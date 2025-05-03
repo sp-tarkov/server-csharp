@@ -25,7 +25,13 @@ public class ContainerHelper
         var limitX = containerX - minVolume;
 
         // Every x+y slot taken up in container, exit
-        if (container2D.All(x => x.All(y => y == 1)))
+        if (container2D.All(x =>
+        {
+            return x.All(y =>
+            {
+                return y == 1;
+            });
+        }))
         {
             return new FindSlotResult(false);
         }
@@ -33,8 +39,11 @@ public class ContainerHelper
         // Down = y
         for (var y = 0; y < limitY; y++)
         {
-            if (container2D[y].All(x => x == 1))
-                // Every item in row is full, skip row
+            if (container2D[y].All(x =>
+            {
+                return x == 1;
+            }))
+            // Every item in row is full, skip row
             {
                 continue;
             }
@@ -141,16 +150,18 @@ public class ContainerHelper
         var itemHeight = rotate ? itemW : itemH;
 
         for (var tmpY = y; tmpY < y + itemHeight; tmpY++)
-        for (var tmpX = x; tmpX < x + itemWidth; tmpX++)
         {
-            if (container2D[tmpY][tmpX] == 0)
+            for (var tmpX = x; tmpX < x + itemWidth; tmpX++)
+            {
+                if (container2D[tmpY][tmpX] == 0)
                 // Flag slot as used
-            {
-                container2D[tmpY][tmpX] = 1;
-            }
-            else
-            {
-                throw new Exception($"Slot at({x}, {y}) is already filled. Cannot fit a {itemW} by {itemH} item");
+                {
+                    container2D[tmpY][tmpX] = 1;
+                }
+                else
+                {
+                    throw new Exception($"Slot at({x}, {y}) is already filled. Cannot fit a {itemW} by {itemH} item");
+                }
             }
         }
     }

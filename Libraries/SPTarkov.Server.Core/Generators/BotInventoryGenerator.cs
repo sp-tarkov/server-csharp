@@ -194,7 +194,7 @@ public class BotInventoryGenerator(
         )
         {
             foreach (var equipmentSlotKvP in randomistionDetails.NighttimeChanges.EquipmentModsModifiers)
-                // Never let mod chance go outside of 0 - 100
+            // Never let mod chance go outside of 0 - 100
             {
                 randomistionDetails.EquipmentMods[equipmentSlotKvP.Key] = Math.Min(
                     Math.Max(randomistionDetails.EquipmentMods[equipmentSlotKvP.Key] + equipmentSlotKvP.Value, 0),
@@ -346,14 +346,14 @@ public class BotInventoryGenerator(
 
         // Bot has no armor vest and flagged to be forced to wear armored rig in this event
         if (botEquipConfig.ForceOnlyArmoredRigWhenNoArmor.GetValueOrDefault(false) && !hasArmorVest)
-            // Filter rigs down to only those with armor
+        // Filter rigs down to only those with armor
         {
             FilterRigsToThoseWithProtection(templateInventory.Equipment, botRole);
         }
 
         // Optimisation - Remove armored rigs from pool
         if (hasArmorVest)
-            // Filter rigs down to only those with armor
+        // Filter rigs down to only those with armor
         {
             FilterRigsToThoseWithoutProtection(templateInventory.Equipment, botRole);
         }
@@ -410,8 +410,17 @@ public class BotInventoryGenerator(
     public void FilterRigsToThoseWithProtection(Dictionary<EquipmentSlots, Dictionary<string, double>> templateEquipment, string botRole)
     {
         var tacVestsWithArmor = templateEquipment[EquipmentSlots.TacticalVest]
-            .Where(kvp => _itemHelper.ItemHasSlots(kvp.Key))
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            .Where(kvp =>
+            {
+                return _itemHelper.ItemHasSlots(kvp.Key);
+            })
+            .ToDictionary(kvp =>
+            {
+                return kvp.Key;
+            }, kvp =>
+            {
+                return kvp.Value;
+            });
 
         if (!tacVestsWithArmor.Any())
         {
@@ -436,8 +445,17 @@ public class BotInventoryGenerator(
         bool allowEmptyResult = true)
     {
         var tacVestsWithoutArmor = templateEquipment[EquipmentSlots.TacticalVest]
-            .Where(kvp => !_itemHelper.ItemHasSlots(kvp.Key))
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            .Where(kvp =>
+            {
+                return !_itemHelper.ItemHasSlots(kvp.Key);
+            })
+            .ToDictionary(kvp =>
+            {
+                return kvp.Key;
+            }, kvp =>
+            {
+                return kvp.Value;
+            });
 
         if (!allowEmptyResult && !tacVestsWithoutArmor.Any())
         {
@@ -559,7 +577,7 @@ public class BotInventoryGenerator(
             if (_botConfig.Equipment.ContainsKey(settings.BotData.EquipmentRole) &&
                 settings.RandomisationDetails?.RandomisedArmorSlots != null &&
                 settings.RandomisationDetails.RandomisedArmorSlots.Contains(settings.RootEquipmentSlot.ToString()))
-                // Filter out mods from relevant blacklist
+            // Filter out mods from relevant blacklist
             {
                 settings.ModPool[pickedItemDb.Id] = GetFilteredDynamicModsForItem(
                     pickedItemDb.Id,
@@ -612,7 +630,10 @@ public class BotInventoryGenerator(
             ;
 
             // Get mods not on blacklist
-            var filteredMods = modPool[modSlot.Key].Where(slotName => !blacklistedMods.Contains(slotName));
+            var filteredMods = modPool[modSlot.Key].Where(slotName =>
+            {
+                return !blacklistedMods.Contains(slotName);
+            });
             if (!filteredMods.Any())
             {
                 _logger.Warning($"Filtering {modSlot.Key} pool resulting in 0 items, skipping filter");
@@ -641,7 +662,7 @@ public class BotInventoryGenerator(
     {
         var weaponSlotsToFill = GetDesiredWeaponsForBot(equipmentChances);
         foreach (var desiredWeapons in weaponSlotsToFill)
-            // Add weapon to bot if true and bot json has something to put into the slot
+        // Add weapon to bot if true and bot json has something to put into the slot
         {
             if (desiredWeapons.ShouldSpawn && templateInventory.Equipment[desiredWeapons.Slot].Any())
             {

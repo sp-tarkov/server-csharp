@@ -21,7 +21,10 @@ public class MapMarkerService(
     public Item CreateMarkerOnMap(PmcData pmcData, InventoryCreateMarkerRequestData request)
     {
         // Get map from inventory
-        var mapItem = pmcData?.Inventory?.Items?.FirstOrDefault(i => i?.Id == request?.Item);
+        var mapItem = pmcData?.Inventory?.Items?.FirstOrDefault(i =>
+        {
+            return i?.Id == request?.Item;
+        });
 
         // add marker to map item
         mapItem.Upd.Map = mapItem?.Upd?.Map ??
@@ -46,7 +49,10 @@ public class MapMarkerService(
     public Item DeleteMarkerFromMap(PmcData pmcData, InventoryDeleteMarkerRequestData request)
     {
         // Get map from inventory
-        var mapItem = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
+        var mapItem = pmcData.Inventory.Items.FirstOrDefault(item =>
+        {
+            return item.Id == request.Item;
+        });
 
         // remove marker
         var markers = mapItem.Upd.Map.Markers.Where(marker =>
@@ -69,12 +75,18 @@ public class MapMarkerService(
     public Item? EditMarkerOnMap(PmcData pmcData, InventoryEditMarkerRequestData request)
     {
         // Get map from inventory
-        var mapItem = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
+        var mapItem = pmcData.Inventory.Items.FirstOrDefault(item =>
+        {
+            return item.Id == request.Item;
+        });
 
         // edit marker
         // the only thing that is consistent between the old and edit is the X and Y
         // find the marker where X and Y match
-        var markerToRemove = mapItem.Upd.Map.Markers.FirstOrDefault(x => x.X == request.X && x.Y == request.Y);
+        var markerToRemove = mapItem.Upd.Map.Markers.FirstOrDefault(x =>
+        {
+            return x.X == request.X && x.Y == request.Y;
+        });
 
         if (markerToRemove is null)
         {

@@ -252,7 +252,7 @@ public class PlayerScavGenerator(
 
             // Try add new key with value
             if (!baseBotNode.BotChances.EquipmentChances.TryAdd(equipmentKvP.Key, equipmentKvP.Value))
-                // Unable to add new, update existing
+            // Unable to add new, update existing
             {
                 baseBotNode.BotChances.EquipmentChances[equipmentKvP.Key] += equipmentKvP.Value;
             }
@@ -280,7 +280,10 @@ public class PlayerScavGenerator(
         var props = baseBotNode.BotGeneration.Items.GetType().GetProperties();
         foreach (var itemLimitKvP in karmaSettings.ItemLimits)
         {
-            var prop = props.FirstOrDefault(x => string.Equals(x.Name, itemLimitKvP.Key, StringComparison.OrdinalIgnoreCase));
+            var prop = props.FirstOrDefault(x =>
+            {
+                return string.Equals(x.Name, itemLimitKvP.Key, StringComparison.OrdinalIgnoreCase);
+            });
             prop.SetValue(baseBotNode.BotGeneration.Items, itemLimitKvP.Value);
         }
 
@@ -358,8 +361,14 @@ public class PlayerScavGenerator(
     {
         // Get sum of all scav cooldown reduction timer bonuses
         var modifier = 1d + pmcData.Bonuses
-            .Where(x => x.Type == BonusType.ScavCooldownTimer)
-            .Sum(bonus => (bonus?.Value ?? 1) / 100);
+            .Where(x =>
+            {
+                return x.Type == BonusType.ScavCooldownTimer;
+            })
+            .Sum(bonus =>
+            {
+                return (bonus?.Value ?? 1) / 100;
+            });
 
         var fenceInfo = _fenceService.GetFenceInfo(pmcData);
         modifier *= fenceInfo.SavageCooldownModifier ?? 1d;

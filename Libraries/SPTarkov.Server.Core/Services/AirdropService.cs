@@ -72,7 +72,10 @@ public class AirdropService(
         var crateLoot = GetLootThatFitsContainer(airdropCrateItem, crateLootPool);
 
         // Flatten loot into single array ready to be returned
-        var flattenedCrateLoot = crateLoot.SelectMany(x => x).ToList();
+        var flattenedCrateLoot = crateLoot.SelectMany(x =>
+        {
+            return x;
+        }).ToList();
 
         // Add crate to front of loot rewards
         flattenedCrateLoot.Insert(0, airdropCrateItem);
@@ -81,7 +84,7 @@ public class AirdropService(
         foreach (var item in flattenedCrateLoot)
         {
             if (item.Id == airdropCrateItem.Id)
-                // Crate itself, don't alter
+            // Crate itself, don't alter
             {
                 continue;
             }
@@ -128,7 +131,7 @@ public class AirdropService(
             }
 
             if (failedToFitAttemptCount > 3)
-                // x attempts to fit an item, container is probably full, stop trying to add more
+            // x attempts to fit an item, container is probably full, stop trying to add more
             {
                 break;
             }
@@ -216,9 +219,18 @@ public class AirdropService(
         // Get all items that match the blacklisted types and fold into item blacklist
         var itemTypeBlacklist = _itemFilterService.GetItemRewardBaseTypeBlacklist();
         var itemsMatchingTypeBlacklist = _itemHelper.GetItems()
-            .Where(templateItem => !string.IsNullOrEmpty(templateItem.Parent))
-            .Where(templateItem => _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist))
-            .Select(templateItem => templateItem.Id).ToHashSet();
+            .Where(templateItem =>
+            {
+                return !string.IsNullOrEmpty(templateItem.Parent);
+            })
+            .Where(templateItem =>
+            {
+                return _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist);
+            })
+            .Select(templateItem =>
+            {
+                return templateItem.Id;
+            }).ToHashSet();
         var itemBlacklist = new HashSet<string>();
         itemBlacklist.UnionWith(lootSettingsByType.ItemBlacklist);
         itemBlacklist.UnionWith(_itemFilterService.GetItemRewardBlacklist());

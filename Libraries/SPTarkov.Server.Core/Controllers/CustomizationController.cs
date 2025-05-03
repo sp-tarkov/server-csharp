@@ -43,12 +43,17 @@ public class CustomizationController(
         var clothing = _databaseService.GetCustomization();
         var suits = _databaseService.GetTrader(traderId).Suits;
 
-        var matchingSuits = suits?.Where(s => clothing.ContainsKey(s.SuiteId!)).ToList();
-        matchingSuits = matchingSuits?.Where(s => clothing[s.SuiteId ?? string.Empty]
-                                                      ?.Properties?.Side?
-                                                      .Contains(pmcData?.Info?.Side ?? string.Empty) ??
-                                                  false
-            )
+        var matchingSuits = suits?.Where(s =>
+        {
+            return clothing.ContainsKey(s.SuiteId!);
+        }).ToList();
+        matchingSuits = matchingSuits?.Where(s =>
+        {
+            return clothing[s.SuiteId ?? string.Empty]
+                                                                  ?.Properties?.Side?
+                                                                  .Contains(pmcData?.Info?.Side ?? string.Empty) ??
+                                                              false;
+        })
             .ToList();
 
         if (matchingSuits == null)
@@ -130,7 +135,10 @@ public class CustomizationController(
         var fullProfile = _profileHelper.GetFullProfile(sessionId);
 
         // Check if clothing can be found by id
-        return fullProfile.CustomisationUnlocks.Exists(customisation => Equals(customisation.Id, suitId));
+        return fullProfile.CustomisationUnlocks.Exists(customisation =>
+        {
+            return Equals(customisation.Id, suitId);
+        });
     }
 
     /// <summary>
@@ -141,7 +149,10 @@ public class CustomizationController(
     /// <returns>Suit</returns>
     protected Suit? GetTraderClothingOffer(string sessionId, string? offerId)
     {
-        var foundSuit = GetAllTraderSuits(sessionId).FirstOrDefault(s => s.Id == offerId);
+        var foundSuit = GetAllTraderSuits(sessionId).FirstOrDefault(s =>
+        {
+            return s.Id == offerId;
+        });
         if (foundSuit is null)
         {
             _logger.Error(_localisationService.GetText("customisation-unable_to_find_suit_with_id", offerId));

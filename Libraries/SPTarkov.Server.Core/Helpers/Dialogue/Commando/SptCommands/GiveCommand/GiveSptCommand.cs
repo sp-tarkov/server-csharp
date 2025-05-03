@@ -146,22 +146,32 @@ public class GiveSptCommand(
                 var allAllowedItemNames = _itemHelper
                     .GetItems()
                     .Where(IsItemAllowed)
-                    .Select(i => localizedGlobal
-                        .GetValueOrDefault($"{i.Id} Name", i.Properties.Name)
-                        ?.ToLower()
-                    )
-                    .Where(i => !string.IsNullOrEmpty(i));
+                    .Select(i =>
+                    {
+                        return localizedGlobal
+                                                .GetValueOrDefault($"{i.Id} Name", i.Properties.Name)
+                                                ?.ToLower();
+                    })
+                    .Where(i =>
+                    {
+                        return !string.IsNullOrEmpty(i);
+                    });
 
                 var closestItemsMatchedByName = allAllowedItemNames
-                    .Select(i => new
+                    .Select(i =>
+                    {
+                        return new
                         {
                             Match = StringSimilarity.Match(item, i, 2, true),
                             ItemName = i
-                        }
-                    )
+                        };
+                    })
                     .ToList();
 
-                closestItemsMatchedByName.Sort((a1, a2) => a2.Match.CompareTo(a1.Match));
+                closestItemsMatchedByName.Sort((a1, a2) =>
+                {
+                    return a2.Match.CompareTo(a1.Match);
+                });
 
                 if (closestItemsMatchedByName[0].Match >= _acceptableConfidence)
                 {
@@ -173,12 +183,18 @@ public class GiveSptCommand(
                     var slicedItems = closestItemsMatchedByName.Slice(0, 10);
                     // max 10 item names and map them
                     var itemList = slicedItems
-                        .Select(match => $"{i++}. {match.ItemName} (conf: {Math.Round(match.Match * 100d),2})");
+                        .Select(match =>
+                        {
+                            return $"{i++}. {match.ItemName} (conf: {Math.Round(match.Match * 100d),2})";
+                        });
                     _savedCommand.Add(
                         sessionId,
                         new SavedCommand(
                             quantity,
-                            slicedItems.Select(item => item.ItemName).ToList(),
+                            slicedItems.Select(item =>
+                            {
+                                return item.ItemName;
+                            }).ToList(),
                             locale
                         )
                     );
@@ -200,7 +216,10 @@ public class GiveSptCommand(
             ? _itemHelper
                 .GetItems()
                 .Where(IsItemAllowed)
-                .FirstOrDefault(i => (localizedGlobal[$"{i?.Id} Name"]?.ToLower() ?? i.Properties.Name) == item)
+                .FirstOrDefault(i =>
+                {
+                    return (localizedGlobal[$"{i?.Id} Name"]?.ToLower() ?? i.Properties.Name) == item;
+                })
                 .Id
             : item;
 

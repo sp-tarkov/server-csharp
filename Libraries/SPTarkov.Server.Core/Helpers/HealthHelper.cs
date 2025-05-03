@@ -168,7 +168,7 @@ public class HealthHelper(
 
             // Limb hp
             if (!isDead)
-                // Player alive, not is limb alive
+            // Player alive, not is limb alive
             {
                 fullProfile.VitalityData.Health[bodyPart.Key].Health.Current = postRaidHealth.BodyParts[bodyPart.Key].Health.Current ?? 0;
             }
@@ -227,7 +227,7 @@ public class HealthHelper(
                 if (profileBodyPartEffects.TryGetValue(effect.Key, out var dictEffect))
                 {
                     if (effectsToIgnore.Contains(effect.Key))
-                        // Get rid of certain effects we dont want to persist out of raid
+                    // Get rid of certain effects we dont want to persist out of raid
                     {
                         dictEffect = null;
                     }
@@ -236,7 +236,7 @@ public class HealthHelper(
                 }
 
                 if (effectsToIgnore.Contains(effect.Key))
-                    // Do not pass some effects to out of raid profile
+                // Do not pass some effects to out of raid profile
                 {
                     continue;
                 }

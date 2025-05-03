@@ -108,7 +108,10 @@ public class BotController(
 
         var botTypesDb = _databaseService.GetBots().Types;
         //Get all bot types as sting array
-        var botTypes = Enum.GetValues<WildSpawnType>().Select(item => item.ToString()).ToList();
+        var botTypes = Enum.GetValues<WildSpawnType>().Select(item =>
+        {
+            return item.ToString();
+        }).ToList();
         foreach (var botType in botTypes)
         {
             if (botTypesDb is null)
@@ -191,22 +194,25 @@ public class BotController(
         // Map conditions to promises for bot generation
 
         Task.WaitAll((request.Conditions ?? [])
-            .Select(condition => Task.Factory.StartNew(() =>
+            .Select(condition =>
             {
-                var botWaveGenerationDetails = GetBotGenerationDetailsForWave(
-                    condition,
-                    pmcProfile,
-                    allPmcsHaveSameNameAsPlayer,
-                    raidSettings,
-                    Math.Max(GetBotPresetGenerationLimit(condition.Role),
-                        condition.Limit), // Choose largest between value passed in from request vs what's in bot.config
-                    _botHelper.IsBotPmc(condition.Role));
+                return Task.Factory.StartNew(() =>
+                            {
+                                var botWaveGenerationDetails = GetBotGenerationDetailsForWave(
+                                    condition,
+                                    pmcProfile,
+                                    allPmcsHaveSameNameAsPlayer,
+                                    raidSettings,
+                                    Math.Max(GetBotPresetGenerationLimit(condition.Role),
+                                        condition.Limit), // Choose largest between value passed in from request vs what's in bot.config
+                                    _botHelper.IsBotPmc(condition.Role));
 
-                lock (_botListLock)
-                {
-                    result.AddRange(GenerateBotWave(condition, botWaveGenerationDetails, sessionId));
-                }
-            })).ToArray());
+                                lock (_botListLock)
+                                {
+                                    result.AddRange(GenerateBotWave(condition, botWaveGenerationDetails, sessionId));
+                                }
+                            });
+            }).ToArray());
 
         stopwatch.Stop();
         if (_logger.IsLogEnabled(LogLevel.Debug))

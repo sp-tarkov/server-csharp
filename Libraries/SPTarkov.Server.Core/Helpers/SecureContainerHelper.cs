@@ -13,7 +13,10 @@ public class SecureContainerHelper(ItemHelper _itemHelper)
     /// <returns>List of ids</returns>
     public List<string> GetSecureContainerItems(List<Item> items)
     {
-        var secureContainer = items.First(x => x.SlotId == "SecuredContainer");
+        var secureContainer = items.First(x =>
+        {
+            return x.SlotId == "SecuredContainer";
+        });
 
         // No container found, drop out
         if (secureContainer is null)
@@ -24,6 +27,9 @@ public class SecureContainerHelper(ItemHelper _itemHelper)
         var itemsInSecureContainer = _itemHelper.FindAndReturnChildrenByItems(items, secureContainer.Id);
 
         // Return all items returned and exclude the secure container item itself
-        return itemsInSecureContainer.Where(x => x != secureContainer.Id).ToList();
+        return itemsInSecureContainer.Where(x =>
+        {
+            return x != secureContainer.Id;
+        }).ToList();
     }
 }

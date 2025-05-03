@@ -268,7 +268,7 @@ public class CustomItemService(
         var weaponSlots = weapon.Value.Properties.Slots;
         foreach (var slot in weaponSlots)
         {
-            baseWeaponModObject[slot.Name] = [..slot.Props.Filters[0].Filter];
+            baseWeaponModObject[slot.Name] = [.. slot.Props.Filters[0].Filter];
         }
 
         // Get PMCs

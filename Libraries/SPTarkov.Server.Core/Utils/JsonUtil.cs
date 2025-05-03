@@ -168,7 +168,10 @@ public class JsonUtil
 
     protected static void AddConverter(JsonSerializerOptions options, JsonConverter newConverter)
     {
-        if (options.Converters.All(c => c.GetType() != newConverter.GetType()))
+        if (options.Converters.All(c =>
+        {
+            return c.GetType() != newConverter.GetType();
+        }))
         {
             // Doesn't exist, add
             options.Converters.Add(newConverter);

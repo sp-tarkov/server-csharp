@@ -77,7 +77,7 @@ public class BotNameService(
 
             // Is this a role that must be unique
             if (roleShouldBeUnique.GetValueOrDefault(false))
-                // Check name in cache
+            // Check name in cache
             {
                 if (CacheContainsName(name))
                 {

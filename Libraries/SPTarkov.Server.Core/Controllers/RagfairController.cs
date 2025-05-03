@@ -160,7 +160,10 @@ public class RagfairController
         );
 
         // Match offers with quests and lock unfinished quests - get offers from traders
-        foreach (var traderOffer in result.Offers.Where(offer => _ragfairOfferHelper.OfferIsFromTrader(offer)))
+        foreach (var traderOffer in result.Offers.Where(offer =>
+        {
+            return _ragfairOfferHelper.OfferIsFromTrader(offer);
+        }))
         {
             // For the items, check the barter schemes. The method getDisplayableAssorts sets a flag sptQuestLocked
             // to true if the quest is not completed yet
@@ -196,7 +199,10 @@ public class RagfairController
         var firstItem = offer.Items[0];
         var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(offer.User.Id).Items;
 
-        var assortPurchased = traderAssorts?.FirstOrDefault(x => x.Id == offer.Items.First().Id);
+        var assortPurchased = traderAssorts?.FirstOrDefault(x =>
+        {
+            return x.Id == offer.Items.First().Id;
+        });
         if (assortPurchased is null)
         {
             _logger.Warning(
@@ -237,7 +243,10 @@ public class RagfairController
 
             // Find patching assort by its id
             var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(offer.User.Id).Items;
-            var assortData = traderAssorts.FirstOrDefault(item => item.Id == assortId);
+            var assortData = traderAssorts.FirstOrDefault(item =>
+            {
+                return item.Id == assortId;
+            });
 
             // Set restriction based on data found above
             offer.BuyRestrictionMax = assortData.Upd.BuyRestrictionMax;
@@ -406,7 +415,10 @@ public class RagfairController
         foreach (var offer in offers)
         {
             // Exclude barter items, they tend to have outrageous equivalent prices
-            if (offer.Requirements.Any(req => !_paymentHelper.IsMoneyTpl(req.Template)))
+            if (offer.Requirements.Any(req =>
+            {
+                return !_paymentHelper.IsMoneyTpl(req.Template);
+            }))
             {
                 continue;
             }
@@ -926,7 +938,10 @@ public class RagfairController
         const int loyalLevel = 1;
         var formattedItems = items.Select(item =>
             {
-                var isChild = items.Any(subItem => subItem.Id == item.ParentId);
+                var isChild = items.Any(subItem =>
+                {
+                    return subItem.Id == item.ParentId;
+                });
 
                 return new Item
                 {
@@ -939,13 +954,15 @@ public class RagfairController
             }
         );
 
-        var formattedRequirements = requirements.Select(item => new BarterScheme
+        var formattedRequirements = requirements.Select(item =>
+        {
+            return new BarterScheme
             {
                 Template = item.Template,
                 Count = item.Count,
                 OnlyFunctional = item.OnlyFunctional
-            }
-        );
+            };
+        });
 
         return _ragfairOfferGenerator.CreateAndAddFleaOffer(
             sessionId,
@@ -994,7 +1011,10 @@ public class RagfairController
         // Count how many items are being sold and multiply the requested amount accordingly
         foreach (var itemId in itemIdsFromFleaOfferRequest)
         {
-            var item = pmcData.Inventory?.Items?.FirstOrDefault(i => i.Id == itemId);
+            var item = pmcData.Inventory?.Items?.FirstOrDefault(i =>
+            {
+                return i.Id == itemId;
+            });
             if (item is null)
             {
                 errorMessage = _localisationService.GetText(
@@ -1064,7 +1084,10 @@ public class RagfairController
             pmcData.RagfairInfo.Offers = [];
         }
 
-        var playerOffer = playerProfileOffers?.FirstOrDefault(x => x.Id == offerId);
+        var playerOffer = playerProfileOffers?.FirstOrDefault(x =>
+        {
+            return x.Id == offerId;
+        });
         if (playerOffer is null)
         {
             _logger.Error(
@@ -1107,7 +1130,10 @@ public class RagfairController
 
         var pmcData = _profileHelper.GetPmcProfile(sessionId);
         var playerOffers = pmcData.RagfairInfo.Offers;
-        var playerOfferIndex = playerOffers.FindIndex(offer => offer.Id == extendRequest.OfferId);
+        var playerOfferIndex = playerOffers.FindIndex(offer =>
+        {
+            return offer.Id == extendRequest.OfferId;
+        });
         var secondsToAdd = extendRequest.RenewalTime * TimeUtil.OneHourAsSeconds;
 
         if (playerOfferIndex == -1)
@@ -1136,7 +1162,10 @@ public class RagfairController
             var sellInOncePiece = playerOffer.SellInOnePiece.GetValueOrDefault(false);
             if (!sellInOncePiece)
             {
-                count = (int) playerOffer.Items.Sum(offerItem => offerItem.Upd?.StackObjectsCount ?? 0);
+                count = (int) playerOffer.Items.Sum(offerItem =>
+                {
+                    return offerItem.Upd?.StackObjectsCount ?? 0;
+                });
             }
 
             var tax = _ragfairTaxService.CalculateTax(
@@ -1208,7 +1237,10 @@ public class RagfairController
     public RagfairOffer? GetOfferByInternalId(string sessionId, GetRagfairOfferByIdRequest request)
     {
         var offers = _ragfairOfferService.GetOffers();
-        var offerToReturn = offers.FirstOrDefault(offer => offer.InternalId == request.Id);
+        var offerToReturn = offers.FirstOrDefault(offer =>
+        {
+            return offer.InternalId == request.Id;
+        });
 
         return offerToReturn;
     }

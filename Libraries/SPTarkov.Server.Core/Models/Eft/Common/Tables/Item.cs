@@ -396,16 +396,31 @@ public record Upd
 
 public record LockableKeyComponent
 {
-    public float? RelativeValue { get; set; }
-    public int? NumberOfUsages { get; set; }
+    public float? RelativeValue
+    {
+        get; set;
+    }
+    public int? NumberOfUsages
+    {
+        get; set;
+    }
 
 }
 
 public record LockableComponent
 {
-    public string[]? KeyIds { get; set; }
-    public bool? Locked { get; set; }
-    public LockableKeyComponent? KeyComponent { get; set; }
+    public string[]? KeyIds
+    {
+        get; set;
+    }
+    public bool? Locked
+    {
+        get; set;
+    }
+    public LockableKeyComponent? KeyComponent
+    {
+        get; set;
+    }
 }
 
 public enum PinLockState

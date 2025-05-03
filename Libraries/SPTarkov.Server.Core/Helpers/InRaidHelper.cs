@@ -129,8 +129,10 @@ public class InRaidHelper(
         foreach (var itemToAdd in itemsToAdd)
         {
             // Try to find index of item to determine if we should add or replace
-            var existingItemIndex = serverInventoryItems.FindIndex(inventoryItem => inventoryItem.Id == itemToAdd.Id
-            );
+            var existingItemIndex = serverInventoryItems.FindIndex(inventoryItem =>
+            {
+                return inventoryItem.Id == itemToAdd.Id;
+            });
             if (existingItemIndex == -1)
             {
                 // Not found, add
@@ -154,9 +156,12 @@ public class InRaidHelper(
     public void DeleteInventory(PmcData pmcData, string sessionId)
     {
         // Get inventory item ids to remove from players profile
-        var itemIdsToDeleteFromProfile = GetInventoryItemsLostOnDeath(pmcData).Select(item => item.Id);
+        var itemIdsToDeleteFromProfile = GetInventoryItemsLostOnDeath(pmcData).Select(item =>
+        {
+            return item.Id;
+        });
         foreach (var itemIdToDelete in itemIdsToDeleteFromProfile)
-            // Items inside containers are handled as part of function
+        // Items inside containers are handled as part of function
         {
             _inventoryHelper.RemoveItem(pmcData, itemIdToDelete, sessionId);
         }
@@ -176,13 +181,19 @@ public class InRaidHelper(
         PmcData pmcData,
         string secureContainerSlotId)
     {
-        if (!pmcData.Inventory.Items.Any(item => item.SlotId == secureContainerSlotId))
+        if (!pmcData.Inventory.Items.Any(item =>
+        {
+            return item.SlotId == secureContainerSlotId;
+        }))
         {
             return;
         }
 
         List<Item> itemsInsideContainer = [];
-        foreach (var inventoryItem in pmcData.Inventory.Items.Where(item => item.Upd is not null && item.SlotId != "hideout"))
+        foreach (var inventoryItem in pmcData.Inventory.Items.Where(item =>
+        {
+            return item.Upd is not null && item.SlotId != "hideout";
+        }))
         {
             if (_itemHelper.ItemIsInsideContainer(inventoryItem, secureContainerSlotId, pmcData.Inventory.Items))
             {
@@ -260,7 +271,7 @@ public class InRaidHelper(
             // Check slot id against config, true = delete, false = keep, undefined = delete
             var discard = _lostOnDeathConfig.Equipment.GetByJsonProp<bool>(itemToCheck.SlotId);
             if (discard)
-                // Lost on death
+            // Lost on death
             {
                 return false;
             }

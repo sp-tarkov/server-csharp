@@ -50,7 +50,10 @@ public class RepairService(
         string traderId
     )
     {
-        var itemToRepair = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == repairItemDetails.Id);
+        var itemToRepair = pmcData.Inventory.Items.FirstOrDefault(item =>
+        {
+            return item.Id == repairItemDetails.Id;
+        });
         if (itemToRepair is null)
         {
             _logger.Error(
@@ -314,7 +317,10 @@ public class RepairService(
     )
     {
         // Find item to repair in inventory
-        var itemToRepair = pmcData.Inventory.Items.FirstOrDefault(x => x.Id == itemToRepairId);
+        var itemToRepair = pmcData.Inventory.Items.FirstOrDefault(x =>
+        {
+            return x.Id == itemToRepairId;
+        });
         if (itemToRepair is null)
         {
             _logger.Error(_localisationService.GetText("repair-item_not_found_unable_to_repair", itemToRepairId));
@@ -342,7 +348,10 @@ public class RepairService(
         // Find and use repair kit defined in body
         foreach (var repairKit in repairKits)
         {
-            var repairKitInInventory = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == repairKit.Id);
+            var repairKitInInventory = pmcData.Inventory.Items.FirstOrDefault(item =>
+            {
+                return item.Id == repairKit.Id;
+            });
             if (repairKitInInventory is null)
             {
                 _logger.Error(
@@ -422,11 +431,17 @@ public class RepairService(
     /// <returns>Multiplier value</returns>
     protected double GetBonusMultiplierValue(BonusType skillBonus, PmcData pmcData)
     {
-        var bonusesMatched = pmcData?.Bonuses?.Where(b => b.Type == skillBonus);
+        var bonusesMatched = pmcData?.Bonuses?.Where(b =>
+        {
+            return b.Type == skillBonus;
+        });
         var value = 1d;
         if (bonusesMatched is not null)
         {
-            var summedPercentage = bonusesMatched.Sum(x => x.Value ?? 0);
+            var summedPercentage = bonusesMatched.Sum(x =>
+            {
+                return x.Value ?? 0;
+            });
             value = 1 + summedPercentage / 100;
         }
 
@@ -447,7 +462,7 @@ public class RepairService(
             // Random loss not disabled via config, perform charisma check
             var hasEliteCharisma = _profileHelper.HasEliteSkillLevel(SkillTypes.Charisma, pmcData);
             if (hasEliteCharisma)
-                // 50/50 chance of loss being ignored at elite level
+            // 50/50 chance of loss being ignored at elite level
             {
                 shouldApplyDurabilityLoss = _randomUtil.GetChance100(50);
             }

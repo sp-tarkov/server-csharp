@@ -137,7 +137,10 @@ public class CreateProfileService(
 
             foreach (var (achievementId, achievement) in profileDetails.CharacterData.PmcData.Achievements)
             {
-                var rewards = achievementsDb.FirstOrDefault(achievementDb => achievementDb.Id == achievementId)?.Rewards;
+                var rewards = achievementsDb.FirstOrDefault(achievementDb =>
+                {
+                    return achievementDb.Id == achievementId;
+                })?.Rewards;
 
                 if (rewards is null)
                 {
@@ -278,7 +281,10 @@ public class CreateProfileService(
     /// <param name="pmcData"> Profile to check </param>
     protected void AddMissingInternalContainersToProfile(PmcData pmcData)
     {
-        if (!pmcData.Inventory.Items.Any(item => item.Id == pmcData.Inventory.HideoutCustomizationStashId))
+        if (!pmcData.Inventory.Items.Any(item =>
+        {
+            return item.Id == pmcData.Inventory.HideoutCustomizationStashId;
+        }))
         {
             pmcData.Inventory.Items.Add(
                 new Item
@@ -289,7 +295,10 @@ public class CreateProfileService(
             );
         }
 
-        if (!pmcData.Inventory.Items.Any(item => item.Id == pmcData.Inventory.SortingTable))
+        if (!pmcData.Inventory.Items.Any(item =>
+        {
+            return item.Id == pmcData.Inventory.SortingTable;
+        }))
         {
             pmcData.Inventory.Items.Add(
                 new Item
@@ -300,7 +309,10 @@ public class CreateProfileService(
             );
         }
 
-        if (!pmcData.Inventory.Items.Any(item => item.Id == pmcData.Inventory.QuestStashItems))
+        if (!pmcData.Inventory.Items.Any(item =>
+        {
+            return item.Id == pmcData.Inventory.QuestStashItems;
+        }))
         {
             pmcData.Inventory.Items.Add(
                 new Item
@@ -311,7 +323,10 @@ public class CreateProfileService(
             );
         }
 
-        if (!pmcData.Inventory.Items.Any(item => item.Id == pmcData.Inventory.QuestRaidItems))
+        if (!pmcData.Inventory.Items.Any(item =>
+        {
+            return item.Id == pmcData.Inventory.QuestRaidItems;
+        }))
         {
             pmcData.Inventory.Items.Add(
                 new Item
@@ -451,7 +466,7 @@ public class CreateProfileService(
 
         // Dev profile additions
         if (fullProfile.ProfileInfo.Edition.ToLower().Contains("developer"))
-            // CyberTark background
+        // CyberTark background
         {
             fullProfile.CustomisationUnlocks.Add(
                 new CustomisationStorage

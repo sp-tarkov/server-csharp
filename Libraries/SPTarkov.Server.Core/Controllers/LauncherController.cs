@@ -41,9 +41,18 @@ public class LauncherController(
         // Get all possible profile types + filter out any that are blacklisted
 
         var profiles = typeof(ProfileTemplates).GetProperties()
-            .Where(p => p.CanWrite)
-            .Select(p => p.GetJsonName())
-            .Where(profileName => !_coreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profileName))
+            .Where(p =>
+            {
+                return p.CanWrite;
+            })
+            .Select(p =>
+            {
+                return p.GetJsonName();
+            })
+            .Where(profileName =>
+            {
+                return !_coreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profileName);
+            })
             .ToList();
 
         return new ConnectResponse
@@ -63,7 +72,10 @@ public class LauncherController(
     {
         var result = new Dictionary<string, string>();
         var dbProfiles = _databaseService.GetProfiles();
-        foreach (var templatesProperty in typeof(ProfileTemplates).GetProperties().Where(p => p.CanWrite))
+        foreach (var templatesProperty in typeof(ProfileTemplates).GetProperties().Where(p =>
+        {
+            return p.CanWrite;
+        }))
         {
             var propertyValue = templatesProperty.GetValue(dbProfiles);
             if (propertyValue == null)
@@ -293,10 +305,16 @@ public class LauncherController(
         foreach (var modName in modsGroupedByName)
         {
             var modDatas = modsGroupedByName[modName.Key];
-            var modVersions = modDatas.Select(x => x.Version);
+            var modVersions = modDatas.Select(x =>
+            {
+                return x.Version;
+            });
             // var highestVersion = MaxSatisfying(modVersions, "*"); ?? TODO: Node used SemVer here
 
-            var chosenVersion = modDatas.FirstOrDefault(x => x.Name == modName.Key); // && x.Version == highestVersion
+            var chosenVersion = modDatas.FirstOrDefault(x =>
+            {
+                return x.Name == modName.Key;
+            }); // && x.Version == highestVersion
             if (chosenVersion is null)
             {
                 continue;

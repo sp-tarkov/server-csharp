@@ -165,8 +165,9 @@ public class BotEquipmentFilterService
         var blacklistDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
         return (blacklistDetailsForBot?.Blacklist ?? []).FirstOrDefault(equipmentFilter =>
-            playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
-        );
+        {
+            return playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max;
+        });
     }
 
     /// <summary>
@@ -180,8 +181,9 @@ public class BotEquipmentFilterService
         var whitelistDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
         return (whitelistDetailsForBot?.Whitelist ?? []).FirstOrDefault(equipmentFilter =>
-            playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
-        );
+        {
+            return playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max;
+        });
     }
 
     /// <summary>
@@ -194,8 +196,10 @@ public class BotEquipmentFilterService
     {
         var weightingDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
-        return (weightingDetailsForBot?.WeightingAdjustmentsByBotLevel ?? []).FirstOrDefault(x => botLevel >= x.LevelRange.Min && botLevel <= x.LevelRange.Max
-        );
+        return (weightingDetailsForBot?.WeightingAdjustmentsByBotLevel ?? []).FirstOrDefault(x =>
+        {
+            return botLevel >= x.LevelRange.Min && botLevel <= x.LevelRange.Max;
+        });
     }
 
     /// <summary>
@@ -209,8 +213,9 @@ public class BotEquipmentFilterService
         var weightingDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
         return (weightingDetailsForBot?.WeightingAdjustmentsByBotLevel ?? []).FirstOrDefault(x =>
-            playerlevel >= x.LevelRange.Min && playerlevel <= x.LevelRange.Max
-        );
+        {
+            return playerlevel >= x.LevelRange.Min && playerlevel <= x.LevelRange.Max;
+        });
     }
 
     /// <summary>
@@ -293,7 +298,7 @@ public class BotEquipmentFilterService
             foreach (var (caliber, cartridges) in baseBotNode.BotInventory.Ammo)
             {
                 if (!whitelist.Cartridge.TryGetValue(caliber, out var matchingWhitelist))
-                    // No cartridge whitelist, move to next cartridge
+                // No cartridge whitelist, move to next cartridge
                 {
                     continue;
                 }
@@ -301,10 +306,10 @@ public class BotEquipmentFilterService
                 // Loop over each cartridge + weight
                 // Clear all cartridges ready for whitelist to be added
                 foreach (var ammoKvP in cartridges)
-                    // Cartridge not on whitelist
+                // Cartridge not on whitelist
                 {
                     if (!matchingWhitelist.Contains(ammoKvP.Key))
-                        // Remove
+                    // Remove
                     {
                         cartridges.Remove(ammoKvP.Key);
                     }
@@ -329,7 +334,10 @@ public class BotEquipmentFilterService
 
                 // Filter cartridge slot items to just items not in blacklist
                 foreach (var blacklistedTpl in cartridgeCaliberBlacklist
-                             .Where(blacklistedTpl => ammoCaliberKvP.Value.ContainsKey(blacklistedTpl)))
+                             .Where(blacklistedTpl =>
+                             {
+                                 return ammoCaliberKvP.Value.ContainsKey(blacklistedTpl);
+                             }))
                 {
                     ammoCaliberKvP.Value.Remove(blacklistedTpl);
                 }
@@ -371,7 +379,7 @@ public class BotEquipmentFilterService
             {
                 var locationToUpdate = botItemPool[Enum.Parse<EquipmentSlots>(poolAdjustmentKvP.Key)];
                 foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
-                    // Only make change if item exists as we're editing, not adding
+                // Only make change if item exists as we're editing, not adding
                 {
                     if (locationToUpdate[itemToEditKvP.Key] != null || locationToUpdate[itemToEditKvP.Key] == 0)
                     {
@@ -426,7 +434,7 @@ public class BotEquipmentFilterService
             {
                 var locationToUpdate = botItemPool[poolAdjustmentKvP.Key];
                 foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
-                    // Only make change if item exists as we're editing, not adding
+                // Only make change if item exists as we're editing, not adding
                 {
                     if (locationToUpdate.GetValueOrDefault(itemToEditKvP.Key) != null || locationToUpdate[itemToEditKvP.Key] == 0)
                     {
@@ -480,7 +488,7 @@ public class BotEquipmentFilterService
             {
                 var locationToUpdate = botItemPool.GetByJsonProp<Dictionary<string, double>>(poolAdjustmentKvP.Key);
                 foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
-                    // Only make change if item exists as we're editing, not adding
+                // Only make change if item exists as we're editing, not adding
                 {
                     if (locationToUpdate.GetValueOrDefault(itemToEditKvP.Key) != null || locationToUpdate.GetValueOrDefault(itemToEditKvP.Key) == 0)
                     {

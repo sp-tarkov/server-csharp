@@ -18,7 +18,10 @@ public class MatchLocationService
         foreach (var locationKvP in _locations)
         {
             var matchingGroup = _locations[locationKvP.Key]
-                .Groups.FirstOrDefault(groupKvP => groupKvP == request.GroupId);
+                .Groups.FirstOrDefault(groupKvP =>
+                {
+                    return groupKvP == request.GroupId;
+                });
             if (matchingGroup != null)
             {
                 _locations[locationKvP.Key].Groups.Remove(request.GroupId);

@@ -43,7 +43,10 @@ public class ProfileController(
     /// <returns></returns>
     public virtual List<MiniProfile> GetMiniProfiles()
     {
-        return _saveServer.GetProfiles().Select(kvp => GetMiniProfile(kvp.Key)).ToList();
+        return _saveServer.GetProfiles().Select(kvp =>
+        {
+            return GetMiniProfile(kvp.Key);
+        }).ToList();
     }
 
     /// <summary>
@@ -282,7 +285,10 @@ public class ProfileController(
         hideoutKeys.Add(profileToViewPmc.Inventory.HideoutCustomizationStashId);
 
         // Find hideout items e.g. posters
-        var hideoutRootItems = profileToViewPmc.Inventory.Items.Where(x => hideoutKeys.Contains(x.Id));
+        var hideoutRootItems = profileToViewPmc.Inventory.Items.Where(x =>
+        {
+            return hideoutKeys.Contains(x.Id);
+        });
         var itemsToReturn = new List<Item>();
         foreach (var rootItems in hideoutRootItems)
         {

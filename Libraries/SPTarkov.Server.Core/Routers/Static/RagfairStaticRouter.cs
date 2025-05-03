@@ -23,7 +23,7 @@ public class RagfairStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => ragfairCallbacks.Search(url, info as SearchRequestData, sessionID),
+                ) => { return ragfairCallbacks.Search(url, info as SearchRequestData, sessionID); },
                 typeof(SearchRequestData)
             ),
             new RouteAction(
@@ -33,7 +33,7 @@ public class RagfairStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => ragfairCallbacks.Search(url, info as SearchRequestData, sessionID),
+                ) => { return ragfairCallbacks.Search(url, info as SearchRequestData, sessionID); },
                 typeof(SearchRequestData)
             ),
             new RouteAction(
@@ -43,7 +43,7 @@ public class RagfairStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => ragfairCallbacks.GetMarketPrice(url, info as GetMarketPriceRequestData, sessionID),
+                ) => { return ragfairCallbacks.GetMarketPrice(url, info as GetMarketPriceRequestData, sessionID); },
                 typeof(GetMarketPriceRequestData)
             ),
             new RouteAction(
@@ -53,7 +53,7 @@ public class RagfairStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => ragfairCallbacks.StorePlayerOfferTaxAmount(url, info as StorePlayerOfferTaxAmountRequestData, sessionID),
+                ) => { return ragfairCallbacks.StorePlayerOfferTaxAmount(url, info as StorePlayerOfferTaxAmountRequestData, sessionID); },
                 typeof(StorePlayerOfferTaxAmountRequestData)
             ),
             new RouteAction(
@@ -63,7 +63,7 @@ public class RagfairStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => ragfairCallbacks.SendReport(url, info as SendRagfairReportRequestData, sessionID),
+                ) => { return ragfairCallbacks.SendReport(url, info as SendRagfairReportRequestData, sessionID); },
                 typeof(SendRagfairReportRequestData)
             ),
             new RouteAction(
@@ -73,8 +73,7 @@ public class RagfairStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => ragfairCallbacks.GetFleaPrices(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return ragfairCallbacks.GetFleaPrices(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/ragfair/offer/findbyid",
                 (
@@ -82,7 +81,7 @@ public class RagfairStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => ragfairCallbacks.GetFleaOfferById(url, info as GetRagfairOfferByIdRequest, sessionID),
+                ) => { return ragfairCallbacks.GetFleaOfferById(url, info as GetRagfairOfferByIdRequest, sessionID); },
                 typeof(GetRagfairOfferByIdRequest)
             )
         ]

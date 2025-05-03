@@ -40,7 +40,10 @@ public class I18nService
 
     private void Initialize()
     {
-        var files = _fileUtil.GetFiles(_directory, true).Where(f => _fileUtil.GetFileExtension(f) == "json").ToList();
+        var files = _fileUtil.GetFiles(_directory, true).Where(f =>
+        {
+            return _fileUtil.GetFileExtension(f) == "json";
+        }).ToList();
         if (files.Count == 0)
         {
             throw new Exception($"Localisation files in directory {_directory} not found.");
@@ -50,9 +53,11 @@ public class I18nService
         {
             _loadedLocales.Add(
                 _fileUtil.StripExtension(file),
-                new LazyLoad<Dictionary<string, string>>(() => _jsonUtil.DeserializeFromFile<Dictionary<string, string>>(file) ??
-                                                               new Dictionary<string, string>()
-                )
+                new LazyLoad<Dictionary<string, string>>(() =>
+                {
+                    return _jsonUtil.DeserializeFromFile<Dictionary<string, string>>(file) ??
+                                                                                   new Dictionary<string, string>();
+                })
             );
         }
 
@@ -70,7 +75,10 @@ public class I18nService
         }
         else
         {
-            var fallback = _fallbacks.Where(kv => locale.StartsWith(kv.Key.Replace("*", "")));
+            var fallback = _fallbacks.Where(kv =>
+            {
+                return locale.StartsWith(kv.Key.Replace("*", ""));
+            });
             if (fallback.Any())
             {
                 var foundFallbackLocale = fallback.First().Value;
@@ -105,7 +113,10 @@ public class I18nService
             _loadedLocales.TryGetValue(_defaultLocale, out var defaults);
             if (!defaults.Value.TryGetValue(key, out value))
             {
-                value = _localeService.GetLocaleDb(_defaultLocale).FirstOrDefault(x => x.Key == key).Value;
+                value = _localeService.GetLocaleDb(_defaultLocale).FirstOrDefault(x =>
+                {
+                    return x.Key == key;
+                }).Value;
             }
 
             return value ?? key;

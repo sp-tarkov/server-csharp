@@ -49,7 +49,10 @@ public class LauncherV2Controller(
         var result = new Dictionary<string, string>();
         var dbProfiles = _databaseService.GetProfiles();
 
-        foreach (var templatesProperty in typeof(ProfileTemplates).GetProperties().Where(p => p.CanWrite))
+        foreach (var templatesProperty in typeof(ProfileTemplates).GetProperties().Where(p =>
+        {
+            return p.CanWrite;
+        }))
         {
             var propertyValue = templatesProperty.GetValue(dbProfiles);
             if (propertyValue == null)

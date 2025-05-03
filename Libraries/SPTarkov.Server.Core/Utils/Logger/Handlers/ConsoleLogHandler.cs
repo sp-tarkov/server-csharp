@@ -6,7 +6,13 @@ namespace SPTarkov.Server.Core.Utils.Logger.Handlers;
 [Injectable(InjectionType.Singleton)]
 public class ConsoleLogHandler : BaseLogHandler
 {
-    public override LoggerType LoggerType => LoggerType.Console;
+    public override LoggerType LoggerType
+    {
+        get
+        {
+            return LoggerType.Console;
+        }
+    }
 
     public override void Log(SptLogMessage message, BaseSptLoggerReference reference)
     {

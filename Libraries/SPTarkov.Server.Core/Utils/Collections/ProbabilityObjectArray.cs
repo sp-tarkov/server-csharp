@@ -92,7 +92,10 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     /// <returns>ProbabilityObjectArray without the dropped element</returns>
     public ProbabilityObjectArray<K, V> Drop(K key)
     {
-        return (ProbabilityObjectArray<K, V>) this.Where(r => !r.Key?.Equals(key) ?? false);
+        return (ProbabilityObjectArray<K, V>) this.Where(r =>
+        {
+            return !r.Key?.Equals(key) ?? false;
+        });
     }
 
     /// <summary>
@@ -102,7 +105,10 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     /// <returns>Stored data object</returns>
     public V? Data(K key)
     {
-        var element = this.FirstOrDefault(r => r.Key?.Equals(key) ?? false);
+        var element = this.FirstOrDefault(r =>
+        {
+            return r.Key?.Equals(key) ?? false;
+        });
         return element == null ? default : element.Data;
     }
 
@@ -116,7 +122,10 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     /// <returns>The relative probability</returns>
     public double? Probability(K key)
     {
-        var element = this.FirstOrDefault(r => r.Key.Equals(key));
+        var element = this.FirstOrDefault(r =>
+        {
+            return r.Key.Equals(key);
+        });
         return element?.RelativeProbability;
     }
 
@@ -131,7 +140,10 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
      */
     public double MaxProbability()
     {
-        return this.Max(x => x.RelativeProbability).Value;
+        return this.Max(x =>
+        {
+            return x.RelativeProbability;
+        }).Value;
     }
 
     /// <summary>
@@ -143,7 +155,10 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     /// <returns>the minimum value of all relative probabilities in this ProbabilityObjectArray</returns>
     public double MinProbability()
     {
-        return this.Min(x => x.RelativeProbability.Value);
+        return this.Min(x =>
+        {
+            return x.RelativeProbability.Value;
+        });
     }
 
     /**
@@ -182,7 +197,10 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
         for (var i = 0; i < drawCount; i++)
         {
             var rand = Random.Shared.NextDouble();
-            var randomIndex = probCumsum.FindIndex(x => x > rand);
+            var randomIndex = probCumsum.FindIndex(x =>
+            {
+                return x > rand;
+            });
             // We cannot put Math.random() directly in the findIndex because then it draws anew for each of its iteration
             if (removeAfterDraw || neverRemoveWhitelist.Contains(totals.keyArray[randomIndex]))
             {

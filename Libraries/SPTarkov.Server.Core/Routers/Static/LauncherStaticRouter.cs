@@ -15,65 +15,57 @@ public class LauncherStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/launcher/ping",
-                (url, _, sessionID, _) => launcherCallbacks.Ping(url, null, sessionID)
-            ),
+                (url, _, sessionID, _) => { return launcherCallbacks.Ping(url, null, sessionID); }),
             new RouteAction(
                 "/launcher/server/connect",
-                (_, _, _, _) => launcherCallbacks.Connect()
-            ),
+                (_, _, _, _) => { return launcherCallbacks.Connect(); }),
             new RouteAction(
                 "/launcher/profile/login",
-                (url, info, sessionID, _) => launcherCallbacks.Login(url, info as LoginRequestData, sessionID),
+                (url, info, sessionID, _) => { return launcherCallbacks.Login(url, info as LoginRequestData, sessionID); },
                 typeof(LoginRequestData)
             ),
             new RouteAction(
                 "/launcher/profile/register",
-                (url, info, sessionID, _) => launcherCallbacks.Register(url, info as RegisterData, sessionID),
+                (url, info, sessionID, _) => { return launcherCallbacks.Register(url, info as RegisterData, sessionID); },
                 typeof(RegisterData)
             ),
             new RouteAction(
                 "/launcher/profile/get",
-                (url, info, sessionID, _) => launcherCallbacks.Get(url, info as LoginRequestData, sessionID),
+                (url, info, sessionID, _) => { return launcherCallbacks.Get(url, info as LoginRequestData, sessionID); },
                 typeof(LoginRequestData)
             ),
             new RouteAction(
                 "/launcher/profile/change/username",
-                (url, info, sessionID, _) =>
-                    launcherCallbacks.ChangeUsername(url, info as ChangeRequestData, sessionID),
+                (url, info, sessionID, _) => { return launcherCallbacks.ChangeUsername(url, info as ChangeRequestData, sessionID); },
                 typeof(ChangeRequestData)
             ),
             new RouteAction(
                 "/launcher/profile/change/password",
-                (url, info, sessionID, _) =>
-                    launcherCallbacks.ChangePassword(url, info as ChangeRequestData, sessionID),
+                (url, info, sessionID, _) => { return launcherCallbacks.ChangePassword(url, info as ChangeRequestData, sessionID); },
                 typeof(ChangeRequestData)
             ),
             new RouteAction(
                 "/launcher/profile/change/wipe",
-                (url, info, sessionID, _) => launcherCallbacks.Wipe(url, info as RegisterData, sessionID),
+                (url, info, sessionID, _) => { return launcherCallbacks.Wipe(url, info as RegisterData, sessionID); },
                 typeof(RegisterData)
             ),
             new RouteAction(
                 "/launcher/profile/remove",
-                (url, info, sessionID, _) => launcherCallbacks.RemoveProfile(url, info as RemoveProfileData, sessionID),
+                (url, info, sessionID, _) => { return launcherCallbacks.RemoveProfile(url, info as RemoveProfileData, sessionID); },
                 typeof(RemoveProfileData)
             ),
             new RouteAction(
                 "/launcher/profile/compatibleTarkovVersion",
-                (_, _, _, _) => launcherCallbacks.GetCompatibleTarkovVersion()
-            ),
+                (_, _, _, _) => { return launcherCallbacks.GetCompatibleTarkovVersion(); }),
             new RouteAction(
                 "/launcher/server/version",
-                (_, _, _, _) => launcherCallbacks.GetServerVersion()
-            ),
+                (_, _, _, _) => { return launcherCallbacks.GetServerVersion(); }),
             new RouteAction(
                 "/launcher/server/loadedServerMods",
-                (_, _, _, _) => launcherCallbacks.GetLoadedServerMods()
-            ),
+                (_, _, _, _) => { return launcherCallbacks.GetLoadedServerMods(); }),
             new RouteAction(
                 "/launcher/server/serverModsUsedByProfile",
-                (url, info, sessionID, _) =>
-                    launcherCallbacks.GetServerModsProfileUsed(url, info as EmptyRequestData, sessionID),
+                (url, info, sessionID, _) => { return launcherCallbacks.GetServerModsProfileUsed(url, info as EmptyRequestData, sessionID); },
                 typeof(EmptyRequestData)
             )
         ]

@@ -270,7 +270,7 @@ public class BotLootGenerator(
 
         // TacticalVest - generate loot if they have one
         if (containersBotHasAvailable.Contains(EquipmentSlots.TacticalVest))
-            // Vest
+        // Vest
         {
             AddLootFromPool(
                 _botLootCacheService.GetLootFromCache(
@@ -337,8 +337,10 @@ public class BotLootGenerator(
             return null;
         }
 
-        var matchingValue = _pmcConfig?.LootItemLimitsRub?.FirstOrDefault(minMaxValue => botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max
-        );
+        var matchingValue = _pmcConfig?.LootItemLimitsRub?.FirstOrDefault(minMaxValue =>
+        {
+            return botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max;
+        });
 
         return matchingValue;
     }
@@ -357,8 +359,10 @@ public class BotLootGenerator(
             return 0;
         }
 
-        var matchingValue = _pmcConfig.MaxBackpackLootTotalRub.FirstOrDefault(minMaxValue => botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max
-        );
+        var matchingValue = _pmcConfig.MaxBackpackLootTotalRub.FirstOrDefault(minMaxValue =>
+        {
+            return botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max;
+        });
         return matchingValue?.Value;
     }
 
@@ -371,12 +375,18 @@ public class BotLootGenerator(
     {
         HashSet<EquipmentSlots> result = [EquipmentSlots.Pockets];
 
-        if ((botInventory.Items ?? []).Any(item => item.SlotId == EquipmentSlots.TacticalVest.ToString()))
+        if ((botInventory.Items ?? []).Any(item =>
+        {
+            return item.SlotId == EquipmentSlots.TacticalVest.ToString();
+        }))
         {
             result.Add(EquipmentSlots.TacticalVest);
         }
 
-        if ((botInventory.Items ?? []).Any(item => item.SlotId == EquipmentSlots.Backpack.ToString()))
+        if ((botInventory.Items ?? []).Any(item =>
+        {
+            return item.SlotId == EquipmentSlots.Backpack.ToString();
+        }))
         {
             result.Add(EquipmentSlots.Backpack);
         }
@@ -526,7 +536,10 @@ public class BotLootGenerator(
                             );
                         }
 
-                        itemWithChildrenToAdd.AddRange(itemsToAdd.SelectMany(x => x));
+                        itemWithChildrenToAdd.AddRange(itemsToAdd.SelectMany(x =>
+                        {
+                            return x;
+                        }));
                     }
                 }
             }
@@ -742,7 +755,7 @@ public class BotLootGenerator(
     {
         // PMCs and scavs have different sections of bot config for spawn limits
         if (itemSpawnLimits is not null && itemSpawnLimits.GlobalLimits?.Count == 0)
-            // No items found in spawn limit, drop out
+        // No items found in spawn limit, drop out
         {
             return false;
         }
@@ -755,7 +768,7 @@ public class BotLootGenerator(
 
         var idToCheckFor = GetMatchingIdFromSpawnLimits(itemTemplate, itemSpawnLimits.GlobalLimits);
         if (idToCheckFor is null)
-            // ParentId or tplid not found in spawnLimits, not a spawn limited item, skip
+        // ParentId or tplid not found in spawnLimits, not a spawn limited item, skip
         {
             return false;
         }
@@ -763,8 +776,8 @@ public class BotLootGenerator(
 
         // Use tryAdd to see if it exists, and automatically add 1
         if (!itemSpawnLimits.CurrentLimits.TryAdd(idToCheckFor, 1))
-            // if it does exist, come in here and increment
-            // Increment item count with this bot type
+        // if it does exist, come in here and increment
+        // Increment item count with this bot type
         {
             itemSpawnLimits.CurrentLimits[idToCheckFor]++;
         }

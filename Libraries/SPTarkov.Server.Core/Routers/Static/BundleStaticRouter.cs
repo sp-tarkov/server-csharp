@@ -22,8 +22,7 @@ public class BundleStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => bundleCallbacks.GetBundles(url, info as EmptyRequestData, sessionID)
-            )
+                ) => { return bundleCallbacks.GetBundles(url, info as EmptyRequestData, sessionID); })
         ]
     )
     {

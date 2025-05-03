@@ -428,7 +428,10 @@ public class MailSendService(
             return null;
         }
 
-        var messageToReplyTo = currentDialogue.Messages?.FirstOrDefault(message => message.Id == replyToId);
+        var messageToReplyTo = currentDialogue.Messages?.FirstOrDefault(message =>
+        {
+            return message.Id == replyToId;
+        });
         if (messageToReplyTo is null)
         {
             return null;
@@ -538,7 +541,10 @@ public class MailSendService(
                 if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.AMMO_BOX))
                 {
                     // look for child cartridge objects
-                    var childItems = messageDetails.Items?.Where(x => x.ParentId == reward.Id);
+                    var childItems = messageDetails.Items?.Where(x =>
+                    {
+                        return x.ParentId == reward.Id;
+                    });
                     if (childItems is null || !childItems.Any())
                     {
                         // No cartridges found, generate and add to rewards
@@ -591,7 +597,10 @@ public class MailSendService(
         }
 
         // Find first item with slotId that indicates its a 'base' item
-        var item = items.FirstOrDefault(x => _slotNames.Contains(x.SlotId ?? ""));
+        var item = items.FirstOrDefault(x =>
+        {
+            return _slotNames.Contains(x.SlotId ?? "");
+        });
         if (item is not null)
         {
             return item;
@@ -599,7 +608,10 @@ public class MailSendService(
 
         // Not a singlular item + no items have a hideout/main slotid
         // Look for first item without parent id
-        item = items.FirstOrDefault(x => x.ParentId is null);
+        item = items.FirstOrDefault(x =>
+        {
+            return x.ParentId is null;
+        });
         if (item is not null)
         {
             return item;
@@ -628,7 +640,7 @@ public class MailSendService(
 
         // Does dialog exist
         if (!dialogsInProfile.ContainsKey(senderId))
-            // Doesn't exist, create
+        // Doesn't exist, create
         {
             dialogsInProfile[senderId] = new Dialogue
             {

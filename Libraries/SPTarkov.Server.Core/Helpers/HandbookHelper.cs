@@ -30,7 +30,10 @@ public class HandbookHelper(
         {
             var data = _itemConfig.HandbookPriceOverride[itemTplKey.Key];
 
-            var itemToUpdate = handbook.Items.FirstOrDefault(item => item.Id == itemTplKey.Key);
+            var itemToUpdate = handbook.Items.FirstOrDefault(item =>
+            {
+                return item.Id == itemTplKey.Key;
+            });
             if (itemToUpdate is null)
             {
                 handbook.Items.Add(
@@ -41,7 +44,10 @@ public class HandbookHelper(
                         Price = data.Price
                     }
                 );
-                itemToUpdate = handbook.Items.FirstOrDefault(item => item.Id == itemTplKey.Key);
+                itemToUpdate = handbook.Items.FirstOrDefault(item =>
+                {
+                    return item.Id == itemTplKey.Key;
+                });
             }
 
             itemToUpdate.Price = data.Price;
@@ -95,7 +101,10 @@ public class HandbookHelper(
             return item;
         }
 
-        var handbookItem = _databaseService.GetHandbook().Items?.FirstOrDefault(item => item.Id == tpl);
+        var handbookItem = _databaseService.GetHandbook().Items?.FirstOrDefault(item =>
+        {
+            return item.Id == tpl;
+        });
         if (handbookItem is null)
         {
             const int newValue = 0;
@@ -195,7 +204,10 @@ public class HandbookHelper(
 
     public HandbookCategory GetCategoryById(string handbookId)
     {
-        return _databaseService.GetHandbook().Categories.FirstOrDefault(category => category.Id == handbookId);
+        return _databaseService.GetHandbook().Categories.FirstOrDefault(category =>
+        {
+            return category.Id == handbookId;
+        });
     }
 }
 

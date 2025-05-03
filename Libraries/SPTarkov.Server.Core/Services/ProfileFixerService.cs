@@ -88,7 +88,10 @@ public class ProfileFixerService(
                 message.Items.Data = _itemHelper.AdoptOrphanedItems(message.Items.Stash, message.Items.Data);
 
                 // Because `adoptOrphanedItems` sets the slotId to `hideout`, we need to re-set it to `main` to work with mail
-                foreach (var item in message.Items.Data.Where(item => item.SlotId == "hideout"))
+                foreach (var item in message.Items.Data.Where(item =>
+                {
+                    return item.SlotId == "hideout";
+                }))
                 {
                     item.SlotId = "main";
                 }
@@ -104,8 +107,17 @@ public class ProfileFixerService(
     {
         // Create a mapping of all inventory items, keyed by _id value
         var itemMapping = pmcProfile.Inventory.Items
-            .GroupBy(item => item.Id)
-            .ToDictionary(x => x.Key, x => x.ToList());
+            .GroupBy(item =>
+            {
+                return item.Id;
+            })
+            .ToDictionary(x =>
+            {
+                return x.Key;
+            }, x =>
+            {
+                return x.ToList();
+            });
 
         foreach (var mappingKvP in itemMapping)
         {
@@ -129,10 +141,16 @@ public class ProfileFixerService(
             {
                 // Items are different, replace ID with unique value
                 // Only replace ID if items have no children, we dont want orphaned children
-                var itemsHaveChildren = pmcProfile.Inventory.Items.Any(x => x.ParentId == mappingKvP.Key);
+                var itemsHaveChildren = pmcProfile.Inventory.Items.Any(x =>
+                {
+                    return x.ParentId == mappingKvP.Key;
+                });
                 if (!itemsHaveChildren)
                 {
-                    var itemToAdjust = pmcProfile.Inventory.Items.FirstOrDefault(x => x.Id == mappingKvP.Key);
+                    var itemToAdjust = pmcProfile.Inventory.Items.FirstOrDefault(x =>
+                    {
+                        return x.Id == mappingKvP.Key;
+                    });
                     itemToAdjust.Id = _hashUtil.Generate();
                     _logger.Warning($"Replace duplicate item Id: {mappingKvP.Key} with {itemToAdjust.Id}");
                 }
@@ -140,10 +158,13 @@ public class ProfileFixerService(
         }
 
         // Iterate over all inventory items
-        foreach (var item in pmcProfile.Inventory.Items.Where(x => x.SlotId is not null))
+        foreach (var item in pmcProfile.Inventory.Items.Where(x =>
+        {
+            return x.SlotId is not null;
+        }))
         {
             if (item.Upd is null)
-                // Ignore items without a upd object
+            // Ignore items without a upd object
             {
                 continue;
             }
@@ -173,8 +194,14 @@ public class ProfileFixerService(
         if (customizationDb[pmcProfile.Customization.Head] is null)
         {
             var defaultHead = playerIsUsec
-                ? customizationDbArray.FirstOrDefault(x => x.Name == "DefaultUsecHead")
-                : customizationDbArray.FirstOrDefault(x => x.Name == "DefaultBearHead");
+                ? customizationDbArray.FirstOrDefault(x =>
+                {
+                    return x.Name == "DefaultUsecHead";
+                })
+                : customizationDbArray.FirstOrDefault(x =>
+                {
+                    return x.Name == "DefaultBearHead";
+                });
             pmcProfile.Customization.Head = defaultHead.Id;
         }
 
@@ -182,8 +209,14 @@ public class ProfileFixerService(
         if (customizationDb[pmcProfile.Customization.Body] is null)
         {
             var defaultBody = playerIsUsec
-                ? customizationDbArray.FirstOrDefault(x => x.Name == "DefaultUsecBody")
-                : customizationDbArray.FirstOrDefault(x => x.Name == "DefaultBearBody");
+                ? customizationDbArray.FirstOrDefault(x =>
+                {
+                    return x.Name == "DefaultUsecBody";
+                })
+                : customizationDbArray.FirstOrDefault(x =>
+                {
+                    return x.Name == "DefaultBearBody";
+                });
             pmcProfile.Customization.Body = defaultBody.Id;
         }
 
@@ -191,8 +224,14 @@ public class ProfileFixerService(
         if (customizationDb[pmcProfile.Customization.Hands] is null)
         {
             var defaultHands = playerIsUsec
-                ? customizationDbArray.FirstOrDefault(x => x.Name == "DefaultUsecHands")
-                : customizationDbArray.FirstOrDefault(x => x.Name == "DefaultBearHands");
+                ? customizationDbArray.FirstOrDefault(x =>
+                {
+                    return x.Name == "DefaultUsecHands";
+                })
+                : customizationDbArray.FirstOrDefault(x =>
+                {
+                    return x.Name == "DefaultBearHands";
+                });
             pmcProfile.Customization.Hands = defaultHands.Id;
         }
 
@@ -200,8 +239,14 @@ public class ProfileFixerService(
         if (customizationDb[pmcProfile.Customization.Feet] is null)
         {
             var defaultFeet = playerIsUsec
-                ? customizationDbArray.FirstOrDefault(x => x.Name == "DefaultUsecFeet")
-                : customizationDbArray.FirstOrDefault(x => x.Name == "DefaultBearFeet");
+                ? customizationDbArray.FirstOrDefault(x =>
+                {
+                    return x.Name == "DefaultUsecFeet";
+                })
+                : customizationDbArray.FirstOrDefault(x =>
+                {
+                    return x.Name == "DefaultBearFeet";
+                });
             pmcProfile.Customization.Feet = defaultFeet.Id;
         }
     }
@@ -219,7 +264,10 @@ public class ProfileFixerService(
         }
 
         foreach (var counterKvP in pmcProfile.TaskConditionCounters
-                     .Where(counterKvP => counterKvP.Value.SourceId is null))
+                     .Where(counterKvP =>
+                     {
+                         return counterKvP.Value.SourceId is null;
+                     }))
         {
             pmcProfile.TaskConditionCounters.Remove(counterKvP.Key);
         }
@@ -242,16 +290,22 @@ public class ProfileFixerService(
 
         // Loop over TaskConditionCounters objects and add once we want to remove to counterKeysToRemove
         foreach (var TaskConditionCounterKvP in pmcProfile.TaskConditionCounters)
-            // Only check if profile has repeatable quests
+        // Only check if profile has repeatable quests
         {
             if (pmcProfile.RepeatableQuests is not null && activeRepeatableQuests.Count > 0)
             {
-                var existsInActiveRepeatableQuests = activeRepeatableQuests.Any(quest => quest.Id == TaskConditionCounterKvP.Value.SourceId
-                );
-                var existsInQuests = pmcProfile.Quests.Any(quest => quest.QId == TaskConditionCounterKvP.Value.SourceId
-                );
-                var isAchievementTracker = achievements.Any(quest => quest.Id == TaskConditionCounterKvP.Value.SourceId
-                );
+                var existsInActiveRepeatableQuests = activeRepeatableQuests.Any(quest =>
+                {
+                    return quest.Id == TaskConditionCounterKvP.Value.SourceId;
+                });
+                var existsInQuests = pmcProfile.Quests.Any(quest =>
+                {
+                    return quest.QId == TaskConditionCounterKvP.Value.SourceId;
+                });
+                var isAchievementTracker = achievements.Any(quest =>
+                {
+                    return quest.Id == TaskConditionCounterKvP.Value.SourceId;
+                });
 
                 // If task conditions id is neither in activeQuests, quests or achievements - it's stale and should be cleaned up
                 if (!(existsInActiveRepeatableQuests || existsInQuests || isAchievementTracker))
@@ -275,8 +329,11 @@ public class ProfileFixerService(
     protected List<RepeatableQuest> GetActiveRepeatableQuests(List<PmcDataRepeatableQuest> repeatableQuests)
     {
         var activeQuests = new List<RepeatableQuest>();
-        foreach (var repeatableQuest in repeatableQuests.Where(questType => questType.ActiveQuests?.Count > 0))
-            // daily/weekly collection has active quests in them, add to array and return
+        foreach (var repeatableQuest in repeatableQuests.Where(questType =>
+        {
+            return questType.ActiveQuests?.Count > 0;
+        }))
+        // daily/weekly collection has active quests in them, add to array and return
         {
             activeQuests.AddRange(repeatableQuest.ActiveQuests);
         }
@@ -297,7 +354,10 @@ public class ProfileFixerService(
 
         for (var i = profileQuests.Count - 1; i >= 0; i--)
         {
-            if (!(quests.ContainsKey(profileQuests[i].QId) || activeRepeatableQuests.Any(x => x.Id == profileQuests[i].QId)))
+            if (!(quests.ContainsKey(profileQuests[i].QId) || activeRepeatableQuests.Any(x =>
+            {
+                return x.Id == profileQuests[i].QId;
+            })))
             {
                 _logger.Info($"Successfully removed orphaned quest: {profileQuests[i].QId} that doesn't exist in quest data");
                 profileQuests.RemoveAt(i);
@@ -325,8 +385,10 @@ public class ProfileFixerService(
             // For started or successful quests, check for unlocks in the `Started` rewards
             if (profileQuest.Status is QuestStatusEnum.Started or QuestStatusEnum.Success)
             {
-                var productionRewards = quest.Rewards.Started?.Where(reward => reward.Type == RewardType.ProductionScheme
-                );
+                var productionRewards = quest.Rewards.Started?.Where(reward =>
+                {
+                    return reward.Type == RewardType.ProductionScheme;
+                });
 
                 if (productionRewards is not null)
                 {
@@ -340,8 +402,10 @@ public class ProfileFixerService(
             // For successful quests, check for unlocks in the `Success` rewards
             if (profileQuest.Status is QuestStatusEnum.Success)
             {
-                var productionRewards = quest.Rewards.Success?.Where(reward => reward.Type == RewardType.ProductionScheme
-                );
+                var productionRewards = quest.Rewards.Success?.Where(reward =>
+                {
+                    return reward.Type == RewardType.ProductionScheme;
+                });
 
                 if (productionRewards is not null)
                 {
@@ -405,7 +469,13 @@ public class ProfileFixerService(
     {
         // Check if the player inventory contains this item
         pmcProfile.InsuredItems = pmcProfile.InsuredItems
-            .Where(insuredItem => pmcProfile.Inventory.Items.Any(item => item.Id == insuredItem.ItemId))
+            .Where(insuredItem =>
+            {
+                return pmcProfile.Inventory.Items.Any(item =>
+                {
+                    return item.Id == insuredItem.ItemId;
+                });
+            })
             .ToList();
     }
 
@@ -418,7 +488,10 @@ public class ProfileFixerService(
     {
         var globals = _databaseService.GetGlobals();
 
-        var generator = pmcProfile.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.GENERATOR);
+        var generator = pmcProfile.Hideout.Areas.FirstOrDefault(area =>
+        {
+            return area.Type == HideoutAreas.GENERATOR;
+        });
         if (generator is not null)
         {
             var genSlots = generator.Slots.Count;
@@ -435,7 +508,10 @@ public class ProfileFixerService(
             }
         }
 
-        var waterCollSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.WATER_COLLECTOR)
+        var waterCollSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x =>
+        {
+            return x.Type == HideoutAreas.WATER_COLLECTOR;
+        })
             .Slots
             .Count;
         var extraWaterCollSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.WaterCollector.Slots;
@@ -450,7 +526,10 @@ public class ProfileFixerService(
             AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.WATER_COLLECTOR, (int) (1 + extraWaterCollSlots ?? 0), pmcProfile);
         }
 
-        var filterSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.AIR_FILTERING).Slots.Count;
+        var filterSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x =>
+        {
+            return x.Type == HideoutAreas.AIR_FILTERING;
+        }).Slots.Count;
         var extraFilterSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.AirFilteringUnit.Slots;
 
         if (filterSlots < 3 + extraFilterSlots)
@@ -463,7 +542,10 @@ public class ProfileFixerService(
             AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.AIR_FILTERING, (int) (3 + extraFilterSlots ?? 0), pmcProfile);
         }
 
-        var btcFarmSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.BITCOIN_FARM).Slots.Count;
+        var btcFarmSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x =>
+        {
+            return x.Type == HideoutAreas.BITCOIN_FARM;
+        }).Slots.Count;
         var extraBtcSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.BitcoinFarm.Slots;
 
         // BTC Farm doesnt have extra slots for hideout management, but we still check for modded stuff!!
@@ -477,7 +559,10 @@ public class ProfileFixerService(
             AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.BITCOIN_FARM, (int) (50 + extraBtcSlots ?? 0), pmcProfile);
         }
 
-        var cultistAreaSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.CIRCLE_OF_CULTISTS)
+        var cultistAreaSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x =>
+        {
+            return x.Type == HideoutAreas.CIRCLE_OF_CULTISTS;
+        })
             .Slots
             .Count;
         if (cultistAreaSlots < 1)
@@ -499,7 +584,10 @@ public class ProfileFixerService(
     /// <param name="pmcProfile">profile to update</param>
     protected void AddEmptyObjectsToHideoutAreaSlots(HideoutAreas areaType, int emptyItemCount, PmcData pmcProfile)
     {
-        var area = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == areaType);
+        var area = pmcProfile.Hideout.Areas.FirstOrDefault(x =>
+        {
+            return x.Type == areaType;
+        });
         area.Slots = AddObjectsToList(emptyItemCount, area.Slots);
     }
 
@@ -507,7 +595,10 @@ public class ProfileFixerService(
     {
         for (var i = 0; i < count; i++)
         {
-            if (!slots.Any(x => x.LocationIndex == i))
+            if (!slots.Any(x =>
+            {
+                return x.LocationIndex == i;
+            }))
             {
                 slots.Add(
                     new HideoutSlot
@@ -529,7 +620,10 @@ public class ProfileFixerService(
     {
         var skills = pmcProfile.Skills.Common;
 
-        foreach (var skill in skills.Where(skill => skill.Progress > 5100))
+        foreach (var skill in skills.Where(skill =>
+        {
+            return skill.Progress > 5100;
+        }))
         {
             skill.Progress = 5100;
         }
@@ -547,9 +641,12 @@ public class ProfileFixerService(
 
         // Get items placed in root of stash
         // TODO: extend to other areas / sub items
-        var inventoryItemsToCheck = pmcProfile.Inventory.Items.Where(item => _areas.Contains(item.SlotId ?? ""));
+        var inventoryItemsToCheck = pmcProfile.Inventory.Items.Where(item =>
+        {
+            return _areas.Contains(item.SlotId ?? "");
+        });
         if (inventoryItemsToCheck is not null)
-            // Check each item in inventory to ensure item exists in itemdb
+        // Check each item in inventory to ensure item exists in itemdb
         {
             foreach (var item in inventoryItemsToCheck)
             {
@@ -642,7 +739,10 @@ public class ProfileFixerService(
         }
 
         var clothingDb = _databaseService.GetTemplates().Customization;
-        foreach (var clothingItem in fullProfile.CustomisationUnlocks.Where(customisation => customisation.Type == CustomisationType.SUITE))
+        foreach (var clothingItem in fullProfile.CustomisationUnlocks.Where(customisation =>
+        {
+            return customisation.Type == CustomisationType.SUITE;
+        }))
         {
             if (!clothingDb.ContainsKey(clothingItem.Id))
             {
@@ -686,22 +786,30 @@ public class ProfileFixerService(
                 }
 
                 // Get Item rewards only
-                foreach (var successReward in activeQuest.Rewards.Success.Where(reward => reward.Type == RewardType.Item))
-                foreach (var item in successReward.Items)
+                foreach (var successReward in activeQuest.Rewards.Success.Where(reward =>
                 {
-                    if (!itemsDb.ContainsKey(item.Template))
+                    return reward.Type == RewardType.Item;
+                }))
+                {
+                    foreach (var item in successReward.Items)
                     {
-                        _logger.Warning(
-                            $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
-                        );
-                        repeatable.ActiveQuests.Remove(activeQuest);
+                        if (!itemsDb.ContainsKey(item.Template))
+                        {
+                            _logger.Warning(
+                                $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
+                            );
+                            repeatable.ActiveQuests.Remove(activeQuest);
+                        }
                     }
                 }
             }
         }
 
         foreach (var TraderPurchaseKvP in fullProfile.TraderPurchases
-                     .Where(TraderPurchase => !_traderHelper.TraderEnumHasValue(TraderPurchase.Key)))
+                     .Where(TraderPurchase =>
+                     {
+                         return !_traderHelper.TraderEnumHasValue(TraderPurchase.Key);
+                     }))
         {
             _logger.Error(_localisationService.GetText("fixer-trader_found", TraderPurchaseKvP.Key));
             if (_coreConfig.Fixes.RemoveModItemsFromProfile)
@@ -725,9 +833,12 @@ public class ProfileFixerService(
         Dictionary<string, TemplateItem> itemsDb)
     {
         if (buildType == "weapon")
-            // Get items not found in items db
+        // Get items not found in items db
         {
-            foreach (var item in (build as WeaponBuild).Items.Where(item => !itemsDb.ContainsKey(item.Template)))
+            foreach (var item in (build as WeaponBuild).Items.Where(item =>
+            {
+                return !itemsDb.ContainsKey(item.Template);
+            }))
             {
                 _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
 
@@ -745,9 +856,12 @@ public class ProfileFixerService(
         // TODO: refactor to be generic
 
         if (buildType == "equipment")
-            // Get items not found in items db
+        // Get items not found in items db
         {
-            foreach (var item in (build as EquipmentBuild).Items.Where(item => !itemsDb.ContainsKey(item.Template)))
+            foreach (var item in (build as EquipmentBuild).Items.Where(item =>
+            {
+                return !itemsDb.ContainsKey(item.Template);
+            }))
             {
                 _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
 
@@ -826,13 +940,16 @@ public class ProfileFixerService(
             // Zero indexed
             var areaLevelsToCheck = new List<string>();
             for (var index = 0; index < level + 1; index++)
-                // Stage key is saved as string in db
+            // Stage key is saved as string in db
             {
                 areaLevelsToCheck.Add(index.ToString());
             }
 
             // Iterate over area levels, check for bonuses, add if needed
-            var dbArea = dbHideoutAreas?.FirstOrDefault(area => area.Type == areaType);
+            var dbArea = dbHideoutAreas?.FirstOrDefault(area =>
+            {
+                return area.Type == areaType;
+            });
             if (dbArea is null)
             {
                 continue;
@@ -874,17 +991,26 @@ public class ProfileFixerService(
         // match by id first, used by "TextBonus" bonuses
         if (bonus.Id is not null)
         {
-            return profileBonuses?.FirstOrDefault(x => x.Id == bonus.Id);
+            return profileBonuses?.FirstOrDefault(x =>
+            {
+                return x.Id == bonus.Id;
+            });
         }
 
         return bonus.Type switch
         {
-            BonusType.StashSize => profileBonuses?.FirstOrDefault(x => x.Type == bonus.Type && x.TemplateId == bonus.TemplateId
-            ),
+            BonusType.StashSize => profileBonuses?.FirstOrDefault(x =>
+            {
+                return x.Type == bonus.Type && x.TemplateId == bonus.TemplateId;
+            }),
             BonusType.AdditionalSlots => profileBonuses?.FirstOrDefault(x =>
-                x.Type == bonus.Type && x?.Value == bonus?.Value && x?.IsVisible == bonus?.IsVisible
-            ),
-            _ => profileBonuses?.FirstOrDefault(x => x.Type == bonus.Type && x.Value == bonus.Value)
+            {
+                return x.Type == bonus.Type && x?.Value == bonus?.Value && x?.IsVisible == bonus?.IsVisible;
+            }),
+            _ => profileBonuses?.FirstOrDefault(x =>
+            {
+                return x.Type == bonus.Type && x.Value == bonus.Value;
+            })
         };
     }
 

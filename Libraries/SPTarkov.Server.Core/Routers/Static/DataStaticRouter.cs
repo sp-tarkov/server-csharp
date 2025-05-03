@@ -22,8 +22,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetSettings(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return dataCallbacks.GetSettings(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/globals",
                 (
@@ -31,8 +30,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetGlobals(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return dataCallbacks.GetGlobals(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/items",
                 (
@@ -40,8 +38,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetTemplateItems(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return dataCallbacks.GetTemplateItems(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/handbook/templates",
                 (
@@ -49,8 +46,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetTemplateHandbook(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return dataCallbacks.GetTemplateHandbook(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/customization",
                 (
@@ -58,8 +54,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetTemplateSuits(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return dataCallbacks.GetTemplateSuits(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/account/customization",
                 (
@@ -67,8 +62,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetTemplateCharacter(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return dataCallbacks.GetTemplateCharacter(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/hideout/production/recipes",
                 (
@@ -76,8 +70,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetHideoutProduction(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return dataCallbacks.GetHideoutProduction(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/hideout/settings",
                 (
@@ -85,8 +78,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetHideoutSettings(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return dataCallbacks.GetHideoutSettings(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/hideout/areas",
                 (
@@ -94,8 +86,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetHideoutAreas(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return dataCallbacks.GetHideoutAreas(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/languages",
                 (
@@ -103,8 +94,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetLocalesLanguages(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return dataCallbacks.GetLocalesLanguages(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/hideout/qte/list",
                 (
@@ -112,8 +102,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetQteList(url, info as EmptyRequestData, sessionID)
-            )
+                ) => { return dataCallbacks.GetQteList(url, info as EmptyRequestData, sessionID); })
         ]
     )
     {

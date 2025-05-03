@@ -9,7 +9,13 @@ public class FileLogHandler : BaseLogHandler
 {
     private static ConcurrentDictionary<string, object> _fileLocks = new();
 
-    public override LoggerType LoggerType => LoggerType.File;
+    public override LoggerType LoggerType
+    {
+        get
+        {
+            return LoggerType.File;
+        }
+    }
 
     public override void Log(SptLogMessage message, BaseSptLoggerReference reference)
     {
@@ -18,7 +24,10 @@ public class FileLogHandler : BaseLogHandler
         if (!_fileLocks.TryGetValue(config.FilePath, out var lockObject))
         {
             lockObject = new object();
-            while (!_fileLocks.TryAdd(config.FilePath, lockObject)) ;
+            while (!_fileLocks.TryAdd(config.FilePath, lockObject))
+            {
+                ;
+            }
         }
 
         lock (lockObject)

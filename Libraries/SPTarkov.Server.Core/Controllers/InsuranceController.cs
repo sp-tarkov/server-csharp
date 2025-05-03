@@ -95,7 +95,10 @@ public class InsuranceController(
             }
         }
 
-        return profileInsuranceDetails.Where(insured => insuranceTime >= insured.ScheduledTime).ToList();
+        return profileInsuranceDetails.Where(insured =>
+        {
+            return insuranceTime >= insured.ScheduledTime;
+        }).ToList();
     }
 
     /// <summary>
@@ -148,7 +151,10 @@ public class InsuranceController(
     /// <returns>Count of insured items</returns>
     protected int CountAllInsuranceItems(List<Insurance> insuranceDetails)
     {
-        return insuranceDetails.Select(ins => ins.Items.Count).Count();
+        return insuranceDetails.Select(ins =>
+        {
+            return ins.Items.Count;
+        }).Count();
     }
 
     /// <summary>
@@ -160,11 +166,12 @@ public class InsuranceController(
     {
         var profile = _saveServer.GetProfile(sessionId);
         profile.InsuranceList = profile.InsuranceList.Where(insurance =>
-                insurance.TraderId != insPackage.TraderId ||
-                insurance.SystemData?.Date != insPackage.SystemData?.Date ||
-                insurance.SystemData?.Time != insPackage.SystemData?.Time ||
-                insurance.SystemData?.Location != insPackage.SystemData?.Location
-            )
+        {
+            return insurance.TraderId != insPackage.TraderId ||
+                            insurance.SystemData?.Date != insPackage.SystemData?.Date ||
+                            insurance.SystemData?.Time != insPackage.SystemData?.Time ||
+                            insurance.SystemData?.Location != insPackage.SystemData?.Location;
+        })
             .ToList();
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
@@ -189,8 +196,10 @@ public class InsuranceController(
         var parentAttachmentsMap = PopulateParentAttachmentsMap(rootItemParentId, insured, itemsMap);
 
         // Check to see if any regular items are present.
-        var hasRegularItems = itemsMap.Values.Any(item => !_itemHelper.IsAttachmentAttached(item)
-        );
+        var hasRegularItems = itemsMap.Values.Any(item =>
+        {
+            return !_itemHelper.IsAttachmentAttached(item);
+        });
 
         // Process all items that are not attached, attachments; those are handled separately, by value.
         if (hasRegularItems)
@@ -235,7 +244,10 @@ public class InsuranceController(
         foreach (var insuredItem in insured.Items)
         {
             // Use the parent ID from the item to get the parent item.
-            var parentItem = insured.Items.FirstOrDefault(item => item.Id == insuredItem.ParentId);
+            var parentItem = insured.Items.FirstOrDefault(item =>
+            {
+                return item.Id == insuredItem.ParentId;
+            });
 
             // The parent (not the hideout) could not be found. Skip and warn.
             if (parentItem is null && insuredItem.ParentId != rootItemParentID)
@@ -500,7 +512,10 @@ public class InsuranceController(
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
                 _logger.Debug(
-                    $"Attachment {index} Id: {attachmentId} Tpl: {attachments.FirstOrDefault(x => x.Id == attachmentId)?.Template} - " +
+                    $"Attachment {index} Id: {attachmentId} Tpl: {attachments.FirstOrDefault(x =>
+                    {
+                        return x.Id == attachmentId;
+                    })?.Template} - " +
                     $"Price: {attachmentPrices[attachmentId]}"
                 );
             }
@@ -550,8 +565,14 @@ public class InsuranceController(
 
         // Get attachments count above or equal to price set in config
         return weightedAttachmentByPrice
-            .Where(attachment => attachment.Value >= _insuranceConfig.MinAttachmentRoublePriceToBeTaken)
-            .Count(_ => RollForDelete(traderId) ?? false);
+            .Where(attachment =>
+            {
+                return attachment.Value >= _insuranceConfig.MinAttachmentRoublePriceToBeTaken;
+            })
+            .Count(_ =>
+            {
+                return RollForDelete(traderId) ?? false;
+            });
     }
 
     /// <summary>
@@ -561,7 +582,10 @@ public class InsuranceController(
     /// <param name="toDelete">The items that should be deleted</param>
     protected void RemoveItemsFromInsurance(Insurance insured, HashSet<string> toDelete)
     {
-        insured.Items = insured.Items.Where(item => !toDelete.Contains(item.Id)).ToList();
+        insured.Items = insured.Items.Where(item =>
+        {
+            return !toDelete.Contains(item.Id);
+        }).ToList();
     }
 
     /// <summary>
@@ -577,13 +601,13 @@ public class InsuranceController(
 
         // Map is labs + insurance is disabled in base.json
         if (IsMapLabsAndInsuranceDisabled(insurance))
-            // Trader has labs-specific messages
-            // Wipe out returnable items
+        // Trader has labs-specific messages
+        // Wipe out returnable items
         {
             HandleLabsInsurance(traderDialogMessages, insurance);
         }
         else if (insurance.Items?.Count == 0)
-            // Not labs and no items to return
+        // Not labs and no items to return
         {
             if (traderDialogMessages.TryGetValue("insuranceFailed", out var insuranceFailedTemplates))
             {
@@ -681,7 +705,10 @@ public class InsuranceController(
         List<IdWithCount> itemsToPay = [];
 
         // Create hash of player inventory items (keyed by item id)
-        var inventoryItemsHash = pmcData.Inventory.Items.ToDictionary(item => item.Id);
+        var inventoryItemsHash = pmcData.Inventory.Items.ToDictionary(item =>
+        {
+            return item.Id;
+        });
 
         // Get price of all items being insured, add to 'itemsToPay'
         foreach (var key in request.Items)
@@ -748,8 +775,10 @@ public class InsuranceController(
     /// <param name="request">Insurance request data</param>
     public void InsureSoftInserts(Item itemWithSoftInserts, PmcData pmcData, InsureRequestData request)
     {
-        var softInsertSlots = pmcData.Inventory.Items.Where(item => item.ParentId == itemWithSoftInserts.Id && _itemHelper.IsSoftInsertId(item.SlotId.ToLower())
-        );
+        var softInsertSlots = pmcData.Inventory.Items.Where(item =>
+        {
+            return item.ParentId == itemWithSoftInserts.Id && _itemHelper.IsSoftInsertId(item.SlotId.ToLower());
+        });
 
         foreach (var softInsertSlot in softInsertSlots)
         {
@@ -782,7 +811,10 @@ public class InsuranceController(
 
         // Create hash of inventory items, keyed by item Id
         pmcData.Inventory.Items ??= [];
-        var inventoryItemsHash = pmcData.Inventory.Items.ToDictionary(item => item.Id);
+        var inventoryItemsHash = pmcData.Inventory.Items.ToDictionary(item =>
+        {
+            return item.Id;
+        });
 
         // Loop over each trader in request
         foreach (var trader in request.Traders ?? [])

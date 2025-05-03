@@ -117,7 +117,10 @@ public class DataCallbacks(
     {
         var localeId = url.Replace("/client/menu/locale/", "");
         var locales = _databaseService.GetLocales();
-        var result = locales.Menu?[localeId] ?? locales.Menu?.FirstOrDefault(m => m.Key == "en").Value;
+        var result = locales.Menu?[localeId] ?? locales.Menu?.FirstOrDefault(m =>
+        {
+            return m.Key == "en";
+        }).Value;
 
         if (result == null)
         {

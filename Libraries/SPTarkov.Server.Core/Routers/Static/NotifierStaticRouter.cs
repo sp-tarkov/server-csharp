@@ -23,8 +23,7 @@ public class NotifierStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => notifierCallbacks.CreateNotifierChannel(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return notifierCallbacks.CreateNotifierChannel(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/game/profile/select",
                 (
@@ -32,7 +31,7 @@ public class NotifierStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => notifierCallbacks.SelectProfile(url, info as UIDRequestData, sessionID),
+                ) => { return notifierCallbacks.SelectProfile(url, info as UIDRequestData, sessionID); },
                 typeof(UIDRequestData)
             )
         ]

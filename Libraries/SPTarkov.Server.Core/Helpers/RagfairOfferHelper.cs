@@ -150,8 +150,14 @@ public class RagfairOfferHelper(
 
         // Check if the item belongs to any restricted type and if player level is insufficient
         if (tieredFleaLimitTypes
-            .Where(tieredItemType => _itemHelper.IsOfBaseclass(offerItemTpl, tieredItemType))
-            .Any(tieredItemType => playerLevel < tieredFlea.UnlocksType[tieredItemType]))
+            .Where(tieredItemType =>
+            {
+                return _itemHelper.IsOfBaseclass(offerItemTpl, tieredItemType);
+            })
+            .Any(tieredItemType =>
+            {
+                return playerLevel < tieredFlea.UnlocksType[tieredItemType];
+            }))
         {
             // Players level is below matching types requirement, flag as locked
             offer.Locked = true;
@@ -218,7 +224,7 @@ public class RagfairOfferHelper(
         {
             var matchingOffers = _ragfairOfferService.GetOffersOfType(desiredItemTpl.Key);
             if (matchingOffers is null)
-                // No offers found for this item, skip
+            // No offers found for this item, skip
             {
                 continue;
             }
@@ -316,8 +322,10 @@ public class RagfairOfferHelper(
                 var lockedOffers = GetLoyaltyLockedOffers(possibleOffers, pmcData);
 
                 // Exclude locked offers + above loyalty locked offers if at least 1 was found
-                offersToSort = possibleOffers.Where(offer => !(offer.Locked.GetValueOrDefault(false) || lockedOffers.Contains(offer.Id))
-                    )
+                offersToSort = possibleOffers.Where(offer =>
+                {
+                    return !(offer.Locked.GetValueOrDefault(false) || lockedOffers.Contains(offer.Id));
+                })
                     .ToList();
 
                 // Exclude trader offers over their buy restriction limit
@@ -357,7 +365,7 @@ public class RagfairOfferHelper(
 
         // Offer root items tpl not in searched for array
         if (!itemsToAdd.Contains(offerRootItem.Template))
-            // skip items we shouldn't include
+        // skip items we shouldn't include
         {
             return false;
         }
@@ -365,7 +373,10 @@ public class RagfairOfferHelper(
         // Performing a required search and offer doesn't have requirement for item
         if (
             !string.IsNullOrEmpty(searchRequest.NeededSearchId) &&
-            !offer.Requirements.Any(requirement => requirement.Template == searchRequest.NeededSearchId)
+            !offer.Requirements.Any(requirement =>
+            {
+                return requirement.Template == searchRequest.NeededSearchId;
+            })
         )
         {
             return false;
@@ -383,13 +394,13 @@ public class RagfairOfferHelper(
         // commented out as required search "which is for checking offers that are barters"
         // has info.removeBartering as true, this if statement removed barter items.
         if (searchRequest.RemoveBartering.GetValueOrDefault(false) && !_paymentHelper.IsMoneyTpl(moneyTypeTpl))
-            // Don't include barter offers
+        // Don't include barter offers
         {
             return false;
         }
 
         if (offer.RequirementsCost is null)
-            // Don't include offers with undefined or NaN in it
+        // Don't include offers with undefined or NaN in it
         {
             return false;
         }
@@ -400,7 +411,7 @@ public class RagfairOfferHelper(
         if (isTraderOffer)
         {
             if (!traderAssorts.ContainsKey(offer.User.Id))
-                // trader not visible on flea market
+            // trader not visible on flea market
             {
                 return false;
             }
@@ -413,7 +424,7 @@ public class RagfairOfferHelper(
                             }
                         )
                 )
-                // skip (quest) locked items
+            // skip (quest) locked items
             {
                 return false;
             }
@@ -479,7 +490,10 @@ public class RagfairOfferHelper(
     /// <returns>true if quest locked</returns>
     public bool TraderOfferItemQuestLocked(RagfairOffer offer, Dictionary<string, TraderAssort> traderAssorts)
     {
-        var itemIds = offer.Items.Select(x => x.Id).ToHashSet();
+        var itemIds = offer.Items.Select(x =>
+        {
+            return x.Id;
+        }).ToHashSet();
         //foreach (var item in offer.Items)
         //{
         //    traderAssorts.TryGetValue(offer.User.Id, out var assorts);
@@ -499,12 +513,22 @@ public class RagfairOfferHelper(
         {
             traderAssorts.TryGetValue(offer.User.Id, out var assorts);
             if (assorts.BarterScheme
-                .Where(x => itemIds.Contains(x.Key))
-                .Any(barterKvP => barterKvP.Value
-                    .Any(subBarter => subBarter
-                        .Any(subBarter => subBarter.SptQuestLocked.GetValueOrDefault(false))
-                    )
-                ))
+                .Where(x =>
+                {
+                    return itemIds.Contains(x.Key);
+                })
+                .Any(barterKvP =>
+                {
+                    return barterKvP.Value
+                                        .Any(subBarter =>
+                                        {
+                                            return subBarter
+                                                .Any(subBarter =>
+                                            {
+                                                return subBarter.SptQuestLocked.GetValueOrDefault(false);
+                                            });
+                                        });
+                }))
             {
                 return true;
             }
@@ -539,7 +563,10 @@ public class RagfairOfferHelper(
         var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(offer.User.Id).Items;
 
         // Find item being purchased from traders assorts
-        var assortData = traderAssorts.FirstOrDefault(item => item.Id == offer.Items[0].Id);
+        var assortData = traderAssorts.FirstOrDefault(item =>
+        {
+            return item.Id == offer.Items[0].Id;
+        });
         if (assortData is null)
         {
             // No trader assort data
@@ -553,7 +580,7 @@ public class RagfairOfferHelper(
         }
 
         if (assortData.Upd is null)
-            // No Upd = no chance of limits
+        // No Upd = no chance of limits
         {
             return false;
         }
@@ -577,7 +604,10 @@ public class RagfairOfferHelper(
     protected HashSet<string> GetLoyaltyLockedOffers(List<RagfairOffer> offers, PmcData pmcProfile)
     {
         var loyaltyLockedOffers = new HashSet<string>();
-        foreach (var offer in offers.Where(offer => OfferIsFromTrader(offer)))
+        foreach (var offer in offers.Where(offer =>
+        {
+            return OfferIsFromTrader(offer);
+        }))
         {
             if (pmcProfile.TradersInfo.TryGetValue(offer.User.Id, out var traderDetails) &&
                 traderDetails.LoyaltyLevel < offer.LoyaltyLevel)
@@ -646,7 +676,7 @@ public class RagfairOfferHelper(
     {
         var total = 0d;
         foreach (var itemAndChildren in itemsInInventoryToList)
-            // Only count the root items stack count in total
+        // Only count the root items stack count in total
         {
             total += itemAndChildren[0]?.Upd?.StackObjectsCount.GetValueOrDefault(1) ?? 1;
         }
@@ -702,7 +732,10 @@ public class RagfairOfferHelper(
     protected void DeleteOfferById(string sessionId, string offerId)
     {
         var profileRagfairInfo = _profileHelper.GetPmcProfile(sessionId).RagfairInfo;
-        var offerIndex = profileRagfairInfo.Offers.FindIndex(o => o.Id == offerId);
+        var offerIndex = profileRagfairInfo.Offers.FindIndex(o =>
+        {
+            return o.Id == offerId;
+        });
         if (offerIndex == -1)
         {
             _logger.Warning($"Unable to find offer: {offerId} in profile: {sessionId}, unable to delete");
@@ -863,19 +896,19 @@ public class RagfairOfferHelper(
         var isTraderOffer = OfferIsFromTrader(offer);
 
         if (pmcData.Info.Level < _databaseService.GetGlobals().Configuration.RagFair.MinUserLevel && isDefaultUserOffer)
-            // Skip item if player is < global unlock level (default is 15) and item is from a dynamically generated source
+        // Skip item if player is < global unlock level (default is 15) and item is from a dynamically generated source
         {
             return false;
         }
 
         if (searchRequest.OfferOwnerType == OfferOwnerType.TRADEROWNERTYPE && !isTraderOffer)
-            // don't include player offers
+        // don't include player offers
         {
             return false;
         }
 
         if (searchRequest.OfferOwnerType == OfferOwnerType.PLAYEROWNERTYPE && isTraderOffer)
-            // don't include trader offers
+        // don't include trader offers
         {
             return false;
         }
@@ -884,25 +917,25 @@ public class RagfairOfferHelper(
                 searchRequest.OneHourExpiration.GetValueOrDefault(false) &&
                 offer.EndTime - _timeUtil.GetTimeStamp() > TimeUtil.OneHourAsSeconds
             )
-            // offer expires within an hour
+        // offer expires within an hour
         {
             return false;
         }
 
         if (searchRequest.QuantityFrom > 0 && offerRootItem.Upd.StackObjectsCount < searchRequest.QuantityFrom)
-            // too little items to offer
+        // too little items to offer
         {
             return false;
         }
 
         if (searchRequest.QuantityTo > 0 && offerRootItem.Upd.StackObjectsCount > searchRequest.QuantityTo)
-            // Too many items to offer
+        // Too many items to offer
         {
             return false;
         }
 
         if (searchRequest.OnlyFunctional.GetValueOrDefault(false) && !IsItemFunctional(offerRootItem, offer))
-            // Don't include non-functional items
+        // Don't include non-functional items
         {
             return false;
         }
@@ -937,20 +970,20 @@ public class RagfairOfferHelper(
         {
             // Use 'currencies' as mapping for the money choice dropdown, e.g. 0 = all, 2 = "USD;
             if (!_currencies.Contains(_ragfairHelper.GetCurrencyTag(offerMoneyTypeTpl)))
-                // Don't include item paid in wrong currency
+            // Don't include item paid in wrong currency
             {
                 return false;
             }
         }
 
         if (searchRequest.PriceFrom > 0 && searchRequest.PriceFrom >= offer.RequirementsCost)
-            // price is too low
+        // price is too low
         {
             return false;
         }
 
         if (searchRequest.PriceTo > 0 && searchRequest.PriceTo <= offer.RequirementsCost)
-            // price is too high
+        // price is too high
         {
             return false;
         }
@@ -978,7 +1011,10 @@ public class RagfairOfferHelper(
         {
             var offerRootTemplate = _itemHelper.GetItem(offerRootItem.Template).Value;
             var requiredPlateCount = offerRootTemplate.Properties.Slots
-                ?.Where(item => item.Required.GetValueOrDefault(false))
+                ?.Where(item =>
+                {
+                    return item.Required.GetValueOrDefault(false);
+                })
                 ?.Count();
 
             return offer.Items.Count > requiredPlateCount;
@@ -1021,13 +1057,13 @@ public class RagfairOfferHelper(
     {
         var itemQualityPercentage = 100 * _itemHelper.GetItemQualityModifier(item);
         if (min > 0 && min > itemQualityPercentage)
-            // Item condition too low
+        // Item condition too low
         {
             return false;
         }
 
         if (max < 100 && max <= itemQualityPercentage)
-            // Item condition too high
+        // Item condition too high
         {
             return false;
         }

@@ -51,7 +51,10 @@ public class PaymentService(
         foreach (var itemRequest in request.SchemeItems)
         {
             // Find the corresponding item in the player's inventory.
-            var item = pmcData.Inventory.Items.FirstOrDefault(i => i.Id == itemRequest.Id);
+            var item = pmcData.Inventory.Items.FirstOrDefault(i =>
+            {
+                return i.Id == itemRequest.Id;
+            });
             if (item is not null)
             {
                 if (!_paymentHelper.IsMoneyTpl(item.Template))
@@ -312,8 +315,10 @@ public class PaymentService(
 
         var amountAvailable = moneyItemsInInventory.Aggregate(
             0d,
-            (accumulator, item) => accumulator + item.Upd.StackObjectsCount.Value
-        );
+            (accumulator, item) =>
+            {
+                return accumulator + item.Upd.StackObjectsCount.Value;
+            });
 
         // If no money in inventory or amount is not enough we return false
         if (moneyItemsInInventory.Count <= 0 || amountAvailable < amountToPay)
@@ -377,7 +382,10 @@ public class PaymentService(
         }
 
         // Prioritise items in stash to top of array
-        moneyItemsInInventory.Sort((a, b) => PrioritiseStashSort(a, b, pmcData.Inventory.Items, playerStashId));
+        moneyItemsInInventory.Sort((a, b) =>
+        {
+            return PrioritiseStashSort(a, b, pmcData.Inventory.Items, playerStashId);
+        });
 
         return moneyItemsInInventory;
     }
@@ -429,8 +437,14 @@ public class PaymentService(
             {
                 // Containers where taking money from would inconvinence player
                 var deprioritisedContainers = _inventoryConfig.DeprioritisedMoneyContainers;
-                var aImmediateParent = inventoryItems.FirstOrDefault(item => item.Id == a.ParentId);
-                var bImmediateParent = inventoryItems.FirstOrDefault(item => item.Id == b.ParentId);
+                var aImmediateParent = inventoryItems.FirstOrDefault(item =>
+                {
+                    return item.Id == a.ParentId;
+                });
+                var bImmediateParent = inventoryItems.FirstOrDefault(item =>
+                {
+                    return item.Id == b.ParentId;
+                });
 
                 // A is not a deprioritised container, B is
                 if (
@@ -465,7 +479,10 @@ public class PaymentService(
     /// <returns> True if it's in inventory </returns>
     protected bool IsInStash(string itemId, List<Item> inventoryItems, string playerStashId)
     {
-        var itemParent = inventoryItems.FirstOrDefault(item => item.Id == itemId);
+        var itemParent = inventoryItems.FirstOrDefault(item =>
+        {
+            return item.Id == itemId;
+        });
 
         if (itemParent is not null)
         {

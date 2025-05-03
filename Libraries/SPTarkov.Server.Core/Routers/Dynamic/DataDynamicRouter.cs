@@ -22,8 +22,7 @@ public class DataDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetLocalesMenu(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return dataCallbacks.GetLocalesMenu(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/locale/",
                 (
@@ -31,8 +30,7 @@ public class DataDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetLocalesGlobal(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return dataCallbacks.GetLocalesGlobal(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/items/prices/",
                 (
@@ -40,8 +38,7 @@ public class DataDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetItemPrices(url, info as EmptyRequestData, sessionID)
-            )
+                ) => { return dataCallbacks.GetItemPrices(url, info as EmptyRequestData, sessionID); })
         ]
     )
     {

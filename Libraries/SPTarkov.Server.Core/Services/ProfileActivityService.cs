@@ -56,7 +56,7 @@ public class ProfileActivityService(
     /// <param name="sessionId"> Profile to update </param>
     public void SetActivityTimestamp(string sessionId)
     {
-        if(!_profileActivityTimestamps.TryAdd(sessionId, timeUtil.GetTimeStamp()))
+        if (!_profileActivityTimestamps.TryAdd(sessionId, timeUtil.GetTimeStamp()))
         {
             _profileActivityTimestamps[sessionId] = timeUtil.GetTimeStamp();
         }

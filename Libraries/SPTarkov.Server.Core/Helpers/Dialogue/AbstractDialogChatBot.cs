@@ -28,7 +28,10 @@ public abstract class AbstractDialogChatBot(
 
         var splitCommand = request.Text.Split(" ");
 
-        var commandos = _chatCommands.Where(c => c.GetCommandPrefix() == splitCommand.FirstOrDefault());
+        var commandos = _chatCommands.Where(c =>
+        {
+            return c.GetCommandPrefix() == splitCommand.FirstOrDefault();
+        });
         if (commandos.FirstOrDefault()?.GetCommands().Contains(splitCommand[1]) ?? false)
         {
             return commandos.FirstOrDefault().Handle(splitCommand[1], GetChatBot(), sessionId, request);
@@ -99,7 +102,10 @@ public abstract class AbstractDialogChatBot(
 
     public void RegisterChatCommand(IChatCommand chatCommand)
     {
-        if (_chatCommands.Any(cc => cc.GetCommandPrefix() == chatCommand.GetCommandPrefix()))
+        if (_chatCommands.Any(cc =>
+        {
+            return cc.GetCommandPrefix() == chatCommand.GetCommandPrefix();
+        }))
         {
             throw new Exception(
                 $"The command \"{chatCommand.GetCommandPrefix()}\" attempting to be registered already exists."

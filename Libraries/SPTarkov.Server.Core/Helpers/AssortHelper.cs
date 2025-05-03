@@ -75,7 +75,7 @@ public class AssortHelper(
         string assortId)
     {
         if (mergedQuestAssorts.TryGetValue("started", out var dict1) && dict1.ContainsKey(assortId))
-            // Assort unlocked by starting quest, assort is visible to player when : started or ready to hand in + handed in
+        // Assort unlocked by starting quest, assort is visible to player when : started or ready to hand in + handed in
         {
             return new KeyValuePair<string, List<QuestStatusEnum>>(
                 mergedQuestAssorts["started"][assortId],
@@ -145,7 +145,10 @@ public class AssortHelper(
 
         if (assort.BarterScheme.TryGetValue(itemID, out var lisToUse) && flea)
         {
-            foreach (var barterScheme in lisToUse.SelectMany(barterSchemes => barterSchemes))
+            foreach (var barterScheme in lisToUse.SelectMany(barterSchemes =>
+            {
+                return barterSchemes;
+            }))
             {
                 barterScheme.SptQuestLocked = true;
             }
@@ -156,7 +159,13 @@ public class AssortHelper(
         assort.BarterScheme.Remove(itemID);
         assort.LoyalLevelItems.Remove(itemID);
 
-        foreach (var item in idsToRemove.SelectMany(i => assort.Items.ToList().Where(a => a.Id == i)))
+        foreach (var item in idsToRemove.SelectMany(i =>
+        {
+            return assort.Items.ToList().Where(a =>
+            {
+                return a.Id == i;
+            });
+        }))
         {
             assort.Items.Remove(item);
         }

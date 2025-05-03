@@ -137,7 +137,13 @@ public class BotLootCacheService(
                 }
             );
 
-            return _cloner.Clone(filteredResult.ToDictionary(pair => pair.Key, pair => pair.Value));
+            return _cloner.Clone(filteredResult.ToDictionary(pair =>
+            {
+                return pair.Key;
+            }, pair =>
+            {
+                return pair.Value;
+            }));
         }
 
         return _cloner.Clone(result);
@@ -228,7 +234,7 @@ public class BotLootCacheService(
 
         // no whitelist, find and assign from combined item pool
         if (!specialLootItems.Any())
-            // key = tpl, value = weight
+        // key = tpl, value = weight
         {
             foreach (var itemKvP in specialLootPool)
             {
@@ -248,7 +254,7 @@ public class BotLootCacheService(
 
         // No whitelist, find and assign from combined item pool
         if (!healingItems.Any())
-            // key = tpl, value = weight
+        // key = tpl, value = weight
         {
             foreach (var itemKvP in combinedLootPool)
             {
@@ -374,7 +380,7 @@ public class BotLootCacheService(
                     IsDrink(itemTemplate.Id) ||
                     IsCurrency(itemTemplate.Id)
                 )
-                // Is type we don't want as backpack loot, skip
+            // Is type we don't want as backpack loot, skip
             {
                 continue;
             }

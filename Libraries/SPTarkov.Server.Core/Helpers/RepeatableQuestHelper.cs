@@ -17,7 +17,9 @@ public class RepeatableQuestHelper(
     /// <returns>EliminationConfig</returns>
     public EliminationConfig? GetEliminationConfigByPmcLevel(int pmcLevel, RepeatableQuestConfig repeatableConfig)
     {
-        return repeatableConfig.QuestConfig.Elimination.FirstOrDefault(x => pmcLevel >= x.LevelRange.Min && pmcLevel <= x.LevelRange.Max
-        );
+        return repeatableConfig.QuestConfig.Elimination.FirstOrDefault(x =>
+        {
+            return pmcLevel >= x.LevelRange.Min && pmcLevel <= x.LevelRange.Max;
+        });
     }
 }

@@ -33,13 +33,25 @@ public abstract class Router
         if (partialMatch)
         {
             return GetInternalHandledRoutes()
-                .Where(r => r.dynamic)
-                .Any(r => url.Contains(r.route));
+                .Where(r =>
+                {
+                    return r.dynamic;
+                })
+                .Any(r =>
+                {
+                    return url.Contains(r.route);
+                });
         }
 
         return GetInternalHandledRoutes()
-            .Where(r => !r.dynamic)
-            .Any(r => r.route == url);
+            .Where(r =>
+            {
+                return !r.dynamic;
+            })
+            .Any(r =>
+            {
+                return r.route == url;
+            });
     }
 }
 
@@ -56,7 +68,10 @@ public abstract class StaticRouter : Router
 
     public object HandleStatic(string url, string? body, string sessionID, string output)
     {
-        var action = _actions.Single(route => route.url == url);
+        var action = _actions.Single(route =>
+        {
+            return route.url == url;
+        });
         var type = action.bodyType;
         IRequestData? info = null;
         if (type != null && !string.IsNullOrEmpty(body))
@@ -69,7 +84,10 @@ public abstract class StaticRouter : Router
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return _actions.Select(route => new HandledRoute(route.url, false)).ToList();
+        return _actions.Select(route =>
+        {
+            return new HandledRoute(route.url, false);
+        }).ToList();
     }
 }
 
@@ -86,7 +104,10 @@ public abstract class DynamicRouter : Router
 
     public object HandleDynamic(string url, string? body, string sessionID, string output)
     {
-        var action = actions.First(r => url.Contains(r.url));
+        var action = actions.First(r =>
+        {
+            return url.Contains(r.url);
+        });
         var type = action.bodyType;
         IRequestData? info = null;
         if (type != null && !string.IsNullOrEmpty(body))
@@ -99,7 +120,10 @@ public abstract class DynamicRouter : Router
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return actions.Select(route => new HandledRoute(route.url, true)).ToList();
+        return actions.Select(route =>
+        {
+            return new HandledRoute(route.url, true);
+        }).ToList();
     }
 }
 

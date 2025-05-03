@@ -170,7 +170,7 @@ public class InsuranceService(
             "SpecialSlot"
         );
         if (hasMarkOfUnheard)
-            // Reduce return time by globals multiplier value
+        // Reduce return time by globals multiplier value
         {
             randomisedReturnTimeSeconds *= globals.Configuration.Insurance.CoefOfHavingMarkOfUnknown.Value;
         }
@@ -189,7 +189,7 @@ public class InsuranceService(
     protected double GetMaxInsuranceStorageTime(TraderBase traderBase)
     {
         if (_insuranceConfig.StorageTimeOverrideSeconds > 0)
-            // Override exists, use instead of traders value
+        // Override exists, use instead of traders value
         {
             return _insuranceConfig.StorageTimeOverrideSeconds;
         }
@@ -223,7 +223,10 @@ public class InsuranceService(
 
         foreach (var lostItem in lostInsuredItems)
         {
-            var insuranceDetails = pmcProfile.InsuredItems.FirstOrDefault(insuredItem => insuredItem.ItemId == lostItem.Id);
+            var insuranceDetails = pmcProfile.InsuredItems.FirstOrDefault(insuredItem =>
+            {
+                return insuredItem.ItemId == lostItem.Id;
+            });
             if (insuranceDetails is null)
             {
                 _logger.Error($"unable to find insurance details for item id: {lostItem.Id} with tpl: {lostItem.Template}");

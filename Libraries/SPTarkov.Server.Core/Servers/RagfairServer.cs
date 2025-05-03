@@ -91,7 +91,10 @@ public class RagfairServer(
     public void HideOffer(string offerId)
     {
         var offers = _ragfairOfferService.GetOffers();
-        var offer = offers.FirstOrDefault(x => x.Id == offerId);
+        var offer = offers.FirstOrDefault(x =>
+        {
+            return x.Id == offerId;
+        });
 
         if (offer is null)
         {

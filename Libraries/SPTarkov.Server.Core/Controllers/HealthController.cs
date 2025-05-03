@@ -42,7 +42,10 @@ public class HealthController(
         var output = _eventOutputHolder.GetOutput(sessionID);
 
         // Update medkit used (hpresource)
-        var healingItemToUse = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
+        var healingItemToUse = pmcData.Inventory.Items.FirstOrDefault(item =>
+        {
+            return item.Id == request.Item;
+        });
         if (healingItemToUse is null)
         {
             var errorMessage = _localisationService.GetText("health-healing_item_not_found", request.Item);
@@ -99,14 +102,14 @@ public class HealthController(
             {
                 // Check enum has effectType
                 if (!Enum.TryParse<DamageEffectType>(effectKvP.Key, out var effect))
-                    // Enum doesnt contain this key
+                // Enum doesnt contain this key
                 {
                     continue;
                 }
 
                 // Check if healing item removes the effect on limb
                 if (!healItemEffectDetails.TryGetValue(effect, out var matchingEffectFromHealingItem))
-                    // Healing item doesn't have matching effect, it doesn't remove the effect
+                // Healing item doesn't have matching effect, it doesn't remove the effect
                 {
                     continue;
                 }
@@ -145,9 +148,12 @@ public class HealthController(
         var output = _eventOutputHolder.GetOutput(sessionID);
         var resourceLeft = 0d;
 
-        var itemToConsume = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
+        var itemToConsume = pmcData.Inventory.Items.FirstOrDefault(item =>
+        {
+            return item.Id == request.Item;
+        });
         if (itemToConsume is null)
-            // Item not found, very bad
+        // Item not found, very bad
         {
             return _httpResponseUtil.AppendErrorToOutput(
                 output,
@@ -218,7 +224,7 @@ public class HealthController(
         OffraidEatRequestData request)
     {
         if (foodIsSingleUse)
-            // Apply whole value from passed in parameter
+        // Apply whole value from passed in parameter
         {
             bodyValue.Current += consumptionDetails.Value;
         }
@@ -281,7 +287,7 @@ public class HealthController(
 
             // Bodypart healing is chosen when part request hp is above 0
             if (partRequest.Health > 0)
-                // Heal bodypart
+            // Heal bodypart
             {
                 profilePart.Health.Current = profilePart.Health.Maximum;
             }

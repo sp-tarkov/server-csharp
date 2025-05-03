@@ -80,7 +80,10 @@ public class BotGenerationCacheService(
     /// <returns> BotBase object </returns>
     public BotBase? GetUsedBot(string profileId)
     {
-        return _activeBotsInRaid.FirstOrDefault(x => x.Id == profileId);
+        return _activeBotsInRaid.FirstOrDefault(x =>
+        {
+            return x.Id == profileId;
+        });
     }
 
     /// <summary>

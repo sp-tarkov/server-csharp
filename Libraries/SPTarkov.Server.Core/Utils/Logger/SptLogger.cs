@@ -195,7 +195,10 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
 
     public bool IsLogEnabled(LogLevel level)
     {
-        return _config.Loggers.Any(l => l.LogLevel.CanLog(level));
+        return _config.Loggers.Any(l =>
+        {
+            return l.LogLevel.CanLog(level);
+        });
     }
 
     public void DumpAndStop()

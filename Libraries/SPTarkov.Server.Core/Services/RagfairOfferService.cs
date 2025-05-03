@@ -131,7 +131,7 @@ public class RagfairOfferService(
             var pmcData = saveServer.GetProfile(sessionId)?.CharacterData?.PmcData;
 
             if (pmcData?.RagfairInfo?.Offers == null)
-                // Profile is wiped
+            // Profile is wiped
             {
                 continue;
             }
@@ -199,7 +199,10 @@ public class RagfairOfferService(
             return;
         }
 
-        var offerinProfileIndex = profile.RagfairInfo.Offers.FindIndex(o => o.Id == playerOffer.Id);
+        var offerinProfileIndex = profile.RagfairInfo.Offers.FindIndex(o =>
+        {
+            return o.Id == playerOffer.Id;
+        });
         if (offerinProfileIndex == -1)
         {
             logger.Warning(localisationService.GetText("ragfair-unable_to_find_offer_to_remove", playerOffer.Id));

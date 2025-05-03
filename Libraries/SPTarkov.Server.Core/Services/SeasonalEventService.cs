@@ -259,7 +259,10 @@ public class SeasonalEventService(
     public bool ForceSeasonalEvent(SeasonalEventType eventType)
     {
         var globalConfig = _databaseService.GetGlobals().Configuration;
-        var seasonEvent = _seasonalEventConfig.Events.FirstOrDefault(e => e.Type == eventType);
+        var seasonEvent = _seasonalEventConfig.Events.FirstOrDefault(e =>
+        {
+            return e.Type == eventType;
+        });
         if (seasonEvent is null)
         {
             _logger.Warning($"Unable to force event: {eventType} as it cannot be found in events config");
@@ -376,7 +379,10 @@ public class SeasonalEventService(
             }
 
             var equipment = botInventory.Equipment[equipmentSlotKey];
-            botInventory.Equipment[equipmentSlotKey] = equipment.Where(i => !_christmasEventItems.Contains(i.Key)).ToDictionary();
+            botInventory.Equipment[equipmentSlotKey] = equipment.Where(i =>
+            {
+                return !_christmasEventItems.Contains(i.Key);
+            }).ToDictionary();
         }
 
         // Remove christmas related loot from loot containers
@@ -384,7 +390,10 @@ public class SeasonalEventService(
         foreach (var lootContainerKey in _lootContainersToFilter)
         {
             var propInfo = props
-                .FirstOrDefault(p => string.Equals(p.Name.ToLower(), lootContainerKey.ToLower(), StringComparison.OrdinalIgnoreCase));
+                .FirstOrDefault(p =>
+                {
+                    return string.Equals(p.Name.ToLower(), lootContainerKey.ToLower(), StringComparison.OrdinalIgnoreCase);
+                });
             var prop = (Dictionary<string, double>?) propInfo.GetValue(botInventory.Items);
 
             if (prop is null)
@@ -401,7 +410,10 @@ public class SeasonalEventService(
                 );
             }
 
-            var newProp = prop.Where(tpl => !christmasItems.Contains(tpl.Key)).ToDictionary();
+            var newProp = prop.Where(tpl =>
+            {
+                return !christmasItems.Contains(tpl.Key);
+            }).ToDictionary();
             propInfo.SetValue(botInventory.Items, newProp);
         }
     }
@@ -464,7 +476,10 @@ public class SeasonalEventService(
     {
         _halloweenEventActive = true;
 
-        globalConfig.EventType = globalConfig.EventType.Where(x => x != EventType.None).ToList();
+        globalConfig.EventType = globalConfig.EventType.Where(x =>
+        {
+            return x != EventType.None;
+        }).ToList();
         globalConfig.EventType.Add(EventType.Halloween);
         globalConfig.EventType.Add(EventType.HalloweenIllumination);
         globalConfig.Health.ProfileHealthSettings.DefaultStimulatorBuff = "Buffs_Halloween";
@@ -488,7 +503,10 @@ public class SeasonalEventService(
 
         if (eventType.Settings?.ReplaceBotHostility ?? false)
         {
-            ReplaceBotHostility(_seasonalEventConfig.HostilitySettingsForEvent.FirstOrDefault(x => x.Key == "zombies").Value);
+            ReplaceBotHostility(_seasonalEventConfig.HostilitySettingsForEvent.FirstOrDefault(x =>
+            {
+                return x.Key == "zombies";
+            }).Value);
         }
 
         if (eventType.Settings?.AdjustBotAppearances ?? false)
@@ -506,7 +524,10 @@ public class SeasonalEventService(
 
         if (eventType.Settings?.EnableChristmasHideout ?? false)
         {
-            globalConfig.EventType = globalConfig.EventType.Where(x => x != EventType.None).ToList();
+            globalConfig.EventType = globalConfig.EventType.Where(x =>
+            {
+                return x != EventType.None;
+            }).ToList();
             globalConfig.EventType.Add(EventType.Christmas);
         }
 
@@ -532,7 +553,10 @@ public class SeasonalEventService(
 
         if (eventType.Settings?.EnableChristmasHideout ?? false)
         {
-            globalConfig.EventType = globalConfig.EventType.Where(x => x != EventType.None).ToList();
+            globalConfig.EventType = globalConfig.EventType.Where(x =>
+            {
+                return x != EventType.None;
+            }).ToList();
             globalConfig.EventType.Add(EventType.Christmas);
         }
 
@@ -576,7 +600,10 @@ public class SeasonalEventService(
                 var props = botDb.BotAppearance.GetType().GetProperties();
                 foreach (var itemKey in weightAdjustments)
                 {
-                    var prop = props.FirstOrDefault(x => string.Equals(x.Name, appearanceKey.Key, StringComparison.CurrentCultureIgnoreCase));
+                    var prop = props.FirstOrDefault(x =>
+                    {
+                        return string.Equals(x.Name, appearanceKey.Key, StringComparison.CurrentCultureIgnoreCase);
+                    });
                     var propValue = (Dictionary<string, double>) prop.GetValue(botDb.BotAppearance);
                     propValue[itemKey.Key] = weightAdjustments[itemKey.Key];
                     prop.SetValue(botDb.BotAppearance, propValue);
@@ -618,7 +645,10 @@ public class SeasonalEventService(
 
             foreach (var settings in newHostilitySettings)
             {
-                var matchingBaseSettings = location.Base.BotLocationModifier.AdditionalHostilitySettings.FirstOrDefault(x => x.BotRole == settings.BotRole);
+                var matchingBaseSettings = location.Base.BotLocationModifier.AdditionalHostilitySettings.FirstOrDefault(x =>
+                {
+                    return x.BotRole == settings.BotRole;
+                });
                 if (matchingBaseSettings is null)
                 {
                     continue;
@@ -714,7 +744,10 @@ public class SeasonalEventService(
     /// </summary>
     protected void AdjustZryachiyMeleeChance()
     {
-        var zryachiyKvP = _databaseService.GetBots().Types.FirstOrDefault(x => x.Key.ToLower() == "bosszryachiy");
+        var zryachiyKvP = _databaseService.GetBots().Types.FirstOrDefault(x =>
+        {
+            return x.Key.ToLower() == "bosszryachiy";
+        });
         var value = new Dictionary<string, double>();
 
         foreach (var chance in zryachiyKvP.Value.BotChances.EquipmentChances)
@@ -795,8 +828,10 @@ public class SeasonalEventService(
         var result = new HashSet<string>();
 
         // Get only the locations with an infection above 0
-        var infectionKeys = locationInfections.Where(location => locationInfections[location.Key] > 0
-        );
+        var infectionKeys = locationInfections.Where(location =>
+        {
+            return locationInfections[location.Key] > 0;
+        });
 
         // Convert the infected location id into its generic location id
         foreach (var location in infectionKeys)
@@ -880,7 +915,10 @@ public class SeasonalEventService(
             {
                 var mapBosses = ((Location) locations[key]).Base.BossLocationSpawn;
                 // If no bosses match by name
-                if (mapBosses.All(bossSpawn => bossSpawn.BossName != boss.BossName))
+                if (mapBosses.All(bossSpawn =>
+                {
+                    return bossSpawn.BossName != boss.BossName;
+                }))
                 {
                     ((Location) locations[key]).Base.BossLocationSpawn.AddRange(bossesToAdd);
                 }
@@ -1084,7 +1122,10 @@ public class SeasonalEventService(
             }
 
             // Don't add gifter to map twice
-            var existingGifter = mapData.Base.BossLocationSpawn.FirstOrDefault(boss => boss.BossName == "gifter");
+            var existingGifter = mapData.Base.BossLocationSpawn.FirstOrDefault(boss =>
+            {
+                return boss.BossName == "gifter";
+            });
             if (existingGifter is not null)
             {
                 existingGifter.BossChance = gifterMapSettings.SpawnChance;
@@ -1120,13 +1161,19 @@ public class SeasonalEventService(
     {
         if (seasonalEvent.Settings?.EnableChristmasHideout ?? false)
         {
-            globalConfig.EventType = globalConfig.EventType.Where(x => x != EventType.None).ToList();
+            globalConfig.EventType = globalConfig.EventType.Where(x =>
+            {
+                return x != EventType.None;
+            }).ToList();
             globalConfig.EventType.Add(EventType.Christmas);
         }
 
         if (seasonalEvent.Settings?.EnableHalloweenHideout ?? false)
         {
-            globalConfig.EventType = globalConfig.EventType.Where(x => x != EventType.None).ToList();
+            globalConfig.EventType = globalConfig.EventType.Where(x =>
+            {
+                return x != EventType.None;
+            }).ToList();
             globalConfig.EventType.Add(EventType.Halloween);
             globalConfig.EventType.Add(EventType.HalloweenIllumination);
         }

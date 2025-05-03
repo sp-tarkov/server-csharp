@@ -73,8 +73,11 @@ public class CustomLocationWaveService(
 
             foreach (var bossWave in mapKvP.Value)
             {
-                if (locationBase.BossLocationSpawn.Any(x => x.SptId == bossWave.SptId))
-                    // Already exists, skip
+                if (locationBase.BossLocationSpawn.Any(x =>
+                {
+                    return x.SptId == bossWave.SptId;
+                }))
+                // Already exists, skip
                 {
                     continue;
                 }
@@ -101,8 +104,11 @@ public class CustomLocationWaveService(
 
             foreach (var normalWave in mapKvP.Value)
             {
-                if (locationBase.Waves.Any(x => x.SptId == normalWave.SptId))
-                    // Already exists, skip
+                if (locationBase.Waves.Any(x =>
+                {
+                    return x.SptId == normalWave.SptId;
+                }))
+                // Already exists, skip
                 {
                     continue;
                 }

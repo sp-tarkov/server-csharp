@@ -80,15 +80,16 @@ public class BotWeaponModLimitService(
         {
             // If weapon already has a longer ranged scope on it, allow ncstar to be spawned
             if (weapon.Any(item =>
-                    _itemHelper.IsOfBaseclasses(
-                        item.Template,
-                        [
-                            BaseClasses.ASSAULT_SCOPE,
+            {
+                return _itemHelper.IsOfBaseclasses(
+                                        item.Template,
+                                        [
+                                            BaseClasses.ASSAULT_SCOPE,
                             BaseClasses.OPTIC_SCOPE,
                             BaseClasses.SPECIAL_SCOPE
-                        ]
-                    )
-                ))
+                                        ]
+                                    );
+            }))
             {
                 return false;
             }
@@ -118,7 +119,10 @@ public class BotWeaponModLimitService(
             modTemplate.Properties.Slots?.Count == 1 &&
             _itemHelper.IsOfBaseclass(modTemplate.Id, BaseClasses.MOUNT) &&
             !_itemHelper.IsOfBaseclass(modsParent.Id, BaseClasses.MOUNT) &&
-            modTemplate.Properties.Slots.Any(slot => slot.Name == "mod_scope")
+            modTemplate.Properties.Slots.Any(slot =>
+            {
+                return slot.Name == "mod_scope";
+            })
            )
         {
             return true;
@@ -140,7 +144,10 @@ public class BotWeaponModLimitService(
         if (modLimits.Scope.Count >= modLimits.ScopeMax &&
             modTemplate.Properties.Slots?.Count == 1 &&
             _itemHelper.IsOfBaseclass(modTemplate.Id, BaseClasses.MOUNT) &&
-            modTemplate.Properties.Slots.Any(slot => slot.Name == "mod_flashlight")
+            modTemplate.Properties.Slots.Any(slot =>
+            {
+                return slot.Name == "mod_flashlight";
+            })
            )
         {
             return true;

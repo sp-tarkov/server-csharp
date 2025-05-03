@@ -40,7 +40,13 @@ public class AchievementController(
         var profiles = profileHelper.GetProfiles();
 
         var achievements = databaseService.GetAchievements();
-        foreach (var achievementId in achievements.Select(achievement => achievement.Id).Where(achievementId => !string.IsNullOrEmpty(achievementId)))
+        foreach (var achievementId in achievements.Select(achievement =>
+        {
+            return achievement.Id;
+        }).Where(achievementId =>
+{
+    return !string.IsNullOrEmpty(achievementId);
+}))
         {
             var percentage = 0;
             foreach (var (profileId, profile) in profiles)

@@ -107,10 +107,16 @@ public class ItemHelper(
     public bool HasItemWithTpl(List<Item> itemPool, string item, string slotId = null)
     {
         // Filter the pool by slotId if provided
-        var filteredPool = slotId is not null ? itemPool.Where(item => item.SlotId?.StartsWith(slotId) ?? false) : itemPool;
+        var filteredPool = slotId is not null ? itemPool.Where(item =>
+        {
+            return item.SlotId?.StartsWith(slotId) ?? false;
+        }) : itemPool;
 
         // Check if any item in the filtered pool matches the provided item
-        return filteredPool.Any(poolItem => string.Equals(poolItem.Template, item, StringComparison.OrdinalIgnoreCase));
+        return filteredPool.Any(poolItem =>
+        {
+            return string.Equals(poolItem.Template, item, StringComparison.OrdinalIgnoreCase);
+        });
     }
 
     /**
@@ -123,10 +129,16 @@ public class ItemHelper(
     public Item GetItemFromPoolByTpl(List<Item> itemPool, string item, string slotId = null)
     {
         // Filter the pool by slotId if provided
-        var filteredPool = slotId is not null ? itemPool.Where(item => item.SlotId?.StartsWith(slotId) ?? false) : itemPool;
+        var filteredPool = slotId is not null ? itemPool.Where(item =>
+        {
+            return item.SlotId?.StartsWith(slotId) ?? false;
+        }) : itemPool;
 
         // Check if any item in the filtered pool matches the provided item
-        return filteredPool.FirstOrDefault(poolItem => poolItem.Template.Equals(item, StringComparison.OrdinalIgnoreCase));
+        return filteredPool.FirstOrDefault(poolItem =>
+        {
+            return poolItem.Template.Equals(item, StringComparison.OrdinalIgnoreCase);
+        });
     }
 
     /**
@@ -147,7 +159,10 @@ public class ItemHelper(
 
         foreach (var itemOf1 in item1)
         {
-            var itemOf2 = item2.FirstOrDefault(i2 => i2.Template.Equals(itemOf1.Template, StringComparison.OrdinalIgnoreCase));
+            var itemOf2 = item2.FirstOrDefault(i2 =>
+            {
+                return i2.Template.Equals(itemOf1.Template, StringComparison.OrdinalIgnoreCase);
+            });
             if (itemOf2 is null)
             {
                 return false;
@@ -199,17 +214,17 @@ public class ItemHelper(
         // key = Upd property Type as string, value = comparison function that returns bool
         var comparers = new Dictionary<string, Func<Upd, Upd, bool>>
         {
-            { "Key", (upd1, upd2) => upd1.Key?.NumberOfUsages == upd2.Key?.NumberOfUsages },
-            { "Buff", (upd1, upd2) => upd1.Buff?.Value == upd2.Buff?.Value && upd1.Buff?.BuffType == upd2.Buff?.BuffType },
-            { "CultistAmulet", (upd1, upd2) => upd1.CultistAmulet?.NumberOfUsages == upd2.CultistAmulet?.NumberOfUsages },
-            { "Dogtag", (upd1, upd2) => upd1.Dogtag?.ProfileId == upd2.Dogtag?.ProfileId },
-            { "FaceShield", (upd1, upd2) => upd1.FaceShield?.Hits == upd2.FaceShield?.Hits },
-            { "Foldable", (upd1, upd2) => upd1.Foldable?.Folded.GetValueOrDefault(false) == upd2.Foldable?.Folded.GetValueOrDefault(false) },
-            { "FoodDrink", (upd1, upd2) => upd1.FoodDrink?.HpPercent == upd2.FoodDrink?.HpPercent },
-            { "MedKit", (upd1, upd2) => upd1.MedKit?.HpResource == upd2.MedKit?.HpResource },
-            { "RecodableComponent", (upd1, upd2) => upd1.RecodableComponent?.IsEncoded == upd2.RecodableComponent?.IsEncoded },
-            { "RepairKit", (upd1, upd2) => upd1.RepairKit?.Resource == upd2.RepairKit?.Resource },
-            { "Resource", (upd1, upd2) => upd1.Resource?.UnitsConsumed == upd2.Resource?.UnitsConsumed }
+            { "Key", (upd1, upd2) => { return upd1.Key?.NumberOfUsages == upd2.Key?.NumberOfUsages; } },
+            { "Buff", (upd1, upd2) => { return upd1.Buff?.Value == upd2.Buff?.Value && upd1.Buff?.BuffType == upd2.Buff?.BuffType; } },
+            { "CultistAmulet", (upd1, upd2) => { return upd1.CultistAmulet?.NumberOfUsages == upd2.CultistAmulet?.NumberOfUsages; } },
+            { "Dogtag", (upd1, upd2) => { return upd1.Dogtag?.ProfileId == upd2.Dogtag?.ProfileId; } },
+            { "FaceShield", (upd1, upd2) => { return upd1.FaceShield?.Hits == upd2.FaceShield?.Hits; } },
+            { "Foldable", (upd1, upd2) => { return upd1.Foldable?.Folded.GetValueOrDefault(false) == upd2.Foldable?.Folded.GetValueOrDefault(false); } },
+            { "FoodDrink", (upd1, upd2) => { return upd1.FoodDrink?.HpPercent == upd2.FoodDrink?.HpPercent; } },
+            { "MedKit", (upd1, upd2) => { return upd1.MedKit?.HpResource == upd2.MedKit?.HpResource; } },
+            { "RecodableComponent", (upd1, upd2) => { return upd1.RecodableComponent?.IsEncoded == upd2.RecodableComponent?.IsEncoded; } },
+            { "RepairKit", (upd1, upd2) => { return upd1.RepairKit?.Resource == upd2.RepairKit?.Resource; } },
+            { "Resource", (upd1, upd2) => { return upd1.Resource?.UnitsConsumed == upd2.Resource?.UnitsConsumed; } }
         };
 
         // Choose above keys or passed in keys to compare items with
@@ -217,7 +232,7 @@ public class ItemHelper(
         foreach (var propertyName in valuesToCompare)
         {
             if (!comparers.TryGetValue(propertyName, out var comparer))
-                // Key not found, skip
+            // Key not found, skip
             {
                 continue;
             }
@@ -360,7 +375,10 @@ public class ItemHelper(
 
         return !(itemDetails.Value.Properties.QuestItem ?? false) &&
                string.Equals(itemDetails.Value.Type, "Item", StringComparison.OrdinalIgnoreCase) &&
-               baseTypes.All(x => !IsOfBaseclass(tpl, x)) &&
+               baseTypes.All(x =>
+               {
+                   return !IsOfBaseclass(tpl, x);
+               }) &&
                GetItemPrice(tpl) > 0 &&
                !_itemFilterService.IsItemBlacklisted(tpl);
     }
@@ -415,7 +433,10 @@ public class ItemHelper(
         var itemTemplate = GetItem(itemTpl);
         var plateSlotIds = GetRemovablePlateSlotIds();
 
-        return itemTemplate.Value.Properties.Slots.Any(slot => plateSlotIds.Contains(slot.Name.ToLower()));
+        return itemTemplate.Value.Properties.Slots.Any(slot =>
+        {
+            return plateSlotIds.Contains(slot.Name.ToLower());
+        });
     }
 
     // Does the provided item tpl require soft inserts to become a valid armor item
@@ -443,7 +464,10 @@ public class ItemHelper(
         }
 
         // Check if item has slots that match soft insert name ids
-        if (itemDbDetails.Value.Properties.Slots.Any(slot => IsSoftInsertId(slot.Name.ToLower())))
+        if (itemDbDetails.Value.Properties.Slots.Any(slot =>
+        {
+            return IsSoftInsertId(slot.Name.ToLower());
+        }))
         {
             return true;
         }
@@ -475,7 +499,10 @@ public class ItemHelper(
     public double GetItemAndChildrenPrice(IEnumerable<string> tpls)
     {
         // Run getItemPrice for each tpl in tpls array, return sum
-        return tpls.Aggregate(0, (total, tpl) => total + (int) GetItemPrice(tpl).GetValueOrDefault(0));
+        return tpls.Aggregate(0, (total, tpl) =>
+        {
+            return total + (int) GetItemPrice(tpl).GetValueOrDefault(0);
+        });
     }
 
     /// <summary>
@@ -637,7 +664,7 @@ public class ItemHelper(
         }
 
         if (itemsWithQualityCount == 0)
-            // Can happen when rigs without soft inserts or plates are listed
+        // Can happen when rigs without soft inserts or plates are listed
         {
             return 1;
         }
@@ -704,7 +731,7 @@ public class ItemHelper(
             }
 
             if (result == 0)
-                // make item non-zero but still very low
+            // make item non-zero but still very low
             {
                 result = 0.01;
             }
@@ -822,7 +849,10 @@ public class ItemHelper(
         {
             // Parent matches desired item + all items in list do not match
             if (string.Equals(itemFromAssort.ParentId, itemIdToFind, StringComparison.OrdinalIgnoreCase)
-                && list.All(item => !string.Equals(itemFromAssort.Id, item.Id, StringComparison.Ordinal)))
+                && list.All(item =>
+                {
+                    return !string.Equals(itemFromAssort.Id, item.Id, StringComparison.Ordinal);
+                }))
             {
                 list.Add(itemFromAssort);
                 list = list.Concat(FindAndReturnChildrenByAssort(itemFromAssort.Id, assort)).ToList();
@@ -1040,7 +1070,10 @@ public class ItemHelper(
         // Add insured items ids to blacklist
         if (insuredItems is not null)
         {
-            itemIdBlacklist.UnionWith(insuredItems.Select(x => x.ItemId));
+            itemIdBlacklist.UnionWith(insuredItems.Select(x =>
+            {
+                return x.ItemId;
+            }));
         }
 
 
@@ -1061,7 +1094,10 @@ public class ItemHelper(
             item.Id = newId;
 
             // Find all children of item and update their parent ids to match
-            var childItems = inventory.Items.Where(x => string.Equals(x.ParentId, originalId, StringComparison.OrdinalIgnoreCase));
+            var childItems = inventory.Items.Where(x =>
+            {
+                return string.Equals(x.ParentId, originalId, StringComparison.OrdinalIgnoreCase);
+            });
             foreach (var childItem in childItems)
             {
                 childItem.ParentId = newId;
@@ -1100,7 +1136,10 @@ public class ItemHelper(
             item.Id = newId;
 
             // Find all children of item and update their parent ids to match
-            var childItems = items.Where(x => string.Equals(x.ParentId, originalId, StringComparison.OrdinalIgnoreCase));
+            var childItems = items.Where(x =>
+            {
+                return string.Equals(x.ParentId, originalId, StringComparison.OrdinalIgnoreCase);
+            });
             foreach (var childItem in childItems)
             {
                 childItem.ParentId = newId;
@@ -1148,7 +1187,10 @@ public class ItemHelper(
         // Add insured items ids to blacklist
         if (insuredItems is not null)
         {
-            itemIdBlacklist.UnionWith(insuredItems.Select(x => x.ItemId));
+            itemIdBlacklist.UnionWith(insuredItems.Select(x =>
+            {
+                return x.ItemId;
+            }));
         }
 
 
@@ -1169,7 +1211,10 @@ public class ItemHelper(
             item.Id = newId;
 
             // Find all children of item and update their parent ids to match
-            var childItems = originalItems.Where(x => string.Equals(x.ParentId, originalId, StringComparison.OrdinalIgnoreCase));
+            var childItems = originalItems.Where(x =>
+            {
+                return string.Equals(x.ParentId, originalId, StringComparison.OrdinalIgnoreCase);
+            });
             foreach (var childItem in childItems)
             {
                 childItem.ParentId = newId;
@@ -1319,9 +1364,10 @@ public class ItemHelper(
         if (parentTemplate.Key && parentTemplate.Value?.Properties?.Slots != null)
         {
             isRequiredSlot = parentTemplate.Value?.Properties?.Slots?.Any(slot =>
-                                 slot?.Name == item?.SlotId &&
-                                 (slot?.Required ?? false)
-                             ) ??
+            {
+                return slot?.Name == item?.SlotId &&
+                                                 (slot?.Required ?? false);
+            }) ??
                              false;
         }
 
@@ -1343,11 +1389,17 @@ public class ItemHelper(
     /// <returns>The Item object representing the top-most parent of the given item, or null if no such parent exists.</returns>
     public Item? GetAttachmentMainParent(string itemId, Dictionary<string, Item> itemsMap)
     {
-        var currentItem = itemsMap.FirstOrDefault(x => x.Key == itemId).Value;
+        var currentItem = itemsMap.FirstOrDefault(x =>
+        {
+            return x.Key == itemId;
+        }).Value;
 
         while (currentItem != null && IsAttachmentAttached(currentItem))
         {
-            currentItem = itemsMap.FirstOrDefault(x => x.Key == currentItem.ParentId).Value;
+            currentItem = itemsMap.FirstOrDefault(x =>
+            {
+                return x.Key == currentItem.ParentId;
+            }).Value;
             if (currentItem == null)
             {
                 return null;
@@ -1409,7 +1461,10 @@ public class ItemHelper(
      */
     public ItemSize GetItemSize(List<Item> items, string rootItemId)
     {
-        var rootTemplate = GetItem(items.Where(x => x.Id.Equals(rootItemId, StringComparison.OrdinalIgnoreCase)).ToList()[0].Template).Value;
+        var rootTemplate = GetItem(items.Where(x =>
+        {
+            return x.Id.Equals(rootItemId, StringComparison.OrdinalIgnoreCase);
+        }).ToList()[0].Template).Value;
         var width = rootTemplate.Properties.Width;
         var height = rootTemplate.Properties.Height;
 
@@ -1483,7 +1538,10 @@ public class ItemHelper(
         var cartridgeMaxStackSize = cartridgeDetails.Value.Properties.StackMaxSize;
 
         // Exit if ammo already exists in box
-        if (ammoBox.Any(item => item.Template.Equals(cartridgeTpl, StringComparison.OrdinalIgnoreCase)))
+        if (ammoBox.Any(item =>
+        {
+            return item.Template.Equals(cartridgeTpl, StringComparison.OrdinalIgnoreCase);
+        }))
         {
             return;
         }
@@ -1549,9 +1607,12 @@ public class ItemHelper(
     public bool ItemIsInsideContainer(Item itemToCheck, string desiredContainerSlotId, List<Item> items)
     {
         // Get items parent
-        var parent = items.FirstOrDefault(item => item.Id.Equals(itemToCheck.ParentId, StringComparison.OrdinalIgnoreCase));
+        var parent = items.FirstOrDefault(item =>
+        {
+            return item.Id.Equals(itemToCheck.ParentId, StringComparison.OrdinalIgnoreCase);
+        });
         if (parent is null)
-            // No parent, end of line, not inside container
+        // No parent, end of line, not inside container
         {
             return false;
         }
@@ -1627,7 +1688,7 @@ public class ItemHelper(
     {
         var isUBGL = IsOfBaseclass(magTemplate.Id, BaseClasses.UBGL);
         if (isUBGL)
-            // UBGL don't have mags
+        // UBGL don't have mags
         {
             return;
         }
@@ -1715,8 +1776,14 @@ public class ItemHelper(
     {
         var ammoTpls = magTemplate.Properties.Cartridges[0].Props.Filters[0].Filter;
         var calibers = ammoTpls
-            .Where(x => GetItem(x).Key)
-            .Select(x => GetItem(x).Value.Properties.Caliber)
+            .Where(x =>
+            {
+                return GetItem(x).Key;
+            })
+            .Select(x =>
+            {
+                return GetItem(x).Value.Properties.Caliber;
+            })
             .ToList();
 
         return _randomUtil.DrawRandomFromList(calibers).FirstOrDefault();
@@ -1838,8 +1905,14 @@ public class ItemHelper(
     {
         return _databaseService.GetItems()
             .Values
-            .Where(item => item.Parent == desiredBaseType)
-            .Select(item => item.Id)
+            .Where(item =>
+            {
+                return item.Parent == desiredBaseType;
+            })
+            .Select(item =>
+            {
+                return item.Id;
+            })
             .ToList();
     }
 
@@ -2003,7 +2076,7 @@ public class ItemHelper(
 
             // Has parentId + no remapping exists for its parent
             if (mod.ParentId is not null && (!idMappings.ContainsKey(mod.ParentId) || idMappings?[mod.ParentId] is null))
-                // Make remapping for items parentId
+            // Make remapping for items parentId
             {
                 idMappings[mod.ParentId] = _hashUtil.Generate();
             }
@@ -2069,7 +2142,10 @@ public class ItemHelper(
         foreach (var item in items)
         {
             // Check if the item's parent exists.
-            var parentExists = items.Any(parentItem => parentItem.Id.Equals(item.ParentId, StringComparison.OrdinalIgnoreCase));
+            var parentExists = items.Any(parentItem =>
+            {
+                return parentItem.Id.Equals(item.ParentId, StringComparison.OrdinalIgnoreCase);
+            });
 
             // If the parent does not exist and the item is not already a 'hideout' item, adopt the orphaned item by
             // setting the parent ID to the PMCs inventory equipment ID, the slot ID to 'hideout', and remove the location.
@@ -2091,7 +2167,10 @@ public class ItemHelper(
     public Dictionary<string, Item> GenerateItemsMap(List<Item> items)
     {
         // Convert list to dictionary, keyed by items Id
-        return items.ToDictionary(item => item.Id);
+        return items.ToDictionary(item =>
+        {
+            return item.Id;
+        });
     }
 
     // Add a blank upd object to passed in item if it does not exist already
@@ -2144,7 +2223,7 @@ public class ItemHelper(
     {
         var result = GetItem(tpl);
         if (!result.Key)
-            // Not an item
+        // Not an item
         {
             return null;
         }
@@ -2153,13 +2232,13 @@ public class ItemHelper(
         while (currentItem is not null)
         {
             if (currentItem.Type == "Node" && !rootOnly)
-                // Hit first base type
+            // Hit first base type
             {
                 return currentItem.Id;
             }
 
             if (currentItem.Parent is null)
-                // No parent, reached root
+            // No parent, reached root
             {
                 return currentItem.Id;
             }
@@ -2217,7 +2296,10 @@ public class ItemHelper(
         //return x;
 
         return Enumerable.Range(0, containerY)
-            .Select(i => new int[containerX])
+            .Select(i =>
+            {
+                return new int[containerX];
+            })
             .ToArray();
     }
 }

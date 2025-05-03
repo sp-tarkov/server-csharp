@@ -89,13 +89,19 @@ public class QuestRewardHelper(
     protected Quest GetQuestFromDb(string questId, PmcData pmcData)
     {
         // May be a repeatable quest
-        var quest = _databaseService.GetQuests().FirstOrDefault(x => x.Key == questId).Value;
+        var quest = _databaseService.GetQuests().FirstOrDefault(x =>
+        {
+            return x.Key == questId;
+        }).Value;
         if (quest == null)
-            // Check daily/weekly objects
+        // Check daily/weekly objects
         {
             foreach (var repeatableQuest in pmcData.RepeatableQuests)
             {
-                quest = repeatableQuest.ActiveQuests.FirstOrDefault(r => r.Id == questId);
+                quest = repeatableQuest.ActiveQuests.FirstOrDefault(r =>
+                {
+                    return r.Id == questId;
+                });
                 if (quest != null)
                 {
                     break;
@@ -114,10 +120,16 @@ public class QuestRewardHelper(
     protected double GetQuestMoneyRewardBonusMultiplier(PmcData pmcData)
     {
         // Check player has intel center
-        var moneyRewardbonuses = pmcData.Bonuses.Where(bonus => bonus.Type == BonusType.QuestMoneyReward);
+        var moneyRewardbonuses = pmcData.Bonuses.Where(bonus =>
+        {
+            return bonus.Type == BonusType.QuestMoneyReward;
+        });
 
         // Get a total of the quest money reward percent bonuses
-        var moneyRewardBonusPercent = moneyRewardbonuses.Aggregate(0D, (accumulate, bonus) => accumulate + bonus.Value ?? 0);
+        var moneyRewardBonusPercent = moneyRewardbonuses.Aggregate(0D, (accumulate, bonus) =>
+        {
+            return accumulate + bonus.Value ?? 0;
+        });
 
         // Calculate hideout management bonus as a percentage (up to 51% bonus)
         var hideoutManagementSkill = _profileHelper.GetSkillFromProfile(pmcData, SkillTypes.HideoutManagement);
@@ -144,13 +156,17 @@ public class QuestRewardHelper(
         var clonedQuest = _cloner.Clone(quest);
         var rewards = (List<Reward>) clonedQuest.Rewards.GetType()
                           .GetProperties()
-                          .FirstOrDefault(p => p.Name == questStatus.ToString())
+                          .FirstOrDefault(p =>
+                          {
+                              return p.Name == questStatus.ToString();
+                          })
                           .GetValue(quest.Rewards) ??
                       new List<Reward>();
         var currencyRewards = rewards.Where(r =>
-            r.Type.ToString() == "Item" &&
-            _paymentHelper.IsMoneyTpl(r.Items.FirstOrDefault().Template)
-        );
+        {
+            return r.Type.ToString() == "Item" &&
+                        _paymentHelper.IsMoneyTpl(r.Items.FirstOrDefault().Template);
+        });
         foreach (var reward in currencyRewards)
         {
             // Add % bonus to existing StackObjectsCount

@@ -198,7 +198,7 @@ public class EventOutputHolder
         foreach (var production in productions)
         {
             if (production.Value is null)
-                // Could be cancelled production, skip item to save processing
+            // Could be cancelled production, skip item to save processing
             {
                 continue;
             }
@@ -259,15 +259,20 @@ public class EventOutputHolder
     private Dictionary<string, TraderData> ConstructTraderRelations(Dictionary<string, TraderInfo> traderData)
     {
         return traderData.ToDictionary(
-            trader => trader.Key,
-            trader => new TraderData
+            trader =>
             {
-                SalesSum = trader.Value.SalesSum,
-                Disabled = trader.Value.Disabled,
-                Loyalty = trader.Value.LoyaltyLevel,
-                Standing = trader.Value.Standing,
-                Unlocked = trader.Value.Unlocked
-            }
-        );
+                return trader.Key;
+            },
+            trader =>
+            {
+                return new TraderData
+                {
+                    SalesSum = trader.Value.SalesSum,
+                    Disabled = trader.Value.Disabled,
+                    Loyalty = trader.Value.LoyaltyLevel,
+                    Standing = trader.Value.Standing,
+                    Unlocked = trader.Value.Unlocked
+                };
+            });
     }
 }

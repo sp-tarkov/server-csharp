@@ -212,7 +212,7 @@ public class BotGenerator(
         }
 
         if (!_seasonalEventService.ChristmasEventEnabled())
-            // Process all bots EXCEPT gifter, he needs christmas items
+        // Process all bots EXCEPT gifter, he needs christmas items
         {
             if (botGenerationDetails.Role != "gifter")
             {
@@ -390,7 +390,7 @@ public class BotGenerator(
         );
 
         if (blacklist?.Gear is null)
-            // Nothing to filter by
+        // Nothing to filter by
         {
             return;
         }
@@ -400,7 +400,7 @@ public class BotGenerator(
             var equipmentDict = botJsonTemplate.BotInventory.Equipment[equipmentSlot];
 
             foreach (var blacklistedTpl in blacklistedTpls)
-                // Set weighting to 0, will never be picked
+            // Set weighting to 0, will never be picked
             {
                 equipmentDict[blacklistedTpl] = 0;
             }
@@ -432,7 +432,10 @@ public class BotGenerator(
         foreach (var lootContainerKey in lootContainersToFilter)
         {
             var propInfo = props
-                .FirstOrDefault(x => string.Equals(x.Name, lootContainerKey, StringComparison.CurrentCultureIgnoreCase));
+                .FirstOrDefault(x =>
+                {
+                    return string.Equals(x.Name, lootContainerKey, StringComparison.CurrentCultureIgnoreCase);
+                });
             var prop = (Dictionary<string, double>?) propInfo.GetValue(botInventory.Items);
 
             // No container, skip
@@ -466,7 +469,10 @@ public class BotGenerator(
         var chosenBodyTemplate = _databaseService.GetCustomization()[bot.Customization.Body];
 
         // Some bodies have matching hands, look up body to see if this is the case
-        var chosenBody = bodyGlobalDictDb.FirstOrDefault(c => c.Key == chosenBodyTemplate?.Name.Trim());
+        var chosenBody = bodyGlobalDictDb.FirstOrDefault(c =>
+        {
+            return c.Key == chosenBodyTemplate?.Name.Trim();
+        });
         bot.Customization.Hands = chosenBody.Value?.IsNotRandom ?? false
             ? chosenBody.Value.Hands // Has fixed hands for chosen body, update to match
             : _weightedRandomHelper.GetWeightedValue<string>(appearance.Hands); // Hands can be random, choose any from weighted dict
@@ -674,7 +680,10 @@ public class BotGenerator(
                     return skillToAdd;
                 }
             )
-            .Where(baseSkill => baseSkill != null)
+            .Where(baseSkill =>
+            {
+                return baseSkill != null;
+            })
             .ToList();
     }
 

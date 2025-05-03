@@ -246,13 +246,16 @@ public class TradeController(
 
         var offerCreatorProfile = _profileHelper.GetPmcProfile(offerOwnerId);
         if (offerCreatorProfile is null || offerCreatorProfile.RagfairInfo.Offers?.Count == 0)
-            // No profile or no offers
+        // No profile or no offers
         {
             return false;
         }
 
         // Does offer id exist in profile
-        return offerCreatorProfile.RagfairInfo.Offers.Any(offer => offer.Id == offerId);
+        return offerCreatorProfile.RagfairInfo.Offers.Any(offer =>
+        {
+            return offer.Id == offerId;
+        });
     }
 
     /// <summary>
@@ -323,7 +326,10 @@ public class TradeController(
             trader,
             MessageType.MESSAGE_WITH_ITEMS,
             _randomUtil.GetArrayValue(_databaseService.GetTrader(trader).Dialogue.TryGetValue("soldItems", out var items) ? items : new List<string>()),
-            curencyReward.SelectMany(x => x).ToList(),
+            curencyReward.SelectMany(x =>
+            {
+                return x;
+            }).ToList(),
             _timeUtil.GetHoursAsSeconds(72)
         );
     }
@@ -349,7 +355,7 @@ public class TradeController(
         {
             var itemDetails = _itemHelper.GetItem(itemToSell.Template);
             if (!(itemDetails.Key && _itemHelper.IsOfBaseclasses(itemDetails.Value.Id, traderDetails.ItemsBuy.Category)))
-                // Skip if tpl isn't item OR item doesn't fulfil match traders buy categories
+            // Skip if tpl isn't item OR item doesn't fulfil match traders buy categories
             {
                 continue;
             }

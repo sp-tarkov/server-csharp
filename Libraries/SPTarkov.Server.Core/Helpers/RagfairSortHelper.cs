@@ -34,7 +34,10 @@ public class RagfairSortHelper(
                 break;
 
             case RagfairSort.OFFER_TITLE:
-                offers.Sort((a, b) => SortOffersByName(a, b));
+                offers.Sort((a, b) =>
+                {
+                    return SortOffersByName(a, b);
+                });
                 break;
 
             case RagfairSort.PRICE:

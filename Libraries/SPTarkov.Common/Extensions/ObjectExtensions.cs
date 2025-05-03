@@ -14,7 +14,13 @@ public static class ObjectExtensions
         {
             if (!_indexedProperties.TryGetValue(type, out var properties))
             {
-                properties = type.GetProperties().ToDictionary(prop => prop.GetJsonName(), prop => prop);
+                properties = type.GetProperties().ToDictionary(prop =>
+                {
+                    return prop.GetJsonName();
+                }, prop =>
+                {
+                    return prop;
+                });
                 _indexedProperties.Add(type, properties);
             }
 
@@ -70,7 +76,13 @@ public static class ObjectExtensions
     {
         var props = obj.GetType().GetProperties();
 
-        return props.ToDictionary(prop => prop.Name, prop => prop.GetValue(obj));
+        return props.ToDictionary(prop =>
+        {
+            return prop.Name;
+        }, prop =>
+        {
+            return prop.GetValue(obj);
+        });
     }
 
     public static T ToObject<T>(this JsonElement element)

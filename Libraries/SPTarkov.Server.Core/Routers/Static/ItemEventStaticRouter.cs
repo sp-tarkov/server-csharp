@@ -22,7 +22,7 @@ public class ItemEventStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => itemEventCallbacks.HandleEvents(url, info as ItemEventRouterRequest, sessionID),
+                ) => { return itemEventCallbacks.HandleEvents(url, info as ItemEventRouterRequest, sessionID); },
                 typeof(ItemEventRouterRequest)
             )
         ]

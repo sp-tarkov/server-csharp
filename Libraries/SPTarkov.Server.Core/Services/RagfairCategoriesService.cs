@@ -61,7 +61,16 @@ public class RagfairCategoriesService(
                     return true;
                 }
             )
-            .GroupBy(x => x.Items.FirstOrDefault().Template)
-            .ToDictionary(group => group.Key, group => group.Count());
+            .GroupBy(x =>
+            {
+                return x.Items.FirstOrDefault().Template;
+            })
+            .ToDictionary(group =>
+            {
+                return group.Key;
+            }, group =>
+            {
+                return group.Count();
+            });
     }
 }

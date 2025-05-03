@@ -22,8 +22,7 @@ public class CustomizationStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => customizationCallbacks.GetCustomisationUnlocks(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return customizationCallbacks.GetCustomisationUnlocks(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/hideout/customization/offer/list",
                 (
@@ -31,8 +30,7 @@ public class CustomizationStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => customizationCallbacks.GetHideoutCustomisation(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return customizationCallbacks.GetHideoutCustomisation(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/customization/storage",
                 (
@@ -40,8 +38,7 @@ public class CustomizationStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => customizationCallbacks.GetStorage(url, info as EmptyRequestData, sessionID)
-            )
+                ) => { return customizationCallbacks.GetStorage(url, info as EmptyRequestData, sessionID); })
         ]
     )
     {

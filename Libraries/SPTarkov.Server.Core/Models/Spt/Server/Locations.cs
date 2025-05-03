@@ -224,9 +224,18 @@ public record Locations
 
     private void HydrateDictionary()
     {
-        var classProps = typeof(Locations).GetProperties().Where(p => p.PropertyType == typeof(Eft.Common.Location) && p.Name != "Item");
+        var classProps = typeof(Locations).GetProperties().Where(p =>
+        {
+            return p.PropertyType == typeof(Eft.Common.Location) && p.Name != "Item";
+        });
         _locationDictionaryCache = classProps
-            .ToDictionary(propertyInfo => propertyInfo.Name, propertyInfo => propertyInfo.GetValue(this, null) as Eft.Common.Location,
+            .ToDictionary(propertyInfo =>
+            {
+                return propertyInfo.Name;
+            }, propertyInfo =>
+            {
+                return propertyInfo.GetValue(this, null) as Eft.Common.Location;
+            },
                 StringComparer.OrdinalIgnoreCase);
     }
 }

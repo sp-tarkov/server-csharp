@@ -170,8 +170,17 @@ public class ItemTplGenerator(
 
         // Sort the items object
         var itemList = itemsObject.ToList();
-        itemList.Sort((kv1, kv2) => kv1.Key.CompareTo(kv2.Key));
-        var orderedItemsObject = itemList.ToDictionary(kv => kv.Key, kv => kv.Value);
+        itemList.Sort((kv1, kv2) =>
+        {
+            return kv1.Key.CompareTo(kv2.Key);
+        });
+        var orderedItemsObject = itemList.ToDictionary(kv =>
+        {
+            return kv.Key;
+        }, kv =>
+        {
+            return kv.Value;
+        });
         return orderedItemsObject;
     }
 
@@ -221,8 +230,17 @@ public class ItemTplGenerator(
 
         // Sort the weapons object
         var itemList = weaponsObject.ToList();
-        itemList.Sort((kv1, kv2) => kv1.Key.CompareTo(kv2.Key));
-        var orderedWeaponsObject = itemList.ToDictionary(kv => kv.Key, kv => kv.Value);
+        itemList.Sort((kv1, kv2) =>
+        {
+            return kv1.Key.CompareTo(kv2.Key);
+        });
+        var orderedWeaponsObject = itemList.ToDictionary(kv =>
+        {
+            return kv.Key;
+        }, kv =>
+        {
+            return kv.Value;
+        });
         return orderedWeaponsObject;
     }
 

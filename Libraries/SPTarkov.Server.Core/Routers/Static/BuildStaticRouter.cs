@@ -24,8 +24,7 @@ public class BuildStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => buildsCallbacks.GetBuilds(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return buildsCallbacks.GetBuilds(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/builds/magazine/save",
                 (
@@ -33,7 +32,7 @@ public class BuildStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => buildsCallbacks.CreateMagazineTemplate(url, info as SetMagazineRequest, sessionID),
+                ) => { return buildsCallbacks.CreateMagazineTemplate(url, info as SetMagazineRequest, sessionID); },
                 typeof(SetMagazineRequest)
             ),
             new RouteAction(
@@ -43,7 +42,7 @@ public class BuildStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => buildsCallbacks.SetWeapon(url, info as PresetBuildActionRequestData, sessionID),
+                ) => { return buildsCallbacks.SetWeapon(url, info as PresetBuildActionRequestData, sessionID); },
                 typeof(PresetBuildActionRequestData)
             ),
             new RouteAction(
@@ -53,7 +52,7 @@ public class BuildStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => buildsCallbacks.SetEquipment(url, info as PresetBuildActionRequestData, sessionID),
+                ) => { return buildsCallbacks.SetEquipment(url, info as PresetBuildActionRequestData, sessionID); },
                 typeof(PresetBuildActionRequestData)
             ),
             new RouteAction(
@@ -63,7 +62,7 @@ public class BuildStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => buildsCallbacks.DeleteBuild(url, info as RemoveBuildRequestData, sessionID),
+                ) => { return buildsCallbacks.DeleteBuild(url, info as RemoveBuildRequestData, sessionID); },
                 typeof(RemoveBuildRequestData)
             )
         ]

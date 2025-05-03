@@ -113,7 +113,7 @@ public class RagfairSellHelper(
                 var random = new Random();
                 var newSellTime = Math.Floor(random.NextDouble() * (maximumTime.Value - minimumTime) + minimumTime);
                 if (newSellTime == 0)
-                    // Ensure all sales don't occur the same exact time
+                // Ensure all sales don't occur the same exact time
                 {
                     newSellTime += 1;
                 }

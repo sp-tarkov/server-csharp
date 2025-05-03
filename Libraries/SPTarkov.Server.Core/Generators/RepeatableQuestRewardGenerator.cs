@@ -110,8 +110,10 @@ public class RepeatableQuestRewardGenerator(
         rewardIndex++;
 
         // Add preset weapon to reward if checks pass
-        var traderWhitelistDetails = repeatableConfig.TraderWhitelist.FirstOrDefault(traderWhitelist => traderWhitelist.TraderId == traderId
-        );
+        var traderWhitelistDetails = repeatableConfig.TraderWhitelist.FirstOrDefault(traderWhitelist =>
+        {
+            return traderWhitelist.TraderId == traderId;
+        });
         if (traderWhitelistDetails?.RewardCanBeWeapon ??
             (false && _randomUtil.GetChance100(traderWhitelistDetails.WeaponRewardChancePercent ?? 0))
            )
@@ -131,8 +133,10 @@ public class RepeatableQuestRewardGenerator(
         if (rewardTplBlacklist is not null)
         {
             // Filter reward pool of items from blacklist, only use if there's at least 1 item remaining
-            var filteredRewardItemPool = inBudgetRewardItemPool.Where(item => !rewardTplBlacklist.Contains(item.Id)
-            );
+            var filteredRewardItemPool = inBudgetRewardItemPool.Where(item =>
+            {
+                return !rewardTplBlacklist.Contains(item.Id);
+            });
             if (filteredRewardItemPool.Count() > 0)
             {
                 inBudgetRewardItemPool = filteredRewardItemPool.ToList();
@@ -464,7 +468,10 @@ public class RepeatableQuestRewardGenerator(
         };
 
         // Find the appropriate price tier and return a random stack size from its options
-        var tier = priceTiers.FirstOrDefault(tier => rewardItemPrice < tier.Item1);
+        var tier = priceTiers.FirstOrDefault(tier =>
+        {
+            return rewardItemPrice < tier.Item1;
+        });
         if (tier is null)
         {
             return 4; // Default to 2 if no tier matches
@@ -508,7 +515,10 @@ public class RepeatableQuestRewardGenerator(
 
             // In case we don't find any items in the price range
             rewardableItemPoolWithinBudget = rewardableItemPool
-                .Where(x => _itemHelper.GetItemPrice(x.Id) < roublesBudget)
+                .Where(x =>
+                {
+                    return _itemHelper.GetItemPrice(x.Id) < roublesBudget;
+                })
                 .ToList();
         }
 
@@ -558,7 +568,10 @@ public class RepeatableQuestRewardGenerator(
             }
 
             // Gather all tpls so we can get prices of them
-            var tpls = randomPreset.Items.Select(item => item.Template).ToList();
+            var tpls = randomPreset.Items.Select(item =>
+            {
+                return item.Template;
+            }).ToList();
 
             // Does preset items fit our budget
             var presetPrice = _itemHelper.GetItemAndChildrenPrice(tpls);
@@ -605,7 +618,10 @@ public class RepeatableQuestRewardGenerator(
         };
 
         // Get presets root item
-        var rootItem = preset.FirstOrDefault(item => item.Template == tpl);
+        var rootItem = preset.FirstOrDefault(item =>
+        {
+            return item.Template == tpl;
+        });
         if (rootItem is null)
         {
             _logger.Warning($"Root item of preset: {tpl} not found");
@@ -710,8 +726,10 @@ public class RepeatableQuestRewardGenerator(
                         return false;
                     }
 
-                    var traderWhitelist = repeatableQuestConfig.TraderWhitelist.FirstOrDefault(trader => trader.TraderId == traderId
-                    );
+                    var traderWhitelist = repeatableQuestConfig.TraderWhitelist.FirstOrDefault(trader =>
+                    {
+                        return trader.TraderId == traderId;
+                    });
 
                     return IsValidRewardItem(
                         itemTemplate.Id,

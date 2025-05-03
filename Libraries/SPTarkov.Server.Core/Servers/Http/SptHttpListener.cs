@@ -166,13 +166,16 @@ public class SptHttpListener : IHttpListener
         }
 
         // Not debug, minority of requests need a serializer to do the job (IMAGE/BUNDLE/NOTIFY)
-        var serialiser = _serializers.FirstOrDefault(x => x.CanHandle(output));
+        var serialiser = _serializers.FirstOrDefault(x =>
+        {
+            return x.CanHandle(output);
+        });
         if (serialiser != null)
         {
             serialiser.Serialize(sessionID, req, resp, bodyInfo);
         }
         else
-            // No serializer can handle the request (majority of requests dont), zlib the output and send response back
+        // No serializer can handle the request (majority of requests dont), zlib the output and send response back
         {
             SendZlibJson(resp, output, sessionID);
         }

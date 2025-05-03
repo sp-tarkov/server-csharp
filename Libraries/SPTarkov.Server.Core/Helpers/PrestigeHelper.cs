@@ -50,7 +50,10 @@ public class PrestigeHelper
             {
                 // Set progress 5% of what it was
                 skillToCopy.Progress = skillToCopy.Progress * 0.05;
-                var existingSkill = newProfile.CharacterData.PmcData.Skills.Common.FirstOrDefault(skill => skill.Id == skillToCopy.Id);
+                var existingSkill = newProfile.CharacterData.PmcData.Skills.Common.FirstOrDefault(skill =>
+                {
+                    return skill.Id == skillToCopy.Id;
+                });
                 if (existingSkill is not null)
                 {
                     existingSkill.Progress = skillToCopy.Progress;
@@ -66,7 +69,10 @@ public class PrestigeHelper
             {
                 // Set progress 5% of what it was
                 skillToCopy.Progress = skillToCopy.Progress * 0.05;
-                var existingSkill = newProfile.CharacterData.PmcData.Skills.Mastering.FirstOrDefault(skill => skill.Id == skillToCopy.Id);
+                var existingSkill = newProfile.CharacterData.PmcData.Skills.Mastering.FirstOrDefault(skill =>
+                {
+                    return skill.Id == skillToCopy.Id;
+                });
                 if (existingSkill is not null)
                 {
                     existingSkill.Progress = skillToCopy.Progress;
@@ -91,7 +97,10 @@ public class PrestigeHelper
         var prestigeRewards = _databaseService
             .GetTemplates()
             .Prestige.Elements.Slice(0, indexOfPrestigeObtained + 1)
-            .SelectMany(prestige => prestige.Rewards);
+            .SelectMany(prestige =>
+            {
+                return prestige.Rewards;
+            });
 
         AddPrestigeRewardsToProfile(sessionId, newProfile, prestigeRewards);
 
@@ -103,7 +112,10 @@ public class PrestigeHelper
         // Copy transferred items
         foreach (var transferRequest in prestige.Items ?? [])
         {
-            var item = prePrestigePmc.Inventory.Items.FirstOrDefault(item => item.Id == transferRequest.Id);
+            var item = prePrestigePmc.Inventory.Items.FirstOrDefault(item =>
+            {
+                return item.Id == transferRequest.Id;
+            });
             if (item is null)
             {
                 _logger.Error($"Unable to find item with id: {transferRequest.Id} in profile: {sessionId}, skipping");

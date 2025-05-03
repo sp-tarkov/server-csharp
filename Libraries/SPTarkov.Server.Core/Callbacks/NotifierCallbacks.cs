@@ -33,8 +33,17 @@ public class NotifierCallbacks(
          *  be sent to client as NEWLINE separated strings... yup.
          */
         _notifierController.NotifyAsync(tmpSessionID)
-            .ContinueWith(messages => messages.Result.Select(message => string.Join("\n", jsonUtil.Serialize(message))))
-            .ContinueWith(text => httpServerHelper.SendTextJson(resp, text.Result));
+            .ContinueWith(messages =>
+            {
+                return messages.Result.Select(message =>
+                {
+                    return string.Join("\n", jsonUtil.Serialize(message));
+                });
+            })
+            .ContinueWith(text =>
+            {
+                httpServerHelper.SendTextJson(resp, text.Result);
+            });
     }
 
 

@@ -42,7 +42,7 @@ public class QuestConditionHelper
         var filteredQuests = questConditions.Where(c =>
                 {
                     if (c.ConditionType == questType)
-                        // return true or run the passed in function
+                    // return true or run the passed in function
                     {
                         return furtherFilter is null || furtherFilter(c).Any();
                     }

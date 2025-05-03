@@ -56,7 +56,10 @@ public class RaidTimeAdjustmentService(
         // Adjust map exits
         foreach (var exitChange in raidAdjustments.ExitChanges)
         {
-            var exitToChange = mapBase.Exits.FirstOrDefault(exit => exit.Name == exitChange.Name);
+            var exitToChange = mapBase.Exits.FirstOrDefault(exit =>
+            {
+                return exit.Name == exitChange.Name;
+            });
             if (exitToChange is null)
             {
                 _logger.Debug($"Exit with Id: {exitChange.Name} not found, skipping");
@@ -110,7 +113,10 @@ public class RaidTimeAdjustmentService(
     {
         // Remove waves that spawned before the player joined
         var originalWaveCount = mapBase.Waves.Count;
-        mapBase.Waves = mapBase.Waves.Where(x => x.TimeMax > raidAdjustments.SimulatedRaidStartSeconds).ToList();
+        mapBase.Waves = mapBase.Waves.Where(x =>
+        {
+            return x.TimeMax > raidAdjustments.SimulatedRaidStartSeconds;
+        }).ToList();
 
         // Adjust wave min/max times to match new simulated start
         var startSeconds = raidAdjustments.SimulatedRaidStartSeconds.GetValueOrDefault(1);
@@ -161,7 +167,7 @@ public class RaidTimeAdjustmentService(
 
         // Chance of reducing raid time for scav, not guaranteed
         if (!_randomUtil.GetChance100(mapSettings.ReducedChancePercent))
-            // Send default
+        // Send default
         {
             return result;
         }

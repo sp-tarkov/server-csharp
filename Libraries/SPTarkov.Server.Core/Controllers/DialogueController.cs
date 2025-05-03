@@ -35,7 +35,10 @@ public class DialogueController(
     /// <param name="chatBot"></param>
     public virtual void RegisterChatBot(IDialogueChatBot chatBot) // TODO: this is in with the helper types
     {
-        if (_dialogueChatBots.Any(cb => cb.GetChatBot().Id == chatBot.GetChatBot().Id))
+        if (_dialogueChatBots.Any(cb =>
+        {
+            return cb.GetChatBot().Id == chatBot.GetChatBot().Id;
+        }))
         {
             _logger.Error(_localisationService.GetText("dialog-chatbot_id_already_exists", chatBot.GetChatBot().Id));
         }
@@ -175,7 +178,10 @@ public class DialogueController(
         // User to user messages are special in that they need the player to exist in them, add if they don't
         if (messageType == MessageType.USER_MESSAGE &&
             dialog?.Users is not null &&
-            dialog.Users.All(userDialog => userDialog.Id != profile.CharacterData?.PmcData?.SessionId))
+            dialog.Users.All(userDialog =>
+            {
+                return userDialog.Id != profile.CharacterData?.PmcData?.SessionId;
+            }))
         {
             dialog.Users.Add(
                 new UserDialogInfo
@@ -260,7 +266,10 @@ public class DialogueController(
 
         var dialogue = profile.DialogueRecords[request.DialogId!];
         dialogue.Users = [];
-        var chatBot = _dialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId);
+        var chatBot = _dialogueChatBots.FirstOrDefault(cb =>
+        {
+            return cb.GetChatBot().Id == request.DialogId;
+        });
 
         if (chatBot is null)
         {
@@ -283,14 +292,17 @@ public class DialogueController(
     {
         List<UserDialogInfo> result = [];
         if (userDialogs is null)
-            // Nothing to add
+        // Nothing to add
         {
             return result;
         }
 
         result.AddRange(userDialogs);
 
-        if (result.Any(userDialog => userDialog.Id == fullProfile.ProfileInfo?.ProfileId))
+        if (result.Any(userDialog =>
+        {
+            return userDialog.Id == fullProfile.ProfileInfo?.ProfileId;
+        }))
         {
             return result;
         }
@@ -364,7 +376,10 @@ public class DialogueController(
     /// <returns>true if uncollected rewards found</returns>
     protected bool MessagesHaveUncollectedRewards(List<Message> messages)
     {
-        return messages.Any(message => (message.Items?.Data?.Count ?? 0) > 0);
+        return messages.Any(message =>
+        {
+            return (message.Items?.Data?.Count ?? 0) > 0;
+        });
     }
 
     /// <summary>
@@ -504,8 +519,9 @@ public class DialogueController(
         _mailSendService.SendPlayerMessageToNpc(sessionId, request.DialogId!, request.Text!);
 
         return (_dialogueChatBots.FirstOrDefault(cb =>
-                        cb.GetChatBot().Id == request.DialogId
-                    )
+        {
+            return cb.GetChatBot().Id == request.DialogId;
+        })
                     ?.HandleMessage(sessionId, request) ??
                 request.DialogId) ??
                string.Empty;
@@ -518,7 +534,10 @@ public class DialogueController(
     /// <returns>messages with items to collect</returns>
     protected List<Message> GetMessageWithAttachments(List<Message> messages)
     {
-        return messages.Where(message => (message.Items?.Data?.Count ?? 0) > 0).ToList();
+        return messages.Where(message =>
+        {
+            return (message.Items?.Data?.Count ?? 0) > 0;
+        }).ToList();
     }
 
     /// <summary>

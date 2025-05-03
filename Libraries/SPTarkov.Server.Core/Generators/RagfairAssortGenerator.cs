@@ -68,7 +68,10 @@ public class RagfairAssortGenerator(
         List<List<Item>> results = [];
 
         // Get cloned items from db
-        var dbItemsClone = itemHelper.GetItems().Where(item => !string.Equals(item.Type, "Node", StringComparison.OrdinalIgnoreCase));
+        var dbItemsClone = itemHelper.GetItems().Where(item =>
+        {
+            return !string.Equals(item.Type, "Node", StringComparison.OrdinalIgnoreCase);
+        });
 
         // Store processed preset tpls so we don't add them when processing non-preset items
         HashSet<string> processedArmorItems = [];
@@ -115,7 +118,7 @@ public class RagfairAssortGenerator(
             }
 
             if (processedArmorItems.Contains(item.Id))
-                // Already processed
+            // Already processed
             {
                 continue;
             }

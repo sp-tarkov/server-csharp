@@ -143,14 +143,14 @@ public class RewardHelper(
     public bool RewardIsForGameEdition(Reward reward, string gameVersion)
     {
         if (reward.AvailableInGameEditions?.Count > 0 && !reward.AvailableInGameEditions.Contains(gameVersion))
-            // Reward has edition whitelist and game version isn't in it
+        // Reward has edition whitelist and game version isn't in it
         {
             return false;
         }
 
         if (reward.NotAvailableInGameEditions?.Count > 0 &&
             reward.NotAvailableInGameEditions.Contains(gameVersion))
-            // Reward has edition blacklist and game version is in it
+        // Reward has edition blacklist and game version is in it
         {
             return false;
         }
@@ -217,22 +217,32 @@ public class RewardHelper(
         var desiredHideoutAreaType = (HideoutAreas) int.Parse(craftUnlockReward.TraderId.ToString());
 
         var matchingProductions = craftingRecipes.Where(prod =>
-                prod.AreaType == desiredHideoutAreaType &&
-                //prod.requirements.some((requirement) => requirement.questId == questId) && // BSG don't store the quest id in requirement any more!
-                prod.Requirements.Any(requirement => requirement.Type == "QuestComplete") &&
-                prod.Requirements.Any(requirement => requirement.RequiredLevel == craftUnlockReward.LoyaltyLevel
-                ) &&
-                prod.EndProduct == craftUnlockReward.Items.FirstOrDefault().Template
-            )
+        {
+            return prod.AreaType == desiredHideoutAreaType &&
+                            //prod.requirements.some((requirement) => requirement.questId == questId) && // BSG don't store the quest id in requirement any more!
+                            prod.Requirements.Any(requirement =>
+                            {
+                                return requirement.Type == "QuestComplete";
+                            }) &&
+                            prod.Requirements.Any(requirement =>
+                            {
+                                return requirement.RequiredLevel == craftUnlockReward.LoyaltyLevel;
+                            }) &&
+                            prod.EndProduct == craftUnlockReward.Items.FirstOrDefault().Template;
+        })
             .ToList();
 
         // More/less than single match, above filtering wasn't strict enough
         if (matchingProductions.Count != 1)
-            // Multiple matches were found, last ditch attempt to match by questid (value we add manually to production.json via `gen:productionquests` command)
+        // Multiple matches were found, last ditch attempt to match by questid (value we add manually to production.json via `gen:productionquests` command)
         {
             matchingProductions = matchingProductions.Where(prod =>
-                    prod.Requirements.Any(requirement => requirement.QuestId == questId)
-                )
+            {
+                return prod.Requirements.Any(requirement =>
+                {
+                    return requirement.QuestId == questId;
+                });
+            })
                 .ToList();
         }
 
@@ -249,10 +259,11 @@ public class RewardHelper(
     {
         // Iterate over all rewards with the desired status, flatten out items that have a type of Item
         var rewardItems = rewards.SelectMany(reward =>
-            reward.Type == RewardType.Item && RewardIsForGameEdition(reward, gameVersion)
-                ? ProcessReward(reward)
-                : []
-        );
+        {
+            return reward.Type == RewardType.Item && RewardIsForGameEdition(reward, gameVersion)
+                            ? ProcessReward(reward)
+                            : [];
+        });
 
         return rewardItems.ToList();
     }
@@ -271,10 +282,10 @@ public class RewardHelper(
 
         // Is armor item that may need inserts / plates
         if (reward.Items.Count == 1 && _itemHelper.ArmorItemCanHoldMods(reward.Items[0].Template))
-            // Only process items with slots
+        // Only process items with slots
         {
             if (_itemHelper.ItemHasSlots(reward.Items.FirstOrDefault().Template))
-                // Attempt to pull default preset from globals and add child items to reward (clones reward.items)
+            // Attempt to pull default preset from globals and add child items to reward (clones reward.items)
             {
                 GenerateArmorRewardChildSlots(reward.Items.FirstOrDefault(), reward);
             }
@@ -314,7 +325,7 @@ public class RewardHelper(
             {
                 // Is child mod
                 if (reward.Items.FirstOrDefault().Upd.SpawnedInSession.GetValueOrDefault(false))
-                    // Propagate FiR status into child items
+                // Propagate FiR status into child items
                 {
                     if (!_itemHelper.IsOfBaseclasses(rewardItem.Template, [BaseClasses.AMMO, BaseClasses.MONEY]))
                     {
@@ -370,7 +381,10 @@ public class RewardHelper(
             reward.Items = presetAndMods;
 
             // Find root item and set its stack count
-            var rootItem = reward.Items.FirstOrDefault(item => item.Id == newRootId);
+            var rootItem = reward.Items.FirstOrDefault(item =>
+            {
+                return item.Id == newRootId;
+            });
 
             // Remap target id to the new presets root id
             reward.Target = rootItem.Id;
@@ -405,7 +419,10 @@ public class RewardHelper(
         // Check for any customisation unlocks
         var achievementDataDb = _databaseService
             .GetTemplates()
-            .Achievements.FirstOrDefault(achievement => achievement.Id == achievementId);
+            .Achievements.FirstOrDefault(achievement =>
+            {
+                return achievement.Id == achievementId;
+            });
         if (achievementDataDb is null)
         {
             return;

@@ -69,7 +69,10 @@ public class InventoryController(
             }
 
             // Check for item in inventory before allowing internal transfer
-            var originalItemLocation = ownerInventoryItems.From?.FirstOrDefault(item => item.Id == moveRequest.Item);
+            var originalItemLocation = ownerInventoryItems.From?.FirstOrDefault(item =>
+            {
+                return item.Id == moveRequest.Item;
+            });
             if (originalItemLocation is null)
             {
                 // Internal item move but item never existed, possible dupe glitch
@@ -133,7 +136,10 @@ public class InventoryController(
     public void PinOrLock(PmcData pmcData, PinOrLockItemRequest request, string sessionId,
         ItemEventRouterResponse output)
     {
-        var itemToAdjust = pmcData.Inventory!.Items!.FirstOrDefault(item => item.Id == request.Item);
+        var itemToAdjust = pmcData.Inventory!.Items!.FirstOrDefault(item =>
+        {
+            return item.Id == request.Item;
+        });
         if (itemToAdjust is null)
         {
             _logger.Error($"Unable find item: {request.Item} to: {request.State} on player {sessionId}to: ");
@@ -174,9 +180,15 @@ public class InventoryController(
             // Hard coded to `SYSTEM` for now
             // TODO: make this dynamic
             var dialog = fullProfile.DialogueRecords["59e7125688a45068a6249071"];
-            var mail = dialog.Messages.FirstOrDefault(message => message.Id == rewardEvent.MessageId);
+            var mail = dialog.Messages.FirstOrDefault(message =>
+            {
+                return message.Id == rewardEvent.MessageId;
+            });
             var mailEvent =
-                mail.ProfileChangeEvents.FirstOrDefault(changeEvent => changeEvent.Id == rewardEvent.EventId);
+                mail.ProfileChangeEvents.FirstOrDefault(changeEvent =>
+                {
+                    return changeEvent.Id == rewardEvent.EventId;
+                });
 
             switch (mailEvent.Type)
             {
@@ -198,7 +210,10 @@ public class InventoryController(
                     break;
                 case ProfileChangeEventType.SkillPoints:
                     {
-                        var profileSkill = pmcData.Skills.Common.FirstOrDefault(x => x.Id == mailEvent.Entity);
+                        var profileSkill = pmcData.Skills.Common.FirstOrDefault(x =>
+                        {
+                            return x.Id == mailEvent.Entity;
+                        });
                         if (profileSkill is null)
                         {
                             _logger.Warning($"Unable to find skill with name: {mailEvent.Entity}");
@@ -211,8 +226,14 @@ public class InventoryController(
                     }
                 case ProfileChangeEventType.ExamineAllItems:
                     {
-                        var itemsToInspect = _itemHelper.GetItems().Where(x => x.Type != "Node");
-                        FlagItemsAsInspectedAndRewardXp(itemsToInspect.Select(x => x.Id), fullProfile);
+                        var itemsToInspect = _itemHelper.GetItems().Where(x =>
+                        {
+                            return x.Type != "Node";
+                        });
+                        FlagItemsAsInspectedAndRewardXp(itemsToInspect.Select(x =>
+                        {
+                            return x.Id;
+                        }), fullProfile);
                         _logger.Success($"Flagged {itemsToInspect.Count()} items as examined");
 
                         break;
@@ -234,7 +255,10 @@ public class InventoryController(
                         var newValue = mailEvent.Value;
                         var hideoutAreaType = Enum.Parse<HideoutAreas>(areaName ?? "NOTSET");
 
-                        var desiredArea = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == hideoutAreaType);
+                        var desiredArea = pmcData.Hideout.Areas.FirstOrDefault(area =>
+                        {
+                            return area.Type == hideoutAreaType;
+                        });
                         if (desiredArea is not null)
                         {
                             desiredArea.Level = (int?) newValue;
@@ -296,7 +320,10 @@ public class InventoryController(
         ItemEventRouterResponse output)
     {
         // Container player opened in their inventory
-        var openedItem = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
+        var openedItem = pmcData.Inventory.Items.FirstOrDefault(item =>
+        {
+            return item.Id == request.Item;
+        });
         var containerDetailsDb = _itemHelper.GetItem(openedItem.Template);
         var isSealedWeaponBox = containerDetailsDb.Value.Name.Contains("event_container_airdrop");
 
@@ -411,7 +438,10 @@ public class InventoryController(
     {
         foreach (var change in request.ChangedItems)
         {
-            var inventoryItem = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == change.Id);
+            var inventoryItem = pmcData.Inventory.Items.FirstOrDefault(item =>
+            {
+                return item.Id == change.Id;
+            });
             if (inventoryItem is null)
             {
                 _logger.Error(
@@ -476,7 +506,7 @@ public class InventoryController(
         }
 
         if (itemId is null)
-            // item template
+        // item template
         {
             if (_databaseService.GetItems().ContainsKey(request.Item))
             {
@@ -487,7 +517,10 @@ public class InventoryController(
         if (itemId is null)
         {
             // Player inventory
-            var target = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
+            var target = pmcData.Inventory.Items.FirstOrDefault(item =>
+            {
+                return item.Id == request.Item;
+            });
             if (target is not null)
             {
                 itemId = target.Template;
@@ -515,18 +548,24 @@ public class InventoryController(
         }
 
         if (request.FromOwner.Id == Traders.FENCE)
-            // Get tpl from fence assorts
+        // Get tpl from fence assorts
         {
-            return _fenceService.GetRawFenceAssorts().Items.FirstOrDefault(x => x.Id == request.Item)?.Template;
+            return _fenceService.GetRawFenceAssorts().Items.FirstOrDefault(x =>
+            {
+                return x.Id == request.Item;
+            })?.Template;
         }
 
         if (request.FromOwner.Type == "Trader")
-            // Not fence
-            // get tpl from trader assort
+        // Not fence
+        // get tpl from trader assort
         {
             return _databaseService
                 .GetTrader(request.FromOwner.Id)
-                .Assort.Items.FirstOrDefault(item => item.Id == request.Item)
+                .Assort.Items.FirstOrDefault(item =>
+                {
+                    return item.Id == request.Item;
+                })
                 ?.Template;
         }
 
@@ -544,7 +583,10 @@ public class InventoryController(
                         _ragfairOfferService.GetOfferByOfferId(request.FromOwner.Id);
 
             // Try find examine item inside offer items array
-            var matchingItem = offer.Items.FirstOrDefault(offerItem => offerItem.Id == request.Item);
+            var matchingItem = offer.Items.FirstOrDefault(offerItem =>
+            {
+                return offerItem.Id == request.Item;
+            });
             if (matchingItem is not null)
             {
                 return matchingItem.Template;
@@ -566,11 +608,23 @@ public class InventoryController(
             // all mail the player has
             var mail = _profileHelper.GetFullProfile(sessionId).DialogueRecords;
             // per trader/person mail
-            var dialogue = mail.FirstOrDefault(x => x.Value.Messages.Any(m => m.Id == request.FromOwner.Id));
+            var dialogue = mail.FirstOrDefault(x =>
+            {
+                return x.Value.Messages.Any(m =>
+                {
+                    return m.Id == request.FromOwner.Id;
+                });
+            });
             // check each message from that trader/person for messages that match the ID we got
-            var message = dialogue.Value.Messages.FirstOrDefault(m => m.Id == request.FromOwner.Id);
+            var message = dialogue.Value.Messages.FirstOrDefault(m =>
+            {
+                return m.Id == request.FromOwner.Id;
+            });
             // get the Id given and get the Template ID from that
-            var item = message.Items.Data.FirstOrDefault(item => item.Id == request.Item);
+            var item = message.Items.Data.FirstOrDefault(item =>
+            {
+                return item.Id == request.Item;
+            });
 
             if (item is not null)
             {
@@ -630,7 +684,10 @@ public class InventoryController(
     /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse TagItem(PmcData pmcData, InventoryTagRequestData request, string sessionId)
     {
-        var itemToTag = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
+        var itemToTag = pmcData.Inventory.Items.FirstOrDefault(item =>
+        {
+            return item.Id == request.Item;
+        });
         if (itemToTag is null)
         {
             _logger.Warning(
@@ -673,7 +730,10 @@ public class InventoryController(
             playerData = _profileHelper.GetScavProfile(sessionId);
         }
 
-        var itemToToggle = playerData.Inventory.Items.FirstOrDefault(x => x.Id == request.Item);
+        var itemToToggle = playerData.Inventory.Items.FirstOrDefault(x =>
+        {
+            return x.Id == request.Item;
+        });
         if (itemToToggle is not null)
         {
             _itemHelper.AddUpdObjectToItem(
@@ -715,7 +775,10 @@ public class InventoryController(
             playerData = _profileHelper.GetScavProfile(sessionId);
         }
 
-        var itemToFold = playerData.Inventory.Items.FirstOrDefault(item => item?.Id == request.Item);
+        var itemToFold = playerData.Inventory.Items.FirstOrDefault(item =>
+        {
+            return item?.Id == request.Item;
+        });
         if (itemToFold is null)
         {
             // Item not found
@@ -758,7 +821,10 @@ public class InventoryController(
             playerData = _profileHelper.GetScavProfile(sessionId);
         }
 
-        var itemOne = playerData.Inventory.Items.FirstOrDefault(x => x.Id == request.Item);
+        var itemOne = playerData.Inventory.Items.FirstOrDefault(x =>
+        {
+            return x.Id == request.Item;
+        });
         if (itemOne is null)
         {
             _logger.Error(
@@ -773,7 +839,10 @@ public class InventoryController(
             );
         }
 
-        var itemTwo = playerData.Inventory.Items.FirstOrDefault(x => x.Id == request.Item2);
+        var itemTwo = playerData.Inventory.Items.FirstOrDefault(x =>
+        {
+            return x.Id == request.Item2;
+        });
         if (itemTwo is null)
         {
             _logger.Error(
@@ -833,8 +902,14 @@ public class InventoryController(
     {
         // TODO - check GetOwnerInventoryItems() call still works
         var inventoryItems = _inventoryHelper.GetOwnerInventoryItems(request, request.Item, sessionId);
-        var sourceItem = inventoryItems.From.FirstOrDefault(item => item.Id == request.Item);
-        var destinationItem = inventoryItems.To.FirstOrDefault(item => item.Id == request.With);
+        var sourceItem = inventoryItems.From.FirstOrDefault(item =>
+        {
+            return item.Id == request.Item;
+        });
+        var destinationItem = inventoryItems.To.FirstOrDefault(item =>
+        {
+            return item.Id == request.With;
+        });
 
         if (sourceItem is null)
         {
@@ -863,12 +938,12 @@ public class InventoryController(
 
         var sourceStackCount = sourceItem.Upd.StackObjectsCount;
         if (sourceStackCount > request.Count)
-            // Source items stack count greater than new desired count
+        // Source items stack count greater than new desired count
         {
             sourceItem.Upd.StackObjectsCount = sourceStackCount - request.Count;
         }
         else
-            // Moving a full stack onto a smaller stack
+        // Moving a full stack onto a smaller stack
         {
             sourceItem.Upd.StackObjectsCount = sourceStackCount - 1;
         }
@@ -897,7 +972,10 @@ public class InventoryController(
         var inventoryItems = _inventoryHelper.GetOwnerInventoryItems(request, request.Item, sessionID);
 
         // Get source item (can be from player or trader or mail)
-        var sourceItem = inventoryItems.From.FirstOrDefault(x => x.Id == request.Item);
+        var sourceItem = inventoryItems.From.FirstOrDefault(x =>
+        {
+            return x.Id == request.Item;
+        });
         if (sourceItem is null)
         {
             var errorMessage = $"Unable to merge stacks as source item: {request.With} cannot be found";
@@ -909,7 +987,10 @@ public class InventoryController(
         }
 
         // Get item being merged into
-        var destinationItem = inventoryItems.To.FirstOrDefault(x => x.Id == request.With);
+        var destinationItem = inventoryItems.To.FirstOrDefault(x =>
+        {
+            return x.Id == request.With;
+        });
         if (destinationItem is null)
         {
             var errorMessage = $"Unable to merge stacks as destination item: {request.With} cannot be found";
@@ -921,7 +1002,7 @@ public class InventoryController(
         }
 
         if (destinationItem.Upd?.StackObjectsCount is null)
-            // No stackcount on destination, add one
+        // No stackcount on destination, add one
         {
             destinationItem.Upd = new Upd
             {
@@ -937,7 +1018,7 @@ public class InventoryController(
             };
         }
         else if (sourceItem.Upd.StackObjectsCount is null)
-            // Items pulled out of raid can have no stack count if the stack should be 1
+        // Items pulled out of raid can have no stack count if the stack should be 1
         {
             sourceItem.Upd.StackObjectsCount = 1;
         }
@@ -959,7 +1040,10 @@ public class InventoryController(
                 }
             ); // Inform client source item being deleted
 
-        var indexOfItemToRemove = inventoryItems.From.FindIndex(x => x.Id == sourceItem.Id);
+        var indexOfItemToRemove = inventoryItems.From.FindIndex(x =>
+        {
+            return x.Id == sourceItem.Id;
+        });
         if (indexOfItemToRemove == -1)
         {
             var errorMessage = $"Unable to find item: {sourceItem.Id} to remove from sender inventory";
@@ -989,12 +1073,18 @@ public class InventoryController(
         // Handle cartridge edge-case
         if (request.Container.Location is null && request.Container.ContainerName == "cartridges")
         {
-            var matchingItems = inventoryItems.To.Where(x => x.ParentId == request.Container.Id);
+            var matchingItems = inventoryItems.To.Where(x =>
+            {
+                return x.ParentId == request.Container.Id;
+            });
             request.Container.Location = matchingItems.Count(); // Wrong location for first cartridge
         }
 
         // The item being merged has three possible sources: pmc, scav or mail, getOwnerInventoryItems() handles getting correct one
-        var itemToSplit = inventoryItems.From.FirstOrDefault(x => x.Id == request.SplitItem);
+        var itemToSplit = inventoryItems.From.FirstOrDefault(x =>
+        {
+            return x.Id == request.SplitItem;
+        });
         if (itemToSplit is null)
         {
             var errorMessage = $"Unable to split stack as source item: {request.SplitItem} cannot be found";

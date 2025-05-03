@@ -32,7 +32,13 @@ public class ModValidator(
         {
             ValidateMods(mods);
 
-            var sortedModLoadOrder = modLoadOrder.SetModList(imported.ToDictionary(m => m.Key, m => m.Value.PackageJson));
+            var sortedModLoadOrder = modLoadOrder.SetModList(imported.ToDictionary(m =>
+            {
+                return m.Key;
+            }, m =>
+            {
+                return m.Value.PackageJson;
+            }));
             var finalList = new List<SptMod>();
             foreach (var orderMod in SortModsLoadOrder())
             {
@@ -90,7 +96,13 @@ public class ModValidator(
         // Validate and remove broken mods from mod list
         var validMods = GetValidMods(mods);
 
-        var modPackageData = validMods.ToDictionary(m => m.PackageJson!.Name!, m => m.PackageJson!);
+        var modPackageData = validMods.ToDictionary(m =>
+        {
+            return m.PackageJson!.Name!;
+        }, m =>
+        {
+            return m.PackageJson!;
+        });
         CheckForDuplicateMods(modPackageData);
 
         // Used to check all errors before stopping the load execution
@@ -131,7 +143,10 @@ public class ModValidator(
 
         // sort mod order
         var missingFromOrderJSON = new Dictionary<string, bool>();
-        validMods.Sort((prev, next) => SortMods(prev, next, missingFromOrderJSON));
+        validMods.Sort((prev, next) =>
+        {
+            return SortMods(prev, next, missingFromOrderJSON);
+        });
 
         // log the missing mods from order.json
         if (logger.IsLogEnabled(LogLevel.Debug))
@@ -187,7 +202,7 @@ public class ModValidator(
         foreach (var mod in modPackageData.Values)
         {
             var name = $"{mod.Author}-{mod.Name}";
-            groupedMods.Add(name, [..groupedMods.GetValueOrDefault(name) ?? [], mod]);
+            groupedMods.Add(name, [.. groupedMods.GetValueOrDefault(name) ?? [], mod]);
 
             // if there's more than one entry for a given mod it means there's at least 2 mods with the same author and name trying to load.
             if (groupedMods[name].Count > 1 && !skippedMods.Contains(name))

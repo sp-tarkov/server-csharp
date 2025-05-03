@@ -64,7 +64,10 @@ public class SaveServer(
             _fileUtil.CreateDirectory(profileFilepath);
         }
 
-        var files = _fileUtil.GetFiles(profileFilepath).Where(item => _fileUtil.GetFileExtension(item) == "json");
+        var files = _fileUtil.GetFiles(profileFilepath).Where(item =>
+        {
+            return _fileUtil.GetFileExtension(item) == "json";
+        });
 
         // load profiles
         var stopwatch = Stopwatch.StartNew();
@@ -201,7 +204,7 @@ public class SaveServer(
         var filename = $"{sessionID}.json";
         var filePath = $"{profileFilepath}{filename}";
         if (_fileUtil.FileExists(filePath))
-            // File found, store in profiles[]
+        // File found, store in profiles[]
         {
             profiles[sessionID] = _jsonUtil.DeserializeFromFile<SptProfile>(filePath);
         }

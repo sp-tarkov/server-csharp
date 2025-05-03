@@ -63,7 +63,10 @@ public class DialogueHelper(
         var dialogueData = fullProfile.DialogueRecords;
         foreach (var dialogue in dialogueData)
         {
-            var message = dialogueData[dialogue.Key].Messages.FirstOrDefault(x => x.Id == messageID);
+            var message = dialogueData[dialogue.Key].Messages.FirstOrDefault(x =>
+            {
+                return x.Id == messageID;
+            });
             if (message is null)
             {
                 continue;
@@ -84,7 +87,10 @@ public class DialogueHelper(
                     message.Items.Data = [];
                 }
 
-                var rewardItems = message.Items.Data?.Where(x => x.Id != itemId);
+                var rewardItems = message.Items.Data?.Where(x =>
+                {
+                    return x.Id != itemId;
+                });
                 if (!rewardItems.Any())
                 {
                     message.RewardCollected = true;

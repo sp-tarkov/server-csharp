@@ -20,7 +20,7 @@ public class InraidStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => inraidCallbacks.SaveProgress(url, info as ScavSaveRequestData, sessionID),
+                ) => { return inraidCallbacks.SaveProgress(url, info as ScavSaveRequestData, sessionID); },
                 typeof(ScavSaveRequestData)
             ),
             new RouteAction(
@@ -30,8 +30,7 @@ public class InraidStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => inraidCallbacks.GetRaidMenuSettings()
-            ),
+                ) => { return inraidCallbacks.GetRaidMenuSettings(); }),
             new RouteAction(
                 "/singleplayer/scav/traitorscavhostile",
                 (
@@ -39,8 +38,7 @@ public class InraidStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => inraidCallbacks.GetTraitorScavHostileChance(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return inraidCallbacks.GetTraitorScavHostileChance(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/singleplayer/bosstypes",
                 (
@@ -48,8 +46,7 @@ public class InraidStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => inraidCallbacks.GetBossTypes(url, info as EmptyRequestData, sessionID)
-            )
+                ) => { return inraidCallbacks.GetBossTypes(url, info as EmptyRequestData, sessionID); })
         ]
     )
     {

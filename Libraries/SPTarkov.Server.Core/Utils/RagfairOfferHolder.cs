@@ -53,8 +53,14 @@ public class RagfairOfferHolder(
         }
 
         var result = _offersById
-            .Where(x => offerIds.Contains(x.Key))
-            .Select(x => x.Value)
+            .Where(x =>
+            {
+                return offerIds.Contains(x.Key);
+            })
+            .Select(x =>
+            {
+                return x.Value;
+            })
             .ToList();
 
         return result;
@@ -73,8 +79,14 @@ public class RagfairOfferHolder(
         }
 
         return offerIds
-            .Select(offerId => _offersById.GetValueOrDefault(offerId))
-            .Where(offer => offer != null)
+            .Select(offerId =>
+            {
+                return _offersById.GetValueOrDefault(offerId);
+            })
+            .Where(offer =>
+            {
+                return offer != null;
+            })
             .ToList();
     }
 

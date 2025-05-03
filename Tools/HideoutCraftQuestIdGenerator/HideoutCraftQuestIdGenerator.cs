@@ -44,7 +44,10 @@ public class HideoutCraftQuestIdGenerator(
     public async Task Run()
     {
         // We only need the DB for this, other OnLoad events alter the data
-        var dbOnload = _onLoadComponents.FirstOrDefault(x => x.GetRoute() == "spt-database");
+        var dbOnload = _onLoadComponents.FirstOrDefault(x =>
+        {
+            return x.GetRoute() == "spt-database";
+        });
         await dbOnload.OnLoad();
 
         // Build up our dataset
@@ -65,7 +68,10 @@ public class HideoutCraftQuestIdGenerator(
     {
         foreach (var (questId, quest) in _databaseServer.GetTables().Templates.Quests)
         {
-            var combinedRewards = CombineRewards(quest.Rewards).Where(x => x.Type == RewardType.ProductionScheme).ToList();
+            var combinedRewards = CombineRewards(quest.Rewards).Where(x =>
+            {
+                return x.Type == RewardType.ProductionScheme;
+            }).ToList();
             foreach (var reward in combinedRewards)
             {
                 // Assume all productions only output a single item template
@@ -77,7 +83,10 @@ public class HideoutCraftQuestIdGenerator(
                 };
 
                 // Loop over root items only, ignore children
-                foreach (var item in reward.Items.Where(x => x.ParentId is null))
+                foreach (var item in reward.Items.Where(x =>
+                {
+                    return x.ParentId is null;
+                }))
                 {
                     if (item.Template != output.ItemTemplate)
                     {
@@ -109,7 +118,10 @@ public class HideoutCraftQuestIdGenerator(
             }
 
             // Look for a 'quest completion' requirement
-            var questCompleteRequirements = production.Requirements.Where(req => req.Type == "QuestComplete").ToList();
+            var questCompleteRequirements = production.Requirements.Where(req =>
+            {
+                return req.Type == "QuestComplete";
+            }).ToList();
             if (questCompleteRequirements.Count == 0)
             {
                 // Production has no quest requirement
@@ -138,8 +150,9 @@ public class HideoutCraftQuestIdGenerator(
 
             // Try to find the quest that matches this production
             var questProductionOutputs = _questProductionOutputList.Where(output =>
-                    output.ItemTemplate == production.EndProduct && output.Quantity == production.Count
-                )
+            {
+                return output.ItemTemplate == production.EndProduct && output.Quantity == production.Count;
+            })
                 .ToList();
 
             // Make sure we found valid data
@@ -199,14 +212,38 @@ public class HideoutCraftQuestIdGenerator(
     private HashSet<Reward> CombineRewards(QuestRewards? questRewards)
     {
         var result = new HashSet<Reward>();
-        questRewards.Started?.ForEach(x => result.Add(x));
-        questRewards.Success?.ForEach(x => result.Add(x));
-        questRewards.AvailableForFinish?.ForEach(x => result.Add(x));
-        questRewards.Expired?.ForEach(x => result.Add(x));
-        questRewards.AvailableForStart?.ForEach(x => result.Add(x));
-        questRewards.Fail?.ForEach(x => result.Add(x));
-        questRewards.FailRestartable?.ForEach(x => result.Add(x));
-        questRewards.Started?.ForEach(x => result.Add(x));
+        questRewards.Started?.ForEach(x =>
+        {
+            result.Add(x);
+        });
+        questRewards.Success?.ForEach(x =>
+        {
+            result.Add(x);
+        });
+        questRewards.AvailableForFinish?.ForEach(x =>
+        {
+            result.Add(x);
+        });
+        questRewards.Expired?.ForEach(x =>
+        {
+            result.Add(x);
+        });
+        questRewards.AvailableForStart?.ForEach(x =>
+        {
+            result.Add(x);
+        });
+        questRewards.Fail?.ForEach(x =>
+        {
+            result.Add(x);
+        });
+        questRewards.FailRestartable?.ForEach(x =>
+        {
+            result.Add(x);
+        });
+        questRewards.Started?.ForEach(x =>
+        {
+            result.Add(x);
+        });
 
         return result;
     }

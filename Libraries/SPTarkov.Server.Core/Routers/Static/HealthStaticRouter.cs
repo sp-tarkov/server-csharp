@@ -22,7 +22,7 @@ public class HealthStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => healthCallbacks.HandleWorkoutEffects(url, info as WorkoutData, sessionID),
+                ) => { return healthCallbacks.HandleWorkoutEffects(url, info as WorkoutData, sessionID); },
                 typeof(WorkoutData)
             )
         ]

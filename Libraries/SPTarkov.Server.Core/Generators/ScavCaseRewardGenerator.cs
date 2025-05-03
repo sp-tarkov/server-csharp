@@ -46,7 +46,10 @@ public class ScavCaseRewardGenerator(
         // Get scavcase details from hideout/scavcase.json
         var scavCaseDetails = _databaseService
             .GetHideout()
-            .Production.ScavRecipes.FirstOrDefault(r => r.Id == recipeId);
+            .Production.ScavRecipes.FirstOrDefault(r =>
+            {
+                return r.Id == recipeId;
+            });
         var rewardItemCounts = GetScavCaseRewardCountsAndPrices(scavCaseDetails);
 
         // Get items that fit the price criteria as set by the scavCase config

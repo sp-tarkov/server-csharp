@@ -288,7 +288,10 @@ public class BackupService
     /// <returns> A promise that resolves when all specified backups have been removed. </returns>
     private void RemoveExcessBackups(List<string> backupFilenames)
     {
-        var filePathsToDelete = backupFilenames.Select(x => x);
+        var filePathsToDelete = backupFilenames.Select(x =>
+        {
+            return x;
+        });
         foreach (var pathToDelete in filePathsToDelete)
         {
             _fileUtil.DeleteDirectory(Path.Combine(pathToDelete), true);

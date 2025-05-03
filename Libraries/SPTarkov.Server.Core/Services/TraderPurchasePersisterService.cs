@@ -125,7 +125,10 @@ public class TraderPurchasePersisterService(
 
             foreach (var purchaseKvP in purchasesFromTrader)
             {
-                var traderUpdateDetails = _traderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == traderId);
+                var traderUpdateDetails = _traderConfig.UpdateTime.FirstOrDefault(x =>
+                {
+                    return x.TraderId == traderId;
+                });
                 if (traderUpdateDetails is null)
                 {
                     _logger.Error(

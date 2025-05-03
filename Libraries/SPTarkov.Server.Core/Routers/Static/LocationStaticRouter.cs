@@ -23,8 +23,7 @@ public class LocationStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => locationCallbacks.GetLocationData(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return locationCallbacks.GetLocationData(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/airdrop/loot",
                 (
@@ -32,7 +31,7 @@ public class LocationStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => locationCallbacks.GetAirdropLoot(url, info as GetAirdropLootRequest, sessionID),
+                ) => { return locationCallbacks.GetAirdropLoot(url, info as GetAirdropLootRequest, sessionID); },
                 typeof(GetAirdropLootRequest)
             )
         ]

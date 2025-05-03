@@ -170,7 +170,10 @@ public class GameController(
     {
         var profile = _profileHelper.GetPmcProfile(sessionId);
         var gameTime = profile?.Stats?.Eft?.OverallCounters?.Items?
-                           .FirstOrDefault(c => c.Key!.Contains("LifeTime") && c.Key.Contains("Pmc"))
+                           .FirstOrDefault(c =>
+                           {
+                               return c.Key!.Contains("LifeTime") && c.Key.Contains("Pmc");
+                           })
                            ?.Value ??
                        0D;
 
@@ -340,16 +343,34 @@ public class GameController(
 
         // Set new values, whatever is smallest
         energyRegenPerHour += pmcProfile.Bonuses!
-            .Where(bonus => bonus.Type == BonusType.EnergyRegeneration)
-            .Aggregate(0d, (sum, bonus) => sum + bonus.Value!.Value);
+            .Where(bonus =>
+            {
+                return bonus.Type == BonusType.EnergyRegeneration;
+            })
+            .Aggregate(0d, (sum, bonus) =>
+            {
+                return sum + bonus.Value!.Value;
+            });
 
         hydrationRegenPerHour += pmcProfile.Bonuses!
-            .Where(bonus => bonus.Type == BonusType.HydrationRegeneration)
-            .Aggregate(0d, (sum, bonus) => sum + bonus.Value!.Value);
+            .Where(bonus =>
+            {
+                return bonus.Type == BonusType.HydrationRegeneration;
+            })
+            .Aggregate(0d, (sum, bonus) =>
+            {
+                return sum + bonus.Value!.Value;
+            });
 
         hpRegenPerHour += pmcProfile.Bonuses!
-            .Where(bonus => bonus.Type == BonusType.HealthRegeneration)
-            .Aggregate(0d, (sum, bonus) => sum + bonus.Value!.Value);
+            .Where(bonus =>
+            {
+                return bonus.Type == BonusType.HealthRegeneration;
+            })
+            .Aggregate(0d, (sum, bonus) =>
+            {
+                return sum + bonus.Value!.Value;
+            });
 
         // Player has energy deficit
         if (pmcProfile.Health?.Energy?.Current - pmcProfile.Health?.Energy?.Maximum <= _deviation)
@@ -388,7 +409,10 @@ public class GameController(
     protected void DecreaseBodyPartEffectTimes(PmcData pmcProfile, double hpRegenPerHour, double diffSeconds)
     {
         foreach (var bodyPart in pmcProfile.Health!.BodyParts!
-                     .Select(bodyPartKvP => bodyPartKvP.Value))
+                     .Select(bodyPartKvP =>
+                     {
+                         return bodyPartKvP.Value;
+                     }))
         {
             // Check part hp
             if (bodyPart.Health!.Current < bodyPart.Health.Maximum)
@@ -425,7 +449,7 @@ public class GameController(
                 // Decrement effect time value by difference between current time and time health was last updated
                 effectKvP.Value.Time -= diffSeconds;
                 if (effectKvP.Value.Time < 1)
-                    // Effect time was sub 1, set floor it can be
+                // Effect time was sub 1, set floor it can be
                 {
                     effectKvP.Value.Time = 1;
                 }
@@ -478,8 +502,9 @@ public class GameController(
         {
             if (
                 fullProfile.SptData.Mods.Any(m =>
-                    m.Author == mod.PackageJson.Author && m.Version == mod.PackageJson.Version && m.Name == mod.PackageJson.Name
-                )
+                {
+                    return m.Author == mod.PackageJson.Author && m.Version == mod.PackageJson.Version && m.Name == mod.PackageJson.Name;
+                })
             )
             {
                 // exists already, skip
@@ -519,7 +544,10 @@ public class GameController(
             // Skip if player name exists already
             if (bots!.TryGetValue("bear", out var bearBot))
             {
-                if (bearBot is not null && bearBot.FirstNames!.Any(x => x == playerName))
+                if (bearBot is not null && bearBot.FirstNames!.Any(x =>
+                {
+                    return x == playerName;
+                }))
                 {
                     bearBot.FirstNames!.Add(playerName);
                 }
@@ -527,7 +555,10 @@ public class GameController(
 
             if (bots.TryGetValue("bear", out var usecBot))
             {
-                if (usecBot is not null && usecBot.FirstNames!.Any(x => x == playerName))
+                if (usecBot is not null && usecBot.FirstNames!.Any(x =>
+                {
+                    return x == playerName;
+                }))
                 {
                     usecBot.FirstNames!.Add(playerName);
                 }

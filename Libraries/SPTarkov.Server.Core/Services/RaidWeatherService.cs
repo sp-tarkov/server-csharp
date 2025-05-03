@@ -70,7 +70,10 @@ public class RaidWeatherService(
         var currentSeason = _seasonalEventService.GetActiveWeatherSeason();
         ValidateWeatherDataExists(currentSeason);
 
-        return _weatherForecast.Find(weather => weather.Timestamp >= _timeUtil.GetTimeStamp());
+        return _weatherForecast.Find(weather =>
+        {
+            return weather.Timestamp >= _timeUtil.GetTimeStamp();
+        });
     }
 
     /// <summary>
@@ -81,7 +84,10 @@ public class RaidWeatherService(
         var currentSeason = _seasonalEventService.GetActiveWeatherSeason();
         ValidateWeatherDataExists(currentSeason);
 
-        return _weatherForecast.Where(weather => weather.Timestamp >= _timeUtil.GetTimeStamp());
+        return _weatherForecast.Where(weather =>
+        {
+            return weather.Timestamp >= _timeUtil.GetTimeStamp();
+        });
     }
 
     /// <summary>
@@ -90,10 +96,16 @@ public class RaidWeatherService(
     protected void ValidateWeatherDataExists(Season currentSeason)
     {
         // Clear expired weather data
-        _weatherForecast.RemoveAll(weather => weather.Timestamp < _timeUtil.GetTimeStamp());
+        _weatherForecast.RemoveAll(weather =>
+        {
+            return weather.Timestamp < _timeUtil.GetTimeStamp();
+        });
 
         // Check data exists for current time
-        var result = _weatherForecast.Where(weather => weather.Timestamp >= _timeUtil.GetTimeStamp());
+        var result = _weatherForecast.Where(weather =>
+        {
+            return weather.Timestamp >= _timeUtil.GetTimeStamp();
+        });
         if (!result.Any())
         {
             GenerateWeather(currentSeason);

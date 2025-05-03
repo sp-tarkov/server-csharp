@@ -107,7 +107,10 @@ public class TraderHelper(
         }
 
         // Find specific assort in traders data
-        var purchasedAssort = traderAssorts.Items.FirstOrDefault(item => item.Id == assortId);
+        var purchasedAssort = traderAssorts.Items.FirstOrDefault(item =>
+        {
+            return item.Id == assortId;
+        });
         if (purchasedAssort is null)
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
@@ -170,11 +173,14 @@ public class TraderHelper(
             // Get traders clothing
             var clothing = _databaseService.GetTrader(traderID).Suits;
             if (clothing?.Count > 0)
-                // Force suit ids into profile
+            // Force suit ids into profile
             {
                 AddSuitsToProfile(
                     fullProfile,
-                    clothing.Select(suit => suit.SuiteId).ToList()
+                    clothing.Select(suit =>
+                    {
+                        return suit.SuiteId;
+                    }).ToList()
                 );
             }
         }
@@ -182,7 +188,10 @@ public class TraderHelper(
         if ((rawProfileTemplate.FleaBlockedDays ?? 0) > 0)
         {
             var newBanDateTime = _timeUtil.GetTimeStampFromNowDays(rawProfileTemplate.FleaBlockedDays ?? 0);
-            var existingBan = pmcData.Info.Bans.FirstOrDefault(ban => ban.BanType == BanType.RAGFAIR);
+            var existingBan = pmcData.Info.Bans.FirstOrDefault(ban =>
+            {
+                return ban.BanType == BanType.RAGFAIR;
+            });
             if (existingBan is not null)
             {
                 existingBan.DateTime = newBanDateTime;
@@ -238,7 +247,10 @@ public class TraderHelper(
 
         foreach (var suitId in clothingIds)
         {
-            if (!fullProfile.CustomisationUnlocks.Exists(customisation => customisation.Id == suitId))
+            if (!fullProfile.CustomisationUnlocks.Exists(customisation =>
+            {
+                return customisation.Id == suitId;
+            }))
             {
                 // Clothing item doesn't exist in profile, add it
                 fullProfile.CustomisationUnlocks.Add(new CustomisationStorage
@@ -286,7 +298,7 @@ public class TraderHelper(
         pmcTraderInfo.Standing = AddStandingValuesTogether(pmcTraderInfo.Standing, standingToAdd);
 
         if (traderId == Traders.FENCE)
-            // Must add rep to scav profile to ensure consistency
+        // Must add rep to scav profile to ensure consistency
         {
             fullProfile.CharacterData.ScavData.TradersInfo[traderId].Standing = pmcTraderInfo.Standing;
         }
@@ -348,7 +360,7 @@ public class TraderHelper(
                 loyaltyLevel.MinStanding <= pmcData.TradersInfo[traderID].Standing &&
                 targetLevel < 4
                )
-                // level reached
+            // level reached
             {
                 targetLevel++;
             }
@@ -377,7 +389,10 @@ public class TraderHelper(
     /// <returns>Time in seconds.</returns>
     public long? GetTraderUpdateSeconds(string traderId)
     {
-        var traderDetails = _traderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == traderId);
+        var traderDetails = _traderConfig.UpdateTime.FirstOrDefault(x =>
+        {
+            return x.TraderId == traderId;
+        });
         if (traderDetails?.Seconds?.Min is null || traderDetails.Seconds?.Max is null)
         {
             _logger.Warning(
@@ -393,11 +408,11 @@ public class TraderHelper(
 
             _traderConfig.UpdateTime.Add(
                 new UpdateTime
-                    // create temporary entry to prevent logger spam
-                    {
-                        TraderId = traderId,
-                        Seconds = new MinMax<int>(_traderConfig.UpdateTimeDefault, _traderConfig.UpdateTimeDefault)
-                    }
+                // create temporary entry to prevent logger spam
+                {
+                    TraderId = traderId,
+                    Seconds = new MinMax<int>(_traderConfig.UpdateTimeDefault, _traderConfig.UpdateTimeDefault)
+                }
             );
 
             return null;
@@ -536,7 +551,10 @@ public class TraderHelper(
             }
 
             // Get all item assorts that have parentId of hideout (base item and not a mod of other item)
-            foreach (var item in traderAssorts.Items.Where(x => x.ParentId == "hideout"))
+            foreach (var item in traderAssorts.Items.Where(x =>
+            {
+                return x.ParentId == "hideout";
+            }))
             {
                 // Get barter scheme (contains cost of item)
                 var barterScheme = traderAssorts.BarterScheme[item.Id].FirstOrDefault().FirstOrDefault();
@@ -602,7 +620,10 @@ public class TraderHelper(
     /// <returns>Traders key</returns>
     public TradersEnum? GetTraderById(string traderId)
     {
-        var kvp = Traders.TradersDictionary.Where(x => x.Value == traderId);
+        var kvp = Traders.TradersDictionary.Where(x =>
+        {
+            return x.Value == traderId;
+        });
 
         if (!kvp.Any())
         {
@@ -630,7 +651,9 @@ public class TraderHelper(
     {
         var traderId = _databaseService.GetTraders();
         var id = traderId.FirstOrDefault(x =>
-            x.Value.Base.Id == traderEnumValue || string.Equals(x.Value.Base.Nickname, traderEnumValue, StringComparison.OrdinalIgnoreCase)).Key;
+        {
+            return x.Value.Base.Id == traderEnumValue || string.Equals(x.Value.Base.Nickname, traderEnumValue, StringComparison.OrdinalIgnoreCase);
+        }).Key;
 
         return id;
     }
@@ -642,7 +665,10 @@ public class TraderHelper(
     /// <returns>True, values exists in Traders enum as a value</returns>
     public bool TraderEnumHasKey(string key)
     {
-        return Traders.TradersDictionary.Any(x => x.Value == key);
+        return Traders.TradersDictionary.Any(x =>
+        {
+            return x.Value == key;
+        });
     }
 
     /// <summary>

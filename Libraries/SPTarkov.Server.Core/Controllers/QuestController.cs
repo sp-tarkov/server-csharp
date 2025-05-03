@@ -70,7 +70,10 @@ public class QuestController(
 
         // Does quest exist in profile
         // Restarting a failed quest can mean quest exists in profile
-        var existingQuestStatus = pmcData.Quests.FirstOrDefault(x => x.QId == acceptedQuest.QuestId);
+        var existingQuestStatus = pmcData.Quests.FirstOrDefault(x =>
+        {
+            return x.QId == acceptedQuest.QuestId;
+        });
         if (existingQuestStatus is not null)
         {
             // Update existing
@@ -220,7 +223,10 @@ public class QuestController(
     {
         foreach (var repeatableQuest in pmcData.RepeatableQuests)
         {
-            var matchingQuest = repeatableQuest.ActiveQuests.FirstOrDefault(x => x.Id == questId);
+            var matchingQuest = repeatableQuest.ActiveQuests.FirstOrDefault(x =>
+            {
+                return x.Id == questId;
+            });
             if (matchingQuest is not null)
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
@@ -271,7 +277,10 @@ public class QuestController(
 
         // Decrement number of items handed in
         QuestCondition? handoverRequirements = null;
-        foreach (var condition in quest.Conditions.AvailableForFinish.Where(condition => condition.Id == request.ConditionId))
+        foreach (var condition in quest.Conditions.AvailableForFinish.Where(condition =>
+        {
+            return condition.Id == request.ConditionId;
+        }))
         {
             // Not a handover quest type, skip
             if (!handoverQuestTypes.Contains(condition.ConditionType))
@@ -317,9 +326,12 @@ public class QuestController(
         var totalItemCountToRemove = 0d;
         foreach (var itemHandover in request.Items)
         {
-            var matchingItemInProfile = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == itemHandover.Id);
+            var matchingItemInProfile = pmcData.Inventory.Items.FirstOrDefault(item =>
+            {
+                return item.Id == itemHandover.Id;
+            });
             if (!(matchingItemInProfile is not null && handoverRequirements.Target.List.Contains(matchingItemInProfile.Template)))
-                // Item handed in by player doesn't match what was requested
+            // Item handed in by player doesn't match what was requested
             {
                 return ShowQuestItemHandoverMatchError(
                     request,
@@ -384,7 +396,10 @@ public class QuestController(
                             childItems.RemoveAt(0); // Remove the parent
 
                             // Sort by the current `location` and update
-                            childItems.Sort((a, b) => (int) a.Location > (int) b.Location ? 1 : -1);
+                            childItems.Sort((a, b) =>
+                            {
+                                return (int) a.Location > (int) b.Location ? 1 : -1;
+                            });
 
                             for (var i = 0; i < childItems.Count; i++)
                             {

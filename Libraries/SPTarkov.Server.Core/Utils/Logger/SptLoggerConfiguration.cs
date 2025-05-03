@@ -162,7 +162,10 @@ public static class SptLoggerFilterExtensions
                 if (!_cachedRegexes.TryGetValue(filter, out var regex))
                 {
                     regex = new Regex(filter.Name);
-                    while(!_cachedRegexes.TryAdd(filter, regex));
+                    while (!_cachedRegexes.TryAdd(filter, regex))
+                    {
+                        ;
+                    }
                 }
 
                 if (!regex.IsMatch(message.Logger))

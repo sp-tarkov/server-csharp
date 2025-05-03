@@ -60,7 +60,7 @@ public class CircleOfCultistService(
     {
         var output = _eventOutputHolder.GetOutput(sessionId);
 
-        var cultistCircleStashId = pmcData.Inventory.HideoutAreaStashes.GetValueOrDefault(((int)HideoutAreas.CIRCLE_OF_CULTISTS).ToString());
+        var cultistCircleStashId = pmcData.Inventory.HideoutAreaStashes.GetValueOrDefault(((int) HideoutAreas.CIRCLE_OF_CULTISTS).ToString());
         if (cultistCircleStashId is null)
         {
             _logger.Error("Could not find cultist circle stash ID inside inventory! No rewards generated");
@@ -73,8 +73,10 @@ public class CircleOfCultistService(
         var sacrificedItems = GetSacrificedItems(pmcData);
         var sacrificedItemCostRoubles = sacrificedItems.Aggregate(
             0D,
-            (sum, curr) => sum + (_itemHelper.GetItemPrice(curr.Template) ?? 0)
-        );
+            (sum, curr) =>
+            {
+                return sum + (_itemHelper.GetItemPrice(curr.Template) ?? 0);
+            });
 
         var rewardAmountMultiplier = GetRewardAmountMultiplier(pmcData, _hideoutConfig.CultistCircle);
 
@@ -248,8 +250,9 @@ public class CircleOfCultistService(
     )
     {
         var matchingThreshold = thresholds.FirstOrDefault(craftThreshold =>
-            craftThreshold.Min <= rewardAmountRoubles && craftThreshold.Max >= rewardAmountRoubles
-        );
+        {
+            return craftThreshold.Min <= rewardAmountRoubles && craftThreshold.Max >= rewardAmountRoubles;
+        });
 
         // No matching threshold, make one
         if (matchingThreshold is null)
@@ -282,8 +285,10 @@ public class CircleOfCultistService(
     protected List<Item> GetSacrificedItems(PmcData pmcData)
     {
         // Get root items that are in the cultist sacrifice window
-        var inventoryRootItemsInCultistGrid = pmcData.Inventory.Items.Where(item => item.SlotId == CircleOfCultistSlotId
-        );
+        var inventoryRootItemsInCultistGrid = pmcData.Inventory.Items.Where(item =>
+        {
+            return item.SlotId == CircleOfCultistSlotId;
+        });
 
         // Get rootitem + its children
         List<Item> sacrificedItems = [];
@@ -510,14 +515,17 @@ public class CircleOfCultistService(
     )
     {
         // Get sacrificed tpls
-        var sacrificedItemTpls = sacrificedItems.Select(item => item.Template).ToList();
+        var sacrificedItemTpls = sacrificedItems.Select(item =>
+        {
+            return item.Template;
+        }).ToList();
         sacrificedItemTpls.Sort();
         // Create md5 key of the items player sacrificed so we can compare against the direct reward cache
         var sacrificedItemsKey = _hashUtil.GenerateMd5ForData(string.Concat(sacrificedItemTpls, ","));
 
         var matchingDirectReward = directRewardsCache.GetValueOrDefault(sacrificedItemsKey);
         if (matchingDirectReward is null)
-            // No direct reward
+        // No direct reward
         {
             return null;
         }
@@ -525,7 +533,7 @@ public class CircleOfCultistService(
         var fullProfile = _profileHelper.GetFullProfile(sessionId);
         var directRewardHash = GetDirectRewardHashKey(matchingDirectReward);
         if (fullProfile.SptData.CultistRewards?.ContainsKey(directRewardHash) ?? false)
-            // Player has already received this direct reward
+        // Player has already received this direct reward
         {
             return null;
         }
@@ -653,8 +661,14 @@ public class CircleOfCultistService(
         // Get all items that match the blacklisted types and fold into item blacklist below
         var itemTypeBlacklist = _itemFilterService.GetItemRewardBaseTypeBlacklist();
         var itemsMatchingTypeBlacklist = itemsDb
-            .Where(templateItem => _itemHelper.IsOfBaseclasses(templateItem.Key, itemTypeBlacklist))
-            .Select(templateItem => templateItem.Key);
+            .Where(templateItem =>
+            {
+                return _itemHelper.IsOfBaseclasses(templateItem.Key, itemTypeBlacklist);
+            })
+            .Select(templateItem =>
+            {
+                return templateItem.Key;
+            });
 
         // Create set of unique values to ignore
         var itemRewardBlacklist = new HashSet<string>();
@@ -720,26 +734,33 @@ public class CircleOfCultistService(
         HashSet<string> itemRewardBlacklist,
         HashSet<string> rewardPool)
     {
-        var activeTasks = pmcData.Quests.Where(quest => quest.Status == QuestStatusEnum.Started);
+        var activeTasks = pmcData.Quests.Where(quest =>
+        {
+            return quest.Status == QuestStatusEnum.Started;
+        });
         foreach (var task in activeTasks)
         {
             var questData = _questHelper.GetQuestFromDb(task.QId, pmcData);
-            var handoverConditions = questData.Conditions.AvailableForFinish.Where(condition => condition.ConditionType == "HandoverItem"
-            );
-            foreach (var condition in handoverConditions)
-            foreach (var neededItem in condition.Target.List)
+            var handoverConditions = questData.Conditions.AvailableForFinish.Where(condition =>
             {
-                if (itemRewardBlacklist.Contains(neededItem) || !_itemHelper.IsValidItem(neededItem))
+                return condition.ConditionType == "HandoverItem";
+            });
+            foreach (var condition in handoverConditions)
+            {
+                foreach (var neededItem in condition.Target.List)
                 {
-                    continue;
-                }
+                    if (itemRewardBlacklist.Contains(neededItem) || !_itemHelper.IsValidItem(neededItem))
+                    {
+                        continue;
+                    }
 
-                if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug($"Added Task Loot: {_itemHelper.GetItemName(neededItem)}");
-                }
+                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    {
+                        _logger.Debug($"Added Task Loot: {_itemHelper.GetItemName(neededItem)}");
+                    }
 
-                rewardPool.Add(neededItem);
+                    rewardPool.Add(neededItem);
+                }
             }
         }
     }
@@ -764,7 +785,10 @@ public class CircleOfCultistService(
             var areaType = profileArea.Type;
 
             // Get next stage of area
-            var dbArea = dbAreas.FirstOrDefault(area => area.Type == areaType);
+            var dbArea = dbAreas.FirstOrDefault(area =>
+            {
+                return area.Type == areaType;
+            });
             var nextStageDbData = dbArea?.Stages[(currentStageLevel + 1).ToString()];
             if (nextStageDbData is not null)
             {
@@ -776,7 +800,7 @@ public class CircleOfCultistService(
                             itemRewardBlacklist.Contains(rewardToAdd.TemplateId) ||
                             !_itemHelper.IsValidItem(rewardToAdd.TemplateId)
                         )
-                        // Dont reward items sacrificed
+                    // Dont reward items sacrificed
                     {
                         continue;
                     }
@@ -802,7 +826,7 @@ public class CircleOfCultistService(
         return areas.Where(area =>
                 {
                     if (area.Type == HideoutAreas.CHRISTMAS_TREE && !_seasonalEventService.ChristmasEventEnabled())
-                        // Christmas tree area and not Christmas, skip
+                    // Christmas tree area and not Christmas, skip
                     {
                         return false;
                     }
@@ -870,7 +894,10 @@ public class CircleOfCultistService(
     /// <returns>Array of item requirements</returns>
     protected List<StageRequirement> GetItemRequirements(List<StageRequirement> requirements)
     {
-        return requirements.Where(requirement => requirement.Type == "Item").ToList();
+        return requirements.Where(requirement =>
+        {
+            return requirement.Type == "Item";
+        }).ToList();
     }
 
     /// <summary>
@@ -880,7 +907,10 @@ public class CircleOfCultistService(
     /// <returns>Array of item requirements</returns>
     protected List<Requirement> GetItemRequirements(List<Requirement> requirements)
     {
-        return requirements.Where(requirement => requirement.Type == "Item").ToList();
+        return requirements.Where(requirement =>
+        {
+            return requirement.Type == "Item";
+        }).ToList();
     }
 
     /// <summary>

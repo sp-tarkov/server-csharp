@@ -77,11 +77,19 @@ public class LocaleService(
         {
             return dbLocales
                 .Concat(customLocales)
-                .GroupBy(kvp => kvp.Key)
+                .GroupBy(kvp =>
+                {
+                    return kvp.Key;
+                })
                 .ToDictionary(
-                    group => group.Key,
-                    group => group.Last().Value
-                );
+                    group =>
+                    {
+                        return group.Key;
+                    },
+                    group =>
+                    {
+                        return group.Last().Value;
+                    });
         }
         catch (Exception e)
         {
@@ -159,7 +167,7 @@ public class LocaleService(
             if (_localeConfig.ServerSupportedLocales.Contains(languageCode))
             {
                 if (baseNameCode == "zh")
-                    // Handle edge case of zh
+                // Handle edge case of zh
                 {
                     return "zh-cn";
                 }
@@ -168,7 +176,7 @@ public class LocaleService(
             }
 
             if (baseNameCode == "pt")
-                // Handle edge case of pt
+            // Handle edge case of pt
             {
                 return "pt-pt";
             }
@@ -234,7 +242,10 @@ public class LocaleService(
 
     public List<string> GetLocaleKeysThatStartsWithValue(string partialKey)
     {
-        return GetLocaleDb().Keys.Where(x => x.StartsWith(partialKey)).ToList();
+        return GetLocaleDb().Keys.Where(x =>
+        {
+            return x.StartsWith(partialKey);
+        }).ToList();
     }
 
     public void AddCustomClientLocale(string locale, string localeKey, string localeValue)

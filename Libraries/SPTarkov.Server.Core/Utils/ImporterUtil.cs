@@ -32,7 +32,10 @@ public class ImporterUtil
     )
     {
         return LoadRecursiveAsync(filepath, typeof(T), onReadCallback, onObjectDeserialized)
-            .ContinueWith(res => (T) res.Result);
+            .ContinueWith(res =>
+            {
+                return (T) res.Result;
+            });
     }
 
     /// <summary>
@@ -166,7 +169,10 @@ public class ImporterUtil
             return CreateLazyLoadDeserialization(file, propertyType);
         }
 
-        return await Task.Run(() => _jsonUtil.DeserializeFromFileStream(fs, propertyType));
+        return await Task.Run(() =>
+        {
+            return _jsonUtil.DeserializeFromFileStream(fs, propertyType);
+        });
     }
 
     private object CreateLazyLoadDeserialization(string file, Type propertyType)
@@ -208,12 +214,13 @@ public class ImporterUtil
         {
             var matchedProperty = type.GetProperties()
                 .FirstOrDefault(prop =>
-                    string.Equals(
-                        prop.Name.ToLower(),
-                        _fileUtil.StripExtension(propertyName).ToLower(),
-                        StringComparison.Ordinal
-                    )
-                );
+                {
+                    return string.Equals(
+                                            prop.Name.ToLower(),
+                                            _fileUtil.StripExtension(propertyName).ToLower(),
+                                            StringComparison.Ordinal
+                                        );
+                });
 
             if (matchedProperty == null)
             {

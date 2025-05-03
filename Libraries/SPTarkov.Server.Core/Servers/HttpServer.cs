@@ -69,7 +69,10 @@ public class HttpServer(
 
         app?.Use((HttpContext req, RequestDelegate _) =>
             {
-                return Task.Factory.StartNew(async () => await HandleFallback(req));
+                return Task.Factory.StartNew(async () =>
+                {
+                    await HandleFallback(req);
+                });
             }
         );
 
@@ -103,7 +106,10 @@ public class HttpServer(
 
         try
         {
-            _httpListeners.SingleOrDefault(l => l.CanHandle(sessionId, context.Request))?.Handle(sessionId, context.Request, context.Response);
+            _httpListeners.SingleOrDefault(l =>
+            {
+                return l.CanHandle(sessionId, context.Request);
+            })?.Handle(sessionId, context.Request, context.Response);
         }
         catch (Exception ex)
         {

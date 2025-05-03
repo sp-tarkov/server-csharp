@@ -120,7 +120,7 @@ public class InventoryHelper(
             output
         );
         if (output.Warnings?.Count > 0)
-            // Failed to place, error out
+        // Failed to place, error out
         {
             return;
         }
@@ -223,7 +223,10 @@ public class InventoryHelper(
         }
 
         // False if ALL items don't fit
-        return itemsWithChildren.All(itemWithChildren => CanPlaceItemInContainer(stashFS2D, itemWithChildren));
+        return itemsWithChildren.All(itemWithChildren =>
+        {
+            return CanPlaceItemInContainer(stashFS2D, itemWithChildren);
+        });
     }
 
     /// <summary>
@@ -234,7 +237,10 @@ public class InventoryHelper(
     /// <returns>True all fit</returns>
     public bool CanPlaceItemsInContainer(int[][] containerFS2D, List<List<Item>> itemsWithChildren)
     {
-        return itemsWithChildren.All(itemWithChildren => CanPlaceItemInContainer(containerFS2D, itemWithChildren));
+        return itemsWithChildren.All(itemWithChildren =>
+        {
+            return CanPlaceItemInContainer(containerFS2D, itemWithChildren);
+        });
     }
 
     /// <summary>
@@ -502,7 +508,10 @@ public class InventoryHelper(
         {
             // We expect that each inventory item and each insured item has unique "_id", respective "itemId".
             // Therefore, we want to use a NON-Greedy function and escape the iteration as soon as we find requested item.
-            var inventoryIndex = inventoryItems.FindIndex(inventoryItem => inventoryItem.Id == item.Id);
+            var inventoryIndex = inventoryItems.FindIndex(inventoryItem =>
+            {
+                return inventoryItem.Id == item.Id;
+            });
             if (inventoryIndex != -1)
             {
                 inventoryItems.RemoveAt(inventoryIndex);
@@ -521,7 +530,10 @@ public class InventoryHelper(
                 );
             }
 
-            var insuredItemIndex = insuredItems.FindIndex(insuredItem => insuredItem.ItemId == item.Id);
+            var insuredItemIndex = insuredItems.FindIndex(insuredItem =>
+            {
+                return insuredItem.ItemId == item.Id;
+            });
             if (insuredItemIndex != -1)
             {
                 insuredItems.RemoveAt(insuredItemIndex);
@@ -545,7 +557,10 @@ public class InventoryHelper(
         foreach (var (_, dialog) in dialogs)
         {
             var messageWithReward =
-                dialog.Messages.FirstOrDefault(message => message.Id == removeRequest.FromOwner.Id);
+                dialog.Messages.FirstOrDefault(message =>
+                {
+                    return message.Id == removeRequest.FromOwner.Id;
+                });
             if (messageWithReward is not null)
             {
                 // Find item + any possible children and remove them from mails items array
@@ -625,7 +640,7 @@ public class InventoryHelper(
             }
 
             if (remainingCount == 0)
-                // Desired count of item has been removed / we ran out of items to remove
+            // Desired count of item has been removed / we ran out of items to remove
             {
                 break;
             }
@@ -813,7 +828,7 @@ public class InventoryHelper(
 
         // Get subset of items that belong to the desired container
         if (!inventoryItemHash.ByParentId.TryGetValue(containerId, out var containerItemHash))
-            // No items in container, exit early
+        // No items in container, exit early
         {
             return containerYX;
         }
@@ -1027,7 +1042,10 @@ public class InventoryHelper(
     protected List<int> GetPlayerStashSize(string sessionId)
     {
         var profile = _profileHelper.GetPmcProfile(sessionId);
-        var stashRowBonus = profile.Bonuses.FirstOrDefault(bonus => bonus.Type == BonusType.StashRows);
+        var stashRowBonus = profile.Bonuses.FirstOrDefault(bonus =>
+        {
+            return bonus.Type == BonusType.StashRows;
+        });
 
         // this sets automatically a stash size from items.json (it's not added anywhere yet because we still use base stash)
         var stashTPL = GetStashType(sessionId);
@@ -1067,7 +1085,10 @@ public class InventoryHelper(
     protected string? GetStashType(string sessionId)
     {
         var pmcData = _profileHelper.GetPmcProfile(sessionId);
-        var stashObj = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == pmcData.Inventory.Stash);
+        var stashObj = pmcData.Inventory.Items.FirstOrDefault(item =>
+        {
+            return item.Id == pmcData.Inventory.Stash;
+        });
         if (stashObj is null)
         {
             _logger.Error(_localisationService.GetText("inventory-unable_to_find_stash"));
@@ -1090,7 +1111,10 @@ public class InventoryHelper(
         var idsToMove = _itemHelper.FindAndReturnChildrenByItems(sourceItems, request.Item);
         foreach (var itemId in idsToMove)
         {
-            var itemToMove = sourceItems.FirstOrDefault(item => item.Id == itemId);
+            var itemToMove = sourceItems.FirstOrDefault(item =>
+            {
+                return item.Id == itemId;
+            });
             if (itemToMove is null)
             {
                 _logger.Error(_localisationService.GetText("inventory-unable_to_find_item_to_move", itemId));
@@ -1104,12 +1128,12 @@ public class InventoryHelper(
                 itemToMove.SlotId = request.To.Container;
 
                 if (request.To.Location is not null)
-                    // Update location object
+                // Update location object
                 {
                     itemToMove.Location = request.To.Location;
                 }
                 else
-                    // No location in request, delete it
+                // No location in request, delete it
                 {
                     itemToMove.Location = null;
                 }
@@ -1138,7 +1162,10 @@ public class InventoryHelper(
         HandleCartridges(inventoryItems, moveRequest);
 
         // Find item we want to 'move'
-        var matchingInventoryItem = inventoryItems.FirstOrDefault(item => item.Id == moveRequest.Item);
+        var matchingInventoryItem = inventoryItems.FirstOrDefault(item =>
+        {
+            return item.Id == moveRequest.Item;
+        });
         if (matchingInventoryItem is null)
         {
             var noMatchingItemMesage = $"Unable to move item: {moveRequest.Item}, cannot find in inventory";
@@ -1211,7 +1238,10 @@ public class InventoryHelper(
         }
 
         // Get moved items parent (should be container item was put into)
-        var itemParent = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == itemBeingMoved.ParentId);
+        var itemParent = pmcData.Inventory.Items.FirstOrDefault(item =>
+        {
+            return item.Id == itemBeingMoved.ParentId;
+        });
         if (itemParent is null)
         {
             return;
@@ -1240,7 +1270,10 @@ public class InventoryHelper(
         }
 
         // Get a count of cartridges in existing magazine
-        var cartridgeCount = items.Count(item => item.ParentId == request.To.Id);
+        var cartridgeCount = items.Count(item =>
+        {
+            return item.ParentId == request.To.Id;
+        });
 
         request.To.Location = cartridgeCount;
     }
@@ -1281,7 +1314,10 @@ public class InventoryHelper(
     protected static bool IsParentInStash(string itemId, PmcData pmcData)
     {
         // Item not found / has no parent
-        var item = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == itemId);
+        var item = pmcData.Inventory.Items.FirstOrDefault(item =>
+        {
+            return item.Id == itemId;
+        });
         if (item?.ParentId is null)
         {
             return false;
@@ -1299,8 +1335,14 @@ public class InventoryHelper(
 
     public void ValidateInventoryUsesMongoIds(List<Item> itemsToValidate)
     {
-        var errors = itemsToValidate.Where(item => !_hashUtil.IsValidMongoId(item.Id))
-            .Select(item => $"Id: {item.Id} - tpl: {item.Template}")
+        var errors = itemsToValidate.Where(item =>
+        {
+            return !_hashUtil.IsValidMongoId(item.Id);
+        })
+            .Select(item =>
+            {
+                return $"Id: {item.Id} - tpl: {item.Template}";
+            })
             .ToList();
         foreach (var message in errors)
         {
@@ -1331,7 +1373,10 @@ public class InventoryHelper(
             }
 
             // Otherwise get the parent item
-            currentItem = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == currentItem.ParentId);
+            currentItem = pmcData.Inventory.Items.FirstOrDefault(item =>
+            {
+                return item.Id == currentItem.ParentId;
+            });
         }
 
         return false;

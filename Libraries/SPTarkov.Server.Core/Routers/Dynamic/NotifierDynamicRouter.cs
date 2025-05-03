@@ -21,8 +21,7 @@ public class NotifierDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     _
-                ) => notifierCallbacks.Notify(url, info, sessionID)
-            ),
+                ) => { return notifierCallbacks.Notify(url, info, sessionID); }),
             new RouteAction(
                 "/notifierServer",
                 (
@@ -30,8 +29,7 @@ public class NotifierDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     _
-                ) => notifierCallbacks.Notify(url, info, sessionID)
-            ),
+                ) => { return notifierCallbacks.Notify(url, info, sessionID); }),
             new RouteAction(
                 "/push/notifier/get/",
                 (
@@ -39,8 +37,7 @@ public class NotifierDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     _
-                ) => notifierCallbacks.GetNotifier(url, info, sessionID)
-            ),
+                ) => { return notifierCallbacks.GetNotifier(url, info, sessionID); }),
             new RouteAction(
                 "/push/notifier/get/",
                 (
@@ -48,8 +45,7 @@ public class NotifierDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     _
-                ) => notifierCallbacks.GetNotifier(url, info, sessionID)
-            )
+                ) => { return notifierCallbacks.GetNotifier(url, info, sessionID); })
         ]
     )
     {

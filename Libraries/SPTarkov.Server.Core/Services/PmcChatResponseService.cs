@@ -255,7 +255,10 @@ public class PmcChatResponseService(
         var keyBase = isVictim ? "pmcresponse-victim_" : "pmcresponse-killer_";
         var keys = _localisationService.GetKeys();
 
-        return keys.Where(x => x.StartsWith($"{keyBase}{keyType}")).ToList();
+        return keys.Where(x =>
+        {
+            return x.StartsWith($"{keyBase}{keyType}");
+        }).ToList();
     }
 
     /// <summary>
@@ -266,7 +269,10 @@ public class PmcChatResponseService(
     {
         var keys = _localisationService.GetKeys();
 
-        return keys.Where(x => x.StartsWith("pmcresponse-suffix")).ToList();
+        return keys.Where(x =>
+        {
+            return x.StartsWith("pmcresponse-suffix");
+        }).ToList();
     }
 
     /// <summary>

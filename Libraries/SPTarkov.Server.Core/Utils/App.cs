@@ -84,7 +84,10 @@ public class App
             await onLoad.OnLoad();
         }
 
-        _timer = new Timer(_ => Update(_onUpdate), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
+        _timer = new Timer(_ =>
+        {
+            Update(_onUpdate);
+        }, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
 
         if (_httpServer.IsStarted())
         {

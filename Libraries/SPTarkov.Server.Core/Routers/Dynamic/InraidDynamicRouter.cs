@@ -22,7 +22,7 @@ public class InraidDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => inraidCallbacks.RegisterPlayer(url, info as RegisterPlayerRequestData, sessionID),
+                ) => { return inraidCallbacks.RegisterPlayer(url, info as RegisterPlayerRequestData, sessionID); },
                 typeof(RegisterPlayerRequestData)
             )
         ]

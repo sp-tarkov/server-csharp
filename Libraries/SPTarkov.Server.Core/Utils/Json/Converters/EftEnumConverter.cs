@@ -33,17 +33,26 @@ public class EftEnumConverter<T> : JsonConverter<T>
 
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
     {
-        if (typeof(T).GetFields().Any(f => f.FieldType == typeof(string)))
+        if (typeof(T).GetFields().Any(f =>
+        {
+            return f.FieldType == typeof(string);
+        }))
         {
             JsonSerializer.Serialize(writer, value as string, _options);
         }
         else
         {
-            if (typeof(T).GetFields().Any(f => f.FieldType == typeof(int)))
+            if (typeof(T).GetFields().Any(f =>
+            {
+                return f.FieldType == typeof(int);
+            }))
             {
                 JsonSerializer.Serialize(writer, Convert.ToInt32(value), _options);
             }
-            else if (typeof(T).GetFields().Any(f => f.FieldType == typeof(byte)))
+            else if (typeof(T).GetFields().Any(f =>
+            {
+                return f.FieldType == typeof(byte);
+            }))
             {
                 JsonSerializer.Serialize(writer, Convert.ToByte(value), _options);
             }
@@ -62,17 +71,26 @@ public class EftEnumConverter<T> : JsonConverter<T>
     public override void WriteAsPropertyName(Utf8JsonWriter writer, [DisallowNull] T value, JsonSerializerOptions options)
     {
         object propertyValue = null;
-        if (typeof(T).GetFields().Any(f => f.FieldType == typeof(string)))
+        if (typeof(T).GetFields().Any(f =>
+        {
+            return f.FieldType == typeof(string);
+        }))
         {
             propertyValue = value as string;
         }
         else
         {
-            if (typeof(T).GetFields().Any(f => f.FieldType == typeof(int)))
+            if (typeof(T).GetFields().Any(f =>
+            {
+                return f.FieldType == typeof(int);
+            }))
             {
                 propertyValue = Convert.ToInt32(value);
             }
-            else if (typeof(T).GetFields().Any(f => f.FieldType == typeof(byte)))
+            else if (typeof(T).GetFields().Any(f =>
+            {
+                return f.FieldType == typeof(byte);
+            }))
             {
                 propertyValue = Convert.ToByte(value);
             }

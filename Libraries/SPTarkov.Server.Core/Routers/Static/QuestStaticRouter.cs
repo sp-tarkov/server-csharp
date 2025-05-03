@@ -23,7 +23,7 @@ public class QuestStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => questCallbacks.ListQuests(url, info as ListQuestsRequestData, sessionID),
+                ) => { return questCallbacks.ListQuests(url, info as ListQuestsRequestData, sessionID); },
                 typeof(ListQuestsRequestData)
             ),
             new RouteAction(
@@ -33,8 +33,7 @@ public class QuestStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => questCallbacks.ActivityPeriods(url, info as EmptyRequestData, sessionID)
-            )
+                ) => { return questCallbacks.ActivityPeriods(url, info as EmptyRequestData, sessionID); })
         ]
     )
     {

@@ -36,7 +36,10 @@ public class ItemEventRouter(ISptLogger<ItemEventRouter> logger,
         {
             var pmcData = profileHelper.GetPmcProfile(sessionID);
 
-            var eventRouter = itemEventRouters.FirstOrDefault(r => r.CanHandle(body.Action));
+            var eventRouter = itemEventRouters.FirstOrDefault(r =>
+            {
+                return r.CanHandle(body.Action);
+            });
             if (eventRouter is null)
             {
                 logger.Error(localisationService.GetText("event-unhandled_event", body.Action));

@@ -85,8 +85,10 @@ public class ProfileSptCommand(
                 {
                     var enumSkill = Enum.GetValues<SkillTypes>()
                         .Cast<SkillTypes?>()
-                        .FirstOrDefault(t => t?.ToString().ToLower() == skill
-                        );
+                        .FirstOrDefault(t =>
+                        {
+                            return t?.ToString().ToLower() == skill;
+                        });
 
                     if (enumSkill == null)
                     {

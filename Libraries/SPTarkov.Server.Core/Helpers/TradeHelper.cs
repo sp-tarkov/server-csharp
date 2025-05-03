@@ -59,7 +59,10 @@ public class TradeHelper(
                 var allOffers = _ragfairServer.GetOffers();
 
                 // We store ragfair offerId in buyRequestData.item_id
-                var offerWithItem = allOffers.FirstOrDefault(x => x.Id == buyRequestData.ItemId);
+                var offerWithItem = allOffers.FirstOrDefault(x =>
+                {
+                    return x.Id == buyRequestData.ItemId;
+                });
                 var itemPurchased = offerWithItem.Items.FirstOrDefault();
 
                 // Ensure purchase does not exceed trader item limit
@@ -95,7 +98,10 @@ public class TradeHelper(
             // buyCallback = BuyCallback1;
             // Get raw offer from ragfair, clone to prevent altering offer itself
             var allOffers = _ragfairServer.GetOffers();
-            var offerWithItemCloned = _cloner.Clone(allOffers.FirstOrDefault(x => x.Id == buyRequestData.ItemId));
+            var offerWithItemCloned = _cloner.Clone(allOffers.FirstOrDefault(x =>
+            {
+                return x.Id == buyRequestData.ItemId;
+            }));
             offerItems = offerWithItemCloned.Items;
         }
         else if (buyRequestData.TransactionId == Traders.FENCE)
@@ -104,7 +110,10 @@ public class TradeHelper(
             {
                 // Update assort/flea item values
                 var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(buyRequestData.TransactionId).Items;
-                var itemPurchased = traderAssorts.FirstOrDefault(assort => assort.Id == buyRequestData.ItemId);
+                var itemPurchased = traderAssorts.FirstOrDefault(assort =>
+                {
+                    return assort.Id == buyRequestData.ItemId;
+                });
 
                 // Decrement trader item count
                 itemPurchased.Upd.StackObjectsCount -= buyCount;
@@ -113,7 +122,10 @@ public class TradeHelper(
             };
 
             var fenceItems = _fenceService.GetRawFenceAssorts().Items;
-            var rootItemIndex = fenceItems.FindIndex(item => item.Id == buyRequestData.ItemId);
+            var rootItemIndex = fenceItems.FindIndex(item =>
+            {
+                return item.Id == buyRequestData.ItemId;
+            });
             if (rootItemIndex == -1)
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
@@ -135,12 +147,15 @@ public class TradeHelper(
             {
                 // Update assort/flea item values
                 var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(buyRequestData.TransactionId).Items;
-                var itemPurchased = traderAssorts.FirstOrDefault(item => item.Id == buyRequestData.ItemId);
+                var itemPurchased = traderAssorts.FirstOrDefault(item =>
+                {
+                    return item.Id == buyRequestData.ItemId;
+                });
 
                 // Ensure purchase does not exceed trader item limit
                 var assortHasBuyRestrictions = _itemHelper.HasBuyRestrictions(itemPurchased);
                 if (assortHasBuyRestrictions)
-                    // Will throw error if check fails
+                // Will throw error if check fails
                 {
                     CheckPurchaseIsWithinTraderItemLimit(
                         sessionID,
@@ -268,7 +283,7 @@ public class TradeHelper(
         // Try to reduce perf hit as this is expensive to do every sale
         // MUST OCCUR PRIOR TO ITEMS BEING REMOVED FROM INVENTORY
         if (sellRequest.TransactionId == Traders.RAGMAN)
-            // Edge case, `Circulate` quest needs to track when certain items are sold to him
+        // Edge case, `Circulate` quest needs to track when certain items are sold to him
         {
             IncrementCirculateSoldToTraderCounter(profileWithItemsToSell, profileToReceiveMoney, sellRequest);
         }
@@ -280,7 +295,10 @@ public class TradeHelper(
         {
             var itemIdToFind = Regex.Replace(itemToBeRemoved.Id, pattern, ""); // Strip out whitespace
             // Find item in player inventory, or show error to player if not found
-            var matchingItemInInventory = profileWithItemsToSell.Inventory.Items.FirstOrDefault(x => x.Id == itemIdToFind);
+            var matchingItemInInventory = profileWithItemsToSell.Inventory.Items.FirstOrDefault(x =>
+            {
+                return x.Id == itemIdToFind;
+            });
             if (matchingItemInInventory is null)
             {
                 var errorMessage = $"Unable to sell item {itemToBeRemoved.Id}, cannot be found in player inventory";
@@ -319,8 +337,10 @@ public class TradeHelper(
     )
     {
         const string circulateQuestId = "6663149f1d3ec95634095e75";
-        var activeCirculateQuest = profileToReceiveMoney.Quests.FirstOrDefault(quest => quest.QId == circulateQuestId && quest.Status == QuestStatusEnum.Started
-        );
+        var activeCirculateQuest = profileToReceiveMoney.Quests.FirstOrDefault(quest =>
+        {
+            return quest.QId == circulateQuestId && quest.Status == QuestStatusEnum.Started;
+        });
 
         // Player not on Circulate quest ,exit
         if (activeCirculateQuest is null)
@@ -330,8 +350,9 @@ public class TradeHelper(
 
         // Find related task condition
         var taskCondition = profileToReceiveMoney.TaskConditionCounters.Values.FirstOrDefault(condition =>
-            condition.SourceId == circulateQuestId && condition.Type == "SellItemToTrader"
-        );
+        {
+            return condition.SourceId == circulateQuestId && condition.Type == "SellItemToTrader";
+        });
 
         // No relevant condtion in profile, nothing to increment
         if (taskCondition is null)
@@ -352,8 +373,10 @@ public class TradeHelper(
 
         // Get sellToTrader condition from quest
         var sellItemToTraderCondition = circulateQuestDb[circulateQuestId]
-            .Conditions.AvailableForFinish.FirstOrDefault(condition => condition.ConditionType == "SellItemToTrader"
-            );
+            .Conditions.AvailableForFinish.FirstOrDefault(condition =>
+            {
+                return condition.ConditionType == "SellItemToTrader";
+            });
 
         // Quest doesnt have a sellItemToTrader condition, nothing to do
         if (sellItemToTraderCondition is null)
@@ -368,8 +391,10 @@ public class TradeHelper(
         foreach (var itemSoldToTrader in sellRequest.Items)
         {
             // Get sold items' details from profile
-            var itemDetails = profileWithItemsToSell.Inventory.Items.FirstOrDefault(inventoryItem => inventoryItem.Id == itemSoldToTrader.Id
-            );
+            var itemDetails = profileWithItemsToSell.Inventory.Items.FirstOrDefault(inventoryItem =>
+            {
+                return inventoryItem.Id == itemSoldToTrader.Id;
+            });
             if (itemDetails is null)
             {
                 _logger.Error($"Unable to find item in inventory to sell to trader with id: {itemSoldToTrader.Id}, cannot increment counter, skipping");

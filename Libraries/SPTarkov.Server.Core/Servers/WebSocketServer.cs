@@ -21,7 +21,10 @@ public class WebSocketServer(
     private async Task HandleWebSocket(HttpContext context, WebSocket webSocket)
     {
         var socketHandlers = _webSocketConnectionHandler
-            .Where(wsh => context.Request.Path.Value.Contains(wsh.GetHookUrl()))
+            .Where(wsh =>
+            {
+                return context.Request.Path.Value.Contains(wsh.GetHookUrl());
+            })
             .ToList();
 
         var cts = new CancellationTokenSource();

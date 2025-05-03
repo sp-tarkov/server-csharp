@@ -22,8 +22,7 @@ public class TraderStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => traderCallbacks.GetTraderSettings(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return traderCallbacks.GetTraderSettings(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/singleplayer/moddedTraders",
                 (
@@ -31,8 +30,7 @@ public class TraderStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => traderCallbacks.GetModdedTraderData(url, info as EmptyRequestData, sessionID)
-            )
+                ) => { return traderCallbacks.GetModdedTraderData(url, info as EmptyRequestData, sessionID); })
         ]
     )
     {

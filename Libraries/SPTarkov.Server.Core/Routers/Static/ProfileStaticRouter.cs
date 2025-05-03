@@ -21,7 +21,7 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.CreateProfile(url, info as ProfileCreateRequestData, sessionID),
+                ) => { return profileCallbacks.CreateProfile(url, info as ProfileCreateRequestData, sessionID); },
                 typeof(ProfileCreateRequestData)
             ),
             new RouteAction(
@@ -31,8 +31,7 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.GetProfileData(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return profileCallbacks.GetProfileData(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/game/profile/savage/regenerate",
                 (
@@ -40,12 +39,10 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.RegenerateScav(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return profileCallbacks.RegenerateScav(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/game/profile/voice/change",
-                (url, info, sessionID, output) =>
-                    profileCallbacks.ChangeVoice(url, info as ProfileChangeVoiceRequestData, sessionID),
+                (url, info, sessionID, output) => { return profileCallbacks.ChangeVoice(url, info as ProfileChangeVoiceRequestData, sessionID); },
                 typeof(ProfileChangeVoiceRequestData)
             ),
             new RouteAction(
@@ -55,7 +52,7 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.ChangeNickname(url, info as ProfileChangeNicknameRequestData, sessionID),
+                ) => { return profileCallbacks.ChangeNickname(url, info as ProfileChangeNicknameRequestData, sessionID); },
                 typeof(ProfileChangeNicknameRequestData)
             ),
             new RouteAction(
@@ -65,7 +62,7 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.ValidateNickname(url, info as ValidateNicknameRequestData, sessionID),
+                ) => { return profileCallbacks.ValidateNickname(url, info as ValidateNicknameRequestData, sessionID); },
                 typeof(ValidateNicknameRequestData)
             ),
             new RouteAction(
@@ -75,8 +72,7 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.GetReservedNickname(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return profileCallbacks.GetReservedNickname(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/profile/status",
                 (
@@ -84,8 +80,7 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.GetProfileStatus(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return profileCallbacks.GetProfileStatus(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/client/profile/view",
                 (
@@ -93,7 +88,7 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.GetOtherProfile(url, info as GetOtherProfileRequest, sessionID),
+                ) => { return profileCallbacks.GetOtherProfile(url, info as GetOtherProfileRequest, sessionID); },
                 typeof(GetOtherProfileRequest)
             ),
             new RouteAction(
@@ -103,7 +98,7 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.GetProfileSettings(url, info as GetProfileSettingsRequest, sessionID),
+                ) => { return profileCallbacks.GetProfileSettings(url, info as GetProfileSettingsRequest, sessionID); },
                 typeof(GetProfileSettingsRequest)
             ),
             new RouteAction(
@@ -113,20 +108,17 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.SearchProfiles(url, info as SearchProfilesRequestData, sessionID),
+                ) => { return profileCallbacks.SearchProfiles(url, info as SearchProfilesRequestData, sessionID); },
                 typeof(SearchProfilesRequestData)
             ),
             new RouteAction(
                 "/launcher/profile/info",
-                (url, info, sessionID, output) =>
-                    profileCallbacks.GetMiniProfile(url, info as GetMiniProfileRequestData, sessionID),
+                (url, info, sessionID, output) => { return profileCallbacks.GetMiniProfile(url, info as GetMiniProfileRequestData, sessionID); },
                 typeof(GetMiniProfileRequestData)
             ),
             new RouteAction(
                 "/launcher/profiles",
-                (url, info, sessionID, output) =>
-                    profileCallbacks.GetAllMiniProfiles(url, info as EmptyRequestData, sessionID)
-            )
+                (url, info, sessionID, output) => { return profileCallbacks.GetAllMiniProfiles(url, info as EmptyRequestData, sessionID); })
         ]
     )
     {

@@ -131,7 +131,10 @@ public class PostDbLoadService(
         foreach (var customArea in hideout.CustomAreas)
         {
             // Check if exists
-            if (hideout.Areas!.Exists(area => area.Id == customArea.Id))
+            if (hideout.Areas!.Exists(area =>
+            {
+                return area.Id == customArea.Id;
+            }))
             {
                 _logger.Warning($"Unable to add new hideout area with Id: {customArea.Id} as ID is already in use, skipping");
 
@@ -150,7 +153,10 @@ public class PostDbLoadService(
         var achievements = _databaseService.GetAchievements();
         foreach (var customAchievement in _databaseService.GetCustomAchievements())
         {
-            if (achievements.Exists(a => a.Id == customAchievement.Id))
+            if (achievements.Exists(a =>
+            {
+                return a.Id == customAchievement.Id;
+            }))
             {
                 _logger.Warning($"Unable to add custom achievement as id: {customAchievement.Id} already exists");
                 continue;
@@ -170,7 +176,10 @@ public class PostDbLoadService(
         };
         foreach (var prestige in prestigeDb.Elements)
         {
-            var itemToRemove = prestige.Conditions?.FirstOrDefault(cond => newBeginningQuestId.Contains(cond.Target?.Item));
+            var itemToRemove = prestige.Conditions?.FirstOrDefault(cond =>
+            {
+                return newBeginningQuestId.Contains(cond.Target?.Item);
+            });
             if (itemToRemove is null)
             {
                 continue;
@@ -191,7 +200,10 @@ public class PostDbLoadService(
         foreach (var craftToAdd in craftsToAdd)
         {
             var clonedCraft = _cloner.Clone(
-                hideoutCraftDb.Recipes.FirstOrDefault(x => x.Id == craftToAdd.CraftIdToCopy)
+                hideoutCraftDb.Recipes.FirstOrDefault(x =>
+                {
+                    return x.Id == craftToAdd.CraftIdToCopy;
+                })
             );
             if (clonedCraft is null)
             {
@@ -214,7 +226,10 @@ public class PostDbLoadService(
         var reserveBase = _databaseService.GetLocation(ELocationName.RezervBase.ToString()).Base;
 
         // Raiders are bosses, get only those from boss spawn array
-        foreach (var raiderSpawn in reserveBase.BossLocationSpawn.Where(boss => boss.BossName == "pmcBot"))
+        foreach (var raiderSpawn in reserveBase.BossLocationSpawn.Where(boss =>
+        {
+            return boss.BossName == "pmcBot";
+        }))
         {
             var isTriggered = raiderSpawn.TriggerId.Length > 0; // Empty string if not triggered
             var newSpawnChance = isTriggered
@@ -227,7 +242,7 @@ public class PostDbLoadService(
             }
 
             if (raiderSpawn.BossChance < newSpawnChance)
-                // Desired chance is bigger than existing, override it
+            // Desired chance is bigger than existing, override it
             {
                 raiderSpawn.BossChance = newSpawnChance;
             }
@@ -257,8 +272,10 @@ public class PostDbLoadService(
             foreach (var positionToAdd in positionsToAdd)
             {
                 // Exists already, add new items to existing positions pool
-                var existingLootPosition = mapLooseLoot.Spawnpoints.FirstOrDefault(x => x.Template.Id == positionToAdd.Template.Id
-                );
+                var existingLootPosition = mapLooseLoot.Spawnpoints.FirstOrDefault(x =>
+                {
+                    return x.Template.Id == positionToAdd.Template.Id;
+                });
 
                 if (existingLootPosition is not null)
                 {
@@ -311,7 +328,10 @@ public class PostDbLoadService(
             }
 
             locationkvP.Value.Base.BossLocationSpawn =
-                locationkvP.Value.Base.BossLocationSpawn.Where(bossSpawn => !pmcTypes.Contains(bossSpawn.BossName)).ToList();
+                locationkvP.Value.Base.BossLocationSpawn.Where(bossSpawn =>
+                {
+                    return !pmcTypes.Contains(bossSpawn.BossName);
+                }).ToList();
         }
     }
 
@@ -339,7 +359,10 @@ public class PostDbLoadService(
 
             foreach (var botToLimit in limits)
             {
-                var index = map.Base.MinMaxBots.FindIndex(x => x.WildSpawnType == botToLimit.Type);
+                var index = map.Base.MinMaxBots.FindIndex(x =>
+                {
+                    return x.WildSpawnType == botToLimit.Type;
+                });
                 if (index != -1)
                 {
                     // Existing bot type found in MinMaxBots array, edit
@@ -383,8 +406,10 @@ public class PostDbLoadService(
 
             foreach (var (lootKey, newChanceValue) in mapAdjustments)
             {
-                var lootPostionToAdjust = mapLooseLootData.Spawnpoints.FirstOrDefault(spawnPoint => spawnPoint.Template.Id == lootKey
-                );
+                var lootPostionToAdjust = mapLooseLootData.Spawnpoints.FirstOrDefault(spawnPoint =>
+                {
+                    return spawnPoint.Template.Id == lootKey;
+                });
                 if (lootPostionToAdjust is null)
                 {
                     _logger.Warning(
@@ -435,14 +460,17 @@ public class PostDbLoadService(
         var rogueSpawnDelaySeconds = _locationConfig.RogueLighthouseSpawnTimeSettings.WaitTimeSeconds;
         var lighthouse = _databaseService.GetLocations().Lighthouse?.Base;
         if (lighthouse is null)
-            // Just in case they remove this cursed map
+        // Just in case they remove this cursed map
         {
             return;
         }
 
         // Find Rogues that spawn instantly
         var instantRogueBossSpawns = lighthouse.BossLocationSpawn
-            .Where(spawn => spawn.BossName == "exUsec" && spawn.Time == -1);
+            .Where(spawn =>
+            {
+                return spawn.BossName == "exUsec" && spawn.Time == -1;
+            });
         foreach (var wave in instantRogueBossSpawns)
         {
             wave.Time = rogueSpawnDelaySeconds;
@@ -457,8 +485,10 @@ public class PostDbLoadService(
         var labsBase = _databaseService.GetLocations().Laboratory.Base;
 
         // Find spawns with empty string for triggerId/TriggerName
-        var nonTriggerLabsBossSpawns = labsBase.BossLocationSpawn.Where(bossSpawn => bossSpawn.TriggerId is null && bossSpawn.TriggerName is null
-        );
+        var nonTriggerLabsBossSpawns = labsBase.BossLocationSpawn.Where(bossSpawn =>
+        {
+            return bossSpawn.TriggerId is null && bossSpawn.TriggerName is null;
+        });
 
         foreach (var boss in nonTriggerLabsBossSpawns)
         {
@@ -475,7 +505,7 @@ public class PostDbLoadService(
         }
 
         foreach (var craft in _databaseService.GetHideout().Production.Recipes)
-            // Only adjust crafts ABOVE the override
+        // Only adjust crafts ABOVE the override
         {
             craft.ProductionTime = Math.Min(craft.ProductionTime.Value, overrideSeconds);
         }
@@ -493,10 +523,12 @@ public class PostDbLoadService(
         }
 
         foreach (var area in _databaseService.GetHideout().Areas)
-        foreach (var (key, stage) in area.Stages)
-            // Only adjust crafts ABOVE the override
         {
-            stage.ConstructionTime = Math.Min(stage.ConstructionTime.Value, overrideSeconds);
+            foreach (var (key, stage) in area.Stages)
+            // Only adjust crafts ABOVE the override
+            {
+                stage.ConstructionTime = Math.Min(stage.ConstructionTime.Value, overrideSeconds);
+            }
         }
     }
 
@@ -511,7 +543,10 @@ public class PostDbLoadService(
 
         foreach (var craftId in hideoutLootBoxCraftIds)
         {
-            var recipe = _databaseService.GetHideout().Production.Recipes.FirstOrDefault(craft => craft.Id == craftId);
+            var recipe = _databaseService.GetHideout().Production.Recipes.FirstOrDefault(craft =>
+            {
+                return craft.Id == craftId;
+            });
             if (recipe is not null)
             {
                 recipe.Locked = false;
@@ -544,7 +579,7 @@ public class PostDbLoadService(
 
             // Loop over all assorts for trader
             foreach (var (assortKey, questKey) in mergedQuestAssorts)
-                // Does assort key exist in trader assort file
+            // Does assort key exist in trader assort file
             {
                 if (!traderAssorts.LoyalLevelItems.ContainsKey(assortKey))
                 {
@@ -565,10 +600,12 @@ public class PostDbLoadService(
     protected void SetAllDbItemsAsSellableOnFlea()
     {
         var dbItems = _databaseService.GetItems().Values.ToList();
-        foreach (var item in dbItems.Where(item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase) &&
-                                                   !item.Properties.CanSellOnRagfair.GetValueOrDefault(false) &&
-                                                   !_ragfairConfig.Dynamic.Blacklist.Custom.Contains(item.Id)
-                 ))
+        foreach (var item in dbItems.Where(item =>
+        {
+            return string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase) &&
+                                                               !item.Properties.CanSellOnRagfair.GetValueOrDefault(false) &&
+                                                               !_ragfairConfig.Dynamic.Blacklist.Custom.Contains(item.Id);
+        }))
         {
             item.Properties.CanSellOnRagfair = true;
         }

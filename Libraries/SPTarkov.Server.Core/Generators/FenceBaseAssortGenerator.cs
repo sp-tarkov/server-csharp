@@ -108,7 +108,7 @@ public class FenceBaseAssortGenerator(
             }
 
             if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.AMMO_BOX))
-                // Only add cartridges to box if box has no children
+            // Only add cartridges to box if box has no children
             {
                 if (itemWithChildrenToAdd.Count == 1)
                 {
@@ -146,7 +146,10 @@ public class FenceBaseAssortGenerator(
         foreach (var defaultPreset in defaultPresets)
         {
             // Skip presets we've already added
-            if (baseFenceAssort.Items.Any(item => item.Upd != null && item.Upd.SptPresetId == defaultPreset.Id))
+            if (baseFenceAssort.Items.Any(item =>
+            {
+                return item.Upd != null && item.Upd.SptPresetId == defaultPreset.Id;
+            }))
             {
                 continue;
             }
@@ -265,7 +268,10 @@ public class FenceBaseAssortGenerator(
         }
 
         // Check for and add required soft inserts to armors
-        var requiredSlots = itemDbDetails.Properties.Slots.Where(slot => slot.Required ?? false).ToList();
+        var requiredSlots = itemDbDetails.Properties.Slots.Where(slot =>
+        {
+            return slot.Required ?? false;
+        }).ToList();
         var hasRequiredSlots = requiredSlots.Count > 0;
         if (hasRequiredSlots)
         {
@@ -275,7 +281,7 @@ public class FenceBaseAssortGenerator(
                 var plateTpl =
                     requiredSlot.Props.Filters[0].Plate; // `Plate` property appears to be the 'default' item for slot
                 if (string.IsNullOrEmpty(plateTpl))
-                    // Some bsg plate properties are empty, skip mod
+                // Some bsg plate properties are empty, skip mod
                 {
                     continue;
                 }
@@ -301,7 +307,10 @@ public class FenceBaseAssortGenerator(
         }
 
         // Check for and add plate items
-        var plateSlots = itemDbDetails.Properties.Slots.Where(slot => itemHelper.IsRemovablePlateSlot(slot.Name))
+        var plateSlots = itemDbDetails.Properties.Slots.Where(slot =>
+        {
+            return itemHelper.IsRemovablePlateSlot(slot.Name);
+        })
             .ToList();
         if (plateSlots.Count > 0)
         {
@@ -309,7 +318,7 @@ public class FenceBaseAssortGenerator(
             {
                 var plateTpl = plateSlot.Props.Filters[0].Plate;
                 if (string.IsNullOrEmpty(plateTpl))
-                    // Bsg data lacks a default plate, skip adding mod
+                // Bsg data lacks a default plate, skip adding mod
                 {
                     continue;
                 }

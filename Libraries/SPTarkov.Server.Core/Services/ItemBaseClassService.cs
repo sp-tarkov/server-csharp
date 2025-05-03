@@ -28,7 +28,10 @@ public class ItemBaseClassService(
         _itemBaseClassesCache = new Dictionary<string, HashSet<string>>();
 
         var items = _databaseService.GetItems();
-        var filteredDbItems = items.Where(x => string.Equals(x.Value.Type, "Item", StringComparison.OrdinalIgnoreCase));
+        var filteredDbItems = items.Where(x =>
+        {
+            return string.Equals(x.Value.Type, "Item", StringComparison.OrdinalIgnoreCase);
+        });
         foreach (var item in filteredDbItems)
         {
             var itemIdToUpdate = item.Value.Id;

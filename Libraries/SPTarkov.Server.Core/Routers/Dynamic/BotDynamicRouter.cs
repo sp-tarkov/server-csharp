@@ -22,8 +22,7 @@ public class BotDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => botCallbacks.GetBotLimit(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return botCallbacks.GetBotLimit(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/singleplayer/settings/bot/difficulty/",
                 (
@@ -31,8 +30,7 @@ public class BotDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => botCallbacks.GetBotDifficulty(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return botCallbacks.GetBotDifficulty(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/singleplayer/settings/bot/difficulties",
                 (
@@ -40,8 +38,7 @@ public class BotDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => botCallbacks.GetAllBotDifficulties(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return botCallbacks.GetAllBotDifficulties(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/singleplayer/settings/bot/maxCap",
                 (
@@ -49,8 +46,7 @@ public class BotDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => botCallbacks.GetBotCap(url, info as EmptyRequestData, sessionID)
-            ),
+                ) => { return botCallbacks.GetBotCap(url, info as EmptyRequestData, sessionID); }),
             new RouteAction(
                 "/singleplayer/settings/bot/getBotBehaviours/",
                 (
@@ -58,8 +54,7 @@ public class BotDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => botCallbacks.GetBotBehaviours()
-            )
+                ) => { return botCallbacks.GetBotBehaviours(); })
         ]
     )
     {

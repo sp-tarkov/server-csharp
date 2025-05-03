@@ -52,7 +52,10 @@ public class BotHelper(
 
     public bool IsBotBoss(string botRole)
     {
-        return !IsBotFollower(botRole) && _botConfig.Bosses.Any(x => string.Equals(x, botRole, StringComparison.CurrentCultureIgnoreCase));
+        return !IsBotFollower(botRole) && _botConfig.Bosses.Any(x =>
+        {
+            return string.Equals(x, botRole, StringComparison.CurrentCultureIgnoreCase);
+        });
     }
 
     public bool IsBotFollower(string botRole)
@@ -141,8 +144,10 @@ public class BotHelper(
             return null;
         }
 
-        return botEquipConfig.Randomisation.FirstOrDefault(randDetails => botLevel >= randDetails.LevelRange.Min && botLevel <= randDetails.LevelRange.Max
-        );
+        return botEquipConfig.Randomisation.FirstOrDefault(randDetails =>
+        {
+            return botLevel >= randDetails.LevelRange.Min && botLevel <= randDetails.LevelRange.Max;
+        });
     }
 
     /// <summary>
@@ -202,7 +207,10 @@ public class BotHelper(
                 chosenFactionDetails = _databaseService.GetBots().Types[chosenFaction];
             }
 
-            var matchingNames = chosenFactionDetails.FirstNames.Where(name => name.Length <= maxLength).ToList();
+            var matchingNames = chosenFactionDetails.FirstNames.Where(name =>
+            {
+                return name.Length <= maxLength;
+            }).ToList();
             if (!matchingNames.Any())
             {
                 _logger.Warning(

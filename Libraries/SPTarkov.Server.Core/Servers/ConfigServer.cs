@@ -46,7 +46,10 @@ public class ConfigServer
 
     private ConfigTypes GetConfigKey(Type type)
     {
-        var configEnumerable = Enum.GetValues<ConfigTypes>().Where(e => e.GetConfigType() == type);
+        var configEnumerable = Enum.GetValues<ConfigTypes>().Where(e =>
+        {
+            return e.GetConfigType() == type;
+        });
         if (!configEnumerable.Any())
         {
             throw new Exception($"Config of type {type.Name} is not mapped to any ConfigTypes");
@@ -93,7 +96,10 @@ public class ConfigServer
     private Type GetConfigTypeByFilename(string filename)
     {
         var type = Enum.GetValues<ConfigTypes>()
-            .First(en => en.GetValue().Contains(_fileUtil.StripExtension(filename)));
+            .First(en =>
+            {
+                return en.GetValue().Contains(_fileUtil.StripExtension(filename));
+            });
         return type.GetConfigType();
     }
 }

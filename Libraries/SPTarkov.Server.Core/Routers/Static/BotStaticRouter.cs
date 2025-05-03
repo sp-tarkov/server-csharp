@@ -22,7 +22,7 @@ public class BotStaticRouter : StaticRouter
                     info,
                     sessionID,
                     outout
-                ) => botCallbacks.GenerateBots(url, info as GenerateBotsRequestData, sessionID),
+                ) => { return botCallbacks.GenerateBots(url, info as GenerateBotsRequestData, sessionID); },
                 typeof(GenerateBotsRequestData)
             )
         ]

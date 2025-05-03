@@ -27,7 +27,10 @@ public class NotificationSendHelper(
     {
         var sptWebSocketConnectionHandler = _sptWebSocketConnectionHandler
             .OfType<SptWebSocketConnectionHandler>()
-            .FirstOrDefault(wsh => wsh.GetHookUrl() == "/notifierServer/getwebsocket/");
+            .FirstOrDefault(wsh =>
+            {
+                return wsh.GetHookUrl() == "/notifierServer/getwebsocket/";
+            });
 
         if (sptWebSocketConnectionHandler.IsWebSocketConnected(sessionID))
         {

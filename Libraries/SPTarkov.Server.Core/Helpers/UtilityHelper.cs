@@ -10,6 +10,9 @@ public class UtilityHelper
         //a.Intersect(x => b.Contains(x)).ToList();
         // gives error Delegate type could not be infered
 
-        return a.Where(x => b.Contains(x)).ToList();
+        return a.Where(x =>
+        {
+            return b.Contains(x);
+        }).ToList();
     }
 }

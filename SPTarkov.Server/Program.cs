@@ -30,7 +30,10 @@ public static class Program
         // validate and sort mods, this will also discard any mods that are invalid
         var sortedLoadedMods = ValidateMods(mods);
         // for harmony, we use the original list, as some mods may only be bepinex patches only
-        HarmonyBootstrapper.LoadAllPatches(mods.SelectMany(asm => asm.Assemblies).ToList());
+        HarmonyBootstrapper.LoadAllPatches(mods.SelectMany(asm =>
+        {
+            return asm.Assemblies;
+        }).ToList());
 
         // register SPT components
         DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
@@ -38,7 +41,10 @@ public static class Program
         if (ProgramStatics.MODS())
         {
             // register mod components from the filtered list
-            DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, sortedLoadedMods.SelectMany(a => a.Assemblies).ToList());
+            DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, sortedLoadedMods.SelectMany(a =>
+            {
+                return a.Assemblies;
+            }).ToList());
         }
 
         var serviceProvider = builder.Services.BuildServiceProvider();

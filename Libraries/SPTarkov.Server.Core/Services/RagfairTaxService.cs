@@ -154,7 +154,10 @@ public class RagfairTaxService(
             if (itemChildren.Count > 1)
             {
                 var itemChildrenClone = _cloner.Clone(itemChildren); // Clone is expensive, only run if necessary
-                foreach (var child in itemChildrenClone.Where(child => child.Id != item.Id))
+                foreach (var child in itemChildrenClone.Where(child =>
+                {
+                    return child.Id != item.Id;
+                }))
                 {
                     child.Upd ??= new Upd();
 

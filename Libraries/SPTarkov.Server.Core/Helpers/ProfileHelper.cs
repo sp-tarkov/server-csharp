@@ -41,7 +41,10 @@ public class ProfileHelper(
         foreach (var questId in questConditionId)
         {
             var conditionId = questId.Value;
-            var profileQuest = pmcData.Quests.FirstOrDefault(q => q.QId == conditionId);
+            var profileQuest = pmcData.Quests.FirstOrDefault(q =>
+            {
+                return q.QId == conditionId;
+            });
 
             if (profileQuest != null) // Remove condition
             {
@@ -111,10 +114,11 @@ public class ProfileHelper(
 
         // Find a profile that doesn't have same session id but has same name
         return allProfiles.Any(p =>
-            ProfileHasInfoProperty(p) &&
-            !StringsMatch(p.ProfileInfo.ProfileId, sessionID) && // SessionIds dont match
-            StringsMatch(p.CharacterData.PmcData.Info.LowerNickname.ToLower(), nicknameRequest.Nickname.ToLower())
-        ); // Nicknames do
+        {
+            return ProfileHasInfoProperty(p) &&
+                        !StringsMatch(p.ProfileInfo.ProfileId, sessionID) && // SessionIds dont match
+                        StringsMatch(p.CharacterData.PmcData.Info.LowerNickname.ToLower(), nicknameRequest.Nickname.ToLower());
+        }); // Nicknames do
     }
 
     protected bool ProfileHasInfoProperty(SptProfile profile)
@@ -152,7 +156,10 @@ public class ProfileHelper(
     /// <returns>PmcData</returns>
     public PmcData? GetProfileByPmcId(string pmcId)
     {
-        return _saveServer.GetProfiles().Values.First(p => p.CharacterData?.PmcData?.Id == pmcId).CharacterData.PmcData;
+        return _saveServer.GetProfiles().Values.First(p =>
+        {
+            return p.CharacterData?.PmcData?.Id == pmcId;
+        }).CharacterData.PmcData;
     }
 
     /// <summary>
@@ -231,7 +238,10 @@ public class ProfileHelper(
             _logger.Error($"Account {accountID} does not exist");
         }
 
-        return _saveServer.GetProfiles().FirstOrDefault(p => p.Value?.ProfileInfo?.Aid == aid).Value;
+        return _saveServer.GetProfiles().FirstOrDefault(p =>
+        {
+            return p.Value?.ProfileInfo?.Aid == aid;
+        }).Value;
     }
 
     /// <summary>
@@ -363,14 +373,20 @@ public class ProfileHelper(
     public PmcData RemoveSecureContainer(PmcData profile)
     {
         var items = profile.Inventory.Items;
-        var secureContainer = items.FirstOrDefault(i => i.SlotId == "SecuredContainer");
+        var secureContainer = items.FirstOrDefault(i =>
+        {
+            return i.SlotId == "SecuredContainer";
+        });
         if (secureContainer is not null)
         {
             // Find and remove container + children
             var childItemsInSecureContainer = _itemHelper.FindAndReturnChildrenByItems(items, secureContainer.Id);
 
             // Remove child items + secure container
-            profile.Inventory.Items = items.Where(i => !childItemsInSecureContainer.Contains(i.Id)).ToList();
+            profile.Inventory.Items = items.Where(i =>
+            {
+                return !childItemsInSecureContainer.Contains(i.Id);
+            }).ToList();
         }
 
         return profile;
@@ -388,7 +404,10 @@ public class ProfileHelper(
         var profileToUpdate = GetFullProfile(playerId);
         profileToUpdate.SptData.ReceivedGifts ??= new List<ReceivedGift>();
 
-        var giftData = profileToUpdate.SptData.ReceivedGifts.FirstOrDefault(g => g.GiftId == giftId);
+        var giftData = profileToUpdate.SptData.ReceivedGifts.FirstOrDefault(g =>
+        {
+            return g.GiftId == giftId;
+        });
         if (giftData != null)
         {
             // Increment counter
@@ -432,7 +451,10 @@ public class ProfileHelper(
             return false;
         }
 
-        var giftDataFromProfile = profile.SptData.ReceivedGifts.FirstOrDefault(g => g.GiftId == giftId);
+        var giftDataFromProfile = profile.SptData.ReceivedGifts.FirstOrDefault(g =>
+        {
+            return g.GiftId == giftId;
+        });
         if (giftDataFromProfile == null)
         {
             return false;
@@ -449,7 +471,10 @@ public class ProfileHelper(
     /// Was Includes in Node so might not be exact?
     public void IncrementStatCounter(CounterKeyValue[] counters, string keyToIncrement)
     {
-        var stat = counters.FirstOrDefault(c => c.Key.Contains(keyToIncrement));
+        var stat = counters.FirstOrDefault(c =>
+        {
+            return c.Key.Contains(keyToIncrement);
+        });
         if (stat != null)
         {
             stat.Value++;
@@ -470,7 +495,10 @@ public class ProfileHelper(
             return false;
         }
 
-        var profileSkill = profileSkills.FirstOrDefault(s => s.Id == skill.ToString());
+        var profileSkill = profileSkills.FirstOrDefault(s =>
+        {
+            return s.Id == skill.ToString();
+        });
         if (profileSkill == null)
         {
             _logger.Error(_localisationService.GetText("quest-no_skill_found", skill));
@@ -504,7 +532,10 @@ public class ProfileHelper(
             return;
         }
 
-        var profileSkill = profileSkills.FirstOrDefault(s => s.Id == skill.ToString());
+        var profileSkill = profileSkills.FirstOrDefault(s =>
+        {
+            return s.Id == skill.ToString();
+        });
         if (profileSkill == null)
         {
             _logger.Error(_localisationService.GetText("quest-no_skill_found", skill));
@@ -539,7 +570,10 @@ public class ProfileHelper(
     /// <returns>Common skill object from desired profile</returns>
     public BaseSkill? GetSkillFromProfile(PmcData pmcData, SkillTypes skill)
     {
-        var skillToReturn = pmcData?.Skills?.Common.FirstOrDefault(s => s.Id == skill.ToString());
+        var skillToReturn = pmcData?.Skills?.Common.FirstOrDefault(s =>
+        {
+            return s.Id == skill.ToString();
+        });
         if (skillToReturn == null)
         {
             _logger.Warning($"Profile {pmcData.SessionId} does not have a skill named: {skill.ToString()}");
@@ -566,7 +600,10 @@ public class ProfileHelper(
     public void AddStashRowsBonusToProfile(string sessionId, int rowsToAdd)
     {
         var profile = GetPmcProfile(sessionId);
-        var existingBonus = profile?.Bonuses?.FirstOrDefault(b => b.Type == BonusType.StashRows);
+        var existingBonus = profile?.Bonuses?.FirstOrDefault(b =>
+        {
+            return b.Type == BonusType.StashRows;
+        });
         if (existingBonus != null)
         {
             profile?.Bonuses?.Add(
@@ -595,20 +632,29 @@ public class ProfileHelper(
     /// <returns>Summed bonus value or 0 if no bonus found</returns>
     public double GetBonusValueFromProfile(PmcData pmcProfile, BonusType desiredBonus)
     {
-        var bonuses = pmcProfile?.Bonuses?.Where(b => b.Type == desiredBonus);
+        var bonuses = pmcProfile?.Bonuses?.Where(b =>
+        {
+            return b.Type == desiredBonus;
+        });
         if (!bonuses.Any())
         {
             return 0;
         }
 
         // Sum all bonuses found above
-        return bonuses?.Sum(bonus => bonus?.Value ?? 0) ?? 0;
+        return bonuses?.Sum(bonus =>
+        {
+            return bonus?.Value ?? 0;
+        }) ?? 0;
     }
 
     public bool PlayerIsFleaBanned(PmcData pmcProfile)
     {
         var currentTimestamp = _timeUtil.GetTimeStamp();
-        return pmcProfile?.Info?.Bans?.Any(b => b.BanType == BanType.RAGFAIR && currentTimestamp < b.DateTime) ?? false;
+        return pmcProfile?.Info?.Bans?.Any(b =>
+        {
+            return b.BanType == BanType.RAGFAIR && currentTimestamp < b.DateTime;
+        }) ?? false;
     }
 
     public bool HasAccessToRepeatableFreeRefreshSystem(PmcData pmcProfile)
@@ -625,7 +671,10 @@ public class ProfileHelper(
     {
         // Find all pockets in profile, may be multiple as they could have equipment stand
         // (1 pocket for each upgrade level of equipment stand)
-        var pockets = pmcProfile.Inventory.Items.Where(i => i.SlotId == "Pockets");
+        var pockets = pmcProfile.Inventory.Items.Where(i =>
+        {
+            return i.SlotId == "Pockets";
+        });
         if (!pockets.Any())
         {
             _logger.Error($"Unable to replace profile: {pmcProfile.Id} pocket tpl with: {newPocketTpl} as Pocket item could not be found.");
@@ -645,7 +694,10 @@ public class ProfileHelper(
     /// <returns>List of item objects</returns>
     public List<Item> GetQuestItemsInProfile(PmcData profile)
     {
-        return profile?.Inventory?.Items.Where(i => i.ParentId == profile.Inventory.QuestRaidItems).ToList();
+        return profile?.Inventory?.Items.Where(i =>
+        {
+            return i.ParentId == profile.Inventory.QuestRaidItems;
+        }).ToList();
     }
 
     /// <summary>
@@ -681,7 +733,10 @@ public class ProfileHelper(
             fullProfile.CustomisationUnlocks = [];
         }
 
-        if (fullProfile?.CustomisationUnlocks?.Any(u => u.Id == reward.Target) ?? false)
+        if (fullProfile?.CustomisationUnlocks?.Any(u =>
+        {
+            return u.Id == reward.Target;
+        }) ?? false)
         {
             _logger.Warning($"Profile: {fullProfile.ProfileInfo.ProfileId} already has hideout customisaiton reward: {reward.Target}, skipping");
             return;

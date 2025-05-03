@@ -51,7 +51,10 @@ public class RagfairPriceService(
     public void RefreshStaticPrices()
     {
         _staticPrices = new Dictionary<string, double>();
-        foreach (var item in _databaseService.GetItems().Values.Where(item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)))
+        foreach (var item in _databaseService.GetItems().Values.Where(item =>
+        {
+            return string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase);
+        }))
         {
             _staticPrices[item.Id] = _handbookHelper.GetTemplatePrice(item.Id);
         }
@@ -112,7 +115,10 @@ public class RagfairPriceService(
             return GetFleaPriceForItem(offerItems[0].Template);
         }
 
-        return offerItems.Sum(item => GetFleaPriceForItem(item.Template));
+        return offerItems.Sum(item =>
+        {
+            return GetFleaPriceForItem(item.Template);
+        });
     }
 
     /// <summary>
@@ -147,8 +153,17 @@ public class RagfairPriceService(
         var dynamicPrices = _databaseService.GetPrices();
         // Use dynamic prices first, fill in any gaps with data from static prices (handbook)
         return dynamicPrices.Concat(_staticPrices)
-            .GroupBy(x => x.Key)
-            .ToDictionary(x => x.Key, x => x.First().Value);
+            .GroupBy(x =>
+            {
+                return x.Key;
+            })
+            .ToDictionary(x =>
+            {
+                return x.Key;
+            }, x =>
+            {
+                return x.First().Value;
+            });
     }
 
     public Dictionary<string, double> GetAllStaticPrices()
@@ -218,9 +233,9 @@ public class RagfairPriceService(
                     item?.Upd?.SptPresetId is not null &&
                     _presetHelper.IsPresetBaseClass(item.Upd.SptPresetId, BaseClasses.WEAPON)
                 )
-                // This is a weapon preset, which has it's own price calculation that takes into account the mods in the
-                // preset. Since we've already calculated the price for the preset entire preset in
-                // `getDynamicItemPrice`, we can skip the rest of the items in the offer.
+            // This is a weapon preset, which has it's own price calculation that takes into account the mods in the
+            // preset. Since we've already calculated the price for the preset entire preset in
+            // `getDynamicItemPrice`, we can skip the rest of the items in the offer.
             {
                 break;
             }
@@ -390,8 +405,8 @@ public class RagfairPriceService(
                 offerAdjustmentSettings.MaxPriceDifferenceBelowHandbookPercent &&
                 itemPrice >= offerAdjustmentSettings.PriceThresholdRub
             )
-            // var itemDetails = this.itemHelper.getItem(itemTpl);
-            // this.logger.debug(`item below handbook price {itemDetails[1]._name} handbook: {itemHandbookPrice} flea: ${itemPrice} {priceDifferencePercent}%`);
+        // var itemDetails = this.itemHelper.getItem(itemTpl);
+        // this.logger.debug(`item below handbook price {itemDetails[1]._name} handbook: {itemHandbookPrice} flea: ${itemPrice} {priceDifferencePercent}%`);
         {
             return Math.Round(itemHandbookPrice.Value * offerAdjustmentSettings.HandbookPriceMultiplier);
         }
@@ -431,12 +446,18 @@ public class RagfairPriceService(
         }
 
         // Get mods on current gun not in default preset
-        var newOrReplacedModsInPresetVsDefault = weaponWithChildren.Where(x => !presetResult.Preset.Items.Any(y => y.Template == x.Template));
+        var newOrReplacedModsInPresetVsDefault = weaponWithChildren.Where(x =>
+        {
+            return !presetResult.Preset.Items.Any(y =>
+            {
+                return y.Template == x.Template;
+            });
+        });
 
         // Add up extra mods price
         var extraModsPrice = 0d;
         foreach (var mod in newOrReplacedModsInPresetVsDefault)
-            // Use handbook or trader price, whatever is higher (dont use dynamic flea price as purchased item cannot be relisted)
+        // Use handbook or trader price, whatever is higher (dont use dynamic flea price as purchased item cannot be relisted)
         {
             extraModsPrice += GetHighestHandbookOrTraderPriceAsRouble(mod.Template).Value;
         }
@@ -446,8 +467,12 @@ public class RagfairPriceService(
         {
             // Add up cost of mods replaced
             var modsReplacedByNewMods = newOrReplacedModsInPresetVsDefault.Where(x =>
-                presetResult.Preset.Items.Any(y => y.SlotId == x.SlotId)
-            );
+            {
+                return presetResult.Preset.Items.Any(y =>
+                {
+                    return y.SlotId == x.SlotId;
+                });
+            });
 
             // Add up replaced mods price
             var replacedModsPrice = 0d;

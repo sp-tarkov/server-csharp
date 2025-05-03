@@ -60,7 +60,7 @@ public class ExternalInventoryMagGen(
             );
 
             if (fitsIntoInventory == ItemAddedResult.NO_CONTAINERS)
-                // No containers to fit magazines, stop trying
+            // No containers to fit magazines, stop trying
             {
                 break;
             }
@@ -84,7 +84,7 @@ public class ExternalInventoryMagGen(
                  * Temporary workaround to Killa spawning with no extra mags if he spawns with a drum mag */
 
                 if (magazineTpl == defaultMagazineTpl)
-                    // We were already on default - stop here to prevent infinite loop
+                // We were already on default - stop here to prevent infinite loop
                 {
                     break;
                 }
@@ -93,13 +93,13 @@ public class ExternalInventoryMagGen(
                 attemptedMagBlacklist.Add(magazineTpl);
 
                 if (defaultMagazineTpl is null)
-                    // No default to fall back to, stop trying to add mags
+                // No default to fall back to, stop trying to add mags
                 {
                     break;
                 }
 
                 if (defaultMagazineTpl == BaseClasses.MAGAZINE)
-                    // Magazine base type, do not use
+                // Magazine base type, do not use
                 {
                     break;
                 }
@@ -152,7 +152,7 @@ public class ExternalInventoryMagGen(
             }
 
             if (fitsIntoInventory == ItemAddedResult.SUCCESS)
-                // Reset fit counter now it succeeded
+            // Reset fit counter now it succeeded
             {
                 fitAttempts = 0;
             }
@@ -168,7 +168,10 @@ public class ExternalInventoryMagGen(
     public TemplateItem? GetRandomExternalMagazineForInternalMagazineGun(string weaponTpl, List<string> magazineBlacklist)
     {
         // The mag Slot data for the weapon
-        var magSlot = _itemHelper.GetItem(weaponTpl).Value.Properties.Slots.FirstOrDefault(x => x.Name == "mod_magazine");
+        var magSlot = _itemHelper.GetItem(weaponTpl).Value.Properties.Slots.FirstOrDefault(x =>
+        {
+            return x.Name == "mod_magazine";
+        });
         if (magSlot is null)
         {
             return null;
@@ -176,16 +179,24 @@ public class ExternalInventoryMagGen(
 
         // All possible mags that fit into the weapon excluding blacklisted
         var magazinePool = magSlot.Props.Filters[0]
-            .Filter.Where(x => !magazineBlacklist.Contains(x))
-            .Select(x => _itemHelper.GetItem(x).Value
-            );
+            .Filter.Where(x =>
+            {
+                return !magazineBlacklist.Contains(x);
+            })
+            .Select(x =>
+            {
+                return _itemHelper.GetItem(x).Value;
+            });
         if (magazinePool is null)
         {
             return null;
         }
 
         // Non-internal magazines that fit into the weapon
-        var externalMagazineOnlyPool = magazinePool.Where(x => x.Properties.ReloadMagType != ReloadMode.InternalMagazine);
+        var externalMagazineOnlyPool = magazinePool.Where(x =>
+        {
+            return x.Properties.ReloadMagType != ReloadMode.InternalMagazine;
+        });
         if (externalMagazineOnlyPool is null || !externalMagazineOnlyPool.Any())
         {
             return null;

@@ -78,7 +78,10 @@ public class SptDialogueChatBot(
     protected static List<IChatMessageHandler> ChatMessageHandlerSetup(IEnumerable<IChatMessageHandler> components)
     {
         var chatMessageHandlers = components.ToList();
-        chatMessageHandlers.Sort((a, b) => a.GetPriority() - b.GetPriority());
+        chatMessageHandlers.Sort((a, b) =>
+        {
+            return a.GetPriority() - b.GetPriority();
+        });
 
         return chatMessageHandlers;
     }

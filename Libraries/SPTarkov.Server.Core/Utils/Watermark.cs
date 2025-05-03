@@ -97,7 +97,7 @@ public class Watermark
         versionLabel = $"{sptConfig.ProjectName} {versionTag} {sptConfig.CompatibleTarkovVersion}";
 
         text = [versionLabel];
-        text = [..text, ..description];
+        text = [.. text, .. description];
 
 
         if (ProgramStatics.DEBUG())
@@ -173,7 +173,10 @@ public class Watermark
         var result = new List<string>();
 
         // Calculate size, add 10% for spacing to the right
-        var longestLength = text.Aggregate((a, b) => a.Length > b.Length ? a : b).Length * 1.1;
+        var longestLength = text.Aggregate((a, b) =>
+        {
+            return a.Length > b.Length ? a : b;
+        }).Length * 1.1;
 
         // Create line of - to add top/bottom of watermark
         var line = "";

@@ -37,7 +37,7 @@ public class MathUtil
             cumSumArray[i] = cumSumArray[i - 1] + values[i];
         }
 
-        return [..cumSumArray];
+        return [.. cumSumArray];
     }
 
     /// <summary>
@@ -48,7 +48,10 @@ public class MathUtil
     /// <returns>A list of elements all multiplied by the factor</returns>
     public List<double> ListProduct(List<double> values, double factor)
     {
-        return values.Select(v => v * factor).ToList();
+        return values.Select(v =>
+        {
+            return v * factor;
+        }).ToList();
     }
 
     /// <summary>
@@ -59,7 +62,10 @@ public class MathUtil
     /// <returns>A list of elements with the additive added to all elements</returns>
     public List<double> ListAdd(List<double> values, double additive)
     {
-        return values.Select(v => v + additive).ToList();
+        return values.Select(v =>
+        {
+            return v + additive;
+        }).ToList();
     }
 
     /// <summary>
