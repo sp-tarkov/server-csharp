@@ -798,8 +798,8 @@ public class InventoryHelper(
     /// <summary>
     ///     Get a 2d mapping of a container with what grid slots are filled
     /// </summary>
-    /// <param name="containerH">Horizontal size of container</param>
-    /// <param name="containerV">Vertical size of container</param>
+    /// <param name="sizeX">Horizontal size of container</param>
+    /// <param name="sizeY">Vertical size of container</param>
     /// <param name="itemList">Players inventory items</param>
     /// <param name="containerId">Id of the container</param>
     /// <returns>Two-dimensional representation of container</returns>
@@ -822,18 +822,19 @@ public class InventoryHelper(
         foreach (var item in containerItemHash)
         {
             ItemLocation? itemLocation;
-            if (item.Location is JsonElement)
+            if (item.Location is JsonElement element)
             {
-                itemLocation = ((JsonElement) item.Location).ToObject<ItemLocation>();
+                // TODO: is this ever true?
+                itemLocation = element.ToObject<ItemLocation>();
             }
             else
             {
-                itemLocation = (ItemLocation) item.Location;
+                itemLocation = (ItemLocation?) item.Location;
             }
 
             if (itemLocation is null)
             {
-                // item has no location property
+                // Item has no location property
                 _logger.Error($"Unable to find 'location' property on item with id: {item.Id}, skipping");
 
                 continue;
@@ -854,7 +855,7 @@ public class InventoryHelper(
                 try
                 {
                     var rowIndex = itemLocation.Y + y;
-                    var containerX = containerYX[rowIndex.Value];
+                    var containerX = containerYX.ElementAtOrDefault(rowIndex.Value);
                     if (containerX is null)
                     {
                         _logger.Error($"Unable to find container: {containerId} row line: {itemLocation.Y + y}");
