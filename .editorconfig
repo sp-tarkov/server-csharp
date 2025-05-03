@@ -20,6 +20,9 @@ trim_trailing_whitespace = true
 
 # C# files
 [*.cs]
+# Rider Specific
+resharper_merge_into_pattern_highlighting = none
+
 # New line preferences
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
@@ -109,9 +112,7 @@ csharp_style_expression_bodied_lambdas = false:warning
 csharp_style_expression_bodied_local_functions = false:warning
 
 # Pattern matching
-csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
-csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
-csharp_style_inlined_variable_declaration = true:suggestion
+csharp_style_prefer_pattern_matching = false:warning
 
 # Null checking preferences
 csharp_style_throw_expression = true:suggestion
@@ -121,6 +122,7 @@ csharp_style_conditional_delegate_call = true:suggestion
 csharp_style_prefer_index_operator = false:none
 csharp_style_prefer_range_operator = false:none
 csharp_style_pattern_local_over_anonymous_function = false:none
+csharp_style_inlined_variable_declaration = true
 
 # Space preferences
 csharp_space_after_cast = true
