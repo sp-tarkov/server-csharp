@@ -148,21 +148,18 @@ public class QuestRewardHelper(
         var itemRewards = clonedQuest.Rewards.Success
             .Where(reward =>
                 reward.Type == RewardType.Item &&
-                reward.Items is { Count: > 0 } &&
+                reward.Items != null && reward.Items.Count > 0 &&
                 _paymentHelper.IsMoneyTpl(reward.Items.FirstOrDefault().Template)
             );
         foreach (var moneyReward in itemRewards)
         {
             // Add % bonus to existing StackObjectsCount
             var rewardItem = moneyReward.Items[0];
-            var newCurrencyAmount = CalculateMoneyRewardAmount(rewardItem, bonusPercent);
+            var newCurrencyAmount = Math.Floor((rewardItem.Upd.StackObjectsCount ?? 0) * (1 + (bonusPercent / 100)));
             rewardItem.Upd.StackObjectsCount = newCurrencyAmount;
             moneyReward.Value = newCurrencyAmount;
         }
 
         return clonedQuest;
     }
-
-    protected double CalculateMoneyRewardAmount(Item item, double bonusPercent) =>
-        Math.Floor((item.Upd.StackObjectsCount ?? 0) * (1 + (bonusPercent / 100)));
 }
