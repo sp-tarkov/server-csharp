@@ -129,7 +129,7 @@ public class BotController(
                 result[botTypeLower] = result[Roles.Assault];
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug($"Unable to find bot: {botTypeLower} in db, copying 'assault'");
+                    _logger.Debug($"Unable to find bot: {botTypeLower} in db, copying '{Roles.Assault}'");
                 }
 
                 continue;
