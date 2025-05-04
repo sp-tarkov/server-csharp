@@ -190,11 +190,11 @@ public class BotInventoryGenerator(
         if (
             randomistionDetails?.NighttimeChanges is not null &&
             raidConfig is not null &&
-            _weatherHelper.IsNightTime(raidConfig.TimeVariant)
+            _weatherHelper.IsNightTime(raidConfig.TimeVariant, raidConfig.Location)
         )
         {
             foreach (var equipmentSlotKvP in randomistionDetails.NighttimeChanges.EquipmentModsModifiers)
-                // Never let mod chance go outside of 0 - 100
+                // Never let mod chance go outside 0 - 100
             {
                 randomistionDetails.EquipmentMods[equipmentSlotKvP.Key] = Math.Min(
                     Math.Max(randomistionDetails.EquipmentMods[equipmentSlotKvP.Key] + equipmentSlotKvP.Value, 0),

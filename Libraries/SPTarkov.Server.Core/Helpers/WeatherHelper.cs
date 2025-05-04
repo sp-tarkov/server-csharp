@@ -41,9 +41,19 @@ public class WeatherHelper(
     ///     Is the current raid at nighttime
     /// </summary>
     /// <param name="timeVariant">PASS OR CURR (from raid settings)</param>
+    /// <param name="mapLocation">map name. E.g. factory4_day</param>
     /// <returns>True when nighttime</returns>
-    public bool IsNightTime(DateTimeEnum timeVariant)
+    public bool IsNightTime(DateTimeEnum timeVariant, string mapLocation)
     {
+        switch (mapLocation)
+        {
+            // Factory differs from other maps, has static times
+            case "factory4_night":
+                return true;
+            case "factory4_day":
+                return false;
+        }
+
         var time = GetInRaidTime();
 
         // getInRaidTime() provides left side value, if player chose right side, set ahead 12 hrs
