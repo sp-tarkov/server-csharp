@@ -17,16 +17,26 @@ public class WeatherHelper(
     protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
 
     /// <summary>
+    ///     Assumes current time
     ///     Get the current in-raid time - does not include an accurate date, only time
     /// </summary>
-    /// <param name="timestamp">(new Date())</param>
     /// <returns>Date object of current in-raid time</returns>
-    public DateTime GetInRaidTime(long? timestamp = null)
+    public DateTime GetInRaidTime()
+    {
+        return GetInRaidTime(_timeUtil.GetTimeStamp());
+    }
+
+    /// <summary>
+    ///     Get the current in-raid time - does not include an accurate date, only time
+    /// </summary>
+    /// <param name="timestamp">Fixed timestamp</param>
+    /// <returns>Date object of current in-raid time</returns>
+    public DateTime GetInRaidTime(long timestamp)
     {
         // tarkov time = (real time * 7 % 24 hr) + 3 hour
         var russiaOffsetMilliseconds = _timeUtil.GetHoursAsSeconds(3) * 1000;
         var twentyFourHoursMilliseconds = _timeUtil.GetHoursAsSeconds(24) * 1000;
-        var currentTimestampMilliSeconds = timestamp ?? _timeUtil.GetTimeStamp();
+        var currentTimestampMilliSeconds = _timeUtil.GetTimeStamp();
 
         return _timeUtil.GetDateTimeFromTimeStamp(
             (long)
