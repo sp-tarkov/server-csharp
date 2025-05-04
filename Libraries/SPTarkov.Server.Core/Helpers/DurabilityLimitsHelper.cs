@@ -110,7 +110,7 @@ public class DurabilityLimitsHelper(
         var roleExistsInConfig = _botConfig.Durability.BotDurabilities.ContainsKey(botRole);
         if (!roleExistsInConfig)
         {
-            _logger.Warning($"{botRole} doesn't exist in bot config durability values, using default fallback");
+            _logger.Debug($"{botRole} doesn't exist in bot config durability values, using default fallback");
 
             return "default";
         }
