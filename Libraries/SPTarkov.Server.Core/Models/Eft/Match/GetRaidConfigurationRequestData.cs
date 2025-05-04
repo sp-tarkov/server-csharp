@@ -34,4 +34,11 @@ public record GetRaidConfigurationRequestData : RaidSettings, IRequestData
         get;
         set;
     }
+
+    [JsonIgnore]
+    public bool IsNightRaid
+    {
+        get;
+        set;
+    }
 }

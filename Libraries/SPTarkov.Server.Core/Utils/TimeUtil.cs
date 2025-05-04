@@ -64,7 +64,7 @@ public class TimeUtil
     /// <returns>The current timestamp in seconds since the Unix epoch in UTC.</returns>
     public long GetTimeStamp()
     {
-        return DateTimeOffset.Now.ToUnixTimeSeconds();
+        return DateTimeOffset.UtcNow.ToUnixTimeSeconds();
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Context;
+using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Match;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
@@ -18,6 +19,7 @@ public class MatchController(
     ConfigServer _configServer,
     ApplicationContext _applicationContext,
     LocationLifecycleService _locationLifecycleService,
+    WeatherHelper _weatherHelper,
     ICloner _cloner
 )
 {
@@ -98,6 +100,9 @@ public class MatchController(
     /// <param name="sessionId">Session/Player id</param>
     public void ConfigureOfflineRaid(GetRaidConfigurationRequestData request, string sessionId)
     {
+        // set IsNightRaid to use it later for bot inventory generation
+        request.IsNightRaid = _weatherHelper.IsNightTime(request.TimeVariant, request.Location);
+
         // Store request data for access during bot generation
         _applicationContext.AddValue(ContextVariableType.RAID_CONFIGURATION, request);
 

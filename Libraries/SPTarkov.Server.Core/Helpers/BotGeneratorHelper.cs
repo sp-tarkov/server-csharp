@@ -74,7 +74,6 @@ public class BotGeneratorHelper
         var raidSettings = _applicationContext
             .GetLatestValue(ContextVariableType.RAID_CONFIGURATION)
             ?.GetValue<GetRaidConfigurationRequestData>();
-        var raidIsNight = raidSettings?.TimeVariant == DateTimeEnum.PAST;
 
         RandomisedResourceDetails randomisationSettings = null;
         if (botRole is not null)
@@ -161,7 +160,7 @@ public class BotGeneratorHelper
         if (itemTemplate?.Parent == BaseClasses.FLASHLIGHT)
         {
             // Get chance from botconfig for bot type
-            var lightLaserActiveChance = raidIsNight
+            var lightLaserActiveChance = raidSettings.IsNightRaid
                 ? GetBotEquipmentSettingFromConfig(botRole, "lightIsActiveNightChancePercent", 50)
                 : GetBotEquipmentSettingFromConfig(botRole, "lightIsActiveDayChancePercent", 25);
             itemProperties.Light = new UpdLight
@@ -190,7 +189,7 @@ public class BotGeneratorHelper
         if (itemTemplate?.Parent == BaseClasses.NIGHTVISION)
         {
             // Get chance from botconfig for bot type
-            var nvgActiveChance = raidIsNight
+            var nvgActiveChance = raidSettings.IsNightRaid
                 ? GetBotEquipmentSettingFromConfig(botRole, "nvgIsActiveChanceNightPercent", 90)
                 : GetBotEquipmentSettingFromConfig(botRole, "nvgIsActiveChanceDayPercent", 15);
             itemProperties.Togglable = new UpdTogglable
