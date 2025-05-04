@@ -19,16 +19,14 @@ public class WeatherHelper(
     /// <summary>
     ///     Get the current in-raid time - does not include an accurate date, only time
     /// </summary>
-    /// <param name="currentDate">(new Date())</param>
+    /// <param name="timestamp">(new Date())</param>
     /// <returns>Date object of current in-raid time</returns>
     public DateTime GetInRaidTime(long? timestamp = null)
     {
         // tarkov time = (real time * 7 % 24 hr) + 3 hour
         var russiaOffsetMilliseconds = _timeUtil.GetHoursAsSeconds(3) * 1000;
         var twentyFourHoursMilliseconds = _timeUtil.GetHoursAsSeconds(24) * 1000;
-        var currentTimestampMilliSeconds = timestamp.HasValue
-            ? timestamp ?? 0
-            : _timeUtil.GetTimeStamp();
+        var currentTimestampMilliSeconds = timestamp ?? _timeUtil.GetTimeStamp();
 
         return _timeUtil.GetDateTimeFromTimeStamp(
             (long)
