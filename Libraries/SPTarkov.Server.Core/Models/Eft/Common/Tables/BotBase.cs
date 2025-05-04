@@ -513,13 +513,13 @@ public record Info
         set;
     }
 
-    public double? GroupId
+    public string? GroupId
     {
         get;
         set;
     }
 
-    public double? TeamId
+    public string? TeamId
     {
         get;
         set;
