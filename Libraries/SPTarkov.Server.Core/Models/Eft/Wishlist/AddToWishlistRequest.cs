@@ -6,9 +6,5 @@ namespace SPTarkov.Server.Core.Models.Eft.Wishlist;
 public record AddToWishlistRequest : InventoryBaseActionRequestData
 {
     [JsonPropertyName("items")]
-    public Dictionary<string, int>? Items
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, int>? Items { get; set; }
 }

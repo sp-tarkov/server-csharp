@@ -11,5 +11,5 @@ public enum RequirementType
     Tool,
     QuestComplete,
     Health,
-    BodyPartBuff
+    BodyPartBuff,
 }

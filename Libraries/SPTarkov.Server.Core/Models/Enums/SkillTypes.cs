@@ -75,5 +75,5 @@ public enum SkillTypes
     DrawMaster,
     AimMaster,
     Physical,
-    Combat
+    Combat,
 }

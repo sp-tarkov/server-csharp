@@ -5,12 +5,20 @@ using SPTarkov.Server.Core.Servers;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
-[Injectable(InjectionType.Singleton, InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.HttpCallbacks)]
+[Injectable(
+    InjectionType.Singleton,
+    InjectableTypeOverride = typeof(IOnLoad),
+    TypePriority = OnLoadOrder.HttpCallbacks
+)]
 public class HttpCallbacks(HttpServer _httpServer, ApplicationContext _applicationContext) : IOnLoad
 {
     public Task OnLoad()
     {
-        _httpServer.Load(_applicationContext.GetLatestValue(ContextVariableType.APP_BUILDER)?.GetValue<WebApplicationBuilder>());
+        _httpServer.Load(
+            _applicationContext
+                .GetLatestValue(ContextVariableType.APP_BUILDER)
+                ?.GetValue<WebApplicationBuilder>()
+        );
         _applicationContext.ClearValues(ContextVariableType.APP_BUILDER);
 
         return Task.CompletedTask;

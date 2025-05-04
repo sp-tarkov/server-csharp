@@ -7,7 +7,6 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
-
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
@@ -54,7 +53,7 @@ public class LocationController(
         return new LocationsGenerateAllResponse
         {
             Locations = locationResult,
-            Paths = locationsFromDb.Base!.Paths
+            Paths = locationsFromDb.Base!.Paths,
         };
     }
 

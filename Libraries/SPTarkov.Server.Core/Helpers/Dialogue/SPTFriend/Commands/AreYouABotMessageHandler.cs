@@ -7,9 +7,8 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
-public class AreYouABotMessageHandler(
-    MailSendService _mailSendService,
-    RandomUtil _randomUtil) : IChatMessageHandler
+public class AreYouABotMessageHandler(MailSendService _mailSendService, RandomUtil _randomUtil)
+    : IChatMessageHandler
 {
     public int GetPriority()
     {
@@ -21,12 +20,19 @@ public class AreYouABotMessageHandler(
         return message.ToLower() == "are you a bot";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
+    public void Process(
+        string sessionId,
+        UserDialogInfo sptFriendUser,
+        PmcData? sender,
+        object? extraInfo = null
+    )
     {
         _mailSendService.SendUserMessageToPlayer(
             sessionId,
             sptFriendUser,
-            _randomUtil.GetArrayValue(["beep boop", "**sad boop**", "probably", "sometimes", "yeah lol"]),
+            _randomUtil.GetArrayValue(
+                ["beep boop", "**sad boop**", "probably", "sometimes", "yeah lol"]
+            ),
             [],
             null
         );

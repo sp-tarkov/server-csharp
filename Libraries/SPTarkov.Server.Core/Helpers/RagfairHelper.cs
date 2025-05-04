@@ -59,7 +59,7 @@ public class RagfairHelper(
         if (!string.IsNullOrEmpty(request.LinkedSearchId))
         {
             var data = ragfairLinkedItemService.GetLinkedItems(request.LinkedSearchId);
-            result = data == null ? [] : [..data];
+            result = data == null ? [] : [.. data];
         }
 
         // Case: category
@@ -83,9 +83,11 @@ public class RagfairHelper(
     public Dictionary<string, TraderAssort> GetDisplayableAssorts(string sessionId)
     {
         var result = new Dictionary<string, TraderAssort>();
-        foreach (var traderId in databaseService.GetTraders()
-                     .Keys
-                     .Where(traderId => _ragfairConfig.Traders.ContainsKey(traderId)))
+        foreach (
+            var traderId in databaseService
+                .GetTraders()
+                .Keys.Where(traderId => _ragfairConfig.Traders.ContainsKey(traderId))
+        )
         {
             result[traderId] = traderAssortHelper.GetAssort(sessionId, traderId, true);
         }
@@ -104,7 +106,7 @@ public class RagfairHelper(
             {
                 foreach (var subCategory in handbookHelper.ChildrenCategories(category))
                 {
-                    result = [..result, ..handbookHelper.TemplatesWithParent(subCategory)];
+                    result = [.. result, .. handbookHelper.TemplatesWithParent(subCategory)];
                 }
             }
 
@@ -117,8 +119,13 @@ public class RagfairHelper(
             // list all item of the category
             result = handbookHelper.TemplatesWithParent(handbookId);
 
-            return handbookHelper.ChildrenCategories(handbookId)
-                .Aggregate(result, (current, category) => [..current, ..handbookHelper.TemplatesWithParent(category)]);
+            return handbookHelper
+                .ChildrenCategories(handbookId)
+                .Aggregate(
+                    result,
+                    (current, category) =>
+                        [.. current, .. handbookHelper.TemplatesWithParent(category)]
+                );
         }
 
         // It's a specific item searched
@@ -160,7 +167,7 @@ public class RagfairHelper(
             }
         }
 
-        return [rootItem, ..list];
+        return [rootItem, .. list];
     }
 
     /**
@@ -175,7 +182,7 @@ public class RagfairHelper(
         {
             Money.EUROS => "€",
             Money.DOLLARS => "$",
-            _ => "₽"
+            _ => "₽",
         };
     }
 }

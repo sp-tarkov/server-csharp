@@ -32,11 +32,13 @@ public class NotifierCallbacks(
          * Take our array of JSON message objects and cast them to JSON strings, so that they can then
          *  be sent to client as NEWLINE separated strings... yup.
          */
-        _notifierController.NotifyAsync(tmpSessionID)
-            .ContinueWith(messages => messages.Result.Select(message => string.Join("\n", jsonUtil.Serialize(message))))
+        _notifierController
+            .NotifyAsync(tmpSessionID)
+            .ContinueWith(messages =>
+                messages.Result.Select(message => string.Join("\n", jsonUtil.Serialize(message)))
+            )
             .ContinueWith(text => httpServerHelper.SendTextJson(resp, text.Result));
     }
-
 
     /// <summary>
     ///     TODO: removed from client?
@@ -64,12 +66,7 @@ public class NotifierCallbacks(
     /// <returns></returns>
     public string SelectProfile(string url, UIDRequestData info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(
-            new SelectProfileResponse
-            {
-                Status = "ok"
-            }
-        );
+        return _httpResponseUtil.GetBody(new SelectProfileResponse { Status = "ok" });
     }
 
     /// <summary>

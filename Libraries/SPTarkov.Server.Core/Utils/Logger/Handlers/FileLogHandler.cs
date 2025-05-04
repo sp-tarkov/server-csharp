@@ -18,7 +18,8 @@ public class FileLogHandler : BaseLogHandler
         if (!_fileLocks.TryGetValue(config.FilePath, out var lockObject))
         {
             lockObject = new object();
-            while (!_fileLocks.TryAdd(config.FilePath, lockObject)) ;
+            while (!_fileLocks.TryAdd(config.FilePath, lockObject))
+                ;
         }
 
         lock (lockObject)
@@ -29,7 +30,10 @@ public class FileLogHandler : BaseLogHandler
             }
 
             // The AppendAllText will create the file as long as the directory exists
-            File.AppendAllText(config.FilePath, FormatMessage(message.Message + "\n", message, reference));
+            File.AppendAllText(
+                config.FilePath,
+                FormatMessage(message.Message + "\n", message, reference)
+            );
         }
     }
 }

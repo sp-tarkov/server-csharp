@@ -7,13 +7,20 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
-public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRouter _itemEventRouter)
+public class ItemEventCallbacks(
+    HttpResponseUtil _httpResponseUtil,
+    ItemEventRouter _itemEventRouter
+)
 {
     public string HandleEvents(string url, ItemEventRouterRequest info, string sessionID)
     {
         var eventResponse = _itemEventRouter.HandleEvents(info, sessionID);
         var result = IsCriticalError(eventResponse.Warnings)
-            ? _httpResponseUtil.GetBody(eventResponse, GetErrorCode(eventResponse.Warnings), eventResponse.Warnings[0].ErrorMessage)
+            ? _httpResponseUtil.GetBody(
+                eventResponse,
+                GetErrorCode(eventResponse.Warnings),
+                eventResponse.Warnings[0].ErrorMessage
+            )
             : _httpResponseUtil.GetBody(eventResponse);
 
         return result;
@@ -34,7 +41,7 @@ public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRou
         // List of non-critical error codes, we return true if any error NOT included is passed in
         var nonCriticalErrorCodes = new HashSet<BackendErrorCodes>
         {
-            BackendErrorCodes.NotEnoughSpace
+            BackendErrorCodes.NotEnoughSpace,
         };
 
         foreach (var warning in warnings)
@@ -51,6 +58,8 @@ public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRou
     public static BackendErrorCodes GetErrorCode(List<Warning> warnings)
     {
         // Cast int to string to get the error code of 220 for Unknown Error.
-        return warnings.FirstOrDefault()?.Code is null ? BackendErrorCodes.UnknownError : warnings.FirstOrDefault()?.Code ?? BackendErrorCodes.UnknownError;
+        return warnings.FirstOrDefault()?.Code is null
+            ? BackendErrorCodes.UnknownError
+            : warnings.FirstOrDefault()?.Code ?? BackendErrorCodes.UnknownError;
     }
 }

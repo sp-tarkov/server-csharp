@@ -9,5 +9,5 @@ public enum WindDirection
     SE = 5,
     SW = 6,
     NW = 7,
-    NE = 8
+    NE = 8,
 }

@@ -81,7 +81,11 @@ public class RagfairServer(
         List<RagfairOffer> offers
     )
     {
-        return _ragfairCategoriesService.GetCategoriesFromOffers(offers, searchRequestData, fleaUnlocked);
+        return _ragfairCategoriesService.GetCategoriesFromOffers(
+            offers,
+            searchRequestData,
+            fleaUnlocked
+        );
     }
 
     /// <summary>
@@ -95,7 +99,9 @@ public class RagfairServer(
 
         if (offer is null)
         {
-            _logger.Error(_localisationService.GetText("ragfair-offer_not_found_unable_to_hide", offerId));
+            _logger.Error(
+                _localisationService.GetText("ragfair-offer_not_found_unable_to_hide", offerId)
+            );
 
             return;
         }

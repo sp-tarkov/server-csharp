@@ -9,20 +9,12 @@ public record PinOrLockItemRequest : InventoryBaseActionRequestData
     ///     Id of item being pinned
     /// </summary>
     [JsonPropertyName("Item")]
-    public string? Item
-    {
-        get;
-        set;
-    }
+    public string? Item { get; set; }
 
     /// <summary>
     ///     "Pinned"/"Locked"/"Free"
     /// </summary>
     [JsonPropertyName("State")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public PinLockState? State
-    {
-        get;
-        set;
-    }
+    public PinLockState? State { get; set; }
 }

@@ -8,11 +8,7 @@ using SPTarkov.Server.Core.Utils.Cloners;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable(InjectionType.Singleton)]
-public class PresetHelper(
-    DatabaseService _databaseService,
-    ItemHelper _itemHelper,
-    ICloner _cloner
-)
+public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelper, ICloner _cloner)
 {
     protected Dictionary<string, Preset> _defaultEquipmentPresets;
     protected Dictionary<string, Preset> _defaultWeaponPresets;
@@ -48,9 +44,10 @@ public class PresetHelper(
         if (_defaultWeaponPresets is null)
         {
             var tempPresets = _databaseService.GetGlobals().ItemPresets;
-            _defaultWeaponPresets = tempPresets.Where(p =>
-                    p.Value.Encyclopedia != null &&
-                    _itemHelper.IsOfBaseclass(p.Value.Encyclopedia, BaseClasses.WEAPON)
+            _defaultWeaponPresets = tempPresets
+                .Where(p =>
+                    p.Value.Encyclopedia != null
+                    && _itemHelper.IsOfBaseclass(p.Value.Encyclopedia, BaseClasses.WEAPON)
                 )
                 .ToDictionary();
         }
@@ -67,9 +64,10 @@ public class PresetHelper(
         if (_defaultEquipmentPresets == null)
         {
             var tempPresets = _databaseService.GetGlobals().ItemPresets;
-            _defaultEquipmentPresets = tempPresets.Where(p =>
-                    p.Value.Encyclopedia != null &&
-                    _itemHelper.ArmorItemCanHoldMods(p.Value.Encyclopedia)
+            _defaultEquipmentPresets = tempPresets
+                .Where(p =>
+                    p.Value.Encyclopedia != null
+                    && _itemHelper.ArmorItemCanHoldMods(p.Value.Encyclopedia)
                 )
                 .ToDictionary();
         }
@@ -128,9 +126,11 @@ public class PresetHelper(
         }
 
         // Use gathered preset ids to get full preset objects, clone and return
-        return _cloner.Clone(presetDetailsForTpl.PresetIds
-            .Select(x => _databaseService.GetGlobals().ItemPresets[x])
-            .ToList());
+        return _cloner.Clone(
+            presetDetailsForTpl
+                .PresetIds.Select(x => _databaseService.GetGlobals().ItemPresets[x])
+                .ToList()
+        );
     }
 
     /// <summary>
@@ -157,7 +157,9 @@ public class PresetHelper(
             if (!_defaultEquipmentPresets.TryGetValue(presetDetails.DefaultId, out defaultPreset))
             {
                 // Default not found in weapon or equipment, return first preset in list
-                return _cloner.Clone(_databaseService.GetGlobals().ItemPresets[presetDetails.PresetIds.First()]);
+                return _cloner.Clone(
+                    _databaseService.GetGlobals().ItemPresets[presetDetails.PresetIds.First()]
+                );
             }
         }
 
@@ -198,7 +200,9 @@ public class PresetHelper(
         var defaultPreset = GetDefaultPreset(tpl);
 
         // Bundle up tpls we want price for
-        var tpls = defaultPreset is not null ? defaultPreset.Items.Select(item => item.Template) : [tpl];
+        var tpls = defaultPreset is not null
+            ? defaultPreset.Items.Select(item => item.Template)
+            : [tpl];
 
         // Get price of tpls
         return _itemHelper.GetItemAndChildrenPrice(tpls);

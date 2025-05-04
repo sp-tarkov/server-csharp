@@ -9,16 +9,8 @@ public record GetProfileSettingsRequest : IRequestData
     ///     Chosen value for profile.Info.SelectedMemberCategory
     /// </summary>
     [JsonPropertyName("memberCategory")]
-    public int? MemberCategory
-    {
-        get;
-        set;
-    }
+    public int? MemberCategory { get; set; }
 
     [JsonPropertyName("squadInviteRestriction")]
-    public bool? SquadInviteRestriction
-    {
-        get;
-        set;
-    }
+    public bool? SquadInviteRestriction { get; set; }
 }

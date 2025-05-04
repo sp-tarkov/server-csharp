@@ -7,5 +7,5 @@ public enum BuffType
     MalfunctionProtections,
     WeaponDamage,
     ArmorEfficiency,
-    DurabilityImprovement
+    DurabilityImprovement,
 }

@@ -13,7 +13,11 @@ public class FileUtil()
 
         if (recursive)
         {
-            files.AddRange(Directory.GetDirectories(path).SelectMany(d => GetFiles(d, recursive, searchPattern)));
+            files.AddRange(
+                Directory
+                    .GetDirectories(path)
+                    .SelectMany(d => GetFiles(d, recursive, searchPattern))
+            );
         }
 
         return files;
@@ -120,7 +124,6 @@ public class FileUtil()
         {
             return false;
         }
-
 
         // Ensure dir exists
         Directory.CreateDirectory(Path.GetDirectoryName(destinationFilePath));

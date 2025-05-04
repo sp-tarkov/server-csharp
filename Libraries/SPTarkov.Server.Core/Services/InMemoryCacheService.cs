@@ -4,9 +4,7 @@ using SPTarkov.Server.Core.Utils.Cloners;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class InMemoryCacheService(
-    ICloner _cloner
-)
+public class InMemoryCacheService(ICloner _cloner)
 {
     protected Dictionary<string, object?> _cacheData = new();
 
@@ -29,7 +27,7 @@ public class InMemoryCacheService(
     {
         if (_cacheData.ContainsKey(key))
         {
-            return (T) _cacheData[key];
+            return (T)_cacheData[key];
         }
 
         return default;

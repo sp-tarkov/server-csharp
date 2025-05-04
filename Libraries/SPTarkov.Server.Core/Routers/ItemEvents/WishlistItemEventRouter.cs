@@ -14,10 +14,7 @@ public class WishlistItemEventRouter : ItemEventRouterDefinition
 {
     protected WishlistCallbacks _wishlistCallbacks;
 
-    public WishlistItemEventRouter
-    (
-        WishlistCallbacks wishlistCallbacks
-    )
+    public WishlistItemEventRouter(WishlistCallbacks wishlistCallbacks)
     {
         _wishlistCallbacks = wishlistCallbacks;
     }
@@ -28,23 +25,42 @@ public class WishlistItemEventRouter : ItemEventRouterDefinition
         {
             new(ItemEventActions.ADD_TO_WISHLIST, false),
             new(ItemEventActions.REMOVE_FROM_WISHLIST, false),
-            new(ItemEventActions.CHANGE_WISHLIST_ITEM_CATEGORY, false)
+            new(ItemEventActions.CHANGE_WISHLIST_ITEM_CATEGORY, false),
         };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
-        ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(
+        string url,
+        PmcData pmcData,
+        BaseInteractionRequestData body,
+        string sessionID,
+        ItemEventRouterResponse output
+    )
     {
         switch (url)
         {
             case ItemEventActions.ADD_TO_WISHLIST:
-                return _wishlistCallbacks.AddToWishlist(pmcData, body as AddToWishlistRequest, sessionID);
+                return _wishlistCallbacks.AddToWishlist(
+                    pmcData,
+                    body as AddToWishlistRequest,
+                    sessionID
+                );
             case ItemEventActions.REMOVE_FROM_WISHLIST:
-                return _wishlistCallbacks.RemoveFromWishlist(pmcData, body as RemoveFromWishlistRequest, sessionID);
+                return _wishlistCallbacks.RemoveFromWishlist(
+                    pmcData,
+                    body as RemoveFromWishlistRequest,
+                    sessionID
+                );
             case ItemEventActions.CHANGE_WISHLIST_ITEM_CATEGORY:
-                return _wishlistCallbacks.ChangeWishlistItemCategory(pmcData, body as ChangeWishlistItemCategoryRequest, sessionID);
+                return _wishlistCallbacks.ChangeWishlistItemCategory(
+                    pmcData,
+                    body as ChangeWishlistItemCategoryRequest,
+                    sessionID
+                );
             default:
-                throw new Exception($"CustomizationItemEventRouter being used when it cant handle route {url}");
+                throw new Exception(
+                    $"CustomizationItemEventRouter being used when it cant handle route {url}"
+                );
         }
     }
 }

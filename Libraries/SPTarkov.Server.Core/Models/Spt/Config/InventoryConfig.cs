@@ -6,156 +6,80 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record InventoryConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
-    {
-        get;
-        set;
-    } = "spt-inventory";
+    public string Kind { get; set; } = "spt-inventory";
 
     /// <summary>
     ///     Should new items purchased by flagged as found in raid
     /// </summary>
     [JsonPropertyName("newItemsMarkedFound")]
-    public bool NewItemsMarkedFound
-    {
-        get;
-        set;
-    }
+    public bool NewItemsMarkedFound { get; set; }
 
     [JsonPropertyName("randomLootContainers")]
-    public Dictionary<string, RewardDetails> RandomLootContainers
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, RewardDetails> RandomLootContainers { get; set; }
 
     [JsonPropertyName("sealedAirdropContainer")]
-    public SealedAirdropContainerSettings SealedAirdropContainer
-    {
-        get;
-        set;
-    }
+    public SealedAirdropContainerSettings SealedAirdropContainer { get; set; }
 
     /// <summary>
     ///     Contains item tpls that the server should consider money and treat the same as roubles/euros/dollars
     /// </summary>
     [JsonPropertyName("customMoneyTpls")]
-    public List<string> CustomMoneyTpls
-    {
-        get;
-        set;
-    }
+    public List<string> CustomMoneyTpls { get; set; }
 
     /// <summary>
     ///     Multipliers for skill gain when inside menus, NOT in-game
     /// </summary>
     [JsonPropertyName("skillGainMultiplers")]
-    public Dictionary<string, double> SkillGainMultipliers
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, double> SkillGainMultipliers { get; set; }
 
     /// <summary>
     ///     Container Tpls that should be deprioritised when choosing where to take money from for payments
     /// </summary>
     [JsonPropertyName("deprioritisedMoneyContainers")]
-    public HashSet<string> DeprioritisedMoneyContainers
-    {
-        get;
-        set;
-    }
+    public HashSet<string> DeprioritisedMoneyContainers { get; set; }
 }
 
 public record RewardDetails
 {
     [JsonPropertyName("_type")]
-    public string? Type
-    {
-        get;
-        set;
-    }
+    public string? Type { get; set; }
 
     [JsonPropertyName("rewardCount")]
-    public int RewardCount
-    {
-        get;
-        set;
-    }
+    public int RewardCount { get; set; }
 
     [JsonPropertyName("foundInRaid")]
-    public bool FoundInRaid
-    {
-        get;
-        set;
-    }
+    public bool FoundInRaid { get; set; }
 
     [JsonPropertyName("rewardTplPool")]
-    public Dictionary<string, double>? RewardTplPool
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, double>? RewardTplPool { get; set; }
 
     [JsonPropertyName("rewardTypePool")]
-    public List<string>? RewardTypePool
-    {
-        get;
-        set;
-    }
+    public List<string>? RewardTypePool { get; set; }
 }
 
 public record SealedAirdropContainerSettings
 {
     [JsonPropertyName("weaponRewardWeight")]
-    public Dictionary<string, double> WeaponRewardWeight
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, double> WeaponRewardWeight { get; set; }
 
     [JsonPropertyName("defaultPresetsOnly")]
-    public bool DefaultPresetsOnly
-    {
-        get;
-        set;
-    }
+    public bool DefaultPresetsOnly { get; set; }
 
     /// <summary>
     ///     Should contents be flagged as found in raid when opened
     /// </summary>
     [JsonPropertyName("foundInRaid")]
-    public bool FoundInRaid
-    {
-        get;
-        set;
-    }
+    public bool FoundInRaid { get; set; }
 
     [JsonPropertyName("weaponModRewardLimits")]
-    public Dictionary<string, MinMax<int>> WeaponModRewardLimits
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, MinMax<int>> WeaponModRewardLimits { get; set; }
 
     [JsonPropertyName("rewardTypeLimits")]
-    public Dictionary<string, MinMax<int>> RewardTypeLimits
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, MinMax<int>> RewardTypeLimits { get; set; }
 
     [JsonPropertyName("ammoBoxWhitelist")]
-    public List<string> AmmoBoxWhitelist
-    {
-        get;
-        set;
-    }
+    public List<string> AmmoBoxWhitelist { get; set; }
 
     [JsonPropertyName("allowBossItems")]
-    public bool AllowBossItems
-    {
-        get;
-        set;
-    }
+    public bool AllowBossItems { get; set; }
 }

@@ -24,13 +24,19 @@ public class AirdropService(
     ContainerHelper _containerHelper,
     LocalisationService _localisationService,
     ItemFilterService _itemFilterService,
-    ItemHelper _itemHelper)
+    ItemHelper _itemHelper
+)
 {
     protected AirdropConfig _airdropConfig = configServer.GetConfig<AirdropConfig>();
 
     public GetAirdropLootResponse GenerateCustomAirdropLoot(GetAirdropLootRequest request)
     {
-        if (!_airdropConfig.CustomAirdropMapping.TryGetValue(request.ContainerId, out var customAirdropInformation))
+        if (
+            !_airdropConfig.CustomAirdropMapping.TryGetValue(
+                request.ContainerId,
+                out var customAirdropInformation
+            )
+        )
         {
             _logger.Warning(
                 $"Unable to find data for custom airdrop {request.ContainerId}, returning random airdrop instead"
@@ -81,7 +87,7 @@ public class AirdropService(
         foreach (var item in flattenedCrateLoot)
         {
             if (item.Id == airdropCrateItem.Id)
-                // Crate itself, don't alter
+            // Crate itself, don't alter
             {
                 continue;
             }
@@ -97,7 +103,7 @@ public class AirdropService(
         return new GetAirdropLootResponse
         {
             Icon = airdropConfig.Icon,
-            Container = flattenedCrateLoot
+            Container = flattenedCrateLoot,
         };
     }
 
@@ -107,7 +113,10 @@ public class AirdropService(
     /// <param name="container">Crate item to fit items into</param>
     /// <param name="crateLootPool">Item pool to try and fit into container</param>
     /// <returns>Items that will fit container</returns>
-    protected List<List<Item>> GetLootThatFitsContainer(Item container, List<List<Item>> crateLootPool)
+    protected List<List<Item>> GetLootThatFitsContainer(
+        Item container,
+        List<List<Item>> crateLootPool
+    )
     {
         var lootResult = new List<List<Item>>();
         var containerMap = _itemHelper.GetContainerMapping(container.Template);
@@ -118,7 +127,11 @@ public class AirdropService(
             var itemSize = _itemHelper.GetItemSize(itemAndChildren, itemAndChildren[0].Id);
 
             // look for open slot to put chosen item into
-            var result = _containerHelper.FindSlotForItem(containerMap, itemSize.Width, itemSize.Height);
+            var result = _containerHelper.FindSlotForItem(
+                containerMap,
+                itemSize.Width,
+                itemSize.Height
+            );
             if (result.Success.GetValueOrDefault(false))
             {
                 // It Fits!
@@ -128,7 +141,7 @@ public class AirdropService(
             }
 
             if (failedToFitAttemptCount > 3)
-                // x attempts to fit an item, container is probably full, stop trying to add more
+            // x attempts to fit an item, container is probably full, stop trying to add more
             {
                 break;
             }
@@ -151,11 +164,7 @@ public class AirdropService(
         {
             Id = _hashUtil.Generate(),
             Template = string.Empty, // Picked later
-            Upd = new Upd
-            {
-                SpawnedInSession = true,
-                StackObjectsCount = 1
-            }
+            Upd = new Upd { SpawnedInSession = true, StackObjectsCount = 1 },
         };
 
         switch (airdropType)
@@ -173,7 +182,8 @@ public class AirdropService(
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_COMMON_SUPPLY_CRATE;
                 break;
             case SptAirdropTypeEnum.radar:
-                airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_TECHNICAL_SUPPLY_CRATE_EVENT_1;
+                airdropContainer.Template =
+                    ItemTpl.LOOTCONTAINER_AIRDROP_TECHNICAL_SUPPLY_CRATE_EVENT_1;
                 break;
             default:
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_COMMON_SUPPLY_CRATE;
@@ -205,7 +215,10 @@ public class AirdropService(
         if (lootSettingsByType is null)
         {
             _logger.Error(
-                _localisationService.GetText("location-unable_to_find_airdrop_drop_config_of_type", airdropType)
+                _localisationService.GetText(
+                    "location-unable_to_find_airdrop_drop_config_of_type",
+                    airdropType
+                )
             );
 
             // TODO: Get Radar airdrop to work. Atm Radar will default to common supply drop (mixed)
@@ -215,10 +228,14 @@ public class AirdropService(
 
         // Get all items that match the blacklisted types and fold into item blacklist
         var itemTypeBlacklist = _itemFilterService.GetItemRewardBaseTypeBlacklist();
-        var itemsMatchingTypeBlacklist = _itemHelper.GetItems()
+        var itemsMatchingTypeBlacklist = _itemHelper
+            .GetItems()
             .Where(templateItem => !string.IsNullOrEmpty(templateItem.Parent))
-            .Where(templateItem => _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist))
-            .Select(templateItem => templateItem.Id).ToHashSet();
+            .Where(templateItem =>
+                _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist)
+            )
+            .Select(templateItem => templateItem.Id)
+            .ToHashSet();
         var itemBlacklist = new HashSet<string>();
         itemBlacklist.UnionWith(lootSettingsByType.ItemBlacklist);
         itemBlacklist.UnionWith(_itemFilterService.GetItemRewardBlacklist());
@@ -241,7 +258,7 @@ public class AirdropService(
             UseForcedLoot = lootSettingsByType.UseForcedLoot,
             ForcedLoot = lootSettingsByType.ForcedLoot,
             UseRewardItemBlacklist = lootSettingsByType.UseRewardItemBlacklist,
-            BlockSeasonalItemsOutOfSeason = lootSettingsByType.BlockSeasonalItemsOutOfSeason
+            BlockSeasonalItemsOutOfSeason = lootSettingsByType.BlockSeasonalItemsOutOfSeason,
         };
     }
 }

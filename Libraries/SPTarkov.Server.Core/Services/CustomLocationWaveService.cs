@@ -11,7 +11,8 @@ namespace SPTarkov.Server.Core.Services;
 public class CustomLocationWaveService(
     ISptLogger<CustomLocationWaveService> _logger,
     DatabaseService _databaseService,
-    ConfigServer _configServer)
+    ConfigServer _configServer
+)
 {
     protected LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
 
@@ -66,7 +67,9 @@ public class CustomLocationWaveService(
             var locationBase = _databaseService.GetLocation(mapKvP.Key).Base;
             if (locationBase is null)
             {
-                _logger.Warning($"Unable to add custom boss wave to location: {mapKvP}, location not found");
+                _logger.Warning(
+                    $"Unable to add custom boss wave to location: {mapKvP}, location not found"
+                );
 
                 continue;
             }
@@ -74,7 +77,7 @@ public class CustomLocationWaveService(
             foreach (var bossWave in mapKvP.Value)
             {
                 if (locationBase.BossLocationSpawn.Any(x => x.SptId == bossWave.SptId))
-                    // Already exists, skip
+                // Already exists, skip
                 {
                     continue;
                 }
@@ -94,7 +97,9 @@ public class CustomLocationWaveService(
             var locationBase = _databaseService.GetLocation(mapKvP.Key).Base;
             if (locationBase is null)
             {
-                _logger.Warning($"Unable to add custom wave to location: {mapKvP}, location not found");
+                _logger.Warning(
+                    $"Unable to add custom wave to location: {mapKvP}, location not found"
+                );
 
                 continue;
             }
@@ -102,7 +107,7 @@ public class CustomLocationWaveService(
             foreach (var normalWave in mapKvP.Value)
             {
                 if (locationBase.Waves.Any(x => x.SptId == normalWave.SptId))
-                    // Already exists, skip
+                // Already exists, skip
                 {
                     continue;
                 }

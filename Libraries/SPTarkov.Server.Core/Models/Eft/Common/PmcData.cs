@@ -9,48 +9,26 @@ public record PmcData : BotBase
 {
     [JsonPropertyName("Prestige")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, long>? Prestige
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, long>? Prestige { get; set; }
 
-    public Dictionary<string, double>? CheckedMagazines
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, double>? CheckedMagazines { get; set; }
 
     /// <summary>
     /// Returns the list of IDs of the weapons, which the player has checked the chamber of in the last raid.
     /// </summary>
-    public List<string> CheckedChambers
-    {
-        get;
-        set;
-    }
+    public List<string> CheckedChambers { get; set; }
 }
 
-public record PostRaidPmcData : PmcData
-{
-}
+public record PostRaidPmcData : PmcData { }
 
 public record PostRaidStats
 {
     [JsonPropertyName("Eft")]
-    public EftStats? Eft
-    {
-        get;
-        set;
-    }
+    public EftStats? Eft { get; set; }
 
     /// <summary>
     ///     Only found in profile we get from client post raid
     /// </summary>
     [JsonPropertyName("Arena")]
-    public EftStats? Arena
-    {
-        get;
-        set;
-    }
+    public EftStats? Arena { get; set; }
 }

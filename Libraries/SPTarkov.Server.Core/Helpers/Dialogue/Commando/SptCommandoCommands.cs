@@ -24,8 +24,12 @@ public class SptCommandoCommands : IChatCommand
         _localisationService = localisationService;
         var coreConfigs = configServer.GetConfig<CoreConfig>();
         var commandoId = coreConfigs.Features?.ChatbotFeatures.Ids.GetValueOrDefault("commando");
-        if (!(coreConfigs.Features.ChatbotFeatures.CommandoFeatures.GiveCommandEnabled &&
-              coreConfigs.Features.ChatbotFeatures.EnabledBots.ContainsKey(commandoId)))
+        if (
+            !(
+                coreConfigs.Features.ChatbotFeatures.CommandoFeatures.GiveCommandEnabled
+                && coreConfigs.Features.ChatbotFeatures.EnabledBots.ContainsKey(commandoId)
+            )
+        )
         {
             var giveCommand = _sptCommands.FirstOrDefault(x => x.GetCommand().ToLower() == "give");
             _sptCommands.Remove(giveCommand);
@@ -47,7 +51,12 @@ public class SptCommandoCommands : IChatCommand
         return _sptCommands.Select(c => c.GetCommand()).ToList();
     }
 
-    public string Handle(string command, UserDialogInfo commandHandler, string sessionId, SendMessageRequest request)
+    public string Handle(
+        string command,
+        UserDialogInfo commandHandler,
+        string sessionId,
+        SendMessageRequest request
+    )
     {
         return _sptCommands
             .First(c => c.GetCommand() == command)

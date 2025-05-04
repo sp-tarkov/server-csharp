@@ -19,7 +19,8 @@ public class BundleHashCacheService
         ISptLogger<BundleHashCacheService> logger,
         JsonUtil jsonUtil,
         HashUtil hashUtil,
-        FileUtil fileUtil)
+        FileUtil fileUtil
+    )
     {
         _logger = logger;
         _jsonUtil = jsonUtil;
@@ -46,7 +47,10 @@ public class BundleHashCacheService
             Directory.CreateDirectory(_bundleHashCachePath);
         }
 
-        _fileUtil.WriteFile(Path.Join(_bundleHashCachePath, _cacheName), _jsonUtil.Serialize(_bundleHashes));
+        _fileUtil.WriteFile(
+            Path.Join(_bundleHashCachePath, _cacheName),
+            _jsonUtil.Serialize(_bundleHashes)
+        );
 
         _logger.Debug($"Bundle: {bundlePath} hash stored in: ${_bundleHashCachePath}");
     }

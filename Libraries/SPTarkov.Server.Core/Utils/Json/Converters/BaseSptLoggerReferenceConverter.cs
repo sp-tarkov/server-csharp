@@ -6,7 +6,11 @@ namespace SPTarkov.Server.Core.Utils.Json.Converters;
 
 public class BaseSptLoggerReferenceConverter : JsonConverter<BaseSptLoggerReference>
 {
-    public override BaseSptLoggerReference? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override BaseSptLoggerReference? Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
     {
         using (var jsonDocument = JsonDocument.ParseValue(ref reader))
         {
@@ -22,12 +26,16 @@ public class BaseSptLoggerReferenceConverter : JsonConverter<BaseSptLoggerRefere
                 case "Console":
                     return jsonDocument.Deserialize<ConsoleSptLoggerReference>();
                 default:
-                    throw new Exception($"The logger type '{typeElement.GetString()}' does not exist.");
+                    throw new Exception(
+                        $"The logger type '{typeElement.GetString()}' does not exist."
+                    );
             }
         }
     }
 
-    public override void Write(Utf8JsonWriter writer, BaseSptLoggerReference value, JsonSerializerOptions options)
-    {
-    }
+    public override void Write(
+        Utf8JsonWriter writer,
+        BaseSptLoggerReference value,
+        JsonSerializerOptions options
+    ) { }
 }

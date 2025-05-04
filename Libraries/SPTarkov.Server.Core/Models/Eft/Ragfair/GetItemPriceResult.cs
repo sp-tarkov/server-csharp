@@ -6,9 +6,5 @@ namespace SPTarkov.Server.Core.Models.Eft.Ragfair;
 public record GetItemPriceResult : MinMax<double>
 {
     [JsonPropertyName("avg")]
-    public double? Avg
-    {
-        get;
-        set;
-    }
+    public double? Avg { get; set; }
 }

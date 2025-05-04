@@ -63,7 +63,7 @@ public class NotifierController(
             ChannelId = sessionId,
             Url = "",
             NotifierServer = GetServer(sessionId),
-            WebSocket = _notifierHelper.GetWebSocketServer(sessionId)
+            WebSocket = _notifierHelper.GetWebSocketServer(sessionId),
         };
     }
 

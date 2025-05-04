@@ -12,5 +12,5 @@ public enum RadioStationType
     LoFi,
     Metal,
     Punk,
-    Pop
+    Pop,
 }

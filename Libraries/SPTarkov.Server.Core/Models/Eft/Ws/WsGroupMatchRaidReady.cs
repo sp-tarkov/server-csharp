@@ -6,9 +6,5 @@ namespace SPTarkov.Server.Core.Models.Eft.Ws;
 public record WsGroupMatchRaidReady : WsNotificationEvent
 {
     [JsonPropertyName("extendedProfile")]
-    public GroupCharacter? ExtendedProfile
-    {
-        get;
-        set;
-    }
+    public GroupCharacter? ExtendedProfile { get; set; }
 }

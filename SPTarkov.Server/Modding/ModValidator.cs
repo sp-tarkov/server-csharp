@@ -16,7 +16,8 @@ public class ModValidator(
     ISemVer semVer,
     ModLoadOrder modLoadOrder,
     JsonUtil jsonUtil,
-    FileUtil fileUtil)
+    FileUtil fileUtil
+)
 {
     protected readonly string basepath = "user/mods/";
     protected readonly string modOrderPath = "user/mods/order.json";
@@ -32,7 +33,9 @@ public class ModValidator(
         {
             ValidateMods(mods);
 
-            var sortedModLoadOrder = modLoadOrder.SetModList(imported.ToDictionary(m => m.Key, m => m.Value.PackageJson));
+            var sortedModLoadOrder = modLoadOrder.SetModList(
+                imported.ToDictionary(m => m.Key, m => m.Value.PackageJson)
+            );
             var finalList = new List<SptMod>();
             foreach (var orderMod in SortModsLoadOrder())
             {
@@ -65,10 +68,7 @@ public class ModValidator(
             logger.Info(localisationService.GetText("modloader-mod_order_missing"));
 
             // Write file with empty order array to disk
-            fileUtil.WriteFile(modOrderPath, jsonUtil.Serialize(new ModOrder
-            {
-                Order = []
-            }));
+            fileUtil.WriteFile(modOrderPath, jsonUtil.Serialize(new ModOrder { Order = [] }));
         }
         else
         {
@@ -138,7 +138,9 @@ public class ModValidator(
         {
             foreach (var missingMod in missingFromOrderJSON.Keys)
             {
-                logger.Debug(localisationService.GetText("modloader-mod_order_missing_from_json", missingMod));
+                logger.Debug(
+                    localisationService.GetText("modloader-mod_order_missing_from_json", missingMod)
+                );
             }
         }
 
@@ -147,10 +149,7 @@ public class ModValidator(
         {
             if (ShouldSkipMod(mod.PackageJson))
             {
-                logger.Warning(localisationService.GetText("modloader-skipped_mod", new
-                {
-                    mod
-                }));
+                logger.Warning(localisationService.GetText("modloader-skipped_mod", new { mod }));
                 continue;
             }
 
@@ -187,7 +186,7 @@ public class ModValidator(
         foreach (var mod in modPackageData.Values)
         {
             var name = $"{mod.Author}-{mod.Name}";
-            groupedMods.Add(name, [..groupedMods.GetValueOrDefault(name) ?? [], mod]);
+            groupedMods.Add(name, [.. groupedMods.GetValueOrDefault(name) ?? [], mod]);
 
             // if there's more than one entry for a given mod it means there's at least 2 mods with the same author and name trying to load.
             if (groupedMods[name].Count > 1 && !skippedMods.Contains(name))
@@ -213,7 +212,6 @@ public class ModValidator(
         return mods.Where(ValidMod).ToList();
     }
 
-
     /// <summary>
     ///     Is the passed in mod compatible with the running server version
     /// </summary>
@@ -227,7 +225,9 @@ public class ModValidator(
         // Error and prevent loading if sptVersion property is not a valid semver string
         if (!(semVer.IsValid(mod.SptVersion) || semVer.IsValidRange(mod.SptVersion)))
         {
-            logger.Error(localisationService.GetText("modloader-invalid_sptversion_field", modName));
+            logger.Error(
+                localisationService.GetText("modloader-invalid_sptversion_field", modName)
+            );
             return false;
         }
 
@@ -235,12 +235,15 @@ public class ModValidator(
         if (!semVer.Satisfies(sptVersion, mod.SptVersion))
         {
             logger.Error(
-                localisationService.GetText("modloader-outdated_sptversion_field", new
-                {
-                    modName,
-                    modVersion = mod.Version,
-                    desiredSptVersion = mod.SptVersion
-                })
+                localisationService.GetText(
+                    "modloader-outdated_sptversion_field",
+                    new
+                    {
+                        modName,
+                        modVersion = mod.Version,
+                        desiredSptVersion = mod.SptVersion,
+                    }
+                )
             );
 
             return false;
@@ -274,12 +277,15 @@ public class ModValidator(
         // Add mod to imported list
         imported.Add(mod.PackageJson.Name, mod);
         logger.Info(
-            localisationService.GetText("modloader-loaded_mod", new
-            {
-                name = mod.PackageJson.Name,
-                version = mod.PackageJson.Version,
-                author = mod.PackageJson.Author
-            })
+            localisationService.GetText(
+                "modloader-loaded_mod",
+                new
+                {
+                    name = mod.PackageJson.Name,
+                    version = mod.PackageJson.Version,
+                    author = mod.PackageJson.Author,
+                }
+            )
         );
     }
 
@@ -293,7 +299,10 @@ public class ModValidator(
         return skippedMods.Contains($"{pkg.Author}-{pkg.Name}");
     }
 
-    protected bool AreModDependenciesFulfilled(PackageJsonData pkg, Dictionary<string, PackageJsonData> loadedMods)
+    protected bool AreModDependenciesFulfilled(
+        PackageJsonData pkg,
+        Dictionary<string, PackageJsonData> loadedMods
+    )
     {
         if (pkg.ModDependencies == null)
         {
@@ -309,11 +318,10 @@ public class ModValidator(
             if (!loadedMods.ContainsKey(modDependency))
             {
                 logger.Error(
-                    localisationService.GetText("modloader-missing_dependency", new
-                    {
-                        mod = modName,
-                        modDependency
-                    })
+                    localisationService.GetText(
+                        "modloader-missing_dependency",
+                        new { mod = modName, modDependency }
+                    )
                 );
                 return false;
             }
@@ -321,13 +329,16 @@ public class ModValidator(
             if (!semVer.Satisfies(loadedMods[modDependency].Version, requiredVersion))
             {
                 logger.Error(
-                    localisationService.GetText("modloader-outdated_dependency", new
-                    {
-                        mod = modName,
-                        modDependency,
-                        currentVersion = loadedMods[modDependency].Version,
-                        requiredVersion
-                    })
+                    localisationService.GetText(
+                        "modloader-outdated_dependency",
+                        new
+                        {
+                            mod = modName,
+                            modDependency,
+                            currentVersion = loadedMods[modDependency].Version,
+                            requiredVersion,
+                        }
+                    )
                 );
                 return false;
             }
@@ -336,7 +347,10 @@ public class ModValidator(
         return true;
     }
 
-    protected bool IsModCompatible(PackageJsonData mod, Dictionary<string, PackageJsonData> loadedMods)
+    protected bool IsModCompatible(
+        PackageJsonData mod,
+        Dictionary<string, PackageJsonData> loadedMods
+    )
     {
         var incompatbileModsList = mod.Incompatibilities;
         if (incompatbileModsList == null)
@@ -350,12 +364,15 @@ public class ModValidator(
             if (loadedMods.ContainsKey(incompatibleModName))
             {
                 logger.Error(
-                    localisationService.GetText("modloader-incompatible_mod_found", new
-                    {
-                        author = mod.Author,
-                        name = mod.Name,
-                        incompatibleModName
-                    })
+                    localisationService.GetText(
+                        "modloader-incompatible_mod_found",
+                        new
+                        {
+                            author = mod.Author,
+                            name = mod.Name,
+                            incompatibleModName,
+                        }
+                    )
                 );
                 return false;
             }
@@ -407,7 +424,9 @@ public class ModValidator(
 
         if (!semVer.IsValid(config.Version))
         {
-            logger.Error(localisationService.GetText("modloader-invalid_version_property", modName));
+            logger.Error(
+                localisationService.GetText("modloader-invalid_version_property", modName)
+            );
             issue = true;
         }
 

@@ -70,7 +70,8 @@ public class EventOutputHolder
                 ProfileChanges = new Dictionary<string, ProfileChange>
                 {
                     {
-                        sessionId, new ProfileChange
+                        sessionId,
+                        new ProfileChange
                         {
                             Id = sessionId,
                             Experience = pmcProfile.Info.Experience,
@@ -82,7 +83,7 @@ public class EventOutputHolder
                             {
                                 NewItems = [],
                                 ChangedItems = [],
-                                DeletedItems = []
+                                DeletedItems = [],
                             },
                             Production = new Dictionary<string, Production>(),
                             Improvements = new Dictionary<string, HideoutImprovement>(),
@@ -90,15 +91,15 @@ public class EventOutputHolder
                             {
                                 Common = [],
                                 Mastering = [],
-                                Points = 0
+                                Points = 0,
                             },
                             Health = _cloner.Clone(pmcProfile.Health),
                             TraderRelations = new Dictionary<string, TraderData>(),
-                            QuestsStatus = []
+                            QuestsStatus = [],
                         }
-                    }
+                    },
                 },
-                Warnings = []
+                Warnings = [],
             }
         );
     }
@@ -122,7 +123,9 @@ public class EventOutputHolder
             _cloner.Clone(pmcData.Hideout.Production),
             sessionId
         );
-        profileChanges.Improvements = _cloner.Clone(GetImprovementsFromProfileAndFlagComplete(pmcData));
+        profileChanges.Improvements = _cloner.Clone(
+            GetImprovementsFromProfileAndFlagComplete(pmcData)
+        );
         profileChanges.TraderRelations = ConstructTraderRelations(pmcData.TradersInfo);
 
         ResetMoneyTransferLimit(pmcData.MoneyTransferLimitData);
@@ -146,7 +149,10 @@ public class EventOutputHolder
                 // remove production in case client already issued a HideoutDeleteProductionCommand and the item is moved to stash
                 productions.Remove(production.Key);
             }
-            else if ((production.Value.SptIsComplete ?? false) && (production.Value.SptIsContinuous ?? false))
+            else if (
+                (production.Value.SptIsComplete ?? false)
+                && (production.Value.SptIsContinuous ?? false)
+            )
             {
                 // Water collector / Bitcoin etc
                 production.Value.SptIsComplete = false;
@@ -166,7 +172,9 @@ public class EventOutputHolder
     /// </summary>
     /// <param name="pmcData"> Player profile </param>
     /// <returns> Dictionary of hideout improvements </returns>
-    private Dictionary<string, HideoutImprovement>? GetImprovementsFromProfileAndFlagComplete(PmcData pmcData)
+    private Dictionary<string, HideoutImprovement>? GetImprovementsFromProfileAndFlagComplete(
+        PmcData pmcData
+    )
     {
         foreach (var improvementKey in pmcData.Hideout.Improvements)
         {
@@ -193,18 +201,24 @@ public class EventOutputHolder
     /// <param name="productions"> Productions from player profile </param>
     /// <param name="sessionId"> Player session ID</param>
     /// <returns> Dictionary of hideout productions </returns>
-    private Dictionary<string, Production>? GetProductionsFromProfileAndFlagComplete(Dictionary<string, Production>? productions, string sessionId)
+    private Dictionary<string, Production>? GetProductionsFromProfileAndFlagComplete(
+        Dictionary<string, Production>? productions,
+        string sessionId
+    )
     {
         foreach (var production in productions)
         {
             if (production.Value is null)
-                // Could be cancelled production, skip item to save processing
+            // Could be cancelled production, skip item to save processing
             {
                 continue;
             }
 
             // Complete and is Continuous e.g. water collector
-            if ((production.Value.SptIsComplete ?? false) && (production.Value.SptIsContinuous ?? false))
+            if (
+                (production.Value.SptIsComplete ?? false)
+                && (production.Value.SptIsContinuous ?? false)
+            )
             {
                 continue;
             }
@@ -256,7 +270,9 @@ public class EventOutputHolder
     /// </summary>
     /// <param name="traderData"> Server data for traders </param>
     /// <returns> Dict of trader id + TraderData </returns>
-    private Dictionary<string, TraderData> ConstructTraderRelations(Dictionary<string, TraderInfo> traderData)
+    private Dictionary<string, TraderData> ConstructTraderRelations(
+        Dictionary<string, TraderInfo> traderData
+    )
     {
         return traderData.ToDictionary(
             trader => trader.Key,
@@ -266,7 +282,7 @@ public class EventOutputHolder
                 Disabled = trader.Value.Disabled,
                 Loyalty = trader.Value.LoyaltyLevel,
                 Standing = trader.Value.Standing,
-                Unlocked = trader.Value.Unlocked
+                Unlocked = trader.Value.Unlocked,
             }
         );
     }

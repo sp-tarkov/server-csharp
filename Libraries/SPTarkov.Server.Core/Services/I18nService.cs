@@ -12,7 +12,8 @@ public class I18nService
     private readonly FileUtil _fileUtil;
     private readonly JsonUtil _jsonUtil;
 
-    private readonly Dictionary<string, LazyLoad<Dictionary<string, string>>> _loadedLocales = new();
+    private readonly Dictionary<string, LazyLoad<Dictionary<string, string>>> _loadedLocales =
+        new();
     private readonly LocaleService _localeService;
     private HashSet<string> _locales;
     private string? _setLocale;
@@ -40,7 +41,10 @@ public class I18nService
 
     private void Initialize()
     {
-        var files = _fileUtil.GetFiles(_directory, true).Where(f => _fileUtil.GetFileExtension(f) == "json").ToList();
+        var files = _fileUtil
+            .GetFiles(_directory, true)
+            .Where(f => _fileUtil.GetFileExtension(f) == "json")
+            .ToList();
         if (files.Count == 0)
         {
             throw new Exception($"Localisation files in directory {_directory} not found.");
@@ -50,15 +54,18 @@ public class I18nService
         {
             _loadedLocales.Add(
                 _fileUtil.StripExtension(file),
-                new LazyLoad<Dictionary<string, string>>(() => _jsonUtil.DeserializeFromFile<Dictionary<string, string>>(file) ??
-                                                               new Dictionary<string, string>()
+                new LazyLoad<Dictionary<string, string>>(() =>
+                    _jsonUtil.DeserializeFromFile<Dictionary<string, string>>(file)
+                    ?? new Dictionary<string, string>()
                 )
             );
         }
 
         if (!_loadedLocales.ContainsKey(_defaultLocale))
         {
-            throw new Exception($"The default locale '{_defaultLocale}' does not exist on the loaded locales.");
+            throw new Exception(
+                $"The default locale '{_defaultLocale}' does not exist on the loaded locales."
+            );
         }
     }
 
@@ -105,7 +112,10 @@ public class I18nService
             _loadedLocales.TryGetValue(_defaultLocale, out var defaults);
             if (!defaults.Value.TryGetValue(key, out value))
             {
-                value = _localeService.GetLocaleDb(_defaultLocale).FirstOrDefault(x => x.Key == key).Value;
+                value = _localeService
+                    .GetLocaleDb(_defaultLocale)
+                    .FirstOrDefault(x => x.Key == key)
+                    .Value;
             }
 
             return value ?? key;
@@ -136,14 +146,18 @@ public class I18nService
             var localizedName = $"{{{{{propertyInfo.GetJsonName()}}}}}";
             if (rawLocalizedString.Contains(localizedName))
             {
-                rawLocalizedString = rawLocalizedString.Replace(localizedName, propertyInfo.GetValue(args)?.ToString() ?? string.Empty);
+                rawLocalizedString = rawLocalizedString.Replace(
+                    localizedName,
+                    propertyInfo.GetValue(args)?.ToString() ?? string.Empty
+                );
             }
         }
 
         return rawLocalizedString;
     }
 
-    public string GetLocalised<T>(string key, T? value) where T : IConvertible
+    public string GetLocalised<T>(string key, T? value)
+        where T : IConvertible
     {
         var rawLocalizedString = GetLocalisedValue(key);
         return rawLocalizedString.Replace("%s", value?.ToString());

@@ -7,9 +7,7 @@ using SPTarkov.Server.Core.Routers;
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class NoteController(
-    EventOutputHolder _eventOutputHolder
-)
+public class NoteController(EventOutputHolder _eventOutputHolder)
 {
     /// <summary>
     /// </summary>
@@ -20,13 +18,10 @@ public class NoteController(
     public ItemEventRouterResponse AddNote(
         PmcData pmcData,
         NoteActionRequest request,
-        string sessionId)
+        string sessionId
+    )
     {
-        var newNote = new Note
-        {
-            Time = request.Note.Time,
-            Text = request.Note.Text
-        };
+        var newNote = new Note { Time = request.Note.Time, Text = request.Note.Text };
         pmcData.Notes.DataNotes.Add(newNote);
 
         return _eventOutputHolder.GetOutput(sessionId);
@@ -41,7 +36,8 @@ public class NoteController(
     public ItemEventRouterResponse EditNote(
         PmcData pmcData,
         NoteActionRequest request,
-        string sessionId)
+        string sessionId
+    )
     {
         var noteToEdit = pmcData.Notes.DataNotes[request.Index!.Value];
         noteToEdit.Time = request.Note.Time;
@@ -59,7 +55,8 @@ public class NoteController(
     public ItemEventRouterResponse DeleteNote(
         PmcData pmcData,
         NoteActionRequest request,
-        string sessionId)
+        string sessionId
+    )
     {
         pmcData.Notes?.DataNotes?.RemoveAt(request.Index!.Value);
 

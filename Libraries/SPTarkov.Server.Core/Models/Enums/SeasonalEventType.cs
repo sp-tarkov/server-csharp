@@ -7,5 +7,5 @@ public enum SeasonalEventType
     Halloween,
     NewYears,
     Promo,
-    AprilFools
+    AprilFools,
 }

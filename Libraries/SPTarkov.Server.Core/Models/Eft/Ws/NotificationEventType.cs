@@ -39,5 +39,5 @@ public enum NotificationEventType
     ProfileLockTimer,
     StashRows,
     SkillPoints,
-    tournamentWarning
+    tournamentWarning,
 }

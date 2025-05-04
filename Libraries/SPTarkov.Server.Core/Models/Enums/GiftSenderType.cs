@@ -4,5 +4,5 @@ public enum GiftSenderType
 {
     System,
     Trader,
-    User
+    User,
 }

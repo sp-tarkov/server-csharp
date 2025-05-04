@@ -4,5 +4,5 @@ public enum RaidMode
 {
     ONLINE,
     LOCAL,
-    COOP
+    COOP,
 }

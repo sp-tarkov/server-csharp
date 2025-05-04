@@ -8,13 +8,19 @@ public class SptLoggerWrapper : ILogger
 {
     private readonly SptLogger<SptLoggerWrapper> _logger;
 
-    public SptLoggerWrapper(string category, JsonUtil jsonUtil, FileUtil fileUtil, SptLoggerQueueManager queueManager)
+    public SptLoggerWrapper(
+        string category,
+        JsonUtil jsonUtil,
+        FileUtil fileUtil,
+        SptLoggerQueueManager queueManager
+    )
     {
         _logger = new SptLogger<SptLoggerWrapper>(fileUtil, jsonUtil, queueManager);
         _logger.OverrideCategory(category);
     }
 
-    public IDisposable? BeginScope<TState>(TState state) where TState : notnull
+    public IDisposable? BeginScope<TState>(TState state)
+        where TState : notnull
     {
         return null;
     }
@@ -24,7 +30,13 @@ public class SptLoggerWrapper : ILogger
         return _logger.IsLogEnabled(ConvertLogLevel(logLevel));
     }
 
-    public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    public void Log<TState>(
+        Microsoft.Extensions.Logging.LogLevel logLevel,
+        EventId eventId,
+        TState state,
+        Exception? exception,
+        Func<TState, Exception?, string> formatter
+    )
     {
         var level = ConvertLogLevel(logLevel);
         switch (level)
@@ -60,7 +72,7 @@ public class SptLoggerWrapper : ILogger
             LogLevel.Warn => Microsoft.Extensions.Logging.LogLevel.Warning,
             LogLevel.Error => Microsoft.Extensions.Logging.LogLevel.Error,
             LogLevel.Fatal => Microsoft.Extensions.Logging.LogLevel.Critical,
-            _ => throw new ArgumentOutOfRangeException(nameof(level), level, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(level), level, null),
         };
     }
 
@@ -74,7 +86,7 @@ public class SptLoggerWrapper : ILogger
             Microsoft.Extensions.Logging.LogLevel.Warning => LogLevel.Warn,
             Microsoft.Extensions.Logging.LogLevel.Error => LogLevel.Error,
             Microsoft.Extensions.Logging.LogLevel.Critical => LogLevel.Fatal,
-            _ => throw new ArgumentOutOfRangeException(nameof(level), level, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(level), level, null),
         };
     }
 }

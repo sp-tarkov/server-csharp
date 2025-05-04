@@ -9,7 +9,10 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.TraderCallbacks)]
-[Injectable(InjectableTypeOverride = typeof(IOnUpdate), TypePriority = OnUpdateOrder.TraderCallbacks)]
+[Injectable(
+    InjectableTypeOverride = typeof(IOnUpdate),
+    TypePriority = OnUpdateOrder.TraderCallbacks
+)]
 [Injectable(InjectableTypeOverride = typeof(TraderCallbacks))]
 public class TraderCallbacks(
     HttpResponseUtil _httpResponseUtil,

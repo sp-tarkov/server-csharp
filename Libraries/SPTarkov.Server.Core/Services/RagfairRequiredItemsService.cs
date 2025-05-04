@@ -8,7 +8,8 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class RagfairRequiredItemsService(
     RagfairOfferService _ragfairOfferService,
-    PaymentHelper _paymentHelper)
+    PaymentHelper _paymentHelper
+)
 {
     protected ConcurrentDictionary<string, List<RagfairOffer>> _requiredItemsCache = new();
 
@@ -26,7 +27,7 @@ public class RagfairRequiredItemsService(
         foreach (var requirement in offer.Requirements)
         {
             if (_paymentHelper.IsMoneyTpl(requirement.Template))
-                // This would just be too noisy
+            // This would just be too noisy
             {
                 continue;
             }

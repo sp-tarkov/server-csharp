@@ -21,7 +21,10 @@ public class SecureContainerHelper(ItemHelper _itemHelper)
             return [];
         }
 
-        var itemsInSecureContainer = _itemHelper.FindAndReturnChildrenByItems(items, secureContainer.Id);
+        var itemsInSecureContainer = _itemHelper.FindAndReturnChildrenByItems(
+            items,
+            secureContainer.Id
+        );
 
         // Return all items returned and exclude the secure container item itself
         return itemsInSecureContainer.Where(x => x != secureContainer.Id).ToList();

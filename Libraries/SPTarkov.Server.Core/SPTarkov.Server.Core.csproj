@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
-  <Import Project="..\..\Build.props"/>
-
+  <Import Project="..\..\Build.props" />
   <PropertyGroup>
     <PackageId>SPTarkov.Server.Core</PackageId>
     <Authors>Single Player Tarkov</Authors>
@@ -14,20 +12,16 @@
     <OutputType>Library</OutputType>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\SPTarkov.DI\SPTarkov.DI.csproj"/>
+    <ProjectReference Include="..\SPTarkov.DI\SPTarkov.DI.csproj" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="System.IO.Hashing" Version="9.0.1"/>
-    <PackageReference Include="FastCloner" Version="3.3.2"/>
+    <PackageReference Include="System.IO.Hashing" Version="9.0.1" />
+    <PackageReference Include="FastCloner" Version="3.3.2" />
   </ItemGroup>
-
   <ItemGroup>
-    <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath=""/>
+    <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
-
   <PropertyGroup>
     <!--  SPT specific  -->
     <SptVersion Condition="'$(SptVersion)' == ''">4.0.0</SptVersion>
@@ -36,7 +30,6 @@
     <SptBuildType Condition="'$(SptBuildType)' == ''">LOCAL</SptBuildType>
     <!--  BuildType options - LOCAL, DEBUG, RELEASE, BLEEDING_EDGE, BLEEDING_EDGE_MODS - *must be all caps*-->
   </PropertyGroup>
-
   <!--  Generates the ProgramStatics class with the build information -->
   <Target Name="GenerateProgramStatics" BeforeTargets="BeforeBuild">
     <WriteLinesToFile
@@ -53,7 +46,8 @@ public static partial class ProgramStatics
     private static double? _buildTime = $(SptBuildTime)%3B
     private static EntryType? BuildType = EntryType.$(SptBuildType)%3B
 }
-" Overwrite="true"/>
+"
+      Overwrite="true"
+    />
   </Target>
-
 </Project>

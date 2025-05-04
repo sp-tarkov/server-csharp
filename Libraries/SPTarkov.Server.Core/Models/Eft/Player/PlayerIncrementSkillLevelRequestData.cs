@@ -6,98 +6,46 @@ namespace SPTarkov.Server.Core.Models.Eft.Player;
 public record PlayerIncrementSkillLevelRequestData
 {
     [JsonPropertyName("_id")]
-    public string? Id
-    {
-        get;
-        set;
-    }
+    public string? Id { get; set; }
 
     [JsonPropertyName("experience")]
-    public int? Experience
-    {
-        get;
-        set;
-    }
+    public int? Experience { get; set; }
 
     [JsonPropertyName("quests")]
-    public List<object>? Quests
-    {
-        get;
-        set;
-    }
+    public List<object>? Quests { get; set; }
 
     [JsonPropertyName("ragFairOffers")]
-    public List<object>? RagFairOffers
-    {
-        get;
-        set;
-    }
+    public List<object>? RagFairOffers { get; set; }
 
     [JsonPropertyName("builds")]
-    public List<object>? Builds
-    {
-        get;
-        set;
-    }
+    public List<object>? Builds { get; set; }
 
     [JsonPropertyName("items")]
-    public Items? Items
-    {
-        get;
-        set;
-    }
+    public Items? Items { get; set; }
 
     [JsonPropertyName("production")]
-    public Production? Production
-    {
-        get;
-        set;
-    }
+    public Production? Production { get; set; }
 
     [JsonPropertyName("skills")]
-    public Skills? Skills
-    {
-        get;
-        set;
-    }
+    public Skills? Skills { get; set; }
 
     [JsonPropertyName("traderRelations")]
-    public TraderRelations? TraderRelations
-    {
-        get;
-        set;
-    }
+    public TraderRelations? TraderRelations { get; set; }
 }
 
 // TODO: These are all lists of objects.
 public record Items
 {
     [JsonPropertyName("new")]
-    public List<object>? NewItems
-    {
-        get;
-        set;
-    }
+    public List<object>? NewItems { get; set; }
 
     [JsonPropertyName("change")]
-    public List<object>? ChangedItems
-    {
-        get;
-        set;
-    }
+    public List<object>? ChangedItems { get; set; }
 
     [JsonPropertyName("del")]
-    public List<object>? DeletedItems
-    {
-        get;
-        set;
-    }
+    public List<object>? DeletedItems { get; set; }
 }
 
-public record Production
-{
-}
+public record Production { }
 
-public record TraderRelations
-{
-}
+public record TraderRelations { }

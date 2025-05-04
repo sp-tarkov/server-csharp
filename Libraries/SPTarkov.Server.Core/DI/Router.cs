@@ -32,14 +32,10 @@ public abstract class Router
     {
         if (partialMatch)
         {
-            return GetInternalHandledRoutes()
-                .Where(r => r.dynamic)
-                .Any(r => url.Contains(r.route));
+            return GetInternalHandledRoutes().Where(r => r.dynamic).Any(r => url.Contains(r.route));
         }
 
-        return GetInternalHandledRoutes()
-            .Where(r => !r.dynamic)
-            .Any(r => r.route == url);
+        return GetInternalHandledRoutes().Where(r => !r.dynamic).Any(r => r.route == url);
     }
 }
 
@@ -61,7 +57,7 @@ public abstract class StaticRouter : Router
         IRequestData? info = null;
         if (type != null && !string.IsNullOrEmpty(body))
         {
-            info = (IRequestData?) _jsonUtil.Deserialize(body, type);
+            info = (IRequestData?)_jsonUtil.Deserialize(body, type);
         }
 
         return action.action(url, info, sessionID, output);
@@ -91,7 +87,7 @@ public abstract class DynamicRouter : Router
         IRequestData? info = null;
         if (type != null && !string.IsNullOrEmpty(body))
         {
-            info = (IRequestData?) _jsonUtil.Deserialize(body, type);
+            info = (IRequestData?)_jsonUtil.Deserialize(body, type);
         }
 
         return action.action(url, info, sessionID, output);
@@ -107,11 +103,13 @@ public abstract class DynamicRouter : Router
 // So instead I added the definition
 public abstract class ItemEventRouterDefinition : Router
 {
-    public abstract ItemEventRouterResponse? HandleItemEvent(string url,
+    public abstract ItemEventRouterResponse? HandleItemEvent(
+        string url,
         PmcData pmcData,
         BaseInteractionRequestData body,
         string sessionID,
-        ItemEventRouterResponse output);
+        ItemEventRouterResponse output
+    );
 }
 
 public abstract class SaveLoadRouter : Router

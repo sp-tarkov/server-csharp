@@ -24,7 +24,11 @@ public class HealthCallbacks(
     /// <returns>empty response, no data sent back to client</returns>
     public string HandleWorkoutEffects(string url, WorkoutData info, string sessionID)
     {
-        _healthController.ApplyWorkoutChanges(_profileHelper.GetPmcProfile(sessionID), info, sessionID);
+        _healthController.ApplyWorkoutChanges(
+            _profileHelper.GetPmcProfile(sessionID),
+            info,
+            sessionID
+        );
         return _httpResponseUtil.EmptyResponse();
     }
 
@@ -35,7 +39,11 @@ public class HealthCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse OffraidEat(PmcData pmcData, OffraidEatRequestData info, string sessionID)
+    public ItemEventRouterResponse OffraidEat(
+        PmcData pmcData,
+        OffraidEatRequestData info,
+        string sessionID
+    )
     {
         return _healthController.OffRaidEat(pmcData, info, sessionID);
     }
@@ -47,7 +55,11 @@ public class HealthCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse OffraidHeal(PmcData pmcData, OffraidHealRequestData info, string sessionID)
+    public ItemEventRouterResponse OffraidHeal(
+        PmcData pmcData,
+        OffraidHealRequestData info,
+        string sessionID
+    )
     {
         return _healthController.OffRaidHeal(pmcData, info, sessionID);
     }
@@ -59,7 +71,11 @@ public class HealthCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse HealthTreatment(PmcData pmcData, HealthTreatmentRequestData info, string sessionID)
+    public ItemEventRouterResponse HealthTreatment(
+        PmcData pmcData,
+        HealthTreatmentRequestData info,
+        string sessionID
+    )
     {
         return _healthController.HealthTreatment(pmcData, info, sessionID);
     }

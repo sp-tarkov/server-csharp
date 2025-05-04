@@ -15,5 +15,5 @@ public enum ModSpawn
     /**
      * Item should not be chosen
      */
-    SKIP = 2
+    SKIP = 2,
 }

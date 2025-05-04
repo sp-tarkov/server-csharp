@@ -71,7 +71,7 @@ public class RagfairLinkedItemService(
 
             // Edge case, ensure ammo for revolves is included
             if (item.Parent == BaseClasses.REVOLVER)
-                // Find magazine for revolver
+            // Find magazine for revolver
             {
                 AddRevolverCylinderAmmoToLinkedItems(item, itemLinkedSet);
             }
@@ -80,12 +80,19 @@ public class RagfairLinkedItemService(
         linkedItemsCache = linkedItems;
     }
 
-    protected void ApplyLinkedItems(HashSet<string> items, TemplateItem item, HashSet<string> itemLinkedSet)
+    protected void ApplyLinkedItems(
+        HashSet<string> items,
+        TemplateItem item,
+        HashSet<string> itemLinkedSet
+    )
     {
         itemLinkedSet.UnionWith(items);
     }
 
-    protected HashSet<string> GetLinkedItems(Dictionary<string, HashSet<string>> linkedItems, string id)
+    protected HashSet<string> GetLinkedItems(
+        Dictionary<string, HashSet<string>> linkedItems,
+        string id
+    )
     {
         linkedItems.TryAdd(id, []);
 
@@ -97,7 +104,10 @@ public class RagfairLinkedItemService(
     /// </summary>
     /// <param name="cylinder"> Revolvers cylinder </param>
     /// <param name="itemLinkedSet"> Set to add to </param>
-    protected void AddRevolverCylinderAmmoToLinkedItems(TemplateItem cylinder, HashSet<string> itemLinkedSet)
+    protected void AddRevolverCylinderAmmoToLinkedItems(
+        TemplateItem cylinder,
+        HashSet<string> itemLinkedSet
+    )
     {
         var cylinderMod = cylinder.Properties.Slots?.FirstOrDefault(x => x.Name == "mod_magazine");
         if (cylinderMod != null)

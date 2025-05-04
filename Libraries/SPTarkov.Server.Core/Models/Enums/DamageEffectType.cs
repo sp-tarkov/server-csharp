@@ -10,5 +10,5 @@ public enum DamageEffectType
     LethalIntoxication,
     RadExposure,
     Pain,
-    DestroyedPart
+    DestroyedPart,
 }

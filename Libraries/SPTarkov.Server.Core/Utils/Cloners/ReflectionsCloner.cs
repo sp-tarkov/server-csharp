@@ -21,7 +21,7 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
 
     public T? Clone<T>(T? obj)
     {
-        return (T?) Clone(obj, typeof(T)).Result;
+        return (T?)Clone(obj, typeof(T)).Result;
     }
 
     public async Task<object?> Clone(object? obj, Type objectType)
@@ -66,18 +66,24 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
                 (result as IDictionary).Add(clonedKey, clonedValue);
             }
         }
-        else if (objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(HashSet<>))
+        else if (
+            objectType.IsGenericType
+            && objectType.GetGenericTypeDefinition() == typeof(HashSet<>)
+        )
         {
             if (!AddMethodInfoCache.TryGetValue(objectType, out var addMethodInfo))
             {
-                addMethodInfo = objectType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public);
+                addMethodInfo = objectType.GetMethod(
+                    "Add",
+                    BindingFlags.Instance | BindingFlags.Public
+                );
                 while (!AddMethodInfoCache.TryAdd(objectType, addMethodInfo))
                 {
                     ;
                 }
             }
 
-            var toCloneEnumerable = (IEnumerable) obj;
+            var toCloneEnumerable = (IEnumerable)obj;
 
             foreach (var toClone in toCloneEnumerable)
             {
@@ -113,9 +119,11 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
                         case PropertyInfo propertyInfo:
 
                             var propertyValue = propertyInfo.GetValue(obj, null);
-                            var propertyCloned = await Clone(propertyValue, propertyInfo.PropertyType);
+                            var propertyCloned = await Clone(
+                                propertyValue,
+                                propertyInfo.PropertyType
+                            );
                             propertyInfo.SetValue(result, propertyCloned, null);
-
 
                             break;
                         case FieldInfo fieldInfo:
@@ -124,14 +132,15 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
                             var fieldCloned = await Clone(fieldValue, fieldInfo.FieldType);
                             fieldInfo.SetValue(result, fieldCloned);
 
-
                             break;
                         case MemberInfo:
                             break;
                         default:
                             if (logger.IsLogEnabled(LogLevel.Debug))
                             {
-                                logger.Debug($"Unknown member type {member.Name} {member.MemberType}");
+                                logger.Debug(
+                                    $"Unknown member type {member.Name} {member.MemberType}"
+                                );
                             }
 
                             break;
@@ -179,8 +188,10 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
                 }
             }
 
-            item.GetSetMethod(true).Invoke(clone, [await Clone(item.GetValue(obj), item.PropertyType)]);
-            list.GetSetMethod(true).Invoke(clone, [await Clone(list.GetValue(obj), list.PropertyType)]);
+            item.GetSetMethod(true)
+                .Invoke(clone, [await Clone(item.GetValue(obj), item.PropertyType)]);
+            list.GetSetMethod(true)
+                .Invoke(clone, [await Clone(list.GetValue(obj), list.PropertyType)]);
             return clone;
         }
 

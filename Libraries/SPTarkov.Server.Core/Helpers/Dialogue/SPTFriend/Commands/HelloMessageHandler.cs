@@ -9,12 +9,18 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
-public class HelloMessageHandler(
-    MailSendService _mailSendService,
-    RandomUtil _randomUtil) : IChatMessageHandler
+public class HelloMessageHandler(MailSendService _mailSendService, RandomUtil _randomUtil)
+    : IChatMessageHandler
 {
-    protected static readonly FrozenSet<string> _listOfGreetings = ["hello", "hi", "sup", "yo", "hey", "bonjour"];
-
+    protected static readonly FrozenSet<string> _listOfGreetings =
+    [
+        "hello",
+        "hi",
+        "sup",
+        "yo",
+        "hey",
+        "bonjour",
+    ];
 
     public int GetPriority()
     {
@@ -26,7 +32,12 @@ public class HelloMessageHandler(
         return _listOfGreetings.Contains(message, StringComparer.OrdinalIgnoreCase);
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
+    public void Process(
+        string sessionId,
+        UserDialogInfo sptFriendUser,
+        PmcData? sender,
+        object? extraInfo = null
+    )
     {
         _mailSendService.SendUserMessageToPlayer(
             sessionId,
@@ -43,14 +54,13 @@ public class HelloMessageHandler(
                     "Heyyyyy",
                     "Hey there",
                     "OH its you",
-                    $"Hello {sender?.Info?.Nickname}"
+                    $"Hello {sender?.Info?.Nickname}",
                 ]
             ),
             [],
             null
         );
     }
-
 
     public string GetCommand()
     {
@@ -67,7 +77,11 @@ public class HelloMessageHandler(
         return "'hello' replies to the player with a random greeting";
     }
 
-    public string PerformAction(UserDialogInfo commandHandler, string sessionId, SendMessageRequest request)
+    public string PerformAction(
+        UserDialogInfo commandHandler,
+        string sessionId,
+        SendMessageRequest request
+    )
     {
         _mailSendService.SendUserMessageToPlayer(
             sessionId,
@@ -83,7 +97,7 @@ public class HelloMessageHandler(
                     "Sup",
                     "Heyyyyy",
                     "Hey there",
-                    "OH its you"
+                    "OH its you",
                 ]
             ),
             [],

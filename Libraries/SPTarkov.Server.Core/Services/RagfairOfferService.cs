@@ -131,7 +131,7 @@ public class RagfairOfferService(
             var pmcData = saveServer.GetProfile(sessionId)?.CharacterData?.PmcData;
 
             if (pmcData?.RagfairInfo?.Offers == null)
-                // Profile is wiped
+            // Profile is wiped
             {
                 continue;
             }
@@ -195,19 +195,28 @@ public class RagfairOfferService(
         var profile = profileHelper.GetProfileByPmcId(pmcId);
         if (profile == null)
         {
-            logger.Error($"Unable to return flea offer {playerOffer.Id} as the profile: {pmcId} could not be found");
+            logger.Error(
+                $"Unable to return flea offer {playerOffer.Id} as the profile: {pmcId} could not be found"
+            );
             return;
         }
 
         var offerinProfileIndex = profile.RagfairInfo.Offers.FindIndex(o => o.Id == playerOffer.Id);
         if (offerinProfileIndex == -1)
         {
-            logger.Warning(localisationService.GetText("ragfair-unable_to_find_offer_to_remove", playerOffer.Id));
+            logger.Warning(
+                localisationService.GetText(
+                    "ragfair-unable_to_find_offer_to_remove",
+                    playerOffer.Id
+                )
+            );
             return;
         }
 
         // Reduce player ragfair rep
-        profile.RagfairInfo.Rating -= databaseService.GetGlobals().Configuration.RagFair.RatingDecreaseCount;
+        profile.RagfairInfo.Rating -= databaseService
+            .GetGlobals()
+            .Configuration.RagFair.RatingDecreaseCount;
         profile.RagfairInfo.IsRatingGrowing = false;
 
         // Increment players 'notSellSum' value
@@ -217,7 +226,9 @@ public class RagfairOfferService(
         var firstOfferItem = playerOffer.Items[0];
         if (firstOfferItem.Upd.StackObjectsCount > firstOfferItem.Upd.OriginalStackObjectsCount)
         {
-            playerOffer.Items[0].Upd.StackObjectsCount = firstOfferItem.Upd.OriginalStackObjectsCount;
+            playerOffer.Items[0].Upd.StackObjectsCount = firstOfferItem
+                .Upd
+                .OriginalStackObjectsCount;
         }
 
         playerOffer.Items[0].Upd.OriginalStackObjectsCount = null;
@@ -303,6 +314,7 @@ public class RagfairOfferService(
 
     public bool EnoughExpiredOffersExistToProcess()
     {
-        return ragfairOfferHolder.GetExpiredOfferCount() >= _ragfairConfig.Dynamic.ExpiredOfferThreshold;
+        return ragfairOfferHolder.GetExpiredOfferCount()
+            >= _ragfairConfig.Dynamic.ExpiredOfferThreshold;
     }
 }

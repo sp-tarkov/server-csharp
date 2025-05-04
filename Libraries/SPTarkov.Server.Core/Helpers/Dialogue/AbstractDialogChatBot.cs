@@ -28,10 +28,14 @@ public abstract class AbstractDialogChatBot(
 
         var splitCommand = request.Text.Split(" ");
 
-        var commandos = _chatCommands.Where(c => c.GetCommandPrefix() == splitCommand.FirstOrDefault());
+        var commandos = _chatCommands.Where(c =>
+            c.GetCommandPrefix() == splitCommand.FirstOrDefault()
+        );
         if (commandos.FirstOrDefault()?.GetCommands().Contains(splitCommand[1]) ?? false)
         {
-            return commandos.FirstOrDefault().Handle(splitCommand[1], GetChatBot(), sessionId, request);
+            return commandos
+                .FirstOrDefault()
+                .Handle(splitCommand[1], GetChatBot(), sessionId, request);
         }
 
         if (splitCommand.FirstOrDefault()?.ToLower() == "help")

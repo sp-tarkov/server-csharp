@@ -54,11 +54,7 @@ public class ModDllLoader
     /// <returns>SptMod</returns>
     private static SptMod LoadMod(string path)
     {
-        var result = new SptMod
-        {
-            Directory = path,
-            Assemblies = []
-        };
+        var result = new SptMod { Directory = path, Assemblies = [] };
         var asmCount = 0;
         var packCount = 0;
         foreach (var file in new DirectoryInfo(path).GetFiles()) // only search top level
@@ -79,7 +75,11 @@ public class ModDllLoader
             if (file.Extension.ToLower() == ".dll")
             {
                 asmCount++;
-                result.Assemblies.Add(AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.GetFullPath(file.FullName)));
+                result.Assemblies.Add(
+                    AssemblyLoadContext.Default.LoadFromAssemblyPath(
+                        Path.GetFullPath(file.FullName)
+                    )
+                );
             }
         }
 
@@ -98,11 +98,17 @@ public class ModDllLoader
             throw new Exception($"No Assemblies found in path: {Path.GetFullPath(path)}");
         }
 
-        if (result.PackageJson?.Name == null || result.PackageJson?.Author == null ||
-            result.PackageJson?.Version == null || result.PackageJson?.Licence == null ||
-            result.PackageJson?.SptVersion == null)
+        if (
+            result.PackageJson?.Name == null
+            || result.PackageJson?.Author == null
+            || result.PackageJson?.Version == null
+            || result.PackageJson?.Licence == null
+            || result.PackageJson?.SptVersion == null
+        )
         {
-            throw new Exception($"The package.json file for {path} is missing one of these properties: name, author, licence, version or sptVersion");
+            throw new Exception(
+                $"The package.json file for {path} is missing one of these properties: name, author, licence, version or sptVersion"
+            );
         }
 
         return result;

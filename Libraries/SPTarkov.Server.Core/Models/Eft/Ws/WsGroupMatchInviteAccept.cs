@@ -7,58 +7,26 @@ public record WsGroupMatchInviteAccept : WsNotificationEvent // TODO: trying to 
 {
     // Copy pasted properties from GroupCharacter to resolve multitype
     [JsonPropertyName("_id")]
-    public string? Id
-    {
-        get;
-        set;
-    }
+    public string? Id { get; set; }
 
     [JsonPropertyName("aid")]
-    public int? Aid
-    {
-        get;
-        set;
-    }
+    public int? Aid { get; set; }
 
     [JsonPropertyName("Info")]
-    public CharacterInfo? Info
-    {
-        get;
-        set;
-    }
+    public CharacterInfo? Info { get; set; }
 
     [JsonPropertyName("PlayerVisualRepresentation")]
-    public PlayerVisualRepresentation? VisualRepresentation
-    {
-        get;
-        set;
-    }
+    public PlayerVisualRepresentation? VisualRepresentation { get; set; }
 
     [JsonPropertyName("isLeader")]
-    public bool? IsLeader
-    {
-        get;
-        set;
-    }
+    public bool? IsLeader { get; set; }
 
     [JsonPropertyName("isReady")]
-    public bool? IsReady
-    {
-        get;
-        set;
-    }
+    public bool? IsReady { get; set; }
 
     [JsonPropertyName("region")]
-    public string? Region
-    {
-        get;
-        set;
-    }
+    public string? Region { get; set; }
 
     [JsonPropertyName("lookingGroup")]
-    public bool? LookingGroup
-    {
-        get;
-        set;
-    }
+    public bool? LookingGroup { get; set; }
 }

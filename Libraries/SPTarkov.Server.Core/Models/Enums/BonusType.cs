@@ -32,5 +32,5 @@ public enum BonusType
     MaximumEnergyReserve,
     TextBonus,
     SkillGroupLevelingBoost,
-    StashRows
+    StashRows,
 }

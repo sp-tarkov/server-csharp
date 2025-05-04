@@ -64,10 +64,15 @@ public class RepeatableQuestRewardGenerator(
         string traderId,
         RepeatableQuestConfig repeatableConfig,
         BaseQuestConfig eliminationConfig,
-        List<string>? rewardTplBlacklist = null)
+        List<string>? rewardTplBlacklist = null
+    )
     {
         // Get vars to configure rewards with
-        var rewardParams = GetQuestRewardValues(repeatableConfig.RewardScaling, difficulty, pmcLevel);
+        var rewardParams = GetQuestRewardValues(
+            repeatableConfig.RewardScaling,
+            difficulty,
+            pmcLevel
+        );
 
         // Get budget to spend on item rewards (copy of raw roubles given)
         var itemRewardBudget = rewardParams.RewardRoubles;
@@ -77,7 +82,7 @@ public class RepeatableQuestRewardGenerator(
         {
             Started = [],
             Success = [],
-            Fail = []
+            Fail = [],
         };
 
         // Start reward index to keep track
@@ -95,28 +100,40 @@ public class RepeatableQuestRewardGenerator(
                     AvailableInGameEditions = [],
                     Index = rewardIndex,
                     Value = rewardParams.RewardXP,
-                    Type = RewardType.Experience
+                    Type = RewardType.Experience,
                 }
             );
             rewardIndex++;
         }
 
         // Add money reward
-        rewards.Success.Add(GetMoneyReward(traderId, rewardParams.RewardRoubles.Value, rewardIndex));
+        rewards.Success.Add(
+            GetMoneyReward(traderId, rewardParams.RewardRoubles.Value, rewardIndex)
+        );
         rewardIndex++;
 
         // Add GP coin reward
-        rewards.Success.Add(GenerateItemReward(Money.GP, rewardParams.GpCoinRewardCount.Value, rewardIndex));
+        rewards.Success.Add(
+            GenerateItemReward(Money.GP, rewardParams.GpCoinRewardCount.Value, rewardIndex)
+        );
         rewardIndex++;
 
         // Add preset weapon to reward if checks pass
-        var traderWhitelistDetails = repeatableConfig.TraderWhitelist.FirstOrDefault(traderWhitelist => traderWhitelist.TraderId == traderId
+        var traderWhitelistDetails = repeatableConfig.TraderWhitelist.FirstOrDefault(
+            traderWhitelist => traderWhitelist.TraderId == traderId
         );
-        if (traderWhitelistDetails?.RewardCanBeWeapon ??
-            (false && _randomUtil.GetChance100(traderWhitelistDetails.WeaponRewardChancePercent ?? 0))
-           )
+        if (
+            traderWhitelistDetails?.RewardCanBeWeapon
+            ?? (
+                false
+                && _randomUtil.GetChance100(traderWhitelistDetails.WeaponRewardChancePercent ?? 0)
+            )
+        )
         {
-            var chosenWeapon = GetRandomWeaponPresetWithinBudget(itemRewardBudget.Value, rewardIndex);
+            var chosenWeapon = GetRandomWeaponPresetWithinBudget(
+                itemRewardBudget.Value,
+                rewardIndex
+            );
             if (chosenWeapon is not null)
             {
                 rewards.Success.Add(chosenWeapon.Value.Key);
@@ -127,18 +144,22 @@ public class RepeatableQuestRewardGenerator(
             }
         }
 
-        var inBudgetRewardItemPool = ChooseRewardItemsWithinBudget(repeatableConfig, itemRewardBudget, traderId);
+        var inBudgetRewardItemPool = ChooseRewardItemsWithinBudget(
+            repeatableConfig,
+            itemRewardBudget,
+            traderId
+        );
         if (rewardTplBlacklist is not null)
         {
             // Filter reward pool of items from blacklist, only use if there's at least 1 item remaining
-            var filteredRewardItemPool = inBudgetRewardItemPool.Where(item => !rewardTplBlacklist.Contains(item.Id)
+            var filteredRewardItemPool = inBudgetRewardItemPool.Where(item =>
+                !rewardTplBlacklist.Contains(item.Id)
             );
             if (filteredRewardItemPool.Count() > 0)
             {
                 inBudgetRewardItemPool = filteredRewardItemPool.ToList();
             }
         }
-
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
@@ -159,7 +180,9 @@ public class RepeatableQuestRewardGenerator(
             // Add item rewards
             foreach (var itemReward in itemsToReward)
             {
-                rewards.Success.Add(GenerateItemReward(itemReward.Key.Id, itemReward.Value, rewardIndex));
+                rewards.Success.Add(
+                    GenerateItemReward(itemReward.Key.Id, itemReward.Value, rewardIndex)
+                );
                 rewardIndex++;
             }
         }
@@ -176,19 +199,21 @@ public class RepeatableQuestRewardGenerator(
                 Target = traderId,
                 Value = rewardParams.RewardReputation,
                 Type = RewardType.TraderStanding,
-                Index = rewardIndex
+                Index = rewardIndex,
             };
             rewards.Success.Add(reward);
             rewardIndex++;
 
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Adding: {rewardParams.RewardReputation} {traderId} trader reputation reward");
+                _logger.Debug(
+                    $"Adding: {rewardParams.RewardReputation} {traderId} trader reputation reward"
+                );
             }
         }
 
         // Chance of adding skill reward
-        if (_randomUtil.GetChance100((double) rewardParams.SkillRewardChance * 100))
+        if (_randomUtil.GetChance100((double)rewardParams.SkillRewardChance * 100))
         {
             var targetSkill = _randomUtil.GetArrayValue(eliminationConfig.PossibleSkillRewards);
             Reward reward = new()
@@ -200,20 +225,26 @@ public class RepeatableQuestRewardGenerator(
                 Target = targetSkill,
                 Value = rewardParams.SkillPointReward,
                 Type = RewardType.Skill,
-                Index = rewardIndex
+                Index = rewardIndex,
             };
             rewards.Success.Add(reward);
 
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Adding {rewardParams.SkillPointReward} skill points to {targetSkill}");
+                _logger.Debug(
+                    $"Adding {rewardParams.SkillPointReward} skill points to {targetSkill}"
+                );
             }
         }
 
         return rewards;
     }
 
-    protected QuestRewardValues GetQuestRewardValues(RewardScaling? rewardScaling, double? difficulty, int pmcLevel)
+    protected QuestRewardValues GetQuestRewardValues(
+        RewardScaling? rewardScaling,
+        double? difficulty,
+        int pmcLevel
+    )
     {
         // difficulty could go from 0.2 ... -> for lowest difficulty receive 0.2*nominal reward
         var levelsConfig = rewardScaling.Levels;
@@ -258,61 +289,102 @@ public class RepeatableQuestRewardGenerator(
                 gpCoinConfig,
                 rewardSpreadConfig
             ),
-            RewardXP = GetRewardXp(effectiveDifficulty, pmcLevel, levelsConfig, xpConfig, rewardSpreadConfig)
+            RewardXP = GetRewardXp(
+                effectiveDifficulty,
+                pmcLevel,
+                levelsConfig,
+                xpConfig,
+                rewardSpreadConfig
+            ),
         };
     }
 
-    protected double GetRewardXp(double? effectiveDifficulty, int pmcLevel, List<double>? levelsConfig,
-        List<double>? xpConfig, double? rewardSpreadConfig)
+    protected double GetRewardXp(
+        double? effectiveDifficulty,
+        int pmcLevel,
+        List<double>? levelsConfig,
+        List<double>? xpConfig,
+        double? rewardSpreadConfig
+    )
     {
         return Math.Floor(
-            effectiveDifficulty *
-            _mathUtil.Interp1(pmcLevel, levelsConfig, xpConfig) *
-            _randomUtil.GetDouble((double) (1 - rewardSpreadConfig), (double) (1 + rewardSpreadConfig)) ??
-            0
+            effectiveDifficulty
+                * _mathUtil.Interp1(pmcLevel, levelsConfig, xpConfig)
+                * _randomUtil.GetDouble(
+                    (double)(1 - rewardSpreadConfig),
+                    (double)(1 + rewardSpreadConfig)
+                )
+                ?? 0
         );
     }
 
-    protected double GetGpCoinRewardCount(double? effectiveDifficulty, int pmcLevel, List<double>? levelsConfig,
+    protected double GetGpCoinRewardCount(
+        double? effectiveDifficulty,
+        int pmcLevel,
+        List<double>? levelsConfig,
         List<double>? gpCoinConfig,
-        double? rewardSpreadConfig)
+        double? rewardSpreadConfig
+    )
     {
         return Math.Ceiling(
-            effectiveDifficulty *
-            _mathUtil.Interp1(pmcLevel, levelsConfig, gpCoinConfig) *
-            _randomUtil.GetDouble((double) (1 - rewardSpreadConfig), (double) (1 + rewardSpreadConfig)) ??
-            0
+            effectiveDifficulty
+                * _mathUtil.Interp1(pmcLevel, levelsConfig, gpCoinConfig)
+                * _randomUtil.GetDouble(
+                    (double)(1 - rewardSpreadConfig),
+                    (double)(1 + rewardSpreadConfig)
+                )
+                ?? 0
         );
     }
 
-    protected double GetRewardRep(double? effectiveDifficulty, int pmcLevel, List<double>? levelsConfig,
+    protected double GetRewardRep(
+        double? effectiveDifficulty,
+        int pmcLevel,
+        List<double>? levelsConfig,
         List<double>? reputationConfig,
-        double? rewardSpreadConfig)
+        double? rewardSpreadConfig
+    )
     {
         return Math.Round(
-                   100 *
-                   effectiveDifficulty *
-                   _mathUtil.Interp1(pmcLevel, levelsConfig, reputationConfig) *
-                   _randomUtil.GetDouble((double) (1 - rewardSpreadConfig), (double) (1 + rewardSpreadConfig)) ??
-                   0
-               ) /
-               100;
+                100
+                    * effectiveDifficulty
+                    * _mathUtil.Interp1(pmcLevel, levelsConfig, reputationConfig)
+                    * _randomUtil.GetDouble(
+                        (double)(1 - rewardSpreadConfig),
+                        (double)(1 + rewardSpreadConfig)
+                    )
+                    ?? 0
+            ) / 100;
     }
 
-    protected int GetRewardNumItems(int pmcLevel, List<double>? levelsConfig, List<double>? itemsConfig)
+    protected int GetRewardNumItems(
+        int pmcLevel,
+        List<double>? levelsConfig,
+        List<double>? itemsConfig
+    )
     {
-        return _randomUtil.RandInt(1, (int) Math.Round(_mathUtil.Interp1(pmcLevel, levelsConfig, itemsConfig) ?? 0) + 1);
+        return _randomUtil.RandInt(
+            1,
+            (int)Math.Round(_mathUtil.Interp1(pmcLevel, levelsConfig, itemsConfig) ?? 0) + 1
+        );
     }
 
-    protected double GetRewardRoubles(double? effectiveDifficulty, int pmcLevel, List<double>? levelsConfig,
+    protected double GetRewardRoubles(
+        double? effectiveDifficulty,
+        int pmcLevel,
+        List<double>? levelsConfig,
         List<double>? roublesConfig,
-        double? rewardSpreadConfig)
+        double? rewardSpreadConfig
+    )
     {
         return Math.Floor(
-            effectiveDifficulty *
-            _mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) *
-            _randomUtil.GetDouble(1d - rewardSpreadConfig.Value, 1d + rewardSpreadConfig.Value) ??
-            0
+            effectiveDifficulty
+                * _mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig)
+                * _randomUtil.GetDouble(
+                    1d - rewardSpreadConfig.Value,
+                    1d + rewardSpreadConfig.Value
+                )
+                ?? 0
         );
     }
 
@@ -324,8 +396,12 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="itemRewardBudget"> Rouble budget all item rewards must fit in </param>
     /// <param name="repeatableConfig"> Config for quest type </param>
     /// <returns> Dictionary of items and stack size</returns>
-    protected Dictionary<TemplateItem, int> GetRewardableItemsFromPoolWithinBudget(List<TemplateItem> itemPool,
-        int maxItemCount, double itemRewardBudget, RepeatableQuestConfig repeatableConfig)
+    protected Dictionary<TemplateItem, int> GetRewardableItemsFromPoolWithinBudget(
+        List<TemplateItem> itemPool,
+        int maxItemCount,
+        double itemRewardBudget,
+        RepeatableQuestConfig repeatableConfig
+    )
     {
         var itemsToReturn = new Dictionary<TemplateItem, int>();
         var exhausableItemPool = new ExhaustableArray<TemplateItem>(itemPool, _randomUtil, _cloner);
@@ -346,7 +422,10 @@ public class RepeatableQuestRewardGenerator(
             if (_itemHelper.IsOfBaseclass(chosenItemFromPool.Id, BaseClasses.AMMO))
             {
                 // Don't reward ammo that stacks to less than what's allowed in config
-                if (chosenItemFromPool.Properties.StackMaxSize < repeatableConfig.RewardAmmoStackMinSize)
+                if (
+                    chosenItemFromPool.Properties.StackMaxSize
+                    < repeatableConfig.RewardAmmoStackMinSize
+                )
                 {
                     i--;
                     continue;
@@ -373,7 +452,9 @@ public class RepeatableQuestRewardGenerator(
             var calculatedItemRewardBudget = itemRewardBudget - rewardItemStackCount * itemCost;
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Added item: {chosenItemFromPool.Id} with price: {rewardItemStackCount * itemCost}");
+                _logger.Debug(
+                    $"Added item: {chosenItemFromPool.Id} with price: {rewardItemStackCount * itemCost}"
+                );
             }
 
             // If we still have budget narrow down possible items
@@ -390,7 +471,9 @@ public class RepeatableQuestRewardGenerator(
                 {
                     if (_logger.IsLogEnabled(LogLevel.Debug))
                     {
-                        _logger.Debug($"Reward pool empty with: {calculatedItemRewardBudget} roubles of budget remaining");
+                        _logger.Debug(
+                            $"Reward pool empty with: {calculatedItemRewardBudget} roubles of budget remaining"
+                        );
                     }
                 }
             }
@@ -410,8 +493,11 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="roublesBudget"> Rouble budget </param>
     /// <param name="rewardNumItems"> Count of rewarded items </param>
     /// <returns> Count that fits budget (min 1) </returns>
-    protected int CalculateAmmoStackSizeThatFitsBudget(TemplateItem itemSelected, double roublesBudget,
-        int rewardNumItems)
+    protected int CalculateAmmoStackSizeThatFitsBudget(
+        TemplateItem itemSelected,
+        double roublesBudget,
+        int rewardNumItems
+    )
     {
         // Calculate budget per reward item
         var stackRoubleBudget = roublesBudget / rewardNumItems;
@@ -425,23 +511,22 @@ public class RepeatableQuestRewardGenerator(
         var stackMaxCount = Math.Min(itemSelected.Properties.StackMaxSize.Value, 100);
 
         // Ensure stack size is at least 1 + is no larger than the max possible stack size
-        return (int) Math.Max(1, Math.Min(stackSizeThatFitsBudget, stackMaxCount));
+        return (int)Math.Max(1, Math.Min(stackSizeThatFitsBudget, stackMaxCount));
     }
 
-    protected bool CanIncreaseRewardItemStackSize(TemplateItem item, int maxRoublePriceToStack,
-        int randomChanceToPass = 100)
+    protected bool CanIncreaseRewardItemStackSize(
+        TemplateItem item,
+        int maxRoublePriceToStack,
+        int randomChanceToPass = 100
+    )
     {
         var isEligibleForStackSizeIncrease =
-            _presetHelper.GetDefaultPresetOrItemPrice(item.Id) < maxRoublePriceToStack &&
-            !_itemHelper.IsOfBaseclasses(
+            _presetHelper.GetDefaultPresetOrItemPrice(item.Id) < maxRoublePriceToStack
+            && !_itemHelper.IsOfBaseclasses(
                 item.Id,
-                [
-                    BaseClasses.WEAPON,
-                    BaseClasses.ARMORED_EQUIPMENT,
-                    BaseClasses.AMMO
-                ]
-            ) &&
-            !_itemHelper.ItemRequiresSoftInserts(item.Id);
+                [BaseClasses.WEAPON, BaseClasses.ARMORED_EQUIPMENT, BaseClasses.AMMO]
+            )
+            && !_itemHelper.ItemRequiresSoftInserts(item.Id);
 
         return isEligibleForStackSizeIncrease && _randomUtil.GetChance100(randomChanceToPass);
     }
@@ -460,7 +545,7 @@ public class RepeatableQuestRewardGenerator(
         {
             new(3000, [2, 3, 4]),
             new(10000, [2, 3]),
-            new(int.MaxValue, [2, 3, 4]) // Default for prices 10001+ RUB
+            new(int.MaxValue, [2, 3, 4]), // Default for prices 10001+ RUB
         };
 
         // Find the appropriate price tier and return a random stack size from its options
@@ -480,8 +565,11 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="roublesBudget"> Total value of items to return </param>
     /// <param name="traderId"> ID of the trader who will give player reward </param>
     /// <returns> List of reward items that fit budget </returns>
-    protected List<TemplateItem> ChooseRewardItemsWithinBudget(RepeatableQuestConfig repeatableConfig,
-        double? roublesBudget, string traderId)
+    protected List<TemplateItem> ChooseRewardItemsWithinBudget(
+        RepeatableQuestConfig repeatableConfig,
+        double? roublesBudget,
+        string traderId
+    )
     {
         // First filter for type and baseclass to avoid lookup in handbook for non-available items
         var rewardableItemPool = GetRewardableItems(repeatableConfig, traderId);
@@ -498,11 +586,7 @@ public class RepeatableQuestRewardGenerator(
             _logger.Warning(
                 _localisationService.GetText(
                     "repeatable-no_reward_item_found_in_price_range",
-                    new
-                    {
-                        minPrice,
-                        roublesBudget
-                    }
+                    new { minPrice, roublesBudget }
                 )
             );
 
@@ -522,15 +606,18 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="roublesBudget"> The budget remaining for rewards </param>
     /// <param name="minPrice"> The minimum priced item to include </param>
     /// <returns> List of Items </returns>
-    protected List<TemplateItem> FilterRewardPoolWithinBudget(List<TemplateItem> rewardItems, double roublesBudget,
-        double minPrice)
+    protected List<TemplateItem> FilterRewardPoolWithinBudget(
+        List<TemplateItem> rewardItems,
+        double roublesBudget,
+        double minPrice
+    )
     {
-        return rewardItems.Where(item =>
-                {
-                    var itemPrice = _presetHelper.GetDefaultPresetOrItemPrice(item.Id);
-                    return itemPrice < roublesBudget && itemPrice > minPrice;
-                }
-            )
+        return rewardItems
+            .Where(item =>
+            {
+                var itemPrice = _presetHelper.GetDefaultPresetOrItemPrice(item.Id);
+                return itemPrice < roublesBudget && itemPrice > minPrice;
+            })
             .ToList();
     }
 
@@ -540,7 +627,10 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="roublesBudget"> Budget in roubles </param>
     /// <param name="rewardIndex"> Index of the reward </param>
     /// <returns> Dictionary of the reward and it's price, can return null. </returns>
-    protected KeyValuePair<Reward, double>? GetRandomWeaponPresetWithinBudget(double roublesBudget, int rewardIndex)
+    protected KeyValuePair<Reward, double>? GetRandomWeaponPresetWithinBudget(
+        double roublesBudget,
+        int rewardIndex
+    )
     {
         // Add a random default preset weapon as reward
         var defaultPresetPool = new ExhaustableArray<Preset>(
@@ -568,7 +658,12 @@ public class RepeatableQuestRewardGenerator(
                 var chosenPreset = _cloner.Clone(randomPreset);
 
                 return new KeyValuePair<Reward, double>(
-                    GeneratePresetReward(chosenPreset.Encyclopedia, 1, rewardIndex, chosenPreset.Items),
+                    GeneratePresetReward(
+                        chosenPreset.Encyclopedia,
+                        1,
+                        rewardIndex,
+                        chosenPreset.Items
+                    ),
                     presetPrice
                 );
             }
@@ -586,7 +681,13 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="preset"> Optional list of preset items </param>
     /// <param name="foundInRaid"> If generated Item is found in raid, default True </param>
     /// <returns> Object of "Reward"-item-type </returns>
-    protected Reward GeneratePresetReward(string tpl, int count, int index, List<Item>? preset, bool foundInRaid = true)
+    protected Reward GeneratePresetReward(
+        string tpl,
+        int count,
+        int index,
+        List<Item>? preset,
+        bool foundInRaid = true
+    )
     {
         var id = _hashUtil.Generate();
         var questRewardItem = new Reward
@@ -601,7 +702,7 @@ public class RepeatableQuestRewardGenerator(
             IsEncoded = false,
             FindInRaid = foundInRaid,
             Type = RewardType.Item,
-            Items = []
+            Items = [],
         };
 
         // Get presets root item
@@ -630,7 +731,12 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="index"> All rewards will be appended to a list, for unknown reasons the client wants the index</param>
     /// <param name="foundInRaid"> If generated Item is found in raid, default True </param>
     /// <returns> Object of "Reward"-item-type </returns>
-    protected Reward GenerateItemReward(string tpl, double count, int index, bool foundInRaid = true)
+    protected Reward GenerateItemReward(
+        string tpl,
+        double count,
+        int index,
+        bool foundInRaid = true
+    )
     {
         var id = _hashUtil.Generate();
         var questRewardItem = new Reward
@@ -645,18 +751,14 @@ public class RepeatableQuestRewardGenerator(
             IsEncoded = false,
             FindInRaid = foundInRaid,
             Type = RewardType.Item,
-            Items = []
+            Items = [],
         };
 
         var rootItem = new Item
         {
             Id = id,
             Template = tpl,
-            Upd = new Upd
-            {
-                StackObjectsCount = count,
-                SpawnedInSession = foundInRaid
-            }
+            Upd = new Upd { StackObjectsCount = count, SpawnedInSession = foundInRaid },
         };
         questRewardItem.Items = [rootItem];
 
@@ -667,16 +769,19 @@ public class RepeatableQuestRewardGenerator(
     {
         // Determine currency based on trader
         // PK and Fence use Euros, everyone else is Roubles
-        var currency = traderId is Traders.PEACEKEEPER or Traders.FENCE ? Money.EUROS : Money.ROUBLES;
+        var currency = traderId is Traders.PEACEKEEPER or Traders.FENCE
+            ? Money.EUROS
+            : Money.ROUBLES;
 
         // Convert reward amount to Euros if necessary
         var rewardAmountToGivePlayer =
-            currency == Money.EUROS ? _handbookHelper.FromRUB(rewardRoubles, Money.EUROS) : rewardRoubles;
+            currency == Money.EUROS
+                ? _handbookHelper.FromRUB(rewardRoubles, Money.EUROS)
+                : rewardRoubles;
 
         // Get chosen currency + amount and return
         return GenerateItemReward(currency, rewardAmountToGivePlayer, rewardIndex, false);
     }
-
 
     /// <summary>
     ///     Picks rewardable items from items.json <br />
@@ -688,7 +793,10 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="repeatableQuestConfig"> Config </param>
     /// <param name="tradderId"> ID of trader who will give reward to player </param>
     /// <returns> List of rewardable items [[_tpl, itemTemplate],...] </returns>
-    public List<TemplateItem> GetRewardableItems(RepeatableQuestConfig repeatableQuestConfig, string traderId)
+    public List<TemplateItem> GetRewardableItems(
+        RepeatableQuestConfig repeatableQuestConfig,
+        string traderId
+    )
     {
         // Get an array of seasonal items that should not be shown right now as seasonal event is not active
         var seasonalItems = _seasonalEventService.GetInactiveSeasonalEventItems();
@@ -696,30 +804,31 @@ public class RepeatableQuestRewardGenerator(
         // Check for specific baseclasses which don't make sense as reward item
         // also check if the price is greater than 0; there are some items whose price can not be found
         // those are not in the game yet (e.g. AGS grenade launcher)
-        return _databaseService.GetItems()
+        return _databaseService
+            .GetItems()
             .Values.Where(itemTemplate =>
+            {
+                // Base "Item" item has no parent, ignore it
+                if (itemTemplate.Parent == "")
                 {
-                    // Base "Item" item has no parent, ignore it
-                    if (itemTemplate.Parent == "")
-                    {
-                        return false;
-                    }
-
-                    if (seasonalItems.Contains(itemTemplate.Id))
-                    {
-                        return false;
-                    }
-
-                    var traderWhitelist = repeatableQuestConfig.TraderWhitelist.FirstOrDefault(trader => trader.TraderId == traderId
-                    );
-
-                    return IsValidRewardItem(
-                        itemTemplate.Id,
-                        repeatableQuestConfig,
-                        traderWhitelist?.RewardBaseWhitelist
-                    );
+                    return false;
                 }
-            )
+
+                if (seasonalItems.Contains(itemTemplate.Id))
+                {
+                    return false;
+                }
+
+                var traderWhitelist = repeatableQuestConfig.TraderWhitelist.FirstOrDefault(trader =>
+                    trader.TraderId == traderId
+                );
+
+                return IsValidRewardItem(
+                    itemTemplate.Id,
+                    repeatableQuestConfig,
+                    traderWhitelist?.RewardBaseWhitelist
+                );
+            })
             .ToList();
     }
 
@@ -731,8 +840,11 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="repeatableQuestConfig"> Config </param>
     /// <param name="itemBaseWhitelist"> Default null, specific trader item base classes</param>
     /// <returns> True if item is valid reward </returns>
-    protected bool IsValidRewardItem(string tpl, RepeatableQuestConfig repeatableQuestConfig,
-        List<string>? itemBaseWhitelist = null)
+    protected bool IsValidRewardItem(
+        string tpl,
+        RepeatableQuestConfig repeatableQuestConfig,
+        List<string>? itemBaseWhitelist = null
+    )
     {
         // Return early if not valid item to give as reward
         if (!_itemHelper.IsValidItem(tpl))
@@ -742,10 +854,10 @@ public class RepeatableQuestRewardGenerator(
 
         // Check item is not blacklisted
         if (
-            _itemFilterService.IsItemBlacklisted(tpl) ||
-            _itemFilterService.IsItemRewardBlacklisted(tpl) ||
-            repeatableQuestConfig.RewardBlacklist.Contains(tpl) ||
             _itemFilterService.IsItemBlacklisted(tpl)
+            || _itemFilterService.IsItemRewardBlacklisted(tpl)
+            || repeatableQuestConfig.RewardBlacklist.Contains(tpl)
+            || _itemFilterService.IsItemBlacklisted(tpl)
         )
         {
             return false;

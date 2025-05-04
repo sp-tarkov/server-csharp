@@ -3,6 +3,4 @@
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class GameEventHelper
-{
-}
+public class GameEventHelper { }

@@ -12,14 +12,14 @@ public class InventoryMagGen()
     private readonly BotBaseInventory _pmcInventory;
     private readonly TemplateItem _weaponTemplate;
 
-    public InventoryMagGen
-    (
+    public InventoryMagGen(
         GenerationData magCounts,
         TemplateItem magazineTemplate,
         TemplateItem weaponTemplate,
         TemplateItem ammoTemplate,
         BotBaseInventory pmcInventory
-    ) : this()
+    )
+        : this()
     {
         _magCounts = magCounts;
         _magazineTemplate = magazineTemplate;

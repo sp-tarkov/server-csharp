@@ -29,8 +29,13 @@ public class WebSocketServer(
 
         if (socketHandlers.Count == 0)
         {
-            var message = $"Socket connection received for url {context.Request.Path.Value}, but there is no websocket handler configured for it!";
-            await webSocket.CloseAsync(WebSocketCloseStatus.ProtocolError, message, CancellationToken.None);
+            var message =
+                $"Socket connection received for url {context.Request.Path.Value}, but there is no websocket handler configured for it!";
+            await webSocket.CloseAsync(
+                WebSocketCloseStatus.ProtocolError,
+                message,
+                CancellationToken.None
+            );
             return;
         }
 
@@ -48,26 +53,34 @@ public class WebSocketServer(
         }
 
         // Discard this task, we dont need to await it.
-        _ = Task.Factory.StartNew(async () =>
-        {
-            while (!wsToken.IsCancellationRequested)
+        _ = Task.Factory.StartNew(
+            async () =>
             {
-                var messageBuffer = new byte[1024 * 4];
-                var isEndOfMessage = false;
-
-                while (!isEndOfMessage)
+                while (!wsToken.IsCancellationRequested)
                 {
-                    var buffer = new ArraySegment<byte>(messageBuffer);
-                    var readTask = await webSocket.ReceiveAsync(buffer, wsToken);
-                    isEndOfMessage = readTask.EndOfMessage;
-                }
+                    var messageBuffer = new byte[1024 * 4];
+                    var isEndOfMessage = false;
 
-                foreach (var wsh in socketHandlers)
-                {
-                    await wsh.OnMessage(messageBuffer.ToArray(), WebSocketMessageType.Text, webSocket, context);
+                    while (!isEndOfMessage)
+                    {
+                        var buffer = new ArraySegment<byte>(messageBuffer);
+                        var readTask = await webSocket.ReceiveAsync(buffer, wsToken);
+                        isEndOfMessage = readTask.EndOfMessage;
+                    }
+
+                    foreach (var wsh in socketHandlers)
+                    {
+                        await wsh.OnMessage(
+                            messageBuffer.ToArray(),
+                            WebSocketMessageType.Text,
+                            webSocket,
+                            context
+                        );
+                    }
                 }
-            }
-        }, TaskCreationOptions.LongRunning);
+            },
+            TaskCreationOptions.LongRunning
+        );
 
         while (webSocket.State == WebSocketState.Open)
         {

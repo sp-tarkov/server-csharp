@@ -8,10 +8,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
-public class BuildsCallbacks(
-    HttpResponseUtil _httpResponseUtil,
-    BuildController _buildController
-)
+public class BuildsCallbacks(HttpResponseUtil _httpResponseUtil, BuildController _buildController)
 {
     /// <summary>
     ///     Handle client/builds/list

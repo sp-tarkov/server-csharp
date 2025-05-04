@@ -8,47 +8,58 @@ public static class DependencyInjectionRegistrator
     private static List<Type>? _allLoadedTypes;
     private static List<ConstructorInfo>? _allConstructors;
 
-    public static void RegisterModOverrideComponents(IServiceCollection builderServices, List<Assembly> assemblies)
+    public static void RegisterModOverrideComponents(
+        IServiceCollection builderServices,
+        List<Assembly> assemblies
+    )
     {
         // We get all the services from this assembly first, since mods will override them later
         RegisterComponents(
             builderServices,
-            assemblies.SelectMany(a => a.GetTypes())
+            assemblies
+                .SelectMany(a => a.GetTypes())
                 .Where(type => Attribute.IsDefined(type, typeof(Injectable)))
         );
     }
 
-    public static void RegisterComponents(IServiceCollection builderServices, IEnumerable<Type> types)
+    public static void RegisterComponents(
+        IServiceCollection builderServices,
+        IEnumerable<Type> types
+    )
     {
-        var groupedTypes = types.SelectMany(t =>
+        var groupedTypes = types
+            .SelectMany(t =>
+            {
+                var attributes = (Injectable[])Attribute.GetCustomAttributes(t, typeof(Injectable));
+                var registerableType = t;
+                var registerableComponents = new List<RegistrableType>();
+                foreach (var attribute in attributes)
                 {
-                    var attributes = (Injectable[]) Attribute.GetCustomAttributes(t, typeof(Injectable));
-                    var registerableType = t;
-                    var registerableComponents = new List<RegistrableType>();
-                    foreach (var attribute in attributes)
+                    // if we have a type override this takes priority
+                    if (attribute.InjectableTypeOverride != null)
                     {
-                        // if we have a type override this takes priority
-                        if (attribute.InjectableTypeOverride != null)
-                        {
-                            registerableType = attribute.InjectableTypeOverride;
-                        }
-                        // if this class only has 1 interface we register it on that interface
-                        else if (registerableType.GetInterfaces().Length == 1)
-                        {
-                            registerableType = registerableType.GetInterfaces()[0];
-                        }
-
-                        registerableComponents.Add(new RegistrableType(registerableType, t, attribute));
+                        registerableType = attribute.InjectableTypeOverride;
+                    }
+                    // if this class only has 1 interface we register it on that interface
+                    else if (registerableType.GetInterfaces().Length == 1)
+                    {
+                        registerableType = registerableType.GetInterfaces()[0];
                     }
 
-                    return registerableComponents;
+                    registerableComponents.Add(new RegistrableType(registerableType, t, attribute));
                 }
-            )
+
+                return registerableComponents;
+            })
             .GroupBy(t => $"{t.RegistrableInterface.Namespace}.{t.RegistrableInterface.Name}");
         // We get all injectable services to register them on our services
         foreach (var groupedInjectables in groupedTypes)
         {
-            foreach (var valueTuple in groupedInjectables.OrderBy(t => t.InjectableAttribute.TypePriority))
+            foreach (
+                var valueTuple in groupedInjectables.OrderBy(t =>
+                    t.InjectableAttribute.TypePriority
+                )
+            )
             {
                 if (valueTuple.TypeToRegister.IsGenericType)
                 {
@@ -67,11 +78,17 @@ public static class DependencyInjectionRegistrator
         }
     }
 
-    private static void RegisterGenericComponents(IServiceCollection builderServices, RegistrableType valueTuple)
+    private static void RegisterGenericComponents(
+        IServiceCollection builderServices,
+        RegistrableType valueTuple
+    )
     {
         try
         {
-            _allLoadedTypes ??= AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).ToList();
+            _allLoadedTypes ??= AppDomain
+                .CurrentDomain.GetAssemblies()
+                .SelectMany(t => t.GetTypes())
+                .ToList();
         }
         catch (ReflectionTypeLoadException ex)
         {
@@ -80,13 +97,16 @@ public static class DependencyInjectionRegistrator
 
         _allConstructors ??= _allLoadedTypes.SelectMany(t => t.GetConstructors()).ToList();
 
-        var typeName = $"{valueTuple.RegistrableInterface.Namespace}.{valueTuple.RegistrableInterface.Name}";
+        var typeName =
+            $"{valueTuple.RegistrableInterface.Namespace}.{valueTuple.RegistrableInterface.Name}";
         try
         {
-            var matchedConstructors = _allConstructors.Where(c => c.GetParameters()
-                .Any(p => p.ParameterType.IsGenericType &&
-                          p.ParameterType.GetGenericTypeDefinition().FullName == typeName
-                )
+            var matchedConstructors = _allConstructors.Where(c =>
+                c.GetParameters()
+                    .Any(p =>
+                        p.ParameterType.IsGenericType
+                        && p.ParameterType.GetGenericTypeDefinition().FullName == typeName
+                    )
             );
 
             var constructorInfos = matchedConstructors.ToList();
@@ -98,7 +118,11 @@ public static class DependencyInjectionRegistrator
             foreach (var matchedConstructor in constructorInfos)
             {
                 var constructorParams = matchedConstructor.GetParameters();
-                foreach (var parameterInfo in constructorParams.Where(x => IsMatchingGenericType(x, typeName)))
+                foreach (
+                    var parameterInfo in constructorParams.Where(x =>
+                        IsMatchingGenericType(x, typeName)
+                    )
+                )
                 {
                     var parameters = parameterInfo.ParameterType.GetGenericArguments();
                     var typedGeneric = valueTuple.TypeToRegister.MakeGenericType(parameters);
@@ -120,8 +144,8 @@ public static class DependencyInjectionRegistrator
 
     private static bool IsMatchingGenericType(ParameterInfo paramInfo, string typeName)
     {
-        return paramInfo.ParameterType.IsGenericType &&
-               paramInfo.ParameterType.GetGenericTypeDefinition().FullName == typeName;
+        return paramInfo.ParameterType.IsGenericType
+            && paramInfo.ParameterType.GetGenericTypeDefinition().FullName == typeName;
     }
 
     private static void RegisterComponent(
@@ -143,7 +167,10 @@ public static class DependencyInjectionRegistrator
                 builderServices.AddScoped(registrableInterface, implementationType);
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(injectionType), "unknown injection type");
+                throw new ArgumentOutOfRangeException(
+                    nameof(injectionType),
+                    "unknown injection type"
+                );
         }
     }
 
@@ -156,26 +183,27 @@ public static class DependencyInjectionRegistrator
         // We get all the services from this assembly first, since mods will override them later
         RegisterComponents(
             builderServices,
-            serverLauncherAssembly.GetTypes().Where(type => Attribute.IsDefined(type, typeof(Injectable)))
-                .Concat(coreAssembly.GetTypes().Where(type => Attribute.IsDefined(type, typeof(Injectable))))
+            serverLauncherAssembly
+                .GetTypes()
+                .Where(type => Attribute.IsDefined(type, typeof(Injectable)))
+                .Concat(
+                    coreAssembly
+                        .GetTypes()
+                        .Where(type => Attribute.IsDefined(type, typeof(Injectable)))
+                )
         );
     }
 
-    private sealed class RegistrableType(Type registrableInterface, Type typeToRegister, Injectable injectableAttribute)
+    private sealed class RegistrableType(
+        Type registrableInterface,
+        Type typeToRegister,
+        Injectable injectableAttribute
+    )
     {
-        public Type RegistrableInterface
-        {
-            get;
-        } = registrableInterface;
+        public Type RegistrableInterface { get; } = registrableInterface;
 
-        public Type TypeToRegister
-        {
-            get;
-        } = typeToRegister;
+        public Type TypeToRegister { get; } = typeToRegister;
 
-        public Injectable InjectableAttribute
-        {
-            get;
-        } = injectableAttribute;
+        public Injectable InjectableAttribute { get; } = injectableAttribute;
     }
 }

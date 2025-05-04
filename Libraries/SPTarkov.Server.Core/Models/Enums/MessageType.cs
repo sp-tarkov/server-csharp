@@ -16,5 +16,5 @@ public enum MessageType
     QUEST_SUCCESS = 12,
     MESSAGE_WITH_ITEMS = 13,
     INITIAL_SUPPORT = 14,
-    BTR_ITEMS_DELIVERY = 15
+    BTR_ITEMS_DELIVERY = 15,
 }

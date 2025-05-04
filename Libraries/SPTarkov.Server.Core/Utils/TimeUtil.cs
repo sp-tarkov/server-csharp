@@ -79,7 +79,7 @@ public class TimeUtil
             : GetDateTimeNow();
 
         var startOfDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
-        return ((DateTimeOffset) startOfDay).ToUnixTimeMilliseconds();
+        return ((DateTimeOffset)startOfDay).ToUnixTimeMilliseconds();
     }
 
     /// <summary>
@@ -138,11 +138,12 @@ public class TimeUtil
     public long GetTimeStampOfNextHour()
     {
         var now = DateTime.UtcNow;
-        var timeUntilNextHour = TimeSpan.FromMinutes(60 - now.Minute)
+        var timeUntilNextHour = TimeSpan
+            .FromMinutes(60 - now.Minute)
             .Subtract(TimeSpan.FromSeconds(now.Second))
             .Subtract(TimeSpan.FromMilliseconds(now.Millisecond));
 
-        var time = ((DateTimeOffset) now.Add(timeUntilNextHour)).ToUnixTimeSeconds();
+        var time = ((DateTimeOffset)now.Add(timeUntilNextHour)).ToUnixTimeSeconds();
 
         return time;
     }
@@ -167,7 +168,7 @@ public class TimeUtil
         // Create a new DateTime with the last full hour, 0 minutes, and 0 seconds
         var lastFullHour = new DateTime(now.Year, now.Month, now.Day, hours, 0, 0);
 
-        return ((DateTimeOffset) lastFullHour).ToUnixTimeSeconds();
+        return ((DateTimeOffset)lastFullHour).ToUnixTimeSeconds();
     }
 
     /// <summary>

@@ -60,7 +60,11 @@ public class CustomItemService(
 
         AddToItemsDb(newItemId, itemClone);
 
-        AddToHandbookDb(newItemId, newItemDetails.HandbookParentId, newItemDetails.HandbookPriceRoubles);
+        AddToHandbookDb(
+            newItemId,
+            newItemDetails.HandbookParentId,
+            newItemDetails.HandbookPriceRoubles
+        );
 
         AddToLocaleDbs(newItemDetails.Locales, newItemId);
 
@@ -104,7 +108,11 @@ public class CustomItemService(
 
         AddToItemsDb(newItem.Id, newItem);
 
-        AddToHandbookDb(newItem.Id, newItemDetails.HandbookParentId, newItemDetails.HandbookPriceRoubles);
+        AddToHandbookDb(
+            newItem.Id,
+            newItemDetails.HandbookParentId,
+            newItemDetails.HandbookPriceRoubles
+        );
 
         AddToLocaleDbs(newItemDetails.Locales, newItem.Id);
 
@@ -139,7 +147,10 @@ public class CustomItemService(
     /// </summary>
     /// <param name="overrideProperties"> New properties to apply </param>
     /// <param name="itemClone"> Item to update </param>
-    protected void UpdateBaseItemPropertiesWithOverrides(Props? overrideProperties, TemplateItem itemClone)
+    protected void UpdateBaseItemPropertiesWithOverrides(
+        Props? overrideProperties,
+        TemplateItem itemClone
+    )
     {
         if (overrideProperties is null)
         {
@@ -148,7 +159,8 @@ public class CustomItemService(
 
         foreach (var propKey in overrideProperties.GetAllPropsAsDict())
         {
-            itemClone.Properties.GetAllPropsAsDict()[propKey.Key] = overrideProperties.GetAllPropsAsDict()[propKey.Key];
+            itemClone.Properties.GetAllPropsAsDict()[propKey.Key] =
+                overrideProperties.GetAllPropsAsDict()[propKey.Key];
         }
     }
 
@@ -180,7 +192,7 @@ public class CustomItemService(
                 {
                     Id = newItemId,
                     ParentId = parentId,
-                    Price = priceRoubles
+                    Price = priceRoubles,
                 }
             );
         // TODO: would we want to keep this the same or get them to send a HandbookItem
@@ -207,9 +219,21 @@ public class CustomItemService(
 
             newLocaleDetails ??= localeDetails[localeDetails.Keys.FirstOrDefault()];
 
-            localeService.AddCustomClientLocale(shortNameKey.Key, $"{newItemId} Name", newLocaleDetails.Name);
-            localeService.AddCustomClientLocale(shortNameKey.Key, $"{newItemId} ShortName", newLocaleDetails.ShortName);
-            localeService.AddCustomClientLocale(shortNameKey.Key, $"{newItemId} Description", newLocaleDetails.Description);
+            localeService.AddCustomClientLocale(
+                shortNameKey.Key,
+                $"{newItemId} Name",
+                newLocaleDetails.Name
+            );
+            localeService.AddCustomClientLocale(
+                shortNameKey.Key,
+                $"{newItemId} ShortName",
+                newLocaleDetails.ShortName
+            );
+            localeService.AddCustomClientLocale(
+                shortNameKey.Key,
+                $"{newItemId} Description",
+                newLocaleDetails.Description
+            );
         }
     }
 
@@ -234,7 +258,7 @@ public class CustomItemService(
         [
             ItemTpl.HIDEOUTAREACONTAINER_WEAPONSTAND_STASH_1,
             ItemTpl.HIDEOUTAREACONTAINER_WEAPONSTAND_STASH_2,
-            ItemTpl.HIDEOUTAREACONTAINER_WEAPONSTAND_STASH_3
+            ItemTpl.HIDEOUTAREACONTAINER_WEAPONSTAND_STASH_3,
         ];
         foreach (var wallId in wallStashIds)
         {
@@ -257,7 +281,9 @@ public class CustomItemService(
         var weapon = itemHelper.GetItem(weaponTpl);
         if (!weapon.Key)
         {
-            logger.Warning($"Unable to add custom weapon {weaponTpl} to PMCs as it cannot be found in the Item db");
+            logger.Warning(
+                $"Unable to add custom weapon {weaponTpl} to PMCs as it cannot be found in the Item db"
+            );
 
             return;
         }
@@ -268,7 +294,7 @@ public class CustomItemService(
         var weaponSlots = weapon.Value.Properties.Slots;
         foreach (var slot in weaponSlots)
         {
-            baseWeaponModObject[slot.Name] = [..slot.Props.Filters[0].Filter];
+            baseWeaponModObject[slot.Name] = [.. slot.Props.Filters[0].Filter];
         }
 
         // Get PMCs
@@ -279,7 +305,9 @@ public class CustomItemService(
         botTypes["bear"].BotInventory.Mods[weaponTpl] = baseWeaponModObject;
 
         // Add weapon to array of allowed weapons + weighting to be picked
-        botTypes["usec"].BotInventory.Equipment[Enum.Parse<EquipmentSlots>(weaponSlot)][weaponTpl] = weaponWeight;
-        botTypes["bear"].BotInventory.Equipment[Enum.Parse<EquipmentSlots>(weaponSlot)][weaponTpl] = weaponWeight;
+        botTypes["usec"].BotInventory.Equipment[Enum.Parse<EquipmentSlots>(weaponSlot)][weaponTpl] =
+            weaponWeight;
+        botTypes["bear"].BotInventory.Equipment[Enum.Parse<EquipmentSlots>(weaponSlot)][weaponTpl] =
+            weaponWeight;
     }
 }

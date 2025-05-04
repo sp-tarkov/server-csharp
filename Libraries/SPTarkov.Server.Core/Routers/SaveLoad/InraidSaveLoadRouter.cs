@@ -16,11 +16,7 @@ public class InraidSaveLoadRouter : SaveLoadRouter
     {
         if (profile.InraidData == null)
         {
-            profile.InraidData = new Inraid
-            {
-                Location = "none",
-                Character = "none"
-            };
+            profile.InraidData = new Inraid { Location = "none", Character = "none" };
         }
 
         return profile;

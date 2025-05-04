@@ -42,8 +42,13 @@ public class QuestRewardHelper(
      * @param questResponse Response to send back to client
      * @returns Array of reward objects
      */
-    public IEnumerable<Item> ApplyQuestReward(PmcData profileData, string questId, QuestStatusEnum state, string sessionId,
-        ItemEventRouterResponse questResponse)
+    public IEnumerable<Item> ApplyQuestReward(
+        PmcData profileData,
+        string questId,
+        QuestStatusEnum state,
+        string sessionId,
+        ItemEventRouterResponse questResponse
+    )
     {
         // Repeatable quest base data is always in PMCProfile, `profileData` may be scav profile
         // TODO: consider moving repeatable quest data to profile-agnostic location
@@ -58,7 +63,12 @@ public class QuestRewardHelper(
         var questDetails = GetQuestFromDb(questId, pmcProfile);
         if (questDetails is null)
         {
-            _logger.Warning(_localisationService.GetText("quest-unable_to_find_quest_in_db_no_quest_rewards", questId));
+            _logger.Warning(
+                _localisationService.GetText(
+                    "quest-unable_to_find_quest_in_db_no_quest_rewards",
+                    questId
+                )
+            );
             return Enumerable.Empty<Item>();
         }
 
@@ -91,7 +101,7 @@ public class QuestRewardHelper(
         // May be a repeatable quest
         var quest = _databaseService.GetQuests().FirstOrDefault(x => x.Key == questId).Value;
         if (quest == null)
-            // Check daily/weekly objects
+        // Check daily/weekly objects
         {
             foreach (var repeatableQuest in pmcData.RepeatableQuests)
             {
@@ -114,19 +124,26 @@ public class QuestRewardHelper(
     protected double GetQuestMoneyRewardBonusMultiplier(PmcData pmcData)
     {
         // Check player has intel center
-        var moneyRewardbonuses = pmcData.Bonuses.Where(bonus => bonus.Type == BonusType.QuestMoneyReward);
+        var moneyRewardbonuses = pmcData.Bonuses.Where(bonus =>
+            bonus.Type == BonusType.QuestMoneyReward
+        );
 
         // Get a total of the quest money reward percent bonuses
-        var moneyRewardBonusPercent = moneyRewardbonuses.Aggregate(0D, (accumulate, bonus) => accumulate + bonus.Value ?? 0);
+        var moneyRewardBonusPercent = moneyRewardbonuses.Aggregate(
+            0D,
+            (accumulate, bonus) => accumulate + bonus.Value ?? 0
+        );
 
         // Calculate hideout management bonus as a percentage (up to 51% bonus)
-        var hideoutManagementSkill = _profileHelper.GetSkillFromProfile(pmcData, SkillTypes.HideoutManagement);
+        var hideoutManagementSkill = _profileHelper.GetSkillFromProfile(
+            pmcData,
+            SkillTypes.HideoutManagement
+        );
 
         // 5100 becomes 0.51, add 1 to it, 1.51
         // We multiply the money reward bonuses by the hideout management skill multiplier, giving the new result
-        var hideoutManagementBonusMultiplier = hideoutManagementSkill != null
-            ? 2 + hideoutManagementSkill.Progress / 1000
-            : 1;
+        var hideoutManagementBonusMultiplier =
+            hideoutManagementSkill != null ? 2 + hideoutManagementSkill.Progress / 1000 : 1;
 
         // e.g 15% * 1.4
         return moneyRewardBonusPercent + hideoutManagementBonusMultiplier ?? 1;
@@ -143,19 +160,22 @@ public class QuestRewardHelper(
     {
         var clonedQuest = _cloner.Clone(quest);
 
-        if (clonedQuest.Rewards.Success == null) return clonedQuest;
+        if (clonedQuest.Rewards.Success == null)
+            return clonedQuest;
 
-        var itemRewards = clonedQuest.Rewards.Success
-            .Where(reward =>
-                reward.Type == RewardType.Item &&
-                reward.Items != null && reward.Items.Count > 0 &&
-                _paymentHelper.IsMoneyTpl(reward.Items.FirstOrDefault().Template)
-            );
+        var itemRewards = clonedQuest.Rewards.Success.Where(reward =>
+            reward.Type == RewardType.Item
+            && reward.Items != null
+            && reward.Items.Count > 0
+            && _paymentHelper.IsMoneyTpl(reward.Items.FirstOrDefault().Template)
+        );
         foreach (var moneyReward in itemRewards)
         {
             // Add % bonus to existing StackObjectsCount
             var rewardItem = moneyReward.Items[0];
-            var newCurrencyAmount = Math.Floor((rewardItem.Upd.StackObjectsCount ?? 0) * (1 + (bonusPercent / 100)));
+            var newCurrencyAmount = Math.Floor(
+                (rewardItem.Upd.StackObjectsCount ?? 0) * (1 + (bonusPercent / 100))
+            );
             rewardItem.Upd.StackObjectsCount = newCurrencyAmount;
             moneyReward.Value = newCurrencyAmount;
         }

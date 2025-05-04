@@ -6,9 +6,5 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 public record SearchProfilesRequestData : IRequestData
 {
     [JsonPropertyName("nickname")]
-    public string? Nickname
-    {
-        get;
-        set;
-    }
+    public string? Nickname { get; set; }
 }

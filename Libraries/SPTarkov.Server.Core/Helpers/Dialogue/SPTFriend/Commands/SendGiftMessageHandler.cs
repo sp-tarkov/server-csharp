@@ -15,7 +15,8 @@ public class SendGiftMessageHandler(
     MailSendService _mailSendService,
     RandomUtil _randomUtil,
     GiftService _giftService,
-    ConfigServer _configServer) : IChatMessageHandler
+    ConfigServer _configServer
+) : IChatMessageHandler
 {
     private readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
@@ -29,7 +30,12 @@ public class SendGiftMessageHandler(
         return _giftService.GiftExists(message);
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender, object? extraInfo = null)
+    public void Process(
+        string sessionId,
+        UserDialogInfo sptFriendUser,
+        PmcData sender,
+        object? extraInfo = null
+    )
     {
         // Gifts may be disabled via config
         if (!_coreConfig.Features.ChatbotFeatures.SptFriendGiftsEnabled)
@@ -37,7 +43,7 @@ public class SendGiftMessageHandler(
             return;
         }
 
-        var messageTest = ((SendMessageRequest) extraInfo).Text;
+        var messageTest = ((SendMessageRequest)extraInfo).Text;
         var giftSent = _giftService.SendGiftToPlayer(sessionId, messageTest);
         switch (giftSent)
         {
@@ -51,7 +57,7 @@ public class SendGiftMessageHandler(
                             "A secret code, how exciting!",
                             "You found a gift code!",
                             "A gift code! incredible",
-                            "A gift! what could it be!"
+                            "A gift! what could it be!",
                         ]
                     ),
                     [],
@@ -63,7 +69,9 @@ public class SendGiftMessageHandler(
                 _mailSendService.SendUserMessageToPlayer(
                     sessionId,
                     sptFriendUser,
-                    _randomUtil.GetArrayValue(["Looks like you already used that code", "You already have that!!"]),
+                    _randomUtil.GetArrayValue(
+                        ["Looks like you already used that code", "You already have that!!"]
+                    ),
                     [],
                     null
                 );

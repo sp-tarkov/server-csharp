@@ -33,14 +33,20 @@ public class CustomizationCallbacks(
         var splitUrl = url.Split('/');
         var traderId = splitUrl[^3];
 
-        return _httpResponseUtil.GetBody(_customizationController.GetTraderSuits(traderId, sessionID));
+        return _httpResponseUtil.GetBody(
+            _customizationController.GetTraderSuits(traderId, sessionID)
+        );
     }
 
     /// <summary>
     ///     Handle CustomizationBuy event
     /// </summary>
     /// <returns></returns>
-    public ItemEventRouterResponse BuyCustomisation(PmcData pmcData, BuyClothingRequestData request, string sessionID)
+    public ItemEventRouterResponse BuyCustomisation(
+        PmcData pmcData,
+        BuyClothingRequestData request,
+        string sessionID
+    )
     {
         return _customizationController.BuyCustomisation(pmcData, request, sessionID);
     }
@@ -51,7 +57,9 @@ public class CustomizationCallbacks(
     /// <returns></returns>
     public string GetHideoutCustomisation(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_customizationController.GetHideoutCustomisation(sessionID));
+        return _httpResponseUtil.GetBody(
+            _customizationController.GetHideoutCustomisation(sessionID)
+        );
     }
 
     /// <summary>
@@ -60,14 +68,20 @@ public class CustomizationCallbacks(
     /// <returns></returns>
     public string GetStorage(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_customizationController.GetCustomisationStorage(sessionID));
+        return _httpResponseUtil.GetBody(
+            _customizationController.GetCustomisationStorage(sessionID)
+        );
     }
 
     /// <summary>
     ///     Handle CustomizationSet
     /// </summary>
     /// <returns></returns>
-    public ItemEventRouterResponse SetCustomisation(PmcData pmcData, CustomizationSetRequest request, string sessionID)
+    public ItemEventRouterResponse SetCustomisation(
+        PmcData pmcData,
+        CustomizationSetRequest request,
+        string sessionID
+    )
     {
         return _customizationController.SetCustomisation(sessionID, request, pmcData);
     }

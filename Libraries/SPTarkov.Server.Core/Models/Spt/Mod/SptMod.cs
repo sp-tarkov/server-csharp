@@ -6,23 +6,11 @@ namespace SPTarkov.Server.Core.Models.Spt.Mod;
 public class SptMod
 {
     [JsonPropertyName("directory")]
-    public string Directory
-    {
-        get;
-        set;
-    }
+    public string Directory { get; set; }
 
     [JsonPropertyName("packageJson")]
-    public PackageJsonData? PackageJson
-    {
-        get;
-        set;
-    }
+    public PackageJsonData? PackageJson { get; set; }
 
     [JsonPropertyName("assemblies")]
-    public List<Assembly>? Assemblies
-    {
-        get;
-        set;
-    }
+    public List<Assembly>? Assemblies { get; set; }
 }

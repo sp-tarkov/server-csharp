@@ -16,8 +16,7 @@ public class CustomizationItemEventRouter : ItemEventRouterDefinition
     protected CustomizationCallbacks _customizationCallbacks;
     protected ISptLogger<CustomizationItemEventRouter> _logger;
 
-    public CustomizationItemEventRouter
-    (
+    public CustomizationItemEventRouter(
         ISptLogger<CustomizationItemEventRouter> logger,
         CustomizationCallbacks customizationCallbacks
     )
@@ -31,21 +30,36 @@ public class CustomizationItemEventRouter : ItemEventRouterDefinition
         return new List<HandledRoute>
         {
             new(ItemEventActions.CUSTOMIZATION_BUY, false),
-            new(ItemEventActions.CUSTOMIZATION_SET, false)
+            new(ItemEventActions.CUSTOMIZATION_SET, false),
         };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
-        ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(
+        string url,
+        PmcData pmcData,
+        BaseInteractionRequestData body,
+        string sessionID,
+        ItemEventRouterResponse output
+    )
     {
         switch (url)
         {
             case ItemEventActions.CUSTOMIZATION_BUY:
-                return _customizationCallbacks.BuyCustomisation(pmcData, body as BuyClothingRequestData, sessionID);
+                return _customizationCallbacks.BuyCustomisation(
+                    pmcData,
+                    body as BuyClothingRequestData,
+                    sessionID
+                );
             case ItemEventActions.CUSTOMIZATION_SET:
-                return _customizationCallbacks.SetCustomisation(pmcData, body as CustomizationSetRequest, sessionID);
+                return _customizationCallbacks.SetCustomisation(
+                    pmcData,
+                    body as CustomizationSetRequest,
+                    sessionID
+                );
             default:
-                throw new Exception($"CustomizationItemEventRouter being used when it cant handle route {url}");
+                throw new Exception(
+                    $"CustomizationItemEventRouter being used when it cant handle route {url}"
+                );
         }
     }
 }

@@ -49,17 +49,23 @@ public class LauncherV2Controller(
         var result = new Dictionary<string, string>();
         var dbProfiles = _databaseService.GetProfiles();
 
-        foreach (var templatesProperty in typeof(ProfileTemplates).GetProperties().Where(p => p.CanWrite))
+        foreach (
+            var templatesProperty in typeof(ProfileTemplates).GetProperties().Where(p => p.CanWrite)
+        )
         {
             var propertyValue = templatesProperty.GetValue(dbProfiles);
             if (propertyValue == null)
             {
-                _logger.Warning(_localisationService.GetText("launcher-missing_property", templatesProperty));
+                _logger.Warning(
+                    _localisationService.GetText("launcher-missing_property", templatesProperty)
+                );
                 continue;
             }
 
             var casterPropertyValue = propertyValue as ProfileSides;
-            result[templatesProperty.GetJsonName()] = _localisationService.GetText(casterPropertyValue?.DescriptionLocaleKey!);
+            result[templatesProperty.GetJsonName()] = _localisationService.GetText(
+                casterPropertyValue?.DescriptionLocaleKey!
+            );
         }
 
         return result;
@@ -158,7 +164,9 @@ public class LauncherV2Controller(
     /// <returns></returns>
     public Dictionary<string, PackageJsonData> LoadedMods()
     {
-        var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES).GetValue<List<SptMod>>();
+        var mods = _applicationContext
+            ?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES)
+            .GetValue<List<SptMod>>();
         var result = new Dictionary<string, PackageJsonData>();
 
         foreach (var sptMod in mods)
@@ -186,7 +194,7 @@ public class LauncherV2Controller(
             Username = info.Username,
             Password = info.Password,
             IsWiped = true,
-            Edition = info.Edition
+            Edition = info.Edition,
         };
 
         _saveServer.CreateProfile(newProfileDetails);
@@ -216,7 +224,10 @@ public class LauncherV2Controller(
     {
         foreach (var profile in _saveServer.GetProfiles())
         {
-            if (info.Username == profile.Value.ProfileInfo!.Username && info.Password == profile.Value.ProfileInfo.Password)
+            if (
+                info.Username == profile.Value.ProfileInfo!.Username
+                && info.Password == profile.Value.ProfileInfo.Password
+            )
             {
                 return profile.Key;
             }

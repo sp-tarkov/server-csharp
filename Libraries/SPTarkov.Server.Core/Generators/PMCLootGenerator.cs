@@ -62,24 +62,31 @@ public class PMCLootGenerator
         {
             _pocketLootPool = new ConcurrentDictionary<string, double>();
             var items = _databaseService.GetItems();
-            var pmcPriceOverrides =
-                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items
-                    .Pockets;
+            var pmcPriceOverrides = _databaseService
+                .GetBots()
+                .Types[
+                    string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase)
+                        ? "bear"
+                        : "usec"
+                ]
+                .BotInventory.Items.Pockets;
 
             var allowedItemTypeWhitelist = _pmcConfig.PocketLoot.Whitelist;
 
             var blacklist = GetLootBlacklist();
 
-            var itemsToAdd = items.Where(item =>
-                allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
-                _itemHelper.IsValidItem(item.Value.Id) &&
-                !blacklist.Contains(item.Value.Id) &&
-                !blacklist.Contains(item.Value.Parent) &&
-                ItemFitsInto1By2Slot(item.Value)
-            ).Select(x => x.Key);
+            var itemsToAdd = items
+                .Where(item =>
+                    allowedItemTypeWhitelist.Contains(item.Value.Parent)
+                    && _itemHelper.IsValidItem(item.Value.Id)
+                    && !blacklist.Contains(item.Value.Id)
+                    && !blacklist.Contains(item.Value.Parent)
+                    && ItemFitsInto1By2Slot(item.Value)
+                )
+                .Select(x => x.Key);
 
             foreach (var tpl in itemsToAdd)
-                // If pmc has price override, use that. Otherwise, use flea price
+            // If pmc has price override, use that. Otherwise, use flea price
             {
                 if (pmcPriceOverrides.TryGetValue(tpl, out var priceOverride))
                 {
@@ -95,8 +102,8 @@ public class PMCLootGenerator
 
             var highestPrice = _pocketLootPool.Max(price => price.Value);
             foreach (var (key, _) in _pocketLootPool)
-                // Invert price so cheapest has a larger weight
-                // Times by highest price so most expensive item has weight of 1
+            // Invert price so cheapest has a larger weight
+            // Times by highest price so most expensive item has weight of 1
             {
                 _pocketLootPool[key] = Math.Round(1 / _pocketLootPool[key] * highestPrice);
             }
@@ -131,24 +138,31 @@ public class PMCLootGenerator
         {
             _vestLootPool = new ConcurrentDictionary<string, double>();
             var items = _databaseService.GetItems();
-            var pmcPriceOverrides =
-                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items
-                    .TacticalVest;
+            var pmcPriceOverrides = _databaseService
+                .GetBots()
+                .Types[
+                    string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase)
+                        ? "bear"
+                        : "usec"
+                ]
+                .BotInventory.Items.TacticalVest;
 
             var allowedItemTypeWhitelist = _pmcConfig.VestLoot.Whitelist;
 
             var blacklist = GetLootBlacklist();
 
-            var itemsToAdd = items.Where(item =>
-                allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
-                _itemHelper.IsValidItem(item.Value.Id) &&
-                !blacklist.Contains(item.Value.Id) &&
-                !blacklist.Contains(item.Value.Parent) &&
-                ItemFitsInto2By2Slot(item.Value)
-            ).Select(x => x.Key);
+            var itemsToAdd = items
+                .Where(item =>
+                    allowedItemTypeWhitelist.Contains(item.Value.Parent)
+                    && _itemHelper.IsValidItem(item.Value.Id)
+                    && !blacklist.Contains(item.Value.Id)
+                    && !blacklist.Contains(item.Value.Parent)
+                    && ItemFitsInto2By2Slot(item.Value)
+                )
+                .Select(x => x.Key);
 
             foreach (var tpl in itemsToAdd)
-                // If pmc has price override, use that. Otherwise, use flea price
+            // If pmc has price override, use that. Otherwise, use flea price
             {
                 if (pmcPriceOverrides.TryGetValue(tpl, out var overridePrice))
                 {
@@ -164,8 +178,8 @@ public class PMCLootGenerator
 
             var highestPrice = _vestLootPool.Max(price => price.Value);
             foreach (var (key, _) in _vestLootPool)
-                // Invert price so cheapest has a larger weight
-                // Times by highest price so most expensive item has weight of 1
+            // Invert price so cheapest has a larger weight
+            // Times by highest price so most expensive item has weight of 1
             {
                 _vestLootPool[key] = Math.Round(1 / _vestLootPool[key] * highestPrice);
             }
@@ -198,7 +212,7 @@ public class PMCLootGenerator
         return $"{item.Properties.Width}x{item.Properties.Height}" switch
         {
             "1x1" or "1x2" or "2x1" => true,
-            _ => false
+            _ => false,
         };
     }
 
@@ -214,23 +228,30 @@ public class PMCLootGenerator
         {
             _backpackLootPool = new ConcurrentDictionary<string, double>();
             var items = _databaseService.GetItems();
-            var pmcPriceOverrides =
-                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items
-                    .Backpack;
+            var pmcPriceOverrides = _databaseService
+                .GetBots()
+                .Types[
+                    string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase)
+                        ? "bear"
+                        : "usec"
+                ]
+                .BotInventory.Items.Backpack;
 
             var allowedItemTypeWhitelist = _pmcConfig.BackpackLoot.Whitelist;
 
             var blacklist = GetLootBlacklist();
 
-            var itemsToAdd = items.Where(item =>
-                allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
-                _itemHelper.IsValidItem(item.Value.Id) &&
-                !blacklist.Contains(item.Value.Id) &&
-                !blacklist.Contains(item.Value.Parent)
-            ).Select(x => x.Key);
+            var itemsToAdd = items
+                .Where(item =>
+                    allowedItemTypeWhitelist.Contains(item.Value.Parent)
+                    && _itemHelper.IsValidItem(item.Value.Id)
+                    && !blacklist.Contains(item.Value.Id)
+                    && !blacklist.Contains(item.Value.Parent)
+                )
+                .Select(x => x.Key);
 
             foreach (var tpl in itemsToAdd)
-                // If pmc has price override, use that. Otherwise, use flea price
+            // If pmc has price override, use that. Otherwise, use flea price
             {
                 if (pmcPriceOverrides.TryGetValue(tpl, out var priceOverride))
                 {
@@ -246,8 +267,8 @@ public class PMCLootGenerator
 
             var highestPrice = _backpackLootPool.Max(price => price.Value);
             foreach (var (key, _) in _backpackLootPool)
-                // Invert price so cheapest has a larger weight
-                // Times by highest price so most expensive item has weight of 1
+            // Invert price so cheapest has a larger weight
+            // Times by highest price so most expensive item has weight of 1
             {
                 _backpackLootPool[key] = Math.Round(1 / _backpackLootPool[key] * highestPrice);
             }

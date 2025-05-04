@@ -37,7 +37,7 @@ public class MathUtil
             cumSumArray[i] = cumSumArray[i - 1] + values[i];
         }
 
-        return [..cumSumArray];
+        return [.. cumSumArray];
     }
 
     /// <summary>

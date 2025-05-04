@@ -12,7 +12,6 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
-
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
@@ -34,7 +33,6 @@ public class TraderHelper(
     protected Dictionary<string, double> _highestTraderPriceItems = new();
     protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
 
-
     /// <summary>
     ///     Get a trader base object, update profile to reflect players current standing in profile
     ///     when trader not found in profile
@@ -46,16 +44,15 @@ public class TraderHelper(
     {
         if (traderID == "ragfair")
         {
-            return new TraderBase
-            {
-                Currency = CurrencyType.RUB
-            };
+            return new TraderBase { Currency = CurrencyType.RUB };
         }
 
         var pmcData = _profileHelper.GetPmcProfile(sessionID);
         if (pmcData == null)
         {
-            throw new Exception(_localisationService.GetText("trader-unable_to_find_profile_with_id", sessionID));
+            throw new Exception(
+                _localisationService.GetText("trader-unable_to_find_profile_with_id", sessionID)
+            );
         }
 
         // Profile has traderInfo dict (profile beyond creation stage) but no requested trader in profile
@@ -69,7 +66,9 @@ public class TraderHelper(
         var traderBase = _databaseService.GetTrader(traderID).Base;
         if (traderBase == null)
         {
-            _logger.Error(_localisationService.GetText("trader-unable_to_find_trader_by_id", traderID));
+            _logger.Error(
+                _localisationService.GetText("trader-unable_to_find_trader_by_id", traderID)
+            );
         }
 
         return traderBase;
@@ -135,11 +134,14 @@ public class TraderHelper(
         var fullProfile = _profileHelper.GetFullProfile(sessionID);
         if (fullProfile is null)
         {
-            throw new Exception(_localisationService.GetText("trader-unable_to_find_profile_by_id", sessionID));
+            throw new Exception(
+                _localisationService.GetText("trader-unable_to_find_profile_by_id", sessionID)
+            );
         }
 
         var pmcData = fullProfile.CharacterData.PmcData;
-        var rawProfileTemplate = profiles.GetByJsonProp<ProfileSides>(fullProfile.ProfileInfo.Edition)
+        var rawProfileTemplate = profiles
+            .GetByJsonProp<ProfileSides>(fullProfile.ProfileInfo.Edition)
             .GetByJsonProp<TemplateSide>(pmcData.Info.Side.ToLower())
             .Trader;
 
@@ -150,14 +152,13 @@ public class TraderHelper(
             SalesSum = rawProfileTemplate.InitialSalesSum,
             Standing = GetStartingStanding(traderID, rawProfileTemplate),
             NextResupply = trader.Base.NextResupply,
-            Unlocked = trader.Base.UnlockedByDefault
+            Unlocked = trader.Base.UnlockedByDefault,
         };
 
         if (!pmcData.TradersInfo.TryAdd(traderID, newTraderData))
         {
             pmcData.TradersInfo[traderID] = newTraderData;
         }
-
 
         // Check if trader should be locked by default
         if (rawProfileTemplate.LockedByDefaultOverride?.Contains(traderID) ?? false)
@@ -170,19 +171,20 @@ public class TraderHelper(
             // Get traders clothing
             var clothing = _databaseService.GetTrader(traderID).Suits;
             if (clothing?.Count > 0)
-                // Force suit ids into profile
+            // Force suit ids into profile
             {
-                AddSuitsToProfile(
-                    fullProfile,
-                    clothing.Select(suit => suit.SuiteId).ToList()
-                );
+                AddSuitsToProfile(fullProfile, clothing.Select(suit => suit.SuiteId).ToList());
             }
         }
 
         if ((rawProfileTemplate.FleaBlockedDays ?? 0) > 0)
         {
-            var newBanDateTime = _timeUtil.GetTimeStampFromNowDays(rawProfileTemplate.FleaBlockedDays ?? 0);
-            var existingBan = pmcData.Info.Bans.FirstOrDefault(ban => ban.BanType == BanType.RAGFAIR);
+            var newBanDateTime = _timeUtil.GetTimeStampFromNowDays(
+                rawProfileTemplate.FleaBlockedDays ?? 0
+            );
+            var existingBan = pmcData.Info.Bans.FirstOrDefault(ban =>
+                ban.BanType == BanType.RAGFAIR
+            );
             if (existingBan is not null)
             {
                 existingBan.DateTime = newBanDateTime;
@@ -190,11 +192,7 @@ public class TraderHelper(
             else
             {
                 pmcData.Info.Bans.Add(
-                    new Ban
-                    {
-                        BanType = BanType.RAGFAIR,
-                        DateTime = newBanDateTime
-                    }
+                    new Ban { BanType = BanType.RAGFAIR, DateTime = newBanDateTime }
                 );
             }
         }
@@ -238,15 +236,21 @@ public class TraderHelper(
 
         foreach (var suitId in clothingIds)
         {
-            if (!fullProfile.CustomisationUnlocks.Exists(customisation => customisation.Id == suitId))
+            if (
+                !fullProfile.CustomisationUnlocks.Exists(customisation =>
+                    customisation.Id == suitId
+                )
+            )
             {
                 // Clothing item doesn't exist in profile, add it
-                fullProfile.CustomisationUnlocks.Add(new CustomisationStorage
-                {
-                    Id = suitId,
-                    Source = CustomisationSource.UNLOCKED_IN_GAME,
-                    Type = CustomisationType.SUITE
-                });
+                fullProfile.CustomisationUnlocks.Add(
+                    new CustomisationStorage
+                    {
+                        Id = suitId,
+                        Source = CustomisationSource.UNLOCKED_IN_GAME,
+                        Type = CustomisationType.SUITE,
+                    }
+                );
             }
         }
     }
@@ -263,7 +267,9 @@ public class TraderHelper(
         var profileTraderData = pmcData.TradersInfo[traderId];
         if (profileTraderData is null)
         {
-            _logger.Error($"Unable to set trader {traderId} unlocked state to: {status} as trader cannot be found in profile");
+            _logger.Error(
+                $"Unable to set trader {traderId} unlocked state to: {status} as trader cannot be found in profile"
+            );
 
             return;
         }
@@ -286,9 +292,10 @@ public class TraderHelper(
         pmcTraderInfo.Standing = AddStandingValuesTogether(pmcTraderInfo.Standing, standingToAdd);
 
         if (traderId == Traders.FENCE)
-            // Must add rep to scav profile to ensure consistency
+        // Must add rep to scav profile to ensure consistency
         {
-            fullProfile.CharacterData.ScavData.TradersInfo[traderId].Standing = pmcTraderInfo.Standing;
+            fullProfile.CharacterData.ScavData.TradersInfo[traderId].Standing =
+                pmcTraderInfo.Standing;
         }
 
         LevelUp(traderId, fullProfile.CharacterData.PmcData);
@@ -339,16 +346,18 @@ public class TraderHelper(
         var targetLevel = 0;
 
         // Round standing to 2 decimal places to address floating point inaccuracies
-        pmcData.TradersInfo[traderID].Standing = Math.Round(pmcData.TradersInfo[traderID].Standing * 100 ?? 0, 2) / 100;
+        pmcData.TradersInfo[traderID].Standing =
+            Math.Round(pmcData.TradersInfo[traderID].Standing * 100 ?? 0, 2) / 100;
 
         foreach (var loyaltyLevel in loyaltyLevels)
         {
-            if (loyaltyLevel.MinLevel <= pmcData.Info.Level &&
-                loyaltyLevel.MinSalesSum <= pmcData.TradersInfo[traderID].SalesSum &&
-                loyaltyLevel.MinStanding <= pmcData.TradersInfo[traderID].Standing &&
-                targetLevel < 4
-               )
-                // level reached
+            if (
+                loyaltyLevel.MinLevel <= pmcData.Info.Level
+                && loyaltyLevel.MinSalesSum <= pmcData.TradersInfo[traderID].SalesSum
+                && loyaltyLevel.MinStanding <= pmcData.TradersInfo[traderID].Standing
+                && targetLevel < 4
+            )
+            // level reached
             {
                 targetLevel++;
             }
@@ -383,21 +392,20 @@ public class TraderHelper(
             _logger.Warning(
                 _localisationService.GetText(
                     "trader-missing_trader_details_using_default_refresh_time",
-                    new
-                    {
-                        traderId,
-                        updateTime = _traderConfig.UpdateTimeDefault
-                    }
+                    new { traderId, updateTime = _traderConfig.UpdateTimeDefault }
                 )
             );
 
             _traderConfig.UpdateTime.Add(
                 new UpdateTime
-                    // create temporary entry to prevent logger spam
-                    {
-                        TraderId = traderId,
-                        Seconds = new MinMax<int>(_traderConfig.UpdateTimeDefault, _traderConfig.UpdateTimeDefault)
-                    }
+                // create temporary entry to prevent logger spam
+                {
+                    TraderId = traderId,
+                    Seconds = new MinMax<int>(
+                        _traderConfig.UpdateTimeDefault,
+                        _traderConfig.UpdateTimeDefault
+                    ),
+                }
             );
 
             return null;
@@ -437,7 +445,8 @@ public class TraderHelper(
     public void AddTraderPurchasesToPlayerProfile(
         string sessionID,
         PurchaseDetails newPurchaseDetails,
-        Item itemPurchased)
+        Item itemPurchased
+    )
     {
         var profile = _profileHelper.GetFullProfile(sessionID);
         var traderId = newPurchaseDetails.TraderId;
@@ -448,44 +457,46 @@ public class TraderHelper(
             var currentTime = _timeUtil.GetTimeStamp();
 
             // Nullguard traderPurchases
-            profile.TraderPurchases ??= new Dictionary<string, Dictionary<string, TraderPurchaseData>?>();
+            profile.TraderPurchases ??=
+                new Dictionary<string, Dictionary<string, TraderPurchaseData>?>();
             // Nullguard traderPurchases for this trader
             profile.TraderPurchases[traderId] ??= new Dictionary<string, TraderPurchaseData>();
 
             // Null guard when dict doesnt exist
 
-            if (profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseCount is null ||
-                profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseTimestamp is null)
+            if (
+                profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseCount is null
+                || profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseTimestamp is null
+            )
             {
                 profile.TraderPurchases[traderId][purchasedItem.ItemId] = new TraderPurchaseData
                 {
                     PurchaseCount = purchasedItem.Count,
-                    PurchaseTimestamp = currentTime
+                    PurchaseTimestamp = currentTime,
                 };
 
                 continue;
             }
 
-            if (profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseCount + purchasedItem.Count >
-                GetAccountTypeAdjustedTraderPurchaseLimit(
-                    (double) itemPurchased.Upd.BuyRestrictionMax,
+            if (
+                profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseCount
+                    + purchasedItem.Count
+                > GetAccountTypeAdjustedTraderPurchaseLimit(
+                    (double)itemPurchased.Upd.BuyRestrictionMax,
                     profile.CharacterData.PmcData.Info.GameVersion
                 )
-               )
+            )
             {
                 throw new Exception(
                     _localisationService.GetText(
                         "trader-unable_to_purchase_item_limit_reached",
-                        new
-                        {
-                            traderId,
-                            limit = itemPurchased.Upd.BuyRestrictionMax
-                        }
+                        new { traderId, limit = itemPurchased.Upd.BuyRestrictionMax }
                     )
                 );
             }
 
-            profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseCount += purchasedItem.Count;
+            profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseCount +=
+                purchasedItem.Count;
             profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseTimestamp = currentTime;
         }
     }
@@ -496,7 +507,10 @@ public class TraderHelper(
     /// <param name="buyRestrictionMax">Existing value from trader item</param>
     /// <param name="gameVersion">Profiles game version</param>
     /// <returns>buyRestrictionMax value</returns>
-    public double GetAccountTypeAdjustedTraderPurchaseLimit(double buyRestrictionMax, string gameVersion)
+    public double GetAccountTypeAdjustedTraderPurchaseLimit(
+        double buyRestrictionMax,
+        string gameVersion
+    )
     {
         if (_gameVersions.Contains(gameVersion))
         {
@@ -539,12 +553,16 @@ public class TraderHelper(
             foreach (var item in traderAssorts.Items.Where(x => x.ParentId == "hideout"))
             {
                 // Get barter scheme (contains cost of item)
-                var barterScheme = traderAssorts.BarterScheme[item.Id].FirstOrDefault().FirstOrDefault();
+                var barterScheme = traderAssorts
+                    .BarterScheme[item.Id]
+                    .FirstOrDefault()
+                    .FirstOrDefault();
 
                 // Convert into roubles
-                var roubleAmount = barterScheme.Template == Money.ROUBLES
-                    ? barterScheme.Count
-                    : _handbookHelper.InRUB(barterScheme.Count ?? 1, barterScheme.Template);
+                var roubleAmount =
+                    barterScheme.Template == Money.ROUBLES
+                        ? barterScheme.Count
+                        : _handbookHelper.InRUB(barterScheme.Count ?? 1, barterScheme.Template);
 
                 // Existing price smaller in dict than current iteration, overwrite
                 if (_highestTraderPriceItems[item.Template] < roubleAmount)
@@ -572,7 +590,10 @@ public class TraderHelper(
             var traderBase = _databaseService.GetTrader(trader.Value).Base;
 
             // Skip traders that don't sell this category of item
-            if (traderBase is null || !_itemHelper.IsOfBaseclasses(tpl, traderBase.ItemsBuy.Category))
+            if (
+                traderBase is null
+                || !_itemHelper.IsOfBaseclasses(tpl, traderBase.ItemsBuy.Category)
+            )
             {
                 continue;
             }
@@ -580,10 +601,15 @@ public class TraderHelper(
             // Get loyalty level details player has achieved with this trader
             // Uses lowest loyalty level as this function is used before a player has logged into server
             // We have no idea what player loyalty is with traders
-            var traderBuyBackPricePercent = 100 - traderBase.LoyaltyLevels.FirstOrDefault().BuyPriceCoefficient;
+            var traderBuyBackPricePercent =
+                100 - traderBase.LoyaltyLevels.FirstOrDefault().BuyPriceCoefficient;
 
             var itemHandbookPrice = _handbookHelper.GetTemplatePrice(tpl);
-            var priceTraderBuysItemAt = _randomUtil.GetPercentOfValue(traderBuyBackPricePercent ?? 0, itemHandbookPrice, 0);
+            var priceTraderBuysItemAt = _randomUtil.GetPercentOfValue(
+                traderBuyBackPricePercent ?? 0,
+                itemHandbookPrice,
+                0
+            );
 
             // Price from this trader is higher than highest found, update
             if (priceTraderBuysItemAt > highestPrice)
@@ -606,7 +632,9 @@ public class TraderHelper(
 
         if (!kvp.Any())
         {
-            _logger.Error(_localisationService.GetText("trader-unable_to_find_trader_in_enum", traderId));
+            _logger.Error(
+                _localisationService.GetText("trader-unable_to_find_trader_in_enum", traderId)
+            );
 
             return null;
         }
@@ -629,8 +657,16 @@ public class TraderHelper(
     public string GetValidTraderIdByEnumValue(string traderEnumValue)
     {
         var traderId = _databaseService.GetTraders();
-        var id = traderId.FirstOrDefault(x =>
-            x.Value.Base.Id == traderEnumValue || string.Equals(x.Value.Base.Nickname, traderEnumValue, StringComparison.OrdinalIgnoreCase)).Key;
+        var id = traderId
+            .FirstOrDefault(x =>
+                x.Value.Base.Id == traderEnumValue
+                || string.Equals(
+                    x.Value.Base.Nickname,
+                    traderEnumValue,
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
+            .Key;
 
         return id;
     }

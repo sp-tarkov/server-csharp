@@ -52,7 +52,12 @@ public class SptWebSocketConnectionHandler(
         return Task.CompletedTask;
     }
 
-    public async Task OnMessage(byte[] receivedMessage, WebSocketMessageType messageType, WebSocket ws, HttpContext context)
+    public async Task OnMessage(
+        byte[] receivedMessage,
+        WebSocketMessageType messageType,
+        WebSocket ws,
+        HttpContext context
+    )
     {
         var splitUrl = context.Request.Path.Value.Split("/");
         var sessionID = splitUrl.Last();
@@ -104,19 +109,28 @@ public class SptWebSocketConnectionHandler(
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(_localisationService.GetText("websocket-not_ready_message_not_sent", sessionID));
+                    _logger.Debug(
+                        _localisationService.GetText(
+                            "websocket-not_ready_message_not_sent",
+                            sessionID
+                        )
+                    );
                 }
             }
         }
         catch (Exception err)
         {
-            _logger.Error(_localisationService.GetText("websocket-message_send_failed_with_error"), err);
+            _logger.Error(
+                _localisationService.GetText("websocket-message_send_failed_with_error"),
+                err
+            );
         }
     }
 
     public bool IsWebSocketConnected(string sessionID)
     {
-        return _sockets.TryGetValue(sessionID, out var socket) && socket.State == WebSocketState.Open;
+        return _sockets.TryGetValue(sessionID, out var socket)
+            && socket.State == WebSocketState.Open;
     }
 
     public WebSocket GetSessionWebSocket(string sessionID)

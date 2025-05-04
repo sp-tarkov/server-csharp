@@ -6,8 +6,7 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class RagfairSortHelper(
-    LocaleService _localeService)
+public class RagfairSortHelper(LocaleService _localeService)
 {
     /**
      * Sort a list of ragfair offers by something (id/rating/offer name/price/expiry time)
@@ -16,7 +15,11 @@ public class RagfairSortHelper(
      * @param direction Ascending/descending
      * @returns Sorted offers
      */
-    public List<RagfairOffer> SortOffers(List<RagfairOffer> offers, RagfairSort type, int direction = 0)
+    public List<RagfairOffer> SortOffers(
+        List<RagfairOffer> offers,
+        RagfairSort type,
+        int direction = 0
+    )
     {
         // Sort results
         switch (type)
@@ -62,15 +65,21 @@ public class RagfairSortHelper(
 
     protected int SortOffersByBarter(RagfairOffer a, RagfairOffer b)
     {
-        var aIsOnlyMoney = a.Requirements.Count == 1 && Money.GetMoneyTpls().Contains(a.Requirements[0].Template) ? 1 : 0;
-        var bIsOnlyMoney = b.Requirements.Count == 1 && Money.GetMoneyTpls().Contains(b.Requirements[0].Template) ? 1 : 0;
+        var aIsOnlyMoney =
+            a.Requirements.Count == 1 && Money.GetMoneyTpls().Contains(a.Requirements[0].Template)
+                ? 1
+                : 0;
+        var bIsOnlyMoney =
+            b.Requirements.Count == 1 && Money.GetMoneyTpls().Contains(b.Requirements[0].Template)
+                ? 1
+                : 0;
 
         return aIsOnlyMoney - bIsOnlyMoney;
     }
 
     protected int SortOffersByRating(RagfairOffer a, RagfairOffer b)
     {
-        return (int) (a.User.Rating.Value - b.User.Rating.Value);
+        return (int)(a.User.Rating.Value - b.User.Rating.Value);
     }
 
     protected int SortOffersByName(RagfairOffer a, RagfairOffer b)
@@ -93,11 +102,11 @@ public class RagfairSortHelper(
      */
     protected int SortOffersByPrice(RagfairOffer a, RagfairOffer b)
     {
-        return (int) (a.RequirementsCost.Value - b.RequirementsCost.Value);
+        return (int)(a.RequirementsCost.Value - b.RequirementsCost.Value);
     }
 
     protected int SortOffersByExpiry(RagfairOffer a, RagfairOffer b)
     {
-        return (int) (a.EndTime - b.EndTime);
+        return (int)(a.EndTime - b.EndTime);
     }
 }

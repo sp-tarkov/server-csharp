@@ -8,211 +8,103 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 public record RaidSettings
 {
     [JsonPropertyName("keyId")]
-    public string? KeyId
-    {
-        get;
-        set;
-    }
+    public string? KeyId { get; set; }
 
     [JsonPropertyName("onlinePveRaidStates")]
-    public Dictionary<string, bool> OnlinePveRaidStates
-    {
-        get;
-        set;
-    } = [];
+    public Dictionary<string, bool> OnlinePveRaidStates { get; set; } = [];
 
     [JsonPropertyName("location")]
-    public string? Location
-    {
-        get;
-        set;
-    }
+    public string? Location { get; set; }
 
     [JsonPropertyName("isLocationTransition")]
-    public bool? IsLocationTransition
-    {
-        get;
-        set;
-    }
+    public bool? IsLocationTransition { get; set; }
 
     [JsonPropertyName("timeVariant")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public DateTimeEnum TimeVariant
-    {
-        get;
-        set;
-    }
+    public DateTimeEnum TimeVariant { get; set; }
 
     [JsonPropertyName("metabolismDisabled")]
-    public bool? MetabolismDisabled
-    {
-        get;
-        set;
-    }
+    public bool? MetabolismDisabled { get; set; }
 
     [JsonPropertyName("timeAndWeatherSettings")]
-    public TimeAndWeatherSettings? TimeAndWeatherSettings
-    {
-        get;
-        set;
-    }
+    public TimeAndWeatherSettings? TimeAndWeatherSettings { get; set; }
 
     [JsonPropertyName("botSettings")]
-    public BotSettings? BotSettings
-    {
-        get;
-        set;
-    }
+    public BotSettings? BotSettings { get; set; }
 
     [JsonPropertyName("wavesSettings")]
-    public WavesSettings? WavesSettings
-    {
-        get;
-        set;
-    }
+    public WavesSettings? WavesSettings { get; set; }
 
     [JsonPropertyName("side")]
-    public SideType? Side
-    {
-        get;
-        set;
-    }
+    public SideType? Side { get; set; }
 
     [JsonPropertyName("raidMode")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public RaidMode? RaidMode
-    {
-        get;
-        set;
-    }
+    public RaidMode? RaidMode { get; set; }
 
     [JsonPropertyName("playersSpawnPlace")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public PlayersSpawnPlace? PlayersSpawnPlace
-    {
-        get;
-        set;
-    }
+    public PlayersSpawnPlace? PlayersSpawnPlace { get; set; }
 
     [JsonPropertyName("CanShowGroupPreview")]
-    public bool? CanShowGroupPreview
-    {
-        get;
-        set;
-    }
+    public bool? CanShowGroupPreview { get; set; }
 }
 
 public record TimeAndWeatherSettings
 {
     [JsonPropertyName("isRandomTime")]
-    public bool? IsRandomTime
-    {
-        get;
-        set;
-    }
+    public bool? IsRandomTime { get; set; }
 
     [JsonPropertyName("isRandomWeather")]
-    public bool? IsRandomWeather
-    {
-        get;
-        set;
-    }
+    public bool? IsRandomWeather { get; set; }
 
     [JsonPropertyName("cloudinessType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public CloudinessType? CloudinessType
-    {
-        get;
-        set;
-    }
+    public CloudinessType? CloudinessType { get; set; }
 
     [JsonPropertyName("rainType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public RainType? RainType
-    {
-        get;
-        set;
-    }
+    public RainType? RainType { get; set; }
 
     [JsonPropertyName("fogType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public FogType? FogType
-    {
-        get;
-        set;
-    }
+    public FogType? FogType { get; set; }
 
     [JsonPropertyName("windType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public WindSpeed? WindType
-    {
-        get;
-        set;
-    }
+    public WindSpeed? WindType { get; set; }
 
     [JsonPropertyName("timeFlowType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public TimeFlowType? TimeFlowType
-    {
-        get;
-        set;
-    }
+    public TimeFlowType? TimeFlowType { get; set; }
 
     [JsonPropertyName("hourOfDay")]
-    public int? HourOfDay
-    {
-        get;
-        set;
-    }
+    public int? HourOfDay { get; set; }
 }
 
 public record BotSettings
 {
     [JsonPropertyName("isScavWars")]
-    public bool? IsScavWars
-    {
-        get;
-        set;
-    }
+    public bool? IsScavWars { get; set; }
 
     [JsonPropertyName("botAmount")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public BotAmount? BotAmount
-    {
-        get;
-        set;
-    }
+    public BotAmount? BotAmount { get; set; }
 }
 
 public record WavesSettings
 {
     [JsonPropertyName("botAmount")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public BotAmount? BotAmount
-    {
-        get;
-        set;
-    }
+    public BotAmount? BotAmount { get; set; }
 
     [JsonPropertyName("botDifficulty")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public BotDifficulty? BotDifficulty
-    {
-        get;
-        set;
-    }
+    public BotDifficulty? BotDifficulty { get; set; }
 
     [JsonPropertyName("isBosses")]
-    public bool? IsBosses
-    {
-        get;
-        set;
-    }
+    public bool? IsBosses { get; set; }
 
     [JsonPropertyName("isTaggedAndCursed")]
-    public bool? IsTaggedAndCursed
-    {
-        get;
-        set;
-    }
+    public bool? IsTaggedAndCursed { get; set; }
 }

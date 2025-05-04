@@ -7,5 +7,5 @@ public enum CloudinessType
     CLOUDY,
     CLOUDY_WITH_GAPS,
     HEAVY_CLOUD_COVER,
-    THUNDER_CLOUD
+    THUNDER_CLOUD,
 }

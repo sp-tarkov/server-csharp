@@ -17,7 +17,8 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// </summary>
     public const int MaxSignificantDigits = 15;
 
-    private static readonly int DecimalPointRandomPrecisionMultiplier = (int) Math.Pow(10, DecimalPointRandomPrecision);
+    private static readonly int DecimalPointRandomPrecisionMultiplier = (int)
+        Math.Pow(10, DecimalPointRandomPrecision);
     public readonly Random Random = new();
 
     /// <summary>
@@ -46,11 +47,11 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <returns>A random floating-point number between `min` (inclusive) and `max` (exclusive).</returns>
     public double GetDouble(double min, double max)
     {
-        var realMin = (long) (min * DecimalPointRandomPrecisionMultiplier);
-        var realMax = (long) (max * DecimalPointRandomPrecisionMultiplier);
+        var realMin = (long)(min * DecimalPointRandomPrecisionMultiplier);
+        var realMax = (long)(max * DecimalPointRandomPrecisionMultiplier);
 
         return Math.Round(
-            Random.NextInt64(realMin, realMax) / (double) DecimalPointRandomPrecisionMultiplier,
+            Random.NextInt64(realMin, realMax) / (double)DecimalPointRandomPrecisionMultiplier,
             DecimalPointRandomPrecision
         );
     }
@@ -138,7 +139,8 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <typeparam name="TKey">Type of key</typeparam>
     /// <typeparam name="TVal">Type of Value</typeparam>
     /// <returns>A random TKey representing one of the keys of the dictionary.</returns>
-    public TKey GetKey<TKey, TVal>(Dictionary<TKey, TVal> dictionary) where TKey : notnull
+    public TKey GetKey<TKey, TVal>(Dictionary<TKey, TVal> dictionary)
+        where TKey : notnull
     {
         return GetCollectionValue(dictionary.Keys);
     }
@@ -150,7 +152,8 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <typeparam name="TKey">Type of key</typeparam>
     /// <typeparam name="TVal">Type of Value</typeparam>
     /// <returns>A random TVal representing one of the values of the dictionary.</returns>
-    public TVal GetVal<TKey, TVal>(Dictionary<TKey, TVal> dictionary) where TKey : notnull
+    public TVal GetVal<TKey, TVal>(Dictionary<TKey, TVal> dictionary)
+        where TKey : notnull
     {
         return GetCollectionValue(dictionary.Values);
     }
@@ -169,7 +172,8 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// </remarks>
     public double GetNormallyDistributedRandomNumber(double mean, double sigma, int attempt = 0)
     {
-        double u, v;
+        double u,
+            v;
 
         do
         {
@@ -211,9 +215,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
         }
 
         // Return low directly when low and high are equal
-        return low == high
-            ? low
-            : Random.Next(low, (int) high);
+        return low == high ? low : Random.Next(low, (int)high);
     }
 
     /// <summary>
@@ -230,19 +232,21 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     {
         if (!double.IsFinite(val1) || !double.IsFinite(val2))
         {
-            throw new ArgumentException("RandNum() parameters 'value1' and 'value2' must be finite numbers.");
+            throw new ArgumentException(
+                "RandNum() parameters 'value1' and 'value2' must be finite numbers."
+            );
         }
 
         // Determine the range
         var min = Math.Min(val1, val2);
         var max = Math.Max(val1, val2);
 
-        var realPrecision = (long) Math.Pow(10, precision);
+        var realPrecision = (long)Math.Pow(10, precision);
 
-        var minInt = (long) (min * realPrecision);
-        var maxInt = (long) (max * realPrecision);
+        var minInt = (long)(min * realPrecision);
+        var maxInt = (long)(max * realPrecision);
 
-        return Math.Round(Random.NextInt64(minInt, maxInt) / (double) realPrecision, precision);
+        return Math.Round(Random.NextInt64(minInt, maxInt) / (double)realPrecision, precision);
     }
 
     /// <summary>
@@ -253,7 +257,11 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <param name="replacement">Whether to draw with replacement. Defaults to true.</param>
     /// <typeparam name="T">The type of elements in the list.</typeparam>
     /// <returns>A List containing the drawn elements.</returns>
-    public List<T> DrawRandomFromList<T>(List<T> originalList, int count = 1, bool replacement = true)
+    public List<T> DrawRandomFromList<T>(
+        List<T> originalList,
+        int count = 1,
+        bool replacement = true
+    )
     {
         var list = originalList;
         var drawCount = count;
@@ -294,7 +302,12 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <typeparam name="TKey">The type of elements in keys</typeparam>
     /// <typeparam name="TVal">The type of elements in values</typeparam>
     /// <returns>A list of randomly drawn keys from the dictionary.</returns>
-    public List<TKey> DrawRandomFromDict<TKey, TVal>(Dictionary<TKey, TVal> dict, int count = 1, bool replacement = true) where TKey : notnull
+    public List<TKey> DrawRandomFromDict<TKey, TVal>(
+        Dictionary<TKey, TVal> dict,
+        int count = 1,
+        bool replacement = true
+    )
+        where TKey : notnull
     {
         var keys = dict.Keys.ToList();
         var randomKeys = DrawRandomFromList(keys, count, replacement);
@@ -326,7 +339,9 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
 
         if (max < min)
         {
-            _logger.Error($"Invalid argument, Bounded random number generation max is smaller than min({max} < {min}");
+            _logger.Error(
+                $"Invalid argument, Bounded random number generation max is smaller than min({max} < {min}"
+            );
             return -1;
         }
 
@@ -353,7 +368,6 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
             );
             _logger.Warning($"min-> {min}; max-> {max}; shift-> {shift}");
         }
-
 
         var biasedMin = shift >= 0 ? min - shift : min;
         var biasedMax = shift < 0 ? max + shift : max;
@@ -399,7 +413,10 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
             currentIndex--;
 
             // Swap it with the current element.
-            (originalList[currentIndex], originalList[randomIndex]) = (originalList[randomIndex], originalList[currentIndex]);
+            (originalList[currentIndex], originalList[randomIndex]) = (
+                originalList[randomIndex],
+                originalList[currentIndex]
+            );
         }
 
         return originalList;
@@ -424,9 +441,9 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <returns>The number of decimal places, or 0 if none exist.</returns>
     public int GetNumberPrecision(double num)
     {
-        var preciseNum = (decimal) num;
+        var preciseNum = (decimal)num;
         var factor = 0;
-        while ((double) (preciseNum % 1) > double.Epsilon)
+        while ((double)(preciseNum % 1) > double.Epsilon)
         {
             preciseNum *= 10M;
             factor++;

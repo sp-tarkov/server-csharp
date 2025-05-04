@@ -7,9 +7,8 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
-public class SptMessageHandler(
-    MailSendService _mailSendService,
-    RandomUtil _randomUtil) : IChatMessageHandler
+public class SptMessageHandler(MailSendService _mailSendService, RandomUtil _randomUtil)
+    : IChatMessageHandler
 {
     public int GetPriority()
     {
@@ -21,7 +20,12 @@ public class SptMessageHandler(
         return message.ToLower() == "spt";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
+    public void Process(
+        string sessionId,
+        UserDialogInfo sptFriendUser,
+        PmcData? sender,
+        object? extraInfo = null
+    )
     {
         _mailSendService.SendUserMessageToPlayer(
             sessionId,

@@ -4,9 +4,5 @@ namespace SPTarkov.Server.Core.Models.Spt.Launcher;
 
 public class LauncherV2PingResponse : IRequestData
 {
-    public required string Response
-    {
-        get;
-        set;
-    }
+    public required string Response { get; set; }
 }

@@ -12,9 +12,15 @@ public class StringToNumberFactoryConverter : JsonConverterFactory
         return true;
     }
 
-    public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
+    public override JsonConverter? CreateConverter(
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
     {
-        return (JsonConverter) Activator.CreateInstance(typeof(StringToNumberConverter<>).MakeGenericType(typeToConvert));
+        return (JsonConverter)
+            Activator.CreateInstance(
+                typeof(StringToNumberConverter<>).MakeGenericType(typeToConvert)
+            );
     }
 
     private class StringToNumberConverter<T> : JsonConverter<T>
@@ -31,7 +37,11 @@ public class StringToNumberFactoryConverter : JsonConverterFactory
             }
         }
 
-        public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override T? Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options
+        )
         {
             if (reader.TokenType == JsonTokenType.String)
             {
@@ -48,12 +58,14 @@ public class StringToNumberFactoryConverter : JsonConverterFactory
 
                     if (stringParseMethod != null)
                     {
-                        return (T) stringParseMethod.Invoke(null, [value]);
+                        return (T)stringParseMethod.Invoke(null, [value]);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Failed to parse '{value}' into {typeToConvert.Name}, returning null.");
+                    Debug.WriteLine(
+                        $"Failed to parse '{value}' into {typeToConvert.Name}, returning null."
+                    );
                     return default;
                 }
             }

@@ -14,31 +14,32 @@ public class InsuranceItemEventRouter : ItemEventRouterDefinition
 {
     protected InsuranceCallbacks _insuranceCallbacks;
 
-    public InsuranceItemEventRouter
-    (
-        InsuranceCallbacks insuranceCallbacks
-    )
+    public InsuranceItemEventRouter(InsuranceCallbacks insuranceCallbacks)
     {
         _insuranceCallbacks = insuranceCallbacks;
     }
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new List<HandledRoute>
-        {
-            new(ItemEventActions.INSURE, false)
-        };
+        return new List<HandledRoute> { new(ItemEventActions.INSURE, false) };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
-        ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(
+        string url,
+        PmcData pmcData,
+        BaseInteractionRequestData body,
+        string sessionID,
+        ItemEventRouterResponse output
+    )
     {
         switch (url)
         {
             case ItemEventActions.INSURE:
                 return _insuranceCallbacks.Insure(pmcData, body as InsureRequestData, sessionID);
             default:
-                throw new Exception($"InsuranceItemEventRouter being used when it cant handle route {url}");
+                throw new Exception(
+                    $"InsuranceItemEventRouter being used when it cant handle route {url}"
+                );
         }
     }
 }
