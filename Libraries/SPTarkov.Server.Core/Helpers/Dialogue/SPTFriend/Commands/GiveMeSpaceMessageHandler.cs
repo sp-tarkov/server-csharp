@@ -14,7 +14,8 @@ public class GiveMeSpaceMessageHandler(
     LocalisationService _localisationService,
     MailSendService _mailSendService,
     RandomUtil _randomUtil,
-    ConfigServer _configServer) : IChatMessageHandler
+    ConfigServer _configServer
+) : IChatMessageHandler
 {
     private readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
@@ -28,11 +29,23 @@ public class GiveMeSpaceMessageHandler(
         return message.ToLower() == "givemespace";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
+    public void Process(
+        string sessionId,
+        UserDialogInfo sptFriendUser,
+        PmcData? sender,
+        object? extraInfo = null
+    )
     {
         const string stashRowGiftId = "StashRows";
-        var maxGiftsToSendCount = _coreConfig.Features.ChatbotFeatures.CommandUseLimits[stashRowGiftId] ?? 5;
-        if (_profileHelper.PlayerHasRecievedMaxNumberOfGift(sessionId, stashRowGiftId, maxGiftsToSendCount))
+        var maxGiftsToSendCount =
+            _coreConfig.Features.ChatbotFeatures.CommandUseLimits[stashRowGiftId] ?? 5;
+        if (
+            _profileHelper.PlayerHasRecievedMaxNumberOfGift(
+                sessionId,
+                stashRowGiftId,
+                maxGiftsToSendCount
+            )
+        )
         {
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
@@ -50,15 +63,17 @@ public class GiveMeSpaceMessageHandler(
                 sessionId,
                 sptFriendUser,
                 _randomUtil.GetArrayValue(
-                    [
-                        _localisationService.GetText("chatbot-added_stash_rows_please_restart")
-                    ]
+                    [_localisationService.GetText("chatbot-added_stash_rows_please_restart")]
                 ),
                 [],
                 null
             );
 
-            _profileHelper.FlagGiftReceivedInProfile(sessionId, stashRowGiftId, maxGiftsToSendCount);
+            _profileHelper.FlagGiftReceivedInProfile(
+                sessionId,
+                stashRowGiftId,
+                maxGiftsToSendCount
+            );
         }
     }
 }

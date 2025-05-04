@@ -20,12 +20,12 @@ public partial class HashUtil(RandomUtil _randomUtil)
         Span<byte> objectId = stackalloc byte[12];
 
         // Time stamp (4 bytes)
-        var timestamp = (int) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        var timestamp = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         // Convert to big-endian
-        objectId[0] = (byte) (timestamp >> 24);
-        objectId[1] = (byte) (timestamp >> 16);
-        objectId[2] = (byte) (timestamp >> 8);
-        objectId[3] = (byte) timestamp;
+        objectId[0] = (byte)(timestamp >> 24);
+        objectId[1] = (byte)(timestamp >> 16);
+        objectId[2] = (byte)(timestamp >> 8);
+        objectId[3] = (byte)timestamp;
 
         // Random value (5 bytes)
         _randomUtil.Random.NextBytes(objectId.Slice(4, 5));
@@ -33,9 +33,9 @@ public partial class HashUtil(RandomUtil _randomUtil)
         // Incrementing counter (3 bytes)
         // 24-bit counter
         var counter = _randomUtil.GetInt(0, 16777215);
-        objectId[9] = (byte) (counter >> 16);
-        objectId[10] = (byte) (counter >> 8);
-        objectId[11] = (byte) counter;
+        objectId[9] = (byte)(counter >> 16);
+        objectId[10] = (byte)(counter >> 8);
+        objectId[11] = (byte)counter;
 
         return Convert.ToHexStringLower(objectId);
     }
@@ -86,7 +86,9 @@ public partial class HashUtil(RandomUtil _randomUtil)
                 return Convert.ToHexString(sha1HashData).Replace("-", string.Empty);
         }
 
-        throw new NotImplementedException($"Provided hash algorithm: {algorithm} is not supported.");
+        throw new NotImplementedException(
+            $"Provided hash algorithm: {algorithm} is not supported."
+        );
     }
 
     /// <summary>
@@ -108,5 +110,5 @@ public partial class HashUtil(RandomUtil _randomUtil)
 public enum HashingAlgorithm
 {
     MD5,
-    SHA1
+    SHA1,
 }

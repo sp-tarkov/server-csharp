@@ -52,7 +52,12 @@ public class OpenZoneService(
 
             // Convert openzones string into list, easier to work wih
             var mapOpenZonesArray = dbLocations[mapKvP.Key].Base.OpenZones.Split(",").ToList();
-            foreach (var zoneToAdd in zonesToAdd.Where(zoneToAdd => !mapOpenZonesArray.Contains(zoneToAdd)))
+            foreach (
+                var zoneToAdd in zonesToAdd.Where(zoneToAdd =>
+                {
+                    return !mapOpenZonesArray.Contains(zoneToAdd);
+                })
+            )
             {
                 // Add new zone to array and convert array back into comma separated string
                 mapOpenZonesArray.Add(zoneToAdd);

@@ -20,5 +20,5 @@ public enum ContextVariableType
     APP_BUILDER = 6,
     LOADED_MOD_ASSEMBLIES = 7,
     WEB_APPLICATION = 8,
-    SERVICE_PROVIDER = 9
+    SERVICE_PROVIDER = 9,
 }

@@ -9,41 +9,43 @@ namespace SPTarkov.Server.Core.Routers.Dynamic;
 [Injectable(InjectableTypeOverride = typeof(DynamicRouter))]
 public class DataDynamicRouter : DynamicRouter
 {
-    public DataDynamicRouter(
-        JsonUtil jsonUtil,
-        DataCallbacks dataCallbacks
-    ) : base(
-        jsonUtil,
-        [
-            new RouteAction(
-                "/client/menu/locale/",
-                (
-                    url,
-                    info,
-                    sessionID,
-                    output
-                ) => dataCallbacks.GetLocalesMenu(url, info as EmptyRequestData, sessionID)
-            ),
-            new RouteAction(
-                "/client/locale/",
-                (
-                    url,
-                    info,
-                    sessionID,
-                    output
-                ) => dataCallbacks.GetLocalesGlobal(url, info as EmptyRequestData, sessionID)
-            ),
-            new RouteAction(
-                "/client/items/prices/",
-                (
-                    url,
-                    info,
-                    sessionID,
-                    output
-                ) => dataCallbacks.GetItemPrices(url, info as EmptyRequestData, sessionID)
-            )
-        ]
-    )
-    {
-    }
+    public DataDynamicRouter(JsonUtil jsonUtil, DataCallbacks dataCallbacks)
+        : base(
+            jsonUtil,
+            [
+                new RouteAction(
+                    "/client/menu/locale/",
+                    (url, info, sessionID, output) =>
+                    {
+                        return dataCallbacks.GetLocalesMenu(
+                            url,
+                            info as EmptyRequestData,
+                            sessionID
+                        );
+                    }
+                ),
+                new RouteAction(
+                    "/client/locale/",
+                    (url, info, sessionID, output) =>
+                    {
+                        return dataCallbacks.GetLocalesGlobal(
+                            url,
+                            info as EmptyRequestData,
+                            sessionID
+                        );
+                    }
+                ),
+                new RouteAction(
+                    "/client/items/prices/",
+                    (url, info, sessionID, output) =>
+                    {
+                        return dataCallbacks.GetItemPrices(
+                            url,
+                            info as EmptyRequestData,
+                            sessionID
+                        );
+                    }
+                ),
+            ]
+        ) { }
 }

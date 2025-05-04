@@ -40,10 +40,20 @@ public class LauncherController(
     {
         // Get all possible profile types + filter out any that are blacklisted
 
-        var profiles = typeof(ProfileTemplates).GetProperties()
-            .Where(p => p.CanWrite)
-            .Select(p => p.GetJsonName())
-            .Where(profileName => !_coreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profileName))
+        var profiles = typeof(ProfileTemplates)
+            .GetProperties()
+            .Where(p =>
+            {
+                return p.CanWrite;
+            })
+            .Select(p =>
+            {
+                return p.GetJsonName();
+            })
+            .Where(profileName =>
+            {
+                return !_coreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profileName);
+            })
             .ToList();
 
         return new ConnectResponse
@@ -51,7 +61,7 @@ public class LauncherController(
             BackendUrl = _httpServerHelper.GetBackendUrl(),
             Name = _coreConfig.ServerName,
             Editions = profiles,
-            ProfileDescriptions = GetProfileDescriptions()
+            ProfileDescriptions = GetProfileDescriptions(),
         };
     }
 
@@ -63,17 +73,28 @@ public class LauncherController(
     {
         var result = new Dictionary<string, string>();
         var dbProfiles = _databaseService.GetProfiles();
-        foreach (var templatesProperty in typeof(ProfileTemplates).GetProperties().Where(p => p.CanWrite))
+        foreach (
+            var templatesProperty in typeof(ProfileTemplates)
+                .GetProperties()
+                .Where(p =>
+                {
+                    return p.CanWrite;
+                })
+        )
         {
             var propertyValue = templatesProperty.GetValue(dbProfiles);
             if (propertyValue == null)
             {
-                _logger.Warning(_localisationService.GetText("launcher-missing_property", templatesProperty));
+                _logger.Warning(
+                    _localisationService.GetText("launcher-missing_property", templatesProperty)
+                );
                 continue;
             }
 
             var casterPropertyValue = propertyValue as ProfileSides;
-            result[templatesProperty.GetJsonName()] = _localisationService.GetText(casterPropertyValue?.DescriptionLocaleKey!);
+            result[templatesProperty.GetJsonName()] = _localisationService.GetText(
+                casterPropertyValue?.DescriptionLocaleKey!
+            );
         }
 
         return result;
@@ -85,7 +106,11 @@ public class LauncherController(
     /// <returns></returns>
     public Info? Find(string? sessionId)
     {
-        return sessionId is not null && _saveServer.GetProfiles().TryGetValue(sessionId, out var profile) ? profile.ProfileInfo : null;
+        return
+            sessionId is not null
+            && _saveServer.GetProfiles().TryGetValue(sessionId, out var profile)
+            ? profile.ProfileInfo
+            : null;
     }
 
     /// <summary>
@@ -139,7 +164,7 @@ public class LauncherController(
             Username = info.Username,
             Password = info.Password,
             IsWiped = true,
-            Edition = info.Edition
+            Edition = info.Edition,
         };
         _saveServer.CreateProfile(newProfileDetails);
 
@@ -242,7 +267,9 @@ public class LauncherController(
     /// <returns>Dictionary of mod name and mod details</returns>
     public Dictionary<string, PackageJsonData> GetLoadedServerMods()
     {
-        var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES).GetValue<List<SptMod>>();
+        var mods = _applicationContext
+            ?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES)
+            .GetValue<List<SptMod>>();
         var result = new Dictionary<string, PackageJsonData>();
 
         foreach (var sptMod in mods)
@@ -293,10 +320,16 @@ public class LauncherController(
         foreach (var modName in modsGroupedByName)
         {
             var modDatas = modsGroupedByName[modName.Key];
-            var modVersions = modDatas.Select(x => x.Version);
+            var modVersions = modDatas.Select(x =>
+            {
+                return x.Version;
+            });
             // var highestVersion = MaxSatisfying(modVersions, "*"); ?? TODO: Node used SemVer here
 
-            var chosenVersion = modDatas.FirstOrDefault(x => x.Name == modName.Key); // && x.Version == highestVersion
+            var chosenVersion = modDatas.FirstOrDefault(x =>
+            {
+                return x.Name == modName.Key;
+            }); // && x.Version == highestVersion
             if (chosenVersion is null)
             {
                 continue;

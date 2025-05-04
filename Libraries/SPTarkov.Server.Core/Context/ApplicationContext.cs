@@ -10,7 +10,8 @@ public class ApplicationContext
 
     private static ApplicationContext? _applicationContext;
     private readonly ISptLogger<ApplicationContext> _logger;
-    private readonly Dictionary<ContextVariableType, LinkedList<ContextVariable>> _variables = new();
+    private readonly Dictionary<ContextVariableType, LinkedList<ContextVariable>> _variables =
+        new();
     private readonly Lock _lockObject = new();
 
     /// <summary>

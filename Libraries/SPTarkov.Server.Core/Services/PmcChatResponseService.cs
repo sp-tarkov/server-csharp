@@ -24,7 +24,8 @@ public class PmcChatResponseService(
     GiftService _giftService,
     LocaleService _localeService,
     MatchBotDetailsCacheService _matchBotDetailsCacheService,
-    ConfigServer _configServer)
+    ConfigServer _configServer
+)
 {
     protected GiftsConfig _giftConfig = _configServer.GetConfig<GiftsConfig>();
     protected PmcChatResponse _pmcResponsesConfig = _configServer.GetConfig<PmcChatResponse>();
@@ -46,7 +47,9 @@ public class PmcChatResponseService(
 
             if (string.IsNullOrEmpty(victim.Name))
             {
-                _logger.Warning($"Victim: {victim.ProfileId} does not have a nickname, skipping pmc response message send");
+                _logger.Warning(
+                    $"Victim: {victim.ProfileId} does not have a nickname, skipping pmc response message send"
+                );
 
                 continue;
             }
@@ -103,8 +106,8 @@ public class PmcChatResponseService(
                 Nickname = killerDetailsInCache.Nickname,
                 Side = side,
                 Level = killerDetailsInCache.Level,
-                MemberCategory = killerDetailsInCache.Type
-            }
+                MemberCategory = killerDetailsInCache.Type,
+            },
         };
 
         var message = ChooseMessage(false, pmcData);
@@ -113,7 +116,12 @@ public class PmcChatResponseService(
             return;
         }
 
-        _notificationSendHelper.SendMessageToPlayer(sessionId, killerDetails, message, MessageType.USER_MESSAGE);
+        _notificationSendHelper.SendMessageToPlayer(
+            sessionId,
+            killerDetails,
+            message,
+            MessageType.USER_MESSAGE
+        );
     }
 
     /// <summary>
@@ -132,7 +140,9 @@ public class PmcChatResponseService(
         var possibleResponseLocaleKeys = GetResponseLocaleKeys(responseType, isVictim);
         if (possibleResponseLocaleKeys.Count == 0)
         {
-            _logger.Warning(_localisationService.GetText("pmcresponse-unable_to_find_key", responseType));
+            _logger.Warning(
+                _localisationService.GetText("pmcresponse-unable_to_find_key", responseType)
+            );
 
             return null;
         }
@@ -145,7 +155,9 @@ public class PmcChatResponseService(
                 playerName = pmcData.Info.Nickname,
                 playerLevel = pmcData.Info.Level,
                 playerSide = pmcData.Info.Side,
-                victimDeathLocation = victimData is not null ? GetLocationName(victimData.Location) : ""
+                victimDeathLocation = victimData is not null
+                    ? GetLocationName(victimData.Location)
+                    : "",
             }
         );
 
@@ -160,7 +172,9 @@ public class PmcChatResponseService(
 
         if (AppendSuffixToMessageEnd(isVictim))
         {
-            var suffixText = _localisationService.GetText(_randomUtil.GetArrayValue(GetResponseSuffixLocaleKeys()));
+            var suffixText = _localisationService.GetText(
+                _randomUtil.GetArrayValue(GetResponseSuffixLocaleKeys())
+            );
             responseText += $" {suffixText}";
         }
 
@@ -255,7 +269,11 @@ public class PmcChatResponseService(
         var keyBase = isVictim ? "pmcresponse-victim_" : "pmcresponse-killer_";
         var keys = _localisationService.GetKeys();
 
-        return keys.Where(x => x.StartsWith($"{keyBase}{keyType}")).ToList();
+        return keys.Where(x =>
+            {
+                return x.StartsWith($"{keyBase}{keyType}");
+            })
+            .ToList();
     }
 
     /// <summary>
@@ -266,7 +284,11 @@ public class PmcChatResponseService(
     {
         var keys = _localisationService.GetKeys();
 
-        return keys.Where(x => x.StartsWith("pmcresponse-suffix")).ToList();
+        return keys.Where(x =>
+            {
+                return x.StartsWith("pmcresponse-suffix");
+            })
+            .ToList();
     }
 
     /// <summary>
@@ -299,7 +321,7 @@ public class PmcChatResponseService(
             MemberCategory.Default,
             MemberCategory.Default,
             MemberCategory.Sherpa,
-            MemberCategory.Developer
+            MemberCategory.Developer,
         };
 
         var chosenCategory = _randomUtil.GetArrayValue(categories);
@@ -314,8 +336,8 @@ public class PmcChatResponseService(
                 Level = pmcVictim.Level,
                 Side = pmcVictim.Side,
                 MemberCategory = chosenCategory,
-                SelectedMemberCategory = chosenCategory
-            }
+                SelectedMemberCategory = chosenCategory,
+            },
         };
     }
 }

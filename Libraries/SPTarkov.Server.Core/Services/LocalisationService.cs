@@ -63,7 +63,8 @@ public class LocalisationService
     /// <param name="key"> Key to look up locale for </param>
     /// <param name="value"> Value to localize </param>
     /// <returns> Localised string </returns>
-    public string GetText<T>(string key, T value) where T : IConvertible?
+    public string GetText<T>(string key, T value)
+        where T : IConvertible?
     {
         return _i18nService.GetLocalised(key, value);
     }

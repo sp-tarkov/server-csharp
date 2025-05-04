@@ -6,9 +6,5 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 public record HideoutCircleOfCultistProductionStartRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("timestamp")]
-    public long? Timestamp
-    {
-        get;
-        set;
-    }
+    public long? Timestamp { get; set; }
 }

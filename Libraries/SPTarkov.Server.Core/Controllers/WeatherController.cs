@@ -23,7 +23,6 @@ public class WeatherController(
 {
     protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
 
-
     /// <summary>
     ///     Handle client/weather
     /// </summary>
@@ -36,7 +35,7 @@ public class WeatherController(
             Time = "",
             Date = "",
             Weather = null,
-            Season = Season.AUTUMN
+            Season = Season.AUTUMN,
         };
 
         _weatherGenerator.CalculateGameTime(result);
@@ -55,7 +54,7 @@ public class WeatherController(
         var result = new GetLocalWeatherResponseData
         {
             Season = _seasonalEventService.GetActiveWeatherSeason(),
-            Weather = []
+            Weather = [],
         };
 
         result.Weather.AddRange(_raidWeatherService.GetUpcomingWeather());

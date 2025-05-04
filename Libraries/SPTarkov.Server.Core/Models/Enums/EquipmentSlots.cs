@@ -15,5 +15,5 @@ public enum EquipmentSlots
     FirstPrimaryWeapon,
     SecondPrimaryWeapon,
     Holster,
-    Scabbard
+    Scabbard,
 }

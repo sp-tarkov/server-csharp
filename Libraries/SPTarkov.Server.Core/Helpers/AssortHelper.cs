@@ -31,14 +31,17 @@ public class AssortHelper(
         string traderId,
         TraderAssort traderAssorts,
         Dictionary<string, Dictionary<string, string>> mergedQuestAssorts,
-        bool flea = false)
+        bool flea = false
+    )
     {
         var strippedTraderAssorts = traderAssorts;
 
         // Trader assort does not always contain loyal_level_items
         if (traderAssorts.LoyalLevelItems is null)
         {
-            _logger.Warning(_localisationService.GetText("assort-missing_loyalty_level_object", traderId));
+            _logger.Warning(
+                _localisationService.GetText("assort-missing_loyalty_level_object", traderId)
+            );
 
             return traderAssorts;
         }
@@ -54,7 +57,10 @@ public class AssortHelper(
             }
 
             // Remove assort if quest in profile does not have status that unlocks assort
-            var questStatusInProfile = _questHelper.GetQuestStatus(pmcProfile, unlockValues.Value.Key);
+            var questStatusInProfile = _questHelper.GetQuestStatus(
+                pmcProfile,
+                unlockValues.Value.Key
+            );
             if (!unlockValues.Value.Value.Contains(questStatusInProfile))
             {
                 strippedTraderAssorts = RemoveItemFromAssort(traderAssorts, assortId.Key, flea);
@@ -72,14 +78,19 @@ public class AssortHelper(
     /// <returns>quest id + array of quest status the assort should show for</returns>
     protected KeyValuePair<string, List<QuestStatusEnum>>? GetQuestIdAndStatusThatShowAssort(
         Dictionary<string, Dictionary<string, string>> mergedQuestAssorts,
-        string assortId)
+        string assortId
+    )
     {
         if (mergedQuestAssorts.TryGetValue("started", out var dict1) && dict1.ContainsKey(assortId))
-            // Assort unlocked by starting quest, assort is visible to player when : started or ready to hand in + handed in
+        // Assort unlocked by starting quest, assort is visible to player when : started or ready to hand in + handed in
         {
             return new KeyValuePair<string, List<QuestStatusEnum>>(
                 mergedQuestAssorts["started"][assortId],
-                [QuestStatusEnum.Started, QuestStatusEnum.AvailableForFinish, QuestStatusEnum.Success]
+                [
+                    QuestStatusEnum.Started,
+                    QuestStatusEnum.AvailableForFinish,
+                    QuestStatusEnum.Success,
+                ]
             );
         }
 
@@ -109,14 +120,20 @@ public class AssortHelper(
      * @param assort traders assorts
      * @returns traders assorts minus locked loyalty assorts
      */
-    public TraderAssort StripLockedLoyaltyAssort(PmcData pmcProfile, string traderId, TraderAssort assort)
+    public TraderAssort StripLockedLoyaltyAssort(
+        PmcData pmcProfile,
+        string traderId,
+        TraderAssort assort
+    )
     {
         var strippedAssort = assort;
 
         // Trader assort does not always contain loyal_level_items
         if (assort.LoyalLevelItems is null)
         {
-            _logger.Warning(_localisationService.GetText("assort-missing_loyalty_level_object", traderId));
+            _logger.Warning(
+                _localisationService.GetText("assort-missing_loyalty_level_object", traderId)
+            );
 
             return strippedAssort;
         }
@@ -124,7 +141,10 @@ public class AssortHelper(
         // Remove items restricted by loyalty levels above those reached by the player
         foreach (var item in assort.LoyalLevelItems)
         {
-            if (pmcProfile.TradersInfo.TryGetValue(traderId, out var info) && assort.LoyalLevelItems[item.Key] > info.LoyaltyLevel)
+            if (
+                pmcProfile.TradersInfo.TryGetValue(traderId, out var info)
+                && assort.LoyalLevelItems[item.Key] > info.LoyaltyLevel
+            )
             {
                 strippedAssort = RemoveItemFromAssort(assort, item.Key);
             }
@@ -145,7 +165,12 @@ public class AssortHelper(
 
         if (assort.BarterScheme.TryGetValue(itemID, out var lisToUse) && flea)
         {
-            foreach (var barterScheme in lisToUse.SelectMany(barterSchemes => barterSchemes))
+            foreach (
+                var barterScheme in lisToUse.SelectMany(barterSchemes =>
+                {
+                    return barterSchemes;
+                })
+            )
             {
                 barterScheme.SptQuestLocked = true;
             }
@@ -156,7 +181,17 @@ public class AssortHelper(
         assort.BarterScheme.Remove(itemID);
         assort.LoyalLevelItems.Remove(itemID);
 
-        foreach (var item in idsToRemove.SelectMany(i => assort.Items.ToList().Where(a => a.Id == i)))
+        foreach (
+            var item in idsToRemove.SelectMany(i =>
+            {
+                return assort
+                    .Items.ToList()
+                    .Where(a =>
+                    {
+                        return a.Id == i;
+                    });
+            })
+        )
         {
             assort.Items.Remove(item);
         }

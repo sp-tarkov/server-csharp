@@ -5,7 +5,7 @@ public enum AirdropTypeEnum
     Common,
     Supply,
     Medical,
-    Weapon
+    Weapon,
 }
 
 public enum SptAirdropTypeEnum
@@ -14,5 +14,5 @@ public enum SptAirdropTypeEnum
     barter,
     foodMedical,
     weaponArmor,
-    radar
+    radar,
 }

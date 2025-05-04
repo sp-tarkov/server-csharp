@@ -97,7 +97,9 @@ public class BackupService
         }
         catch (Exception ex)
         {
-            _logger.Debug($"Skipping profile backup: Unable to read profiles directory, {ex.Message}");
+            _logger.Debug(
+                $"Skipping profile backup: Unable to read profiles directory, {ex.Message}"
+            );
             return;
         }
 
@@ -125,12 +127,17 @@ public class BackupService
                 var absoluteDestinationFilePath = Path.Combine(targetDir, profileFileName);
                 if (!_fileUtil.CopyFile(relativeSourceFilePath, absoluteDestinationFilePath))
                 {
-                    _logger.Error($"Source file not found: {relativeSourceFilePath}. Cannot copy to: {absoluteDestinationFilePath}");
+                    _logger.Error(
+                        $"Source file not found: {relativeSourceFilePath}. Cannot copy to: {absoluteDestinationFilePath}"
+                    );
                 }
             }
 
             // Write a copy of active mods.
-            _fileUtil.WriteFile(Path.Combine(targetDir, "activeMods.json"), _jsonUtil.Serialize(_activeServerMods));
+            _fileUtil.WriteFile(
+                Path.Combine(targetDir, "activeMods.json"),
+                _jsonUtil.Serialize(_activeServerMods)
+            );
 
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
@@ -207,7 +214,9 @@ public class BackupService
         }
     }
 
-    private SortedDictionary<long, string> GetBackupPathsWithCreationTimestamp(List<string> backupPaths)
+    private SortedDictionary<long, string> GetBackupPathsWithCreationTimestamp(
+        List<string> backupPaths
+    )
     {
         var result = new SortedDictionary<long, string>();
         foreach (var backupPath in backupPaths)
@@ -253,7 +262,7 @@ public class BackupService
             return 0; // Skip comparison if either date is invalid.
         }
 
-        return (int) (dateA.Value.ToFileTimeUtc() - dateB.Value.ToFileTimeUtc());
+        return (int)(dateA.Value.ToFileTimeUtc() - dateB.Value.ToFileTimeUtc());
     }
 
     /// <summary>
@@ -288,7 +297,10 @@ public class BackupService
     /// <returns> A promise that resolves when all specified backups have been removed. </returns>
     private void RemoveExcessBackups(List<string> backupFilenames)
     {
-        var filePathsToDelete = backupFilenames.Select(x => x);
+        var filePathsToDelete = backupFilenames.Select(x =>
+        {
+            return x;
+        });
         foreach (var pathToDelete in filePathsToDelete)
         {
             _fileUtil.DeleteDirectory(Path.Combine(pathToDelete), true);
@@ -306,7 +318,9 @@ public class BackupService
     /// <returns> A List of mod names. </returns>
     protected List<string> GetActiveServerMods()
     {
-        var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES)?.GetValue<List<SptMod>>();
+        var mods = _applicationContext
+            ?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES)
+            ?.GetValue<List<SptMod>>();
         if (mods == null)
         {
             return [];

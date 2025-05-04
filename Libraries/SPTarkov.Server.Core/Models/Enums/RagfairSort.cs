@@ -7,5 +7,5 @@ public enum RagfairSort
     RATING = 3,
     OFFER_TITLE = 4,
     PRICE = 5,
-    EXPIRY = 6
+    EXPIRY = 6,
 }

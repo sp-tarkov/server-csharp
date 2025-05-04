@@ -27,81 +27,67 @@ public class HealthSaveLoadRouter : SaveLoadRouter
             Health = null,
             Energy = 0,
             Temperature = 0,
-            Hydration = 0
+            Hydration = 0,
         };
 
         vitality.Health = new Dictionary<string, BodyPartHealth>
         {
             {
-                "Head", new BodyPartHealth
+                "Head",
+                new BodyPartHealth
                 {
-                    Health = new CurrentMinMax
-                    {
-                        Current = 0
-                    },
-                    Effects = new Dictionary<string, BodyPartEffectProperties>()
+                    Health = new CurrentMinMax { Current = 0 },
+                    Effects = new Dictionary<string, BodyPartEffectProperties>(),
                 }
             },
             {
-                "Chest", new BodyPartHealth
+                "Chest",
+                new BodyPartHealth
                 {
-                    Health = new CurrentMinMax
-                    {
-                        Current = 0
-                    },
-                    Effects = new Dictionary<string, BodyPartEffectProperties>()
+                    Health = new CurrentMinMax { Current = 0 },
+                    Effects = new Dictionary<string, BodyPartEffectProperties>(),
                 }
             },
             {
-                "Stomach", new BodyPartHealth
+                "Stomach",
+                new BodyPartHealth
                 {
-                    Health = new CurrentMinMax
-                    {
-                        Current = 0
-                    },
-                    Effects = new Dictionary<string, BodyPartEffectProperties>()
+                    Health = new CurrentMinMax { Current = 0 },
+                    Effects = new Dictionary<string, BodyPartEffectProperties>(),
                 }
             },
             {
-                "LeftArm", new BodyPartHealth
+                "LeftArm",
+                new BodyPartHealth
                 {
-                    Health = new CurrentMinMax
-                    {
-                        Current = 0
-                    },
-                    Effects = new Dictionary<string, BodyPartEffectProperties>()
+                    Health = new CurrentMinMax { Current = 0 },
+                    Effects = new Dictionary<string, BodyPartEffectProperties>(),
                 }
             },
             {
-                "RightArm", new BodyPartHealth
+                "RightArm",
+                new BodyPartHealth
                 {
-                    Health = new CurrentMinMax
-                    {
-                        Current = 0
-                    },
-                    Effects = new Dictionary<string, BodyPartEffectProperties>()
+                    Health = new CurrentMinMax { Current = 0 },
+                    Effects = new Dictionary<string, BodyPartEffectProperties>(),
                 }
             },
             {
-                "LeftLeg", new BodyPartHealth
+                "LeftLeg",
+                new BodyPartHealth
                 {
-                    Health = new CurrentMinMax
-                    {
-                        Current = 0
-                    },
-                    Effects = new Dictionary<string, BodyPartEffectProperties>()
+                    Health = new CurrentMinMax { Current = 0 },
+                    Effects = new Dictionary<string, BodyPartEffectProperties>(),
                 }
             },
             {
-                "RightLeg", new BodyPartHealth
+                "RightLeg",
+                new BodyPartHealth
                 {
-                    Health = new CurrentMinMax
-                    {
-                        Current = 0
-                    },
-                    Effects = new Dictionary<string, BodyPartEffectProperties>()
+                    Health = new CurrentMinMax { Current = 0 },
+                    Effects = new Dictionary<string, BodyPartEffectProperties>(),
                 }
-            }
+            },
         };
     }
 }

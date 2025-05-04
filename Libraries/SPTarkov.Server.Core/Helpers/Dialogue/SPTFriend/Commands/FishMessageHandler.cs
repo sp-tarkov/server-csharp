@@ -6,8 +6,7 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
-public class FishMessageHandler(
-    MailSendService _mailSendService) : IChatMessageHandler
+public class FishMessageHandler(MailSendService _mailSendService) : IChatMessageHandler
 {
     public int GetPriority()
     {
@@ -19,14 +18,13 @@ public class FishMessageHandler(
         return message.ToLower() == "fish";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
+    public void Process(
+        string sessionId,
+        UserDialogInfo sptFriendUser,
+        PmcData? sender,
+        object? extraInfo = null
+    )
     {
-        _mailSendService.SendUserMessageToPlayer(
-            sessionId,
-            sptFriendUser,
-            "blub",
-            [],
-            null
-        );
+        _mailSendService.SendUserMessageToPlayer(sessionId, sptFriendUser, "blub", [], null);
     }
 }

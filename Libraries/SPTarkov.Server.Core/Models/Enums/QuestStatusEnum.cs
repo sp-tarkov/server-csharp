@@ -11,5 +11,5 @@ public enum QuestStatusEnum
     FailRestartable = 6,
     MarkedAsFailed = 7,
     Expired = 8,
-    AvailableAfter = 9
+    AvailableAfter = 9,
 }

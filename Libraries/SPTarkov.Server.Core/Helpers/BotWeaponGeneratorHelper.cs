@@ -21,7 +21,11 @@ public class BotWeaponGeneratorHelper(
     LocalisationService _localisationService
 )
 {
-    private static readonly FrozenSet<string> _magCheck = ["CylinderMagazine", "SpringDrivenCylinder"];
+    private static readonly FrozenSet<string> _magCheck =
+    [
+        "CylinderMagazine",
+        "SpringDrivenCylinder",
+    ];
 
     /// <summary>
     ///     Get a randomized number of bullets for a specific magazine
@@ -36,11 +40,16 @@ public class BotWeaponGeneratorHelper(
         double? chamberBulletCount = 0;
         if (MagazineIsCylinderRelated(parentItem.Name))
         {
-            var firstSlotAmmoTpl = magTemplate.Properties.Cartridges.FirstOrDefault()?.Props.Filters[0].Filter.FirstOrDefault();
-            var ammoMaxStackSize = _itemHelper.GetItem(firstSlotAmmoTpl).Value?.Properties?.StackMaxSize ?? 1;
-            chamberBulletCount = ammoMaxStackSize == 1
-                ? 1 // Rotating grenade launcher
-                : magTemplate.Properties.Slots.Count; // Shotguns/revolvers. We count the number of camoras as the _max_count of the magazine is 0
+            var firstSlotAmmoTpl = magTemplate
+                .Properties.Cartridges.FirstOrDefault()
+                ?.Props.Filters[0]
+                .Filter.FirstOrDefault();
+            var ammoMaxStackSize =
+                _itemHelper.GetItem(firstSlotAmmoTpl).Value?.Properties?.StackMaxSize ?? 1;
+            chamberBulletCount =
+                ammoMaxStackSize == 1
+                    ? 1 // Rotating grenade launcher
+                    : magTemplate.Properties.Slots.Count; // Shotguns/revolvers. We count the number of camoras as the _max_count of the magazine is 0
         }
         else if (parentItem.Id == BaseClasses.UBGL)
         {
@@ -64,7 +73,7 @@ public class BotWeaponGeneratorHelper(
     /// <returns>Numerical value of magazine count</returns>
     public int GetRandomizedMagazineCount(GenerationData magCounts)
     {
-        return (int) _weightedRandomHelper.GetWeightedValue(magCounts.Weights);
+        return (int)_weightedRandomHelper.GetWeightedValue(magCounts.Weights);
     }
 
     /// <summary>
@@ -84,16 +93,13 @@ public class BotWeaponGeneratorHelper(
     /// <param name="ammoTpl">Ammo to add to magazine</param>
     /// <param name="magTemplate">Template object of magazine</param>
     /// <returns>Item array</returns>
-    public List<Item> CreateMagazineWithAmmo(string magazineTpl, string ammoTpl, TemplateItem magTemplate)
+    public List<Item> CreateMagazineWithAmmo(
+        string magazineTpl,
+        string ammoTpl,
+        TemplateItem magTemplate
+    )
     {
-        List<Item> magazine =
-        [
-            new()
-            {
-                Id = _hashUtil.Generate(),
-                Template = magazineTpl
-            }
-        ];
+        List<Item> magazine = [new() { Id = _hashUtil.Generate(), Template = magazineTpl }];
 
         _itemHelper.FillMagazineWithCartridge(magazine, magTemplate, ammoTpl, 1);
 
@@ -124,10 +130,7 @@ public class BotWeaponGeneratorHelper(
             {
                 Id = _hashUtil.Generate(),
                 Template = ammoTpl,
-                Upd = new Upd
-                {
-                    StackObjectsCount = cartridgeCount
-                }
+                Upd = new Upd { StackObjectsCount = cartridgeCount },
             }
         );
 
@@ -143,10 +146,12 @@ public class BotWeaponGeneratorHelper(
 
             if (result != ItemAddedResult.SUCCESS)
             {
-                _logger.Debug($"Unable to add ammo: {ammoItem.Template} to bot inventory, {result.ToString()}");
+                _logger.Debug(
+                    $"Unable to add ammo: {ammoItem.Template} to bot inventory, {result.ToString()}"
+                );
 
                 if (result == ItemAddedResult.NO_SPACE || result == ItemAddedResult.NO_CONTAINERS)
-                    // If there's no space for 1 stack or no containers to hold item, there's no space for the others
+                // If there's no space for 1 stack or no containers to hold item, there's no space for the others
                 {
                     break;
                 }

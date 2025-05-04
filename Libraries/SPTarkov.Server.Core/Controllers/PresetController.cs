@@ -33,10 +33,7 @@ public class PresetController(
 
             // Get root items tpl
             var tpl = preset.Items.FirstOrDefault()?.Template;
-            result.TryAdd(tpl, new PresetCacheDetails
-            {
-                PresetIds = []
-            });
+            result.TryAdd(tpl, new PresetCacheDetails { PresetIds = [] });
 
             result.TryGetValue(tpl, out var details);
             details.PresetIds.Add(presetId);

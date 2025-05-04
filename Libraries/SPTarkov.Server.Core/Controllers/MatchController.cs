@@ -69,9 +69,9 @@ public class MatchController(
                     RaidMode = "Online",
                     Mode = "deathmatch",
                     ShortId = null,
-                    AdditionalInfo = null
-                }
-            ]
+                    AdditionalInfo = null,
+                },
+            ],
         };
 
         return output;
@@ -84,11 +84,7 @@ public class MatchController(
     /// <returns>MatchGroupStatusResponse</returns>
     public MatchGroupStatusResponse GetGroupStatus(MatchGroupStatusRequest request)
     {
-        return new MatchGroupStatusResponse
-        {
-            Players = [],
-            MaxPveCountExceeded = false
-        };
+        return new MatchGroupStatusResponse { Players = [], MaxPveCountExceeded = false };
     }
 
     /// <summary>
@@ -134,7 +130,10 @@ public class MatchController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Start raid request</param>
     /// <returns>StartLocalRaidResponseData</returns>
-    public StartLocalRaidResponseData StartLocalRaid(string sessionId, StartLocalRaidRequestData request)
+    public StartLocalRaidResponseData StartLocalRaid(
+        string sessionId,
+        StartLocalRaidRequestData request
+    )
     {
         return _locationLifecycleService.StartLocalRaid(sessionId, request);
     }

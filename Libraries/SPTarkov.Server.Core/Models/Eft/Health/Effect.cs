@@ -6,5 +6,5 @@ public enum Effect
     LightBleeding,
     HeavyBleeding,
     MildMusclePain,
-    SevereMusclePain
+    SevereMusclePain,
 }

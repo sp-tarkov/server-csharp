@@ -9,5 +9,5 @@ public enum HealthFactor
     Radiation,
     Temperature,
     Poisoning,
-    Effect
+    Effect,
 }

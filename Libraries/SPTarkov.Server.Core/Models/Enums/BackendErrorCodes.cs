@@ -90,5 +90,5 @@ public enum BackendErrorCodes
     PlayerInRaid,
     LimitForPresetsReached = 504001,
     PlayerProfileNotFound = 505001,
-    NoArenaSync = 507006
+    NoArenaSync = 507006,
 }

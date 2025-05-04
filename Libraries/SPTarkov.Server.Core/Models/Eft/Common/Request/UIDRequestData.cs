@@ -6,9 +6,5 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Request;
 public record UIDRequestData : IRequestData
 {
     [JsonPropertyName("uid")]
-    public string? Uid
-    {
-        get;
-        set;
-    }
+    public string? Uid { get; set; }
 }

@@ -27,7 +27,10 @@ public class NotificationSendHelper(
     {
         var sptWebSocketConnectionHandler = _sptWebSocketConnectionHandler
             .OfType<SptWebSocketConnectionHandler>()
-            .FirstOrDefault(wsh => wsh.GetHookUrl() == "/notifierServer/getwebsocket/");
+            .FirstOrDefault(wsh =>
+            {
+                return wsh.GetHookUrl() == "/notifierServer/getwebsocket/";
+            });
 
         if (sptWebSocketConnectionHandler.IsWebSocketConnected(sessionID))
         {
@@ -50,7 +53,8 @@ public class NotificationSendHelper(
         string sessionId,
         UserDialogInfo senderDetails,
         string messageText,
-        MessageType messageType)
+        MessageType messageType
+    )
     {
         var dialog = GetDialog(sessionId, messageType, senderDetails);
 
@@ -64,7 +68,7 @@ public class NotificationSendHelper(
             Text = messageText,
             HasRewards = null,
             RewardCollected = null,
-            Items = null
+            Items = null,
         };
         dialog.Messages.Add(message);
 
@@ -73,7 +77,7 @@ public class NotificationSendHelper(
             EventType = NotificationEventType.new_message,
             EventIdentifier = message.Id,
             DialogId = message.UserId,
-            Message = message
+            Message = message,
         };
         SendMessage(sessionId, notification);
     }
@@ -85,7 +89,11 @@ public class NotificationSendHelper(
     /// <param name="messageType">Type of message to generate</param>
     /// <param name="senderDetails">Who is sending the message</param>
     /// <returns>Dialogue</returns>
-    protected Models.Eft.Profile.Dialogue GetDialog(string sessionId, MessageType messageType, UserDialogInfo senderDetails)
+    protected Models.Eft.Profile.Dialogue GetDialog(
+        string sessionId,
+        MessageType messageType,
+        UserDialogInfo senderDetails
+    )
     {
         // Use trader id if sender is trader, otherwise use nickname
         var dialogKey = senderDetails.Id;
@@ -94,12 +102,19 @@ public class NotificationSendHelper(
         var dialogueData = _saveServer.GetProfile(sessionId).DialogueRecords;
 
         // Ensure empty dialog exists based on sender details passed in
-        dialogueData.TryAdd(dialogKey, GetEmptyDialogTemplate(dialogKey, messageType, senderDetails));
+        dialogueData.TryAdd(
+            dialogKey,
+            GetEmptyDialogTemplate(dialogKey, messageType, senderDetails)
+        );
 
         return dialogueData[dialogKey];
     }
 
-    protected Models.Eft.Profile.Dialogue GetEmptyDialogTemplate(string dialogKey, MessageType messageType, UserDialogInfo senderDetails)
+    protected Models.Eft.Profile.Dialogue GetEmptyDialogTemplate(
+        string dialogKey,
+        MessageType messageType,
+        UserDialogInfo senderDetails
+    )
     {
         return new Models.Eft.Profile.Dialogue
         {
@@ -109,7 +124,8 @@ public class NotificationSendHelper(
             Pinned = false,
             New = 0,
             AttachmentsNew = 0,
-            Users = senderDetails.Info.MemberCategory == MemberCategory.Trader ? null : [senderDetails]
+            Users =
+                senderDetails.Info.MemberCategory == MemberCategory.Trader ? null : [senderDetails],
         };
     }
 }

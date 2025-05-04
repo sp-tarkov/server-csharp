@@ -14,7 +14,7 @@ public class EncodingUtil
             EncodeType.HEX => Convert.ToHexString(Encoding.Default.GetBytes(value)),
             EncodeType.ASCII => Encoding.ASCII.GetString(Encoding.Default.GetBytes(value)),
             EncodeType.UTF8 => Encoding.UTF8.GetString(Encoding.Default.GetBytes(value)),
-            _ => throw new ArgumentOutOfRangeException(nameof(encode), encode, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(encode), encode, null),
         };
     }
 
@@ -61,5 +61,5 @@ public enum EncodeType
     BASE64,
     HEX,
     ASCII,
-    UTF8
+    UTF8,
 }

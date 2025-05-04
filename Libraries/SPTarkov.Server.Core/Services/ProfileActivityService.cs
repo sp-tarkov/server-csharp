@@ -5,9 +5,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class ProfileActivityService(
-    TimeUtil timeUtil
-)
+public class ProfileActivityService(TimeUtil timeUtil)
 {
     private readonly ConcurrentDictionary<string, long> _profileActivityTimestamps = new();
 
@@ -56,7 +54,7 @@ public class ProfileActivityService(
     /// <param name="sessionId"> Profile to update </param>
     public void SetActivityTimestamp(string sessionId)
     {
-        if(!_profileActivityTimestamps.TryAdd(sessionId, timeUtil.GetTimeStamp()))
+        if (!_profileActivityTimestamps.TryAdd(sessionId, timeUtil.GetTimeStamp()))
         {
             _profileActivityTimestamps[sessionId] = timeUtil.GetTimeStamp();
         }

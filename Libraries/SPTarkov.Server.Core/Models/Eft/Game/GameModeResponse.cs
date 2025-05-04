@@ -5,22 +5,14 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 public enum SessionMode
 {
     REGULAR,
-    PVE
+    PVE,
 }
 
 public record GameModeResponse
 {
     [JsonPropertyName("gameMode")]
-    public string? GameMode
-    {
-        get;
-        set;
-    }
+    public string? GameMode { get; set; }
 
     [JsonPropertyName("backendUrl")]
-    public string? BackendUrl
-    {
-        get;
-        set;
-    }
+    public string? BackendUrl { get; set; }
 }

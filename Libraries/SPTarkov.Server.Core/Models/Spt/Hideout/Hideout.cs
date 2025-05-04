@@ -6,44 +6,20 @@ namespace SPTarkov.Server.Core.Models.Spt.Hideout;
 public record Hideout
 {
     [JsonPropertyName("areas")]
-    public List<HideoutArea>? Areas
-    {
-        get;
-        set;
-    }
+    public List<HideoutArea>? Areas { get; set; }
 
     [JsonPropertyName("customAreas")]
-    public List<HideoutArea>? CustomAreas
-    {
-        get;
-        set;
-    }
+    public List<HideoutArea>? CustomAreas { get; set; }
 
     [JsonPropertyName("customisation")]
-    public HideoutCustomisation? Customisation
-    {
-        get;
-        set;
-    }
+    public HideoutCustomisation? Customisation { get; set; }
 
     [JsonPropertyName("production")]
-    public HideoutProductionData? Production
-    {
-        get;
-        set;
-    }
+    public HideoutProductionData? Production { get; set; }
 
     [JsonPropertyName("settings")]
-    public HideoutSettingsBase? Settings
-    {
-        get;
-        set;
-    }
+    public HideoutSettingsBase? Settings { get; set; }
 
     [JsonPropertyName("qte")]
-    public List<QteData>? Qte
-    {
-        get;
-        set;
-    }
+    public List<QteData>? Qte { get; set; }
 }

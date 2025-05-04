@@ -19,7 +19,7 @@ public class HttpServerHelper(ConfigServer configServer)
         { "json", "application/json" },
         { "png", "image/png" },
         { "svg", "image/svg+xml" },
-        { "txt", "text/plain" }
+        { "txt", "text/plain" },
     };
 
     public string? GetMimeText(string key)

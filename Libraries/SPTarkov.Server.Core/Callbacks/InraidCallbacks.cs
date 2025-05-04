@@ -7,10 +7,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
-public class InraidCallbacks(
-    InRaidController _inRaidController,
-    HttpResponseUtil _httpResponseUtil
-)
+public class InraidCallbacks(InRaidController _inRaidController, HttpResponseUtil _httpResponseUtil)
 {
     /// <summary>
     ///     Handle client/location/getLocalloot
@@ -54,7 +51,9 @@ public class InraidCallbacks(
     /// <returns></returns>
     public string GetTraitorScavHostileChance(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.NoBody(_inRaidController.GetTraitorScavHostileChance(url, sessionID));
+        return _httpResponseUtil.NoBody(
+            _inRaidController.GetTraitorScavHostileChance(url, sessionID)
+        );
     }
 
     /// <summary>

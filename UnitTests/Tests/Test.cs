@@ -12,7 +12,11 @@ public class Test
     [TestInitialize]
     public void Setup()
     {
-        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(), new JsonUtil());
+        var importer = new ImporterUtil(
+            new MockLogger<ImporterUtil>(),
+            new FileUtil(),
+            new JsonUtil()
+        );
         var loadTask = importer.LoadRecursiveAsync<Templates>("./TestAssets/");
         loadTask.Wait();
         _templates = loadTask.Result;

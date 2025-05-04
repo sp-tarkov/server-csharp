@@ -27,14 +27,16 @@ public class GiveSptCommand(
 ) : ISptCommand
 {
     private const double _acceptableConfidence = 0.9d;
-    private static readonly Regex _commandRegex = new(@"^spt give (((([a-z]{2,5}) )?""(.+)""|\w+) )?([0-9]+)$");
+    private static readonly Regex _commandRegex = new(
+        @"^spt give (((([a-z]{2,5}) )?""(.+)""|\w+) )?([0-9]+)$"
+    );
 
     // Exception for flares
     protected static readonly FrozenSet<string> _excludedPresetItems =
     [
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_RED,
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_GREEN,
-        ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_YELLOW
+        ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_YELLOW,
     ];
 
     protected Dictionary<string, SavedCommand> _savedCommand = new();
@@ -46,13 +48,16 @@ public class GiveSptCommand(
 
     public string GetCommandHelp()
     {
-        return
-            "spt give\n========\nSends items to the player through the message system.\n\n\tspt give [template ID] [quantity]\n\t\tEx: " +
-            "spt give 544fb25a4bdc2dfb738b4567 2\n\n\tspt give [\"item name\"] [quantity]\n\t\tEx: spt give \"pack of sugar\" 10\n\n\tspt " +
-            "give [locale] [\"item name\"] [quantity]\n\t\tEx: spt give fr \"figurine de chat\" 3";
+        return "spt give\n========\nSends items to the player through the message system.\n\n\tspt give [template ID] [quantity]\n\t\tEx: "
+            + "spt give 544fb25a4bdc2dfb738b4567 2\n\n\tspt give [\"item name\"] [quantity]\n\t\tEx: spt give \"pack of sugar\" 10\n\n\tspt "
+            + "give [locale] [\"item name\"] [quantity]\n\t\tEx: spt give fr \"figurine de chat\" 3";
     }
 
-    public string PerformAction(UserDialogInfo commandHandler, string sessionId, SendMessageRequest request)
+    public string PerformAction(
+        UserDialogInfo commandHandler,
+        string sessionId,
+        SendMessageRequest request
+    )
     {
         if (!_commandRegex.IsMatch(request.Text))
         {
@@ -112,7 +117,10 @@ public class GiveSptCommand(
             }
 
             isItemName = (!string.IsNullOrEmpty(result.Groups[5].Value));
-            item = (!string.IsNullOrEmpty(result.Groups[5].Value)) ? result.Groups[5].Value : result.Groups[2].Value;
+            item =
+                (!string.IsNullOrEmpty(result.Groups[5].Value))
+                    ? result.Groups[5].Value
+                    : result.Groups[2].Value;
             quantity = +int.Parse(result.Groups[6].Value);
             if (quantity <= 0)
             {
@@ -128,7 +136,8 @@ public class GiveSptCommand(
             {
                 try
                 {
-                    locale = result.Groups[4].Value ?? _localeService.GetDesiredGameLocale() ?? "en";
+                    locale =
+                        result.Groups[4].Value ?? _localeService.GetDesiredGameLocale() ?? "en";
                 }
                 catch (Exception ex)
                 {
@@ -146,22 +155,34 @@ public class GiveSptCommand(
                 var allAllowedItemNames = _itemHelper
                     .GetItems()
                     .Where(IsItemAllowed)
-                    .Select(i => localizedGlobal
-                        .GetValueOrDefault($"{i.Id} Name", i.Properties.Name)
-                        ?.ToLower()
-                    )
-                    .Where(i => !string.IsNullOrEmpty(i));
+                    .Select(i =>
+                    {
+                        return localizedGlobal
+                            .GetValueOrDefault($"{i.Id} Name", i.Properties.Name)
+                            ?.ToLower();
+                    })
+                    .Where(i =>
+                    {
+                        return !string.IsNullOrEmpty(i);
+                    });
 
                 var closestItemsMatchedByName = allAllowedItemNames
-                    .Select(i => new
+                    .Select(i =>
+                    {
+                        return new
                         {
                             Match = StringSimilarity.Match(item, i, 2, true),
-                            ItemName = i
-                        }
-                    )
+                            ItemName = i,
+                        };
+                    })
                     .ToList();
 
-                closestItemsMatchedByName.Sort((a1, a2) => a2.Match.CompareTo(a1.Match));
+                closestItemsMatchedByName.Sort(
+                    (a1, a2) =>
+                    {
+                        return a2.Match.CompareTo(a1.Match);
+                    }
+                );
 
                 if (closestItemsMatchedByName[0].Match >= _acceptableConfidence)
                 {
@@ -172,13 +193,20 @@ public class GiveSptCommand(
                     var i = 1;
                     var slicedItems = closestItemsMatchedByName.Slice(0, 10);
                     // max 10 item names and map them
-                    var itemList = slicedItems
-                        .Select(match => $"{i++}. {match.ItemName} (conf: {Math.Round(match.Match * 100d),2})");
+                    var itemList = slicedItems.Select(match =>
+                    {
+                        return $"{i++}. {match.ItemName} (conf: {Math.Round(match.Match * 100d), 2})";
+                    });
                     _savedCommand.Add(
                         sessionId,
                         new SavedCommand(
                             quantity,
-                            slicedItems.Select(item => item.ItemName).ToList(),
+                            slicedItems
+                                .Select(item =>
+                                {
+                                    return item.ItemName;
+                                })
+                                .ToList(),
                             locale
                         )
                     );
@@ -200,7 +228,11 @@ public class GiveSptCommand(
             ? _itemHelper
                 .GetItems()
                 .Where(IsItemAllowed)
-                .FirstOrDefault(i => (localizedGlobal[$"{i?.Id} Name"]?.ToLower() ?? i.Properties.Name) == item)
+                .FirstOrDefault(i =>
+                {
+                    return (localizedGlobal[$"{i?.Id} Name"]?.ToLower() ?? i.Properties.Name)
+                        == item;
+                })
                 .Id
             : item;
 
@@ -232,11 +264,7 @@ public class GiveSptCommand(
             {
                 List<Item> ammoBoxArray = [];
                 ammoBoxArray.Add(
-                    new Item
-                    {
-                        Id = _hashUtil.Generate(),
-                        Template = checkedItem.Value.Id
-                    }
+                    new Item { Id = _hashUtil.Generate(), Template = checkedItem.Value.Id }
                 );
                 // DO NOT generate the ammo box cartridges, the mail service does it for us! :)
                 // _itemHelper.addCartridgesToAmmoBox(ammoBoxArray, checkedItem[1]);
@@ -254,7 +282,7 @@ public class GiveSptCommand(
                         {
                             Id = _hashUtil.Generate(),
                             Template = checkedItem.Value.Id,
-                            Upd = _itemHelper.GenerateUpdForItem(checkedItem.Value)
+                            Upd = _itemHelper.GenerateUpdForItem(checkedItem.Value),
                         }
                     );
                 }
@@ -265,7 +293,7 @@ public class GiveSptCommand(
                 {
                     Id = _hashUtil.Generate(),
                     Template = checkedItem.Value.Id,
-                    Upd = _itemHelper.GenerateUpdForItem(checkedItem.Value)
+                    Upd = _itemHelper.GenerateUpdForItem(checkedItem.Value),
                 };
                 itemToSend.Upd.StackObjectsCount = quantity;
                 try
@@ -288,7 +316,11 @@ public class GiveSptCommand(
         // Flag the items as FiR
         _itemHelper.SetFoundInRaid(itemsToSend);
 
-        _mailSendService.SendSystemMessageToPlayer(sessionId, $"SPT GIVE DELIVERY: {item}", itemsToSend);
+        _mailSendService.SendSystemMessageToPlayer(
+            sessionId,
+            $"SPT GIVE DELIVERY: {item}",
+            itemsToSend
+        );
 
         return request.DialogId;
     }
@@ -310,17 +342,19 @@ public class GiveSptCommand(
      */
     protected bool IsItemAllowed(TemplateItem templateItem)
     {
-        return templateItem.Type != "Node" &&
-               !_itemHelper.IsQuestItem(templateItem.Id) &&
-               !_itemFilterService.IsItemBlacklisted(templateItem.Id) &&
-               (templateItem.Properties?.Prefab?.Path ?? "") != "" &&
-               !_itemHelper.IsOfBaseclasses(
-                   templateItem.Id,
-                   [
-                       BaseClasses.HIDEOUT_AREA_CONTAINER, BaseClasses.LOOT_CONTAINER,
-                       BaseClasses.RANDOM_LOOT_CONTAINER, BaseClasses.MOB_CONTAINER,
-                       BaseClasses.BUILT_IN_INSERTS
-                   ]
-               );
+        return templateItem.Type != "Node"
+            && !_itemHelper.IsQuestItem(templateItem.Id)
+            && !_itemFilterService.IsItemBlacklisted(templateItem.Id)
+            && (templateItem.Properties?.Prefab?.Path ?? "") != ""
+            && !_itemHelper.IsOfBaseclasses(
+                templateItem.Id,
+                [
+                    BaseClasses.HIDEOUT_AREA_CONTAINER,
+                    BaseClasses.LOOT_CONTAINER,
+                    BaseClasses.RANDOM_LOOT_CONTAINER,
+                    BaseClasses.MOB_CONTAINER,
+                    BaseClasses.BUILT_IN_INSERTS,
+                ]
+            );
     }
 }

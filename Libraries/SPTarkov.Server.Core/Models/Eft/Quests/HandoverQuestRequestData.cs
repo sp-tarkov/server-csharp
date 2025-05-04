@@ -7,23 +7,11 @@ namespace SPTarkov.Server.Core.Models.Eft.Quests;
 public record HandoverQuestRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("qid")]
-    public string? QuestId
-    {
-        get;
-        set;
-    }
+    public string? QuestId { get; set; }
 
     [JsonPropertyName("conditionId")]
-    public string? ConditionId
-    {
-        get;
-        set;
-    }
+    public string? ConditionId { get; set; }
 
     [JsonPropertyName("items")]
-    public List<IdWithCount>? Items
-    {
-        get;
-        set;
-    }
+    public List<IdWithCount>? Items { get; set; }
 }

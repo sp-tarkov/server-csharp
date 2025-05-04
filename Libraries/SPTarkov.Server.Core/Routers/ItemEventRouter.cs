@@ -12,16 +12,17 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Routers;
 
 [Injectable]
-public class ItemEventRouter(ISptLogger<ItemEventRouter> logger,
+public class ItemEventRouter(
+    ISptLogger<ItemEventRouter> logger,
     ISptLogger<FileLogger> fileLogger,
     JsonUtil jsonUtil,
     ProfileHelper profileHelper,
     LocalisationService localisationService,
     EventOutputHolder eventOutputHolder,
     IEnumerable<ItemEventRouterDefinition> itemEventRouters,
-    ICloner cloner)
+    ICloner cloner
+)
 {
-
     /// <summary>
     ///     Handles ItemEventRouter Requests and processes them.
     /// </summary>
@@ -36,7 +37,10 @@ public class ItemEventRouter(ISptLogger<ItemEventRouter> logger,
         {
             var pmcData = profileHelper.GetPmcProfile(sessionID);
 
-            var eventRouter = itemEventRouters.FirstOrDefault(r => r.CanHandle(body.Action));
+            var eventRouter = itemEventRouters.FirstOrDefault(r =>
+            {
+                return r.CanHandle(body.Action);
+            });
             if (eventRouter is null)
             {
                 logger.Error(localisationService.GetText("event-unhandled_event", body.Action));

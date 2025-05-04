@@ -9,101 +9,61 @@ public record GenerateWeaponRequest
     ///     Weapon to add mods to / result that is returned
     /// </summary>
     [JsonPropertyName("weapon")]
-    public List<Item>? Weapon
-    {
-        get;
-        set;
-    }
+    public List<Item>? Weapon { get; set; }
 
     /// <summary>
     ///     Pool of compatible mods to attach to weapon
     /// </summary>
     [JsonPropertyName("modPool")]
-    public GlobalMods? ModPool
-    {
-        get;
-        set;
-    }
+    public GlobalMods? ModPool { get; set; }
 
     /// <summary>
     ///     ParentId of weapon
     /// </summary>
     [JsonPropertyName("weaponId")]
-    public string? WeaponId
-    {
-        get;
-        set;
-    }
+    public string? WeaponId { get; set; }
 
     /// <summary>
     ///     Weapon which mods will be generated on
     /// </summary>
     [JsonPropertyName("parentTemplate")]
-    public TemplateItem? ParentTemplate
-    {
-        get;
-        set;
-    }
+    public TemplateItem? ParentTemplate { get; set; }
 
     /// <summary>
     ///     Chance values mod will be added
     /// </summary>
     [JsonPropertyName("modSpawnChances")]
-    public Dictionary<string, double>? ModSpawnChances
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, double>? ModSpawnChances { get; set; }
 
     /// <summary>
     ///     Ammo tpl to use when generating magazines/cartridges
     /// </summary>
     [JsonPropertyName("ammoTpl")]
-    public string? AmmoTpl
-    {
-        get;
-        set;
-    }
+    public string? AmmoTpl { get; set; }
 
     /// <summary>
     ///     Bot-specific properties
     /// </summary>
     [JsonPropertyName("botData")]
-    public BotData? BotData
-    {
-        get;
-        set;
-    }
+    public BotData? BotData { get; set; }
 
     /// <summary>
     ///     limits placed on certain mod types per gun
     /// </summary>
     [JsonPropertyName("modLimits")]
-    public BotModLimits? ModLimits
-    {
-        get;
-        set;
-    }
+    public BotModLimits? ModLimits { get; set; }
 
     /// <summary>
     ///     Info related to the weapon being generated
     /// </summary>
     [JsonPropertyName("weaponStats")]
-    public WeaponStats? WeaponStats
-    {
-        get;
-        set;
-    }
+    public WeaponStats? WeaponStats { get; set; }
 
     /// <summary>
     ///     Array of item tpls the weapon does not support
     /// </summary>
     [JsonPropertyName("conflictingItemTpls")]
-    public HashSet<string>? ConflictingItemTpls
-    {
-        get;
-        set;
-    }
+    public HashSet<string>? ConflictingItemTpls { get; set; }
 }
 
 public record BotData
@@ -112,108 +72,56 @@ public record BotData
     ///     Role of bot weapon is generated for
     /// </summary>
     [JsonPropertyName("role")]
-    public string? Role
-    {
-        get;
-        set;
-    }
+    public string? Role { get; set; }
 
     /// <summary>
     ///     Level of the bot weapon is being generated for
     /// </summary>
     [JsonPropertyName("level")]
-    public int? Level
-    {
-        get;
-        set;
-    }
+    public int? Level { get; set; }
 
     /// <summary>
     ///     role of bot when accessing bot.json equipment config settings
     /// </summary>
     [JsonPropertyName("equipmentRole")]
-    public string? EquipmentRole
-    {
-        get;
-        set;
-    }
+    public string? EquipmentRole { get; set; }
 }
 
 public record WeaponStats
 {
     [JsonPropertyName("hasOptic")]
-    public bool? HasOptic
-    {
-        get;
-        set;
-    }
+    public bool? HasOptic { get; set; }
 
     [JsonPropertyName("hasFrontIronSight")]
-    public bool? HasFrontIronSight
-    {
-        get;
-        set;
-    }
+    public bool? HasFrontIronSight { get; set; }
 
     [JsonPropertyName("hasRearIronSight")]
-    public bool? HasRearIronSight
-    {
-        get;
-        set;
-    }
+    public bool? HasRearIronSight { get; set; }
 }
 
 public record BotModLimits
 {
     [JsonPropertyName("scope")]
-    public ItemCount? Scope
-    {
-        get;
-        set;
-    }
+    public ItemCount? Scope { get; set; }
 
     [JsonPropertyName("scopeMax")]
-    public int? ScopeMax
-    {
-        get;
-        set;
-    }
+    public int? ScopeMax { get; set; }
 
     [JsonPropertyName("scopeBaseTypes")]
-    public List<string>? ScopeBaseTypes
-    {
-        get;
-        set;
-    }
+    public List<string>? ScopeBaseTypes { get; set; }
 
     [JsonPropertyName("flashlightLaser")]
-    public ItemCount? FlashlightLaser
-    {
-        get;
-        set;
-    }
+    public ItemCount? FlashlightLaser { get; set; }
 
     [JsonPropertyName("flashlightLaserMax")]
-    public int? FlashlightLaserMax
-    {
-        get;
-        set;
-    }
+    public int? FlashlightLaserMax { get; set; }
 
     [JsonPropertyName("flashlightLaserBaseTypes")]
-    public List<string>? FlashlightLaserBaseTypes
-    {
-        get;
-        set;
-    }
+    public List<string>? FlashlightLaserBaseTypes { get; set; }
 }
 
 public record ItemCount
 {
     [JsonPropertyName("count")]
-    public int? Count
-    {
-        get;
-        set;
-    }
+    public int? Count { get; set; }
 }

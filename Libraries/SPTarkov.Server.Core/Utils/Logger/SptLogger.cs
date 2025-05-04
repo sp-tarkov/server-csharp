@@ -37,7 +37,8 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
         if (_config == null)
         {
             throw new Exception(
-                "The configuration path was loaded but it contained invalid or incorrect configuration.");
+                "The configuration path was loaded but it contained invalid or incorrect configuration."
+            );
         }
 
         _loggerQueueManager.Initialize(_config);
@@ -47,7 +48,9 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
     {
         if (fileUtil.FileExists(sptloggerDevelopmentJson))
         {
-            _config = jsonUtil.DeserializeFromFile<SptLoggerConfiguration>(sptloggerDevelopmentJson);
+            _config = jsonUtil.DeserializeFromFile<SptLoggerConfiguration>(
+                sptloggerDevelopmentJson
+            );
         }
         else
         {
@@ -77,7 +80,8 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
                 data,
                 ex,
                 textColor,
-                backgroundColor)
+                backgroundColor
+            )
         );
     }
 
@@ -92,7 +96,8 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
                 Thread.CurrentThread.Name,
                 data,
                 ex,
-                LogTextColor.Green)
+                LogTextColor.Green
+            )
         );
     }
 
@@ -107,7 +112,8 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
                 Thread.CurrentThread.Name,
                 data,
                 ex,
-                LogTextColor.Red)
+                LogTextColor.Red
+            )
         );
     }
 
@@ -122,7 +128,8 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
                 Thread.CurrentThread.Name,
                 data,
                 ex,
-                LogTextColor.Yellow)
+                LogTextColor.Yellow
+            )
         );
     }
 
@@ -136,7 +143,8 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
                 Environment.CurrentManagedThreadId,
                 Thread.CurrentThread.Name,
                 data,
-                ex)
+                ex
+            )
         );
     }
 
@@ -151,7 +159,8 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
                 Thread.CurrentThread.Name,
                 data,
                 ex,
-                LogTextColor.Gray)
+                LogTextColor.Gray
+            )
         );
     }
 
@@ -167,7 +176,8 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
                 data,
                 ex,
                 LogTextColor.Black,
-                LogBackgroundColor.Red)
+                LogBackgroundColor.Red
+            )
         );
     }
 
@@ -189,13 +199,17 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
                 data,
                 ex,
                 textColor,
-                backgroundColor)
+                backgroundColor
+            )
         );
     }
 
     public bool IsLogEnabled(LogLevel level)
     {
-        return _config.Loggers.Any(l => l.LogLevel.CanLog(level));
+        return _config.Loggers.Any(l =>
+        {
+            return l.LogLevel.CanLog(level);
+        });
     }
 
     public void DumpAndStop()

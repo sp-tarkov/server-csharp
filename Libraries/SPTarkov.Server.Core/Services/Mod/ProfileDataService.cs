@@ -6,7 +6,11 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Services.Mod;
 
 [Injectable(InjectionType.Singleton)]
-public class ProfileDataService(ISptLogger<ProfileDataService> logger, FileUtil fileUtil, JsonUtil jsonUtil)
+public class ProfileDataService(
+    ISptLogger<ProfileDataService> logger,
+    FileUtil fileUtil,
+    JsonUtil jsonUtil
+)
 {
     protected const string ProfileDataFilepath = "user/profileData/";
     private readonly ConcurrentDictionary<string, object> _profileDataCache = new();
@@ -23,12 +27,12 @@ public class ProfileDataService(ISptLogger<ProfileDataService> logger, FileUtil 
         {
             if (fileUtil.FileExists($"{ProfileDataFilepath}{profileId}/{modKey}.json"))
             {
-                value = jsonUtil.Deserialize<T>(fileUtil.ReadFile($"{ProfileDataFilepath}{profileId}/{modKey}.json"));
+                value = jsonUtil.Deserialize<T>(
+                    fileUtil.ReadFile($"{ProfileDataFilepath}{profileId}/{modKey}.json")
+                );
                 if (value != null)
                 {
-                    while (!_profileDataCache.TryAdd(profileDataKey, value))
-                    {
-                    }
+                    while (!_profileDataCache.TryAdd(profileDataKey, value)) { }
                 }
             }
             else
@@ -37,7 +41,7 @@ public class ProfileDataService(ISptLogger<ProfileDataService> logger, FileUtil 
             }
         }
 
-        return (T?) value;
+        return (T?)value;
     }
 
     public void SaveProfileData<T>(string profileId, string modKey, T profileData)
@@ -53,9 +57,7 @@ public class ProfileDataService(ISptLogger<ProfileDataService> logger, FileUtil 
             throw new Exception("The profile data when serialized resulted in a null value");
         }
 
-        while (!_profileDataCache.TryAdd($"{profileId}:{modKey}", data))
-        {
-        }
+        while (!_profileDataCache.TryAdd($"{profileId}:{modKey}", data)) { }
 
         fileUtil.WriteFile($"{ProfileDataFilepath}{profileId}/{modKey}.json", data);
     }

@@ -15,7 +15,6 @@ public class BotGenerationCacheService(
     protected Queue<BotBase> _activeBotsInRaid = [];
     protected ConcurrentDictionary<string, List<BotBase>> _storedBots = new();
 
-
     /// <summary>
     ///     Store list of bots in cache, shuffle results before storage
     /// </summary>
@@ -50,11 +49,18 @@ public class BotGenerationCacheService(
                 }
                 catch (Exception _)
                 {
-                    _logger.Error(_localisationService.GetText("bot-cache_has_zero_bots_of_requested_type", key));
+                    _logger.Error(
+                        _localisationService.GetText(
+                            "bot-cache_has_zero_bots_of_requested_type",
+                            key
+                        )
+                    );
                 }
             }
 
-            _logger.Error(_localisationService.GetText("bot-cache_has_zero_bots_of_requested_type", key));
+            _logger.Error(
+                _localisationService.GetText("bot-cache_has_zero_bots_of_requested_type", key)
+            );
 
             return null;
         }
@@ -80,7 +86,10 @@ public class BotGenerationCacheService(
     /// <returns> BotBase object </returns>
     public BotBase? GetUsedBot(string profileId)
     {
-        return _activeBotsInRaid.FirstOrDefault(x => x.Id == profileId);
+        return _activeBotsInRaid.FirstOrDefault(x =>
+        {
+            return x.Id == profileId;
+        });
     }
 
     /// <summary>

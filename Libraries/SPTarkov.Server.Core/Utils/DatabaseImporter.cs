@@ -12,7 +12,11 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Utils;
 
-[Injectable(InjectionType.Singleton, InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.Database)]
+[Injectable(
+    InjectionType.Singleton,
+    InjectableTypeOverride = typeof(IOnLoad),
+    TypePriority = OnLoadOrder.Database
+)]
 public class DatabaseImporter : IOnLoad
 {
     private const string _sptDataPath = "./Assets/";
@@ -166,7 +170,8 @@ public class DatabaseImporter : IOnLoad
 
         dataToImport.Traders = tempTraders;
 
-        var validation = valid == ValidationResult.FAILED || valid == ValidationResult.NOT_FOUND ? "." : "";
+        var validation =
+            valid == ValidationResult.FAILED || valid == ValidationResult.NOT_FOUND ? "." : "";
         _logger.Info($"{_localisationService.GetText("importing_database_finish")}{validation}");
         _logger.Debug($"Database import took {timer.ElapsedMilliseconds}ms");
         _databaseServer.SetTables(dataToImport);
@@ -233,7 +238,9 @@ public class DatabaseImporter : IOnLoad
                 {
                     if (_logger.IsLogEnabled(LogLevel.Debug))
                     {
-                        _logger.Debug($"overrode route: {routeKey} endpoint: {imagePath} with {pathOverride}");
+                        _logger.Debug(
+                            $"overrode route: {routeKey} endpoint: {imagePath} with {pathOverride}"
+                        );
                     }
 
                     imagePath = pathOverride;
@@ -268,5 +275,5 @@ internal enum ValidationResult
     SUCCESS = 0,
     FAILED = 1,
     NOT_FOUND = 2,
-    UNDEFINED = 3
+    UNDEFINED = 3,
 }

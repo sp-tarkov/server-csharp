@@ -26,7 +26,7 @@ public class BarrelInvetoryMagGen(
         // Can't be done by _props.ammoType as grenade launcher shoots grenades with ammoType of "buckshot"
         double? randomisedAmmoStackSize;
         if (inventoryMagGen.GetAmmoTemplate().Properties.StackMaxRandom == 1)
-            // Doesn't stack
+        // Doesn't stack
         {
             randomisedAmmoStackSize = _randomUtil.GetInt(3, 6);
         }
@@ -40,7 +40,7 @@ public class BarrelInvetoryMagGen(
 
         _botWeaponGeneratorHelper.AddAmmoIntoEquipmentSlots(
             inventoryMagGen.GetAmmoTemplate().Id,
-            (int) randomisedAmmoStackSize,
+            (int)randomisedAmmoStackSize,
             inventoryMagGen.GetPmcInventory(),
             null
         );

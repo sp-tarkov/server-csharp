@@ -8,7 +8,11 @@ public static class StringExtensions
     private static readonly Dictionary<string, Regex> _regexCache = new();
     private static readonly Lock _regexCacheLock = new();
 
-    public static string RegexReplace(this string source, [StringSyntax(StringSyntaxAttribute.Regex)] string regexString, string newValue)
+    public static string RegexReplace(
+        this string source,
+        [StringSyntax(StringSyntaxAttribute.Regex)] string regexString,
+        string newValue
+    )
     {
         Regex regex;
         lock (_regexCacheLock)
@@ -23,7 +27,11 @@ public static class StringExtensions
         return regex.Replace(source, newValue);
     }
 
-    public static bool RegexMatch(this string source, [StringSyntax(StringSyntaxAttribute.Regex)] string regexString, out Match? matchedString)
+    public static bool RegexMatch(
+        this string source,
+        [StringSyntax(StringSyntaxAttribute.Regex)] string regexString,
+        out Match? matchedString
+    )
     {
         Regex regex;
         lock (_regexCacheLock)

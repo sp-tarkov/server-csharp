@@ -4,5 +4,5 @@ public enum EquipmentBuildType
 {
     Custom,
     Standard,
-    Storage
+    Storage,
 }

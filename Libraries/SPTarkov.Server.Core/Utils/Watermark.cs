@@ -22,7 +22,7 @@ public class WatermarkLocale
             "",
             localisationService.GetText("watermark-free_of_charge"),
             localisationService.GetText("watermark-paid_scammed"),
-            localisationService.GetText("watermark-commercial_use_prohibited")
+            localisationService.GetText("watermark-commercial_use_prohibited"),
         ];
         warning =
         [
@@ -33,7 +33,7 @@ public class WatermarkLocale
             $"{localisationService.GetText("watermark-report_issues_to")}:",
             localisationService.GetText("watermark-issue_tracker_url"),
             "",
-            localisationService.GetText("watermark-use_at_own_risk")
+            localisationService.GetText("watermark-use_at_own_risk"),
         ];
         modding =
         [
@@ -41,7 +41,7 @@ public class WatermarkLocale
             localisationService.GetText("watermark-modding_disabled"),
             "",
             localisationService.GetText("watermark-not_an_issue"),
-            localisationService.GetText("watermark-do_not_report")
+            localisationService.GetText("watermark-do_not_report"),
         ];
     }
 
@@ -97,8 +97,7 @@ public class Watermark
         versionLabel = $"{sptConfig.ProjectName} {versionTag} {sptConfig.CompatibleTarkovVersion}";
 
         text = [versionLabel];
-        text = [..text, ..description];
-
+        text = [.. text, .. description];
 
         if (ProgramStatics.DEBUG())
         {
@@ -109,7 +108,6 @@ public class Watermark
         {
             text.AddRange(modding);
         }
-
 
         if (sptConfig.CustomWatermarkLocaleKeys?.Count > 0)
         {
@@ -131,7 +129,8 @@ public class Watermark
     public string GetVersionTag(bool withEftVersion = false)
     {
         var sptVersion = ProgramStatics.SPT_VERSION() ?? sptConfig.SptVersion;
-        var versionTag = /*ProgramStatics.DEBUG*/ $"{sptVersion} - {_localisationService.GetText("bleeding_edge_build")}";
+        var versionTag = /*ProgramStatics.DEBUG*/
+            $"{sptVersion} - {_localisationService.GetText("bleeding_edge_build")}";
 
         if (withEftVersion)
         {
@@ -149,7 +148,8 @@ public class Watermark
     /// <returns>label text</returns>
     public string GetInGameVersionLabel()
     {
-        var sptVersion = /*ProgramStatics.SPT_VERSION ||*/ sptConfig.SptVersion;
+        var sptVersion = /*ProgramStatics.SPT_VERSION ||*/
+        sptConfig.SptVersion;
         var versionTag = /*ProgramStatics.DEBUG ? */
             $"{sptVersion} - BLEEDINGEDGE { /*ProgramStatics.COMMIT?.slice(0, 6) ?? */""}";
         //: `{sptVersion} - {ProgramStatics.COMMIT?.slice(0, 6) ?? ""}`;
@@ -173,7 +173,13 @@ public class Watermark
         var result = new List<string>();
 
         // Calculate size, add 10% for spacing to the right
-        var longestLength = text.Aggregate((a, b) => a.Length > b.Length ? a : b).Length * 1.1;
+        var longestLength =
+            text.Aggregate(
+                (a, b) =>
+                {
+                    return a.Length > b.Length ? a : b;
+                }
+            ).Length * 1.1;
 
         // Create line of - to add top/bottom of watermark
         var line = "";

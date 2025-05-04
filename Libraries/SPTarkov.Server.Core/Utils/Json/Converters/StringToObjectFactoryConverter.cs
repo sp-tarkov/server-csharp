@@ -10,14 +10,24 @@ public class StringToObjectFactoryConverter : JsonConverterFactory
         return true;
     }
 
-    public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
+    public override JsonConverter? CreateConverter(
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
     {
-        return (JsonConverter) Activator.CreateInstance(typeof(StringToObjectConverter<>).MakeGenericType(typeToConvert));
+        return (JsonConverter)
+            Activator.CreateInstance(
+                typeof(StringToObjectConverter<>).MakeGenericType(typeToConvert)
+            );
     }
 
     public class StringToObjectConverter<T> : JsonConverter<T>
     {
-        public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override T? Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options
+        )
         {
             switch (reader.TokenType)
             {

@@ -6,7 +6,12 @@ namespace UnitTests.Mock;
 
 public class MockLogger<T> : ISptLogger<T>
 {
-    public void LogWithColor(string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null, Exception? ex = null)
+    public void LogWithColor(
+        string data,
+        LogTextColor? textColor = null,
+        LogBackgroundColor? backgroundColor = null,
+        Exception? ex = null
+    )
     {
         throw new NotImplementedException();
     }

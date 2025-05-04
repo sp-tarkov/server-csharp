@@ -9,24 +9,22 @@ namespace SPTarkov.Server.Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class BotStaticRouter : StaticRouter
 {
-    public BotStaticRouter(
-        JsonUtil jsonUtil,
-        BotCallbacks botCallbacks
-    ) : base(
-        jsonUtil,
-        [
-            new RouteAction(
-                "/client/game/bot/generate",
-                (
-                    url,
-                    info,
-                    sessionID,
-                    outout
-                ) => botCallbacks.GenerateBots(url, info as GenerateBotsRequestData, sessionID),
-                typeof(GenerateBotsRequestData)
-            )
-        ]
-    )
-    {
-    }
+    public BotStaticRouter(JsonUtil jsonUtil, BotCallbacks botCallbacks)
+        : base(
+            jsonUtil,
+            [
+                new RouteAction(
+                    "/client/game/bot/generate",
+                    (url, info, sessionID, outout) =>
+                    {
+                        return botCallbacks.GenerateBots(
+                            url,
+                            info as GenerateBotsRequestData,
+                            sessionID
+                        );
+                    },
+                    typeof(GenerateBotsRequestData)
+                ),
+            ]
+        ) { }
 }

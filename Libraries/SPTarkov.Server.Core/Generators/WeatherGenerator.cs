@@ -81,16 +81,25 @@ public class WeatherGenerator(
             Temperature = 0,
             Fog = GetWeightedFog(weatherValues),
             RainIntensity =
-                rain > 1 ? GetRandomDouble(weatherValues.RainIntensity.Min, weatherValues.RainIntensity.Max) : 0,
+                rain > 1
+                    ? GetRandomDouble(
+                        weatherValues.RainIntensity.Min,
+                        weatherValues.RainIntensity.Max
+                    )
+                    : 0,
             Rain = rain,
-            WindGustiness = GetRandomDouble(weatherValues.WindGustiness.Min, weatherValues.WindGustiness.Max, 2),
+            WindGustiness = GetRandomDouble(
+                weatherValues.WindGustiness.Min,
+                weatherValues.WindGustiness.Max,
+                2
+            ),
             WindDirection = GetWeightedWindDirection(weatherValues),
             WindSpeed = GetWeightedWindSpeed(weatherValues),
             Cloud = clouds,
             Time = "",
             Date = "",
             Timestamp = 0,
-            SptInRaidTimestamp = 0
+            SptInRaidTimestamp = 0,
         };
 
         SetCurrentDateTime(result, timestamp);
@@ -102,7 +111,10 @@ public class WeatherGenerator(
 
     protected SeasonalValues GetWeatherValuesBySeason(Season currentSeason)
     {
-        var result = _weatherConfig.Weather.SeasonValues.TryGetValue(currentSeason.ToString(), out var value);
+        var result = _weatherConfig.Weather.SeasonValues.TryGetValue(
+            currentSeason.ToString(),
+            out var value
+        );
         if (!result)
         {
             return _weatherConfig.Weather.SeasonValues["default"];
@@ -137,7 +149,11 @@ public class WeatherGenerator(
     {
         var inRaidTime = _weatherHelper.GetInRaidTime(timestamp);
         var normalTime = GetBsgFormattedTime(inRaidTime);
-        var formattedDate = _timeUtil.FormatDate(timestamp.HasValue ? _timeUtil.GetDateTimeFromTimeStamp(timestamp.Value) : DateTime.UtcNow);
+        var formattedDate = _timeUtil.FormatDate(
+            timestamp.HasValue
+                ? _timeUtil.GetDateTimeFromTimeStamp(timestamp.Value)
+                : DateTime.UtcNow
+        );
         var datetimeBsgFormat = $"{formattedDate} {normalTime}";
 
         weather.Timestamp = timestamp ?? _timeUtil.GetTimeStamp(); // matches weather.date
@@ -148,17 +164,23 @@ public class WeatherGenerator(
 
     protected WindDirection GetWeightedWindDirection(SeasonalValues weather)
     {
-        return _weightedRandomHelper.WeightedRandom(weather.WindDirection.Values, weather.WindDirection.Weights).Item;
+        return _weightedRandomHelper
+            .WeightedRandom(weather.WindDirection.Values, weather.WindDirection.Weights)
+            .Item;
     }
 
     protected double GetWeightedClouds(SeasonalValues weather)
     {
-        return _weightedRandomHelper.WeightedRandom(weather.Clouds.Values, weather.Clouds.Weights).Item;
+        return _weightedRandomHelper
+            .WeightedRandom(weather.Clouds.Values, weather.Clouds.Weights)
+            .Item;
     }
 
     protected double GetWeightedWindSpeed(SeasonalValues weather)
     {
-        return _weightedRandomHelper.WeightedRandom(weather.WindSpeed.Values, weather.WindSpeed.Weights).Item;
+        return _weightedRandomHelper
+            .WeightedRandom(weather.WindSpeed.Values, weather.WindSpeed.Weights)
+            .Item;
     }
 
     protected double GetWeightedFog(SeasonalValues weather)

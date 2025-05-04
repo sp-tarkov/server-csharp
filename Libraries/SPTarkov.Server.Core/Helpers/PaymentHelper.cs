@@ -41,7 +41,7 @@ public class PaymentHelper(ConfigServer _configServer)
             CurrencyType.USD => Money.DOLLARS,
             CurrencyType.RUB => Money.ROUBLES,
             CurrencyType.GP => Money.GP,
-            _ => ""
+            _ => "",
         };
     }
 }

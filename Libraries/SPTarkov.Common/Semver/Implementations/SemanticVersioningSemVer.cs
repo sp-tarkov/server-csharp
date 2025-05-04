@@ -32,7 +32,10 @@ public class SemanticVersioningSemVer : ISemVer
 
     public bool AnySatisfies(string version, List<string> testVersions)
     {
-        return testVersions.Any(v => Satisfies(version, v));
+        return testVersions.Any(v =>
+        {
+            return Satisfies(version, v);
+        });
     }
 
     public bool IsValid(string version)

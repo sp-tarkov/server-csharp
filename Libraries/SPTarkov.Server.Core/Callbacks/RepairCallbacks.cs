@@ -17,7 +17,11 @@ public class RepairCallbacks(RepairController _repairController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse TraderRepair(PmcData pmcData, TraderRepairActionDataRequest info, string sessionID)
+    public ItemEventRouterResponse TraderRepair(
+        PmcData pmcData,
+        TraderRepairActionDataRequest info,
+        string sessionID
+    )
     {
         return _repairController.TraderRepair(sessionID, info, pmcData);
     }
@@ -30,7 +34,11 @@ public class RepairCallbacks(RepairController _repairController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse Repair(PmcData pmcData, RepairActionDataRequest info, string sessionID)
+    public ItemEventRouterResponse Repair(
+        PmcData pmcData,
+        RepairActionDataRequest info,
+        string sessionID
+    )
     {
         return _repairController.RepairWithKit(sessionID, info, pmcData);
     }

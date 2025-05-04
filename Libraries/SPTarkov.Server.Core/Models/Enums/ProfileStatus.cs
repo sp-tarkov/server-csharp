@@ -6,5 +6,5 @@ public enum ProfileStatus
     MATCH_WAIT,
     BUSY,
     LEAVING,
-    TRANSFER
+    TRANSFER,
 }

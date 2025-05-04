@@ -4,5 +4,5 @@ public enum SideType
 {
     Pmc,
     Savage,
-    Random
+    Random,
 }

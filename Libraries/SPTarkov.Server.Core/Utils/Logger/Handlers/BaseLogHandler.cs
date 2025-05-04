@@ -2,16 +2,18 @@ namespace SPTarkov.Server.Core.Utils.Logger.Handlers;
 
 public abstract class BaseLogHandler : ILogHandler
 {
-    public abstract LoggerType LoggerType
-    {
-        get;
-    }
+    public abstract LoggerType LoggerType { get; }
 
     public abstract void Log(SptLogMessage message, BaseSptLoggerReference reference);
 
-    protected string FormatMessage(string processedMessage, SptLogMessage message, BaseSptLoggerReference reference)
+    protected string FormatMessage(
+        string processedMessage,
+        SptLogMessage message,
+        BaseSptLoggerReference reference
+    )
     {
-        var formattedMessage = reference.Format.Replace("%date%", message.LogTime.ToString("yyyy-MM-dd"))
+        var formattedMessage = reference
+            .Format.Replace("%date%", message.LogTime.ToString("yyyy-MM-dd"))
             .Replace("%time%", message.LogTime.ToString("HH:mm:ss.fff"))
             .Replace("%message%", processedMessage)
             .Replace("%loggerShort%", message.Logger.Split('.').Last())

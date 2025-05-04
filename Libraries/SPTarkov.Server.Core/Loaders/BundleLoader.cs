@@ -20,14 +20,9 @@ namespace SPTarkov.Server.Core.Loaders;
 } */
 public class BundleInfo
 {
-    public BundleInfo()
-    {
-    }
+    public BundleInfo() { }
 
-    public BundleInfo(
-        string modPath,
-        BundleManifestEntry bundle,
-        uint bundleHash)
+    public BundleInfo(string modPath, BundleManifestEntry bundle, uint bundleHash)
     {
         ModPath = modPath;
         FileName = bundle.Key;
@@ -36,35 +31,15 @@ public class BundleInfo
         Dependencies = bundle?.DependencyKeys ?? [];
     }
 
-    public string? ModPath
-    {
-        get;
-        set;
-    }
+    public string? ModPath { get; set; }
 
-    public string FileName
-    {
-        get;
-        set;
-    }
+    public string FileName { get; set; }
 
-    public BundleManifestEntry Bundle
-    {
-        get;
-        set;
-    }
+    public BundleManifestEntry Bundle { get; set; }
 
-    public uint Crc
-    {
-        get;
-        set;
-    }
+    public uint Crc { get; set; }
 
-    public List<string> Dependencies
-    {
-        get;
-        set;
-    }
+    public List<string> Dependencies { get; set; }
 }
 
 [Injectable(InjectionType.Singleton)]
@@ -86,7 +61,8 @@ public class BundleLoader
         FileUtil fileUtil,
         BundleHashCacheService bundleHashCacheService,
         InMemoryCacheService inMemoryCacheService,
-        ICloner cloner)
+        ICloner cloner
+    )
     {
         _logger = logger;
         _hashUtil = hashUtil;
@@ -123,7 +99,9 @@ public class BundleLoader
         // modPath should be relative to the server exe - ./user/mods/Mod3
         // TODO: make sure the mod is passing a path that is relative from the server exe
 
-        var modBundlesJson = _fileUtil.ReadFile(Path.Join(Directory.GetCurrentDirectory(), modPath, "bundles.json"));
+        var modBundlesJson = _fileUtil.ReadFile(
+            Path.Join(Directory.GetCurrentDirectory(), modPath, "bundles.json")
+        );
         var modBundles = _jsonUtil.Deserialize<BundleManifest>(modBundlesJson);
         var bundleManifestArr = modBundles?.Manifest;
 
@@ -131,7 +109,8 @@ public class BundleLoader
         {
             var relativeModPath = modPath.Replace('\\', '/');
 
-            var bundleLocalPath = Path.Join(relativeModPath, "bundles", bundleManifest.Key).Replace('\\', '/');
+            var bundleLocalPath = Path.Join(relativeModPath, "bundles", bundleManifest.Key)
+                .Replace('\\', '/');
 
             if (!_bundleHashCacheService.CalculateAndMatchHash(bundleLocalPath))
             {
@@ -140,7 +119,10 @@ public class BundleLoader
 
             var bundleHash = _bundleHashCacheService.GetStoredValue(bundleLocalPath);
 
-            AddBundle(bundleManifest.Key, new BundleInfo(relativeModPath, bundleManifest, bundleHash));
+            AddBundle(
+                bundleManifest.Key,
+                new BundleInfo(relativeModPath, bundleManifest, bundleHash)
+            );
         }
     }
 
@@ -157,26 +139,14 @@ public class BundleLoader
 public record BundleManifest
 {
     [JsonPropertyName("manifest")]
-    public List<BundleManifestEntry> Manifest
-    {
-        get;
-        set;
-    }
+    public List<BundleManifestEntry> Manifest { get; set; }
 }
 
 public record BundleManifestEntry
 {
     [JsonPropertyName("key")]
-    public string Key
-    {
-        get;
-        set;
-    }
+    public string Key { get; set; }
 
     [JsonPropertyName("dependencyKeys")]
-    public List<string>? DependencyKeys
-    {
-        get;
-        set;
-    }
+    public List<string>? DependencyKeys { get; set; }
 }

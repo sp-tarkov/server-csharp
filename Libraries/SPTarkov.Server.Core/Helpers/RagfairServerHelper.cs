@@ -49,7 +49,10 @@ public class RagfairServerHelper(
         }
 
         // Skip bsg blacklisted items
-        if (blacklistConfig.EnableBsgList && !(itemDetails.Value?.Properties?.CanSellOnRagfair ?? false))
+        if (
+            blacklistConfig.EnableBsgList
+            && !(itemDetails.Value?.Properties?.CanSellOnRagfair ?? false)
+        )
         {
             return false;
         }
@@ -64,8 +67,8 @@ public class RagfairServerHelper(
 
         // Skip custom category blacklisted items
         if (
-            blacklistConfig.EnableCustomItemCategoryList &&
-            IsItemCategoryOnCustomFleaBlacklist(itemDetails.Value.Parent)
+            blacklistConfig.EnableCustomItemCategoryList
+            && IsItemCategoryOnCustomFleaBlacklist(itemDetails.Value.Parent)
         )
         {
             return false;
@@ -79,9 +82,9 @@ public class RagfairServerHelper(
 
         // Don't include damaged ammo packs
         if (
-            ragfairConfig.Dynamic.Blacklist.DamagedAmmoPacks &&
-            itemDetails.Value.Parent == BaseClasses.AMMO_BOX &&
-            itemDetails.Value.Name.Contains("_damaged")
+            ragfairConfig.Dynamic.Blacklist.DamagedAmmoPacks
+            && itemDetails.Value.Parent == BaseClasses.AMMO_BOX
+            && itemDetails.Value.Name.Contains("_damaged")
         )
         {
             return false;
@@ -133,7 +136,12 @@ public class RagfairServerHelper(
             MessageType.MESSAGE_WITH_ITEMS,
             goodsReturnedTemplate,
             returnedItems,
-            timeUtil.GetHoursAsSeconds((int) databaseService.GetGlobals().Configuration.RagFair.YourOfferDidNotSellMaxStorageTimeInHour)
+            timeUtil.GetHoursAsSeconds(
+                (int)
+                    databaseService
+                        .GetGlobals()
+                        .Configuration.RagFair.YourOfferDidNotSellMaxStorageTimeInHour
+            )
         );
     }
 
@@ -154,9 +162,13 @@ public class RagfairServerHelper(
         }
 
         // Item Types to return one of
-        if (isWeaponPreset ||
-            itemHelper.IsOfBaseclasses(itemDetails.Value.Id, ragfairConfig.Dynamic.ShowAsSingleStack)
-           )
+        if (
+            isWeaponPreset
+            || itemHelper.IsOfBaseclasses(
+                itemDetails.Value.Id,
+                ragfairConfig.Dynamic.ShowAsSingleStack
+            )
+        )
         {
             return 1;
         }
@@ -171,10 +183,13 @@ public class RagfairServerHelper(
         }
 
         // Get a % to get of stack size
-        var stackPercent = randomUtil.GetDouble(config.StackablePercent.Min, config.StackablePercent.Max);
+        var stackPercent = randomUtil.GetDouble(
+            config.StackablePercent.Min,
+            config.StackablePercent.Max
+        );
 
         // Min value to return should be no less than 1
-        return Math.Max((int) randomUtil.GetPercentOfValue(stackPercent, maxStackSize, 0), 1);
+        return Math.Max((int)randomUtil.GetPercentOfValue(stackPercent, maxStackSize, 0), 1);
     }
 
     /**
@@ -209,7 +224,9 @@ public class RagfairServerHelper(
         {
             if (databaseService.GetGlobals().ItemPresets[itemId].Items[0].Template == item.Template)
             {
-                var presetItems = cloner.Clone(databaseService.GetGlobals().ItemPresets[itemId].Items);
+                var presetItems = cloner.Clone(
+                    databaseService.GetGlobals().ItemPresets[itemId].Items
+                );
                 presets.AddRange(itemHelper.ReparentItemAndChildren(item, presetItems));
             }
         }

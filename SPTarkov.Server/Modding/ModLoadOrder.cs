@@ -36,7 +36,7 @@ public class ModLoadOrder(ICloner cloner)
 
     public List<string> GetLoadOrder()
     {
-        return [..loadOrder.Keys];
+        return [.. loadOrder.Keys];
     }
 
     public HashSet<string> GetModsOnLoadBefore(string mod)

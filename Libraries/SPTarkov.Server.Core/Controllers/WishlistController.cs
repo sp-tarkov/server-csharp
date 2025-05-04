@@ -7,9 +7,7 @@ using SPTarkov.Server.Core.Routers;
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class WishlistController(
-    EventOutputHolder _eventOutputHolder
-)
+public class WishlistController(EventOutputHolder _eventOutputHolder)
 {
     /// <summary>
     ///     Handle AddToWishList
@@ -21,7 +19,8 @@ public class WishlistController(
     public ItemEventRouterResponse AddToWishList(
         PmcData pmcData,
         AddToWishlistRequest request,
-        string sessionId)
+        string sessionId
+    )
     {
         foreach (var item in request.Items)
         {
@@ -41,7 +40,8 @@ public class WishlistController(
     public ItemEventRouterResponse RemoveFromWishList(
         PmcData pmcData,
         RemoveFromWishlistRequest request,
-        string sessionId)
+        string sessionId
+    )
     {
         foreach (var itemId in request.Items)
         {
@@ -61,7 +61,8 @@ public class WishlistController(
     public ItemEventRouterResponse ChangeWishListItemCategory(
         PmcData pmcData,
         ChangeWishlistItemCategoryRequest request,
-        string sessionId)
+        string sessionId
+    )
     {
         pmcData.WishList.Dictionary[request.Item] = request.Category.Value;
 

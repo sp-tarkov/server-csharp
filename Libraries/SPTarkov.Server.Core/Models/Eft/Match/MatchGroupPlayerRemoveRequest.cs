@@ -6,9 +6,5 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 public record MatchGroupPlayerRemoveRequest : IRequestData
 {
     [JsonPropertyName("aidToKick")]
-    public string? AidToKick
-    {
-        get;
-        set;
-    }
+    public string? AidToKick { get; set; }
 }

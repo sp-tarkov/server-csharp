@@ -8,5 +8,5 @@ public enum TraderServiceType
     BtrItemsDelivery,
     PlayerTaxi,
     BtrBotCover,
-    TransitItemsDelivery
+    TransitItemsDelivery,
 }

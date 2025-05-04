@@ -7,16 +7,8 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 public record HideoutUpgradeCompleteRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("areaType")]
-    public HideoutAreas? AreaType
-    {
-        get;
-        set;
-    }
+    public HideoutAreas? AreaType { get; set; }
 
     [JsonPropertyName("timestamp")]
-    public long? Timestamp
-    {
-        get;
-        set;
-    }
+    public long? Timestamp { get; set; }
 }

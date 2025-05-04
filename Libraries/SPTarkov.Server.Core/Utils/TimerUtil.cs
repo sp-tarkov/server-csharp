@@ -23,7 +23,7 @@ public class TimerUtil
         {
             "ns" => timePassed.Nanoseconds,
             "ms" => timePassed.Milliseconds,
-            _ => timePassed.Seconds
+            _ => timePassed.Seconds,
         };
     }
 }

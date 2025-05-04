@@ -7,5 +7,9 @@ public interface ISptCommand
 {
     public string GetCommand();
     public string GetCommandHelp();
-    public string PerformAction(UserDialogInfo commandHandler, string sessionId, SendMessageRequest request);
+    public string PerformAction(
+        UserDialogInfo commandHandler,
+        string sessionId,
+        SendMessageRequest request
+    );
 }

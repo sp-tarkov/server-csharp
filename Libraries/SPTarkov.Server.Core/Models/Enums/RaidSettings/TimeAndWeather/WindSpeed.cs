@@ -6,5 +6,5 @@ public enum WindSpeed
     Moderate,
     Strong,
     VeryStrong,
-    Hurricane
+    Hurricane,
 }

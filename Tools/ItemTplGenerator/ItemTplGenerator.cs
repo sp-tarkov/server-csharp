@@ -44,7 +44,13 @@ public class ItemTplGenerator(
 
         // Figure out our source and target directories
         var projectDir = Directory.GetParent("./").Parent.Parent.Parent.Parent.Parent;
-        enumDir = Path.Combine(projectDir.FullName, "Libraries", "SPTarkov.Server.Core", "Models", "Enums");
+        enumDir = Path.Combine(
+            projectDir.FullName,
+            "Libraries",
+            "SPTarkov.Server.Core",
+            "Models",
+            "Enums"
+        );
         items = _databaseServer.GetTables().Templates.Items;
 
         // Generate an object containing all item name to ID associations
@@ -57,7 +63,7 @@ public class ItemTplGenerator(
             itemTplOutPath,
             new Dictionary<string, Dictionary<string, string>>
             {
-                { nameof(ItemTpl), orderedItemsObject }
+                { nameof(ItemTpl), orderedItemsObject },
             }
         );
 
@@ -69,7 +75,7 @@ public class ItemTplGenerator(
             weaponTypeOutPath,
             new Dictionary<string, Dictionary<string, string>>
             {
-                { nameof(Weapons), weaponsObject }
+                { nameof(Weapons), weaponsObject },
             }
         );
 
@@ -97,9 +103,11 @@ public class ItemTplGenerator(
             var itemSuffix = GetItemSuffix(item);
 
             // Handle the case where the item starts with the parent category name. Avoids things like 'POCKETS_POCKETS'
-            if (itemName.Length > itemParentName.Length &&
-                itemParentName == itemName.Substring(1, itemParentName.Length) &&
-                itemPrefix == "")
+            if (
+                itemName.Length > itemParentName.Length
+                && itemParentName == itemName.Substring(1, itemParentName.Length)
+                && itemPrefix == ""
+            )
             {
                 itemName = itemName.Substring(itemParentName.Length + 1);
                 if (itemName.Length > 0 && itemName[0] != '_')
@@ -109,8 +117,10 @@ public class ItemTplGenerator(
             }
 
             // Handle the case where the item ends with the parent category name. Avoids things like 'KEY_DORM_ROOM_103_KEY'
-            if (itemName.Length >= itemParentName.Length &&
-                itemParentName == itemName.Substring(itemName.Length - itemParentName.Length))
+            if (
+                itemName.Length >= itemParentName.Length
+                && itemParentName == itemName.Substring(itemName.Length - itemParentName.Length)
+            )
             {
                 itemName = itemName.Substring(0, itemName.Length - itemParentName.Length);
 
@@ -160,7 +170,9 @@ public class ItemTplGenerator(
                 else
                 {
                     var val = itemsObject.ContainsKey(itemKey) ? itemsObject[itemKey] : itemKey;
-                    _logger.Error($"New itemOverride entry required: itemsObject already contains {itemKey}  {val} => {item.Id}");
+                    _logger.Error(
+                        $"New itemOverride entry required: itemsObject already contains {itemKey}  {val} => {item.Id}"
+                    );
                     continue;
                 }
             }
@@ -170,15 +182,32 @@ public class ItemTplGenerator(
 
         // Sort the items object
         var itemList = itemsObject.ToList();
-        itemList.Sort((kv1, kv2) => kv1.Key.CompareTo(kv2.Key));
-        var orderedItemsObject = itemList.ToDictionary(kv => kv.Key, kv => kv.Value);
+        itemList.Sort(
+            (kv1, kv2) =>
+            {
+                return kv1.Key.CompareTo(kv2.Key);
+            }
+        );
+        var orderedItemsObject = itemList.ToDictionary(
+            kv =>
+            {
+                return kv.Key;
+            },
+            kv =>
+            {
+                return kv.Value;
+            }
+        );
         return orderedItemsObject;
     }
 
     private Dictionary<string, string> GenerateWeaponsObject()
     {
         var weaponsObject = new Dictionary<string, string>();
-        foreach (var kv /*[itemId, item]*/ in items)
+        foreach (
+            var kv /*[itemId, item]*/
+            in items
+        )
         {
             if (!_itemHelper.IsOfBaseclass(kv.Key, BaseClasses.WEAPON))
             {
@@ -196,8 +225,10 @@ public class ItemTplGenerator(
 
             // Include any bracketed suffixes that exist, handles the case of colored gun variants
             var weaponFullName = _localeService.GetLocaleDb()[$"{kv.Key} Name"]?.ToUpper();
-            if (weaponFullName.RegexMatch(@"\((.+?)\)$", out var itemNameBracketSuffix) &&
-                !weaponShortName.EndsWith(itemNameBracketSuffix.Groups[1].Value))
+            if (
+                weaponFullName.RegexMatch(@"\((.+?)\)$", out var itemNameBracketSuffix)
+                && !weaponShortName.EndsWith(itemNameBracketSuffix.Groups[1].Value)
+            )
             {
                 weaponShortName += $"_{itemNameBracketSuffix.Groups[1].Value}";
             }
@@ -221,8 +252,22 @@ public class ItemTplGenerator(
 
         // Sort the weapons object
         var itemList = weaponsObject.ToList();
-        itemList.Sort((kv1, kv2) => kv1.Key.CompareTo(kv2.Key));
-        var orderedWeaponsObject = itemList.ToDictionary(kv => kv.Key, kv => kv.Value);
+        itemList.Sort(
+            (kv1, kv2) =>
+            {
+                return kv1.Key.CompareTo(kv2.Key);
+            }
+        );
+        var orderedWeaponsObject = itemList.ToDictionary(
+            kv =>
+            {
+                return kv.Key;
+            },
+            kv =>
+            {
+                return kv.Value;
+            }
+        );
         return orderedWeaponsObject;
     }
 
@@ -233,10 +278,7 @@ public class ItemTplGenerator(
     /// <returns>The sanitized enum key</returns>
     private string SanitizeEnumKey(string enumKey)
     {
-        return enumKey
-            .ToUpper()
-            .RegexReplace("[^A-Z0-9_]", "")
-            .RegexReplace("_+", "_");
+        return enumKey.ToUpper().RegexReplace("[^A-Z0-9_]", "").RegexReplace("_+", "_");
     }
 
     private string GetParentName(TemplateItem item)
@@ -406,14 +448,18 @@ public class ItemTplGenerator(
 
     private string GetAmmoBoxPrefix(TemplateItem item)
     {
-        var ammoItem = item.Properties?.StackSlots?[0]?.Props?.Filters?[0]?.Filter?.FirstOrDefault();
+        var ammoItem = item.Properties?.StackSlots?[0]?.Props?.Filters?[
+            0
+        ]?.Filter?.FirstOrDefault();
 
         return GetAmmoPrefix(items[ammoItem]);
     }
 
     private string GetMagazinePrefix(TemplateItem item)
     {
-        var ammoItem = item.Properties?.Cartridges?[0]?.Props?.Filters?[0]?.Filter?.FirstOrDefault();
+        var ammoItem = item.Properties?.Cartridges?[0]?.Props?.Filters?[
+            0
+        ]?.Filter?.FirstOrDefault();
 
         return GetAmmoPrefix(items[ammoItem]);
     }
@@ -437,18 +483,19 @@ public class ItemTplGenerator(
         else if (
             _itemHelper.IsOfBaseclasses(
                 item.Id,
-                [
-                    BaseClasses.RANDOM_LOOT_CONTAINER,
-                    BaseClasses.BUILT_IN_INSERTS,
-                    BaseClasses.STASH
-                ]
+                [BaseClasses.RANDOM_LOOT_CONTAINER, BaseClasses.BUILT_IN_INSERTS, BaseClasses.STASH]
             )
         )
         {
             itemName = item.Name.ToUpper();
         }
         // For the listed types, use the short name
-        else if (_itemHelper.IsOfBaseclasses(item.Id, [BaseClasses.AMMO, BaseClasses.AMMO_BOX, BaseClasses.MAGAZINE]))
+        else if (
+            _itemHelper.IsOfBaseclasses(
+                item.Id,
+                [BaseClasses.AMMO, BaseClasses.AMMO_BOX, BaseClasses.MAGAZINE]
+            )
+        )
         {
             if (localeDb.TryGetValue($"{item.Id} ShortName", out itemName))
             {
@@ -536,7 +583,11 @@ public class ItemTplGenerator(
         return "";
     }
 
-    private void LogEnumValueChanges(Dictionary<string, string> data, string enumName, Type originalEnum)
+    private void LogEnumValueChanges(
+        Dictionary<string, string> data,
+        string enumName,
+        Type originalEnum
+    )
     {
         // First generate a mapping of the original enum values to names
         var originalEnumValues = new Dictionary<string, string>();
@@ -557,7 +608,10 @@ public class ItemTplGenerator(
         }
     }
 
-    private void WriteEnumsToFile(string outputPath, Dictionary<string, Dictionary<string, string>> enumEntries)
+    private void WriteEnumsToFile(
+        string outputPath,
+        Dictionary<string, Dictionary<string, string>> enumEntries
+    )
     {
         var enumFileData =
             "// This is an auto generated file, do not modify. Re-generate by running ItemTplGenerator.exe";

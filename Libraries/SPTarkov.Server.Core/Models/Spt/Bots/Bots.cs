@@ -6,23 +6,11 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 public record Bots
 {
     [JsonPropertyName("types")]
-    public Dictionary<string, BotType?>? Types
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, BotType?>? Types { get; set; }
 
     [JsonPropertyName("base")]
-    public BotBase? Base
-    {
-        get;
-        set;
-    }
+    public BotBase? Base { get; set; }
 
     [JsonPropertyName("core")]
-    public Dictionary<string, object>? Core
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, object>? Core { get; set; }
 }

@@ -20,7 +20,7 @@ public class ProfileSaveLoadRouter : SaveLoadRouter
             profile.CharacterData = new Characters
             {
                 PmcData = new PmcData(),
-                ScavData = new PmcData()
+                ScavData = new PmcData(),
             };
         }
 

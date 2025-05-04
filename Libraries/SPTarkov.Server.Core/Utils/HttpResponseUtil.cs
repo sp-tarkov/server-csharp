@@ -20,13 +20,10 @@ public class HttpResponseUtil
         new("[\\f]"),
         new("[\\n]"),
         new("[\\r]"),
-        new("[\\t]")
+        new("[\\t]"),
     ];
 
-    public HttpResponseUtil(
-        JsonUtil jsonUtil,
-        LocalisationService localisationService
-    )
+    public HttpResponseUtil(JsonUtil jsonUtil, LocalisationService localisationService)
     {
         _localisationService = localisationService;
         _jsonUtil = jsonUtil;
@@ -60,21 +57,30 @@ public class HttpResponseUtil
      * @param errmsg
      * @returns
      */
-    public string GetBody<T>(T data, BackendErrorCodes err = BackendErrorCodes.None, string? errmsg = null, bool sanitize = true)
+    public string GetBody<T>(
+        T data,
+        BackendErrorCodes err = BackendErrorCodes.None,
+        string? errmsg = null,
+        bool sanitize = true
+    )
     {
         return sanitize
             ? ClearString(GetUnclearedBody(data, err, errmsg))
             : GetUnclearedBody(data, err, errmsg);
     }
 
-    public string GetUnclearedBody<T>(T? data, BackendErrorCodes err = BackendErrorCodes.None, string? errmsg = null)
+    public string GetUnclearedBody<T>(
+        T? data,
+        BackendErrorCodes err = BackendErrorCodes.None,
+        string? errmsg = null
+    )
     {
         return _jsonUtil.Serialize(
             new GetBodyResponseData<T>
             {
                 Err = err,
                 ErrMsg = errmsg,
-                Data = data
+                Data = data,
             }
         );
     }
@@ -119,7 +125,7 @@ public class HttpResponseUtil
                 {
                     Index = output.Warnings?.Count - 1,
                     ErrorMessage = message,
-                    Code = errorCode
+                    Code = errorCode,
                 }
             );
         }
@@ -131,8 +137,8 @@ public class HttpResponseUtil
                 {
                     Index = 0,
                     ErrorMessage = message,
-                    Code = errorCode
-                }
+                    Code = errorCode,
+                },
             ];
         }
 

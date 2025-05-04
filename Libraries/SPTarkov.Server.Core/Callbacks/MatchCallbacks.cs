@@ -54,12 +54,7 @@ public class MatchCallbacks(
     /// <returns></returns>
     public string GroupCurrent(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(
-            new MatchGroupCurrentResponse
-            {
-                Squad = []
-            }
-        );
+        return _httpResponseUtil.GetBody(new MatchGroupCurrentResponse { Squad = [] });
     }
 
     /// <summary>
@@ -95,12 +90,7 @@ public class MatchCallbacks(
     /// <returns></returns>
     public string AcceptGroupInvite(string url, RequestIdRequest info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(
-            new List<GroupCharacter>
-            {
-                new()
-            }
-        );
+        return _httpResponseUtil.GetBody(new List<GroupCharacter> { new() });
     }
 
     /// <summary>
@@ -226,7 +216,11 @@ public class MatchCallbacks(
     ///     Handle client/match/group/player/remove
     /// </summary>
     /// <returns></returns>
-    public string RemovePlayerFromGroup(string url, MatchGroupPlayerRemoveRequest info, string sessionID)
+    public string RemovePlayerFromGroup(
+        string url,
+        MatchGroupPlayerRemoveRequest info,
+        string sessionID
+    )
     {
         return _httpResponseUtil.GetBody(true);
     }
@@ -254,7 +248,11 @@ public class MatchCallbacks(
     ///     Handle client/raid/configuration
     /// </summary>
     /// <returns></returns>
-    public string GetRaidConfiguration(string url, GetRaidConfigurationRequestData info, string sessionID)
+    public string GetRaidConfiguration(
+        string url,
+        GetRaidConfigurationRequestData info,
+        string sessionID
+    )
     {
         _matchController.ConfigureOfflineRaid(info, sessionID);
         return _httpResponseUtil.NullResponse();
@@ -267,7 +265,11 @@ public class MatchCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetConfigurationByProfile(string url, GetRaidConfigurationRequestData info, string sessionID)
+    public string GetConfigurationByProfile(
+        string url,
+        GetRaidConfigurationRequestData info,
+        string sessionID
+    )
     {
         return _httpResponseUtil.NullResponse();
     }

@@ -12,7 +12,8 @@ public class ForceChristmasMessageHandler(
     LocalisationService _localisationService,
     MailSendService _mailSendService,
     RandomUtil _randomUtil,
-    SeasonalEventService _seasonalEventService) : IChatMessageHandler
+    SeasonalEventService _seasonalEventService
+) : IChatMessageHandler
 {
     public int GetPriority()
     {
@@ -24,9 +25,16 @@ public class ForceChristmasMessageHandler(
         return message.ToLower() == "hohoho";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
+    public void Process(
+        string sessionId,
+        UserDialogInfo sptFriendUser,
+        PmcData? sender,
+        object? extraInfo = null
+    )
     {
-        var enableEventResult = _seasonalEventService.ForceSeasonalEvent(SeasonalEventType.Christmas);
+        var enableEventResult = _seasonalEventService.ForceSeasonalEvent(
+            SeasonalEventType.Christmas
+        );
         if (enableEventResult)
         {
             _mailSendService.SendUserMessageToPlayer(
@@ -34,7 +42,10 @@ public class ForceChristmasMessageHandler(
                 sptFriendUser,
                 _randomUtil.GetArrayValue(
                     [
-                        _localisationService.GetText("chatbot-forced_event_enabled", SeasonalEventType.Christmas)
+                        _localisationService.GetText(
+                            "chatbot-forced_event_enabled",
+                            SeasonalEventType.Christmas
+                        ),
                     ]
                 ),
                 [],

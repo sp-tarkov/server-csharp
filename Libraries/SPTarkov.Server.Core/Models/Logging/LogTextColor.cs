@@ -10,5 +10,5 @@ public enum LogTextColor
     Magenta = 35,
     Cyan = 36,
     White = 37,
-    Gray = 90
+    Gray = 90,
 }

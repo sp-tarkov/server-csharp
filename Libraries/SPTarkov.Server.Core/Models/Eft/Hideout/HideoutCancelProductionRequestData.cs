@@ -6,16 +6,8 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 public record HideoutCancelProductionRequestData : BaseInteractionRequestData
 {
     [JsonPropertyName("recipeId")]
-    public string? RecipeId
-    {
-        get;
-        set;
-    }
+    public string? RecipeId { get; set; }
 
     [JsonPropertyName("timestamp")]
-    public long? Timestamp
-    {
-        get;
-        set;
-    }
+    public long? Timestamp { get; set; }
 }

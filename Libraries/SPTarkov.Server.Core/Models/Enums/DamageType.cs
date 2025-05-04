@@ -26,5 +26,5 @@ public enum DamageType
     LethalToxin = 2097152,
     Btr = 4194304,
     Artillery = 8388608,
-    Environment = 16777216
+    Environment = 16777216,
 }

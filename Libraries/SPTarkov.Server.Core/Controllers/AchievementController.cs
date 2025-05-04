@@ -23,10 +23,7 @@ public class AchievementController(
     /// <returns></returns>
     public virtual GetAchievementsResponse GetAchievements(string sessionID)
     {
-        return new GetAchievementsResponse
-        {
-            Elements = databaseService.GetAchievements()
-        };
+        return new GetAchievementsResponse { Elements = databaseService.GetAchievements() };
     }
 
     /// <summary>
@@ -40,7 +37,17 @@ public class AchievementController(
         var profiles = profileHelper.GetProfiles();
 
         var achievements = databaseService.GetAchievements();
-        foreach (var achievementId in achievements.Select(achievement => achievement.Id).Where(achievementId => !string.IsNullOrEmpty(achievementId)))
+        foreach (
+            var achievementId in achievements
+                .Select(achievement =>
+                {
+                    return achievement.Id;
+                })
+                .Where(achievementId =>
+                {
+                    return !string.IsNullOrEmpty(achievementId);
+                })
+        )
         {
             var percentage = 0;
             foreach (var (profileId, profile) in profiles)
@@ -67,9 +74,6 @@ public class AchievementController(
             stats.Add(achievementId, percentage);
         }
 
-        return new CompletedAchievementsResponse
-        {
-            Elements = stats
-        };
+        return new CompletedAchievementsResponse { Elements = stats };
     }
 }

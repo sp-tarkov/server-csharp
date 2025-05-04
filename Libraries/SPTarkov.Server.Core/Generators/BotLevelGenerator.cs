@@ -24,25 +24,28 @@ public class BotLevelGenerator(
     /// <param name="botGenerationDetails">Details to help generate a bot</param>
     /// <param name="bot">Bot the level is being generated for</param>
     /// <returns>IRandomisedBotLevelResult object</returns>
-    public RandomisedBotLevelResult GenerateBotLevel(MinMax<int> levelDetails, BotGenerationDetails botGenerationDetails, BotBase bot)
+    public RandomisedBotLevelResult GenerateBotLevel(
+        MinMax<int> levelDetails,
+        BotGenerationDetails botGenerationDetails,
+        BotBase bot
+    )
     {
         if (!botGenerationDetails.IsPmc.GetValueOrDefault(false))
         {
-            return new RandomisedBotLevelResult
-            {
-                Exp = 0,
-                Level = 1
-            };
+            return new RandomisedBotLevelResult { Exp = 0, Level = 1 };
         }
 
         var expTable = _databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
-        var botLevelRange = GetRelativePmcBotLevelRange(botGenerationDetails, levelDetails, expTable.Length);
+        var botLevelRange = GetRelativePmcBotLevelRange(
+            botGenerationDetails,
+            levelDetails,
+            expTable.Length
+        );
 
         // Get random level based on the exp table.
         var exp = 0;
         var level = int.Parse(
-            ChooseBotLevel(botLevelRange.Min, botLevelRange.Max, 1, 1.15)
-                .ToString()
+            ChooseBotLevel(botLevelRange.Min, botLevelRange.Max, 1, 1.15).ToString()
         ); // TODO - nasty double to string to int conversion
         for (var i = 0; i < level; i++)
         {
@@ -55,11 +58,7 @@ public class BotLevelGenerator(
             exp += _randomUtil.GetInt(0, expTable[level].Experience.Value - 1);
         }
 
-        return new RandomisedBotLevelResult
-        {
-            Level = level,
-            Exp = exp
-        };
+        return new RandomisedBotLevelResult { Level = level, Exp = exp };
     }
 
     public double ChooseBotLevel(double min, double max, int shift, double number)
@@ -74,7 +73,11 @@ public class BotLevelGenerator(
     /// <param name="levelDetails"></param>
     /// <param name="maxAvailableLevel">Max level allowed</param>
     /// <returns>A MinMax of the lowest and highest level to generate the bots</returns>
-    public MinMax<int> GetRelativePmcBotLevelRange(BotGenerationDetails botGenerationDetails, MinMax<int> levelDetails, int maxAvailableLevel)
+    public MinMax<int> GetRelativePmcBotLevelRange(
+        BotGenerationDetails botGenerationDetails,
+        MinMax<int> levelDetails,
+        int maxAvailableLevel
+    )
     {
         var levelOverride = botGenerationDetails.LocationSpecificPmcLevelOverride;
 
@@ -93,12 +96,14 @@ public class BotLevelGenerator(
 
         // Get min level relative to player if value exists
         var minLevel = botGenerationDetails.PlayerLevel.HasValue
-            ? botGenerationDetails.PlayerLevel.Value - botGenerationDetails.BotRelativeLevelDeltaMin.Value
+            ? botGenerationDetails.PlayerLevel.Value
+                - botGenerationDetails.BotRelativeLevelDeltaMin.Value
             : 1 - botGenerationDetails.BotRelativeLevelDeltaMin.Value;
 
         // Get max level relative to player if value exists
         var maxLevel = botGenerationDetails.PlayerLevel.HasValue
-            ? botGenerationDetails.PlayerLevel.Value + botGenerationDetails.BotRelativeLevelDeltaMax.Value
+            ? botGenerationDetails.PlayerLevel.Value
+                + botGenerationDetails.BotRelativeLevelDeltaMax.Value
             : 1 + botGenerationDetails.BotRelativeLevelDeltaMin.Value;
 
         // Bound the level to the min/max possible

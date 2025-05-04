@@ -5,23 +5,11 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 public record Server
 {
     [JsonPropertyName("ping")]
-    public int? Ping
-    {
-        get;
-        set;
-    }
+    public int? Ping { get; set; }
 
     [JsonPropertyName("ip")]
-    public string? Ip
-    {
-        get;
-        set;
-    }
+    public string? Ip { get; set; }
 
     [JsonPropertyName("port")]
-    public int? Port
-    {
-        get;
-        set;
-    }
+    public int? Port { get; set; }
 }

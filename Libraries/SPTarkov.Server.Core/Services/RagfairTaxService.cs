@@ -22,7 +22,10 @@ public class RagfairTaxService(
 {
     protected Dictionary<string, StorePlayerOfferTaxAmountRequestData> _playerOfferTaxCache = new();
 
-    public void StoreClientOfferTaxValue(string sessionId, StorePlayerOfferTaxAmountRequestData offer)
+    public void StoreClientOfferTaxValue(
+        string sessionId,
+        StorePlayerOfferTaxAmountRequestData offer
+    )
     {
         _playerOfferTaxCache[offer.Id] = offer;
     }
@@ -32,7 +35,9 @@ public class RagfairTaxService(
         _playerOfferTaxCache.Remove(offerIdToRemove);
     }
 
-    public StorePlayerOfferTaxAmountRequestData GetStoredClientOfferTaxValueById(string offerIdToGet)
+    public StorePlayerOfferTaxAmountRequestData GetStoredClientOfferTaxValueById(
+        string offerIdToGet
+    )
     {
         return _playerOfferTaxCache[offerIdToGet];
     }
@@ -52,7 +57,8 @@ public class RagfairTaxService(
         PmcData pmcData,
         double? requirementsValue,
         int? offerItemCount,
-        bool sellInOnePiece)
+        bool sellInOnePiece
+    )
     {
         if (requirementsValue is null)
         {
@@ -96,7 +102,8 @@ public class RagfairTaxService(
         var taxDiscountPercent = -(hideoutFleaTaxDiscountBonusSum / 100.0);
 
         var tax =
-            itemWorth * itemTaxMult * itemPriceMult + requirementsPrice * requirementTaxMult * requirementPriceMult;
+            itemWorth * itemTaxMult * itemPriceMult
+            + requirementsPrice * requirementTaxMult * requirementPriceMult;
         var discountedTax = tax * (1.0 - taxDiscountPercent);
         var itemComissionMult = itemTemplate.Properties.RagFairCommissionModifier.HasValue
             ? itemTemplate.Properties.RagFairCommissionModifier.Value
@@ -105,14 +112,24 @@ public class RagfairTaxService(
         if (item.Upd.Buff is not null)
         {
             var buffType = item.Upd.Buff.BuffType;
-            var itemEnhancementSettings =
-                _databaseService.GetGlobals().Configuration.RepairSettings.ItemEnhancementSettings;
+            var itemEnhancementSettings = _databaseService
+                .GetGlobals()
+                .Configuration.RepairSettings.ItemEnhancementSettings;
             var priceModiferValue = buffType switch
             {
-                BuffType.DamageReduction => itemEnhancementSettings.DamageReduction.PriceModifierValue.Value,
-                BuffType.MalfunctionProtections => itemEnhancementSettings.MalfunctionProtections.PriceModifierValue.Value,
-                BuffType.WeaponSpread => itemEnhancementSettings.WeaponSpread.PriceModifierValue.Value,
-                _ => 1d
+                BuffType.DamageReduction => itemEnhancementSettings
+                    .DamageReduction
+                    .PriceModifierValue
+                    .Value,
+                BuffType.MalfunctionProtections => itemEnhancementSettings
+                    .MalfunctionProtections
+                    .PriceModifierValue
+                    .Value,
+                BuffType.WeaponSpread => itemEnhancementSettings
+                    .WeaponSpread
+                    .PriceModifierValue
+                    .Value,
+                _ => 1d,
             };
             discountedTax *= 1.0 + Math.Abs(item.Upd.Buff.Value.Value - 1.0) * priceModiferValue;
         }
@@ -142,7 +159,8 @@ public class RagfairTaxService(
         TemplateItem itemTemplate,
         int itemCount,
         PmcData pmcData,
-        bool isRootItem = true)
+        bool isRootItem = true
+    )
     {
         var worth = _ragfairPriceService.GetFleaPriceForItem(item.Template);
 
@@ -150,18 +168,26 @@ public class RagfairTaxService(
         if (isRootItem)
         {
             // Since we get a flat list of all child items, we only want to recurse from parent item
-            var itemChildren = _itemHelper.FindAndReturnChildrenAsItems(pmcData.Inventory.Items, item.Id);
+            var itemChildren = _itemHelper.FindAndReturnChildrenAsItems(
+                pmcData.Inventory.Items,
+                item.Id
+            );
             if (itemChildren.Count > 1)
             {
                 var itemChildrenClone = _cloner.Clone(itemChildren); // Clone is expensive, only run if necessary
-                foreach (var child in itemChildrenClone.Where(child => child.Id != item.Id))
+                foreach (
+                    var child in itemChildrenClone.Where(child =>
+                    {
+                        return child.Id != item.Id;
+                    })
+                )
                 {
                     child.Upd ??= new Upd();
 
                     worth += CalculateItemWorth(
                         child,
                         _itemHelper.GetItem(child.Template).Value,
-                        (int) (child.Upd.StackObjectsCount ?? 1),
+                        (int)(child.Upd.StackObjectsCount ?? 1),
                         pmcData,
                         false
                     );
@@ -178,7 +204,9 @@ public class RagfairTaxService(
 
         if (itemTemplate.Properties is null)
         {
-            _logger.Warning($"Item: {item.Id} lacks _props and cannot have its worth calculated properly");
+            _logger.Warning(
+                $"Item: {item.Id} lacks _props and cannot have its worth calculated properly"
+            );
 
             return worth;
         }
@@ -186,41 +214,55 @@ public class RagfairTaxService(
         if (upd.Key is not null && (itemTemplate.Properties.MaximumNumberOfUsage ?? 0) > 0)
         {
             worth =
-                worth /
-                (itemTemplate.Properties.MaximumNumberOfUsage ?? 1) *
-                ((itemTemplate.Properties.MaximumNumberOfUsage ?? 1) - upd.Key.NumberOfUsages.Value);
+                worth
+                / (itemTemplate.Properties.MaximumNumberOfUsage ?? 1)
+                * (
+                    (itemTemplate.Properties.MaximumNumberOfUsage ?? 1)
+                    - upd.Key.NumberOfUsages.Value
+                );
         }
 
         if (upd.Resource is not null && (itemTemplate.Properties.MaxResource ?? 0) > 0)
         {
-            worth = (double) (worth * 0.1 +
-                              worth * 0.9 / (itemTemplate.Properties.MaxResource ?? 1) * upd.Resource.Value);
+            worth = (double)(
+                worth * 0.1
+                + worth * 0.9 / (itemTemplate.Properties.MaxResource ?? 1) * upd.Resource.Value
+            );
         }
 
         if (upd.SideEffect is not null && (itemTemplate.Properties.MaxResource ?? 0) > 0)
         {
-            worth = (double) (worth * 0.1 +
-                              worth * 0.9 / (itemTemplate.Properties.MaxResource ?? 1) * upd.SideEffect.Value);
+            worth = (double)(
+                worth * 0.1
+                + worth * 0.9 / (itemTemplate.Properties.MaxResource ?? 1) * upd.SideEffect.Value
+            );
         }
 
         if (upd.MedKit is not null && (itemTemplate.Properties.MaxHpResource ?? 0) > 0)
         {
-            worth = worth / (itemTemplate.Properties.MaxHpResource ?? 1) * upd.MedKit.HpResource.Value;
+            worth =
+                worth / (itemTemplate.Properties.MaxHpResource ?? 1) * upd.MedKit.HpResource.Value;
         }
 
         if (upd.FoodDrink is not null && (itemTemplate.Properties.MaxResource ?? 0) > 0)
         {
-            worth = worth / (itemTemplate.Properties.MaxResource ?? 1) * upd.FoodDrink.HpPercent.Value;
+            worth =
+                worth / (itemTemplate.Properties.MaxResource ?? 1) * upd.FoodDrink.HpPercent.Value;
         }
 
         if (upd.Repairable is not null && (itemTemplate.Properties.ArmorClass ?? 0) > 0)
         {
             var num2 = 0.01 * Math.Pow(0.0, upd.Repairable.MaxDurability.Value);
             worth =
-                worth * (upd.Repairable.MaxDurability.Value / (itemTemplate.Properties.Durability ?? 1) - num2) -
-                Math.Floor(
-                    (itemTemplate.Properties.RepairCost ?? 0) *
-                    (upd.Repairable.MaxDurability.Value - upd.Repairable.Durability.Value)
+                worth
+                    * (
+                        upd.Repairable.MaxDurability.Value
+                            / (itemTemplate.Properties.Durability ?? 1)
+                        - num2
+                    )
+                - Math.Floor(
+                    (itemTemplate.Properties.RepairCost ?? 0)
+                        * (upd.Repairable.MaxDurability.Value - upd.Repairable.Durability.Value)
                 );
         }
 

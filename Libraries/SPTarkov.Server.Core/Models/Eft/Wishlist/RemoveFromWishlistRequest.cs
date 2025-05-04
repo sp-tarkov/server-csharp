@@ -6,9 +6,5 @@ namespace SPTarkov.Server.Core.Models.Eft.Wishlist;
 public record RemoveFromWishlistRequest : InventoryBaseActionRequestData
 {
     [JsonPropertyName("items")]
-    public List<string>? Items
-    {
-        get;
-        set;
-    }
+    public List<string>? Items { get; set; }
 }

@@ -19,7 +19,8 @@ public class GiftService(
     HashUtil _hashUtil,
     TimeUtil _timeUtil,
     ProfileHelper _profileHelper,
-    ConfigServer _configServer)
+    ConfigServer _configServer
+)
 {
     protected GiftsConfig _giftConfig = _configServer.GetConfig<GiftsConfig>();
 
@@ -86,7 +87,9 @@ public class GiftService(
 
         if (giftData.Items?.Count > 0 && giftData.CollectionTimeHours is not null)
         {
-            _logger.Warning($"Gift {giftId} has items but no collection time limit, defaulting to 48 hours");
+            _logger.Warning(
+                $"Gift {giftId} has items but no collection time limit, defaulting to 48 hours"
+            );
         }
 
         // Handle system messages
@@ -162,11 +165,13 @@ public class GiftService(
                 {
                     Id = GetSenderId(giftData),
                     Aid = 1234567, // TODO - pass proper aid value
-                    Info = null
+                    Info = null,
                 },
                 MessageText = giftData.MessageText,
                 Items = giftData.Items,
-                ItemsMaxStorageLifetimeSeconds = _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 0)
+                ItemsMaxStorageLifetimeSeconds = _timeUtil.GetHoursAsSeconds(
+                    giftData.CollectionTimeHours ?? 0
+                ),
             };
 
             if (giftData.Trader is not null)
@@ -218,7 +223,12 @@ public class GiftService(
             case GiftSenderType.User:
                 return MessageType.USER_MESSAGE;
             default:
-                _logger.Error(_localisationService.GetText("gift-unable_to_handle_message_type_command", giftData.Sender));
+                _logger.Error(
+                    _localisationService.GetText(
+                        "gift-unable_to_handle_message_type_command",
+                        giftData.Sender
+                    )
+                );
                 return null;
         }
     }
@@ -234,7 +244,7 @@ public class GiftService(
         {
             1 => "PraporGiftDay1",
             2 => "PraporGiftDay2",
-            _ => null
+            _ => null,
         };
 
         if (giftId is not null)

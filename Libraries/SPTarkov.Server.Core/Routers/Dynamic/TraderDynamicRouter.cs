@@ -9,32 +9,24 @@ namespace SPTarkov.Server.Core.Routers.Dynamic;
 [Injectable(InjectableTypeOverride = typeof(DynamicRouter))]
 public class TraderDynamicRouter : DynamicRouter
 {
-    public TraderDynamicRouter(
-        JsonUtil jsonUtil,
-        TraderCallbacks traderCallbacks
-    ) : base(
-        jsonUtil,
-        [
-            new RouteAction(
-                "/client/trading/api/getTrader/",
-                (
-                    url,
-                    info,
-                    sessionID,
-                    output
-                ) => traderCallbacks.GetTrader(url, info as EmptyRequestData, sessionID)
-            ),
-            new RouteAction(
-                "/client/trading/api/getTraderAssort/",
-                (
-                    url,
-                    info,
-                    sessionID,
-                    output
-                ) => traderCallbacks.GetAssort(url, info as EmptyRequestData, sessionID)
-            )
-        ]
-    )
-    {
-    }
+    public TraderDynamicRouter(JsonUtil jsonUtil, TraderCallbacks traderCallbacks)
+        : base(
+            jsonUtil,
+            [
+                new RouteAction(
+                    "/client/trading/api/getTrader/",
+                    (url, info, sessionID, output) =>
+                    {
+                        return traderCallbacks.GetTrader(url, info as EmptyRequestData, sessionID);
+                    }
+                ),
+                new RouteAction(
+                    "/client/trading/api/getTraderAssort/",
+                    (url, info, sessionID, output) =>
+                    {
+                        return traderCallbacks.GetAssort(url, info as EmptyRequestData, sessionID);
+                    }
+                ),
+            ]
+        ) { }
 }

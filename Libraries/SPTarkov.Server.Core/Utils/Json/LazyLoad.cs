@@ -21,7 +21,10 @@ public class LazyLoad<T>(Func<T> deserialize)
                     {
                         _result = default;
                         _isLoaded = false;
-                        autoCleanerTimeout?.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+                        autoCleanerTimeout?.Change(
+                            Timeout.InfiniteTimeSpan,
+                            Timeout.InfiniteTimeSpan
+                        );
                         autoCleanerTimeout = null;
                     },
                     null,
@@ -33,9 +36,6 @@ public class LazyLoad<T>(Func<T> deserialize)
             autoCleanerTimeout?.Change(_autoCleanerTimeout, Timeout.InfiniteTimeSpan);
             return _result;
         }
-        set
-        {
-            _result = value;
-        }
+        set { _result = value; }
     }
 }

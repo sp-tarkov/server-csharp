@@ -6,9 +6,5 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 public record RemoveDialogRequestData : IRequestData
 {
     [JsonPropertyName("dialogId")]
-    public string? DialogId
-    {
-        get;
-        set;
-    }
+    public string? DialogId { get; set; }
 }
