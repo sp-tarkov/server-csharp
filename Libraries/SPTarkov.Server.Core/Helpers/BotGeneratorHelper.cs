@@ -1,5 +1,6 @@
 using System.Collections.Frozen;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Constants;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Match;
@@ -15,29 +16,50 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class BotGeneratorHelper(
-    ISptLogger<BotGeneratorHelper> _logger,
-    RandomUtil _randomUtil,
-    DurabilityLimitsHelper _durabilityLimitsHelper,
-    ItemHelper _itemHelper,
-    InventoryHelper _inventoryHelper,
-    ContainerHelper _containerHelper,
-    ApplicationContext _applicationContext,
-    LocalisationService _localisationService,
-    ConfigServer _configServer
-)
+public class BotGeneratorHelper
 {
     // Equipment slot ids that do not conflict with other slots
-    protected static readonly FrozenSet<string> _slotsWithNoCompatIssues =
-    [
-        "Scabbard",
-        "Backpack",
-        "SecureContainer",
-        "Holster",
-        "ArmBand",
+    private static readonly FrozenSet<string> _slotsWithNoCompatIssues = [
+        EquipmentSlots.Scabbard.ToString(),
+        EquipmentSlots.Backpack.ToString(),
+        EquipmentSlots.SecuredContainer.ToString(),
+        EquipmentSlots.Holster.ToString(),
+        EquipmentSlots.ArmBand.ToString()
     ];
-    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
+
+    private readonly BotConfig _botConfig;
+    private readonly ISptLogger<BotGeneratorHelper> _logger;
+    private readonly RandomUtil _randomUtil;
+    private readonly DurabilityLimitsHelper _durabilityLimitsHelper;
+    private readonly ItemHelper _itemHelper;
+    private readonly InventoryHelper _inventoryHelper;
+    private readonly ContainerHelper _containerHelper;
+    private readonly ApplicationContext _applicationContext;
+    private readonly LocalisationService _localisationService;
+    private readonly string[] _pmcTypes;
+
+    public BotGeneratorHelper(ISptLogger<BotGeneratorHelper> logger,
+        RandomUtil randomUtil,
+        DurabilityLimitsHelper durabilityLimitsHelper,
+        ItemHelper itemHelper,
+        InventoryHelper inventoryHelper,
+        ContainerHelper containerHelper,
+        ApplicationContext applicationContext,
+        LocalisationService localisationService,
+        ConfigServer configServer)
+    {
+        _logger = logger;
+        _randomUtil = randomUtil;
+        _durabilityLimitsHelper = durabilityLimitsHelper;
+        _itemHelper = itemHelper;
+        _inventoryHelper = inventoryHelper;
+        _containerHelper = containerHelper;
+        _applicationContext = applicationContext;
+        _localisationService = localisationService;
+        _botConfig = configServer.GetConfig<BotConfig>();
+        var pmcConfig = configServer.GetConfig<PmcConfig>();
+        _pmcTypes = [pmcConfig.UsecType.ToLower(), pmcConfig.BearType.ToLower()];
+    }
 
     /// <summary>
     ///     Adds properties to an item
@@ -57,59 +79,57 @@ public class BotGeneratorHelper(
         RandomisedResourceDetails randomisationSettings = null;
         if (botRole is not null)
         {
-            _botConfig.LootItemResourceRandomization.TryGetValue(
-                botRole,
-                out randomisationSettings
-            );
+            _botConfig.LootItemResourceRandomization.TryGetValue(botRole, out randomisationSettings);
         }
+
 
         Upd itemProperties = new();
         var hasProperties = false;
 
-        if (
-            itemTemplate?.Properties?.MaxDurability is not null
-            && itemTemplate.Properties.MaxDurability > 0
-        )
+        if (itemTemplate?.Properties?.MaxDurability is not null && itemTemplate.Properties.MaxDurability > 0)
         {
             if (itemTemplate.Properties.WeapClass is not null)
             {
                 // Is weapon
-                itemProperties.Repairable = GenerateWeaponRepairableProperties(
-                    itemTemplate,
-                    botRole
-                );
+                itemProperties.Repairable = GenerateWeaponRepairableProperties(itemTemplate, botRole);
                 hasProperties = true;
             }
             else if (itemTemplate.Properties.ArmorClass is not null)
             {
                 // Is armor
-                itemProperties.Repairable = GenerateArmorRepairableProperties(
-                    itemTemplate,
-                    botRole
-                );
+                itemProperties.Repairable = GenerateArmorRepairableProperties(itemTemplate, botRole);
                 hasProperties = true;
             }
         }
 
         if (itemTemplate?.Properties?.HasHinge ?? false)
         {
-            itemProperties.Togglable = new UpdTogglable { On = true };
+            itemProperties.Togglable = new UpdTogglable
+            {
+                On = true
+            };
             hasProperties = true;
         }
 
         if (itemTemplate?.Properties?.Foldable ?? false)
         {
-            itemProperties.Foldable = new UpdFoldable { Folded = false };
+            itemProperties.Foldable = new UpdFoldable
+            {
+                Folded = false
+            };
             hasProperties = true;
         }
 
         if (itemTemplate?.Properties?.WeapFireType?.Count == 0)
         {
             itemProperties.FireMode = itemTemplate.Properties.WeapFireType.Contains("fullauto")
-                ? new UpdFireMode { FireMode = "fullauto" }
+                ? new UpdFireMode
+                {
+                    FireMode = "fullauto"
+                }
                 : new UpdFireMode
                 {
-                    FireMode = _randomUtil.GetArrayValue(itemTemplate.Properties.WeapFireType),
+                    FireMode = _randomUtil.GetArrayValue(itemTemplate.Properties.WeapFireType)
                 };
             hasProperties = true;
         }
@@ -121,22 +141,19 @@ public class BotGeneratorHelper(
                 HpResource = GetRandomizedResourceValue(
                     itemTemplate.Properties.MaxHpResource ?? 0,
                     randomisationSettings?.Meds
-                ),
+                )
             };
             hasProperties = true;
         }
 
-        if (
-            itemTemplate?.Properties?.MaxResource is not null
-            && itemTemplate.Properties?.FoodUseTime is not null
-        )
+        if (itemTemplate?.Properties?.MaxResource is not null && itemTemplate.Properties?.FoodUseTime is not null)
         {
             itemProperties.FoodDrink = new UpdFoodDrink
             {
                 HpPercent = GetRandomizedResourceValue(
                     itemTemplate.Properties.MaxResource ?? 0,
                     randomisationSettings?.Food
-                ),
+                )
             };
             hasProperties = true;
         }
@@ -150,7 +167,7 @@ public class BotGeneratorHelper(
             itemProperties.Light = new UpdLight
             {
                 IsActive = _randomUtil.GetChance100(lightLaserActiveChance),
-                SelectedMode = 0,
+                SelectedMode = 0
             };
             hasProperties = true;
         }
@@ -165,7 +182,7 @@ public class BotGeneratorHelper(
             itemProperties.Light = new UpdLight
             {
                 IsActive = _randomUtil.GetChance100(lightLaserActiveChance),
-                SelectedMode = 0,
+                SelectedMode = 0
             };
             hasProperties = true;
         }
@@ -178,16 +195,13 @@ public class BotGeneratorHelper(
                 : GetBotEquipmentSettingFromConfig(botRole, "nvgIsActiveChanceDayPercent", 15);
             itemProperties.Togglable = new UpdTogglable
             {
-                On = _randomUtil.GetChance100(nvgActiveChance),
+                On = _randomUtil.GetChance100(nvgActiveChance)
             };
             hasProperties = true;
         }
 
         // Togglable face shield
-        if (
-            (itemTemplate?.Properties?.HasHinge ?? false)
-            && (itemTemplate.Properties.FaceShieldComponent ?? false)
-        )
+        if ((itemTemplate?.Properties?.HasHinge ?? false) && (itemTemplate.Properties.FaceShieldComponent ?? false))
         {
             var faceShieldActiveChance = GetBotEquipmentSettingFromConfig(
                 botRole,
@@ -196,7 +210,7 @@ public class BotGeneratorHelper(
             );
             itemProperties.Togglable = new UpdTogglable
             {
-                On = _randomUtil.GetChance100(faceShieldActiveChance),
+                On = _randomUtil.GetChance100(faceShieldActiveChance)
             };
             hasProperties = true;
         }
@@ -211,10 +225,7 @@ public class BotGeneratorHelper(
     /// <param name="maxResource">Max resource value of medical items</param>
     /// <param name="randomizationValues">Value provided from config</param>
     /// <returns>Randomized value from maxHpResource</returns>
-    protected double GetRandomizedResourceValue(
-        double maxResource,
-        RandomisedResourceValues? randomizationValues
-    )
+    protected double GetRandomizedResourceValue(double maxResource, RandomisedResourceValues? randomizationValues)
     {
         if (randomizationValues is null)
         {
@@ -239,11 +250,7 @@ public class BotGeneratorHelper(
     /// <param name="setting">the setting of the weapon attachment/helmet equipment to be activated</param>
     /// <param name="defaultValue">default value for the chance of activation if the botrole or bot equipment role is undefined</param>
     /// <returns>Percent chance to be active</returns>
-    protected double? GetBotEquipmentSettingFromConfig(
-        string? botRole,
-        string setting,
-        double defaultValue
-    )
+    protected double? GetBotEquipmentSettingFromConfig(string? botRole, string setting, double defaultValue)
     {
         if (botRole is null)
         {
@@ -260,7 +267,7 @@ public class BotGeneratorHelper(
                     {
                         botRole,
                         setting,
-                        defaultValue,
+                        defaultValue
                     }
                 )
             );
@@ -269,17 +276,8 @@ public class BotGeneratorHelper(
         }
 
         var props = botEquipmentSettings.GetType().GetProperties();
-        var propValue = (double?)
-            props
-                .FirstOrDefault(x =>
-                {
-                    return string.Equals(
-                        x.Name,
-                        setting,
-                        StringComparison.CurrentCultureIgnoreCase
-                    );
-                })
-                ?.GetValue(botEquipmentSettings);
+        var propValue = (double?) props.FirstOrDefault(x => string.Equals(x.Name, setting, StringComparison.CurrentCultureIgnoreCase))
+            ?.GetValue(botEquipmentSettings);
 
         if (propValue is not null)
         {
@@ -293,7 +291,7 @@ public class BotGeneratorHelper(
                 {
                     botRole,
                     setting,
-                    defaultValue,
+                    defaultValue
                 }
             )
         );
@@ -307,15 +305,9 @@ public class BotGeneratorHelper(
     /// <param name="itemTemplate">weapon object being generated for</param>
     /// <param name="botRole">type of bot being generated for</param>
     /// <returns>Repairable object</returns>
-    protected UpdRepairable GenerateWeaponRepairableProperties(
-        TemplateItem itemTemplate,
-        string? botRole = null
-    )
+    protected UpdRepairable GenerateWeaponRepairableProperties(TemplateItem itemTemplate, string? botRole = null)
     {
-        var maxDurability = _durabilityLimitsHelper.GetRandomizedMaxWeaponDurability(
-            itemTemplate,
-            botRole
-        );
+        var maxDurability = _durabilityLimitsHelper.GetRandomizedMaxWeaponDurability(itemTemplate, botRole);
         var currentDurability = _durabilityLimitsHelper.GetRandomizedWeaponDurability(
             itemTemplate,
             botRole,
@@ -325,7 +317,7 @@ public class BotGeneratorHelper(
         return new UpdRepairable
         {
             Durability = Math.Round(currentDurability, 5),
-            MaxDurability = Math.Round(maxDurability, 5),
+            MaxDurability = Math.Round(maxDurability, 5)
         };
     }
 
@@ -335,10 +327,7 @@ public class BotGeneratorHelper(
     /// <param name="itemTemplate">weapon object being generated for</param>
     /// <param name="botRole">type of bot being generated for</param>
     /// <returns>Repairable object</returns>
-    protected UpdRepairable GenerateArmorRepairableProperties(
-        TemplateItem itemTemplate,
-        string? botRole = null
-    )
+    protected UpdRepairable GenerateArmorRepairableProperties(TemplateItem itemTemplate, string? botRole = null)
     {
         double maxDurability;
         double currentDurability;
@@ -349,10 +338,7 @@ public class BotGeneratorHelper(
         }
         else
         {
-            maxDurability = _durabilityLimitsHelper.GetRandomizedMaxArmorDurability(
-                itemTemplate,
-                botRole
-            );
+            maxDurability = _durabilityLimitsHelper.GetRandomizedMaxArmorDurability(itemTemplate, botRole);
             currentDurability = _durabilityLimitsHelper.GetRandomizedArmorDurability(
                 itemTemplate,
                 botRole,
@@ -363,7 +349,7 @@ public class BotGeneratorHelper(
         return new UpdRepairable
         {
             Durability = Math.Round(currentDurability, 5),
-            MaxDurability = Math.Round(maxDurability, 5),
+            MaxDurability = Math.Round(maxDurability, 5)
         };
     }
 
@@ -374,11 +360,7 @@ public class BotGeneratorHelper(
     /// <param name="tplToCheck">Tpl of the item to check for incompatibilities</param>
     /// <param name="equipmentSlot">Slot the item will be placed into</param>
     /// <returns>false if no incompatibilities, also has incompatibility reason</returns>
-    public ChooseRandomCompatibleModResult IsItemIncompatibleWithCurrentItems(
-        List<Item> itemsEquipped,
-        string tplToCheck,
-        string equipmentSlot
-    )
+    public ChooseRandomCompatibleModResult IsItemIncompatibleWithCurrentItems(List<Item> itemsEquipped, string tplToCheck, string equipmentSlot)
     {
         // Skip slots that have no incompatibilities
         if (_slotsWithNoCompatIssues.Contains(equipmentSlot))
@@ -387,17 +369,12 @@ public class BotGeneratorHelper(
             {
                 Incompatible = false,
                 Found = false,
-                Reason = "",
+                Reason = ""
             };
         }
 
         // TODO: Can probably be optimized to cache itemTemplates as items are added to inventory
-        var equippedItemsDb = itemsEquipped
-            .Select(equippedItem =>
-            {
-                return _itemHelper.GetItem(equippedItem.Template).Value;
-            })
-            .ToList();
+        var equippedItemsDb = itemsEquipped.Select(equippedItem => _itemHelper.GetItem(equippedItem.Template).Value).ToList();
         var (key, itemToEquip) = _itemHelper.GetItem(tplToCheck);
 
         if (!key)
@@ -405,7 +382,11 @@ public class BotGeneratorHelper(
             _logger.Warning(
                 _localisationService.GetText(
                     "bot-invalid_item_compatibility_check",
-                    new { itemTpl = tplToCheck, slot = equipmentSlot }
+                    new
+                    {
+                        itemTpl = tplToCheck,
+                        slot = equipmentSlot
+                    }
                 )
             );
 
@@ -413,7 +394,7 @@ public class BotGeneratorHelper(
             {
                 Incompatible = true,
                 Found = false,
-                Reason = $"item: {tplToCheck} does not exist in the database",
+                Reason = $"item: {tplToCheck} does not exist in the database"
             };
         }
 
@@ -426,7 +407,7 @@ public class BotGeneratorHelper(
                     {
                         id = itemToEquip?.Id,
                         name = itemToEquip?.Name,
-                        slot = equipmentSlot,
+                        slot = equipmentSlot
                     }
                 )
             );
@@ -435,64 +416,51 @@ public class BotGeneratorHelper(
             {
                 Incompatible = true,
                 Found = false,
-                Reason = $"item: {tplToCheck} does not have a _props field",
+                Reason = $"item: {tplToCheck} does not have a _props field"
             };
         }
 
         // Does an equipped item have a property that blocks the desired item - check for prop "BlocksX" .e.g BlocksEarpiece / BlocksFaceCover
-        var blockingPropertyName = $"blocks{equipmentSlot}";
         var templateItems = equippedItemsDb.ToList();
-        var blockingItem = templateItems.FirstOrDefault(item =>
-        {
-            return HasBlockingProperty(item, blockingPropertyName);
-        });
+        var blockingItem = templateItems.FirstOrDefault(item => HasBlockingProperty(item, equipmentSlot));
         if (blockingItem is not null)
-        // this.logger.warning(`1 incompatibility found between - {itemToEquip[1]._name} and {blockingItem._name} - {equipmentSlot}`);
+            // this.logger.warning(`1 incompatibility found between - {itemToEquip[1]._name} and {blockingItem._name} - {equipmentSlot}`);
         {
             return new ChooseRandomCompatibleModResult
             {
                 Incompatible = true,
                 Found = false,
-                Reason =
-                    $"{tplToCheck} {itemToEquip.Name} in slot: {equipmentSlot} blocked by: {blockingItem.Id} {blockingItem.Name}",
-                SlotBlocked = true,
+                Reason = $"{tplToCheck} {itemToEquip.Name} in slot: {equipmentSlot} blocked by: {blockingItem.Id} {blockingItem.Name}",
+                SlotBlocked = true
             };
         }
 
         // Check if any of the current inventory templates have the incoming item defined as incompatible
-        blockingItem = templateItems.FirstOrDefault(x =>
-        {
-            return x?.Properties?.ConflictingItems?.Contains(tplToCheck) ?? false;
-        });
+        blockingItem = templateItems.FirstOrDefault(x => x?.Properties?.ConflictingItems?.Contains(tplToCheck) ?? false);
         if (blockingItem is not null)
-        // this.logger.warning(`2 incompatibility found between - {itemToEquip[1]._name} and {blockingItem._props.Name} - {equipmentSlot}`);
+            // this.logger.warning(`2 incompatibility found between - {itemToEquip[1]._name} and {blockingItem._props.Name} - {equipmentSlot}`);
         {
             return new ChooseRandomCompatibleModResult
             {
                 Incompatible = true,
                 Found = false,
-                Reason =
-                    $"{tplToCheck} {itemToEquip.Name} in slot: {equipmentSlot} blocked by: {blockingItem.Id} {blockingItem.Name}",
-                SlotBlocked = true,
+                Reason = $"{tplToCheck} {itemToEquip.Name} in slot: {equipmentSlot} blocked by: {blockingItem.Id} {blockingItem.Name}",
+                SlotBlocked = true
             };
         }
 
         // Does item being checked get blocked/block existing item
         if (itemToEquip.Properties.BlocksHeadwear ?? false)
         {
-            var existingHeadwear = itemsEquipped.FirstOrDefault(x =>
-            {
-                return x.SlotId == "Headwear";
-            });
+            var existingHeadwear = itemsEquipped.FirstOrDefault(x => x.SlotId == Containers.Headwear);
             if (existingHeadwear is not null)
             {
                 return new ChooseRandomCompatibleModResult
                 {
                     Incompatible = true,
                     Found = false,
-                    Reason =
-                        $"{tplToCheck} {itemToEquip.Name} is blocked by: {existingHeadwear.Template} in slot: {existingHeadwear.SlotId}",
-                    SlotBlocked = true,
+                    Reason = $"{tplToCheck} {itemToEquip.Name} is blocked by: {existingHeadwear.Template} in slot: {existingHeadwear.SlotId}",
+                    SlotBlocked = true
                 };
             }
         }
@@ -500,19 +468,15 @@ public class BotGeneratorHelper(
         // Does item being checked get blocked/block existing item
         if (itemToEquip.Properties.BlocksFaceCover.GetValueOrDefault(false))
         {
-            var existingFaceCover = itemsEquipped.FirstOrDefault(item =>
-            {
-                return item.SlotId == "FaceCover";
-            });
+            var existingFaceCover = itemsEquipped.FirstOrDefault(item => item.SlotId == Containers.FaceCover);
             if (existingFaceCover is not null)
             {
                 return new ChooseRandomCompatibleModResult
                 {
                     Incompatible = true,
                     Found = false,
-                    Reason =
-                        $"{tplToCheck} {itemToEquip.Name} is blocked by: {existingFaceCover.Template} in slot: {existingFaceCover.SlotId}",
-                    SlotBlocked = true,
+                    Reason = $"{tplToCheck} {itemToEquip.Name} is blocked by: {existingFaceCover.Template} in slot: {existingFaceCover.SlotId}",
+                    SlotBlocked = true
                 };
             }
         }
@@ -520,19 +484,15 @@ public class BotGeneratorHelper(
         // Does item being checked get blocked/block existing item
         if (itemToEquip.Properties.BlocksEarpiece.GetValueOrDefault(false))
         {
-            var existingEarpiece = itemsEquipped.FirstOrDefault(item =>
-            {
-                return item.SlotId == "Earpiece";
-            });
+            var existingEarpiece = itemsEquipped.FirstOrDefault(item => item.SlotId == Containers.Earpiece);
             if (existingEarpiece is not null)
             {
                 return new ChooseRandomCompatibleModResult
                 {
                     Incompatible = true,
                     Found = false,
-                    Reason =
-                        $"{tplToCheck} {itemToEquip.Name} is blocked by: {existingEarpiece.Template} in slot: {existingEarpiece.SlotId}",
-                    SlotBlocked = true,
+                    Reason = $"{tplToCheck} {itemToEquip.Name} is blocked by: {existingEarpiece.Template} in slot: {existingEarpiece.SlotId}",
+                    SlotBlocked = true
                 };
             }
         }
@@ -540,55 +500,42 @@ public class BotGeneratorHelper(
         // Does item being checked get blocked/block existing item
         if (itemToEquip.Properties.BlocksArmorVest.GetValueOrDefault(false))
         {
-            var existingArmorVest = itemsEquipped.FirstOrDefault(item =>
-            {
-                return item.SlotId == "ArmorVest";
-            });
+            var existingArmorVest = itemsEquipped.FirstOrDefault(item => item.SlotId == Containers.ArmorVest);
             if (existingArmorVest is not null)
             {
                 return new ChooseRandomCompatibleModResult
                 {
                     Incompatible = true,
                     Found = false,
-                    Reason =
-                        $"{tplToCheck} {itemToEquip.Name} is blocked by: {existingArmorVest.Template} in slot: {existingArmorVest.SlotId}",
-                    SlotBlocked = true,
+                    Reason = $"{tplToCheck} {itemToEquip.Name} is blocked by: {existingArmorVest.Template} in slot: {existingArmorVest.SlotId}",
+                    SlotBlocked = true
                 };
             }
         }
 
         // Check if the incoming item has any inventory items defined as incompatible
-        var blockingInventoryItem = itemsEquipped.FirstOrDefault(x =>
-        {
-            return itemToEquip.Properties.ConflictingItems?.Contains(x.Template) ?? false;
-        });
+        var blockingInventoryItem = itemsEquipped.FirstOrDefault(x => itemToEquip.Properties.ConflictingItems?.Contains(x.Template) ?? false);
         if (blockingInventoryItem is not null)
-        // this.logger.warning(`3 incompatibility found between - {itemToEquip[1]._name} and {blockingInventoryItem._tpl} - {equipmentSlot}`)
+            // this.logger.warning(`3 incompatibility found between - {itemToEquip[1]._name} and {blockingInventoryItem._tpl} - {equipmentSlot}`)
         {
             return new ChooseRandomCompatibleModResult
             {
                 Incompatible = true,
                 Found = false,
-                Reason =
-                    $"{tplToCheck} blocks existing item {blockingInventoryItem.Template} in slot {blockingInventoryItem.SlotId}",
+                Reason = $"{tplToCheck} blocks existing item {blockingInventoryItem.Template} in slot {blockingInventoryItem.SlotId}"
             };
         }
 
-        return new ChooseRandomCompatibleModResult { Incompatible = false, Reason = "" };
+        return new ChooseRandomCompatibleModResult
+        {
+            Incompatible = false,
+            Reason = ""
+        };
     }
 
     protected bool HasBlockingProperty(TemplateItem? item, string blockingPropertyName)
     {
-        return item
-            ?.Properties?.GetType()
-            .GetProperties()
-            .FirstOrDefault(x =>
-            {
-                return x.PropertyType == typeof(bool)
-                    && x.Name.ToLower() == blockingPropertyName
-                    && (bool)x.GetValue(item.Properties);
-            })
-            is not null;
+        return item != null && item.Blocks.TryGetValue(blockingPropertyName, out var blocks) && blocks;
     }
 
     /// <summary>
@@ -598,15 +545,16 @@ public class BotGeneratorHelper(
     /// <returns>Equipment role (e.g. pmc / assault / bossTagilla)</returns>
     public string GetBotEquipmentRole(string botRole)
     {
-        string[] pmcs = [_pmcConfig.UsecType.ToLower(), _pmcConfig.BearType.ToLower()];
-        return pmcs.Contains(botRole.ToLower()) ? "pmc" : botRole;
+        return _pmcTypes.Contains(botRole, StringComparer.OrdinalIgnoreCase)
+            ? Sides.PmcEquipmentRole
+            : botRole;
     }
 
     /// <summary>
     ///     Adds an item with all its children into specified equipmentSlots, wherever it fits.
     /// </summary>
     /// <param name="equipmentSlots">Slot to add item+children into</param>
-    /// <param name="rootItemId">Root item id to use as mod items parentid</param>
+    /// <param name="rootItemId">Root item id to use as mod items parentId</param>
     /// <param name="rootItemTplId">Root itms tpl id</param>
     /// <param name="itemWithChildren">Item to add</param>
     /// <param name="inventory">Inventory to add item+children into</param>
@@ -618,8 +566,7 @@ public class BotGeneratorHelper(
         string? rootItemTplId,
         List<Item> itemWithChildren,
         BotBaseInventory inventory,
-        HashSet<string>? containersIdFull = null
-    )
+        HashSet<string>? containersIdFull = null)
     {
         // Track how many containers are unable to be found
         var missingContainerCount = 0;
@@ -631,10 +578,7 @@ public class BotGeneratorHelper(
             }
 
             // Get container to put item into
-            var container = inventory.Items.FirstOrDefault(item =>
-            {
-                return item.SlotId == equipmentSlotId.ToString();
-            });
+            var container = inventory.Items.FirstOrDefault(item => item.SlotId == equipmentSlotId.ToString());
             if (container is null)
             {
                 missingContainerCount++;
@@ -659,29 +603,20 @@ public class BotGeneratorHelper(
             var (key, value) = _itemHelper.GetItem(container.Template);
             if (!key)
             {
-                _logger.Warning(
-                    _localisationService.GetText(
-                        "bot-missing_container_with_tpl",
-                        container.Template
-                    )
-                );
+                _logger.Warning(_localisationService.GetText("bot-missing_container_with_tpl", container.Template));
 
                 // Bad item, skip
                 continue;
             }
 
             if (value?.Properties?.Grids?.Count == 0)
-            // Container has no slots to hold items
+                // Container has no slots to hold items
             {
                 continue;
             }
 
             // Get x/y grid size of item
-            var itemSize = _inventoryHelper.GetItemSize(
-                rootItemTplId,
-                rootItemId,
-                itemWithChildren
-            );
+            var itemSize = _inventoryHelper.GetItemSize(rootItemTplId, rootItemId, itemWithChildren);
 
             // Iterate over each grid in the container and look for a big enough space for the item to be placed in
             var currentGridCount = 1;
@@ -689,37 +624,27 @@ public class BotGeneratorHelper(
             foreach (var slotGrid in value?.Properties?.Grids ?? [])
             {
                 // Grid is empty, skip or item size is bigger than grid
-                if (
-                    slotGrid.Props?.CellsH == 0
-                    || slotGrid.Props?.CellsV == 0
-                    || itemSize[0] * itemSize[1] > slotGrid.Props?.CellsV * slotGrid.Props?.CellsH
-                )
+                if (slotGrid.Props?.CellsH == 0 ||
+                    slotGrid.Props?.CellsV == 0 ||
+                    itemSize[0] * itemSize[1] > slotGrid.Props?.CellsV * slotGrid.Props?.CellsH)
                 {
                     continue;
                 }
 
                 // Can't put item type in grid, skip all grids as we're assuming they have the same rules
                 if (!ItemAllowedInContainer(slotGrid, rootItemTplId))
-                // Multiple containers, maybe next one allows item, only break out of loop for the containers grids
+                    // Multiple containers, maybe next one allows item, only break out of loop for the containers grids
                 {
                     break;
                 }
 
                 // Get all root items in found container
-                var existingContainerItems = (inventory.Items ?? []).Where(item =>
-                {
-                    return item.ParentId == container.Id && item.SlotId == slotGrid.Name;
-                });
+                var existingContainerItems = (inventory.Items ?? []).Where(item => item.ParentId == container.Id && item.SlotId == slotGrid.Name
+                );
 
                 // Get root items in container we can iterate over to find out what space is free
-                var containerItemsToCheck = existingContainerItems.Where(x =>
-                {
-                    return x.SlotId == slotGrid.Name;
-                });
-                var containerItemsWithChildren = GetContainerItemsWithChildren(
-                    containerItemsToCheck,
-                    inventory.Items
-                );
+                var containerItemsToCheck = existingContainerItems.Where(x => x.SlotId == slotGrid.Name);
+                var containerItemsWithChildren = GetContainerItemsWithChildren(containerItemsToCheck, inventory.Items);
 
                 if (slotGrid.Props is not null)
                 {
@@ -732,19 +657,12 @@ public class BotGeneratorHelper(
                     );
 
                     // Try to fit item into grid
-                    var findSlotResult = _containerHelper.FindSlotForItem(
-                        slotGridMap,
-                        itemSize[0],
-                        itemSize[1]
-                    );
+                    var findSlotResult = _containerHelper.FindSlotForItem(slotGridMap, itemSize[0], itemSize[1]);
 
                     // Free slot found, add item
                     if (findSlotResult.Success ?? false)
                     {
-                        var parentItem = itemWithChildren.FirstOrDefault(i =>
-                        {
-                            return i.Id == rootItemId;
-                        });
+                        var parentItem = itemWithChildren.FirstOrDefault(i => i.Id == rootItemId);
 
                         // Set items parent to container id
                         if (parentItem is not null)
@@ -752,14 +670,12 @@ public class BotGeneratorHelper(
                             parentItem.ParentId = container.Id;
                             parentItem.SlotId = slotGrid.Name;
                             parentItem.Location = new ItemLocation
-                            {
-                                X = findSlotResult.X,
-                                Y = findSlotResult.Y,
-                                R =
-                                    findSlotResult.Rotation ?? false
-                                        ? ItemRotation.Vertical
-                                        : ItemRotation.Horizontal,
-                            };
+                                {
+                                    X = findSlotResult.X,
+                                    Y = findSlotResult.Y,
+                                    R = findSlotResult.Rotation ?? false ? ItemRotation.Vertical : ItemRotation.Horizontal
+                                }
+                                ;
                         }
 
                         (inventory.Items ?? []).AddRange(itemWithChildren);
@@ -800,10 +716,7 @@ public class BotGeneratorHelper(
     /// <param name="containerRootItems"></param>
     /// <param name="inventoryItems"></param>
     /// <returns></returns>
-    protected List<Item> GetContainerItemsWithChildren(
-        IEnumerable<Item> containerRootItems,
-        List<Item> inventoryItems
-    )
+    protected List<Item> GetContainerItemsWithChildren(IEnumerable<Item> containerRootItems, List<Item> inventoryItems)
     {
         var result = new List<Item>();
         if (!containerRootItems.Any())
@@ -813,20 +726,12 @@ public class BotGeneratorHelper(
         }
 
         // Filter out all items without location prop, (child items)
-        var itemsWithoutLocation = inventoryItems
-            .Where(item =>
-            {
-                return item.Location is null;
-            })
-            .ToList();
+        var itemsWithoutLocation = inventoryItems.Where(item => item.Location is null).ToList();
         foreach (var rootItem in containerRootItems)
         {
             // Check item in container for children, store for later insertion into `containerItemsToCheck`
             // (used later when figuring out how much space weapon takes up)
-            var itemWithChildItems = _itemHelper.FindAndReturnChildrenAsItems(
-                itemsWithoutLocation,
-                rootItem.Id
-            );
+            var itemWithChildItems = _itemHelper.FindAndReturnChildrenAsItems(itemsWithoutLocation, rootItem.Id);
 
             // Item had children, replace existing data with item + its children
             result.Add(rootItem);
@@ -849,7 +754,7 @@ public class BotGeneratorHelper(
         var filter = propFilters?.FirstOrDefault()?.Filter ?? [];
 
         if (propFilters?.Count == 0)
-        // no filters, item is fine to add
+            // no filters, item is fine to add
         {
             return true;
         }

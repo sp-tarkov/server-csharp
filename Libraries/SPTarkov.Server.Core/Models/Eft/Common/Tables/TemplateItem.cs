@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Constants;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
@@ -6,6 +7,8 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record TemplateItem
 {
+    private Dictionary<string, bool>? _blocks;
+
     private string? _id;
 
     private string? _name;
@@ -52,6 +55,27 @@ public record TemplateItem
     {
         get { return _prototype; }
         set { _prototype = string.Intern(value); }
+    }
+
+    /// <summary>
+    /// Used for easy access during bot generation to any slot/container this item is blocking.
+    /// </summary>
+    [JsonIgnore]
+    public Dictionary<string, bool> Blocks
+    {
+        get
+        {
+            return _blocks ??= new Dictionary<string, bool>()
+            {
+                { Containers.LeftStance, Properties?.BlockLeftStance ?? false },
+                { Containers.Collapsible, Properties?.BlocksCollapsible ?? false },
+                { Containers.Earpiece, Properties?.BlocksEarpiece ?? false },
+                { Containers.Eyewear, Properties?.BlocksEyewear ?? false },
+                { Containers.FaceCover, Properties?.BlocksFaceCover ?? false },
+                { Containers.Folding, Properties?.BlocksFolding ?? false },
+                { Containers.Headwear, Properties?.BlocksHeadwear ?? false }
+            };
+        }
     }
 }
 
