@@ -34,15 +34,17 @@ public class WeatherHelper(
     public DateTime GetInRaidTime(long timestamp)
     {
         // tarkov time = (real time * 7 % 24 hr) + 3 hour
-        var russiaOffsetMilliseconds = _timeUtil.GetHoursAsSeconds(3) * 1000;
-        var twentyFourHoursMilliseconds = _timeUtil.GetHoursAsSeconds(24) * 1000;
-        var currentTimestampMilliSeconds = _timeUtil.GetTimeStamp();
+        var russiaOffsetSeconds = _timeUtil.GetHoursAsSeconds(3);
+        var twentyFourHoursSeconds = _timeUtil.GetHoursAsSeconds(24);
+        var currentTimestampSeconds = timestamp;
 
-        return _timeUtil.GetDateTimeFromTimeStamp(
+        var tarkovTime = _timeUtil.GetDateTimeFromTimeStamp(
             (long)
-            (russiaOffsetMilliseconds + currentTimestampMilliSeconds * _weatherConfig.Acceleration) %
-            twentyFourHoursMilliseconds
+            (russiaOffsetSeconds + currentTimestampSeconds * _weatherConfig.Acceleration) %
+            twentyFourHoursSeconds
         );
+
+        return tarkovTime;
     }
 
     /// <summary>
