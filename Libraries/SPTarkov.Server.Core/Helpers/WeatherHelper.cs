@@ -49,7 +49,7 @@ public class WeatherHelper(
         // getInRaidTime() provides left side value, if player chose right side, set ahead 12 hrs
         if (timeVariant == DateTimeEnum.PAST)
         {
-            time.AddHours(12);
+            time = time.AddHours(12);
         }
 
         // Night if after 9pm or before 5am
