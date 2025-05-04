@@ -135,7 +135,7 @@ public class WeatherGenerator(
     /// <param name="timestamp"> Optional, timestamp used </param>
     protected void SetCurrentDateTime(Weather weather, long? timestamp = null)
     {
-        var inRaidTime = _weatherHelper.GetInRaidTime(timestamp);
+        var inRaidTime = timestamp.HasValue ? _weatherHelper.GetInRaidTime() :  _weatherHelper.GetInRaidTime(timestamp.Value);
         var normalTime = GetBsgFormattedTime(inRaidTime);
         var formattedDate = _timeUtil.FormatDate(timestamp.HasValue ? _timeUtil.GetDateTimeFromTimeStamp(timestamp.Value) : DateTime.UtcNow);
         var datetimeBsgFormat = $"{formattedDate} {normalTime}";
