@@ -22,11 +22,11 @@ jobs:
         with:
           dotnet-version: 9.0
 
-      - name: Restore Dependencies
-        run: dotnet restore
+      - name: Restore Tool Dependencies
+        run: dotnet tool install -g csharpier
 
-      - name: Format
-        run: dotnet format --verbosity diagnostic
+      - name: CSharpier Format
+        run: dotnet csharpier format .
 
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
