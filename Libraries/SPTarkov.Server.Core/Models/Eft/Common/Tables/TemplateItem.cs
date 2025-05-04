@@ -73,7 +73,7 @@ public record TemplateItem
                 { Containers.Eyewear, Properties?.BlocksEyewear ?? false },
                 { Containers.FaceCover, Properties?.BlocksFaceCover ?? false },
                 { Containers.Folding, Properties?.BlocksFolding ?? false },
-                { Containers.Headwear, Properties?.BlocksHeadwear ?? false }
+                { Containers.Headwear, Properties?.BlocksHeadwear ?? false },
             };
         }
     }
