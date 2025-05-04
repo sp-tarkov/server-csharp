@@ -7,9 +7,8 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
-public class GarbageMessageHandler(
-    MailSendService _mailSendService,
-    RandomUtil _randomUtil) : IChatMessageHandler
+public class GarbageMessageHandler(MailSendService _mailSendService, RandomUtil _randomUtil)
+    : IChatMessageHandler
 {
     public int GetPriority()
     {
@@ -21,7 +20,12 @@ public class GarbageMessageHandler(
         return message.ToLower() == "garbage";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
+    public void Process(
+        string sessionId,
+        UserDialogInfo sptFriendUser,
+        PmcData? sender,
+        object? extraInfo = null
+    )
     {
         var beforeCollect = GC.GetTotalMemory(false) / 1024 / 1024;
 

@@ -11,10 +11,7 @@ public class FileLogHandler : BaseLogHandler
 
     public override LoggerType LoggerType
     {
-        get
-        {
-            return LoggerType.File;
-        }
+        get { return LoggerType.File; }
     }
 
     public override void Log(SptLogMessage message, BaseSptLoggerReference reference)
@@ -38,7 +35,10 @@ public class FileLogHandler : BaseLogHandler
             }
 
             // The AppendAllText will create the file as long as the directory exists
-            File.AppendAllText(config.FilePath, FormatMessage(message.Message + "\n", message, reference));
+            File.AppendAllText(
+                config.FilePath,
+                FormatMessage(message.Message + "\n", message, reference)
+            );
         }
     }
 }

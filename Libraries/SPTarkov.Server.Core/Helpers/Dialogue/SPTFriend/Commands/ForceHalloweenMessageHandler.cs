@@ -12,7 +12,8 @@ public class ForceHalloweenMessageHandler(
     LocalisationService _localisationService,
     MailSendService _mailSendService,
     RandomUtil _randomUtil,
-    SeasonalEventService _seasonalEventService) : IChatMessageHandler
+    SeasonalEventService _seasonalEventService
+) : IChatMessageHandler
 {
     public int GetPriority()
     {
@@ -24,9 +25,16 @@ public class ForceHalloweenMessageHandler(
         return message.ToLower() == "veryspooky";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
+    public void Process(
+        string sessionId,
+        UserDialogInfo sptFriendUser,
+        PmcData? sender,
+        object? extraInfo = null
+    )
     {
-        var enableEventResult = _seasonalEventService.ForceSeasonalEvent(SeasonalEventType.Halloween);
+        var enableEventResult = _seasonalEventService.ForceSeasonalEvent(
+            SeasonalEventType.Halloween
+        );
         if (enableEventResult)
         {
             _mailSendService.SendUserMessageToPlayer(
@@ -34,7 +42,10 @@ public class ForceHalloweenMessageHandler(
                 sptFriendUser,
                 _randomUtil.GetArrayValue(
                     [
-                        _localisationService.GetText("chatbot-forced_event_enabled", SeasonalEventType.Halloween)
+                        _localisationService.GetText(
+                            "chatbot-forced_event_enabled",
+                            SeasonalEventType.Halloween
+                        ),
                     ]
                 ),
                 [],

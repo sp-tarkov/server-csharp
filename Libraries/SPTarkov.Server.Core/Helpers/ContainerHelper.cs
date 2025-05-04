@@ -25,13 +25,15 @@ public class ContainerHelper
         var limitX = containerX - minVolume;
 
         // Every x+y slot taken up in container, exit
-        if (container2D.All(x =>
-        {
-            return x.All(y =>
+        if (
+            container2D.All(x =>
             {
-                return y == 1;
-            });
-        }))
+                return x.All(y =>
+                {
+                    return y == 1;
+                });
+            })
+        )
         {
             return new FindSlotResult(false);
         }
@@ -39,10 +41,13 @@ public class ContainerHelper
         // Down = y
         for (var y = 0; y < limitY; y++)
         {
-            if (container2D[y].All(x =>
-            {
-                return x == 1;
-            }))
+            if (
+                container2D[y]
+                    .All(x =>
+                    {
+                        return x == 1;
+                    })
+            )
             // Every item in row is full, skip row
             {
                 continue;
@@ -51,7 +56,17 @@ public class ContainerHelper
             // Go left to right across x-axis looking for free position
             for (var x = 0; x < limitX; x++)
             {
-                if (CanItemBePlacedInContainerAtPosition(container2D, containerX, containerY, x, y, itemX!.Value, itemY!.Value))
+                if (
+                    CanItemBePlacedInContainerAtPosition(
+                        container2D,
+                        containerX,
+                        containerY,
+                        x,
+                        y,
+                        itemX!.Value,
+                        itemY!.Value
+                    )
+                )
                 {
                     // Success, return result
                     return new FindSlotResult(true, x, y, rotation);
@@ -64,7 +79,17 @@ public class ContainerHelper
                 }
 
                 // Bigger than 1x1, try rotating by swapping x and y values
-                if (!CanItemBePlacedInContainerAtPosition(container2D, containerX, containerY, x, y, itemY!.Value, itemX!.Value))
+                if (
+                    !CanItemBePlacedInContainerAtPosition(
+                        container2D,
+                        containerX,
+                        containerY,
+                        x,
+                        y,
+                        itemY!.Value,
+                        itemX!.Value
+                    )
+                )
                 {
                     continue;
                 }
@@ -103,7 +128,8 @@ public class ContainerHelper
         int startXPos,
         int startYPos,
         int itemWidth,
-        int itemHeight)
+        int itemHeight
+    )
     {
         // Check item isn't bigger than container when at position
         if (startXPos + itemWidth > containerWidth || startYPos + itemHeight > containerHeight)
@@ -143,7 +169,8 @@ public class ContainerHelper
         int y,
         int? itemW,
         int? itemH,
-        bool rotate)
+        bool rotate
+    )
     {
         // Swap height/width if we want to fit it in rotated
         var itemWidth = rotate ? itemH : itemW;
@@ -160,7 +187,9 @@ public class ContainerHelper
                 }
                 else
                 {
-                    throw new Exception($"Slot at({x}, {y}) is already filled. Cannot fit a {itemW} by {itemH} item");
+                    throw new Exception(
+                        $"Slot at({x}, {y}) is already filled. Cannot fit a {itemW} by {itemH} item"
+                    );
                 }
             }
         }
@@ -182,35 +211,17 @@ public class FindSlotResult
         Rotation = rotation;
     }
 
-    public FindSlotResult()
-    {
-    }
+    public FindSlotResult() { }
 
     [JsonPropertyName("success")]
-    public bool? Success
-    {
-        get;
-        set;
-    }
+    public bool? Success { get; set; }
 
     [JsonPropertyName("x")]
-    public int? X
-    {
-        get;
-        set;
-    }
+    public int? X { get; set; }
 
     [JsonPropertyName("y")]
-    public int? Y
-    {
-        get;
-        set;
-    }
+    public int? Y { get; set; }
 
     [JsonPropertyName("rotation")]
-    public bool? Rotation
-    {
-        get;
-        set;
-    }
+    public bool? Rotation { get; set; }
 }

@@ -9,5 +9,10 @@ public interface IChatMessageHandler
     int GetPriority();
 
     public bool CanHandle(string? message);
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null);
+    public void Process(
+        string sessionId,
+        UserDialogInfo sptFriendUser,
+        PmcData? sender,
+        object? extraInfo = null
+    );
 }

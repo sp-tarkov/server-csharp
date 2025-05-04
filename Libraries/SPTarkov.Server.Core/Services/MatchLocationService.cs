@@ -33,20 +33,12 @@ public class MatchLocationService
     public class MatchGroup
     {
         [JsonPropertyName("groups")]
-        public List<string> Groups
-        {
-            get;
-            set;
-        }
+        public List<string> Groups { get; set; }
     }
 
     public class DeleteGroupRequest
     {
         [JsonPropertyName("groupId")]
-        public string GroupId
-        {
-            get;
-            set;
-        }
+        public string GroupId { get; set; }
     }
 }

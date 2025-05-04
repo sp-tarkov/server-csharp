@@ -76,7 +76,7 @@ public abstract class StaticRouter : Router
         IRequestData? info = null;
         if (type != null && !string.IsNullOrEmpty(body))
         {
-            info = (IRequestData?) _jsonUtil.Deserialize(body, type);
+            info = (IRequestData?)_jsonUtil.Deserialize(body, type);
         }
 
         return action.action(url, info, sessionID, output);
@@ -84,10 +84,12 @@ public abstract class StaticRouter : Router
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return _actions.Select(route =>
-        {
-            return new HandledRoute(route.url, false);
-        }).ToList();
+        return _actions
+            .Select(route =>
+            {
+                return new HandledRoute(route.url, false);
+            })
+            .ToList();
     }
 }
 
@@ -112,7 +114,7 @@ public abstract class DynamicRouter : Router
         IRequestData? info = null;
         if (type != null && !string.IsNullOrEmpty(body))
         {
-            info = (IRequestData?) _jsonUtil.Deserialize(body, type);
+            info = (IRequestData?)_jsonUtil.Deserialize(body, type);
         }
 
         return action.action(url, info, sessionID, output);
@@ -120,10 +122,12 @@ public abstract class DynamicRouter : Router
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return actions.Select(route =>
-        {
-            return new HandledRoute(route.url, true);
-        }).ToList();
+        return actions
+            .Select(route =>
+            {
+                return new HandledRoute(route.url, true);
+            })
+            .ToList();
     }
 }
 
@@ -131,11 +135,13 @@ public abstract class DynamicRouter : Router
 // So instead I added the definition
 public abstract class ItemEventRouterDefinition : Router
 {
-    public abstract ItemEventRouterResponse? HandleItemEvent(string url,
+    public abstract ItemEventRouterResponse? HandleItemEvent(
+        string url,
         PmcData pmcData,
         BaseInteractionRequestData body,
         string sessionID,
-        ItemEventRouterResponse output);
+        ItemEventRouterResponse output
+    );
 }
 
 public abstract class SaveLoadRouter : Router

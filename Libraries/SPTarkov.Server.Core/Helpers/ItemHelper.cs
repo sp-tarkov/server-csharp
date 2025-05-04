@@ -36,7 +36,7 @@ public class ItemHelper(
         BaseClasses.SORTING_TABLE,
         BaseClasses.INVENTORY,
         BaseClasses.STATIONARY_CONTAINER,
-        BaseClasses.POCKETS
+        BaseClasses.POCKETS,
     ];
 
     protected static readonly FrozenSet<string> _slotsAsStrings =
@@ -54,7 +54,7 @@ public class ItemHelper(
         EquipmentSlots.FirstPrimaryWeapon.ToString(),
         EquipmentSlots.SecondPrimaryWeapon.ToString(),
         EquipmentSlots.Holster.ToString(),
-        EquipmentSlots.Scabbard.ToString()
+        EquipmentSlots.Scabbard.ToString(),
     ];
 
     protected static readonly FrozenSet<string> _dogTagTpls =
@@ -68,7 +68,7 @@ public class ItemHelper(
         ItemTpl.BARTER_DOGTAG_BEAR_PRESTIGE_1,
         ItemTpl.BARTER_DOGTAG_BEAR_PRESTIGE_2,
         ItemTpl.BARTER_DOGTAG_USEC_PRESTIGE_1,
-        ItemTpl.BARTER_DOGTAG_USEC_PRESTIGE_2
+        ItemTpl.BARTER_DOGTAG_USEC_PRESTIGE_2,
     ];
 
     protected static readonly FrozenSet<string> _softInsertIds =
@@ -86,7 +86,7 @@ public class ItemHelper(
         "helmet_back",
         "helmet_eyes",
         "helmet_jaw",
-        "helmet_ears"
+        "helmet_ears",
     ];
 
     protected static readonly FrozenSet<string> _removablePlateSlotIds =
@@ -94,7 +94,7 @@ public class ItemHelper(
         "front_plate",
         "back_plate",
         "left_side_plate",
-        "right_side_plate"
+        "right_side_plate",
     ];
 
     /**
@@ -107,10 +107,12 @@ public class ItemHelper(
     public bool HasItemWithTpl(List<Item> itemPool, string item, string slotId = null)
     {
         // Filter the pool by slotId if provided
-        var filteredPool = slotId is not null ? itemPool.Where(item =>
-        {
-            return item.SlotId?.StartsWith(slotId) ?? false;
-        }) : itemPool;
+        var filteredPool = slotId is not null
+            ? itemPool.Where(item =>
+            {
+                return item.SlotId?.StartsWith(slotId) ?? false;
+            })
+            : itemPool;
 
         // Check if any item in the filtered pool matches the provided item
         return filteredPool.Any(poolItem =>
@@ -129,10 +131,12 @@ public class ItemHelper(
     public Item GetItemFromPoolByTpl(List<Item> itemPool, string item, string slotId = null)
     {
         // Filter the pool by slotId if provided
-        var filteredPool = slotId is not null ? itemPool.Where(item =>
-        {
-            return item.SlotId?.StartsWith(slotId) ?? false;
-        }) : itemPool;
+        var filteredPool = slotId is not null
+            ? itemPool.Where(item =>
+            {
+                return item.SlotId?.StartsWith(slotId) ?? false;
+            })
+            : itemPool;
 
         // Check if any item in the filtered pool matches the provided item
         return filteredPool.FirstOrDefault(poolItem =>
@@ -149,7 +153,11 @@ public class ItemHelper(
      * @param compareUpdProperties Upd properties to compare between the items
      * @returns true if they are the same, false if they aren't
      */
-    public bool IsSameItems(List<Item> item1, List<Item> item2, HashSet<string>? compareUpdProperties = null)
+    public bool IsSameItems(
+        List<Item> item1,
+        List<Item> item2,
+        HashSet<string>? compareUpdProperties = null
+    )
     {
         if (item1.Count != item2.Count)
         {
@@ -214,21 +222,90 @@ public class ItemHelper(
         // key = Upd property Type as string, value = comparison function that returns bool
         var comparers = new Dictionary<string, Func<Upd, Upd, bool>>
         {
-            { "Key", (upd1, upd2) => { return upd1.Key?.NumberOfUsages == upd2.Key?.NumberOfUsages; } },
-            { "Buff", (upd1, upd2) => { return upd1.Buff?.Value == upd2.Buff?.Value && upd1.Buff?.BuffType == upd2.Buff?.BuffType; } },
-            { "CultistAmulet", (upd1, upd2) => { return upd1.CultistAmulet?.NumberOfUsages == upd2.CultistAmulet?.NumberOfUsages; } },
-            { "Dogtag", (upd1, upd2) => { return upd1.Dogtag?.ProfileId == upd2.Dogtag?.ProfileId; } },
-            { "FaceShield", (upd1, upd2) => { return upd1.FaceShield?.Hits == upd2.FaceShield?.Hits; } },
-            { "Foldable", (upd1, upd2) => { return upd1.Foldable?.Folded.GetValueOrDefault(false) == upd2.Foldable?.Folded.GetValueOrDefault(false); } },
-            { "FoodDrink", (upd1, upd2) => { return upd1.FoodDrink?.HpPercent == upd2.FoodDrink?.HpPercent; } },
-            { "MedKit", (upd1, upd2) => { return upd1.MedKit?.HpResource == upd2.MedKit?.HpResource; } },
-            { "RecodableComponent", (upd1, upd2) => { return upd1.RecodableComponent?.IsEncoded == upd2.RecodableComponent?.IsEncoded; } },
-            { "RepairKit", (upd1, upd2) => { return upd1.RepairKit?.Resource == upd2.RepairKit?.Resource; } },
-            { "Resource", (upd1, upd2) => { return upd1.Resource?.UnitsConsumed == upd2.Resource?.UnitsConsumed; } }
+            {
+                "Key",
+                (upd1, upd2) =>
+                {
+                    return upd1.Key?.NumberOfUsages == upd2.Key?.NumberOfUsages;
+                }
+            },
+            {
+                "Buff",
+                (upd1, upd2) =>
+                {
+                    return upd1.Buff?.Value == upd2.Buff?.Value
+                        && upd1.Buff?.BuffType == upd2.Buff?.BuffType;
+                }
+            },
+            {
+                "CultistAmulet",
+                (upd1, upd2) =>
+                {
+                    return upd1.CultistAmulet?.NumberOfUsages == upd2.CultistAmulet?.NumberOfUsages;
+                }
+            },
+            {
+                "Dogtag",
+                (upd1, upd2) =>
+                {
+                    return upd1.Dogtag?.ProfileId == upd2.Dogtag?.ProfileId;
+                }
+            },
+            {
+                "FaceShield",
+                (upd1, upd2) =>
+                {
+                    return upd1.FaceShield?.Hits == upd2.FaceShield?.Hits;
+                }
+            },
+            {
+                "Foldable",
+                (upd1, upd2) =>
+                {
+                    return upd1.Foldable?.Folded.GetValueOrDefault(false)
+                        == upd2.Foldable?.Folded.GetValueOrDefault(false);
+                }
+            },
+            {
+                "FoodDrink",
+                (upd1, upd2) =>
+                {
+                    return upd1.FoodDrink?.HpPercent == upd2.FoodDrink?.HpPercent;
+                }
+            },
+            {
+                "MedKit",
+                (upd1, upd2) =>
+                {
+                    return upd1.MedKit?.HpResource == upd2.MedKit?.HpResource;
+                }
+            },
+            {
+                "RecodableComponent",
+                (upd1, upd2) =>
+                {
+                    return upd1.RecodableComponent?.IsEncoded == upd2.RecodableComponent?.IsEncoded;
+                }
+            },
+            {
+                "RepairKit",
+                (upd1, upd2) =>
+                {
+                    return upd1.RepairKit?.Resource == upd2.RepairKit?.Resource;
+                }
+            },
+            {
+                "Resource",
+                (upd1, upd2) =>
+                {
+                    return upd1.Resource?.UnitsConsumed == upd2.Resource?.UnitsConsumed;
+                }
+            },
         };
 
         // Choose above keys or passed in keys to compare items with
-        var valuesToCompare = compareUpdProperties?.Count > 0 ? compareUpdProperties : comparers.Keys.ToHashSet();
+        var valuesToCompare =
+            compareUpdProperties?.Count > 0 ? compareUpdProperties : comparers.Keys.ToHashSet();
         foreach (var propertyName in valuesToCompare)
         {
             if (!comparers.TryGetValue(propertyName, out var comparer))
@@ -261,40 +338,31 @@ public class ItemHelper(
             itemProperties.Repairable = new UpdRepairable
             {
                 Durability = itemTemplate.Properties.MaxDurability,
-                MaxDurability = itemTemplate.Properties.MaxDurability
+                MaxDurability = itemTemplate.Properties.MaxDurability,
             };
         }
 
         if (itemTemplate.Properties.HasHinge ?? false)
         {
-            itemProperties.Togglable = new UpdTogglable
-            {
-                On = true
-            };
+            itemProperties.Togglable = new UpdTogglable { On = true };
         }
 
         if (itemTemplate.Properties.Foldable ?? false)
         {
-            itemProperties.Foldable = new UpdFoldable
-            {
-                Folded = false
-            };
+            itemProperties.Foldable = new UpdFoldable { Folded = false };
         }
 
         if (itemTemplate.Properties.WeapFireType?.Any() ?? false)
         {
             if (itemTemplate.Properties.WeapFireType.Contains("fullauto"))
             {
-                itemProperties.FireMode = new UpdFireMode
-                {
-                    FireMode = "fullauto"
-                };
+                itemProperties.FireMode = new UpdFireMode { FireMode = "fullauto" };
             }
             else
             {
                 itemProperties.FireMode = new UpdFireMode
                 {
-                    FireMode = _randomUtil.GetArrayValue(itemTemplate.Properties.WeapFireType)
+                    FireMode = _randomUtil.GetArrayValue(itemTemplate.Properties.WeapFireType),
                 };
             }
         }
@@ -303,50 +371,42 @@ public class ItemHelper(
         {
             itemProperties.MedKit = new UpdMedKit
             {
-                HpResource = itemTemplate.Properties.MaxHpResource
+                HpResource = itemTemplate.Properties.MaxHpResource,
             };
         }
 
-        if (itemTemplate.Properties.MaxResource is not null && itemTemplate.Properties.FoodUseTime is not null)
+        if (
+            itemTemplate.Properties.MaxResource is not null
+            && itemTemplate.Properties.FoodUseTime is not null
+        )
         {
             itemProperties.FoodDrink = new UpdFoodDrink
             {
-                HpPercent = itemTemplate.Properties.MaxResource
+                HpPercent = itemTemplate.Properties.MaxResource,
             };
         }
 
         if (itemTemplate.Parent == BaseClasses.FLASHLIGHT)
         {
-            itemProperties.Light = new UpdLight
-            {
-                IsActive = false,
-                SelectedMode = 0
-            };
+            itemProperties.Light = new UpdLight { IsActive = false, SelectedMode = 0 };
         }
         else if (itemTemplate.Parent == BaseClasses.TACTICAL_COMBO)
         {
-            itemProperties.Light = new UpdLight
-            {
-                IsActive = false,
-                SelectedMode = 0
-            };
+            itemProperties.Light = new UpdLight { IsActive = false, SelectedMode = 0 };
         }
 
         if (itemTemplate.Parent == BaseClasses.NIGHTVISION)
         {
-            itemProperties.Togglable = new UpdTogglable
-            {
-                On = false
-            };
+            itemProperties.Togglable = new UpdTogglable { On = false };
         }
 
         // Togglable face shield
-        if ((itemTemplate.Properties.HasHinge ?? false) && (itemTemplate.Properties.FaceShieldComponent ?? false))
+        if (
+            (itemTemplate.Properties.HasHinge ?? false)
+            && (itemTemplate.Properties.FaceShieldComponent ?? false)
+        )
         {
-            itemProperties.Togglable = new UpdTogglable
-            {
-                On = false
-            };
+            itemProperties.Togglable = new UpdTogglable { On = false };
         }
 
         return itemProperties;
@@ -373,14 +433,14 @@ public class ItemHelper(
             return false;
         }
 
-        return !(itemDetails.Value.Properties.QuestItem ?? false) &&
-               string.Equals(itemDetails.Value.Type, "Item", StringComparison.OrdinalIgnoreCase) &&
-               baseTypes.All(x =>
-               {
-                   return !IsOfBaseclass(tpl, x);
-               }) &&
-               GetItemPrice(tpl) > 0 &&
-               !_itemFilterService.IsItemBlacklisted(tpl);
+        return !(itemDetails.Value.Properties.QuestItem ?? false)
+            && string.Equals(itemDetails.Value.Type, "Item", StringComparison.OrdinalIgnoreCase)
+            && baseTypes.All(x =>
+            {
+                return !IsOfBaseclass(tpl, x);
+            })
+            && GetItemPrice(tpl) > 0
+            && !_itemFilterService.IsItemBlacklisted(tpl);
     }
 
     // Check if the tpl / template Id provided is a descendent of the baseclass
@@ -409,7 +469,10 @@ public class ItemHelper(
     // @returns Does item have the possibility ot need soft inserts
     public bool ArmorItemCanHoldMods(string itemTpl)
     {
-        return IsOfBaseclasses(itemTpl, [BaseClasses.HEADWEAR, BaseClasses.VEST, BaseClasses.ARMOR]);
+        return IsOfBaseclasses(
+            itemTpl,
+            [BaseClasses.HEADWEAR, BaseClasses.VEST, BaseClasses.ARMOR]
+        );
     }
 
     // Does the provided item tpl need soft/removable inserts to function
@@ -464,10 +527,12 @@ public class ItemHelper(
         }
 
         // Check if item has slots that match soft insert name ids
-        if (itemDbDetails.Value.Properties.Slots.Any(slot =>
-        {
-            return IsSoftInsertId(slot.Name.ToLower());
-        }))
+        if (
+            itemDbDetails.Value.Properties.Slots.Any(slot =>
+            {
+                return IsSoftInsertId(slot.Name.ToLower());
+            })
+        )
         {
             return true;
         }
@@ -499,10 +564,13 @@ public class ItemHelper(
     public double GetItemAndChildrenPrice(IEnumerable<string> tpls)
     {
         // Run getItemPrice for each tpl in tpls array, return sum
-        return tpls.Aggregate(0, (total, tpl) =>
-        {
-            return total + (int) GetItemPrice(tpl).GetValueOrDefault(0);
-        });
+        return tpls.Aggregate(
+            0,
+            (total, tpl) =>
+            {
+                return total + (int)GetItemPrice(tpl).GetValueOrDefault(0);
+            }
+        );
     }
 
     /// <summary>
@@ -575,10 +643,7 @@ public class ItemHelper(
     public Item FixItemStackCount(Item item)
     {
         // Ensure item has 'Upd' object
-        item.Upd ??= new Upd
-        {
-            StackObjectsCount = 1
-        };
+        item.Upd ??= new Upd { StackObjectsCount = 1 };
 
         // Ensure item has 'StackObjectsCount' property
         item.Upd.StackObjectsCount ??= 1;
@@ -642,7 +707,10 @@ public class ItemHelper(
      * @param skipArmorItemsWithoutDurability Skip over armor items without durability
      * @returns % quality modifier between 0 and 1
      */
-    public double GetItemQualityModifierForItems(List<Item> itemWithChildren, bool skipArmorItemsWithoutDurability = false)
+    public double GetItemQualityModifierForItems(
+        List<Item> itemWithChildren,
+        bool skipArmorItemsWithoutDurability = false
+    )
     {
         if (IsOfBaseclass(itemWithChildren[0].Template, BaseClasses.WEAPON))
         {
@@ -688,13 +756,18 @@ public class ItemHelper(
         var itemDetails = GetItem(item.Template).Value;
         if (itemDetails?.Properties is null)
         {
-            _logger.Warning($"Item: {item.Template} lacks properties, cannot ascertain quality level, assuming 100%");
+            _logger.Warning(
+                $"Item: {item.Template} lacks properties, cannot ascertain quality level, assuming 100%"
+            );
 
             return 1;
         }
 
-        if (skipArmorItemsWithoutDurability && IsOfBaseclass(item.Template, BaseClasses.ARMOR) && itemDetails?.Properties?.MaxDurability == 0
-           )
+        if (
+            skipArmorItemsWithoutDurability
+            && IsOfBaseclass(item.Template, BaseClasses.ARMOR)
+            && itemDetails?.Properties?.MaxDurability == 0
+        )
         {
             return -1;
         }
@@ -704,7 +777,8 @@ public class ItemHelper(
             if (item.Upd.MedKit is not null)
             {
                 // Meds
-                result = (item.Upd.MedKit.HpResource ?? 0) / (itemDetails.Properties.MaxHpResource ?? 0);
+                result =
+                    (item.Upd.MedKit.HpResource ?? 0) / (itemDetails.Properties.MaxHpResource ?? 0);
             }
             else if (item.Upd.Repairable is not null)
             {
@@ -712,13 +786,18 @@ public class ItemHelper(
             }
             else if (item.Upd.FoodDrink is not null)
             {
-                result = (item.Upd.FoodDrink.HpPercent ?? 0) / (itemDetails.Properties.MaxResource ?? 0);
+                result =
+                    (item.Upd.FoodDrink.HpPercent ?? 0) / (itemDetails.Properties.MaxResource ?? 0);
             }
-            else if (item.Upd.Key?.NumberOfUsages > 0 && itemDetails.Properties.MaximumNumberOfUsage > 0)
+            else if (
+                item.Upd.Key?.NumberOfUsages > 0
+                && itemDetails.Properties.MaximumNumberOfUsage > 0
+            )
             {
                 // keys - keys count upwards, not down like everything else
                 var maxNumOfUsages = itemDetails.Properties.MaximumNumberOfUsage;
-                result = (maxNumOfUsages ?? 0 - item.Upd.Key.NumberOfUsages ?? 0) / maxNumOfUsages ?? 0;
+                result =
+                    (maxNumOfUsages ?? 0 - item.Upd.Key.NumberOfUsages ?? 0) / maxNumOfUsages ?? 0;
             }
             else if (item.Upd.Resource?.UnitsConsumed > 0)
             {
@@ -727,7 +806,9 @@ public class ItemHelper(
             }
             else if (item.Upd.RepairKit is not null)
             {
-                result = (item.Upd.RepairKit.Resource ?? 0) / (itemDetails.Properties.MaxRepairResource ?? 0);
+                result =
+                    (item.Upd.RepairKit.Resource ?? 0)
+                    / (itemDetails.Properties.MaxRepairResource ?? 0);
             }
 
             if (result == 0)
@@ -749,7 +830,11 @@ public class ItemHelper(
      * @param item Item quality value is for
      * @returns A number between 0 and 1
      */
-    protected double GetRepairableItemQualityValue(TemplateItem itemDetails, UpdRepairable repairable, Item item)
+    protected double GetRepairableItemQualityValue(
+        TemplateItem itemDetails,
+        UpdRepairable repairable,
+        Item item
+    )
     {
         // Edge case, durability above max
         if (repairable.Durability > repairable.MaxDurability)
@@ -761,12 +846,18 @@ public class ItemHelper(
         }
 
         // Attempt to get the max durability from _props. If not available, use Repairable max durability value instead.
-        var maxPossibleDurability = itemDetails.Properties?.MaxDurability ?? repairable.MaxDurability;
+        var maxPossibleDurability =
+            itemDetails.Properties?.MaxDurability ?? repairable.MaxDurability;
         var durability = repairable.Durability / maxPossibleDurability;
 
         if (durability == 0)
         {
-            _logger.Error(_localisationService.GetText("item-durability_value_invalid_use_default", item.Template));
+            _logger.Error(
+                _localisationService.GetText(
+                    "item-durability_value_invalid_use_default",
+                    item.Template
+                )
+            );
 
             return 1;
         }
@@ -804,7 +895,11 @@ public class ItemHelper(
      * @param modsOnly Include only mod items, exclude items stored inside root item
      * @returns A list of Item objects
      */
-    public List<Item> FindAndReturnChildrenAsItems(List<Item> items, string baseItemId, bool modsOnly = false)
+    public List<Item> FindAndReturnChildrenAsItems(
+        List<Item> items,
+        string baseItemId,
+        bool modsOnly = false
+    )
     {
         // Use dictionary to make key lookup faster, convert to list before being returned
         Dictionary<string, Item> result = [];
@@ -824,7 +919,10 @@ public class ItemHelper(
             }
 
             // Items parentId matches root item AND returned items doesn't contain current child
-            if (!result.ContainsKey(childItem.Id) && string.Equals(childItem.ParentId, baseItemId, StringComparison.Ordinal))
+            if (
+                !result.ContainsKey(childItem.Id)
+                && string.Equals(childItem.ParentId, baseItemId, StringComparison.Ordinal)
+            )
             {
                 foreach (var item in FindAndReturnChildrenAsItems(items, childItem.Id))
                 {
@@ -848,14 +946,21 @@ public class ItemHelper(
         foreach (var itemFromAssort in assort)
         {
             // Parent matches desired item + all items in list do not match
-            if (string.Equals(itemFromAssort.ParentId, itemIdToFind, StringComparison.OrdinalIgnoreCase)
+            if (
+                string.Equals(
+                    itemFromAssort.ParentId,
+                    itemIdToFind,
+                    StringComparison.OrdinalIgnoreCase
+                )
                 && list.All(item =>
                 {
                     return !string.Equals(itemFromAssort.Id, item.Id, StringComparison.Ordinal);
-                }))
+                })
+            )
             {
                 list.Add(itemFromAssort);
-                list = list.Concat(FindAndReturnChildrenByAssort(itemFromAssort.Id, assort)).ToList();
+                list = list.Concat(FindAndReturnChildrenByAssort(itemFromAssort.Id, assort))
+                    .ToList();
             }
         }
 
@@ -869,7 +974,10 @@ public class ItemHelper(
      */
     public bool HasBuyRestrictions(Item itemToCheck)
     {
-        if (itemToCheck.Upd?.BuyRestrictionCurrent is not null && itemToCheck.Upd?.BuyRestrictionMax is not null)
+        if (
+            itemToCheck.Upd?.BuyRestrictionCurrent is not null
+            && itemToCheck.Upd?.BuyRestrictionMax is not null
+        )
         {
             return true;
         }
@@ -899,7 +1007,7 @@ public class ItemHelper(
             return item.SlotId;
         }
 
-        var LocationTyped = (ItemLocation) item.Location;
+        var LocationTyped = (ItemLocation)item.Location;
 
         return $"{item.SlotId},{LocationTyped.X},{LocationTyped.Y}";
     }
@@ -971,7 +1079,10 @@ public class ItemHelper(
         // item already within bounds of stack size, return it
         if (itemToSplit.Upd?.StackObjectsCount <= itemMaxStackSize)
         {
-            return [[itemToSplit]];
+            return
+            [
+                [itemToSplit],
+            ];
         }
 
         // Split items stack into chunks
@@ -998,22 +1109,27 @@ public class ItemHelper(
     /// <param name="itemsToSearch">Array of items to iterate over.</param>
     /// <param name="desiredBarterItemIds">Desired barter item ids.</param>
     /// <returns>List of Item objects.</returns>
-    public List<Item> FindBarterItems(string by, List<Item> itemsToSearch, object desiredBarterItemIds)
+    public List<Item> FindBarterItems(
+        string by,
+        List<Item> itemsToSearch,
+        object desiredBarterItemIds
+    )
     {
         // Find required items to take after buying (handles multiple items)
         var desiredBarterIds =
-            desiredBarterItemIds.GetType() == typeof(string) ? [(string) desiredBarterItemIds] : (List<string>) desiredBarterItemIds;
+            desiredBarterItemIds.GetType() == typeof(string)
+                ? [(string)desiredBarterItemIds]
+                : (List<string>)desiredBarterItemIds;
 
         List<Item> matchingItems = [];
         foreach (var barterId in desiredBarterIds)
         {
             var filterResult = itemsToSearch.Where(item =>
-                {
-                    return by == "tpl"
-                        ? item.Template.Equals(barterId, StringComparison.OrdinalIgnoreCase)
-                        : item.Id.Equals(barterId, StringComparison.OrdinalIgnoreCase);
-                }
-            );
+            {
+                return by == "tpl"
+                    ? item.Template.Equals(barterId, StringComparison.OrdinalIgnoreCase)
+                    : item.Id.Equals(barterId, StringComparison.OrdinalIgnoreCase);
+            });
 
             matchingItems.AddRange(filterResult);
         }
@@ -1050,7 +1166,10 @@ public class ItemHelper(
         }
     }
 
-    public void ReplaceProfileInventoryIds(BotBaseInventory inventory, List<InsuredItem>? insuredItems = null)
+    public void ReplaceProfileInventoryIds(
+        BotBaseInventory inventory,
+        List<InsuredItem>? insuredItems = null
+    )
     {
         // Blacklist
         var itemIdBlacklist = new HashSet<string>();
@@ -1062,7 +1181,7 @@ public class ItemHelper(
                 inventory.QuestStashItems,
                 inventory.SortingTable,
                 inventory.Stash,
-                inventory.HideoutCustomizationStashId
+                inventory.HideoutCustomizationStashId,
             }
         );
         itemIdBlacklist.UnionWith(inventory.HideoutAreaStashes.Values);
@@ -1070,12 +1189,13 @@ public class ItemHelper(
         // Add insured items ids to blacklist
         if (insuredItems is not null)
         {
-            itemIdBlacklist.UnionWith(insuredItems.Select(x =>
-            {
-                return x.ItemId;
-            }));
+            itemIdBlacklist.UnionWith(
+                insuredItems.Select(x =>
+                {
+                    return x.ItemId;
+                })
+            );
         }
-
 
         foreach (var item in inventory.Items)
         {
@@ -1162,7 +1282,8 @@ public class ItemHelper(
         List<Item> originalItems,
         PmcData? pmcData,
         List<InsuredItem>? insuredItems = null,
-        Dictionary<string, string>? fastPanel = null)
+        Dictionary<string, string>? fastPanel = null
+    )
     {
         // Blacklist
         var itemIdBlacklist = new HashSet<string>();
@@ -1177,22 +1298,22 @@ public class ItemHelper(
                     pmcData.Inventory.QuestStashItems,
                     pmcData.Inventory.SortingTable,
                     pmcData.Inventory.Stash,
-                    pmcData.Inventory.HideoutCustomizationStashId
+                    pmcData.Inventory.HideoutCustomizationStashId,
                 }
             );
             itemIdBlacklist.UnionWith(pmcData.Inventory.HideoutAreaStashes.Keys);
         }
 
-
         // Add insured items ids to blacklist
         if (insuredItems is not null)
         {
-            itemIdBlacklist.UnionWith(insuredItems.Select(x =>
-            {
-                return x.ItemId;
-            }));
+            itemIdBlacklist.UnionWith(
+                insuredItems.Select(x =>
+                {
+                    return x.ItemId;
+                })
+            );
         }
-
 
         foreach (var item in originalItems)
         {
@@ -1363,12 +1484,11 @@ public class ItemHelper(
         var isRequiredSlot = false;
         if (parentTemplate.Key && parentTemplate.Value?.Properties?.Slots != null)
         {
-            isRequiredSlot = parentTemplate.Value?.Properties?.Slots?.Any(slot =>
-            {
-                return slot?.Name == item?.SlotId &&
-                                                 (slot?.Required ?? false);
-            }) ??
-                             false;
+            isRequiredSlot =
+                parentTemplate.Value?.Properties?.Slots?.Any(slot =>
+                {
+                    return slot?.Name == item?.SlotId && (slot?.Required ?? false);
+                }) ?? false;
         }
 
         return itemTemplate.Key && parentTemplate.Key && (isNotRaidModdable || isRequiredSlot);
@@ -1389,17 +1509,21 @@ public class ItemHelper(
     /// <returns>The Item object representing the top-most parent of the given item, or null if no such parent exists.</returns>
     public Item? GetAttachmentMainParent(string itemId, Dictionary<string, Item> itemsMap)
     {
-        var currentItem = itemsMap.FirstOrDefault(x =>
-        {
-            return x.Key == itemId;
-        }).Value;
+        var currentItem = itemsMap
+            .FirstOrDefault(x =>
+            {
+                return x.Key == itemId;
+            })
+            .Value;
 
         while (currentItem != null && IsAttachmentAttached(currentItem))
         {
-            currentItem = itemsMap.FirstOrDefault(x =>
-            {
-                return x.Key == currentItem.ParentId;
-            }).Value;
+            currentItem = itemsMap
+                .FirstOrDefault(x =>
+                {
+                    return x.Key == currentItem.ParentId;
+                })
+                .Value;
             if (currentItem == null)
             {
                 return null;
@@ -1419,7 +1543,11 @@ public class ItemHelper(
     {
         HashSet<string> check = ["hideout", "main"];
 
-        return !(check.Contains(item.SlotId) || _slotsAsStrings.Contains(item.SlotId) || !int.TryParse(item.SlotId, out _));
+        return !(
+            check.Contains(item.SlotId)
+            || _slotsAsStrings.Contains(item.SlotId)
+            || !int.TryParse(item.SlotId, out _)
+        );
     }
 
     /**
@@ -1461,10 +1589,15 @@ public class ItemHelper(
      */
     public ItemSize GetItemSize(List<Item> items, string rootItemId)
     {
-        var rootTemplate = GetItem(items.Where(x =>
-        {
-            return x.Id.Equals(rootItemId, StringComparison.OrdinalIgnoreCase);
-        }).ToList()[0].Template).Value;
+        var rootTemplate = GetItem(
+            items
+                .Where(x =>
+                {
+                    return x.Id.Equals(rootItemId, StringComparison.OrdinalIgnoreCase);
+                })
+                .ToList()[0]
+                .Template
+        ).Value;
         var width = rootTemplate.Properties.Width;
         var height = rootTemplate.Properties.Height;
 
@@ -1493,17 +1626,29 @@ public class ItemHelper(
             }
             else
             {
-                sizeUp = sizeUp < itemTemplate.Properties.ExtraSizeUp ? itemTemplate.Properties.ExtraSizeUp.Value : sizeUp;
-                sizeDown = sizeDown < itemTemplate.Properties.ExtraSizeDown ? itemTemplate.Properties.ExtraSizeDown.Value : sizeDown;
-                sizeLeft = sizeLeft < itemTemplate.Properties.ExtraSizeLeft ? itemTemplate.Properties.ExtraSizeLeft.Value : sizeLeft;
-                sizeRight = sizeRight < itemTemplate.Properties.ExtraSizeRight ? itemTemplate.Properties.ExtraSizeRight.Value : sizeRight;
+                sizeUp =
+                    sizeUp < itemTemplate.Properties.ExtraSizeUp
+                        ? itemTemplate.Properties.ExtraSizeUp.Value
+                        : sizeUp;
+                sizeDown =
+                    sizeDown < itemTemplate.Properties.ExtraSizeDown
+                        ? itemTemplate.Properties.ExtraSizeDown.Value
+                        : sizeDown;
+                sizeLeft =
+                    sizeLeft < itemTemplate.Properties.ExtraSizeLeft
+                        ? itemTemplate.Properties.ExtraSizeLeft.Value
+                        : sizeLeft;
+                sizeRight =
+                    sizeRight < itemTemplate.Properties.ExtraSizeRight
+                        ? itemTemplate.Properties.ExtraSizeRight.Value
+                        : sizeRight;
             }
         }
 
         return new ItemSize
         {
             Width = (width ?? 0) + sizeLeft + sizeRight + forcedLeft + forcedRight,
-            Height = (height ?? 0) + sizeUp + sizeDown + forcedUp + forcedDown
+            Height = (height ?? 0) + sizeUp + sizeDown + forcedUp + forcedDown,
         };
     }
 
@@ -1533,15 +1678,20 @@ public class ItemHelper(
     public void AddCartridgesToAmmoBox(List<Item> ammoBox, TemplateItem ammoBoxDetails)
     {
         var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties.StackSlots[0].MaxCount;
-        var cartridgeTpl = ammoBoxDetails.Properties.StackSlots[0].Props.Filters[0].Filter.FirstOrDefault();
+        var cartridgeTpl = ammoBoxDetails
+            .Properties.StackSlots[0]
+            .Props.Filters[0]
+            .Filter.FirstOrDefault();
         var cartridgeDetails = GetItem(cartridgeTpl);
         var cartridgeMaxStackSize = cartridgeDetails.Value.Properties.StackMaxSize;
 
         // Exit if ammo already exists in box
-        if (ammoBox.Any(item =>
-        {
-            return item.Template.Equals(cartridgeTpl, StringComparison.OrdinalIgnoreCase);
-        }))
+        if (
+            ammoBox.Any(item =>
+            {
+                return item.Template.Equals(cartridgeTpl, StringComparison.OrdinalIgnoreCase);
+            })
+        )
         {
             return;
         }
@@ -1561,7 +1711,7 @@ public class ItemHelper(
             var cartridgeItemToAdd = CreateCartridges(
                 ammoBox[0].Id,
                 cartridgeTpl,
-                (int) cartridgeCountToAdd,
+                (int)cartridgeCountToAdd,
                 location
             );
 
@@ -1586,14 +1736,11 @@ public class ItemHelper(
     public void AddSingleStackCartridgesToAmmoBox(List<Item> ammoBox, TemplateItem ammoBoxDetails)
     {
         var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties?.StackSlots?[0].MaxCount ?? 0;
-        var cartridgeTpl = ammoBoxDetails.Properties?.StackSlots?[0].Props?.Filters?[0].Filter?.FirstOrDefault();
+        var cartridgeTpl = ammoBoxDetails.Properties?.StackSlots?[0].Props?.Filters?[
+            0
+        ].Filter?.FirstOrDefault();
         ammoBox.Add(
-            CreateCartridges(
-                ammoBox[0].Id,
-                cartridgeTpl,
-                (int) ammoBoxMaxCartridgeCount,
-                0
-            )
+            CreateCartridges(ammoBox[0].Id, cartridgeTpl, (int)ammoBoxMaxCartridgeCount, 0)
         );
     }
 
@@ -1604,7 +1751,11 @@ public class ItemHelper(
      * @param items Inventory with child parent items to check
      * @returns True when item is in container
      */
-    public bool ItemIsInsideContainer(Item itemToCheck, string desiredContainerSlotId, List<Item> items)
+    public bool ItemIsInsideContainer(
+        Item itemToCheck,
+        string desiredContainerSlotId,
+        List<Item> items
+    )
     {
         // Get items parent
         var parent = items.FirstOrDefault(item =>
@@ -1642,7 +1793,8 @@ public class ItemHelper(
         string? caliber = null,
         double minSizePercent = 0.25,
         string? defaultCartridgeTpl = null,
-        TemplateItem? weapon = null)
+        TemplateItem? weapon = null
+    )
     {
         var chosenCaliber = caliber ?? GetRandomValidCaliber(magTemplate);
 
@@ -1657,13 +1809,16 @@ public class ItemHelper(
             chosenCaliber,
             staticAmmoDist,
             defaultCartridgeTpl,
-            weapon?.Properties?.Chambers?.FirstOrDefault()?.Props?.Filters?.FirstOrDefault()?.Filter ?? null
+            weapon?.Properties?.Chambers?.FirstOrDefault()?.Props?.Filters?.FirstOrDefault()?.Filter
+                ?? null
         );
         if (cartridgeTpl is null)
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Unable to fill item: {magazine.FirstOrDefault().Id} {magTemplate.Name} with cartridges, none found.");
+                _logger.Debug(
+                    $"Unable to fill item: {magazine.FirstOrDefault().Id} {magTemplate.Name} with cartridges, none found."
+                );
             }
 
             return;
@@ -1708,26 +1863,32 @@ public class ItemHelper(
 
         // Get max number of cartridges in magazine, choose random value between min/max
         var magProps = magTemplate.Properties;
-        var magazineCartridgeMaxCount = IsOfBaseclass(magTemplate.Id, BaseClasses.SPRING_DRIVEN_CYLINDER)
+        var magazineCartridgeMaxCount = IsOfBaseclass(
+            magTemplate.Id,
+            BaseClasses.SPRING_DRIVEN_CYLINDER
+        )
             ? magProps?.Slots?.Count // Edge case for rotating grenade launcher magazine
             : magProps?.Cartridges?.FirstOrDefault()?.MaxCount;
 
         if (magazineCartridgeMaxCount is null)
         {
-            _logger.Warning($"Magazine: {magTemplate.Id} {magTemplate.Name} lacks a Cartridges array, unable to fill magazine with ammo");
+            _logger.Warning(
+                $"Magazine: {magTemplate.Id} {magTemplate.Name} lacks a Cartridges array, unable to fill magazine with ammo"
+            );
 
             return;
         }
 
         var desiredStackCount = _randomUtil.GetInt(
-            (int)
-            Math.Round(minSizeMultiplier * magazineCartridgeMaxCount ?? 0),
-            (int) magazineCartridgeMaxCount
+            (int)Math.Round(minSizeMultiplier * magazineCartridgeMaxCount ?? 0),
+            (int)magazineCartridgeMaxCount
         );
 
         if (magazineWithChildCartridges.Count > 1)
         {
-            _logger.Warning($"Magazine {magTemplate.Name} already has cartridges defined,  this may cause issues");
+            _logger.Warning(
+                $"Magazine {magTemplate.Name} already has cartridges defined,  this may cause issues"
+            );
         }
 
         // Loop over cartridge count and add stacks to magazine
@@ -1737,7 +1898,9 @@ public class ItemHelper(
         {
             // Get stack size of cartridges
             var cartridgeCountToAdd =
-                desiredStackCount <= cartridgeMaxStackSize ? desiredStackCount : cartridgeMaxStackSize;
+                desiredStackCount <= cartridgeMaxStackSize
+                    ? desiredStackCount
+                    : cartridgeMaxStackSize;
 
             // Ensure we don't go over the max stackCount size
             var remainingSpace = desiredStackCount - currentStoredCartridgeCount;
@@ -1807,14 +1970,18 @@ public class ItemHelper(
         var ammos = staticAmmoDist.GetValueOrDefault(caliber, []);
         if (ammos.Count == 0 && fallbackCartridgeTpl is not null)
         {
-            _logger.Warning($"Unable to pick a cartridge for caliber: {caliber}, staticAmmoDist has no data. using fallback value of {fallbackCartridgeTpl}");
+            _logger.Warning(
+                $"Unable to pick a cartridge for caliber: {caliber}, staticAmmoDist has no data. using fallback value of {fallbackCartridgeTpl}"
+            );
 
             return fallbackCartridgeTpl;
         }
 
         if (ammos.Count == 0 && fallbackCartridgeTpl is null)
         {
-            _logger.Warning($"Unable to pick a cartridge for caliber: {caliber}, staticAmmoDist has no data. No fallback value provided");
+            _logger.Warning(
+                $"Unable to pick a cartridge for caliber: {caliber}, staticAmmoDist has no data. No fallback value provided"
+            );
 
             return null;
         }
@@ -1829,7 +1996,13 @@ public class ItemHelper(
                 continue;
             }
 
-            ammoArray.Add(new ProbabilityObject<string, float?>(icd.Tpl, (double) icd.RelativeProbability, null));
+            ammoArray.Add(
+                new ProbabilityObject<string, float?>(
+                    icd.Tpl,
+                    (double)icd.RelativeProbability,
+                    null
+                )
+            );
         }
 
         return ammoArray.Draw().FirstOrDefault();
@@ -1843,12 +2016,7 @@ public class ItemHelper(
     /// <param name="stackCount">Count of cartridges inside parent</param>
     /// <param name="location">Location inside parent (e.g. 0, 1)</param>
     /// <returns>Item</returns>
-    public Item CreateCartridges(
-        string parentId,
-        string ammoTpl,
-        int stackCount,
-        double location
-    )
+    public Item CreateCartridges(string parentId, string ammoTpl, int stackCount, double location)
     {
         return new Item
         {
@@ -1857,10 +2025,7 @@ public class ItemHelper(
             ParentId = parentId,
             SlotId = "cartridges",
             Location = location,
-            Upd = new Upd
-            {
-                StackObjectsCount = stackCount
-            }
+            Upd = new Upd { StackObjectsCount = stackCount },
         };
     }
 
@@ -1873,7 +2038,7 @@ public class ItemHelper(
     {
         if (item.Upd?.StackObjectsCount is not null)
         {
-            return (int) item.Upd.StackObjectsCount;
+            return (int)item.Upd.StackObjectsCount;
         }
 
         return 1;
@@ -1903,9 +2068,9 @@ public class ItemHelper(
     /// <returns>Array of tpls</returns>
     public List<string> GetItemTplsOfBaseType(string desiredBaseType)
     {
-        return _databaseService.GetItems()
-            .Values
-            .Where(item =>
+        return _databaseService
+            .GetItems()
+            .Values.Where(item =>
             {
                 return item.Parent == desiredBaseType;
             })
@@ -1987,7 +2152,7 @@ public class ItemHelper(
                 Id = _hashUtil.Generate(),
                 Template = chosenTpl,
                 ParentId = result[0].Id,
-                SlotId = slot.Name
+                SlotId = slot.Name,
             };
 
             // Add chosen item to weapon array
@@ -2008,7 +2173,10 @@ public class ItemHelper(
     /// <param name="possibleTpls">Tpls to randomly choose from</param>
     /// <param name="incompatibleModTpls">Incompatible tpls to not allow</param>
     /// <returns>Chosen tpl or undefined</returns>
-    public string? GetCompatibleTplFromArray(HashSet<string> possibleTpls, HashSet<string> incompatibleModTpls)
+    public string? GetCompatibleTplFromArray(
+        HashSet<string> possibleTpls,
+        HashSet<string> incompatibleModTpls
+    )
     {
         if (!possibleTpls.Any())
         {
@@ -2075,7 +2243,10 @@ public class ItemHelper(
             }
 
             // Has parentId + no remapping exists for its parent
-            if (mod.ParentId is not null && (!idMappings.ContainsKey(mod.ParentId) || idMappings?[mod.ParentId] is null))
+            if (
+                mod.ParentId is not null
+                && (!idMappings.ContainsKey(mod.ParentId) || idMappings?[mod.ParentId] is null)
+            )
             // Make remapping for items parentId
             {
                 idMappings[mod.ParentId] = _hashUtil.Generate();
@@ -2091,7 +2262,9 @@ public class ItemHelper(
         // Force item's details into first location of presetItems
         if (itemWithChildren[0].Template != rootItem.Template)
         {
-            _logger.Warning($"Reassigning root item from {itemWithChildren[0].Template} to {rootItem.Template}");
+            _logger.Warning(
+                $"Reassigning root item from {itemWithChildren[0].Template} to {rootItem.Template}"
+            );
         }
 
         itemWithChildren[0] = rootItem;
@@ -2121,7 +2294,9 @@ public class ItemHelper(
             }
 
             // Child with parent of root, update
-            if (string.Equals(item.ParentId, rootItemExistingId, StringComparison.OrdinalIgnoreCase))
+            if (
+                string.Equals(item.ParentId, rootItemExistingId, StringComparison.OrdinalIgnoreCase)
+            )
             {
                 item.ParentId = newId;
             }
@@ -2295,7 +2470,8 @@ public class ItemHelper(
 
         //return x;
 
-        return Enumerable.Range(0, containerY)
+        return Enumerable
+            .Range(0, containerY)
             .Select(i =>
             {
                 return new int[containerX];
@@ -2307,16 +2483,8 @@ public class ItemHelper(
 public class ItemSize
 {
     [JsonPropertyName("width")]
-    public int Width
-    {
-        get;
-        set;
-    }
+    public int Width { get; set; }
 
     [JsonPropertyName("height")]
-    public int Height
-    {
-        get;
-        set;
-    }
+    public int Height { get; set; }
 }

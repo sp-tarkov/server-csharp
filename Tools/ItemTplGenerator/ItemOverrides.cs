@@ -10,23 +10,19 @@ public class ItemOverrides
             // Stashes
             { "5963866b86f7747bfa1c4462", "QuestOffline" },
             { "5963866286f7747bf429b572", "QuestRaid" },
-
             // Usables
             { "614451b71e5874611e2c7ae5", "Bottle of Tarkovskaya vodka (Bad)" },
-
             // Special
             { "557ffd194bdc2d28148b457f", "Pockets 1x4" },
             { "627a4e6b255f7527fb05a0f6", "Pockets 1x4 Special" },
             { "65e080be269cbd5c5005e529", "Pockets 1x4 TUE" },
             { "64cbd95a29b9b4283e216ff5", "Pockets 2x3" },
             { "665ee77ccf2d642e98220bca", "Secure container Gamma TUE" },
-
             // Misc
             { "6662e9f37fa79a6d83730fa0", "Dogtag USEC EOD" },
             { "6662ea05f6259762c56f3189", "Dogtag USEC TUE" },
             { "6662e9aca7e0b43baa3d5f74", "Dogtag BEAR EOD" },
             { "6662e9cda7e0b43baa3d5f76", "Dogtag BEAR TUE" },
-
             // Quest Items
             { "590de92486f77423d9312a33", "Watch Gold" },
             { "5937fc6786f7742cab753590", "Watch Silver" },
@@ -70,7 +66,6 @@ public class ItemOverrides
             { "661421c7c1f2f548c50ee649", "Unheard laptop" },
             { "661423200d240a5f5d0f679b", "Unheard laptop 2" },
             { "66a0f0926fee20fa70036da6", "Quest blood sample nf2024" },
-
             // Weapon Parts
             { "5d1340b3d7ad1a0b52682ed7", "GEN M3 FDE" },
             { "55802d5f4bdc2dac148b458e", "GEN M3 Window" },
@@ -80,30 +75,25 @@ public class ItemOverrides
             { "5e21a3c67e40bd02257a008a", "GEN M3 Banana" },
             { "6241c2c2117ad530666a5108", "GEN M3 AIRSOFT" },
             { "61840d85568c120fdd2962a5", "MK16 FDE" },
-
             // Lootable Containers
             { "5914944186f774189e5e76c2", "Jacket 204Key" },
             { "5937ef2b86f77408a47244b3", "Jacket MachineryKey" },
             { "59387ac686f77401442ddd61", "Jacket 114Key" },
             { "61aa1e9a32a4743c3453d2cf", "Duffle bag Adv" },
             { "61aa1ead84ea0800645777fd", "Medbag SMU06 Adv" },
-
             // Storage Containers
             { "5b6d9ce188a4501afc1b2b25", "THICC Weapon case" },
             { "5c0a840b86f7742ffa4f2482", "THICC Item case" },
             { "5d235bb686f77443f4331278", "SICC" },
             { "61aa1e6984ea0800645777f9", "Long Weapon Box" },
-
             // Grenade launchers, they are weird, so just number them
             { "5e81ebcd8e146c7080625e15", "FN40GL 01" },
             { "639c3fbbd0446708ee622ee9", "FN40GL 02" },
             { "639af924d0446708ee62294e", "FN40GL 03" },
-
             // Airdrop crates
             { "66da1b49099cf6adcc07a36b", "Airdrop technical supply crate event 1" },
             { "66da1b546916142b3b022777", "Airdrop technical supply crate event 2" },
             { "61a89e5445a2672acf66c877", "Airdrop technical supply crate event 3" },
-
             // Posters
             { "6759e7a44ff23436160d7ff5", "Girl poster 4" },
             { "6759e8b1c3102563bd01c985", "Girl poster 5" },
@@ -111,20 +101,17 @@ public class ItemOverrides
             { "675a046b8f547d6cae01922e", "Arena poster 2" },
             { "6759e61067c8eb5cd10352f1", "Girl poster 2" },
             { "6759e6c39422e1708e0e9b81", "Girl poster 3" },
-
             // Keys
             { "63a71f1a0aa9fb29da61c537", "City key 26" },
             { "590de52486f774226a0c24c2", "Machinery tech key" },
             { "590de4a286f77423d9312a32", "Folding automobile key" },
             { "63a39e0f64283b5e9c56b282", "City key x" },
-
             { "67499d2c69a58fceba104a43", "Lightkeeper btr quest rpg ammo case" },
             { "67499d4deca8acb2d206163b", "BTR quest electronic jamming device" },
-
             { "6764207f2fa5e32733055c4a", "Dogtag USEC Prestige 1" },
             { "675dc9d37ae1a8792107ca96", "Dogtag BEAR Prestige 1" },
             { "675dcb0545b1a2d108011b2b", "Dogtag BEAR Prestige 2" },
-            { "6764202ae307804338014c1a", "Dogtag USEC Prestige 2" }
+            { "6764202ae307804338014c1a", "Dogtag USEC Prestige 2" },
         }
     );
 }

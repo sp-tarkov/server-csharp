@@ -1,11 +1,9 @@
-
 <Project>
-  <PropertyGroup>
-    <Version>4.0.0-prerelease2</Version>
-    <TargetFramework>net9.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <RepositoryType>Git</RepositoryType>
-  </PropertyGroup>
-
+    <PropertyGroup>
+        <Version>4.0.0-prerelease2</Version>
+        <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <RepositoryType>Git</RepositoryType>
+    </PropertyGroup>
 </Project>

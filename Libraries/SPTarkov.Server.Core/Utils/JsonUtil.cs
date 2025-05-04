@@ -55,21 +55,21 @@ public class JsonUtil
             new EftEnumConverter<EquipmentSlots>(),
             new EftEnumConverter<BuffType>(),
             new EftEnumConverter<BodyPartColliderType>(),
-
             new EftEnumConverter<LogLevel>(),
             new EftEnumConverter<LogTextColor>(),
             new EftEnumConverter<LogBackgroundColor>(),
-
             new EftListEnumConverter<EquipmentSlots>(),
             new EftListEnumConverter<PlayerSide>(),
             new EftListEnumConverter<DamageType>(),
-            new BaseInteractionRequestDataConverter()
-        }
+            new BaseInteractionRequestDataConverter(),
+        },
     };
 
-    protected static JsonSerializerOptions jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)
+    protected static JsonSerializerOptions jsonSerializerOptionsIndented = new(
+        jsonSerializerOptionsNoIndent
+    )
     {
-        WriteIndented = true
+        WriteIndented = true,
     };
 
     /// <summary>
@@ -80,7 +80,9 @@ public class JsonUtil
     /// <returns>Deserialized object or null</returns>
     public T? Deserialize<T>(string? json)
     {
-        return string.IsNullOrEmpty(json) ? default : JsonSerializer.Deserialize<T>(json, jsonSerializerOptionsNoIndent);
+        return string.IsNullOrEmpty(json)
+            ? default
+            : JsonSerializer.Deserialize<T>(json, jsonSerializerOptionsNoIndent);
     }
 
     /// <summary>
@@ -91,7 +93,9 @@ public class JsonUtil
     /// <returns></returns>
     public object? Deserialize(string? json, Type type)
     {
-        return string.IsNullOrEmpty(json) ? null : JsonSerializer.Deserialize(json, type, jsonSerializerOptionsNoIndent);
+        return string.IsNullOrEmpty(json)
+            ? null
+            : JsonSerializer.Deserialize(json, type, jsonSerializerOptionsNoIndent);
     }
 
     /// <summary>
@@ -151,7 +155,12 @@ public class JsonUtil
     /// <returns>Serialised object as JSON, or null</returns>
     public string? Serialize<T>(T? obj, bool indented = false)
     {
-        return obj == null ? null : JsonSerializer.Serialize(obj, indented ? jsonSerializerOptionsIndented : jsonSerializerOptionsNoIndent);
+        return obj == null
+            ? null
+            : JsonSerializer.Serialize(
+                obj,
+                indented ? jsonSerializerOptionsIndented : jsonSerializerOptionsNoIndent
+            );
     }
 
     /// <summary>
@@ -163,15 +172,23 @@ public class JsonUtil
     /// <returns>Serialized text</returns>
     public string? Serialize(object? obj, Type type, bool indented = false)
     {
-        return obj == null ? null : JsonSerializer.Serialize(obj, type, indented ? jsonSerializerOptionsIndented : jsonSerializerOptionsNoIndent);
+        return obj == null
+            ? null
+            : JsonSerializer.Serialize(
+                obj,
+                type,
+                indented ? jsonSerializerOptionsIndented : jsonSerializerOptionsNoIndent
+            );
     }
 
     protected static void AddConverter(JsonSerializerOptions options, JsonConverter newConverter)
     {
-        if (options.Converters.All(c =>
-        {
-            return c.GetType() != newConverter.GetType();
-        }))
+        if (
+            options.Converters.All(c =>
+            {
+                return c.GetType() != newConverter.GetType();
+            })
+        )
         {
             // Doesn't exist, add
             options.Converters.Add(newConverter);

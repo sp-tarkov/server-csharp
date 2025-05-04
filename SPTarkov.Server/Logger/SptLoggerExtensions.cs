@@ -5,7 +5,6 @@ namespace SPTarkov.Server.Logger;
 
 public static class SptLoggerExtensions
 {
-
     public static IHostBuilder UseSptLogger(this IHostBuilder builder)
     {
         if (builder == null)
@@ -13,10 +12,12 @@ public static class SptLoggerExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        builder.ConfigureServices((_, collection) =>
-        {
-            collection.AddSptLogger();
-        });
+        builder.ConfigureServices(
+            (_, collection) =>
+            {
+                collection.AddSptLogger();
+            }
+        );
 
         return builder;
     }
@@ -30,10 +31,13 @@ public static class SptLoggerExtensions
 
         collection.AddSingleton<ILoggerFactory>(sp =>
         {
-            return new SptLoggerProvider(sp.GetService<JsonUtil>(), sp.GetService<FileUtil>(), sp.GetService<SptLoggerQueueManager>());
+            return new SptLoggerProvider(
+                sp.GetService<JsonUtil>(),
+                sp.GetService<FileUtil>(),
+                sp.GetService<SptLoggerQueueManager>()
+            );
         });
 
         return collection;
     }
-
 }

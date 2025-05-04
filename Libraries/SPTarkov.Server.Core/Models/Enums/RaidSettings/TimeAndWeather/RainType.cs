@@ -6,5 +6,5 @@ public enum RainType
     Drizzling,
     Rain,
     Heavy,
-    Shower
+    Shower,
 }

@@ -42,29 +42,33 @@ public class BuildController(
             {
                 EquipmentBuilds = [],
                 WeaponBuilds = [],
-                MagazineBuilds = []
+                MagazineBuilds = [],
             };
         }
 
         // Ensure the secure container in the default presets match what the player has equipped
-        var defaultEquipmentPresetsClone = _cloner.Clone(_databaseService.GetTemplates().DefaultEquipmentPresets)
+        var defaultEquipmentPresetsClone = _cloner
+            .Clone(_databaseService.GetTemplates().DefaultEquipmentPresets)
             .ToList();
 
         // Get players secure container
-        var playerSecureContainer = profile?.CharacterData?.PmcData?.Inventory?.Items?.FirstOrDefault(x =>
-        {
-            return x.SlotId == secureContainerSlotId;
-        });
-
-        var firstDefaultItemsSecureContainer = defaultEquipmentPresetsClone?
-            .FirstOrDefault()
-            ?.Items?
-            .FirstOrDefault(x =>
+        var playerSecureContainer =
+            profile?.CharacterData?.PmcData?.Inventory?.Items?.FirstOrDefault(x =>
             {
                 return x.SlotId == secureContainerSlotId;
             });
 
-        if (playerSecureContainer is not null && playerSecureContainer.Template != firstDefaultItemsSecureContainer?.Template)
+        var firstDefaultItemsSecureContainer = defaultEquipmentPresetsClone
+            ?.FirstOrDefault()
+            ?.Items?.FirstOrDefault(x =>
+            {
+                return x.SlotId == secureContainerSlotId;
+            });
+
+        if (
+            playerSecureContainer is not null
+            && playerSecureContainer.Template != firstDefaultItemsSecureContainer?.Template
+        )
         // Default equipment presets' secure container tpl doesn't match players secure container tpl
         {
             foreach (var defaultPreset in defaultEquipmentPresetsClone)
@@ -110,7 +114,7 @@ public class BuildController(
             Id = body.Id,
             Name = body.Name,
             Root = body.Root,
-            Items = body.Items
+            Items = body.Items,
         };
 
         var profile = _profileHelper.GetFullProfile(sessionId);
@@ -143,8 +147,9 @@ public class BuildController(
         var profile = _profileHelper.GetFullProfile(sessionID);
         var pmcData = profile.CharacterData.PmcData;
 
-        var existingSavedEquipmentBuilds =
-            _saveServer.GetProfile(sessionID).UserBuildData.EquipmentBuilds;
+        var existingSavedEquipmentBuilds = _saveServer
+            .GetProfile(sessionID)
+            .UserBuildData.EquipmentBuilds;
 
         // Replace duplicate ID's. The first item is the base item.
         // Root ID and the base item ID need to match.
@@ -156,7 +161,7 @@ public class BuildController(
             Name = request.Name,
             BuildType = EquipmentBuildType.Custom,
             Root = request.Items[0].Id,
-            Items = request.Items
+            Items = request.Items,
         };
 
         var existingBuild = existingSavedEquipmentBuilds?.FirstOrDefault(build =>
@@ -203,7 +208,7 @@ public class BuildController(
             Caliber = request.Caliber,
             TopCount = request.TopCount,
             BottomCount = request.BottomCount,
-            Items = request.Items
+            Items = request.Items,
         };
 
         var profile = _profileHelper.GetFullProfile(sessionId);

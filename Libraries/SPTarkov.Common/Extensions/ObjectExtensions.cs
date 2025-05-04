@@ -5,7 +5,8 @@ namespace SPTarkov.Common.Extensions;
 
 public static class ObjectExtensions
 {
-    private static readonly Dictionary<Type, Dictionary<string, PropertyInfo>> _indexedProperties = new();
+    private static readonly Dictionary<Type, Dictionary<string, PropertyInfo>> _indexedProperties =
+        new();
     private static readonly Lock _indexedPropertiesLockObject = new();
 
     private static bool TryGetCachedProperty(Type type, string key, out PropertyInfo cachedProperty)
@@ -14,13 +15,17 @@ public static class ObjectExtensions
         {
             if (!_indexedProperties.TryGetValue(type, out var properties))
             {
-                properties = type.GetProperties().ToDictionary(prop =>
-                {
-                    return prop.GetJsonName();
-                }, prop =>
-                {
-                    return prop;
-                });
+                properties = type.GetProperties()
+                    .ToDictionary(
+                        prop =>
+                        {
+                            return prop.GetJsonName();
+                        },
+                        prop =>
+                        {
+                            return prop;
+                        }
+                    );
                 _indexedProperties.Add(type, properties);
             }
 
@@ -54,7 +59,7 @@ public static class ObjectExtensions
             return default;
         }
 
-        return (T?) cachedProperty.GetValue(obj);
+        return (T?)cachedProperty.GetValue(obj);
     }
 
     public static List<object> GetAllPropValuesAsList(this object? obj)
@@ -76,13 +81,16 @@ public static class ObjectExtensions
     {
         var props = obj.GetType().GetProperties();
 
-        return props.ToDictionary(prop =>
-        {
-            return prop.Name;
-        }, prop =>
-        {
-            return prop.GetValue(obj);
-        });
+        return props.ToDictionary(
+            prop =>
+            {
+                return prop.Name;
+            },
+            prop =>
+            {
+                return prop.GetValue(obj);
+            }
+        );
     }
 
     public static T ToObject<T>(this JsonElement element)

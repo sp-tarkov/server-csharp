@@ -6,9 +6,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(BundleCallbacks))]
-public class BundleCallbacks(
-    HttpResponseUtil _httpResponseUtil,
-    BundleLoader _bundleLoader)
+public class BundleCallbacks(HttpResponseUtil _httpResponseUtil, BundleLoader _bundleLoader)
 {
     /// <summary>
     ///     Handle singleplayer/bundles

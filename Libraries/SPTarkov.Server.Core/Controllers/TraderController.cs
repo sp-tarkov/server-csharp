@@ -67,8 +67,9 @@ public class TraderController(
             _traderPurchasePersisterService.RemoveStalePurchasesFromProfiles(traderId);
 
             // Set to next hour on clock or current time + 60 minutes
-            trader.Base.NextResupply =
-                traderResetStartsWithServer ? (int) _traderHelper.GetNextUpdateTimestamp(trader.Base.Id) : (int) nextHourTimestamp;
+            trader.Base.NextResupply = traderResetStartsWithServer
+                ? (int)_traderHelper.GetNextUpdateTimestamp(trader.Base.Id)
+                : (int)nextHourTimestamp;
         }
     }
 
@@ -85,10 +86,7 @@ public class TraderController(
             var barterSchemeItem = kvp.Value?.FirstOrDefault()?.FirstOrDefault();
             if (barterSchemeItem != null && _paymentHelper.IsMoneyTpl(barterSchemeItem.Template))
             {
-                barterSchemeItem.Count += Math.Round(
-                    barterSchemeItem?.Count * multiplier ?? 0D,
-                    2
-                );
+                barterSchemeItem.Count += Math.Round(barterSchemeItem?.Count * multiplier ?? 0D, 2);
             }
         }
     }
@@ -108,14 +106,14 @@ public class TraderController(
                 case Traders.LIGHTHOUSEKEEPER:
                     continue;
                 case Traders.FENCE:
+                {
+                    if (_fenceService.NeedsPartialRefresh())
                     {
-                        if (_fenceService.NeedsPartialRefresh())
-                        {
-                            _fenceService.GenerateFenceAssorts();
-                        }
-
-                        continue;
+                        _fenceService.GenerateFenceAssorts();
                     }
+
+                    continue;
+                }
             }
 
             // Trader needs to be refreshed
@@ -203,8 +201,8 @@ public class TraderController(
             {
                 { "5449016a4bdc2d6f028b456f", handbookPrices[Money.ROUBLES] },
                 { "569668774bdc2da2298b4568", handbookPrices[Money.EUROS] },
-                { "5696686a4bdc2da3298b456a", handbookPrices[Money.DOLLARS] }
-            }
+                { "5696686a4bdc2da3298b456a", handbookPrices[Money.DOLLARS] },
+            },
         };
     }
 }

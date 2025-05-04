@@ -102,13 +102,16 @@ public class RewardHelper(
                     AddAchievementToProfile(fullProfile, reward.Target);
                     break;
                 case RewardType.StashRows:
-                    _profileHelper.AddStashRowsBonusToProfile(
-                        sessionId,
-                        (int) reward.Value
-                    ); // Add specified stash rows from reward - requires client restart
+                    _profileHelper.AddStashRowsBonusToProfile(sessionId, (int)reward.Value); // Add specified stash rows from reward - requires client restart
                     break;
                 case RewardType.ProductionScheme:
-                    FindAndAddHideoutProductionIdToProfile(pmcProfile, reward, questId, sessionId, questResponse);
+                    FindAndAddHideoutProductionIdToProfile(
+                        pmcProfile,
+                        reward,
+                        questId,
+                        sessionId,
+                        questResponse
+                    );
                     break;
                 case RewardType.Pockets:
                     _profileHelper.ReplaceProfilePocketTpl(pmcProfile, reward.Target);
@@ -120,11 +123,7 @@ public class RewardHelper(
                     _logger.Error(
                         _localisationService.GetText(
                             "reward-type_not_handled",
-                            new
-                            {
-                                rewardType = reward.Type,
-                                questId
-                            }
+                            new { rewardType = reward.Type, questId }
                         )
                     );
                     break;
@@ -142,14 +141,19 @@ public class RewardHelper(
      */
     public bool RewardIsForGameEdition(Reward reward, string gameVersion)
     {
-        if (reward.AvailableInGameEditions?.Count > 0 && !reward.AvailableInGameEditions.Contains(gameVersion))
+        if (
+            reward.AvailableInGameEditions?.Count > 0
+            && !reward.AvailableInGameEditions.Contains(gameVersion)
+        )
         // Reward has edition whitelist and game version isn't in it
         {
             return false;
         }
 
-        if (reward.NotAvailableInGameEditions?.Count > 0 &&
-            reward.NotAvailableInGameEditions.Contains(gameVersion))
+        if (
+            reward.NotAvailableInGameEditions?.Count > 0
+            && reward.NotAvailableInGameEditions.Contains(gameVersion)
+        )
         // Reward has edition blacklist and game version is in it
         {
             return false;
@@ -173,7 +177,8 @@ public class RewardHelper(
         Reward craftUnlockReward,
         string questId,
         string sessionID,
-        ItemEventRouterResponse response)
+        ItemEventRouterResponse response
+    )
     {
         var matchingProductions = GetRewardProductionMatch(craftUnlockReward, questId);
         if (matchingProductions.Count != 1)
@@ -181,11 +186,7 @@ public class RewardHelper(
             _logger.Error(
                 _localisationService.GetText(
                     "reward-unable_to_find_matching_hideout_production",
-                    new
-                    {
-                        questId,
-                        matchCount = matchingProductions.Count
-                    }
+                    new { questId, matchCount = matchingProductions.Count }
                 )
             );
 
@@ -208,41 +209,47 @@ public class RewardHelper(
      * @param questId Quest or achievement ID with craft unlock reward
      * @returns Hideout craft
      */
-    public List<HideoutProduction> GetRewardProductionMatch(Reward craftUnlockReward, string questId)
+    public List<HideoutProduction> GetRewardProductionMatch(
+        Reward craftUnlockReward,
+        string questId
+    )
     {
         // Get hideout crafts and find those that match by areatype/required level/end product tpl - hope for just one match
         var craftingRecipes = _databaseService.GetHideout().Production.Recipes;
 
         // Area that will be used to craft unlocked item
-        var desiredHideoutAreaType = (HideoutAreas) int.Parse(craftUnlockReward.TraderId.ToString());
+        var desiredHideoutAreaType = (HideoutAreas)int.Parse(craftUnlockReward.TraderId.ToString());
 
-        var matchingProductions = craftingRecipes.Where(prod =>
-        {
-            return prod.AreaType == desiredHideoutAreaType &&
-                            //prod.requirements.some((requirement) => requirement.questId == questId) && // BSG don't store the quest id in requirement any more!
-                            prod.Requirements.Any(requirement =>
-                            {
-                                return requirement.Type == "QuestComplete";
-                            }) &&
-                            prod.Requirements.Any(requirement =>
-                            {
-                                return requirement.RequiredLevel == craftUnlockReward.LoyaltyLevel;
-                            }) &&
-                            prod.EndProduct == craftUnlockReward.Items.FirstOrDefault().Template;
-        })
+        var matchingProductions = craftingRecipes
+            .Where(prod =>
+            {
+                return prod.AreaType == desiredHideoutAreaType
+                    &&
+                    //prod.requirements.some((requirement) => requirement.questId == questId) && // BSG don't store the quest id in requirement any more!
+                    prod.Requirements.Any(requirement =>
+                    {
+                        return requirement.Type == "QuestComplete";
+                    })
+                    && prod.Requirements.Any(requirement =>
+                    {
+                        return requirement.RequiredLevel == craftUnlockReward.LoyaltyLevel;
+                    })
+                    && prod.EndProduct == craftUnlockReward.Items.FirstOrDefault().Template;
+            })
             .ToList();
 
         // More/less than single match, above filtering wasn't strict enough
         if (matchingProductions.Count != 1)
         // Multiple matches were found, last ditch attempt to match by questid (value we add manually to production.json via `gen:productionquests` command)
         {
-            matchingProductions = matchingProductions.Where(prod =>
-            {
-                return prod.Requirements.Any(requirement =>
+            matchingProductions = matchingProductions
+                .Where(prod =>
                 {
-                    return requirement.QuestId == questId;
-                });
-            })
+                    return prod.Requirements.Any(requirement =>
+                    {
+                        return requirement.QuestId == questId;
+                    });
+                })
                 .ToList();
         }
 
@@ -261,8 +268,8 @@ public class RewardHelper(
         var rewardItems = rewards.SelectMany(reward =>
         {
             return reward.Type == RewardType.Item && RewardIsForGameEdition(reward, gameVersion)
-                            ? ProcessReward(reward)
-                            : [];
+                ? ProcessReward(reward)
+                : [];
         });
 
         return rewardItems.ToList();
@@ -303,10 +310,12 @@ public class RewardHelper(
             {
                 // Is base reward item
                 if (
-                    rewardItem.ParentId != null &&
-                    rewardItem.ParentId == "hideout" && // Has parentId of hideout
-                    rewardItem.Upd != null &&
-                    rewardItem.Upd.StackObjectsCount != null && // Has upd with stackobject count
+                    rewardItem.ParentId != null
+                    && rewardItem.ParentId == "hideout"
+                    && // Has parentId of hideout
+                    rewardItem.Upd != null
+                    && rewardItem.Upd.StackObjectsCount != null
+                    && // Has upd with stackobject count
                     rewardItem.Upd.StackObjectsCount > 1 // More than 1 item in stack
                 )
                 {
@@ -327,9 +336,16 @@ public class RewardHelper(
                 if (reward.Items.FirstOrDefault().Upd.SpawnedInSession.GetValueOrDefault(false))
                 // Propagate FiR status into child items
                 {
-                    if (!_itemHelper.IsOfBaseclasses(rewardItem.Template, [BaseClasses.AMMO, BaseClasses.MONEY]))
+                    if (
+                        !_itemHelper.IsOfBaseclasses(
+                            rewardItem.Template,
+                            [BaseClasses.AMMO, BaseClasses.MONEY]
+                        )
+                    )
                     {
-                        rewardItem.Upd.SpawnedInSession = reward.Items.FirstOrDefault()?.Upd.SpawnedInSession;
+                        rewardItem.Upd.SpawnedInSession = reward
+                            .Items.FirstOrDefault()
+                            ?.Upd.SpawnedInSession;
                     }
                 }
 
@@ -341,10 +357,7 @@ public class RewardHelper(
         foreach (var target in targets)
         {
             // This has all the original id relations since we reset the id to the original after the splitStack
-            var itemsClone = new List<Item>
-            {
-                _cloner.Clone(target)
-            };
+            var itemsClone = new List<Item> { _cloner.Clone(target) };
             // Here we generate a new id for the root item
             target.Id = _hashUtil.Generate();
 
@@ -413,8 +426,10 @@ public class RewardHelper(
     public void AddAchievementToProfile(SptProfile fullProfile, string achievementId)
     {
         // Add achievement id to profile with timestamp it was unlocked
-        fullProfile.CharacterData.PmcData.Achievements.TryAdd(achievementId, _timeUtil.GetTimeStamp());
-
+        fullProfile.CharacterData.PmcData.Achievements.TryAdd(
+            achievementId,
+            _timeUtil.GetTimeStamp()
+        );
 
         // Check for any customisation unlocks
         var achievementDataDb = _databaseService

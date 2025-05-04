@@ -31,9 +31,10 @@ public class WeatherHelper(
             : _timeUtil.GetTimeStamp();
 
         return _timeUtil.GetDateTimeFromTimeStamp(
-            (long)
-            (russiaOffsetMilliseconds + currentTimestampMilliSeconds * _weatherConfig.Acceleration) %
-            twentyFourHoursMilliseconds
+            (long)(
+                russiaOffsetMilliseconds
+                + currentTimestampMilliSeconds * _weatherConfig.Acceleration
+            ) % twentyFourHoursMilliseconds
         );
     }
 

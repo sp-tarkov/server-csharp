@@ -47,12 +47,7 @@ public class GameCallbacks(
     {
         var startTimestampSec = _timeUtil.GetTimeStamp();
         _gameController.GameStart(url, sessionID, startTimestampSec);
-        return _httpResponseUtil.GetBody(
-            new GameStartResponse
-            {
-                UtcTime = startTimestampSec
-            }
-        );
+        return _httpResponseUtil.GetBody(new GameStartResponse { UtcTime = startTimestampSec });
     }
 
     /// <summary>
@@ -63,12 +58,7 @@ public class GameCallbacks(
     public string GameLogout(string url, EmptyRequestData _, string sessionID)
     {
         _saveServer.SaveProfile(sessionID);
-        return _httpResponseUtil.GetBody(
-            new GameLogoutResponseData
-            {
-                Status = "ok"
-            }
-        );
+        return _httpResponseUtil.GetBody(new GameLogoutResponseData { Status = "ok" });
     }
 
     /// <summary>
@@ -132,12 +122,7 @@ public class GameCallbacks(
     public string GetVersion(string url, EmptyRequestData _, string sessionID)
     {
         // change to be a proper type
-        return _httpResponseUtil.NoBody(
-            new
-            {
-                Version = _watermark.GetInGameVersionLabel()
-            }
-        );
+        return _httpResponseUtil.NoBody(new { Version = _watermark.GetInGameVersionLabel() });
     }
 
     /// <summary>

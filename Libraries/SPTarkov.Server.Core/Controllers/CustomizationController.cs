@@ -43,22 +43,25 @@ public class CustomizationController(
         var clothing = _databaseService.GetCustomization();
         var suits = _databaseService.GetTrader(traderId).Suits;
 
-        var matchingSuits = suits?.Where(s =>
-        {
-            return clothing.ContainsKey(s.SuiteId!);
-        }).ToList();
-        matchingSuits = matchingSuits?.Where(s =>
-        {
-            return clothing[s.SuiteId ?? string.Empty]
-                                                                  ?.Properties?.Side?
-                                                                  .Contains(pmcData?.Info?.Side ?? string.Empty) ??
-                                                              false;
-        })
+        var matchingSuits = suits
+            ?.Where(s =>
+            {
+                return clothing.ContainsKey(s.SuiteId!);
+            })
+            .ToList();
+        matchingSuits = matchingSuits
+            ?.Where(s =>
+            {
+                return clothing[s.SuiteId ?? string.Empty]
+                        ?.Properties?.Side?.Contains(pmcData?.Info?.Side ?? string.Empty) ?? false;
+            })
             .ToList();
 
         if (matchingSuits == null)
         {
-            throw new Exception(_localisationService.GetText("customisation-unable_to_get_trader_suits", traderId));
+            throw new Exception(
+                _localisationService.GetText("customisation-unable_to_get_trader_suits", traderId)
+            );
         }
 
         return matchingSuits;
@@ -75,7 +78,8 @@ public class CustomizationController(
     public ItemEventRouterResponse BuyCustomisation(
         PmcData pmcData,
         BuyClothingRequestData buyClothingRequest,
-        string sessionId)
+        string sessionId
+    )
     {
         var output = _eventOutputHolder.GetOutput(sessionId);
 
@@ -83,7 +87,10 @@ public class CustomizationController(
         if (traderOffer is null)
         {
             _logger.Error(
-                _localisationService.GetText("customisation-unable_to_find_suit_by_id", buyClothingRequest.Offer)
+                _localisationService.GetText(
+                    "customisation-unable_to_find_suit_by_id",
+                    buyClothingRequest.Offer
+                )
             );
             return output;
         }
@@ -95,11 +102,7 @@ public class CustomizationController(
             _logger.Error(
                 _localisationService.GetText(
                     "customisation-item_already_purchased",
-                    new
-                    {
-                        itemId = suitDetails?.Id,
-                        itemName = suitDetails?.Name
-                    }
+                    new { itemId = suitDetails?.Id, itemName = suitDetails?.Name }
                 )
             );
 
@@ -116,7 +119,7 @@ public class CustomizationController(
         {
             Id = suitId,
             Source = CustomisationSource.UNLOCKED_IN_GAME,
-            Type = CustomisationType.SUITE
+            Type = CustomisationType.SUITE,
         };
 
         profile.CustomisationUnlocks.Add(rewardToStore);
@@ -149,13 +152,16 @@ public class CustomizationController(
     /// <returns>Suit</returns>
     protected Suit? GetTraderClothingOffer(string sessionId, string? offerId)
     {
-        var foundSuit = GetAllTraderSuits(sessionId).FirstOrDefault(s =>
-        {
-            return s.Id == offerId;
-        });
+        var foundSuit = GetAllTraderSuits(sessionId)
+            .FirstOrDefault(s =>
+            {
+                return s.Id == offerId;
+            });
         if (foundSuit is null)
         {
-            _logger.Error(_localisationService.GetText("customisation-unable_to_find_suit_with_id", offerId));
+            _logger.Error(
+                _localisationService.GetText("customisation-unable_to_find_suit_with_id", offerId)
+            );
         }
 
         return foundSuit;
@@ -168,9 +174,12 @@ public class CustomizationController(
     /// <param name="pmcData">Player profile</param>
     /// <param name="itemsToPayForClothingWith">Clothing purchased</param>
     /// <param name="output">Client response</param>
-    protected void PayForClothingItems(string sessionId, PmcData pmcData,
+    protected void PayForClothingItems(
+        string sessionId,
+        PmcData pmcData,
         List<PaymentItemForClothing>? itemsToPayForClothingWith,
-        ItemEventRouterResponse output)
+        ItemEventRouterResponse output
+    )
     {
         if (itemsToPayForClothingWith is null || itemsToPayForClothingWith.Count == 0)
         {
@@ -186,15 +195,15 @@ public class CustomizationController(
                     new IdWithCount
                     {
                         Count = inventoryItemToProcess.Count.Value,
-                        Id = inventoryItemToProcess.Id
-                    }
+                        Id = inventoryItemToProcess.Id,
+                    },
                 ],
                 TransactionId = Traders.RAGMAN,
                 Action = "BuyCustomization",
                 Type = "",
                 ItemId = "",
                 Count = 0,
-                SchemeId = 0
+                SchemeId = 0,
             };
 
             _paymentService.PayMoney(pmcData, options, sessionId, output);
@@ -213,7 +222,10 @@ public class CustomizationController(
 
         foreach (var trader in traders)
         {
-            if (trader.Value.Base?.CustomizationSeller is not null && trader.Value.Base.CustomizationSeller.Value)
+            if (
+                trader.Value.Base?.CustomizationSeller is not null
+                && trader.Value.Base.CustomizationSeller.Value
+            )
             {
                 result.AddRange(GetTraderSuits(trader.Key, sessionId));
             }
@@ -237,10 +249,11 @@ public class CustomizationController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public List<CustomisationStorage> GetCustomisationStorage(
-        string sessionId)
+    public List<CustomisationStorage> GetCustomisationStorage(string sessionId)
     {
-        var customisationResultsClone = _cloner.Clone(_databaseService.GetTemplates().CustomisationStorage);
+        var customisationResultsClone = _cloner.Clone(
+            _databaseService.GetTemplates().CustomisationStorage
+        );
 
         var profile = _profileHelper.GetFullProfile(sessionId);
         if (profile is null)
@@ -260,7 +273,11 @@ public class CustomizationController(
     /// <param name="request"></param>
     /// <param name="pmcData">Players PMC profile</param>
     /// <returns></returns>
-    public ItemEventRouterResponse SetCustomisation(string sessionId, CustomizationSetRequest request, PmcData pmcData)
+    public ItemEventRouterResponse SetCustomisation(
+        string sessionId,
+        CustomizationSetRequest request,
+        PmcData pmcData
+    )
     {
         foreach (var customisation in request.Customizations)
         {

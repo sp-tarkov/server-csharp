@@ -120,7 +120,11 @@ public class ItemBaseClassService(
     /// <returns> True if item is of type Item </returns>
     private bool CachedItemIsOfItemType(string itemTemplateId)
     {
-        return string.Equals(_databaseService.GetItems()[itemTemplateId]?.Type, "Item", StringComparison.OrdinalIgnoreCase);
+        return string.Equals(
+            _databaseService.GetItems()[itemTemplateId]?.Type,
+            "Item",
+            StringComparison.OrdinalIgnoreCase
+        );
     }
 
     /// <summary>

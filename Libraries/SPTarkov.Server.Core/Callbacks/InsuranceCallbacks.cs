@@ -11,15 +11,17 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(IOnUpdate), TypePriority = OnUpdateOrder.InsuranceCallbacks)]
+[Injectable(
+    InjectableTypeOverride = typeof(IOnUpdate),
+    TypePriority = OnUpdateOrder.InsuranceCallbacks
+)]
 [Injectable(InjectableTypeOverride = typeof(InsuranceCallbacks))]
 public class InsuranceCallbacks(
     InsuranceController _insuranceController,
     InsuranceService _insuranceService,
     HttpResponseUtil _httpResponseUtil,
     ConfigServer _configServer
-)
-    : IOnUpdate
+) : IOnUpdate
 {
     private readonly InsuranceConfig _insuranceConfig = _configServer.GetConfig<InsuranceConfig>();
 

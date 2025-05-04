@@ -12,16 +12,17 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Routers;
 
 [Injectable]
-public class ItemEventRouter(ISptLogger<ItemEventRouter> logger,
+public class ItemEventRouter(
+    ISptLogger<ItemEventRouter> logger,
     ISptLogger<FileLogger> fileLogger,
     JsonUtil jsonUtil,
     ProfileHelper profileHelper,
     LocalisationService localisationService,
     EventOutputHolder eventOutputHolder,
     IEnumerable<ItemEventRouterDefinition> itemEventRouters,
-    ICloner cloner)
+    ICloner cloner
+)
 {
-
     /// <summary>
     ///     Handles ItemEventRouter Requests and processes them.
     /// </summary>

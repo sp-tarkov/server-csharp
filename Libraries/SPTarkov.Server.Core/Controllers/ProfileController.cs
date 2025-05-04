@@ -43,10 +43,13 @@ public class ProfileController(
     /// <returns></returns>
     public virtual List<MiniProfile> GetMiniProfiles()
     {
-        return _saveServer.GetProfiles().Select(kvp =>
-        {
-            return GetMiniProfile(kvp.Key);
-        }).ToList();
+        return _saveServer
+            .GetProfiles()
+            .Select(kvp =>
+            {
+                return GetMiniProfile(kvp.Key);
+            })
+            .ToList();
     }
 
     /// <summary>
@@ -59,7 +62,9 @@ public class ProfileController(
         var profile = _saveServer.GetProfile(sessionID);
         if (profile?.CharacterData == null)
         {
-            throw new Exception($"Unable to find character data for id: {sessionID}. Profile may be corrupt");
+            throw new Exception(
+                $"Unable to find character data for id: {sessionID}. Profile may be corrupt"
+            );
         }
 
         var pmc = profile.CharacterData.PmcData;
@@ -83,7 +88,7 @@ public class ProfileController(
                 MaxLevel = maxLvl,
                 Edition = profile.ProfileInfo?.Edition ?? "",
                 ProfileId = profile.ProfileInfo?.ProfileId ?? "",
-                SptData = _profileHelper.GetDefaultSptDataObject()
+                SptData = _profileHelper.GetDefaultSptDataObject(),
             };
         }
 
@@ -100,7 +105,7 @@ public class ProfileController(
             MaxLevel = maxLvl,
             Edition = profile.ProfileInfo?.Edition ?? "",
             ProfileId = profile.ProfileInfo?.ProfileId ?? "",
-            SptData = profile.SptData
+            SptData = profile.SptData,
         };
     }
 
@@ -167,10 +172,7 @@ public class ProfileController(
     public virtual string ChangeNickname(ProfileChangeNicknameRequestData request, string sessionID)
     {
         var output = ValidateNickname(
-            new ValidateNicknameRequestData
-            {
-                Nickname = request.Nickname
-            },
+            new ValidateNicknameRequestData { Nickname = request.Nickname },
             sessionID
         );
 
@@ -202,7 +204,10 @@ public class ProfileController(
     /// <param name="request">Search profiles request</param>
     /// <param name="sessionID">Player id</param>
     /// <returns>Found profiles</returns>
-    public virtual List<SearchFriendResponse> SearchProfiles(SearchProfilesRequestData request, string sessionID)
+    public virtual List<SearchFriendResponse> SearchProfiles(
+        SearchProfilesRequestData request,
+        string sessionID
+    )
     {
         var result = new List<SearchFriendResponse>();
 
@@ -243,7 +248,7 @@ public class ProfileController(
                     Status = "Free",
                     Sid = "",
                     Ip = "",
-                    Port = 0
+                    Port = 0,
                 },
                 new ProfileStatusData
                 {
@@ -252,9 +257,9 @@ public class ProfileController(
                     Status = "Free",
                     Sid = "",
                     Ip = "",
-                    Port = 0
-                }
-            ]
+                    Port = 0,
+                },
+            ],
         };
 
         return response;
@@ -266,13 +271,21 @@ public class ProfileController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Get other profile request</param>
     /// <returns>GetOtherProfileResponse</returns>
-    public virtual GetOtherProfileResponse GetOtherProfile(string sessionId, GetOtherProfileRequest request)
+    public virtual GetOtherProfileResponse GetOtherProfile(
+        string sessionId,
+        GetOtherProfileRequest request
+    )
     {
         // Find the profile by the account ID, fall back to the current player if we can't find the account
         var profileToView = _profileHelper.GetFullProfileByAccountId(request.AccountId);
-        if (profileToView?.CharacterData?.PmcData is null || profileToView.CharacterData.ScavData is null)
+        if (
+            profileToView?.CharacterData?.PmcData is null
+            || profileToView.CharacterData.ScavData is null
+        )
         {
-            _logger.Warning($"Unable to get profile: {request.AccountId} to show, falling back to own profile");
+            _logger.Warning(
+                $"Unable to get profile: {request.AccountId} to show, falling back to own profile"
+            );
             profileToView = _profileHelper.GetFullProfile(sessionId);
         }
 
@@ -293,7 +306,10 @@ public class ProfileController(
         foreach (var rootItems in hideoutRootItems)
         {
             // Check each root items for children and add
-            var itemWithChildren = _itemHelper.FindAndReturnChildrenAsItems(profileToViewPmc.Inventory.Items, rootItems.Id);
+            var itemWithChildren = _itemHelper.FindAndReturnChildrenAsItems(
+                profileToViewPmc.Inventory.Items,
+                rootItems.Id
+            );
             itemsToReturn.AddRange(itemWithChildren);
         }
 
@@ -309,7 +325,7 @@ public class ProfileController(
                 MemberCategory = profileToViewPmc.Info.MemberCategory as int?,
                 BannedState = profileToViewPmc.Info.BannedState,
                 BannedUntil = profileToViewPmc.Info.BannedUntil,
-                RegistrationDate = profileToViewPmc.Info.RegistrationDate
+                RegistrationDate = profileToViewPmc.Info.RegistrationDate,
             },
             Customization =
             {
@@ -317,13 +333,13 @@ public class ProfileController(
                 Body = profileToViewPmc.Customization.Body,
                 Feet = profileToViewPmc.Customization.Feet,
                 Hands = profileToViewPmc.Customization.Hands,
-                Dogtag = profileToViewPmc.Customization.DogTag
+                Dogtag = profileToViewPmc.Customization.DogTag,
             },
             Skills = profileToViewPmc.Skills,
             Equipment =
             {
                 Id = profileToViewPmc.Inventory.Equipment,
-                Items = profileToViewPmc.Inventory.Items
+                Items = profileToViewPmc.Inventory.Items,
             },
             Achievements = profileToViewPmc.Achievements,
             FavoriteItems = _profileHelper.GetOtherProfileFavorites(profileToViewPmc),
@@ -332,21 +348,21 @@ public class ProfileController(
                 Eft =
                 {
                     TotalInGameTime = profileToViewPmc.Stats.Eft.TotalInGameTime,
-                    OverAllCounters = profileToViewPmc.Stats.Eft.OverallCounters
-                }
+                    OverAllCounters = profileToViewPmc.Stats.Eft.OverallCounters,
+                },
             },
             ScavStats =
             {
                 Eft =
                 {
                     TotalInGameTime = profileToViewScav.Stats.Eft.TotalInGameTime,
-                    OverAllCounters = profileToViewScav.Stats.Eft.OverallCounters
-                }
+                    OverAllCounters = profileToViewScav.Stats.Eft.OverallCounters,
+                },
             },
             Hideout = profileToViewPmc.Hideout,
             CustomizationStash = profileToViewPmc.Inventory.HideoutCustomizationStashId,
             HideoutAreaStashes = profileToViewPmc.Inventory.HideoutAreaStashes,
-            Items = itemsToReturn
+            Items = itemsToReturn,
         };
     }
 

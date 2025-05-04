@@ -40,7 +40,7 @@ public class BarrelInvetoryMagGen(
 
         _botWeaponGeneratorHelper.AddAmmoIntoEquipmentSlots(
             inventoryMagGen.GetAmmoTemplate().Id,
-            (int) randomisedAmmoStackSize,
+            (int)randomisedAmmoStackSize,
             inventoryMagGen.GetPmcInventory(),
             null
         );

@@ -44,7 +44,9 @@ public class RepairHelper(
     {
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"Adding {amountToRepair} to {itemToRepairDetails.Name} using kit: {useRepairKit}");
+            _logger.Debug(
+                $"Adding {amountToRepair} to {itemToRepairDetails.Name} using kit: {useRepairKit}"
+            );
         }
 
         var itemMaxDurability = _cloner.Clone(itemToRepair.Upd.Repairable.MaxDurability);
@@ -70,7 +72,7 @@ public class RepairHelper(
         itemToRepair.Upd.Repairable = new UpdRepairable
         {
             Durability = newCurrentDurability,
-            MaxDurability = newCurrentMaxDurability
+            MaxDurability = newCurrentMaxDurability,
         };
 
         // when modders set the repair coefficient to 0 it means that they dont want to lose durability on items
@@ -124,7 +126,11 @@ public class RepairHelper(
     )
     {
         // Degradation value is based on the armor material
-        if (!_databaseService.GetGlobals().Configuration.ArmorMaterials.TryGetValue(material, out var armorMaterialSettings))
+        if (
+            !_databaseService
+                .GetGlobals()
+                .Configuration.ArmorMaterials.TryGetValue(material, out var armorMaterialSettings)
+        )
         {
             _logger.Error($"Unable to find armor with a type of: {material}");
         }
@@ -137,8 +143,9 @@ public class RepairHelper(
             ? armorMaterialSettings.MaxRepairKitDegradation
             : armorMaterialSettings.MaxRepairDegradation;
 
-        var duraLossPercent = _randomUtil.GetDouble((double) minMultiplier, (double) maxMultiplier);
-        var duraLossMultipliedByTraderMultiplier = duraLossPercent * armorMax * traderQualityMultiplier;
+        var duraLossPercent = _randomUtil.GetDouble((double)minMultiplier, (double)maxMultiplier);
+        var duraLossMultipliedByTraderMultiplier =
+            duraLossPercent * armorMax * traderQualityMultiplier;
 
         return Math.Round(duraLossMultipliedByTraderMultiplier, 2);
     }
@@ -158,8 +165,12 @@ public class RepairHelper(
         double traderQualityMultipler
     )
     {
-        var minRepairDeg = isRepairKit ? itemProps.MinRepairKitDegradation : itemProps.MinRepairDegradation;
-        var maxRepairDeg = isRepairKit ? itemProps.MaxRepairKitDegradation : itemProps.MaxRepairDegradation;
+        var minRepairDeg = isRepairKit
+            ? itemProps.MinRepairKitDegradation
+            : itemProps.MinRepairDegradation;
+        var maxRepairDeg = isRepairKit
+            ? itemProps.MaxRepairKitDegradation
+            : itemProps.MaxRepairDegradation;
 
         // WORKAROUND: Some items are always 0 when repairkit is true
         if (maxRepairDeg == 0)
@@ -167,8 +178,9 @@ public class RepairHelper(
             maxRepairDeg = itemProps.MaxRepairDegradation;
         }
 
-        var duraLossPercent = _randomUtil.GetDouble((double) minRepairDeg, (double) maxRepairDeg);
-        var duraLossMultipliedByTraderMultiplier = duraLossPercent * weaponMax * traderQualityMultipler;
+        var duraLossPercent = _randomUtil.GetDouble((double)minRepairDeg, (double)maxRepairDeg);
+        var duraLossMultipliedByTraderMultiplier =
+            duraLossPercent * weaponMax * traderQualityMultipler;
 
         return Math.Round(duraLossMultipliedByTraderMultiplier, 2);
     }

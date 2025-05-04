@@ -62,25 +62,32 @@ public class PMCLootGenerator
         {
             _pocketLootPool = new ConcurrentDictionary<string, double>();
             var items = _databaseService.GetItems();
-            var pmcPriceOverrides =
-                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items
-                    .Pockets;
+            var pmcPriceOverrides = _databaseService
+                .GetBots()
+                .Types[
+                    string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase)
+                        ? "bear"
+                        : "usec"
+                ]
+                .BotInventory.Items.Pockets;
 
             var allowedItemTypeWhitelist = _pmcConfig.PocketLoot.Whitelist;
 
             var blacklist = GetLootBlacklist();
 
-            var itemsToAdd = items.Where(item =>
-            {
-                return allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
-                                _itemHelper.IsValidItem(item.Value.Id) &&
-                                !blacklist.Contains(item.Value.Id) &&
-                                !blacklist.Contains(item.Value.Parent) &&
-                                ItemFitsInto1By2Slot(item.Value);
-            }).Select(x =>
-{
-    return x.Key;
-});
+            var itemsToAdd = items
+                .Where(item =>
+                {
+                    return allowedItemTypeWhitelist.Contains(item.Value.Parent)
+                        && _itemHelper.IsValidItem(item.Value.Id)
+                        && !blacklist.Contains(item.Value.Id)
+                        && !blacklist.Contains(item.Value.Parent)
+                        && ItemFitsInto1By2Slot(item.Value);
+                })
+                .Select(x =>
+                {
+                    return x.Key;
+                });
 
             foreach (var tpl in itemsToAdd)
             // If pmc has price override, use that. Otherwise, use flea price
@@ -138,25 +145,32 @@ public class PMCLootGenerator
         {
             _vestLootPool = new ConcurrentDictionary<string, double>();
             var items = _databaseService.GetItems();
-            var pmcPriceOverrides =
-                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items
-                    .TacticalVest;
+            var pmcPriceOverrides = _databaseService
+                .GetBots()
+                .Types[
+                    string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase)
+                        ? "bear"
+                        : "usec"
+                ]
+                .BotInventory.Items.TacticalVest;
 
             var allowedItemTypeWhitelist = _pmcConfig.VestLoot.Whitelist;
 
             var blacklist = GetLootBlacklist();
 
-            var itemsToAdd = items.Where(item =>
-            {
-                return allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
-                                _itemHelper.IsValidItem(item.Value.Id) &&
-                                !blacklist.Contains(item.Value.Id) &&
-                                !blacklist.Contains(item.Value.Parent) &&
-                                ItemFitsInto2By2Slot(item.Value);
-            }).Select(x =>
-{
-    return x.Key;
-});
+            var itemsToAdd = items
+                .Where(item =>
+                {
+                    return allowedItemTypeWhitelist.Contains(item.Value.Parent)
+                        && _itemHelper.IsValidItem(item.Value.Id)
+                        && !blacklist.Contains(item.Value.Id)
+                        && !blacklist.Contains(item.Value.Parent)
+                        && ItemFitsInto2By2Slot(item.Value);
+                })
+                .Select(x =>
+                {
+                    return x.Key;
+                });
 
             foreach (var tpl in itemsToAdd)
             // If pmc has price override, use that. Otherwise, use flea price
@@ -212,7 +226,7 @@ public class PMCLootGenerator
         return $"{item.Properties.Width}x{item.Properties.Height}" switch
         {
             "1x1" or "1x2" or "2x1" => true,
-            _ => false
+            _ => false,
         };
     }
 
@@ -228,24 +242,31 @@ public class PMCLootGenerator
         {
             _backpackLootPool = new ConcurrentDictionary<string, double>();
             var items = _databaseService.GetItems();
-            var pmcPriceOverrides =
-                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items
-                    .Backpack;
+            var pmcPriceOverrides = _databaseService
+                .GetBots()
+                .Types[
+                    string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase)
+                        ? "bear"
+                        : "usec"
+                ]
+                .BotInventory.Items.Backpack;
 
             var allowedItemTypeWhitelist = _pmcConfig.BackpackLoot.Whitelist;
 
             var blacklist = GetLootBlacklist();
 
-            var itemsToAdd = items.Where(item =>
-            {
-                return allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
-                                _itemHelper.IsValidItem(item.Value.Id) &&
-                                !blacklist.Contains(item.Value.Id) &&
-                                !blacklist.Contains(item.Value.Parent);
-            }).Select(x =>
-{
-    return x.Key;
-});
+            var itemsToAdd = items
+                .Where(item =>
+                {
+                    return allowedItemTypeWhitelist.Contains(item.Value.Parent)
+                        && _itemHelper.IsValidItem(item.Value.Id)
+                        && !blacklist.Contains(item.Value.Id)
+                        && !blacklist.Contains(item.Value.Parent);
+                })
+                .Select(x =>
+                {
+                    return x.Key;
+                });
 
             foreach (var tpl in itemsToAdd)
             // If pmc has price override, use that. Otherwise, use flea price

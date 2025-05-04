@@ -22,7 +22,8 @@ public class NotifySerializer(
          * Take our array of JSON message objects and cast them to JSON strings, so that they can then
          *  be sent to client as NEWLINE separated strings... yup.
          */
-        notifierController.NotifyAsync(tmpSessionID)
+        notifierController
+            .NotifyAsync(tmpSessionID)
             .ContinueWith(messages =>
             {
                 return messages.Result.Select(message =>

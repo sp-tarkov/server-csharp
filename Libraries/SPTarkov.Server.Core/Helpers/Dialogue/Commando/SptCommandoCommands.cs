@@ -24,8 +24,12 @@ public class SptCommandoCommands : IChatCommand
         _localisationService = localisationService;
         var coreConfigs = configServer.GetConfig<CoreConfig>();
         var commandoId = coreConfigs.Features?.ChatbotFeatures.Ids.GetValueOrDefault("commando");
-        if (!(coreConfigs.Features.ChatbotFeatures.CommandoFeatures.GiveCommandEnabled &&
-              coreConfigs.Features.ChatbotFeatures.EnabledBots.ContainsKey(commandoId)))
+        if (
+            !(
+                coreConfigs.Features.ChatbotFeatures.CommandoFeatures.GiveCommandEnabled
+                && coreConfigs.Features.ChatbotFeatures.EnabledBots.ContainsKey(commandoId)
+            )
+        )
         {
             var giveCommand = _sptCommands.FirstOrDefault(x =>
             {
@@ -42,21 +46,30 @@ public class SptCommandoCommands : IChatCommand
 
     public string GetCommandHelp(string command)
     {
-        return _sptCommands.FirstOrDefault(c =>
-        {
-            return c.GetCommand() == command;
-        })?.GetCommandHelp();
+        return _sptCommands
+            .FirstOrDefault(c =>
+            {
+                return c.GetCommand() == command;
+            })
+            ?.GetCommandHelp();
     }
 
     public List<string> GetCommands()
     {
-        return _sptCommands.Select(c =>
-        {
-            return c.GetCommand();
-        }).ToList();
+        return _sptCommands
+            .Select(c =>
+            {
+                return c.GetCommand();
+            })
+            .ToList();
     }
 
-    public string Handle(string command, UserDialogInfo commandHandler, string sessionId, SendMessageRequest request)
+    public string Handle(
+        string command,
+        UserDialogInfo commandHandler,
+        string sessionId,
+        SendMessageRequest request
+    )
     {
         return _sptCommands
             .First(c =>
@@ -68,10 +81,12 @@ public class SptCommandoCommands : IChatCommand
 
     public void RegisterSptCommandoCommand(ISptCommand command)
     {
-        if (_sptCommands.Any(c =>
-        {
-            return c.GetCommand() == command.GetCommand();
-        }))
+        if (
+            _sptCommands.Any(c =>
+            {
+                return c.GetCommand() == command.GetCommand();
+            })
+        )
         {
             throw new Exception(
                 _localisationService.GetText(

@@ -7,7 +7,10 @@ namespace UnitTests.Tests.Utils;
 [TestClass]
 public sealed class RandomUtilTests
 {
-    private readonly RandomUtil _randomUtil = new(new MockLogger<RandomUtil>(), new JsonCloner(new JsonUtil()));
+    private readonly RandomUtil _randomUtil = new(
+        new MockLogger<RandomUtil>(),
+        new JsonCloner(new JsonUtil())
+    );
 
     [TestMethod]
     public void GetIntTest()
@@ -19,7 +22,9 @@ public sealed class RandomUtilTests
 
             if (result < 0 || result > 10)
             {
-                Assert.Fail($"GetInt(0, 10) out of range. Expected range [0, 10] but was {result}.");
+                Assert.Fail(
+                    $"GetInt(0, 10) out of range. Expected range [0, 10] but was {result}."
+                );
             }
         }
     }
@@ -49,7 +54,9 @@ public sealed class RandomUtilTests
 
             if (result is < 0d or >= 10d)
             {
-                Assert.Fail($"GetDouble(0d, 10d) out of range. Expected range [0.0d, 9.999d] but was {result}.");
+                Assert.Fail(
+                    $"GetDouble(0d, 10d) out of range. Expected range [0.0d, 9.999d] but was {result}."
+                );
             }
         }
     }
@@ -121,7 +128,9 @@ public sealed class RandomUtilTests
 
             if (result < 0 || result > 9)
             {
-                Assert.Fail($"RandInt(0, 10) out of range. Expected range [0, 9] but was {result}.");
+                Assert.Fail(
+                    $"RandInt(0, 10) out of range. Expected range [0, 9] but was {result}."
+                );
             }
         }
 
@@ -131,7 +140,9 @@ public sealed class RandomUtilTests
 
             if (result < 0 || result > 9)
             {
-                Assert.Fail($"RandInt(10, null) out of range. Expected range [0, 9] but was {result}.");
+                Assert.Fail(
+                    $"RandInt(10, null) out of range. Expected range [0, 9] but was {result}."
+                );
             }
         }
     }
@@ -145,12 +156,16 @@ public sealed class RandomUtilTests
 
             if (result < 0 || result >= 10)
             {
-                Assert.Fail($"RandNum(0, 10) out of range. Expected range [0, 9.999d] but was {result}.");
+                Assert.Fail(
+                    $"RandNum(0, 10) out of range. Expected range [0, 9.999d] but was {result}."
+                );
             }
 
             if (_randomUtil.GetNumberPrecision(result) > RandomUtil.MaxSignificantDigits)
             {
-                Assert.Fail($"RandNum(0, 10) precision of {result} exceeds the allowable precision ({RandomUtil.MaxSignificantDigits}) for the given values.");
+                Assert.Fail(
+                    $"RandNum(0, 10) precision of {result} exceeds the allowable precision ({RandomUtil.MaxSignificantDigits}) for the given values."
+                );
             }
         }
 
@@ -160,12 +175,16 @@ public sealed class RandomUtilTests
 
             if (result < 0 || result >= 10)
             {
-                Assert.Fail($"RandNum(10) out of range. Expected range [0, 9.999d] but was {result}.");
+                Assert.Fail(
+                    $"RandNum(10) out of range. Expected range [0, 9.999d] but was {result}."
+                );
             }
 
             if (_randomUtil.GetNumberPrecision(result) > RandomUtil.MaxSignificantDigits)
             {
-                Assert.Fail($"RandNum(10) precision of {result} exceeds the allowable precision ({RandomUtil.MaxSignificantDigits}) for the given values.");
+                Assert.Fail(
+                    $"RandNum(10) precision of {result} exceeds the allowable precision ({RandomUtil.MaxSignificantDigits}) for the given values."
+                );
             }
         }
     }
@@ -173,19 +192,7 @@ public sealed class RandomUtilTests
     [TestMethod]
     public void ShuffleTest()
     {
-        var testList = new List<int>
-        {
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10
-        };
+        var testList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
         var orig = new List<int>(testList);
 

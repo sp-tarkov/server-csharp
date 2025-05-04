@@ -5,5 +5,5 @@ public enum ReloadMode
     ExternalMagazine,
     InternalMagazine,
     OnlyBarrel,
-    ExternalMagazineWithInternalReloadSupport
+    ExternalMagazineWithInternalReloadSupport,
 }

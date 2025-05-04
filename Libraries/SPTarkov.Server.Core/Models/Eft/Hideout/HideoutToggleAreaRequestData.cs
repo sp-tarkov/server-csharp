@@ -7,23 +7,11 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 public record HideoutToggleAreaRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("areaType")]
-    public HideoutAreas? AreaType
-    {
-        get;
-        set;
-    }
+    public HideoutAreas? AreaType { get; set; }
 
     [JsonPropertyName("enabled")]
-    public bool? Enabled
-    {
-        get;
-        set;
-    }
+    public bool? Enabled { get; set; }
 
     [JsonPropertyName("timestamp")]
-    public long? Timestamp
-    {
-        get;
-        set;
-    }
+    public long? Timestamp { get; set; }
 }

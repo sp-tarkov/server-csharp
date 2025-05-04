@@ -24,12 +24,17 @@ public class SecureContainerHelper(ItemHelper _itemHelper)
             return [];
         }
 
-        var itemsInSecureContainer = _itemHelper.FindAndReturnChildrenByItems(items, secureContainer.Id);
+        var itemsInSecureContainer = _itemHelper.FindAndReturnChildrenByItems(
+            items,
+            secureContainer.Id
+        );
 
         // Return all items returned and exclude the secure container item itself
-        return itemsInSecureContainer.Where(x =>
-        {
-            return x != secureContainer.Id;
-        }).ToList();
+        return itemsInSecureContainer
+            .Where(x =>
+            {
+                return x != secureContainer.Id;
+            })
+            .ToList();
     }
 }

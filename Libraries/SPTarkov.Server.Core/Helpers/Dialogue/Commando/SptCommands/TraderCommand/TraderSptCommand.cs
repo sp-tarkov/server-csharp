@@ -17,7 +17,8 @@ public class TraderSptCommand(
     ISptLogger<TraderSptCommand> _logger,
     HashUtil _hashUtil,
     TraderHelper _traderHelper,
-    MailSendService _mailSendService) : ISptCommand
+    MailSendService _mailSendService
+) : ISptCommand
 {
     protected Regex _commandRegex = new(
         @"^spt trader (?<trader>[\w]+) (?<command>rep|spend) (?<quantity>(?!0+)[0-9]+)$"
@@ -30,11 +31,14 @@ public class TraderSptCommand(
 
     public string GetCommandHelp()
     {
-        return
-            "spt trader\n========\nSets the reputation or money spent to the input quantity through the message system.\n\n\tspt trader [trader] rep [quantity]\n\t\tEx: spt trader prapor rep 2\n\n\tspt trader [trader] spend [quantity]\n\t\tEx: spt trader therapist spend 1000000";
+        return "spt trader\n========\nSets the reputation or money spent to the input quantity through the message system.\n\n\tspt trader [trader] rep [quantity]\n\t\tEx: spt trader prapor rep 2\n\n\tspt trader [trader] spend [quantity]\n\t\tEx: spt trader therapist spend 1000000";
     }
 
-    public string PerformAction(UserDialogInfo commandHandler, string sessionId, SendMessageRequest request)
+    public string PerformAction(
+        UserDialogInfo commandHandler,
+        string sessionId,
+        SendMessageRequest request
+    )
     {
         if (!_commandRegex.IsMatch(request.Text))
         {
@@ -75,15 +79,15 @@ public class TraderSptCommand(
                 profileChangeEventType = ProfileChangeEventType.TraderSalesSum;
                 break;
             default:
-                {
-                    _mailSendService.SendUserMessageToPlayer(
-                        sessionId,
-                        commandHandler,
-                        "Invalid use of trader command, ProfileChangeEventType was not found. Use 'help' for more information."
-                    );
+            {
+                _mailSendService.SendUserMessageToPlayer(
+                    sessionId,
+                    commandHandler,
+                    "Invalid use of trader command, ProfileChangeEventType was not found. Use 'help' for more information."
+                );
 
-                    return request.DialogId;
-                }
+                return request.DialogId;
+            }
         }
 
         _mailSendService.SendSystemMessageToPlayer(
@@ -94,13 +98,10 @@ public class TraderSptCommand(
                 {
                     Id = _hashUtil.Generate(),
                     Template = Money.ROUBLES,
-                    Upd = new Upd
-                    {
-                        StackObjectsCount = 1
-                    },
+                    Upd = new Upd { StackObjectsCount = 1 },
                     ParentId = _hashUtil.Generate(),
-                    SlotId = "main"
-                }
+                    SlotId = "main",
+                },
             ],
             999999,
             [CreateProfileChangeEvent(profileChangeEventType, quantity, dbTrader.Id)]
@@ -109,14 +110,18 @@ public class TraderSptCommand(
         return request.DialogId;
     }
 
-    protected ProfileChangeEvent CreateProfileChangeEvent(ProfileChangeEventType profileChangeEventType, int quantity, string dbTraderId)
+    protected ProfileChangeEvent CreateProfileChangeEvent(
+        ProfileChangeEventType profileChangeEventType,
+        int quantity,
+        string dbTraderId
+    )
     {
         return new ProfileChangeEvent
         {
             Id = _hashUtil.Generate(),
             Type = profileChangeEventType,
             Value = quantity,
-            Entity = dbTraderId
+            Entity = dbTraderId,
         };
     }
 }

@@ -34,14 +34,35 @@ public class HttpRouter
     }
     */
 
-    public string? GetResponse(HttpRequest req, string sessionID, string? body, out object deserializedObject)
+    public string? GetResponse(
+        HttpRequest req,
+        string sessionID,
+        string? body,
+        out object deserializedObject
+    )
     {
         var wrapper = new ResponseWrapper("");
 
-        var handled = HandleRoute(req, sessionID, wrapper, _staticRouters, false, body, out deserializedObject);
+        var handled = HandleRoute(
+            req,
+            sessionID,
+            wrapper,
+            _staticRouters,
+            false,
+            body,
+            out deserializedObject
+        );
         if (!handled)
         {
-            HandleRoute(req, sessionID, wrapper, _dynamicRoutes, true, body, out deserializedObject);
+            HandleRoute(
+                req,
+                sessionID,
+                wrapper,
+                _dynamicRoutes,
+                true,
+                body,
+                out deserializedObject
+            );
         }
 
         return wrapper.Output;
@@ -73,11 +94,15 @@ public class HttpRouter
             {
                 if (dynamic)
                 {
-                    wrapper.Output = (route as DynamicRouter).HandleDynamic(url, body, sessionID, wrapper.Output) as string;
+                    wrapper.Output =
+                        (route as DynamicRouter).HandleDynamic(url, body, sessionID, wrapper.Output)
+                        as string;
                 }
                 else
                 {
-                    wrapper.Output = (route as StaticRouter).HandleStatic(url, body, sessionID, wrapper.Output) as string;
+                    wrapper.Output =
+                        (route as StaticRouter).HandleStatic(url, body, sessionID, wrapper.Output)
+                        as string;
                 }
 
                 matched = true;
@@ -89,10 +114,6 @@ public class HttpRouter
 
     protected class ResponseWrapper(string? output)
     {
-        public string? Output
-        {
-            get;
-            set;
-        } = output;
+        public string? Output { get; set; } = output;
     }
 }

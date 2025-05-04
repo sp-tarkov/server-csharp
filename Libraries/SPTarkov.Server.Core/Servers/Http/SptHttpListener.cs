@@ -28,7 +28,6 @@ public class SptHttpListener : IHttpListener
     protected readonly ISptLogger<SptHttpListener> _logger;
     protected readonly ISptLogger<RequestLogger> _requestLogger;
 
-
     protected readonly HttpRouter _router;
     protected readonly IEnumerable<ISerializer> _serializers;
 
@@ -61,71 +60,78 @@ public class SptHttpListener : IHttpListener
         switch (req.Method)
         {
             case "GET":
-                {
-                    var response = GetResponse(sessionId, req, null);
-                    SendResponse(sessionId, req, resp, null, response);
-                    break;
-                }
+            {
+                var response = GetResponse(sessionId, req, null);
+                SendResponse(sessionId, req, resp, null, response);
+                break;
+            }
             // these are handled almost identically.
             case "POST":
             case "PUT":
+            {
+                // Contrary to reasonable expectations, the content-encoding is _not_ actually used to
+                // determine if the payload is compressed. All PUT requests are, and POST requests without
+                // debug = 1 are as well. This should be fixed.
+                // let compressed = req.headers["content-encoding"] === "deflate";
+                var requestIsCompressed =
+                    !req.Headers.TryGetValue("requestcompressed", out var compressHeader)
+                    || compressHeader != "0";
+                var requestCompressed = req.Method == "PUT" || requestIsCompressed;
+
+                // reserve some capacity to avoid having the list to resize
+                var totalRead = new List<byte>(InitialCapacityForListBuffer);
+                // read 1KB at a time
+                var memory = new Memory<byte>(new byte[BodyReadBufferSize]);
+                var readTask = req.Body.ReadAsync(memory).AsTask();
+                readTask.Wait();
+                var readBytes = 0;
+                while (readTask.Result != 0)
                 {
-                    // Contrary to reasonable expectations, the content-encoding is _not_ actually used to
-                    // determine if the payload is compressed. All PUT requests are, and POST requests without
-                    // debug = 1 are as well. This should be fixed.
-                    // let compressed = req.headers["content-encoding"] === "deflate";
-                    var requestIsCompressed = !req.Headers.TryGetValue("requestcompressed", out var compressHeader) ||
-                                              compressHeader != "0";
-                    var requestCompressed = req.Method == "PUT" || requestIsCompressed;
-
-                    // reserve some capacity to avoid having the list to resize
-                    var totalRead = new List<byte>(InitialCapacityForListBuffer);
-                    // read 1KB at a time
-                    var memory = new Memory<byte>(new byte[BodyReadBufferSize]);
-                    var readTask = req.Body.ReadAsync(memory).AsTask();
+                    readBytes += readTask.Result;
+                    totalRead.AddRange(memory[..readTask.Result].ToArray());
+                    memory = new Memory<byte>(new byte[BodyReadBufferSize]);
+                    readTask = req.Body.ReadAsync(memory).AsTask();
                     readTask.Wait();
-                    var readBytes = 0;
-                    while (readTask.Result != 0)
-                    {
-                        readBytes += readTask.Result;
-                        totalRead.AddRange(memory[..readTask.Result].ToArray());
-                        memory = new Memory<byte>(new byte[BodyReadBufferSize]);
-                        readTask = req.Body.ReadAsync(memory).AsTask();
-                        readTask.Wait();
-                    }
-
-                    string value;
-                    if (requestCompressed)
-                    {
-                        using var uncompressedDataStream = new MemoryStream();
-                        using var compressedDataStream = new MemoryStream(totalRead[..readBytes].ToArray());
-                        using var deflateStream = new ZLibStream(compressedDataStream, CompressionMode.Decompress, true);
-                        deflateStream.CopyTo(uncompressedDataStream);
-                        value = Encoding.UTF8.GetString(uncompressedDataStream.ToArray());
-                    }
-                    else
-                    {
-                        value = Encoding.UTF8.GetString(totalRead[..readBytes].ToArray());
-                    }
-
-                    if (!requestIsCompressed)
-                    {
-                        if (_logger.IsLogEnabled(LogLevel.Debug))
-                        {
-                            _logger.Debug(value);
-                        }
-                    }
-
-                    var response = GetResponse(sessionId, req, value);
-                    SendResponse(sessionId, req, resp, value, response);
-                    break;
                 }
+
+                string value;
+                if (requestCompressed)
+                {
+                    using var uncompressedDataStream = new MemoryStream();
+                    using var compressedDataStream = new MemoryStream(
+                        totalRead[..readBytes].ToArray()
+                    );
+                    using var deflateStream = new ZLibStream(
+                        compressedDataStream,
+                        CompressionMode.Decompress,
+                        true
+                    );
+                    deflateStream.CopyTo(uncompressedDataStream);
+                    value = Encoding.UTF8.GetString(uncompressedDataStream.ToArray());
+                }
+                else
+                {
+                    value = Encoding.UTF8.GetString(totalRead[..readBytes].ToArray());
+                }
+
+                if (!requestIsCompressed)
+                {
+                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    {
+                        _logger.Debug(value);
+                    }
+                }
+
+                var response = GetResponse(sessionId, req, value);
+                SendResponse(sessionId, req, resp, value, response);
+                break;
+            }
 
             default:
-                {
-                    _logger.Warning($"{_localisationService.GetText("unknown_request")}: {req.Method}");
-                    break;
-                }
+            {
+                _logger.Warning($"{_localisationService.GetText("unknown_request")}: {req.Method}");
+                break;
+            }
         }
     }
 
@@ -215,13 +221,20 @@ public class SptHttpListener : IHttpListener
         {
             _logger.Error(_localisationService.GetText("unhandled_response", req.Path.ToString()));
             _logger.Info(_jsonUtil.Serialize(deserializedObject));
-            output = _httpResponseUtil.GetBody<object?>(null, BackendErrorCodes.HTTPNotFound, $"UNHANDLED RESPONSE: {req.Path.ToString()}");
+            output = _httpResponseUtil.GetBody<object?>(
+                null,
+                BackendErrorCodes.HTTPNotFound,
+                $"UNHANDLED RESPONSE: {req.Path.ToString()}"
+            );
         }
 
         if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
         {
             // Parse quest info into object
-            var log = new Request(req.Method, new RequestData(req.Path, req.Headers, deserializedObject));
+            var log = new Request(
+                req.Method,
+                new RequestData(req.Path, req.Headers, deserializedObject)
+            );
             _requestLogger.Info($"REQUEST={_jsonUtil.Serialize(log)}");
         }
 

@@ -12,8 +12,7 @@ public class SaveCallbacks(
     SaveServer _saveServer,
     ConfigServer _configServer,
     BackupService _backupService
-)
-    : IOnLoad, IOnUpdate
+) : IOnLoad, IOnUpdate
 {
     private readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 

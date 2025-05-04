@@ -8,10 +8,7 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class RepairController(
-    EventOutputHolder _eventOutputHolder,
-    RepairService _repairService
-)
+public class RepairController(EventOutputHolder _eventOutputHolder, RepairService _repairService)
 {
     /// <summary>
     ///     Handle TraderRepair event
@@ -24,14 +21,20 @@ public class RepairController(
     public ItemEventRouterResponse TraderRepair(
         string sessionID,
         TraderRepairActionDataRequest body,
-        PmcData pmcData)
+        PmcData pmcData
+    )
     {
         var output = _eventOutputHolder.GetOutput(sessionID);
 
         // find the item to repair
         foreach (var repairItem in body.RepairItems)
         {
-            var repairDetails = _repairService.RepairItemByTrader(sessionID, pmcData, repairItem, body.TId);
+            var repairDetails = _repairService.RepairItemByTrader(
+                sessionID,
+                pmcData,
+                repairItem,
+                body.TId
+            );
 
             _repairService.PayForRepair(
                 sessionID,
@@ -68,7 +71,8 @@ public class RepairController(
     public ItemEventRouterResponse RepairWithKit(
         string sessionId,
         RepairActionDataRequest body,
-        PmcData pmcData)
+        PmcData pmcData
+    )
     {
         var output = _eventOutputHolder.GetOutput(sessionId);
 

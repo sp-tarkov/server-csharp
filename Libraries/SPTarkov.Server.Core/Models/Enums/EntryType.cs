@@ -6,5 +6,5 @@ public enum EntryType
     DEBUG,
     RELEASE,
     BLEEDING_EDGE,
-    BLEEDING_EDGE_MODS
+    BLEEDING_EDGE_MODS,
 }

@@ -5,5 +5,5 @@ public enum ItemDropSoundType
     None,
     Pistol,
     SubMachineGun,
-    Rifle
+    Rifle,
 }

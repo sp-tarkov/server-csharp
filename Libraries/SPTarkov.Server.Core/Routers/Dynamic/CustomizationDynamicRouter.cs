@@ -12,19 +12,21 @@ public class CustomizationDynamicRouter : DynamicRouter
     public CustomizationDynamicRouter(
         JsonUtil jsonUtil,
         CustomizationCallbacks customizationCallbacks
-    ) : base(
-        jsonUtil,
-        [
-            new RouteAction(
-                "/client/trading/customization/",
-                (
-                    url,
-                    info,
-                    sessionID,
-                    output
-                ) => { return customizationCallbacks.GetTraderSuits(url, info as EmptyRequestData, sessionID); })
-        ]
     )
-    {
-    }
+        : base(
+            jsonUtil,
+            [
+                new RouteAction(
+                    "/client/trading/customization/",
+                    (url, info, sessionID, output) =>
+                    {
+                        return customizationCallbacks.GetTraderSuits(
+                            url,
+                            info as EmptyRequestData,
+                            sessionID
+                        );
+                    }
+                ),
+            ]
+        ) { }
 }

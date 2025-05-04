@@ -30,21 +30,33 @@ public static class Program
         // validate and sort mods, this will also discard any mods that are invalid
         var sortedLoadedMods = ValidateMods(mods);
         // for harmony, we use the original list, as some mods may only be bepinex patches only
-        HarmonyBootstrapper.LoadAllPatches(mods.SelectMany(asm =>
-        {
-            return asm.Assemblies;
-        }).ToList());
+        HarmonyBootstrapper.LoadAllPatches(
+            mods.SelectMany(asm =>
+                {
+                    return asm.Assemblies;
+                })
+                .ToList()
+        );
 
         // register SPT components
-        DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
+        DependencyInjectionRegistrator.RegisterSptComponents(
+            typeof(Program).Assembly,
+            typeof(App).Assembly,
+            builder.Services
+        );
 
         if (ProgramStatics.MODS())
         {
             // register mod components from the filtered list
-            DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, sortedLoadedMods.SelectMany(a =>
-            {
-                return a.Assemblies;
-            }).ToList());
+            DependencyInjectionRegistrator.RegisterModOverrideComponents(
+                builder.Services,
+                sortedLoadedMods
+                    .SelectMany(a =>
+                    {
+                        return a.Assemblies;
+                    })
+                    .ToList()
+            );
         }
 
         var serviceProvider = builder.Services.BuildServiceProvider();
@@ -80,13 +92,15 @@ public static class Program
             GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
 
-
             var httpServerHelper = serviceProvider.GetService<HttpServerHelper>();
             // When the application is started by the HttpServer it will be added into the AppContext of the WebApplication
             // object, which we can use here to start the webapp.
             if (httpServerHelper != null)
             {
-                appContext?.GetLatestValue(ContextVariableType.WEB_APPLICATION)?.GetValue<WebApplication>().Run();
+                appContext
+                    ?.GetLatestValue(ContextVariableType.WEB_APPLICATION)
+                    ?.GetValue<WebApplication>()
+                    .Run();
             }
         }
         catch (Exception ex)
@@ -121,10 +135,14 @@ public static class Program
         // So we create a disposable web application that we will throw away after getting the mods to load
         var builder = CreateNewHostBuilder();
         // register SPT components
-        DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
+        DependencyInjectionRegistrator.RegisterSptComponents(
+            typeof(Program).Assembly,
+            typeof(App).Assembly,
+            builder.Services
+        );
         // register the mod validator components
-        var provider = builder.Services
-            .AddScoped(typeof(ISptLogger<ModValidator>), typeof(SptLogger<ModValidator>))
+        var provider = builder
+            .Services.AddScoped(typeof(ISptLogger<ModValidator>), typeof(SptLogger<ModValidator>))
             .AddScoped(typeof(ISemVer), typeof(SemanticVersioningSemVer))
             .AddSingleton<ModValidator>()
             .AddSingleton<ModLoadOrder>()

@@ -7,54 +7,26 @@ public record TraderServiceModel
 {
     [JsonPropertyName("serviceType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public TraderServiceType? ServiceType
-    {
-        get;
-        set;
-    }
+    public TraderServiceType? ServiceType { get; set; }
 
     [JsonPropertyName("itemsToPay")]
-    public Dictionary<string, int>? ItemsToPay
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, int>? ItemsToPay { get; set; }
 
     [JsonPropertyName("itemsToReceive")]
-    public List<string>? ItemsToReceive
-    {
-        get;
-        set;
-    }
+    public List<string>? ItemsToReceive { get; set; }
 
     [JsonPropertyName("subServices")]
-    public Dictionary<string, int>? SubServices
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, int>? SubServices { get; set; }
 
     [JsonPropertyName("requirements")]
-    public TraderServiceRequirementsModel? Requirements
-    {
-        get;
-        set;
-    }
+    public TraderServiceRequirementsModel? Requirements { get; set; }
 }
 
 public record TraderServiceRequirementsModel
 {
     [JsonPropertyName("completedQuests")]
-    public List<string>? CompletedQuests
-    {
-        get;
-        set;
-    }
+    public List<string>? CompletedQuests { get; set; }
 
     [JsonPropertyName("standings")]
-    public Dictionary<string, double>? Standings
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, double>? Standings { get; set; }
 }

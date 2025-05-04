@@ -6,17 +6,15 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class WeightedRandomHelper(
-    ISptLogger<WeightedRandomHelper> _logger,
-    RandomUtil _randomUtil
-)
+public class WeightedRandomHelper(ISptLogger<WeightedRandomHelper> _logger, RandomUtil _randomUtil)
 {
     /// <summary>
     ///     Choose an item from the passed in array based on the weightings of each
     /// </summary>
     /// <param name="values">Items and weights to use</param>
     /// <returns>Chosen item from array</returns>
-    public T GetWeightedValue<T>(Dictionary<T, double> values) where T : notnull
+    public T GetWeightedValue<T>(Dictionary<T, double> values)
+        where T : notnull
     {
         if (values.Count == 1)
         {
@@ -79,11 +77,7 @@ public class WeightedRandomHelper(
         {
             // Weights are all the same, early exit
             var randomIndex = _randomUtil.GetInt(0, items.Count - 1);
-            return new WeightedRandomResult<T>
-            {
-                Item = items[randomIndex],
-                Index = randomIndex
-            };
+            return new WeightedRandomResult<T> { Item = items[randomIndex], Index = randomIndex };
         }
 
         // Getting the random number in a range of [0...sum(weights)]
@@ -94,11 +88,7 @@ public class WeightedRandomHelper(
         {
             if (cumulativeWeights[itemIndex] >= randomNumber)
             {
-                return new WeightedRandomResult<T>
-                {
-                    Item = items[itemIndex],
-                    Index = itemIndex
-                };
+                return new WeightedRandomResult<T> { Item = items[itemIndex], Index = itemIndex };
             }
         }
 

@@ -16,7 +16,11 @@ public class TradeCallbacks(TradeController _tradeController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ProcessTrade(PmcData pmcData, ProcessBaseTradeRequestData info, string sessionID)
+    public ItemEventRouterResponse ProcessTrade(
+        PmcData pmcData,
+        ProcessBaseTradeRequestData info,
+        string sessionID
+    )
     {
         return _tradeController.ConfirmTrading(pmcData, info, sessionID);
     }
@@ -28,7 +32,11 @@ public class TradeCallbacks(TradeController _tradeController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ProcessRagfairTrade(PmcData pmcData, ProcessRagfairTradeRequestData info, string sessionID)
+    public ItemEventRouterResponse ProcessRagfairTrade(
+        PmcData pmcData,
+        ProcessRagfairTradeRequestData info,
+        string sessionID
+    )
     {
         return _tradeController.ConfirmRagfairTrading(pmcData, info, sessionID);
     }
@@ -40,7 +48,11 @@ public class TradeCallbacks(TradeController _tradeController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse SellAllFromSavage(PmcData pmcData, SellScavItemsToFenceRequestData info, string sessionID)
+    public ItemEventRouterResponse SellAllFromSavage(
+        PmcData pmcData,
+        SellScavItemsToFenceRequestData info,
+        string sessionID
+    )
     {
         return _tradeController.SellScavItemsToFence(pmcData, info, sessionID);
     }

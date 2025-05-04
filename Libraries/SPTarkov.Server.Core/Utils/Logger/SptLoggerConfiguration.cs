@@ -8,77 +8,41 @@ namespace SPTarkov.Server.Core.Utils.Logger;
 public class SptLoggerConfiguration
 {
     [JsonPropertyName("loggers")]
-    public List<BaseSptLoggerReference> Loggers
-    {
-        get;
-        set;
-    }
+    public List<BaseSptLoggerReference> Loggers { get; set; }
 
     [JsonPropertyName("poolingTimeMs")]
-    public uint PoolingTimeMs
-    {
-        get;
-        set;
-    } = 500;
+    public uint PoolingTimeMs { get; set; } = 500;
 }
 
 public abstract class BaseSptLoggerReference
 {
     [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public LoggerType Type
-    {
-        get;
-        set;
-    }
+    public LoggerType Type { get; set; }
 
     [JsonPropertyName("filters")]
-    public List<SptLoggerFilter> Filters
-    {
-        get;
-        set;
-    }
+    public List<SptLoggerFilter> Filters { get; set; }
 
     [JsonPropertyName("logLevel")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public LogLevel LogLevel
-    {
-        get;
-        set;
-    }
+    public LogLevel LogLevel { get; set; }
 
     [JsonPropertyName("format")]
-    public string Format
-    {
-        get;
-        set;
-    }
+    public string Format { get; set; }
 }
 
 public class SptLoggerFilter
 {
     [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public SptLoggerFilterType Type
-    {
-        get;
-        set;
-    }
+    public SptLoggerFilterType Type { get; set; }
 
     [JsonPropertyName("name")]
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
     [JsonPropertyName("matchingType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public MatchingType MatchingType
-    {
-        get;
-        set;
-    }
+    public MatchingType MatchingType { get; set; }
 
     protected bool Equals(SptLoggerFilter other)
     {
@@ -102,46 +66,39 @@ public class SptLoggerFilter
             return false;
         }
 
-        return Equals((SptLoggerFilter) obj);
+        return Equals((SptLoggerFilter)obj);
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine((int) Type, Name, (int) MatchingType);
+        return HashCode.Combine((int)Type, Name, (int)MatchingType);
     }
 }
 
 public class FileSptLoggerReference : BaseSptLoggerReference
 {
     [JsonPropertyName("filePath")]
-    public string FilePath
-    {
-        get;
-        set;
-    }
+    public string FilePath { get; set; }
 }
 
-public class ConsoleSptLoggerReference : BaseSptLoggerReference
-{
-}
+public class ConsoleSptLoggerReference : BaseSptLoggerReference { }
 
 public enum LoggerType
 {
     File,
-    Console
+    Console,
 }
-
 
 public enum MatchingType
 {
     Literal,
-    Regex
+    Regex,
 }
 
 public enum SptLoggerFilterType
 {
     Exclude,
-    Include
+    Include,
 }
 
 public static class SptLoggerFilterExtensions
@@ -173,7 +130,6 @@ public static class SptLoggerFilterExtensions
                     return false;
                 }
                 break;
-
         }
 
         return true;

@@ -14,9 +14,7 @@ public class HideoutItemEventRouter : ItemEventRouterDefinition
 {
     protected HideoutCallbacks _hideoutCallbacks;
 
-    public HideoutItemEventRouter
-    (
-        HideoutCallbacks hideoutCallbacks)
+    public HideoutItemEventRouter(HideoutCallbacks hideoutCallbacks)
     {
         _hideoutCallbacks = hideoutCallbacks;
     }
@@ -40,49 +38,123 @@ public class HideoutItemEventRouter : ItemEventRouterDefinition
             new HandledRoute(HideoutEventActions.HIDEOUT_CIRCLE_OF_CULTIST_PRODUCTION_START, false),
             new HandledRoute(HideoutEventActions.HIDEOUT_DELETE_PRODUCTION_COMMAND, false),
             new HandledRoute(HideoutEventActions.HIDEOUT_CUSTOMIZATION_APPLY_COMMAND, false),
-            new HandledRoute(HideoutEventActions.HIDEOUT_CUSTOMIZATION_SET_MANNEQUIN_POSE, false)
+            new HandledRoute(HideoutEventActions.HIDEOUT_CUSTOMIZATION_SET_MANNEQUIN_POSE, false),
         ];
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
-        ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(
+        string url,
+        PmcData pmcData,
+        BaseInteractionRequestData body,
+        string sessionID,
+        ItemEventRouterResponse output
+    )
     {
         switch (url)
         {
             case HideoutEventActions.HIDEOUT_UPGRADE:
-                return _hideoutCallbacks.Upgrade(pmcData, body as HideoutUpgradeRequestData, sessionID, output);
+                return _hideoutCallbacks.Upgrade(
+                    pmcData,
+                    body as HideoutUpgradeRequestData,
+                    sessionID,
+                    output
+                );
             case HideoutEventActions.HIDEOUT_UPGRADE_COMPLETE:
-                return _hideoutCallbacks.UpgradeComplete(pmcData, body as HideoutUpgradeCompleteRequestData, sessionID, output);
+                return _hideoutCallbacks.UpgradeComplete(
+                    pmcData,
+                    body as HideoutUpgradeCompleteRequestData,
+                    sessionID,
+                    output
+                );
             case HideoutEventActions.HIDEOUT_PUT_ITEMS_IN_AREA_SLOTS:
-                return _hideoutCallbacks.PutItemsInAreaSlots(pmcData, body as HideoutPutItemInRequestData, sessionID);
+                return _hideoutCallbacks.PutItemsInAreaSlots(
+                    pmcData,
+                    body as HideoutPutItemInRequestData,
+                    sessionID
+                );
             case HideoutEventActions.HIDEOUT_TAKE_ITEMS_FROM_AREA_SLOTS:
-                return _hideoutCallbacks.TakeItemsFromAreaSlots(pmcData, body as HideoutTakeItemOutRequestData, sessionID);
+                return _hideoutCallbacks.TakeItemsFromAreaSlots(
+                    pmcData,
+                    body as HideoutTakeItemOutRequestData,
+                    sessionID
+                );
             case HideoutEventActions.HIDEOUT_TOGGLE_AREA:
-                return _hideoutCallbacks.ToggleArea(pmcData, body as HideoutToggleAreaRequestData, sessionID);
+                return _hideoutCallbacks.ToggleArea(
+                    pmcData,
+                    body as HideoutToggleAreaRequestData,
+                    sessionID
+                );
             case HideoutEventActions.HIDEOUT_SINGLE_PRODUCTION_START:
-                return _hideoutCallbacks.SingleProductionStart(pmcData, body as HideoutSingleProductionStartRequestData, sessionID);
+                return _hideoutCallbacks.SingleProductionStart(
+                    pmcData,
+                    body as HideoutSingleProductionStartRequestData,
+                    sessionID
+                );
             case HideoutEventActions.HIDEOUT_SCAV_CASE_PRODUCTION_START:
-                return _hideoutCallbacks.ScavCaseProductionStart(pmcData, body as HideoutScavCaseStartRequestData, sessionID);
+                return _hideoutCallbacks.ScavCaseProductionStart(
+                    pmcData,
+                    body as HideoutScavCaseStartRequestData,
+                    sessionID
+                );
             case HideoutEventActions.HIDEOUT_CONTINUOUS_PRODUCTION_START:
-                return _hideoutCallbacks.ContinuousProductionStart(pmcData, body as HideoutContinuousProductionStartRequestData, sessionID);
+                return _hideoutCallbacks.ContinuousProductionStart(
+                    pmcData,
+                    body as HideoutContinuousProductionStartRequestData,
+                    sessionID
+                );
             case HideoutEventActions.HIDEOUT_TAKE_PRODUCTION:
-                return _hideoutCallbacks.TakeProduction(pmcData, body as HideoutTakeProductionRequestData, sessionID);
+                return _hideoutCallbacks.TakeProduction(
+                    pmcData,
+                    body as HideoutTakeProductionRequestData,
+                    sessionID
+                );
             case HideoutEventActions.HIDEOUT_RECORD_SHOOTING_RANGE_POINTS:
-                return _hideoutCallbacks.RecordShootingRangePoints(pmcData, body as RecordShootingRangePoints, sessionID, output);
+                return _hideoutCallbacks.RecordShootingRangePoints(
+                    pmcData,
+                    body as RecordShootingRangePoints,
+                    sessionID,
+                    output
+                );
             case HideoutEventActions.HIDEOUT_IMPROVE_AREA:
-                return _hideoutCallbacks.ImproveArea(pmcData, body as HideoutImproveAreaRequestData, sessionID);
+                return _hideoutCallbacks.ImproveArea(
+                    pmcData,
+                    body as HideoutImproveAreaRequestData,
+                    sessionID
+                );
             case HideoutEventActions.HIDEOUT_CANCEL_PRODUCTION_COMMAND:
-                return _hideoutCallbacks.CancelProduction(pmcData, body as HideoutCancelProductionRequestData, sessionID);
+                return _hideoutCallbacks.CancelProduction(
+                    pmcData,
+                    body as HideoutCancelProductionRequestData,
+                    sessionID
+                );
             case HideoutEventActions.HIDEOUT_CIRCLE_OF_CULTIST_PRODUCTION_START:
-                return _hideoutCallbacks.CicleOfCultistProductionStart(pmcData, body as HideoutCircleOfCultistProductionStartRequestData, sessionID);
+                return _hideoutCallbacks.CicleOfCultistProductionStart(
+                    pmcData,
+                    body as HideoutCircleOfCultistProductionStartRequestData,
+                    sessionID
+                );
             case HideoutEventActions.HIDEOUT_DELETE_PRODUCTION_COMMAND:
-                return _hideoutCallbacks.HideoutDeleteProductionCommand(pmcData, body as HideoutDeleteProductionRequestData, sessionID);
+                return _hideoutCallbacks.HideoutDeleteProductionCommand(
+                    pmcData,
+                    body as HideoutDeleteProductionRequestData,
+                    sessionID
+                );
             case HideoutEventActions.HIDEOUT_CUSTOMIZATION_APPLY_COMMAND:
-                return _hideoutCallbacks.HideoutCustomizationApplyCommand(pmcData, body as HideoutCustomizationApplyRequestData, sessionID);
+                return _hideoutCallbacks.HideoutCustomizationApplyCommand(
+                    pmcData,
+                    body as HideoutCustomizationApplyRequestData,
+                    sessionID
+                );
             case HideoutEventActions.HIDEOUT_CUSTOMIZATION_SET_MANNEQUIN_POSE:
-                return _hideoutCallbacks.HideoutCustomizationSetMannequinPose(pmcData, body as HideoutCustomizationSetMannequinPoseRequest, sessionID);
+                return _hideoutCallbacks.HideoutCustomizationSetMannequinPose(
+                    pmcData,
+                    body as HideoutCustomizationSetMannequinPoseRequest,
+                    sessionID
+                );
             default:
-                throw new Exception($"HideoutItemEventRouter being used when it cant handle route {url}");
+                throw new Exception(
+                    $"HideoutItemEventRouter being used when it cant handle route {url}"
+                );
         }
     }
 }

@@ -26,7 +26,8 @@ public class SaveServer(
     protected const string profileFilepath = "user/profiles/";
 
     // onLoad = require("../bindings/SaveLoad");
-    protected readonly Dictionary<string, Func<SptProfile, SptProfile>> onBeforeSaveCallbacks = new();
+    protected readonly Dictionary<string, Func<SptProfile, SptProfile>> onBeforeSaveCallbacks =
+        new();
 
     protected ConcurrentDictionary<string, SptProfile> profiles = new();
     protected ConcurrentDictionary<string, string> saveMd5 = new();
@@ -64,10 +65,12 @@ public class SaveServer(
             _fileUtil.CreateDirectory(profileFilepath);
         }
 
-        var files = _fileUtil.GetFiles(profileFilepath).Where(item =>
-        {
-            return _fileUtil.GetFileExtension(item) == "json";
-        });
+        var files = _fileUtil
+            .GetFiles(profileFilepath)
+            .Where(item =>
+            {
+                return _fileUtil.GetFileExtension(item) == "json";
+            });
 
         // load profiles
         var stopwatch = Stopwatch.StartNew();
@@ -79,7 +82,9 @@ public class SaveServer(
         stopwatch.Stop();
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"{files.Count()} Profiles took: {stopwatch.ElapsedMilliseconds}ms to load.");
+            _logger.Debug(
+                $"{files.Count()} Profiles took: {stopwatch.ElapsedMilliseconds}ms to load."
+            );
         }
     }
 
@@ -111,7 +116,9 @@ public class SaveServer(
     {
         if (string.IsNullOrEmpty(sessionId))
         {
-            throw new Exception("session id provided was empty, did you restart the server while the game was running?");
+            throw new Exception(
+                "session id provided was empty, did you restart the server while the game was running?"
+            );
         }
 
         if (profiles == null || profiles.Count == 0)
@@ -179,8 +186,8 @@ public class SaveServer(
                 CharacterData = new Characters
                 {
                     PmcData = new PmcData(),
-                    ScavData = new PmcData()
-                }
+                    ScavData = new PmcData(),
+                },
             }
         );
     }
@@ -210,8 +217,7 @@ public class SaveServer(
         }
 
         // Run callbacks
-        foreach (var callback in
-                 _saveLoadRouters) // HealthSaveLoadRouter, InraidSaveLoadRouter, InsuranceSaveLoadRouter, ProfileSaveLoadRouter. THESE SHOULD EXIST IN HERE
+        foreach (var callback in _saveLoadRouters) // HealthSaveLoadRouter, InraidSaveLoadRouter, InsuranceSaveLoadRouter, ProfileSaveLoadRouter. THESE SHOULD EXIST IN HERE
         {
             profiles[sessionID] = callback.HandleLoad(GetProfile(sessionID));
         }
@@ -240,11 +246,7 @@ public class SaveServer(
                 _logger.Error(
                     _localisationService.GetText(
                         "profile_save_callback_error",
-                        new
-                        {
-                            callback,
-                            error = e
-                        }
+                        new { callback, error = e }
                     )
                 );
                 profiles[sessionID] = previous;
@@ -252,7 +254,10 @@ public class SaveServer(
         }
 
         var start = Stopwatch.StartNew();
-        var jsonProfile = _jsonUtil.Serialize(profiles[sessionID], !_configServer.GetConfig<CoreConfig>().Features.CompressProfile);
+        var jsonProfile = _jsonUtil.Serialize(
+            profiles[sessionID],
+            !_configServer.GetConfig<CoreConfig>().Features.CompressProfile
+        );
         var fmd5 = _hashUtil.GenerateMd5ForData(jsonProfile);
         if (!saveMd5.TryGetValue(sessionID, out var currentMd5) || currentMd5 != fmd5)
         {
@@ -280,7 +285,6 @@ public class SaveServer(
             {
                 _logger.Error($"Unable to delete file, not found: {file}");
             }
-
         }
 
         return !_fileUtil.FileExists(file);

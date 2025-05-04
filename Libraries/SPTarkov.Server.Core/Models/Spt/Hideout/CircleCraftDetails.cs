@@ -7,30 +7,14 @@ namespace SPTarkov.Server.Core.Models.Spt.Hideout;
 public record CircleCraftDetails
 {
     [JsonPropertyName("time")]
-    public long Time
-    {
-        get;
-        set;
-    }
+    public long Time { get; set; }
 
     [JsonPropertyName("rewardType")]
-    public CircleRewardType? RewardType
-    {
-        get;
-        set;
-    }
+    public CircleRewardType? RewardType { get; set; }
 
     [JsonPropertyName("rewardAmountRoubles")]
-    public int? RewardAmountRoubles
-    {
-        get;
-        set;
-    }
+    public int? RewardAmountRoubles { get; set; }
 
     [JsonPropertyName("rewardDetails")]
-    public CraftTimeThreshold? RewardDetails
-    {
-        get;
-        set;
-    }
+    public CraftTimeThreshold? RewardDetails { get; set; }
 }

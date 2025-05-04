@@ -6,23 +6,11 @@ namespace SPTarkov.Server.Core.Models.Eft.Ws;
 public record WsGroupMatchInviteSend : WsNotificationEvent
 {
     [JsonPropertyName("requestId")]
-    public string? RequestId
-    {
-        get;
-        set;
-    }
+    public string? RequestId { get; set; }
 
     [JsonPropertyName("from")]
-    public int? From
-    {
-        get;
-        set;
-    }
+    public int? From { get; set; }
 
     [JsonPropertyName("members")]
-    public List<GroupCharacter>? Members
-    {
-        get;
-        set;
-    }
+    public List<GroupCharacter>? Members { get; set; }
 }

@@ -7,9 +7,7 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class ClientLogController(
-    ISptLogger<ClientLogController> _logger
-)
+public class ClientLogController(ISptLogger<ClientLogController> _logger)
 {
     /// <summary>
     ///     Handle /singleplayer/log

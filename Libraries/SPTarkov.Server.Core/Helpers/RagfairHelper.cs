@@ -83,12 +83,14 @@ public class RagfairHelper(
     public Dictionary<string, TraderAssort> GetDisplayableAssorts(string sessionId)
     {
         var result = new Dictionary<string, TraderAssort>();
-        foreach (var traderId in databaseService.GetTraders()
-                     .Keys
-                     .Where(traderId =>
-                     {
-                         return _ragfairConfig.Traders.ContainsKey(traderId);
-                     }))
+        foreach (
+            var traderId in databaseService
+                .GetTraders()
+                .Keys.Where(traderId =>
+                {
+                    return _ragfairConfig.Traders.ContainsKey(traderId);
+                })
+        )
         {
             result[traderId] = traderAssortHelper.GetAssort(sessionId, traderId, true);
         }
@@ -120,11 +122,15 @@ public class RagfairHelper(
             // list all item of the category
             result = handbookHelper.TemplatesWithParent(handbookId);
 
-            return handbookHelper.ChildrenCategories(handbookId)
-                .Aggregate(result, (current, category) =>
-                {
-                    return [.. current, .. handbookHelper.TemplatesWithParent(category)];
-                });
+            return handbookHelper
+                .ChildrenCategories(handbookId)
+                .Aggregate(
+                    result,
+                    (current, category) =>
+                    {
+                        return [.. current, .. handbookHelper.TemplatesWithParent(category)];
+                    }
+                );
         }
 
         // It's a specific item searched
@@ -184,7 +190,7 @@ public class RagfairHelper(
         {
             Money.EUROS => "€",
             Money.DOLLARS => "$",
-            _ => "₽"
+            _ => "₽",
         };
     }
 }

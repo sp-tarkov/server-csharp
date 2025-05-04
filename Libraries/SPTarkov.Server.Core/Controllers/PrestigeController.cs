@@ -23,8 +23,7 @@ public class PrestigeController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>Prestige</returns>
-    public Prestige GetPrestige(
-        string sessionId)
+    public Prestige GetPrestige(string sessionId)
     {
         return _databaseService.GetTemplates().Prestige;
     }
@@ -59,9 +58,7 @@ public class PrestigeController(
     ///     </list>
     /// </summary>
     /// <returns></returns>
-    public void ObtainPrestige(
-        string sessionId,
-        ObtainPrestigeRequestList request)
+    public void ObtainPrestige(string sessionId, ObtainPrestigeRequestList request)
     {
         var profile = _profileHelper.GetFullProfile(sessionId);
         if (profile is not null)
@@ -69,7 +66,7 @@ public class PrestigeController(
             var pendingPrestige = new PendingPrestige
             {
                 PrestigeLevel = profile.CharacterData.PmcData.Info.PrestigeLevel + 1,
-                Items = request
+                Items = request,
             };
 
             profile.SptData.PendingPrestige = pendingPrestige;

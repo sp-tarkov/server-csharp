@@ -22,7 +22,8 @@ public class NotifierHelper(HttpServerHelper _httpServerHelper)
      */
     public WsRagfairOfferSold CreateRagfairOfferSoldNotification(
         Message dialogueMessage,
-        MessageContentRagfair ragfairData)
+        MessageContentRagfair ragfairData
+    )
     {
         return new WsRagfairOfferSold
         {
@@ -30,7 +31,7 @@ public class NotifierHelper(HttpServerHelper _httpServerHelper)
             EventIdentifier = dialogueMessage.Id,
             OfferId = ragfairData.OfferId,
             HandbookId = ragfairData.HandbookId,
-            Count = (int) ragfairData.Count
+            Count = (int)ragfairData.Count,
         };
     }
 
@@ -46,7 +47,7 @@ public class NotifierHelper(HttpServerHelper _httpServerHelper)
             EventType = NotificationEventType.new_message,
             EventIdentifier = dialogueMessage.Id,
             DialogId = dialogueMessage.UserId,
-            Message = dialogueMessage
+            Message = dialogueMessage,
         };
     }
 

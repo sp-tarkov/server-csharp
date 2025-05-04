@@ -29,7 +29,8 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
         MathUtil mathUtil,
         ICloner cloner,
         ICollection<ProbabilityObject<K, V>>? items = null
-    ) : base(items ?? [])
+    )
+        : base(items ?? [])
     {
         _mathUtil = mathUtil;
         _cloner = cloner;
@@ -56,7 +57,11 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     /// <returns>Filtered results</returns>
     public ProbabilityObjectArray<K, V> Filter(Predicate<ProbabilityObject<K, V>> predicate)
     {
-        var result = new ProbabilityObjectArray<K, V>(_mathUtil, _cloner, new List<ProbabilityObject<K, V>>());
+        var result = new ProbabilityObjectArray<K, V>(
+            _mathUtil,
+            _cloner,
+            new List<ProbabilityObject<K, V>>()
+        );
         foreach (var probabilityObject in this)
         {
             if (predicate.Invoke(probabilityObject))
@@ -92,10 +97,11 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     /// <returns>ProbabilityObjectArray without the dropped element</returns>
     public ProbabilityObjectArray<K, V> Drop(K key)
     {
-        return (ProbabilityObjectArray<K, V>) this.Where(r =>
-        {
-            return !r.Key?.Equals(key) ?? false;
-        });
+        return (ProbabilityObjectArray<K, V>)
+            this.Where(r =>
+            {
+                return !r.Key?.Equals(key) ?? false;
+            });
     }
 
     /// <summary>
@@ -131,11 +137,11 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
 
     /**
      * Get the maximum relative probability out of a ProbabilityObjectArray
-     * 
+     *
      * Example:
      * po = new ProbabilityObjectArray(new ProbabilityObject("a", 5), new ProbabilityObject("b", 1))
      * po.maxProbability() // returns 5
-     * 
+     *
      * @return      {number}                                                the maximum value of all relative probabilities in this ProbabilityObjectArray
      */
     public double MaxProbability()
@@ -169,7 +175,11 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
      * @param lockList list keys which shall be replaced even if drawing without replacement
      * @returns Array consisting of N random keys for this ProbabilityObjectArray
      */
-    public List<K> Draw(int drawCount = 1, bool removeAfterDraw = true, List<K>? neverRemoveWhitelist = null)
+    public List<K> Draw(
+        int drawCount = 1,
+        bool removeAfterDraw = true,
+        List<K>? neverRemoveWhitelist = null
+    )
     {
         neverRemoveWhitelist ??= [];
         if (Count == 0)
@@ -178,11 +188,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
         }
 
         var totals = this.Aggregate(
-            new
-            {
-                probArray = new List<double>(),
-                keyArray = new List<K>()
-            },
+            new { probArray = new List<double>(), keyArray = new List<K>() },
             (acc, x) =>
             {
                 acc.probArray.Add(x.RelativeProbability.Value);
@@ -236,9 +242,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
 /// <typeparam name="V"></typeparam>
 public class ProbabilityObject<K, V>
 {
-    public ProbabilityObject()
-    {
-    }
+    public ProbabilityObject() { }
 
     /**
      * constructor for the ProbabilityObject
@@ -254,26 +258,14 @@ public class ProbabilityObject<K, V>
     }
 
     [JsonPropertyName("key")]
-    public K? Key
-    {
-        get;
-        set;
-    }
+    public K? Key { get; set; }
 
     /// <summary>
     ///     Weighting of key compared to other ProbabilityObjects
     /// </summary>
     [JsonPropertyName("relativeProbability")]
-    public double? RelativeProbability
-    {
-        get;
-        set;
-    }
+    public double? RelativeProbability { get; set; }
 
     [JsonPropertyName("data")]
-    public V? Data
-    {
-        get;
-        set;
-    }
+    public V? Data { get; set; }
 }

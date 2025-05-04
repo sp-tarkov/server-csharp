@@ -17,11 +17,17 @@ public class BotEquipmentModPoolService
     protected BotConfig _botConfig;
     protected ConfigServer _configServer;
     protected DatabaseService _databaseService;
-    protected ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>> _gearModPool;
+    protected ConcurrentDictionary<
+        string,
+        ConcurrentDictionary<string, HashSet<string>>
+    > _gearModPool;
     protected ItemHelper _itemHelper;
     protected LocalisationService _localisationService;
     protected ISptLogger<BotEquipmentModPoolService> _logger;
-    protected ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>> _weaponModPool;
+    protected ConcurrentDictionary<
+        string,
+        ConcurrentDictionary<string, HashSet<string>>
+    > _weaponModPool;
 
     protected bool _weaponPoolGenerated;
 
@@ -40,8 +46,10 @@ public class BotEquipmentModPoolService
         _configServer = configServer;
         _botConfig = _configServer.GetConfig<BotConfig>();
 
-        _weaponModPool = new ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>>();
-        _gearModPool = new ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>>();
+        _weaponModPool =
+            new ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>>();
+        _gearModPool =
+            new ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>>();
     }
 
     /// <summary>
@@ -53,7 +61,9 @@ public class BotEquipmentModPoolService
     {
         if (items is null)
         {
-            _logger.Error(_localisationService.GetText("bot-unable_to_generate_item_pool_no_items", poolType));
+            _logger.Error(
+                _localisationService.GetText("bot-unable_to_generate_item_pool_no_items", poolType)
+            );
 
             return;
         }
@@ -67,11 +77,7 @@ public class BotEquipmentModPoolService
                 _logger.Error(
                     _localisationService.GetText(
                         "bot-item_missing_props_property",
-                        new
-                        {
-                            itemTpl = item.Id,
-                            name = item.Name
-                        }
+                        new { itemTpl = item.Id, name = item.Name }
                     )
                 );
 
@@ -136,7 +142,10 @@ public class BotEquipmentModPoolService
         }
     }
 
-    private bool InitSetInDict(ConcurrentDictionary<string, HashSet<string>> dictionary, string slotName)
+    private bool InitSetInDict(
+        ConcurrentDictionary<string, HashSet<string>> dictionary,
+        string slotName
+    )
     {
         lock (_lockObject)
         {
@@ -181,9 +190,7 @@ public class BotEquipmentModPoolService
             GenerateGearPool();
         }
 
-        return _gearModPool.TryGetValue(itemTpl, out var value)
-            ? value
-            : [];
+        return _gearModPool.TryGetValue(itemTpl, out var value) ? value : [];
     }
 
     /// <summary>
@@ -215,10 +222,12 @@ public class BotEquipmentModPoolService
         if (itemDb.Properties.Slots is not null)
         // Loop over slots flagged as 'required'
         {
-            foreach (var slot in itemDb.Properties.Slots.Where(slot =>
-            {
-                return slot.Required.GetValueOrDefault(false);
-            }))
+            foreach (
+                var slot in itemDb.Properties.Slots.Where(slot =>
+                {
+                    return slot.Required.GetValueOrDefault(false);
+                })
+            )
             {
                 // Create dict entry for mod slot
                 result.Add(slot.Name, []);
@@ -239,10 +248,12 @@ public class BotEquipmentModPoolService
     /// </summary>
     protected void GenerateWeaponPool()
     {
-        var weapons = _databaseService.GetItems()
+        var weapons = _databaseService
+            .GetItems()
             .Values.Where(item =>
             {
-                return string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase) && _itemHelper.IsOfBaseclass(item.Id, BaseClasses.WEAPON);
+                return string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)
+                    && _itemHelper.IsOfBaseclass(item.Id, BaseClasses.WEAPON);
             });
         GeneratePool(weapons, "weapon");
 
@@ -255,19 +266,20 @@ public class BotEquipmentModPoolService
     /// </summary>
     protected void GenerateGearPool()
     {
-        var gear = _databaseService.GetItems()
+        var gear = _databaseService
+            .GetItems()
             .Values.Where(item =>
             {
-                return string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase) &&
-                                                  _itemHelper.IsOfBaseclasses(
-                                                      item.Id,
-                                                      [
-                                                          BaseClasses.ARMORED_EQUIPMENT,
-                                          BaseClasses.VEST,
-                                          BaseClasses.ARMOR,
-                                          BaseClasses.HEADWEAR
-                                                      ]
-                                                  );
+                return string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)
+                    && _itemHelper.IsOfBaseclasses(
+                        item.Id,
+                        [
+                            BaseClasses.ARMORED_EQUIPMENT,
+                            BaseClasses.VEST,
+                            BaseClasses.ARMOR,
+                            BaseClasses.HEADWEAR,
+                        ]
+                    );
             });
         GeneratePool(gear, "gear");
 

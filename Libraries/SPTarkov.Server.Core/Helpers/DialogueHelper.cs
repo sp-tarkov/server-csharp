@@ -34,7 +34,7 @@ public class DialogueHelper(
             DateTime = message?.DateTime,
             MessageType = message?.MessageType,
             TemplateId = message?.TemplateId,
-            UserId = dialogue?.Id
+            UserId = dialogue?.Id,
         };
 
         if (message?.Text is not null)
@@ -63,10 +63,11 @@ public class DialogueHelper(
         var dialogueData = fullProfile.DialogueRecords;
         foreach (var dialogue in dialogueData)
         {
-            var message = dialogueData[dialogue.Key].Messages.FirstOrDefault(x =>
-            {
-                return x.Id == messageID;
-            });
+            var message = dialogueData[dialogue.Key]
+                .Messages.FirstOrDefault(x =>
+                {
+                    return x.Id == messageID;
+                });
             if (message is null)
             {
                 continue;
@@ -112,7 +113,8 @@ public class DialogueHelper(
     public Dictionary<string, Models.Eft.Profile.Dialogue> GetDialogsForProfile(string sessionId)
     {
         var profile = _profileHelper.GetFullProfile(sessionId);
-        return profile.DialogueRecords ?? (profile.DialogueRecords = new Dictionary<string, Models.Eft.Profile.Dialogue>());
+        return profile.DialogueRecords
+            ?? (profile.DialogueRecords = new Dictionary<string, Models.Eft.Profile.Dialogue>());
     }
 
     /// <summary>

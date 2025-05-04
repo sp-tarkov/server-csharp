@@ -4,5 +4,5 @@ public enum DogtagExchangeSide
 {
     Usec,
     Bear,
-    Any
+    Any,
 }

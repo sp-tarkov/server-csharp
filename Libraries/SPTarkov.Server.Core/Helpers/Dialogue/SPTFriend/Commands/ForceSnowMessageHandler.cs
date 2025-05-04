@@ -14,7 +14,8 @@ public class ForceSnowMessageHandler(
     LocalisationService _localisationService,
     MailSendService _mailSendService,
     RandomUtil _randomUtil,
-    ConfigServer _configServer) : IChatMessageHandler
+    ConfigServer _configServer
+) : IChatMessageHandler
 {
     private readonly WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
 
@@ -28,7 +29,12 @@ public class ForceSnowMessageHandler(
         return message.ToLower() == "itsonlysnowalan";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
+    public void Process(
+        string sessionId,
+        UserDialogInfo sptFriendUser,
+        PmcData? sender,
+        object? extraInfo = null
+    )
     {
         _weatherConfig.OverrideSeason = Season.WINTER;
 

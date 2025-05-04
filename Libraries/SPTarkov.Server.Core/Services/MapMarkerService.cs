@@ -8,9 +8,7 @@ using SPTarkov.Server.Core.Models.Utils;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable]
-public class MapMarkerService(
-    ISptLogger<MapMarkerService> _logger
-)
+public class MapMarkerService(ISptLogger<MapMarkerService> _logger)
 {
     /// <summary>
     ///     Add note to a map item in player inventory
@@ -27,11 +25,7 @@ public class MapMarkerService(
         });
 
         // add marker to map item
-        mapItem.Upd.Map = mapItem?.Upd?.Map ??
-                          new UpdMap
-                          {
-                              Markers = new List<MapMarker>()
-                          };
+        mapItem.Upd.Map = mapItem?.Upd?.Map ?? new UpdMap { Markers = new List<MapMarker>() };
 
         // Update request note with text, then add to maps upd
         request.MapMarker.Note = SanitiseMapMarkerText(request.MapMarker.Note);
@@ -55,11 +49,11 @@ public class MapMarkerService(
         });
 
         // remove marker
-        var markers = mapItem.Upd.Map.Markers.Where(marker =>
-                {
-                    return marker.X != request.X && marker.Y != request.Y;
-                }
-            )
+        var markers = mapItem
+            .Upd.Map.Markers.Where(marker =>
+            {
+                return marker.X != request.X && marker.Y != request.Y;
+            })
             .ToList();
         mapItem.Upd.Map.Markers = markers;
 

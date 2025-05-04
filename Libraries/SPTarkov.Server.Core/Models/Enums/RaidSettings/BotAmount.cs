@@ -7,5 +7,5 @@ public enum BotAmount
     Low,
     Medium,
     High,
-    Horde
+    Horde,
 }

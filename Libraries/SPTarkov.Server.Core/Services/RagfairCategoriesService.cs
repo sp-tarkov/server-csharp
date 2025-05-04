@@ -22,55 +22,67 @@ public class RagfairCategoriesService(
     public Dictionary<string, int> GetCategoriesFromOffers(
         List<RagfairOffer> offers,
         SearchRequestData searchRequestData,
-        bool fleaUnlocked)
+        bool fleaUnlocked
+    )
     {
         // Get offers valid for search request, then reduce them down to just the counts
         return offers
             .Where(offer =>
+            {
+                var isTraderOffer = offer.User.MemberType == MemberCategory.Trader;
+
+                // Not level 15 and offer is from player, skip
+                if (!fleaUnlocked && !isTraderOffer)
                 {
-                    var isTraderOffer = offer.User.MemberType == MemberCategory.Trader;
-
-                    // Not level 15 and offer is from player, skip
-                    if (!fleaUnlocked && !isTraderOffer)
-                    {
-                        return false;
-                    }
-
-                    // Skip items not for currency when `removeBartering` is enabled
-                    if (
-                        searchRequestData.RemoveBartering.GetValueOrDefault(false) &&
-                        (offer.Requirements.Count > 1 || !_paymentHelper.IsMoneyTpl(offer.Requirements.FirstOrDefault().Template))
-                    )
-                    {
-                        return false;
-                    }
-
-                    // Remove when filter set to players only + offer is from trader
-                    if (searchRequestData.OfferOwnerType == OfferOwnerType.PLAYEROWNERTYPE && isTraderOffer)
-                    {
-                        return false;
-                    }
-
-                    // Remove when filter set to traders only + offer is not from trader
-                    if (searchRequestData.OfferOwnerType == OfferOwnerType.TRADEROWNERTYPE && !isTraderOffer)
-                    {
-                        return false;
-                    }
-
-                    // Passed checks, it's a valid offer to process
-                    return true;
+                    return false;
                 }
-            )
+
+                // Skip items not for currency when `removeBartering` is enabled
+                if (
+                    searchRequestData.RemoveBartering.GetValueOrDefault(false)
+                    && (
+                        offer.Requirements.Count > 1
+                        || !_paymentHelper.IsMoneyTpl(offer.Requirements.FirstOrDefault().Template)
+                    )
+                )
+                {
+                    return false;
+                }
+
+                // Remove when filter set to players only + offer is from trader
+                if (
+                    searchRequestData.OfferOwnerType == OfferOwnerType.PLAYEROWNERTYPE
+                    && isTraderOffer
+                )
+                {
+                    return false;
+                }
+
+                // Remove when filter set to traders only + offer is not from trader
+                if (
+                    searchRequestData.OfferOwnerType == OfferOwnerType.TRADEROWNERTYPE
+                    && !isTraderOffer
+                )
+                {
+                    return false;
+                }
+
+                // Passed checks, it's a valid offer to process
+                return true;
+            })
             .GroupBy(x =>
             {
                 return x.Items.FirstOrDefault().Template;
             })
-            .ToDictionary(group =>
-            {
-                return group.Key;
-            }, group =>
-            {
-                return group.Count();
-            });
+            .ToDictionary(
+                group =>
+                {
+                    return group.Key;
+                },
+                group =>
+                {
+                    return group.Count();
+                }
+            );
     }
 }

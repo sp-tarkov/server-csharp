@@ -8,32 +8,18 @@ public record ExhaustableArray<T> : IExhaustableArray<T>
     private readonly RandomUtil _randomUtil;
     private readonly LinkedList<T>? pool;
 
-    public ExhaustableArray(
-        T[]? itemPool,
-        RandomUtil randomUtil,
-        ICloner cloner
-    ) : this(new LinkedList<T>(itemPool ?? []), randomUtil, cloner)
-    {
-    }
+    public ExhaustableArray(T[]? itemPool, RandomUtil randomUtil, ICloner cloner)
+        : this(new LinkedList<T>(itemPool ?? []), randomUtil, cloner) { }
 
-    public ExhaustableArray(
-        LinkedList<T>? itemPool,
-        RandomUtil randomUtil,
-        ICloner cloner
-    )
+    public ExhaustableArray(LinkedList<T>? itemPool, RandomUtil randomUtil, ICloner cloner)
     {
         _cloner = cloner;
         _randomUtil = randomUtil;
         pool = cloner.Clone(itemPool ?? []);
     }
 
-    public ExhaustableArray(
-        ICollection<T>? itemPool,
-        RandomUtil randomUtil,
-        ICloner cloner
-    ) : this(new LinkedList<T>(itemPool ?? []), randomUtil, cloner)
-    {
-    }
+    public ExhaustableArray(ICollection<T>? itemPool, RandomUtil randomUtil, ICloner cloner)
+        : this(new LinkedList<T>(itemPool ?? []), randomUtil, cloner) { }
 
     public T? GetRandomValue()
     {

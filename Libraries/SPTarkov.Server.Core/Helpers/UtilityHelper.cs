@@ -11,8 +11,9 @@ public class UtilityHelper
         // gives error Delegate type could not be infered
 
         return a.Where(x =>
-        {
-            return b.Contains(x);
-        }).ToList();
+            {
+                return b.Contains(x);
+            })
+            .ToList();
     }
 }

@@ -7,5 +7,5 @@ public enum PlayerSideMask
     Bear,
     Savage,
     Pmc,
-    All
+    All,
 }

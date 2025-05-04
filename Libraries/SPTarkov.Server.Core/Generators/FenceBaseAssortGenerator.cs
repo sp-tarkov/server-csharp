@@ -60,24 +60,29 @@ public class FenceBaseAssortGenerator(
             // Item base type blacklisted
             if (traderConfig.Fence.Blacklist.Count > 0)
             {
-                if (traderConfig.Fence.Blacklist.Contains(rootItemDb.Id) ||
-                    itemHelper.IsOfBaseclasses(rootItemDb.Id, traderConfig.Fence.Blacklist)
-                   )
+                if (
+                    traderConfig.Fence.Blacklist.Contains(rootItemDb.Id)
+                    || itemHelper.IsOfBaseclasses(rootItemDb.Id, traderConfig.Fence.Blacklist)
+                )
                 {
                     continue;
                 }
             }
 
             // Only allow rigs with no slots (carrier rigs)
-            if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.VEST) &&
-                (rootItemDb.Properties?.Slots?.Count ?? 0) > 0
-               )
+            if (
+                itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.VEST)
+                && (rootItemDb.Properties?.Slots?.Count ?? 0) > 0
+            )
             {
                 continue;
             }
 
             // Skip seasonal event items when not in seasonal event
-            if (traderConfig.Fence.BlacklistSeasonalItems && blockedSeasonalItems.Contains(rootItemDb.Id))
+            if (
+                traderConfig.Fence.BlacklistSeasonalItems
+                && blockedSeasonalItems.Contains(rootItemDb.Id)
+            )
             {
                 continue;
             }
@@ -91,11 +96,8 @@ public class FenceBaseAssortGenerator(
                     Template = rootItemDb.Id,
                     ParentId = "hideout",
                     SlotId = "hideout",
-                    Upd = new Upd
-                    {
-                        StackObjectsCount = 9999999
-                    }
-                }
+                    Upd = new Upd { StackObjectsCount = 9999999 },
+                },
             };
 
             // Ensure ammo is not above penetration limit value
@@ -127,12 +129,17 @@ public class FenceBaseAssortGenerator(
             // Create barter scheme (price)
             var barterSchemeToAdd = new BarterScheme
             {
-                Count = Math.Round((double) fenceService.GetItemPrice(rootItemDb.Id, itemWithChildrenToAdd)),
-                Template = Money.ROUBLES
+                Count = Math.Round(
+                    (double)fenceService.GetItemPrice(rootItemDb.Id, itemWithChildrenToAdd)
+                ),
+                Template = Money.ROUBLES,
             };
 
             // Add barter data to base
-            baseFenceAssort.BarterScheme[itemWithChildrenToAdd[0].Id] = [[barterSchemeToAdd]];
+            baseFenceAssort.BarterScheme[itemWithChildrenToAdd[0].Id] =
+            [
+                [barterSchemeToAdd],
+            ];
 
             // Add item to base
             baseFenceAssort.Items.AddRange(itemWithChildrenToAdd);
@@ -146,10 +153,12 @@ public class FenceBaseAssortGenerator(
         foreach (var defaultPreset in defaultPresets)
         {
             // Skip presets we've already added
-            if (baseFenceAssort.Items.Any(item =>
-            {
-                return item.Upd != null && item.Upd.SptPresetId == defaultPreset.Id;
-            }))
+            if (
+                baseFenceAssort.Items.Any(item =>
+                {
+                    return item.Upd != null && item.Upd.SptPresetId == defaultPreset.Id;
+                })
+            )
             {
                 continue;
             }
@@ -170,8 +179,7 @@ public class FenceBaseAssortGenerator(
                     mod.Upd = new Upd
                     {
                         StackObjectsCount = 1,
-                        SptPresetId =
-                            defaultPreset.Id // Store preset id here so we can check it later to prevent preset dupes
+                        SptPresetId = defaultPreset.Id, // Store preset id here so we can check it later to prevent preset dupes
                     };
 
                     // Updated root item, exit loop
@@ -194,9 +202,9 @@ public class FenceBaseAssortGenerator(
                     new BarterScheme
                     {
                         Template = Money.ROUBLES,
-                        Count = Math.Round(price * itemQualityModifier)
-                    }
-                }
+                        Count = Math.Round(price * itemQualityModifier),
+                    },
+                },
             };
 
             baseFenceAssort.LoyalLevelItems[itemAndChildren[0].Id] = 1;
@@ -213,7 +221,12 @@ public class FenceBaseAssortGenerator(
         var ammoPenetrationPower = GetAmmoPenetrationPower(rootItemDb);
         if (ammoPenetrationPower == null)
         {
-            logger.Warning(localisationService.GetText("fence-unable_to_get_ammo_penetration_value", rootItemDb.Id));
+            logger.Warning(
+                localisationService.GetText(
+                    "fence-unable_to_get_ammo_penetration_value",
+                    rootItemDb.Id
+                )
+            );
             return false;
         }
 
@@ -230,13 +243,18 @@ public class FenceBaseAssortGenerator(
         if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.AMMO_BOX))
         {
             // Get the cartridge tpl found inside ammo box
-            var cartridgeTplInBox = rootItemDb.Properties.StackSlots[0].Props.Filters[0].Filter.FirstOrDefault();
+            var cartridgeTplInBox = rootItemDb
+                .Properties.StackSlots[0]
+                .Props.Filters[0]
+                .Filter.FirstOrDefault();
 
             // Look up cartridge tpl in db
             var ammoItemDb = itemHelper.GetItem(cartridgeTplInBox);
             if (!ammoItemDb.Key)
             {
-                logger.Warning(localisationService.GetText("fence-ammo_not_found_in_db", cartridgeTplInBox));
+                logger.Warning(
+                    localisationService.GetText("fence-ammo_not_found_in_db", cartridgeTplInBox)
+                );
                 return null;
             }
 
@@ -268,18 +286,21 @@ public class FenceBaseAssortGenerator(
         }
 
         // Check for and add required soft inserts to armors
-        var requiredSlots = itemDbDetails.Properties.Slots.Where(slot =>
-        {
-            return slot.Required ?? false;
-        }).ToList();
+        var requiredSlots = itemDbDetails
+            .Properties.Slots.Where(slot =>
+            {
+                return slot.Required ?? false;
+            })
+            .ToList();
         var hasRequiredSlots = requiredSlots.Count > 0;
         if (hasRequiredSlots)
         {
             foreach (var requiredSlot in requiredSlots)
             {
-                var modItemDbDetails = itemHelper.GetItem(requiredSlot.Props.Filters[0].Plate).Value;
-                var plateTpl =
-                    requiredSlot.Props.Filters[0].Plate; // `Plate` property appears to be the 'default' item for slot
+                var modItemDbDetails = itemHelper
+                    .GetItem(requiredSlot.Props.Filters[0].Plate)
+                    .Value;
+                var plateTpl = requiredSlot.Props.Filters[0].Plate; // `Plate` property appears to be the 'default' item for slot
                 if (string.IsNullOrEmpty(plateTpl))
                 // Some bsg plate properties are empty, skip mod
                 {
@@ -297,9 +318,9 @@ public class FenceBaseAssortGenerator(
                         Repairable = new UpdRepairable
                         {
                             Durability = modItemDbDetails.Properties.MaxDurability,
-                            MaxDurability = modItemDbDetails.Properties.MaxDurability
-                        }
-                    }
+                            MaxDurability = modItemDbDetails.Properties.MaxDurability,
+                        },
+                    },
                 };
 
                 armor.Add(mod);
@@ -307,10 +328,11 @@ public class FenceBaseAssortGenerator(
         }
 
         // Check for and add plate items
-        var plateSlots = itemDbDetails.Properties.Slots.Where(slot =>
-        {
-            return itemHelper.IsRemovablePlateSlot(slot.Name);
-        })
+        var plateSlots = itemDbDetails
+            .Properties.Slots.Where(slot =>
+            {
+                return itemHelper.IsRemovablePlateSlot(slot.Name);
+            })
             .ToList();
         if (plateSlots.Count > 0)
         {
@@ -336,9 +358,9 @@ public class FenceBaseAssortGenerator(
                             Repairable = new UpdRepairable
                             {
                                 Durability = modItemDbDetails.Properties.MaxDurability,
-                                MaxDurability = modItemDbDetails.Properties.MaxDurability
-                            }
-                        }
+                                MaxDurability = modItemDbDetails.Properties.MaxDurability,
+                            },
+                        },
                     }
                 );
             }

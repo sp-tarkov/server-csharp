@@ -7,9 +7,8 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
-public class NikitaMessageHandler(
-    MailSendService _mailSendService,
-    RandomUtil _randomUtil) : IChatMessageHandler
+public class NikitaMessageHandler(MailSendService _mailSendService, RandomUtil _randomUtil)
+    : IChatMessageHandler
 {
     public int GetPriority()
     {
@@ -21,7 +20,12 @@ public class NikitaMessageHandler(
         return message.ToLower() == "nikita";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
+    public void Process(
+        string sessionId,
+        UserDialogInfo sptFriendUser,
+        PmcData? sender,
+        object? extraInfo = null
+    )
     {
         _mailSendService.SendUserMessageToPlayer(
             sessionId,
@@ -32,7 +36,7 @@ public class NikitaMessageHandler(
                     "Cool guy, he made EFT!",
                     "Legend",
                     "The mastermind of my suffering",
-                    "Remember when he said webel-webel-webel-webel, classic Nikita moment"
+                    "Remember when he said webel-webel-webel-webel, classic Nikita moment",
                 ]
             ),
             [],

@@ -4,5 +4,5 @@ public enum TransitionType
 {
     NONE = 0,
     COMMON = 1,
-    EVENT = 2
+    EVENT = 2,
 }

@@ -5,10 +5,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class ProbabilityHelper(
-    ISptLogger<ProbabilityHelper> _logger,
-    RandomUtil _randomUtil
-)
+public class ProbabilityHelper(ISptLogger<ProbabilityHelper> _logger, RandomUtil _randomUtil)
 {
     /// <summary>
     ///     Chance to roll a number out of 100
@@ -18,6 +15,6 @@ public class ProbabilityHelper(
     /// <returns>true if success</returns>
     public bool RollChance(double chance, double scale = 1)
     {
-        return _randomUtil.GetInt(1, (int) (100 * scale)) / (1 * scale) <= chance;
+        return _randomUtil.GetInt(1, (int)(100 * scale)) / (1 * scale) <= chance;
     }
 }

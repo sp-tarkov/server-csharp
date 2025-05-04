@@ -14,5 +14,5 @@ public enum ELocationName
     RezervBase,
     TarkovStreets,
     Labyrinth,
-    any
+    any,
 }

@@ -34,7 +34,9 @@ public abstract class AbstractDialogChatBot(
         });
         if (commandos.FirstOrDefault()?.GetCommands().Contains(splitCommand[1]) ?? false)
         {
-            return commandos.FirstOrDefault().Handle(splitCommand[1], GetChatBot(), sessionId, request);
+            return commandos
+                .FirstOrDefault()
+                .Handle(splitCommand[1], GetChatBot(), sessionId, request);
         }
 
         if (splitCommand.FirstOrDefault()?.ToLower() == "help")
@@ -102,10 +104,12 @@ public abstract class AbstractDialogChatBot(
 
     public void RegisterChatCommand(IChatCommand chatCommand)
     {
-        if (_chatCommands.Any(cc =>
-        {
-            return cc.GetCommandPrefix() == chatCommand.GetCommandPrefix();
-        }))
+        if (
+            _chatCommands.Any(cc =>
+            {
+                return cc.GetCommandPrefix() == chatCommand.GetCommandPrefix();
+            })
+        )
         {
             throw new Exception(
                 $"The command \"{chatCommand.GetCommandPrefix()}\" attempting to be registered already exists."

@@ -28,5 +28,5 @@ public enum BodyPartColliderType
     PelvisBack,
     RightSideChestDown,
     LeftSideChestDown,
-    RibcageLow
+    RibcageLow,
 }

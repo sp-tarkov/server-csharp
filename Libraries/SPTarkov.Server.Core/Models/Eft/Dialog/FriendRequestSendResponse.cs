@@ -6,23 +6,11 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 public record FriendRequestSendResponse
 {
     [JsonPropertyName("status")]
-    public BackendErrorCodes? Status
-    {
-        get;
-        set;
-    }
+    public BackendErrorCodes? Status { get; set; }
 
     [JsonPropertyName("requestId")]
-    public string? RequestId
-    {
-        get;
-        set;
-    }
+    public string? RequestId { get; set; }
 
     [JsonPropertyName("retryAfter")]
-    public int? RetryAfter
-    {
-        get;
-        set;
-    }
+    public int? RetryAfter { get; set; }
 }

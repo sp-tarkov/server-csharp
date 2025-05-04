@@ -11,17 +11,12 @@ namespace SPTarkov.Server.Core.Services;
 ///     Cache bots in a dictionary, keyed by the bots name, keying by name isnt ideal as its not unique but this is used by the post-raid system which doesnt have any bot ids, only name
 /// </summary>
 [Injectable(InjectionType.Singleton)]
-public class MatchBotDetailsCacheService(
-    ISptLogger<MatchBotDetailsCacheService> _logger
-)
+public class MatchBotDetailsCacheService(ISptLogger<MatchBotDetailsCacheService> _logger)
 {
-    private static readonly HashSet<string> _sidesToCache =
-    [
-        "pmcUSEC",
-        "pmcBEAR"
-    ];
+    private static readonly HashSet<string> _sidesToCache = ["pmcUSEC", "pmcBEAR"];
 
-    protected readonly ConcurrentDictionary<string, BotDetailsForChatMessages> BotDetailsCache = new();
+    protected readonly ConcurrentDictionary<string, BotDetailsForChatMessages> BotDetailsCache =
+        new();
 
     /// <summary>
     ///     Store a bot in the cache, keyed by its name.
@@ -36,24 +31,32 @@ public class MatchBotDetailsCacheService(
 
         if (botToCache.Info?.Nickname is null)
         {
-            _logger.Warning($"Unable to cache: {botToCache.Info?.Settings?.Role} bot with id: {botToCache.Id} as it lacks a nickname");
+            _logger.Warning(
+                $"Unable to cache: {botToCache.Info?.Settings?.Role} bot with id: {botToCache.Id} as it lacks a nickname"
+            );
             return;
         }
 
         // If bot isn't a PMC, skip
-        if (botToCache.Info?.Settings?.Role is null || !_sidesToCache.Contains(botToCache.Info.Settings.Role))
+        if (
+            botToCache.Info?.Settings?.Role is null
+            || !_sidesToCache.Contains(botToCache.Info.Settings.Role)
+        )
         {
             return;
         }
 
-        BotDetailsCache.TryAdd(botToCache.Id, new BotDetailsForChatMessages()
-        {
-            Nickname = botToCache.Info.Nickname.Trim(),
-            Side = botToCache.Info.Side == "pmcUSEC" ? DogtagSide.Usec : DogtagSide.Bear,
-            Aid = botToCache.Aid,
-            Type = botToCache.Info.MemberCategory,
-            Level = botToCache.Info.Level,
-        });
+        BotDetailsCache.TryAdd(
+            botToCache.Id,
+            new BotDetailsForChatMessages()
+            {
+                Nickname = botToCache.Info.Nickname.Trim(),
+                Side = botToCache.Info.Side == "pmcUSEC" ? DogtagSide.Usec : DogtagSide.Bear,
+                Aid = botToCache.Aid,
+                Type = botToCache.Info.MemberCategory,
+                Level = botToCache.Info.Level,
+            }
+        );
     }
 
     /// <summary>

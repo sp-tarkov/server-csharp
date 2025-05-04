@@ -2,6 +2,4 @@
 
 namespace SPTarkov.Server.Core.Models.Eft.Common;
 
-public record EmptyRequestData : IRequestData
-{
-}
+public record EmptyRequestData : IRequestData { }

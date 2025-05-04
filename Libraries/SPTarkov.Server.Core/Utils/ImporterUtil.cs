@@ -16,7 +16,12 @@ public class ImporterUtil
     protected ISptLogger<ImporterUtil> _logger;
     protected HashSet<string> directoriesToIgnore = ["./Assets/database/locales/server"];
 
-    protected HashSet<string> filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
+    protected HashSet<string> filesToIgnore =
+    [
+        "bearsuits.json",
+        "usecsuits.json",
+        "archivedquests.json",
+    ];
 
     public ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, JsonUtil jsonUtil)
     {
@@ -34,7 +39,7 @@ public class ImporterUtil
         return LoadRecursiveAsync(filepath, typeof(T), onReadCallback, onObjectDeserialized)
             .ContinueWith(res =>
             {
-                return (T) res.Result;
+                return (T)res.Result;
             });
     }
 
@@ -64,12 +69,24 @@ public class ImporterUtil
         // Process files
         foreach (var file in files)
         {
-            if (_fileUtil.GetFileExtension(file) != "json" || filesToIgnore.Contains(_fileUtil.GetFileNameAndExtension(file).ToLower()))
+            if (
+                _fileUtil.GetFileExtension(file) != "json"
+                || filesToIgnore.Contains(_fileUtil.GetFileNameAndExtension(file).ToLower())
+            )
             {
                 continue;
             }
 
-            tasks.Add(ProcessFileAsync(file, loadedType, onReadCallback, onObjectDeserialized, result, dictionaryLock));
+            tasks.Add(
+                ProcessFileAsync(
+                    file,
+                    loadedType,
+                    onReadCallback,
+                    onObjectDeserialized,
+                    result,
+                    dictionaryLock
+                )
+            );
         }
 
         // Process directories
@@ -153,7 +170,10 @@ public class ImporterUtil
 
             lock (dictionaryLock)
             {
-                setMethod.Invoke(result, isDictionary ? [directory, loadedData] : new[] { loadedData });
+                setMethod.Invoke(
+                    result,
+                    isDictionary ? [directory, loadedData] : new[] { loadedData }
+                );
             }
         }
         catch (Exception ex)
@@ -164,7 +184,10 @@ public class ImporterUtil
 
     private async Task<object> DeserializeFileAsync(FileStream fs, string file, Type propertyType)
     {
-        if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(LazyLoad<>))
+        if (
+            propertyType.IsGenericType
+            && propertyType.GetGenericTypeDefinition() == typeof(LazyLoad<>)
+        )
         {
             return CreateLazyLoadDeserialization(file, propertyType);
         }
@@ -199,7 +222,12 @@ public class ImporterUtil
         return Activator.CreateInstance(propertyType, expressionDelegate);
     }
 
-    public MethodInfo GetSetMethod(string propertyName, Type type, out Type propertyType, out bool isDictionary)
+    public MethodInfo GetSetMethod(
+        string propertyName,
+        Type type,
+        out Type propertyType,
+        out bool isDictionary
+    )
     {
         MethodInfo setMethod;
         isDictionary = false;
@@ -216,10 +244,10 @@ public class ImporterUtil
                 .FirstOrDefault(prop =>
                 {
                     return string.Equals(
-                                            prop.Name.ToLower(),
-                                            _fileUtil.StripExtension(propertyName).ToLower(),
-                                            StringComparison.Ordinal
-                                        );
+                        prop.Name.ToLower(),
+                        _fileUtil.StripExtension(propertyName).ToLower(),
+                        StringComparison.Ordinal
+                    );
                 });
 
             if (matchedProperty == null)

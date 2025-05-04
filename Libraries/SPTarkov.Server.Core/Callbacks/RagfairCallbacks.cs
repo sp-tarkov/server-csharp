@@ -12,7 +12,10 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.RagfairCallbacks)]
-[Injectable(InjectableTypeOverride = typeof(IOnUpdate), TypePriority = OnUpdateOrder.RagfairCallbacks)]
+[Injectable(
+    InjectableTypeOverride = typeof(IOnUpdate),
+    TypePriority = OnUpdateOrder.RagfairCallbacks
+)]
 [Injectable(InjectableTypeOverride = typeof(RagfairCallbacks))]
 public class RagfairCallbacks(
     HttpResponseUtil _httpResponseUtil,
@@ -88,7 +91,11 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse AddOffer(PmcData pmcData, AddOfferRequestData info, string sessionID)
+    public ItemEventRouterResponse AddOffer(
+        PmcData pmcData,
+        AddOfferRequestData info,
+        string sessionID
+    )
     {
         return _ragfairController.AddPlayerOffer(pmcData, info, sessionID);
     }
@@ -100,7 +107,11 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse RemoveOffer(PmcData pmcData, RemoveOfferRequestData info, string sessionID)
+    public ItemEventRouterResponse RemoveOffer(
+        PmcData pmcData,
+        RemoveOfferRequestData info,
+        string sessionID
+    )
     {
         return _ragfairController.FlagOfferForRemoval(info.OfferId, sessionID);
     }
@@ -112,7 +123,11 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ExtendOffer(PmcData pmcData, ExtendOfferRequestData info, string sessionID)
+    public ItemEventRouterResponse ExtendOffer(
+        PmcData pmcData,
+        ExtendOfferRequestData info,
+        string sessionID
+    )
     {
         return _ragfairController.ExtendOffer(info, sessionID);
     }
@@ -142,7 +157,11 @@ public class RagfairCallbacks(
         return _httpResponseUtil.NullResponse();
     }
 
-    public string StorePlayerOfferTaxAmount(string url, StorePlayerOfferTaxAmountRequestData info, string sessionID)
+    public string StorePlayerOfferTaxAmount(
+        string url,
+        StorePlayerOfferTaxAmountRequestData info,
+        string sessionID
+    )
     {
         _ragfairTaxService.StoreClientOfferTaxValue(sessionID, info);
         return _httpResponseUtil.NullResponse();

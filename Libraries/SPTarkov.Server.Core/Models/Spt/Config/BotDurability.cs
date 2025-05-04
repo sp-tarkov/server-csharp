@@ -5,25 +5,13 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record BotDurability
 {
     [JsonPropertyName("default")]
-    public DefaultDurability Default
-    {
-        get;
-        set;
-    }
+    public DefaultDurability Default { get; set; }
 
     [JsonPropertyName("botDurabilities")]
-    public Dictionary<string, DefaultDurability> BotDurabilities
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, DefaultDurability> BotDurabilities { get; set; }
 
     [JsonPropertyName("pmc")]
-    public PmcDurability Pmc
-    {
-        get;
-        set;
-    }
+    public PmcDurability Pmc { get; set; }
 }
 
 /// <summary>
@@ -32,147 +20,71 @@ public record BotDurability
 public record DefaultDurability
 {
     [JsonPropertyName("armor")]
-    public ArmorDurability Armor
-    {
-        get;
-        set;
-    }
+    public ArmorDurability Armor { get; set; }
 
     [JsonPropertyName("weapon")]
-    public WeaponDurability Weapon
-    {
-        get;
-        set;
-    }
+    public WeaponDurability Weapon { get; set; }
 }
 
 public record PmcDurability
 {
     [JsonPropertyName("armor")]
-    public PmcDurabilityArmor Armor
-    {
-        get;
-        set;
-    }
+    public PmcDurabilityArmor Armor { get; set; }
 
     [JsonPropertyName("weapon")]
-    public WeaponDurability Weapon
-    {
-        get;
-        set;
-    }
+    public WeaponDurability Weapon { get; set; }
 }
 
 public record PmcDurabilityArmor
 {
     [JsonPropertyName("lowestMaxPercent")]
-    public int LowestMaxPercent
-    {
-        get;
-        set;
-    }
+    public int LowestMaxPercent { get; set; }
 
     [JsonPropertyName("highestMaxPercent")]
-    public int HighestMaxPercent
-    {
-        get;
-        set;
-    }
+    public int HighestMaxPercent { get; set; }
 
     [JsonPropertyName("maxDelta")]
-    public int MaxDelta
-    {
-        get;
-        set;
-    }
+    public int MaxDelta { get; set; }
 
     [JsonPropertyName("minDelta")]
-    public int MinDelta
-    {
-        get;
-        set;
-    }
+    public int MinDelta { get; set; }
 
     [JsonPropertyName("minLimitPercent")]
-    public int MinLimitPercent
-    {
-        get;
-        set;
-    }
+    public int MinLimitPercent { get; set; }
 }
 
 public record ArmorDurability
 {
     [JsonPropertyName("maxDelta")]
-    public int MaxDelta
-    {
-        get;
-        set;
-    }
+    public int MaxDelta { get; set; }
 
     [JsonPropertyName("minDelta")]
-    public int MinDelta
-    {
-        get;
-        set;
-    }
+    public int MinDelta { get; set; }
 
     [JsonPropertyName("minLimitPercent")]
-    public int MinLimitPercent
-    {
-        get;
-        set;
-    }
+    public int MinLimitPercent { get; set; }
 
     [JsonPropertyName("lowestMaxPercent")]
-    public int LowestMaxPercent
-    {
-        get;
-        set;
-    }
+    public int LowestMaxPercent { get; set; }
 
     [JsonPropertyName("highestMaxPercent")]
-    public int HighestMaxPercent
-    {
-        get;
-        set;
-    }
+    public int HighestMaxPercent { get; set; }
 }
 
 public record WeaponDurability
 {
     [JsonPropertyName("lowestMax")]
-    public int LowestMax
-    {
-        get;
-        set;
-    }
+    public int LowestMax { get; set; }
 
     [JsonPropertyName("highestMax")]
-    public int HighestMax
-    {
-        get;
-        set;
-    }
+    public int HighestMax { get; set; }
 
     [JsonPropertyName("maxDelta")]
-    public int MaxDelta
-    {
-        get;
-        set;
-    }
+    public int MaxDelta { get; set; }
 
     [JsonPropertyName("minDelta")]
-    public int MinDelta
-    {
-        get;
-        set;
-    }
+    public int MinDelta { get; set; }
 
     [JsonPropertyName("minLimitPercent")]
-    public double MinLimitPercent
-    {
-        get;
-        set;
-    }
+    public double MinLimitPercent { get; set; }
 }

@@ -28,8 +28,10 @@ public class LocaleService(
         Dictionary<string, string>? localeToReturn;
 
         // if it can't get locales for language provided, default to en
-        if (TryGetLocaleDbWithCustomLocales(languageToUse, out localeToReturn) ||
-            TryGetLocaleDbWithCustomLocales("en", out localeToReturn))
+        if (
+            TryGetLocaleDbWithCustomLocales(languageToUse, out localeToReturn)
+            || TryGetLocaleDbWithCustomLocales("en", out localeToReturn)
+        )
         {
             // TODO: need to see if this needs to be cloned
             return RemovePraporTestMessage(localeToReturn);
@@ -44,10 +46,17 @@ public class LocaleService(
     /// <param name="languageKey">The language key for which the locale database should be retrieved.</param>
     /// <param name="localeToReturn">The resulting locale database as a dictionary, or null if the operation fails.</param>
     /// <returns>True if the locale database was successfully retrieved, otherwise false.</returns>
-    private bool TryGetLocaleDbWithCustomLocales(string languageKey, out Dictionary<string, string>? localeToReturn)
+    private bool TryGetLocaleDbWithCustomLocales(
+        string languageKey,
+        out Dictionary<string, string>? localeToReturn
+    )
     {
         localeToReturn = null;
-        if (!_databaseServer.GetTables().Locales.Global.TryGetValue(languageKey, out var keyedLocales))
+        if (
+            !_databaseServer
+                .GetTables()
+                .Locales.Global.TryGetValue(languageKey, out var keyedLocales)
+        )
         {
             return false;
         }
@@ -63,7 +72,6 @@ public class LocaleService(
         return true;
     }
 
-
     /// <summary>
     ///     Combines the provided database locales with custom locales, ensuring that all entries are merged into a single dictionary.
     ///     Custom locale entries will overwrite existing keys from the database locales if conflicts occur.
@@ -71,7 +79,10 @@ public class LocaleService(
     /// <param name="dbLocales">The dictionary containing locale entries from the database.</param>
     /// <param name="customLocales">The dictionary containing custom locale entries to be merged.</param>
     /// <returns>A dictionary representing the merged result of database and custom locales.</returns>
-    private Dictionary<string, string> CombineDbWithCustomLocales(Dictionary<string, string> dbLocales, Dictionary<string, string> customLocales)
+    private Dictionary<string, string> CombineDbWithCustomLocales(
+        Dictionary<string, string> dbLocales,
+        Dictionary<string, string> customLocales
+    )
     {
         try
         {
@@ -89,7 +100,8 @@ public class LocaleService(
                     group =>
                     {
                         return group.Last().Value;
-                    });
+                    }
+                );
         }
         catch (Exception e)
         {
@@ -181,7 +193,9 @@ public class LocaleService(
                 return "pt-pt";
             }
 
-            _logger.Warning($"Unsupported system language found: {baseNameCode}, falling back to english");
+            _logger.Warning(
+                $"Unsupported system language found: {baseNameCode}, falling back to english"
+            );
 
             return "en";
         }
@@ -227,7 +241,9 @@ public class LocaleService(
             return "ge";
         }
 
-        _logger.Warning($"Unsupported system language found: {languageCode}, falling back to english");
+        _logger.Warning(
+            $"Unsupported system language found: {languageCode}, falling back to english"
+        );
         return "en";
     }
 
@@ -242,10 +258,12 @@ public class LocaleService(
 
     public List<string> GetLocaleKeysThatStartsWithValue(string partialKey)
     {
-        return GetLocaleDb().Keys.Where(x =>
-        {
-            return x.StartsWith(partialKey);
-        }).ToList();
+        return GetLocaleDb()
+            .Keys.Where(x =>
+            {
+                return x.StartsWith(partialKey);
+            })
+            .ToList();
     }
 
     public void AddCustomClientLocale(string locale, string localeKey, string localeValue)
@@ -258,8 +276,12 @@ public class LocaleService(
         customClientLocales.Remove(localeKey);
     }
 
-    private void AddToDictionary(string locale, string localeKey, string localeValue,
-        Dictionary<string, Dictionary<string, string>> dictionaryToAddTo)
+    private void AddToDictionary(
+        string locale,
+        string localeKey,
+        string localeValue,
+        Dictionary<string, Dictionary<string, string>> dictionaryToAddTo
+    )
     {
         dictionaryToAddTo.TryAdd(locale, new Dictionary<string, string>());
         if (!dictionaryToAddTo.TryGetValue(locale, out var localeDictToAddTo))
@@ -278,7 +300,9 @@ public class LocaleService(
     /// <summary>
     ///     Blank out the "test" mail message from prapor
     /// </summary>
-    protected Dictionary<string, string> RemovePraporTestMessage(Dictionary<string, string> dbLocales)
+    protected Dictionary<string, string> RemovePraporTestMessage(
+        Dictionary<string, string> dbLocales
+    )
     {
         dbLocales["61687e2c3e526901fa76baf9"] = "";
         return dbLocales;

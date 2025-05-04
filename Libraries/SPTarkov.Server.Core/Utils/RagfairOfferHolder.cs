@@ -24,7 +24,9 @@ public class RagfairOfferHolder(
     protected readonly Lock _ragfairOperationLock = new();
 
     protected HashSet<string> _expiredOfferIds = [];
-    protected int _maxOffersPerTemplate = _configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
+    protected int _maxOffersPerTemplate = _configServer
+        .GetConfig<RagfairConfig>()
+        .Dynamic.OfferItemCount.Max;
     protected ConcurrentDictionary<string, RagfairOffer> _offersById = new();
     protected ConcurrentDictionary<string, HashSet<string>> _offersByTemplate = new(); // key = tplId, value = list of offerIds
     protected ConcurrentDictionary<string, HashSet<string>> _offersByTrader = new(); // key = traderId, value = list of offerIds
@@ -168,7 +170,9 @@ public class RagfairOfferHolder(
     {
         if (!_offersById.TryGetValue(offerId, out var offer))
         {
-            _logger.Warning(_localisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId));
+            _logger.Warning(
+                _localisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId)
+            );
             return;
         }
 
@@ -323,7 +327,9 @@ public class RagfairOfferHolder(
 
                 if (offer?.Items?.Count == 0)
                 {
-                    _logger.Error($"Unable to process expired offer: {expiredOfferId}, it has no items");
+                    _logger.Error(
+                        $"Unable to process expired offer: {expiredOfferId}, it has no items"
+                    );
                     continue;
                 }
 
@@ -355,7 +361,10 @@ public class RagfairOfferHolder(
         {
             foreach (var offer in GetOffers())
             {
-                if (_expiredOfferIds.Contains(offer.Id) || _ragfairServerHelper.IsTrader(offer.User.Id))
+                if (
+                    _expiredOfferIds.Contains(offer.Id)
+                    || _ragfairServerHelper.IsTrader(offer.User.Id)
+                )
                 {
                     // Already flagged or trader offer (handled separately), skip
                     continue;

@@ -9,24 +9,22 @@ namespace SPTarkov.Server.Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class HealthStaticRouter : StaticRouter
 {
-    public HealthStaticRouter(
-        JsonUtil jsonUtil,
-        HealthCallbacks healthCallbacks
-    ) : base(
-        jsonUtil,
-        [
-            new RouteAction(
-                "/client/hideout/workout",
-                (
-                    url,
-                    info,
-                    sessionID,
-                    output
-                ) => { return healthCallbacks.HandleWorkoutEffects(url, info as WorkoutData, sessionID); },
-                typeof(WorkoutData)
-            )
-        ]
-    )
-    {
-    }
+    public HealthStaticRouter(JsonUtil jsonUtil, HealthCallbacks healthCallbacks)
+        : base(
+            jsonUtil,
+            [
+                new RouteAction(
+                    "/client/hideout/workout",
+                    (url, info, sessionID, output) =>
+                    {
+                        return healthCallbacks.HandleWorkoutEffects(
+                            url,
+                            info as WorkoutData,
+                            sessionID
+                        );
+                    },
+                    typeof(WorkoutData)
+                ),
+            ]
+        ) { }
 }

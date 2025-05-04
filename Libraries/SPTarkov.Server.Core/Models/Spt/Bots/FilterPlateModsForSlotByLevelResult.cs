@@ -5,18 +5,10 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 public record FilterPlateModsForSlotByLevelResult
 {
     [JsonPropertyName("result")]
-    public Result? Result
-    {
-        get;
-        set;
-    }
+    public Result? Result { get; set; }
 
     [JsonPropertyName("plateModTpls")]
-    public HashSet<string>? PlateModTemplates
-    {
-        get;
-        set;
-    }
+    public HashSet<string>? PlateModTemplates { get; set; }
 }
 
 public enum Result
@@ -25,5 +17,5 @@ public enum Result
     SUCCESS = 1,
     NO_DEFAULT_FILTER = 2,
     NOT_PLATE_HOLDING_SLOT = 3,
-    LACKS_PLATE_WEIGHTS = 4
+    LACKS_PLATE_WEIGHTS = 4,
 }

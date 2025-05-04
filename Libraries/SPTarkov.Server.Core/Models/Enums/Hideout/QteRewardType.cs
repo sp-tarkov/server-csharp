@@ -5,5 +5,5 @@ public enum QteRewardType
     Skill,
     HealthEffect,
     MusclePain,
-    GymArmTrauma
+    GymArmTrauma,
 }

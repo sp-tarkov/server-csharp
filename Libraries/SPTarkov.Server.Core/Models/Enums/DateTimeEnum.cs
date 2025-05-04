@@ -3,5 +3,5 @@
 public enum DateTimeEnum
 {
     CURR,
-    PAST
+    PAST,
 }

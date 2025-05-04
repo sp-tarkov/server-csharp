@@ -41,7 +41,7 @@ public class HandbookHelper(
                     {
                         Id = itemTplKey.Key,
                         ParentId = data.ParentId,
-                        Price = data.Price
+                        Price = data.Price,
                     }
                 );
                 itemToUpdate = handbook.Items.FirstOrDefault(item =>
@@ -68,15 +68,26 @@ public class HandbookHelper(
 
         foreach (var handbookCategory in handbookDbClone.Categories)
         {
-            _handbookPriceCache.Categories.ById.TryAdd(handbookCategory.Id, handbookCategory.ParentId);
+            _handbookPriceCache.Categories.ById.TryAdd(
+                handbookCategory.Id,
+                handbookCategory.ParentId
+            );
             if (handbookCategory.ParentId is not null)
             {
-                if (!_handbookPriceCache.Categories.ByParent.TryGetValue(handbookCategory.ParentId, out _))
+                if (
+                    !_handbookPriceCache.Categories.ByParent.TryGetValue(
+                        handbookCategory.ParentId,
+                        out _
+                    )
+                )
                 {
                     _handbookPriceCache.Categories.ByParent.TryAdd(handbookCategory.ParentId, []);
                 }
 
-                _handbookPriceCache.Categories.ByParent.TryGetValue(handbookCategory.ParentId, out var array);
+                _handbookPriceCache.Categories.ByParent.TryGetValue(
+                    handbookCategory.ParentId,
+                    out var array
+                );
                 array.Add(handbookCategory.Id);
             }
         }
@@ -101,10 +112,12 @@ public class HandbookHelper(
             return item;
         }
 
-        var handbookItem = _databaseService.GetHandbook().Items?.FirstOrDefault(item =>
-        {
-            return item.Id == tpl;
-        });
+        var handbookItem = _databaseService
+            .GetHandbook()
+            .Items?.FirstOrDefault(item =>
+            {
+                return item.Id == tpl;
+            });
         if (handbookItem is null)
         {
             const int newValue = 0;
@@ -192,22 +205,22 @@ public class HandbookHelper(
     {
         if (currencyTypeTo == Money.ROUBLES)
         {
-            return (int) roubleCurrencyCount;
+            return (int)roubleCurrencyCount;
         }
 
         // Get price of currency from handbook
         var price = GetTemplatePrice(currencyTypeTo);
-        return price > 0
-            ? Math.Max(1, Math.Round(roubleCurrencyCount / price))
-            : 0;
+        return price > 0 ? Math.Max(1, Math.Round(roubleCurrencyCount / price)) : 0;
     }
 
     public HandbookCategory GetCategoryById(string handbookId)
     {
-        return _databaseService.GetHandbook().Categories.FirstOrDefault(category =>
-        {
-            return category.Id == handbookId;
-        });
+        return _databaseService
+            .GetHandbook()
+            .Categories.FirstOrDefault(category =>
+            {
+                return category.Id == handbookId;
+            });
     }
 }
 
@@ -219,17 +232,9 @@ public class LookupItem<T, I>
         ByParent = new Dictionary<string, List<I>>();
     }
 
-    public Dictionary<string, T> ById
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, T> ById { get; set; }
 
-    public Dictionary<string, List<I>> ByParent
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, List<I>> ByParent { get; set; }
 }
 
 public class LookupCollection
@@ -240,15 +245,7 @@ public class LookupCollection
         Categories = new LookupItem<string, string>();
     }
 
-    public LookupItem<double, string> Items
-    {
-        get;
-        set;
-    }
+    public LookupItem<double, string> Items { get; set; }
 
-    public LookupItem<string, string> Categories
-    {
-        get;
-        set;
-    }
+    public LookupItem<string, string> Categories { get; set; }
 }

@@ -10,9 +10,7 @@ public class ModHelper
     private readonly FileUtil _fileUtil;
     private readonly JsonUtil _jsonUtil;
 
-    public ModHelper(
-        FileUtil fileUtil,
-        JsonUtil jsonUtil)
+    public ModHelper(FileUtil fileUtil, JsonUtil jsonUtil)
     {
         _fileUtil = fileUtil;
         _jsonUtil = jsonUtil;

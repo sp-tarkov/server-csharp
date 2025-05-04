@@ -22,7 +22,9 @@ public class SptDialogueChatBot(
     IEnumerable<IChatMessageHandler> chatMessageHandlers
 ) : IDialogueChatBot
 {
-    protected IEnumerable<IChatMessageHandler> _chatMessageHandlers = ChatMessageHandlerSetup(chatMessageHandlers);
+    protected IEnumerable<IChatMessageHandler> _chatMessageHandlers = ChatMessageHandlerSetup(
+        chatMessageHandlers
+    );
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
     public UserDialogInfo GetChatBot()
@@ -37,8 +39,8 @@ public class SptDialogueChatBot(
                 MemberCategory = MemberCategory.Developer,
                 SelectedMemberCategory = MemberCategory.Developer,
                 Nickname = _coreConfig.SptFriendNickname,
-                Side = "Usec"
-            }
+                Side = "Usec",
+            },
         };
     }
 
@@ -75,13 +77,17 @@ public class SptDialogueChatBot(
         return request.DialogId;
     }
 
-    protected static List<IChatMessageHandler> ChatMessageHandlerSetup(IEnumerable<IChatMessageHandler> components)
+    protected static List<IChatMessageHandler> ChatMessageHandlerSetup(
+        IEnumerable<IChatMessageHandler> components
+    )
     {
         var chatMessageHandlers = components.ToList();
-        chatMessageHandlers.Sort((a, b) =>
-        {
-            return a.GetPriority() - b.GetPriority();
-        });
+        chatMessageHandlers.Sort(
+            (a, b) =>
+            {
+                return a.GetPriority() - b.GetPriority();
+            }
+        );
 
         return chatMessageHandlers;
     }

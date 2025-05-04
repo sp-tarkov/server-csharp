@@ -15,5 +15,5 @@ public enum RequirementState
     ScavCooperation,
     Train,
     Timer,
-    SecretTransferItem
+    SecretTransferItem,
 }

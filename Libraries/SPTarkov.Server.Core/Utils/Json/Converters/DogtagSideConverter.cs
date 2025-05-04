@@ -6,7 +6,11 @@ namespace SPTarkov.Server.Core.Utils.Json.Converters;
 
 public class DogtagSideConverter : JsonConverter<DogtagSide>
 {
-    public override DogtagSide Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override DogtagSide Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
     {
         if (reader.TokenType == JsonTokenType.Number)
         {
@@ -17,7 +21,11 @@ public class DogtagSideConverter : JsonConverter<DogtagSide>
         return value != null ? Enum.Parse<DogtagSide>(value) : DogtagSide.NotApplicable;
     }
 
-    public override void Write(Utf8JsonWriter writer, DogtagSide value, JsonSerializerOptions options)
+    public override void Write(
+        Utf8JsonWriter writer,
+        DogtagSide value,
+        JsonSerializerOptions options
+    )
     {
         switch (value)
         {

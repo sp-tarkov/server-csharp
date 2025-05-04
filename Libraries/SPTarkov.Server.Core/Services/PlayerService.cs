@@ -4,9 +4,7 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class PlayerService(
-    DatabaseService _databaseService
-)
+public class PlayerService(DatabaseService _databaseService)
 {
     /// <summary>
     ///     Calculates the current level of a player based on their accumulated experience points.

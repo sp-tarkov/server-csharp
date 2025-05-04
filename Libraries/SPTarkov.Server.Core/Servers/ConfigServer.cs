@@ -17,11 +17,7 @@ public class ConfigServer
     protected ISptLogger<ConfigServer> _logger;
     private static Dictionary<string, object> _configs = new();
 
-    public ConfigServer(
-        ISptLogger<ConfigServer> logger,
-        JsonUtil jsonUtil,
-        FileUtil fileUtil
-    )
+    public ConfigServer(ISptLogger<ConfigServer> logger, JsonUtil jsonUtil, FileUtil fileUtil)
     {
         _logger = logger;
         _jsonUtil = jsonUtil;
@@ -33,12 +29,15 @@ public class ConfigServer
         }
     }
 
-    public T GetConfig<T>() where T : BaseConfig
+    public T GetConfig<T>()
+        where T : BaseConfig
     {
         var configKey = GetConfigKey(typeof(T));
         if (!_configs.ContainsKey(configKey.GetValue()))
         {
-            throw new Exception($"Config: {configKey} is undefined. Ensure you have not broken it via editing");
+            throw new Exception(
+                $"Config: {configKey} is undefined. Ensure you have not broken it via editing"
+            );
         }
 
         return _configs[configKey.GetValue()] as T;
@@ -46,10 +45,11 @@ public class ConfigServer
 
     private ConfigTypes GetConfigKey(Type type)
     {
-        var configEnumerable = Enum.GetValues<ConfigTypes>().Where(e =>
-        {
-            return e.GetConfigType() == type;
-        });
+        var configEnumerable = Enum.GetValues<ConfigTypes>()
+            .Where(e =>
+            {
+                return e.GetConfigType() == type;
+            });
         if (!configEnumerable.Any())
         {
             throw new Exception($"Config of type {type.Name} is not mapped to any ConfigTypes");
@@ -58,7 +58,8 @@ public class ConfigServer
         return configEnumerable.First();
     }
 
-    public T GetConfigByString<T>(string configType) where T : BaseConfig
+    public T GetConfigByString<T>(string configType)
+        where T : BaseConfig
     {
         return _configs[configType] as T;
     }
@@ -84,8 +85,12 @@ public class ConfigServer
 
                 if (deserializedContent == null)
                 {
-                    _logger.Error($"Config file: {file} is corrupt. Use a site like: https://jsonlint.com to find the issue.");
-                    throw new Exception($"Server will not run until the: {file} config error mentioned above is  fixed");
+                    _logger.Error(
+                        $"Config file: {file} is corrupt. Use a site like: https://jsonlint.com to find the issue."
+                    );
+                    throw new Exception(
+                        $"Server will not run until the: {file} config error mentioned above is  fixed"
+                    );
                 }
 
                 _configs[$"spt-{_fileUtil.StripExtension(file)}"] = deserializedContent;

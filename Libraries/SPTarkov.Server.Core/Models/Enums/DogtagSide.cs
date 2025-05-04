@@ -8,5 +8,5 @@ public enum DogtagSide
     NotApplicable,
 
     Usec,
-    Bear
+    Bear,
 }

@@ -10,22 +10,29 @@ public class ArrayToObjectFactoryConverter : JsonConverterFactory
         return true;
     }
 
-    public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
+    public override JsonConverter? CreateConverter(
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
     {
-        return (JsonConverter) Activator.CreateInstance(typeof(ArrayToObjectConverter<>).MakeGenericType(typeToConvert));
+        return (JsonConverter)
+            Activator.CreateInstance(
+                typeof(ArrayToObjectConverter<>).MakeGenericType(typeToConvert)
+            );
     }
 
     private class ArrayToObjectConverter<T> : JsonConverter<T?>
     {
         public override bool HandleNull
         {
-            get
-            {
-                return true;
-            }
+            get { return true; }
         }
 
-        public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override T? Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options
+        )
         {
             switch (reader.TokenType)
             {

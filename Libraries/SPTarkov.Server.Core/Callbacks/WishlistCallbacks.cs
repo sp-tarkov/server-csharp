@@ -16,7 +16,11 @@ public class WishlistCallbacks(WishlistController _wishlistController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse AddToWishlist(PmcData pmcData, AddToWishlistRequest info, string sessionID)
+    public ItemEventRouterResponse AddToWishlist(
+        PmcData pmcData,
+        AddToWishlistRequest info,
+        string sessionID
+    )
     {
         return _wishlistController.AddToWishList(pmcData, info, sessionID);
     }
@@ -28,7 +32,11 @@ public class WishlistCallbacks(WishlistController _wishlistController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse RemoveFromWishlist(PmcData pmcData, RemoveFromWishlistRequest info, string sessionID)
+    public ItemEventRouterResponse RemoveFromWishlist(
+        PmcData pmcData,
+        RemoveFromWishlistRequest info,
+        string sessionID
+    )
     {
         return _wishlistController.RemoveFromWishList(pmcData, info, sessionID);
     }
@@ -40,7 +48,11 @@ public class WishlistCallbacks(WishlistController _wishlistController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ChangeWishlistItemCategory(PmcData pmcData, ChangeWishlistItemCategoryRequest info, string sessionID)
+    public ItemEventRouterResponse ChangeWishlistItemCategory(
+        PmcData pmcData,
+        ChangeWishlistItemCategoryRequest info,
+        string sessionID
+    )
     {
         return _wishlistController.ChangeWishListItemCategory(pmcData, info, sessionID);
     }
