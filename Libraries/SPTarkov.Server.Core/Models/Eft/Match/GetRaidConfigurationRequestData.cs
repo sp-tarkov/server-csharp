@@ -35,6 +35,10 @@ public record GetRaidConfigurationRequestData : RaidSettings, IRequestData
         set;
     }
 
+    /// <summary>
+    /// Custom property that is not received from or sent to the client.
+    /// We calculate this once based on the time slot selected for the raid to use it during inventory generation.
+    /// </summary>
     [JsonIgnore]
     public bool IsNightRaid
     {
