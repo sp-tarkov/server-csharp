@@ -21,7 +21,8 @@ public class PostDbLoadService(
     ItemBaseClassService _itemBaseClassService,
     RaidWeatherService _raidWeatherService,
     ConfigServer _configServer,
-    ICloner _cloner)
+    ICloner _cloner
+)
 {
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
@@ -133,7 +134,9 @@ public class PostDbLoadService(
             // Check if exists
             if (hideout.Areas!.Exists(area => area.Id == customArea.Id))
             {
-                _logger.Warning($"Unable to add new hideout area with Id: {customArea.Id} as ID is already in use, skipping");
+                _logger.Warning(
+                    $"Unable to add new hideout area with Id: {customArea.Id} as ID is already in use, skipping"
+                );
 
                 continue;
             }
@@ -152,7 +155,9 @@ public class PostDbLoadService(
         {
             if (achievements.Exists(a => a.Id == customAchievement.Id))
             {
-                _logger.Warning($"Unable to add custom achievement as id: {customAchievement.Id} already exists");
+                _logger.Warning(
+                    $"Unable to add custom achievement as id: {customAchievement.Id} already exists"
+                );
                 continue;
             }
 
@@ -166,11 +171,13 @@ public class PostDbLoadService(
         var newBeginningQuestId = new HashSet<string>
         {
             "6761f28a022f60bb320f3e95",
-            "6761ff17cdc36bd66102e9d0"
+            "6761ff17cdc36bd66102e9d0",
         };
         foreach (var prestige in prestigeDb.Elements)
         {
-            var itemToRemove = prestige.Conditions?.FirstOrDefault(cond => newBeginningQuestId.Contains(cond.Target?.Item));
+            var itemToRemove = prestige.Conditions?.FirstOrDefault(cond =>
+                newBeginningQuestId.Contains(cond.Target?.Item)
+            );
             if (itemToRemove is null)
             {
                 continue;
@@ -195,7 +202,9 @@ public class PostDbLoadService(
             );
             if (clonedCraft is null)
             {
-                _logger.Warning($"Unable to find hideout craft: {craftToAdd.CraftIdToCopy}, skipping");
+                _logger.Warning(
+                    $"Unable to find hideout craft: {craftToAdd.CraftIdToCopy}, skipping"
+                );
 
                 continue;
             }
@@ -214,7 +223,11 @@ public class PostDbLoadService(
         var reserveBase = _databaseService.GetLocation(ELocationName.RezervBase.ToString()).Base;
 
         // Raiders are bosses, get only those from boss spawn array
-        foreach (var raiderSpawn in reserveBase.BossLocationSpawn.Where(boss => boss.BossName == "pmcBot"))
+        foreach (
+            var raiderSpawn in reserveBase.BossLocationSpawn.Where(boss =>
+                boss.BossName == "pmcBot"
+            )
+        )
         {
             var isTriggered = raiderSpawn.TriggerId.Length > 0; // Empty string if not triggered
             var newSpawnChance = isTriggered
@@ -227,7 +240,7 @@ public class PostDbLoadService(
             }
 
             if (raiderSpawn.BossChance < newSpawnChance)
-                // Desired chance is bigger than existing, override it
+            // Desired chance is bigger than existing, override it
             {
                 raiderSpawn.BossChance = newSpawnChance;
             }
@@ -241,7 +254,12 @@ public class PostDbLoadService(
         {
             if (mapId is null)
             {
-                _logger.Warning(_localisationService.GetText("location-unable_to_add_custom_loot_position", mapId));
+                _logger.Warning(
+                    _localisationService.GetText(
+                        "location-unable_to_add_custom_loot_position",
+                        mapId
+                    )
+                );
 
                 continue;
             }
@@ -249,7 +267,9 @@ public class PostDbLoadService(
             var mapLooseLoot = _databaseService.GetLocation(mapId).LooseLoot.Value;
             if (mapLooseLoot is null)
             {
-                _logger.Warning(_localisationService.GetText("location-map_has_no_loose_loot_data", mapId));
+                _logger.Warning(
+                    _localisationService.GetText("location-map_has_no_loose_loot_data", mapId)
+                );
 
                 continue;
             }
@@ -257,7 +277,8 @@ public class PostDbLoadService(
             foreach (var positionToAdd in positionsToAdd)
             {
                 // Exists already, add new items to existing positions pool
-                var existingLootPosition = mapLooseLoot.Spawnpoints.FirstOrDefault(x => x.Template.Id == positionToAdd.Template.Id
+                var existingLootPosition = mapLooseLoot.Spawnpoints.FirstOrDefault(x =>
+                    x.Template.Id == positionToAdd.Template.Id
                 );
 
                 if (existingLootPosition is not null)
@@ -283,13 +304,16 @@ public class PostDbLoadService(
         {
             Weapons.SHOTGUN_12G_SAIGA_12K,
             Weapons.SHOTGUN_20G_TOZ_106,
-            Weapons.SHOTGUN_12G_M870
+            Weapons.SHOTGUN_12G_M870,
+            Weapons.SHOTGUN_12G_SAIGA_12K_FA,
         };
         foreach (var shotgunId in shotguns)
         {
             if (itemDb[shotgunId].Properties.ShotgunDispersion.HasValue)
             {
-                itemDb[shotgunId].Properties.shotgunDispersion = itemDb[shotgunId].Properties.ShotgunDispersion;
+                itemDb[shotgunId].Properties.shotgunDispersion = itemDb[shotgunId]
+                    .Properties
+                    .ShotgunDispersion;
             }
         }
     }
@@ -298,11 +322,7 @@ public class PostDbLoadService(
     {
         var locations = _databaseService.GetLocations().GetDictionary();
 
-        var pmcTypes = new HashSet<string>
-        {
-            "pmcUSEC",
-            "pmcBEAR"
-        };
+        var pmcTypes = new HashSet<string> { "pmcUSEC", "pmcBEAR" };
         foreach (var locationkvP in locations)
         {
             if (locationkvP.Value?.Base?.BossLocationSpawn is null)
@@ -310,8 +330,11 @@ public class PostDbLoadService(
                 continue;
             }
 
-            locationkvP.Value.Base.BossLocationSpawn =
-                locationkvP.Value.Base.BossLocationSpawn.Where(bossSpawn => !pmcTypes.Contains(bossSpawn.BossName)).ToList();
+            locationkvP.Value.Base.BossLocationSpawn = locationkvP
+                .Value.Base.BossLocationSpawn.Where(bossSpawn =>
+                    !pmcTypes.Contains(bossSpawn.BossName)
+                )
+                .ToList();
         }
     }
 
@@ -356,7 +379,7 @@ public class PostDbLoadService(
                             // Bot type not found, add new object
                             WildSpawnType = botToLimit.Type,
                             Min = botToLimit.Min,
-                            Max = botToLimit.Max
+                            Max = botToLimit.Max,
                         }
                     );
                 }
@@ -376,25 +399,24 @@ public class PostDbLoadService(
             var mapLooseLootData = _databaseService.GetLocation(mapId).LooseLoot.Value;
             if (mapLooseLootData is null)
             {
-                _logger.Warning(_localisationService.GetText("location-map_has_no_loose_loot_data", mapId));
+                _logger.Warning(
+                    _localisationService.GetText("location-map_has_no_loose_loot_data", mapId)
+                );
 
                 continue;
             }
 
             foreach (var (lootKey, newChanceValue) in mapAdjustments)
             {
-                var lootPostionToAdjust = mapLooseLootData.Spawnpoints.FirstOrDefault(spawnPoint => spawnPoint.Template.Id == lootKey
+                var lootPostionToAdjust = mapLooseLootData.Spawnpoints.FirstOrDefault(spawnPoint =>
+                    spawnPoint.Template.Id == lootKey
                 );
                 if (lootPostionToAdjust is null)
                 {
                     _logger.Warning(
                         _localisationService.GetText(
                             "location-unable_to_adjust_loot_position_on_map",
-                            new
-                            {
-                                lootKey,
-                                mapId
-                            }
+                            new { lootKey, mapId }
                         )
                     );
 
@@ -405,7 +427,6 @@ public class PostDbLoadService(
             }
         }
     }
-
 
     protected void AdjustLocationBotValues()
     {
@@ -432,17 +453,20 @@ public class PostDbLoadService(
     /// </summary>
     protected void FixRoguesSpawningInstantlyOnLighthouse()
     {
-        var rogueSpawnDelaySeconds = _locationConfig.RogueLighthouseSpawnTimeSettings.WaitTimeSeconds;
+        var rogueSpawnDelaySeconds = _locationConfig
+            .RogueLighthouseSpawnTimeSettings
+            .WaitTimeSeconds;
         var lighthouse = _databaseService.GetLocations().Lighthouse?.Base;
         if (lighthouse is null)
-            // Just in case they remove this cursed map
+        // Just in case they remove this cursed map
         {
             return;
         }
 
         // Find Rogues that spawn instantly
-        var instantRogueBossSpawns = lighthouse.BossLocationSpawn
-            .Where(spawn => spawn.BossName == "exUsec" && spawn.Time == -1);
+        var instantRogueBossSpawns = lighthouse.BossLocationSpawn.Where(spawn =>
+            spawn.BossName == "exUsec" && spawn.Time == -1
+        );
         foreach (var wave in instantRogueBossSpawns)
         {
             wave.Time = rogueSpawnDelaySeconds;
@@ -457,7 +481,8 @@ public class PostDbLoadService(
         var labsBase = _databaseService.GetLocations().Laboratory.Base;
 
         // Find spawns with empty string for triggerId/TriggerName
-        var nonTriggerLabsBossSpawns = labsBase.BossLocationSpawn.Where(bossSpawn => bossSpawn.TriggerId is null && bossSpawn.TriggerName is null
+        var nonTriggerLabsBossSpawns = labsBase.BossLocationSpawn.Where(bossSpawn =>
+            bossSpawn.TriggerId is null && bossSpawn.TriggerName is null
         );
 
         foreach (var boss in nonTriggerLabsBossSpawns)
@@ -475,7 +500,7 @@ public class PostDbLoadService(
         }
 
         foreach (var craft in _databaseService.GetHideout().Production.Recipes)
-            // Only adjust crafts ABOVE the override
+        // Only adjust crafts ABOVE the override
         {
             craft.ProductionTime = Math.Min(craft.ProductionTime.Value, overrideSeconds);
         }
@@ -494,7 +519,7 @@ public class PostDbLoadService(
 
         foreach (var area in _databaseService.GetHideout().Areas)
         foreach (var (key, stage) in area.Stages)
-            // Only adjust crafts ABOVE the override
+        // Only adjust crafts ABOVE the override
         {
             stage.ConstructionTime = Math.Min(stage.ConstructionTime.Value, overrideSeconds);
         }
@@ -506,12 +531,14 @@ public class PostDbLoadService(
         {
             "66582be04de4820934746cea",
             "6745925da9c9adf0450d5bca",
-            "67449c79268737ef6908d636"
+            "67449c79268737ef6908d636",
         };
 
         foreach (var craftId in hideoutLootBoxCraftIds)
         {
-            var recipe = _databaseService.GetHideout().Production.Recipes.FirstOrDefault(craft => craft.Id == craftId);
+            var recipe = _databaseService
+                .GetHideout()
+                .Production.Recipes.FirstOrDefault(craft => craft.Id == craftId);
             if (recipe is not null)
             {
                 recipe.Locked = false;
@@ -537,14 +564,15 @@ public class PostDbLoadService(
 
             // Merge started/success/fail quest assorts into one dictionary
             var mergedQuestAssorts = new Dictionary<string, string>();
-            mergedQuestAssorts = mergedQuestAssorts.Concat(traderData.QuestAssort["started"])
+            mergedQuestAssorts = mergedQuestAssorts
+                .Concat(traderData.QuestAssort["started"])
                 .Concat(traderData.QuestAssort["success"])
                 .Concat(traderData.QuestAssort["fail"])
                 .ToDictionary();
 
             // Loop over all assorts for trader
             foreach (var (assortKey, questKey) in mergedQuestAssorts)
-                // Does assort key exist in trader assort file
+            // Does assort key exist in trader assort file
             {
                 if (!traderAssorts.LoyalLevelItems.ContainsKey(assortKey))
                 {
@@ -552,10 +580,13 @@ public class PostDbLoadService(
                     var messageValues = new
                     {
                         traderName = traderId,
-                        questName = quests[questKey]?.QuestName ?? "UNKNOWN"
+                        questName = quests[questKey]?.QuestName ?? "UNKNOWN",
                     };
                     _logger.Warning(
-                        _localisationService.GetText("assort-missing_quest_assort_unlock", messageValues)
+                        _localisationService.GetText(
+                            "assort-missing_quest_assort_unlock",
+                            messageValues
+                        )
                     );
                 }
             }
@@ -565,10 +596,13 @@ public class PostDbLoadService(
     protected void SetAllDbItemsAsSellableOnFlea()
     {
         var dbItems = _databaseService.GetItems().Values.ToList();
-        foreach (var item in dbItems.Where(item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase) &&
-                                                   !item.Properties.CanSellOnRagfair.GetValueOrDefault(false) &&
-                                                   !_ragfairConfig.Dynamic.Blacklist.Custom.Contains(item.Id)
-                 ))
+        foreach (
+            var item in dbItems.Where(item =>
+                string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)
+                && !item.Properties.CanSellOnRagfair.GetValueOrDefault(false)
+                && !_ragfairConfig.Dynamic.Blacklist.Custom.Contains(item.Id)
+            )
+        )
         {
             item.Properties.CanSellOnRagfair = true;
         }
@@ -576,10 +610,12 @@ public class PostDbLoadService(
 
     protected void AddMissingTraderBuyRestrictionMaxValue()
     {
-        var restrictions = _databaseService.GetGlobals().Configuration.TradingSettings.BuyRestrictionMaxBonus;
+        var restrictions = _databaseService
+            .GetGlobals()
+            .Configuration.TradingSettings.BuyRestrictionMaxBonus;
         restrictions["unheard_edition"] = new BuyRestrictionMaxBonus
         {
-            Multiplier = restrictions["edge_of_darkness"].Multiplier
+            Multiplier = restrictions["edge_of_darkness"].Multiplier,
         };
     }
 
@@ -598,7 +634,9 @@ public class PostDbLoadService(
         {
             if (_databaseService.GetGlobals().ItemPresets.ContainsKey(presetToAdd.Id))
             {
-                _logger.Warning($"Global ItemPreset with Id of: {presetToAdd.Id} already exists, unable to overwrite");
+                _logger.Warning(
+                    $"Global ItemPreset with Id of: {presetToAdd.Id} already exists, unable to overwrite"
+                );
                 continue;
             }
 
