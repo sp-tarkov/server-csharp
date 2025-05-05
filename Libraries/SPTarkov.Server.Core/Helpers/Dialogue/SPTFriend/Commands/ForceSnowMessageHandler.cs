@@ -25,7 +25,7 @@ public class ForceSnowMessageHandler(
 
     public bool CanHandle(string message)
     {
-        return message.ToLower() == "itsonlysnowalan";
+        return string.Equals(message, "itsonlysnowalan", StringComparison.OrdinalIgnoreCase);
     }
 
     public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)

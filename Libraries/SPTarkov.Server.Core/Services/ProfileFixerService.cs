@@ -167,7 +167,7 @@ public class ProfileFixerService(
         // Iterate over clothing
         var customizationDb = _databaseService.GetTemplates().Customization;
         var customizationDbArray = customizationDb.Values;
-        var playerIsUsec = pmcProfile.Info.Side.ToLower() == "usec";
+        var playerIsUsec = string.Equals(pmcProfile.Info.Side, "usec", StringComparison.OrdinalIgnoreCase);
 
         // Check Head
         if (customizationDb[pmcProfile.Customization.Head] is null)

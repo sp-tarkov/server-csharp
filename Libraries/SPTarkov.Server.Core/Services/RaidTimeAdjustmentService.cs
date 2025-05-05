@@ -151,7 +151,7 @@ public class RaidTimeAdjustmentService(
         };
 
         // Pmc raid, send default
-        if (request.Side.ToLower() == "pmc")
+        if (string.Equals(request.Side, "pmc", StringComparison.OrdinalIgnoreCase))
         {
             return result;
         }

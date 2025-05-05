@@ -18,7 +18,7 @@ public class GarbageMessageHandler(
 
     public bool CanHandle(string message)
     {
-        return message.ToLower() == "garbage";
+        return string.Equals(message, "garbage", StringComparison.OrdinalIgnoreCase);
     }
 
     public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)

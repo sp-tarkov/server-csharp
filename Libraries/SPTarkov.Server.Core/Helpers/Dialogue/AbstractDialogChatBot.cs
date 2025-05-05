@@ -34,7 +34,7 @@ public abstract class AbstractDialogChatBot(
             return commandos.FirstOrDefault().Handle(splitCommand[1], GetChatBot(), sessionId, request);
         }
 
-        if (splitCommand.FirstOrDefault()?.ToLower() == "help")
+        if (string.Equals(splitCommand.FirstOrDefault(), "help", StringComparison.OrdinalIgnoreCase))
         {
             return SendPlayerHelpMessage(sessionId, request);
         }

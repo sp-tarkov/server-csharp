@@ -209,7 +209,7 @@ public class LocationLifecycleService
     /// <param name="locationData"> Maps location base data </param>
     protected void AdjustExtracts(string playerSide, string location, LocationBase locationData)
     {
-        var playerIsScav = playerSide.ToLower() == "savage";
+        var playerIsScav = string.Equals(playerSide, "savage", StringComparison.OrdinalIgnoreCase);
         if (!playerIsScav)
         {
             return;
@@ -225,7 +225,7 @@ public class LocationLifecycleService
         }
 
         // Find only scav extracts and overwrite existing exits with them
-        var scavExtracts = mapExtracts.Where(extract => extract.Side.ToLower() == "scav").ToList();
+        var scavExtracts = mapExtracts.Where(extract => string.Equals(extract.Side, "scav", StringComparison.OrdinalIgnoreCase)).ToList();
         if (scavExtracts.Count > 0)
             // Scav extracts found, use them
         {
@@ -347,7 +347,7 @@ public class LocationLifecycleService
         locationBaseClone.UnixDateTime = _timeUtil.GetTimeStamp();
 
         // Don't generate loot for hideout
-        if (name.ToLower() == "hideout")
+        if (string.Equals(name, "hideout", StringComparison.OrdinalIgnoreCase))
         {
             return locationBaseClone;
         }

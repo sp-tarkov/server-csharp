@@ -18,7 +18,7 @@ public class AreYouABotMessageHandler(
 
     public bool CanHandle(string message)
     {
-        return message.ToLower() == "are you a bot";
+        return string.Equals(message, "are you a bot", StringComparison.OrdinalIgnoreCase);
     }
 
     public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)

@@ -21,7 +21,7 @@ public class ForceHalloweenMessageHandler(
 
     public bool CanHandle(string message)
     {
-        return message.ToLower() == "veryspooky";
+        return string.Equals(message, "veryspooky", StringComparison.OrdinalIgnoreCase);
     }
 
     public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)

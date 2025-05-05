@@ -19,7 +19,7 @@ public class LoveYouChatMessageHandler(
 
     public bool CanHandle(string message)
     {
-        return message.ToLower() == "love you";
+        return string.Equals(message, "love you", StringComparison.OrdinalIgnoreCase);
     }
 
     public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)

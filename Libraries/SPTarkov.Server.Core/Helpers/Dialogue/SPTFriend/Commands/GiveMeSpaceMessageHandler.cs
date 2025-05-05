@@ -25,7 +25,7 @@ public class GiveMeSpaceMessageHandler(
 
     public bool CanHandle(string message)
     {
-        return message.ToLower() == "givemespace";
+        return string.Equals(message, "givemespace", StringComparison.OrdinalIgnoreCase);
     }
 
     public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)

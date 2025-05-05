@@ -374,10 +374,10 @@ public class ModValidator(
         var modName = mod.PackageJson.Name;
         var modPath = GetModPath(modName);
 
-        var modIsCalledBepinEx = modName.ToLower() == "bepinex";
-        var modIsCalledUser = modName.ToLower() == "user";
-        var modIsCalledSrc = modName.ToLower() == "src";
-        var modIsCalledDb = modName.ToLower() == "db";
+        var modIsCalledBepinEx = string.Equals(modName, "bepinex", StringComparison.OrdinalIgnoreCase);
+        var modIsCalledUser = string.Equals(modName, "user", StringComparison.OrdinalIgnoreCase);
+        var modIsCalledSrc = string.Equals(modName, "src", StringComparison.OrdinalIgnoreCase);
+        var modIsCalledDb = string.Equals(modName, "db", StringComparison.OrdinalIgnoreCase);
         var hasBepinExFolderStructure = fileUtil.DirectoryExists($"{mod.Directory}/plugins");
         var containsJs = fileUtil.GetFiles(mod.Directory, true, "*.js").Count > 0;
         var containsTs = fileUtil.GetFiles(mod.Directory, true, "*.ts").Count > 0;

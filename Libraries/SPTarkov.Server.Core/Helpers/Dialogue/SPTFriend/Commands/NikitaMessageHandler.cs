@@ -18,7 +18,7 @@ public class NikitaMessageHandler(
 
     public bool CanHandle(string message)
     {
-        return message.ToLower() == "nikita";
+        return string.Equals(message, "nikita", StringComparison.OrdinalIgnoreCase);
     }
 
     public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)

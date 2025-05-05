@@ -97,7 +97,7 @@ public class LocaleService(
     /// <returns> Locale e.g en/ge/cz/cn </returns>
     public string GetDesiredGameLocale()
     {
-        if (_localeConfig.GameLocale.ToLower() == "system")
+        if (string.Equals(_localeConfig.GameLocale, "system", StringComparison.OrdinalIgnoreCase))
         {
             return GetPlatformForClientLocale();
         }
@@ -112,7 +112,7 @@ public class LocaleService(
     /// <returns> Locale e.g en/ge/cz/cn </returns>
     public string GetDesiredServerLocale()
     {
-        if (_localeConfig.ServerLocale.ToLower() == "system")
+        if (string.Equals(_localeConfig.ServerLocale, "system", StringComparison.OrdinalIgnoreCase))
         {
             return GetPlatformForServerLocale();
         }

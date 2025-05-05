@@ -47,7 +47,7 @@ public class SptDialogueChatBot(
         var sender = _profileHelper.GetPmcProfile(sessionId);
         var sptFriendUser = GetChatBot();
 
-        if (request.Text?.ToLower() == "help")
+        if (string.Equals(request.Text, "help", StringComparison.OrdinalIgnoreCase))
         {
             return SendPlayerHelpMessage(sessionId, request);
         }

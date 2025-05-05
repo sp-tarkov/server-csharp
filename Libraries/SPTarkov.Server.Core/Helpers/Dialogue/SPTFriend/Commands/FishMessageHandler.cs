@@ -16,7 +16,7 @@ public class FishMessageHandler(
 
     public bool CanHandle(string message)
     {
-        return message.ToLower() == "fish";
+        return string.Equals(message, "fish", StringComparison.OrdinalIgnoreCase);
     }
 
     public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
