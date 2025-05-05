@@ -48,7 +48,7 @@ public class ModDllLoader
     }
 
     /// <summary>
-    ///     Check the provided directory path for a dll and .json file, load into memory
+    ///     Check the provided directory path for a dll and package.json file, load into memory
     /// </summary>
     /// <param name="path">Directory path that contains mod files</param>
     /// <returns>SptMod</returns>
@@ -59,41 +59,43 @@ public class ModDllLoader
             Directory = path,
             Assemblies = []
         };
-        var asmCount = 0;
-        var packCount = 0;
-        foreach (var file in new DirectoryInfo(path).GetFiles()) // only search top level
+        var assemblyCount = 0;
+        var packageJsonCount = 0;
+        foreach (var file in new DirectoryInfo(path).GetFiles()) // Only search top level
         {
-            if (file.Name.ToLower() == "package.json")
+            if (string.Equals(file.Name, "package.json", StringComparison.OrdinalIgnoreCase))
             {
-                packCount++;
+                packageJsonCount++;
 
                 // Handle package.json
                 var rawJson = File.ReadAllText(file.FullName);
                 result.PackageJson = JsonSerializer.Deserialize<PackageJsonData>(rawJson);
-                if (packCount > 1)
+                if (packageJsonCount > 1)
                 {
                     throw new Exception($"More than one package.json file found in path: {path}");
                 }
+
+                continue;
             }
 
-            if (file.Extension.ToLower() == ".dll")
+            if (string.Equals(file.Extension, ".dll", StringComparison.OrdinalIgnoreCase))
             {
-                asmCount++;
+                assemblyCount++;
                 result.Assemblies.Add(AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.GetFullPath(file.FullName)));
             }
         }
 
-        if (asmCount == 0 && packCount == 0)
+        if (assemblyCount == 0 && packageJsonCount == 0)
         {
             throw new Exception($"No Assembly or package.json found in: {Path.GetFullPath(path)}");
         }
 
-        if (packCount == 0)
+        if (packageJsonCount == 0)
         {
             throw new Exception($"No package.json found in path: {Path.GetFullPath(path)}");
         }
 
-        if (asmCount == 0)
+        if (assemblyCount == 0)
         {
             throw new Exception($"No Assemblies found in path: {Path.GetFullPath(path)}");
         }
@@ -102,7 +104,7 @@ public class ModDllLoader
             result.PackageJson?.Version == null || result.PackageJson?.Licence == null ||
             result.PackageJson?.SptVersion == null)
         {
-            throw new Exception($"The package.json file for {path} is missing one of these properties: name, author, licence, version or sptVersion");
+            throw new Exception($"The package.json file for: {path} is missing one of these properties: name, author, licence, version or sptVersion");
         }
 
         return result;
