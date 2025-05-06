@@ -188,7 +188,7 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
         }
     }
 
-    public static void RegisterModDataHandler(string action, Func<string, BaseInteractionRequestData> handler)
+    public static void RegisterModDataHandler(string action, Func<string, BaseInteractionRequestData?> handler)
     {
         if (!_modHandlers.TryAdd(action, handler))
         {
