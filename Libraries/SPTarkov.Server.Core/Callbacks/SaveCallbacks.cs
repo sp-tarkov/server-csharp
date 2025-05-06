@@ -1,4 +1,4 @@
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
@@ -6,8 +6,7 @@ using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.SaveCallbacks)]
-[Injectable(InjectableTypeOverride = typeof(IOnUpdate), TypePriority = OnUpdateOrder.SaveCallbacks)]
+[Injectable(TypePriority = OnLoadOrder.SaveCallbacks)]
 public class SaveCallbacks(
     SaveServer _saveServer,
     ConfigServer _configServer,

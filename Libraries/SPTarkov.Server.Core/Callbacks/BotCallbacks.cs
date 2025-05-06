@@ -1,4 +1,4 @@
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.Models.Eft.Bot;
@@ -8,7 +8,7 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(BotCallbacks))]
+[Injectable]
 public class BotCallbacks(
     BotController _botController,
     HttpResponseUtil _httpResponseUtil,

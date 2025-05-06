@@ -1,4 +1,4 @@
-﻿using SPTarkov.Common.Annotations;
+﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -8,9 +8,7 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.TraderCallbacks)]
-[Injectable(InjectableTypeOverride = typeof(IOnUpdate), TypePriority = OnUpdateOrder.TraderCallbacks)]
-[Injectable(InjectableTypeOverride = typeof(TraderCallbacks))]
+[Injectable(TypePriority = OnLoadOrder.TraderCallbacks)]
 public class TraderCallbacks(
     HttpResponseUtil _httpResponseUtil,
     TraderController _traderController,

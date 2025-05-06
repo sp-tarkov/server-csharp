@@ -1,4 +1,4 @@
-﻿using SPTarkov.Common.Annotations;
+﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -11,8 +11,7 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(IOnUpdate), TypePriority = OnUpdateOrder.InsuranceCallbacks)]
-[Injectable(InjectableTypeOverride = typeof(InsuranceCallbacks))]
+[Injectable(TypePriority = OnUpdateOrder.InsuranceCallbacks)]
 public class InsuranceCallbacks(
     InsuranceController _insuranceController,
     InsuranceService _insuranceService,

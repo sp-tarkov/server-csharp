@@ -1,4 +1,4 @@
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;

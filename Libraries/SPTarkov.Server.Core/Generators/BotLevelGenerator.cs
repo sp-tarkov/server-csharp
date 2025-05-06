@@ -1,4 +1,4 @@
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Bot;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;

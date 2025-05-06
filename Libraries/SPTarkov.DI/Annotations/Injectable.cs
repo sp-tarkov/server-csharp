@@ -1,6 +1,6 @@
-﻿namespace SPTarkov.Common.Annotations;
+﻿namespace SPTarkov.DI.Annotations;
 
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class Injectable(InjectionType injectionType = InjectionType.Scoped, Type? type = null, int typePriority = int.MaxValue) : Attribute
 {
     public InjectionType InjectionType
@@ -8,12 +8,6 @@ public class Injectable(InjectionType injectionType = InjectionType.Scoped, Type
         get;
         set;
     } = injectionType;
-
-    public Type? InjectableTypeOverride
-    {
-        get;
-        set;
-    } = type;
 
     public int TypePriority
     {

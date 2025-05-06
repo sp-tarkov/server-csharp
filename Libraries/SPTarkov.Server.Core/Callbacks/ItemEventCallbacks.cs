@@ -1,4 +1,4 @@
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Routers;

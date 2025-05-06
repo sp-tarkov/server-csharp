@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 

@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 using System.Text;
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 
 namespace SPTarkov.Server.Core.Utils.Logger.Handlers;
 

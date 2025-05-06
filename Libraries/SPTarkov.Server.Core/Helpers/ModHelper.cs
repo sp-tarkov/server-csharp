@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Helpers;

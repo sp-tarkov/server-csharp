@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 

@@ -1,11 +1,11 @@
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Logging;
 using SPTarkov.Server.Core.Models.Utils;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Utils.Logger;
 
-[Injectable(InjectableTypeOverride = typeof(ISptLogger<>), TypePriority = int.MinValue)]
+[Injectable(TypePriority = int.MinValue)]
 public class SptLogger<T> : ISptLogger<T>, IDisposable
 {
     private string _category;

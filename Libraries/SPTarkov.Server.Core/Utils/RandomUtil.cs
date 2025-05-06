@@ -1,5 +1,5 @@
-using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 

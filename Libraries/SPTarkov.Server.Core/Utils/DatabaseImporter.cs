@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -12,7 +12,7 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Utils;
 
-[Injectable(InjectionType.Singleton, InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.Database)]
+[Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.Database)]
 public class DatabaseImporter : IOnLoad
 {
     private const string _sptDataPath = "./Assets/";

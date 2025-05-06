@@ -1,4 +1,4 @@
-﻿using SPTarkov.Common.Annotations;
+﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Utils;
 
 namespace SPTarkov.Server.Core.Context;

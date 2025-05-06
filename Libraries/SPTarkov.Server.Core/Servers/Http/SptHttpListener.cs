@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
 using System.IO.Compression;
 using System.Text;
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;

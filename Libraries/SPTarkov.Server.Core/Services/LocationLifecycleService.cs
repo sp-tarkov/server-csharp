@@ -1,4 +1,4 @@
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;

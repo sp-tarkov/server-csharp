@@ -1,4 +1,4 @@
-﻿using SPTarkov.Common.Annotations;
+﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -9,8 +9,7 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.GameCallbacks)]
-[Injectable(InjectableTypeOverride = typeof(GameCallbacks))]
+[Injectable(TypePriority = OnLoadOrder.GameCallbacks)]
 public class GameCallbacks(
     HttpResponseUtil _httpResponseUtil,
     Watermark _watermark,

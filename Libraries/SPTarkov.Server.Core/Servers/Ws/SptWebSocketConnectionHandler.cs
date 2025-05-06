@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text;
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Models.Utils;

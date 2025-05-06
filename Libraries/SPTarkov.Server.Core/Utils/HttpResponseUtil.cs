@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 using System.Text.RegularExpressions;
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Eft.HttpResponse;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Enums;
