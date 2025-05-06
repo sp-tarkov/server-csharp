@@ -95,7 +95,7 @@ public class DialogueController(
         };
     }
 
-    protected List<UserDialogInfo> GetActiveChatBots()
+    public List<UserDialogInfo> GetActiveChatBots()
     {
         var activeBots = new List<UserDialogInfo>();
 
