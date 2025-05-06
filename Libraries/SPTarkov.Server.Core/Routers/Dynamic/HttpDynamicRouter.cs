@@ -1,10 +1,10 @@
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Routers.Dynamic;
 
-[Injectable(InjectableTypeOverride = typeof(DynamicRouter))]
+[Injectable]
 public class HttpDynamicRouter : DynamicRouter
 {
     public HttpDynamicRouter(ImageRouter imageRouter, JsonUtil jsonUtil) : base(

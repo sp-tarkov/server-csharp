@@ -11,11 +11,10 @@ public class ItemTplGeneratorLauncher
         try
         {
             var serviceCollection = new ServiceCollection();
-            DependencyInjectionRegistrator.RegisterSptComponents(
-                typeof(ItemTplGeneratorLauncher).Assembly,
-                typeof(App).Assembly,
-                serviceCollection
-            );
+            var diHandler = new DependencyInjectionHandler(serviceCollection);
+            diHandler.AddInjectableTypesFromTypeAssembly(typeof(ItemTplGeneratorLauncher));
+            diHandler.AddInjectableTypesFromTypeAssembly(typeof(App));
+            diHandler.InjectAll();
             var serviceProvider = serviceCollection.BuildServiceProvider();
             serviceProvider.GetService<ItemTplGenerator>().Run().Wait();
         }

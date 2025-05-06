@@ -1,4 +1,4 @@
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Logger;
 

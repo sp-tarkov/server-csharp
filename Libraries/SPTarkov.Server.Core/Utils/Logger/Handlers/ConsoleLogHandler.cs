@@ -1,4 +1,4 @@
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Logging;
 
 namespace SPTarkov.Server.Core.Utils.Logger.Handlers;

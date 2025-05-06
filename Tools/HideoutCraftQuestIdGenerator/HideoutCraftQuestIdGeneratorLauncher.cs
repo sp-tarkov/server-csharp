@@ -11,11 +11,10 @@ public class HideoutCraftQuestIdGeneratorLauncher
         try
         {
             var serviceCollection = new ServiceCollection();
-            DependencyInjectionRegistrator.RegisterSptComponents(
-                typeof(HideoutCraftQuestIdGeneratorLauncher).Assembly,
-                typeof(App).Assembly,
-                serviceCollection
-            );
+            var diHandler = new DependencyInjectionHandler(serviceCollection);
+            diHandler.AddInjectableTypesFromTypeAssembly(typeof(HideoutCraftQuestIdGeneratorLauncher));
+            diHandler.AddInjectableTypesFromTypeAssembly(typeof(App));
+            diHandler.InjectAll();
             var serviceProvider = serviceCollection.BuildServiceProvider();
             serviceProvider.GetService<HideoutCraftQuestIdGenerator>().Run().Wait();
         }

@@ -1,7 +1,8 @@
 using System.Collections.Frozen;
-using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Constants;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Context;
+using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Match;
 using SPTarkov.Server.Core.Models.Enums;
@@ -15,8 +16,18 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Helpers;
 
-[Injectable]
-public class BotGeneratorHelper
+[Injectable(InjectionType.Singleton)]
+public class BotGeneratorHelper(
+    ISptLogger<BotGeneratorHelper> _logger,
+    RandomUtil _randomUtil,
+    DurabilityLimitsHelper _durabilityLimitsHelper,
+    ItemHelper _itemHelper,
+    InventoryHelper _inventoryHelper,
+    ContainerHelper _containerHelper,
+    ApplicationContext _applicationContext,
+    LocalisationService _localisationService,
+    ConfigServer _configServer
+    ) : IOnLoad
 {
     // Equipment slot ids that do not conflict with other slots
     private static readonly FrozenSet<string> _slotsWithNoCompatIssues = [
@@ -27,38 +38,20 @@ public class BotGeneratorHelper
         EquipmentSlots.ArmBand.ToString()
     ];
 
-    private readonly BotConfig _botConfig;
-    private readonly ISptLogger<BotGeneratorHelper> _logger;
-    private readonly RandomUtil _randomUtil;
-    private readonly DurabilityLimitsHelper _durabilityLimitsHelper;
-    private readonly ItemHelper _itemHelper;
-    private readonly InventoryHelper _inventoryHelper;
-    private readonly ContainerHelper _containerHelper;
-    private readonly ApplicationContext _applicationContext;
-    private readonly LocalisationService _localisationService;
-    private readonly string[] _pmcTypes;
+    private BotConfig _botConfig;
+    private string[] _pmcTypes;
 
-    public BotGeneratorHelper(ISptLogger<BotGeneratorHelper> logger,
-        RandomUtil randomUtil,
-        DurabilityLimitsHelper durabilityLimitsHelper,
-        ItemHelper itemHelper,
-        InventoryHelper inventoryHelper,
-        ContainerHelper containerHelper,
-        ApplicationContext applicationContext,
-        LocalisationService localisationService,
-        ConfigServer configServer)
+    public Task OnLoad()
     {
-        _logger = logger;
-        _randomUtil = randomUtil;
-        _durabilityLimitsHelper = durabilityLimitsHelper;
-        _itemHelper = itemHelper;
-        _inventoryHelper = inventoryHelper;
-        _containerHelper = containerHelper;
-        _applicationContext = applicationContext;
-        _localisationService = localisationService;
-        _botConfig = configServer.GetConfig<BotConfig>();
-        var pmcConfig = configServer.GetConfig<PmcConfig>();
+        _botConfig = _configServer.GetConfig<BotConfig>();
+        var pmcConfig = _configServer.GetConfig<PmcConfig>();
         _pmcTypes = [pmcConfig.UsecType.ToLower(), pmcConfig.BearType.ToLower()];
+        return Task.CompletedTask;
+    }
+
+    public string GetRoute()
+    {
+        return "spt-botGeneratorHelper";
     }
 
     /// <summary>

@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
-using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Constants;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;

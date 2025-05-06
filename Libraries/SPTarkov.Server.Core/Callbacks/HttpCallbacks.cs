@@ -1,11 +1,11 @@
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Servers;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
-[Injectable(InjectionType.Singleton, InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.HttpCallbacks)]
+[Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.HttpCallbacks)]
 public class HttpCallbacks(HttpServer _httpServer, ApplicationContext _applicationContext) : IOnLoad
 {
     public Task OnLoad()

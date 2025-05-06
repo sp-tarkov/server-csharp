@@ -2,7 +2,7 @@ using System.IO.Hashing;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using SPTarkov.Common.Annotations;
+using SPTarkov.DI.Annotations;
 
 namespace SPTarkov.Server.Core.Utils;
 

@@ -32,14 +32,16 @@ public static class Program
         // for harmony, we use the original list, as some mods may only be bepinex patches only
         HarmonyBootstrapper.LoadAllPatches(mods.SelectMany(asm => asm.Assemblies).ToList());
 
+        var diHandler = new DependencyInjectionHandler(builder.Services);
         // register SPT components
-        DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
+        diHandler.AddInjectableTypesFromTypeAssembly(typeof(Program));
+        diHandler.AddInjectableTypesFromTypeAssembly(typeof(App));
 
         if (ProgramStatics.MODS())
         {
-            // register mod components from the filtered list
-            DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, sortedLoadedMods.SelectMany(a => a.Assemblies).ToList());
+            diHandler.AddInjectableTypesFromAssemblies(sortedLoadedMods.SelectMany(a => a.Assemblies));
         }
+        diHandler.InjectAll();
 
         var serviceProvider = builder.Services.BuildServiceProvider();
         var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger("Server");
@@ -115,7 +117,10 @@ public static class Program
         // So we create a disposable web application that we will throw away after getting the mods to load
         var builder = CreateNewHostBuilder();
         // register SPT components
-        DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
+        var diHandler = new DependencyInjectionHandler(builder.Services);
+        diHandler.AddInjectableTypesFromAssembly(typeof(Program).Assembly);
+        diHandler.AddInjectableTypesFromAssembly(typeof(App).Assembly);
+        diHandler.InjectAll();
         // register the mod validator components
         var provider = builder.Services
             .AddScoped(typeof(ISptLogger<ModValidator>), typeof(SptLogger<ModValidator>))
