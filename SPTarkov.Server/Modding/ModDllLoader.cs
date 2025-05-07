@@ -1,5 +1,5 @@
+using System.Reflection;
 using System.Runtime.Loader;
-using System.Text.Json;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Utils;
 
@@ -25,9 +25,8 @@ public class ModDllLoader
 
         // foreach directory in /user/mods/
         // treat this as the MOD
-        // should contain a dll and Package.json
-        // load both
-        // if either is missing Throw Warning and skip
+        // should contain a dll
+        // if dll is missing Throw Warning and skip
 
         var modDirectories = Directory.GetDirectories(ModPath);
 
@@ -48,7 +47,7 @@ public class ModDllLoader
     }
 
     /// <summary>
-    ///     Check the provided directory path for a dll and package.json file, load into memory
+    ///     Check the provided directory path for a dll, load into memory
     /// </summary>
     /// <param name="path">Directory path that contains mod files</param>
     /// <returns>SptMod</returns>
@@ -60,24 +59,8 @@ public class ModDllLoader
             Assemblies = []
         };
         var assemblyCount = 0;
-        var packageJsonCount = 0;
         foreach (var file in new DirectoryInfo(path).GetFiles()) // Only search top level
         {
-            if (string.Equals(file.Name, "package.json", StringComparison.OrdinalIgnoreCase))
-            {
-                packageJsonCount++;
-
-                // Handle package.json
-                var rawJson = File.ReadAllText(file.FullName);
-                result.PackageJson = JsonSerializer.Deserialize<PackageJsonData>(rawJson);
-                if (packageJsonCount > 1)
-                {
-                    throw new Exception($"More than one package.json file found in path: {path}");
-                }
-
-                continue;
-            }
-
             if (string.Equals(file.Extension, ".dll", StringComparison.OrdinalIgnoreCase))
             {
                 assemblyCount++;
@@ -85,26 +68,55 @@ public class ModDllLoader
             }
         }
 
-        if (assemblyCount == 0 && packageJsonCount == 0)
-        {
-            throw new Exception($"No Assembly or package.json found in: {Path.GetFullPath(path)}");
-        }
-
-        if (packageJsonCount == 0)
-        {
-            throw new Exception($"No package.json found in path: {Path.GetFullPath(path)}");
-        }
-
         if (assemblyCount == 0)
         {
             throw new Exception($"No Assemblies found in path: {Path.GetFullPath(path)}");
         }
 
-        if (result.PackageJson?.Name == null || result.PackageJson?.Author == null ||
-            result.PackageJson?.Version == null || result.PackageJson?.Licence == null ||
-            result.PackageJson?.SptVersion == null)
+        result.ModMetadata = LoadModMetadata(result.Assemblies, path);
+
+        if (result.ModMetadata == null)
         {
-            throw new Exception($"The package.json file for: {path} is missing one of these properties: name, author, licence, version or sptVersion");
+            throw new Exception($"Failed to load mod metadata for: {Path.GetFullPath(path)} \ndid you override `AbstractModMetadata`?");
+        }
+
+        if (result.ModMetadata?.Name == null || result.ModMetadata?.Author == null ||
+            result.ModMetadata?.Version == null || result.ModMetadata?.Licence == null ||
+            result.ModMetadata?.SptVersion == null)
+        {
+            throw new Exception($"The mod metadata for: {Path.GetFullPath(path)} is missing one of these properties: name, author, licence, version or sptVersion");
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Finds and returns the mod metadata for this mod
+    /// </summary>
+    /// <param name="assemblies">All mod assemblies</param>
+    /// <param name="path">Path of the mod directory</param>
+    /// <returns>Mod metadata</returns>
+    /// <exception cref="Exception">Thrown if duplicate metadata implementations are found</exception>
+    private static AbstractModMetadata? LoadModMetadata(List<Assembly> assemblies, string path)
+    {
+        AbstractModMetadata? result = null;
+
+        foreach (var allAsmModules in assemblies.Select(a => a.Modules))
+        {
+            foreach (var module in allAsmModules)
+            {
+                var modMetadata = module.GetTypes().SingleOrDefault(t => typeof(AbstractModMetadata).IsAssignableFrom(t));
+
+                if (result != null && modMetadata != null)
+                {
+                    throw new Exception($"Duplicate mod metadata found for mod at path: {Path.GetFullPath(path)}");
+                }
+
+                if (modMetadata != null)
+                {
+                    result = (AbstractModMetadata)Activator.CreateInstance(modMetadata)!;
+                }
+            }
         }
 
         return result;

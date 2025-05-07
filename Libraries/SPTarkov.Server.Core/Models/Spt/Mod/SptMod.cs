@@ -12,8 +12,8 @@ public class SptMod
         set;
     }
 
-    [JsonPropertyName("packageJson")]
-    public PackageJsonData? PackageJson
+    [JsonPropertyName("modMetadata")]
+    public AbstractModMetadata? ModMetadata
     {
         get;
         set;
