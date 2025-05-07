@@ -478,7 +478,7 @@ public class GameController(
         {
             if (
                 fullProfile.SptData.Mods.Any(m =>
-                    m.Author == mod.PackageJson.Author && m.Version == mod.PackageJson.Version && m.Name == mod.PackageJson.Name
+                    m.Author == mod.ModMetadata.Author && m.Version == mod.ModMetadata.Version && m.Name == mod.ModMetadata.Name
                 )
             )
             {
@@ -489,10 +489,10 @@ public class GameController(
             fullProfile.SptData.Mods.Add(
                 new ModDetails
                 {
-                    Author = mod.PackageJson.Author,
-                    Version = mod.PackageJson.Version,
-                    Name = mod.PackageJson.Name,
-                    Url = mod.PackageJson.Url,
+                    Author = mod.ModMetadata.Author,
+                    Version = mod.ModMetadata.Version,
+                    Name = mod.ModMetadata.Name,
+                    Url = mod.ModMetadata.Url,
                     DateAdded = _timeUtil.GetTimeStamp()
                 }
             );

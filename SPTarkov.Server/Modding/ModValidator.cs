@@ -32,7 +32,7 @@ public class ModValidator(
         {
             ValidateMods(mods);
 
-            var sortedModLoadOrder = modLoadOrder.SetModList(imported.ToDictionary(m => m.Key, m => m.Value.PackageJson));
+            var sortedModLoadOrder = modLoadOrder.SetModList(imported.ToDictionary(m => m.Key, m => m.Value.ModMetadata));
             var finalList = new List<SptMod>();
             foreach (var orderMod in SortModsLoadOrder())
             {
@@ -90,7 +90,7 @@ public class ModValidator(
         // Validate and remove broken mods from mod list
         var validMods = GetValidMods(mods);
 
-        var modPackageData = validMods.ToDictionary(m => m.PackageJson!.Name!, m => m.PackageJson!);
+        var modPackageData = validMods.ToDictionary(m => m.ModMetadata!.Name!, m => m.ModMetadata!);
         CheckForDuplicateMods(modPackageData);
 
         // Used to check all errors before stopping the load execution
@@ -145,7 +145,7 @@ public class ModValidator(
         // add mods
         foreach (var mod in validMods)
         {
-            if (ShouldSkipMod(mod.PackageJson))
+            if (ShouldSkipMod(mod.ModMetadata))
             {
                 logger.Warning(localisationService.GetText("modloader-skipped_mod", new
                 {
@@ -161,15 +161,15 @@ public class ModValidator(
     protected int SortMods(SptMod prev, SptMod next, Dictionary<string, bool> missingFromOrderJson)
     {
         // mod is not on the list, move the mod to last
-        if (!order.TryGetValue(prev.PackageJson!.Name!, out var previndex))
+        if (!order.TryGetValue(prev.ModMetadata!.Name!, out var previndex))
         {
-            missingFromOrderJson[prev.PackageJson.Name!] = true;
+            missingFromOrderJson[prev.ModMetadata.Name!] = true;
             return 1;
         }
 
-        if (!order.TryGetValue(next.PackageJson!.Name!, out var nextindex))
+        if (!order.TryGetValue(next.ModMetadata!.Name!, out var nextindex))
         {
-            missingFromOrderJson[next.PackageJson.Name!] = true;
+            missingFromOrderJson[next.ModMetadata.Name!] = true;
             return -1;
         }
 
@@ -180,9 +180,9 @@ public class ModValidator(
     ///     Check for duplicate mods loaded, show error if any
     /// </summary>
     /// <param name="modPackageData">Dictionary of mod package.json data</param>
-    protected void CheckForDuplicateMods(Dictionary<string, PackageJsonData> modPackageData)
+    protected void CheckForDuplicateMods(Dictionary<string, AbstractModMetadata> modPackageData)
     {
-        var groupedMods = new Dictionary<string, List<PackageJsonData>>();
+        var groupedMods = new Dictionary<string, List<AbstractModMetadata>>();
 
         foreach (var mod in modPackageData.Values)
         {
@@ -219,7 +219,7 @@ public class ModValidator(
     /// </summary>
     /// <param name="mod">Mod to check compatibility with SPT</param>
     /// <returns>True if compatible</returns>
-    protected bool IsModCompatibleWithSpt(PackageJsonData mod)
+    protected bool IsModCompatibleWithSpt(AbstractModMetadata mod)
     {
         var sptVersion = ProgramStatics.SPT_VERSION() ?? sptConfig.SptVersion;
         var modName = $"{mod.Author}-{mod.Name}";
@@ -272,13 +272,13 @@ public class ModValidator(
     protected void AddMod(SptMod mod)
     {
         // Add mod to imported list
-        imported.Add(mod.PackageJson.Name, mod);
+        imported.Add(mod.ModMetadata.Name, mod);
         logger.Info(
             localisationService.GetText("modloader-loaded_mod", new
             {
-                name = mod.PackageJson.Name,
-                version = mod.PackageJson.Version,
-                author = mod.PackageJson.Author
+                name = mod.ModMetadata.Name,
+                version = mod.ModMetadata.Version,
+                author = mod.ModMetadata.Author
             })
         );
     }
@@ -288,12 +288,12 @@ public class ModValidator(
     /// </summary>
     /// <param name="pkg">mod package.json data</param>
     /// <returns></returns>
-    protected bool ShouldSkipMod(PackageJsonData pkg)
+    protected bool ShouldSkipMod(AbstractModMetadata pkg)
     {
         return skippedMods.Contains($"{pkg.Author}-{pkg.Name}");
     }
 
-    protected bool AreModDependenciesFulfilled(PackageJsonData pkg, Dictionary<string, PackageJsonData> loadedMods)
+    protected bool AreModDependenciesFulfilled(AbstractModMetadata pkg, Dictionary<string, AbstractModMetadata> loadedMods)
     {
         if (pkg.ModDependencies == null)
         {
@@ -336,7 +336,7 @@ public class ModValidator(
         return true;
     }
 
-    protected bool IsModCompatible(PackageJsonData mod, Dictionary<string, PackageJsonData> loadedMods)
+    protected bool IsModCompatible(AbstractModMetadata mod, Dictionary<string, AbstractModMetadata> loadedMods)
     {
         var incompatbileModsList = mod.Incompatibilities;
         if (incompatbileModsList == null)
@@ -371,7 +371,7 @@ public class ModValidator(
     /// <returns>true if valid</returns>
     protected bool ValidMod(SptMod mod)
     {
-        var modName = mod.PackageJson.Name;
+        var modName = mod.ModMetadata.Name;
         var modPath = GetModPath(modName);
 
         var modIsCalledBepinEx = string.Equals(modName, "bepinex", StringComparison.OrdinalIgnoreCase);
@@ -402,7 +402,7 @@ public class ModValidator(
         }
 
         // Validate mod
-        var config = mod.PackageJson;
+        var config = mod.ModMetadata;
         var issue = false;
 
         if (!semVer.IsValid(config.Version))
