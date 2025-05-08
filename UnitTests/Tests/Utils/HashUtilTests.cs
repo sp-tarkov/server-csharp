@@ -1,3 +1,5 @@
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using UnitTests.Mock;
@@ -61,6 +63,32 @@ public class HashUtilTests
             expectedOutput,
             result,
             failMessage
+        );
+    }
+
+    [TestMethod]
+    public void MultiThreadedMongoIDGenerationTest()
+    {
+        var concurrentBag = new ConcurrentBag<string>();
+        var random = new Random();
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+
+        Parallel.For(0, 1000, i =>
+        {
+            Thread.Sleep(random.Next(0, 10));
+            var mongoId = _hashUtil.Generate();
+            concurrentBag.Add(mongoId);
+        });
+
+        stopwatch.Stop();
+        Console.WriteLine($"Elapsed time: {stopwatch.ElapsedMilliseconds} ms");
+        var uniqueCount = concurrentBag.Distinct().Count();
+        var totalCount = concurrentBag.Count;
+        Assert.AreEqual(
+            totalCount,
+            uniqueCount,
+            $"Expected all generated MongoId's to be unique, but found {totalCount - uniqueCount} duplicates."
         );
     }
 }

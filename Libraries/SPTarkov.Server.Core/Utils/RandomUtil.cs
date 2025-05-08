@@ -35,7 +35,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
             max -= 1;
         }
 
-        return max > min ? Random.Next(min, exclusive ? max : max + 1) : min;
+        return max > min ? Random.Shared.Next(min, exclusive ? max : max + 1) : min;
     }
 
     /// <summary>
@@ -62,6 +62,11 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     public bool GetBool()
     {
         return Random.Next(0, 2) == 1;
+    }
+
+    public void NextBytes(Span<byte> bytes)
+    {
+        Random.Shared.NextBytes(bytes);
     }
 
     /// <summary>

@@ -316,7 +316,7 @@ public class BackupService
 
         foreach (var mod in mods)
         {
-            result.Add($"{mod.PackageJson.Author} - {mod.PackageJson.Version ?? ""}");
+            result.Add($"{mod.ModMetadata.Author} - {mod.ModMetadata.Version ?? ""}");
         }
 
         return result;
