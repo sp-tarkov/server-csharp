@@ -908,7 +908,7 @@ public class LocationLifecycleService
     {
         // Exclude completed quests
         var activeQuestIdsInProfile = profileQuests
-            .Where(quest => quest.Status != QuestStatusEnum.AvailableForStart && quest.Status != QuestStatusEnum.Success)
+            .Where(quest => quest.Status is not QuestStatusEnum.AvailableForStart and not QuestStatusEnum.Success)
             .Select(status => status.QId);
 
         // Get db details of quests we found above
