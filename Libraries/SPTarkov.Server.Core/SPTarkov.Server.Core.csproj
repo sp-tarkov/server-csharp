@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SPTarkov.DI\SPTarkov.DI.csproj"/>
+    <ProjectReference Include="..\SPTarkov.Reflection\SPTarkov.Reflection.csproj"/>
   </ItemGroup>
 
   <ItemGroup>

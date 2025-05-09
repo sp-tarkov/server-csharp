@@ -29,8 +29,6 @@ public static class Program
 
         // validate and sort mods, this will also discard any mods that are invalid
         var sortedLoadedMods = ValidateMods(mods);
-        // for harmony, we use the original list, as some mods may only be bepinex patches only
-        HarmonyBootstrapper.LoadAllPatches(mods.SelectMany(asm => asm.Assemblies).ToList());
 
         var diHandler = new DependencyInjectionHandler(builder.Services);
         // register SPT components
