@@ -2,9 +2,10 @@ namespace SPTarkov.Server.Core.DI;
 
 public static class OnLoadOrder
 {
-    public const int PreSPTDatabase = 0;
-    public const int Database = 1;
-    public const int PostSptDatabase = 2;
+    public const int SPTPatchLoad = 0;
+    public const int PreSPTDatabase = 1;
+    public const int Database = 2;
+    public const int PostSptDatabase = 3;
     public const int GameCallbacks = 100;
     public const int PostDBModLoader = 200;
     public const int HandbookCallbacks = 300;
