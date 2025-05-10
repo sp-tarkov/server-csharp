@@ -42,7 +42,7 @@ public class PaymentService(
     {
         // May need to convert to trader currency
         var trader = _traderHelper.GetTrader(request.TransactionId, sessionID);
-        var payToTrader = _traderHelper.TraderEnumHasValue(request.TransactionId);
+        var payToTrader = _traderHelper.TraderExists(request.TransactionId);
 
         // Track the amounts of each type of currency involved in the trade.
         var currencyAmounts = new Dictionary<string, double?>();

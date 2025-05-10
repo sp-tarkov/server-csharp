@@ -25,6 +25,7 @@ public class TraderHelper(
     PlayerService _playerService,
     LocalisationService _localisationService,
     FenceService _fenceService,
+    TraderStore _traderStore,
     TimeUtil _timeUtil,
     RandomUtil _randomUtil,
     ConfigServer _configServer
@@ -520,16 +521,16 @@ public class TraderHelper(
         }
 
         // Init dict and fill
-        foreach (var traderName in Traders.TradersDictionary)
+        foreach (var trader in _traderStore.GetAllTraders())
         {
             // Skip some traders
-            if (traderName.Value == Traders.FENCE)
+            if (trader.Id == Traders.FENCE)
             {
                 continue;
             }
 
             // Get assorts for trader, skip trader if no assorts found
-            var traderAssorts = _databaseService.GetTrader(traderName.Value).Assort;
+            var traderAssorts = _databaseService.GetTrader(trader.Id).Assort;
             if (traderAssorts is null)
             {
                 continue;
@@ -566,10 +567,10 @@ public class TraderHelper(
     {
         // Find largest trader price for item
         var highestPrice = 1d; // Default price
-        foreach (var trader in Traders.TradersDictionary)
+        foreach (var trader in _traderStore.GetAllTraders())
         {
             // Get trader and check buy category allows tpl
-            var traderBase = _databaseService.GetTrader(trader.Value).Base;
+            var traderBase = _databaseService.GetTrader(trader.Id).Base;
 
             // Skip traders that don't sell this category of item
             if (traderBase is null || !_itemHelper.IsOfBaseclasses(tpl, traderBase.ItemsBuy.Category))
@@ -596,62 +597,12 @@ public class TraderHelper(
     }
 
     /// <summary>
-    ///     Get a trader enum key by its value
-    /// </summary>
-    /// <param name="traderId">Traders id</param>
-    /// <returns>Traders key</returns>
-    public TradersEnum? GetTraderById(string traderId)
-    {
-        var kvp = Traders.TradersDictionary.Where(x => x.Value == traderId);
-
-        if (!kvp.Any())
-        {
-            _logger.Error(_localisationService.GetText("trader-unable_to_find_trader_in_enum", traderId));
-
-            return null;
-        }
-
-        return kvp.FirstOrDefault().Key;
-    }
-
-    /// <summary>
-    ///     Validates that the provided traderEnumValue exists in the Traders enum. If the value is valid, it returns the
-    ///     same enum value, effectively serving as a trader ID; otherwise, it logs an error and returns an empty string.
-    ///     This method provides a runtime check to prevent undefined behavior when using the enum as a dictionary key.
-    ///     For example, instead of this:
-    ///     const traderId = Traders[Traders.PRAPOR];
-    ///     You can use safely use this:
-    ///     const traderId = this.traderHelper.getValidTraderIdByEnumValue(Traders.PRAPOR);
-    /// </summary>
-    /// <param name="traderEnumValue">The trader enum value to validate</param>
-    /// <returns>The validated trader enum value as a string, or an empty string if invalid</returns>
-    /// TODO: might not be needed
-    public string GetValidTraderIdByEnumValue(string traderEnumValue)
-    {
-        var traderId = _databaseService.GetTraders();
-        var id = traderId.FirstOrDefault(x =>
-            x.Value.Base.Id == traderEnumValue || string.Equals(x.Value.Base.Nickname, traderEnumValue, StringComparison.OrdinalIgnoreCase)).Key;
-
-        return id;
-    }
-
-    /// <summary>
-    ///     Does the 'Traders' enum has a value that matches the passed in parameter
-    /// </summary>
-    /// <param name="key">Value to check for</param>
-    /// <returns>True, values exists in Traders enum as a value</returns>
-    public bool TraderEnumHasKey(string key)
-    {
-        return Traders.TradersDictionary.Any(x => x.Value == key);
-    }
-
-    /// <summary>
     ///     Accepts a trader id
     /// </summary>
     /// <param name="traderId">Trader id</param>
-    /// <returns>True if Traders enum has the param as a value</returns>
-    public bool TraderEnumHasValue(string traderId)
+    /// <returns>True if a Trader exists with given ID</returns>
+    public bool TraderExists(string traderId)
     {
-        return Traders.TradersDictionary.ContainsValue(traderId);
+        return _traderStore.GetTrader(traderId) != null;
     }
 }
