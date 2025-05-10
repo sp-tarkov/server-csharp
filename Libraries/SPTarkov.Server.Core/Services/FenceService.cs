@@ -1452,16 +1452,14 @@ public class FenceService(
         {
             itemToAdjust.Upd.MedKit = new UpdMedKit
             {
-                HpResource = randomUtil.GetInt(1, (int) itemDetails.Properties.MaxHpResource)
+                HpResource = randomUtil.GetInt(1, itemDetails.Properties.MaxHpResource.Value)
             };
         }
 
         // Randomise armor durability
         if (
-            (itemDetails.Parent == BaseClasses.ARMORED_EQUIPMENT ||
-             itemDetails.Parent == BaseClasses.FACECOVER ||
-             itemDetails.Parent == BaseClasses.ARMOR_PLATE) &&
-            (itemDetails.Properties.MaxDurability ?? 0) > 0
+            itemDetails.Parent is BaseClasses.ARMORED_EQUIPMENT or BaseClasses.FACECOVER or BaseClasses.ARMOR_PLATE
+            && itemDetails.Properties.MaxDurability.GetValueOrDefault(0) > 0
         )
         {
             var values = GetRandomisedArmorDurabilityValues(
