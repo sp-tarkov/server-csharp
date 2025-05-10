@@ -7,6 +7,7 @@ public static class OnLoadOrder
     public const int PostSptDatabase = 2;
     public const int GameCallbacks = 100;
     public const int PostDBModLoader = 200;
+    public const int TraderRegistration = 250;
     public const int HandbookCallbacks = 300;
     public const int HttpCallbacks = 400;
     public const int SaveCallbacks = 500;
