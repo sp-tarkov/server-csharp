@@ -643,7 +643,7 @@ public class InsuranceController(
     /// <returns>Should item be deleted</returns>
     protected bool? RollForDelete(string traderId, Item? insuredItem = null)
     {
-        var trader = _traderStore.GetTrader(traderId);
+        var trader = _traderStore.GetTraderById(traderId);
         if (trader is null)
         {
             return null;

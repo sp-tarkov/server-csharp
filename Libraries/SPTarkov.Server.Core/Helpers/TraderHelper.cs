@@ -603,6 +603,6 @@ public class TraderHelper(
     /// <returns>True if a Trader exists with given ID</returns>
     public bool TraderExists(string traderId)
     {
-        return _traderStore.GetTrader(traderId) != null;
+        return _traderStore.GetTraderById(traderId) != null;
     }
 }
