@@ -3,7 +3,7 @@ using HarmonyLib;
 
 namespace SPTarkov.Reflection.Patching;
 
-public abstract class ModulePatch
+public abstract class AbstractPatch
 {
     private readonly Harmony _harmony;
     private readonly List<HarmonyMethod> _prefixList;
@@ -16,7 +16,7 @@ public abstract class ModulePatch
     /// Constructor
     /// </summary>
     /// <param name="name">Name</param>
-    protected ModulePatch(string? name = null)
+    protected AbstractPatch(string? name = null)
     {
         _harmony = new Harmony(name ?? GetType().Name);
         _prefixList = GetPatchMethods(typeof(PatchPrefixAttribute));
