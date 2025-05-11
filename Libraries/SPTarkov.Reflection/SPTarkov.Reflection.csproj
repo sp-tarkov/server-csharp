@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\Build.props"/>
+
+    <PropertyGroup>
+        <PackageId>SPTarkov.Reflection</PackageId>
+        <Authors>Single Player Tarkov</Authors>
+        <Description>Reflection library for the Single Player Tarkov server.</Description>
+        <Copyright>Copyright (c) Single Player Tarkov 2025</Copyright>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageProjectUrl>https://sp-tarkov.com</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/sp-tarkov/server-csharp</RepositoryUrl>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <OutputType>Library</OutputType>
+        <IsPackable>true</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath=""/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="HarmonyX" Version="2.14.0"/>
+    </ItemGroup>
+
+</Project>
