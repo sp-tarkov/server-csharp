@@ -31,7 +31,6 @@ public class InsuranceController(
     ItemHelper _itemHelper,
     ProfileHelper _profileHelper,
     WeightedRandomHelper _weightedRandomHelper,
-    TraderHelper _traderHelper,
     PaymentService _paymentService,
     InsuranceService _insuranceService,
     DatabaseService _databaseService,
@@ -39,6 +38,7 @@ public class InsuranceController(
     RagfairPriceService _ragfairPriceService,
     LocalisationService _localisationService,
     SaveServer _saveServer,
+    TraderStore _traderStore,
     ConfigServer _configServer,
     ICloner _cloner
 )
@@ -643,7 +643,7 @@ public class InsuranceController(
     /// <returns>Should item be deleted</returns>
     protected bool? RollForDelete(string traderId, Item? insuredItem = null)
     {
-        var trader = _traderHelper.GetTraderById(traderId);
+        var trader = _traderStore.GetTraderById(traderId);
         if (trader is null)
         {
             return null;
