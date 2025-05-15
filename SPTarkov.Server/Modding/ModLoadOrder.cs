@@ -5,15 +5,15 @@ namespace SPTarkov.Server.Modding;
 
 public class ModLoadOrder(ICloner cloner)
 {
-    protected Dictionary<string, PackageJsonData> loadOrder = new();
-    protected Dictionary<string, PackageJsonData> mods = new();
-    protected Dictionary<string, PackageJsonData> modsAvailable = new();
+    protected Dictionary<string, AbstractModMetadata> loadOrder = new();
+    protected Dictionary<string, AbstractModMetadata> mods = new();
+    protected Dictionary<string, AbstractModMetadata> modsAvailable = new();
 
-    public Dictionary<string, PackageJsonData> SetModList(Dictionary<string, PackageJsonData> mods)
+    public Dictionary<string, AbstractModMetadata> SetModList(Dictionary<string, AbstractModMetadata> mods)
     {
         this.mods = mods;
         modsAvailable = cloner.Clone(this.mods);
-        loadOrder = new Dictionary<string, PackageJsonData>();
+        loadOrder = new Dictionary<string, AbstractModMetadata>();
 
         var visited = new HashSet<string>();
 

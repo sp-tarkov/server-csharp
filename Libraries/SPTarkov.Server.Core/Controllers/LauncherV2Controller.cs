@@ -156,14 +156,14 @@ public class LauncherV2Controller(
     ///     Gets the Servers loaded mods.
     /// </summary>
     /// <returns></returns>
-    public Dictionary<string, PackageJsonData> LoadedMods()
+    public Dictionary<string, AbstractModMetadata> LoadedMods()
     {
         var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES).GetValue<List<SptMod>>();
-        var result = new Dictionary<string, PackageJsonData>();
+        var result = new Dictionary<string, AbstractModMetadata>();
 
         foreach (var sptMod in mods)
         {
-            result.Add(sptMod.PackageJson.Name, sptMod.PackageJson);
+            result.Add(sptMod.ModMetadata.Name, sptMod.ModMetadata);
         }
 
         return result;

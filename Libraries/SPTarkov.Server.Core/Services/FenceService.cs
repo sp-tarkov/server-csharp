@@ -1045,20 +1045,18 @@ public class FenceService(
         int loyaltyLevel
     )
     {
+        var failedAttemptsCount = 0;
         var weaponPresetsAddedCount = 0;
         if (desiredWeaponPresetsCount > 0)
         {
             var weaponPresetRootItems = baseFenceAssort.Items.Where(item =>
-                item.Upd?.SptPresetId != null && itemHelper.IsOfBaseclass(item.Template, BaseClasses.WEAPON)
+                item.Upd?.SptPresetId is not null
+                && itemHelper.IsOfBaseclass(item.Template, BaseClasses.WEAPON)
+                && !traderConfig.Fence.Blacklist.Contains(item.Template)
             );
             while (weaponPresetsAddedCount < desiredWeaponPresetsCount)
             {
                 var randomPresetRoot = randomUtil.GetArrayValue(weaponPresetRootItems);
-                if (traderConfig.Fence.Blacklist.Contains(randomPresetRoot.Template))
-                {
-                    continue;
-                }
-
                 var rootItemDb = itemHelper.GetItem(randomPresetRoot.Template).Value;
 
                 var presetWithChildrenClone = _cloner.Clone(
@@ -1067,17 +1065,26 @@ public class FenceService(
 
                 RandomiseItemUpdProperties(rootItemDb, presetWithChildrenClone[0]);
 
+                // Simulate players listing weapons with parts removed
                 RemoveRandomModsOfItem(presetWithChildrenClone);
 
-                // Check chosen item is below price cap
-                var itemPrice = handbookHelper.GetTemplatePriceForItems(presetWithChildrenClone) *
+                // Check chosen preset is below listing cap in config
+                var presetPrice = handbookHelper.GetTemplatePriceForItems(presetWithChildrenClone) *
                                 itemHelper.GetItemQualityModifierForItems(presetWithChildrenClone);
                 if (traderConfig.Fence.ItemCategoryRoublePriceLimit.TryGetValue(rootItemDb.Parent, out var priceLimitRouble))
                 {
-                    if (itemPrice > priceLimitRouble)
+                    if (presetPrice > priceLimitRouble)
                         // Too expensive, try again
                     {
+                        failedAttemptsCount++;
+                        if (failedAttemptsCount > 25)
+                        {
+                            logger.Warning($"Unable to add: {desiredWeaponPresetsCount} presets to Fence as all presets found after 25 attempts were too expensive.");
+                            break;
+                        }
+
                         continue;
+                        
                     }
                 }
 
@@ -1085,7 +1092,7 @@ public class FenceService(
                 itemHelper.ReparentItemAndChildren(presetWithChildrenClone[0], presetWithChildrenClone);
                 itemHelper.RemapRootItemId(presetWithChildrenClone);
 
-                // Remapping IDs causes parentid to be altered
+                // Remapping IDs causes parentId to be altered, fix
                 presetWithChildrenClone[0].ParentId = "hideout";
 
                 assorts.SptItems.Add(presetWithChildrenClone);
@@ -1098,7 +1105,7 @@ public class FenceService(
                         new BarterScheme
                         {
                             Template = Money.ROUBLES,
-                            Count = Math.Round(itemPrice)
+                            Count = Math.Round(presetPrice)
                         }
                     ]
                 ];
@@ -1445,16 +1452,14 @@ public class FenceService(
         {
             itemToAdjust.Upd.MedKit = new UpdMedKit
             {
-                HpResource = randomUtil.GetInt(1, (int) itemDetails.Properties.MaxHpResource)
+                HpResource = randomUtil.GetInt(1, itemDetails.Properties.MaxHpResource.Value)
             };
         }
 
         // Randomise armor durability
         if (
-            (itemDetails.Parent == BaseClasses.ARMORED_EQUIPMENT ||
-             itemDetails.Parent == BaseClasses.FACECOVER ||
-             itemDetails.Parent == BaseClasses.ARMOR_PLATE) &&
-            (itemDetails.Properties.MaxDurability ?? 0) > 0
+            itemDetails.Parent is BaseClasses.ARMORED_EQUIPMENT or BaseClasses.FACECOVER or BaseClasses.ARMOR_PLATE
+            && itemDetails.Properties.MaxDurability.GetValueOrDefault(0) > 0
         )
         {
             var values = GetRandomisedArmorDurabilityValues(

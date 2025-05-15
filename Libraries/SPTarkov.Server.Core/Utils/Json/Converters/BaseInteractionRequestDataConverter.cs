@@ -18,6 +18,7 @@ namespace SPTarkov.Server.Core.Utils.Json.Converters;
 
 public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteractionRequestData>
 {
+    private static Dictionary<string, Func<string, BaseInteractionRequestData?>> _modHandlers = new();
     public override BaseInteractionRequestData? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         using var jsonDocument = JsonDocument.ParseValue(ref reader);
@@ -177,9 +178,21 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
             case ItemEventActions.PIN_LOCK:
                 return JsonSerializer.Deserialize<PinOrLockItemRequest>(jsonText);
             default:
+                if (_modHandlers.TryGetValue(action, out var handler))
+                {
+                    return handler(jsonText);
+                }
                 throw new Exception(
                     $"Unhandled action type {action}, make sure the BaseInteractionRequestDataConverter has the deserialization for this action handled."
                 );
+        }
+    }
+
+    public static void RegisterModDataHandler(string action, Func<string, BaseInteractionRequestData?> handler)
+    {
+        if (!_modHandlers.TryAdd(action, handler))
+        {
+            throw new Exception($"Unable to register action {action} to BaseInteractionRequestDataConverter as it already exists.");
         }
     }
 
