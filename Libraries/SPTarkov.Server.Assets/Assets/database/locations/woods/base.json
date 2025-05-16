@@ -1134,7 +1134,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 40
+          "Radius": 100
         }
       },
       "CorePointId": 7,
@@ -10470,7 +10470,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 40
+          "Radius": 100
         }
       },
       "CorePointId": 7,
@@ -10745,7 +10745,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 80
+          "Radius": 100
         }
       },
       "CorePointId": 7,
@@ -10898,7 +10898,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 40
+          "Radius": 100
         }
       },
       "CorePointId": 7,
