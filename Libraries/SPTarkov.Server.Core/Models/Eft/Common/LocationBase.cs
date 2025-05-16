@@ -703,7 +703,7 @@ public record LocationBase
     }
 
     [JsonPropertyName("OneTimeSpawn")]
-    public double? OneTimeSpawn
+    public bool? OneTimeSpawn
     {
         get;
         set;
