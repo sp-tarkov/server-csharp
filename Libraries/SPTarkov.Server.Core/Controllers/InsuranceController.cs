@@ -582,6 +582,10 @@ public class InsuranceController(
         {
             HandleLabsInsurance(traderDialogMessages, insurance);
         }
+        else if (IsMapLabyrinthAndInsuranceDisabled(insurance))
+        {
+            HandleLabyrinthInsurance(traderDialogMessages, insurance);
+        }
         else if (insurance.Items?.Count == 0)
             // Not labs and no items to return
         {
@@ -616,6 +620,18 @@ public class InsuranceController(
     }
 
     /// <summary>
+    ///     Edge case - labyrinth doesn't allow for insurance returns unless location config is edited
+    /// </summary>
+    /// <param name="insurance">The insured items to process</param>
+    /// <param name="labsId">OPTIONAL - id of labs location</param>
+    /// <returns></returns>
+    protected bool IsMapLabyrinthAndInsuranceDisabled(Insurance insurance, string labyrinthId = "labyrinth")
+    {
+        return string.Equals(insurance.SystemData?.Location, labyrinthId, StringComparison.OrdinalIgnoreCase) &&
+               !(_databaseService.GetLocation(labyrinthId)?.Base?.Insurance.GetValueOrDefault(false) ?? false);
+    }
+
+    /// <summary>
     ///     Update IInsurance object with new messageTemplateId and wipe out items array data
     /// </summary>
     /// <param name="traderDialogMessages"></param>
@@ -626,6 +642,25 @@ public class InsuranceController(
         var responseMesageIds =
             traderDialogMessages["insuranceFailedLabs"]?.Count > 0
                 ? traderDialogMessages["insuranceFailedLabs"]
+                : traderDialogMessages["insuranceFailed"];
+
+        insurance.MessageTemplateId = _randomUtil.GetArrayValue(responseMesageIds);
+
+        // Remove all insured items taken into labs
+        insurance.Items = [];
+    }
+
+    /// <summary>
+    ///     Update IInsurance object with new messageTemplateId and wipe out items array data
+    /// </summary>
+    /// <param name="traderDialogMessages"></param>
+    /// <param name="insurance"></param>
+    protected void HandleLabyrinthInsurance(Dictionary<string, List<string>?>? traderDialogMessages, Insurance insurance)
+    {
+        // Use labs specific messages if available, otherwise use default
+        var responseMesageIds =
+            traderDialogMessages["insuranceFailedLabyrinth"]?.Count > 0
+                ? traderDialogMessages["insuranceFailedLabyrinth"]
                 : traderDialogMessages["insuranceFailed"];
 
         insurance.MessageTemplateId = _randomUtil.GetArrayValue(responseMesageIds);
