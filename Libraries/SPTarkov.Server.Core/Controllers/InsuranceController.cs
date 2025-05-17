@@ -658,12 +658,12 @@ public class InsuranceController(
     protected void HandleLabyrinthInsurance(Dictionary<string, List<string>?>? traderDialogMessages, Insurance insurance)
     {
         // Use labs specific messages if available, otherwise use default
-        var responseMesageIds =
+        var responseMessageIds  =
             traderDialogMessages["insuranceFailedLabyrinth"]?.Count > 0
                 ? traderDialogMessages["insuranceFailedLabyrinth"]
                 : traderDialogMessages["insuranceFailed"];
 
-        insurance.MessageTemplateId = _randomUtil.GetArrayValue(responseMesageIds);
+        insurance.MessageTemplateId = _randomUtil.GetArrayValue(responseMessageIds);
 
         // Remove all insured items taken into labs
         insurance.Items = [];
