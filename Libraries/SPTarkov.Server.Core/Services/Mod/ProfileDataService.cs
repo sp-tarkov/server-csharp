@@ -42,10 +42,7 @@ public class ProfileDataService(ISptLogger<ProfileDataService> logger, FileUtil 
 
     public void SaveProfileData<T>(string profileId, string modKey, T profileData)
     {
-        if (profileData == null)
-        {
-            throw new ArgumentNullException(nameof(profileData));
-        }
+        ArgumentNullException.ThrowIfNull(profileData);
 
         var data = jsonUtil.Serialize(profileData, profileData.GetType());
         if (data == null)

@@ -8,7 +8,7 @@ public static class SptLoggerExtensions
 
     public static IHostBuilder UseSptLogger(this IHostBuilder builder)
     {
-        if (builder == null) throw new ArgumentNullException(nameof(builder));
+        ArgumentNullException.ThrowIfNull(builder);
 
         builder.ConfigureServices((_, collection) =>
         {
@@ -20,7 +20,7 @@ public static class SptLoggerExtensions
 
     public static IServiceCollection AddSptLogger(this IServiceCollection collection)
     {
-        if (collection == null) throw new ArgumentNullException(nameof(collection));
+        ArgumentNullException.ThrowIfNull(collection);
 
         collection.AddSingleton<ILoggerFactory>(sp =>
             new SptLoggerProvider(sp.GetService<JsonUtil>(), sp.GetService<FileUtil>(), sp.GetService<SptLoggerQueueManager>()));
