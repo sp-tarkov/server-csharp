@@ -48,11 +48,11 @@ public class TraderSptCommand(
 
         var result = _commandRegex.Match(request.Text);
 
-        var trader = result.Groups["trader"].Captures[0].Value;
-        var command = result.Groups["command"].Captures[0].Value;
-        var quantity = int.Parse(result.Groups["quantity"].Captures[0].Value);
+        var trader = result.Groups["trader"].Captures[0]?.Value;
+        var command = result.Groups["command"].Captures[0]?.Value;
+        var quantity = int.Parse(result.Groups["quantity"].Captures[0]?.Value ?? "0");
 
-        var dbTrader = _traderHelper.GetTrader(trader, sessionId);
+        var dbTrader = _traderHelper.GetTraderByNickName(trader);
         if (dbTrader == null)
         {
             _mailSendService.SendUserMessageToPlayer(
