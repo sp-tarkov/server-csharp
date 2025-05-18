@@ -48,9 +48,9 @@ public class TraderSptCommand(
 
         var result = _commandRegex.Match(request.Text);
 
-        var trader = result.Groups["trader"].Captures[0]?.Value;
-        var command = result.Groups["command"].Captures[0]?.Value;
-        var quantity = int.Parse(result.Groups["quantity"].Captures[0]?.Value ?? "0");
+        var trader = result.Groups["trader"].Captures.Count > 0 ? result.Groups["trader"].Captures[0].Value : null;
+        var command = result.Groups["command"].Captures.Count > 0 ? result.Groups["command"].Captures[0].Value : null;
+        var quantity = int.Parse(result.Groups["command"].Captures.Count > 0 ? result.Groups["quantity"].Captures[0].Value : "0");
 
         var dbTrader = _traderHelper.GetTraderByNickName(trader);
         if (dbTrader == null)
