@@ -608,7 +608,7 @@ public class ProfileHelper(
     public bool PlayerIsFleaBanned(PmcData pmcProfile)
     {
         var currentTimestamp = _timeUtil.GetTimeStamp();
-        return pmcProfile?.Info?.Bans?.Any(b => b.BanType == BanType.RAGFAIR && currentTimestamp < b.DateTime) ?? false;
+        return pmcProfile?.Info?.Bans?.Any(b => b.BanType == BanType.RagFair && currentTimestamp < b.DateTime) ?? false;
     }
 
     public bool HasAccessToRepeatableFreeRefreshSystem(PmcData pmcProfile)

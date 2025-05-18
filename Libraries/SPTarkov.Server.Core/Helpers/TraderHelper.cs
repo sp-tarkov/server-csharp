@@ -183,7 +183,7 @@ public class TraderHelper(
         if ((rawProfileTemplate.FleaBlockedDays ?? 0) > 0)
         {
             var newBanDateTime = _timeUtil.GetTimeStampFromNowDays(rawProfileTemplate.FleaBlockedDays ?? 0);
-            var existingBan = pmcData.Info.Bans.FirstOrDefault(ban => ban.BanType == BanType.RAGFAIR);
+            var existingBan = pmcData.Info.Bans.FirstOrDefault(ban => ban.BanType == BanType.RagFair);
             if (existingBan is not null)
             {
                 existingBan.DateTime = newBanDateTime;
@@ -193,7 +193,7 @@ public class TraderHelper(
                 pmcData.Info.Bans.Add(
                     new Ban
                     {
-                        BanType = BanType.RAGFAIR,
+                        BanType = BanType.RagFair,
                         DateTime = newBanDateTime
                     }
                 );

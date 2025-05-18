@@ -55,7 +55,7 @@ public class JsonUtil
             new EftEnumConverter<EquipmentSlots>(),
             new EftEnumConverter<BuffType>(),
             new EftEnumConverter<BodyPartColliderType>(),
-
+            new EftEnumConverter<BanType>(),
             new EftEnumConverter<LogLevel>(),
             new EftEnumConverter<LogTextColor>(),
             new EftEnumConverter<LogBackgroundColor>(),

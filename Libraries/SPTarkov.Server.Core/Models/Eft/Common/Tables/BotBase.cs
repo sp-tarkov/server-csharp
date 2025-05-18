@@ -618,13 +618,13 @@ public record Ban
 
 public enum BanType
 {
-    CHAT = 0,
-    RAGFAIR = 1,
-    VOIP = 2,
-    TRADING = 3,
-    ONLINE = 4,
-    FRIENDS = 5,
-    CHANGE_NICKNAME = 6
+    Chat,
+    RagFair,
+    Voip,
+    Trading,
+    Online,
+    Friends,
+    ChangeNickname,
 }
 
 public record Customization
