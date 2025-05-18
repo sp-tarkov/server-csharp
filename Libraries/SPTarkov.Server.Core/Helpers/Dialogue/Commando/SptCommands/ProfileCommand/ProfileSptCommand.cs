@@ -61,9 +61,9 @@ public class ProfileSptCommand(
 
         var result = _commandRegex.Match(request.Text);
 
-        var command = result.Groups["command"].Captures[0].Value;
-        var skill = result.Groups["skill"].Captures[0].Value;
-        var quantity = int.Parse(result.Groups["quantity"].Captures[0].Value);
+        var command = result.Groups["command"].Length > 0 ? result.Groups["command"].Captures[0].Value : null;
+        var skill = result.Groups["skill"].Length > 0 ?  result.Groups["skill"].Captures[0].Value : null;
+        var quantity = int.Parse(result.Groups["quantity"].Length > 0 ? result.Groups["quantity"].Captures[0].Value : "0");
 
         ProfileChangeEvent profileChangeEvent;
         switch (command)

@@ -35,6 +35,12 @@ public class TraderHelper(
     protected Dictionary<string, double> _highestTraderPriceItems = new();
     protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
 
+    public TraderBase? GetTraderByNickName(string traderName)
+    {
+        return _databaseService.GetTraders().Select(dict => dict.Value.Base)
+            .FirstOrDefault(t => t?.Nickname != null && string.Equals(t.Nickname, traderName, StringComparison.CurrentCultureIgnoreCase));
+    }
+
 
     /// <summary>
     ///     Get a trader base object, update profile to reflect players current standing in profile
