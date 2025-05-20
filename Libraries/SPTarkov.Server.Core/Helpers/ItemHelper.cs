@@ -41,20 +41,20 @@ public class ItemHelper(
 
     protected static readonly FrozenSet<string> _slotsAsStrings =
     [
-        EquipmentSlots.Headwear.ToString(),
-        EquipmentSlots.Earpiece.ToString(),
-        EquipmentSlots.FaceCover.ToString(),
-        EquipmentSlots.ArmorVest.ToString(),
-        EquipmentSlots.Eyewear.ToString(),
-        EquipmentSlots.ArmBand.ToString(),
-        EquipmentSlots.TacticalVest.ToString(),
-        EquipmentSlots.Pockets.ToString(),
-        EquipmentSlots.Backpack.ToString(),
-        EquipmentSlots.SecuredContainer.ToString(),
-        EquipmentSlots.FirstPrimaryWeapon.ToString(),
-        EquipmentSlots.SecondPrimaryWeapon.ToString(),
-        EquipmentSlots.Holster.ToString(),
-        EquipmentSlots.Scabbard.ToString()
+        nameof(EquipmentSlots.Headwear),
+        nameof(EquipmentSlots.Earpiece),
+        nameof(EquipmentSlots.FaceCover),
+        nameof(EquipmentSlots.ArmorVest),
+        nameof(EquipmentSlots.Eyewear),
+        nameof(EquipmentSlots.ArmBand),
+        nameof(EquipmentSlots.TacticalVest),
+        nameof(EquipmentSlots.Pockets),
+        nameof(EquipmentSlots.Backpack),
+        nameof(EquipmentSlots.SecuredContainer),
+        nameof(EquipmentSlots.FirstPrimaryWeapon),
+        nameof(EquipmentSlots.SecondPrimaryWeapon),
+        nameof(EquipmentSlots.Holster),
+        nameof(EquipmentSlots.Scabbard)
     ];
 
     protected static readonly FrozenSet<string> _dogTagTpls =
