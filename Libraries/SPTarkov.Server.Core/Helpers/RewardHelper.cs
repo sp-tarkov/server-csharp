@@ -275,8 +275,6 @@ public class RewardHelper(
      */
     protected List<Item> GetRewardItems(List<Reward> rewards, string gameVersion)
     {
-
-
         // Iterate over all rewards with the desired status, flatten out items that have a type of Item
         var rewardItems = rewards.SelectMany(reward =>
             reward.Type == RewardType.Item && RewardIsForGameEdition(reward, gameVersion)
