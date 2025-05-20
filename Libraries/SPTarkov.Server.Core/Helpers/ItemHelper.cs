@@ -97,36 +97,40 @@ public class ItemHelper(
         "right_side_plate"
     ];
 
-    /**
-     * Does the provided pool of items contain the desired item
-     * @param itemPool Item collection to check
-     * @param item Item to look for
-     * @param slotId OPTIONAL - slotid of desired item
-     * @returns True if pool contains item
-     */
-    public bool HasItemWithTpl(List<Item> itemPool, string item, string slotId = null)
+    /// <summary>
+    /// Does the provided pool of items contain the desired item
+    /// </summary>
+    /// <param name="itemPool">Item collection to check</param>
+    /// <param name="item">Item to look for</param>
+    /// <param name="slotId">OPTIONAL - slotId of desired item</param>
+    /// <returns>True if pool contains item</returns>
+    public bool HasItemWithTpl(IEnumerable<Item> itemPool, string item, string slotId = "")
     {
         // Filter the pool by slotId if provided
-        var filteredPool = slotId is not null ? itemPool.Where(item => item.SlotId?.StartsWith(slotId) ?? false) : itemPool;
+        var filteredPool =  string.IsNullOrEmpty(slotId)
+            ? itemPool
+            : itemPool.Where(item => item.SlotId?.StartsWith(slotId, StringComparison.OrdinalIgnoreCase) ?? false);
 
         // Check if any item in the filtered pool matches the provided item
         return filteredPool.Any(poolItem => string.Equals(poolItem.Template, item, StringComparison.OrdinalIgnoreCase));
     }
 
-    /**
-     * Get the first item from provided pool with the desired tpl
-     * @param itemPool Item collection to search
-     * @param item Item to look for
-     * @param slotId OPTIONAL - slotid of desired item
-     * @returns Item or null
-     */
-    public Item GetItemFromPoolByTpl(List<Item> itemPool, string item, string slotId = null)
+    /// <summary>
+    /// Get the first item from provided pool with the desired tpl
+    /// </summary>
+    /// <param name="itemPool">Item collection to search</param>
+    /// <param name="tpl">Item tpl to find</param>
+    /// <param name="slotId">OPTIONAL - slotId of desired item</param>
+    /// <returns>Item or null if no item found</returns>
+    public Item GetItemFromPoolByTpl(IEnumerable<Item> itemPool, string tpl, string slotId = "")
     {
         // Filter the pool by slotId if provided
-        var filteredPool = slotId is not null ? itemPool.Where(item => item.SlotId?.StartsWith(slotId) ?? false) : itemPool;
+        var filteredPool = string.IsNullOrEmpty(slotId)
+            ? itemPool
+            : itemPool.Where(item => item.SlotId?.StartsWith(slotId, StringComparison.OrdinalIgnoreCase) ?? false);
 
         // Check if any item in the filtered pool matches the provided item
-        return filteredPool.FirstOrDefault(poolItem => poolItem.Template.Equals(item, StringComparison.OrdinalIgnoreCase));
+        return filteredPool.FirstOrDefault(poolItem => poolItem.Template.Equals(tpl, StringComparison.OrdinalIgnoreCase));
     }
 
     /**
