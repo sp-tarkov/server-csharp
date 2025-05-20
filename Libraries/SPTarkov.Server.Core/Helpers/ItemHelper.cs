@@ -97,6 +97,13 @@ public class ItemHelper(
         "right_side_plate"
     ];
 
+    protected static readonly FrozenSet<string> _armorSlotsThatCanHoldMods =
+    [
+        BaseClasses.HEADWEAR,
+        BaseClasses.VEST,
+        BaseClasses.ARMOR
+    ];
+
     /// <summary>
     /// Does the provided pool of items contain the desired item
     /// </summary>
@@ -134,14 +141,23 @@ public class ItemHelper(
     }
 
     /**
-     * This method will compare two items (with all its children) and see if they are equivalent.
-     * This method will NOT compare IDs on the items
-     * @param item1 first item with all its children to compare
-     * @param item2 second item with all its children to compare
-     * @param compareUpdProperties Upd properties to compare between the items
-     * @returns true if they are the same, false if they aren't
+     * .
+     * 
+     * @param item1 
+     * @param item2 
+     * @param compareUpdProperties 
+     * @returns 
      */
-    public bool IsSameItems(List<Item> item1, List<Item> item2, HashSet<string>? compareUpdProperties = null)
+
+    /// <summary>
+    /// This method will compare two items (with all its children) and see if they are equivalent
+    /// This method will NOT compare IDs on the items
+    /// </summary>
+    /// <param name="item1">first item with all its children to compare</param>
+    /// <param name="item2">second item with all its children to compare</param>
+    /// <param name="compareUpdProperties">Upd properties to compare between the items</param>
+    /// <returns>true if they are the same</returns>
+    public bool IsSameItems(ICollection<Item> item1, ICollection<Item> item2, HashSet<string>? compareUpdProperties = null)
     {
         if (item1.Count != item2.Count)
         {
@@ -166,14 +182,14 @@ public class ItemHelper(
         return true;
     }
 
-    /**
-     * This method will compare two items and see if they are equivalent.
-     * This method will NOT compare IDs on the items
-     * @param item1 first item to compare
-     * @param item2 second item to compare
-     * @param compareUpdProperties Upd properties to compare between the items
-     * @returns true if they are the same, false if they aren't
-     */
+    /// <summary>
+    /// This method will compare two items and see if they are equivalent
+    /// This method will NOT compare IDs on the items
+    /// </summary>
+    /// <param name="item1">first item to compare</param>
+    /// <param name="item2">second item to compare</param>
+    /// <param name="compareUpdProperties">Upd properties to compare between the items</param>
+    /// <returns>true if they are the same</returns>
     public bool IsSameItem(Item item1, Item item2, HashSet<string>? compareUpdProperties = null)
     {
         // Different tpl == different item
@@ -235,16 +251,16 @@ public class ItemHelper(
         return true;
     }
 
-    /**
-     * Helper method to generate a Upd based on a template
-     * @param itemTemplate the item template to generate a Upd for
-     * @returns A Upd with all the default properties set
-     */
+    /// <summary>
+    /// Helper method to generate an Upd based on a template
+    /// </summary>
+    /// <param name="itemTemplate">The item template to generate an Upd for</param>
+    /// <returns>An Upd with all the default properties set</returns>
     public Upd GenerateUpdForItem(TemplateItem itemTemplate)
     {
         Upd itemProperties = new();
 
-        // armors, etc
+        // Armors, etc
         if (itemTemplate.Properties.MaxDurability is not null)
         {
             itemProperties.Repairable = new UpdRepairable
@@ -329,7 +345,7 @@ public class ItemHelper(
             };
         }
 
-        // Togglable face shield
+        // Toggleable face shield
         if ((itemTemplate.Properties.HasHinge ?? false) && (itemTemplate.Properties.FaceShieldComponent ?? false))
         {
             itemProperties.Togglable = new UpdTogglable
@@ -341,17 +357,17 @@ public class ItemHelper(
         return itemProperties;
     }
 
-    /**
-     * Checks if a tpl is a valid item. Valid meaning that it's an item that can be stored in stash
-     * Valid means:
-     * Not quest item
-     * 'Item' type
-     * Not on the invalid base types array
-     * Price above 0 roubles
-     * Not on item config blacklist
-     * @param tpl the template id / tpl
-     * @returns boolean; true for items that may be in player possession and not quest items
-     */
+    /// <summary>
+    /// Checks if a tpl is a valid item. Valid meaning that it's an item that can be stored in stash
+    /// Valid means:
+    /// Not quest item
+    /// 'Item' type
+    /// Not on the invalid base types array
+    /// Price above 0 roubles
+    /// </summary>
+    /// <param name="tpl">Template id to check</param>
+    /// <param name="invalidBaseTypes">OPTIONAL - Base types deemed invalid</param>
+    /// <returns>true for items that may be in player possession and not quest items</returns>
     public bool IsValidItem(string tpl, ICollection<string>? invalidBaseTypes = null)
     {
         var baseTypes = invalidBaseTypes ?? _defaultInvalidBaseTypes;
@@ -369,38 +385,45 @@ public class ItemHelper(
                !_itemFilterService.IsItemBlacklisted(tpl);
     }
 
-    // Check if the tpl / template Id provided is a descendent of the baseclass
-    //
-    // @param   string    tpl             the item template id to check
-    // @param   string    baseClassTpl    the baseclass to check for
-    // @return  bool                    is the tpl a descendent?
+    /// <summary>
+    /// Check if the tpl / template id provided is a descendant of the baseclass
+    /// </summary>
+    /// <param name="tpl">Item template id to check</param>
+    /// <param name="baseClassTpl">Baseclass to check for</param>
+    /// <returns>is the tpl a descendant</returns>
     public bool IsOfBaseclass(string tpl, string baseClassTpl)
     {
         return _itemBaseClassService.ItemHasBaseClass(tpl, [baseClassTpl]);
     }
 
-    // Check if item has any of the supplied base classes
-    // @param string tpl Item to check base classes of
-    // @param string[] baseClassTpls base classes to check for
-    // @returns true if any supplied base classes match
+    /// <summary>
+    /// Check if item has any of the supplied base classes
+    /// </summary>
+    /// <param name="tpl">Item to check base classes of</param>
+    /// <param name="baseClassTpls">Base classes to check for</param>
+    /// <returns>True if any supplied base classes match</returns>
     public bool IsOfBaseclasses(string tpl, ICollection<string> baseClassTpls)
     {
         return _itemBaseClassService.ItemHasBaseClass(tpl, baseClassTpls);
     }
 
-    // Does the provided item have the chance to require soft armor inserts
-    // Only applies to helmets/vest/armors.
-    // Not all head gear needs them
-    // @param string itemTpl item to check
-    // @returns Does item have the possibility ot need soft inserts
+    /// <summary>
+    /// Does the provided item have the chance to require soft armor inserts
+    /// Only applies to helmets/vest/armors
+    /// Not all headgear needs them
+    /// </summary>
+    /// <param name="itemTpl">Tpl to check</param>
+    /// <returns>Does item have the possibility ot need soft inserts</returns>
     public bool ArmorItemCanHoldMods(string itemTpl)
     {
-        return IsOfBaseclasses(itemTpl, [BaseClasses.HEADWEAR, BaseClasses.VEST, BaseClasses.ARMOR]);
+        return IsOfBaseclasses(itemTpl, _armorSlotsThatCanHoldMods);
     }
 
-    // Does the provided item tpl need soft/removable inserts to function
-    // @param string itemTpl Armor item
-    // @returns True if item needs some kind of insert
+    /// <summary>
+    /// Does the provided item tpl need soft/removable inserts to function
+    /// </summary>
+    /// <param name="itemTpl">Armor item</param>
+    /// <returns>True if item needs some kind of insert</returns>
     public bool ArmorItemHasRemovableOrSoftInsertSlots(string itemTpl)
     {
         if (!ArmorItemCanHoldMods(itemTpl))
@@ -411,23 +434,26 @@ public class ItemHelper(
         return ArmorItemHasRemovablePlateSlots(itemTpl) || ItemRequiresSoftInserts(itemTpl);
     }
 
-    // Does the pased in tpl have ability to hold removable plate items
-    // @param string itemTpl item tpl to check for plate support
-    // @returns True when armor can hold plates
+    /// <summary>
+    /// Does the provided tpl have ability to hold removable plate items
+    /// </summary>
+    /// <param name="itemTpl">Item tpl to check for plate support</param>
+    /// <returns>True when armor can hold plates</returns>
     public bool ArmorItemHasRemovablePlateSlots(string itemTpl)
     {
         var itemTemplate = GetItem(itemTpl);
-        var plateSlotIds = GetRemovablePlateSlotIds();
 
-        return itemTemplate.Value.Properties.Slots.Any(slot => plateSlotIds.Contains(slot.Name.ToLower()));
+        return itemTemplate.Value.Properties.Slots.Any(slot => _removablePlateSlotIds.Contains(slot.Name.ToLower()));
     }
 
-    // Does the provided item tpl require soft inserts to become a valid armor item
-    // @param string itemTpl Item tpl to check
-    // @returns True if it needs armor inserts
+    /// <summary>
+    /// Does the provided item tpl require soft inserts to become a valid armor item
+    /// </summary>
+    /// <param name="itemTpl">Item tpl to check</param>
+    /// <returns>True if it needs armor inserts</returns>
     public bool ItemRequiresSoftInserts(string itemTpl)
     {
-        // not a slot that takes soft-inserts
+        // Not a slot that takes soft-inserts
         if (!ArmorItemCanHoldMods(itemTpl))
         {
             return false;
@@ -455,8 +481,10 @@ public class ItemHelper(
         return false;
     }
 
-    // Get all soft insert slot ids
-    // @returns A List of soft insert ids (e.g. soft_armor_back, helmet_top)
+    /// <summary>
+    /// Get all soft insert slot ids
+    /// </summary>
+    /// <returns>A List of soft insert ids (e.g. soft_armor_back, helmet_top)</returns>
     public static FrozenSet<string> GetSoftInsertSlotIds()
     {
         return _softInsertIds;
@@ -465,17 +493,19 @@ public class ItemHelper(
     /// <summary>
     ///     Does the passed in slot id match a soft insert id
     /// </summary>
-    /// <param name="slotId">Id to check</param>
+    /// <param name="slotId">slotId value to check</param>
     /// <returns></returns>
     public bool IsSoftInsertId(string slotId)
     {
         return _softInsertIds.Contains(slotId);
     }
 
-    // Returns the items total price based on the handbook or as a fallback from the prices.json if the item is not
-    // found in the handbook. If the price can't be found at all return 0
-    // @param List<string> tpls item tpls to look up the price of
-    // @returns Total price in roubles
+    /// <summary>
+    /// Returns the items total price based on the handbook or as a fallback from the prices.json if the item is not
+    /// found in the handbook. If the price can't be found at all return 0
+    /// </summary>
+    /// <param name="tpls">item tpls to look up the price of</param>
+    /// <returns>Total price in roubles</returns>
     public double GetItemAndChildrenPrice(IEnumerable<string> tpls)
     {
         // Run getItemPrice for each tpl in tpls array, return sum
@@ -573,10 +603,16 @@ public class ItemHelper(
     }
 
     /**
-     * Gets item data from items.json
-     * @param itemTpl items template id to look up
-     * @returns bool - is valid + template item object as array
+     * 
+     * @param itemTpl items 
+     * @returns 
      */
+
+    /// <summary>
+    /// Gets item data from items.json
+    /// </summary>
+    /// <param name="itemTpl">template id to look up</param>
+    /// <returns>KvP, key = bool, value = template item object</returns>
     public KeyValuePair<bool, TemplateItem?> GetItem(string itemTpl)
     {
         // -> Gets item from <input: _tpl>
@@ -588,37 +624,37 @@ public class ItemHelper(
         return new KeyValuePair<bool, TemplateItem?>(false, null);
     }
 
-    /**
-     * Checks if the item has slots
-     * @param itemTpl Template id of the item to check
-     * @returns true if the item has slots
-     */
+    /// <summary>
+    /// Checks if the item has slots
+    /// </summary>
+    /// <param name="itemTpl">Template id of the item to check</param>
+    /// <returns>True if the item has slots</returns>
     public bool ItemHasSlots(string itemTpl)
     {
         if (_databaseService.GetItems().TryGetValue(itemTpl, out var item))
         {
-            return GetItem(itemTpl).Value.Properties?.Slots?.Count > 0;
+            return GetItem(itemTpl).Value?.Properties?.Slots?.Count > 0;
         }
 
         return false;
     }
 
-    /**
-     * Checks if the item is in the database
-     * @param itemTpl Template id of the item to check
-     * @returns true if the item is in the database
-     */
+    /// <summary>
+    /// Checks if the item is in the database
+    /// </summary>
+    /// <param name="itemTpl">Id of the item to check</param>
+    /// <returns>true if the item is in the database</returns>
     public bool IsItemInDb(string itemTpl)
     {
         return _databaseService.GetItems().ContainsKey(itemTpl);
     }
 
-    /**
-     * Calculate the average quality of an item and its children
-     * @param itemWithChildren An offers item to process
-     * @param skipArmorItemsWithoutDurability Skip over armor items without durability
-     * @returns % quality modifier between 0 and 1
-     */
+    /// <summary>
+    /// Calculate the average quality of an item and its children
+    /// </summary>
+    /// <param name="itemWithChildren">An offers item to process</param>
+    /// <param name="skipArmorItemsWithoutDurability">Skip over armor items without durability</param>
+    /// <returns>% quality modifier between 0 and 1</returns>
     public double GetItemQualityModifierForItems(List<Item> itemWithChildren, bool skipArmorItemsWithoutDurability = false)
     {
         if (IsOfBaseclass(itemWithChildren[0].Template, BaseClasses.WEAPON))
@@ -631,8 +667,9 @@ public class ItemHelper(
         foreach (var item in itemWithChildren)
         {
             var result = GetItemQualityModifier(item, skipArmorItemsWithoutDurability);
-            if (result == -1)
+            if (Math.Abs(result - (-1)) < 0.001)
             {
+                // Is/near zero - Skip
                 continue;
             }
 
@@ -757,7 +794,7 @@ public class ItemHelper(
      * @param baseItemId Parent item's id
      * @returns a list of strings
      */
-    public List<string> FindAndReturnChildrenByItems(List<Item> items, string baseItemId)
+    public List<string> FindAndReturnChildrenByItems(IEnumerable<Item> items, string baseItemId)
     {
         List<string> list = [];
 
@@ -781,7 +818,7 @@ public class ItemHelper(
      * @param modsOnly Include only mod items, exclude items stored inside root item
      * @returns A list of Item objects
      */
-    public List<Item> FindAndReturnChildrenAsItems(List<Item> items, string baseItemId, bool modsOnly = false)
+    public List<Item> FindAndReturnChildrenAsItems(IEnumerable<Item> items, string baseItemId, bool modsOnly = false)
     {
         // Use dictionary to make key lookup faster, convert to list before being returned
         Dictionary<string, Item> result = [];
@@ -843,12 +880,7 @@ public class ItemHelper(
      */
     public bool HasBuyRestrictions(Item itemToCheck)
     {
-        if (itemToCheck.Upd?.BuyRestrictionCurrent is not null && itemToCheck.Upd?.BuyRestrictionMax is not null)
-        {
-            return true;
-        }
-
-        return false;
+        return itemToCheck.Upd?.BuyRestrictionCurrent is not null && itemToCheck.Upd?.BuyRestrictionMax is not null;
     }
 
     /// <summary>
