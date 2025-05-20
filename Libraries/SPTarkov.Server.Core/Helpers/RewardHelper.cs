@@ -25,8 +25,7 @@ public class RewardHelper(
     TraderHelper _traderHelper,
     PresetHelper _presetHelper,
     ICloner _cloner,
-    PlayerService _playerService,
-    QuestHelper _questHelper
+    PlayerService _playerService
 )
 {
     /**
@@ -43,8 +42,9 @@ public class RewardHelper(
         string source,
         SptProfile fullProfile,
         PmcData profileData,
-        string questId,
-        ItemEventRouterResponse questResponse = null
+        string id,
+        ItemEventRouterResponse questResponse = null,
+        Quest? quest = null
     )
     {
         var sessionId = fullProfile?.ProfileInfo?.ProfileId;
@@ -109,7 +109,7 @@ public class RewardHelper(
                     ); // Add specified stash rows from reward - requires client restart
                     break;
                 case RewardType.ProductionScheme:
-                    FindAndAddHideoutProductionIdToProfile(pmcProfile, reward, questId, sessionId, questResponse);
+                    FindAndAddHideoutProductionIdToProfile(pmcProfile, reward, id, sessionId, questResponse);
                     break;
                 case RewardType.Pockets:
                     _profileHelper.ReplaceProfilePocketTpl(pmcProfile, reward.Target);
@@ -124,7 +124,7 @@ public class RewardHelper(
                             new
                             {
                                 rewardType = reward.Type,
-                                questId
+                                id
                             }
                         )
                     );
@@ -132,34 +132,7 @@ public class RewardHelper(
             }
         }
 
-        var quest = _questHelper.GetQuestFromDb(questId, profileData);
-
-
-        return IsInGameRewardTrader(quest) ? [] : GetRewardItems(rewards, gameVersion);
-    }
-
-    /// <summary>
-    /// Value for in game reward traders to not duplicate quest rewards.
-    /// Value can be modified by modders by overriding this value with new traders.
-    /// Ensure to add Lightkeeper's ID (638f541a29ffd1183d187f57) and BTR Driver's ID (656f0f98d80a697f855d34b1)
-    /// </summary>
-    protected string[] noRewardTraders = [
-        // LightKeeper
-        "638f541a29ffd1183d187f57",
-        // BTR Driver
-        "656f0f98d80a697f855d34b1"
-    ];
-
-    /// <summary>
-    /// Determines if quest rewards are given in raid by the trader instead of through messaging system
-    /// </summary>
-    /// <param name="quest"></param>
-    /// <returns></returns>
-    protected bool IsInGameRewardTrader(Quest quest)
-    {
-        var value = noRewardTraders.Contains(quest.TraderId);
-        if (!value) _logger.Debug($"Skipping quest rewards for quest {quest.Id} as it is not in the noRewardTraders list");
-        return value;
+        return GetRewardItems(rewards, gameVersion, quest);
     }
 
     /**
@@ -267,14 +240,43 @@ public class RewardHelper(
         return matchingProductions;
     }
 
+    /// <summary>
+    /// Value for in game reward traders to not duplicate quest rewards.
+    /// Value can be modified by modders by overriding this value with new traders.
+    /// Ensure to add Lightkeeper's ID (638f541a29ffd1183d187f57) and BTR Driver's ID (656f0f98d80a697f855d34b1)
+    /// </summary>
+    protected string[] noRewardTraders = [
+        // LightKeeper
+        "638f541a29ffd1183d187f57",
+        // BTR Driver
+        "656f0f98d80a697f855d34b1"
+    ];
+
+    /// <summary>
+    /// Determines if quest rewards are given in raid by the trader instead of through messaging system
+    /// </summary>
+    /// <param name="quest"></param>
+    /// <returns></returns>
+    protected bool IsInGameRewardTrader(Quest quest)
+    {
+        return noRewardTraders.Contains(quest.TraderId);
+    }
+
     /**
      * Gets a flat list of reward items from the given rewards for the specified game version
      * @param rewards Array of rewards to get the items from
      * @param gameVersion The game version of the profile
      * @returns array of items with the correct maxStack
      */
-    protected List<Item> GetRewardItems(List<Reward> rewards, string gameVersion)
+    protected List<Item> GetRewardItems(List<Reward> rewards, string gameVersion, Quest? quest = null)
     {
+        var isInGameRewardTrader = quest != null && IsInGameRewardTrader(quest);
+        if (isInGameRewardTrader)
+        {
+            _logger.Debug($"Skipping quest rewards for quest {quest.Id} as it is not in the InGameRewardTrader list");
+            return [];
+        }
+
         // Iterate over all rewards with the desired status, flatten out items that have a type of Item
         var rewardItems = rewards.SelectMany(reward =>
             reward.Type == RewardType.Item && RewardIsForGameEdition(reward, gameVersion)

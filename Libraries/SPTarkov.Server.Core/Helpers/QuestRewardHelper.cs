@@ -76,7 +76,8 @@ public class QuestRewardHelper(
             fullProfile,
             profileData,
             questId,
-            questResponse
+            questResponse,
+            questDetails
         );
     }
 
