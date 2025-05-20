@@ -1357,17 +1357,18 @@ public class ItemHelper(
         return currentItem;
     }
 
-    /**
-     * Determines if an item is an attachment that is currently attached to its parent item.
-     *
-     * @param item The item to check.
-     * @returns true if the item is attached attachment, otherwise false.
-     */
+    /// <summary>
+    /// Determines if an item is an attachment that is currently attached to its parent item
+    /// </summary>
+    /// <param name="item">The item to check</param>
+    /// <returns>true if the item is attached attachment, otherwise false</returns>
     public bool IsAttachmentAttached(Item item)
     {
         HashSet<string> check = ["hideout", "main"];
 
-        return !(check.Contains(item.SlotId) || _slotsAsStrings.Contains(item.SlotId) || int.TryParse(item.SlotId, out _));
+        return !(check.Contains(item.SlotId) // Is root item
+                 || _slotsAsStrings.Contains(item.SlotId) // Is root item in equipment slot e.g. `Headwear`
+                 || int.TryParse(item.SlotId, out _)); // Has int as slotId, is inside container. e.g. cartridges
     }
 
     /**
