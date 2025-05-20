@@ -209,9 +209,9 @@ public class InsuranceController(
         }
 
         // Log the number of items marked for deletion, if any
-        if (toDelete.Any())
+        if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (toDelete.Any())
             {
                 _logger.Debug($"Marked {toDelete.Count} items for deletion from insurance.");
             }
