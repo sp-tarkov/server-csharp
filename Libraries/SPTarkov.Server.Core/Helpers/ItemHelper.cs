@@ -1325,7 +1325,7 @@ public class ItemHelper(
                              false;
         }
 
-        return itemTemplate.Key && parentTemplate.Key && (isNotRaidModdable || isRequiredSlot);
+        return itemTemplate.Key && parentTemplate.Key && !(isNotRaidModdable || isRequiredSlot);
     }
 
     /// <summary>
@@ -1367,7 +1367,7 @@ public class ItemHelper(
     {
         HashSet<string> check = ["hideout", "main"];
 
-        return !(check.Contains(item.SlotId) || _slotsAsStrings.Contains(item.SlotId) || !int.TryParse(item.SlotId, out _));
+        return !(check.Contains(item.SlotId) || _slotsAsStrings.Contains(item.SlotId) || int.TryParse(item.SlotId, out _));
     }
 
     /**
