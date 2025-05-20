@@ -35,7 +35,7 @@ public class RewardHelper(
     /// <param name="source">The source of the rewards (Achievement, quest).</param>
     /// <param name="fullProfile">The full profile to apply the rewards to.</param>
     /// <param name="profileData">The profile data (could be the scav profile).</param>
-    /// <param name="id">The quest or achievement ID, used for finding production unlocks.</param>
+    /// <param name="rewardSourceId">The quest or achievement ID, used for finding production unlocks.</param>
     /// <param name="questResponse">Response to quest completion when a production is unlocked.</param>
     /// <param name="quest">The quest that the reward is for.</param>
     /// <returns>List of items that is the reward.</returns>
@@ -44,8 +44,8 @@ public class RewardHelper(
         string source,
         SptProfile fullProfile,
         PmcData profileData,
-        string id,
-        ItemEventRouterResponse questResponse = null,
+        string rewardSourceId,
+        ItemEventRouterResponse? questResponse = null,
         Quest? quest = null
     )
     {
@@ -120,7 +120,7 @@ public class RewardHelper(
                     FindAndAddHideoutProductionIdToProfile(
                         pmcProfile,
                         reward,
-                        id,
+                        rewardSourceId,
                         sessionId,
                         questResponse
                     );
@@ -135,7 +135,7 @@ public class RewardHelper(
                     _logger.Error(
                         _localisationService.GetText(
                             "reward-type_not_handled",
-                            new { rewardType = reward.Type, id }
+                            new { rewardType = reward.Type, rewardSourceId }
                         )
                     );
                     break;
