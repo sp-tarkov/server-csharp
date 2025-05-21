@@ -736,7 +736,7 @@ public class QuestHelper(
                 _mailSendService.SendLocalisedNpcMessageToPlayer(
                     sessionID,
                     quest?.TraderId ?? matchingRepeatableQuest?.TraderId,
-                    MessageType.QUEST_FAIL,
+                    MessageType.QuestFail,
                     quest.FailMessageText,
                     questRewards.ToList(),
                     _timeUtil.GetHoursAsSeconds((int) GetMailItemRedeemTimeHoursForProfile(pmcData))
@@ -1367,7 +1367,7 @@ public class QuestHelper(
         _mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionID,
             quest.TraderId,
-            MessageType.QUEST_SUCCESS,
+            MessageType.QuestSuccess,
             quest.SuccessMessageText,
             questRewards,
             _timeUtil.GetHoursAsSeconds((int) GetMailItemRedeemTimeHoursForProfile(pmcData))

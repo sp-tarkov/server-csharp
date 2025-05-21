@@ -321,7 +321,7 @@ public class TradeController(
         _mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionId,
             trader,
-            MessageType.MESSAGE_WITH_ITEMS,
+            MessageType.MessageWithItems,
             _randomUtil.GetArrayValue(_databaseService.GetTrader(trader).Dialogue.TryGetValue("soldItems", out var items) ? items : new List<string>()),
             curencyReward.SelectMany(x => x).ToList(),
             _timeUtil.GetHoursAsSeconds(72)

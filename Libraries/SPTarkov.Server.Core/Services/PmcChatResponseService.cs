@@ -59,7 +59,7 @@ public class PmcChatResponseService(
                     sessionId,
                     victimDetails,
                     message,
-                    MessageType.USER_MESSAGE
+                    MessageType.UserMessage
                 );
             }
         }
@@ -113,7 +113,7 @@ public class PmcChatResponseService(
             return;
         }
 
-        _notificationSendHelper.SendMessageToPlayer(sessionId, killerDetails, message, MessageType.USER_MESSAGE);
+        _notificationSendHelper.SendMessageToPlayer(sessionId, killerDetails, message, MessageType.UserMessage);
     }
 
     /// <summary>

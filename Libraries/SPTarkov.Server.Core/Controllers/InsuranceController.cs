@@ -599,7 +599,7 @@ public class InsuranceController(
         _mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionId,
             insurance.TraderId,
-            insurance.MessageType ?? MessageType.SYSTEM_MESSAGE,
+            insurance.MessageType ?? MessageType.SystemMessage,
             insurance.MessageTemplateId,
             insurance.Items,
             insurance.MaxStorageTime,

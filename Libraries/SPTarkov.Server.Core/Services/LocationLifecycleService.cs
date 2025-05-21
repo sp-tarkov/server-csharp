@@ -516,7 +516,7 @@ public class LocationLifecycleService
         _mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionId,
             Traders.FENCE,
-            MessageType.MESSAGE_WITH_ITEMS,
+            MessageType.MessageWithItems,
             _randomUtil.GetArrayValue(_traderConfig.Fence.CoopExtractGift.MessageLocaleIds),
             mailableLoot,
             _timeUtil.GetHoursAsSeconds(_traderConfig.Fence.CoopExtractGift.GiftExpiryHours)
@@ -1134,7 +1134,7 @@ public class LocationLifecycleService
         _mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionId,
             traderId,
-            MessageType.BTR_ITEMS_DELIVERY,
+            MessageType.BtrItemsDelivery,
             messageId,
             items,
             messageStoreTime
