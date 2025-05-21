@@ -1,9 +1,9 @@
 using System.Collections.Frozen;
-using System.Text.Json.Serialization;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Inventory;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -1431,7 +1431,7 @@ public class ItemHelper(
     /// <param name="items">Item with children</param>
     /// <param name="rootItemId">The base items root id</param>
     /// <returns>ItemSize object (width and height)</returns>
-    public ItemSize GetItemSize(List<Item> items, string rootItemId)
+    public ItemSize GetItemSize(ICollection<Item> items, string rootItemId)
     {
         var rootTemplate = GetItem(items.Where(x => x.Id.Equals(rootItemId, StringComparison.OrdinalIgnoreCase)).ToList()[0].Template).Value;
         var width = rootTemplate.Properties.Width;
@@ -2242,22 +2242,5 @@ public class ItemHelper(
         return Enumerable.Range(0, containerY)
             .Select(i => new int[containerX])
             .ToArray();
-    }
-}
-
-public class ItemSize
-{
-    [JsonPropertyName("width")]
-    public int Width
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("height")]
-    public int Height
-    {
-        get;
-        set;
     }
 }
