@@ -81,30 +81,23 @@ public class QuestRewardHelper(
         );
     }
 
-    /**
-     * Get quest by id from database (repeatables are stored in profile, check there if questId not found)
-     * @param questId Id of quest to find
-     * @param pmcData Player profile
-     * @returns IQuest object
-     */
-    protected Quest GetQuestFromDb(string questId, PmcData pmcData)
+    /// <summary>
+    /// Get quest by id from database (repeatable quests are stored in profile, check there if questId not found)
+    /// </summary>
+    /// <param name="questId">Id of quest to find</param>
+    /// <param name="pmcData">Player profile</param>
+    /// <returns>IQuest object</returns>
+    protected Quest? GetQuestFromDb(string questId, PmcData pmcData)
     {
-        // May be a repeatable quest
-        var quest = _databaseService.GetQuests().FirstOrDefault(x => x.Key == questId).Value;
-        if (quest == null)
-            // Check daily/weekly objects
+        // Look for quest in db
+        if (_databaseService.GetQuests().TryGetValue(questId, out var quest))
         {
-            foreach (var repeatableQuest in pmcData.RepeatableQuests)
-            {
-                quest = repeatableQuest.ActiveQuests.FirstOrDefault(r => r.Id == questId);
-                if (quest != null)
-                {
-                    break;
-                }
-            }
+            return quest;
         }
 
-        return quest;
+        // Group daily/weekly/scav repeatable subtypes into one collection and find first that matched desired quest id
+        return pmcData.RepeatableQuests?.SelectMany(repeatableQuestSubType => repeatableQuestSubType.ActiveQuests)
+            .FirstOrDefault(repeatableQuest => repeatableQuest.Id == questId);
     }
 
     /// <summary>
