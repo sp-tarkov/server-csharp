@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <Import Project="..\..\Build.props"/>
+  <Import Project="..\..\Build.props" />
 
   <PropertyGroup>
     <PackageId>SPTarkov.Server.Core</PackageId>
@@ -16,17 +16,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SPTarkov.DI\SPTarkov.DI.csproj"/>
-    <ProjectReference Include="..\SPTarkov.Reflection\SPTarkov.Reflection.csproj"/>
+    <ProjectReference Include="..\SPTarkov.DI\SPTarkov.DI.csproj" />
+    <ProjectReference Include="..\SPTarkov.Reflection\SPTarkov.Reflection.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.IO.Hashing" Version="9.0.1"/>
-    <PackageReference Include="FastCloner" Version="3.3.2"/>
+    <PackageReference Include="System.IO.Hashing" Version="9.0.1" />
+    <PackageReference Include="FastCloner" Version="3.3.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath=""/>
+    <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -40,21 +40,7 @@
 
   <!--  Generates the ProgramStatics class with the build information -->
   <Target Name="GenerateProgramStatics" BeforeTargets="BeforeBuild">
-    <WriteLinesToFile
-      File="Utils/ProgramStatics.Generated.cs"
-      Lines="
-using SPTarkov.Server.Core.Models.Enums%3B
-
-namespace SPTarkov.Server.Core.Utils%3B
-
-public static partial class ProgramStatics
-{
-    private static string? _sptVersion = &quot;$(SptVersion)&quot;%3B
-    private static string? _commit = &quot;$(SptCommit)&quot;%3B
-    private static double? _buildTime = $(SptBuildTime)%3B
-    private static EntryType? BuildType = EntryType.$(SptBuildType)%3B
-}
-" Overwrite="true"/>
+    <WriteLinesToFile File="Utils/ProgramStatics.Generated.cs" Lines="&#xD;&#xA;using SPTarkov.Server.Core.Models.Enums%3B&#xD;&#xA;&#xD;&#xA;namespace SPTarkov.Server.Core.Utils%3B&#xD;&#xA;&#xD;&#xA;public static partial class ProgramStatics&#xD;&#xA;{&#xD;&#xA;    private static string? _sptVersion = &quot;$(SptVersion)&quot;%3B&#xD;&#xA;    private static string? _commit = &quot;$(SptCommit)&quot;%3B&#xD;&#xA;    private static double? _buildTime = $(SptBuildTime)%3B&#xD;&#xA;    private static EntryType? BuildType = EntryType.$(SptBuildType)%3B&#xD;&#xA;}&#xD;&#xA;" Overwrite="true" />
   </Target>
 
 </Project>

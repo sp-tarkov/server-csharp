@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\Build.props"/>
+  <Import Project="..\Build.props" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,11 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.14.0"/>
-    <ProjectReference Include="..\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj"/>
-    <ProjectReference Include="..\Libraries\SPTarkov.Server.Assets\SPTarkov.Server.Assets.csproj"/>
-    <ProjectReference Include="..\Libraries\SPTarkov.Common\SPTarkov.Common.csproj"/>
-    <ProjectReference Include="..\Libraries\SPTarkov.DI\SPTarkov.DI.csproj"/>
+    <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
+    <PackageReference Include="FastCloner" Version="3.3.4" />
+    <ProjectReference Include="..\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
+    <ProjectReference Include="..\Libraries\SPTarkov.Server.Assets\SPTarkov.Server.Assets.csproj" />
+    <ProjectReference Include="..\Libraries\SPTarkov.Common\SPTarkov.Common.csproj" />
+    <ProjectReference Include="..\Libraries\SPTarkov.DI\SPTarkov.DI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
