@@ -135,7 +135,7 @@ public class CreateProfileService(
             var achievementsDb = _databaseService.GetTemplates().Achievements;
             var achievementRewardItemsToSend = new List<Item>();
 
-            foreach (var (achievementId, achievement) in profileDetails.CharacterData.PmcData.Achievements)
+            foreach (var (achievementId, _) in profileDetails.CharacterData.PmcData.Achievements)
             {
                 var rewards = achievementsDb.FirstOrDefault(achievementDb => achievementDb.Id == achievementId)?.Rewards;
 

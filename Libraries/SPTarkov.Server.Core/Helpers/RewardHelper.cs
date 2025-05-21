@@ -37,7 +37,6 @@ public class RewardHelper(
     /// <param name="profileData">The profile data (could be the scav profile).</param>
     /// <param name="rewardSourceId">The quest or achievement ID, used for finding production unlocks.</param>
     /// <param name="questResponse">Response to quest completion when a production is unlocked.</param>
-    /// <param name="quest">The quest that the reward is for.</param>
     /// <returns>List of items that is the reward.</returns>
     public List<Item> ApplyRewards(
         List<Reward> rewards,
@@ -45,28 +44,19 @@ public class RewardHelper(
         SptProfile fullProfile,
         PmcData profileData,
         string rewardSourceId,
-        ItemEventRouterResponse? questResponse = null,
-        Quest? quest = null
+        ItemEventRouterResponse? questResponse = null
     )
     {
         var sessionId = fullProfile?.ProfileInfo?.ProfileId;
-        var pmcProfile = fullProfile?.CharacterData.PmcData;
+        var pmcProfile = fullProfile?.CharacterData?.PmcData;
         if (pmcProfile is null)
         {
-            _logger.Error($"Unable to get pmc profile for: {sessionId}, no rewards given");
+            _logger.Error($"Unable to get PMC profile for: {sessionId}, no rewards given");
+
             return [];
         }
 
         var gameVersion = pmcProfile.Info.GameVersion;
-
-        var isInGameRewardTrader = quest != null && IsInGameRewardTrader(quest);
-        if (isInGameRewardTrader)
-        {
-            _logger.Debug(
-                $"Skipping quest rewards for quest {quest.Id} as it is in the InGameRewardrTader list"
-            );
-            return [];
-        }
 
         foreach (var reward in rewards)
         {
@@ -142,30 +132,7 @@ public class RewardHelper(
             }
         }
 
-        return GetRewardItems(rewards, gameVersion, quest);
-    }
-
-    /// <summary>
-    /// Value for in game reward traders to not duplicate quest rewards.
-    /// Value can be modified by modders by overriding this value with new traders.
-    /// Ensure to add Lightkeeper's ID (638f541a29ffd1183d187f57) and BTR Driver's ID (656f0f98d80a697f855d34b1)
-    /// </summary>
-    protected string[] noRewardTraders =
-    [
-        // LightKeeper
-        "638f541a29ffd1183d187f57",
-        // BTR Driver
-        "656f0f98d80a697f855d34b1",
-    ];
-
-    /// <summary>
-    /// Determines if quest rewards are given in raid by the trader instead of through messaging system.
-    /// </summary>
-    /// <param name="quest">The quest to check.</param>
-    /// <returns>True if the quest's trader is in the in-game reward trader list; otherwise, false.</returns>
-    protected bool IsInGameRewardTrader(Quest quest)
-    {
-        return noRewardTraders.Contains(quest.TraderId);
+        return GetRewardItems(rewards, gameVersion);
     }
 
     /// <summary>
@@ -285,12 +252,10 @@ public class RewardHelper(
     /// </summary>
     /// <param name="rewards">Array of rewards to get the items from.</param>
     /// <param name="gameVersion">The game version of the profile.</param>
-    /// <param name="quest">The quest (optional).</param>
     /// <returns>Array of items with the correct maxStack.</returns>
     protected List<Item> GetRewardItems(
         List<Reward> rewards,
-        string gameVersion,
-        Quest? quest = null
+        string gameVersion
     )
     {
         // Iterate over all rewards with the desired status, flatten out items that have a type of Item
@@ -310,7 +275,7 @@ public class RewardHelper(
     /// <returns>Fixed rewards.</returns>
     protected List<Item> ProcessReward(Reward reward)
     {
-        /** item with mods to return */
+        // item with mods to return
         List<Item> rewardItems = [];
         List<Item> targets = [];
         List<Item> mods = [];

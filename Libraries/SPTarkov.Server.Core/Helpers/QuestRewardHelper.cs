@@ -33,37 +33,61 @@ public class QuestRewardHelper(
 {
     protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
 
-    /**
-     * Give player quest rewards - Skills/exp/trader standing/items/assort unlocks - Returns reward items player earned
-     * @param profileData Player profile (scav or pmc)
-     * @param questId questId of quest to get rewards for
-     * @param state State of the quest to get rewards for
-     * @param sessionId Session id
-     * @param questResponse Response to send back to client
-     * @returns Array of reward objects
-     */
+    /// <summary>
+    /// Value for in game reward traders to not duplicate quest rewards.
+    /// Value can be modified by modders by overriding this value with new traders.
+    /// Ensure to add Lightkeeper's ID (638f541a29ffd1183d187f57) and BTR Driver's ID (656f0f98d80a697f855d34b1)
+    /// </summary>
+    protected string[] InGameTraders =
+    [
+        Traders.LIGHTHOUSEKEEPER,
+        Traders.BTR
+    ];
+    
+    /// <summary>
+    /// Give player quest rewards - Skills/exp/trader standing/items/assort unlocks - Returns reward items player earned
+    /// SKIP quests completed in-game
+    /// </summary>
+    /// <param name="profileData">Player profile (scav or pmc)</param>
+    /// <param name="questId">questId of quest to get rewards for</param>
+    /// <param name="state">State of the quest to get rewards for</param>
+    /// <param name="sessionId">Session id</param>
+    /// <param name="questResponse">Response to send back to client</param>
+    /// <returns>Array of reward items player was given</returns>
     public IEnumerable<Item> ApplyQuestReward(PmcData profileData, string questId, QuestStatusEnum state, string sessionId,
         ItemEventRouterResponse questResponse)
     {
         // Repeatable quest base data is always in PMCProfile, `profileData` may be scav profile
-        // TODO: consider moving repeatable quest data to profile-agnostic location
+        // TODO: Move repeatable quest data to profile-agnostic location
         var fullProfile = _profileHelper.GetFullProfile(sessionId);
         var pmcProfile = fullProfile.CharacterData.PmcData;
         if (pmcProfile is null)
         {
             _logger.Error($"Unable to get pmc profile for: {sessionId}, no rewards given");
-            return Enumerable.Empty<Item>();
+
+            return [];
         }
 
         var questDetails = GetQuestFromDb(questId, pmcProfile);
         if (questDetails is null)
         {
             _logger.Warning(_localisationService.GetText("quest-unable_to_find_quest_in_db_no_quest_rewards", questId));
-            return Enumerable.Empty<Item>();
+
+            return [];
+        }
+
+        if (IsInGameTrader(questDetails))
+        {
+            // Assuming in-game traders give ALL rewards
+            _logger.Debug(
+                $"Skipping quest rewards for quest: {questDetails.Id}, trader: {questDetails.TraderId} in InGameRewardTrader list"
+            );
+
+            return [];
         }
 
         var questMoneyRewardBonusMultiplier = GetQuestMoneyRewardBonusMultiplier(pmcProfile);
-        if (questMoneyRewardBonusMultiplier > 0) // money = money + (money * intelCenterBonus / 100)
+        if (questMoneyRewardBonusMultiplier > 0) // money = money + (money * IntelCenterBonus / 100)
         {
             questDetails = ApplyMoneyBoost(questDetails, questMoneyRewardBonusMultiplier, state);
         }
@@ -76,9 +100,18 @@ public class QuestRewardHelper(
             fullProfile,
             profileData,
             questId,
-            questResponse,
-            questDetails
+            questResponse
         );
+    }
+
+    /// <summary>
+    /// Determines if quest rewards are given in raid by the trader instead of through messaging system.
+    /// </summary>
+    /// <param name="quest">The quest to check.</param>
+    /// <returns>True if the quest's trader is in the in-game reward trader list; otherwise, false.</returns>
+    protected bool IsInGameTrader(Quest quest)
+    {
+        return InGameTraders.Contains(quest.TraderId);
     }
 
     /// <summary>
