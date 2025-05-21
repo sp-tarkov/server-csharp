@@ -524,7 +524,7 @@ public class CreateProfileService(
             _mailSendService.SendLocalisedNpcMessageToPlayer(
                 sessionID,
                 questFromDb.TraderId,
-                MessageType.QUEST_START,
+                MessageType.QuestStart,
                 messageId,
                 itemRewards,
                 _timeUtil.GetHoursAsSeconds(100)

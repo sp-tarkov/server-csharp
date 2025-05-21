@@ -111,7 +111,7 @@ public class QuestController(
         _mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionID,
             questFromDb.TraderId,
-            MessageType.QUEST_START,
+            MessageType.QuestStart,
             messageId,
             startedQuestRewardItems.ToList(),
             _timeUtil.GetHoursAsSeconds((int) _questHelper.GetMailItemRedeemTimeHoursForProfile(pmcData))

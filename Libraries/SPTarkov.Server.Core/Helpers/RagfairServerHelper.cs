@@ -130,7 +130,7 @@ public class RagfairServerHelper(
         mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionID,
             Traders.RAGMAN,
-            MessageType.MESSAGE_WITH_ITEMS,
+            MessageType.MessageWithItems,
             goodsReturnedTemplate,
             returnedItems,
             timeUtil.GetHoursAsSeconds((int) databaseService.GetGlobals().Configuration.RagFair.YourOfferDidNotSellMaxStorageTimeInHour)
