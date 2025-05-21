@@ -5,6 +5,7 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Launcher;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
@@ -72,20 +73,20 @@ public class ProfileCallbacks(
     ///     Handle client/game/profile/nickname/change event
     ///     Client allows player to adjust their profile name
     /// </summary>
-    /// <returns></returns>
-    public string ChangeNickname(string url, ProfileChangeNicknameRequestData info, string sessionID)
+    /// <returns>Client response as string</returns>
+    public string ChangeNickname(string url, ProfileChangeNicknameRequestData info, string sessionId)
     {
-        var output = _profileController.ChangeNickname(info, sessionID);
+        var output = _profileController.ChangeNickname(info, sessionId);
 
         return output switch
         {
-            "taken" => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotUnique, "The nickname is already in use"),
-            "tooshort" => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotValid, "The nickname is too short"),
+            NicknameValidationResult.Taken => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotUnique, $"{BackendErrorCodes.NicknameNotUnique} - "),
+            NicknameValidationResult.Short => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotValid, $"{BackendErrorCodes.NicknameNotValid} - "),
             _ => _httpResponse.GetBody<object>(
                 new
                 {
                     status = 0,
-                    nicknamechangedate = _timeUtil.GetTimeStamp()
+                    NicknameChangeDate = _timeUtil.GetTimeStamp()
                 }
             )
         };
@@ -94,15 +95,13 @@ public class ProfileCallbacks(
     /// <summary>
     ///     Handle client/game/profile/nickname/validate
     /// </summary>
-    /// <returns></returns>
-    public string ValidateNickname(string url, ValidateNicknameRequestData info, string sessionID)
+    /// <returns>Client response as string</returns>
+    public string ValidateNickname(string url, ValidateNicknameRequestData info, string sessionId)
     {
-        var output = _profileController.ValidateNickname(info, sessionID);
-
-        return output switch
+        return _profileController.ValidateNickname(info, sessionId) switch
         {
-            "taken" => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotUnique, "The nickname is already in use"),
-            "tooshort" => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotValid, "The nickname is too short"),
+            NicknameValidationResult.Taken => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotUnique, $"{BackendErrorCodes.NicknameNotUnique} - "),
+            NicknameValidationResult.Short => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotValid, $"{BackendErrorCodes.NicknameNotValid} - "),
             _ => _httpResponse.GetBody(
                 new
                 {
@@ -116,11 +115,12 @@ public class ProfileCallbacks(
     ///     Handle client/game/profile/nickname/reserved
     /// </summary>
     /// <returns></returns>
-    public string GetReservedNickname(string url, EmptyRequestData _, string sessionID)
+    public string GetReservedNickname(string url, EmptyRequestData _, string sessionId)
     {
-        var fullProfile = _profileHelper.GetFullProfile(sessionID);
+        var fullProfile = _profileHelper.GetFullProfile(sessionId);
         if (fullProfile?.ProfileInfo?.Username is not null)
         {
+            // Send players name back to them
             return _httpResponse.GetBody(fullProfile?.ProfileInfo?.Username);
         }
 
@@ -132,9 +132,9 @@ public class ProfileCallbacks(
     ///     Called when creating a character when choosing a character face/voice
     /// </summary>
     /// <returns></returns>
-    public string GetProfileStatus(string url, EmptyRequestData _, string sessionID)
+    public string GetProfileStatus(string url, EmptyRequestData _, string sessionId)
     {
-        return _httpResponse.GetBody(_profileController.GetProfileStatus(sessionID));
+        return _httpResponse.GetBody(_profileController.GetProfileStatus(sessionId));
     }
 
     /// <summary>

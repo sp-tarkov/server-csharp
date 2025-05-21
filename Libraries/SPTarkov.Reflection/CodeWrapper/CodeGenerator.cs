@@ -68,7 +68,7 @@ public class CodeGenerator
     {
         if (code.GetLabel() == null)
         {
-            return new List<Label>();
+            return [];
         }
 
         return [ (Label)code.GetLabel() ];
