@@ -115,10 +115,10 @@ public class QuestRewardHelper(
     protected double GetQuestMoneyRewardBonusMultiplier(PmcData pmcData)
     {
         // Check player has intel center
-        var moneyRewardbonuses = pmcData.Bonuses.Where(bonus => bonus.Type == BonusType.QuestMoneyReward);
+        var moneyRewardBonuses = pmcData.Bonuses.Where(bonus => bonus.Type == BonusType.QuestMoneyReward);
 
         // Get a total of the quest money reward percent bonuses
-        var moneyRewardBonusPercent = moneyRewardbonuses.Aggregate(0D, (accumulate, bonus) => accumulate + bonus.Value ?? 0);
+        var moneyRewardBonusPercent = moneyRewardBonuses.Aggregate(0D, (accumulate, bonus) => accumulate + bonus.Value ?? 0);
 
         // Calculate hideout management bonus as a percentage (up to 51% bonus)
         var hideoutManagementSkill = _profileHelper.GetSkillFromProfile(pmcData, SkillTypes.HideoutManagement);
