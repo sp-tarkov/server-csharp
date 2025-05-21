@@ -49,29 +49,29 @@ public class ProfileController(
     /// <summary>
     ///     Handle launcher/profile/info
     /// </summary>
-    /// <param name="sessionID">Session/Player id</param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public virtual MiniProfile GetMiniProfile(string sessionID)
+    public virtual MiniProfile GetMiniProfile(string sessionId)
     {
-        var profile = _saveServer.GetProfile(sessionID);
+        var profile = _saveServer.GetProfile(sessionId);
         if (profile?.CharacterData == null)
         {
-            throw new Exception($"Unable to find character data for id: {sessionID}. Profile may be corrupt");
+            throw new Exception($"Unable to find character data for id: {sessionId}. Profile may be corrupt");
         }
 
         var pmc = profile.CharacterData.PmcData;
         var maxLvl = _profileHelper.GetMaxLevel();
 
         // Player hasn't completed profile creation process, send defaults
-        var currlvl = pmc?.Info?.Level.GetValueOrDefault(1);
-        var xpToNextLevel = _profileHelper.GetExperience((currlvl ?? 1) + 1);
+        var currentLevel = pmc?.Info?.Level.GetValueOrDefault(1);
+        var xpToNextLevel = _profileHelper.GetExperience((currentLevel ?? 1) + 1);
         if (pmc?.Info?.Level == null)
         {
             return new MiniProfile
             {
                 Username = profile.ProfileInfo?.Username ?? "",
                 Nickname = "unknown",
-                HasPassword = profile.ProfileInfo.Password != "",
+                HasPassword = profile.ProfileInfo?.Password != "",
                 Side = "unknown",
                 CurrentLevel = 0,
                 CurrentExperience = 0,
@@ -86,13 +86,13 @@ public class ProfileController(
 
         return new MiniProfile
         {
-            Username = profile.ProfileInfo.Username,
+            Username = profile.ProfileInfo?.Username,
             Nickname = pmc.Info.Nickname,
-            HasPassword = profile.ProfileInfo.Password != "",
+            HasPassword = profile.ProfileInfo?.Password != "",
             Side = pmc.Info.Side,
             CurrentLevel = pmc.Info.Level,
             CurrentExperience = pmc.Info.Experience ?? 0,
-            PreviousExperience = currlvl == 0 ? 0 : _profileHelper.GetExperience(currlvl.Value),
+            PreviousExperience = currentLevel == 0 ? 0 : _profileHelper.GetExperience(currentLevel.Value),
             NextLevel = xpToNextLevel,
             MaxLevel = maxLvl,
             Edition = profile.ProfileInfo?.Edition ?? "",
