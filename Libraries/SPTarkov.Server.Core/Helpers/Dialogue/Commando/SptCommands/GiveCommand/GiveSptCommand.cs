@@ -303,11 +303,11 @@ public class GiveSptCommand(
         return _localeService.GetLocaleDb(desiredLocale);
     }
 
-    /**
-     * A "simple" function that checks if an item is supposed to be given to a player or not
-     * @param templateItem the template item to check
-     * @returns true if its obtainable, false if its not
-     */
+    /// <summary>
+    /// A "simple" function that checks if an item is supposed to be given to a player or not
+    /// </summary>
+    /// <param name="templateItem">Template item to check</param>
+    /// <returns>true if its obtainable</returns>
     protected bool IsItemAllowed(TemplateItem templateItem)
     {
         return templateItem.Type != "Node" &&

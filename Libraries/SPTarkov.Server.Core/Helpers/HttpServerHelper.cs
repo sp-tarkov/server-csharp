@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable(InjectionType.Singleton)]
 public class HttpServerHelper(ConfigServer configServer)
 {
-    protected HttpConfig _httpConfig = configServer.GetConfig<HttpConfig>();
+    protected readonly HttpConfig _httpConfig = configServer.GetConfig<HttpConfig>();
 
     protected Dictionary<string, string> mime = new()
     {
@@ -27,27 +27,28 @@ public class HttpServerHelper(ConfigServer configServer)
         return mime.GetValueOrDefault(key);
     }
 
-    /**
-     * Combine ip and port into address
-     * @returns url
-     */
+    /// <summary>
+    /// Combine ip and port into address
+    /// </summary>
+    /// <returns>URI</returns>
     public string BuildUrl()
     {
         return $"{_httpConfig.BackendIp}:{_httpConfig.BackendPort}";
     }
 
-    /**
-     * Prepend http to the url:port
-     * @returns URI
-     */
+    /// <summary>
+    /// Prepend http to the url:port
+    /// </summary>
+    /// <returns>URI</returns>
     public string GetBackendUrl()
     {
         return $"https://{BuildUrl()}";
     }
 
-    /**
-     * Get websocket url + port
-     */
+    /// <summary>
+    /// Get websocket url + port
+    /// </summary>
+    /// <returns>wss:// address</returns>
     public string GetWebsocketUrl()
     {
         return $"wss://{BuildUrl()}";

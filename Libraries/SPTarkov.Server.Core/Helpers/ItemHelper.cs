@@ -140,15 +140,6 @@ public class ItemHelper(
         return filteredPool.FirstOrDefault(poolItem => poolItem.Template.Equals(tpl, StringComparison.OrdinalIgnoreCase));
     }
 
-    /**
-     * .
-     * 
-     * @param item1 
-     * @param item2 
-     * @param compareUpdProperties 
-     * @returns 
-     */
-
     /// <summary>
     /// This method will compare two items (with all its children) and see if they are equivalent
     /// This method will NOT compare IDs on the items
@@ -602,12 +593,6 @@ public class ItemHelper(
         return _cloner.Clone(_databaseService.GetItems().Values.ToList());
     }
 
-    /**
-     * 
-     * @param itemTpl items 
-     * @returns 
-     */
-
     /// <summary>
     /// Gets item data from items.json
     /// </summary>
@@ -686,13 +671,13 @@ public class ItemHelper(
         return Math.Min(Math.Round(qualityModifier / itemsWithQualityCount, 5), 1);
     }
 
-    /**
-     * Get normalized value (0-1) based on item condition
-     * Will return -1 for base armor items with 0 durability
-     * @param item Item to check
-     * @param skipArmorItemsWithoutDurability return -1 for armor items that have max durability of 0
-     * @returns Number between 0 and 1
-     */
+    /// <summary>
+    /// Get normalized value (0-1) based on item condition
+    /// Will return -1 for base armor items with 0 durability
+    /// </summary>
+    /// <param name="item">Item to check</param>
+    /// <param name="skipArmorItemsWithoutDurability">return -1 for armor items that have max durability of 0</param>
+    /// <returns>Number between 0 and 1</returns>
     public double GetItemQualityModifier(Item item, bool skipArmorItemsWithoutDurability = false)
     {
         // Default to 100%
@@ -749,20 +734,18 @@ public class ItemHelper(
             {
                 result = 0.01;
             }
-
-            return result;
         }
 
         return result;
     }
 
-    /**
-     * Get a quality value based on a repairable item's current state between current and max durability
-     * @param itemDetails Db details for item we want quality value for
-     * @param repairable Repairable properties
-     * @param item Item quality value is for
-     * @returns A number between 0 and 1
-     */
+    /// <summary>
+    /// Get a quality value based on a repairable item's current state between current and max durability
+    /// </summary>
+    /// <param name="itemDetails">Db details for item we want quality value for</param>
+    /// <param name="repairable">Repairable properties</param>
+    /// <param name="item">Item quality value is for</param>
+    /// <returns>number between 0 and 1</returns>
     protected double GetRepairableItemQualityValue(TemplateItem itemDetails, UpdRepairable repairable, Item item)
     {
         // Edge case, durability above max
@@ -788,12 +771,12 @@ public class ItemHelper(
         return Math.Sqrt(durability ?? 0);
     }
 
-    /**
-     * Recursive function that looks at every item from parameter and gets their children's Ids + includes parent item in results
-     * @param items List of items (item + possible children)
-     * @param baseItemId Parent item's id
-     * @returns a list of strings
-     */
+    /// <summary>
+    /// Recursive function that looks at every item from parameter and gets their children's Ids + includes parent item in results
+    /// </summary>
+    /// <param name="items">List of items (item + possible children)</param>
+    /// <param name="baseItemId">Parent item's id</param>
+    /// <returns>list of child item ids</returns>
     public List<string> FindAndReturnChildrenByItems(IEnumerable<Item> items, string baseItemId)
     {
         List<string> list = [];
@@ -811,13 +794,13 @@ public class ItemHelper(
         return list;
     }
 
-    /**
-     * A variant of FindAndReturnChildren where the output is list of item objects instead of their ids.
-     * @param items List of items (item + possible children)
-     * @param baseItemId Parent item's id
-     * @param modsOnly Include only mod items, exclude items stored inside root item
-     * @returns A list of Item objects
-     */
+    /// <summary>
+    /// A variant of FindAndReturnChildren where the output is list of item objects instead of their ids.
+    /// </summary>
+    /// <param name="items">List of items (item + possible children)</param>
+    /// <param name="baseItemId">Parent item's id</param>
+    /// <param name="modsOnly">OPTIONAL - Include only mod items, exclude items stored inside root item</param>
+    /// <returns>list of Item objects</returns>
     public List<Item> FindAndReturnChildrenAsItems(IEnumerable<Item> items, string baseItemId, bool modsOnly = false)
     {
         // Use dictionary to make key lookup faster, convert to list before being returned
@@ -850,12 +833,12 @@ public class ItemHelper(
         return result.Values.ToList();
     }
 
-    /**
-     * Find children of the item in a given assort (weapons parts for example, need recursive loop function)
-     * @param itemIdToFind Template id of item to check for
-     * @param assort List of items to check in
-     * @returns List of children of requested item
-     */
+    /// <summary>
+    /// Find children of the item in a given assort (weapons parts for example, need recursive loop function)
+    /// </summary>
+    /// <param name="itemIdToFind">Template id of item to check for</param>
+    /// <param name="assort">List of items to check in</param>
+    /// <returns>List of children of requested item</returns>
     public List<Item> FindAndReturnChildrenByAssort(string itemIdToFind, List<Item> assort)
     {
         List<Item> list = [];
@@ -873,11 +856,11 @@ public class ItemHelper(
         return list;
     }
 
-    /**
-     * Check if the passed in item has buy count restrictions
-     * @param itemToCheck Item to check
-     * @returns true if it has buy restrictions
-     */
+    /// <summary>
+    /// Check if the passed in item has buy count restrictions
+    /// </summary>
+    /// <param name="itemToCheck">Item to check</param>
+    /// <returns>true if it has buy restrictions</returns>
     public bool HasBuyRestrictions(Item itemToCheck)
     {
         return itemToCheck.Upd?.BuyRestrictionCurrent is not null && itemToCheck.Upd?.BuyRestrictionMax is not null;
@@ -1056,6 +1039,11 @@ public class ItemHelper(
         }
     }
 
+    /// <summary>
+    /// TODO - Write
+    /// </summary>
+    /// <param name="inventory"></param>
+    /// <param name="insuredItems"></param>
     public void ReplaceProfileInventoryIds(BotBaseInventory inventory, List<InsuredItem>? insuredItems = null)
     {
         // Blacklist
@@ -1407,21 +1395,20 @@ public class ItemHelper(
                  || int.TryParse(item.SlotId, out _)); // Has int as slotId, is inside container. e.g. cartridges
     }
 
-    /**
-     * Retrieves the equipment parent item for a given item.
-     *
-     * This method traverses up the hierarchy of items starting from a given `itemId`, until it finds the equipment
-     * parent item. In other words, if you pass it an item id of a suppressor, it will traverse up the muzzle brake,
-     * barrel, upper receiver, gun, nested backpack, and finally return the backpack Item that is equipped.
-     *
-     * It's important to note that traversal is expensive, so this method requires that you pass it a Dictionary of the items
-     * to traverse, where the keys are the item IDs and the values are the corresponding Item objects. This alleviates
-     * some of the performance concerns, as it allows for quick lookups of items by ID.
-     *
-     * @param itemId - The unique identifier of the item for which to find the equipment parent.
-     * @param itemsMap - A Dictionary containing item IDs mapped to their corresponding Item objects for quick lookup.
-     * @returns The Item object representing the equipment parent of the given item, or `null` if no such parent exists.
-     */
+    /// <summary>
+    /// Retrieves the equipment parent item for a given item.
+    ///
+    /// This method traverses up the hierarchy of items starting from a given `itemId`, until it finds the equipment
+    /// parent item. In other words, if you pass it an item id of a suppressor, it will traverse up the muzzle brake,
+    /// barrel, upper receiver, gun, nested backpack, and finally return the backpack Item that is equipped.
+    ///
+    /// It's important to note that traversal is expensive, so this method requires that you pass it a Dictionary of the items
+    /// to traverse, where the keys are the item IDs and the values are the corresponding Item objects. This alleviates
+    /// some of the performance concerns, as it allows for quick lookups of items by ID.
+    /// </summary>
+    /// <param name="itemId">The unique identifier of the item for which to find the equipment parent.</param>
+    /// <param name="itemsMap">A Dictionary containing item IDs mapped to their corresponding Item objects for quick lookup.</param>
+    /// <returns>The Item object representing the equipment parent of the given item, or `null` if no such parent exists</returns>
     public Item? GetEquipmentParent(string itemId, Dictionary<string, Item> itemsMap)
     {
         var currentItem = itemsMap.GetValueOrDefault(itemId);
@@ -1438,12 +1425,12 @@ public class ItemHelper(
         return currentItem;
     }
 
-    /**
-     * Get the inventory size of an item
-     * @param items Item with children
-     * @param rootItemId
-     * @returns ItemSize object (width and height)
-     */
+    /// <summary>
+    /// Get the inventory size of an item
+    /// </summary>
+    /// <param name="items">Item with children</param>
+    /// <param name="rootItemId">The base items root id</param>
+    /// <returns>ItemSize object (width and height)</returns>
     public ItemSize GetItemSize(List<Item> items, string rootItemId)
     {
         var rootTemplate = GetItem(items.Where(x => x.Id.Equals(rootItemId, StringComparison.OrdinalIgnoreCase)).ToList()[0].Template).Value;
@@ -1489,15 +1476,14 @@ public class ItemHelper(
         };
     }
 
-    /**
-     * Get a random cartridge from an items Filter property
-     * @param item Db item template to look up Cartridge filter values from
-     * @returns Caliber of cartridge
-     */
+    /// <summary>
+    /// Get a random cartridge from an items Filter property
+    /// </summary>
+    /// <param name="item">Db item template to look up Cartridge filter values from</param>
+    /// <returns>Valid caliber for cartridge</returns>
     public string? GetRandomCompatibleCaliberTemplateId(TemplateItem item)
     {
-        var cartridges = item?.Properties?.Cartridges[0]?.Props?.Filters[0]?.Filter;
-
+        var cartridges = item?.Properties?.Cartridges?.FirstOrDefault()?.Props?.Filters?.FirstOrDefault()?.Filter;
         if (cartridges is null)
         {
             _logger.Warning($"Failed to find cartridge for item: {item?.Id} {item?.Name}");
@@ -1519,7 +1505,7 @@ public class ItemHelper(
         var cartridgeDetails = GetItem(cartridgeTpl);
         var cartridgeMaxStackSize = cartridgeDetails.Value.Properties.StackMaxSize;
 
-        // Exit if ammo already exists in box
+        // Exit early if ammo already exists in box
         if (ammoBox.Any(item => item.Template.Equals(cartridgeTpl, StringComparison.OrdinalIgnoreCase)))
         {
             return;
@@ -1557,11 +1543,11 @@ public class ItemHelper(
         }
     }
 
-    /**
-     * Add a single stack of cartridges to the ammo box
-     * @param ammoBox Box to add cartridges to
-     * @param ammoBoxDetails Item template from items db
-     */
+    /// <summary>
+    /// Add a single stack of cartridges to the ammo box
+    /// </summary>
+    /// <param name="ammoBox">Box item to add cartridges to</param>
+    /// <param name="ammoBoxDetails">Item template from items db</param>
     public void AddSingleStackCartridgesToAmmoBox(List<Item> ammoBox, TemplateItem ammoBoxDetails)
     {
         var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties?.StackSlots?[0].MaxCount ?? 0;
@@ -1576,13 +1562,13 @@ public class ItemHelper(
         );
     }
 
-    /**
-     * Check if item is stored inside of a container
-     * @param itemToCheck Item to check is inside of container
-     * @param desiredContainerSlotId Name of slot to check item is in e.g. SecuredContainer/Backpack
-     * @param items Inventory with child parent items to check
-     * @returns True when item is in container
-     */
+    /// <summary>
+    /// Check if item is stored inside a container
+    /// </summary>
+    /// <param name="itemToCheck">Item to check is inside of container</param>
+    /// <param name="desiredContainerSlotId">Name of slot to check item is in e.g. SecuredContainer/Backpack</param>
+    /// <param name="items">Inventory with child parent items to check</param>
+    /// <returns>True when item is in container</returns>
     public bool ItemIsInsideContainer(Item itemToCheck, string desiredContainerSlotId, List<Item> items)
     {
         // Get items parent
@@ -1601,16 +1587,16 @@ public class ItemHelper(
         return ItemIsInsideContainer(parent, desiredContainerSlotId, items);
     }
 
-    /**
-     * Add child items (cartridges) to a magazine
-     * @param magazine Magazine to add child items to
-     * @param magTemplate Db template of magazine
-     * @param staticAmmoDist Cartridge distribution
-     * @param caliber Caliber of cartridge to add to magazine
-     * @param minSizePercent % the magazine must be filled to
-     * @param defaultCartridgeTpl Cartridge to use when none found
-     * @param weapon Weapon the magazine will be used for (if passed in uses Chamber as whitelist)
-     */
+    /// <summary>
+    /// Add child items (cartridges) to a magazine
+    /// </summary>
+    /// <param name="magazine">Magazine to add child items to</param>
+    /// <param name="magTemplate">Db template of magazine</param>
+    /// <param name="staticAmmoDist">Cartridge distribution</param>
+    /// <param name="caliber">Caliber of cartridge to add to magazine</param>
+    /// <param name="minSizePercent">OPTIONAL - % the magazine must be filled to</param>
+    /// <param name="defaultCartridgeTpl">OPTIONAL -Cartridge to use when none found</param>
+    /// <param name="weapon">OPTIONAL -Weapon the magazine will be used for (if passed in uses Chamber as whitelist)</param>
     public void FillMagazineWithRandomCartridge(
         List<Item> magazine,
         TemplateItem magTemplate,
@@ -1622,7 +1608,7 @@ public class ItemHelper(
     {
         var chosenCaliber = caliber ?? GetRandomValidCaliber(magTemplate);
 
-        // Edge case for the Klin pp-9, it has a typo in its ammo caliber
+        // Edge case - Klin pp-9 has a typo in its ammo caliber
         if (chosenCaliber == "Caliber9x18PMM")
         {
             chosenCaliber = "Caliber9x18PM";

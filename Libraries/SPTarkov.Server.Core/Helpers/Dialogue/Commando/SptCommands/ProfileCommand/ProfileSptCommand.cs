@@ -20,16 +20,15 @@ public class ProfileSptCommand(
     ProfileHelper _profileHelper
 ) : ISptCommand
 {
-    /**
-     * Regex to account for all these cases:
-     * spt profile level 20
-     * spt profile skill metabolism 10
-     */
-    protected Regex _commandRegex = new(
-        @"^spt profile (?<command>level|skill)((?<=.*skill) (?<skill>[\w]+))? (?<quantity>(?!0+)[0-9]+)$"
-    );
+    /// <summary>
+    /// Regex to account for all these cases
+    /// spt profile level 20
+    /// spt profile skill metabolism 10
+    /// </summary>
+    protected static readonly Regex _commandRegex = new(
+        @"^spt profile (?<command>level|skill)((?<=.*skill) (?<skill>[\w]+))? (?<quantity>(?!0+)[0-9]+)$");
 
-    protected Regex _examineRegex = new(@"^spt profile (?<command>examine)");
+    protected static readonly Regex _examineRegex = new(@"^spt profile (?<command>examine)");
 
     public string GetCommand()
     {
