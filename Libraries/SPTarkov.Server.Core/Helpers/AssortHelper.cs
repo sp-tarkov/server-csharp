@@ -24,14 +24,14 @@ public class AssortHelper(
     /// <param name="traderId">Traders id the assort belongs to</param>
     /// <param name="traderAssorts">All assort items from same trader</param>
     /// <param name="mergedQuestAssorts">Dict of quest assort to quest id unlocks for all traders (key = started/failed/complete)</param>
-    /// <param name="flea">TODO: what is this for</param>
+    /// <param name="isFlea">Is the trader assort being modified the flea market</param>
     /// <returns>items minus locked quest assorts</returns>
     public TraderAssort StripLockedQuestAssort(
         PmcData pmcProfile,
         string traderId,
         TraderAssort traderAssorts,
         Dictionary<string, Dictionary<string, string>> mergedQuestAssorts,
-        bool flea = false)
+        bool isFlea = false)
     {
         var strippedTraderAssorts = traderAssorts;
 
@@ -57,7 +57,7 @@ public class AssortHelper(
             var questStatusInProfile = _questHelper.GetQuestStatus(pmcProfile, unlockValues.Value.Key);
             if (!unlockValues.Value.Value.Contains(questStatusInProfile))
             {
-                strippedTraderAssorts = RemoveItemFromAssort(traderAssorts, assortId.Key, flea);
+                strippedTraderAssorts = RemoveItemFromAssort(traderAssorts, assortId.Key, isFlea);
             }
         }
 
@@ -102,13 +102,13 @@ public class AssortHelper(
         return null;
     }
 
-    /**
-     * Remove assorts from a trader that have not been unlocked yet
-     * @param pmcProfile player profile
-     * @param traderId traders id
-     * @param assort traders assorts
-     * @returns traders assorts minus locked loyalty assorts
-     */
+    /// <summary>
+    /// Remove assorts from a trader that have not been unlocked yet
+    /// </summary>
+    /// <param name="pmcProfile">Player profile</param>
+    /// <param name="traderId">Traders id</param>
+    /// <param name="assort">Traders assorts</param>
+    /// <returns>Trader assorts minus locked loyalty assorts</returns>
     public TraderAssort StripLockedLoyaltyAssort(PmcData pmcProfile, string traderId, TraderAssort assort)
     {
         var strippedAssort = assort;
@@ -133,19 +133,20 @@ public class AssortHelper(
         return strippedAssort;
     }
 
-    /**
-     * Remove an item from an assort
-     * @param assort assort to modify
-     * @param itemID item id to remove from assort
-     * @returns Modified assort
-     */
-    public TraderAssort RemoveItemFromAssort(TraderAssort assort, string itemID, bool flea = false)
+    /// <summary>
+    /// Remove an item from an assort
+    /// Must be removed from the assorts; items + barterScheme + LoyaltyLevel
+    /// </summary>
+    /// <param name="assort">Assort to remove item from</param>
+    /// <param name="itemId">Id of item to remove from assort</param>
+    /// <param name="isFlea">Is the assort being modified the flea market assort</param>
+    /// <returns>Modified assort</returns>
+    public TraderAssort RemoveItemFromAssort(TraderAssort assort, string itemId, bool isFlea = false)
     {
-        var idsToRemove = _itemHelper.FindAndReturnChildrenByItems(assort.Items, itemID);
-
-        if (assort.BarterScheme.TryGetValue(itemID, out var lisToUse) && flea)
+        // Flea assort needs special handling, item must remain in assort but be flagged as locked
+        if (isFlea && assort.BarterScheme.TryGetValue(itemId, out var listToUse))
         {
-            foreach (var barterScheme in lisToUse.SelectMany(barterSchemes => barterSchemes))
+            foreach (var barterScheme in listToUse.SelectMany(barterSchemes => barterSchemes))
             {
                 barterScheme.SptQuestLocked = true;
             }
@@ -153,13 +154,12 @@ public class AssortHelper(
             return assort;
         }
 
-        assort.BarterScheme.Remove(itemID);
-        assort.LoyalLevelItems.Remove(itemID);
+        assort.BarterScheme.Remove(itemId);
+        assort.LoyalLevelItems.Remove(itemId);
 
-        foreach (var item in idsToRemove.SelectMany(i => assort.Items.ToList().Where(a => a.Id == i)))
-        {
-            assort.Items.Remove(item);
-        }
+        // The item being removed may have children linked to it, find and remove them too
+        var idsToRemove = _itemHelper.FindAndReturnChildrenByItems(assort.Items, itemId);
+        assort.Items.RemoveAll(item => idsToRemove.Contains(item.Id));
 
         return assort;
     }
