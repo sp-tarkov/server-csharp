@@ -133,29 +133,41 @@ public class QuestRewardHelper(
         return moneyRewardBonusPercent + hideoutManagementBonusMultiplier ?? 1;
     }
 
-    /**
-     * Adjust quest money rewards by passed in multiplier
-     * @param quest Quest to multiple money rewards
-     * @param bonusPercent Percent to adjust money rewards by
-     * @param questStatus Status of quest to apply money boost to rewards of
-     * @returns Updated quest
-     */
+
+    /// <summary>
+    /// Adjust a quests money rewards by supplied multiplier
+    /// </summary>
+    /// <param name="quest">Quest to apply bonus to</param>
+    /// <param name="bonusPercent">Percent to adjust money rewards by</param>
+    /// <param name="questStatus">Status of quest to apply money boost to rewards of</param>
+    /// <returns>Updated quest</returns>
     public Quest ApplyMoneyBoost(Quest quest, double bonusPercent, QuestStatusEnum questStatus)
     {
         var clonedQuest = _cloner.Clone(quest);
+        if (clonedQuest?.Rewards?.Success == null)
+        {
+            return clonedQuest;
+        }
 
-        if (clonedQuest.Rewards.Success == null) return clonedQuest;
-
-        var itemRewards = clonedQuest.Rewards.Success
+        // Grab just the money rewards from quest reward pool
+        var moneyRewards = clonedQuest.Rewards.Success
             .Where(reward =>
                 reward.Type == RewardType.Item &&
                 reward.Items != null && reward.Items.Count > 0 &&
                 _paymentHelper.IsMoneyTpl(reward.Items.FirstOrDefault().Template)
             );
-        foreach (var moneyReward in itemRewards)
+
+        foreach (var moneyReward in moneyRewards)
         {
             // Add % bonus to existing StackObjectsCount
-            var rewardItem = moneyReward.Items[0];
+            var rewardItem = moneyReward.Items?.FirstOrDefault();
+            if (rewardItem is null)
+            {
+                _logger.Error($"Unable to apply money reward bonus to quest: {quest.Name} as no money item found");
+
+                continue;
+            }
+
             var newCurrencyAmount = Math.Floor((rewardItem.Upd.StackObjectsCount ?? 0) * (1 + (bonusPercent / 100)));
             rewardItem.Upd.StackObjectsCount = newCurrencyAmount;
             moneyReward.Value = newCurrencyAmount;
