@@ -1,7 +1,9 @@
 ﻿using System.Net.WebSockets;
+using System.Runtime.InteropServices.JavaScript;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers.Ws;
+using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Servers;
@@ -34,6 +36,8 @@ public class WebSocketServer(
             return;
         }
 
+        var sessionIdContext = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff");
+
         foreach (var wsh in socketHandlers)
         {
             if (webSocket.State == WebSocketState.Open)
@@ -44,7 +48,7 @@ public class WebSocketServer(
                 }
             }
 
-            await wsh.OnConnection(webSocket, context);
+            await wsh.OnConnection(webSocket, context, sessionIdContext);
         }
 
         // Discard this task, we dont need to await it.
@@ -79,7 +83,7 @@ public class WebSocketServer(
         foreach (var wsh in socketHandlers)
         {
             await cts.CancelAsync();
-            await wsh.OnClose(webSocket, context);
+            await wsh.OnClose(webSocket, context, sessionIdContext);
         }
     }
 }

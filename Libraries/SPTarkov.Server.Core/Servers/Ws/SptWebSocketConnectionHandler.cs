@@ -20,8 +20,8 @@ public class SptWebSocketConnectionHandler(
     IEnumerable<ISptWebSocketMessageHandler> _messageHandlers
 ) : IWebSocketConnectionHandler
 {
-    protected Dictionary<string, WebSocket> _sockets = new();
-    protected object _socketsLock = new();
+    protected Dictionary<string, Dictionary<string, WebSocket>> _sockets = new();
+    protected Lock _socketsLock = new();
 
     public string GetHookUrl()
     {
@@ -33,7 +33,7 @@ public class SptWebSocketConnectionHandler(
         return "SPT WebSocket Handler";
     }
 
-    public Task OnConnection(WebSocket ws, HttpContext context)
+    public Task OnConnection(WebSocket ws, HttpContext context, string sessionIdContext)
     {
         var splitUrl = context.Request.Path.Value.Split("/");
         var sessionID = splitUrl.Last();
@@ -41,18 +41,32 @@ public class SptWebSocketConnectionHandler(
         var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
         lock (_socketsLock)
         {
-            if (_sockets.TryGetValue(sessionID, out var oldSocket))
+            if (_sockets.TryGetValue(sessionID, out var sessionSockets) && sessionSockets.Any())
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
                     _logger.Debug(_localisationService.GetText("websocket-player_reconnect", playerInfoText));
                 }
 
-                oldSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).Wait();
-                _sockets.Remove(sessionID);
+                foreach (var oldSocket in sessionSockets)
+                {
+                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    {
+                        _logger.Debug($"[ws] Removing websocket reference {oldSocket.Key} for session {sessionID}");
+                    }
+
+                    oldSocket.Value.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).Wait();
+                }
+
+                sessionSockets.Clear();
+            }
+            else
+            {
+                sessionSockets = new Dictionary<string, WebSocket>();
+                _sockets.Add(sessionID, sessionSockets);
             }
 
-            _sockets.Add(sessionID, ws);
+            sessionSockets.Add(sessionIdContext, ws);
             if (_logger.IsLogEnabled(LogLevel.Info))
             {
                 _logger.Info(_localisationService.GetText("websocket-player_connected", playerInfoText));
@@ -62,7 +76,10 @@ public class SptWebSocketConnectionHandler(
         }
     }
 
-    public async Task OnMessage(byte[] receivedMessage, WebSocketMessageType messageType, WebSocket ws,
+    public async Task OnMessage(
+        byte[] receivedMessage,
+        WebSocketMessageType messageType,
+        WebSocket ws,
         HttpContext context)
     {
         var splitUrl = context.Request.Path.Value.Split("/");
@@ -74,23 +91,29 @@ public class SptWebSocketConnectionHandler(
         }
     }
 
-    public async Task OnClose(WebSocket ws, HttpContext context)
+    public async Task OnClose(WebSocket ws, HttpContext context, string sessionIdContext)
     {
         var splitUrl = context.Request.Path.Value.Split("/");
         var sessionID = splitUrl.Last();
 
         lock (_socketsLock)
         {
-            if (!_sockets.Remove(sessionID, out _) && _logger.IsLogEnabled(LogLevel.Info))
+            if (_sockets.TryGetValue(sessionID, out var sessionSockets) && sessionSockets.Any())
             {
-                _logger.Info($"[ws] The websocket session {sessionID} has already been removed or reconnected");
-            }
-
-            var playerProfile = _profileHelper.GetFullProfile(sessionID);
-            var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
-            if (_logger.IsLogEnabled(LogLevel.Info))
-            {
-                _logger.Info($"[ws] player: {playerInfoText} has disconnected");
+                if (!sessionSockets.TryGetValue(sessionIdContext, out _) && _logger.IsLogEnabled(LogLevel.Info))
+                {
+                    _logger.Info($"[ws] The websocket session {sessionID} with reference {sessionIdContext} has already been removed or reconnected");
+                }
+                else
+                {
+                    sessionSockets.Remove(sessionIdContext);
+                    if (_logger.IsLogEnabled(LogLevel.Info))
+                    {
+                        var playerProfile = _profileHelper.GetFullProfile(sessionID);
+                        var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
+                        _logger.Info($"[ws] player: {playerInfoText} has disconnected");
+                    }
+                }
             }
         }
     }
@@ -101,15 +124,19 @@ public class SptWebSocketConnectionHandler(
         {
             if (IsWebSocketConnected(sessionID))
             {
-                var ws = GetSessionWebSocket(sessionID);
+                var webSockets = GetSessionWebSocket(sessionID);
 
-                var sendTask = ws.SendAsync(
-                    Encoding.UTF8.GetBytes(_jsonUtil.Serialize(output, output.GetType())),
-                    WebSocketMessageType.Text,
-                    true,
-                    CancellationToken.None
-                );
-                sendTask.Wait();
+                foreach (var webSocket in webSockets)
+                {
+                    var sendTask = webSocket.SendAsync(
+                        Encoding.UTF8.GetBytes(_jsonUtil.Serialize(output, output.GetType())),
+                        WebSocketMessageType.Text,
+                        true,
+                        CancellationToken.None
+                    );
+                    sendTask.Wait();
+                }
+
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
                     _logger.Debug(_localisationService.GetText("websocket-message_sent"));
@@ -131,11 +158,17 @@ public class SptWebSocketConnectionHandler(
 
     public bool IsWebSocketConnected(string sessionID)
     {
-        return _sockets.TryGetValue(sessionID, out var socket) && socket.State == WebSocketState.Open;
+        lock (_socketsLock)
+        {
+            return _sockets.TryGetValue(sessionID, out var sockets) && sockets.Any(s => s.Value.State == WebSocketState.Open);
+        }
     }
 
-    public WebSocket GetSessionWebSocket(string sessionID)
+    public IEnumerable<WebSocket> GetSessionWebSocket(string sessionID)
     {
-        return _sockets.GetValueOrDefault(sessionID);
+        lock (_socketsLock)
+        {
+            return _sockets.GetValueOrDefault(sessionID)?.Values.Where(s => s.State == WebSocketState.Open);
+        }
     }
 }
