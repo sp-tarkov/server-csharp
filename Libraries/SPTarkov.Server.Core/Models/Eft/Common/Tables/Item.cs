@@ -411,8 +411,8 @@ public record LockableComponent
 public enum PinLockState
 {
     Free,
-    Locked,
-    Pinned
+    Pinned,
+    Locked
 }
 
 public record UpdBuff

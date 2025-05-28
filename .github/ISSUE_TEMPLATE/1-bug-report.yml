@@ -1,0 +1,101 @@
+name: "Bug Report"
+description: "Report a bug in the SPT project."
+labels: ["triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Thank you for taking the time to fill out a bug report!
+
+        Please note the following requirements:
+
+        - You must be able to replicate the issue with a fresh profile, running no mods. If you can't, we can't fix it.
+        - If you are using a profile from an older version, please make a fresh profile and replicate the issue before submitting.
+        - You must upload all the required log files, even if you think they are useless.
+        - Failure to comply with any of the above requirements will result in your issue being closed without notice.        
+  - type: dropdown
+    id: version
+    attributes:
+      label: SPT Version
+      description: What version of SPT are you using?
+      options:
+        - "4.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: projects
+    attributes:
+      label: "Project Type"
+      description: "If known, which part of the project is involved in this bug report?"
+      options:
+        - "Server"
+        - "Modules"
+        - "Launcher"
+      multiple: true
+    validations:
+      required: false
+  - type: textarea
+    id: result_expected
+    attributes:
+      label: "Expected Result"
+      description: "What you expect to happen?"
+    validations:
+      required: true
+  - type: textarea
+    id: result_actual
+    attributes:
+      label: "Actual Result"
+      description: "What actually happened?"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: "Steps To Reproduce"
+      description: "Describe in point form the steps we can take to reproduce the issue on our end."
+    validations:
+      required: true
+  - type: textarea
+    id: log_server
+    attributes:
+      label: "Server Log"
+      description: "Upload a copy of your *entire* server log: `/user/logs/spt/spt.txt`."
+      placeholder: "Attach the log file. Do not paste the contents."
+    validations:
+      required: true
+  - type: textarea
+    id: log_bepinex
+    attributes:
+      label: "BepinEx Log"
+      description: "Upload a copy of your *entire* BepinEx log: `/BepinEx/LogOutput.log`."
+      placeholder: "Attach the log file. Do not paste the contents."
+    validations:
+      required: true
+  - type: textarea
+    id: log_client
+    attributes:
+      label: "Client Log"
+      description: "Upload a copy of your *entire* client log: `/Logs/log_<date>_<version>/<date>_<version> traces.log`."
+      placeholder: "Attach the log file. Do not paste the contents."
+    validations:
+      required: true
+  - type: textarea
+    id: profile
+    attributes:
+      label: "Player Profile"
+      description: "If helpful, upload a copy of your *entire* player profile: `/user/profiles/<profileId>.json`."
+      placeholder: "Attach the profile file. Do not paste the contents."
+    validations:
+      required: false
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "Screenshots"
+      description: "If helpful, upload any screenshots or videos you think would help us identify the issue."
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ## BEFORE YOU SUBMIT
+        Ensure that your logs are attached. **No logs = Issue deleted**

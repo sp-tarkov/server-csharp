@@ -90,7 +90,14 @@ public class QuestController(
         // Note that for starting quests, the correct locale field is "description", not "startedMessageText".
         var questFromDb = _questHelper.GetQuestFromDb(acceptedQuest.QuestId, pmcData);
 
-        AddTaskConditionCountersToProfile(questFromDb.Conditions.AvailableForFinish, pmcData, acceptedQuest.QuestId);
+        if (questFromDb.Conditions?.AvailableForFinish is not null)
+        {
+            AddTaskConditionCountersToProfile(
+                questFromDb.Conditions.AvailableForFinish,
+                pmcData,
+                acceptedQuest.QuestId);
+        }
+        
 
         // Get messageId of text to send to player as text message in game
         var messageId = _questHelper.GetMessageIdForQuestStart(
@@ -136,14 +143,14 @@ public class QuestController(
     /// <param name="questConditions">Conditions to iterate over and possibly add to profile</param>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="questId">Quest where conditions originated</param>
-    protected void AddTaskConditionCountersToProfile(List<QuestCondition>? questConditions, PmcData pmcData, string questId)
+    protected void AddTaskConditionCountersToProfile(List<QuestCondition> questConditions, PmcData pmcData, string questId)
     {
         foreach (var condition in questConditions)
         {
             if (pmcData.TaskConditionCounters.TryGetValue(condition.Id, out var counter))
             {
                 _logger.Error(
-                    $"Unable to add new task condition counter: {condition.ConditionType} for quest: {questId} to profile: {pmcData.SessionId} as it already exists:"
+                    $"Unable to add new task condition counter: {condition.ConditionType} for quest: {questId} to profile: {pmcData.SessionId} as it already exists"
                 );
             }
 

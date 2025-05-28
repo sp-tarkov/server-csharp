@@ -149,10 +149,8 @@ public class Watermark
     /// <returns>label text</returns>
     public string GetInGameVersionLabel()
     {
-        var sptVersion = /*ProgramStatics.SPT_VERSION ||*/ sptConfig.SptVersion;
-        var versionTag = /*ProgramStatics.DEBUG ? */
-            $"{sptVersion} - BLEEDINGEDGE { /*ProgramStatics.COMMIT?.slice(0, 6) ?? */""}";
-        //: `{sptVersion} - {ProgramStatics.COMMIT?.slice(0, 6) ?? ""}`;
+        var sptVersion = ProgramStatics.SPT_VERSION();
+        var versionTag = ProgramStatics.DEBUG() ? $"{sptVersion} - BLEEDINGEDGE {ProgramStatics.COMMIT()?.Substring(0, 6) ?? ""}" : $"{sptVersion} - {ProgramStatics.COMMIT()?.Substring(0, 6) ?? ""}";
 
         return $"{sptConfig.ProjectName} {versionTag}";
     }

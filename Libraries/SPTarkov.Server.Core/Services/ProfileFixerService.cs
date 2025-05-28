@@ -664,7 +664,7 @@ public class ProfileFixerService(
                 continue;
             }
 
-            foreach (var activeQuest in repeatable.ActiveQuests)
+            foreach (var activeQuest in repeatable.ActiveQuests.ToArray())
             {
                 if (!_traderHelper.TraderExists(activeQuest.TraderId))
                 {

@@ -9,7 +9,7 @@
 
         {
           "type": "Include",
-          "name": "Microsoft\\.AspNetCore\\.Server\\.Kestrel.*",
+          "name": "Microsoft.*",
           "matchingType": "Regex"
         }
       ]
@@ -27,7 +27,7 @@
         },
         {
           "type": "Exclude",
-          "name": "Microsoft\\.AspNetCore\\.Server\\.Kestrel.*",
+          "name": "Microsoft.*",
           "matchingType": "Regex"
         }
       ]
