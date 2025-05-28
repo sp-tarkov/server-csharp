@@ -722,6 +722,7 @@
     "websocket-not_ready_message_not_sent": "[WS] Socket not ready for %s, message not sent",
     "websocket-pinging_player": "[WS] Pinging player: %s",
     "websocket-player_connected": "[WS] Player: %s has connected",
+    "websocket-player_reconnect": "[WS] Player: %s reconnection received, closing previous active socket",
     "websocket-received_message": "[WS] Received message from user %s ",
     "websocket-socket_lost_deleting_handle": "[WS] Socket lost, deleting handle",
     "websocket-started": "Started websocket at %s",
