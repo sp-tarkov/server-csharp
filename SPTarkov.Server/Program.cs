@@ -1,4 +1,6 @@
 using System.Runtime;
+using System.Runtime.InteropServices;
+using System.Text;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.DI;
@@ -46,6 +48,8 @@ public static class Program
 
         try
         {
+            SetConsoleOutputMode();
+
             var watermark = serviceProvider.GetService<Watermark>();
             // Initialize Watermark
             watermark?.Initialize();
@@ -132,4 +136,33 @@ public static class Program
         var modValidator = provider.GetRequiredService<ModValidator>();
         return modValidator.ValidateAndSort(mods);
     }
+
+    private static void SetConsoleOutputMode()
+    {
+        const int stdOutputHandle = -11;
+        const uint enableVirtualTerminalProcessing = 0x0004;
+
+        var handle = GetStdHandle(stdOutputHandle);
+
+        if (!GetConsoleMode(handle, out var consoleMode))
+        {
+            throw new Exception("Unable to get console mode");
+        }
+
+        consoleMode |= enableVirtualTerminalProcessing;
+
+        if (!SetConsoleMode(handle, consoleMode))
+        {
+            throw new Exception("Unable to set console mode");
+        }
+    }
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern IntPtr GetStdHandle(int nStdHandle);
+
+    [DllImport("kernel32.dll")]
+    private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+
+    [DllImport("kernel32.dll")]
+    private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 }
