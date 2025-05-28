@@ -10,7 +10,7 @@ public abstract record AbstractModMetadata
     /// <summary>
     /// Name of this mod
     /// </summary>
-    public abstract string? Name
+    public abstract string Name
     {
         get;
         set;
@@ -19,7 +19,7 @@ public abstract record AbstractModMetadata
     /// <summary>
     /// Your username
     /// </summary>
-    public abstract string? Author
+    public abstract string Author
     {
         get;
         set;
@@ -37,7 +37,7 @@ public abstract record AbstractModMetadata
     /// <summary>
     /// Semantic version of this mod, this uses the semver standard
     /// </summary>
-    public abstract string? Version
+    public abstract string Version
     {
         get;
         set;
@@ -46,7 +46,7 @@ public abstract record AbstractModMetadata
     /// <summary>
     /// SPT version this mod was built for
     /// </summary>
-    public abstract string? SptVersion
+    public abstract string SptVersion
     {
         get;
         set;

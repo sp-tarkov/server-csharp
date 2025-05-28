@@ -510,10 +510,10 @@ public class CircleOfCultistService(
     )
     {
         // Get sacrificed tpls
-        var sacrificedItemTpls = sacrificedItems.Select(item => item.Template).ToList();
+        List<string> sacrificedItemTpls = sacrificedItems.Select(item => item.Template).Where(i => i != null).ToList()!;
         sacrificedItemTpls.Sort();
         // Create md5 key of the items player sacrificed so we can compare against the direct reward cache
-        var sacrificedItemsKey = _hashUtil.GenerateMd5ForData(string.Concat(sacrificedItemTpls, ","));
+        var sacrificedItemsKey = CreateSacrificeCacheKey(sacrificedItemTpls);
 
         var matchingDirectReward = directRewardsCache.GetValueOrDefault(sacrificedItemsKey);
         if (matchingDirectReward is null)
@@ -883,6 +883,14 @@ public class CircleOfCultistService(
         return requirements.Where(requirement => requirement.Type == "Item").ToList();
     }
 
+    protected string CreateSacrificeCacheKey(List<string> requiredItems)
+    {
+        requiredItems.Sort();
+        var concat = string.Join(",", requiredItems);
+
+        return _hashUtil.GenerateMd5ForData(concat);
+    }
+
     /// <summary>
     ///     Create a map of the possible direct rewards, keyed by the items needed to be sacrificed
     /// </summary>
@@ -893,10 +901,7 @@ public class CircleOfCultistService(
         var result = new Dictionary<string, DirectRewardSettings>();
         foreach (var rewardSettings in directRewards)
         {
-            rewardSettings.RequiredItems.Sort();
-            var concat = string.Concat(rewardSettings.RequiredItems, ",");
-
-            var key = _hashUtil.GenerateMd5ForData(concat);
+            var key = CreateSacrificeCacheKey(rewardSettings.RequiredItems);
             result[key] = rewardSettings;
         }
 

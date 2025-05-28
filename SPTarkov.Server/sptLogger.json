@@ -13,7 +13,7 @@
         },
         {
           "type": "Exclude",
-          "name": "Microsoft\\.AspNetCore\\.Server\\.Kestrel.*",
+          "name": "Microsoft.*",
           "matchingType": "Regex"
         }
       ]

@@ -242,15 +242,13 @@ public class LauncherController(
     /// <returns>Dictionary of mod name and mod details</returns>
     public Dictionary<string, AbstractModMetadata> GetLoadedServerMods()
     {
-        var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES).GetValue<List<SptMod>>();
-        var result = new Dictionary<string, AbstractModMetadata>();
-
-        foreach (var sptMod in mods)
+        var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES)?.GetValue<List<SptMod>>();
+        if (mods == null)
         {
-            result.Add(sptMod.ModMetadata.Name, sptMod.ModMetadata);
+            return [];
         }
 
-        return result;
+        return mods.ToDictionary(sptMod => sptMod.ModMetadata?.Name ?? "UNKNOWN MOD", sptMod => sptMod.ModMetadata);
     }
 
     /// <summary>

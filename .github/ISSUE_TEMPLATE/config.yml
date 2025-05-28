@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Discord Community
+    url: https://discord.com/invite/Xn9msqQZan
+    about: Find community support through our Discord server.
+  - name: Github Discussions
+    url: https://github.com/orgs/sp-tarkov/discussions
+    about: Please duscuss the project on the Github Discussions board.

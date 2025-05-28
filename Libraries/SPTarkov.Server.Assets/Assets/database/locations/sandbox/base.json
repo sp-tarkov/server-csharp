@@ -18,7 +18,29 @@
   "Area": 0,
   "AveragePlayTime": 35,
   "AveragePlayerLevel": 20,
-  "Banners": [],
+  "Banners": [
+    {
+      "id": "67d1ac822b87c1a5a30e5ae8",
+      "pic": {
+        "path": "CONTENT/banners/banner_Sandbox.jpg",
+        "rcid": ""
+      }
+    },
+    {
+      "id": "63a9c1f5662a5b0a2c7fbde5",
+      "pic": {
+        "path": "CONTENT/banners/banner_City_final.jpg",
+        "rcid": ""
+      }
+    },
+    {
+      "id": "64c0acf85174e095610734a0",
+      "pic": {
+        "path": "CONTENT/banners/banner_sherpa.jpg",
+        "rcid": ""
+      }
+    }
+  ],
   "BossLocationSpawn": [
     {
       "BossChance": 50,

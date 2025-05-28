@@ -84,7 +84,7 @@ public class GiftService(
             return GiftSentResult.FAILED_GIFT_ALREADY_RECEIVED;
         }
 
-        if (giftData.Items?.Count > 0 && giftData.CollectionTimeHours is not null)
+        if (giftData.Items?.Count > 0 && giftData.CollectionTimeHours is null)
         {
             _logger.Warning($"Gift {giftId} has items but no collection time limit, defaulting to 48 hours");
         }

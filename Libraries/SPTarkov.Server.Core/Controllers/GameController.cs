@@ -472,7 +472,11 @@ public class GameController(
     protected void SaveActiveModsToProfile(SptProfile fullProfile)
     {
         fullProfile.SptData!.Mods ??= [];
-        var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES).GetValue<List<SptMod>>();
+        var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES)?.GetValue<List<SptMod>>();
+        if (mods == null)
+        {
+            return;
+        }
 
         foreach (var mod in mods)
         {
