@@ -138,6 +138,11 @@ public static class Program
 
     private static void SetConsoleOutputMode()
     {
+        if (!OperatingSystem.IsWindows())
+        {
+            return;
+        }
+
         const int stdOutputHandle = -11;
         const uint enableVirtualTerminalProcessing = 0x0004;
 
