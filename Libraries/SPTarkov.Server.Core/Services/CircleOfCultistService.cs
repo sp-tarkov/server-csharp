@@ -763,9 +763,9 @@ public class CircleOfCultistService(
             var areaType = profileArea.Type;
 
             // Get next stage of area
-            var dbArea = dbAreas.FirstOrDefault(area => area.Type == areaType);
-            var nextStageDbData = dbArea?.Stages[(currentStageLevel + 1).ToString()];
-            if (nextStageDbData is not null)
+            var dbArea = dbAreas?.FirstOrDefault(area => area.Type == areaType);
+            var nextTargetStageLevel = (currentStageLevel + 1).ToString() ?? "";
+            if (dbArea?.Stages?.TryGetValue(nextTargetStageLevel, out var nextStageDbData) ?? false)
             {
                 // Next stage exists, gather up requirements and add to pool
                 var itemRequirements = GetItemRequirements(nextStageDbData.Requirements);
