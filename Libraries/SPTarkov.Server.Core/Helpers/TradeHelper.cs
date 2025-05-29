@@ -32,7 +32,7 @@ public class TradeHelper(
     ICloner _cloner
 )
 {
-    protected readonly System.Threading.Lock buyLock = new ();
+    protected static Lock buyLock = new();
 
     /// <summary>
     ///     Buy item from flea or trader
