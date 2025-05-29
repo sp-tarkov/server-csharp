@@ -32,7 +32,7 @@ public class TradeHelper(
     ICloner _cloner
 )
 {
-    protected readonly Mutex buyMutex;
+    protected readonly Mutex buyMutex = new();
 
     /// <summary>
     ///     Buy item from flea or trader
