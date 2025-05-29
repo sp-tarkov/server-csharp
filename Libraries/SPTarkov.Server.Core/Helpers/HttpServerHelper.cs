@@ -1,4 +1,6 @@
-﻿using SPTarkov.DI.Annotations;
+﻿using System.Net;
+using System.Net.Sockets;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
 
@@ -58,21 +60,23 @@ public class HttpServerHelper(ConfigServer configServer)
     /// Method to determine if another version of the server is already running
     /// </summary>
     /// <returns>bool isAlreadyRunning</returns>
-    public async Task<bool> IsAlreadyRunning()
+    public bool IsAlreadyRunning()
     {
+        TcpListener? listener = null;
+
         try
         {
-            var handler = new HttpClientHandler()
-            {
-                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            };
-            var http = new HttpClient(handler);
-            var res = await http.PostAsync($"{GetBackendUrl()}/launcher/ping", null);
-            return res.IsSuccessStatusCode;
-        }
-        catch (Exception )
-        {
+            listener = new(IPAddress.Parse(_httpConfig.BackendIp), _httpConfig.Port);
+            listener.Start();
             return false;
+        }
+        catch (Exception)
+        {
+            return true;
+        }
+        finally
+        {
+            listener?.Stop();
         }
     }
 

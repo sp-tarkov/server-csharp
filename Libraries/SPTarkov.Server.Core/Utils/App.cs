@@ -62,7 +62,7 @@ public class App
         // execute onLoad callbacks
         _logger.Info(_localisationService.GetText("executing_startup_callbacks"));
 
-        var isAlreadyRunning = await _httpServerHelper.IsAlreadyRunning();
+        var isAlreadyRunning = _httpServerHelper.IsAlreadyRunning();
         if (isAlreadyRunning)
         {
             _logger.Critical(_localisationService.GetText("webserver_already_running"));
