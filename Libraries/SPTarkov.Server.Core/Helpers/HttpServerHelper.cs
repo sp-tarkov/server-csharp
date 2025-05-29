@@ -66,7 +66,7 @@ public class HttpServerHelper(ConfigServer configServer)
 
         try
         {
-            listener = new(IPAddress.Parse(_httpConfig.BackendIp), _httpConfig.Port);
+            listener = new(IPAddress.Parse(_httpConfig.Ip), _httpConfig.Port);
             listener.Start();
             return false;
         }
