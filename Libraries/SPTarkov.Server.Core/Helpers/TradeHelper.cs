@@ -32,6 +32,61 @@ public class TradeHelper(
     ICloner _cloner
 )
 {
+    protected readonly Mutex buyMutex;
+
+    /// <summary>
+    ///     Buy item from flea or trader
+    /// </summary>
+    /// <param name="pmcData">Player profile</param>
+    /// <param name="buyRequestData">data from client</param>
+    /// <param name="sessionID">Session id</param>
+    /// <param name="foundInRaid">Should item be found in raid</param>
+    /// <param name="output">Item event router response</param>
+    public void BuyItem(
+        PmcData pmcData,
+        ProcessBuyTradeRequestData buyRequestData,
+        string sessionID,
+        bool foundInRaid,
+        ItemEventRouterResponse output
+    )
+    {
+        if (!buyMutex.WaitOne(5000, false))
+        {
+            _logger.Error($"Unable to release buy mutex after 5s {buyRequestData.ItemId}");
+            return;
+        }
+        try
+        {
+            var (buyCallback, offerItems) =
+                // Called when player purchases PMC offer from ragfair
+                string.Equals(buyRequestData.TransactionId, "ragfair", StringComparison.OrdinalIgnoreCase)
+                    ? RagFairCallBack(pmcData, buyRequestData, sessionID) :
+                    // Called when player purchases from Fence
+                    buyRequestData.TransactionId == Traders.FENCE
+                        ? FenceCallBack(buyRequestData, output) :
+                        // All other traders
+                        ElseCallBack(pmcData, buyRequestData, sessionID);
+
+            HandleBuy(
+                buyCallback: buyCallback,
+                offerItems: offerItems,
+                pmcData: pmcData,
+                buyRequestData: buyRequestData,
+                sessionID: sessionID,
+                foundInRaid: foundInRaid,
+                output: output
+            );
+
+        }
+        catch (Exception e)
+        {
+            _logger.Debug("inner buy exception", e);
+        }
+        finally
+        {
+            buyMutex.ReleaseMutex();
+        }
+    }
 
     /// <summary>
     /// Handle Ragfair Type Callbacks for BuyItem
@@ -282,62 +337,6 @@ public class TradeHelper(
         {
             var errorMessage = $"Transaction failed: {output.Warnings.FirstOrDefault().ErrorMessage}";
             _httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.UnknownTradingError);
-        }
-    }
-
-    protected Mutex buyMutex = new Mutex();
-
-    /// <summary>
-    ///     Buy item from flea or trader
-    /// </summary>
-    /// <param name="pmcData">Player profile</param>
-    /// <param name="buyRequestData">data from client</param>
-    /// <param name="sessionID">Session id</param>
-    /// <param name="foundInRaid">Should item be found in raid</param>
-    /// <param name="output">Item event router response</param>
-    public void BuyItem(
-        PmcData pmcData,
-        ProcessBuyTradeRequestData buyRequestData,
-        string sessionID,
-        bool foundInRaid,
-        ItemEventRouterResponse output
-    )
-    {
-        if (!buyMutex.WaitOne(5000, false))
-        {
-            _logger.Error($"Unable to release buy mutex after 5s {buyRequestData.ItemId}");
-            return;
-        }
-        try
-        {
-            var (buyCallback, offerItems) =
-                // Called when player purchases PMC offer from ragfair
-                string.Equals(buyRequestData.TransactionId, "ragfair", StringComparison.OrdinalIgnoreCase)
-                    ? RagFairCallBack(pmcData, buyRequestData, sessionID) :
-                    // Called when player purchases from Fence
-                    buyRequestData.TransactionId == Traders.FENCE
-                        ? FenceCallBack(buyRequestData, output) :
-                        // All other traders
-                        ElseCallBack(pmcData, buyRequestData, sessionID);
-
-            HandleBuy(
-                buyCallback: buyCallback,
-                offerItems: offerItems,
-                pmcData: pmcData,
-                buyRequestData: buyRequestData,
-                sessionID: sessionID,
-                foundInRaid: foundInRaid,
-                output: output
-            );
-
-        }
-        catch (Exception e)
-        {
-            _logger.Error("inner buy exception", e);
-        }
-        finally
-        {
-            buyMutex.ReleaseMutex();
         }
     }
 
