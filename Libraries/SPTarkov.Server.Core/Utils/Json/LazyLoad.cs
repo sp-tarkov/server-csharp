@@ -18,7 +18,6 @@ public class LazyLoad<T>(Func<T> deserialize)
     {
         get
         {
-
             if (!_isLoaded)
             {
                 _result = deserialize();
