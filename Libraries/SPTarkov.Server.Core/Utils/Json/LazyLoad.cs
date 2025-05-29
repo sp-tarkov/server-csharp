@@ -8,14 +8,27 @@ public class LazyLoad<T>(Func<T> deserialize)
 
     private Timer? autoCleanerTimeout;
 
+    /// <summary>
+    /// <see cref="OnLazyLoad" /> can be subscribed to for mods to modify. It is fired right after lazy loading is complete
+    /// and any modification passed to <see cref="OnLazyLoadEventArgs.Value" /> will stay for the duration of this <see cref="LazyLoad{T}"/>'s lifecycle
+    /// </summary>
+    public event EventHandler<OnLazyLoadEventArgs<T>>? OnLazyLoad;
+
     public T? Value
     {
         get
         {
+
             if (!_isLoaded)
             {
                 _result = deserialize();
                 _isLoaded = true;
+
+                OnLazyLoadEventArgs<T> args = new(_result);
+                OnLazyLoad?.Invoke(this, args);
+
+                _result = args.Value;
+
                 autoCleanerTimeout = new Timer(
                     _ =>
                     {
@@ -33,9 +46,10 @@ public class LazyLoad<T>(Func<T> deserialize)
             autoCleanerTimeout?.Change(_autoCleanerTimeout, Timeout.InfiniteTimeSpan);
             return _result;
         }
-        set
-        {
-            _result = value;
-        }
     }
+}
+
+public class OnLazyLoadEventArgs<T>(T value) : EventArgs
+{
+    public T Value { get; set; } = value;
 }
