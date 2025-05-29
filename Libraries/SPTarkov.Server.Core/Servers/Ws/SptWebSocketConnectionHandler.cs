@@ -73,11 +73,11 @@ public class SptWebSocketConnectionHandler : IWebSocketConnectionHandler
     {
         var splitUrl = context.Request.Path.Value.Split("/");
         var sessionID = splitUrl.Last();
-        //var playerProfile = _profileHelper.GetFullProfile(sessionID);
-        //var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
+        var playerProfile = _profileHelper.GetFullProfile(sessionID);
+        var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"[WS] Websocket connect for player {"playerInfoText"} started with context {sessionIdContext}");
+            _logger.Debug($"[WS] Websocket connect for player {playerInfoText} started with context {sessionIdContext}");
         }
 
         lock (_socketsLock)
@@ -86,7 +86,7 @@ public class SptWebSocketConnectionHandler : IWebSocketConnectionHandler
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(_localisationService.GetText("websocket-player_reconnect", "playerInfoText"));
+                    _logger.Debug(_localisationService.GetText("websocket-player_reconnect", playerInfoText));
                 }
 
                 foreach (var oldSocket in sessionSockets)
@@ -116,7 +116,7 @@ public class SptWebSocketConnectionHandler : IWebSocketConnectionHandler
             sessionSockets.Add(sessionIdContext, ws);
             if (_logger.IsLogEnabled(LogLevel.Info))
             {
-                _logger.Info(_localisationService.GetText("websocket-player_connected", "playerInfoText"));
+                _logger.Info(_localisationService.GetText("websocket-player_connected", playerInfoText));
             }
 
             return Task.CompletedTask;
