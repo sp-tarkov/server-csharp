@@ -12,9 +12,4 @@ public class HandbookCallbacks(HandBookController _handBookController) : IOnLoad
         _handBookController.Load();
         return Task.CompletedTask;
     }
-
-    public string GetRoute()
-    {
-        return "spt-handbook";
-    }
 }

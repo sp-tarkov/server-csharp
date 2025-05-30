@@ -23,11 +23,6 @@ public class DialogueCallbacks(
         return true;
     }
 
-    public string GetRoute()
-    {
-        return "spt-dialogue";
-    }
-
     /// <summary>
     ///     Handle client/friend/list
     /// </summary>

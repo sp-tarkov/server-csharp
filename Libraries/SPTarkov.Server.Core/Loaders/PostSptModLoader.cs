@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Loaders;
 
+[Obsolete("This mod loader is obsolete and will be removed in 4.1.0. See documentation in IPostSptLoadModAsync for more information.")]
 [Injectable(TypePriority = OnLoadOrder.PostSptModLoader)]
 public class PostSptModLoader(
     ISptLogger<PostSptModLoader> _logger,
@@ -24,10 +25,5 @@ public class PostSptModLoader(
 
             _logger.Info("Finished loading PostSptMods...");
         }
-    }
-
-    public string GetRoute()
-    {
-        return "spt-post-spt-mods";
     }
 }

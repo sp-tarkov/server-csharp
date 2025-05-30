@@ -49,11 +49,6 @@ public class BotGeneratorHelper(
         return Task.CompletedTask;
     }
 
-    public string GetRoute()
-    {
-        return "spt-botGeneratorHelper";
-    }
-
     /// <summary>
     ///     Adds properties to an item
     ///     e.g. Repairable / HasHinge / Foldable / MaxDurability

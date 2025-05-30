@@ -23,11 +23,6 @@ public class TraderCallbacks(
         return Task.CompletedTask;
     }
 
-    public string GetRoute()
-    {
-        return "spt-traders";
-    }
-
     public bool OnUpdate(long _)
     {
         return _traderController.Update();

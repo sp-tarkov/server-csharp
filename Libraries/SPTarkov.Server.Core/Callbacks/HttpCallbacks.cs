@@ -14,11 +14,6 @@ public class HttpCallbacks(HttpServer _httpServer) : IOnLoad
         return Task.CompletedTask;
     }
 
-    public string GetRoute()
-    {
-        return "spt-http";
-    }
-
     public string GetImage()
     {
         return "";

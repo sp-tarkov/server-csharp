@@ -28,11 +28,6 @@ public class HideoutCallbacks(
         return false;
     }
 
-    public string GetRoute()
-    {
-        return "spt-hideout";
-    }
-
     /// <summary>
     ///     Handle HideoutUpgrade event
     /// </summary>

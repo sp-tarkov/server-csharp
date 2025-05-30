@@ -24,11 +24,6 @@ public class GameCallbacks(
         return Task.CompletedTask;
     }
 
-    public string GetRoute()
-    {
-        return "spt-game";
-    }
-
     /// <summary>
     ///     Handle client/game/version/validate
     /// </summary>

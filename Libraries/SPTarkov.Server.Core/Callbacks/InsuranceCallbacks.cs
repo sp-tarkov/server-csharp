@@ -33,11 +33,6 @@ public class InsuranceCallbacks(
         return false;
     }
 
-    public string GetRoute()
-    {
-        return "spt-insurance";
-    }
-
     /// <summary>
     ///     Handle client/insurance/items/list/cost
     /// </summary>

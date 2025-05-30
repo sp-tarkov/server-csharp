@@ -90,11 +90,6 @@ public class DatabaseImporter : IOnLoad
         CreateRouteMapping(imageFilePath, "files");
     }
 
-    public string GetRoute()
-    {
-        return "spt-database";
-    }
-
     /**
      * Get path to spt data
      * @returns path to data

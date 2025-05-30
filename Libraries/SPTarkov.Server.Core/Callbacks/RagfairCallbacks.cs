@@ -30,11 +30,6 @@ public class RagfairCallbacks(
         return Task.CompletedTask;
     }
 
-    public string GetRoute()
-    {
-        return "spt-ragfair";
-    }
-
     public bool OnUpdate(long timeSinceLastRun)
     {
         if (timeSinceLastRun > _ragfairConfig.RunIntervalSeconds)

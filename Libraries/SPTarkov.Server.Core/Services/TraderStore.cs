@@ -67,11 +67,6 @@ public class TraderStore : IOnLoad
         return Task.CompletedTask;
     }
 
-    public string GetRoute()
-    {
-        return "spt-trader-registration";
-    }
-
     /// <summary>
     /// Returns a trader by given ID.
     /// </summary>

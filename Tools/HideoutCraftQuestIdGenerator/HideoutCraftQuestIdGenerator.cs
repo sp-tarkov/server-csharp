@@ -20,7 +20,7 @@ public class HideoutCraftQuestIdGenerator(
     DatabaseServer _databaseServer,
     LocaleService _localeService,
     ItemHelper _itemHelper,
-    IEnumerable<IOnLoad> _onLoadComponents
+    DatabaseImporter _databaseImporter
 )
 {
     private static readonly HashSet<string> _blacklistedProductions =
@@ -43,9 +43,7 @@ public class HideoutCraftQuestIdGenerator(
 
     public async Task Run()
     {
-        // We only need the DB for this, other OnLoad events alter the data
-        var dbOnload = _onLoadComponents.FirstOrDefault(x => x.GetRoute() == "spt-database");
-        await dbOnload.OnLoad();
+        await _databaseImporter.OnLoad();
 
         // Build up our dataset
         BuildQuestProductionList();

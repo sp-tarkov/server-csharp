@@ -12,9 +12,4 @@ public class PresetCallbacks(PresetController _presetController) : IOnLoad
         _presetController.Initialize();
         return Task.CompletedTask;
     }
-
-    public string GetRoute()
-    {
-        return "spt-presets";
-    }
 }

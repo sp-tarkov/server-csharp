@@ -52,22 +52,8 @@ public static class Program
         {
             SetConsoleOutputMode();
 
-            var watermark = serviceProvider.GetService<Watermark>();
-            // Initialize Watermark
-            watermark?.Initialize();
-
             var appContext = serviceProvider.GetService<ApplicationContext>();
             appContext?.AddValue(ContextVariableType.SERVICE_PROVIDER, serviceProvider);
-
-            if (ProgramStatics.MODS())
-            {
-                // Initialize PreSptMods
-                var preSptLoadMods = serviceProvider.GetServices<IPreSptLoadModAsync>();
-                foreach (var preSptLoadMod in preSptLoadMods)
-                {
-                    await preSptLoadMod.PreSptLoadAsync();
-                }
-            }
 
             // Get the Built app and run it
             var app = serviceProvider.GetService<App>();
