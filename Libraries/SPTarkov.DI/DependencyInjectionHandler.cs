@@ -61,10 +61,24 @@ public class DependencyInjectionHandler
             throw new Exception("Invalid usage of DependencyInjectionHandler, this is a one time use service!");
         }
         _oneTimeUseFlag = true;
-        var sortedInjectableTypes = _injectedTypeNames.Values
-            .Select(t =>
-                new TypeRefContainer(((Injectable[]) Attribute.GetCustomAttributes(t, typeof(Injectable)))[0], t, t))
-            .OrderBy(tRef => tRef.InjectableAttribute.TypePriority);
+        var typeRefValues = _injectedTypeNames.Values
+            .Select(t => new TypeRefContainer(((Injectable[]) Attribute.GetCustomAttributes(t, typeof(Injectable)))[0], t, t));
+        // All the components that have a type override, we need to find them and remove them before injecting everything
+        var componentsToRemove = typeRefValues.Where(tr => tr.InjectableAttribute.TypeOverride != null).Select(tr =>
+            string.IsNullOrEmpty(tr.InjectableAttribute.TypeOverride!.FullName)
+                ? $"{tr.InjectableAttribute.TypeOverride.Namespace}.{tr.InjectableAttribute.TypeOverride.Name}"
+                : tr.InjectableAttribute.TypeOverride.FullName!)
+            .ToHashSet();
+        // All the components without the removed overrides
+        var cleanedComponents = typeRefValues.Where(tr =>
+        {
+            var name = string.IsNullOrEmpty(tr.Type.FullName)
+                ? $"{tr.Type.Namespace}.{tr.Type.Name}"
+                : tr.Type.FullName!;
+            return !componentsToRemove.Contains(name);
+        });
+        // All the components sorted and ready to be inserted into the DI container
+        var sortedInjectableTypes = cleanedComponents.OrderBy(tRef => tRef.InjectableAttribute.TypePriority);
 
         foreach (var typeRefToInject in sortedInjectableTypes)
         {

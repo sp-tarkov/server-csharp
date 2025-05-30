@@ -88,7 +88,7 @@ public class Watermark : IOnLoad
         sptConfig = _configServer.GetConfig<CoreConfig>();
     }
 
-    public Task OnLoad()
+    public virtual Task OnLoad()
     {
         var description = _watermarkLocale.GetDescription();
         var warning = _watermarkLocale.GetWarning();
