@@ -189,12 +189,18 @@ public class SptHttpListener(
     public async ValueTask<string> GetResponse(string sessionID, HttpRequest req, string? body)
     {
         var output = await _router.GetResponse(req, sessionID, body);
-
         /* route doesn't exist or response is not properly set up */
         if (string.IsNullOrEmpty(output))
         {
             _logger.Error(_localisationService.GetText("unhandled_response", req.Path.ToString()));
             output = _httpResponseUtil.GetBody<object?>(null, BackendErrorCodes.HTTPNotFound, $"UNHANDLED RESPONSE: {req.Path.ToString()}");
+        }
+
+        if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
+        {
+            // Parse quest info into object
+            var log = new Request(req.Method, new RequestData(req.Path, req.Headers));
+            _requestsLogger.Info($"REQUEST={_jsonUtil.Serialize(log)}");
         }
 
         return output;
@@ -235,5 +241,5 @@ public class SptHttpListener(
 
     private record Request(string Method, object output);
 
-    private record RequestData(string Url, object Headers, object Data);
+    private record RequestData(string Url, object Headers);
 }
