@@ -18,21 +18,21 @@ public class PrestigeStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/client/prestige/list",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => prestigeCallbacks.GetPrestige(url, info as EmptyRequestData, sessionID)
+                ) => await prestigeCallbacks.GetPrestige(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/prestige/obtain",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => prestigeCallbacks.ObtainPrestige(url, info as ObtainPrestigeRequestList, sessionID),
+                ) => await prestigeCallbacks.ObtainPrestige(url, info as ObtainPrestigeRequestList, sessionID),
                 typeof(ObtainPrestigeRequestList)
             )
         ]

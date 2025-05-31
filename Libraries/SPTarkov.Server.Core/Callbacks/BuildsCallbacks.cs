@@ -17,9 +17,9 @@ public class BuildsCallbacks(
     ///     Handle client/builds/list
     /// </summary>
     /// <returns></returns>
-    public string GetBuilds(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetBuilds(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_buildController.GetUserBuilds(sessionID));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_buildController.GetUserBuilds(sessionID)));
     }
 
     /// <summary>
@@ -29,39 +29,39 @@ public class BuildsCallbacks(
     /// <param name="request"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string CreateMagazineTemplate(string url, SetMagazineRequest request, string sessionID)
+    public ValueTask<string> CreateMagazineTemplate(string url, SetMagazineRequest request, string sessionID)
     {
         _buildController.CreateMagazineTemplate(sessionID, request);
-        return _httpResponseUtil.NullResponse();
+        return new ValueTask<string>(_httpResponseUtil.NullResponse());
     }
 
     /// <summary>
     ///     Handle client/builds/weapon/save
     /// </summary>
     /// <returns></returns>
-    public string SetWeapon(string url, PresetBuildActionRequestData request, string sessionID)
+    public ValueTask<string> SetWeapon(string url, PresetBuildActionRequestData request, string sessionID)
     {
         _buildController.SaveWeaponBuild(sessionID, request);
-        return _httpResponseUtil.NullResponse();
+        return new ValueTask<string>(_httpResponseUtil.NullResponse());
     }
 
     /// <summary>
     ///     Handle client/builds/equipment/save
     /// </summary>
     /// <returns></returns>
-    public string SetEquipment(string url, PresetBuildActionRequestData request, string sessionID)
+    public ValueTask<string> SetEquipment(string url, PresetBuildActionRequestData request, string sessionID)
     {
         _buildController.SaveEquipmentBuild(sessionID, request);
-        return _httpResponseUtil.NullResponse();
+        return new ValueTask<string>(_httpResponseUtil.NullResponse());
     }
 
     /// <summary>
     ///     Handle client/builds/delete
     /// </summary>
     /// <returns></returns>
-    public string DeleteBuild(string url, RemoveBuildRequestData request, string sessionID)
+    public ValueTask<string> DeleteBuild(string url, RemoveBuildRequestData request, string sessionID)
     {
         _buildController.RemoveBuild(sessionID, request);
-        return _httpResponseUtil.NullResponse();
+        return new ValueTask<string>(_httpResponseUtil.NullResponse());
     }
 }

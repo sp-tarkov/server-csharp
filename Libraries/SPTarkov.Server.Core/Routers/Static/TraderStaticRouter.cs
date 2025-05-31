@@ -17,21 +17,21 @@ public class TraderStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/client/trading/api/traderSettings",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => traderCallbacks.GetTraderSettings(url, info as EmptyRequestData, sessionID)
+                ) => await traderCallbacks.GetTraderSettings(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/singleplayer/moddedTraders",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => traderCallbacks.GetModdedTraderData(url, info as EmptyRequestData, sessionID)
+                ) => await traderCallbacks.GetModdedTraderData(url, info as EmptyRequestData, sessionID)
             )
         ]
     )

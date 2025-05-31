@@ -17,30 +17,30 @@ public class CustomizationStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/client/trading/customization/storage",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => customizationCallbacks.GetCustomisationUnlocks(url, info as EmptyRequestData, sessionID)
+                ) => await customizationCallbacks.GetCustomisationUnlocks(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/hideout/customization/offer/list",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => customizationCallbacks.GetHideoutCustomisation(url, info as EmptyRequestData, sessionID)
+                ) => await customizationCallbacks.GetHideoutCustomisation(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/customization/storage",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => customizationCallbacks.GetStorage(url, info as EmptyRequestData, sessionID)
+                ) => await customizationCallbacks.GetStorage(url, info as EmptyRequestData, sessionID)
             )
         ]
     )

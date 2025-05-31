@@ -15,24 +15,24 @@ public class ClientLogCallbacks(
     ClientLogController _clientLogController,
     ConfigServer _configServer,
     LocalisationService _localisationService
-    // ModLoadOrder _modLoadOrder // TODO: needs implementing
+// ModLoadOrder _modLoadOrder // TODO: needs implementing
 )
 {
     /// <summary>
     ///     Handle /singleplayer/log
     /// </summary>
     /// <returns></returns>
-    public string ClientLog(string url, ClientLogRequest request, string sessionID)
+    public ValueTask<string> ClientLog(string url, ClientLogRequest request, string sessionID)
     {
         _clientLogController.ClientLog(request);
-        return _httpResponseUtil.NullResponse();
+        return new ValueTask<string>(_httpResponseUtil.NullResponse());
     }
 
     /// <summary>
     ///     Handle /singleplayer/release
     /// </summary>
     /// <returns></returns>
-    public string ReleaseNotes()
+    public ValueTask<string> ReleaseNotes()
     {
         var data = _configServer.GetConfig<CoreConfig>().Release;
 
@@ -52,16 +52,16 @@ public class ClientLogCallbacks(
         data.IsModdable = ProgramStatics.MODS();
         data.IsModded = false; // TODO
 
-        return _httpResponseUtil.NoBody(data);
+        return new ValueTask<string>(_httpResponseUtil.NoBody(data));
     }
 
     /// <summary>
     ///     Handle /singleplayer/enableBSGlogging
     /// </summary>
     /// <returns></returns>
-    public string BsgLogging()
+    public ValueTask<string> BsgLogging()
     {
         var data = _configServer.GetConfig<CoreConfig>().BsgLogging;
-        return _httpResponseUtil.NoBody(data);
+        return new ValueTask<string>(_httpResponseUtil.NoBody(data));
     }
 }

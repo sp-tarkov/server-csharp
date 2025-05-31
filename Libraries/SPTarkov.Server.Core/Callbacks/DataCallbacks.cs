@@ -19,101 +19,101 @@ public class DataCallbacks(
     ///     Handle client/settings
     /// </summary>
     /// <returns></returns>
-    public string GetSettings(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetSettings(string url, EmptyRequestData _, string sessionID)
     {
         var returns = _httpResponseUtil.GetBody(_databaseService.GetSettings());
-        return returns;
+        return new ValueTask<string>(returns);
     }
 
     /// <summary>
     ///     Handle client/globals
     /// </summary>
     /// <returns></returns>
-    public string GetGlobals(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetGlobals(string url, EmptyRequestData _, string sessionID)
     {
         var globals = _databaseService.GetGlobals();
         var returns = _httpResponseUtil.GetBody(globals);
 
-        return returns;
+        return new ValueTask<string>(returns);
     }
 
     /// <summary>
     ///     Handle client/items
     /// </summary>
     /// <returns></returns>
-    public string GetTemplateItems(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetTemplateItems(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetUnclearedBody(_databaseService.GetItems());
+        return new ValueTask<string>(_httpResponseUtil.GetUnclearedBody(_databaseService.GetItems()));
     }
 
     /// <summary>
     ///     Handle client/handbook/templates
     /// </summary>
     /// <returns></returns>
-    public string GetTemplateHandbook(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetTemplateHandbook(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_databaseService.GetHandbook());
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_databaseService.GetHandbook()));
     }
 
     /// <summary>
     ///     Handle client/customization
     /// </summary>
     /// <returns></returns>
-    public string GetTemplateSuits(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetTemplateSuits(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_databaseService.GetTemplates().Customization);
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_databaseService.GetTemplates().Customization));
     }
 
     /// <summary>
     ///     Handle client/account/customization
     /// </summary>
     /// <returns></returns>
-    public string GetTemplateCharacter(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetTemplateCharacter(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_databaseService.GetTemplates().Character);
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_databaseService.GetTemplates().Character));
     }
 
     /// <summary>
     ///     Handle client/hideout/settings
     /// </summary>
     /// <returns></returns>
-    public string GetHideoutSettings(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetHideoutSettings(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_databaseService.GetHideout().Settings);
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_databaseService.GetHideout().Settings));
     }
 
     /// <summary>
     ///     Handle client/hideout/areas
     /// </summary>
     /// <returns></returns>
-    public string GetHideoutAreas(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetHideoutAreas(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_databaseService.GetHideout().Areas);
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_databaseService.GetHideout().Areas));
     }
 
     /// <summary>
     ///     Handle client/hideout/production/recipes
     /// </summary>
     /// <returns></returns>
-    public string GetHideoutProduction(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetHideoutProduction(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_databaseService.GetHideout().Production);
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_databaseService.GetHideout().Production));
     }
 
     /// <summary>
     ///     Handle client/languages
     /// </summary>
     /// <returns></returns>
-    public string GetLocalesLanguages(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetLocalesLanguages(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_databaseService.GetLocales().Languages);
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_databaseService.GetLocales().Languages));
     }
 
     /// <summary>
     ///     Handle client/menu/locale
     /// </summary>
     /// <returns></returns>
-    public string GetLocalesMenu(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetLocalesMenu(string url, EmptyRequestData _, string sessionID)
     {
         var localeId = url.Replace("/client/menu/locale/", "");
         var locales = _databaseService.GetLocales();
@@ -124,38 +124,38 @@ public class DataCallbacks(
             throw new Exception($"Unable to determine locale for request with {localeId}");
         }
 
-        return _httpResponseUtil.GetBody(result);
+        return new ValueTask<string>(_httpResponseUtil.GetBody(result));
     }
 
     /// <summary>
     ///     Handle client/locale
     /// </summary>
     /// <returns></returns>
-    public string GetLocalesGlobal(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetLocalesGlobal(string url, EmptyRequestData _, string sessionID)
     {
         var localeId = url.Replace("/client/locale/", "");
         var locales = _localeService.GetLocaleDb(localeId);
 
-        return _httpResponseUtil.GetUnclearedBody(locales);
+        return new ValueTask<string>(_httpResponseUtil.GetUnclearedBody(locales));
     }
 
     /// <summary>
     ///     Handle client/hideout/qte/list
     /// </summary>
     /// <returns></returns>
-    public string GetQteList(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetQteList(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetUnclearedBody(_hideoutController.GetQteList(sessionID));
+        return new ValueTask<string>(_httpResponseUtil.GetUnclearedBody(_hideoutController.GetQteList(sessionID)));
     }
 
     /// <summary>
     ///     Handle client/items/prices/
     /// </summary>
     /// <returns></returns>
-    public string GetItemPrices(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetItemPrices(string url, EmptyRequestData _, string sessionID)
     {
         var traderId = url.Replace("/client/items/prices/", "");
 
-        return _httpResponseUtil.GetBody(_traderController.GetItemPrices(sessionID, traderId));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_traderController.GetItemPrices(sessionID, traderId)));
     }
 }

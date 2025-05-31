@@ -17,12 +17,12 @@ public class CustomizationDynamicRouter : DynamicRouter
         [
             new RouteAction(
                 "/client/trading/customization/",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => customizationCallbacks.GetTraderSuits(url, info as EmptyRequestData, sessionID)
+                ) => await customizationCallbacks.GetTraderSuits(url, info as EmptyRequestData, sessionID)
             )
         ]
     )

@@ -15,65 +15,65 @@ public class LauncherStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/launcher/ping",
-                (url, _, sessionID, _) => launcherCallbacks.Ping(url, null, sessionID)
+                async (url, _, sessionID, _) => await launcherCallbacks.Ping(url, null, sessionID)
             ),
             new RouteAction(
                 "/launcher/server/connect",
-                (_, _, _, _) => launcherCallbacks.Connect()
+                async (_, _, _, _) => await launcherCallbacks.Connect()
             ),
             new RouteAction(
                 "/launcher/profile/login",
-                (url, info, sessionID, _) => launcherCallbacks.Login(url, info as LoginRequestData, sessionID),
+                async (url, info, sessionID, _) => await launcherCallbacks.Login(url, info as LoginRequestData, sessionID),
                 typeof(LoginRequestData)
             ),
             new RouteAction(
                 "/launcher/profile/register",
-                (url, info, sessionID, _) => launcherCallbacks.Register(url, info as RegisterData, sessionID),
+                async (url, info, sessionID, _) => await launcherCallbacks.Register(url, info as RegisterData, sessionID),
                 typeof(RegisterData)
             ),
             new RouteAction(
                 "/launcher/profile/get",
-                (url, info, sessionID, _) => launcherCallbacks.Get(url, info as LoginRequestData, sessionID),
+                async (url, info, sessionID, _) => await launcherCallbacks.Get(url, info as LoginRequestData, sessionID),
                 typeof(LoginRequestData)
             ),
             new RouteAction(
                 "/launcher/profile/change/username",
-                (url, info, sessionID, _) =>
-                    launcherCallbacks.ChangeUsername(url, info as ChangeRequestData, sessionID),
+                async (url, info, sessionID, _) =>
+                    await launcherCallbacks.ChangeUsername(url, info as ChangeRequestData, sessionID),
                 typeof(ChangeRequestData)
             ),
             new RouteAction(
                 "/launcher/profile/change/password",
-                (url, info, sessionID, _) =>
-                    launcherCallbacks.ChangePassword(url, info as ChangeRequestData, sessionID),
+                async (url, info, sessionID, _) =>
+                    await launcherCallbacks.ChangePassword(url, info as ChangeRequestData, sessionID),
                 typeof(ChangeRequestData)
             ),
             new RouteAction(
                 "/launcher/profile/change/wipe",
-                (url, info, sessionID, _) => launcherCallbacks.Wipe(url, info as RegisterData, sessionID),
+                async (url, info, sessionID, _) => await launcherCallbacks.Wipe(url, info as RegisterData, sessionID),
                 typeof(RegisterData)
             ),
             new RouteAction(
                 "/launcher/profile/remove",
-                (url, info, sessionID, _) => launcherCallbacks.RemoveProfile(url, info as RemoveProfileData, sessionID),
+                async (url, info, sessionID, _) => await launcherCallbacks.RemoveProfile(url, info as RemoveProfileData, sessionID),
                 typeof(RemoveProfileData)
             ),
             new RouteAction(
                 "/launcher/profile/compatibleTarkovVersion",
-                (_, _, _, _) => launcherCallbacks.GetCompatibleTarkovVersion()
+                async (_, _, _, _) => await launcherCallbacks.GetCompatibleTarkovVersion()
             ),
             new RouteAction(
                 "/launcher/server/version",
-                (_, _, _, _) => launcherCallbacks.GetServerVersion()
+                async (_, _, _, _) => await launcherCallbacks.GetServerVersion()
             ),
             new RouteAction(
                 "/launcher/server/loadedServerMods",
-                (_, _, _, _) => launcherCallbacks.GetLoadedServerMods()
+                async (_, _, _, _) => await launcherCallbacks.GetLoadedServerMods()
             ),
             new RouteAction(
                 "/launcher/server/serverModsUsedByProfile",
-                (url, info, sessionID, _) =>
-                    launcherCallbacks.GetServerModsProfileUsed(url, info as EmptyRequestData, sessionID),
+                async (url, info, sessionID, _) =>
+                    await launcherCallbacks.GetServerModsProfileUsed(url, info as EmptyRequestData, sessionID),
                 typeof(EmptyRequestData)
             )
         ]

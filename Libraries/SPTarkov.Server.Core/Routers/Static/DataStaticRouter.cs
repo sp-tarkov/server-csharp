@@ -17,102 +17,102 @@ public class DataStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/client/settings",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetSettings(url, info as EmptyRequestData, sessionID)
+                ) => await dataCallbacks.GetSettings(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/globals",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetGlobals(url, info as EmptyRequestData, sessionID)
+                ) => await dataCallbacks.GetGlobals(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/items",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetTemplateItems(url, info as EmptyRequestData, sessionID)
+                ) => await dataCallbacks.GetTemplateItems(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/handbook/templates",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetTemplateHandbook(url, info as EmptyRequestData, sessionID)
+                ) => await dataCallbacks.GetTemplateHandbook(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/customization",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetTemplateSuits(url, info as EmptyRequestData, sessionID)
+                ) => await dataCallbacks.GetTemplateSuits(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/account/customization",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetTemplateCharacter(url, info as EmptyRequestData, sessionID)
+                ) => await dataCallbacks.GetTemplateCharacter(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/hideout/production/recipes",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetHideoutProduction(url, info as EmptyRequestData, sessionID)
+                ) => await dataCallbacks.GetHideoutProduction(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/hideout/settings",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetHideoutSettings(url, info as EmptyRequestData, sessionID)
+                ) => await dataCallbacks.GetHideoutSettings(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/hideout/areas",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetHideoutAreas(url, info as EmptyRequestData, sessionID)
+                ) => await dataCallbacks.GetHideoutAreas(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/languages",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetLocalesLanguages(url, info as EmptyRequestData, sessionID)
+                ) => await dataCallbacks.GetLocalesLanguages(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/hideout/qte/list",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetQteList(url, info as EmptyRequestData, sessionID)
+                ) => await dataCallbacks.GetQteList(url, info as EmptyRequestData, sessionID)
             )
         ]
     )

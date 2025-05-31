@@ -27,16 +27,16 @@ public class DialogueCallbacks(
     ///     Handle client/friend/list
     /// </summary>
     /// <returns></returns>
-    public virtual string GetFriendList(string url, EmptyRequestData _, string sessionID)
+    public virtual ValueTask<string> GetFriendList(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_dialogueController.GetFriendList(sessionID));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_dialogueController.GetFriendList(sessionID)));
     }
 
     /// <summary>
     ///     Handle client/chatServer/list
     /// </summary>
     /// <returns></returns>
-    public virtual string GetChatServerList(string url, GetChatServerListRequestData request, string sessionID)
+    public virtual ValueTask<string> GetChatServerList(string url, GetChatServerListRequestData request, string sessionID)
     {
         var chatServer = new List<ChatServer>
         {
@@ -61,7 +61,7 @@ public class DialogueCallbacks(
             }
         };
 
-        return _httpResponseUtil.GetBody(chatServer);
+        return new ValueTask<string>(_httpResponseUtil.GetBody(chatServer));
     }
 
     /// <summary>
@@ -69,9 +69,9 @@ public class DialogueCallbacks(
     ///     TODO: request properties are not handled
     /// </summary>
     /// <returns></returns>
-    public virtual string GetMailDialogList(string url, GetMailDialogListRequestData request, string sessionID)
+    public virtual ValueTask<string> GetMailDialogList(string url, GetMailDialogListRequestData request, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_dialogueController.GenerateDialogueList(sessionID), 0, null, false);
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_dialogueController.GenerateDialogueList(sessionID), 0, null, false));
     }
 
     /// <summary>
@@ -81,191 +81,191 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public virtual string GetMailDialogView(string url, GetMailDialogViewRequestData request, string sessionID)
+    public virtual ValueTask<string> GetMailDialogView(string url, GetMailDialogViewRequestData request, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_dialogueController.GenerateDialogueView(request, sessionID), 0, null, false);
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_dialogueController.GenerateDialogueView(request, sessionID), 0, null, false));
     }
 
     /// <summary>
     ///     Handle client/mail/dialog/info
     /// </summary>
     /// <returns></returns>
-    public virtual string GetMailDialogInfo(string url, GetMailDialogInfoRequestData request, string sessionID)
+    public virtual ValueTask<string> GetMailDialogInfo(string url, GetMailDialogInfoRequestData request, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_dialogueController.GetDialogueInfo(request.DialogId, sessionID));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_dialogueController.GetDialogueInfo(request.DialogId, sessionID)));
     }
 
     /// <summary>
     ///     Handle client/mail/dialog/remove
     /// </summary>
     /// <returns></returns>
-    public virtual string RemoveDialog(string url, RemoveDialogRequestData request, string sessionID)
+    public virtual ValueTask<string> RemoveDialog(string url, RemoveDialogRequestData request, string sessionID)
     {
         _dialogueController.RemoveDialogue(request.DialogId, sessionID);
-        return _httpResponseUtil.EmptyArrayResponse();
+        return new ValueTask<string>(_httpResponseUtil.EmptyArrayResponse());
     }
 
     /// <summary>
     ///     Handle client/mail/dialog/pin
     /// </summary>
     /// <returns></returns>
-    public virtual string PinDialog(string url, PinDialogRequestData request, string sessionID)
+    public virtual ValueTask<string> PinDialog(string url, PinDialogRequestData request, string sessionID)
     {
         _dialogueController.SetDialoguePin(request.DialogId, true, sessionID);
-        return _httpResponseUtil.EmptyArrayResponse();
+        return new ValueTask<string>(_httpResponseUtil.EmptyArrayResponse());
     }
 
     /// <summary>
     ///     Handle client/mail/dialog/unpin
     /// </summary>
     /// <returns></returns>
-    public virtual string UnpinDialog(string url, PinDialogRequestData request, string sessionID)
+    public virtual ValueTask<string> UnpinDialog(string url, PinDialogRequestData request, string sessionID)
     {
         _dialogueController.SetDialoguePin(request.DialogId, false, sessionID);
-        return _httpResponseUtil.EmptyArrayResponse();
+        return new ValueTask<string>(_httpResponseUtil.EmptyArrayResponse());
     }
 
     /// <summary>
     ///     Handle client/mail/dialog/read
     /// </summary>
     /// <returns></returns>
-    public virtual string SetRead(string url, SetDialogReadRequestData request, string sessionID)
+    public virtual ValueTask<string> SetRead(string url, SetDialogReadRequestData request, string sessionID)
     {
         _dialogueController.SetRead(request.Dialogs, sessionID);
-        return _httpResponseUtil.EmptyArrayResponse();
+        return new ValueTask<string>(_httpResponseUtil.EmptyArrayResponse());
     }
 
     /// <summary>
     ///     Handle client/mail/dialog/getAllAttachments
     /// </summary>
     /// <returns></returns>
-    public virtual string GetAllAttachments(string url, GetAllAttachmentsRequestData request, string sessionID)
+    public virtual ValueTask<string> GetAllAttachments(string url, GetAllAttachmentsRequestData request, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_dialogueController.GetAllAttachments(request.DialogId, sessionID));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_dialogueController.GetAllAttachments(request.DialogId, sessionID)));
     }
 
     /// <summary>
     ///     Handle client/mail/msg/send
     /// </summary>
     /// <returns></returns>
-    public virtual string SendMessage(string url, SendMessageRequest request, string sessionID)
+    public virtual ValueTask<string> SendMessage(string url, SendMessageRequest request, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_dialogueController.SendMessage(sessionID, request));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_dialogueController.SendMessage(sessionID, request)));
     }
 
     /// <summary>
     ///     Handle client/friend/request/list/outbox
     /// </summary>
     /// <returns></returns>
-    public virtual string ListOutbox(string url, EmptyRequestData _, string sessionID)
+    public virtual ValueTask<string> ListOutbox(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.EmptyArrayResponse();
+        return new ValueTask<string>(_httpResponseUtil.EmptyArrayResponse());
     }
 
     /// <summary>
     ///     Handle client/friend/request/list/inbox
     /// </summary>
     /// <returns></returns>
-    public virtual string ListInbox(string url, EmptyRequestData _, string sessionID)
+    public virtual ValueTask<string> ListInbox(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.EmptyArrayResponse();
+        return new ValueTask<string>(_httpResponseUtil.EmptyArrayResponse());
     }
 
     /// <summary>
     ///     Handle client/friend/request/send
     /// </summary>
     /// <returns></returns>
-    public virtual string SendFriendRequest(string url, FriendRequestData request, string sessionID)
+    public virtual ValueTask<string> SendFriendRequest(string url, FriendRequestData request, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_dialogueController.SendFriendRequest(sessionID, request));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_dialogueController.SendFriendRequest(sessionID, request)));
     }
 
     /// <summary>
     ///     Handle client/friend/request/accept-all
     /// </summary>
     /// <returns></returns>
-    public virtual string AcceptAllFriendRequests(string url, EmptyRequestData _, string sessionID)
+    public virtual ValueTask<string> AcceptAllFriendRequests(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.NullResponse();
+        return new ValueTask<string>(_httpResponseUtil.NullResponse());
     }
 
     /// <summary>
     ///     Handle client/friend/request/accept
     /// </summary>
     /// <returns></returns>
-    public virtual string AcceptFriendRequest(string url, AcceptFriendRequestData request, string sessionID)
+    public virtual ValueTask<string> AcceptFriendRequest(string url, AcceptFriendRequestData request, string sessionID)
     {
-        return _httpResponseUtil.GetBody(true);
+        return new ValueTask<string>(_httpResponseUtil.GetBody(true));
     }
 
     /// <summary>
     ///     Handle client/friend/request/decline
     /// </summary>
     /// <returns></returns>
-    public virtual string DeclineFriendRequest(string url, DeclineFriendRequestData request, string sessionID)
+    public virtual ValueTask<string> DeclineFriendRequest(string url, DeclineFriendRequestData request, string sessionID)
     {
-        return _httpResponseUtil.GetBody(true);
+        return new ValueTask<string>(_httpResponseUtil.GetBody(true));
     }
 
     /// <summary>
     ///     Handle client/friend/request/cancel
     /// </summary>
     /// <returns></returns>
-    public virtual string CancelFriendRequest(string url, CancelFriendRequestData request, string sessionID)
+    public virtual ValueTask<string> CancelFriendRequest(string url, CancelFriendRequestData request, string sessionID)
     {
-        return _httpResponseUtil.GetBody(true);
+        return new ValueTask<string>(_httpResponseUtil.GetBody(true));
     }
 
     /// <summary>
     ///     Handle client/friend/delete
     /// </summary>
     /// <returns></returns>
-    public virtual string DeleteFriend(string url, DeleteFriendRequest request, string sessionID)
+    public virtual ValueTask<string> DeleteFriend(string url, DeleteFriendRequest request, string sessionID)
     {
         _dialogueController.DeleteFriend(sessionID, request);
-        return _httpResponseUtil.NullResponse();
+        return new ValueTask<string>(_httpResponseUtil.NullResponse());
     }
 
     /// <summary>
     ///     Handle client/friend/ignore/set
     /// </summary>
     /// <returns></returns>
-    public virtual string IgnoreFriend(string url, UIDRequestData request, string sessionID)
+    public virtual ValueTask<string> IgnoreFriend(string url, UIDRequestData request, string sessionID)
     {
-        return _httpResponseUtil.NullResponse();
+        return new ValueTask<string>(_httpResponseUtil.NullResponse());
     }
 
     /// <summary>
     ///     Handle client/friend/ignore/remove
     /// </summary>
     /// <returns></returns>
-    public virtual string UnIgnoreFriend(string url, UIDRequestData request, string sessionID)
+    public virtual ValueTask<string> UnIgnoreFriend(string url, UIDRequestData request, string sessionID)
     {
-        return _httpResponseUtil.NullResponse();
+        return new ValueTask<string>(_httpResponseUtil.NullResponse());
     }
 
-    public virtual string ClearMail(string url, ClearMailMessageRequest request, string sessionID)
+    public virtual ValueTask<string> ClearMail(string url, ClearMailMessageRequest request, string sessionID)
     {
-        return _httpResponseUtil.EmptyArrayResponse();
+        return new ValueTask<string>(_httpResponseUtil.EmptyArrayResponse());
     }
 
-    public virtual string CreateGroupMail(string url, CreateGroupMailRequest request, string sessionID)
+    public virtual ValueTask<string> CreateGroupMail(string url, CreateGroupMailRequest request, string sessionID)
     {
-        return _httpResponseUtil.EmptyArrayResponse();
+        return new ValueTask<string>(_httpResponseUtil.EmptyArrayResponse());
     }
 
-    public virtual string ChangeMailGroupOwner(string url, ChangeGroupMailOwnerRequest request, string sessionID)
+    public virtual ValueTask<string> ChangeMailGroupOwner(string url, ChangeGroupMailOwnerRequest request, string sessionID)
     {
-        return "Not Implemented!"; // Not implemented in Node
+        return new ValueTask<string>("Not Implemented!"); // Not implemented in Node
     }
 
-    public virtual string AddUserToMail(string url, AddUserGroupMailRequest request, string sessionID)
+    public virtual ValueTask<string> AddUserToMail(string url, AddUserGroupMailRequest request, string sessionID)
     {
-        return "Not Implemented!"; // Not implemented in Node
+        return new ValueTask<string>("Not Implemented!"); // Not implemented in Node
     }
 
-    public virtual string RemoveUserFromMail(string url, RemoveUserGroupMailRequest request, string sessionID)
+    public virtual ValueTask<string> RemoveUserFromMail(string url, RemoveUserGroupMailRequest request, string sessionID)
     {
-        return "Not Implemented!"; // Not implemented in Node
+        return new ValueTask<string>("Not Implemented!"); // Not implemented in Node
     }
 }

@@ -74,9 +74,9 @@ public class QuestCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string ListQuests(string url, ListQuestsRequestData info, string sessionID)
+    public ValueTask<string> ListQuests(string url, ListQuestsRequestData info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_questController.GetClientQuests(sessionID));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_questController.GetClientQuests(sessionID)));
     }
 
     /// <summary>
@@ -86,8 +86,8 @@ public class QuestCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string ActivityPeriods(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> ActivityPeriods(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_repeatableQuestController.GetClientRepeatableQuests(sessionID));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_repeatableQuestController.GetClientRepeatableQuests(sessionID)));
     }
 }

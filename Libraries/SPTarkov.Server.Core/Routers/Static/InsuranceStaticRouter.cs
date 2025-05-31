@@ -17,12 +17,12 @@ public class InsuranceStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/client/insurance/items/list/cost",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => insuranceCallbacks.GetInsuranceCost(url, info as GetInsuranceCostRequestData, sessionID),
+                ) => await insuranceCallbacks.GetInsuranceCost(url, info as GetInsuranceCostRequestData, sessionID),
                 typeof(GetInsuranceCostRequestData)
             )
         ]

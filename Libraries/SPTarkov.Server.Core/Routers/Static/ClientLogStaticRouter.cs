@@ -17,31 +17,31 @@ public class ClientLogStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/singleplayer/log",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => clientLogCallbacks.ClientLog(url, info as ClientLogRequest, sessionID),
+                ) => await clientLogCallbacks.ClientLog(url, info as ClientLogRequest, sessionID),
                 typeof(ClientLogRequest)
             ),
             new RouteAction(
                 "/singleplayer/release",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => clientLogCallbacks.ReleaseNotes()
+                ) => await clientLogCallbacks.ReleaseNotes()
             ),
             new RouteAction(
                 "/singleplayer/enableBSGlogging",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => clientLogCallbacks.BsgLogging()
+                ) => await clientLogCallbacks.BsgLogging()
             )
         ]
     )

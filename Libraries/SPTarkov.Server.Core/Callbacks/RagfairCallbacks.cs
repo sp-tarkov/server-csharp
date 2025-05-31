@@ -57,9 +57,9 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string Search(string url, SearchRequestData info, string sessionID)
+    public ValueTask<string> Search(string url, SearchRequestData info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_ragfairController.GetOffers(sessionID, info));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_ragfairController.GetOffers(sessionID, info)));
     }
 
     /// <summary>
@@ -69,9 +69,9 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetMarketPrice(string url, GetMarketPriceRequestData info, string sessionID)
+    public ValueTask<string> GetMarketPrice(string url, GetMarketPriceRequestData info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_ragfairController.GetItemMinAvgMaxFleaPriceValues(info));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_ragfairController.GetItemMinAvgMaxFleaPriceValues(info)));
     }
 
     /// <summary>
@@ -118,9 +118,9 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetFleaPrices(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetFleaPrices(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_ragfairController.GetAllFleaPrices());
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_ragfairController.GetAllFleaPrices()));
     }
 
     /// <summary>
@@ -130,15 +130,15 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string SendReport(string url, SendRagfairReportRequestData info, string sessionID)
+    public ValueTask<string> SendReport(string url, SendRagfairReportRequestData info, string sessionID)
     {
-        return _httpResponseUtil.NullResponse();
+        return new ValueTask<string>(_httpResponseUtil.NullResponse());
     }
 
-    public string StorePlayerOfferTaxAmount(string url, StorePlayerOfferTaxAmountRequestData info, string sessionID)
+    public ValueTask<string> StorePlayerOfferTaxAmount(string url, StorePlayerOfferTaxAmountRequestData info, string sessionID)
     {
         _ragfairTaxService.StoreClientOfferTaxValue(sessionID, info);
-        return _httpResponseUtil.NullResponse();
+        return new ValueTask<string>(_httpResponseUtil.NullResponse());
     }
 
     /// <summary>
@@ -148,8 +148,8 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetFleaOfferById(string url, GetRagfairOfferByIdRequest info, string sessionID)
+    public ValueTask<string> GetFleaOfferById(string url, GetRagfairOfferByIdRequest info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_ragfairController.GetOfferByInternalId(sessionID, info));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_ragfairController.GetOfferByInternalId(sessionID, info)));
     }
 }

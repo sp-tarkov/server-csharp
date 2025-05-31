@@ -18,21 +18,21 @@ public class LocationStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/client/locations",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => locationCallbacks.GetLocationData(url, info as EmptyRequestData, sessionID)
+                ) => await locationCallbacks.GetLocationData(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/airdrop/loot",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => locationCallbacks.GetAirdropLoot(url, info as GetAirdropLootRequest, sessionID),
+                ) => await locationCallbacks.GetAirdropLoot(url, info as GetAirdropLootRequest, sessionID),
                 typeof(GetAirdropLootRequest)
             )
         ]

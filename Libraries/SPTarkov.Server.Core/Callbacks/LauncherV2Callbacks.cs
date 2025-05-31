@@ -13,72 +13,72 @@ public class LauncherV2Callbacks(
     ProfileController _profileController
 )
 {
-    public string Ping()
+    public ValueTask<string> Ping()
     {
-        return _httpResponseUtil.NoBody(
+        return new ValueTask<string>(_httpResponseUtil.NoBody(
             new LauncherV2PingResponse
             {
                 Response = _launcherV2Controller.Ping()
             }
-        );
+        ));
     }
 
-    public string Types()
+    public ValueTask<string> Types()
     {
-        return _httpResponseUtil.NoBody(
+        return new ValueTask<string>(_httpResponseUtil.NoBody(
             new LauncherV2TypesResponse
             {
                 Response = _launcherV2Controller.Types()
             }
-        );
+        ));
     }
 
-    public string Login(LoginRequestData info)
+    public ValueTask<string> Login(LoginRequestData info)
     {
-        return _httpResponseUtil.NoBody(
+        return new ValueTask<string>(_httpResponseUtil.NoBody(
             new LauncherV2LoginResponse
             {
                 Response = _launcherV2Controller.Login(info)
             }
-        );
+        ));
     }
 
-    public string Register(RegisterData info)
+    public ValueTask<string> Register(RegisterData info)
     {
-        return _httpResponseUtil.NoBody(
+        return new ValueTask<string>(_httpResponseUtil.NoBody(
             new LauncherV2RegisterResponse
             {
                 Response = _launcherV2Controller.Register(info),
                 Profiles = _profileController.GetMiniProfiles()
             }
-        );
+        ));
     }
 
-    public string PasswordChange(ChangeRequestData info)
+    public ValueTask<string> PasswordChange(ChangeRequestData info)
     {
-        return _httpResponseUtil.NoBody(
+        return new ValueTask<string>(_httpResponseUtil.NoBody(
             new LauncherV2PasswordChangeResponse
             {
                 Response = _launcherV2Controller.PasswordChange(info),
                 Profiles = _profileController.GetMiniProfiles()
             }
-        );
+        ));
     }
 
-    public string Remove(LoginRequestData info)
+    public ValueTask<string> Remove(LoginRequestData info)
     {
-        return _httpResponseUtil.NoBody(
+        return new ValueTask<string>(_httpResponseUtil.NoBody(
             new LauncherV2RemoveResponse
             {
                 Response = _launcherV2Controller.Remove(info),
                 Profiles = _profileController.GetMiniProfiles()
             }
-        );
+        ));
     }
 
-    public string CompatibleVersion()
+    public ValueTask<string> CompatibleVersion()
     {
-        return _httpResponseUtil.NoBody(
+        return new ValueTask<string>(_httpResponseUtil.NoBody(
             new LauncherV2VersionResponse
             {
                 Response = new LauncherV2CompatibleVersion
@@ -87,36 +87,36 @@ public class LauncherV2Callbacks(
                     EftVersion = _launcherV2Controller.EftVersion()
                 }
             }
-        );
+        ));
     }
 
-    public string Mods()
+    public ValueTask<string> Mods()
     {
-        return _httpResponseUtil.NoBody(
+        return new ValueTask<string>(_httpResponseUtil.NoBody(
             new LauncherV2ModsResponse
             {
                 Response = _launcherV2Controller.LoadedMods()
             }
-        );
+        ));
     }
 
-    public string Profiles()
+    public ValueTask<string> Profiles()
     {
-        return _httpResponseUtil.NoBody(
+        return new ValueTask<string>(_httpResponseUtil.NoBody(
             new LauncherV2ProfilesResponse
             {
                 Response = _profileController.GetMiniProfiles()
             }
-        );
+        ));
     }
 
-    public object Profile(string? sessionId)
+    public ValueTask<string> Profile(string? sessionId)
     {
-        return _httpResponseUtil.NoBody(
+        return new ValueTask<string>(_httpResponseUtil.NoBody(
             new LauncherV2ProfileResponse
             {
                 Response = _launcherV2Controller.GetProfile(sessionId)
             }
-        );
+        ));
     }
 }

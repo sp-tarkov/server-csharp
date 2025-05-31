@@ -17,30 +17,30 @@ public class DataDynamicRouter : DynamicRouter
         [
             new RouteAction(
                 "/client/menu/locale/",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetLocalesMenu(url, info as EmptyRequestData, sessionID)
+                ) => await dataCallbacks.GetLocalesMenu(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/locale/",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetLocalesGlobal(url, info as EmptyRequestData, sessionID)
+                ) => await dataCallbacks.GetLocalesGlobal(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/items/prices/",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => dataCallbacks.GetItemPrices(url, info as EmptyRequestData, sessionID)
+                ) => await dataCallbacks.GetItemPrices(url, info as EmptyRequestData, sessionID)
             )
         ]
     )

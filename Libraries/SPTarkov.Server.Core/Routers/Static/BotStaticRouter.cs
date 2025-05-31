@@ -17,12 +17,12 @@ public class BotStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/client/game/bot/generate",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     outout
-                ) => botCallbacks.GenerateBots(url, info as GenerateBotsRequestData, sessionID),
+                ) => await botCallbacks.GenerateBots(url, info as GenerateBotsRequestData, sessionID),
                 typeof(GenerateBotsRequestData)
             )
         ]

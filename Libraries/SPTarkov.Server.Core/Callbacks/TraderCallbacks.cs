@@ -35,9 +35,9 @@ public class TraderCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetTraderSettings(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetTraderSettings(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_traderController.GetAllTraders(sessionID));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_traderController.GetAllTraders(sessionID)));
     }
 
     /// <summary>
@@ -47,10 +47,10 @@ public class TraderCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetTrader(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetTrader(string url, EmptyRequestData _, string sessionID)
     {
         var traderID = url.Replace("/client/trading/api/getTrader/", "");
-        return _httpResponseUtil.GetBody(_traderController.GetTrader(sessionID, traderID));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_traderController.GetTrader(sessionID, traderID)));
     }
 
     /// <summary>
@@ -60,10 +60,10 @@ public class TraderCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetAssort(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetAssort(string url, EmptyRequestData _, string sessionID)
     {
         var traderID = url.Replace("/client/trading/api/getTraderAssort/", "");
-        return _httpResponseUtil.GetBody(_traderController.GetAssort(sessionID, traderID));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_traderController.GetAssort(sessionID, traderID)));
     }
 
     /// <summary>
@@ -73,8 +73,8 @@ public class TraderCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetModdedTraderData(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetModdedTraderData(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.NoBody(_traderConfig.ModdedTraders);
+        return new ValueTask<string>(_httpResponseUtil.NoBody(_traderConfig.ModdedTraders));
     }
 }

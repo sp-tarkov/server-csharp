@@ -22,10 +22,10 @@ public class HealthCallbacks(
     /// <param name="info">HealthListener.Instance.CurrentHealth class</param>
     /// <param name="sessionID">session id</param>
     /// <returns>empty response, no data sent back to client</returns>
-    public string HandleWorkoutEffects(string url, WorkoutData info, string sessionID)
+    public ValueTask<string> HandleWorkoutEffects(string url, WorkoutData info, string sessionID)
     {
         _healthController.ApplyWorkoutChanges(_profileHelper.GetPmcProfile(sessionID), info, sessionID);
-        return _httpResponseUtil.EmptyResponse();
+        return new ValueTask<string>(_httpResponseUtil.EmptyResponse());
     }
 
     /// <summary>

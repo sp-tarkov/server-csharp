@@ -16,17 +16,17 @@ public class LocationCallbacks(
     ///     Handle client/locations
     /// </summary>
     /// <returns></returns>
-    public string GetLocationData(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetLocationData(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_locationController.GenerateAll(sessionID));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_locationController.GenerateAll(sessionID)));
     }
 
     /// <summary>
     ///     Handle client/airdrop/loot
     /// </summary>
     /// <returns></returns>
-    public string GetAirdropLoot(string url, GetAirdropLootRequest info, string sessionID)
+    public ValueTask<string> GetAirdropLoot(string url, GetAirdropLootRequest info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_locationController.GetAirDropLoot(info));
+        return new ValueTask<string>(_httpResponseUtil.GetBody(_locationController.GetAirDropLoot(info)));
     }
 }

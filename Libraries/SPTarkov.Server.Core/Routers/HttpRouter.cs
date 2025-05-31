@@ -34,31 +34,29 @@ public class HttpRouter
     }
     */
 
-    public string? GetResponse(HttpRequest req, string sessionID, string? body, out object deserializedObject)
+    public async ValueTask<string?> GetResponse(HttpRequest req, string sessionID, string? body)
     {
         var wrapper = new ResponseWrapper("");
 
-        var handled = HandleRoute(req, sessionID, wrapper, _staticRouters, false, body, out deserializedObject);
+        var handled = await HandleRoute(req, sessionID, wrapper, _staticRouters, false, body);
         if (!handled)
         {
-            HandleRoute(req, sessionID, wrapper, _dynamicRoutes, true, body, out deserializedObject);
+            await HandleRoute(req, sessionID, wrapper, _dynamicRoutes, true, body);
         }
 
         return wrapper.Output;
     }
 
-    protected bool HandleRoute(
+    protected async ValueTask<bool> HandleRoute(
         HttpRequest request,
         string sessionID,
         ResponseWrapper wrapper,
         IEnumerable<Router> routers,
         bool dynamic,
-        string? body,
-        out object deserializedObject
+        string? body
     )
     {
         var url = request.Path.Value;
-        deserializedObject = null;
 
         // remove retry from url
         if (url?.Contains("?retry=") ?? false)
@@ -73,11 +71,11 @@ public class HttpRouter
             {
                 if (dynamic)
                 {
-                    wrapper.Output = (route as DynamicRouter).HandleDynamic(url, body, sessionID, wrapper.Output) as string;
+                    wrapper.Output = await (route as DynamicRouter).HandleDynamic(url, body, sessionID, wrapper.Output) as string;
                 }
                 else
                 {
-                    wrapper.Output = (route as StaticRouter).HandleStatic(url, body, sessionID, wrapper.Output) as string;
+                    wrapper.Output = await (route as StaticRouter).HandleStatic(url, body, sessionID, wrapper.Output) as string;
                 }
 
                 matched = true;

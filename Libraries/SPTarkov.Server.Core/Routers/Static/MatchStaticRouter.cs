@@ -19,270 +19,270 @@ public class MatchStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/client/match/available",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.ServerAvailable(url, info as EmptyRequestData, sessionID)
+                ) => await matchCallbacks.ServerAvailable(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/updatePing",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.UpdatePing(url, info as UpdatePingRequestData, sessionID),
+                ) => await matchCallbacks.UpdatePing(url, info as UpdatePingRequestData, sessionID),
                 typeof(UpdatePingRequestData)
             ),
             new RouteAction(
                 "/client/match/join",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.JoinMatch(url, info as MatchGroupStartGameRequest, sessionID),
+                ) => await matchCallbacks.JoinMatch(url, info as MatchGroupStartGameRequest, sessionID),
                 typeof(MatchGroupStartGameRequest)
             ),
             new RouteAction(
                 "/client/match/exit",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.ExitMatch(url, info as EmptyRequestData, sessionID)
+                ) => await matchCallbacks.ExitMatch(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/delete",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.DeleteGroup(url, info as DeleteGroupRequest, sessionID)
+                ) => await matchCallbacks.DeleteGroup(url, info as DeleteGroupRequest, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/leave",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.LeaveGroup(url, info as EmptyRequestData, sessionID)
+                ) => await matchCallbacks.LeaveGroup(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/status",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.GetGroupStatus(url, info as MatchGroupStatusRequest, sessionID),
+                ) => await matchCallbacks.GetGroupStatus(url, info as MatchGroupStatusRequest, sessionID),
                 typeof(MatchGroupStatusRequest)
             ),
             new RouteAction(
                 "/client/match/group/start_game",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.JoinMatch(url, info as MatchGroupStartGameRequest, sessionID),
+                ) => await matchCallbacks.JoinMatch(url, info as MatchGroupStartGameRequest, sessionID),
                 typeof(MatchGroupStartGameRequest)
             ),
             new RouteAction(
                 "/client/match/group/exit_from_menu",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.ExitFromMenu(url, info as EmptyRequestData, sessionID)
+                ) => await matchCallbacks.ExitFromMenu(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/current",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.GroupCurrent(url, info as EmptyRequestData, sessionID)
+                ) => await matchCallbacks.GroupCurrent(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/looking/start",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.StartGroupSearch(url, info as EmptyRequestData, sessionID)
+                ) => await matchCallbacks.StartGroupSearch(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/looking/stop",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.StopGroupSearch(url, info as EmptyRequestData, sessionID)
+                ) => await matchCallbacks.StopGroupSearch(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/invite/send",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.SendGroupInvite(url, info as MatchGroupInviteSendRequest, sessionID),
+                ) => await matchCallbacks.SendGroupInvite(url, info as MatchGroupInviteSendRequest, sessionID),
                 typeof(MatchGroupInviteSendRequest)
             ),
             new RouteAction(
                 "/client/match/group/invite/accept",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.AcceptGroupInvite(url, info as RequestIdRequest, sessionID),
+                ) => await matchCallbacks.AcceptGroupInvite(url, info as RequestIdRequest, sessionID),
                 typeof(RequestIdRequest)
             ),
             new RouteAction(
                 "/client/match/group/invite/decline",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.DeclineGroupInvite(url, info as RequestIdRequest, sessionID),
+                ) => await matchCallbacks.DeclineGroupInvite(url, info as RequestIdRequest, sessionID),
                 typeof(RequestIdRequest)
             ),
             new RouteAction(
                 "/client/match/group/invite/cancel",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.CancelGroupInvite(url, info as RequestIdRequest, sessionID),
+                ) => await matchCallbacks.CancelGroupInvite(url, info as RequestIdRequest, sessionID),
                 typeof(RequestIdRequest)
             ),
             new RouteAction(
                 "/client/match/group/invite/cancel-all",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.CancelAllGroupInvite(url, info as EmptyRequestData, sessionID)
+                ) => await matchCallbacks.CancelAllGroupInvite(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/transfer",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.TransferGroup(url, info as MatchGroupTransferRequest, sessionID),
+                ) => await matchCallbacks.TransferGroup(url, info as MatchGroupTransferRequest, sessionID),
                 typeof(MatchGroupTransferRequest)
             ),
             new RouteAction(
                 "/client/match/group/raid/ready",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.RaidReady(url, info as EmptyRequestData, sessionID)
+                ) => await matchCallbacks.RaidReady(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/raid/not-ready",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.NotRaidReady(url, info as EmptyRequestData, sessionID)
+                ) => await matchCallbacks.NotRaidReady(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/putMetrics",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.PutMetrics(url, info as PutMetricsRequestData, sessionID),
+                ) => await matchCallbacks.PutMetrics(url, info as PutMetricsRequestData, sessionID),
                 typeof(PutMetricsRequestData)
             ),
             new RouteAction(
                 "/client/analytics/event-disconnect",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.EventDisconnect(url, info as PutMetricsRequestData, sessionID),
+                ) => await matchCallbacks.EventDisconnect(url, info as PutMetricsRequestData, sessionID),
                 typeof(PutMetricsRequestData)
             ),
             new RouteAction(
                 "/client/getMetricsConfig",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.GetMetrics(url, info as EmptyRequestData, sessionID)
+                ) => await matchCallbacks.GetMetrics(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/raid/configuration",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.GetRaidConfiguration(url, info as GetRaidConfigurationRequestData, sessionID),
+                ) => await matchCallbacks.GetRaidConfiguration(url, info as GetRaidConfigurationRequestData, sessionID),
                 typeof(GetRaidConfigurationRequestData)
             ),
             new RouteAction(
                 "/client/raid/configuration-by-profile",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.GetConfigurationByProfile(url, info as GetRaidConfigurationRequestData, sessionID),
+                ) => await matchCallbacks.GetConfigurationByProfile(url, info as GetRaidConfigurationRequestData, sessionID),
                 typeof(GetRaidConfigurationRequestData)
             ),
             new RouteAction(
                 "/client/match/group/player/remove",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.RemovePlayerFromGroup(url, info as MatchGroupPlayerRemoveRequest, sessionID),
+                ) => await matchCallbacks.RemovePlayerFromGroup(url, info as MatchGroupPlayerRemoveRequest, sessionID),
                 typeof(MatchGroupPlayerRemoveRequest)
             ),
             new RouteAction(
                 "/client/match/local/start",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.StartLocalRaid(url, info as StartLocalRaidRequestData, sessionID),
+                ) => await matchCallbacks.StartLocalRaid(url, info as StartLocalRaidRequestData, sessionID),
                 typeof(StartLocalRaidRequestData)
             ),
             new RouteAction(
                 "/client/match/local/end",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => matchCallbacks.EndLocalRaid(url, info as EndLocalRaidRequestData, sessionID),
+                ) => await matchCallbacks.EndLocalRaid(url, info as EndLocalRaidRequestData, sessionID),
                 typeof(EndLocalRaidRequestData)
             )
         ]

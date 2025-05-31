@@ -17,21 +17,21 @@ public class WeatherStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/client/weather",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => weatherCallbacks.GetWeather(url, info as EmptyRequestData, sessionID)
+                ) => await weatherCallbacks.GetWeather(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/localGame/weather",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => weatherCallbacks.GetLocalWeather(url, info as EmptyRequestData, sessionID)
+                ) => await weatherCallbacks.GetLocalWeather(url, info as EmptyRequestData, sessionID)
             )
         ]
     )

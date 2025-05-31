@@ -198,7 +198,7 @@ public class EventOutputHolder
         foreach (var production in productions)
         {
             if (production.Value is null)
-                // Could be cancelled production, skip item to save processing
+            // Could be cancelled production, skip item to save processing
             {
                 continue;
             }

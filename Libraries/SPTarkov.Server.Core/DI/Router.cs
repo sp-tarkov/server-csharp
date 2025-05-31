@@ -54,7 +54,7 @@ public abstract class StaticRouter : Router
         _jsonUtil = jsonUtil;
     }
 
-    public object HandleStatic(string url, string? body, string sessionID, string output)
+    public async ValueTask<object> HandleStatic(string url, string? body, string sessionID, string output)
     {
         var action = _actions.Single(route => route.url == url);
         var type = action.bodyType;
@@ -64,7 +64,7 @@ public abstract class StaticRouter : Router
             info = (IRequestData?) _jsonUtil.Deserialize(body, type);
         }
 
-        return action.action(url, info, sessionID, output);
+        return await action.action(url, info, sessionID, output);
     }
 
     protected override List<HandledRoute> GetHandledRoutes()
@@ -84,7 +84,7 @@ public abstract class DynamicRouter : Router
         _jsonUtil = jsonUtil;
     }
 
-    public object HandleDynamic(string url, string? body, string sessionID, string output)
+    public async ValueTask<object> HandleDynamic(string url, string? body, string sessionID, string output)
     {
         var action = actions.First(r => url.Contains(r.url));
         var type = action.bodyType;
@@ -94,7 +94,7 @@ public abstract class DynamicRouter : Router
             info = (IRequestData?) _jsonUtil.Deserialize(body, type);
         }
 
-        return action.action(url, info, sessionID, output);
+        return await action.action(url, info, sessionID, output);
     }
 
     protected override List<HandledRoute> GetHandledRoutes()
@@ -123,7 +123,7 @@ public record HandledRoute(string route, bool dynamic);
 
 public record RouteAction(
     string url,
-    Func<string, IRequestData?, string?, string?, object> action,
+    Func<string, IRequestData?, string?, string?, ValueTask<object>> action,
     Type? bodyType = null
 );
 //public action: (url: string, info: any, sessionID: string, output: string) => Promise<any>,

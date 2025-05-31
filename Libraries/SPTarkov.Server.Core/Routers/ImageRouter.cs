@@ -47,8 +47,8 @@ public class ImageRouter
         _logger.Warning($"IMAGE: {url} not found");
     }
 
-    public string GetImage()
+    public ValueTask<string> GetImage()
     {
-        return "IMAGE";
+        return new ValueTask<string>("IMAGE");
     }
 }

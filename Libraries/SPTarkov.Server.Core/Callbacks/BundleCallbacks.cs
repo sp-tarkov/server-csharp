@@ -14,17 +14,17 @@ public class BundleCallbacks(
     ///     Handle singleplayer/bundles
     /// </summary>
     /// <returns></returns>
-    public string GetBundles(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetBundles(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.NoBody(_bundleLoader.GetBundles());
+        return new ValueTask<string>(_httpResponseUtil.NoBody(_bundleLoader.GetBundles()));
     }
 
     /// <summary>
     ///     TODO: what does it do
     /// </summary>
     /// <returns></returns>
-    public string GetBundle(string url, object info, string sessionID)
+    public ValueTask<string> GetBundle(string url, object info, string sessionID)
     {
-        return "BUNDLE";
+        return new ValueTask<string>("BUNDLE");
     }
 }

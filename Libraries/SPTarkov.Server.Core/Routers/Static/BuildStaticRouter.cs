@@ -19,51 +19,51 @@ public class BuildStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/client/builds/list",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => buildsCallbacks.GetBuilds(url, info as EmptyRequestData, sessionID)
+                ) => await buildsCallbacks.GetBuilds(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/builds/magazine/save",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => buildsCallbacks.CreateMagazineTemplate(url, info as SetMagazineRequest, sessionID),
+                ) => await buildsCallbacks.CreateMagazineTemplate(url, info as SetMagazineRequest, sessionID),
                 typeof(SetMagazineRequest)
             ),
             new RouteAction(
                 "/client/builds/weapon/save",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => buildsCallbacks.SetWeapon(url, info as PresetBuildActionRequestData, sessionID),
+                ) => await buildsCallbacks.SetWeapon(url, info as PresetBuildActionRequestData, sessionID),
                 typeof(PresetBuildActionRequestData)
             ),
             new RouteAction(
                 "/client/builds/equipment/save",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => buildsCallbacks.SetEquipment(url, info as PresetBuildActionRequestData, sessionID),
+                ) => await buildsCallbacks.SetEquipment(url, info as PresetBuildActionRequestData, sessionID),
                 typeof(PresetBuildActionRequestData)
             ),
             new RouteAction(
                 "/client/builds/delete",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => buildsCallbacks.DeleteBuild(url, info as RemoveBuildRequestData, sessionID),
+                ) => await buildsCallbacks.DeleteBuild(url, info as RemoveBuildRequestData, sessionID),
                 typeof(RemoveBuildRequestData)
             )
         ]

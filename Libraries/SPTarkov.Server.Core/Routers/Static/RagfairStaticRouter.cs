@@ -18,71 +18,71 @@ public class RagfairStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/client/ragfair/search",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => ragfairCallbacks.Search(url, info as SearchRequestData, sessionID),
+                ) => await ragfairCallbacks.Search(url, info as SearchRequestData, sessionID),
                 typeof(SearchRequestData)
             ),
             new RouteAction(
                 "/client/ragfair/find",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => ragfairCallbacks.Search(url, info as SearchRequestData, sessionID),
+                ) => await ragfairCallbacks.Search(url, info as SearchRequestData, sessionID),
                 typeof(SearchRequestData)
             ),
             new RouteAction(
                 "/client/ragfair/itemMarketPrice",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => ragfairCallbacks.GetMarketPrice(url, info as GetMarketPriceRequestData, sessionID),
+                ) => await ragfairCallbacks.GetMarketPrice(url, info as GetMarketPriceRequestData, sessionID),
                 typeof(GetMarketPriceRequestData)
             ),
             new RouteAction(
                 "/client/ragfair/offerfees",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => ragfairCallbacks.StorePlayerOfferTaxAmount(url, info as StorePlayerOfferTaxAmountRequestData, sessionID),
+                ) => await ragfairCallbacks.StorePlayerOfferTaxAmount(url, info as StorePlayerOfferTaxAmountRequestData, sessionID),
                 typeof(StorePlayerOfferTaxAmountRequestData)
             ),
             new RouteAction(
                 "/client/reports/ragfair/send",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => ragfairCallbacks.SendReport(url, info as SendRagfairReportRequestData, sessionID),
+                ) => await ragfairCallbacks.SendReport(url, info as SendRagfairReportRequestData, sessionID),
                 typeof(SendRagfairReportRequestData)
             ),
             new RouteAction(
                 "/client/items/prices",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => ragfairCallbacks.GetFleaPrices(url, info as EmptyRequestData, sessionID)
+                ) => await ragfairCallbacks.GetFleaPrices(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/ragfair/offer/findbyid",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => ragfairCallbacks.GetFleaOfferById(url, info as GetRagfairOfferByIdRequest, sessionID),
+                ) => await ragfairCallbacks.GetFleaOfferById(url, info as GetRagfairOfferByIdRequest, sessionID),
                 typeof(GetRagfairOfferByIdRequest)
             )
         ]

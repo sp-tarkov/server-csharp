@@ -10,9 +10,9 @@ public class HttpDynamicRouter : DynamicRouter
     public HttpDynamicRouter(ImageRouter imageRouter, JsonUtil jsonUtil) : base(
         jsonUtil,
         [
-            new RouteAction(".jpg", (_, _, _, _) => imageRouter.GetImage()),
-            new RouteAction(".png", (_, _, _, _) => imageRouter.GetImage()),
-            new RouteAction(".ico", (_, _, _, _) => imageRouter.GetImage())
+            new RouteAction(".jpg", async (_, _, _, _) => await imageRouter.GetImage()),
+            new RouteAction(".png", async (_, _, _, _) => await imageRouter.GetImage()),
+            new RouteAction(".ico", async (_, _, _, _) => await imageRouter.GetImage())
         ]
     )
     {

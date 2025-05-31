@@ -17,12 +17,12 @@ public class BundleStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/singleplayer/bundles",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => bundleCallbacks.GetBundles(url, info as EmptyRequestData, sessionID)
+                ) => await bundleCallbacks.GetBundles(url, info as EmptyRequestData, sessionID)
             )
         ]
     )

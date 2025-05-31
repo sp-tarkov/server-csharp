@@ -17,12 +17,12 @@ public class HealthStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/client/hideout/workout",
-                (
+                async (
                     url,
                     info,
                     sessionID,
                     output
-                ) => healthCallbacks.HandleWorkoutEffects(url, info as WorkoutData, sessionID),
+                ) => await healthCallbacks.HandleWorkoutEffects(url, info as WorkoutData, sessionID),
                 typeof(WorkoutData)
             )
         ]
