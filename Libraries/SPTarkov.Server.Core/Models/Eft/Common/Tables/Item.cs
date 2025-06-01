@@ -88,14 +88,6 @@ public record Item
         get;
         set;
     }
-#if !DEBUG
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData
-    {
-        get;
-        set;
-    }
-#endif
 }
 
 public record HideoutItem
@@ -384,14 +376,6 @@ public record Upd
         get;
         set;
     }
-#if !DEBUG
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData
-    {
-        get;
-        set;
-    }
-#endif
 }
 
 public record LockableKeyComponent

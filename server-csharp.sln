@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Server", "SPTarkov.Server\SPTarkov.Server.csproj", "{1F5ED9C6-8B1F-4776-85AB-B387CBBC5557}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Server.Core", "Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj", "{AC8643DC-8779-4B4A-BBDA-2D4CC466F765}"
+	ProjectSection(ProjectDependencies) = postProject
+		{905FBA04-D73A-4A46-930B-1B0C3A7C4EB8} = {905FBA04-D73A-4A46-930B-1B0C3A7C4EB8}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{6C0681F9-4013-4579-82DA-0A9297984FD3}"
 EndProject
@@ -26,6 +29,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{6884273A-72E9-4035-B5BE-EE101C69F5F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Reflection", "Libraries\SPTarkov.Reflection\SPTarkov.Reflection.csproj", "{9073A593-A2F5-471E-9678-B896A7226FD4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fody", "Fody", "{61D0AD50-5B86-41E6-8B19-F11944AC3EE4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JsonExtensionData", "JsonExtensionData", "{2938742B-34FA-47F2-A50B-E0470FB1D807}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonExtensionData.Fody", "Libraries\FodyWeavers\JsonExtensionData.Fody\JsonExtensionData.Fody.csproj", "{905FBA04-D73A-4A46-930B-1B0C3A7C4EB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +82,10 @@ Global
 		{9073A593-A2F5-471E-9678-B896A7226FD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9073A593-A2F5-471E-9678-B896A7226FD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9073A593-A2F5-471E-9678-B896A7226FD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{905FBA04-D73A-4A46-930B-1B0C3A7C4EB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{905FBA04-D73A-4A46-930B-1B0C3A7C4EB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{905FBA04-D73A-4A46-930B-1B0C3A7C4EB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{905FBA04-D73A-4A46-930B-1B0C3A7C4EB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,5 +98,8 @@ Global
 		{4B973AC0-0C60-4853-9AF7-7CB69127473E} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
 		{C24B1FEB-F8AC-434E-998D-5DA4D1687295} = {587959C2-5AFA-4B77-B327-566610F9A289}
 		{9073A593-A2F5-471E-9678-B896A7226FD4} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
+		{61D0AD50-5B86-41E6-8B19-F11944AC3EE4} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
+		{2938742B-34FA-47F2-A50B-E0470FB1D807} = {61D0AD50-5B86-41E6-8B19-F11944AC3EE4}
+		{905FBA04-D73A-4A46-930B-1B0C3A7C4EB8} = {2938742B-34FA-47F2-A50B-E0470FB1D807}
 	EndGlobalSection
 EndGlobal

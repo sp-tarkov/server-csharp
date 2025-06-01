@@ -1217,13 +1217,6 @@ public record Victim
         get;
         set;
     }
-
-    [JsonExtensionData]
-    public Dictionary<string, object> OtherProperties
-    {
-        get;
-        set;
-    }
 }
 
 public record SessionCounters
@@ -1331,13 +1324,6 @@ public record Aggressor
     }
 
     public string? Role
-    {
-        get;
-        set;
-    }
-
-    [JsonExtensionData]
-    public Dictionary<string, object> OtherProperties
     {
         get;
         set;

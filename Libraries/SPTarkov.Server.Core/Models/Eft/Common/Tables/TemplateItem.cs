@@ -3517,9 +3517,6 @@ public record Props
         get;
         set;
     }
-
-    //[JsonExtensionData]
-    //public Dictionary<string, object> OtherProperties { get; set; }
 }
 
 public record WeaponRecoilSettings

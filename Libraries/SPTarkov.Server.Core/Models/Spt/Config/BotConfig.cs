@@ -547,13 +547,6 @@ public record PresetBatch
         get;
         set;
     }
-
-    [JsonExtensionData]
-    public IDictionary<string, object> AdditionalData
-    {
-        get;
-        set;
-    }
 }
 
 public record WalletLootSettings

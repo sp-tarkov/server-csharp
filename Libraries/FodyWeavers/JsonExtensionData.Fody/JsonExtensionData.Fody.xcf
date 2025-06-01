@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="IncludeNamespacesRegex"
+                type="xs:string"
+                minOccurs="0"
+                maxOccurs="1">
+    <xs:annotation>
+      <xs:documentation>Namespaces to use for adding JsonExtensionData properties and attribute</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+</xs:complexType>
