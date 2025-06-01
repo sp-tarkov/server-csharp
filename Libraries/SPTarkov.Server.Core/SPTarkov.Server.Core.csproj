@@ -22,6 +22,18 @@
   <ItemGroup>
     <PackageReference Include="System.IO.Hashing" Version="9.0.5"/>
     <PackageReference Include="FastCloner" Version="3.3.4"/>
+    
+    <!--
+     We are using Fody to make all methods virtual, this is a perfect use case for us to allow modders to override 
+     any behaviour they need and replace any classes.
+     -->
+    <PackageReference Include="Fody" Version="6.9.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Virtuosity.Fody" Version="3.1.2" >
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
