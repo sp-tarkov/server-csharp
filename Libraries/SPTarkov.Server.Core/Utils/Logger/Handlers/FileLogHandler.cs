@@ -13,17 +13,17 @@ public class FileLogHandler(IEnumerable<IFilePatternReplacer> replacers) : BaseL
     // To be more efficient and avoid creating extra strings we will cache file patterns to the current processed pattern
     // That way we dont need to process them twice and generate extra garbage
     // _cacheFileNames[config.FilePath][config.FilePattern] will give you the current file pattern
-    private Dictionary<string, Dictionary<string, string>> _cachedFileNames = new();
+    private readonly Dictionary<string, Dictionary<string, string>> _cachedFileNames = new();
     // This section needs to be fully locked as it is a double dictionary lookup
-    private Lock _cachedFileNamesLocks = new();
+    private readonly Lock _cachedFileNamesLocks = new();
 
-    private Dictionary<string, Dictionary<string, string>> _cachedWipedPatterns = new();
+    private readonly Dictionary<string, Dictionary<string, string>> _cachedWipedPatterns = new();
 
-    private Dictionary<string, IFilePatternReplacer> _replacers = replacers.ToDictionary(kv => kv.Pattern, kv => kv);
+    private readonly Dictionary<string, IFilePatternReplacer> _replacers = replacers.ToDictionary(kv => kv.Pattern, kv => kv);
 
-    private ConcurrentDictionary<string, Lock> _fileLocks = new();
-    private ConcurrentDictionary<string, FileInfo> _fileInfos = new();
-    private ConcurrentDictionary<string, FileSptLoggerReference> _fileConfigs = new();
+    private readonly ConcurrentDictionary<string, Lock> _fileLocks = new();
+    private readonly ConcurrentDictionary<string, FileInfo> _fileInfos = new();
+    private readonly ConcurrentDictionary<string, FileSptLoggerReference> _fileConfigs = new();
     public override LoggerType LoggerType => LoggerType.File;
 
     public override void Log(SptLogMessage message, BaseSptLoggerReference reference)
@@ -109,7 +109,7 @@ public class FileLogHandler(IEnumerable<IFilePatternReplacer> replacers) : BaseL
     {
         while (true)
         {
-            if (_fileInfos.Any())
+            if (!_fileInfos.IsEmpty)
             {
                 foreach (var fileInfosKvp in _fileInfos)
                 {
