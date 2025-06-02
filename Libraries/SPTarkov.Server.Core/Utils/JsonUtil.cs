@@ -155,6 +155,16 @@ public class JsonUtil
     }
 
     /// <summary>
+    ///     Convert JSON into an object from a MemoryStream asynchronously
+    /// </summary>
+    /// <param name="fs">The memory stream to deserialize</param>
+    /// <returns>T</returns>
+    public async Task<T?> DeserializeFromMemoryStreamAsync<T>(MemoryStream ms)
+    {
+        return await JsonSerializer.DeserializeAsync<T>(ms, jsonSerializerOptionsNoIndent);
+    }
+
+    /// <summary>
     ///     Convert an object into JSON
     /// </summary>
     /// <typeparam name="T">Type of the object being serialised</typeparam>

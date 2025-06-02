@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\..\Build.props"/>
 
@@ -24,6 +24,10 @@
       <ExcludeFromSingleFile>True</ExcludeFromSingleFile>
     </Content>
   </ItemGroup>
+
+  <Target Name="PostBuildHashFile" AfterTargets="Build">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)PostBuild.ps1&quot;" />
+  </Target>
 
   <ItemGroup>
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath=""/>

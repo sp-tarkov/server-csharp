@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -17,14 +18,17 @@ public class DatabaseImporter(
     LocalisationService _localisationService,
     DatabaseServer _databaseServer,
     ImageRouter _imageRouter,
-    ImporterUtil _importerUtil
+    ImporterUtil _importerUtil,
+    JsonUtil _jsonUtil
     ) : IOnLoad
 {
     private const string _sptDataPath = "./Assets/";
     protected ISptLogger<DatabaseImporter> _logger = logger;
+    protected Dictionary<string, string> databaseHashes = [];
 
     public async Task OnLoad()
     {
+        await LoadHashes();
         await HydrateDatabase(_sptDataPath);
 
         var imageFilePath = $"{_sptDataPath}images/";
@@ -62,6 +66,41 @@ public class DatabaseImporter(
         return result;
     }
 
+    protected async Task LoadHashes()
+    {
+        var checksFilePath = System.IO.Path.Combine(_sptDataPath, "checks.dat");
+
+        try
+        {
+            if (File.Exists(checksFilePath))
+            {
+                await using FileStream fs = File.OpenRead(checksFilePath);
+
+                using var reader = new StreamReader(fs, Encoding.ASCII);
+                string base64Content = await reader.ReadToEndAsync();
+
+                byte[] jsonBytes = Convert.FromBase64String(base64Content);
+
+                await using var ms = new MemoryStream(jsonBytes);
+
+                var FileHashes = await _jsonUtil.DeserializeFromMemoryStreamAsync<List<FileHash>>(ms) ?? [];
+
+                foreach(var hash in FileHashes)
+                {
+                    databaseHashes.Add(hash.Path, hash.Hash);
+                }
+            }
+            else
+            {
+                _logger.Error(_localisationService.GetText("validation_error_exception", checksFilePath));
+            }
+        }
+        catch (Exception)
+        {
+            _logger.Error(_localisationService.GetText("validation_error_exception", checksFilePath));
+        }
+    }
+
     /**
      * Read all json files in database folder and map into a json object
      * @param filepath path to database folder
@@ -73,7 +112,8 @@ public class DatabaseImporter(
         timer.Start();
 
         var dataToImport = await _importerUtil.LoadRecursiveAsync<DatabaseTables>(
-            $"{filePath}database/"
+            $"{filePath}database/",
+            VerifyDatabase
         );
 
         // TODO: Fix loading of traders, so their full path is not included as the key
@@ -92,8 +132,43 @@ public class DatabaseImporter(
 
         dataToImport.Traders = tempTraders;
 
-        _logger.Info( _localisationService.GetText("importing_database_finish"));
+        _logger.Info(_localisationService.GetText("importing_database_finish"));
         _logger.Debug($"Database import took {timer.ElapsedMilliseconds}ms");
         _databaseServer.SetTables(dataToImport);
     }
+
+    protected async Task VerifyDatabase(string fileName)
+    {
+        var relativePath = fileName.StartsWith(_sptDataPath, StringComparison.OrdinalIgnoreCase)
+            ? fileName.Substring(_sptDataPath.Length)
+            : fileName;
+
+        using (var md5 = System.Security.Cryptography.MD5.Create())
+        await using (var stream = File.OpenRead(fileName))
+        {
+            var hashBytes = await md5.ComputeHashAsync(stream);
+            var hashString = Convert.ToHexString(hashBytes);
+
+            bool hashKeyExists = databaseHashes.ContainsKey(relativePath);
+
+            if (hashKeyExists)
+            {
+                if (databaseHashes[relativePath] != hashString)
+                {
+                    _logger.Warning(_localisationService.GetText("validation_error_file", fileName));
+                }
+            }
+            else
+            {
+                _logger.Warning(_localisationService.GetText("validation_error_file", fileName));
+            }
+        }
+    }
 }
+
+public class FileHash
+{
+    public string Path { get; set; } = string.Empty;
+    public string Hash { get; set; } = string.Empty;
+}
+
