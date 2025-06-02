@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -7,12 +8,21 @@ namespace JsonExtensionData.Fody;
 
 public partial class ModuleWeaver
 {
-    private TypeReference? _dictionaryStringObjectReference;
+    private TypeReference? _dictionaryObjectReference;
+    private GenericInstanceType? _dictionaryGenericNullableReference;
+    private TypeReference? _nullableTypeReference;
     private MethodReference? _jsonExtensionDataAttributeReference;
     private MethodReference? _jsonIgnoreAttributeReference;
     public void ProcessType(TypeDefinition typeDefinition)
     {
-        _dictionaryStringObjectReference ??= ModuleDefinition.ImportReference(typeof(Dictionary<string, object>));
+        _nullableTypeReference ??= ModuleDefinition.ImportReference(typeof(Nullable<>));
+
+        if (_dictionaryGenericNullableReference == null)
+        {
+            _dictionaryObjectReference ??= ModuleDefinition.ImportReference(typeof(Dictionary<string, object>));
+            _dictionaryGenericNullableReference = new GenericInstanceType(_nullableTypeReference);
+            _dictionaryGenericNullableReference.GenericArguments.Add(_dictionaryObjectReference);
+        }
         if (_jsonExtensionDataAttributeReference is null)
         {
             var jsonConstructorReference = ModuleDefinition.AssemblyResolver
@@ -29,20 +39,20 @@ public partial class ModuleWeaver
                 .First(m => m.IsConstructor && !m.HasParameters);
             _jsonIgnoreAttributeReference = ModuleDefinition.ImportReference(jsonIgnoreConstructorReference);
         }
-        var propertyDefinition = new PropertyDefinition("ExtensionData", PropertyAttributes.None, _dictionaryStringObjectReference);
+        var propertyDefinition = new PropertyDefinition("ExtensionData", PropertyAttributes.None, _dictionaryGenericNullableReference);
         propertyDefinition.CustomAttributes.Add(new CustomAttribute(_jsonExtensionDataAttributeReference));
 
         // Add backing field
         var field = new FieldDefinition("_extensionData",
             FieldAttributes.Private,
-            _dictionaryStringObjectReference);
+            _dictionaryGenericNullableReference);
         field.CustomAttributes.Add(new CustomAttribute(_jsonIgnoreAttributeReference));
         typeDefinition.Fields.Add(field);
 
         // Add getter
         var get = new MethodDefinition("get_ExtensionData",
             MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig,
-            _dictionaryStringObjectReference);
+            _dictionaryGenericNullableReference);
         get.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
         get.Body.Instructions.Add(Instruction.Create(OpCodes.Ldfld, field));
         get.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
@@ -53,7 +63,7 @@ public partial class ModuleWeaver
         var set = new MethodDefinition("set_ExtensionData",
             MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig,
             ModuleDefinition.TypeSystem.Void);
-        set.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, _dictionaryStringObjectReference));
+        set.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, _dictionaryGenericNullableReference));
 
         set.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
         set.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_1));
