@@ -33,7 +33,7 @@
     <PackageReference Include="Virtuosity.Fody" Version="3.1.2">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <WeaverFiles Include="$(SolutionDir)Libraries\FodyWeavers\JsonExtensionData.Fody\bin\$(Configuration)\$(TargetFramework)\JsonExtensionData.Fody.dll"/>
+    <WeaverFiles Include="$(SolutionDir)Libraries\FodyWeavers\JsonExtensionData.Fody\bin\$(Configuration)\netstandard2.0\JsonExtensionData.Fody.dll"/>
   </ItemGroup>
 
   <ItemGroup>

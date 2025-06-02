@@ -2,7 +2,12 @@
   <Import Project="..\..\..\Build.props"/>
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <!--
+     DO NOT change the target framework for this project
+     This is a Fody plugin that runs over the MSBuild runtime, changing this target framework will make this plugin
+     crash under certain MSBuild runtimes, like the one VS uses
+     -->
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FodyHelpers" Version="6.8.0"/>
