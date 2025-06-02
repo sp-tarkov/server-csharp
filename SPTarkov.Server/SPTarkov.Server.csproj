@@ -41,10 +41,15 @@
     <None Update="sptLogger.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Remove="postBuildScript.ps1" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
+
+  <Target Name="PostBuildScript" AfterTargets="AfterRebuild" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="powershell -ExecutionPolicy Bypass -File $(ProjectDir)\postBuildScript.ps1 $(OutDir)Assets $(OutDir)Assets/checks.dat"/>
+  </Target>
 
 </Project>
