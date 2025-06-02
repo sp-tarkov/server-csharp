@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <Target Name="PostBuildHashFile" AfterTargets="Build">
-    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)PostBuild.ps1&quot;" />
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)PostBuild.ps1&quot;" />
   </Target>
 
   <ItemGroup>
