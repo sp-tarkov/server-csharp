@@ -48,12 +48,12 @@ public class LauncherV2Controller(
         var result = new Dictionary<string, string>();
         var dbProfiles = _databaseService.GetProfiles();
 
-        foreach (var templatesProperty in typeof(ProfileTemplates).GetProperties().Where(p => p.CanWrite))
+        foreach (var templatesProperty in typeof(ProfileTemplates).GetProperties().Where(p => p.CanWrite && p.Name != "ExtensionData"))
         {
             var propertyValue = templatesProperty.GetValue(dbProfiles);
             if (propertyValue == null)
             {
-                _logger.Warning(_localisationService.GetText("launcher-missing_property", templatesProperty));
+                _logger.Warning(_localisationService.GetText("launcher-missing_property", templatesProperty.Name));
                 continue;
             }
 
