@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Security.Cryptography;
 using System.Text;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
@@ -143,24 +144,26 @@ public class DatabaseImporter(
             ? fileName.Substring(_sptDataPath.Length)
             : fileName;
 
-        using (var md5 = System.Security.Cryptography.MD5.Create())
-        await using (var stream = File.OpenRead(fileName))
+        using (var md5 = MD5.Create())
         {
-            var hashBytes = await md5.ComputeHashAsync(stream);
-            var hashString = Convert.ToHexString(hashBytes);
-
-            bool hashKeyExists = databaseHashes.ContainsKey(relativePath);
-
-            if (hashKeyExists)
+            await using (var stream = File.OpenRead(fileName))
             {
-                if (databaseHashes[relativePath] != hashString)
+                var hashBytes = await md5.ComputeHashAsync(stream);
+                var hashString = Convert.ToHexString(hashBytes);
+
+                bool hashKeyExists = databaseHashes.ContainsKey(relativePath);
+
+                if (hashKeyExists)
+                {
+                    if (databaseHashes[relativePath] != hashString)
+                    {
+                        _logger.Warning(_localisationService.GetText("validation_error_file", fileName));
+                    }
+                }
+                else
                 {
                     _logger.Warning(_localisationService.GetText("validation_error_file", fileName));
                 }
-            }
-            else
-            {
-                _logger.Warning(_localisationService.GetText("validation_error_file", fileName));
             }
         }
     }
