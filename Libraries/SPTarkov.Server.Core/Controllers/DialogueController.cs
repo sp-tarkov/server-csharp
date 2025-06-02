@@ -125,7 +125,14 @@ public class DialogueController(
         var data = new List<DialogueInfo>();
         foreach (var dialogueId in _dialogueHelper.GetDialogsForProfile(sessionId))
         {
-            data.Add(GetDialogueInfo(dialogueId.Key, sessionId));
+            var dialogueInfo = GetDialogueInfo(dialogueId.Key, sessionId);
+
+            if (dialogueInfo is null)
+            {
+                continue;
+            }
+
+            data.Add(dialogueInfo);
         }
 
         return data;
@@ -137,12 +144,17 @@ public class DialogueController(
     /// <param name="dialogueId">Dialog id</param>
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
-    public virtual DialogueInfo GetDialogueInfo(
+    public virtual DialogueInfo? GetDialogueInfo(
         string? dialogueId,
         string sessionId)
     {
         var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
         var dialogue = dialogs!.GetValueOrDefault(dialogueId);
+
+        if (!dialogue.Messages.Any())
+        {
+            return null;
+        }
 
         var result = new DialogueInfo
         {
@@ -213,6 +225,16 @@ public class DialogueController(
         var dialogueId = request.DialogId;
         var fullProfile = _saveServer.GetProfile(sessionId);
         var dialogue = GetDialogByIdFromProfile(fullProfile, request);
+
+        if (!dialogue.Messages.Any())
+        {
+            return new GetMailDialogViewResponseData
+            {
+                Messages = [],
+                Profiles = [],
+                HasMessagesWithRewards = false
+            };
+        }
 
         // Dialog was opened, remove the little [1] on screen
         dialogue.New = 0;

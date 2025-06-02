@@ -683,7 +683,7 @@ public class ProfileHelper(
 
         if (fullProfile?.CustomisationUnlocks?.Any(u => u.Id == reward.Target) ?? false)
         {
-            _logger.Warning($"Profile: {fullProfile.ProfileInfo.ProfileId} already has hideout customisaiton reward: {reward.Target}, skipping");
+            _logger.Warning($"Profile: {fullProfile.ProfileInfo.ProfileId} already has hideout customisation reward: {reward.Target}, skipping");
             return;
         }
 
@@ -721,6 +721,9 @@ public class ProfileHelper(
                     break;
                 case CustomisationTypeId.ENVIRONMENT_UI:
                     rewardToStore.Type = CustomisationType.ENVIRONMENT;
+                    break;
+                case CustomisationTypeId.SHOOTING_RANGE_MARK:
+                    rewardToStore.Type = CustomisationType.SHOOTING_RANGE_MARK;
                     break;
                 default:
                     _logger.Error($"Unhandled customisation unlock type: {matchingCustomisation.Parent} not added to profile");

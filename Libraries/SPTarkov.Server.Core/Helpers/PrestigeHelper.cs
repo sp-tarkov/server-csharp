@@ -137,7 +137,7 @@ public class PrestigeHelper
                         _profileHelper.AddSkillPointsToPlayer(
                             newProfile.CharacterData.PmcData,
                             result,
-                            ((JsonElement) reward.Value).ToObject<double>()
+                            reward.Value
                         );
                     }
                     else

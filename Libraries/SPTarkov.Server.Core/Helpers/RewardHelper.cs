@@ -73,7 +73,7 @@ public class RewardHelper(
                     _profileHelper.AddSkillPointsToPlayer(
                         profileData,
                         Enum.Parse<SkillTypes>(reward.Target),
-                        reward.Value as double?
+                        reward.Value
                     );
                     break;
                 case RewardType.Experience:
@@ -88,7 +88,7 @@ public class RewardHelper(
                     _traderHelper.AddStandingToTrader(
                         sessionId,
                         reward.Target,
-                        double.Parse(reward.Value.ToString(), CultureInfo.InvariantCulture)
+                        reward.Value.Value
                     );
                     break;
                 case RewardType.TraderUnlock:
@@ -121,11 +121,15 @@ public class RewardHelper(
                 case RewardType.CustomizationDirect:
                     _profileHelper.AddHideoutCustomisationUnlock(fullProfile, reward, source);
                     break;
+                case RewardType.NotificationPopup:
+                    // TODO: Wire up to notification system
+                    _logger.Error("Unhandled: RewardType.NotificationPopup");
+                    break;
                 default:
                     _logger.Error(
                         _localisationService.GetText(
                             "reward-type_not_handled",
-                            new { rewardType = reward.Type, rewardSourceId }
+                            new { rewardType = reward.Type, questId = rewardSourceId }
                         )
                     );
                     break;

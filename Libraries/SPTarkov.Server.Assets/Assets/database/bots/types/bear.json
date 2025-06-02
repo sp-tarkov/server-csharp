@@ -965,8 +965,8 @@
         "MAX_DISTANCE_VISIBILITY_CHANGE_SPEED_K": 0.3,
         "MAX_VISION_GRASS_METERS": 0.8,
         "MAX_VISION_GRASS_METERS_FLARE": 8,
-        "MAX_VISION_GRASS_METERS_OPT": 0.9090909,
         "MAX_VISION_GRASS_METERS_FLARE_OPT": 0.125,
+        "MAX_VISION_GRASS_METERS_OPT": 0.9090909,
         "MIDDLE_DIST": 90,
         "MIDDLE_DIST_CAN_SHOOT_HEAD": false,
         "MIN_LOOK_AROUD_TIME": 20,
@@ -13288,10 +13288,6 @@
           "5e01f31d86f77465cf261343",
           "66b5f69ea7f72d197e70bcdb",
           "66b5f6a28ca68c6461709ed8"
-        ],
-        "mod_equipment_001": [
-          "5e00cdd986f7747473332240",
-          "5e01f37686f774773c6f6c15"
         ],
         "mod_nvg": [
           "5c0558060db834001b735271",

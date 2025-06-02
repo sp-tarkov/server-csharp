@@ -9,15 +9,14 @@ namespace SPTarkov.Server.Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class JsonUtil
 {
-    private static JsonSerializerOptions? jsonSerializerOptionsNoIndent;
     private static JsonSerializerOptions? jsonSerializerOptionsIndented;
-    private static readonly Lock _lock = new();
+    private static JsonSerializerOptions jsonSerializerOptionsNoIndent;
 
     public JsonUtil(
         IEnumerable<IJsonConverterRegistrator> registrators
         )
     {
-        jsonSerializerOptionsNoIndent = new JsonSerializerOptions
+        jsonSerializerOptionsNoIndent = new JsonSerializerOptions()
         {
             WriteIndented = false,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -29,20 +28,14 @@ public class JsonUtil
         {
             foreach (var converter in registrator.GetJsonConverters())
             {
-                lock (_lock)
-                {
-                    jsonSerializerOptionsNoIndent.Converters.Add(converter);
-                }
+                jsonSerializerOptionsNoIndent.Converters.Add(converter);
             }
         }
 
-        lock (_lock)
+        jsonSerializerOptionsIndented = new JsonSerializerOptions(jsonSerializerOptionsNoIndent)
         {
-            jsonSerializerOptionsIndented = new JsonSerializerOptions(jsonSerializerOptionsNoIndent)
-            {
-                WriteIndented = true
-            };
-        }
+            WriteIndented = true
+        };
     }
 
     /// <summary>

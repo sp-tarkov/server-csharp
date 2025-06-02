@@ -22,6 +22,12 @@ public class BotLootCacheService(
 )
 {
     protected ConcurrentDictionary<string, BotLootCache> _lootCache = new();
+    private readonly Lock _drugLock = new();
+    private readonly Lock _foodLock = new();
+    private readonly Lock _drinkLock = new();
+    private readonly Lock _currencyLock = new();
+    private readonly Lock _stimLock = new();
+    private readonly Lock _grenadeLock = new();
 
     /// <summary>
     ///     Remove cached bot loot data
@@ -182,51 +188,48 @@ public class BotLootCacheService(
             };
 
 
-        foreach (var kvp in poolsToProcess)
+        foreach (var (containerType, itemPool) in poolsToProcess)
         {
             // No items to add, skip
-            if (kvp.Value.Count == 0)
+            if (itemPool.Count == 0)
             {
                 continue;
             }
 
             // Sort loot pool into separate buckets
-            switch (kvp.Key)
+            switch (containerType)
             {
                 case "SpecialLoot":
-                    AddItemsToPool(specialLootPool, kvp.Value);
+                    AddItemsToPool(specialLootPool, itemPool);
                     break;
                 case "Pockets":
-                    AddItemsToPool(pocketLootPool, kvp.Value);
+                    AddItemsToPool(pocketLootPool, itemPool);
                     break;
                 case "TacticalVest":
-                    AddItemsToPool(vestLootPool, kvp.Value);
+                    AddItemsToPool(vestLootPool, itemPool);
                     break;
                 case "SecuredContainer":
-                    AddItemsToPool(secureLootPool, kvp.Value);
+                    AddItemsToPool(secureLootPool, itemPool);
                     break;
                 case "Backpack":
-                    AddItemsToPool(backpackLootPool, kvp.Value);
+                    AddItemsToPool(backpackLootPool, itemPool);
                     break;
                 default:
-                    _logger.Warning($"How did you get here {kvp.Key}");
+                    _logger.Warning($"How did you get here {containerType}");
                     break;
             }
 
             // Add all items (if any) to combined pool (excluding secure)
-            if (kvp.Value.Count > 0 && kvp.Key.ToLower() != "securedcontainer")
+            if (itemPool.Count > 0 && containerType.Equals("securedcontainer", StringComparison.OrdinalIgnoreCase))
             {
-                AddItemsToPool(combinedLootPool, kvp.Value);
+                AddItemsToPool(combinedLootPool, itemPool);
             }
         }
 
         // Assign whitelisted special items to bot if any exist
-        var specialLootItems =
-            botJsonTemplate.BotGeneration?.Items?.SpecialItems?.Whitelist?.Count > 0
-                ? botJsonTemplate.BotGeneration?.Items?.SpecialItems?.Whitelist
-                : new Dictionary<string, double>();
+        var specialLootItems = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.SpecialItems?.Whitelist);
 
-        // no whitelist, find and assign from combined item pool
+        // No whitelist, find and assign from combined item pool
         if (!specialLootItems.Any())
             // key = tpl, value = weight
         {
@@ -235,16 +238,13 @@ public class BotLootCacheService(
                 var itemTemplate = _itemHelper.GetItem(itemKvP.Key).Value;
                 if (!(IsBulletOrGrenade(itemTemplate.Properties) || IsMagazine(itemTemplate.Properties)))
                 {
-                    specialLootItems[itemKvP.Key] = itemKvP.Value;
+                    specialLootItems.TryAdd(itemKvP.Key, itemKvP.Value);
                 }
             }
         }
 
         // Assign whitelisted healing items to bot if any exist
-        var healingItems =
-            botJsonTemplate.BotGeneration?.Items?.Healing?.Whitelist?.Count > 0
-                ? botJsonTemplate.BotGeneration?.Items?.Healing?.Whitelist
-                : new Dictionary<string, double>();
+        var healingItems = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.Healing?.Whitelist);
 
         // No whitelist, find and assign from combined item pool
         if (!healingItems.Any())
@@ -259,97 +259,133 @@ public class BotLootCacheService(
                     itemTemplate.Parent != BaseClasses.DRUGS
                 )
                 {
-                    healingItems[itemKvP.Key] = itemKvP.Value;
+                    healingItems.TryAdd(itemKvP.Key, itemKvP.Value);
                 }
             }
         }
 
         // Assign whitelisted drugs to bot if any exist
-        var drugItems = botJsonTemplate.BotGeneration?.Items?.Drugs?.Whitelist ?? new Dictionary<string, double>();
+        var drugItems = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.Drugs?.Whitelist);
+
         // no drugs whitelist, find and assign from combined item pool
         if (!drugItems.Any())
         {
             foreach (var itemKvP in combinedLootPool)
             {
                 var itemTemplate = _itemHelper.GetItem(itemKvP.Key).Value;
-                if (IsMedicalItem(itemTemplate.Properties) && itemTemplate.Parent == BaseClasses.DRUGS)
+                if (!IsMedicalItem(itemTemplate.Properties) || itemTemplate.Parent != BaseClasses.DRUGS)
                 {
-                    drugItems[itemKvP.Key] = itemKvP.Value;
+                    // Not a drug/medical item, skip
+                    continue;
+                }
+
+                lock (_drugLock)
+                {
+                    drugItems.TryAdd(itemKvP.Key, itemKvP.Value);
                 }
             }
         }
 
         // Assign whitelisted food to bot if any exist
-        var foodItems = botJsonTemplate.BotGeneration?.Items?.Food?.Whitelist ?? new Dictionary<string, double>();
+        var foodItems = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.Food?.Whitelist);
         // No food whitelist, find and assign from combined item pool
         if (!foodItems.Any())
         {
             foreach (var itemKvP in combinedLootPool)
             {
                 var itemTemplate = _itemHelper.GetItem(itemKvP.Key).Value;
-                if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.FOOD))
+                if (!_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.FOOD))
                 {
-                    foodItems[itemKvP.Key] = itemKvP.Value;
+                    // Not food, skip
+                    continue;
+                }
+
+                lock (_foodLock)
+                {
+                    foodItems.TryAdd(itemKvP.Key, itemKvP.Value);
                 }
             }
         }
 
         // Assign whitelisted drink to bot if any exist
-        var drinkItems = botJsonTemplate.BotGeneration?.Items?.Food?.Whitelist ?? new Dictionary<string, double>();
+        var drinkItems = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.Food?.Whitelist);
+
         // No drink whitelist, find and assign from combined item pool
         if (!drinkItems.Any())
         {
             foreach (var itemKvP in combinedLootPool)
             {
                 var itemTemplate = _itemHelper.GetItem(itemKvP.Key).Value;
-                if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.DRINK))
+                if (!_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.DRINK))
                 {
-                    drinkItems[itemKvP.Key] = itemKvP.Value;
+                    // Not a drink, skip
+                    continue;
+                }
+
+                lock (_drinkLock)
+                {
+                    drinkItems.TryAdd(itemKvP.Key, itemKvP.Value);
                 }
             }
         }
 
         // Assign whitelisted currency to bot if any exist
-        var currencyItems = botJsonTemplate.BotGeneration?.Items?.Currency?.Whitelist ?? new Dictionary<string, double>();
+        var currencyItems = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.Currency?.Whitelist);
+
         // No currency whitelist, find and assign from combined item pool
         if (!currencyItems.Any())
         {
             foreach (var itemKvP in combinedLootPool)
             {
                 var itemTemplate = _itemHelper.GetItem(itemKvP.Key).Value;
-                if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.MONEY))
+                if (!_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.MONEY))
                 {
-                    currencyItems[itemKvP.Key] = itemKvP.Value;
+                    continue;
+                }
+
+                lock (_currencyLock)
+                {
+                    currencyItems.TryAdd(itemKvP.Key, itemKvP.Value);
                 }
             }
         }
 
         // Assign whitelisted stims to bot if any exist
-        var stimItems = botJsonTemplate.BotGeneration?.Items?.Stims?.Whitelist ?? new Dictionary<string, double>();
+        var stimItems = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.Stims?.Whitelist);
         // No whitelist, find and assign from combined item pool
         if (!stimItems.Any())
         {
             foreach (var itemKvP in combinedLootPool)
             {
                 var itemTemplate = _itemHelper.GetItem(itemKvP.Key).Value;
-                if (IsMedicalItem(itemTemplate.Properties) && itemTemplate.Parent == BaseClasses.STIMULATOR)
+                if (!IsMedicalItem(itemTemplate.Properties) || itemTemplate.Parent != BaseClasses.STIMULATOR)
                 {
-                    stimItems[itemKvP.Key] = itemKvP.Value;
+                    continue;
+                }
+
+                lock (_stimLock)
+                {
+                    stimItems.TryAdd(itemKvP.Key, itemKvP.Value);
                 }
             }
         }
 
         // Assign whitelisted grenades to bot if any exist
-        var grenadeItems = botJsonTemplate.BotGeneration?.Items?.Grenades?.Whitelist ?? new Dictionary<string, double>();
+        var grenadeItems = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.Grenades?.Whitelist);
         // no whitelist, find and assign from combined item pool
         if (!grenadeItems.Any())
         {
             foreach (var itemKvP in combinedLootPool)
             {
                 var itemTemplate = _itemHelper.GetItem(itemKvP.Key).Value;
-                if (IsGrenade(itemTemplate.Properties))
+                if (!IsGrenade(itemTemplate.Properties))
                 {
-                    grenadeItems[itemKvP.Key] = itemKvP.Value;
+                    continue;
+                }
+
+                lock (_grenadeLock)
+                {
+                    grenadeItems.TryAdd(itemKvP.Key, itemKvP.Value);
                 }
             }
         }
@@ -379,7 +415,7 @@ public class BotLootCacheService(
                 continue;
             }
 
-            filteredBackpackItems[itemKvP.Key] = itemKvP.Value;
+            filteredBackpackItems.TryAdd(itemKvP.Key, itemKvP.Value);
         }
 
         // Get pocket loot (excluding magazines, bullets, grenades, drink, food medical and healing/stim items)
@@ -408,7 +444,7 @@ public class BotLootCacheService(
                 continue;
             }
 
-            filteredPocketItems[itemKvP.Key] = itemKvP.Value;
+            filteredPocketItems.TryAdd(itemKvP.Key, itemKvP.Value);
         }
 
         // Get vest loot (excluding magazines, bullets, grenades, medical and healing/stim items)
@@ -435,7 +471,7 @@ public class BotLootCacheService(
                 continue;
             }
 
-            filteredVestItems[itemKvP.Key] = itemKvP.Value;
+            filteredVestItems.TryAdd(itemKvP.Key, itemKvP.Value);
         }
 
         // Get secure loot (excluding magazines, bullets)
@@ -454,7 +490,7 @@ public class BotLootCacheService(
                 continue;
             }
 
-            filteredSecureLoot[itemKvP.Key] = itemKvP.Value;
+            filteredSecureLoot.TryAdd(itemKvP.Key, itemKvP.Value);
         }
 
         var cacheForRole = _lootCache[botRole];
@@ -472,6 +508,16 @@ public class BotLootCacheService(
         cacheForRole.SecureLoot = filteredSecureLoot;
     }
 
+    /// <summary>
+    /// Return provided weights or an empty dictionary
+    /// </summary>
+    /// <param name="weights">Weights to return</param>
+    /// <returns>Dictionary</returns>
+    protected static Dictionary<string, double> GetGenerationWeights(Dictionary<string, double>? weights)
+    {
+        return weights ?? [];
+    }
+
     protected void AddItemsToPool(Dictionary<string, double> poolToAddTo, Dictionary<string, double> poolOfItemsToAdd)
     {
         foreach (var tpl in poolOfItemsToAdd)
@@ -482,7 +528,7 @@ public class BotLootCacheService(
                 continue;
             }
 
-            poolToAddTo[tpl.Key] = poolOfItemsToAdd[tpl.Key];
+            poolToAddTo.TryAdd(tpl.Key, poolOfItemsToAdd[tpl.Key]);
         }
     }
 
@@ -588,7 +634,7 @@ public class BotLootCacheService(
     }
 
     /// <summary>
-    ///     Compares two item prices by their flea (or handbook if that doesnt exist) price
+    ///     Compares two item prices by their flea (or handbook if that doesn't exist) price
     /// </summary>
     /// <param name="itemAPrice"></param>
     /// <param name="itemBPrice"></param>

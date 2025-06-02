@@ -1,16 +1,18 @@
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Utils.Json.Converters;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Reward
 {
     [JsonPropertyName("value")]
-    public object? Value
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
+    public double? Value
     {
         get;
         set;
-    } // TODO: Can be either string or number
+    }
 
     [JsonPropertyName("id")]
     public string? Id
