@@ -5,21 +5,21 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record PmcChatResponse : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
     } = "spt-pmcchatresponse";
 
     [JsonPropertyName("victim")]
-    public ResponseSettings Victim
+    public required ResponseSettings Victim
     {
         get;
         set;
     }
 
     [JsonPropertyName("killer")]
-    public ResponseSettings Killer
+    public required ResponseSettings Killer
     {
         get;
         set;
@@ -36,7 +36,7 @@ public record ResponseSettings
     }
 
     [JsonPropertyName("responseTypeWeights")]
-    public Dictionary<string, double> ResponseTypeWeights
+    public required Dictionary<string, double> ResponseTypeWeights
     {
         get;
         set;

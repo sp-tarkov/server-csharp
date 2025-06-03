@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record LostOnDeathConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -15,7 +15,7 @@ public record LostOnDeathConfig : BaseConfig
     ///     What equipment in each slot should be lost on death
     /// </summary>
     [JsonPropertyName("equipment")]
-    public LostEquipment Equipment
+    public required LostEquipment Equipment
     {
         get;
         set;

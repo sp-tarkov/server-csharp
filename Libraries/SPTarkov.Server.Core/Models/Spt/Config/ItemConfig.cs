@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record ItemConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -16,7 +16,7 @@ public record ItemConfig : BaseConfig
     ///     Items that should be globally blacklisted
     /// </summary>
     [JsonPropertyName("blacklist")]
-    public HashSet<string> Blacklist
+    public required HashSet<string> Blacklist
     {
         get;
         set;
@@ -26,7 +26,7 @@ public record ItemConfig : BaseConfig
     ///     Items that should not be lootable from any location
     /// </summary>
     [JsonPropertyName("lootableItemBlacklist")]
-    public HashSet<string> LootableItemBlacklist
+    public required HashSet<string> LootableItemBlacklist
     {
         get;
         set;
@@ -36,7 +36,7 @@ public record ItemConfig : BaseConfig
     ///     items that should not be given as rewards
     /// </summary>
     [JsonPropertyName("rewardItemBlacklist")]
-    public HashSet<string> RewardItemBlacklist
+    public required HashSet<string> RewardItemBlacklist
     {
         get;
         set;
@@ -46,7 +46,7 @@ public record ItemConfig : BaseConfig
     ///     Item base types that should not be given as rewards
     /// </summary>
     [JsonPropertyName("rewardItemTypeBlacklist")]
-    public HashSet<string> RewardItemTypeBlacklist
+    public required HashSet<string> RewardItemTypeBlacklist
     {
         get;
         set;
@@ -56,14 +56,14 @@ public record ItemConfig : BaseConfig
     ///     Items that can only be found on bosses
     /// </summary>
     [JsonPropertyName("bossItems")]
-    public HashSet<string> BossItems
+    public required HashSet<string> BossItems
     {
         get;
         set;
     }
 
     [JsonPropertyName("handbookPriceOverride")]
-    public Dictionary<string, HandbookPriceOverride> HandbookPriceOverride
+    public required Dictionary<string, HandbookPriceOverride> HandbookPriceOverride
     {
         get;
         set;
@@ -73,7 +73,7 @@ public record ItemConfig : BaseConfig
     ///     Presets to add to the globals.json `ItemPresets` dictionary on server start
     /// </summary>
     [JsonPropertyName("customItemGlobalPresets")]
-    public List<Preset> CustomItemGlobalPresets
+    public required List<Preset> CustomItemGlobalPresets
     {
         get;
         set;
@@ -100,5 +100,5 @@ public record HandbookPriceOverride
     {
         get;
         set;
-    }
+    } = string.Empty;
 }

@@ -8,7 +8,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record WeatherConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string? Kind
+    public override string Kind
     {
         get;
         set;

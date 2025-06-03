@@ -1877,7 +1877,7 @@ public class ItemHelper(
     public List<Item> AddChildSlotItems(
         List<Item> itemToAdd,
         TemplateItem itemToAddTemplate,
-        Dictionary<string, double?>? modSpawnChanceDict = null,
+        Dictionary<string, double>? modSpawnChanceDict = null,
         bool requiredOnly = false
     )
     {
@@ -1895,10 +1895,9 @@ public class ItemHelper(
             if (modSpawnChanceDict is not null && !(slot.Required ?? false))
             {
                 // only roll chance to not include mod if dict exists and has value for this mod type (e.g. front_plate)
-                var modSpawnChance = modSpawnChanceDict[slot.Name.ToLower()];
-                if (modSpawnChance is not null)
+                if(modSpawnChanceDict.ContainsKey(slot.Name.ToLower()))
                 {
-                    if (!_randomUtil.GetChance100(modSpawnChance ?? 0))
+                    if (!_randomUtil.GetChance100(modSpawnChanceDict[slot.Name.ToLower()]))
                     {
                         continue;
                     }

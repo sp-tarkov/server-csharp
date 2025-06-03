@@ -8,7 +8,7 @@ public record BotDetailsForChatMessages
     {
         get;
         set;
-    }
+    } = string.Empty;
 
     public DogtagSide Side
     {

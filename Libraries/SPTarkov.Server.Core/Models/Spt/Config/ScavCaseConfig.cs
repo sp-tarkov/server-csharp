@@ -6,42 +6,42 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record ScavCaseConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
     } = "spt-scavcase";
 
     [JsonPropertyName("rewardItemValueRangeRub")]
-    public Dictionary<string, MinMax<double>> RewardItemValueRangeRub
+    public required Dictionary<string, MinMax<double>> RewardItemValueRangeRub
     {
         get;
         set;
     }
 
     [JsonPropertyName("moneyRewards")]
-    public MoneyRewards MoneyRewards
+    public required MoneyRewards MoneyRewards
     {
         get;
         set;
     }
 
     [JsonPropertyName("ammoRewards")]
-    public AmmoRewards AmmoRewards
+    public required AmmoRewards AmmoRewards
     {
         get;
         set;
     }
 
     [JsonPropertyName("rewardItemParentBlacklist")]
-    public HashSet<string> RewardItemParentBlacklist
+    public required HashSet<string> RewardItemParentBlacklist
     {
         get;
         set;
     }
 
     [JsonPropertyName("rewardItemBlacklist")]
-    public HashSet<string> RewardItemBlacklist
+    public required HashSet<string> RewardItemBlacklist
     {
         get;
         set;
@@ -79,28 +79,28 @@ public record MoneyRewards
     }
 
     [JsonPropertyName("rubCount")]
-    public MoneyLevels RubCount
+    public required MoneyLevels RubCount
     {
         get;
         set;
     }
 
     [JsonPropertyName("usdCount")]
-    public MoneyLevels UsdCount
+    public required MoneyLevels UsdCount
     {
         get;
         set;
     }
 
     [JsonPropertyName("eurCount")]
-    public MoneyLevels EurCount
+    public required MoneyLevels EurCount
     {
         get;
         set;
     }
 
     [JsonPropertyName("gpCount")]
-    public MoneyLevels GpCount
+    public required MoneyLevels GpCount
     {
         get;
         set;
@@ -110,21 +110,21 @@ public record MoneyRewards
 public record MoneyLevels
 {
     [JsonPropertyName("common")]
-    public MinMax<int> Common
+    public required MinMax<int> Common
     {
         get;
         set;
     }
 
     [JsonPropertyName("rare")]
-    public MinMax<int> Rare
+    public required MinMax<int> Rare
     {
         get;
         set;
     }
 
     [JsonPropertyName("superrare")]
-    public MinMax<int> SuperRare
+    public required MinMax<int> SuperRare
     {
         get;
         set;
@@ -141,14 +141,14 @@ public record AmmoRewards
     }
 
     [JsonPropertyName("ammoRewardBlacklist")]
-    public Dictionary<string, List<string>> AmmoRewardBlacklist
+    public required Dictionary<string, List<string>> AmmoRewardBlacklist
     {
         get;
         set;
     }
 
     [JsonPropertyName("ammoRewardValueRangeRub")]
-    public Dictionary<string, MinMax<double>> AmmoRewardValueRangeRub
+    public required Dictionary<string, MinMax<double>> AmmoRewardValueRangeRub
     {
         get;
         set;

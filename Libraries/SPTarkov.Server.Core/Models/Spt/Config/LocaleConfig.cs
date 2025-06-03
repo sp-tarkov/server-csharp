@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record LocaleConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -15,7 +15,7 @@ public record LocaleConfig : BaseConfig
     ///     e.g. ru/en/cn/fr etc, or 'system', will take computer locale setting
     /// </summary>
     [JsonPropertyName("gameLocale")]
-    public string GameLocale
+    public required string GameLocale
     {
         get;
         set;
@@ -25,7 +25,7 @@ public record LocaleConfig : BaseConfig
     ///     e.g. ru/en/cn/fr etc, or 'system', will take computer locale setting
     /// </summary>
     [JsonPropertyName("serverLocale")]
-    public string ServerLocale
+    public required string ServerLocale
     {
         get;
         set;
@@ -35,14 +35,14 @@ public record LocaleConfig : BaseConfig
     ///     Languages server can be translated into
     /// </summary>
     [JsonPropertyName("serverSupportedLocales")]
-    public List<string> ServerSupportedLocales
+    public required List<string> ServerSupportedLocales
     {
         get;
         set;
     }
 
     [JsonPropertyName("fallbacks")]
-    public Dictionary<string, string> Fallbacks
+    public required Dictionary<string, string> Fallbacks
     {
         get;
         set;

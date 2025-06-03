@@ -9,7 +9,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record QuestConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;

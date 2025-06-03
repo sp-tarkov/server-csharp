@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record InventoryConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -23,14 +23,14 @@ public record InventoryConfig : BaseConfig
     }
 
     [JsonPropertyName("randomLootContainers")]
-    public Dictionary<string, RewardDetails> RandomLootContainers
+    public required Dictionary<string, RewardDetails> RandomLootContainers
     {
         get;
         set;
     }
 
     [JsonPropertyName("sealedAirdropContainer")]
-    public SealedAirdropContainerSettings SealedAirdropContainer
+    public required SealedAirdropContainerSettings SealedAirdropContainer
     {
         get;
         set;
@@ -40,7 +40,7 @@ public record InventoryConfig : BaseConfig
     ///     Contains item tpls that the server should consider money and treat the same as roubles/euros/dollars
     /// </summary>
     [JsonPropertyName("customMoneyTpls")]
-    public List<string> CustomMoneyTpls
+    public required List<string> CustomMoneyTpls
     {
         get;
         set;
@@ -50,7 +50,7 @@ public record InventoryConfig : BaseConfig
     ///     Multipliers for skill gain when inside menus, NOT in-game
     /// </summary>
     [JsonPropertyName("skillGainMultiplers")]
-    public Dictionary<string, double> SkillGainMultipliers
+    public required Dictionary<string, double> SkillGainMultipliers
     {
         get;
         set;
@@ -60,7 +60,7 @@ public record InventoryConfig : BaseConfig
     ///     Container Tpls that should be deprioritised when choosing where to take money from for payments
     /// </summary>
     [JsonPropertyName("deprioritisedMoneyContainers")]
-    public HashSet<string> DeprioritisedMoneyContainers
+    public required HashSet<string> DeprioritisedMoneyContainers
     {
         get;
         set;
@@ -108,7 +108,7 @@ public record RewardDetails
 public record SealedAirdropContainerSettings
 {
     [JsonPropertyName("weaponRewardWeight")]
-    public Dictionary<string, double> WeaponRewardWeight
+    public required Dictionary<string, double> WeaponRewardWeight
     {
         get;
         set;
@@ -132,21 +132,21 @@ public record SealedAirdropContainerSettings
     }
 
     [JsonPropertyName("weaponModRewardLimits")]
-    public Dictionary<string, MinMax<int>> WeaponModRewardLimits
+    public required Dictionary<string, MinMax<int>> WeaponModRewardLimits
     {
         get;
         set;
     }
 
     [JsonPropertyName("rewardTypeLimits")]
-    public Dictionary<string, MinMax<int>> RewardTypeLimits
+    public required Dictionary<string, MinMax<int>> RewardTypeLimits
     {
         get;
         set;
     }
 
     [JsonPropertyName("ammoBoxWhitelist")]
-    public List<string> AmmoBoxWhitelist
+    public required List<string> AmmoBoxWhitelist
     {
         get;
         set;

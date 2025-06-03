@@ -5,14 +5,14 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record BackupConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
     } = "spt-backup";
 
     [JsonPropertyName("enabled")]
-    public bool Enabled
+    public required bool Enabled
     {
         get;
         set;
@@ -30,10 +30,10 @@ public record BackupConfig : BaseConfig
     {
         get;
         set;
-    }
+    } = string.Empty;
 
     [JsonPropertyName("backupInterval")]
-    public BackupConfigInterval BackupInterval
+    public required BackupConfigInterval BackupInterval
     {
         get;
         set;

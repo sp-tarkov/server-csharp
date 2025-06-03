@@ -51,7 +51,7 @@ public record Location
     {
         get;
         set;
-    }
+    } = [];
 
     /// <summary>
     ///     All possible static containers on map + their assign groupings
@@ -71,7 +71,7 @@ public record Location
     {
         get;
         set;
-    }
+    } = [];
 }
 
 public record StaticContainer
@@ -139,14 +139,14 @@ public record StaticLootDetails
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("itemDistribution")]
     public ItemDistribution[] ItemDistribution
     {
         get;
         set;
-    }
+    } = [];
 }
 
 public record ItemCountDistribution
@@ -183,97 +183,6 @@ public record ItemDistribution
     }
 }
 
-public record StaticPropsBase
-{
-    [JsonPropertyName("Id")]
-    public string? Id
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("IsContainer")]
-    public bool? IsContainer
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("useGravity")]
-    public bool? UseGravity
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("randomRotation")]
-    public bool? RandomRotation
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("Position")]
-    public XYZ? Position
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("Rotation")]
-    public XYZ? Rotation
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("IsGroupPosition")]
-    public bool? IsGroupPosition
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("IsAlwaysSpawn")]
-    public bool? IsAlwaysSpawn
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("GroupPositions")]
-    public GroupPosition[] GroupPositions
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("Root")]
-    public string? Root
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("Items")]
-    public Item[] Items
-    {
-        get;
-        set;
-    }
-}
-
-[Obsolete("use SpawnpointTemplate")]
-public record StaticWeaponProps : StaticPropsBase
-{
-    [JsonPropertyName("Items")]
-    public Item[] Items
-    {
-        get;
-        set;
-    }
-}
-
 public record StaticContainerDetails
 {
     [JsonPropertyName("staticWeapons")]
@@ -281,21 +190,21 @@ public record StaticContainerDetails
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("staticContainers")]
     public List<StaticContainerData> StaticContainers
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("staticForced")]
     public List<StaticForced> StaticForced
     {
         get;
         set;
-    }
+    } = [];
 }
 
 public record StaticForced
@@ -305,14 +214,14 @@ public record StaticForced
     {
         get;
         set;
-    }
+    } = string.Empty;
 
     [JsonPropertyName("itemTpl")]
     public string ItemTpl
     {
         get;
         set;
-    }
+    } = string.Empty;
 }
 
 public record StaticContainerData
@@ -343,58 +252,6 @@ public record StaticAmmoDetails
 
     [JsonPropertyName("relativeProbability")]
     public float? RelativeProbability
-    {
-        get;
-        set;
-    }
-}
-
-public record StaticForcedProps
-{
-    [JsonPropertyName("containerId")]
-    public string? ContainerId
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("itemTpl")]
-    public string? ItemTpl
-    {
-        get;
-        set;
-    }
-}
-
-[Obsolete("use SpawnpointTemplate")]
-public record StaticContainerProps : StaticPropsBase
-{
-    [JsonPropertyName("Items")]
-    public StaticItem[] Items
-    {
-        get;
-        set;
-    }
-}
-
-public record StaticItem
-{
-    [JsonPropertyName("_id")]
-    public string? Id
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("_tpl")]
-    public string? Tpl
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("upd")]
-    public Upd? Upd
     {
         get;
         set;

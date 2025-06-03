@@ -2,10 +2,10 @@
 
 namespace SPTarkov.Server.Core.Models.Spt.Config;
 
-public record BaseConfig
+public abstract record BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public abstract string Kind
     {
         get;
         set;

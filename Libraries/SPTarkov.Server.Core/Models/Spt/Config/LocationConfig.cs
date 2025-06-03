@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record LocationConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -17,21 +17,21 @@ public record LocationConfig : BaseConfig
     ///     Rogues are classified as bosses and spawn immediately, this can result in no scavs spawning, delay rogues spawning to allow scavs to spawn first
     /// </summary>
     [JsonPropertyName("rogueLighthouseSpawnTimeSettings")]
-    public RogueLighthouseSpawnTimeSettings RogueLighthouseSpawnTimeSettings
+    public required RogueLighthouseSpawnTimeSettings RogueLighthouseSpawnTimeSettings
     {
         get;
         set;
     }
 
     [JsonPropertyName("looseLootMultiplier")]
-    public Dictionary<string, double> LooseLootMultiplier
+    public required Dictionary<string, double> LooseLootMultiplier
     {
         get;
         set;
     }
 
     [JsonPropertyName("staticLootMultiplier")]
-    public Dictionary<string, double> StaticLootMultiplier
+    public required Dictionary<string, double> StaticLootMultiplier
     {
         get;
         set;
@@ -41,7 +41,7 @@ public record LocationConfig : BaseConfig
     ///     Custom bot waves to add to a locations base json on game start if addCustomBotWavesToMaps is true
     /// </summary>
     [JsonPropertyName("customWaves")]
-    public CustomWaves CustomWaves
+    public CustomWaves? CustomWaves
     {
         get;
         set;
@@ -51,7 +51,7 @@ public record LocationConfig : BaseConfig
     ///     Open zones to add to map
     /// </summary>
     [JsonPropertyName("openZones")]
-    public Dictionary<string, HashSet<string>> OpenZones
+    public required Dictionary<string, HashSet<string>> OpenZones
     {
         get;
         set;
@@ -61,7 +61,7 @@ public record LocationConfig : BaseConfig
     ///     Key = map id, value = item tpls that should only have one forced loot spawn position
     /// </summary>
     [JsonPropertyName("forcedLootSingleSpawnById")]
-    public Dictionary<string, HashSet<string>> ForcedLootSingleSpawnById
+    public required Dictionary<string, HashSet<string>> ForcedLootSingleSpawnById
     {
         get;
         set;
@@ -111,7 +111,7 @@ public record LocationConfig : BaseConfig
     ///     Add limits to a locations base.MinMaxBots array if enableBotTypeLimits is true
     /// </summary>
     [JsonPropertyName("botTypeLimits")]
-    public Dictionary<string, List<BotTypeLimit>> BotTypeLimits
+    public required Dictionary<string, List<BotTypeLimit>> BotTypeLimits
     {
         get;
         set;
@@ -121,7 +121,7 @@ public record LocationConfig : BaseConfig
     ///     Container randomisation settings
     /// </summary>
     [JsonPropertyName("containerRandomisationSettings")]
-    public ContainerRandomisationSettings ContainerRandomisationSettings
+    public required ContainerRandomisationSettings ContainerRandomisationSettings
     {
         get;
         set;
@@ -178,7 +178,7 @@ public record LocationConfig : BaseConfig
     ///     Key: map, value: loose loot ids to ignore
     /// </summary>
     [JsonPropertyName("looseLootBlacklist")]
-    public Dictionary<string, List<string>> LooseLootBlacklist
+    public required Dictionary<string, List<string>> LooseLootBlacklist
     {
         get;
         set;
@@ -188,7 +188,7 @@ public record LocationConfig : BaseConfig
     ///     Key: map, value: settings to control how long scav raids are
     /// </summary>
     [JsonPropertyName("scavRaidTimeSettings")]
-    public ScavRaidTimeSettings ScavRaidTimeSettings
+    public required ScavRaidTimeSettings ScavRaidTimeSettings
     {
         get;
         set;
@@ -198,7 +198,7 @@ public record LocationConfig : BaseConfig
     ///     Settings to adjust mods for lootable equipment in raid
     /// </summary>
     [JsonPropertyName("equipmentLootSettings")]
-    public EquipmentLootSettings EquipmentLootSettings
+    public required EquipmentLootSettings EquipmentLootSettings
     {
         get;
         set;
@@ -208,7 +208,7 @@ public record LocationConfig : BaseConfig
     ///     Min percentage to set raider spawns at, -1 makes no changes
     /// </summary>
     [JsonPropertyName("reserveRaiderSpawnChanceOverrides")]
-    public ReserveRaiderSpawnChanceOverrides ReserveRaiderSpawnChanceOverrides
+    public required ReserveRaiderSpawnChanceOverrides ReserveRaiderSpawnChanceOverrides
     {
         get;
         set;
@@ -218,7 +218,7 @@ public record LocationConfig : BaseConfig
     ///     Containers to remove all children from when generating static/loose loot
     /// </summary>
     [JsonPropertyName("tplsToStripChildItemsFrom")]
-    public HashSet<string> TplsToStripChildItemsFrom
+    public required HashSet<string> TplsToStripChildItemsFrom
     {
         get;
         set;
@@ -228,7 +228,7 @@ public record LocationConfig : BaseConfig
     ///     Map ids players cannot visit
     /// </summary>
     [JsonPropertyName("nonMaps")]
-    public HashSet<string> NonMaps
+    public required HashSet<string> NonMaps
     {
         get;
         set;
@@ -258,24 +258,7 @@ public record EquipmentLootSettings
     ///     Percentage chance item will be added to equipment
     /// </summary>
     [JsonPropertyName("modSpawnChancePercent")]
-    public Dictionary<string, double?> ModSpawnChancePercent
-    {
-        get;
-        set;
-    }
-}
-
-public record FixEmptyBotWavesSettings
-{
-    [JsonPropertyName("enabled")]
-    public bool Enabled
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("ignoreMaps")]
-    public List<string> IgnoreMaps
+    public required Dictionary<string, double> ModSpawnChancePercent
     {
         get;
         set;
@@ -299,30 +282,6 @@ public record RogueLighthouseSpawnTimeSettings
     }
 }
 
-public record SplitWaveSettings
-{
-    [JsonPropertyName("enabled")]
-    public bool Enabled
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("ignoreMaps")]
-    public List<string> IgnoreMaps
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("waveSizeThreshold")]
-    public int WaveSizeThreshold
-    {
-        get;
-        set;
-    }
-}
-
 public record CustomWaves
 {
     /// <summary>
@@ -333,152 +292,20 @@ public record CustomWaves
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("normal")]
     public Dictionary<string, List<Wave>> Normal
     {
         get;
         set;
-    }
+    } = [];
 }
 
 public record BotTypeLimit : MinMax<int>
 {
     [JsonPropertyName("type")]
-    public string Type
-    {
-        get;
-        set;
-    }
-}
-
-/// <summary>
-///     Multiplier to apply to the loot count for a given map
-/// </summary>
-public record LootMultiplier
-{
-    [JsonPropertyName("bigmap")]
-    public double BigMap
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("develop")]
-    public double Develop
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("factory4_day")]
-    public double Factory4Day
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("factory4_night")]
-    public double Factory4Night
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("interchange")]
-    public double Interchange
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("laboratory")]
-    public double Laboratory
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("rezervbase")]
-    public double RezervBase
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("shoreline")]
-    public double Shoreline
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("woods")]
-    public double Woods
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("hideout")]
-    public double Hideout
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("lighthouse")]
-    public double Lighthouse
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("privatearea")]
-    public double PrivateArea
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("suburbs")]
-    public double Suburbs
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("tarkovstreets")]
-    public double TarkovStreets
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("terminal")]
-    public double Terminal
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("town")]
-    public double Town
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("sandbox")]
-    public double Sandbox
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("sandbox_high")]
-    public double SandboxHigh
+    public new required string Type
     {
         get;
         set;
@@ -498,7 +325,7 @@ public record ContainerRandomisationSettings
     ///     What maps can use the container randomisation feature
     /// </summary>
     [JsonPropertyName("maps")]
-    public Dictionary<string, bool> Maps
+    public required Dictionary<string, bool> Maps
     {
         get;
         set;
@@ -508,7 +335,7 @@ public record ContainerRandomisationSettings
     ///     Some container types don't work when randomised
     /// </summary>
     [JsonPropertyName("containerTypesToNotRandomise")]
-    public HashSet<string> ContainerTypesToNotRandomise
+    public required HashSet<string> ContainerTypesToNotRandomise
     {
         get;
         set;
@@ -532,14 +359,14 @@ public record ContainerRandomisationSettings
 public record ScavRaidTimeSettings
 {
     [JsonPropertyName("settings")]
-    public ScavRaidTimeConfigSettings Settings
+    public required ScavRaidTimeConfigSettings Settings
     {
         get;
         set;
     }
 
     [JsonPropertyName("maps")]
-    public Dictionary<string, ScavRaidTimeLocationSettings?>? Maps
+    public required Dictionary<string, ScavRaidTimeLocationSettings?> Maps
     {
         get;
         set;
@@ -606,7 +433,7 @@ public record ScavRaidTimeLocationSettings
     {
         get;
         set;
-    }
+    } = [];
 
     /// <summary>
     ///     Should bot waves be removed / spawn times be adjusted

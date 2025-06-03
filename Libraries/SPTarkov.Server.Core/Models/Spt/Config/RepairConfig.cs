@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record RepairConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -44,7 +44,7 @@ public record RepairConfig : BaseConfig
     ///     INT gain multiplier per repaired item type
     /// </summary>
     [JsonPropertyName("repairKitIntellectGainMultiplier")]
-    public IntellectGainValues RepairKitIntellectGainMultiplier
+    public required IntellectGainValues RepairKitIntellectGainMultiplier
     {
         get;
         set;
@@ -54,21 +54,21 @@ public record RepairConfig : BaseConfig
     ///     How much INT can be given to player per repair action
     /// </summary>
     [JsonPropertyName("maxIntellectGainPerRepair")]
-    public MaxIntellectGainValues MaxIntellectGainPerRepair
+    public required MaxIntellectGainValues MaxIntellectGainPerRepair
     {
         get;
         set;
     }
 
     [JsonPropertyName("weaponTreatment")]
-    public WeaponTreatmentRepairValues WeaponTreatment
+    public required WeaponTreatmentRepairValues WeaponTreatment
     {
         get;
         set;
     }
 
     [JsonPropertyName("repairKit")]
-    public RepairKit RepairKit
+    public required RepairKit RepairKit
     {
         get;
         set;
@@ -159,28 +159,28 @@ public record WeaponTreatmentRepairValues
 public record RepairKit
 {
     [JsonPropertyName("armor")]
-    public BonusSettings Armor
+    public required BonusSettings Armor
     {
         get;
         set;
     }
 
     [JsonPropertyName("weapon")]
-    public BonusSettings Weapon
+    public required BonusSettings Weapon
     {
         get;
         set;
     }
 
     [JsonPropertyName("vest")]
-    public BonusSettings Vest
+    public required BonusSettings Vest
     {
         get;
         set;
     }
 
     [JsonPropertyName("headwear")]
-    public BonusSettings Headwear
+    public required BonusSettings Headwear
     {
         get;
         set;
@@ -190,28 +190,28 @@ public record RepairKit
 public record BonusSettings
 {
     [JsonPropertyName("rarityWeight")]
-    public Dictionary<string, double> RarityWeight
+    public required Dictionary<string, double> RarityWeight
     {
         get;
         set;
     }
 
     [JsonPropertyName("bonusTypeWeight")]
-    public Dictionary<string, double> BonusTypeWeight
+    public required Dictionary<string, double> BonusTypeWeight
     {
         get;
         set;
     }
 
     [JsonPropertyName("Common")]
-    public Dictionary<string, BonusValues> Common
+    public required Dictionary<string, BonusValues> Common
     {
         get;
         set;
     }
 
     [JsonPropertyName("Rare")]
-    public Dictionary<string, BonusValues> Rare
+    public required Dictionary<string, BonusValues> Rare
     {
         get;
         set;
@@ -221,7 +221,7 @@ public record BonusSettings
 public record BonusValues
 {
     [JsonPropertyName("valuesMinMax")]
-    public MinMax<double> ValuesMinMax
+    public required MinMax<double> ValuesMinMax
     {
         get;
         set;
@@ -231,7 +231,7 @@ public record BonusValues
     ///     What dura is buff active between (min max of current max)
     /// </summary>
     [JsonPropertyName("activeDurabilityPercentMinMax")]
-    public MinMax<int> ActiveDurabilityPercentMinMax
+    public required MinMax<int> ActiveDurabilityPercentMinMax
     {
         get;
         set;

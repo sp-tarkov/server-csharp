@@ -7,14 +7,14 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record PlayerScavConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
     } = "spt-playerscav";
 
     [JsonPropertyName("karmaLevel")]
-    public Dictionary<string, KarmaLevel> KarmaLevel
+    public required Dictionary<string, KarmaLevel> KarmaLevel
     {
         get;
         set;
@@ -24,28 +24,28 @@ public record PlayerScavConfig : BaseConfig
 public record KarmaLevel
 {
     [JsonPropertyName("botTypeForLoot")]
-    public string BotTypeForLoot
+    public required string BotTypeForLoot
     {
         get;
         set;
     }
 
     [JsonPropertyName("modifiers")]
-    public Modifiers Modifiers
+    public required Modifiers Modifiers
     {
         get;
         set;
     }
 
     [JsonPropertyName("itemLimits")]
-    public Dictionary<string, GenerationData> ItemLimits
+    public required Dictionary<string, GenerationData> ItemLimits
     {
         get;
         set;
     }
 
     [JsonPropertyName("equipmentBlacklist")]
-    public Dictionary<EquipmentSlots, List<string>> EquipmentBlacklist
+    public required Dictionary<EquipmentSlots, List<string>> EquipmentBlacklist
     {
         get;
         set;
@@ -59,7 +59,7 @@ public record KarmaLevel
     }
 
     [JsonPropertyName("lootItemsToAddChancePercent")]
-    public Dictionary<string, double> LootItemsToAddChancePercent
+    public required Dictionary<string, double> LootItemsToAddChancePercent
     {
         get;
         set;
@@ -69,59 +69,14 @@ public record KarmaLevel
 public record Modifiers
 {
     [JsonPropertyName("equipment")]
-    public Dictionary<string, double> Equipment
+    public required Dictionary<string, double> Equipment
     {
         get;
         set;
     }
 
     [JsonPropertyName("mod")]
-    public Dictionary<string, double> Mod
-    {
-        get;
-        set;
-    }
-}
-
-public record ItemLimits
-{
-    [JsonPropertyName("healing")]
-    public GenerationData Healing
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("drugs")]
-    public GenerationData Drugs
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("stims")]
-    public GenerationData Stims
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("looseLoot")]
-    public GenerationData LooseLoot
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("magazines")]
-    public GenerationData Magazines
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("grenades")]
-    public GenerationData Grenades
+    public required Dictionary<string, double> Mod
     {
         get;
         set;

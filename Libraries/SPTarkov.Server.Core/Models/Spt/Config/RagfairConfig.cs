@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record RagfairConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;

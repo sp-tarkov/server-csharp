@@ -5,21 +5,21 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record HealthConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
     } = "spt-health";
 
     [JsonPropertyName("healthMultipliers")]
-    public HealthMultipliers HealthMultipliers
+    public required HealthMultipliers HealthMultipliers
     {
         get;
         set;
     }
 
     [JsonPropertyName("save")]
-    public HealthSave Save
+    public required HealthSave Save
     {
         get;
         set;

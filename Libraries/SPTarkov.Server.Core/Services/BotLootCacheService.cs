@@ -559,24 +559,7 @@ public class BotLootCacheService(
     /// <param name="botRole">Bot role to hydrate</param>
     protected void InitCacheForBotRole(string botRole)
     {
-        _lootCache.TryAdd(botRole, new BotLootCache
-            {
-                BackpackLoot = new Dictionary<string, double>(),
-                PocketLoot = new Dictionary<string, double>(),
-                VestLoot = new Dictionary<string, double>(),
-                SecureLoot = new Dictionary<string, double>(),
-                CombinedPoolLoot = new Dictionary<string, double>(),
-
-                SpecialItems = new Dictionary<string, double>(),
-                GrenadeItems = new Dictionary<string, double>(),
-                DrugItems = new Dictionary<string, double>(),
-                FoodItems = new Dictionary<string, double>(),
-                DrinkItems = new Dictionary<string, double>(),
-                CurrencyItems = new Dictionary<string, double>(),
-                HealingItems = new Dictionary<string, double>(),
-                StimItems = new Dictionary<string, double>()
-            }
-        );
+        _lootCache.TryAdd(botRole, new BotLootCache());
     }
 
     /// <summary>

@@ -9,14 +9,14 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record GiftsConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
     } = "spt-gifts";
 
     [JsonPropertyName("gifts")]
-    public Dictionary<string, Gift> Gifts
+    public required Dictionary<string, Gift> Gifts
     {
         get;
         set;
@@ -33,7 +33,7 @@ public record Gift
     {
         get;
         set;
-    }
+    } = [];
 
     /// <summary>
     ///     Who is sending the gift to player
@@ -56,7 +56,7 @@ public record Gift
     }
 
     [JsonPropertyName("senderDetails")]
-    public UserDialogInfo SenderDetails
+    public UserDialogInfo? SenderDetails
     {
         get;
         set;
@@ -73,7 +73,7 @@ public record Gift
     }
 
     [JsonPropertyName("messageText")]
-    public string MessageText
+    public string? MessageText
     {
         get;
         set;

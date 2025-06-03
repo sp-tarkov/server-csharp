@@ -2,17 +2,20 @@
 
 namespace SPTarkov.Server.Core.Models.Spt.Server;
 
+/// <summary>
+/// Model for Assets/database/server.json
+/// </summary>
 public record ServerBase
 {
     [JsonPropertyName("ip")]
-    public string? Ip
+    public required string Ip
     {
         get;
         set;
     }
 
     [JsonPropertyName("port")]
-    public int? Port
+    public required int Port
     {
         get;
         set;

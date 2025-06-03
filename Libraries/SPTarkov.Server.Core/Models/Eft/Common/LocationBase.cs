@@ -79,7 +79,7 @@ public record LocationBase
     }
 
     [JsonPropertyName("BossLocationSpawn")]
-    public List<BossLocationSpawn> BossLocationSpawn
+    public required List<BossLocationSpawn> BossLocationSpawn
     {
         get;
         set;
@@ -137,7 +137,7 @@ public record LocationBase
     }
 
     [JsonPropertyName("BotLocationModifier")]
-    public BotLocationModifier? BotLocationModifier
+    public required BotLocationModifier BotLocationModifier
     {
         get;
         set;
@@ -801,7 +801,7 @@ public record LocationBase
     }
 
     [JsonPropertyName("waves")]
-    public List<Wave> Waves
+    public required List<Wave> Waves
     {
         get;
         set;
@@ -949,21 +949,21 @@ public record NonWaveGroupScenario
 public record Limit : MinMax<int>
 {
     [JsonPropertyName("items")]
-    public object[] Items
+    public required List<string> Items
     {
         get;
         set;
-    } // TODO: was on TS any[] hmmm..
+    }
 
     [JsonPropertyName("min")]
-    public int? Min
+    public new int? Min
     {
         get;
         set;
     }
 
     [JsonPropertyName("max")]
-    public int? Max
+    public new int? Max
     {
         get;
         set;
@@ -1198,15 +1198,16 @@ public record BossLocationSpawn
         set;
     }
 
-
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("Supports")]
     public List<BossSupport> Supports
     {
         get;
         set;
-    }
+    } = [];
 
+
+    //Todo: This doesn't exist in the location base?
     [JsonPropertyName("sptId")]
     public string? SptId
     {
@@ -1219,7 +1220,7 @@ public record BossLocationSpawn
     {
         get;
         set;
-    }
+    } = [];
 }
 
 public record BossSupport

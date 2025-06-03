@@ -2,13 +2,13 @@ namespace SPTarkov.Server.Core.Models.Spt.Helper;
 
 public record WeightedRandomResult<T>
 {
-    public T Item
+    public required T Item
     {
         get;
         set;
     }
 
-    public int Index
+    public required int Index
     {
         get;
         set;
