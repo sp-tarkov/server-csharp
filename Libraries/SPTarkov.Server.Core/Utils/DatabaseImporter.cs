@@ -69,6 +69,12 @@ public class DatabaseImporter(
 
     protected async Task LoadHashes()
     {
+        // The checks hash file is only made in Release mode
+        if (ProgramStatics.DEBUG())
+        {
+            return;
+        }
+
         var checksFilePath = System.IO.Path.Combine(_sptDataPath, "checks.dat");
 
         try
@@ -140,6 +146,12 @@ public class DatabaseImporter(
 
     protected async Task VerifyDatabase(string fileName)
     {
+        // The checks hash file is only made in Release mode
+        if (ProgramStatics.DEBUG())
+        {
+            return;
+        }
+
         var relativePath = fileName.StartsWith(_sptDataPath, StringComparison.OrdinalIgnoreCase)
             ? fileName.Substring(_sptDataPath.Length)
             : fileName;

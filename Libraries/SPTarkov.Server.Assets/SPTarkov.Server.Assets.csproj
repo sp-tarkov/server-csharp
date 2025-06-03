@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\..\Build.props"/>
 
@@ -25,7 +25,7 @@
     </Content>
   </ItemGroup>
 
-  <Target Name="PostBuildHashFile" AfterTargets="Build">
+  <Target Name="PostBuildHashFile" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'"> 
     <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)PostBuild.ps1&quot;" />
   </Target>
 
