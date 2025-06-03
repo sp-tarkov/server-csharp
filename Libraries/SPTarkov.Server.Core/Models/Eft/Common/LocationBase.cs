@@ -956,14 +956,14 @@ public record Limit : MinMax<int>
     }
 
     [JsonPropertyName("min")]
-    public new int? Min
+    public int? Min
     {
         get;
         set;
     }
 
     [JsonPropertyName("max")]
-    public new int? Max
+    public int? Max
     {
         get;
         set;
