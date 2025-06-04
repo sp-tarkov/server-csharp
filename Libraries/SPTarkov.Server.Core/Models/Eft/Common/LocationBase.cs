@@ -79,7 +79,7 @@ public record LocationBase
     }
 
     [JsonPropertyName("BossLocationSpawn")]
-    public required List<BossLocationSpawn> BossLocationSpawn
+    public List<BossLocationSpawn> BossLocationSpawn
     {
         get;
         set;
@@ -137,7 +137,7 @@ public record LocationBase
     }
 
     [JsonPropertyName("BotLocationModifier")]
-    public required BotLocationModifier BotLocationModifier
+    public BotLocationModifier? BotLocationModifier
     {
         get;
         set;
@@ -801,7 +801,7 @@ public record LocationBase
     }
 
     [JsonPropertyName("waves")]
-    public required List<Wave> Waves
+    public List<Wave> Waves
     {
         get;
         set;
@@ -1198,16 +1198,15 @@ public record BossLocationSpawn
         set;
     }
 
+
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("Supports")]
     public List<BossSupport> Supports
     {
         get;
         set;
-    } = [];
+    }
 
-
-    //Todo: This doesn't exist in the location base?
     [JsonPropertyName("sptId")]
     public string? SptId
     {
@@ -1220,7 +1219,7 @@ public record BossLocationSpawn
     {
         get;
         set;
-    } = [];
+    }
 }
 
 public record BossSupport

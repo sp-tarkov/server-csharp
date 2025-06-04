@@ -51,7 +51,7 @@ public record Location
     {
         get;
         set;
-    } = [];
+    }
 
     /// <summary>
     ///     All possible static containers on map + their assign groupings
@@ -71,7 +71,7 @@ public record Location
     {
         get;
         set;
-    } = [];
+    }
 }
 
 public record StaticContainer
@@ -139,14 +139,14 @@ public record StaticLootDetails
     {
         get;
         set;
-    } = [];
+    }
 
     [JsonPropertyName("itemDistribution")]
     public ItemDistribution[] ItemDistribution
     {
         get;
         set;
-    } = [];
+    }
 }
 
 public record ItemCountDistribution
@@ -190,21 +190,21 @@ public record StaticContainerDetails
     {
         get;
         set;
-    } = [];
+    }
 
     [JsonPropertyName("staticContainers")]
     public List<StaticContainerData> StaticContainers
     {
         get;
         set;
-    } = [];
+    }
 
     [JsonPropertyName("staticForced")]
     public List<StaticForced> StaticForced
     {
         get;
         set;
-    } = [];
+    }
 }
 
 public record StaticForced
@@ -214,14 +214,14 @@ public record StaticForced
     {
         get;
         set;
-    } = string.Empty;
+    }
 
     [JsonPropertyName("itemTpl")]
     public string ItemTpl
     {
         get;
         set;
-    } = string.Empty;
+    }
 }
 
 public record StaticContainerData
