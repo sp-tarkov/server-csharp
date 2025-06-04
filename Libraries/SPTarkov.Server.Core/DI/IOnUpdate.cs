@@ -2,5 +2,5 @@ namespace SPTarkov.Server.Core.DI;
 
 public interface IOnUpdate
 {
-    bool OnUpdate(long timeSinceLastRun);
+    Task OnUpdate(long timeSinceLastRun);
 }

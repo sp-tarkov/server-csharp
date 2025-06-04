@@ -22,14 +22,13 @@ public class SaveCallbacks(
         _saveServer.Load();
     }
 
-    public bool OnUpdate(long timeSinceLastRun)
+    public Task OnUpdate(long timeSinceLastRun)
     {
         if (timeSinceLastRun > _coreConfig.ProfileSaveIntervalInSeconds)
         {
             _saveServer.Save();
-            return true;
         }
 
-        return false;
+        return Task.CompletedTask;
     }
 }

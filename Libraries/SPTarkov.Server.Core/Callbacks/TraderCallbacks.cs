@@ -23,9 +23,10 @@ public class TraderCallbacks(
         return Task.CompletedTask;
     }
 
-    public bool OnUpdate(long _)
+    public Task OnUpdate(long _)
     {
-        return _traderController.Update();
+        _traderController.Update();
+        return Task.CompletedTask;
     }
 
     /// <summary>

@@ -22,15 +22,14 @@ public class InsuranceCallbacks(
 {
     private readonly InsuranceConfig _insuranceConfig = _configServer.GetConfig<InsuranceConfig>();
 
-    public bool OnUpdate(long timeSinceLastRun)
+    public Task OnUpdate(long timeSinceLastRun)
     {
         if (timeSinceLastRun > Math.Max(_insuranceConfig.RunIntervalSeconds, 1))
         {
             _insuranceController.ProcessReturn();
-            return true;
         }
 
-        return false;
+        return Task.CompletedTask;
     }
 
     /// <summary>

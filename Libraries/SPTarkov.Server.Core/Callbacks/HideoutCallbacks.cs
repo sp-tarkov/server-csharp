@@ -17,15 +17,14 @@ public class HideoutCallbacks(
 {
     private readonly HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
 
-    public bool OnUpdate(long timeSinceLastRun)
+    public Task OnUpdate(long timeSinceLastRun)
     {
         if (timeSinceLastRun > _hideoutConfig.RunIntervalSeconds)
         {
             _hideoutController.Update();
-            return true;
         }
 
-        return false;
+        return Task.CompletedTask;
     }
 
     /// <summary>

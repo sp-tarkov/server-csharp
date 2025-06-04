@@ -17,10 +17,10 @@ public class DialogueCallbacks(
 )
     : IOnUpdate
 {
-    public bool OnUpdate(long timeSinceLastRun)
+    public Task OnUpdate(long timeSinceLastRun)
     {
         _dialogueController.Update();
-        return true;
+        return Task.CompletedTask;
     }
 
     /// <summary>

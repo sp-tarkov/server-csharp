@@ -30,7 +30,7 @@ public class RagfairCallbacks(
         return Task.CompletedTask;
     }
 
-    public bool OnUpdate(long timeSinceLastRun)
+    public Task OnUpdate(long timeSinceLastRun)
     {
         if (timeSinceLastRun > _ragfairConfig.RunIntervalSeconds)
         {
@@ -42,11 +42,9 @@ public class RagfairCallbacks(
 
             // Process all offers / expire offers
             _ragfairServer.Update();
-
-            return true;
         }
 
-        return false;
+        return Task.CompletedTask;
     }
 
     /// <summary>
