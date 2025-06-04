@@ -15,7 +15,7 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Helpers;
 
-[Injectable(InjectionType.Singleton)]
+[Injectable]
 public class BotGeneratorHelper(
     ISptLogger<BotGeneratorHelper> _logger,
     RandomUtil _randomUtil,
@@ -26,7 +26,7 @@ public class BotGeneratorHelper(
     ProfileActivityService _profileActivityService,
     LocalisationService _localisationService,
     ConfigServer _configServer
-    ) : IOnLoad
+    )
 {
     // Equipment slot ids that do not conflict with other slots
     private static readonly FrozenSet<string> _slotsWithNoCompatIssues = [
@@ -37,16 +37,7 @@ public class BotGeneratorHelper(
         EquipmentSlots.ArmBand.ToString()
     ];
 
-    private BotConfig _botConfig;
-    private string[] _pmcTypes;
-
-    public Task OnLoad()
-    {
-        _botConfig = _configServer.GetConfig<BotConfig>();
-        var pmcConfig = _configServer.GetConfig<PmcConfig>();
-        _pmcTypes = [pmcConfig.UsecType.ToLower(), pmcConfig.BearType.ToLower()];
-        return Task.CompletedTask;
-    }
+    private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     /// <summary>
     ///     Adds properties to an item
@@ -529,7 +520,11 @@ public class BotGeneratorHelper(
     /// <returns>Equipment role (e.g. pmc / assault / bossTagilla)</returns>
     public string GetBotEquipmentRole(string botRole)
     {
-        return _pmcTypes.Contains(botRole, StringComparer.OrdinalIgnoreCase)
+        PmcConfig pmcConfig = _configServer.GetConfig<PmcConfig>();
+
+        string[] pmcTypes = [ pmcConfig.UsecType.ToLower(), pmcConfig.BearType.ToLower() ];
+
+        return pmcTypes.Contains(botRole, StringComparer.OrdinalIgnoreCase)
             ? Sides.PmcEquipmentRole
             : botRole;
     }
