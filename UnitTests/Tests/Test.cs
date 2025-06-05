@@ -10,12 +10,10 @@ public class Test
 {
     private Templates? _templates;
 
-    private static JsonUtil _jsonUtil = new([ new SptJsonConverterRegistrator()]);
-
     [TestInitialize]
     public async Task Setup()
     {
-        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(), _jsonUtil);
+        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(), DI.GetService<JsonUtil>());
         _templates = await importer.LoadRecursiveAsync<Templates>("./TestAssets/");
 
     }
@@ -23,7 +21,7 @@ public class Test
     [TestMethod]
     public void TestMethod1()
     {
-        var result = _jsonUtil.Serialize(_templates);
+        var result = DI.GetService<JsonUtil>().Serialize(_templates);
         Console.WriteLine(result);
     }
 }
