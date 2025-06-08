@@ -95,7 +95,7 @@ public class WebSocketServer(
 
                 // Handle graceful close of the WebSocket
                 // WebsocketSharp requires this as when Close() is called it will send a message to the WS server that it's about to close.
-                // If this is not handled an exception is thrown
+                // If this is not handled an exception is thrown on the client
                 if (result.MessageType == WebSocketMessageType.Close)
                 {
                     _logger.Debug($"[WS] WebSocket reference {webSocketIdContext} sent close frame, stopping.");
