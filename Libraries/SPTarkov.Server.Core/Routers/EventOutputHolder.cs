@@ -9,7 +9,7 @@ using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Routers;
 
-[Injectable(InjectionType.Singleton)]
+[Injectable]
 public class EventOutputHolder
 {
     protected Dictionary<string, Dictionary<string, bool>> _clientActiveSessionStorage = new();
