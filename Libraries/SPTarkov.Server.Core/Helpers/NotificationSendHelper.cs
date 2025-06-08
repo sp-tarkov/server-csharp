@@ -31,13 +31,13 @@ public class NotificationSendHelper(
     {
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"Send message for {sessionID} started, message: {_jsonUtil.Serialize(notificationMessage)}");
+            _logger.Debug($"Send WS message for {sessionID} started, message: {_jsonUtil.Serialize(notificationMessage)}");
         }
         if (_sptWebSocketConnectionHandler.IsWebSocketConnected(sessionID))
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Send message for {sessionID} websocket available, message being sent");
+                _logger.Debug($"Send WS message for {sessionID} websocket available, message being sent");
             }
             _sptWebSocketConnectionHandler.SendMessage(sessionID, notificationMessage);
         }
@@ -47,6 +47,7 @@ public class NotificationSendHelper(
             {
                 _logger.Debug($"Send message for {sessionID} websocket not available, queuing into profile");
             }
+
             _notificationService.Add(sessionID, notificationMessage);
         }
     }

@@ -38,7 +38,7 @@
   </PropertyGroup>
 
   <Target Name="AfterEverythingDone" AfterTargets="PostBuildEvent">
-    <Exec ConsoleToMsBuild="true" Command="..\..\Ceciler\Ceciler.Launcher.exe $(OutDir)SPTarkov.Server.Core.dll ..\..\Patches\Ceciler.Virtualizer\bin\$(Configuration)\$(TargetFramework)\Ceciler.Virtualizer.dll" />
+    <Exec ConsoleToMsBuild="true" Command="dotnet ..\..\Ceciler\Ceciler.Launcher.dll $(OutDir)SPTarkov.Server.Core.dll ..\..\Patches\Ceciler.Virtualizer\bin\$(Configuration)\$(TargetFramework)\Ceciler.Virtualizer.dll" />
   </Target>
 
   <!--  Generates the ProgramStatics class with the build information -->
