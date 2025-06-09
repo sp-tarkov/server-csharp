@@ -97,7 +97,7 @@ public class LauncherController(
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
-    public string Register(RegisterData info)
+    public async Task<string> Register(RegisterData info)
     {
         foreach (var kvp in _saveServer.GetProfiles())
         {
@@ -107,14 +107,14 @@ public class LauncherController(
             }
         }
 
-        return CreateAccount(info);
+        return await CreateAccount(info);
     }
 
     /// <summary>
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
-    protected string CreateAccount(RegisterData info)
+    protected async Task<string> CreateAccount(RegisterData info)
     {
         var profileId = GenerateProfileId();
         var scavId = GenerateProfileId();
@@ -130,8 +130,8 @@ public class LauncherController(
         };
         _saveServer.CreateProfile(newProfileDetails);
 
-        _saveServer.LoadProfile(profileId);
-        _saveServer.SaveProfile(profileId);
+        await _saveServer.LoadProfileAsync(profileId);
+        await _saveServer.SaveProfileAsync(profileId);
 
         return profileId;
     }

@@ -56,7 +56,7 @@ public class SaveServer(
     /// <summary>
     ///     Load all profiles in /user/profiles folder into memory (this.profiles)
     /// </summary>
-    public void Load()
+    public async Task LoadAsync()
     {
         // get files to load
         if (!_fileUtil.DirectoryExists(profileFilepath))
@@ -70,7 +70,7 @@ public class SaveServer(
         var stopwatch = Stopwatch.StartNew();
         foreach (var file in files)
         {
-            LoadProfile(_fileUtil.StripExtension(file));
+            await LoadProfileAsync(_fileUtil.StripExtension(file));
         }
 
         stopwatch.Stop();
@@ -83,13 +83,13 @@ public class SaveServer(
     /// <summary>
     ///     Save changes for each profile from memory into user/profiles json
     /// </summary>
-    public void Save()
+    public async Task SaveAsync()
     {
         // Save every profile
         var totalTime = 0L;
         foreach (var sessionID in profiles)
         {
-            totalTime += SaveProfile(sessionID.Key);
+            totalTime += await SaveProfileAsync(sessionID.Key);
         }
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
@@ -196,14 +196,14 @@ public class SaveServer(
     ///     Execute saveLoadRouters callbacks after being loaded into memory.
     /// </summary>
     /// <param name="sessionID"> ID of profile to store in memory </param>
-    public void LoadProfile(string sessionID)
+    public async Task LoadProfileAsync(string sessionID)
     {
         var filename = $"{sessionID}.json";
         var filePath = $"{profileFilepath}{filename}";
         if (_fileUtil.FileExists(filePath))
             // File found, store in profiles[]
         {
-            profiles[sessionID] = _jsonUtil.DeserializeFromFile<SptProfile>(filePath);
+            profiles[sessionID] = await _jsonUtil.DeserializeFromFileAsync<SptProfile>(filePath);
         }
 
         // Run callbacks
@@ -220,7 +220,7 @@ public class SaveServer(
     /// </summary>
     /// <param name="sessionID"> Profile id (user/profiles/id.json) </param>
     /// <returns> Time taken to save the profile in seconds </returns>
-    public long SaveProfile(string sessionID)
+    public async Task<long> SaveProfileAsync(string sessionID)
     {
         var filePath = $"{profileFilepath}{sessionID}.json";
 
@@ -250,12 +250,12 @@ public class SaveServer(
 
         var start = Stopwatch.StartNew();
         var jsonProfile = _jsonUtil.Serialize(profiles[sessionID], !_configServer.GetConfig<CoreConfig>().Features.CompressProfile);
-        var fmd5 = _hashUtil.GenerateMd5ForData(jsonProfile);
+        var fmd5 = await _hashUtil.GenerateHashForDataAsync(HashingAlgorithm.MD5, jsonProfile);
         if (!saveMd5.TryGetValue(sessionID, out var currentMd5) || currentMd5 != fmd5)
         {
             saveMd5[sessionID] = fmd5;
             // save profile to disk
-            _fileUtil.WriteFile(filePath, jsonProfile);
+            await _fileUtil.WriteFileAsync(filePath, jsonProfile);
         }
 
         start.Stop();

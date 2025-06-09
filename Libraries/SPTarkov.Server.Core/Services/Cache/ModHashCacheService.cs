@@ -42,14 +42,14 @@ public class ModHashCacheService(
 
     public bool CalculateAndCompareHash(string modName, string modContent)
     {
-        var generatedHash = _hashUtil.GenerateSha1ForData(modContent);
+        var generatedHash = _hashUtil.GenerateHashForData(HashingAlgorithm.SHA1, modContent);
 
         return MatchWithStoredHash(modName, generatedHash);
     }
 
     public void CalculateAndStoreHash(string modName, string modContent)
     {
-        var generatedHash = _hashUtil.GenerateSha1ForData(modContent);
+        var generatedHash = _hashUtil.GenerateHashForData(HashingAlgorithm.SHA1, modContent);
 
         StoreValue(modName, generatedHash);
     }

@@ -43,26 +43,26 @@ public class LauncherV2Callbacks(
         ));
     }
 
-    public ValueTask<string> Register(RegisterData info)
+    public async ValueTask<string> Register(RegisterData info)
     {
-        return new ValueTask<string>(_httpResponseUtil.NoBody(
+        return _httpResponseUtil.NoBody(
             new LauncherV2RegisterResponse
             {
-                Response = _launcherV2Controller.Register(info),
+                Response = await _launcherV2Controller.Register(info),
                 Profiles = _profileController.GetMiniProfiles()
             }
-        ));
+        );
     }
 
-    public ValueTask<string> PasswordChange(ChangeRequestData info)
+    public async ValueTask<string> PasswordChange(ChangeRequestData info)
     {
-        return new ValueTask<string>(_httpResponseUtil.NoBody(
+        return _httpResponseUtil.NoBody(
             new LauncherV2PasswordChangeResponse
             {
-                Response = _launcherV2Controller.PasswordChange(info),
+                Response = await _launcherV2Controller.PasswordChange(info),
                 Profiles = _profileController.GetMiniProfiles()
             }
-        ));
+        );
     }
 
     public ValueTask<string> Remove(LoginRequestData info)

@@ -118,9 +118,9 @@ public class ProfileController(
     /// <param name="request">Create profile request</param>
     /// <param name="sessionId">Player id</param>
     /// <returns>Player id</returns>
-    public virtual string CreateProfile(ProfileCreateRequestData request, string sessionId)
+    public virtual async ValueTask<string> CreateProfile(ProfileCreateRequestData request, string sessionId)
     {
-        return _createProfileService.CreateProfile(sessionId, request);
+        return await _createProfileService.CreateProfile(sessionId, request);
     }
 
     /// <summary>

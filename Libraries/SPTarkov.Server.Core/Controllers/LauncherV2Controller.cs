@@ -71,7 +71,7 @@ public class LauncherV2Controller(
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
-    public bool Register(RegisterData info)
+    public async Task<bool> Register(RegisterData info)
     {
         foreach (var session in _saveServer.GetProfiles())
         {
@@ -81,7 +81,7 @@ public class LauncherV2Controller(
             }
         }
 
-        CreateAccount(info);
+        await CreateAccount(info);
         return true;
     }
 
@@ -90,7 +90,7 @@ public class LauncherV2Controller(
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
-    public bool PasswordChange(ChangeRequestData info)
+    public async Task<bool> PasswordChange(ChangeRequestData info)
     {
         var sessionId = GetSessionId(info);
 
@@ -105,7 +105,7 @@ public class LauncherV2Controller(
         }
 
         _saveServer.GetProfile(sessionId).ProfileInfo!.Password = info.Change;
-        _saveServer.SaveProfile(sessionId);
+        await _saveServer.SaveProfileAsync(sessionId);
         return true;
     }
 
@@ -162,7 +162,7 @@ public class LauncherV2Controller(
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
-    protected string CreateAccount(RegisterData info)
+    protected async Task<string> CreateAccount(RegisterData info)
     {
         var profileId = GenerateProfileId();
         var scavId = GenerateProfileId();
@@ -179,8 +179,8 @@ public class LauncherV2Controller(
 
         _saveServer.CreateProfile(newProfileDetails);
 
-        _saveServer.LoadProfile(profileId);
-        _saveServer.SaveProfile(profileId);
+        await _saveServer.LoadProfileAsync(profileId);
+        await _saveServer.SaveProfileAsync(profileId);
 
         return profileId;
     }

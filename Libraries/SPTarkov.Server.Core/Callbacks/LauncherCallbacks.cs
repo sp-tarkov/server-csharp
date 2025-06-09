@@ -26,10 +26,10 @@ public class LauncherCallbacks(
         return new ValueTask<string>(output ?? "FAILED");
     }
 
-    public ValueTask<string> Register(string url, RegisterData info, string sessionID)
+    public async ValueTask<string> Register(string url, RegisterData info, string sessionID)
     {
-        var output = _launcherController.Register(info);
-        return new ValueTask<string>(string.IsNullOrEmpty(output) ? "FAILED" : "OK");
+        var output = await _launcherController.Register(info);
+        return string.IsNullOrEmpty(output) ? "FAILED" : "OK";
     }
 
     public ValueTask<string> Get(string url, LoginRequestData info, string sessionID)

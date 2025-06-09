@@ -549,7 +549,7 @@ public class CircleOfCultistService(
         // Key is sacrificed items separated by commas, a dash, then the rewards separated by commas
         var key = $"{{{required}-{reward}}}";
 
-        return _hashUtil.GenerateMd5ForData(key);
+        return _hashUtil.GenerateHashForData(HashingAlgorithm.MD5, key);
     }
 
     /// <summary>
@@ -887,7 +887,7 @@ public class CircleOfCultistService(
     protected string CreateSacrificeCacheKey(IEnumerable<string> requiredItems)
     {
         var concat = string.Join(",", requiredItems.OrderBy(item => item));
-        return _hashUtil.GenerateMd5ForData(concat);
+        return _hashUtil.GenerateHashForData(HashingAlgorithm.MD5, concat);
     }
 
     /// <summary>

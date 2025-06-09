@@ -46,22 +46,22 @@ public class BackupService
     /// <summary>
     ///     Start the backup interval if enabled in config.
     /// </summary>
-    public void StartBackupSystem()
+    public async Task StartBackupSystem()
     {
         if (!_backupConfig.BackupInterval.Enabled)
         {
             // Not backing up at regular intervals, run once and exit
-            Init();
+            await Init();
 
             return;
         }
 
-        _backupIntervalTimer = new Timer(
+        _backupIntervalTimer = new Timer(async
             _ =>
             {
                 try
                 {
-                    Init();
+                    await Init();
                 }
                 catch (Exception ex)
                 {
@@ -79,7 +79,7 @@ public class BackupService
     ///     This method orchestrates the profile backup service. Handles copying profiles to a backup directory and cleaning
     ///     up old backups if the number exceeds the configured maximum.
     /// </summary>
-    public void Init()
+    public async Task Init()
     {
         if (!IsEnabled())
         {
@@ -129,7 +129,7 @@ public class BackupService
             }
 
             // Write a copy of active mods.
-            _fileUtil.WriteFile(Path.Combine(targetDir, "activeMods.json"), _jsonUtil.Serialize(_activeServerMods));
+            await _fileUtil.WriteFileAsync(Path.Combine(targetDir, "activeMods.json"), _jsonUtil.Serialize(_activeServerMods));
 
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {

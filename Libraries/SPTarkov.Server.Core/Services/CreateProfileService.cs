@@ -40,7 +40,7 @@ public class CreateProfileService(
     MailSendService _mailSendService
 )
 {
-    public string CreateProfile(string sessionId, ProfileCreateRequestData request)
+    public async ValueTask<string> CreateProfile(string sessionId, ProfileCreateRequestData request)
     {
         var account = _cloner.Clone(_saveServer.GetProfile(sessionId));
         var profileTemplateClone = _cloner.Clone(_profileHelper.GetProfileTemplateForSide(account.ProfileInfo.Edition, request.Side));
@@ -207,12 +207,12 @@ public class CreateProfileService(
         _saveServer.GetProfile(sessionId).CharacterData.ScavData = _playerScavGenerator.Generate(sessionId);
 
         // Store minimal profile and reload it
-        _saveServer.SaveProfile(sessionId);
-        _saveServer.LoadProfile(sessionId);
+        await _saveServer.SaveProfileAsync(sessionId);
+        await _saveServer.LoadProfileAsync(sessionId);
 
         // Completed account creation
         _saveServer.GetProfile(sessionId).ProfileInfo.IsWiped = false;
-        _saveServer.SaveProfile(sessionId);
+        await _saveServer.SaveProfileAsync(sessionId);
 
         return pmcData.Id;
     }

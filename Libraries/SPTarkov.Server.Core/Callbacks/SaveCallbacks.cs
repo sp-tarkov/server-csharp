@@ -20,19 +20,19 @@ public class SaveCallbacks(
     public async Task OnLoad()
     {
         _backupService.StartBackupSystem();
-        _saveServer.Load();
+        await _saveServer.LoadAsync();
     }
 
-    public Task<bool> OnUpdate(long secondsSinceLastRun)
+    public async Task<bool> OnUpdate(long secondsSinceLastRun)
     {
         if (secondsSinceLastRun < _coreConfig.ProfileSaveIntervalInSeconds)
         {
             // Not enough time has passed since last run, exit early
-            return Task.FromResult(false);
+            return false;
         }
 
-        _saveServer.Save();
+        await _saveServer.SaveAsync();
 
-        return Task.FromResult(true);
+        return true;
     }
 }
