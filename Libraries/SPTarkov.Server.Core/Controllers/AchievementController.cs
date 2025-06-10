@@ -37,7 +37,9 @@ public class AchievementController(
     public virtual CompletedAchievementsResponse GetAchievementStatics(string sessionId)
     {
         var stats = new Dictionary<string, int>();
-        var profiles = profileHelper.GetProfiles();
+        var profiles = profileHelper.GetProfiles()
+            .Where(kvp => !coreConfig.Features.AchievementProfileIdBlacklist.Contains(kvp.Value.ProfileInfo.ProfileId))
+            .ToDictionary();
 
         var achievements = databaseService.GetAchievements();
         foreach (var achievementId in achievements.Select(achievement => achievement.Id).Where(achievementId => !string.IsNullOrEmpty(achievementId)))
@@ -45,11 +47,6 @@ public class AchievementController(
             var percentage = 0;
             foreach (var (profileId, profile) in profiles)
             {
-                if (coreConfig.Features.AchievementProfileIdBlacklist.Contains(profileId))
-                {
-                    continue;
-                }
-
                 if (profile.CharacterData?.PmcData?.Achievements is null)
                 {
                     continue;
