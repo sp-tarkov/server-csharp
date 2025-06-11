@@ -78,7 +78,10 @@ We're really excited that you're interested in contributing! Before submitting y
 
 ### Style Guide
 
- TODO: style guidance
+ Every developer has their own code style conventions and opinions, but in a collaborative project it's a good idea if every contributor follows the same principles and guidelines. 
+ 
+ The [Google C# Style Guide](https://google.github.io/styleguide/csharp-style.html) is a good place to start.
+ 
  Ensure that your code is automatically formatted whenever you save a file.
 
 ### Tests
