@@ -4,6 +4,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 
 public record GameConfigResponse
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("aid")]
     public double? Aid
     {
@@ -115,6 +118,9 @@ public record GameConfigResponse
 
 public record PurchasedGames
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("eft")]
     public bool? IsEftPurchased
     {
@@ -132,6 +138,9 @@ public record PurchasedGames
 
 public record Backend
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Lobby")]
     public string? Lobby
     {

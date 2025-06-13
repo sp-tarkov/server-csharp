@@ -155,9 +155,9 @@ public class RepeatableQuestGenerator(
         // the actual difficulty we calculate the minimum and maximum difficulty (max being the sum of max of each condition type
         // times the number of kills we have to perform):
 
-        // the minimum difficulty is the difficulty for the most probable (= easiest target) with no additional conditions
+        // The minimum difficulty is the difficulty for the most probable (= easiest target) with no additional conditions
         var minDifficulty =
-            1 / targetsConfig.MaxProbability(); // min difficulty is lowest amount of scavs without any constraints
+            1 / targetsConfig.MaxProbability(); // min difficulty is the lowest amount of scavs without any constraints
 
         // Target on bodyPart max. difficulty is that of the least probable element
         var maxTargetDifficulty = 1 / targetsConfig.MinProbability();
@@ -169,7 +169,7 @@ public class RepeatableQuestGenerator(
         var maxKillDifficulty = eliminationConfig.MaxKills;
 
         var targetPool = questTypePool.Pool.Elimination;
-        targetsConfig = targetsConfig.Filter(x => questTypePool.Pool.Elimination.Targets.ContainsKey(x.Key));
+        targetsConfig = targetsConfig.Filter(x => targetPool.Targets.ContainsKey(x.Key));
 
         if (targetsConfig.Count == 0 || targetsConfig.All(x => x.Data.IsBoss.GetValueOrDefault(false)))
         {
@@ -183,10 +183,10 @@ public class RepeatableQuestGenerator(
         var botTypeToEliminate = targetsConfig.Draw()[0];
         var targetDifficulty = 1 / targetsConfig.Probability(botTypeToEliminate);
 
-        questTypePool.Pool.Elimination.Targets.TryGetValue(botTypeToEliminate, out var targetLocationPool);
+        targetPool.Targets.TryGetValue(botTypeToEliminate, out var targetLocationPool);
         var locations = targetLocationPool.Locations;
 
-        // we use any as location if "any" is in the pool and we don't hit the specific location random
+        // we use any as location if "any" is in the pool, and we don't hit the specific location random
         // we use any also if the random condition is not met in case only "any" was in the pool
         var locationKey = "any";
         if (locations.Contains("any") &&
@@ -194,7 +194,7 @@ public class RepeatableQuestGenerator(
            )
         {
             locationKey = "any";
-            questTypePool.Pool.Elimination.Targets.Remove(botTypeToEliminate);
+            targetPool.Targets.Remove(botTypeToEliminate);
         }
         else
         {
@@ -206,7 +206,7 @@ public class RepeatableQuestGenerator(
                 locationKey = _randomUtil.DrawRandomFromList(locations).FirstOrDefault();
 
                 // Get a pool of locations the chosen bot type can be eliminated on
-                if (!questTypePool.Pool.Elimination.Targets.TryGetValue(
+                if (!targetPool.Targets.TryGetValue(
                         botTypeToEliminate,
                         out var possibleLocationPool
                     ))
@@ -224,13 +224,13 @@ public class RepeatableQuestGenerator(
                 {
                     // TODO: Why do any of this?!
                     // Remove chosen bot to eliminate from pool
-                    questTypePool.Pool.Elimination.Targets.Remove(botTypeToEliminate);
+                    targetPool.Targets.Remove(botTypeToEliminate);
                 }
             }
             else
             {
-                // never should reach this if everything works out
-                _logger.Error("Encountered issue when creating Elimination quest. Please report.");
+                // Never should reach this if everything works out
+                _logger.Error(_localisationService.GetText("quest-repeatable_elimination_generation_failed_please_report"));
             }
         }
 

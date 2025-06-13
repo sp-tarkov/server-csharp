@@ -145,7 +145,7 @@ public class MailSendService(
             DialogType = MessageType.NpcTraderMessage,
             Trader = trader,
             TemplateId = messageLocaleId,
-            Items = new List<Item>()
+            Items = []
         };
 
         // add items to message
@@ -153,14 +153,9 @@ public class MailSendService(
         if (items?.Count > 0)
         {
             details.Items.AddRange(items);
-            if (maxStorageTimeSeconds is not null && maxStorageTimeSeconds > 0)
-            {
-                details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds;
-            }
-            else
-            {
-                details.ItemsMaxStorageLifetimeSeconds = 172800;
-            }
+            details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds > 0
+                ? maxStorageTimeSeconds
+                : 172800;
         }
 
         if (systemData is not null)

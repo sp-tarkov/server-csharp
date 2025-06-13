@@ -1,9 +1,12 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Prestige
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("elements")]
     public List<PrestigeElement>? Elements
     {
@@ -14,6 +17,9 @@ public record Prestige
 
 public record PrestigeElement
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("id")]
     public string? Id
     {
@@ -59,6 +65,9 @@ public record PrestigeElement
 
 public record TransferConfigs
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("stashConfig")]
     public StashPrestigeConfig? StashConfig
     {
@@ -83,6 +92,9 @@ public record TransferConfigs
 
 public record StashPrestigeConfig
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("xCellCount")]
     public int? XCellCount
     {
@@ -107,6 +119,9 @@ public record StashPrestigeConfig
 
 public record StashPrestigeFilters
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("includedItems")]
     public List<string>? IncludedItems
     {
@@ -124,6 +139,9 @@ public record StashPrestigeFilters
 
 public record PrestigeSkillConfig
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("transferMultiplier")]
     public double? TransferMultiplier
     {
@@ -134,6 +152,9 @@ public record PrestigeSkillConfig
 
 public record PrestigeMasteringConfig
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("transferMultiplier")]
     public double? TransferMultiplier
     {

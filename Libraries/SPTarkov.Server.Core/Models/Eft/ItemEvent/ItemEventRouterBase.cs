@@ -7,6 +7,9 @@ namespace SPTarkov.Server.Core.Models.Eft.ItemEvent;
 
 public record ItemEventRouterBase
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("warnings")]
     public List<Warning>? Warnings
@@ -25,6 +28,9 @@ public record ItemEventRouterBase
 
 public record Warning
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("index")]
     public int? Index
     {
@@ -56,6 +62,9 @@ public record Warning
 
 public record ProfileChange
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("_id")]
     public string? Id
     {
@@ -184,6 +193,9 @@ public record ProfileChange
 
 public record HideoutStashItem
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("id")]
     public string? Id
     {
@@ -201,6 +213,9 @@ public record HideoutStashItem
 
 public record WeaponBuildChange
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("id")]
     public string? Id
     {
@@ -232,6 +247,9 @@ public record WeaponBuildChange
 
 public record EquipmentBuildChange
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("id")]
     public string? Id
     {
@@ -284,6 +302,9 @@ public record EquipmentBuildChange
 
 public record ItemChanges
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("new")]
     public List<Item>? NewItems
     {
@@ -311,6 +332,9 @@ public record ItemChanges
 /// </summary>
 public record TraderData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("salesSum")]
     public double? SalesSum
     {

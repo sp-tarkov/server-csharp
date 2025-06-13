@@ -1,9 +1,12 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Spt.Fence;
 
 public record FenceAssortGenerationValues
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("normal")]
     public GenerationAssortValues? Normal
     {
@@ -21,6 +24,9 @@ public record FenceAssortGenerationValues
 
 public record GenerationAssortValues
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("item")]
     public int? Item
     {

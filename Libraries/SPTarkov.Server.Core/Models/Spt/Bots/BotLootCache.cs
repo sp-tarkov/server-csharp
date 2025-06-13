@@ -4,100 +4,106 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record BotLootCache
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("backpackLoot")]
-    public Dictionary<string, double>? BackpackLoot
+    public Dictionary<string, double> BackpackLoot
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("pocketLoot")]
-    public Dictionary<string, double>? PocketLoot
+    public Dictionary<string, double> PocketLoot
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("vestLoot")]
-    public Dictionary<string, double>? VestLoot
+    public Dictionary<string, double> VestLoot
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("secureLoot")]
-    public Dictionary<string, double>? SecureLoot
+    public Dictionary<string, double> SecureLoot
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("combinedPoolLoot")]
-    public Dictionary<string, double>? CombinedPoolLoot
+    public Dictionary<string, double> CombinedPoolLoot
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("specialItems")]
-    public Dictionary<string, double>? SpecialItems
+    public Dictionary<string, double> SpecialItems
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("healingItems")]
-    public Dictionary<string, double>? HealingItems
+    public Dictionary<string, double> HealingItems
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("drugItems")]
-    public Dictionary<string, double>? DrugItems
+    public Dictionary<string, double> DrugItems
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("foodItems")]
-    public Dictionary<string, double>? FoodItems
+    public Dictionary<string, double> FoodItems
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("drinkItems")]
-    public Dictionary<string, double>? DrinkItems
+    public Dictionary<string, double> DrinkItems
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("currencyItems")]
-    public Dictionary<string, double>? CurrencyItems
+    public Dictionary<string, double> CurrencyItems
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("stimItems")]
-    public Dictionary<string, double>? StimItems
+    public Dictionary<string, double> StimItems
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("grenadeItems")]
-    public Dictionary<string, double>? GrenadeItems
+    public Dictionary<string, double> GrenadeItems
     {
         get;
         set;
-    }
+    } = [];
 }
 
 public record LootCacheType
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public const string Special = "Special";
     public const string Backpack = "Backpack";
     public const string Pocket = "Pocket";

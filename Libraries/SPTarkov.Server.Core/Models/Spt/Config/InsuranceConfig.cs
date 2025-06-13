@@ -1,11 +1,11 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Spt.Config;
 
 public record InsuranceConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -19,7 +19,7 @@ public record InsuranceConfig : BaseConfig
     {
         get;
         set;
-    }
+    } = [];
 
     /// <summary>
     ///     Item slots that should never be returned as insurance
@@ -29,7 +29,7 @@ public record InsuranceConfig : BaseConfig
     {
         get;
         set;
-    }
+    } = [];
 
     /// <summary>
     ///     Some slots should always be removed, e.g. 'cartridges'
@@ -39,7 +39,7 @@ public record InsuranceConfig : BaseConfig
     {
         get;
         set;
-    }
+    } = [];
 
     /// <summary>
     ///     Override to control how quickly insurance is processed/returned in seconds

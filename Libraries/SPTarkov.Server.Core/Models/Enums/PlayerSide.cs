@@ -2,6 +2,7 @@
 
 namespace SPTarkov.Server.Core.Models.Enums;
 
+[EftEnumConverter]
 [EftListEnumConverter]
 public enum PlayerSide
 {

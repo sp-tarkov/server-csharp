@@ -147,7 +147,7 @@ public class LocaleService(
         var platformLocale = GetPlatformLocale();
         if (platformLocale == null)
         {
-            _logger.Warning("System language could not be found, falling back to english");
+            _logger.Warning("System language not found, falling back to english");
             return "en";
         }
 
@@ -190,7 +190,7 @@ public class LocaleService(
         var platformLocale = GetPlatformLocale();
         if (platformLocale == null)
         {
-            _logger.Warning("System language could not be found, falling back to english");
+            _logger.Warning("System language not found, falling back to english");
             return "en";
         }
 

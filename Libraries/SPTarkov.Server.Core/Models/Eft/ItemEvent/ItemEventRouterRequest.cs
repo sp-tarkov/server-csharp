@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Common.Request;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
@@ -7,6 +7,9 @@ namespace SPTarkov.Server.Core.Models.Eft.ItemEvent;
 
 public record ItemEventRouterRequest : IRequestData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("data")]
     public List<BaseInteractionRequestData>? Data
     {
@@ -31,6 +34,9 @@ public record ItemEventRouterRequest : IRequestData
 
 public record Daum
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Action")]
     public string? Action
     {
@@ -90,6 +96,9 @@ public record Daum
 
 public record FromOwner
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("id")]
     public string? Id
     {
@@ -107,6 +116,9 @@ public record FromOwner
 
 public record To
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("id")]
     public string? Id
     {
@@ -131,6 +143,9 @@ public record To
 
 public record Location
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("x")]
     public int? X
     {

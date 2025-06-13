@@ -4,22 +4,25 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 
 public record BotDurability
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("default")]
-    public DefaultDurability Default
+    public required DefaultDurability Default
     {
         get;
         set;
     }
 
     [JsonPropertyName("botDurabilities")]
-    public Dictionary<string, DefaultDurability> BotDurabilities
+    public required Dictionary<string, DefaultDurability> BotDurabilities
     {
         get;
         set;
     }
 
     [JsonPropertyName("pmc")]
-    public PmcDurability Pmc
+    public required PmcDurability Pmc
     {
         get;
         set;
@@ -31,15 +34,18 @@ public record BotDurability
 /// </summary>
 public record DefaultDurability
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("armor")]
-    public ArmorDurability Armor
+    public required ArmorDurability Armor
     {
         get;
         set;
     }
 
     [JsonPropertyName("weapon")]
-    public WeaponDurability Weapon
+    public required WeaponDurability Weapon
     {
         get;
         set;
@@ -48,15 +54,18 @@ public record DefaultDurability
 
 public record PmcDurability
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("armor")]
-    public PmcDurabilityArmor Armor
+    public required PmcDurabilityArmor Armor
     {
         get;
         set;
     }
 
     [JsonPropertyName("weapon")]
-    public WeaponDurability Weapon
+    public required WeaponDurability Weapon
     {
         get;
         set;
@@ -65,6 +74,9 @@ public record PmcDurability
 
 public record PmcDurabilityArmor
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("lowestMaxPercent")]
     public int LowestMaxPercent
     {
@@ -103,6 +115,9 @@ public record PmcDurabilityArmor
 
 public record ArmorDurability
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("maxDelta")]
     public int MaxDelta
     {
@@ -141,6 +156,9 @@ public record ArmorDurability
 
 public record WeaponDurability
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("lowestMax")]
     public int LowestMax
     {

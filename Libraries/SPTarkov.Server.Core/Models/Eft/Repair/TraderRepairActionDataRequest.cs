@@ -5,6 +5,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Repair;
 
 public record TraderRepairActionDataRequest : InventoryBaseActionRequestData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("tid")]
     public string? TId
     {
@@ -22,6 +25,9 @@ public record TraderRepairActionDataRequest : InventoryBaseActionRequestData
 
 public record RepairItem
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("_id")]
     public string? Id
     {

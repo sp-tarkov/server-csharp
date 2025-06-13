@@ -4,6 +4,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Notifier;
 
 public record NotifierChannel
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("server")]
     public string? Server
     {

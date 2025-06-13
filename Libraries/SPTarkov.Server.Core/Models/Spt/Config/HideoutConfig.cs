@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record HideoutConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -27,7 +27,7 @@ public record HideoutConfig : BaseConfig
     ///     Default values used to hydrate `RunIntervalSeconds` with
     /// </summary>
     [JsonPropertyName("runIntervalValues")]
-    public RunIntervalValues RunIntervalValues
+    public required RunIntervalValues RunIntervalValues
     {
         get;
         set;
@@ -72,14 +72,14 @@ public record HideoutConfig : BaseConfig
     }
 
     [JsonPropertyName("cultistCircle")]
-    public CultistCircleSettings CultistCircle
+    public required CultistCircleSettings CultistCircle
     {
         get;
         set;
     }
 
     [JsonPropertyName("hideoutCraftsToAdd")]
-    public List<HideoutCraftToAdd> HideoutCraftsToAdd
+    public required List<HideoutCraftToAdd> HideoutCraftsToAdd
     {
         get;
         set;
@@ -88,32 +88,35 @@ public record HideoutConfig : BaseConfig
 
 public record HideoutCraftToAdd
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     The new mongoId for the craft to use
     /// </summary>
     [JsonPropertyName("newId")]
-    public string NewId
+    public  required string NewId
     {
         get;
         set;
     }
 
     [JsonPropertyName("requirements")]
-    public List<Requirement> Requirements
+    public  required List<Requirement> Requirements
     {
         get;
         set;
     }
 
     [JsonPropertyName("craftIdToCopy")]
-    public string CraftIdToCopy
+    public required string CraftIdToCopy
     {
         get;
         set;
     }
 
     [JsonPropertyName("craftOutputTpl")]
-    public string CraftOutputTpl
+    public required string CraftOutputTpl
     {
         get;
         set;
@@ -122,6 +125,9 @@ public record HideoutCraftToAdd
 
 public record CultistCircleSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("maxRewardItemCount")]
     public int MaxRewardItemCount
     {
@@ -137,7 +143,7 @@ public record CultistCircleSettings
     }
 
     [JsonPropertyName("rewardPriceMultiplerMinMax")]
-    public MinMax<double> RewardPriceMultiplierMinMax
+    public required MinMax<double> RewardPriceMultiplierMinMax
     {
         get;
         set;
@@ -191,7 +197,7 @@ public record CultistCircleSettings
     }
 
     [JsonPropertyName("craftTimeThreshholds")]
-    public List<CraftTimeThreshold> CraftTimeThreshholds
+    public required List<CraftTimeThreshold> CraftTimeThreshholds
     {
         get;
         set;
@@ -211,7 +217,7 @@ public record CultistCircleSettings
     ///     Specific reward pool when player sacrifices specific item(s)
     /// </summary>
     [JsonPropertyName("directRewards")]
-    public List<DirectRewardSettings> DirectRewards
+    public required List<DirectRewardSettings> DirectRewards
     {
         get;
         set;
@@ -221,7 +227,7 @@ public record CultistCircleSettings
     ///     Overrides for reward stack sizes, keyed by item tpl
     /// </summary>
     [JsonPropertyName("directRewardStackSize")]
-    public Dictionary<string, MinMax<int>> DirectRewardStackSize
+    public required Dictionary<string, MinMax<int>> DirectRewardStackSize
     {
         get;
         set;
@@ -231,7 +237,7 @@ public record CultistCircleSettings
     ///     Item tpls to exclude from the reward pool
     /// </summary>
     [JsonPropertyName("rewardItemBlacklist")]
-    public List<string> RewardItemBlacklist
+    public required List<string> RewardItemBlacklist
     {
         get;
         set;
@@ -241,14 +247,14 @@ public record CultistCircleSettings
     ///     Item tpls to include in the reward pool
     /// </summary>
     [JsonPropertyName("additionalRewardItemPool")]
-    public List<string> AdditionalRewardItemPool
+    public required List<string> AdditionalRewardItemPool
     {
         get;
         set;
     }
 
     [JsonPropertyName("currencyRewards")]
-    public Dictionary<string, MinMax<int>> CurrencyRewards
+    public required Dictionary<string, MinMax<int>> CurrencyRewards
     {
         get;
         set;
@@ -267,22 +273,25 @@ public record CraftTimeThreshold : MinMax<int>
 
 public record DirectRewardSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("reward")]
-    public List<string> Reward
+    public required List<string> Reward
     {
         get;
         set;
     }
 
     [JsonPropertyName("requiredItems")]
-    public List<string> RequiredItems
+    public required List<string> RequiredItems
     {
         get;
         set;
     }
 
     [JsonPropertyName("craftTimeSeconds")]
-    public int CraftTimeSeconds
+    public required int CraftTimeSeconds
     {
         get;
         set;
@@ -292,7 +301,7 @@ public record DirectRewardSettings
     ///     Is the reward a one time reward or can it be given multiple times
     /// </summary>
     [JsonPropertyName("repeatable")]
-    public bool Repeatable
+    public required bool Repeatable
     {
         get;
         set;

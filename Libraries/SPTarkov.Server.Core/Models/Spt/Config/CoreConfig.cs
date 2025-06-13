@@ -6,91 +6,91 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record CoreConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
     } = "spt-core";
 
     [JsonPropertyName("sptVersion")]
-    public string SptVersion
+    public required string SptVersion
     {
         get;
         set;
     }
 
     [JsonPropertyName("projectName")]
-    public string ProjectName
+    public required string ProjectName
     {
         get;
         set;
     }
 
     [JsonPropertyName("compatibleTarkovVersion")]
-    public string CompatibleTarkovVersion
+    public required string CompatibleTarkovVersion
     {
         get;
         set;
     }
 
     [JsonPropertyName("serverName")]
-    public string ServerName
+    public required string ServerName
     {
         get;
         set;
     }
 
     [JsonPropertyName("profileSaveIntervalSeconds")]
-    public int ProfileSaveIntervalInSeconds
+    public required int ProfileSaveIntervalInSeconds
     {
         get;
         set;
     }
 
     [JsonPropertyName("sptFriendNickname")]
-    public string SptFriendNickname
+    public required string SptFriendNickname
     {
         get;
         set;
     }
 
     [JsonPropertyName("allowProfileWipe")]
-    public bool AllowProfileWipe
+    public required bool AllowProfileWipe
     {
         get;
         set;
     }
 
     [JsonPropertyName("bsgLogging")]
-    public BsgLogging BsgLogging
+    public required BsgLogging BsgLogging
     {
         get;
         set;
     }
 
     [JsonPropertyName("release")]
-    public Release Release
+    public required Release Release
     {
         get;
         set;
     }
 
     [JsonPropertyName("fixes")]
-    public GameFixes Fixes
+    public required GameFixes Fixes
     {
         get;
         set;
     }
 
     [JsonPropertyName("survey")]
-    public SurveyResponseData Survey
+    public required SurveyResponseData Survey
     {
         get;
         set;
     }
 
     [JsonPropertyName("features")]
-    public ServerFeatures Features
+    public required ServerFeatures Features
     {
         get;
         set;
@@ -129,6 +129,9 @@ public record CoreConfig : BaseConfig
 
 public record BsgLogging
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     verbosity of what to log, yes I know this is backwards, but its how nlog deals with ordinals. <br />
     ///     complain to them about it! In all cases, better exceptions will be logged.<br />
@@ -161,6 +164,9 @@ public record BsgLogging
 
 public record Release
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Disclaimer outlining the intended usage of bleeding edge
     /// </summary>
@@ -175,7 +181,7 @@ public record Release
     ///     Text logged when users agreed to terms
     /// </summary>
     [JsonPropertyName("betaDisclaimerAcceptText")]
-    public string BetaDisclaimerAcceptText
+    public string? BetaDisclaimerAcceptText
     {
         get;
         set;
@@ -185,7 +191,7 @@ public record Release
     ///     Server mods loaded message
     /// </summary>
     [JsonPropertyName("serverModsLoadedText")]
-    public string ServerModsLoadedText
+    public string? ServerModsLoadedText
     {
         get;
         set;
@@ -195,7 +201,7 @@ public record Release
     ///     Server mods loaded debug message text
     /// </summary>
     [JsonPropertyName("serverModsLoadedDebugText")]
-    public string ServerModsLoadedDebugText
+    public string? ServerModsLoadedDebugText
     {
         get;
         set;
@@ -205,7 +211,7 @@ public record Release
     ///     Client mods loaded message
     /// </summary>
     [JsonPropertyName("clientModsLoadedText")]
-    public string ClientModsLoadedText
+    public string? ClientModsLoadedText
     {
         get;
         set;
@@ -215,7 +221,7 @@ public record Release
     ///     Client mods loaded debug message text
     /// </summary>
     [JsonPropertyName("clientModsLoadedDebugText")]
-    public string ClientModsLoadedDebugText
+    public string? ClientModsLoadedDebugText
     {
         get;
         set;
@@ -225,7 +231,7 @@ public record Release
     ///     Illegal plugins log message
     /// </summary>
     [JsonPropertyName("illegalPluginsLoadedText")]
-    public string IllegalPluginsLoadedText
+    public string? IllegalPluginsLoadedText
     {
         get;
         set;
@@ -235,7 +241,7 @@ public record Release
     ///     Illegal plugins exception
     /// </summary>
     [JsonPropertyName("illegalPluginsExceptionText")]
-    public string IllegalPluginsExceptionText
+    public string? IllegalPluginsExceptionText
     {
         get;
         set;
@@ -294,6 +300,9 @@ public record Release
 
 public record GameFixes
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Shotguns use a different value than normal guns causing huge pellet dispersion
     /// </summary>
@@ -337,15 +346,8 @@ public record GameFixes
 
 public record ServerFeatures
 {
-    /// <summary>
-    ///     Controls whether the server attempts to download mod dependencies not included in the server's executable
-    /// </summary>
-    [JsonPropertyName("autoInstallModDependencies")]
-    public bool AutoInstallModDependencies
-    {
-        get;
-        set;
-    }
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
 
     [JsonPropertyName("compressProfile")]
     public bool CompressProfile
@@ -355,7 +357,7 @@ public record ServerFeatures
     }
 
     [JsonPropertyName("chatbotFeatures")]
-    public ChatbotFeatures ChatbotFeatures
+    public required ChatbotFeatures ChatbotFeatures
     {
         get;
         set;
@@ -365,7 +367,7 @@ public record ServerFeatures
     ///     Keyed to profile type e.g. "Standard" or "SPT Developer"
     /// </summary>
     [JsonPropertyName("createNewProfileTypesBlacklist")]
-    public HashSet<string> CreateNewProfileTypesBlacklist
+    public required HashSet<string> CreateNewProfileTypesBlacklist
     {
         get;
         set;
@@ -375,7 +377,7 @@ public record ServerFeatures
     ///     Profile ids to ignore when calculating achievement stats
     /// </summary>
     [JsonPropertyName("achievementProfileIdBlacklist")]
-    public HashSet<string>? AchievementProfileIdBlacklist
+    public  required HashSet<string>? AchievementProfileIdBlacklist
     {
         get;
         set;
@@ -384,6 +386,9 @@ public record ServerFeatures
 
 public record ChatbotFeatures
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("sptFriendGiftsEnabled")]
     public bool SptFriendGiftsEnabled
     {
@@ -392,14 +397,14 @@ public record ChatbotFeatures
     }
 
     [JsonPropertyName("commandoFeatures")]
-    public CommandoFeatures CommandoFeatures
+    public required CommandoFeatures CommandoFeatures
     {
         get;
         set;
     }
 
     [JsonPropertyName("commandUseLimits")]
-    public Dictionary<string, int?> CommandUseLimits
+    public required Dictionary<string, int?> CommandUseLimits
     {
         get;
         set;
@@ -409,7 +414,7 @@ public record ChatbotFeatures
     ///     Human readable id to guid for each bot
     /// </summary>
     [JsonPropertyName("ids")]
-    public Dictionary<string, string> Ids
+    public required Dictionary<string, string> Ids
     {
         get;
         set;
@@ -419,7 +424,7 @@ public record ChatbotFeatures
     ///     Bot Ids player is allowed to interact with
     /// </summary>
     [JsonPropertyName("enabledBots")]
-    public Dictionary<string, bool> EnabledBots
+    public required Dictionary<string, bool> EnabledBots
     {
         get;
         set;
@@ -428,6 +433,9 @@ public record ChatbotFeatures
 
 public record CommandoFeatures
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("giveCommandEnabled")]
     public bool GiveCommandEnabled
     {

@@ -17,10 +17,10 @@ public class DialogueCallbacks(
 )
     : IOnUpdate
 {
-    public bool OnUpdate(long timeSinceLastRun)
+    public Task<bool> OnUpdate(long timeSinceLastRun)
     {
         _dialogueController.Update();
-        return true;
+        return Task.FromResult(true);
     }
 
     /// <summary>
@@ -246,6 +246,8 @@ public class DialogueCallbacks(
 
     public virtual ValueTask<string> ClearMail(string url, ClearMailMessageRequest request, string sessionID)
     {
+        _dialogueController.ClearMessages(sessionID, request);
+
         return new ValueTask<string>(_httpResponseUtil.EmptyArrayResponse());
     }
 

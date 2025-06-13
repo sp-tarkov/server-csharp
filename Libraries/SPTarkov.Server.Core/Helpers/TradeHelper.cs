@@ -262,7 +262,7 @@ public class TradeHelper(
     /// <param name="sellRequest">Request data</param>
     /// <param name="sessionID">Session id</param>
     /// <param name="output">Item event router response</param>
-    public void sellItem(
+    public void SellItem(
         PmcData profileWithItemsToSell,
         PmcData profileToReceiveMoney,
         ProcessSellTradeRequestData sellRequest,
@@ -335,14 +335,14 @@ public class TradeHelper(
         }
 
         // Find related task condition
-        var taskCondition = profileToReceiveMoney.TaskConditionCounters.Values.FirstOrDefault(condition =>
+        var taskCondition = profileToReceiveMoney.TaskConditionCounters?.Values.FirstOrDefault(condition =>
             condition.SourceId == circulateQuestId && condition.Type == "SellItemToTrader"
         );
 
-        // No relevant condtion in profile, nothing to increment
+        // No relevant condition in profile, nothing to increment
         if (taskCondition is null)
         {
-            _logger.Error("Unable to find `sellToTrader` task counter for Circulate quest in profile, skipping");
+            _logger.Error($"Unable to find `sellToTrader` task counter for {circulateQuestId} quest in profile, skipping");
 
             return;
         }
@@ -357,14 +357,14 @@ public class TradeHelper(
         }
 
         // Get sellToTrader condition from quest
-        var sellItemToTraderCondition = circulateQuestDb[circulateQuestId]
-            .Conditions.AvailableForFinish.FirstOrDefault(condition => condition.ConditionType == "SellItemToTrader"
+        var sellItemToTraderCondition = circulateQuestDb.GetValueOrDefault(circulateQuestId)?
+            .Conditions?.AvailableForFinish?.FirstOrDefault(condition => condition.ConditionType == "SellItemToTrader"
             );
 
-        // Quest doesnt have a sellItemToTrader condition, nothing to do
+        // Quest doesn't have a sellItemToTrader condition, nothing to do
         if (sellItemToTraderCondition is null)
         {
-            _logger.Error("Unable to find `sellToTrader` counter for Circulate quest in db, skipping");
+            _logger.Error(_localisationService.GetText("quest-unable_to_find_selltotrader_counter", circulateQuestId));
 
             return;
         }
@@ -374,11 +374,11 @@ public class TradeHelper(
         foreach (var itemSoldToTrader in sellRequest.Items)
         {
             // Get sold items' details from profile
-            var itemDetails = profileWithItemsToSell.Inventory.Items.FirstOrDefault(inventoryItem => inventoryItem.Id == itemSoldToTrader.Id
+            var itemDetails = profileWithItemsToSell.Inventory?.Items?.FirstOrDefault(inventoryItem => inventoryItem.Id == itemSoldToTrader.Id
             );
             if (itemDetails is null)
             {
-                _logger.Error($"Unable to find item in inventory to sell to trader with id: {itemSoldToTrader.Id}, cannot increment counter, skipping");
+                _logger.Error(_localisationService.GetText("trader-unable_to_find_inventory_item_for_selltotrader_counter", circulateQuestId));
 
                 continue;
             }

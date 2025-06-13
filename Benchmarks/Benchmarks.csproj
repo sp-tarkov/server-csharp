@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
-    <PackageReference Include="FastCloner" Version="3.3.4" />
+    <PackageReference Include="FastCloner" Version="3.3.8" />
     <ProjectReference Include="..\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
     <ProjectReference Include="..\Libraries\SPTarkov.Server.Assets\SPTarkov.Server.Assets.csproj" />
     <ProjectReference Include="..\Libraries\SPTarkov.Common\SPTarkov.Common.csproj" />

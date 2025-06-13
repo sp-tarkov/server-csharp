@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Common.Request;
 
 namespace SPTarkov.Server.Core.Models.Eft.Hideout;

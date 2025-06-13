@@ -8,7 +8,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record PmcConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -18,7 +18,7 @@ public record PmcConfig : BaseConfig
     ///     What game version should the PMC have
     /// </summary>
     [JsonPropertyName("gameVersionWeight")]
-    public Dictionary<string, double> GameVersionWeight
+    public required Dictionary<string, double> GameVersionWeight
     {
         get;
         set;
@@ -28,7 +28,7 @@ public record PmcConfig : BaseConfig
     ///     What account type should the PMC have
     /// </summary>
     [JsonPropertyName("accountTypeWeight")]
-    public Dictionary<MemberCategory, double> AccountTypeWeight
+    public required Dictionary<MemberCategory, double> AccountTypeWeight
     {
         get;
         set;
@@ -38,7 +38,7 @@ public record PmcConfig : BaseConfig
     ///     Global whitelist/blacklist of vest loot for PMCs
     /// </summary>
     [JsonPropertyName("vestLoot")]
-    public SlotLootSettings VestLoot
+    public required SlotLootSettings VestLoot
     {
         get;
         set;
@@ -48,7 +48,7 @@ public record PmcConfig : BaseConfig
     ///     Global whitelist/blacklist of pocket loot for PMCs
     /// </summary>
     [JsonPropertyName("pocketLoot")]
-    public SlotLootSettings PocketLoot
+    public required SlotLootSettings PocketLoot
     {
         get;
         set;
@@ -58,14 +58,14 @@ public record PmcConfig : BaseConfig
     ///     Global whitelist/blacklist of backpack loot for PMCs
     /// </summary>
     [JsonPropertyName("backpackLoot")]
-    public SlotLootSettings BackpackLoot
+    public required SlotLootSettings BackpackLoot
     {
         get;
         set;
     }
 
     [JsonPropertyName("globalLootBlacklist")]
-    public List<string> GlobalLootBlacklist
+    public required List<string> GlobalLootBlacklist
     {
         get;
         set;
@@ -75,7 +75,7 @@ public record PmcConfig : BaseConfig
     ///     Use difficulty defined in config/bot.json/difficulty instead of chosen difficulty dropdown value
     /// </summary>
     [JsonPropertyName("useDifficultyOverride")]
-    public bool UseDifficultyOverride
+    public required bool UseDifficultyOverride
     {
         get;
         set;
@@ -85,7 +85,7 @@ public record PmcConfig : BaseConfig
     ///     Difficulty override e.g. "AsOnline/Hard"
     /// </summary>
     [JsonPropertyName("difficulty")]
-    public string Difficulty
+    public required string Difficulty
     {
         get;
         set;
@@ -95,7 +95,7 @@ public record PmcConfig : BaseConfig
     ///     Chance out of 100 to have a complete gun in backpack
     /// </summary>
     [JsonPropertyName("looseWeaponInBackpackChancePercent")]
-    public double LooseWeaponInBackpackChancePercent
+    public required double LooseWeaponInBackpackChancePercent
     {
         get;
         set;
@@ -105,7 +105,7 @@ public record PmcConfig : BaseConfig
     ///     Chance out of 100 to have an enhancement applied to PMC weapon
     /// </summary>
     [JsonPropertyName("weaponHasEnhancementChancePercent")]
-    public double WeaponHasEnhancementChancePercent
+    public required double WeaponHasEnhancementChancePercent
     {
         get;
         set;
@@ -115,7 +115,7 @@ public record PmcConfig : BaseConfig
     ///     MinMax count of weapons to have in backpack
     /// </summary>
     [JsonPropertyName("looseWeaponInBackpackLootMinMax")]
-    public MinMax<int> LooseWeaponInBackpackLootMinMax
+    public required MinMax<int> LooseWeaponInBackpackLootMinMax
     {
         get;
         set;
@@ -132,7 +132,7 @@ public record PmcConfig : BaseConfig
     ///     Percentage chance PMC will be USEC
     /// </summary>
     [JsonPropertyName("isUsec")]
-    public double IsUsec
+    public required double IsUsec
     {
         get;
         set;
@@ -142,7 +142,7 @@ public record PmcConfig : BaseConfig
     ///     WildSpawnType enum value USEC PMCs use
     /// </summary>
     [JsonPropertyName("usecType")]
-    public string UsecType
+    public required string UsecType
     {
         get;
         set;
@@ -152,7 +152,7 @@ public record PmcConfig : BaseConfig
     ///     WildSpawnType enum value BEAR PMCs use
     /// </summary>
     [JsonPropertyName("bearType")]
-    public string BearType
+    public required string BearType
     {
         get;
         set;
@@ -169,28 +169,28 @@ public record PmcConfig : BaseConfig
     ///     What 'brain' does a PMC use, keyed by map and side (USEC/BEAR) key: map location, value: type for usec/bear
     /// </summary>
     [JsonPropertyName("pmcType")]
-    public Dictionary<string, Dictionary<string, Dictionary<string, double>>> PmcType
+    public required Dictionary<string, Dictionary<string, Dictionary<string, double>>> PmcType
     {
         get;
         set;
     }
 
     [JsonPropertyName("maxBackpackLootTotalRub")]
-    public List<MinMaxLootValue> MaxBackpackLootTotalRub
+    public required List<MinMaxLootValue> MaxBackpackLootTotalRub
     {
         get;
         set;
     }
 
     [JsonPropertyName("maxPocketLootTotalRub")]
-    public int MaxPocketLootTotalRub
+    public required int MaxPocketLootTotalRub
     {
         get;
         set;
     }
 
     [JsonPropertyName("maxVestLootTotalRub")]
-    public int MaxVestLootTotalRub
+    public required int MaxVestLootTotalRub
     {
         get;
         set;
@@ -200,7 +200,7 @@ public record PmcConfig : BaseConfig
     ///     How many levels above player level can a PMC be
     /// </summary>
     [JsonPropertyName("botRelativeLevelDeltaMax")]
-    public int BotRelativeLevelDeltaMax
+    public required int BotRelativeLevelDeltaMax
     {
         get;
         set;
@@ -210,7 +210,7 @@ public record PmcConfig : BaseConfig
     ///     How many levels below player level can a PMC be
     /// </summary>
     [JsonPropertyName("botRelativeLevelDeltaMin")]
-    public int BotRelativeLevelDeltaMin
+    public required int BotRelativeLevelDeltaMin
     {
         get;
         set;
@@ -220,28 +220,28 @@ public record PmcConfig : BaseConfig
     ///     Force a number of healing items into PMCs secure container to ensure they can heal
     /// </summary>
     [JsonPropertyName("forceHealingItemsIntoSecure")]
-    public bool ForceHealingItemsIntoSecure
+    public required bool ForceHealingItemsIntoSecure
     {
         get;
         set;
     }
 
     [JsonPropertyName("hostilitySettings")]
-    public Dictionary<string, HostilitySettings> HostilitySettings
+    public required Dictionary<string, HostilitySettings> HostilitySettings
     {
         get;
         set;
     }
 
     [JsonPropertyName("allPMCsHavePlayerNameWithRandomPrefixChance")]
-    public double AllPMCsHavePlayerNameWithRandomPrefixChance
+    public required double AllPMCsHavePlayerNameWithRandomPrefixChance
     {
         get;
         set;
     }
 
     [JsonPropertyName("locationSpecificPmcLevelOverride")]
-    public Dictionary<string, MinMax<int>> LocationSpecificPmcLevelOverride
+    public required Dictionary<string, MinMax<int>> LocationSpecificPmcLevelOverride
     {
         get;
         set;
@@ -251,35 +251,35 @@ public record PmcConfig : BaseConfig
     ///     Should secure container loot from usec.json/bear.json be added to pmc bots secure
     /// </summary>
     [JsonPropertyName("addSecureContainerLootFromBotConfig")]
-    public bool AddSecureContainerLootFromBotConfig
+    public required bool AddSecureContainerLootFromBotConfig
     {
         get;
         set;
     }
 
     [JsonPropertyName("addPrefixToSameNamePMCAsPlayerChance")]
-    public int? AddPrefixToSameNamePMCAsPlayerChance
+    public required int? AddPrefixToSameNamePMCAsPlayerChance
     {
         get;
         set;
     }
 
     [JsonPropertyName("lootItemLimitsRub")]
-    public List<MinMaxLootItemValue>? LootItemLimitsRub
+    public required List<MinMaxLootItemValue>? LootItemLimitsRub
     {
         get;
         set;
     }
 
     [JsonPropertyName("removeExistingPmcWaves")]
-    public bool? RemoveExistingPmcWaves
+    public required bool? RemoveExistingPmcWaves
     {
         get;
         set;
     }
 
     [JsonPropertyName("customPmcWaves")]
-    public Dictionary<string, List<BossLocationSpawn>> CustomPmcWaves
+    public required Dictionary<string, List<BossLocationSpawn>> CustomPmcWaves
     {
         get;
         set;
@@ -288,6 +288,9 @@ public record PmcConfig : BaseConfig
 
 public record HostilitySettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Bot roles that are 100% an enemy
     /// </summary>
@@ -347,25 +350,11 @@ public record HostilitySettings
     }
 }
 
-public record PmcTypes
-{
-    [JsonPropertyName("usec")]
-    public string Usec
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("bear")]
-    public string Bear
-    {
-        get;
-        set;
-    }
-}
-
 public record SlotLootSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Item Type whitelist
     /// </summary>
@@ -374,7 +363,7 @@ public record SlotLootSettings
     {
         get;
         set;
-    }
+    } = [];
 
     /// <summary>
     ///     Item tpl blacklist
@@ -384,7 +373,7 @@ public record SlotLootSettings
     {
         get;
         set;
-    }
+    } = [];
 }
 
 public record MinMaxLootValue : MinMax<int>
@@ -400,21 +389,21 @@ public record MinMaxLootValue : MinMax<int>
 public record MinMaxLootItemValue : MinMax<double>
 {
     [JsonPropertyName("backpack")]
-    public MinMax<double> Backpack
+    public required MinMax<double> Backpack
     {
         get;
         set;
     }
 
     [JsonPropertyName("pocket")]
-    public MinMax<double> Pocket
+    public required MinMax<double> Pocket
     {
         get;
         set;
     }
 
     [JsonPropertyName("vest")]
-    public MinMax<double> Vest
+    public required MinMax<double> Vest
     {
         get;
         set;

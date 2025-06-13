@@ -1,4 +1,4 @@
-﻿// namespace SPTarkov.Server.Core.Models.Spt.Logging;
+// namespace SPTarkov.Server.Core.Models.Spt.Logging;
 //
 // public record LogBackgroundColor
 // {

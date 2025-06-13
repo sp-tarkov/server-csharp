@@ -8,7 +8,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record SeasonalEventConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -25,7 +25,7 @@ public record SeasonalEventConfig : BaseConfig
     ///     event / botType / equipSlot / itemid
     /// </summary>
     [JsonPropertyName("eventGear")]
-    public Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventGear
+    public required Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventGear
     {
         get;
         set;
@@ -35,42 +35,42 @@ public record SeasonalEventConfig : BaseConfig
     ///     event / bot type / equipSlot / itemid
     /// </summary>
     [JsonPropertyName("eventLoot")]
-    public Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventLoot
+    public required Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventLoot
     {
         get;
         set;
     }
 
     [JsonPropertyName("events")]
-    public List<SeasonalEvent> Events
+    public required List<SeasonalEvent> Events
     {
         get;
         set;
     }
 
     [JsonPropertyName("eventBotMapping")]
-    public Dictionary<string, string> EventBotMapping
+    public required Dictionary<string, string> EventBotMapping
     {
         get;
         set;
     }
 
     [JsonPropertyName("eventBossSpawns")]
-    public Dictionary<string, Dictionary<string, List<BossLocationSpawn>>> EventBossSpawns
+    public required Dictionary<string, Dictionary<string, List<BossLocationSpawn>>> EventBossSpawns
     {
         get;
         set;
     }
 
     [JsonPropertyName("eventWaves")]
-    public Dictionary<string, Dictionary<string, List<Wave>>> EventWaves
+    public required Dictionary<string, Dictionary<string, List<Wave>>> EventWaves
     {
         get;
         set;
     }
 
     [JsonPropertyName("gifterSettings")]
-    public List<GifterSetting> GifterSettings
+    public required List<GifterSetting> GifterSettings
     {
         get;
         set;
@@ -80,7 +80,7 @@ public record SeasonalEventConfig : BaseConfig
     ///     key = event, second key = map name
     /// </summary>
     [JsonPropertyName("hostilitySettingsForEvent")]
-    public Dictionary<string, Dictionary<string, List<AdditionalHostilitySettings>>> HostilitySettingsForEvent
+    public required Dictionary<string, Dictionary<string, List<AdditionalHostilitySettings>>> HostilitySettingsForEvent
     {
         get;
         set;
@@ -90,7 +90,7 @@ public record SeasonalEventConfig : BaseConfig
     ///     Ids of containers on locations that only have Christmas loot
     /// </summary>
     [JsonPropertyName("christmasContainerIds")]
-    public List<string> ChristmasContainerIds
+    public required List<string> ChristmasContainerIds
     {
         get;
         set;
@@ -100,7 +100,7 @@ public record SeasonalEventConfig : BaseConfig
     ///     Season - botType - location (body/feet/hands/head)
     /// </summary>
     [JsonPropertyName("botAppearanceChanges")]
-    public Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> BotAppearanceChanges
+    public required Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> BotAppearanceChanges
     {
         get;
         set;
@@ -109,6 +109,9 @@ public record SeasonalEventConfig : BaseConfig
 
 public record SeasonalEvent
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("enabled")]
     public bool Enabled
     {
@@ -121,7 +124,7 @@ public record SeasonalEvent
     {
         get;
         set;
-    }
+    } = string.Empty;
 
     [JsonPropertyName("type")]
     public SeasonalEventType Type
@@ -181,6 +184,9 @@ public record SeasonalEvent
 
 public record SeasonalEventSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("enableSummoning")]
     public bool? EnableSummoning
     {
@@ -275,6 +281,9 @@ public record SeasonalEventSettings
 
 public record ZombieSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("enabled")]
     public bool? Enabled
     {
@@ -306,6 +315,9 @@ public record ZombieSettings
 
 public record GifterSetting
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("map")]
     public string? Map
     {

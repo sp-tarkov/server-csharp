@@ -7,6 +7,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Trader
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("assort")]
     public TraderAssort? Assort
     {
@@ -52,6 +55,9 @@ public record Trader
 
 public record TraderBase
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("refreshTraderRagfairOffers")]
     public bool? RefreshTraderRagfairOffers
     {
@@ -266,6 +272,9 @@ public record TraderBase
 
 public record ItemBuyData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     // MongoId
     [JsonPropertyName("category")]
     public List<string>? Category
@@ -285,6 +294,9 @@ public record ItemBuyData
 
 public record TraderInsurance
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("availability")]
     public bool? Availability
     {
@@ -334,6 +346,9 @@ public record TraderInsurance
 
 public record TraderLoyaltyLevel
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("buy_price_coef")]
     public double? BuyPriceCoefficient
     {
@@ -395,6 +410,9 @@ public record TraderLoyaltyLevel
 
 public record TraderRepair
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("availability")]
     public bool? Availability
     {
@@ -451,6 +469,9 @@ public record TraderRepair
 
 public record TraderAssort
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("nextResupply")]
     public double? NextResupply
     {
@@ -482,6 +503,9 @@ public record TraderAssort
 
 public record BarterScheme
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     // Confirmed in client
     [JsonPropertyName("count")]
     public double? Count
@@ -529,6 +553,9 @@ public record BarterScheme
 
 public record Suit
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("_id")]
     public string? Id
     {
@@ -595,6 +622,9 @@ public record Suit
 
 public record SuitRequirements
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("achievementRequirements")]
     public List<string>? AchievementRequirements
     {
@@ -655,6 +685,9 @@ public record SuitRequirements
 
 public record ItemRequirement
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("count")]
     public double? Count
     {

@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Spt.Services;
 
@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record TraderConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -18,7 +18,7 @@ public record TraderConfig : BaseConfig
     {
         get;
         set;
-    }
+    } = [];
 
     [JsonPropertyName("updateTimeDefault")]
     public int UpdateTimeDefault
@@ -52,14 +52,14 @@ public record TraderConfig : BaseConfig
     }
 
     [JsonPropertyName("fence")]
-    public FenceConfig Fence
+    public required FenceConfig Fence
     {
         get;
         set;
     }
 
     [JsonPropertyName("moddedTraders")]
-    public ModdedTraders ModdedTraders
+    public required ModdedTraders ModdedTraders
     {
         get;
         set;
@@ -68,25 +68,28 @@ public record TraderConfig : BaseConfig
 
 public record UpdateTime
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("_name")]
     public string Name
     {
         get;
         set;
-    }
+    } = string.Empty;
 
     [JsonPropertyName("traderId")]
     public string TraderId
     {
         get;
         set;
-    }
+    } = string.Empty;
 
     /// <summary>
     ///     Seconds between trader resets
     /// </summary>
     [JsonPropertyName("seconds")]
-    public MinMax<int> Seconds
+    public required MinMax<int> Seconds
     {
         get;
         set;
@@ -95,8 +98,11 @@ public record UpdateTime
 
 public record FenceConfig
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("discountOptions")]
-    public DiscountOptions DiscountOptions
+    public required DiscountOptions DiscountOptions
     {
         get;
         set;
@@ -124,14 +130,14 @@ public record FenceConfig
     }
 
     [JsonPropertyName("weaponPresetMinMax")]
-    public MinMax<int> WeaponPresetMinMax
+    public required MinMax<int> WeaponPresetMinMax
     {
         get;
         set;
     }
 
     [JsonPropertyName("equipmentPresetMinMax")]
-    public MinMax<int> EquipmentPresetMinMax
+    public required MinMax<int> EquipmentPresetMinMax
     {
         get;
         set;
@@ -152,14 +158,14 @@ public record FenceConfig
     }
 
     [JsonPropertyName("armorMaxDurabilityPercentMinMax")]
-    public ItemDurabilityCurrentMax ArmorMaxDurabilityPercentMinMax
+    public required ItemDurabilityCurrentMax ArmorMaxDurabilityPercentMinMax
     {
         get;
         set;
     }
 
     [JsonPropertyName("weaponDurabilityPercentMinMax")]
-    public ItemDurabilityCurrentMax WeaponDurabilityPercentMinMax
+    public required ItemDurabilityCurrentMax WeaponDurabilityPercentMinMax
     {
         get;
         set;
@@ -169,7 +175,7 @@ public record FenceConfig
     ///     Keyed to plate protection level
     /// </summary>
     [JsonPropertyName("chancePlateExistsInArmorPercent")]
-    public Dictionary<string, double> ChancePlateExistsInArmorPercent
+    public required Dictionary<string, double> ChancePlateExistsInArmorPercent
     {
         get;
         set;
@@ -179,14 +185,14 @@ public record FenceConfig
     ///     Key: item tpl
     /// </summary>
     [JsonPropertyName("itemStackSizeOverrideMinMax")]
-    public Dictionary<string, MinMax<int>?> ItemStackSizeOverrideMinMax
+    public required Dictionary<string, MinMax<int>?> ItemStackSizeOverrideMinMax
     {
         get;
         set;
     }
 
     [JsonPropertyName("itemTypeLimits")]
-    public Dictionary<string, int> ItemTypeLimits
+    public required Dictionary<string, int> ItemTypeLimits
     {
         get;
         set;
@@ -196,7 +202,7 @@ public record FenceConfig
     ///     Prevent duplicate offers of items of specific categories by parentId
     /// </summary>
     [JsonPropertyName("preventDuplicateOffersOfCategory")]
-    public List<string> PreventDuplicateOffersOfCategory
+    public required List<string> PreventDuplicateOffersOfCategory
     {
         get;
         set;
@@ -213,7 +219,7 @@ public record FenceConfig
     ///     Max rouble price before item is not listed on flea
     /// </summary>
     [JsonPropertyName("itemCategoryRoublePriceLimit")]
-    public Dictionary<string, double?> ItemCategoryRoublePriceLimit
+    public required Dictionary<string, double?> ItemCategoryRoublePriceLimit
     {
         get;
         set;
@@ -223,7 +229,7 @@ public record FenceConfig
     ///     Each slotid with % to be removed prior to listing on fence
     /// </summary>
     [JsonPropertyName("presetSlotsToRemoveChancePercent")]
-    public Dictionary<string, double?> PresetSlotsToRemoveChancePercent
+    public required Dictionary<string, double?> PresetSlotsToRemoveChancePercent
     {
         get;
         set;
@@ -250,14 +256,14 @@ public record FenceConfig
     }
 
     [JsonPropertyName("blacklist")]
-    public HashSet<string> Blacklist
+    public required HashSet<string> Blacklist
     {
         get;
         set;
     }
 
     [JsonPropertyName("coopExtractGift")]
-    public CoopExtractReward CoopExtractGift
+    public required CoopExtractReward CoopExtractGift
     {
         get;
         set;
@@ -293,15 +299,18 @@ public record FenceConfig
 
 public record ItemDurabilityCurrentMax
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("current")]
-    public MinMax<double> Current
+    public required MinMax<double> Current
     {
         get;
         set;
     }
 
     [JsonPropertyName("max")]
-    public MinMax<double> Max
+    public required MinMax<double> Max
     {
         get;
         set;
@@ -318,14 +327,14 @@ public record CoopExtractReward : LootRequest
     }
 
     [JsonPropertyName("useRewardItemBlacklist")]
-    public bool UseRewardItemBlacklist
+    public new bool UseRewardItemBlacklist
     {
         get;
         set;
     }
 
     [JsonPropertyName("messageLocaleIds")]
-    public List<string> MessageLocaleIds
+    public required List<string> MessageLocaleIds
     {
         get;
         set;
@@ -341,6 +350,9 @@ public record CoopExtractReward : LootRequest
 
 public record DiscountOptions
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("assortSize")]
     public int AssortSize
     {
@@ -363,14 +375,14 @@ public record DiscountOptions
     }
 
     [JsonPropertyName("weaponPresetMinMax")]
-    public MinMax<int> WeaponPresetMinMax
+    public required MinMax<int> WeaponPresetMinMax
     {
         get;
         set;
     }
 
     [JsonPropertyName("equipmentPresetMinMax")]
-    public MinMax<int> EquipmentPresetMinMax
+    public required MinMax<int> EquipmentPresetMinMax
     {
         get;
         set;
@@ -382,6 +394,9 @@ public record DiscountOptions
 /// </summary>
 public record ModdedTraders
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Trader Ids to enable the clothing service for
     /// </summary>
@@ -390,5 +405,5 @@ public record ModdedTraders
     {
         get;
         set;
-    }
+    } = [];
 }

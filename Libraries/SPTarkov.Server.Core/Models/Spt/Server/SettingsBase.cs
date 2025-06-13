@@ -1,10 +1,13 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Common;
 
 namespace SPTarkov.Server.Core.Models.Spt.Server;
 
 public record SettingsBase
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("config")]
     public Config? Configuration
     {
@@ -15,6 +18,9 @@ public record SettingsBase
 
 public record Config
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("AFKTimeoutSeconds")]
     public int? AFKTimeoutSeconds
     {
@@ -214,6 +220,9 @@ public record Config
 
 public record AudioSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("AudioGroupPresets")]
     public List<AudioGroupPreset>? AudioGroupPresets
     {
@@ -259,6 +268,9 @@ public record AudioSettings
 
 public record FramerateLimit
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("MaxFramerateGameLimit")]
     public int? MaxFramerateGameLimit
     {
@@ -283,6 +295,9 @@ public record FramerateLimit
 
 public record MemoryManagementSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("AggressiveGC")]
     public bool? AggressiveGC
     {
@@ -328,6 +343,9 @@ public record MemoryManagementSettings
 
 public record ReleaseProfiler
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Enabled")]
     public bool? Enabled
     {
@@ -352,6 +370,9 @@ public record ReleaseProfiler
 
 public record NetworkStateView
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("LossThreshold")]
     public int? LossThreshold
     {
@@ -369,6 +390,9 @@ public record NetworkStateView
 
 public record AudioGroupPreset
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("AngleToAllowBinaural")]
     public double? AngleToAllowBinaural
     {
@@ -442,6 +466,9 @@ public record AudioGroupPreset
 
 public record EnvironmentSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("AutumnLateSettings")]
     public SeasonEnvironmentSettings AutumnLateSettings
     {
@@ -501,6 +528,9 @@ public record EnvironmentSettings
 
 public record SeasonEnvironmentSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("RainSettings")]
     public List<RainSetting> RainSettings
     {
@@ -525,6 +555,9 @@ public record SeasonEnvironmentSettings
 
 public record SurfaceMultiplier
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public string SurfaceType
     {
         get;
@@ -540,6 +573,9 @@ public record SurfaceMultiplier
 
 public record WindMultiplier
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("VolumeMult")]
     public double VolumeMult
     {
@@ -557,6 +593,9 @@ public record WindMultiplier
 
 public record RainSetting
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("IndoorVolumeMult")]
     public int IndoorVolumeMult
     {
@@ -581,6 +620,9 @@ public record RainSetting
 
 public record HeadphoneSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public double FadeDuration
     {
         get;
@@ -602,6 +644,9 @@ public record HeadphoneSettings
 
 public record MetaXRAudioPluginSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public bool? EnabledPluginErrorChecker
     {
         get;

@@ -1,7 +1,11 @@
+using System.Text.Json.Serialization;
 namespace SPTarkov.Server.Core.Models.Enums;
 
 public record HideoutEventActions
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public const string HIDEOUT_UPGRADE = "HideoutUpgrade";
     public const string HIDEOUT_UPGRADE_COMPLETE = "HideoutUpgradeComplete";
     public const string HIDEOUT_PUT_ITEMS_IN_AREA_SLOTS = "HideoutPutItemsInAreaSlots";

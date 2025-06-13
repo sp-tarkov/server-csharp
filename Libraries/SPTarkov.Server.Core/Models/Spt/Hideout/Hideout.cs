@@ -1,10 +1,13 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
 
 namespace SPTarkov.Server.Core.Models.Spt.Hideout;
 
 public record Hideout
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("areas")]
     public List<HideoutArea>? Areas
     {

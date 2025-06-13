@@ -1,10 +1,13 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Enums;
 
 namespace SPTarkov.Server.Core.Models.Eft.Game;
 
 public record CurrentGroupResponse
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("squad")]
     public List<CurrentGroupSquadMember>? Squad
     {
@@ -15,6 +18,9 @@ public record CurrentGroupResponse
 
 public record CurrentGroupSquadMember
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("_id")]
     public string? Id
     {
@@ -53,6 +59,9 @@ public record CurrentGroupSquadMember
 
 public record CurrentGroupMemberInfo
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Nickname")]
     public string? Nickname
     {

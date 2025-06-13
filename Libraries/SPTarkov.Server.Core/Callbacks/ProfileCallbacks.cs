@@ -22,15 +22,15 @@ public class ProfileCallbacks(
     ///     Handle client/game/profile/create
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> CreateProfile(string url, ProfileCreateRequestData info, string sessionID)
+    public async ValueTask<string> CreateProfile(string url, ProfileCreateRequestData info, string sessionID)
     {
-        var id = _profileController.CreateProfile(info, sessionID);
-        return new ValueTask<string>(_httpResponse.GetBody(
+        var id = await _profileController.CreateProfile(info, sessionID);
+        return _httpResponse.GetBody(
             new CreateProfileResponse
             {
                 UserId = id
             }
-        ));
+        );
     }
 
     /// <summary>

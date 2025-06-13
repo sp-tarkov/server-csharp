@@ -1,6 +1,4 @@
-using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -46,19 +44,11 @@ public class LauncherV2Controller(
     public Dictionary<string, string> Types()
     {
         var result = new Dictionary<string, string>();
-        var dbProfiles = _databaseService.GetProfiles();
+        var dbProfiles = _databaseService.GetProfileTemplates();
 
-        foreach (var templatesProperty in typeof(ProfileTemplates).GetProperties().Where(p => p.CanWrite))
+        foreach (var profileKvP in dbProfiles)
         {
-            var propertyValue = templatesProperty.GetValue(dbProfiles);
-            if (propertyValue == null)
-            {
-                _logger.Warning(_localisationService.GetText("launcher-missing_property", templatesProperty));
-                continue;
-            }
-
-            var casterPropertyValue = propertyValue as ProfileSides;
-            result[templatesProperty.GetJsonName()] = _localisationService.GetText(casterPropertyValue?.DescriptionLocaleKey!);
+            result.TryAdd(profileKvP.Key, _localisationService.GetText(profileKvP.Value.DescriptionLocaleKey));
         }
 
         return result;
@@ -81,7 +71,7 @@ public class LauncherV2Controller(
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
-    public bool Register(RegisterData info)
+    public async Task<bool> Register(RegisterData info)
     {
         foreach (var session in _saveServer.GetProfiles())
         {
@@ -91,7 +81,7 @@ public class LauncherV2Controller(
             }
         }
 
-        CreateAccount(info);
+        await CreateAccount(info);
         return true;
     }
 
@@ -100,7 +90,7 @@ public class LauncherV2Controller(
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
-    public bool PasswordChange(ChangeRequestData info)
+    public async Task<bool> PasswordChange(ChangeRequestData info)
     {
         var sessionId = GetSessionId(info);
 
@@ -115,7 +105,7 @@ public class LauncherV2Controller(
         }
 
         _saveServer.GetProfile(sessionId).ProfileInfo!.Password = info.Change;
-        _saveServer.SaveProfile(sessionId);
+        await _saveServer.SaveProfileAsync(sessionId);
         return true;
     }
 
@@ -172,7 +162,7 @@ public class LauncherV2Controller(
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
-    protected string CreateAccount(RegisterData info)
+    protected async Task<string> CreateAccount(RegisterData info)
     {
         var profileId = GenerateProfileId();
         var scavId = GenerateProfileId();
@@ -189,8 +179,8 @@ public class LauncherV2Controller(
 
         _saveServer.CreateProfile(newProfileDetails);
 
-        _saveServer.LoadProfile(profileId);
-        _saveServer.SaveProfile(profileId);
+        await _saveServer.LoadProfileAsync(profileId);
+        await _saveServer.SaveProfileAsync(profileId);
 
         return profileId;
     }

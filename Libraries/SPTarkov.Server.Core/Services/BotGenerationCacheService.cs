@@ -48,9 +48,10 @@ public class BotGenerationCacheService(
                 {
                     return bots.PopLast();
                 }
-                catch (Exception _)
+                catch (Exception e)
                 {
                     _logger.Error(_localisationService.GetText("bot-cache_has_zero_bots_of_requested_type", key));
+                    _logger.Error(e.StackTrace);
                 }
             }
 

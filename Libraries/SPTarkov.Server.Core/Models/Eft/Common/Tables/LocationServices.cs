@@ -6,6 +6,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record LocationServices
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("TraderServerSettings")]
     public TraderServerSettings? TraderServerSettings
     {
@@ -23,6 +26,9 @@ public record LocationServices
 
 public record TraderServerSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("TraderServices")]
     public TraderServices? TraderServices
     {
@@ -33,6 +39,9 @@ public record TraderServerSettings
 
 public record TraderServices
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("ExUsecLoyalty")]
     public TraderService? ExUsecLoyalty
     {
@@ -85,6 +94,9 @@ public record TraderServices
 
 public record TraderService
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("TraderId")]
     public string? TraderId
     {
@@ -125,6 +137,9 @@ public record TraderService
 
 public record ServiceRequirements
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("CompletedQuests")]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public List<CompletedQuest>? CompletedQuests
@@ -145,6 +160,9 @@ public record ServiceRequirements
 
 public record CompletedQuest
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("QuestId")]
     public string? QuestId
     {
@@ -155,6 +173,9 @@ public record CompletedQuest
 
 public record StandingRequirement
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Value")]
     public double? Value
     {
@@ -165,6 +186,9 @@ public record StandingRequirement
 
 public record ServiceItemCostDetails
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Count")]
     public int? Count
     {
@@ -175,6 +199,9 @@ public record ServiceItemCostDetails
 
 public record BtrServerSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("ChanceSpawn")]
     public double? ChanceSpawn
     {
@@ -283,6 +310,9 @@ public record BtrServerSettings
 
 public record ServerMapBtrsettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("MapID")]
     public string? MapID
     {

@@ -155,7 +155,7 @@ public class PostDbLoadService(
         {
             if (achievements.Exists(a => a.Id == customAchievement.Id))
             {
-                _logger.Warning(
+                _logger.Debug(
                     $"Unable to add custom achievement as id: {customAchievement.Id} already exists"
                 );
                 continue;
@@ -518,7 +518,7 @@ public class PostDbLoadService(
         }
 
         foreach (var area in _databaseService.GetHideout().Areas)
-        foreach (var (key, stage) in area.Stages)
+        foreach (var (_, stage) in area.Stages)
         // Only adjust crafts ABOVE the override
         {
             stage.ConstructionTime = Math.Min(stage.ConstructionTime.Value, overrideSeconds);

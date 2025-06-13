@@ -25,6 +25,10 @@
     </Content>
   </ItemGroup>
 
+  <Target Name="PostBuildHashFile" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'"> 
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)PostBuild.ps1&quot;" />
+  </Target>
+
   <ItemGroup>
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath=""/>
   </ItemGroup>

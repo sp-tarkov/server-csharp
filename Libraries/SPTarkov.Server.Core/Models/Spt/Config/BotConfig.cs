@@ -8,7 +8,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record BotConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -18,17 +18,7 @@ public record BotConfig : BaseConfig
     ///     How many variants of each bot should be generated on raid start
     /// </summary>
     [JsonPropertyName("presetBatch")]
-    public Dictionary<string, int>? PresetBatch
-    {
-        get;
-        set;
-    }
-
-    /// <summary>
-    ///     Bot roles that should not have PMC types (pmcBEAR/pmcUSEC) added as enemies to
-    /// </summary>
-    [JsonPropertyName("botsToNotAddPMCsAsEnemiesTo")]
-    public List<string> BotsToNotAddPMCsAsEnemiesTo
+    public required Dictionary<string, int> PresetBatch
     {
         get;
         set;
@@ -38,7 +28,7 @@ public record BotConfig : BaseConfig
     ///     What bot types should be classified as bosses
     /// </summary>
     [JsonPropertyName("bosses")]
-    public List<string> Bosses
+    public required List<string> Bosses
     {
         get;
         set;
@@ -48,7 +38,7 @@ public record BotConfig : BaseConfig
     ///     Control weapon/armor durability min/max values for each bot type
     /// </summary>
     [JsonPropertyName("durability")]
-    public BotDurability Durability
+    public required BotDurability Durability
     {
         get;
         set;
@@ -58,7 +48,7 @@ public record BotConfig : BaseConfig
     ///     Controls the percentage values of randomization item resources
     /// </summary>
     [JsonPropertyName("lootItemResourceRandomization")]
-    public Dictionary<string, RandomisedResourceDetails> LootItemResourceRandomization
+    public required Dictionary<string, RandomisedResourceDetails> LootItemResourceRandomization
     {
         get;
         set;
@@ -69,7 +59,7 @@ public record BotConfig : BaseConfig
     ///     key: bottype, value: bottypes to revenge on seeing their death
     /// </summary>
     [JsonPropertyName("revenge")]
-    public Dictionary<string, List<string>> Revenge
+    public required Dictionary<string, List<string>> Revenge
     {
         get;
         set;
@@ -81,7 +71,7 @@ public record BotConfig : BaseConfig
     ///     key: itemTpl: value: max item count>
     /// </summary>
     [JsonPropertyName("itemSpawnLimits")]
-    public Dictionary<string, Dictionary<string, double>> ItemSpawnLimits
+    public required Dictionary<string, Dictionary<string, double>> ItemSpawnLimits
     {
         get;
         set;
@@ -91,7 +81,7 @@ public record BotConfig : BaseConfig
     ///     Blacklist/whitelist items on a bot
     /// </summary>
     [JsonPropertyName("equipment")]
-    public Dictionary<string, EquipmentFilters?> Equipment
+    public required Dictionary<string, EquipmentFilters?> Equipment
     {
         get;
         set;
@@ -111,7 +101,7 @@ public record BotConfig : BaseConfig
     ///     What ai brain should a normal scav use per map
     /// </summary>
     [JsonPropertyName("assaultBrainType")]
-    public Dictionary<string, Dictionary<string, int>> AssaultBrainType
+    public required Dictionary<string, Dictionary<string, int>> AssaultBrainType
     {
         get;
         set;
@@ -121,7 +111,7 @@ public record BotConfig : BaseConfig
     ///     What ai brain should a player scav use per map
     /// </summary>
     [JsonPropertyName("playerScavBrainType")]
-    public Dictionary<string, Dictionary<string, int>> PlayerScavBrainType
+    public required Dictionary<string, Dictionary<string, int>> PlayerScavBrainType
     {
         get;
         set;
@@ -131,7 +121,7 @@ public record BotConfig : BaseConfig
     ///     Max number of bots that can be spawned in a raid at any one time
     /// </summary>
     [JsonPropertyName("maxBotCap")]
-    public Dictionary<string, int> MaxBotCap
+    public required Dictionary<string, int> MaxBotCap
     {
         get;
         set;
@@ -161,7 +151,7 @@ public record BotConfig : BaseConfig
     ///     Bot roles in this array will be given a dog tag on generation
     /// </summary>
     [JsonPropertyName("botRolesWithDogTags")]
-    public HashSet<string> BotRolesWithDogTags
+    public required HashSet<string> BotRolesWithDogTags
     {
         get;
         set;
@@ -171,7 +161,7 @@ public record BotConfig : BaseConfig
     ///     Settings to control the items that get added into wallets on bots
     /// </summary>
     [JsonPropertyName("walletLoot")]
-    public WalletLootSettings WalletLoot
+    public required WalletLootSettings WalletLoot
     {
         get;
         set;
@@ -181,7 +171,7 @@ public record BotConfig : BaseConfig
     ///     Currency weights, Keyed by botrole / currency
     /// </summary>
     [JsonPropertyName("currencyStackSize")]
-    public Dictionary<string, Dictionary<string, Dictionary<string, double>>> CurrencyStackSize
+    public required Dictionary<string, Dictionary<string, Dictionary<string, double>>> CurrencyStackSize
     {
         get;
         set;
@@ -191,7 +181,7 @@ public record BotConfig : BaseConfig
     ///     Tpls for low profile gas blocks
     /// </summary>
     [JsonPropertyName("lowProfileGasBlockTpls")]
-    public HashSet<string> LowProfileGasBlockTpls
+    public required HashSet<string> LowProfileGasBlockTpls
     {
         get;
         set;
@@ -201,7 +191,7 @@ public record BotConfig : BaseConfig
     ///     What bottypes should be excluded from having loot generated on them (backpack/pocket/vest) does not disable food/drink/special/
     /// </summary>
     [JsonPropertyName("disableLootOnBotTypes")]
-    public HashSet<string> DisableLootOnBotTypes
+    public required HashSet<string> DisableLootOnBotTypes
     {
         get;
         set;
@@ -221,7 +211,7 @@ public record BotConfig : BaseConfig
     ///     Bot roles that must have a unique name when generated vs other bots in raid
     /// </summary>
     [JsonPropertyName("botRolesThatMustHaveUniqueName")]
-    public HashSet<string> BotRolesThatMustHaveUniqueName
+    public required HashSet<string> BotRolesThatMustHaveUniqueName
     {
         get;
         set;
@@ -233,6 +223,9 @@ public record BotConfig : BaseConfig
 /// </summary>
 public record PresetBatch
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("assault")]
     public int Assault
     {
@@ -547,17 +540,13 @@ public record PresetBatch
         get;
         set;
     }
-
-    [JsonExtensionData]
-    public IDictionary<string, object> AdditionalData
-    {
-        get;
-        set;
-    }
 }
 
 public record WalletLootSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Chance wallets have loot in them
     /// </summary>
@@ -569,21 +558,21 @@ public record WalletLootSettings
     }
 
     [JsonPropertyName("itemCount")]
-    public MinMax<int> ItemCount
+    public required MinMax<int> ItemCount
     {
         get;
         set;
     }
 
     [JsonPropertyName("stackSizeWeight")]
-    public Dictionary<string, double> StackSizeWeight
+    public required Dictionary<string, double> StackSizeWeight
     {
         get;
         set;
     }
 
     [JsonPropertyName("currencyWeight")]
-    public Dictionary<string, double> CurrencyWeight
+    public required Dictionary<string, double> CurrencyWeight
     {
         get;
         set;
@@ -593,7 +582,7 @@ public record WalletLootSettings
     ///     What wallets will have money in them
     /// </summary>
     [JsonPropertyName("walletTplPool")]
-    public List<string> WalletTplPool
+    public required List<string> WalletTplPool
     {
         get;
         set;
@@ -602,6 +591,9 @@ public record WalletLootSettings
 
 public record EquipmentFilters
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Limits for mod types per weapon .e.g. scopes
     /// </summary>
@@ -786,6 +778,9 @@ public record EquipmentFilters
 
 public record ModLimits
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     How many scopes are allowed on a weapon - hard coded to work with OPTIC_SCOPE, ASSAULT_SCOPE, COLLIMATOR, COMPACT_COLLIMATOR
     /// </summary>
@@ -809,6 +804,9 @@ public record ModLimits
 
 public record RandomisationDetails
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Between what levels do these randomisation setting apply to
     /// </summary>
@@ -896,6 +894,9 @@ public record RandomisationDetails
 
 public record NighttimeChanges
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Applies changes to values stored in equipmentMods
     /// </summary>
@@ -916,6 +917,9 @@ public record NighttimeChanges
 
 public record EquipmentFilterDetails
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Between what levels do these equipment filter setting apply to
     /// </summary>
@@ -959,6 +963,9 @@ public record EquipmentFilterDetails
 
 public record WeightingAdjustmentDetails
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Between what levels do these weight settings apply to
     /// </summary>
@@ -1002,6 +1009,9 @@ public record WeightingAdjustmentDetails
 
 public record AdjustmentDetails
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("add")]
     public Dictionary<string, Dictionary<string, float>> Add
     {
@@ -1019,6 +1029,9 @@ public record AdjustmentDetails
 
 public class ArmorPlateWeights
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("levelRange")]
     public MinMax<int> LevelRange
     {
@@ -1036,6 +1049,9 @@ public class ArmorPlateWeights
 
 public record RandomisedResourceDetails
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("food")]
     public RandomisedResourceValues Food
     {
@@ -1053,6 +1069,9 @@ public record RandomisedResourceDetails
 
 public record RandomisedResourceValues
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Minimum percent of item to randomized between min and max resource
     /// </summary>

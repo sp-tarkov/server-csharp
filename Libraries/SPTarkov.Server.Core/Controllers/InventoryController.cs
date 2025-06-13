@@ -7,7 +7,6 @@ using SPTarkov.Server.Core.Models.Eft.Inventory;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Spt.Dialog;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Services;
@@ -177,28 +176,28 @@ public class InventoryController(
             var mail = dialog.Messages.FirstOrDefault(message => message.Id == rewardEvent.MessageId);
             var mailEvent =
                 mail.ProfileChangeEvents.FirstOrDefault(changeEvent => changeEvent.Id == rewardEvent.EventId);
-
+            
             switch (mailEvent.Type)
             {
-                case ProfileChangeEventType.TraderSalesSum:
+                case "TraderSalesSum":
                     pmcData.TradersInfo[mailEvent.Entity].SalesSum = mailEvent.Value;
                     _traderHelper.LevelUp(mailEvent.Entity, pmcData);
                     _logger.Success($"Set trader {mailEvent.Entity}: Sales Sum to: {mailEvent.Value}");
                     break;
-                case ProfileChangeEventType.TraderStanding:
+                case "TraderStanding":
                     pmcData.TradersInfo[mailEvent.Entity].Standing = mailEvent.Value;
                     _traderHelper.LevelUp(mailEvent.Entity, pmcData);
                     _logger.Success($"Set trader {mailEvent.Entity}: Standing to: {mailEvent.Value}");
                     break;
-                case ProfileChangeEventType.ProfileLevel:
+                case "ProfileLevel":
                     pmcData.Info.Experience = (int) mailEvent.Value.Value;
                     // Will calculate level below
                     _traderHelper.ValidateTraderStandingsAndPlayerLevelForProfile(sessionId);
                     _logger.Success($"Set profile xp to: {mailEvent.Value}");
                     break;
-                case ProfileChangeEventType.SkillPoints:
+                case "SkillPoints":
                     {
-                        var profileSkill = pmcData.Skills.Common.FirstOrDefault(x => x.Id == mailEvent.Entity);
+                        var profileSkill = pmcData.Skills.Common.FirstOrDefault(x => x.Id == Enum.Parse<SkillTypes>(mailEvent.Entity));
                         if (profileSkill is null)
                         {
                             _logger.Warning($"Unable to find skill with name: {mailEvent.Entity}");
@@ -209,7 +208,7 @@ public class InventoryController(
                         _logger.Success($"Set profile skill: {mailEvent.Entity} to: {mailEvent.Value}");
                         break;
                     }
-                case ProfileChangeEventType.ExamineAllItems:
+                case "ExamineAllItems":
                     {
                         var itemsToInspect = _itemHelper.GetItems().Where(x => x.Type != "Node");
                         FlagItemsAsInspectedAndRewardXp(itemsToInspect.Select(x => x.Id), fullProfile);
@@ -217,22 +216,22 @@ public class InventoryController(
 
                         break;
                     }
-                case ProfileChangeEventType.UnlockTrader:
+                case "UnlockTrader":
                     pmcData.TradersInfo[mailEvent.Entity].Unlocked = true;
                     _logger.Success($"Trader {mailEvent.Entity} Unlocked");
 
                     break;
-                case ProfileChangeEventType.AssortmentUnlockRule:
+                case "AssortmentUnlockRule":
                     fullProfile.SptData.BlacklistedItemTemplates ??= [];
                     fullProfile.SptData.BlacklistedItemTemplates.Add(mailEvent.Entity);
                     _logger.Success($"Item {mailEvent.Entity} is now blacklisted");
 
                     break;
-                case ProfileChangeEventType.HideoutAreaLevel:
+                case "HideoutAreaLevel":
                     {
                         var areaName = mailEvent.Entity;
                         var newValue = mailEvent.Value;
-                        var hideoutAreaType = Enum.Parse<HideoutAreas>(areaName ?? "NOTSET");
+                        var hideoutAreaType = Enum.Parse<HideoutAreas>(areaName ?? "NotSet");
 
                         var desiredArea = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == hideoutAreaType);
                         if (desiredArea is not null)

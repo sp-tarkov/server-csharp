@@ -760,7 +760,8 @@ public class FenceService(
             .ToList();
         if (assortRootItems.Count == 0)
         {
-            logger.Error("Unable to add assorts to Fence as no root items exist in items being added");
+            logger.Error(localisationService.GetText("fence-unable_to_find_root_item_to_add"));
+
             return;
         }
 

@@ -1,9 +1,7 @@
 using System.Collections.Frozen;
 using SPTarkov.Server.Core.Constants;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Models.Eft.Match;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -15,7 +13,7 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Helpers;
 
-[Injectable(InjectionType.Singleton)]
+[Injectable]
 public class BotGeneratorHelper(
     ISptLogger<BotGeneratorHelper> _logger,
     RandomUtil _randomUtil,
@@ -26,7 +24,7 @@ public class BotGeneratorHelper(
     ProfileActivityService _profileActivityService,
     LocalisationService _localisationService,
     ConfigServer _configServer
-    ) : IOnLoad
+    )
 {
     // Equipment slot ids that do not conflict with other slots
     private static readonly FrozenSet<string> _slotsWithNoCompatIssues = [
@@ -37,16 +35,9 @@ public class BotGeneratorHelper(
         EquipmentSlots.ArmBand.ToString()
     ];
 
-    private BotConfig _botConfig;
-    private string[] _pmcTypes;
+    private static readonly string[] _pmcTypes = [ Sides.PmcBear.ToLower(), Sides.PmcUsec.ToLower() ];
 
-    public Task OnLoad()
-    {
-        _botConfig = _configServer.GetConfig<BotConfig>();
-        var pmcConfig = _configServer.GetConfig<PmcConfig>();
-        _pmcTypes = [pmcConfig.UsecType.ToLower(), pmcConfig.BearType.ToLower()];
-        return Task.CompletedTask;
-    }
+    private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     /// <summary>
     ///     Adds properties to an item
@@ -359,9 +350,9 @@ public class BotGeneratorHelper(
 
         // TODO: Can probably be optimized to cache itemTemplates as items are added to inventory
         var equippedItemsDb = itemsEquipped.Select(equippedItem => _itemHelper.GetItem(equippedItem.Template).Value).ToList();
-        var (key, itemToEquip) = _itemHelper.GetItem(tplToCheck);
+        var (itemIsValid, itemToEquip) = _itemHelper.GetItem(tplToCheck);
 
-        if (!key)
+        if (!itemIsValid)
         {
             _logger.Warning(
                 _localisationService.GetText(

@@ -5,6 +5,9 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record GenerateWeaponResult
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("weapon")]
     public List<Item>? Weapon
     {

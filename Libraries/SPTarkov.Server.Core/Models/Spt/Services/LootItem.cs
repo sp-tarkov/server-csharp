@@ -4,6 +4,9 @@ namespace SPTarkov.Server.Core.Models.Spt.Services;
 
 public record LootItem
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("id")]
     public string? Id
     {

@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SPTarkov.Common.Extensions;
 
@@ -60,6 +61,20 @@ public static class ObjectExtensions
 
         foreach (var prop in list)
         {
+            // Edge case
+            if (Attribute.IsDefined(prop, typeof(JsonExtensionDataAttribute)))
+            {
+                if (prop.GetValue(obj) is not IDictionary<string, object> kvp)
+                {
+                    // Not a dictionary, skip iterating over its keys/values
+                    continue;
+                }
+
+                result.AddRange(kvp.Select(jsonExtensionKvP => jsonExtensionKvP.Value));
+
+                continue;
+            }
+
             result.Add(prop.GetValue(obj));
         }
 
@@ -68,9 +83,37 @@ public static class ObjectExtensions
 
     public static Dictionary<string, object?> GetAllPropsAsDict(this object? obj)
     {
-        var props = obj.GetType().GetProperties();
+        if (obj is null)
+        {
+            return [];
+        }
 
-        return props.ToDictionary(prop => prop.Name, prop => prop.GetValue(obj));
+        var resultDict = new Dictionary<string, object?>();
+        foreach (var prop in obj.GetType().GetProperties())
+        {
+            // Edge case
+            if (Attribute.IsDefined(prop, typeof(JsonExtensionDataAttribute)))
+            {
+                if (prop.GetValue(obj) is not IDictionary<string, object> kvp)
+                {
+                    // Not a dictionary, skip iterating over its keys/values
+                    continue;
+                }
+
+                foreach (var jsonExtensionKvP in kvp)
+                {
+                    // Add contents of prop into dictionary we return
+                    resultDict.TryAdd(jsonExtensionKvP.Key, jsonExtensionKvP.Value);
+                }
+
+                continue;
+            }
+
+            // Normal prop
+            resultDict.Add(prop.Name, prop.GetValue(obj));
+        }
+
+        return resultDict;
     }
 
     public static T ToObject<T>(this JsonElement element)

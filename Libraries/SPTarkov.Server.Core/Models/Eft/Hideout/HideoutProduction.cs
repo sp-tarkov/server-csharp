@@ -6,6 +6,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record HideoutProductionData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("recipes")]
     public List<HideoutProduction>? Recipes
     {
@@ -30,6 +33,9 @@ public record HideoutProductionData
 
 public record HideoutProduction
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("_id")]
     public string? Id
     {
@@ -120,6 +126,9 @@ public record HideoutProduction
 
 public record Requirement
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("templateId")]
     public string? TemplateId
     {
@@ -200,6 +209,9 @@ public record Requirement
 
 public record ScavRecipe
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("_id")]
     public string? Id
     {
@@ -231,6 +243,9 @@ public record ScavRecipe
 
 public record EndProducts
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Common")]
     public MinMax<int>? Common
     {
@@ -255,6 +270,9 @@ public record EndProducts
 
 public record CultistRecipe
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("_id")]
     public string? Id
     {

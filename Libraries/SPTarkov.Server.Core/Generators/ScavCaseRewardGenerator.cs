@@ -26,6 +26,7 @@ public class ScavCaseRewardGenerator(
     RagfairPriceService _ragfairPriceService,
     SeasonalEventService _seasonalEventService,
     ItemFilterService _itemFilterService,
+    LocalisationService localisationService,
     ConfigServer _configServer,
     ICloner _cloner
 )
@@ -295,7 +296,7 @@ public class ScavCaseRewardGenerator(
     /// <summary>
     ///     Get a random ammo from items.json that is not in the ammo blacklist AND inside the price range defined in scavcase.json config
     /// </summary>
-    /// <param name="rarity">The rarity this ammo reward is for</param>
+    /// <param name="rarity">The rarity desired ammo reward is for</param>
     /// <returns>random ammo item from items.json</returns>
     protected TemplateItem GetRandomAmmo(string rarity)
     {
@@ -303,9 +304,10 @@ public class ScavCaseRewardGenerator(
             {
                 // Is ammo handbook price between desired range
                 var handbookPrice = _ragfairPriceService.GetStaticPriceForItem(ammo.Id);
-                if (
-                    handbookPrice >= _scavCaseConfig.AmmoRewards.AmmoRewardValueRangeRub[rarity].Min &&
-                    handbookPrice <= _scavCaseConfig.AmmoRewards.AmmoRewardValueRangeRub[rarity].Max
+                if (_scavCaseConfig.AmmoRewards.AmmoRewardValueRangeRub.TryGetValue(rarity,
+                        out var matchingAmmoRewardForRarity) &&
+                    handbookPrice >= matchingAmmoRewardForRarity.Min &&
+                    handbookPrice <= matchingAmmoRewardForRarity.Max
                 )
                 {
                     return true;
@@ -317,7 +319,8 @@ public class ScavCaseRewardGenerator(
 
         if (!possibleAmmoPool.Any())
         {
-            _logger.Warning("Unable to get a list of ammo that matches desired criteria for scav case reward");
+            // Filtered pool is empty
+            _logger.Warning(localisationService.GetText("scavcase-no_cartridges_found_matching_price"));
         }
 
         // Get a random ammo and return it
@@ -329,6 +332,7 @@ public class ScavCaseRewardGenerator(
     ///     Also add a stack count to ammo and money
     /// </summary>
     /// <param name="rewardItems">items to convert</param>
+    /// <param name="rarity">The rarity desired ammo reward is for</param>
     /// <returns>Product array</returns>
     protected List<List<Item>> RandomiseContainerItemRewards(List<TemplateItem> rewardItems, string rarity)
     {

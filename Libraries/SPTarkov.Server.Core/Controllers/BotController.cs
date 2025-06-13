@@ -110,15 +110,14 @@ public class BotController(
         var result = new Dictionary<string, Dictionary<string, DifficultyCategories>>();
 
         var botTypesDb = _databaseService.GetBots().Types;
+        if (botTypesDb is null)
+        {
+            return result;
+        }
         //Get all bot types as sting array
         var botTypes = Enum.GetValues<WildSpawnType>().Select(item => item.ToString()).ToList();
         foreach (var botType in botTypes)
         {
-            if (botTypesDb is null)
-            {
-                continue;
-            }
-
             // If bot is usec/bear, swap to different name
             var botTypeLower = _botHelper.IsBotPmc(botType)
                 ? _botHelper.GetPmcSideByRole(botType).ToLower()

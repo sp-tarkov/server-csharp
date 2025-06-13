@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Models.Spt.Mod;
@@ -59,6 +59,9 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
 
 public record NewItemDetailsBase
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("fleaPriceRoubles")]
     public double? FleaPriceRoubles
     {
@@ -90,6 +93,9 @@ public record NewItemDetailsBase
 
 public record LocaleDetails
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("name")]
     public string? Name
     {
@@ -114,6 +120,9 @@ public record LocaleDetails
 
 public record CreateItemResult
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public CreateItemResult()
     {
         Success = false;

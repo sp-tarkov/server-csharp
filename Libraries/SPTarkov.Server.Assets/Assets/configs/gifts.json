@@ -5410,25 +5410,20 @@
                     "value": 2500,
                     "entity": "Attention"
                 }, {
-                    "_id": "668014ea2b680c65290bbe4d",
-                    "Type": "SkillPoints",
-                    "value": 2500,
-                    "entity": "63"
-                }, {
                     "_id": "668014ea2b680c65290bbe4e",
                     "Type": "SkillPoints",
                     "value": 2500,
-                    "entity": "39"
+                    "entity": "WeaponModding"
                 }, {
                     "_id": "668014ea2b680c65290bbe4f",
                     "Type": "SkillPoints",
                     "value": 2500,
-                    "entity": "38"
+                    "entity": "HeavyVests"
                 }, {
                     "_id": "668014ea2b680c65290bbe50",
                     "Type": "SkillPoints",
                     "value": 2500,
-                    "entity": "45"
+                    "entity": "WeaponTreatment"
                 }, {
                     "_id": "668014ea2b680c65290bbe51",
                     "Type": "ExamineAllItems"

@@ -118,9 +118,9 @@ public class ProfileController(
     /// <param name="request">Create profile request</param>
     /// <param name="sessionId">Player id</param>
     /// <returns>Player id</returns>
-    public virtual string CreateProfile(ProfileCreateRequestData request, string sessionId)
+    public virtual async ValueTask<string> CreateProfile(ProfileCreateRequestData request, string sessionId)
     {
-        return _createProfileService.CreateProfile(sessionId, request);
+        return await _createProfileService.CreateProfile(sessionId, request);
     }
 
     /// <summary>
@@ -292,21 +292,21 @@ public class ProfileController(
             itemsToReturn.AddRange(itemWithChildren);
         }
 
-        return new GetOtherProfileResponse
+        var profile = new GetOtherProfileResponse
         {
             Id = profileToViewPmc.Id,
             Aid = profileToViewPmc.Aid,
-            Info =
+            Info = new OtherProfileInfo
             {
                 Nickname = profileToViewPmc.Info.Nickname,
                 Side = profileToViewPmc.Info.Side,
                 Experience = profileToViewPmc.Info.Experience,
-                MemberCategory = profileToViewPmc.Info.MemberCategory as int?,
+                MemberCategory = (int)(profileToViewPmc.Info.MemberCategory ?? MemberCategory.Default),
                 BannedState = profileToViewPmc.Info.BannedState,
                 BannedUntil = profileToViewPmc.Info.BannedUntil,
                 RegistrationDate = profileToViewPmc.Info.RegistrationDate
             },
-            Customization =
+            Customization = new OtherProfileCustomization
             {
                 Head = profileToViewPmc.Customization.Head,
                 Body = profileToViewPmc.Customization.Body,
@@ -315,24 +315,24 @@ public class ProfileController(
                 Dogtag = profileToViewPmc.Customization.DogTag
             },
             Skills = profileToViewPmc.Skills,
-            Equipment =
+            Equipment = new OtherProfileEquipment
             {
                 Id = profileToViewPmc.Inventory.Equipment,
                 Items = profileToViewPmc.Inventory.Items
             },
             Achievements = profileToViewPmc.Achievements,
             FavoriteItems = _profileHelper.GetOtherProfileFavorites(profileToViewPmc),
-            PmcStats =
+            PmcStats = new OtherProfileStats
             {
-                Eft =
+                Eft = new OtherProfileSubStats
                 {
                     TotalInGameTime = profileToViewPmc.Stats.Eft.TotalInGameTime,
                     OverAllCounters = profileToViewPmc.Stats.Eft.OverallCounters
                 }
             },
-            ScavStats =
+            ScavStats = new OtherProfileStats
             {
-                Eft =
+                Eft = new OtherProfileSubStats
                 {
                     TotalInGameTime = profileToViewScav.Stats.Eft.TotalInGameTime,
                     OverAllCounters = profileToViewScav.Stats.Eft.OverallCounters
@@ -343,6 +343,8 @@ public class ProfileController(
             HideoutAreaStashes = profileToViewPmc.Inventory.HideoutAreaStashes,
             Items = itemsToReturn
         };
+
+        return profile;
     }
 
     /// <summary>

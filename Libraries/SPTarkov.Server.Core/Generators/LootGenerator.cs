@@ -399,21 +399,22 @@ public class LootGenerator(
         HashSet<string> itemBlacklist,
         List<List<Item>> result)
     {
-        // Choose random preset and get details from item db using encyclopedia value (encyclopedia === tplId)
-        var chosenPreset = _randomUtil.GetArrayValue(presetPool);
-        if (chosenPreset is null)
+        if (presetPool.Count == 0)
         {
-            _logger.Warning("Unable to find random preset in given presets, skipping");
+            _logger.Warning(_localisationService.GetText("loot-preset_pool_is_empty"));
 
             return false;
         }
 
+        // Choose random preset and get details from item db using encyclopedia value (encyclopedia === tplId)
+        var chosenPreset = _randomUtil.GetArrayValue(presetPool);
+
         // No `_encyclopedia` property, not possible to reliably get root item tpl
-        if (chosenPreset.Encyclopedia is null)
+        if (chosenPreset?.Encyclopedia is null)
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Preset with id: {chosenPreset?.Id} lacks encyclopedia property, skipping");
+                _logger.Warning(_localisationService.GetText("loot-chosen_preset_missing_encyclopedia_value", chosenPreset?.Id));
             }
 
             return false;
@@ -432,13 +433,13 @@ public class LootGenerator(
         }
 
         // Skip preset if root item is blacklisted
-        if (itemBlacklist.Contains(chosenPreset.Items[0].Template))
+        if (itemBlacklist.Contains(chosenPreset.Items.FirstOrDefault().Template))
         {
             return false;
         }
 
         // Some custom mod items lack a parent property
-        if (itemDbDetails.Value.Parent is null)
+        if (itemDbDetails.Value?.Parent is null)
         {
             _logger.Error(_localisationService.GetText("loot-item_missing_parentid", itemDbDetails.Value?.Name));
 

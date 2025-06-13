@@ -74,7 +74,7 @@ public class BotInventoryGenerator(
         var botInventory = GenerateInventoryBase();
 
         // Get generated raid details bot will be spawned in
-        var raidConfig = _profileActivityService.GetProfileActivityRaidData(sessionId).RaidConfiguration;
+        var raidConfig = _profileActivityService.GetProfileActivityRaidData(sessionId)?.RaidConfiguration;
 
         GenerateAndAddEquipmentToBot(
             sessionId,
@@ -178,7 +178,7 @@ public class BotInventoryGenerator(
     /// <param name="chosenGameVersion">Game version for bot, only really applies for PMCs</param>
     /// <param name="raidConfig">RadiConfig</param>
     public void GenerateAndAddEquipmentToBot(string sessionId, BotTypeInventory templateInventory, Chances wornItemChances, string botRole,
-        BotBaseInventory botInventory, int botLevel, string chosenGameVersion, bool isPmc, GetRaidConfigurationRequestData raidConfig)
+        BotBaseInventory botInventory, int botLevel, string chosenGameVersion, bool isPmc, GetRaidConfigurationRequestData? raidConfig)
     {
         _botConfig.Equipment.TryGetValue(_botGeneratorHelper.GetBotEquipmentRole(botRole), out var botEquipConfig);
         var randomistionDetails = _botHelper.GetBotRandomizationDetails(botLevel, botEquipConfig);

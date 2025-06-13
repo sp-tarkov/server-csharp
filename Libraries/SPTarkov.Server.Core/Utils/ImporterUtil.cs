@@ -15,8 +15,8 @@ public class ImporterUtil(ISptLogger<ImporterUtil> _logger, FileUtil _fileUtil, 
 
     public async Task<T> LoadRecursiveAsync<T>(
         string filePath,
-        Action<string>? onReadCallback = null,
-        Action<string, object>? onObjectDeserialized = null
+        Func<string, Task>? onReadCallback = null,
+        Func<string, object, Task>? onObjectDeserialized = null
     )
     {
         var result = await LoadRecursiveAsync(filePath, typeof(T), onReadCallback, onObjectDeserialized);
@@ -35,8 +35,8 @@ public class ImporterUtil(ISptLogger<ImporterUtil> _logger, FileUtil _fileUtil, 
     protected async Task<object> LoadRecursiveAsync(
         string filePath,
         Type loadedType,
-        Action<string>? onReadCallback = null,
-        Action<string, object>? onObjectDeserialized = null
+        Func<string, Task>? onReadCallback = null,
+        Func<string, object, Task>? onObjectDeserialized = null
     )
     {
         var tasks = new List<Task>();
@@ -66,7 +66,7 @@ public class ImporterUtil(ISptLogger<ImporterUtil> _logger, FileUtil _fileUtil, 
                 continue;
             }
 
-            tasks.Add(ProcessDirectoryAsync(directory, loadedType, result, dictionaryLock));
+            tasks.Add(ProcessDirectoryAsync(directory, loadedType, result, onReadCallback, onObjectDeserialized, dictionaryLock));
         }
 
         // Wait for all tasks to finish
@@ -78,15 +78,18 @@ public class ImporterUtil(ISptLogger<ImporterUtil> _logger, FileUtil _fileUtil, 
     private async Task ProcessFileAsync(
         string file,
         Type loadedType,
-        Action<string>? onReadCallback,
-        Action<string, object>? onObjectDeserialized,
+        Func<string, Task>? onReadCallback,
+        Func<string, object, Task>? onObjectDeserialized,
         object result,
         Lock dictionaryLock
     )
     {
         try
         {
-            onReadCallback?.Invoke(file);
+            if (onReadCallback != null)
+            {
+                await onReadCallback(file);
+            }
 
             // Get the set method to update the object
             var setMethod = GetSetMethod(
@@ -98,7 +101,10 @@ public class ImporterUtil(ISptLogger<ImporterUtil> _logger, FileUtil _fileUtil, 
 
             var fileDeserialized = await DeserializeFileAsync(file, propertyType);
 
-            onObjectDeserialized?.Invoke(file, fileDeserialized);
+            if (onObjectDeserialized != null)
+            {
+                await onObjectDeserialized(file, fileDeserialized);
+            }
 
             lock (dictionaryLock)
             {
@@ -120,6 +126,8 @@ public class ImporterUtil(ISptLogger<ImporterUtil> _logger, FileUtil _fileUtil, 
         string directory,
         Type loadedType,
         object result,
+        Func<string, Task>? onReadCallback,
+        Func<string, object, Task>? onObjectDeserialized,
         Lock dictionaryLock
     )
     {
@@ -132,7 +140,7 @@ public class ImporterUtil(ISptLogger<ImporterUtil> _logger, FileUtil _fileUtil, 
                 out var isDictionary
             );
 
-            var loadedData = await LoadRecursiveAsync($"{directory}/", matchedProperty);
+            var loadedData = await LoadRecursiveAsync($"{directory}/", matchedProperty, onReadCallback, onObjectDeserialized);
 
             lock (dictionaryLock)
             {

@@ -5,6 +5,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Player;
 
 public record PlayerIncrementSkillLevelRequestData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("_id")]
     public string? Id
     {
@@ -72,6 +75,9 @@ public record PlayerIncrementSkillLevelRequestData
 // TODO: These are all lists of objects.
 public record Items
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("new")]
     public List<object>? NewItems
     {
@@ -96,8 +102,14 @@ public record Items
 
 public record Production
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
 }
 
 public record TraderRelations
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
 }

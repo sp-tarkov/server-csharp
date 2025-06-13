@@ -4,6 +4,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record CustomisationStorage
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     // Customisation.json/itemId
     [JsonPropertyName("id")]
     public string Id
@@ -29,6 +32,9 @@ public record CustomisationStorage
 
 public record CustomisationType
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public const string SUITE = "suite";
     public const string DOG_TAG = "dogTag";
     public const string HEAD = "head";
@@ -46,6 +52,9 @@ public record CustomisationType
 
 public record CustomisationTypeId
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public const string CUSTOMIZATION = "5cbdb4a2e2b501000d352ae2";
     public const string BODY_PARTS = "5cd943c31388ce000a659df5";
     public const string BODY = "5cc0868e14c02e000c6bea68";
@@ -72,6 +81,9 @@ public record CustomisationTypeId
 
 public record CustomisationSource
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public const string QUEST = "quest";
     public const string PRESTIGE = "prestige";
     public const string ACHIEVEMENT = "achievement";

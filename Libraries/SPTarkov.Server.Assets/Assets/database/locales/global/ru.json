@@ -18942,7 +18942,7 @@
   "Transit/AccessNotGranted": "Доступ запрещен",
   "Transit/InactivePoint": "Переход недоступен",
   "Transit/Interaction": "Взаимодействовать",
-  "Transit/LONG_TAP_TO_INTERACT": "Вы находитесь в зоне перехода, зажмите \"взаимодействовать\" для активации перехода",
+  "Transit/LONG_TAP_TO_INTERACT": "Вы находитесь в зоне перехода, зажмите \"взаимодействовать\" для активации перехода.",
   "Transition in ": "Переход через ",
   "Transition in {0:F1}": "Переход через {0:F1}",
   "Tremor": "Тремор",

@@ -333,22 +333,24 @@ public class RagfairOfferHelper(
         return offersToReturn;
     }
 
-    /**
-     * Should a ragfair offer be visible to the player
-     * @param searchRequest Search request
-     * @param itemsToAdd ?
-     * @param traderAssorts Trader assort items - used for filtering out locked trader items
-     * @param offer The flea offer
-     * @param pmcProfile Player profile
-     * @returns True = should be shown to player
-     */
+    /// <summary>
+    /// Should a ragfair offer be visible to the player
+    /// </summary>
+    /// <param name="searchRequest">Client request</param>
+    /// <param name="itemsToAdd"></param>
+    /// <param name="traderAssorts">Trader assort items - used for filtering out locked trader items</param>
+    /// <param name="offer">Flea offer</param>
+    /// <param name="pmcProfile">Player profile</param>
+    /// <param name="playerIsFleaBanned">Player cannot view flea yet/ever</param>
+    /// <returns>True = should be shown to player</returns>
     private bool IsDisplayableOffer(SearchRequestData searchRequest, List<string> itemsToAdd,
         Dictionary<string, TraderAssort> traderAssorts, RagfairOffer offer, PmcData pmcProfile,
         bool playerIsFleaBanned = false)
     {
-        var offerRootItem = offer.Items[0];
+        var offerRootItem = offer.Items.FirstOrDefault();
+
         // Currency offer is sold for
-        var moneyTypeTpl = offer.Requirements[0].Template;
+        var moneyTypeTpl = offer.Requirements.FirstOrDefault().Template;
         var isTraderOffer = _databaseService.GetTraders().ContainsKey(offer.User.Id);
 
         if (!isTraderOffer && playerIsFleaBanned)
@@ -496,7 +498,7 @@ public class RagfairOfferHelper(
         //    }
         //}
 
-        foreach (var item in offer.Items)
+        foreach (var _ in offer.Items)
         {
             traderAssorts.TryGetValue(offer.User.Id, out var assorts);
             if (assorts.BarterScheme

@@ -62,7 +62,7 @@ public class BotLootGenerator(
     ///     Add loot to bots containers
     /// </summary>
     /// <param name="sessionId">Session id</param>
-    /// <param name="botJsonTemplate">Base json db file for the bot having its loot generated</param>
+    /// <param name="botJsonTemplate">Clone of Base JSON db file for the bot having its loot generated</param>
     /// <param name="isPmc">Will bot be a pmc</param>
     /// <param name="botRole">Role of bot, e.g. asssult</param>
     /// <param name="botInventory">Inventory to add loot to</param>
@@ -371,12 +371,12 @@ public class BotLootGenerator(
     {
         HashSet<EquipmentSlots> result = [EquipmentSlots.Pockets];
 
-        if ((botInventory.Items ?? []).Any(item => item.SlotId == EquipmentSlots.TacticalVest.ToString()))
+        if ((botInventory.Items ?? []).Any(item => item.SlotId == nameof(EquipmentSlots.TacticalVest)))
         {
             result.Add(EquipmentSlots.TacticalVest);
         }
 
-        if ((botInventory.Items ?? []).Any(item => item.SlotId == EquipmentSlots.Backpack.ToString()))
+        if ((botInventory.Items ?? []).Any(item => item.SlotId == nameof(EquipmentSlots.Backpack)))
         {
             result.Add(EquipmentSlots.Backpack);
         }
@@ -712,10 +712,18 @@ public class BotLootGenerator(
                 isPmc,
                 botLevel
             );
+
+            var weaponRootItem = generatedWeapon.Weapon?.FirstOrDefault();
+            if (weaponRootItem is null)
+            {
+                _logger.Error($"Generated loose weapon: {chosenWeaponType} for: {botRole} level: {botLevel} was null, skipping");
+
+                continue;
+            }
             var result = _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
                 [equipmentSlot],
-                generatedWeapon.Weapon[0].Id,
-                generatedWeapon.Weapon[0].Template,
+                weaponRootItem.Id,
+                weaponRootItem.Template,
                 generatedWeapon.Weapon,
                 botInventory,
                 containersIdFull
@@ -725,7 +733,7 @@ public class BotLootGenerator(
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug($"Failed to add additional weapon {generatedWeapon.Weapon[0].Id} to bot backpack, reason: {result.ToString()}");
+                    _logger.Debug($"Failed to add additional weapon: {weaponRootItem.Id} to bot backpack, reason: {result.ToString()}");
                 }
             }
         }

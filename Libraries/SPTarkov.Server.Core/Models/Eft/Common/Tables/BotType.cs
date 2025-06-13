@@ -7,6 +7,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record BotType
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("appearance")]
     public Appearance? BotAppearance
     {
@@ -80,6 +83,9 @@ public record BotType
 
 public record Appearance
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("body")]
     public Dictionary<string, double>? Body
     {
@@ -121,6 +127,9 @@ public record Appearance
 
 public record Chances
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("equipment")]
     public Dictionary<string, double>? EquipmentChances
     {
@@ -157,6 +166,9 @@ public record Chances
  GenerateWeaponRequest.ModSpawnChances
 public record ModsChances
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("mod_charge")]
 public double? ModCharge { get; set; }
 
@@ -317,6 +329,9 @@ public double? ModPistol_Grip { get; set; }
 
 public record Difficulties
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("easy")]
     public DifficultyCategories? Easy
     {
@@ -348,6 +363,9 @@ public record Difficulties
 
 public record DifficultyCategories
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public Dictionary<string, object>? Aiming
     {
         get;
@@ -435,6 +453,9 @@ public record DifficultyCategories
 
 public record Experience
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     key = bot difficulty
     /// </summary>
@@ -482,6 +503,9 @@ public record Experience
 
 public record Generation
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("items")]
     public GenerationWeightingItems? Items
     {
@@ -492,6 +516,9 @@ public record Generation
 
 public record GenerationData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     key: number of items, value: weighting
     /// </summary>
@@ -516,6 +543,9 @@ public record GenerationData
 
 public record GenerationWeightingItems
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("grenades")]
     public GenerationData Grenades
     {
@@ -610,6 +640,9 @@ public record GenerationWeightingItems
 
 public record BotTypeHealth
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public List<BodyPart>? BodyParts
     {
         get;
@@ -637,6 +670,9 @@ public record BotTypeHealth
 
 public record BodyPart
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public MinMax<double>? Chest
     {
         get;
@@ -682,6 +718,9 @@ public record BodyPart
 
 public record BotTypeInventory
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("equipment")]
     public Dictionary<EquipmentSlots, Dictionary<string, double>>? Equipment
     {
@@ -712,6 +751,9 @@ public record BotTypeInventory
 
 public record Equipment
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public Dictionary<string, double>? ArmBand
     {
         get;
@@ -799,6 +841,9 @@ public record Equipment
 
 public record ItemPools
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public Dictionary<string, double>? Backpack
     {
         get;
@@ -832,6 +877,9 @@ public record ItemPools
 
 public record BotDbSkills
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public Dictionary<string, MinMax<double>>? Common
     {
         get;

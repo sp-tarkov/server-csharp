@@ -1,10 +1,13 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
 
 namespace SPTarkov.Server.Core.Models.Eft.Customization;
 
 public record CustomizationSetRequest : InventoryBaseActionRequestData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("customizations")]
     public List<CustomizationSetOption>? Customizations
     {
@@ -15,6 +18,9 @@ public record CustomizationSetRequest : InventoryBaseActionRequestData
 
 public record CustomizationSetOption
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("id")]
     public string? Id
     {

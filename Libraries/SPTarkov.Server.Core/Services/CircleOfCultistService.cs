@@ -37,6 +37,7 @@ public class CircleOfCultistService(
     DatabaseService _databaseService,
     ItemFilterService _itemFilterService,
     SeasonalEventService _seasonalEventService,
+    LocalisationService localisationService,
     ConfigServer _configServer
 )
 {
@@ -60,10 +61,10 @@ public class CircleOfCultistService(
     {
         var output = _eventOutputHolder.GetOutput(sessionId);
 
-        var cultistCircleStashId = pmcData.Inventory.HideoutAreaStashes.GetValueOrDefault(((int)HideoutAreas.CIRCLE_OF_CULTISTS).ToString());
+        var cultistCircleStashId = pmcData.Inventory?.HideoutAreaStashes?.GetValueOrDefault(((int)HideoutAreas.CircleOfCultists).ToString());
         if (cultistCircleStashId is null)
         {
-            _logger.Error("Could not find cultist circle stash ID inside inventory! No rewards generated");
+            _logger.Error(localisationService.GetText("cultistcircle-unable_to_find_stash_id"));
 
             return output;
         }
@@ -254,12 +255,13 @@ public class CircleOfCultistService(
         // No matching threshold, make one
         if (matchingThreshold is null)
         {
-            // None found, use a defalt
-            _logger.Warning("Unable to find a matching cultist circle threshold, using fallback of 12 hours");
+            // None found, use a default
+            _logger.Warning(
+                localisationService.GetText("cultistcircle-no_matching_threshhold_found", new { rewardAmountRoubles  = rewardAmountRoubles }));
 
             // Use first threshold value (cheapest) from parameter array, otherwise use 12 hours
             var firstThreshold = thresholds.FirstOrDefault();
-            var craftTime = firstThreshold?.CraftTimeSeconds is not null && firstThreshold.CraftTimeSeconds > 0
+            var craftTime = firstThreshold?.CraftTimeSeconds > 0
                 ? firstThreshold.CraftTimeSeconds
                 : _timeUtil.GetHoursAsSeconds(12);
 
@@ -547,7 +549,7 @@ public class CircleOfCultistService(
         // Key is sacrificed items separated by commas, a dash, then the rewards separated by commas
         var key = $"{{{required}-{reward}}}";
 
-        return _hashUtil.GenerateMd5ForData(key);
+        return _hashUtil.GenerateHashForData(HashingAlgorithm.MD5, key);
     }
 
     /// <summary>
@@ -800,7 +802,7 @@ public class CircleOfCultistService(
     {
         return areas.Where(area =>
                 {
-                    if (area.Type == HideoutAreas.CHRISTMAS_TREE && !_seasonalEventService.ChristmasEventEnabled())
+                    if (area.Type == HideoutAreas.ChristmasIllumination && !_seasonalEventService.ChristmasEventEnabled())
                         // Christmas tree area and not Christmas, skip
                     {
                         return false;
@@ -885,7 +887,7 @@ public class CircleOfCultistService(
     protected string CreateSacrificeCacheKey(IEnumerable<string> requiredItems)
     {
         var concat = string.Join(",", requiredItems.OrderBy(item => item));
-        return _hashUtil.GenerateMd5ForData(concat);
+        return _hashUtil.GenerateHashForData(HashingAlgorithm.MD5, concat);
     }
 
     /// <summary>

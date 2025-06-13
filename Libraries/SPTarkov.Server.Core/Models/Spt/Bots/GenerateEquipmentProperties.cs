@@ -7,6 +7,9 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record GenerateEquipmentProperties
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Root Slot being generated
     /// </summary>

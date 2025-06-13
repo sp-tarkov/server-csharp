@@ -5,6 +5,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 
 public record ProfileCreateRequestData : IRequestData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("side")]
     public string? Side
     {

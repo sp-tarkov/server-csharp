@@ -618,7 +618,7 @@ public class ItemHelper(
     {
         if (_databaseService.GetItems().TryGetValue(itemTpl, out var item))
         {
-            return GetItem(itemTpl).Value?.Properties?.Slots?.Count > 0;
+            return item?.Properties?.Slots?.Count > 0;
         }
 
         return false;
@@ -804,13 +804,14 @@ public class ItemHelper(
     public List<Item> FindAndReturnChildrenAsItems(IEnumerable<Item> items, string baseItemId, bool modsOnly = false)
     {
         // Use dictionary to make key lookup faster, convert to list before being returned
-        Dictionary<string, Item> result = [];
+        OrderedDictionary<string, Item> result = [];
         foreach (var childItem in items)
         {
             // Include itself
             if (string.Equals(childItem.Id, baseItemId, StringComparison.Ordinal))
             {
-                result.Add(childItem.Id, childItem);
+                // Root item MUST be at 0 index for things like flea market offers
+                result.Insert(0, childItem.Id, childItem);
                 continue;
             }
 
@@ -1877,7 +1878,7 @@ public class ItemHelper(
     public List<Item> AddChildSlotItems(
         List<Item> itemToAdd,
         TemplateItem itemToAddTemplate,
-        Dictionary<string, double?>? modSpawnChanceDict = null,
+        Dictionary<string, double>? modSpawnChanceDict = null,
         bool requiredOnly = false
     )
     {
@@ -1895,10 +1896,9 @@ public class ItemHelper(
             if (modSpawnChanceDict is not null && !(slot.Required ?? false))
             {
                 // only roll chance to not include mod if dict exists and has value for this mod type (e.g. front_plate)
-                var modSpawnChance = modSpawnChanceDict[slot.Name.ToLower()];
-                if (modSpawnChance is not null)
+                if(modSpawnChanceDict.ContainsKey(slot.Name.ToLower()))
                 {
-                    if (!_randomUtil.GetChance100(modSpawnChance ?? 0))
+                    if (!_randomUtil.GetChance100(modSpawnChanceDict[slot.Name.ToLower()]))
                     {
                         continue;
                     }
@@ -2226,8 +2226,8 @@ public class ItemHelper(
     /// <summary>
     ///     Get a blank two-dimensional representation of a container
     /// </summary>
-    /// <param name="containerH">Horizontal size of container</param>
-    /// <param name="containerY">Vertical size of container</param>
+    /// <param name="containerY">Horizontal size of container</param>
+    /// <param name="containerX">Vertical size of container</param>
     /// <returns>Two-dimensional representation of container</returns>
     public int[][] GetBlankContainerMap(int containerY, int containerX)
     {
@@ -2240,7 +2240,7 @@ public class ItemHelper(
         //return x;
 
         return Enumerable.Range(0, containerY)
-            .Select(i => new int[containerX])
+            .Select(_ => new int[containerX])
             .ToArray();
     }
 }

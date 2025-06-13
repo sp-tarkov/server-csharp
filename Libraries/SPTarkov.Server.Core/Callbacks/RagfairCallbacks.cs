@@ -27,26 +27,28 @@ public class RagfairCallbacks(
     {
         _ragfairServer.Load();
         _ragfairPriceService.Load();
+
         return Task.CompletedTask;
     }
 
-    public bool OnUpdate(long timeSinceLastRun)
+    public Task<bool> OnUpdate(long secondsSinceLastRun)
     {
-        if (timeSinceLastRun > _ragfairConfig.RunIntervalSeconds)
+        if (secondsSinceLastRun < _ragfairConfig.RunIntervalSeconds)
         {
-            // There is a flag inside this class that only makes it run once.
-            _ragfairServer.AddPlayerOffers();
-
-            // Check player offers and mail payment to player if sold
-            _ragfairController.Update();
-
-            // Process all offers / expire offers
-            _ragfairServer.Update();
-
-            return true;
+            // Not enough time has passed since last run, exit early
+            return Task.FromResult(false);
         }
 
-        return false;
+        // There is a flag inside this class that only makes it run once.
+        _ragfairServer.AddPlayerOffers();
+
+        // Check player offers and mail payment to player if sold
+        _ragfairController.Update();
+
+        // Process all offers / expire offers
+        _ragfairServer.Update();
+
+        return Task.FromResult(true);
     }
 
     /// <summary>

@@ -1018,7 +1018,7 @@ public class BotEquipmentModGenerator(
             return null;
         }
 
-        // Filter out non-whitelisted scopes, use full modpool if filtered pool would have no elements
+        // Filter out non-whitelisted scopes, use the full mod pool if filtered pool would have no elements
         if (request.ModSlot.Contains("mod_scope") && request.BotWeaponSightWhitelist is not null)
             // scope pool has more than one scope
         {
@@ -1030,7 +1030,7 @@ public class BotEquipmentModGenerator(
 
         if (request.ModSlot == "mod_gas_block")
         {
-            if ((request.WeaponStats.HasOptic ?? false) && modPool.Count > 1)
+            if ((request.WeaponStats?.HasOptic ?? false) && modPool.Count > 1)
             {
                 // Attempt to limit modpool to low profile gas blocks when weapon has an optic
                 var onlyLowProfileGasBlocks = modPool.Where(tpl =>
@@ -1041,7 +1041,7 @@ public class BotEquipmentModGenerator(
                     modPool = onlyLowProfileGasBlocks.ToHashSet();
                 }
             }
-            else if ((request.WeaponStats.HasRearIronSight ?? false) && modPool.Count > 1)
+            else if ((request.WeaponStats?.HasRearIronSight ?? false) && modPool.Count > 1)
             {
                 // Attempt to limit modpool to high profile gas blocks when weapon has rear iron sight + no front iron sight
                 var onlyHighProfileGasBlocks = modPool.Where(tpl => !_botConfig.LowProfileGasBlockTpls.Contains(tpl)
@@ -1060,7 +1060,7 @@ public class BotEquipmentModGenerator(
             request.RandomisationSettings.MinimumMagazineSize is not null
         )
         {
-            modPool = GetFilterdMagazinePoolByCapacity(request, modPool).ToHashSet();
+            modPool = GetFilteredMagazinePoolByCapacity(request, modPool).ToHashSet();
         }
 
         // Pick random mod that's compatible
@@ -1116,26 +1116,25 @@ public class BotEquipmentModGenerator(
     }
 
     /// <summary>
-    ///     Given the passed in array of magaizne tpls, look up the min size set in config and return only those that have that size or larger
+    ///     Given the passed in array of magazine tpls, look up the min size set in config and return only those that have that size or larger
     /// </summary>
     /// <param name="modSpawnRequest">Request data</param>
     /// <param name="modPool">Pool of magazine tpls to filter</param>
     /// <returns>Filtered pool of magazine tpls</returns>
-    public IEnumerable<string> GetFilterdMagazinePoolByCapacity(ModToSpawnRequest modSpawnRequest, HashSet<string> modPool)
+    public IEnumerable<string> GetFilteredMagazinePoolByCapacity(ModToSpawnRequest modSpawnRequest, HashSet<string> modPool)
     {
-        var weaponTpl = modSpawnRequest.Weapon[0].Template;
+        var weaponTpl = modSpawnRequest.Weapon.FirstOrDefault().Template;
         modSpawnRequest.RandomisationSettings.MinimumMagazineSize.TryGetValue(weaponTpl, out var minMagSizeFromSettings);
-        var minMagazineSize = minMagSizeFromSettings;
         var desiredMagazineTpls = modPool.Where(magTpl =>
             {
                 var magazineDb = _itemHelper.GetItem(magTpl).Value;
-                return magazineDb.Properties is not null && magazineDb.Properties.Cartridges.FirstOrDefault().MaxCount >= minMagazineSize;
+                return magazineDb.Properties is not null && magazineDb.Properties.Cartridges.FirstOrDefault().MaxCount >= minMagSizeFromSettings;
             }
         );
 
         if (!desiredMagazineTpls.Any())
         {
-            _logger.Warning($"Magazine size filter for {weaponTpl} was too strict, ignoring filter");
+            _logger.Warning($"Magazine size filter for: {weaponTpl} was too strict, ignoring filter");
 
             return modPool;
         }
@@ -1169,7 +1168,7 @@ public class BotEquipmentModGenerator(
             };
         }
 
-        // Filter mod pool to only items that appear in parents allowed list
+        // Filter modpool to only items that appear in parents allowed list
         preFilteredModPool = preFilteredModPool.Where(tpl => parentSlot.Props.Filters[0].Filter.Contains(tpl)).ToHashSet();
         if (preFilteredModPool.Count == 0)
         {
@@ -1590,21 +1589,17 @@ public class BotEquipmentModGenerator(
     /// <summary>
     ///     Find mod tpls of a provided type and add to its modPool
     /// </summary>
-    /// <param name="desiredSlotName">Slot to look up and add we are adding tpls for (e.g mod_scope)</param>
+    /// <param name="desiredSlotName">Slot to look up and add we are adding tpls for (e.g. mod_scope)</param>
     /// <param name="modTemplate">db object for modItem we get compatible mods from</param>
     /// <param name="modPool">Pool of mods we are adding to</param>
     /// <param name="botEquipBlacklist">A blacklist of items that cannot be picked</param>
     public void AddCompatibleModsForProvidedMod(string desiredSlotName, TemplateItem modTemplate,
-        Dictionary<string, Dictionary<string, HashSet<string>>> modPool,
+        IDictionary<string, Dictionary<string, HashSet<string>>> modPool,
         EquipmentFilterDetails botEquipBlacklist)
     {
-        var desiredSlotObject = modTemplate.Properties.Slots?.FirstOrDefault(slot => slot.Name.Contains(desiredSlotName));
-        if (desiredSlotObject is null)
-        {
-            return;
-        }
+        var desiredSlotObject = modTemplate.Properties?.Slots?.FirstOrDefault(slot => slot.Name.Contains(desiredSlotName));
 
-        var supportedSubMods = desiredSlotObject.Props.Filters[0].Filter;
+        var supportedSubMods = desiredSlotObject?.Props?.Filters?.FirstOrDefault()?.Filter;
         if (supportedSubMods is null)
         {
             return;

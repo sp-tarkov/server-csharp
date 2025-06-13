@@ -10,6 +10,7 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue;
 public abstract class AbstractDialogChatBot(
     ISptLogger<AbstractDialogChatBot> _logger,
     MailSendService _mailSendService,
+    LocalisationService localisationService,
     IEnumerable<IChatCommand> chatCommands
 ) : IDialogueChatBot
 {
@@ -22,7 +23,7 @@ public abstract class AbstractDialogChatBot(
     {
         if ((request.Text ?? "").Length == 0)
         {
-            _logger.Error("Command came in as empty text! Invalid data!");
+            _logger.Error(localisationService.GetText("chatbot-command_was_empty"));
 
             return request.DialogId;
         }

@@ -23,18 +23,16 @@ public class TraderCallbacks(
         return Task.CompletedTask;
     }
 
-    public bool OnUpdate(long _)
+    public Task<bool> OnUpdate(long _)
     {
-        return _traderController.Update();
+        _traderController.Update();
+
+        return Task.FromResult(true);
     }
 
     /// <summary>
     ///     Handle client/trading/api/traderSettings
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
-    /// <returns></returns>
     public ValueTask<string> GetTraderSettings(string url, EmptyRequestData _, string sessionID)
     {
         return new ValueTask<string>(_httpResponseUtil.GetBody(_traderController.GetAllTraders(sessionID)));
@@ -43,10 +41,6 @@ public class TraderCallbacks(
     /// <summary>
     ///     Handle client/trading/api/getTrader
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
-    /// <returns></returns>
     public ValueTask<string> GetTrader(string url, EmptyRequestData _, string sessionID)
     {
         var traderID = url.Replace("/client/trading/api/getTrader/", "");
@@ -56,9 +50,6 @@ public class TraderCallbacks(
     /// <summary>
     ///     Handle client/trading/api/getTraderAssort
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ValueTask<string> GetAssort(string url, EmptyRequestData _, string sessionID)
     {

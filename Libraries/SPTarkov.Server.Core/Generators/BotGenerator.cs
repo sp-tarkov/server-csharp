@@ -602,7 +602,7 @@ public class BotGenerator(
         {
             double? hpTotal = 0;
 
-            foreach (var prop in props)
+            foreach (var prop in props.Where(property => !property.Name.Equals("extensiondata", StringComparison.OrdinalIgnoreCase)))
             {
                 var value = (MinMax<double>) prop.GetValue(bodyPart);
                 hpTotal += value.Max;
@@ -628,8 +628,8 @@ public class BotGenerator(
     {
         var skillsToReturn = new Skills
         {
-            Common = GetSkillsWithRandomisedProgressValue(botSkills.Common, true),
-            Mastering = GetSkillsWithRandomisedProgressValue(botSkills.Mastering, false),
+            Common = GetCommonSkillsWithRandomisedProgressValue(botSkills.Common),
+            Mastering = GetMasteringSkillsWithRandomisedProgressValue(botSkills.Mastering),
             Points = 0
         };
 
@@ -640,9 +640,43 @@ public class BotGenerator(
     ///     Randomise the progress value of passed in skills based on the min/max value
     /// </summary>
     /// <param name="skills">Skills to randomise</param>
-    /// <param name="isCommonSkills">Are the skills 'common' skills</param>
-    /// <returns>Skills with randomised progress values as an array</returns>
-    public List<BaseSkill> GetSkillsWithRandomisedProgressValue(Dictionary<string, MinMax<double>>? skills, bool isCommonSkills)
+    /// <returns>Skills with randomised progress values as a collection</returns>
+    public List<CommonSkill> GetCommonSkillsWithRandomisedProgressValue(Dictionary<string, MinMax<double>>? skills)
+    {
+        if (skills is null)
+        {
+            return [];
+        }
+
+        return skills
+            .Select(kvp =>
+                {
+                    // Get skill from dict, skip if not found
+                    var skill = kvp.Value;
+                    if (skill == null)
+                    {
+                        return null;
+                    }
+
+                    return new CommonSkill
+                    {
+                        Id = Enum.Parse<SkillTypes>(kvp.Key),
+                        Progress = _randomUtil.GetDouble(skill.Min, skill.Max),
+                        PointsEarnedDuringSession = 0,
+                        LastAccess = 0
+                    };
+                }
+            )
+            .Where(baseSkill => baseSkill != null)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Randomise the progress value of passed in skills based on the min/max value
+    /// </summary>
+    /// <param name="skills">Skills to randomise</param>
+    /// <returns>Skills with randomised progress values as a collection</returns>
+    public List<MasterySkill> GetMasteringSkillsWithRandomisedProgressValue(Dictionary<string, MinMax<double>>? skills)
     {
         if (skills is null)
         {
@@ -660,20 +694,11 @@ public class BotGenerator(
                     }
 
                     // All skills have id and progress props
-                    var skillToAdd = new BaseSkill
+                    return new MasterySkill
                     {
                         Id = kvp.Key,
                         Progress = _randomUtil.GetDouble(skill.Min, skill.Max)
                     };
-
-                    // Common skills have additional props
-                    if (isCommonSkills)
-                    {
-                        skillToAdd.PointsEarnedDuringSession = 0;
-                        skillToAdd.LastAccess = 0;
-                    }
-
-                    return skillToAdd;
                 }
             )
             .Where(baseSkill => baseSkill != null)

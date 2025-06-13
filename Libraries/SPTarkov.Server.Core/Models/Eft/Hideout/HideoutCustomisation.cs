@@ -5,6 +5,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record HideoutCustomisation
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("globals")]
     public List<HideoutCustomisationGlobal>? Globals
     {
@@ -22,6 +25,9 @@ public record HideoutCustomisation
 
 public record HideoutCustomisationGlobal
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("id")]
     public string? Id
     {
@@ -74,6 +80,9 @@ public record HideoutCustomisationGlobal
 
 public record HideoutCustomisationSlot
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("id")]
     public string? Id
     {

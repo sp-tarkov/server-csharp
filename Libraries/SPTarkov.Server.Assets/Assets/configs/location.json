@@ -510,5 +510,5 @@
         "63a898a328e385334e0640a5",
         "634959225289190e5e773b3b"
     ],
-    "nonMaps": ["base", "develop", "hideout", "privatearea", "suburbs", "terminal", "town"]
+    "nonMaps": ["Base", "Develop", "Hideout", "PrivateArea", "Suburbs", "Terminal", "Town"]
 }

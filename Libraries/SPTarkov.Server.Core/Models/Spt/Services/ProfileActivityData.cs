@@ -1,4 +1,4 @@
-﻿using SPTarkov.Server.Core.Models.Eft.Match;
+using SPTarkov.Server.Core.Models.Eft.Match;
 using SPTarkov.Server.Core.Models.Spt.Location;
 
 namespace SPTarkov.Server.Core.Models.Spt.Services

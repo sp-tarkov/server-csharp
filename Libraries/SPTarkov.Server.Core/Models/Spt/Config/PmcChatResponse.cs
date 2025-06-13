@@ -1,25 +1,25 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Spt.Config;
 
 public record PmcChatResponse : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
     } = "spt-pmcchatresponse";
 
     [JsonPropertyName("victim")]
-    public ResponseSettings Victim
+    public required ResponseSettings Victim
     {
         get;
         set;
     }
 
     [JsonPropertyName("killer")]
-    public ResponseSettings Killer
+    public required ResponseSettings Killer
     {
         get;
         set;
@@ -28,6 +28,9 @@ public record PmcChatResponse : BaseConfig
 
 public record ResponseSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("responseChancePercent")]
     public double ResponseChancePercent
     {
@@ -36,7 +39,7 @@ public record ResponseSettings
     }
 
     [JsonPropertyName("responseTypeWeights")]
-    public Dictionary<string, double> ResponseTypeWeights
+    public required Dictionary<string, double> ResponseTypeWeights
     {
         get;
         set;

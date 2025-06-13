@@ -1,10 +1,13 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
 
 namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record HideoutContinuousProductionStartRequestData : InventoryBaseActionRequestData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("recipeId")]
     public string? RecipeId
     {
@@ -22,6 +25,9 @@ public record HideoutContinuousProductionStartRequestData : InventoryBaseActionR
 
 public record HideoutProperties
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public int? BtcFarmGcs
     {
         get;

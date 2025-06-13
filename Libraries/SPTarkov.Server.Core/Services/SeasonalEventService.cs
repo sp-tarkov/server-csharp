@@ -18,16 +18,14 @@ public class SeasonalEventService(
     DatabaseService _databaseService,
     GiftService _giftService,
     LocalisationService _localisationService,
-    BotHelper _botHelper,
     ProfileHelper _profileHelper,
-    //DatabaseImporter _databaseImporter,
     ConfigServer _configServer,
     LocaleService _localeService
 )
 {
     private bool _christmasEventActive;
 
-    protected HashSet<string> _christmasEventItems =
+    protected readonly HashSet<string> _christmasEventItems =
     [
         ItemTpl.ARMOR_6B13_M_ASSAULT_ARMOR_CHRISTMAS_EDITION,
         ItemTpl.BACKPACK_SANTAS_BAG,
@@ -53,17 +51,19 @@ public class SeasonalEventService(
         ItemTpl.FACECOVER_GRINCH_MASK,
         ItemTpl.FACECOVER_HARE_MASK,
         ItemTpl.FACECOVER_ROOSTER_MASK,
-        ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_FIREWORK
+        ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_FIREWORK,
+        ItemTpl.BARTER_SHYSHKA_CHRISTMAS_TREE_LIFE_EXTENDER,
+        ItemTpl.BACKPACK_MYSTERY_RANCH_TERRAFRAME_BACKPACK_CHRISTMAS_EDITION
     ];
 
     private List<SeasonalEvent> _currentlyActiveEvents = [];
 
-    protected HashSet<EquipmentSlots> _equipmentSlotsToFilter =
+    protected readonly HashSet<EquipmentSlots> _equipmentSlotsToFilter =
         [EquipmentSlots.FaceCover, EquipmentSlots.Headwear, EquipmentSlots.Backpack, EquipmentSlots.TacticalVest];
 
     private bool _halloweenEventActive;
 
-    protected HashSet<string> _halloweenEventItems =
+    protected readonly HashSet<string> _halloweenEventItems =
     [
         ItemTpl.HEADWEAR_JACKOLANTERN_TACTICAL_PUMPKIN_HELMET,
         ItemTpl.FACECOVER_FACELESS_MASK,
@@ -223,17 +223,12 @@ public class SeasonalEventService(
     ///     Look up quest in configs/quest.json
     /// </summary>
     /// <param name="questId">Quest to look up</param>
-    /// <param name="event">event type (Christmas/Halloween/None)</param>
+    /// <param name="eventType">event type (Christmas/Halloween/None)</param>
     /// <returns>true if related</returns>
     public bool IsQuestRelatedToEvent(string questId, SeasonalEventType eventType)
     {
         var eventQuestData = _questConfig.EventQuests.GetValueOrDefault(questId, null);
-        if (eventQuestData?.Season == eventType)
-        {
-            return true;
-        }
-
-        return false;
+        return eventQuestData?.Season == eventType;
     }
 
     /// <summary>
@@ -587,29 +582,26 @@ public class SeasonalEventService(
 
     private void ReplaceBotHostility(Dictionary<string, List<AdditionalHostilitySettings>> hostilitySettings)
     {
-        var locations = _databaseService.GetLocations();
+        var locations = _databaseService.GetLocations().GetDictionary();
         var ignoreList = _locationConfig.NonMaps;
 
-        var props = locations.GetType().GetProperties();
-
-        foreach (var locationProp in props)
+        foreach (var (locationName, locationBase) in locations)
         {
-            if (ignoreList.Contains(locationProp.Name))
+            if (ignoreList.Contains(locationName))
             {
                 continue;
             }
 
-            var location = (Location) locationProp.GetValue(locations);
-            if (location?.Base?.BotLocationModifier?.AdditionalHostilitySettings is null)
+            if (locationBase?.Base?.BotLocationModifier?.AdditionalHostilitySettings is null)
             {
                 continue;
             }
 
             // Try to get map 'default' first if it exists
-            if (!hostilitySettings.TryGetValue("Default", out var newHostilitySettings))
+            if (!hostilitySettings.TryGetValue("default", out var newHostilitySettings))
             {
                 // No 'default', try for location name
-                if (!hostilitySettings.TryGetValue(locationProp.Name, out newHostilitySettings))
+                if (!hostilitySettings.TryGetValue(locationName, out newHostilitySettings))
                 {
                     // no settings for map by name, skip map
                     continue;
@@ -618,7 +610,7 @@ public class SeasonalEventService(
 
             foreach (var settings in newHostilitySettings)
             {
-                var matchingBaseSettings = location.Base.BotLocationModifier.AdditionalHostilitySettings.FirstOrDefault(x => x.BotRole == settings.BotRole);
+                var matchingBaseSettings = locationBase.Base.BotLocationModifier.AdditionalHostilitySettings.FirstOrDefault(x => x.BotRole == settings.BotRole);
                 if (matchingBaseSettings is null)
                 {
                     continue;
@@ -755,21 +747,20 @@ public class SeasonalEventService(
         infectionHalloween.Enabled = true;
 
         var globalInfectionDict = globals.LocationInfection.GetAllPropsAsDict();
-        foreach (var infectedLocationKvP in zombieSettings.MapInfectionAmount)
+        foreach (var (locationId, infectionPercentage) in zombieSettings.MapInfectionAmount)
         {
-            var mappedLocations = GetLocationFromInfectedLocation(infectedLocationKvP.Key);
-
+            // Infection rates sometimes apply to multiple maps, e.g. Factory day/night or Sandbox/sandbox_high
+            // Get the list of maps that should have infection value applied to their base
+            // 90% of locations are just 1 map e.g. bigmap = customs
+            var mappedLocations = GetLocationFromInfectedLocation(locationId);
             foreach (var locationKey in mappedLocations)
             {
-                _databaseService.GetLocation(
-                            locationKey.ToLower()
-                        )
-                        .Base.Events.Halloween2024.InfectionPercentage =
-                    zombieSettings.MapInfectionAmount[infectedLocationKvP.Key];
+                _databaseService.GetLocation(locationKey)
+                    .Base.Events.Halloween2024.InfectionPercentage = infectionPercentage;
             }
 
-            globalInfectionDict[infectedLocationKvP.Key] =
-                zombieSettings.MapInfectionAmount[infectedLocationKvP.Key];
+            // Globals data needs value updated too
+            globalInfectionDict[locationId] = infectionPercentage;
         }
 
         foreach (var locationId in zombieSettings.DisableBosses)
@@ -861,29 +852,28 @@ public class SeasonalEventService(
             return;
         }
 
-        var mapKeys = botsToAddPerMap;
         var locations = _databaseService.GetLocations().GetAllPropsAsDict();
-        foreach (var (key, _) in mapKeys)
+        foreach (var (locationKey, bossesToAdd) in botsToAddPerMap)
         {
-            if (!botsToAddPerMap.TryGetValue(key, out var bossesToAdd))
-            {
-                _logger.Warning($"Unable to add: {eventType} bosses to: {key}");
-
-                continue;
-            }
-
-            if (mapIdWhitelist is null || !mapIdWhitelist.Contains(key))
+            if (bossesToAdd.Count == 0)
             {
                 continue;
             }
 
+            if (mapIdWhitelist is null || !mapIdWhitelist.Contains(locationKey))
+            {
+                continue;
+            }
+
+            var locationName = _databaseService.GetLocations().GetMappedKey(locationKey);
+            var mapBosses = ((Location) locations[locationName]).Base.BossLocationSpawn;
             foreach (var boss in bossesToAdd)
             {
-                var mapBosses = ((Location) locations[key]).Base.BossLocationSpawn;
-                // If no bosses match by name
+                
                 if (mapBosses.All(bossSpawn => bossSpawn.BossName != boss.BossName))
                 {
-                    ((Location) locations[key]).Base.BossLocationSpawn.AddRange(bossesToAdd);
+                    // Zombie doesn't exist in maps boss list yet, add
+                    mapBosses.Add(boss);
                 }
             }
         }

@@ -9,6 +9,9 @@ public class ObtainPrestigeRequestList : List<ObtainPrestigeRequest>, IRequestDa
 
 public record ObtainPrestigeRequest : IRequestData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("id")]
     public string Id
     {
@@ -26,6 +29,9 @@ public record ObtainPrestigeRequest : IRequestData
 
 public record Location
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("x")]
     public int X
     {

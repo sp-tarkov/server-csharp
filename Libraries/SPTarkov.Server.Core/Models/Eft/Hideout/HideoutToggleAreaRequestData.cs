@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
 using SPTarkov.Server.Core.Models.Enums;
 
@@ -6,6 +6,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record HideoutToggleAreaRequestData : InventoryBaseActionRequestData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("areaType")]
     public HideoutAreas? AreaType
     {

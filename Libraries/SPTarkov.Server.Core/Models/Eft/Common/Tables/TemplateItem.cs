@@ -7,6 +7,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record TemplateItem
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     private Dictionary<string, bool>? _blocks;
 
     private string? _id;
@@ -115,6 +118,9 @@ public record TemplateItem
 
 public record Props
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     private string _backgroundColor;
 
     private string _itemSound;
@@ -3517,13 +3523,13 @@ public record Props
         get;
         set;
     }
-
-    //[JsonExtensionData]
-    //public Dictionary<string, object> OtherProperties { get; set; }
 }
 
 public record WeaponRecoilSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Enable")]
     public bool? Enable
     {
@@ -3541,6 +3547,9 @@ public record WeaponRecoilSettings
 
 public record WeaponRecoilSettingValues
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Enable")]
     public bool? Enable
     {
@@ -3565,6 +3574,9 @@ public record WeaponRecoilSettingValues
 
 public record WeaponRecoilProcess
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("ComponentType")]
     public string? ComponentType
     {
@@ -3603,6 +3615,9 @@ public record WeaponRecoilProcess
 
 public record WeaponRecoilTransformationCurve
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Keys")]
     public List<WeaponRecoilTransformationCurveKey>? Keys
     {
@@ -3613,6 +3628,9 @@ public record WeaponRecoilTransformationCurve
 
 public record WeaponRecoilTransformationCurveKey
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("inTangent")]
     public double? InTangent
     {
@@ -3644,6 +3662,9 @@ public record WeaponRecoilTransformationCurveKey
 
 public record HealthEffect
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("type")]
     public string? Type
     {
@@ -3661,6 +3682,9 @@ public record HealthEffect
 
 public record Prefab
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("path")]
     public string? Path
     {
@@ -3678,6 +3702,9 @@ public record Prefab
 
 public record Grid
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("_name")]
     public string? Name
     {
@@ -3716,6 +3743,9 @@ public record Grid
 
 public record GridProps
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("filters")]
     public List<GridFilter>? Filters
     {
@@ -3768,6 +3798,9 @@ public record GridProps
 
 public record GridFilter
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Filter")]
     public HashSet<string>? Filter
     {
@@ -3792,6 +3825,9 @@ public record GridFilter
 
 public record Slot
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     private string? _name;
 
     private string? _proto;
@@ -3867,6 +3903,9 @@ public record Slot
 
 public record SlotProps
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("filters")]
     public List<SlotFilter>? Filters
     {
@@ -3884,6 +3923,9 @@ public record SlotProps
 
 public record SlotFilter
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Shift")]
     public double? Shift
     {
@@ -3950,6 +3992,9 @@ public record SlotFilter
 
 public record StackSlot
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("_name")]
     public string? Name
     {
@@ -4002,6 +4047,9 @@ public record StackSlot
 
 public record StackSlotProps
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("filters")]
     public List<SlotFilter>? Filters
     {
@@ -4012,6 +4060,9 @@ public record StackSlotProps
 
 public record RandomLootSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("allowToSpawnIdenticalItems")]
     public bool? AllowToSpawnIdenticalItems
     {
@@ -4071,6 +4122,9 @@ public record RandomLootSettings
 
 public record RandomLootExcluded
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("categoryTemplates")]
     public List<object>? CategoryTemplates
     {
@@ -4095,6 +4149,9 @@ public record RandomLootExcluded
 
 public record EffectsHealth
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Energy")]
     public EffectsHealthProps? Energy
     {
@@ -4112,6 +4169,9 @@ public record EffectsHealth
 
 public record EffectsHealthProps
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("value")]
     public double? Value
     {
@@ -4136,6 +4196,9 @@ public record EffectsHealthProps
 
 public record EffectsDamage
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Pain")]
     public EffectDamageProps? Pain
     {
@@ -4188,6 +4251,9 @@ public record EffectsDamage
 
 public record EffectDamageProps
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("value")]
     public double? Value
     {
@@ -4240,6 +4306,9 @@ public record EffectDamageProps
 
 public record Color
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("r")]
     public double? R
     {
@@ -4271,6 +4340,9 @@ public record Color
 
 public record ShotsGroupSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("EndShotIndex")]
     public double? EndShotIndex
     {

@@ -470,7 +470,7 @@ public class ProfileHelper(
             return false;
         }
 
-        var profileSkill = profileSkills.FirstOrDefault(s => s.Id == skill.ToString());
+        var profileSkill = profileSkills.FirstOrDefault(s => s.Id == skill);
         if (profileSkill == null)
         {
             _logger.Error(_localisationService.GetText("quest-no_skill_found", skill));
@@ -504,7 +504,7 @@ public class ProfileHelper(
             return;
         }
 
-        var profileSkill = profileSkills.FirstOrDefault(s => s.Id == skill.ToString());
+        var profileSkill = profileSkills.FirstOrDefault(s => s.Id == skill);
         if (profileSkill == null)
         {
             _logger.Error(_localisationService.GetText("quest-no_skill_found", skill));
@@ -537,9 +537,9 @@ public class ProfileHelper(
     /// <param name="pmcData">Player profile</param>
     /// <param name="skill">Skill to look up and return value from</param>
     /// <returns>Common skill object from desired profile</returns>
-    public BaseSkill? GetSkillFromProfile(PmcData pmcData, SkillTypes skill)
+    public CommonSkill? GetSkillFromProfile(PmcData pmcData, SkillTypes skill)
     {
-        var skillToReturn = pmcData?.Skills?.Common.FirstOrDefault(s => s.Id == skill.ToString());
+        var skillToReturn = pmcData?.Skills?.Common.FirstOrDefault(s => s.Id == skill);
         if (skillToReturn == null)
         {
             _logger.Warning($"Profile {pmcData.SessionId} does not have a skill named: {skill.ToString()}");
@@ -566,10 +566,15 @@ public class ProfileHelper(
     public void AddStashRowsBonusToProfile(string sessionId, int rowsToAdd)
     {
         var profile = GetPmcProfile(sessionId);
-        var existingBonus = profile?.Bonuses?.FirstOrDefault(b => b.Type == BonusType.StashRows);
-        if (existingBonus != null)
+        if (profile?.Bonuses is null)
         {
-            profile?.Bonuses?.Add(
+            // Something is very wrong with profile to lack bonuses array, likely broken profile, exit early
+            return;
+        }
+        var existingBonus = profile?.Bonuses.FirstOrDefault(b => b.Type == BonusType.StashRows);
+        if (existingBonus is null)
+        {
+            profile!.Bonuses.Add(
                 new Bonus
                 {
                     Id = _hashUtil.Generate(),
@@ -657,11 +662,11 @@ public class ProfileHelper(
     {
         var fullFavorites = new List<Item>();
 
-        foreach (var itemId in profile.Inventory.FavoriteItems ?? new List<string>())
+        foreach (var itemId in profile.Inventory?.FavoriteItems ?? [])
         {
             // When viewing another users profile, the client expects a full item with children, so get that
             var itemAndChildren = _itemHelper.FindAndReturnChildrenAsItems(profile.Inventory.Items, itemId);
-            if (itemAndChildren != null && itemAndChildren.Count > 0)
+            if (itemAndChildren?.Count > 0)
             {
                 // To get the client to actually see the items, we set the main item's parent to null, so it's treated as a root item
                 var clonedItems = _cloner.Clone(itemAndChildren);
@@ -683,7 +688,7 @@ public class ProfileHelper(
 
         if (fullProfile?.CustomisationUnlocks?.Any(u => u.Id == reward.Target) ?? false)
         {
-            _logger.Warning($"Profile: {fullProfile.ProfileInfo.ProfileId} already has hideout customisaiton reward: {reward.Target}, skipping");
+            _logger.Warning($"Profile: {fullProfile.ProfileInfo.ProfileId} already has hideout customisation reward: {reward.Target}, skipping");
             return;
         }
 
@@ -722,6 +727,9 @@ public class ProfileHelper(
                 case CustomisationTypeId.ENVIRONMENT_UI:
                     rewardToStore.Type = CustomisationType.ENVIRONMENT;
                     break;
+                case CustomisationTypeId.SHOOTING_RANGE_MARK:
+                    rewardToStore.Type = CustomisationType.SHOOTING_RANGE_MARK;
+                    break;
                 default:
                     _logger.Error($"Unhandled customisation unlock type: {matchingCustomisation.Parent} not added to profile");
                     return;
@@ -745,5 +753,24 @@ public class ProfileHelper(
         {
             fullProfile.SptData.ExtraRepeatableQuests[repeatableId] += rewardValue;
         }
+    }
+
+    /// <summary>
+    /// Get a profile template by the account and side
+    /// </summary>
+    /// <param name="accountEdition">Edition of profile desired, e.g. "Standard"</param>
+    /// <param name="side">Side of profile desired, e.g. "Bear"</param>
+    /// <returns></returns>
+    public TemplateSide GetProfileTemplateForSide(string accountEdition, string side)
+    {
+        var profileTemplates = _databaseService.GetProfileTemplates();
+
+        // Get matching profile 'type' e.g. 'standard'
+        profileTemplates.TryGetValue(accountEdition, out var matchingProfileTemplate);
+
+        // Get matching profile by 'side' e.g. USEC
+        return string.Equals(side, "bear", StringComparison.OrdinalIgnoreCase)
+            ? matchingProfileTemplate.Bear
+            : matchingProfileTemplate.Usec;
     }
 }

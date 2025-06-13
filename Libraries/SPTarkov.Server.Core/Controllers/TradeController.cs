@@ -68,7 +68,7 @@ public class TradeController(
         if (request.Type == "sell_to_trader")
         {
             var sellData = (ProcessSellTradeRequestData) request;
-            _tradeHelper.sellItem(pmcData, pmcData, sellData, sessionID, output);
+            _tradeHelper.SellItem(pmcData, pmcData, sellData, sessionID, output);
 
             return output;
         }

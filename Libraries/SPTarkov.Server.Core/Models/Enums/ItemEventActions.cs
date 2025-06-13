@@ -1,7 +1,11 @@
-﻿namespace SPTarkov.Server.Core.Models.Enums;
+using System.Text.Json.Serialization;
+namespace SPTarkov.Server.Core.Models.Enums;
 
 public record ItemEventActions
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public const string MOVE = "Move";
     public const string REMOVE = "Remove";
     public const string SPLIT = "Split";

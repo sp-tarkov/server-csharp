@@ -62,7 +62,7 @@ public class HashUtilTests
     [DataRow("123456789", "25F9E794323B453885F5181F1B624D0B", "Not valid output, expected '25F9E794323B453885F5181F1B624D0B'")]
     public void GenerateValidMd5Test(string input, string expectedOutput, string failMessage)
     {
-        var result = _hashUtil.GenerateMd5ForData(input);
+        var result = _hashUtil.GenerateHashForData(HashingAlgorithm.MD5,input);
         Assert.AreEqual(
             expectedOutput,
             result,

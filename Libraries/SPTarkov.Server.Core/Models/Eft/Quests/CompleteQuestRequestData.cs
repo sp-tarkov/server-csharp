@@ -5,6 +5,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Quests;
 
 public record CompleteQuestRequestData : InventoryBaseActionRequestData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Quest Id
     /// </summary>

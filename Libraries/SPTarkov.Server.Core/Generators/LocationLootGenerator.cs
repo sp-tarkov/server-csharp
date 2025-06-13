@@ -1162,7 +1162,6 @@ public class LocationLootGenerator(
 
     protected Item? CreateWeaponItems(string chosenTpl, Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist, string? parentId, ref List<Item> items)
     {
-        Item? rootItem;
         List<Item> children = [];
         var defaultPreset = _cloner.Clone(_presetHelper.GetDefaultPreset(chosenTpl));
         if (defaultPreset?.Items is not null)
@@ -1188,6 +1187,7 @@ public class LocationLootGenerator(
                         }
                     )
                 );
+                _logger.Error(e.StackTrace);
 
                 throw;
             }
@@ -1201,7 +1201,7 @@ public class LocationLootGenerator(
             }
         }
 
-        rootItem = items[0];
+        var rootItem = items.FirstOrDefault();
         if (rootItem is null)
         {
             _logger.Error(
@@ -1237,6 +1237,7 @@ public class LocationLootGenerator(
                     }
                 )
             );
+            _logger.Error(e.StackTrace);
 
             throw;
         }

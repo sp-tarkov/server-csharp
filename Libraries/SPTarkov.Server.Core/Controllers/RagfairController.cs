@@ -125,14 +125,14 @@ public class RagfairController
 
     /// <summary>
     ///     Handles client/ragfair/find
+    ///     Returns an object containing an array of flea offers to show to player
     /// </summary>
     /// <param name="sessionID">Session/Player id</param>
-    /// <param name="searchRequest">Search request data</param>
+    /// <param name="searchRequest">Search request data from client</param>
     /// <returns>Flea offers that match required search parameters</returns>
     public GetOffersResult GetOffers(string sessionID, SearchRequestData searchRequest)
     {
         var profile = _profileHelper.GetFullProfile(sessionID);
-
         var itemsToAdd = _ragfairHelper.FilterCategories(sessionID, searchRequest);
         var traderAssorts = _ragfairHelper.GetDisplayableAssorts(sessionID);
         var result = new GetOffersResult
@@ -142,6 +142,7 @@ public class RagfairController
             SelectedCategory = searchRequest.HandbookId
         };
 
+        // Get all offers ready for sorting/filtering below
         result.Offers = GetOffersForSearchType(searchRequest, itemsToAdd, traderAssorts, profile.CharacterData.PmcData);
 
         // Client requested a category refresh
@@ -150,16 +151,26 @@ public class RagfairController
             result.Categories = GetSpecificCategories(profile.CharacterData.PmcData, searchRequest, result.Offers);
         }
 
+        // Adjust index value of offers found to start at 0 
         AddIndexValueToOffers(result.Offers);
 
         // Sort offers
         result.Offers = _ragfairSortHelper.SortOffers(
             result.Offers,
-            searchRequest.SortType.Value,
-            searchRequest.SortDirection.Value
+            searchRequest.SortType.GetValueOrDefault(RagfairSort.ID),
+            searchRequest.SortDirection.GetValueOrDefault(0)
         );
 
-        // Match offers with quests and lock unfinished quests - get offers from traders
+        // Must occur prior to pagination
+        result.OffersCount = result.Offers.Count;
+
+        // Handle paging before returning results if searching for general items, not preset items
+        if (searchRequest.BuildCount == 0)
+        {
+            PaginateOffers(searchRequest, result);
+        }
+
+        // Update trader offers' values, Lock quest-linked offers + adjust offer buy limits
         foreach (var traderOffer in result.Offers.Where(offer => _ragfairOfferHelper.OfferIsFromTrader(offer)))
         {
             // For the items, check the barter schemes. The method getDisplayableAssorts sets a flag sptQuestLocked
@@ -174,17 +185,43 @@ public class RagfairController
             SetTraderOfferStackSize(traderOffer);
         }
 
-        result.OffersCount = result.Offers.Count;
+        return result;
+    }
 
-        // Handle paging before returning results only if searching for general items, not preset items
-        if (searchRequest.BuildCount == 0)
+    /// <summary>
+    /// Paginate offers based on search request properties
+    /// </summary>
+    /// <param name="searchRequest">Client request</param>
+    /// <param name="result">Object to return to client</param>
+    protected void PaginateOffers(SearchRequestData searchRequest, GetOffersResult result)
+    {
+        // Number of items to show per page
+        var perPageLimit = searchRequest.Limit.GetValueOrDefault(15); // Client defaults to 15 items per page
+
+        // Total pages to show player
+        var totalPages = result.Offers.Count / perPageLimit;
+
+        // Page player was just on before clicking new page
+        var previousPage = searchRequest.Page.GetValueOrDefault(0);
+
+        // Assumed page player is moving to
+        var nextPage = searchRequest.Page.GetValueOrDefault(0) + 1;
+
+        // Get start/end item indexes
+        var startIndex = previousPage * perPageLimit;
+        var endIndex = Math.Min(nextPage * perPageLimit, result.Offers.Count);
+
+        // Edge case
+        if (previousPage > totalPages)
         {
-            var start = searchRequest.Page * searchRequest.Limit;
-            var end = Math.Min((searchRequest.Page.Value + 1) * searchRequest.Limit.Value, result.Offers.Count);
-            result.Offers = result.Offers.Slice(start.Value, end - start.Value);
+            // Occurs when player edits "item count shown per page" value when on page near end of offer list
+            // The page no longer exists due to the larger number of items on each page, show them the very end of the offer list instead
+            _logger.Warning(_localisationService.GetText("ragfair-offer_page_doesnt_exist"));
+            startIndex = result.Offers.Count - perPageLimit;
+            endIndex = result.Offers.Count;
         }
 
-        return result;
+        result.Offers = result.Offers.Skip(startIndex).Take(endIndex - startIndex).ToList();
     }
 
     /// <summary>
@@ -555,13 +592,15 @@ public class RagfairController
         SptProfile fullProfile, ItemEventRouterResponse output)
     {
         var pmcData = fullProfile.CharacterData.PmcData;
-        // var itemsToListCount = offerRequest.Items.Count; // Wasnt used to commented out for now // Does not count stack size, only items
+        // var itemsToListCount = offerRequest.Items.Count; // Wasn't used to commented out for now // Does not count stack size, only items
+
+        var firstOfferItemId = offerRequest.Items.First(); // What id chosen doesn't matter, it's a multi-offer so all items are the same
 
         // multi-offers are all the same item,
         // Get first item and its children and use as template
-        var firstListingAndChidren = _itemHelper.FindAndReturnChildrenAsItems(
+        var inventoryItems = _itemHelper.FindAndReturnChildrenAsItems(
             pmcData.Inventory.Items,
-            offerRequest.Items[0]
+            firstOfferItemId // Choose first item as they're all the same item
         );
 
         // Find items to be listed on flea (+ children) from player inventory
@@ -571,19 +610,19 @@ public class RagfairController
             _httpResponseUtil.AppendErrorToOutput(output, result.ErrorMessage);
         }
 
-        // Total count of items summed using their stack counts
+        // Total count of items summed using their individual stack counts
         var stackCountTotal = _ragfairOfferHelper.GetTotalStackCountSize(result.Items);
 
         // When listing identical items on flea, condense separate items into one stack with a merged stack count
-        // e.g. 2 ammo items, stackObjectCount = 3 for each, will result in 1 stack of 6
-        firstListingAndChidren[0].Upd ??= new Upd();
-        firstListingAndChidren[0].Upd.StackObjectsCount = stackCountTotal;
+        // e.g. 2 ammo items each with stackObjectCount = 3, will result in 1 stack of 6
+        inventoryItems[0].Upd ??= new Upd();
+        inventoryItems[0].Upd.StackObjectsCount = stackCountTotal;
 
         // Create flea object
-        var offer = CreatePlayerOffer(sessionID, offerRequest.Requirements, firstListingAndChidren, false);
+        var offer = CreatePlayerOffer(sessionID, offerRequest.Requirements, inventoryItems, false);
 
         // This is the item that will be listed on flea, has merged stackObjectCount
-        var newRootOfferItem = offer.Items[0];
+        var rootOfferItem = offer.Items.First(x => x.Id == firstOfferItemId);
 
         // Average offer price for single item (or whole weapon)
         var averages =
@@ -593,10 +632,10 @@ public class RagfairController
                     TemplateId = offer.Items[0].Template
                 }
             );
-        var averageOfferPrice = averages.Avg;
 
         // Check for and apply item price modifer if it exists in config
-        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(newRootOfferItem.Template, out var itemPriceModifer))
+        var averageOfferPrice = averages.Avg;
+        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(rootOfferItem.Template, out var itemPriceModifer))
         {
             averageOfferPrice *= itemPriceModifer;
         }
@@ -625,7 +664,7 @@ public class RagfairController
         {
             var taxFeeChargeFailed = ChargePlayerTaxFee(
                 sessionID,
-                newRootOfferItem,
+                rootOfferItem,
                 pmcData,
                 playerListedPriceInRub,
                 (int) stackCountTotal,
@@ -665,11 +704,11 @@ public class RagfairController
         SptProfile fullProfile, ItemEventRouterResponse output)
     {
         var pmcData = fullProfile.CharacterData.PmcData;
-        // var itemsToListCount = offerRequest.Items.Count; // Wasn't used so commented out for now // Does not count stack size, only items
+        // var itemsToListCount = offerRequest.Items.Count; // TODO: Wasn't used so commented out for now // Does not count stack size, only items
 
         // multi-offers are all the same item,
         // Get first item and its children and use as template
-        var firstListingAndChidren = _itemHelper.FindAndReturnChildrenAsItems(
+        var firstListingAndChildren = _itemHelper.FindAndReturnChildrenAsItems(
             pmcData.Inventory.Items,
             offerRequest.Items[0]
         );
@@ -686,21 +725,21 @@ public class RagfairController
 
         // When listing identical items on flea, condense separate items into one stack with a merged stack count
         // e.g. 2 ammo items, stackObjectCount = 3 for each, will result in 1 stack of 6
-        firstListingAndChidren[0].Upd ??= new Upd();
-
-        firstListingAndChidren[0].Upd.StackObjectsCount = stackCountTotal;
+        var firstListingRootItem = firstListingAndChildren.FirstOrDefault();
+        firstListingRootItem.Upd ??= new Upd();
+        firstListingRootItem.Upd.StackObjectsCount = stackCountTotal;
 
         // Create flea object
-        var offer = CreatePlayerOffer(sessionID, offerRequest.Requirements, firstListingAndChidren, true);
+        var offer = CreatePlayerOffer(sessionID, offerRequest.Requirements, firstListingAndChildren, true);
 
         // This is the item that will be listed on flea, has merged stackObjectCount
-        var newRootOfferItem = offer.Items[0];
+        var newRootOfferItem = offer.Items[0]; // TODO: add logic like single/multi offers to find root item
 
         // Single price for an item
         var averages = GetItemMinAvgMaxFleaPriceValues(
             new GetMarketPriceRequestData
             {
-                TemplateId = firstListingAndChidren[0].Template
+                TemplateId = firstListingRootItem.Template
             }
         );
         var singleItemPrice = averages.Avg;
@@ -727,7 +766,7 @@ public class RagfairController
             qualityMultiplier
         );
 
-        // Create array of sell times for items listed + sell all at once as its a pack
+        // Create array of sell times for items listed + sell all at once as it's a pack
         offer.SellResults = _ragfairSellHelper.RollForSale(sellChancePercent, (int) stackCountTotal, true);
 
         // Subtract flea market fee from stash
@@ -778,24 +817,25 @@ public class RagfairController
         // var itemsToListCount = offerRequest.Items.Count; // Wasn't used so commented out for now // Does not count stack size, only items
 
         // Find items to be listed on flea from player inventory
-        var result = GetItemsToListOnFleaFromInventory(pmcData, offerRequest.Items);
-        if (result.Items is null || !string.IsNullOrEmpty(result.ErrorMessage))
+        var inventoryItemsToSell = GetItemsToListOnFleaFromInventory(pmcData, offerRequest.Items);
+        if (inventoryItemsToSell.Items is null || !string.IsNullOrEmpty(inventoryItemsToSell.ErrorMessage))
         {
-            _httpResponseUtil.AppendErrorToOutput(output, result.ErrorMessage);
+            _httpResponseUtil.AppendErrorToOutput(output, inventoryItemsToSell.ErrorMessage);
         }
 
         // Total count of items summed using their stack counts
-        var stackCountTotal = _ragfairOfferHelper.GetTotalStackCountSize(result.Items);
+        var stackCountTotal = _ragfairOfferHelper.GetTotalStackCountSize(inventoryItemsToSell.Items);
 
-        // Checks are done, create the offer
+        // Checks are done, create offer
         var playerListedPriceInRub = CalculateRequirementsPriceInRub(offerRequest.Requirements);
         var offer = CreatePlayerOffer(
             sessionID,
             offerRequest.Requirements,
-            result.Items.First(),
+            inventoryItemsToSell.Items.First(), // Single offer, value will be collection with one array of items
             false
         );
-        var rootItem = offer.Items.First();
+
+        var offerRootItem = offer.Items.FirstOrDefault(x => x.Id == offerRequest.Items[0]);
 
         // Get average of items quality+children
         var qualityMultiplier = _itemHelper.GetItemQualityModifierForItems(offer.Items, true);
@@ -805,13 +845,13 @@ public class RagfairController
             GetItemMinAvgMaxFleaPriceValues(
                 new GetMarketPriceRequestData
                 {
-                    TemplateId = rootItem.Template
+                    TemplateId = offerRootItem.Template
                 }
             );
         var averageOfferPriceSingleItem = averages.Avg;
 
         // Check for and apply item price modifer if it exists in config
-        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(rootItem.Template, out var itemPriceModifer))
+        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(offerRootItem.Template, out var itemPriceModifer))
         {
             averageOfferPriceSingleItem *= itemPriceModifer;
         }
@@ -832,7 +872,7 @@ public class RagfairController
         {
             var taxFeeChargeFailed = ChargePlayerTaxFee(
                 sessionID,
-                rootItem,
+                offerRootItem,
                 pmcData,
                 playerListedPriceInRub,
                 (int) stackCountTotal,
@@ -994,8 +1034,8 @@ public class RagfairController
         // Count how many items are being sold and multiply the requested amount accordingly
         foreach (var itemId in itemIdsFromFleaOfferRequest)
         {
-            var item = pmcData.Inventory?.Items?.FirstOrDefault(i => i.Id == itemId);
-            if (item is null)
+            var rootItem = pmcData.Inventory?.Items?.FirstOrDefault(i => i.Id == itemId);
+            if (rootItem is null)
             {
                 errorMessage = _localisationService.GetText(
                     "ragfair-unable_to_find_item_in_inventory",
@@ -1013,7 +1053,8 @@ public class RagfairController
                 };
             }
 
-            item = _itemHelper.FixItemStackCount(item);
+            _itemHelper.FixItemStackCount(rootItem);
+
             itemsToReturn.Add(_itemHelper.FindAndReturnChildrenAsItems(pmcData.Inventory.Items, itemId));
         }
 

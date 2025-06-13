@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 
@@ -6,6 +6,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record GroupCharacter
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("_id")]
     public string? Id
     {
@@ -65,6 +68,9 @@ public record GroupCharacter
 
 public record CharacterInfo
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Nickname")]
     public string? Nickname
     {
@@ -124,6 +130,9 @@ public record CharacterInfo
 
 public record PlayerVisualRepresentation
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Info")]
     public VisualInfo? Info
     {
@@ -148,6 +157,9 @@ public record PlayerVisualRepresentation
 
 public record VisualInfo
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Side")]
     public string? Side
     {
@@ -186,6 +198,9 @@ public record VisualInfo
 
 public record Customization
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Head")]
     public string? Head
     {
@@ -217,6 +232,9 @@ public record Customization
 
 public record Equipment
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Id")]
     public string? Id
     {

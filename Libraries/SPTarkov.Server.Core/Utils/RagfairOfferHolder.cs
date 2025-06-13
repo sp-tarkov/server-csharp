@@ -3,9 +3,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
-using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Core.Utils;
@@ -17,14 +15,13 @@ public class RagfairOfferHolder(
     ProfileHelper _profileHelper,
     HashUtil _hashUtil,
     LocalisationService _localisationService,
-    ConfigServer _configServer
+    ItemHelper _itemHelper
 )
 {
     protected readonly Lock _expiredOfferIdsLock = new();
     protected readonly Lock _ragfairOperationLock = new();
 
-    protected HashSet<string> _expiredOfferIds = [];
-    protected int _maxOffersPerTemplate = _configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
+    protected readonly HashSet<string> _expiredOfferIds = [];
     protected ConcurrentDictionary<string, RagfairOffer> _offersById = new();
     protected ConcurrentDictionary<string, HashSet<string>> _offersByTemplate = new(); // key = tplId, value = list of offerIds
     protected ConcurrentDictionary<string, HashSet<string>> _offersByTrader = new(); // key = traderId, value = list of offerIds
@@ -123,11 +120,12 @@ public class RagfairOfferHolder(
             // If it is an NPC PMC offer AND we have already reached the maximum amount of possible offers
             // for this template, just don't add in more
             var sellerIsTrader = _ragfairServerHelper.IsTrader(sellerId);
+            var itemSoldDb = _itemHelper.GetItem(itemTpl);
             if (
-                itemTpl != null
+                !string.IsNullOrEmpty(itemTpl)
                 && !(sellerIsTrader || _profileHelper.IsPlayer(sellerId))
                 && _offersByTemplate.TryGetValue(itemTpl, out var offers)
-                && offers?.Count >= _maxOffersPerTemplate
+                && offers?.Count >= _ragfairServerHelper.GetOfferCountByBaseType(itemSoldDb.Value.Parent)
             )
             {
                 return;

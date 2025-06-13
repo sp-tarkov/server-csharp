@@ -1,11 +1,11 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Spt.Config;
 
 public record InRaidConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -15,7 +15,7 @@ public record InRaidConfig : BaseConfig
     ///     Overrides to apply to the pre-raid settings screen
     /// </summary>
     [JsonPropertyName("raidMenuSettings")]
-    public RaidMenuSettings RaidMenuSettings
+    public required RaidMenuSettings RaidMenuSettings
     {
         get;
         set;
@@ -35,7 +35,7 @@ public record InRaidConfig : BaseConfig
     ///     Names of car extracts
     /// </summary>
     [JsonPropertyName("carExtracts")]
-    public List<string> CarExtracts
+    public required List<string> CarExtracts
     {
         get;
         set;
@@ -45,7 +45,7 @@ public record InRaidConfig : BaseConfig
     ///     Names of coop extracts
     /// </summary>
     [JsonPropertyName("coopExtracts")]
-    public List<string> CoopExtracts
+    public required List<string> CoopExtracts
     {
         get;
         set;
@@ -124,15 +124,18 @@ public record InRaidConfig : BaseConfig
 
 public record RaidMenuSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("aiAmount")]
-    public string AiAmount
+    public required string AiAmount
     {
         get;
         set;
     }
 
     [JsonPropertyName("aiDifficulty")]
-    public string AiDifficulty
+    public required string AiDifficulty
     {
         get;
         set;
@@ -183,6 +186,9 @@ public record RaidMenuSettings
 
 public record RaidSave
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Should loot gained from raid be saved
     /// </summary>

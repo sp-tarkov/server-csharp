@@ -5,4 +5,5 @@ public static class OnUpdateOrder
     public const int DialogueCallbacks = 1000;
     public const int HideoutCallbacks = 2000;
     public const int InsuranceCallbacks = 3000;
+    public const int BtrDeliveryCallbacks = 4000;
 }

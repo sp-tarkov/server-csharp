@@ -847,9 +847,6 @@ public class InventoryHelper(
             var fH = IsVertical(itemLocation) ? iW : iH;
             var fW = IsVertical(itemLocation) ? iH : iW;
 
-            // Find the ending x coord of container
-            var fillTo = itemLocation.X + fW;
-
             for (var y = 0; y < fH; y++)
             {
                 try

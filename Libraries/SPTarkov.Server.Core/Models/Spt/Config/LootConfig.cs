@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record LootConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -16,7 +16,7 @@ public record LootConfig : BaseConfig
     ///     Spawn positions to add into a map, key=mapid
     /// </summary>
     [JsonPropertyName("looseLoot")]
-    public Dictionary<string, Spawnpoint[]> LooseLoot
+    public required Dictionary<string, Spawnpoint[]> LooseLoot
     {
         get;
         set;
@@ -26,7 +26,7 @@ public record LootConfig : BaseConfig
     ///     Loose loot probability adjustments to apply on game start
     /// </summary>
     [JsonPropertyName("looseLootSpawnPointAdjustments")]
-    public Dictionary<string, Dictionary<string, double>>? LooseLootSpawnPointAdjustments
+    public required Dictionary<string, Dictionary<string, double>> LooseLootSpawnPointAdjustments
     {
         get;
         set;

@@ -15,6 +15,9 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
 
+/// <summary>
+/// Provides access to the servers database, these are in-memory representations of the .JSON files stored inside `Libraries\SPTarkov.Server.Assets\Assets\database`
+/// </summary>
 [Injectable(InjectionType.Singleton)]
 public class DatabaseService(
     ISptLogger<DatabaseService> _logger,
@@ -98,7 +101,7 @@ public class DatabaseService(
     }
 
     /// <summary>
-    ///     Get specific location by its ID
+    ///     Get specific location by its ID, automatically ToLowers id
     /// </summary>
     /// <param name="locationId"> Desired location ID </param>
     /// <returns> assets/database/locations/ </returns>
@@ -257,7 +260,7 @@ public class DatabaseService(
     }
 
     /// <returns> assets/database/templates/profiles.json </returns>
-    public ProfileTemplates GetProfiles()
+    public Dictionary<string, ProfileSides> GetProfileTemplates()
     {
         if (_databaseServer.GetTables().Templates?.Profiles == null)
         {

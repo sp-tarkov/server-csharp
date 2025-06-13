@@ -1,10 +1,14 @@
-﻿using SPTarkov.Server.Core.Models.Eft.Common;
+using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Models.Spt.Server;
 
 public record DatabaseTables
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public Bots.Bots? Bots
     {
         get;

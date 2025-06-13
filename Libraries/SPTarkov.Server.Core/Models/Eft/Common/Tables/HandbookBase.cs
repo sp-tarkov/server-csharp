@@ -1,9 +1,12 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record HandbookBase
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Categories")]
     public List<HandbookCategory>? Categories
     {
@@ -21,6 +24,9 @@ public record HandbookBase
 
 public record HandbookCategory
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Id")]
     public string? Id
     {
@@ -61,6 +67,9 @@ public record HandbookCategory
 
 public record HandbookItem
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Id")]
     public string? Id
     {

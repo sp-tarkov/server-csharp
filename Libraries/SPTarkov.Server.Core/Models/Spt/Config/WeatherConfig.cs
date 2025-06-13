@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils.Json.Converters;
@@ -8,7 +8,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record WeatherConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string? Kind
+    public override string Kind
     {
         get;
         set;
@@ -45,6 +45,9 @@ public record WeatherConfig : BaseConfig
 
 public record SeasonDateTimes
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("seasonType")]
     public Season? SeasonType
     {
@@ -94,6 +97,9 @@ public record SeasonDateTimes
 
 public record WeatherValues
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("seasonValues")]
     public Dictionary<string, SeasonalValues>? SeasonValues
     {
@@ -124,6 +130,9 @@ public record WeatherValues
 
 public record SeasonalValues
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("clouds")]
     public WeatherSettings<double>? Clouds
     {
@@ -190,6 +199,9 @@ public record SeasonalValues
 
 public record TempDayNight
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("day")]
     public MinMax<double>? Day
     {
@@ -207,6 +219,9 @@ public record TempDayNight
 
 public record WeatherSettings<T>
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("values")]
     public List<T>? Values
     {

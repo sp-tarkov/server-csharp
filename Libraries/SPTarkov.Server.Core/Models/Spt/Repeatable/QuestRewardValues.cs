@@ -4,6 +4,9 @@ namespace SPTarkov.Server.Core.Models.Spt.Repeatable;
 
 public record QuestRewardValues
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("skillPointReward")]
     public double? SkillPointReward
     {

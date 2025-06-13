@@ -5,6 +5,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 
 public record GetProfileSettingsRequest : IRequestData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Chosen value for profile.Info.SelectedMemberCategory
     /// </summary>

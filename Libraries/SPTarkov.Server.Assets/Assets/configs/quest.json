@@ -91,28 +91,28 @@
         },
         "675031be899713ccad00060c": {
             "name": "Christmas Dinner",
-            "season": "christmas",
+            "season": "Christmas",
             "startTimestamp": 1701388800000,
             "endTimestamp": 1703980800000,
             "yearly": true
         },
         "675031d3884e1da4a90b3bc9": {
             "name": "Chilly",
-            "season": "christmas",
+            "season": "Christmas",
             "startTimestamp": 1701388800000,
             "endTimestamp": 1703980800000,
             "yearly": true
         },
         "6750320e23fc8fd9cc087d14": {
             "name": "Holiday Beyond the Means",
-            "season": "christmas",
+            "season": "Christmas",
             "startTimestamp": 1701388800000,
             "endTimestamp": 1703980800000,
             "yearly": true
         },
         "67503247622398376d0b57cd": {
             "name": "Khorovod",
-            "season": "christmas",
+            "season": "Christmas",
             "startTimestamp": 1701388800000,
             "endTimestamp": 1703980800000,
             "yearly": true
@@ -175,14 +175,14 @@
         },
         "670404a2ea1caa8f2e0be106": {
             "name": "Don’t Believe Your Eyes",
-            "season": "halloween",
+            "season": "Halloween",
             "startTimestamp": 1341615600000,
             "endTimestamp": "",
             "yearly": true
         },
         "67190f6c1b3f4964d90d71e9": {
             "name": "Global Threat",
-            "season": "halloween",
+            "season": "Halloween",
             "startTimestamp": 1341615600000,
             "endTimestamp": "",
             "yearly": true
@@ -196,14 +196,14 @@
         },
         "675031e1f300496cc4104450": {
             "name": "Hide in Plain Sight",
-            "season": "christmas",
+            "season": "Christmas",
             "startTimestamp": 1701388800000,
             "endTimestamp": 1703980800000,
             "yearly": true
         },
         "675031f57775aada6b0f96a1": {
             "name": "Cheer up",
-            "season": "christmas",
+            "season": "Christmas",
             "startTimestamp": 1701388800000,
             "endTimestamp": 1703980800000,
             "yearly": true
@@ -1211,7 +1211,12 @@
                     "minRequestedBulletAmount": 20,
                     "maxRequestedBulletAmount": 60,
                     "useWhitelist": true,
-                    "useBlacklist": false
+                    "useBlacklist": false,
+					"requiredItemsAreFiR": true,
+                    "requiredItemMinDurabilityMinMax": {
+                        "min": 60,
+                        "max": 80
+                    }
                 },
                 "Elimination": [
                     {
@@ -2008,7 +2013,12 @@
                     "minRequestedBulletAmount": 15,
                     "maxRequestedBulletAmount": 40,
                     "useWhitelist": true,
-                    "useBlacklist": false
+                    "useBlacklist": false,
+					"requiredItemsAreFiR": true,
+                    "requiredItemMinDurabilityMinMax": {
+                        "min": 60,
+                        "max": 80
+                    }
                 },
                 "Elimination": [
                     {

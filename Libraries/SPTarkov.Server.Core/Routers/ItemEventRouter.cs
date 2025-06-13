@@ -28,7 +28,7 @@ public class ItemEventRouter(ISptLogger<ItemEventRouter> logger,
     /// <param name="info"> Event request </param>
     /// <param name="sessionID"> Session ID </param>
     /// <returns> Item response </returns>
-    public ItemEventRouterResponse HandleEvents(ItemEventRouterRequest info, string sessionID)
+    public async ValueTask<ItemEventRouterResponse> HandleEvents(ItemEventRouterRequest info, string sessionID)
     {
         var output = eventOutputHolder.GetOutput(sessionID);
 
@@ -50,7 +50,8 @@ public class ItemEventRouter(ISptLogger<ItemEventRouter> logger,
                 logger.Debug($"event: {body.Action}");
             }
 
-            eventRouter.HandleItemEvent(body.Action, pmcData, body, sessionID, output);
+            await eventRouter.HandleItemEvent(body.Action, pmcData, body, sessionID, output);
+
             if (output.Warnings?.Count > 0)
             {
                 break;

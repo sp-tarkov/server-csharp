@@ -49,7 +49,7 @@ public class StringToNumberFactoryConverter : JsonConverterFactory
 
                     if (_stringParseMethod != null)
                     {
-                        return (T) _stringParseMethod.Invoke(null, [value, CultureInfo.CreateSpecificCulture("en-US")]);
+                        return (T) _stringParseMethod.Invoke(null, [value, CultureInfo.InvariantCulture]);
                     }
                 }
                 catch (Exception ex)

@@ -26,25 +26,27 @@ public class HandbookHelper(
     {
         var handbook = _databaseService.GetHandbook();
         // Add handbook overrides found in items.json config into db
-        foreach (var itemTplKey in _itemConfig.HandbookPriceOverride)
+        foreach (var (key, priceOverride) in _itemConfig.HandbookPriceOverride)
         {
-            var data = _itemConfig.HandbookPriceOverride[itemTplKey.Key];
-
-            var itemToUpdate = handbook.Items.FirstOrDefault(item => item.Id == itemTplKey.Key);
+            var itemToUpdate = handbook.Items.FirstOrDefault(item => item.Id == key);
             if (itemToUpdate is null)
             {
                 handbook.Items.Add(
                     new HandbookItem
                     {
-                        Id = itemTplKey.Key,
-                        ParentId = data.ParentId,
-                        Price = data.Price
+                        Id = key,
+                        ParentId = priceOverride.ParentId,
+                        Price = priceOverride.Price
                     }
                 );
-                itemToUpdate = handbook.Items.FirstOrDefault(item => item.Id == itemTplKey.Key);
+                itemToUpdate = handbook.Items.FirstOrDefault(item => item.Id == key);
             }
 
-            itemToUpdate.Price = data.Price;
+            itemToUpdate.Price = priceOverride.Price;
+            if (priceOverride.ParentId is not null)
+            {
+                itemToUpdate.ParentId = priceOverride.ParentId;
+            }
         }
 
         var handbookDbClone = _cloner.Clone(handbook);

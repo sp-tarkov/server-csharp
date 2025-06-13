@@ -118,7 +118,7 @@ public class DialogStaticRouter : StaticRouter
                 typeof(SendMessageRequest)
             ),
             new RouteAction(
-                "client/mail/dialog/clear",
+                "/client/mail/dialog/clear",
                 async (
                     url,
                     info,

@@ -54,15 +54,15 @@ public class GameCallbacks(
     ///     Save profiles on game close
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GameLogout(string url, EmptyRequestData _, string sessionID)
+    public async ValueTask<string> GameLogout(string url, EmptyRequestData _, string sessionID)
     {
-        _saveServer.SaveProfile(sessionID);
-        return new ValueTask<string>(_httpResponseUtil.GetBody(
+        await _saveServer.SaveProfileAsync(sessionID);
+        return _httpResponseUtil.GetBody(
             new GameLogoutResponseData
             {
                 Status = "ok"
             }
-        ));
+        );
     }
 
     /// <summary>

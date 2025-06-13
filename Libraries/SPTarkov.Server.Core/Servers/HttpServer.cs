@@ -118,7 +118,7 @@ public class HttpServer(
         }
         catch (Exception ex)
         {
-            _logger.Debug("Error handling request: " + context.Request.Path);
+            _logger.Critical("Error handling request: " + context.Request.Path);
             _logger.Critical(ex.Message);
             _logger.Critical(ex.StackTrace);
 #if DEBUG

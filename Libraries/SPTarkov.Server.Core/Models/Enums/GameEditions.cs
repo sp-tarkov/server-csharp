@@ -1,7 +1,11 @@
-﻿namespace SPTarkov.Server.Core.Models.Enums;
+using System.Text.Json.Serialization;
+namespace SPTarkov.Server.Core.Models.Enums;
 
 public record GameEditions
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public const string STANDARD = "standard";
     public const string LEFT_BEHIND = "left_behind";
     public const string PREPARE_FOR_ESCAPE = "prepare_for_escape";

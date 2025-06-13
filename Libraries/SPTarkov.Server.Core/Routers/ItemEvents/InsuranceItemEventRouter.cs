@@ -30,13 +30,13 @@ public class InsuranceItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
+    public override ValueTask<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
         ItemEventRouterResponse output)
     {
         switch (url)
         {
             case ItemEventActions.INSURE:
-                return _insuranceCallbacks.Insure(pmcData, body as InsureRequestData, sessionID);
+                return new ValueTask<ItemEventRouterResponse>(_insuranceCallbacks.Insure(pmcData, body as InsureRequestData, sessionID));
             default:
                 throw new Exception($"InsuranceItemEventRouter being used when it cant handle route {url}");
         }

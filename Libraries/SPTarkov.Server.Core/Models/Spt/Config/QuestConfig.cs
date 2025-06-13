@@ -9,7 +9,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 public record QuestConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -100,6 +100,9 @@ public record QuestConfig : BaseConfig
 
 public record PlayerTypeQuestIds
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("pmc")]
     public QuestTypeIds? Pmc
     {
@@ -117,6 +120,9 @@ public record PlayerTypeQuestIds
 
 public record QuestTypeIds
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("elimination")]
     public string? Elimination
     {
@@ -148,6 +154,9 @@ public record QuestTypeIds
 
 public record EventQuestData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("name")]
     public string? Name
     {
@@ -187,6 +196,9 @@ public record EventQuestData
 
 public record RepeatableQuestConfig
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("id")]
     public string? Id
     {
@@ -325,6 +337,9 @@ public record RepeatableQuestConfig
 
 public record RewardScaling
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("levels")]
     public List<double>? Levels
     {
@@ -391,6 +406,9 @@ public record RewardScaling
 
 public record TraderWhitelist
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("name")]
     public string? Name
     {
@@ -436,6 +454,9 @@ public record TraderWhitelist
 
 public record RepeatableQuestTypesConfig
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Exploration")]
     public Exploration? Exploration
     {
@@ -491,6 +512,9 @@ public record Exploration : BaseQuestConfig
 
 public record SpecificExits
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("probability")]
     public double? Probability
     {
@@ -603,6 +627,9 @@ public record Pickup : BaseQuestConfig
 
 public record PickupTypeWithMaxCount
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("itemType")]
     public string? ItemType
     {
@@ -763,6 +790,9 @@ public record EliminationConfig : BaseQuestConfig
 
 public record BaseQuestConfig
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("possibleSkillRewards")]
     public List<string>? PossibleSkillRewards
     {
@@ -773,6 +803,9 @@ public record BaseQuestConfig
 
 public record BossInfo
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("isBoss")]
     public bool? IsBoss
     {

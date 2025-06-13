@@ -27,7 +27,7 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
         }
         catch (Exception e)
         {
-            logger.Error("cloning error:", e);
+            logger.Error("Cloning error:", e);
             return default;
         }
     }

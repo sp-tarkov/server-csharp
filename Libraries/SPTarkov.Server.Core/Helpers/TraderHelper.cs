@@ -1,4 +1,4 @@
-using SPTarkov.Common.Extensions;
+using System.Security.Principal;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -136,7 +136,7 @@ public class TraderHelper(
     /// <param name="traderID">trader id to reset</param>
     public void ResetTrader(string sessionID, string traderID)
     {
-        var profiles = _databaseService.GetProfiles();
+        var profiles = _databaseService.GetProfileTemplates();
         var trader = _databaseService.GetTrader(traderID);
 
         var fullProfile = _profileHelper.GetFullProfile(sessionID);
@@ -145,34 +145,33 @@ public class TraderHelper(
             throw new Exception(_localisationService.GetText("trader-unable_to_find_profile_by_id", sessionID));
         }
 
+        // Get matching profile 'type' e.g. 'standard'
         var pmcData = fullProfile.CharacterData.PmcData;
-        var rawProfileTemplate = profiles.GetByJsonProp<ProfileSides>(fullProfile.ProfileInfo.Edition)
-            .GetByJsonProp<TemplateSide>(pmcData.Info.Side.ToLower())
-            .Trader;
+        var matchingSide = _profileHelper.GetProfileTemplateForSide(fullProfile.ProfileInfo.Edition, pmcData.Info.Side);
+
+        // Profiles trader settings
+        var profileTemplateTraderData = matchingSide.Trader;
 
         var newTraderData = new TraderInfo
         {
             Disabled = false,
-            LoyaltyLevel = rawProfileTemplate.InitialLoyaltyLevel.GetValueOrDefault(traderID, 1),
-            SalesSum = rawProfileTemplate.InitialSalesSum,
-            Standing = GetStartingStanding(traderID, rawProfileTemplate),
+            LoyaltyLevel = profileTemplateTraderData.InitialLoyaltyLevel.GetValueOrDefault(traderID, 1),
+            SalesSum = profileTemplateTraderData.InitialSalesSum,
+            Standing = GetStartingStanding(traderID, profileTemplateTraderData),
             NextResupply = trader.Base.NextResupply,
             Unlocked = trader.Base.UnlockedByDefault
         };
 
-        if (!pmcData.TradersInfo.TryAdd(traderID, newTraderData))
-        {
-            pmcData.TradersInfo[traderID] = newTraderData;
-        }
-
+        // Add trader to profile if it doesn't already
+        pmcData.TradersInfo.TryAdd(traderID, newTraderData);
 
         // Check if trader should be locked by default
-        if (rawProfileTemplate.LockedByDefaultOverride?.Contains(traderID) ?? false)
+        if (profileTemplateTraderData.LockedByDefaultOverride?.Contains(traderID) ?? false)
         {
             pmcData.TradersInfo[traderID].Unlocked = true;
         }
 
-        if (rawProfileTemplate.PurchaseAllClothingByDefaultForTrader?.Contains(traderID) ?? false)
+        if (profileTemplateTraderData.PurchaseAllClothingByDefaultForTrader?.Contains(traderID) ?? false)
         {
             // Get traders clothing
             var clothing = _databaseService.GetTrader(traderID).Suits;
@@ -186,16 +185,18 @@ public class TraderHelper(
             }
         }
 
-        if ((rawProfileTemplate.FleaBlockedDays ?? 0) > 0)
+        // Template has flea block
+        if ((profileTemplateTraderData.FleaBlockedDays ?? 0) > 0)
         {
-            var newBanDateTime = _timeUtil.GetTimeStampFromNowDays(rawProfileTemplate.FleaBlockedDays ?? 0);
-            var existingBan = pmcData.Info.Bans.FirstOrDefault(ban => ban.BanType == BanType.RagFair);
+            var newBanDateTime = _timeUtil.GetTimeStampFromNowDays(profileTemplateTraderData.FleaBlockedDays ?? 0);
+            var existingBan = pmcData.Info.Bans?.FirstOrDefault(ban => ban.BanType == BanType.RagFair);
             if (existingBan is not null)
             {
                 existingBan.DateTime = newBanDateTime;
             }
             else
             {
+                pmcData.Info.Bans ??= [];
                 pmcData.Info.Bans.Add(
                     new Ban
                     {
@@ -208,7 +209,7 @@ public class TraderHelper(
 
         if (traderID == Traders.JAEGER)
         {
-            pmcData.TradersInfo[traderID].Unlocked = rawProfileTemplate.JaegerUnlocked;
+            pmcData.TradersInfo[traderID].Unlocked = profileTemplateTraderData.JaegerUnlocked;
         }
     }
 

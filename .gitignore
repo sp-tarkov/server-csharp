@@ -5,6 +5,7 @@
 Server/user/
 SPTarkov.Server/user
 SPTarkov.Server/Assets
+Libraries/SPTarkov.Server.Assets/Assets/checks.dat
 
 # User-specific files
 *.rsuser

@@ -5,6 +5,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Inventory;
 
 public record AddItemsDirectRequest
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Item and child mods to add to player inventory
     /// </summary>

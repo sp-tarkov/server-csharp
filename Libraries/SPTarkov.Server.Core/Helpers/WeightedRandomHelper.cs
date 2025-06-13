@@ -1,6 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Spt.Helper;
 using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Helpers;
@@ -8,6 +9,7 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class WeightedRandomHelper(
     ISptLogger<WeightedRandomHelper> _logger,
+    LocalisationService localisationService,
     RandomUtil _randomUtil
 )
 {
@@ -47,17 +49,17 @@ public class WeightedRandomHelper(
     {
         if (items.Count == 0)
         {
-            _logger.Error("Items must not be empty");
+            _logger.Error(localisationService.GetText("weightedrandomhelper-supplied_items_empty"));
         }
 
         if (weights.Count == 0)
         {
-            _logger.Error("Item weights must not be empty");
+            _logger.Error(localisationService.GetText("weightedrandomhelper-supplied_weights_empty"));
         }
 
         if (items.Count != weights.Count)
         {
-            _logger.Error("Items and weight inputs must be of the same length");
+            _logger.Error(localisationService.GetText("weightedrandomhelper-supplied_data_doesnt_match", new { itemCount = items .Count, weightCount = weights.Count}));
         }
 
         // Preparing the cumulative weights list.

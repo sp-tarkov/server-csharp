@@ -49,10 +49,10 @@ public class HideoutController(
 
     protected List<HideoutAreas> _hideoutAreas =
     [
-        HideoutAreas.AIR_FILTERING,
-        HideoutAreas.WATER_COLLECTOR,
-        HideoutAreas.GENERATOR,
-        HideoutAreas.BITCOIN_FARM
+        HideoutAreas.AirFilteringUnit,
+        HideoutAreas.WaterCollector,
+        HideoutAreas.Generator,
+        HideoutAreas.BitcoinFarm
     ];
 
     protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
@@ -209,15 +209,15 @@ public class HideoutController(
 
         // Upgrading water collector / med station
         if (
-            profileHideoutArea.Type == HideoutAreas.WATER_COLLECTOR ||
-            profileHideoutArea.Type == HideoutAreas.MEDSTATION
+            profileHideoutArea.Type == HideoutAreas.WaterCollector ||
+            profileHideoutArea.Type == HideoutAreas.MedStation
         )
         {
             SetWallVisibleIfPrereqsMet(pmcData);
         }
 
         // Cleanup temporary buffs/debuffs from wall if complete
-        if (profileHideoutArea.Type == HideoutAreas.EMERGENCY_WALL && profileHideoutArea.Level == 6)
+        if (profileHideoutArea.Type == HideoutAreas.EmergencyWall && profileHideoutArea.Level == 6)
         {
             _hideoutHelper.RemoveHideoutWallBuffsAndDebuffs(hideoutData, pmcData);
         }
@@ -236,11 +236,11 @@ public class HideoutController(
     /// <param name="pmcData">Player profile</param>
     protected void SetWallVisibleIfPrereqsMet(PmcData pmcData)
     {
-        var medStation = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.MEDSTATION);
-        var waterCollector = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.WATER_COLLECTOR);
+        var medStation = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.MedStation);
+        var waterCollector = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.WaterCollector);
         if (medStation?.Level >= 1 && waterCollector?.Level >= 1)
         {
-            var wall = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.EMERGENCY_WALL);
+            var wall = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.EmergencyWall);
             if (wall?.Level == 0)
             {
                 wall.Level = 3;
@@ -275,7 +275,7 @@ public class HideoutController(
         AddUpdateInventoryItemToProfile(sessionId, pmcData, dbHideoutArea, hideoutStage);
 
         // Edge case, add/update `stand1/stand2/stand3` children
-        if (dbHideoutArea.Type == HideoutAreas.EQUIPMENT_PRESETS_STAND)
+        if (dbHideoutArea.Type == HideoutAreas.EquipmentPresetsStand)
             // Can have multiple 'standx' children depending on upgrade level
         {
             AddMissingPresetStandItemsToProfile(sessionId, hideoutStage, pmcData, dbHideoutArea, output);
@@ -283,8 +283,8 @@ public class HideoutController(
 
         // Don't inform client when upgraded area is hall of fame or equipment stand, BSG doesn't inform client this specific upgrade has occurred
         // will break client if sent
-        HashSet<HideoutAreas> check = [HideoutAreas.PLACE_OF_FAME];
-        if (!check.Contains(dbHideoutArea.Type ?? HideoutAreas.NOTSET))
+        HashSet<HideoutAreas> check = [HideoutAreas.PlaceOfFame];
+        if (!check.Contains(dbHideoutArea.Type ?? HideoutAreas.NotSet))
         {
             AddContainerUpgradeToClientOutput(sessionId, keyForHideoutAreaStash, dbHideoutArea, hideoutStage, output);
         }
@@ -477,7 +477,7 @@ public class HideoutController(
 
         // Handle areas that have resources that can be placed in/taken out of slots from the area
         if (
-            _hideoutAreas.Contains(hideoutArea.Type ?? HideoutAreas.NOTSET)
+            _hideoutAreas.Contains(hideoutArea.Type ?? HideoutAreas.NotSet)
         )
         {
             var response = RemoveResourceFromArea(sessionID, pmcData, request, output, hideoutArea);
@@ -923,7 +923,7 @@ public class HideoutController(
             var addToolsRequest = new AddItemsDirectRequest
             {
                 ItemsWithModsToAdd = [toolItem],
-                FoundInRaid = toolItem[0].Upd?.SpawnedInSession ?? false,
+                FoundInRaid = toolItem.FirstOrDefault()?.Upd?.SpawnedInSession ?? false,
                 UseSortingTable = false,
                 Callback = null
             };
@@ -1550,7 +1550,8 @@ public class HideoutController(
     }
 
     /// <summary>
-    ///     Function called every `hideoutConfig.runIntervalSeconds` seconds as part of onUpdate event
+    ///     Called every `hideoutConfig.runIntervalSeconds` seconds as part of onUpdate event
+    /// Updates hideout craft times
     /// </summary>
     public void Update()
     {

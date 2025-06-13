@@ -25,7 +25,7 @@ public class PresetController(
             if (presetId != preset.Id)
             {
                 _logger.Error(
-                    $"Preset for template tpl: '{preset.Items[0].Template} {preset.Name}' has invalid key: ({presetId} != {preset.Id}). Skipping"
+                    $"Preset for template tpl: '{preset.Items.FirstOrDefault()?.Template} {preset.Name}' has invalid key: ({presetId} != {preset.Id}). Skipping"
                 );
 
                 continue;

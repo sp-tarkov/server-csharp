@@ -107,7 +107,7 @@ public abstract class DynamicRouter : Router
 // So instead I added the definition
 public abstract class ItemEventRouterDefinition : Router
 {
-    public abstract ItemEventRouterResponse? HandleItemEvent(string url,
+    public abstract ValueTask<ItemEventRouterResponse> HandleItemEvent(string url,
         PmcData pmcData,
         BaseInteractionRequestData body,
         string sessionID,

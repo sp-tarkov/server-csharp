@@ -119,6 +119,43 @@ public class FileSptLoggerReference : BaseSptLoggerReference
         get;
         set;
     }
+
+    [JsonPropertyName("filePattern")]
+    public string FilePattern
+    {
+        get;
+        set;
+    }
+
+    private int _maxFileSizeMb;
+    [JsonPropertyName("maxFileSizeMB")]
+    public int MaxFileSizeMb
+    {
+        get => _maxFileSizeMb;
+        set
+        {
+            if (value < 0)
+            {
+                throw new Exception("Invalid value for MaxFileSizeMb, must be >= 0");
+            }
+            _maxFileSizeMb = value;
+        }
+    }
+
+    private int _maxRollingFiles;
+    [JsonPropertyName("maxRollingFiles")]
+    public int MaxRollingFiles
+    {
+        get => _maxRollingFiles;
+        set
+        {
+            if (value < 0)
+            {
+                throw new Exception("Invalid value for MaxRollingFiles, must be >= 0");
+            }
+            _maxRollingFiles = value;
+        }
+    }
 }
 
 public class ConsoleSptLoggerReference : BaseSptLoggerReference

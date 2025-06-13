@@ -1,9 +1,12 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Spt.Hideout;
 
 public record ScavCaseRewardCountsAndPrices
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Common")]
     public RewardCountAndPriceDetails? Common
     {
@@ -28,6 +31,9 @@ public record ScavCaseRewardCountsAndPrices
 
 public record RewardCountAndPriceDetails
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("minCount")]
     public double? MinCount
     {

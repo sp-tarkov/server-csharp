@@ -250,7 +250,7 @@ public class ModValidator(
     }
 
     /// <summary>
-    ///     Read loadorder.json (create if doesnt exist) and return sorted list of mods
+    ///     Read loadorder.json (create if doesn't exist) and return sorted list of mods
     /// </summary>
     /// <returns>string array of sorted mod names</returns>
     public List<string> SortModsLoadOrder()

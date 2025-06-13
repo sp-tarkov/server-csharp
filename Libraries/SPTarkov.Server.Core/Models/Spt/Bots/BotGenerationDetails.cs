@@ -5,6 +5,9 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record BotGenerationDetails
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     /// <summary>
     ///     Should the bot be generated as a PMC
     /// </summary>
@@ -56,7 +59,7 @@ public record BotGenerationDetails
     ///     Level specific overrides for PMC level
     /// </summary>
     [JsonPropertyName("locationSpecificPmcLevelOverride")]
-    public MinMax<int> LocationSpecificPmcLevelOverride
+    public MinMax<int>? LocationSpecificPmcLevelOverride
     {
         get;
         set;

@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.DI;
+using SPTarkov.Server.Core.Loaders;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
@@ -17,6 +18,14 @@ public static class Program
 {
     public static async Task Main(string[] args)
     {
+        // Some users don't know how to create a shortcut...
+        if (!IsRunFromInstallationFolder())
+        {
+            Console.WriteLine("You have not created a shortcut properly. Please hold alt when dragging to create a shortcut.");
+            await Task.Delay(-1);
+            return;
+        }
+
         // Initialize the program variables
         ProgramStatics.Initialize();
 
@@ -36,6 +45,9 @@ public static class Program
             // validate and sort mods, this will also discard any mods that are invalid
             var sortedLoadedMods = ValidateMods(loadedMods);
 
+            // update the loadedMods list with our validated sorted mods
+            loadedMods = sortedLoadedMods;
+
             diHandler.AddInjectableTypesFromAssemblies(sortedLoadedMods.SelectMany(a => a.Assemblies));
         }
         diHandler.InjectAll();
@@ -44,7 +56,24 @@ public static class Program
         builder.Services.AddSingleton<IReadOnlyList<SptMod>>(loadedMods);
         var serviceProvider = builder.Services.BuildServiceProvider();
         var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger("Server");
+        // Load bundles for bundle mods
+        if (ProgramStatics.MODS())
+        {
+            var bundleLoader = serviceProvider.GetService<BundleLoader>();
+            foreach (var mod in loadedMods)
+            {
+                if (mod.ModMetadata?.IsBundleMod == true)
+                {
+                    // Convert to relative path
+                    string relativeModPath = Path.GetRelativePath(
+                        Directory.GetCurrentDirectory(),
+                        mod.Directory
+                    ).Replace('\\', '/');
 
+                    bundleLoader.AddBundles(relativeModPath);
+                }
+            }
+        }
         try
         {
             SetConsoleOutputMode();
@@ -133,6 +162,14 @@ public static class Program
         {
             throw new Exception("Unable to set console mode");
         }
+    }
+
+    private static bool IsRunFromInstallationFolder()
+    {
+        var dirFiles =  Directory.GetFiles(Directory.GetCurrentDirectory());
+
+        // This file is guaranteed to exist if ran from the correct location, even if the game does not exist here.
+        return dirFiles.Any(dirFile => dirFile.EndsWith("sptLogger.json"));
     }
 
     [DllImport("kernel32.dll", SetLastError = true)]

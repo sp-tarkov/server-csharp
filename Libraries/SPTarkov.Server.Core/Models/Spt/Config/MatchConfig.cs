@@ -1,11 +1,11 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Spt.Config;
 
 public record MatchConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind
+    public override string Kind
     {
         get;
         set;
@@ -19,7 +19,7 @@ public record MatchConfig : BaseConfig
     }
 
     [JsonPropertyName("randomiseMapContainers")]
-    public Dictionary<string, bool> RandomiseMapContainers
+    public required Dictionary<string, bool> RandomiseMapContainers
     {
         get;
         set;

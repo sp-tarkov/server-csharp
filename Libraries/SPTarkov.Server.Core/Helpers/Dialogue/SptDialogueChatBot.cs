@@ -52,11 +52,7 @@ public class SptDialogueChatBot(
             return SendPlayerHelpMessage(sessionId, request);
         }
 
-        var handler = _chatMessageHandlers.FirstOrDefault(h =>
-        {
-            return h.CanHandle(request.Text);
-        });
-
+        var handler = _chatMessageHandlers.FirstOrDefault(h => h.CanHandle(request.Text));
         if (handler is not null)
         {
             handler.Process(sessionId, sptFriendUser, sender, request);
@@ -93,43 +89,9 @@ public class SptDialogueChatBot(
         _mailSendService.SendUserMessageToPlayer(
             sessionId,
             GetChatBot(),
-            "The available commands are:\\n GIVEMESPACE \\n HOHOHO \\n VERYSPOOKY \\n ITSONLYSNOWALAN \\n GIVEMESUNSHINE",
+            "The available commands are:\n GIVEMESPACE \n HOHOHO \n VERYSPOOKY \n ITSONLYSNOWALAN \n GIVEMESUNSHINE \n GARBAGE",
             [],
             null
-        );
-        // due to BSG being dumb with messages we need a mandatory timeout between messages so they get out on the right order
-        TimeoutCallback.RunInTimespan(
-            () =>
-            {
-                foreach (var chatCommand in _chatCommands)
-                {
-                    _mailSendService.SendUserMessageToPlayer(
-                        sessionId,
-                        GetChatBot(),
-                        $"Commands available for \"{chatCommand.GetCommandPrefix()}\" prefix:",
-                        [],
-                        null
-                    );
-
-                    TimeoutCallback.RunInTimespan(
-                        () =>
-                        {
-                            foreach (var subCommand in chatCommand.GetCommands())
-                            {
-                                _mailSendService.SendUserMessageToPlayer(
-                                    sessionId,
-                                    GetChatBot(),
-                                    $"Subcommand {subCommand}:\\n{chatCommand.GetCommandHelp(subCommand)}",
-                                    [],
-                                    null
-                                );
-                            }
-                        },
-                        TimeSpan.FromSeconds(1)
-                    );
-                }
-            },
-            TimeSpan.FromSeconds(1)
         );
 
         return request.DialogId;

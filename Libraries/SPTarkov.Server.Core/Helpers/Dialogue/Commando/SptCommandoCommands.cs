@@ -11,8 +11,8 @@ namespace SPTarkov.Server.Core.Helpers.Dialog.Commando;
 [Injectable]
 public class SptCommandoCommands : IChatCommand
 {
-    protected LocalisationService _localisationService;
-    protected IDictionary<string, ISptCommand> _sptCommands;
+    protected readonly LocalisationService _localisationService;
+    protected readonly IDictionary<string, ISptCommand> _sptCommands;
 
     public SptCommandoCommands(
         ConfigServer configServer,

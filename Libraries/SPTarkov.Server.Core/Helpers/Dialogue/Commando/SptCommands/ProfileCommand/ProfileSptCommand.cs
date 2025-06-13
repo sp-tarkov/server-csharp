@@ -4,6 +4,7 @@ using SPTarkov.Server.Core.Helpers.Dialog.Commando.SptCommands;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
+using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Dialog;
 using SPTarkov.Server.Core.Models.Utils;
@@ -152,7 +153,7 @@ public class ProfileSptCommand(
         var profileChangeEvent = new ProfileChangeEvent
         {
             Id = _hashUtil.Generate(),
-            Type = ProfileChangeEventType.SkillPoints,
+            Type = "SkillPoints",
             Value = level * 100,
             Entity = skill.ToString()
         };
@@ -165,7 +166,7 @@ public class ProfileSptCommand(
         var profileChangeEvent = new ProfileChangeEvent
         {
             Id = _hashUtil.Generate(),
-            Type = ProfileChangeEventType.ProfileLevel,
+            Type = "ProfileLevel",
             Value = exp,
             Entity = null
         };
@@ -177,7 +178,7 @@ public class ProfileSptCommand(
         var profileChangeEvent = new ProfileChangeEvent
         {
             Id = _hashUtil.Generate(),
-            Type = ProfileChangeEventType.ExamineAllItems,
+            Type = "ExamineAllItems",
             Value = null,
             Entity = null
         };

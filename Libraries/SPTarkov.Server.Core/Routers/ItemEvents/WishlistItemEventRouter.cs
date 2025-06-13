@@ -32,17 +32,17 @@ public class WishlistItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
+    public override ValueTask<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
         ItemEventRouterResponse output)
     {
         switch (url)
         {
             case ItemEventActions.ADD_TO_WISHLIST:
-                return _wishlistCallbacks.AddToWishlist(pmcData, body as AddToWishlistRequest, sessionID);
+                return new ValueTask<ItemEventRouterResponse>(_wishlistCallbacks.AddToWishlist(pmcData, body as AddToWishlistRequest, sessionID));
             case ItemEventActions.REMOVE_FROM_WISHLIST:
-                return _wishlistCallbacks.RemoveFromWishlist(pmcData, body as RemoveFromWishlistRequest, sessionID);
+                return new ValueTask<ItemEventRouterResponse>(_wishlistCallbacks.RemoveFromWishlist(pmcData, body as RemoveFromWishlistRequest, sessionID)  );
             case ItemEventActions.CHANGE_WISHLIST_ITEM_CATEGORY:
-                return _wishlistCallbacks.ChangeWishlistItemCategory(pmcData, body as ChangeWishlistItemCategoryRequest, sessionID);
+                return new ValueTask<ItemEventRouterResponse>(_wishlistCallbacks.ChangeWishlistItemCategory(pmcData, body as ChangeWishlistItemCategoryRequest, sessionID));
             default:
                 throw new Exception($"CustomizationItemEventRouter being used when it cant handle route {url}");
         }

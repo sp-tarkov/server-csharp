@@ -354,7 +354,7 @@ public class RepeatableQuestController(
 
         if (attempts > maxAttempts)
         {
-            _logger.Error("We were stuck in repeatable quest generation. This should never happen. Please report");
+            _logger.Error(_localisationService.GetText("quest-repeatable_generation_failed_please_report", attempts));
         }
 
         return newRepeatableQuest;
@@ -648,7 +648,7 @@ public class RepeatableQuestController(
     /// <returns>True if unlocked</returns>
     protected bool PlayerHasDailyScavQuestsUnlocked(PmcData pmcData)
     {
-        return pmcData?.Hideout?.Areas?.FirstOrDefault(hideoutArea => hideoutArea.Type == HideoutAreas.INTEL_CENTER)
+        return pmcData?.Hideout?.Areas?.FirstOrDefault(hideoutArea => hideoutArea.Type == HideoutAreas.IntelligenceCenter)
                    ?.Level >=
                1;
     }
@@ -829,12 +829,12 @@ public class RepeatableQuestController(
     protected bool IsPmcLevelAllowedOnLocation(string location, int pmcLevel)
     {
         // All PMC levels are allowed for 'any' location requirement
-        if (location == ELocationName.any.ToString())
+        if (location == nameof(ELocationName.any))
         {
             return true;
         }
 
-        var locationBase = _databaseService.GetLocation(location.ToLower())?.Base;
+        var locationBase = _databaseService.GetLocation(location)?.Base;
         if (locationBase is null)
         {
             return true;

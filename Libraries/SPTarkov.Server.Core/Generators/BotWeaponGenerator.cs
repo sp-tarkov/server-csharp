@@ -200,7 +200,7 @@ public class BotWeaponGenerator(
 
         // Add cartridge(s) to gun chamber(s)
         if (weaponItemTemplate.Properties?.Chambers?.Count > 0 &&
-            weaponItemTemplate.Properties.Chambers[0].Props.Filters[0].Filter.Contains(ammoTpl))
+            weaponItemTemplate.Properties.Chambers.FirstOrDefault().Props.Filters.FirstOrDefault().Filter.Contains(ammoTpl))
         {
             // Guns have variety of possible Chamber ids, patron_in_weapon/patron_in_weapon_000/patron_in_weapon_001
             var chamberSlotNames = weaponItemTemplate.Properties.Chambers.Select(chamberSlot => chamberSlot.Name);
@@ -214,7 +214,7 @@ public class BotWeaponGenerator(
         {
             var ubglTemplate = _itemHelper.GetItem(ubglMod.Template).Value;
             ubglAmmoTpl = GetWeightedCompatibleAmmo(botTemplateInventory.Ammo, ubglTemplate);
-            // this can be null - example - FollowerBoarClose2 can have an UBGL but doesnt have the ammo caliber defined in its json
+            // this can be null - example - FollowerBoarClose2 can have an UBGL but doesn't have the ammo caliber defined in its json
             // the default ammo passed from GetWeightCompatibleAmmo can be null
             if (ubglAmmoTpl is not null)
             {
@@ -315,7 +315,7 @@ public class BotWeaponGenerator(
         List<Item> weaponMods = [];
 
         // TODO: Preset weapons trigger a lot of warnings regarding missing ammo in magazines & such
-        Preset preset = null;
+        Preset? preset = null;
         foreach (var (_, itemPreset) in _databaseService.GetGlobals().ItemPresets)
         {
             if (itemPreset.Items[0].Template == weaponTemplate)
@@ -363,8 +363,7 @@ public class BotWeaponGenerator(
             foreach (var modSlotTemplate in modTemplate.Properties.Slots?.Where(slot => slot.Required.GetValueOrDefault(false)) ?? [])
             {
                 var slotName = modSlotTemplate.Name;
-                var hasWeaponSlotItem = weaponItemList.Any(weaponItem => weaponItem.ParentId == mod.Id && weaponItem.SlotId == slotName
-                );
+                var hasWeaponSlotItem = weaponItemList.Any(weaponItem => weaponItem.ParentId == mod.Id && weaponItem.SlotId == slotName);
                 if (!hasWeaponSlotItem)
                 {
                     _logger.Warning(

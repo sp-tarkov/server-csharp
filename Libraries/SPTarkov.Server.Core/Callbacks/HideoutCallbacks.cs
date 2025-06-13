@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
@@ -17,15 +18,17 @@ public class HideoutCallbacks(
 {
     private readonly HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
 
-    public bool OnUpdate(long timeSinceLastRun)
+    public Task<bool> OnUpdate(long secondsSinceLastRun)
     {
-        if (timeSinceLastRun > _hideoutConfig.RunIntervalSeconds)
+        if (secondsSinceLastRun < _hideoutConfig.RunIntervalSeconds)
         {
-            _hideoutController.Update();
-            return true;
+            // Not enough time has passed since last run, exit early
+            return Task.FromResult(false);
         }
 
-        return false;
+        _hideoutController.Update();
+
+        return Task.FromResult(true);
     }
 
     /// <summary>

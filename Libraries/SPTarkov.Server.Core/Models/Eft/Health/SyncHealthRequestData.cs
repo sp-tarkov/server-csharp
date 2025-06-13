@@ -1,9 +1,12 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Eft.Health;
 
 public record SyncHealthRequestData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Health")]
     public List<BodyPartHealth>? Health
     {
@@ -42,6 +45,9 @@ public record SyncHealthRequestData
 
 public record BodyPartCollection
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Head")]
     public BodyPartHealth? Head
     {
@@ -94,6 +100,9 @@ public record BodyPartCollection
 
 public record BodyPartHealth
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("Maximum")]
     public int? Maximum
     {

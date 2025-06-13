@@ -1,4 +1,4 @@
-﻿namespace SPTarkov.Server.Core.Models.Eft.Launcher;
+namespace SPTarkov.Server.Core.Models.Eft.Launcher;
 
 public record RemoveProfileData : LoginRequestData
 {

@@ -1,10 +1,13 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Utils;
 
 namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record PutMetricsRequestData : IRequestData
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("sid")]
     public string? SessionId
     {
@@ -71,6 +74,9 @@ public record PutMetricsRequestData : IRequestData
 
 public record SharedSettings
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("StatedFieldOfView")]
     public double? StatedFieldOfView
     {
@@ -81,6 +87,9 @@ public record SharedSettings
 
 public record HardwareDescription
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("deviceUniqueIdentifier")]
     public string? DeviceUniqueIdentifier
     {
@@ -203,6 +212,9 @@ public record HardwareDescription
 
 public record ClientEvents
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     [JsonPropertyName("MatchingCompleted")]
     public double? MatchingCompleted
     {

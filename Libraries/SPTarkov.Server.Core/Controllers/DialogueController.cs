@@ -125,7 +125,14 @@ public class DialogueController(
         var data = new List<DialogueInfo>();
         foreach (var dialogueId in _dialogueHelper.GetDialogsForProfile(sessionId))
         {
-            data.Add(GetDialogueInfo(dialogueId.Key, sessionId));
+            var dialogueInfo = GetDialogueInfo(dialogueId.Key, sessionId);
+
+            if (dialogueInfo is null)
+            {
+                continue;
+            }
+
+            data.Add(dialogueInfo);
         }
 
         return data;
@@ -137,12 +144,17 @@ public class DialogueController(
     /// <param name="dialogueId">Dialog id</param>
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
-    public virtual DialogueInfo GetDialogueInfo(
+    public virtual DialogueInfo? GetDialogueInfo(
         string? dialogueId,
         string sessionId)
     {
         var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
         var dialogue = dialogs!.GetValueOrDefault(dialogueId);
+
+        if (!dialogue.Messages.Any())
+        {
+            return null;
+        }
 
         var result = new DialogueInfo
         {
@@ -213,6 +225,16 @@ public class DialogueController(
         var dialogueId = request.DialogId;
         var fullProfile = _saveServer.GetProfile(sessionId);
         var dialogue = GetDialogByIdFromProfile(fullProfile, request);
+
+        if (!dialogue.Messages.Any())
+        {
+            return new GetMailDialogViewResponseData
+            {
+                Messages = [],
+                Profiles = [],
+                HasMessagesWithRewards = false
+            };
+        }
 
         // Dialog was opened, remove the little [1] on screen
         dialogue.New = 0;
@@ -378,8 +400,7 @@ public class DialogueController(
         string sessionId)
     {
         var profile = _saveServer.GetProfile(sessionId);
-        var dialog = profile.DialogueRecords.GetValueOrDefault(dialogueId);
-        if (dialog is null)
+        if (!profile.DialogueRecords.ContainsKey(dialogueId))
         {
             _logger.Error(
                 _localisationService.GetText(
@@ -629,5 +650,23 @@ public class DialogueController(
         {
             profile.FriendProfileIds.RemoveAt(friendIndex);
         }
+    }
+
+    /// <summary>
+    /// Clear messages from a specified dialogue
+    /// </summary>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="request">Client request to clear messages</param>
+    public void ClearMessages(string sessionId, ClearMailMessageRequest request)
+    {
+        var profile = _saveServer.GetProfile(sessionId);
+        if (!profile.DialogueRecords.TryGetValue(request.DialogId, out var dialogToClear))
+        {
+            _logger.Warning($"unable to clear messages from dialog: {request.DialogId} as it cannot be found in profile: {sessionId}");
+
+            return;
+        }
+
+        dialogToClear.Messages?.Clear();
     }
 }

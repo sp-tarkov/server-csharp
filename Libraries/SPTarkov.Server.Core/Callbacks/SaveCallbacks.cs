@@ -3,6 +3,7 @@ using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
@@ -19,17 +20,19 @@ public class SaveCallbacks(
     public async Task OnLoad()
     {
         _backupService.StartBackupSystem();
-        _saveServer.Load();
+        await _saveServer.LoadAsync();
     }
 
-    public bool OnUpdate(long timeSinceLastRun)
+    public async Task<bool> OnUpdate(long secondsSinceLastRun)
     {
-        if (timeSinceLastRun > _coreConfig.ProfileSaveIntervalInSeconds)
+        if (secondsSinceLastRun < _coreConfig.ProfileSaveIntervalInSeconds)
         {
-            _saveServer.Save();
-            return true;
+            // Not enough time has passed since last run, exit early
+            return false;
         }
 
-        return false;
+        await _saveServer.SaveAsync();
+
+        return true;
     }
 }

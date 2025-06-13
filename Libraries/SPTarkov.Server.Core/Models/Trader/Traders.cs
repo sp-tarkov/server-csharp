@@ -1,4 +1,5 @@
-﻿using SPTarkov.DI.Annotations;
+using System.Text.Json.Serialization;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Enums;
 
 namespace SPTarkov.Server.Core.Models;
@@ -6,6 +7,9 @@ namespace SPTarkov.Server.Core.Models;
 [Injectable]
 public record Prapor() : ITrader
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public string Name { get; } = "Prapor";
     public string Id { get; } = Traders.PRAPOR;
 }
@@ -13,6 +17,9 @@ public record Prapor() : ITrader
 [Injectable]
 public record Therapist() : ITrader
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public string Name { get; } = "Therapist";
     public string Id { get; } = Traders.THERAPIST;
 }
@@ -20,6 +27,9 @@ public record Therapist() : ITrader
 [Injectable]
 public record Fence() : ITrader
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public string Name { get; } = "Fence";
     public string Id { get; } = Traders.FENCE;
 }
@@ -27,6 +37,9 @@ public record Fence() : ITrader
 [Injectable]
 public record Skier() : ITrader
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public string Name { get; } = "Skier";
     public string Id { get; } = Traders.SKIER;
 }
@@ -34,6 +47,9 @@ public record Skier() : ITrader
 [Injectable]
 public record Peacekeeper() : ITrader
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public string Name { get; } = "Peacekeeper";
     public string Id { get; } = Traders.PEACEKEEPER;
 }
@@ -41,6 +57,9 @@ public record Peacekeeper() : ITrader
 [Injectable]
 public record Mechanic() : ITrader
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public string Name { get; } = "Mechanic";
     public string Id { get; } = Traders.MECHANIC;
 }
@@ -48,6 +67,9 @@ public record Mechanic() : ITrader
 [Injectable]
 public record Ragman() : ITrader
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public string Name { get; } = "Ragman";
     public string Id { get; } = Traders.RAGMAN;
 }
@@ -55,6 +77,9 @@ public record Ragman() : ITrader
 [Injectable]
 public record Jaeger() : ITrader
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public string Name { get; } = "Jaeger";
     public string Id { get; } = Traders.JAEGER;
 }
@@ -62,6 +87,9 @@ public record Jaeger() : ITrader
 [Injectable]
 public record LighthouseKeeper() : ITrader
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public string Name { get; } = "LighthouseKeeper";
     public string Id { get; } = Traders.LIGHTHOUSEKEEPER;
 }
@@ -69,6 +97,9 @@ public record LighthouseKeeper() : ITrader
 [Injectable]
 public record Btr() : ITrader
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public string Name { get; } = "Btr";
     public string Id { get; } = Traders.BTR;
 }
@@ -76,6 +107,9 @@ public record Btr() : ITrader
 [Injectable]
 public record Ref() : ITrader
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; set; }
+
     public string Name { get; } = "Ref";
     public string Id { get; } = Traders.REF;
 }
