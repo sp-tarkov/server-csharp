@@ -13,7 +13,7 @@ public class ImporterUtil(
     FileUtil _fileUtil,
     JsonUtil _jsonUtil)
 {
-    private readonly FrozenSet<string> _directoriesToIgnore = ["./Assets/database/locales/server"];
+    private readonly FrozenSet<string> _directoriesToIgnore = ["./SPT_Data/database/locales/server"];
     private readonly FrozenSet<string> _filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
 
     public async Task<T> LoadRecursiveAsync<T>(

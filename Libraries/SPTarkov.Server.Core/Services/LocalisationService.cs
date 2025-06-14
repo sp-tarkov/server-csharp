@@ -38,7 +38,7 @@ public class LocalisationService
             localeService.GetServerSupportedLocales().ToHashSet(),
             localeService.GetLocaleFallbacks(),
             "en",
-            "./Assets/database/locales/server",
+            "./SPT_Data/database/locales/server",
             localeService
         );
         _i18nService.SetLocaleByKey(localeService.GetDesiredServerLocale());

@@ -1,9 +1,9 @@
 $scriptDir = $PSScriptRoot
-$assetsPath = Join-Path $scriptDir 'Assets'
-$outputFile = Join-Path $assetsPath 'checks.dat'
+$sptDataPath = Join-Path $scriptDir 'SPT_Data'
+$outputFile = Join-Path $sptDataPath 'checks.dat'
 
-$files = Get-ChildItem -Path $assetsPath -Recurse -File |
-    Where-Object { $_.FullName -notmatch [regex]::Escape((Join-Path $assetsPath 'images')) } |
+$files = Get-ChildItem -Path $sptDataPath -Recurse -File |
+    Where-Object { $_.FullName -notmatch [regex]::Escape((Join-Path $sptDataPath 'images')) } |
     Sort-Object FullName
 
 $hashes = foreach ($file in $files) {
@@ -14,7 +14,7 @@ $hashes = foreach ($file in $files) {
 
     $hashString = [BitConverter]::ToString($hashBytes) -replace '-', ''
 
-    $relativePath = $file.FullName.Substring($assetsPath.Length + 1) -replace '\\', '/'
+    $relativePath = $file.FullName.Substring($sptDataPath.Length + 1) -replace '\\', '/'
 
     [PSCustomObject]@{
         Path = $relativePath

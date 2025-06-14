@@ -23,7 +23,7 @@ public class DatabaseImporter(
     JsonUtil _jsonUtil
     ) : IOnLoad
 {
-    private const string _sptDataPath = "./Assets/";
+    private const string _sptDataPath = "./SPT_Data/";
     protected ISptLogger<DatabaseImporter> _logger = logger;
     protected Dictionary<string, string> databaseHashes = [];
 
