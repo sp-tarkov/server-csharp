@@ -50,7 +50,7 @@ public class AirdropService(
     /// <returns>List of LootItem objects</returns>
     public GetAirdropLootResponse GenerateAirdropLoot(SptAirdropTypeEnum? forcedAirdropType = null)
     {
-        var airdropType = SptAirdropTypeEnum.toiletPaper;
+        var airdropType = forcedAirdropType ?? ChooseAirdropType();
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
             _logger.Debug($"Chose: {airdropType} for airdrop loot");
@@ -164,7 +164,7 @@ public class AirdropService(
         var airdropContainer = new Item
         {
             Id = _hashUtil.Generate(),
-            Template = string.Empty, // Chosen below later 
+            Template = string.Empty, // Chosen below later
             Upd = new Upd
             {
                 SpawnedInSession = true,
@@ -174,19 +174,19 @@ public class AirdropService(
 
         switch (airdropType)
         {
-            case SptAirdropTypeEnum.foodMedical:
+            case SptAirdropTypeEnum.FoodMedical:
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_MEDICAL_CRATE;
                 break;
-            case SptAirdropTypeEnum.barter:
+            case SptAirdropTypeEnum.Barter:
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_SUPPLY_CRATE;
                 break;
-            case SptAirdropTypeEnum.weaponArmor:
+            case SptAirdropTypeEnum.WeaponArmor:
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_WEAPON_CRATE;
                 break;
-            case SptAirdropTypeEnum.mixed:
+            case SptAirdropTypeEnum.Mixed:
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_COMMON_SUPPLY_CRATE;
                 break;
-            case SptAirdropTypeEnum.radar:
+            case SptAirdropTypeEnum.Radar:
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_TECHNICAL_SUPPLY_CRATE_EVENT_1;
                 break;
             default:

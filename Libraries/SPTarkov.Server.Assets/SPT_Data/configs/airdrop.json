@@ -4,8 +4,7 @@
         "weaponArmor": 400,
         "foodMedical": 100,
         "barter": 100,
-        "radar": 0,
-		"toiletPaper": 1
+        "radar": 0
     },
     "loot": {
         "mixed": {

@@ -13,10 +13,9 @@ public enum AirdropTypeEnum
 [EftEnumConverter]
 public enum SptAirdropTypeEnum
 {
-    mixed,
-    barter,
-    foodMedical,
-    weaponArmor,
-    radar,
-    toiletPaper
+    Mixed,
+    Barter,
+    FoodMedical,
+    WeaponArmor,
+    Radar
 }
