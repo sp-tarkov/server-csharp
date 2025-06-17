@@ -419,7 +419,10 @@
                     "requiredItemMinDurabilityMinMax": {
                         "min": 60,
                         "max": 80
-                    }
+                    },
+                    "requiredItemTypeBlacklist": [
+                        "5485a8684bdc2da71d8b4567"
+                    ]
                 },
                 "Elimination": [
                     {
@@ -2020,7 +2023,10 @@
                     "requiredItemMinDurabilityMinMax": {
                         "min": 60,
                         "max": 80
-                    }
+                    },
+                    "requiredItemTypeBlacklist": [
+                        "5485a8684bdc2da71d8b4567"
+                    ]
                 },
                 "Elimination": [
                     {
