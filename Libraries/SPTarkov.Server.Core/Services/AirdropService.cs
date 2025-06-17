@@ -174,19 +174,19 @@ public class AirdropService(
 
         switch (airdropType)
         {
-            case SptAirdropTypeEnum.FoodMedical:
+            case SptAirdropTypeEnum.foodMedical:
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_MEDICAL_CRATE;
                 break;
-            case SptAirdropTypeEnum.Barter:
+            case SptAirdropTypeEnum.barter:
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_SUPPLY_CRATE;
                 break;
-            case SptAirdropTypeEnum.WeaponArmor:
+            case SptAirdropTypeEnum.weaponArmor:
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_WEAPON_CRATE;
                 break;
-            case SptAirdropTypeEnum.Mixed:
+            case SptAirdropTypeEnum.mixed:
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_COMMON_SUPPLY_CRATE;
                 break;
-            case SptAirdropTypeEnum.Radar:
+            case SptAirdropTypeEnum.radar:
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_TECHNICAL_SUPPLY_CRATE_EVENT_1;
                 break;
             default:
