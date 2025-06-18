@@ -18,7 +18,7 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Helpers;
 
-[Injectable]
+[Injectable(InjectionType.Singleton)]
 public class QuestHelper(
     ISptLogger<QuestHelper> _logger,
     TimeUtil _timeUtil,
@@ -725,6 +725,12 @@ public class QuestHelper(
                                                                         && condition.Type == "SellItemToTrader").ToList();
     }
 
+    /// <summary>
+    /// Look over all active conditions and increment them as needed
+    /// </summary>
+    /// <param name="profileWithItemsToSell">profile selling the items</param>
+    /// <param name="profileToReceiveMoney">profile to recieve the money</param>
+    /// <param name="sellRequest">request with items to sell</param>
     public void IncrementSoldToTraderCounters(
         PmcData profileWithItemsToSell,
         PmcData profileToReceiveMoney,
@@ -757,6 +763,13 @@ public class QuestHelper(
         }
     }
 
+    /// <summary>
+    /// Increment an individual condition counter
+    /// </summary>
+    /// <param name="profileWithItemsToSell">Profile selling the items</param>
+    /// <param name="taskCounter">condition counter to increment</param>
+    /// <param name="questCondition">quest condtion to check for valid items on</param>
+    /// <param name="sellRequest">sell request of items sold</param>
     protected void IncrementSoldToTraderCounter(
         PmcData profileWithItemsToSell,
         TaskConditionCounter taskCounter,
