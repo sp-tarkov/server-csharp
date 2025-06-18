@@ -604,6 +604,7 @@
   "quest-no_skill_found": "Skill %s not found",
   "quest-unable_to_find_compare_condition": "Unrecognised Comparison Method: %s",
   "quest-unable_to_find_quest_in_db": "Quest id: {{questId}} with type: {{questType}} not found in database",
+  "quest-unable_to_find_quest_in_db_no_type": "Quest id: {{questId}} not found in db",
   "quest-unable_to_find_quest_in_db_no_quest_rewards": "Unable to find quest: %s in db, unable to give quest rewards to player",
   "quest-unable_to_find_repeatable_to_replace": "Unable to find repeatable quest in profile to replace, skipping",
   "quest-unable_to_find_trader_in_profile": "Unable to find trader: %s in profile",
