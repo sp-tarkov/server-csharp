@@ -671,7 +671,7 @@ public class QuestHelper(
 
 
     /// <summary>
-    /// Get all quests the finish condition `SellItemToTrader`.
+    /// Get all quests with finish condition `SellItemToTrader`.
     /// The first time this method is called it will cache the conditions by quest id in `_sellToTraderQuestConditionCache` and return that thereafter.
     /// </summary>
     /// <returns>List of quests with `SellItemToTrader` finish conditions</returns>
