@@ -21,6 +21,7 @@ public class TradeHelper(
     DatabaseService _databaseService,
     TraderHelper _traderHelper,
     ItemHelper _itemHelper,
+    QuestHelper _questHelper,
     PaymentService _paymentService,
     FenceService _fenceService,
     LocalisationService _localisationService,
@@ -270,14 +271,8 @@ public class TradeHelper(
         ItemEventRouterResponse output
     )
     {
-        // TODO - make more generic to support all quests that have this condition type
-        // Try to reduce perf hit as this is expensive to do every sale
-        // MUST OCCUR PRIOR TO ITEMS BEING REMOVED FROM INVENTORY
-        if (sellRequest.TransactionId == Traders.RAGMAN)
-            // Edge case, `Circulate` quest needs to track when certain items are sold to him
-        {
-            IncrementCirculateSoldToTraderCounter(profileWithItemsToSell, profileToReceiveMoney, sellRequest);
-        }
+        // Check for and increment SoldToTrader condition counters
+        _questHelper.IncrementSoldToTraderCounters(profileWithItemsToSell, profileToReceiveMoney, sellRequest);
 
         const string pattern = @"\s+";
 
@@ -316,79 +311,6 @@ public class TradeHelper(
 
         // Give player money for sold item(s)
         _paymentService.GiveProfileMoney(profileToReceiveMoney, sellRequest.Price, sellRequest, output, sessionID);
-    }
-
-    protected void IncrementCirculateSoldToTraderCounter(
-        PmcData profileWithItemsToSell,
-        PmcData profileToReceiveMoney,
-        ProcessSellTradeRequestData sellRequest
-    )
-    {
-        const string circulateQuestId = "6663149f1d3ec95634095e75";
-        var activeCirculateQuest = profileToReceiveMoney.Quests.FirstOrDefault(quest => quest.QId == circulateQuestId && quest.Status == QuestStatusEnum.Started
-        );
-
-        // Player not on Circulate quest ,exit
-        if (activeCirculateQuest is null)
-        {
-            return;
-        }
-
-        // Find related task condition
-        var taskCondition = profileToReceiveMoney.TaskConditionCounters?.Values.FirstOrDefault(condition =>
-            condition.SourceId == circulateQuestId && condition.Type == "SellItemToTrader"
-        );
-
-        // No relevant condition in profile, nothing to increment
-        if (taskCondition is null)
-        {
-            _logger.Error($"Unable to find `sellToTrader` task counter for {circulateQuestId} quest in profile, skipping");
-
-            return;
-        }
-
-        // Condition exists in profile
-        var circulateQuestDb = _databaseService.GetQuests();
-        if (!circulateQuestDb.TryGetValue(circulateQuestId, out _))
-        {
-            _logger.Error($"Unable to find quest: {circulateQuestId} in db, skipping");
-
-            return;
-        }
-
-        // Get sellToTrader condition from quest
-        var sellItemToTraderCondition = circulateQuestDb.GetValueOrDefault(circulateQuestId)?
-            .Conditions?.AvailableForFinish?.FirstOrDefault(condition => condition.ConditionType == "SellItemToTrader"
-            );
-
-        // Quest doesn't have a sellItemToTrader condition, nothing to do
-        if (sellItemToTraderCondition is null)
-        {
-            _logger.Error(_localisationService.GetText("quest-unable_to_find_selltotrader_counter", circulateQuestId));
-
-            return;
-        }
-
-        // Iterate over items sold to trader
-        var itemsTplsThatIncrement = sellItemToTraderCondition.Target;
-        foreach (var itemSoldToTrader in sellRequest.Items)
-        {
-            // Get sold items' details from profile
-            var itemDetails = profileWithItemsToSell.Inventory?.Items?.FirstOrDefault(inventoryItem => inventoryItem.Id == itemSoldToTrader.Id
-            );
-            if (itemDetails is null)
-            {
-                _logger.Error(_localisationService.GetText("trader-unable_to_find_inventory_item_for_selltotrader_counter", circulateQuestId));
-
-                continue;
-            }
-
-            // Is sold item on the increment list
-            if (itemsTplsThatIncrement.List.Contains(itemDetails.Template))
-            {
-                taskCondition.Value += itemSoldToTrader.Count;
-            }
-        }
     }
 
     /// <summary>
