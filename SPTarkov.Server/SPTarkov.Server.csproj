@@ -17,10 +17,6 @@
     <AssemblyName>SPT.Server</AssemblyName>
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
-    <AssemblyName>SPTarkov.Server</AssemblyName>
-    <ApplicationIcon>..\Libraries\SPTarkov.Server.Assets\SPT_Data\images\icon.ico</ApplicationIcon>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
     <AssemblyName>SPT.Server.Linux</AssemblyName>
   </PropertyGroup>
