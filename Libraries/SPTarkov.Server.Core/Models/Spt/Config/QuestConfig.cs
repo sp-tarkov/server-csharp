@@ -15,73 +15,81 @@ public record QuestConfig : BaseConfig
     ///     Hours to get/redeem items from quest mail keyed by profile type
     /// </summary>
     [JsonPropertyName("mailRedeemTimeHours")]
-    public Dictionary<string, double?>? MailRedeemTimeHours { get; set; }
-
-    [JsonPropertyName("questTemplateIds")]
-    public PlayerTypeQuestIds? QuestTemplateIds { get; set; }
+    public required Dictionary<string, double> MailRedeemTimeHours { get; set; }
 
     /// <summary>
-    ///     Show non-seasonal quests be shown to player
+    ///     Collection of quests by id only available to usec
     /// </summary>
-    [JsonPropertyName("showNonSeasonalEventQuests")]
-    public bool? ShowNonSeasonalEventQuests { get; set; }
-
-    [JsonPropertyName("eventQuests")]
-    public Dictionary<string, EventQuestData>? EventQuests { get; set; }
-
-    [JsonPropertyName("repeatableQuests")]
-    public List<RepeatableQuestConfig>? RepeatableQuests { get; set; }
-
-    [JsonPropertyName("locationIdMap")]
-    public Dictionary<string, string>? LocationIdMap { get; set; }
-
-    [JsonPropertyName("bearOnlyQuests")]
-    public HashSet<string>? BearOnlyQuests { get; set; }
-
     [JsonPropertyName("usecOnlyQuests")]
-    public HashSet<string>? UsecOnlyQuests { get; set; }
+    public required HashSet<string> UsecOnlyQuests { get; set; }
+
+    /// <summary>
+    ///     Collection of quests by id only available to bears
+    /// </summary>
+    [JsonPropertyName("bearOnlyQuests")]
+    public required HashSet<string> BearOnlyQuests { get; set; }
 
     /// <summary>
     ///     Quests that the keyed game version do not see/access
     /// </summary>
     [JsonPropertyName("profileBlacklist")]
-    public Dictionary<string, HashSet<string>>? ProfileBlacklist { get; set; }
+    public required Dictionary<string, HashSet<string>> ProfileBlacklist { get; set; }
 
     /// <summary>
     ///     key=questid, gameversions that can see/access quest
     /// </summary>
     [JsonPropertyName("profileWhitelist")]
-    public Dictionary<string, HashSet<string>>? ProfileWhitelist { get; set; }
+    public required Dictionary<string, HashSet<string>> ProfileWhitelist { get; set; }
+
+    /// <summary>
+    ///     Holds repeatable quest template ids for pmc's and scav's
+    /// </summary>
+    [JsonPropertyName("repeatableQuestTemplateIds")]
+    public required RepeatableQuestTemplates RepeatableQuestTemplates { get; set; }
+
+    /// <summary>
+    ///     Show non-seasonal quests be shown to players
+    /// </summary>
+    [JsonPropertyName("showNonSeasonalEventQuests")]
+    public required bool ShowNonSeasonalEventQuests { get; set; }
+
+    /// <summary>
+    ///     Collection of event quest data keyed by quest id.
+    /// </summary>
+    [JsonPropertyName("eventQuests")]
+    public required Dictionary<string, EventQuestData> EventQuests { get; set; }
+
+    /// <summary>
+    ///     List of repeatable quest configs for; daily, weekly, and daily scav.
+    /// </summary>
+    [JsonPropertyName("repeatableQuests")]
+    public required List<RepeatableQuestConfig> RepeatableQuests { get; set; }
+
+    /// <summary>
+    ///     Maps internal map names to their mongoId: Key - internal :: val - Mongoid
+    /// </summary>
+    [JsonPropertyName("locationIdMap")]
+    public required Dictionary<string, string> LocationIdMap { get; set; }
 }
 
-public record PlayerTypeQuestIds
+public record RepeatableQuestTemplates
 {
     [JsonExtensionData]
     public Dictionary<string, object> ExtensionData { get; set; }
 
+    /// <summary>
+    ///     Pmc repeatable quest template ids keyed by type of quest
+    /// Keys: elimination, completion, exploration
+    /// </summary>
     [JsonPropertyName("pmc")]
-    public QuestTypeIds? Pmc { get; set; }
+    public required Dictionary<string, string> Pmc { get; set; }
 
+    /// <summary>
+    ///     Scav repeatable quest template ids keyed by type of quest
+    /// Keys: elimination, completion, exploration, pickup
+    /// </summary>
     [JsonPropertyName("scav")]
-    public QuestTypeIds? Scav { get; set; }
-}
-
-public record QuestTypeIds
-{
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; set; }
-
-    [JsonPropertyName("elimination")]
-    public string? Elimination { get; set; }
-
-    [JsonPropertyName("completion")]
-    public string? Completion { get; set; }
-
-    [JsonPropertyName("exploration")]
-    public string? Exploration { get; set; }
-
-    [JsonPropertyName("pickup")]
-    public string? Pickup { get; set; }
+    public required Dictionary<string, string> Scav { get; set; }
 }
 
 public record EventQuestData
@@ -89,21 +97,36 @@ public record EventQuestData
     [JsonExtensionData]
     public Dictionary<string, object> ExtensionData { get; set; }
 
+    /// <summary>
+    ///     Name of the event quest
+    /// </summary>
     [JsonPropertyName("name")]
-    public string? Name { get; set; }
+    public required string Name { get; set; }
 
+    /// <summary>
+    ///     Season to which this quest belongs
+    /// </summary>
     [JsonPropertyName("season")]
-    public SeasonalEventType? Season { get; set; }
+    public required SeasonalEventType Season { get; set; }
 
+    /// <summary>
+    ///     Start timestamp
+    /// </summary>
     [JsonPropertyName("startTimestamp")]
-    public long? StartTimestamp { get; set; }
+    public required long StartTimestamp { get; set; }
 
+    /// <summary>
+    ///     End timestamp
+    /// </summary>
     [JsonPropertyName("endTimestamp")]
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
-    public long? EndTimestamp { get; set; }
+    public required long EndTimestamp { get; set; }
 
+    /// <summary>
+    ///     Is this quest part of a yearly event, ex: Christmas
+    /// </summary>
     [JsonPropertyName("yearly")]
-    public bool? Yearly { get; set; }
+    public required bool Yearly { get; set; }
 }
 
 public record RepeatableQuestConfig
@@ -111,68 +134,115 @@ public record RepeatableQuestConfig
     [JsonExtensionData]
     public Dictionary<string, object> ExtensionData { get; set; }
 
+    /// <summary>
+    ///     Id for type of repeatable quest
+    /// </summary>
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public required string Id { get; set; }
 
+    /// <summary>
+    ///     Human-readable name for repeatable quest type
+    /// </summary>
     [JsonPropertyName("name")]
-    public string? Name { get; set; }
+    public required string Name { get; set; }
 
+    /// <summary>
+    ///     Side this config belongs to. Note: Random not implemented, do not use!
+    /// </summary>
     [JsonPropertyName("side")]
-    public string? Side { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public required PlayerGroup Side { get; set; }
 
+    /// <summary>
+    ///     Types of tasks this config can generate; ex: Elimination
+    /// </summary>
     [JsonPropertyName("types")]
-    public List<string>? Types { get; set; }
+    public required List<string> Types { get; set; }
 
+    /// <summary>
+    ///     How long does the task stay active for after accepting it
+    /// </summary>
     [JsonPropertyName("resetTime")]
-    public long? ResetTime { get; set; }
+    public required long ResetTime { get; set; }
 
+    /// <summary>
+    ///     How many quests should we provide per ResetTime
+    /// </summary>
     [JsonPropertyName("numQuests")]
-    public int? NumQuests { get; set; }
+    public required int NumQuests { get; set; }
 
+    /// <summary>
+    ///     Min player level required to receive a quest from this config
+    /// </summary>
     [JsonPropertyName("minPlayerLevel")]
-    public int? MinPlayerLevel { get; set; }
+    public required int MinPlayerLevel { get; set; }
 
+    /// <summary>
+    ///     Reward scaling config
+    /// </summary>
     [JsonPropertyName("rewardScaling")]
-    public RewardScaling? RewardScaling { get; set; }
+    public required RewardScaling RewardScaling { get; set; }
 
+    /// <summary>
+    ///     Location map
+    /// </summary>
     [JsonPropertyName("locations")]
-    public Dictionary<ELocationName, List<string>>? Locations { get; set; }
+    public required Dictionary<ELocationName, List<string>> Locations { get; set; }
 
+    /// <summary>
+    ///     Traders that are allowed to generate tasks from this config.
+    /// Includes quest types, reward whitelist, and whether rewards can be weapons.
+    /// </summary>
     [JsonPropertyName("traderWhitelist")]
-    public List<TraderWhitelist>? TraderWhitelist { get; set; }
+    public required List<TraderWhitelist> TraderWhitelist { get; set; }
 
+    /// <summary>
+    ///     Quest config, holds information on how a task should be generated
+    /// </summary>
     [JsonPropertyName("questConfig")]
-    public RepeatableQuestTypesConfig? QuestConfig { get; set; }
+    public RepeatableQuestTypesConfig QuestConfig { get; set; }
 
     /// <summary>
     ///     Item base types to block when generating rewards
     /// </summary>
     [JsonPropertyName("rewardBaseTypeBlacklist")]
-    public HashSet<string>? RewardBaseTypeBlacklist { get; set; }
+    public required HashSet<string> RewardBaseTypeBlacklist { get; set; }
 
     /// <summary>
     ///     Item tplIds to ignore when generating rewards
     /// </summary>
     [JsonPropertyName("rewardBlacklist")]
-    public HashSet<string>? RewardBlacklist { get; set; }
+    public required HashSet<string> RewardBlacklist { get; set; }
 
+    /// <summary>
+    ///     Minimum stack size that an ammo reward should be generated with
+    /// </summary>
     [JsonPropertyName("rewardAmmoStackMinSize")]
-    public int? RewardAmmoStackMinSize { get; set; }
+    public required int RewardAmmoStackMinSize { get; set; }
 
+    /// <summary>
+    ///     How many free task changes are available from this config
+    /// </summary>
     [JsonPropertyName("freeChangesAvailable")]
-    public int? FreeChangesAvailable { get; set; }
+    public required int FreeChangesAvailable { get; set; }
 
+    /// <summary>
+    ///     How many free task changes remain from this config
+    /// </summary>
     [JsonPropertyName("freeChanges")]
-    public int? FreeChanges { get; set; }
+    public required int FreeChanges { get; set; }
 
+    /// <summary>
+    ///     Should the task replacement category be the same as the one its replacing
+    /// </summary>
     [JsonPropertyName("keepDailyQuestTypeOnReplacement")]
-    public bool? KeepDailyQuestTypeOnReplacement { get; set; }
+    public required bool KeepDailyQuestTypeOnReplacement { get; set; }
 
     /// <summary>
     ///     Reputation standing price for replacing a repeatable
     /// </summary>
     [JsonPropertyName("standingChangeCost")]
-    public IList<double>? StandingChangeCost { get; set; }
+    public required IList<double> StandingChangeCost { get; set; }
 }
 
 public record RewardScaling

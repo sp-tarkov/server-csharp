@@ -25,17 +25,17 @@
     "profileWhitelist": {
         "666314b4d7f171c4c20226c3": ["edge_of_darkness"]
     },
-    "questTemplateIds": {
+    "repeatableQuestTemplateIds": {
         "pmc": {
-            "elimination": "616052ea3054fc0e2c24ce6e",
-            "completion": "61604635c725987e815b1a46",
-            "exploration": "616041eb031af660100c9967"
+            "Elimination": "616052ea3054fc0e2c24ce6e",
+            "Completion": "61604635c725987e815b1a46",
+            "Exploration": "616041eb031af660100c9967"
         },
         "scav": {
-            "elimination": "62825ef60e88d037dc1eb428",
-            "completion": "628f588ebb558574b2260fe5",
-            "exploration": "62825ef60e88d037dc1eb42c",
-            "pickup": "628f588ebb558574b2260fe5"
+            "Elimination": "62825ef60e88d037dc1eb428",
+            "Completion": "628f588ebb558574b2260fe5",
+            "Exploration": "62825ef60e88d037dc1eb42c",
+            "Pickup": "628f588ebb558574b2260fe5"
         }
     },
     "showNonSeasonalEventQuests": false,
@@ -1891,6 +1891,7 @@
             "rewardAmmoStackMinSize": 5,
             "freeChangesAvailable": 0,
             "freeChanges": 0,
+            "keepDailyQuestTypeOnReplacement": false,
             "standingChangeCost": [0, 0.01, 0.01]
         },
         {
@@ -2314,6 +2315,7 @@
             "rewardAmmoStackMinSize": 5,
             "freeChangesAvailable": 0,
             "freeChanges": 0,
+            "keepDailyQuestTypeOnReplacement": false,
             "standingChangeCost": [0, 0.01]
         }
     ],

@@ -1046,13 +1046,13 @@ public class RepeatableQuestGenerator(
     ///     Filter a maps exits to just those for the desired side
     /// </summary>
     /// <param name="locationKey">Map id (e.g. factory4_day)</param>
-    /// <param name="playerSide">Scav/Pmc</param>
+    /// <param name="playerGroup">Pmc or Savage</param>
     /// <returns>List of Exit objects</returns>
-    protected List<Exit> GetLocationExitsForSide(string locationKey, string playerSide)
+    protected List<Exit> GetLocationExitsForSide(string locationKey, PlayerGroup playerGroup)
     {
         var mapExtracts = _databaseService.GetLocation(locationKey.ToLower()).AllExtracts;
 
-        return mapExtracts.Where(exit => exit.Side == playerSide).ToList();
+        return mapExtracts.Where(exit => exit.Side == Enum.GetName(playerGroup)).ToList();
     }
 
     protected RepeatableQuest GeneratePickupQuest(
@@ -1149,7 +1149,7 @@ public class RepeatableQuestGenerator(
     /// </summary>
     /// <param name="type">Quest type: "Elimination", "Completion" or "Extraction"</param>
     /// <param name="traderId">Trader from which the quest will be provided</param>
-    /// <param name="side">Scav daily or pmc daily/weekly quest</param>
+    /// <param name="playerGroup">Scav daily or pmc daily/weekly quest</param>
     /// <returns>
     ///     Object which contains the base elements for repeatable quests of the requests type
     ///     (needs to be filled with reward and conditions by called to make a valid quest)
@@ -1157,7 +1157,7 @@ public class RepeatableQuestGenerator(
     protected RepeatableQuest GenerateRepeatableTemplate(
         string type,
         string traderId,
-        string side,
+        PlayerGroup playerGroup,
         string sessionId
     )
     {
@@ -1188,28 +1188,9 @@ public class RepeatableQuestGenerator(
         */
 
         // Get template id from config based on side and type of quest
-        var typeIds = string.Equals(side, "pmc", StringComparison.OrdinalIgnoreCase)
-            ? _questConfig.QuestTemplateIds.Pmc
-            : _questConfig.QuestTemplateIds.Scav;
+        var typeIds = _repeatableQuestHelper.GetRepeatableQuestTemplatesByGroup(playerGroup);
 
-        var templateId = string.Empty;
-        switch (type)
-        {
-            case "Completion":
-                templateId = typeIds.Completion;
-                break;
-            case "Elimination":
-                templateId = typeIds.Elimination;
-                break;
-            case "Exploration":
-                templateId = typeIds.Exploration;
-                break;
-            case "Pickup":
-                templateId = typeIds.Pickup;
-                break;
-        }
-
-        questClone.TemplateId = templateId;
+        questClone.TemplateId = typeIds[type];
 
         // Force REF templates to use prapors ID - solves missing text issue
         var desiredTraderId = traderId == Traders.REF ? Traders.PRAPOR : traderId;
@@ -1217,30 +1198,39 @@ public class RepeatableQuestGenerator(
         questClone.Name = questClone
             .Name.Replace("{traderId}", traderId)
             .Replace("{templateId}", questClone.TemplateId);
+
         questClone.Note = questClone
             .Note.Replace("{traderId}", desiredTraderId)
             .Replace("{templateId}", questClone.TemplateId);
+
         questClone.Description = questClone
             .Description.Replace("{traderId}", desiredTraderId)
             .Replace("{templateId}", questClone.TemplateId);
+
         questClone.SuccessMessageText = questClone
             .SuccessMessageText.Replace("{traderId}", desiredTraderId)
             .Replace("{templateId}", questClone.TemplateId);
+
         questClone.FailMessageText = questClone
             .FailMessageText.Replace("{traderId}", desiredTraderId)
             .Replace("{templateId}", questClone.TemplateId);
+
         questClone.StartedMessageText = questClone
             .StartedMessageText.Replace("{traderId}", desiredTraderId)
             .Replace("{templateId}", questClone.TemplateId);
+
         questClone.ChangeQuestMessageText = questClone
             .ChangeQuestMessageText.Replace("{traderId}", desiredTraderId)
             .Replace("{templateId}", questClone.TemplateId);
+
         questClone.AcceptPlayerMessage = questClone
             .AcceptPlayerMessage.Replace("{traderId}", desiredTraderId)
             .Replace("{templateId}", questClone.TemplateId);
+
         questClone.DeclinePlayerMessage = questClone
             .DeclinePlayerMessage.Replace("{traderId}", desiredTraderId)
             .Replace("{templateId}", questClone.TemplateId);
+
         questClone.CompletePlayerMessage = questClone
             .CompletePlayerMessage.Replace("{traderId}", desiredTraderId)
             .Replace("{templateId}", questClone.TemplateId);

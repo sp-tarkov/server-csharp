@@ -184,7 +184,7 @@ public class RepeatableQuestController(
         }
 
         // Add newly generated quest to daily/weekly/scav type array
-        newRepeatableQuest.Side = repeatableConfig.Side;
+        newRepeatableQuest.Side = Enum.GetName(repeatableConfig.Side);;
         repeatablesOfTypeInProfile.ActiveQuests.Add(newRepeatableQuest);
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
@@ -568,7 +568,7 @@ public class RepeatableQuestController(
                     break;
                 }
 
-                quest.Side = repeatableConfig.Side;
+                quest.Side = Enum.GetName(repeatableConfig.Side);
                 generatedRepeatables.ActiveQuests.Add(quest);
             }
 
@@ -674,7 +674,7 @@ public class RepeatableQuestController(
     {
         // PMC and daily quests not unlocked yet
         if (
-            repeatableConfig.Side == "Pmc"
+            repeatableConfig.Side == PlayerGroup.Pmc
             && !PlayerHasDailyPmcQuestsUnlocked(pmcData, repeatableConfig)
         )
         {
@@ -682,7 +682,7 @@ public class RepeatableQuestController(
         }
 
         // Scav and daily quests not unlocked yet
-        if (repeatableConfig.Side == "Scav" && !PlayerHasDailyScavQuestsUnlocked(pmcData))
+        if (repeatableConfig.Side == PlayerGroup.Scav && !PlayerHasDailyScavQuestsUnlocked(pmcData))
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
@@ -875,7 +875,7 @@ public class RepeatableQuestController(
     /// <returns>Quest count</returns>
     protected int GetQuestCount(RepeatableQuestConfig repeatableConfig, SptProfile fullProfile)
     {
-        var questCount = repeatableConfig.NumQuests.GetValueOrDefault(0);
+        var questCount = repeatableConfig.NumQuests;
         if (questCount == 0)
         {
             _logger.Warning($"Repeatable: {repeatableConfig.Name} quests have a count of 0");

@@ -513,7 +513,7 @@ public class QuestHelper(
 
         // Should non-season event quests be shown to player
         if (
-            !(_questConfig.ShowNonSeasonalEventQuests ?? false)
+            !_questConfig.ShowNonSeasonalEventQuests
             && _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.None)
         )
         {
@@ -1173,10 +1173,10 @@ public class QuestHelper(
     {
         if (!_questConfig.MailRedeemTimeHours.TryGetValue(pmcData.Info.GameVersion, out var hours))
         {
-            return _questConfig.MailRedeemTimeHours["default"] ?? 48;
+            return _questConfig.MailRedeemTimeHours["default"];
         }
 
-        return hours ?? 48;
+        return hours;
     }
 
     /// <summary>
