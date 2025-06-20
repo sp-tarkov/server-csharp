@@ -184,7 +184,7 @@ public class RepeatableQuestController(
         }
 
         // Add newly generated quest to daily/weekly/scav type array
-        newRepeatableQuest.Side = Enum.GetName(repeatableConfig.Side);;
+        newRepeatableQuest.Side = Enum.GetName(repeatableConfig.Side);
         repeatablesOfTypeInProfile.ActiveQuests.Add(newRepeatableQuest);
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
