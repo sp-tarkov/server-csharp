@@ -1046,7 +1046,7 @@ public class RepeatableQuestGenerator(
     ///     Filter a maps exits to just those for the desired side
     /// </summary>
     /// <param name="locationKey">Map id (e.g. factory4_day)</param>
-    /// <param name="playerGroup">Pmc or Savage</param>
+    /// <param name="playerGroup">Pmc/Scav</param>
     /// <returns>List of Exit objects</returns>
     protected List<Exit> GetLocationExitsForSide(string locationKey, PlayerGroup playerGroup)
     {
