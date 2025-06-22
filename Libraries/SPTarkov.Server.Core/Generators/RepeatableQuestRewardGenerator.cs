@@ -58,7 +58,7 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="eliminationConfig"> Base Quest config</param>
     /// <param name="rewardTplBlacklist"> Optional: list of tpls to NOT use when picking a reward </param>
     /// <returns> QuestRewards </returns>
-    public QuestRewards GenerateReward(
+    public QuestRewards? GenerateReward(
         int pmcLevel,
         double difficulty,
         string traderId,
@@ -122,13 +122,17 @@ public class RepeatableQuestRewardGenerator(
         var traderWhitelistDetails = repeatableConfig.TraderWhitelist.FirstOrDefault(
             traderWhitelist => traderWhitelist.TraderId == traderId
         );
+
+        if (traderWhitelistDetails is null)
+        {
+            _logger.Error($"Cound not find trader id: {traderId} in whitelist");
+            return null;
+        }
+
         if (
-            traderWhitelistDetails?.RewardCanBeWeapon
-            ?? (
-                false
-                && _randomUtil.GetChance100(traderWhitelistDetails.WeaponRewardChancePercent ?? 0)
+            traderWhitelistDetails.RewardCanBeWeapon &&
+            _randomUtil.GetChance100(traderWhitelistDetails.WeaponRewardChancePercent)
             )
-        )
         {
             var chosenWeapon = GetRandomWeaponPresetWithinBudget(
                 itemRewardBudget.Value,

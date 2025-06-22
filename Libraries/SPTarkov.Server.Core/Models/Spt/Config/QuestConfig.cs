@@ -617,11 +617,11 @@ public record BossInfo
     ///     Is this target a boss
     /// </summary>
     [JsonPropertyName("isBoss")]
-    public required bool IsBoss { get; set; }
+    public bool? IsBoss { get; set; }
 
     /// <summary>
     ///     Is ths target a PMC
     /// </summary>
     [JsonPropertyName("isPmc")]
-    public required bool IsPmc { get; set; }
+    public bool? IsPmc { get; set; }
 }

@@ -217,7 +217,7 @@ public class RepeatableQuestGenerator(
         if (
             locations.Contains("any")
             && (
-                _mathUtil.RandomRoll(eliminationConfig.SpecificLocationProbability)
+                _randomUtil.GetChance100(eliminationConfig.SpecificLocationProbability)
                 || locations.Count <= 1
             )
         )
@@ -274,7 +274,7 @@ public class RepeatableQuestGenerator(
         // draw the target body part and calculate the difficulty factor
         var bodyPartsToClient = new List<string>();
         var bodyPartDifficulty = 0d;
-        if (_mathUtil.RandomRoll(eliminationConfig.BodyPartProbability))
+        if (_randomUtil.GetChance100(eliminationConfig.BodyPartProbability))
         {
             // if we add a bodyPart condition, we draw randomly one or two parts
             // each bodyPart of the BODYPARTS ProbabilityObjectArray includes the string(s) which need to be presented to the client in ProbabilityObjectArray.data
@@ -334,7 +334,7 @@ public class RepeatableQuestGenerator(
         }
 
         if (
-            _mathUtil.RandomRoll(eliminationConfig.DistanceProbability)
+            _randomUtil.GetChance100(eliminationConfig.DistanceProbability)
             && isDistanceRequirementAllowed
         )
         {
@@ -353,7 +353,7 @@ public class RepeatableQuestGenerator(
         }
 
         string? allowedWeaponsCategory = null;
-        if (_mathUtil.RandomRoll(eliminationConfig.WeaponCategoryRequirementProbability))
+        if (_randomUtil.GetChance100(eliminationConfig.WeaponCategoryRequirementProbability))
         {
             // Filter out close range weapons from far distance requirement
             if (distance > 50)

@@ -810,7 +810,7 @@ public class RepeatableQuestController(
         foreach (var target in targetsConfig)
         {
             // Target is boss
-            if (target.Data.IsBoss.GetValueOrDefault(false))
+            if (target.Data?.IsBoss ?? false)
             {
                 questPool.Pool.Elimination.Targets.Add(
                     target.Key,

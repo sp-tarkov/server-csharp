@@ -1927,6 +1927,7 @@
             },
             "traderWhitelist": [
                 {
+                    "name": "fence",
                     "traderId": "579dc571d53a0658a154fbec",
                     "questTypes": ["Completion", "Exploration", "Elimination", "Pickup"],
                     "rewardBaseWhitelist": [

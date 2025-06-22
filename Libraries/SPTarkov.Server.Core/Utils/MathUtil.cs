@@ -123,14 +123,4 @@ public class MathUtil
 
         return default;
     }
-
-    /// <summary>
-    ///     Determines whether a random roll succeeds based on a given probability.
-    /// </summary>
-    /// <param name="chance">The probability of success as a value between 0.0 (0%) and 1.0 (100%). Values outside this range are clamped.</param>
-    /// <returns>True if the random roll succeeds; otherwise, false.</returns>
-    public bool RandomRoll(double chance)
-    {
-        return Random.Shared.NextDouble() < Math.Clamp(chance, 0d, 1d);
-    }
 }
