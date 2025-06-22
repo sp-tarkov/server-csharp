@@ -493,10 +493,10 @@ public record EliminationConfig : BaseQuestConfig
     public required List<ProbabilityObject<string, BossInfo>> Targets { get; set; }
 
     /// <summary>
-    ///     Probability that a specific body part is needed as a requirement
+    ///     Chance that a specific body part is needed as a requirement
     /// </summary>
-    [JsonPropertyName("bodyPartProb")]
-    public required double BodyPartProbability { get; set; }
+    [JsonPropertyName("bodyPartChance")]
+    public required int BodyPartChance { get; set; }
 
     /// <summary>
     ///     If the specific body part requirement is chosen, pick from these body parts

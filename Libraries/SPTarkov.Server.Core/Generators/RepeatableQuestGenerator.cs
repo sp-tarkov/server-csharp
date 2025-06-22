@@ -274,7 +274,7 @@ public class RepeatableQuestGenerator(
         // draw the target body part and calculate the difficulty factor
         var bodyPartsToClient = new List<string>();
         var bodyPartDifficulty = 0d;
-        if (_randomUtil.GetChance100(eliminationConfig.BodyPartProbability))
+        if (_randomUtil.GetChance100(eliminationConfig.BodyPartChance))
         {
             // if we add a bodyPart condition, we draw randomly one or two parts
             // each bodyPart of the BODYPARTS ProbabilityObjectArray includes the string(s) which need to be presented to the client in ProbabilityObjectArray.data

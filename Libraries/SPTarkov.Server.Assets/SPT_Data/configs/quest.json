@@ -440,7 +440,7 @@
                                 }
                             }
                         ],
-                        "bodyPartProb": 0.15,
+                        "bodyPartChance": 15,
                         "bodyParts": [
                             {
                                 "key": "Head",
@@ -666,7 +666,7 @@
                                 }
                             }
                         ],
-                        "bodyPartProb": 0.15,
+                        "bodyPartChance": 15,
                         "bodyParts": [
                             {
                                 "key": "Head",
@@ -887,7 +887,7 @@
                                 }
                             }
                         ],
-                        "bodyPartProb": 0.15,
+                        "bodyPartChance": 15,
                         "bodyParts": [
                             {
                                 "key": "Head",
@@ -1317,7 +1317,7 @@
                                 }
                             }
                         ],
-                        "bodyPartProb": 0.15,
+                        "bodyPartChance": 15,
                         "bodyParts": [
                             {
                                 "key": "Head",
@@ -1538,7 +1538,7 @@
                                 }
                             }
                         ],
-                        "bodyPartProb": 0.15,
+                        "bodyPartChance": 15,
                         "bodyParts": [
                             {
                                 "key": "Head",
@@ -1759,7 +1759,7 @@
                                 }
                             }
                         ],
-                        "bodyPartProb": 0.15,
+                        "bodyPartChance": 15,
                         "bodyParts": [
                             {
                                 "key": "Head",
@@ -2047,7 +2047,7 @@
                                 }
                             }
                         ],
-                        "bodyPartProb": 0.2,
+                        "bodyPartChance": 20,
                         "bodyParts": [
                             {
                                 "key": "Head",
@@ -2184,7 +2184,7 @@
                                 }
                             }
                         ],
-                        "bodyPartProb": 0.4,
+                        "bodyPartChance": 40,
                         "bodyParts": [
                             {
                                 "key": "Head",
