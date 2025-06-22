@@ -24,10 +24,10 @@ public record SpawnpointCount
     public Dictionary<string, object> ExtensionData { get; set; }
 
     [JsonPropertyName("mean")]
-    public double? Mean { get; set; }
+    public required double Mean { get; set; }
 
     [JsonPropertyName("std")]
-    public double? Std { get; set; }
+    public required double Std { get; set; }
 }
 
 public record SpawnpointTemplate

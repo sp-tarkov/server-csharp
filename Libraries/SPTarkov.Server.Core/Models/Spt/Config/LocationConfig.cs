@@ -34,10 +34,10 @@ public record LocationConfig : BaseConfig
     public required Dictionary<string, HashSet<string>> OpenZones { get; set; }
 
     /// <summary>
-    ///     Key = map id, value = item tpls that should only have one forced loot spawn position
+    ///     Key = map id, value = dict of item tpls that should only have x forced loot spawn position
     /// </summary>
-    [JsonPropertyName("forcedLootSingleSpawnById")]
-    public required Dictionary<string, HashSet<string>> ForcedLootSingleSpawnById { get; set; }
+    [JsonPropertyName("lootMaxSpawnLimits")]
+    public required Dictionary<string, Dictionary<string, int>> LootMaxSpawnLimits { get; set; }
 
     /// <summary>
     ///     How many attempts should be taken to fit an item into a container before giving up

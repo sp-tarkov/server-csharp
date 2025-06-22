@@ -2223,7 +2223,7 @@
                 }, {
                     "_id": "6571e74a4a27570f5926ecd9",
                     "Type": "ProfileLevel",
-                    "value": 2735966,
+                    "value": 2901143,
                     "entity": null
                 }, {
                     "_id": "6571e74a4a27570f5926ecda",
@@ -2328,6 +2328,16 @@
                     "Type": "UnlockTrader",
                     "value": 1,
                     "entity": "5c0647fdd443bc2504c2d371"
+                }, {
+                    "_id": "6571e74a4a27570f5926ecef",
+                    "Type": "UnlockTrader",
+                    "value": 1,
+                    "entity": "6617beeaa9cfa777ca915b7c"
+                }, {
+                    "_id": "6571e74a4a27570f5926ecf0",
+                    "Type": "TraderStanding",
+                    "value": 1.2,
+                    "entity": "6617beeaa9cfa777ca915b7c"
                 }
             ],
             "sender": "System",

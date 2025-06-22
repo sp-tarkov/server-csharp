@@ -54,6 +54,7 @@ public class LocationLifecycleService
     protected TraderConfig _traderConfig;
     protected TraderHelper _traderHelper;
     protected BtrDeliveryService _btrDeliveryService;
+    private readonly CounterTrackerHelper _counterTrackerHelper;
 
     public LocationLifecycleService(
         ISptLogger<LocationLifecycleService> logger,
@@ -84,7 +85,8 @@ public class LocationLifecycleService
         QuestHelper questHelper,
         InsuranceService insuranceService,
         MatchBotDetailsCacheService matchBotDetailsCacheService,
-        BtrDeliveryService btrDeliveryService
+        BtrDeliveryService btrDeliveryService,
+        CounterTrackerHelper counterTrackerHelper
     )
     {
         _logger = logger;
@@ -116,6 +118,7 @@ public class LocationLifecycleService
         _insuranceService = insuranceService;
         _matchBotDetailsCacheService = matchBotDetailsCacheService;
         _btrDeliveryService = btrDeliveryService;
+        _counterTrackerHelper = counterTrackerHelper;
 
         _locationConfig = _configServer.GetConfig<LocationConfig>();
         _inRaidConfig = _configServer.GetConfig<InRaidConfig>();
@@ -357,15 +360,10 @@ public class LocationLifecycleService
     /// <summary>
     ///     Generate a maps base location (cloned) and loot
     /// </summary>
+    /// <param name="sessionId"> Session/Player id </param>
     /// <param name="name"> Map name </param>
     /// <param name="generateLoot"> OPTIONAL - Should loot be generated for the map before being returned </param>
-    /// <returns> LocationBase </returns>
-    /// <returns> LocationBase </returns>
-    /// <param name="generateLoot"> OPTIONAL - Should loot be generated for the map before being returned </param>
-    /// <param name="name"> Map name </param>
-    /// </summary>
-    /// Generate a maps base location (cloned) and loot
-    /// <summary>
+    /// <returns>LocationBase with loot</returns>
     public virtual LocationBase GenerateLocationAndLoot(
         string sessionId,
         string name,
@@ -390,51 +388,22 @@ public class LocationLifecycleService
             return locationBaseClone;
         }
 
-        // Add cusom pmcs to map every time its run
+        // Add custom PMCs to map every time its run
         _pmcWaveGenerator.ApplyWaveChangesToMap(locationBaseClone);
 
-        // Adjust raid based on whether this is a scav run
+        // Adjust raid values based raid type (e.g. Scav or PMC)
         LocationConfig? locationConfigClone = null;
         var raidAdjustments = _profileActivityService
             .GetProfileActivityRaidData(sessionId)
-            .RaidAdjustments;
+            ?.RaidAdjustments;
         if (raidAdjustments is not null)
         {
             locationConfigClone = _cloner.Clone(_locationConfig); // Clone values so they can be used to reset originals later
             _raidTimeAdjustmentService.MakeAdjustmentsToMap(raidAdjustments, locationBaseClone);
         }
 
-        var staticAmmoDist = _cloner.Clone(location.StaticAmmo);
-
-        // Create containers and add loot to them
-        var staticLoot = _locationLootGenerator.GenerateStaticContainers(
-            locationBaseClone,
-            staticAmmoDist
-        );
-        locationBaseClone.Loot.AddRange(staticLoot);
-
-        // Add dynamic loot to output loot
-        var dynamicLootDistClone = _cloner.Clone(location.LooseLoot.Value);
-        var dynamicSpawnPoints = _locationLootGenerator.GenerateDynamicLoot(
-            dynamicLootDistClone,
-            staticAmmoDist,
-            name.ToLower()
-        );
-
-        // Push chosen spawn points into returned object
-        foreach (var spawnPoint in dynamicSpawnPoints)
-        {
-            locationBaseClone.Loot.Add(spawnPoint);
-        }
-
-        // Done generating, log results
-        _logger.Success(
-            _localisationService.GetText(
-                "location-dynamic_items_spawned_success",
-                dynamicSpawnPoints.Count
-            )
-        );
-        _logger.Success(_localisationService.GetText("location-generated_success", name));
+        // Generate loot for location
+        locationBaseClone.Loot = _locationLootGenerator.GenerateLocationLoot(name);
 
         // Reset loot multipliers back to original values
         if (raidAdjustments is not null && locationConfigClone is not null)

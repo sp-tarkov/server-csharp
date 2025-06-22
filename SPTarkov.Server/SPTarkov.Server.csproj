@@ -13,12 +13,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Exe</OutputType>
     <IsPackable>true</IsPackable>
-    <StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
     <AssemblyName>SPT.Server</AssemblyName>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
-    <AssemblyName>SPTarkov.Server</AssemblyName>
     <ApplicationIcon>..\Libraries\SPTarkov.Server.Assets\SPT_Data\images\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
@@ -43,7 +41,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <ExcludeFromSingleFile>True</ExcludeFromSingleFile>
     </Content>
-    <Content Include="icon.ico" />
     <None Update="sptLogger.json" Condition="'$(Configuration)' == 'RELEASE'">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
