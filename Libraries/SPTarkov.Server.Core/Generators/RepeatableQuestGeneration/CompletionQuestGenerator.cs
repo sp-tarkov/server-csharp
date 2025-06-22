@@ -268,7 +268,7 @@ public class CompletionQuestGenerator(
     /// <param name="itemSelection">Filtered item selection</param>
     /// <param name="roublesBudget">Budget in roubles</param>
     /// <returns>Chosen item template Ids</returns>
-    public List<string> GenerateAvailableForFinish(
+    protected List<string> GenerateAvailableForFinish(
         RepeatableQuest quest,
         Completion completionConfig,
         RepeatableQuestConfig repeatableConfig,
