@@ -195,7 +195,7 @@ public class RepeatableQuestGenerator(
 
         if (
             targetsConfig.Count == 0
-            || targetsConfig.All(x => x.Data.IsBoss.GetValueOrDefault(false))
+            || targetsConfig.All(x => x.Data?.IsBoss ?? false)
         )
         {
             // There are no more targets left for elimination; delete it as a possible quest type
@@ -217,7 +217,7 @@ public class RepeatableQuestGenerator(
         if (
             locations.Contains("any")
             && (
-                eliminationConfig.SpecificLocationProbability < rand.NextDouble()
+                _mathUtil.RandomRoll(eliminationConfig.SpecificLocationProbability)
                 || locations.Count <= 1
             )
         )
@@ -274,7 +274,7 @@ public class RepeatableQuestGenerator(
         // draw the target body part and calculate the difficulty factor
         var bodyPartsToClient = new List<string>();
         var bodyPartDifficulty = 0d;
-        if (eliminationConfig.BodyPartProbability > rand.NextDouble())
+        if (_mathUtil.RandomRoll(eliminationConfig.BodyPartProbability))
         {
             // if we add a bodyPart condition, we draw randomly one or two parts
             // each bodyPart of the BODYPARTS ProbabilityObjectArray includes the string(s) which need to be presented to the client in ProbabilityObjectArray.data
@@ -307,7 +307,7 @@ public class RepeatableQuestGenerator(
             locationKey
         );
 
-        if (targetsConfig.Data(botTypeToEliminate).IsBoss.GetValueOrDefault(false))
+        if (targetsConfig.Data(botTypeToEliminate)?.IsBoss ?? false)
         {
             // Get all boss spawn information
             var bossSpawns = _databaseService
@@ -330,11 +330,11 @@ public class RepeatableQuestGenerator(
             );
             // if the boss spawns on nom-blacklisted locations and the current location is allowed we can generate a distance kill requirement
             isDistanceRequirementAllowed =
-                isDistanceRequirementAllowed && allowedSpawns.Count() > 0;
+                isDistanceRequirementAllowed && allowedSpawns.Any();
         }
 
         if (
-            eliminationConfig.DistanceProbability > rand.NextDouble()
+            _mathUtil.RandomRoll(eliminationConfig.DistanceProbability)
             && isDistanceRequirementAllowed
         )
         {
@@ -344,7 +344,6 @@ public class RepeatableQuestGenerator(
                     Math.Abs(rand.NextDouble() - rand.NextDouble())
                         * (1 + eliminationConfig.MaxDistance - eliminationConfig.MinDistance)
                         + eliminationConfig.MinDistance
-                        ?? 0
                 );
 
             distance = (int)Math.Ceiling((decimal)(distance / 5)) * 5;
@@ -354,7 +353,7 @@ public class RepeatableQuestGenerator(
         }
 
         string? allowedWeaponsCategory = null;
-        if (eliminationConfig.WeaponCategoryRequirementProbability > rand.NextDouble())
+        if (_mathUtil.RandomRoll(eliminationConfig.WeaponCategoryRequirementProbability))
         {
             // Filter out close range weapons from far distance requirement
             if (distance > 50)
@@ -411,9 +410,9 @@ public class RepeatableQuestGenerator(
         var maxDifficulty = DifficultyWeighing(1, 1, 1, 1, 1);
         var curDifficulty = DifficultyWeighing(
             targetDifficulty.Value / maxTargetDifficulty,
-            bodyPartDifficulty / maxBodyPartsDifficulty.Value,
+            bodyPartDifficulty / maxBodyPartsDifficulty,
             distanceDifficulty / maxDistDifficulty,
-            killDifficulty / maxKillDifficulty.Value,
+            killDifficulty / maxKillDifficulty,
             allowedWeaponsCategory is not null || allowedWeapon is not null ? 1 : 0
         );
 
@@ -485,24 +484,24 @@ public class RepeatableQuestGenerator(
         EliminationConfig eliminationConfig
     )
     {
-        if (targetsConfig.Data(targetKey).IsBoss.GetValueOrDefault(false))
+        if (targetsConfig.Data(targetKey)?.IsBoss ?? false)
         {
             return _randomUtil.RandInt(
-                eliminationConfig.MinBossKills.Value,
+                eliminationConfig.MinBossKills,
                 eliminationConfig.MaxBossKills + 1
             );
         }
 
-        if (targetsConfig.Data(targetKey).IsPmc.GetValueOrDefault(false))
+        if (targetsConfig.Data(targetKey)?.IsPmc ?? false)
         {
             return _randomUtil.RandInt(
-                eliminationConfig.MinPmcKills.Value,
+                eliminationConfig.MinPmcKills,
                 eliminationConfig.MaxPmcKills + 1
             );
         }
 
         return _randomUtil.RandInt(
-            eliminationConfig.MinKills.Value,
+            eliminationConfig.MinKills,
             eliminationConfig.MaxKills + 1
         );
     }
@@ -620,12 +619,7 @@ public class RepeatableQuestGenerator(
         RepeatableQuestConfig repeatableConfig
     )
     {
-        var completionConfig = repeatableConfig?.QuestConfig?.Completion;
-        if (completionConfig is null)
-        {
-            _logger.Error("Unable to generate Completion quest, no Completion config found");
-            return null;
-        }
+        var completionConfig = repeatableConfig.QuestConfig.Completion;
         var levelsConfig = repeatableConfig.RewardScaling.Levels;
         var roublesConfig = repeatableConfig.RewardScaling.Roubles;
 
@@ -645,7 +639,7 @@ public class RepeatableQuestGenerator(
         // Be fair, don't value the items be more expensive than the reward
         var multiplier = _randomUtil.GetDouble(0.5, 1);
         var roublesBudget = Math.Floor(
-            (double)(_mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) * multiplier)
+            _mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) * multiplier
         );
         roublesBudget = Math.Max(roublesBudget, 5000d);
         var itemSelection = itemsToRetrievePool
@@ -654,7 +648,7 @@ public class RepeatableQuestGenerator(
 
         // We also have the option to use whitelist and/or blacklist which is defined in repeatableQuests.json as
         // [{"minPlayerLevel": 1, "itemIds": ["id1",...]}, {"minPlayerLevel": 15, "itemIds": ["id3",...]}]
-        if (repeatableConfig.QuestConfig.Completion.UseWhitelist.GetValueOrDefault(false))
+        if (repeatableConfig.QuestConfig.Completion.UseWhitelist)
         {
             var itemWhitelist = _databaseService
                 .GetTemplates()
@@ -678,7 +672,7 @@ public class RepeatableQuestGenerator(
             // var missing = itemIdsWhitelisted.filter(l => !flatList.includes(l));
         }
 
-        if (repeatableConfig.QuestConfig.Completion.UseBlacklist.GetValueOrDefault(false))
+        if (repeatableConfig.QuestConfig.Completion.UseBlacklist)
         {
             var itemBlacklist = _databaseService
                 .GetTemplates()
@@ -714,7 +708,7 @@ public class RepeatableQuestGenerator(
         // Store the indexes of items we are asking player to supply
         var distinctItemsToRetrieveCount = _randomUtil.GetInt(
             1,
-            completionConfig.UniqueItemCount.Value
+            completionConfig.UniqueItemCount
         );
         var chosenRequirementItemsTpls = new List<string>();
         var usedItemIndexes = new HashSet<int>();
@@ -753,8 +747,8 @@ public class RepeatableQuestGenerator(
 
             var tplChosen = itemSelection[chosenItemIndex];
             var itemPrice = _itemHelper.GetItemPrice(tplChosen).Value;
-            var minValue = completionConfig.MinimumRequestedAmount.Value;
-            var maxValue = completionConfig.MaximumRequestedAmount.Value;
+            var minValue = completionConfig.MinimumRequestedAmount;
+            var maxValue = completionConfig.MaximumRequestedAmount;
 
             var value = minValue;
 
@@ -928,7 +922,7 @@ public class RepeatableQuestGenerator(
     {
         var explorationConfig = repeatableConfig.QuestConfig.Exploration;
         var requiresSpecificExtract =
-            _randomUtil.Random.Next()
+            _randomUtil.Random.NextDouble()
             < repeatableConfig.QuestConfig.Exploration.SpecificExits.Probability;
 
         if (questTypePool.Pool.Exploration.Locations.Count == 0)
@@ -1026,7 +1020,7 @@ public class RepeatableQuestGenerator(
         var difficulty = _mathUtil.MapToRange(
             numExtracts,
             1,
-            explorationConfig.MaximumExtracts.Value,
+            explorationConfig.MaximumExtracts,
             0.2,
             1
         );
