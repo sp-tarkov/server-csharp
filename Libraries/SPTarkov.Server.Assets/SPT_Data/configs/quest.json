@@ -463,7 +463,7 @@
                                 "data": ["LeftLeg", "RightLeg"]
                             }
                         ],
-                        "specificLocationProb": 0,
+                        "specificLocationChance": 0,
                         "distLocationBlacklist": ["laboratory", "factory4_day", "factory4_night"],
                         "distProb": 0.15,
                         "maxDist": 75,
@@ -689,7 +689,7 @@
                                 "data": ["LeftLeg", "RightLeg"]
                             }
                         ],
-                        "specificLocationProb": 0.15,
+                        "specificLocationChance": 15,
                         "distLocationBlacklist": ["laboratory", "factory4_day", "factory4_night"],
                         "distProb": 0.25,
                         "maxDist": 100,
@@ -910,7 +910,7 @@
                                 "data": ["LeftLeg", "RightLeg"]
                             }
                         ],
-                        "specificLocationProb": 0.15,
+                        "specificLocationChance": 15,
                         "distLocationBlacklist": ["laboratory", "factory4_day", "factory4_night"],
                         "distProb": 0.25,
                         "maxDist": 100,
@@ -1340,7 +1340,7 @@
                                 "data": ["LeftLeg", "RightLeg"]
                             }
                         ],
-                        "specificLocationProb": 0.15,
+                        "specificLocationChance": 15,
                         "distLocationBlacklist": ["laboratory", "factory4_day", "factory4_night"],
                         "distProb": 0.15,
                         "maxDist": 75,
@@ -1561,7 +1561,7 @@
                                 "data": ["LeftLeg", "RightLeg"]
                             }
                         ],
-                        "specificLocationProb": 0.15,
+                        "specificLocationChance": 15,
                         "distLocationBlacklist": ["laboratory", "factory4_day", "factory4_night"],
                         "distProb": 0.15,
                         "maxDist": 75,
@@ -1782,7 +1782,7 @@
                                 "data": ["LeftLeg", "RightLeg"]
                             }
                         ],
-                        "specificLocationProb": 0.15,
+                        "specificLocationChance": 15,
                         "distLocationBlacklist": ["laboratory", "factory4_day", "factory4_night"],
                         "distProb": 0.15,
                         "maxDist": 100,
@@ -2070,7 +2070,7 @@
                                 "data": ["LeftLeg", "RightLeg"]
                             }
                         ],
-                        "specificLocationProb": 0.15,
+                        "specificLocationChance": 15,
                         "distLocationBlacklist": ["laboratory"],
                         "distProb": 0.2,
                         "maxDist": 75,
@@ -2207,7 +2207,7 @@
                                 "data": ["LeftLeg", "RightLeg"]
                             }
                         ],
-                        "specificLocationProb": 0.25,
+                        "specificLocationChance": 25,
                         "distLocationBlacklist": ["laboratory"],
                         "distProb": 0.25,
                         "maxDist": 75,

@@ -217,7 +217,7 @@ public class RepeatableQuestGenerator(
         if (
             locations.Contains("any")
             && (
-                _randomUtil.GetChance100(eliminationConfig.SpecificLocationProbability)
+                _randomUtil.GetChance100(eliminationConfig.SpecificLocationChance)
                 || locations.Count <= 1
             )
         )

@@ -505,10 +505,10 @@ public record EliminationConfig : BaseQuestConfig
     public required List<ProbabilityObject<string, List<string>>> BodyParts { get; set; }
 
     /// <summary>
-    ///     Probability that a specific location modifier is selected
+    ///     Chance that a specific location modifier is selected
     /// </summary>
-    [JsonPropertyName("specificLocationProb")]
-    public required double SpecificLocationProbability { get; set; }
+    [JsonPropertyName("specificLocationChance")]
+    public required int SpecificLocationChance { get; set; }
 
     /// <summary>
     ///     Locations that should be blacklisted as a requirement
