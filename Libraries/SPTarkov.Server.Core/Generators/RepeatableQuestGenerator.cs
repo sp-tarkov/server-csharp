@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Generators.RepeatableQuestGeneration;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -13,9 +14,11 @@ using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
 using SPTarkov.Server.Core.Utils.Json;
 using BodyParts = SPTarkov.Server.Core.Constants.BodyParts;
+using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators;
 
+[Obsolete("In the process of being removed, do NOT add any new logic!!")]
 [Injectable]
 public class RepeatableQuestGenerator(
     ISptLogger<RepeatableQuestGenerator> _logger,
@@ -28,8 +31,9 @@ public class RepeatableQuestGenerator(
     DatabaseService _databaseService,
     LocalisationService _localisationService,
     ConfigServer _configServer,
-    SeasonalEventService _seasonalEventService,
-    ICloner _cloner
+    ICloner _cloner,
+    // This is temporary while this is being refactored, eventually these will all live in the RepeatableQuestController.
+    CompletionQuestGenerator _completionQuestGenerator
 )
 {
     /// <summary>
@@ -72,10 +76,23 @@ public class RepeatableQuestGenerator(
         var traders = repeatableConfig
             .TraderWhitelist.Where(x => x.QuestTypes.Contains(questType))
             .Select(x => x.TraderId)
+            // filter out locked traders
+            .Where(x => pmcTraderInfo[x].Unlocked.GetValueOrDefault(false))
             .ToList();
-        // filter out locked traders
-        traders = traders.Where(x => pmcTraderInfo[x].Unlocked.GetValueOrDefault(false)).ToList();
+
         var traderId = _randomUtil.DrawRandomFromList(traders).FirstOrDefault();
+
+        if (traderId is null)
+        {
+            // TODO: Localize me!
+            _logger.Error("Could not draw traderId from whitelist during repeatable quest generation");
+            return null;
+        }
+
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Generating operation task type: {questType} for {traderId}");
+        }
 
         return questType switch
         {
@@ -86,7 +103,7 @@ public class RepeatableQuestGenerator(
                 questTypePool,
                 repeatableConfig
             ),
-            "Completion" => GenerateCompletionQuest(
+            "Completion" => _completionQuestGenerator.Generate(
                 sessionId,
                 pmcLevel,
                 traderId,
@@ -417,8 +434,8 @@ public class RepeatableQuestGenerator(
         // crazy maximum difficulty will lead to a higher difficulty reward gain factor than 1
         var difficulty = _mathUtil.MapToRange(curDifficulty, minDifficulty, maxDifficulty, 0.5, 2);
 
-        var quest = GenerateRepeatableTemplate(
-            "Elimination",
+        var quest = _repeatableQuestHelper.GenerateRepeatableTemplate(
+            RepeatableQuestType.Elimination,
             traderId,
             repeatableConfig.Side,
             sessionId
@@ -596,301 +613,6 @@ public class RepeatableQuestGenerator(
     }
 
     /// <summary>
-    ///     Generates a valid Completion quest
-    /// </summary>
-    /// <param name="pmcLevel">player's level for requested items and reward generation</param>
-    /// <param name="traderId">trader from which the quest will be provided</param>
-    /// <param name="repeatableConfig">
-    ///     The configuration for the repeatably kind (daily, weekly) as configured in QuestConfig
-    ///     for the requested quest
-    /// </param>
-    /// <returns>quest type format for "Completion" (see assets/database/templates/repeatableQuests.json)</returns>
-    protected RepeatableQuest? GenerateCompletionQuest(
-        string sessionId,
-        int pmcLevel,
-        string traderId,
-        RepeatableQuestConfig repeatableConfig
-    )
-    {
-        var completionConfig = repeatableConfig.QuestConfig.Completion;
-        var levelsConfig = repeatableConfig.RewardScaling.Levels;
-        var roublesConfig = repeatableConfig.RewardScaling.Roubles;
-
-        var quest = GenerateRepeatableTemplate(
-            "Completion",
-            traderId,
-            repeatableConfig.Side,
-            sessionId
-        );
-
-        // Filter the items.json items to items the player must retrieve to complete quest: shouldn't be a quest item or "non-existent"
-        var itemsToRetrievePool = GetItemsToRetrievePool(
-            completionConfig,
-            repeatableConfig.RewardBlacklist
-        );
-
-        // Be fair, don't value the items be more expensive than the reward
-        var multiplier = _randomUtil.GetDouble(0.5, 1);
-        var roublesBudget = Math.Floor(
-            _mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) * multiplier
-        );
-        roublesBudget = Math.Max(roublesBudget, 5000d);
-        var itemSelection = itemsToRetrievePool
-            .Where(itemTpl => _itemHelper.GetItemPrice(itemTpl) < roublesBudget)
-            .ToList();
-
-        // We also have the option to use whitelist and/or blacklist which is defined in repeatableQuests.json as
-        // [{"minPlayerLevel": 1, "itemIds": ["id1",...]}, {"minPlayerLevel": 15, "itemIds": ["id3",...]}]
-        if (repeatableConfig.QuestConfig.Completion.UseWhitelist)
-        {
-            var itemWhitelist = _databaseService
-                .GetTemplates()
-                .RepeatableQuests.Data.Completion.ItemsWhitelist;
-
-            // Filter and concatenate items according to current player level
-            var itemIdsWhitelisted = itemWhitelist
-                .Where(p => p.MinPlayerLevel <= pmcLevel)
-                .SelectMany(x => x.ItemIds)
-                .ToHashSet(); //.Aggregate((a, p) => a.Concat(p.ItemIds), []);
-            itemSelection = itemSelection
-                .Where(x =>
-                {
-                    // Whitelist can contain item tpls and item base type ids
-                    return itemIdsWhitelisted.Any(v => _itemHelper.IsOfBaseclass(x, v))
-                        || itemIdsWhitelisted.Contains(x);
-                })
-                .ToList();
-            // check if items are missing
-            // var flatList = itemSelection.reduce((a, il) => a.concat(il[0]), []);
-            // var missing = itemIdsWhitelisted.filter(l => !flatList.includes(l));
-        }
-
-        if (repeatableConfig.QuestConfig.Completion.UseBlacklist)
-        {
-            var itemBlacklist = _databaseService
-                .GetTemplates()
-                .RepeatableQuests.Data.Completion.ItemsBlacklist;
-
-            // Filter and concatenate the arrays according to current player level
-            var itemIdsBlacklisted = itemBlacklist
-                .Where(p => p.MinPlayerLevel <= pmcLevel)
-                .SelectMany(x => x.ItemIds)
-                .ToHashSet(); //.Aggregate(List<ItemsBlacklist> , (a, p) => a.Concat(p.ItemIds) );
-
-            itemSelection = itemSelection
-                .Where(x =>
-                {
-                    return itemIdsBlacklisted.All(v => !_itemHelper.IsOfBaseclass(x, v))
-                        || !itemIdsBlacklisted.Contains(x);
-                })
-                .ToList();
-        }
-
-        // Filtering too harsh
-        if (!itemSelection.Any())
-        {
-            _logger.Error(
-                _localisationService.GetText(
-                    "repeatable-completion_quest_whitelist_too_small_or_blacklist_too_restrictive"
-                )
-            );
-
-            return null;
-        }
-
-        // Store the indexes of items we are asking player to supply
-        var distinctItemsToRetrieveCount = _randomUtil.GetInt(1, completionConfig.UniqueItemCount);
-        var chosenRequirementItemsTpls = new List<string>();
-        var usedItemIndexes = new HashSet<int>();
-        for (var i = 0; i < distinctItemsToRetrieveCount; i++)
-        {
-            var chosenItemIndex = _randomUtil.RandInt(itemSelection.Count);
-            var found = false;
-
-            for (var j = 0; j < _maxRandomNumberAttempts; j++)
-            {
-                if (usedItemIndexes.Contains(chosenItemIndex))
-                {
-                    chosenItemIndex = _randomUtil.RandInt(itemSelection.Count);
-                }
-                else
-                {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found)
-            {
-                _logger.Error(
-                    _localisationService.GetText(
-                        "repeatable-no_reward_item_found_in_price_range",
-                        new { minPrice = 0, roublesBudget }
-                    )
-                );
-
-                return null;
-            }
-
-            // Store index of item we've already chosen for later checking
-            usedItemIndexes.Add(chosenItemIndex);
-
-            var tplChosen = itemSelection[chosenItemIndex];
-            var itemPrice = _itemHelper.GetItemPrice(tplChosen).Value;
-            var minValue = completionConfig.MinimumRequestedAmount;
-            var maxValue = completionConfig.MaximumRequestedAmount;
-
-            var value = minValue;
-
-            // Get the value range within budget
-            var x = (int)Math.Floor(roublesBudget / itemPrice);
-            maxValue = Math.Min(maxValue, x);
-            if (maxValue > minValue)
-            // If it doesn't blow the budget we have for the request, draw a random amount of the selected
-            // Item type to be requested
-            {
-                value = _randomUtil.RandInt(minValue, maxValue + 1);
-            }
-
-            roublesBudget -= value * itemPrice;
-
-            // Push a CompletionCondition with the item and the amount of the item into quest
-            chosenRequirementItemsTpls.Add(tplChosen);
-            quest.Conditions.AvailableForFinish.Add(
-                GenerateCompletionAvailableForFinish(
-                    tplChosen,
-                    value,
-                    repeatableConfig.QuestConfig.Completion
-                )
-            );
-
-            // Is there budget left for more items
-            if (roublesBudget > 0)
-            {
-                // Reduce item pool to fit budget
-                itemSelection = itemSelection
-                    .Where(tpl => _itemHelper.GetItemPrice(tpl) < roublesBudget)
-                    .ToList();
-                if (!itemSelection.Any())
-                {
-                    // Nothing fits new budget, exit
-                    break;
-                }
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        quest.Rewards = _repeatableQuestRewardGenerator.GenerateReward(
-            pmcLevel,
-            1,
-            traderId,
-            repeatableConfig,
-            completionConfig,
-            chosenRequirementItemsTpls
-        );
-
-        return quest;
-    }
-
-    /// <summary>
-    /// Generate a pool of item tpls the player should reasonably be able to retrieve
-    /// </summary>
-    /// <param name="completionConfig">Completion quest type config</param>
-    /// <param name="itemTplBlacklist">Item tpls to not add to pool</param>
-    /// <returns>Set of item tpls</returns>
-    protected HashSet<string> GetItemsToRetrievePool(
-        Completion completionConfig,
-        HashSet<string> itemTplBlacklist
-    )
-    {
-        // Get seasonal items that should not be added to pool as seasonal event is not active
-        var seasonalItems = _seasonalEventService.GetInactiveSeasonalEventItems();
-
-        // Check for specific base classes which don't make sense as reward item
-        // also check if the price is greater than 0; there are some items whose price can not be found
-        return _databaseService
-            .GetItems()
-            .Values.Where(itemTemplate =>
-            {
-                // Base "Item" item has no parent, ignore it
-                if (itemTemplate.Parent == string.Empty)
-                {
-                    return false;
-                }
-
-                if (seasonalItems.Contains(itemTemplate.Id))
-                {
-                    return false;
-                }
-
-                // Valid reward items share same logic as items to retrieve
-                return _repeatableQuestRewardGenerator.IsValidRewardItem(
-                    itemTemplate.Id,
-                    itemTplBlacklist,
-                    completionConfig.RequiredItemTypeBlacklist
-                );
-            })
-            .Select(item => item.Id)
-            .ToHashSet();
-    }
-
-    /// <summary>
-    ///     A repeatable quest, besides some more or less static components, exists of reward and condition (see
-    ///     assets/database/templates/repeatableQuests.json)
-    ///     This is a helper method for GenerateCompletionQuest to create a completion condition (of which a completion quest
-    ///     theoretically can have many)
-    /// </summary>
-    /// <param name="itemTpl">Id of the item to request</param>
-    /// <param name="value">Amount of items of this specific type to request</param>
-    /// <param name="completionConfig">Completion config from quest.json</param>
-    /// <returns>object of "Completion"-condition</returns>
-    protected QuestCondition GenerateCompletionAvailableForFinish(
-        string itemTpl,
-        double value,
-        Completion completionConfig
-    )
-    {
-        var onlyFoundInRaid = completionConfig.RequiredItemsAreFiR;
-        var minDurability = _itemHelper.IsOfBaseclasses(
-            itemTpl,
-            [BaseClasses.WEAPON, BaseClasses.ARMOR]
-        )
-            ? _randomUtil.GetArrayValue(
-                [
-                    completionConfig.RequiredItemMinDurabilityMinMax.Min,
-                    completionConfig.RequiredItemMinDurabilityMinMax.Max,
-                ]
-            )
-            : 0;
-
-        // Dog tags MUST NOT be FiR for them to work
-        if (_itemHelper.IsDogtag(itemTpl))
-        {
-            onlyFoundInRaid = false;
-        }
-
-        return new QuestCondition
-        {
-            Id = _hashUtil.Generate(),
-            Index = 0,
-            ParentId = "",
-            DynamicLocale = true,
-            VisibilityConditions = [],
-            Target = new ListOrT<string>([itemTpl], null),
-            Value = value,
-            MinDurability = minDurability,
-            MaxDurability = 100,
-            DogtagLevel = 0,
-            OnlyFoundInRaid = onlyFoundInRaid,
-            IsEncoded = false,
-            ConditionType = "HandoverItem",
-        };
-    }
-
-    /// <summary>
     ///     Generates a valid Exploration quest
     /// </summary>
     /// <param name="sessionId">session id for the quest</param>
@@ -938,8 +660,8 @@ public class RepeatableQuestGenerator(
             : explorationConfig.MaximumExtracts + 1;
         var numExtracts = _randomUtil.RandInt(1, exitTimesMax);
 
-        var quest = GenerateRepeatableTemplate(
-            "Exploration",
+        var quest = _repeatableQuestHelper.GenerateRepeatableTemplate(
+            RepeatableQuestType.Exploration,
             traderId,
             repeatableConfig.Side,
             sessionId
@@ -1048,8 +770,8 @@ public class RepeatableQuestGenerator(
     {
         var pickupConfig = repeatableConfig.QuestConfig.Pickup;
 
-        var quest = GenerateRepeatableTemplate(
-            "Pickup",
+        var quest = _repeatableQuestHelper.GenerateRepeatableTemplate(
+            RepeatableQuestType.Pickup,
             traderId,
             repeatableConfig.Side,
             sessionId
@@ -1123,105 +845,5 @@ public class RepeatableQuestGenerator(
             ExitName = exit.Name,
             ConditionType = "ExitName",
         };
-    }
-
-    /// <summary>
-    ///     Generates the base object of quest type format given as templates in
-    ///     assets/database/templates/repeatableQuests.json
-    ///     The templates include Elimination, Completion and Extraction quest types
-    /// </summary>
-    /// <param name="type">Quest type: "Elimination", "Completion" or "Extraction"</param>
-    /// <param name="traderId">Trader from which the quest will be provided</param>
-    /// <param name="playerGroup">Scav daily or pmc daily/weekly quest</param>
-    /// <returns>
-    ///     Object which contains the base elements for repeatable quests of the requests type
-    ///     (needs to be filled with reward and conditions by called to make a valid quest)
-    /// </returns>
-    protected RepeatableQuest GenerateRepeatableTemplate(
-        string type,
-        string traderId,
-        PlayerGroup playerGroup,
-        string sessionId
-    )
-    {
-        RepeatableQuest questData = null;
-        switch (type)
-        {
-            case "Elimination":
-                questData = _databaseService.GetTemplates().RepeatableQuests.Templates.Elimination;
-                break;
-            case "Completion":
-                questData = _databaseService.GetTemplates().RepeatableQuests.Templates.Completion;
-                break;
-            case "Exploration":
-                questData = _databaseService.GetTemplates().RepeatableQuests.Templates.Exploration;
-                break;
-            case "Pickup":
-                questData = _databaseService.GetTemplates().RepeatableQuests.Templates.Pickup;
-                break;
-        }
-
-        var questClone = _cloner.Clone(questData);
-        questClone.Id = _hashUtil.Generate();
-        questClone.TraderId = traderId;
-
-        /*  in locale, these id correspond to the text of quests
-            template ids -pmc  : Elimination = 616052ea3054fc0e2c24ce6e / Completion = 61604635c725987e815b1a46 / Exploration = 616041eb031af660100c9967
-            template ids -scav : Elimination = 62825ef60e88d037dc1eb428 / Completion = 628f588ebb558574b2260fe5 / Exploration = 62825ef60e88d037dc1eb42c
-        */
-
-        // Get template id from config based on side and type of quest
-        var typeIds = _repeatableQuestHelper.GetRepeatableQuestTemplatesByGroup(playerGroup);
-
-        questClone.TemplateId = typeIds[type];
-
-        // Force REF templates to use prapors ID - solves missing text issue
-        var desiredTraderId = traderId == Traders.REF ? Traders.PRAPOR : traderId;
-
-        questClone.Name = questClone
-            .Name.Replace("{traderId}", traderId)
-            .Replace("{templateId}", questClone.TemplateId);
-
-        questClone.Note = questClone
-            .Note.Replace("{traderId}", desiredTraderId)
-            .Replace("{templateId}", questClone.TemplateId);
-
-        questClone.Description = questClone
-            .Description.Replace("{traderId}", desiredTraderId)
-            .Replace("{templateId}", questClone.TemplateId);
-
-        questClone.SuccessMessageText = questClone
-            .SuccessMessageText.Replace("{traderId}", desiredTraderId)
-            .Replace("{templateId}", questClone.TemplateId);
-
-        questClone.FailMessageText = questClone
-            .FailMessageText.Replace("{traderId}", desiredTraderId)
-            .Replace("{templateId}", questClone.TemplateId);
-
-        questClone.StartedMessageText = questClone
-            .StartedMessageText.Replace("{traderId}", desiredTraderId)
-            .Replace("{templateId}", questClone.TemplateId);
-
-        questClone.ChangeQuestMessageText = questClone
-            .ChangeQuestMessageText.Replace("{traderId}", desiredTraderId)
-            .Replace("{templateId}", questClone.TemplateId);
-
-        questClone.AcceptPlayerMessage = questClone
-            .AcceptPlayerMessage.Replace("{traderId}", desiredTraderId)
-            .Replace("{templateId}", questClone.TemplateId);
-
-        questClone.DeclinePlayerMessage = questClone
-            .DeclinePlayerMessage.Replace("{traderId}", desiredTraderId)
-            .Replace("{templateId}", questClone.TemplateId);
-
-        questClone.CompletePlayerMessage = questClone
-            .CompletePlayerMessage.Replace("{traderId}", desiredTraderId)
-            .Replace("{templateId}", questClone.TemplateId);
-
-        questClone.QuestStatus.Id = _hashUtil.Generate();
-        questClone.QuestStatus.Uid = sessionId; // Needs to match user id
-        questClone.QuestStatus.QId = questClone.Id; // Needs to match quest id
-
-        return questClone;
     }
 }
