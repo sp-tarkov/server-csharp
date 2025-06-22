@@ -250,30 +250,57 @@ public record RewardScaling
     [JsonExtensionData]
     public Dictionary<string, object> ExtensionData { get; set; }
 
+    /// <summary>
+    ///     Levels at which to increase to the next level of reward potential
+    /// </summary>
     [JsonPropertyName("levels")]
     public required List<double> Levels { get; set; }
 
+    /// <summary>
+    ///     Experience reward tiers
+    /// </summary>
     [JsonPropertyName("experience")]
     public required List<double> Experience { get; set; }
 
+    /// <summary>
+    ///     Rouble reward tiers
+    /// </summary>
     [JsonPropertyName("roubles")]
     public required List<double> Roubles { get; set; }
 
+    /// <summary>
+    ///     Gp coin reward tiers
+    /// </summary>
     [JsonPropertyName("gpCoins")]
     public required List<double> GpCoins { get; set; }
 
+    /// <summary>
+    ///     Item amount reward tiers
+    /// </summary>
     [JsonPropertyName("items")]
     public required List<double> Items { get; set; }
 
+    /// <summary>
+    ///     reputation amount reward tiers
+    /// </summary>
     [JsonPropertyName("reputation")]
     public required List<double> Reputation { get; set; }
 
+    /// <summary>
+    ///     Reward spread
+    /// </summary>
     [JsonPropertyName("rewardSpread")]
     public required double RewardSpread { get; set; }
 
+    /// <summary>
+    ///     Skill reward chance tiers
+    /// </summary>
     [JsonPropertyName("skillRewardChance")]
     public required List<double> SkillRewardChance { get; set; }
 
+    /// <summary>
+    ///     Skill reward amount tiers
+    /// </summary>
     [JsonPropertyName("skillPointReward")]
     public required List<double> SkillPointReward { get; set; }
 }
