@@ -4,6 +4,7 @@ using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Request;
 using SPTarkov.Server.Core.Models.Eft.Game;
+using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 
@@ -74,6 +75,21 @@ public class GameCallbacks(
         return new ValueTask<string>(
             _httpResponseUtil.GetBody(_gameController.GetGameConfig(sessionID))
         );
+    }
+
+    /// <summary>
+    ///     Handle client/putHWMetrics
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> PutHwMetrics(
+        string url,
+        EmptyRequestData info,
+        string sessionID
+    )
+    {
+        return new ValueTask<string>(
+            _httpResponseUtil.GetBody<string>(null!)
+            );
     }
 
     /// <summary>
