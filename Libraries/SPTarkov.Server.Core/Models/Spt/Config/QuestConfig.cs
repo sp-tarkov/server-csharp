@@ -598,16 +598,16 @@ public record EliminationConfig : BaseQuestConfig
     public required int MinPmcKills { get; set; }
 
     /// <summary>
-    ///     Probability that a specific weapon requirement is chosen
+    ///     Chance that a specific weapon requirement is chosen
     /// </summary>
-    [JsonPropertyName("weaponRequirementProb")]
-    public required double WeaponRequirementProbability { get; set; }
+    [JsonPropertyName("weaponRequirementChance")]
+    public required int WeaponRequirementChance { get; set; }
 
     /// <summary>
-    ///     Probability that a weapon category requirement is chosen
+    ///     Chance that a weapon category requirement is chosen
     /// </summary>
-    [JsonPropertyName("weaponCategoryRequirementProb")]
-    public required double WeaponCategoryRequirementProbability { get; set; }
+    [JsonPropertyName("weaponCategoryRequirementChance")]
+    public required int WeaponCategoryRequirementChance { get; set; }
 
     /// <summary>
     ///     If a weapon category requirement is chosen, pick from these categories

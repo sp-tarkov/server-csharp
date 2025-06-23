@@ -474,8 +474,8 @@
                         "minBossKills": 1,
                         "maxPmcKills": 2,
                         "minPmcKills": 1,
-                        "weaponRequirementProb": 0,
-                        "weaponCategoryRequirementProb": 0.15,
+                        "weaponRequirementChance": 0,
+                        "weaponCategoryRequirementChance": 15,
                         "weaponCategoryRequirements": [
                             {
                                 "key": "Shotgun",
@@ -700,8 +700,8 @@
                         "minBossKills": 1,
                         "maxPmcKills": 5,
                         "minPmcKills": 2,
-                        "weaponRequirementProb": 0,
-                        "weaponCategoryRequirementProb": 0.15,
+                        "weaponRequirementChance": 0,
+                        "weaponCategoryRequirementChance": 15,
                         "weaponCategoryRequirements": [
                             {
                                 "key": "Shotgun",
@@ -921,8 +921,8 @@
                         "minBossKills": 2,
                         "maxPmcKills": 6,
                         "minPmcKills": 3,
-                        "weaponRequirementProb": 0,
-                        "weaponCategoryRequirementProb": 0.15,
+                        "weaponRequirementChance": 0,
+                        "weaponCategoryRequirementChance": 15,
                         "weaponCategoryRequirements": [
                             {
                                 "key": "Shotgun",
@@ -1351,8 +1351,8 @@
                         "minBossKills": 3,
                         "maxPmcKills": 8,
                         "minPmcKills": 5,
-                        "weaponRequirementProb": 0,
-                        "weaponCategoryRequirementProb": 0.2,
+                        "weaponRequirementChance": 0,
+                        "weaponCategoryRequirementChance": 20,
                         "weaponCategoryRequirements": [
                             {
                                 "key": "Shotgun",
@@ -1572,8 +1572,8 @@
                         "minBossKills": 5,
                         "maxPmcKills": 15,
                         "minPmcKills": 10,
-                        "weaponRequirementProb": 0,
-                        "weaponCategoryRequirementProb": 0.15,
+                        "weaponRequirementChance": 0,
+                        "weaponCategoryRequirementChance": 15,
                         "weaponCategoryRequirements": [
                             {
                                 "key": "Shotgun",
@@ -1793,8 +1793,8 @@
                         "minBossKills": 7,
                         "maxPmcKills": 25,
                         "minPmcKills": 10,
-                        "weaponRequirementProb": 0,
-                        "weaponCategoryRequirementProb": 0.2,
+                        "weaponRequirementChance": 0,
+                        "weaponCategoryRequirementChance": 20,
                         "weaponCategoryRequirements": [
                             {
                                 "key": "Shotgun",
@@ -2081,8 +2081,8 @@
                         "minBossKills": 1,
                         "maxPmcKills": 2,
                         "minPmcKills": 1,
-                        "weaponRequirementProb": 0,
-                        "weaponCategoryRequirementProb": 0.3,
+                        "weaponRequirementChance": 0,
+                        "weaponCategoryRequirementChance": 30,
                         "weaponCategoryRequirements": [
                             {
                                 "key": "Shotgun",
@@ -2218,8 +2218,8 @@
                         "minBossKills": 1,
                         "maxPmcKills": 5,
                         "minPmcKills": 2,
-                        "weaponRequirementProb": 0,
-                        "weaponCategoryRequirementProb": 0.3,
+                        "weaponRequirementChance": 0,
+                        "weaponCategoryRequirementChance": 30,
                         "weaponCategoryRequirements": [
                             {
                                 "key": "Shotgun",
