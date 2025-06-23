@@ -1086,51 +1086,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "case_extraction"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5a577b4186f7743e797f6f04",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5bf5393d86f77458f17c1993",
-                "target": [
-                  "factory4_day",
-                  "factory4_night"
-                ]
-              }
-            ],
-            "id": "5977784486f774285402cf51"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5977784486f774285402cf52",
-          "index": 2,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5a5779e486f774411f6c321f",
-              "target": "59674fe586f7744f4e358aa2"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -1533,7 +1488,8 @@
                 "id": "5a60653f86f7740d887d2d38",
                 "status": [
                   "Survived",
-                  "Runner"
+                  "Runner",
+                  "Transit"
                 ]
               }
             ],
@@ -2234,7 +2190,8 @@
                 "id": "5968962b86f7740d14064723",
                 "status": [
                   "Survived",
-                  "Runner"
+                  "Runner",
+                  "Transit"
                 ]
               },
               {
@@ -3319,7 +3276,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -3344,7 +3301,8 @@
                 "id": "5a577cb386f774727a7198ad",
                 "status": [
                   "Survived",
-                  "Runner"
+                  "Runner",
+                  "Transit"
                 ]
               }
             ],
@@ -3357,7 +3315,7 @@
           "index": 1,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -8107,50 +8065,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "gazel"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "59b95df386f7741b653edfd3",
-                "target": [
-                  "bigmap"
-                ]
-              },
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "59b95df686f774184302e219",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              }
-            ],
-            "id": "59b95de686f77418457056ee"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "59b95de686f77418457056ef",
-          "index": 2,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5a57798086f774411f6c320b",
-              "target": "59b242ea86f7741e6e0e7a86"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -8381,50 +8295,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "gazel"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5a577aaa86f7743e797f6dcb",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5a577abe86f7743e84764c96",
-                "target": [
-                  "bigmap"
-                ]
-              }
-            ],
-            "id": "597a166d86f774779c70e8a3"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "597a166d86f774779c70e8a4",
-          "index": 2,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5a5777bd86f7740ad907c6e9",
-              "target": "5998366886f77455853b2d9f"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -8623,50 +8493,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "gazel"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "597a178e86f77477531d39d6",
-                "target": [
-                  "bigmap"
-                ]
-              },
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5a577e7686f7742f6130009c",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              }
-            ],
-            "id": "597a178786f774799e5cd154"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "597a178786f774799e5cd155",
-          "index": 3,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5a577e9e86f7742f600a7045",
-              "target": "5998360886f77456936817f3"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -8928,65 +8754,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "fuel4"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5c92189286f7746af93240ab",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "604240ceabf6800310035513",
-                "target": [
-                  "bigmap"
-                ]
-              }
-            ],
-            "id": "5c92184386f7746afa2e783f"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5c92184386f7746afa2e7840",
-          "index": 4,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5f9d4563f254e6181a4e1552",
-              "target": "59c128b986f77415037680df"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5f9d4578c3904e10bf3c454c",
-              "target": "59c128cc86f774189b3c84b5"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5f9d45820905e01479325c1f",
-              "target": "59c128d886f77414fe7f1a64"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5f9d4594f254e6181a4e1554",
-              "target": "59c128f386f774189b3c84bb"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -12659,50 +12426,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "place_peacemaker_008_2_N2"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5a37d81686f774245c063b6b",
-                "target": [
-                  "Shoreline"
-                ]
-              },
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5a37d85486f774245b1a0818",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              }
-            ],
-            "id": "5a37d80986f774245c063b68"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5a37d80986f774245c063b69",
-          "index": 3,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5a60a99386f774590326d5cc",
-              "target": "5a0325f286f7744384509230"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -13248,7 +12971,7 @@
           "index": 1,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -13276,7 +12999,7 @@
           "index": 3,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -13293,7 +13016,8 @@
                 "id": "5c94f68386f7743285178acc",
                 "status": [
                   "Survived",
-                  "Runner"
+                  "Runner",
+                  "Transit"
                 ]
               },
               {
@@ -13314,7 +13038,7 @@
           "index": 4,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Discover",
           "value": 1,
@@ -13691,55 +13415,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "place_peacemaker_001"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5c93795386f77411fc1e1822",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5c93795d86f7740a111bd782",
-                "target": [
-                  "Shoreline"
-                ]
-              }
-            ],
-            "id": "5c93794086f7740a13567866"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5c93794086f7740a13567867",
-          "index": 4,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Discover",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5c93966986f774122a7ac1a4",
-              "target": "5a27d81a86f774472a6e0456"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5c93967486f774122c346f86",
-              "target": "5a27d85286f77448d82084e7"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -14096,60 +13771,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "place_peacemaker_002_N3"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5c9394ba86f774122a7ac1a2",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5c9394de86f774122c346f82",
-                "target": [
-                  "bigmap"
-                ]
-              }
-            ],
-            "id": "5c9394a986f7741228714be2"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5c9394a986f7741228714be3",
-          "index": 3,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Elimination",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5c9395be86f774122a7ac1a3",
-              "target": "5a27e75886f7740aef4a9157"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5c9395cd86f774122c346f84",
-              "target": "5a29653986f77406a3435b26"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "66698b0c361faf66b8ade1dd",
-              "target": "66698a9eddc21e9441645819"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -14425,60 +14046,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "place_peacemaker_003_N3"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5c939d1886f7741229301dc2",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5c939d2586f774122b6e7852",
-                "target": [
-                  "Shoreline"
-                ]
-              }
-            ],
-            "id": "5c939d0e86f774185203c4c2"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5c939d0e86f774185203c4c3",
-          "index": 3,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Elimination",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5c9a166586f77438c80164e8",
-              "target": "5a37e8ae86f77415076b401d"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5c9a166a86f7741da4659f71",
-              "target": "5a27fc8186f7746371546243"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5c9a166f86f7747dbe2da3be",
-              "target": "5a27fc9686f774675744bb60"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -15258,60 +14825,6 @@
           "counter": {
             "conditions": [
               {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5c939f3c86f7741228714be5",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5c939f4886f774122a7ac1a5",
-                "target": [
-                  "Shoreline"
-                ]
-              }
-            ],
-            "id": "5c939f2186f774122b6e7853"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5c939f2186f774122b6e7854",
-          "index": 4,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Elimination",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5c939f8586f774122a7ac1a6",
-              "target": "5a28017786f77452f6318b1b"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5c939f9386f774122c346f87",
-              "target": "5a2801f986f774531b679875"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5c9b7e0e86f7744aa8646183",
-              "target": "5c9a170386f77438c80164eb"
-            }
-          ]
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
                 "bodyPart": [],
                 "compareMethod": ">=",
                 "conditionType": "Kills",
@@ -15617,7 +15130,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -15642,7 +15155,8 @@
                 "id": "5a2eb6e586f7747063190763",
                 "status": [
                   "Survived",
-                  "Runner"
+                  "Runner",
+                  "Transit"
                 ]
               }
             ],
@@ -15655,7 +15169,7 @@
           "index": 1,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -17120,7 +16634,7 @@
           "index": 1,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -17145,7 +16659,8 @@
                 "id": "5a37de6586f774150a3820f1",
                 "status": [
                   "Survived",
-                  "Runner"
+                  "Runner",
+                  "Transit"
                 ]
               }
             ],
@@ -17158,7 +16673,7 @@
           "index": 2,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -17642,50 +17157,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "place_peacemaker_010_2"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5a37dc1686f7745cdd0f7a99",
-                "target": [
-                  "Shoreline"
-                ]
-              },
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5a37dc1d86f7745b8f4bec7f",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              }
-            ],
-            "id": "5a37dc0c86f77469da071ef1"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5a37dc0c86f77469da071ef2",
-          "index": 3,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5a60a8ba86f77455b416fb7a",
-              "target": "5a281efe86f7745bc42005cc"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -17866,7 +17337,7 @@
           "index": 1,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -17891,7 +17362,8 @@
                 "id": "5a37db5386f7743b3d3fcfdf",
                 "status": [
                   "Survived",
-                  "Runner"
+                  "Runner",
+                  "Transit"
                 ]
               }
             ],
@@ -17904,7 +17376,7 @@
           "index": 2,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -22156,56 +21628,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "place_SADOVOD_01_2"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5ac7a5e086f774383054c362",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5b7ff33786f7744b99464500",
-                "target": [
-                  "factory4_day",
-                  "factory4_night"
-                ]
-              }
-            ],
-            "id": "5ac7a5d586f774383111ee62"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5ac7a5d586f774383111ee63",
-          "index": 2,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5ac7a5f486f774382e6fce02",
-              "target": "5ac7a4ba86f77409f3423628"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5ac7a5fb86f7743e1e142464",
-              "target": "5ac7a51a86f774738a4ffc96"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -23723,60 +23145,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "place_SIGNAL_03_3"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5ac7a94086f77466515f8b7b",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5ac7a95886f77466515f8b7c",
-                "target": [
-                  "Shoreline"
-                ]
-              }
-            ],
-            "id": "5ac7a93286f774664f4cbd8b"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5ac7a93286f774664f4cbd8c",
-          "index": 3,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5ac7a95e86f774665012340f",
-              "target": "5ac7a7bf86f774132252a524"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5ac7a96386f774664f4cbd8d",
-              "target": "5ac7a83b86f774665012340b"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5ac7a96886f7746c57321d67",
-              "target": "5ac7a8d386f7741321499e3c"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -24631,7 +23999,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -24659,7 +24027,7 @@
           "index": 1,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -24687,7 +24055,7 @@
           "index": 2,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -24715,7 +24083,7 @@
           "index": 3,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -24731,7 +24099,8 @@
                 "dynamicLocale": false,
                 "id": "5ac61b1c86f774741c1bf0a1",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -26780,7 +26149,8 @@
                 "id": "5ae4515086f7741250488375",
                 "status": [
                   "Survived",
-                  "Runner"
+                  "Runner",
+                  "Transit"
                 ]
               },
               {
@@ -26991,60 +26361,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "place_WARBLOOD_04_3"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5ae4531f86f77417eb43f0d8",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5ae4532486f77418215460fb",
-                "target": [
-                  "Interchange"
-                ]
-              }
-            ],
-            "id": "5ae4531986f774177033c3e5"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5ae4531986f774177033c3e6",
-          "index": 3,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5ae4532a86f774336a39759e",
-              "target": "5ae452c086f774336a397578"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5ae4532e86f774184a254940",
-              "target": "5ae452de86f77450595c4333"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5ae4533286f7741b747a04d9",
-              "target": "5ae452fa86f774336a39758e"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -30053,7 +29369,8 @@
                 "dynamicLocale": false,
                 "id": "5bb60cc688a4507f2f385a76",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               }
             ],
@@ -32570,76 +31887,6 @@
           "type": "Item",
           "unknown": true,
           "value": 1
-        },
-        {
-          "availableInGameEditions": [],
-          "id": "655b8bce065b076eb02c4b4d",
-          "index": 0,
-          "items": [
-            {
-              "_id": "683ee16dcb22c3ad2412115f",
-              "_tpl": "5b44d0de86f774503d30cba8"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121160",
-              "_tpl": "6575c342efc786cd9101a5e5",
-              "parentId": "683ee16dcb22c3ad2412115f",
-              "slotId": "Soft_armor_front"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121161",
-              "_tpl": "6575c34bc6700bd6b40e8a84",
-              "parentId": "683ee16dcb22c3ad2412115f",
-              "slotId": "Soft_armor_back"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121162",
-              "_tpl": "6575c35bc6700bd6b40e8a88",
-              "parentId": "683ee16dcb22c3ad2412115f",
-              "slotId": "Soft_armor_left"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121163",
-              "_tpl": "6575c366c6700bd6b40e8a8c",
-              "parentId": "683ee16dcb22c3ad2412115f",
-              "slotId": "soft_armor_right"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121164",
-              "_tpl": "6575c373dc9932aed601c5ec",
-              "parentId": "683ee16dcb22c3ad2412115f",
-              "slotId": "Collar"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121165",
-              "_tpl": "6575c385dc9932aed601c5f0",
-              "parentId": "683ee16dcb22c3ad2412115f",
-              "slotId": "Groin"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121166",
-              "_tpl": "6575c390efc786cd9101a5e9",
-              "parentId": "683ee16dcb22c3ad2412115f",
-              "slotId": "Groin_back"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121167",
-              "_tpl": "656fa8d700d62bcd2e024084",
-              "parentId": "683ee16dcb22c3ad2412115f",
-              "slotId": "Front_plate"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121168",
-              "_tpl": "656fa8d700d62bcd2e024084",
-              "parentId": "683ee16dcb22c3ad2412115f",
-              "slotId": "Back_plate"
-            }
-          ],
-          "loyaltyLevel": 4,
-          "target": "683ee16dcb22c3ad2412115f",
-          "traderId": "6617beeaa9cfa777ca915b7c",
-          "type": "AssortmentUnlock",
-          "unknown": false
         }
       ]
     },
@@ -33024,60 +32271,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "place_merch_21_3"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5b478df086f7746807461fd2",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5b478dfc86f7746807461fd3",
-                "target": [
-                  "Interchange"
-                ]
-              }
-            ],
-            "id": "5b478de086f7744d1c3533a0"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5b478de086f7744d1c3533a1",
-          "index": 3,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5b478e0186f7744d1a393fc9",
-              "target": "5b478d8986f774563c7a4809"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5b478e0586f774563c7a4810",
-              "target": "5b478daf86f7744d1c35339b"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5b478e0b86f7744d1a393fca",
-              "target": "5b478dca86f7744d190d91c2"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -43639,59 +42832,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "bar_fuel3_3"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5ae4531f86f77417eb43f0d8",
-                "status": [
-                  "Survived"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5ae4532486f77418215460fb",
-                "target": [
-                  "Woods"
-                ]
-              }
-            ],
-            "id": "5ae4531986f774177033c3e5"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5c10f94386f774227172c577",
-          "index": 3,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "64e14e40c6eac9f1f7095019",
-              "target": "5c10f94386f774227172c574"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "64e14e4810139b0c0e01d5e8",
-              "target": "5c10f94386f774227172c575"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "64e14e56a6f1e7dfd50127cb",
-              "target": "5c10f94386f774227172c576"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -54163,7 +53303,8 @@
                 "dynamicLocale": false,
                 "id": "629f4f4c73dafb76f535aa8a",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               }
             ],
@@ -55468,7 +54609,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -55484,7 +54625,8 @@
                 "dynamicLocale": false,
                 "id": "629f12614861393d8c62e33d",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -55505,7 +54647,7 @@
           "index": 1,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -57797,60 +56939,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "prapor_022_area_3"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5f03899abb4e27377c090cdc",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5f0389b036cb1c7f496f9942",
-                "target": [
-                  "Shoreline"
-                ]
-              }
-            ],
-            "id": "5f0389268580cc37797e0025"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5f0389268580cc37797e0026",
-          "index": 3,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5f06e52d4ab52901d036b505",
-              "target": "5eda1d6ec586607c09662d54"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5f06e532d57aeb6e0925300c",
-              "target": "5eda1da9a58a4c49c74165ee"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5f06e536fdc0320a0850e310",
-              "target": "5eda1dd3317f6066993c1744"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -58684,7 +57772,8 @@
                 "id": "5f0396babb4e27377c090ced",
                 "status": [
                   "Survived",
-                  "Runner"
+                  "Runner",
+                  "Transit"
                 ]
               },
               {
@@ -59139,60 +58228,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "skier_022_area_3"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "5f039de7bfbf26606e383df7",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "5f039df57c499425787ebb39",
-                "target": [
-                  "Shoreline"
-                ]
-              }
-            ],
-            "id": "5f039da057a46716b610b576"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "5f039da057a46716b610b577",
-          "index": 4,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5f071b48e32b900a91328f50",
-              "target": "5f071a9727cec53d5d24fe3b"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5f071b4c8ca6db7f3b412160",
-              "target": "5f071ae396d1ae55e476abc4"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "5f071b514ab52901d036bcf6",
-              "target": "5f071b2a8ca6db7f3b41215f"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -60921,7 +59956,8 @@
                 "id": "5ee0e5c39f0b3d34a90f8009",
                 "status": [
                   "Survived",
-                  "Runner"
+                  "Runner",
+                  "Transit"
                 ]
               },
               {
@@ -61387,7 +60423,8 @@
                 "id": "5ee0e765a263820890521b60",
                 "status": [
                   "Survived",
-                  "Runner"
+                  "Runner",
+                  "Transit"
                 ]
               },
               {
@@ -61712,7 +60749,8 @@
                 "id": "5f0498629b667032c8402576",
                 "status": [
                   "Survived",
-                  "Runner"
+                  "Runner",
+                  "Transit"
                 ]
               }
             ],
@@ -61982,7 +61020,8 @@
                 "id": "5ee0e765a263820890521b60",
                 "status": [
                   "Survived",
-                  "Runner"
+                  "Runner",
+                  "Transit"
                 ]
               },
               {
@@ -65085,7 +64124,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -65113,7 +64152,7 @@
           "index": 1,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -65141,7 +64180,7 @@
           "index": 2,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -65169,7 +64208,7 @@
           "index": 3,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -65197,7 +64236,7 @@
           "index": 4,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -65213,7 +64252,8 @@
                 "dynamicLocale": false,
                 "id": "60e571854c28474a5d4bd1df",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -65234,7 +64274,7 @@
           "index": 5,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -65479,54 +64519,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "baraholshik_fuel_area_3"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "60a29875d90e89467e385633",
-                "target": [
-                  "RezervBase"
-                ]
-              },
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "60a299220b00f16d2d63dea4",
-                "status": [
-                  "Survived"
-                ]
-              }
-            ],
-            "id": "608bfe32c61c4b541b381da8"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "608bfe32c61c4b541b381da9",
-          "index": 2,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": true,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "60a5028d42bd1607c81ab923",
-              "target": "60a4dc7e4e734e57d07fb335"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "60b9f085a9c5f27bcf28d613",
-              "target": "60b90232ec7c6f5eb510c195"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -71574,41 +70566,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "qlight_pr1_heli1_mark"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "61abcc7a7102094da42cef06",
-                "status": [
-                  "Survived"
-                ]
-              }
-            ],
-            "id": "61abcc6379c3a477d0122458"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "61abcc6379c3a477d0122457",
-          "index": 3,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Exploration",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "63ac1eef160cc610ba0367a4",
-              "target": "6179b804bca27a099552e057"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -72370,7 +71327,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -72387,7 +71344,8 @@
                 "id": "6190465ab843e65aae5edc67",
                 "status": [
                   "Survived",
-                  "Runner"
+                  "Runner",
+                  "Transit"
                 ]
               },
               {
@@ -72912,138 +71870,6 @@
         },
         {
           "availableInGameEditions": [],
-          "id": "61ae0ac63979ec0a22045937",
-          "index": 0,
-          "items": [
-            {
-              "_id": "683ee16dcb22c3ad24121538",
-              "_tpl": "618428466ef05c2ce828f218",
-              "upd": {
-                "FireMode": {
-                  "FireMode": "single"
-                },
-                "Foldable": {
-                  "Folded": false
-                }
-              }
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121539",
-              "_tpl": "55802f5d4bdc2dac148b458f",
-              "parentId": "683ee16dcb22c3ad24121538",
-              "slotId": "mod_pistol_grip"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412153a",
-              "_tpl": "5aaa5dfee5b5b000140293d3",
-              "parentId": "683ee16dcb22c3ad24121538",
-              "slotId": "mod_magazine"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412153b",
-              "_tpl": "618405198004cc50514c3594",
-              "parentId": "683ee16dcb22c3ad24121538",
-              "slotId": "mod_reciever"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412153c",
-              "_tpl": "544a3a774bdc2d3a388b4567",
-              "parentId": "683ee16dcb22c3ad2412153b",
-              "slotId": "mod_scope"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412153d",
-              "_tpl": "58d268fc86f774111273f8c2",
-              "parentId": "683ee16dcb22c3ad2412153c",
-              "slotId": "mod_scope"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412153e",
-              "_tpl": "6183fd911cb55961fa0fdce9",
-              "parentId": "683ee16dcb22c3ad2412153b",
-              "slotId": "mod_barrel"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412153f",
-              "_tpl": "56ea6fafd2720b844b8b4593",
-              "parentId": "683ee16dcb22c3ad2412153e",
-              "slotId": "mod_muzzle"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121540",
-              "_tpl": "61816fcad92c473c770215cc",
-              "parentId": "683ee16dcb22c3ad2412153e",
-              "slotId": "mod_sight_front"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121541",
-              "_tpl": "61817865d3a39d50044c13a4",
-              "parentId": "683ee16dcb22c3ad2412153b",
-              "slotId": "mod_sight_rear"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121542",
-              "_tpl": "61816df1d3a39d50044c139e",
-              "parentId": "683ee16dcb22c3ad2412153b",
-              "slotId": "mod_mount_000"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121543",
-              "_tpl": "5c1bc5612e221602b5429350",
-              "parentId": "683ee16dcb22c3ad24121542",
-              "slotId": "mod_foregrip"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121544",
-              "_tpl": "61965d9058ef8c428c287e0d",
-              "parentId": "683ee16dcb22c3ad24121542",
-              "slotId": "mod_mount"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121545",
-              "_tpl": "61816dfa6ef05c2ce828f1ad",
-              "parentId": "683ee16dcb22c3ad2412153b",
-              "slotId": "mod_mount_001"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121546",
-              "_tpl": "61825d06d92c473c770215de",
-              "parentId": "683ee16dcb22c3ad24121538",
-              "slotId": "mod_stock"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121547",
-              "_tpl": "61825d136ef05c2ce828f1cc",
-              "parentId": "683ee16dcb22c3ad24121546",
-              "slotId": "mod_stock_001"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121548",
-              "_tpl": "618167616ef05c2ce828f1a8",
-              "parentId": "683ee16dcb22c3ad24121547",
-              "slotId": "mod_stock"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121549",
-              "_tpl": "618167441cb55961fa0fdc71",
-              "parentId": "683ee16dcb22c3ad24121546",
-              "slotId": "mod_stock_002"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412154a",
-              "_tpl": "6181688c6c780c1e710c9b04",
-              "parentId": "683ee16dcb22c3ad24121538",
-              "slotId": "mod_charge"
-            }
-          ],
-          "loyaltyLevel": 3,
-          "target": "683ee16dcb22c3ad24121538",
-          "traderId": "6617beeaa9cfa777ca915b7c",
-          "type": "AssortmentUnlock",
-          "unknown": false
-        },
-        {
-          "availableInGameEditions": [],
           "id": "63a1a3714ebcff1c995dc342",
           "index": 0,
           "items": [
@@ -73264,90 +72090,6 @@
           "type": "Item",
           "unknown": false,
           "value": 40000
-        },
-        {
-          "availableInGameEditions": [],
-          "id": "61ad5bc521371d378205bac7",
-          "index": 0,
-          "items": [
-            {
-              "_id": "683ee16dcb22c3ad24121694",
-              "_tpl": "5ac66d725acfc43b321d4b60",
-              "upd": {
-                "FireMode": {
-                  "FireMode": "single"
-                },
-                "Foldable": {
-                  "Folded": false
-                }
-              }
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121695",
-              "_tpl": "59e649f986f77411d949b246",
-              "parentId": "683ee16dcb22c3ad24121694",
-              "slotId": "mod_gas_block"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121696",
-              "_tpl": "5efaf417aeb21837e749c7f2",
-              "parentId": "683ee16dcb22c3ad24121695",
-              "slotId": "mod_handguard"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121697",
-              "_tpl": "5c1cd46f2e22164bef5cfedb",
-              "parentId": "683ee16dcb22c3ad24121696",
-              "slotId": "mod_foregrip"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121698",
-              "_tpl": "58491f3324597764bc48fa02",
-              "parentId": "683ee16dcb22c3ad24121696",
-              "slotId": "mod_scope"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121699",
-              "_tpl": "5f633f791b231926f2329f13",
-              "parentId": "683ee16dcb22c3ad24121694",
-              "slotId": "mod_muzzle"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412169a",
-              "_tpl": "5947fa2486f77425b47c1a9b",
-              "parentId": "683ee16dcb22c3ad24121694",
-              "slotId": "mod_pistol_grip"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412169b",
-              "_tpl": "5d2c772c48f0355d95672c25",
-              "parentId": "683ee16dcb22c3ad24121694",
-              "slotId": "mod_reciever"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412169c",
-              "_tpl": "5cf50fc5d7f00c056c53f83c",
-              "parentId": "683ee16dcb22c3ad24121694",
-              "slotId": "mod_stock"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412169d",
-              "_tpl": "5b39f8db5acfc40016387a1b",
-              "parentId": "683ee16dcb22c3ad2412169c",
-              "slotId": "mod_stock"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412169e",
-              "_tpl": "5cbdc23eae9215001136a407",
-              "parentId": "683ee16dcb22c3ad24121694",
-              "slotId": "mod_magazine"
-            }
-          ],
-          "loyaltyLevel": 2,
-          "target": "683ee16dcb22c3ad24121694",
-          "traderId": "6617beeaa9cfa777ca915b7c",
-          "type": "AssortmentUnlock",
-          "unknown": false
         },
         {
           "availableInGameEditions": [],
@@ -74747,49 +73489,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "qlight16_peace_terra"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "61958d8f2e2805073c2d3bc1",
-                "status": [
-                  "Survived"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "61ad51da78d2361409060866",
-                "target": [
-                  "Lighthouse"
-                ]
-              }
-            ],
-            "id": "61958d69d14ece31007e2df5"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "61958d69d14ece31007e2df4",
-          "index": 1,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": true,
-          "parentId": "",
-          "type": "Exploration",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "61958d97ea774d183b6cc91d",
-              "target": "61958d54aa0f643f9a0aed73"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -76461,7 +75160,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -76477,7 +75176,8 @@
                 "dynamicLocale": false,
                 "id": "62602c94f7308432be1d44cb",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -76498,7 +75198,7 @@
           "index": 1,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Experience",
           "value": 1,
@@ -77248,7 +75948,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -77276,7 +75976,7 @@
           "index": 1,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -77304,7 +76004,7 @@
           "index": 2,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -77320,7 +76020,8 @@
                 "dynamicLocale": false,
                 "id": "62987d4ae8590f3a3d59c576",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -77341,7 +76042,7 @@
           "index": 4,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -79187,7 +77888,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Discover",
           "value": 1,
@@ -79203,7 +77904,8 @@
                 "dynamicLocale": false,
                 "id": "63a7dab6ee7b4d0d5507baf7",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -79224,7 +77926,7 @@
           "index": 1,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -79453,7 +78155,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Discover",
           "value": 1,
@@ -79477,7 +78179,8 @@
                 "dynamicLocale": false,
                 "id": "639c8cbf5b759c65a3476544",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               }
             ],
@@ -79490,7 +78193,7 @@
           "index": 2,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -79910,7 +78613,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Discover",
           "value": 1,
@@ -79926,7 +78629,8 @@
                 "dynamicLocale": false,
                 "id": "63972c885b2a6108ac2194c8",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -79947,7 +78651,7 @@
           "index": 2,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -80157,7 +78861,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Discover",
           "value": 1,
@@ -80185,7 +78889,7 @@
           "index": 1,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Discover",
           "value": 1,
@@ -80201,7 +78905,8 @@
                 "dynamicLocale": false,
                 "id": "63972dbacf1240499d01a016",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -80222,7 +78927,7 @@
           "index": 4,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -81079,59 +79784,6 @@
           "value": 1,
           "visibilityConditions": [],
           "zoneId": "quest_zone_place_c14_revx_3"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "639cebc3dae1800a3e1359b2",
-                "status": [
-                  "Survived"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "639cebee2a994a11600df103",
-                "target": [
-                  "TarkovStreets"
-                ]
-              }
-            ],
-            "id": "639cebb78fe84d33a25a142c"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "639cebb78fe84d33a25a142b",
-          "index": 3,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "639cec865573fd6cc27d99bd",
-              "target": "63927f14744e452011470816"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "639cec8d5b759c65a3476546",
-              "target": "63927f2d8ba6894d155e77e6"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "639cec947c898a131e1cfffb",
-              "target": "63927f349444fb141f4e6f24"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -82249,49 +80901,6 @@
           "type": "Elimination",
           "value": 10,
           "visibilityConditions": []
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "639d00a9dae1800a3e1359b3",
-                "status": [
-                  "Survived"
-                ]
-              },
-              {
-                "conditionType": "Location",
-                "dynamicLocale": false,
-                "id": "639d00d481b99001240bbe77",
-                "target": [
-                  "TarkovStreets"
-                ]
-              }
-            ],
-            "id": "639d00a28fe84d33a25a1430"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "639d00a28fe84d33a25a142f",
-          "index": 1,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "639d00fd5573fd6cc27d99bf",
-              "target": "63929224744e45201147081a"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -82630,7 +81239,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Discover",
           "value": 1,
@@ -82646,7 +81255,8 @@
                 "dynamicLocale": false,
                 "id": "639da5f35b759c65a3476548",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -82667,7 +81277,7 @@
           "index": 2,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -82943,7 +81553,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Discover",
           "value": 1,
@@ -82959,7 +81569,8 @@
                 "dynamicLocale": false,
                 "id": "639da88681b99001240bbe7c",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -83364,7 +81975,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Discover",
           "value": 1,
@@ -83392,7 +82003,7 @@
           "index": 1,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Discover",
           "value": 1,
@@ -83408,7 +82019,8 @@
                 "dynamicLocale": false,
                 "id": "639cdfac81b99001240bbe75",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -83429,7 +82041,7 @@
           "index": 4,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -84253,8 +82865,7 @@
                 "status": [
                   "Survived",
                   "Runner",
-                  "Killed",
-                  "MissingInAction"
+                  "Transit"
                 ]
               },
               {
@@ -85254,7 +83865,8 @@
                 "dynamicLocale": false,
                 "id": "639a7986da859817035a33d5",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -85824,7 +84436,8 @@
                 "dynamicLocale": false,
                 "id": "639c3e37ffadd8b532003319",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               }
             ],
@@ -86326,7 +84939,8 @@
                 "dynamicLocale": false,
                 "id": "639b00ef20668603de1597cf",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -86829,106 +85443,6 @@
           "type": "Item",
           "unknown": false,
           "value": 1
-        },
-        {
-          "availableInGameEditions": [],
-          "id": "63a19b36fcae11642e50f9b4",
-          "index": 0,
-          "items": [
-            {
-              "_id": "683ee16ecb22c3ad24121c8b",
-              "_tpl": "59984ab886f7743e98271174",
-              "upd": {
-                "Repairable": {
-                  "Durability": 100,
-                  "MaxDurability": 100
-                }
-              }
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121c8c",
-              "_tpl": "5649ae4a4bdc2d1b2b8b4588",
-              "parentId": "683ee16ecb22c3ad24121c8b",
-              "slotId": "mod_pistol_grip"
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121c8d",
-              "_tpl": "5ac78eaf5acfc4001926317a",
-              "parentId": "683ee16ecb22c3ad24121c8b",
-              "slotId": "mod_stock"
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121c8e",
-              "_tpl": "59ecc3dd86f7746dc827481c",
-              "parentId": "683ee16ecb22c3ad24121c8d",
-              "slotId": "mod_stock"
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121c8f",
-              "_tpl": "5648ac824bdc2ded0b8b457d",
-              "parentId": "683ee16ecb22c3ad24121c8b",
-              "slotId": "mod_charge"
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121c90",
-              "_tpl": "599860ac86f77436b225ed1a",
-              "parentId": "683ee16ecb22c3ad24121c8b",
-              "slotId": "mod_magazine"
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121c91",
-              "_tpl": "59bfc5c886f7743bf6794e62",
-              "parentId": "683ee16ecb22c3ad24121c8b",
-              "slotId": "mod_muzzle"
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121c92",
-              "_tpl": "59985a6c86f77414ec448d17",
-              "parentId": "683ee16ecb22c3ad24121c8b",
-              "slotId": "mod_reciever"
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121c93",
-              "_tpl": "570fd6c2d2720bc6458b457f",
-              "parentId": "683ee16ecb22c3ad24121c92",
-              "slotId": "mod_scope"
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121c94",
-              "_tpl": "599860e986f7743bb57573a6",
-              "parentId": "683ee16ecb22c3ad24121c8b",
-              "slotId": "mod_sight_rear"
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121c95",
-              "_tpl": "59ccd11386f77428f24a488f",
-              "parentId": "683ee16ecb22c3ad24121c8b",
-              "slotId": "mod_gas_block"
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121c96",
-              "_tpl": "5648b4534bdc2d3d1c8b4580",
-              "parentId": "683ee16ecb22c3ad24121c95",
-              "slotId": "mod_handguard"
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121c97",
-              "_tpl": "591af28e86f77414a27a9e1d",
-              "parentId": "683ee16ecb22c3ad24121c96",
-              "slotId": "mod_foregrip"
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121c98",
-              "_tpl": "560d657b4bdc2da74d8b4572",
-              "parentId": "683ee16ecb22c3ad24121c96",
-              "slotId": "mod_tactical_002"
-            }
-          ],
-          "loyaltyLevel": 1,
-          "target": "683ee16ecb22c3ad24121c8b",
-          "traderId": "6617beeaa9cfa777ca915b7c",
-          "type": "AssortmentUnlock",
-          "unknown": false
         }
       ]
     },
@@ -87425,129 +85939,6 @@
           "type": "Item",
           "unknown": false,
           "value": 1
-        },
-        {
-          "availableInGameEditions": [],
-          "id": "63a19c7e5032c67f050dd95d",
-          "index": 0,
-          "items": [
-            {
-              "_id": "683ee16dcb22c3ad24121111",
-              "_tpl": "5447a9cd4bdc2dbd208b4567",
-              "upd": {
-                "FireMode": {
-                  "FireMode": "single"
-                }
-              }
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121112",
-              "_tpl": "5cc9bcaed7f00c011c04e179",
-              "parentId": "683ee16dcb22c3ad24121111",
-              "slotId": "mod_pistol_grip"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121113",
-              "_tpl": "59c1383d86f774290a37e0ca",
-              "parentId": "683ee16dcb22c3ad24121111",
-              "slotId": "mod_magazine"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121114",
-              "_tpl": "5d4405aaa4b9361e6a4e6bd3",
-              "parentId": "683ee16dcb22c3ad24121111",
-              "slotId": "mod_reciever"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121115",
-              "_tpl": "59f9d81586f7744c7506ee62",
-              "parentId": "683ee16dcb22c3ad24121114",
-              "slotId": "mod_scope"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121116",
-              "_tpl": "55d35ee94bdc2d61338b4568",
-              "parentId": "683ee16dcb22c3ad24121114",
-              "slotId": "mod_barrel"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121117",
-              "_tpl": "5cff9e5ed7ad1a09407397d4",
-              "parentId": "683ee16dcb22c3ad24121116",
-              "slotId": "mod_muzzle"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121118",
-              "_tpl": "5d00ec68d7ad1a04a067e5be",
-              "parentId": "683ee16dcb22c3ad24121116",
-              "slotId": "mod_gas_block"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121119",
-              "_tpl": "5c78f2612e221600114c9f0d",
-              "parentId": "683ee16dcb22c3ad24121114",
-              "slotId": "mod_handguard"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412111a",
-              "_tpl": "5b7be4895acfc400170e2dd5",
-              "parentId": "683ee16dcb22c3ad24121119",
-              "slotId": "mod_foregrip"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412111b",
-              "_tpl": "588226d124597767ad33f787",
-              "parentId": "683ee16dcb22c3ad2412111a",
-              "slotId": "mod_foregrip"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412111c",
-              "_tpl": "5ba26b01d4351e0085325a51",
-              "parentId": "683ee16dcb22c3ad24121119",
-              "slotId": "mod_sight_front"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412111d",
-              "_tpl": "5c78f2882e22165df16b832e",
-              "parentId": "683ee16dcb22c3ad24121119",
-              "slotId": "mod_muzzle"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412111e",
-              "_tpl": "5b07dd285acfc4001754240d",
-              "parentId": "683ee16dcb22c3ad24121119",
-              "slotId": "mod_tactical_002"
-            },
-            {
-              "_id": "683ee16dcb22c3ad2412111f",
-              "_tpl": "5ba26b17d4351e00367f9bdd",
-              "parentId": "683ee16dcb22c3ad24121114",
-              "slotId": "mod_sight_rear"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121120",
-              "_tpl": "5d120a10d7ad1a4e1026ba85",
-              "parentId": "683ee16dcb22c3ad24121111",
-              "slotId": "mod_stock"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121121",
-              "_tpl": "5d120a28d7ad1a1c8962e295",
-              "parentId": "683ee16dcb22c3ad24121120",
-              "slotId": "mod_stock"
-            },
-            {
-              "_id": "683ee16dcb22c3ad24121122",
-              "_tpl": "5d44334ba4b9362b346d1948",
-              "parentId": "683ee16dcb22c3ad24121111",
-              "slotId": "mod_charge"
-            }
-          ],
-          "loyaltyLevel": 2,
-          "target": "683ee16dcb22c3ad24121111",
-          "traderId": "6617beeaa9cfa777ca915b7c",
-          "type": "AssortmentUnlock",
-          "unknown": false
         }
       ]
     },
@@ -88390,7 +86781,7 @@
           "index": 0,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Discover",
           "value": 1,
@@ -88414,7 +86805,8 @@
                 "dynamicLocale": false,
                 "id": "639dbbc35573fd6cc27d99c4",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               }
             ],
@@ -88427,7 +86819,7 @@
           "index": 2,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -88566,7 +86958,7 @@
           "index": 1,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Exploration",
           "value": 1,
@@ -88582,7 +86974,8 @@
                 "dynamicLocale": false,
                 "id": "639da5f35b759c65a3476548",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -88603,7 +86996,7 @@
           "index": 2,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
+          "oneSessionOnly": true,
           "parentId": "",
           "type": "Completion",
           "value": 1,
@@ -95196,42 +93589,6 @@
             }
           ],
           "zoneId": "quest_zone_hide_2st_mech"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "64ee9ce01180874bb93e8640",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              }
-            ],
-            "id": "64ee9cc69a4f90510651507f"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "64ee9cc69a4f90510651507e",
-          "index": 3,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "64ee9d14bf4c727e9c7bdb96",
-              "target": "64ee9b5a1a5f313cb144bf87"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -95539,42 +93896,6 @@
             }
           ],
           "zoneId": "quest_zone_hide_sillent2"
-        },
-        {
-          "completeInSeconds": 0,
-          "conditionType": "CounterCreator",
-          "counter": {
-            "conditions": [
-              {
-                "conditionType": "ExitStatus",
-                "dynamicLocale": false,
-                "id": "64ee9ce01180874bb93e8640",
-                "status": [
-                  "Survived",
-                  "Runner"
-                ]
-              }
-            ],
-            "id": "64ee9df4496db64f9b7a4439"
-          },
-          "doNotResetIfCounterCompleted": false,
-          "dynamicLocale": false,
-          "globalQuestCounterId": "",
-          "id": "64ee9df4496db64f9b7a4437",
-          "index": 3,
-          "isNecessary": false,
-          "isResetOnConditionFailed": false,
-          "oneSessionOnly": false,
-          "parentId": "",
-          "type": "Completion",
-          "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "64eea65a403fc9681a4b7d61",
-              "target": "64eea6059878a0569d6ec98b"
-            }
-          ]
         }
       ],
       "AvailableForStart": [
@@ -98197,7 +96518,8 @@
                 "dynamicLocale": false,
                 "id": "64f732641a5f313cb144c20b",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -101240,18 +99562,7 @@
           "parentId": "",
           "type": "Discover",
           "value": 1,
-          "visibilityConditions": [
-            {
-              "conditionType": "CompleteCondition",
-              "id": "65818061afb99a95381caf63",
-              "target": "6575a524a39d2be74e620546"
-            },
-            {
-              "conditionType": "CompleteCondition",
-              "id": "658180699ee9544b197c9c34",
-              "target": "6575a62a62028c6d5cb43cb7"
-            }
-          ]
+          "visibilityConditions": []
         },
         {
           "conditionType": "FindItem",
@@ -101508,7 +99819,8 @@
                 "dynamicLocale": false,
                 "id": "65801b16fc87cfba118a95a2",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               }
             ],
@@ -101769,7 +100081,8 @@
                 "dynamicLocale": false,
                 "id": "65800474556edbe06a53482a",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               }
             ],
@@ -102049,7 +100362,8 @@
                 "dynamicLocale": false,
                 "id": "658009e218e29cccc834118e",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               }
             ],
@@ -104337,7 +102651,8 @@
                 "dynamicLocale": false,
                 "id": "65802c07ce6bd802ff2eadb3",
                 "status": [
-                  "Survived"
+                  "Survived",
+                  "Transit"
                 ]
               },
               {
@@ -111371,52 +109686,11 @@
             "tournament",
             "tournament_live"
           ],
-          "findInRaid": true,
-          "id": "6671de8abaf4e04a020c7323",
+          "id": "6671de23baf4e04a020c7322",
           "index": 0,
           "items": [
             {
-              "_id": "683ee16ecb22c3ad24121cc2",
-              "_tpl": "66507eabf5ddb0818b085b68",
-              "upd": {
-                "SpawnedInSession": true,
-                "StackObjectsCount": 1
-              }
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121cc3",
-              "_tpl": "66507eabf5ddb0818b085b68",
-              "upd": {
-                "SpawnedInSession": true,
-                "StackObjectsCount": 1
-              }
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121cc4",
-              "_tpl": "66507eabf5ddb0818b085b68",
-              "upd": {
-                "SpawnedInSession": true,
-                "StackObjectsCount": 1
-              }
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121cc5",
-              "_tpl": "66507eabf5ddb0818b085b68",
-              "upd": {
-                "SpawnedInSession": true,
-                "StackObjectsCount": 1
-              }
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121cc6",
-              "_tpl": "66507eabf5ddb0818b085b68",
-              "upd": {
-                "SpawnedInSession": true,
-                "StackObjectsCount": 1
-              }
-            },
-            {
-              "_id": "683ee16ecb22c3ad24121cc7",
+              "_id": "685971fb9a2f7148a31379b2",
               "_tpl": "66507eabf5ddb0818b085b68",
               "upd": {
                 "SpawnedInSession": true,
@@ -111424,10 +109698,11 @@
               }
             }
           ],
-          "target": "683ee16ecb22c3ad24121cc7",
-          "type": "Item",
-          "unknown": true,
-          "value": 6
+          "loyaltyLevel": 2,
+          "target": "685971fb9a2f7148a31379b2",
+          "traderId": 7,
+          "type": "ProductionScheme",
+          "unknown": true
         }
       ]
     },
@@ -149570,7 +147845,7 @@
           "index": 12,
           "isNecessary": false,
           "isResetOnConditionFailed": false,
-          "oneSessionOnly": true,
+          "oneSessionOnly": false,
           "parentId": "",
           "type": "Elimination",
           "value": 2,
