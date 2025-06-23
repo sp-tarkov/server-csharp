@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Generators;
+using SPTarkov.Server.Core.Generators.RepeatableQuestGeneration;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -24,6 +25,10 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class RepeatableQuestController(
     ISptLogger<RepeatableQuestChangeRequest> _logger,
+    EliminationQuestGenerator _eliminationQuestGenerator,
+    CompletionQuestGenerator _completionQuestGenerator,
+    ExplorationQuestGenerator _explorationQuestGenerator,
+    PickupQuestGenerator _pickupQuestGenerator,
     TimeUtil _timeUtil,
     MathUtil _mathUtil,
     RandomUtil _randomUtil,
@@ -33,7 +38,6 @@ public class RepeatableQuestController(
     LocalisationService _localisationService,
     EventOutputHolder _eventOutputHolder,
     PaymentService _paymentService,
-    RepeatableQuestGenerator _repeatableQuestGenerator,
     RepeatableQuestHelper _repeatableQuestHelper,
     QuestHelper _questHelper,
     DatabaseService _databaseService,
@@ -42,7 +46,7 @@ public class RepeatableQuestController(
 )
 {
     protected static readonly List<string> _questTypes = ["PickUp", "Exploration", "Elimination"];
-    protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
+    protected QuestConfig QuestConfig = _configServer.GetConfig<QuestConfig>();
 
     /// <summary>
     ///     Handle the client accepting a repeatable quest and starting it
@@ -152,7 +156,7 @@ public class RepeatableQuestController(
         repeatablesOfTypeInProfile.ChangeRequirement.Remove(changeRequest.QuestId);
 
         // Get config for this repeatable subtype (daily/weekly/scav)
-        var repeatableConfig = _questConfig.RepeatableQuests.FirstOrDefault(config =>
+        var repeatableConfig = QuestConfig.RepeatableQuests.FirstOrDefault(config =>
             config.Name == repeatablesOfTypeInProfile.Name
         );
 
@@ -374,7 +378,7 @@ public class RepeatableQuestController(
         var attempts = 0;
         while (attempts < maxAttempts && questTypePool.Types.Count > 0)
         {
-            newRepeatableQuest = _repeatableQuestGenerator.GenerateRepeatableQuest(
+            newRepeatableQuest = PickAndGenerateRandomRepeatableQuest(
                 sessionId,
                 pmcData.Info.Level.Value,
                 pmcData.TradersInfo,
@@ -402,6 +406,86 @@ public class RepeatableQuestController(
         }
 
         return newRepeatableQuest;
+    }
+
+    /// <summary>
+    ///     This method is called by /GetClientRepeatableQuests/ and creates one element of quest type format (see
+    ///     assets/database/templates/repeatableQuests.json).
+    ///     It randomly draws a quest type (currently Elimination, Completion or Exploration) as well as a trader who is
+    ///     providing the quest
+    /// </summary>
+    /// <param name="sessionId">Session id</param>
+    /// <param name="pmcLevel">Player's level for requested items and reward generation</param>
+    /// <param name="pmcTraderInfo">Players trader standing/rep levels</param>
+    /// <param name="questTypePool">Possible quest types pool</param>
+    /// <param name="repeatableConfig">Repeatable quest config</param>
+    /// <returns>RepeatableQuest</returns>
+    public RepeatableQuest? PickAndGenerateRandomRepeatableQuest(
+        string sessionId,
+        int pmcLevel,
+        Dictionary<string, TraderInfo> pmcTraderInfo,
+        QuestTypePool questTypePool,
+        RepeatableQuestConfig repeatableConfig
+    )
+    {
+        var questType = _randomUtil.DrawRandomFromList(questTypePool.Types).First();
+
+        // Get traders from whitelist and filter by quest type availability
+        var traders = repeatableConfig
+            .TraderWhitelist.Where(x => x.QuestTypes.Contains(questType))
+            .Select(x => x.TraderId)
+            // filter out locked traders
+            .Where(x => pmcTraderInfo[x].Unlocked.GetValueOrDefault(false))
+            .ToList();
+
+        var traderId = _randomUtil.DrawRandomFromList(traders).FirstOrDefault();
+
+        if (traderId is null)
+        {
+            // TODO: Localize me!
+            _logger.Error(
+                "Could not draw traderId from whitelist during repeatable quest generation"
+            );
+            return null;
+        }
+
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Generating operation task type: {questType} for {traderId}");
+        }
+
+        return questType switch
+        {
+            "Elimination" => _eliminationQuestGenerator.Generate(
+                sessionId,
+                pmcLevel,
+                traderId,
+                questTypePool,
+                repeatableConfig
+            ),
+            "Completion" => _completionQuestGenerator.Generate(
+                sessionId,
+                pmcLevel,
+                traderId,
+                questTypePool,
+                repeatableConfig
+            ),
+            "Exploration" => _explorationQuestGenerator.Generate(
+                sessionId,
+                pmcLevel,
+                traderId,
+                questTypePool,
+                repeatableConfig
+            ),
+            "Pickup" => _pickupQuestGenerator.Generate(
+                sessionId,
+                pmcLevel,
+                traderId,
+                questTypePool,
+                repeatableConfig
+            ),
+            _ => null,
+        };
     }
 
     /// <summary>
@@ -486,7 +570,7 @@ public class RepeatableQuestController(
         var currentTime = _timeUtil.GetTimeStamp();
 
         // Daily / weekly / Daily_Savage
-        foreach (var repeatableConfig in _questConfig.RepeatableQuests)
+        foreach (var repeatableConfig in QuestConfig.RepeatableQuests)
         {
             // Get daily/weekly data from profile, add empty object if missing
             var generatedRepeatables = GetRepeatableQuestSubTypeFromProfile(
@@ -544,7 +628,7 @@ public class RepeatableQuestController(
                 var lifeline = 0;
                 while (quest?.Id == null && questTypePool.Types.Count > 0)
                 {
-                    quest = _repeatableQuestGenerator.GenerateRepeatableQuest(
+                    quest = PickAndGenerateRandomRepeatableQuest(
                         sessionID,
                         pmcData.Info.Level ?? 0,
                         pmcData.TradersInfo,
@@ -848,7 +932,7 @@ public class RepeatableQuestController(
     {
         return new QuestTypePool
         {
-            Types = _cloner.Clone(repeatableConfig.Types),
+            Types = _cloner.Clone(repeatableConfig.Types)!,
             Pool = new QuestPool
             {
                 Exploration = new ExplorationPool

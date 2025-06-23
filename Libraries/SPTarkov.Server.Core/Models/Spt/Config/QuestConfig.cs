@@ -406,8 +406,8 @@ public record SpecificExits
     /// <summary>
     ///     Chance that an operational task is generated with a specific extract
     /// </summary>
-    [JsonPropertyName("probability")]
-    public required double Probability { get; set; }
+    [JsonPropertyName("chance")]
+    public required double Chance { get; set; }
 
     /// <summary>
     ///     Whitelist of specific extract types

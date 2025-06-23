@@ -9,10 +9,10 @@ public record QuestTypePool
     public Dictionary<string, object> ExtensionData { get; set; }
 
     [JsonPropertyName("types")]
-    public List<string>? Types { get; set; }
+    public required List<string> Types { get; set; }
 
     [JsonPropertyName("pool")]
-    public QuestPool? Pool { get; set; }
+    public required QuestPool Pool { get; set; }
 }
 
 public record QuestPool
@@ -21,13 +21,13 @@ public record QuestPool
     public Dictionary<string, object> ExtensionData { get; set; }
 
     [JsonPropertyName("Exploration")]
-    public ExplorationPool? Exploration { get; set; }
+    public required ExplorationPool Exploration { get; set; }
 
     [JsonPropertyName("Elimination")]
-    public EliminationPool? Elimination { get; set; }
+    public required EliminationPool Elimination { get; set; }
 
     [JsonPropertyName("Pickup")]
-    public ExplorationPool? Pickup { get; set; }
+    public required ExplorationPool Pickup { get; set; }
 }
 
 public record ExplorationPool

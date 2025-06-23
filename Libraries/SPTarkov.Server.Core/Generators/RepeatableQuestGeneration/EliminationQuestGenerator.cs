@@ -1,7 +1,5 @@
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Generators.RepeatableQuestGeneration;
 using SPTarkov.Server.Core.Helpers;
-using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -14,27 +12,24 @@ using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
 using SPTarkov.Server.Core.Utils.Json;
 using BodyParts = SPTarkov.Server.Core.Constants.BodyParts;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
-namespace SPTarkov.Server.Core.Generators;
+namespace SPTarkov.Server.Core.Generators.RepeatableQuestGeneration;
 
-[Obsolete("In the process of being removed, do NOT add any new logic!!")]
+// TODO: Refactor me!
 [Injectable]
-public class RepeatableQuestGenerator(
-    ISptLogger<RepeatableQuestGenerator> _logger,
-    RandomUtil _randomUtil,
-    HashUtil _hashUtil,
-    MathUtil _mathUtil,
-    RepeatableQuestHelper _repeatableQuestHelper,
-    ItemHelper _itemHelper,
-    RepeatableQuestRewardGenerator _repeatableQuestRewardGenerator,
-    DatabaseService _databaseService,
-    LocalisationService _localisationService,
-    ConfigServer _configServer,
-    ICloner _cloner,
-    // This is temporary while this is being refactored, eventually these will all live in the RepeatableQuestController.
-    CompletionQuestGenerator _completionQuestGenerator
-)
+public class EliminationQuestGenerator(
+    ISptLogger<EliminationQuestGenerator> logger,
+    RandomUtil randomUtil,
+    HashUtil hashUtil,
+    MathUtil mathUtil,
+    RepeatableQuestHelper repeatableQuestHelper,
+    ItemHelper itemHelper,
+    RepeatableQuestRewardGenerator repeatableQuestRewardGenerator,
+    DatabaseService databaseService,
+    LocalisationService localisationService,
+    ConfigServer configServer,
+    ICloner cloner
+) : IRepeatableQuestGenerator
 {
     /// <summary>
     /// Body parts to present to the client as opposed to the body part information in quest data.
@@ -47,87 +42,7 @@ public class RepeatableQuestGenerator(
         { BodyParts.Chest, [BodyParts.Chest, BodyParts.Stomach] },
     };
 
-    protected int _maxRandomNumberAttempts = 6;
-    protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
-
-    /// <summary>
-    ///     This method is called by /GetClientRepeatableQuests/ and creates one element of quest type format (see
-    ///     assets/database/templates/repeatableQuests.json).
-    ///     It randomly draws a quest type (currently Elimination, Completion or Exploration) as well as a trader who is
-    ///     providing the quest
-    /// </summary>
-    /// <param name="sessionId">Session id</param>
-    /// <param name="pmcLevel">Player's level for requested items and reward generation</param>
-    /// <param name="pmcTraderInfo">Players trader standing/rep levels</param>
-    /// <param name="questTypePool">Possible quest types pool</param>
-    /// <param name="repeatableConfig">Repeatable quest config</param>
-    /// <returns>RepeatableQuest</returns>
-    public RepeatableQuest? GenerateRepeatableQuest(
-        string sessionId,
-        int pmcLevel,
-        Dictionary<string, TraderInfo> pmcTraderInfo,
-        QuestTypePool questTypePool,
-        RepeatableQuestConfig repeatableConfig
-    )
-    {
-        var questType = _randomUtil.DrawRandomFromList(questTypePool.Types).First();
-
-        // Get traders from whitelist and filter by quest type availability
-        var traders = repeatableConfig
-            .TraderWhitelist.Where(x => x.QuestTypes.Contains(questType))
-            .Select(x => x.TraderId)
-            // filter out locked traders
-            .Where(x => pmcTraderInfo[x].Unlocked.GetValueOrDefault(false))
-            .ToList();
-
-        var traderId = _randomUtil.DrawRandomFromList(traders).FirstOrDefault();
-
-        if (traderId is null)
-        {
-            // TODO: Localize me!
-            _logger.Error(
-                "Could not draw traderId from whitelist during repeatable quest generation"
-            );
-            return null;
-        }
-
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"Generating operation task type: {questType} for {traderId}");
-        }
-
-        return questType switch
-        {
-            "Elimination" => GenerateEliminationQuest(
-                sessionId,
-                pmcLevel,
-                traderId,
-                questTypePool,
-                repeatableConfig
-            ),
-            "Completion" => _completionQuestGenerator.Generate(
-                sessionId,
-                pmcLevel,
-                traderId,
-                repeatableConfig
-            ),
-            "Exploration" => GenerateExplorationQuest(
-                sessionId,
-                pmcLevel,
-                traderId,
-                questTypePool,
-                repeatableConfig
-            ),
-            "Pickup" => GeneratePickupQuest(
-                sessionId,
-                pmcLevel,
-                traderId,
-                questTypePool,
-                repeatableConfig
-            ),
-            _ => null,
-        };
-    }
+    protected QuestConfig QuestConfig = configServer.GetConfig<QuestConfig>();
 
     /// <summary>
     ///     Generate a randomised Elimination quest
@@ -138,10 +53,10 @@ public class RepeatableQuestGenerator(
     /// <param name="questTypePool">Pools for quests (used to avoid redundant quests)</param>
     /// <param name="repeatableConfig">
     ///     The configuration for the repeatably kind (daily, weekly) as configured in QuestConfig
-    ///     for the requestd quest
+    ///     for the requested quest
     /// </param>
     /// <returns>Object of quest type format for "Elimination" (see assets/database/templates/repeatableQuests.json)</returns>
-    protected RepeatableQuest GenerateEliminationQuest(
+    public RepeatableQuest? Generate(
         string sessionId,
         int pmcLevel,
         string traderId,
@@ -151,29 +66,29 @@ public class RepeatableQuestGenerator(
     {
         var rand = new Random();
 
-        var eliminationConfig = _repeatableQuestHelper.GetEliminationConfigByPmcLevel(
+        var eliminationConfig = repeatableQuestHelper.GetEliminationConfigByPmcLevel(
             pmcLevel,
             repeatableConfig
         );
         var locationsConfig = repeatableConfig.Locations;
         var targetsConfig = new ProbabilityObjectArray<string, BossInfo>(
-            _mathUtil,
-            _cloner,
+            mathUtil,
+            cloner,
             eliminationConfig.Targets
         );
         var bodyPartsConfig = new ProbabilityObjectArray<string, List<string>>(
-            _mathUtil,
-            _cloner,
+            mathUtil,
+            cloner,
             eliminationConfig.BodyParts
         );
         var weaponCategoryRequirementConfig = new ProbabilityObjectArray<string, List<string>>(
-            _mathUtil,
-            _cloner,
+            mathUtil,
+            cloner,
             eliminationConfig.WeaponCategoryRequirements
         );
         var weaponRequirementConfig = new ProbabilityObjectArray<string, List<string>>(
-            _mathUtil,
-            _cloner,
+            mathUtil,
+            cloner,
             eliminationConfig.WeaponRequirements
         );
 
@@ -233,7 +148,7 @@ public class RepeatableQuestGenerator(
         if (
             locations.Contains("any")
             && (
-                _randomUtil.GetChance100(eliminationConfig.SpecificLocationChance)
+                randomUtil.GetChance100(eliminationConfig.SpecificLocationChance)
                 || locations.Count <= 1
             )
         )
@@ -248,7 +163,7 @@ public class RepeatableQuestGenerator(
             if (locations.Count > 0)
             {
                 // Get name of location we want elimination to occur on
-                locationKey = _randomUtil.DrawRandomFromList(locations).FirstOrDefault();
+                locationKey = randomUtil.DrawRandomFromList(locations).FirstOrDefault();
 
                 // Get a pool of locations the chosen bot type can be eliminated on
                 if (
@@ -258,7 +173,7 @@ public class RepeatableQuestGenerator(
                     )
                 )
                 {
-                    _logger.Warning(
+                    logger.Warning(
                         $"Bot to kill: {botTypeToEliminate} not found in elimination dict"
                     );
                 }
@@ -279,8 +194,8 @@ public class RepeatableQuestGenerator(
             else
             {
                 // Never should reach this if everything works out
-                _logger.Error(
-                    _localisationService.GetText(
+                logger.Error(
+                    localisationService.GetText(
                         "quest-repeatable_elimination_generation_failed_please_report"
                     )
                 );
@@ -290,13 +205,13 @@ public class RepeatableQuestGenerator(
         // draw the target body part and calculate the difficulty factor
         var bodyPartsToClient = new List<string>();
         var bodyPartDifficulty = 0d;
-        if (_randomUtil.GetChance100(eliminationConfig.BodyPartChance))
+        if (randomUtil.GetChance100(eliminationConfig.BodyPartChance))
         {
             // if we add a bodyPart condition, we draw randomly one or two parts
             // each bodyPart of the BODYPARTS ProbabilityObjectArray includes the string(s) which need to be presented to the client in ProbabilityObjectArray.data
             // e.g. we draw "Arms" from the probability array but must present ["LeftArm", "RightArm"] to the client
             bodyPartsToClient = [];
-            var bodyParts = bodyPartsConfig.Draw(_randomUtil.RandInt(1, 3), false);
+            var bodyParts = bodyPartsConfig.Draw(randomUtil.RandInt(1, 3), false);
             double probability = 0;
             foreach (var bodyPart in bodyParts)
             {
@@ -326,7 +241,7 @@ public class RepeatableQuestGenerator(
         if (targetsConfig.Data(botTypeToEliminate)?.IsBoss ?? false)
         {
             // Get all boss spawn information
-            var bossSpawns = _databaseService
+            var bossSpawns = databaseService
                 .GetLocations()
                 .GetDictionary()
                 .Select(x => x.Value)
@@ -349,7 +264,7 @@ public class RepeatableQuestGenerator(
         }
 
         if (
-            _randomUtil.GetChance100(eliminationConfig.DistanceProbability)
+            randomUtil.GetChance100(eliminationConfig.DistanceProbability)
             && isDistanceRequirementAllowed
         )
         {
@@ -368,7 +283,7 @@ public class RepeatableQuestGenerator(
         }
 
         string? allowedWeaponsCategory = null;
-        if (_randomUtil.GetChance100(eliminationConfig.WeaponCategoryRequirementProbability))
+        if (randomUtil.GetChance100(eliminationConfig.WeaponCategoryRequirementProbability))
         {
             // Filter out close range weapons from far distance requirement
             if (distance > 50)
@@ -406,10 +321,10 @@ public class RepeatableQuestGenerator(
         {
             var weaponRequirement = weaponRequirementConfig.Draw(1, false);
             var specificAllowedWeaponCategory = weaponRequirementConfig.Data(weaponRequirement[0]);
-            var allowedWeapons = _itemHelper.GetItemTplsOfBaseType(
+            var allowedWeapons = itemHelper.GetItemTplsOfBaseType(
                 specificAllowedWeaponCategory[0]
             );
-            allowedWeapon = _randomUtil.GetArrayValue(allowedWeapons);
+            allowedWeapon = randomUtil.GetArrayValue(allowedWeapons);
         }
 
         // Draw how many npm kills are required
@@ -434,9 +349,9 @@ public class RepeatableQuestGenerator(
         // Aforementioned issue makes it a bit crazy since now all easier quests give significantly lower rewards than Completion / Exploration
         // I therefore moved the mapping a bit up (from 0.2...1 to 0.5...2) so that normal difficulty still gives good reward and having the
         // crazy maximum difficulty will lead to a higher difficulty reward gain factor than 1
-        var difficulty = _mathUtil.MapToRange(curDifficulty, minDifficulty, maxDifficulty, 0.5, 2);
+        var difficulty = mathUtil.MapToRange(curDifficulty, minDifficulty, maxDifficulty, 0.5, 2);
 
-        var quest = _repeatableQuestHelper.GenerateRepeatableTemplate(
+        var quest = repeatableQuestHelper.GenerateRepeatableTemplate(
             RepeatableQuestType.Elimination,
             traderId,
             repeatableConfig.Side,
@@ -450,7 +365,7 @@ public class RepeatableQuestGenerator(
         }
 
         var availableForFinishCondition = quest.Conditions.AvailableForFinish[0];
-        availableForFinishCondition.Counter.Id = _hashUtil.Generate();
+        availableForFinishCondition.Counter.Id = hashUtil.Generate();
         availableForFinishCondition.Counter.Conditions = [];
 
         // Only add specific location condition if specific map selected
@@ -472,10 +387,12 @@ public class RepeatableQuestGenerator(
             )
         );
         availableForFinishCondition.Value = desiredKillCount;
-        availableForFinishCondition.Id = _hashUtil.Generate();
-        quest.Location = GetQuestLocationByMapId(locationKey);
+        availableForFinishCondition.Id = hashUtil.Generate();
 
-        quest.Rewards = _repeatableQuestRewardGenerator.GenerateReward(
+        // Get the quest location, default to any if none exist
+        quest.Location = repeatableQuestHelper.GetQuestLocationByMapId(locationKey) ?? "any";
+
+        quest.Rewards = repeatableQuestRewardGenerator.GenerateReward(
             pmcLevel,
             Math.Min(difficulty, 1),
             traderId,
@@ -501,7 +418,7 @@ public class RepeatableQuestGenerator(
     {
         if (targetsConfig.Data(targetKey)?.IsBoss ?? false)
         {
-            return _randomUtil.RandInt(
+            return randomUtil.RandInt(
                 eliminationConfig.MinBossKills,
                 eliminationConfig.MaxBossKills + 1
             );
@@ -509,13 +426,13 @@ public class RepeatableQuestGenerator(
 
         if (targetsConfig.Data(targetKey)?.IsPmc ?? false)
         {
-            return _randomUtil.RandInt(
+            return randomUtil.RandInt(
                 eliminationConfig.MinPmcKills,
                 eliminationConfig.MaxPmcKills + 1
             );
         }
 
-        return _randomUtil.RandInt(eliminationConfig.MinKills, eliminationConfig.MaxKills + 1);
+        return randomUtil.RandInt(eliminationConfig.MinKills, eliminationConfig.MaxKills + 1);
     }
 
     protected double DifficultyWeighing(
@@ -540,7 +457,7 @@ public class RepeatableQuestGenerator(
     {
         return new QuestConditionCounterCondition
         {
-            Id = _hashUtil.Generate(),
+            Id = hashUtil.Generate(),
             DynamicLocale = true,
             Target = new ListOrT<string>(location, null),
             ConditionType = "Location",
@@ -566,7 +483,7 @@ public class RepeatableQuestGenerator(
     {
         var killConditionProps = new QuestConditionCounterCondition
         {
-            Id = _hashUtil.Generate(),
+            Id = hashUtil.Generate(),
             DynamicLocale = true,
             Target = new ListOrT<string>(null, target), // e,g, "AnyPmc"
             Value = 1,
@@ -612,240 +529,5 @@ public class RepeatableQuestGenerator(
         }
 
         return killConditionProps;
-    }
-
-    /// <summary>
-    ///     Generates a valid Exploration quest
-    /// </summary>
-    /// <param name="sessionId">session id for the quest</param>
-    /// <param name="pmcLevel">player's level for reward generation</param>
-    /// <param name="traderId">trader from which the quest will be provided</param>
-    /// <param name="questTypePool">Pools for quests (used to avoid redundant quests)</param>
-    /// <param name="repeatableConfig">
-    ///     The configuration for the repeatably kind (daily, weekly) as configured in QuestConfig
-    ///     for the requested quest
-    /// </param>
-    /// <returns>object of quest type format for "Exploration" (see assets/database/templates/repeatableQuests.json)</returns>
-    protected RepeatableQuest? GenerateExplorationQuest(
-        string sessionId,
-        int pmcLevel,
-        string traderId,
-        QuestTypePool questTypePool,
-        RepeatableQuestConfig repeatableConfig
-    )
-    {
-        var explorationConfig = repeatableConfig.QuestConfig.Exploration;
-        var requiresSpecificExtract =
-            _randomUtil.Random.NextDouble()
-            < repeatableConfig.QuestConfig.Exploration.SpecificExits.Probability;
-
-        if (questTypePool.Pool.Exploration.Locations.Count == 0)
-        {
-            // there are no more locations left for exploration; delete it as a possible quest type
-            questTypePool.Types = questTypePool.Types.Where(t => t != "Exploration").ToList();
-            return null;
-        }
-
-        // If location drawn is factory, it's possible to either get factory4_day and factory4_night or only one
-        // of the both
-        var locationKey = _randomUtil.DrawRandomFromDict(questTypePool.Pool.Exploration.Locations)[
-            0
-        ];
-        var locationTarget = questTypePool.Pool.Exploration.Locations[locationKey];
-
-        // Remove the location from the available pool
-        questTypePool.Pool.Exploration.Locations.Remove(locationKey);
-
-        // Different max extract count when specific extract needed
-        var exitTimesMax = requiresSpecificExtract
-            ? explorationConfig.MaximumExtractsWithSpecificExit
-            : explorationConfig.MaximumExtracts + 1;
-        var numExtracts = _randomUtil.RandInt(1, exitTimesMax);
-
-        var quest = _repeatableQuestHelper.GenerateRepeatableTemplate(
-            RepeatableQuestType.Exploration,
-            traderId,
-            repeatableConfig.Side,
-            sessionId
-        );
-
-        var exitStatusCondition = new QuestConditionCounterCondition
-        {
-            Id = _hashUtil.Generate(),
-            DynamicLocale = true,
-            Status = ["Survived"],
-            ConditionType = "ExitStatus",
-        };
-        var locationCondition = new QuestConditionCounterCondition
-        {
-            Id = _hashUtil.Generate(),
-            DynamicLocale = true,
-            Target = new ListOrT<string>(locationTarget, null),
-            ConditionType = "Location",
-        };
-
-        quest.Conditions.AvailableForFinish[0].Counter.Id = _hashUtil.Generate();
-        quest.Conditions.AvailableForFinish[0].Counter.Conditions =
-        [
-            exitStatusCondition,
-            locationCondition,
-        ];
-        quest.Conditions.AvailableForFinish[0].Value = numExtracts;
-        quest.Conditions.AvailableForFinish[0].Id = _hashUtil.Generate();
-        quest.Location = GetQuestLocationByMapId(locationKey.ToString());
-
-        if (requiresSpecificExtract)
-        {
-            // Fetch extracts for the requested side
-            var mapExits = GetLocationExitsForSide(locationKey.ToString(), repeatableConfig.Side);
-
-            // Only get exits that have a greater than 0% chance to spawn
-            var exitPool = mapExits.Where(exit => exit.Chance > 0).ToList();
-
-            // Exclude exits with a requirement to leave (e.g. car extracts)
-            var possibleExits = exitPool
-                .Where(exit =>
-                    exit.PassageRequirement is not null
-                    || repeatableConfig.QuestConfig.Exploration.SpecificExits.PassageRequirementWhitelist.Contains(
-                        "PassageRequirement"
-                    )
-                )
-                .ToList();
-
-            if (possibleExits.Count == 0)
-            {
-                _logger.Error(
-                    $"Unable to choose specific exit on map: {locationKey}, Possible exit pool was empty"
-                );
-            }
-            else
-            {
-                // Choose one of the exits we filtered above
-                var chosenExit = _randomUtil.DrawRandomFromList(possibleExits)[0];
-
-                // Create a quest condition to leave raid via chosen exit
-                var exitCondition = GenerateExplorationExitCondition(chosenExit);
-                quest.Conditions.AvailableForFinish[0].Counter.Conditions.Add(exitCondition);
-            }
-        }
-
-        // Difficulty for exploration goes from 1 extract to maxExtracts
-        // Difficulty for reward goes from 0.2...1 -> map
-        var difficulty = _mathUtil.MapToRange(
-            numExtracts,
-            1,
-            explorationConfig.MaximumExtracts,
-            0.2,
-            1
-        );
-        quest.Rewards = _repeatableQuestRewardGenerator.GenerateReward(
-            pmcLevel,
-            difficulty,
-            traderId,
-            repeatableConfig,
-            explorationConfig
-        );
-
-        return quest;
-    }
-
-    /// <summary>
-    ///     Filter a maps exits to just those for the desired side
-    /// </summary>
-    /// <param name="locationKey">Map id (e.g. factory4_day)</param>
-    /// <param name="playerGroup">Pmc/Scav</param>
-    /// <returns>List of Exit objects</returns>
-    protected List<Exit> GetLocationExitsForSide(string locationKey, PlayerGroup playerGroup)
-    {
-        var mapExtracts = _databaseService.GetLocation(locationKey.ToLower()).AllExtracts;
-
-        return mapExtracts.Where(exit => exit.Side == Enum.GetName(playerGroup)).ToList();
-    }
-
-    protected RepeatableQuest GeneratePickupQuest(
-        string sessionId,
-        int pmcLevel,
-        string traderId,
-        QuestTypePool questTypePool,
-        RepeatableQuestConfig repeatableConfig
-    )
-    {
-        var pickupConfig = repeatableConfig.QuestConfig.Pickup;
-
-        var quest = _repeatableQuestHelper.GenerateRepeatableTemplate(
-            RepeatableQuestType.Pickup,
-            traderId,
-            repeatableConfig.Side,
-            sessionId
-        );
-
-        var itemTypeToFetchWithCount = _randomUtil.GetArrayValue(
-            pickupConfig.ItemTypeToFetchWithMaxCount
-        );
-        var itemCountToFetch = _randomUtil.RandInt(
-            itemTypeToFetchWithCount.MinimumPickupCount.Value,
-            itemTypeToFetchWithCount.MaximumPickupCount + 1
-        );
-        // Choose location - doesnt seem to work for anything other than 'any'
-        // var locationKey: string = this.randomUtil.drawRandomFromDict(questTypePool.pool.Pickup.locations)[0];
-        // var locationTarget = questTypePool.pool.Pickup.locations[locationKey];
-
-        var findCondition = quest.Conditions.AvailableForFinish.FirstOrDefault(x =>
-            x.ConditionType == "FindItem"
-        );
-        findCondition.Target = new ListOrT<string>([itemTypeToFetchWithCount.ItemType], null);
-        findCondition.Value = itemCountToFetch;
-
-        var counterCreatorCondition = quest.Conditions.AvailableForFinish.FirstOrDefault(x =>
-            x.ConditionType == "CounterCreator"
-        );
-        // var locationCondition = counterCreatorCondition._props.counter.conditions.find(x => x._parent === "Location");
-        // (locationCondition._props as ILocationConditionProps).target = [...locationTarget];
-
-        var equipmentCondition = counterCreatorCondition.Counter.Conditions.FirstOrDefault(x =>
-            x.ConditionType == "Equipment"
-        );
-        equipmentCondition.EquipmentInclusive =
-        [
-            [itemTypeToFetchWithCount.ItemType],
-        ];
-
-        // Add rewards
-        quest.Rewards = _repeatableQuestRewardGenerator.GenerateReward(
-            pmcLevel,
-            1,
-            traderId,
-            repeatableConfig,
-            pickupConfig
-        );
-
-        return quest;
-    }
-
-    /// <summary>
-    ///     Convert a location into an quest code can read (e.g. factory4_day into 55f2d3fd4bdc2d5f408b4567)
-    /// </summary>
-    /// <param name="locationKey">e.g factory4_day</param>
-    /// <returns>guid</returns>
-    protected string GetQuestLocationByMapId(string locationKey)
-    {
-        return _questConfig.LocationIdMap[locationKey];
-    }
-
-    /// <summary>
-    ///     Exploration repeatable quests can specify a required extraction point.
-    ///     This method creates the according object which will be appended to the conditions list
-    /// </summary>
-    /// <param name="exit">The exit name to generate the condition for</param>
-    /// <returns>Exit condition</returns>
-    protected QuestConditionCounterCondition GenerateExplorationExitCondition(Exit exit)
-    {
-        return new QuestConditionCounterCondition
-        {
-            Id = _hashUtil.Generate(),
-            DynamicLocale = true,
-            ExitName = exit.Name,
-            ConditionType = "ExitName",
-        };
     }
 }

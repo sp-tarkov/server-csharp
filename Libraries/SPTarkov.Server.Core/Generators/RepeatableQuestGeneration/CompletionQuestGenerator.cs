@@ -3,6 +3,7 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Repeatable;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -19,13 +20,16 @@ public class CompletionQuestGenerator(
     DatabaseService databaseService,
     SeasonalEventService seasonalEventService,
     LocalisationService localisationService,
+    ConfigServer configServer,
     RandomUtil randomUtil,
     MathUtil mathUtil,
     HashUtil hashUtil,
     ItemHelper itemHelper
-)
+) : IRepeatableQuestGenerator
 {
     protected const int MaxRandomNumberAttempts = 6;
+
+    protected QuestConfig QuestConfig = configServer.GetConfig<QuestConfig>();
 
     /// <summary>
     ///     Generates a valid Completion quest
@@ -42,6 +46,7 @@ public class CompletionQuestGenerator(
         string sessionId,
         int pmcLevel,
         string traderId,
+        QuestTypePool questTypePool,
         RepeatableQuestConfig repeatableConfig
     )
     {

@@ -19,7 +19,7 @@ public class RepeatableQuestHelper(
     ConfigServer configServer
 )
 {
-    protected QuestConfig _questConfig = configServer.GetConfig<QuestConfig>();
+    protected QuestConfig QuestConfig = configServer.GetConfig<QuestConfig>();
 
     /// <summary>
     ///     Get the relevant elimination config based on the current players PMC level
@@ -45,7 +45,7 @@ public class RepeatableQuestHelper(
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     public Dictionary<string, string> GetRepeatableQuestTemplatesByGroup(PlayerGroup playerGroup)
     {
-        var templates = _questConfig.RepeatableQuestTemplates;
+        var templates = QuestConfig.RepeatableQuestTemplates;
 
         return playerGroup switch
         {
@@ -195,5 +195,22 @@ public class RepeatableQuestHelper(
         questData.QuestStatus.QId = questData.Id; // Needs to match quest id
 
         return questData;
+    }
+
+    /// <summary>
+    ///     Convert a raw location string into a location code can read (e.g. factory4_day into 55f2d3fd4bdc2d5f408b4567)
+    /// </summary>
+    /// <param name="locationKey">e.g. factory4_day</param>
+    /// <returns>guid</returns>
+    public string? GetQuestLocationByMapId(string locationKey)
+    {
+        if (!QuestConfig.LocationIdMap.TryGetValue(locationKey, out var locationId))
+        {
+            // TODO - localize me!
+            logger.Error($"No location in LocationIdMap found for key {locationKey}");
+            return null;
+        }
+
+        return locationId;
     }
 }

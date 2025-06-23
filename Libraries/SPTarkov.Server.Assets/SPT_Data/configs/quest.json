@@ -395,7 +395,7 @@
                     "maxExtractsWithSpecificExit": 2,
                     "possibleSkillRewards": ["Endurance", "Strength", "Vitality"],
                     "specificExits": {
-                        "probability": 0.2,
+                        "chance": 20,
                         "passageRequirementWhitelist": [
                             "None",
                             "TransferItem",
@@ -1194,7 +1194,7 @@
                     "maxExtractsWithSpecificExit": 4,
                     "possibleSkillRewards": ["Endurance", "Strength", "Vitality"],
                     "specificExits": {
-                        "probability": 0.1,
+                        "chance": 10,
                         "passageRequirementWhitelist": [
                             "None",
                             "TransferItem",
@@ -1947,7 +1947,7 @@
                     "maxExtracts": 3,
                     "maxExtractsWithSpecificExit": 1,
                     "specificExits": {
-                        "probability": 0.2,
+                        "chance": 20,
                         "passageRequirementWhitelist": ["None", "WorldEvent", "Train", "Reference", "Empty"]
                     }
                 },
