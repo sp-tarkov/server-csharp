@@ -306,8 +306,7 @@ public class EliminationQuestGenerator(
 
         if (eliminationConfig is null)
         {
-            // TODO - Localize me!
-            logger.Error("EliminationConfig not found");
+            logger.Error(localisationService.GetText("repeatable-elimination-config-not-found"));
             return null;
         }
 
@@ -399,8 +398,7 @@ public class EliminationQuestGenerator(
                 return true;
             // We're not using a specific location and locations didn't contain any.
             case false:
-                // TODO - Localize me!
-                logger.Error("We're not targeting a specific location and `any` was not found in locations");
+                logger.Error(localisationService.GetText("repeatable-elimination-any-not-found"));
                 locationKey = null;
                 return false;
         }
@@ -653,8 +651,7 @@ public class EliminationQuestGenerator(
 
         if (specificAllowedWeaponCategory?[0] is null)
         {
-            // TODO: Localize me!
-            logger.Error("Specific allowed weapon categories are null");
+            logger.Error(localisationService.GetText("repeatable-elimination-specific-weapon-null"));
             return null;
         }
 
