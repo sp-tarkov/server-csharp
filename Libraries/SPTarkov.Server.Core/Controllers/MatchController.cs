@@ -2,6 +2,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Match;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Services;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -99,7 +100,8 @@ public class MatchController(
         request.IsNightRaid = _weatherHelper.IsNightTime(request.TimeVariant, request.Location);
 
         // Store request data for access during bot generation
-        _profileActivityService.GetProfileActivityRaidData(sessionId).RaidConfiguration = request;
+        ProfileActivityRaidData raidData = _profileActivityService.GetProfileActivityRaidData(sessionId);
+        if (raidData != null) raidData.RaidConfiguration = request;
 
         // TODO: add code to strip PMC of equipment now they've started the raid
 

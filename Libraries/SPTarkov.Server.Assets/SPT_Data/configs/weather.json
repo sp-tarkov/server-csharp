@@ -101,7 +101,7 @@
         {
             "seasonType": 0,
             "name": "SUMMER",
-            "startDay": "2",
+            "startDay": "23",
             "startMonth": "6",
             "endDay": "15",
             "endMonth": "10"
@@ -151,7 +151,7 @@
             "name": "SPRING",
             "startDay": "20",
             "startMonth": "3",
-            "endDay": "2",
+            "endDay": "23",
             "endMonth": "6"
         },
         {
