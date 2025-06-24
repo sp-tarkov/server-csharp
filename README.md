@@ -33,6 +33,8 @@ This project has been built in [Visual Studio](https://visualstudio.microsoft.co
 Minimum required Visual Studio version is `17.13.5`
 Minimum required Rider version is `2024.3`
 
+[CSharpier](https://csharpier.com/docs/Editors) plugin is requirement for autoformatting. It is available for either of the above IDE's.
+
 You only need one of the above.
 
 ### Initial Setup
