@@ -100,8 +100,11 @@ public class MatchController(
         request.IsNightRaid = _weatherHelper.IsNightTime(request.TimeVariant, request.Location);
 
         // Store request data for access during bot generation
-        ProfileActivityRaidData raidData = _profileActivityService.GetProfileActivityRaidData(sessionId);
-        if (raidData != null) raidData.RaidConfiguration = request;
+        ProfileActivityRaidData raidData = _profileActivityService.GetProfileActivityRaidData(
+            sessionId
+        );
+        if (raidData != null)
+            raidData.RaidConfiguration = request;
 
         // TODO: add code to strip PMC of equipment now they've started the raid
 
