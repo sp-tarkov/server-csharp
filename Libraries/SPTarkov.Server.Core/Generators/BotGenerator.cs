@@ -668,43 +668,29 @@ public class BotGenerator(
     }
 
     /// <summary>
-    ///     Sum up body parts max hp values, return the bodyPart collection with the lowest value
+    ///     Get the bodyPart with the lowest hp
     /// </summary>
-    /// <param name="bodies">Body parts to sum up</param>
-    /// <returns>Lowest hp collection</returns>
-    public BodyPart? GetLowestHpBody(List<BodyPart> bodies)
+    /// <param name="bodyParts">Body parts</param>
+    /// <returns>Part with the lowest hp</returns>
+    public BodyPart? GetLowestHpBody(List<BodyPart> bodyParts)
     {
-        if (bodies.Count == 0)
+        if (bodyParts.Count == 0)
         {
             return null;
         }
 
-        BodyPart result = new();
-        var props = result.GetType().GetProperties();
-        double? currentHighest = double.MaxValue;
-        foreach (var bodyPart in bodies)
-        {
-            double? hpTotal = 0;
-
-            foreach (
-                var prop in props.Where(property =>
-                    !property.Name.Equals("extensiondata", StringComparison.OrdinalIgnoreCase)
-                )
-            )
+        return bodyParts.Select(bp => new
             {
-                var value = (MinMax<double>)prop.GetValue(bodyPart);
-                hpTotal += value.Max;
-            }
-
-            if (hpTotal < currentHighest)
-            {
-                // Found collection with lower value that previous, use it
-                currentHighest = hpTotal;
-                result = bodyPart;
-            }
-        }
-
-        return result;
+                BodyPart = bp,
+                TotalMaxHp = bp.Head.Max +
+                             bp.Chest.Max +
+                             bp.LeftArm.Max +
+                             bp.RightArm.Max +
+                             bp.LeftLeg.Max +
+                             bp.RightLeg.Max
+            })
+            .OrderBy(x => x.TotalMaxHp)
+            .FirstOrDefault()?.BodyPart;
     }
 
     /// <summary>
