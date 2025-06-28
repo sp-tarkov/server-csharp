@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
@@ -76,8 +77,7 @@ public class TradeHelper(
                     var itemPurchased = offerWithItem.Items.FirstOrDefault();
 
                     // Ensure purchase does not exceed trader item limit
-                    var assortHasBuyRestrictions = _itemHelper.HasBuyRestrictions(itemPurchased);
-                    if (assortHasBuyRestrictions)
+                    if (itemPurchased.HasBuyRestrictions())
                     {
                         CheckPurchaseIsWithinTraderItemLimit(
                             sessionID,
@@ -170,8 +170,7 @@ public class TradeHelper(
                     );
 
                     // Ensure purchase does not exceed trader item limit
-                    var assortHasBuyRestrictions = _itemHelper.HasBuyRestrictions(itemPurchased);
-                    if (assortHasBuyRestrictions)
+                    if (itemPurchased.HasBuyRestrictions())
                     // Will throw error if check fails
                     {
                         CheckPurchaseIsWithinTraderItemLimit(
@@ -195,7 +194,7 @@ public class TradeHelper(
                     // Decrement trader item count
                     itemPurchased.Upd.StackObjectsCount -= buyCount;
 
-                    if (assortHasBuyRestrictions)
+                    if (itemPurchased.HasBuyRestrictions())
                     {
                         var itemPurchaseDat = new PurchaseDetails
                         {

@@ -500,22 +500,6 @@ public class ItemHelper(
     }
 
     /// <summary>
-    ///     Update items upd.StackObjectsCount to be 1 if its upd is missing or StackObjectsCount is undefined
-    /// </summary>
-    /// <param name="item">Item to update</param>
-    /// <returns>Fixed item</returns>
-    public Item FixItemStackCount(Item item)
-    {
-        // Ensure item has 'Upd' object
-        item.Upd ??= new Upd { StackObjectsCount = 1 };
-
-        // Ensure item has 'StackObjectsCount' property
-        item.Upd.StackObjectsCount ??= 1;
-
-        return item;
-    }
-
-    /// <summary>
     ///     Get cloned copy of all item data from items.json
     /// </summary>
     /// <returns>List of TemplateItem objects</returns>
@@ -808,17 +792,6 @@ public class ItemHelper(
     }
 
     /// <summary>
-    /// Check if the passed in item has buy count restrictions
-    /// </summary>
-    /// <param name="itemToCheck">Item to check</param>
-    /// <returns>true if it has buy restrictions</returns>
-    public bool HasBuyRestrictions(Item itemToCheck)
-    {
-        return itemToCheck.Upd?.BuyRestrictionCurrent is not null
-            && itemToCheck.Upd?.BuyRestrictionMax is not null;
-    }
-
-    /// <summary>
     ///     Checks if the passed template id is a dog tag.
     /// </summary>
     /// <param name="tpl">Template id to check.</param>
@@ -826,23 +799,6 @@ public class ItemHelper(
     public bool IsDogtag(string tpl)
     {
         return _dogTagTpls.Contains(tpl);
-    }
-
-    /// <summary>
-    ///     Gets the identifier for a child using slotId, locationX and locationY.
-    /// </summary>
-    /// <param name="item">Item.</param>
-    /// <returns>SlotId OR slotid, locationX, locationY.</returns>
-    public string GetChildId(Item item)
-    {
-        if (item.Location is null)
-        {
-            return item.SlotId;
-        }
-
-        var LocationTyped = (ItemLocation)item.Location;
-
-        return $"{item.SlotId},{LocationTyped.X},{LocationTyped.Y}";
     }
 
     /// <summary>
@@ -1303,22 +1259,6 @@ public class ItemHelper(
         }
 
         return DoesItemOrParentsIdMatch(item.Parent, tplsToCheck);
-    }
-
-    /// <summary>
-    ///     Check if item is quest item
-    /// </summary>
-    /// <param name="tpl">Items tpl to check quest status of</param>
-    /// <returns>true if item is flagged as quest item</returns>
-    public bool IsQuestItem(string tpl)
-    {
-        var itemDetails = GetItem(tpl);
-        if (itemDetails.Key && itemDetails.Value.Properties.QuestItem.GetValueOrDefault(false))
-        {
-            return true;
-        }
-
-        return false;
     }
 
     /// <summary>

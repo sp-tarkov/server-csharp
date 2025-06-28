@@ -23,7 +23,6 @@ public class BotEquipmentModGenerator(
     ISptLogger<BotEquipmentModGenerator> _logger,
     HashUtil _hashUtil,
     RandomUtil _randomUtil,
-    ProbabilityHelper _probabilityHelper,
     DatabaseService _databaseService,
     ItemHelper _itemHelper,
     BotEquipmentFilterService _botEquipmentFilterService,
@@ -1103,7 +1102,7 @@ public class BotEquipmentModGenerator(
             return ModSpawn.SPAWN;
         }
 
-        var spawnMod = _probabilityHelper.RollChance(
+        var spawnMod = _randomUtil.RollChance(
             modSpawnChances.GetValueOrDefault(modSlotName.ToLower())
         );
         if (

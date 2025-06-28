@@ -238,7 +238,7 @@ public class PaymentService(
             }
 
             // Item is not in the stash
-            if (!_inventoryHelper.IsItemInStash(pmcData, item))
+            if (!pmcData.IsItemInStash(item))
             {
                 continue;
             }

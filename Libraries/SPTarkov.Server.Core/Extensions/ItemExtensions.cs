@@ -223,5 +223,58 @@ namespace SPTarkov.Server.Core.Extensions
 
             return list;
         }
+        
+        /// Check if the passed in item has buy count restrictions
+        /// </summary>
+        /// <param name="itemToCheck">Item to check</param>
+        /// <returns>true if it has buy restrictions</returns>
+        public static bool HasBuyRestrictions(this Item itemToCheck)
+        {
+            return itemToCheck.Upd?.BuyRestrictionCurrent is not null
+                && itemToCheck.Upd?.BuyRestrictionMax is not null;
+        }
+
+        /// <summary>
+        ///     Gets the identifier for a child using slotId, locationX and locationY.
+        /// </summary>
+        /// <param name="item">Item.</param>
+        /// <returns>SlotId OR slotid, locationX, locationY.</returns>
+        public static string GetChildId(this Item item)
+        {
+            if (item.Location is null)
+            {
+                return item.SlotId;
+            }
+
+            var LocationTyped = (ItemLocation)item.Location;
+
+            return $"{item.SlotId},{LocationTyped.X},{LocationTyped.Y}";
+        }
+
+        public static bool IsVertical(this ItemLocation itemLocation)
+        {
+            var castValue = itemLocation.R.ToString();
+            return castValue == "1"
+                || string.Equals(castValue, "vertical", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(
+                    itemLocation.Rotation?.ToString(),
+                    "vertical",
+                    StringComparison.OrdinalIgnoreCase
+                );
+        }
+
+        /// <summary>
+        ///     Update items upd.StackObjectsCount to be 1 if its upd is missing or StackObjectsCount is undefined
+        /// </summary>
+        /// <param name="item">Item to update</param>
+        /// <returns>Fixed item</returns>
+        public static void FixItemStackCount(this Item item)
+        {
+            // Ensure item has 'Upd' object
+            item.Upd ??= new Upd { StackObjectsCount = 1 };
+
+            // Ensure item has 'StackObjectsCount' property
+            item.Upd.StackObjectsCount ??= 1;
+        }
     }
 }

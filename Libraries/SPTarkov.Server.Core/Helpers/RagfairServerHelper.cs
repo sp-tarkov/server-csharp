@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -75,7 +76,7 @@ public class RagfairServerHelper(
         }
 
         // Skip quest items
-        if (blacklistConfig.EnableQuestList && itemHelper.IsQuestItem(itemDetails.Value.Id))
+        if (blacklistConfig.EnableQuestList && itemDetails.Value.IsQuestItem())
         {
             return false;
         }

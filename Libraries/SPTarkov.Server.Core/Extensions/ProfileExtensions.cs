@@ -110,5 +110,59 @@ namespace SPTarkov.Server.Core.Extensions
                 Points = 0,
             };
         }
+
+        /// <summary>
+        ///     Recursively checks if the given item is
+        ///     inside the stash, that is it has the stash as
+        ///     ancestor with slotId=hideout
+        /// </summary>
+        /// <param name="pmcData">Player profile</param>
+        /// <param name="itemToCheck">Item to look for</param>
+        /// <returns>True if item exists inside stash</returns>
+        public static bool IsItemInStash(this PmcData pmcData, Item itemToCheck)
+        {
+            // Start recursive check
+            return pmcData.IsParentInStash(itemToCheck.Id);
+        }
+
+        public static bool IsParentInStash(this PmcData pmcData, string itemId)
+        {
+            // Item not found / has no parent
+            var item = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == itemId);
+            if (item?.ParentId is null)
+            {
+                return false;
+            }
+
+            // Root level. Items parent is the stash with slotId "hideout"
+            if (item.ParentId == pmcData.Inventory.Stash && item.SlotId == "hideout")
+            {
+                return true;
+            }
+
+            // Recursive case: Check the items parent
+            return IsParentInStash(pmcData, item.ParentId);
+        }
+
+        /// <summary>
+        ///     Iterate over all bonuses and sum up all bonuses of desired type in provided profile
+        /// </summary>
+        /// <param name="pmcProfile">Player profile</param>
+        /// <param name="desiredBonus">Bonus to sum up</param>
+        /// <returns>Summed bonus value or 0 if no bonus found</returns>
+        public static double GetBonusValueFromProfile(
+            this PmcData pmcProfile,
+            BonusType desiredBonus
+        )
+        {
+            var bonuses = pmcProfile?.Bonuses?.Where(b => b.Type == desiredBonus);
+            if (!bonuses.Any())
+            {
+                return 0;
+            }
+
+            // Sum all bonuses found above
+            return bonuses?.Sum(bonus => bonus?.Value ?? 0) ?? 0;
+        }
     }
 }

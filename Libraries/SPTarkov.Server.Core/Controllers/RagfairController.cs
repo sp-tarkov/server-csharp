@@ -1145,7 +1145,7 @@ public class RagfairController
                 };
             }
 
-            _itemHelper.FixItemStackCount(rootItem);
+            rootItem.FixItemStackCount();
 
             itemsToReturn.Add(
                 _itemHelper.FindAndReturnChildrenAsItems(pmcData.Inventory.Items, itemId)

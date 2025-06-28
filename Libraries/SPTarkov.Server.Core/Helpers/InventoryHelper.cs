@@ -512,7 +512,7 @@ public class InventoryHelper(
             profile.Inventory.Items,
             itemId
         );
-        if (itemAndChildrenToRemove.Count == 0)
+        if (!itemAndChildrenToRemove.Any())
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
@@ -924,8 +924,8 @@ public class InventoryHelper(
             var tmpSize = GetSizeByInventoryItemHash(item.Template, item.Id, inventoryItemHash);
             var iW = tmpSize[0]; // x
             var iH = tmpSize[1]; // y
-            var fH = IsVertical(itemLocation) ? iW : iH;
-            var fW = IsVertical(itemLocation) ? iH : iW;
+            var fH = itemLocation.IsVertical() ? iW : iH;
+            var fW = itemLocation.IsVertical() ? iH : iW;
 
             for (var y = 0; y < fH; y++)
             {
@@ -956,18 +956,6 @@ public class InventoryHelper(
         }
 
         return containerYX;
-    }
-
-    protected bool IsVertical(ItemLocation itemLocation)
-    {
-        var castValue = itemLocation.R.ToString();
-        return castValue == "1"
-            || string.Equals(castValue, "vertical", StringComparison.OrdinalIgnoreCase)
-            || string.Equals(
-                itemLocation.Rotation?.ToString(),
-                "vertical",
-                StringComparison.OrdinalIgnoreCase
-            );
     }
 
     protected InventoryItemHash GetInventoryItemHash(List<Item> inventoryItems)
@@ -1368,39 +1356,6 @@ public class InventoryHelper(
     public InventoryConfig GetInventoryConfig()
     {
         return _inventoryConfig;
-    }
-
-    /// <summary>
-    ///     Recursively checks if the given item is
-    ///     inside the stash, that is it has the stash as
-    ///     ancestor with slotId=hideout
-    /// </summary>
-    /// <param name="pmcData">Player profile</param>
-    /// <param name="itemToCheck">Item to look for</param>
-    /// <returns>True if item exists inside stash</returns>
-    public bool IsItemInStash(PmcData pmcData, Item itemToCheck)
-    {
-        // Start recursive check
-        return IsParentInStash(itemToCheck.Id, pmcData);
-    }
-
-    protected static bool IsParentInStash(string itemId, PmcData pmcData)
-    {
-        // Item not found / has no parent
-        var item = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == itemId);
-        if (item?.ParentId is null)
-        {
-            return false;
-        }
-
-        // Root level. Items parent is the stash with slotId "hideout"
-        if (item.ParentId == pmcData.Inventory.Stash && item.SlotId == "hideout")
-        {
-            return true;
-        }
-
-        // Recursive case: Check the items parent
-        return IsParentInStash(item.ParentId, pmcData);
     }
 
     public void ValidateInventoryUsesMongoIds(List<Item> itemsToValidate)

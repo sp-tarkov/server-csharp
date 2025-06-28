@@ -1,6 +1,7 @@
 using System.Collections.Frozen;
 using System.Text.RegularExpressions;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers.Dialog.Commando.SptCommands;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
@@ -323,7 +324,7 @@ public class GiveSptCommand(
     protected bool IsItemAllowed(TemplateItem templateItem)
     {
         return templateItem.Type != "Node"
-            && !_itemHelper.IsQuestItem(templateItem.Id)
+            && !templateItem.IsQuestItem()
             && !_itemFilterService.IsItemBlacklisted(templateItem.Id)
             && (templateItem.Properties?.Prefab?.Path ?? "") != ""
             && !_itemHelper.IsOfBaseclasses(

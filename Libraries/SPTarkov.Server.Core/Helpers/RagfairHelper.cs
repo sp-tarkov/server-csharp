@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
@@ -16,7 +17,6 @@ public class RagfairHelper(
     HandbookHelper handbookHelper,
     ItemHelper itemHelper,
     RagfairLinkedItemService ragfairLinkedItemService,
-    UtilityHelper utilityHelper,
     ConfigServer configServer,
     ICloner cloner
 )
@@ -86,7 +86,7 @@ public class RagfairHelper(
         if (!string.IsNullOrEmpty(request.HandbookId))
         {
             var handbook = GetCategoryList(request.HandbookId);
-            result = result?.Count > 0 ? utilityHelper.ArrayIntersect(result, handbook) : handbook;
+            result = result?.Count > 0 ? result.IntersectWith(handbook) : handbook;
         }
 
         return result;
@@ -157,25 +157,25 @@ public class RagfairHelper(
 
         foreach (var item in items)
         {
-            var itemFixed = itemHelper.FixItemStackCount(item);
+            item.FixItemStackCount();
 
-            var isChild = items.Any(it => it.Id == itemFixed.ParentId);
+            var isChild = items.Any(it => it.Id == item.ParentId);
             if (!isChild)
             {
                 if (rootItem == null)
                 {
-                    rootItem = cloner.Clone(itemFixed);
+                    rootItem = cloner.Clone(item);
                     rootItem.Upd.OriginalStackObjectsCount = rootItem.Upd.StackObjectsCount;
                 }
                 else
                 {
-                    rootItem.Upd.StackObjectsCount += itemFixed.Upd.StackObjectsCount;
-                    list.Add(itemFixed);
+                    rootItem.Upd.StackObjectsCount += item.Upd.StackObjectsCount;
+                    list.Add(item);
                 }
             }
             else
             {
-                list.Add(itemFixed);
+                list.Add(item);
             }
         }
 
