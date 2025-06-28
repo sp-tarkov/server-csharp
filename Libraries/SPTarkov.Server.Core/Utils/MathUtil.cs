@@ -7,58 +7,6 @@ namespace SPTarkov.Server.Core.Utils;
 public class MathUtil
 {
     /// <summary>
-    ///     Helper to create the sum of all list elements
-    /// </summary>
-    /// <param name="values">List of floats to sum</param>
-    /// <returns>sum of all values</returns>
-    public double ListSum(List<double> values)
-    {
-        // Sum the list starting with an initial value of 0
-        return values.Sum();
-    }
-
-    public float ListSum(List<float> values)
-    {
-        // Sum the list starting with an initial value of 0
-        return values.Sum();
-    }
-
-    /// <summary>
-    ///     Helper to create the cumulative sum of all list elements
-    ///     ListCumSum([1, 2, 3, 4]) = [1, 3, 6, 10]
-    /// </summary>
-    /// <param name="values">The list with numbers of which to calculate the cumulative sum</param>
-    /// <returns>cumulative sum of values</returns>
-    public List<double> ListCumSum(List<double> values)
-    {
-        if (values.Count == 0)
-        {
-            return [];
-        }
-
-        var cumSumArray = new double[values.Count];
-        cumSumArray[0] = values[0];
-
-        for (var i = 1; i < values.Count; i++)
-        {
-            cumSumArray[i] = cumSumArray[i - 1] + values[i];
-        }
-
-        return [.. cumSumArray];
-    }
-
-    /// <summary>
-    ///     Helper to create the product of each element times factor
-    /// </summary>
-    /// <param name="values">The list of numbers which shall be multiplied by the factor</param>
-    /// <param name="factor">Number to multiply each element by</param>
-    /// <returns>A list of elements all multiplied by the factor</returns>
-    public List<double> ListProduct(List<double> values, double factor)
-    {
-        return values.Select(v => v * factor).ToList();
-    }
-
-    /// <summary>
     ///     Helper to add a constant to all list elements
     /// </summary>
     /// <param name="values">The list of numbers to which the summand should be added</param>

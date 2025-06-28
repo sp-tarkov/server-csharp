@@ -494,10 +494,7 @@ public class InsuranceController(
         );
 
         // Create prob array and add all attachments with rouble price as the weight
-        var attachmentsProbabilityArray = new ProbabilityObjectArray<string, double?>(
-            _mathUtil,
-            _cloner
-        );
+        var attachmentsProbabilityArray = new ProbabilityObjectArray<string, double?>(_cloner);
         foreach (var (itemTpl, price) in weightedAttachmentByPrice)
         {
             attachmentsProbabilityArray.Add(
@@ -507,7 +504,7 @@ public class InsuranceController(
 
         // Draw x attachments from weighted array to remove from parent, remove from pool after being picked
         var attachmentIdsToRemove = attachmentsProbabilityArray.Draw(
-            (int)countOfAttachmentsToRemove,
+            (int) countOfAttachmentsToRemove,
             false
         );
         foreach (var attachmentId in attachmentIdsToRemove)

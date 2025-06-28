@@ -1,3 +1,4 @@
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Utils;
 
 namespace UnitTests.Tests.Utils;
@@ -19,7 +20,7 @@ public class MathUtilTests
         var test = new List<float> { 1.1f, 2.1f, 3.3f };
         const double expected = 6.5f;
 
-        var actual = _mathUtil.ListSum(test);
+        var actual = test.Sum();
 
         Assert.AreEqual(expected, actual, $"ListSum() Expected: {expected}, Actual: {actual}");
     }
@@ -30,7 +31,7 @@ public class MathUtilTests
         var test = new List<double> { 1f, 2f, 3f, 4f };
         var expected = new List<double> { 1f, 3f, 6f, 10f };
 
-        var actual = _mathUtil.ListCumSum(test);
+        var actual = test.CumulativeSum().ToList();
 
         for (var i = 0; i < actual.Count; i++)
         {
@@ -49,7 +50,7 @@ public class MathUtilTests
         var test = new List<double> { 1f, 2f, 3f, 4f };
         var expected = new List<double> { 2f, 4f, 6f, 8f };
 
-        var actual = _mathUtil.ListProduct(test, 2);
+        var actual = test.Product(2).ToList();
 
         for (var i = 0; i < actual.Count; i++)
         {

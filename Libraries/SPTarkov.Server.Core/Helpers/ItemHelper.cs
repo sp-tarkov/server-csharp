@@ -433,7 +433,7 @@ public class ItemHelper(
         // Run getItemPrice for each tpl in tpls array, return sum
         return tpls.Aggregate(
             0,
-            (total, tpl) => total + (int)GetItemPrice(tpl).GetValueOrDefault(0)
+            (total, tpl) => total + (int) GetItemPrice(tpl).GetValueOrDefault(0)
         );
     }
 
@@ -902,8 +902,8 @@ public class ItemHelper(
         // Find required items to take after buying (handles multiple items)
         var desiredBarterIds =
             desiredBarterItemIds.GetType() == typeof(string)
-                ? [(string)desiredBarterItemIds]
-                : (List<string>)desiredBarterItemIds;
+                ? [(string) desiredBarterItemIds]
+                : (List<string>) desiredBarterItemIds;
 
         List<Item> matchingItems = [];
         foreach (var barterId in desiredBarterIds)
@@ -1456,7 +1456,7 @@ public class ItemHelper(
             var cartridgeItemToAdd = CreateCartridges(
                 ammoBox[0].Id,
                 cartridgeTpl,
-                (int)cartridgeCountToAdd,
+                (int) cartridgeCountToAdd,
                 location
             );
 
@@ -1485,7 +1485,7 @@ public class ItemHelper(
             0
         ].Filter?.FirstOrDefault();
         ammoBox.Add(
-            CreateCartridges(ammoBox[0].Id, cartridgeTpl, (int)ammoBoxMaxCartridgeCount, 0)
+            CreateCartridges(ammoBox[0].Id, cartridgeTpl, (int) ammoBoxMaxCartridgeCount, 0)
         );
     }
 
@@ -1593,8 +1593,8 @@ public class ItemHelper(
         }
 
         var desiredStackCount = _randomUtil.GetInt(
-            (int)Math.Round(minSizeMultiplier * magazineCartridgeMaxCount ?? 0),
-            (int)magazineCartridgeMaxCount
+            (int) Math.Round(minSizeMultiplier * magazineCartridgeMaxCount ?? 0),
+            (int) magazineCartridgeMaxCount
         );
 
         if (magazineWithChildCartridges.Count > 1)
@@ -1693,7 +1693,7 @@ public class ItemHelper(
             return null;
         }
 
-        var ammoArray = new ProbabilityObjectArray<string, float?>(_mathUtil, _cloner);
+        var ammoArray = new ProbabilityObjectArray<string, float?>(_cloner);
         foreach (var icd in ammos)
         {
             // Whitelist exists and tpl not inside it, skip
@@ -1706,7 +1706,7 @@ public class ItemHelper(
             ammoArray.Add(
                 new ProbabilityObject<string, float?>(
                     icd.Tpl,
-                    (double)icd.RelativeProbability,
+                    (double) icd.RelativeProbability,
                     null
                 )
             );

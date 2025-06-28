@@ -881,7 +881,6 @@ public class RepeatableQuestController(
             repeatableConfig
         );
         var targetsConfig = new ProbabilityObjectArray<string, BossInfo>(
-            _mathUtil,
             _cloner,
             eliminationConfig.Targets
         );

@@ -401,14 +401,14 @@ public class LocationLootGenerator(
         }
 
         // Create probability array with all possible container ids in this group and their relative probability of spawning
-        var containerDistribution = new ProbabilityObjectArray<string, double>(_mathUtil, _cloner);
+        var containerDistribution = new ProbabilityObjectArray<string, double>(_cloner);
         foreach (var x in containerIds)
         {
             var value = containerData.ContainerIdsWithProbability[x];
             containerDistribution.Add(new ProbabilityObject<string, double>(x, value, value));
         }
 
-        chosenContainerIds.AddRange(containerDistribution.Draw((int)containerData.ChosenCount));
+        chosenContainerIds.AddRange(containerDistribution.Draw((int) containerData.ChosenCount));
 
         return chosenContainerIds;
     }
@@ -653,7 +653,7 @@ public class LocationLootGenerator(
     )
     {
         // Create probability array to calculate the total count of lootable items inside container
-        var itemCountArray = new ProbabilityObjectArray<int, float?>(_mathUtil, _cloner);
+        var itemCountArray = new ProbabilityObjectArray<int, float?>(_cloner);
         var countDistribution = staticLootDist[containerTypeId]?.ItemCountDistribution;
         if (countDistribution is null)
         {
@@ -698,7 +698,7 @@ public class LocationLootGenerator(
         var seasonalEventActive = _seasonalEventService.SeasonalEventEnabled();
         var seasonalItemTplBlacklist = _seasonalEventService.GetInactiveSeasonalEventItems();
 
-        var itemDistribution = new ProbabilityObjectArray<string, float?>(_mathUtil, _cloner);
+        var itemDistribution = new ProbabilityObjectArray<string, float?>(_cloner);
 
         var itemContainerDistribution = staticLootDist[containerTypeId]?.ItemDistribution;
         if (itemContainerDistribution is null)
@@ -804,7 +804,7 @@ public class LocationLootGenerator(
         );
 
         // Init empty array to hold spawn points, letting us pick them pseudo-randomly
-        var spawnPointArray = new ProbabilityObjectArray<string, Spawnpoint>(_mathUtil, _cloner);
+        var spawnPointArray = new ProbabilityObjectArray<string, Spawnpoint>(_cloner);
 
         // Positions not in forced but have 100% chance to spawn
         List<Spawnpoint> guaranteedLoosePoints = [];
@@ -855,7 +855,7 @@ public class LocationLootGenerator(
         if (randomSpawnPointCount > 0 && spawnPointArray.Count > 0)
         // Add randomly chosen spawn points
         {
-            foreach (var si in spawnPointArray.Draw((int)randomSpawnPointCount, false))
+            foreach (var si in spawnPointArray.Draw((int) randomSpawnPointCount, false))
             {
                 chosenSpawnPoints.Add(spawnPointArray.Data(si));
             }
@@ -940,7 +940,7 @@ public class LocationLootGenerator(
             var validItemIds = spawnPoint.Template.Items.Select(item => item.Id).ToHashSet();
 
             // Construct container to hold above filtered items, letting us pick an item for the spot
-            var itemArray = new ProbabilityObjectArray<string, double?>(_mathUtil, _cloner);
+            var itemArray = new ProbabilityObjectArray<string, double?>(_cloner);
             foreach (var itemDist in spawnPoint.ItemDistribution)
             {
                 if (!validItemIds.Contains(itemDist.ComposedKey.Key))
