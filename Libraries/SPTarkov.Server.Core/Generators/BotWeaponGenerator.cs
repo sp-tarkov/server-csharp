@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators.WeaponGen;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -623,7 +624,7 @@ public class BotWeaponGenerator(
             // return default mag tpl
             if (weaponTemplate.Properties.ReloadMode == ReloadMode.OnlyBarrel)
             {
-                return _botWeaponGeneratorHelper.GetWeaponsDefaultMagazineTpl(weaponTemplate);
+                return weaponTemplate.GetWeaponsDefaultMagazineTpl();
             }
 
             // log error if no magazine AND not a chamber loaded weapon (e.g. shotgun revolver)
@@ -638,9 +639,8 @@ public class BotWeaponGenerator(
                 );
             }
 
-            var defaultMagTplId = _botWeaponGeneratorHelper.GetWeaponsDefaultMagazineTpl(
-                weaponTemplate
-            );
+            var defaultMagTplId = weaponTemplate.GetWeaponsDefaultMagazineTpl();
+
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
                 _logger.Debug(
