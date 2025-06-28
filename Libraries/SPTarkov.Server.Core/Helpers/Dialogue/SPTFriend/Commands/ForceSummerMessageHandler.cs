@@ -11,7 +11,7 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
 public class ForceSummerMessageHandler(
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     MailSendService _mailSendService,
     RandomUtil _randomUtil,
     ConfigServer _configServer
@@ -41,7 +41,7 @@ public class ForceSummerMessageHandler(
         _mailSendService.SendUserMessageToPlayer(
             sessionId,
             sptFriendUser,
-            _randomUtil.GetArrayValue([_localisationService.GetText("chatbot-summer_enabled")]),
+            _randomUtil.GetArrayValue([_serverLocalisationService.GetText("chatbot-summer_enabled")]),
             [],
             null
         );

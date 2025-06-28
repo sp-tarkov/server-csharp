@@ -35,7 +35,7 @@ public class RepeatableQuestController(
     HttpResponseUtil _httpResponseUtil,
     ProfileHelper _profileHelper,
     ProfileFixerService _profileFixerService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     EventOutputHolder _eventOutputHolder,
     PaymentService _paymentService,
     RepeatableQuestHelper _repeatableQuestHelper,
@@ -76,14 +76,14 @@ public class RepeatableQuestController(
         if (repeatableQuestProfile is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "repeatable-accepted_repeatable_quest_not_found_in_active_quests",
                     acceptedQuest.QuestId
                 )
             );
 
             throw new Exception(
-                _localisationService.GetText("repeatable-unable_to_accept_quest_see_log")
+                _serverLocalisationService.GetText("repeatable-unable_to_accept_quest_see_log")
             );
         }
 
@@ -128,7 +128,7 @@ public class RepeatableQuestController(
         if (repeatables.RepeatableType is null || repeatables.Quest is null)
         {
             // Unable to find quest being replaced
-            var message = _localisationService.GetText(
+            var message = _serverLocalisationService.GetText(
                 "quest-unable_to_find_repeatable_to_replace"
             );
             _logger.Error(message);
@@ -397,7 +397,7 @@ public class RepeatableQuestController(
         if (attempts > maxAttempts)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "quest-repeatable_generation_failed_please_report",
                     attempts
                 )
@@ -440,7 +440,9 @@ public class RepeatableQuestController(
         var traderId = _randomUtil.DrawRandomFromList(traders).FirstOrDefault();
         if (traderId is null)
         {
-            _logger.Error(_localisationService.GetText("repeatable-unable_to_find_trader_in_pool"));
+            _logger.Error(
+                _serverLocalisationService.GetText("repeatable-unable_to_find_trader_in_pool")
+            );
 
             return null;
         }

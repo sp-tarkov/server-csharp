@@ -16,7 +16,7 @@ namespace SPTarkov.Server.Core.Servers;
 public class HttpServer(
     WebApplicationBuilder _builder,
     ISptLogger<HttpServer> _logger,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer,
     CertificateHelper _certificateHelper,
     WebSocketServer _webSocketServer,
@@ -148,13 +148,13 @@ public class HttpServer(
         if (isLocalRequest)
         {
             _logger.Info(
-                _localisationService.GetText("client_request", context.Request.Path.Value)
+                _serverLocalisationService.GetText("client_request", context.Request.Path.Value)
             );
         }
         else
         {
             _logger.Info(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "client_request_ip",
                     new { ip = clientIp, url = context.Request.Path.Value }
                 )

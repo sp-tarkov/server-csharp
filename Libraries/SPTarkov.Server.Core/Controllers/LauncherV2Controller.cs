@@ -20,7 +20,7 @@ public class LauncherV2Controller(
     RandomUtil _randomUtil,
     SaveServer _saveServer,
     DatabaseService _databaseService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer,
     Watermark _watermark
 )
@@ -50,7 +50,7 @@ public class LauncherV2Controller(
         {
             result.TryAdd(
                 profileKvP.Key,
-                _localisationService.GetText(profileKvP.Value.DescriptionLocaleKey)
+                _serverLocalisationService.GetText(profileKvP.Value.DescriptionLocaleKey)
             );
         }
 

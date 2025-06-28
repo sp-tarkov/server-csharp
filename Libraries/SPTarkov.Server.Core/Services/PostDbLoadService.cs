@@ -14,7 +14,7 @@ public class PostDbLoadService(
     ISptLogger<PostDbLoadService> _logger,
     HashUtil _hashUtil,
     DatabaseService _databaseService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     SeasonalEventService _seasonalEventService,
     CustomLocationWaveService _customLocationWaveService,
     OpenZoneService _openZoneService,
@@ -270,7 +270,7 @@ public class PostDbLoadService(
             if (mapId is null)
             {
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "location-unable_to_add_custom_loot_position",
                         mapId
                     )
@@ -286,7 +286,7 @@ public class PostDbLoadService(
                     if (looselootData is null)
                     {
                         _logger.Warning(
-                            _localisationService.GetText(
+                            _serverLocalisationService.GetText(
                                 "location-map_has_no_loose_loot_data",
                                 mapId
                             )
@@ -382,7 +382,10 @@ public class PostDbLoadService(
             if (!mapsDb.TryGetValue(mapId, out var map))
             {
                 _logger.Warning(
-                    _localisationService.GetText("bot-unable_to_edit_limits_of_unknown_map", mapId)
+                    _serverLocalisationService.GetText(
+                        "bot-unable_to_edit_limits_of_unknown_map",
+                        mapId
+                    )
                 );
 
                 continue;
@@ -431,7 +434,7 @@ public class PostDbLoadService(
                     if (looselootData is null)
                     {
                         _logger.Warning(
-                            _localisationService.GetText(
+                            _serverLocalisationService.GetText(
                                 "location-map_has_no_loose_loot_data",
                                 mapId
                             )
@@ -448,7 +451,7 @@ public class PostDbLoadService(
                         if (lootPostionToAdjust is null)
                         {
                             _logger.Warning(
-                                _localisationService.GetText(
+                                _serverLocalisationService.GetText(
                                     "location-unable_to_adjust_loot_position_on_map",
                                     new { lootKey, mapId }
                                 )
@@ -620,7 +623,7 @@ public class PostDbLoadService(
                         questName = quests[questKey]?.QuestName ?? "UNKNOWN",
                     };
                     _logger.Warning(
-                        _localisationService.GetText(
+                        _serverLocalisationService.GetText(
                             "assort-missing_quest_assort_unlock",
                             messageValues
                         )

@@ -11,7 +11,7 @@ namespace SPTarkov.Server.Modding;
 
 public class ModValidator(
     ISptLogger<ModValidator> logger,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     ConfigServer configServer,
     ISemVer semVer,
     ModLoadOrder modLoadOrder,

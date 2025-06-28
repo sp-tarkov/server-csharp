@@ -15,7 +15,7 @@ namespace SPTarkov.Server.Core.Services;
 public class GiftService(
     ISptLogger<GiftService> _logger,
     MailSendService _mailSendService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     HashUtil _hashUtil,
     TimeUtil _timeUtil,
     ProfileHelper _profileHelper,
@@ -224,7 +224,7 @@ public class GiftService(
                 return MessageType.UserMessage;
             default:
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "gift-unable_to_handle_message_type_command",
                         giftData.Sender
                     )

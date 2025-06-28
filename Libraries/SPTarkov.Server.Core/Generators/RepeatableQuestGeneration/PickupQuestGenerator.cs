@@ -17,7 +17,7 @@ public class PickupQuestGenerator(
     RepeatableQuestHelper repeatableQuestHelper,
     RepeatableQuestRewardGenerator repeatableQuestRewardGenerator,
     DatabaseService databaseService,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     RandomUtil randomUtil,
     MathUtil mathUtil,
     HashUtil hashUtil

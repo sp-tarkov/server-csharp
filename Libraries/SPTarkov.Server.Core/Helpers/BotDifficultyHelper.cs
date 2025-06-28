@@ -15,7 +15,7 @@ public class BotDifficultyHelper(
     ISptLogger<BotDifficultyHelper> _logger,
     DatabaseService _databaseService,
     RandomUtil _randomUtil,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     BotHelper _botHelper,
     ConfigServer _configServer,
     ICloner _cloner
@@ -43,7 +43,10 @@ public class BotDifficultyHelper(
         {
             // No bot found, get fallback difficulty values
             _logger.Warning(
-                _localisationService.GetText("bot-unable_to_get_bot_fallback_to_assault", type)
+                _serverLocalisationService.GetText(
+                    "bot-unable_to_get_bot_fallback_to_assault",
+                    type
+                )
             );
             botDb.Types[desiredType] = _cloner.Clone(botDb.Types["assault"]);
         }
@@ -55,7 +58,7 @@ public class BotDifficultyHelper(
         {
             // No bot settings found, use 'assault' bot difficulty instead
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "bot-unable_to_get_bot_difficulty_fallback_to_assault",
                     new { botType = desiredType, difficulty = desiredDifficulty }
                 )

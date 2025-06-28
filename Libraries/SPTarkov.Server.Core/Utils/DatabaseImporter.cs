@@ -16,7 +16,7 @@ namespace SPTarkov.Server.Core.Utils;
 public class DatabaseImporter(
     ISptLogger<DatabaseImporter> logger,
     FileUtil _fileUtil,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     DatabaseServer _databaseServer,
     ImageRouter _imageRouter,
     ImporterUtil _importerUtil,
@@ -101,14 +101,14 @@ public class DatabaseImporter(
             else
             {
                 _logger.Error(
-                    _localisationService.GetText("validation_error_exception", checksFilePath)
+                    _serverLocalisationService.GetText("validation_error_exception", checksFilePath)
                 );
             }
         }
         catch (Exception)
         {
             _logger.Error(
-                _localisationService.GetText("validation_error_exception", checksFilePath)
+                _serverLocalisationService.GetText("validation_error_exception", checksFilePath)
             );
         }
     }
@@ -119,7 +119,7 @@ public class DatabaseImporter(
      */
     protected async Task HydrateDatabase(string filePath)
     {
-        _logger.Info(_localisationService.GetText("importing_database"));
+        _logger.Info(_serverLocalisationService.GetText("importing_database"));
         Stopwatch timer = new();
         timer.Start();
 
@@ -144,7 +144,7 @@ public class DatabaseImporter(
 
         dataToImport.Traders = tempTraders;
 
-        _logger.Info(_localisationService.GetText("importing_database_finish"));
+        _logger.Info(_serverLocalisationService.GetText("importing_database_finish"));
         _logger.Debug($"Database import took {timer.ElapsedMilliseconds}ms");
         _databaseServer.SetTables(dataToImport);
     }
@@ -175,14 +175,14 @@ public class DatabaseImporter(
                     if (databaseHashes[relativePath] != hashString)
                     {
                         _logger.Warning(
-                            _localisationService.GetText("validation_error_file", fileName)
+                            _serverLocalisationService.GetText("validation_error_file", fileName)
                         );
                     }
                 }
                 else
                 {
                     _logger.Warning(
-                        _localisationService.GetText("validation_error_file", fileName)
+                        _serverLocalisationService.GetText("validation_error_file", fileName)
                     );
                 }
             }

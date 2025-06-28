@@ -28,7 +28,7 @@ public class BotController(
     BotGenerator _botGenerator,
     BotHelper _botHelper,
     BotDifficultyHelper _botDifficultyHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     SeasonalEventService _seasonalEventService,
     MatchBotDetailsCacheService _matchBotDetailsCacheService,
     ProfileHelper _profileHelper,
@@ -52,7 +52,7 @@ public class BotController(
         if (!_botConfig.PresetBatch.TryGetValue(type, out var limit))
         {
             _logger.Warning(
-                _localisationService.GetText("bot-bot_preset_count_value_missing", type)
+                _serverLocalisationService.GetText("bot-bot_preset_count_value_missing", type)
             );
 
             return 10;
@@ -97,7 +97,7 @@ public class BotController(
         if (!(raidConfig != null || ignoreRaidSettings))
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "bot-missing_application_context",
                     "RAID_CONFIGURATION"
                 )
@@ -354,7 +354,9 @@ public class BotController(
         if (raidConfiguration is null)
         {
             _logger.Warning(
-                _localisationService.GetText("bot-unable_to_load_raid_settings_from_appcontext")
+                _serverLocalisationService.GetText(
+                    "bot-unable_to_load_raid_settings_from_appcontext"
+                )
             );
         }
 
@@ -429,7 +431,7 @@ public class BotController(
         if (location == "default")
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "bot-no_bot_cap_found_for_location",
                     location.ToLower()
                 )

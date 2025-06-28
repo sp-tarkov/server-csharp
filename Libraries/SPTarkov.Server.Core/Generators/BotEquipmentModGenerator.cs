@@ -34,7 +34,7 @@ public class BotEquipmentModGenerator(
     BotWeaponGeneratorHelper _botWeaponGeneratorHelper,
     WeightedRandomHelper _weightedRandomHelper,
     PresetHelper _presetHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     BotEquipmentModPoolService _botEquipmentModPoolService,
     ConfigServer _configServer,
     ICloner _cloner
@@ -124,7 +124,7 @@ public class BotEquipmentModGenerator(
             if (itemSlotTemplate is null)
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "bot-mod_slot_missing_from_item",
                         new
                         {
@@ -518,7 +518,7 @@ public class BotEquipmentModGenerator(
         if (ItemLacksSlotsCartridgesAndChambers(request.ParentTemplate))
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "bot-unable_to_add_mods_to_weapon_missing_ammo_slot",
                     new
                     {
@@ -562,7 +562,7 @@ public class BotEquipmentModGenerator(
             if (modsParentSlot is null)
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "bot-weapon_missing_mod_slot",
                         new
                         {
@@ -1772,7 +1772,7 @@ public class BotEquipmentModGenerator(
         if (modBeingAddedDbTemplate.Value is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "bot-no_item_template_found_when_adding_mod",
                     new { modId = modBeingAddedDbTemplate.Value?.Id ?? "UNKNOWN", modSlot }
                 )
@@ -1792,7 +1792,7 @@ public class BotEquipmentModGenerator(
             if (slotAddedToTemplate.Required ?? false)
             {
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "bot-unable_to_add_mod_item_invalid",
                         new
                         {
@@ -1847,7 +1847,7 @@ public class BotEquipmentModGenerator(
         if (!filteredMods.Any())
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "bot-unable_to_filter_mods_all_blacklisted",
                     new { slotName = desiredSlotObject.Name, itemName = modTemplate.Name }
                 )
@@ -1890,7 +1890,10 @@ public class BotEquipmentModGenerator(
         }
 
         _logger.Warning(
-            _localisationService.GetText("bot-unable_to_filter_mod_slot_all_blacklisted", modSlot)
+            _serverLocalisationService.GetText(
+                "bot-unable_to_filter_mod_slot_all_blacklisted",
+                modSlot
+            )
         );
 
         return modsFromDynamicPool;
@@ -1953,7 +1956,7 @@ public class BotEquipmentModGenerator(
         if (!modPool.TryGetValue(cylinderMagTemplate.Id, out var itemModPool))
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "bot-unable_to_fill_camora_slot_mod_pool_empty",
                     new { weaponId = cylinderMagTemplate.Id, weaponName = cylinderMagTemplate.Name }
                 )
@@ -1989,7 +1992,10 @@ public class BotEquipmentModGenerator(
         else
         {
             _logger.Error(
-                _localisationService.GetText("bot-missing_cartridge_slot", cylinderMagTemplate.Id)
+                _serverLocalisationService.GetText(
+                    "bot-missing_cartridge_slot",
+                    cylinderMagTemplate.Id
+                )
             );
 
             return;
@@ -2014,7 +2020,7 @@ public class BotEquipmentModGenerator(
         if (!found)
         {
             _logger.Error(
-                _localisationService.GetText("bot-no_compatible_camora_ammo_found", modSlot)
+                _serverLocalisationService.GetText("bot-no_compatible_camora_ammo_found", modSlot)
             );
 
             return;

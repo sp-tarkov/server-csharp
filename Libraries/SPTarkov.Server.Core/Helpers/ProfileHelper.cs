@@ -23,7 +23,7 @@ public class ProfileHelper(
     DatabaseService _databaseService,
     Watermark _watermark,
     TimeUtil _timeUtil,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     HashUtil _hashUtil,
     ConfigServer _configServer
 )
@@ -486,7 +486,7 @@ public class ProfileHelper(
         var profileSkill = profileSkills.FirstOrDefault(s => s.Id == skill);
         if (profileSkill == null)
         {
-            _logger.Error(_localisationService.GetText("quest-no_skill_found", skill));
+            _logger.Error(_serverLocalisationService.GetText("quest-no_skill_found", skill));
             return false;
         }
 
@@ -510,7 +510,7 @@ public class ProfileHelper(
         if (pointsToAddToSkill < 0D)
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "player-attempt_to_increment_skill_with_negative_value",
                     skill
                 )
@@ -530,7 +530,7 @@ public class ProfileHelper(
         var profileSkill = profileSkills.FirstOrDefault(s => s.Id == skill);
         if (profileSkill == null)
         {
-            _logger.Error(_localisationService.GetText("quest-no_skill_found", skill));
+            _logger.Error(_serverLocalisationService.GetText("quest-no_skill_found", skill));
             return;
         }
 

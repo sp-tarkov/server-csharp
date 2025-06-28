@@ -19,7 +19,7 @@ public class CompletionQuestGenerator(
     RepeatableQuestRewardGenerator repeatableQuestRewardGenerator,
     DatabaseService databaseService,
     SeasonalEventService seasonalEventService,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     ConfigServer configServer,
     RandomUtil randomUtil,
     MathUtil mathUtil,

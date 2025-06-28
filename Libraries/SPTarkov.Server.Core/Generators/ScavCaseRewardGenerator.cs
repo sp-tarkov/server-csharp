@@ -26,7 +26,7 @@ public class ScavCaseRewardGenerator(
     RagfairPriceService _ragfairPriceService,
     SeasonalEventService _seasonalEventService,
     ItemFilterService _itemFilterService,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     ConfigServer _configServer,
     ICloner _cloner
 )

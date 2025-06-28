@@ -31,7 +31,7 @@ public class InventoryHelper(
     EventOutputHolder _eventOutputHolder,
     ProfileHelper _profileHelper,
     ItemHelper _itemHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer,
     ICloner _cloner
 )
@@ -65,7 +65,7 @@ public class InventoryHelper(
             // No space, exit
             _httpResponseUtil.AppendErrorToOutput(
                 output,
-                _localisationService.GetText("inventory-no_stash_space"),
+                _serverLocalisationService.GetText("inventory-no_stash_space"),
                 BackendErrorCodes.NotEnoughSpace
             );
 
@@ -285,7 +285,7 @@ public class InventoryHelper(
             catch (Exception ex)
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "inventory-unable_to_fit_item_into_inventory",
                         ex.Message
                     )
@@ -341,7 +341,10 @@ public class InventoryHelper(
             catch (Exception ex)
             {
                 _logger.Error(
-                    _localisationService.GetText("inventory-fill_container_failed", ex.Message)
+                    _serverLocalisationService.GetText(
+                        "inventory-fill_container_failed",
+                        ex.Message
+                    )
                 );
 
                 return;
@@ -466,7 +469,7 @@ public class InventoryHelper(
         {
             _httpResponseUtil.AppendErrorToOutput(
                 output,
-                _localisationService.GetText("inventory-no_stash_space"),
+                _serverLocalisationService.GetText("inventory-no_stash_space"),
                 BackendErrorCodes.NotEnoughSpace
             );
         }
@@ -474,11 +477,13 @@ public class InventoryHelper(
 
     protected void HandleContainerPlacementError(string errorText, ItemEventRouterResponse output)
     {
-        _logger.Error(_localisationService.GetText("inventory-fill_container_failed", errorText));
+        _logger.Error(
+            _serverLocalisationService.GetText("inventory-fill_container_failed", errorText)
+        );
 
         _httpResponseUtil.AppendErrorToOutput(
             output,
-            _localisationService.GetText("inventory-no_stash_space")
+            _serverLocalisationService.GetText("inventory-no_stash_space")
         );
     }
 
@@ -501,7 +506,7 @@ public class InventoryHelper(
         if (itemId is null)
         {
             _logger.Warning(
-                _localisationService.GetText("inventory-unable_to_remove_item_no_id_given")
+                _serverLocalisationService.GetText("inventory-unable_to_remove_item_no_id_given")
             );
 
             return;
@@ -514,7 +519,7 @@ public class InventoryHelper(
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
                 _logger.Debug(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "inventory-unable_to_remove_item_id_not_found",
                         new { ChildId = itemId, ProfileId = profile.Id }
                     )
@@ -547,7 +552,7 @@ public class InventoryHelper(
             else
             {
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "inventory-unable_to_remove_item_id_not_found",
                         new { childId = item.Id, ProfileId = profile.Id }
                     )
@@ -598,7 +603,7 @@ public class InventoryHelper(
                     if (indexOfItemToRemove == -1)
                     {
                         _logger.Error(
-                            _localisationService.GetText(
+                            _serverLocalisationService.GetText(
                                 "inventory-unable_to_remove_item_restart_immediately",
                                 new
                                 {
@@ -709,14 +714,17 @@ public class InventoryHelper(
         if (!isValidItem)
         {
             _logger.Error(
-                _localisationService.GetText("inventory-invalid_item_missing_from_db", itemTpl)
+                _serverLocalisationService.GetText(
+                    "inventory-invalid_item_missing_from_db",
+                    itemTpl
+                )
             );
         }
 
         // Item found but no _props property
         if (isValidItem && itemTemplate.Properties is null)
         {
-            _localisationService.GetText(
+            _serverLocalisationService.GetText(
                 "inventory-item_missing_props_property",
                 new { itemTpl, itemName = itemTemplate?.Name }
             );
@@ -726,7 +734,9 @@ public class InventoryHelper(
         if (!isValidItem && itemTemplate is null)
         {
             // return default size of 1x1
-            _logger.Error(_localisationService.GetText("inventory-return_default_size", itemTpl));
+            _logger.Error(
+                _serverLocalisationService.GetText("inventory-return_default_size", itemTpl)
+            );
 
             return [1, 1]; // Invalid input data, return defaults
         }
@@ -796,7 +806,7 @@ public class InventoryHelper(
                         if (!isValid)
                         {
                             _logger.Error(
-                                _localisationService.GetText(
+                                _serverLocalisationService.GetText(
                                     "inventory-get_item_size_item_not_found_by_tpl",
                                     childItem.Template
                                 )
@@ -939,7 +949,7 @@ public class InventoryHelper(
                 catch (Exception ex)
                 {
                     _logger.Error(
-                        _localisationService.GetText(
+                        _serverLocalisationService.GetText(
                             "inventory-unable_to_fill_container",
                             new { id = item.Id, error = $"{ex.Message} {ex.StackTrace}" }
                         )
@@ -1103,13 +1113,15 @@ public class InventoryHelper(
         var stashTPL = GetStashType(sessionId);
         if (stashTPL is null)
         {
-            _logger.Error(_localisationService.GetText("inventory-missing_stash_size"));
+            _logger.Error(_serverLocalisationService.GetText("inventory-missing_stash_size"));
         }
 
         var stashItemResult = _itemHelper.GetItem(stashTPL);
         if (!stashItemResult.Key)
         {
-            _logger.Error(_localisationService.GetText("inventory-stash_not_found", stashTPL));
+            _logger.Error(
+                _serverLocalisationService.GetText("inventory-stash_not_found", stashTPL)
+            );
 
             return new List<int>();
         }
@@ -1142,7 +1154,7 @@ public class InventoryHelper(
         );
         if (stashObj is null)
         {
-            _logger.Error(_localisationService.GetText("inventory-unable_to_find_stash"));
+            _logger.Error(_serverLocalisationService.GetText("inventory-unable_to_find_stash"));
         }
 
         return stashObj?.Template;
@@ -1170,7 +1182,10 @@ public class InventoryHelper(
             if (itemToMove is null)
             {
                 _logger.Error(
-                    _localisationService.GetText("inventory-unable_to_find_item_to_move", itemId)
+                    _serverLocalisationService.GetText(
+                        "inventory-unable_to_find_item_to_move",
+                        itemId
+                    )
                 );
                 continue;
             }
@@ -1244,7 +1259,7 @@ public class InventoryHelper(
         )
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "inventory-invalid_move_to_container",
                     new
                     {

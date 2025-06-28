@@ -20,7 +20,7 @@ public class BuildController(
     EventOutputHolder _eventOutputHolder,
     DatabaseService _databaseService,
     ProfileHelper _profileHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ItemHelper _itemHelper,
     SaveServer _saveServer,
     ICloner _cloner
@@ -266,6 +266,8 @@ public class BuildController(
         }
 
         // Not found in weapons,equipment or magazines, not good
-        _logger.Error(_localisationService.GetText("build-unable_to_delete_preset", idToRemove));
+        _logger.Error(
+            _serverLocalisationService.GetText("build-unable_to_delete_preset", idToRemove)
+        );
     }
 }

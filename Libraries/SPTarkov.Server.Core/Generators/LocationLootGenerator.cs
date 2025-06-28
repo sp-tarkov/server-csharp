@@ -26,7 +26,7 @@ public class LocationLootGenerator(
     DatabaseService _databaseService,
     ContainerHelper _containerHelper,
     PresetHelper _presetHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     SeasonalEventService _seasonalEventService,
     ItemFilterService _itemFilterService,
     ConfigServer _configServer,
@@ -83,12 +83,14 @@ public class LocationLootGenerator(
         result.AddRange(dynamicSpawnPoints);
 
         _logger.Success(
-            _localisationService.GetText(
+            _serverLocalisationService.GetText(
                 "location-dynamic_items_spawned_success",
                 dynamicSpawnPoints.Count
             )
         );
-        _logger.Success(_localisationService.GetText("location-generated_success", locationId));
+        _logger.Success(
+            _serverLocalisationService.GetText("location-generated_success", locationId)
+        );
 
         // Clean up tracker
         counterTrackerHelper.Clear();
@@ -114,7 +116,7 @@ public class LocationLootGenerator(
         if (staticWeaponsOnMapClone is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "location-unable_to_find_static_weapon_for_map",
                     locationId
                 )
@@ -130,7 +132,7 @@ public class LocationLootGenerator(
         if (allStaticContainersOnMapClone is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "location-unable_to_find_static_container_for_map",
                     locationId
                 )
@@ -142,7 +144,7 @@ public class LocationLootGenerator(
         if (staticForcedOnMapClone is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "location-unable_to_find_forced_static_data_for_map",
                     locationId
                 )
@@ -230,7 +232,10 @@ public class LocationLootGenerator(
         if (mapData.Statics is null)
         {
             _logger.Warning(
-                _localisationService.GetText("location-unable_to_generate_static_loot", locationId)
+                _serverLocalisationService.GetText(
+                    "location-unable_to_generate_static_loot",
+                    locationId
+                )
             );
 
             return result;
@@ -324,7 +329,7 @@ public class LocationLootGenerator(
 
         _logger.Success($"A total of: {staticLootItemCount} static items spawned");
         _logger.Success(
-            _localisationService.GetText(
+            _serverLocalisationService.GetText(
                 "location-containers_generated_success",
                 staticContainerCount
             )
@@ -473,7 +478,7 @@ public class LocationLootGenerator(
             )
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "location-unable_to_find_container_in_statics_json",
                         container.Template.Id
                     )
@@ -658,7 +663,7 @@ public class LocationLootGenerator(
         if (countDistribution is null)
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "location-unable_to_find_count_distribution_for_container",
                     new { containerId = containerTypeId, locationName }
                 )
@@ -704,7 +709,7 @@ public class LocationLootGenerator(
         if (itemContainerDistribution is null)
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "location-missing_item_distribution_data",
                     containerTypeId
                 )
@@ -874,7 +879,7 @@ public class LocationLootGenerator(
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
                 _logger.Debug(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "location-spawn_point_count_requested_vs_found",
                         new
                         {
@@ -896,7 +901,7 @@ public class LocationLootGenerator(
             if (spawnPoint.Template is null)
             {
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "location-missing_dynamic_template",
                         spawnPoint.LocationId
                     )
@@ -926,7 +931,7 @@ public class LocationLootGenerator(
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
                     _logger.Debug(
-                        _localisationService.GetText(
+                        _serverLocalisationService.GetText(
                             "location-spawnpoint_missing_items",
                             spawnPoint.Template.Id
                         )
@@ -960,7 +965,7 @@ public class LocationLootGenerator(
             if (itemArray.Count == 0)
             {
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "location-loot_pool_is_empty_skipping",
                         spawnPoint.Template.Id
                     )
@@ -1316,7 +1321,7 @@ public class LocationLootGenerator(
                 // 5ea03f7400685063ec28bfa8 // ppsh default
                 // 5ba26383d4351e00334c93d9 //mp7_devgru
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "location-preset_not_found",
                         new
                         {
@@ -1345,13 +1350,15 @@ public class LocationLootGenerator(
         if (rootItem is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "location-missing_root_item",
                     new { tpl = chosenTpl, parentId }
                 )
             );
 
-            throw new Exception(_localisationService.GetText("location-critical_error_see_log"));
+            throw new Exception(
+                _serverLocalisationService.GetText("location-critical_error_see_log")
+            );
         }
 
         try
@@ -1364,7 +1371,7 @@ public class LocationLootGenerator(
         catch (Exception e)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "location-unable_to_reparent_item",
                     new { tpl = chosenTpl, parentId }
                 )

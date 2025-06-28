@@ -21,7 +21,7 @@ public class RewardHelper(
     ItemHelper _itemHelper,
     DatabaseService _databaseService,
     ProfileHelper _profileHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     TraderHelper _traderHelper,
     PresetHelper _presetHelper,
     ICloner _cloner,
@@ -129,7 +129,7 @@ public class RewardHelper(
                     break;
                 default:
                     _logger.Error(
-                        _localisationService.GetText(
+                        _serverLocalisationService.GetText(
                             "reward-type_not_handled",
                             new { rewardType = reward.Type, questId = rewardSourceId }
                         )
@@ -192,7 +192,7 @@ public class RewardHelper(
         if (matchingProductions.Count != 1)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "reward-unable_to_find_matching_hideout_production",
                     new { questId, matchCount = matchingProductions.Count }
                 )

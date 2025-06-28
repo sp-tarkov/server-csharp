@@ -33,7 +33,7 @@ public class LocationLifecycleService
     protected InRaidConfig _inRaidConfig;
     protected InRaidHelper _inRaidHelper;
     protected InsuranceService _insuranceService;
-    protected LocalisationService _localisationService;
+    protected ServerLocalisationService _serverLocalisationService;
     protected LocationConfig _locationConfig;
     protected LocationLootGenerator _locationLootGenerator;
     protected ISptLogger<LocationLifecycleService> _logger;
@@ -71,7 +71,7 @@ public class LocationLifecycleService
         ICloner cloner,
         RaidTimeAdjustmentService raidTimeAdjustmentService,
         LocationLootGenerator locationLootGenerator,
-        LocalisationService localisationService,
+        ServerLocalisationService localisationService,
         BotLootCacheService botLootCacheService,
         LootGenerator lootGenerator,
         MailSendService mailSendService,
@@ -103,7 +103,7 @@ public class LocationLifecycleService
         _cloner = cloner;
         _raidTimeAdjustmentService = raidTimeAdjustmentService;
         _locationLootGenerator = locationLootGenerator;
-        _localisationService = localisationService;
+        _serverLocalisationService = localisationService;
         _botLootCacheService = botLootCacheService;
         _lootGenerator = lootGenerator;
         _mailSendService = mailSendService;
@@ -799,7 +799,7 @@ public class LocationLifecycleService
             if (pmcQuest is null)
             {
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "inraid-unable_to_migrate_pmc_quest_not_found_in_profile",
                         scavQuest.QId
                     )

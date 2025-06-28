@@ -29,7 +29,7 @@ public class RepairService(
     PaymentService _paymentService,
     ProfileHelper _profileHelper,
     RepairHelper _repairHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer,
     WeightedRandomHelper _weightedRandomHelper
 )
@@ -57,7 +57,7 @@ public class RepairService(
         if (itemToRepair is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "repair-unable_to_find_item_in_inventory_cant_repair",
                     repairItemDetails.Id
                 )
@@ -69,7 +69,10 @@ public class RepairService(
         if (traderRepairDetails is null)
         {
             _logger.Error(
-                _localisationService.GetText("repair-unable_to_find_trader_details_by_id", traderId)
+                _serverLocalisationService.GetText(
+                    "repair-unable_to_find_trader_details_by_id",
+                    traderId
+                )
             );
         }
 
@@ -95,7 +98,7 @@ public class RepairService(
         if (itemRepairCost is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "repair-unable_to_find_item_repair_cost",
                     itemToRepair.Template
                 )
@@ -199,7 +202,7 @@ public class RepairService(
             {
                 // No item found
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "repair-unable_to_find_item_in_db",
                         repairDetails.RepairedItem.Template
                     )
@@ -213,7 +216,7 @@ public class RepairService(
             if (repairDetails.RepairPoints is null)
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "repair-item_has_no_repair_points",
                         repairDetails.RepairedItem.Template
                     )
@@ -261,7 +264,7 @@ public class RepairService(
             if (repairDetails.RepairPoints is null)
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "repair-item_has_no_repair_points",
                         repairDetails.RepairedItem.Template
                     )
@@ -339,7 +342,7 @@ public class RepairService(
         if (itemToRepair is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "repair-item_not_found_unable_to_repair",
                     itemToRepairId
                 )
@@ -375,7 +378,7 @@ public class RepairService(
             if (repairKitInInventory is null)
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "repair-repair_kit_not_found_in_inventory",
                         repairKit.Id
                     )
@@ -676,7 +679,7 @@ public class RepairService(
         if (repairDetails.RepairPoints is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "repair-item_has_no_repair_points",
                     repairDetails.RepairedItem.Template
                 )

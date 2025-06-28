@@ -12,7 +12,7 @@ namespace SPTarkov.Server.Core.Services;
 public class ItemBaseClassService(
     ISptLogger<ItemBaseClassService> _logger,
     DatabaseService _databaseService,
-    LocalisationService _localisationService
+    ServerLocalisationService _serverLocalisationService
 )
 {
     private bool _cacheGenerated;
@@ -95,7 +95,7 @@ public class ItemBaseClassService(
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(_localisationService.GetText("baseclass-item_not_found", itemTpl));
+            _logger.Debug(_serverLocalisationService.GetText("baseclass-item_not_found", itemTpl));
         }
 
         // Not found in cache, Hydrate again - some mods add items late
@@ -107,7 +107,9 @@ public class ItemBaseClassService(
             return value.Any(baseClasses.Contains);
         }
 
-        _logger.Warning(_localisationService.GetText("baseclass-item_not_found_failed", itemTpl));
+        _logger.Warning(
+            _serverLocalisationService.GetText("baseclass-item_not_found_failed", itemTpl)
+        );
 
         return false;
     }

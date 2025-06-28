@@ -23,7 +23,7 @@ public class BotGeneratorHelper(
     InventoryHelper _inventoryHelper,
     ContainerHelper _containerHelper,
     ProfileActivityService _profileActivityService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer
 )
 {
@@ -265,7 +265,7 @@ public class BotGeneratorHelper(
         if (botEquipmentSettings is null)
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "bot-missing_equipment_settings",
                     new
                     {
@@ -293,7 +293,7 @@ public class BotGeneratorHelper(
         }
 
         _logger.Warning(
-            _localisationService.GetText(
+            _serverLocalisationService.GetText(
                 "bot-missing_equipment_settings_property",
                 new
                 {
@@ -406,7 +406,7 @@ public class BotGeneratorHelper(
         if (!itemIsValid)
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "bot-invalid_item_compatibility_check",
                     new { itemTpl = tplToCheck, slot = equipmentSlot }
                 )
@@ -423,7 +423,7 @@ public class BotGeneratorHelper(
         if (itemToEquip?.Properties is null)
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "bot-compatibility_check_missing_props",
                     new
                     {
@@ -648,7 +648,7 @@ public class BotGeneratorHelper(
             if (!key)
             {
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "bot-missing_container_with_tpl",
                         container.Template
                     )

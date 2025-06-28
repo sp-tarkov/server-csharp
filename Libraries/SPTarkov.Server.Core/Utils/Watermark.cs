@@ -15,7 +15,7 @@ public class WatermarkLocale
     protected readonly List<string> Modding;
     protected readonly List<string> Warning;
 
-    public WatermarkLocale(LocalisationService localisationService)
+    public WatermarkLocale(ServerLocalisationService localisationService)
     {
         Description =
         [
@@ -66,7 +66,7 @@ public class WatermarkLocale
 public class Watermark : IOnLoad
 {
     protected ConfigServer _configServer;
-    protected LocalisationService _localisationService;
+    protected ServerLocalisationService _serverLocalisationService;
 
     protected ISptLogger<Watermark> _logger;
     protected WatermarkLocale _watermarkLocale;
@@ -77,13 +77,13 @@ public class Watermark : IOnLoad
     public Watermark(
         ISptLogger<Watermark> logger,
         ConfigServer configServer,
-        LocalisationService localisationService,
+        ServerLocalisationService localisationService,
         WatermarkLocale watermarkLocale
     )
     {
         _logger = logger;
         _configServer = configServer;
-        _localisationService = localisationService;
+        _serverLocalisationService = localisationService;
         _watermarkLocale = watermarkLocale;
         sptConfig = _configServer.GetConfig<CoreConfig>();
     }
@@ -114,7 +114,7 @@ public class Watermark : IOnLoad
         {
             foreach (var key in sptConfig.CustomWatermarkLocaleKeys)
             {
-                text.AddRange(["", _localisationService.GetText(key)]);
+                text.AddRange(["", _serverLocalisationService.GetText(key)]);
             }
         }
 
@@ -141,7 +141,7 @@ public class Watermark : IOnLoad
     {
         var sptVersion = ProgramStatics.SPT_VERSION() ?? sptConfig.SptVersion;
         var versionTag = /*ProgramStatics.DEBUG*/
-            $"{sptVersion} - {_localisationService.GetText("bleeding_edge_build")}";
+            $"{sptVersion} - {_serverLocalisationService.GetText("bleeding_edge_build")}";
 
         if (withEftVersion)
         {

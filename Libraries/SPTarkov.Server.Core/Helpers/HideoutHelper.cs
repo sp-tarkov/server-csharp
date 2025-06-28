@@ -19,7 +19,7 @@ namespace SPTarkov.Server.Core.Helpers;
 public class HideoutHelper(
     ISptLogger<HideoutHelper> _logger,
     TimeUtil _timeUtil,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     HashUtil _hashUtil,
     DatabaseService _databaseService,
     EventOutputHolder _eventOutputHolder,
@@ -57,7 +57,7 @@ public class HideoutHelper(
         if (recipe is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "hideout-missing_recipe_in_db",
                     productionRequest.RecipeId
                 )
@@ -136,7 +136,7 @@ public class HideoutHelper(
         if (recipe is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "hideout-missing_recipe_in_db",
                     productionRequest.RecipeId
                 )
@@ -212,7 +212,7 @@ public class HideoutHelper(
                 if (stashItem is null)
                 {
                     _logger.Warning(
-                        _localisationService.GetText(
+                        _serverLocalisationService.GetText(
                             "hideout-unable_to_apply_stashsize_bonus_no_stash_found",
                             profileData.Inventory.Stash
                         )
@@ -331,7 +331,7 @@ public class HideoutHelper(
             if (craft.Progress == null)
             {
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "hideout-craft_has_undefined_progress_value_defaulting",
                         prodId
                     )
@@ -386,7 +386,7 @@ public class HideoutHelper(
             if (recipe is null)
             {
                 _logger.Error(
-                    _localisationService.GetText("hideout-missing_recipe_for_area", prodId)
+                    _serverLocalisationService.GetText("hideout-missing_recipe_for_area", prodId)
                 );
 
                 continue;
@@ -782,7 +782,9 @@ public class HideoutHelper(
             .Production.Recipes.FirstOrDefault(production => production.Id == recipeId);
         if (recipe is null)
         {
-            _logger.Error(_localisationService.GetText("hideout-missing_recipe_in_db", recipeId));
+            _logger.Error(
+                _serverLocalisationService.GetText("hideout-missing_recipe_in_db", recipeId)
+            );
 
             return null;
         }
@@ -1119,7 +1121,7 @@ public class HideoutHelper(
     {
         if (btcProduction is null)
         {
-            _logger.Error(_localisationService.GetText("hideout-bitcoin_craft_missing"));
+            _logger.Error(_serverLocalisationService.GetText("hideout-bitcoin_craft_missing"));
 
             return;
         }
@@ -1402,7 +1404,7 @@ public class HideoutHelper(
         var craftedCoinCount = bitcoinCraft?.Products?.Count;
         if (bitcoinCraft is null || craftedCoinCount is null)
         {
-            var errorMsg = _localisationService.GetText("hideout-no_bitcoins_to_collect");
+            var errorMsg = _serverLocalisationService.GetText("hideout-no_bitcoins_to_collect");
             _logger.Error(errorMsg);
 
             _httpResponseUtil.AppendErrorToOutput(output, errorMsg);

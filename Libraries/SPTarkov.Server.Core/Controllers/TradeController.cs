@@ -32,7 +32,7 @@ public class TradeController(
     TraderHelper _traderHelper,
     RagfairServer _ragfairServer,
     HttpResponseUtil _httpResponseUtil,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     RagfairPriceService _ragfairPriceService,
     MailSendService _mailSendService,
     ConfigServer _configServer
@@ -114,7 +114,7 @@ public class TradeController(
 
             if (offer.Count == 0)
             {
-                var errorMessage = _localisationService.GetText(
+                var errorMessage = _serverLocalisationService.GetText(
                     "ragfair-unable_to_purchase_0_count_item",
                     _itemHelper.GetItem(fleaOffer.Items[0].Template).Value.Name
                 );

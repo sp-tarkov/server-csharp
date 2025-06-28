@@ -23,7 +23,7 @@ public class CreateProfileService(
     TimeUtil _timeUtil,
     HashUtil _hashUtil,
     DatabaseService _databaseService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ProfileHelper _profileHelper,
     ItemHelper _itemHelper,
     TraderHelper _traderHelper,
@@ -240,7 +240,7 @@ public class CreateProfileService(
         else
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "profile-unable_to_find_profile_by_id_cannot_delete",
                     sessionID
                 )

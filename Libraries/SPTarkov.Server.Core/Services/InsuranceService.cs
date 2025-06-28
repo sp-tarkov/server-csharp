@@ -26,7 +26,7 @@ public class InsuranceService(
     SaveServer _saveServer,
     TraderHelper _traderHelper,
     ProfileHelper _profileHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     MailSendService _mailSendService,
     ConfigServer _configServer,
     ICloner _cloner
@@ -81,7 +81,7 @@ public class InsuranceService(
             if (traderBase is null)
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "insurance-unable_to_find_trader_by_id",
                         traderKvP.Key
                     )
@@ -94,7 +94,7 @@ public class InsuranceService(
             if (dialogueTemplates is null)
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "insurance-trader_lacks_dialogue_property",
                         traderKvP.Key
                     )

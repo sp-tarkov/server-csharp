@@ -25,7 +25,7 @@ public class ProfileFixerService(
     TraderHelper _traderHelper,
     HideoutHelper _hideoutHelper,
     DatabaseService _databaseService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer,
     InventoryHelper _inventoryHelper
 )
@@ -413,7 +413,7 @@ public class ProfileFixerService(
         if (matchingProductions.Count != 1)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "quest-unable_to_find_matching_hideout_production",
                     new
                     {
@@ -658,7 +658,7 @@ public class ProfileFixerService(
                 if (!itemsDb.ContainsKey(item.Template))
                 {
                     _logger.Error(
-                        _localisationService.GetText("fixer-mod_item_found", item.Template)
+                        _serverLocalisationService.GetText("fixer-mod_item_found", item.Template)
                     );
 
                     if (_coreConfig.Fixes.RemoveModItemsFromProfile)
@@ -734,7 +734,10 @@ public class ProfileFixerService(
                     if (!itemsDb.ContainsKey(item.Template))
                     {
                         _logger.Error(
-                            _localisationService.GetText("fixer-mod_item_found", item.Template)
+                            _serverLocalisationService.GetText(
+                                "fixer-mod_item_found",
+                                item.Template
+                            )
                         );
                     }
 
@@ -762,7 +765,7 @@ public class ProfileFixerService(
             {
                 // Item in profile not found in db, not good
                 _logger.Error(
-                    _localisationService.GetText("fixer-clothing_item_found", clothingItem)
+                    _serverLocalisationService.GetText("fixer-clothing_item_found", clothingItem)
                 );
 
                 if (_coreConfig.Fixes.RemoveModItemsFromProfile)
@@ -790,7 +793,10 @@ public class ProfileFixerService(
                 if (!_traderHelper.TraderExists(activeQuest.TraderId))
                 {
                     _logger.Error(
-                        _localisationService.GetText("fixer-trader_found", activeQuest.TraderId)
+                        _serverLocalisationService.GetText(
+                            "fixer-trader_found",
+                            activeQuest.TraderId
+                        )
                     );
                     if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                     {
@@ -834,7 +840,7 @@ public class ProfileFixerService(
         )
         {
             _logger.Error(
-                _localisationService.GetText("fixer-trader_found", TraderPurchaseKvP.Key)
+                _serverLocalisationService.GetText("fixer-trader_found", TraderPurchaseKvP.Key)
             );
             if (_coreConfig.Fixes.RemoveModItemsFromProfile)
             {
@@ -868,7 +874,9 @@ public class ProfileFixerService(
                 )
             )
             {
-                _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
+                _logger.Error(
+                    _serverLocalisationService.GetText("fixer-mod_item_found", item.Template)
+                );
 
                 if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                 {
@@ -894,7 +902,9 @@ public class ProfileFixerService(
                 )
             )
             {
-                _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
+                _logger.Error(
+                    _serverLocalisationService.GetText("fixer-mod_item_found", item.Template)
+                );
 
                 if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                 {
@@ -936,7 +946,7 @@ public class ProfileFixerService(
             if (!itemsDb.ContainsKey(item.TemplateId))
             {
                 _logger.Error(
-                    _localisationService.GetText("fixer-mod_item_found", item.TemplateId)
+                    _serverLocalisationService.GetText("fixer-mod_item_found", item.TemplateId)
                 );
 
                 if (_coreConfig.Fixes.RemoveModItemsFromProfile)
@@ -1054,7 +1064,7 @@ public class ProfileFixerService(
             var traderId = traderKvP.Key;
             if (!_traderHelper.TraderExists(traderId))
             {
-                _logger.Error(_localisationService.GetText("fixer-trader_found", traderId));
+                _logger.Error(_serverLocalisationService.GetText("fixer-trader_found", traderId));
                 if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
                     _logger.Warning(
@@ -1070,7 +1080,7 @@ public class ProfileFixerService(
             var traderId = traderKvP.Key;
             if (!_traderHelper.TraderExists(traderId))
             {
-                _logger.Error(_localisationService.GetText("fixer-trader_found", traderId));
+                _logger.Error(_serverLocalisationService.GetText("fixer-trader_found", traderId));
                 if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
                     _logger.Warning(

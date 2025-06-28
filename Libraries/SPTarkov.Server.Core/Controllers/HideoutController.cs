@@ -35,7 +35,7 @@ public class HideoutController(
     ProfileHelper _profileHelper,
     HideoutHelper _hideoutHelper,
     ScavCaseRewardGenerator _scavCaseRewardGenerator,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ProfileActivityService _profileActivityService,
     FenceService _fenceService,
     CircleOfCultistService _circleOfCultistService,
@@ -86,7 +86,7 @@ public class HideoutController(
             if (item.inventoryItem is null)
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "hideout-unable_to_find_item_in_inventory",
                         item.requestedItem.Id
                     )
@@ -118,7 +118,7 @@ public class HideoutController(
         if (profileHideoutArea is null)
         {
             _logger.Error(
-                _localisationService.GetText("hideout-unable_to_find_area", request.AreaType)
+                _serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType)
             );
             _httpResponseUtil.AppendErrorToOutput(output);
 
@@ -131,7 +131,7 @@ public class HideoutController(
         if (hideoutDataDb is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "hideout-unable_to_find_area_in_database",
                     request.AreaType
                 )
@@ -182,7 +182,7 @@ public class HideoutController(
         if (profileHideoutArea is null)
         {
             _logger.Error(
-                _localisationService.GetText("hideout-unable_to_find_area", request.AreaType)
+                _serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType)
             );
             _httpResponseUtil.AppendErrorToOutput(output);
 
@@ -200,7 +200,7 @@ public class HideoutController(
         if (hideoutData is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "hideout-unable_to_find_area_in_database",
                     request.AreaType
                 )
@@ -484,7 +484,7 @@ public class HideoutController(
         if (hideoutArea is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "hideout-unable_to_find_area_in_database",
                     addItemToHideoutRequest.AreaType
                 )
@@ -497,7 +497,7 @@ public class HideoutController(
             if (item.inventoryItem is null)
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "hideout-unable_to_find_item_in_inventory",
                         new { itemId = item.requestedItem.Id, area = hideoutArea.Type }
                     )
@@ -559,7 +559,7 @@ public class HideoutController(
         if (hideoutArea is null)
         {
             _logger.Error(
-                _localisationService.GetText("hideout-unable_to_find_area", request.AreaType)
+                _serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType)
             );
             return _httpResponseUtil.AppendErrorToOutput(output);
         }
@@ -567,7 +567,7 @@ public class HideoutController(
         if (hideoutArea.Slots is null || hideoutArea.Slots.Count == 0)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "hideout-unable_to_find_item_to_remove_from_area",
                     hideoutArea.Type
                 )
@@ -586,7 +586,7 @@ public class HideoutController(
         }
 
         throw new Exception(
-            _localisationService.GetText(
+            _serverLocalisationService.GetText(
                 "hideout-unhandled_remove_item_from_area_request",
                 hideoutArea.Type
             )
@@ -683,7 +683,7 @@ public class HideoutController(
         if (hideoutArea is null)
         {
             _logger.Error(
-                _localisationService.GetText("hideout-unable_to_find_area", request.AreaType)
+                _serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType)
             );
             return _httpResponseUtil.AppendErrorToOutput(output);
         }
@@ -780,7 +780,7 @@ public class HideoutController(
             if (inventoryItem is null)
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "hideout-unable_to_find_scavcase_requested_item_in_profile_inventory",
                         requestedItem.Id
                     )
@@ -807,7 +807,7 @@ public class HideoutController(
         if (recipe is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "hideout-unable_to_find_scav_case_recipie_in_database",
                     request.RecipeId
                 )
@@ -937,7 +937,7 @@ public class HideoutController(
         }
 
         _logger.Error(
-            _localisationService.GetText(
+            _serverLocalisationService.GetText(
                 "hideout-unable_to_find_production_in_profile_by_recipie_id",
                 request.RecipeId
             )
@@ -987,7 +987,7 @@ public class HideoutController(
         if (prodId is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "hideout-unable_to_find_production_in_profile_by_recipie_id",
                     request.RecipeId
                 )
@@ -995,7 +995,7 @@ public class HideoutController(
 
             _httpResponseUtil.AppendErrorToOutput(
                 output,
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "hideout-unable_to_find_production_in_profile_by_recipie_id",
                     request.RecipeId
                 )
@@ -1077,7 +1077,7 @@ public class HideoutController(
         {
             _httpResponseUtil.AppendErrorToOutput(
                 output,
-                _localisationService.GetText("inventory-no_stash_space"),
+                _serverLocalisationService.GetText("inventory-no_stash_space"),
                 BackendErrorCodes.NotEnoughSpace
             );
             return;
@@ -1296,7 +1296,7 @@ public class HideoutController(
         if (prodId == null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "hideout-unable_to_find_production_in_profile_by_recipie_id",
                     request.RecipeId
                 )
@@ -1497,7 +1497,7 @@ public class HideoutController(
             if (item.inventoryItem is null)
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "hideout-unable_to_find_item_in_inventory",
                         item.requestedItem.Id
                     )
@@ -1526,7 +1526,7 @@ public class HideoutController(
         if (profileHideoutArea is null)
         {
             _logger.Error(
-                _localisationService.GetText("hideout-unable_to_find_area", request.AreaType)
+                _serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType)
             );
             return _httpResponseUtil.AppendErrorToOutput(output);
         }
@@ -1537,7 +1537,7 @@ public class HideoutController(
         if (hideoutDbData is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "hideout-unable_to_find_area_in_database",
                     request.AreaType
                 )

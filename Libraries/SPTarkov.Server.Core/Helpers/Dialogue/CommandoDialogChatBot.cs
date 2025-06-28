@@ -13,7 +13,7 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue;
 public class CommandoDialogChatBot(
     ISptLogger<AbstractDialogChatBot> logger,
     MailSendService mailSendService,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     ConfigServer _configServer,
     IEnumerable<IChatCommand> chatCommands
 ) : AbstractDialogChatBot(logger, mailSendService, localisationService, chatCommands)

@@ -22,7 +22,7 @@ public class DialogueController(
     ProfileHelper _profileHelper,
     ConfigServer _configServer,
     SaveServer _saveServer,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     MailSendService _mailSendService,
     IEnumerable<IDialogueChatBot> dialogueChatBots
 )
@@ -38,7 +38,7 @@ public class DialogueController(
         if (_dialogueChatBots.Any(cb => cb.GetChatBot().Id == chatBot.GetChatBot().Id))
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "dialog-chatbot_id_already_exists",
                     chatBot.GetChatBot().Id
                 )
@@ -436,7 +436,7 @@ public class DialogueController(
         if (!profile.DialogueRecords.ContainsKey(dialogueId))
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "dialogue-unable_to_find_in_profile",
                     new { sessionId, dialogueId }
                 )
@@ -460,7 +460,7 @@ public class DialogueController(
         if (dialog is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "dialogue-unable_to_find_in_profile",
                     new { sessionId, dialogueId }
                 )
@@ -484,7 +484,7 @@ public class DialogueController(
         if (dialogs is null || !dialogs.Any())
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "dialogue-unable_to_find_dialogs_in_profile",
                     new { sessionId }
                 )
@@ -513,7 +513,7 @@ public class DialogueController(
         var dialog = dialogs.TryGetValue(dialogueId, out var dialogInfo);
         if (!dialog)
         {
-            _logger.Error(_localisationService.GetText("dialogue-unable_to_find_in_profile"));
+            _logger.Error(_serverLocalisationService.GetText("dialogue-unable_to_find_in_profile"));
 
             return null;
         }

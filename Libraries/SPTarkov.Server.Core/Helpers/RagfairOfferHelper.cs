@@ -33,7 +33,7 @@ public class RagfairOfferHelper(
     DatabaseService _databaseService,
     RagfairOfferService _ragfairOfferService,
     LocaleService _localeService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     MailSendService _mailSendService,
     RagfairRequiredItemsService _ragfairRequiredItemsService,
     ProfileHelper _profileHelper,
@@ -888,7 +888,7 @@ public class RagfairOfferHelper(
         if (!globalLocales.TryGetValue(_goodSoldTemplate, out var soldMessageLocaleGuid))
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "ragfair-unable_to_find_locale_by_key",
                     _goodSoldTemplate
                 )

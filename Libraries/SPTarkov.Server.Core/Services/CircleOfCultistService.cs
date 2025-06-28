@@ -38,7 +38,7 @@ public class CircleOfCultistService(
     DatabaseService _databaseService,
     ItemFilterService _itemFilterService,
     SeasonalEventService _seasonalEventService,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     ConfigServer _configServer
 )
 {

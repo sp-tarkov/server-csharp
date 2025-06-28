@@ -24,7 +24,7 @@ public class LootGenerator(
     PresetHelper _presetHelper,
     DatabaseService _databaseService,
     ItemFilterService _itemFilterService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     WeightedRandomHelper _weightedRandomHelper,
     RagfairLinkedItemService _ragfairLinkedItemService,
     SeasonalEventService _seasonalEventService,
@@ -431,7 +431,7 @@ public class LootGenerator(
     {
         if (presetPool.Count == 0)
         {
-            _logger.Warning(_localisationService.GetText("loot-preset_pool_is_empty"));
+            _logger.Warning(_serverLocalisationService.GetText("loot-preset_pool_is_empty"));
 
             return false;
         }
@@ -445,7 +445,7 @@ public class LootGenerator(
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "loot-chosen_preset_missing_encyclopedia_value",
                         chosenPreset?.Id
                     )
@@ -479,7 +479,7 @@ public class LootGenerator(
         if (itemDbDetails.Value?.Parent is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "loot-item_missing_parentid",
                     itemDbDetails.Value?.Name
                 )
@@ -537,7 +537,7 @@ public class LootGenerator(
         if (!weaponDetailsDb.Key)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "loot-non_item_picked_as_sealed_weapon_crate_reward",
                     chosenWeaponTpl
                 )
@@ -555,7 +555,7 @@ public class LootGenerator(
         if (chosenWeaponPreset is null)
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "loot-default_preset_not_found_using_random",
                     chosenWeaponTpl
                 )

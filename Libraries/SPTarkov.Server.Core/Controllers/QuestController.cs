@@ -24,7 +24,7 @@ public class QuestController(
     MailSendService _mailSendService,
     QuestHelper _questHelper,
     QuestRewardHelper _questRewardHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ICloner _cloner
 )
 {
@@ -236,7 +236,7 @@ public class QuestController(
                 if (handedInCount <= 0)
                 {
                     _logger.Error(
-                        _localisationService.GetText(
+                        _serverLocalisationService.GetText(
                             "repeatable-quest_handover_failed_condition_already_satisfied",
                             new
                             {
@@ -376,7 +376,7 @@ public class QuestController(
         ItemEventRouterResponse output
     )
     {
-        var errorMessage = _localisationService.GetText(
+        var errorMessage = _serverLocalisationService.GetText(
             "repeatable-quest_handover_failed_condition_invalid",
             new { questId, conditionId }
         );
@@ -400,7 +400,7 @@ public class QuestController(
         ItemEventRouterResponse output
     )
     {
-        var errorMessage = _localisationService.GetText(
+        var errorMessage = _serverLocalisationService.GetText(
             "quest-handover_wrong_item",
             new
             {

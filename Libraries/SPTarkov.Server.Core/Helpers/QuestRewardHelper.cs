@@ -18,7 +18,7 @@ public class QuestRewardHelper(
     DatabaseService _databaseService,
     ProfileHelper _profileHelper,
     RewardHelper _rewardHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ICloner _cloner
 )
 {
@@ -62,7 +62,7 @@ public class QuestRewardHelper(
         if (questDetails is null)
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "quest-unable_to_find_quest_in_db_no_quest_rewards",
                     questId
                 )

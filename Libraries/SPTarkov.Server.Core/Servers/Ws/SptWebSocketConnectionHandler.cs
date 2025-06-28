@@ -14,7 +14,7 @@ namespace SPTarkov.Server.Core.Servers.Ws;
 [Injectable(InjectionType.Singleton)]
 public class SptWebSocketConnectionHandler(
     ISptLogger<SptWebSocketConnectionHandler> _logger,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     JsonUtil _jsonUtil,
     ProfileHelper _profileHelper,
     IEnumerable<ISptWebSocketMessageHandler> _messageHandlers
@@ -55,7 +55,7 @@ public class SptWebSocketConnectionHandler(
                     if (_logger.IsLogEnabled(LogLevel.Debug))
                     {
                         _logger.Debug(
-                            _localisationService.GetText(
+                            _serverLocalisationService.GetText(
                                 "websocket-player_reconnect",
                                 new { sessionId = playerInfoText, contextId = sessionIdContext }
                             )
@@ -73,7 +73,7 @@ public class SptWebSocketConnectionHandler(
             if (_logger.IsLogEnabled(LogLevel.Info))
             {
                 _logger.Info(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "websocket-player_connected",
                         new { sessionId = playerInfoText, contextId = sessionIdContext }
                     )
@@ -200,7 +200,7 @@ public class SptWebSocketConnectionHandler(
 
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(_localisationService.GetText("websocket-message_sent"));
+                    _logger.Debug(_serverLocalisationService.GetText("websocket-message_sent"));
                 }
             }
             else
@@ -208,7 +208,7 @@ public class SptWebSocketConnectionHandler(
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
                     _logger.Debug(
-                        _localisationService.GetText(
+                        _serverLocalisationService.GetText(
                             "websocket-not_ready_message_not_sent",
                             sessionID
                         )
@@ -219,7 +219,7 @@ public class SptWebSocketConnectionHandler(
         catch (Exception err)
         {
             _logger.Error(
-                _localisationService.GetText("websocket-message_send_failed_with_error"),
+                _serverLocalisationService.GetText("websocket-message_send_failed_with_error"),
                 err
             );
         }

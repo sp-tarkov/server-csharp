@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
@@ -15,7 +14,7 @@ public class RagfairOfferHolder(
     RagfairServerHelper _ragfairServerHelper,
     ProfileHelper _profileHelper,
     HashUtil _hashUtil,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ItemHelper _itemHelper
 )
 {
@@ -182,7 +181,10 @@ public class RagfairOfferHolder(
         if (!_offersById.TryGetValue(offerId, out var offer))
         {
             _logger.Warning(
-                _localisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId)
+                _serverLocalisationService.GetText(
+                    "ragfair-unable_to_remove_offer_doesnt_exist",
+                    offerId
+                )
             );
 
             return;

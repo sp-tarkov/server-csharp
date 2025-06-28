@@ -11,7 +11,7 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 [Injectable]
 public class GiveMeSpaceMessageHandler(
     ProfileHelper _profileHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     MailSendService _mailSendService,
     RandomUtil _randomUtil,
     ConfigServer _configServer
@@ -50,7 +50,7 @@ public class GiveMeSpaceMessageHandler(
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
-                _localisationService.GetText("chatbot-cannot_accept_any_more_of_gift"),
+                _serverLocalisationService.GetText("chatbot-cannot_accept_any_more_of_gift"),
                 [],
                 null
             );
@@ -63,7 +63,7 @@ public class GiveMeSpaceMessageHandler(
                 sessionId,
                 sptFriendUser,
                 _randomUtil.GetArrayValue(
-                    [_localisationService.GetText("chatbot-added_stash_rows_please_restart")]
+                    [_serverLocalisationService.GetText("chatbot-added_stash_rows_please_restart")]
                 ),
                 [],
                 null

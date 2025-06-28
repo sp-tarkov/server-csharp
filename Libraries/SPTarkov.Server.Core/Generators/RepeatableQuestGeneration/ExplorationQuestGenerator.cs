@@ -19,7 +19,7 @@ public class ExplorationQuestGenerator(
     RepeatableQuestHelper repeatableQuestHelper,
     RepeatableQuestRewardGenerator repeatableQuestRewardGenerator,
     DatabaseService databaseService,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     ConfigServer configServer,
     RandomUtil randomUtil,
     MathUtil mathUtil,

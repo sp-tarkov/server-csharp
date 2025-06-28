@@ -14,7 +14,7 @@ public class AssortHelper(
     ISptLogger<AssortHelper> _logger,
     ItemHelper _itemHelper,
     DatabaseServer _databaseServer,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     QuestHelper _questHelper
 )
 {
@@ -41,7 +41,7 @@ public class AssortHelper(
         if (traderAssorts.LoyalLevelItems is null)
         {
             _logger.Warning(
-                _localisationService.GetText("assort-missing_loyalty_level_object", traderId)
+                _serverLocalisationService.GetText("assort-missing_loyalty_level_object", traderId)
             );
 
             return traderAssorts;
@@ -133,7 +133,7 @@ public class AssortHelper(
         if (assort.LoyalLevelItems is null)
         {
             _logger.Warning(
-                _localisationService.GetText("assort-missing_loyalty_level_object", traderId)
+                _serverLocalisationService.GetText("assort-missing_loyalty_level_object", traderId)
             );
 
             return strippedAssort;

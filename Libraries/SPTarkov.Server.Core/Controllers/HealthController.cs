@@ -22,7 +22,7 @@ public class HealthController(
     ItemHelper _itemHelper,
     PaymentService _paymentService,
     InventoryHelper _inventoryHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     HttpResponseUtil _httpResponseUtil,
     HealthHelper _healthHelper,
     ICloner _cloner
@@ -49,7 +49,7 @@ public class HealthController(
         );
         if (healingItemToUse is null)
         {
-            var errorMessage = _localisationService.GetText(
+            var errorMessage = _serverLocalisationService.GetText(
                 "health-healing_item_not_found",
                 request.Item
             );
@@ -165,7 +165,10 @@ public class HealthController(
         {
             return _httpResponseUtil.AppendErrorToOutput(
                 output,
-                _localisationService.GetText("health-unable_to_find_item_to_consume", request.Item)
+                _serverLocalisationService.GetText(
+                    "health-unable_to_find_item_to_consume",
+                    request.Item
+                )
             );
         }
 

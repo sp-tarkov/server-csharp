@@ -10,7 +10,7 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue;
 public abstract class AbstractDialogChatBot(
     ISptLogger<AbstractDialogChatBot> _logger,
     MailSendService _mailSendService,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     IEnumerable<IChatCommand> chatCommands
 ) : IDialogueChatBot
 {

@@ -24,7 +24,7 @@ public class LauncherController(
     HttpServerHelper _httpServerHelper,
     ProfileHelper _profileHelper,
     DatabaseService _databaseService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer
 )
 {
@@ -65,7 +65,10 @@ public class LauncherController(
         var result = new Dictionary<string, string>();
         foreach (var (profileKey, profile) in profileTemplates)
         {
-            result.TryAdd(profileKey, _localisationService.GetText(profile.DescriptionLocaleKey));
+            result.TryAdd(
+                profileKey,
+                _serverLocalisationService.GetText(profile.DescriptionLocaleKey)
+            );
         }
 
         return result;

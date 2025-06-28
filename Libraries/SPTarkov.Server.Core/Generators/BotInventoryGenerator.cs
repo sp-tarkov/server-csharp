@@ -29,7 +29,7 @@ public class BotInventoryGenerator(
     WeightedRandomHelper _weightedRandomHelper,
     ItemHelper _itemHelper,
     WeatherHelper _weatherHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     BotEquipmentFilterService _botEquipmentFilterService,
     BotEquipmentModPoolService _botEquipmentModPoolService,
     BotEquipmentModGenerator _botEquipmentModGenerator,
@@ -497,7 +497,7 @@ public class BotInventoryGenerator(
         if (!spawnChance.HasValue)
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "bot-no_spawn_chance_defined_for_equipment_slot",
                     settings.RootEquipmentSlot
                 )
@@ -531,7 +531,7 @@ public class BotInventoryGenerator(
                 if (!dbResult.Key)
                 {
                     _logger.Error(
-                        _localisationService.GetText("bot-missing_item_template", chosenItemTpl)
+                        _serverLocalisationService.GetText("bot-missing_item_template", chosenItemTpl)
                     );
                     if (_logger.IsLogEnabled(LogLevel.Debug))
                     {

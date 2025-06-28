@@ -21,7 +21,7 @@ public class AirdropService(
     HashUtil _hashUtil,
     WeightedRandomHelper _weightedRandomHelper,
     ContainerHelper _containerHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ItemFilterService _itemFilterService,
     ItemHelper _itemHelper
 )
@@ -42,7 +42,7 @@ public class AirdropService(
         }
 
         _logger.Warning(
-            _localisationService.GetText(
+            _serverLocalisationService.GetText(
                 "airdrop-unable_to_find_container_id_generating_random",
                 request.ContainerId
             )
@@ -234,7 +234,7 @@ public class AirdropService(
         if (!_airdropConfig.Loot.TryGetValue(airdropType.ToString(), out var lootSettingsByType))
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "location-unable_to_find_airdrop_drop_config_of_type",
                     airdropType
                 )

@@ -16,7 +16,7 @@ public class BotLootCacheService(
     ISptLogger<BotLootCacheService> _logger,
     ItemHelper _itemHelper,
     PMCLootGenerator _pmcLootGenerator,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ICloner _cloner
 )
 {
@@ -112,7 +112,7 @@ public class BotLootCacheService(
                 break;
             default:
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "bot-loot_type_not_found",
                         new
                         {

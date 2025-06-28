@@ -20,7 +20,7 @@ public class SptHttpListener(
     ISptLogger<RequestLogger> _requestsLogger,
     JsonUtil _jsonUtil,
     HttpResponseUtil _httpResponseUtil,
-    LocalisationService _localisationService
+    ServerLocalisationService _serverLocalisationService
 ) : IHttpListener
 {
     // We want to read 1KB at a time, for most request this is already big enough
@@ -108,7 +108,9 @@ public class SptHttpListener(
 
             default:
             {
-                _logger.Warning($"{_localisationService.GetText("unknown_request")}: {req.Method}");
+                _logger.Warning(
+                    $"{_serverLocalisationService.GetText("unknown_request")}: {req.Method}"
+                );
                 break;
             }
         }
@@ -195,7 +197,9 @@ public class SptHttpListener(
         /* route doesn't exist or response is not properly set up */
         if (string.IsNullOrEmpty(output))
         {
-            _logger.Error(_localisationService.GetText("unhandled_response", req.Path.ToString()));
+            _logger.Error(
+                _serverLocalisationService.GetText("unhandled_response", req.Path.ToString())
+            );
             output = _httpResponseUtil.GetBody<object?>(
                 null,
                 BackendErrorCodes.HTTPNotFound,

@@ -28,7 +28,7 @@ public class GameController(
     HideoutHelper _hideoutHelper,
     ProfileHelper _profileHelper,
     ProfileFixerService _profileFixerService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     PostDbLoadService _postDbLoadService,
     SeasonalEventService _seasonalEventService,
     GiftService _giftService,
@@ -300,7 +300,7 @@ public class GameController(
         if (botReloadSkill?.Progress > 0)
         {
             _logger.Warning(
-                _localisationService.GetText("server_start_player_active_botreload_skill")
+                _serverLocalisationService.GetText("server_start_player_active_botreload_skill")
             );
         }
     }

@@ -9,7 +9,7 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
 public class ForceHalloweenMessageHandler(
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     MailSendService _mailSendService,
     RandomUtil _randomUtil,
     SeasonalEventService _seasonalEventService
@@ -42,7 +42,7 @@ public class ForceHalloweenMessageHandler(
                 sptFriendUser,
                 _randomUtil.GetArrayValue(
                     [
-                        _localisationService.GetText(
+                        _serverLocalisationService.GetText(
                             "chatbot-forced_event_enabled",
                             SeasonalEventType.Halloween
                         ),

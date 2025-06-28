@@ -22,7 +22,7 @@ public class CustomizationController(
     EventOutputHolder _eventOutputHolder,
     DatabaseService _databaseService,
     SaveServer _saveServer,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ProfileHelper _profileHelper,
     ICloner _cloner,
     PaymentService _paymentService
@@ -54,7 +54,7 @@ public class CustomizationController(
         if (matchingSuits == null)
         {
             throw new Exception(
-                _localisationService.GetText("customisation-unable_to_get_trader_suits", traderId)
+                _serverLocalisationService.GetText("customisation-unable_to_get_trader_suits", traderId)
             );
         }
 
@@ -81,7 +81,7 @@ public class CustomizationController(
         if (traderOffer is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "customisation-unable_to_find_suit_by_id",
                     buyClothingRequest.Offer
                 )
@@ -94,7 +94,7 @@ public class CustomizationController(
         {
             var suitDetails = _databaseService.GetCustomization()!.GetValueOrDefault(suitId);
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "customisation-item_already_purchased",
                     new { itemId = suitDetails?.Id, itemName = suitDetails?.Name }
                 )
@@ -149,7 +149,7 @@ public class CustomizationController(
         if (foundSuit is null)
         {
             _logger.Error(
-                _localisationService.GetText("customisation-unable_to_find_suit_with_id", offerId)
+                _serverLocalisationService.GetText("customisation-unable_to_find_suit_with_id", offerId)
             );
         }
 

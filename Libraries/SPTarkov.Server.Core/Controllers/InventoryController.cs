@@ -33,7 +33,7 @@ public class InventoryController(
     FenceService _fenceService,
     RagfairOfferService _ragfairOfferService,
     MapMarkerService _mapMarkerService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     PlayerService _playerService,
     LootGenerator _lootGenerator,
     EventOutputHolder _eventOutputHolder,
@@ -139,7 +139,7 @@ public class InventoryController(
     {
         _httpResponseUtil.AppendErrorToOutput(
             output,
-            _localisationService.GetText("inventory-edit_trader_item"),
+            _serverLocalisationService.GetText("inventory-edit_trader_item"),
             (BackendErrorCodes)228
         );
     }
@@ -311,7 +311,7 @@ public class InventoryController(
             if (!item.Key)
             {
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "inventory-unable_to_inspect_item_not_in_db",
                         itemTpl
                     )
@@ -496,7 +496,7 @@ public class InventoryController(
             if (inventoryItem is null)
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "inventory-unable_to_sort_inventory_restart_game",
                         change.Id
                     )
@@ -563,7 +563,7 @@ public class InventoryController(
             catch
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "inventory-examine_item_does_not_exist",
                         request.Item
                     )
@@ -654,7 +654,7 @@ public class InventoryController(
 
             // Unable to find item in database or ragfair
             _logger.Warning(
-                _localisationService.GetText("inventory-unable_to_find_item", request.Item)
+                _serverLocalisationService.GetText("inventory-unable_to_find_item", request.Item)
             );
         }
 
@@ -793,7 +793,7 @@ public class InventoryController(
         {
             _itemHelper.AddUpdObjectToItem(
                 itemToToggle,
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "inventory-item_to_toggle_missing_upd",
                     itemToToggle.Id
                 )
@@ -805,7 +805,10 @@ public class InventoryController(
         }
 
         _logger.Warning(
-            _localisationService.GetText("inventory-unable_to_toggle_item_not_found", request.Item)
+            _serverLocalisationService.GetText(
+                "inventory-unable_to_toggle_item_not_found",
+                request.Item
+            )
         );
 
         return new ItemEventRouterResponse { Warnings = [] };
@@ -840,7 +843,7 @@ public class InventoryController(
         {
             // Item not found
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "inventory-unable_to_fold_item_not_found_in_inventory",
                     request.Item
                 )
@@ -883,7 +886,7 @@ public class InventoryController(
         if (itemOne is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "inventory-unable_to_find_item_to_swap",
                     new { item1Id = request.Item, item2Id = request.Item2 }
                 )
@@ -894,7 +897,7 @@ public class InventoryController(
         if (itemTwo is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "inventory-unable_to_find_item_to_swap",
                     new { item1Id = request.Item2, item2Id = request.Item }
                 )

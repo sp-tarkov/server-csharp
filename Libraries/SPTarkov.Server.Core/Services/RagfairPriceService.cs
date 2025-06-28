@@ -24,7 +24,7 @@ public class RagfairPriceService(
     PresetHelper _presetHelper,
     ItemHelper _itemHelper,
     DatabaseService _databaseService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer
 )
 {
@@ -85,7 +85,7 @@ public class RagfairPriceService(
         {
             var itemFromDb = _itemHelper.GetItem(tplId);
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "ragfair-unable_to_find_item_price_for_item_in_flea_handbook",
                     new { tpl = tplId, name = itemFromDb.Value.Name ?? "" }
                 )

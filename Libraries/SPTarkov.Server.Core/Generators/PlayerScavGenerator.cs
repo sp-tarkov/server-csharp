@@ -30,7 +30,7 @@ public class PlayerScavGenerator(
     BotHelper _botHelper,
     FenceService _fenceService,
     BotLootCacheService _botLootCacheService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     BotGenerator _botGenerator,
     ConfigServer _configServer,
     ICloner _cloner,
@@ -64,7 +64,7 @@ public class PlayerScavGenerator(
         )
         {
             _logger.Error(
-                _localisationService.GetText("scav-missing_karma_settings", scavKarmaLevel)
+                _serverLocalisationService.GetText("scav-missing_karma_settings", scavKarmaLevel)
             );
         }
 
@@ -163,7 +163,10 @@ public class PlayerScavGenerator(
             if (!itemResult.Key)
             {
                 _logger.Warning(
-                    _localisationService.GetText("scav-unable_to_add_item_to_player_scav", tpl)
+                    _serverLocalisationService.GetText(
+                        "scav-unable_to_add_item_to_player_scav",
+                        tpl
+                    )
                 );
                 continue;
             }

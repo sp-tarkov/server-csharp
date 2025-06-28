@@ -22,7 +22,7 @@ public class TraderHelper(
     HandbookHelper _handbookHelper,
     ItemHelper _itemHelper,
     PlayerService _playerService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     FenceService _fenceService,
     TraderStore _traderStore,
     TimeUtil _timeUtil,
@@ -67,7 +67,10 @@ public class TraderHelper(
         if (pmcData == null)
         {
             throw new Exception(
-                _localisationService.GetText("trader-unable_to_find_profile_with_id", sessionID)
+                _serverLocalisationService.GetText(
+                    "trader-unable_to_find_profile_with_id",
+                    sessionID
+                )
             );
         }
 
@@ -83,7 +86,7 @@ public class TraderHelper(
         if (traderBase == null)
         {
             _logger.Error(
-                _localisationService.GetText("trader-unable_to_find_trader_by_id", traderID)
+                _serverLocalisationService.GetText("trader-unable_to_find_trader_by_id", traderID)
             );
         }
 
@@ -151,7 +154,7 @@ public class TraderHelper(
         if (fullProfile is null)
         {
             throw new Exception(
-                _localisationService.GetText("trader-unable_to_find_profile_by_id", sessionID)
+                _serverLocalisationService.GetText("trader-unable_to_find_profile_by_id", sessionID)
             );
         }
 
@@ -388,7 +391,7 @@ public class TraderHelper(
         if (traderDetails?.Seconds?.Min is null || traderDetails.Seconds?.Max is null)
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "trader-missing_trader_details_using_default_refresh_time",
                     new { traderId, updateTime = _traderConfig.UpdateTimeDefault }
                 )
@@ -486,7 +489,7 @@ public class TraderHelper(
             )
             {
                 throw new Exception(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "trader-unable_to_purchase_item_limit_reached",
                         new { traderId, limit = itemPurchased.Upd.BuyRestrictionMax }
                     )

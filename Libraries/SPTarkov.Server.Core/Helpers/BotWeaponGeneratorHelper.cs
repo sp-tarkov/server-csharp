@@ -18,7 +18,7 @@ public class BotWeaponGeneratorHelper(
     HashUtil _hashUtil,
     WeightedRandomHelper _weightedRandomHelper,
     BotGeneratorHelper _botGeneratorHelper,
-    LocalisationService _localisationService
+    ServerLocalisationService _serverLocalisationService
 )
 {
     private static readonly FrozenSet<string> _magCheck =

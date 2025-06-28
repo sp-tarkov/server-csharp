@@ -12,7 +12,7 @@ public class BotEquipmentModPoolService(
     ISptLogger<BotEquipmentModPoolService> logger,
     ItemHelper itemHelper,
     DatabaseService databaseService,
-    LocalisationService localisationService
+    ServerLocalisationService localisationService
 )
 {
     private readonly Lock _lockObject = new();

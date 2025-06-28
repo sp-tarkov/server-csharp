@@ -21,7 +21,7 @@ public class FenceBaseAssortGenerator(
     PresetHelper presetHelper,
     ItemFilterService itemFilterService,
     SeasonalEventService seasonalEventService,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     ConfigServer configServer,
     FenceService fenceService,
     ICloner _cloner

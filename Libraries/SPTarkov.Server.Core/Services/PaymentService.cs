@@ -24,7 +24,7 @@ public class PaymentService(
     TraderHelper _traderHelper,
     ItemHelper _itemHelper,
     InventoryHelper _inventoryHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     PaymentHelper _paymentHelper,
     ConfigServer _configServer
 )
@@ -135,7 +135,7 @@ public class PaymentService(
         // If no currency-based payment is involved, handle it separately
         if (totalCurrencyAmount == 0 && payToTrader)
         {
-            _logger.Debug(_localisationService.GetText("payment-zero_price_no_payment"));
+            _logger.Debug(_serverLocalisationService.GetText("payment-zero_price_no_payment"));
 
             // Convert the handbook price to the trader's currency and update the sales sum.
             var costOfPurchaseInCurrency = _handbookHelper.FromRUB(
@@ -336,14 +336,14 @@ public class PaymentService(
         if (moneyItemsInInventory.Count <= 0 || amountAvailable < amountToPay)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "payment-not_enough_money_to_complete_transation", // Typo, needs locale updated if fixed
                     new { amountToPay, amountAvailable }
                 )
             );
             _httpResponseUtil.AppendErrorToOutput(
                 output,
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "payment-not_enough_money_to_complete_transation_short",
                     amountToPay
                 ), // Typo, needs locale updated if fixed

@@ -14,7 +14,7 @@ public class TraderPurchasePersisterService(
     RandomUtil _randomUtil,
     TimeUtil _timeUtil,
     ProfileHelper _profileHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer
 )
 {
@@ -125,7 +125,7 @@ public class TraderPurchasePersisterService(
                 if (traderUpdateDetails is null)
                 {
                     _logger.Error(
-                        _localisationService.GetText(
+                        _serverLocalisationService.GetText(
                             "trader-unable_to_delete_stale_purchases",
                             new { profileId = profile.ProfileInfo.ProfileId, traderId }
                         )

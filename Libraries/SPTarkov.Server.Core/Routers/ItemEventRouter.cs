@@ -17,7 +17,7 @@ public class ItemEventRouter(
     ISptLogger<FileLogger> fileLogger,
     JsonUtil jsonUtil,
     ProfileHelper profileHelper,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     EventOutputHolder eventOutputHolder,
     IEnumerable<ItemEventRouterDefinition> itemEventRouters,
     ICloner cloner

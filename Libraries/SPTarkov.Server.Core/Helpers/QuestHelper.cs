@@ -30,7 +30,7 @@ public class QuestHelper(
     ProfileHelper _profileHelper,
     QuestRewardHelper _questRewardHelper,
     RewardHelper _rewardHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     SeasonalEventService _seasonalEventService,
     MailSendService _mailSendService,
     ConfigServer _configServer,
@@ -98,7 +98,7 @@ public class QuestHelper(
                 return playerLevel == conditionValue;
             default:
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "quest-unable_to_find_compare_condition",
                         condition.CompareMethod
                     )
@@ -218,7 +218,7 @@ public class QuestHelper(
         )
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "quest-unable_to_find_trader_in_profile",
                     questProperties.Target
                 )
@@ -251,7 +251,7 @@ public class QuestHelper(
         )
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "quest-unable_to_find_trader_in_profile",
                     questProperties.Target
                 )
@@ -291,7 +291,10 @@ public class QuestHelper(
 
             default:
                 _logger.Error(
-                    _localisationService.GetText("quest-compare_operator_unhandled", compareMethod)
+                    _serverLocalisationService.GetText(
+                        "quest-compare_operator_unhandled",
+                        compareMethod
+                    )
                 );
 
                 return false;
@@ -350,7 +353,7 @@ public class QuestHelper(
         if (questDbData is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "quest-unable_to_find_quest_in_db",
                     new { questId = acceptedQuest.QuestId, questType = acceptedQuest.Type }
                 )
@@ -644,7 +647,7 @@ public class QuestHelper(
         if (inventoryItemIndex < 0)
         {
             _logger.Error(
-                _localisationService.GetText("quest-item_not_found_in_inventory", itemId)
+                _serverLocalisationService.GetText("quest-item_not_found_in_inventory", itemId)
             );
 
             return;
@@ -776,7 +779,7 @@ public class QuestHelper(
             if (!SellToTraderQuestConditionCache.TryGetValue(counter.SourceId, out var conditions))
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "quest_unable_to_find_quest_in_db_no_type",
                         counter.SourceId
                     )
@@ -820,7 +823,7 @@ public class QuestHelper(
             if (itemDetails is null)
             {
                 _logger.Error(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "trader-unable_to_find_inventory_item_for_selltotrader_counter",
                         taskCounter.SourceId
                     )
@@ -1674,7 +1677,7 @@ public class QuestHelper(
         if (repeatableInScavProfile is null)
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "quest-unable_to_remove_scav_quest_from_profile",
                     new { scavQuestId = questIdToRemove, profileId = sessionId }
                 )

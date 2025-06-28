@@ -22,7 +22,7 @@ public class RagfairOfferService(
     RagfairServerHelper ragfairServerHelper,
     ItemHelper itemHelper,
     ProfileHelper profileHelper,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     ICloner cloner,
     RagfairOfferHolder ragfairOfferHolder,
     NotifierHelper notifierHelper,

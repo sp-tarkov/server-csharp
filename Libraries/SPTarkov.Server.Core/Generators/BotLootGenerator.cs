@@ -27,7 +27,7 @@ public class BotLootGenerator(
     WeightedRandomHelper _weightedRandomHelper,
     BotHelper _botHelper,
     BotLootCacheService _botLootCacheService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer,
     ICloner _cloner
 )
@@ -94,7 +94,7 @@ public class BotLootGenerator(
         )
         {
             _logger.Warning(
-                _localisationService.GetText("bot-unable_to_generate_bot_loot", botRole)
+                _serverLocalisationService.GetText("bot-unable_to_generate_bot_loot", botRole)
             );
             return;
         }
@@ -875,7 +875,7 @@ public class BotLootGenerator(
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
                     _logger.Debug(
-                        _localisationService.GetText(
+                        _serverLocalisationService.GetText(
                             "bot-item_spawn_limit_reached_skipping_item",
                             new
                             {
@@ -952,7 +952,7 @@ public class BotLootGenerator(
         }
 
         _logger.Warning(
-            _localisationService.GetText(
+            _serverLocalisationService.GetText(
                 "bot-unable_to_find_spawn_limits_fallback_to_defaults",
                 botRole
             )

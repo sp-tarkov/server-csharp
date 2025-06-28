@@ -24,7 +24,7 @@ public class ItemHelper(
     HandbookHelper _handbookHelper,
     ItemBaseClassService _itemBaseClassService,
     ItemFilterService _itemFilterService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     LocaleService _localeService,
     ICloner _cloner
 )
@@ -700,7 +700,7 @@ public class ItemHelper(
         if (durability == 0)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "item-durability_value_invalid_use_default",
                     item.Template
                 )
@@ -1565,7 +1565,9 @@ public class ItemHelper(
         var cartridgeDetails = GetItem(cartridgeTpl);
         if (!cartridgeDetails.Key)
         {
-            _logger.Error(_localisationService.GetText("item-invalid_tpl_item", cartridgeTpl));
+            _logger.Error(
+                _serverLocalisationService.GetText("item-invalid_tpl_item", cartridgeTpl)
+            );
         }
 
         var cartridgeMaxStackSize = cartridgeDetails.Value?.Properties?.StackMaxSize;

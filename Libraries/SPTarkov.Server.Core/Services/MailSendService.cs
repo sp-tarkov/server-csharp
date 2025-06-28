@@ -23,7 +23,7 @@ public class MailSendService(
     NotifierHelper _notifierHelper,
     DialogueHelper _dialogueHelper,
     NotificationSendHelper _notificationSendHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ItemHelper _itemHelper,
     TraderHelper _traderHelper,
     ICloner _cloner
@@ -62,7 +62,7 @@ public class MailSendService(
         if (trader is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "mailsend-missing_trader",
                     new { messageType, sessionId }
                 )
@@ -126,7 +126,7 @@ public class MailSendService(
         if (trader is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "mailsend-missing_trader",
                     new { messageType, sessionId }
                 )
@@ -357,7 +357,9 @@ public class MailSendService(
             || !playerProfile.DialogueRecords.TryGetValue(targetNpcId, out var dialogWithNpc)
         )
         {
-            _logger.Error(_localisationService.GetText("mailsend-missing_npc_dialog", targetNpcId));
+            _logger.Error(
+                _serverLocalisationService.GetText("mailsend-missing_npc_dialog", targetNpcId)
+            );
             return;
         }
 
@@ -493,7 +495,7 @@ public class MailSendService(
             var parentItem = GetBaseItemFromRewards(messageDetails.Items);
             if (parentItem is null)
             {
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "mailsend-missing_parent",
                     new { traderId = messageDetails.Trader, sender = messageDetails.Sender }
                 );
@@ -524,7 +526,7 @@ public class MailSendService(
                 if (itemTemplate is null)
                 {
                     _logger.Error(
-                        _localisationService.GetText(
+                        _serverLocalisationService.GetText(
                             "dialog-missing_item_template",
                             new { tpl = reward.Template, type = dialogType }
                         )
@@ -570,7 +572,7 @@ public class MailSendService(
                     if (itemTemplate.Properties.StackSlots is not null)
                     {
                         _logger.Error(
-                            _localisationService.GetText(
+                            _serverLocalisationService.GetText(
                                 "mail-unable_to_give_gift_not_handled",
                                 itemTemplate.Id
                             )
@@ -635,7 +637,7 @@ public class MailSendService(
         if (senderId is null)
         {
             throw new Exception(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "mail-unable_to_find_message_sender_by_id",
                     messageDetails.Sender
                 )

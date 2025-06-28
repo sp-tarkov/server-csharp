@@ -11,17 +11,17 @@ namespace SPTarkov.Server.Core.Helpers.Dialog.Commando;
 [Injectable]
 public class SptCommandoCommands : IChatCommand
 {
-    protected readonly LocalisationService _localisationService;
+    protected readonly ServerLocalisationService _serverLocalisationService;
     protected readonly IDictionary<string, ISptCommand> _sptCommands;
 
     public SptCommandoCommands(
         ConfigServer configServer,
-        LocalisationService localisationService,
+        ServerLocalisationService localisationService,
         IEnumerable<ISptCommand> sptCommands
     )
     {
         _sptCommands = sptCommands.ToDictionary(command => command.GetCommand());
-        _localisationService = localisationService;
+        _serverLocalisationService = localisationService;
         var coreConfigs = configServer.GetConfig<CoreConfig>();
         var commandoId = coreConfigs.Features?.ChatbotFeatures.Ids.GetValueOrDefault("commando");
         if (
@@ -66,7 +66,7 @@ public class SptCommandoCommands : IChatCommand
         if (!_sptCommands.TryAdd(key, command))
         {
             throw new Exception(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "chat-unable_to_register_command_already_registered",
                     key
                 )

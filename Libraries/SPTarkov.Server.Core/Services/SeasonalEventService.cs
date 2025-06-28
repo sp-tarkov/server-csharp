@@ -19,7 +19,7 @@ public class SeasonalEventService(
     TimeUtil _timeUtil,
     DatabaseService _databaseService,
     GiftService _giftService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ProfileHelper _profileHelper,
     ConfigServer _configServer,
     RandomUtil _randomUtil
@@ -345,7 +345,9 @@ public class SeasonalEventService(
             }
         }
 
-        _logger.Warning(_localisationService.GetText("season-no_matching_season_found_for_date"));
+        _logger.Warning(
+            _serverLocalisationService.GetText("season-no_matching_season_found_for_date")
+        );
 
         return Season.SUMMER;
     }
@@ -365,7 +367,7 @@ public class SeasonalEventService(
             if (botInventory.Equipment[equipmentSlotKey] is null)
             {
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "seasonal-missing_equipment_slot_on_bot",
                         new { equipmentSlot = equipmentSlotKey, botRole }
                     )
@@ -394,7 +396,7 @@ public class SeasonalEventService(
             if (prop is null)
             {
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "seasonal-missing_loot_container_slot_on_bot",
                         new { lootContainer = lootContainerKey, botRole }
                     )
@@ -413,7 +415,9 @@ public class SeasonalEventService(
     /// <param name="event">Name of the event to enable. e.g. Christmas</param>
     private void UpdateGlobalEvents(Config globalConfig, SeasonalEvent eventType)
     {
-        _logger.Success(_localisationService.GetText("season-event_is_active", eventType.Type));
+        _logger.Success(
+            _serverLocalisationService.GetText("season-event_is_active", eventType.Type)
+        );
         _christmasEventActive = false;
         _halloweenEventActive = false;
 
@@ -1003,7 +1007,9 @@ public class SeasonalEventService(
         var botGearChanges = GetEventBotGear(eventType);
         if (botGearChanges is null)
         {
-            _logger.Warning(_localisationService.GetText("gameevent-no_gear_data", eventType));
+            _logger.Warning(
+                _serverLocalisationService.GetText("gameevent-no_gear_data", eventType)
+            );
 
             return;
         }
@@ -1014,7 +1020,9 @@ public class SeasonalEventService(
             var botToUpdate = _databaseService.GetBots().Types[botKvP.Key.ToLower()];
             if (botToUpdate is null)
             {
-                _logger.Warning(_localisationService.GetText("gameevent-bot_not_found", botKvP));
+                _logger.Warning(
+                    _serverLocalisationService.GetText("gameevent-bot_not_found", botKvP)
+                );
                 continue;
             }
 
@@ -1049,7 +1057,9 @@ public class SeasonalEventService(
         var botLootChanges = GetEventBotLoot(eventType);
         if (botLootChanges is null)
         {
-            _logger.Warning(_localisationService.GetText("gameevent-no_gear_data", eventType));
+            _logger.Warning(
+                _serverLocalisationService.GetText("gameevent-no_gear_data", eventType)
+            );
 
             return;
         }
@@ -1060,7 +1070,9 @@ public class SeasonalEventService(
             var botToUpdate = _databaseService.GetBots().Types[botKvpP.Key.ToLower()];
             if (botToUpdate is null)
             {
-                _logger.Warning(_localisationService.GetText("gameevent-bot_not_found", botKvpP));
+                _logger.Warning(
+                    _serverLocalisationService.GetText("gameevent-bot_not_found", botKvpP)
+                );
                 continue;
             }
 

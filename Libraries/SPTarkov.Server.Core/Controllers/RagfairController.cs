@@ -31,7 +31,7 @@ public class RagfairController
     protected InventoryHelper _inventoryHelper;
     protected ItemHelper _itemHelper;
     protected JsonUtil _jsonUtil;
-    protected LocalisationService _localisationService;
+    protected ServerLocalisationService _serverLocalisationService;
     protected ISptLogger<RagfairController> _logger;
     protected PaymentHelper _paymentHelper;
     protected PaymentService _paymentService;
@@ -68,7 +68,7 @@ public class RagfairController
         RagfairOfferHelper ragfairOfferHelper,
         TraderHelper traderHelper,
         DatabaseService databaseService,
-        LocalisationService localisationService,
+        ServerLocalisationService localisationService,
         RagfairTaxService ragfairTaxService,
         RagfairOfferService ragfairOfferService,
         PaymentService paymentService,
@@ -94,7 +94,7 @@ public class RagfairController
         _ragfairOfferHelper = ragfairOfferHelper;
         _traderHelper = traderHelper;
         _databaseService = databaseService;
-        _localisationService = localisationService;
+        _serverLocalisationService = localisationService;
         _ragfairTaxService = ragfairTaxService;
         _ragfairOfferService = ragfairOfferService;
         _paymentService = paymentService;
@@ -231,7 +231,7 @@ public class RagfairController
         {
             // Occurs when player edits "item count shown per page" value when on page near end of offer list
             // The page no longer exists due to the larger number of items on each page, show them the very end of the offer list instead
-            _logger.Warning(_localisationService.GetText("ragfair-offer_page_doesnt_exist"));
+            _logger.Warning(_serverLocalisationService.GetText("ragfair-offer_page_doesnt_exist"));
             startIndex = result.Offers.Count - perPageLimit;
             endIndex = result.Offers.Count;
         }
@@ -252,7 +252,7 @@ public class RagfairController
         if (assortPurchased is null)
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "ragfair-unable_to_adjust_stack_count_assort_not_found",
                     new { offerId = offer.Items.First().Id, traderId = offer.User.Id }
                 )
@@ -346,7 +346,7 @@ public class RagfairController
         }
         else
         {
-            _logger.Error(_localisationService.GetText("ragfair-unable_to_get_categories"));
+            _logger.Error(_serverLocalisationService.GetText("ragfair-unable_to_get_categories"));
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
                 _logger.Debug(_jsonUtil.Serialize(searchRequest));
@@ -578,7 +578,9 @@ public class RagfairController
     {
         if (offerRequest?.Items is null || offerRequest.Items.Count == 0)
         {
-            _logger.Error(_localisationService.GetText("ragfair-invalid_player_offer_request"));
+            _logger.Error(
+                _serverLocalisationService.GetText("ragfair-invalid_player_offer_request")
+            );
 
             return false;
         }
@@ -586,7 +588,9 @@ public class RagfairController
         if (offerRequest.Requirements is null)
         {
             _logger.Error(
-                _localisationService.GetText("ragfair-unable_to_place_offer_with_no_requirements")
+                _serverLocalisationService.GetText(
+                    "ragfair-unable_to_place_offer_with_no_requirements"
+                )
             );
 
             return false;
@@ -1029,7 +1033,7 @@ public class RagfairController
         {
             _httpResponseUtil.AppendErrorToOutput(
                 output,
-                _localisationService.GetText("ragfair-unable_to_pay_commission_fee", tax)
+                _serverLocalisationService.GetText("ragfair-unable_to_pay_commission_fee", tax)
             );
             return true;
         }
@@ -1130,7 +1134,7 @@ public class RagfairController
             var rootItem = pmcData.Inventory?.Items?.FirstOrDefault(i => i.Id == itemId);
             if (rootItem is null)
             {
-                errorMessage = _localisationService.GetText(
+                errorMessage = _serverLocalisationService.GetText(
                     "ragfair-unable_to_find_item_in_inventory",
                     new { id = itemId }
                 );
@@ -1150,7 +1154,7 @@ public class RagfairController
 
         if (itemsToReturn?.Count == 0)
         {
-            errorMessage = _localisationService.GetText(
+            errorMessage = _serverLocalisationService.GetText(
                 "ragfair-unable_to_find_requested_items_in_inventory"
             );
             _logger.Error(errorMessage);
@@ -1181,7 +1185,7 @@ public class RagfairController
         if (playerProfileOffers is null)
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "ragfair-unable_to_remove_offer_not_found_in_profile",
                     new { profileId = sessionId, offerId }
                 )
@@ -1194,12 +1198,15 @@ public class RagfairController
         if (playerOffer is null)
         {
             _logger.Error(
-                _localisationService.GetText("ragfair-offer_not_found_in_profile", new { offerId })
+                _serverLocalisationService.GetText(
+                    "ragfair-offer_not_found_in_profile",
+                    new { offerId }
+                )
             );
 
             return _httpResponseUtil.AppendErrorToOutput(
                 output,
-                _localisationService.GetText("ragfair-offer_not_found_in_profile_short")
+                _serverLocalisationService.GetText("ragfair-offer_not_found_in_profile_short")
             );
         }
 
@@ -1240,14 +1247,14 @@ public class RagfairController
         if (playerOfferIndex == -1)
         {
             _logger.Warning(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "ragfair-offer_not_found_in_profile",
                     new { offerId = extendRequest.OfferId }
                 )
             );
             return _httpResponseUtil.AppendErrorToOutput(
                 output,
-                _localisationService.GetText("ragfair-offer_not_found_in_profile_short")
+                _serverLocalisationService.GetText("ragfair-offer_not_found_in_profile_short")
             );
         }
 
@@ -1278,7 +1285,7 @@ public class RagfairController
             {
                 return _httpResponseUtil.AppendErrorToOutput(
                     output,
-                    _localisationService.GetText("ragfair-unable_to_pay_commission_fee")
+                    _serverLocalisationService.GetText("ragfair-unable_to_pay_commission_fee")
                 );
             }
         }

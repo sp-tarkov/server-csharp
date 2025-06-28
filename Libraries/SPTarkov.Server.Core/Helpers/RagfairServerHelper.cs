@@ -21,7 +21,7 @@ public class RagfairServerHelper(
     TraderHelper traderHelper,
     WeightedRandomHelper weightedRandomHelper,
     MailSendService mailSendService,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     ConfigServer configServer,
     ICloner cloner
 )

@@ -14,7 +14,7 @@ namespace SPTarkov.Server.Core.Generators.WeaponGen.Implementations;
 public class ExternalInventoryMagGen(
     ISptLogger<ExternalInventoryMagGen> _logger,
     ItemHelper _itemHelper,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     BotWeaponGeneratorHelper _botWeaponGeneratorHelper,
     BotGeneratorHelper _botGeneratorHelper,
     RandomUtil _randomUtil
@@ -115,7 +115,7 @@ public class ExternalInventoryMagGen(
                 if (magTemplate is null)
                 {
                     _logger.Error(
-                        _localisationService.GetText(
+                        _serverLocalisationService.GetText(
                             "bot-unable_to_find_default_magazine_item",
                             magazineTpl
                         )

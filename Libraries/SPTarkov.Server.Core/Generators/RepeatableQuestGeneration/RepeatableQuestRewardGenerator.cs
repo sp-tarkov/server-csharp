@@ -25,7 +25,7 @@ public class RepeatableQuestRewardGenerator(
     ItemHelper itemHelper,
     PresetHelper presetHelper,
     HandbookHelper handbookHelper,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     ItemFilterService itemFilterService,
     SeasonalEventService seasonalEventService,
     ConfigServer configServer,

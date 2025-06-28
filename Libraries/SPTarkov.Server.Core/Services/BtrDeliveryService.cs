@@ -21,7 +21,7 @@ public class BtrDeliveryService(
     SaveServer _saveServer,
     MailSendService _mailSendService,
     ConfigServer _configServer,
-    LocalisationService _localisationService
+    ServerLocalisationService _serverLocalisationService
 )
 {
     protected readonly BtrDeliveryConfig _btrDeliveryConfig =
@@ -95,7 +95,7 @@ public class BtrDeliveryService(
         if (dialogueTemplates is null)
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "inraid-unable_to_deliver_item_no_trader_found",
                     Traders.BTR
                 )
@@ -106,7 +106,7 @@ public class BtrDeliveryService(
         if (!dialogueTemplates.TryGetValue("itemsDelivered", out var itemsDelivered))
         {
             _logger.Error(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "btr-unable_to_find_items_in_dialog_template",
                     sessionId
                 )

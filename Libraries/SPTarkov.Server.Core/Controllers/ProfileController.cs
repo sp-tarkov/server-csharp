@@ -27,7 +27,7 @@ public class ProfileController(
     DatabaseService _databaseService,
     ItemHelper _itemHelper,
     ProfileFixerService _profileFixerService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     CreateProfileService _createProfileService,
     SeasonalEventService _seasonalEventService,
     PlayerScavGenerator _playerScavGenerator,

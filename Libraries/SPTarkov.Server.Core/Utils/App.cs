@@ -13,9 +13,10 @@ namespace SPTarkov.Server.Core.Utils;
 public class App(
     IServiceProvider _serviceProvider,
     ISptLogger<App> _logger,
+    DatabaseImporter _databaseImporter,
     TimeUtil _timeUtil,
     RandomUtil _randomUtil,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer,
     EncodingUtil _encodingUtil,
     HttpServer _httpServer,
@@ -33,13 +34,10 @@ public class App(
     {
         ServiceLocator.SetServiceProvider(_serviceProvider);
 
-        // execute onLoad callbacks
-        _logger.Info(_localisationService.GetText("executing_startup_callbacks"));
-
         var isAlreadyRunning = _httpServerHelper.IsAlreadyRunning();
         if (isAlreadyRunning)
         {
-            _logger.Critical(_localisationService.GetText("webserver_already_running"));
+            _logger.Critical(_serverLocalisationService.GetText("webserver_already_running"));
             await Task.Delay(Timeout.Infinite);
         }
 
@@ -68,6 +66,8 @@ public class App(
             }
         }
 
+        // execute onLoad callbacks
+        _logger.Info(_serverLocalisationService.GetText("executing_startup_callbacks"));
         foreach (var onLoad in _onLoadComponents)
         {
             await onLoad.OnLoad();
@@ -82,13 +82,13 @@ public class App(
         if (!_httpServer.IsStarted())
         {
             _logger.Success(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "started_webserver_success",
                     _httpServer.ListeningUrl()
                 )
             );
             _logger.Success(
-                _localisationService.GetText(
+                _serverLocalisationService.GetText(
                     "websocket-started",
                     _httpServer.ListeningUrl().Replace("https://", "wss://")
                 )
@@ -104,10 +104,12 @@ public class App(
     {
         if (_randomUtil.GetInt(1, 1000) > 999)
         {
-            return _localisationService.GetRandomTextThatMatchesPartialKey("server_start_meme_");
+            return _serverLocalisationService.GetRandomTextThatMatchesPartialKey(
+                "server_start_meme_"
+            );
         }
 
-        return _localisationService.GetText("server_start_success");
+        return _serverLocalisationService.GetText("server_start_success");
     }
 
     protected async Task Update()
@@ -155,7 +157,7 @@ public class App(
     protected void LogUpdateException(Exception err, IOnUpdate updateable)
     {
         _logger.Error(
-            _localisationService.GetText(
+            _serverLocalisationService.GetText(
                 "scheduled_event_failed_to_run",
                 updateable.GetType().FullName
             )

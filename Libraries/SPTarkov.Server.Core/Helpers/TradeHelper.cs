@@ -25,7 +25,7 @@ public class TradeHelper(
     QuestHelper _questHelper,
     PaymentService _paymentService,
     FenceService _fenceService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     HttpResponseUtil _httpResponseUtil,
     InventoryHelper _inventoryHelper,
     RagfairServer _ragfairServer,
@@ -146,7 +146,9 @@ public class TradeHelper(
                         );
                     }
 
-                    var message = _localisationService.GetText("ragfair-offer_no_longer_exists");
+                    var message = _serverLocalisationService.GetText(
+                        "ragfair-offer_no_longer_exists"
+                    );
                     _httpResponseUtil.AppendErrorToOutput(output, message);
 
                     return;

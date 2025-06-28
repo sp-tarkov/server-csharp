@@ -12,7 +12,7 @@ namespace SPTarkov.Server.Core.Services;
 public class OpenZoneService(
     ISptLogger<OpenZoneService> _logger,
     DatabaseService _databaseService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer
 )
 {
@@ -43,7 +43,7 @@ public class OpenZoneService(
         {
             if (!dbLocations.ContainsKey(mapKvP.Key))
             {
-                _logger.Error(_localisationService.GetText("openzone-unable_to_find_map", mapKvP));
+                _logger.Error(_serverLocalisationService.GetText("openzone-unable_to_find_map", mapKvP));
 
                 continue;
             }

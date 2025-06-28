@@ -12,7 +12,7 @@ namespace SPTarkov.Server.Core.Utils;
 public class HttpResponseUtil
 {
     protected readonly JsonUtil _jsonUtil;
-    protected readonly LocalisationService _localisationService;
+    protected readonly ServerLocalisationService _serverLocalisationService;
 
     protected readonly ImmutableList<Regex> _cleanupRegexList =
     [
@@ -23,9 +23,9 @@ public class HttpResponseUtil
         new("[\\t]"),
     ];
 
-    public HttpResponseUtil(JsonUtil jsonUtil, LocalisationService localisationService)
+    public HttpResponseUtil(JsonUtil jsonUtil, ServerLocalisationService localisationService)
     {
-        _localisationService = localisationService;
+        _serverLocalisationService = localisationService;
         _jsonUtil = jsonUtil;
     }
 
@@ -115,7 +115,7 @@ public class HttpResponseUtil
     {
         if (string.IsNullOrEmpty(message))
         {
-            message = _localisationService.GetText("http-unknown_error");
+            message = _serverLocalisationService.GetText("http-unknown_error");
         }
 
         if (output.Warnings?.Count > 0)

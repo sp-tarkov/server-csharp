@@ -32,7 +32,7 @@ public class RagfairOfferGenerator(
     RagfairAssortGenerator ragfairAssortGenerator,
     RagfairOfferService ragfairOfferService,
     RagfairPriceService ragfairPriceService,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     PaymentHelper paymentHelper,
     ItemHelper itemHelper,
     ConfigServer configServer,

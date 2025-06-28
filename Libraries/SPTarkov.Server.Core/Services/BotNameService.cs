@@ -15,7 +15,7 @@ public class BotNameService(
     ISptLogger<BotNameService> _logger,
     BotHelper _botHelper,
     RandomUtil _randomUtil,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     DatabaseService _databaseService,
     ConfigServer _configServer
 )
@@ -80,7 +80,7 @@ public class BotNameService(
                 && botGenerationDetails.AllPmcsHaveSameNameAsPlayer.GetValueOrDefault(false)
             )
             {
-                var prefix = _localisationService.GetRandomTextThatMatchesPartialKey(
+                var prefix = _serverLocalisationService.GetRandomTextThatMatchesPartialKey(
                     "pmc-name_prefix_"
                 );
                 name = $"{prefix} {name}";

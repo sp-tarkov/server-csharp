@@ -9,7 +9,7 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class WeightedRandomHelper(
     ISptLogger<WeightedRandomHelper> _logger,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     RandomUtil _randomUtil
 )
 {

@@ -15,7 +15,7 @@ public class ClientLogCallbacks(
     HttpResponseUtil _httpResponseUtil,
     ClientLogController _clientLogController,
     ConfigServer _configServer,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     IReadOnlyList<SptMod> _loadedMods
 )
 {
@@ -38,27 +38,27 @@ public class ClientLogCallbacks(
         var data = _configServer.GetConfig<CoreConfig>().Release;
 
         data.BetaDisclaimerText = ProgramStatics.MODS()
-            ? _localisationService.GetText("release-beta-disclaimer-mods-enabled")
-            : _localisationService.GetText("release-beta-disclaimer");
+            ? _serverLocalisationService.GetText("release-beta-disclaimer-mods-enabled")
+            : _serverLocalisationService.GetText("release-beta-disclaimer");
 
-        data.BetaDisclaimerAcceptText = _localisationService.GetText(
+        data.BetaDisclaimerAcceptText = _serverLocalisationService.GetText(
             "release-beta-disclaimer-accept"
         );
-        data.ServerModsLoadedText = _localisationService.GetText("release-server-mods-loaded");
-        data.ServerModsLoadedDebugText = _localisationService.GetText(
+        data.ServerModsLoadedText = _serverLocalisationService.GetText("release-server-mods-loaded");
+        data.ServerModsLoadedDebugText = _serverLocalisationService.GetText(
             "release-server-mods-debug-message"
         );
-        data.ClientModsLoadedText = _localisationService.GetText("release-plugins-loaded");
-        data.ClientModsLoadedDebugText = _localisationService.GetText(
+        data.ClientModsLoadedText = _serverLocalisationService.GetText("release-plugins-loaded");
+        data.ClientModsLoadedDebugText = _serverLocalisationService.GetText(
             "release-plugins-loaded-debug-message"
         );
-        data.IllegalPluginsLoadedText = _localisationService.GetText(
+        data.IllegalPluginsLoadedText = _serverLocalisationService.GetText(
             "release-illegal-plugins-loaded"
         );
-        data.IllegalPluginsExceptionText = _localisationService.GetText(
+        data.IllegalPluginsExceptionText = _serverLocalisationService.GetText(
             "release-illegal-plugins-exception"
         );
-        data.ReleaseSummaryText = _localisationService.GetText("release-summary");
+        data.ReleaseSummaryText = _serverLocalisationService.GetText("release-summary");
         data.IsBeta =
             ProgramStatics.ENTRY_TYPE() is EntryType.BLEEDING_EDGE or EntryType.BLEEDING_EDGE_MODS;
         data.IsModdable = ProgramStatics.MODS();

@@ -17,7 +17,7 @@ public class RagfairServer(
     RagfairOfferService _ragfairOfferService,
     RagfairCategoriesService _ragfairCategoriesService,
     RagfairRequiredItemsService _ragfairRequiredItemsService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     RagfairOfferGenerator _ragfairOfferGenerator,
     RagfairOfferHolder _ragfairOfferHolder,
     ConfigServer _configServer,
@@ -28,7 +28,7 @@ public class RagfairServer(
 
     public void Load()
     {
-        _logger.Info(_localisationService.GetText("ragfair-generating_offers"));
+        _logger.Info(_serverLocalisationService.GetText("ragfair-generating_offers"));
         _ragfairOfferGenerator.GenerateDynamicOffers();
         Update();
     }
@@ -106,7 +106,10 @@ public class RagfairServer(
         if (offer is null)
         {
             _logger.Error(
-                _localisationService.GetText("ragfair-offer_not_found_unable_to_hide", offerId)
+                _serverLocalisationService.GetText(
+                    "ragfair-offer_not_found_unable_to_hide",
+                    offerId
+                )
             );
 
             return;

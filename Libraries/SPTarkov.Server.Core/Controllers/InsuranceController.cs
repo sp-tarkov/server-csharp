@@ -37,7 +37,7 @@ public class InsuranceController(
     DatabaseService _databaseService,
     MailSendService _mailSendService,
     RagfairPriceService _ragfairPriceService,
-    LocalisationService _localisationService,
+    ServerLocalisationService _serverLocalisationService,
     SaveServer _saveServer,
     TraderStore _traderStore,
     ConfigServer _configServer,
@@ -257,7 +257,7 @@ public class InsuranceController(
             if (parentItem is null && insuredItem.ParentId != rootItemParentID)
             {
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "insurance-unable_to_find_parent_of_item",
                         new
                         {
@@ -281,7 +281,7 @@ public class InsuranceController(
             if (!_itemHelper.GetItem(insuredItem.Template).Key)
             {
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "insurance-unable_to_find_attachment_in_db",
                         new
                         {
@@ -300,7 +300,7 @@ public class InsuranceController(
             {
                 // Odd. The parent couldn't be found. Skip this attachment and warn.
                 _logger.Warning(
-                    _localisationService.GetText(
+                    _serverLocalisationService.GetText(
                         "insurance-unable_to_find_main_parent_for_attachment",
                         new
                         {

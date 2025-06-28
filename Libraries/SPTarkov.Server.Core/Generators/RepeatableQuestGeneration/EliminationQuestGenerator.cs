@@ -26,7 +26,7 @@ public class EliminationQuestGenerator(
     ItemHelper itemHelper,
     RepeatableQuestRewardGenerator repeatableQuestRewardGenerator,
     DatabaseService databaseService,
-    LocalisationService localisationService,
+    ServerLocalisationService localisationService,
     ConfigServer configServer,
     ICloner cloner
 ) : IRepeatableQuestGenerator
