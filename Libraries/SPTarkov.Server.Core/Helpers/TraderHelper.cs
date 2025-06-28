@@ -21,7 +21,6 @@ public class TraderHelper(
     ProfileHelper _profileHelper,
     HandbookHelper _handbookHelper,
     ItemHelper _itemHelper,
-    PlayerService _playerService,
     ServerLocalisationService _serverLocalisationService,
     FenceService _fenceService,
     TraderStore _traderStore,

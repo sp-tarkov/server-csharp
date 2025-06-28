@@ -24,8 +24,7 @@ public class RewardHelper(
     ServerLocalisationService _serverLocalisationService,
     TraderHelper _traderHelper,
     PresetHelper _presetHelper,
-    ICloner _cloner,
-    PlayerService _playerService
+    ICloner _cloner
 )
 {
     /// <summary>

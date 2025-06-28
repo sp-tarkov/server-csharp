@@ -34,7 +34,6 @@ public class InventoryController(
     RagfairOfferService _ragfairOfferService,
     MapMarkerService _mapMarkerService,
     ServerLocalisationService _serverLocalisationService,
-    PlayerService _playerService,
     LootGenerator _lootGenerator,
     EventOutputHolder _eventOutputHolder,
     ICloner _cloner
