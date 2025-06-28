@@ -1,20 +1,18 @@
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Json;
 
 namespace SPTarkov.Server.Core.Services;
 
 /// <summary>
-///     Handles translating server text into different langauges
+///     Handles translating server text into different languages
 /// </summary>
 [Injectable(InjectionType.Singleton)]
 public class ServerLocalisationService(
     ISptLogger<ServerLocalisationService> _logger,
     RandomUtil _randomUtil,
-    DatabaseServer _databaseServer,
     LocaleService _localeService,
     JsonUtil _jsonUtil,
     FileUtil _fileUtil
