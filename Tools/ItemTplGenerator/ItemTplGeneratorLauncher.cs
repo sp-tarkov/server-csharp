@@ -1,4 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.Metrics;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using SPTarkov.DI;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Utils;
@@ -11,11 +16,12 @@ public class ItemTplGeneratorLauncher
     {
         try
         {
+            ProgramStatics.Initialize();
+
             var serviceCollection = new ServiceCollection();
+            serviceCollection.AddSingleton(WebApplication.CreateBuilder());
             serviceCollection.AddSingleton<IReadOnlyList<SptMod>>([]);
             var diHandler = new DependencyInjectionHandler(serviceCollection);
-
-            diHandler.AddTypeNamesToIgnore(["HttpServer", "HttpCallbacks"]);
 
             diHandler.AddInjectableTypesFromTypeAssembly(typeof(ItemTplGeneratorLauncher));
             diHandler.AddInjectableTypesFromTypeAssembly(typeof(App));

@@ -13,8 +13,6 @@ public class DependencyInjectionHandler(IServiceCollection serviceCollection)
     private readonly Dictionary<string, object> _injectedValues = new();
     private readonly Lock _injectedValuesLock = new();
 
-    private readonly HashSet<string> _typeNamesToSkip = [];
-
     private bool _oneTimeUseFlag;
 
     public void AddInjectableTypesFromAssembly(Assembly assembly)
@@ -45,11 +43,6 @@ public class DependencyInjectionHandler(IServiceCollection serviceCollection)
         {
             foreach (var type in typesToInject)
             {
-                if (_typeNamesToSkip.Contains(type.Name))
-                {
-                    continue;
-                }
-
                 _injectedTypeNames.Add($"{type.Namespace}.{type.Name}", type);
             }
         }
@@ -138,11 +131,6 @@ public class DependencyInjectionHandler(IServiceCollection serviceCollection)
                 }
             }
         }
-    }
-
-    public void AddTypeNamesToIgnore(HashSet<string> typeNames)
-    {
-        _typeNamesToSkip.UnionWith(typeNames);
     }
 
     private void RegisterGenericComponents(TypeRefContainer typeRef)
