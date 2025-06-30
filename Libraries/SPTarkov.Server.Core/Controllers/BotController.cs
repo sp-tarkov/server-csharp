@@ -293,9 +293,16 @@ public class BotController(
             );
         }
 
+        var maxThreads = botGenerationDetails.BotCountToGenerate.Value;
+
+#if DEBUG
+        // Make debugging bot gen easier
+        maxThreads = 1;
+#endif
+
         Parallel.For(
             0,
-            botGenerationDetails.BotCountToGenerate.Value,
+            maxThreads,
             (i) =>
             {
                 BotBase bot = null;
