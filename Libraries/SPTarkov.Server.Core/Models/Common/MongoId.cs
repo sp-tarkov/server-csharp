@@ -56,8 +56,7 @@ public readonly partial struct MongoId : IEquatable<MongoId>
         objectId[11] = (byte) counter;
 
         // Convert to lowercase hex string (24 chars)
-        return Convert.ToHexString(objectId)
-            .ToLowerInvariant();
+        return Convert.ToHexStringLower(objectId);
     }
 
     public override string ToString()
