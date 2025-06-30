@@ -39,7 +39,7 @@ public record TraderBase
     public bool? RefreshTraderRagfairOffers { get; set; }
 
     [JsonPropertyName("_id")]
-    public MongoId? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("availableInRaid")]
     public bool? AvailableInRaid { get; set; }
@@ -167,7 +167,7 @@ public record TraderInsurance
 
     // MongoId
     [JsonPropertyName("excluded_category")]
-    public List<string>? ExcludedCategory { get; set; }
+    public List<MongoId>? ExcludedCategory { get; set; }
 
     // Confirmed in client
     [JsonPropertyName("max_return_hour")]
@@ -226,7 +226,7 @@ public record TraderRepair
     public bool? Availability { get; set; }
 
     [JsonPropertyName("currency")]
-    public MongoId? Currency { get; set; }
+    public MongoId Currency { get; set; }
 
     [JsonPropertyName("currency_coefficient")]
     public double? CurrencyCoefficient { get; set; }
