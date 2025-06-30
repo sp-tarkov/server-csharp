@@ -113,7 +113,7 @@
         /// <param name="dateTime">Date to get closest monday of</param>
         /// <param name="startDay">Starting day of week - Default = Monday</param>
         /// <returns>Monday as DateTime</returns>
-        public static DateTime GetStartOfWeek(
+        public static DateTime GetClosestDate(
             this DateTime dateTime,
             DayOfWeek startDay = DayOfWeek.Monday
         )
@@ -123,6 +123,30 @@
 
             // Subtract difference to get date of most recent Monday
             return dateTime.AddDays(-1 * diff).Date;
+        }
+
+        /// <summary>
+        /// Get the most recent requested day from date
+        /// </summary>
+        /// <param name="dateTime">Date to start from</param>
+        /// <param name="desiredDay">Desired day to find</param>
+        /// <param name="inclusiveOfToday">Should today be included in check, default = true</param>
+        /// <returns>Datetime of desired day</returns>
+        public static DateTime GetMostRecentPreviousDay(
+            this DateTime dateTime,
+            DayOfWeek desiredDay,
+            bool inclusiveOfToday = true
+        )
+        {
+            // Go back 1 day if we don't count today (exclusive)
+            var closestDate = inclusiveOfToday ? dateTime : dateTime.AddDays(-1);
+
+            while (closestDate.DayOfWeek != desiredDay)
+            {
+                closestDate = closestDate.AddDays(-1);
+            }
+
+            return closestDate;
         }
     }
 }

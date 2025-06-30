@@ -147,7 +147,7 @@ public class PostDbLoadService(
     protected WildSpawnType GetWeeklyBoss(List<WildSpawnType> bosses, DayOfWeek bossResetDay)
     {
         // Get closest monday to today
-        var startOfWeek = DateTime.Today.GetStartOfWeek(bossResetDay);
+        var startOfWeek = DateTime.Today.GetMostRecentPreviousDay(bossResetDay);
 
         // Create a consistent seed for the week using the year and the day of the year of above monday chosen
         // This results in seed being identical for the week
