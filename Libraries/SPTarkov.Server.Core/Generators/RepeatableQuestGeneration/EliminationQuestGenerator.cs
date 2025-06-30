@@ -422,19 +422,23 @@ public class EliminationQuestGenerator(
                 return false;
         }
 
-        // Specific location
-        locations = locations.Where(location => location != "any").ToList();
-        if (locations.Count == 0)
+        // Don't filter when there's less than 2 options
+        if (locations.Count > 1)
         {
-            // Never should reach this if everything works out
-            logger.Error(
-                localisationService.GetText(
-                    "quest-repeatable_elimination_generation_failed_please_report"
-                )
-            );
+            // Specific location
+            locations = locations.Where(location => location != "any").ToList();
+            if (locations.Count == 0)
+            {
+                // Never should reach this if everything works out
+                logger.Error(
+                    localisationService.GetText(
+                        "quest-repeatable_elimination_generation_failed_please_report"
+                    )
+                );
 
-            locationKey = null;
-            return false;
+                locationKey = null;
+                return false;
+            }
         }
 
         // Get name of location we want elimination to occur on
