@@ -2919,14 +2919,15 @@
   },
   "weeklyBoss": {
 	  "enabled": true,
-	  "bossPool": [
-		  "bossBully",
-		  "bossTagilla",
-		  "bossGluhar",
-		  "bossKilla",
-		  "bossKojaniy",
-		  "bossSanitar",
-		  "bossKolontay"
+      "bossPool": [
+          "bossBully",
+          "bossTagilla",
+          "bossGluhar",
+          "bossKilla",
+          "bossKojaniy",
+          "bossSanitar",
+          "bossKolontay",
+          "bossKnight"
 	  ]
   }
 }

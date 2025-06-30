@@ -185,6 +185,9 @@ public class PostDbLoadService(
             case WildSpawnType.bossKolontay:
                 location = locations.TarkovStreets;
                 break;
+            case WildSpawnType.bossKnight:
+                location = locations.Lighthouse;
+                break;
             default:
                 _logger.Warning($"Unknown boss type: {boss}. Unable to set as weekly. Skipping");
                 return;
