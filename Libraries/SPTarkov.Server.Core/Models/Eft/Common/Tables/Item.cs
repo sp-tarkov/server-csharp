@@ -16,11 +16,11 @@ public record Item
 
     // MongoId
     [JsonPropertyName("_id")]
-    public MongoId? Id { get; set; }
+    public required MongoId Id { get; set; }
 
     [JsonPropertyName("_tpl")]
     // MongoId
-    public MongoId? Template { get; set; }
+    public MongoId Template { get; set; }
 
     [JsonPropertyName("parentId")]
     public string? ParentId
@@ -55,7 +55,7 @@ public record HideoutItem
     ///     Hideout inventory id that was used by improvement action
     /// </summary>
     [JsonPropertyName("_id")]
-    public MongoId? _Id
+    public MongoId _Id
     {
         get { return Id; }
         set
@@ -70,10 +70,10 @@ public record HideoutItem
     }
 
     [JsonPropertyName("id")]
-    public MongoId? Id { get; set; }
+    public required MongoId Id { get; set; }
 
     [JsonPropertyName("_tpl")]
-    public MongoId? Template { get; set; }
+    public required MongoId Template { get; set; }
 
     [JsonPropertyName("upd")]
     public Upd? Upd { get; set; }

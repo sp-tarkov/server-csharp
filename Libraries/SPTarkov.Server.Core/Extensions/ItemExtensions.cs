@@ -155,7 +155,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// </summary>
         /// <param name="items">Collection of items</param>
         /// <returns>Dictionary of items</returns>
-        public static Dictionary<MongoId?, Item> GenerateItemsMap(this IEnumerable<Item> items)
+        public static Dictionary<MongoId, Item> GenerateItemsMap(this IEnumerable<Item> items)
         {
             // Convert list to dictionary, keyed by items Id
             return items.ToDictionary(item => item.Id);

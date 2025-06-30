@@ -553,7 +553,7 @@ public class CircleOfCultistService(
     )
     {
         // Get sacrificed tpls
-        IEnumerable<MongoId?> sacrificedItemTpls = sacrificedItems
+        IEnumerable<MongoId> sacrificedItemTpls = sacrificedItems
             .Select(item => item.Template)
             .Where(item => item != null);
         // Create md5 key of the items player sacrificed so we can compare against the direct reward cache
@@ -976,7 +976,7 @@ public class CircleOfCultistService(
         return _hashUtil.GenerateHashForData(HashingAlgorithm.MD5, concat);
     }
 
-    protected string CreateSacrificeCacheKey(IEnumerable<MongoId?> requiredItems)
+    protected string CreateSacrificeCacheKey(IEnumerable<MongoId> requiredItems)
     {
         var concat = string.Join(",", requiredItems.OrderBy(item => item));
         return _hashUtil.GenerateHashForData(HashingAlgorithm.MD5, concat);

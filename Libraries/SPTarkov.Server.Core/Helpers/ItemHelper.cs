@@ -443,7 +443,7 @@ public class ItemHelper(
     /// </summary>
     /// <param name="tpls">item tpls to look up the price of</param>
     /// <returns>Total price in roubles</returns>
-    public double GetItemAndChildrenPrice(IEnumerable<MongoId?> tpls)
+    public double GetItemAndChildrenPrice(IEnumerable<MongoId> tpls)
     {
         // Run getItemPrice for each tpl in tpls array, return sum
         return tpls.Aggregate(
@@ -1279,7 +1279,7 @@ public class ItemHelper(
     /// <param name="itemId">The unique identifier of the item for which to find the main parent.</param>
     /// <param name="itemsMap">A Dictionary containing item IDs mapped to their corresponding Item objects for quick lookup.</param>
     /// <returns>The Item object representing the top-most parent of the given item, or null if no such parent exists.</returns>
-    public Item? GetAttachmentMainParent(string itemId, Dictionary<MongoId?, Item> itemsMap)
+    public Item? GetAttachmentMainParent(string itemId, Dictionary<MongoId, Item> itemsMap)
     {
         var currentItem = itemsMap.FirstOrDefault(x => x.Key == itemId).Value;
 

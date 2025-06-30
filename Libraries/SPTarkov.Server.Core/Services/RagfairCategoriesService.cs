@@ -20,7 +20,7 @@ public class RagfairCategoriesService(
     /// <param name="searchRequestData">Search criteria requested</param>
     /// <param name="fleaUnlocked">Can player see full flea yet (level 15 by default)</param>
     /// <returns>KVP of item tpls + count of offers</returns>
-    public Dictionary<MongoId?, int> GetCategoriesFromOffers(
+    public Dictionary<MongoId, int> GetCategoriesFromOffers(
         List<RagfairOffer> offers,
         SearchRequestData searchRequestData,
         bool fleaUnlocked

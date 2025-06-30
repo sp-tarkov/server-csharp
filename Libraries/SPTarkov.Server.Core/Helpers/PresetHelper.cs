@@ -40,7 +40,7 @@ public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelp
     /// Get weapon and armor default presets, keyed to root items tpl
     /// </summary>
     /// <returns>dictionary of presets keyed by the root items tpl</returns>
-    public Dictionary<MongoId?, Preset> GetDefaultPresetsByTplKey()
+    public Dictionary<MongoId, Preset> GetDefaultPresetsByTplKey()
     {
         // Weapons and equipment keyed by their preset id
         var weapons = GetDefaultWeaponPresets().Values;

@@ -324,7 +324,7 @@ public class RagfairController
     /// <param name="searchRequest">Client search request data</param>
     /// <param name="offers">Ragfair offers to get categories for</param>
     /// <returns>Record with templates + counts</returns>
-    protected Dictionary<MongoId?, int> GetSpecificCategories(
+    protected Dictionary<MongoId, int> GetSpecificCategories(
         PmcData pmcProfile,
         SearchRequestData searchRequest,
         List<RagfairOffer> offers

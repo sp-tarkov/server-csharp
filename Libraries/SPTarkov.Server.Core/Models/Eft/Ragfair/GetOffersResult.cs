@@ -9,7 +9,7 @@ public record GetOffersResult
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("categories")]
-    public Dictionary<MongoId?, int>? Categories { get; set; }
+    public Dictionary<MongoId, int>? Categories { get; set; }
 
     [JsonPropertyName("offers")]
     public List<RagfairOffer>? Offers { get; set; }

@@ -82,7 +82,7 @@ public class RagfairServer(
         return _ragfairConfig.Traders.Keys.ToList();
     }
 
-    public Dictionary<MongoId?, int> GetAllActiveCategories(
+    public Dictionary<MongoId, int> GetAllActiveCategories(
         bool fleaUnlocked,
         SearchRequestData searchRequestData,
         List<RagfairOffer> offers
