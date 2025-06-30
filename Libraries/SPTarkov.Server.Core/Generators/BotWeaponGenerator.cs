@@ -197,7 +197,7 @@ public class BotWeaponGenerator(
                 },
                 ModLimits = modLimits,
                 WeaponStats = new WeaponStats(),
-                ConflictingItemTpls = new HashSet<string>(),
+                ConflictingItemTpls = [],
             };
             weaponWithModsArray = _botEquipmentModGenerator.GenerateModsForWeapon(
                 sessionId,
