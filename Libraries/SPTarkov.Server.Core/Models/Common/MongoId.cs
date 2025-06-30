@@ -8,7 +8,13 @@ public readonly partial struct MongoId : IEquatable<MongoId>
 
     public MongoId(string id)
     {
-        if (string.IsNullOrWhiteSpace(id) || id.Length != 24)
+        // This is temporary, otherwise item buying is broken as when LINQ searches for string id's it's possible null is passed
+        if (id == null)
+        {
+            id = string.Empty;
+        }
+
+        if (id.Length != 24)
         {
             // TODO: Items.json root item has an empty parentId property
             Console.WriteLine($"Critical MongoId error: Incorrect length. id: {id}");
