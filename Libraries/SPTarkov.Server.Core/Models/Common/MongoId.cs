@@ -88,6 +88,11 @@ public readonly partial struct MongoId : IEquatable<MongoId>
 
     public static bool IsValidMongoId(string stringToCheck)
     {
+        if (string.IsNullOrEmpty(stringToCheck))
+        {
+            return false;
+        }
+
         return MongoIdRegex().IsMatch(stringToCheck);
     }
 
