@@ -130,7 +130,10 @@ public class PostDbLoadService(
 
         if (_botConfig.WeeklyBoss.Enabled)
         {
-            var chosenBoss = GetWeeklyBoss(_botConfig.WeeklyBoss.BossPool);
+            var chosenBoss = GetWeeklyBoss(
+                _botConfig.WeeklyBoss.BossPool,
+                _botConfig.WeeklyBoss.ResetDay
+            );
             FlagMapAsGuaranteedBoss(chosenBoss);
         }
     }
@@ -139,11 +142,12 @@ public class PostDbLoadService(
     /// Choose a boss that will spawn at 100% on a map from a predefined collection of bosses
     /// </summary>
     /// <param name="bosses">Pool of bosses to pick from</param>
+    /// <param name="bossResetDay">Day of week choice of boss changes</param>
     /// <returns>Boss to spawn for this week</returns>
-    protected WildSpawnType GetWeeklyBoss(List<WildSpawnType> bosses)
+    protected WildSpawnType GetWeeklyBoss(List<WildSpawnType> bosses, DayOfWeek bossResetDay)
     {
         // Get closest monday to today
-        var startOfWeek = DateTime.Today.GetStartOfWeek();
+        var startOfWeek = DateTime.Today.GetStartOfWeek(bossResetDay);
 
         // Create a consistent seed for the week using the year and the day of the year of above monday chosen
         // This results in seed being identical for the week

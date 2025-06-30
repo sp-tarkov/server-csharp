@@ -149,11 +149,24 @@ public record BotConfig : BaseConfig
 
 public record WeeklyBossSettings
 {
+    /// <summary>
+    /// Should a weekly boss be picked to 100% spawn
+    /// </summary>
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
 
+    /// <summary>
+    /// Bosses that can be picked
+    /// </summary>
     [JsonPropertyName("bossPool")]
     public List<WildSpawnType> BossPool { get; set; }
+
+    /// <summary>
+    /// Day of week boss choice resets
+    /// </summary>
+    [JsonPropertyName("resetDay")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public DayOfWeek ResetDay { get; set; }
 }
 
 /// <summary>
