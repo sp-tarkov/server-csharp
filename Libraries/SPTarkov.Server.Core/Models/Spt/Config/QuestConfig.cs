@@ -206,13 +206,13 @@ public record RepeatableQuestConfig
     ///     Item base types to block when generating rewards
     /// </summary>
     [JsonPropertyName("rewardBaseTypeBlacklist")]
-    public required HashSet<string> RewardBaseTypeBlacklist { get; set; }
+    public required HashSet<MongoId> RewardBaseTypeBlacklist { get; set; }
 
     /// <summary>
     ///     Item tplIds to ignore when generating rewards
     /// </summary>
     [JsonPropertyName("rewardBlacklist")]
-    public required HashSet<string> RewardBlacklist { get; set; }
+    public required HashSet<MongoId> RewardBlacklist { get; set; }
 
     /// <summary>
     ///     Minimum stack size that an ammo reward should be generated with
@@ -476,7 +476,7 @@ public record Completion : BaseQuestConfig
     ///     Blacklisted item types to not collect
     /// </summary>
     [JsonPropertyName("requiredItemTypeBlacklist")]
-    public HashSet<string>? RequiredItemTypeBlacklist { get; set; }
+    public HashSet<MongoId>? RequiredItemTypeBlacklist { get; set; }
 }
 
 public record Pickup : BaseQuestConfig

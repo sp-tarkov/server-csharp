@@ -2,6 +2,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators.WeaponGen;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -753,7 +754,9 @@ public class BotWeaponGenerator(
     /// </summary>
     /// <param name="weaponTemplate">Weapon db template to get cartridges for</param>
     /// <returns>List of cartridge tpls</returns>
-    protected HashSet<string> GetCompatibleCartridgesFromWeaponTemplate(TemplateItem weaponTemplate)
+    protected HashSet<MongoId> GetCompatibleCartridgesFromWeaponTemplate(
+        TemplateItem weaponTemplate
+    )
     {
         ArgumentNullException.ThrowIfNull(weaponTemplate);
 
@@ -775,7 +778,7 @@ public class BotWeaponGenerator(
     /// <param name="weaponTemplate">Weapon db template to get magazine cartridges for</param>
     /// <returns>Hashset of cartridge tpls</returns>
     /// <exception cref="ArgumentNullException">Thrown when weaponTemplate is null.</exception>
-    protected HashSet<string> GetCompatibleCartridgesFromMagazineTemplate(
+    protected HashSet<MongoId> GetCompatibleCartridgesFromMagazineTemplate(
         TemplateItem weaponTemplate
     )
     {

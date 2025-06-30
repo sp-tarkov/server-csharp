@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
@@ -13,9 +14,9 @@ public class RagfairLinkedItemService(
     ISptLogger<RagfairLinkedItemService> logger
 )
 {
-    protected readonly Dictionary<string, HashSet<string>> linkedItemsCache = new();
+    protected readonly Dictionary<string, HashSet<MongoId>> linkedItemsCache = new();
 
-    public HashSet<string> GetLinkedItems(string linkedSearchId)
+    public HashSet<MongoId> GetLinkedItems(string linkedSearchId)
     {
         if (!linkedItemsCache.TryGetValue(linkedSearchId, out var set))
         {
@@ -60,7 +61,7 @@ public class RagfairLinkedItemService(
     /// </summary>
     protected void BuildLinkedItemTable()
     {
-        var linkedItems = new Dictionary<string, HashSet<string>>();
+        var linkedItems = new Dictionary<string, HashSet<MongoId>>();
 
         foreach (var item in databaseService.GetItems().Values)
         {
@@ -117,7 +118,7 @@ public class RagfairLinkedItemService(
     /// <param name="itemLinkedSet"> Set to add to </param>
     protected void AddRevolverCylinderAmmoToLinkedItems(
         TemplateItem cylinder,
-        HashSet<string> itemLinkedSet
+        HashSet<MongoId> itemLinkedSet
     )
     {
         var cylinderMod = cylinder.Properties.Slots?.FirstOrDefault(x => x.Name == "mod_magazine");
@@ -144,9 +145,9 @@ public class RagfairLinkedItemService(
     /// </summary>
     /// <param name="item">Db item to get tpls from</param>
     /// <returns>Set of tpls</returns>
-    protected HashSet<string> GetSlotFilters(TemplateItem item)
+    protected HashSet<MongoId> GetSlotFilters(TemplateItem item)
     {
-        var result = new HashSet<string>();
+        var result = new HashSet<MongoId>();
 
         var slots = item.Properties?.Slots;
         if (slots is null || slots.Count == 0)
@@ -172,9 +173,9 @@ public class RagfairLinkedItemService(
         return result;
     }
 
-    protected HashSet<string> GetChamberFilters(TemplateItem item)
+    protected HashSet<MongoId> GetChamberFilters(TemplateItem item)
     {
-        var result = new HashSet<string>();
+        var result = new HashSet<MongoId>();
 
         var chambers = item.Properties?.Chambers;
         if (chambers is null || chambers.Count == 0)
@@ -198,9 +199,9 @@ public class RagfairLinkedItemService(
         return result;
     }
 
-    protected HashSet<string> GetCartridgeFilters(TemplateItem item)
+    protected HashSet<MongoId> GetCartridgeFilters(TemplateItem item)
     {
-        var result = new HashSet<string>();
+        var result = new HashSet<MongoId>();
 
         var cartridges = item.Properties?.Cartridges;
         if (cartridges is null || cartridges.Count == 0)

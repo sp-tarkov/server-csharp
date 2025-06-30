@@ -30,18 +30,25 @@ public class RagfairHelper(
     /// <returns>Currency tag, e.g. RUB</returns>
     public string GetCurrencyTag(string currencyTpl)
     {
-        switch (currencyTpl)
+        if (currencyTpl == Money.EUROS)
         {
-            case Money.EUROS:
-                return "EUR";
-            case Money.DOLLARS:
-                return "USD";
-            case Money.ROUBLES:
-                return "RUB";
-            case Money.GP:
-                return "GP";
-            default:
-                return "";
+            return "EUR";
+        }
+        else if (currencyTpl == Money.DOLLARS)
+        {
+            return "USD";
+        }
+        else if (currencyTpl == Money.ROUBLES)
+        {
+            return "RUB";
+        }
+        else if (currencyTpl == Money.GP)
+        {
+            return "GP";
+        }
+        else
+        {
+            return "";
         }
     }
 
@@ -190,11 +197,8 @@ public class RagfairHelper(
      */
     public string GetCurrencySymbol(string currencyTpl)
     {
-        return currencyTpl switch
-        {
-            Money.EUROS => "€",
-            Money.DOLLARS => "$",
-            _ => "₽",
-        };
+        return currencyTpl == Money.EUROS ? "€"
+            : currencyTpl == Money.DOLLARS ? "$"
+            : "₽";
     }
 }

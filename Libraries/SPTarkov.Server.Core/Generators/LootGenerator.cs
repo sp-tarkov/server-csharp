@@ -241,15 +241,15 @@ public class LootGenerator(
     /// <param name="blockSeasonalItemsOutOfSeason">Prevent seasonal items appearing outside their defined season</param>
     /// <returns>results of filtering + blacklist used</returns>
     protected ItemRewardPoolResults GetItemRewardPool(
-        HashSet<string> itemTplBlacklist,
-        List<string> itemTypeWhitelist,
+        HashSet<MongoId> itemTplBlacklist,
+        List<MongoId> itemTypeWhitelist,
         bool useRewardItemBlacklist,
         bool allowBossItems,
         bool blockSeasonalItemsOutOfSeason
     )
     {
         var itemsDb = _databaseService.GetItems().Values;
-        var itemBlacklist = new HashSet<string>();
+        var itemBlacklist = new HashSet<MongoId>();
         itemBlacklist.UnionWith([.. _itemFilterService.GetBlacklistedItems(), .. itemTplBlacklist]);
 
         if (useRewardItemBlacklist)
@@ -321,9 +321,9 @@ public class LootGenerator(
     /// </summary>
     /// <param name="limits">limits as defined in config</param>
     /// <returns>record, key: item tplId, value: current/max item count allowed</returns>
-    protected Dictionary<string, ItemLimit> InitItemLimitCounter(Dictionary<string, int> limits)
+    protected Dictionary<MongoId, ItemLimit> InitItemLimitCounter(Dictionary<MongoId, int> limits)
     {
-        var itemTypeCounts = new Dictionary<string, ItemLimit>();
+        var itemTypeCounts = new Dictionary<MongoId, ItemLimit>();
         foreach (var itemTypeId in limits)
         {
             itemTypeCounts[itemTypeId.Key] = new ItemLimit
@@ -346,7 +346,7 @@ public class LootGenerator(
     /// <returns>true if item was valid and added to pool</returns>
     protected bool FindAndAddRandomItemToLoot(
         List<TemplateItem> items,
-        Dictionary<string, ItemLimit> itemTypeCounts,
+        Dictionary<MongoId, ItemLimit> itemTypeCounts,
         LootRequest options,
         List<List<Item>> result
     )
@@ -424,8 +424,8 @@ public class LootGenerator(
     /// <returns>true if preset was valid and added to pool</returns>
     protected bool FindAndAddRandomPresetToLoot(
         List<Preset> presetPool,
-        Dictionary<string, ItemLimit> itemTypeCounts,
-        HashSet<string> itemBlacklist,
+        Dictionary<MongoId, ItemLimit> itemTypeCounts,
+        HashSet<MongoId> itemBlacklist,
         List<List<Item>> result
     )
     {
@@ -807,7 +807,7 @@ public class LootGenerator(
     {
         public List<TemplateItem> ItemPool { get; set; }
 
-        public HashSet<string> Blacklist { get; set; }
+        public HashSet<MongoId> Blacklist { get; set; }
     }
 }
 

@@ -62,25 +62,25 @@ public record AirdropLoot
     ///     Items to never allow - tpls
     /// </summary>
     [JsonPropertyName("itemBlacklist")]
-    public required List<string> ItemBlacklist { get; set; }
+    public required List<MongoId> ItemBlacklist { get; set; }
 
     /// <summary>
     ///     Item type (parentId) to allow inside crate
     /// </summary>
     [JsonPropertyName("itemTypeWhitelist")]
-    public required List<string> ItemTypeWhitelist { get; set; }
+    public required List<MongoId> ItemTypeWhitelist { get; set; }
 
     /// <summary>
     ///     Item type/ item tpls to limit count of inside crate - key: item base type: value: max count
     /// </summary>
     [JsonPropertyName("itemLimits")]
-    public required Dictionary<string, int> ItemLimits { get; set; }
+    public required Dictionary<MongoId, int> ItemLimits { get; set; }
 
     /// <summary>
     ///     Items to limit stack size of key: item tpl value: min/max stack size
     /// </summary>
     [JsonPropertyName("itemStackLimits")]
-    public required Dictionary<string, MinMax<int>> ItemStackLimits { get; set; }
+    public required Dictionary<MongoId, MinMax<int>> ItemStackLimits { get; set; }
 
     /// <summary>
     ///     Armor levels to allow inside crate e.g. [4,5,6]

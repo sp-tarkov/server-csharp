@@ -37,22 +37,22 @@ public record LootRequest
     ///     Item tpl blacklist to exclude
     /// </summary>
     [JsonPropertyName("itemBlacklist")]
-    public HashSet<string>? ItemBlacklist { get; set; }
+    public HashSet<MongoId>? ItemBlacklist { get; set; }
 
     /// <summary>
     ///     Item tpl whitelist to pick from
     /// </summary>
     [JsonPropertyName("itemTypeWhitelist")]
-    public List<string>? ItemTypeWhitelist { get; set; }
+    public List<MongoId>? ItemTypeWhitelist { get; set; }
 
     /// <summary>
     ///     key: item base type: value: max count
     /// </summary>
     [JsonPropertyName("itemLimits")]
-    public Dictionary<string, int>? ItemLimits { get; set; }
+    public Dictionary<MongoId, int>? ItemLimits { get; set; }
 
     [JsonPropertyName("itemStackLimits")]
-    public Dictionary<string, MinMax<int>>? ItemStackLimits { get; set; }
+    public Dictionary<MongoId, MinMax<int>>? ItemStackLimits { get; set; }
 
     /// <summary>
     ///     Allowed armor plate levels 2/3/4/5/6 for armor generated

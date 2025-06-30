@@ -496,12 +496,20 @@ public class ScavCaseRewardGenerator(
     /// <returns>value to set stack count to</returns>
     protected int GetRandomAmountRewardForScavCase(TemplateItem itemToCalculate, string rarity)
     {
-        return itemToCalculate.Parent switch
+        var parentId = itemToCalculate.Parent;
+
+        if (parentId == BaseClasses.AMMO)
         {
-            BaseClasses.AMMO => GetRandomisedAmmoRewardStackSize(itemToCalculate),
-            BaseClasses.MONEY => GetRandomisedMoneyRewardStackSize(itemToCalculate, rarity),
-            _ => 1,
-        };
+            return GetRandomisedAmmoRewardStackSize(itemToCalculate);
+        }
+        else if (parentId == BaseClasses.MONEY)
+        {
+            return GetRandomisedMoneyRewardStackSize(itemToCalculate, rarity);
+        }
+        else
+        {
+            return 1;
+        }
     }
 
     /// <summary>
@@ -525,26 +533,40 @@ public class ScavCaseRewardGenerator(
     /// <returns>value to set stack count to</returns>
     protected int GetRandomisedMoneyRewardStackSize(TemplateItem itemToCalculate, string rarity)
     {
-        return itemToCalculate.Id switch
+        var id = itemToCalculate.Id;
+
+        if (id == Money.ROUBLES)
         {
-            Money.ROUBLES => _randomUtil.GetInt(
+            return _randomUtil.GetInt(
                 _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax<int>>(rarity).Min,
                 _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax<int>>(rarity).Max
-            ),
-            Money.EUROS => _randomUtil.GetInt(
+            );
+        }
+        else if (id == Money.EUROS)
+        {
+            return _randomUtil.GetInt(
                 _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMax<int>>(rarity).Min,
                 _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMax<int>>(rarity).Max
-            ),
-            Money.DOLLARS => _randomUtil.GetInt(
+            );
+        }
+        else if (id == Money.DOLLARS)
+        {
+            return _randomUtil.GetInt(
                 _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMax<int>>(rarity).Min,
                 _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMax<int>>(rarity).Max
-            ),
-            Money.GP => _randomUtil.GetInt(
+            );
+        }
+        else if (id == Money.GP)
+        {
+            return _randomUtil.GetInt(
                 _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMax<int>>(rarity).Min,
                 _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMax<int>>(rarity).Max
-            ),
-            _ => 1,
-        };
+            );
+        }
+        else
+        {
+            return 1;
+        }
     }
 }
 

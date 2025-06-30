@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -818,8 +819,8 @@ public class RepeatableQuestRewardGenerator(
     /// <returns> True if item is valid reward </returns>
     public bool IsValidRewardItem(
         string tpl,
-        HashSet<string> itemTplBlacklist,
-        HashSet<string> itemTypeBlacklist,
+        HashSet<MongoId> itemTplBlacklist,
+        HashSet<MongoId> itemTypeBlacklist,
         List<string>? itemBaseWhitelist = null
     )
     {

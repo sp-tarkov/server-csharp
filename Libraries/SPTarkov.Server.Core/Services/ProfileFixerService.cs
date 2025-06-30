@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
@@ -862,7 +863,7 @@ public class ProfileFixerService(
     protected bool ShouldRemoveWeaponEquipmentBuild(
         string buildType,
         UserBuild build,
-        Dictionary<string, TemplateItem> itemsDb
+        Dictionary<MongoId, TemplateItem> itemsDb
     )
     {
         if (buildType == "weapon")
@@ -931,7 +932,7 @@ public class ProfileFixerService(
     /// <returns> True if the build should be removed from the build list, false otherwise </returns>
     protected bool ShouldRemoveMagazineBuild(
         MagazineBuild magazineBuild,
-        Dictionary<string, TemplateItem> itemsDb
+        Dictionary<MongoId, TemplateItem> itemsDb
     )
     {
         foreach (var item in magazineBuild.Items)

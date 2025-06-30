@@ -1679,7 +1679,7 @@ public class ItemHelper(
         string caliber,
         Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist,
         string? fallbackCartridgeTpl = null,
-        ICollection<string>? cartridgeWhitelist = null
+        ICollection<MongoId>? cartridgeWhitelist = null
     )
     {
         var ammos = staticAmmoDist.GetValueOrDefault(caliber, []);
@@ -1766,7 +1766,7 @@ public class ItemHelper(
     /// </summary>
     /// <param name="desiredBaseType">Item base type wanted</param>
     /// <returns>Array of tpls</returns>
-    public List<string> GetItemTplsOfBaseType(string desiredBaseType)
+    public List<MongoId> GetItemTplsOfBaseType(string desiredBaseType)
     {
         return _databaseService
             .GetItems()
@@ -1791,7 +1791,7 @@ public class ItemHelper(
     )
     {
         var result = itemToAdd;
-        HashSet<string> incompatibleModTpls = [];
+        HashSet<MongoId> incompatibleModTpls = [];
         foreach (var slot in itemToAddTemplate.Properties.Slots)
         {
             // If only required mods is requested, skip non-essential
@@ -1867,8 +1867,8 @@ public class ItemHelper(
     /// <param name="incompatibleModTpls">Incompatible tpls to not allow</param>
     /// <returns>Chosen tpl or undefined</returns>
     public string? GetCompatibleTplFromArray(
-        HashSet<string> possibleTpls,
-        HashSet<string> incompatibleModTpls
+        HashSet<MongoId> possibleTpls,
+        HashSet<MongoId> incompatibleModTpls
     )
     {
         if (!possibleTpls.Any())
@@ -2062,7 +2062,7 @@ public class ItemHelper(
                 return currentItem.Id;
             }
 
-            if (currentItem.Parent is null)
+            if (currentItem.Parent.IsEmpty())
             // No parent, reached root
             {
                 return currentItem.Id;

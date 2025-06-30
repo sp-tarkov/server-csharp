@@ -276,7 +276,7 @@ public record BarterScheme
     public double? Count { get; set; }
 
     [JsonPropertyName("_tpl")]
-    public string? Template { get; set; }
+    public MongoId Template { get; set; }
 
     [JsonPropertyName("onlyFunctional")]
     public bool? OnlyFunctional { get; set; }

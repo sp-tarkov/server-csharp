@@ -1,5 +1,6 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -134,9 +135,9 @@ public class CompletionQuestGenerator(
     /// <param name="completionConfig">Completion quest type config</param>
     /// <param name="itemTplBlacklist">Item tpls to not add to pool</param>
     /// <returns>Set of item tpls</returns>
-    protected HashSet<string> GetItemsToRetrievePool(
+    protected HashSet<MongoId> GetItemsToRetrievePool(
         Completion completionConfig,
-        HashSet<string> itemTplBlacklist
+        HashSet<MongoId> itemTplBlacklist
     )
     {
         // Get seasonal items that should not be added to pool as seasonal event is not active
@@ -178,11 +179,11 @@ public class CompletionQuestGenerator(
     /// <param name="roublesConfig">Roubles config</param>
     /// <param name="itemsToRetrievePool">Item pool</param>
     /// <returns>Filtered items and roubles budget</returns>
-    protected (HashSet<string>, double) GetItemsWithinBudget(
+    protected (HashSet<MongoId>, double) GetItemsWithinBudget(
         int pmcLevel,
         List<double> levelsConfig,
         List<double> roublesConfig,
-        HashSet<string> itemsToRetrievePool
+        HashSet<MongoId> itemsToRetrievePool
     )
     {
         // Be fair, don't value the items be more expensive than the reward
@@ -208,8 +209,8 @@ public class CompletionQuestGenerator(
     /// <param name="itemSelection">Item selection to filter</param>
     /// <param name="pmcLevel">Level of pmc</param>
     /// <returns>Filtered selection, or original if null or empty</returns>
-    protected HashSet<string> GetWhitelistedItemSelection(
-        HashSet<string> itemSelection,
+    protected HashSet<MongoId> GetWhitelistedItemSelection(
+        HashSet<MongoId> itemSelection,
         int pmcLevel
     )
     {
@@ -251,8 +252,8 @@ public class CompletionQuestGenerator(
     /// <param name="itemSelection">Item selection to filter</param>
     /// <param name="pmcLevel">Level of pmc</param>
     /// <returns>Filtered selection, or original if null or empty</returns>
-    protected HashSet<string> GetBlacklistedItemSelection(
-        HashSet<string> itemSelection,
+    protected HashSet<MongoId> GetBlacklistedItemSelection(
+        HashSet<MongoId> itemSelection,
         int pmcLevel
     )
     {
@@ -296,7 +297,7 @@ public class CompletionQuestGenerator(
         RepeatableQuest quest,
         Completion completionConfig,
         RepeatableQuestConfig repeatableConfig,
-        List<string> itemSelection,
+        List<MongoId> itemSelection,
         double roublesBudget
     )
     {

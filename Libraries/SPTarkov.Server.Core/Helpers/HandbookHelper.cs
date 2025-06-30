@@ -48,10 +48,7 @@ public class HandbookHelper(
             }
 
             itemToUpdate.Price = priceOverride.Price;
-            if (priceOverride.ParentId is not null)
-            {
-                itemToUpdate.ParentId = priceOverride.ParentId;
-            }
+            itemToUpdate.ParentId = priceOverride.ParentId;
         }
 
         var handbookDbClone = _cloner.Clone(handbook);

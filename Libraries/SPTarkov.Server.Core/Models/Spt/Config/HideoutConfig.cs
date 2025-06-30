@@ -133,7 +133,7 @@ public record CultistCircleSettings
     ///     Item tpls to exclude from the reward pool
     /// </summary>
     [JsonPropertyName("rewardItemBlacklist")]
-    public required List<string> RewardItemBlacklist { get; set; }
+    public required List<MongoId> RewardItemBlacklist { get; set; }
 
     /// <summary>
     ///     Item tpls to include in the reward pool
@@ -142,7 +142,7 @@ public record CultistCircleSettings
     public required List<string> AdditionalRewardItemPool { get; set; }
 
     [JsonPropertyName("currencyRewards")]
-    public required Dictionary<string, MinMax<int>> CurrencyRewards { get; set; }
+    public required Dictionary<MongoId, MinMax<int>> CurrencyRewards { get; set; }
 }
 
 public record CraftTimeThreshold : MinMax<int>

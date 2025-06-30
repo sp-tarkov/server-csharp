@@ -128,7 +128,7 @@ public readonly partial struct MongoId : IEquatable<MongoId>
 
     public bool IsEmpty()
     {
-        if (_stringId == "000000000000000000000000")
+        if (_stringId == "000000000000000000000000" || string.IsNullOrEmpty(_stringId))
         {
             return true;
         }

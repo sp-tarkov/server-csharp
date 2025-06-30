@@ -1,21 +1,22 @@
-﻿using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+﻿using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Extensions
 {
     public static class TemplateItemExtensions
     {
         public static IEnumerable<TemplateItem> OfClass(
-            this Dictionary<string, TemplateItem> templates,
-            params string[] baseClasses
+            this Dictionary<MongoId, TemplateItem> templates,
+            params MongoId[] baseClasses
         )
         {
             return templates.Where(x => baseClasses.Contains(x.Value.Parent)).Select(x => x.Value);
         }
 
         public static IEnumerable<TemplateItem> OfClass(
-            this Dictionary<string, TemplateItem> templates,
+            this Dictionary<MongoId, TemplateItem> templates,
             Func<TemplateItem, bool> pred,
-            params string[] baseClasses
+            params MongoId[] baseClasses
         )
         {
             return templates

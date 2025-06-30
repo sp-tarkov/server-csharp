@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
@@ -19,11 +20,11 @@ public class BotEquipmentModPoolService(
 
     private ConcurrentDictionary<
         string,
-        ConcurrentDictionary<string, HashSet<string>>
+        ConcurrentDictionary<string, HashSet<MongoId>>
     >? _gearModPool;
     protected ConcurrentDictionary<
         string,
-        ConcurrentDictionary<string, HashSet<string>>
+        ConcurrentDictionary<string, HashSet<MongoId>>
     > GearModPool
     {
         get
@@ -37,11 +38,11 @@ public class BotEquipmentModPoolService(
 
     private ConcurrentDictionary<
         string,
-        ConcurrentDictionary<string, HashSet<string>>
+        ConcurrentDictionary<string, HashSet<MongoId>>
     >? _weaponModPool;
     protected ConcurrentDictionary<
         string,
-        ConcurrentDictionary<string, HashSet<string>>
+        ConcurrentDictionary<string, HashSet<MongoId>>
     > WeaponModPool
     {
         get
@@ -60,7 +61,7 @@ public class BotEquipmentModPoolService(
     /// <param name="poolType"> Mod pool to choose from e.g. "weapon" for weaponModPool </param>
     protected ConcurrentDictionary<
         string,
-        ConcurrentDictionary<string, HashSet<string>>
+        ConcurrentDictionary<string, HashSet<MongoId>>
     > GeneratePool(IEnumerable<TemplateItem>? inputItems, string poolType)
     {
         if (inputItems is null || !inputItems.Any())
@@ -73,7 +74,7 @@ public class BotEquipmentModPoolService(
         }
 
         var pool =
-            new ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>>();
+            new ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<MongoId>>>();
         foreach (var item in inputItems)
         {
             if (item.Properties is null)
@@ -95,7 +96,7 @@ public class BotEquipmentModPoolService(
             }
 
             // Add base item (weapon/armor) to pool
-            pool.TryAdd(item.Id, new ConcurrentDictionary<string, HashSet<string>>());
+            pool.TryAdd(item.Id, new ConcurrentDictionary<string, HashSet<MongoId>>());
 
             // Iterate over each items mod slots e.g. mod_muzzle
             foreach (var slot in item.Properties.Slots)
@@ -134,7 +135,7 @@ public class BotEquipmentModPoolService(
         return pool;
     }
 
-    private bool SetContainsTpl(HashSet<string> itemSet, string tpl)
+    private bool SetContainsTpl(HashSet<MongoId> itemSet, string tpl)
     {
         lock (_lockObject)
         {
@@ -142,7 +143,7 @@ public class BotEquipmentModPoolService(
         }
     }
 
-    private bool AddTplToSet(HashSet<string> itemSet, string itemToAddTpl)
+    private bool AddTplToSet(HashSet<MongoId> itemSet, string itemToAddTpl)
     {
         lock (_lockObject)
         {
@@ -151,7 +152,7 @@ public class BotEquipmentModPoolService(
     }
 
     private bool InitSetInDict(
-        ConcurrentDictionary<string, HashSet<string>> dictionary,
+        ConcurrentDictionary<string, HashSet<MongoId>> dictionary,
         string slotName
     )
     {
@@ -175,7 +176,7 @@ public class BotEquipmentModPoolService(
     /// <param name="itemTpl"> Item to look up </param>
     /// <param name="slotName"> Slot to get compatible mods for </param>
     /// <returns> Hashset of tpls that fit the slot </returns>
-    public HashSet<string> GetCompatibleModsForWeaponSlot(string itemTpl, string slotName)
+    public HashSet<MongoId> GetCompatibleModsForWeaponSlot(string itemTpl, string slotName)
     {
         if (WeaponModPool.TryGetValue(itemTpl, out var value))
         {
@@ -194,7 +195,7 @@ public class BotEquipmentModPoolService(
     /// </summary>
     /// <param name="itemTpl"> Items tpl to look up mods for </param>
     /// <returns> Dictionary of mods (keys are mod slot names) with array of compatible mod tpls as value </returns>
-    public ConcurrentDictionary<string, HashSet<string>> GetModsForGearSlot(string itemTpl)
+    public ConcurrentDictionary<string, HashSet<MongoId>> GetModsForGearSlot(string itemTpl)
     {
         return GearModPool.TryGetValue(itemTpl, out var value) ? value : [];
     }
@@ -204,7 +205,7 @@ public class BotEquipmentModPoolService(
     /// </summary>
     /// <param name="itemTpl"> Weapons tpl to look up mods for </param>
     /// <returns> Dictionary of mods (keys are mod slot names) with array of compatible mod tpls as value </returns>
-    public ConcurrentDictionary<string, HashSet<string>> GetModsForWeaponSlot(string itemTpl)
+    public ConcurrentDictionary<string, HashSet<MongoId>> GetModsForWeaponSlot(string itemTpl)
     {
         return WeaponModPool.TryGetValue(itemTpl, out var value) ? value : [];
     }
@@ -214,9 +215,9 @@ public class BotEquipmentModPoolService(
     /// </summary>
     /// <param name="itemTpl"> Weapons tpl to look up mods for </param>
     /// <returns> Dictionary of mods (keys are mod slot names) with array of compatible mod tpls as value </returns>
-    public Dictionary<string, HashSet<string>>? GetRequiredModsForWeaponSlot(string itemTpl)
+    public Dictionary<string, HashSet<MongoId>>? GetRequiredModsForWeaponSlot(string itemTpl)
     {
-        var result = new Dictionary<string, HashSet<string>>();
+        var result = new Dictionary<string, HashSet<MongoId>>();
 
         // Get item from db
         var itemDb = itemHelper.GetItem(itemTpl).Value;
@@ -248,7 +249,7 @@ public class BotEquipmentModPoolService(
     /// </summary>
     protected ConcurrentDictionary<
         string,
-        ConcurrentDictionary<string, HashSet<string>>
+        ConcurrentDictionary<string, HashSet<MongoId>>
     > GenerateWeaponPool()
     {
         var weaponsAndMods = databaseService
@@ -267,7 +268,7 @@ public class BotEquipmentModPoolService(
     /// </summary>
     protected ConcurrentDictionary<
         string,
-        ConcurrentDictionary<string, HashSet<string>>
+        ConcurrentDictionary<string, HashSet<MongoId>>
     > GenerateGearPool()
     {
         var gearAndMods = databaseService

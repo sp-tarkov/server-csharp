@@ -1,6 +1,7 @@
 using System.Collections.Frozen;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Match;
 using SPTarkov.Server.Core.Models.Enums;
@@ -645,9 +646,9 @@ public class BotInventoryGenerator(
     /// <param name="itemTpl">Item mod pool is being retrieved and filtered</param>
     /// <param name="equipmentBlacklist">Blacklist to filter mod pool with</param>
     /// <returns>Filtered pool of mods</returns>
-    public Dictionary<string, HashSet<string>> GetFilteredDynamicModsForItem(
+    public Dictionary<string, HashSet<MongoId>> GetFilteredDynamicModsForItem(
         string itemTpl,
-        Dictionary<string, HashSet<string>> equipmentBlacklist
+        Dictionary<string, HashSet<MongoId>> equipmentBlacklist
     )
     {
         var modPool = _botEquipmentModPoolService.GetModsForGearSlot(itemTpl);

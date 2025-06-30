@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Models.Spt.Bots;
@@ -66,7 +67,7 @@ public record GenerateWeaponRequest
     ///     Array of item tpls the weapon does not support
     /// </summary>
     [JsonPropertyName("conflictingItemTpls")]
-    public HashSet<string>? ConflictingItemTpls { get; set; }
+    public HashSet<MongoId>? ConflictingItemTpls { get; set; }
 }
 
 public record BotData

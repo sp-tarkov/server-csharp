@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
@@ -11,7 +12,7 @@ public record FilterPlateModsForSlotByLevelResult
     public Result? Result { get; set; }
 
     [JsonPropertyName("plateModTpls")]
-    public HashSet<string>? PlateModTemplates { get; set; }
+    public HashSet<MongoId>? PlateModTemplates { get; set; }
 }
 
 public enum Result

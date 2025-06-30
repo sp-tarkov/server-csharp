@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
@@ -16,10 +17,10 @@ public class ItemFilterService(
     ConfigServer _configServer
 )
 {
-    protected readonly HashSet<string>? _itemBlacklistCache = [];
+    protected readonly HashSet<MongoId>? _itemBlacklistCache = [];
     protected readonly ItemConfig _itemConfig = _configServer.GetConfig<ItemConfig>();
 
-    protected readonly HashSet<string>? _lootableItemBlacklistCache = [];
+    protected readonly HashSet<MongoId>? _lootableItemBlacklistCache = [];
 
     /// <summary>
     ///     Check if the provided template id is blacklisted in config/item.json/blacklist
@@ -50,7 +51,7 @@ public class ItemFilterService(
     ///     Get an HashSet of items that should never be given as a reward to player
     /// </summary>
     /// <returns> HashSet of item tpls </returns>
-    public HashSet<string> GetItemRewardBlacklist()
+    public HashSet<MongoId> GetItemRewardBlacklist()
     {
         return _cloner.Clone(_itemConfig.RewardItemBlacklist);
     }
@@ -59,7 +60,7 @@ public class ItemFilterService(
     ///     Get an HashSet of item types that should never be given as a reward to player
     /// </summary>
     /// <returns> HashSet of item base ids </returns>
-    public HashSet<string> GetItemRewardBaseTypeBlacklist()
+    public HashSet<MongoId> GetItemRewardBaseTypeBlacklist()
     {
         return _cloner.Clone(_itemConfig.RewardItemTypeBlacklist);
     }
@@ -68,7 +69,7 @@ public class ItemFilterService(
     ///     Return every template id blacklisted in config/item.json
     /// </summary>
     /// <returns> HashSet of blacklisted template ids </returns>
-    public HashSet<string> GetBlacklistedItems()
+    public HashSet<MongoId> GetBlacklistedItems()
     {
         return _cloner.Clone(_itemConfig.Blacklist);
     }
@@ -77,7 +78,7 @@ public class ItemFilterService(
     ///     Return every template id blacklisted in config/item.json/lootableItemBlacklist
     /// </summary>
     /// <returns> HashSet of blacklisted template ids </returns>
-    public HashSet<string> GetBlacklistedLootableItems()
+    public HashSet<MongoId> GetBlacklistedLootableItems()
     {
         return _cloner.Clone(_itemConfig.LootableItemBlacklist);
     }
@@ -96,7 +97,7 @@ public class ItemFilterService(
     ///     Return boss items in config/item.json
     /// </summary>
     /// <returns> HashSet of boss item template ids </returns>
-    public HashSet<string> GetBossItems()
+    public HashSet<MongoId> GetBossItems()
     {
         return _cloner.Clone(_itemConfig.BossItems).ToHashSet();
     }

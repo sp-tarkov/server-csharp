@@ -553,19 +553,19 @@ public record EquipmentFilterDetails
     ///     Key: mod slot name e.g. mod_magazine, value: item tpls
     /// </summary>
     [JsonPropertyName("equipment")]
-    public Dictionary<string, HashSet<string>>? Equipment { get; set; }
+    public Dictionary<string, HashSet<MongoId>>? Equipment { get; set; }
 
     /// <summary>
     ///     Key: equipment slot name e.g. FirstPrimaryWeapon, value: item tpls
     /// </summary>
     [JsonPropertyName("gear")]
-    public Dictionary<EquipmentSlots, HashSet<string>>? Gear { get; set; }
+    public Dictionary<EquipmentSlots, HashSet<MongoId>>? Gear { get; set; }
 
     /// <summary>
     ///     Key: cartridge type e.g. Caliber23x75, value: item tpls
     /// </summary>
     [JsonPropertyName("cartridge")]
-    public Dictionary<string, HashSet<string>>? Cartridge { get; set; }
+    public Dictionary<string, HashSet<MongoId>>? Cartridge { get; set; }
 }
 
 public record WeightingAdjustmentDetails

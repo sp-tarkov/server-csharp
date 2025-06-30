@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 
 namespace SPTarkov.Server.Core.Models.Spt.Config;
@@ -12,34 +13,34 @@ public record ItemConfig : BaseConfig
     ///     Items that should be globally blacklisted
     /// </summary>
     [JsonPropertyName("blacklist")]
-    public required HashSet<string> Blacklist { get; set; }
+    public required HashSet<MongoId> Blacklist { get; set; }
 
     /// <summary>
     ///     Items that should not be lootable from any location
     /// </summary>
     [JsonPropertyName("lootableItemBlacklist")]
-    public required HashSet<string> LootableItemBlacklist { get; set; }
+    public required HashSet<MongoId> LootableItemBlacklist { get; set; }
 
     /// <summary>
     ///     items that should not be given as rewards
     /// </summary>
     [JsonPropertyName("rewardItemBlacklist")]
-    public required HashSet<string> RewardItemBlacklist { get; set; }
+    public required HashSet<MongoId> RewardItemBlacklist { get; set; }
 
     /// <summary>
     ///     Item base types that should not be given as rewards
     /// </summary>
     [JsonPropertyName("rewardItemTypeBlacklist")]
-    public required HashSet<string> RewardItemTypeBlacklist { get; set; }
+    public required HashSet<MongoId> RewardItemTypeBlacklist { get; set; }
 
     /// <summary>
     ///     Items that can only be found on bosses
     /// </summary>
     [JsonPropertyName("bossItems")]
-    public required HashSet<string> BossItems { get; set; }
+    public required HashSet<MongoId> BossItems { get; set; }
 
     [JsonPropertyName("handbookPriceOverride")]
-    public required Dictionary<string, HandbookPriceOverride> HandbookPriceOverride { get; set; }
+    public required Dictionary<MongoId, HandbookPriceOverride> HandbookPriceOverride { get; set; }
 
     /// <summary>
     ///     Presets to add to the globals.json `ItemPresets` dictionary on server start
@@ -63,5 +64,5 @@ public record HandbookPriceOverride
     ///     NOT parentId from items.json, but handbook.json
     /// </summary>
     [JsonPropertyName("parentId")]
-    public string? ParentId { get; set; } = string.Empty;
+    public MongoId ParentId { get; set; } = MongoId.Empty();
 }
