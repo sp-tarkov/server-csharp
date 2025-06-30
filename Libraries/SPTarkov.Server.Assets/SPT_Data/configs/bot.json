@@ -2928,6 +2928,7 @@
           "bossSanitar",
           "bossKolontay",
           "bossKnight"
-	  ]
+	  ],
+	  "resetDay": "Monday"
   }
 }
