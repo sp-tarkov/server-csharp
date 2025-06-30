@@ -324,7 +324,7 @@ public class RagfairController
     /// <param name="searchRequest">Client search request data</param>
     /// <param name="offers">Ragfair offers to get categories for</param>
     /// <returns>Record with templates + counts</returns>
-    protected Dictionary<string, int> GetSpecificCategories(
+    protected Dictionary<MongoId, int> GetSpecificCategories(
         PmcData pmcProfile,
         SearchRequestData searchRequest,
         List<RagfairOffer> offers
@@ -352,7 +352,7 @@ public class RagfairController
                 _logger.Debug(_jsonUtil.Serialize(searchRequest));
             }
 
-            return new Dictionary<string, int>();
+            return [];
         }
 
         return _ragfairServer.GetAllActiveCategories(

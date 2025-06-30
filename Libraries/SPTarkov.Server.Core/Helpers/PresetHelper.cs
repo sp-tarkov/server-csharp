@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Presets;
@@ -39,7 +40,7 @@ public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelp
     /// Get weapon and armor default presets, keyed to root items tpl
     /// </summary>
     /// <returns>dictionary of presets keyed by the root items tpl</returns>
-    public Dictionary<string, Preset> GetDefaultPresetsByTplKey()
+    public Dictionary<MongoId, Preset> GetDefaultPresetsByTplKey()
     {
         // Weapons and equipment keyed by their preset id
         var weapons = GetDefaultWeaponPresets().Values;

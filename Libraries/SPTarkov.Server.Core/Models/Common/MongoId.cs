@@ -126,7 +126,17 @@ public readonly partial struct MongoId : IEquatable<MongoId>
         return _stringId.GetHashCode();
     }
 
-    public MongoId Empty()
+    public bool IsEmpty()
+    {
+        if (_stringId == "000000000000000000000000")
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static MongoId Empty()
     {
         return new MongoId("000000000000000000000000");
     }

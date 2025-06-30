@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -1084,8 +1085,9 @@ public class LocationLootGenerator(
     )
     {
         var chosenItem = items.FirstOrDefault(item => item.Id == chosenComposedKey);
-        var chosenTpl = chosenItem?.Template;
-        if (chosenTpl is null)
+        MongoId chosenTpl = chosenItem?.Template ?? MongoId.Empty();
+
+        if (chosenTpl == null)
         {
             throw new Exception(
                 $"Item for tpl {chosenComposedKey} was not found in the spawn point"

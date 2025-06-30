@@ -1,4 +1,5 @@
-﻿using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+﻿using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Extensions
 {
@@ -119,9 +120,7 @@ namespace SPTarkov.Server.Core.Extensions
         )
         {
             // Get items parent
-            var parent = items.FirstOrDefault(item =>
-                item.Id.Equals(itemToCheck.ParentId, StringComparison.OrdinalIgnoreCase)
-            );
+            var parent = items.FirstOrDefault(item => item.Id.Equals(itemToCheck.ParentId));
             if (parent is null)
             // No parent, end of line, not inside container
             {
@@ -156,7 +155,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// </summary>
         /// <param name="items">Collection of items</param>
         /// <returns>Dictionary of items</returns>
-        public static Dictionary<string, Item> GenerateItemsMap(this IEnumerable<Item> items)
+        public static Dictionary<MongoId, Item> GenerateItemsMap(this IEnumerable<Item> items)
         {
             // Convert list to dictionary, keyed by items Id
             return items.ToDictionary(item => item.Id);
@@ -175,9 +174,7 @@ namespace SPTarkov.Server.Core.Extensions
             foreach (var item in items)
             {
                 // Check if the item's parent exists.
-                var parentExists = items.Any(parentItem =>
-                    parentItem.Id.Equals(item.ParentId, StringComparison.OrdinalIgnoreCase)
-                );
+                var parentExists = items.Any(parentItem => parentItem.Id.Equals(item.ParentId));
 
                 // If the parent does not exist and the item is not already a 'hideout' item, adopt the orphaned item by
                 // setting the parent ID to the PMCs inventory equipment ID, the slot ID to 'hideout', and remove the location.

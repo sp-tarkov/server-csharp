@@ -2,6 +2,7 @@ using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
@@ -552,7 +553,7 @@ public class CircleOfCultistService(
     )
     {
         // Get sacrificed tpls
-        IEnumerable<string> sacrificedItemTpls = sacrificedItems
+        IEnumerable<MongoId> sacrificedItemTpls = sacrificedItems
             .Select(item => item.Template)
             .Where(item => item != null);
         // Create md5 key of the items player sacrificed so we can compare against the direct reward cache
@@ -964,7 +965,18 @@ public class CircleOfCultistService(
         return requirements.Where(requirement => requirement.Type == "Item").ToList();
     }
 
+    /// <summary>
+    /// Temporary until MongoId conversion is done, should be removed and the mongoid one kept in place
+    /// </summary>
+    /// <param name="requiredItems"></param>
+    /// <returns></returns>
     protected string CreateSacrificeCacheKey(IEnumerable<string> requiredItems)
+    {
+        var concat = string.Join(",", requiredItems.OrderBy(item => item));
+        return _hashUtil.GenerateHashForData(HashingAlgorithm.MD5, concat);
+    }
+
+    protected string CreateSacrificeCacheKey(IEnumerable<MongoId> requiredItems)
     {
         var concat = string.Join(",", requiredItems.OrderBy(item => item));
         return _hashUtil.GenerateHashForData(HashingAlgorithm.MD5, concat);

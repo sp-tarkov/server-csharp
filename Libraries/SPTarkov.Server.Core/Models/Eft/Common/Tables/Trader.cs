@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Services;
 using SPTarkov.Server.Core.Utils.Json.Converters;
@@ -38,7 +39,7 @@ public record TraderBase
     public bool? RefreshTraderRagfairOffers { get; set; }
 
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("availableInRaid")]
     public bool? AvailableInRaid { get; set; }
@@ -137,11 +138,11 @@ public record ItemBuyData
 
     // MongoId
     [JsonPropertyName("category")]
-    public List<string>? Category { get; set; }
+    public required List<MongoId> Category { get; set; }
 
     // MongoId
     [JsonPropertyName("id_list")]
-    public List<string>? IdList { get; set; }
+    public required List<MongoId> IdList { get; set; }
 }
 
 public record ItemSellData
@@ -150,10 +151,10 @@ public record ItemSellData
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("category")]
-    public required List<string> Category { get; set; }
+    public required List<MongoId> Category { get; set; }
 
     [JsonPropertyName("id_list")]
-    public required List<string> IdList { get; set; }
+    public required List<MongoId> IdList { get; set; }
 }
 
 public record TraderInsurance
@@ -166,7 +167,7 @@ public record TraderInsurance
 
     // MongoId
     [JsonPropertyName("excluded_category")]
-    public List<string>? ExcludedCategory { get; set; }
+    public List<MongoId>? ExcludedCategory { get; set; }
 
     // Confirmed in client
     [JsonPropertyName("max_return_hour")]
@@ -225,7 +226,7 @@ public record TraderRepair
     public bool? Availability { get; set; }
 
     [JsonPropertyName("currency")]
-    public string? Currency { get; set; }
+    public MongoId Currency { get; set; }
 
     [JsonPropertyName("currency_coefficient")]
     public double? CurrencyCoefficient { get; set; }

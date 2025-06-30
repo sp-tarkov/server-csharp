@@ -244,7 +244,7 @@ public class InsuranceController(
     protected Dictionary<string, List<Item>> PopulateParentAttachmentsMap(
         string rootItemParentID,
         Insurance insured,
-        Dictionary<string, Item> itemsMap
+        Dictionary<MongoId, Item> itemsMap
     )
     {
         var mainParentToAttachmentsMap = new Dictionary<string, List<Item>>();
@@ -340,7 +340,7 @@ public class InsuranceController(
     /// <returns></returns>
     protected Dictionary<string, List<Item>> RemoveNonModdableAttachments(
         Dictionary<string, List<Item>> parentAttachmentsMap,
-        Dictionary<string, Item> itemsMap
+        Dictionary<MongoId, Item> itemsMap
     )
     {
         var updatedMap = new Dictionary<string, List<Item>>();
@@ -442,7 +442,7 @@ public class InsuranceController(
     /// <param name="toDelete">Tracked attachment ids to be removed</param>
     protected void ProcessAttachments(
         Dictionary<string, List<Item>> mainParentToAttachmentsMap,
-        Dictionary<string, Item> itemsMap,
+        Dictionary<MongoId, Item> itemsMap,
         string? insuredTraderId,
         HashSet<string> toDelete
     )

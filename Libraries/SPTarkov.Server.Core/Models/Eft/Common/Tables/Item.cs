@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
@@ -9,29 +10,17 @@ public record Item
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    private string? _id;
-
     private string? _parentId;
 
     private string? _SlotId;
 
-    private string? _tpl;
-
     // MongoId
     [JsonPropertyName("_id")]
-    public string? Id
-    {
-        get { return _id; }
-        set { _id = string.Intern(value); }
-    }
+    public required MongoId Id { get; set; }
 
     [JsonPropertyName("_tpl")]
     // MongoId
-    public string? Template
-    {
-        get { return _tpl; }
-        set { _tpl = string.Intern(value); }
-    }
+    public MongoId Template { get; set; }
 
     [JsonPropertyName("parentId")]
     public string? ParentId
@@ -66,7 +55,7 @@ public record HideoutItem
     ///     Hideout inventory id that was used by improvement action
     /// </summary>
     [JsonPropertyName("_id")]
-    public string? _Id
+    public MongoId _Id
     {
         get { return Id; }
         set
@@ -81,10 +70,10 @@ public record HideoutItem
     }
 
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public required MongoId Id { get; set; }
 
     [JsonPropertyName("_tpl")]
-    public string? Template { get; set; }
+    public required MongoId Template { get; set; }
 
     [JsonPropertyName("upd")]
     public Upd? Upd { get; set; }

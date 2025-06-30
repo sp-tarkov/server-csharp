@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Generators;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -81,7 +82,7 @@ public class RagfairServer(
         return _ragfairConfig.Traders.Keys.ToList();
     }
 
-    public Dictionary<string, int> GetAllActiveCategories(
+    public Dictionary<MongoId, int> GetAllActiveCategories(
         bool fleaUnlocked,
         SearchRequestData searchRequestData,
         List<RagfairOffer> offers

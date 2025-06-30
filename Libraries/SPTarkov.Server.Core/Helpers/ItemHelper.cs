@@ -1,6 +1,7 @@
 using System.Collections.Frozen;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -144,9 +145,7 @@ public class ItemHelper(
             );
 
         // Check if any item in the filtered pool matches the provided item
-        return filteredPool.FirstOrDefault(poolItem =>
-            poolItem.Template.Equals(tpl, StringComparison.OrdinalIgnoreCase)
-        );
+        return filteredPool.FirstOrDefault(poolItem => poolItem.Template.Equals(tpl));
     }
 
     /// <summary>
@@ -171,9 +170,7 @@ public class ItemHelper(
 
         foreach (var itemOf1 in item1)
         {
-            var itemOf2 = item2.FirstOrDefault(i2 =>
-                i2.Template.Equals(itemOf1.Template, StringComparison.OrdinalIgnoreCase)
-            );
+            var itemOf2 = item2.FirstOrDefault(i2 => i2.Template.Equals(itemOf1.Template));
             if (itemOf2 is null)
             {
                 return false;
@@ -328,6 +325,24 @@ public class ItemHelper(
     }
 
     /// <summary>
+    /// Temporary until we have better MongoId handling
+    /// </summary>
+    /// <param name="tpl"></param>
+    /// <param name="baseClassTpls"></param>
+    /// <returns></returns>
+    public bool IsOfBaseclasses(string tpl, ICollection<MongoId> baseClassTpls)
+    {
+        List<string> MongoList = [];
+
+        foreach (var baseTpl in baseClassTpls)
+        {
+            MongoList.Add(baseTpl);
+        }
+
+        return _itemBaseClassService.ItemHasBaseClass(tpl, MongoList);
+    }
+
+    /// <summary>
     /// Does the provided item have the chance to require soft armor inserts
     /// Only applies to helmets/vest/armors
     /// Not all headgear needs them
@@ -428,7 +443,7 @@ public class ItemHelper(
     /// </summary>
     /// <param name="tpls">item tpls to look up the price of</param>
     /// <returns>Total price in roubles</returns>
-    public double GetItemAndChildrenPrice(IEnumerable<string> tpls)
+    public double GetItemAndChildrenPrice(IEnumerable<MongoId> tpls)
     {
         // Run getItemPrice for each tpl in tpls array, return sum
         return tpls.Aggregate(
@@ -910,9 +925,7 @@ public class ItemHelper(
         {
             var filterResult = itemsToSearch.Where(item =>
             {
-                return by == "tpl"
-                    ? item.Template.Equals(barterId, StringComparison.OrdinalIgnoreCase)
-                    : item.Id.Equals(barterId, StringComparison.OrdinalIgnoreCase);
+                return by == "tpl" ? item.Template.Equals(barterId) : item.Id.Equals(barterId);
             });
 
             matchingItems.AddRange(filterResult);
@@ -1266,7 +1279,7 @@ public class ItemHelper(
     /// <param name="itemId">The unique identifier of the item for which to find the main parent.</param>
     /// <param name="itemsMap">A Dictionary containing item IDs mapped to their corresponding Item objects for quick lookup.</param>
     /// <returns>The Item object representing the top-most parent of the given item, or null if no such parent exists.</returns>
-    public Item? GetAttachmentMainParent(string itemId, Dictionary<string, Item> itemsMap)
+    public Item? GetAttachmentMainParent(string itemId, Dictionary<MongoId, Item> itemsMap)
     {
         var currentItem = itemsMap.FirstOrDefault(x => x.Key == itemId).Value;
 
@@ -1337,10 +1350,7 @@ public class ItemHelper(
     public ItemSize GetItemSize(ICollection<Item> items, string rootItemId)
     {
         var rootTemplate = GetItem(
-            items
-                .Where(x => x.Id.Equals(rootItemId, StringComparison.OrdinalIgnoreCase))
-                .ToList()[0]
-                .Template
+            items.Where(x => x.Id.Equals(rootItemId)).ToList()[0].Template
         ).Value;
         var width = rootTemplate.Properties.Width;
         var height = rootTemplate.Properties.Height;
@@ -1432,11 +1442,7 @@ public class ItemHelper(
         var cartridgeMaxStackSize = cartridgeDetails.Value.Properties.StackMaxSize;
 
         // Exit early if ammo already exists in box
-        if (
-            ammoBox.Any(item =>
-                item.Template.Equals(cartridgeTpl, StringComparison.OrdinalIgnoreCase)
-            )
-        )
+        if (ammoBox.Any(item => item.Template.Equals(cartridgeTpl)))
         {
             return;
         }
@@ -1931,7 +1937,7 @@ public class ItemHelper(
 
             // Has parentId + no remapping exists for its parent
             if (
-                mod.ParentId is not null
+                mod.ParentId != null
                 && (!idMappings.ContainsKey(mod.ParentId) || idMappings?[mod.ParentId] is null)
             )
             // Make remapping for items parentId
@@ -1940,7 +1946,7 @@ public class ItemHelper(
             }
 
             mod.Id = idMappings[mod.Id];
-            if (mod.ParentId is not null)
+            if (mod.ParentId != null)
             {
                 mod.ParentId = idMappings[mod.ParentId];
             }
@@ -1973,7 +1979,7 @@ public class ItemHelper(
         foreach (var item in itemWithChildren)
         {
             // Root, update id
-            if (item.Id.Equals(rootItemExistingId, StringComparison.OrdinalIgnoreCase))
+            if (item.Id.Equals(rootItemExistingId))
             {
                 item.Id = newId;
 

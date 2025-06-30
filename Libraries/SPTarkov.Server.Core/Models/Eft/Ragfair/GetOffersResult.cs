@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Ragfair;
 
@@ -8,7 +9,7 @@ public record GetOffersResult
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("categories")]
-    public Dictionary<string, int>? Categories { get; set; }
+    public Dictionary<MongoId, int>? Categories { get; set; }
 
     [JsonPropertyName("offers")]
     public List<RagfairOffer>? Offers { get; set; }
