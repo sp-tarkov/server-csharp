@@ -138,15 +138,17 @@
             bool inclusiveOfToday = true
         )
         {
-            // Go back 1 day if we don't count today (exclusive)
-            var closestDate = inclusiveOfToday ? dateTime : dateTime.AddDays(-1);
+            // Get difference in day count from today to what day we want
+            var dayDifferenceCount = (dateTime.DayOfWeek - desiredDay + 7) % 7;
 
-            while (closestDate.DayOfWeek != desiredDay)
+            // Today is wanted day + we are not counting today, we know desired day is exactly 7 days ago
+            if (!inclusiveOfToday && dayDifferenceCount == 0)
             {
-                closestDate = closestDate.AddDays(-1);
+                dayDifferenceCount = 7;
             }
 
-            return closestDate;
+            // Remove count of day difference to get desired day
+            return dateTime.AddDays(-dayDifferenceCount);
         }
     }
 }
