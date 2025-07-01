@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Models.Common;
 
@@ -35,29 +36,26 @@ public readonly partial struct MongoId : IEquatable<MongoId>
     /// <returns>24 character objectId</returns>
     private static string Generate()
     {
-        // Allocate a span directly onto the stack, will dispose whenever we finished running
-        // Span is recommended to work with stackalloc + we use stackalloc here because we don't do anything with this afterwards
         Span<byte> objectId = stackalloc byte[12];
 
-        // Time stamp (4 bytes)
-        var timestamp = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        // Convert to big-endian
-        objectId[0] = (byte)(timestamp >> 24);
-        objectId[1] = (byte)(timestamp >> 16);
-        objectId[2] = (byte)(timestamp >> 8);
-        objectId[3] = (byte)timestamp;
+        // 4 bytes: current timestamp (big endian)
+        var timestamp = (int) DateTimeOffset.UtcNow
+            .ToUnixTimeSeconds();
+        objectId[0] = (byte) (timestamp >> 24);
+        objectId[1] = (byte) (timestamp >> 16);
+        objectId[2] = (byte) (timestamp >> 8);
+        objectId[3] = (byte) timestamp;
 
-        // Random value (5 bytes)
-        var rand = new Random();
-        rand.NextBytes(objectId.Slice(4, 5));
+        // 5 bytes: random machine/process identifier
+        Random.Shared.NextBytes(objectId.Slice(4, 5));
 
-        // Incrementing counter (3 bytes)
-        // 24-bit counter
-        var counter = rand.Next(0, 16777215);
-        objectId[9] = (byte)(counter >> 16);
-        objectId[10] = (byte)(counter >> 8);
-        objectId[11] = (byte)counter;
+        // 3 bytes: random counter fallback (no static state)
+        var counter = Random.Shared.Next(0, 0xFFFFFF);
+        objectId[9] = (byte) (counter >> 16);
+        objectId[10] = (byte) (counter >> 8);
+        objectId[11] = (byte) counter;
 
+        // Convert to lowercase hex string (24 chars)
         return Convert.ToHexStringLower(objectId);
     }
 
@@ -88,7 +86,7 @@ public readonly partial struct MongoId : IEquatable<MongoId>
 
     public static bool IsValidMongoId(string stringToCheck)
     {
-        return MongoIdRegex().IsMatch(stringToCheck);
+        return stringToCheck.IsValidMongoId();
     }
 
     public static implicit operator string(MongoId mongoId)
@@ -140,7 +138,4 @@ public readonly partial struct MongoId : IEquatable<MongoId>
     {
         return new MongoId("000000000000000000000000");
     }
-
-    [GeneratedRegex("^[a-fA-F0-9]{24}$")]
-    private static partial Regex MongoIdRegex();
 }
