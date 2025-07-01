@@ -29,7 +29,11 @@ namespace UnitTests.Tests.Utils
                 }
             }
 
-            Assert.AreEqual(0, invalidIds.Count, $"Invalid MongoIds found: {string.Join(", ", invalidIds)}");
+            Assert.AreEqual(
+                0,
+                invalidIds.Count,
+                $"Invalid MongoIds found: {string.Join(", ", invalidIds)}"
+            );
         }
     }
 }
