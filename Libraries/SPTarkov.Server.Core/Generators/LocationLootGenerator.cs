@@ -2,7 +2,6 @@ using System.Text.Json.Serialization;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
-using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -639,7 +638,9 @@ public class LocationLootGenerator(
             };
 
             // Add loot to container before returning
-            containerClone.Template.Items.AddRange(items);
+            containerClone.Template.Items.AddRange(
+                items.Select(item => item.ToLootItem()).ToList() // Convert into correct output type first
+            );
         }
 
         return containerClone;
@@ -996,8 +997,11 @@ public class LocationLootGenerator(
             // Root id can change when generating a weapon, ensure ids match
             spawnPoint.Template.Root = createItemResult.Items.FirstOrDefault().Id;
 
+            // Convert the processed items into the correct output type
+            var convertedItems = createItemResult.Items.Select(item => item.ToLootItem()).ToList();
+
             // Overwrite entire pool with chosen item
-            spawnPoint.Template.Items = createItemResult.Items;
+            spawnPoint.Template.Items = convertedItems;
 
             loot.Add(spawnPoint.Template);
         }
@@ -1047,7 +1051,11 @@ public class LocationLootGenerator(
 
             // Update root ID with the above dynamically generated ID
             forcedLootLocation.Template.Root = createItemResult.Items.FirstOrDefault().Id;
-            forcedLootLocation.Template.Items = createItemResult.Items;
+
+            // Convert the processed items into the correct output type
+            var convertedItems = createItemResult.Items.Select(item => item.ToLootItem()).ToList();
+
+            forcedLootLocation.Template.Items = convertedItems;
 
             // Push forced location into array as long as it doesn't exist already
             var existingLocation = result.Any(spawnPoint =>
@@ -1075,18 +1083,18 @@ public class LocationLootGenerator(
     ///     Create array of item (with child items) and return
     /// </summary>
     /// <param name="chosenComposedKey"> Key we want to look up items for </param>
-    /// <param name="items"> Location loot Template </param>
+    /// <param name="lootItems"> Location loot Template </param>
     /// <param name="staticAmmoDist"> Ammo distributions </param>
     /// <returns> ContainerItem object </returns>
     protected ContainerItem CreateDynamicLootItem(
         string? chosenComposedKey,
-        List<Item> items,
+        List<SptLootItem> lootItems,
         Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist
     )
     {
-        var chosenItem = items.FirstOrDefault(item => item.Id == chosenComposedKey);
-        MongoId chosenTpl = chosenItem?.Template ?? MongoId.Empty();
-
+        // Find matching item with chosen composed key
+        var chosenItem = lootItems.FirstOrDefault(item => item.ComposedKey == chosenComposedKey);
+        var chosenTpl = chosenItem?.Template;
         if (chosenTpl == null)
         {
             throw new Exception(
@@ -1094,8 +1102,8 @@ public class LocationLootGenerator(
             );
         }
 
-        var itemTemplate = _itemHelper.GetItem(chosenTpl).Value;
-        if (itemTemplate is null)
+        var itemDbTemplate = _itemHelper.GetItem(chosenTpl).Value;
+        if (itemDbTemplate is null)
         {
             _logger.Error($"Item tpl: {chosenTpl} cannot be found in database");
         }
@@ -1107,18 +1115,18 @@ public class LocationLootGenerator(
         if (_itemHelper.IsOfBaseclasses(chosenTpl, [BaseClasses.MONEY, BaseClasses.AMMO]))
         {
             var stackCount =
-                itemTemplate.Properties.StackMaxSize == 1
+                itemDbTemplate.Properties.StackMaxSize == 1
                     ? 1
                     : _randomUtil.GetInt(
-                        itemTemplate.Properties.StackMinRandom.Value,
-                        itemTemplate.Properties.StackMaxRandom.Value
+                        itemDbTemplate.Properties.StackMinRandom.Value,
+                        itemDbTemplate.Properties.StackMaxRandom.Value
                     );
 
             itemWithMods.Add(
                 new Item
                 {
                     Id = _hashUtil.Generate(),
-                    Template = chosenTpl,
+                    Template = chosenTpl.Value,
                     Upd = new Upd { StackObjectsCount = stackCount },
                 }
             );
@@ -1126,21 +1134,27 @@ public class LocationLootGenerator(
         else if (_itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.AMMO_BOX))
         {
             // Fill with cartridges
-            List<Item> ammoBoxItem = [new() { Id = _hashUtil.Generate(), Template = chosenTpl }];
-            _itemHelper.AddCartridgesToAmmoBox(ammoBoxItem, itemTemplate);
+            List<Item> ammoBoxItem =
+            [
+                new() { Id = _hashUtil.Generate(), Template = chosenTpl.Value },
+            ];
+            _itemHelper.AddCartridgesToAmmoBox(ammoBoxItem, itemDbTemplate);
             itemWithMods.AddRange(ammoBoxItem);
         }
         else if (_itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.MAGAZINE))
         {
             // Create array with just magazine
-            List<Item> magazineItem = [new() { Id = _hashUtil.Generate(), Template = chosenTpl }];
+            List<Item> magazineItem =
+            [
+                new() { Id = _hashUtil.Generate(), Template = chosenTpl.Value },
+            ];
 
             if (_randomUtil.GetChance100(_locationConfig.StaticMagazineLootHasAmmoChancePercent))
             // Add randomised amount of cartridges
             {
                 _itemHelper.FillMagazineWithRandomCartridge(
                     magazineItem,
-                    itemTemplate, // Magazine template
+                    itemDbTemplate, // Magazine template
                     staticAmmoDist,
                     null,
                     _locationConfig.MinFillLooseMagazinePercent / 100d
@@ -1153,7 +1167,7 @@ public class LocationLootGenerator(
         {
             // Also used by armors to get child mods
             // Get item + children and add into array we return
-            var itemWithChildren = items.FindAndReturnChildrenAsItems(chosenItem.Id);
+            var itemWithChildren = lootItems.FindAndReturnChildrenAsItems(chosenItem.Id);
 
             // Ensure all IDs are unique
             itemWithChildren = _itemHelper.ReplaceIDs(_cloner.Clone(itemWithChildren));

@@ -1,4 +1,5 @@
 ﻿using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Extensions
@@ -319,6 +320,27 @@ namespace SPTarkov.Server.Core.Extensions
             }
 
             return result.Values.ToList();
+        }
+
+        /// <summary>
+        /// Convert an Item to SptLootItem
+        /// </summary>
+        /// <param name="item">Item to convert</param>
+        /// <returns>Converted SptLootItem</returns>
+        public static SptLootItem ToLootItem(this Item item)
+        {
+            return new SptLootItem
+            {
+                ComposedKey = null,
+                Id = item.Id,
+                Template = item.Template,
+                Upd = item.Upd,
+                ParentId = item.ParentId,
+                SlotId = item.SlotId,
+                Location = item.Location,
+                Desc = item.Desc,
+                ExtensionData = item.ExtensionData,
+            };
         }
     }
 }
