@@ -947,13 +947,15 @@ public class LocationLootGenerator(
             }
 
             // Get an array of allowed IDs after above filtering has occured
-            var validItemIds = spawnPoint.Template.Items.Select(item => item.Id).ToHashSet();
+            var validComposedKeys = spawnPoint
+                .Template.Items.Select(item => item.ComposedKey)
+                .ToHashSet();
 
             // Construct container to hold above filtered items, letting us pick an item for the spot
             var itemArray = new ProbabilityObjectArray<string, double?>(_cloner);
             foreach (var itemDist in spawnPoint.ItemDistribution)
             {
-                if (!validItemIds.Contains(itemDist.ComposedKey.Key))
+                if (!validComposedKeys.Contains(itemDist.ComposedKey.Key))
                 {
                     continue;
                 }
