@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -1139,14 +1140,14 @@ public class LocationLootGenerator(
         else if (_itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.AMMO_BOX))
         {
             // Fill with cartridges
-            List<Item> ammoBoxItem = [new() { Id = _hashUtil.Generate(), Template = chosenTpl }];
+            List<Item> ammoBoxItem = [new() { Id = new MongoId(), Template = chosenTpl }];
             _itemHelper.AddCartridgesToAmmoBox(ammoBoxItem, itemDbTemplate);
             itemWithMods.AddRange(ammoBoxItem);
         }
         else if (_itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.MAGAZINE))
         {
             // Create array with just magazine
-            List<Item> magazineItem = [new() { Id = _hashUtil.Generate(), Template = chosenTpl }];
+            List<Item> magazineItem = [new() { Id = new MongoId(), Template = chosenTpl }];
 
             if (_randomUtil.GetChance100(_locationConfig.StaticMagazineLootHasAmmoChancePercent))
             // Add randomised amount of cartridges
@@ -1208,7 +1209,7 @@ public class LocationLootGenerator(
 
         var width = itemTemplate.Properties.Width;
         var height = itemTemplate.Properties.Height;
-        List<Item> items = [new() { Id = _hashUtil.Generate(), Template = chosenTpl }];
+        List<Item> items = [new() { Id = new MongoId(), Template = chosenTpl }];
         var rootItem = items.FirstOrDefault();
 
         // Use passed in parentId as override for new item
