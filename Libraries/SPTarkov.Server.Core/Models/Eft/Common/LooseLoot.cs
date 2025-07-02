@@ -78,7 +78,7 @@ public record SpawnpointTemplate
 public record SptLootItem : Item
 {
     [JsonPropertyName("composedKey")]
-    public required string? ComposedKey { get; set; }
+    public string? ComposedKey { get; set; }
 }
 
 public record GroupPosition

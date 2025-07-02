@@ -20,7 +20,6 @@ namespace SPTarkov.Server.Core.Generators;
 public class LocationLootGenerator(
     ISptLogger<LocationLootGenerator> _logger,
     RandomUtil _randomUtil,
-    MathUtil _mathUtil,
     HashUtil _hashUtil,
     ItemHelper _itemHelper,
     DatabaseService _databaseService,
@@ -976,10 +975,21 @@ public class LocationLootGenerator(
                 continue;
             }
 
-            // Draw a random item from spawn points possible items
+            // Draw a random item from the spawn points possible items
             var chosenComposedKey = itemArray.Draw().FirstOrDefault();
+            var chosenItem = spawnPoint.Template.Items.FirstOrDefault(item =>
+                item.ComposedKey == chosenComposedKey
+            );
+            if (chosenItem is null)
+            {
+                _logger.Warning(
+                    $"Unable to find item with composed key: {chosenComposedKey}, skipping spawn point: {spawnPoint.LocationId} "
+                );
+                continue;
+            }
+
             var createItemResult = CreateDynamicLootItem(
-                chosenComposedKey,
+                chosenItem,
                 spawnPoint.Template.Items,
                 staticAmmoDist
             );
@@ -1043,8 +1053,11 @@ public class LocationLootGenerator(
                 continue;
             }
 
+            var chosenItem = forcedLootLocation.Template.Items.FirstOrDefault(item =>
+                item.Id == rootItem.Id
+            );
             var createItemResult = CreateDynamicLootItem(
-                rootItem.Id,
+                chosenItem,
                 forcedLootLocation.Template.Items,
                 staticAmmoDist
             );
@@ -1082,25 +1095,17 @@ public class LocationLootGenerator(
     /// <summary>
     ///     Create array of item (with child items) and return
     /// </summary>
-    /// <param name="chosenComposedKey"> Key we want to look up items for </param>
+    /// <param name="chosenItem"> Item we want to spawn in the position </param>
     /// <param name="lootItems"> Location loot Template </param>
     /// <param name="staticAmmoDist"> Ammo distributions </param>
     /// <returns> ContainerItem object </returns>
     protected ContainerItem CreateDynamicLootItem(
-        string? chosenComposedKey,
+        SptLootItem chosenItem,
         List<SptLootItem> lootItems,
         Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist
     )
     {
-        // Find matching item with chosen composed key
-        var chosenItem = lootItems.FirstOrDefault(item => item.ComposedKey == chosenComposedKey);
-        var chosenTpl = chosenItem?.Template;
-        if (chosenTpl == null)
-        {
-            throw new Exception(
-                $"Item for tpl {chosenComposedKey} was not found in the spawn point"
-            );
-        }
+        var chosenTpl = chosenItem.Template;
 
         var itemDbTemplate = _itemHelper.GetItem(chosenTpl).Value;
         if (itemDbTemplate is null)
@@ -1126,7 +1131,7 @@ public class LocationLootGenerator(
                 new Item
                 {
                     Id = _hashUtil.Generate(),
-                    Template = chosenTpl.Value,
+                    Template = chosenTpl,
                     Upd = new Upd { StackObjectsCount = stackCount },
                 }
             );
@@ -1134,20 +1139,14 @@ public class LocationLootGenerator(
         else if (_itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.AMMO_BOX))
         {
             // Fill with cartridges
-            List<Item> ammoBoxItem =
-            [
-                new() { Id = _hashUtil.Generate(), Template = chosenTpl.Value },
-            ];
+            List<Item> ammoBoxItem = [new() { Id = _hashUtil.Generate(), Template = chosenTpl }];
             _itemHelper.AddCartridgesToAmmoBox(ammoBoxItem, itemDbTemplate);
             itemWithMods.AddRange(ammoBoxItem);
         }
         else if (_itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.MAGAZINE))
         {
             // Create array with just magazine
-            List<Item> magazineItem =
-            [
-                new() { Id = _hashUtil.Generate(), Template = chosenTpl.Value },
-            ];
+            List<Item> magazineItem = [new() { Id = _hashUtil.Generate(), Template = chosenTpl }];
 
             if (_randomUtil.GetChance100(_locationConfig.StaticMagazineLootHasAmmoChancePercent))
             // Add randomised amount of cartridges
