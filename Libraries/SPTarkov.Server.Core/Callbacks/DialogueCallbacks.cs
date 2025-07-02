@@ -52,7 +52,7 @@ public class DialogueCallbacks(
                 DateTime = _timeUtil.GetTimeStamp(),
                 IsDeveloper = true,
                 Regions = ["EUR"],
-                VersionId = "bgkidft87ddd",
+                VersionId = request.VersionId,
                 Ip = "",
                 Port = 0,
                 Chats = [new Chat { Id = "0", Members = 0 }],
