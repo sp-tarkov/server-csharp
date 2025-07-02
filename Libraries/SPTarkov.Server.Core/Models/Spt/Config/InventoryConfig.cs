@@ -57,7 +57,7 @@ public record RewardDetails
     public Dictionary<string, double>? RewardTplPool { get; set; }
 
     [JsonPropertyName("rewardTypePool")]
-    public List<string>? RewardTypePool { get; set; }
+    public List<MongoId>? RewardTypePool { get; set; }
 }
 
 public record SealedAirdropContainerSettings

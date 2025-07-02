@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 
@@ -16,7 +17,7 @@ public record Templates
     public List<CustomisationStorage>? CustomisationStorage { get; set; }
 
     [JsonPropertyName("items")]
-    public Dictionary<string, TemplateItem>? Items { get; set; }
+    public Dictionary<MongoId, TemplateItem>? Items { get; set; }
 
     [JsonPropertyName("prestige")]
     public Prestige? Prestige { get; set; }

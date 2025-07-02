@@ -711,7 +711,7 @@ public class CircleOfCultistService(
             .Select(templateItem => templateItem.Key);
 
         // Create set of unique values to ignore
-        var itemRewardBlacklist = new HashSet<string>();
+        var itemRewardBlacklist = new HashSet<MongoId>();
         itemRewardBlacklist.UnionWith(_seasonalEventService.GetInactiveSeasonalEventItems());
         itemRewardBlacklist.UnionWith(_itemFilterService.GetItemRewardBlacklist());
         itemRewardBlacklist.UnionWith(_itemFilterService.GetBlacklistedItems());
@@ -785,7 +785,7 @@ public class CircleOfCultistService(
     /// <param name="rewardPool">Pool to add items to</param>
     protected void AddTaskItemRequirementsToRewardPool(
         PmcData pmcData,
-        HashSet<string> itemRewardBlacklist,
+        HashSet<MongoId> itemRewardBlacklist,
         HashSet<string> rewardPool
     )
     {
@@ -826,7 +826,7 @@ public class CircleOfCultistService(
     protected void AddHideoutUpgradeRequirementsToRewardPool(
         Hideout hideoutDbData,
         PmcData pmcData,
-        HashSet<string> itemRewardBlacklist,
+        HashSet<MongoId> itemRewardBlacklist,
         HashSet<string> rewardPool
     )
     {
@@ -900,7 +900,7 @@ public class CircleOfCultistService(
     /// <returns>Set of item tpls</returns>
     protected HashSet<string> GenerateRandomisedItemsAndAddToRewardPool(
         HashSet<string> rewardPool,
-        HashSet<string> itemRewardBlacklist,
+        HashSet<MongoId> itemRewardBlacklist,
         bool itemsShouldBeHighValue
     )
     {

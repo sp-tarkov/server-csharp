@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Mod;
@@ -320,7 +321,7 @@ public class CustomItemService(
             return;
         }
 
-        var baseWeaponModObject = new Dictionary<string, HashSet<string>?>();
+        var baseWeaponModObject = new Dictionary<string, HashSet<MongoId>?>();
 
         // Get all slots weapon has and create a dictionary of them with possible mods that slot into each
         var weaponSlots = weapon.Value.Properties.Slots;

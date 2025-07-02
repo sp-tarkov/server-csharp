@@ -72,7 +72,13 @@ public record SpawnpointTemplate
     }
 
     [JsonPropertyName("Items")]
-    public List<Item>? Items { get; set; }
+    public List<SptLootItem>? Items { get; set; }
+}
+
+public record SptLootItem : Item
+{
+    [JsonPropertyName("composedKey")]
+    public string? ComposedKey { get; set; }
 }
 
 public record GroupPosition

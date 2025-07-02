@@ -2,6 +2,7 @@ using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -151,17 +152,17 @@ public class SeasonalEventService(
     ///     or, if halloween and christmas are inactive, return both sets of items
     /// </summary>
     /// <returns>array of tpl strings</returns>
-    public HashSet<string> GetInactiveSeasonalEventItems()
+    public HashSet<MongoId> GetInactiveSeasonalEventItems()
     {
-        var items = new HashSet<string>();
+        var items = new HashSet<MongoId>();
         if (!ChristmasEventEnabled())
         {
-            items.UnionWith(_christmasEventItems);
+            items.UnionWith(_christmasEventItems.ToMongoIds());
         }
 
         if (!HalloweenEventEnabled())
         {
-            items.UnionWith(_halloweenEventItems);
+            items.UnionWith(_halloweenEventItems.ToMongoIds());
         }
 
         return items;

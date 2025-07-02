@@ -2,8 +2,14 @@
 
 namespace SPTarkov.Server.Core.Extensions
 {
-    public static class MongoIDExtensions
+    public static class MongoIdExtensions
     {
+        //Temporary, but necessary
+        public static IEnumerable<MongoId> ToMongoIds(this IEnumerable<string> source)
+        {
+            return source.Select(s => (MongoId)s);
+        }
+
         /// <summary>
         /// Determines whether the specified <see cref="MongoId"/> is a valid 24-character hexadecimal string,
         /// which is the standard format for MongoDB ObjectIds.

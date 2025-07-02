@@ -1552,10 +1552,11 @@ public class FenceService(
 
         // Randomise armor durability
         if (
-            itemDetails.Parent
-                is BaseClasses.ARMORED_EQUIPMENT
-                    or BaseClasses.FACECOVER
-                    or BaseClasses.ARMOR_PLATE
+            (
+                itemDetails.Parent == BaseClasses.ARMORED_EQUIPMENT
+                || itemDetails.Parent == BaseClasses.FACECOVER
+                || itemDetails.Parent == BaseClasses.ARMOR_PLATE
+            )
             && itemDetails.Properties.MaxDurability.GetValueOrDefault(0) > 0
         )
         {

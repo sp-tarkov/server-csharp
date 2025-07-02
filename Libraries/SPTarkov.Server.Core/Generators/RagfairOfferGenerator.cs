@@ -835,7 +835,8 @@ public class RagfairOfferGenerator(
 
             // Add hits to visor
             var visorMod = itemWithMods.FirstOrDefault(item =>
-                item.ParentId == BaseClasses.ARMORED_EQUIPMENT && item.SlotId == "mod_equipment_000"
+                item.ParentId == BaseClasses.ARMORED_EQUIPMENT.ToString()
+                && item.SlotId == "mod_equipment_000"
             );
             if (randomUtil.GetChance100(25) && visorMod != null)
             {

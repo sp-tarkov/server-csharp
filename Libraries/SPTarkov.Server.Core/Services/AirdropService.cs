@@ -1,6 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Location;
 using SPTarkov.Server.Core.Models.Enums;
@@ -255,7 +256,7 @@ public class AirdropService(
             )
             .Select(templateItem => templateItem.Id)
             .ToHashSet();
-        var itemBlacklist = new HashSet<string>();
+        var itemBlacklist = new HashSet<MongoId>();
         itemBlacklist.UnionWith(lootSettingsByType.ItemBlacklist);
         itemBlacklist.UnionWith(_itemFilterService.GetItemRewardBlacklist());
         itemBlacklist.UnionWith(_itemFilterService.GetBossItems());

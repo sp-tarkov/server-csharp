@@ -12,11 +12,11 @@ public record Item
 
     private string? _parentId;
 
-    private string? _SlotId;
+    private string? _slotId;
 
     // MongoId
     [JsonPropertyName("_id")]
-    public required MongoId Id { get; set; }
+    public virtual required MongoId Id { get; set; }
 
     [JsonPropertyName("_tpl")]
     // MongoId
@@ -32,8 +32,8 @@ public record Item
     [JsonPropertyName("slotId")]
     public string? SlotId
     {
-        get { return _SlotId; }
-        set { _SlotId = value == null ? null : string.Intern(value); }
+        get { return _slotId; }
+        set { _slotId = value == null ? null : string.Intern(value); }
     }
 
     [JsonPropertyName("location")]

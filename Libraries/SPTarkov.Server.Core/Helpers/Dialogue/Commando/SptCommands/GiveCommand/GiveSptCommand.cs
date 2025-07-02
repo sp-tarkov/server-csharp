@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers.Dialog.Commando.SptCommands;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
@@ -207,7 +208,7 @@ public class GiveSptCommand(
         localizedGlobal ??= GetGlobalsLocale(locale ?? "en");
         // If item is an item name, we need to search using that item name and the locale which one we want otherwise
         // item is just the tplId.
-        var tplId = isItemName
+        MongoId tplId = isItemName
             ? _itemHelper
                 .GetItems()
                 .Where(IsItemAllowed)

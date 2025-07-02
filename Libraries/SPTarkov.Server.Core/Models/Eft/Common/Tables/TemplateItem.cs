@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Constants;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
@@ -12,8 +13,6 @@ public record TemplateItem
 
     private Dictionary<string, bool>? _blocks;
 
-    private string? _id;
-
     private string? _name;
 
     private string? _parent;
@@ -23,11 +22,7 @@ public record TemplateItem
     private string? _type;
 
     [JsonPropertyName("_id")]
-    public string? Id
-    {
-        get { return _id; }
-        set { _id = string.Intern(value); }
-    }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("_name")]
     public string? Name
@@ -37,11 +32,7 @@ public record TemplateItem
     }
 
     [JsonPropertyName("_parent")]
-    public string? Parent
-    {
-        get { return _parent; }
-        set { _parent = string.Intern(value); }
-    }
+    public MongoId Parent { get; set; }
 
     [JsonPropertyName("_type")]
     public string? Type
@@ -309,7 +300,7 @@ public record Props
     public bool? CanRequireOnRagfair { get; set; }
 
     [JsonPropertyName("ConflictingItems")]
-    public HashSet<string>? ConflictingItems { get; set; }
+    public HashSet<MongoId>? ConflictingItems { get; set; }
 
     [JsonPropertyName("Unlootable")]
     public bool? Unlootable { get; set; }
@@ -1235,7 +1226,7 @@ public record Props
 
     // Confirmed on client - MongoId
     [JsonPropertyName("TargetItemFilter")]
-    public List<string>? TargetItemFilter { get; set; }
+    public List<MongoId>? TargetItemFilter { get; set; }
 
     [JsonPropertyName("RepairQuality")]
     public double? RepairQuality { get; set; }
@@ -1815,7 +1806,7 @@ public record SlotFilter
     public List<string>? ArmorPlateColliders { get; set; }
 
     [JsonPropertyName("Filter")]
-    public HashSet<string>? Filter { get; set; }
+    public HashSet<MongoId>? Filter { get; set; }
 
     [JsonPropertyName("AnimationIndex")]
     public double? AnimationIndex { get; set; }

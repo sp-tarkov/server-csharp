@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Bots;
@@ -263,7 +264,7 @@ public class DatabaseService(
     }
 
     /// <returns> assets/database/templates/items.json </returns>
-    public Dictionary<string, TemplateItem> GetItems()
+    public Dictionary<MongoId, TemplateItem> GetItems()
     {
         if (_databaseServer.GetTables().Templates?.Items == null)
         {
@@ -410,6 +411,20 @@ public class DatabaseService(
     /// <param name="tableType"> The type of table, used in output message </param>
     /// <returns> True if the table only contains valid data </returns>
     private bool ValidateTable<T>(Dictionary<string, T> table, string tableType)
+    {
+        foreach (var keyValuePair in table)
+        {
+            if (!_hashUtil.IsValidMongoId(keyValuePair.Key))
+            {
+                _logger.Error($"Invalid {tableType} ID: '{keyValuePair.Key}'");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private bool ValidateTable<T>(Dictionary<MongoId, T> table, string tableType)
     {
         foreach (var keyValuePair in table)
         {

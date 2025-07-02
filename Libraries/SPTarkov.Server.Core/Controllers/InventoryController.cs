@@ -1,6 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
@@ -300,7 +301,7 @@ public class InventoryController(
     /// <param name="itemTpls">Inspected item tpls</param>
     /// <param name="fullProfile">Profile to add xp to</param>
     protected void FlagItemsAsInspectedAndRewardXp(
-        IEnumerable<string> itemTpls,
+        IEnumerable<MongoId> itemTpls,
         SptProfile fullProfile
     )
     {

@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -138,8 +139,8 @@ public class PMCLootGenerator(
     /// <returns>Dictionary of items and weights inversely tied to the items price</returns>
     protected Dictionary<string, double> GenerateLootPool(
         string pmcRole,
-        HashSet<string> allowedItemTypeWhitelist,
-        HashSet<string> itemTplAndParentBlacklist,
+        HashSet<MongoId> allowedItemTypeWhitelist,
+        HashSet<MongoId> itemTplAndParentBlacklist,
         Func<TemplateItem, bool>? genericItemCheck
     )
     {
@@ -188,9 +189,9 @@ public class PMCLootGenerator(
     /// Get a generic all-container blacklist
     /// </summary>
     /// <returns>Hashset of blacklisted items</returns>
-    protected HashSet<string> GetContainerLootBlacklist()
+    protected HashSet<MongoId> GetContainerLootBlacklist()
     {
-        var blacklist = new HashSet<string>();
+        var blacklist = new HashSet<MongoId>();
         blacklist.UnionWith(_pmcConfig.PocketLoot.Blacklist);
         blacklist.UnionWith(_pmcConfig.GlobalLootBlacklist);
         blacklist.UnionWith(itemFilterService.GetBlacklistedItems());
