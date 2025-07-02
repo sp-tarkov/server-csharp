@@ -63,7 +63,7 @@
         /// <param name="target">Target value</param>
         /// <param name="error">Error value</param>
         /// <returns>True if value is approx target within the error range</returns>
-        public static bool Approx(this double value, double target, double error)
+        public static bool Approx(this double value, double target, double error = 0.001d)
         {
             return Math.Abs(value - target) <= error;
         }
@@ -75,7 +75,7 @@
         /// <param name="target">Target value</param>
         /// <param name="error">Error value</param>
         /// <returns>True if value is approx target within the error range</returns>
-        public static bool Approx(this float value, float target, float error)
+        public static bool Approx(this float value, float target, float error = 0.001f)
         {
             return Math.Abs(value - target) <= error;
         }
