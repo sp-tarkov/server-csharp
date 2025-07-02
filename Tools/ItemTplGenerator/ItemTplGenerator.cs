@@ -3,6 +3,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Callbacks;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
@@ -26,7 +27,7 @@ public class ItemTplGenerator(
     private readonly HashSet<string> collidedEnumKeys = [];
     private string _enumDir;
     private IDictionary<string, string> _itemOverrides;
-    private Dictionary<string, TemplateItem> _items;
+    private Dictionary<MongoId, TemplateItem> _items;
 
     public async Task Run()
     {
@@ -420,20 +421,16 @@ public class ItemTplGenerator(
 
     private string GetAmmoBoxPrefix(TemplateItem item)
     {
-        var ammoItem = item.Properties?.StackSlots?[0]?.Props?.Filters?[
-            0
-        ]?.Filter?.FirstOrDefault();
+        var ammoTpl = item.Properties?.StackSlots?[0]?.Props?.Filters?[0]?.Filter?.FirstOrDefault();
 
-        return GetAmmoPrefix(_items[ammoItem]);
+        return GetAmmoPrefix(_items[ammoTpl.Value]);
     }
 
     private string GetMagazinePrefix(TemplateItem item)
     {
-        var ammoItem = item.Properties?.Cartridges?[0]?.Props?.Filters?[
-            0
-        ]?.Filter?.FirstOrDefault();
+        var ammoTpl = item.Properties?.Cartridges?[0]?.Props?.Filters?[0]?.Filter?.FirstOrDefault();
 
-        return GetAmmoPrefix(_items[ammoItem]);
+        return GetAmmoPrefix(_items[ammoTpl.Value]);
     }
 
     /// <summary>
