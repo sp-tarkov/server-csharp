@@ -21,25 +21,25 @@ public record QuestConfig : BaseConfig
     ///     Collection of quests by id only available to usec
     /// </summary>
     [JsonPropertyName("usecOnlyQuests")]
-    public required HashSet<string> UsecOnlyQuests { get; set; }
+    public required HashSet<MongoId> UsecOnlyQuests { get; set; }
 
     /// <summary>
     ///     Collection of quests by id only available to bears
     /// </summary>
     [JsonPropertyName("bearOnlyQuests")]
-    public required HashSet<string> BearOnlyQuests { get; set; }
+    public required HashSet<MongoId> BearOnlyQuests { get; set; }
 
     /// <summary>
     ///     Quests that the keyed game version do not see/access
     /// </summary>
     [JsonPropertyName("profileBlacklist")]
-    public required Dictionary<string, HashSet<string>> ProfileBlacklist { get; set; }
+    public required Dictionary<string, HashSet<MongoId>> ProfileBlacklist { get; set; }
 
     /// <summary>
     ///     key=questid, gameversions that can see/access quest
     /// </summary>
     [JsonPropertyName("profileWhitelist")]
-    public required Dictionary<string, HashSet<string>> ProfileWhitelist { get; set; }
+    public required Dictionary<MongoId, HashSet<string>> ProfileWhitelist { get; set; }
 
     /// <summary>
     ///     Holds repeatable quest template ids for pmc's and scav's
@@ -57,7 +57,7 @@ public record QuestConfig : BaseConfig
     ///     Collection of event quest data keyed by quest id.
     /// </summary>
     [JsonPropertyName("eventQuests")]
-    public required Dictionary<string, EventQuestData> EventQuests { get; set; }
+    public required Dictionary<MongoId, EventQuestData> EventQuests { get; set; }
 
     /// <summary>
     ///     List of repeatable quest configs for; daily, weekly, and daily scav.
@@ -82,14 +82,14 @@ public record RepeatableQuestTemplates
     /// Keys: elimination, completion, exploration
     /// </summary>
     [JsonPropertyName("pmc")]
-    public required Dictionary<string, string> Pmc { get; set; }
+    public required Dictionary<string, MongoId> Pmc { get; set; }
 
     /// <summary>
     ///     Scav repeatable quest template ids keyed by type of quest
     /// Keys: elimination, completion, exploration, pickup
     /// </summary>
     [JsonPropertyName("scav")]
-    public required Dictionary<string, string> Scav { get; set; }
+    public required Dictionary<string, MongoId> Scav { get; set; }
 }
 
 public record EventQuestData
@@ -138,7 +138,7 @@ public record RepeatableQuestConfig
     ///     Id for type of repeatable quest
     /// </summary>
     [JsonPropertyName("id")]
-    public required string Id { get; set; }
+    public required MongoId Id { get; set; }
 
     /// <summary>
     ///     Human-readable name for repeatable quest type
@@ -314,7 +314,7 @@ public record TraderWhitelist
     ///     Trader Id
     /// </summary>
     [JsonPropertyName("traderId")]
-    public required string TraderId { get; set; }
+    public required MongoId TraderId { get; set; }
 
     /// <summary>
     ///     Human-readable name
@@ -332,7 +332,7 @@ public record TraderWhitelist
     ///     Item categories that the reward can be
     /// </summary>
     [JsonPropertyName("rewardBaseWhitelist")]
-    public required List<string> RewardBaseWhitelist { get; set; }
+    public required List<MongoId> RewardBaseWhitelist { get; set; }
 
     /// <summary>
     ///     Can this reward be a weapon?
@@ -614,14 +614,14 @@ public record EliminationConfig : BaseQuestConfig
     /// </summary>
     [JsonPropertyName("weaponCategoryRequirements")]
     public required List<
-        ProbabilityObject<string, List<string>>
+        ProbabilityObject<string, List<MongoId>>
     > WeaponCategoryRequirements { get; set; }
 
     /// <summary>
     ///     If a weapon requirement is chosen, pick from these weapons
     /// </summary>
     [JsonPropertyName("weaponRequirements")]
-    public required List<ProbabilityObject<string, List<string>>> WeaponRequirements { get; set; }
+    public required List<ProbabilityObject<string, List<MongoId>>> WeaponRequirements { get; set; }
 }
 
 public record BaseQuestConfig

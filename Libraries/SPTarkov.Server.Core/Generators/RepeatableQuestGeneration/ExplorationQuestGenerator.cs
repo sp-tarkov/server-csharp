@@ -1,5 +1,6 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -50,7 +51,7 @@ public class ExplorationQuestGenerator(
     public RepeatableQuest? Generate(
         string sessionId,
         int pmcLevel,
-        string traderId,
+        MongoId traderId,
         QuestTypePool questTypePool,
         RepeatableQuestConfig repeatableConfig
     )

@@ -46,7 +46,7 @@ public class CompletionQuestGenerator(
     public RepeatableQuest? Generate(
         string sessionId,
         int pmcLevel,
-        string traderId,
+        MongoId traderId,
         QuestTypePool questTypePool,
         RepeatableQuestConfig repeatableConfig
     )
@@ -269,8 +269,8 @@ public class CompletionQuestGenerator(
 
         // Filter and concatenate the arrays according to current player level
         var itemIdsBlacklisted = itemBlacklist
-            .Where(p => p.MinPlayerLevel <= pmcLevel)
-            .SelectMany(x => x.ItemIds)
+            .Where(blacklist => blacklist.MinPlayerLevel <= pmcLevel)
+            .SelectMany(blacklist => blacklist.ItemIds)
             .ToHashSet(); //.Aggregate(List<ItemsBlacklist> , (a, p) => a.Concat(p.ItemIds) );
 
         var filteredSelection = itemSelection

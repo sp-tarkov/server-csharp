@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -43,20 +44,20 @@ public class TraderController(
         var traders = databaseService.GetTraders();
         foreach (var (traderId, trader) in traders)
         {
-            switch (traderId)
+            if (traderId == Traders.LIGHTHOUSEKEEPER || traderId == "ragfair")
             {
-                case "ragfair":
-                case Traders.LIGHTHOUSEKEEPER:
-                    continue;
-                case Traders.FENCE:
-                    fenceBaseAssortGenerator.GenerateFenceBaseAssorts();
-                    fenceService.GenerateFenceAssorts();
+                continue;
+            }
 
-                    continue;
+            if (traderId == Traders.FENCE)
+            {
+                fenceBaseAssortGenerator.GenerateFenceBaseAssorts();
+                fenceService.GenerateFenceAssorts();
+                continue;
             }
 
             // Adjust price by traderPriceMultiplier config property
-            if (TraderConfig.TraderPriceMultiplier != 1)
+            if (!TraderConfig.TraderPriceMultiplier.Approx(1, 0.001))
             {
                 AdjustTraderItemPrices(trader, TraderConfig.TraderPriceMultiplier);
             }
@@ -101,19 +102,19 @@ public class TraderController(
     {
         foreach (var (traderId, trader) in databaseService.GetTables().Traders)
         {
-            switch (traderId)
+            if (traderId == Traders.LIGHTHOUSEKEEPER)
             {
-                case Traders.LIGHTHOUSEKEEPER:
-                    continue;
-                case Traders.FENCE:
-                {
-                    if (fenceService.NeedsPartialRefresh())
-                    {
-                        fenceService.GenerateFenceAssorts();
-                    }
+                continue;
+            }
 
-                    continue;
+            if (traderId == Traders.FENCE)
+            {
+                if (fenceService.NeedsPartialRefresh())
+                {
+                    fenceService.GenerateFenceAssorts();
                 }
+
+                continue;
             }
 
             if (!traderAssortHelper.TraderAssortsHaveExpired(traderId))

@@ -55,5 +55,29 @@
         {
             return values.Select(v => v * factor);
         }
+
+        /// <summary>
+        ///     Helper to determine if one double is approx equal to another double
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="target">Target value</param>
+        /// <param name="error">Error value</param>
+        /// <returns>True if value is approx target within the error range</returns>
+        public static bool Approx(this double value, double target, double error)
+        {
+            return Math.Abs(value - target) <= error;
+        }
+
+        /// <summary>
+        ///     Helper to determine if one float is approx equal to another float
+        /// </summary>
+        /// <param name="value">Value to check</param>
+        /// <param name="target">Target value</param>
+        /// <param name="error">Error value</param>
+        /// <returns>True if value is approx target within the error range</returns>
+        public static bool Approx(this float value, float target, float error)
+        {
+            return Math.Abs(value - target) <= error;
+        }
     }
 }

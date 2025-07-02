@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -54,8 +55,8 @@ public class EliminationQuestGenerator(
         Dictionary<ELocationName, List<string>> LocationsConfig,
         ProbabilityObjectArray<string, BossInfo> TargetsConfig,
         ProbabilityObjectArray<string, List<string>> BodyPartsConfig,
-        ProbabilityObjectArray<string, List<string>> WeaponCategoryRequirementConfig,
-        ProbabilityObjectArray<string, List<string>> WeaponRequirementConfig
+        ProbabilityObjectArray<string, List<MongoId>> WeaponCategoryRequirementConfig,
+        ProbabilityObjectArray<string, List<MongoId>> WeaponRequirementConfig
     );
 
     /// <summary>
@@ -73,7 +74,7 @@ public class EliminationQuestGenerator(
     public RepeatableQuest? Generate(
         string sessionId,
         int pmcLevel,
-        string traderId,
+        MongoId traderId,
         QuestTypePool questTypePool,
         RepeatableQuestConfig repeatableConfig
     )
@@ -213,7 +214,7 @@ public class EliminationQuestGenerator(
         }
 
         // Only allow a specific weapon requirement if a weapon category was not chosen
-        string? allowedWeapon = null;
+        MongoId? allowedWeapon = null;
 
         var generateWeaponRequirement = randomUtil.GetChance100(
             generationData.EliminationConfig.WeaponRequirementChance
@@ -340,11 +341,11 @@ public class EliminationQuestGenerator(
             cloner,
             eliminationConfig.BodyParts
         );
-        var weaponCategoryRequirementConfig = new ProbabilityObjectArray<string, List<string>>(
+        var weaponCategoryRequirementConfig = new ProbabilityObjectArray<string, List<MongoId>>(
             cloner,
             eliminationConfig.WeaponCategoryRequirements
         );
-        var weaponRequirementConfig = new ProbabilityObjectArray<string, List<string>>(
+        var weaponRequirementConfig = new ProbabilityObjectArray<string, List<MongoId>>(
             cloner,
             eliminationConfig.WeaponRequirements
         );
@@ -667,7 +668,7 @@ public class EliminationQuestGenerator(
     /// </summary>
     /// <param name="generationData">Generation data</param>
     /// <returns>Weapon to use</returns>
-    protected string? GenerateSpecificWeaponRequirement(
+    protected MongoId GenerateSpecificWeaponRequirement(
         EliminationQuestGenerationData generationData
     )
     {
@@ -681,7 +682,7 @@ public class EliminationQuestGenerator(
             logger.Error(
                 localisationService.GetText("repeatable-elimination-specific-weapon-null")
             );
-            return null;
+            return MongoId.Empty();
         }
 
         var allowedWeapons = itemHelper.GetItemTplsOfBaseType(specificAllowedWeaponCategory[0]);

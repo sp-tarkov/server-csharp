@@ -2,6 +2,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Match;
@@ -580,7 +581,7 @@ public class LocationLifecycleService
             pmcData.CarExtractCounts[extractName]
         );
 
-        const string fenceId = Traders.FENCE;
+        var fenceId = Traders.FENCE;
         pmcData.TradersInfo[fenceId].Standing = newFenceStanding;
 
         // Check if new standing has leveled up trader
@@ -618,7 +619,7 @@ public class LocationLifecycleService
             pmcData.CoopExtractCounts[extractName]
         );
 
-        const string fenceId = Traders.FENCE;
+        var fenceId = Traders.FENCE;
         pmcData.TradersInfo[fenceId].Standing = newFenceStanding;
 
         // Check if new standing has leveled up trader
@@ -649,7 +650,7 @@ public class LocationLifecycleService
         double extractCount
     )
     {
-        const string fenceId = Traders.FENCE;
+        var fenceId = Traders.FENCE;
         var fenceStanding = pmcData.TradersInfo[fenceId].Standing;
 
         // get standing after taking extract x times, x.xx format, gain from extract can be no smaller than 0.01
@@ -946,7 +947,7 @@ public class LocationLifecycleService
         // Must occur AFTER experience is set and stats copied over
         serverPmcProfile.Stats.Eft.TotalSessionExperience = 0;
 
-        const string fenceId = Traders.FENCE;
+        var fenceId = Traders.FENCE;
 
         // Clamp fence standing
         var currentFenceStanding = postRaidProfile.TradersInfo[fenceId].Standing;

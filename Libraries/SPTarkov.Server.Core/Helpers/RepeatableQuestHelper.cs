@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -14,6 +15,7 @@ namespace SPTarkov.Server.Core.Helpers;
 public class RepeatableQuestHelper(
     ISptLogger<RepeatableQuestHelper> logger,
     DatabaseService databaseService,
+    ServerLocalisationService serverLocalisationService,
     HashUtil hashUtil,
     ICloner cloner,
     ConfigServer configServer
@@ -43,7 +45,7 @@ public class RepeatableQuestHelper(
     /// <param name="playerGroup">Side to get the templates for</param>
     /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public Dictionary<string, string> GetRepeatableQuestTemplatesByGroup(PlayerGroup playerGroup)
+    public Dictionary<string, MongoId> GetRepeatableQuestTemplatesByGroup(PlayerGroup playerGroup)
     {
         var templates = QuestConfig.RepeatableQuestTemplates;
 
@@ -107,7 +109,7 @@ public class RepeatableQuestHelper(
     /// </returns>
     public RepeatableQuest? GenerateRepeatableTemplate(
         RepeatableQuestType type,
-        string traderId,
+        MongoId traderId,
         PlayerGroup playerGroup,
         string sessionId
     )
@@ -116,8 +118,12 @@ public class RepeatableQuestHelper(
 
         if (questData is null)
         {
-            // TODO: Localize me!
-            logger.Error($"No repeatable quest template found for type {type}");
+            logger.Error(
+                serverLocalisationService.GetText(
+                    "repeatable-quest_helper_template_not_found",
+                    type
+                )
+            );
             return null;
         }
 
@@ -128,15 +134,20 @@ public class RepeatableQuestHelper(
 
         if (templateName is null)
         {
-            // TODO: Localize me!
-            logger.Error($"Could not resolve template name for {type}");
+            logger.Error(
+                serverLocalisationService.GetText(
+                    "repeatable-quest_helper_template_name_not_found",
+                    type
+                )
+            );
             return null;
         }
 
         questData.TemplateId = typeIds[templateName];
 
         // Force REF templates to use prapors ID - solves missing text issue
-        var desiredTraderId = traderId == Traders.REF ? Traders.PRAPOR : traderId;
+        // TODO: Get rid of this new mongoid generation, needs handled in `Traders` but can't be done right now.
+        var desiredTraderId = traderId == Traders.REF ? new MongoId(Traders.PRAPOR) : traderId;
 
         /*  in locale, these id correspond to the text of quests
             template ids -pmc  : Elimination = 616052ea3054fc0e2c24ce6e / Completion = 61604635c725987e815b1a46 / Exploration = 616041eb031af660100c9967
@@ -185,8 +196,9 @@ public class RepeatableQuestHelper(
 
         if (questData.QuestStatus is null)
         {
-            // TODO: Localize me!
-            logger.Error($"No quest status found for type {type}");
+            logger.Error(
+                serverLocalisationService.GetText("repeatable-quest_helper_no_status", type)
+            );
             return null;
         }
 
@@ -206,8 +218,9 @@ public class RepeatableQuestHelper(
     {
         if (!QuestConfig.LocationIdMap.TryGetValue(locationKey, out var locationId))
         {
-            // TODO - localize me!
-            logger.Error($"No location in LocationIdMap found for key {locationKey}");
+            logger.Error(
+                serverLocalisationService.GetText("repeatable-quest_helper_no_loc_id", locationKey)
+            );
             return null;
         }
 

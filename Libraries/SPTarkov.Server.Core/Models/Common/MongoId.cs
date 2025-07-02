@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Models.Common;
@@ -7,7 +8,13 @@ public readonly partial struct MongoId : IEquatable<MongoId>
 {
     private readonly string _stringId;
 
-    public MongoId(string id)
+    public MongoId(
+        string id,
+        // TODO: TEMPORARY REMOVE ME WHEN DONE!!!!
+        [CallerFilePath] string callerFilePath = "",
+        [CallerMemberName] string methodName = "",
+        [CallerLineNumber] int callerLineNumber = 0
+    )
     {
         // This is temporary, otherwise item buying is broken as when LINQ searches for string id's it's possible null is passed
         if (id == null)
@@ -18,13 +25,15 @@ public readonly partial struct MongoId : IEquatable<MongoId>
         if (id.Length != 24)
         {
             // TODO: Items.json root item has an empty parentId property
-            Console.WriteLine($"Critical MongoId error: Incorrect length. id: {id}");
+            Console.WriteLine(
+                $"Critical MongoId error [{callerFilePath}::{methodName} L{callerLineNumber}]: Incorrect length. id: {id}"
+            );
         }
 
         if (!IsValidMongoId(id))
         {
             Console.WriteLine(
-                $"Critical MongoId error: Incorrect format. Must be a hexadecimal [a-f0-9] of 24 characters. id: {id}"
+                $"Critical MongoId error [{callerFilePath}::{methodName} L{callerLineNumber}]: Incorrect format. Must be a hexadecimal [a-f0-9] of 24 characters. id: {id}"
             );
         }
 

@@ -62,7 +62,7 @@ public class RepeatableQuestRewardGenerator(
     public QuestRewards? GenerateReward(
         int pmcLevel,
         double difficulty,
-        string traderId,
+        MongoId traderId,
         RepeatableQuestConfig repeatableConfig,
         BaseQuestConfig eliminationConfig,
         List<string>? rewardTplBlacklist = null
@@ -707,7 +707,7 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="foundInRaid"> If generated Item is found in raid, default True </param>
     /// <returns> Object of "Reward"-item-type </returns>
     protected Reward GenerateItemReward(
-        string tpl,
+        MongoId tpl,
         double count,
         int index,
         bool foundInRaid = true
@@ -740,13 +740,14 @@ public class RepeatableQuestRewardGenerator(
         return questRewardItem;
     }
 
-    protected Reward GetMoneyReward(string traderId, double rewardRoubles, int rewardIndex)
+    protected Reward GetMoneyReward(MongoId traderId, double rewardRoubles, int rewardIndex)
     {
         // Determine currency based on trader
         // PK and Fence use Euros, everyone else is Roubles
-        var currency = traderId is Traders.PEACEKEEPER or Traders.FENCE
-            ? Money.EUROS
-            : Money.ROUBLES;
+        var currency =
+            traderId == Traders.PEACEKEEPER || traderId == Traders.FENCE
+                ? Money.EUROS
+                : Money.ROUBLES;
 
         // Convert reward amount to Euros if necessary
         var rewardAmountToGivePlayer =
@@ -766,7 +767,7 @@ public class RepeatableQuestRewardGenerator(
     ///     - Have a price greater than 0
     /// </summary>
     /// <param name="repeatableQuestConfig"> Config </param>
-    /// <param name="tradderId"> ID of trader who will give reward to player </param>
+    /// <param name="traderId"> ID of trader who will give reward to player </param>
     /// <returns> List of rewardable items [[_tpl, itemTemplate],...] </returns>
     public List<TemplateItem> GetRewardableItems(
         RepeatableQuestConfig repeatableQuestConfig,
@@ -821,7 +822,7 @@ public class RepeatableQuestRewardGenerator(
         string tpl,
         HashSet<MongoId> itemTplBlacklist,
         HashSet<MongoId> itemTypeBlacklist,
-        List<string>? itemBaseWhitelist = null
+        List<MongoId>? itemBaseWhitelist = null
     )
     {
         // Return early if not valid item to give as reward
