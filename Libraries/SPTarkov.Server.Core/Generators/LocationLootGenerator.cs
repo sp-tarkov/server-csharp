@@ -197,15 +197,12 @@ public class LocationLootGenerator(
         }
 
         // Randomisation is turned off for location / globally
-        if (
-            !_locationConfig.ContainerRandomisationSettings.Enabled
-            || !_locationConfig.ContainerRandomisationSettings.Maps.ContainsKey(locationId)
-        )
+        if (!LocationRandomisationEnabled(locationId))
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
                 _logger.Debug(
-                    $"Container randomisation disabled, Adding {staticRandomisableContainersOnMap.Count} containers to: {locationId}"
+                    $"Container randomisation disabled, Adding: {staticRandomisableContainersOnMap.Count} containers to: {locationId}"
                 );
             }
 
@@ -336,6 +333,12 @@ public class LocationLootGenerator(
         );
 
         return result;
+    }
+
+    protected bool LocationRandomisationEnabled(string locationId)
+    {
+        return _locationConfig.ContainerRandomisationSettings.Enabled
+            && _locationConfig.ContainerRandomisationSettings.Maps.ContainsKey(locationId);
     }
 
     /// <summary>
