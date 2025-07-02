@@ -1,7 +1,6 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
@@ -19,8 +18,7 @@ public class BtrDeliveryCallbacks(
     TimeUtil _timeUtil,
     ConfigServer _configServer,
     SaveServer _saveServer,
-    HashUtil _hashUtil,
-    ItemHelper _itemHelper
+    HashUtil _hashUtil
 ) : IOnUpdate
 {
     private readonly BtrDeliveryConfig _btrDeliveryConfig =

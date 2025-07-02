@@ -20,7 +20,6 @@ namespace SPTarkov.Server.Core.Generators;
 [Injectable(InjectionType.Singleton)]
 public class BotWeaponGenerator(
     ISptLogger<BotWeaponGenerator> _logger,
-    HashUtil _hashUtil,
     DatabaseService _databaseService,
     ItemHelper _itemHelper,
     WeightedRandomHelper _weightedRandomHelper,
@@ -291,7 +290,7 @@ public class BotWeaponGenerator(
                 weaponWithModsList.Add(
                     new Item
                     {
-                        Id = _hashUtil.Generate(),
+                        Id = new MongoId(),
                         Template = ammoTemplate,
                         ParentId = weaponWithModsList[0].Id,
                         SlotId = slotId,
@@ -330,7 +329,7 @@ public class BotWeaponGenerator(
         [
             new Item
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(),
                 Template = weaponTemplate,
                 ParentId = weaponParentId,
                 SlotId = equipmentSlot,
@@ -586,7 +585,7 @@ public class BotWeaponGenerator(
     {
         for (var i = 0; i < stackCount; i++)
         {
-            var id = _hashUtil.Generate();
+            var id = new MongoId();
             _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
                 new HashSet<EquipmentSlots> { EquipmentSlots.SecuredContainer },
                 id,
@@ -896,14 +895,14 @@ public class BotWeaponGenerator(
     ///     Add desired ammo template as item to weapon modifications list, placed as child to UBGL.
     /// </summary>
     /// <param name="weaponMods">Weapon with children.</param>
-    /// <param name="ubglMod">UBGL item.</param>
+    /// <param name="ubglMod">Underbarrrel grenade launcher item.</param>
     /// <param name="ubglAmmoTpl">Grenade ammo template.</param>
     protected void FillUbgl(List<Item> weaponMods, Item ubglMod, string ubglAmmoTpl)
     {
         weaponMods.Add(
             new Item
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(),
                 Template = ubglAmmoTpl,
                 ParentId = ubglMod.Id,
                 SlotId = "patron_in_weapon",

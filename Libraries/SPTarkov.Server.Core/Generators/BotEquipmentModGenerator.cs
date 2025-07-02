@@ -21,9 +21,7 @@ namespace SPTarkov.Server.Core.Generators;
 [Injectable]
 public class BotEquipmentModGenerator(
     ISptLogger<BotEquipmentModGenerator> _logger,
-    HashUtil _hashUtil,
     RandomUtil _randomUtil,
-    DatabaseService _databaseService,
     ItemHelper _itemHelper,
     BotEquipmentFilterService _botEquipmentFilterService,
     ItemFilterService _itemFilterService,
@@ -187,7 +185,8 @@ public class BotEquipmentModGenerator(
                 );
                 switch (plateSlotFilteringOutcome.Result)
                 {
-                    case Result.UNKNOWN_FAILURE or Result.NO_DEFAULT_FILTER:
+                    case Result.UNKNOWN_FAILURE
+                    or Result.NO_DEFAULT_FILTER:
                         if (_logger.IsLogEnabled(LogLevel.Debug))
                         {
                             _logger.Debug(
@@ -260,7 +259,7 @@ public class BotEquipmentModGenerator(
             }
 
             // Generate new id to ensure all items are unique on bot
-            var modId = _hashUtil.Generate();
+            var modId = new MongoId();
             equipment.Add(
                 CreateModItem(
                     modId,
@@ -740,7 +739,7 @@ public class BotEquipmentModGenerator(
                 request.WeaponStats.HasOptic = true;
             }
 
-            var modId = _hashUtil.Generate();
+            var modId = new MongoId();
             request.Weapon.Add(
                 CreateModItem(
                     modId,
@@ -1685,7 +1684,7 @@ public class BotEquipmentModGenerator(
     /// <param name="botRole">The bots role mod is being created for</param>
     /// <returns>Item object</returns>
     public Item CreateModItem(
-        string modId,
+        MongoId modId,
         string modTpl,
         string parentId,
         string modSlot,
@@ -2031,7 +2030,7 @@ public class BotEquipmentModGenerator(
         foreach (var slot in cylinderMagTemplate.Properties.Slots)
         {
             var modSlotId = slot.Name;
-            var modId = _hashUtil.Generate();
+            var modId = new MongoId();
             items.Add(
                 new Item
                 {

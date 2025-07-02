@@ -22,7 +22,6 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class HideoutController(
     ISptLogger<HideoutController> _logger,
-    HashUtil _hashUtil,
     TimeUtil _timeUtil,
     DatabaseService _databaseService,
     InventoryHelper _inventoryHelper,
@@ -1189,7 +1188,7 @@ public class HideoutController(
             // Create root item
             var rewardToAdd = new Item
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(),
                 Template = recipe.EndProduct,
                 Upd = new Upd { StackObjectsCount = recipe.Count },
             };
@@ -1207,7 +1206,7 @@ public class HideoutController(
         if (!rewardIsPreset)
         {
             itemAndChildrenToSendToPlayer.Add(
-                [new Item { Id = _hashUtil.Generate(), Template = recipe.EndProduct }]
+                [new Item { Id = new MongoId(), Template = recipe.EndProduct }]
             );
         }
 
@@ -1719,7 +1718,7 @@ public class HideoutController(
             // No child, add it
             if (existingMannequin is null)
             {
-                var standId = _hashUtil.Generate();
+                var standId = new MongoId();
                 var mannequinToAdd = new Item
                 {
                     Id = standId,
@@ -1732,7 +1731,7 @@ public class HideoutController(
                 // Add pocket child item
                 var mannequinPocketItemToAdd = new Item
                 {
-                    Id = _hashUtil.Generate(),
+                    Id = new MongoId(),
                     Template = pmcData
                         .Inventory.Items.FirstOrDefault(item =>
                             item.SlotId == "Pockets" && item.ParentId == pmcData.Inventory.Equipment

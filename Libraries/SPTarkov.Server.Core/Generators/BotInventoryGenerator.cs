@@ -18,9 +18,7 @@ namespace SPTarkov.Server.Core.Generators;
 [Injectable]
 public class BotInventoryGenerator(
     ISptLogger<BotInventoryGenerator> _logger,
-    HashUtil _hashUtil,
     RandomUtil _randomUtil,
-    DatabaseService _databaseService,
     ProfileActivityService _profileActivityService,
     BotWeaponGenerator _botWeaponGenerator,
     BotLootGenerator _botLootGenerator,
@@ -133,12 +131,12 @@ public class BotInventoryGenerator(
     /// <returns>PmcInventory object</returns>
     public BotBaseInventory GenerateInventoryBase()
     {
-        var equipmentId = _hashUtil.Generate();
-        var stashId = _hashUtil.Generate();
-        var questRaidItemsId = _hashUtil.Generate();
-        var questStashItemsId = _hashUtil.Generate();
-        var sortingTableId = _hashUtil.Generate();
-        var hideoutCustomizationStashId = _hashUtil.Generate();
+        var equipmentId = new MongoId();
+        var stashId = new MongoId();
+        var questRaidItemsId = new MongoId();
+        var questStashItemsId = new MongoId();
+        var sortingTableId = new MongoId();
+        var hideoutCustomizationStashId = new MongoId();
 
         return new BotBaseInventory
         {
@@ -579,7 +577,7 @@ public class BotInventoryGenerator(
             }
 
             // Create root item
-            var id = _hashUtil.Generate();
+            var id = new MongoId();
             Item item = new()
             {
                 Id = id,

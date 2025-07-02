@@ -331,7 +331,7 @@ public record WalletLootSettings
     public required Dictionary<string, double> StackSizeWeight { get; set; }
 
     [JsonPropertyName("currencyWeight")]
-    public required Dictionary<string, double> CurrencyWeight { get; set; }
+    public required Dictionary<MongoId, double> CurrencyWeight { get; set; }
 
     /// <summary>
     ///     What wallets will have money in them

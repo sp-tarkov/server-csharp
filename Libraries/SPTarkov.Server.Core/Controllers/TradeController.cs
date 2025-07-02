@@ -1,6 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -25,15 +26,12 @@ public class TradeController(
     TradeHelper _tradeHelper,
     TimeUtil _timeUtil,
     RandomUtil _randomUtil,
-    HashUtil _hashUtil,
     ItemHelper _itemHelper,
     ProfileHelper _profileHelper,
     RagfairOfferHelper _ragfairOfferHelper,
-    TraderHelper _traderHelper,
     RagfairServer _ragfairServer,
     HttpResponseUtil _httpResponseUtil,
     ServerLocalisationService _serverLocalisationService,
-    RagfairPriceService _ragfairPriceService,
     MailSendService _mailSendService,
     ConfigServer _configServer
 )
@@ -330,7 +328,7 @@ public class TradeController(
         // Create single currency item with all currency on it
         var rootCurrencyReward = new Item
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             Template = Money.ROUBLES,
             Upd = new Upd { StackObjectsCount = roublesToSend },
         };

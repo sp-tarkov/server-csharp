@@ -18,9 +18,7 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class ItemHelper(
     ISptLogger<ItemHelper> _logger,
-    HashUtil _hashUtil,
     RandomUtil _randomUtil,
-    MathUtil _mathUtil,
     DatabaseService _databaseService,
     HandbookHelper _handbookHelper,
     ItemBaseClassService _itemBaseClassService,
@@ -308,7 +306,7 @@ public class ItemHelper(
     /// <param name="tpl">Item template id to check</param>
     /// <param name="baseClassTpl">Baseclass to check for</param>
     /// <returns>is the tpl a descendant</returns>
-    public bool IsOfBaseclass(string tpl, string baseClassTpl)
+    public bool IsOfBaseclass(MongoId tpl, string baseClassTpl)
     {
         return _itemBaseClassService.ItemHasBaseClass(tpl, [baseClassTpl]);
     }
@@ -814,7 +812,7 @@ public class ItemHelper(
             var amount = Math.Min(remainingCount ?? 0, maxStackSize ?? 0);
             var newStackClone = _cloner.Clone(itemToSplit);
 
-            newStackClone.Id = _hashUtil.Generate();
+            newStackClone.Id = new MongoId();
             newStackClone.Upd.StackObjectsCount = amount;
             remainingCount -= amount;
             rootAndChildren.Add(newStackClone);
@@ -892,7 +890,7 @@ public class ItemHelper(
             var amount = Math.Min(remainingCount ?? 0, itemMaxStackSize);
             var newItemClone = _cloner.Clone(itemToSplit);
 
-            newItemClone.Id = _hashUtil.Generate();
+            newItemClone.Id = new MongoId();
             newItemClone.Upd.StackObjectsCount = amount;
             remainingCount -= amount;
             result.Add([newItemClone]);
@@ -1002,7 +1000,7 @@ public class ItemHelper(
             }
 
             // Generate new id
-            var newId = _hashUtil.Generate();
+            var newId = new MongoId();
 
             // Keep copy of original id
             var originalId = item.Id;
@@ -1043,7 +1041,7 @@ public class ItemHelper(
         foreach (var item in items)
         {
             // Generate new id
-            var newId = _hashUtil.Generate();
+            var newId = new MongoId();
 
             // Keep copy of original id
             var originalId = item.Id;
@@ -1113,7 +1111,7 @@ public class ItemHelper(
             }
 
             // Generate new id
-            var newId = _hashUtil.Generate();
+            var newId = new MongoId();
 
             // Keep copy of original id
             var originalId = item.Id;
@@ -1735,7 +1733,7 @@ public class ItemHelper(
     {
         return new Item
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             Template = ammoTpl,
             ParentId = parentId,
             SlotId = "cartridges",
@@ -1842,8 +1840,8 @@ public class ItemHelper(
             // Create basic item structure ready to add to weapon array
             Item modItemToAdd = new()
             {
-                Id = _hashUtil.Generate(),
-                Template = chosenTpl,
+                Id = new MongoId(),
+                Template = chosenTpl.Value,
                 ParentId = result[0].Id,
                 SlotId = slot.Name,
             };
@@ -1866,7 +1864,7 @@ public class ItemHelper(
     /// <param name="possibleTpls">Tpls to randomly choose from</param>
     /// <param name="incompatibleModTpls">Incompatible tpls to not allow</param>
     /// <returns>Chosen tpl or undefined</returns>
-    public string? GetCompatibleTplFromArray(
+    public MongoId? GetCompatibleTplFromArray(
         HashSet<MongoId> possibleTpls,
         HashSet<MongoId> incompatibleModTpls
     )
@@ -1876,7 +1874,7 @@ public class ItemHelper(
             return null;
         }
 
-        string? chosenTpl = null;
+        MongoId? chosenTpl = null;
         var count = 0;
         while (chosenTpl is null)
         {
@@ -1924,7 +1922,7 @@ public class ItemHelper(
     public List<Item> ReparentItemAndChildren(Item rootItem, List<Item> itemWithChildren)
     {
         var oldRootId = itemWithChildren[0].Id;
-        Dictionary<string, string> idMappings = new();
+        Dictionary<string, MongoId> idMappings = new();
 
         idMappings[oldRootId] = rootItem.Id;
 
@@ -1932,7 +1930,7 @@ public class ItemHelper(
         {
             if (!idMappings.ContainsKey(mod.Id))
             {
-                idMappings[mod.Id] = _hashUtil.Generate();
+                idMappings[mod.Id] = new MongoId();
             }
 
             // Has parentId + no remapping exists for its parent
@@ -1942,7 +1940,7 @@ public class ItemHelper(
             )
             // Make remapping for items parentId
             {
-                idMappings[mod.ParentId] = _hashUtil.Generate();
+                idMappings[mod.ParentId] = new MongoId();
             }
 
             mod.Id = idMappings[mod.Id];
@@ -1970,9 +1968,9 @@ public class ItemHelper(
     // Optional: new id to use
     // Returns New root id
 
-    public string RemapRootItemId(List<Item> itemWithChildren, string? newId = null)
+    public string RemapRootItemId(List<Item> itemWithChildren, MongoId? newId = null)
     {
-        newId ??= _hashUtil.Generate();
+        newId ??= new MongoId();
 
         var rootItemExistingId = itemWithChildren[0].Id;
 
@@ -1981,7 +1979,7 @@ public class ItemHelper(
             // Root, update id
             if (item.Id.Equals(rootItemExistingId))
             {
-                item.Id = newId;
+                item.Id = newId.Value;
 
                 continue;
             }

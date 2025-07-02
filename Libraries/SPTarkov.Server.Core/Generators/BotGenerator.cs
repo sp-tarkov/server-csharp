@@ -794,9 +794,7 @@ public class BotGenerator(
     /// <returns></returns>
     public void AddIdsToBot(BotBase bot, BotGenerationDetails botGenerationDetails)
     {
-        var botId = _hashUtil.Generate();
-
-        bot.Id = botId;
+        bot.Id = new MongoId();
         bot.Aid = botGenerationDetails.IsPmc.GetValueOrDefault(false)
             ? _hashUtil.GenerateAccountId()
             : 0;
@@ -809,7 +807,7 @@ public class BotGenerator(
     /// <param name="profile">Profile to update</param>
     public void GenerateInventoryId(BotBase profile)
     {
-        var newInventoryItemId = _hashUtil.Generate();
+        var newInventoryItemId = new MongoId();
 
         foreach (var item in profile.Inventory.Items)
         {
@@ -892,7 +890,7 @@ public class BotGenerator(
     {
         Item inventoryItem = new()
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             Template = GetDogtagTplByGameVersionAndSide(bot.Info.Side, bot.Info.GameVersion),
             ParentId = bot.Inventory.Equipment,
             SlotId = Slots.Dogtag,

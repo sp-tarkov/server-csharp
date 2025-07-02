@@ -19,7 +19,6 @@ namespace SPTarkov.Server.Core.Generators;
 public class LootGenerator(
     ISptLogger<LootGenerator> _logger,
     RandomUtil _randomUtil,
-    HashUtil _hashUtil,
     ItemHelper _itemHelper,
     PresetHelper _presetHelper,
     DatabaseService _databaseService,
@@ -62,7 +61,7 @@ public class LootGenerator(
                     [
                         new Item
                         {
-                            Id = _hashUtil.Generate(),
+                            Id = new MongoId(),
                             Template = chosenSealedContainer.Id,
                             Upd = new Upd { StackObjectsCount = 1, SpawnedInSession = true },
                         },
@@ -216,7 +215,7 @@ public class LootGenerator(
             // Non-preset item to be added
             var newLootItem = new Item
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(),
                 Template = itemTpl,
                 Upd = new Upd { StackObjectsCount = randomisedItemCount, SpawnedInSession = true },
             };
@@ -370,7 +369,7 @@ public class LootGenerator(
 
         var newLootItem = new Item
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             Template = randomItem.Id,
             Upd = new Upd { StackObjectsCount = 1, SpawnedInSession = true },
         };
@@ -641,7 +640,7 @@ public class LootGenerator(
                     var chosenAmmoBox = _randomUtil.GetArrayValue(ammoBoxesMatchingCaliber);
                     var ammoBoxReward = new List<Item>
                     {
-                        new() { Id = _hashUtil.Generate(), Template = chosenAmmoBox.Id },
+                        new() { Id = new MongoId(), Template = chosenAmmoBox.Id },
                     };
                     _itemHelper.AddCartridgesToAmmoBox(ammoBoxReward, chosenAmmoBox);
                     rewards.Add(ammoBoxReward);
@@ -677,7 +676,7 @@ public class LootGenerator(
                 var chosenRewardItem = _randomUtil.GetArrayValue(rewardItemPool);
                 var rewardItem = new List<Item>
                 {
-                    new() { Id = _hashUtil.Generate(), Template = chosenRewardItem.Id },
+                    new() { Id = new MongoId(), Template = chosenRewardItem.Id },
                 };
 
                 rewards.Add(rewardItem);
@@ -734,7 +733,7 @@ public class LootGenerator(
                 var chosenItem = _randomUtil.DrawRandomFromList(relatedItems.ToList());
                 var reward = new List<Item>
                 {
-                    new() { Id = _hashUtil.Generate(), Template = chosenItem[0].Id },
+                    new() { Id = new MongoId(), Template = chosenItem[0].Id },
                 };
 
                 modRewards.Add(reward);
@@ -772,10 +771,7 @@ public class LootGenerator(
                 continue;
             }
 
-            List<Item> rewardItem =
-            [
-                new() { Id = _hashUtil.Generate(), Template = chosenRewardItemTpl },
-            ];
+            List<Item> rewardItem = [new() { Id = new MongoId(), Template = chosenRewardItemTpl }];
             itemsToReturn.Add(rewardItem);
         }
 

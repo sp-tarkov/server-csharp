@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
@@ -16,11 +17,9 @@ namespace SPTarkov.Server.Core.Generators;
 [Injectable]
 public class BotLootGenerator(
     ISptLogger<BotLootGenerator> _logger,
-    HashUtil _hashUtil,
     RandomUtil _randomUtil,
     ItemHelper _itemHelper,
     InventoryHelper _inventoryHelper,
-    DatabaseService _databaseService,
     HandbookHelper _handbookHelper,
     BotGeneratorHelper _botGeneratorHelper,
     BotWeaponGenerator _botWeaponGenerator,
@@ -549,7 +548,7 @@ public class BotLootGenerator(
                 continue;
             }
 
-            var newRootItemId = _hashUtil.Generate();
+            var newRootItemId = new MongoId();
             List<Item> itemWithChildrenToAdd =
             [
                 new()
@@ -687,7 +686,7 @@ public class BotLootGenerator(
             [
                 new()
                 {
-                    Id = _hashUtil.Generate(),
+                    Id = new MongoId(),
                     Template = _weightedRandomHelper.GetWeightedValue(
                         _botConfig.WalletLoot.CurrencyWeight
                     ),
