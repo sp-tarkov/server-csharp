@@ -952,6 +952,11 @@ public class InventoryHelper(
                 continue;
             }
 
+            if (item.ParentId == "hideout")
+            {
+                continue;
+            }
+
             if (!inventoryItemHash.ByParentId.ContainsKey(item.ParentId))
             {
                 inventoryItemHash.ByParentId[item.ParentId] = [];
