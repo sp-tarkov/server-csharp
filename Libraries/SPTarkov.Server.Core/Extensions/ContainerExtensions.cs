@@ -137,7 +137,7 @@ namespace SPTarkov.Server.Core.Extensions
         private static bool RowIsFull(int[,] container2D, int rowIndex)
         {
             var rowFull = true;
-            var containerColumnCount = container2D.GetLength(0); // rows
+            var containerColumnCount = container2D.GetLength(1); // columns
             for (var col = 0; col < containerColumnCount; col++)
             {
                 if (container2D[rowIndex, col] == 0)
