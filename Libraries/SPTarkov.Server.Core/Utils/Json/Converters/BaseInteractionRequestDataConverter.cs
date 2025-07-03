@@ -260,7 +260,7 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
 
     public static void RegisterModDataHandler(
         string action,
-        Func<string, BaseInteractionRequestData?> handler
+        Func<string, JsonSerializerOptions, BaseInteractionRequestData?> handler
     )
     {
         if (!_modHandlers.TryAdd(action, handler))
