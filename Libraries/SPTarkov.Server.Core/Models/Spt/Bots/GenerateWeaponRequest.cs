@@ -121,7 +121,7 @@ public record BotModLimits
     public int? ScopeMax { get; set; }
 
     [JsonPropertyName("scopeBaseTypes")]
-    public List<string>? ScopeBaseTypes { get; set; }
+    public List<MongoId>? ScopeBaseTypes { get; set; }
 
     [JsonPropertyName("flashlightLaser")]
     public ItemCount? FlashlightLaser { get; set; }
@@ -130,7 +130,7 @@ public record BotModLimits
     public int? FlashlightLaserMax { get; set; }
 
     [JsonPropertyName("flashlightLaserBaseTypes")]
-    public List<string>? FlashlightLaserBaseTypes { get; set; }
+    public List<MongoId>? FlashlightLaserBaseTypes { get; set; }
 }
 
 public record ItemCount

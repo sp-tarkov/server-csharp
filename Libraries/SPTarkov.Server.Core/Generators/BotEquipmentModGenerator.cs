@@ -2064,7 +2064,7 @@ public class BotEquipmentModGenerator(
     public HashSet<MongoId> FilterSightsByWeaponType(
         Item weapon,
         HashSet<MongoId> scopes,
-        Dictionary<string, List<string>> botWeaponSightWhitelist
+        Dictionary<MongoId, List<MongoId>> botWeaponSightWhitelist
     )
     {
         var weaponDetails = _itemHelper.GetItem(weapon.Template);

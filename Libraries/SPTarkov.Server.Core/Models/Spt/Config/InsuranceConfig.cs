@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Spt.Config;
 
@@ -11,7 +12,7 @@ public record InsuranceConfig : BaseConfig
     ///     Chance item is returned as insurance, keyed by trader id
     /// </summary>
     [JsonPropertyName("returnChancePercent")]
-    public Dictionary<string, double> ReturnChancePercent { get; set; } = [];
+    public Dictionary<MongoId, double> ReturnChancePercent { get; set; } = [];
 
     /// <summary>
     ///     Item slots that should never be returned as insurance

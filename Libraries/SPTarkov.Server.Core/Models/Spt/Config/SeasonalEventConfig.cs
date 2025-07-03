@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils.Json.Converters;
@@ -19,7 +20,7 @@ public record SeasonalEventConfig : BaseConfig
     [JsonPropertyName("eventGear")]
     public required Dictionary<
         SeasonalEventType,
-        Dictionary<string, Dictionary<string, Dictionary<string, int>>>
+        Dictionary<string, Dictionary<string, Dictionary<MongoId, int>>>
     > EventGear { get; set; }
 
     /// <summary>
@@ -28,7 +29,7 @@ public record SeasonalEventConfig : BaseConfig
     [JsonPropertyName("eventLoot")]
     public required Dictionary<
         SeasonalEventType,
-        Dictionary<string, Dictionary<string, Dictionary<string, int>>>
+        Dictionary<string, Dictionary<string, Dictionary<MongoId, int>>>
     > EventLoot { get; set; }
 
     [JsonPropertyName("events")]
@@ -70,7 +71,7 @@ public record SeasonalEventConfig : BaseConfig
     [JsonPropertyName("botAppearanceChanges")]
     public required Dictionary<
         SeasonalEventType,
-        Dictionary<string, Dictionary<string, Dictionary<string, int>>>
+        Dictionary<string, Dictionary<string, Dictionary<MongoId, int>>>
     > BotAppearanceChanges { get; set; }
 }
 

@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
@@ -36,7 +37,7 @@ public class InventoryHelper(
     ICloner _cloner
 )
 {
-    private static readonly FrozenSet<string> _variableSizeItemTypes =
+    private static readonly FrozenSet<MongoId> _variableSizeItemTypes =
     [
         BaseClasses.WEAPON,
         BaseClasses.FUNCTIONAL_MOD,
@@ -962,8 +963,8 @@ public class InventoryHelper(
     {
         var inventoryItemHash = new InventoryItemHash
         {
-            ByItemId = new Dictionary<string, Item>(),
-            ByParentId = new Dictionary<string, HashSet<Item>>(),
+            ByItemId = new Dictionary<MongoId, Item>(),
+            ByParentId = new Dictionary<MongoId, HashSet<Item>>(),
         };
         foreach (var item in inventoryItems)
         {
@@ -1367,7 +1368,7 @@ public class InventoryHelper(
     public void ValidateInventoryUsesMongoIds(List<Item> itemsToValidate)
     {
         var errors = itemsToValidate
-            .Where(item => !_hashUtil.IsValidMongoId(item.Id))
+            .Where(item => !item.Id.IsValidMongoId())
             .Select(item => $"Id: {item.Id} - tpl: {item.Template}")
             .ToList();
         foreach (var message in errors)
@@ -1411,8 +1412,8 @@ public class InventoryHelper(
 public class InventoryItemHash
 {
     [JsonPropertyName("byItemId")]
-    public Dictionary<string, Item> ByItemId { get; set; }
+    public Dictionary<MongoId, Item> ByItemId { get; set; }
 
     [JsonPropertyName("byParentId")]
-    public Dictionary<string, HashSet<Item>> ByParentId { get; set; }
+    public Dictionary<MongoId, HashSet<Item>> ByParentId { get; set; }
 }

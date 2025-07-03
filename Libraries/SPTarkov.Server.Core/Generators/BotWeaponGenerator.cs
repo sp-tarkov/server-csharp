@@ -794,6 +794,7 @@ public class BotWeaponGenerator(
 
         var magazineTemplate = _itemHelper.GetItem(
             magazineSlot.Props?.Filters.FirstOrDefault()?.Filter?.FirstOrDefault()
+                ?? new MongoId(null)
         );
         if (!magazineTemplate.Key)
         {

@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -414,7 +415,7 @@ public class DatabaseService(
     {
         foreach (var keyValuePair in table)
         {
-            if (!_hashUtil.IsValidMongoId(keyValuePair.Key))
+            if (!keyValuePair.Key.IsValidMongoId())
             {
                 _logger.Error($"Invalid {tableType} ID: '{keyValuePair.Key}'");
                 return false;
@@ -428,7 +429,7 @@ public class DatabaseService(
     {
         foreach (var keyValuePair in table)
         {
-            if (!_hashUtil.IsValidMongoId(keyValuePair.Key))
+            if (!keyValuePair.Key.IsValidMongoId())
             {
                 _logger.Error($"Invalid {tableType} ID: '{keyValuePair.Key}'");
                 return false;

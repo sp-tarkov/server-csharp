@@ -37,7 +37,7 @@ public record LocationConfig : BaseConfig
     ///     Key = map id, value = dict of item tpls that should only have x forced loot spawn position
     /// </summary>
     [JsonPropertyName("lootMaxSpawnLimits")]
-    public required Dictionary<string, Dictionary<string, int>> LootMaxSpawnLimits { get; set; }
+    public required Dictionary<string, Dictionary<MongoId, int>> LootMaxSpawnLimits { get; set; }
 
     /// <summary>
     ///     How many attempts should be taken to fit an item into a container before giving up
@@ -130,7 +130,7 @@ public record LocationConfig : BaseConfig
     ///     Containers to remove all children from when generating static/loose loot
     /// </summary>
     [JsonPropertyName("tplsToStripChildItemsFrom")]
-    public required HashSet<string> TplsToStripChildItemsFrom { get; set; }
+    public required HashSet<MongoId> TplsToStripChildItemsFrom { get; set; }
 
     /// <summary>
     ///     Map ids players cannot visit
@@ -232,7 +232,7 @@ public record ContainerRandomisationSettings
     ///     Some container types don't work when randomised
     /// </summary>
     [JsonPropertyName("containerTypesToNotRandomise")]
-    public required HashSet<string> ContainerTypesToNotRandomise { get; set; }
+    public required HashSet<MongoId> ContainerTypesToNotRandomise { get; set; }
 
     [JsonPropertyName("containerGroupMinSizeMultiplier")]
     public double ContainerGroupMinSizeMultiplier { get; set; }

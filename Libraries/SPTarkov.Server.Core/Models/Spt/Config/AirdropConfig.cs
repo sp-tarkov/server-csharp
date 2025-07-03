@@ -19,7 +19,7 @@ public record AirdropConfig : BaseConfig
     public required Dictionary<string, AirdropLoot> Loot { get; set; }
 
     [JsonPropertyName("customAirdropMapping")]
-    public required Dictionary<string, SptAirdropTypeEnum> CustomAirdropMapping { get; set; }
+    public required Dictionary<MongoId, SptAirdropTypeEnum> CustomAirdropMapping { get; set; }
 }
 
 /// <summary>
@@ -98,7 +98,7 @@ public record AirdropLoot
     public bool UseForcedLoot { get; set; }
 
     [JsonPropertyName("forcedLoot")]
-    public Dictionary<string, MinMax<int>>? ForcedLoot { get; set; }
+    public Dictionary<MongoId, MinMax<int>>? ForcedLoot { get; set; }
 
     [JsonPropertyName("useRewardItemBlacklist")]
     public bool UseRewardItemBlacklist { get; set; }

@@ -30,7 +30,7 @@ public record ModToSpawnRequest
     ///     Parent slot the item will be a part of
     /// </summary>
     [JsonPropertyName("botWeaponSightWhitelist")]
-    public Dictionary<string, List<string>>? BotWeaponSightWhitelist { get; set; }
+    public Dictionary<MongoId, List<MongoId>>? BotWeaponSightWhitelist { get; set; }
 
     /// <summary>
     ///     Blacklist to prevent mods from being picked

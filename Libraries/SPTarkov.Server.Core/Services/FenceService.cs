@@ -782,7 +782,7 @@ public class FenceService(
         int? assortCount,
         CreateFenceAssortsResult assorts,
         TraderAssort baseFenceAssortClone,
-        Dictionary<string, (int current, int max)> itemTypeLimits,
+        Dictionary<MongoId, (int current, int max)> itemTypeLimits,
         int loyaltyLevel
     )
     {
@@ -1066,8 +1066,8 @@ public class FenceService(
     }
 
     protected (int current, int max)? GetMatchingItemLimit(
-        Dictionary<string, (int current, int max)> itemTypeLimits,
-        string itemTpl
+        Dictionary<MongoId, (int current, int max)> itemTypeLimits,
+        MongoId itemTpl
     )
     {
         foreach (var baseTypeKey in itemTypeLimits.Keys)
@@ -1680,11 +1680,11 @@ public class FenceService(
     /// </summary>
     /// <param name="limits"> Limits as defined in config </param>
     /// <returns> Record, key: item tplId, value: current/max item count allowed </returns>
-    protected Dictionary<string, (int current, int max)> InitItemLimitCounter(
-        Dictionary<string, int> limits
+    protected Dictionary<MongoId, (int current, int max)> InitItemLimitCounter(
+        Dictionary<MongoId, int> limits
     )
     {
-        var itemTypeCounts = new Dictionary<string, (int current, int max)>();
+        var itemTypeCounts = new Dictionary<MongoId, (int current, int max)>();
 
         foreach (var x in limits.Keys)
         {

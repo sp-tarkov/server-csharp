@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 
@@ -28,7 +29,7 @@ public record KarmaLevel
     public required Dictionary<string, GenerationData> ItemLimits { get; set; }
 
     [JsonPropertyName("equipmentBlacklist")]
-    public required Dictionary<EquipmentSlots, List<string>> EquipmentBlacklist { get; set; }
+    public required Dictionary<EquipmentSlots, List<MongoId>> EquipmentBlacklist { get; set; }
 
     [JsonPropertyName("labsAccessCardChancePercent")]
     public double? LabsAccessCardChancePercent { get; set; }

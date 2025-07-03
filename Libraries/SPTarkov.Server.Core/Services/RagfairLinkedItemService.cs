@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -128,8 +129,10 @@ public class RagfairLinkedItemService(
         }
 
         // Get the first cylinder filter tpl
-        var cylinderTpl = cylinderMod.Props?.Filters?[0].Filter?.FirstOrDefault();
-        if (string.IsNullOrEmpty(cylinderTpl))
+        var cylinderTpl =
+            cylinderMod.Props?.Filters?[0].Filter?.FirstOrDefault() ?? new MongoId(null);
+
+        if (!cylinderTpl.IsValidMongoId())
         {
             // No cylinder, nothing to do
             return;

@@ -1,6 +1,7 @@
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
@@ -160,7 +161,7 @@ public class BotEquipmentFilterService(
     /// </summary>
     /// <param name="botEquipmentRole">equipment role of bot to look up</param>
     /// <returns>Dictionary of weapon type and their whitelisted scope types</returns>
-    public Dictionary<string, List<string>> GetBotWeaponSightWhitelist(string botEquipmentRole)
+    public Dictionary<MongoId, List<MongoId>> GetBotWeaponSightWhitelist(string botEquipmentRole)
     {
         var botEquipmentSettings = _botConfig.Equipment[botEquipmentRole];
 

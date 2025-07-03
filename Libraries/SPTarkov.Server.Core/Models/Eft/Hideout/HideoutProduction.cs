@@ -70,7 +70,7 @@ public record Requirement
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("templateId")]
-    public string? TemplateId { get; set; }
+    public MongoId TemplateId { get; set; }
 
     [JsonPropertyName("count")]
     public int? Count { get; set; }
