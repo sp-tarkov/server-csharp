@@ -47,7 +47,7 @@ public class DialogueCallbacks(
         {
             new()
             {
-                Id = _hashUtil.Generate(),
+                Id = new Models.Common.MongoId(),
                 RegistrationId = 20,
                 DateTime = _timeUtil.GetTimeStamp(),
                 IsDeveloper = true,

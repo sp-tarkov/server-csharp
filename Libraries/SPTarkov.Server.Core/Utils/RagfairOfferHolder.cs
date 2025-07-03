@@ -138,7 +138,7 @@ public class RagfairOfferHolder(
             // Keep generating IDs until we get a unique one
             while (_offersById.ContainsKey(offer.Id))
             {
-                offer.Id = _hashUtil.Generate();
+                offer.Id = new MongoId();
             }
 
             var itemTpl = offer.Items?.FirstOrDefault()?.Template ?? new MongoId(null);

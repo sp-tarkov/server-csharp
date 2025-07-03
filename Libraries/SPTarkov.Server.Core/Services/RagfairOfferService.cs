@@ -1,6 +1,7 @@
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -268,7 +269,7 @@ public class RagfairOfferService(
         var unstackedItems = UnstackOfferItems(playerOffer.Items);
 
         // Need to regenerate Ids to ensure returned item(s) have correct parent values
-        var newParentId = hashUtil.Generate();
+        var newParentId = new MongoId();
         foreach (var item in unstackedItems)
         {
             // Refresh root items' parentIds

@@ -137,9 +137,9 @@ public class CustomItemService(
     /// </summary>
     /// <param name="newId"> ID supplied to code </param>
     /// <returns> ItemID </returns>
-    protected string GetOrGenerateIdForItem(string newId)
+    protected MongoId GetOrGenerateIdForItem(string newId)
     {
-        return newId == "" ? hashUtil.Generate() : newId;
+        return string.IsNullOrEmpty(newId) ? new MongoId() : new MongoId(newId);
     }
 
     /// <summary>

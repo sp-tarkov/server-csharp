@@ -171,7 +171,7 @@ public class LocationLifecycleService
             Transition = new Transition
             {
                 TransitionType = TransitionType.NONE,
-                TransitionRaidId = _hashUtil.Generate(),
+                TransitionRaidId = new MongoId(),
                 TransitionCount = 0,
                 VisitedLocations = [],
             },
@@ -520,7 +520,7 @@ public class LocationLifecycleService
         // Generate randomised reward for taking coop extract
         var loot = _lootGenerator.CreateRandomLoot(_traderConfig.Fence.CoopExtractGift);
 
-        var parentId = _hashUtil.Generate();
+        var parentId = new MongoId();
         foreach (var itemAndChildren in loot)
         {
             // Set all root items parent to new id

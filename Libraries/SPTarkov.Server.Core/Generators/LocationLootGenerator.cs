@@ -542,7 +542,7 @@ public class LocationLootGenerator(
         var containerTpl = containerClone.Template.Items.FirstOrDefault().Template;
 
         // Create new unique parent id to prevent any collisions
-        var parentId = _hashUtil.Generate();
+        var parentId = new MongoId();
         containerClone.Template.Root = parentId;
         containerClone.Template.Items.FirstOrDefault().Id = parentId;
 

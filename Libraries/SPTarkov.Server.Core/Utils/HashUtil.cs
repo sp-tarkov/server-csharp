@@ -1,7 +1,6 @@
 using System.IO.Hashing;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 using SPTarkov.DI.Annotations;
 
 namespace SPTarkov.Server.Core.Utils;
@@ -9,37 +8,6 @@ namespace SPTarkov.Server.Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public partial class HashUtil(RandomUtil _randomUtil)
 {
-    /// <summary>
-    ///     Create a 24 character MongoId
-    /// </summary>
-    /// <returns>24 character objectId</returns>
-    public string Generate()
-    {
-        // Allocate a span directly onto the stack, will dispose whenever we finished running
-        // Span is recommended to work with stackalloc and we can use stackalloc here because we don't do anything with this afterwards
-        Span<byte> objectId = stackalloc byte[12];
-
-        // Time stamp (4 bytes)
-        var timestamp = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        // Convert to big-endian
-        objectId[0] = (byte)(timestamp >> 24);
-        objectId[1] = (byte)(timestamp >> 16);
-        objectId[2] = (byte)(timestamp >> 8);
-        objectId[3] = (byte)timestamp;
-
-        // Random value (5 bytes)
-        _randomUtil.NextBytes(objectId.Slice(4, 5));
-
-        // Incrementing counter (3 bytes)
-        // 24-bit counter
-        var counter = _randomUtil.GetInt(0, 16777215);
-        objectId[9] = (byte)(counter >> 16);
-        objectId[10] = (byte)(counter >> 8);
-        objectId[11] = (byte)counter;
-
-        return Convert.ToHexStringLower(objectId);
-    }
-
     public uint GenerateCrc32ForData(string data)
     {
         return Crc32.HashToUInt32(new ArraySegment<byte>(Encoding.UTF8.GetBytes(data)));

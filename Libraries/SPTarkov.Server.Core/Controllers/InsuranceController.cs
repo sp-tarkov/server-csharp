@@ -122,7 +122,7 @@ public class InsuranceController(
         foreach (var insured in insuranceDetails)
         {
             // Create a new root parent ID for the message we'll be sending the player
-            var rootItemParentId = _hashUtil.Generate();
+            var rootItemParentId = new MongoId();
 
             // Update the insured items to have the new root parent ID for root/orphaned items
             insured.Items = insured.Items.AdoptOrphanedItems(rootItemParentId);

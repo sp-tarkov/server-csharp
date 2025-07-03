@@ -111,7 +111,7 @@ public class TraderSptCommand(
                     Id = new MongoId(),
                     Template = Money.ROUBLES,
                     Upd = new Upd { StackObjectsCount = 1 },
-                    ParentId = _hashUtil.Generate(),
+                    ParentId = new MongoId(),
                     SlotId = "main",
                 },
             ],

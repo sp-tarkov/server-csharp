@@ -820,7 +820,7 @@ public class RagfairOfferHelper(
             // Create an item template item
             var requestedItem = new Item
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(),
                 Template = requirement.Template,
                 Upd = new Upd { StackObjectsCount = requirement.Count * boughtAmount },
             };
