@@ -36,7 +36,7 @@ namespace SPTarkov.Server.Core.Extensions
             // Down = y, iterate over rows
             for (var y = 0; y < limitY; y++)
             {
-                if (RowIsFull(container2D, y, containerY))
+                if (RowIsFull(container2D, y))
                 {
                     continue;
                 }
@@ -48,8 +48,6 @@ namespace SPTarkov.Server.Core.Extensions
                     if (
                         CanItemBePlacedInContainerAtPosition(
                             container2D,
-                            containerX,
-                            containerY,
                             x,
                             y,
                             itemX.Value,
@@ -71,8 +69,6 @@ namespace SPTarkov.Server.Core.Extensions
                     if (
                         CanItemBePlacedInContainerAtPosition(
                             container2D,
-                            containerX,
-                            containerY,
                             x,
                             y,
                             itemY.Value, // Swapped
@@ -132,10 +128,17 @@ namespace SPTarkov.Server.Core.Extensions
             }
         }
 
-        private static bool RowIsFull(int[,] container2D, int rowIndex, int columnCount)
+        /// <summary>
+        /// Is the requested row full
+        /// </summary>
+        /// <param name="container2D">Container to check</param>
+        /// <param name="rowIndex">Index of row to check</param>
+        /// <returns>True = full</returns>
+        private static bool RowIsFull(int[,] container2D, int rowIndex)
         {
             var rowFull = true;
-            for (var col = 0; col < columnCount; col++)
+            var containerColumnCount = container2D.GetLength(0); // rows
+            for (var col = 0; col < containerColumnCount; col++)
             {
                 if (container2D[rowIndex, col] == 0)
                 {
@@ -147,6 +150,11 @@ namespace SPTarkov.Server.Core.Extensions
             return rowFull;
         }
 
+        /// <summary>
+        /// Is every slot in container full
+        /// </summary>
+        /// <param name="container2D">Container to check</param>
+        /// <returns>True = full</returns>
         private static bool ContainerIsFull(int[,] container2D)
         {
             var containerY = container2D.GetLength(0); // rows
@@ -171,6 +179,12 @@ namespace SPTarkov.Server.Core.Extensions
             return containerFull;
         }
 
+        /// <summary>
+        /// Is the item size values passed in bigger than 1x1
+        /// </summary>
+        /// <param name="itemWidth">Width of item</param>
+        /// <param name="itemHeight">Height of item</param>
+        /// <returns>True = bigger than 1x1</returns>
         private static bool ItemBiggerThan1X1(int itemWidth, int itemHeight)
         {
             return itemWidth + itemHeight > 2;
@@ -180,8 +194,6 @@ namespace SPTarkov.Server.Core.Extensions
         ///     Can an item of specified size be placed inside a 2d container at a specific position
         /// </summary>
         /// <param name="container">Container to find space in</param>
-        /// <param name="containerWidth">Container x size</param>
-        /// <param name="containerHeight">Container y size</param>
         /// <param name="startXPos">Starting x position for item</param>
         /// <param name="startYPos">Starting y position for item</param>
         /// <param name="itemXWidth">Items width</param>
@@ -189,14 +201,15 @@ namespace SPTarkov.Server.Core.Extensions
         /// <returns>True - slot found</returns>
         private static bool CanItemBePlacedInContainerAtPosition(
             int[,] container,
-            int containerWidth,
-            int containerHeight,
             int startXPos,
             int startYPos,
             int itemXWidth,
             int itemYHeight
         )
         {
+            var containerHeight = container.GetLength(0); // Rows
+            var containerWidth = container.GetLength(1); // Columns
+
             // Check item isn't bigger than container when at position
             if (
                 startXPos + itemXWidth > containerWidth
@@ -207,6 +220,7 @@ namespace SPTarkov.Server.Core.Extensions
                 return false;
             }
 
+            // Check each slot, is any filled
             for (var checkY = startYPos; checkY < startYPos + itemYHeight; checkY++)
             {
                 for (var checkX = startXPos; checkX < startXPos + itemXWidth; checkX++)
