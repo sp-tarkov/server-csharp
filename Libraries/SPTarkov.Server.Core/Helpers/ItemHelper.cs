@@ -2075,7 +2075,7 @@ public class ItemHelper(
     ///     Get a 2D grid of a container's item slots
     /// </summary>
     /// <param name="containerTpl">Tpl id of the container</param>
-    public int[][] GetContainerMapping(string containerTpl)
+    public int[,] GetContainerMapping(string containerTpl)
     {
         // Get template from db
         var containerTemplate = GetItem(containerTpl).Value;
@@ -2093,16 +2093,8 @@ public class ItemHelper(
     /// <param name="containerY">Horizontal size of container</param>
     /// <param name="containerX">Vertical size of container</param>
     /// <returns>Two-dimensional representation of container</returns>
-    public int[][] GetBlankContainerMap(int containerY, int containerX)
+    public int[,] GetBlankContainerMap(int containerY, int containerX)
     {
-        //var x = new int[containerY][];
-        //for (int i = 0; i < containerY; i++)
-        //{
-        //    x[i] = new int[containerH];
-        //}
-
-        //return x;
-
-        return Enumerable.Range(0, containerY).Select(_ => new int[containerX]).ToArray();
+        return new int[containerX, containerY];
     }
 }

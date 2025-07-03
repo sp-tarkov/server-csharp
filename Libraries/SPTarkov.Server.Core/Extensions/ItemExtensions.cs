@@ -1,4 +1,6 @@
-﻿using SPTarkov.Server.Core.Models.Common;
+﻿using System.Text.Json;
+using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
@@ -341,6 +343,22 @@ namespace SPTarkov.Server.Core.Extensions
                 Desc = item.Desc,
                 ExtensionData = item.ExtensionData,
             };
+        }
+
+        public static ItemLocation? GetParsedLocation(this Item item)
+        {
+            if (item.Location is null)
+            {
+                return null;
+            }
+
+            if (item.Location is JsonElement element)
+            {
+                // TODO: when is this true
+                return element.ToObject<ItemLocation>();
+            }
+
+            return (ItemLocation)item.Location;
         }
     }
 }

@@ -1,9 +1,8 @@
 using System.Collections.Frozen;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
@@ -145,10 +144,7 @@ public class InventoryHelper(
         // Run callback
         try
         {
-            if (request.Callback is not null)
-            {
-                request.Callback((int)(itemWithModsToAddClone[0].Upd.StackObjectsCount ?? 0));
-            }
+            request.Callback?.Invoke((int)(itemWithModsToAddClone[0].Upd.StackObjectsCount ?? 0));
         }
         catch (Exception ex)
         {
@@ -168,7 +164,7 @@ public class InventoryHelper(
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
             _logger.Debug(
-                $"Added {itemWithModsToAddClone[0].Upd?.StackObjectsCount ?? 1} item: {itemWithModsToAddClone[0].Template} with: {itemWithModsToAddClone.Count - 1} mods to inventory"
+                $"Added: {itemWithModsToAddClone[0].Upd?.StackObjectsCount ?? 1} item: {itemWithModsToAddClone[0].Template} with: {itemWithModsToAddClone.Count - 1} mods to inventory"
             );
         }
     }
@@ -244,7 +240,7 @@ public class InventoryHelper(
     /// <param name="containerFS2D">Container grid to fit items into</param>
     /// <param name="itemsWithChildren">Items to try and fit into grid</param>
     /// <returns>True all fit</returns>
-    public bool CanPlaceItemsInContainer(int[][] containerFS2D, List<List<Item>> itemsWithChildren)
+    public bool CanPlaceItemsInContainer(int[,] containerFS2D, List<List<Item>> itemsWithChildren)
     {
         return itemsWithChildren.All(itemWithChildren =>
             CanPlaceItemInContainer(containerFS2D, itemWithChildren)
@@ -257,18 +253,14 @@ public class InventoryHelper(
     /// <param name="containerFS2D">Container grid</param>
     /// <param name="itemWithChildren">Item to check fits</param>
     /// <returns>True it fits</returns>
-    public bool CanPlaceItemInContainer(int[][] containerFS2D, List<Item> itemWithChildren)
+    public bool CanPlaceItemInContainer(int[,] containerFS2D, List<Item> itemWithChildren)
     {
         // Get x/y size of item
         var rootItem = itemWithChildren[0];
-        var itemSize = GetItemSize(rootItem.Template, rootItem.Id, itemWithChildren);
+        var (sizeX, sizeY) = GetItemSize(rootItem.Template, rootItem.Id, itemWithChildren);
 
         // Look for a place to slot item into
-        var findSlotResult = _containerHelper.FindSlotForItem(
-            containerFS2D,
-            itemSize[0],
-            itemSize[1]
-        );
+        var findSlotResult = _containerHelper.FindSlotForItem(containerFS2D, sizeX, sizeY);
         if (findSlotResult.Success.GetValueOrDefault(false))
         {
             try
@@ -277,8 +269,8 @@ public class InventoryHelper(
                     containerFS2D,
                     findSlotResult.X.Value,
                     findSlotResult.Y.Value,
-                    itemSize[0],
-                    itemSize[1],
+                    sizeX,
+                    sizeY,
                     findSlotResult.Rotation.Value
                 );
             }
@@ -309,7 +301,7 @@ public class InventoryHelper(
     /// <param name="containerId">Id of the container we're fitting item into</param>
     /// <param name="desiredSlotId">Slot id value to use, default is "hideout"</param>
     public void PlaceItemInContainer(
-        int[][] containerFS2D,
+        int[,] containerFS2D,
         List<Item> itemWithChildren,
         string containerId,
         string desiredSlotId = "hideout"
@@ -317,14 +309,14 @@ public class InventoryHelper(
     {
         // Get x/y size of item
         var rootItemAdded = itemWithChildren[0];
-        var itemSize = GetItemSize(rootItemAdded.Template, rootItemAdded.Id, itemWithChildren);
+        var (sizeX, sizeY) = GetItemSize(
+            rootItemAdded.Template,
+            rootItemAdded.Id,
+            itemWithChildren
+        );
 
         // Look for a place to slot item into
-        var findSlotResult = _containerHelper.FindSlotForItem(
-            containerFS2D,
-            itemSize[0],
-            itemSize[1]
-        );
+        var findSlotResult = _containerHelper.FindSlotForItem(containerFS2D, sizeX, sizeY);
         if (findSlotResult.Success.GetValueOrDefault(false))
         {
             try
@@ -333,8 +325,8 @@ public class InventoryHelper(
                     containerFS2D,
                     findSlotResult.X.Value,
                     findSlotResult.Y.Value,
-                    itemSize[0],
-                    itemSize[1],
+                    sizeX,
+                    sizeY,
                     findSlotResult.Rotation.Value
                 );
             }
@@ -377,8 +369,8 @@ public class InventoryHelper(
     /// <param name="useSortingTable">Should sorting table to be used if main stash has no space</param>
     /// <param name="output">Output to send back to client</param>
     protected void PlaceItemInInventory(
-        int[][] stashFS2D,
-        int[][] sortingTableFS2D,
+        int[,] stashFS2D,
+        int[,] sortingTableFS2D,
         List<Item> itemWithChildren,
         BotBaseInventory playerInventory,
         bool useSortingTable,
@@ -387,10 +379,10 @@ public class InventoryHelper(
     {
         // Get x/y size of item
         var rootItem = itemWithChildren[0];
-        var itemSize = GetItemSize(rootItem.Template, rootItem.Id, itemWithChildren);
+        var (sizeX, sizeY) = GetItemSize(rootItem.Template, rootItem.Id, itemWithChildren);
 
         // Look for a place to slot item into
-        var findSlotResult = _containerHelper.FindSlotForItem(stashFS2D, itemSize[0], itemSize[1]);
+        var findSlotResult = _containerHelper.FindSlotForItem(stashFS2D, sizeX, sizeY);
         if (findSlotResult.Success.Value)
         {
             try
@@ -399,8 +391,8 @@ public class InventoryHelper(
                     stashFS2D,
                     findSlotResult.X.Value,
                     findSlotResult.Y.Value,
-                    itemSize[0],
-                    itemSize[1],
+                    sizeX,
+                    sizeY,
                     findSlotResult.Rotation.Value
                 );
             }
@@ -411,7 +403,7 @@ public class InventoryHelper(
                 return;
             }
 
-            // Store details for object, incuding container item will be placed in
+            // Store details for object, including container item will be placed in
             rootItem.ParentId = playerInventory.Stash;
             rootItem.SlotId = "hideout";
             rootItem.Location = new ItemLocation
@@ -431,8 +423,8 @@ public class InventoryHelper(
         {
             var findSortingSlotResult = _containerHelper.FindSlotForItem(
                 sortingTableFS2D,
-                itemSize[0],
-                itemSize[1]
+                sizeX,
+                sizeY
             );
 
             try
@@ -441,8 +433,8 @@ public class InventoryHelper(
                     sortingTableFS2D,
                     findSortingSlotResult.X.Value,
                     findSortingSlotResult.Y.Value,
-                    itemSize[0],
-                    itemSize[1],
+                    sizeX,
+                    sizeY,
                     findSortingSlotResult.Rotation.Value
                 );
             }
@@ -686,7 +678,7 @@ public class InventoryHelper(
     /// <param name="itemId">Items id to get size of</param>
     /// <param name="inventoryItems"></param>
     /// <returns>[width, height]</returns>
-    public List<int> GetItemSize(string? itemTpl, string itemId, List<Item> inventoryItems)
+    public (int, int) GetItemSize(string? itemTpl, string itemId, List<Item> inventoryItems)
     {
         // -> Prepares item Width and height returns [sizeX, sizeY]
         return GetSizeByInventoryItemHash(itemTpl, itemId, GetInventoryItemHash(inventoryItems));
@@ -700,9 +692,9 @@ public class InventoryHelper(
     /// <param name="itemId">Items id</param>
     /// <param name="inventoryItemHash">Hashmap of inventory items</param>
     /// <returns>An array representing the [width, height] of the item</returns>
-    protected List<int> GetSizeByInventoryItemHash(
-        string itemTpl,
-        string itemId,
+    protected (int, int) GetSizeByInventoryItemHash(
+        MongoId itemTpl,
+        MongoId itemId,
         InventoryItemHash inventoryItemHash
     )
     {
@@ -735,7 +727,7 @@ public class InventoryHelper(
                 _serverLocalisationService.GetText("inventory-return_default_size", itemTpl)
             );
 
-            return [1, 1]; // Invalid input data, return defaults
+            return (1, 1); // Invalid input data, return defaults
         }
 
         if (!inventoryItemHash.ByItemId.TryGetValue(itemId, out var rootItem))
@@ -744,7 +736,7 @@ public class InventoryHelper(
                 $"Unable to get root item with Id: {itemId} from player inventory. Defaulting to 1x1"
             );
 
-            return [1, 1]; // Invalid input data, return defaults
+            return (1, 1); // Invalid input data, return defaults
         }
 
         // Does root item support being folded
@@ -866,11 +858,10 @@ public class InventoryHelper(
             }
         }
 
-        return
-        [
+        return (
             outX.Value + sizeLeft + sizeRight + forcedLeft + forcedRight,
-            outY.Value + sizeUp + sizeDown + forcedUp + forcedDown,
-        ];
+            outY.Value + sizeUp + sizeDown + forcedUp + forcedDown
+        );
     }
 
     /// <summary>
@@ -881,7 +872,7 @@ public class InventoryHelper(
     /// <param name="itemList">Players inventory items</param>
     /// <param name="containerId">Id of the container</param>
     /// <returns>Two-dimensional representation of container</returns>
-    public int[][] GetContainerMap(int sizeX, int sizeY, List<Item> itemList, string containerId)
+    public int[,] GetContainerMap(int sizeX, int sizeY, List<Item> itemList, string containerId)
     {
         // Create blank 2d map of container
         var containerYX = _itemHelper.GetBlankContainerMap(sizeY, sizeX);
@@ -891,66 +882,63 @@ public class InventoryHelper(
 
         // Get subset of items that belong to the desired container
         if (!inventoryItemHash.ByParentId.TryGetValue(containerId, out var rootItemsInContainer))
-        // No items in container, exit early
         {
+            // No items in container, exit early and return the blank container map
             return containerYX;
         }
 
-        // Check each item in container
-        foreach (var item in rootItemsInContainer)
+        // Add every root items size (with mods attached) found in container
+        foreach (var rootItem in rootItemsInContainer)
         {
-            ItemLocation? itemLocation;
-            if (item.Location is JsonElement element)
-            {
-                // TODO: is this ever true?
-                itemLocation = element.ToObject<ItemLocation>();
-            }
-            else
-            {
-                itemLocation = (ItemLocation?)item.Location;
-            }
-
+            var itemLocation = rootItem.GetParsedLocation();
             if (itemLocation is null)
             {
                 // Item has no location property
                 _logger.Error(
-                    $"Unable to find 'location' property on item with id: {item.Id}, skipping"
+                    $"Unable to find 'location' property on item with id: {rootItem.Id}, skipping"
                 );
 
                 continue;
             }
 
             // Get x/y size of item
-            var tmpSize = GetSizeByInventoryItemHash(item.Template, item.Id, inventoryItemHash);
-            var iW = tmpSize[0]; // x
-            var iH = tmpSize[1]; // y
-            var fH = itemLocation.IsVertical() ? iW : iH;
-            var fW = itemLocation.IsVertical() ? iH : iW;
+            var (xSize, ySize) = GetSizeByInventoryItemHash(
+                rootItem.Template,
+                rootItem.Id,
+                inventoryItemHash
+            );
+            var itemHSize = itemLocation.IsVertical() ? xSize : ySize;
+            var itemWSize = itemLocation.IsVertical() ? ySize : xSize;
 
-            for (var y = 0; y < fH; y++)
+            for (var yOffset = 0; yOffset < itemHSize; yOffset++)
             {
-                try
+                for (var xOffset = 0; xOffset < itemWSize; xOffset++)
                 {
-                    var rowIndex = itemLocation.Y + y;
-                    var containerX = containerYX.ElementAtOrDefault(rowIndex.Value);
-                    if (containerX is null)
-                    {
-                        _logger.Error(
-                            $"Unable to find container: {containerId} row line: {itemLocation.Y + y}"
-                        );
-                    }
+                    var currentY = itemLocation.Y.Value + yOffset;
+                    var currentX = itemLocation.X.Value + xOffset;
 
-                    // Fill the corresponding cells in the container map to show the slot is taken
-                    Array.Fill(containerX, 1, itemLocation.X.Value, fW);
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(
-                        _serverLocalisationService.GetText(
-                            "inventory-unable_to_fill_container",
-                            new { id = item.Id, error = $"{ex.Message} {ex.StackTrace}" }
-                        )
-                    );
+                    // Check still in containers bounds
+                    if (currentY >= 0 && currentY < sizeY && currentX >= 0 && currentX < sizeX)
+                    {
+                        // mark slot used
+                        containerYX[currentY, currentX] = 1;
+                    }
+                    else
+                    {
+                        // Out of bounds
+                        var message =
+                            $"Item: {rootItem.Id} at: {itemLocation.X}, {itemLocation.Y} size: {itemHSize}x{itemWSize} extends outside the containers bounds";
+
+                        _logger.Error(
+                            _serverLocalisationService.GetText(
+                                "inventory-unable_to_fill_container",
+                                new { id = rootItem.Id, error = $"{message}" }
+                            )
+                        );
+
+                        // Stop and try next row
+                        break;
+                    }
                 }
             }
         }
@@ -1056,7 +1044,7 @@ public class InventoryHelper(
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <returns>2-dimensional array</returns>
-    protected int[][] GetStashSlotMap(PmcData pmcData)
+    protected int[,] GetStashSlotMap(PmcData pmcData)
     {
         var (horizontal, vertical) = GetPlayerStashSize(pmcData);
         return GetContainerMap(
@@ -1072,7 +1060,7 @@ public class InventoryHelper(
     /// </summary>
     /// <param name="containerTpl">Container to get data for</param>
     /// <returns>blank two-dimensional array</returns>
-    public int[][] GetContainerSlotMap(string containerTpl)
+    public int[,] GetContainerSlotMap(string containerTpl)
     {
         var containerTemplate = _itemHelper.GetItem(containerTpl).Value;
 
@@ -1088,7 +1076,7 @@ public class InventoryHelper(
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <returns>two-dimensional array</returns>
-    protected int[][] GetSortingTableSlotMap(PmcData pmcData)
+    protected int[,] GetSortingTableSlotMap(PmcData pmcData)
     {
         return GetContainerMap(10, 45, pmcData.Inventory.Items, pmcData.Inventory.SortingTable);
     }
