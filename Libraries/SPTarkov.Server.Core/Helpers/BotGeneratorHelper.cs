@@ -21,7 +21,6 @@ public class BotGeneratorHelper(
     DurabilityLimitsHelper _durabilityLimitsHelper,
     ItemHelper _itemHelper,
     InventoryHelper _inventoryHelper,
-    ContainerHelper _containerHelper,
     ProfileActivityService _profileActivityService,
     ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer
@@ -718,11 +717,7 @@ public class BotGeneratorHelper(
                     );
 
                     // Try to fit item into grid
-                    var findSlotResult = _containerHelper.FindSlotForItem(
-                        slotGridMap,
-                        width,
-                        height
-                    );
+                    var findSlotResult = slotGridMap.FindSlotForItem(width, height);
 
                     // Free slot found, add item
                     if (findSlotResult.Success ?? false)

@@ -23,10 +23,8 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class InventoryHelper(
     ISptLogger<InventoryHelper> _logger,
-    HashUtil _hashUtil,
     HttpResponseUtil _httpResponseUtil,
     DialogueHelper _dialogueHelper,
-    ContainerHelper _containerHelper,
     EventOutputHolder _eventOutputHolder,
     ProfileHelper _profileHelper,
     ItemHelper _itemHelper,
@@ -260,13 +258,12 @@ public class InventoryHelper(
         var (sizeX, sizeY) = GetItemSize(rootItem.Template, rootItem.Id, itemWithChildren);
 
         // Look for a place to slot item into
-        var findSlotResult = _containerHelper.FindSlotForItem(containerFS2D, sizeX, sizeY);
+        var findSlotResult = containerFS2D.FindSlotForItem(sizeX, sizeY);
         if (findSlotResult.Success.GetValueOrDefault(false))
         {
             try
             {
-                _containerHelper.FillContainerMapWithItem(
-                    containerFS2D,
+                containerFS2D.FillContainerMapWithItem(
                     findSlotResult.X.Value,
                     findSlotResult.Y.Value,
                     sizeX,
@@ -316,13 +313,12 @@ public class InventoryHelper(
         );
 
         // Look for a place to slot item into
-        var findSlotResult = _containerHelper.FindSlotForItem(containerFS2D, sizeX, sizeY);
+        var findSlotResult = containerFS2D.FindSlotForItem(sizeX, sizeY);
         if (findSlotResult.Success.GetValueOrDefault(false))
         {
             try
             {
-                _containerHelper.FillContainerMapWithItem(
-                    containerFS2D,
+                containerFS2D.FillContainerMapWithItem(
                     findSlotResult.X.Value,
                     findSlotResult.Y.Value,
                     sizeX,
@@ -382,13 +378,12 @@ public class InventoryHelper(
         var (sizeX, sizeY) = GetItemSize(rootItem.Template, rootItem.Id, itemWithChildren);
 
         // Look for a place to slot item into
-        var findSlotResult = _containerHelper.FindSlotForItem(stashFS2D, sizeX, sizeY);
+        var findSlotResult = stashFS2D.FindSlotForItem(sizeX, sizeY);
         if (findSlotResult.Success.Value)
         {
             try
             {
-                _containerHelper.FillContainerMapWithItem(
-                    stashFS2D,
+                stashFS2D.FillContainerMapWithItem(
                     findSlotResult.X.Value,
                     findSlotResult.Y.Value,
                     sizeX,
@@ -421,16 +416,11 @@ public class InventoryHelper(
         // Space not found in main stash, use sorting table
         if (useSortingTable)
         {
-            var findSortingSlotResult = _containerHelper.FindSlotForItem(
-                sortingTableFS2D,
-                sizeX,
-                sizeY
-            );
+            var findSortingSlotResult = sortingTableFS2D.FindSlotForItem(sizeX, sizeY);
 
             try
             {
-                _containerHelper.FillContainerMapWithItem(
-                    sortingTableFS2D,
+                sortingTableFS2D.FillContainerMapWithItem(
                     findSortingSlotResult.X.Value,
                     findSortingSlotResult.Y.Value,
                     sizeX,

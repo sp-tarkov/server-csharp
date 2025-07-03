@@ -21,10 +21,8 @@ namespace SPTarkov.Server.Core.Generators;
 public class LocationLootGenerator(
     ISptLogger<LocationLootGenerator> _logger,
     RandomUtil _randomUtil,
-    HashUtil _hashUtil,
     ItemHelper _itemHelper,
     DatabaseService _databaseService,
-    ContainerHelper _containerHelper,
     PresetHelper _presetHelper,
     ServerLocalisationService _serverLocalisationService,
     SeasonalEventService _seasonalEventService,
@@ -600,8 +598,7 @@ public class LocationLootGenerator(
                 : chosenItemWithChildren.Items;
 
             // look for open slot to put chosen item into
-            var result = _containerHelper.FindSlotForItem(
-                containerMap,
+            var result = containerMap.FindSlotForItem(
                 chosenItemWithChildren.Width,
                 chosenItemWithChildren.Height
             );
@@ -620,8 +617,7 @@ public class LocationLootGenerator(
             }
 
             // Find somewhere for item inside container
-            _containerHelper.FillContainerMapWithItem(
-                containerMap,
+            containerMap.FillContainerMapWithItem(
                 result.X.Value,
                 result.Y.Value,
                 chosenItemWithChildren.Width,

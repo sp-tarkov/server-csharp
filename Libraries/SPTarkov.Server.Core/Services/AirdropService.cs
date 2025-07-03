@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -9,7 +10,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Services;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -19,9 +19,7 @@ public class AirdropService(
     ConfigServer configServer,
     ISptLogger<AirdropService> _logger,
     LootGenerator _lootGenerator,
-    HashUtil _hashUtil,
     WeightedRandomHelper _weightedRandomHelper,
-    ContainerHelper _containerHelper,
     ServerLocalisationService _serverLocalisationService,
     ItemFilterService _itemFilterService,
     ItemHelper _itemHelper
@@ -135,19 +133,14 @@ public class AirdropService(
             var itemSize = _itemHelper.GetItemSize(itemAndChildren, itemAndChildren[0].Id);
 
             // Look for open slot to put chosen item into
-            var result = _containerHelper.FindSlotForItem(
-                containerMap,
-                itemSize.Width,
-                itemSize.Height
-            );
+            var result = containerMap.FindSlotForItem(itemSize.Width, itemSize.Height);
             if (result.Success.GetValueOrDefault(false))
             {
                 // It Fits, add item + children
                 lootResult.AddRange(itemAndChildren);
 
                 // Update container with item we just added
-                _containerHelper.FillContainerMapWithItem(
-                    containerMap,
+                containerMap.FillContainerMapWithItem(
                     result.X.Value,
                     result.Y.Value,
                     itemSize.Width,
