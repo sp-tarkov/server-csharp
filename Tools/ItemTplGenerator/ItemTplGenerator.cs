@@ -592,7 +592,8 @@ public class ItemTplGenerator(
 
             foreach (var (key, value) in data)
             {
-                enumFileData += $"    public static MongoId {key} = new MongoId(\"{value}\");\n";
+                enumFileData +=
+                    $"    public static readonly MongoId {key} = new MongoId(\"{value}\");\n";
             }
 
             enumFileData += "}\n";
