@@ -23,11 +23,6 @@ public readonly struct MongoId : IEquatable<MongoId>
             return;
         }
 
-        if (id == "hideout")
-        {
-            throw new Exception("wtf");
-        }
-
         if (id.Length != 24)
         {
             // TODO: Items.json root item has an empty parentId property
