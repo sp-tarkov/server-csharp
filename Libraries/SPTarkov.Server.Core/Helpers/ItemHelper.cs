@@ -28,7 +28,7 @@ public class ItemHelper(
     ICloner _cloner
 )
 {
-    protected static readonly FrozenSet<string> _defaultInvalidBaseTypes =
+    protected static readonly FrozenSet<MongoId> _defaultInvalidBaseTypes =
     [
         BaseClasses.LOOT_CONTAINER,
         BaseClasses.MOB_CONTAINER,
@@ -97,7 +97,7 @@ public class ItemHelper(
         "right_side_plate",
     ];
 
-    protected static readonly FrozenSet<string> _armorSlotsThatCanHoldMods =
+    protected static readonly FrozenSet<MongoId> _armorSlotsThatCanHoldMods =
     [
         BaseClasses.HEADWEAR,
         BaseClasses.VEST,
@@ -283,7 +283,7 @@ public class ItemHelper(
     /// <param name="tpl">Template id to check</param>
     /// <param name="invalidBaseTypes">OPTIONAL - Base types deemed invalid</param>
     /// <returns>true for items that may be in player possession and not quest items</returns>
-    public bool IsValidItem(string tpl, ICollection<string>? invalidBaseTypes = null)
+    public bool IsValidItem(MongoId tpl, ICollection<MongoId>? invalidBaseTypes = null)
     {
         var baseTypes = invalidBaseTypes ?? _defaultInvalidBaseTypes;
         var itemDetails = GetItem(tpl);
@@ -306,7 +306,7 @@ public class ItemHelper(
     /// <param name="tpl">Item template id to check</param>
     /// <param name="baseClassTpl">Baseclass to check for</param>
     /// <returns>is the tpl a descendant</returns>
-    public bool IsOfBaseclass(MongoId tpl, string baseClassTpl)
+    public bool IsOfBaseclass(MongoId tpl, MongoId baseClassTpl)
     {
         return _itemBaseClassService.ItemHasBaseClass(tpl, [baseClassTpl]);
     }
@@ -317,27 +317,9 @@ public class ItemHelper(
     /// <param name="tpl">Item to check base classes of</param>
     /// <param name="baseClassTpls">Base classes to check for</param>
     /// <returns>True if any supplied base classes match</returns>
-    public bool IsOfBaseclasses(string tpl, ICollection<string> baseClassTpls)
+    public bool IsOfBaseclasses(MongoId tpl, ICollection<MongoId> baseClassTpls)
     {
         return _itemBaseClassService.ItemHasBaseClass(tpl, baseClassTpls);
-    }
-
-    /// <summary>
-    /// Temporary until we have better MongoId handling
-    /// </summary>
-    /// <param name="tpl"></param>
-    /// <param name="baseClassTpls"></param>
-    /// <returns></returns>
-    public bool IsOfBaseclasses(string tpl, ICollection<MongoId> baseClassTpls)
-    {
-        List<string> MongoList = [];
-
-        foreach (var baseTpl in baseClassTpls)
-        {
-            MongoList.Add(baseTpl);
-        }
-
-        return _itemBaseClassService.ItemHasBaseClass(tpl, MongoList);
     }
 
     /// <summary>
@@ -347,7 +329,7 @@ public class ItemHelper(
     /// </summary>
     /// <param name="itemTpl">Tpl to check</param>
     /// <returns>Does item have the possibility ot need soft inserts</returns>
-    public bool ArmorItemCanHoldMods(string itemTpl)
+    public bool ArmorItemCanHoldMods(MongoId itemTpl)
     {
         return IsOfBaseclasses(itemTpl, _armorSlotsThatCanHoldMods);
     }
@@ -526,7 +508,7 @@ public class ItemHelper(
     /// </summary>
     /// <param name="itemTpl">template id to look up</param>
     /// <returns>KvP, key = bool, value = template item object</returns>
-    public KeyValuePair<bool, TemplateItem?> GetItem(string itemTpl)
+    public KeyValuePair<bool, TemplateItem?> GetItem(MongoId itemTpl)
     {
         // -> Gets item from <input: _tpl>
         if (_databaseService.GetItems().TryGetValue(itemTpl, out var item))
@@ -542,7 +524,7 @@ public class ItemHelper(
     /// </summary>
     /// <param name="itemTpl">Template id of the item to check</param>
     /// <returns>True if the item has slots</returns>
-    public bool ItemHasSlots(string itemTpl)
+    public bool ItemHasSlots(MongoId itemTpl)
     {
         if (_databaseService.GetItems().TryGetValue(itemTpl, out var item))
         {
@@ -1347,7 +1329,7 @@ public class ItemHelper(
     /// <returns>ItemSize object (width and height)</returns>
     public ItemSize GetItemSize(ICollection<Item> items, MongoId rootItemId)
     {
-        var rootTemplate = GetItem(items.FirstOrDefault(x => x.Id == rootItemId)?.Template).Value;
+        var rootTemplate = GetItem(items.FirstOrDefault(x => x.Id == rootItemId).Template).Value;
         var width = rootTemplate.Properties.Width;
         var height = rootTemplate.Properties.Height;
 

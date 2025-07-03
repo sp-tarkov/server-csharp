@@ -55,16 +55,16 @@ public record HideoutCraftToAdd
     ///     The new mongoId for the craft to use
     /// </summary>
     [JsonPropertyName("newId")]
-    public required string NewId { get; set; }
+    public required MongoId NewId { get; set; }
 
     [JsonPropertyName("requirements")]
     public required List<Requirement> Requirements { get; set; }
 
     [JsonPropertyName("craftIdToCopy")]
-    public required string CraftIdToCopy { get; set; }
+    public required MongoId CraftIdToCopy { get; set; }
 
     [JsonPropertyName("craftOutputTpl")]
-    public required string CraftOutputTpl { get; set; }
+    public required MongoId CraftOutputTpl { get; set; }
 }
 
 public record CultistCircleSettings
@@ -157,10 +157,10 @@ public record DirectRewardSettings
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("reward")]
-    public required List<string> Reward { get; set; }
+    public required List<MongoId> Reward { get; set; }
 
     [JsonPropertyName("requiredItems")]
-    public required List<string> RequiredItems { get; set; }
+    public required List<MongoId> RequiredItems { get; set; }
 
     [JsonPropertyName("craftTimeSeconds")]
     public required int CraftTimeSeconds { get; set; }

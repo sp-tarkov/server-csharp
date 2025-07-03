@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
@@ -16,7 +17,7 @@ public class ItemBaseClassService(
 )
 {
     private bool _cacheGenerated;
-    private Dictionary<string, HashSet<string>> _itemBaseClassesCache;
+    private Dictionary<MongoId, HashSet<MongoId>> _itemBaseClassesCache = [];
 
     /// <summary>
     ///     Create cache and store inside ItemBaseClassService <br />
@@ -25,7 +26,7 @@ public class ItemBaseClassService(
     public void HydrateItemBaseClassCache()
     {
         // Clear existing cache
-        _itemBaseClassesCache = new Dictionary<string, HashSet<string>>();
+        _itemBaseClassesCache = new Dictionary<MongoId, HashSet<MongoId>>();
 
         var items = _databaseService.GetItems();
         var filteredDbItems = items.Where(x =>
@@ -50,12 +51,12 @@ public class ItemBaseClassService(
     /// </summary>
     /// <param name="itemIdToUpdate"> Item tpl to store base ids against in dictionary </param>
     /// <param name="item"> Item being checked </param>
-    protected void AddBaseItems(string itemIdToUpdate, TemplateItem item)
+    protected void AddBaseItems(MongoId itemIdToUpdate, TemplateItem item)
     {
         _itemBaseClassesCache[itemIdToUpdate].Add(item.Parent);
         _databaseService.GetItems().TryGetValue(item.Parent, out var parent);
 
-        if (parent is not null && !string.IsNullOrEmpty(parent.Parent))
+        if (parent is not null && !parent.Parent.IsEmpty())
         {
             AddBaseItems(itemIdToUpdate, parent);
         }
@@ -67,14 +68,14 @@ public class ItemBaseClassService(
     /// <param name="itemTpl"> ItemTpl item to check base classes of </param>
     /// <param name="baseClasses"> BaseClass base class to check for </param>
     /// <returns> true if item inherits from base class passed in </returns>
-    public bool ItemHasBaseClass(string itemTpl, ICollection<string> baseClasses)
+    public bool ItemHasBaseClass(MongoId itemTpl, ICollection<MongoId> baseClasses)
     {
         if (!_cacheGenerated)
         {
             HydrateItemBaseClassCache();
         }
 
-        if (string.IsNullOrEmpty(itemTpl))
+        if (itemTpl.IsEmpty())
         {
             _logger.Warning("Unable to check itemTpl base class as value passed is null");
 
@@ -119,7 +120,7 @@ public class ItemBaseClassService(
     /// </summary>
     /// <param name="itemTemplateId"> ItemTemplateId item to check </param>
     /// <returns> True if item is of type Item </returns>
-    private bool CachedItemIsOfItemType(string itemTemplateId)
+    private bool CachedItemIsOfItemType(MongoId itemTemplateId)
     {
         return string.Equals(
             _databaseService.GetItems()[itemTemplateId]?.Type,
@@ -133,7 +134,7 @@ public class ItemBaseClassService(
     /// </summary>
     /// <param name="itemTpl"> ItemTpl item to get base classes for </param>
     /// <returns> array of base classes </returns>
-    public List<string> GetItemBaseClasses(string itemTpl)
+    public List<MongoId> GetItemBaseClasses(MongoId itemTpl)
     {
         if (!_cacheGenerated)
         {

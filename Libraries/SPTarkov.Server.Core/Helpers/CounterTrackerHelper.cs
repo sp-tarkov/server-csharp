@@ -1,18 +1,19 @@
 ﻿using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers
 {
     [Injectable]
     public class CounterTrackerHelper
     {
-        private Dictionary<string, int> _maxCounts = new();
-        private readonly Dictionary<string, int> _trackedCounts = new();
+        private Dictionary<MongoId, int> _maxCounts = new();
+        private readonly Dictionary<MongoId, int> _trackedCounts = new();
 
         /// <summary>
         /// Add dictionary of keys and their matching limits to track
         /// </summary>
         /// <param name="maxCounts">Values to store</param>
-        public void AddDataToTrack(Dictionary<string, int> maxCounts)
+        public void AddDataToTrack(Dictionary<MongoId, int> maxCounts)
         {
             _maxCounts = maxCounts;
         }
@@ -23,7 +24,7 @@ namespace SPTarkov.Server.Core.Helpers
         /// <param name="key"></param>
         /// <param name="countToIncrementBy"></param>
         /// <returns>True = above max count</returns>
-        public bool IncrementCount(string key, int countToIncrementBy = 1)
+        public bool IncrementCount(MongoId key, int countToIncrementBy = 1)
         {
             // Not tracked, skip
             if (!_maxCounts.Any() || !_maxCounts.ContainsKey(key))

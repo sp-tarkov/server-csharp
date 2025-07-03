@@ -43,7 +43,7 @@ public record UpdateTime
     public string Name { get; set; } = string.Empty;
 
     [JsonPropertyName("traderId")]
-    public string TraderId { get; set; } = string.Empty;
+    public MongoId TraderId { get; set; } = string.Empty;
 
     /// <summary>
     ///     Seconds between trader resets
@@ -97,16 +97,16 @@ public record FenceConfig
     ///     Key: item tpl
     /// </summary>
     [JsonPropertyName("itemStackSizeOverrideMinMax")]
-    public required Dictionary<string, MinMax<int>?> ItemStackSizeOverrideMinMax { get; set; }
+    public required Dictionary<MongoId, MinMax<int>?> ItemStackSizeOverrideMinMax { get; set; }
 
     [JsonPropertyName("itemTypeLimits")]
-    public required Dictionary<string, int> ItemTypeLimits { get; set; }
+    public required Dictionary<MongoId, int> ItemTypeLimits { get; set; }
 
     /// <summary>
     ///     Prevent duplicate offers of items of specific categories by parentId
     /// </summary>
     [JsonPropertyName("preventDuplicateOffersOfCategory")]
-    public required List<string> PreventDuplicateOffersOfCategory { get; set; }
+    public required List<MongoId> PreventDuplicateOffersOfCategory { get; set; }
 
     [JsonPropertyName("regenerateAssortsOnRefresh")]
     public bool RegenerateAssortsOnRefresh { get; set; }
@@ -115,7 +115,7 @@ public record FenceConfig
     ///     Max rouble price before item is not listed on flea
     /// </summary>
     [JsonPropertyName("itemCategoryRoublePriceLimit")]
-    public required Dictionary<string, double?> ItemCategoryRoublePriceLimit { get; set; }
+    public required Dictionary<MongoId, double?> ItemCategoryRoublePriceLimit { get; set; }
 
     /// <summary>
     ///     Each slotid with % to be removed prior to listing on fence
@@ -136,7 +136,7 @@ public record FenceConfig
     public double AmmoMaxPenLimit { get; set; }
 
     [JsonPropertyName("blacklist")]
-    public required HashSet<string> Blacklist { get; set; }
+    public required HashSet<MongoId> Blacklist { get; set; }
 
     [JsonPropertyName("coopExtractGift")]
     public required CoopExtractReward CoopExtractGift { get; set; }

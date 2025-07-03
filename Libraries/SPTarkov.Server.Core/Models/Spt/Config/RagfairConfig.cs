@@ -30,7 +30,7 @@ public record RagfairConfig : BaseConfig
     ///     Trader ids + should their assorts be listed on flea
     /// </summary>
     [JsonPropertyName("traders")]
-    public Dictionary<string, bool> Traders { get; set; }
+    public required Dictionary<MongoId, bool> Traders { get; set; }
 
     [JsonPropertyName("dynamic")]
     public Dynamic Dynamic { get; set; }
@@ -159,7 +159,7 @@ public record Dynamic
     ///     Tpls that should not use the variable price system when their quality is less than 100% (lower dura/uses = lower price)
     /// </summary>
     [JsonPropertyName("ignoreQualityPriceVarianceBlacklist")]
-    public HashSet<string> IgnoreQualityPriceVarianceBlacklist { get; set; }
+    public HashSet<MongoId> IgnoreQualityPriceVarianceBlacklist { get; set; }
 
     [JsonPropertyName("endTimeSeconds")]
     public MinMax<int> EndTimeSeconds { get; set; }
@@ -198,7 +198,7 @@ public record Dynamic
     ///     A multipler to apply to individual tpls price just prior to item quality adjustment
     /// </summary>
     [JsonPropertyName("itemPriceMultiplier")]
-    public Dictionary<string, double>? ItemPriceMultiplier { get; set; }
+    public Dictionary<MongoId, double>? ItemPriceMultiplier { get; set; }
 
     [JsonPropertyName("_currencies")]
     public string? CurrenciesDescription { get; set; }
@@ -207,13 +207,13 @@ public record Dynamic
     ///     Percentages to sell offers in each currency
     /// </summary>
     [JsonPropertyName("currencies")]
-    public Dictionary<string, double> Currencies { get; set; }
+    public Dictionary<MongoId, double> Currencies { get; set; }
 
     /// <summary>
     ///     Item tpls that should be forced to sell as a single item
     /// </summary>
     [JsonPropertyName("showAsSingleStack")]
-    public HashSet<string> ShowAsSingleStack { get; set; }
+    public HashSet<MongoId> ShowAsSingleStack { get; set; }
 
     /// <summary>
     ///     Should christmas/halloween items be removed from flea when not within the seasonal bounds
@@ -231,13 +231,13 @@ public record Dynamic
     ///     Dict of price limits keyed by item type
     /// </summary>
     [JsonPropertyName("unreasonableModPrices")]
-    public Dictionary<string, UnreasonableModPrices> UnreasonableModPrices { get; set; }
+    public Dictionary<MongoId, UnreasonableModPrices> UnreasonableModPrices { get; set; }
 
     /// <summary>
     ///     Custom rouble prices for items to override values from prices.json
     /// </summary>
     [JsonPropertyName("itemPriceOverrideRouble")]
-    public Dictionary<string, double> ItemPriceOverrideRouble { get; set; }
+    public Dictionary<MongoId, double> ItemPriceOverrideRouble { get; set; }
 }
 
 public record PriceRanges
@@ -300,7 +300,7 @@ public record BarterDetails
     ///     Item Tpls to never be turned into a barter
     /// </summary>
     [JsonPropertyName("itemTypeBlacklist")]
-    public HashSet<string> ItemTypeBlacklist { get; set; }
+    public HashSet<MongoId> ItemTypeBlacklist { get; set; }
 }
 
 public record PackDetails
@@ -330,7 +330,7 @@ public record PackDetails
     ///     item types to allow being a pack
     /// </summary>
     [JsonPropertyName("itemTypeWhitelist")]
-    public HashSet<string> ItemTypeWhitelist { get; set; }
+    public HashSet<MongoId> ItemTypeWhitelist { get; set; }
 }
 
 public record OfferAdjustment
@@ -399,7 +399,7 @@ public record RagfairBlacklist
     ///     Custom blacklist for item Tpls
     /// </summary>
     [JsonPropertyName("custom")]
-    public HashSet<string> Custom { get; set; }
+    public HashSet<MongoId> Custom { get; set; }
 
     /// <summary>
     ///     BSG blacklist a large number of items from flea, true = use blacklist
@@ -513,16 +513,16 @@ public record TieredFlea
     ///     key: tpl, value: playerlevel
     /// </summary>
     [JsonPropertyName("unlocksTpl")]
-    public Dictionary<string, int> UnlocksTpl { get; set; }
+    public Dictionary<MongoId, int> UnlocksTpl { get; set; }
 
     /// <summary>
     ///     key: item type id, value: playerlevel
     /// </summary>
     [JsonPropertyName("unlocksType")]
-    public Dictionary<string, int> UnlocksType { get; set; }
+    public Dictionary<MongoId, int> UnlocksType { get; set; }
 
     [JsonPropertyName("ammoTplUnlocks")]
-    public Dictionary<string, int>? AmmoTplUnlocks { get; set; }
+    public Dictionary<MongoId, int>? AmmoTplUnlocks { get; set; }
 
     [JsonPropertyName("ammoTiersEnabled")]
     public bool AmmoTiersEnabled { get; set; }

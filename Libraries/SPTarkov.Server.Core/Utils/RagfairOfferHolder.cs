@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Utils;
@@ -137,10 +138,10 @@ public class RagfairOfferHolder(
             // Keep generating IDs until we get a unique one
             while (_offersById.ContainsKey(offer.Id))
             {
-                offer.Id = _hashUtil.Generate();
+                offer.Id = new MongoId();
             }
 
-            var itemTpl = offer.Items?.FirstOrDefault()?.Template;
+            var itemTpl = offer.Items?.FirstOrDefault()?.Template ?? new MongoId(null);
 
             var sellerId = offer.User.Id;
             var sellerIsTrader = _ragfairServerHelper.IsTrader(sellerId);

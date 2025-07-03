@@ -34,10 +34,11 @@ public class BotWeaponGeneratorHelper(
         double? chamberBulletCount = 0;
         if (MagazineIsCylinderRelated(parentItem.Name))
         {
-            var firstSlotAmmoTpl = magTemplate
-                .Properties.Cartridges.FirstOrDefault()
-                ?.Props.Filters[0]
-                .Filter.FirstOrDefault();
+            var firstSlotAmmoTpl =
+                magTemplate
+                    .Properties.Cartridges.FirstOrDefault()
+                    ?.Props.Filters[0]
+                    .Filter.FirstOrDefault() ?? new MongoId(null);
             var ammoMaxStackSize =
                 _itemHelper.GetItem(firstSlotAmmoTpl).Value?.Properties?.StackMaxSize ?? 1;
             chamberBulletCount =

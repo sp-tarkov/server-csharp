@@ -1,6 +1,7 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
@@ -110,7 +111,7 @@ public class BtrDeliveryCallbacks(
         foreach (var package in packagesToBeDelivered)
         {
             // Create a new root parent ID for the message we'll be sending the player
-            var rootItemParentId = _hashUtil.Generate();
+            var rootItemParentId = new MongoId();
 
             // Update the delivery items to have the new root parent ID for root/orphaned items
             package.Items = package.Items.AdoptOrphanedItems(rootItemParentId);

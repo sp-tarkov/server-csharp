@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
@@ -10,7 +11,7 @@ public class PaymentHelper(ConfigServer configServer)
 {
     protected bool _addedCustomMoney;
     protected readonly InventoryConfig _inventoryConfig = configServer.GetConfig<InventoryConfig>();
-    protected readonly HashSet<string> _moneyTpls =
+    protected readonly HashSet<MongoId> _moneyTpls =
     [
         Money.DOLLARS,
         Money.EUROS,
@@ -23,7 +24,7 @@ public class PaymentHelper(ConfigServer configServer)
     /// </summary>
     /// <param name="tpl">Item Tpl to check</param>
     /// <returns></returns>
-    public bool IsMoneyTpl(string tpl)
+    public bool IsMoneyTpl(MongoId tpl)
     {
         // Add custom currency first time this method is accessed
         if (!_addedCustomMoney)

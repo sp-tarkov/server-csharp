@@ -77,7 +77,7 @@ public class RagfairServer(
     ///     Get traders who need to be periodically refreshed
     /// </summary>
     /// <returns> List of traders </returns>
-    public List<string> GetUpdateableTraders()
+    public List<MongoId> GetUpdateableTraders()
     {
         return _ragfairConfig.Traders.Keys.ToList();
     }

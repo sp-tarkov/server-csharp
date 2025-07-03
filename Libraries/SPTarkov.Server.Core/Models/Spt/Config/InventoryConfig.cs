@@ -15,7 +15,7 @@ public record InventoryConfig : BaseConfig
     public bool NewItemsMarkedFound { get; set; }
 
     [JsonPropertyName("randomLootContainers")]
-    public required Dictionary<string, RewardDetails> RandomLootContainers { get; set; }
+    public required Dictionary<MongoId, RewardDetails> RandomLootContainers { get; set; }
 
     [JsonPropertyName("sealedAirdropContainer")]
     public required SealedAirdropContainerSettings SealedAirdropContainer { get; set; }
@@ -24,7 +24,7 @@ public record InventoryConfig : BaseConfig
     ///     Contains item tpls that the server should consider money and treat the same as roubles/euros/dollars
     /// </summary>
     [JsonPropertyName("customMoneyTpls")]
-    public required List<string> CustomMoneyTpls { get; set; }
+    public required List<MongoId> CustomMoneyTpls { get; set; }
 
     /// <summary>
     ///     Multipliers for skill gain when inside menus, NOT in-game
@@ -36,7 +36,7 @@ public record InventoryConfig : BaseConfig
     ///     Container Tpls that should be deprioritised when choosing where to take money from for payments
     /// </summary>
     [JsonPropertyName("deprioritisedMoneyContainers")]
-    public required HashSet<string> DeprioritisedMoneyContainers { get; set; }
+    public required HashSet<MongoId> DeprioritisedMoneyContainers { get; set; }
 }
 
 public record RewardDetails
@@ -54,7 +54,7 @@ public record RewardDetails
     public bool FoundInRaid { get; set; }
 
     [JsonPropertyName("rewardTplPool")]
-    public Dictionary<string, double>? RewardTplPool { get; set; }
+    public Dictionary<MongoId, double>? RewardTplPool { get; set; }
 
     [JsonPropertyName("rewardTypePool")]
     public List<MongoId>? RewardTypePool { get; set; }
@@ -78,13 +78,13 @@ public record SealedAirdropContainerSettings
     public bool FoundInRaid { get; set; }
 
     [JsonPropertyName("weaponModRewardLimits")]
-    public required Dictionary<string, MinMax<int>> WeaponModRewardLimits { get; set; }
+    public required Dictionary<MongoId, MinMax<int>> WeaponModRewardLimits { get; set; }
 
     [JsonPropertyName("rewardTypeLimits")]
-    public required Dictionary<string, MinMax<int>> RewardTypeLimits { get; set; }
+    public required Dictionary<MongoId, MinMax<int>> RewardTypeLimits { get; set; }
 
     [JsonPropertyName("ammoBoxWhitelist")]
-    public required List<string> AmmoBoxWhitelist { get; set; }
+    public required List<MongoId> AmmoBoxWhitelist { get; set; }
 
     [JsonPropertyName("allowBossItems")]
     public bool AllowBossItems { get; set; }

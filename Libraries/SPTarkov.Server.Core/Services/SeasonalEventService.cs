@@ -209,7 +209,7 @@ public class SeasonalEventService(
     /// </summary>
     /// <param name="eventName">Name of event to get gear changes for</param>
     /// <returns>bots with equipment changes</returns>
-    protected Dictionary<string, Dictionary<string, Dictionary<string, int>>>? GetEventBotGear(
+    protected Dictionary<string, Dictionary<string, Dictionary<MongoId, int>>>? GetEventBotGear(
         SeasonalEventType eventType
     )
     {
@@ -221,7 +221,7 @@ public class SeasonalEventService(
     /// </summary>
     /// <param name="eventName">Name of event to get gear changes for</param>
     /// <returns>bots with loot changes</returns>
-    protected Dictionary<string, Dictionary<string, Dictionary<string, int>>> GetEventBotLoot(
+    protected Dictionary<string, Dictionary<string, Dictionary<MongoId, int>>> GetEventBotLoot(
         SeasonalEventType eventType
     )
     {

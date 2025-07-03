@@ -583,7 +583,8 @@ public class ItemTplGenerator(
     )
     {
         var enumFileData =
-            "// This is an auto generated file, do not modify. Re-generate by running ItemTplGenerator.exe";
+            "using SPTarkov.Server.Core.Models.Common;\n\n"
+            + "// This is an auto generated file, do not modify. Re-generate by running ItemTplGenerator.exe";
 
         foreach (var (enumName, data) in enumEntries)
         {
@@ -591,7 +592,8 @@ public class ItemTplGenerator(
 
             foreach (var (key, value) in data)
             {
-                enumFileData += $"    public const string {key} = \"{value}\";\n";
+                enumFileData +=
+                    $"    public static readonly MongoId {key} = new MongoId(\"{value}\");\n";
             }
 
             enumFileData += "}\n";

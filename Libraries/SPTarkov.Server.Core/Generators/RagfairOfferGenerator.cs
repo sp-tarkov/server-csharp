@@ -149,7 +149,7 @@ public class RagfairOfferGenerator(
 
         var offer = new RagfairOffer
         {
-            Id = hashUtil.Generate(),
+            Id = new MongoId(),
             InternalId = offerCounter,
             User = CreateUserDataForFleaOffer(userId, ragfairServerHelper.IsTrader(userId)),
             Root = rootItem.Id,

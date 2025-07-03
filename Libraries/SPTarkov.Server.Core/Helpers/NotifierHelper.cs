@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Utils;
@@ -57,7 +58,7 @@ public class NotifierHelper(HttpServerHelper httpServerHelper, HashUtil hashUtil
         return new WsRagfairNewRating
         {
             EventType = NotificationEventType.RagfairNewRating,
-            EventIdentifier = hashUtil.Generate(),
+            EventIdentifier = new MongoId(),
             Rating = rating,
             IsRatingGrowing = isGrowing,
         };

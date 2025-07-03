@@ -1,6 +1,7 @@
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -112,7 +113,7 @@ public class RagfairOfferHelper(
     protected void CheckAndLockOfferFromPlayerTieredFlea(
         TieredFlea tieredFlea,
         RagfairOffer offer,
-        List<string> tieredFleaLimitTypes,
+        List<MongoId> tieredFleaLimitTypes,
         int playerLevel
     )
     {
@@ -819,7 +820,7 @@ public class RagfairOfferHelper(
             // Create an item template item
             var requestedItem = new Item
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(),
                 Template = requirement.Template,
                 Upd = new Upd { StackObjectsCount = requirement.Count * boughtAmount },
             };

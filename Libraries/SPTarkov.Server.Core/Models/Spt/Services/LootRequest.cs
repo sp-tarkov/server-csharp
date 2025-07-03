@@ -82,7 +82,7 @@ public record LootRequest
     ///     Item tpls + count of items to force include
     /// </summary>
     [JsonPropertyName("forcedLoot")]
-    public Dictionary<string, MinMax<int>>? ForcedLoot { get; set; }
+    public Dictionary<MongoId, MinMax<int>>? ForcedLoot { get; set; }
 
     /// <summary>
     ///     Should seasonal items appear when it's not the season for them

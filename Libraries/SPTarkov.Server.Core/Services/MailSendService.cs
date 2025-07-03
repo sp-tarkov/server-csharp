@@ -1,6 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
@@ -194,7 +195,7 @@ public class MailSendService(
         // add items to message
         if (items?.Count > 0)
         {
-            var rootItemParentId = _hashUtil.Generate();
+            var rootItemParentId = new MongoId();
 
             details.Items.AddRange(items.AdoptOrphanedItems(rootItemParentId));
             details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds;
@@ -366,7 +367,7 @@ public class MailSendService(
         dialogWithNpc.Messages.Add(
             new Message
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(),
                 DateTime = _timeUtil.GetTimeStamp(),
                 HasRewards = false,
                 UserId = playerProfile.CharacterData.PmcData.Id,
@@ -387,7 +388,7 @@ public class MailSendService(
     {
         Message message = new()
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             UserId = dialogId,
             MessageType = messageDetails.Sender,
             DateTime = _timeUtil.GetTimeStamp(),
@@ -506,7 +507,7 @@ public class MailSendService(
             // No parent id, generate random id and add (doesn't need to be actual parentId from db, only unique)
             if (parentItem?.ParentId is null)
             {
-                parentItem.ParentId = _hashUtil.Generate();
+                parentItem.ParentId = new MongoId();
             }
 
             // Prep return object

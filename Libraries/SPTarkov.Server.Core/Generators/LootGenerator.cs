@@ -180,7 +180,7 @@ public class LootGenerator(
     /// </summary>
     /// <param name="forcedLootToAdd">Dictionary of item tpls with minmax values</param>
     /// <returns>Array of Item</returns>
-    public List<List<Item>> CreateForcedLoot(Dictionary<string, MinMax<int>> forcedLootToAdd)
+    public List<List<Item>> CreateForcedLoot(Dictionary<MongoId, MinMax<int>> forcedLootToAdd)
     {
         var result = new List<List<Item>>();
 

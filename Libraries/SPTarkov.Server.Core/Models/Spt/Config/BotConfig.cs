@@ -355,7 +355,7 @@ public record EquipmentFilters
     ///     Whitelist for weapon sight types allowed per gun
     /// </summary>
     [JsonPropertyName("weaponSightWhitelist")]
-    public Dictionary<string, List<string>> WeaponSightWhitelist { get; set; }
+    public Dictionary<MongoId, List<MongoId>> WeaponSightWhitelist { get; set; }
 
     /// <summary>
     ///     Chance face shield is down/active

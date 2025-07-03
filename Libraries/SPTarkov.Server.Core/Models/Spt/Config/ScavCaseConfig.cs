@@ -18,10 +18,10 @@ public record ScavCaseConfig : BaseConfig
     public required AmmoRewards AmmoRewards { get; set; }
 
     [JsonPropertyName("rewardItemParentBlacklist")]
-    public required HashSet<string> RewardItemParentBlacklist { get; set; }
+    public required HashSet<MongoId> RewardItemParentBlacklist { get; set; }
 
     [JsonPropertyName("rewardItemBlacklist")]
-    public required HashSet<string> RewardItemBlacklist { get; set; }
+    public required HashSet<MongoId> RewardItemBlacklist { get; set; }
 
     [JsonPropertyName("allowMultipleMoneyRewardsPerRarity")]
     public bool AllowMultipleMoneyRewardsPerRarity { get; set; }
@@ -78,7 +78,7 @@ public record AmmoRewards
     public int AmmoRewardChancePercent { get; set; }
 
     [JsonPropertyName("ammoRewardBlacklist")]
-    public required Dictionary<string, List<string>> AmmoRewardBlacklist { get; set; }
+    public required Dictionary<string, List<MongoId>> AmmoRewardBlacklist { get; set; }
 
     [JsonPropertyName("ammoRewardValueRangeRub")]
     public required Dictionary<string, MinMax<double>> AmmoRewardValueRangeRub { get; set; }

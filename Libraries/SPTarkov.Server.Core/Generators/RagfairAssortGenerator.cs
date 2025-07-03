@@ -22,7 +22,7 @@ public class RagfairAssortGenerator(
 {
     protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
 
-    protected readonly List<string> RagfairItemInvalidBaseTypes =
+    protected readonly List<MongoId> RagfairItemInvalidBaseTypes =
     [
         BaseClasses.LOOT_CONTAINER, // Safe, barrel cache etc
         BaseClasses.STASH, // Player inventory stash
