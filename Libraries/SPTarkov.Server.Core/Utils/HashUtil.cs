@@ -40,16 +40,6 @@ public partial class HashUtil(RandomUtil _randomUtil)
         return Convert.ToHexStringLower(objectId);
     }
 
-    /// <summary>
-    ///     is the passed in string a valid mongo id
-    /// </summary>
-    /// <param name="stringToCheck">String to check</param>
-    /// <returns>True when string is a valid mongo id</returns>
-    public bool IsValidMongoId(string stringToCheck)
-    {
-        return MongoIdRegex().IsMatch(stringToCheck);
-    }
-
     public uint GenerateCrc32ForData(string data)
     {
         return Crc32.HashToUInt32(new ArraySegment<byte>(Encoding.UTF8.GetBytes(data)));
@@ -124,9 +114,6 @@ public partial class HashUtil(RandomUtil _randomUtil)
 
         return _randomUtil.Random.Next(min, max + 1);
     }
-
-    [GeneratedRegex("^[a-fA-F0-9]{24}$")]
-    private static partial Regex MongoIdRegex();
 }
 
 public enum HashingAlgorithm
