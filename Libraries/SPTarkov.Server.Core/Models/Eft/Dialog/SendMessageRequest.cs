@@ -10,14 +10,14 @@ public record SendMessageRequest : IRequestData
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("dialogId")]
-    public string? DialogId { get; set; }
+    public required string DialogId { get; set; }
 
     [JsonPropertyName("type")]
-    public MessageType? Type { get; set; }
+    public required MessageType Type { get; set; }
 
     [JsonPropertyName("text")]
-    public string? Text { get; set; }
+    public required string Text { get; set; }
 
     [JsonPropertyName("replyTo")]
-    public string? ReplyTo { get; set; }
+    public required string ReplyTo { get; set; }
 }

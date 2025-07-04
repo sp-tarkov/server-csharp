@@ -48,8 +48,8 @@ namespace SPTarkov.Server.Core.Extensions
                     if (
                         CanItemBePlacedInContainerAtPosition(
                             container2D,
-                            column,
                             row,
+                            column,
                             itemWidthX.Value,
                             itemHeightY.Value
                         )
@@ -69,8 +69,8 @@ namespace SPTarkov.Server.Core.Extensions
                     if (
                         CanItemBePlacedInContainerAtPosition(
                             container2D,
-                            column,
                             row,
+                            column,
                             itemHeightY.Value, // Swapped
                             itemWidthX.Value // Swapped
                         )
@@ -112,12 +112,21 @@ namespace SPTarkov.Server.Core.Extensions
             var itemWidth = isRotated ? itemYHeight : itemXWidth;
             var itemHeight = isRotated ? itemXWidth : itemYHeight;
 
-            var itemRowEndPosition = rowStartPositionY + itemHeight;
-            var itemColumnEndPosition = columnStartPositionX + itemWidth;
+            var itemRowEndPosition = rowStartPositionY + (itemHeight - 1);
+            var itemColumnEndPosition = columnStartPositionX + (itemWidth - 1);
 
-            for (var y = rowStartPositionY; y < itemRowEndPosition; y++)
+            //Item is a 1x1, flag slot as taken and exit early
+            if (itemXWidth == 1 && itemYHeight == 1)
             {
-                for (var x = columnStartPositionX; x < itemColumnEndPosition; x++)
+                container2D[rowStartPositionY, columnStartPositionX] = 1;
+
+                return;
+            }
+
+            // Loop over rows and columns and flag each as taken by item
+            for (var y = rowStartPositionY; y <= itemRowEndPosition; y++)
+            {
+                for (var x = columnStartPositionX; x <= itemColumnEndPosition; x++)
                 {
                     if (container2D[y, x] == 0)
                     {
@@ -127,7 +136,7 @@ namespace SPTarkov.Server.Core.Extensions
                     else
                     {
                         throw new Exception(
-                            $"Slot at({containerX}, {containerY}) is already filled. Cannot fit a {itemXWidth} by {itemYHeight} item"
+                            $"Slot at: ({containerX}, {containerY}) is already filled. Cannot fit: {itemXWidth} by {itemYHeight} item"
                         );
                     }
                 }
@@ -200,45 +209,49 @@ namespace SPTarkov.Server.Core.Extensions
         ///     Can an item of specified size be placed inside a 2d container at a specific position
         /// </summary>
         /// <param name="container">Container to find space in</param>
-        /// <param name="startXPos">Starting x position for item</param>
-        /// <param name="startYPos">Starting y position for item</param>
-        /// <param name="itemXWidth">Items width</param>
-        /// <param name="itemYHeight">Items height</param>
+        /// <param name="itemStartVerticalPos">Starting y position for item</param>
+        /// <param name="itemStartHorizontalPos">Starting x position for item</param>
+        /// <param name="itemWidth">Items width (y)</param>
+        /// <param name="itemHeight">Items height (x)</param>
         /// <returns>True - slot found</returns>
         public static bool CanItemBePlacedInContainerAtPosition(
             this int[,] container,
-            int startXPos,
-            int startYPos,
-            int itemXWidth,
-            int itemYHeight
+            int itemStartVerticalPos,
+            int itemStartHorizontalPos,
+            int itemWidth,
+            int itemHeight
         )
         {
-            var containerHeight = container.GetLength(1); // Rows
-            var containerWidth = container.GetLength(0); // Columns
+            var containerHeight = container.GetLength(0); // Rows
+            var containerWidth = container.GetLength(1); // Columns
+
+            var itemEndColPosition = itemStartHorizontalPos + itemWidth - 1;
+            var itemEndRowPosition = itemStartVerticalPos + itemHeight - 1;
 
             // Check item isn't bigger than container when at position
-            if (
-                startXPos + itemXWidth > containerWidth
-                || startYPos + itemYHeight > containerHeight
-            )
+            if (itemEndColPosition > containerWidth - 1 || itemEndRowPosition > containerHeight - 1)
             {
                 // Item is bigger than container, will never fit
                 return false;
             }
 
-            // Single slot item, do direct check
-            if (itemXWidth == 1 && itemYHeight == 1)
+            // Early exit if exact spot is taken
+            if (container[itemStartVerticalPos, itemStartHorizontalPos] == 1)
             {
-                return container[startXPos, startYPos] == 0;
+                return false;
             }
 
-            var itemEndColPosition = startXPos + itemXWidth;
-            var itemEndRowPosition = startYPos + itemYHeight;
-            for (var y = startYPos; y < itemEndColPosition; y++)
+            // Single slot item, do direct check
+            if (itemWidth == 1 && itemHeight == 1)
             {
-                for (var x = startXPos; x < itemEndRowPosition; x++)
+                return container[itemStartVerticalPos, itemStartHorizontalPos] == 0;
+            }
+
+            for (var row = itemStartVerticalPos; row <= itemEndRowPosition; row++)
+            {
+                for (var column = itemStartHorizontalPos; column <= itemEndColPosition; column++)
                 {
-                    if (container[y, x] == 1)
+                    if (container[row, column] == 1)
                     {
                         // Occupied by something
                         return false;

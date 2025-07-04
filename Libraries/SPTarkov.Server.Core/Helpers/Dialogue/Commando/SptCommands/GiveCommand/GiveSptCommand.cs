@@ -52,7 +52,7 @@ public class GiveSptCommand(
             + "give [locale] [\"item name\"] [quantity]\n\t\tEx: spt give fr \"figurine de chat\" 3";
     }
 
-    public string PerformAction(
+    public ValueTask<string> PerformAction(
         UserDialogInfo commandHandler,
         string sessionId,
         SendMessageRequest request
@@ -65,7 +65,7 @@ public class GiveSptCommand(
                 commandHandler,
                 "Invalid use of give command. Use 'help' for more information."
             );
-            return request.DialogId;
+            return new ValueTask<string>(request.DialogId);
         }
 
         var result = _commandRegex.Match(request.Text);
@@ -86,7 +86,7 @@ public class GiveSptCommand(
                     commandHandler,
                     "Invalid use of give command. Use 'help' for more information."
                 );
-                return request.DialogId;
+                return new ValueTask<string>(request.DialogId);
             }
 
             _savedCommand.TryGetValue(sessionId, out var savedCommand);
@@ -98,7 +98,7 @@ public class GiveSptCommand(
                     commandHandler,
                     "Invalid selection. Outside of bounds! Use 'help' for more information."
                 );
-                return request.DialogId;
+                return new ValueTask<string>(request.DialogId);
             }
 
             item = savedCommand.PotentialItemNames[locationSixValue - 1];
@@ -128,7 +128,7 @@ public class GiveSptCommand(
                     commandHandler,
                     "Invalid quantity! Must be 1 or higher. Use 'help' for more information."
                 );
-                return request.DialogId;
+                return new ValueTask<string>(request.DialogId);
             }
 
             if (isItemName)
@@ -197,7 +197,7 @@ public class GiveSptCommand(
                         $"Could not find exact match. Closest are:\n{string.Join("\n", itemList)}\n\nUse 'spt give [above number]' to select one."
                     );
 
-                    return request.DialogId;
+                    return new ValueTask<string>(request.DialogId);
                 }
             }
         }
@@ -224,7 +224,7 @@ public class GiveSptCommand(
                 commandHandler,
                 "That item could not be found. Please refine your request and try again."
             );
-            return request.DialogId;
+            return new ValueTask<string>(request.DialogId);
         }
 
         List<Item> itemsToSend = [];
@@ -286,7 +286,7 @@ public class GiveSptCommand(
                         "Too many items requested. Please lower the amount and try again."
                     );
 
-                    return request.DialogId;
+                    return new ValueTask<string>(request.DialogId);
                 }
             }
         }
@@ -300,7 +300,7 @@ public class GiveSptCommand(
             itemsToSend
         );
 
-        return request.DialogId;
+        return new ValueTask<string>(request.DialogId);
     }
 
     /// <summary>

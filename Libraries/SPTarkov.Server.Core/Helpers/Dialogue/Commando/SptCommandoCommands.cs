@@ -50,14 +50,14 @@ public class SptCommandoCommands : IChatCommand
         return _sptCommands.Keys.ToList();
     }
 
-    public string Handle(
+    public async ValueTask<string> Handle(
         string command,
         UserDialogInfo commandHandler,
         string sessionId,
         SendMessageRequest request
     )
     {
-        return _sptCommands[command].PerformAction(commandHandler, sessionId, request);
+        return await _sptCommands[command].PerformAction(commandHandler, sessionId, request);
     }
 
     public void RegisterSptCommandoCommand(ISptCommand command)

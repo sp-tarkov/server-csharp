@@ -50,7 +50,7 @@ public partial class ContainerExtensionsTests
     [TestMethod]
     public void CanItemBePlacedInContainerAtPosition_1x2_Item_Fits_1x2_Container_At_0x0()
     {
-        var container = new int[1, 2];
+        var container = new int[2, 1];
         var itemStartXPos = 0;
         var itemStartYPos = 0;
         var itemWidth = 1;
@@ -109,8 +109,8 @@ public partial class ContainerExtensionsTests
     public void CanItemBePlacedInContainerAtPosition_1x2_Item_Fits_2x2_Container_At_0x1()
     {
         var container = new int[2, 2];
-        var itemStartXPos = 1;
-        var itemStartYPos = 0;
+        var itemStartXPos = 0;
+        var itemStartYPos = 1;
         var itemWidth = 1;
         var itemHeight = 2;
 
@@ -143,6 +143,31 @@ public partial class ContainerExtensionsTests
     }
 
     [TestMethod]
+    public void FindSlotForItem_1x2_item_fits_3x3_container_rotated_with_items()
+    {
+        /// |1|1|1|
+        /// |1|0|0|
+        /// |1|1|1|
+        var container = new int[3, 3];
+        container[0, 0] = 1;
+        container[0, 1] = 1;
+        container[0, 2] = 1;
+        container[1, 0] = 1;
+        container[2, 0] = 1;
+        container[2, 1] = 1;
+        container[2, 2] = 1;
+        var itemWidth = 1;
+        var itemHeight = 2;
+
+        var result = container.FindSlotForItem(itemWidth, itemHeight);
+
+        Assert.IsTrue(result.Success);
+        Assert.IsTrue(result.Rotation);
+        Assert.AreEqual(result.X, 1);
+        Assert.AreEqual(result.Y, 1);
+    }
+
+    [TestMethod]
     public void FindSlotForItem_1x1_item_fails_1x1_container_no_space()
     {
         var container = new int[1, 1];
@@ -158,7 +183,7 @@ public partial class ContainerExtensionsTests
     [TestMethod]
     public void FindSlotForItem_1x2_item_fits_1x2_container_no_rotation()
     {
-        var container = new int[1, 2];
+        var container = new int[2, 1];
         var itemWidth = 1;
         var itemHeight = 2;
 

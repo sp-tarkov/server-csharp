@@ -538,15 +538,22 @@ public class DialogueController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public virtual string SendMessage(string sessionId, SendMessageRequest request)
+    public virtual async ValueTask<string> SendMessage(string sessionId, SendMessageRequest request)
     {
         _mailSendService.SendPlayerMessageToNpc(sessionId, request.DialogId!, request.Text!);
 
-        return (
-                _dialogueChatBots
-                    .FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId)
-                    ?.HandleMessage(sessionId, request) ?? request.DialogId
-            ) ?? string.Empty;
+        var chatBot = _dialogueChatBots.FirstOrDefault(cb =>
+            cb.GetChatBot().Id == request.DialogId
+        );
+
+        if (chatBot is not null)
+        {
+            return await chatBot.HandleMessage(sessionId, request);
+        }
+        else
+        {
+            return string.Empty;
+        }
     }
 
     /// <summary>
