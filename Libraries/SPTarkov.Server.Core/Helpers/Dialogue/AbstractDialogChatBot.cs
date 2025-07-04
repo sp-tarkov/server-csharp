@@ -36,7 +36,7 @@ public abstract class AbstractDialogChatBot(
             && commando.GetCommands().Contains(splitCommand[1])
         )
         {
-            return commando.Handle(splitCommand[1], GetChatBot(), sessionId, request);
+            return await commando.Handle(splitCommand[1], GetChatBot(), sessionId, request);
         }
 
         if (

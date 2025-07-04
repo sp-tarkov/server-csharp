@@ -8,7 +8,7 @@ public interface IChatCommand
     public string GetCommandPrefix();
     public string GetCommandHelp(string command);
     public List<string> GetCommands();
-    public string Handle(
+    public ValueTask<string> Handle(
         string command,
         UserDialogInfo commandHandler,
         string sessionId,
