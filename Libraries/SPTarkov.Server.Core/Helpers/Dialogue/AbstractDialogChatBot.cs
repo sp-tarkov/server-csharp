@@ -3,7 +3,6 @@ using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
-using SPTarkov.Server.Core.Utils.Callbacks;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue;
 
@@ -20,7 +19,7 @@ public abstract class AbstractDialogChatBot(
 
     public abstract UserDialogInfo GetChatBot();
 
-    public string? HandleMessage(string sessionId, SendMessageRequest request)
+    public async ValueTask<string> HandleMessage(string sessionId, SendMessageRequest request)
     {
         if ((request.Text ?? "").Length == 0)
         {
@@ -44,7 +43,7 @@ public abstract class AbstractDialogChatBot(
             string.Equals(splitCommand.FirstOrDefault(), "help", StringComparison.OrdinalIgnoreCase)
         )
         {
-            return SendPlayerHelpMessage(sessionId, request);
+            return await SendPlayerHelpMessage(sessionId, request);
         }
 
         _mailSendService.SendUserMessageToPlayer(
@@ -55,10 +54,13 @@ public abstract class AbstractDialogChatBot(
             null
         );
 
-        return null;
+        return string.Empty;
     }
 
-    protected string? SendPlayerHelpMessage(string sessionId, SendMessageRequest request)
+    protected async ValueTask<string> SendPlayerHelpMessage(
+        string sessionId,
+        SendMessageRequest request
+    )
     {
         _mailSendService.SendUserMessageToPlayer(
             sessionId,
@@ -67,40 +69,34 @@ public abstract class AbstractDialogChatBot(
             [],
             null
         );
-        // due to BSG being dumb with messages we need a mandatory timeout between messages so they get out on the right order
-        TimeoutCallback.RunInTimespan(
-            () =>
-            {
-                foreach (var chatCommand in _chatCommands.Values)
-                {
-                    _mailSendService.SendUserMessageToPlayer(
-                        sessionId,
-                        GetChatBot(),
-                        $"Commands available for \"{chatCommand.GetCommandPrefix()}\" prefix:",
-                        [],
-                        null
-                    );
+        foreach (var chatCommand in _chatCommands.Values)
+        {
+            // due to BSG being dumb with messages we need a mandatory timeout between messages so they get out on the right order
+            await Task.Delay(TimeSpan.FromSeconds(1));
 
-                    TimeoutCallback.RunInTimespan(
-                        () =>
-                        {
-                            foreach (var subCommand in chatCommand.GetCommands())
-                            {
-                                _mailSendService.SendUserMessageToPlayer(
-                                    sessionId,
-                                    GetChatBot(),
-                                    $"Subcommand {subCommand}:\n{chatCommand.GetCommandHelp(subCommand)}",
-                                    [],
-                                    null
-                                );
-                            }
-                        },
-                        TimeSpan.FromSeconds(1)
-                    );
-                }
-            },
-            TimeSpan.FromSeconds(1)
-        );
+            _mailSendService.SendUserMessageToPlayer(
+                sessionId,
+                GetChatBot(),
+                $"Commands available for \"{chatCommand.GetCommandPrefix()}\" prefix:",
+                [],
+                null
+            );
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            foreach (var subCommand in chatCommand.GetCommands())
+            {
+                _mailSendService.SendUserMessageToPlayer(
+                    sessionId,
+                    GetChatBot(),
+                    $"Subcommand {subCommand}:\n{chatCommand.GetCommandHelp(subCommand)}",
+                    [],
+                    null
+                );
+
+                await Task.Delay(TimeSpan.FromSeconds(1));
+            }
+        }
 
         return request.DialogId;
     }

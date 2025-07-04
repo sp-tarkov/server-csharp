@@ -199,15 +199,13 @@ public class DialogueCallbacks(
     ///     Handle client/mail/msg/send
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> SendMessage(
+    public virtual async ValueTask<string> SendMessage(
         string url,
         SendMessageRequest request,
         string sessionID
     )
     {
-        return new ValueTask<string>(
-            _httpResponseUtil.GetBody(_dialogueController.SendMessage(sessionID, request))
-        );
+        return _httpResponseUtil.GetBody(await _dialogueController.SendMessage(sessionID, request));
     }
 
     /// <summary>

@@ -13,9 +13,7 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue;
 
 [Injectable]
 public class SptDialogueChatBot(
-    ISptLogger<AbstractDialogChatBot> _logger,
     MailSendService _mailSendService,
-    IEnumerable<IChatCommand> _chatCommands,
     ConfigServer _configServer,
     ProfileHelper _profileHelper,
     IEnumerable<IChatMessageHandler> chatMessageHandlers
@@ -42,7 +40,7 @@ public class SptDialogueChatBot(
         };
     }
 
-    public string? HandleMessage(string sessionId, SendMessageRequest request)
+    public ValueTask<string> HandleMessage(string sessionId, SendMessageRequest request)
     {
         var sender = _profileHelper.GetPmcProfile(sessionId);
         var sptFriendUser = GetChatBot();
@@ -57,7 +55,7 @@ public class SptDialogueChatBot(
         {
             handler.Process(sessionId, sptFriendUser, sender, request);
 
-            return request.DialogId;
+            return new ValueTask<string>(request.DialogId);
         }
 
         _mailSendService.SendUserMessageToPlayer(
@@ -68,7 +66,7 @@ public class SptDialogueChatBot(
             null
         );
 
-        return request.DialogId;
+        return new ValueTask<string>(request.DialogId);
     }
 
     protected static List<IChatMessageHandler> ChatMessageHandlerSetup(
@@ -86,7 +84,7 @@ public class SptDialogueChatBot(
         return "Unknown command.";
     }
 
-    protected string? SendPlayerHelpMessage(string sessionId, SendMessageRequest request)
+    protected ValueTask<string> SendPlayerHelpMessage(string sessionId, SendMessageRequest request)
     {
         _mailSendService.SendUserMessageToPlayer(
             sessionId,
@@ -96,6 +94,6 @@ public class SptDialogueChatBot(
             null
         );
 
-        return request.DialogId;
+        return new ValueTask<string>(request.DialogId);
     }
 }
