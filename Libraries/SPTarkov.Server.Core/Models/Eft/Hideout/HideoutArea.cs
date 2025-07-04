@@ -104,7 +104,7 @@ public record StageImprovement
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("bonuses")]
     public List<StageImprovementBonus>? Bonuses { get; set; }
@@ -122,7 +122,7 @@ public record StageImprovementBonus
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("passive")]
     public bool? IsPassive { get; set; }
@@ -158,7 +158,7 @@ public record StageImprovementRequirement
     public bool? IsFunctional { get; set; }
 
     [JsonPropertyName("templateId")]
-    public string? TemplateId { get; set; }
+    public MongoId TemplateId { get; set; }
 
     [JsonPropertyName("isSpawnedInSession")]
     public bool? IsSpawnedInSession { get; set; }
@@ -179,7 +179,7 @@ public record StageRequirement
     public int? RequiredLevel { get; set; }
 
     [JsonPropertyName("templateId")]
-    public string? TemplateId { get; set; }
+    public MongoId TemplateId { get; set; }
 
     [JsonPropertyName("count")]
     public int? Count { get; set; }
@@ -191,7 +191,7 @@ public record StageRequirement
     public bool? IsFunctional { get; set; }
 
     [JsonPropertyName("traderId")]
-    public string? TraderId { get; set; }
+    public MongoId TraderId { get; set; }
 
     [JsonPropertyName("isSpawnedInSession")]
     public bool? IsSpawnedInSession { get; set; }

@@ -15,7 +15,7 @@ public readonly struct MongoId : IEquatable<MongoId>
         [CallerLineNumber] int callerLineNumber = 0
     )
     {
-        // This is temporary, otherwise item buying is broken as when LINQ searches for string id's it's possible null is passed
+        // Handle null strings, various id's are null either by BSG or by our own doing with LINQ
         if (string.IsNullOrEmpty(id))
         {
             _stringId = null;
