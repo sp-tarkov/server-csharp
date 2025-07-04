@@ -938,7 +938,7 @@ public record Production // use this instead of productive and scavcase
     [JsonPropertyName("sptIsCultistCircle")]
     public bool? SptIsCultistCircle { get; set; }
 
-    public string? RecipeId { get; set; }
+    public MongoId RecipeId { get; set; }
 }
 
 public record BotHideoutArea
@@ -1094,7 +1094,7 @@ public record Bonus
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("id")]
-    public MongoId? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]

@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
 using SPTarkov.Server.Core.Models.Enums;
@@ -14,7 +15,7 @@ public record HideoutImproveAreaRequestData : InventoryBaseActionRequestData
     ///     Hideout area id from areas.json
     /// </summary>
     [JsonPropertyName("id")]
-    public string? AreaId { get; set; }
+    public MongoId AreaId { get; set; }
 
     [JsonPropertyName("areaType")]
     public HideoutAreas? AreaType { get; set; }

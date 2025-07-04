@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Enums;
@@ -238,7 +239,7 @@ public class HideoutCraftQuestIdGenerator(
 
 public class QuestProductionOutput
 {
-    public string QuestId { get; set; }
+    public MongoId QuestId { get; set; }
 
     public string ItemTemplate { get; set; }
 

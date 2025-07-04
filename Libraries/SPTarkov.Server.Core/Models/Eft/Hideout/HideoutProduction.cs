@@ -25,7 +25,7 @@ public record HideoutProduction
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("areaType")]
     public HideoutAreas? AreaType { get; set; }
@@ -40,7 +40,7 @@ public record HideoutProduction
     ///     Tpl of item being crafted
     /// </summary>
     [JsonPropertyName("endProduct")]
-    public string? EndProduct { get; set; }
+    public MongoId EndProduct { get; set; }
 
     [JsonPropertyName("isEncoded")]
     public bool? IsEncoded { get; set; }
@@ -109,7 +109,7 @@ public record ScavRecipe
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("requirements")]
     public List<Requirement>? Requirements { get; set; }
@@ -142,5 +142,5 @@ public record CultistRecipe
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 }

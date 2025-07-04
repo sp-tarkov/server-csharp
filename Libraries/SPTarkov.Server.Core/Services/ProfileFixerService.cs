@@ -1037,7 +1037,7 @@ public class ProfileFixerService(
     protected Bonus? GetBonusFromProfile(List<Bonus>? profileBonuses, Bonus bonus)
     {
         // match by id first, used by "TextBonus" bonuses
-        if (bonus.Id is not null)
+        if (!bonus.Id.IsEmpty())
         {
             return profileBonuses?.FirstOrDefault(x => x.Id == bonus.Id);
         }

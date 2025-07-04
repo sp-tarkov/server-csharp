@@ -10,7 +10,7 @@ public record HideoutScavCaseStartRequestData : InventoryBaseActionRequestData
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("recipeId")]
-    public string? RecipeId { get; set; }
+    public MongoId RecipeId { get; set; }
 
     [JsonPropertyName("items")]
     public List<IdWithCount>? Items { get; set; }

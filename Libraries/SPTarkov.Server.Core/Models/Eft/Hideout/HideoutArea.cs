@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 
@@ -10,7 +11,7 @@ public record HideoutArea
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("type")]
     public HideoutAreas? Type { get; set; }
@@ -37,7 +38,7 @@ public record HideoutArea
     public bool? EnableAreaRequirements { get; set; }
 
     [JsonPropertyName("parentArea")]
-    public string? ParentArea { get; set; }
+    public MongoId? ParentArea { get; set; }
 
     [JsonPropertyName("stages")]
     public Dictionary<string, Stage>? Stages { get; set; }

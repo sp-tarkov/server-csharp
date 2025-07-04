@@ -6,12 +6,6 @@ namespace SPTarkov.Server.Core.Extensions
 {
     public static class ProductionExtensions
     {
-        private static readonly HashSet<string> _idCheck =
-        [
-            HideoutHelper.BitcoinFarm,
-            HideoutHelper.CultistCircleCraftId,
-        ];
-
         /// <summary>
         ///     Has the craft completed
         ///     Ignores bitcoin farm/cultist circle as they're continuous crafts
@@ -20,7 +14,9 @@ namespace SPTarkov.Server.Core.Extensions
         /// <returns>True when craft is complete</returns>
         public static bool IsCraftComplete(this Production craft)
         {
-            return craft.Progress >= craft.ProductionTime && !_idCheck.Contains(craft.RecipeId);
+            return craft.Progress >= craft.ProductionTime
+                && !craft.IsCraftOfType(HideoutAreas.BitcoinFarm)
+                && !craft.IsCraftOfType(HideoutAreas.CircleOfCultists);
         }
 
         /// <summary>
@@ -34,9 +30,9 @@ namespace SPTarkov.Server.Core.Extensions
             switch (hideoutType)
             {
                 case HideoutAreas.WaterCollector:
-                    return craft.RecipeId == HideoutHelper.WaterCollector;
+                    return craft.RecipeId == HideoutHelper.WaterCollectorId;
                 case HideoutAreas.BitcoinFarm:
-                    return craft.RecipeId == HideoutHelper.BitcoinFarm;
+                    return craft.RecipeId == HideoutHelper.BitcoinProductionId;
                 case HideoutAreas.ScavCase:
                     return craft.SptIsScavCase ?? false;
                 case HideoutAreas.CircleOfCultists:
