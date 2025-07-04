@@ -21,7 +21,7 @@ public class HideoutCraftQuestIdGenerator(
     DatabaseImporter _databaseImporter
 )
 {
-    private static readonly HashSet<string> _blacklistedProductions =
+    private static readonly HashSet<MongoId> _blacklistedProductions =
     [
         "6617cdb6b24b0ea24505f618", // Old event quest production "Radio Repeater" alt recipe
         "66140c4a9688754de10dac07", // Old event quest production "Documents with decrypted data"
@@ -30,13 +30,14 @@ public class HideoutCraftQuestIdGenerator(
         "67093210d514d26f8408612b", // Old event quest production "TG-Vi-24 true vaccine"
     ];
 
-    private static readonly Dictionary<string, string> _forcedQuestToProductionAssociations = new()
-    {
-        // KEY = PRODUCTION, VALUE = QUEST
-        { "63a571802116d261d2336cd1", "625d6ffaf7308432be1d44c5" }, // Network Provider - Part 2
-    };
+    private static readonly Dictionary<MongoId, MongoId> _forcedQuestToProductionAssociations =
+        new()
+        {
+            // KEY = PRODUCTION, VALUE = QUEST
+            { "63a571802116d261d2336cd1", "625d6ffaf7308432be1d44c5" }, // Network Provider - Part 2
+        };
 
-    private readonly Dictionary<string, string> _questProductionMap = new();
+    private readonly Dictionary<MongoId, MongoId> _questProductionMap = new();
     private readonly List<QuestProductionOutput> _questProductionOutputList = [];
 
     public async Task Run()
