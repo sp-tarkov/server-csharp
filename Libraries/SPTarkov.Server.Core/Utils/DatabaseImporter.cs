@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Server;
 using SPTarkov.Server.Core.Models.Utils;
@@ -128,21 +129,7 @@ public class DatabaseImporter(
             VerifyDatabase
         );
 
-        // TODO: Fix loading of traders, so their full path is not included as the key
-
-        var tempTraders = new Dictionary<string, Trader>();
-
-        // temp fix for trader keys
-        foreach (var trader in dataToImport.Traders)
-        {
-            // fix string for key
-            var tempKey = trader.Key.Split("/").Last();
-            tempTraders.Add(tempKey, trader.Value);
-        }
-
         timer.Stop();
-
-        dataToImport.Traders = tempTraders;
 
         _logger.Info(_serverLocalisationService.GetText("importing_database_finish"));
         _logger.Debug($"Database import took {timer.ElapsedMilliseconds}ms");

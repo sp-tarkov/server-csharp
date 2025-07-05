@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
@@ -21,7 +22,7 @@ public record DatabaseTables
 
     public Templates.Templates? Templates { get; set; }
 
-    public Dictionary<string, Trader> Traders { get; set; }
+    public Dictionary<MongoId, Trader> Traders { get; set; }
 
     public Globals? Globals { get; set; }
 

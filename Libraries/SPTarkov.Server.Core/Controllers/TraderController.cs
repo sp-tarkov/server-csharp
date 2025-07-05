@@ -44,7 +44,7 @@ public class TraderController(
         var traders = databaseService.GetTraders();
         foreach (var (traderId, trader) in traders)
         {
-            if (traderId == Traders.LIGHTHOUSEKEEPER || traderId == "ragfair")
+            if (traderId == Traders.LIGHTHOUSEKEEPER)
             {
                 continue;
             }

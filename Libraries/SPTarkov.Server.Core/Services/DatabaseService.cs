@@ -328,7 +328,7 @@ public class DatabaseService(
     }
 
     /// <returns> assets/database/traders/ </returns>
-    public Dictionary<string, Trader> GetTraders()
+    public Dictionary<MongoId, Trader> GetTraders()
     {
         if (_databaseServer.GetTables().Traders == null)
         {
