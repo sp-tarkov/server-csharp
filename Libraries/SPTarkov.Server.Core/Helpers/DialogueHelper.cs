@@ -47,7 +47,7 @@ public class DialogueHelper(ISptLogger<DialogueHelper> logger, ProfileHelper pro
     /// <param name="sessionID">Session/player id</param>
     /// <param name="itemId">Item being moved to inventory</param>
     /// <returns>Collection of items from message</returns>
-    public List<Item> GetMessageItemContents(string messageID, string sessionID, MongoId itemId)
+    public List<Item> GetMessageItemContents(string messageID, MongoId sessionID, MongoId itemId)
     {
         var fullProfile = profileHelper.GetFullProfile(sessionID);
         var dialogueData = fullProfile.DialogueRecords;
@@ -95,7 +95,7 @@ public class DialogueHelper(ISptLogger<DialogueHelper> logger, ProfileHelper pro
     /// </summary>
     /// <param name="sessionId">Session/player id</param>
     /// <returns>Dialog dictionary</returns>
-    public Dictionary<string, Models.Eft.Profile.Dialogue> GetDialogsForProfile(string sessionId)
+    public Dictionary<string, Models.Eft.Profile.Dialogue> GetDialogsForProfile(MongoId sessionId)
     {
         var profile = profileHelper.GetFullProfile(sessionId);
         return profile.DialogueRecords
@@ -108,7 +108,7 @@ public class DialogueHelper(ISptLogger<DialogueHelper> logger, ProfileHelper pro
     /// <param name="profileId">Profile to look in</param>
     /// <param name="dialogueId">Dialog to return</param>
     /// <returns>Dialogue</returns>
-    public Models.Eft.Profile.Dialogue? GetDialogueFromProfile(string profileId, string dialogueId)
+    public Models.Eft.Profile.Dialogue? GetDialogueFromProfile(MongoId profileId, string dialogueId)
     {
         var dialogues = GetDialogsForProfile(profileId);
         if (dialogues.TryGetValue(dialogueId, out var dialogue))

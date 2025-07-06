@@ -9,10 +9,10 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class BotWeaponGeneratorHelper(
-    ISptLogger<BotWeaponGeneratorHelper> _logger,
-    ItemHelper _itemHelper,
-    WeightedRandomHelper _weightedRandomHelper,
-    BotGeneratorHelper _botGeneratorHelper
+    ISptLogger<BotWeaponGeneratorHelper> logger,
+    ItemHelper itemHelper,
+    WeightedRandomHelper weightedRandomHelper,
+    BotGeneratorHelper botGeneratorHelper
 )
 {
     private static readonly FrozenSet<string> _magCheck =
@@ -30,7 +30,7 @@ public class BotWeaponGeneratorHelper(
     public double? GetRandomizedBulletCount(GenerationData magCounts, TemplateItem magTemplate)
     {
         var randomizedMagazineCount = GetRandomizedMagazineCount(magCounts);
-        var parentItem = _itemHelper.GetItem(magTemplate.Parent).Value;
+        var parentItem = itemHelper.GetItem(magTemplate.Parent).Value;
         double? chamberBulletCount = 0;
         if (MagazineIsCylinderRelated(parentItem.Name))
         {
@@ -40,7 +40,7 @@ public class BotWeaponGeneratorHelper(
                     ?.Props.Filters[0]
                     .Filter.FirstOrDefault() ?? new MongoId(null);
             var ammoMaxStackSize =
-                _itemHelper.GetItem(firstSlotAmmoTpl).Value?.Properties?.StackMaxSize ?? 1;
+                itemHelper.GetItem(firstSlotAmmoTpl).Value?.Properties?.StackMaxSize ?? 1;
             chamberBulletCount =
                 ammoMaxStackSize == 1
                     ? 1 // Rotating grenade launcher
@@ -68,7 +68,7 @@ public class BotWeaponGeneratorHelper(
     /// <returns>Numerical value of magazine count</returns>
     public int GetRandomizedMagazineCount(GenerationData magCounts)
     {
-        return (int)_weightedRandomHelper.GetWeightedValue(magCounts.Weights);
+        return (int)weightedRandomHelper.GetWeightedValue(magCounts.Weights);
     }
 
     /// <summary>
@@ -89,14 +89,14 @@ public class BotWeaponGeneratorHelper(
     /// <param name="magTemplate">Template object of magazine</param>
     /// <returns>Item array</returns>
     public List<Item> CreateMagazineWithAmmo(
-        string magazineTpl,
-        string ammoTpl,
+        MongoId magazineTpl,
+        MongoId ammoTpl,
         TemplateItem magTemplate
     )
     {
         List<Item> magazine = [new() { Id = new MongoId(), Template = magazineTpl }];
 
-        _itemHelper.FillMagazineWithCartridge(magazine, magTemplate, ammoTpl, 1);
+        itemHelper.FillMagazineWithCartridge(magazine, magTemplate, ammoTpl, 1);
 
         return magazine;
     }
@@ -109,7 +109,7 @@ public class BotWeaponGeneratorHelper(
     /// <param name="inventory">Bot inventory to add cartridges to</param>
     /// <param name="equipmentSlotsToAddTo">What equipment slots should bullets be added into</param>
     public void AddAmmoIntoEquipmentSlots(
-        string ammoTpl,
+        MongoId ammoTpl,
         int cartridgeCount,
         BotBaseInventory inventory,
         HashSet<EquipmentSlots>? equipmentSlotsToAddTo = null
@@ -120,7 +120,7 @@ public class BotWeaponGeneratorHelper(
             equipmentSlotsToAddTo = [EquipmentSlots.TacticalVest, EquipmentSlots.Pockets];
         }
 
-        var ammoItems = _itemHelper.SplitStack(
+        var ammoItems = itemHelper.SplitStack(
             new Item
             {
                 Id = new MongoId(),
@@ -131,7 +131,7 @@ public class BotWeaponGeneratorHelper(
 
         foreach (var ammoItem in ammoItems)
         {
-            var result = _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
+            var result = botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
                 equipmentSlotsToAddTo,
                 ammoItem.Id,
                 ammoItem.Template,
@@ -141,7 +141,7 @@ public class BotWeaponGeneratorHelper(
 
             if (result != ItemAddedResult.SUCCESS)
             {
-                _logger.Debug(
+                logger.Debug(
                     $"Unable to add ammo: {ammoItem.Template} to bot inventory, {result.ToString()}"
                 );
 

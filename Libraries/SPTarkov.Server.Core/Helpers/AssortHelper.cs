@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -10,22 +11,22 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class AssortHelper(
-    ISptLogger<AssortHelper> _logger,
-    ServerLocalisationService _serverLocalisationService
+    ISptLogger<AssortHelper> logger,
+    ServerLocalisationService serverLocalisationService
 )
 {
     /// <summary>
     ///     Remove assorts from a trader that have not been unlocked yet (via player completing corresponding quest)
     /// </summary>
     /// <param name="pmcProfile"></param>
-    /// <param name="traderId">Traders id the assort belongs to</param>
+    /// <param name="traderId">Traders id assort belongs to</param>
     /// <param name="traderAssorts">All assort items from same trader</param>
     /// <param name="mergedQuestAssorts">Dict of quest assort to quest id unlocks for all traders (key = started/failed/complete)</param>
     /// <param name="isFlea">Is the trader assort being modified the flea market</param>
     /// <returns>items minus locked quest assorts</returns>
     public TraderAssort StripLockedQuestAssort(
         PmcData pmcProfile,
-        string traderId,
+        MongoId traderId,
         TraderAssort traderAssorts,
         Dictionary<string, Dictionary<string, string>> mergedQuestAssorts,
         bool isFlea = false
@@ -36,8 +37,8 @@ public class AssortHelper(
         // Trader assort does not always contain loyal_level_items
         if (traderAssorts.LoyalLevelItems is null)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText("assort-missing_loyalty_level_object", traderId)
+            logger.Warning(
+                serverLocalisationService.GetText("assort-missing_loyalty_level_object", traderId)
             );
 
             return traderAssorts;
@@ -116,7 +117,7 @@ public class AssortHelper(
     /// <returns>Trader assorts minus locked loyalty assorts</returns>
     public TraderAssort StripLockedLoyaltyAssort(
         PmcData pmcProfile,
-        string traderId,
+        MongoId traderId,
         TraderAssort assort
     )
     {
@@ -125,8 +126,8 @@ public class AssortHelper(
         // Trader assort does not always contain loyal_level_items
         if (assort.LoyalLevelItems is null)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText("assort-missing_loyalty_level_object", traderId)
+            logger.Warning(
+                serverLocalisationService.GetText("assort-missing_loyalty_level_object", traderId)
             );
 
             return strippedAssort;

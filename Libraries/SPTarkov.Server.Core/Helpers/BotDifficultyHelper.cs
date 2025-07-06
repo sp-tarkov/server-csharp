@@ -12,16 +12,16 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class BotDifficultyHelper(
-    ISptLogger<BotDifficultyHelper> _logger,
-    DatabaseService _databaseService,
-    RandomUtil _randomUtil,
-    ServerLocalisationService _serverLocalisationService,
-    BotHelper _botHelper,
-    ConfigServer _configServer,
-    ICloner _cloner
+    ISptLogger<BotDifficultyHelper> logger,
+    DatabaseService databaseService,
+    RandomUtil randomUtil,
+    ServerLocalisationService serverLocalisationService,
+    BotHelper botHelper,
+    ConfigServer configServer,
+    ICloner cloner
 )
 {
-    protected readonly PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
+    protected readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
 
     /// <summary>
     ///     Get difficulty settings for desired bot type, if not found use assault bot types
@@ -36,39 +36,36 @@ public class BotDifficultyHelper(
         Bots botDb
     )
     {
-        var desiredType = _botHelper.IsBotPmc(type)
-            ? _botHelper.GetPmcSideByRole(type).ToLowerInvariant()
+        var desiredType = botHelper.IsBotPmc(type)
+            ? botHelper.GetPmcSideByRole(type).ToLowerInvariant()
             : type.ToLowerInvariant();
         if (!botDb.Types.ContainsKey(desiredType))
         {
             // No bot found, get fallback difficulty values
-            _logger.Warning(
-                _serverLocalisationService.GetText(
-                    "bot-unable_to_get_bot_fallback_to_assault",
-                    type
-                )
+            logger.Warning(
+                serverLocalisationService.GetText("bot-unable_to_get_bot_fallback_to_assault", type)
             );
-            botDb.Types[desiredType] = _cloner.Clone(botDb.Types["assault"]);
+            botDb.Types[desiredType] = cloner.Clone(botDb.Types["assault"]);
         }
 
         // Get settings from raw bot json template file
-        var botTemplate = _botHelper.GetBotTemplate(desiredType);
+        var botTemplate = botHelper.GetBotTemplate(desiredType);
         botTemplate.BotDifficulty.TryGetValue(desiredDifficulty, out var difficultySettings);
         if (difficultySettings is null)
         {
             // No bot settings found, use 'assault' bot difficulty instead
-            _logger.Warning(
-                _serverLocalisationService.GetText(
+            logger.Warning(
+                serverLocalisationService.GetText(
                     "bot-unable_to_get_bot_difficulty_fallback_to_assault",
                     new { botType = desiredType, difficulty = desiredDifficulty }
                 )
             );
-            botDb.Types[desiredType].BotDifficulty[desiredDifficulty] = _cloner.Clone(
+            botDb.Types[desiredType].BotDifficulty[desiredDifficulty] = cloner.Clone(
                 botDb.Types["assault"].BotDifficulty[desiredDifficulty]
             );
         }
 
-        return _cloner.Clone(difficultySettings);
+        return cloner.Clone(difficultySettings);
     }
 
     /// <summary>
@@ -89,9 +86,7 @@ public class BotDifficultyHelper(
 
         difficultySetting = ConvertBotDifficultyDropdownToBotDifficulty(difficultySetting);
 
-        return _cloner.Clone(
-            _databaseService.GetBots().Types[type].BotDifficulty[difficultySetting]
-        );
+        return cloner.Clone(databaseService.GetBots().Types[type].BotDifficulty[difficultySetting]);
     }
 
     /// <summary>
@@ -118,6 +113,6 @@ public class BotDifficultyHelper(
     /// <returns>random difficulty</returns>
     public string ChooseRandomDifficulty()
     {
-        return _randomUtil.GetArrayValue(["easy", "normal", "hard", "impossible"]);
+        return randomUtil.GetArrayValue(["easy", "normal", "hard", "impossible"]);
     }
 }

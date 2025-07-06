@@ -17,14 +17,14 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class BotGeneratorHelper(
-    ISptLogger<BotGeneratorHelper> _logger,
-    RandomUtil _randomUtil,
-    DurabilityLimitsHelper _durabilityLimitsHelper,
-    ItemHelper _itemHelper,
-    InventoryHelper _inventoryHelper,
-    ProfileActivityService _profileActivityService,
-    ServerLocalisationService _serverLocalisationService,
-    ConfigServer _configServer
+    ISptLogger<BotGeneratorHelper> logger,
+    RandomUtil randomUtil,
+    DurabilityLimitsHelper durabilityLimitsHelper,
+    ItemHelper itemHelper,
+    InventoryHelper inventoryHelper,
+    ProfileActivityService profileActivityService,
+    ServerLocalisationService serverLocalisationService,
+    ConfigServer configServer
 )
 {
     // Equipment slot ids that do not conflict with other slots
@@ -43,7 +43,7 @@ public class BotGeneratorHelper(
         Sides.PmcUsec.ToLowerInvariant(),
     ];
 
-    private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    private readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
 
     /// <summary>
     ///     Adds properties to an item
@@ -55,7 +55,7 @@ public class BotGeneratorHelper(
     public Upd GenerateExtraPropertiesForItem(TemplateItem? itemTemplate, string? botRole = null)
     {
         // Get raid settings, if no raid, default to day
-        var raidSettings = _profileActivityService
+        var raidSettings = profileActivityService
             .GetFirstProfileActivityRaidData()
             ?.RaidConfiguration;
 
@@ -114,7 +114,7 @@ public class BotGeneratorHelper(
                 ? new UpdFireMode { FireMode = "fullauto" }
                 : new UpdFireMode
                 {
-                    FireMode = _randomUtil.GetArrayValue(itemTemplate.Properties.WeapFireType),
+                    FireMode = randomUtil.GetArrayValue(itemTemplate.Properties.WeapFireType),
                 };
             hasProperties = true;
         }
@@ -163,7 +163,7 @@ public class BotGeneratorHelper(
                     );
             itemProperties.Light = new UpdLight
             {
-                IsActive = _randomUtil.GetChance100(lightLaserActiveChance),
+                IsActive = randomUtil.GetChance100(lightLaserActiveChance),
                 SelectedMode = 0,
             };
             hasProperties = true;
@@ -178,7 +178,7 @@ public class BotGeneratorHelper(
             );
             itemProperties.Light = new UpdLight
             {
-                IsActive = _randomUtil.GetChance100(lightLaserActiveChance),
+                IsActive = randomUtil.GetChance100(lightLaserActiveChance),
                 SelectedMode = 0,
             };
             hasProperties = true;
@@ -193,7 +193,7 @@ public class BotGeneratorHelper(
                     : GetBotEquipmentSettingFromConfig(botRole, "nvgIsActiveChanceDayPercent", 15);
             itemProperties.Togglable = new UpdTogglable
             {
-                On = _randomUtil.GetChance100(nvgActiveChance),
+                On = randomUtil.GetChance100(nvgActiveChance),
             };
             hasProperties = true;
         }
@@ -211,7 +211,7 @@ public class BotGeneratorHelper(
             );
             itemProperties.Togglable = new UpdTogglable
             {
-                On = _randomUtil.GetChance100(faceShieldActiveChance),
+                On = randomUtil.GetChance100(faceShieldActiveChance),
             };
             hasProperties = true;
         }
@@ -236,13 +236,13 @@ public class BotGeneratorHelper(
             return maxResource;
         }
 
-        if (_randomUtil.GetChance100(randomizationValues.ChanceMaxResourcePercent))
+        if (randomUtil.GetChance100(randomizationValues.ChanceMaxResourcePercent))
         {
             return maxResource;
         }
 
-        return _randomUtil.GetDouble(
-            _randomUtil.GetPercentOfValue(randomizationValues.ResourcePercent, maxResource, 0),
+        return randomUtil.GetDouble(
+            randomUtil.GetPercentOfValue(randomizationValues.ResourcePercent, maxResource, 0),
             maxResource
         );
     }
@@ -268,8 +268,8 @@ public class BotGeneratorHelper(
         var botEquipmentSettings = _botConfig.Equipment[GetBotEquipmentRole(botRole)];
         if (botEquipmentSettings is null)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
+            logger.Warning(
+                serverLocalisationService.GetText(
                     "bot-missing_equipment_settings",
                     new
                     {
@@ -296,8 +296,8 @@ public class BotGeneratorHelper(
             return propValue;
         }
 
-        _logger.Warning(
-            _serverLocalisationService.GetText(
+        logger.Warning(
+            serverLocalisationService.GetText(
                 "bot-missing_equipment_settings_property",
                 new
                 {
@@ -322,11 +322,11 @@ public class BotGeneratorHelper(
         string? botRole = null
     )
     {
-        var maxDurability = _durabilityLimitsHelper.GetRandomizedMaxWeaponDurability(
+        var maxDurability = durabilityLimitsHelper.GetRandomizedMaxWeaponDurability(
             itemTemplate,
             botRole
         );
-        var currentDurability = _durabilityLimitsHelper.GetRandomizedWeaponDurability(
+        var currentDurability = durabilityLimitsHelper.GetRandomizedWeaponDurability(
             itemTemplate,
             botRole,
             maxDurability
@@ -359,11 +359,11 @@ public class BotGeneratorHelper(
         }
         else
         {
-            maxDurability = _durabilityLimitsHelper.GetRandomizedMaxArmorDurability(
+            maxDurability = durabilityLimitsHelper.GetRandomizedMaxArmorDurability(
                 itemTemplate,
                 botRole
             );
-            currentDurability = _durabilityLimitsHelper.GetRandomizedArmorDurability(
+            currentDurability = durabilityLimitsHelper.GetRandomizedArmorDurability(
                 itemTemplate,
                 botRole,
                 maxDurability
@@ -403,14 +403,14 @@ public class BotGeneratorHelper(
 
         // TODO: Can probably be optimized to cache itemTemplates as items are added to inventory
         var equippedItemsDb = itemsEquipped
-            .Select(equippedItem => _itemHelper.GetItem(equippedItem.Template).Value)
+            .Select(equippedItem => itemHelper.GetItem(equippedItem.Template).Value)
             .ToList();
-        var (itemIsValid, itemToEquip) = _itemHelper.GetItem(tplToCheck);
+        var (itemIsValid, itemToEquip) = itemHelper.GetItem(tplToCheck);
 
         if (!itemIsValid)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
+            logger.Warning(
+                serverLocalisationService.GetText(
                     "bot-invalid_item_compatibility_check",
                     new { itemTpl = tplToCheck, slot = equipmentSlot }
                 )
@@ -426,8 +426,8 @@ public class BotGeneratorHelper(
 
         if (itemToEquip?.Properties is null)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
+            logger.Warning(
+                serverLocalisationService.GetText(
                     "bot-compatibility_check_missing_props",
                     new
                     {
@@ -633,9 +633,9 @@ public class BotGeneratorHelper(
                 if (missingContainerCount == equipmentSlots.Count)
                 {
                     // Bot doesn't have any containers we want to add item to
-                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    if (logger.IsLogEnabled(LogLevel.Debug))
                     {
-                        _logger.Debug(
+                        logger.Debug(
                             $"Unable to add item: {itemWithChildren.FirstOrDefault()?.Template} to bot as it lacks the following containers: {string.Join(",", equipmentSlots)}"
                         );
                     }
@@ -648,11 +648,11 @@ public class BotGeneratorHelper(
             }
 
             // Get container details from db
-            var (key, value) = _itemHelper.GetItem(container.Template);
+            var (key, value) = itemHelper.GetItem(container.Template);
             if (!key)
             {
-                _logger.Warning(
-                    _serverLocalisationService.GetText(
+                logger.Warning(
+                    serverLocalisationService.GetText(
                         "bot-missing_container_with_tpl",
                         container.Template
                     )
@@ -669,7 +669,7 @@ public class BotGeneratorHelper(
             }
 
             // Get x/y grid size of item
-            var (itemWidth, itemHeight) = _inventoryHelper.GetItemSize(
+            var (itemWidth, itemHeight) = inventoryHelper.GetItemSize(
                 rootItemTplId,
                 rootItemId,
                 itemWithChildren
@@ -714,7 +714,7 @@ public class BotGeneratorHelper(
                 if (slotGrid.Props is not null)
                 {
                     // Get rid of an items free/used spots in current grid
-                    var slotGridMap = _inventoryHelper.GetContainerMap(
+                    var slotGridMap = inventoryHelper.GetContainerMap(
                         slotGrid.Props.CellsH.GetValueOrDefault(),
                         slotGrid.Props.CellsV.GetValueOrDefault(),
                         containerItemsWithChildren,
@@ -830,7 +830,7 @@ public class BotGeneratorHelper(
         }
 
         // Check if item base type is excluded
-        var itemDetails = _itemHelper.GetItem(itemTpl).Value;
+        var itemDetails = itemHelper.GetItem(itemTpl).Value;
 
         // if item to add is found in exclude filter, not allowed
         if (excludedFilter.Contains(itemDetails?.Parent ?? string.Empty))

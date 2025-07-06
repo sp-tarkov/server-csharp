@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -10,13 +11,13 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class HealthHelper(
-    TimeUtil _timeUtil,
-    SaveServer _saveServer,
-    ProfileHelper _profileHelper,
-    ConfigServer _configServer
+    TimeUtil timeUtil,
+    SaveServer saveServer,
+    ProfileHelper profileHelper,
+    ConfigServer configServer
 )
 {
-    protected readonly HealthConfig _healthConfig = _configServer.GetConfig<HealthConfig>();
+    protected readonly HealthConfig _healthConfig = configServer.GetConfig<HealthConfig>();
 
     /// <summary>
     ///     Update player profile vitality values with changes from client request object
@@ -26,18 +27,18 @@ public class HealthHelper(
     /// <param name="healthChanges">Changes to apply </param>
     /// <param name="isDead">OPTIONAL - Is player dead</param>
     public void ApplyHealthChangesToProfile(
-        string sessionID,
+        MongoId sessionID,
         PmcData pmcProfileToUpdate,
         BotBaseHealth healthChanges,
         bool isDead = false
     )
     {
-        var fullProfile = _saveServer.GetProfile(sessionID);
+        var fullProfile = saveServer.GetProfile(sessionID);
         var profileEdition = fullProfile.ProfileInfo.Edition;
         var profileSide = fullProfile.CharacterData.PmcData.Info.Side;
 
         // Get matching 'side' e.g. USEC
-        var matchingSide = _profileHelper.GetProfileTemplateForSide(profileEdition, profileSide);
+        var matchingSide = profileHelper.GetProfileTemplateForSide(profileEdition, profileSide);
 
         var defaultTemperature =
             matchingSide?.Character?.Health?.Temperature ?? new CurrentMinMax { Current = 36.6 };
@@ -53,7 +54,7 @@ public class HealthHelper(
         AdjustProfileHydrationEnergyTemperature(pmcProfileToUpdate, healthChanges);
 
         // Update last edited timestamp
-        pmcProfileToUpdate.Health.UpdateTime = _timeUtil.GetTimeStamp();
+        pmcProfileToUpdate.Health.UpdateTime = timeUtil.GetTimeStamp();
     }
 
     /// <summary>
