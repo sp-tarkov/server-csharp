@@ -8,7 +8,7 @@ using SPTarkov.Server.Core.Models.Utils;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable]
-public class MapMarkerService(ISptLogger<MapMarkerService> _logger)
+public class MapMarkerService(ISptLogger<MapMarkerService> logger)
 {
     /// <summary>
     ///     Add note to a map item in player inventory
@@ -74,7 +74,7 @@ public class MapMarkerService(ISptLogger<MapMarkerService> _logger)
 
         if (markerToRemove is null)
         {
-            _logger.Warning($"No marker found for item {request.Item}");
+            logger.Warning($"No marker found for item {request.Item}");
             return null;
         }
 

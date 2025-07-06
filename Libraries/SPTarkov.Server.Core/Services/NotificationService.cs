@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Ws;
 
 namespace SPTarkov.Server.Core.Services;
@@ -6,19 +7,19 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class NotificationService
 {
-    protected readonly Dictionary<string, List<WsNotificationEvent>> _messageQueue = new();
+    protected readonly Dictionary<MongoId, List<WsNotificationEvent>> _messageQueue = new();
 
-    public Dictionary<string, List<WsNotificationEvent>> GetMessageQueue()
+    public Dictionary<MongoId, List<WsNotificationEvent>> GetMessageQueue()
     {
         return _messageQueue;
     }
 
-    public List<WsNotificationEvent>? GetMessageFromQueue(string sessionId)
+    public List<WsNotificationEvent>? GetMessageFromQueue(MongoId sessionId)
     {
         return _messageQueue.GetValueOrDefault(sessionId);
     }
 
-    public void UpdateMessageOnQueue(string sessionId, List<WsNotificationEvent> value)
+    public void UpdateMessageOnQueue(MongoId sessionId, List<WsNotificationEvent> value)
     {
         if (_messageQueue.ContainsKey(sessionId))
         {
@@ -26,7 +27,7 @@ public class NotificationService
         }
     }
 
-    public bool Has(string sessionID)
+    public bool Has(MongoId sessionID)
     {
         return _messageQueue.ContainsKey(sessionID);
     }
@@ -34,7 +35,7 @@ public class NotificationService
     /// <summary>
     ///     Pop first message from queue.
     /// </summary>
-    public WsNotificationEvent Pop(string sessionID)
+    public WsNotificationEvent Pop(MongoId sessionID)
     {
         var result = Get(sessionID).First();
         Get(sessionID).Remove(result);
@@ -44,7 +45,7 @@ public class NotificationService
     /// <summary>
     ///     Add message to queue
     /// </summary>
-    public void Add(string sessionID, WsNotificationEvent message)
+    public void Add(MongoId sessionID, WsNotificationEvent message)
     {
         Get(sessionID).Add(message);
     }
@@ -53,9 +54,9 @@ public class NotificationService
     ///     Get message queue for session
     /// </summary>
     /// <param name="sessionID">Session/player id</param>
-    public List<WsNotificationEvent> Get(string sessionID)
+    public List<WsNotificationEvent> Get(MongoId sessionID)
     {
-        if (sessionID is null)
+        if (sessionID.IsEmpty())
         {
             throw new Exception("sessionID missing");
         }

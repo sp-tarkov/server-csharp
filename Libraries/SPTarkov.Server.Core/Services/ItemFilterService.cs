@@ -12,13 +12,13 @@ namespace SPTarkov.Server.Core.Services;
 /// </summary>
 [Injectable(InjectionType.Singleton)]
 public class ItemFilterService(
-    ISptLogger<ItemFilterService> _logger,
-    ICloner _cloner,
-    ConfigServer _configServer
+    ISptLogger<ItemFilterService> logger,
+    ICloner cloner,
+    ConfigServer configServer
 )
 {
     protected readonly HashSet<MongoId>? _itemBlacklistCache = [];
-    protected readonly ItemConfig _itemConfig = _configServer.GetConfig<ItemConfig>();
+    protected readonly ItemConfig _itemConfig = configServer.GetConfig<ItemConfig>();
 
     protected readonly HashSet<MongoId>? _lootableItemBlacklistCache = [];
 
@@ -53,7 +53,7 @@ public class ItemFilterService(
     /// <returns> HashSet of item tpls </returns>
     public HashSet<MongoId> GetItemRewardBlacklist()
     {
-        return _cloner.Clone(_itemConfig.RewardItemBlacklist);
+        return cloner.Clone(_itemConfig.RewardItemBlacklist);
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public class ItemFilterService(
     /// <returns> HashSet of item base ids </returns>
     public HashSet<MongoId> GetItemRewardBaseTypeBlacklist()
     {
-        return _cloner.Clone(_itemConfig.RewardItemTypeBlacklist);
+        return cloner.Clone(_itemConfig.RewardItemTypeBlacklist);
     }
 
     /// <summary>
@@ -71,7 +71,7 @@ public class ItemFilterService(
     /// <returns> HashSet of blacklisted template ids </returns>
     public HashSet<MongoId> GetBlacklistedItems()
     {
-        return _cloner.Clone(_itemConfig.Blacklist);
+        return cloner.Clone(_itemConfig.Blacklist);
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ public class ItemFilterService(
     /// <returns> HashSet of blacklisted template ids </returns>
     public HashSet<MongoId> GetBlacklistedLootableItems()
     {
-        return _cloner.Clone(_itemConfig.LootableItemBlacklist);
+        return cloner.Clone(_itemConfig.LootableItemBlacklist);
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ public class ItemFilterService(
     /// <returns> HashSet of boss item template ids </returns>
     public HashSet<MongoId> GetBossItems()
     {
-        return _cloner.Clone(_itemConfig.BossItems).ToHashSet();
+        return cloner.Clone(_itemConfig.BossItems).ToHashSet();
     }
 
     /// <summary>

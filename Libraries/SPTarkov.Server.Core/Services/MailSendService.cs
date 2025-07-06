@@ -16,16 +16,16 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable]
 public class MailSendService(
-    ISptLogger<MailSendService> _logger,
-    TimeUtil _timeUtil,
-    SaveServer _saveServer,
-    DatabaseService _databaseService,
-    NotifierHelper _notifierHelper,
-    DialogueHelper _dialogueHelper,
-    NotificationSendHelper _notificationSendHelper,
-    ServerLocalisationService _serverLocalisationService,
-    ItemHelper _itemHelper,
-    ICloner _cloner
+    ISptLogger<MailSendService> logger,
+    TimeUtil timeUtil,
+    SaveServer saveServer,
+    DatabaseService databaseService,
+    NotifierHelper notifierHelper,
+    DialogueHelper dialogueHelper,
+    NotificationSendHelper notificationSendHelper,
+    ServerLocalisationService serverLocalisationService,
+    ItemHelper itemHelper,
+    ICloner cloner
 )
 {
     private const string _systemSenderId = "59e7125688a45068a6249071";
@@ -48,7 +48,7 @@ public class MailSendService(
     /// <param name="systemData"> </param>
     /// <param name="ragfair"> </param>
     public void SendDirectNpcMessageToPlayer(
-        string sessionId,
+        MongoId sessionId,
         string? trader,
         MessageType messageType,
         string message,
@@ -60,8 +60,8 @@ public class MailSendService(
     {
         if (trader is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
+            logger.Error(
+                serverLocalisationService.GetText(
                     "mailsend-missing_trader",
                     new { messageType, sessionId }
                 )
@@ -112,7 +112,7 @@ public class MailSendService(
     /// <param name="systemData"></param>
     /// <param name="ragfair"></param>
     public void SendLocalisedNpcMessageToPlayer(
-        string sessionId,
+        MongoId sessionId,
         string? trader,
         MessageType messageType,
         string messageLocaleId,
@@ -124,8 +124,8 @@ public class MailSendService(
     {
         if (trader is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
+            logger.Error(
+                serverLocalisationService.GetText(
                     "mailsend-missing_trader",
                     new { messageType, sessionId }
                 )
@@ -175,7 +175,7 @@ public class MailSendService(
     /// <param name="maxStorageTimeSeconds"> Optional time to collect items before they expire </param>
     /// <param name="profileChangeEvents"></param>
     public void SendSystemMessageToPlayer(
-        string sessionId,
+        MongoId sessionId,
         string message,
         List<Item>? items,
         long? maxStorageTimeSeconds = 172800,
@@ -216,7 +216,7 @@ public class MailSendService(
     /// <param name="profileChangeEvents"></param>
     /// <param name="maxStorageTimeSeconds"> Optional time to collect items before they expire </param>
     public void SendLocalisedSystemMessageToPlayer(
-        string sessionId,
+        MongoId sessionId,
         string messageLocaleId,
         List<Item>? items,
         List<ProfileChangeEvent>? profileChangeEvents,
@@ -255,7 +255,7 @@ public class MailSendService(
     /// <param name="items"> Optional items to send to player </param>
     /// <param name="maxStorageTimeSeconds"> Optional time to collect items before they expire </param>
     public void SendUserMessageToPlayer(
-        string sessionId,
+        MongoId sessionId,
         UserDialogInfo senderDetails,
         string message,
         List<Item>? items = null,
@@ -329,17 +329,17 @@ public class MailSendService(
             && messageDetails?.RagfairDetails is not null
         )
         {
-            var offerSoldMessage = _notifierHelper.CreateRagfairOfferSoldNotification(
+            var offerSoldMessage = notifierHelper.CreateRagfairOfferSoldNotification(
                 message,
                 messageDetails.RagfairDetails
             );
-            _notificationSendHelper.SendMessage(messageDetails.RecipientId, offerSoldMessage);
+            notificationSendHelper.SendMessage(messageDetails.RecipientId, offerSoldMessage);
             message.MessageType = MessageType.MessageWithItems; // Should prevent getting the same notification popup twice
         }
 
         // Send message off to player so they get it in client
-        var notificationMessage = _notifierHelper.CreateNewMessageNotification(message);
-        _notificationSendHelper.SendMessage(messageDetails.RecipientId, notificationMessage);
+        var notificationMessage = notifierHelper.CreateNewMessageNotification(message);
+        notificationSendHelper.SendMessage(messageDetails.RecipientId, notificationMessage);
     }
 
     /// <summary>
@@ -348,16 +348,16 @@ public class MailSendService(
     /// <param name="sessionId"> Session ID </param>
     /// <param name="targetNpcId"> NPC message is sent to </param>
     /// <param name="message"> Text to send to NPC </param>
-    public void SendPlayerMessageToNpc(string sessionId, string targetNpcId, string message)
+    public void SendPlayerMessageToNpc(MongoId sessionId, string targetNpcId, string message)
     {
-        var playerProfile = _saveServer.GetProfile(sessionId);
+        var playerProfile = saveServer.GetProfile(sessionId);
         if (
             playerProfile.DialogueRecords is null
             || !playerProfile.DialogueRecords.TryGetValue(targetNpcId, out var dialogWithNpc)
         )
         {
-            _logger.Error(
-                _serverLocalisationService.GetText("mailsend-missing_npc_dialog", targetNpcId)
+            logger.Error(
+                serverLocalisationService.GetText("mailsend-missing_npc_dialog", targetNpcId)
             );
             return;
         }
@@ -366,7 +366,7 @@ public class MailSendService(
             new Message
             {
                 Id = new MongoId(),
-                DateTime = _timeUtil.GetTimeStamp(),
+                DateTime = timeUtil.GetTimeStamp(),
                 HasRewards = false,
                 UserId = playerProfile.CharacterData.PmcData.Id,
                 MessageType = MessageType.UserMessage,
@@ -389,7 +389,7 @@ public class MailSendService(
             Id = new MongoId(),
             UserId = dialogId,
             MessageType = messageDetails.Sender,
-            DateTime = _timeUtil.GetTimeStamp(),
+            DateTime = timeUtil.GetTimeStamp(),
             Text = messageDetails.TemplateId is not null ? "" : messageDetails.MessageText,
             TemplateId = messageDetails.TemplateId,
             HasRewards = false,
@@ -427,11 +427,11 @@ public class MailSendService(
     /// <returns> A new instance with data from the found message, otherwise undefined </returns>
     protected ReplyTo? GetMessageToReplyTo(string recipientId, string replyToId, string dialogueId)
     {
-        var currentDialogue = _dialogueHelper.GetDialogueFromProfile(recipientId, dialogueId);
+        var currentDialogue = dialogueHelper.GetDialogueFromProfile(recipientId, dialogueId);
 
         if (currentDialogue is null)
         {
-            _logger.Warning($"Unable to find dialogue: {dialogueId} from sender");
+            logger.Warning($"Unable to find dialogue: {dialogueId} from sender");
             return null;
         }
 
@@ -485,7 +485,7 @@ public class MailSendService(
         SendMessageDetails messageDetails
     )
     {
-        var items = _databaseService.GetItems();
+        var items = databaseService.GetItems();
 
         MessageItems itemsToSendToPlayer = new();
         if ((messageDetails.Items?.Count ?? 0) > 0)
@@ -494,7 +494,7 @@ public class MailSendService(
             var parentItem = GetBaseItemFromRewards(messageDetails.Items);
             if (parentItem is null)
             {
-                _serverLocalisationService.GetText(
+                serverLocalisationService.GetText(
                     "mailsend-missing_parent",
                     new { traderId = messageDetails.Trader, sender = messageDetails.Sender }
                 );
@@ -516,7 +516,7 @@ public class MailSendService(
             };
 
             // Ensure Ids are unique and cont collide with items in player inventory later
-            messageDetails.Items = _cloner.Clone(messageDetails.Items).ReplaceIDs().ToList();
+            messageDetails.Items = cloner.Clone(messageDetails.Items).ReplaceIDs().ToList();
 
             // Ensure item exits in items db
             foreach (var reward in messageDetails.Items)
@@ -524,8 +524,8 @@ public class MailSendService(
                 var itemTemplate = items[reward.Template];
                 if (itemTemplate is null)
                 {
-                    _logger.Error(
-                        _serverLocalisationService.GetText(
+                    logger.Error(
+                        serverLocalisationService.GetText(
                             "dialog-missing_item_template",
                             new { tpl = reward.Template, type = dialogType }
                         )
@@ -547,7 +547,7 @@ public class MailSendService(
                 }
 
                 // Boxes can contain sub-items
-                if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.AMMO_BOX))
+                if (itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.AMMO_BOX))
                 {
                     // look for child cartridge objects
                     var childItems = messageDetails.Items?.Where(x => x.ParentId == reward.Id);
@@ -555,7 +555,7 @@ public class MailSendService(
                     {
                         // No cartridges found, generate and add to rewards
                         var boxAndCartridges = new List<Item> { reward };
-                        _itemHelper.AddCartridgesToAmmoBox(boxAndCartridges, itemTemplate);
+                        itemHelper.AddCartridgesToAmmoBox(boxAndCartridges, itemTemplate);
 
                         // Push box + cartridge children into array
                         itemsToSendToPlayer.Data.AddRange(boxAndCartridges);
@@ -570,8 +570,8 @@ public class MailSendService(
                 {
                     if (itemTemplate.Properties.StackSlots is not null)
                     {
-                        _logger.Error(
-                            _serverLocalisationService.GetText(
+                        logger.Error(
+                            serverLocalisationService.GetText(
                                 "mail-unable_to_give_gift_not_handled",
                                 itemTemplate.Id
                             )
@@ -636,14 +636,14 @@ public class MailSendService(
         if (senderId is null)
         {
             throw new Exception(
-                _serverLocalisationService.GetText(
+                serverLocalisationService.GetText(
                     "mail-unable_to_find_message_sender_by_id",
                     messageDetails.Sender
                 )
             );
         }
 
-        var dialogsInProfile = _dialogueHelper.GetDialogsForProfile(messageDetails.RecipientId);
+        var dialogsInProfile = dialogueHelper.GetDialogsForProfile(messageDetails.RecipientId);
 
         // Does dialog exist
         if (!dialogsInProfile.ContainsKey(senderId))
@@ -680,9 +680,9 @@ public class MailSendService(
             || messageDetails.DialogType == MessageType.NpcTraderMessage
         )
         {
-            if (messageDetails.Trader == null && _logger.IsLogEnabled(LogLevel.Debug))
+            if (messageDetails.Trader == null && logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Trader was null for {messageDetails.TemplateId}");
+                logger.Debug($"Trader was null for {messageDetails.TemplateId}");
             }
 
             return messageDetails.Trader;
@@ -703,7 +703,7 @@ public class MailSendService(
             return messageDetails.Trader;
         }
 
-        _logger.Warning($"Unable to handle message of type: {messageDetails.Sender}");
+        logger.Warning($"Unable to handle message of type: {messageDetails.Sender}");
         return null;
     }
 }

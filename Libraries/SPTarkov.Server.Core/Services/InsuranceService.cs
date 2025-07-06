@@ -1,6 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
@@ -17,28 +18,27 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class InsuranceService(
-    ISptLogger<InsuranceService> _logger,
-    DatabaseService _databaseService,
-    RandomUtil _randomUtil,
-    ItemHelper _itemHelper,
-    TimeUtil _timeUtil,
-    SaveServer _saveServer,
-    TraderHelper _traderHelper,
-    ServerLocalisationService _serverLocalisationService,
-    MailSendService _mailSendService,
-    ConfigServer _configServer
+    ISptLogger<InsuranceService> logger,
+    DatabaseService databaseService,
+    RandomUtil randomUtil,
+    ItemHelper itemHelper,
+    TimeUtil timeUtil,
+    SaveServer saveServer,
+    TraderHelper traderHelper,
+    ServerLocalisationService serverLocalisationService,
+    MailSendService mailSendService,
+    ConfigServer configServer
 )
 {
-    protected readonly InsuranceConfig _insuranceConfig =
-        _configServer.GetConfig<InsuranceConfig>();
-    protected readonly Dictionary<string, Dictionary<string, List<Item>>?> _insured = new();
+    protected readonly InsuranceConfig _insuranceConfig = configServer.GetConfig<InsuranceConfig>();
+    protected readonly Dictionary<MongoId, Dictionary<MongoId, List<Item>>?> _insured = new();
 
     /// <summary>
     ///     Does player have insurance dictionary exists
     /// </summary>
     /// <param name="sessionId">Player id</param>
     /// <returns>True if exists</returns>
-    public bool InsuranceDictionaryExists(string sessionId)
+    public bool InsuranceDictionaryExists(MongoId sessionId)
     {
         return _insured.TryGetValue(sessionId, out _);
     }
@@ -48,16 +48,16 @@ public class InsuranceService(
     /// </summary>
     /// <param name="sessionId">Profile id (session id)</param>
     /// <returns>Item list</returns>
-    public Dictionary<string, List<Item>>? GetInsurance(string sessionId)
+    public Dictionary<MongoId, List<Item>>? GetInsurance(MongoId sessionId)
     {
         return _insured[sessionId];
     }
 
-    public void ResetInsurance(string sessionId)
+    public void ResetInsurance(MongoId sessionId)
     {
-        if (!_insured.TryAdd(sessionId, new Dictionary<string, List<Item>>()))
+        if (!_insured.TryAdd(sessionId, new Dictionary<MongoId, List<Item>>()))
         {
-            _insured[sessionId] = new Dictionary<string, List<Item>>();
+            _insured[sessionId] = new Dictionary<MongoId, List<Item>>();
         }
     }
 
@@ -68,17 +68,17 @@ public class InsuranceService(
     /// <param name="pmcData">Profile to send insured items to</param>
     /// <param name="sessionID">SessionId of current player</param>
     /// <param name="mapId">Id of the location player died/exited that caused the insurance to be issued on</param>
-    public void StartPostRaidInsuranceLostProcess(PmcData pmcData, string sessionID, string mapId)
+    public void StartPostRaidInsuranceLostProcess(PmcData pmcData, MongoId sessionID, string mapId)
     {
         // Get insurance items for each trader
-        var globals = _databaseService.GetGlobals();
+        var globals = databaseService.GetGlobals();
         foreach (var traderKvP in GetInsurance(sessionID))
         {
-            var traderBase = _traderHelper.GetTrader(traderKvP.Key, sessionID);
+            var traderBase = traderHelper.GetTrader(traderKvP.Key, sessionID);
             if (traderBase is null)
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText(
+                logger.Error(
+                    serverLocalisationService.GetText(
                         "insurance-unable_to_find_trader_by_id",
                         traderKvP.Key
                     )
@@ -87,11 +87,11 @@ public class InsuranceService(
                 continue;
             }
 
-            var dialogueTemplates = _databaseService.GetTrader(traderKvP.Key).Dialogue;
+            var dialogueTemplates = databaseService.GetTrader(traderKvP.Key).Dialogue;
             if (dialogueTemplates is null)
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText(
+                logger.Error(
+                    serverLocalisationService.GetText(
                         "insurance-trader_lacks_dialogue_property",
                         traderKvP.Key
                     )
@@ -102,21 +102,21 @@ public class InsuranceService(
 
             var systemData = new SystemData
             {
-                Date = _timeUtil.GetBsgDateMailFormat(),
-                Time = _timeUtil.GetBsgTimeMailFormat(),
+                Date = timeUtil.GetBsgDateMailFormat(),
+                Time = timeUtil.GetBsgTimeMailFormat(),
                 Location = mapId,
             };
 
             // Send "i will go look for your stuff" message from trader to player
-            _mailSendService.SendLocalisedNpcMessageToPlayer(
+            mailSendService.SendLocalisedNpcMessageToPlayer(
                 sessionID,
                 traderKvP.Key,
                 MessageType.NpcTraderMessage,
-                _randomUtil.GetArrayValue(
+                randomUtil.GetArrayValue(
                     dialogueTemplates["insuranceStart"] ?? ["INSURANCE START MESSAGE MISSING"]
                 ),
                 null,
-                _timeUtil.GetHoursAsSeconds(
+                timeUtil.GetHoursAsSeconds(
                     (int)globals.Configuration?.Insurance?.MaxStorageTimeInHour
                 ),
                 systemData
@@ -124,7 +124,7 @@ public class InsuranceService(
 
             // Store insurance to send to player later in profile
             // Store insurance return details in profile + "hey i found your stuff, here you go!" message details to send to player at a later date
-            _saveServer
+            saveServer
                 .GetProfile(sessionID)
                 .InsuranceList.Add(
                     new Insurance
@@ -134,7 +134,7 @@ public class InsuranceService(
                         MaxStorageTime = (int)GetMaxInsuranceStorageTime(traderBase),
                         SystemData = systemData,
                         MessageType = MessageType.InsuranceReturn,
-                        MessageTemplateId = _randomUtil.GetArrayValue(
+                        MessageTemplateId = randomUtil.GetArrayValue(
                             dialogueTemplates["insuranceFound"]
                         ),
                         Items = GetInsurance(sessionID)[traderKvP.Key],
@@ -157,14 +157,14 @@ public class InsuranceService(
         // If override in config is non-zero, use that instead of trader values
         if (_insuranceConfig.ReturnTimeOverrideSeconds > 0)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(
+                logger.Debug(
                     $"Insurance override used: returning in {_insuranceConfig.ReturnTimeOverrideSeconds} seconds"
                 );
             }
 
-            return _timeUtil.GetTimeStamp() + _insuranceConfig.ReturnTimeOverrideSeconds;
+            return timeUtil.GetTimeStamp() + _insuranceConfig.ReturnTimeOverrideSeconds;
         }
 
         var insuranceReturnTimeBonusSum = pmcData.GetBonusValueFromProfile(
@@ -176,14 +176,14 @@ public class InsuranceService(
 
         var traderMinReturnAsSeconds = trader.Insurance.MinReturnHour * TimeUtil.OneHourAsSeconds;
         var traderMaxReturnAsSeconds = trader.Insurance.MaxReturnHour * TimeUtil.OneHourAsSeconds;
-        var randomisedReturnTimeSeconds = _randomUtil.GetDouble(
+        var randomisedReturnTimeSeconds = randomUtil.GetDouble(
             traderMinReturnAsSeconds.Value,
             traderMaxReturnAsSeconds.Value
         );
 
         // Check for Mark of The Unheard in players special slots (only slot item can fit)
-        var globals = _databaseService.GetGlobals();
-        var hasMarkOfUnheard = _itemHelper.HasItemWithTpl(
+        var globals = databaseService.GetGlobals();
+        var hasMarkOfUnheard = itemHelper.HasItemWithTpl(
             pmcData.Inventory.Items,
             ItemTpl.MARKOFUNKNOWN_MARK_OF_THE_UNHEARD,
             "SpecialSlot"
@@ -212,7 +212,7 @@ public class InsuranceService(
         // Calculate the final return time based on our bonus percent
         var finalReturnTimeSeconds =
             randomisedReturnTimeSeconds * (1d - insuranceReturnTimeBonusPercent);
-        return _timeUtil.GetTimeStamp() + finalReturnTimeSeconds;
+        return timeUtil.GetTimeStamp() + finalReturnTimeSeconds;
     }
 
     protected double GetMaxInsuranceStorageTime(TraderBase traderBase)
@@ -223,7 +223,7 @@ public class InsuranceService(
             return _insuranceConfig.StorageTimeOverrideSeconds;
         }
 
-        return _timeUtil.GetHoursAsSeconds((int)traderBase.Insurance.MaxStorageTime);
+        return timeUtil.GetHoursAsSeconds((int)traderBase.Insurance.MaxStorageTime);
     }
 
     /// <summary>
@@ -231,7 +231,7 @@ public class InsuranceService(
     /// </summary>
     /// <param name="equipmentPkg">Gear to store - generated by GetGearLostInRaid()</param>
     public void StoreGearLostInRaidToSendLater(
-        string sessionID,
+        MongoId sessionID,
         List<InsuranceEquipmentPkg> equipmentPkg
     )
     {
@@ -250,7 +250,7 @@ public class InsuranceService(
     /// <param name="pmcProfile">Player profile</param>
     /// <returns>InsuranceEquipmentPkg list</returns>
     public List<InsuranceEquipmentPkg> MapInsuredItemsToTrader(
-        string sessionId,
+        MongoId sessionId,
         List<Item> lostInsuredItems,
         PmcData pmcProfile
     )
@@ -264,7 +264,7 @@ public class InsuranceService(
             );
             if (insuranceDetails is null)
             {
-                _logger.Error(
+                logger.Error(
                     $"unable to find insurance details for item id: {lostItem.Id} with tpl: {lostItem.Template}"
                 );
 
@@ -353,7 +353,7 @@ public class InsuranceService(
     /// <param name="sessionId">Player id (session id)</param>
     /// <param name="traderId">Trader items insured with</param>
     /// <returns>True if exists</returns>
-    protected bool InsuranceTraderArrayExists(string sessionId, string traderId)
+    protected bool InsuranceTraderArrayExists(MongoId sessionId, MongoId traderId)
     {
         return _insured[sessionId].GetValueOrDefault(traderId) is not null;
     }
@@ -363,7 +363,7 @@ public class InsuranceService(
     /// </summary>
     /// <param name="sessionId">Player id (session id)</param>
     /// <param name="traderId">Trader items insured with</param>
-    public void ResetInsuranceTraderArray(string sessionId, string traderId)
+    public void ResetInsuranceTraderArray(MongoId sessionId, MongoId traderId)
     {
         _insured[sessionId][traderId] = [];
     }
@@ -374,7 +374,7 @@ public class InsuranceService(
     /// <param name="sessionId">Player id (session id)</param>
     /// <param name="traderId">Trader item insured with</param>
     /// <param name="itemToAdd">Insured item (with children)</param>
-    public void AddInsuranceItemToArray(string sessionId, string traderId, Item itemToAdd)
+    public void AddInsuranceItemToArray(MongoId sessionId, MongoId traderId, Item itemToAdd)
     {
         _insured[sessionId][traderId].Add(itemToAdd);
     }
@@ -389,12 +389,12 @@ public class InsuranceService(
     public double GetRoublePriceToInsureItemWithTrader(
         PmcData? pmcData,
         Item inventoryItem,
-        string traderId
+        MongoId traderId
     )
     {
         var price =
-            _itemHelper.GetStaticItemPrice(inventoryItem.Template)
-            * (_traderHelper.GetLoyaltyLevel(traderId, pmcData).InsurancePriceCoefficient / 100);
+            itemHelper.GetStaticItemPrice(inventoryItem.Template)
+            * (traderHelper.GetLoyaltyLevel(traderId, pmcData).InsurancePriceCoefficient / 100);
 
         return Math.Ceiling(price ?? 1);
     }

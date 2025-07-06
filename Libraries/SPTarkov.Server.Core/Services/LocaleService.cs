@@ -8,12 +8,12 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class LocaleService(
-    ISptLogger<LocaleService> _logger,
-    DatabaseServer _databaseServer,
-    ConfigServer _configServer
+    ISptLogger<LocaleService> logger,
+    DatabaseServer databaseServer,
+    ConfigServer configServer
 )
 {
-    protected readonly LocaleConfig _localeConfig = _configServer.GetConfig<LocaleConfig>();
+    protected readonly LocaleConfig _localeConfig = configServer.GetConfig<LocaleConfig>();
     private string _chosenServerLocale = string.Empty;
     private string _chosenClientLocale = string.Empty;
 
@@ -50,7 +50,7 @@ public class LocaleService(
     {
         localeToReturn = null;
         if (
-            !_databaseServer
+            !databaseServer
                 .GetTables()
                 .Locales.Global.TryGetValue(languageKey, out var keyedLocales)
         )
@@ -132,7 +132,7 @@ public class LocaleService(
         var platformLocale = GetPlatformLocale();
         if (platformLocale == null)
         {
-            _logger.Warning("System language not found, falling back to english");
+            logger.Warning("System language not found, falling back to english");
             return "en";
         }
 
@@ -162,7 +162,7 @@ public class LocaleService(
             return "pt-pt";
         }
 
-        _logger.Debug(
+        logger.Debug(
             $"Unsupported system language found: {baseNameCode}, langCode: {languageCode} falling back to english for server locale"
         );
 
@@ -178,11 +178,11 @@ public class LocaleService(
         var platformLocale = GetPlatformLocale();
         if (platformLocale == null)
         {
-            _logger.Warning("System language not found, falling back to english");
+            logger.Warning("System language not found, falling back to english");
             return "en";
         }
 
-        var locales = _databaseServer.GetTables().Locales;
+        var locales = databaseServer.GetTables().Locales;
         var baseNameCode = platformLocale.TwoLetterISOLanguageName.ToLowerInvariant();
         if (locales.Global.ContainsKey(baseNameCode))
         {
@@ -218,7 +218,7 @@ public class LocaleService(
             return "cn";
         }
 
-        _logger.Debug(
+        logger.Debug(
             $"Unsupported system language found: {languageCode} baseLocale: {baseNameCode}, falling back to english for client locale"
         );
         return "en";

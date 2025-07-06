@@ -62,7 +62,7 @@ public class RagfairLinkedItemService(
     /// </summary>
     protected void BuildLinkedItemTable()
     {
-        var linkedItems = new Dictionary<string, HashSet<MongoId>>();
+        var linkedItems = new Dictionary<MongoId, HashSet<MongoId>>();
 
         foreach (var item in databaseService.GetItems().Values)
         {

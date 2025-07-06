@@ -11,9 +11,9 @@ namespace SPTarkov.Server.Core.Services;
 /// </summary>
 [Injectable(InjectionType.Singleton)]
 public class ItemBaseClassService(
-    ISptLogger<ItemBaseClassService> _logger,
-    DatabaseService _databaseService,
-    ServerLocalisationService _serverLocalisationService
+    ISptLogger<ItemBaseClassService> logger,
+    DatabaseService databaseService,
+    ServerLocalisationService serverLocalisationService
 )
 {
     private bool _cacheGenerated;
@@ -28,7 +28,7 @@ public class ItemBaseClassService(
         // Clear existing cache
         _itemBaseClassesCache = new Dictionary<MongoId, HashSet<MongoId>>();
 
-        var items = _databaseService.GetItems();
+        var items = databaseService.GetItems();
         var filteredDbItems = items.Where(x =>
             string.Equals(x.Value.Type, "Item", StringComparison.OrdinalIgnoreCase)
         );
@@ -54,7 +54,7 @@ public class ItemBaseClassService(
     protected void AddBaseItems(MongoId itemIdToUpdate, TemplateItem item)
     {
         _itemBaseClassesCache[itemIdToUpdate].Add(item.Parent);
-        _databaseService.GetItems().TryGetValue(item.Parent, out var parent);
+        databaseService.GetItems().TryGetValue(item.Parent, out var parent);
 
         if (parent is not null && !parent.Parent.IsEmpty())
         {
@@ -77,7 +77,7 @@ public class ItemBaseClassService(
 
         if (itemTpl.IsEmpty())
         {
-            _logger.Warning("Unable to check itemTpl base class as value passed is null");
+            logger.Warning("Unable to check itemTpl base class as value passed is null");
 
             return false;
         }
@@ -94,9 +94,9 @@ public class ItemBaseClassService(
             return baseClassList.Overlaps(baseClasses);
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(_serverLocalisationService.GetText("baseclass-item_not_found", itemTpl));
+            logger.Debug(serverLocalisationService.GetText("baseclass-item_not_found", itemTpl));
         }
 
         // Not found in cache, Hydrate again - some mods add items late
@@ -108,8 +108,8 @@ public class ItemBaseClassService(
             return value.Any(baseClasses.Contains);
         }
 
-        _logger.Warning(
-            _serverLocalisationService.GetText("baseclass-item_not_found_failed", itemTpl)
+        logger.Warning(
+            serverLocalisationService.GetText("baseclass-item_not_found_failed", itemTpl)
         );
 
         return false;
@@ -123,7 +123,7 @@ public class ItemBaseClassService(
     private bool CachedItemIsOfItemType(MongoId itemTemplateId)
     {
         return string.Equals(
-            _databaseService.GetItems()[itemTemplateId]?.Type,
+            databaseService.GetItems()[itemTemplateId]?.Type,
             "Item",
             StringComparison.OrdinalIgnoreCase
         );

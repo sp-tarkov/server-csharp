@@ -899,10 +899,9 @@ public class ItemHelper(
     )
     {
         // Find required items to take after buying (handles multiple items)
-        var desiredBarterIds =
-            desiredBarterItemIds.GetType() == typeof(string)
-                ? [(string)desiredBarterItemIds]
-                : (List<string>)desiredBarterItemIds;
+        var desiredBarterIds = desiredBarterItemIds is MongoId id
+            ? [id]
+            : (List<MongoId>)desiredBarterItemIds;
 
         List<Item> matchingItems = [];
         foreach (var barterId in desiredBarterIds)

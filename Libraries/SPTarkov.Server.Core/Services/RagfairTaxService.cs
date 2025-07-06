@@ -1,6 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
@@ -13,11 +14,11 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairTaxService(
-    ISptLogger<RagfairTaxService> _logger,
-    DatabaseService _databaseService,
-    RagfairPriceService _ragfairPriceService,
-    ItemHelper _itemHelper,
-    ICloner _cloner
+    ISptLogger<RagfairTaxService> logger,
+    DatabaseService databaseService,
+    RagfairPriceService ragfairPriceService,
+    ItemHelper itemHelper,
+    ICloner cloner
 )
 {
     protected readonly Dictionary<
@@ -26,7 +27,7 @@ public class RagfairTaxService(
     > _playerOfferTaxCache = new();
 
     public void StoreClientOfferTaxValue(
-        string sessionId,
+        MongoId sessionId,
         StorePlayerOfferTaxAmountRequestData offer
     )
     {
@@ -73,9 +74,9 @@ public class RagfairTaxService(
             return 0;
         }
 
-        var globals = _databaseService.GetGlobals();
+        var globals = databaseService.GetGlobals();
 
-        var itemTemplate = _itemHelper.GetItem(item.Template).Value;
+        var itemTemplate = itemHelper.GetItem(item.Template).Value;
         var itemWorth = CalculateItemWorth(item, itemTemplate, offerItemCount.Value, pmcData);
         var requirementsPrice = requirementsValue * (sellInOnePiece ? 1 : offerItemCount);
 
@@ -114,7 +115,7 @@ public class RagfairTaxService(
         if (item.Upd.Buff is not null)
         {
             var buffType = item.Upd.Buff.BuffType;
-            var itemEnhancementSettings = _databaseService
+            var itemEnhancementSettings = databaseService
                 .GetGlobals()
                 .Configuration.RepairSettings.ItemEnhancementSettings;
             var priceModiferValue = buffType switch
@@ -138,9 +139,9 @@ public class RagfairTaxService(
 
         var taxValue = Math.Round(discountedTax.Value * itemComissionMult);
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"Tax Calculated to be: {taxValue}");
+            logger.Debug($"Tax Calculated to be: {taxValue}");
         }
 
         return taxValue;
@@ -164,7 +165,7 @@ public class RagfairTaxService(
         bool isRootItem = true
     )
     {
-        var worth = _ragfairPriceService.GetFleaPriceForItem(item.Template);
+        var worth = ragfairPriceService.GetFleaPriceForItem(item.Template);
 
         // In client, all item slots are traversed and any items contained within have their values added
         if (isRootItem)
@@ -173,14 +174,14 @@ public class RagfairTaxService(
             var itemChildren = pmcData.Inventory.Items.FindAndReturnChildrenAsItems(item.Id);
             if (itemChildren.Count > 1)
             {
-                var itemChildrenClone = _cloner.Clone(itemChildren); // Clone is expensive, only run if necessary
+                var itemChildrenClone = cloner.Clone(itemChildren); // Clone is expensive, only run if necessary
                 foreach (var child in itemChildrenClone.Where(child => child.Id != item.Id))
                 {
                     child.Upd ??= new Upd();
 
                     worth += CalculateItemWorth(
                         child,
-                        _itemHelper.GetItem(child.Template).Value,
+                        itemHelper.GetItem(child.Template).Value,
                         (int)(child.Upd.StackObjectsCount ?? 1),
                         pmcData,
                         false
@@ -198,7 +199,7 @@ public class RagfairTaxService(
 
         if (itemTemplate.Properties is null)
         {
-            _logger.Warning(
+            logger.Warning(
                 $"Item: {item.Id} lacks _props and cannot have its worth calculated properly"
             );
 

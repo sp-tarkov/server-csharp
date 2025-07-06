@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Game;
 using SPTarkov.Server.Core.Models.Enums;
@@ -13,15 +14,15 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class RaidTimeAdjustmentService(
-    ISptLogger<RaidTimeAdjustmentService> _logger,
-    DatabaseService _databaseService,
-    RandomUtil _randomUtil,
-    WeightedRandomHelper _weightedRandomHelper,
-    ProfileActivityService _profileActivityService,
-    ConfigServer _configServer
+    ISptLogger<RaidTimeAdjustmentService> logger,
+    DatabaseService databaseService,
+    RandomUtil randomUtil,
+    WeightedRandomHelper weightedRandomHelper,
+    ProfileActivityService profileActivityService,
+    ConfigServer configServer
 )
 {
-    protected readonly LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
+    protected readonly LocationConfig _locationConfig = configServer.GetConfig<LocationConfig>();
 
     /// <summary>
     ///     Make alterations to the base map data passed in
@@ -33,7 +34,7 @@ public class RaidTimeAdjustmentService(
     {
         if (raidAdjustments.DynamicLootPercent < 100 || raidAdjustments.StaticLootPercent < 100)
         {
-            _logger.Debug(
+            logger.Debug(
                 $"Adjusting dynamic loot multipliers to {raidAdjustments.DynamicLootPercent}% and static loot multipliers to {raidAdjustments.StaticLootPercent}% of original"
             );
         }
@@ -64,7 +65,7 @@ public class RaidTimeAdjustmentService(
             var exitToChange = mapBase.Exits.FirstOrDefault(exit => exit.Name == exitChange.Name);
             if (exitToChange is null)
             {
-                _logger.Debug($"Exit with Id: {exitChange.Name} not found, skipping");
+                logger.Debug($"Exit with Id: {exitChange.Name} not found, skipping");
 
                 return;
             }
@@ -105,7 +106,7 @@ public class RaidTimeAdjustmentService(
     {
         foreach (var location in mapLootMultipliers)
         {
-            mapLootMultipliers[location.Key] = _randomUtil.GetPercentOfValue(
+            mapLootMultipliers[location.Key] = randomUtil.GetPercentOfValue(
                 mapLootMultipliers[location.Key],
                 loosePercent ?? 1
             );
@@ -134,7 +135,7 @@ public class RaidTimeAdjustmentService(
             wave.TimeMax -= (int)Math.Max(startSeconds, 0);
         }
 
-        _logger.Debug(
+        logger.Debug(
             $"Removed {originalWaveCount - mapBase.Waves.Count} wave from map due to simulated raid start time of {raidAdjustments.SimulatedRaidStartSeconds / 60} minutes"
         );
     }
@@ -145,10 +146,10 @@ public class RaidTimeAdjustmentService(
     /// <param name="sessionId">Session id</param>
     /// <param name="request">Raid adjustment request</param>
     /// <returns>Response to send to client</returns>
-    public RaidChanges GetRaidAdjustments(string sessionId, GetRaidTimeRequest request)
+    public RaidChanges GetRaidAdjustments(MongoId sessionId, GetRaidTimeRequest request)
     {
-        var globals = _databaseService.GetGlobals();
-        var mapBase = _databaseService.GetLocation(request.Location.ToLowerInvariant()).Base;
+        var globals = databaseService.GetGlobals();
+        var mapBase = databaseService.GetLocation(request.Location.ToLowerInvariant()).Base;
         var baseEscapeTimeMinutes = mapBase.EscapeTimeLimit;
 
         // Prep result object to return
@@ -177,7 +178,7 @@ public class RaidTimeAdjustmentService(
         var mapSettings = GetMapSettings(request.Location);
 
         // Chance of reducing raid time for scav, not guaranteed
-        if (!_randomUtil.GetChance100(mapSettings.ReducedChancePercent))
+        if (!randomUtil.GetChance100(mapSettings.ReducedChancePercent))
         // Send default
         {
             return result;
@@ -185,13 +186,13 @@ public class RaidTimeAdjustmentService(
 
         // Get the weighted percent to reduce the raid time by
         var chosenRaidReductionPercent = int.Parse(
-            _weightedRandomHelper.GetWeightedValue(mapSettings.ReductionPercentWeights)
+            weightedRandomHelper.GetWeightedValue(mapSettings.ReductionPercentWeights)
         );
         var raidTimeRemainingPercent = 100 - chosenRaidReductionPercent;
 
         // How many minutes raid will last
         var newRaidTimeMinutes = Math.Floor(
-            _randomUtil.ReduceValueByPercent(baseEscapeTimeMinutes ?? 1, chosenRaidReductionPercent)
+            randomUtil.ReduceValueByPercent(baseEscapeTimeMinutes ?? 1, chosenRaidReductionPercent)
         );
 
         // Time player spawns into the raid if it was online
@@ -218,7 +219,7 @@ public class RaidTimeAdjustmentService(
             );
         }
 
-        _logger.Debug(
+        logger.Debug(
             $"Reduced: {request.Location} raid time by: {chosenRaidReductionPercent}% to {newRaidTimeMinutes} minutes"
         );
 
@@ -236,7 +237,7 @@ public class RaidTimeAdjustmentService(
         }
 
         // Store state to use in loot generation
-        _profileActivityService.GetProfileActivityRaidData(sessionId).RaidAdjustments = result;
+        profileActivityService.GetProfileActivityRaidData(sessionId).RaidAdjustments = result;
 
         return result;
     }
@@ -248,10 +249,10 @@ public class RaidTimeAdjustmentService(
     /// <returns>ScavRaidTimeLocationSettings</returns>
     protected ScavRaidTimeLocationSettings GetMapSettings(string location)
     {
-        var mapSettings = _locationConfig.ScavRaidTimeSettings.Maps?[location.ToLowerInvariant()];
+        var mapSettings = _locationConfig.ScavRaidTimeSettings.Maps[location.ToLowerInvariant()];
         if (mapSettings is null)
         {
-            _logger.Warning(
+            logger.Warning(
                 $"Unable to find scav raid time settings for map: {location}, using defaults"
             );
             return new ScavRaidTimeLocationSettings();
@@ -325,7 +326,7 @@ public class RaidTimeAdjustmentService(
             {
                 exitChange.Chance = 0;
 
-                _logger.Debug(
+                logger.Debug(
                     $"Train Exit: {exit.Name} disabled as new raid time {newRaidTimeMinutes} minutes is below {mostPossibleTimeRemainingAfterDeparture} minutes"
                 );
 
@@ -338,7 +339,7 @@ public class RaidTimeAdjustmentService(
             exitChange.MinTime = Math.Max(exit.MinTime - reductionSeconds ?? 0, 0);
             exitChange.MaxTime = Math.Max(exit.MaxTime - reductionSeconds ?? 0, 0);
 
-            _logger.Debug(
+            logger.Debug(
                 $"Train appears between: {exitChange.MinTime} and {exitChange.MaxTime} seconds raid time"
             );
 

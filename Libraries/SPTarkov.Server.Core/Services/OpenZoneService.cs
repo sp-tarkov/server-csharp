@@ -10,13 +10,13 @@ namespace SPTarkov.Server.Core.Services;
 /// </summary>
 [Injectable(InjectionType.Singleton)]
 public class OpenZoneService(
-    ISptLogger<OpenZoneService> _logger,
-    DatabaseService _databaseService,
-    ServerLocalisationService _serverLocalisationService,
-    ConfigServer _configServer
+    ISptLogger<OpenZoneService> logger,
+    DatabaseService databaseService,
+    ServerLocalisationService serverLocalisationService,
+    ConfigServer configServer
 )
 {
-    protected readonly LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
+    protected readonly LocationConfig _locationConfig = configServer.GetConfig<LocationConfig>();
 
     /// <summary>
     ///     Add open zone to specified map
@@ -38,13 +38,13 @@ public class OpenZoneService(
     /// </summary>
     public void ApplyZoneChangesToAllMaps()
     {
-        var dbLocations = _databaseService.GetLocations().GetDictionary();
+        var dbLocations = databaseService.GetLocations().GetDictionary();
         foreach (var mapKvP in _locationConfig.OpenZones)
         {
             if (!dbLocations.ContainsKey(mapKvP.Key))
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText("openzone-unable_to_find_map", mapKvP)
+                logger.Error(
+                    serverLocalisationService.GetText("openzone-unable_to_find_map", mapKvP)
                 );
 
                 continue;

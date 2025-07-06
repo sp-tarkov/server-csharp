@@ -97,7 +97,7 @@ public class TraderHelper(
     /// </summary>
     /// <param name="traderId">Trader to get assorts for</param>
     /// <returns>TraderAssort</returns>
-    public TraderAssort GetTraderAssortsByTraderId(string traderId)
+    public TraderAssort GetTraderAssortsByTraderId(MongoId traderId)
     {
         return traderId == Traders.FENCE
             ? _fenceService.GetRawFenceAssorts()
@@ -110,7 +110,7 @@ public class TraderHelper(
     /// <param name="traderId">Trader to get assorts for</param>
     /// <param name="assortId">Id of assort to find</param>
     /// <returns>Item object</returns>
-    public Item? GetTraderAssortItemByAssortId(string traderId, string assortId)
+    public Item? GetTraderAssortItemByAssortId(MongoId traderId, MongoId assortId)
     {
         var traderAssorts = GetTraderAssortsByTraderId(traderId);
         if (traderAssorts is null)

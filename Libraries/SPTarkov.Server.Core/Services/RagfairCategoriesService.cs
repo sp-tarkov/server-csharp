@@ -9,8 +9,8 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairCategoriesService(
-    ISptLogger<RagfairCategoriesService> _logger,
-    PaymentHelper _paymentHelper
+    ISptLogger<RagfairCategoriesService> logger,
+    PaymentHelper paymentHelper
 )
 {
     /// <summary>
@@ -47,7 +47,7 @@ public class RagfairCategoriesService(
                     && searchRequestData.RemoveBartering.GetValueOrDefault(false)
                     && (
                         offer.Requirements.Count > 1
-                        || !_paymentHelper.IsMoneyTpl(offer.Requirements.FirstOrDefault().Template)
+                        || !paymentHelper.IsMoneyTpl(offer.Requirements.FirstOrDefault().Template)
                     )
                 )
                 {

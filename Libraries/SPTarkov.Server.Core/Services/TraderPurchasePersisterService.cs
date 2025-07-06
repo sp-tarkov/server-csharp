@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
@@ -10,15 +11,15 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class TraderPurchasePersisterService(
-    ISptLogger<TraderPurchasePersisterService> _logger,
-    RandomUtil _randomUtil,
-    TimeUtil _timeUtil,
-    ProfileHelper _profileHelper,
-    ServerLocalisationService _serverLocalisationService,
-    ConfigServer _configServer
+    ISptLogger<TraderPurchasePersisterService> logger,
+    RandomUtil randomUtil,
+    TimeUtil timeUtil,
+    ProfileHelper profileHelper,
+    ServerLocalisationService serverLocalisationService,
+    ConfigServer configServer
 )
 {
-    protected readonly TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
+    protected readonly TraderConfig _traderConfig = configServer.GetConfig<TraderConfig>();
 
     /// <summary>
     ///     Get the purchases made from a trader for this profile before the last trader reset
@@ -27,11 +28,11 @@ public class TraderPurchasePersisterService(
     /// <param name="traderId"> Trader to loop up purchases for </param>
     /// <returns> Dictionary of assort id and count purchased </returns>
     public Dictionary<string, TraderPurchaseData>? GetProfileTraderPurchases(
-        string sessionId,
-        string traderId
+        MongoId sessionId,
+        MongoId traderId
     )
     {
-        var profile = _profileHelper.GetFullProfile(sessionId);
+        var profile = profileHelper.GetFullProfile(sessionId);
 
         return profile?.TraderPurchases?.GetValueOrDefault(traderId);
     }
@@ -44,12 +45,12 @@ public class TraderPurchasePersisterService(
     /// <param name="assortId"> ID of assort to get data for </param>
     /// <returns> TraderPurchaseData </returns>
     public TraderPurchaseData? GetProfileTraderPurchase(
-        string sessionId,
-        string traderId,
+        MongoId sessionId,
+        MongoId traderId,
         string assortId
     )
     {
-        var profile = _profileHelper.GetFullProfile(sessionId);
+        var profile = profileHelper.GetFullProfile(sessionId);
 
         if (profile.TraderPurchases is null)
         {
@@ -75,10 +76,10 @@ public class TraderPurchasePersisterService(
     ///     Remove all trader purchase records from all profiles that exist
     /// </summary>
     /// <param name="traderId"> Traders ID </param>
-    public void ResetTraderPurchasesStoredInProfile(string traderId)
+    public void ResetTraderPurchasesStoredInProfile(MongoId traderId)
     {
         // Reset all profiles purchase dictionaries now a trader update has occured;
-        var profiles = _profileHelper.GetProfiles();
+        var profiles = profileHelper.GetProfiles();
         foreach (var profile in profiles)
         {
             // Skip if no purchases
@@ -96,16 +97,16 @@ public class TraderPurchasePersisterService(
             profile.Value.TraderPurchases[traderId] = new Dictionary<string, TraderPurchaseData>();
         }
 
-        _logger.Debug($"Reset trader: {traderId} assort buy limits");
+        logger.Debug($"Reset trader: {traderId} assort buy limits");
     }
 
     /// <summary>
     ///     Iterate over all server profiles and remove specific trader purchase data that has passed the trader refresh time
     /// </summary>
     /// <param name="traderId"> Trader ID </param>
-    public void RemoveStalePurchasesFromProfiles(string traderId)
+    public void RemoveStalePurchasesFromProfiles(MongoId traderId)
     {
-        var profiles = _profileHelper.GetProfiles();
+        var profiles = profileHelper.GetProfiles();
         foreach (var profileKvP in profiles)
         {
             var profile = profileKvP.Value;
@@ -124,8 +125,8 @@ public class TraderPurchasePersisterService(
                 );
                 if (traderUpdateDetails is null)
                 {
-                    _logger.Error(
-                        _serverLocalisationService.GetText(
+                    logger.Error(
+                        serverLocalisationService.GetText(
                             "trader-unable_to_delete_stale_purchases",
                             new { profileId = profile.ProfileInfo.ProfileId, traderId }
                         )
@@ -137,14 +138,14 @@ public class TraderPurchasePersisterService(
                 var purchaseDetails = purchaseKvP.Value;
                 var resetTimeForItem =
                     purchaseDetails.PurchaseTimestamp
-                    + _randomUtil.GetDouble(
+                    + randomUtil.GetDouble(
                         traderUpdateDetails.Seconds.Min,
                         traderUpdateDetails.Seconds.Max
                     );
-                if (resetTimeForItem < _timeUtil.GetTimeStamp())
+                if (resetTimeForItem < timeUtil.GetTimeStamp())
                 {
                     // Item was purchased far enough in past a trader refresh would have occured, remove purchase record from profile
-                    _logger.Debug(
+                    logger.Debug(
                         $"Removed trader: {traderId} purchase: {purchaseKvP} from profile: {profile.ProfileInfo.ProfileId}"
                     );
 

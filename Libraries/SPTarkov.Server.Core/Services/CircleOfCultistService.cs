@@ -32,19 +32,19 @@ public class CircleOfCultistService(
     HashUtil hashUtil,
     ItemHelper itemHelper,
     PresetHelper presetHelper,
-    ProfileHelper _profileHelper,
-    InventoryHelper _inventoryHelper,
-    HideoutHelper _hideoutHelper,
-    QuestHelper _questHelper,
-    DatabaseService _databaseService,
-    ItemFilterService _itemFilterService,
-    SeasonalEventService _seasonalEventService,
+    ProfileHelper profileHelper,
+    InventoryHelper inventoryHelper,
+    HideoutHelper hideoutHelper,
+    QuestHelper questHelper,
+    DatabaseService databaseService,
+    ItemFilterService itemFilterService,
+    SeasonalEventService seasonalEventService,
     ServerLocalisationService localisationService,
-    ConfigServer _configServer
+    ConfigServer configServer
 )
 {
     protected const string CircleOfCultistSlotId = "CircleOfCultistsGrid1";
-    protected readonly HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
+    protected readonly HideoutConfig _hideoutConfig = configServer.GetConfig<HideoutConfig>();
 
     /// <summary>
     ///     Start a sacrifice event
@@ -74,7 +74,7 @@ public class CircleOfCultistService(
         }
 
         // `cultistRecipes` just has single recipeId
-        var cultistCraftData = _databaseService
+        var cultistCraftData = databaseService
             .GetHideout()
             .Production.CultistRecipes.FirstOrDefault();
         var sacrificedItems = GetSacrificedItems(pmcData);
@@ -123,7 +123,7 @@ public class CircleOfCultistService(
         {
             if (item.SlotId == CircleOfCultistSlotId)
             {
-                _inventoryHelper.RemoveItem(pmcData, item.Id, sessionId, output);
+                inventoryHelper.RemoveItem(pmcData, item.Id, sessionId, output);
             }
         }
 
@@ -147,7 +147,7 @@ public class CircleOfCultistService(
         );
 
         // Ensure rewards fit into container
-        var containerGrid = _inventoryHelper.GetContainerSlotMap(cultistStashDbItem.Value.Id);
+        var containerGrid = inventoryHelper.GetContainerSlotMap(cultistStashDbItem.Value.Id);
         AddRewardsToCircleContainer(
             sessionId,
             pmcData,
@@ -204,7 +204,7 @@ public class CircleOfCultistService(
     )
     {
         // Create circle production/craft object to add to player profile
-        var cultistProduction = _hideoutHelper.InitProduction(recipeId, craftingTime, false);
+        var cultistProduction = hideoutHelper.InitProduction(recipeId, craftingTime, false);
 
         // Flag as cultist circle for code to pick up later
         cultistProduction.SptIsCultistCircle = true;
@@ -564,7 +564,7 @@ public class CircleOfCultistService(
             return null;
         }
 
-        var fullProfile = _profileHelper.GetFullProfile(sessionId);
+        var fullProfile = profileHelper.GetFullProfile(sessionId);
         var directRewardHash = GetDirectRewardHashKey(matchingDirectReward);
         if (fullProfile.SptData.CultistRewards?.ContainsKey(directRewardHash) ?? false)
         // Player has already received this direct reward
@@ -630,7 +630,7 @@ public class CircleOfCultistService(
         DirectRewardSettings directReward
     )
     {
-        var fullProfile = _profileHelper.GetFullProfile(sessionId);
+        var fullProfile = profileHelper.GetFullProfile(sessionId);
         var dataToStoreInProfile = new AcceptedCultistReward
         {
             Timestamp = timeUtil.GetTimeStamp(),
@@ -699,20 +699,20 @@ public class CircleOfCultistService(
     )
     {
         var rewardPool = new HashSet<string>();
-        var hideoutDbData = _databaseService.GetHideout();
-        var itemsDb = _databaseService.GetItems();
+        var hideoutDbData = databaseService.GetHideout();
+        var itemsDb = databaseService.GetItems();
 
         // Get all items that match the blacklisted types and fold into item blacklist below
-        var itemTypeBlacklist = _itemFilterService.GetItemRewardBaseTypeBlacklist();
+        var itemTypeBlacklist = itemFilterService.GetItemRewardBaseTypeBlacklist();
         var itemsMatchingTypeBlacklist = itemsDb
             .Where(templateItem => itemHelper.IsOfBaseclasses(templateItem.Key, itemTypeBlacklist))
             .Select(templateItem => templateItem.Key);
 
         // Create set of unique values to ignore
         var itemRewardBlacklist = new HashSet<MongoId>();
-        itemRewardBlacklist.UnionWith(_seasonalEventService.GetInactiveSeasonalEventItems());
-        itemRewardBlacklist.UnionWith(_itemFilterService.GetItemRewardBlacklist());
-        itemRewardBlacklist.UnionWith(_itemFilterService.GetBlacklistedItems());
+        itemRewardBlacklist.UnionWith(seasonalEventService.GetInactiveSeasonalEventItems());
+        itemRewardBlacklist.UnionWith(itemFilterService.GetItemRewardBlacklist());
+        itemRewardBlacklist.UnionWith(itemFilterService.GetBlacklistedItems());
         itemRewardBlacklist.UnionWith(cultistCircleConfig.RewardItemBlacklist);
         itemRewardBlacklist.UnionWith(itemsMatchingTypeBlacklist);
 
@@ -790,7 +790,7 @@ public class CircleOfCultistService(
         var activeTasks = pmcData.Quests.Where(quest => quest.Status == QuestStatusEnum.Started);
         foreach (var task in activeTasks)
         {
-            var questData = _questHelper.GetQuestFromDb(task.QId, pmcData);
+            var questData = questHelper.GetQuestFromDb(task.QId, pmcData);
             var handoverConditions = questData.Conditions.AvailableForFinish.Where(condition =>
                 condition.ConditionType == "HandoverItem"
             );
@@ -875,7 +875,7 @@ public class CircleOfCultistService(
             {
                 if (
                     area.Type == HideoutAreas.ChristmasIllumination
-                    && !_seasonalEventService.ChristmasEventEnabled()
+                    && !seasonalEventService.ChristmasEventEnabled()
                 )
                 // Christmas tree area and not Christmas, skip
                 {
@@ -1018,7 +1018,7 @@ public class CircleOfCultistService(
         var canAddToContainer = false;
         while (!canAddToContainer && rewards.Count > 0)
         {
-            canAddToContainer = _inventoryHelper.CanPlaceItemsInContainer(
+            canAddToContainer = inventoryHelper.CanPlaceItemsInContainer(
                 cloner.Clone(containerGrid), // MUST clone grid before passing in as function modifies grid
                 rewards
             );
@@ -1032,7 +1032,7 @@ public class CircleOfCultistService(
 
         foreach (var itemToAdd in rewards)
         {
-            _inventoryHelper.PlaceItemInContainer(
+            inventoryHelper.PlaceItemInContainer(
                 containerGrid,
                 itemToAdd,
                 cultistCircleStashId,

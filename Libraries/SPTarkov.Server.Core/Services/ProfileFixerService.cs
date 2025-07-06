@@ -18,19 +18,19 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class ProfileFixerService(
-    ISptLogger<ProfileFixerService> _logger,
-    JsonUtil _jsonUtil,
-    RewardHelper _rewardHelper,
-    TraderHelper _traderHelper,
-    HideoutHelper _hideoutHelper,
-    DatabaseService _databaseService,
-    ServerLocalisationService _serverLocalisationService,
-    ConfigServer _configServer,
-    InventoryHelper _inventoryHelper
+    ISptLogger<ProfileFixerService> logger,
+    JsonUtil jsonUtil,
+    RewardHelper rewardHelper,
+    TraderHelper traderHelper,
+    HideoutHelper hideoutHelper,
+    DatabaseService databaseService,
+    ServerLocalisationService serverLocalisationService,
+    ConfigServer configServer,
+    InventoryHelper inventoryHelper
 )
 {
     protected readonly List<string> _areas = ["hideout", "main"];
-    protected readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
 
     /// <summary>
     ///     Find issues in the pmc profile data that may cause issues and fix them
@@ -118,17 +118,17 @@ public class ProfileFixerService(
                 continue;
             }
 
-            _logger.Warning(
+            logger.Warning(
                 $"{mappingKvP.Value.Count - 1} duplicate(s) found for item: {mappingKvP.Key}"
             );
-            var itemAJson = _jsonUtil.Serialize(mappingKvP.Value[0]);
-            var itemBJson = _jsonUtil.Serialize(mappingKvP.Value[1]);
+            var itemAJson = jsonUtil.Serialize(mappingKvP.Value[0]);
+            var itemBJson = jsonUtil.Serialize(mappingKvP.Value[1]);
             if (itemAJson == itemBJson)
             {
                 // Both items match, we can safely delete one (A)
                 var indexOfItemToRemove = pmcProfile.Inventory.Items.IndexOf(mappingKvP.Value[0]);
                 pmcProfile.Inventory.Items.RemoveAt(indexOfItemToRemove);
-                _logger.Warning($"Deleted duplicate item: {mappingKvP.Key}");
+                logger.Warning($"Deleted duplicate item: {mappingKvP.Key}");
             }
             else
             {
@@ -143,7 +143,7 @@ public class ProfileFixerService(
                         x.Id == mappingKvP.Key
                     );
                     itemToAdjust.Id = new MongoId();
-                    _logger.Warning(
+                    logger.Warning(
                         $"Replace duplicate item Id: {mappingKvP.Key} with {itemToAdjust.Id}"
                     );
                 }
@@ -163,14 +163,14 @@ public class ProfileFixerService(
             var regxp = new Regex("[^a-zA-Z0-9 -]");
             if (item.Upd.Tag?.Name is not null && !regxp.IsMatch(item.Upd.Tag.Name))
             {
-                _logger.Warning($"Fixed item: {item.Id}s Tag value, removed invalid characters");
+                logger.Warning($"Fixed item: {item.Id}s Tag value, removed invalid characters");
                 item.Upd.Tag.Name = regxp.Replace(item.Upd.Tag.Name, "");
             }
 
             // Check items with StackObjectsCount (undefined)
             if (item.Upd.StackObjectsCount is null)
             {
-                _logger.Warning(
+                logger.Warning(
                     $"Fixed item: {item.Id}s undefined StackObjectsCount value, now set to 1"
                 );
                 item.Upd.StackObjectsCount = 1;
@@ -178,7 +178,7 @@ public class ProfileFixerService(
         }
 
         // Iterate over clothing
-        var customizationDb = _databaseService.GetTemplates().Customization;
+        var customizationDb = databaseService.GetTemplates().Customization;
         var customizationDbArray = customizationDb.Values;
         var playerIsUsec = string.Equals(
             pmcProfile.Info.Side,
@@ -258,7 +258,7 @@ public class ProfileFixerService(
 
         var taskConditionKeysToRemove = new List<string>();
         var activeRepeatableQuests = GetActiveRepeatableQuests(pmcProfile.RepeatableQuests);
-        var achievements = _databaseService.GetAchievements();
+        var achievements = databaseService.GetAchievements();
 
         // Loop over TaskConditionCounters objects and add once we want to remove to counterKeysToRemove
         foreach (var TaskConditionCounterKvP in pmcProfile.TaskConditionCounters)
@@ -286,9 +286,9 @@ public class ProfileFixerService(
 
         foreach (var counterKeyToRemove in taskConditionKeysToRemove)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Removed: {counterKeyToRemove} TaskConditionCounter object");
+                logger.Debug($"Removed: {counterKeyToRemove} TaskConditionCounter object");
             }
 
             pmcProfile.TaskConditionCounters.Remove(counterKeyToRemove);
@@ -319,7 +319,7 @@ public class ProfileFixerService(
     /// <param name="pmcProfile">Profile to remove dead quests from</param>
     protected void RemoveOrphanedQuests(PmcData pmcProfile)
     {
-        var quests = _databaseService.GetQuests();
+        var quests = databaseService.GetQuests();
         var profileQuests = pmcProfile.Quests;
 
         var activeRepeatableQuests = GetActiveRepeatableQuests(pmcProfile.RepeatableQuests);
@@ -333,7 +333,7 @@ public class ProfileFixerService(
                 )
             )
             {
-                _logger.Info(
+                logger.Info(
                     $"Successfully removed orphaned quest: {profileQuests[i].QId} that doesn't exist in quest data"
                 );
                 profileQuests.RemoveAt(i);
@@ -347,7 +347,7 @@ public class ProfileFixerService(
     /// <param name="pmcProfile">The profile to validate quest productions for</param>
     protected void VerifyQuestProductionUnlocks(PmcData pmcProfile)
     {
-        var quests = _databaseService.GetQuests();
+        var quests = databaseService.GetQuests();
         var profileQuests = pmcProfile.Quests;
 
         foreach (var profileQuest in profileQuests)
@@ -404,15 +404,15 @@ public class ProfileFixerService(
         Quest questDetails
     )
     {
-        var matchingProductions = _rewardHelper.GetRewardProductionMatch(
+        var matchingProductions = rewardHelper.GetRewardProductionMatch(
             productionUnlockReward,
             questDetails.Id
         );
 
         if (matchingProductions.Count != 1)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
+            logger.Error(
+                serverLocalisationService.GetText(
                     "quest-unable_to_find_matching_hideout_production",
                     new
                     {
@@ -431,9 +431,9 @@ public class ProfileFixerService(
         {
             pmcProfile.UnlockedInfo.UnlockedProductionRecipe.Add(matchingProductionId);
 
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(
+                logger.Debug(
                     $"Added production: {matchingProductionId} to unlocked production recipes for: {questDetails.QuestName}"
                 );
             }
@@ -462,7 +462,7 @@ public class ProfileFixerService(
     /// <param name="pmcProfile">profile to add slots to</param>
     protected void AddHideoutEliteSlots(PmcData pmcProfile)
     {
-        var globals = _databaseService.GetGlobals();
+        var globals = databaseService.GetGlobals();
 
         var generator = pmcProfile.Hideout.Areas.FirstOrDefault(area =>
             area.Type == HideoutAreas.Generator
@@ -480,9 +480,9 @@ public class ProfileFixerService(
 
             if (genSlots < 6 + extraGenSlots)
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
+                if (logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(
+                    logger.Debug(
                         "Updating generator area slots to a size of 6 + hideout management skill"
                     );
                 }
@@ -508,9 +508,9 @@ public class ProfileFixerService(
 
         if (waterCollSlots < 1 + extraWaterCollSlots)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(
+                logger.Debug(
                     "Updating water collector area slots to a size of 1 + hideout management skill"
                 );
             }
@@ -535,9 +535,9 @@ public class ProfileFixerService(
 
         if (filterSlots < 3 + extraFilterSlots)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(
+                logger.Debug(
                     "Updating air filter area slots to a size of 3 + hideout management skill"
                 );
             }
@@ -563,9 +563,9 @@ public class ProfileFixerService(
         // BTC Farm doesnt have extra slots for hideout management, but we still check for modded stuff!!
         if (btcFarmSlots < 50 + extraBtcSlots)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(
+                logger.Debug(
                     "Updating bitcoin farm area slots to a size of 50 + hideout management skill"
                 );
             }
@@ -582,9 +582,9 @@ public class ProfileFixerService(
             .Slots.Count;
         if (cultistAreaSlots < 1)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug("Updating cultist area slots to a size of 1");
+                logger.Debug("Updating cultist area slots to a size of 1");
             }
 
             AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.CircleOfCultists, 1, pmcProfile);
@@ -639,9 +639,9 @@ public class ProfileFixerService(
     /// </summary>
     /// <param name="sessionId"> Session ID </param>
     /// <param name="fullProfile"> Profile to check inventory of </param>
-    public void CheckForOrphanedModdedItems(string sessionId, SptProfile fullProfile)
+    public void CheckForOrphanedModdedItems(MongoId sessionId, SptProfile fullProfile)
     {
-        var itemsDb = _databaseService.GetItems();
+        var itemsDb = databaseService.GetItems();
         var pmcProfile = fullProfile.CharacterData.PmcData;
 
         // Get items placed in root of stash
@@ -656,18 +656,18 @@ public class ProfileFixerService(
             {
                 if (!itemsDb.ContainsKey(item.Template))
                 {
-                    _logger.Error(
-                        _serverLocalisationService.GetText("fixer-mod_item_found", item.Template)
+                    logger.Error(
+                        serverLocalisationService.GetText("fixer-mod_item_found", item.Template)
                     );
 
                     if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                     {
-                        _logger.Success(
+                        logger.Success(
                             $"Deleting item from inventory and insurance with id: {item.Id} tpl: {item.Template}"
                         );
 
                         // also deletes from insured array
-                        _inventoryHelper.RemoveItem(pmcProfile, item.Id, sessionId);
+                        inventoryHelper.RemoveItem(pmcProfile, item.Id, sessionId);
                     }
                 }
             }
@@ -732,18 +732,15 @@ public class ProfileFixerService(
                     // Check item exists in itemsDb
                     if (!itemsDb.ContainsKey(item.Template))
                     {
-                        _logger.Error(
-                            _serverLocalisationService.GetText(
-                                "fixer-mod_item_found",
-                                item.Template
-                            )
+                        logger.Error(
+                            serverLocalisationService.GetText("fixer-mod_item_found", item.Template)
                         );
                     }
 
                     if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                     {
                         dialog.Value.Messages.Remove(message);
-                        _logger.Warning(
+                        logger.Warning(
                             $"Item: {item.Template} has resulted in the deletion of message: {message.Id} from dialog {dialog}"
                         );
                     }
@@ -753,7 +750,7 @@ public class ProfileFixerService(
             }
         }
 
-        var clothingDb = _databaseService.GetTemplates().Customization;
+        var clothingDb = databaseService.GetTemplates().Customization;
         foreach (
             var clothingItem in fullProfile.CustomisationUnlocks.Where(customisation =>
                 customisation.Type == CustomisationType.SUITE
@@ -763,14 +760,14 @@ public class ProfileFixerService(
             if (!clothingDb.ContainsKey(clothingItem.Id))
             {
                 // Item in profile not found in db, not good
-                _logger.Error(
-                    _serverLocalisationService.GetText("fixer-clothing_item_found", clothingItem)
+                logger.Error(
+                    serverLocalisationService.GetText("fixer-clothing_item_found", clothingItem)
                 );
 
                 if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                 {
                     fullProfile.CustomisationUnlocks.Remove(clothingItem);
-                    _logger.Warning(
+                    logger.Warning(
                         $"Non-default clothing purchase: {clothingItem} removed from profile"
                     );
                 }
@@ -789,17 +786,17 @@ public class ProfileFixerService(
 
             foreach (var activeQuest in repeatable.ActiveQuests.ToArray())
             {
-                if (!_traderHelper.TraderExists(activeQuest.TraderId))
+                if (!traderHelper.TraderExists(activeQuest.TraderId))
                 {
-                    _logger.Error(
-                        _serverLocalisationService.GetText(
+                    logger.Error(
+                        serverLocalisationService.GetText(
                             "fixer-trader_found",
                             activeQuest.TraderId
                         )
                     );
                     if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                     {
-                        _logger.Warning(
+                        logger.Warning(
                             $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
                         );
                         repeatable.ActiveQuests.Remove(activeQuest);
@@ -823,7 +820,7 @@ public class ProfileFixerService(
                 {
                     if (!itemsDb.ContainsKey(item.Template))
                     {
-                        _logger.Warning(
+                        logger.Warning(
                             $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
                         );
                         repeatable.ActiveQuests.Remove(activeQuest);
@@ -834,16 +831,16 @@ public class ProfileFixerService(
 
         foreach (
             var TraderPurchaseKvP in fullProfile.TraderPurchases.Where(TraderPurchase =>
-                !_traderHelper.TraderExists(TraderPurchase.Key)
+                !traderHelper.TraderExists(TraderPurchase.Key)
             )
         )
         {
-            _logger.Error(
-                _serverLocalisationService.GetText("fixer-trader_found", TraderPurchaseKvP.Key)
+            logger.Error(
+                serverLocalisationService.GetText("fixer-trader_found", TraderPurchaseKvP.Key)
             );
             if (_coreConfig.Fixes.RemoveModItemsFromProfile)
             {
-                _logger.Warning(
+                logger.Warning(
                     $"Non-default trader: {TraderPurchaseKvP.Key} purchase removed from traderPurchases list in profile"
                 );
                 fullProfile.TraderPurchases.Remove(TraderPurchaseKvP.Key);
@@ -873,13 +870,13 @@ public class ProfileFixerService(
                 )
             )
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText("fixer-mod_item_found", item.Template)
+                logger.Error(
+                    serverLocalisationService.GetText("fixer-mod_item_found", item.Template)
                 );
 
                 if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                 {
-                    _logger.Warning(
+                    logger.Warning(
                         $"Item: {item.Template} has resulted in the deletion of {buildType} build: {build.Name}"
                     );
 
@@ -901,13 +898,13 @@ public class ProfileFixerService(
                 )
             )
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText("fixer-mod_item_found", item.Template)
+                logger.Error(
+                    serverLocalisationService.GetText("fixer-mod_item_found", item.Template)
                 );
 
                 if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                 {
-                    _logger.Warning(
+                    logger.Warning(
                         $"Item: {item.Template} has resulted in the deletion of {buildType} build: {build.Name}"
                     );
 
@@ -944,13 +941,13 @@ public class ProfileFixerService(
             // Check item exists in itemsDb
             if (!itemsDb.ContainsKey(item.TemplateId))
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText("fixer-mod_item_found", item.TemplateId)
+                logger.Error(
+                    serverLocalisationService.GetText("fixer-mod_item_found", item.TemplateId)
                 );
 
                 if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                 {
-                    _logger.Warning(
+                    logger.Warning(
                         $"Item: {item.TemplateId} has resulted in the deletion of magazine build: {magazineBuild.Name}"
                     );
 
@@ -1018,10 +1015,10 @@ public class ProfileFixerService(
                     if (profileBonus is null)
                     {
                         // no bonus, add to profile
-                        _logger.Debug(
+                        logger.Debug(
                             $"Profile has level {level} area {profileArea.Type} but no bonus found, adding {bonus.Type}"
                         );
-                        _hideoutHelper.ApplyPlayerUpgradesBonuses(pmcProfile, bonus);
+                        hideoutHelper.ApplyPlayerUpgradesBonuses(pmcProfile, bonus);
                     }
                 }
             }
@@ -1061,12 +1058,12 @@ public class ProfileFixerService(
         foreach (var traderKvP in fullProfile.CharacterData?.PmcData?.TradersInfo)
         {
             var traderId = traderKvP.Key;
-            if (!_traderHelper.TraderExists(traderId))
+            if (!traderHelper.TraderExists(traderId))
             {
-                _logger.Error(_serverLocalisationService.GetText("fixer-trader_found", traderId));
+                logger.Error(serverLocalisationService.GetText("fixer-trader_found", traderId));
                 if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
-                    _logger.Warning(
+                    logger.Warning(
                         $"Non - default trader: {traderId} removed from PMC TradersInfo in: {fullProfile.ProfileInfo?.ProfileId} profile"
                     );
                     fullProfile.CharacterData.PmcData.TradersInfo.Remove(traderId);
@@ -1077,12 +1074,12 @@ public class ProfileFixerService(
         foreach (var traderKvP in fullProfile.CharacterData.ScavData?.TradersInfo)
         {
             var traderId = traderKvP.Key;
-            if (!_traderHelper.TraderExists(traderId))
+            if (!traderHelper.TraderExists(traderId))
             {
-                _logger.Error(_serverLocalisationService.GetText("fixer-trader_found", traderId));
+                logger.Error(serverLocalisationService.GetText("fixer-trader_found", traderId));
                 if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
-                    _logger.Warning(
+                    logger.Warning(
                         $"Non - default trader: {traderId} removed from Scav TradersInfo in: {fullProfile.ProfileInfo?.ProfileId} profile"
                     );
                     fullProfile.CharacterData.ScavData.TradersInfo.Remove(traderId);

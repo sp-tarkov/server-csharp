@@ -18,19 +18,18 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class PaymentService(
-    ISptLogger<PaymentService> _logger,
-    HttpResponseUtil _httpResponseUtil,
-    HandbookHelper _handbookHelper,
-    TraderHelper _traderHelper,
-    ItemHelper _itemHelper,
-    InventoryHelper _inventoryHelper,
-    ServerLocalisationService _serverLocalisationService,
-    PaymentHelper _paymentHelper,
-    ConfigServer _configServer
+    ISptLogger<PaymentService> logger,
+    HttpResponseUtil httpResponseUtil,
+    HandbookHelper handbookHelper,
+    TraderHelper traderHelper,
+    ItemHelper itemHelper,
+    InventoryHelper inventoryHelper,
+    ServerLocalisationService serverLocalisationService,
+    PaymentHelper paymentHelper,
+    ConfigServer configServer
 )
 {
-    protected readonly InventoryConfig _inventoryConfig =
-        _configServer.GetConfig<InventoryConfig>();
+    protected readonly InventoryConfig _inventoryConfig = configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
     ///     Take money and insert items into return to server request
@@ -42,13 +41,13 @@ public class PaymentService(
     public void PayMoney(
         PmcData pmcData,
         ProcessBuyTradeRequestData request,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
         // May need to convert to trader currency
-        var trader = _traderHelper.GetTrader(request.TransactionId, sessionID);
-        var payToTrader = _traderHelper.TraderExists(request.TransactionId);
+        var trader = traderHelper.GetTrader(request.TransactionId, sessionID);
+        var payToTrader = traderHelper.TraderExists(request.TransactionId);
 
         // Track the amounts of each type of currency involved in the trade.
         var currencyAmounts = new Dictionary<string, double?>();
@@ -60,10 +59,10 @@ public class PaymentService(
             var item = pmcData.Inventory.Items.FirstOrDefault(i => i.Id == itemRequest.Id);
             if (item is not null)
             {
-                if (!_paymentHelper.IsMoneyTpl(item.Template))
+                if (!paymentHelper.IsMoneyTpl(item.Template))
                 {
                     // If the item is not money, remove it from the inventory.
-                    _inventoryHelper.RemoveItemByCount(
+                    inventoryHelper.RemoveItemByCount(
                         pmcData,
                         item.Id,
                         (int)itemRequest.Count,
@@ -122,8 +121,8 @@ public class PaymentService(
             if (payToTrader)
             {
                 // Convert the amount to the trader's currency and update the sales sum.
-                var costOfPurchaseInCurrency = _handbookHelper.FromRUB(
-                    _handbookHelper.InRUB(currencyAmount ?? 0, currencyTpl),
+                var costOfPurchaseInCurrency = handbookHelper.FromRUB(
+                    handbookHelper.InRUB(currencyAmount ?? 0, currencyTpl),
                     trader.Currency.Value.GetCurrencyTpl()
                 );
 
@@ -135,10 +134,10 @@ public class PaymentService(
         // If no currency-based payment is involved, handle it separately
         if (totalCurrencyAmount == 0 && payToTrader)
         {
-            _logger.Debug(_serverLocalisationService.GetText("payment-zero_price_no_payment"));
+            logger.Debug(serverLocalisationService.GetText("payment-zero_price_no_payment"));
 
             // Convert the handbook price to the trader's currency and update the sales sum.
-            var costOfPurchaseInCurrency = _handbookHelper.FromRUB(
+            var costOfPurchaseInCurrency = handbookHelper.FromRUB(
                 GetTraderItemHandbookPriceRouble(request.ItemId, request.TransactionId) ?? 0,
                 trader.Currency.Value.GetCurrencyTpl()
             );
@@ -148,12 +147,12 @@ public class PaymentService(
 
         if (payToTrader)
         {
-            _traderHelper.LevelUp(request.TransactionId, pmcData);
+            traderHelper.LevelUp(request.TransactionId, pmcData);
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug("Item(s) taken. Status OK.");
+            logger.Debug("Item(s) taken. Status OK.");
         }
     }
 
@@ -163,9 +162,9 @@ public class PaymentService(
     /// <param name="traderAssortId"> ID of the assort to look up</param>
     /// <param name="traderId"> ID of trader with assort </param>
     /// <returns> Handbook rouble price of the item </returns>
-    private double? GetTraderItemHandbookPriceRouble(string? traderAssortId, string traderId)
+    private double? GetTraderItemHandbookPriceRouble(MongoId traderAssortId, MongoId traderId)
     {
-        var purchasedAssortItem = _traderHelper.GetTraderAssortItemByAssortId(
+        var purchasedAssortItem = traderHelper.GetTraderAssortItemByAssortId(
             traderId,
             traderAssortId
         );
@@ -174,10 +173,10 @@ public class PaymentService(
             return 1;
         }
 
-        var assortItemPriceRouble = _handbookHelper.GetTemplatePrice(purchasedAssortItem.Template);
+        var assortItemPriceRouble = handbookHelper.GetTemplatePrice(purchasedAssortItem.Template);
         if (assortItemPriceRouble == 0)
         {
-            _logger.Debug(
+            logger.Debug(
                 $"No item price found for {purchasedAssortItem.Template} on trader: {traderId} in assort: {traderAssortId}"
             );
 
@@ -200,13 +199,13 @@ public class PaymentService(
         double? amountToSend,
         ProcessSellTradeRequestData request,
         ItemEventRouterResponse output,
-        string sessionID
+        MongoId sessionID
     )
     {
-        var trader = _traderHelper.GetTrader(request.TransactionId, sessionID);
+        var trader = traderHelper.GetTrader(request.TransactionId, sessionID);
         if (trader is null)
         {
-            _logger.Error(
+            logger.Error(
                 $"Unable to add currency to profile as trader: {request.TransactionId} does not exist"
             );
 
@@ -214,14 +213,14 @@ public class PaymentService(
         }
 
         var currencyTpl = trader.Currency.Value.GetCurrencyTpl();
-        var calcAmount = _handbookHelper.FromRUB(
-            _handbookHelper.InRUB(amountToSend ?? 0, currencyTpl),
+        var calcAmount = handbookHelper.FromRUB(
+            handbookHelper.InRUB(amountToSend ?? 0, currencyTpl),
             currencyTpl
         );
-        var currencyMaxStackSize = _itemHelper.GetItem(currencyTpl).Value.Properties?.StackMaxSize;
+        var currencyMaxStackSize = itemHelper.GetItem(currencyTpl).Value.Properties?.StackMaxSize;
         if (currencyMaxStackSize is null)
         {
-            _logger.Error(
+            logger.Error(
                 $"Unable to add currency: {currencyTpl} to profile as it lacks a _props property"
             );
 
@@ -278,7 +277,7 @@ public class PaymentService(
         };
 
         // Ensure money is properly split to follow its max stack size limit
-        var rewards = _itemHelper.SplitStackIntoSeparateItems(rootCurrencyReward);
+        var rewards = itemHelper.SplitStackIntoSeparateItems(rootCurrencyReward);
 
         if (!skipSendingMoneyToStash)
         {
@@ -289,14 +288,14 @@ public class PaymentService(
                 Callback = null,
                 UseSortingTable = true,
             };
-            _inventoryHelper.AddItemsToStash(sessionID, addItemToStashRequest, pmcData, output);
+            inventoryHelper.AddItemsToStash(sessionID, addItemToStashRequest, pmcData, output);
         }
 
         // Calcualte new total sale sum with trader item sold to
         var saleSum = pmcData.TradersInfo[request.TransactionId].SalesSum + amountToSend;
 
         pmcData.TradersInfo[request.TransactionId].SalesSum = saleSum;
-        _traderHelper.LevelUp(request.TransactionId, pmcData);
+        traderHelper.LevelUp(request.TransactionId, pmcData);
     }
 
     /// <summary>
@@ -309,16 +308,16 @@ public class PaymentService(
     /// <param name="output"> Client response </param>
     public void AddPaymentToOutput(
         PmcData pmcData,
-        string currencyTpl,
+        MongoId currencyTpl,
         double amountToPay,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
         var moneyItemsInInventory = GetSortedMoneyItemsInInventory(
             pmcData,
             currencyTpl,
-            pmcData.Inventory.Stash
+            pmcData.Inventory.Stash.Value
         );
 
         //Ensure all money items found have a upd
@@ -335,15 +334,15 @@ public class PaymentService(
         // If no money in inventory or amount is not enough we return false
         if (moneyItemsInInventory.Count <= 0 || amountAvailable < amountToPay)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
+            logger.Error(
+                serverLocalisationService.GetText(
                     "payment-not_enough_money_to_complete_transation", // Typo, needs locale updated if fixed
                     new { amountToPay, amountAvailable }
                 )
             );
-            _httpResponseUtil.AppendErrorToOutput(
+            httpResponseUtil.AppendErrorToOutput(
                 output,
-                _serverLocalisationService.GetText(
+                serverLocalisationService.GetText(
                     "payment-not_enough_money_to_complete_transation_short",
                     amountToPay
                 ), // Typo, needs locale updated if fixed
@@ -360,7 +359,7 @@ public class PaymentService(
             if (leftToPay >= itemAmount)
             {
                 leftToPay -= itemAmount ?? 0;
-                _inventoryHelper.RemoveItem(pmcData, profileMoneyItem.Id, sessionID, output);
+                inventoryHelper.RemoveItem(pmcData, profileMoneyItem.Id, sessionID, output);
             }
             else
             {
@@ -388,19 +387,19 @@ public class PaymentService(
     // TODO - ensure money in containers inside secure container are LAST
     protected List<Item> GetSortedMoneyItemsInInventory(
         PmcData pmcData,
-        string currencyTpl,
-        string playerStashId
+        MongoId currencyTpl,
+        MongoId playerStashId
     )
     {
         // Get money stacks player has
-        var moneyItemsInInventory = _itemHelper.FindBarterItems(
+        var moneyItemsInInventory = itemHelper.FindBarterItems(
             "tpl",
             pmcData.Inventory.Items,
             currencyTpl
         );
         if (moneyItemsInInventory.Count == 0)
         {
-            _logger.Debug($"No {currencyTpl} money items found in inventory");
+            logger.Debug($"No {currencyTpl} money items found in inventory");
 
             return moneyItemsInInventory;
         }
@@ -432,12 +431,12 @@ public class PaymentService(
     /// <param name="items">Inventory items to check</param>
     /// <param name="playerStashId">Id of players stash</param>
     /// <returns>Dictionary</returns>
-    protected IReadOnlyDictionary<string, InventoryLocation> GetItemInStashCache(
+    protected IReadOnlyDictionary<MongoId, InventoryLocation> GetItemInStashCache(
         List<Item> items,
-        string playerStashId
+        MongoId playerStashId
     )
     {
-        var itemsInStashCache = new Dictionary<string, InventoryLocation>();
+        var itemsInStashCache = new Dictionary<MongoId, InventoryLocation>();
         foreach (var inventoryItem in items)
         {
             itemsInStashCache.TryAdd(
@@ -464,7 +463,7 @@ public class PaymentService(
         Item a,
         Item b,
         List<Item> inventoryItems,
-        IReadOnlyDictionary<string, InventoryLocation> itemInStashCache
+        IReadOnlyDictionary<MongoId, InventoryLocation> itemInStashCache
     )
     {
         // Get the location of A and B
@@ -592,7 +591,7 @@ public class PaymentService(
     protected InventoryLocation GetItemLocation(
         MongoId itemId,
         List<Item> inventoryItems,
-        string playerStashId
+        MongoId playerStashId
     )
     {
         var inventoryItem = inventoryItems.FirstOrDefault(item => item.Id == itemId);

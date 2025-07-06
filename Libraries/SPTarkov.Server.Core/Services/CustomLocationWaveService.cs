@@ -9,12 +9,12 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class CustomLocationWaveService(
-    ISptLogger<CustomLocationWaveService> _logger,
-    DatabaseService _databaseService,
-    ConfigServer _configServer
+    ISptLogger<CustomLocationWaveService> logger,
+    DatabaseService databaseService,
+    ConfigServer configServer
 )
 {
-    protected readonly LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
+    protected readonly LocationConfig _locationConfig = configServer.GetConfig<LocationConfig>();
 
     /// <summary>
     ///     Add a boss wave to a map
@@ -64,10 +64,10 @@ public class CustomLocationWaveService(
 
         foreach (var mapKvP in bossWavesToApply)
         {
-            var locationBase = _databaseService.GetLocation(mapKvP.Key).Base;
+            var locationBase = databaseService.GetLocation(mapKvP.Key).Base;
             if (locationBase is null)
             {
-                _logger.Warning(
+                logger.Warning(
                     $"Unable to add custom boss wave to location: {mapKvP}, location not found"
                 );
 
@@ -83,9 +83,9 @@ public class CustomLocationWaveService(
                 }
 
                 locationBase.BossLocationSpawn.Add(bossWave);
-                if (_logger.IsLogEnabled(LogLevel.Debug))
+                if (logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(
+                    logger.Debug(
                         $"Added custom boss wave to {mapKvP.Key} of type {bossWave.BossName}, time: {bossWave.Time}, chance: {bossWave.BossChance}, zone: {(string.IsNullOrEmpty(bossWave.BossZone) ? "Global" : bossWave.BossZone)}"
                     );
                 }
@@ -94,10 +94,10 @@ public class CustomLocationWaveService(
 
         foreach (var mapKvP in normalWavesToApply)
         {
-            var locationBase = _databaseService.GetLocation(mapKvP.Key).Base;
+            var locationBase = databaseService.GetLocation(mapKvP.Key).Base;
             if (locationBase is null)
             {
-                _logger.Warning(
+                logger.Warning(
                     $"Unable to add custom wave to location: {mapKvP}, location not found"
                 );
 

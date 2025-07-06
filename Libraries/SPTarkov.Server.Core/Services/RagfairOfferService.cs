@@ -102,7 +102,7 @@ public class RagfairOfferService(
     /// Remove all offers from ragfair made by trader
     /// </summary>
     /// <param name="traderId">Trader to remove offers for</param>
-    public void RemoveAllOffersByTrader(string traderId)
+    public void RemoveAllOffersByTrader(MongoId traderId)
     {
         ragfairOfferHolder.RemoveAllOffersByTrader(traderId);
     }
@@ -112,7 +112,7 @@ public class RagfairOfferService(
     /// </summary>
     /// <param name="traderID"> Trader to check </param>
     /// <returns> True if they do </returns>
-    public bool TraderOffersNeedRefreshing(string traderID)
+    public bool TraderOffersNeedRefreshing(MongoId traderID)
     {
         var trader = databaseService.GetTrader(traderID);
         if (trader?.Base == null)
@@ -175,7 +175,7 @@ public class RagfairOfferService(
     /// </summary>
     /// <param name="staleOfferId"> Stale offer id to process </param>
     /// <param name="flagOfferAsExpired">OPTIONAL - Flag the passed in offer as expired default = true</param>
-    protected void ProcessStaleOffer(string staleOfferId, bool flagOfferAsExpired = true)
+    protected void ProcessStaleOffer(MongoId staleOfferId, bool flagOfferAsExpired = true)
     {
         var staleOffer = ragfairOfferHolder.GetOfferById(staleOfferId);
         if (staleOffer is null)

@@ -11,39 +11,39 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class PostDbLoadService(
-    ISptLogger<PostDbLoadService> _logger,
-    DatabaseService _databaseService,
-    ServerLocalisationService _serverLocalisationService,
-    SeasonalEventService _seasonalEventService,
-    CustomLocationWaveService _customLocationWaveService,
-    OpenZoneService _openZoneService,
-    ItemBaseClassService _itemBaseClassService,
-    RaidWeatherService _raidWeatherService,
-    ConfigServer _configServer,
-    ICloner _cloner
+    ISptLogger<PostDbLoadService> logger,
+    DatabaseService databaseService,
+    ServerLocalisationService serverLocalisationService,
+    SeasonalEventService seasonalEventService,
+    CustomLocationWaveService customLocationWaveService,
+    OpenZoneService openZoneService,
+    ItemBaseClassService itemBaseClassService,
+    RaidWeatherService raidWeatherService,
+    ConfigServer configServer,
+    ICloner cloner
 )
 {
-    protected readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
-    protected readonly HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
-    protected readonly ItemConfig _itemConfig = _configServer.GetConfig<ItemConfig>();
-    protected readonly LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
-    protected readonly LootConfig _lootConfig = _configServer.GetConfig<LootConfig>();
-    protected readonly PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
-    protected readonly RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
+    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
+    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
+    protected readonly HideoutConfig _hideoutConfig = configServer.GetConfig<HideoutConfig>();
+    protected readonly ItemConfig _itemConfig = configServer.GetConfig<ItemConfig>();
+    protected readonly LocationConfig _locationConfig = configServer.GetConfig<LocationConfig>();
+    protected readonly LootConfig _lootConfig = configServer.GetConfig<LootConfig>();
+    protected readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
+    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
     public void PerformPostDbLoadActions()
     {
         // Regenerate base cache now mods are loaded and game is starting
         // Mods that add items and use the baseClass service generate the cache including their items, the next mod that
         // add items gets left out,causing warnings
-        _itemBaseClassService.HydrateItemBaseClassCache();
+        itemBaseClassService.HydrateItemBaseClassCache();
 
         // Validate that only mongoIds exist in items, quests, and traders
         // Kill the startup if not.
         // TODO: We can probably remove this in a couple versions
-        _databaseService.ValidateDatabase();
-        if (!_databaseService.IsDatabaseValid())
+        databaseService.ValidateDatabase();
+        if (!databaseService.IsDatabaseValid())
         {
             throw new Exception("Server start failure, database invalid");
         }
@@ -61,7 +61,7 @@ public class PostDbLoadService(
 
         if (_locationConfig.AddOpenZonesToAllMaps)
         {
-            _openZoneService.ApplyZoneChangesToAllMaps();
+            openZoneService.ApplyZoneChangesToAllMaps();
         }
 
         if (_pmcConfig.RemoveExistingPmcWaves.GetValueOrDefault(false))
@@ -71,7 +71,7 @@ public class PostDbLoadService(
 
         if (_locationConfig.AddCustomBotWavesToMaps)
         {
-            _customLocationWaveService.ApplyWaveChangesToAllMaps();
+            customLocationWaveService.ApplyWaveChangesToAllMaps();
         }
 
         if (_locationConfig.EnableBotTypeLimits)
@@ -105,10 +105,10 @@ public class PostDbLoadService(
 
         ValidateQuestAssortUnlocksExist();
 
-        if (_seasonalEventService.IsAutomaticEventDetectionEnabled())
+        if (seasonalEventService.IsAutomaticEventDetectionEnabled())
         {
-            _seasonalEventService.CacheActiveEvents();
-            _seasonalEventService.EnableSeasonalEvents();
+            seasonalEventService.CacheActiveEvents();
+            seasonalEventService.EnableSeasonalEvents();
         }
 
         // Flea bsg blacklist is off
@@ -123,8 +123,8 @@ public class PostDbLoadService(
 
         AddCustomItemPresetsToGlobals();
 
-        var currentSeason = _seasonalEventService.GetActiveWeatherSeason();
-        _raidWeatherService.GenerateWeather(currentSeason);
+        var currentSeason = seasonalEventService.GetActiveWeatherSeason();
+        raidWeatherService.GenerateWeather(currentSeason);
 
         if (_botConfig.WeeklyBoss.Enabled)
         {
@@ -165,7 +165,7 @@ public class PostDbLoadService(
     protected void FlagMapAsGuaranteedBoss(WildSpawnType boss)
     {
         // Get the corresponding map for the provided boss
-        var locations = _databaseService.GetLocations();
+        var locations = databaseService.GetLocations();
         Location? location;
         switch (boss)
         {
@@ -191,7 +191,7 @@ public class PostDbLoadService(
                 location = locations.Lighthouse;
                 break;
             default:
-                _logger.Warning($"Unknown boss type: {boss}. Unable to set as weekly. Skipping");
+                logger.Warning($"Unknown boss type: {boss}. Unable to set as weekly. Skipping");
                 return;
         }
 
@@ -200,11 +200,11 @@ public class PostDbLoadService(
         );
         if (bossSpawn is null)
         {
-            _logger.Warning($"Boss: {boss} not found on map, unable to set as weekly. Skipping");
+            logger.Warning($"Boss: {boss} not found on map, unable to set as weekly. Skipping");
             return;
         }
 
-        _logger.Debug($"{boss} is boss of the week");
+        logger.Debug($"{boss} is boss of the week");
         bossSpawn.BossChance = 100;
         bossSpawn.ShowOnTarkovMap = true;
         bossSpawn.ShowOnTarkovMapPvE = true;
@@ -212,13 +212,13 @@ public class PostDbLoadService(
 
     private void MergeCustomHideoutAreas()
     {
-        var hideout = _databaseService.GetHideout();
+        var hideout = databaseService.GetHideout();
         foreach (var customArea in hideout.CustomAreas)
         {
             // Check if exists
             if (hideout.Areas!.Exists(area => area.Id == customArea.Id))
             {
-                _logger.Warning(
+                logger.Warning(
                     $"Unable to add new hideout area with Id: {customArea.Id} as ID is already in use, skipping"
                 );
 
@@ -234,12 +234,12 @@ public class PostDbLoadService(
     /// </summary>
     protected void MergeCustomAchievements()
     {
-        var achievements = _databaseService.GetAchievements();
-        foreach (var customAchievement in _databaseService.GetCustomAchievements())
+        var achievements = databaseService.GetAchievements();
+        foreach (var customAchievement in databaseService.GetCustomAchievements())
         {
             if (achievements.Exists(a => a.Id == customAchievement.Id))
             {
-                _logger.Debug(
+                logger.Debug(
                     $"Unable to add custom achievement as id: {customAchievement.Id} already exists"
                 );
                 continue;
@@ -251,7 +251,7 @@ public class PostDbLoadService(
 
     private void RemoveNewBeginningRequirementFromPrestige()
     {
-        var prestigeDb = _databaseService.GetTemplates().Prestige;
+        var prestigeDb = databaseService.GetTemplates().Prestige;
         var newBeginningQuestId = new HashSet<string>
         {
             "6761f28a022f60bb320f3e95",
@@ -277,7 +277,7 @@ public class PostDbLoadService(
 
     private void RemovePraporTestMessage()
     {
-        foreach ((var locale, var lazyLoad) in _databaseService.GetLocales().Global)
+        foreach ((var locale, var lazyLoad) in databaseService.GetLocales().Global)
         {
             lazyLoad.AddTransformer(lazyloadedData =>
             {
@@ -290,16 +290,16 @@ public class PostDbLoadService(
 
     protected void CloneExistingCraftsAndAddNew()
     {
-        var hideoutCraftDb = _databaseService.GetHideout().Production;
+        var hideoutCraftDb = databaseService.GetHideout().Production;
         var craftsToAdd = _hideoutConfig.HideoutCraftsToAdd;
         foreach (var craftToAdd in craftsToAdd)
         {
-            var clonedCraft = _cloner.Clone(
+            var clonedCraft = cloner.Clone(
                 hideoutCraftDb.Recipes.FirstOrDefault(x => x.Id == craftToAdd.CraftIdToCopy)
             );
             if (clonedCraft is null)
             {
-                _logger.Warning(
+                logger.Warning(
                     $"Unable to find hideout craft: {craftToAdd.CraftIdToCopy}, skipping"
                 );
 
@@ -317,7 +317,7 @@ public class PostDbLoadService(
     protected void AdjustMinReserveRaiderSpawnChance()
     {
         // Get reserve base.json
-        var reserveBase = _databaseService.GetLocation(ELocationName.RezervBase.ToString()).Base;
+        var reserveBase = databaseService.GetLocation(ELocationName.RezervBase.ToString()).Base;
 
         // Raiders are bosses, get only those from boss spawn array
         foreach (
@@ -351,8 +351,8 @@ public class PostDbLoadService(
         {
             if (mapId is null)
             {
-                _logger.Warning(
-                    _serverLocalisationService.GetText(
+                logger.Warning(
+                    serverLocalisationService.GetText(
                         "location-unable_to_add_custom_loot_position",
                         mapId
                     )
@@ -361,14 +361,14 @@ public class PostDbLoadService(
                 continue;
             }
 
-            _databaseService
+            databaseService
                 .GetLocation(mapId)
                 .LooseLoot.AddTransformer(looselootData =>
                 {
                     if (looselootData is null)
                     {
-                        _logger.Warning(
-                            _serverLocalisationService.GetText(
+                        logger.Warning(
+                            serverLocalisationService.GetText(
                                 "location-map_has_no_loose_loot_data",
                                 mapId
                             )
@@ -408,7 +408,7 @@ public class PostDbLoadService(
     // BSG have two values for shotgun dispersion, we make sure both have the same value
     protected void FixShotgunDispersions()
     {
-        var itemDb = _databaseService.GetItems();
+        var itemDb = databaseService.GetItems();
 
         var shotguns = new List<string>
         {
@@ -430,7 +430,7 @@ public class PostDbLoadService(
 
     protected void RemoveExistingPmcWaves()
     {
-        var locations = _databaseService.GetLocations().GetDictionary();
+        var locations = databaseService.GetLocations().GetDictionary();
 
         var pmcTypes = new HashSet<string> { "pmcUSEC", "pmcBEAR" };
         foreach (var locationkvP in locations)
@@ -453,7 +453,7 @@ public class PostDbLoadService(
     /// </summary>
     protected void AdjustMapBotLimits()
     {
-        var mapsDb = _databaseService.GetLocations().GetDictionary();
+        var mapsDb = databaseService.GetLocations().GetDictionary();
         if (_locationConfig.BotTypeLimits is null)
         {
             return;
@@ -463,8 +463,8 @@ public class PostDbLoadService(
         {
             if (!mapsDb.TryGetValue(mapId, out var map))
             {
-                _logger.Warning(
-                    _serverLocalisationService.GetText(
+                logger.Warning(
+                    serverLocalisationService.GetText(
                         "bot-unable_to_edit_limits_of_unknown_map",
                         mapId
                     )
@@ -509,14 +509,14 @@ public class PostDbLoadService(
 
         foreach (var (mapId, mapAdjustments) in _lootConfig.LooseLootSpawnPointAdjustments)
         {
-            _databaseService
+            databaseService
                 .GetLocation(mapId)
                 .LooseLoot.AddTransformer(looselootData =>
                 {
                     if (looselootData is null)
                     {
-                        _logger.Warning(
-                            _serverLocalisationService.GetText(
+                        logger.Warning(
+                            serverLocalisationService.GetText(
                                 "location-map_has_no_loose_loot_data",
                                 mapId
                             )
@@ -532,8 +532,8 @@ public class PostDbLoadService(
                         );
                         if (lootPostionToAdjust is null)
                         {
-                            _logger.Warning(
-                                _serverLocalisationService.GetText(
+                            logger.Warning(
+                                serverLocalisationService.GetText(
                                     "location-unable_to_adjust_loot_position_on_map",
                                     new { lootKey, mapId }
                                 )
@@ -552,7 +552,7 @@ public class PostDbLoadService(
 
     protected void AdjustLocationBotValues()
     {
-        var mapsDb = _databaseService.GetLocations();
+        var mapsDb = databaseService.GetLocations();
         var mapsDict = mapsDb.GetDictionary();
         foreach (var (key, cap) in _botConfig.MaxBotCap)
         {
@@ -578,7 +578,7 @@ public class PostDbLoadService(
         var rogueSpawnDelaySeconds = _locationConfig
             .RogueLighthouseSpawnTimeSettings
             .WaitTimeSeconds;
-        var lighthouse = _databaseService.GetLocations().Lighthouse?.Base;
+        var lighthouse = databaseService.GetLocations().Lighthouse?.Base;
         if (lighthouse is null)
         // Just in case they remove this cursed map
         {
@@ -600,7 +600,7 @@ public class PostDbLoadService(
     /// </summary>
     protected void AdjustLabsRaiderSpawnRate()
     {
-        var labsBase = _databaseService.GetLocations().Laboratory.Base;
+        var labsBase = databaseService.GetLocations().Laboratory.Base;
 
         // Find spawns with empty string for triggerId/TriggerName
         var nonTriggerLabsBossSpawns = labsBase.BossLocationSpawn.Where(bossSpawn =>
@@ -621,7 +621,7 @@ public class PostDbLoadService(
             return;
         }
 
-        foreach (var craft in _databaseService.GetHideout().Production.Recipes)
+        foreach (var craft in databaseService.GetHideout().Production.Recipes)
         // Only adjust crafts ABOVE the override
         {
             craft.ProductionTime = Math.Min(craft.ProductionTime.Value, overrideSeconds);
@@ -639,7 +639,7 @@ public class PostDbLoadService(
             return;
         }
 
-        foreach (var area in _databaseService.GetHideout().Areas)
+        foreach (var area in databaseService.GetHideout().Areas)
         foreach (var (_, stage) in area.Stages)
         // Only adjust crafts ABOVE the override
         {
@@ -658,7 +658,7 @@ public class PostDbLoadService(
 
         foreach (var craftId in hideoutLootBoxCraftIds)
         {
-            var recipe = _databaseService
+            var recipe = databaseService
                 .GetHideout()
                 .Production.Recipes.FirstOrDefault(craft => craft.Id == craftId);
             if (recipe is not null)
@@ -673,7 +673,7 @@ public class PostDbLoadService(
     /// </summary>
     protected void ValidateQuestAssortUnlocksExist()
     {
-        var db = _databaseService.GetTables();
+        var db = databaseService.GetTables();
         var traders = db.Traders;
         var quests = db.Templates.Quests;
         foreach (var (traderId, traderData) in traders)
@@ -704,8 +704,8 @@ public class PostDbLoadService(
                         traderName = traderId,
                         questName = quests[questKey]?.QuestName ?? "UNKNOWN",
                     };
-                    _logger.Warning(
-                        _serverLocalisationService.GetText(
+                    logger.Warning(
+                        serverLocalisationService.GetText(
                             "assort-missing_quest_assort_unlock",
                             messageValues
                         )
@@ -717,7 +717,7 @@ public class PostDbLoadService(
 
     protected void SetAllDbItemsAsSellableOnFlea()
     {
-        var dbItems = _databaseService.GetItems().Values.ToList();
+        var dbItems = databaseService.GetItems().Values.ToList();
         foreach (
             var item in dbItems.Where(item =>
                 string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)
@@ -732,7 +732,7 @@ public class PostDbLoadService(
 
     protected void AddMissingTraderBuyRestrictionMaxValue()
     {
-        var restrictions = _databaseService
+        var restrictions = databaseService
             .GetGlobals()
             .Configuration.TradingSettings.BuyRestrictionMaxBonus;
         restrictions["unheard_edition"] = new BuyRestrictionMaxBonus
@@ -743,7 +743,7 @@ public class PostDbLoadService(
 
     protected void ApplyFleaPriceOverrides()
     {
-        var fleaPrices = _databaseService.GetPrices();
+        var fleaPrices = databaseService.GetPrices();
         foreach (var (itemTpl, price) in _ragfairConfig.Dynamic.ItemPriceOverrideRouble)
         {
             fleaPrices[itemTpl] = price;
@@ -754,15 +754,15 @@ public class PostDbLoadService(
     {
         foreach (var presetToAdd in _itemConfig.CustomItemGlobalPresets)
         {
-            if (_databaseService.GetGlobals().ItemPresets.ContainsKey(presetToAdd.Id))
+            if (databaseService.GetGlobals().ItemPresets.ContainsKey(presetToAdd.Id))
             {
-                _logger.Warning(
+                logger.Warning(
                     $"Global ItemPreset with Id of: {presetToAdd.Id} already exists, unable to overwrite"
                 );
                 continue;
             }
 
-            _databaseService.GetGlobals().ItemPresets.TryAdd(presetToAdd.Id, presetToAdd);
+            databaseService.GetGlobals().ItemPresets.TryAdd(presetToAdd.Id, presetToAdd);
         }
     }
 }
