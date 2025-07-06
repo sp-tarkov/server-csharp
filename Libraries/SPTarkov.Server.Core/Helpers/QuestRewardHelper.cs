@@ -1,6 +1,7 @@
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -13,13 +14,13 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class QuestRewardHelper(
-    ISptLogger<QuestRewardHelper> _logger,
-    PaymentHelper _paymentHelper,
-    DatabaseService _databaseService,
-    ProfileHelper _profileHelper,
-    RewardHelper _rewardHelper,
-    ServerLocalisationService _serverLocalisationService,
-    ICloner _cloner
+    ISptLogger<QuestRewardHelper> logger,
+    PaymentHelper paymentHelper,
+    DatabaseService databaseService,
+    ProfileHelper profileHelper,
+    RewardHelper rewardHelper,
+    ServerLocalisationService serverLocalisationService,
+    ICloner cloner
 )
 {
     /// <summary>
@@ -27,7 +28,7 @@ public class QuestRewardHelper(
     /// Value can be modified by modders by overriding this value with new traders.
     /// Ensure to add Lightkeeper's ID (638f541a29ffd1183d187f57) and BTR Driver's ID (656f0f98d80a697f855d34b1)
     /// </summary>
-    protected readonly string[] InGameTraders = [Traders.LIGHTHOUSEKEEPER, Traders.BTR];
+    protected readonly MongoId[] InGameTraders = [Traders.LIGHTHOUSEKEEPER, Traders.BTR];
 
     /// <summary>
     /// Give player quest rewards - Skills/exp/trader standing/items/assort unlocks - Returns reward items player earned
@@ -41,19 +42,19 @@ public class QuestRewardHelper(
     /// <returns>Array of reward items player was given</returns>
     public IEnumerable<Item> ApplyQuestReward(
         PmcData profileData,
-        string questId,
+        MongoId questId,
         QuestStatusEnum state,
-        string sessionId,
+        MongoId sessionId,
         ItemEventRouterResponse questResponse
     )
     {
         // Repeatable quest base data is always in PMCProfile, `profileData` may be scav profile
         // TODO: Move repeatable quest data to profile-agnostic location
-        var fullProfile = _profileHelper.GetFullProfile(sessionId);
+        var fullProfile = profileHelper.GetFullProfile(sessionId);
         var pmcProfile = fullProfile.CharacterData.PmcData;
         if (pmcProfile is null)
         {
-            _logger.Error($"Unable to get pmc profile for: {sessionId}, no rewards given");
+            logger.Error($"Unable to get pmc profile for: {sessionId}, no rewards given");
 
             return [];
         }
@@ -61,8 +62,8 @@ public class QuestRewardHelper(
         var questDetails = GetQuestFromDb(questId, pmcProfile);
         if (questDetails is null)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
+            logger.Warning(
+                serverLocalisationService.GetText(
                     "quest-unable_to_find_quest_in_db_no_quest_rewards",
                     questId
                 )
@@ -74,7 +75,7 @@ public class QuestRewardHelper(
         if (IsInGameTrader(questDetails))
         {
             // Assuming in-game traders give ALL rewards
-            _logger.Debug(
+            logger.Debug(
                 $"Skipping quest rewards for quest: {questDetails.Id}, trader: {questDetails.TraderId} in InGameRewardTrader list"
             );
 
@@ -89,7 +90,7 @@ public class QuestRewardHelper(
 
         // e.g. 'Success' or 'AvailableForFinish'
         var rewards = questDetails.Rewards.GetByJsonProp<List<Reward>>(state.ToString());
-        return _rewardHelper.ApplyRewards(
+        return rewardHelper.ApplyRewards(
             rewards,
             CustomisationSource.UNLOCKED_IN_GAME,
             fullProfile,
@@ -115,10 +116,10 @@ public class QuestRewardHelper(
     /// <param name="questId">Id of quest to find</param>
     /// <param name="pmcData">Player profile</param>
     /// <returns>IQuest object</returns>
-    protected Quest? GetQuestFromDb(string questId, PmcData pmcData)
+    protected Quest? GetQuestFromDb(MongoId questId, PmcData pmcData)
     {
         // Look for quest in db
-        if (_databaseService.GetQuests().TryGetValue(questId, out var quest))
+        if (databaseService.GetQuests().TryGetValue(questId, out var quest))
         {
             return quest;
         }
@@ -170,7 +171,7 @@ public class QuestRewardHelper(
     /// <returns>Updated quest</returns>
     public Quest ApplyMoneyBoost(Quest quest, double bonusPercent, QuestStatusEnum questStatus)
     {
-        var clonedQuest = _cloner.Clone(quest);
+        var clonedQuest = cloner.Clone(quest);
         if (clonedQuest?.Rewards?.Success == null)
         {
             return clonedQuest;
@@ -181,7 +182,7 @@ public class QuestRewardHelper(
             reward.Type == RewardType.Item
             && reward.Items != null
             && reward.Items.Count > 0
-            && _paymentHelper.IsMoneyTpl(reward.Items.FirstOrDefault().Template)
+            && paymentHelper.IsMoneyTpl(reward.Items.FirstOrDefault().Template)
         );
 
         foreach (var moneyReward in moneyRewards)
@@ -190,7 +191,7 @@ public class QuestRewardHelper(
             var rewardItem = moneyReward.Items?.FirstOrDefault();
             if (rewardItem is null)
             {
-                _logger.Error(
+                logger.Error(
                     $"Unable to apply money reward bonus to quest: {quest.Name} as no money item found"
                 );
 

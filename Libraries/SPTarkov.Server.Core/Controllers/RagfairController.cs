@@ -392,8 +392,8 @@ public class RagfairController
     /// <returns>Array of offers</returns>
     protected List<RagfairOffer> GetOffersForSearchType(
         SearchRequestData searchRequest,
-        List<string> itemsToAdd,
-        Dictionary<string, TraderAssort> traderAssorts,
+        List<MongoId> itemsToAdd,
+        Dictionary<MongoId, TraderAssort> traderAssorts,
         PmcData pmcProfile
     )
     {

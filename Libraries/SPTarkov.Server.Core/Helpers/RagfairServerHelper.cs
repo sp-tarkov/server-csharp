@@ -109,7 +109,7 @@ public class RagfairServerHelper(
      * @param parentId Parent Id to check is blacklisted
      * @returns true if blacklisted
      */
-    protected bool IsItemCategoryOnCustomFleaBlacklist(string itemParentId)
+    protected bool IsItemCategoryOnCustomFleaBlacklist(MongoId itemParentId)
     {
         return ragfairConfig.Dynamic.Blacklist.CustomItemCategoryList.Contains(itemParentId);
     }
@@ -119,7 +119,7 @@ public class RagfairServerHelper(
      * @param traderId
      * @returns True if id was a trader
      */
-    public bool IsTrader(string traderId)
+    public bool IsTrader(MongoId traderId)
     {
         return databaseService.GetTraders().ContainsKey(traderId);
     }
@@ -129,7 +129,7 @@ public class RagfairServerHelper(
      * @param sessionID Player to send items to
      * @param returnedItems Items to send to player
      */
-    public void ReturnItems(string sessionID, List<Item> returnedItems)
+    public void ReturnItems(MongoId sessionID, List<Item> returnedItems)
     {
         mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionID,

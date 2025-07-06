@@ -14,12 +14,12 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class NotificationSendHelper(
-    ISptLogger<NotificationSendHelper> _logger,
-    SptWebSocketConnectionHandler _sptWebSocketConnectionHandler,
-    SaveServer _saveServer,
-    NotificationService _notificationService,
-    TimeUtil _timeUtil,
-    JsonUtil _jsonUtil
+    ISptLogger<NotificationSendHelper> logger,
+    SptWebSocketConnectionHandler sptWebSocketConnectionHandler,
+    SaveServer saveServer,
+    NotificationService notificationService,
+    TimeUtil timeUtil,
+    JsonUtil jsonUtil
 )
 {
     /// <summary>
@@ -27,33 +27,33 @@ public class NotificationSendHelper(
     /// </summary>
     /// <param name="sessionID">Session/player id</param>
     /// <param name="notificationMessage"></param>
-    public void SendMessage(string sessionID, WsNotificationEvent notificationMessage)
+    public void SendMessage(MongoId sessionID, WsNotificationEvent notificationMessage)
     {
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
-                $"Send message for {sessionID} started, message: {_jsonUtil.Serialize(notificationMessage)}"
+            logger.Debug(
+                $"Send message for {sessionID} started, message: {jsonUtil.Serialize(notificationMessage)}"
             );
         }
-        if (_sptWebSocketConnectionHandler.IsWebSocketConnected(sessionID))
+        if (sptWebSocketConnectionHandler.IsWebSocketConnected(sessionID))
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(
+                logger.Debug(
                     $"Send message for {sessionID} websocket available, message being sent"
                 );
             }
-            _sptWebSocketConnectionHandler.SendMessage(sessionID, notificationMessage);
+            sptWebSocketConnectionHandler.SendMessage(sessionID, notificationMessage);
         }
         else
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(
+                logger.Debug(
                     $"Send message for {sessionID} websocket not available, queuing into profile"
                 );
             }
-            _notificationService.Add(sessionID, notificationMessage);
+            notificationService.Add(sessionID, notificationMessage);
         }
     }
 
@@ -65,7 +65,7 @@ public class NotificationSendHelper(
     /// <param name="messageText">Text to send player</param>
     /// <param name="messageType">Underlying type of message being sent</param>
     public void SendMessageToPlayer(
-        string sessionId,
+        MongoId sessionId,
         UserDialogInfo senderDetails,
         string messageText,
         MessageType messageType
@@ -79,7 +79,7 @@ public class NotificationSendHelper(
             Id = new MongoId(),
             UserId = dialog.Id,
             MessageType = messageType,
-            DateTime = _timeUtil.GetTimeStamp(),
+            DateTime = timeUtil.GetTimeStamp(),
             Text = messageText,
             HasRewards = null,
             RewardCollected = null,
@@ -105,7 +105,7 @@ public class NotificationSendHelper(
     /// <param name="senderDetails">Who is sending the message</param>
     /// <returns>Dialogue</returns>
     protected Models.Eft.Profile.Dialogue GetDialog(
-        string sessionId,
+        MongoId sessionId,
         MessageType messageType,
         UserDialogInfo senderDetails
     )
@@ -114,7 +114,7 @@ public class NotificationSendHelper(
         var dialogKey = senderDetails.Id;
 
         // Get all dialogs with pmcs/traders player has
-        var dialogueData = _saveServer.GetProfile(sessionId).DialogueRecords;
+        var dialogueData = saveServer.GetProfile(sessionId).DialogueRecords;
 
         // Ensure empty dialog exists based on sender details passed in
         dialogueData.TryAdd(

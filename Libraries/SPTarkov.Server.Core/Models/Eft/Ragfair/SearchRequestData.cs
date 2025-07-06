@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 
@@ -70,7 +71,7 @@ public record SearchRequestData : IRequestData
     public string? NeededSearchId { get; set; }
 
     [JsonPropertyName("buildItems")]
-    public Dictionary<string, double>? BuildItems { get; set; }
+    public Dictionary<MongoId, double>? BuildItems { get; set; }
 
     [JsonPropertyName("buildCount")]
     public int? BuildCount { get; set; }

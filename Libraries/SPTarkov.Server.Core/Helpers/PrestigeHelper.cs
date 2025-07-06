@@ -1,5 +1,6 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
@@ -10,32 +11,15 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class PrestigeHelper
+public class PrestigeHelper(
+    ISptLogger<PrestigeHelper> logger,
+    TimeUtil timeUtil,
+    DatabaseService databaseService,
+    MailSendService mailSendService,
+    ProfileHelper profileHelper,
+    RewardHelper rewardHelper
+)
 {
-    protected DatabaseService _databaseService;
-    protected ISptLogger<PrestigeHelper> _logger;
-    protected MailSendService _mailSendService;
-    protected ProfileHelper _profileHelper;
-    protected RewardHelper _rewardHelper;
-    protected TimeUtil _timeUtil;
-
-    public PrestigeHelper(
-        ISptLogger<PrestigeHelper> logger,
-        TimeUtil timeUtil,
-        DatabaseService databaseService,
-        MailSendService mailSendService,
-        ProfileHelper profileHelper,
-        RewardHelper rewardHelper
-    )
-    {
-        _logger = logger;
-        _timeUtil = timeUtil;
-        _databaseService = databaseService;
-        _mailSendService = mailSendService;
-        _profileHelper = profileHelper;
-        _rewardHelper = rewardHelper;
-    }
-
     public void ProcessPendingPrestige(
         SptProfile oldProfile,
         SptProfile newProfile,
@@ -92,23 +76,22 @@ public class PrestigeHelper
         // Add "Prestigious" achievement
         if (!newProfile.CharacterData.PmcData.Achievements.ContainsKey("676091c0f457869a94017a23"))
         {
-            _rewardHelper.AddAchievementToProfile(newProfile, "676091c0f457869a94017a23");
+            rewardHelper.AddAchievementToProfile(newProfile, "676091c0f457869a94017a23");
         }
 
         // Assumes Prestige data is in descending order
-        var currentPrestigeData = _databaseService.GetTemplates().Prestige.Elements[
+        var currentPrestigeData = databaseService.GetTemplates().Prestige.Elements[
             indexOfPrestigeObtained
         ];
-        var prestigeRewards = _databaseService
+        var prestigeRewards = databaseService
             .GetTemplates()
             .Prestige.Elements.Slice(0, indexOfPrestigeObtained + 1)
             .SelectMany(prestige => prestige.Rewards);
 
-        AddPrestigeRewardsToProfile(sessionId, newProfile, prestigeRewards);
+        AddPrestigeRewardsToProfile(sessionId.Value, newProfile, prestigeRewards);
 
         // Flag profile as having achieved this prestige level
-        newProfile.CharacterData.PmcData.Prestige[currentPrestigeData.Id] =
-            _timeUtil.GetTimeStamp();
+        newProfile.CharacterData.PmcData.Prestige[currentPrestigeData.Id] = timeUtil.GetTimeStamp();
 
         var itemsToTransfer = new List<Item>();
 
@@ -120,7 +103,7 @@ public class PrestigeHelper
             );
             if (item is null)
             {
-                _logger.Error(
+                logger.Error(
                     $"Unable to find item with id: {transferRequest.Id} in profile: {sessionId}, skipping"
                 );
                 continue;
@@ -129,13 +112,13 @@ public class PrestigeHelper
             itemsToTransfer.Add(item);
         }
 
-        _mailSendService.SendSystemMessageToPlayer(sessionId.Value, "", itemsToTransfer, 31536000);
+        mailSendService.SendSystemMessageToPlayer(sessionId.Value, "", itemsToTransfer, 31536000);
 
         newProfile.CharacterData.PmcData.Info.PrestigeLevel = prestige.PrestigeLevel;
     }
 
     private void AddPrestigeRewardsToProfile(
-        string sessionId,
+        MongoId sessionId,
         SptProfile newProfile,
         IEnumerable<Reward> rewards
     )
@@ -148,7 +131,7 @@ public class PrestigeHelper
             {
                 case RewardType.CustomizationDirect:
                 {
-                    _profileHelper.AddHideoutCustomisationUnlock(
+                    profileHelper.AddHideoutCustomisationUnlock(
                         newProfile,
                         reward,
                         CustomisationSource.PRESTIGE
@@ -158,7 +141,7 @@ public class PrestigeHelper
                 case RewardType.Skill:
                     if (Enum.TryParse(reward.Target, out SkillTypes result))
                     {
-                        _profileHelper.AddSkillPointsToPlayer(
+                        profileHelper.AddSkillPointsToPlayer(
                             newProfile.CharacterData.PmcData,
                             result,
                             reward.Value
@@ -166,7 +149,7 @@ public class PrestigeHelper
                     }
                     else
                     {
-                        _logger.Error($"Unable to parse reward Target to Enum: {reward.Target}");
+                        logger.Error($"Unable to parse reward Target to Enum: {reward.Target}");
                     }
 
                     break;
@@ -181,14 +164,14 @@ public class PrestigeHelper
                     break;
                 }
                 default:
-                    _logger.Error($"Unhandled prestige reward type: {reward.Type}");
+                    logger.Error($"Unhandled prestige reward type: {reward.Type}");
                     break;
             }
         }
 
         if (itemsToSend.Count > 0)
         {
-            _mailSendService.SendSystemMessageToPlayer(sessionId, "", itemsToSend, 31536000);
+            mailSendService.SendSystemMessageToPlayer(sessionId, "", itemsToSend, 31536000);
         }
     }
 }

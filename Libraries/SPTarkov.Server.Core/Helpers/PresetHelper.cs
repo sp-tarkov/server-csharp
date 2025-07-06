@@ -9,10 +9,10 @@ using SPTarkov.Server.Core.Utils.Cloners;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable(InjectionType.Singleton)]
-public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelper, ICloner _cloner)
+public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper, ICloner cloner)
 {
-    protected Dictionary<string, Preset> _defaultEquipmentPresets;
-    protected Dictionary<string, Preset> _defaultWeaponPresets;
+    protected Dictionary<string, Preset>? _defaultEquipmentPresets;
+    protected Dictionary<string, Preset>? _defaultWeaponPresets;
 
     /// <summary>
     ///     Preset cache - key = item tpl, value = preset ids
@@ -60,11 +60,11 @@ public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelp
     {
         if (_defaultWeaponPresets is null)
         {
-            var tempPresets = _databaseService.GetGlobals().ItemPresets;
+            var tempPresets = databaseService.GetGlobals().ItemPresets;
             _defaultWeaponPresets = tempPresets
                 .Where(p =>
                     p.Value.Encyclopedia != null
-                    && _itemHelper.IsOfBaseclass(p.Value.Encyclopedia, BaseClasses.WEAPON)
+                    && itemHelper.IsOfBaseclass(p.Value.Encyclopedia, BaseClasses.WEAPON)
                 )
                 .ToDictionary();
         }
@@ -80,11 +80,11 @@ public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelp
     {
         if (_defaultEquipmentPresets == null)
         {
-            var tempPresets = _databaseService.GetGlobals().ItemPresets;
+            var tempPresets = databaseService.GetGlobals().ItemPresets;
             _defaultEquipmentPresets = tempPresets
                 .Where(p =>
                     p.Value.Encyclopedia != null
-                    && _itemHelper.ArmorItemCanHoldMods(p.Value.Encyclopedia)
+                    && itemHelper.ArmorItemCanHoldMods(p.Value.Encyclopedia)
                 )
                 .ToDictionary();
         }
@@ -97,14 +97,14 @@ public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelp
     /// </summary>
     /// <param name="id">Value to check</param>
     /// <returns>True = preset exists for this id</returns>
-    public bool IsPreset(string id)
+    public bool IsPreset(MongoId id)
     {
-        if (string.IsNullOrEmpty(id))
+        if (id.IsEmpty())
         {
             return false;
         }
 
-        return _databaseService.GetGlobals().ItemPresets.ContainsKey(id);
+        return databaseService.GetGlobals().ItemPresets.ContainsKey(id);
     }
 
     /**
@@ -113,9 +113,9 @@ public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelp
      * @param baseClass The BaseClasses enum to check against
      * @returns True if the preset is of the given base class, false otherwise
      */
-    public bool IsPresetBaseClass(string id, MongoId baseClass)
+    public bool IsPresetBaseClass(MongoId id, MongoId baseClass)
     {
-        return IsPreset(id) && _itemHelper.IsOfBaseclass(GetPreset(id).Encyclopedia, baseClass);
+        return IsPreset(id) && itemHelper.IsOfBaseclass(GetPreset(id).Encyclopedia, baseClass);
     }
 
     /// <summary>
@@ -128,9 +128,9 @@ public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelp
         return _lookup.ContainsKey(templateId);
     }
 
-    public Preset GetPreset(string id)
+    public Preset GetPreset(MongoId id)
     {
-        return _cloner.Clone(_databaseService.GetGlobals().ItemPresets[id]);
+        return cloner.Clone(databaseService.GetGlobals().ItemPresets[id]);
     }
 
     /// <summary>
@@ -139,7 +139,7 @@ public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelp
     /// <returns>List</returns>
     public List<Preset> GetAllPresets()
     {
-        return _cloner.Clone(_databaseService.GetGlobals().ItemPresets.Values.ToList());
+        return cloner.Clone(databaseService.GetGlobals().ItemPresets.Values.ToList());
     }
 
     /// <summary>
@@ -147,7 +147,7 @@ public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelp
     /// </summary>
     /// <param name="templateId">Tpl to get presets for</param>
     /// <returns>List</returns>
-    public List<Preset> GetPresets(string templateId)
+    public List<Preset> GetPresets(MongoId templateId)
     {
         // Try adn get preset ids from cache if they exist
         if (!_lookup.TryGetValue(templateId, out var presetDetailsForTpl))
@@ -157,9 +157,9 @@ public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelp
         }
 
         // Use gathered preset ids to get full preset objects, clone and return
-        return _cloner.Clone(
+        return cloner.Clone(
             presetDetailsForTpl
-                .PresetIds.Select(x => _databaseService.GetGlobals().ItemPresets[x])
+                .PresetIds.Select(x => databaseService.GetGlobals().ItemPresets[x])
                 .ToList()
         );
     }
@@ -188,13 +188,13 @@ public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelp
             if (!_defaultEquipmentPresets.TryGetValue(presetDetails.DefaultId, out defaultPreset))
             {
                 // Default not found in weapon or equipment, return first preset in list
-                return _cloner.Clone(
-                    _databaseService.GetGlobals().ItemPresets[presetDetails.PresetIds.First()]
+                return cloner.Clone(
+                    databaseService.GetGlobals().ItemPresets[presetDetails.PresetIds.First()]
                 );
             }
         }
 
-        return _cloner.Clone(defaultPreset);
+        return cloner.Clone(defaultPreset);
     }
 
     /// <summary>
@@ -204,7 +204,7 @@ public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelp
     /// <returns>tpl mongoid</returns>
     public MongoId GetBaseItemTpl(MongoId presetId)
     {
-        if (!_databaseService.GetGlobals().ItemPresets.TryGetValue(presetId, out var preset))
+        if (!databaseService.GetGlobals().ItemPresets.TryGetValue(presetId, out var preset))
         {
             // No preset exists
             return "";
@@ -236,6 +236,6 @@ public class PresetHelper(DatabaseService _databaseService, ItemHelper _itemHelp
             : [tpl];
 
         // Get price of tpls
-        return _itemHelper.GetItemAndChildrenPrice(tpls);
+        return itemHelper.GetItemAndChildrenPrice(tpls);
     }
 }

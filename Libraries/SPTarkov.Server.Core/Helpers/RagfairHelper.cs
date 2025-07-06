@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
@@ -27,28 +28,26 @@ public class RagfairHelper(
     /// </summary>
     /// <param name="currencyTpl">Currency tpl</param>
     /// <returns>Currency tag, e.g. RUB</returns>
-    public string GetCurrencyTag(string currencyTpl)
+    public string GetCurrencyTag(MongoId currencyTpl)
     {
         if (currencyTpl == Money.EUROS)
         {
             return "EUR";
         }
-        else if (currencyTpl == Money.DOLLARS)
+        if (currencyTpl == Money.DOLLARS)
         {
             return "USD";
         }
-        else if (currencyTpl == Money.ROUBLES)
+        if (currencyTpl == Money.ROUBLES)
         {
             return "RUB";
         }
-        else if (currencyTpl == Money.GP)
+        if (currencyTpl == Money.GP)
         {
             return "GP";
         }
-        else
-        {
-            return "";
-        }
+
+        return "";
     }
 
     /// <summary>
@@ -71,9 +70,9 @@ public class RagfairHelper(
         }
     }
 
-    public List<string> FilterCategories(string sessionId, SearchRequestData request)
+    public List<MongoId> FilterCategories(MongoId sessionId, SearchRequestData request)
     {
-        var result = new List<string>();
+        var result = new List<MongoId>();
 
         // Case: weapon builds
         if (request.BuildCount > 0)
@@ -98,9 +97,9 @@ public class RagfairHelper(
         return result;
     }
 
-    public Dictionary<string, TraderAssort> GetDisplayableAssorts(string sessionId)
+    public Dictionary<MongoId, TraderAssort> GetDisplayableAssorts(MongoId sessionId)
     {
-        var result = new Dictionary<string, TraderAssort>();
+        var result = new Dictionary<MongoId, TraderAssort>();
         foreach (
             var traderId in databaseService
                 .GetTraders()
@@ -113,12 +112,12 @@ public class RagfairHelper(
         return result;
     }
 
-    protected List<string> GetCategoryList(string handbookId)
+    protected List<MongoId> GetCategoryList(MongoId handbookId)
     {
-        var result = new List<string>();
+        var result = new List<MongoId>();
 
         // if its "mods" great-parent category, do double recursive loop
-        if (handbookId == "5b5f71a686f77447ed5636ab")
+        if (handbookId == new MongoId("5b5f71a686f77447ed5636ab"))
         {
             foreach (var category in handbookHelper.ChildrenCategories(handbookId))
             {

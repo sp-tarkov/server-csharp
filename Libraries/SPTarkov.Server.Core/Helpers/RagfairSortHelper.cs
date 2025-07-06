@@ -6,7 +6,7 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class RagfairSortHelper(LocaleService _localeService)
+public class RagfairSortHelper(LocaleService localeService)
 {
     /**
      * Sort a list of ragfair offers by something (id/rating/offer name/price/expiry time)
@@ -84,7 +84,7 @@ public class RagfairSortHelper(LocaleService _localeService)
 
     protected int SortOffersByName(RagfairOffer a, RagfairOffer b)
     {
-        var locale = _localeService.GetLocaleDb();
+        var locale = localeService.GetLocaleDb();
 
         var tplA = a.Items[0].Template;
         var tplB = b.Items[0].Template;

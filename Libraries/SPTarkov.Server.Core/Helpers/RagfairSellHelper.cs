@@ -11,14 +11,14 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class RagfairSellHelper(
-    ISptLogger<RagfairSellHelper> _logger,
-    TimeUtil _timeUtil,
-    RandomUtil _randomUtil,
-    DatabaseService _databaseService,
-    ConfigServer _configServer
+    ISptLogger<RagfairSellHelper> logger,
+    TimeUtil timeUtil,
+    RandomUtil randomUtil,
+    DatabaseService databaseService,
+    ConfigServer configServer
 )
 {
-    protected readonly RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
+    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
     ///     Get the percent chance to sell an item based on its average listed price vs player chosen listing price
@@ -72,16 +72,14 @@ public class RagfairSellHelper(
         bool sellInOneGo = false
     )
     {
-        var startTimestamp = _timeUtil.GetTimeStamp();
+        var startTimestamp = timeUtil.GetTimeStamp();
 
         // Get a time in future to stop simulating sell chances at
         var endTime =
             startTimestamp
-            + _timeUtil.GetHoursAsSeconds(
+            + timeUtil.GetHoursAsSeconds(
                 (int)
-                    _databaseService
-                        .GetGlobals()
-                        .Configuration.RagFair.OfferDurationTimeInHour.Value
+                    databaseService.GetGlobals().Configuration.RagFair.OfferDurationTimeInHour.Value
             );
 
         var sellTimestamp = startTimestamp;
@@ -93,14 +91,14 @@ public class RagfairSellHelper(
         if (sellChancePercent is null)
         {
             effectiveSellChance = _ragfairConfig.Sell.Chance.Base;
-            _logger.Warning(
+            logger.Warning(
                 $"Sell chance was not a number: {sellChancePercent}, defaulting to {_ragfairConfig.Sell.Chance.Base}%"
             );
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
+            logger.Debug(
                 $"Rolling to sell: {itemSellCount} item(s) - (chance: {effectiveSellChance}%)"
             );
         }
@@ -113,8 +111,8 @@ public class RagfairSellHelper(
 
         while (remainingCount > 0 && sellTimestamp < endTime)
         {
-            var boughtAmount = sellInOneGo ? remainingCount : _randomUtil.GetInt(1, remainingCount);
-            if (_randomUtil.GetChance100(effectiveSellChance))
+            var boughtAmount = sellInOneGo ? remainingCount : randomUtil.GetInt(1, remainingCount);
+            if (randomUtil.GetChance100(effectiveSellChance))
             {
                 // Passed roll check, item will be sold
                 // Weight time to sell towards selling faster based on how cheap the item sold
@@ -140,18 +138,18 @@ public class RagfairSellHelper(
                 sellTimestamp += (long)newSellTime;
                 result.Add(new SellResult { SellTime = sellTimestamp, Amount = boughtAmount });
 
-                if (_logger.IsLogEnabled(LogLevel.Debug))
+                if (logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(
-                        $"Offer will sell at: {_timeUtil.GetDateTimeFromTimeStamp(sellTimestamp).ToLocalTime().ToString()}, bought: {boughtAmount}"
+                    logger.Debug(
+                        $"Offer will sell at: {timeUtil.GetDateTimeFromTimeStamp(sellTimestamp).ToLocalTime().ToString()}, bought: {boughtAmount}"
                     );
                 }
             }
             else
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
+                if (logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug($"Offer rolled not to sell, item count: {boughtAmount}");
+                    logger.Debug($"Offer rolled not to sell, item count: {boughtAmount}");
                 }
             }
 

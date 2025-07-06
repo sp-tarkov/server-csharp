@@ -13,14 +13,14 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class RepairHelper(
-    ISptLogger<RepairHelper> _logger,
-    RandomUtil _randomUtil,
-    DatabaseService _databaseService,
-    ConfigServer _configServer,
-    ICloner _cloner
+    ISptLogger<RepairHelper> logger,
+    RandomUtil randomUtil,
+    DatabaseService databaseService,
+    ConfigServer configServer,
+    ICloner cloner
 )
 {
-    protected RepairConfig _repairConfig = _configServer.GetConfig<RepairConfig>();
+    protected RepairConfig _repairConfig = configServer.GetConfig<RepairConfig>();
 
     /// <summary>
     ///     Alter an items durability after a repair by trader/repair kit
@@ -42,16 +42,16 @@ public class RepairHelper(
         bool applyMaxDurabilityDegradation = true
     )
     {
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
+            logger.Debug(
                 $"Adding {amountToRepair} to {itemToRepairDetails.Name} using kit: {useRepairKit}"
             );
         }
 
-        var itemMaxDurability = _cloner.Clone(itemToRepair.Upd.Repairable.MaxDurability);
-        var itemCurrentDurability = _cloner.Clone(itemToRepair.Upd.Repairable.Durability);
-        var itemCurrentMaxDurability = _cloner.Clone(itemToRepair.Upd.Repairable.MaxDurability);
+        var itemMaxDurability = cloner.Clone(itemToRepair.Upd.Repairable.MaxDurability);
+        var itemCurrentDurability = cloner.Clone(itemToRepair.Upd.Repairable.Durability);
+        var itemCurrentMaxDurability = cloner.Clone(itemToRepair.Upd.Repairable.MaxDurability);
 
         var newCurrentDurability = itemCurrentDurability + amountToRepair;
         var newCurrentMaxDurability = itemCurrentMaxDurability + amountToRepair;
@@ -127,12 +127,12 @@ public class RepairHelper(
     {
         // Degradation value is based on the armor material
         if (
-            !_databaseService
+            !databaseService
                 .GetGlobals()
                 .Configuration.ArmorMaterials.TryGetValue(material, out var armorMaterialSettings)
         )
         {
-            _logger.Error($"Unable to find armor with a type of: {material}");
+            logger.Error($"Unable to find armor with a type of: {material}");
         }
 
         var minMultiplier = isRepairKit
@@ -143,7 +143,7 @@ public class RepairHelper(
             ? armorMaterialSettings.MaxRepairKitDegradation
             : armorMaterialSettings.MaxRepairDegradation;
 
-        var duraLossPercent = _randomUtil.GetDouble((double)minMultiplier, (double)maxMultiplier);
+        var duraLossPercent = randomUtil.GetDouble((double)minMultiplier, (double)maxMultiplier);
         var duraLossMultipliedByTraderMultiplier =
             duraLossPercent * armorMax * traderQualityMultiplier;
 
@@ -178,7 +178,7 @@ public class RepairHelper(
             maxRepairDeg = itemProps.MaxRepairDegradation;
         }
 
-        var duraLossPercent = _randomUtil.GetDouble((double)minRepairDeg, (double)maxRepairDeg);
+        var duraLossPercent = randomUtil.GetDouble((double)minRepairDeg, (double)maxRepairDeg);
         var duraLossMultipliedByTraderMultiplier =
             duraLossPercent * weaponMax * traderQualityMultipler;
 

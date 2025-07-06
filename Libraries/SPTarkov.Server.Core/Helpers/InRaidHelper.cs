@@ -13,10 +13,10 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class InRaidHelper(
-    InventoryHelper _inventoryHelper,
-    ConfigServer _configServer,
-    ICloner _cloner,
-    DatabaseService _databaseService
+    InventoryHelper inventoryHelper,
+    ConfigServer configServer,
+    ICloner cloner,
+    DatabaseService databaseService
 )
 {
     protected static readonly List<string> _pocketSlots =
@@ -26,9 +26,9 @@ public class InRaidHelper(
         "pocket3",
         "pocket4",
     ];
-    protected readonly InRaidConfig _inRaidConfig = _configServer.GetConfig<InRaidConfig>();
+    protected readonly InRaidConfig _inRaidConfig = configServer.GetConfig<InRaidConfig>();
     protected readonly LostOnDeathConfig _lostOnDeathConfig =
-        _configServer.GetConfig<LostOnDeathConfig>();
+        configServer.GetConfig<LostOnDeathConfig>();
 
     /// <summary>
     ///     Deprecated. Reset the skill points earned in a raid to 0, ready for next raid.
@@ -54,7 +54,7 @@ public class InRaidHelper(
     /// <param name="isSurvived">Indicates if the player survived the raid</param>
     /// <param name="isTransfer">Indicates if it is a transfer operation</param>
     public void SetInventory(
-        string sessionID,
+        MongoId sessionID,
         PmcData serverProfile,
         PmcData postRaidProfile,
         bool isSurvived,
@@ -62,17 +62,17 @@ public class InRaidHelper(
     )
     {
         // Store insurance (as removeItem() removes insured items)
-        var insured = _cloner.Clone(serverProfile.InsuredItems);
+        var insured = cloner.Clone(serverProfile.InsuredItems);
 
         // Remove equipment and loot items stored on player from server profile in preparation for data from client being added
-        _inventoryHelper.RemoveItem(
+        inventoryHelper.RemoveItem(
             serverProfile,
             serverProfile.Inventory.Equipment.Value,
             sessionID
         );
 
         // Remove quest items stored on player from server profile in preparation for data from client being added
-        _inventoryHelper.RemoveItem(
+        inventoryHelper.RemoveItem(
             serverProfile,
             serverProfile.Inventory.QuestRaidItems.Value,
             sessionID
@@ -111,7 +111,7 @@ public class InRaidHelper(
     /// <param name="items">Items to process</param>
     protected void RemoveFiRStatusFromItems(List<Item> items)
     {
-        var dbItems = _databaseService.GetItems();
+        var dbItems = databaseService.GetItems();
 
         var itemsToRemovePropertyFrom = items.Where(item =>
         {
@@ -166,7 +166,7 @@ public class InRaidHelper(
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="sessionId">Session id</param>
-    public void DeleteInventory(PmcData pmcData, string sessionId)
+    public void DeleteInventory(PmcData pmcData, MongoId sessionId)
     {
         // Get inventory item ids to remove from players profile
         var itemIdsToDeleteFromProfile = GetInventoryItemsLostOnDeath(pmcData)
@@ -174,7 +174,7 @@ public class InRaidHelper(
         foreach (var itemIdToDelete in itemIdsToDeleteFromProfile)
         // Items inside containers are handled as part of function
         {
-            _inventoryHelper.RemoveItem(pmcData, itemIdToDelete, sessionId);
+            inventoryHelper.RemoveItem(pmcData, itemIdToDelete, sessionId);
         }
 
         // Remove contents of fast panel
@@ -188,7 +188,7 @@ public class InRaidHelper(
     /// <param name="pmcData">Player profile</param>
     /// <param name="secureContainerSlotId">Container slot id to find items for and remove FiR from</param>
     public void RemoveFiRStatusFromItemsInContainer(
-        string sessionId,
+        MongoId sessionId,
         PmcData pmcData,
         string secureContainerSlotId
     )

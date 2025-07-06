@@ -42,7 +42,7 @@ public record Quest
     public string? Note { get; set; }
 
     [JsonPropertyName("traderId")]
-    public required string TraderId { get; set; }
+    public required MongoId TraderId { get; set; }
 
     [JsonPropertyName("location")]
     public required string Location { get; set; }

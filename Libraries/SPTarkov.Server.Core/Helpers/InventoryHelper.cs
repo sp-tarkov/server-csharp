@@ -22,15 +22,15 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class InventoryHelper(
-    ISptLogger<InventoryHelper> _logger,
-    HttpResponseUtil _httpResponseUtil,
-    DialogueHelper _dialogueHelper,
-    EventOutputHolder _eventOutputHolder,
-    ProfileHelper _profileHelper,
-    ItemHelper _itemHelper,
-    ServerLocalisationService _serverLocalisationService,
-    ConfigServer _configServer,
-    ICloner _cloner
+    ISptLogger<InventoryHelper> logger,
+    HttpResponseUtil httpResponseUtil,
+    DialogueHelper dialogueHelper,
+    EventOutputHolder eventOutputHolder,
+    ProfileHelper profileHelper,
+    ItemHelper itemHelper,
+    ServerLocalisationService serverLocalisationService,
+    ConfigServer configServer,
+    ICloner cloner
 )
 {
     private static readonly FrozenSet<MongoId> _variableSizeItemTypes =
@@ -39,8 +39,7 @@ public class InventoryHelper(
         BaseClasses.FUNCTIONAL_MOD,
         BaseClasses.MOD,
     ];
-    protected readonly InventoryConfig _inventoryConfig =
-        _configServer.GetConfig<InventoryConfig>();
+    protected readonly InventoryConfig _inventoryConfig = configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
     ///     Add multiple items to player stash (assuming they all fit)
@@ -50,7 +49,7 @@ public class InventoryHelper(
     /// <param name="pmcData">Player profile</param>
     /// <param name="output">Client response object</param>
     public void AddItemsToStash(
-        string sessionId,
+        MongoId sessionId,
         AddItemsDirectRequest request,
         PmcData pmcData,
         ItemEventRouterResponse output
@@ -60,9 +59,9 @@ public class InventoryHelper(
         if (!CanPlaceItemsInInventory(sessionId, request.ItemsWithModsToAdd))
         {
             // No space, exit
-            _httpResponseUtil.AppendErrorToOutput(
+            httpResponseUtil.AppendErrorToOutput(
                 output,
-                _serverLocalisationService.GetText("inventory-no_stash_space"),
+                serverLocalisationService.GetText("inventory-no_stash_space"),
                 BackendErrorCodes.NotEnoughSpace
             );
 
@@ -96,19 +95,19 @@ public class InventoryHelper(
     /// <param name="pmcData">Player profile</param>
     /// <param name="output">Client response object</param>
     public void AddItemToStash(
-        string sessionId,
+        MongoId sessionId,
         AddItemDirectRequest request,
         PmcData pmcData,
         ItemEventRouterResponse output
     )
     {
-        var itemWithModsToAddClone = _cloner.Clone(request.ItemWithModsToAdd);
+        var itemWithModsToAddClone = cloner.Clone(request.ItemWithModsToAdd);
 
         // Get stash layouts ready for use
         var stashFS2D = GetStashSlotMap(pmcData);
         if (stashFS2D is null)
         {
-            _logger.Error($"Unable to get stash map for players: {sessionId} stash");
+            logger.Error($"Unable to get stash map for players: {sessionId} stash");
 
             return;
         }
@@ -148,8 +147,8 @@ public class InventoryHelper(
         {
             // Callback failed
             var message = ex.Message;
-            _httpResponseUtil.AppendErrorToOutput(output, message);
-            _logger.Error($"[InventoryHelper]: {ex.Message}");
+            httpResponseUtil.AppendErrorToOutput(output, message);
+            logger.Error($"[InventoryHelper]: {ex.Message}");
 
             return;
         }
@@ -159,9 +158,9 @@ public class InventoryHelper(
         output.ProfileChanges[sessionId].Items.NewItems.AddRange(itemWithModsToAddClone);
         pmcData.Inventory.Items.AddRange(itemWithModsToAddClone);
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
+            logger.Debug(
                 $"Added: {itemWithModsToAddClone[0].Upd?.StackObjectsCount ?? 1} item: {itemWithModsToAddClone[0].Template} with: {itemWithModsToAddClone.Count - 1} mods to inventory"
             );
         }
@@ -177,10 +176,10 @@ public class InventoryHelper(
         foreach (var item in itemWithChildren)
         {
             // Ensure item has upd object
-            _itemHelper.AddUpdObjectToItem(item);
+            itemHelper.AddUpdObjectToItem(item);
 
             // Ammo / currency can NEVER be FiR or have a 'SpawnedInSession' property
-            item.Upd.SpawnedInSession = _itemHelper.IsOfBaseclass(item.Template, BaseClasses.AMMO)
+            item.Upd.SpawnedInSession = itemHelper.IsOfBaseclass(item.Template, BaseClasses.AMMO)
                 ? null
                 : foundInRaid;
         }
@@ -216,12 +215,12 @@ public class InventoryHelper(
     /// <returns>True all items fit</returns>
     public bool CanPlaceItemsInInventory(string sessionId, List<List<Item>> itemsWithChildren)
     {
-        var pmcData = _profileHelper.GetPmcProfile(sessionId);
+        var pmcData = profileHelper.GetPmcProfile(sessionId);
 
-        var stashFS2D = _cloner.Clone(GetStashSlotMap(pmcData));
+        var stashFS2D = cloner.Clone(GetStashSlotMap(pmcData));
         if (stashFS2D is null)
         {
-            _logger.Error($"Unable to get stash map for players: {sessionId} stash");
+            logger.Error($"Unable to get stash map for players: {sessionId} stash");
 
             return false;
         }
@@ -273,8 +272,8 @@ public class InventoryHelper(
             }
             catch (Exception ex)
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText(
+                logger.Error(
+                    serverLocalisationService.GetText(
                         "inventory-unable_to_fit_item_into_inventory",
                         ex.Message
                     )
@@ -328,11 +327,8 @@ public class InventoryHelper(
             }
             catch (Exception ex)
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText(
-                        "inventory-fill_container_failed",
-                        ex.Message
-                    )
+                logger.Error(
+                    serverLocalisationService.GetText("inventory-fill_container_failed", ex.Message)
                 );
 
                 return;
@@ -449,9 +445,9 @@ public class InventoryHelper(
         }
         else
         {
-            _httpResponseUtil.AppendErrorToOutput(
+            httpResponseUtil.AppendErrorToOutput(
                 output,
-                _serverLocalisationService.GetText("inventory-no_stash_space"),
+                serverLocalisationService.GetText("inventory-no_stash_space"),
                 BackendErrorCodes.NotEnoughSpace
             );
         }
@@ -459,13 +455,13 @@ public class InventoryHelper(
 
     protected void HandleContainerPlacementError(string errorText, ItemEventRouterResponse output)
     {
-        _logger.Error(
-            _serverLocalisationService.GetText("inventory-fill_container_failed", errorText)
+        logger.Error(
+            serverLocalisationService.GetText("inventory-fill_container_failed", errorText)
         );
 
-        _httpResponseUtil.AppendErrorToOutput(
+        httpResponseUtil.AppendErrorToOutput(
             output,
-            _serverLocalisationService.GetText("inventory-no_stash_space")
+            serverLocalisationService.GetText("inventory-no_stash_space")
         );
     }
 
@@ -481,14 +477,14 @@ public class InventoryHelper(
     public void RemoveItem(
         PmcData profile,
         MongoId itemId,
-        string sessionId,
+        MongoId sessionId,
         ItemEventRouterResponse? output = null
     )
     {
         if (itemId.IsEmpty())
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText("inventory-unable_to_remove_item_no_id_given")
+            logger.Warning(
+                serverLocalisationService.GetText("inventory-unable_to_remove_item_no_id_given")
             );
 
             return;
@@ -498,10 +494,10 @@ public class InventoryHelper(
         var itemAndChildrenToRemove = profile.Inventory.Items.FindAndReturnChildrenAsItems(itemId);
         if (!itemAndChildrenToRemove.Any())
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(
-                    _serverLocalisationService.GetText(
+                logger.Debug(
+                    serverLocalisationService.GetText(
                         "inventory-unable_to_remove_item_id_not_found",
                         new { ChildId = itemId, ProfileId = profile.Id }
                     )
@@ -530,8 +526,8 @@ public class InventoryHelper(
             }
             else
             {
-                _logger.Warning(
-                    _serverLocalisationService.GetText(
+                logger.Warning(
+                    serverLocalisationService.GetText(
                         "inventory-unable_to_remove_item_id_not_found",
                         new { childId = item.Id, ProfileId = profile.Id }
                     )
@@ -555,12 +551,12 @@ public class InventoryHelper(
     /// <param name="removeRequest">Remove request</param>
     /// <param name="output">OPTIONAL - ItemEventRouterResponse</param>
     public void RemoveItemAndChildrenFromMailRewards(
-        string sessionId,
+        MongoId sessionId,
         InventoryRemoveRequestData removeRequest,
         ItemEventRouterResponse? output
     )
     {
-        var fullProfile = _profileHelper.GetFullProfile(sessionId);
+        var fullProfile = profileHelper.GetFullProfile(sessionId);
 
         // Iterate over all dialogs and look for mesasage with key from request, that has item (and maybe its children) we want to remove
         var dialogs = fullProfile.DialogueRecords;
@@ -581,8 +577,8 @@ public class InventoryHelper(
                     var indexOfItemToRemove = messageWithReward.Items.Data.IndexOf(itemToDelete);
                     if (indexOfItemToRemove == -1)
                     {
-                        _logger.Error(
-                            _serverLocalisationService.GetText(
+                        logger.Error(
+                            serverLocalisationService.GetText(
                                 "inventory-unable_to_remove_item_restart_immediately",
                                 new
                                 {
@@ -619,7 +615,7 @@ public class InventoryHelper(
         PmcData pmcData,
         MongoId itemId,
         int countToRemove,
-        string sessionId,
+        MongoId sessionId,
         ItemEventRouterResponse? output
     )
     {
@@ -658,7 +654,7 @@ public class InventoryHelper(
             }
         }
 
-        return output ?? _eventOutputHolder.GetOutput(sessionId);
+        return output ?? eventOutputHolder.GetOutput(sessionId);
     }
 
     /// <summary>
@@ -689,21 +685,18 @@ public class InventoryHelper(
     )
     {
         // Invalid item
-        var (isValidItem, itemTemplate) = _itemHelper.GetItem(itemTpl);
+        var (isValidItem, itemTemplate) = itemHelper.GetItem(itemTpl);
         if (!isValidItem)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "inventory-invalid_item_missing_from_db",
-                    itemTpl
-                )
+            logger.Error(
+                serverLocalisationService.GetText("inventory-invalid_item_missing_from_db", itemTpl)
             );
         }
 
         // Item found but no _props property
         if (isValidItem && itemTemplate.Properties is null)
         {
-            _serverLocalisationService.GetText(
+            serverLocalisationService.GetText(
                 "inventory-item_missing_props_property",
                 new { itemTpl, itemName = itemTemplate?.Name }
             );
@@ -713,8 +706,8 @@ public class InventoryHelper(
         if (!isValidItem && itemTemplate is null)
         {
             // return default size of 1x1
-            _logger.Error(
-                _serverLocalisationService.GetText("inventory-return_default_size", itemTpl)
+            logger.Error(
+                serverLocalisationService.GetText("inventory-return_default_size", itemTpl)
             );
 
             return (1, 1); // Invalid input data, return defaults
@@ -722,7 +715,7 @@ public class InventoryHelper(
 
         if (!inventoryItemHash.ByItemId.TryGetValue(itemId, out var rootItem))
         {
-            _logger.Error(
+            logger.Error(
                 $"Unable to get root item with Id: {itemId} from player inventory. Defaulting to 1x1"
             );
 
@@ -757,7 +750,7 @@ public class InventoryHelper(
         }
 
         // Item can have child items that adjust its size
-        if (_itemHelper.IsOfBaseclasses(itemTpl, _variableSizeItemTypes))
+        if (itemHelper.IsOfBaseclasses(itemTpl, _variableSizeItemTypes))
         {
             // Storage for root item and its children, store root item id for now
             // Will store child items that may have sub-children to process
@@ -781,11 +774,11 @@ public class InventoryHelper(
                         toDo.Enqueue(childItem.Id);
 
                         // Get child item from db
-                        var (isValid, template) = _itemHelper.GetItem(childItem.Template);
+                        var (isValid, template) = itemHelper.GetItem(childItem.Template);
                         if (!isValid)
                         {
-                            _logger.Error(
-                                _serverLocalisationService.GetText(
+                            logger.Error(
+                                serverLocalisationService.GetText(
                                     "inventory-get_item_size_item_not_found_by_tpl",
                                     childItem.Template
                                 )
@@ -866,11 +859,11 @@ public class InventoryHelper(
         int containerSizeHorizontalX,
         int containerSizeVerticalY,
         List<Item> itemList,
-        string containerId
+        MongoId containerId
     )
     {
         // Create blank 2d map of container
-        var container = _itemHelper.GetBlankContainerMap(
+        var container = itemHelper.GetBlankContainerMap(
             containerSizeHorizontalX, // Column count
             containerSizeVerticalY // Row count
         );
@@ -892,7 +885,7 @@ public class InventoryHelper(
             if (itemLocation is null)
             {
                 // Item has no location property
-                _logger.Error(
+                logger.Error(
                     $"Unable to find 'location' property on item with id: {rootItem.Id}, skipping"
                 );
 
@@ -937,8 +930,8 @@ public class InventoryHelper(
                         var message =
                             $"Item: {rootItem.Id} at: {itemLocation.X}, {itemLocation.Y} size: {itemHeight}x{itemWidth} extends outside the containers bounds";
 
-                        _logger.Error(
-                            _serverLocalisationService.GetText(
+                        logger.Error(
+                            serverLocalisationService.GetText(
                                 "inventory-unable_to_fill_container",
                                 new { id = rootItem.Id, error = $"{message}" }
                             )
@@ -998,11 +991,11 @@ public class InventoryHelper(
     public OwnerInventoryItems GetOwnerInventoryItems(
         InventoryBaseActionRequestData request,
         MongoId itemId,
-        string sessionId
+        MongoId sessionId
     )
     {
-        var pmcItems = _profileHelper.GetPmcProfile(sessionId).Inventory.Items;
-        var scavProfile = _profileHelper.GetScavProfile(sessionId);
+        var pmcItems = profileHelper.GetPmcProfile(sessionId).Inventory.Items;
+        var scavProfile = profileHelper.GetScavProfile(sessionId);
         var fromInventoryItems = pmcItems;
         var fromType = "pmc";
 
@@ -1018,7 +1011,7 @@ public class InventoryHelper(
             )
             {
                 // Split requests don't use 'use' but 'splitItem' property
-                fromInventoryItems = _dialogueHelper.GetMessageItemContents(
+                fromInventoryItems = dialogueHelper.GetMessageItemContents(
                     request.FromOwner.Id,
                     sessionId,
                     itemId
@@ -1064,7 +1057,7 @@ public class InventoryHelper(
             horizontal,
             vertical,
             pmcData.Inventory.Items,
-            pmcData.Inventory.Stash
+            pmcData.Inventory.Stash.Value
         );
     }
 
@@ -1075,16 +1068,13 @@ public class InventoryHelper(
     /// <returns>blank two-dimensional array</returns>
     public int[,] GetContainerSlotMap(string containerTpl)
     {
-        var containerTemplate = _itemHelper.GetItem(containerTpl).Value;
+        var containerTemplate = itemHelper.GetItem(containerTpl).Value;
 
         var firstContainerGrid = containerTemplate.Properties.Grids.FirstOrDefault();
         var containerRowCount = firstContainerGrid.Props.CellsH;
         var containerColumnCount = firstContainerGrid.Props.CellsV;
 
-        return _itemHelper.GetBlankContainerMap(
-            containerColumnCount.Value,
-            containerRowCount.Value
-        );
+        return itemHelper.GetBlankContainerMap(containerColumnCount.Value, containerRowCount.Value);
     }
 
     /// <summary>
@@ -1094,7 +1084,12 @@ public class InventoryHelper(
     /// <returns>two-dimensional array</returns>
     protected int[,] GetSortingTableSlotMap(PmcData pmcData)
     {
-        return GetContainerMap(10, 45, pmcData.Inventory.Items, pmcData.Inventory.SortingTable);
+        return GetContainerMap(
+            10,
+            45,
+            pmcData.Inventory.Items,
+            pmcData.Inventory.SortingTable.Value
+        );
     }
 
     /// <summary>
@@ -1109,18 +1104,16 @@ public class InventoryHelper(
         var stashTpl = GetProfileStashTpl(pmcData);
         if (stashTpl is null)
         {
-            _logger.Error(_serverLocalisationService.GetText("inventory-missing_stash_size"));
+            logger.Error(serverLocalisationService.GetText("inventory-missing_stash_size"));
 
             return (0, 0);
         }
 
         // Look up details of stash in db
-        var (isValidItem, stashItemDbItem) = _itemHelper.GetItem(stashTpl);
+        var (isValidItem, stashItemDbItem) = itemHelper.GetItem(stashTpl);
         if (!isValidItem)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText("inventory-stash_not_found", stashTpl)
-            );
+            logger.Error(serverLocalisationService.GetText("inventory-stash_not_found", stashTpl));
 
             return (0, 0);
         }
@@ -1156,7 +1149,7 @@ public class InventoryHelper(
         );
         if (stashObj is null)
         {
-            _logger.Error(_serverLocalisationService.GetText("inventory-unable_to_find_stash"));
+            logger.Error(serverLocalisationService.GetText("inventory-unable_to_find_stash"));
         }
 
         return stashObj?.Template;
@@ -1183,8 +1176,8 @@ public class InventoryHelper(
             var itemToMove = sourceItems.FirstOrDefault(item => item.Id == itemId);
             if (itemToMove is null)
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText(
+                logger.Error(
+                    serverLocalisationService.GetText(
                         "inventory-unable_to_find_item_to_move",
                         itemId
                     )
@@ -1241,15 +1234,15 @@ public class InventoryHelper(
         {
             var noMatchingItemMesage =
                 $"Unable to move item: {moveRequest.Item}, cannot find in inventory";
-            _logger.Error(noMatchingItemMesage);
+            logger.Error(noMatchingItemMesage);
 
             errorMessage = noMatchingItemMesage;
             return false;
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
+            logger.Debug(
                 $"{moveRequest.Action} item: {moveRequest.Item} from slotid: {matchingInventoryItem.SlotId} to container: {moveRequest.To.Container}"
             );
         }
@@ -1260,8 +1253,8 @@ public class InventoryHelper(
             && moveRequest.To.Container == "cartridges"
         )
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
+            logger.Warning(
+                serverLocalisationService.GetText(
                     "inventory-invalid_move_to_container",
                     new
                     {
@@ -1380,7 +1373,7 @@ public class InventoryHelper(
             .ToList();
         foreach (var message in errors)
         {
-            _logger.Error(message);
+            logger.Error(message);
         }
 
         throw new Exception(

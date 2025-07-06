@@ -62,7 +62,10 @@ public class RepeatableQuestHelper(
     /// <param name="traderId">TraderId that should provide this quest</param>
     /// <returns>Cloned quest template</returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public RepeatableQuest? GetClonedQuestTemplateForType(RepeatableQuestType type, string traderId)
+    public RepeatableQuest? GetClonedQuestTemplateForType(
+        RepeatableQuestType type,
+        MongoId traderId
+    )
     {
         var quest = type switch
         {
@@ -109,7 +112,7 @@ public class RepeatableQuestHelper(
         RepeatableQuestType type,
         MongoId traderId,
         PlayerGroup playerGroup,
-        string sessionId
+        MongoId sessionId
     )
     {
         var questData = GetClonedQuestTemplateForType(type, traderId);

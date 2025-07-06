@@ -1439,7 +1439,7 @@ public class ItemHelper(
             0
         ].Filter?.FirstOrDefault();
         ammoBox.Add(
-            CreateCartridges(ammoBox[0].Id, cartridgeTpl, (int)ammoBoxMaxCartridgeCount, 0)
+            CreateCartridges(ammoBox[0].Id, cartridgeTpl.Value, (int)ammoBoxMaxCartridgeCount, 0)
         );
     }
 
@@ -1459,7 +1459,7 @@ public class ItemHelper(
         Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist,
         string? caliber = null,
         double minSizePercent = 0.25,
-        string? defaultCartridgeTpl = null,
+        MongoId? defaultCartridgeTpl = null,
         TemplateItem? weapon = null
     )
     {
@@ -1504,7 +1504,7 @@ public class ItemHelper(
     public void FillMagazineWithCartridge(
         List<Item> magazineWithChildCartridges,
         TemplateItem magTemplate,
-        string cartridgeTpl,
+        MongoId cartridgeTpl,
         double minSizeMultiplier = 0.25
     )
     {
@@ -1624,7 +1624,7 @@ public class ItemHelper(
     protected string? DrawAmmoTpl(
         string caliber,
         Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist,
-        string? fallbackCartridgeTpl = null,
+        MongoId? fallbackCartridgeTpl = null,
         ICollection<MongoId>? cartridgeWhitelist = null
     )
     {
@@ -1677,7 +1677,7 @@ public class ItemHelper(
     /// <param name="stackCount">Count of cartridges inside parent</param>
     /// <param name="location">Location inside parent (e.g. 0, 1)</param>
     /// <returns>Item</returns>
-    public Item CreateCartridges(string parentId, string ammoTpl, int stackCount, double location)
+    public Item CreateCartridges(MongoId parentId, MongoId ammoTpl, int stackCount, double location)
     {
         return new Item
         {
@@ -1957,7 +1957,7 @@ public class ItemHelper(
             );
     }
 
-    public string? GetItemBaseType(MongoId tpl, bool rootOnly = true)
+    public MongoId? GetItemBaseType(MongoId tpl, bool rootOnly = true)
     {
         var result = GetItem(tpl);
         if (!result.Key)
@@ -1992,7 +1992,7 @@ public class ItemHelper(
     ///     Get a 2D grid of a container's item slots
     /// </summary>
     /// <param name="containerTpl">Tpl id of the container</param>
-    public int[,] GetContainerMapping(string containerTpl)
+    public int[,] GetContainerMapping(MongoId containerTpl)
     {
         // Get template from db
         var containerTemplate = GetItem(containerTpl).Value;

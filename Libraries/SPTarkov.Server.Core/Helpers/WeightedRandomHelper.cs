@@ -9,9 +9,9 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class WeightedRandomHelper(
-    ISptLogger<WeightedRandomHelper> _logger,
+    ISptLogger<WeightedRandomHelper> logger,
     ServerLocalisationService localisationService,
-    RandomUtil _randomUtil
+    RandomUtil randomUtil
 )
 {
     /// <summary>
@@ -51,19 +51,19 @@ public class WeightedRandomHelper(
     {
         if (items.Count == 0)
         {
-            _logger.Error(localisationService.GetText("weightedrandomhelper-supplied_items_empty"));
+            logger.Error(localisationService.GetText("weightedrandomhelper-supplied_items_empty"));
         }
 
         if (weights.Count == 0)
         {
-            _logger.Error(
+            logger.Error(
                 localisationService.GetText("weightedrandomhelper-supplied_weights_empty")
             );
         }
 
         if (items.Count != weights.Count)
         {
-            _logger.Error(
+            logger.Error(
                 localisationService.GetText(
                     "weightedrandomhelper-supplied_data_doesnt_match",
                     new { itemCount = items.Count, weightCount = weights.Count }
@@ -78,7 +78,7 @@ public class WeightedRandomHelper(
         {
             if (weights[i] < 0)
             {
-                _logger.Warning($"Weight at index: {i} is negative ({weights[i]}), skipping");
+                logger.Warning($"Weight at index: {i} is negative ({weights[i]}), skipping");
                 continue;
             }
 
@@ -89,12 +89,12 @@ public class WeightedRandomHelper(
         if (sumOfWeights == weights.Count)
         {
             // Weights are all the same, early exit
-            var randomIndex = _randomUtil.GetInt(0, items.Count - 1);
+            var randomIndex = randomUtil.GetInt(0, items.Count - 1);
             return new WeightedRandomResult<T> { Item = items[randomIndex], Index = randomIndex };
         }
 
         // Getting the random number in a range of [0...sum(weights)]
-        var randomNumber = sumOfWeights * _randomUtil.GetDouble(0, 1);
+        var randomNumber = sumOfWeights * randomUtil.GetDouble(0, 1);
 
         // Picking the random item based on its weight.
         for (var itemIndex = 0; itemIndex < items.Count; itemIndex++)

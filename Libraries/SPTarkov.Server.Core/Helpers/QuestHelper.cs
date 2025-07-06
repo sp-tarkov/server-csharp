@@ -22,20 +22,20 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable(InjectionType.Singleton)]
 public class QuestHelper(
-    ISptLogger<QuestHelper> _logger,
-    TimeUtil _timeUtil,
-    ItemHelper _itemHelper,
-    DatabaseService _databaseService,
-    EventOutputHolder _eventOutputHolder,
-    LocaleService _localeService,
-    ProfileHelper _profileHelper,
-    QuestRewardHelper _questRewardHelper,
-    RewardHelper _rewardHelper,
-    ServerLocalisationService _serverLocalisationService,
-    SeasonalEventService _seasonalEventService,
-    MailSendService _mailSendService,
-    ConfigServer _configServer,
-    ICloner _cloner
+    ISptLogger<QuestHelper> logger,
+    TimeUtil timeUtil,
+    ItemHelper itemHelper,
+    DatabaseService databaseService,
+    EventOutputHolder eventOutputHolder,
+    LocaleService localeService,
+    ProfileHelper profileHelper,
+    QuestRewardHelper questRewardHelper,
+    RewardHelper rewardHelper,
+    ServerLocalisationService serverLocalisationService,
+    SeasonalEventService seasonalEventService,
+    MailSendService mailSendService,
+    ConfigServer configServer,
+    ICloner cloner
 )
 {
     protected readonly HashSet<QuestStatusEnum> _startedOrAvailToFinish =
@@ -43,7 +43,7 @@ public class QuestHelper(
         QuestStatusEnum.Started,
         QuestStatusEnum.AvailableForFinish,
     ];
-    protected readonly QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
+    protected readonly QuestConfig _questConfig = configServer.GetConfig<QuestConfig>();
     private Dictionary<string, List<QuestCondition>>? _sellToTraderQuestConditionCache;
 
     /// <summary>
@@ -85,8 +85,8 @@ public class QuestHelper(
             case "=":
                 return playerLevel == conditionValue;
             default:
-                _logger.Error(
-                    _serverLocalisationService.GetText(
+                logger.Error(
+                    serverLocalisationService.GetText(
                         "quest-unable_to_find_compare_condition",
                         condition.CompareMethod
                     )
@@ -147,16 +147,16 @@ public class QuestHelper(
         {
             // Calculate how much progress to add, limiting it to the current level max progress
             var currentLevelRemainingProgress = (currentLevel + 1) * 10 - startingLevelProgress;
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"currentLevelRemainingProgress: {currentLevelRemainingProgress}");
+                logger.Debug($"currentLevelRemainingProgress: {currentLevelRemainingProgress}");
             }
 
             var progressToAdd = Math.Min(remainingProgress, currentLevelRemainingProgress ?? 0);
             var adjustedProgressToAdd = 10 / (currentLevel + 1) * progressToAdd;
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(
+                logger.Debug(
                     $"Progress To Add: {progressToAdd}  Adjusted for level: {adjustedProgressToAdd}"
                 );
             }
@@ -185,7 +185,7 @@ public class QuestHelper(
     public string GetQuestNameFromLocale(string questId)
     {
         var questNameKey = $"{questId} name";
-        return _localeService.GetLocaleDb().GetValueOrDefault(questNameKey, "UNKNOWN");
+        return localeService.GetLocaleDb().GetValueOrDefault(questNameKey, "UNKNOWN");
     }
 
     /// <summary>
@@ -205,8 +205,8 @@ public class QuestHelper(
             )
         )
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
+            logger.Error(
+                serverLocalisationService.GetText(
                     "quest-unable_to_find_trader_in_profile",
                     questProperties.Target
                 )
@@ -238,8 +238,8 @@ public class QuestHelper(
             )
         )
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
+            logger.Error(
+                serverLocalisationService.GetText(
                     "quest-unable_to_find_trader_in_profile",
                     questProperties.Target
                 )
@@ -278,8 +278,8 @@ public class QuestHelper(
                 return current == required;
 
             default:
-                _logger.Error(
-                    _serverLocalisationService.GetText(
+                logger.Error(
+                    serverLocalisationService.GetText(
                         "quest-compare_operator_unhandled",
                         compareMethod
                     )
@@ -309,7 +309,7 @@ public class QuestHelper(
         AcceptQuestRequestData acceptedQuest
     )
     {
-        var currentTimestamp = _timeUtil.GetTimeStamp();
+        var currentTimestamp = timeUtil.GetTimeStamp();
         var existingQuest = pmcData.Quests.FirstOrDefault(q => q.QId == acceptedQuest.QuestId);
         if (existingQuest is not null)
         {
@@ -340,8 +340,8 @@ public class QuestHelper(
         var questDbData = GetQuestFromDb(acceptedQuest.QuestId, pmcData);
         if (questDbData is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
+            logger.Error(
+                serverLocalisationService.GetText(
                     "quest-unable_to_find_quest_in_db",
                     new { questId = acceptedQuest.QuestId, questType = acceptedQuest.Type }
                 )
@@ -374,12 +374,12 @@ public class QuestHelper(
     /// <param name="sessionID">Session/Player id</param>
     /// <returns>Quests accessible to player including newly unlocked quests now quest (startedQuestId) was started</returns>
     public List<Quest> GetNewlyAccessibleQuestsWhenStartingQuest(
-        string startedQuestId,
-        string sessionID
+        MongoId startedQuestId,
+        MongoId sessionID
     )
     {
         // Get quest acceptance data from profile
-        var profile = _profileHelper.GetPmcProfile(sessionID);
+        var profile = profileHelper.GetPmcProfile(sessionID);
         var startedQuestInProfile = profile.Quests.FirstOrDefault(profileQuest =>
             profileQuest.QId == startedQuestId
         );
@@ -479,15 +479,15 @@ public class QuestHelper(
     /// </summary>
     /// <param name="questId">Quest to check</param>
     /// <returns>true = show to player</returns>
-    public bool ShowEventQuestToPlayer(string questId)
+    public bool ShowEventQuestToPlayer(MongoId questId)
     {
-        var isChristmasEventActive = _seasonalEventService.ChristmasEventEnabled();
-        var isHalloweenEventActive = _seasonalEventService.HalloweenEventEnabled();
+        var isChristmasEventActive = seasonalEventService.ChristmasEventEnabled();
+        var isHalloweenEventActive = seasonalEventService.HalloweenEventEnabled();
 
         // Not christmas + quest is for christmas
         if (
             !isChristmasEventActive
-            && _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.Christmas)
+            && seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.Christmas)
         )
         {
             return false;
@@ -496,7 +496,7 @@ public class QuestHelper(
         // Not halloween + quest is for halloween
         if (
             !isHalloweenEventActive
-            && _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.Halloween)
+            && seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.Halloween)
         )
         {
             return false;
@@ -505,7 +505,7 @@ public class QuestHelper(
         // Should non-season event quests be shown to player
         if (
             !_questConfig.ShowNonSeasonalEventQuests
-            && _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.None)
+            && seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.None)
         )
         {
             return false;
@@ -520,7 +520,7 @@ public class QuestHelper(
     /// <param name="playerSide">Player side (usec/bear)</param>
     /// <param name="questId">QuestId to check</param>
     /// <returns>true = quest isn't for player</returns>
-    public bool QuestIsForOtherSide(string playerSide, string questId)
+    public bool QuestIsForOtherSide(string playerSide, MongoId questId)
     {
         var isUsec = string.Equals(playerSide, "usec", StringComparison.OrdinalIgnoreCase);
         if (isUsec && _questConfig.BearOnlyQuests.Contains(questId))
@@ -546,9 +546,9 @@ public class QuestHelper(
     /// <param name="gameVersion">Game version to check against</param>
     /// <param name="questId">Quest id to check</param>
     /// <returns>True = Quest should not be visible to game version</returns>
-    protected bool QuestIsProfileBlacklisted(string gameVersion, string questId)
+    protected bool QuestIsProfileBlacklisted(string gameVersion, MongoId questId)
     {
-        var questBlacklist = _questConfig.ProfileBlacklist?.GetValueOrDefault(gameVersion);
+        var questBlacklist = _questConfig.ProfileBlacklist.GetValueOrDefault(gameVersion);
         if (questBlacklist is null)
         {
             // Not blacklisted
@@ -565,7 +565,7 @@ public class QuestHelper(
     /// <param name="gameVersion">Game version to check against</param>
     /// <param name="questId">Quest id to check</param>
     /// <returns>True = Quest should be visible to game version</returns>
-    protected bool QuestIsProfileWhitelisted(string gameVersion, string questId)
+    protected bool QuestIsProfileWhitelisted(string gameVersion, MongoId questId)
     {
         var questBlacklist = _questConfig.ProfileBlacklist.GetValueOrDefault(gameVersion);
         if (questBlacklist is null)
@@ -583,9 +583,9 @@ public class QuestHelper(
     /// <param name="failedQuestId">Id of the quest failed by player</param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>List of Quest</returns>
-    public List<Quest> FailedUnlocked(string failedQuestId, string sessionId)
+    public List<Quest> FailedUnlocked(MongoId failedQuestId, MongoId sessionId)
     {
-        var profile = _profileHelper.GetPmcProfile(sessionId);
+        var profile = profileHelper.GetPmcProfile(sessionId);
         var profileQuest = profile.Quests.FirstOrDefault(x => x.QId == failedQuestId);
 
         var quests = GetQuestsFromDb()
@@ -626,7 +626,7 @@ public class QuestHelper(
         PmcData pmcData,
         MongoId itemId,
         int newStackSize,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
@@ -634,8 +634,8 @@ public class QuestHelper(
         var inventoryItemIndex = pmcData.Inventory.Items.FindIndex(item => item.Id == itemId);
         if (inventoryItemIndex < 0)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText("quest-item_not_found_in_inventory", itemId)
+            logger.Error(
+                serverLocalisationService.GetText("quest-item_not_found_in_inventory", itemId)
             );
 
             return;
@@ -644,7 +644,7 @@ public class QuestHelper(
         if (newStackSize > 0)
         {
             var item = pmcData.Inventory.Items[inventoryItemIndex];
-            _itemHelper.AddUpdObjectToItem(item);
+            itemHelper.AddUpdObjectToItem(item);
 
             item.Upd.StackObjectsCount = newStackSize;
 
@@ -680,7 +680,7 @@ public class QuestHelper(
     /// <returns>Quest</returns>
     public Quest RemoveQuestConditionsExceptLevel(Quest quest)
     {
-        var updatedQuest = _cloner.Clone(quest);
+        var updatedQuest = cloner.Clone(quest);
         updatedQuest.Conditions.AvailableForStart = updatedQuest
             .Conditions.AvailableForStart.Where(q => q.ConditionType == "Level")
             .ToList();
@@ -720,9 +720,9 @@ public class QuestHelper(
             }
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"GetSellToTraderQuests found: {result.Count} quests");
+            logger.Debug($"GetSellToTraderQuests found: {result.Count} quests");
         }
 
         return result;
@@ -768,8 +768,8 @@ public class QuestHelper(
             // Condition is in profile, but quest doesn't exist in database
             if (!SellToTraderQuestConditionCache.TryGetValue(counter.SourceId, out var conditions))
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText(
+                logger.Error(
+                    serverLocalisationService.GetText(
                         "quest_unable_to_find_quest_in_db_no_type",
                         counter.SourceId
                     )
@@ -812,8 +812,8 @@ public class QuestHelper(
             );
             if (itemDetails is null)
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText(
+                logger.Error(
+                    serverLocalisationService.GetText(
                         "trader-unable_to_find_inventory_item_for_selltotrader_counter",
                         taskCounter.SourceId
                     )
@@ -840,15 +840,15 @@ public class QuestHelper(
     public void FailQuest(
         PmcData pmcData,
         FailQuestRequestData failRequest,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse? output = null
     )
     {
         // Prepare response to send back to client
-        var updatedOutput = output ?? _eventOutputHolder.GetOutput(sessionID);
+        var updatedOutput = output ?? eventOutputHolder.GetOutput(sessionID);
 
         UpdateQuestState(pmcData, QuestStatusEnum.Fail, failRequest.QuestId);
-        var questRewards = _questRewardHelper.ApplyQuestReward(
+        var questRewards = questRewardHelper.ApplyQuestReward(
             pmcData,
             failRequest.QuestId,
             QuestStatusEnum.Fail,
@@ -869,13 +869,13 @@ public class QuestHelper(
         {
             if (quest.FailMessageText.Trim().Any())
             {
-                _mailSendService.SendLocalisedNpcMessageToPlayer(
+                mailSendService.SendLocalisedNpcMessageToPlayer(
                     sessionID,
                     quest?.TraderId ?? matchingRepeatableQuest?.TraderId,
                     MessageType.QuestFail,
                     quest.FailMessageText,
                     questRewards.ToList(),
-                    _timeUtil.GetHoursAsSeconds((int)GetMailItemRedeemTimeHoursForProfile(pmcData))
+                    timeUtil.GetHoursAsSeconds((int)GetMailItemRedeemTimeHoursForProfile(pmcData))
                 );
             }
         }
@@ -892,7 +892,7 @@ public class QuestHelper(
     /// <returns>List of Quest objects</returns>
     public List<Quest> GetQuestsFromDb()
     {
-        return _databaseService.GetQuests().Values.ToList();
+        return databaseService.GetQuests().Values.ToList();
     }
 
     /// <summary>
@@ -901,10 +901,10 @@ public class QuestHelper(
     /// <param name="questId">Id of quest to find</param>
     /// <param name="pmcData">Player profile</param>
     /// <returns>Found quest</returns>
-    public Quest? GetQuestFromDb(string questId, PmcData pmcData)
+    public Quest? GetQuestFromDb(MongoId questId, PmcData pmcData)
     {
         // Maybe a repeatable quest?
-        if (_databaseService.GetQuests().TryGetValue(questId, out var quest))
+        if (databaseService.GetQuests().TryGetValue(questId, out var quest))
         {
             return quest;
         }
@@ -945,7 +945,7 @@ public class QuestHelper(
     /// <returns>Locale Id from locale db</returns>
     public string GetQuestLocaleIdFromDb(string questMessageId)
     {
-        var locale = _localeService.GetLocaleDb();
+        var locale = localeService.GetLocaleDb();
         return locale.GetValueOrDefault(questMessageId, null);
     }
 
@@ -955,14 +955,14 @@ public class QuestHelper(
     /// <param name="pmcData">Profile to update</param>
     /// <param name="newQuestState">New state the quest should be in</param>
     /// <param name="questId">Id of the quest to alter the status of</param>
-    protected void UpdateQuestState(PmcData pmcData, QuestStatusEnum newQuestState, string questId)
+    protected void UpdateQuestState(PmcData pmcData, QuestStatusEnum newQuestState, MongoId questId)
     {
         // Find quest in profile, update status to desired status
         var questToUpdate = pmcData.Quests.FirstOrDefault(quest => quest.QId == questId);
         if (questToUpdate is not null)
         {
             questToUpdate.Status = newQuestState;
-            questToUpdate.StatusTimers[newQuestState] = _timeUtil.GetTimeStamp();
+            questToUpdate.StatusTimers[newQuestState] = timeUtil.GetTimeStamp();
         }
     }
 
@@ -972,12 +972,12 @@ public class QuestHelper(
     /// <param name="pmcData">Profile to update</param>
     /// <param name="newQuestState">New state the quest should be in</param>
     /// <param name="questId">Id of the quest to alter the status of</param>
-    public void ResetQuestState(PmcData pmcData, QuestStatusEnum newQuestState, string questId)
+    public void ResetQuestState(PmcData pmcData, QuestStatusEnum newQuestState, MongoId questId)
     {
         var questToUpdate = pmcData.Quests?.FirstOrDefault(quest => quest.QId == questId);
         if (questToUpdate is not null)
         {
-            var currentTimestamp = _timeUtil.GetTimeStamp();
+            var currentTimestamp = timeUtil.GetTimeStamp();
 
             questToUpdate.Status = newQuestState;
 
@@ -1022,9 +1022,9 @@ public class QuestHelper(
             var questInDb = allQuests.FirstOrDefault(x => x.Id == questId);
             if (questInDb is null)
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
+                if (logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(
+                    logger.Debug(
                         $"Unable to find quest: {questId} in db, cannot get 'FindItem' condition, skipping"
                     );
                 }
@@ -1055,7 +1055,7 @@ public class QuestHelper(
     public void AddAllQuestsToProfile(PmcData pmcProfile, List<QuestStatusEnum> statuses)
     {
         // Iterate over all quests in db
-        var quests = _databaseService.GetQuests();
+        var quests = databaseService.GetQuests();
         foreach (var (key, questData) in quests)
         {
             // Quest from db matches quests in profile, skip
@@ -1068,13 +1068,13 @@ public class QuestHelper(
             var statusesDict = new Dictionary<QuestStatusEnum, double>();
             foreach (var status in statuses)
             {
-                statusesDict.Add(status, _timeUtil.GetTimeStamp());
+                statusesDict.Add(status, timeUtil.GetTimeStamp());
             }
 
             var questRecordToAdd = new QuestStatus
             {
                 QId = key,
-                StartTime = _timeUtil.GetTimeStamp(),
+                StartTime = timeUtil.GetTimeStamp(),
                 Status = statuses[^1], // Get last status in list as currently active status
                 StatusTimers = statusesDict,
                 CompletedConditions = [],
@@ -1102,7 +1102,7 @@ public class QuestHelper(
     /// </summary>
     /// <param name="questId">Id of quest to remove</param>
     /// <param name="quests">Collection of quests to remove id from</param>
-    public void FindAndRemoveQuestFromArrayIfExists(string questId, List<QuestStatus> quests)
+    public void FindAndRemoveQuestFromArrayIfExists(MongoId questId, List<QuestStatus> quests)
     {
         quests.RemoveAll(quest => quest.QId == questId);
     }
@@ -1112,7 +1112,7 @@ public class QuestHelper(
     /// </summary>
     /// <param name="completedQuestId">quest completed id</param>
     /// <returns>Collection of Quest objects</returns>
-    public List<Quest> GetQuestsFailedByCompletingQuest(string completedQuestId)
+    public List<Quest> GetQuestsFailedByCompletingQuest(MongoId completedQuestId)
     {
         var questsInDb = GetQuestsFromDb();
         return questsInDb
@@ -1163,29 +1163,29 @@ public class QuestHelper(
     public ItemEventRouterResponse CompleteQuest(
         PmcData pmcData,
         CompleteQuestRequestData request,
-        string sessionID
+        MongoId sessionID
     )
     {
-        var completeQuestResponse = _eventOutputHolder.GetOutput(sessionID);
+        var completeQuestResponse = eventOutputHolder.GetOutput(sessionID);
         if (!completeQuestResponse.ProfileChanges.TryGetValue(sessionID, out var profileChanges))
         {
-            _logger.Error($"Unable to get profile changes for {sessionID}");
+            logger.Error($"Unable to get profile changes for {sessionID}");
 
             return completeQuestResponse;
         }
 
         // Clone of players quest status prior to any changes
-        var preCompleteProfileQuestsClone = _cloner.Clone(pmcData.Quests);
+        var preCompleteProfileQuestsClone = cloner.Clone(pmcData.Quests);
 
         // Id of quest player just completed
         var completedQuestId = request.QuestId;
 
         // Keep a copy of player quest statuses from their profile (Must be gathered prior to applyQuestReward() & failQuests())
-        var clientQuestsClone = _cloner.Clone(GetClientQuests(sessionID));
+        var clientQuestsClone = cloner.Clone(GetClientQuests(sessionID));
 
         const QuestStatusEnum newQuestState = QuestStatusEnum.Success;
         UpdateQuestState(pmcData, newQuestState, completedQuestId);
-        var questRewards = _questRewardHelper.ApplyQuestReward(
+        var questRewards = questRewardHelper.ApplyQuestReward(
             pmcData,
             request.QuestId,
             newQuestState,
@@ -1250,13 +1250,13 @@ public class QuestHelper(
     /// </summary>
     /// <param name="sessionID">session/player id</param>
     /// <returns>Collection of quests</returns>
-    public List<Quest> GetClientQuests(string sessionID)
+    public List<Quest> GetClientQuests(MongoId sessionID)
     {
         List<Quest> questsToShowPlayer = [];
-        var profile = _profileHelper.GetPmcProfile(sessionID);
+        var profile = profileHelper.GetPmcProfile(sessionID);
         if (profile is null)
         {
-            _logger.Error($"Profile {sessionID} not found, unable to return quests");
+            logger.Error($"Profile {sessionID} not found, unable to return quests");
 
             return [];
         }
@@ -1293,9 +1293,9 @@ public class QuestHelper(
             // Player can use trader mods then remove them, leaving quests behind
             if (!profile.TradersInfo.ContainsKey(quest.TraderId))
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
+                if (logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(
+                    logger.Debug(
                         $"Unable to show quest: {quest.QuestName} as its for a trader: {quest.TraderId} that no longer exists."
                     );
                 }
@@ -1358,10 +1358,10 @@ public class QuestHelper(
                         out var previousQuestCompleteTime
                     );
                     var unlockTime = previousQuestCompleteTime + conditionToFulfil.AvailableAfter;
-                    if (unlockTime > _timeUtil.GetTimeStamp())
+                    if (unlockTime > timeUtil.GetTimeStamp())
                     {
-                        _logger.Debug(
-                            $"Quest {quest.QuestName} is locked for another: {unlockTime - _timeUtil.GetTimeStamp()} seconds"
+                        logger.Debug(
+                            $"Quest {quest.QuestName} is locked for another: {unlockTime - timeUtil.GetTimeStamp()} seconds"
                         );
                     }
                 }
@@ -1415,7 +1415,7 @@ public class QuestHelper(
     /// <returns>Collection of Quest objects with the rewards filtered correctly for the game version</returns>
     protected List<Quest> UpdateQuestsForGameEdition(List<Quest> quests, string gameVersion)
     {
-        var modifiedQuests = _cloner.Clone(quests);
+        var modifiedQuests = cloner.Clone(quests);
         foreach (var quest in modifiedQuests)
         {
             // Remove any reward that doesn't pass the game edition check
@@ -1428,7 +1428,7 @@ public class QuestHelper(
                 }
 
                 propsAsDict[rewardType.Key] = ((List<Reward>)propsAsDict[rewardType.Key])
-                    .Where(reward => _rewardHelper.RewardIsForGameEdition(reward, gameVersion))
+                    .Where(reward => rewardHelper.RewardIsForGameEdition(reward, gameVersion))
                     .ToList();
             }
         }
@@ -1443,7 +1443,7 @@ public class QuestHelper(
     /// <param name="pmcProfile"></param>
     /// <returns>Collection of Quest objects</returns>
     protected List<Quest> GetQuestsFromProfileFailedByCompletingQuest(
-        string completedQuestId,
+        MongoId completedQuestId,
         PmcData pmcProfile
     )
     {
@@ -1511,7 +1511,7 @@ public class QuestHelper(
      * @param output Client output
      */
     protected void FailQuests(
-        string sessionID,
+        MongoId sessionID,
         PmcData pmcData,
         List<Quest> questsToFail,
         ItemEventRouterResponse output
@@ -1555,11 +1555,11 @@ public class QuestHelper(
                     statusTimers.Add(QuestStatusEnum.Fail, 0);
                 }
 
-                statusTimers[QuestStatusEnum.Fail] = _timeUtil.GetTimeStamp();
+                statusTimers[QuestStatusEnum.Fail] = timeUtil.GetTimeStamp();
                 var questData = new QuestStatus
                 {
                     QId = questToFail.Id,
-                    StartTime = _timeUtil.GetTimeStamp(),
+                    StartTime = timeUtil.GetTimeStamp(),
                     StatusTimers = statusTimers,
                     Status = QuestStatusEnum.Fail,
                 };
@@ -1576,21 +1576,21 @@ public class QuestHelper(
      * @param questRewards Rewards given to player
      */
     protected void SendSuccessDialogMessageOnQuestComplete(
-        string sessionID,
+        MongoId sessionID,
         PmcData pmcData,
-        string completedQuestId,
+        MongoId completedQuestId,
         List<Item> questRewards
     )
     {
         var quest = GetQuestFromDb(completedQuestId, pmcData);
 
-        _mailSendService.SendLocalisedNpcMessageToPlayer(
+        mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionID,
             quest.TraderId,
             MessageType.QuestSuccess,
             quest.SuccessMessageText,
             questRewards,
-            _timeUtil.GetHoursAsSeconds((int)GetMailItemRedeemTimeHoursForProfile(pmcData))
+            timeUtil.GetHoursAsSeconds((int)GetMailItemRedeemTimeHoursForProfile(pmcData))
         );
     }
 
@@ -1603,7 +1603,7 @@ public class QuestHelper(
     protected void AddTimeLockedQuestsToProfile(
         PmcData pmcData,
         List<Quest> quests,
-        string completedQuestId
+        MongoId completedQuestId
     )
     {
         // Iterate over quests, look for quests with right criteria
@@ -1622,7 +1622,7 @@ public class QuestHelper(
             {
                 // Now + wait time
                 var availableAfterTimestamp =
-                    _timeUtil.GetTimeStamp() + nextQuestWaitCondition.AvailableAfter;
+                    timeUtil.GetTimeStamp() + nextQuestWaitCondition.AvailableAfter;
 
                 // Update quest in profile with status of AvailableAfter
                 var existingQuestInProfile = pmcData.Quests.FirstOrDefault(x => x.QId == quest.Id);
@@ -1644,7 +1644,7 @@ public class QuestHelper(
                         Status = QuestStatusEnum.AvailableAfter,
                         StatusTimers = new Dictionary<QuestStatusEnum, double>
                         {
-                            { QuestStatusEnum.AvailableAfter, _timeUtil.GetTimeStamp() },
+                            { QuestStatusEnum.AvailableAfter, timeUtil.GetTimeStamp() },
                         },
                         AvailableAfter = availableAfterTimestamp,
                     }
@@ -1658,16 +1658,16 @@ public class QuestHelper(
      * @param sessionId Player id
      * @param questIdToRemove Qid of quest to remove
      */
-    protected void RemoveQuestFromScavProfile(string sessionId, string questIdToRemove)
+    protected void RemoveQuestFromScavProfile(MongoId sessionId, MongoId questIdToRemove)
     {
-        var fullProfile = _profileHelper.GetFullProfile(sessionId);
+        var fullProfile = profileHelper.GetFullProfile(sessionId);
         var repeatableInScavProfile = fullProfile.CharacterData.ScavData.Quests?.FirstOrDefault(x =>
             x.QId == questIdToRemove
         );
         if (repeatableInScavProfile is null)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
+            logger.Warning(
+                serverLocalisationService.GetText(
                     "quest-unable_to_remove_scav_quest_from_profile",
                     new { scavQuestId = questIdToRemove, profileId = sessionId }
                 )

@@ -70,12 +70,16 @@ public class HandbookHelper(
             result.Categories.ById.TryAdd(handbookCategory.Id, handbookCategory.ParentId);
             if (handbookCategory.ParentId is not null)
             {
-                if (!result.Categories.ByParent.TryGetValue(handbookCategory.ParentId, out _))
+                if (!result.Categories.ByParent.TryGetValue(handbookCategory.ParentId.Value, out _))
                 {
-                    result.Categories.ByParent.TryAdd(handbookCategory.ParentId, []);
+                    result.Categories.ByParent.TryAdd(handbookCategory.ParentId.Value, []);
                 }
 
-                result.Categories.ByParent.TryGetValue(handbookCategory.ParentId, out var itemIds);
+                result.Categories.ByParent.TryGetValue(
+                    handbookCategory.ParentId.Value,
+                    out var itemIds
+                );
+
                 itemIds.Add(handbookCategory.Id);
             }
         }
@@ -142,7 +146,7 @@ public class HandbookHelper(
     /// </summary>
     /// <param name="parentId"></param>
     /// <returns>string array</returns>
-    public List<string> TemplatesWithParent(string parentId)
+    public List<MongoId> TemplatesWithParent(MongoId parentId)
     {
         HandbookPriceCache.Items.ByParent.TryGetValue(parentId, out var template);
 
@@ -213,23 +217,23 @@ public class HandbookHelper(
         public LookupItem()
         {
             ById = new Dictionary<MongoId, T>();
-            ByParent = new Dictionary<string, List<I>>();
+            ByParent = new Dictionary<MongoId, List<I>>();
         }
 
         public Dictionary<MongoId, T> ById { get; set; }
 
-        public Dictionary<string, List<I>> ByParent { get; set; }
+        public Dictionary<MongoId, List<I>> ByParent { get; set; }
     }
 
     protected record LookupCollection
     {
         public LookupCollection()
         {
-            Items = new LookupItem<double, string>();
+            Items = new LookupItem<double, MongoId>();
             Categories = new LookupItem<string, string>();
         }
 
-        public LookupItem<double, string> Items { get; set; }
+        public LookupItem<double, MongoId> Items { get; set; }
 
         public LookupItem<string, string> Categories { get; set; }
     }

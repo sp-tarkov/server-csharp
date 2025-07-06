@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
@@ -11,7 +12,7 @@ public record Achievement
     public required int Index { get; set; }
 
     [JsonPropertyName("id")]
-    public required string Id { get; set; }
+    public required MongoId Id { get; set; }
 
     [JsonPropertyName("imageUrl")]
     public required string ImageUrl { get; set; }
