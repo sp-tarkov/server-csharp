@@ -14,19 +14,19 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class BtrDeliveryService(
-    ISptLogger<BtrDeliveryService> _logger,
-    DatabaseService _databaseService,
-    RandomUtil _randomUtil,
-    TimeUtil _timeUtil,
-    SaveServer _saveServer,
-    MailSendService _mailSendService,
-    ConfigServer _configServer,
-    ServerLocalisationService _serverLocalisationService
+    ISptLogger<BtrDeliveryService> logger,
+    DatabaseService databaseService,
+    RandomUtil randomUtil,
+    TimeUtil timeUtil,
+    SaveServer saveServer,
+    MailSendService mailSendService,
+    ConfigServer configServer,
+    ServerLocalisationService serverLocalisationService
 )
 {
     protected readonly BtrDeliveryConfig _btrDeliveryConfig =
-        _configServer.GetConfig<BtrDeliveryConfig>();
-    protected readonly TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
+        configServer.GetConfig<BtrDeliveryConfig>();
+    protected readonly TraderConfig _traderConfig = configServer.GetConfig<TraderConfig>();
 
     protected static readonly List<string> _transferTypes = new() { "btr", "transit" };
 
@@ -35,7 +35,7 @@ public class BtrDeliveryService(
     /// </summary>
     /// <param name="sessionId"> Session ID </param>
     /// <param name="request"> End raid request from client </param>
-    public void HandleItemTransferEvent(string sessionId, EndLocalRaidRequestData request)
+    public void HandleItemTransferEvent(MongoId sessionId, EndLocalRaidRequestData request)
     {
         foreach (var transferType in _transferTypes)
         {
@@ -59,9 +59,9 @@ public class BtrDeliveryService(
         }
     }
 
-    protected void HandleTransferItemDelivery(string sessionId, List<Item> items)
+    protected void HandleTransferItemDelivery(MongoId sessionId, List<Item> items)
     {
-        var serverProfile = _saveServer.GetProfile(sessionId);
+        var serverProfile = saveServer.GetProfile(sessionId);
         var pmcData = serverProfile.CharacterData.PmcData;
 
         // Remove any items that were returned by the item delivery, but also insured, from the player's insurance list
@@ -71,13 +71,13 @@ public class BtrDeliveryService(
             .InsuredItems.Where(insuredItem => !deliveredItemIds.Contains(insuredItem.ItemId.Value))
             .ToList();
 
-        if (_saveServer.GetProfile(sessionId).BtrDeliveryList == null)
+        if (saveServer.GetProfile(sessionId).BtrDeliveryList == null)
         {
-            _saveServer.GetProfile(sessionId).BtrDeliveryList = new List<BtrDelivery>();
+            saveServer.GetProfile(sessionId).BtrDeliveryList = new List<BtrDelivery>();
         }
 
         // Store delivery to send to player later in profile
-        _saveServer
+        saveServer
             .GetProfile(sessionId)
             .BtrDeliveryList.Add(
                 new BtrDelivery
@@ -89,13 +89,13 @@ public class BtrDeliveryService(
             );
     }
 
-    public void SendBTRDelivery(string sessionId, List<Item> items)
+    public void SendBTRDelivery(MongoId sessionId, List<Item> items)
     {
-        var dialogueTemplates = _databaseService.GetTrader(Traders.BTR).Dialogue;
+        var dialogueTemplates = databaseService.GetTrader(Traders.BTR).Dialogue;
         if (dialogueTemplates is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
+            logger.Error(
+                serverLocalisationService.GetText(
                     "inraid-unable_to_deliver_item_no_trader_found",
                     Traders.BTR
                 )
@@ -105,8 +105,8 @@ public class BtrDeliveryService(
 
         if (!dialogueTemplates.TryGetValue("itemsDelivered", out var itemsDelivered))
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
+            logger.Error(
+                serverLocalisationService.GetText(
                     "btr-unable_to_find_items_in_dialog_template",
                     sessionId
                 )
@@ -115,13 +115,13 @@ public class BtrDeliveryService(
             return;
         }
 
-        var messageId = _randomUtil.GetArrayValue(itemsDelivered);
-        var messageStoreTime = _timeUtil.GetHoursAsSeconds(
+        var messageId = randomUtil.GetArrayValue(itemsDelivered);
+        var messageStoreTime = timeUtil.GetHoursAsSeconds(
             _traderConfig.Fence.BtrDeliveryExpireHours
         );
 
         // Send the items to the player
-        _mailSendService.SendLocalisedNpcMessageToPlayer(
+        mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionId,
             Traders.BTR,
             MessageType.BtrItemsDelivery,
@@ -136,16 +136,16 @@ public class BtrDeliveryService(
     /// </summary>
     /// <param name="sessionId">The session ID of the profile to remove the package from.</param>
     /// <param name="delivery">The BTR delivery package to remove.</param>
-    public void RemoveBTRDeliveryPackageFromProfile(string sessionId, BtrDelivery delivery)
+    public void RemoveBTRDeliveryPackageFromProfile(MongoId sessionId, BtrDelivery delivery)
     {
-        var profile = _saveServer.GetProfile(sessionId);
+        var profile = saveServer.GetProfile(sessionId);
         profile.BtrDeliveryList = profile
             .BtrDeliveryList.Where(package => package.Id != delivery.Id)
             .ToList();
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
+            logger.Debug(
                 $"Removed processed BTR delivery package. Remaining packages: {profile.BtrDeliveryList.Count}"
             );
         }
@@ -160,16 +160,16 @@ public class BtrDeliveryService(
         // If override in config is non-zero, use that
         if (_btrDeliveryConfig.ReturnTimeOverrideSeconds > 0)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(
+                logger.Debug(
                     $"BTR delivery override used: returning in {_btrDeliveryConfig.ReturnTimeOverrideSeconds} seconds"
                 );
             }
 
-            return _timeUtil.GetTimeStamp() + _btrDeliveryConfig.ReturnTimeOverrideSeconds;
+            return timeUtil.GetTimeStamp() + _btrDeliveryConfig.ReturnTimeOverrideSeconds;
         }
 
-        return _timeUtil.GetTimeStamp();
+        return timeUtil.GetTimeStamp();
     }
 }

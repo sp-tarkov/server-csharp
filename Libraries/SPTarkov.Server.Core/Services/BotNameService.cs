@@ -12,16 +12,16 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class BotNameService(
-    ISptLogger<BotNameService> _logger,
-    BotHelper _botHelper,
-    RandomUtil _randomUtil,
-    ServerLocalisationService _serverLocalisationService,
-    DatabaseService _databaseService,
-    ConfigServer _configServer
+    ISptLogger<BotNameService> logger,
+    BotHelper botHelper,
+    RandomUtil randomUtil,
+    ServerLocalisationService serverLocalisationService,
+    DatabaseService databaseService,
+    ConfigServer configServer
 )
 {
     protected readonly Lock _lockObject = new();
-    protected readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
     protected readonly HashSet<string> _usedNameCache = new();
 
     /// <summary>
@@ -60,11 +60,11 @@ public class BotNameService(
         {
             // Get bot name with leading/trailing whitespace removed
             var name = isPmc.GetValueOrDefault(false) // Explicit handling of PMCs, all other bots will get "first_name last_name"
-                ? _botHelper.GetPmcNicknameOfMaxLength(
+                ? botHelper.GetPmcNicknameOfMaxLength(
                     _botConfig.BotNameLengthLimit,
                     botGenerationDetails.Side
                 )
-                : $"{_randomUtil.GetArrayValue(botJsonTemplate.FirstNames)} {(botJsonTemplate.LastNames.Count > 0 ? _randomUtil.GetArrayValue(botJsonTemplate.LastNames) : "")}";
+                : $"{randomUtil.GetArrayValue(botJsonTemplate.FirstNames)} {(botJsonTemplate.LastNames.Count > 0 ? randomUtil.GetArrayValue(botJsonTemplate.LastNames) : "")}";
 
             name = name.Trim();
 
@@ -80,7 +80,7 @@ public class BotNameService(
                 && botGenerationDetails.AllPmcsHaveSameNameAsPlayer.GetValueOrDefault(false)
             )
             {
-                var prefix = _serverLocalisationService.GetRandomTextThatMatchesPartialKey(
+                var prefix = serverLocalisationService.GetRandomTextThatMatchesPartialKey(
                     "pmc-name_prefix_"
                 );
                 name = $"{prefix} {name}";
@@ -97,10 +97,10 @@ public class BotNameService(
                     {
                         // 5 attempts to generate a name, pool probably isn't big enough
                         var genericName =
-                            $"{botGenerationDetails.Side} {_randomUtil.GetInt(100000, 999999)}";
-                        if (_logger.IsLogEnabled(LogLevel.Debug))
+                            $"{botGenerationDetails.Side} {randomUtil.GetInt(100000, 999999)}";
+                        if (logger.IsLogEnabled(LogLevel.Debug))
                         {
-                            _logger.Debug(
+                            logger.Debug(
                                 $"Failed to find unique name for: {botRole} {botGenerationDetails.Side} after 5 attempts, using: {genericName}"
                             );
                         }
@@ -158,12 +158,12 @@ public class BotNameService(
     /// <returns>PMC name as string</returns>
     protected string GetRandomPmcName()
     {
-        var bots = _databaseService.GetBots().Types;
+        var bots = databaseService.GetBots().Types;
 
         var pmcNames = new List<string>();
         pmcNames.AddRange(bots["usec"].FirstNames);
         pmcNames.AddRange(bots["bear"].FirstNames);
 
-        return _randomUtil.GetArrayValue(pmcNames);
+        return randomUtil.GetArrayValue(pmcNames);
     }
 }

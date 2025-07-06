@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
@@ -12,12 +13,12 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class BotWeaponModLimitService(
-    ISptLogger<BotWeaponModLimitService> _logger,
-    ConfigServer _configServer,
-    ItemHelper _itemHelper
+    ISptLogger<BotWeaponModLimitService> logger,
+    ConfigServer configServer,
+    ItemHelper itemHelper
 )
 {
-    protected readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
 
     /// <summary>
     ///     Initalise mod limits to be used when generating a weapon
@@ -79,7 +80,7 @@ public class BotWeaponModLimitService(
             // If weapon already has a longer ranged scope on it, allow ncstar to be spawned
             if (
                 weapon.Any(item =>
-                    _itemHelper.IsOfBaseclasses(
+                    itemHelper.IsOfBaseclasses(
                         item.Template,
                         [
                             BaseClasses.ASSAULT_SCOPE,
@@ -97,8 +98,8 @@ public class BotWeaponModLimitService(
         }
 
         // Mods parent is scope and mod is scope, allow it (adds those mini-sights to the tops of sights)
-        var modIsScope = _itemHelper.IsOfBaseclasses(modTemplate.Id, modLimits.ScopeBaseTypes);
-        if (_itemHelper.IsOfBaseclasses(modsParent.Id, modLimits.ScopeBaseTypes) && modIsScope)
+        var modIsScope = itemHelper.IsOfBaseclasses(modTemplate.Id, modLimits.ScopeBaseTypes);
+        if (itemHelper.IsOfBaseclasses(modsParent.Id, modLimits.ScopeBaseTypes) && modIsScope)
         {
             return false;
         }
@@ -122,8 +123,8 @@ public class BotWeaponModLimitService(
         if (
             modLimits.Scope.Count >= modLimits.ScopeMax
             && modTemplate.Properties.Slots?.Count == 1
-            && _itemHelper.IsOfBaseclass(modTemplate.Id, BaseClasses.MOUNT)
-            && !_itemHelper.IsOfBaseclass(modsParent.Id, BaseClasses.MOUNT)
+            && itemHelper.IsOfBaseclass(modTemplate.Id, BaseClasses.MOUNT)
+            && !itemHelper.IsOfBaseclass(modsParent.Id, BaseClasses.MOUNT)
             && modTemplate.Properties.Slots.Any(slot => slot.Name == "mod_scope")
         )
         {
@@ -131,7 +132,7 @@ public class BotWeaponModLimitService(
         }
 
         // If mod is a light/laser, return if limit reached
-        var modIsLightOrLaser = _itemHelper.IsOfBaseclasses(
+        var modIsLightOrLaser = itemHelper.IsOfBaseclasses(
             modTemplate.Id,
             modLimits.FlashlightLaserBaseTypes
         );
@@ -149,7 +150,7 @@ public class BotWeaponModLimitService(
         if (
             modLimits.Scope.Count >= modLimits.ScopeMax
             && modTemplate.Properties.Slots?.Count == 1
-            && _itemHelper.IsOfBaseclass(modTemplate.Id, BaseClasses.MOUNT)
+            && itemHelper.IsOfBaseclass(modTemplate.Id, BaseClasses.MOUNT)
             && modTemplate.Properties.Slots.Any(slot => slot.Name == "mod_flashlight")
         )
         {
@@ -168,7 +169,7 @@ public class BotWeaponModLimitService(
     /// <param name="botRole">role of bot we're checking weapon of</param>
     /// <returns>true if limit reached</returns>
     protected bool WeaponModLimitReached(
-        string modTpl,
+        MongoId modTpl,
         ItemCount currentCount,
         int? maxLimit,
         string botRole
@@ -183,9 +184,9 @@ public class BotWeaponModLimitService(
         // Has mod limit for bot type been reached
         if (currentCount.Count >= maxLimit)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(
+                logger.Debug(
                     $"[{botRole}] scope limit reached! tried to add {modTpl} but scope count is {currentCount.Count}"
                 );
             }

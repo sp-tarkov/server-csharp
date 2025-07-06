@@ -13,11 +13,11 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class BotLootCacheService(
-    ISptLogger<BotLootCacheService> _logger,
-    ItemHelper _itemHelper,
-    PMCLootGenerator _pmcLootGenerator,
-    ServerLocalisationService _serverLocalisationService,
-    ICloner _cloner
+    ISptLogger<BotLootCacheService> logger,
+    ItemHelper itemHelper,
+    PMCLootGenerator pmcLootGenerator,
+    ServerLocalisationService serverLocalisationService,
+    ICloner cloner
 )
 {
     protected readonly ConcurrentDictionary<string, BotLootCache> _lootCache = new();
@@ -64,7 +64,7 @@ public class BotLootCacheService(
 
         if (!_lootCache.TryGetValue(botRole, out var botRoleCache))
         {
-            _logger.Error($"Unable to find: {botRole} in loot cache");
+            logger.Error($"Unable to find: {botRole} in loot cache");
             return [];
         }
 
@@ -111,8 +111,8 @@ public class BotLootCacheService(
                 result = botRoleCache.StimItems;
                 break;
             default:
-                _logger.Error(
-                    _serverLocalisationService.GetText(
+                logger.Error(
+                    serverLocalisationService.GetText(
                         "bot-loot_type_not_found",
                         new
                         {
@@ -135,13 +135,13 @@ public class BotLootCacheService(
         if (itemPriceMinMax is null)
         {
             // No filtering requested, exit
-            return _cloner.Clone(result);
+            return cloner.Clone(result);
         }
 
         // Filter the loot pool prior to returning
         var filteredResult = result.Where(i =>
         {
-            var itemPrice = _itemHelper.GetItemPrice(i.Key);
+            var itemPrice = itemHelper.GetItemPrice(i.Key);
             if (itemPriceMinMax?.Min is not null && itemPriceMinMax?.Max is not null)
             {
                 return itemPrice >= itemPriceMinMax?.Min && itemPrice <= itemPriceMinMax?.Max;
@@ -160,7 +160,7 @@ public class BotLootCacheService(
             return false;
         });
 
-        return _cloner.Clone(filteredResult.ToDictionary(pair => pair.Key, pair => pair.Value));
+        return cloner.Clone(filteredResult.ToDictionary(pair => pair.Key, pair => pair.Value));
     }
 
     /// <summary>
@@ -185,13 +185,9 @@ public class BotLootCacheService(
         if (isPmc)
         {
             // Replace lootPool from bot json with our own generated list for PMCs
-            lootPool.Backpack = _cloner.Clone(
-                _pmcLootGenerator.GeneratePMCBackpackLootPool(botRole)
-            );
-            lootPool.Pockets = _cloner.Clone(_pmcLootGenerator.GeneratePMCPocketLootPool(botRole));
-            lootPool.TacticalVest = _cloner.Clone(
-                _pmcLootGenerator.GeneratePMCVestLootPool(botRole)
-            );
+            lootPool.Backpack = cloner.Clone(pmcLootGenerator.GeneratePMCBackpackLootPool(botRole));
+            lootPool.Pockets = cloner.Clone(pmcLootGenerator.GeneratePMCPocketLootPool(botRole));
+            lootPool.TacticalVest = cloner.Clone(pmcLootGenerator.GeneratePMCVestLootPool(botRole));
         }
 
         // Backpack/Pockets etc
@@ -231,7 +227,7 @@ public class BotLootCacheService(
                     AddItemsToPool(backpackLootPool, itemPool);
                     break;
                 default:
-                    _logger.Warning($"How did you get here {containerType}");
+                    logger.Warning($"How did you get here {containerType}");
                     break;
             }
 
@@ -255,7 +251,7 @@ public class BotLootCacheService(
             // No whitelist, find and assign from combined item pool
             foreach (var itemKvP in specialLootPool)
             {
-                var itemTemplate = _itemHelper.GetItem(itemKvP.Key).Value;
+                var itemTemplate = itemHelper.GetItem(itemKvP.Key).Value;
                 if (
                     !(
                         IsBulletOrGrenade(itemTemplate.Properties)
@@ -295,7 +291,7 @@ public class BotLootCacheService(
 
         foreach (var itemKvP in combinedLootPool)
         {
-            var itemTemplate = _itemHelper.GetItem(itemKvP.Key).Value;
+            var itemTemplate = itemHelper.GetItem(itemKvP.Key).Value;
             if (itemTemplate is null)
             {
                 continue;
@@ -333,7 +329,7 @@ public class BotLootCacheService(
 
             if (addFoodItems)
             {
-                if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.FOOD))
+                if (itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.FOOD))
                 {
                     lock (_foodLock)
                     {
@@ -344,7 +340,7 @@ public class BotLootCacheService(
 
             if (addDrinkItems)
             {
-                if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.DRINK))
+                if (itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.DRINK))
                 {
                     lock (_drinkLock)
                     {
@@ -355,7 +351,7 @@ public class BotLootCacheService(
 
             if (addCurrencyItems)
             {
-                if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.MONEY))
+                if (itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.MONEY))
                 {
                     lock (_currencyLock)
                     {
@@ -423,7 +419,7 @@ public class BotLootCacheService(
         var filteredVestItems = new Dictionary<MongoId, double>();
         foreach (var itemKvP in vestLootPool)
         {
-            var itemResult = _itemHelper.GetItem(itemKvP.Key);
+            var itemResult = itemHelper.GetItem(itemKvP.Key);
             if (itemResult.Value is null)
             {
                 continue;
@@ -455,7 +451,7 @@ public class BotLootCacheService(
 
         if (!_lootCache.TryGetValue(botRole, out var cacheForRole))
         {
-            _logger.Error($"Unable to get loot cache value using key: {botRole}");
+            logger.Error($"Unable to get loot cache value using key: {botRole}");
 
             return;
         }
@@ -488,7 +484,7 @@ public class BotLootCacheService(
         var filteredItems = new Dictionary<MongoId, double>();
         foreach (var (itemTpl, itemWeight) in lootPool)
         {
-            var (isValidItem, itemTemplate) = _itemHelper.GetItem(itemTpl);
+            var (isValidItem, itemTemplate) = itemHelper.GetItem(itemTpl);
             if (!isValidItem)
             {
                 continue;
@@ -579,17 +575,17 @@ public class BotLootCacheService(
 
     protected bool IsFood(MongoId tpl)
     {
-        return _itemHelper.IsOfBaseclass(tpl, BaseClasses.FOOD);
+        return itemHelper.IsOfBaseclass(tpl, BaseClasses.FOOD);
     }
 
     protected bool IsDrink(MongoId tpl)
     {
-        return _itemHelper.IsOfBaseclass(tpl, BaseClasses.DRINK);
+        return itemHelper.IsOfBaseclass(tpl, BaseClasses.DRINK);
     }
 
     protected bool IsCurrency(MongoId tpl)
     {
-        return _itemHelper.IsOfBaseclass(tpl, BaseClasses.MONEY);
+        return itemHelper.IsOfBaseclass(tpl, BaseClasses.MONEY);
     }
 
     /// <summary>

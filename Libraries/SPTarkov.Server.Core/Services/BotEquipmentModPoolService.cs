@@ -215,7 +215,7 @@ public class BotEquipmentModPoolService(
     /// </summary>
     /// <param name="itemTpl"> Weapons tpl to look up mods for </param>
     /// <returns> Dictionary of mods (keys are mod slot names) with array of compatible mod tpls as value </returns>
-    public Dictionary<string, HashSet<MongoId>>? GetRequiredModsForWeaponSlot(MongoId itemTpl)
+    public Dictionary<string, HashSet<MongoId>> GetRequiredModsForWeaponSlot(MongoId itemTpl)
     {
         var result = new Dictionary<string, HashSet<MongoId>>();
 

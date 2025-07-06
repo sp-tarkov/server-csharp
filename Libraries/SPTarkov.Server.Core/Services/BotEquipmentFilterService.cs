@@ -33,7 +33,7 @@ public class BotEquipmentFilterService(
     /// <param name="botLevel">Level of the bot</param>
     /// <param name="botGenerationDetails">details on how to generate a bot</param>
     public void FilterBotEquipment(
-        string sessionId,
+        MongoId sessionId,
         BotType baseBotNode,
         int botLevel,
         BotGenerationDetails botGenerationDetails
