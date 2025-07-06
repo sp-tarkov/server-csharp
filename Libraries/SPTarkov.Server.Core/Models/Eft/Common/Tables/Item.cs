@@ -65,7 +65,7 @@ public record HideoutItem
     public MongoId Id { get; set; }
 
     [JsonPropertyName("_tpl")]
-    public required MongoId Template { get; set; }
+    public MongoId Template { get; set; }
 
     [JsonPropertyName("upd")]
     public Upd? Upd { get; set; }
