@@ -481,7 +481,7 @@ public class RagfairController
         foreach (var offer in offers)
         {
             // Exclude barter items, they tend to have outrageous equivalent prices
-            if (offer.Requirements.Any(req => !_paymentHelper.IsMoneyTpl(req.Template)))
+            if (offer.Requirements.Any(req => !_paymentHelper.IsMoneyTpl(req.TemplateId)))
             {
                 continue;
             }

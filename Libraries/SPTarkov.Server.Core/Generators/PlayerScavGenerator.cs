@@ -20,38 +20,38 @@ namespace SPTarkov.Server.Core.Generators;
 
 [Injectable]
 public class PlayerScavGenerator(
-    ISptLogger<PlayerScavGenerator> _logger,
-    RandomUtil _randomUtil,
-    DatabaseService _databaseService,
-    ItemHelper _itemHelper,
-    BotGeneratorHelper _botGeneratorHelper,
-    SaveServer _saveServer,
-    ProfileHelper _profileHelper,
-    BotHelper _botHelper,
-    FenceService _fenceService,
-    BotLootCacheService _botLootCacheService,
-    ServerLocalisationService _serverLocalisationService,
-    BotGenerator _botGenerator,
-    ConfigServer _configServer,
-    ICloner _cloner,
-    TimeUtil _timeUtil
+    ISptLogger<PlayerScavGenerator> logger,
+    RandomUtil randomUtil,
+    DatabaseService databaseService,
+    ItemHelper itemHelper,
+    BotGeneratorHelper botGeneratorHelper,
+    SaveServer saveServer,
+    ProfileHelper profileHelper,
+    BotHelper botHelper,
+    FenceService fenceService,
+    BotLootCacheService botLootCacheService,
+    ServerLocalisationService serverLocalisationService,
+    BotGenerator botGenerator,
+    ConfigServer configServer,
+    ICloner cloner,
+    TimeUtil timeUtil
 )
 {
     protected readonly PlayerScavConfig _playerScavConfig =
-        _configServer.GetConfig<PlayerScavConfig>();
+        configServer.GetConfig<PlayerScavConfig>();
 
     /// <summary>
     ///     Update a player profile to include a new player scav profile
     /// </summary>
     /// <param name="sessionID">session id to specify what profile is updated</param>
     /// <returns>profile object</returns>
-    public PmcData Generate(string sessionID)
+    public PmcData Generate(MongoId sessionID)
     {
         // get karma level from profile
-        var profile = _saveServer.GetProfile(sessionID);
-        var profileCharactersClone = _cloner.Clone(profile.CharacterData);
-        var pmcDataClone = _cloner.Clone(profileCharactersClone.PmcData);
-        var existingScavDataClone = _cloner.Clone(profileCharactersClone.ScavData);
+        var profile = saveServer.GetProfile(sessionID);
+        var profileCharactersClone = cloner.Clone(profile.CharacterData);
+        var pmcDataClone = cloner.Clone(profileCharactersClone.PmcData);
+        var existingScavDataClone = cloner.Clone(profileCharactersClone.ScavData);
 
         var scavKarmaLevel = pmcDataClone.GetScavKarmaLevel();
 
@@ -63,14 +63,14 @@ public class PlayerScavGenerator(
             )
         )
         {
-            _logger.Error(
-                _serverLocalisationService.GetText("scav-missing_karma_settings", scavKarmaLevel)
+            logger.Error(
+                serverLocalisationService.GetText("scav-missing_karma_settings", scavKarmaLevel)
             );
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"Generated player scav loadout with karma level {scavKarmaLevel}");
+            logger.Debug($"Generated player scav loadout with karma level {scavKarmaLevel}");
         }
 
         // Edit baseBotNode values
@@ -78,7 +78,7 @@ public class PlayerScavGenerator(
 
         AdjustBotTemplateWithKarmaSpecificSettings(playerScavKarmaSettings, baseBotNode);
 
-        var scavData = _botGenerator.GeneratePlayerScav(
+        var scavData = botGenerator.GeneratePlayerScav(
             sessionID,
             playerScavKarmaSettings.BotTypeForLoot.ToLowerInvariant(),
             "easy",
@@ -87,7 +87,7 @@ public class PlayerScavGenerator(
         );
 
         // Remove cached bot data after scav was generated
-        _botLootCacheService.ClearCache();
+        botLootCacheService.ClearCache();
 
         // Add scav metadata
         scavData.Savage = null;
@@ -128,13 +128,13 @@ public class PlayerScavGenerator(
         );
 
         // Remove secure container
-        scavData = _profileHelper.RemoveSecureContainer(scavData);
+        scavData = profileHelper.RemoveSecureContainer(scavData);
 
         // set cooldown timer
         scavData = SetScavCooldownTimer(scavData, pmcDataClone);
 
         // add scav to profile
-        _saveServer.GetProfile(sessionID).CharacterData.ScavData = scavData;
+        saveServer.GetProfile(sessionID).CharacterData.ScavData = scavData;
 
         return scavData;
     }
@@ -146,27 +146,24 @@ public class PlayerScavGenerator(
     /// <param name="scavData"></param>
     /// <param name="containersToAddTo">Possible slotIds to add loot to</param>
     protected void AddAdditionalLootToPlayerScavContainers(
-        Dictionary<string, double> possibleItemsToAdd,
+        Dictionary<MongoId, double> possibleItemsToAdd,
         BotBase scavData,
         HashSet<EquipmentSlots> containersToAddTo
     )
     {
         foreach (var tpl in possibleItemsToAdd)
         {
-            var shouldAdd = _randomUtil.GetChance100(tpl.Value);
+            var shouldAdd = randomUtil.GetChance100(tpl.Value);
             if (!shouldAdd)
             {
                 continue;
             }
 
-            var itemResult = _itemHelper.GetItem(tpl.Key);
+            var itemResult = itemHelper.GetItem(tpl.Key);
             if (!itemResult.Key)
             {
-                _logger.Warning(
-                    _serverLocalisationService.GetText(
-                        "scav-unable_to_add_item_to_player_scav",
-                        tpl
-                    )
+                logger.Warning(
+                    serverLocalisationService.GetText("scav-unable_to_add_item_to_player_scav", tpl)
                 );
                 continue;
             }
@@ -178,11 +175,11 @@ public class PlayerScavGenerator(
                 {
                     Id = new MongoId(),
                     Template = itemTemplate.Id,
-                    Upd = _botGeneratorHelper.GenerateExtraPropertiesForItem(itemTemplate),
+                    Upd = botGeneratorHelper.GenerateExtraPropertiesForItem(itemTemplate),
                 },
             };
 
-            var result = _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
+            var result = botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
                 containersToAddTo,
                 itemsToAdd[0].Id,
                 itemTemplate.Id,
@@ -192,9 +189,9 @@ public class PlayerScavGenerator(
 
             if (result != ItemAddedResult.SUCCESS)
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
+                if (logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug($"Unable to add keycard to bot. Reason: {result.ToString()}");
+                    logger.Debug($"Unable to add keycard to bot. Reason: {result.ToString()}");
                 }
             }
         }
@@ -209,7 +206,7 @@ public class PlayerScavGenerator(
     protected BotType ConstructBotBaseTemplate(string botTypeForLoot)
     {
         const string baseScavType = "assault";
-        var asssaultBase = _cloner.Clone(_botHelper.GetBotTemplate(baseScavType));
+        var asssaultBase = cloner.Clone(botHelper.GetBotTemplate(baseScavType));
 
         // Loot bot is same as base bot, return base with no modification
         if (botTypeForLoot == baseScavType)
@@ -217,7 +214,7 @@ public class PlayerScavGenerator(
             return asssaultBase;
         }
 
-        var lootBase = _cloner.Clone(_botHelper.GetBotTemplate(botTypeForLoot));
+        var lootBase = cloner.Clone(botHelper.GetBotTemplate(botTypeForLoot));
         asssaultBase.BotInventory = lootBase.BotInventory;
         asssaultBase.BotChances = lootBase.BotChances;
         asssaultBase.BotGeneration = lootBase.BotGeneration;
@@ -314,7 +311,7 @@ public class PlayerScavGenerator(
             case "specialItems":
                 return botItemWeights.SpecialItems;
             default:
-                _logger.Error($"Subtype: {key} not found");
+                logger.Error($"Subtype: {key} not found");
                 return null;
         }
     }
@@ -387,7 +384,7 @@ public class PlayerScavGenerator(
             return scavProfile.Stats;
         }
 
-        return _profileHelper.GetDefaultCounters();
+        return profileHelper.GetDefaultCounters();
     }
 
     protected int GetScavLevel(PmcData scavProfile)
@@ -428,14 +425,14 @@ public class PlayerScavGenerator(
                 .Bonuses.Where(x => x.Type == BonusType.ScavCooldownTimer)
                 .Sum(bonus => (bonus?.Value ?? 1) / 100);
 
-        var fenceInfo = _fenceService.GetFenceInfo(pmcData);
+        var fenceInfo = fenceService.GetFenceInfo(pmcData);
         modifier *= fenceInfo.SavageCooldownModifier ?? 1d;
 
         // Make sure to apply ScavCooldownTimer bonus from Hideout if the player has it.
         var scavLockDuration =
-            _databaseService.GetGlobals().Configuration.SavagePlayCooldown * modifier;
+            databaseService.GetGlobals().Configuration.SavagePlayCooldown * modifier;
 
-        var fullProfile = _profileHelper.GetFullProfile(pmcData?.SessionId);
+        var fullProfile = profileHelper.GetFullProfile(pmcData?.SessionId);
         if (
             fullProfile?.ProfileInfo?.Edition?.StartsWith(
                 AccountTypes.SPT_DEVELOPER,
@@ -450,7 +447,7 @@ public class PlayerScavGenerator(
         if (scavData?.Info != null)
         {
             scavData.Info.SavageLockTime = Math.Round(
-                _timeUtil.GetTimeStamp() + (scavLockDuration ?? 0)
+                timeUtil.GetTimeStamp() + (scavLockDuration ?? 0)
             );
         }
 

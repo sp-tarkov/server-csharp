@@ -373,7 +373,7 @@ public class RagfairOfferHelper(
         var offerRootItem = offer.Items.FirstOrDefault();
 
         // Currency offer is sold for
-        var moneyTypeTpl = offer.Requirements.FirstOrDefault().Template;
+        var moneyTypeTpl = offer.Requirements.FirstOrDefault().TemplateId;
         var isTraderOffer = databaseService.GetTraders().ContainsKey(offer.User.Id);
 
         if (!isTraderOffer && playerIsFleaBanned)
@@ -392,7 +392,7 @@ public class RagfairOfferHelper(
         if (
             !string.IsNullOrEmpty(searchRequest.NeededSearchId)
             && !offer.Requirements.Any(requirement =>
-                requirement.Template == searchRequest.NeededSearchId
+                requirement.TemplateId == searchRequest.NeededSearchId
             )
         )
         {
@@ -820,7 +820,7 @@ public class RagfairOfferHelper(
             var requestedItem = new Item
             {
                 Id = new MongoId(),
-                Template = requirement.Template,
+                Template = requirement.TemplateId,
                 Upd = new Upd { StackObjectsCount = requirement.Count * boughtAmount },
             };
 
@@ -939,7 +939,7 @@ public class RagfairOfferHelper(
     {
         var isDefaultUserOffer = offer.User.MemberType == MemberCategory.Default;
         var offerRootItem = offer.Items.FirstOrDefault();
-        var offerMoneyTypeTpl = offer.Requirements.FirstOrDefault().Template;
+        var offerMoneyTypeTpl = offer.Requirements.FirstOrDefault().TemplateId;
 
         if (
             pmcData.Info.Level < databaseService.GetGlobals().Configuration.RagFair.MinUserLevel

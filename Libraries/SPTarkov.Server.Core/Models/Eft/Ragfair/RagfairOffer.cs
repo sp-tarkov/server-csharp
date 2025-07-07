@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 
@@ -103,14 +104,8 @@ public record OfferRequirement
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    private string? _tpl;
-
     [JsonPropertyName("_tpl")]
-    public string? Template
-    {
-        get { return _tpl; }
-        set { _tpl = string.Intern(value); }
-    }
+    public required MongoId TemplateId { get; set; }
 
     [JsonPropertyName("count")]
     public double? Count { get; set; }

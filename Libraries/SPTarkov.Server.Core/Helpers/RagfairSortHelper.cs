@@ -66,11 +66,11 @@ public class RagfairSortHelper(LocaleService localeService)
     protected int SortOffersByBarter(RagfairOffer a, RagfairOffer b)
     {
         var aIsOnlyMoney =
-            a.Requirements.Count == 1 && Money.GetMoneyTpls().Contains(a.Requirements[0].Template)
+            a.Requirements.Count == 1 && Money.GetMoneyTpls().Contains(a.Requirements[0].TemplateId)
                 ? 1
                 : 0;
         var bIsOnlyMoney =
-            b.Requirements.Count == 1 && Money.GetMoneyTpls().Contains(b.Requirements[0].Template)
+            b.Requirements.Count == 1 && Money.GetMoneyTpls().Contains(b.Requirements[0].TemplateId)
                 ? 1
                 : 0;
 

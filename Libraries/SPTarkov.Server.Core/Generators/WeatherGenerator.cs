@@ -12,15 +12,15 @@ namespace SPTarkov.Server.Core.Generators;
 
 [Injectable]
 public class WeatherGenerator(
-    TimeUtil _timeUtil,
-    SeasonalEventService _seasonalEventService,
-    WeatherHelper _weatherHelper,
-    ConfigServer _configServer,
-    WeightedRandomHelper _weightedRandomHelper,
-    RandomUtil _randomUtil
+    TimeUtil timeUtil,
+    SeasonalEventService seasonalEventService,
+    WeatherHelper weatherHelper,
+    ConfigServer configServer,
+    WeightedRandomHelper weightedRandomHelper,
+    RandomUtil randomUtil
 )
 {
-    protected readonly WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
+    protected readonly WeatherConfig _weatherConfig = configServer.GetConfig<WeatherConfig>();
 
     /// <summary>
     ///     Get current + raid datetime and format into correct BSG format.
@@ -29,14 +29,14 @@ public class WeatherGenerator(
     /// <returns> WeatherData </returns>
     public void CalculateGameTime(WeatherData data)
     {
-        var computedDate = _timeUtil.GetDateTimeNow();
+        var computedDate = timeUtil.GetDateTimeNow();
         var formattedDate = computedDate.FormatToBsgDate();
 
         data.Date = formattedDate;
         data.Time = GetBsgFormattedInRaidTime();
         data.Acceleration = _weatherConfig.Acceleration;
 
-        data.Season = _seasonalEventService.GetActiveWeatherSeason();
+        data.Season = seasonalEventService.GetActiveWeatherSeason();
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public class WeatherGenerator(
     /// <returns>Formatted time as String </returns>
     protected string GetBsgFormattedInRaidTime()
     {
-        return _weatherHelper.GetInRaidTime().GetBsgFormattedWeatherTime();
+        return weatherHelper.GetInRaidTime().GetBsgFormattedWeatherTime();
     }
 
     /// <summary>
@@ -122,11 +122,11 @@ public class WeatherGenerator(
     {
         // Convert timestamp to date so we can get current hour and check if its day or night
         var currentRaidTime = new DateTime(inRaidTimestamp);
-        var minMax = _weatherHelper.IsHourAtNightTime(currentRaidTime.Hour)
+        var minMax = weatherHelper.IsHourAtNightTime(currentRaidTime.Hour)
             ? weather.Temp.Night
             : weather.Temp.Day;
 
-        return Math.Round(_randomUtil.GetDouble(minMax.Min, minMax.Max), 2);
+        return Math.Round(randomUtil.GetDouble(minMax.Min, minMax.Max), 2);
     }
 
     /// <summary>
@@ -137,17 +137,17 @@ public class WeatherGenerator(
     protected void SetCurrentDateTime(Weather weather, long? timestamp = null)
     {
         var inRaidTime = timestamp is null
-            ? _weatherHelper.GetInRaidTime()
-            : _weatherHelper.GetInRaidTime(timestamp.Value);
+            ? weatherHelper.GetInRaidTime()
+            : weatherHelper.GetInRaidTime(timestamp.Value);
         var normalTime = inRaidTime.GetBsgFormattedWeatherTime();
         var formattedDate = (
             timestamp.HasValue
-                ? _timeUtil.GetDateTimeFromTimeStamp(timestamp.Value)
+                ? timeUtil.GetDateTimeFromTimeStamp(timestamp.Value)
                 : DateTime.UtcNow
         ).FormatToBsgDate();
         var datetimeBsgFormat = $"{formattedDate} {normalTime}";
 
-        weather.Timestamp = timestamp ?? _timeUtil.GetTimeStamp(); // matches weather.date
+        weather.Timestamp = timestamp ?? timeUtil.GetTimeStamp(); // matches weather.date
         weather.Date = formattedDate; // matches weather.timestamp
         weather.Time = datetimeBsgFormat; // matches weather.timestamp
         weather.SptInRaidTimestamp = weather.Timestamp;
@@ -155,37 +155,37 @@ public class WeatherGenerator(
 
     protected WindDirection GetWeightedWindDirection(SeasonalValues weather)
     {
-        return _weightedRandomHelper
+        return weightedRandomHelper
             .WeightedRandom(weather.WindDirection.Values, weather.WindDirection.Weights)
             .Item;
     }
 
     protected double GetWeightedClouds(SeasonalValues weather)
     {
-        return _weightedRandomHelper
+        return weightedRandomHelper
             .WeightedRandom(weather.Clouds.Values, weather.Clouds.Weights)
             .Item;
     }
 
     protected double GetWeightedWindSpeed(SeasonalValues weather)
     {
-        return _weightedRandomHelper
+        return weightedRandomHelper
             .WeightedRandom(weather.WindSpeed.Values, weather.WindSpeed.Weights)
             .Item;
     }
 
     protected double GetWeightedFog(SeasonalValues weather)
     {
-        return _weightedRandomHelper.WeightedRandom(weather.Fog.Values, weather.Fog.Weights).Item;
+        return weightedRandomHelper.WeightedRandom(weather.Fog.Values, weather.Fog.Weights).Item;
     }
 
     protected double GetWeightedRain(SeasonalValues weather)
     {
-        return _weightedRandomHelper.WeightedRandom(weather.Rain.Values, weather.Rain.Weights).Item;
+        return weightedRandomHelper.WeightedRandom(weather.Rain.Values, weather.Rain.Weights).Item;
     }
 
     protected double GetRandomDouble(double min, double max, int precision = 3)
     {
-        return Math.Round(_randomUtil.GetDouble(min, max), precision);
+        return Math.Round(randomUtil.GetDouble(min, max), precision);
     }
 }

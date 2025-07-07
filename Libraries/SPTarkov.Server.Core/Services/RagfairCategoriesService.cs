@@ -47,7 +47,7 @@ public class RagfairCategoriesService(
                     && searchRequestData.RemoveBartering.GetValueOrDefault(false)
                     && (
                         offer.Requirements.Count > 1
-                        || !paymentHelper.IsMoneyTpl(offer.Requirements.FirstOrDefault().Template)
+                        || !paymentHelper.IsMoneyTpl(offer.Requirements.FirstOrDefault().TemplateId)
                     )
                 )
                 {

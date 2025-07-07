@@ -109,7 +109,7 @@ public class RagfairOfferGenerator(
             {
                 var offerRequirement = new OfferRequirement
                 {
-                    Template = barter.Template,
+                    TemplateId = barter.Template,
                     Count = Math.Round(barter.Count.Value, 2),
                     OnlyFunctional = barter.OnlyFunctional ?? false,
                 };
@@ -230,9 +230,9 @@ public class RagfairOfferGenerator(
         var roublePrice = 0d;
         foreach (var requirement in offerRequirements)
         {
-            roublePrice += paymentHelper.IsMoneyTpl(requirement.Template)
-                ? Math.Round(CalculateRoublePrice(requirement.Count.Value, requirement.Template))
-                : ragfairPriceService.GetFleaPriceForItem(requirement.Template)
+            roublePrice += paymentHelper.IsMoneyTpl(requirement.TemplateId)
+                ? Math.Round(CalculateRoublePrice(requirement.Count.Value, requirement.TemplateId))
+                : ragfairPriceService.GetFleaPriceForItem(requirement.TemplateId)
                     * requirement.Count.Value; // Get flea price for barter offer items
         }
 
@@ -245,7 +245,7 @@ public class RagfairOfferGenerator(
     /// <param name="isTrader"> Is user we're getting avatar for a trader </param>
     /// <param name="userId"> Persons id to get avatar of </param>
     /// <returns> Url of avatar as String </returns>
-    protected string GetAvatarUrl(bool isTrader, string userId)
+    protected string GetAvatarUrl(bool isTrader, MongoId userId)
     {
         if (isTrader)
         {
@@ -261,7 +261,7 @@ public class RagfairOfferGenerator(
     /// <param name="currencyCount"> Amount of currency to convert into roubles </param>
     /// <param name="currencyType"> Type of currency (euro/dollar/rouble) </param>
     /// <returns> Count of roubles </returns>
-    protected double CalculateRoublePrice(double currencyCount, string currencyType)
+    protected double CalculateRoublePrice(double currencyCount, MongoId currencyType)
     {
         if (currencyType == Money.ROUBLES)
         {
@@ -276,7 +276,7 @@ public class RagfairOfferGenerator(
     /// </summary>
     /// <param name="userId"> Users ID to check </param>
     /// <returns> Users ID </returns>
-    protected string GetTraderId(string userId)
+    protected string GetTraderId(MongoId userId)
     {
         if (profileHelper.IsPlayer(userId))
         {
@@ -291,7 +291,7 @@ public class RagfairOfferGenerator(
     /// </summary>
     /// <param name="userId"> User to get flea rating of </param>
     /// <returns> Flea rating value </returns>
-    protected double? GetRating(string userId)
+    protected double? GetRating(MongoId userId)
     {
         // Player offer
         if (profileHelper.IsPlayer(userId))
@@ -317,7 +317,7 @@ public class RagfairOfferGenerator(
     /// </summary>
     /// <param name="userID"> User to check rating of</param>
     /// <returns> True if growing </returns>
-    protected bool GetRatingGrowing(string userID)
+    protected bool GetRatingGrowing(MongoId userID)
     {
         if (profileHelper.IsPlayer(userID))
         // player offer
@@ -344,7 +344,7 @@ public class RagfairOfferGenerator(
     /// <param name="userID"> ID of the offer owner </param>
     /// <param name="time"> Time the offer is posted in seconds </param>
     /// <returns> Number of seconds until offer expires </returns>
-    protected long GetOfferEndTime(string userID, long time)
+    protected long GetOfferEndTime(MongoId userID, long time)
     {
         if (profileHelper.IsPlayer(userID))
         {
@@ -364,15 +364,13 @@ public class RagfairOfferGenerator(
             return (long)databaseService.GetTrader(userID).Base.NextResupply;
         }
 
+        var randomSpread = randomUtil.GetDouble(
+            ragfairConfig.Dynamic.EndTimeSeconds.Min,
+            ragfairConfig.Dynamic.EndTimeSeconds.Max
+        );
+
         // Generated fake-player offer
-        return (long)
-            Math.Round(
-                time
-                    + randomUtil.GetDouble(
-                        ragfairConfig.Dynamic.EndTimeSeconds.Min,
-                        ragfairConfig.Dynamic.EndTimeSeconds.Max
-                    )
-            );
+        return (long)Math.Round(time + randomSpread);
     }
 
     /// <summary>
@@ -534,7 +532,7 @@ public class RagfairOfferGenerator(
     /// <param name="itemToSellDetails"> Raw DB item details </param>
     /// <param name="isExpiredOffer">Offer being created is to replace an expired, existing offer</param>
     protected void CreateSingleOfferForItem(
-        string sellerId,
+        MongoId sellerId,
         List<Item> itemWithChildren,
         bool isPreset,
         TemplateItem itemToSellDetails,
@@ -752,7 +750,7 @@ public class RagfairOfferGenerator(
     /// <param name="itemWithMods"> Item and mods, get condition of first item (only first array item is modified) </param>
     /// <param name="itemDetails"> DB details of first item</param>
     protected void RandomiseOfferItemUpdProperties(
-        string userID,
+        MongoId userID,
         List<Item> itemWithMods,
         TemplateItem itemDetails
     )

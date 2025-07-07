@@ -18,17 +18,17 @@ namespace SPTarkov.Server.Core.Generators;
 
 [Injectable]
 public class LootGenerator(
-    ISptLogger<LootGenerator> _logger,
-    RandomUtil _randomUtil,
-    ItemHelper _itemHelper,
-    PresetHelper _presetHelper,
-    DatabaseService _databaseService,
-    ItemFilterService _itemFilterService,
-    ServerLocalisationService _serverLocalisationService,
-    WeightedRandomHelper _weightedRandomHelper,
-    RagfairLinkedItemService _ragfairLinkedItemService,
-    SeasonalEventService _seasonalEventService,
-    ICloner _cloner
+    ISptLogger<LootGenerator> logger,
+    RandomUtil randomUtil,
+    ItemHelper itemHelper,
+    PresetHelper presetHelper,
+    DatabaseService databaseService,
+    ItemFilterService itemFilterService,
+    ServerLocalisationService serverLocalisationService,
+    WeightedRandomHelper weightedRandomHelper,
+    RagfairLinkedItemService ragfairLinkedItemService,
+    SeasonalEventService seasonalEventService,
+    ICloner cloner
 )
 {
     /// <summary>
@@ -42,14 +42,14 @@ public class LootGenerator(
         var itemTypeCounts = InitItemLimitCounter(options.ItemLimits);
 
         // Handle sealed weapon containers
-        var sealedWeaponCrateCount = _randomUtil.GetInt(
+        var sealedWeaponCrateCount = randomUtil.GetInt(
             options.WeaponCrateCount.Min,
             options.WeaponCrateCount.Max
         );
         if (sealedWeaponCrateCount > 0)
         {
             // Get list of all sealed containers from db - they're all the same, just for flavor
-            var itemsDb = _itemHelper.GetItems();
+            var itemsDb = itemHelper.GetItems();
             var sealedWeaponContainerPool = itemsDb.Where(item =>
                 item.Name.Contains("event_container_airdrop")
             );
@@ -57,7 +57,7 @@ public class LootGenerator(
             for (var index = 0; index < sealedWeaponCrateCount; index++)
             {
                 // Choose one at random + add to results array
-                var chosenSealedContainer = _randomUtil.GetArrayValue(sealedWeaponContainerPool);
+                var chosenSealedContainer = randomUtil.GetArrayValue(sealedWeaponContainerPool);
                 result.Add(
                     [
                         new Item
@@ -83,7 +83,7 @@ public class LootGenerator(
         // Pool has items we could add as loot, proceed
         if (rewardPoolResults.ItemPool.Count > 0)
         {
-            var randomisedItemCount = _randomUtil.GetInt(
+            var randomisedItemCount = randomUtil.GetInt(
                 options.ItemCount.Min,
                 options.ItemCount.Max
             );
@@ -104,17 +104,17 @@ public class LootGenerator(
             }
         }
 
-        var globalDefaultPresets = _presetHelper.GetDefaultPresets().Values;
+        var globalDefaultPresets = presetHelper.GetDefaultPresets().Values;
 
         // Filter default presets to just weapons
-        var randomisedWeaponPresetCount = _randomUtil.GetInt(
+        var randomisedWeaponPresetCount = randomUtil.GetInt(
             options.WeaponPresetCount.Min,
             options.WeaponPresetCount.Max
         );
         if (randomisedWeaponPresetCount > 0)
         {
             var weaponDefaultPresets = globalDefaultPresets
-                .Where(preset => _itemHelper.IsOfBaseclass(preset.Encyclopedia, BaseClasses.WEAPON))
+                .Where(preset => itemHelper.IsOfBaseclass(preset.Encyclopedia, BaseClasses.WEAPON))
                 .ToList();
 
             if (weaponDefaultPresets.Any())
@@ -138,14 +138,14 @@ public class LootGenerator(
         }
 
         // Filter default presets to just armors and then filter again by protection level
-        var randomisedArmorPresetCount = _randomUtil.GetInt(
+        var randomisedArmorPresetCount = randomUtil.GetInt(
             options.ArmorPresetCount.Min,
             options.ArmorPresetCount.Max
         );
         if (randomisedArmorPresetCount > 0)
         {
             var armorDefaultPresets = globalDefaultPresets.Where(preset =>
-                _itemHelper.ArmorItemCanHoldMods(preset.Encyclopedia)
+                itemHelper.ArmorItemCanHoldMods(preset.Encyclopedia)
             );
             var levelFilteredArmorPresets = armorDefaultPresets
                 .Where(armor => IsArmorOfDesiredProtectionLevel(armor, options))
@@ -185,11 +185,11 @@ public class LootGenerator(
     {
         var result = new List<List<Item>>();
 
-        var defaultPresets = _presetHelper.GetDefaultPresetsByTplKey();
+        var defaultPresets = presetHelper.GetDefaultPresetsByTplKey();
         foreach (var (itemTpl, details) in forcedLootToAdd)
         {
             // How many of this item we want
-            var randomisedItemCount = _randomUtil.GetInt(details.Min, details.Max);
+            var randomisedItemCount = randomUtil.GetInt(details.Min, details.Max);
 
             // Check if item being added has a preset and use that instead
             if (defaultPresets.ContainsKey(itemTpl))
@@ -201,7 +201,7 @@ public class LootGenerator(
                     for (var i = 0; i < randomisedItemCount; i++)
                     {
                         // Clone preset and alter Ids to be unique
-                        var presetWithUniqueIdsClone = _cloner
+                        var presetWithUniqueIdsClone = cloner
                             .Clone(preset.Items)
                             .ReplaceIDs()
                             .ToList();
@@ -221,7 +221,7 @@ public class LootGenerator(
                 Template = itemTpl,
                 Upd = new Upd { StackObjectsCount = randomisedItemCount, SpawnedInSession = true },
             };
-            var splitResults = _itemHelper.SplitStack(newLootItem);
+            var splitResults = itemHelper.SplitStack(newLootItem);
             foreach (var splitItem in splitResults)
             {
                 // Add as separate lists
@@ -249,20 +249,20 @@ public class LootGenerator(
         bool blockSeasonalItemsOutOfSeason
     )
     {
-        var itemsDb = _databaseService.GetItems().Values;
+        var itemsDb = databaseService.GetItems().Values;
         var itemBlacklist = new HashSet<MongoId>();
-        itemBlacklist.UnionWith([.. _itemFilterService.GetBlacklistedItems(), .. itemTplBlacklist]);
+        itemBlacklist.UnionWith([.. itemFilterService.GetBlacklistedItems(), .. itemTplBlacklist]);
 
         if (useRewardItemBlacklist)
         {
-            var rewardItemBlacklist = _itemFilterService.GetItemRewardBlacklist();
+            var rewardItemBlacklist = itemFilterService.GetItemRewardBlacklist();
 
             // Get all items that match the blacklisted types and fold into item blacklist
-            var itemTypeBlacklist = _itemFilterService.GetItemRewardBaseTypeBlacklist();
+            var itemTypeBlacklist = itemFilterService.GetItemRewardBaseTypeBlacklist();
             var itemsMatchingTypeBlacklist = itemsDb
                 .Where(templateItem => !string.IsNullOrEmpty(templateItem.Parent)) // Ignore items without parents
                 .Where(templateItem =>
-                    _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist)
+                    itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist)
                 )
                 .Select(templateItem => templateItem.Id);
 
@@ -271,12 +271,12 @@ public class LootGenerator(
 
         if (!allowBossItems)
         {
-            itemBlacklist.UnionWith(_itemFilterService.GetBossItems());
+            itemBlacklist.UnionWith(itemFilterService.GetBossItems());
         }
 
         if (blockSeasonalItemsOutOfSeason)
         {
-            itemBlacklist.UnionWith(_seasonalEventService.GetInactiveSeasonalEventItems());
+            itemBlacklist.UnionWith(seasonalEventService.GetInactiveSeasonalEventItems());
         }
 
         var items = itemsDb
@@ -308,7 +308,7 @@ public class LootGenerator(
                 continue;
             }
 
-            var armorDetails = _itemHelper.GetItem(armorItem.Template).Value;
+            var armorDetails = itemHelper.GetItem(armorItem.Template).Value;
             var armorClass = armorDetails.Properties.ArmorClass;
 
             return options.ArmorLevelWhitelist.Contains(armorClass.Value);
@@ -352,7 +352,7 @@ public class LootGenerator(
         List<List<Item>> result
     )
     {
-        var randomItem = _randomUtil.GetArrayValue(items);
+        var randomItem = randomUtil.GetArrayValue(items);
 
         var itemLimitCount = itemTypeCounts.TryGetValue(
             randomItem.Parent,
@@ -364,7 +364,7 @@ public class LootGenerator(
         }
 
         // Skip armors as they need to come from presets
-        if (_itemHelper.ArmorItemCanHoldMods(randomItem.Id))
+        if (itemHelper.ArmorItemCanHoldMods(randomItem.Id))
         {
             return false;
         }
@@ -412,7 +412,7 @@ public class LootGenerator(
             max = itemLimits.Max;
         }
 
-        return _randomUtil.GetInt(min ?? 1, max ?? 1);
+        return randomUtil.GetInt(min ?? 1, max ?? 1);
     }
 
     /// <summary>
@@ -432,21 +432,21 @@ public class LootGenerator(
     {
         if (presetPool.Count == 0)
         {
-            _logger.Warning(_serverLocalisationService.GetText("loot-preset_pool_is_empty"));
+            logger.Warning(serverLocalisationService.GetText("loot-preset_pool_is_empty"));
 
             return false;
         }
 
         // Choose random preset and get details from item db using encyclopedia value (encyclopedia === tplId)
-        var chosenPreset = _randomUtil.GetArrayValue(presetPool);
+        var chosenPreset = randomUtil.GetArrayValue(presetPool);
 
         // No `_encyclopedia` property, not possible to reliably get root item tpl
         if (chosenPreset?.Encyclopedia is null)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Warning(
-                    _serverLocalisationService.GetText(
+                logger.Warning(
+                    serverLocalisationService.GetText(
                         "loot-chosen_preset_missing_encyclopedia_value",
                         chosenPreset?.Id
                     )
@@ -457,12 +457,12 @@ public class LootGenerator(
         }
 
         // Get preset root item db details via its `_encyclopedia` property
-        var itemDbDetails = _itemHelper.GetItem(chosenPreset.Encyclopedia);
+        var itemDbDetails = itemHelper.GetItem(chosenPreset.Encyclopedia);
         if (!itemDbDetails.Key)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(
+                logger.Debug(
                     $"$Unable to find preset with tpl: {chosenPreset.Encyclopedia}, skipping"
                 );
             }
@@ -479,8 +479,8 @@ public class LootGenerator(
         // Some custom mod items lack a parent property
         if (itemDbDetails.Value?.Parent is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
+            logger.Error(
+                serverLocalisationService.GetText(
                     "loot-item_missing_parentid",
                     itemDbDetails.Value?.Name
                 )
@@ -499,10 +499,10 @@ public class LootGenerator(
             return false;
         }
 
-        var presetAndModsClone = _cloner.Clone(chosenPreset.Items).ReplaceIDs().ToList();
+        var presetAndModsClone = cloner.Clone(chosenPreset.Items).ReplaceIDs().ToList();
         presetAndModsClone.RemapRootItemId();
 
-        _itemHelper.SetFoundInRaid(presetAndModsClone);
+        itemHelper.SetFoundInRaid(presetAndModsClone);
 
         // Add chosen preset tpl to result array
         result.Add(presetAndModsClone);
@@ -529,16 +529,16 @@ public class LootGenerator(
         List<List<Item>> itemsToReturn = [];
 
         // Choose a weapon to give to the player (weighted)
-        var chosenWeaponTpl = _weightedRandomHelper.GetWeightedValue(
+        var chosenWeaponTpl = weightedRandomHelper.GetWeightedValue(
             containerSettings.WeaponRewardWeight
         );
 
         // Get itemDb details of weapon
-        var weaponDetailsDb = _itemHelper.GetItem(chosenWeaponTpl);
+        var weaponDetailsDb = itemHelper.GetItem(chosenWeaponTpl);
         if (!weaponDetailsDb.Key)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
+            logger.Error(
+                serverLocalisationService.GetText(
                     "loot-non_item_picked_as_sealed_weapon_crate_reward",
                     chosenWeaponTpl
                 )
@@ -549,32 +549,30 @@ public class LootGenerator(
 
         // Get weapon preset - default or choose a random one from globals.json preset pool
         var chosenWeaponPreset = containerSettings.DefaultPresetsOnly
-            ? _presetHelper.GetDefaultPreset(chosenWeaponTpl)
-            : _randomUtil.GetArrayValue(_presetHelper.GetPresets(chosenWeaponTpl));
+            ? presetHelper.GetDefaultPreset(chosenWeaponTpl)
+            : randomUtil.GetArrayValue(presetHelper.GetPresets(chosenWeaponTpl));
 
         // No default preset found for weapon, choose a random one
         if (chosenWeaponPreset is null)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
+            logger.Warning(
+                serverLocalisationService.GetText(
                     "loot-default_preset_not_found_using_random",
                     chosenWeaponTpl
                 )
             );
-            chosenWeaponPreset = _randomUtil.GetArrayValue(
-                _presetHelper.GetPresets(chosenWeaponTpl)
-            );
+            chosenWeaponPreset = randomUtil.GetArrayValue(presetHelper.GetPresets(chosenWeaponTpl));
         }
 
         // Clean up Ids to ensure they're all unique and prevent collisions
-        var presetAndModsClone = _cloner.Clone(chosenWeaponPreset.Items).ReplaceIDs().ToList();
+        var presetAndModsClone = cloner.Clone(chosenWeaponPreset.Items).ReplaceIDs().ToList();
         presetAndModsClone.RemapRootItemId();
 
         // Add preset to return object
         itemsToReturn.Add(presetAndModsClone);
 
         // Get a random collection of weapon mods related to chosen weapon and add them to result array
-        var linkedItemsToWeapon = _ragfairLinkedItemService.GetLinkedDbItems(chosenWeaponTpl);
+        var linkedItemsToWeapon = ragfairLinkedItemService.GetLinkedDbItems(chosenWeaponTpl);
         itemsToReturn.AddRange(
             GetSealedContainerWeaponModRewards(
                 containerSettings,
@@ -606,7 +604,7 @@ public class LootGenerator(
 
         foreach (var (rewardKey, settings) in containerSettings.RewardTypeLimits)
         {
-            var rewardCount = _randomUtil.GetInt(settings.Min, settings.Max);
+            var rewardCount = randomUtil.GetInt(settings.Min, settings.Max);
             if (rewardCount == 0)
             {
                 continue;
@@ -618,7 +616,7 @@ public class LootGenerator(
                 // Get ammo boxes from db
                 var ammoBoxesDetails = containerSettings.AmmoBoxWhitelist.Select(tpl =>
                 {
-                    var itemDetails = _itemHelper.GetItem(tpl);
+                    var itemDetails = itemHelper.GetItem(tpl);
                     return itemDetails.Value;
                 });
 
@@ -629,9 +627,9 @@ public class LootGenerator(
                 );
                 if (!ammoBoxesMatchingCaliber.Any())
                 {
-                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    if (logger.IsLogEnabled(LogLevel.Debug))
                     {
-                        _logger.Debug($"No ammo box with caliber {weaponCaliber} found, skipping");
+                        logger.Debug($"No ammo box with caliber {weaponCaliber} found, skipping");
                     }
 
                     continue;
@@ -639,12 +637,12 @@ public class LootGenerator(
 
                 for (var index = 0; index < rewardCount; index++)
                 {
-                    var chosenAmmoBox = _randomUtil.GetArrayValue(ammoBoxesMatchingCaliber);
+                    var chosenAmmoBox = randomUtil.GetArrayValue(ammoBoxesMatchingCaliber);
                     var ammoBoxReward = new List<Item>
                     {
                         new() { Id = new MongoId(), Template = chosenAmmoBox.Id },
                     };
-                    _itemHelper.AddCartridgesToAmmoBox(ammoBoxReward, chosenAmmoBox);
+                    itemHelper.AddCartridgesToAmmoBox(ammoBoxReward, chosenAmmoBox);
                     rewards.Add(ammoBoxReward);
                 }
 
@@ -652,21 +650,21 @@ public class LootGenerator(
             }
 
             // Get all items of the desired type + not quest items + not globally blacklisted
-            var rewardItemPool = _databaseService
+            var rewardItemPool = databaseService
                 .GetItems()
                 .Values.Where(item =>
                     item.Parent == rewardKey
                     && string.Equals(item.Type, "item", StringComparison.OrdinalIgnoreCase)
-                    && _itemFilterService.IsItemBlacklisted(item.Id)
-                    && !(containerSettings.AllowBossItems || _itemFilterService.IsBossItem(item.Id))
+                    && itemFilterService.IsItemBlacklisted(item.Id)
+                    && !(containerSettings.AllowBossItems || itemFilterService.IsBossItem(item.Id))
                     && item.Properties.QuestItem is null
                 );
 
             if (!rewardItemPool.Any())
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
+                if (logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug($"No items with base type of {rewardKey} found, skipping");
+                    logger.Debug($"No items with base type of {rewardKey} found, skipping");
                 }
 
                 continue;
@@ -675,7 +673,7 @@ public class LootGenerator(
             for (var index = 0; index < rewardCount; index++)
             {
                 // Choose a random item from pool
-                var chosenRewardItem = _randomUtil.GetArrayValue(rewardItemPool);
+                var chosenRewardItem = randomUtil.GetArrayValue(rewardItemPool);
                 var rewardItem = new List<Item>
                 {
                     new() { Id = new MongoId(), Template = chosenRewardItem.Id },
@@ -705,7 +703,7 @@ public class LootGenerator(
 
         foreach (var (rewardKey, settings) in containerSettings.WeaponModRewardLimits)
         {
-            var rewardCount = _randomUtil.GetInt(settings.Min, settings.Max);
+            var rewardCount = randomUtil.GetInt(settings.Min, settings.Max);
 
             // Nothing to add, skip reward type
             if (rewardCount == 0)
@@ -715,13 +713,13 @@ public class LootGenerator(
 
             // Get items that fulfil reward type criteria from items that fit on gun
             var relatedItems = linkedItemsToWeapon?.Where(item =>
-                item?.Parent == rewardKey && !_itemFilterService.IsItemBlacklisted(item.Id)
+                item?.Parent == rewardKey && !itemFilterService.IsItemBlacklisted(item.Id)
             );
             if (relatedItems is null || !relatedItems.Any())
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
+                if (logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(
+                    logger.Debug(
                         $"No items found to fulfil reward type: {rewardKey} for weapon: {chosenWeaponPreset.Name}, skipping type"
                     );
                 }
@@ -732,7 +730,7 @@ public class LootGenerator(
             // Find a random item of the desired type and add as reward
             for (var index = 0; index < rewardCount; index++)
             {
-                var chosenItem = _randomUtil.DrawRandomFromList(relatedItems.ToList());
+                var chosenItem = randomUtil.DrawRandomFromList(relatedItems.ToList());
                 var reward = new List<Item>
                 {
                     new() { Id = new MongoId(), Template = chosenItem[0].Id },
@@ -760,9 +758,9 @@ public class LootGenerator(
             // Pick random reward from pool, add to request object
             var chosenRewardItemTpl = PickRewardItem(rewardContainerDetails);
 
-            if (_presetHelper.HasPreset(chosenRewardItemTpl))
+            if (presetHelper.HasPreset(chosenRewardItemTpl))
             {
-                var preset = _presetHelper.GetDefaultPreset(chosenRewardItemTpl);
+                var preset = presetHelper.GetDefaultPreset(chosenRewardItemTpl);
 
                 // Ensure preset has unique ids and is cloned so we don't alter the preset data stored in memory
                 var presetAndMods = preset.Items.ReplaceIDs().ToList();
@@ -792,10 +790,10 @@ public class LootGenerator(
             && rewardContainerDetails.RewardTplPool.Count > 0
         )
         {
-            return _weightedRandomHelper.GetWeightedValue(rewardContainerDetails.RewardTplPool);
+            return weightedRandomHelper.GetWeightedValue(rewardContainerDetails.RewardTplPool);
         }
 
-        return _randomUtil.GetArrayValue(
+        return randomUtil.GetArrayValue(
             GetItemRewardPool([], rewardContainerDetails.RewardTypePool, true, true, false)
                 .ItemPool.Select(item => item.Id)
         );
