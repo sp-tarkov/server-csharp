@@ -166,11 +166,7 @@ public class MatchCallbacks(
     ///     Handle client/analytics/event-disconnect
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> EventDisconnect(
-        string url,
-        PutMetricsRequestData info,
-        string sessionID
-    )
+    public ValueTask<string> EventDisconnect(string url, PutMetricsRequestData info, string MongoId)
     {
         return new ValueTask<string>(httpResponseUtil.NullResponse());
     }

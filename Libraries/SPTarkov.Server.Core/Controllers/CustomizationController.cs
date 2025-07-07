@@ -28,16 +28,13 @@ public class CustomizationController(
     PaymentService _paymentService
 )
 {
-    protected const string _lowerParentClothingId = "5cd944d01388ce000a659df9";
-    protected const string _upperParentClothingId = "5cd944ca1388ce03a44dc2a4";
-
     /// <summary>
     ///     Get purchasable clothing items from trader that match players side (usec/bear)
     /// </summary>
     /// <param name="traderId">trader to look up clothing for</param>
     /// <param name="sessionId">Session id</param>
     /// <returns>Suit array</returns>
-    public List<Suit> GetTraderSuits(string traderId, string sessionId)
+    public List<Suit> GetTraderSuits(string traderId, MongoId sessionId)
     {
         var pmcData = _profileHelper.GetPmcProfile(sessionId);
         var clothing = _databaseService.GetCustomization();
@@ -75,7 +72,7 @@ public class CustomizationController(
     public ItemEventRouterResponse BuyCustomisation(
         PmcData pmcData,
         BuyClothingRequestData buyClothingRequest,
-        string sessionId
+        MongoId sessionId
     )
     {
         var output = _eventOutputHolder.GetOutput(sessionId);
@@ -130,7 +127,7 @@ public class CustomizationController(
     /// <param name="suitId">clothing id</param>
     /// <param name="sessionId">Session id of profile to check for clothing in</param>
     /// <returns>true if already purchased</returns>
-    protected bool OutfitAlreadyPurchased(object suitId, string sessionId)
+    protected bool OutfitAlreadyPurchased(object suitId, MongoId sessionId)
     {
         var fullProfile = _profileHelper.GetFullProfile(sessionId);
 
@@ -146,7 +143,7 @@ public class CustomizationController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="offerId"></param>
     /// <returns>Suit</returns>
-    protected Suit? GetTraderClothingOffer(string sessionId, string? offerId)
+    protected Suit? GetTraderClothingOffer(MongoId sessionId, string? offerId)
     {
         var foundSuit = GetAllTraderSuits(sessionId).FirstOrDefault(s => s.Id == offerId);
         if (foundSuit is null)
@@ -170,7 +167,7 @@ public class CustomizationController(
     /// <param name="itemsToPayForClothingWith">Clothing purchased</param>
     /// <param name="output">Client response</param>
     protected void PayForClothingItems(
-        string sessionId,
+        MongoId sessionId,
         PmcData pmcData,
         List<PaymentItemForClothing>? itemsToPayForClothingWith,
         ItemEventRouterResponse output
@@ -210,7 +207,7 @@ public class CustomizationController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    protected List<Suit> GetAllTraderSuits(string sessionId)
+    protected List<Suit> GetAllTraderSuits(MongoId sessionId)
     {
         var traders = _databaseService.GetTraders();
         var result = new List<Suit>();
@@ -234,7 +231,7 @@ public class CustomizationController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public HideoutCustomisation GetHideoutCustomisation(string sessionId)
+    public HideoutCustomisation GetHideoutCustomisation(MongoId sessionId)
     {
         return _databaseService.GetHideout().Customisation!;
     }
@@ -244,7 +241,7 @@ public class CustomizationController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public List<CustomisationStorage> GetCustomisationStorage(string sessionId)
+    public List<CustomisationStorage> GetCustomisationStorage(MongoId sessionId)
     {
         var customisationResultsClone = _cloner.Clone(
             _databaseService.GetTemplates().CustomisationStorage
@@ -269,7 +266,7 @@ public class CustomizationController(
     /// <param name="pmcData">Players PMC profile</param>
     /// <returns></returns>
     public ItemEventRouterResponse SetCustomisation(
-        string sessionId,
+        MongoId sessionId,
         CustomizationSetRequest request,
         PmcData pmcData
     )
@@ -311,7 +308,7 @@ public class CustomizationController(
         }
 
         // Body
-        if (dbSuit.Parent == _upperParentClothingId)
+        if (dbSuit.Parent == CustomisationTypeId.UPPER)
         {
             pmcData.Customization.Body = dbSuit.Properties.Body;
             pmcData.Customization.Hands = dbSuit.Properties.Hands;
@@ -320,7 +317,7 @@ public class CustomizationController(
         }
 
         // Feet
-        if (dbSuit.Parent == _lowerParentClothingId)
+        if (dbSuit.Parent == CustomisationTypeId.LOWER)
         {
             pmcData.Customization.Feet = dbSuit.Properties.Feet;
         }

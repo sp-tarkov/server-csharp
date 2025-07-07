@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Generators;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Weather;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -47,7 +48,7 @@ public class WeatherController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>GetLocalWeatherResponseData</returns>
-    public GetLocalWeatherResponseData GenerateLocal(string sessionId)
+    public GetLocalWeatherResponseData GenerateLocal(MongoId sessionId)
     {
         var result = new GetLocalWeatherResponseData
         {

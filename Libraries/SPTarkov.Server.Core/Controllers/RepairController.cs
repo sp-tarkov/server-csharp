@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Repair;
@@ -15,25 +16,25 @@ public class RepairController(EventOutputHolder _eventOutputHolder, RepairServic
     ///     Repair with trader
     /// </summary>
     /// <param name="sessionID">session id</param>
-    /// <param name="body">endpoint request data</param>
+    /// <param name="request">endpoint request data</param>
     /// <param name="pmcData">player profile</param>
     /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse TraderRepair(
-        string sessionID,
-        TraderRepairActionDataRequest body,
+        MongoId sessionID,
+        TraderRepairActionDataRequest request,
         PmcData pmcData
     )
     {
         var output = _eventOutputHolder.GetOutput(sessionID);
 
         // find the item to repair
-        foreach (var repairItem in body.RepairItems)
+        foreach (var repairItem in request.RepairItems)
         {
             var repairDetails = _repairService.RepairItemByTrader(
                 sessionID,
                 pmcData,
                 repairItem,
-                body.TId
+                request.TId
             );
 
             _repairService.PayForRepair(
@@ -41,7 +42,7 @@ public class RepairController(EventOutputHolder _eventOutputHolder, RepairServic
                 pmcData,
                 repairItem.Id,
                 repairDetails.RepairCost.Value,
-                body.TId,
+                request.TId,
                 output
             );
 
@@ -69,7 +70,7 @@ public class RepairController(EventOutputHolder _eventOutputHolder, RepairServic
     /// <param name="pmcData">player profile</param>
     /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse RepairWithKit(
-        string sessionId,
+        MongoId sessionId,
         RepairActionDataRequest body,
         PmcData pmcData
     )
@@ -81,7 +82,7 @@ public class RepairController(EventOutputHolder _eventOutputHolder, RepairServic
             sessionId,
             pmcData,
             body.RepairKitsInfo,
-            body.Target,
+            body.Target.Value,
             output
         );
 

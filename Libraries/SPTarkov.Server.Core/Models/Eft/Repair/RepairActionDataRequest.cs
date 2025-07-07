@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
 
 namespace SPTarkov.Server.Core.Models.Eft.Repair;
@@ -15,7 +16,7 @@ public record RepairActionDataRequest : InventoryBaseActionRequestData
     ///     item to repair
     /// </summary>
     [JsonPropertyName("target")]
-    public string? Target { get; set; }
+    public MongoId? Target { get; set; }
 }
 
 public record RepairKitsInfo

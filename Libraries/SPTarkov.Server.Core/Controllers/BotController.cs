@@ -82,7 +82,7 @@ public class BotController(
     /// <param name="ignoreRaidSettings">OPTIONAL - should raid settings chosen pre-raid be ignored</param>
     /// <returns>Difficulty object</returns>
     public DifficultyCategories GetBotDifficulty(
-        string sessionId,
+        MongoId sessionId,
         string type,
         string diffLevel,
         bool ignoreRaidSettings = false
@@ -192,7 +192,7 @@ public class BotController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     /// <returns>List of bots</returns>
-    public List<BotBase> Generate(string sessionId, GenerateBotsRequestData request)
+    public List<BotBase> Generate(MongoId sessionId, GenerateBotsRequestData request)
     {
         var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
 
@@ -209,7 +209,7 @@ public class BotController(
     protected List<BotBase> GenerateBotWaves(
         GenerateBotsRequestData request,
         PmcData? pmcProfile,
-        string sessionId
+        MongoId sessionId
     )
     {
         var generatedBotList = new List<BotBase>();
@@ -268,7 +268,7 @@ public class BotController(
         GenerateCondition generateRequest,
         BotGenerationDetails botGenerationDetails,
         List<BotBase> botList,
-        string sessionId
+        MongoId sessionId
     )
     {
         var isEventBot = generateRequest.Role?.Contains(
@@ -352,7 +352,7 @@ public class BotController(
     ///     Pull raid settings from Application context
     /// </summary>
     /// <returns>GetRaidConfigurationRequestData if it exists</returns>
-    protected GetRaidConfigurationRequestData? GetMostRecentRaidSettings(string sessionId)
+    protected GetRaidConfigurationRequestData? GetMostRecentRaidSettings(MongoId sessionId)
     {
         var raidConfiguration = _profileActivityService
             .GetProfileActivityRaidData(sessionId)

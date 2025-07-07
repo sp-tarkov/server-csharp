@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Builds;
 using SPTarkov.Server.Core.Models.Eft.PresetBuild;
 using SPTarkov.Server.Core.Models.Eft.Profile;
@@ -27,7 +28,7 @@ public class BuildController(
     /// </summary>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public UserBuilds? GetUserBuilds(string sessionID)
+    public UserBuilds? GetUserBuilds(MongoId sessionID)
     {
         const string secureContainerSlotId = "SecuredContainer";
 
@@ -90,7 +91,7 @@ public class BuildController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="body"></param>
-    public void SaveWeaponBuild(string sessionId, PresetBuildActionRequestData body)
+    public void SaveWeaponBuild(MongoId sessionId, PresetBuildActionRequestData body)
     {
         var pmcData = _profileHelper.GetPmcProfile(sessionId);
 
@@ -130,7 +131,7 @@ public class BuildController(
     /// </summary>
     /// <param name="sessionID">Session/player id</param>
     /// <param name="request"></param>
-    public void SaveEquipmentBuild(string sessionID, PresetBuildActionRequestData request)
+    public void SaveEquipmentBuild(MongoId sessionID, PresetBuildActionRequestData request)
     {
         var profile = _profileHelper.GetFullProfile(sessionID);
         var pmcData = profile.CharacterData.PmcData;
@@ -173,7 +174,7 @@ public class BuildController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
-    public void RemoveBuild(string sessionId, RemoveBuildRequestData request)
+    public void RemoveBuild(MongoId sessionId, RemoveBuildRequestData request)
     {
         if (request.Id is not null)
         {
@@ -186,7 +187,7 @@ public class BuildController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
-    public void CreateMagazineTemplate(string sessionId, SetMagazineRequest request)
+    public void CreateMagazineTemplate(MongoId sessionId, SetMagazineRequest request)
     {
         var result = new MagazineBuild
         {
@@ -220,8 +221,8 @@ public class BuildController(
     ///     Remove build from players profile
     /// </summary>
     /// <param name="idToRemove"></param>
-    /// <param name="sessionId">Session/Player id</param>
-    protected void RemovePlayerBuild(string idToRemove, string sessionID)
+    /// <param name="sessionID">Session/Player id</param>
+    protected void RemovePlayerBuild(string idToRemove, MongoId sessionID)
     {
         var profile = _saveServer.GetProfile(sessionID);
         var weaponBuilds = profile.UserBuildData.WeaponBuilds;

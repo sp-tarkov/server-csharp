@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
@@ -21,7 +22,7 @@ public class AchievementController(
     /// </summary>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public virtual GetAchievementsResponse GetAchievements(string sessionID)
+    public virtual GetAchievementsResponse GetAchievements(MongoId sessionID)
     {
         return new GetAchievementsResponse { Elements = databaseService.GetAchievements() };
     }
@@ -31,7 +32,7 @@ public class AchievementController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>CompletedAchievementsResponse</returns>
-    public virtual CompletedAchievementsResponse GetAchievementStatics(string sessionId)
+    public virtual CompletedAchievementsResponse GetAchievementStatics(MongoId sessionId)
     {
         var stats = new Dictionary<string, int>();
         var profiles = profileHelper

@@ -190,6 +190,9 @@ public class PostDbLoadService(
             case WildSpawnType.bossKnight:
                 location = locations.Lighthouse;
                 break;
+            case WildSpawnType.bossTagilla:
+                location = locations.Factory4Day;
+                break;
             default:
                 logger.Warning($"Unknown boss type: {boss}. Unable to set as weekly. Skipping");
                 return;
