@@ -12,6 +12,7 @@
     <OutputType>Library</OutputType>
     <IsPackable>true</IsPackable>
     <StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\SPTarkov.DI\SPTarkov.DI.csproj" />
