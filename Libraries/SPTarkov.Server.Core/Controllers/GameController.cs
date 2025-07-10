@@ -70,12 +70,6 @@ public class GameController(
             return;
         }
 
-        fullProfile.SptData ??= new Spt
-        {
-            //TODO: complete
-            Version = "Replace_me",
-        };
-        fullProfile.SptData.Migrations ??= new Dictionary<string, long>();
         fullProfile.FriendProfileIds ??= [];
 
         if (fullProfile.ProfileInfo?.IsWiped is not null && fullProfile.ProfileInfo.IsWiped.Value)
