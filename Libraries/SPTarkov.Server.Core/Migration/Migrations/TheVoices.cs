@@ -73,7 +73,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
 
         private void HandlePmcVoice(JsonObject profileObject)
         {
-            JsonObject pmcInfo = profileObject["characters"]?["pmc"]?["Info"] as JsonObject;
+            var pmcInfo = profileObject["characters"]!["pmc"]!["Info"] as JsonObject;
 
             var oldVoice = pmcInfo["Voice"]?.ToString() ?? "";
             pmcInfo.Remove("Voice");
@@ -89,7 +89,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
 
         private void HandleScavVoice(JsonObject profileObject)
         {
-            JsonObject pmcInfo = profileObject["characters"]?["scav"]?["Info"] as JsonObject;
+            var pmcInfo = profileObject["characters"]!["scav"]!["Info"] as JsonObject;
 
             var oldVoice = pmcInfo["Voice"]?.ToString() ?? "";
             pmcInfo.Remove("Voice");

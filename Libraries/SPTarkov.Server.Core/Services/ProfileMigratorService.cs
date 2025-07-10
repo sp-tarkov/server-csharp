@@ -30,19 +30,19 @@ namespace SPTarkov.Server.Core.Services
                 if (profileMigration.CanMigrate(profile))
                 {
                     logger.Warning(
-                        $"{profile.ProfileInfo.ProfileId} Has a pending profile migration: {profileMigration.MigrationName}"
+                        $"{profile.ProfileInfo!.ProfileId} Has a pending profile migration: {profileMigration.MigrationName}"
                     );
 
                     var migratedProfile = profileMigration.Migrate(profile);
 
-                    if (migratedProfile != null)
+                    if (migratedProfile is not null)
                     {
-                        migratedProfile.SptData.Migrations[profileMigration.MigrationName] =
+                        migratedProfile.SptData!.Migrations![profileMigration.MigrationName] =
                             timeUtil.GetTimeStamp();
                         profile = migratedProfile;
 
                         logger.Success(
-                            $"{profile.ProfileInfo.ProfileId} has successfully ran profile migration: {profileMigration.MigrationName}"
+                            $"{profile.ProfileInfo!.ProfileId} has successfully ran profile migration: {profileMigration.MigrationName}"
                         );
                     }
                 }
