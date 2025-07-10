@@ -1,6 +1,9 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Migration;
+using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 
@@ -15,7 +18,7 @@ namespace SPTarkov.Server.Core.Services
     {
         private IEnumerable<AbstractProfileMigration> _sortedMigrations = [];
 
-        public JsonObject HandlePendingMigrations(JsonObject profile)
+        public SptProfile HandlePendingMigrations(JsonObject profile)
         {
             // On the initial run, begin sorting our migrations
             // This will sort it so that any non prerequisite migrations go first
@@ -25,6 +28,8 @@ namespace SPTarkov.Server.Core.Services
                 _sortedMigrations = SortMigrations();
             }
 
+            var profileId = profile["info"]?["id"]?.GetValue<string>();
+
             // Profile is due for a wipe or a reset, do not continue here.
             if (
                 profile["characters"]?["pmc"]?["Info"] == null
@@ -32,14 +37,18 @@ namespace SPTarkov.Server.Core.Services
                 || (profile["info"]?["wipe"]?.GetValue<bool>() == true)
             )
             {
-                return profile;
+                return profile.Deserialize<SptProfile>(JsonUtil.JsonSerializerOptionsNoIndent)
+                    ?? throw new InvalidOperationException(
+                        $"Could not deserialize the profile {profileId}"
+                    );
+                ;
             }
 
-            var profileId = profile["info"]?["id"]?.GetValue<string>();
+            var ranMigrations = new List<AbstractProfileMigration>();
 
             foreach (var profileMigration in _sortedMigrations)
             {
-                if (profileMigration.CanMigrate(profile))
+                if (profileMigration.CanMigrate(profile, ranMigrations))
                 {
                     logger.Warning(
                         $"{profileId} has a pending profile migration: {profileMigration.MigrationName}"
@@ -49,18 +58,35 @@ namespace SPTarkov.Server.Core.Services
 
                     if (migratedProfile is not null)
                     {
-                        SetCompletedMigration(profile, profileMigration.MigrationName);
-
                         profile = migratedProfile;
 
-                        logger.Success(
-                            $"{profileId} successfully ran profile migration: {profileMigration.MigrationName}"
-                        );
+                        ranMigrations.Add(profileMigration);
                     }
                 }
             }
 
-            return profile;
+            var SptReadyProfile =
+                profile.Deserialize<SptProfile>(JsonUtil.JsonSerializerOptionsNoIndent)
+                ?? throw new InvalidOperationException(
+                    $"Could not deserialize the profile {profileId}"
+                );
+
+            foreach (var ranMigration in ranMigrations)
+            {
+                if (ranMigration.PostMigrate(SptReadyProfile))
+                {
+                    logger.Success(
+                        $"{profileId} successfully ran profile migration: {ranMigration.MigrationName}"
+                    );
+
+                    SptReadyProfile.SptData.Migrations.Add(
+                        ranMigration.MigrationName,
+                        timeUtil.GetTimeStamp()
+                    );
+                }
+            }
+
+            return SptReadyProfile;
         }
 
         protected void SetCompletedMigration(JsonObject profile, string migrationName)

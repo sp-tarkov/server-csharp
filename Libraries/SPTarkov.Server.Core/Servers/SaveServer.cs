@@ -227,13 +227,7 @@ public class SaveServer(
 
             if (profile is not null)
             {
-                profile = profileMigratorService.HandlePendingMigrations(profile);
-
-                profiles[sessionID] =
-                    profile.Deserialize<SptProfile>(JsonUtil.JsonSerializerOptionsNoIndent)
-                    ?? throw new InvalidOperationException(
-                        $"Could not deserialize the profile {sessionID}"
-                    );
+                profiles[sessionID] = profileMigratorService.HandlePendingMigrations(profile);
             }
         }
 

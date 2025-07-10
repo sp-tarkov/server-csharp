@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Nodes;
+using SPTarkov.Server.Core.Models.Eft.Profile;
 
 namespace SPTarkov.Server.Core.Migration
 {
@@ -10,8 +11,16 @@ namespace SPTarkov.Server.Core.Migration
 
         public abstract IEnumerable<Type> PrerequisiteMigrations { get; }
 
-        public abstract bool CanMigrate(JsonObject profile);
+        public abstract bool CanMigrate(
+            JsonObject profile,
+            IEnumerable<IProfileMigration> ranMigrations
+        );
         public abstract JsonObject? Migrate(JsonObject profile);
+
+        public virtual bool PostMigrate(SptProfile profile)
+        {
+            return true;
+        }
 
         protected SemanticVersioning.Version? GetProfileVersion(JsonObject profile)
         {

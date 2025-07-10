@@ -293,7 +293,7 @@ public class CreateProfileService(
     ///     DOES NOT check that stash exists
     /// </summary>
     /// <param name="pmcData"> Profile to check </param>
-    protected void AddMissingInternalContainersToProfile(PmcData pmcData)
+    public void AddMissingInternalContainersToProfile(PmcData pmcData)
     {
         if (
             !pmcData.Inventory.Items.Any(item =>

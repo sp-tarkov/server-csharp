@@ -28,21 +28,18 @@ namespace SPTarkov.Server.Core.Migration.Migrations
 
         public override IEnumerable<Type> PrerequisiteMigrations
         {
-            get { return []; }
+            // Requires ThreeTenToThreeEleven on legacy profiles, due to that changing customization for the first time
+            get { return [typeof(ThreeTenToThreeEleven)]; }
         }
 
-        public override bool CanMigrate(JsonObject profile)
+        public override bool CanMigrate(
+            JsonObject profile,
+            IEnumerable<IProfileMigration> ranMigrations
+        )
         {
-            var profileVersion = GetProfileVersion(profile);
-
-            var fromRange = Range.Parse(FromVersion);
-            var toRange = Range.Parse(ToVersion);
-
-            bool versionMatches =
-                fromRange.IsSatisfied(profileVersion) && toRange.IsSatisfied(profileVersion);
             bool voiceIsMissing = profile["characters"]?["pmc"]?["Customization"]?["Voice"] == null;
 
-            return versionMatches && voiceIsMissing;
+            return voiceIsMissing;
         }
 
         public override JsonObject? Migrate(JsonObject profile)
