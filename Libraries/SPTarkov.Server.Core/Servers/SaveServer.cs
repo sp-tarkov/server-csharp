@@ -1,5 +1,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
@@ -221,13 +223,15 @@ public class SaveServer(
         if (fileUtil.FileExists(filePath))
         // File found, store in profiles[]
         {
-            var profile = await jsonUtil.DeserializeFromFileAsync<SptProfile>(filePath);
+            var profile = await jsonUtil.DeserializeFromFileAsync<JsonObject>(filePath);
 
             if (profile is not null)
             {
                 profile = profileMigratorService.HandlePendingMigrations(profile);
 
-                profiles[sessionID] = profile;
+                profiles[sessionID] = profile.Deserialize<SptProfile>(
+                    JsonUtil.JsonSerializerOptionsNoIndent
+                );
             }
         }
 

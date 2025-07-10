@@ -14,13 +14,10 @@ namespace SPTarkov.Server.Core.Migration.Migrations
     /// In 16.8.0.37972 BSG added customization for voices, technically this only affects BE profiles, but this should fix these.
     /// </summary>
     [Injectable]
-    public class TheVoices(
-        JsonUtil jsonUtil,
-        DatabaseService databaseService,
-        ConfigServer configServer
-    ) : AbstractProfileMigration
+    public class TheVoices(DatabaseService databaseService, ConfigServer configServer)
+        : AbstractProfileMigration
     {
-        private CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
+        private readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
 
         public override string FromVersion
         {
@@ -37,7 +34,12 @@ namespace SPTarkov.Server.Core.Migration.Migrations
             get { return "TheVoices400"; }
         }
 
-        public override bool CanMigrate(SptProfile profile)
+        public override IEnumerable<Type> PrerequisiteMigrations
+        {
+            get { return []; }
+        }
+
+        public override bool CanMigrate(JsonObject profile)
         {
             var sptVersion = ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion;
 
@@ -51,24 +53,17 @@ namespace SPTarkov.Server.Core.Migration.Migrations
 
             bool versionMatches =
                 fromRange.IsSatisfied(actualVersion) && toRange.IsSatisfied(actualVersion);
-            bool voiceIsMissing = profile.CharacterData!.PmcData!.Customization!.Voice == null;
+            bool voiceIsMissing = profile["characters"]?["pmc"]?["Customization"]?["Voice"] == null;
 
             return versionMatches && voiceIsMissing;
         }
 
-        public override SptProfile? Migrate(SptProfile profile)
+        public override JsonObject? Migrate(JsonObject profile)
         {
-            var profileNode = JsonNode.Parse(jsonUtil.Serialize(profile));
+            HandlePmcVoice(profile);
+            HandleScavVoice(profile);
 
-            if (profileNode is null || profileNode is not JsonObject profileObject)
-            {
-                return null;
-            }
-
-            HandlePmcVoice(profileObject);
-            HandleScavVoice(profileObject);
-
-            return profileObject.Deserialize<SptProfile>(JsonUtil.JsonSerializerOptionsNoIndent);
+            return profile;
         }
 
         private void HandlePmcVoice(JsonObject profileObject)

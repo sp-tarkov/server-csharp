@@ -1,4 +1,5 @@
-﻿using SPTarkov.Server.Core.Models.Eft.Profile;
+﻿using System.Text.Json.Nodes;
+using SPTarkov.Server.Core.Models.Eft.Profile;
 
 namespace SPTarkov.Server.Core.Migration
 {
@@ -9,13 +10,13 @@ namespace SPTarkov.Server.Core.Migration
         /// </summary>
         /// <param name="profile">The profile to check</param>
         /// <returns>Returns true if the profile can migrate, returns false if not</returns>
-        public bool CanMigrate(SptProfile profile);
+        public bool CanMigrate(JsonObject profile);
 
         /// <summary>
         /// Migrate the profile
         /// </summary>
         /// <param name="profile">The profile to migrate</param>
         /// <returns>Returns the migrated profile on success, or null if it failed</returns>
-        public SptProfile? Migrate(SptProfile profile);
+        public JsonObject? Migrate(JsonObject profile);
     }
 }
