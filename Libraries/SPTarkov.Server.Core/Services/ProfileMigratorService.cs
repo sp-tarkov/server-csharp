@@ -35,7 +35,7 @@ namespace SPTarkov.Server.Core.Services
                 return profile;
             }
 
-            string profileId = profile["info"]?["id"]?.GetValue<string>();
+            var profileId = profile["info"]?["id"]?.GetValue<string>();
 
             foreach (var profileMigration in _sortedMigrations)
             {

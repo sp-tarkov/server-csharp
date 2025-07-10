@@ -229,9 +229,11 @@ public class SaveServer(
             {
                 profile = profileMigratorService.HandlePendingMigrations(profile);
 
-                profiles[sessionID] = profile.Deserialize<SptProfile>(
-                    JsonUtil.JsonSerializerOptionsNoIndent
-                );
+                profiles[sessionID] =
+                    profile.Deserialize<SptProfile>(JsonUtil.JsonSerializerOptionsNoIndent)
+                    ?? throw new InvalidOperationException(
+                        $"Could not deserialize the profile {sessionID}"
+                    );
             }
         }
 
