@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Nodes;
-using SPTarkov.Server.Core.Models.Eft.Profile;
 
 namespace SPTarkov.Server.Core.Migration
 {

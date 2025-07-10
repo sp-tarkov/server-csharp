@@ -1,11 +1,6 @@
-﻿using System.Text.Json;
-using System.Text.Json.Nodes;
+﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Models.Eft.Profile;
-using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
-using SPTarkov.Server.Core.Utils;
 using Range = SemanticVersioning.Range;
 
 namespace SPTarkov.Server.Core.Migration.Migrations
@@ -14,11 +9,8 @@ namespace SPTarkov.Server.Core.Migration.Migrations
     /// In 16.8.0.37972 BSG added customization for voices, technically this only affects BE profiles, but this should fix these.
     /// </summary>
     [Injectable]
-    public class TheVoices(DatabaseService databaseService, ConfigServer configServer)
-        : AbstractProfileMigration
+    public class TheVoices(DatabaseService databaseService) : AbstractProfileMigration
     {
-        private readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
-
         public override string FromVersion
         {
             get { return "~4.0"; }
@@ -41,18 +33,13 @@ namespace SPTarkov.Server.Core.Migration.Migrations
 
         public override bool CanMigrate(JsonObject profile)
         {
-            var sptVersion = ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion;
-
-            if (!SemanticVersioning.Version.TryParse(sptVersion, out var actualVersion))
-            {
-                return false;
-            }
+            var profileVersion = GetProfileVersion(profile);
 
             var fromRange = Range.Parse(FromVersion);
             var toRange = Range.Parse(ToVersion);
 
             bool versionMatches =
-                fromRange.IsSatisfied(actualVersion) && toRange.IsSatisfied(actualVersion);
+                fromRange.IsSatisfied(profileVersion) && toRange.IsSatisfied(profileVersion);
             bool voiceIsMissing = profile["characters"]?["pmc"]?["Customization"]?["Voice"] == null;
 
             return versionMatches && voiceIsMissing;
