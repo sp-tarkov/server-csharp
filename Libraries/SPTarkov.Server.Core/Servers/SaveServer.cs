@@ -20,6 +20,7 @@ public class SaveServer(
     JsonUtil jsonUtil,
     HashUtil hashUtil,
     ServerLocalisationService serverLocalisationService,
+    ProfileMigratorService profileMigratorService,
     ISptLogger<SaveServer> logger,
     ConfigServer configServer
 )
@@ -220,7 +221,14 @@ public class SaveServer(
         if (fileUtil.FileExists(filePath))
         // File found, store in profiles[]
         {
-            profiles[sessionID] = await jsonUtil.DeserializeFromFileAsync<SptProfile>(filePath);
+            var profile = await jsonUtil.DeserializeFromFileAsync<SptProfile>(filePath);
+
+            if (profile is not null)
+            {
+                profile = profileMigratorService.HandlePendingMigrations(profile);
+
+                profiles[sessionID] = profile;
+            }
         }
 
         // Run callbacks
