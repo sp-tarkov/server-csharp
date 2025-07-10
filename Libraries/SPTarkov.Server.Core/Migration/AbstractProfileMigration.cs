@@ -13,7 +13,7 @@ namespace SPTarkov.Server.Core.Migration
 
         public abstract bool CanMigrate(
             JsonObject profile,
-            IEnumerable<IProfileMigration> ranMigrations
+            IEnumerable<IProfileMigration> previouslyRanMigrations
         );
         public abstract JsonObject? Migrate(JsonObject profile);
 

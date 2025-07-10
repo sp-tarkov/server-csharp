@@ -10,7 +10,10 @@ namespace SPTarkov.Server.Core.Migration
         /// </summary>
         /// <param name="profile">The profile to check</param>
         /// <returns>Returns true if the profile can migrate, returns false if not</returns>
-        public bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> ranMigrations);
+        public bool CanMigrate(
+            JsonObject profile,
+            IEnumerable<IProfileMigration> previouslyRanMigrations
+        );
 
         /// <summary>
         /// Migrate the profile, this should be used to handle and fix old data that has been removed from the <see cref="SptProfile"/> record

@@ -33,7 +33,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
 
         public override bool CanMigrate(
             JsonObject profile,
-            IEnumerable<IProfileMigration> ranMigrations
+            IEnumerable<IProfileMigration> previouslyRanMigrations
         )
         {
             var profileVersion = GetProfileVersion(profile);

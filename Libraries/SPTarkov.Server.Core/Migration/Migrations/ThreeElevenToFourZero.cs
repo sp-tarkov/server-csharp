@@ -31,7 +31,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
 
         public override bool CanMigrate(
             JsonObject profile,
-            IEnumerable<IProfileMigration> ranMigrations
+            IEnumerable<IProfileMigration> previouslyRanMigrations
         )
         {
             var profileVersion = GetProfileVersion(profile);
@@ -41,7 +41,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
             var versionMatches =
                 fromRange.IsSatisfied(profileVersion)
                 || PrerequisiteMigrations.All(prereq =>
-                    ranMigrations.Any(r => r.GetType() == prereq)
+                    previouslyRanMigrations.Any(r => r.GetType() == prereq)
                 );
 
             return versionMatches;
