@@ -71,7 +71,7 @@ public class PrestigeHelper(
             }
         }
 
-        var indexOfPrestigeObtained = Math.Min(prestige.PrestigeLevel.Value - 1, 1); // Index starts at 0
+        var indexOfPrestigeObtained = Math.Min((prestige.PrestigeLevel ?? 1) - 1, 1); // Index starts at 0
 
         // Add "Prestigious" achievement
         if (!newProfile.CharacterData.PmcData.Achievements.ContainsKey("676091c0f457869a94017a23"))
