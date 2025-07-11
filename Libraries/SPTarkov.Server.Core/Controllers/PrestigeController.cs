@@ -66,7 +66,7 @@ public class PrestigeController(
         {
             var pendingPrestige = new PendingPrestige
             {
-                PrestigeLevel = profile.CharacterData.PmcData.Info.PrestigeLevel + 1,
+                PrestigeLevel = (profile.CharacterData?.PmcData?.Info?.PrestigeLevel ?? 0) + 1,
                 Items = request,
             };
 
