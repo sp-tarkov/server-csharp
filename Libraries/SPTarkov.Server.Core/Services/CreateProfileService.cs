@@ -133,6 +133,8 @@ public class CreateProfileService(
 
         profileFixerService.CheckForAndFixPmcProfileIssues(profileDetails.CharacterData.PmcData);
 
+        saveServer.AddProfile(profileDetails);
+
         if (profileDetails.CharacterData.PmcData.Achievements.Count > 0)
         {
             var achievementsDb = databaseService.GetTemplates().Achievements;
@@ -184,8 +186,6 @@ public class CreateProfileService(
 
             prestigeHelper.ProcessPendingPrestige(account, profileDetails, pendingPrestige);
         }
-
-        saveServer.AddProfile(profileDetails);
 
         if (profileTemplateClone.Trader.SetQuestsAvailableForStart ?? false)
         {
