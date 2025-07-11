@@ -129,10 +129,11 @@ namespace SPTarkov.Server.Core.Extensions
                     break;
             }
 
-            var pretigeLevel = fullProfile?.CharacterData?.PmcData?.Info?.PrestigeLevel;
-            if (pretigeLevel is not null)
+            var prestigeLevel = fullProfile?.CharacterData?.PmcData?.Info?.PrestigeLevel;
+
+            if (prestigeLevel is not null)
             {
-                if (pretigeLevel >= 1)
+                if (prestigeLevel >= 1)
                 {
                     fullProfile.CustomisationUnlocks.Add(
                         new CustomisationStorage
@@ -144,7 +145,7 @@ namespace SPTarkov.Server.Core.Extensions
                     );
                 }
 
-                if (pretigeLevel >= 2)
+                if (prestigeLevel >= 2)
                 {
                     fullProfile.CustomisationUnlocks.Add(
                         new CustomisationStorage
