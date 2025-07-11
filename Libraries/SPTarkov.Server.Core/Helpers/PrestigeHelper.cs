@@ -112,7 +112,15 @@ public class PrestigeHelper(
             itemsToTransfer.Add(item);
         }
 
-        mailSendService.SendSystemMessageToPlayer(sessionId.Value, "", itemsToTransfer, 31536000);
+        if (itemsToTransfer.Count > 0)
+        {
+            mailSendService.SendSystemMessageToPlayer(
+                sessionId.Value,
+                "",
+                itemsToTransfer,
+                31536000
+            );
+        }
 
         newProfile.CharacterData.PmcData.Info.PrestigeLevel = prestige.PrestigeLevel;
     }
