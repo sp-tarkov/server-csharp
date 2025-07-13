@@ -8,10 +8,10 @@
 public abstract record AbstractModMetadata
 {
     /// <summary>
-    /// A Global Unique ID (GUID) to distinguish this mod from all others
-    ///
+    /// A Global Unique ID (GUID) to distinguish this mod from all others.
+    /// <br />
     /// It is recommended (but not mandatory) to use
-    /// <see href="https://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html">reverse domain name notation</see>
+    /// <see href="https://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html">reverse domain name notation</see>.
     /// </summary>
     public abstract string ModGuid { get; set; }
 
