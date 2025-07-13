@@ -8,9 +8,9 @@
 public abstract record AbstractModMetadata
 {
     /// <summary>
-    /// A unique ID value for the mod to distinguish it from others
+    /// A Global Unique ID (GUID) to distinguish this mod from all others
     /// </summary>
-    public abstract string ModId { get; set; }
+    public abstract string ModGuid { get; set; }
 
     /// <summary>
     /// Name of this mod
