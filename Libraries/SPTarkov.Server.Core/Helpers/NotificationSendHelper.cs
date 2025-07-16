@@ -50,7 +50,7 @@ public class NotificationSendHelper(
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
                 logger.Debug(
-                    $"Send message for {sessionID} websocket not available, queuing into profile"
+                    $"Send message for {sessionID} websocket not available, queueing into profile"
                 );
             }
             notificationService.Add(sessionID, notificationMessage);
