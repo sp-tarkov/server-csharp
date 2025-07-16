@@ -163,6 +163,17 @@ public class SptWebSocketConnectionHandler(
         }
     }
 
+    public void SendMessageToAll(WsNotificationEvent output)
+    {
+        lock (_socketsLock)
+        {
+            foreach (var sessionID in _sockets.Keys)
+            {
+                SendMessage(sessionID, output); // this currently serializes for every socket, might want to separate into sending already serialized data
+            } 
+        }
+    }
+
     public void SendMessage(string sessionID, WsNotificationEvent output)
     {
         try
