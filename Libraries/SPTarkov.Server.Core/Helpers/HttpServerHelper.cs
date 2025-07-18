@@ -1,6 +1,7 @@
 ﻿using System.Collections.Frozen;
 using System.Net;
 using System.Net.Sockets;
+using Microsoft.AspNetCore.Http;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;

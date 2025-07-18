@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Text.Json.Serialization;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Spt.Logging;
 
 namespace SPTarkov.Server.Core.Utils.Json.Converters;
 

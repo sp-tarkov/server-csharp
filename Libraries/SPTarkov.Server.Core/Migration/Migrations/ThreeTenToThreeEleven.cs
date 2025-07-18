@@ -85,8 +85,8 @@ namespace SPTarkov.Server.Core.Migration.Migrations
                 );
 
                 //Directly injecting CreateProfileService causes a circular dependency which I can't be bothered to fix just for this
-                serviceProvider
-                    .GetService<CreateProfileService>()!
+                (serviceProvider
+                    .GetService(typeof(CreateProfileService)) as CreateProfileService)!
                     .AddMissingInternalContainersToProfile(profile.CharacterData.PmcData);
             }
 
@@ -135,8 +135,8 @@ namespace SPTarkov.Server.Core.Migration.Migrations
                         .ToList();
 
                     //Directly injecting RewardHelper causes a circular dependency which I can't be bothered to fix just for this
-                    serviceProvider
-                        .GetService<RewardHelper>()!
+                    (serviceProvider
+                        .GetService(typeof(RewardHelper)) as RewardHelper)!
                         .ApplyRewards(
                             filteredRewards,
                             CustomisationSource.ACHIEVEMENT,

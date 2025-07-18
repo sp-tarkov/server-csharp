@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.DI;

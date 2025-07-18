@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Hosting;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Extensions;

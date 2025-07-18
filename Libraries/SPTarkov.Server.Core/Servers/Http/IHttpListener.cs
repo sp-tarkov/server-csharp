@@ -1,4 +1,6 @@
-﻿namespace SPTarkov.Server.Core.Servers.Http;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace SPTarkov.Server.Core.Servers.Http;
 
 public interface IHttpListener
 {

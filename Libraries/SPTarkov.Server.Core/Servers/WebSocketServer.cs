@@ -1,4 +1,5 @@
 ﻿using System.Net.WebSockets;
+using Microsoft.AspNetCore.Http;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers.Ws;
