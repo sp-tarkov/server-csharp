@@ -3,7 +3,7 @@ namespace SPTarkov.Server.Core.DI;
 public static class OnLoadOrder
 {
     public const int Watermark = 0;
-    public const int PreSptModLoader = 1000;
+    // public const int PreSptModLoader = 1000;
     public const int Database = 2000;
     public const int GameCallbacks = 3000;
     public const int PostDBModLoader = 4000;

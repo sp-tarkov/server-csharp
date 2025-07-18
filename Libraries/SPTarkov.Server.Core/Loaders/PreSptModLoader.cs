@@ -9,11 +9,11 @@ namespace SPTarkov.Server.Core.Loaders;
 [Obsolete(
     "This mod loader is obsolete and will be removed in 4.1.0. See documentation in IPreSptLoadModAsync for more information."
 )]
-[Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.PreSptModLoader)]
+[Injectable(InjectionType.Singleton)]
 public class PreSptModLoader(
     ISptLogger<PreSptModLoader> _logger,
     IEnumerable<IPreSptLoadModAsync> _preSptLoadMods
-) : IOnLoad
+)
 {
     public async Task OnLoad()
     {
