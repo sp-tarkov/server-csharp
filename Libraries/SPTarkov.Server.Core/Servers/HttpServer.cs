@@ -1,10 +1,6 @@
-﻿using System.Net;
-using System.Security.Authentication;
-using Microsoft.AspNetCore.Server.Kestrel.Https;
-using Microsoft.Extensions.Primitives;
+﻿using Microsoft.Extensions.Primitives;
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers.Http;
@@ -14,11 +10,9 @@ namespace SPTarkov.Server.Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
 public class HttpServer(
-    WebApplicationBuilder _builder,
     ISptLogger<HttpServer> _logger,
     ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer,
-    CertificateHelper _certificateHelper,
     WebSocketServer _webSocketServer,
     ProfileActivityService _profileActivityService,
     IEnumerable<IHttpListener> _httpListeners
@@ -26,70 +20,8 @@ public class HttpServer(
 {
     private readonly HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
     private bool _started;
-    private WebApplication? _webApplication;
 
-    /// <summary>
-    ///     Handle server loading event
-    /// </summary>
-    /// <exception cref="Exception"> Throws Exception when WebApplicationBuilder or WebApplication are null </exception>
-    public void Load()
-    {
-        if (_builder is null)
-        {
-            throw new Exception("WebApplicationBuilder is null in HttpServer.Load()");
-        }
-
-        _builder.WebHost.ConfigureKestrel(options =>
-        {
-            options.Listen(
-                IPAddress.Parse(_httpConfig.Ip),
-                _httpConfig.Port,
-                listenOptions =>
-                {
-                    listenOptions.UseHttps(opts =>
-                    {
-                        opts.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
-                        opts.ServerCertificate = _certificateHelper.LoadOrGenerateCertificatePfx();
-                        opts.ClientCertificateMode = ClientCertificateMode.NoCertificate;
-                    });
-                }
-            );
-        });
-
-        _webApplication = _builder.Build();
-
-        if (_webApplication is null)
-        {
-            throw new Exception("WebApplication is null in HttpServer.Load()");
-        }
-
-        // Enable web socket
-        _webApplication.UseWebSockets(
-            new WebSocketOptions
-            {
-                // Every minute a heartbeat is sent to keep the connection alive.
-                KeepAliveInterval = TimeSpan.FromSeconds(60),
-            }
-        );
-
-        _webApplication.Use(
-            async (HttpContext req, RequestDelegate _) =>
-            {
-                await HandleFallback(req);
-            }
-        );
-    }
-
-    public async Task StartAsync()
-    {
-        if (_webApplication != null && !_started)
-        {
-            _started = true;
-            await _webApplication.RunAsync();
-        }
-    }
-
-    private async Task HandleFallback(HttpContext context)
+    public async Task HandleRequest(HttpContext context)
     {
         if (context.WebSockets.IsWebSocketRequest)
         {

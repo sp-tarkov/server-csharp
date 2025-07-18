@@ -77,7 +77,7 @@ public class App(
         _ = Task.Run(Update);
     }
 
-    public async Task StartAsync()
+    public void StartAsync()
     {
         if (!_httpServer.IsStarted())
         {
@@ -96,8 +96,6 @@ public class App(
         }
 
         _logger.Success(GetRandomisedStartMessage());
-
-        await _httpServer.StartAsync();
     }
 
     protected string GetRandomisedStartMessage()

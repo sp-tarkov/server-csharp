@@ -35,11 +35,6 @@ public class ItemTplGenerator(
         // Load all onload components, this gives us access to most of SPTs injections
         foreach (var onLoad in _onLoadComponents)
         {
-            if (onLoad is HttpCallbacks)
-            {
-                continue;
-            }
-
             await onLoad.OnLoad();
         }
 

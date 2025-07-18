@@ -1,16 +1,23 @@
+using System.Net;
 using System.Runtime;
 using System.Runtime.InteropServices;
+using System.Security.Authentication;
 using System.Text;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.DI;
+using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Loaders;
+using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Logger;
 using SPTarkov.Server.Logger;
 using SPTarkov.Server.Modding;
+using SPTarkov.Server.Services;
 
 namespace SPTarkov.Server;
 
@@ -60,55 +67,71 @@ public static class Program
 
         builder.Services.AddSingleton(builder);
         builder.Services.AddSingleton<IReadOnlyList<SptMod>>(loadedMods);
-        var serviceProvider = builder.Services.BuildServiceProvider();
-        var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger("Server");
-        // Load bundles for bundle mods
-        if (ProgramStatics.MODS())
-        {
-            var bundleLoader = serviceProvider.GetService<BundleLoader>();
-            foreach (var mod in loadedMods)
-            {
-                if (mod.ModMetadata?.IsBundleMod == true)
-                {
-                    // Convert to relative path
-                    string relativeModPath = Path.GetRelativePath(
-                            Directory.GetCurrentDirectory(),
-                            mod.Directory
-                        )
-                        .Replace('\\', '/');
+        builder.Services.AddHostedService<SptServerBackgroundService>();
+        // Configure Kestrel options
+        ConfigureKestrel(builder);
 
-                    bundleLoader.AddBundles(relativeModPath);
-                }
-            }
-        }
+        var app = builder.Build();
+
+        // Configure Kestrel WS options and Handle fallback requests
+        ConfigureWebApp(app);
+
+        // In case of exceptions we snatch a Server logger
+        var serverExceptionLogger = app.Services.GetService<ILoggerFactory>()!.CreateLogger("Server");
+        // We need any logger instance to use as a finalizer when the app closes
+        var loggerFinalizer = app.Services.GetService<ISptLogger<App>>()!;
         try
         {
             SetConsoleOutputMode();
 
-            // Get the Built app and run it
-            var app = serviceProvider.GetService<App>();
-
-            if (app != null)
-            {
-                await app.InitializeAsync();
-
-                // Run garbage collection now the server is ready to start
-                GCSettings.LargeObjectHeapCompactionMode =
-                    GCLargeObjectHeapCompactionMode.CompactOnce;
-                GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
-
-                await app.StartAsync();
-            }
+            await app.RunAsync();
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-            logger.LogCritical(ex, "Critical exception, stopping server...");
+            serverExceptionLogger.LogCritical(ex, "Critical exception, stopping server...");
         }
         finally
         {
-            serviceProvider.GetService<SptLogger<object>>()?.DumpAndStop();
+            loggerFinalizer.DumpAndStop();
         }
+    }
+
+    private static void ConfigureWebApp(WebApplication app)
+    {
+        app.UseWebSockets(
+            new WebSocketOptions
+            {
+                // Every minute a heartbeat is sent to keep the connection alive.
+                KeepAliveInterval = TimeSpan.FromSeconds(60)
+            }
+        );
+        app.Use(async (HttpContext context, RequestDelegate _) =>
+        {
+            await context.RequestServices.GetService<HttpServer>()!.HandleRequest(context);
+        });
+    }
+
+    private static void ConfigureKestrel(WebApplicationBuilder builder)
+    {
+        builder.WebHost.ConfigureKestrel((_, options) =>
+        {
+            var httpConfig = options.ApplicationServices.GetService<ConfigServer>()?.GetConfig<HttpConfig>()!;
+            var certHelper = options.ApplicationServices.GetService<CertificateHelper>()!;
+            options.Listen(
+                IPAddress.Parse(httpConfig.Ip),
+                httpConfig.Port,
+                listenOptions =>
+                {
+                    listenOptions.UseHttps(opts =>
+                    {
+                        opts.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+                        opts.ServerCertificate = certHelper.LoadOrGenerateCertificatePfx();
+                        opts.ClientCertificateMode = ClientCertificateMode.NoCertificate;
+                    });
+                }
+            );
+        });
     }
 
     private static WebApplicationBuilder CreateNewHostBuilder(string[]? args = null)
