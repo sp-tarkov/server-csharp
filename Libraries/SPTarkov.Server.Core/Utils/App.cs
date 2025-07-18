@@ -75,25 +75,19 @@ public class App(
 
         // Discard here, as this task will run indefinitely
         _ = Task.Run(Update);
-    }
 
-    public void StartAsync()
-    {
-        if (!_httpServer.IsStarted())
-        {
-            _logger.Success(
-                _serverLocalisationService.GetText(
-                    "started_webserver_success",
-                    _httpServer.ListeningUrl()
-                )
-            );
-            _logger.Success(
-                _serverLocalisationService.GetText(
-                    "websocket-started",
-                    _httpServer.ListeningUrl().Replace("https://", "wss://")
-                )
-            );
-        }
+        _logger.Success(
+            _serverLocalisationService.GetText(
+                "started_webserver_success",
+                _httpServer.ListeningUrl()
+            )
+        );
+        _logger.Success(
+            _serverLocalisationService.GetText(
+                "websocket-started",
+                _httpServer.ListeningUrl().Replace("https://", "wss://")
+            )
+        );
 
         _logger.Success(GetRandomisedStartMessage());
     }
@@ -115,7 +109,7 @@ public class App(
         while (!_appLifeTime.ApplicationStopping.IsCancellationRequested)
         {
             // If the server has failed to start, skip any update calls
-            if (!_httpServer.IsStarted() || !_databaseService.IsDatabaseValid())
+            if (!_databaseService.IsDatabaseValid())
             {
                 await Task.Delay(5000, _appLifeTime.ApplicationStopping);
 

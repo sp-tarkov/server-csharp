@@ -19,7 +19,6 @@ public class HttpServer(
 )
 {
     private readonly HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
-    private bool _started;
 
     public async Task HandleRequest(HttpContext context)
     {
@@ -133,11 +132,6 @@ public class HttpServer(
         }
 
         return found;
-    }
-
-    public bool IsStarted()
-    {
-        return _started;
     }
 
     public string ListeningUrl()

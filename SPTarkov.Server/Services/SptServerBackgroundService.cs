@@ -29,7 +29,5 @@ public class SptServerBackgroundService(IReadOnlyList<SptMod> loadedMods, Bundle
         // Run garbage collection now the server is ready to start
         GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
         GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
-
-        app.StartAsync();
     }
 }
