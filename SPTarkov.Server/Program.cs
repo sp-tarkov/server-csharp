@@ -122,7 +122,7 @@ public static class Program
             (_, options) =>
             {
                 // This method is not expected to be async so we need to wait for the Task instead of using await keyword
-                options.ApplicationServices.GetService<PreSptModLoader>().OnLoad().Wait();
+                options.ApplicationServices.GetService<OnLoadModLoader>().OnLoad().Wait();
                 var httpConfig = options
                     .ApplicationServices.GetService<ConfigServer>()
                     ?.GetConfig<HttpConfig>()!;
