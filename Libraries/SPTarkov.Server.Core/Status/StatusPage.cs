@@ -10,7 +10,7 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Status
 {
-    [Injectable]
+    [Injectable(TypePriority = 0)]
     public class StatusPage(
         TimeUtil timeUtil,
         ProfileActivityService profileActivityService,
