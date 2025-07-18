@@ -138,11 +138,11 @@ public record ItemBuyData
 
     // MongoId
     [JsonPropertyName("category")]
-    public required List<MongoId> Category { get; set; }
+    public required HashSet<MongoId> Category { get; set; }
 
     // MongoId
     [JsonPropertyName("id_list")]
-    public required List<MongoId> IdList { get; set; }
+    public required HashSet<MongoId> IdList { get; set; }
 }
 
 public record ItemSellData
@@ -151,10 +151,10 @@ public record ItemSellData
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("category")]
-    public required List<MongoId> Category { get; set; }
+    public required HashSet<MongoId> Category { get; set; }
 
     [JsonPropertyName("id_list")]
-    public required List<MongoId> IdList { get; set; }
+    public required HashSet<MongoId> IdList { get; set; }
 }
 
 public record TraderInsurance

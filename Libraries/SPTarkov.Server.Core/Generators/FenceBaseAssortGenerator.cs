@@ -37,22 +37,27 @@ public class FenceBaseAssortGenerator(
         var blockedSeasonalItems = seasonalEventService.GetInactiveSeasonalEventItems();
         var baseFenceAssort = databaseService.GetTrader(Traders.FENCE).Assort;
 
-        foreach (var rootItemDb in itemHelper.GetItems().Where(IsValidFenceItem))
+        foreach (var (itemId, rootItemDb) in databaseService.GetItems())
         {
+            if (!string.Equals(rootItemDb.Type, "Item", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
             // Skip blacklisted items
-            if (itemFilterService.IsItemBlacklisted(rootItemDb.Id))
+            if (itemFilterService.IsItemBlacklisted(itemId))
             {
                 continue;
             }
 
             // Skip reward item blacklist
-            if (itemFilterService.IsItemRewardBlacklisted(rootItemDb.Id))
+            if (itemFilterService.IsItemRewardBlacklisted(itemId))
             {
                 continue;
             }
 
             // Invalid
-            if (!itemHelper.IsValidItem(rootItemDb.Id))
+            if (!itemHelper.IsValidItem(itemId))
             {
                 continue;
             }
@@ -61,8 +66,8 @@ public class FenceBaseAssortGenerator(
             if (traderConfig.Fence.Blacklist.Count > 0)
             {
                 if (
-                    traderConfig.Fence.Blacklist.Contains(rootItemDb.Id)
-                    || itemHelper.IsOfBaseclasses(rootItemDb.Id, traderConfig.Fence.Blacklist)
+                    traderConfig.Fence.Blacklist.Contains(itemId)
+                    || itemHelper.IsOfBaseclasses(itemId, traderConfig.Fence.Blacklist)
                 )
                 {
                     continue;
@@ -71,7 +76,7 @@ public class FenceBaseAssortGenerator(
 
             // Only allow rigs with no slots (carrier rigs)
             if (
-                itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.VEST)
+                itemHelper.IsOfBaseclass(itemId, BaseClasses.VEST)
                 && (rootItemDb.Properties?.Slots?.Count ?? 0) > 0
             )
             {
@@ -79,10 +84,7 @@ public class FenceBaseAssortGenerator(
             }
 
             // Skip seasonal event items when not in seasonal event
-            if (
-                traderConfig.Fence.BlacklistSeasonalItems
-                && blockedSeasonalItems.Contains(rootItemDb.Id)
-            )
+            if (traderConfig.Fence.BlacklistSeasonalItems && blockedSeasonalItems.Contains(itemId))
             {
                 continue;
             }
@@ -93,7 +95,7 @@ public class FenceBaseAssortGenerator(
                 new()
                 {
                     Id = new MongoId(),
-                    Template = rootItemDb.Id,
+                    Template = itemId,
                     ParentId = "hideout",
                     SlotId = "hideout",
                     Upd = new Upd { StackObjectsCount = 9999999 },
@@ -101,7 +103,7 @@ public class FenceBaseAssortGenerator(
             };
 
             // Ensure ammo is not above penetration limit value
-            if (itemHelper.IsOfBaseclasses(rootItemDb.Id, [BaseClasses.AMMO_BOX, BaseClasses.AMMO]))
+            if (itemHelper.IsOfBaseclasses(itemId, [BaseClasses.AMMO_BOX, BaseClasses.AMMO]))
             {
                 if (IsAmmoAbovePenetrationLimit(rootItemDb))
                 {
@@ -109,7 +111,7 @@ public class FenceBaseAssortGenerator(
                 }
             }
 
-            if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.AMMO_BOX))
+            if (itemHelper.IsOfBaseclass(itemId, BaseClasses.AMMO_BOX))
             // Only add cartridges to box if box has no children
             {
                 if (itemWithChildrenToAdd.Count == 1)
@@ -130,7 +132,7 @@ public class FenceBaseAssortGenerator(
             var barterSchemeToAdd = new BarterScheme
             {
                 Count = Math.Round(
-                    (double)fenceService.GetItemPrice(rootItemDb.Id, itemWithChildrenToAdd)
+                    (double)fenceService.GetItemPrice(itemId, itemWithChildrenToAdd)
                 ),
                 Template = Money.ROUBLES,
             };
@@ -185,8 +187,8 @@ public class FenceBaseAssortGenerator(
             var itemQualityModifier = itemHelper.GetItemQualityModifierForItems(itemAndChildren);
 
             // Multiply weapon+mods rouble price by quality modifier
-            baseFenceAssort.BarterScheme[itemAndChildren[0].Id] = new List<List<BarterScheme>>
-            {
+            baseFenceAssort.BarterScheme[itemAndChildren[0].Id] =
+            [
                 new()
                 {
                     new BarterScheme
@@ -195,7 +197,7 @@ public class FenceBaseAssortGenerator(
                         Count = Math.Round(price * itemQualityModifier),
                     },
                 },
-            };
+            ];
 
             baseFenceAssort.LoyalLevelItems[itemAndChildren[0].Id] = 1;
         }

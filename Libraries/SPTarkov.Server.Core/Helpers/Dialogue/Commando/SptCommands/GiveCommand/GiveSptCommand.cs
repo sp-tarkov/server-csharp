@@ -152,7 +152,7 @@ public class GiveSptCommand(
 
                 localizedGlobal = GetGlobalsLocale(locale);
                 var allAllowedItemNames = _itemHelper
-                    .GetItems()
+                    .GetItemsClone()
                     .Where(IsItemAllowed)
                     .Select(i =>
                         localizedGlobal
@@ -207,7 +207,7 @@ public class GiveSptCommand(
         // item is just the tplId.
         MongoId tplId = isItemName
             ? _itemHelper
-                .GetItems()
+                .GetItemsClone()
                 .Where(IsItemAllowed)
                 .FirstOrDefault(i =>
                     (localizedGlobal[$"{i?.Id} Name"]?.ToLowerInvariant() ?? i.Properties.Name)

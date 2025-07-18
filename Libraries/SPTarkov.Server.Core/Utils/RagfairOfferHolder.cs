@@ -146,8 +146,11 @@ public class RagfairOfferHolder(
             var sellerIsTrader = _ragfairServerHelper.IsTrader(sellerId);
             var itemSoldTemplate = _itemHelper.GetItem(itemTpl);
             if (
-                !string.IsNullOrEmpty(itemTpl)
-                && !(sellerIsTrader || _profileHelper.IsPlayer(sellerId))
+                !itemTpl.IsEmpty()
+                && !(
+                    sellerIsTrader
+                    || (bool)offer.ExtensionData.GetValueOrDefault("isPlayerOffer", false)
+                )
                 && _offersByTemplate.TryGetValue(itemTpl, out var offers)
                 && offers?.Count
                     >= _ragfairServerHelper.GetOfferCountByBaseType(itemSoldTemplate.Value.Parent)

@@ -292,7 +292,7 @@ public class BotController(
             );
         }
 
-        var maxThreads = botGenerationDetails.BotCountToGenerate.Value;
+        var maxThreads = botGenerationDetails.BotCountToGenerate;
 
 #if DEBUG
         // Make debugging bot gen easier

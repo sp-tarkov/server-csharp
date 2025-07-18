@@ -88,7 +88,7 @@ public record RagfairOffer
     ///     Tightly bound to offer.items[0].upd.stackObjectsCount
     /// </summary>
     [JsonPropertyName("quantity")]
-    public int? Quantity { get; set; }
+    public int Quantity { get; set; }
 }
 
 public record OfferRequirement

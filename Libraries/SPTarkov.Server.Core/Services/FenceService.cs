@@ -814,7 +814,7 @@ public class FenceService(
             var childItemsAndSingleRoot = baseFenceAssortClone
                 .Items.Where(item =>
                     !string.Equals(item.ParentId, "hideout", StringComparison.Ordinal)
-                    || string.Equals(item.Id, chosenBaseAssortRoot.Id, StringComparison.Ordinal)
+                    || item.Id == chosenBaseAssortRoot.Id
                 )
                 .ToList();
 

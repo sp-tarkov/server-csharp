@@ -1020,7 +1020,8 @@ public class RagfairController(
             formattedRequirements.ToList(),
             loyalLevel,
             (int?)items.FirstOrDefault()?.Upd?.StackObjectsCount ?? 1,
-            sellInOnePiece
+            sellInOnePiece,
+            true
         );
     }
 

@@ -55,7 +55,7 @@ public class RagfairAssortGenerator(
 
         // Get cloned items from db
         var dbItemsClone = itemHelper
-            .GetItems()
+            .GetItemsClone()
             .Where(item => !string.Equals(item.Type, "Node", StringComparison.OrdinalIgnoreCase));
 
         // Store processed preset tpls so we don't add them when processing non-preset items
@@ -136,7 +136,7 @@ public class RagfairAssortGenerator(
     /// <returns> Hydrated Item object </returns>
     protected Item CreateRagfairAssortRootItem(MongoId tplId, MongoId? id = null)
     {
-        if (string.IsNullOrEmpty(id))
+        if (id == null || id.Value.IsEmpty())
         {
             id = new MongoId();
         }

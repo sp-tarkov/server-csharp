@@ -1482,14 +1482,7 @@ public class QuestHelper(
                         return true;
                     }
 
-                    if (
-                        condition.Target.IsItem
-                        && string.Equals(
-                            condition.Target.Item,
-                            completedQuestId,
-                            StringComparison.InvariantCultureIgnoreCase
-                        )
-                    )
+                    if (condition.Target.IsItem && condition.Target.Item == completedQuestId)
                     {
                         // Not a list, plain string
                         return true;

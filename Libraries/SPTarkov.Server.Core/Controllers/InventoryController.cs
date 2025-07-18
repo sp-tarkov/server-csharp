@@ -250,9 +250,12 @@ public class InventoryController(
                 }
                 case "ExamineAllItems":
                 {
-                    var itemsToInspect = itemHelper.GetItems().Where(x => x.Type != "Node");
-                    FlagItemsAsInspectedAndRewardXp(itemsToInspect.Select(x => x.Id), fullProfile);
-                    logger.Success($"Flagged {itemsToInspect.Count()} items as examined");
+                    var itemIds = databaseService
+                        .GetItems()
+                        .Where(x => x.Value.Type != "Node")
+                        .Select(x => x.Key);
+                    FlagItemsAsInspectedAndRewardXp(itemIds, fullProfile);
+                    logger.Success($"Flagged {itemIds.Count()} items as examined");
 
                     break;
                 }

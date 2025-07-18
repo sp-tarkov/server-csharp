@@ -901,7 +901,7 @@ public class CircleOfCultistService(
         bool itemsShouldBeHighValue
     )
     {
-        var allItems = itemHelper.GetItems();
+        var allItems = itemHelper.GetItemsClone();
         var currentItemCount = 0;
         var attempts = 0;
         // `currentItemCount` var will look for the correct number of items, `attempts` var will keep this from never stopping if the highValueThreshold is too high

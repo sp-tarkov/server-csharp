@@ -47,7 +47,7 @@ public class DialogueHelper(ISptLogger<DialogueHelper> logger, ProfileHelper pro
     /// <param name="sessionID">Session/player id</param>
     /// <param name="itemId">Item being moved to inventory</param>
     /// <returns>Collection of items from message</returns>
-    public List<Item> GetMessageItemContents(string messageID, MongoId sessionID, MongoId itemId)
+    public List<Item> GetMessageItemContents(MongoId messageID, MongoId sessionID, MongoId itemId)
     {
         var fullProfile = profileHelper.GetFullProfile(sessionID);
         var dialogueData = fullProfile.DialogueRecords;

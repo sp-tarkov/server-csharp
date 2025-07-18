@@ -207,13 +207,7 @@ namespace SPTarkov.Server.Core.Extensions
 
             foreach (var childItem in items)
             {
-                if (
-                    string.Equals(
-                        childItem.ParentId,
-                        baseItemId,
-                        StringComparison.OrdinalIgnoreCase
-                    )
-                )
+                if (childItem.ParentId == baseItemId.ToString())
                 {
                     list.AddRange(FindAndReturnChildrenByItems(items, childItem.Id));
                 }
@@ -292,8 +286,9 @@ namespace SPTarkov.Server.Core.Extensions
         )
         {
             // Use dictionary to make key lookup faster, convert to list before being returned
+            var itemList = items.ToList();
             OrderedDictionary<MongoId, Item> result = [];
-            foreach (var childItem in items)
+            foreach (var childItem in itemList)
             {
                 // Include itself
                 if (childItem.Id == baseItemId)
@@ -403,9 +398,7 @@ namespace SPTarkov.Server.Core.Extensions
                 item.Id = newId;
 
                 // Find all children of item and update their parent ids to match
-                var childItems = items.Where(x =>
-                    string.Equals(x.ParentId, originalId, StringComparison.OrdinalIgnoreCase)
-                );
+                var childItems = items.Where(item => item.ParentId == originalId.ToString());
                 foreach (var childItem in childItems)
                 {
                     childItem.ParentId = newId;

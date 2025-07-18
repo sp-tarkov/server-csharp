@@ -12,7 +12,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <returns>True - offer is stale</returns>
         public static bool IsStale(this RagfairOffer offer, long time)
         {
-            return offer.EndTime < time || (offer.Quantity ?? 0) < 1;
+            return offer.EndTime < time || (offer.Quantity) < 1;
         }
     }
 }

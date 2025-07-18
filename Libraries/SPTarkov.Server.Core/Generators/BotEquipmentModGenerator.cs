@@ -197,7 +197,8 @@ public class BotEquipmentModGenerator(
                 );
                 switch (plateSlotFilteringOutcome.Result)
                 {
-                    case Result.UNKNOWN_FAILURE or Result.NO_DEFAULT_FILTER:
+                    case Result.UNKNOWN_FAILURE
+                    or Result.NO_DEFAULT_FILTER:
                         if (logger.IsLogEnabled(LogLevel.Debug))
                         {
                             logger.Debug(
@@ -421,9 +422,9 @@ public class BotEquipmentModGenerator(
                 var defaultPlate = armorItem.GetDefaultPlateTpl(modSlot);
                 if (defaultPlate is not null)
                 {
-                    // Return Default Plates cause couldn't get lowest level available from original selection
+                    // Return Default Plates cause couldn't get the lowest level available from original selection
                     result.Result = Result.SUCCESS;
-                    result.PlateModTemplates = [defaultPlate];
+                    result.PlateModTemplates = [defaultPlate.Value];
 
                     return result;
                 }

@@ -89,23 +89,26 @@ public class ItemBaseClassService(
             return false;
         }
 
-        if (_itemBaseClassesCache.TryGetValue(itemTpl, out var baseClassList))
+        var existsInCache = _itemBaseClassesCache.TryGetValue(itemTpl, out var baseClassList);
+        if (!existsInCache)
+        {
+            // Not found
+            if (logger.IsLogEnabled(LogLevel.Debug))
+            {
+                logger.Debug(
+                    serverLocalisationService.GetText("baseclass-item_not_found", itemTpl)
+                );
+            }
+
+            // Not found in cache, Hydrate again - some mods add items late in server startup lifecycle
+            HydrateItemBaseClassCache();
+
+            existsInCache = _itemBaseClassesCache.TryGetValue(itemTpl, out baseClassList);
+        }
+
+        if (existsInCache)
         {
             return baseClassList.Overlaps(baseClasses);
-        }
-
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug(serverLocalisationService.GetText("baseclass-item_not_found", itemTpl));
-        }
-
-        // Not found in cache, Hydrate again - some mods add items late
-        HydrateItemBaseClassCache();
-
-        // Check for item again, return false if item not found a second time
-        if (_itemBaseClassesCache.TryGetValue(itemTpl, out var value))
-        {
-            return value.Any(baseClasses.Contains);
         }
 
         logger.Warning(

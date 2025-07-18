@@ -1013,7 +1013,7 @@ public class InventoryHelper(
             {
                 // Split requests don't use 'use' but 'splitItem' property
                 fromInventoryItems = dialogueHelper.GetMessageItemContents(
-                    request.FromOwner.Id,
+                    request.FromOwner.Id.Value,
                     sessionId,
                     itemId
                 );

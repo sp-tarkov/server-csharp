@@ -242,8 +242,8 @@ public class AirdropService(
         // Get all items that match the blacklisted types and fold into item blacklist
         var itemTypeBlacklist = _itemFilterService.GetItemRewardBaseTypeBlacklist();
         var itemsMatchingTypeBlacklist = _itemHelper
-            .GetItems()
-            .Where(templateItem => !string.IsNullOrEmpty(templateItem.Parent))
+            .GetItemsClone()
+            .Where(templateItem => !templateItem.Parent.IsEmpty())
             .Where(templateItem =>
                 _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist)
             )

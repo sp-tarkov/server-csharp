@@ -74,7 +74,7 @@ public readonly struct MongoId : IEquatable<MongoId>
     {
         if (other is null)
         {
-            return other == this;
+            return false;
         }
 
         return other.ToString().Equals(ToString(), StringComparison.InvariantCultureIgnoreCase);
@@ -142,7 +142,7 @@ public readonly struct MongoId : IEquatable<MongoId>
 
     public bool IsEmpty()
     {
-        if (_stringId == "000000000000000000000000" || string.IsNullOrEmpty(_stringId))
+        if (string.IsNullOrEmpty(_stringId) || _stringId == "000000000000000000000000")
         {
             return true;
         }

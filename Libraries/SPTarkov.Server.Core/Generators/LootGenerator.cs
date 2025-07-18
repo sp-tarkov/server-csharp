@@ -49,7 +49,7 @@ public class LootGenerator(
         if (sealedWeaponCrateCount > 0)
         {
             // Get list of all sealed containers from db - they're all the same, just for flavor
-            var itemsDb = itemHelper.GetItems();
+            var itemsDb = databaseService.GetItems().Values;
             var sealedWeaponContainerPool = itemsDb.Where(item =>
                 item.Name.Contains("event_container_airdrop")
             );

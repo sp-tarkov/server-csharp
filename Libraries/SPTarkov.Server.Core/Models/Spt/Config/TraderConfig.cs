@@ -106,7 +106,7 @@ public record FenceConfig
     ///     Prevent duplicate offers of items of specific categories by parentId
     /// </summary>
     [JsonPropertyName("preventDuplicateOffersOfCategory")]
-    public required List<MongoId> PreventDuplicateOffersOfCategory { get; set; }
+    public required HashSet<MongoId> PreventDuplicateOffersOfCategory { get; set; }
 
     [JsonPropertyName("regenerateAssortsOnRefresh")]
     public bool RegenerateAssortsOnRefresh { get; set; }

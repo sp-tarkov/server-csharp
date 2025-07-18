@@ -121,9 +121,7 @@ public class ItemHelper(
             );
 
         // Check if any item in the filtered pool matches the provided item
-        return filteredPool.Any(poolItem =>
-            string.Equals(poolItem.Template, itemTpl, StringComparison.OrdinalIgnoreCase)
-        );
+        return filteredPool.Any(poolItem => poolItem.Template == itemTpl);
     }
 
     /// <summary>
@@ -283,7 +281,7 @@ public class ItemHelper(
     /// <param name="tpl">Template id to check</param>
     /// <param name="invalidBaseTypes">OPTIONAL - Base types deemed invalid</param>
     /// <returns>true for items that may be in player possession and not quest items</returns>
-    public bool IsValidItem(MongoId tpl, ICollection<MongoId>? invalidBaseTypes = null)
+    public bool IsValidItem(MongoId tpl, ISet<MongoId>? invalidBaseTypes = null)
     {
         var baseTypes = invalidBaseTypes ?? _defaultInvalidBaseTypes;
         var itemDetails = GetItem(tpl);
@@ -295,9 +293,9 @@ public class ItemHelper(
 
         return !(itemDetails.Value.Properties.QuestItem ?? false)
             && string.Equals(itemDetails.Value.Type, "Item", StringComparison.OrdinalIgnoreCase)
-            && baseTypes.All(x => !IsOfBaseclass(tpl, x))
             && GetItemPrice(tpl) > 0
-            && !itemFilterService.IsItemBlacklisted(tpl);
+            && !itemFilterService.IsItemBlacklisted(tpl)
+            && baseTypes.All(x => !IsOfBaseclass(tpl, x));
     }
 
     /// <summary>
@@ -502,7 +500,7 @@ public class ItemHelper(
     ///     Get cloned copy of all item data from items.json
     /// </summary>
     /// <returns>List of TemplateItem objects</returns>
-    public List<TemplateItem> GetItems()
+    public List<TemplateItem> GetItemsClone()
     {
         return cloner.Clone(databaseService.GetItems().Values.ToList());
     }
@@ -724,14 +722,8 @@ public class ItemHelper(
         {
             // Parent matches desired item + all items in list do not match
             if (
-                string.Equals(
-                    itemFromAssort.ParentId,
-                    itemIdToFind,
-                    StringComparison.OrdinalIgnoreCase
-                )
-                && list.All(item =>
-                    !string.Equals(itemFromAssort.Id, item.Id, StringComparison.Ordinal)
-                )
+                itemFromAssort.ParentId == itemIdToFind
+                && list.All(item => itemFromAssort.Id != item.Id)
             )
             {
                 list.Add(itemFromAssort);
@@ -937,7 +929,7 @@ public class ItemHelper(
         // Update all parentIds of items attached to base item to use new id
         foreach (var item in itemWithChildren)
         {
-            if (string.Equals(item.ParentId, oldId, StringComparison.OrdinalIgnoreCase))
+            if (item.ParentId == oldId)
             {
                 item.ParentId = newId;
             }
@@ -992,9 +984,7 @@ public class ItemHelper(
             item.Id = newId;
 
             // Find all children of item and update their parent ids to match
-            var childItems = inventory.Items.Where(x =>
-                string.Equals(x.ParentId, originalId, StringComparison.OrdinalIgnoreCase)
-            );
+            var childItems = inventory.Items.Where(x => x.ParentId == originalId);
             foreach (var childItem in childItems)
             {
                 childItem.ParentId = newId;
@@ -1072,9 +1062,7 @@ public class ItemHelper(
             item.Id = newId;
 
             // Find all children of item and update their parent ids to match
-            var childItems = originalItems.Where(x =>
-                string.Equals(x.ParentId, originalId, StringComparison.OrdinalIgnoreCase)
-            );
+            var childItems = originalItems.Where(x => x.ParentId == originalId);
             foreach (var childItem in childItems)
             {
                 childItem.ParentId = newId;

@@ -58,6 +58,7 @@ public class RagfairOfferGenerator(
     /// <param name="loyalLevel">Loyalty level needed to buy item</param>
     /// <param name="quantity">Amount of item being listed</param>
     /// <param name="sellInOnePiece">Flags sellInOnePiece to be true</param>
+    /// <param name="isPlayerOffer">Offer to create is for a player</param>
     /// <returns>RagfairOffer</returns>
     public RagfairOffer CreateAndAddFleaOffer(
         MongoId userId,
@@ -66,7 +67,8 @@ public class RagfairOfferGenerator(
         List<BarterScheme> barterScheme,
         int loyalLevel,
         int quantity,
-        bool sellInOnePiece = false
+        bool sellInOnePiece = false,
+        bool isPlayerOffer = false
     )
     {
         var offer = CreateOffer(
@@ -76,8 +78,13 @@ public class RagfairOfferGenerator(
             barterScheme,
             loyalLevel,
             quantity,
-            sellInOnePiece
+            sellInOnePiece,
+            isPlayerOffer
         );
+
+        offer.ExtensionData ??= new Dictionary<string, object>();
+        offer.ExtensionData.Add("isPlayerOffer", isPlayerOffer);
+
         ragfairOfferService.AddOffer(offer);
 
         return offer;
@@ -93,6 +100,7 @@ public class RagfairOfferGenerator(
     /// <param name="loyalLevel">Loyalty level needed to buy item</param>
     /// <param name="quantity">Amount of item being listed</param>
     /// <param name="isPackOffer">Is offer being created flagged as a pack</param>
+    /// <param name="isPlayerOffer">Offer is from a player</param>
     /// <returns>RagfairOffer</returns>
     protected RagfairOffer CreateOffer(
         MongoId userId,
@@ -101,7 +109,8 @@ public class RagfairOfferGenerator(
         List<BarterScheme> barterScheme,
         int loyalLevel,
         int quantity,
-        bool isPackOffer = false
+        bool isPackOffer = false,
+        bool isPlayerOffer = false
     )
     {
         var offerRequirements = barterScheme
@@ -132,8 +141,8 @@ public class RagfairOfferGenerator(
         // Hydrate ammo boxes with cartridges + ensure only 1 item is present (ammo box)
         // On offer refresh don't re-add cartridges to ammo box that already has cartridges
         if (
-            itemHelper.IsOfBaseclass(itemsClone[0].Template, BaseClasses.AMMO_BOX)
-            && itemsClone.Count == 1
+            itemsClone.Count == 1
+            && itemHelper.IsOfBaseclass(itemsClone[0].Template, BaseClasses.AMMO_BOX)
         )
         {
             itemHelper.AddCartridgesToAmmoBox(
@@ -151,7 +160,9 @@ public class RagfairOfferGenerator(
         {
             Id = new MongoId(),
             InternalId = offerCounter,
-            User = CreateUserDataForFleaOffer(userId, ragfairServerHelper.IsTrader(userId)),
+            User = isPlayerOffer
+                ? CreatePlayerUserDataForFleaOffer(userId)
+                : CreateUserDataForFleaOffer(userId, ragfairServerHelper.IsTrader(userId)),
             Root = rootItem.Id,
             Items = itemsClone,
             ItemsCost = Math.Round(handbookHelper.GetTemplatePrice(rootItem.Template)), // Handbook price
@@ -185,23 +196,6 @@ public class RagfairOfferGenerator(
             return new RagfairOfferUser { Id = userId, MemberType = MemberCategory.Trader };
         }
 
-        var isPlayerOffer = profileHelper.IsPlayer(userId);
-        if (isPlayerOffer)
-        {
-            var playerProfile = profileHelper.GetPmcProfile(userId);
-            return new RagfairOfferUser
-            {
-                Id = playerProfile.Id.Value,
-                MemberType = playerProfile.Info.MemberCategory,
-                SelectedMemberCategory = playerProfile.Info.SelectedMemberCategory,
-                Nickname = playerProfile.Info.Nickname,
-                Rating = playerProfile.RagfairInfo.Rating ?? 0,
-                IsRatingGrowing = playerProfile.RagfairInfo.IsRatingGrowing,
-                Avatar = null,
-                Aid = playerProfile.Aid,
-            };
-        }
-
         // 'Fake' pmc offer
         return new RagfairOfferUser
         {
@@ -215,6 +209,27 @@ public class RagfairOfferGenerator(
             IsRatingGrowing = randomUtil.GetBool(),
             Avatar = null,
             Aid = hashUtil.GenerateAccountId(),
+        };
+    }
+
+    /// <summary>
+    /// Create the user object stored inside each flea offer object
+    /// </summary>
+    /// <param name="userId">Player id</param>
+    /// <returns>OfferUser object</returns>
+    protected RagfairOfferUser CreatePlayerUserDataForFleaOffer(MongoId userId)
+    {
+        var playerProfile = profileHelper.GetPmcProfile(userId);
+        return new RagfairOfferUser
+        {
+            Id = playerProfile.Id.Value,
+            MemberType = playerProfile.Info.MemberCategory,
+            SelectedMemberCategory = playerProfile.Info.SelectedMemberCategory,
+            Nickname = playerProfile.Info.Nickname,
+            Rating = playerProfile.RagfairInfo.Rating ?? 0,
+            IsRatingGrowing = playerProfile.RagfairInfo.IsRatingGrowing,
+            Avatar = null,
+            Aid = playerProfile.Aid,
         };
     }
 
@@ -1083,15 +1098,15 @@ public class RagfairOfferGenerator(
         // Filter possible barters to items that match the price range + not itself
         var min = desiredItemCostRouble - offerCostVarianceRoubles;
         var max = desiredItemCostRouble + offerCostVarianceRoubles;
-        var itemsInsidePriceBounds = itemFleaPrices.Where(itemAndPrice =>
-            itemAndPrice.Price >= min
-            && itemAndPrice.Price <= max
-            && !string.Equals(
-                itemAndPrice.Tpl,
-                offerItems[0].Template,
-                StringComparison.OrdinalIgnoreCase
-            ) // Don't allow the item being sold to be chosen
-        );
+        var rootOfferItem = offerItems.FirstOrDefault();
+
+        var itemsInsidePriceBounds = itemFleaPrices
+            .Where(itemAndPrice =>
+                itemAndPrice.Price >= min
+                && itemAndPrice.Price <= max
+                && itemAndPrice.Tpl != rootOfferItem.Template // Don't allow the item being sold to be chosen
+            )
+            .ToList();
 
         // No items on flea have a matching price, fall back to currency
         if (!itemsInsidePriceBounds.Any())
@@ -1100,7 +1115,7 @@ public class RagfairOfferGenerator(
         }
 
         // Choose random item from price-filtered flea items
-        var randomItem = randomUtil.GetArrayValue(itemsInsidePriceBounds.ToList());
+        var randomItem = randomUtil.GetArrayValue(itemsInsidePriceBounds);
 
         return [new BarterScheme { Count = barterItemCount, Template = randomItem.Tpl }];
     }

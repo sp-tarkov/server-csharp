@@ -92,7 +92,7 @@ public class RagfairOfferHelper(
                     CheckAndLockOfferFromPlayerTieredFlea(
                         tieredFlea,
                         offer,
-                        tieredFleaLimitTypes.Keys.ToList(),
+                        tieredFleaLimitTypes.Keys.ToHashSet(),
                         pmcData.Info.Level.Value
                     );
                 }
@@ -112,7 +112,7 @@ public class RagfairOfferHelper(
     protected void CheckAndLockOfferFromPlayerTieredFlea(
         TieredFlea tieredFlea,
         RagfairOffer offer,
-        List<MongoId> tieredFleaLimitTypes,
+        HashSet<MongoId> tieredFleaLimitTypes,
         int playerLevel
     )
     {
@@ -199,7 +199,7 @@ public class RagfairOfferHelper(
                 CheckAndLockOfferFromPlayerTieredFlea(
                     tieredFlea,
                     offer,
-                    tieredFleaLimitTypes.Keys.ToList(),
+                    tieredFleaLimitTypes.Keys.ToHashSet(),
                     pmcData.Info.Level.Value
                 );
             }
@@ -296,7 +296,7 @@ public class RagfairOfferHelper(
                     CheckAndLockOfferFromPlayerTieredFlea(
                         tieredFlea,
                         offer,
-                        tieredFleaLimitTypes.Keys.ToList(),
+                        tieredFleaLimitTypes.Keys.ToHashSet(),
                         pmcData.Info.Level.Value
                     );
 
