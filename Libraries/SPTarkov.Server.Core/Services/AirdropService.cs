@@ -19,6 +19,7 @@ public class AirdropService(
     ConfigServer configServer,
     ISptLogger<AirdropService> _logger,
     LootGenerator _lootGenerator,
+    DatabaseService databaseService,
     WeightedRandomHelper _weightedRandomHelper,
     ServerLocalisationService _serverLocalisationService,
     ItemFilterService _itemFilterService,
@@ -241,13 +242,11 @@ public class AirdropService(
 
         // Get all items that match the blacklisted types and fold into item blacklist
         var itemTypeBlacklist = _itemFilterService.GetItemRewardBaseTypeBlacklist();
-        var itemsMatchingTypeBlacklist = _itemHelper
-            .GetItemsClone()
-            .Where(templateItem => !templateItem.Parent.IsEmpty())
-            .Where(templateItem =>
-                _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist)
-            )
-            .Select(templateItem => templateItem.Id)
+        var itemsMatchingTypeBlacklist = databaseService
+            .GetItems()
+            .Where(kvp => !kvp.Value.Parent.IsEmpty())
+            .Where(kvp => _itemHelper.IsOfBaseclasses(kvp.Value.Parent, itemTypeBlacklist))
+            .Select(kvp => kvp.Key)
             .ToHashSet();
         var itemBlacklist = new HashSet<MongoId>();
         itemBlacklist.UnionWith(lootSettingsByType.ItemBlacklist);

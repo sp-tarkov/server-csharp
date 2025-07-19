@@ -668,7 +668,7 @@ public class InventoryHelper(
     public (int, int) GetItemSize(MongoId itemTpl, MongoId itemId, List<Item> inventoryItems)
     {
         // -> Prepares item Width and height returns [sizeX, sizeY]
-        return GetSizeByInventoryItemHash(itemTpl, itemId, GetInventoryItemHash(inventoryItems));
+        return GetSizeByInventoryItemHash(itemTpl, itemId, inventoryItems.GetInventoryItemHash());
     }
 
     /// <summary>
@@ -755,7 +755,7 @@ public class InventoryHelper(
         {
             // Storage for root item and its children, store root item id for now
             // Will store child items that may have sub-children to process
-            var toDo = new Queue<string>([itemId]);
+            var toDo = new Queue<MongoId>([itemId]);
             while (toDo.Count > 0)
             {
                 // Lookup parent in `to do queue`, get all of its children, then loop over them
@@ -870,7 +870,7 @@ public class InventoryHelper(
         );
 
         // Get all items in players inventory keyed by their parentId and by ItemId
-        var inventoryItemHash = GetInventoryItemHash(itemList);
+        var inventoryItemHash = itemList.GetInventoryItemHash();
 
         // Get subset of items that belong to the desired container
         if (!inventoryItemHash.ByParentId.TryGetValue(containerId, out var rootItemsInContainer))
@@ -946,38 +946,6 @@ public class InventoryHelper(
         }
 
         return container;
-    }
-
-    protected InventoryItemHash GetInventoryItemHash(List<Item> inventoryItems)
-    {
-        var inventoryItemHash = new InventoryItemHash
-        {
-            ByItemId = new Dictionary<MongoId, Item>(),
-            ByParentId = new Dictionary<MongoId, HashSet<Item>>(),
-        };
-        foreach (var item in inventoryItems)
-        {
-            inventoryItemHash.ByItemId.TryAdd(item.Id, item);
-
-            if (item.ParentId is null)
-            {
-                continue;
-            }
-
-            if (item.ParentId == "hideout")
-            {
-                continue;
-            }
-
-            if (!inventoryItemHash.ByParentId.ContainsKey(item.ParentId))
-            {
-                inventoryItemHash.ByParentId[item.ParentId] = [];
-            }
-
-            inventoryItemHash.ByParentId[item.ParentId].Add(item);
-        }
-
-        return inventoryItemHash;
     }
 
     /// <summary>

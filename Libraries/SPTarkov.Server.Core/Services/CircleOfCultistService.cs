@@ -901,7 +901,7 @@ public class CircleOfCultistService(
         bool itemsShouldBeHighValue
     )
     {
-        var allItems = itemHelper.GetItemsClone();
+        var allItems = databaseService.GetItems();
         var currentItemCount = 0;
         var attempts = 0;
         // `currentItemCount` var will look for the correct number of items, `attempts` var will keep this from never stopping if the highValueThreshold is too high
@@ -913,8 +913,8 @@ public class CircleOfCultistService(
             attempts++;
             var randomItem = randomUtil.GetArrayValue(allItems);
             if (
-                itemRewardBlacklist.Contains(randomItem.Id)
-                || !itemHelper.IsValidItem(randomItem.Id)
+                itemRewardBlacklist.Contains(randomItem.Key)
+                || !itemHelper.IsValidItem(randomItem.Key)
             )
             {
                 continue;
@@ -923,7 +923,7 @@ public class CircleOfCultistService(
             // Valuable check
             if (itemsShouldBeHighValue)
             {
-                var itemValue = itemHelper.GetItemMaxPrice(randomItem.Id);
+                var itemValue = itemHelper.GetItemMaxPrice(randomItem.Key);
                 if (itemValue < _hideoutConfig.CultistCircle.HighValueThresholdRub)
                 {
                     continue;
@@ -932,10 +932,10 @@ public class CircleOfCultistService(
 
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                logger.Debug($"Added: {itemHelper.GetItemName(randomItem.Id)}");
+                logger.Debug($"Added: {itemHelper.GetItemName(randomItem.Key)}");
             }
 
-            rewardPool.Add(randomItem.Id);
+            rewardPool.Add(randomItem.Key);
             currentItemCount++;
         }
     }

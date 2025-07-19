@@ -286,16 +286,29 @@ public class ItemHelper(
         var baseTypes = invalidBaseTypes ?? _defaultInvalidBaseTypes;
         var itemDetails = GetItem(tpl);
 
-        if (!itemDetails.Key)
-        {
-            return false;
-        }
+        return itemDetails.Key && IsValidItem(itemDetails.Value, baseTypes);
+    }
 
-        return !(itemDetails.Value.Properties.QuestItem ?? false)
-            && string.Equals(itemDetails.Value.Type, "Item", StringComparison.OrdinalIgnoreCase)
-            && GetItemPrice(tpl) > 0
-            && !itemFilterService.IsItemBlacklisted(tpl)
-            && baseTypes.All(x => !IsOfBaseclass(tpl, x));
+    /// <summary>
+    /// Checks if a tpl is a valid item. Valid meaning that it's an item that can be stored in stash
+    /// Valid means:
+    /// Not quest item
+    /// 'Item' type
+    /// Not on the invalid base types array
+    /// Price above 0 roubles
+    /// </summary>
+    /// <param name="item">Item from DB to check</param>
+    /// <param name="invalidBaseTypes">OPTIONAL - Base types deemed invalid</param>
+    /// <returns>true for items that may be in player possession and not quest items</returns>
+    public bool IsValidItem(TemplateItem item, ISet<MongoId>? invalidBaseTypes = null)
+    {
+        var baseTypes = invalidBaseTypes ?? _defaultInvalidBaseTypes;
+
+        return !(item.Properties.QuestItem ?? false)
+            && string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)
+            && GetItemPrice(item.Id) > 0
+            && !itemFilterService.IsItemBlacklisted(item.Id)
+            && baseTypes.All(x => !IsOfBaseclass(item.Id, x));
     }
 
     /// <summary>
@@ -718,11 +731,12 @@ public class ItemHelper(
     public List<Item> FindAndReturnChildrenByAssort(MongoId itemIdToFind, List<Item> assort)
     {
         List<Item> list = [];
+        var itemIdToFindString = itemIdToFind.ToString();
         foreach (var itemFromAssort in assort)
         {
             // Parent matches desired item + all items in list do not match
             if (
-                itemFromAssort.ParentId == itemIdToFind
+                itemFromAssort.ParentId == itemIdToFindString
                 && list.All(item => itemFromAssort.Id != item.Id)
             )
             {

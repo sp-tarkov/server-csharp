@@ -810,18 +810,6 @@ public class FenceService(
                 continue;
             }
 
-            // Filter out root items from pool
-            var childItemsAndSingleRoot = baseFenceAssortClone
-                .Items.Where(item =>
-                    !string.Equals(item.ParentId, "hideout", StringComparison.Ordinal)
-                    || item.Id == chosenBaseAssortRoot.Id
-                )
-                .ToList();
-
-            var desiredAssortItemAndChildrenClone = _cloner.Clone(
-                childItemsAndSingleRoot.FindAndReturnChildrenAsItems(chosenBaseAssortRoot.Id)
-            );
-
             var itemDbDetails = itemHelper.GetItem(chosenBaseAssortRoot.Template).Value;
             var itemLimitCount = GetMatchingItemLimit(itemTypeLimits, itemDbDetails.Id);
             if (itemLimitCount?.current >= itemLimitCount?.max)
@@ -858,14 +846,24 @@ public class FenceService(
                 value.current += 1;
             }
 
+            // Filter to only 1 root item + all children
+            var childItemsAndSingleRoot = baseFenceAssortClone
+                .Items.Where(item =>
+                    !string.Equals(item.ParentId, "hideout", StringComparison.Ordinal)
+                    || item.Id == chosenBaseAssortRoot.Id
+                )
+                .ToList();
+
             // MUST randomise Ids as its possible to add the same base fence assort twice = duplicate IDs = dead client
-            desiredAssortItemAndChildrenClone = _cloner
-                .Clone(desiredAssortItemAndChildrenClone)
+            var desiredAssortItemAndChildrenClone = _cloner
+                .Clone(
+                    childItemsAndSingleRoot.FindAndReturnChildrenAsItems(chosenBaseAssortRoot.Id)
+                )
                 .ReplaceIDs()
                 .ToList();
             desiredAssortItemAndChildrenClone.RemapRootItemId();
 
-            var rootItemBeingAdded = desiredAssortItemAndChildrenClone[0];
+            var rootItemBeingAdded = desiredAssortItemAndChildrenClone.FirstOrDefault();
 
             // Set stack size based on possible overrides, e.g. ammos, otherwise set to 1
             rootItemBeingAdded.Upd.StackObjectsCount = GetSingleItemStackCount(itemDbDetails);

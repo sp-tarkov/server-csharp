@@ -18,6 +18,7 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.GiveCommand
 public class GiveSptCommand(
     ISptLogger<GiveSptCommand> _logger,
     ItemHelper _itemHelper,
+    DatabaseService databaseService,
     PresetHelper _presetHelper,
     ItemFilterService _itemFilterService,
     MailSendService _mailSendService,
@@ -31,7 +32,7 @@ public class GiveSptCommand(
     );
 
     // Exception for flares
-    protected static readonly FrozenSet<string> _excludedPresetItems =
+    protected static readonly FrozenSet<MongoId> _excludedPresetItems =
     [
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_RED,
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_GREEN,
@@ -151,9 +152,9 @@ public class GiveSptCommand(
                 }
 
                 localizedGlobal = GetGlobalsLocale(locale);
-                var allAllowedItemNames = _itemHelper
-                    .GetItemsClone()
-                    .Where(IsItemAllowed)
+                var allAllowedItemNames = databaseService
+                    .GetItems()
+                    .Values.Where(IsItemAllowed)
                     .Select(i =>
                         localizedGlobal
                             .GetValueOrDefault($"{i.Id} Name", i.Properties.Name)
@@ -206,9 +207,9 @@ public class GiveSptCommand(
         // If item is an item name, we need to search using that item name and the locale which one we want otherwise
         // item is just the tplId.
         MongoId tplId = isItemName
-            ? _itemHelper
-                .GetItemsClone()
-                .Where(IsItemAllowed)
+            ? databaseService
+                .GetItems()
+                .Values.Where(IsItemAllowed)
                 .FirstOrDefault(i =>
                     (localizedGlobal[$"{i?.Id} Name"]?.ToLowerInvariant() ?? i.Properties.Name)
                     == item

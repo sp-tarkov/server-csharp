@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -288,33 +289,41 @@ namespace SPTarkov.Server.Core.Extensions
             // Use dictionary to make key lookup faster, convert to list before being returned
             var itemList = items.ToList();
             OrderedDictionary<MongoId, Item> result = [];
-            foreach (var childItem in itemList)
+
+            // Find desired root item
+            var desiredRootItem = itemList.FirstOrDefault(item => item.Id == baseItemId);
+            if (desiredRootItem is null)
             {
-                // Include itself
-                if (childItem.Id == baseItemId)
+                // Root not found, nothing to return, exit
+                return [];
+            }
+            result.Add(desiredRootItem.Id, desiredRootItem);
+            var rootItemIdString = desiredRootItem.Id.ToString();
+
+            foreach (var item in itemList)
+            {
+                if (result.ContainsKey(item.Id))
                 {
-                    // Root item MUST be at 0 index for things like flea market offers
-                    result.Insert(0, childItem.Id, childItem);
+                    // Already processed, skip
+                    continue;
+                }
+
+                // Skip items with different parentId
+                if (item.ParentId != rootItemIdString)
+                {
                     continue;
                 }
 
                 // Is stored in parent and disallowed
-                if (modsOnly && childItem.Location is not null)
+                if (modsOnly && item.Location is not null)
                 {
                     continue;
                 }
 
-                // Items parentId matches root item AND returned items doesn't contain current child
-                if (
-                    !result.ContainsKey(childItem.Id)
-                    && childItem.ParentId != "hideout"
-                    && childItem.ParentId == baseItemId.ToString()
-                )
+                // Item may have children, check
+                foreach (var subItem in FindAndReturnChildrenAsItems(itemList, item.Id))
                 {
-                    foreach (var item in FindAndReturnChildrenAsItems(items, childItem.Id))
-                    {
-                        result.Add(item.Id, item);
-                    }
+                    result.Add(subItem.Id, subItem);
                 }
             }
 
@@ -441,6 +450,26 @@ namespace SPTarkov.Server.Core.Extensions
             }
 
             return newId.Value;
+        }
+
+        /// <summary>
+        /// Create hashsets for passed in items, keyed by the items ID and by the items parentId
+        /// </summary>
+        /// <param name="inventoryItems">Items to hash</param>
+        /// <returns>InventoryItemHash</returns>
+        public static InventoryItemHash GetInventoryItemHash(this List<Item> inventoryItems)
+        {
+            // Group by parentId + turn value into mongoId as we've filtered out non-mongoId values
+            var byParentId = inventoryItems
+                .Where(item => !string.IsNullOrEmpty(item.ParentId) && item.ParentId != "hideout")
+                .GroupBy(item => new MongoId(item.ParentId))
+                .ToDictionary(kvp => kvp.Key, group => group.ToHashSet());
+
+            return new InventoryItemHash
+            {
+                ByItemId = inventoryItems.ToDictionary(item => item.Id),
+                ByParentId = byParentId,
+            };
         }
     }
 }

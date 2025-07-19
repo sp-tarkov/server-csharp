@@ -16,6 +16,7 @@ namespace SPTarkov.Server.Core.Generators;
 [Injectable]
 public class RagfairAssortGenerator(
     ItemHelper itemHelper,
+    DatabaseService databaseService,
     PresetHelper presetHelper,
     SeasonalEventService seasonalEventService,
     ConfigServer configServer,
@@ -54,9 +55,11 @@ public class RagfairAssortGenerator(
         List<List<Item>> results = [];
 
         // Get cloned items from db
-        var dbItemsClone = itemHelper
-            .GetItemsClone()
-            .Where(item => !string.Equals(item.Type, "Node", StringComparison.OrdinalIgnoreCase));
+        var dbItems = databaseService
+            .GetItems()
+            .Where(item =>
+                !string.Equals(item.Value.Type, "Node", StringComparison.OrdinalIgnoreCase)
+            );
 
         // Store processed preset tpls so we don't add them when processing non-preset items
         HashSet<MongoId> processedArmorItems = [];
@@ -85,9 +88,9 @@ public class RagfairAssortGenerator(
             results.Add(presetAndModsClone);
         }
 
-        foreach (var item in dbItemsClone)
+        foreach (var (id, item) in dbItems)
         {
-            if (!itemHelper.IsValidItem(item.Id, RagfairItemInvalidBaseTypes))
+            if (!itemHelper.IsValidItem(item, RagfairItemInvalidBaseTypes))
             {
                 continue;
             }
@@ -96,19 +99,19 @@ public class RagfairAssortGenerator(
             if (
                 RagfairConfig.Dynamic.RemoveSeasonalItemsWhenNotInEvent
                 && !seasonalEventActive
-                && seasonalItemTplBlacklist.Contains(item.Id)
+                && seasonalItemTplBlacklist.Contains(id)
             )
             {
                 continue;
             }
 
-            if (processedArmorItems.Contains(item.Id))
+            if (processedArmorItems.Contains(id))
             // Already processed
             {
                 continue;
             }
 
-            var ragfairAssort = CreateRagfairAssortRootItem(item.Id, item.Id); // tpl and id must be the same so hideout recipe rewards work
+            var ragfairAssort = CreateRagfairAssortRootItem(id, id); // tpl and id must be the same so hideout recipe rewards work
 
             results.Add([ragfairAssort]);
         }

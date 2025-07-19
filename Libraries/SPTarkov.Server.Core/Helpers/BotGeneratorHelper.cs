@@ -636,9 +636,9 @@ public class BotGeneratorHelper(
                 );
 
                 // Get root items in container we can iterate over to find out what space is free
-                var containerItemsToCheck = existingContainerItems.Where(x =>
-                    x.SlotId == slotGrid.Name
-                );
+                var containerItemsToCheck = existingContainerItems
+                    .Where(x => x.SlotId == slotGrid.Name)
+                    .ToList();
                 var containerItemsWithChildren = GetContainerItemsWithChildren(
                     containerItemsToCheck,
                     inventory.Items
@@ -729,7 +729,7 @@ public class BotGeneratorHelper(
         }
 
         // Filter out all items without location prop, (child items)
-        var itemsWithoutLocation = inventoryItems.Where(item => item.Location is null);
+        var itemsWithoutLocation = inventoryItems.Where(item => item.Location is null).ToList();
         foreach (var rootItem in containerRootItems)
         {
             // Check item in container for children, store for later insertion into `containerItemsToCheck`
