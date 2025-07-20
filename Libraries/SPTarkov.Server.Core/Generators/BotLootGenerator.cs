@@ -618,12 +618,9 @@ public class BotLootGenerator(
                 if (itemAddedResult == ItemAddedResult.NO_CONTAINERS)
                 {
                     // Bot has no container to put item in, exit
-                    if (logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        logger.Debug(
-                            $"Unable to add: {totalItemCount} items to bot as it lacks a container to include them"
-                        );
-                    }
+                    logger.Debug(
+                        $"Unable to add: {totalItemCount} items to bot as it lacks a container to include them"
+                    );
 
                     break;
                 }
@@ -631,14 +628,11 @@ public class BotLootGenerator(
                 fitItemIntoContainerAttempts++;
                 if (fitItemIntoContainerAttempts >= 4)
                 {
-                    if (logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        logger.Debug(
-                            $"Failed placing item: {itemToAddTemplate.Id} - {itemToAddTemplate.Name}: {i} of: {totalItemCount} items into: {botRole} "
-                                + $"containers: {string.Join(",", equipmentSlots)}. Tried: {fitItemIntoContainerAttempts} "
-                                + $"times, reason: {itemAddedResult}, skipping"
-                        );
-                    }
+                    logger.Debug(
+                        $"Failed placing item: {itemToAddTemplate.Id} - {itemToAddTemplate.Name}: {i} of: {totalItemCount} items into: {botRole} "
+                            + $"containers: {string.Join(",", equipmentSlots)}. Tried: {fitItemIntoContainerAttempts} "
+                            + $"times, reason: {itemAddedResult}, skipping"
+                    );
 
                     break;
                 }
@@ -811,12 +805,9 @@ public class BotLootGenerator(
 
             if (result != ItemAddedResult.SUCCESS)
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        $"Failed to add additional weapon: {weaponRootItem.Id} to bot backpack, reason: {result.ToString()}"
-                    );
-                }
+                logger.Debug(
+                    $"Failed to add additional weapon: {weaponRootItem.Id} to bot backpack, reason: {result.ToString()}"
+                );
             }
         }
     }
@@ -871,20 +862,17 @@ public class BotLootGenerator(
             // Prevent edge-case of small loot pools + code trying to add limited item over and over infinitely
             if (currentLimitCount > currentLimitCount * 10)
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        serverLocalisationService.GetText(
-                            "bot-item_spawn_limit_reached_skipping_item",
-                            new
-                            {
-                                botRole,
-                                itemName = itemTemplate.Name,
-                                attempts = currentLimitCount,
-                            }
-                        )
-                    );
-                }
+                logger.Debug(
+                    serverLocalisationService.GetText(
+                        "bot-item_spawn_limit_reached_skipping_item",
+                        new
+                        {
+                            botRole,
+                            itemName = itemTemplate.Name,
+                            attempts = currentLimitCount,
+                        }
+                    )
+                );
 
                 return false;
             }

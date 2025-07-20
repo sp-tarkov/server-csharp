@@ -431,10 +431,7 @@ public class ProfileHelper(
         var profile = GetFullProfile(playerId);
         if (profile == null)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"Unable to gift {giftId}, Profile: {playerId} does not exist");
-            }
+            logger.Debug($"Unable to gift {giftId}, Profile: {playerId} does not exist");
 
             return false;
         }

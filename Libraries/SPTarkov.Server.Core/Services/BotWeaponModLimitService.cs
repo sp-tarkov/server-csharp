@@ -184,12 +184,9 @@ public class BotWeaponModLimitService(
         // Has mod limit for bot type been reached
         if (currentCount.Count >= maxLimit)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"[{botRole}] scope limit reached! tried to add {modTpl} but scope count is {currentCount.Count}"
-                );
-            }
+            logger.Debug(
+                $"[{botRole}] scope limit reached! tried to add {modTpl} but scope count is {currentCount.Count}"
+            );
 
             return true;
         }

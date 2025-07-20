@@ -342,12 +342,9 @@ public class BotGenerator(
     {
         if (!experiences.TryGetValue(botDifficulty.ToLowerInvariant(), out var result))
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Unable to find experience: {botDifficulty} for {role} bot, falling back to `normal`"
-                );
-            }
+            logger.Debug(
+                $"Unable to find experience: {botDifficulty} for {role} bot, falling back to `normal`"
+            );
 
             return randomUtil.GetInt(experiences["normal"].Min, experiences["normal"].Max);
         }

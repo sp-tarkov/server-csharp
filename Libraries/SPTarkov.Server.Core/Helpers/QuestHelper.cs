@@ -148,19 +148,13 @@ public class QuestHelper(
         {
             // Calculate how much progress to add, limiting it to the current level max progress
             var currentLevelRemainingProgress = (currentLevel + 1) * 10 - startingLevelProgress;
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"currentLevelRemainingProgress: {currentLevelRemainingProgress}");
-            }
+            logger.Debug($"currentLevelRemainingProgress: {currentLevelRemainingProgress}");
 
             var progressToAdd = Math.Min(remainingProgress, currentLevelRemainingProgress ?? 0);
             var adjustedProgressToAdd = 10 / (currentLevel + 1) * progressToAdd;
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Progress To Add: {progressToAdd}  Adjusted for level: {adjustedProgressToAdd}"
-                );
-            }
+            logger.Debug(
+                $"Progress To Add: {progressToAdd}  Adjusted for level: {adjustedProgressToAdd}"
+            );
 
             // Add the progress amount adjusted by level
             adjustedSkillProgress += (int)adjustedProgressToAdd;
@@ -719,10 +713,7 @@ public class QuestHelper(
             }
         }
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"GetSellToTraderQuests found: {result.Count} quests");
-        }
+        logger.Debug($"GetSellToTraderQuests found: {result.Count} quests");
 
         return result;
     }
@@ -1021,12 +1012,9 @@ public class QuestHelper(
             var questInDb = allQuests.FirstOrDefault(x => x.Id == questId);
             if (questInDb is null)
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        $"Unable to find quest: {questId} in db, cannot get 'FindItem' condition, skipping"
-                    );
-                }
+                logger.Debug(
+                    $"Unable to find quest: {questId} in db, cannot get 'FindItem' condition, skipping"
+                );
 
                 continue;
             }
@@ -1292,12 +1280,9 @@ public class QuestHelper(
             // Player can use trader mods then remove them, leaving quests behind
             if (!profile.TradersInfo.ContainsKey(quest.TraderId))
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        $"Unable to show quest: {quest.QuestName} as its for a trader: {quest.TraderId} that no longer exists."
-                    );
-                }
+                logger.Debug(
+                    $"Unable to show quest: {quest.QuestName} as its for a trader: {quest.TraderId} that no longer exists."
+                );
 
                 continue;
             }

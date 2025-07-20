@@ -231,10 +231,7 @@ public class HideoutHelper(
 
         // Add bonus to player bonuses array in profile
         // EnergyRegeneration, HealthRegeneration, RagfairCommission, ScavCooldownTimer, SkillGroupLevelingBoost, ExperienceRate, QuestMoneyReward etc
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"Adding bonus: {bonus.Type} to profile, value: {bonus.Value}");
-        }
+        logger.Debug($"Adding bonus: {bonus.Type} to profile, value: {bonus.Value}");
 
         profileData.Bonuses.Add(bonus);
     }
@@ -676,12 +673,9 @@ public class HideoutHelper(
                     isFuelItemFoundInRaid
                 );
 
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        $"Profile: {pmcData.Id} Generator has: {fuelRemaining} fuel left in slot {i + 1}"
-                    );
-                }
+                logger.Debug(
+                    $"Profile: {pmcData.Id} Generator has: {fuelRemaining} fuel left in slot {i + 1}"
+                );
 
                 hasFuelRemaining = true;
 
@@ -692,10 +686,7 @@ public class HideoutHelper(
 
             // Ran out of fuel items to deduct fuel from
             fuelUsedSinceLastTick = Math.Abs(fuelRemaining ?? 0);
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"Profile: {pmcData.Id} Generator ran out of fuel");
-            }
+            logger.Debug($"Profile: {pmcData.Id} Generator ran out of fuel");
         }
 
         // Out of fuel, flag generator as offline
@@ -904,10 +895,7 @@ public class HideoutHelper(
                     pointsConsumed,
                     isWaterFilterFoundInRaid
                 );
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug($"Water filter has: {resourceValue} units left in slot {i + 1}");
-                }
+                logger.Debug($"Water filter has: {resourceValue} units left in slot {i + 1}");
 
                 break; // Break here to avoid iterating other filters now we're done
             }
@@ -1079,10 +1067,7 @@ public class HideoutHelper(
                             UnitsConsumed = pointsConsumed,
                         },
                     };
-                    if (logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        logger.Debug($"Air filter: {resourceValue} filter left on slot {i + 1}");
-                    }
+                    logger.Debug($"Air filter: {resourceValue} filter left on slot {i + 1}");
 
                     break; // Break here to avoid updating all filters
                 }
@@ -1576,10 +1561,7 @@ public class HideoutHelper(
             bonusIdsToRemove.Add(bonus.Id);
         }
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"Removing: {bonusIdsToRemove.Count} bonuses from profile");
-        }
+        logger.Debug($"Removing: {bonusIdsToRemove.Count} bonuses from profile");
 
         // Remove the wall bonuses from profile by id
         pmcData.Bonuses = pmcData

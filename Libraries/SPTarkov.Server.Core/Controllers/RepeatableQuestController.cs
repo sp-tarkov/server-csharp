@@ -197,12 +197,9 @@ public class RepeatableQuestController(
         newRepeatableQuest.Side = Enum.GetName(repeatableConfig.Side);
         repeatablesOfTypeInProfile.ActiveQuests.Add(newRepeatableQuest);
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug(
-                $"Removing: {repeatableConfig.Name} quest: {questToReplace.Id} from trader: {questToReplace.TraderId} as its been replaced"
-            );
-        }
+        logger.Debug(
+            $"Removing: {repeatableConfig.Name} quest: {questToReplace.Id} from trader: {questToReplace.TraderId} as its been replaced"
+        );
 
         // Remove the replaced quest from profile
         RemoveQuestFromProfile(fullProfile, questToReplace.Id);
@@ -281,10 +278,7 @@ public class RepeatableQuestController(
                 continue;
             }
 
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"Accepted repeatable quest: {questId} from: {repeatableQuest.Name}");
-            }
+            logger.Debug($"Accepted repeatable quest: {questId} from: {repeatableQuest.Name}");
 
             matchingQuest.SptRepatableGroupName = repeatableQuest.Name;
 
@@ -453,10 +447,7 @@ public class RepeatableQuestController(
             return null;
         }
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"Generating operation task type: {questType} for {traderId}");
-        }
+        logger.Debug($"Generating operation task type: {questType} for {traderId}");
 
         return questType switch
         {
@@ -595,10 +586,7 @@ public class RepeatableQuestController(
             {
                 returnData.Add(generatedRepeatables);
 
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug($"[Quest Check] {repeatableTypeLower} quests are still valid.");
-                }
+                logger.Debug($"[Quest Check] {repeatableTypeLower} quests are still valid.");
 
                 continue;
             }
@@ -608,10 +596,7 @@ public class RepeatableQuestController(
             // Set endtime to be now + new duration
             generatedRepeatables.EndTime = currentTime + repeatableConfig.ResetTime;
             generatedRepeatables.InactiveQuests = [];
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"Generating new {repeatableTypeLower}");
-            }
+            logger.Debug($"Generating new {repeatableTypeLower}");
 
             // Put old quests to inactive (this is required since only then the client makes them fail due to non-completion)
             // Also need to push them to the "inactiveQuests" list since we need to remove them from offraidData.profile.Quests
@@ -772,10 +757,7 @@ public class RepeatableQuestController(
         // Scav and daily quests not unlocked yet
         if (repeatableConfig.Side == PlayerGroup.Scav && !PlayerHasDailyScavQuestsUnlocked(pmcData))
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug("Daily scav quests still locked, Intel center not built");
-            }
+            logger.Debug("Daily scav quests still locked, Intel center not built");
 
             return false;
         }
@@ -836,12 +818,9 @@ public class RepeatableQuestController(
             if (questStatusInProfile.Status == QuestStatusEnum.AvailableForFinish)
             {
                 questsToKeep.Add(activeQuest);
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug( // TODO: this shouldn't happen, doesn't on live
-                        $"Keeping repeatable quest: {activeQuest.Id} in activeQuests since it is available to hand in"
-                    );
-                }
+                logger.Debug( // TODO: this shouldn't happen, doesn't on live
+                    $"Keeping repeatable quest: {activeQuest.Id} in activeQuests since it is available to hand in"
+                );
 
                 continue;
             }

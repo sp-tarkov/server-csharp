@@ -291,10 +291,7 @@ public class RagfairOfferService(
         ragfairServerHelper.ReturnItems(offerCreatorProfile.SessionId.Value, unstackedItems);
         offerCreatorProfile.RagfairInfo.Offers.Splice(indexOfOfferInProfile, 1);
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"Returned offer: {{playerOffer.Id}} items to player");
-        }
+        logger.Debug($"Returned offer: {{playerOffer.Id}} items to player");
     }
 
     /// <summary>

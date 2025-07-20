@@ -27,7 +27,7 @@ public class SptLoggerWrapper : ILogger
 
     public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
     {
-        return _logger.IsLogEnabled(ConvertLogLevel(logLevel));
+        return _logger.IsEnabled(ConvertLogLevel(logLevel));
     }
 
     public void Log<TState>(

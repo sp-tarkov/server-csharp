@@ -680,7 +680,7 @@ public class MailSendService(
             || messageDetails.DialogType == MessageType.NpcTraderMessage
         )
         {
-            if (messageDetails.Trader == null && logger.IsLogEnabled(LogLevel.Debug))
+            if (messageDetails.Trader == null)
             {
                 logger.Debug($"Trader was null for {messageDetails.TemplateId}");
             }

@@ -566,12 +566,9 @@ public class BotGeneratorHelper(
                 if (missingContainerCount == equipmentSlots.Count)
                 {
                     // Bot doesn't have any containers we want to add item to
-                    if (logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        logger.Debug(
-                            $"Unable to add item: {itemWithChildren.FirstOrDefault()?.Template} to bot as it lacks the following containers: {string.Join(",", equipmentSlots)}"
-                        );
-                    }
+                    logger.Debug(
+                        $"Unable to add item: {itemWithChildren.FirstOrDefault()?.Template} to bot as it lacks the following containers: {string.Join(",", equipmentSlots)}"
+                    );
 
                     return ItemAddedResult.NO_CONTAINERS;
                 }

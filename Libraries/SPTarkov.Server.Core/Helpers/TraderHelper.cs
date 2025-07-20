@@ -120,10 +120,7 @@ public class TraderHelper(
         var traderAssorts = GetTraderAssortsByTraderId(traderId);
         if (traderAssorts is null)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"No assorts on trader: {traderId} found");
-            }
+            logger.Debug($"No assorts on trader: {traderId} found");
 
             return null;
         }
@@ -132,10 +129,7 @@ public class TraderHelper(
         var purchasedAssort = traderAssorts.Items.FirstOrDefault(item => item.Id == assortId);
         if (purchasedAssort is null)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"No assort {assortId} on trader: {traderId} found");
-            }
+            logger.Debug($"No assort {assortId} on trader: {traderId} found");
 
             return null;
         }

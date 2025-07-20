@@ -43,30 +43,21 @@ public class WebSocketServer(
 
         var webSocketIdContext = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff");
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug(
-                $"[WS] Notifying handlers of new websocket connection opening with reference {webSocketIdContext}"
-            );
-        }
+        _logger.Debug(
+            $"[WS] Notifying handlers of new websocket connection opening with reference {webSocketIdContext}"
+        );
 
         foreach (var wsh in socketHandlers)
         {
             if (webSocket.State == WebSocketState.Open)
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug($"WebSocketHandler \"{wsh.GetSocketId()}\" connected");
-                }
+                _logger.Debug($"WebSocketHandler \"{wsh.GetSocketId()}\" connected");
             }
 
             await wsh.OnConnection(webSocket, context, webSocketIdContext);
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"[WS] Starting read loop for websocket reference {webSocketIdContext}");
-        }
+        _logger.Debug($"[WS] Starting read loop for websocket reference {webSocketIdContext}");
 
         var thread = Task.Factory.StartNew(
             async () =>
@@ -126,12 +117,9 @@ public class WebSocketServer(
 
                     if (result.EndOfMessage)
                     {
-                        if (_logger.IsLogEnabled(LogLevel.Debug))
-                        {
-                            _logger.Debug(
-                                $"[WS] Read loop for websocket reference {webSocketIdContext} received new message. Notifying socket handlers."
-                            );
-                        }
+                        _logger.Debug(
+                            $"[WS] Read loop for websocket reference {webSocketIdContext} received new message. Notifying socket handlers."
+                        );
 
                         var message = messageBuffer.ToArray();
 
@@ -157,7 +145,7 @@ public class WebSocketServer(
         var counter = 0;
         while (webSocket.State == WebSocketState.Open)
         {
-            if (counter == 30 && _logger.IsLogEnabled(LogLevel.Debug))
+            if (counter == 30)
             {
                 _logger.Debug(
                     $"[WS] Websocket keep alive for reference {webSocketIdContext}. Thread state {thread.Status}. Websocket state {webSocket.State}"
@@ -173,31 +161,20 @@ public class WebSocketServer(
             Thread.Sleep(1000);
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug(
-                $"[WS] State for websocket reference {webSocketIdContext} is now {webSocket.State}, closing"
-            );
-        }
+        _logger.Debug(
+            $"[WS] State for websocket reference {webSocketIdContext} is now {webSocket.State}, closing"
+        );
 
         // Disconnect has been received, cancel the token and send OnClose to the relevant WebSockets.
         foreach (var wsh in socketHandlers)
         {
             await cts.CancelAsync();
 
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug(
-                    $"[WS] OnClose for websocket reference {webSocketIdContext} requested"
-                );
-            }
+            _logger.Debug($"[WS] OnClose for websocket reference {webSocketIdContext} requested");
 
             await wsh.OnClose(webSocket, context, webSocketIdContext);
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"[WS] Websocket reference {webSocketIdContext} fully closed.");
-        }
+        _logger.Debug($"[WS] Websocket reference {webSocketIdContext} fully closed.");
     }
 }

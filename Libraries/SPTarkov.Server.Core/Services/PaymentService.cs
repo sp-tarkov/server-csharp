@@ -148,10 +148,7 @@ public class PaymentService(
             traderHelper.LevelUp(requestTransactionId, pmcData);
         }
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug("Item(s) taken. Status OK.");
-        }
+        logger.Debug("Item(s) taken. Status OK.");
     }
 
     /// <summary>

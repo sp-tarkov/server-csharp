@@ -132,10 +132,7 @@ public class RagfairTaxService(
 
         var taxValue = Math.Round(discountedTax.Value * itemComissionMult);
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"Tax Calculated to be: {taxValue}");
-        }
+        logger.Debug($"Tax Calculated to be: {taxValue}");
 
         return taxValue;
     }

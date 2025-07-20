@@ -287,10 +287,7 @@ public class ProfileFixerService(
 
         foreach (var counterKeyToRemove in taskConditionKeysToRemove)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"Removed: {counterKeyToRemove} TaskConditionCounter object");
-            }
+            logger.Debug($"Removed: {counterKeyToRemove} TaskConditionCounter object");
 
             pmcProfile.TaskConditionCounters.Remove(counterKeyToRemove);
         }
@@ -430,12 +427,9 @@ public class ProfileFixerService(
         var matchingProductionId = matchingProductions[0].Id;
         if (pmcProfile.UnlockedInfo.UnlockedProductionRecipe.Add(matchingProductionId))
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Added production: {matchingProductionId} to unlocked production recipes for: {questDetails.QuestName}"
-                );
-            }
+            logger.Debug(
+                $"Added production: {matchingProductionId} to unlocked production recipes for: {questDetails.QuestName}"
+            );
         }
     }
 
@@ -479,12 +473,9 @@ public class ProfileFixerService(
 
             if (genSlots < 6 + extraGenSlots)
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        "Updating generator area slots to a size of 6 + hideout management skill"
-                    );
-                }
+                logger.Debug(
+                    "Updating generator area slots to a size of 6 + hideout management skill"
+                );
 
                 AddEmptyObjectsToHideoutAreaSlots(
                     HideoutAreas.Generator,
@@ -507,12 +498,9 @@ public class ProfileFixerService(
 
         if (waterCollSlots < 1 + extraWaterCollSlots)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    "Updating water collector area slots to a size of 1 + hideout management skill"
-                );
-            }
+            logger.Debug(
+                "Updating water collector area slots to a size of 1 + hideout management skill"
+            );
 
             AddEmptyObjectsToHideoutAreaSlots(
                 HideoutAreas.WaterCollector,
@@ -534,12 +522,9 @@ public class ProfileFixerService(
 
         if (filterSlots < 3 + extraFilterSlots)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    "Updating air filter area slots to a size of 3 + hideout management skill"
-                );
-            }
+            logger.Debug(
+                "Updating air filter area slots to a size of 3 + hideout management skill"
+            );
 
             AddEmptyObjectsToHideoutAreaSlots(
                 HideoutAreas.AirFilteringUnit,
@@ -562,12 +547,9 @@ public class ProfileFixerService(
         // BTC Farm doesnt have extra slots for hideout management, but we still check for modded stuff!!
         if (btcFarmSlots < 50 + extraBtcSlots)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    "Updating bitcoin farm area slots to a size of 50 + hideout management skill"
-                );
-            }
+            logger.Debug(
+                "Updating bitcoin farm area slots to a size of 50 + hideout management skill"
+            );
 
             AddEmptyObjectsToHideoutAreaSlots(
                 HideoutAreas.BitcoinFarm,
@@ -581,10 +563,7 @@ public class ProfileFixerService(
             .Slots.Count;
         if (cultistAreaSlots < 1)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug("Updating cultist area slots to a size of 1");
-            }
+            logger.Debug("Updating cultist area slots to a size of 1");
 
             AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.CircleOfCultists, 1, pmcProfile);
         }

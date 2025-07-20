@@ -83,12 +83,9 @@ public class CustomLocationWaveService(
                 }
 
                 locationBase.BossLocationSpawn.Add(bossWave);
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        $"Added custom boss wave to {mapKvP.Key} of type {bossWave.BossName}, time: {bossWave.Time}, chance: {bossWave.BossChance}, zone: {(string.IsNullOrEmpty(bossWave.BossZone) ? "Global" : bossWave.BossZone)}"
-                    );
-                }
+                logger.Debug(
+                    $"Added custom boss wave to {mapKvP.Key} of type {bossWave.BossName}, time: {bossWave.Time}, chance: {bossWave.BossChance}, zone: {(string.IsNullOrEmpty(bossWave.BossZone) ? "Global" : bossWave.BossZone)}"
+                );
             }
         }
 

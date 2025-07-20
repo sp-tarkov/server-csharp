@@ -91,12 +91,7 @@ public class GameController(
             profileFixerService.CheckForAndFixDialogueAttachments(fullProfile);
         }
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug(
-                $"Started game with session {sessionId} {fullProfile.ProfileInfo?.Username}"
-            );
-        }
+        logger.Debug($"Started game with session {sessionId} {fullProfile.ProfileInfo?.Username}");
 
         var pmcProfile = fullProfile.CharacterData.PmcData;
 
@@ -551,15 +546,12 @@ public class GameController(
     /// <param name="fullProfile"></param>
     protected void LogProfileDetails(SptProfile fullProfile)
     {
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"Profile made with: {fullProfile.SptData?.Version}");
-            logger.Debug(
-                $"Server version: {ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion} {ProgramStatics.COMMIT()}"
-            );
-            logger.Debug($"Debug enabled: {ProgramStatics.DEBUG()}");
-            logger.Debug($"Mods enabled: {ProgramStatics.MODS()}");
-        }
+        logger.Debug($"Profile made with: {fullProfile.SptData?.Version}");
+        logger.Debug(
+            $"Server version: {ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion} {ProgramStatics.COMMIT()}"
+        );
+        logger.Debug($"Debug enabled: {ProgramStatics.DEBUG()}");
+        logger.Debug($"Mods enabled: {ProgramStatics.MODS()}");
     }
 
     public void Load()

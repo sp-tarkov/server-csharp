@@ -402,7 +402,7 @@ public class RagfairOfferGenerator(
             ? expiredOffers ?? []
             : ragfairAssortGenerator.GetAssortItems();
         stopwatch.Stop();
-        if (logger.IsLogEnabled(LogLevel.Debug) && stopwatch.ElapsedMilliseconds > 0)
+        if (stopwatch.ElapsedMilliseconds > 0)
         {
             logger.Debug(
                 $"Took {stopwatch.ElapsedMilliseconds}ms to GetRagfairAssorts - {assortItemsToProcess.Count} items"
@@ -427,10 +427,7 @@ public class RagfairOfferGenerator(
 
         Task.WaitAll(tasks.ToArray());
         stopwatch.Stop();
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to CreateOffersFromAssort");
-        }
+        logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to CreateOffersFromAssort");
     }
 
     /// <summary>

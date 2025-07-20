@@ -804,10 +804,7 @@ public class CircleOfCultistService(
                     continue;
                 }
 
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug($"Added Task Loot: {itemHelper.GetItemName(neededItem)}");
-                }
+                logger.Debug($"Added Task Loot: {itemHelper.GetItemName(neededItem)}");
 
                 rewardPool.Add(neededItem);
             }
@@ -852,12 +849,9 @@ public class CircleOfCultistService(
                         continue;
                     }
 
-                    if (logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        logger.Debug(
-                            $"Added Hideout Loot: {itemHelper.GetItemName(rewardToAdd.TemplateId)}"
-                        );
-                    }
+                    logger.Debug(
+                        $"Added Hideout Loot: {itemHelper.GetItemName(rewardToAdd.TemplateId)}"
+                    );
 
                     rewardPool.Add(rewardToAdd.TemplateId);
                 }
@@ -930,10 +924,7 @@ public class CircleOfCultistService(
                 }
             }
 
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"Added: {itemHelper.GetItemName(randomItem.Key)}");
-            }
+            logger.Debug($"Added: {itemHelper.GetItemName(randomItem.Key)}");
 
             rewardPool.Add(randomItem.Key);
             currentItemCount++;

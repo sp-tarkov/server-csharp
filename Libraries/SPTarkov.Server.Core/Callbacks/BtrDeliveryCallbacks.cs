@@ -78,12 +78,9 @@ public class BtrDeliveryCallbacks(
         var deliveryList = saveServer.GetProfile(sessionId).BtrDeliveryList;
         if (deliveryList != null && deliveryList!.Count > 0)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Found {deliveryList.Count} BTR delivery package(s) in profile {sessionId}"
-                );
-            }
+            logger.Debug(
+                $"Found {deliveryList.Count} BTR delivery package(s) in profile {sessionId}"
+            );
             return deliveryList
                 .Where(toBeDelivered => currentTime >= toBeDelivered.ScheduledTime)
                 .ToList();
@@ -99,12 +96,9 @@ public class BtrDeliveryCallbacks(
     /// <param name="sessionId">session ID that should receive the processed items</param>
     protected void ProcessDeliveryItems(List<BtrDelivery> packagesToBeDelivered, MongoId sessionId)
     {
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug(
-                $"Processing {packagesToBeDelivered.Count} BTR delivery package(s), which include a total of: {packagesToBeDelivered.Select(items => items.Items).Count()} items, in profile: {sessionId}"
-            );
-        }
+        logger.Debug(
+            $"Processing {packagesToBeDelivered.Count} BTR delivery package(s), which include a total of: {packagesToBeDelivered.Select(items => items.Items).Count()} items, in profile: {sessionId}"
+        );
 
         // Iterate over each of the insurance packages.
         foreach (var package in packagesToBeDelivered)

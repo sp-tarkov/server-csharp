@@ -359,10 +359,7 @@ public class LocationLifecycleService(
         var pmcProfile = fullProfile.CharacterData.PmcData;
         var scavProfile = fullProfile.CharacterData.ScavData;
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"Raid: {request.ServerId} outcome: {request.Results.Result}");
-        }
+        logger.Debug($"Raid: {request.ServerId} outcome: {request.Results.Result}");
 
         // Reset flea interval time to out-of-raid value
         _ragfairConfig.RunIntervalSeconds = _ragfairConfig.RunIntervalValues.OutOfRaid;

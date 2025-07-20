@@ -35,10 +35,7 @@ public class LocationController(
             var mapBase = location.Base;
             if (mapBase == null)
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug($"Map: {locationId} has no base json file, skipping generation");
-                }
+                logger.Debug($"Map: {locationId} has no base json file, skipping generation");
 
                 continue;
             }

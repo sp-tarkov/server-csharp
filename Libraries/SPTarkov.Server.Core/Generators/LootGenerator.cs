@@ -445,15 +445,12 @@ public class LootGenerator(
         // No `_encyclopedia` property, not possible to reliably get root item tpl
         if (chosenPreset?.Encyclopedia is null)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Warning(
-                    serverLocalisationService.GetText(
-                        "loot-chosen_preset_missing_encyclopedia_value",
-                        chosenPreset?.Id
-                    )
-                );
-            }
+            logger.Warning(
+                serverLocalisationService.GetText(
+                    "loot-chosen_preset_missing_encyclopedia_value",
+                    chosenPreset?.Id
+                )
+            );
 
             return false;
         }
@@ -462,12 +459,7 @@ public class LootGenerator(
         var itemDbDetails = itemHelper.GetItem(chosenPreset.Encyclopedia.Value);
         if (!itemDbDetails.Key)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"$Unable to find preset with tpl: {chosenPreset.Encyclopedia}, skipping"
-                );
-            }
+            logger.Debug($"$Unable to find preset with tpl: {chosenPreset.Encyclopedia}, skipping");
 
             return false;
         }
@@ -629,10 +621,7 @@ public class LootGenerator(
                 );
                 if (!ammoBoxesMatchingCaliber.Any())
                 {
-                    if (logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        logger.Debug($"No ammo box with caliber {weaponCaliber} found, skipping");
-                    }
+                    logger.Debug($"No ammo box with caliber {weaponCaliber} found, skipping");
 
                     continue;
                 }
@@ -664,10 +653,7 @@ public class LootGenerator(
 
             if (!rewardItemPool.Any())
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug($"No items with base type of {rewardKey} found, skipping");
-                }
+                logger.Debug($"No items with base type of {rewardKey} found, skipping");
 
                 continue;
             }
@@ -719,12 +705,9 @@ public class LootGenerator(
             );
             if (relatedItems is null || !relatedItems.Any())
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        $"No items found to fulfil reward type: {rewardKey} for weapon: {chosenWeaponPreset.Name}, skipping type"
-                    );
-                }
+                logger.Debug(
+                    $"No items found to fulfil reward type: {rewardKey} for weapon: {chosenWeaponPreset.Name}, skipping type"
+                );
 
                 continue;
             }

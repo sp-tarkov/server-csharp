@@ -139,12 +139,9 @@ public class TradeHelper(
                 var rootItemIndex = fenceItems.FindIndex(item => item.Id == buyRequestData.ItemId);
                 if (rootItemIndex == -1)
                 {
-                    if (logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        logger.Debug(
-                            $"Tried to buy item {buyRequestData.ItemId} from fence that no longer exists"
-                        );
-                    }
+                    logger.Debug(
+                        $"Tried to buy item {buyRequestData.ItemId} from fence that no longer exists"
+                    );
 
                     var message = serverLocalisationService.GetText(
                         "ragfair-offer_no_longer_exists"
@@ -336,12 +333,9 @@ public class TradeHelper(
                 return;
             }
 
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Selling: id: {matchingItemInInventory.Id} tpl: {matchingItemInInventory.Template}"
-                );
-            }
+            logger.Debug(
+                $"Selling: id: {matchingItemInInventory.Id} tpl: {matchingItemInInventory.Template}"
+            );
 
             if (sellRequest.TransactionId == Traders.FENCE)
             {

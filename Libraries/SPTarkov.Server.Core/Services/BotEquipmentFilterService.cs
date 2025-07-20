@@ -430,12 +430,9 @@ public class BotEquipmentFilterService(
                     {
                         if (showEditWarnings)
                         {
-                            if (logger.IsLogEnabled(LogLevel.Debug))
-                            {
-                                logger.Debug(
-                                    $"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}"
-                                );
-                            }
+                            logger.Debug(
+                                $"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}"
+                            );
                         }
                     }
                 }
@@ -491,12 +488,9 @@ public class BotEquipmentFilterService(
                     {
                         if (showEditWarnings)
                         {
-                            if (logger.IsLogEnabled(LogLevel.Debug))
-                            {
-                                logger.Debug(
-                                    $"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}"
-                                );
-                            }
+                            logger.Debug(
+                                $"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}"
+                            );
                         }
                     }
                 }
@@ -565,12 +559,9 @@ public class BotEquipmentFilterService(
                     // We tried to add an item flagged as edit only
                     if (showEditWarnings)
                     {
-                        if (logger.IsLogEnabled(LogLevel.Debug))
-                        {
-                            logger.Debug(
-                                $"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}"
-                            );
-                        }
+                        logger.Debug(
+                            $"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}"
+                        );
                     }
                 }
             }

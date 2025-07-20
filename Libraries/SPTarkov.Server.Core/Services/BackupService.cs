@@ -105,10 +105,7 @@ public class BackupService
 
         if (currentProfilePaths.Count == 0)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug("No profiles to backup");
-            }
+            _logger.Debug("No profiles to backup");
 
             return;
         }
@@ -139,10 +136,7 @@ public class BackupService
                 _jsonUtil.Serialize(_activeServerMods)
             );
 
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Profile backup created in: {targetDir}");
-            }
+            _logger.Debug($"Profile backup created in: {targetDir}");
         }
         catch (Exception ex)
         {
@@ -164,10 +158,7 @@ public class BackupService
             return true;
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug("Profile backups disabled");
-        }
+        _logger.Debug("Profile backups disabled");
 
         return false;
     }
@@ -302,10 +293,7 @@ public class BackupService
         {
             _fileUtil.DeleteDirectory(Path.Combine(pathToDelete), true);
 
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Deleted old backup: {pathToDelete}");
-            }
+            _logger.Debug($"Deleted old backup: {pathToDelete}");
         }
     }
 

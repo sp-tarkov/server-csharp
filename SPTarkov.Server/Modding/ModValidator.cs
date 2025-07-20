@@ -134,14 +134,11 @@ public class ModValidator(
         validMods.Sort((prev, next) => SortMods(prev, next, missingFromOrderJSON));
 
         // log the missing mods from order.json
-        if (logger.IsLogEnabled(LogLevel.Debug))
+        foreach (var missingMod in missingFromOrderJSON.Keys)
         {
-            foreach (var missingMod in missingFromOrderJSON.Keys)
-            {
-                logger.Debug(
-                    localisationService.GetText("modloader-mod_order_missing_from_json", missingMod)
-                );
-            }
+            logger.Debug(
+                localisationService.GetText("modloader-mod_order_missing_from_json", missingMod)
+            );
         }
 
         // add mods

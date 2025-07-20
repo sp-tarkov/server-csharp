@@ -97,10 +97,7 @@ public class SptHttpListener(
 
                 if (!requestIsCompressed)
                 {
-                    if (_logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        _logger.Debug(body);
-                    }
+                    _logger.Debug(body);
                 }
 
                 var response = await GetResponse(sessionId, req, body);
@@ -142,10 +139,7 @@ public class SptHttpListener(
         {
             // Send only raw response without transformation
             await SendJson(resp, output, sessionID);
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Response: {output}");
-            }
+            _logger.Debug($"Response: {output}");
 
             LogRequest(req, output);
             return;

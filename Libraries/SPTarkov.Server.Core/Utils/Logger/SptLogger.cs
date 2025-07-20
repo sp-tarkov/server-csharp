@@ -6,7 +6,7 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Utils.Logger;
 
 [Injectable(TypePriority = int.MinValue)]
-public class SptLogger<T> : ISptLogger<T>, IDisposable
+public class SptLogger<T> : SptLoggerBase<T>, IDisposable
 {
     private string _category;
     private readonly SptLoggerQueueManager _loggerQueueManager;
@@ -60,7 +60,7 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
         _category = category;
     }
 
-    public void LogWithColor(
+    public override void LogWithColorInternal(
         string data,
         LogTextColor? textColor = null,
         LogBackgroundColor? backgroundColor = null,
@@ -82,7 +82,7 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
         );
     }
 
-    public void Success(string data, Exception? ex = null)
+    protected override void SuccessInternal(string data, Exception? ex = null)
     {
         _loggerQueueManager.EnqueueMessage(
             new SptLogMessage(
@@ -98,7 +98,7 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
         );
     }
 
-    public void Error(string data, Exception? ex = null)
+    protected override void ErrorInternal(string data, Exception? ex = null)
     {
         _loggerQueueManager.EnqueueMessage(
             new SptLogMessage(
@@ -114,7 +114,7 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
         );
     }
 
-    public void Warning(string data, Exception? ex = null)
+    protected override void WarningInternal(string data, Exception? ex = null)
     {
         _loggerQueueManager.EnqueueMessage(
             new SptLogMessage(
@@ -130,7 +130,7 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
         );
     }
 
-    public void Info(string data, Exception? ex = null)
+    protected override void InfoInternal(string data, Exception? ex = null)
     {
         _loggerQueueManager.EnqueueMessage(
             new SptLogMessage(
@@ -145,7 +145,7 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
         );
     }
 
-    public void Debug(string data, Exception? ex = null)
+    protected override void DebugInternal(string data, Exception? ex = null)
     {
         _loggerQueueManager.EnqueueMessage(
             new SptLogMessage(
@@ -161,7 +161,7 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
         );
     }
 
-    public void Critical(string data, Exception? ex = null)
+    protected override void CriticalInternal(string data, Exception? ex = null)
     {
         _loggerQueueManager.EnqueueMessage(
             new SptLogMessage(
@@ -178,7 +178,7 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
         );
     }
 
-    public void Log(
+    protected override void LogInternal(
         LogLevel level,
         string data,
         LogTextColor? textColor = null,
@@ -201,12 +201,17 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
         );
     }
 
-    public bool IsLogEnabled(LogLevel level)
+    protected override bool IsLogEnabled(LogLevel level)
     {
         return _config.Loggers.Any(l => l.LogLevel.CanLog(level));
     }
 
-    public void DumpAndStop()
+    public bool IsEnabled(LogLevel level)
+    {
+        return IsLogEnabled(level);
+    }
+
+    public override void DumpAndStop()
     {
         _loggerQueueManager.DumpAndStop();
     }

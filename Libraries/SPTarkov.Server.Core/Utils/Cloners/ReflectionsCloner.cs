@@ -138,12 +138,7 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
                         case MemberInfo:
                             break;
                         default:
-                            if (logger.IsLogEnabled(LogLevel.Debug))
-                            {
-                                logger.Debug(
-                                    $"Unknown member type {member.Name} {member.MemberType}"
-                                );
-                            }
+                            logger.Debug($"Unknown member type {member.Name} {member.MemberType}");
 
                             break;
                     }
@@ -157,10 +152,7 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
         }
         else
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"Clone of type {objectType} is not supported");
-            }
+            logger.Debug($"Clone of type {objectType} is not supported");
         }
 
         return result;

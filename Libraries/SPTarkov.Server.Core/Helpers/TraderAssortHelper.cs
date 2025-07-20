@@ -81,24 +81,18 @@ public class TraderAssortHelper(
             var assortToAdjust = traderClone.Assort.Items.FirstOrDefault(x => x.Id == assortId.Key);
             if (assortToAdjust is null)
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        $"Cannot find trader: {traderClone.Base.Nickname} assort: {assortId} to adjust BuyRestrictionCurrent value, skipping"
-                    );
-                }
+                logger.Debug(
+                    $"Cannot find trader: {traderClone.Base.Nickname} assort: {assortId} to adjust BuyRestrictionCurrent value, skipping"
+                );
 
                 continue;
             }
 
             if (assortToAdjust.Upd is null)
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        $"Unable to adjust assort: {assortToAdjust.Id} item: {assortToAdjust.Template} BuyRestrictionCurrent value, assort has a null upd object"
-                    );
-                }
+                logger.Debug(
+                    $"Unable to adjust assort: {assortToAdjust.Id} item: {assortToAdjust.Template} BuyRestrictionCurrent value, assort has a null upd object"
+                );
 
                 continue;
             }

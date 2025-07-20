@@ -161,12 +161,9 @@ public class RepeatableQuestRewardGenerator(
             }
         }
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug(
-                $"Generating: {repeatableConfig.Name} quest for: {traderId.ToString()} with budget: {itemRewardBudget} totalling: {rewardParams.RewardNumItems} items"
-            );
-        }
+        logger.Debug(
+            $"Generating: {repeatableConfig.Name} quest for: {traderId.ToString()} with budget: {itemRewardBudget} totalling: {rewardParams.RewardNumItems} items"
+        );
 
         if (inBudgetRewardItemPool.Count > 0)
         {
@@ -204,12 +201,9 @@ public class RepeatableQuestRewardGenerator(
             rewards.Success.Add(reward);
             rewardIndex++;
 
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Adding: {rewardParams.RewardReputation} {traderId.ToString()} trader reputation reward"
-                );
-            }
+            logger.Debug(
+                $"Adding: {rewardParams.RewardReputation} {traderId.ToString()} trader reputation reward"
+            );
         }
 
         // Chance of adding skill reward
@@ -229,12 +223,7 @@ public class RepeatableQuestRewardGenerator(
             };
             rewards.Success.Add(reward);
 
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Adding {rewardParams.SkillPointReward} skill points to {targetSkill}"
-                );
-            }
+            logger.Debug($"Adding {rewardParams.SkillPointReward} skill points to {targetSkill}");
         }
 
         return rewards;
@@ -424,12 +413,9 @@ public class RepeatableQuestRewardGenerator(
 
             var itemCost = presetHelper.GetDefaultPresetOrItemPrice(chosenItemFromPool.Id);
             var calculatedItemRewardBudget = itemRewardBudget - rewardItemStackCount * itemCost;
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Added item: {chosenItemFromPool.Id} with price: {rewardItemStackCount * itemCost}"
-                );
-            }
+            logger.Debug(
+                $"Added item: {chosenItemFromPool.Id} with price: {rewardItemStackCount * itemCost}"
+            );
 
             // If we still have budget narrow down possible items
             if (calculatedItemRewardBudget > 0)
@@ -443,12 +429,9 @@ public class RepeatableQuestRewardGenerator(
 
                 if (!exhaustibleItemPool.HasValues())
                 {
-                    if (logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        logger.Debug(
-                            $"Reward pool empty with: {calculatedItemRewardBudget} roubles of budget remaining"
-                        );
-                    }
+                    logger.Debug(
+                        $"Reward pool empty with: {calculatedItemRewardBudget} roubles of budget remaining"
+                    );
                 }
             }
 

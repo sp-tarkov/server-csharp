@@ -801,10 +801,7 @@ public class SeasonalEventService(
                     : Convert.ToDouble(
                         randomUtil.GetInt(Convert.ToInt32(infectionPercentage), 100)
                     );
-            if (logger.IsLogEnabled(LogLevel.Debug))
-                logger.Debug(
-                    $"Percent infected from map {locationId} is {randomInfectionPercentage}"
-                );
+            logger.Debug($"Percent infected from map {locationId} is {randomInfectionPercentage}");
             // Infection rates sometimes apply to multiple maps, e.g. Factory day/night or Sandbox/sandbox_high
             // Get the list of maps that should have infection value applied to their base
             // 90% of locations are just 1 map e.g. bigmap = customs

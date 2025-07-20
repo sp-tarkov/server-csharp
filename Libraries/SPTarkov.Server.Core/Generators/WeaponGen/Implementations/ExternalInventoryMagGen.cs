@@ -75,12 +75,9 @@ public class ExternalInventoryMagGen(
                 // Prevent infinite loop by only allowing 5 attempts at fitting a magazine into inventory
                 if (fitAttempts > 5)
                 {
-                    if (logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        logger.Debug(
-                            $"Failed {fitAttempts} times to add magazine {magazineTpl} to bot inventory, stopping"
-                        );
-                    }
+                    logger.Debug(
+                        $"Failed {fitAttempts} times to add magazine {magazineTpl} to bot inventory, stopping"
+                    );
 
                     break;
                 }
@@ -141,12 +138,9 @@ public class ExternalInventoryMagGen(
                             break;
                         }
 
-                        if (logger.IsLogEnabled(LogLevel.Debug))
-                        {
-                            logger.Debug(
-                                $"Unable to add additional magazine into bot inventory: vest/pockets for weapon: {weapon.Name}, attempted: {fitAttempts} times. Reason: {fitsIntoInventory}"
-                            );
-                        }
+                        logger.Debug(
+                            $"Unable to add additional magazine into bot inventory: vest/pockets for weapon: {weapon.Name}, attempted: {fitAttempts} times. Reason: {fitsIntoInventory}"
+                        );
 
                         break;
                     }

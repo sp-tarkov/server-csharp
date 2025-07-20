@@ -140,12 +140,9 @@ public class BtrDeliveryService(
             .BtrDeliveryList.Where(package => package.Id != delivery.Id)
             .ToList();
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug(
-                $"Removed processed BTR delivery package. Remaining packages: {profile.BtrDeliveryList.Count}"
-            );
-        }
+        logger.Debug(
+            $"Removed processed BTR delivery package. Remaining packages: {profile.BtrDeliveryList.Count}"
+        );
     }
 
     /// <summary>
@@ -157,12 +154,9 @@ public class BtrDeliveryService(
         // If override in config is non-zero, use that
         if (_btrDeliveryConfig.ReturnTimeOverrideSeconds > 0)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"BTR delivery override used: returning in {_btrDeliveryConfig.ReturnTimeOverrideSeconds} seconds"
-                );
-            }
+            logger.Debug(
+                $"BTR delivery override used: returning in {_btrDeliveryConfig.ReturnTimeOverrideSeconds} seconds"
+            );
 
             return timeUtil.GetTimeStamp() + _btrDeliveryConfig.ReturnTimeOverrideSeconds;
         }

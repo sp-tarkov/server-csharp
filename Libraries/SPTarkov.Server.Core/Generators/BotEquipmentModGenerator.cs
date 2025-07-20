@@ -198,12 +198,9 @@ public class BotEquipmentModGenerator(
                 switch (plateSlotFilteringOutcome.Result)
                 {
                     case Result.UNKNOWN_FAILURE or Result.NO_DEFAULT_FILTER:
-                        if (logger.IsLogEnabled(LogLevel.Debug))
-                        {
-                            logger.Debug(
-                                $"Plate slot: {modSlotName} selection for armor: {parentTemplate.Id} failed: {plateSlotFilteringOutcome.Result}, skipping"
-                            );
-                        }
+                        logger.Debug(
+                            $"Plate slot: {modSlotName} selection for armor: {parentTemplate.Id} failed: {plateSlotFilteringOutcome.Result}, skipping"
+                        );
 
                         continue;
                     case Result.LACKS_PLATE_WEIGHTS:
@@ -411,12 +408,9 @@ public class BotEquipmentModGenerator(
             // No valid plate class found in 3 tries, attempt default plates
             if (findCompatiblePlateAttempts >= maxAttempts)
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        $"Plate filter too restrictive for armor: {armorItem.Name} {armorItem.Id}, unable to find plates of level: {chosenArmorPlateLevelString}, using items default plate"
-                    );
-                }
+                logger.Debug(
+                    $"Plate filter too restrictive for armor: {armorItem.Name} {armorItem.Id}, unable to find plates of level: {chosenArmorPlateLevelString}, using items default plate"
+                );
 
                 var defaultPlate = armorItem.GetDefaultPlateTpl(modSlot);
                 if (defaultPlate is not null)
@@ -1128,12 +1122,9 @@ public class BotEquipmentModGenerator(
         if ((modPool is null || !modPool.Any()) && !(parentSlot?.Required ?? false))
         {
             // Nothing in mod pool + item not required
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Mod pool for optional slot: {request.ModSlot} on item: {request.ParentTemplate.Name} was empty, skipping mod"
-                );
-            }
+            logger.Debug(
+                $"Mod pool for optional slot: {request.ModSlot} on item: {request.ParentTemplate.Name} was empty, skipping mod"
+            );
 
             return null;
         }
@@ -1212,12 +1203,9 @@ public class BotEquipmentModGenerator(
             && !parentSlot.Required.GetValueOrDefault(false)
         )
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Unable to find compatible mod of type: {parentSlot.Name}, in slot: {request.ModSlot} reason: {chosenModResult.Reason}"
-                );
-            }
+            logger.Debug(
+                $"Unable to find compatible mod of type: {parentSlot.Name}, in slot: {request.ModSlot} reason: {chosenModResult.Reason}"
+            );
         }
 
         // Get random mod to attach from items db for required slots if none found above
@@ -1509,12 +1497,9 @@ public class BotEquipmentModGenerator(
         {
             if (request.ItemModPool[request.ModSlot]?.Count > 1)
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        $"{request.BotData.Role} No default: {request.ModSlot} mod found for: {weaponTemplate.Name}, using existing pool"
-                    );
-                }
+                logger.Debug(
+                    $"{request.BotData.Role} No default: {request.ModSlot} mod found for: {weaponTemplate.Name}, using existing pool"
+                );
             }
 
             // Couldn't find default in globals, use existing mod pool data
@@ -1556,23 +1541,17 @@ public class BotEquipmentModGenerator(
             }
 
             // Above chosen mod had conflicts with existing weapon mods
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"{request.BotData.Role} Chosen default: {request.ModSlot} mod found for: {weaponTemplate.Name} weapon conflicts with item on weapon, cannot use default"
-                );
-            }
+            logger.Debug(
+                $"{request.BotData.Role} Chosen default: {request.ModSlot} mod found for: {weaponTemplate.Name} weapon conflicts with item on weapon, cannot use default"
+            );
 
             var existingModPool = request.ItemModPool[request.ModSlot];
             if (existingModPool.Count == 1)
             {
                 // The only item in pool isn't compatible
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        $"{request.BotData.Role} {request.ModSlot} Mod pool for: {weaponTemplate.Name} weapon has only incompatible items, using parent list instead"
-                    );
-                }
+                logger.Debug(
+                    $"{request.BotData.Role} {request.ModSlot} Mod pool for: {weaponTemplate.Name} weapon has only incompatible items, using parent list instead"
+                );
 
                 // Last ditch, use full pool of items minus conflicts
                 var newListOfModsForSlot = parentSlotCompatibleItems.Where(tpl =>
@@ -1758,10 +1737,7 @@ public class BotEquipmentModGenerator(
                     new { modId = modBeingAddedDbTemplate.Value?.Id ?? "UNKNOWN", modSlot }
                 )
             );
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"Item -> {parentTemplate?.Id}; Slot -> {modSlot}");
-            }
+            logger.Debug($"Item -> {parentTemplate?.Id}; Slot -> {modSlot}");
 
             return false;
         }
@@ -2058,12 +2034,9 @@ public class BotEquipmentModGenerator(
             )
         )
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Unable to find whitelist for weapon type: {weaponDetails.Value.Parent} {weaponDetails.Value.Name}, skipping sight filtering"
-                );
-            }
+            logger.Debug(
+                $"Unable to find whitelist for weapon type: {weaponDetails.Value.Parent} {weaponDetails.Value.Name}, skipping sight filtering"
+            );
 
             return scopes;
         }
@@ -2115,12 +2088,9 @@ public class BotEquipmentModGenerator(
         // No mods added to return list after filtering has occurred, send back the original mod list
         if (filteredScopesAndMods.Count == 0)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Scope whitelist too restrictive for: {weapon.Template} {weaponDetails.Value.Name}, skipping filter"
-                );
-            }
+            logger.Debug(
+                $"Scope whitelist too restrictive for: {weapon.Template} {weaponDetails.Value.Name}, skipping filter"
+            );
 
             return scopes;
         }

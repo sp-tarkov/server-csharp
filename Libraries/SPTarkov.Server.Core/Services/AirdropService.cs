@@ -61,10 +61,7 @@ public class AirdropService(
     public GetAirdropLootResponse GenerateAirdropLoot(SptAirdropTypeEnum? forcedAirdropType = null)
     {
         var airdropType = forcedAirdropType ?? ChooseAirdropType();
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"Chose: {airdropType} for airdrop loot");
-        }
+        _logger.Debug($"Chose: {airdropType} for airdrop loot");
 
         // Common/weapon/etc
         var airdropConfig = GetAirdropLootConfigByType(airdropType);

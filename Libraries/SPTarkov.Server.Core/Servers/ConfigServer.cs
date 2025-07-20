@@ -62,10 +62,7 @@ public class ConfigServer
 
     public void Initialize()
     {
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug("Importing configs...");
-        }
+        _logger.Debug("Importing configs...");
 
         // Get all filepaths
         const string filepath = "./SPT_Data/configs/";

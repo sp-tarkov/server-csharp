@@ -24,6 +24,5 @@ public interface ISptLogger<T>
         LogBackgroundColor? backgroundColor = null,
         Exception? ex = null
     );
-    bool IsLogEnabled(LogLevel level);
     void DumpAndStop();
 }

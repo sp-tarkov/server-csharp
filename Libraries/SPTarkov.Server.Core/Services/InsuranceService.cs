@@ -157,12 +157,9 @@ public class InsuranceService(
         // If override in config is non-zero, use that instead of trader values
         if (_insuranceConfig.ReturnTimeOverrideSeconds > 0)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Insurance override used: returning in {_insuranceConfig.ReturnTimeOverrideSeconds} seconds"
-                );
-            }
+            logger.Debug(
+                $"Insurance override used: returning in {_insuranceConfig.ReturnTimeOverrideSeconds} seconds"
+            );
 
             return timeUtil.GetTimeStamp() + _insuranceConfig.ReturnTimeOverrideSeconds;
         }

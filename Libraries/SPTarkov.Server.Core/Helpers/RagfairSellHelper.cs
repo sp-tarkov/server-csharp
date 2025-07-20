@@ -96,12 +96,9 @@ public class RagfairSellHelper(
             );
         }
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug(
-                $"Rolling to sell: {itemSellCount} item(s) - (chance: {effectiveSellChance}%)"
-            );
-        }
+        logger.Debug(
+            $"Rolling to sell: {itemSellCount} item(s) - (chance: {effectiveSellChance}%)"
+        );
 
         // No point rolling for a sale on a 0% chance item, exit early
         if (effectiveSellChance == 0)
@@ -138,19 +135,13 @@ public class RagfairSellHelper(
                 sellTimestamp += (long)newSellTime;
                 result.Add(new SellResult { SellTime = sellTimestamp, Amount = boughtAmount });
 
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        $"Offer will sell at: {timeUtil.GetDateTimeFromTimeStamp(sellTimestamp).ToLocalTime().ToString(CultureInfo.InvariantCulture)}, bought: {boughtAmount}"
-                    );
-                }
+                logger.Debug(
+                    $"Offer will sell at: {timeUtil.GetDateTimeFromTimeStamp(sellTimestamp).ToLocalTime().ToString(CultureInfo.InvariantCulture)}, bought: {boughtAmount}"
+                );
             }
             else
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug($"Offer rolled not to sell, item count: {boughtAmount}");
-                }
+                logger.Debug($"Offer rolled not to sell, item count: {boughtAmount}");
             }
 
             remainingCount -= boughtAmount;

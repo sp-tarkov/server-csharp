@@ -112,12 +112,9 @@ public class RepairService(
                 * _repairConfig.PriceMultiplier
         );
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"item base repair cost: {itemRepairCost}");
-            logger.Debug($"price multiplier: {_repairConfig.PriceMultiplier}");
-            logger.Debug($"repair cost: {repairCost}");
-        }
+        logger.Debug($"item base repair cost: {itemRepairCost}");
+        logger.Debug($"price multiplier: {_repairConfig.PriceMultiplier}");
+        logger.Debug($"repair cost: {repairCost}");
 
         return new RepairDetails
         {
@@ -508,12 +505,9 @@ public class RepairService(
         var maxRepairAmount = repairKitDetails.Properties.MaxRepairResource;
         if (repairKitInInventory.Upd is null)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Repair kit: {repairKitInInventory.Id} in inventory lacks upd object, adding"
-                );
-            }
+            logger.Debug(
+                $"Repair kit: {repairKitInInventory.Id} in inventory lacks upd object, adding"
+            );
 
             repairKitInInventory.Upd = new Upd
             {

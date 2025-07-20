@@ -288,10 +288,7 @@ public class RagfairController(
         else
         {
             logger.Error(localisationService.GetText("ragfair-unable_to_get_categories"));
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(jsonUtil.Serialize(searchRequest));
-            }
+            logger.Debug(jsonUtil.Serialize(searchRequest));
 
             return [];
         }
@@ -952,12 +949,9 @@ public class RagfairController(
                 offerRequest.SellInOnePiece.GetValueOrDefault(false)
             );
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug(
-                $"Offer tax to charge: {tax}, pulled from client: {storedClientTaxValue.Count is not null}"
-            );
-        }
+        logger.Debug(
+            $"Offer tax to charge: {tax}, pulled from client: {storedClientTaxValue.Count is not null}"
+        );
 
         // cleanup of cache now we've used the tax value from it
         ragfairTaxService.ClearStoredOfferTaxById(offerRequest.Items.First());

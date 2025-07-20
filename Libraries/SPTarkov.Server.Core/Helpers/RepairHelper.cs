@@ -42,12 +42,9 @@ public class RepairHelper(
         bool applyMaxDurabilityDegradation = true
     )
     {
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug(
-                $"Adding {amountToRepair} to {itemToRepairDetails.Name} using kit: {useRepairKit}"
-            );
-        }
+        logger.Debug(
+            $"Adding {amountToRepair} to {itemToRepairDetails.Name} using kit: {useRepairKit}"
+        );
 
         var itemMaxDurability = cloner.Clone(itemToRepair.Upd.Repairable.MaxDurability);
         var itemCurrentDurability = cloner.Clone(itemToRepair.Upd.Repairable.Durability);

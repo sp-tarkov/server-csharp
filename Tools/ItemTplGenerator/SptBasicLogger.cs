@@ -6,7 +6,7 @@ using SPTarkov.Server.Core.Models.Utils;
 namespace ItemTplGenerator;
 
 [Injectable]
-public class SptBasicLogger<T> : ISptLogger<T>
+public class SptBasicLogger<T> : SptLoggerBase<T>
 {
     private readonly string categoryName;
 
@@ -15,7 +15,7 @@ public class SptBasicLogger<T> : ISptLogger<T>
         categoryName = typeof(T).Name;
     }
 
-    public void LogWithColor(
+    public override void LogWithColorInternal(
         string data,
         LogTextColor? textColor = null,
         LogBackgroundColor? backgroundColor = null,
@@ -25,37 +25,37 @@ public class SptBasicLogger<T> : ISptLogger<T>
         Console.WriteLine($"{categoryName}: {data}");
     }
 
-    public void Success(string data, Exception? ex = null)
+    protected override void SuccessInternal(string data, Exception? ex = null)
     {
         Console.WriteLine($"{categoryName}: {data}");
     }
 
-    public void Error(string data, Exception? ex = null)
+    protected override void ErrorInternal(string data, Exception? ex = null)
     {
         Console.WriteLine($"{categoryName}: {data}");
     }
 
-    public void Warning(string data, Exception? ex = null)
+    protected override void WarningInternal(string data, Exception? ex = null)
     {
         Console.WriteLine($"{categoryName}: {data}");
     }
 
-    public void Info(string data, Exception? ex = null)
+    protected override void InfoInternal(string data, Exception? ex = null)
     {
         Console.WriteLine($"{categoryName}: {data}");
     }
 
-    public void Debug(string data, Exception? ex = null)
+    protected override void DebugInternal(string data, Exception? ex = null)
     {
         Console.WriteLine($"{categoryName}: {data}");
     }
 
-    public void Critical(string data, Exception? ex = null)
+    protected override void CriticalInternal(string data, Exception? ex = null)
     {
         Console.WriteLine($"{categoryName}: {data}");
     }
 
-    public void Log(
+    protected override void LogInternal(
         LogLevel level,
         string data,
         LogTextColor? textColor = null,
@@ -71,12 +71,12 @@ public class SptBasicLogger<T> : ISptLogger<T>
         Console.WriteLine($"{categoryName}: {body}");
     }
 
-    public bool IsLogEnabled(LogLevel level)
+    protected override bool IsLogEnabled(LogLevel level)
     {
         return true;
     }
 
-    public void DumpAndStop()
+    public override void DumpAndStop()
     {
         throw new NotImplementedException();
     }

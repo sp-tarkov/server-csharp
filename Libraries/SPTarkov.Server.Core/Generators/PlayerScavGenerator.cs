@@ -67,10 +67,7 @@ public class PlayerScavGenerator(
             );
         }
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"Generated player scav load out with karma level: {scavKarmaLevel}");
-        }
+        logger.Debug($"Generated player scav load out with karma level: {scavKarmaLevel}");
 
         // Edit baseBotNode values
         var baseBotNode = ConstructBotBaseTemplate(playerScavKarmaSettings.BotTypeForLoot);
@@ -191,10 +188,7 @@ public class PlayerScavGenerator(
 
             if (result != ItemAddedResult.SUCCESS)
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug($"Unable to add keycard to bot. Reason: {result.ToString()}");
-                }
+                logger.Debug($"Unable to add keycard to bot. Reason: {result.ToString()}");
             }
         }
     }

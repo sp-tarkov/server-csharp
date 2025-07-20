@@ -191,20 +191,14 @@ public class LocationLootGenerator(
             staticLootItemCount += containerWithLoot.Template.Items.Count;
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"Added {guaranteedContainers.Count} guaranteed containers");
-        }
+        _logger.Debug($"Added {guaranteedContainers.Count} guaranteed containers");
 
         // Randomisation is turned off for location / globally
         if (!LocationRandomisationEnabled(locationId))
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug(
-                    $"Container randomisation disabled, Adding: {staticRandomisableContainersOnMap.Count} containers to: {locationId}"
-                );
-            }
+            _logger.Debug(
+                $"Container randomisation disabled, Adding: {staticRandomisableContainersOnMap.Count} containers to: {locationId}"
+            );
 
             foreach (var container in staticRandomisableContainersOnMap)
             {
@@ -253,12 +247,9 @@ public class LocationLootGenerator(
 
             if (data.ContainerIdsWithProbability.Count == 0)
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug(
-                        $"Group: {key} has no containers with < 100 % spawn chance to choose from, skipping"
-                    );
-                }
+                _logger.Debug(
+                    $"Group: {key} has no containers with < 100 % spawn chance to choose from, skipping"
+                );
 
                 continue;
             }
@@ -299,12 +290,9 @@ public class LocationLootGenerator(
                 );
                 if (containerObject is null)
                 {
-                    if (_logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        _logger.Debug(
-                            $"Container: {chosenContainerId} not found in staticRandomisableContainersOnMap, this is bad"
-                        );
-                    }
+                    _logger.Debug(
+                        $"Container: {chosenContainerId} not found in staticRandomisableContainersOnMap, this is bad"
+                    );
 
                     continue;
                 }
@@ -398,12 +386,9 @@ public class LocationLootGenerator(
         var containerIds = containerData.ContainerIdsWithProbability.Keys.ToList();
         if (containerData.ChosenCount > containerIds.Count)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug(
-                    $"Group: {groupId} wants: {containerData.ChosenCount} containers but pool only has: {containerIds.Count}, add what's available"
-                );
-            }
+            _logger.Debug(
+                $"Group: {groupId} wants: {containerData.ChosenCount} containers but pool only has: {containerIds.Count}, add what's available"
+            );
 
             return containerIds;
         }
@@ -492,12 +477,9 @@ public class LocationLootGenerator(
 
             if (container.Probability >= 1)
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug(
-                        $"Container {container.Template.Id} with group: {groupData.GroupId} had 100 % chance to spawn was picked as random container, skipping"
-                    );
-                }
+                _logger.Debug(
+                    $"Container {container.Template.Id} with group: {groupData.GroupId} had 100 % chance to spawn was picked as random container, skipping"
+                );
 
                 continue;
             }
@@ -823,10 +805,7 @@ public class LocationLootGenerator(
             // Point is blacklisted, skip
             if (blacklistedSpawnPoints?.Contains(spawnPoint.Template.Id) ?? false)
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug($"Ignoring loose loot location: {spawnPoint.Template.Id}");
-                }
+                _logger.Debug($"Ignoring loose loot location: {spawnPoint.Template.Id}");
 
                 continue;
             }
@@ -879,20 +858,17 @@ public class LocationLootGenerator(
         var tooManySpawnPointsRequested = desiredSpawnPointCount - chosenSpawnPoints.Count > 0;
         if (tooManySpawnPointsRequested)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug(
-                    _serverLocalisationService.GetText(
-                        "location-spawn_point_count_requested_vs_found",
-                        new
-                        {
-                            requested = desiredSpawnPointCount + guaranteedLoosePoints.Count,
-                            found = chosenSpawnPoints.Count,
-                            mapName = locationName,
-                        }
-                    )
-                );
-            }
+            _logger.Debug(
+                _serverLocalisationService.GetText(
+                    "location-spawn_point_count_requested_vs_found",
+                    new
+                    {
+                        requested = desiredSpawnPointCount + guaranteedLoosePoints.Count,
+                        found = chosenSpawnPoints.Count,
+                        mapName = locationName,
+                    }
+                )
+            );
         }
 
         // Iterate over spawnPoints
@@ -931,15 +907,12 @@ public class LocationLootGenerator(
             // Spawn point has no items after filtering, skip
             if (spawnPoint.Template.Items is null || spawnPoint.Template.Items.Count == 0)
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug(
-                        _serverLocalisationService.GetText(
-                            "location-spawnpoint_missing_items",
-                            spawnPoint.Template.Id
-                        )
-                    );
-                }
+                _logger.Debug(
+                    _serverLocalisationService.GetText(
+                        "location-spawnpoint_missing_items",
+                        spawnPoint.Template.Id
+                    )
+                );
 
                 continue;
             }
@@ -1084,12 +1057,9 @@ public class LocationLootGenerator(
             }
             else
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug(
-                        $"Attempted to add a forced loot location with Id: {locationTemplateToAdd.Id} to map {locationName} that already has that id in use, skipping"
-                    );
-                }
+                _logger.Debug(
+                    $"Attempted to add a forced loot location with Id: {locationTemplateToAdd.Id} to map {locationName} that already has that id in use, skipping"
+                );
             }
         }
 
@@ -1359,10 +1329,7 @@ public class LocationLootGenerator(
         else
         {
             // RSP30 (62178be9d0050232da3485d9/624c0b3340357b5f566e8766/6217726288ed9f0845317459) doesn't have any default presets and kills this code below as it has no children to re-parent
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"createStaticLootItem() No preset found for weapon: {chosenTpl}");
-            }
+            _logger.Debug($"createStaticLootItem() No preset found for weapon: {chosenTpl}");
         }
 
         var rootItem = items.FirstOrDefault();

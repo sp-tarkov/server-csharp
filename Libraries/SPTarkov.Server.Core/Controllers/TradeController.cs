@@ -163,10 +163,7 @@ public class TradeController(
         {
             var errorMessage =
                 $"Unable to buy item: {fleaOffer.Items[0].Template} from trader: {fleaOffer.User.Id} as loyalty level too low, skipping";
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(errorMessage);
-            }
+            logger.Debug(errorMessage);
 
             httpResponseUtil.AppendErrorToOutput(
                 output,
@@ -320,10 +317,7 @@ public class TradeController(
     /// <param name="trader">Trader to sell items to</param>
     protected void MailMoneyToPlayer(MongoId sessionId, int roublesToSend, MongoId trader)
     {
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"Selling scav items to fence for {roublesToSend} roubles");
-        }
+        logger.Debug($"Selling scav items to fence for {roublesToSend} roubles");
 
         // Create single currency item with all currency on it
         var rootCurrencyReward = new Item

@@ -93,12 +93,7 @@ public class ItemBaseClassService(
         if (!existsInCache)
         {
             // Not found
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    serverLocalisationService.GetText("baseclass-item_not_found", itemTpl)
-                );
-            }
+            logger.Debug(serverLocalisationService.GetText("baseclass-item_not_found", itemTpl));
 
             // Not found in cache, Hydrate again - some mods add items late in server startup lifecycle
             HydrateItemBaseClassCache();

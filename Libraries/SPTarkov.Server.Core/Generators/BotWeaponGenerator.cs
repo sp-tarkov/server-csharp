@@ -647,12 +647,9 @@ public class BotWeaponGenerator(
 
             var defaultMagTplId = weaponTemplate.GetWeaponsDefaultMagazineTpl();
 
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"[{botRole}] Unable to find magazine for weapon: {weaponTemplate.Id} {weaponTemplate.Name}, using mag template default: {defaultMagTplId}."
-                );
-            }
+            logger.Debug(
+                $"[{botRole}] Unable to find magazine for weapon: {weaponTemplate.Id} {weaponTemplate.Name}, using mag template default: {defaultMagTplId}."
+            );
 
             return defaultMagTplId;
         }
@@ -677,20 +674,17 @@ public class BotWeaponGenerator(
             || cartridgePoolForWeapon?.Count == 0
         )
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    serverLocalisationService.GetText(
-                        "bot-no_caliber_data_for_weapon_falling_back_to_default",
-                        new
-                        {
-                            weaponId = weaponTemplate.Id,
-                            weaponName = weaponTemplate.Name,
-                            defaultAmmo = weaponTemplate.Properties.DefAmmo,
-                        }
-                    )
-                );
-            }
+            logger.Debug(
+                serverLocalisationService.GetText(
+                    "bot-no_caliber_data_for_weapon_falling_back_to_default",
+                    new
+                    {
+                        weaponId = weaponTemplate.Id,
+                        weaponName = weaponTemplate.Name,
+                        defaultAmmo = weaponTemplate.Properties.DefAmmo,
+                    }
+                )
+            );
 
             // Immediately returns, default ammo is guaranteed to be compatible
             // it is not guaranteed to even have a default ammo

@@ -77,10 +77,7 @@ public class GiftService(
 
         if (profileHelper.PlayerHasReceivedMaxNumberOfGift(playerId, giftId, maxGiftsToSendCount))
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"Player already received gift: {giftId}");
-            }
+            logger.Debug($"Player already received gift: {giftId}");
 
             return GiftSentResult.FAILED_GIFT_ALREADY_RECEIVED;
         }

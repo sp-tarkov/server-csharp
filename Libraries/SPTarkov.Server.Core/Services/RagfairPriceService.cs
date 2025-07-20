@@ -535,14 +535,11 @@ public class RagfairPriceService(
 
         var nonDefaultPresets = presetHelper.GetPresets(weapon.Template);
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug(
-                nonDefaultPresets.Count == 1
-                    ? $"Item Id: {weapon.Template} has no default encyclopedia entry but only one preset: ({nonDefaultPresets[0].Name}), choosing preset: ({nonDefaultPresets[0].Name})"
-                    : $"Item Id: {weapon.Template} has no default encyclopedia entry, choosing first preset({nonDefaultPresets[0].Name}) of {nonDefaultPresets.Count}"
-            );
-        }
+        logger.Debug(
+            nonDefaultPresets.Count == 1
+                ? $"Item Id: {weapon.Template} has no default encyclopedia entry but only one preset: ({nonDefaultPresets[0].Name}), choosing preset: ({nonDefaultPresets[0].Name})"
+                : $"Item Id: {weapon.Template} has no default encyclopedia entry, choosing first preset({nonDefaultPresets[0].Name}) of {nonDefaultPresets.Count}"
+        );
 
         return new WeaponPreset { IsDefault = false, Preset = nonDefaultPresets[0] };
     }

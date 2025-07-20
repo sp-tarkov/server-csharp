@@ -29,30 +29,19 @@ public class NotificationSendHelper(
     /// <param name="notificationMessage"></param>
     public void SendMessage(MongoId sessionID, WsNotificationEvent notificationMessage)
     {
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug(
-                $"Send message for {sessionID} started, message: {jsonUtil.Serialize(notificationMessage)}"
-            );
-        }
+        logger.Debug(
+            $"Send message for {sessionID} started, message: {jsonUtil.Serialize(notificationMessage)}"
+        );
         if (sptWebSocketConnectionHandler.IsWebSocketConnected(sessionID))
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Send message for {sessionID} websocket available, message being sent"
-                );
-            }
+            logger.Debug($"Send message for {sessionID} websocket available, message being sent");
             sptWebSocketConnectionHandler.SendMessage(sessionID, notificationMessage);
         }
         else
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Send message for {sessionID} websocket not available, queueing into profile"
-                );
-            }
+            logger.Debug(
+                $"Send message for {sessionID} websocket not available, queueing into profile"
+            );
             notificationService.Add(sessionID, notificationMessage);
         }
     }

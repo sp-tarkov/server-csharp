@@ -397,10 +397,7 @@ public class DatabaseService(
         }
 
         start.Stop();
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"ID validation took: {start.ElapsedMilliseconds}ms");
-        }
+        logger.Debug($"ID validation took: {start.ElapsedMilliseconds}ms");
     }
 
     /// <summary>

@@ -1481,12 +1481,9 @@ public class ItemHelper(
         );
         if (cartridgeTpl is null)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(
-                    $"Unable to fill item: {magazine.FirstOrDefault().Id} {magTemplate.Name} with cartridges, none found."
-                );
-            }
+            logger.Debug(
+                $"Unable to fill item: {magazine.FirstOrDefault().Id} {magTemplate.Name} with cartridges, none found."
+            );
 
             return;
         }
@@ -1762,12 +1759,9 @@ public class ItemHelper(
             var itemPool = slot.Props.Filters.FirstOrDefault().Filter ?? [];
             if (itemPool.Count == 0)
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        $"Unable to choose a mod for slot: {slot.Name} on item: {itemToAddTemplate.Id} {itemToAddTemplate.Name}, parents' 'Filter' array is empty, skipping"
-                    );
-                }
+                logger.Debug(
+                    $"Unable to choose a mod for slot: {slot.Name} on item: {itemToAddTemplate.Id} {itemToAddTemplate.Name}, parents' 'Filter' array is empty, skipping"
+                );
 
                 continue;
             }
@@ -1775,12 +1769,9 @@ public class ItemHelper(
             var chosenTpl = GetCompatibleTplFromArray(itemPool, incompatibleModTpls);
             if (chosenTpl is null)
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(
-                        $"Unable to choose a mod for slot: {slot.Name} on item: {itemToAddTemplate.Id} {itemToAddTemplate.Name}, no compatible tpl found in pool of {itemPool.Count}, skipping"
-                    );
-                }
+                logger.Debug(
+                    $"Unable to choose a mod for slot: {slot.Name} on item: {itemToAddTemplate.Id} {itemToAddTemplate.Name}, no compatible tpl found in pool of {itemPool.Count}, skipping"
+                );
 
                 continue;
             }
@@ -1931,10 +1922,7 @@ public class ItemHelper(
 
         if (warningMessageWhenMissing is not null)
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(warningMessageWhenMissing);
-            }
+            logger.Debug(warningMessageWhenMissing);
         }
 
         return true;

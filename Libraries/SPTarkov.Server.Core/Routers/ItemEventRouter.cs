@@ -50,10 +50,7 @@ public class ItemEventRouter(
                 continue;
             }
 
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"event: {body.Action}");
-            }
+            logger.Debug($"event: {body.Action}");
 
             await eventRouter.HandleItemEvent(body.Action, pmcData, body, sessionID, output);
 

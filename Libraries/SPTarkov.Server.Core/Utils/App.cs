@@ -42,29 +42,24 @@ public class App(
             await Task.Delay(Timeout.Infinite);
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        _logger.Debug($"OS: {Environment.OSVersion.Version} | {Environment.OSVersion.Platform}");
+        _logger.Debug($"Ran as admin: {Environment.IsPrivilegedProcess}");
+        _logger.Debug($"CPU cores: {Environment.ProcessorCount}");
+        _logger.Debug(
+            $"PATH: {(Environment.ProcessPath ?? "null returned").Encode(EncodeType.BASE64)}"
+        );
+        _logger.Debug($"Server: {ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion}");
+
+        // _logger.Debug($"RAM: {(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB");
+
+        if (ProgramStatics.BUILD_TIME() is not null)
         {
-            _logger.Debug(
-                $"OS: {Environment.OSVersion.Version} | {Environment.OSVersion.Platform}"
-            );
-            _logger.Debug($"Ran as admin: {Environment.IsPrivilegedProcess}");
-            _logger.Debug($"CPU cores: {Environment.ProcessorCount}");
-            _logger.Debug(
-                $"PATH: {(Environment.ProcessPath ?? "null returned").Encode(EncodeType.BASE64)}"
-            );
-            _logger.Debug($"Server: {ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion}");
+            _logger.Debug($"Date: {ProgramStatics.BUILD_TIME()}");
+        }
 
-            // _logger.Debug($"RAM: {(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB");
-
-            if (ProgramStatics.BUILD_TIME() is not null)
-            {
-                _logger.Debug($"Date: {ProgramStatics.BUILD_TIME()}");
-            }
-
-            if (ProgramStatics.COMMIT() is not null)
-            {
-                _logger.Debug($"Commit: {ProgramStatics.COMMIT()}");
-            }
+        if (ProgramStatics.COMMIT() is not null)
+        {
+            _logger.Debug($"Commit: {ProgramStatics.COMMIT()}");
         }
 
         // execute onLoad callbacks

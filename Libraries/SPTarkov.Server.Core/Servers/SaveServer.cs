@@ -77,12 +77,7 @@ public class SaveServer(
         }
 
         stopwatch.Stop();
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug(
-                $"{files.Count()} Profiles took: {stopwatch.ElapsedMilliseconds}ms to load."
-            );
-        }
+        logger.Debug($"{files.Count()} Profiles took: {stopwatch.ElapsedMilliseconds}ms to load.");
     }
 
     /// <summary>
@@ -97,10 +92,7 @@ public class SaveServer(
             totalTime += await SaveProfileAsync(sessionID.Key);
         }
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"Saved {profiles.Count} profiles, took: {totalTime}ms");
-        }
+        logger.Debug($"Saved {profiles.Count} profiles, took: {totalTime}ms");
     }
 
     /// <summary>
