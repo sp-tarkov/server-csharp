@@ -588,7 +588,9 @@ public class LocationLifecycleService(
         fenceStanding += Math.Max(baseGain / extractCount, 0.01);
 
         // Ensure fence loyalty level is not above/below the range -7 to 15
-        var newFenceStanding = Math.Min(Math.Max((double)fenceStanding, -7), 15);
+        var fenceMax = _traderConfig.Fence.PlayerRepMax;
+        var fenceMin = _traderConfig.Fence.PlayerRepMin;
+        var newFenceStanding = Math.Clamp(fenceStanding.GetValueOrDefault(0), fenceMin, fenceMax);
         logger.Debug(
             $"Old vs new fence standing: {pmcData.TradersInfo[fenceId].Standing}, {newFenceStanding}"
         );
@@ -678,8 +680,9 @@ public class LocationLifecycleService(
             logger.Error($"post raid fence data not found for: {sessionId}");
         }
 
-        scavProfile.TradersInfo[Traders.FENCE].Standing = Math.Min(
-            Math.Max(postRaidFenceData.Standing.Value, fenceMin),
+        scavProfile.TradersInfo[Traders.FENCE].Standing = Math.Clamp(
+            postRaidFenceData.Standing.Value,
+            fenceMin,
             fenceMax
         );
 
@@ -882,11 +885,14 @@ public class LocationLifecycleService(
         var fenceId = Traders.FENCE;
 
         // Clamp fence standing
-        var currentFenceStanding = postRaidProfile.TradersInfo[fenceId].Standing ?? 0d;
-        serverPmcProfile.TradersInfo[fenceId].Standing = Math.Min(
-            Math.Max(currentFenceStanding, -7),
-            15
-        ); // Ensure it stays between -7 and 15
+        var fenceMax = _traderConfig.Fence.PlayerRepMax; // 15
+        var fenceMin = _traderConfig.Fence.PlayerRepMin; //-7
+
+        serverPmcProfile.TradersInfo[fenceId].Standing = Math.Clamp(
+            postRaidProfile.TradersInfo[fenceId].Standing ?? 0d,
+            fenceMin,
+            fenceMax
+        );
 
         // Copy fence values to Scav
         scavProfile.TradersInfo[fenceId] = serverPmcProfile.TradersInfo[fenceId];

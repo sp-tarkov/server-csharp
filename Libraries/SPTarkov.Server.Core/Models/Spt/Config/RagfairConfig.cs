@@ -139,6 +139,7 @@ public record Dynamic
 
     /// <summary>
     ///     How many offers should be listed
+    /// key can be mongoId or "default"
     /// </summary>
     [JsonPropertyName("offerItemCount")]
     public required Dictionary<string, MinMax<int>> OfferItemCount { get; set; }
@@ -199,9 +200,6 @@ public record Dynamic
     /// </summary>
     [JsonPropertyName("itemPriceMultiplier")]
     public Dictionary<MongoId, double>? ItemPriceMultiplier { get; set; }
-
-    [JsonPropertyName("_currencies")]
-    public string? CurrenciesDescription { get; set; }
 
     /// <summary>
     ///     Percentages to sell offers in each currency
@@ -435,7 +433,7 @@ public record RagfairBlacklist
     ///     Custom category blacklist for parent Ids
     /// </summary>
     [JsonPropertyName("customItemCategoryList")]
-    public required HashSet<string> CustomItemCategoryList { get; set; }
+    public required HashSet<MongoId> CustomItemCategoryList { get; set; }
 }
 
 public record ArmorPlateBlacklistSettings
@@ -498,7 +496,7 @@ public record ArmorSettings
     ///     What slots are to be removed when removeRemovablePlateChance is true
     /// </summary>
     [JsonPropertyName("plateSlotIdToRemovePool")]
-    public HashSet<string>? PlateSlotIdToRemovePool { get; set; }
+    public HashSet<string> PlateSlotIdToRemovePool { get; set; }
 }
 
 public record TieredFlea

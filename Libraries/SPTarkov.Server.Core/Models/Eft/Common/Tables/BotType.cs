@@ -11,34 +11,34 @@ public record BotType
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("appearance")]
-    public Appearance? BotAppearance { get; set; }
+    public Appearance BotAppearance { get; set; }
 
     [JsonPropertyName("chances")]
-    public Chances? BotChances { get; set; }
+    public Chances BotChances { get; set; }
 
     [JsonPropertyName("difficulty")]
-    public Dictionary<string, DifficultyCategories>? BotDifficulty { get; set; }
+    public Dictionary<string, DifficultyCategories> BotDifficulty { get; set; }
 
     [JsonPropertyName("experience")]
-    public Experience? BotExperience { get; set; }
+    public Experience BotExperience { get; set; }
 
     [JsonPropertyName("firstName")]
-    public List<string>? FirstNames { get; set; }
+    public List<string> FirstNames { get; set; }
 
     [JsonPropertyName("generation")]
-    public Generation? BotGeneration { get; set; }
+    public Generation BotGeneration { get; set; }
 
     [JsonPropertyName("health")]
-    public BotTypeHealth? BotHealth { get; set; }
+    public BotTypeHealth BotHealth { get; set; }
 
     [JsonPropertyName("inventory")]
-    public BotTypeInventory? BotInventory { get; set; }
+    public BotTypeInventory BotInventory { get; set; }
 
     [JsonPropertyName("lastName")]
-    public List<string>? LastNames { get; set; }
+    public List<string> LastNames { get; set; }
 
     [JsonPropertyName("skills")]
-    public BotDbSkills? BotSkills { get; set; }
+    public BotDbSkills BotSkills { get; set; }
 }
 
 public record Appearance
@@ -47,22 +47,22 @@ public record Appearance
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("body")]
-    public Dictionary<MongoId, double>? Body { get; set; }
+    public Dictionary<MongoId, double> Body { get; set; }
 
     [JsonPropertyName("feet")]
-    public Dictionary<MongoId, double>? Feet { get; set; }
+    public Dictionary<MongoId, double> Feet { get; set; }
 
     [JsonPropertyName("hands")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<MongoId, double>? Hands { get; set; }
+    public Dictionary<MongoId, double> Hands { get; set; }
 
     [JsonPropertyName("head")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<MongoId, double>? Head { get; set; }
+    public Dictionary<MongoId, double> Head { get; set; }
 
     [JsonPropertyName("voice")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, double>? Voice { get; set; }
+    public Dictionary<string, double> Voice { get; set; }
 }
 
 public record Chances
@@ -71,16 +71,13 @@ public record Chances
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("equipment")]
-    public Dictionary<string, double>? EquipmentChances { get; set; }
+    public Dictionary<string, double> EquipmentChances { get; set; }
 
     [JsonPropertyName("weaponMods")]
-    public Dictionary<string, double>? WeaponModsChances { get; set; }
+    public Dictionary<string, double> WeaponModsChances { get; set; }
 
     [JsonPropertyName("equipmentMods")]
-    public Dictionary<string, double>? EquipmentModsChances { get; set; }
-
-    [JsonPropertyName("mods")]
-    public Dictionary<string, double>? Mods { get; set; }
+    public Dictionary<string, double> EquipmentModsChances { get; set; }
 }
 
 /* record removed in favor of Dictionary<string, double>
@@ -257,16 +254,16 @@ public record Difficulties
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("easy")]
-    public DifficultyCategories? Easy { get; set; }
+    public DifficultyCategories Easy { get; set; }
 
     [JsonPropertyName("normal")]
-    public DifficultyCategories? Normal { get; set; }
+    public DifficultyCategories Normal { get; set; }
 
     [JsonPropertyName("hard")]
-    public DifficultyCategories? Hard { get; set; }
+    public DifficultyCategories Hard { get; set; }
 
     [JsonPropertyName("impossible")]
-    public DifficultyCategories? Impossible { get; set; }
+    public DifficultyCategories Impossible { get; set; }
 }
 
 public record DifficultyCategories
@@ -312,25 +309,25 @@ public record Experience
     ///     key = bot difficulty
     /// </summary>
     [JsonPropertyName("aggressorBonus")]
-    public Dictionary<string, double>? AggressorBonus { get; set; }
+    public Dictionary<string, double> AggressorBonus { get; set; }
 
     [JsonPropertyName("level")]
-    public MinMax<int>? Level { get; set; }
+    public MinMax<int> Level { get; set; }
 
     /// <summary>
     ///     key = bot difficulty
     /// </summary>
     [JsonPropertyName("reward")]
-    public Dictionary<string, MinMax<int>>? Reward { get; set; }
+    public Dictionary<string, MinMax<int>> Reward { get; set; }
 
     /// <summary>
     ///     key = bot difficulty
     /// </summary>
     [JsonPropertyName("standingForKill")]
-    public Dictionary<string, double>? StandingForKill { get; set; }
+    public Dictionary<string, double> StandingForKill { get; set; }
 
     [JsonPropertyName("useSimpleAnimator")]
-    public bool? UseSimpleAnimator { get; set; }
+    public bool UseSimpleAnimator { get; set; }
 }
 
 public record Generation
@@ -339,7 +336,7 @@ public record Generation
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("items")]
-    public GenerationWeightingItems? Items { get; set; }
+    public GenerationWeightingItems Items { get; set; }
 }
 
 public record GenerationData
@@ -351,14 +348,14 @@ public record GenerationData
     ///     key: number of items, value: weighting
     /// </summary>
     [JsonPropertyName("weights")]
-    public Dictionary<double, double>? Weights { get; set; }
+    public Dictionary<double, double> Weights { get; set; }
 
     /// <summary>
     ///     Array of item tpls
     /// </summary>
     [JsonPropertyName("whitelist")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<MongoId, double>? Whitelist { get; set; }
+    public Dictionary<MongoId, double> Whitelist { get; set; }
 }
 
 public record GenerationWeightingItems
@@ -411,13 +408,13 @@ public record BotTypeHealth
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public List<BodyPart>? BodyParts { get; set; }
+    public List<BodyPart> BodyParts { get; set; }
 
-    public MinMax<double>? Energy { get; set; }
+    public MinMax<double> Energy { get; set; }
 
-    public MinMax<double>? Hydration { get; set; }
+    public MinMax<double> Hydration { get; set; }
 
-    public MinMax<double>? Temperature { get; set; }
+    public MinMax<double> Temperature { get; set; }
 }
 
 public record BodyPart
@@ -425,19 +422,19 @@ public record BodyPart
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public MinMax<double>? Chest { get; set; }
+    public MinMax<double> Chest { get; set; }
 
-    public MinMax<double>? Head { get; set; }
+    public MinMax<double> Head { get; set; }
 
-    public MinMax<double>? LeftArm { get; set; }
+    public MinMax<double> LeftArm { get; set; }
 
-    public MinMax<double>? LeftLeg { get; set; }
+    public MinMax<double> LeftLeg { get; set; }
 
-    public MinMax<double>? RightArm { get; set; }
+    public MinMax<double> RightArm { get; set; }
 
-    public MinMax<double>? RightLeg { get; set; }
+    public MinMax<double> RightLeg { get; set; }
 
-    public MinMax<double>? Stomach { get; set; }
+    public MinMax<double> Stomach { get; set; }
 }
 
 public record BotTypeInventory
@@ -446,15 +443,15 @@ public record BotTypeInventory
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("equipment")]
-    public Dictionary<EquipmentSlots, Dictionary<MongoId, double>>? Equipment { get; set; }
+    public Dictionary<EquipmentSlots, Dictionary<MongoId, double>> Equipment { get; set; }
 
-    public Dictionary<string, Dictionary<MongoId, double>>? Ammo { get; set; }
+    public Dictionary<string, Dictionary<MongoId, double>> Ammo { get; set; }
 
     [JsonPropertyName("items")]
-    public ItemPools? Items { get; set; }
+    public ItemPools Items { get; set; }
 
     [JsonPropertyName("mods")]
-    public GlobalMods? Mods { get; set; }
+    public GlobalMods Mods { get; set; }
 }
 
 public record Equipment
@@ -496,15 +493,15 @@ public record ItemPools
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public Dictionary<MongoId, double>? Backpack { get; set; }
+    public Dictionary<MongoId, double> Backpack { get; set; }
 
-    public Dictionary<MongoId, double>? Pockets { get; set; }
+    public Dictionary<MongoId, double> Pockets { get; set; }
 
-    public Dictionary<MongoId, double>? SecuredContainer { get; set; }
+    public Dictionary<MongoId, double> SecuredContainer { get; set; }
 
-    public Dictionary<MongoId, double>? SpecialLoot { get; set; }
+    public Dictionary<MongoId, double> SpecialLoot { get; set; }
 
-    public Dictionary<MongoId, double>? TacticalVest { get; set; }
+    public Dictionary<MongoId, double> TacticalVest { get; set; }
 }
 
 public record BotDbSkills
@@ -512,7 +509,7 @@ public record BotDbSkills
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public Dictionary<string, MinMax<double>>? Common { get; set; }
+    public Dictionary<string, MinMax<double>> Common { get; set; }
 
     public Dictionary<string, MinMax<double>>? Mastering { get; set; }
 }

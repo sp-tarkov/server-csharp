@@ -50,9 +50,9 @@ public class InsuranceController(
     public void ProcessReturn()
     {
         // Process each installed profile.
-        foreach (var sessionId in saveServer.GetProfiles())
+        foreach (var (sessionId, _) in saveServer.GetProfiles())
         {
-            ProcessReturnByProfile(sessionId.Key);
+            ProcessReturnByProfile(sessionId);
         }
     }
 
@@ -444,17 +444,17 @@ public class InsuranceController(
         HashSet<MongoId> toDelete
     )
     {
-        foreach (var parentObj in mainParentToAttachmentsMap)
+        foreach (var (key, attachments) in mainParentToAttachmentsMap)
         {
             // Skip processing if parentId is already marked for deletion, as all attachments for that parent will
             // already be marked for deletion as well.
-            if (toDelete.Contains(parentObj.Key))
+            if (toDelete.Contains(key))
             {
                 continue;
             }
 
             // Log the parent item's name.
-            itemsMap.TryGetValue(parentObj.Key, out var parentItem);
+            itemsMap.TryGetValue(key, out var parentItem);
             var parentName = itemHelper.GetItemName(parentItem.Template);
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
@@ -462,7 +462,7 @@ public class InsuranceController(
             }
 
             // Process the attachments for this individual parent item.
-            ProcessAttachmentByParent(parentObj.Value, insuredTraderId.Value, toDelete);
+            ProcessAttachmentByParent(attachments, insuredTraderId.Value, toDelete);
         }
     }
 

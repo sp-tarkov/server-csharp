@@ -206,18 +206,14 @@ public class BotInventoryGenerator(
         )
         {
             foreach (
-                var equipmentSlotKvP in randomistionDetails.NighttimeChanges.EquipmentModsModifiers
+                var (equipment, weight) in randomistionDetails
+                    .NighttimeChanges
+                    .EquipmentModsModifiers
             )
             // Never let mod chance go outside 0 - 100
             {
-                randomistionDetails.EquipmentMods[equipmentSlotKvP.Key] = Math.Min(
-                    Math.Max(
-                        randomistionDetails.EquipmentMods[equipmentSlotKvP.Key]
-                            + equipmentSlotKvP.Value,
-                        0
-                    ),
-                    100
-                );
+                var newWeight = weight + randomistionDetails.EquipmentMods[equipment];
+                randomistionDetails.EquipmentMods[equipment] = Math.Clamp(newWeight, 0, 100);
             }
         }
 
@@ -795,7 +791,7 @@ public class BotInventoryGenerator(
             sessionId,
             weaponSlot.Slot.ToString(),
             templateInventory,
-            botInventory.Equipment,
+            botInventory.Equipment.Value,
             equipmentChances.WeaponModsChances,
             botRole,
             isPmc,

@@ -485,7 +485,7 @@ public class RepeatableQuestRewardGenerator(
         var stackMaxCount = Math.Min(itemSelected.Properties.StackMaxSize.Value, 100);
 
         // Ensure stack size is at least 1 + is no larger than the max possible stack size
-        return (int)Math.Max(1, Math.Min(stackSizeThatFitsBudget, stackMaxCount));
+        return (int)Math.Clamp(stackSizeThatFitsBudget, 1, stackMaxCount);
     }
 
     protected bool CanIncreaseRewardItemStackSize(

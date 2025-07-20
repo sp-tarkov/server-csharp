@@ -441,7 +441,7 @@ public record Skills
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public List<CommonSkill>? Common { get; set; }
+    public List<CommonSkill> Common { get; set; }
 
     public List<MasterySkill>? Mastering { get; set; }
 

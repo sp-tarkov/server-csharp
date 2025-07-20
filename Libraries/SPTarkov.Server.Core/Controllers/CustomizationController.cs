@@ -264,7 +264,7 @@ public class CustomizationController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     /// <param name="pmcData">Players PMC profile</param>
-    /// <returns></returns>
+    /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse SetCustomisation(
         MongoId sessionId,
         CustomizationSetRequest request,
@@ -280,6 +280,9 @@ public class CustomizationController(
                     break;
                 case "suite":
                     ApplyClothingItemToProfile(customisation, pmcData);
+                    break;
+                case "voice":
+                    pmcData.Customization.Voice = customisation.Id;
                     break;
                 default:
                     logger.Error($"Unhandled customisation type: {customisation.Type}");

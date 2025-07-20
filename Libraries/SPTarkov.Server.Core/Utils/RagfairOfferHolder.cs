@@ -69,7 +69,7 @@ public class RagfairOfferHolder(
     /// </summary>
     /// <param name="templateId">Tpl to get offers for</param>
     /// <returns>RagfairOffer list</returns>
-    public List<RagfairOffer>? GetOffersByTemplate(string templateId)
+    public List<RagfairOffer>? GetOffersByTemplate(MongoId templateId)
     {
         // Get the offerIds we want to return
         if (!_offersByTemplate.TryGetValue(templateId, out var offerIds))
@@ -251,7 +251,7 @@ public class RagfairOfferHolder(
     /// <param name="template">Tpl to store offer against</param>
     /// <param name="offerId">Offer to store against tpl</param>
     /// <returns>True - offer was added</returns>
-    protected bool AddOfferByTemplates(string template, string offerId)
+    protected bool AddOfferByTemplates(MongoId template, MongoId offerId)
     {
         // Look for hashset for tpl first
         if (_offersByTemplate.TryGetValue(template, out var offerIds))

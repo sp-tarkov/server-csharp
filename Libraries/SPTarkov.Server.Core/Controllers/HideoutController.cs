@@ -1299,13 +1299,13 @@ public class HideoutController(
     )
     {
         var ongoingProductions = pmcData.Hideout.Production;
-        string? prodId = null;
-        foreach (var production in ongoingProductions)
+        MongoId? prodId = null;
+        foreach (var (ongoingProdId, ongoingProduction) in ongoingProductions)
         // Production or ScavCase
         {
-            if (production.Value.RecipeId == request.RecipeId)
+            if (ongoingProduction?.RecipeId == request.RecipeId)
             {
-                prodId = production.Key; // Set to objects key
+                prodId = ongoingProdId; // Set to objects key
                 break;
             }
         }
@@ -1345,10 +1345,10 @@ public class HideoutController(
         output.ProfileChanges[sessionID].Production.Remove(request.RecipeId);
 
         // Flag as complete - will be cleaned up later by hideoutController.update()
-        pmcData.Hideout.Production[prodId].SptIsComplete = true;
+        pmcData.Hideout.Production[prodId.Value].SptIsComplete = true;
 
         // Crafting complete, flag
-        pmcData.Hideout.Production[prodId].InProgress = false;
+        pmcData.Hideout.Production[prodId.Value].InProgress = false;
     }
 
     /// <summary>
@@ -1784,11 +1784,11 @@ public class HideoutController(
             return eventOutputHolder.GetOutput(sessionId);
         }
 
-        foreach (var poseKvP in request.Poses)
+        foreach (var (poseKey, poseValue) in request.Poses)
         {
             // Nullguard
             pmcData.Hideout.MannequinPoses ??= [];
-            pmcData.Hideout.MannequinPoses[poseKvP.Key] = poseKvP.Value;
+            pmcData.Hideout.MannequinPoses[poseKey] = poseValue;
         }
 
         return eventOutputHolder.GetOutput(sessionId);

@@ -59,7 +59,9 @@
       "Usec_2": 1,
       "Usec_3": 1,
       "Usec_4": 1,
-      "Usec_5": 1
+      "Usec_5": 1,
+	  "Usec_6": 1,
+	  "Usec_7": 1
     }
   },
   "chances": {

@@ -249,14 +249,7 @@ namespace SPTarkov.Server.Core.Extensions
 
         public static bool IsVertical(this ItemLocation itemLocation)
         {
-            var castValue = itemLocation.R.ToString();
-            return castValue == "1"
-                || string.Equals(castValue, "vertical", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(
-                    itemLocation.Rotation?.ToString(),
-                    "vertical",
-                    StringComparison.OrdinalIgnoreCase
-                );
+            return itemLocation.R == ItemRotation.Vertical;
         }
 
         /// <summary>

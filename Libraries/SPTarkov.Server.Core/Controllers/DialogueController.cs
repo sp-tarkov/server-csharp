@@ -55,9 +55,9 @@ public class DialogueController(
     public void Update()
     {
         var profiles = saveServer.GetProfiles();
-        foreach (var kvp in profiles)
+        foreach (var (sessionId, _) in profiles)
         {
-            RemoveExpiredItemsFromMessages(kvp.Key);
+            RemoveExpiredItemsFromMessages(sessionId);
         }
     }
 

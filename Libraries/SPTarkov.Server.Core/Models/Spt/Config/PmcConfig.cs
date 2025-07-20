@@ -73,9 +73,6 @@ public record PmcConfig : BaseConfig
     [JsonPropertyName("looseWeaponInBackpackLootMinMax")]
     public required MinMax<int> LooseWeaponInBackpackLootMinMax { get; set; }
 
-    [JsonPropertyName("_isUsec")]
-    public string? IsUsecDescription { get; set; }
-
     /// <summary>
     ///     Percentage chance PMC will be USEC
     /// </summary>
@@ -143,10 +140,16 @@ public record PmcConfig : BaseConfig
     public required bool AddSecureContainerLootFromBotConfig { get; set; }
 
     [JsonPropertyName("lootItemLimitsRub")]
-    public required List<MinMaxLootItemValue>? LootItemLimitsRub { get; set; }
+    public required List<MinMaxLootItemValue> LootItemLimitsRub { get; set; }
 
     [JsonPropertyName("removeExistingPmcWaves")]
-    public required bool? RemoveExistingPmcWaves { get; set; }
+    public required bool RemoveExistingPmcWaves { get; set; }
+
+    [JsonPropertyName("dogtags")]
+    public required Dictionary<
+        string,
+        Dictionary<string, Dictionary<MongoId, double>>
+    > DogtagSettings { get; set; }
 
     [JsonPropertyName("customPmcWaves")]
     public required Dictionary<string, List<BossLocationSpawn>> CustomPmcWaves { get; set; }

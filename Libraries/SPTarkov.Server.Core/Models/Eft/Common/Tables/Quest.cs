@@ -200,6 +200,7 @@ public record QuestCondition
 
     /// <summary>
     ///     Can be: string[] or string
+    ///     Can be mongoId or string e.g. event_labyrinth_06_mech_place_01
     /// </summary>
     [JsonPropertyName("target")]
     [JsonConverter(typeof(ListOrTConverterFactory))]

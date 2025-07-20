@@ -56,7 +56,7 @@ public class BotGenerator(
         PmcData profile
     )
     {
-        var bot = GetCloneOfBotBase();
+        var bot = GetBotBaseClone();
         bot.Info.Settings.BotDifficulty = difficulty;
         bot.Info.Settings.Role = role;
         bot.Info.Side = Sides.Savage;
@@ -121,7 +121,7 @@ public class BotGenerator(
     /// <returns>constructed bot</returns>
     public BotBase PrepareAndGenerateBot(
         MongoId sessionId,
-        BotGenerationDetails? botGenerationDetails
+        BotGenerationDetails botGenerationDetails
     )
     {
         var preparedBotBase = GetPreparedBotBase(
@@ -152,9 +152,9 @@ public class BotGenerator(
     /// <param name="botSide">Side bot should have</param>
     /// <param name="difficulty">Difficult bot should have</param>
     /// <returns>Cloned bot base</returns>
-    public BotBase GetPreparedBotBase(string botRole, string botSide, string difficulty)
+    protected BotBase GetPreparedBotBase(string botRole, string botSide, string difficulty)
     {
-        var botBaseClone = GetCloneOfBotBase();
+        var botBaseClone = GetBotBaseClone();
         botBaseClone.Info.Settings.Role = botRole;
         botBaseClone.Info.Side = botSide;
         botBaseClone.Info.Settings.BotDifficulty = difficulty;
@@ -166,7 +166,7 @@ public class BotGenerator(
     ///     Get a clone of the database\bots\base.json file
     /// </summary>
     /// <returns>BotBase object</returns>
-    public BotBase GetCloneOfBotBase()
+    protected BotBase GetBotBaseClone()
     {
         return cloner.Clone(databaseService.GetBots().Base);
     }
@@ -179,7 +179,7 @@ public class BotGenerator(
     /// <param name="botJsonTemplate">Bot template from db/bots/x.json</param>
     /// <param name="botGenerationDetails">details on how to generate the bot</param>
     /// <returns>BotBase object</returns>
-    public BotBase GenerateBot(
+    protected BotBase GenerateBot(
         MongoId sessionId,
         BotBase bot,
         BotType botJsonTemplate,
@@ -260,8 +260,7 @@ public class BotGenerator(
             botGenerationDetails.BotDifficulty,
             botGenerationDetails.Role
         );
-        bot.Info.Settings.UseSimpleAnimator =
-            botJsonTemplate.BotExperience.UseSimpleAnimator ?? false;
+        bot.Info.Settings.UseSimpleAnimator = botJsonTemplate.BotExperience.UseSimpleAnimator;
         var chosenVoiceName = weightedRandomHelper.GetWeightedValue(
             botJsonTemplate.BotAppearance.Voice
         );
@@ -308,7 +307,7 @@ public class BotGenerator(
         // Generate new inventory ID
         GenerateInventoryId(bot);
 
-        // Set role back to originally requested now its been generated
+        // Set role back to originally requested now it has been generated
         if (botGenerationDetails.EventRole is not null)
         {
             bot.Info.Settings.Role = botGenerationDetails.EventRole;
@@ -322,7 +321,7 @@ public class BotGenerator(
     /// </summary>
     /// <param name="botRole">Role bot has</param>
     /// <returns>True if name should be simulated pscav</returns>
-    public bool ShouldSimulatePlayerScav(string botRole)
+    protected bool ShouldSimulatePlayerScav(string botRole)
     {
         return botRole == Roles.Assault
             && randomUtil.GetChance100(_botConfig.ChanceAssaultScavHasPlayerScavName);
@@ -335,7 +334,7 @@ public class BotGenerator(
     /// <param name="botDifficulty">the killed bots difficulty</param>
     /// <param name="role">Role of bot (optional, used for error logging)</param>
     /// <returns>Experience for kill</returns>
-    public int GetExperienceRewardForKillByDifficulty(
+    protected int GetExperienceRewardForKillByDifficulty(
         Dictionary<string, MinMax<int>> experiences,
         string botDifficulty,
         string role
@@ -370,7 +369,7 @@ public class BotGenerator(
     /// <param name="botDifficulty">Difficulty of bot to look up</param>
     /// <param name="role">Role of bot (optional, used for error logging)</param>
     /// <returns>Standing change value</returns>
-    public double GetStandingChangeForKillByDifficulty(
+    protected double GetStandingChangeForKillByDifficulty(
         Dictionary<string, double> standingsForKill,
         string botDifficulty,
         string role
@@ -395,7 +394,7 @@ public class BotGenerator(
     /// <param name="botDifficulty">Difficulty of bot to look up</param>
     /// <param name="role">Role of bot (optional, used for error logging)</param>
     /// <returns>Standing change value</returns>
-    public double GetAggressorBonusByDifficulty(
+    protected double GetAggressorBonusByDifficulty(
         Dictionary<string, double> aggressorBonuses,
         string botDifficulty,
         string role
@@ -417,7 +416,7 @@ public class BotGenerator(
     ///     Unheard PMCs need their pockets expanded
     /// </summary>
     /// <param name="botJsonTemplate">Bot data to adjust</param>
-    public void AddAdditionalPocketLootWeightsForUnheardBot(BotType botJsonTemplate)
+    protected void AddAdditionalPocketLootWeightsForUnheardBot(BotType botJsonTemplate)
     {
         // Adjust pocket loot weights to allow for 5 or 6 items
         var pocketWeights = botJsonTemplate.BotGeneration.Items.PocketLoot.Weights;
@@ -429,7 +428,7 @@ public class BotGenerator(
     ///     Remove items from item.json/lootableItemBlacklist from bots inventory
     /// </summary>
     /// <param name="botInventory">Bot to filter</param>
-    public void RemoveBlacklistedLootFromBotTemplate(BotTypeInventory botInventory)
+    protected void RemoveBlacklistedLootFromBotTemplate(BotTypeInventory botInventory)
     {
         var containersToProcess = new List<Dictionary<MongoId, double>>
         {
@@ -466,7 +465,7 @@ public class BotGenerator(
     /// <param name="bot">Bot to adjust</param>
     /// <param name="appearance">Appearance settings to choose from</param>
     /// <param name="botGenerationDetails">Generation details</param>
-    public void SetBotAppearance(
+    protected void SetBotAppearance(
         BotBase bot,
         Appearance appearance,
         BotGenerationDetails botGenerationDetails
@@ -496,10 +495,10 @@ public class BotGenerator(
     /// <param name="healthObj">health object from bot json</param>
     /// <param name="playerScav">Is a pscav bot being generated</param>
     /// <returns>Health object</returns>
-    public BotBaseHealth GenerateHealth(BotTypeHealth healthObj, bool playerScav = false)
+    protected BotBaseHealth GenerateHealth(BotTypeHealth healthObj, bool playerScav = false)
     {
         var bodyParts = playerScav
-            ? GetLowestHpBody(healthObj.BodyParts)
+            ? GetLowestHpBodyPart(healthObj.BodyParts)
             : randomUtil.GetArrayValue(healthObj.BodyParts);
 
         BotBaseHealth health = new()
@@ -632,7 +631,7 @@ public class BotGenerator(
     /// </summary>
     /// <param name="bodyParts">Body parts</param>
     /// <returns>Part with the lowest hp</returns>
-    public BodyPart? GetLowestHpBody(List<BodyPart> bodyParts)
+    protected BodyPart? GetLowestHpBodyPart(List<BodyPart> bodyParts)
     {
         if (bodyParts.Count == 0)
         {
@@ -660,7 +659,7 @@ public class BotGenerator(
     /// </summary>
     /// <param name="botSkills">Skills that should have their progress value randomised</param>
     /// <returns>Skills</returns>
-    public Skills GenerateSkills(BotDbSkills botSkills)
+    protected Skills GenerateSkills(BotDbSkills botSkills)
     {
         var skillsToReturn = new Skills
         {
@@ -677,15 +676,10 @@ public class BotGenerator(
     /// </summary>
     /// <param name="skills">Skills to randomise</param>
     /// <returns>Skills with randomised progress values as a collection</returns>
-    public List<CommonSkill> GetCommonSkillsWithRandomisedProgressValue(
-        Dictionary<string, MinMax<double>>? skills
+    protected List<CommonSkill> GetCommonSkillsWithRandomisedProgressValue(
+        Dictionary<string, MinMax<double>> skills
     )
     {
-        if (skills is null)
-        {
-            return [];
-        }
-
         return skills
             .Select(kvp =>
             {
@@ -711,18 +705,18 @@ public class BotGenerator(
     /// <summary>
     /// Randomise the progress value of passed in skills based on the min/max value
     /// </summary>
-    /// <param name="skills">Skills to randomise</param>
+    /// <param name="masteringSkills">Skills to randomise</param>
     /// <returns>Skills with randomised progress values as a collection</returns>
-    public List<MasterySkill> GetMasteringSkillsWithRandomisedProgressValue(
-        Dictionary<string, MinMax<double>>? skills
+    protected List<MasterySkill> GetMasteringSkillsWithRandomisedProgressValue(
+        Dictionary<string, MinMax<double>>? masteringSkills
     )
     {
-        if (skills is null)
+        if (masteringSkills is null)
         {
             return [];
         }
 
-        return skills
+        return masteringSkills
             .Select(kvp =>
             {
                 // Get skill from dict, skip if not found
@@ -749,7 +743,7 @@ public class BotGenerator(
     /// <param name="bot">bot to update</param>
     /// <param name="botGenerationDetails"></param>
     /// <returns></returns>
-    public void AddIdsToBot(BotBase bot, BotGenerationDetails botGenerationDetails)
+    protected void AddIdsToBot(BotBase bot, BotGenerationDetails botGenerationDetails)
     {
         bot.Id = new MongoId();
         bot.Aid = botGenerationDetails.IsPmc ? hashUtil.GenerateAccountId() : 0;
@@ -760,7 +754,7 @@ public class BotGenerator(
     ///     Update all inventory items that make use of this value too.
     /// </summary>
     /// <param name="profile">Profile to update</param>
-    public void GenerateInventoryId(BotBase profile)
+    protected void GenerateInventoryId(BotBase profile)
     {
         var newInventoryItemId = new MongoId();
 
@@ -799,7 +793,7 @@ public class BotGenerator(
     /// </summary>
     /// <param name="botInfo">bot info object to update</param>
     /// <returns>Chosen game version</returns>
-    public string SetRandomisedGameVersionAndCategory(Info botInfo)
+    protected string SetRandomisedGameVersionAndCategory(Info botInfo)
     {
         // Special case
         if (string.Equals(botInfo.Nickname, "nikita", StringComparison.OrdinalIgnoreCase))
@@ -841,7 +835,7 @@ public class BotGenerator(
     /// </summary>
     /// <param name="bot">bot to add dogtag to</param>
     /// <returns></returns>
-    public void AddDogtagToBot(BotBase bot)
+    protected void AddDogtagToBot(BotBase bot)
     {
         Item inventoryItem = new()
         {
@@ -861,29 +855,14 @@ public class BotGenerator(
     /// <param name="side">Usec/Bear</param>
     /// <param name="gameVersion">edge_of_darkness / standard</param>
     /// <returns>item tpl</returns>
-    public string GetDogtagTplByGameVersionAndSide(string side, string gameVersion)
+    protected MongoId GetDogtagTplByGameVersionAndSide(string side, string gameVersion)
     {
-        if (string.Equals(side, Sides.Usec, StringComparison.OrdinalIgnoreCase))
+        _pmcConfig.DogtagSettings.TryGetValue(side.ToLower(), out var gameVersionWeights);
+        if (!gameVersionWeights.TryGetValue(gameVersion, out var possibleDogtags))
         {
-            switch (gameVersion)
-            {
-                case GameEditions.EDGE_OF_DARKNESS:
-                    return ItemTpl.BARTER_DOGTAG_USEC_EOD;
-                case GameEditions.UNHEARD:
-                    return ItemTpl.BARTER_DOGTAG_USEC_TUE;
-                default:
-                    return ItemTpl.BARTER_DOGTAG_USEC;
-            }
+            gameVersionWeights.TryGetValue("default", out possibleDogtags);
         }
 
-        switch (gameVersion)
-        {
-            case GameEditions.EDGE_OF_DARKNESS:
-                return ItemTpl.BARTER_DOGTAG_BEAR_EOD;
-            case GameEditions.UNHEARD:
-                return ItemTpl.BARTER_DOGTAG_BEAR_TUE;
-            default:
-                return ItemTpl.BARTER_DOGTAG_BEAR;
-        }
+        return weightedRandomHelper.GetWeightedValue(possibleDogtags);
     }
 }

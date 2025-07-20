@@ -36,7 +36,8 @@ public class MathUtil
         var deltaOut = maxOut - minOut;
 
         var xScale = (x - minIn) / deltaIn;
-        return Math.Max(minOut, Math.Min(maxOut, minOut + xScale * deltaOut));
+
+        return Math.Clamp(minOut + xScale * deltaOut, minOut, maxOut);
     }
 
     /// <summary>

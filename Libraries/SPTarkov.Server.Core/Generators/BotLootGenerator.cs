@@ -411,7 +411,7 @@ public class BotLootGenerator(
             return null;
         }
 
-        var matchingValue = _pmcConfig?.LootItemLimitsRub?.FirstOrDefault(minMaxValue =>
+        var matchingValue = _pmcConfig?.LootItemLimitsRub.FirstOrDefault(minMaxValue =>
             botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max
         );
 
@@ -753,7 +753,7 @@ public class BotLootGenerator(
         BotBaseInventory botInventory,
         EquipmentSlots equipmentSlot,
         BotTypeInventory? templateInventory,
-        Dictionary<string, double>? modChances,
+        Dictionary<string, double> modChances,
         string botRole,
         bool isPmc,
         int botLevel,
@@ -784,7 +784,7 @@ public class BotLootGenerator(
                 sessionId,
                 chosenWeaponType,
                 templateInventory,
-                botInventory.Equipment,
+                botInventory.Equipment.Value,
                 modChances,
                 botRole,
                 isPmc,
@@ -795,7 +795,7 @@ public class BotLootGenerator(
             if (weaponRootItem is null)
             {
                 logger.Error(
-                    $"Generated loose weapon: {chosenWeaponType} for: {botRole} level: {botLevel} was null, skipping"
+                    $"Generated null loose weapon: {chosenWeaponType} for: {botRole} level: {botLevel}, skipping"
                 );
 
                 continue;

@@ -248,7 +248,7 @@ public class RagfairServerHelper(
     /// </summary>
     /// <param name="itemParentType">Parent type for the item</param>
     /// <returns>randomised number between min and max</returns>
-    public int GetOfferCountByBaseType(string itemParentType)
+    public int GetOfferCountByBaseType(MongoId itemParentType)
     {
         if (!ragfairConfig.Dynamic.OfferItemCount.TryGetValue(itemParentType, out var minMaxRange))
         {

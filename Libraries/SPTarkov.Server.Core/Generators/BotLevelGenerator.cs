@@ -86,13 +86,13 @@ public class BotLevelGenerator(
         var minPossibleLevel = levelOverride is not null
             ? Math.Min(
                 Math.Max(levelDetails.Min, levelOverride.Min), // Biggest between json min and the botgen min
-                maxAvailableLevel // Fallback if value above is crazy (default is 79)
+                maxAvailableLevel // Fallback if value above is crazy
             )
-            : Math.Min(levelDetails.Min, maxAvailableLevel); // Not pmc with override or non-pmc
+            : Math.Clamp(levelDetails.Min, 1, maxAvailableLevel); // Not pmc with override or non-pmc
 
         // Create a max limit PMCs level cannot go above
         var maxPossibleLevel = levelOverride is not null
-            ? Math.Min(levelOverride.Max, maxAvailableLevel) // Was a PMC and they have a level override
+            ? Math.Min(levelOverride.Max, maxAvailableLevel) // Is PMC and have a level override
             : Math.Min(levelDetails.Max, maxAvailableLevel); // Not pmc with override or non-pmc
 
         // Get min level relative to player if value exists
@@ -108,8 +108,8 @@ public class BotLevelGenerator(
             : 1 + botGenerationDetails.BotRelativeLevelDeltaMin.Value;
 
         // Bound the level to the min/max possible
-        maxLevel = Math.Min(Math.Max(maxLevel, minPossibleLevel), maxPossibleLevel);
-        minLevel = Math.Min(Math.Max(minLevel, minPossibleLevel), maxPossibleLevel);
+        maxLevel = Math.Clamp(maxLevel, minPossibleLevel, maxPossibleLevel);
+        minLevel = Math.Clamp(minLevel, minPossibleLevel, maxPossibleLevel);
 
         return new MinMax<int>(minLevel, maxLevel);
     }

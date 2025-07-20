@@ -335,7 +335,7 @@ public class InventoryHelper(
                 return;
             }
 
-            // Store details for object, incuding container item will be placed in
+            // Store details for object, including container item will be placed in
             rootItemAdded.ParentId = containerId;
             rootItemAdded.SlotId = desiredSlotId;
             rootItemAdded.Location = new ItemLocation

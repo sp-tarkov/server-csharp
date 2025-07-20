@@ -748,8 +748,9 @@ public class RepairService(
     {
         // Ensure the max percent is at least 0.01
         var validMaxPercent = Math.Max(0.01, receiveDurabilityMaxPercent);
+
         // Calculate the ratio and constrain it between 0.01 and 1
-        return Math.Min(1, Math.Max(0.01, receiveDurabilityPercent / validMaxPercent));
+        return Math.Clamp(receiveDurabilityPercent / validMaxPercent, 0.01, 1);
     }
 }
 

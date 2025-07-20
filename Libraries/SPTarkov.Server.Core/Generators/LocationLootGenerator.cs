@@ -54,7 +54,7 @@ public class LocationLootGenerator(
         }
 
         // Clone ammo data to ensure any changes don't affect the db values
-        var staticAmmoDist = _cloner.Clone(locationDetails.StaticAmmo);
+        var staticAmmoDistClone = _cloner.Clone(locationDetails.StaticAmmo);
 
         // Pull location-specific spawn limits from db
         var itemsWithSpawnCountLimitsClone = _cloner.Clone(
@@ -68,12 +68,14 @@ public class LocationLootGenerator(
         }
 
         // Create containers with loot
-        result.AddRange(GenerateStaticContainers(locationId.ToLowerInvariant(), staticAmmoDist));
+        result.AddRange(
+            GenerateStaticContainers(locationId.ToLowerInvariant(), staticAmmoDistClone)
+        );
 
         // Add dynamic loot to output loot
         var dynamicSpawnPoints = GenerateDynamicLoot(
             _cloner.Clone(locationDetails.LooseLoot.Value),
-            staticAmmoDist,
+            staticAmmoDistClone,
             locationId.ToLowerInvariant()
         );
 

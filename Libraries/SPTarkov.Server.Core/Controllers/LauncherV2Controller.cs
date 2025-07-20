@@ -39,17 +39,17 @@ public class LauncherV2Controller(
     ///     Returns all available profile types and descriptions for creation.
     ///     - This is also localised.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>dict of profile names + description</returns>
     public Dictionary<string, string> Types()
     {
         var result = new Dictionary<string, string>();
         var dbProfiles = databaseService.GetProfileTemplates();
 
-        foreach (var profileKvP in dbProfiles)
+        foreach (var (templateName, template) in dbProfiles)
         {
             result.TryAdd(
-                profileKvP.Key,
-                serverLocalisationService.GetText(profileKvP.Value.DescriptionLocaleKey)
+                templateName,
+                serverLocalisationService.GetText(template.DescriptionLocaleKey)
             );
         }
 

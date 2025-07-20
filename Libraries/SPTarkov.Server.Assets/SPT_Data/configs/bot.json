@@ -2713,61 +2713,61 @@
   "playerScavBrainType": {
     "bigmap": {
       "assault": 1,
-      "bossKilla": 1,
-      "pmcBot": 1
+      "bossKilla": 0,
+      "pmcBot": 0
     },
     "factory4_day": {
       "assault": 1,
-      "bossKilla": 1,
-      "pmcBot": 1
+      "bossKilla": 0,
+      "pmcBot": 0
     },
     "factory4_night": {
       "assault": 1,
-      "bossKilla": 1,
-      "pmcBot": 1
+      "bossKilla": 0,
+      "pmcBot": 0
     },
     "interchange": {
       "assault": 1,
-      "bossKilla": 1,
-      "pmcBot": 1
+      "bossKilla": 0,
+      "pmcBot": 0
     },
     "laboratory": {
       "assault": 1,
-      "bossKilla": 1,
-      "pmcBot": 1
+      "bossKilla": 0,
+      "pmcBot": 0
     },
     "lighthouse": {
       "assault": 1,
-      "bossKilla": 1,
-      "pmcBot": 1
+      "bossKilla": 0,
+      "pmcBot": 0
     },
     "rezervbase": {
       "assault": 1,
-      "bossKilla": 1,
-      "pmcBot": 1
+      "bossKilla": 0,
+      "pmcBot": 0
     },
     "sandbox": {
-      "assault": 2,
-      "pmcBot": 1
+      "assault": 1,
+      "pmcBot": 0
     },
     "sandbox_high": {
       "assault": 2,
-      "pmcBot": 1
+      "pmcBot": 0
     },
     "shoreline": {
       "assault": 1,
-      "bossKilla": 1,
-      "pmcBot": 1
+      "bossKilla": 0,
+      "pmcBot": 0
     },
     "tarkovstreets": {
       "assault": 1,
-      "bossKilla": 1,
-      "pmcBot": 1
+      "bossKilla": 0,
+      "pmcBot": 0
     },
     "woods": {
       "assault": 1,
-      "bossKilla": 1,
-      "pmcBot": 1
+      "bossKilla": 0,
+      "pmcBot": 0
     }
   },
   "presetBatch": {

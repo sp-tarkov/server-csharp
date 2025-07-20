@@ -66,7 +66,7 @@ public class PostDbLoadService(
             openZoneService.ApplyZoneChangesToAllMaps();
         }
 
-        if (_pmcConfig.RemoveExistingPmcWaves.GetValueOrDefault(false))
+        if (_pmcConfig.RemoveExistingPmcWaves)
         {
             RemoveExistingPmcWaves();
         }

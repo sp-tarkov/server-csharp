@@ -25,7 +25,7 @@ public class BotNameService(
     protected readonly HashSet<string> _usedNameCache = [];
 
     /// <summary>
-    ///     Clear out any entries in Name Set
+    ///     Clear out generated pmc names from cache
     /// </summary>
     public void ClearNameCache()
     {

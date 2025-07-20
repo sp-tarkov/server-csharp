@@ -42,9 +42,9 @@ public class BtrDeliveryCallbacks(
     protected void ProcessDeliveries()
     {
         // Process each installed profile.
-        foreach (var sessionId in saveServer.GetProfiles())
+        foreach (var (sessionId, _) in saveServer.GetProfiles())
         {
-            ProcessDeliveryByProfile(sessionId.Key);
+            ProcessDeliveryByProfile(sessionId);
         }
     }
 
