@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{587959C2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.DI", "Libraries\SPTarkov.DI\SPTarkov.DI.csproj", "{4B4AF50D-B2C6-47D1-B567-EA4560D8CBA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemTplGenerator", "Tools\ItemTplGenerator\ItemTplGenerator.csproj", "{00897F10-1AB3-4DC7-8DF9-5EA1D0289ACF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoIdTplGenerator", "Tools\MongoIdTplGenerator\MongoIdTplGenerator.csproj", "{00897F10-1AB3-4DC7-8DF9-5EA1D0289ACF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Common", "Libraries\SPTarkov.Common\SPTarkov.Common.csproj", "{DB049C81-DEC0-490D-AC06-7AF4DC8C0571}"
 EndProject

@@ -3,7 +3,7 @@ using SPTarkov.Server.Core.Models.Logging;
 using SPTarkov.Server.Core.Models.Spt.Logging;
 using SPTarkov.Server.Core.Models.Utils;
 
-namespace ItemTplGenerator;
+namespace MongoIdTplGenerator.Utils;
 
 [Injectable]
 public class SptBasicLogger<T> : ISptLogger<T>

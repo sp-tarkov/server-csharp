@@ -4,11 +4,11 @@ using SPTarkov.DI;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Utils;
 
-namespace ItemTplGenerator;
+namespace MongoIdTplGenerator;
 
-public class ItemTplGeneratorLauncher
+public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         try
         {
@@ -19,12 +19,13 @@ public class ItemTplGeneratorLauncher
             serviceCollection.AddSingleton<IReadOnlyList<SptMod>>([]);
             var diHandler = new DependencyInjectionHandler(serviceCollection);
 
-            diHandler.AddInjectableTypesFromTypeAssembly(typeof(ItemTplGeneratorLauncher));
+            diHandler.AddInjectableTypesFromTypeAssembly(typeof(Program));
             diHandler.AddInjectableTypesFromTypeAssembly(typeof(App));
 
             diHandler.InjectAll();
             var serviceProvider = serviceCollection.BuildServiceProvider();
-            serviceProvider.GetService<ItemTplGenerator>().Run().Wait();
+
+            await serviceProvider.GetService<Application>()?.Run()!;
         }
         catch (Exception e)
         {

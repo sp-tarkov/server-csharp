@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace ItemTplGenerator;
+namespace MongoIdTplGenerator.Utils;
 
 public class ItemOverrides
 {
