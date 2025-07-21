@@ -33,7 +33,7 @@ jobs:
         run: csharpier format .
 
       - name: Auto Commit Changes
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: .NET Format Style Fixes
           commit_user_name: sp-tarkov-bot
