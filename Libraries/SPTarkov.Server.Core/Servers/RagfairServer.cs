@@ -129,12 +129,12 @@ public class RagfairServer(
         return _ragfairOfferService.GetOffers();
     }
 
-    public void ReduceOfferQuantity(string offerId, int amount)
+    public void ReduceOfferQuantity(MongoId offerId, int amount)
     {
         _ragfairOfferService.ReduceOfferQuantity(offerId, amount);
     }
 
-    public bool DoesOfferExist(string offerId)
+    public bool DoesOfferExist(MongoId offerId)
     {
         return _ragfairOfferService.DoesOfferExist(offerId);
     }

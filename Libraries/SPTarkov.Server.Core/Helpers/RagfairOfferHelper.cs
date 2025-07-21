@@ -87,7 +87,7 @@ public class RagfairOfferHelper(
                 }
 
                 // Not trader offer + tiered flea enabled
-                if (tieredFlea.Enabled && !OfferIsFromTrader(offer))
+                if (tieredFlea.Enabled && !offer.IsTraderOffer())
                 {
                     CheckAndLockOfferFromPlayerTieredFlea(
                         tieredFlea,
@@ -194,7 +194,7 @@ public class RagfairOfferHelper(
                 .Where(offer => PassesSearchFilterCriteria(searchRequest, offer, pmcData))
         )
         {
-            if (tieredFlea.Enabled && !OfferIsFromTrader(offer))
+            if (tieredFlea.Enabled && !offer.IsTraderOffer())
             {
                 CheckAndLockOfferFromPlayerTieredFlea(
                     tieredFlea,
@@ -267,7 +267,7 @@ public class RagfairOfferHelper(
                     continue;
                 }
 
-                if (OfferIsFromTrader(offer))
+                if (offer.IsTraderOffer())
                 {
                     if (TraderBuyRestrictionReached(offer))
                     {
@@ -291,7 +291,7 @@ public class RagfairOfferHelper(
                 }
 
                 // Tiered flea and not trader offer
-                if (tieredFlea.Enabled && !OfferIsFromTrader(offer))
+                if (tieredFlea.Enabled && !offer.IsTraderOffer())
                 {
                     CheckAndLockOfferFromPlayerTieredFlea(
                         tieredFlea,
@@ -374,7 +374,7 @@ public class RagfairOfferHelper(
 
         // Currency offer is sold for
         var moneyTypeTpl = offer.Requirements.FirstOrDefault().TemplateId;
-        var isTraderOffer = databaseService.GetTraders().ContainsKey(offer.User.Id);
+        var isTraderOffer = offer.IsTraderOffer();
 
         if (!isTraderOffer && playerIsFleaBanned)
         {
@@ -463,7 +463,7 @@ public class RagfairOfferHelper(
             {
                 if (
                     offer.BuyRestrictionMax is null
-                    && OfferIsFromTrader(offer)
+                    && offer.IsTraderOffer()
                     && offer.BuyRestrictionCurrent >= offer.BuyRestrictionMax
                 )
                 {
@@ -473,7 +473,7 @@ public class RagfairOfferHelper(
                     }
                 }
 
-                // Doesnt have buy limits, retrun offer
+                // Doesn't have buy limits, return offer
                 return true;
             })
             .ToList();
@@ -615,7 +615,7 @@ public class RagfairOfferHelper(
     protected HashSet<string> GetLoyaltyLockedOffers(List<RagfairOffer> offers, PmcData pmcProfile)
     {
         var loyaltyLockedOffers = new HashSet<string>();
-        foreach (var offer in offers.Where(OfferIsFromTrader))
+        foreach (var offer in offers.Where(x => x.IsTraderOffer()))
         {
             if (
                 pmcProfile.TradersInfo.TryGetValue(offer.User.Id, out var traderDetails)
@@ -945,7 +945,7 @@ public class RagfairOfferHelper(
             return false;
         }
 
-        var isTraderOffer = OfferIsFromTrader(offer);
+        var isTraderOffer = offer.IsTraderOffer();
         if (searchRequest.OfferOwnerType == OfferOwnerType.TRADEROWNERTYPE && !isTraderOffer)
         // don't include player offers
         {
@@ -1127,15 +1127,5 @@ public class RagfairOfferHelper(
         }
 
         return true;
-    }
-
-    /// <summary>
-    ///     Does this offer come from a trader
-    /// </summary>
-    /// <param name="offer">Offer to check</param>
-    /// <returns>True = from trader</returns>
-    public bool OfferIsFromTrader(RagfairOffer offer)
-    {
-        return offer.User.MemberType == MemberCategory.Trader;
     }
 }

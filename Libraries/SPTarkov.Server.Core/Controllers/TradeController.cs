@@ -123,7 +123,7 @@ public class TradeController(
                 );
             }
 
-            if (ragfairOfferHelper.OfferIsFromTrader(fleaOffer))
+            if (fleaOffer.IsTraderOffer())
             {
                 BuyTraderItemFromRagfair(sessionID, pmcData, fleaOffer, offer, output);
             }
@@ -244,7 +244,7 @@ public class TradeController(
         var offerOwnerId = fleaOffer.User.Id;
         var offerBuyCount = requestOffer.Count;
 
-        if (IsPlayerOffer(fleaOffer.Id, fleaOffer.User?.Id))
+        if (fleaOffer.IsPlayerOffer())
         {
             // Complete selling the offer now it has been purchased
             ragfairOfferHelper.CompleteOffer(offerOwnerId, fleaOffer, offerBuyCount ?? 0);
@@ -254,31 +254,6 @@ public class TradeController(
 
         // Remove/lower offer quantity of item purchased from PMC flea offer
         ragfairServer.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
-    }
-
-    /// <summary>
-    ///     Is the provided offerId and ownerId from a player made offer
-    /// </summary>
-    /// <param name="offerId">id of the offer</param>
-    /// <param name="offerOwnerId">Owner id</param>
-    /// <returns>true if offer was made by a player</returns>
-    protected bool IsPlayerOffer(string offerId, MongoId? offerOwnerId)
-    {
-        // No ownerId, not player offer
-        if (offerOwnerId is null)
-        {
-            return false;
-        }
-
-        var offerCreatorProfile = profileHelper.GetPmcProfile(offerOwnerId.Value);
-        if (offerCreatorProfile is null || offerCreatorProfile.RagfairInfo.Offers?.Count == 0)
-        // No profile or no offers
-        {
-            return false;
-        }
-
-        // Does offer id exist in profile
-        return offerCreatorProfile.RagfairInfo.Offers.Any(offer => offer.Id == offerId);
     }
 
     /// <summary>

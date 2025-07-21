@@ -89,6 +89,12 @@ public record RagfairOffer
     /// </summary>
     [JsonPropertyName("quantity")]
     public int Quantity { get; set; }
+
+    /// <summary>
+    /// SPT property - offer made by player
+    /// </summary>
+    [JsonIgnore]
+    public OfferCreator? CreatedBy { get; set; }
 }
 
 public record OfferRequirement

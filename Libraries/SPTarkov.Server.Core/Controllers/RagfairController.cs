@@ -127,7 +127,7 @@ public class RagfairController(
         }
 
         // Update trader offers' values, Lock quest-linked offers + adjust offer buy limits
-        foreach (var traderOffer in result.Offers.Where(ragfairOfferHelper.OfferIsFromTrader))
+        foreach (var traderOffer in result.Offers.Where(x => x.IsTraderOffer()))
         {
             // For the items, check the barter schemes. The method getDisplayableAssorts sets a flag sptQuestLocked
             // to true if the quest is not completed yet
@@ -427,7 +427,7 @@ public class RagfairController(
                 continue;
             }
 
-            if (ignoreTraderOffers && ragfairOfferHelper.OfferIsFromTrader(offer))
+            if (ignoreTraderOffers && offer.IsTraderOffer())
             {
                 continue;
             }
@@ -1020,8 +1020,8 @@ public class RagfairController(
             formattedRequirements.ToList(),
             loyalLevel,
             (int?)items.FirstOrDefault()?.Upd?.StackObjectsCount ?? 1,
-            sellInOnePiece,
-            true
+            OfferCreator.Player,
+            sellInOnePiece
         );
     }
 

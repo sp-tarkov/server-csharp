@@ -142,14 +142,11 @@ public class RagfairOfferHolder(
             var itemTpl = offer.Items?.FirstOrDefault()?.Template ?? new MongoId(null);
 
             var sellerId = offer.User.Id;
-            var sellerIsTrader = _ragfairServerHelper.IsTrader(sellerId);
+            var sellerIsTrader = offer.IsTraderOffer();
             var itemSoldTemplate = _itemHelper.GetItem(itemTpl);
             if (
-                !itemTpl.IsEmpty()
-                && !(
-                    sellerIsTrader
-                    || (bool)offer.ExtensionData.GetValueOrDefault("isPlayerOffer", false)
-                )
+                !itemTpl.IsEmpty() // Has tpl
+                && !(sellerIsTrader || offer.IsPlayerOffer())
                 && _offersByTemplate.TryGetValue(itemTpl, out var offers)
                 && offers?.Count
                     >= _ragfairServerHelper.GetOfferCountByBaseType(itemSoldTemplate.Value.Parent)
@@ -179,7 +176,7 @@ public class RagfairOfferHolder(
     /// </summary>
     /// <param name="offerId">Offer id to remove</param>
     /// <param name="checkTraderOffers">OPTIONAL - Should trader offers be checked for offer id</param>
-    public void RemoveOffer(string offerId, bool checkTraderOffers = true)
+    public void RemoveOffer(MongoId offerId, bool checkTraderOffers = true)
     {
         if (!_offersById.TryGetValue(offerId, out var offer))
         {
@@ -277,7 +274,7 @@ public class RagfairOfferHolder(
     /// <param name="trader">Trader id to store offer against</param>
     /// <param name="offerId">Offer to store against</param>
     /// <returns>True - offer was added</returns>
-    protected bool AddOfferByTrader(string trader, string offerId)
+    protected bool AddOfferByTrader(MongoId trader, MongoId offerId)
     {
         // Look for hashset for trader first
         if (_offersByTrader.TryGetValue(trader, out var traderOfferIds))

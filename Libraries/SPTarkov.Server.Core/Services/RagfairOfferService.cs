@@ -63,7 +63,7 @@ public class RagfairOfferService(
     /// </summary>
     /// <param name="offerId"> Offer id to check for </param>
     /// <returns> True when offer exists </returns>
-    public bool DoesOfferExist(string offerId)
+    public bool DoesOfferExist(MongoId offerId)
     {
         return ragfairOfferHolder.GetOfferById(offerId) != null;
     }
@@ -72,7 +72,7 @@ public class RagfairOfferService(
     ///     Remove an offer from ragfair by offer id
     /// </summary>
     /// <param name="offerId"> Offer id to remove </param>
-    public void RemoveOfferById(string offerId)
+    public void RemoveOfferById(MongoId offerId)
     {
         ragfairOfferHolder.RemoveOffer(offerId);
     }
@@ -82,7 +82,7 @@ public class RagfairOfferService(
     /// </summary>
     /// <param name="offerId"> Offer to adjust stack size of </param>
     /// <param name="amount"> How much to deduct from offers stack size </param>
-    public void ReduceOfferQuantity(string offerId, int amount)
+    public void ReduceOfferQuantity(MongoId offerId, int amount)
     {
         var offer = ragfairOfferHolder.GetOfferById(offerId);
         if (offer == null)

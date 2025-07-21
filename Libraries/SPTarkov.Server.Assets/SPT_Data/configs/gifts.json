@@ -2141,6 +2141,30 @@
                     },
                     "parentId": "6571e74a4a27570f5926ecb2",
                     "slotId": "main"
+                }, {
+                    "_id": "6571e74a4a9823b15926f4d1",
+                    "_tpl": "5d235b4d86f7742e017bc88a",
+                    "upd": {
+                        "StackObjectsCount": 100
+                    },
+                    "parentId": "6571e74a4a27570f5926ecb2",
+                    "slotId": "main"
+                }, {
+                    "_id": "6571e74a4a9823b15926f4d2",
+                    "_tpl": "5d235b4d86f7742e017bc88a",
+                    "upd": {
+                        "StackObjectsCount": 100
+                    },
+                    "parentId": "6571e74a4a27570f5926ecb2",
+                    "slotId": "main"
+                }, {
+                    "_id": "6571e74a4a9823b15926f4d3",
+                    "_tpl": "5d235b4d86f7742e017bc88a",
+                    "upd": {
+                        "StackObjectsCount": 100
+                    },
+                    "parentId": "6571e74a4a27570f5926ecb2",
+                    "slotId": "main"
                 }
             ],
             "profileChangeEvents": [{

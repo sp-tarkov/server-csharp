@@ -24,6 +24,8 @@ namespace UnitTests.Tests.Helpers
             ;
         }
 
+        #region AddItemWithChildrenToEquipmentSlot
+
         [TestMethod]
         public void AddItemWithChildrenToEquipmentSlot_fit_vertical()
         {
@@ -461,5 +463,35 @@ namespace UnitTests.Tests.Helpers
 
             Assert.AreEqual(ItemAddedResult.NO_SPACE, result);
         }
+
+        #endregion
+
+        #region GetBotEquipmentRole
+
+        [TestMethod]
+        public void GetBotEquipmentRole_assault()
+        {
+            var result = _botGeneratorHelper.GetBotEquipmentRole("assault");
+
+            Assert.AreEqual("assault", result);
+        }
+
+        [TestMethod]
+        public void GetBotEquipmentRole_pmcBEAR()
+        {
+            var result = _botGeneratorHelper.GetBotEquipmentRole("pmcBEAR");
+
+            Assert.AreEqual("pmc", result);
+        }
+
+        [TestMethod]
+        public void GetBotEquipmentRole_pmcBEAR_lowercase()
+        {
+            var result = _botGeneratorHelper.GetBotEquipmentRole("pmcbear");
+
+            Assert.AreEqual("pmc", result);
+        }
+
+        #endregion
     }
 }

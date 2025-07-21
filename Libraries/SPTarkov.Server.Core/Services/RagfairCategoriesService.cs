@@ -1,8 +1,8 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
-using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 
 namespace SPTarkov.Server.Core.Services;
@@ -30,7 +30,7 @@ public class RagfairCategoriesService(
         return offers
             .Where(offer =>
             {
-                var isTraderOffer = offer.User.MemberType == MemberCategory.Trader;
+                var isTraderOffer = offer.IsTraderOffer();
 
                 // Not level 15 and offer is from player, skip
                 if (!fleaUnlocked && !isTraderOffer)

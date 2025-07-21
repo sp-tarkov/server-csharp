@@ -57,8 +57,8 @@ public class RagfairOfferGenerator(
     /// <param name="barterScheme">Cost of item (currency or barter)</param>
     /// <param name="loyalLevel">Loyalty level needed to buy item</param>
     /// <param name="quantity">Amount of item being listed</param>
+    /// <param name="creator">Who created this offer</param>
     /// <param name="sellInOnePiece">Flags sellInOnePiece to be true</param>
-    /// <param name="isPlayerOffer">Offer to create is for a player</param>
     /// <returns>RagfairOffer</returns>
     public RagfairOffer CreateAndAddFleaOffer(
         MongoId userId,
@@ -67,8 +67,8 @@ public class RagfairOfferGenerator(
         List<BarterScheme> barterScheme,
         int loyalLevel,
         int quantity,
-        bool sellInOnePiece = false,
-        bool isPlayerOffer = false
+        OfferCreator creator,
+        bool sellInOnePiece = false
     )
     {
         var offer = CreateOffer(
@@ -78,12 +78,11 @@ public class RagfairOfferGenerator(
             barterScheme,
             loyalLevel,
             quantity,
-            sellInOnePiece,
-            isPlayerOffer
+            creator,
+            sellInOnePiece
         );
 
-        offer.ExtensionData ??= new Dictionary<string, object>();
-        offer.ExtensionData.Add("isPlayerOffer", isPlayerOffer);
+        offer.CreatedBy = creator;
 
         ragfairOfferService.AddOffer(offer);
 
@@ -109,8 +108,8 @@ public class RagfairOfferGenerator(
         List<BarterScheme> barterScheme,
         int loyalLevel,
         int quantity,
-        bool isPackOffer = false,
-        bool isPlayerOffer = false
+        OfferCreator creator,
+        bool isPackOffer = false
     )
     {
         var offerRequirements = barterScheme
@@ -160,9 +159,10 @@ public class RagfairOfferGenerator(
         {
             Id = new MongoId(),
             InternalId = offerCounter,
-            User = isPlayerOffer
-                ? CreatePlayerUserDataForFleaOffer(userId)
-                : CreateUserDataForFleaOffer(userId, ragfairServerHelper.IsTrader(userId)),
+            User =
+                creator == OfferCreator.Player
+                    ? CreatePlayerUserDataForFleaOffer(userId)
+                    : CreateUserDataForFleaOffer(userId, ragfairServerHelper.IsTrader(userId)),
             Root = rootItem.Id,
             Items = itemsClone,
             ItemsCost = Math.Round(handbookHelper.GetTemplatePrice(rootItem.Template)), // Handbook price
@@ -170,7 +170,7 @@ public class RagfairOfferGenerator(
             RequirementsCost = Math.Round(singleItemListingPrice),
             SummaryCost = roubleListingPrice,
             StartTime = time,
-            EndTime = GetOfferEndTime(userId, time),
+            EndTime = GetOfferEndTime(creator, userId, time),
             LoyaltyLevel = loyalLevel,
             SellInOnePiece = isPackOffer,
             Locked = false,
@@ -287,21 +287,6 @@ public class RagfairOfferGenerator(
     }
 
     /// <summary>
-    ///     Check userId, if it's a player, return their pmc _id, otherwise return userId parameter
-    /// </summary>
-    /// <param name="userId"> Users ID to check </param>
-    /// <returns> Users ID </returns>
-    protected string GetTraderId(MongoId userId)
-    {
-        if (profileHelper.IsPlayer(userId))
-        {
-            return saveServer.GetProfile(userId).CharacterData.PmcData.Id;
-        }
-
-        return userId;
-    }
-
-    /// <summary>
     ///     Get a flea trading rating for the passed in user
     /// </summary>
     /// <param name="userId"> User to get flea rating of </param>
@@ -356,12 +341,13 @@ public class RagfairOfferGenerator(
     /// <summary>
     ///     Get number of section until offer should expire
     /// </summary>
+    /// <param name="creatorType"></param>
     /// <param name="userID"> ID of the offer owner </param>
     /// <param name="time"> Time the offer is posted in seconds </param>
     /// <returns> Number of seconds until offer expires </returns>
-    protected long GetOfferEndTime(MongoId userID, long time)
+    protected long GetOfferEndTime(OfferCreator creatorType, MongoId userID, long time)
     {
-        if (profileHelper.IsPlayer(userID))
+        if (creatorType == OfferCreator.Player)
         {
             // Player offer = current time + offerDurationTimeInHour;
             var offerDurationTimeHours = databaseService
@@ -373,7 +359,7 @@ public class RagfairOfferGenerator(
             );
         }
 
-        if (ragfairServerHelper.IsTrader(userID))
+        if (creatorType == OfferCreator.Trader)
         // Trader offer
         {
             return (long)databaseService.GetTrader(userID).Base.NextResupply;
@@ -384,7 +370,7 @@ public class RagfairOfferGenerator(
             ragfairConfig.Dynamic.EndTimeSeconds.Max
         );
 
-        // Generated fake-player offer
+        // Fake-player offer
         return (long)Math.Round(time + randomSpread);
     }
 
@@ -628,6 +614,7 @@ public class RagfairOfferGenerator(
             barterScheme,
             1,
             desiredStackSize,
+            OfferCreator.FakePlayer,
             isPackOffer // sellAsOnePiece - pack offer
         );
     }
@@ -751,7 +738,8 @@ public class RagfairOfferGenerator(
                 items,
                 barterSchemeItems,
                 loyalLevel,
-                (int?)item.Upd.StackObjectsCount ?? 1
+                (int?)item.Upd.StackObjectsCount ?? 1,
+                OfferCreator.Trader
             );
 
             // Refresh complete, reset flag to false
