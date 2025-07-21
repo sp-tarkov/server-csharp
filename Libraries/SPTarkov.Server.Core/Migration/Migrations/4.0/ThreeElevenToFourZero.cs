@@ -65,9 +65,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
                 }
             }
 
-            //Todo: TaskConditionCounters CounterCrafting?
-
-            return profile;
+            return base.Migrate(profile);
         }
 
         public override bool PostMigrate(SptProfile profile)

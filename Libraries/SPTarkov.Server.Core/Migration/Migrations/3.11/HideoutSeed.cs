@@ -38,14 +38,15 @@ namespace SPTarkov.Server.Core.Migration.Migrations
         {
             var profileVersion = GetProfileVersion(profile);
             var fromRange = Range.Parse(FromVersion);
-            var versionMatches = fromRange.IsSatisfied(profileVersion);
+            var profileVersionMatches = fromRange.IsSatisfied(profileVersion);
 
             var seedNode = profile["characters"]?["pmc"]?["Hideout"]?["Seed"];
 
+            // Check if the seed still has it's numeric value, this is not valid anymore
             var seedIsNumeric =
                 seedNode is JsonValue seedValue && seedValue.TryGetValue<long>(out _);
 
-            return versionMatches && seedIsNumeric;
+            return profileVersionMatches && seedIsNumeric;
         }
 
         public override JsonObject? Migrate(JsonObject profile)
@@ -54,7 +55,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
                 RandomNumberGenerator.GetBytes(16)
             );
 
-            return profile;
+            return base.Migrate(profile);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
 
         public override IEnumerable<Type> PrerequisiteMigrations
         {
-            // Requires ThreeTenToThreeEleven on legacy profiles, due to that changing customization for the first time
+            // Requires ThreeTenToThreeEleven on legacy profiles, due to that adding the customization object for the first time
             get { return [typeof(ThreeTenToThreeEleven)]; }
         }
 
@@ -59,7 +59,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
                 HandleScavVoice(profile);
             }
 
-            return profile;
+            return base.Migrate(profile);
         }
 
         private void HandlePmcVoice(JsonObject profileObject)
