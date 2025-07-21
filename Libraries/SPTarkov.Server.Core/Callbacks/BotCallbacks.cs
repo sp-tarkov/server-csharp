@@ -19,9 +19,7 @@ public class BotCallbacks(BotController botController, HttpResponseUtil httpResp
     {
         var splitUrl = url.Split('/');
         var type = splitUrl[^1];
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(botController.GetBotPresetGenerationLimit(type))
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(botController.GetBotPresetGenerationLimit(type)));
     }
 
     /// <summary>
