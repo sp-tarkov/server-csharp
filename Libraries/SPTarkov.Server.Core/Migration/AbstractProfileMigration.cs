@@ -15,7 +15,11 @@ namespace SPTarkov.Server.Core.Migration
             JsonObject profile,
             IEnumerable<IProfileMigration> previouslyRanMigrations
         );
-        public abstract JsonObject? Migrate(JsonObject profile);
+
+        public virtual JsonObject? Migrate(JsonObject profile)
+        {
+            return profile;
+        }
 
         public virtual bool PostMigrate(SptProfile profile)
         {
