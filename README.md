@@ -105,7 +105,7 @@ We use a custom git LFS server to store large files. The public server is read-o
 
 ### Style Guide
 
-We use [CSharpier](https://csharpier.com/) to keep the project's code styled/formatted. You can install it globally by running: `dotnet tool install -g csharpier`. You may then apply the formatting rules by running: `csharpier format .`. Please ensure this is ran before your PR is created to make merges easier.
+We use [CSharpier](https://csharpier.com/) to keep the project's code styled/formatted. You can install it globally by running: `dotnet tool install -g csharpier`. You may then apply the formatting rules by running: `csharpier format .`. Please ensure this is ran before your PR is created to make merges easier. A workflow will fail if formatting changes are required.
 
 #### Format On Save
 
