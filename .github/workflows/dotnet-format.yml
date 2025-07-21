@@ -19,8 +19,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.BYPASS_WORKFLOW_PAT || github.token }}
-          ref: ${{ github.event.pull_request.head.ref || github.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -33,7 +31,17 @@ jobs:
       - name: CSharpier Format
         run: csharpier format .
 
-      - name: Auto Commit Changes
+      - name: Check PR Formatting
+        if: github.event_name == 'pull_request'
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "::error::Code formatting issues found. Please run 'csharpier format .' locally and push the changes to your PR branch. Read the `README.md` file for more information."
+            git status --porcelain
+            exit 1
+          fi
+
+      - name: Auto Commit Changes (Push)
+        if: github.event_name != 'pull_request'
         uses: stefanzweifel/git-auto-commit-action@v6
         with:
           commit_message: .NET Format Style Fixes
