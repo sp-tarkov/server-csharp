@@ -18,6 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.head_ref }}
           token: ${{ secrets.BYPASS_WORKFLOW_PAT }}
 
       - name: Setup .NET
@@ -31,7 +32,10 @@ jobs:
       - name: CSharpier Format
         run: csharpier format .
 
-      - uses: stefanzweifel/git-auto-commit-action@v6
+      - name: Auto Commit Changes
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
           commit_message: .NET Format Style Fixes
           commit_user_name: Format Bot
+          commit_user_email: format@sp-tarkov.com
+          commit_author: Format Bot <format@sp-tarkov.com>
