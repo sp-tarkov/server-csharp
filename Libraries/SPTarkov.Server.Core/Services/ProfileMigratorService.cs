@@ -77,6 +77,11 @@ namespace SPTarkov.Server.Core.Services
                         $"{profileId} successfully ran profile migration: {ranMigration.MigrationName}"
                     );
 
+                    if (sptReadyProfile.SptData!.Migrations is null)
+                    {
+                        sptReadyProfile.SptData.Migrations = [];
+                    }
+
                     sptReadyProfile.SptData.Migrations.Add(
                         ranMigration.MigrationName,
                         timeUtil.GetTimeStamp()
