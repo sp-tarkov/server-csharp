@@ -51,39 +51,17 @@ public class RagfairOfferGenerator(
     /// <summary>
     ///     Create a flea offer and store it in the Ragfair server offers array
     /// </summary>
-    /// <param name="userId">Owner of the offer</param>
-    /// <param name="time">Time offer is listed at</param>
-    /// <param name="items">Items in the offer</param>
-    /// <param name="barterScheme">Cost of item (currency or barter)</param>
-    /// <param name="loyalLevel">Loyalty level needed to buy item</param>
-    /// <param name="quantity">Amount of item being listed</param>
-    /// <param name="creator">Who created this offer</param>
-    /// <param name="sellInOnePiece">Flags sellInOnePiece to be true</param>
+    /// <param name="details">Data needed to create a flea offer</param>
     /// <returns>RagfairOffer</returns>
-    public RagfairOffer CreateAndAddFleaOffer(
-        MongoId userId,
-        long time,
-        List<Item> items,
-        List<BarterScheme> barterScheme,
-        int loyalLevel,
-        int quantity,
-        OfferCreator creator,
-        bool sellInOnePiece = false
-    )
+    public RagfairOffer CreateAndAddFleaOffer(CreateFleaOfferDetails details)
     {
-        var offer = CreateOffer(
-            userId,
-            time,
-            items,
-            barterScheme,
-            loyalLevel,
-            quantity,
-            creator,
-            sellInOnePiece
-        );
+        // Create offer object
+        var offer = CreateOffer(details);
 
-        offer.CreatedBy = creator;
+        // Flag offer with creator type
+        offer.CreatedBy = details.Creator;
 
+        // Add offer into server storage
         ragfairOfferService.AddOffer(offer);
 
         return offer;
@@ -92,28 +70,12 @@ public class RagfairOfferGenerator(
     /// <summary>
     ///     Create an offer object ready to send to ragfairOfferService.addOffer()
     /// </summary>
-    /// <param name="userId">Owner of the offer</param>
-    /// <param name="time">Timestamp offer is listed at</param>
-    /// <param name="items">Items in the offer</param>
-    /// <param name="barterScheme">Cost of item (currency or barter)</param>
-    /// <param name="loyalLevel">Loyalty level needed to buy item</param>
-    /// <param name="quantity">Amount of item being listed</param>
-    /// <param name="isPackOffer">Is offer being created flagged as a pack</param>
-    /// <param name="isPlayerOffer">Offer is from a player</param>
+    /// <param name="details">Data needed to create a flea offer</param>
     /// <returns>RagfairOffer</returns>
-    protected RagfairOffer CreateOffer(
-        MongoId userId,
-        long time,
-        List<Item> items,
-        List<BarterScheme> barterScheme,
-        int loyalLevel,
-        int quantity,
-        OfferCreator creator,
-        bool isPackOffer = false
-    )
+    protected RagfairOffer CreateOffer(CreateFleaOfferDetails details)
     {
-        var offerRequirements = barterScheme
-            .Select(barter =>
+        var offerRequirements = details
+            .BarterScheme.Select(barter =>
             {
                 var offerRequirement = new OfferRequirement
                 {
@@ -134,7 +96,7 @@ public class RagfairOfferGenerator(
             .ToList();
 
         // Clone to avoid modifying original array
-        var itemsClone = cloner.Clone(items);
+        var itemsClone = cloner.Clone(details.Items);
         var rootItem = itemsClone.FirstOrDefault();
 
         // Hydrate ammo boxes with cartridges + ensure only 1 item is present (ammo box)
@@ -151,8 +113,8 @@ public class RagfairOfferGenerator(
         }
 
         var roubleListingPrice = Math.Round(ConvertOfferRequirementsIntoRoubles(offerRequirements));
-        var singleItemListingPrice = isPackOffer
-            ? roubleListingPrice / quantity
+        var singleItemListingPrice = details.SellInOnePiece
+            ? roubleListingPrice / details.Quantity
             : roubleListingPrice;
 
         var offer = new RagfairOffer
@@ -160,21 +122,24 @@ public class RagfairOfferGenerator(
             Id = new MongoId(),
             InternalId = offerCounter,
             User =
-                creator == OfferCreator.Player
-                    ? CreatePlayerUserDataForFleaOffer(userId)
-                    : CreateUserDataForFleaOffer(userId, ragfairServerHelper.IsTrader(userId)),
+                details.Creator == OfferCreator.Player
+                    ? CreatePlayerUserDataForFleaOffer(details.UserId)
+                    : CreateUserDataForFleaOffer(
+                        details.UserId,
+                        details.Creator == OfferCreator.Trader
+                    ),
             Root = rootItem.Id,
             Items = itemsClone,
             ItemsCost = Math.Round(handbookHelper.GetTemplatePrice(rootItem.Template)), // Handbook price
             Requirements = offerRequirements,
             RequirementsCost = Math.Round(singleItemListingPrice),
             SummaryCost = roubleListingPrice,
-            StartTime = time,
-            EndTime = GetOfferEndTime(creator, userId, time),
-            LoyaltyLevel = loyalLevel,
-            SellInOnePiece = isPackOffer,
+            StartTime = details.Time,
+            EndTime = GetOfferEndTime(details.Creator, details.UserId, details.Time),
+            LoyaltyLevel = details.LoyalLevel,
+            SellInOnePiece = details.SellInOnePiece,
             Locked = false,
-            Quantity = quantity,
+            Quantity = details.Quantity,
         };
 
         offerCounter++;
@@ -607,16 +572,18 @@ public class RagfairOfferGenerator(
             barterScheme = CreateCurrencyBarterScheme(itemWithChildren, isPackOffer);
         }
 
-        CreateAndAddFleaOffer(
-            sellerId,
-            timeUtil.GetTimeStamp(),
-            itemWithChildren,
-            barterScheme,
-            1,
-            desiredStackSize,
-            OfferCreator.FakePlayer,
-            isPackOffer // sellAsOnePiece - pack offer
-        );
+        var createOfferDetails = new CreateFleaOfferDetails
+        {
+            UserId = sellerId,
+            Time = timeUtil.GetTimeStamp(),
+            Items = itemWithChildren,
+            BarterScheme = barterScheme,
+            LoyalLevel = 1,
+            Quantity = desiredStackSize,
+            Creator = OfferCreator.FakePlayer,
+            SellInOnePiece = isPackOffer, // sellAsOnePiece - pack offer
+        };
+        CreateAndAddFleaOffer(createOfferDetails);
     }
 
     /// <summary>
@@ -732,15 +699,17 @@ public class RagfairOfferGenerator(
             var barterSchemeItems = barterScheme[0];
             var loyalLevel = assortsClone.LoyalLevelItems[item.Id];
 
-            CreateAndAddFleaOffer(
-                traderId,
-                time,
-                items,
-                barterSchemeItems,
-                loyalLevel,
-                (int?)item.Upd.StackObjectsCount ?? 1,
-                OfferCreator.Trader
-            );
+            var createOfferDetails = new CreateFleaOfferDetails
+            {
+                UserId = traderId,
+                Time = time,
+                Items = items,
+                BarterScheme = barterSchemeItems,
+                LoyalLevel = loyalLevel,
+                Quantity = (int?)item.Upd.StackObjectsCount ?? 1,
+                Creator = OfferCreator.Trader,
+            };
+            CreateAndAddFleaOffer(createOfferDetails);
 
             // Refresh complete, reset flag to false
             trader.Base.RefreshTraderRagfairOffers = false;

@@ -35,7 +35,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           if [[ -n $(git status --porcelain) ]]; then
-            echo "::error::Code formatting issues found. Please run 'csharpier format .' locally and push the changes to your PR branch. Read the `README.md` file for more information."
+            echo "::error::Code formatting issues found. Please run 'csharpier format .' locally and push the changes to your PR branch. Read the 'README.md' file for more information."
             git status --porcelain
             exit 1
           fi

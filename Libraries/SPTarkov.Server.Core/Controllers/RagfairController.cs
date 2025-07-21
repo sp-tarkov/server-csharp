@@ -11,6 +11,7 @@ using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Ragfair;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
@@ -1013,16 +1014,19 @@ public class RagfairController(
             OnlyFunctional = item.OnlyFunctional,
         });
 
-        return ragfairOfferGenerator.CreateAndAddFleaOffer(
-            sessionId,
-            timeUtil.GetTimeStamp(),
-            formattedItems.ToList(),
-            formattedRequirements.ToList(),
-            loyalLevel,
-            (int?)items.FirstOrDefault()?.Upd?.StackObjectsCount ?? 1,
-            OfferCreator.Player,
-            sellInOnePiece
-        );
+        var createOfferDetails = new CreateFleaOfferDetails
+        {
+            UserId = sessionId,
+            Time = timeUtil.GetTimeStamp(),
+            Items = formattedItems.ToList(),
+            BarterScheme = formattedRequirements.ToList(),
+            LoyalLevel = loyalLevel,
+            Quantity = (int?)items.FirstOrDefault()?.Upd?.StackObjectsCount ?? 1,
+            Creator = OfferCreator.Player,
+            SellInOnePiece = sellInOnePiece,
+        };
+
+        return ragfairOfferGenerator.CreateAndAddFleaOffer(createOfferDetails);
     }
 
     /// <summary>
@@ -1035,7 +1039,7 @@ public class RagfairController(
         return requirements.Sum(requirement =>
         {
             if (
-                string.IsNullOrEmpty(requirement.Template)
+                requirement.Template.IsEmpty()
                 || !requirement.Count.HasValue
                 || requirement.Count == 0
             )
