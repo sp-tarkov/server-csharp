@@ -26,7 +26,7 @@ public class SptServerBackgroundService(
                         )
                         .Replace('\\', '/');
 
-                    bundleLoader.AddBundles(relativeModPath);
+                    await bundleLoader.LoadBundlesAsync(mod);
                 }
             }
         }

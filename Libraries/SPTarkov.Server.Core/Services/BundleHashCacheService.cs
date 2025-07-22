@@ -14,7 +14,7 @@ public class BundleHashCacheService(
 {
     protected const string _bundleHashCachePath = "./user/cache/";
     protected const string _cacheName = "bundleHashCache.json";
-    protected readonly Dictionary<string, uint> _bundleHashes = new();
+    protected readonly Dictionary<string, uint> _bundleHashes = [];
 
     public uint GetStoredValue(string key)
     {
@@ -26,7 +26,7 @@ public class BundleHashCacheService(
         return value;
     }
 
-    public void StoreValue(string bundlePath, uint hash)
+    public async Task StoreValue(string bundlePath, uint hash)
     {
         _bundleHashes.Add(bundlePath, hash);
 
@@ -35,7 +35,7 @@ public class BundleHashCacheService(
             Directory.CreateDirectory(_bundleHashCachePath);
         }
 
-        fileUtil.WriteFile(
+        await fileUtil.WriteFileAsync(
             Path.Join(_bundleHashCachePath, _cacheName),
             jsonUtil.Serialize(_bundleHashes)
         );
@@ -48,9 +48,9 @@ public class BundleHashCacheService(
         return MatchWithStoredHash(BundlePath, CalculateHash(BundlePath));
     }
 
-    public void CalculateAndStoreHash(string BundlePath)
+    public async Task CalculateAndStoreHash(string BundlePath)
     {
-        StoreValue(BundlePath, CalculateHash(BundlePath));
+        await StoreValue(BundlePath, CalculateHash(BundlePath));
     }
 
     public uint CalculateHash(string BundlePath)
