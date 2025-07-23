@@ -10,7 +10,7 @@ public class EftListEnumConverterFactory : JsonConverterFactory
         return typeToConvert.IsGenericType
             && typeToConvert.GetGenericTypeDefinition() == typeof(List<>)
             && typeToConvert.GenericTypeArguments[0].IsEnum
-            && (typeToConvert.GenericTypeArguments[0].Namespace?.Contains("SPTarkov") ?? false);
+            && typeToConvert.IsDefined(typeof(EftListEnumConverterAttribute), false);
     }
 
     public override JsonConverter? CreateConverter(
