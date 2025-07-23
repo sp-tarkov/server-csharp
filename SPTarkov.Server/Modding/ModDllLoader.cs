@@ -79,11 +79,12 @@ public class ModDllLoader
         };
 
         if (
-            result.ModMetadata.Name == null
-            || result.ModMetadata.Author == null
-            || result.ModMetadata.Version == null
-            || result.ModMetadata.License == null
-            || result.ModMetadata.SptVersion == null
+            string.IsNullOrEmpty(result.ModMetadata.Name)
+            || string.IsNullOrEmpty(result.ModMetadata.Author)
+            || string.IsNullOrEmpty(result.ModMetadata.Version)
+            || string.IsNullOrEmpty(result.ModMetadata.License)
+            || string.IsNullOrEmpty(result.ModMetadata.SptVersion)
+            || string.IsNullOrEmpty(result.ModMetadata.ModGuid)
         )
         {
             throw new Exception(
