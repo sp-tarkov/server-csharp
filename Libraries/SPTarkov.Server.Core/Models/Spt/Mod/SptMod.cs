@@ -15,5 +15,5 @@ public class SptMod
     public required AbstractModMetadata ModMetadata { get; init; }
 
     [JsonPropertyName("assemblies")]
-    public required List<Assembly> Assemblies { get; init; }
+    public required IEnumerable<Assembly> Assemblies { get; init; }
 }
