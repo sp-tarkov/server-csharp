@@ -58,30 +58,6 @@ public class HttpServerHelper(ConfigServer configServer)
         return $"wss://{BuildUrl()}";
     }
 
-    /// <summary>
-    /// Method to determine if another version of the server is already running
-    /// </summary>
-    /// <returns>bool isAlreadyRunning</returns>
-    public bool IsAlreadyRunning()
-    {
-        TcpListener? listener = null;
-
-        try
-        {
-            listener = new(IPAddress.Parse(_httpConfig.Ip), _httpConfig.Port);
-            listener.Start();
-            return false;
-        }
-        catch (Exception)
-        {
-            return true;
-        }
-        finally
-        {
-            listener?.Stop();
-        }
-    }
-
     public void SendTextJson(HttpResponse resp, object output)
     {
         resp.Headers.Append("Content-Type", mime["json"]);

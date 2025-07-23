@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Sockets;
 using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Security.Authentication;
@@ -126,6 +127,20 @@ public static class Program
                 var httpConfig = options
                     .ApplicationServices.GetService<ConfigServer>()
                     ?.GetConfig<HttpConfig>()!;
+
+                // Probe the http ip and port to see if its being used, this method will throw an exception and crash
+                // the server if the IP/Port combination is already in use
+                TcpListener? listener = null;
+                try
+                {
+                    listener = new TcpListener(IPAddress.Parse(httpConfig.Ip), httpConfig.Port);
+                    listener.Start();
+                }
+                finally
+                {
+                    listener?.Stop();
+                }
+
                 var certHelper = options.ApplicationServices.GetService<CertificateHelper>()!;
                 options.Listen(
                     IPAddress.Parse(httpConfig.Ip),

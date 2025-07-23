@@ -35,13 +35,6 @@ public class App(
     {
         ServiceLocator.SetServiceProvider(_serviceProvider);
 
-        var isAlreadyRunning = _httpServerHelper.IsAlreadyRunning();
-        if (isAlreadyRunning)
-        {
-            _logger.Critical(_serverLocalisationService.GetText("webserver_already_running"));
-            await Task.Delay(Timeout.Infinite);
-        }
-
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
             _logger.Debug(
