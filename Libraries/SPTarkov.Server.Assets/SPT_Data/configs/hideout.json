@@ -76,7 +76,7 @@
                 "repeatable": false
             },
             {
-                "reward": ["5c0e874186f7745dc7616606", "5c0e842486f77443a74d2976"],
+                "reward": ["5c0e874186f7745dc7616606"],
                 "requiredItems": ["66572c82ad599021091c6118"],
                 "craftTimeSeconds": 3960,
                 "repeatable": false
