@@ -20,7 +20,7 @@
     "highValueThresholdRub": 70000,
     "hideoutTaskRewardTimeSeconds": 21600,
     "hideoutCraftSacrificeThresholdRub": 400000,
-    "craftTimeThreshholds": [
+    "craftTimeThresholds": [
       {
         "min": 1,
         "max": 350000,

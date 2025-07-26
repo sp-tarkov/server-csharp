@@ -102,8 +102,8 @@ public record CultistCircleSettings
     [JsonPropertyName("hideoutCraftSacrificeThresholdRub")]
     public int HideoutCraftSacrificeThresholdRub { get; set; }
 
-    [JsonPropertyName("craftTimeThreshholds")]
-    public required List<CraftTimeThreshold> CraftTimeThreshholds { get; set; }
+    [JsonPropertyName("craftTimeThresholds")]
+    public required List<CraftTimeThreshold> CraftTimeThresholds { get; set; }
 
     /// <summary>
     ///     -1 means no override, value in seconds
