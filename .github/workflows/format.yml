@@ -1,0 +1,191 @@
+name: Format
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches-ignore:
+      - main
+
+jobs:
+  dotnet-format:
+    if: "!contains(github.event.head_commit.message, 'Format Style Fixes')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BYPASS_WORKFLOW_PAT || github.token }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0
+
+      - name: Restore Tool Dependencies
+        run: dotnet tool install -g csharpier
+
+      - name: CSharpier Format
+        run: csharpier format .
+
+      - name: Check for Changes
+        id: check-changes
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload Changes as Artifact
+        if: steps.check-changes.outputs.changes == 'true' && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-changes
+          path: |
+            **/*.cs
+            **/*.csproj
+          retention-days: 1
+          compression-level: 1
+
+      - name: Fail PR if Changes Detected
+        if: steps.check-changes.outputs.changes == 'true' && github.event_name == 'pull_request'
+        run: |
+          echo "::error::Code formatting issues found. Please run 'csharpier format .' locally and push the changes to your PR branch. Read the 'README.md' file for more information."
+          git status --porcelain
+          exit 1
+
+  biome-format:
+    if: "!contains(github.event.head_commit.message, 'Format Style Fixes')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BYPASS_WORKFLOW_PAT || github.token }}
+
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+
+      - name: Create Biome Config
+        run: |
+          cat > biome.json << 'EOF'
+          {
+            "vcs": {
+              "enabled": true,
+              "clientKind": "git",
+              "useIgnoreFile": true
+            },
+            "files": {
+              "maxSize": 20971520,
+              "includes": [
+                "**/*.json",
+                "!**/looseLoot.json",
+                "!**/items.json"
+              ]
+            },
+            "formatter": {
+              "useEditorconfig": true
+            },
+            "javascript": {
+              "formatter": {
+                "enabled": false
+              }
+            },
+            "json": {
+              "formatter": {
+                "enabled": true,
+                "lineWidth": 120,
+                "trailingCommas": "none",
+                "bracketSpacing": true,
+                "expand": "always"
+              },
+              "parser": {
+                "allowComments": true,
+                "allowTrailingCommas": true
+              },
+              "linter": {
+                "enabled": false
+              }
+            }
+          }
+          EOF
+
+      - name: Format JSON Files
+        run: |
+          biome format --write . || true
+
+      - name: Remove Biome Config
+        if: always()
+        run: rm -f biome.json
+
+      - name: Check for Changes
+        id: check-changes
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload Changes as Artifact
+        if: steps.check-changes.outputs.changes == 'true' && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: biome-changes
+          path: |
+            **/*.json
+          retention-days: 1
+          compression-level: 1
+
+      - name: Fail PR if Changes Detected
+        if: steps.check-changes.outputs.changes == 'true' && github.event_name == 'pull_request'
+        run: |
+          echo "::error::JSON formatting issues found. Please run BiomeJS locally to format your JSON files and push the changes to your PR branch."
+          git status --porcelain
+          exit 1
+
+  commit-changes:
+    if: github.event_name != 'pull_request' && !contains(github.event.head_commit.message, 'Format Style Fixes')
+    needs: [dotnet-format, biome-format]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BYPASS_WORKFLOW_PAT || github.token }}
+
+      - name: Download Dotnet Changes
+        uses: actions/download-artifact@v4
+        with:
+          name: dotnet-changes
+        continue-on-error: true
+
+      - name: Download Biome Changes
+        uses: actions/download-artifact@v4
+        with:
+          name: biome-changes
+        continue-on-error: true
+
+      - name: Check for Any Changes
+        id: check-changes
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Auto Commit Changes
+        if: steps.check-changes.outputs.changes == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: Format Style Fixes
+          commit_user_name: sp-tarkov-bot
+          commit_user_email: singleplayertarkov@gmail.com
+          commit_author: sp-tarkov-bot <singleplayertarkov@gmail.com>
