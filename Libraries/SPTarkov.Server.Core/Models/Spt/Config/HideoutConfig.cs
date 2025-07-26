@@ -78,7 +78,7 @@ public record CultistCircleSettings
     [JsonPropertyName("maxAttemptsToPickRewardsWithinBudget")]
     public int MaxAttemptsToPickRewardsWithinBudget { get; set; }
 
-    [JsonPropertyName("rewardPriceMultiplerMinMax")]
+    [JsonPropertyName("rewardPriceMultiplierMinMax")]
     public required MinMax<double> RewardPriceMultiplierMinMax { get; set; }
 
     [JsonPropertyName("bonusChanceMultiplier")]
