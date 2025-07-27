@@ -357,7 +357,7 @@ public record OfferAdjustment
     /// <summary>
     ///     What is the minimum rouble price to consider adjusting price of item
     /// </summary>
-    [JsonPropertyName("priceThreshholdRub")]
+    [JsonPropertyName("priceThresholdRub")]
     public double PriceThresholdRub { get; set; }
 }
 

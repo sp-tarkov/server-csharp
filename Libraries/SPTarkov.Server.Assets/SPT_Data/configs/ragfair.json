@@ -263,7 +263,7 @@
       "adjustPriceWhenBelowHandbookPrice": false,
       "handbookPriceMultiplier": 1.1,
       "maxPriceDifferenceBelowHandbookPercent": 64,
-      "priceThreshholdRub": 20000
+      "priceThresholdRub": 20000
     },
     "offerItemCount": {
       "default": {
