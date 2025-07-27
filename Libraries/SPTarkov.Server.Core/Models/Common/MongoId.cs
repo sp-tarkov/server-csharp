@@ -2,7 +2,7 @@
 
 namespace SPTarkov.Server.Core.Models.Common;
 
-public readonly struct MongoId : IEquatable<MongoId>
+public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
 {
     private readonly string? _stringId;
 
@@ -108,6 +108,11 @@ public readonly struct MongoId : IEquatable<MongoId>
     public bool Equals(MongoId other)
     {
         return string.Equals(_stringId, other._stringId, StringComparison.OrdinalIgnoreCase);
+    }
+
+    public int CompareTo(MongoId other)
+    {
+        return string.CompareOrdinal(_stringId, other._stringId);
     }
 
     public override bool Equals(object? obj)
