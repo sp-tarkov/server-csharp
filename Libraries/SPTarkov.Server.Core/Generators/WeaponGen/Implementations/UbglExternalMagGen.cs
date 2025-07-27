@@ -16,7 +16,7 @@ public class UbglExternalMagGen(BotWeaponGeneratorHelper botWeaponGeneratorHelpe
 
     public bool CanHandleInventoryMagGen(InventoryMagGen inventoryMagGen)
     {
-        return inventoryMagGen.GetWeaponTemplate().Parent == BaseClasses.UBGL;
+        return inventoryMagGen.GetWeaponTemplate().Parent == BaseClasses.LAUNCHER;
     }
 
     public void Process(InventoryMagGen inventoryMagGen)

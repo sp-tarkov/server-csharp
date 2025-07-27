@@ -257,7 +257,7 @@ public class ItemHelper(
             itemProperties.Light = new UpdLight { IsActive = false, SelectedMode = 0 };
         }
 
-        if (itemTemplate.Parent == BaseClasses.NIGHTVISION)
+        if (itemTemplate.Parent == BaseClasses.NIGHT_VISION)
         {
             itemProperties.Togglable = new UpdTogglable { On = false };
         }
@@ -1514,7 +1514,7 @@ public class ItemHelper(
         double minSizeMultiplier = 0.25
     )
     {
-        var isUBGL = IsOfBaseclass(magTemplate.Id, BaseClasses.UBGL);
+        var isUBGL = IsOfBaseclass(magTemplate.Id, BaseClasses.LAUNCHER);
         if (isUBGL)
         // UBGL don't have mags
         {

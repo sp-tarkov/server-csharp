@@ -961,7 +961,7 @@ public class FenceService(
 
         var isMedical = itemHelper.IsOfBaseclasses(
             rootItemBeingAdded.Template,
-            [BaseClasses.MEDICAL, BaseClasses.MEDKIT]
+            [BaseClasses.MEDICAL, BaseClasses.MED_KIT]
         );
         var isGearAndHasSlots =
             itemHelper.IsOfBaseclasses(
@@ -1566,7 +1566,7 @@ public class FenceService(
         if (
             (
                 itemDetails.Parent == BaseClasses.ARMORED_EQUIPMENT
-                || itemDetails.Parent == BaseClasses.FACECOVER
+                || itemDetails.Parent == BaseClasses.FACE_COVER
                 || itemDetails.Parent == BaseClasses.ARMOR_PLATE
             )
             && itemDetails.Properties.MaxDurability.GetValueOrDefault(0) > 0

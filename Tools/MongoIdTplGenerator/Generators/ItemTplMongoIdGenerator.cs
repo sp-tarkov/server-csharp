@@ -4,7 +4,6 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -249,7 +248,7 @@ public class ItemTplMongoIdGenerator(
             return "BARTER";
         }
 
-        if (itemHelper.IsOfBaseclass(item.Id, BaseClasses.THROW_WEAPON))
+        if (itemHelper.IsOfBaseclass(item.Id, BaseClasses.THROW_WEAP))
         {
             return "GRENADE";
         }

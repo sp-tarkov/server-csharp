@@ -46,7 +46,7 @@ public class BotWeaponGeneratorHelper(
                     ? 1 // Rotating grenade launcher
                     : magTemplate.Properties.Slots.Count(); // Shotguns/revolvers. We count the number of camoras as the _max_count of the magazine is 0
         }
-        else if (parentItem.Id == BaseClasses.UBGL)
+        else if (parentItem.Id == BaseClasses.LAUNCHER)
         {
             // Underbarrel launchers can only have 1 chambered grenade
             chamberBulletCount = 1;

@@ -174,7 +174,7 @@ public class BotGeneratorHelper(
             hasProperties = true;
         }
 
-        if (itemTemplate?.Parent == BaseClasses.NIGHTVISION)
+        if (itemTemplate?.Parent == BaseClasses.NIGHT_VISION)
         {
             // Get chance from botconfig for bot type
             var nvgActiveChance =
