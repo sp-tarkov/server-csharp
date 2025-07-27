@@ -351,13 +351,13 @@ public record OfferAdjustment
     /// <summary>
     ///     How much to multiply the handbook price to get the new price
     /// </summary>
-    [JsonPropertyName("handbookPriceMultipier")]
+    [JsonPropertyName("handbookPriceMultiplier")]
     public double HandbookPriceMultiplier { get; set; }
 
     /// <summary>
     ///     What is the minimum rouble price to consider adjusting price of item
     /// </summary>
-    [JsonPropertyName("priceThreshholdRub")]
+    [JsonPropertyName("priceThresholdRub")]
     public double PriceThresholdRub { get; set; }
 }
 

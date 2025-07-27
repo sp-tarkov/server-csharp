@@ -250,7 +250,7 @@ public class CircleOfCultistService(
 
         // Get a threshold where sacrificed amount is between thresholds min and max
         var matchingThreshold = GetMatchingThreshold(
-            circleConfig.CraftTimeThreshholds,
+            circleConfig.CraftTimeThresholds,
             rewardAmountRoubles
         );
         if (
