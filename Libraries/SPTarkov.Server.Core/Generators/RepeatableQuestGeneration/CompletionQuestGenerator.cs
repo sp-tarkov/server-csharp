@@ -146,7 +146,7 @@ public class CompletionQuestGenerator(
             .Values.Where(itemTemplate =>
             {
                 // Base "Item" item has no parent, ignore it
-                if (itemTemplate.Parent == string.Empty)
+                if (itemTemplate.Parent == MongoId.Empty())
                 {
                     return false;
                 }
@@ -413,7 +413,7 @@ public class CompletionQuestGenerator(
             : 0;
 
         // Dog tags MUST NOT be FiR for them to work
-        if (itemHelper.IsDogtag(itemTpl))
+        if (itemHelper.IsDogtag(itemTpl) || itemHelper.IsOfBaseclass(itemTpl, BaseClasses.AMMO))
         {
             onlyFoundInRaid = false;
         }
