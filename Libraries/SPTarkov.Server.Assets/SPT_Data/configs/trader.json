@@ -84,7 +84,7 @@
   "updateTimeDefault": 3600,
   "tradersResetFromServerStart": true,
   "purchasesAreFoundInRaid": false,
-  "traderPriceMultipler": 1,
+  "traderPriceMultiplier": 1,
   "fence": {
     "discountOptions": {
       "assortSize": 45,

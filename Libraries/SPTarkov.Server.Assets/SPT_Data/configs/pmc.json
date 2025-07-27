@@ -276,7 +276,7 @@
           "value": 50000
         }
       ],
-      "locationMultipler": {
+      "locationMultiplier": {
         "default": 1,
         "laboratory": 2,
         "labyrinth": 4
@@ -290,7 +290,7 @@
           "value": 50000
         }
       ],
-      "locationMultipler": {
+      "locationMultiplier": {
         "default": 1,
         "laboratory": 2,
         "labyrinth": 4
@@ -324,7 +324,7 @@
           "value": 2500000
         }
       ],
-      "locationMultipler": {
+      "locationMultiplier": {
         "default": 1,
         "laboratory": 2,
         "labyrinth": 4

@@ -172,8 +172,8 @@ public record LootContainerSettings
     [JsonPropertyName("totalRubByLevel")]
     public List<MinMaxLootValue> TotalRubByLevel { get; set; }
 
-    [JsonPropertyName("locationMultipler")]
-    public Dictionary<string, double> LocationMultipler { get; set; }
+    [JsonPropertyName("locationMultiplier")]
+    public Dictionary<string, double> LocationMultiplier { get; set; }
 }
 
 public record HostilitySettings

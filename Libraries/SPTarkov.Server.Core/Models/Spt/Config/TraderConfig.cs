@@ -24,7 +24,7 @@ public record TraderConfig : BaseConfig
     [JsonPropertyName("tradersResetFromServerStart")]
     public bool TradersResetFromServerStart { get; set; }
 
-    [JsonPropertyName("traderPriceMultipler")]
+    [JsonPropertyName("traderPriceMultiplier")]
     public double TraderPriceMultiplier { get; set; }
 
     [JsonPropertyName("fence")]

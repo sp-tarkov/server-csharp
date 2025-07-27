@@ -1,6 +1,5 @@
 {
   "dynamic": {
-    "_currencies": "what percentage of the offers are in each currency",
     "armor": {
       "plateSlotIdToRemovePool": [
         "front_plate",
@@ -229,7 +228,7 @@
         }
       }
     },
-    "currencies": {
+    "offerCurrencyChancePercent": {
       "5449016a4bdc2d6f028b456f": 78,
       "5696686a4bdc2da3298b456a": 14,
       "569668774bdc2da2298b4568": 8
