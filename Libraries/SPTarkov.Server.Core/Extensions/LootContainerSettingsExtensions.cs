@@ -24,9 +24,9 @@ namespace SPTarkov.Server.Core.Extensions
             }
 
             // Get multiplier for map, use default if map not found
-            if (!settings.LocationMultipler.TryGetValue(locationId, out var multiplier))
+            if (!settings.LocationMultiplier.TryGetValue(locationId, out var multiplier))
             {
-                if (!settings.LocationMultipler.TryGetValue("default", out multiplier))
+                if (!settings.LocationMultiplier.TryGetValue("default", out multiplier))
                 {
                     return roubleTotalByLevel;
                 }
