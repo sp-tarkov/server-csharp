@@ -199,7 +199,7 @@ public class RagfairServerHelper(
     /// <returns>Currency TPL</returns>
     public MongoId GetDynamicOfferCurrency()
     {
-        return weightedRandomHelper.GetWeightedValue(ragfairConfig.Dynamic.Currencies);
+        return weightedRandomHelper.GetWeightedValue(ragfairConfig.Dynamic.OfferCurrencyChangePercent);
     }
 
     /// <summary>

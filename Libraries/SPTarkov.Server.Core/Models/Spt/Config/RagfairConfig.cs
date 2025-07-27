@@ -202,10 +202,10 @@ public record Dynamic
     public Dictionary<MongoId, double>? ItemPriceMultiplier { get; set; }
 
     /// <summary>
-    ///     Percentages to sell offers in each currency
+    ///     Percentage chance for offers to be listed in specified currency
     /// </summary>
-    [JsonPropertyName("currencies")]
-    public required Dictionary<MongoId, double> Currencies { get; set; }
+    [JsonPropertyName("offerCurrencyChancePercent")]
+    public required Dictionary<MongoId, double> OfferCurrencyChangePercent { get; set; }
 
     /// <summary>
     ///     Item tpls that should be forced to sell as a single item
