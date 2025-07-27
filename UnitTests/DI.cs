@@ -40,7 +40,7 @@ public class DI
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(App));
         diHandler.AddInjectableTypesFromTypeList(
             [
-                typeof(MockLogger<>), /* TODO: this needs to be enabled but the randomizer needs to NOT be random, typeof(MockRandomUtil)*/
+                typeof(MockLogger<>), // TODO: this needs to be enabled but the randomizer needs to NOT be random, typeof(MockRandomUtil)
             ]
         );
 

@@ -148,7 +148,7 @@ public class RepeatableQuestHelper(
 
         // Force REF templates to use prapors ID - solves missing text issue
         // TODO: Get rid of this new mongoid generation, needs handled in `Traders` but can't be done right now.
-        var desiredTraderId = traderId == Traders.REF ? new MongoId(Traders.PRAPOR) : traderId;
+        var desiredTraderId = traderId == Traders.REF ? Traders.PRAPOR : traderId;
 
         //  In locale, these id correspond to the text of quests
         //  template ids -pmc  : Elimination = 616052ea3054fc0e2c24ce6e / Completion = 61604635c725987e815b1a46 / Exploration = 616041eb031af660100c9967
