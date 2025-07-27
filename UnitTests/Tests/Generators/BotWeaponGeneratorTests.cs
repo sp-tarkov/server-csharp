@@ -2,6 +2,8 @@
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Profile;
+using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 
 namespace UnitTests.Tests.Generators;
@@ -12,6 +14,7 @@ public class BotWeaponGeneratorTests
     private BotWeaponGenerator _botWeaponGenerator;
     private DatabaseService _databaseService;
     private InventoryHelper _inventoryHelper;
+    private SaveServer _saveServer;
 
     [OneTimeSetUp]
     public void Initialize()
@@ -19,6 +22,7 @@ public class BotWeaponGeneratorTests
         _botWeaponGenerator = DI.GetInstance().GetService<BotWeaponGenerator>();
         _databaseService = DI.GetInstance().GetService<DatabaseService>();
         _inventoryHelper = DI.GetInstance().GetService<InventoryHelper>();
+        _saveServer = DI.GetInstance().GetService<SaveServer>();
     }
 
     [Test]
@@ -27,7 +31,10 @@ public class BotWeaponGeneratorTests
         var usecTemplate = _databaseService.GetBots().Types["usec"];
         var botTemplateInventory = usecTemplate.BotInventory;
 
+        // Create profile stub to allow `GenerateWeaponByTpl` to work
         var sessionId = new MongoId();
+        _saveServer.CreateProfile(new Info() { ProfileId = sessionId });
+
         var weaponTpl = ItemTpl.ASSAULTRIFLE_COLT_M4A1_556X45_ASSAULT_RIFLE;
         const string slotName = "FirstPrimaryWeapon";
         var weaponModChances = usecTemplate.BotChances.WeaponModsChances;
