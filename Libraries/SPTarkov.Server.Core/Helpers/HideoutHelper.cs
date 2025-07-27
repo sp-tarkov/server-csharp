@@ -1033,63 +1033,65 @@ public class HideoutHelper(
         // Hideout management resource consumption bonus:
         var hideoutManagementConsumptionBonus = 1.0 - GetHideoutManagementConsumptionBonus(pmcData);
         filterDrainRate *= hideoutManagementConsumptionBonus;
-        double pointsConsumed;
 
         for (var i = 0; i < airFilterArea.Slots.Count; i++)
         {
-            if (airFilterArea.Slots[i].Items is not null)
+            if (airFilterArea.Slots[i]?.Items is null)
             {
-                var resourceValue = airFilterArea.Slots[i].Items[0].Upd?.Resource is not null
-                    ? airFilterArea.Slots[i].Items[0].Upd.Resource.Value
-                    : null;
-
-                if (resourceValue is null)
-                {
-                    resourceValue = 300 - filterDrainRate;
-                    pointsConsumed = filterDrainRate ?? 0;
-                }
-                else
-                {
-                    pointsConsumed =
-                        (airFilterArea.Slots[i].Items[0].Upd.Resource.UnitsConsumed ?? 0)
-                            + filterDrainRate
-                        ?? 0;
-                    resourceValue -= filterDrainRate;
-                }
-
-                resourceValue = Math.Round(resourceValue * 10000 ?? 0) / 10000;
-                pointsConsumed = Math.Round(pointsConsumed * 10000) / 10000;
-
-                // check unit consumed for increment skill point
-                if (pmcData is not null && Math.Floor(pointsConsumed / 10) >= 1)
-                {
-                    profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.HideoutManagement, 1);
-                    pointsConsumed -= 10;
-                }
-
-                if (resourceValue > 0)
-                {
-                    airFilterArea.Slots[i].Items[0].Upd = new Upd
-                    {
-                        StackObjectsCount = 1,
-                        Resource = new UpdResource
-                        {
-                            Value = resourceValue,
-                            UnitsConsumed = pointsConsumed,
-                        },
-                    };
-                    if (logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        logger.Debug($"Air filter: {resourceValue} filter left on slot {i + 1}");
-                    }
-
-                    break; // Break here to avoid updating all filters
-                }
-
-                airFilterArea.Slots[i].Items = null;
-                // Update remaining resources to be subtracted
-                filterDrainRate = Math.Abs(resourceValue ?? 0);
+                continue;
             }
+
+            var resourceValue = airFilterArea.Slots[i].Items[0].Upd?.Resource is not null
+                ? airFilterArea.Slots[i].Items[0].Upd.Resource.Value
+                : null;
+
+            double pointsConsumed;
+            if (resourceValue is null)
+            {
+                resourceValue = 300 - filterDrainRate;
+                pointsConsumed = filterDrainRate ?? 0;
+            }
+            else
+            {
+                pointsConsumed =
+                    (airFilterArea.Slots[i].Items[0].Upd.Resource.UnitsConsumed ?? 0)
+                        + filterDrainRate
+                    ?? 0;
+                resourceValue -= filterDrainRate;
+            }
+
+            resourceValue = Math.Round(resourceValue * 10000 ?? 0) / 10000;
+            pointsConsumed = Math.Round(pointsConsumed * 10000) / 10000;
+
+            // check unit consumed for increment skill point
+            if (pmcData is not null && Math.Floor(pointsConsumed / 10) >= 1)
+            {
+                profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.HideoutManagement, 1);
+                pointsConsumed -= 10;
+            }
+
+            if (resourceValue > 0)
+            {
+                airFilterArea.Slots[i].Items[0].Upd = new Upd
+                {
+                    StackObjectsCount = 1,
+                    Resource = new UpdResource
+                    {
+                        Value = resourceValue,
+                        UnitsConsumed = pointsConsumed,
+                    },
+                };
+                if (logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    logger.Debug($"Air filter: {resourceValue} filter left on slot {i + 1}");
+                }
+
+                break; // Break here to avoid updating all filters
+            }
+
+            airFilterArea.Slots[i].Items = null;
+            // Update remaining resources to be subtracted
+            filterDrainRate = Math.Abs(resourceValue ?? 0);
         }
     }
 
