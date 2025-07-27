@@ -446,7 +446,7 @@ public record Spt
     public PendingPrestige? PendingPrestige { get; set; }
 
     [JsonPropertyName("extraRepeatableQuests")]
-    public Dictionary<string, double>? ExtraRepeatableQuests { get; set; }
+    public Dictionary<MongoId, double>? ExtraRepeatableQuests { get; set; }
 }
 
 public record AcceptedCultistReward

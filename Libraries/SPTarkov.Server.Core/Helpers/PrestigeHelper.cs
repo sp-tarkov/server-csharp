@@ -191,7 +191,10 @@ public class PrestigeHelper(
                 }
                 case RewardType.ExtraDailyQuest:
                 {
-                    newProfile.AddExtraRepeatableQuest(reward.Target, (double)reward.Value);
+                    newProfile.AddExtraRepeatableQuest(
+                        new MongoId(reward.Target),
+                        (double)reward.Value
+                    );
                     break;
                 }
                 default:

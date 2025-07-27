@@ -209,11 +209,11 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="rewardValue">The number of extra repeatables to add</param>
         public static void AddExtraRepeatableQuest(
             this SptProfile fullProfile,
-            string repeatableId,
+            MongoId repeatableId,
             double rewardValue
         )
         {
-            fullProfile.SptData.ExtraRepeatableQuests ??= new Dictionary<string, double>();
+            fullProfile.SptData.ExtraRepeatableQuests ??= new Dictionary<MongoId, double>();
 
             if (!fullProfile.SptData.ExtraRepeatableQuests.TryAdd(repeatableId, 0))
             {

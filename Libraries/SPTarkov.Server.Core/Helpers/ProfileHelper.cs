@@ -214,11 +214,11 @@ public class ProfileHelper(
             Mods = [],
             ReceivedGifts = [],
             BlacklistedItemTemplates = [],
-            FreeRepeatableRefreshUsedCount = new Dictionary<string, int>(),
-            Migrations = new Dictionary<string, long>(),
-            CultistRewards = new Dictionary<string, AcceptedCultistReward>(),
+            FreeRepeatableRefreshUsedCount = new(),
+            Migrations = new(),
+            CultistRewards = new(),
             PendingPrestige = null,
-            ExtraRepeatableQuests = new Dictionary<string, double>(),
+            ExtraRepeatableQuests = new(),
         };
     }
 
