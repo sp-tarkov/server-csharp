@@ -1594,7 +1594,7 @@
     "allowBossItems": false
   },
   "customMoneyTpls": [],
-  "skillGainMultiplers": {
+  "skillGainMultipliers": {
     "Strength": 1
   },
   "deprioritisedMoneyContainers": [
