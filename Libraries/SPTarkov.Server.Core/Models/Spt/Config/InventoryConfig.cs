@@ -23,7 +23,7 @@ public record InventoryConfig : BaseConfig
     /// <summary>
     ///     Multipliers for skill gain when inside menus, NOT in-game
     /// </summary>
-    [JsonPropertyName("skillGainMultiplers")]
+    [JsonPropertyName("skillGainMultipliers")]
     public required Dictionary<string, double> SkillGainMultipliers { get; set; }
 
     /// <summary>
