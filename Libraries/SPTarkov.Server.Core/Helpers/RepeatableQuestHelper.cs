@@ -150,10 +150,9 @@ public class RepeatableQuestHelper(
         // TODO: Get rid of this new mongoid generation, needs handled in `Traders` but can't be done right now.
         var desiredTraderId = traderId == Traders.REF ? new MongoId(Traders.PRAPOR) : traderId;
 
-        /*  in locale, these id correspond to the text of quests
-            template ids -pmc  : Elimination = 616052ea3054fc0e2c24ce6e / Completion = 61604635c725987e815b1a46 / Exploration = 616041eb031af660100c9967
-            template ids -scav : Elimination = 62825ef60e88d037dc1eb428 / Completion = 628f588ebb558574b2260fe5 / Exploration = 62825ef60e88d037dc1eb42c
-        */
+        //  In locale, these id correspond to the text of quests
+        //  template ids -pmc  : Elimination = 616052ea3054fc0e2c24ce6e / Completion = 61604635c725987e815b1a46 / Exploration = 616041eb031af660100c9967
+        //  template ids -scav : Elimination = 62825ef60e88d037dc1eb428 / Completion = 628f588ebb558574b2260fe5 / Exploration = 62825ef60e88d037dc1eb42c
 
         questData.Name = questData
             .Name.Replace("{traderId}", traderId)

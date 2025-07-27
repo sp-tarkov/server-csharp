@@ -1,6 +1,4 @@
 ﻿using System.Collections.Frozen;
-using System.Net;
-using System.Net.Sockets;
 using Microsoft.AspNetCore.Http;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -62,11 +60,10 @@ public class HttpServerHelper(ConfigServer configServer)
     {
         resp.Headers.Append("Content-Type", mime["json"]);
         resp.StatusCode = 200;
-        /* TODO: figure this one out
-        resp.writeHead(200, "OK",  {
-            "Content-Type": this.mime.json
-        });
-        resp.end(output);
-        */
+        //  TODO: figure this one out
+        // resp.writeHead(200, "OK",  {
+        //     "Content-Type": this.mime.json
+        // });
+        // resp.end(output);
     }
 }

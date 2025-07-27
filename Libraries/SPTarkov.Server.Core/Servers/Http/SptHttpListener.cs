@@ -194,7 +194,7 @@ public class SptHttpListener(
     {
         var output = await _router.GetResponse(req, sessionId, body);
 
-        /* route doesn't exist or response is not properly set up */
+        // Route doesn't exist or response is not properly set up
         if (string.IsNullOrEmpty(output))
         {
             _logger.Error(

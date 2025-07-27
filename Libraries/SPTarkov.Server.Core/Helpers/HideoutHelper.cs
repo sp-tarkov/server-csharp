@@ -1023,10 +1023,9 @@ public class HideoutHelper(
     )
     {
         // 300 resources last 20 hrs, 300/20/60/60 = 0.00416
-        /* 10-10-2021 from WIKI (https://escapefromtarkov.fandom.com/wiki/FP-100_filter_absorber)
-            Lasts for 17 hours 38 minutes and 49 seconds (23 hours 31 minutes and 45 seconds with elite hideout management skill),
-            300/17.64694/60/60 = 0.004722
-        */
+        // 10-10-2021 from WIKI (https://escapefromtarkov.fandom.com/wiki/FP-100_filter_absorber)
+        //   Lasts for 17 hours 38 minutes and 49 seconds (23 hours 31 minutes and 45 seconds with elite hideout management skill),
+        //   300/17.64694/60/60 = 0.004722
         var filterDrainRate =
             databaseService.GetHideout().Settings.AirFilterUnitFlowRate
             * GetTimeElapsedSinceLastServerTick(pmcData, isGeneratorOn);

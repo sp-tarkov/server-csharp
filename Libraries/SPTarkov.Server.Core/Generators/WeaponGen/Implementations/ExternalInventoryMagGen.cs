@@ -85,9 +85,9 @@ public class ExternalInventoryMagGen(
                     break;
                 }
 
-                /* We were unable to fit at least the minimum amount of magazines,
-                 * so we fallback to default magazine and try again.
-                 * Temporary workaround to Killa spawning with no extra mags if he spawns with a drum mag */
+                // We were unable to fit at least the minimum amount of magazines,
+                // Fallback to default magazine and try again.
+                // Temporary workaround to Killa spawning with no extra mags if he spawns with a drum mag
 
                 if (magazineTpl == defaultMagazineTpl)
                 // We were already on default - stop here to prevent infinite loop
