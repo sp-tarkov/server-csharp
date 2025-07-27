@@ -1,8 +1,8 @@
 {
-    "ip": "127.0.0.1",
-    "port": 6969,
-    "backendIp": "127.0.0.1",
-    "backendPort": 6969,
-    "logRequests": true,
-    "serverImagePathOverride": {}
+  "ip": "127.0.0.1",
+  "port": 6969,
+  "backendIp": "127.0.0.1",
+  "backendPort": 6969,
+  "logRequests": true,
+  "serverImagePathOverride": {}
 }

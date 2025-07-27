@@ -670,7 +670,7 @@
   "repeatable-unable_to_find_location_id_for_location_name": "Unable to find a locationId for: %s",
   "repeatable-unable_to_find_exits_for_location": "Unable to get location exits for location: %s",
   "repeatable-unable_choose_exit_pool_empty": "Unable to choose specific exit for map: %s as exit pool is empty",
-  "repeatable-eliminationQuestGenerationData-is-null" : "Elimination generation data is null",
+  "repeatable-eliminationQuestGenerationData-is-null": "Elimination generation data is null",
   "repeatable-no-bot-types-remain": "No remaining bot types remain in pool, skipping Elimination quest generation",
   "repeatable-unable-targets-are-null": "Unable to generate Elimination quest generation, targets are null",
   "repeatable-unable-get-target-pool": "Unable to get targetLocationPool for bot type: %s",

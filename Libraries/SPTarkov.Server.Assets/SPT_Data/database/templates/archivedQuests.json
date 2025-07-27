@@ -1,126 +1,151 @@
 {
-	    "5d25dae186f77443e55d2f78": {
-        "QuestName": "The survivalist path. Zatoichi",
-        "_id": "5d25dae186f77443e55d2f78",
-        "canShowNotificationsInGame": true,
-        "conditions": {
-            "AvailableForFinish": [{
-                    "_parent": "CounterCreator",
-                    "_props": {
-                        "counter": {
-                            "conditions": [{
-                                    "_parent": "Kills",
-                                    "_props": {
-                                        "compareMethod": ">=",
-                                        "id": "5d25dc3486f77408251c4bf8",
-                                        "target": "AnyPmc",
-                                        "value": "1"
-                                    }
-                                }, {
-                                    "_parent": "HealthEffect",
-                                    "_props": {
-                                        "bodyPartsWithEffects": [{
-                                                "bodyParts": ["Head", "Chest", "Stomach", "LeftArm", "RightArm", "LeftLeg", "RightLeg"],
-                                                "effects": ["Stun"]
-                                            }
-                                        ],
-                                        "id": "5d25dfb686f77444001e2e47"
-                                    }
-                                }
-                            ],
-                            "id": "5d25dc2286f77443e7549027"
-                        },
-                        "id": "5d25dc2286f77443e7549028",
-                        "index": 0,
-                        "parentId": "",
-                        "type": "Elimination",
-                        "value": "2"
-                    }
+  "5d25dae186f77443e55d2f78": {
+    "QuestName": "The survivalist path. Zatoichi",
+    "_id": "5d25dae186f77443e55d2f78",
+    "canShowNotificationsInGame": true,
+    "conditions": {
+      "AvailableForFinish": [
+        {
+          "_parent": "CounterCreator",
+          "_props": {
+            "counter": {
+              "conditions": [
+                {
+                  "_parent": "Kills",
+                  "_props": {
+                    "compareMethod": ">=",
+                    "id": "5d25dc3486f77408251c4bf8",
+                    "target": "AnyPmc",
+                    "value": "1"
+                  }
+                },
+                {
+                  "_parent": "HealthEffect",
+                  "_props": {
+                    "bodyPartsWithEffects": [
+                      {
+                        "bodyParts": [
+                          "Head",
+                          "Chest",
+                          "Stomach",
+                          "LeftArm",
+                          "RightArm",
+                          "LeftLeg",
+                          "RightLeg"
+                        ],
+                        "effects": [
+                          "Stun"
+                        ]
+                      }
+                    ],
+                    "id": "5d25dfb686f77444001e2e47"
+                  }
                 }
+              ],
+              "id": "5d25dc2286f77443e7549027"
+            },
+            "id": "5d25dc2286f77443e7549028",
+            "index": 0,
+            "parentId": "",
+            "type": "Elimination",
+            "value": "2"
+          }
+        }
+      ],
+      "AvailableForStart": [
+        {
+          "_parent": "Quest",
+          "_props": {
+            "id": "",
+            "index": 0,
+            "parentId": "",
+            "status": [
+              4
             ],
-            "AvailableForStart": [{
-                    "_parent": "Quest",
-                    "_props": {
-                        "id": "",
-                        "index": 0,
-                        "parentId": "",
-                        "status": [4],
-                        "target": "5d25d2c186f77443e35162e5"
-                    }
-                }
-            ],
-            "Fail": []
-        },
-        "image": "/files/quest/icon/5d67b66186f774266f0867b5.jpg",
-        "instantComplete": false,
-        "isKey": false,
-        "location": "any",
-        "min_level": 0,
-        "restartable": false,
-        "rewards": {
-            "Fail": [],
-            "Started": [],
-            "Success": [{
-                    "id": "5d66724a86f774368e1b7862",
-                    "index": 0,
-                    "type": "Experience",
-                    "value": "12000"
-                }, {
-                    "id": "5d66727886f774131e206b37",
-                    "index": 1,
-                    "items": [{
-                            "_id": "5e02be602a251a095227110b",
-                            "_tpl": "5449016a4bdc2d6f028b456f",
-                            "upd": {
-                                "StackObjectsCount": 30000
-                            }
-                        }
-                    ],
-                    "target": "5e02be602a251a095227110b",
-                    "type": "Item",
-                    "value": "30000"
-                }, {
-                    "id": "5d77cf9186f7745041358b52",
-                    "index": 2,
-                    "target": "5c0647fdd443bc2504c2d371",
-                    "type": "TraderStanding",
-                    "value": "0.03"
-                }, {
-                    "id": "5db2e34086f7742c9714d6f7",
-                    "index": 3,
-                    "items": [{
-                            "_id": "5e02be602a251a095227110c",
-                            "_tpl": "5c0d591486f7744c505b416f",
-                            "upd": {
-                                "StackObjectsCount": 30
-                            }
-                        }
-                    ],
-                    "target": "5e02be602a251a095227110c",
-                    "type": "Item",
-                    "value": "30"
-                }, {
-                    "id": "5db2fd7c86f7743a177e96c3",
-                    "index": 4,
-                    "items": [{
-                            "_id": "5e02be602a251a095227110d",
-                            "_tpl": "5c0d5ae286f7741e46554302",
-                            "upd": {
-                                "StackObjectsCount": 80
-                            }
-                        }
-                    ],
-                    "target": "5e02be602a251a095227110d",
-                    "type": "Item",
-                    "value": "80"
-                }
-            ]
-        },
-        "secretQuest": false,
-        "traderId": "5c0647fdd443bc2504c2d371",
-        "type": "Completion"
+            "target": "5d25d2c186f77443e35162e5"
+          }
+        }
+      ],
+      "Fail": []
     },
-	"636a2f5759cb834f8a5825d6": {
+    "image": "/files/quest/icon/5d67b66186f774266f0867b5.jpg",
+    "instantComplete": false,
+    "isKey": false,
+    "location": "any",
+    "min_level": 0,
+    "restartable": false,
+    "rewards": {
+      "Fail": [],
+      "Started": [],
+      "Success": [
+        {
+          "id": "5d66724a86f774368e1b7862",
+          "index": 0,
+          "type": "Experience",
+          "value": "12000"
+        },
+        {
+          "id": "5d66727886f774131e206b37",
+          "index": 1,
+          "items": [
+            {
+              "_id": "5e02be602a251a095227110b",
+              "_tpl": "5449016a4bdc2d6f028b456f",
+              "upd": {
+                "StackObjectsCount": 30000
+              }
+            }
+          ],
+          "target": "5e02be602a251a095227110b",
+          "type": "Item",
+          "value": "30000"
+        },
+        {
+          "id": "5d77cf9186f7745041358b52",
+          "index": 2,
+          "target": "5c0647fdd443bc2504c2d371",
+          "type": "TraderStanding",
+          "value": "0.03"
+        },
+        {
+          "id": "5db2e34086f7742c9714d6f7",
+          "index": 3,
+          "items": [
+            {
+              "_id": "5e02be602a251a095227110c",
+              "_tpl": "5c0d591486f7744c505b416f",
+              "upd": {
+                "StackObjectsCount": 30
+              }
+            }
+          ],
+          "target": "5e02be602a251a095227110c",
+          "type": "Item",
+          "value": "30"
+        },
+        {
+          "id": "5db2fd7c86f7743a177e96c3",
+          "index": 4,
+          "items": [
+            {
+              "_id": "5e02be602a251a095227110d",
+              "_tpl": "5c0d5ae286f7741e46554302",
+              "upd": {
+                "StackObjectsCount": 80
+              }
+            }
+          ],
+          "target": "5e02be602a251a095227110d",
+          "type": "Item",
+          "value": "80"
+        }
+      ]
+    },
+    "secretQuest": false,
+    "traderId": "5c0647fdd443bc2504c2d371",
+    "type": "Completion"
+  },
+  "636a2f5759cb834f8a5825d6": {
     "QuestName": "Letters",
     "_id": "636a2f5759cb834f8a5825d6",
     "canShowNotificationsInGame": true,

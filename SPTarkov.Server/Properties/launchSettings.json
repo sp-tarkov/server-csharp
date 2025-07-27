@@ -1,9 +1,9 @@
 {
-    "profiles": {
-        "Spt Server": {
-            "commandName": "Project",
-            "hotReloadEnabled": false,
-            "workingDirectory": "$(OutDir)"
-        }
+  "profiles": {
+    "Spt Server": {
+      "commandName": "Project",
+      "hotReloadEnabled": false,
+      "workingDirectory": "$(OutDir)"
     }
+  }
 }

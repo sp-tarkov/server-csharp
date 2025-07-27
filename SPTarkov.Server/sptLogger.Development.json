@@ -9,7 +9,6 @@
       "maxFileSizeMB": 10,
       "maxRollingFiles": 10,
       "filters": [
-
         {
           "type": "Include",
           "name": "Microsoft.*",

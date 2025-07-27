@@ -1,8 +1,8 @@
 {
-    "healthMultipliers": {
-        "blacked": 0.1
-    },
-    "save": {
-        "health": true
-    }
+  "healthMultipliers": {
+    "blacked": 0.1
+  },
+  "save": {
+    "health": true
+  }
 }

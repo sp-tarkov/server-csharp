@@ -175,7 +175,7 @@
         },
         "weapon": {
           "highestMax": 100,
-        "lowestMax": 85,
+          "lowestMax": 85,
           "maxDelta": 10,
           "minDelta": 0,
           "minLimitPercent": 15
@@ -225,15 +225,15 @@
       },
       "follower": {
         "armor": {
-        "highestMaxPercent": 100,
-        "lowestMaxPercent": 90,
+          "highestMaxPercent": 100,
+          "lowestMaxPercent": 90,
           "maxDelta": 10,
           "minDelta": 0,
           "minLimitPercent": 15
         },
         "weapon": {
           "highestMax": 100,
-        "lowestMax": 85,
+          "lowestMax": 85,
           "maxDelta": 40,
           "minDelta": 20,
           "minLimitPercent": 15
@@ -2399,7 +2399,7 @@
                 "60db29ce99594040e04c4a27": 0,
                 "61f7c9e189e6fb1a5e3ea78d": 0,
                 "65290f395ae2ae97b80fdf2d": 10,
-				"67d0576f29f580ebc10efd08": 1
+                "67d0576f29f580ebc10efd08": 1
               },
               "Headwear": {
                 "5aa7e276e5b5b000171d0647": 50,
@@ -2860,17 +2860,17 @@
     ]
   },
   "weeklyBoss": {
-	  "enabled": true,
-      "bossPool": [
-          "bossBully",
-          "bossTagilla",
-          "bossGluhar",
-          "bossKilla",
-          "bossKojaniy",
-          "bossSanitar",
-          "bossKolontay",
-          "bossKnight"
-	  ],
-	  "resetDay": "Monday"
+    "enabled": true,
+    "bossPool": [
+      "bossBully",
+      "bossTagilla",
+      "bossGluhar",
+      "bossKilla",
+      "bossKojaniy",
+      "bossSanitar",
+      "bossKolontay",
+      "bossKnight"
+    ],
+    "resetDay": "Monday"
   }
 }

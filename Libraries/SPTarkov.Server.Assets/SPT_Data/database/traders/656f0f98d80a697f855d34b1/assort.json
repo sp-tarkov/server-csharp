@@ -1,10 +1,5 @@
 {
-    "barter_scheme": {
-     
-    },
-    "items": [
-       
-    ],
-    "loyal_level_items": {
-    }
+  "barter_scheme": {},
+  "items": [],
+  "loyal_level_items": {}
 }

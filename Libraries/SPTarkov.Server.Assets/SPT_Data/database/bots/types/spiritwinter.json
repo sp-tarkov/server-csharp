@@ -2037,8 +2037,8 @@
     },
     "reward": {
       "normal": {
-      "max": 275,
-      "min": 275
+        "max": 275,
+        "min": 275
       }
     },
     "standingForKill": {
