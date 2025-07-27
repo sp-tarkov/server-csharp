@@ -351,7 +351,7 @@ public record OfferAdjustment
     /// <summary>
     ///     How much to multiply the handbook price to get the new price
     /// </summary>
-    [JsonPropertyName("handbookPriceMultipier")]
+    [JsonPropertyName("handbookPriceMultiplier")]
     public double HandbookPriceMultiplier { get; set; }
 
     /// <summary>
