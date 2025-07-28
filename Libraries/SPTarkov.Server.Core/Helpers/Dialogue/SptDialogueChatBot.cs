@@ -18,8 +18,7 @@ public class SptDialogueChatBot(
     IEnumerable<IChatMessageHandler> chatMessageHandlers
 ) : IDialogueChatBot
 {
-    protected readonly IEnumerable<IChatMessageHandler> _chatMessageHandlers =
-        ChatMessageHandlerSetup(chatMessageHandlers);
+    protected readonly IEnumerable<IChatMessageHandler> _chatMessageHandlers = ChatMessageHandlerSetup(chatMessageHandlers);
     protected readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
     public UserDialogInfo GetChatBot()
@@ -57,20 +56,12 @@ public class SptDialogueChatBot(
             return new ValueTask<string>(request.DialogId);
         }
 
-        _mailSendService.SendUserMessageToPlayer(
-            sessionId,
-            GetChatBot(),
-            GetUnrecognizedCommandMessage(),
-            [],
-            null
-        );
+        _mailSendService.SendUserMessageToPlayer(sessionId, GetChatBot(), GetUnrecognizedCommandMessage(), [], null);
 
         return new ValueTask<string>(request.DialogId);
     }
 
-    protected static List<IChatMessageHandler> ChatMessageHandlerSetup(
-        IEnumerable<IChatMessageHandler> components
-    )
+    protected static List<IChatMessageHandler> ChatMessageHandlerSetup(IEnumerable<IChatMessageHandler> components)
     {
         var chatMessageHandlers = components.ToList();
         chatMessageHandlers.Sort((a, b) => a.GetPriority() - b.GetPriority());

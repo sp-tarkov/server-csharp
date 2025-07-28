@@ -4,10 +4,7 @@ namespace JsonExtensionDataGenerator;
 
 public class JsonExtensionDataGeneratorLauncher
 {
-    private static readonly Regex _recordAndClassRegex = new(
-        "^(public record |public class )",
-        RegexOptions.Multiline
-    );
+    private static readonly Regex _recordAndClassRegex = new("^(public record |public class )", RegexOptions.Multiline);
     private static readonly Regex _endRecordClassRegex = new("^}", RegexOptions.Multiline);
     private static readonly Regex _startRecordClassRegex = new("^{", RegexOptions.Multiline);
     private const int StartRecordClassOffset = 3;
@@ -41,17 +38,13 @@ public class JsonExtensionDataGeneratorLauncher
         var content = File.ReadAllText(modelFile);
         if (!content.Contains("public record ") && !content.Contains("public class "))
         {
-            Console.WriteLine(
-                $"File {fileName} doesn't contain any records or classes, skipping..."
-            );
+            Console.WriteLine($"File {fileName} doesn't contain any records or classes, skipping...");
             // Probably an enum or interface
             return;
         }
 
         var classesAndRecordsToProcessCount = _recordAndClassRegex.Matches(content).Count;
-        Console.WriteLine(
-            $"Found {classesAndRecordsToProcessCount} records or classes for {fileName}"
-        );
+        Console.WriteLine($"Found {classesAndRecordsToProcessCount} records or classes for {fileName}");
         var firstTimeFlag = false;
         var currentIndex = 0;
         try
@@ -62,15 +55,9 @@ public class JsonExtensionDataGeneratorLauncher
                 var endIndex = FindEndClassIndex(content, startIndex);
                 currentIndex = endIndex;
                 // Check if this class already has the tag anywhere
-                if (
-                    content
-                        .Substring(startIndex, endIndex - startIndex)
-                        .Contains("[JsonExtensionData]")
-                )
+                if (content.Substring(startIndex, endIndex - startIndex).Contains("[JsonExtensionData]"))
                 {
-                    Console.WriteLine(
-                        $"Class index {i} for {fileName} already contains [JsonExtensionData], skipping class..."
-                    );
+                    Console.WriteLine($"Class index {i} for {fileName} already contains [JsonExtensionData], skipping class...");
                     continue;
                 }
 
@@ -78,9 +65,7 @@ public class JsonExtensionDataGeneratorLauncher
                 {
                     if (extensions.Any(e => !e.StartsWith("I")))
                     {
-                        Console.WriteLine(
-                            $"Class index {i} for {fileName} extends a parent class, skipping..."
-                        );
+                        Console.WriteLine($"Class index {i} for {fileName} extends a parent class, skipping...");
                         continue;
                     }
                 }
@@ -90,9 +75,7 @@ public class JsonExtensionDataGeneratorLauncher
                 {
                     if (!content.Contains("using System.Text.Json.Serialization;"))
                     {
-                        Console.WriteLine(
-                            $"Class index {i} for {fileName} doesn't contain using for Json.Serialization. Adding."
-                        );
+                        Console.WriteLine($"Class index {i} for {fileName} doesn't contain using for Json.Serialization. Adding.");
                         // insert the using and adjust the indexes
                         content = Using + content;
                         startIndex += Using.Length;
@@ -105,8 +88,7 @@ public class JsonExtensionDataGeneratorLauncher
 
                 // We need to add StartRecordClassOffset to offset the EOL
                 var insertionIndex =
-                    _startRecordClassRegex.Match(content, startIndex, endIndex - startIndex).Index
-                    + StartRecordClassOffset;
+                    _startRecordClassRegex.Match(content, startIndex, endIndex - startIndex).Index + StartRecordClassOffset;
                 content = content.Insert(insertionIndex, Insertion);
                 Console.WriteLine($"Class index {i} for {fileName} processed.");
                 currentIndex += Insertion.Length;
@@ -122,21 +104,14 @@ public class JsonExtensionDataGeneratorLauncher
         }
     }
 
-    private static bool TryGetExtensions(
-        string content,
-        int startIndex,
-        int endIndex,
-        out IEnumerable<string> extensions
-    )
+    private static bool TryGetExtensions(string content, int startIndex, int endIndex, out IEnumerable<string> extensions)
     {
         extensions = null;
         var match = _extensionFinding.Match(content, startIndex, endIndex - startIndex);
         if (match.Success)
         {
             var extensionsGroup = match.Groups[8];
-            extensions = extensionsGroup.Captures.Select(c =>
-                _extensionCleanup.Replace(c.Value, "")
-            );
+            extensions = extensionsGroup.Captures.Select(c => _extensionCleanup.Replace(c.Value, ""));
             return true;
         }
 
@@ -157,12 +132,7 @@ public class JsonExtensionDataGeneratorLauncher
     private static IEnumerable<string> LoadModelFiles()
     {
         var projectDir = Directory.GetParent("./").Parent.Parent.Parent.Parent.Parent;
-        var modelsDir = Path.Combine(
-            projectDir.FullName,
-            "Libraries",
-            "SPTarkov.Server.Core",
-            "Models"
-        );
+        var modelsDir = Path.Combine(projectDir.FullName, "Libraries", "SPTarkov.Server.Core", "Models");
         return Directory.GetFiles(modelsDir, "*.cs", SearchOption.AllDirectories);
     }
 }

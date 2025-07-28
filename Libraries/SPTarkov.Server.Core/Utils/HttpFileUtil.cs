@@ -11,9 +11,7 @@ public class HttpFileUtil(HttpServerHelper httpServerHelper)
     {
         var pathSlice = filePath.Split("/");
         var mimePath = httpServerHelper.GetMimeText(pathSlice[^1].Split(".")[^1]);
-        var type = string.IsNullOrWhiteSpace(mimePath)
-            ? httpServerHelper.GetMimeText("txt")
-            : mimePath;
+        var type = string.IsNullOrWhiteSpace(mimePath) ? httpServerHelper.GetMimeText("txt") : mimePath;
         resp.Headers.Append("Content-Type", type);
         await resp.SendFileAsync(filePath, CancellationToken.None);
     }

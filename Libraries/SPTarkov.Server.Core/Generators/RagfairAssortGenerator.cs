@@ -55,11 +55,7 @@ public class RagfairAssortGenerator(
         IEnumerable<List<Item>> results = [];
 
         // Get cloned items from db
-        var dbItems = databaseService
-            .GetItems()
-            .Where(item =>
-                !string.Equals(item.Value.Type, "Node", StringComparison.OrdinalIgnoreCase)
-            );
+        var dbItems = databaseService.GetItems().Where(item => !string.Equals(item.Value.Type, "Node", StringComparison.OrdinalIgnoreCase));
 
         // Store processed preset tpls so we don't add them when processing non-preset items
         HashSet<MongoId> processedArmorItems = [];
@@ -96,11 +92,7 @@ public class RagfairAssortGenerator(
             }
 
             // Skip seasonal items when not in-season
-            if (
-                RagfairConfig.Dynamic.RemoveSeasonalItemsWhenNotInEvent
-                && !seasonalEventActive
-                && seasonalItemTplBlacklist.Contains(id)
-            )
+            if (RagfairConfig.Dynamic.RemoveSeasonalItemsWhenNotInEvent && !seasonalEventActive && seasonalItemTplBlacklist.Contains(id))
             {
                 continue;
             }

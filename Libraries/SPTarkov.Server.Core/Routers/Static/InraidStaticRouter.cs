@@ -16,32 +16,21 @@ public class InraidStaticRouter : StaticRouter
             [
                 new RouteAction(
                     "/raid/profile/scavsave",
-                    async (url, info, sessionID, output) =>
-                        await inRaidCallbacks.SaveProgress(
-                            url,
-                            info as ScavSaveRequestData,
-                            sessionID
-                        ),
+                    async (url, info, sessionID, output) => await inRaidCallbacks.SaveProgress(url, info as ScavSaveRequestData, sessionID),
                     typeof(ScavSaveRequestData)
                 ),
                 new RouteAction(
                     "/singleplayer/settings/raid/menu",
-                    async (url, info, sessionID, output) =>
-                        await inRaidCallbacks.GetRaidMenuSettings()
+                    async (url, info, sessionID, output) => await inRaidCallbacks.GetRaidMenuSettings()
                 ),
                 new RouteAction(
                     "/singleplayer/scav/traitorscavhostile",
                     async (url, info, sessionID, output) =>
-                        await inRaidCallbacks.GetTraitorScavHostileChance(
-                            url,
-                            info as EmptyRequestData,
-                            sessionID
-                        )
+                        await inRaidCallbacks.GetTraitorScavHostileChance(url, info as EmptyRequestData, sessionID)
                 ),
                 new RouteAction(
                     "/singleplayer/bosstypes",
-                    async (url, info, sessionID, output) =>
-                        await inRaidCallbacks.GetBossTypes(url, info as EmptyRequestData, sessionID)
+                    async (url, info, sessionID, output) => await inRaidCallbacks.GetBossTypes(url, info as EmptyRequestData, sessionID)
                 ),
             ]
         ) { }

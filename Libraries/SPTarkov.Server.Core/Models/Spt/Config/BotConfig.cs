@@ -32,10 +32,7 @@ public record BotConfig : BaseConfig
     ///     Controls the percentage values of randomization item resources
     /// </summary>
     [JsonPropertyName("lootItemResourceRandomization")]
-    public required Dictionary<
-        string,
-        RandomisedResourceDetails
-    > LootItemResourceRandomization { get; set; }
+    public required Dictionary<string, RandomisedResourceDetails> LootItemResourceRandomization { get; set; }
 
     /// <summary>
     ///     Control how many items are allowed to spawn on a bot <br />
@@ -103,10 +100,7 @@ public record BotConfig : BaseConfig
     ///     Currency weights, Keyed by botrole / currency
     /// </summary>
     [JsonPropertyName("currencyStackSize")]
-    public required Dictionary<
-        string,
-        Dictionary<string, Dictionary<string, double>>
-    > CurrencyStackSize { get; set; }
+    public required Dictionary<string, Dictionary<string, Dictionary<string, double>>> CurrencyStackSize { get; set; }
 
     /// <summary>
     ///     Tpls for low profile gas blocks

@@ -17,8 +17,7 @@ public class MatchLocationService
         // Find group by id by iterating over all locations and looking for it by groupId
         foreach (var locationKvP in _locations)
         {
-            var matchingGroup = _locations[locationKvP.Key]
-                .Groups.FirstOrDefault(groupKvP => groupKvP == request.GroupId);
+            var matchingGroup = _locations[locationKvP.Key].Groups.FirstOrDefault(groupKvP => groupKvP == request.GroupId);
             if (matchingGroup != null)
             {
                 _locations[locationKvP.Key].Groups.Remove(request.GroupId);

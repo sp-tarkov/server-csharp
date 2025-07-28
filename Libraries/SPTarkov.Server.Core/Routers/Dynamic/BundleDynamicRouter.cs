@@ -15,8 +15,7 @@ public class BundleDynamicRouter : DynamicRouter
             [
                 new RouteAction(
                     "/files/bundle",
-                    async (url, info, sessionID, output) =>
-                        await bundleCallbacks.GetBundle(url, info as EmptyRequestData, sessionID)
+                    async (url, info, sessionID, output) => await bundleCallbacks.GetBundle(url, info as EmptyRequestData, sessionID)
                 ),
             ]
         ) { }

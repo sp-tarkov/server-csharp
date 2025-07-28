@@ -27,10 +27,7 @@ public class TraderPurchasePersisterService(
     /// <param name="sessionId"> Session id </param>
     /// <param name="traderId"> Trader to loop up purchases for </param>
     /// <returns> Dictionary of assort id and count purchased </returns>
-    public Dictionary<MongoId, TraderPurchaseData>? GetProfileTraderPurchases(
-        MongoId sessionId,
-        MongoId traderId
-    )
+    public Dictionary<MongoId, TraderPurchaseData>? GetProfileTraderPurchases(MongoId sessionId, MongoId traderId)
     {
         var profile = profileHelper.GetFullProfile(sessionId);
 
@@ -44,11 +41,7 @@ public class TraderPurchasePersisterService(
     /// <param name="traderId"> Trader to loop up purchases for </param>
     /// <param name="assortId"> ID of assort to get data for </param>
     /// <returns> TraderPurchaseData </returns>
-    public TraderPurchaseData? GetProfileTraderPurchase(
-        MongoId sessionId,
-        MongoId traderId,
-        string assortId
-    )
+    public TraderPurchaseData? GetProfileTraderPurchase(MongoId sessionId, MongoId traderId, string assortId)
     {
         var profile = profileHelper.GetFullProfile(sessionId);
 
@@ -120,9 +113,7 @@ public class TraderPurchasePersisterService(
 
             foreach (var purchaseKvP in purchasesFromTrader)
             {
-                var traderUpdateDetails = _traderConfig.UpdateTime.FirstOrDefault(x =>
-                    x.TraderId == traderId
-                );
+                var traderUpdateDetails = _traderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == traderId);
                 if (traderUpdateDetails is null)
                 {
                     logger.Error(
@@ -138,16 +129,11 @@ public class TraderPurchasePersisterService(
                 var purchaseDetails = purchaseKvP.Value;
                 var resetTimeForItem =
                     purchaseDetails.PurchaseTimestamp
-                    + randomUtil.GetDouble(
-                        traderUpdateDetails.Seconds.Min,
-                        traderUpdateDetails.Seconds.Max
-                    );
+                    + randomUtil.GetDouble(traderUpdateDetails.Seconds.Min, traderUpdateDetails.Seconds.Max);
                 if (resetTimeForItem < timeUtil.GetTimeStamp())
                 {
                     // Item was purchased far enough in past a trader refresh would have occured, remove purchase record from profile
-                    logger.Debug(
-                        $"Removed trader: {traderId} purchase: {purchaseKvP} from profile: {profile.ProfileInfo.ProfileId}"
-                    );
+                    logger.Debug($"Removed trader: {traderId} purchase: {purchaseKvP} from profile: {profile.ProfileInfo.ProfileId}");
 
                     profile.TraderPurchases[traderId].Remove(purchaseKvP.Key);
                 }

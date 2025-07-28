@@ -42,18 +42,12 @@ public class CustomizationController(
 
         var matchingSuits = suits?.Where(s => clothing.ContainsKey(s.SuiteId));
         matchingSuits = matchingSuits?.Where(s =>
-            clothing[s.SuiteId]?.Properties?.Side?.Contains(pmcData?.Info?.Side ?? string.Empty)
-            ?? false
+            clothing[s.SuiteId]?.Properties?.Side?.Contains(pmcData?.Info?.Side ?? string.Empty) ?? false
         );
 
         if (matchingSuits == null)
         {
-            throw new Exception(
-                serverLocalisationService.GetText(
-                    "customisation-unable_to_get_trader_suits",
-                    traderId
-                )
-            );
+            throw new Exception(serverLocalisationService.GetText("customisation-unable_to_get_trader_suits", traderId));
         }
 
         return matchingSuits.ToList();
@@ -67,23 +61,14 @@ public class CustomizationController(
     /// <param name="buyClothingRequest">Request object</param>
     /// <param name="sessionId">Session id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse BuyCustomisation(
-        PmcData pmcData,
-        BuyClothingRequestData buyClothingRequest,
-        MongoId sessionId
-    )
+    public ItemEventRouterResponse BuyCustomisation(PmcData pmcData, BuyClothingRequestData buyClothingRequest, MongoId sessionId)
     {
         var output = eventOutputHolder.GetOutput(sessionId);
 
         var traderOffer = GetTraderClothingOffer(sessionId, buyClothingRequest.Offer);
         if (traderOffer is null)
         {
-            logger.Error(
-                serverLocalisationService.GetText(
-                    "customisation-unable_to_find_suit_by_id",
-                    buyClothingRequest.Offer
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("customisation-unable_to_find_suit_by_id", buyClothingRequest.Offer));
             return output;
         }
 
@@ -130,9 +115,7 @@ public class CustomizationController(
         var fullProfile = profileHelper.GetFullProfile(sessionId);
 
         // Check if clothing can be found by id
-        return fullProfile.CustomisationUnlocks.Exists(customisation =>
-            Equals(customisation.Id, suitId)
-        );
+        return fullProfile.CustomisationUnlocks.Exists(customisation => Equals(customisation.Id, suitId));
     }
 
     /// <summary>
@@ -146,12 +129,7 @@ public class CustomizationController(
         var foundSuit = GetAllTraderSuits(sessionId).FirstOrDefault(s => s.Id == offerId);
         if (foundSuit is null)
         {
-            logger.Error(
-                serverLocalisationService.GetText(
-                    "customisation-unable_to_find_suit_with_id",
-                    offerId
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("customisation-unable_to_find_suit_with_id", offerId));
         }
 
         return foundSuit;
@@ -180,14 +158,7 @@ public class CustomizationController(
         {
             var options = new ProcessBuyTradeRequestData
             {
-                SchemeItems =
-                [
-                    new IdWithCount
-                    {
-                        Count = inventoryItemToProcess.Count.Value,
-                        Id = inventoryItemToProcess.Id,
-                    },
-                ],
+                SchemeItems = [new IdWithCount { Count = inventoryItemToProcess.Count.Value, Id = inventoryItemToProcess.Id }],
                 TransactionId = Traders.RAGMAN,
                 Action = "BuyCustomization",
                 Type = "",
@@ -212,10 +183,7 @@ public class CustomizationController(
 
         foreach (var (traderId, trader) in traders)
         {
-            if (
-                trader.Base?.CustomizationSeller is not null
-                && trader.Base.CustomizationSeller.Value
-            )
+            if (trader.Base?.CustomizationSeller is not null && trader.Base.CustomizationSeller.Value)
             {
                 result.AddRange(GetTraderSuits(traderId, sessionId));
             }
@@ -241,9 +209,7 @@ public class CustomizationController(
     /// <returns></returns>
     public List<CustomisationStorage> GetCustomisationStorage(MongoId sessionId)
     {
-        var customisationResultsClone = cloner.Clone(
-            databaseService.GetTemplates().CustomisationStorage
-        );
+        var customisationResultsClone = cloner.Clone(databaseService.GetTemplates().CustomisationStorage);
 
         var profile = profileHelper.GetFullProfile(sessionId);
         if (profile is null)
@@ -263,11 +229,7 @@ public class CustomizationController(
     /// <param name="request"></param>
     /// <param name="pmcData">Players PMC profile</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse SetCustomisation(
-        MongoId sessionId,
-        CustomizationSetRequest request,
-        PmcData pmcData
-    )
+    public ItemEventRouterResponse SetCustomisation(MongoId sessionId, CustomizationSetRequest request, PmcData pmcData)
     {
         foreach (var customisation in request.Customizations)
         {

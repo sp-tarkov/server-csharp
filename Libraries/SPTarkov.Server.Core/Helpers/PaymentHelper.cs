@@ -11,13 +11,7 @@ public class PaymentHelper(ConfigServer configServer)
 {
     protected bool _addedCustomMoney;
     protected readonly InventoryConfig _inventoryConfig = configServer.GetConfig<InventoryConfig>();
-    protected readonly HashSet<MongoId> _moneyTpls =
-    [
-        Money.DOLLARS,
-        Money.EUROS,
-        Money.ROUBLES,
-        Money.GP,
-    ];
+    protected readonly HashSet<MongoId> _moneyTpls = [Money.DOLLARS, Money.EUROS, Money.ROUBLES, Money.GP];
 
     /// <summary>
     ///     Is the passed in tpl money (also checks custom currencies in inventoryConfig.customMoneyTpls)

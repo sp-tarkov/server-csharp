@@ -17,8 +17,7 @@ public class MatchBotDetailsCacheService(ISptLogger<MatchBotDetailsCacheService>
 {
     private static readonly FrozenSet<string> _sidesToCache = [Sides.PmcUsec, Sides.PmcBear];
 
-    protected readonly ConcurrentDictionary<string, BotDetailsForChatMessages> BotDetailsCache =
-        new();
+    protected readonly ConcurrentDictionary<string, BotDetailsForChatMessages> BotDetailsCache = new();
 
     /// <summary>
     ///     Store a bot in the cache, keyed by its ID.
@@ -33,17 +32,12 @@ public class MatchBotDetailsCacheService(ISptLogger<MatchBotDetailsCacheService>
 
         if (botToCache.Info?.Nickname is null)
         {
-            logger.Warning(
-                $"Unable to cache: {botToCache.Info?.Settings?.Role} bot with id: {botToCache.Id} as it lacks a nickname"
-            );
+            logger.Warning($"Unable to cache: {botToCache.Info?.Settings?.Role} bot with id: {botToCache.Id} as it lacks a nickname");
             return;
         }
 
         // If bot isn't a PMC, skip
-        if (
-            botToCache.Info?.Settings?.Role is null
-            || !_sidesToCache.Contains(botToCache.Info.Settings.Role)
-        )
+        if (botToCache.Info?.Settings?.Role is null || !_sidesToCache.Contains(botToCache.Info.Settings.Role))
         {
             return;
         }

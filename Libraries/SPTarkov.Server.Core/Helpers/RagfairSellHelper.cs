@@ -28,11 +28,7 @@ public class RagfairSellHelper(
     /// <param name="playerListedPriceRub">Price player listed item for in roubles</param>
     /// <param name="qualityMultiplier">Quality multiplier of item being sold</param>
     /// <returns>percent value</returns>
-    public double CalculateSellChance(
-        double averageOfferPriceRub,
-        double playerListedPriceRub,
-        double qualityMultiplier
-    )
+    public double CalculateSellChance(double averageOfferPriceRub, double playerListedPriceRub, double qualityMultiplier)
     {
         var sellConfig = _ragfairConfig.Sell.Chance;
 
@@ -41,9 +37,7 @@ public class RagfairSellHelper(
 
         // Modifier gets applied twice to either penalize or incentivize over/under pricing (Probably a cleaner way to do this)
         var sellModifier = averageOfferPriceRub / playerListedPriceRub * sellConfig.SellMultiplier;
-        var sellChance = Math.Round(
-            baseSellChancePercent * sellModifier * Math.Pow(sellModifier, 3) + 10
-        ); // Power of 3
+        var sellChance = Math.Round(baseSellChancePercent * sellModifier * Math.Pow(sellModifier, 3) + 10); // Power of 3
 
         // Adjust sell chance if below config value
         if (sellChance < sellConfig.MinSellChancePercent)
@@ -67,20 +61,13 @@ public class RagfairSellHelper(
     /// <param name="itemSellCount">count of items to sell</param>
     /// <param name="sellInOneGo">All items listed get sold at once</param>
     /// <returns>List of purchases of item(s) listed</returns>
-    public List<SellResult> RollForSale(
-        double? sellChancePercent,
-        int itemSellCount,
-        bool sellInOneGo = false
-    )
+    public List<SellResult> RollForSale(double? sellChancePercent, int itemSellCount, bool sellInOneGo = false)
     {
         var startTimestamp = timeUtil.GetTimeStamp();
 
         // Get a time in future to stop simulating sell chances at
         var endTime =
-            startTimestamp
-            + timeUtil.GetHoursAsSeconds(
-                (int)databaseService.GetGlobals().Configuration.RagFair.OfferDurationTimeInHour
-            );
+            startTimestamp + timeUtil.GetHoursAsSeconds((int)databaseService.GetGlobals().Configuration.RagFair.OfferDurationTimeInHour);
 
         var sellTimestamp = startTimestamp;
         var remainingCount = itemSellCount;
@@ -91,16 +78,12 @@ public class RagfairSellHelper(
         if (sellChancePercent is null)
         {
             effectiveSellChance = _ragfairConfig.Sell.Chance.Base;
-            logger.Warning(
-                $"Sell chance was not a number: {sellChancePercent}, defaulting to {_ragfairConfig.Sell.Chance.Base}%"
-            );
+            logger.Warning($"Sell chance was not a number: {sellChancePercent}, defaulting to {_ragfairConfig.Sell.Chance.Base}%");
         }
 
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            logger.Debug(
-                $"Rolling to sell: {itemSellCount} item(s) - (chance: {effectiveSellChance}%)"
-            );
+            logger.Debug($"Rolling to sell: {itemSellCount} item(s) - (chance: {effectiveSellChance}%)");
         }
 
         // No point rolling for a sale on a 0% chance item, exit early
@@ -126,9 +109,7 @@ public class RagfairSellHelper(
 
                 // Sell time will be random between min/max
                 var random = new Random();
-                var newSellTime = Math.Floor(
-                    random.NextDouble() * (maximumTime.Value - minimumTime) + minimumTime
-                );
+                var newSellTime = Math.Floor(random.NextDouble() * (maximumTime.Value - minimumTime) + minimumTime);
                 if (newSellTime == 0)
                 // Ensure all sales don't occur the same exact time
                 {

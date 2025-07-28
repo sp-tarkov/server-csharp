@@ -24,10 +24,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
 {
     private readonly ICloner _cloner;
 
-    public ProbabilityObjectArray(
-        ICloner cloner,
-        ICollection<ProbabilityObject<K, V>>? items = null
-    )
+    public ProbabilityObjectArray(ICloner cloner, ICollection<ProbabilityObject<K, V>>? items = null)
         : base(items ?? [])
     {
         _cloner = cloner;
@@ -73,10 +70,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     public ProbabilityObjectArray<K, V> Clone()
     {
         var clone = _cloner.Clone(this);
-        var probabilityObjects = new ProbabilityObjectArray<K, V>(
-            _cloner,
-            new List<ProbabilityObject<K, V>>()
-        );
+        var probabilityObjects = new ProbabilityObjectArray<K, V>(_cloner, new List<ProbabilityObject<K, V>>());
         probabilityObjects.AddRange(clone);
 
         return probabilityObjects;
@@ -149,11 +143,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     /// <param name="removeAfterDraw">Draw with or without replacement from the input dict (true = don't remove after drawing)</param>
     /// <param name="neverRemoveWhitelist">List of keys which shall be replaced even if drawing without replacement</param>
     /// <returns>Collection consisting of N random keys for this ProbabilityObjectArray</returns>
-    public List<K> Draw(
-        int drawCount = 1,
-        bool removeAfterDraw = true,
-        List<K>? neverRemoveWhitelist = null
-    )
+    public List<K> Draw(int drawCount = 1, bool removeAfterDraw = true, List<K>? neverRemoveWhitelist = null)
     {
         neverRemoveWhitelist ??= [];
         if (Count == 0)

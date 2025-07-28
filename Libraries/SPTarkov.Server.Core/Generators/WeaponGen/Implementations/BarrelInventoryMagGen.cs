@@ -6,10 +6,9 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Generators.WeaponGen.Implementations;
 
 [Injectable]
-public class BarrelInventoryMagGen(
-    RandomUtil randomUtil,
-    BotWeaponGeneratorHelper botWeaponGeneratorHelper
-) : InventoryMagGen, IInventoryMagGen
+public class BarrelInventoryMagGen(RandomUtil randomUtil, BotWeaponGeneratorHelper botWeaponGeneratorHelper)
+    : InventoryMagGen,
+        IInventoryMagGen
 {
     public int GetPriority()
     {

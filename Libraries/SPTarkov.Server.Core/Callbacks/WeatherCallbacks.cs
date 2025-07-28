@@ -7,10 +7,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
-public class WeatherCallbacks(
-    HttpResponseUtil httpResponseUtil,
-    WeatherController weatherController
-)
+public class WeatherCallbacks(HttpResponseUtil httpResponseUtil, WeatherController weatherController)
 {
     /// <summary>
     ///     Handle client/weather
@@ -33,8 +30,6 @@ public class WeatherCallbacks(
     /// <returns></returns>
     public ValueTask<string> GetLocalWeather(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(weatherController.GenerateLocal(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(weatherController.GenerateLocal(sessionID)));
     }
 }

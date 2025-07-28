@@ -40,32 +40,18 @@ public class QuestItemEventRouter(QuestCallbacks questCallbacks) : ItemEventRout
                 );
             case ItemEventActions.QUEST_COMPLETE:
                 return new ValueTask<ItemEventRouterResponse>(
-                    questCallbacks.CompleteQuest(
-                        pmcData,
-                        body as CompleteQuestRequestData,
-                        sessionID
-                    )
+                    questCallbacks.CompleteQuest(pmcData, body as CompleteQuestRequestData, sessionID)
                 );
             case ItemEventActions.QUEST_HANDOVER:
                 return new ValueTask<ItemEventRouterResponse>(
-                    questCallbacks.HandoverQuest(
-                        pmcData,
-                        body as HandoverQuestRequestData,
-                        sessionID
-                    )
+                    questCallbacks.HandoverQuest(pmcData, body as HandoverQuestRequestData, sessionID)
                 );
             case ItemEventActions.REPEATABLE_QUEST_CHANGE:
                 return new ValueTask<ItemEventRouterResponse>(
-                    questCallbacks.ChangeRepeatableQuest(
-                        pmcData,
-                        body as RepeatableQuestChangeRequest,
-                        sessionID
-                    )
+                    questCallbacks.ChangeRepeatableQuest(pmcData, body as RepeatableQuestChangeRequest, sessionID)
                 );
             default:
-                throw new Exception(
-                    $"QuestItemEventRouter being used when it cant handle route {url}"
-                );
+                throw new Exception($"QuestItemEventRouter being used when it cant handle route {url}");
         }
     }
 }

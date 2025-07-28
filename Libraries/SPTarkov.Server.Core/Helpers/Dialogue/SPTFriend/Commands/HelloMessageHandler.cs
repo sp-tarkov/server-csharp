@@ -10,18 +10,9 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
-public class HelloMessageHandler(MailSendService mailSendService, RandomUtil randomUtil)
-    : IChatMessageHandler
+public class HelloMessageHandler(MailSendService mailSendService, RandomUtil randomUtil) : IChatMessageHandler
 {
-    protected static readonly FrozenSet<string> _greetings =
-    [
-        "hello",
-        "hi",
-        "sup",
-        "yo",
-        "hey",
-        "bonjour",
-    ];
+    protected static readonly FrozenSet<string> _greetings = ["hello", "hi", "sup", "yo", "hey", "bonjour"];
 
     public int GetPriority()
     {
@@ -33,12 +24,7 @@ public class HelloMessageHandler(MailSendService mailSendService, RandomUtil ran
         return _greetings.Contains(message, StringComparer.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        MongoId sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         mailSendService.SendUserMessageToPlayer(
             sessionId,
@@ -78,29 +64,12 @@ public class HelloMessageHandler(MailSendService mailSendService, RandomUtil ran
         return "'hello' replies to the player with a random greeting";
     }
 
-    public string PerformAction(
-        UserDialogInfo commandHandler,
-        MongoId sessionId,
-        SendMessageRequest request
-    )
+    public string PerformAction(UserDialogInfo commandHandler, MongoId sessionId, SendMessageRequest request)
     {
         mailSendService.SendUserMessageToPlayer(
             sessionId,
             commandHandler,
-            randomUtil.GetArrayValue(
-                [
-                    "Howdy",
-                    "Hi",
-                    "Greetings",
-                    "Hello",
-                    "Bonjor",
-                    "Yo",
-                    "Sup",
-                    "Heyyyyy",
-                    "Hey there",
-                    "OH its you",
-                ]
-            ),
+            randomUtil.GetArrayValue(["Howdy", "Hi", "Greetings", "Hello", "Bonjor", "Yo", "Sup", "Heyyyyy", "Hey there", "OH its you"]),
             [],
             null
         );

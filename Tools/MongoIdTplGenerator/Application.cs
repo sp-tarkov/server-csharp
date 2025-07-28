@@ -6,11 +6,7 @@ using SPTarkov.Server.Core.Models.Utils;
 namespace MongoIdTplGenerator;
 
 [Injectable(InjectionType.Singleton)]
-public class Application(
-    ISptLogger<Application> logger,
-    IEnumerable<IOnLoad> onloadComponents,
-    IEnumerable<IMongoIdGenerator> generators
-)
+public class Application(ISptLogger<Application> logger, IEnumerable<IOnLoad> onloadComponents, IEnumerable<IMongoIdGenerator> generators)
 {
     public async Task Run()
     {

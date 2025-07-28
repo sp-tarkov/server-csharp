@@ -45,9 +45,7 @@ public class InRaidHelperTests
         Assert.LessOrEqual(pmcData.Inventory.Items.Count, initialItemCount);
 
         // Verify that the method completed without throwing collection modification exception
-        Assert.Pass(
-            "DeleteInventory completed successfully without collection modification exception"
-        );
+        Assert.Pass("DeleteInventory completed successfully without collection modification exception");
     }
 
     private static PmcData CreateTestPmcData()

@@ -29,10 +29,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
             get { return [typeof(ThreeTenToThreeEleven)]; }
         }
 
-        public override bool CanMigrate(
-            JsonObject profile,
-            IEnumerable<IProfileMigration> previouslyRanMigrations
-        )
+        public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
         {
             var profileVersion = GetProfileVersion(profile);
 
@@ -40,9 +37,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
 
             var versionMatches =
                 fromRange.IsSatisfied(profileVersion)
-                || PrerequisiteMigrations.All(prereq =>
-                    previouslyRanMigrations.Any(r => r.GetType() == prereq)
-                );
+                || PrerequisiteMigrations.All(prereq => previouslyRanMigrations.Any(r => r.GetType() == prereq));
 
             return versionMatches;
         }

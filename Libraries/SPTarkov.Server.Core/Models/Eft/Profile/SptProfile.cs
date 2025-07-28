@@ -48,10 +48,7 @@ public record SptProfile
     ///     Assort purchases made by player since last trader refresh
     /// </summary>
     [JsonPropertyName("traderPurchases")]
-    public Dictionary<
-        MongoId,
-        Dictionary<MongoId, TraderPurchaseData>?
-    >? TraderPurchases { get; set; }
+    public Dictionary<MongoId, Dictionary<MongoId, TraderPurchaseData>?>? TraderPurchases { get; set; }
 
     /// <summary>
     ///     List of friend profile IDs

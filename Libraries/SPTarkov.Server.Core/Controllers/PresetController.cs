@@ -8,11 +8,7 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class PresetController(
-    ISptLogger<PresetController> logger,
-    PresetHelper presetHelper,
-    DatabaseService databaseService
-)
+public class PresetController(ISptLogger<PresetController> logger, PresetHelper presetHelper, DatabaseService databaseService)
 {
     /// <summary>
     ///     Keyed by item tpl, value = collection of preset ids

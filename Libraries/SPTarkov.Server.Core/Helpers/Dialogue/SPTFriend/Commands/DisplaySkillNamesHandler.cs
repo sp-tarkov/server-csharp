@@ -20,12 +20,7 @@ public class DisplaySkillNamesHandler(MailSendService _mailSendService) : IChatM
         return string.Equals(message, "skills", StringComparison.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        MongoId sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         // Get all items as an array
         var skills = Enum.GetNames(typeof(SkillTypes)).Order();
@@ -44,13 +39,7 @@ public class DisplaySkillNamesHandler(MailSendService _mailSendService) : IChatM
             Thread.Sleep(500);
 
             // Send to player
-            _mailSendService.SendUserMessageToPlayer(
-                sessionId,
-                sptFriendUser,
-                itemsToSendCsv,
-                [],
-                null
-            );
+            _mailSendService.SendUserMessageToPlayer(sessionId, sptFriendUser, itemsToSendCsv, [], null);
 
             // Increment processed count
             parsedCount += itemsToSend.Count();

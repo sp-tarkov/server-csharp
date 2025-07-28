@@ -9,19 +9,9 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable]
-public class HttpResponseUtil(
-    JsonUtil jsonUtil,
-    ServerLocalisationService serverLocalisationService
-)
+public class HttpResponseUtil(JsonUtil jsonUtil, ServerLocalisationService serverLocalisationService)
 {
-    protected readonly ImmutableList<Regex> _cleanupRegexList =
-    [
-        new("[\\b]"),
-        new("[\\f]"),
-        new("[\\n]"),
-        new("[\\r]"),
-        new("[\\t]"),
-    ];
+    protected readonly ImmutableList<Regex> _cleanupRegexList = [new("[\\b]"), new("[\\f]"), new("[\\n]"), new("[\\r]"), new("[\\t]")];
 
     protected string ClearString(string? s)
     {
@@ -54,23 +44,12 @@ public class HttpResponseUtil(
     /// <param name="errmsg"></param>
     /// <param name="sanitize"></param>
     /// <returns>response as string</returns>
-    public string GetBody<T>(
-        T data,
-        BackendErrorCodes err = BackendErrorCodes.None,
-        string? errmsg = null,
-        bool sanitize = true
-    )
+    public string GetBody<T>(T data, BackendErrorCodes err = BackendErrorCodes.None, string? errmsg = null, bool sanitize = true)
     {
-        return sanitize
-            ? ClearString(GetUnclearedBody(data, err, errmsg))
-            : GetUnclearedBody(data, err, errmsg);
+        return sanitize ? ClearString(GetUnclearedBody(data, err, errmsg)) : GetUnclearedBody(data, err, errmsg);
     }
 
-    public string GetUnclearedBody<T>(
-        T? data,
-        BackendErrorCodes err = BackendErrorCodes.None,
-        string? errmsg = null
-    )
+    public string GetUnclearedBody<T>(T? data, BackendErrorCodes err = BackendErrorCodes.None, string? errmsg = null)
     {
         return jsonUtil.Serialize(
             new GetBodyResponseData<T>

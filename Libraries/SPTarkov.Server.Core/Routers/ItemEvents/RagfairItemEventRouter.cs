@@ -34,9 +34,7 @@ public class RagfairItemEventRouter(RagfairCallbacks ragfairCallbacks) : ItemEve
         switch (url)
         {
             case ItemEventActions.RAGFAIR_ADD_OFFER:
-                return new ValueTask<ItemEventRouterResponse>(
-                    ragfairCallbacks.AddOffer(pmcData, body as AddOfferRequestData, sessionID)
-                );
+                return new ValueTask<ItemEventRouterResponse>(ragfairCallbacks.AddOffer(pmcData, body as AddOfferRequestData, sessionID));
             case ItemEventActions.RAGFAIR_REMOVE_OFFER:
                 return new ValueTask<ItemEventRouterResponse>(
                     ragfairCallbacks.RemoveOffer(pmcData, body as RemoveOfferRequestData, sessionID)
@@ -46,9 +44,7 @@ public class RagfairItemEventRouter(RagfairCallbacks ragfairCallbacks) : ItemEve
                     ragfairCallbacks.ExtendOffer(pmcData, body as ExtendOfferRequestData, sessionID)
                 );
             default:
-                throw new Exception(
-                    $"CustomizationItemEventRouter being used when it cant handle route {url}"
-                );
+                throw new Exception($"CustomizationItemEventRouter being used when it cant handle route {url}");
         }
     }
 }

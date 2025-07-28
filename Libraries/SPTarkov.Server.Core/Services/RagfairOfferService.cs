@@ -233,32 +233,21 @@ public class RagfairOfferService(
         var offerCreatorProfile = profileHelper.GetProfileByPmcId(offerCreatorId);
         if (offerCreatorProfile == null)
         {
-            logger.Error(
-                $"Unable to return flea offer: {playerOffer.Id} as the profile: {offerCreatorId} could not be found"
-            );
+            logger.Error($"Unable to return flea offer: {playerOffer.Id} as the profile: {offerCreatorId} could not be found");
 
             return;
         }
 
-        var indexOfOfferInProfile = offerCreatorProfile.RagfairInfo.Offers.FindIndex(o =>
-            o.Id == playerOffer.Id
-        );
+        var indexOfOfferInProfile = offerCreatorProfile.RagfairInfo.Offers.FindIndex(o => o.Id == playerOffer.Id);
         if (indexOfOfferInProfile == -1)
         {
-            logger.Warning(
-                localisationService.GetText(
-                    "ragfair-unable_to_find_offer_to_remove",
-                    playerOffer.Id
-                )
-            );
+            logger.Warning(localisationService.GetText("ragfair-unable_to_find_offer_to_remove", playerOffer.Id));
 
             return;
         }
 
         // Reduce player ragfair rep
-        offerCreatorProfile.RagfairInfo.Rating -= databaseService
-            .GetGlobals()
-            .Configuration.RagFair.RatingDecreaseCount;
+        offerCreatorProfile.RagfairInfo.Rating -= databaseService.GetGlobals().Configuration.RagFair.RatingDecreaseCount;
         offerCreatorProfile.RagfairInfo.IsRatingGrowing = false;
 
         // Increment players 'notSellSum' value
@@ -353,10 +342,7 @@ public class RagfairOfferService(
             itemAndChildrenClone[0].Upd.StackObjectsCount = 1;
 
             // Ensure items IDs are unique to prevent collisions when added to player inventory
-            var reparentedItemAndChildren = itemHelper.ReparentItemAndChildren(
-                itemAndChildrenClone.FirstOrDefault(),
-                itemAndChildrenClone
-            );
+            var reparentedItemAndChildren = itemHelper.ReparentItemAndChildren(itemAndChildrenClone.FirstOrDefault(), itemAndChildrenClone);
             reparentedItemAndChildren.RemapRootItemId();
 
             result.AddRange(reparentedItemAndChildren);
@@ -371,7 +357,6 @@ public class RagfairOfferService(
     /// <returns>True if enough offers have expired</returns>
     public bool EnoughExpiredOffersExistToProcess()
     {
-        return ragfairOfferHolder.GetExpiredOfferCount()
-            >= _ragfairConfig.Dynamic.ExpiredOfferThreshold;
+        return ragfairOfferHolder.GetExpiredOfferCount() >= _ragfairConfig.Dynamic.ExpiredOfferThreshold;
     }
 }

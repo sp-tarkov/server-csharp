@@ -17,9 +17,7 @@ public class BuildsCallbacks(HttpResponseUtil httpResponseUtil, BuildController 
     /// <returns></returns>
     public ValueTask<string> GetBuilds(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(buildController.GetUserBuilds(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(buildController.GetUserBuilds(sessionID)));
     }
 
     /// <summary>
@@ -29,11 +27,7 @@ public class BuildsCallbacks(HttpResponseUtil httpResponseUtil, BuildController 
     /// <param name="request"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ValueTask<string> CreateMagazineTemplate(
-        string url,
-        SetMagazineRequest request,
-        MongoId sessionID
-    )
+    public ValueTask<string> CreateMagazineTemplate(string url, SetMagazineRequest request, MongoId sessionID)
     {
         buildController.CreateMagazineTemplate(sessionID, request);
         return new ValueTask<string>(httpResponseUtil.NullResponse());
@@ -43,11 +37,7 @@ public class BuildsCallbacks(HttpResponseUtil httpResponseUtil, BuildController 
     ///     Handle client/builds/weapon/save
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> SetWeapon(
-        string url,
-        PresetBuildActionRequestData request,
-        MongoId sessionID
-    )
+    public ValueTask<string> SetWeapon(string url, PresetBuildActionRequestData request, MongoId sessionID)
     {
         buildController.SaveWeaponBuild(sessionID, request);
         return new ValueTask<string>(httpResponseUtil.NullResponse());
@@ -57,11 +47,7 @@ public class BuildsCallbacks(HttpResponseUtil httpResponseUtil, BuildController 
     ///     Handle client/builds/equipment/save
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> SetEquipment(
-        string url,
-        PresetBuildActionRequestData request,
-        MongoId sessionID
-    )
+    public ValueTask<string> SetEquipment(string url, PresetBuildActionRequestData request, MongoId sessionID)
     {
         buildController.SaveEquipmentBuild(sessionID, request);
         return new ValueTask<string>(httpResponseUtil.NullResponse());
@@ -71,11 +57,7 @@ public class BuildsCallbacks(HttpResponseUtil httpResponseUtil, BuildController 
     ///     Handle client/builds/delete
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> DeleteBuild(
-        string url,
-        RemoveBuildRequestData request,
-        MongoId sessionID
-    )
+    public ValueTask<string> DeleteBuild(string url, RemoveBuildRequestData request, MongoId sessionID)
     {
         buildController.RemoveBuild(sessionID, request);
         return new ValueTask<string>(httpResponseUtil.NullResponse());

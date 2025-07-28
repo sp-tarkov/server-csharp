@@ -34,15 +34,11 @@ namespace SPTarkov.Server.Core.Migration.Migrations
             get { return [typeof(ThreeTenToThreeEleven)]; }
         }
 
-        public override bool CanMigrate(
-            JsonObject profile,
-            IEnumerable<IProfileMigration> previouslyRanMigrations
-        )
+        public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
         {
             _pmcVoiceIsMissing = profile["characters"]?["pmc"]?["Customization"]?["Voice"] == null;
 
-            _scavVoiceIsMissing =
-                profile["characters"]?["scav"]?["Customization"]?["Voice"] == null;
+            _scavVoiceIsMissing = profile["characters"]?["scav"]?["Customization"]?["Voice"] == null;
 
             return _pmcVoiceIsMissing || _scavVoiceIsMissing;
         }
@@ -69,13 +65,9 @@ namespace SPTarkov.Server.Core.Migration.Migrations
             var oldVoice = pmcInfo["Voice"]?.ToString() ?? "";
             pmcInfo.Remove("Voice");
 
-            var voiceMongoId = databaseService
-                .GetCustomization()
-                .FirstOrDefault(x => x.Value.Properties.Name == oldVoice)
-                .Key;
+            var voiceMongoId = databaseService.GetCustomization().FirstOrDefault(x => x.Value.Properties.Name == oldVoice).Key;
 
-            profileObject["characters"]!["pmc"]!["Customization"]!["Voice"] =
-                voiceMongoId.ToString();
+            profileObject["characters"]!["pmc"]!["Customization"]!["Voice"] = voiceMongoId.ToString();
         }
 
         private void HandleScavVoice(JsonObject profileObject)
@@ -85,13 +77,9 @@ namespace SPTarkov.Server.Core.Migration.Migrations
             var oldVoice = pmcInfo["Voice"]?.ToString() ?? "";
             pmcInfo.Remove("Voice");
 
-            var voiceMongoId = databaseService
-                .GetCustomization()
-                .FirstOrDefault(x => x.Value.Properties.Name == oldVoice)
-                .Key;
+            var voiceMongoId = databaseService.GetCustomization().FirstOrDefault(x => x.Value.Properties.Name == oldVoice).Key;
 
-            profileObject["characters"]!["scav"]!["Customization"]!["Voice"] =
-                voiceMongoId.ToString();
+            profileObject["characters"]!["scav"]!["Customization"]!["Voice"] = voiceMongoId.ToString();
         }
     }
 }

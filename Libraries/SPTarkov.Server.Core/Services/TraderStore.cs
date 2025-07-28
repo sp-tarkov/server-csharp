@@ -61,9 +61,7 @@ public class TraderStore(
             }
         }
 
-        logger.Info(
-            $"Importing traders complete {(customTraders == 0 ? "" : $"[{customTraders} traders loaded]")}"
-        );
+        logger.Info($"Importing traders complete {(customTraders == 0 ? "" : $"[{customTraders} traders loaded]")}");
         return Task.CompletedTask;
     }
 

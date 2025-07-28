@@ -100,11 +100,7 @@ public class RagfairHelper(
     public Dictionary<MongoId, TraderAssort> GetDisplayableAssorts(MongoId sessionId)
     {
         var result = new Dictionary<MongoId, TraderAssort>();
-        foreach (
-            var traderId in databaseService
-                .GetTraders()
-                .Keys.Where(traderId => _ragfairConfig.Traders.ContainsKey(traderId))
-        )
+        foreach (var traderId in databaseService.GetTraders().Keys.Where(traderId => _ragfairConfig.Traders.ContainsKey(traderId)))
         {
             result[traderId] = traderAssortHelper.GetAssort(sessionId, traderId, true);
         }
@@ -138,11 +134,7 @@ public class RagfairHelper(
 
             return handbookHelper
                 .ChildrenCategories(handbookId)
-                .Aggregate(
-                    result,
-                    (current, category) =>
-                        [.. current, .. handbookHelper.TemplatesWithParent(category)]
-                );
+                .Aggregate(result, (current, category) => [.. current, .. handbookHelper.TemplatesWithParent(category)]);
         }
 
         // It's a specific item searched

@@ -41,32 +41,24 @@ public class BuildController(
         };
 
         // Ensure the secure container in the default presets match what the player has equipped
-        var defaultEquipmentPresetsClone = cloner
-            .Clone(databaseService.GetTemplates().DefaultEquipmentPresets)
-            .ToList();
+        var defaultEquipmentPresetsClone = cloner.Clone(databaseService.GetTemplates().DefaultEquipmentPresets).ToList();
 
         // Get players secure container
-        var playerSecureContainer =
-            profile.CharacterData?.PmcData?.Inventory?.Items?.FirstOrDefault(x =>
-                x.SlotId == secureContainerSlotId
-            );
+        var playerSecureContainer = profile.CharacterData?.PmcData?.Inventory?.Items?.FirstOrDefault(x =>
+            x.SlotId == secureContainerSlotId
+        );
 
         var firstDefaultItemsSecureContainer = defaultEquipmentPresetsClone
             .FirstOrDefault()
             ?.Items?.FirstOrDefault(x => x.SlotId == secureContainerSlotId);
 
-        if (
-            playerSecureContainer is not null
-            && playerSecureContainer.Template != firstDefaultItemsSecureContainer?.Template
-        )
+        if (playerSecureContainer is not null && playerSecureContainer.Template != firstDefaultItemsSecureContainer?.Template)
         // Default equipment presets' secure container tpl doesn't match players secure container tpl
         {
             foreach (var defaultPreset in defaultEquipmentPresetsClone)
             {
                 // Find presets secure container
-                var secureContainer = defaultPreset.Items?.FirstOrDefault(item =>
-                    item.SlotId == secureContainerSlotId
-                );
+                var secureContainer = defaultPreset.Items?.FirstOrDefault(item => item.SlotId == secureContainerSlotId);
                 if (secureContainer is not null)
                 {
                     secureContainer.Template = playerSecureContainer.Template;
@@ -133,9 +125,7 @@ public class BuildController(
         var profile = profileHelper.GetFullProfile(sessionID);
         var pmcData = profile.CharacterData.PmcData;
 
-        var existingSavedEquipmentBuilds = saveServer
-            .GetProfile(sessionID)
-            .UserBuildData.EquipmentBuilds;
+        var existingSavedEquipmentBuilds = saveServer.GetProfile(sessionID).UserBuildData.EquipmentBuilds;
 
         // Replace duplicate ID's. The first item is the base item.
         // Root ID and the base item ID need to match.
@@ -150,9 +140,7 @@ public class BuildController(
             Items = request.Items.ToList(),
         };
 
-        var existingBuild = existingSavedEquipmentBuilds?.FirstOrDefault(build =>
-            build.Name == request.Name || build.Id == request.Id
-        );
+        var existingBuild = existingSavedEquipmentBuilds?.FirstOrDefault(build => build.Name == request.Name || build.Id == request.Id);
         if (existingBuild is not null)
         {
             // Already exists, replace
@@ -198,9 +186,7 @@ public class BuildController(
         profile.UserBuildData.MagazineBuilds ??= [];
 
         // Check if template with desired name already exists and remove it
-        var magazineBuildToRemove = profile.UserBuildData.MagazineBuilds.FirstOrDefault(item =>
-            item.Name == request.Name
-        );
+        var magazineBuildToRemove = profile.UserBuildData.MagazineBuilds.FirstOrDefault(item => item.Name == request.Name);
         if (magazineBuildToRemove is not null)
         {
             profile.UserBuildData.MagazineBuilds.Remove(magazineBuildToRemove);
@@ -224,9 +210,7 @@ public class BuildController(
         var magazineBuilds = profile.UserBuildData.MagazineBuilds;
 
         // Check for id in weapon array first
-        var matchingWeaponBuild = weaponBuilds.FirstOrDefault(weaponBuild =>
-            weaponBuild.Id == idToRemove
-        );
+        var matchingWeaponBuild = weaponBuilds.FirstOrDefault(weaponBuild => weaponBuild.Id == idToRemove);
         if (matchingWeaponBuild is not null)
         {
             weaponBuilds.Remove(matchingWeaponBuild);
@@ -235,9 +219,7 @@ public class BuildController(
         }
 
         // Id not found in weapons, try equipment
-        var matchingEquipmentBuild = equipmentBuilds.FirstOrDefault(equipmentBuild =>
-            equipmentBuild.Id == idToRemove
-        );
+        var matchingEquipmentBuild = equipmentBuilds.FirstOrDefault(equipmentBuild => equipmentBuild.Id == idToRemove);
         if (matchingEquipmentBuild is not null)
         {
             equipmentBuilds.Remove(matchingEquipmentBuild);
@@ -246,9 +228,7 @@ public class BuildController(
         }
 
         // Id not found in weapons/equipment, try mags
-        var matchingMagazineBuild = magazineBuilds.FirstOrDefault(magBuild =>
-            magBuild.Id == idToRemove
-        );
+        var matchingMagazineBuild = magazineBuilds.FirstOrDefault(magBuild => magBuild.Id == idToRemove);
         if (matchingMagazineBuild is not null)
         {
             magazineBuilds.Remove(matchingMagazineBuild);
@@ -257,8 +237,6 @@ public class BuildController(
         }
 
         // Not found in weapons,equipment or magazines, not good
-        logger.Error(
-            serverLocalisationService.GetText("build-unable_to_delete_preset", idToRemove)
-        );
+        logger.Error(serverLocalisationService.GetText("build-unable_to_delete_preset", idToRemove));
     }
 }

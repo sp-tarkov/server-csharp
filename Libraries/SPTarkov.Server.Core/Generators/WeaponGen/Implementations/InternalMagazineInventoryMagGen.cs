@@ -5,9 +5,7 @@ using SPTarkov.Server.Core.Models.Enums;
 namespace SPTarkov.Server.Core.Generators.WeaponGen.Implementations;
 
 [Injectable]
-public class InternalMagazineInventoryMagGen(BotWeaponGeneratorHelper botWeaponGeneratorHelper)
-    : InventoryMagGen,
-        IInventoryMagGen
+public class InternalMagazineInventoryMagGen(BotWeaponGeneratorHelper botWeaponGeneratorHelper) : InventoryMagGen, IInventoryMagGen
 {
     public int GetPriority()
     {
@@ -16,8 +14,7 @@ public class InternalMagazineInventoryMagGen(BotWeaponGeneratorHelper botWeaponG
 
     public bool CanHandleInventoryMagGen(InventoryMagGen inventoryMagGen)
     {
-        return inventoryMagGen.GetMagazineTemplate().Properties.ReloadMagType
-            == ReloadMode.InternalMagazine;
+        return inventoryMagGen.GetMagazineTemplate().Properties.ReloadMagType == ReloadMode.InternalMagazine;
     }
 
     public void Process(InventoryMagGen inventoryMagGen)

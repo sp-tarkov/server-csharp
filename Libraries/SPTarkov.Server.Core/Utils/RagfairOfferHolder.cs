@@ -93,9 +93,7 @@ public class RagfairOfferHolder(
             return [];
         }
 
-        return offerIds
-            .Select(offerId => _offersById.GetValueOrDefault(offerId))
-            .Where(offer => offer != null);
+        return offerIds.Select(offerId => _offersById.GetValueOrDefault(offerId)).Where(offer => offer != null);
     }
 
     /// <summary>
@@ -147,8 +145,7 @@ public class RagfairOfferHolder(
                 !itemTpl.IsEmpty() // Has tpl
                 && !(sellerIsTrader || offer.IsPlayerOffer())
                 && _offersByTemplate.TryGetValue(itemTpl, out var offers)
-                && offers?.Count
-                    >= _ragfairServerHelper.GetOfferCountByBaseType(itemSoldTemplate.Value.Parent)
+                && offers?.Count >= _ragfairServerHelper.GetOfferCountByBaseType(itemSoldTemplate.Value.Parent)
             )
             {
                 // If it is an NPC PMC offer AND we have already reached the maximum amount of possible offers
@@ -179,12 +176,7 @@ public class RagfairOfferHolder(
     {
         if (!_offersById.TryGetValue(offerId, out var offer))
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
-                    "ragfair-unable_to_remove_offer_doesnt_exist",
-                    offerId
-                )
-            );
+            _logger.Warning(_serverLocalisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId));
 
             return;
         }
@@ -374,10 +366,7 @@ public class RagfairOfferHolder(
         {
             foreach (var offer in GetOffers())
             {
-                if (
-                    _expiredOfferIds.Contains(offer.Id)
-                    || _ragfairServerHelper.IsTrader(offer.User.Id)
-                )
+                if (_expiredOfferIds.Contains(offer.Id) || _ragfairServerHelper.IsTrader(offer.User.Id))
                 {
                     // Already flagged or trader offer (handled separately), skip
                     continue;
@@ -387,9 +376,7 @@ public class RagfairOfferHolder(
                 {
                     if (!_expiredOfferIds.Add(offer.Id))
                     {
-                        _logger.Warning(
-                            $"Unable to add offer: {offer.Id} to expired offers as it already exists"
-                        );
+                        _logger.Warning($"Unable to add offer: {offer.Id} to expired offers as it already exists");
                     }
                 }
             }

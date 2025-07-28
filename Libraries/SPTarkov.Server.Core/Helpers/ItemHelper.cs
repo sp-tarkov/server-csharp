@@ -101,12 +101,7 @@ public class ItemHelper(
         "right_side_plate",
     ];
 
-    protected static readonly FrozenSet<MongoId> _armorSlotsThatCanHoldMods =
-    [
-        BaseClasses.HEADWEAR,
-        BaseClasses.VEST,
-        BaseClasses.ARMOR,
-    ];
+    protected static readonly FrozenSet<MongoId> _armorSlotsThatCanHoldMods = [BaseClasses.HEADWEAR, BaseClasses.VEST, BaseClasses.ARMOR];
 
     /// <summary>
     /// Does the provided pool of items contain the desired item
@@ -120,9 +115,7 @@ public class ItemHelper(
         // Filter the pool by slotId if provided
         var filteredPool = string.IsNullOrEmpty(slotId)
             ? itemPool
-            : itemPool.Where(itemInPool =>
-                itemInPool.SlotId?.StartsWith(slotId, StringComparison.OrdinalIgnoreCase) ?? false
-            );
+            : itemPool.Where(itemInPool => itemInPool.SlotId?.StartsWith(slotId, StringComparison.OrdinalIgnoreCase) ?? false);
 
         // Check if any item in the filtered pool matches the provided item
         return filteredPool.Any(poolItem => poolItem.Template == itemTpl);
@@ -140,9 +133,7 @@ public class ItemHelper(
         // Filter the pool by slotId if provided
         var filteredPool = string.IsNullOrEmpty(slotId)
             ? itemPool
-            : itemPool.Where(item =>
-                item.SlotId?.StartsWith(slotId, StringComparison.OrdinalIgnoreCase) ?? false
-            );
+            : itemPool.Where(item => item.SlotId?.StartsWith(slotId, StringComparison.OrdinalIgnoreCase) ?? false);
 
         // Check if any item in the filtered pool matches the provided item
         return filteredPool.FirstOrDefault(poolItem => poolItem.Template == tpl);
@@ -156,11 +147,7 @@ public class ItemHelper(
     /// <param name="item2">second item with all its children to compare</param>
     /// <param name="compareUpdProperties">Upd properties to compare between the items</param>
     /// <returns>true if they are the same</returns>
-    public bool IsSameItems(
-        ICollection<Item> item1,
-        ICollection<Item> item2,
-        ISet<string>? compareUpdProperties = null
-    )
+    public bool IsSameItems(ICollection<Item> item1, ICollection<Item> item2, ISet<string>? compareUpdProperties = null)
     {
         if (item1.Count != item2.Count)
         {
@@ -222,30 +209,18 @@ public class ItemHelper(
             }
             else
             {
-                itemProperties.FireMode = new UpdFireMode
-                {
-                    FireMode = randomUtil.GetArrayValue(itemTemplate.Properties.WeapFireType),
-                };
+                itemProperties.FireMode = new UpdFireMode { FireMode = randomUtil.GetArrayValue(itemTemplate.Properties.WeapFireType) };
             }
         }
 
         if (itemTemplate.Properties.MaxHpResource is not null)
         {
-            itemProperties.MedKit = new UpdMedKit
-            {
-                HpResource = itemTemplate.Properties.MaxHpResource,
-            };
+            itemProperties.MedKit = new UpdMedKit { HpResource = itemTemplate.Properties.MaxHpResource };
         }
 
-        if (
-            itemTemplate.Properties.MaxResource is not null
-            && itemTemplate.Properties.FoodUseTime is not null
-        )
+        if (itemTemplate.Properties.MaxResource is not null && itemTemplate.Properties.FoodUseTime is not null)
         {
-            itemProperties.FoodDrink = new UpdFoodDrink
-            {
-                HpPercent = itemTemplate.Properties.MaxResource,
-            };
+            itemProperties.FoodDrink = new UpdFoodDrink { HpPercent = itemTemplate.Properties.MaxResource };
         }
 
         if (itemTemplate.Parent == BaseClasses.FLASHLIGHT)
@@ -263,10 +238,7 @@ public class ItemHelper(
         }
 
         // Toggleable face shield
-        if (
-            (itemTemplate.Properties.HasHinge ?? false)
-            && (itemTemplate.Properties.FaceShieldComponent ?? false)
-        )
+        if ((itemTemplate.Properties.HasHinge ?? false) && (itemTemplate.Properties.FaceShieldComponent ?? false))
         {
             itemProperties.Togglable = new UpdTogglable { On = false };
         }
@@ -374,9 +346,7 @@ public class ItemHelper(
         var itemTemplate = GetItem(itemTpl);
 
         return itemTemplate.Value?.Properties?.Slots is not null
-            && itemTemplate.Value.Properties.Slots.Any(slot =>
-                _removablePlateSlotIds.Contains(slot.Name.ToLowerInvariant())
-            );
+            && itemTemplate.Value.Properties.Slots.Any(slot => _removablePlateSlotIds.Contains(slot.Name.ToLowerInvariant()));
     }
 
     /// <summary>
@@ -406,11 +376,7 @@ public class ItemHelper(
         }
 
         // Check if item has slots that match soft insert name ids
-        if (
-            itemDbDetails.Value.Properties.Slots.Any(slot =>
-                IsSoftInsertId(slot.Name.ToLowerInvariant())
-            )
-        )
+        if (itemDbDetails.Value.Properties.Slots.Any(slot => IsSoftInsertId(slot.Name.ToLowerInvariant())))
         {
             return true;
         }
@@ -446,10 +412,7 @@ public class ItemHelper(
     public double GetItemAndChildrenPrice(IEnumerable<MongoId> tpls)
     {
         // Run getItemPrice for each tpl in tpls array, return sum
-        return tpls.Aggregate(
-            0,
-            (total, tpl) => total + (int)GetItemPrice(tpl).GetValueOrDefault(0)
-        );
+        return tpls.Aggregate(0, (total, tpl) => total + (int)GetItemPrice(tpl).GetValueOrDefault(0));
     }
 
     /// <summary>
@@ -570,10 +533,7 @@ public class ItemHelper(
     /// <param name="itemWithChildren">An offers item to process</param>
     /// <param name="skipArmorItemsWithoutDurability">Skip over armor items without durability</param>
     /// <returns>% quality modifier between 0 and 1</returns>
-    public double GetItemQualityModifierForItems(
-        IEnumerable<Item> itemWithChildren,
-        bool skipArmorItemsWithoutDurability = false
-    )
+    public double GetItemQualityModifierForItems(IEnumerable<Item> itemWithChildren, bool skipArmorItemsWithoutDurability = false)
     {
         if (IsOfBaseclass(itemWithChildren.First().Template, BaseClasses.WEAPON))
         {
@@ -620,9 +580,7 @@ public class ItemHelper(
         var itemDetails = GetItem(item.Template).Value;
         if (itemDetails?.Properties is null)
         {
-            logger.Warning(
-                $"Item: {item.Template} lacks properties, cannot ascertain quality level, assuming 100%"
-            );
+            logger.Warning($"Item: {item.Template} lacks properties, cannot ascertain quality level, assuming 100%");
 
             return 1;
         }
@@ -641,8 +599,7 @@ public class ItemHelper(
             if (item.Upd.MedKit is not null)
             {
                 // Meds
-                result =
-                    (item.Upd.MedKit.HpResource ?? 0) / (itemDetails.Properties.MaxHpResource ?? 0);
+                result = (item.Upd.MedKit.HpResource ?? 0) / (itemDetails.Properties.MaxHpResource ?? 0);
             }
             else if (item.Upd.Repairable is not null)
             {
@@ -650,13 +607,9 @@ public class ItemHelper(
             }
             else if (item.Upd.FoodDrink is not null)
             {
-                result =
-                    (item.Upd.FoodDrink.HpPercent ?? 0) / (itemDetails.Properties.MaxResource ?? 0);
+                result = (item.Upd.FoodDrink.HpPercent ?? 0) / (itemDetails.Properties.MaxResource ?? 0);
             }
-            else if (
-                item.Upd.Key?.NumberOfUsages > 0
-                && itemDetails.Properties.MaximumNumberOfUsage > 0
-            )
+            else if (item.Upd.Key?.NumberOfUsages > 0 && itemDetails.Properties.MaximumNumberOfUsage > 0)
             {
                 // keys - keys count upwards, not down like everything else
                 var maxNumOfUsages = itemDetails.Properties.MaximumNumberOfUsage;
@@ -669,9 +622,7 @@ public class ItemHelper(
             }
             else if (item.Upd.RepairKit is not null)
             {
-                result =
-                    (item.Upd.RepairKit.Resource ?? 0)
-                    / (itemDetails.Properties.MaxRepairResource ?? 0);
+                result = (item.Upd.RepairKit.Resource ?? 0) / (itemDetails.Properties.MaxRepairResource ?? 0);
             }
 
             if (result == 0)
@@ -691,11 +642,7 @@ public class ItemHelper(
     /// <param name="repairable">Repairable properties</param>
     /// <param name="item">Item quality value is for</param>
     /// <returns>number between 0 and 1</returns>
-    protected double GetRepairableItemQualityValue(
-        TemplateItem itemDetails,
-        UpdRepairable repairable,
-        Item item
-    )
+    protected double GetRepairableItemQualityValue(TemplateItem itemDetails, UpdRepairable repairable, Item item)
     {
         // Edge case, durability above max
         if (repairable.Durability > repairable.MaxDurability)
@@ -707,18 +654,12 @@ public class ItemHelper(
         }
 
         // Attempt to get the max durability from _props. If not available, use Repairable max durability value instead.
-        var maxPossibleDurability =
-            itemDetails.Properties?.MaxDurability ?? repairable.MaxDurability;
+        var maxPossibleDurability = itemDetails.Properties?.MaxDurability ?? repairable.MaxDurability;
         var durability = repairable.Durability / maxPossibleDurability;
 
         if (durability == 0)
         {
-            logger.Error(
-                serverLocalisationService.GetText(
-                    "item-durability_value_invalid_use_default",
-                    item.Template
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("item-durability_value_invalid_use_default", item.Template));
 
             return 1;
         }
@@ -739,14 +680,10 @@ public class ItemHelper(
         foreach (var itemFromAssort in assort)
         {
             // Parent matches desired item + all items in list do not match
-            if (
-                itemFromAssort.ParentId == itemIdToFindString
-                && list.All(item => itemFromAssort.Id != item.Id)
-            )
+            if (itemFromAssort.ParentId == itemIdToFindString && list.All(item => itemFromAssort.Id != item.Id))
             {
                 list.Add(itemFromAssort);
-                list = list.Concat(FindAndReturnChildrenByAssort(itemFromAssort.Id, assort))
-                    .ToList();
+                list = list.Concat(FindAndReturnChildrenByAssort(itemFromAssort.Id, assort)).ToList();
             }
         }
 
@@ -902,25 +839,17 @@ public class ItemHelper(
     /// <param name="itemsToSearch">Array of items to iterate over.</param>
     /// <param name="desiredBarterItemIds">List of desired barter item ids.</param>
     /// <returns>List of Item objects.</returns>
-    public List<Item> FindBarterItems(
-        string by,
-        IEnumerable<Item> itemsToSearch,
-        IEnumerable<MongoId> desiredBarterItemIds
-    )
+    public List<Item> FindBarterItems(string by, IEnumerable<Item> itemsToSearch, IEnumerable<MongoId> desiredBarterItemIds)
     {
         // Find required items to take after buying (handles multiple items)
         List<Item> matchingItems = [];
         foreach (var barterId in desiredBarterItemIds)
         {
-            var filteredResult = itemsToSearch.Where(item =>
-                by == "tpl" ? item.Template.Equals(barterId) : item.Id.Equals(barterId)
-            );
+            var filteredResult = itemsToSearch.Where(item => by == "tpl" ? item.Template.Equals(barterId) : item.Id.Equals(barterId));
 
             if (!filteredResult.Any())
             {
-                logger.Warning(
-                    serverLocalisationService.GetText("item-helper_no_items_for_barter", barterId)
-                );
+                logger.Warning(serverLocalisationService.GetText("item-helper_no_items_for_barter", barterId));
                 continue;
             }
 
@@ -959,10 +888,7 @@ public class ItemHelper(
     /// </summary>
     /// <param name="inventory"></param>
     /// <param name="insuredItems"></param>
-    public void ReplaceProfileInventoryIds(
-        BotBaseInventory inventory,
-        IEnumerable<InsuredItem>? insuredItems = null
-    )
+    public void ReplaceProfileInventoryIds(BotBaseInventory inventory, IEnumerable<InsuredItem>? insuredItems = null)
     {
         // Blacklist
         var itemIdBlacklist = new HashSet<MongoId>();
@@ -1213,9 +1139,7 @@ public class ItemHelper(
         if (parentTemplate.Key && parentTemplate.Value?.Properties?.Slots != null)
         {
             isRequiredSlot =
-                parentTemplate.Value?.Properties?.Slots?.Any(slot =>
-                    slot?.Name == item?.SlotId && (slot?.Required ?? false)
-                ) ?? false;
+                parentTemplate.Value?.Properties?.Slots?.Any(slot => slot?.Name == item?.SlotId && (slot?.Required ?? false)) ?? false;
         }
 
         return itemTemplate.Key && parentTemplate.Key && !(isNotRaidModdable || isRequiredSlot);
@@ -1333,22 +1257,10 @@ public class ItemHelper(
             }
             else
             {
-                sizeUp =
-                    sizeUp < itemTemplate.Properties.ExtraSizeUp
-                        ? itemTemplate.Properties.ExtraSizeUp.Value
-                        : sizeUp;
-                sizeDown =
-                    sizeDown < itemTemplate.Properties.ExtraSizeDown
-                        ? itemTemplate.Properties.ExtraSizeDown.Value
-                        : sizeDown;
-                sizeLeft =
-                    sizeLeft < itemTemplate.Properties.ExtraSizeLeft
-                        ? itemTemplate.Properties.ExtraSizeLeft.Value
-                        : sizeLeft;
-                sizeRight =
-                    sizeRight < itemTemplate.Properties.ExtraSizeRight
-                        ? itemTemplate.Properties.ExtraSizeRight.Value
-                        : sizeRight;
+                sizeUp = sizeUp < itemTemplate.Properties.ExtraSizeUp ? itemTemplate.Properties.ExtraSizeUp.Value : sizeUp;
+                sizeDown = sizeDown < itemTemplate.Properties.ExtraSizeDown ? itemTemplate.Properties.ExtraSizeDown.Value : sizeDown;
+                sizeLeft = sizeLeft < itemTemplate.Properties.ExtraSizeLeft ? itemTemplate.Properties.ExtraSizeLeft.Value : sizeLeft;
+                sizeRight = sizeRight < itemTemplate.Properties.ExtraSizeRight ? itemTemplate.Properties.ExtraSizeRight.Value : sizeRight;
             }
         }
 
@@ -1366,10 +1278,7 @@ public class ItemHelper(
     /// <returns>Valid caliber for cartridge</returns>
     public MongoId? GetRandomCompatibleCaliberTemplateId(TemplateItem item)
     {
-        var cartridges = item
-            ?.Properties?.Cartridges?.FirstOrDefault()
-            ?.Props?.Filters?.FirstOrDefault()
-            ?.Filter;
+        var cartridges = item?.Properties?.Cartridges?.FirstOrDefault()?.Props?.Filters?.FirstOrDefault()?.Filter;
         if (cartridges is null)
         {
             logger.Warning($"Failed to find cartridge for item: {item?.Id} {item?.Name}");
@@ -1387,10 +1296,7 @@ public class ItemHelper(
     public void AddCartridgesToAmmoBox(List<Item> ammoBox, TemplateItem ammoBoxDetails)
     {
         var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties.StackSlots.First().MaxCount;
-        var cartridgeTpl = ammoBoxDetails
-            .Properties.StackSlots.First()
-            .Props.Filters.First()
-            .Filter.FirstOrDefault();
+        var cartridgeTpl = ammoBoxDetails.Properties.StackSlots.First().Props.Filters.First().Filter.FirstOrDefault();
         var cartridgeDetails = GetItem(cartridgeTpl);
         var cartridgeMaxStackSize = cartridgeDetails.Value.Properties.StackMaxSize;
 
@@ -1412,12 +1318,7 @@ public class ItemHelper(
             var cartridgeCountToAdd = remainingSpace < maxPerStack ? remainingSpace : maxPerStack;
 
             // Add cartridge item into items array
-            var cartridgeItemToAdd = CreateCartridges(
-                ammoBox[0].Id,
-                cartridgeTpl,
-                (int)cartridgeCountToAdd,
-                location
-            );
+            var cartridgeItemToAdd = CreateCartridges(ammoBox[0].Id, cartridgeTpl, (int)cartridgeCountToAdd, location);
 
             // In live no ammo box has the first cartridge item with a location
             if (location == 0)
@@ -1440,13 +1341,8 @@ public class ItemHelper(
     public void AddSingleStackCartridgesToAmmoBox(List<Item> ammoBox, TemplateItem ammoBoxDetails)
     {
         var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties?.StackSlots?.First().MaxCount ?? 0;
-        var cartridgeTpl = ammoBoxDetails
-            .Properties?.StackSlots?.First()
-            .Props?.Filters?.First()
-            .Filter?.FirstOrDefault();
-        ammoBox.Add(
-            CreateCartridges(ammoBox[0].Id, cartridgeTpl.Value, (int)ammoBoxMaxCartridgeCount, 0)
-        );
+        var cartridgeTpl = ammoBoxDetails.Properties?.StackSlots?.First().Props?.Filters?.First().Filter?.FirstOrDefault();
+        ammoBox.Add(CreateCartridges(ammoBox[0].Id, cartridgeTpl.Value, (int)ammoBoxMaxCartridgeCount, 0));
     }
 
     /// <summary>
@@ -1482,16 +1378,13 @@ public class ItemHelper(
             chosenCaliber,
             staticAmmoDist,
             defaultCartridgeTpl,
-            weapon?.Properties?.Chambers?.FirstOrDefault()?.Props?.Filters?.FirstOrDefault()?.Filter
-                ?? null
+            weapon?.Properties?.Chambers?.FirstOrDefault()?.Props?.Filters?.FirstOrDefault()?.Filter ?? null
         );
         if (cartridgeTpl is null)
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                logger.Debug(
-                    $"Unable to fill item: {magazine.FirstOrDefault().Id} {magTemplate.Name} with cartridges, none found."
-                );
+                logger.Debug($"Unable to fill item: {magazine.FirstOrDefault().Id} {magTemplate.Name} with cartridges, none found.");
             }
 
             return;
@@ -1536,18 +1429,13 @@ public class ItemHelper(
 
         // Get max number of cartridges in magazine, choose random value between min/max
         var magProps = magTemplate.Properties;
-        var magazineCartridgeMaxCount = IsOfBaseclass(
-            magTemplate.Id,
-            BaseClasses.SPRING_DRIVEN_CYLINDER
-        )
+        var magazineCartridgeMaxCount = IsOfBaseclass(magTemplate.Id, BaseClasses.SPRING_DRIVEN_CYLINDER)
             ? magProps?.Slots?.Count() // Edge case for rotating grenade launcher magazine
             : magProps?.Cartridges?.FirstOrDefault()?.MaxCount;
 
         if (magazineCartridgeMaxCount is null)
         {
-            logger.Warning(
-                $"Magazine: {magTemplate.Id} {magTemplate.Name} lacks a Cartridges array, unable to fill magazine with ammo"
-            );
+            logger.Warning($"Magazine: {magTemplate.Id} {magTemplate.Name} lacks a Cartridges array, unable to fill magazine with ammo");
 
             return;
         }
@@ -1559,9 +1447,7 @@ public class ItemHelper(
 
         if (magazineWithChildCartridges.Count > 1)
         {
-            logger.Warning(
-                $"Magazine {magTemplate.Name} already has cartridges defined,  this may cause issues"
-            );
+            logger.Warning($"Magazine {magTemplate.Name} already has cartridges defined,  this may cause issues");
         }
 
         // Loop over cartridge count and add stacks to magazine
@@ -1570,10 +1456,7 @@ public class ItemHelper(
         while (currentStoredCartridgeCount < desiredStackCount)
         {
             // Get stack size of cartridges
-            var cartridgeCountToAdd =
-                desiredStackCount <= cartridgeMaxStackSize
-                    ? desiredStackCount
-                    : cartridgeMaxStackSize;
+            var cartridgeCountToAdd = desiredStackCount <= cartridgeMaxStackSize ? desiredStackCount : cartridgeMaxStackSize;
 
             // Ensure we don't go over the max stackCount size
             var remainingSpace = desiredStackCount - currentStoredCartridgeCount;
@@ -1584,12 +1467,7 @@ public class ItemHelper(
 
             // Add cartridge item object into items array
             magazineWithChildCartridges.Add(
-                CreateCartridges(
-                    magazineWithChildCartridges[0].Id,
-                    cartridgeTpl,
-                    cartridgeCountToAdd ?? 0,
-                    location
-                )
+                CreateCartridges(magazineWithChildCartridges[0].Id, cartridgeTpl, cartridgeCountToAdd ?? 0, location)
             );
 
             currentStoredCartridgeCount += cartridgeCountToAdd.Value;
@@ -1611,10 +1489,7 @@ public class ItemHelper(
     protected string? GetRandomValidCaliber(TemplateItem magTemplate)
     {
         var ammoTpls = magTemplate.Properties.Cartridges.First().Props.Filters.First().Filter;
-        var calibers = ammoTpls
-            .Where(x => GetItem(x).Key)
-            .Select(x => GetItem(x).Value.Properties.Caliber)
-            .ToList();
+        var calibers = ammoTpls.Where(x => GetItem(x).Key).Select(x => GetItem(x).Value.Properties.Caliber).ToList();
 
         return randomUtil.DrawRandomFromList(calibers).FirstOrDefault();
     }
@@ -1646,9 +1521,7 @@ public class ItemHelper(
                 return fallbackCartridgeTpl;
             }
 
-            logger.Warning(
-                $"Unable to pick a cartridge for caliber: {caliber}, staticAmmoDist has no data. No fallback value provided"
-            );
+            logger.Warning($"Unable to pick a cartridge for caliber: {caliber}, staticAmmoDist has no data. No fallback value provided");
 
             return null;
         }
@@ -1663,13 +1536,7 @@ public class ItemHelper(
                 continue;
             }
 
-            ammoArray.Add(
-                new ProbabilityObject<MongoId, float?>(
-                    icd.Tpl.Value,
-                    (double)icd.RelativeProbability,
-                    null
-                )
-            );
+            ammoArray.Add(new ProbabilityObject<MongoId, float?>(icd.Tpl.Value, (double)icd.RelativeProbability, null));
         }
 
         return ammoArray.Draw().FirstOrDefault();
@@ -1720,10 +1587,7 @@ public class ItemHelper(
     /// <returns>Array of tpls</returns>
     public IEnumerable<MongoId> GetItemTplsOfBaseType(string desiredBaseType)
     {
-        return databaseService
-            .GetItems()
-            .Values.Where(item => item.Parent == desiredBaseType)
-            .Select(item => item.Id);
+        return databaseService.GetItems().Values.Where(item => item.Parent == desiredBaseType).Select(item => item.Id);
     }
 
     /// <summary>
@@ -1817,10 +1681,7 @@ public class ItemHelper(
     /// <param name="possibleTpls">Tpls to randomly choose from</param>
     /// <param name="incompatibleModTpls">Incompatible tpls to not allow</param>
     /// <returns>Chosen tpl or undefined</returns>
-    public MongoId? GetCompatibleTplFromArray(
-        HashSet<MongoId> possibleTpls,
-        HashSet<MongoId> incompatibleModTpls
-    )
+    public MongoId? GetCompatibleTplFromArray(HashSet<MongoId> possibleTpls, HashSet<MongoId> incompatibleModTpls)
     {
         if (!possibleTpls.Any())
         {
@@ -1891,10 +1752,7 @@ public class ItemHelper(
             }
 
             // Has parentId + no remapping exists for its parent
-            if (
-                mod.ParentId != null
-                && (!idMappings.ContainsKey(mod.ParentId) || idMappings?[mod.ParentId] is null)
-            )
+            if (mod.ParentId != null && (!idMappings.ContainsKey(mod.ParentId) || idMappings?[mod.ParentId] is null))
             // Make remapping for items parentId
             {
                 idMappings[mod.ParentId] = new MongoId();
@@ -1910,9 +1768,7 @@ public class ItemHelper(
         // Force item's details into first location of presetItems
         if (itemWithChildren[0].Template != rootItem.Template)
         {
-            logger.Warning(
-                $"Reassigning root item from {itemWithChildren[0].Template} to {rootItem.Template}"
-            );
+            logger.Warning($"Reassigning root item from {itemWithChildren[0].Template} to {rootItem.Template}");
         }
 
         itemWithChildren[0] = rootItem;

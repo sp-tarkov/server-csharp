@@ -57,13 +57,7 @@ public class TradeHelper(
             List<Item> offerItems = [];
             Action<int>? buyCallback;
 
-            if (
-                string.Equals(
-                    buyRequestData.TransactionId,
-                    "ragfair",
-                    StringComparison.OrdinalIgnoreCase
-                )
-            )
+            if (string.Equals(buyRequestData.TransactionId, "ragfair", StringComparison.OrdinalIgnoreCase))
             {
                 // Called when player purchases PMC offer from ragfair
                 buyCallback = buyCount =>
@@ -71,9 +65,7 @@ public class TradeHelper(
                     var allOffers = ragfairServer.GetOffers();
 
                     // We store ragfair offerId in buyRequestData.item_id
-                    var offerWithItem = allOffers.FirstOrDefault(x =>
-                        x.Id == buyRequestData.ItemId
-                    );
+                    var offerWithItem = allOffers.FirstOrDefault(x => x.Id == buyRequestData.ItemId);
                     var itemPurchased = offerWithItem.Items.FirstOrDefault();
 
                     // Ensure purchase does not exceed trader item limit
@@ -91,30 +83,17 @@ public class TradeHelper(
                         // Decrement trader item count
                         var itemPurchaseDetails = new PurchaseDetails
                         {
-                            Items =
-                            [
-                                new PurchaseItems
-                                {
-                                    ItemId = buyRequestData.ItemId,
-                                    Count = buyCount,
-                                },
-                            ],
+                            Items = [new PurchaseItems { ItemId = buyRequestData.ItemId, Count = buyCount }],
                             TraderId = buyRequestData.TransactionId,
                         };
-                        traderHelper.AddTraderPurchasesToPlayerProfile(
-                            sessionID,
-                            itemPurchaseDetails,
-                            itemPurchased
-                        );
+                        traderHelper.AddTraderPurchasesToPlayerProfile(sessionID, itemPurchaseDetails, itemPurchased);
                     }
                 };
 
                 // buyCallback = BuyCallback1;
                 // Get raw offer from ragfair, clone to prevent altering offer itself
                 var allOffers = ragfairServer.GetOffers();
-                var offerWithItemCloned = cloner.Clone(
-                    allOffers.FirstOrDefault(x => x.Id == buyRequestData.ItemId)
-                );
+                var offerWithItemCloned = cloner.Clone(allOffers.FirstOrDefault(x => x.Id == buyRequestData.ItemId));
                 offerItems = offerWithItemCloned.Items;
             }
             else if (buyRequestData.TransactionId == Traders.FENCE)
@@ -122,12 +101,8 @@ public class TradeHelper(
                 buyCallback = buyCount =>
                 {
                     // Update assort/flea item values
-                    var traderAssorts = traderHelper
-                        .GetTraderAssortsByTraderId(buyRequestData.TransactionId)
-                        .Items;
-                    var itemPurchased = traderAssorts.FirstOrDefault(assort =>
-                        assort.Id == buyRequestData.ItemId
-                    );
+                    var traderAssorts = traderHelper.GetTraderAssortsByTraderId(buyRequestData.TransactionId).Items;
+                    var itemPurchased = traderAssorts.FirstOrDefault(assort => assort.Id == buyRequestData.ItemId);
 
                     // Decrement trader item count
                     itemPurchased.Upd.StackObjectsCount -= buyCount;
@@ -141,14 +116,10 @@ public class TradeHelper(
                 {
                     if (logger.IsLogEnabled(LogLevel.Debug))
                     {
-                        logger.Debug(
-                            $"Tried to buy item {buyRequestData.ItemId} from fence that no longer exists"
-                        );
+                        logger.Debug($"Tried to buy item {buyRequestData.ItemId} from fence that no longer exists");
                     }
 
-                    var message = serverLocalisationService.GetText(
-                        "ragfair-offer_no_longer_exists"
-                    );
+                    var message = serverLocalisationService.GetText("ragfair-offer_no_longer_exists");
                     httpResponseUtil.AppendErrorToOutput(output, message);
 
                     return;
@@ -161,12 +132,8 @@ public class TradeHelper(
                 buyCallback = buyCount =>
                 {
                     // Update assort/flea item values
-                    var traderAssorts = traderHelper
-                        .GetTraderAssortsByTraderId(buyRequestData.TransactionId)
-                        .Items;
-                    var itemPurchased = traderAssorts.FirstOrDefault(item =>
-                        item.Id == buyRequestData.ItemId
-                    );
+                    var traderAssorts = traderHelper.GetTraderAssortsByTraderId(buyRequestData.TransactionId).Items;
+                    var itemPurchased = traderAssorts.FirstOrDefault(item => item.Id == buyRequestData.ItemId);
 
                     // Ensure purchase does not exceed trader item limit
                     if (itemPurchased.HasBuyRestrictions())
@@ -197,37 +164,22 @@ public class TradeHelper(
                     {
                         var itemPurchaseDat = new PurchaseDetails
                         {
-                            Items =
-                            [
-                                new PurchaseItems
-                                {
-                                    ItemId = buyRequestData.ItemId,
-                                    Count = buyCount,
-                                },
-                            ],
+                            Items = [new PurchaseItems { ItemId = buyRequestData.ItemId, Count = buyCount }],
                             TraderId = buyRequestData.TransactionId,
                         };
 
-                        traderHelper.AddTraderPurchasesToPlayerProfile(
-                            sessionID,
-                            itemPurchaseDat,
-                            itemPurchased
-                        );
+                        traderHelper.AddTraderPurchasesToPlayerProfile(sessionID, itemPurchaseDat, itemPurchased);
                     }
                 };
 
                 // Get all trader assort items
-                var traderItems = traderAssortHelper
-                    .GetAssort(sessionID, buyRequestData.TransactionId)
-                    .Items;
+                var traderItems = traderAssortHelper.GetAssort(sessionID, buyRequestData.TransactionId).Items;
 
                 // Get item + children for purchase
                 var relevantItems = traderItems.GetItemWithChildren(buyRequestData.ItemId);
                 if (relevantItems.Count == 0)
                 {
-                    logger.Error(
-                        $"Purchased trader: {buyRequestData.TransactionId} offer: {buyRequestData.ItemId} has no items"
-                    );
+                    logger.Error($"Purchased trader: {buyRequestData.TransactionId} offer: {buyRequestData.ItemId} has no items");
                 }
 
                 offerItems.AddRange(relevantItems);
@@ -281,13 +233,8 @@ public class TradeHelper(
             paymentService.PayMoney(pmcData, buyRequestData, sessionID, output);
             if (output.Warnings?.Count > 0)
             {
-                var errorMessage =
-                    $"Transaction failed: {output.Warnings.FirstOrDefault().ErrorMessage}";
-                httpResponseUtil.AppendErrorToOutput(
-                    output,
-                    errorMessage,
-                    BackendErrorCodes.UnknownTradingError
-                );
+                var errorMessage = $"Transaction failed: {output.Warnings.FirstOrDefault().ErrorMessage}";
+                httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.UnknownTradingError);
             }
         }
     }
@@ -309,11 +256,7 @@ public class TradeHelper(
     )
     {
         // Check for and increment SoldToTrader condition counters
-        questHelper.IncrementSoldToTraderCounters(
-            profileWithItemsToSell,
-            profileToReceiveMoney,
-            sellRequest
-        );
+        questHelper.IncrementSoldToTraderCounters(profileWithItemsToSell, profileToReceiveMoney, sellRequest);
 
         const string pattern = @"\s+";
 
@@ -322,13 +265,10 @@ public class TradeHelper(
         {
             var itemIdToFind = Regex.Replace(itemToBeRemoved.Id, pattern, ""); // Strip out whitespace
             // Find item in player inventory, or show error to player if not found
-            var matchingItemInInventory = profileWithItemsToSell.Inventory.Items.FirstOrDefault(x =>
-                x.Id == itemIdToFind
-            );
+            var matchingItemInInventory = profileWithItemsToSell.Inventory.Items.FirstOrDefault(x => x.Id == itemIdToFind);
             if (matchingItemInInventory is null)
             {
-                var errorMessage =
-                    $"Unable to sell item {itemToBeRemoved.Id}, cannot be found in player inventory";
+                var errorMessage = $"Unable to sell item {itemToBeRemoved.Id}, cannot be found in player inventory";
                 logger.Error(errorMessage);
 
                 httpResponseUtil.AppendErrorToOutput(output, errorMessage);
@@ -338,36 +278,20 @@ public class TradeHelper(
 
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                logger.Debug(
-                    $"Selling: id: {matchingItemInInventory.Id} tpl: {matchingItemInInventory.Template}"
-                );
+                logger.Debug($"Selling: id: {matchingItemInInventory.Id} tpl: {matchingItemInInventory.Template}");
             }
 
             if (sellRequest.TransactionId == Traders.FENCE)
             {
-                fenceService.AddItemsToFenceAssort(
-                    profileWithItemsToSell.Inventory.Items,
-                    matchingItemInInventory
-                );
+                fenceService.AddItemsToFenceAssort(profileWithItemsToSell.Inventory.Items, matchingItemInInventory);
             }
 
             // Remove item from inventory + any child items it has
-            inventoryHelper.RemoveItem(
-                profileWithItemsToSell,
-                itemToBeRemoved.Id,
-                sessionID,
-                output
-            );
+            inventoryHelper.RemoveItem(profileWithItemsToSell, itemToBeRemoved.Id, sessionID, output);
         }
 
         // Give player money for sold item(s)
-        paymentService.GiveProfileMoney(
-            profileToReceiveMoney,
-            sellRequest.Price,
-            sellRequest,
-            output,
-            sessionID
-        );
+        paymentService.GiveProfileMoney(profileToReceiveMoney, sellRequest.Price, sellRequest, output, sessionID);
     }
 
     /// <summary>
@@ -388,11 +312,7 @@ public class TradeHelper(
         double count
     )
     {
-        var traderPurchaseData = traderPurchasePersisterService.GetProfileTraderPurchase(
-            sessionId,
-            traderId,
-            assortBeingPurchased.Id
-        );
+        var traderPurchaseData = traderPurchasePersisterService.GetProfileTraderPurchase(sessionId, traderId, assortBeingPurchased.Id);
         var traderItemPurchaseLimit = traderHelper.GetAccountTypeAdjustedTraderPurchaseLimit(
             (double)assortBeingPurchased.Upd?.BuyRestrictionMax,
             pmcData.Info.GameVersion

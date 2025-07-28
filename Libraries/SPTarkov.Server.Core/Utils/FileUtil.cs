@@ -13,11 +13,7 @@ public class FileUtil
 
         if (recursive)
         {
-            files.AddRange(
-                Directory
-                    .GetDirectories(path)
-                    .SelectMany(d => GetFiles(d, recursive, searchPattern))
-            );
+            files.AddRange(Directory.GetDirectories(path).SelectMany(d => GetFiles(d, recursive, searchPattern)));
         }
 
         return files;

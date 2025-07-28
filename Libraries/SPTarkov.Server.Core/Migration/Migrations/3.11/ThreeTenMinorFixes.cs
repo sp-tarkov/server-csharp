@@ -36,10 +36,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
             get { return [typeof(HideoutSeed)]; }
         }
 
-        public override bool CanMigrate(
-            JsonObject profile,
-            IEnumerable<IProfileMigration> previouslyRanMigrations
-        )
+        public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
         {
             var cultistRewardsMissing = profile["spt"]?["cultistRewards"] == null;
             var friendProfileIdsMissing = profile["friends"] == null;

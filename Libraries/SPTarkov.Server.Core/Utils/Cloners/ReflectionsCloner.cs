@@ -74,17 +74,11 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
                 (result as IDictionary).Add(clonedKey, clonedValue);
             }
         }
-        else if (
-            objectType.IsGenericType
-            && objectType.GetGenericTypeDefinition() == typeof(HashSet<>)
-        )
+        else if (objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(HashSet<>))
         {
             if (!AddMethodInfoCache.TryGetValue(objectType, out var addMethodInfo))
             {
-                addMethodInfo = objectType.GetMethod(
-                    "Add",
-                    BindingFlags.Instance | BindingFlags.Public
-                );
+                addMethodInfo = objectType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public);
                 while (!AddMethodInfoCache.TryAdd(objectType, addMethodInfo)) { }
             }
 
@@ -121,10 +115,7 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
                         case PropertyInfo propertyInfo:
 
                             var propertyValue = propertyInfo.GetValue(obj, null);
-                            var propertyCloned = await Clone(
-                                propertyValue,
-                                propertyInfo.PropertyType
-                            );
+                            var propertyCloned = await Clone(propertyValue, propertyInfo.PropertyType);
                             propertyInfo.SetValue(result, propertyCloned, null);
 
                             break;
@@ -140,9 +131,7 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
                         default:
                             if (logger.IsLogEnabled(LogLevel.Debug))
                             {
-                                logger.Debug(
-                                    $"Unknown member type {member.Name} {member.MemberType}"
-                                );
+                                logger.Debug($"Unknown member type {member.Name} {member.MemberType}");
                             }
 
                             break;
@@ -184,10 +173,8 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
                 while (!_listPropertyInfoCache.TryAdd(type, list)) { }
             }
 
-            item.GetSetMethod(true)
-                .Invoke(clone, [await Clone(item.GetValue(obj), item.PropertyType)]);
-            list.GetSetMethod(true)
-                .Invoke(clone, [await Clone(list.GetValue(obj), list.PropertyType)]);
+            item.GetSetMethod(true).Invoke(clone, [await Clone(item.GetValue(obj), item.PropertyType)]);
+            list.GetSetMethod(true).Invoke(clone, [await Clone(list.GetValue(obj), list.PropertyType)]);
             return clone;
         }
 

@@ -33,13 +33,7 @@ public class ItemTplMongoIdGenerator(
 
         // Figure out our source and target directories
         var projectDir = Directory.GetParent("./").Parent.Parent.Parent.Parent.Parent;
-        _enumDir = Path.Combine(
-            projectDir.FullName,
-            "Libraries",
-            "SPTarkov.Server.Core",
-            "Models",
-            "Enums"
-        );
+        _enumDir = Path.Combine(projectDir.FullName, "Libraries", "SPTarkov.Server.Core", "Models", "Enums");
         _items = databaseServer.GetTables().Templates.Items;
 
         // Generate an object containing all item name to ID associations
@@ -48,25 +42,13 @@ public class ItemTplMongoIdGenerator(
         // Log any changes to enum values, so the source can be updated as required
         LogEnumValueChanges(orderedItemsObject, "ItemTpl", typeof(ItemTpl));
         var itemTplOutPath = Path.Combine(_enumDir, "ItemTpl.cs");
-        WriteEnumsToFile(
-            itemTplOutPath,
-            new Dictionary<string, Dictionary<string, string>>
-            {
-                { nameof(ItemTpl), orderedItemsObject },
-            }
-        );
+        WriteEnumsToFile(itemTplOutPath, new Dictionary<string, Dictionary<string, string>> { { nameof(ItemTpl), orderedItemsObject } });
 
         // Handle the weapon type enums
         var weaponsObject = GenerateWeaponsObject();
         LogEnumValueChanges(weaponsObject, "Weapons", typeof(Weapons));
         var weaponTypeOutPath = Path.Combine(_enumDir, "Weapons.cs");
-        WriteEnumsToFile(
-            weaponTypeOutPath,
-            new Dictionary<string, Dictionary<string, string>>
-            {
-                { nameof(Weapons), weaponsObject },
-            }
-        );
+        WriteEnumsToFile(weaponTypeOutPath, new Dictionary<string, Dictionary<string, string>> { { nameof(Weapons), weaponsObject } });
 
         logger.Info("Generating items finished");
 
@@ -108,10 +90,7 @@ public class ItemTplMongoIdGenerator(
             }
 
             // Handle the case where the item ends with the parent category name. Avoids things like 'KEY_DORM_ROOM_103_KEY'
-            if (
-                itemName.Length >= itemParentName.Length
-                && itemParentName == itemName.Substring(itemName.Length - itemParentName.Length)
-            )
+            if (itemName.Length >= itemParentName.Length && itemParentName == itemName.Substring(itemName.Length - itemParentName.Length))
             {
                 itemName = itemName.Substring(0, itemName.Length - itemParentName.Length);
 
@@ -142,9 +121,7 @@ public class ItemTplMongoIdGenerator(
                         var oldItemNameSuffix = GetItemNameSuffix(_items[oldItemId]);
                         if (!string.IsNullOrEmpty(oldItemNameSuffix))
                         {
-                            var oldItemNewKey = localeUtil.SanitizeEnumKey(
-                                $"{itemKey}_{oldItemNameSuffix}"
-                            );
+                            var oldItemNewKey = localeUtil.SanitizeEnumKey($"{itemKey}_{oldItemNameSuffix}");
                             itemsObject.Remove(itemKey);
                             itemsObject[oldItemNewKey] = oldItemId;
                         }
@@ -155,17 +132,13 @@ public class ItemTplMongoIdGenerator(
                     // If we still collide, log an error
                     if (itemsObject.TryGetValue(itemKey, out var value))
                     {
-                        logger.Error(
-                            $"After rename, itemsObject already contains {itemKey}  {value} => {item.Id}"
-                        );
+                        logger.Error($"After rename, itemsObject already contains {itemKey}  {value} => {item.Id}");
                     }
                 }
                 else
                 {
                     var val = itemsObject.GetValueOrDefault(itemKey, itemKey);
-                    logger.Error(
-                        $"New itemOverride entry required: itemsObject already contains {itemKey}  {val} => {item.Id}"
-                    );
+                    logger.Error($"New itemOverride entry required: itemsObject already contains {itemKey}  {val} => {item.Id}");
                     continue;
                 }
             }
@@ -403,20 +376,14 @@ public class ItemTplMongoIdGenerator(
 
     private string GetAmmoBoxPrefix(TemplateItem item)
     {
-        var ammoTpl = item
-            .Properties?.StackSlots?.First()
-            ?.Props?.Filters?.First()
-            ?.Filter?.FirstOrDefault();
+        var ammoTpl = item.Properties?.StackSlots?.First()?.Props?.Filters?.First()?.Filter?.FirstOrDefault();
 
         return GetAmmoPrefix(_items[ammoTpl.Value]);
     }
 
     private string GetMagazinePrefix(TemplateItem item)
     {
-        var ammoTpl = item
-            .Properties?.Cartridges?.First()
-            ?.Props?.Filters?.First()
-            ?.Filter?.FirstOrDefault();
+        var ammoTpl = item.Properties?.Cartridges?.First()?.Props?.Filters?.First()?.Filter?.FirstOrDefault();
 
         return GetAmmoPrefix(_items[ammoTpl.Value]);
     }
@@ -437,22 +404,12 @@ public class ItemTplMongoIdGenerator(
             itemName = itemNameOverride.ToUpper();
         }
         // For the listed types, user the item's _name property
-        else if (
-            itemHelper.IsOfBaseclasses(
-                item.Id,
-                [BaseClasses.RANDOM_LOOT_CONTAINER, BaseClasses.BUILT_IN_INSERTS, BaseClasses.STASH]
-            )
-        )
+        else if (itemHelper.IsOfBaseclasses(item.Id, [BaseClasses.RANDOM_LOOT_CONTAINER, BaseClasses.BUILT_IN_INSERTS, BaseClasses.STASH]))
         {
             itemName = item.Name.ToUpper();
         }
         // For the listed types, use the short name
-        else if (
-            itemHelper.IsOfBaseclasses(
-                item.Id,
-                [BaseClasses.AMMO, BaseClasses.AMMO_BOX, BaseClasses.MAGAZINE]
-            )
-        )
+        else if (itemHelper.IsOfBaseclasses(item.Id, [BaseClasses.AMMO, BaseClasses.AMMO_BOX, BaseClasses.MAGAZINE]))
         {
             if (localeDb.TryGetValue($"{item.Id} ShortName", out itemName))
             {
@@ -540,11 +497,7 @@ public class ItemTplMongoIdGenerator(
         return "";
     }
 
-    private void LogEnumValueChanges(
-        Dictionary<string, string> data,
-        string enumName,
-        Type originalEnum
-    )
+    private void LogEnumValueChanges(Dictionary<string, string> data, string enumName, Type originalEnum)
     {
         // First generate a mapping of the original enum values to names
         var originalEnumValues = new Dictionary<string, string>();
@@ -558,17 +511,12 @@ public class ItemTplMongoIdGenerator(
         {
             if (originalEnumValues.ContainsKey(kv.Value) && originalEnumValues[kv.Value] != kv.Key)
             {
-                logger.Warning(
-                    $"Enum {enumName} key has changed for {kv.Value}, {originalEnumValues[kv.Value]} => {kv.Key}"
-                );
+                logger.Warning($"Enum {enumName} key has changed for {kv.Value}, {originalEnumValues[kv.Value]} => {kv.Key}");
             }
         }
     }
 
-    private void WriteEnumsToFile(
-        string outputPath,
-        Dictionary<string, Dictionary<string, string>> enumEntries
-    )
+    private void WriteEnumsToFile(string outputPath, Dictionary<string, Dictionary<string, string>> enumEntries)
     {
         var enumFileData =
             "using SPTarkov.Server.Core.Models.Common;\n\n"
@@ -580,8 +528,7 @@ public class ItemTplMongoIdGenerator(
 
             foreach (var (key, value) in data)
             {
-                enumFileData +=
-                    $"    public static readonly MongoId {key} = new MongoId(\"{value}\");\n";
+                enumFileData += $"    public static readonly MongoId {key} = new MongoId(\"{value}\");\n";
             }
 
             enumFileData += "}\n";

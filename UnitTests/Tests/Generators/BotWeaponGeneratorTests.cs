@@ -60,11 +60,7 @@ public class BotWeaponGeneratorTests
                 69
             );
 
-            var itemSize = _inventoryHelper.GetItemSize(
-                weaponTpl,
-                result.Weapon[0].Id,
-                result.Weapon
-            );
+            var itemSize = _inventoryHelper.GetItemSize(weaponTpl, result.Weapon[0].Id, result.Weapon);
 
             Assert.AreEqual(weaponTpl, result.WeaponTemplate.Id);
 

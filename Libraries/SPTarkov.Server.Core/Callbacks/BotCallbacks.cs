@@ -19,9 +19,7 @@ public class BotCallbacks(BotController botController, HttpResponseUtil httpResp
     {
         var splitUrl = url.Split('/');
         var type = splitUrl[^1];
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(botController.GetBotPresetGenerationLimit(type))
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(botController.GetBotPresetGenerationLimit(type)));
     }
 
     /// <summary>
@@ -35,44 +33,28 @@ public class BotCallbacks(BotController botController, HttpResponseUtil httpResp
         var difficulty = splitUrl[^1];
         if (difficulty == "core")
         {
-            return new ValueTask<string>(
-                httpResponseUtil.NoBody(botController.GetBotCoreDifficulty())
-            );
+            return new ValueTask<string>(httpResponseUtil.NoBody(botController.GetBotCoreDifficulty()));
         }
 
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(botController.GetBotDifficulty(sessionID, type, difficulty))
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(botController.GetBotDifficulty(sessionID, type, difficulty)));
     }
 
     /// <summary>
     ///     Handle singleplayer/settings/bot/difficulties
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetAllBotDifficulties(
-        string url,
-        EmptyRequestData _,
-        MongoId sessionID
-    )
+    public ValueTask<string> GetAllBotDifficulties(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(botController.GetAllBotDifficulties())
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(botController.GetAllBotDifficulties()));
     }
 
     /// <summary>
     ///     Handle client/game/bot/generate
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GenerateBots(
-        string url,
-        GenerateBotsRequestData info,
-        MongoId sessionID
-    )
+    public ValueTask<string> GenerateBots(string url, GenerateBotsRequestData info, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(botController.Generate(sessionID, info))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(botController.Generate(sessionID, info)));
     }
 
     /// <summary>

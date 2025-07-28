@@ -31,17 +31,13 @@ public class NotificationSendHelper(
     {
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            logger.Debug(
-                $"Send message for {sessionID} started, message: {jsonUtil.Serialize(notificationMessage)}"
-            );
+            logger.Debug($"Send message for {sessionID} started, message: {jsonUtil.Serialize(notificationMessage)}");
         }
         if (sptWebSocketConnectionHandler.IsWebSocketConnected(sessionID))
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                logger.Debug(
-                    $"Send message for {sessionID} websocket available, message being sent"
-                );
+                logger.Debug($"Send message for {sessionID} websocket available, message being sent");
             }
             sptWebSocketConnectionHandler.SendMessage(sessionID, notificationMessage);
         }
@@ -49,9 +45,7 @@ public class NotificationSendHelper(
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                logger.Debug(
-                    $"Send message for {sessionID} websocket not available, queueing into profile"
-                );
+                logger.Debug($"Send message for {sessionID} websocket not available, queueing into profile");
             }
             notificationService.Add(sessionID, notificationMessage);
         }
@@ -64,12 +58,7 @@ public class NotificationSendHelper(
     /// <param name="senderDetails">Who is sending the message to player</param>
     /// <param name="messageText">Text to send player</param>
     /// <param name="messageType">Underlying type of message being sent</param>
-    public void SendMessageToPlayer(
-        MongoId sessionId,
-        UserDialogInfo senderDetails,
-        string messageText,
-        MessageType messageType
-    )
+    public void SendMessageToPlayer(MongoId sessionId, UserDialogInfo senderDetails, string messageText, MessageType messageType)
     {
         var dialog = GetDialog(sessionId, messageType, senderDetails);
 
@@ -104,11 +93,7 @@ public class NotificationSendHelper(
     /// <param name="messageType">Type of message to generate</param>
     /// <param name="senderDetails">Who is sending the message</param>
     /// <returns>Dialogue</returns>
-    protected Models.Eft.Profile.Dialogue GetDialog(
-        MongoId sessionId,
-        MessageType messageType,
-        UserDialogInfo senderDetails
-    )
+    protected Models.Eft.Profile.Dialogue GetDialog(MongoId sessionId, MessageType messageType, UserDialogInfo senderDetails)
     {
         // Use trader id if sender is trader, otherwise use nickname
         var dialogKey = senderDetails.Id;
@@ -117,19 +102,12 @@ public class NotificationSendHelper(
         var dialogueData = saveServer.GetProfile(sessionId).DialogueRecords;
 
         // Ensure empty dialog exists based on sender details passed in
-        dialogueData.TryAdd(
-            dialogKey,
-            GetEmptyDialogTemplate(dialogKey, messageType, senderDetails)
-        );
+        dialogueData.TryAdd(dialogKey, GetEmptyDialogTemplate(dialogKey, messageType, senderDetails));
 
         return dialogueData[dialogKey];
     }
 
-    protected Models.Eft.Profile.Dialogue GetEmptyDialogTemplate(
-        string dialogKey,
-        MessageType messageType,
-        UserDialogInfo senderDetails
-    )
+    protected Models.Eft.Profile.Dialogue GetEmptyDialogTemplate(string dialogKey, MessageType messageType, UserDialogInfo senderDetails)
     {
         return new Models.Eft.Profile.Dialogue
         {
@@ -139,8 +117,7 @@ public class NotificationSendHelper(
             Pinned = false,
             New = 0,
             AttachmentsNew = 0,
-            Users =
-                senderDetails.Info.MemberCategory == MemberCategory.Trader ? null : [senderDetails],
+            Users = senderDetails.Info.MemberCategory == MemberCategory.Trader ? null : [senderDetails],
         };
     }
 }

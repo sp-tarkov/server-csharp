@@ -29,11 +29,7 @@ public class GameCallbacks(
     ///     Handle client/game/version/validate
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> VersionValidate(
-        string url,
-        VersionValidateRequestData info,
-        MongoId sessionID
-    )
+    public ValueTask<string> VersionValidate(string url, VersionValidateRequestData info, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.NullResponse());
     }
@@ -46,9 +42,7 @@ public class GameCallbacks(
     {
         var startTimestampSec = timeUtil.GetTimeStamp();
         gameController.GameStart(url, sessionID, startTimestampSec);
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(new GameStartResponse { UtcTime = startTimestampSec })
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(new GameStartResponse { UtcTime = startTimestampSec }));
     }
 
     /// <summary>
@@ -66,15 +60,9 @@ public class GameCallbacks(
     ///     Handle client/game/config
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetGameConfig(
-        string url,
-        GameEmptyCrcRequestData info,
-        MongoId sessionID
-    )
+    public ValueTask<string> GetGameConfig(string url, GameEmptyCrcRequestData info, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(gameController.GetGameConfig(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(gameController.GetGameConfig(sessionID)));
     }
 
     /// <summary>
@@ -92,9 +80,7 @@ public class GameCallbacks(
     /// <returns></returns>
     public ValueTask<string> GetGameMode(string url, GameModeRequestData info, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(gameController.GetGameMode(sessionID, info))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(gameController.GetGameMode(sessionID, info)));
     }
 
     /// <summary>
@@ -112,9 +98,7 @@ public class GameCallbacks(
     /// <returns></returns>
     public ValueTask<string> GetCurrentGroup(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(gameController.GetCurrentGroup(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(gameController.GetCurrentGroup(sessionID)));
     }
 
     /// <summary>
@@ -123,9 +107,7 @@ public class GameCallbacks(
     /// <returns></returns>
     public ValueTask<string> ValidateGameVersion(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(gameController.GetValidGameVersion(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(gameController.GetValidGameVersion(sessionID)));
     }
 
     /// <summary>
@@ -134,9 +116,7 @@ public class GameCallbacks(
     /// <returns></returns>
     public ValueTask<string> GameKeepalive(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(gameController.GetKeepAlive(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(gameController.GetKeepAlive(sessionID)));
     }
 
     /// <summary>
@@ -146,9 +126,7 @@ public class GameCallbacks(
     public ValueTask<string> GetVersion(string url, EmptyRequestData _, MongoId sessionID)
     {
         // change to be a proper type
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(new { Version = watermark.GetInGameVersionLabel() })
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(new { Version = watermark.GetInGameVersionLabel() }));
     }
 
     /// <summary>
@@ -166,9 +144,7 @@ public class GameCallbacks(
     /// <returns></returns>
     public ValueTask<string> GetRaidTime(string url, GetRaidTimeRequest request, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(gameController.GetRaidTime(sessionID, request))
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(gameController.GetRaidTime(sessionID, request)));
     }
 
     /// <summary>
@@ -184,11 +160,7 @@ public class GameCallbacks(
     ///     Handle client/survey/view
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetSurveyView(
-        string url,
-        SendSurveyOpinionRequest request,
-        MongoId sessionID
-    )
+    public ValueTask<string> GetSurveyView(string url, SendSurveyOpinionRequest request, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.NullResponse());
     }
@@ -197,11 +169,7 @@ public class GameCallbacks(
     ///     Handle client/survey/opinion
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> SendSurveyOpinion(
-        string url,
-        SendSurveyOpinionRequest request,
-        MongoId sessionID
-    )
+    public ValueTask<string> SendSurveyOpinion(string url, SendSurveyOpinionRequest request, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.NullResponse());
     }

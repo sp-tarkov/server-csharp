@@ -8,12 +8,7 @@ public class SptLoggerWrapper : ILogger
 {
     private readonly SptLogger<SptLoggerWrapper> _logger;
 
-    public SptLoggerWrapper(
-        string category,
-        JsonUtil jsonUtil,
-        FileUtil fileUtil,
-        SptLoggerQueueManager queueManager
-    )
+    public SptLoggerWrapper(string category, JsonUtil jsonUtil, FileUtil fileUtil, SptLoggerQueueManager queueManager)
     {
         _logger = new SptLogger<SptLoggerWrapper>(fileUtil, jsonUtil, queueManager);
         _logger.OverrideCategory(category);

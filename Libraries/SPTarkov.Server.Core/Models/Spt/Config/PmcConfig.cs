@@ -98,10 +98,7 @@ public record PmcConfig : BaseConfig
     ///     What 'brain' does a PMC use, keyed by map and side (USEC/BEAR) key: map location, value: type for usec/bear
     /// </summary>
     [JsonPropertyName("pmcType")]
-    public required Dictionary<
-        string,
-        Dictionary<string, Dictionary<string, double>>
-    > PmcType { get; set; }
+    public required Dictionary<string, Dictionary<string, Dictionary<string, double>>> PmcType { get; set; }
 
     [JsonPropertyName("lootSettings")]
     public required PmcLootSettings LootSettings { get; set; }
@@ -146,10 +143,7 @@ public record PmcConfig : BaseConfig
     public required bool RemoveExistingPmcWaves { get; set; }
 
     [JsonPropertyName("dogtags")]
-    public required Dictionary<
-        string,
-        Dictionary<string, Dictionary<MongoId, double>>
-    > DogtagSettings { get; set; }
+    public required Dictionary<string, Dictionary<string, Dictionary<MongoId, double>>> DogtagSettings { get; set; }
 
     [JsonPropertyName("customPmcWaves")]
     public required Dictionary<string, List<BossLocationSpawn>> CustomPmcWaves { get; set; }

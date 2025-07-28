@@ -8,11 +8,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class WeatherHelper(
-    ISptLogger<WeatherHelper> logger,
-    TimeUtil timeUtil,
-    ConfigServer configServer
-)
+public class WeatherHelper(ISptLogger<WeatherHelper> logger, TimeUtil timeUtil, ConfigServer configServer)
 {
     protected readonly WeatherConfig _weatherConfig = configServer.GetConfig<WeatherConfig>();
 
@@ -39,8 +35,7 @@ public class WeatherHelper(
         var currentTimestampSeconds = timestamp;
 
         var tarkovTime = timeUtil.GetDateTimeFromTimeStamp(
-            (long)(russiaOffsetSeconds + currentTimestampSeconds * _weatherConfig.Acceleration)
-                % twentyFourHoursSeconds
+            (long)(russiaOffsetSeconds + currentTimestampSeconds * _weatherConfig.Acceleration) % twentyFourHoursSeconds
         );
 
         return tarkovTime;

@@ -16,11 +16,7 @@ public class NoteController(EventOutputHolder eventOutputHolder)
     /// <param name="request">Add note request</param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse AddNote(
-        PmcData pmcData,
-        NoteActionRequest request,
-        MongoId sessionId
-    )
+    public ItemEventRouterResponse AddNote(PmcData pmcData, NoteActionRequest request, MongoId sessionId)
     {
         var newNote = new Note { Time = request.Note.Time, Text = request.Note.Text };
         pmcData.Notes.DataNotes.Add(newNote);
@@ -34,11 +30,7 @@ public class NoteController(EventOutputHolder eventOutputHolder)
     /// <param name="request">Edit note request</param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse EditNote(
-        PmcData pmcData,
-        NoteActionRequest request,
-        MongoId sessionId
-    )
+    public ItemEventRouterResponse EditNote(PmcData pmcData, NoteActionRequest request, MongoId sessionId)
     {
         var noteToEdit = pmcData.Notes.DataNotes[request.Index!.Value];
         noteToEdit.Time = request.Note.Time;
@@ -53,11 +45,7 @@ public class NoteController(EventOutputHolder eventOutputHolder)
     /// <param name="request">Delete note request</param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse DeleteNote(
-        PmcData pmcData,
-        NoteActionRequest request,
-        MongoId sessionId
-    )
+    public ItemEventRouterResponse DeleteNote(PmcData pmcData, NoteActionRequest request, MongoId sessionId)
     {
         pmcData.Notes?.DataNotes?.RemoveAt(request.Index!.Value);
 

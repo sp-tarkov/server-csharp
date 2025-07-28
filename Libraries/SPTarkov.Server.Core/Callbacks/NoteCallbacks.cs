@@ -17,11 +17,7 @@ public class NoteCallbacks(NoteController noteController)
     /// <param name="request">Add note request</param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse AddNote(
-        PmcData pmcData,
-        NoteActionRequest request,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse AddNote(PmcData pmcData, NoteActionRequest request, MongoId sessionID)
     {
         return noteController.AddNote(pmcData, request, sessionID);
     }
@@ -33,11 +29,7 @@ public class NoteCallbacks(NoteController noteController)
     /// <param name="request">Edit note request</param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse EditNote(
-        PmcData pmcData,
-        NoteActionRequest request,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse EditNote(PmcData pmcData, NoteActionRequest request, MongoId sessionID)
     {
         return noteController.EditNote(pmcData, request, sessionID);
     }
@@ -49,11 +41,7 @@ public class NoteCallbacks(NoteController noteController)
     /// <param name="request">Delete note request</param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse DeleteNote(
-        PmcData pmcData,
-        NoteActionRequest request,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse DeleteNote(PmcData pmcData, NoteActionRequest request, MongoId sessionID)
     {
         return noteController.DeleteNote(pmcData, request, sessionID);
     }

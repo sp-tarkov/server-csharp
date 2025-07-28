@@ -9,10 +9,7 @@ using SPTarkov.Server.Core.Models.Eft.Quests;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
-public class InventoryCallbacks(
-    InventoryController inventoryController,
-    QuestController questController
-)
+public class InventoryCallbacks(InventoryController inventoryController, QuestController questController)
 {
     /// <summary>
     ///     Handle client/game/profile/items/moving Move event
@@ -114,11 +111,7 @@ public class InventoryCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse SwapItem(
-        PmcData pmcData,
-        InventorySwapRequestData info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse SwapItem(PmcData pmcData, InventorySwapRequestData info, MongoId sessionID)
     {
         return inventoryController.SwapItem(pmcData, info, sessionID);
     }
@@ -129,11 +122,7 @@ public class InventoryCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse FoldItem(
-        PmcData pmcData,
-        InventoryFoldRequestData info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse FoldItem(PmcData pmcData, InventoryFoldRequestData info, MongoId sessionID)
     {
         return inventoryController.FoldItem(pmcData, info, sessionID);
     }
@@ -144,11 +133,7 @@ public class InventoryCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ToggleItem(
-        PmcData pmcData,
-        InventoryToggleRequestData info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse ToggleItem(PmcData pmcData, InventoryToggleRequestData info, MongoId sessionID)
     {
         return inventoryController.ToggleItem(pmcData, info, sessionID);
     }
@@ -159,11 +144,7 @@ public class InventoryCallbacks(
     /// <param name="request"></param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse TagItem(
-        PmcData pmcData,
-        InventoryTagRequestData request,
-        MongoId sessionId
-    )
+    public ItemEventRouterResponse TagItem(PmcData pmcData, InventoryTagRequestData request, MongoId sessionId)
     {
         return inventoryController.TagItem(pmcData, request, sessionId);
     }
@@ -229,11 +210,7 @@ public class InventoryCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ReadEncyclopedia(
-        PmcData pmcData,
-        InventoryReadEncyclopediaRequestData info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse ReadEncyclopedia(PmcData pmcData, InventoryReadEncyclopediaRequestData info, MongoId sessionID)
     {
         return inventoryController.ReadEncyclopedia(pmcData, info, sessionID);
     }
@@ -376,12 +353,7 @@ public class InventoryCallbacks(
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse FailQuest(
-        PmcData pmcData,
-        FailQuestRequestData info,
-        MongoId sessionID,
-        ItemEventRouterResponse output
-    )
+    public ItemEventRouterResponse FailQuest(PmcData pmcData, FailQuestRequestData info, MongoId sessionID, ItemEventRouterResponse output)
     {
         questController.FailQuest(pmcData, info, sessionID, output);
         return output;
@@ -394,12 +366,7 @@ public class InventoryCallbacks(
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse PinOrLock(
-        PmcData pmcData,
-        PinOrLockItemRequest info,
-        MongoId sessionID,
-        ItemEventRouterResponse output
-    )
+    public ItemEventRouterResponse PinOrLock(PmcData pmcData, PinOrLockItemRequest info, MongoId sessionID, ItemEventRouterResponse output)
     {
         inventoryController.PinOrLock(pmcData, info, sessionID, output);
         return output;

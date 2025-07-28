@@ -15,11 +15,7 @@ public class BotWeaponGeneratorHelper(
     BotGeneratorHelper botGeneratorHelper
 )
 {
-    private static readonly FrozenSet<string> _magCheck =
-    [
-        "CylinderMagazine",
-        "SpringDrivenCylinder",
-    ];
+    private static readonly FrozenSet<string> _magCheck = ["CylinderMagazine", "SpringDrivenCylinder"];
 
     /// <summary>
     ///     Get a randomized number of bullets for a specific magazine
@@ -35,12 +31,8 @@ public class BotWeaponGeneratorHelper(
         if (MagazineIsCylinderRelated(parentItem.Name))
         {
             var firstSlotAmmoTpl =
-                magTemplate
-                    .Properties.Cartridges.FirstOrDefault()
-                    ?.Props.Filters.First()
-                    .Filter.FirstOrDefault() ?? new MongoId(null);
-            var ammoMaxStackSize =
-                itemHelper.GetItem(firstSlotAmmoTpl).Value?.Properties?.StackMaxSize ?? 1;
+                magTemplate.Properties.Cartridges.FirstOrDefault()?.Props.Filters.First().Filter.FirstOrDefault() ?? new MongoId(null);
+            var ammoMaxStackSize = itemHelper.GetItem(firstSlotAmmoTpl).Value?.Properties?.StackMaxSize ?? 1;
             chamberBulletCount =
                 ammoMaxStackSize == 1
                     ? 1 // Rotating grenade launcher
@@ -88,11 +80,7 @@ public class BotWeaponGeneratorHelper(
     /// <param name="ammoTpl">Ammo to add to magazine</param>
     /// <param name="magTemplate">Template object of magazine</param>
     /// <returns>Item array</returns>
-    public List<Item> CreateMagazineWithAmmo(
-        MongoId magazineTpl,
-        MongoId ammoTpl,
-        TemplateItem magTemplate
-    )
+    public List<Item> CreateMagazineWithAmmo(MongoId magazineTpl, MongoId ammoTpl, TemplateItem magTemplate)
     {
         List<Item> magazine = [new() { Id = new MongoId(), Template = magazineTpl }];
 
@@ -139,9 +127,7 @@ public class BotWeaponGeneratorHelper(
 
             if (result != ItemAddedResult.SUCCESS)
             {
-                logger.Debug(
-                    $"Unable to add ammo: {ammoItem.Template} to bot inventory, {result.ToString()}"
-                );
+                logger.Debug($"Unable to add ammo: {ammoItem.Template} to bot inventory, {result.ToString()}");
 
                 if (result == ItemAddedResult.NO_SPACE || result == ItemAddedResult.NO_CONTAINERS)
                 // If there's no space for 1 stack or no containers to hold item, there's no space for the others

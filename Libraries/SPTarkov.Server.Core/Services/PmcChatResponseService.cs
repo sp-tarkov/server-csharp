@@ -26,8 +26,7 @@ public class PmcChatResponseService(
     ConfigServer configServer
 )
 {
-    protected readonly PmcChatResponse _pmcResponsesConfig =
-        configServer.GetConfig<PmcChatResponse>();
+    protected readonly PmcChatResponse _pmcResponsesConfig = configServer.GetConfig<PmcChatResponse>();
 
     /// <summary>
     ///     For each PMC victim of the player, have a chance to send a message to the player, can be positive or negative
@@ -35,11 +34,7 @@ public class PmcChatResponseService(
     /// <param name="sessionId"> Session ID </param>
     /// <param name="pmcVictims"> List of bots killed by player </param>
     /// <param name="pmcData"> Player profile </param>
-    public void SendVictimResponse(
-        MongoId sessionId,
-        IEnumerable<Victim> pmcVictims,
-        PmcData pmcData
-    )
+    public void SendVictimResponse(MongoId sessionId, IEnumerable<Victim> pmcVictims, PmcData pmcData)
     {
         foreach (var victim in pmcVictims)
         {
@@ -50,9 +45,7 @@ public class PmcChatResponseService(
 
             if (string.IsNullOrEmpty(victim.Name))
             {
-                logger.Warning(
-                    $"Victim: {victim.ProfileId.ToString()} does not have a nickname, skipping pmc response message send"
-                );
+                logger.Warning($"Victim: {victim.ProfileId.ToString()} does not have a nickname, skipping pmc response message send");
 
                 continue;
             }
@@ -61,12 +54,7 @@ public class PmcChatResponseService(
             var message = ChooseMessage(true, pmcData, victim);
             if (message is not null)
             {
-                notificationSendHelper.SendMessageToPlayer(
-                    sessionId,
-                    victimDetails,
-                    message,
-                    MessageType.UserMessage
-                );
+                notificationSendHelper.SendMessageToPlayer(sessionId, victimDetails, message, MessageType.UserMessage);
             }
         }
     }
@@ -114,12 +102,7 @@ public class PmcChatResponseService(
             return;
         }
 
-        notificationSendHelper.SendMessageToPlayer(
-            sessionId,
-            killerDetails,
-            message,
-            MessageType.UserMessage
-        );
+        notificationSendHelper.SendMessageToPlayer(sessionId, killerDetails, message, MessageType.UserMessage);
     }
 
     /// <summary>
@@ -138,9 +121,7 @@ public class PmcChatResponseService(
         var possibleResponseLocaleKeys = GetResponseLocaleKeys(responseType, isVictim);
         if (possibleResponseLocaleKeys.Count == 0)
         {
-            logger.Warning(
-                serverLocalisationService.GetText("pmcresponse-unable_to_find_key", responseType)
-            );
+            logger.Warning(serverLocalisationService.GetText("pmcresponse-unable_to_find_key", responseType));
 
             return null;
         }
@@ -153,9 +134,7 @@ public class PmcChatResponseService(
                 playerName = pmcData.Info.Nickname,
                 playerLevel = pmcData.Info.Level,
                 playerSide = pmcData.Info.Side,
-                victimDeathLocation = victimData is not null
-                    ? GetLocationName(victimData.Location)
-                    : "",
+                victimDeathLocation = victimData is not null ? GetLocationName(victimData.Location) : "",
             }
         );
 
@@ -170,9 +149,7 @@ public class PmcChatResponseService(
 
         if (AppendSuffixToMessageEnd(isVictim))
         {
-            var suffixText = serverLocalisationService.GetText(
-                randomUtil.GetArrayValue(GetResponseSuffixLocaleKeys())
-            );
+            var suffixText = serverLocalisationService.GetText(randomUtil.GetArrayValue(GetResponseSuffixLocaleKeys()));
             responseText += $" {suffixText}";
         }
 
@@ -221,9 +198,7 @@ public class PmcChatResponseService(
     /// <returns> True = should be stripped </returns>
     protected bool AllCaps(bool isVictim)
     {
-        var chance = isVictim
-            ? _pmcResponsesConfig.Victim.AllCapsChancePercent
-            : _pmcResponsesConfig.Killer.AllCapsChancePercent;
+        var chance = isVictim ? _pmcResponsesConfig.Victim.AllCapsChancePercent : _pmcResponsesConfig.Killer.AllCapsChancePercent;
 
         return randomUtil.GetChance100(chance);
     }
@@ -249,9 +224,7 @@ public class PmcChatResponseService(
     /// <returns> Response type (positive/negative) </returns>
     protected string ChooseResponseType(bool isVictim = true)
     {
-        var responseWeights = isVictim
-            ? _pmcResponsesConfig.Victim.ResponseTypeWeights
-            : _pmcResponsesConfig.Killer.ResponseTypeWeights;
+        var responseWeights = isVictim ? _pmcResponsesConfig.Victim.ResponseTypeWeights : _pmcResponsesConfig.Killer.ResponseTypeWeights;
 
         return weightedRandomHelper.GetWeightedValue(responseWeights);
     }

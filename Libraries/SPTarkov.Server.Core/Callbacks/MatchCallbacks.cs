@@ -10,11 +10,7 @@ using static SPTarkov.Server.Core.Services.MatchLocationService;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
-public class MatchCallbacks(
-    HttpResponseUtil httpResponseUtil,
-    MatchController matchController,
-    DatabaseService databaseService
-)
+public class MatchCallbacks(HttpResponseUtil httpResponseUtil, MatchController matchController, DatabaseService databaseService)
 {
     /// <summary>
     ///     Handle client/match/updatePing
@@ -55,9 +51,7 @@ public class MatchCallbacks(
     /// <returns></returns>
     public ValueTask<string> GroupCurrent(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(new MatchGroupCurrentResponse { Squad = [] })
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(new MatchGroupCurrentResponse { Squad = [] }));
     }
 
     /// <summary>
@@ -82,11 +76,7 @@ public class MatchCallbacks(
     ///     Handle client/match/group/invite/send
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> SendGroupInvite(
-        string url,
-        MatchGroupInviteSendRequest info,
-        MongoId sessionID
-    )
+    public ValueTask<string> SendGroupInvite(string url, MatchGroupInviteSendRequest info, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetBody("2427943f23698ay9f2863735"));
     }
@@ -107,11 +97,7 @@ public class MatchCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ValueTask<string> DeclineGroupInvite(
-        string url,
-        RequestIdRequest info,
-        MongoId sessionID
-    )
+    public ValueTask<string> DeclineGroupInvite(string url, RequestIdRequest info, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetBody(true));
     }
@@ -135,11 +121,7 @@ public class MatchCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ValueTask<string> TransferGroup(
-        string url,
-        MatchGroupTransferRequest info,
-        MongoId sessionID
-    )
+    public ValueTask<string> TransferGroup(string url, MatchGroupTransferRequest info, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetBody(true));
     }
@@ -166,11 +148,7 @@ public class MatchCallbacks(
     ///     Handle client/analytics/event-disconnect
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> EventDisconnect(
-        string url,
-        PutMetricsRequestData request,
-        MongoId sessionId
-    )
+    public ValueTask<string> EventDisconnect(string url, PutMetricsRequestData request, MongoId sessionId)
     {
         return new ValueTask<string>(httpResponseUtil.NullResponse());
     }
@@ -190,9 +168,7 @@ public class MatchCallbacks(
     /// <returns></returns>
     public ValueTask<string> JoinMatch(string url, MatchGroupJoinRequest request, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(matchController.JoinMatch(request, sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(matchController.JoinMatch(request, sessionID)));
     }
 
     /// <summary>
@@ -209,15 +185,9 @@ public class MatchCallbacks(
     ///     Handle client/match/group/status
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetGroupStatus(
-        string url,
-        MatchGroupStatusRequest info,
-        MongoId sessionID
-    )
+    public ValueTask<string> GetGroupStatus(string url, MatchGroupStatusRequest info, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(matchController.GetGroupStatus(info))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(matchController.GetGroupStatus(info)));
     }
 
     /// <summary>
@@ -243,11 +213,7 @@ public class MatchCallbacks(
     ///     Handle client/match/group/player/remove
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> RemovePlayerFromGroup(
-        string url,
-        MatchGroupPlayerRemoveRequest info,
-        MongoId sessionID
-    )
+    public ValueTask<string> RemovePlayerFromGroup(string url, MatchGroupPlayerRemoveRequest info, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetBody(true));
     }
@@ -256,26 +222,16 @@ public class MatchCallbacks(
     ///     Handle client/match/local/start
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> StartLocalRaid(
-        string url,
-        StartLocalRaidRequestData info,
-        MongoId sessionID
-    )
+    public ValueTask<string> StartLocalRaid(string url, StartLocalRaidRequestData info, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(matchController.StartLocalRaid(sessionID, info))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(matchController.StartLocalRaid(sessionID, info)));
     }
 
     /// <summary>
     ///     Handle client/match/local/end
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> EndLocalRaid(
-        string url,
-        EndLocalRaidRequestData info,
-        MongoId sessionID
-    )
+    public ValueTask<string> EndLocalRaid(string url, EndLocalRaidRequestData info, MongoId sessionID)
     {
         matchController.EndLocalRaid(sessionID, info);
         return new ValueTask<string>(httpResponseUtil.NullResponse());
@@ -285,11 +241,7 @@ public class MatchCallbacks(
     ///     Handle client/raid/configuration
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetRaidConfiguration(
-        string url,
-        GetRaidConfigurationRequestData info,
-        MongoId sessionID
-    )
+    public ValueTask<string> GetRaidConfiguration(string url, GetRaidConfigurationRequestData info, MongoId sessionID)
     {
         matchController.ConfigureOfflineRaid(info, sessionID);
         return new ValueTask<string>(httpResponseUtil.NullResponse());
@@ -302,11 +254,7 @@ public class MatchCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ValueTask<string> GetConfigurationByProfile(
-        string url,
-        GetRaidConfigurationRequestData info,
-        MongoId sessionID
-    )
+    public ValueTask<string> GetConfigurationByProfile(string url, GetRaidConfigurationRequestData info, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.NullResponse());
     }
@@ -335,11 +283,7 @@ public class MatchCallbacks(
     /// <summary>
     /// Handle client/match/group/start_game
     /// </summary>
-    public Task<string> StartGameAsGroupLeader(
-        string url,
-        MatchGroupStartGameRequest? request,
-        MongoId? sessionId
-    )
+    public Task<string> StartGameAsGroupLeader(string url, MatchGroupStartGameRequest? request, MongoId? sessionId)
     {
         // returns a ProfileStatusResponse object
         throw new NotImplementedException();

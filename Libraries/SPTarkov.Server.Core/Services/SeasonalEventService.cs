@@ -90,8 +90,7 @@ public class SeasonalEventService(
     protected readonly HttpConfig _httpConfig = configServer.GetConfig<HttpConfig>();
     protected readonly LocationConfig _locationConfig = configServer.GetConfig<LocationConfig>();
     protected readonly QuestConfig _questConfig = configServer.GetConfig<QuestConfig>();
-    protected readonly SeasonalEventConfig _seasonalEventConfig =
-        configServer.GetConfig<SeasonalEventConfig>();
+    protected readonly SeasonalEventConfig _seasonalEventConfig = configServer.GetConfig<SeasonalEventConfig>();
     protected readonly WeatherConfig _weatherConfig = configServer.GetConfig<WeatherConfig>();
 
     /// <summary>
@@ -204,9 +203,7 @@ public class SeasonalEventService(
     /// </summary>
     /// <param name="eventType">Name of event to get gear changes for</param>
     /// <returns>bots with equipment changes</returns>
-    protected Dictionary<string, Dictionary<string, Dictionary<MongoId, int>>>? GetEventBotGear(
-        SeasonalEventType eventType
-    )
+    protected Dictionary<string, Dictionary<string, Dictionary<MongoId, int>>>? GetEventBotGear(SeasonalEventType eventType)
     {
         return _seasonalEventConfig.EventGear.GetValueOrDefault(eventType, null);
     }
@@ -216,9 +213,7 @@ public class SeasonalEventService(
     /// </summary>
     /// <param name="eventType">Name of event to get gear changes for</param>
     /// <returns>bots with loot changes</returns>
-    protected Dictionary<string, Dictionary<string, Dictionary<MongoId, int>>> GetEventBotLoot(
-        SeasonalEventType eventType
-    )
+    protected Dictionary<string, Dictionary<string, Dictionary<MongoId, int>>> GetEventBotLoot(SeasonalEventType eventType)
     {
         return _seasonalEventConfig.EventLoot.GetValueOrDefault(eventType, null);
     }
@@ -270,9 +265,7 @@ public class SeasonalEventService(
         var seasonEvent = _seasonalEventConfig.Events.FirstOrDefault(e => e.Type == eventType);
         if (seasonEvent is null)
         {
-            logger.Warning(
-                $"Unable to force event: {eventType} as it cannot be found in events config"
-            );
+            logger.Warning($"Unable to force event: {eventType} as it cannot be found in events config");
             return false;
         }
 
@@ -300,14 +293,7 @@ public class SeasonalEventService(
                 continue;
             }
 
-            if (
-                currentDate.DateIsBetweenTwoDates(
-                    events.StartMonth,
-                    events.StartDay,
-                    events.EndMonth,
-                    events.EndDay
-                )
-            )
+            if (currentDate.DateIsBetweenTwoDates(events.StartMonth, events.StartDay, events.EndMonth, events.EndDay))
             {
                 _currentlyActiveEvents.Add(events);
             }
@@ -341,9 +327,7 @@ public class SeasonalEventService(
             }
         }
 
-        logger.Warning(
-            serverLocalisationService.GetText("season-no_matching_season_found_for_date")
-        );
+        logger.Warning(serverLocalisationService.GetText("season-no_matching_season_found_for_date"));
 
         return Season.SUMMER;
     }
@@ -372,9 +356,7 @@ public class SeasonalEventService(
                 continue;
             }
 
-            botInventory.Equipment[equipmentSlotKey] = equipment
-                .Where(i => !_christmasEventItems.Contains(i.Key))
-                .ToDictionary();
+            botInventory.Equipment[equipmentSlotKey] = equipment.Where(i => !_christmasEventItems.Contains(i.Key)).ToDictionary();
         }
 
         var containersToCheck = new List<Dictionary<MongoId, double>>
@@ -426,17 +408,9 @@ public class SeasonalEventService(
                 EnableHalloweenSummonEvent();
                 AddPumpkinsToScavBackpacks();
                 RenameBitcoin();
-                if (
-                    eventType.Settings is not null
-                    && eventType.Settings.ReplaceBotHostility.GetValueOrDefault(false)
-                )
+                if (eventType.Settings is not null && eventType.Settings.ReplaceBotHostility.GetValueOrDefault(false))
                 {
-                    if (
-                        _seasonalEventConfig.HostilitySettingsForEvent.TryGetValue(
-                            "AprilFools",
-                            out var botData
-                        )
-                    )
+                    if (_seasonalEventConfig.HostilitySettingsForEvent.TryGetValue("AprilFools", out var botData))
                     {
                         ReplaceBotHostility(botData);
                     }
@@ -483,11 +457,7 @@ public class SeasonalEventService(
 
         if (eventType.Settings?.ReplaceBotHostility ?? false)
         {
-            ReplaceBotHostility(
-                _seasonalEventConfig
-                    .HostilitySettingsForEvent.FirstOrDefault(x => x.Key == "zombies")
-                    .Value
-            );
+            ReplaceBotHostility(_seasonalEventConfig.HostilitySettingsForEvent.FirstOrDefault(x => x.Key == "zombies").Value);
         }
 
         if (eventType.Settings?.AdjustBotAppearances ?? false)
@@ -505,9 +475,7 @@ public class SeasonalEventService(
 
         if (eventType.Settings?.EnableChristmasHideout ?? false)
         {
-            globalConfig.EventType = globalConfig
-                .EventType.Where(x => x != EventType.None)
-                .ToList();
+            globalConfig.EventType = globalConfig.EventType.Where(x => x != EventType.None).ToList();
             globalConfig.EventType.Add(EventType.Christmas);
         }
 
@@ -533,9 +501,7 @@ public class SeasonalEventService(
 
         if (eventType.Settings?.EnableChristmasHideout ?? false)
         {
-            globalConfig.EventType = globalConfig
-                .EventType.Where(x => x != EventType.None)
-                .ToList();
+            globalConfig.EventType = globalConfig.EventType.Where(x => x != EventType.None).ToList();
             globalConfig.EventType.Add(EventType.Christmas);
         }
 
@@ -563,12 +529,7 @@ public class SeasonalEventService(
     /// <param name="season">Season to apply changes for</param>
     protected void AdjustBotAppearanceValues(SeasonalEventType season)
     {
-        if (
-            !_seasonalEventConfig.BotAppearanceChanges.TryGetValue(
-                season,
-                out var appearanceAdjustments
-            )
-        )
+        if (!_seasonalEventConfig.BotAppearanceChanges.TryGetValue(season, out var appearanceAdjustments))
         {
             // No changes found for this season
             return;
@@ -596,9 +557,7 @@ public class SeasonalEventService(
 
                 if (partPool is null)
                 {
-                    logger.Warning(
-                        $"Unable to adjust bot: {botType} body part appearance: {bodyPart}"
-                    );
+                    logger.Warning($"Unable to adjust bot: {botType} body part appearance: {bodyPart}");
 
                     continue;
                 }
@@ -612,9 +571,7 @@ public class SeasonalEventService(
         }
     }
 
-    protected void ReplaceBotHostility(
-        Dictionary<string, List<AdditionalHostilitySettings>> hostilitySettings
-    )
+    protected void ReplaceBotHostility(Dictionary<string, List<AdditionalHostilitySettings>> hostilitySettings)
     {
         var locations = databaseService.GetLocations().GetDictionary();
         var ignoreList = _locationConfig.NonMaps;
@@ -644,10 +601,9 @@ public class SeasonalEventService(
 
             foreach (var settings in newHostilitySettings)
             {
-                var matchingBaseSettings =
-                    locationBase.Base.BotLocationModifier.AdditionalHostilitySettings.FirstOrDefault(
-                        x => x.BotRole == settings.BotRole
-                    );
+                var matchingBaseSettings = locationBase.Base.BotLocationModifier.AdditionalHostilitySettings.FirstOrDefault(x =>
+                    x.BotRole == settings.BotRole
+                );
                 if (matchingBaseSettings is null)
                 {
                     continue;
@@ -745,9 +701,7 @@ public class SeasonalEventService(
     {
         var zryachiyKvP = databaseService
             .GetBots()
-            .Types.FirstOrDefault(x =>
-                string.Equals(x.Key, "bosszryachiy", StringComparison.OrdinalIgnoreCase)
-            );
+            .Types.FirstOrDefault(x => string.Equals(x.Key, "bosszryachiy", StringComparison.OrdinalIgnoreCase));
         var value = new Dictionary<string, double>();
 
         foreach (var chance in zryachiyKvP.Value.BotChances.EquipmentChances)
@@ -793,22 +747,16 @@ public class SeasonalEventService(
             double randomInfectionPercentage =
                 infectionPercentage == 100
                     ? infectionPercentage
-                    : Convert.ToDouble(
-                        randomUtil.GetInt(Convert.ToInt32(infectionPercentage), 100)
-                    );
+                    : Convert.ToDouble(randomUtil.GetInt(Convert.ToInt32(infectionPercentage), 100));
             if (logger.IsLogEnabled(LogLevel.Debug))
-                logger.Debug(
-                    $"Percent infected from map {locationId} is {randomInfectionPercentage}"
-                );
+                logger.Debug($"Percent infected from map {locationId} is {randomInfectionPercentage}");
             // Infection rates sometimes apply to multiple maps, e.g. Factory day/night or Sandbox/sandbox_high
             // Get the list of maps that should have infection value applied to their base
             // 90% of locations are just 1 map e.g. bigmap = customs
             var mappedLocations = GetLocationFromInfectedLocation(locationId);
             foreach (var locationKey in mappedLocations)
             {
-                databaseService
-                    .GetLocation(locationKey)
-                    .Base.Events.Halloween2024.InfectionPercentage = randomInfectionPercentage;
+                databaseService.GetLocation(locationKey).Base.Events.Halloween2024.InfectionPercentage = randomInfectionPercentage;
             }
 
             // Globals data needs value updated too
@@ -825,9 +773,7 @@ public class SeasonalEventService(
             databaseService.GetLocation(locationId).Base.Waves = [];
         }
 
-        var locationsWithActiveInfection = GetLocationsWithZombies(
-            zombieSettings.MapInfectionAmount
-        );
+        var locationsWithActiveInfection = GetLocationsWithZombies(zombieSettings.MapInfectionAmount);
         AddEventBossesToMaps("halloweenzombies", locationsWithActiveInfection);
     }
 
@@ -841,9 +787,7 @@ public class SeasonalEventService(
         var result = new HashSet<string>();
 
         // Get only the locations with an infection above 0
-        var infectionKeys = locationInfections.Where(location =>
-            locationInfections[location.Key] > 0
-        );
+        var infectionKeys = locationInfections.Where(location => locationInfections[location.Key] > 0);
 
         // Convert the infected location id into its generic location id
         foreach (var location in infectionKeys)
@@ -901,12 +845,7 @@ public class SeasonalEventService(
     /// <param name="mapIdWhitelist">OPTIONAL - Maps to add bosses to</param>
     protected void AddEventBossesToMaps(string eventType, HashSet<string>? mapIdWhitelist = null)
     {
-        if (
-            !_seasonalEventConfig.EventBossSpawns.TryGetValue(
-                eventType.ToLowerInvariant(),
-                out var botsToAddPerMap
-            )
-        )
+        if (!_seasonalEventConfig.EventBossSpawns.TryGetValue(eventType.ToLowerInvariant(), out var botsToAddPerMap))
         {
             logger.Warning($"Unable to add: {eventType} bosses, eventBossSpawns is missing");
             return;
@@ -947,30 +886,22 @@ public class SeasonalEventService(
         switch (eventType)
         {
             case SeasonalEventType.Halloween:
-                _httpConfig.ServerImagePathOverride[
-                    "./assets/images/traders/5a7c2ebb86f7746e324a06ab.png"
-                ] = "./assets/images/traders/halloween/5a7c2ebb86f7746e324a06ab.png";
-                _httpConfig.ServerImagePathOverride[
-                    "./assets/images/traders/5ac3b86a86f77461491d1ad8.png"
-                ] = "./assets/images/traders/halloween/5ac3b86a86f77461491d1ad8.png";
-                _httpConfig.ServerImagePathOverride[
-                    "./assets/images/traders/5c06531a86f7746319710e1b.png"
-                ] = "./assets/images/traders/halloween/5c06531a86f7746319710e1b.png";
-                _httpConfig.ServerImagePathOverride[
-                    "./assets/images/traders/59b91ca086f77469a81232e4.png"
-                ] = "./assets/images/traders/halloween/59b91ca086f77469a81232e4.png";
-                _httpConfig.ServerImagePathOverride[
-                    "./assets/images/traders/59b91cab86f77469aa5343ca.png"
-                ] = "./assets/images/traders/halloween/59b91cab86f77469aa5343ca.png";
-                _httpConfig.ServerImagePathOverride[
-                    "./assets/images/traders/59b91cb486f77469a81232e5.png"
-                ] = "./assets/images/traders/halloween/59b91cb486f77469a81232e5.png";
-                _httpConfig.ServerImagePathOverride[
-                    "./assets/images/traders/59b91cbd86f77469aa5343cb.png"
-                ] = "./assets/images/traders/halloween/59b91cbd86f77469aa5343cb.png";
-                _httpConfig.ServerImagePathOverride[
-                    "./assets/images/traders/579dc571d53a0658a154fbec.png"
-                ] = "./assets/images/traders/halloween/579dc571d53a0658a154fbec.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/5a7c2ebb86f7746e324a06ab.png"] =
+                    "./assets/images/traders/halloween/5a7c2ebb86f7746e324a06ab.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/5ac3b86a86f77461491d1ad8.png"] =
+                    "./assets/images/traders/halloween/5ac3b86a86f77461491d1ad8.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/5c06531a86f7746319710e1b.png"] =
+                    "./assets/images/traders/halloween/5c06531a86f7746319710e1b.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/59b91ca086f77469a81232e4.png"] =
+                    "./assets/images/traders/halloween/59b91ca086f77469a81232e4.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/59b91cab86f77469aa5343ca.png"] =
+                    "./assets/images/traders/halloween/59b91cab86f77469aa5343ca.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/59b91cb486f77469a81232e5.png"] =
+                    "./assets/images/traders/halloween/59b91cb486f77469a81232e5.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/59b91cbd86f77469aa5343cb.png"] =
+                    "./assets/images/traders/halloween/59b91cbd86f77469aa5343cb.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/579dc571d53a0658a154fbec.png"] =
+                    "./assets/images/traders/halloween/579dc571d53a0658a154fbec.png";
                 break;
             case SeasonalEventType.Christmas:
                 // TODO: find christmas trader icons
@@ -1019,9 +950,7 @@ public class SeasonalEventService(
             var botToUpdate = databaseService.GetBots().Types[botKvP.Key.ToLowerInvariant()];
             if (botToUpdate is null)
             {
-                logger.Warning(
-                    serverLocalisationService.GetText("gameevent-bot_not_found", botKvP)
-                );
+                logger.Warning(serverLocalisationService.GetText("gameevent-bot_not_found", botKvP));
                 continue;
             }
 
@@ -1038,8 +967,7 @@ public class SeasonalEventService(
                 // Grab gear to add and loop over it
                 foreach (var itemToAddKvP in equipmentKvP.Value)
                 {
-                    var equipmentSlot = (EquipmentSlots)
-                        Enum.Parse(typeof(EquipmentSlots), equipmentKvP.Key);
+                    var equipmentSlot = (EquipmentSlots)Enum.Parse(typeof(EquipmentSlots), equipmentKvP.Key);
                     var equipmentDict = botToUpdate.BotInventory.Equipment[equipmentSlot];
                     equipmentDict[itemToAddKvP.Key] = equipmentKvP.Value[itemToAddKvP.Key];
                 }
@@ -1067,9 +995,7 @@ public class SeasonalEventService(
             var botToUpdate = databaseService.GetBots().Types[botKvpP.Key.ToLowerInvariant()];
             if (botToUpdate is null)
             {
-                logger.Warning(
-                    serverLocalisationService.GetText("gameevent-bot_not_found", botKvpP)
-                );
+                logger.Warning(serverLocalisationService.GetText("gameevent-bot_not_found", botKvpP));
                 continue;
             }
 
@@ -1093,9 +1019,8 @@ public class SeasonalEventService(
     /// </summary>
     protected void AddPumpkinsToScavBackpacks()
     {
-        databaseService.GetBots().Types["assault"].BotInventory.Items.Backpack[
-            ItemTpl.RANDOMLOOTCONTAINER_PUMPKIN_RAND_LOOT_CONTAINER
-        ] = 400;
+        databaseService.GetBots().Types["assault"].BotInventory.Items.Backpack[ItemTpl.RANDOMLOOTCONTAINER_PUMPKIN_RAND_LOOT_CONTAINER] =
+            400;
     }
 
     protected void RenameBitcoin()
@@ -1145,12 +1070,7 @@ public class SeasonalEventService(
         var maps = databaseService.GetLocations().GetDictionary();
         foreach (var gifterMapSettings in gifterSettings)
         {
-            if (
-                !maps.TryGetValue(
-                    databaseService.GetLocations().GetMappedKey(gifterMapSettings.Map),
-                    out var mapData
-                )
-            )
+            if (!maps.TryGetValue(databaseService.GetLocations().GetMappedKey(gifterMapSettings.Map), out var mapData))
             {
                 logger.Warning($"AddGifterBotToMaps() Map not found {gifterMapSettings.Map}");
 
@@ -1158,9 +1078,7 @@ public class SeasonalEventService(
             }
 
             // Don't add gifter to map twice
-            var existingGifter = mapData.Base.BossLocationSpawn.FirstOrDefault(boss =>
-                boss.BossName == "gifter"
-            );
+            var existingGifter = mapData.Base.BossLocationSpawn.FirstOrDefault(boss => boss.BossName == "gifter");
             if (existingGifter is not null)
             {
                 existingGifter.BossChance = gifterMapSettings.SpawnChance;
@@ -1196,17 +1114,13 @@ public class SeasonalEventService(
     {
         if (seasonalEvent.Settings?.EnableChristmasHideout ?? false)
         {
-            globalConfig.EventType = globalConfig
-                .EventType.Where(x => x != EventType.None)
-                .ToList();
+            globalConfig.EventType = globalConfig.EventType.Where(x => x != EventType.None).ToList();
             globalConfig.EventType.Add(EventType.Christmas);
         }
 
         if (seasonalEvent.Settings?.EnableHalloweenHideout ?? false)
         {
-            globalConfig.EventType = globalConfig
-                .EventType.Where(x => x != EventType.None)
-                .ToList();
+            globalConfig.EventType = globalConfig.EventType.Where(x => x != EventType.None).ToList();
             globalConfig.EventType.Add(EventType.Halloween);
             globalConfig.EventType.Add(EventType.HalloweenIllumination);
         }
@@ -1251,13 +1165,7 @@ public class SeasonalEventService(
     protected void GiveGift(MongoId playerId, string giftKey)
     {
         var giftData = giftService.GetGiftById(giftKey);
-        if (
-            !profileHelper.PlayerHasReceivedMaxNumberOfGift(
-                playerId,
-                giftKey,
-                giftData.MaxToSendPlayer ?? 5
-            )
-        )
+        if (!profileHelper.PlayerHasReceivedMaxNumberOfGift(playerId, giftKey, giftData.MaxToSendPlayer ?? 5))
         {
             giftService.SendGiftToPlayer(playerId, giftKey);
         }

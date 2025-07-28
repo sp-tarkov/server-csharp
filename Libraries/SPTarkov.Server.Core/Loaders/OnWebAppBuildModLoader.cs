@@ -6,10 +6,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Loaders;
 
 [Injectable(InjectionType.Singleton)]
-public class OnWebAppBuildModLoader(
-    ISptLogger<OnWebAppBuildModLoader> _logger,
-    IEnumerable<IOnWebAppBuildModAsync> _onWebAppBuildMods
-)
+public class OnWebAppBuildModLoader(ISptLogger<OnWebAppBuildModLoader> _logger, IEnumerable<IOnWebAppBuildModAsync> _onWebAppBuildMods)
 {
     public async Task OnLoad()
     {

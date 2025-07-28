@@ -12,11 +12,7 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class BotWeaponModLimitService(
-    ISptLogger<BotWeaponModLimitService> logger,
-    ConfigServer configServer,
-    ItemHelper itemHelper
-)
+public class BotWeaponModLimitService(ISptLogger<BotWeaponModLimitService> logger, ConfigServer configServer, ItemHelper itemHelper)
 {
     protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
 
@@ -41,12 +37,7 @@ public class BotWeaponModLimitService(
             ],
             FlashlightLaser = new ItemCount { Count = 0 },
             FlashlightLaserMax = _botConfig.Equipment[botRole]?.WeaponModLimits?.LightLaserLimit,
-            FlashlightLaserBaseTypes =
-            [
-                BaseClasses.TACTICAL_COMBO,
-                BaseClasses.FLASHLIGHT,
-                BaseClasses.PORTABLE_RANGE_FINDER,
-            ],
+            FlashlightLaserBaseTypes = [BaseClasses.TACTICAL_COMBO, BaseClasses.FLASHLIGHT, BaseClasses.PORTABLE_RANGE_FINDER],
         };
     }
 
@@ -72,21 +63,14 @@ public class BotWeaponModLimitService(
     )
     {
         // If mod or mods parent is the NcSTAR MPR45 Backup mount, allow it as it looks cool
-        if (
-            modsParent.Id == ItemTpl.MOUNT_NCSTAR_MPR45_BACKUP
-            || modTemplate.Id == ItemTpl.MOUNT_NCSTAR_MPR45_BACKUP
-        )
+        if (modsParent.Id == ItemTpl.MOUNT_NCSTAR_MPR45_BACKUP || modTemplate.Id == ItemTpl.MOUNT_NCSTAR_MPR45_BACKUP)
         {
             // If weapon already has a longer ranged scope on it, allow ncstar to be spawned
             if (
                 weapon.Any(item =>
                     itemHelper.IsOfBaseclasses(
                         item.Template,
-                        [
-                            BaseClasses.ASSAULT_SCOPE,
-                            BaseClasses.OPTIC_SCOPE,
-                            BaseClasses.SPECIAL_SCOPE,
-                        ]
+                        [BaseClasses.ASSAULT_SCOPE, BaseClasses.OPTIC_SCOPE, BaseClasses.SPECIAL_SCOPE]
                     )
                 )
             )
@@ -107,12 +91,7 @@ public class BotWeaponModLimitService(
         // If mod is a scope , Exit early
         if (modIsScope)
         {
-            return WeaponModLimitReached(
-                modTemplate.Id,
-                modLimits.Scope,
-                modLimits.ScopeMax ?? 0,
-                botRole
-            );
+            return WeaponModLimitReached(modTemplate.Id, modLimits.Scope, modLimits.ScopeMax ?? 0, botRole);
         }
 
         // Don't allow multiple mounts on a weapon (except when mount is on another mount)
@@ -132,18 +111,10 @@ public class BotWeaponModLimitService(
         }
 
         // If mod is a light/laser, return if limit reached
-        var modIsLightOrLaser = itemHelper.IsOfBaseclasses(
-            modTemplate.Id,
-            modLimits.FlashlightLaserBaseTypes
-        );
+        var modIsLightOrLaser = itemHelper.IsOfBaseclasses(modTemplate.Id, modLimits.FlashlightLaserBaseTypes);
         if (modIsLightOrLaser)
         {
-            return WeaponModLimitReached(
-                modTemplate.Id,
-                modLimits.FlashlightLaser,
-                modLimits.FlashlightLaserMax ?? 0,
-                botRole
-            );
+            return WeaponModLimitReached(modTemplate.Id, modLimits.FlashlightLaser, modLimits.FlashlightLaserMax ?? 0, botRole);
         }
 
         // Mod is a mount that can hold only flashlights ad limit is reached (don't want to add empty mounts if limit is reached)
@@ -168,12 +139,7 @@ public class BotWeaponModLimitService(
     /// <param name="maxLimit">mod limit allowed</param>
     /// <param name="botRole">role of bot we're checking weapon of</param>
     /// <returns>true if limit reached</returns>
-    protected bool WeaponModLimitReached(
-        MongoId modTpl,
-        ItemCount currentCount,
-        int? maxLimit,
-        string botRole
-    )
+    protected bool WeaponModLimitReached(MongoId modTpl, ItemCount currentCount, int? maxLimit, string botRole)
     {
         // No value or 0
         if (maxLimit is null || maxLimit is 0)
@@ -186,9 +152,7 @@ public class BotWeaponModLimitService(
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                logger.Debug(
-                    $"[{botRole}] scope limit reached! tried to add {modTpl} but scope count is {currentCount.Count}"
-                );
+                logger.Debug($"[{botRole}] scope limit reached! tried to add {modTpl} but scope count is {currentCount.Count}");
             }
 
             return true;

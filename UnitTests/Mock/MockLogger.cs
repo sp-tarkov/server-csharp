@@ -9,12 +9,7 @@ namespace UnitTests.Mock;
 [Injectable(TypeOverride = typeof(SptLogger<>))]
 public class MockLogger<T> : ISptLogger<T>
 {
-    public void LogWithColor(
-        string data,
-        LogTextColor? textColor = null,
-        LogBackgroundColor? backgroundColor = null,
-        Exception? ex = null
-    )
+    public void LogWithColor(string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null, Exception? ex = null)
     {
         Console.WriteLine(data);
     }
@@ -75,12 +70,7 @@ public class MockLogger<T> : ISptLogger<T>
         throw new NotImplementedException();
     }
 
-    public void LogWithColor(
-        string data,
-        Exception? ex = null,
-        LogTextColor? textColor = null,
-        LogBackgroundColor? backgroundColor = null
-    )
+    public void LogWithColor(string data, Exception? ex = null, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null)
     {
         Console.WriteLine(data);
     }

@@ -5,12 +5,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class BundleHashCacheService(
-    ISptLogger<BundleHashCacheService> logger,
-    JsonUtil jsonUtil,
-    HashUtil hashUtil,
-    FileUtil fileUtil
-)
+public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, JsonUtil jsonUtil, HashUtil hashUtil, FileUtil fileUtil)
 {
     protected const string _bundleHashCachePath = "./user/cache/";
     protected const string _cacheName = "bundleHashCache.json";
@@ -35,10 +30,7 @@ public class BundleHashCacheService(
             Directory.CreateDirectory(_bundleHashCachePath);
         }
 
-        await fileUtil.WriteFileAsync(
-            Path.Join(_bundleHashCachePath, _cacheName),
-            jsonUtil.Serialize(_bundleHashes)
-        );
+        await fileUtil.WriteFileAsync(Path.Join(_bundleHashCachePath, _cacheName), jsonUtil.Serialize(_bundleHashes));
 
         logger.Debug($"Bundle: {bundlePath} hash stored in: ${_bundleHashCachePath}");
     }

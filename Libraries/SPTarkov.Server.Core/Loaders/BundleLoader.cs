@@ -33,11 +33,7 @@ public class BundleInfo(string modPath, BundleManifestEntry bundle, uint bundleH
 }
 
 [Injectable(InjectionType.Singleton)]
-public class BundleLoader(
-    ISptLogger<BundleLoader> logger,
-    JsonUtil jsonUtil,
-    BundleHashCacheService bundleHashCacheService
-)
+public class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonUtil, BundleHashCacheService bundleHashCacheService)
 {
     private readonly Dictionary<string, BundleInfo> _bundles = [];
 
@@ -55,14 +51,11 @@ public class BundleLoader(
         {
             var relativeModPath = modPath.Replace('\\', '/');
 
-            var bundleLocalPath = Path.Join(relativeModPath, "bundles", bundleManifest.Key)
-                .Replace('\\', '/');
+            var bundleLocalPath = Path.Join(relativeModPath, "bundles", bundleManifest.Key).Replace('\\', '/');
 
             if (!File.Exists(bundleLocalPath))
             {
-                logger.Warning(
-                    $"Could not find bundle {bundleManifest.Key} for mod {mod.ModMetadata.Name}"
-                );
+                logger.Warning($"Could not find bundle {bundleManifest.Key} for mod {mod.ModMetadata.Name}");
                 continue;
             }
 
@@ -73,10 +66,7 @@ public class BundleLoader(
 
             var bundleHash = bundleHashCacheService.GetStoredValue(bundleLocalPath);
 
-            AddBundle(
-                bundleManifest.Key,
-                new BundleInfo(relativeModPath, bundleManifest, bundleHash)
-            );
+            AddBundle(bundleManifest.Key, new BundleInfo(relativeModPath, bundleManifest, bundleHash));
         }
     }
 

@@ -8,10 +8,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
-public class PrestigeCallbacks(
-    HttpResponseUtil httpResponseUtil,
-    PrestigeController prestigeController
-)
+public class PrestigeCallbacks(HttpResponseUtil httpResponseUtil, PrestigeController prestigeController)
 {
     /// <summary>
     ///     Handle client/prestige/list
@@ -22,9 +19,7 @@ public class PrestigeCallbacks(
     /// <returns></returns>
     public ValueTask<string> GetPrestige(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(prestigeController.GetPrestige(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(prestigeController.GetPrestige(sessionID)));
     }
 
     /// <summary>
@@ -34,11 +29,7 @@ public class PrestigeCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public async ValueTask<string> ObtainPrestige(
-        string url,
-        ObtainPrestigeRequestList info,
-        MongoId sessionID
-    )
+    public async ValueTask<string> ObtainPrestige(string url, ObtainPrestigeRequestList info, MongoId sessionID)
     {
         await prestigeController.ObtainPrestige(sessionID, info);
 

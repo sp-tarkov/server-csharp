@@ -20,10 +20,7 @@ public class FileLogHandler(IEnumerable<IFilePatternReplacer> replacers) : BaseL
 
     private readonly Dictionary<string, Dictionary<string, string>> _cachedWipedPatterns = new();
 
-    private readonly Dictionary<string, IFilePatternReplacer> _replacers = replacers.ToDictionary(
-        kv => kv.Pattern,
-        kv => kv
-    );
+    private readonly Dictionary<string, IFilePatternReplacer> _replacers = replacers.ToDictionary(kv => kv.Pattern, kv => kv);
 
     private readonly ConcurrentDictionary<string, Lock> _fileLocks = new();
     private readonly ConcurrentDictionary<string, FileInfo> _fileInfos = new();
@@ -58,10 +55,7 @@ public class FileLogHandler(IEnumerable<IFilePatternReplacer> replacers) : BaseL
             }
 
             // The AppendAllText will create the file as long as the directory exists
-            System.IO.File.AppendAllText(
-                targetFile,
-                FormatMessage(message.Message + "\n", message, reference)
-            );
+            System.IO.File.AppendAllText(targetFile, FormatMessage(message.Message + "\n", message, reference));
 
             if (!_fileInfos.TryGetValue(targetFile, out _))
             {
@@ -176,8 +170,7 @@ public class FileLogHandler(IEnumerable<IFilePatternReplacer> replacers) : BaseL
             for (var i = fileConfig.MaxRollingFiles - 1; i > 0; i--)
             {
                 var oldReference = i - 1;
-                var oldFile =
-                    oldReference == 0 ? fileInfo.FullName : $"{unpatternedFileName}.{i - 1}";
+                var oldFile = oldReference == 0 ? fileInfo.FullName : $"{unpatternedFileName}.{i - 1}";
                 var newFile = $"{unpatternedFileName}.{i}";
                 if (System.IO.File.Exists(oldFile))
                 {

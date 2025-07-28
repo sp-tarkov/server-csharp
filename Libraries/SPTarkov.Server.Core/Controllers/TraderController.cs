@@ -83,10 +83,7 @@ public class TraderController(
         foreach (var kvp in trader.Assort?.BarterScheme)
         {
             var barterSchemeItem = kvp.Value.FirstOrDefault()?.FirstOrDefault();
-            if (
-                barterSchemeItem?.Template != null
-                && paymentHelper.IsMoneyTpl(barterSchemeItem.Template)
-            )
+            if (barterSchemeItem?.Template != null && paymentHelper.IsMoneyTpl(barterSchemeItem.Template))
             {
                 barterSchemeItem.Count += Math.Round(barterSchemeItem?.Count * multiplier ?? 0D, 2);
             }

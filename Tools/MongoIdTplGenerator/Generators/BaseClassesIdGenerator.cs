@@ -26,13 +26,7 @@ public class BaseClassesIdGenerator(
     {
         // Figure out our source and target directories
         var projectDir = Directory.GetParent("./").Parent.Parent.Parent.Parent.Parent;
-        _enumDir = Path.Combine(
-            projectDir.FullName,
-            "Libraries",
-            "SPTarkov.Server.Core",
-            "Models",
-            "Enums"
-        );
+        _enumDir = Path.Combine(projectDir.FullName, "Libraries", "SPTarkov.Server.Core", "Models", "Enums");
         _items = databaseServer.GetTables().Templates.Items;
 
         // Generate an object containing all item name to ID associations
@@ -43,10 +37,7 @@ public class BaseClassesIdGenerator(
         var itemTplOutPath = Path.Combine(_enumDir, "BaseClasses.cs");
         WriteEnumsToFile(
             itemTplOutPath,
-            new Dictionary<string, Dictionary<string, MongoId>>
-            {
-                { nameof(BaseClasses), orderedItemsObject },
-            }
+            new Dictionary<string, Dictionary<string, MongoId>> { { nameof(BaseClasses), orderedItemsObject } }
         );
 
         logger.Info("Generating items finished");
@@ -86,11 +77,7 @@ public class BaseClassesIdGenerator(
         return orderedItemsObject;
     }
 
-    private void LogEnumValueChanges(
-        Dictionary<string, MongoId> data,
-        string enumName,
-        Type originalEnum
-    )
+    private void LogEnumValueChanges(Dictionary<string, MongoId> data, string enumName, Type originalEnum)
     {
         // First generate a mapping of the original enum values to names
         var originalEnumValues = new Dictionary<string, string>();
@@ -104,17 +91,12 @@ public class BaseClassesIdGenerator(
         {
             if (originalEnumValues.ContainsKey(kv.Value) && originalEnumValues[kv.Value] != kv.Key)
             {
-                logger.Warning(
-                    $"Enum {enumName} key has changed for {kv.Value}, {originalEnumValues[kv.Value]} => {kv.Key}"
-                );
+                logger.Warning($"Enum {enumName} key has changed for {kv.Value}, {originalEnumValues[kv.Value]} => {kv.Key}");
             }
         }
     }
 
-    private void WriteEnumsToFile(
-        string outputPath,
-        Dictionary<string, Dictionary<string, MongoId>> enumEntries
-    )
+    private void WriteEnumsToFile(string outputPath, Dictionary<string, Dictionary<string, MongoId>> enumEntries)
     {
         var enumFileData =
             "using SPTarkov.Server.Core.Models.Common;\n\n"
@@ -126,8 +108,7 @@ public class BaseClassesIdGenerator(
 
             foreach (var (key, value) in data)
             {
-                enumFileData +=
-                    $"    public static readonly MongoId {key} = new MongoId(\"{value}\");\n";
+                enumFileData += $"    public static readonly MongoId {key} = new MongoId(\"{value}\");\n";
             }
 
             enumFileData += "}\n";

@@ -7,16 +7,9 @@ namespace SPTarkov.Server.Core.Extensions
     /// </summary>
     public static class LootContainerSettingsExtensions
     {
-        public static double GetRoubleValue(
-            this LootContainerSettings settings,
-            int botLevel,
-            string? locationId
-        )
+        public static double GetRoubleValue(this LootContainerSettings settings, int botLevel, string? locationId)
         {
-            var roubleTotalByLevel = GetContainerRoubleTotalByLevel(
-                botLevel,
-                settings.TotalRubByLevel
-            );
+            var roubleTotalByLevel = GetContainerRoubleTotalByLevel(botLevel, settings.TotalRubByLevel);
 
             if (locationId is null)
             {
@@ -42,10 +35,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="botLevel">level of the bot</param>
         /// <param name="containerLootValuesPool">Pocket/vest/backpack</param>
         /// <returns>rouble amount</returns>
-        private static double GetContainerRoubleTotalByLevel(
-            int botLevel,
-            IEnumerable<MinMaxLootValue> containerLootValuesPool
-        )
+        private static double GetContainerRoubleTotalByLevel(int botLevel, IEnumerable<MinMaxLootValue> containerLootValuesPool)
         {
             var matchingValue = containerLootValuesPool.FirstOrDefault(minMaxValue =>
                 botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max

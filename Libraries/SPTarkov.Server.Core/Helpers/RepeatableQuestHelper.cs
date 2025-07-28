@@ -27,14 +27,9 @@ public class RepeatableQuestHelper(
     /// <param name="pmcLevel">Level of PMC character</param>
     /// <param name="repeatableConfig">Main repeatable config</param>
     /// <returns>EliminationConfig</returns>
-    public EliminationConfig? GetEliminationConfigByPmcLevel(
-        int pmcLevel,
-        RepeatableQuestConfig repeatableConfig
-    )
+    public EliminationConfig? GetEliminationConfigByPmcLevel(int pmcLevel, RepeatableQuestConfig repeatableConfig)
     {
-        return repeatableConfig.QuestConfig.Elimination.FirstOrDefault(x =>
-            pmcLevel >= x.LevelRange.Min && pmcLevel <= x.LevelRange.Max
-        );
+        return repeatableConfig.QuestConfig.Elimination.FirstOrDefault(x => pmcLevel >= x.LevelRange.Min && pmcLevel <= x.LevelRange.Max);
     }
 
     /// <summary>
@@ -62,25 +57,14 @@ public class RepeatableQuestHelper(
     /// <param name="traderId">TraderId that should provide this quest</param>
     /// <returns>Cloned quest template</returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public RepeatableQuest? GetClonedQuestTemplateForType(
-        RepeatableQuestType type,
-        MongoId traderId
-    )
+    public RepeatableQuest? GetClonedQuestTemplateForType(RepeatableQuestType type, MongoId traderId)
     {
         var quest = type switch
         {
-            RepeatableQuestType.Elimination => cloner.Clone(
-                databaseService.GetTemplates().RepeatableQuests?.Templates?.Elimination
-            ),
-            RepeatableQuestType.Completion => cloner.Clone(
-                databaseService.GetTemplates().RepeatableQuests?.Templates?.Completion
-            ),
-            RepeatableQuestType.Exploration => cloner.Clone(
-                databaseService.GetTemplates().RepeatableQuests?.Templates?.Exploration
-            ),
-            RepeatableQuestType.Pickup => cloner.Clone(
-                databaseService.GetTemplates().RepeatableQuests?.Templates?.Pickup
-            ),
+            RepeatableQuestType.Elimination => cloner.Clone(databaseService.GetTemplates().RepeatableQuests?.Templates?.Elimination),
+            RepeatableQuestType.Completion => cloner.Clone(databaseService.GetTemplates().RepeatableQuests?.Templates?.Completion),
+            RepeatableQuestType.Exploration => cloner.Clone(databaseService.GetTemplates().RepeatableQuests?.Templates?.Exploration),
+            RepeatableQuestType.Pickup => cloner.Clone(databaseService.GetTemplates().RepeatableQuests?.Templates?.Pickup),
             _ => null,
         };
 
@@ -119,12 +103,7 @@ public class RepeatableQuestHelper(
 
         if (questData is null)
         {
-            logger.Error(
-                serverLocalisationService.GetText(
-                    "repeatable-quest_helper_template_not_found",
-                    type
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("repeatable-quest_helper_template_not_found", type));
             return null;
         }
 
@@ -135,12 +114,7 @@ public class RepeatableQuestHelper(
 
         if (templateName is null)
         {
-            logger.Error(
-                serverLocalisationService.GetText(
-                    "repeatable-quest_helper_template_name_not_found",
-                    type
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("repeatable-quest_helper_template_name_not_found", type));
             return null;
         }
 
@@ -154,17 +128,11 @@ public class RepeatableQuestHelper(
         //  template ids -pmc  : Elimination = 616052ea3054fc0e2c24ce6e / Completion = 61604635c725987e815b1a46 / Exploration = 616041eb031af660100c9967
         //  template ids -scav : Elimination = 62825ef60e88d037dc1eb428 / Completion = 628f588ebb558574b2260fe5 / Exploration = 62825ef60e88d037dc1eb42c
 
-        questData.Name = questData
-            .Name.Replace("{traderId}", traderId)
-            .Replace("{templateId}", questData.TemplateId);
+        questData.Name = questData.Name.Replace("{traderId}", traderId).Replace("{templateId}", questData.TemplateId);
 
-        questData.Note = questData
-            .Note?.Replace("{traderId}", desiredTraderId)
-            .Replace("{templateId}", questData.TemplateId);
+        questData.Note = questData.Note?.Replace("{traderId}", desiredTraderId).Replace("{templateId}", questData.TemplateId);
 
-        questData.Description = questData
-            .Description.Replace("{traderId}", desiredTraderId)
-            .Replace("{templateId}", questData.TemplateId);
+        questData.Description = questData.Description.Replace("{traderId}", desiredTraderId).Replace("{templateId}", questData.TemplateId);
 
         questData.SuccessMessageText = questData
             .SuccessMessageText?.Replace("{traderId}", desiredTraderId)
@@ -196,9 +164,7 @@ public class RepeatableQuestHelper(
 
         if (questData.QuestStatus is null)
         {
-            logger.Error(
-                serverLocalisationService.GetText("repeatable-quest_helper_no_status", type)
-            );
+            logger.Error(serverLocalisationService.GetText("repeatable-quest_helper_no_status", type));
             return null;
         }
 
@@ -218,9 +184,7 @@ public class RepeatableQuestHelper(
     {
         if (!QuestConfig.LocationIdMap.TryGetValue(locationKey, out var locationId))
         {
-            logger.Error(
-                serverLocalisationService.GetText("repeatable-quest_helper_no_loc_id", locationKey)
-            );
+            logger.Error(serverLocalisationService.GetText("repeatable-quest_helper_no_loc_id", locationKey));
             return null;
         }
 

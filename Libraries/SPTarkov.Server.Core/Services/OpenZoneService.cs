@@ -43,9 +43,7 @@ public class OpenZoneService(
         {
             if (!dbLocations.ContainsKey(mapKvP.Key))
             {
-                logger.Error(
-                    serverLocalisationService.GetText("openzone-unable_to_find_map", mapKvP)
-                );
+                logger.Error(serverLocalisationService.GetText("openzone-unable_to_find_map", mapKvP));
 
                 continue;
             }
@@ -54,11 +52,7 @@ public class OpenZoneService(
 
             // Convert openzones string into list, easier to work wih
             var mapOpenZonesArray = dbLocations[mapKvP.Key].Base.OpenZones.Split(",").ToHashSet();
-            foreach (
-                var zoneToAdd in zonesToAdd.Where(zoneToAdd =>
-                    !mapOpenZonesArray.Contains(zoneToAdd)
-                )
-            )
+            foreach (var zoneToAdd in zonesToAdd.Where(zoneToAdd => !mapOpenZonesArray.Contains(zoneToAdd)))
             {
                 // Add new zone to array and convert array back into comma separated string
                 mapOpenZonesArray.Add(zoneToAdd);

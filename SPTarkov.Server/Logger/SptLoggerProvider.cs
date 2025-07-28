@@ -5,11 +5,7 @@ using SPTarkov.Server.Core.Utils.Logger;
 namespace SPTarkov.Server.Logger;
 
 [Injectable]
-public class SptLoggerProvider(
-    JsonUtil jsonUtil,
-    FileUtil fileUtil,
-    SptLoggerQueueManager queueManager
-) : ILoggerProvider, ILoggerFactory
+public class SptLoggerProvider(JsonUtil jsonUtil, FileUtil fileUtil, SptLoggerQueueManager queueManager) : ILoggerProvider, ILoggerFactory
 {
     private readonly List<ILoggerProvider> _loggerProviders = [];
 

@@ -10,11 +10,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
-public class HealthCallbacks(
-    HttpResponseUtil httpResponseUtil,
-    ProfileHelper profileHelper,
-    HealthController healthController
-)
+public class HealthCallbacks(HttpResponseUtil httpResponseUtil, ProfileHelper profileHelper, HealthController healthController)
 {
     /// <summary>
     ///     Custom spt server request found in modules/QTEPatch.cs
@@ -25,11 +21,7 @@ public class HealthCallbacks(
     /// <returns>empty response, no data sent back to client</returns>
     public ValueTask<string> HandleWorkoutEffects(string url, WorkoutData info, MongoId sessionID)
     {
-        healthController.ApplyWorkoutChanges(
-            profileHelper.GetPmcProfile(sessionID),
-            info,
-            sessionID
-        );
+        healthController.ApplyWorkoutChanges(profileHelper.GetPmcProfile(sessionID), info, sessionID);
         return new ValueTask<string>(httpResponseUtil.EmptyResponse());
     }
 
@@ -40,11 +32,7 @@ public class HealthCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse OffraidEat(
-        PmcData pmcData,
-        OffraidEatRequestData info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse OffraidEat(PmcData pmcData, OffraidEatRequestData info, MongoId sessionID)
     {
         return healthController.OffRaidEat(pmcData, info, sessionID);
     }
@@ -56,11 +44,7 @@ public class HealthCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse OffraidHeal(
-        PmcData pmcData,
-        OffraidHealRequestData info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse OffraidHeal(PmcData pmcData, OffraidHealRequestData info, MongoId sessionID)
     {
         return healthController.OffRaidHeal(pmcData, info, sessionID);
     }
@@ -72,11 +56,7 @@ public class HealthCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse HealthTreatment(
-        PmcData pmcData,
-        HealthTreatmentRequestData info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse HealthTreatment(PmcData pmcData, HealthTreatmentRequestData info, MongoId sessionID)
     {
         return healthController.HealthTreatment(pmcData, info, sessionID);
     }

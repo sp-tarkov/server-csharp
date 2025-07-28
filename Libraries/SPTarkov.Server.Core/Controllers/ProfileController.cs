@@ -44,9 +44,7 @@ public class ProfileController(
         var profile = saveServer.GetProfile(sessionId);
         if (profile?.CharacterData == null)
         {
-            throw new Exception(
-                $"Unable to find character data for id: {sessionId}. Profile may be corrupt"
-            );
+            throw new Exception($"Unable to find character data for id: {sessionId}. Profile may be corrupt");
         }
 
         var pmc = profile.CharacterData.PmcData;
@@ -82,8 +80,7 @@ public class ProfileController(
             Side = pmc.Info.Side,
             CurrentLevel = pmc.Info.Level,
             CurrentExperience = pmc.Info.Experience ?? 0,
-            PreviousExperience =
-                currentLevel == 0 ? 0 : profileHelper.GetExperience(currentLevel.Value),
+            PreviousExperience = currentLevel == 0 ? 0 : profileHelper.GetExperience(currentLevel.Value),
             NextLevel = xpToNextLevel,
             MaxLevel = maxLvl,
             Edition = profile.ProfileInfo?.Edition ?? "",
@@ -127,10 +124,7 @@ public class ProfileController(
     /// <param name="request">Create profile request</param>
     /// <param name="sessionId">Player id</param>
     /// <returns>Player id</returns>
-    public virtual async ValueTask<string> CreateProfile(
-        ProfileCreateRequestData request,
-        MongoId sessionId
-    )
+    public virtual async ValueTask<string> CreateProfile(ProfileCreateRequestData request, MongoId sessionId)
     {
         return await createProfileService.CreateProfile(sessionId, request);
     }
@@ -152,10 +146,7 @@ public class ProfileController(
     /// <param name="request">Validate nickname request</param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public virtual NicknameValidationResult ValidateNickname(
-        ValidateNicknameRequestData request,
-        MongoId sessionId
-    )
+    public virtual NicknameValidationResult ValidateNickname(ValidateNicknameRequestData request, MongoId sessionId)
     {
         if (request.Nickname?.Length < 3)
         {
@@ -177,15 +168,9 @@ public class ProfileController(
     /// <param name="request">Change nickname request</param>
     /// <param name="sessionId">Player id</param>
     /// <returns></returns>
-    public virtual NicknameValidationResult ChangeNickname(
-        ProfileChangeNicknameRequestData request,
-        MongoId sessionId
-    )
+    public virtual NicknameValidationResult ChangeNickname(ProfileChangeNicknameRequestData request, MongoId sessionId)
     {
-        var output = ValidateNickname(
-            new ValidateNicknameRequestData { Nickname = request.Nickname },
-            sessionId
-        );
+        var output = ValidateNickname(new ValidateNicknameRequestData { Nickname = request.Nickname }, sessionId);
 
         if (output == NicknameValidationResult.Valid)
         {
@@ -215,10 +200,7 @@ public class ProfileController(
     /// <param name="request">Search profiles request</param>
     /// <param name="sessionID">Player id</param>
     /// <returns>Found profiles</returns>
-    public virtual List<SearchFriendResponse> SearchProfiles(
-        SearchProfilesRequestData request,
-        MongoId sessionID
-    )
+    public virtual List<SearchFriendResponse> SearchProfiles(SearchProfilesRequestData request, MongoId sessionID)
     {
         var result = new List<SearchFriendResponse>();
 
@@ -228,10 +210,7 @@ public class ProfileController(
         foreach (var profile in allProfiles)
         {
             var pmcProfile = profile?.CharacterData?.PmcData;
-            if (
-                !pmcProfile?.Info?.LowerNickname?.Contains(request.Nickname.ToLowerInvariant())
-                ?? false
-            )
+            if (!pmcProfile?.Info?.LowerNickname?.Contains(request.Nickname.ToLowerInvariant()) ?? false)
             {
                 continue;
             }
@@ -285,21 +264,13 @@ public class ProfileController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Get other profile request</param>
     /// <returns>GetOtherProfileResponse</returns>
-    public virtual GetOtherProfileResponse GetOtherProfile(
-        MongoId sessionId,
-        GetOtherProfileRequest request
-    )
+    public virtual GetOtherProfileResponse GetOtherProfile(MongoId sessionId, GetOtherProfileRequest request)
     {
         // Find the profile by the account ID, fall back to the current player if we can't find the account
         var profileToView = profileHelper.GetFullProfileByAccountId(request.AccountId);
-        if (
-            profileToView?.CharacterData?.PmcData is null
-            || profileToView.CharacterData.ScavData is null
-        )
+        if (profileToView?.CharacterData?.PmcData is null || profileToView.CharacterData.ScavData is null)
         {
-            logger.Warning(
-                $"Unable to get profile: {request.AccountId} to show, falling back to own profile"
-            );
+            logger.Warning($"Unable to get profile: {request.AccountId} to show, falling back to own profile");
             profileToView = profileHelper.GetFullProfile(sessionId);
         }
 
@@ -312,16 +283,12 @@ public class ProfileController(
         hideoutKeys.Add(profileToViewPmc.Inventory.HideoutCustomizationStashId);
 
         // Find hideout items e.g. posters
-        var hideoutRootItems = profileToViewPmc.Inventory.Items.Where(x =>
-            hideoutKeys.Contains(x.Id)
-        );
+        var hideoutRootItems = profileToViewPmc.Inventory.Items.Where(x => hideoutKeys.Contains(x.Id));
         var itemsToReturn = new List<Item>();
         foreach (var rootItems in hideoutRootItems)
         {
             // Check each root items for children and add
-            var itemWithChildren = profileToViewPmc.Inventory.Items.GetItemWithChildren(
-                rootItems.Id
-            );
+            var itemWithChildren = profileToViewPmc.Inventory.Items.GetItemWithChildren(rootItems.Id);
             itemsToReturn.AddRange(itemWithChildren);
         }
 
@@ -334,9 +301,7 @@ public class ProfileController(
                 Nickname = profileToViewPmc.Info.Nickname,
                 Side = profileToViewPmc.Info.Side,
                 Experience = profileToViewPmc.Info.Experience,
-                MemberCategory = (int)(
-                    profileToViewPmc.Info.MemberCategory ?? MemberCategory.Default
-                ),
+                MemberCategory = (int)(profileToViewPmc.Info.MemberCategory ?? MemberCategory.Default),
                 BannedState = profileToViewPmc.Info.BannedState,
                 BannedUntil = profileToViewPmc.Info.BannedUntil,
                 RegistrationDate = profileToViewPmc.Info.RegistrationDate,
@@ -351,11 +316,7 @@ public class ProfileController(
                 Voice = profileToViewPmc.Customization.Voice,
             },
             Skills = profileToViewPmc.Skills,
-            Equipment = new OtherProfileEquipment
-            {
-                Id = profileToViewPmc.Inventory.Equipment,
-                Items = profileToViewPmc.Inventory.Items,
-            },
+            Equipment = new OtherProfileEquipment { Id = profileToViewPmc.Inventory.Equipment, Items = profileToViewPmc.Inventory.Items },
             Achievements = profileToViewPmc.Achievements,
             FavoriteItems = profileHelper.GetOtherProfileFavorites(profileToViewPmc),
             PmcStats = new OtherProfileStats

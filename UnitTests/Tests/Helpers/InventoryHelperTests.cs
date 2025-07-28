@@ -21,9 +21,7 @@ public class InventoryHelperTests
     [Test]
     public void GetItemSize_vss_val()
     {
-        var vssValPreset = _presetHelper.GetDefaultPreset(
-            ItemTpl.MARKSMANRIFLE_VSS_VINTOREZ_9X39_SPECIAL_SNIPER_RIFLE
-        );
+        var vssValPreset = _presetHelper.GetDefaultPreset(ItemTpl.MARKSMANRIFLE_VSS_VINTOREZ_9X39_SPECIAL_SNIPER_RIFLE);
 
         var result = _helper.GetItemSize(
             ItemTpl.MARKSMANRIFLE_VSS_VINTOREZ_9X39_SPECIAL_SNIPER_RIFLE,
@@ -38,15 +36,9 @@ public class InventoryHelperTests
     [Test]
     public void GetItemSize_m4a1()
     {
-        var vssValPreset = _presetHelper.GetDefaultPreset(
-            ItemTpl.ASSAULTRIFLE_COLT_M4A1_556X45_ASSAULT_RIFLE
-        );
+        var vssValPreset = _presetHelper.GetDefaultPreset(ItemTpl.ASSAULTRIFLE_COLT_M4A1_556X45_ASSAULT_RIFLE);
 
-        var result = _helper.GetItemSize(
-            ItemTpl.ASSAULTRIFLE_COLT_M4A1_556X45_ASSAULT_RIFLE,
-            vssValPreset.Parent,
-            vssValPreset.Items
-        );
+        var result = _helper.GetItemSize(ItemTpl.ASSAULTRIFLE_COLT_M4A1_556X45_ASSAULT_RIFLE, vssValPreset.Parent, vssValPreset.Items);
 
         Assert.AreEqual(5, result.Item1);
         Assert.AreEqual(2, result.Item2);
@@ -57,11 +49,7 @@ public class InventoryHelperTests
     {
         var vssValPreset = _presetHelper.GetDefaultPreset(ItemTpl.PISTOL_GLOCK_17_9X19);
 
-        var result = _helper.GetItemSize(
-            ItemTpl.PISTOL_GLOCK_17_9X19,
-            vssValPreset.Parent,
-            vssValPreset.Items
-        );
+        var result = _helper.GetItemSize(ItemTpl.PISTOL_GLOCK_17_9X19, vssValPreset.Parent, vssValPreset.Items);
 
         Assert.AreEqual(2, result.Item1);
         Assert.AreEqual(1, result.Item2);
@@ -73,11 +61,7 @@ public class InventoryHelperTests
         var rootWeaponId = new MongoId();
 
         var weaponWithChildren = new List<Item>();
-        var root = new Item
-        {
-            Id = rootWeaponId,
-            Template = ItemTpl.ASSAULTRIFLE_MOLOT_ARMS_VPO136_VEPRKM_762X39_CARBINE,
-        };
+        var root = new Item { Id = rootWeaponId, Template = ItemTpl.ASSAULTRIFLE_MOLOT_ARMS_VPO136_VEPRKM_762X39_CARBINE };
         weaponWithChildren.Add(root);
 
         var stock = new Item
@@ -119,11 +103,7 @@ public class InventoryHelperTests
         var rootWeaponId = new MongoId();
 
         var weaponWithChildren = new List<Item>();
-        var root = new Item
-        {
-            Id = rootWeaponId,
-            Template = ItemTpl.SMG_IWI_UZI_9X19_SUBMACHINE_GUN,
-        };
+        var root = new Item { Id = rootWeaponId, Template = ItemTpl.SMG_IWI_UZI_9X19_SUBMACHINE_GUN };
         weaponWithChildren.Add(root);
 
         var stock = new Item
@@ -144,11 +124,7 @@ public class InventoryHelperTests
         };
         weaponWithChildren.Add(magazine);
 
-        var result = _helper.GetItemSize(
-            ItemTpl.SMG_IWI_UZI_9X19_SUBMACHINE_GUN,
-            rootWeaponId,
-            weaponWithChildren
-        );
+        var result = _helper.GetItemSize(ItemTpl.SMG_IWI_UZI_9X19_SUBMACHINE_GUN, rootWeaponId, weaponWithChildren);
 
         Assert.AreEqual(3, result.Item1);
         Assert.AreEqual(2, result.Item2);
@@ -160,11 +136,7 @@ public class InventoryHelperTests
         var rootWeaponId = new MongoId();
 
         var weaponWithChildren = new List<Item>();
-        var root = new Item
-        {
-            Id = rootWeaponId,
-            Template = ItemTpl.SMG_IWI_UZI_9X19_SUBMACHINE_GUN,
-        };
+        var root = new Item { Id = rootWeaponId, Template = ItemTpl.SMG_IWI_UZI_9X19_SUBMACHINE_GUN };
         weaponWithChildren.Add(root);
 
         var stock = new Item
@@ -186,11 +158,7 @@ public class InventoryHelperTests
         };
         weaponWithChildren.Add(magazine);
 
-        var result = _helper.GetItemSize(
-            ItemTpl.SMG_IWI_UZI_9X19_SUBMACHINE_GUN,
-            rootWeaponId,
-            weaponWithChildren
-        );
+        var result = _helper.GetItemSize(ItemTpl.SMG_IWI_UZI_9X19_SUBMACHINE_GUN, rootWeaponId, weaponWithChildren);
 
         Assert.AreEqual(2, result.Item1);
         Assert.AreEqual(2, result.Item2);

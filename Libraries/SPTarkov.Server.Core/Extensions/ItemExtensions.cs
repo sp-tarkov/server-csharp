@@ -17,11 +17,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="item2">second item to compare</param>
         /// <param name="compareUpdProperties">Upd properties to compare between the items</param>
         /// <returns>true if they are the same</returns>
-        public static bool IsSameItem(
-            this Item item1,
-            Item item2,
-            ISet<string>? compareUpdProperties = null
-        )
+        public static bool IsSameItem(this Item item1, Item item2, ISet<string>? compareUpdProperties = null)
         {
             // Different tpl == different item
             if (item1.Template != item2.Template)
@@ -51,48 +47,23 @@ namespace SPTarkov.Server.Core.Extensions
             var comparers = new Dictionary<string, Func<Upd, Upd, bool>>
             {
                 { "Key", (upd1, upd2) => upd1.Key?.NumberOfUsages == upd2.Key?.NumberOfUsages },
-                {
-                    "Buff",
-                    (upd1, upd2) =>
-                        upd1.Buff?.Value == upd2.Buff?.Value
-                        && upd1.Buff?.BuffType == upd2.Buff?.BuffType
-                },
-                {
-                    "CultistAmulet",
-                    (upd1, upd2) =>
-                        upd1.CultistAmulet?.NumberOfUsages == upd2.CultistAmulet?.NumberOfUsages
-                },
+                { "Buff", (upd1, upd2) => upd1.Buff?.Value == upd2.Buff?.Value && upd1.Buff?.BuffType == upd2.Buff?.BuffType },
+                { "CultistAmulet", (upd1, upd2) => upd1.CultistAmulet?.NumberOfUsages == upd2.CultistAmulet?.NumberOfUsages },
                 { "Dogtag", (upd1, upd2) => upd1.Dogtag?.ProfileId == upd2.Dogtag?.ProfileId },
                 { "FaceShield", (upd1, upd2) => upd1.FaceShield?.Hits == upd2.FaceShield?.Hits },
                 {
                     "Foldable",
-                    (upd1, upd2) =>
-                        upd1.Foldable?.Folded.GetValueOrDefault(false)
-                        == upd2.Foldable?.Folded.GetValueOrDefault(false)
+                    (upd1, upd2) => upd1.Foldable?.Folded.GetValueOrDefault(false) == upd2.Foldable?.Folded.GetValueOrDefault(false)
                 },
-                {
-                    "FoodDrink",
-                    (upd1, upd2) => upd1.FoodDrink?.HpPercent == upd2.FoodDrink?.HpPercent
-                },
+                { "FoodDrink", (upd1, upd2) => upd1.FoodDrink?.HpPercent == upd2.FoodDrink?.HpPercent },
                 { "MedKit", (upd1, upd2) => upd1.MedKit?.HpResource == upd2.MedKit?.HpResource },
-                {
-                    "RecodableComponent",
-                    (upd1, upd2) =>
-                        upd1.RecodableComponent?.IsEncoded == upd2.RecodableComponent?.IsEncoded
-                },
-                {
-                    "RepairKit",
-                    (upd1, upd2) => upd1.RepairKit?.Resource == upd2.RepairKit?.Resource
-                },
-                {
-                    "Resource",
-                    (upd1, upd2) => upd1.Resource?.UnitsConsumed == upd2.Resource?.UnitsConsumed
-                },
+                { "RecodableComponent", (upd1, upd2) => upd1.RecodableComponent?.IsEncoded == upd2.RecodableComponent?.IsEncoded },
+                { "RepairKit", (upd1, upd2) => upd1.RepairKit?.Resource == upd2.RepairKit?.Resource },
+                { "Resource", (upd1, upd2) => upd1.Resource?.UnitsConsumed == upd2.Resource?.UnitsConsumed },
             };
 
             // Choose above keys or passed in keys to compare items with
-            var valuesToCompare =
-                compareUpdProperties?.Count > 0 ? compareUpdProperties : comparers.Keys.ToHashSet();
+            var valuesToCompare = compareUpdProperties?.Count > 0 ? compareUpdProperties : comparers.Keys.ToHashSet();
             foreach (var propertyName in valuesToCompare)
             {
                 if (!comparers.TryGetValue(propertyName, out var comparer))
@@ -117,11 +88,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="desiredContainerSlotId">Name of slot to check item is in e.g. SecuredContainer/Backpack</param>
         /// <param name="items">Inventory with child parent items to check</param>
         /// <returns>True when item is in container</returns>
-        public static bool ItemIsInsideContainer(
-            this Item itemToCheck,
-            string desiredContainerSlotId,
-            IEnumerable<Item> items
-        )
+        public static bool ItemIsInsideContainer(this Item itemToCheck, string desiredContainerSlotId, IEnumerable<Item> items)
         {
             // Get items parent
             var parent = items.FirstOrDefault(item => item.Id.Equals(itemToCheck.ParentId));
@@ -199,10 +166,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="items">List of items (item + possible children)</param>
         /// <param name="baseItemId">Parent item's id</param>
         /// <returns>list of child item ids</returns>
-        public static List<MongoId> GetItemWithChildrenTpls(
-            this IEnumerable<Item> items,
-            MongoId baseItemId
-        )
+        public static List<MongoId> GetItemWithChildrenTpls(this IEnumerable<Item> items, MongoId baseItemId)
         {
             List<MongoId> list = [];
 
@@ -226,8 +190,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <returns>true if it has buy restrictions</returns>
         public static bool HasBuyRestrictions(this Item itemToCheck)
         {
-            return itemToCheck.Upd?.BuyRestrictionCurrent is not null
-                && itemToCheck.Upd?.BuyRestrictionMax is not null;
+            return itemToCheck.Upd?.BuyRestrictionCurrent is not null && itemToCheck.Upd?.BuyRestrictionMax is not null;
         }
 
         /// <summary>
@@ -273,11 +236,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="baseItemId">Parent item's id</param>
         /// <param name="excludeStoredItems">OPTIONAL - Include only mod items, exclude items stored inside root item</param>
         /// <returns>list of Item objects</returns>
-        public static List<Item> GetItemWithChildren(
-            this IEnumerable<Item> items,
-            MongoId baseItemId,
-            bool excludeStoredItems = false
-        )
+        public static List<Item> GetItemWithChildren(this IEnumerable<Item> items, MongoId baseItemId, bool excludeStoredItems = false)
         {
             // Use dictionary to make key lookup faster, convert to list before being returned
             var itemList = items.ToList();
@@ -416,10 +375,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="itemWithChildren">Item to update root items _id property</param>
         /// <param name="newId">Optional: new id to use</param>
         /// <returns>New root id</returns>
-        public static MongoId RemapRootItemId(
-            this IEnumerable<Item> itemWithChildren,
-            MongoId? newId = null
-        )
+        public static MongoId RemapRootItemId(this IEnumerable<Item> itemWithChildren, MongoId? newId = null)
         {
             newId ??= new MongoId();
 
@@ -458,11 +414,7 @@ namespace SPTarkov.Server.Core.Extensions
                 .GroupBy(item => new MongoId(item.ParentId))
                 .ToDictionary(kvp => kvp.Key, group => group.ToHashSet());
 
-            return new InventoryItemHash
-            {
-                ByItemId = inventoryItems.ToDictionary(item => item.Id),
-                ByParentId = byParentId,
-            };
+            return new InventoryItemHash { ByItemId = inventoryItems.ToDictionary(item => item.Id), ByParentId = byParentId };
         }
     }
 }

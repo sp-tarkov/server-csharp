@@ -56,9 +56,7 @@ public class WeightedRandomHelper(
 
         if (weights.Count == 0)
         {
-            logger.Error(
-                localisationService.GetText("weightedrandomhelper-supplied_weights_empty")
-            );
+            logger.Error(localisationService.GetText("weightedrandomhelper-supplied_weights_empty"));
         }
 
         if (items.Count != weights.Count)

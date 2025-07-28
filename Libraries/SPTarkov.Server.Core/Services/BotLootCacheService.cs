@@ -232,10 +232,7 @@ public class BotLootCacheService(
             }
 
             // If pool has items and items were going into a non-secure container pool, add to combined
-            if (
-                itemPool.Count > 0
-                && !containerType.Equals("securedcontainer", StringComparison.OrdinalIgnoreCase)
-            )
+            if (itemPool.Count > 0 && !containerType.Equals("securedcontainer", StringComparison.OrdinalIgnoreCase))
             {
                 // fill up 'combined' pool of all loot
                 AddItemsToPool(combinedLootPool, itemPool);
@@ -243,21 +240,14 @@ public class BotLootCacheService(
         }
 
         // Assign whitelisted special items to bot if any exist
-        var (specialLootItems, addSpecialLootItems) = GetGenerationWeights(
-            botJsonTemplate.BotGeneration?.Items?.SpecialItems?.Whitelist
-        );
+        var (specialLootItems, addSpecialLootItems) = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.SpecialItems?.Whitelist);
         if (addSpecialLootItems) // key = tpl, value = weight
         {
             // No whitelist, find and assign from combined item pool
             foreach (var itemKvP in specialLootPool)
             {
                 var itemTemplate = itemHelper.GetItem(itemKvP.Key).Value;
-                if (
-                    !(
-                        IsBulletOrGrenade(itemTemplate.Properties)
-                        || IsMagazine(itemTemplate.Properties)
-                    )
-                )
+                if (!(IsBulletOrGrenade(itemTemplate.Properties) || IsMagazine(itemTemplate.Properties)))
                 {
                     lock (_specialLock)
                     {
@@ -267,27 +257,13 @@ public class BotLootCacheService(
             }
         }
 
-        var (healingItemsInWhitelist, addHealingItems) = GetGenerationWeights(
-            botJsonTemplate.BotGeneration?.Items?.Healing?.Whitelist
-        );
-        var (drugItemsInWhitelist, addDrugItems) = GetGenerationWeights(
-            botJsonTemplate.BotGeneration?.Items?.Drugs?.Whitelist
-        );
-        var (foodItemsInWhitelist, addFoodItems) = GetGenerationWeights(
-            botJsonTemplate.BotGeneration?.Items?.Food?.Whitelist
-        );
-        var (drinkItemsInWhitelist, addDrinkItems) = GetGenerationWeights(
-            botJsonTemplate.BotGeneration?.Items?.Food?.Whitelist
-        );
-        var (currencyItemsInWhitelist, addCurrencyItems) = GetGenerationWeights(
-            botJsonTemplate.BotGeneration?.Items?.Currency?.Whitelist
-        );
-        var (stimItemsInWhitelist, addStimItems) = GetGenerationWeights(
-            botJsonTemplate.BotGeneration?.Items?.Stims?.Whitelist
-        );
-        var (grenadeItemsInWhitelist, addGrenadeItems) = GetGenerationWeights(
-            botJsonTemplate.BotGeneration?.Items?.Grenades?.Whitelist
-        );
+        var (healingItemsInWhitelist, addHealingItems) = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.Healing?.Whitelist);
+        var (drugItemsInWhitelist, addDrugItems) = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.Drugs?.Whitelist);
+        var (foodItemsInWhitelist, addFoodItems) = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.Food?.Whitelist);
+        var (drinkItemsInWhitelist, addDrinkItems) = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.Food?.Whitelist);
+        var (currencyItemsInWhitelist, addCurrencyItems) = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.Currency?.Whitelist);
+        var (stimItemsInWhitelist, addStimItems) = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.Stims?.Whitelist);
+        var (grenadeItemsInWhitelist, addGrenadeItems) = GetGenerationWeights(botJsonTemplate.BotGeneration?.Items?.Grenades?.Whitelist);
 
         foreach (var itemKvP in combinedLootPool)
         {
@@ -315,10 +291,7 @@ public class BotLootCacheService(
 
             if (addDrugItems)
             {
-                if (
-                    itemTemplate.Parent == BaseClasses.DRUGS
-                    && IsMedicalItem(itemTemplate.Properties)
-                )
+                if (itemTemplate.Parent == BaseClasses.DRUGS && IsMedicalItem(itemTemplate.Properties))
                 {
                     lock (_drugLock)
                     {
@@ -362,10 +335,7 @@ public class BotLootCacheService(
 
             if (addStimItems)
             {
-                if (
-                    itemTemplate.Parent == BaseClasses.STIMULATOR
-                    && IsMedicalItem(itemTemplate.Properties)
-                )
+                if (itemTemplate.Parent == BaseClasses.STIMULATOR && IsMedicalItem(itemTemplate.Properties))
                 {
                     lock (_stimLock)
                     {
@@ -445,8 +415,7 @@ public class BotLootCacheService(
         // Get secure loot (excluding magazines, bullets)
         var filteredSecureLoot = FilterItemPool(
             secureLootPool,
-            (itemTemplate) =>
-                IsBulletOrGrenade(itemTemplate.Properties) || IsMagazine(itemTemplate.Properties)
+            (itemTemplate) => IsBulletOrGrenade(itemTemplate.Properties) || IsMagazine(itemTemplate.Properties)
         );
 
         if (!_lootCache.TryGetValue(botRole, out var cacheForRole))
@@ -476,10 +445,7 @@ public class BotLootCacheService(
     /// <param name="lootPool">Pool to filter</param>
     /// <param name="shouldBeSkipped">Delegate to filter pool by</param>
     /// <returns></returns>
-    protected Dictionary<MongoId, double> FilterItemPool(
-        Dictionary<MongoId, double> lootPool,
-        Func<TemplateItem, bool> shouldBeSkipped
-    )
+    protected Dictionary<MongoId, double> FilterItemPool(Dictionary<MongoId, double> lootPool, Func<TemplateItem, bool> shouldBeSkipped)
     {
         var filteredItems = new Dictionary<MongoId, double>();
         foreach (var (itemTpl, itemWeight) in lootPool)
@@ -506,10 +472,7 @@ public class BotLootCacheService(
     /// </summary>
     /// <param name="weights">Weights to return</param>
     /// <returns>Dictionary and should pool be hydrated by items in combined loot pool</returns>
-    protected static (
-        Dictionary<MongoId, double>,
-        bool populateFromCombinedPool
-    ) GetGenerationWeights(Dictionary<MongoId, double>? weights)
+    protected static (Dictionary<MongoId, double>, bool populateFromCombinedPool) GetGenerationWeights(Dictionary<MongoId, double>? weights)
     {
         var result = weights ?? [];
         return (result, !result.Any()); // empty dict = should be populated from combined pool
@@ -521,10 +484,7 @@ public class BotLootCacheService(
     /// </summary>
     /// <param name="poolToAddTo">Dictionary to add item to</param>
     /// <param name="poolOfItemsToAdd">Dictionary of items to add</param>
-    protected void AddItemsToPool(
-        Dictionary<MongoId, double> poolToAddTo,
-        Dictionary<MongoId, double> poolOfItemsToAdd
-    )
+    protected void AddItemsToPool(Dictionary<MongoId, double> poolToAddTo, Dictionary<MongoId, double> poolOfItemsToAdd)
     {
         foreach (var (tpl, weight) in poolOfItemsToAdd)
         {

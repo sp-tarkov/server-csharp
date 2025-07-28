@@ -11,10 +11,7 @@ namespace SPTarkov.Server.Core.Migration
 
         public abstract IEnumerable<Type> PrerequisiteMigrations { get; }
 
-        public abstract bool CanMigrate(
-            JsonObject profile,
-            IEnumerable<IProfileMigration> previouslyRanMigrations
-        );
+        public abstract bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations);
 
         public virtual JsonObject? Migrate(JsonObject profile)
         {
@@ -37,9 +34,7 @@ namespace SPTarkov.Server.Core.Migration
 
             var versionNumber = versionString.Split(' ')[0];
 
-            return SemanticVersioning.Version.TryParse(versionNumber, out var version)
-                ? version
-                : null;
+            return SemanticVersioning.Version.TryParse(versionNumber, out var version) ? version : null;
         }
     }
 }

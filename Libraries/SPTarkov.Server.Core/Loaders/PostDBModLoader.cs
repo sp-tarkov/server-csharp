@@ -6,14 +6,9 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Loaders;
 
-[Obsolete(
-    "This mod loader is obsolete and will be removed in 4.1.0. See documentation in IPostDBLoadModAsync for more information."
-)]
+[Obsolete("This mod loader is obsolete and will be removed in 4.1.0. See documentation in IPostDBLoadModAsync for more information.")]
 [Injectable(TypePriority = OnLoadOrder.PostDBModLoader)]
-public class PostDBModLoader(
-    ISptLogger<PostDBModLoader> _logger,
-    IEnumerable<IPostDBLoadModAsync> _postDbLoadMods
-) : IOnLoad
+public class PostDBModLoader(ISptLogger<PostDBModLoader> _logger, IEnumerable<IPostDBLoadModAsync> _postDbLoadMods) : IOnLoad
 {
     public async Task OnLoad()
     {

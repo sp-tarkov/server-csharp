@@ -47,9 +47,7 @@ public class MapMarkerService(ISptLogger<MapMarkerService> logger)
         var mapItem = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
 
         // remove marker
-        var markers = mapItem
-            .Upd.Map.Markers.Where(marker => marker.X != request.X && marker.Y != request.Y)
-            .ToList();
+        var markers = mapItem.Upd.Map.Markers.Where(marker => marker.X != request.X && marker.Y != request.Y).ToList();
         mapItem.Upd.Map.Markers = markers;
 
         return mapItem;
@@ -69,9 +67,7 @@ public class MapMarkerService(ISptLogger<MapMarkerService> logger)
         // edit marker
         // the only thing that is consistent between the old and edit is the X and Y
         // find the marker where X and Y match
-        var markerToRemove = mapItem.Upd.Map.Markers.FirstOrDefault(x =>
-            x.X == request.X && x.Y == request.Y
-        );
+        var markerToRemove = mapItem.Upd.Map.Markers.FirstOrDefault(x => x.X == request.X && x.Y == request.Y);
 
         if (markerToRemove is null)
         {

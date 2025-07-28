@@ -14,9 +14,7 @@ public abstract class AbstractDialogChatBot(
     IEnumerable<IChatCommand> chatCommands
 ) : IDialogueChatBot
 {
-    protected readonly IDictionary<string, IChatCommand> _chatCommands = chatCommands.ToDictionary(
-        command => command.CommandPrefix
-    );
+    protected readonly IDictionary<string, IChatCommand> _chatCommands = chatCommands.ToDictionary(command => command.CommandPrefix);
 
     public abstract UserDialogInfo GetChatBot();
 
@@ -40,36 +38,19 @@ public abstract class AbstractDialogChatBot(
             return await commando.Handle(splitCommand[1], GetChatBot(), sessionId, request);
         }
 
-        if (
-            string.Equals(splitCommand.FirstOrDefault(), "help", StringComparison.OrdinalIgnoreCase)
-        )
+        if (string.Equals(splitCommand.FirstOrDefault(), "help", StringComparison.OrdinalIgnoreCase))
         {
             return await SendPlayerHelpMessage(sessionId, request);
         }
 
-        _mailSendService.SendUserMessageToPlayer(
-            sessionId,
-            GetChatBot(),
-            GetUnrecognizedCommandMessage(),
-            [],
-            null
-        );
+        _mailSendService.SendUserMessageToPlayer(sessionId, GetChatBot(), GetUnrecognizedCommandMessage(), [], null);
 
         return string.Empty;
     }
 
-    protected async ValueTask<string> SendPlayerHelpMessage(
-        MongoId sessionId,
-        SendMessageRequest request
-    )
+    protected async ValueTask<string> SendPlayerHelpMessage(MongoId sessionId, SendMessageRequest request)
     {
-        _mailSendService.SendUserMessageToPlayer(
-            sessionId,
-            GetChatBot(),
-            "The available commands will be listed below:",
-            [],
-            null
-        );
+        _mailSendService.SendUserMessageToPlayer(sessionId, GetChatBot(), "The available commands will be listed below:", [], null);
         foreach (var chatCommand in _chatCommands.Values)
         {
             // due to BSG being dumb with messages we need a mandatory timeout between messages so they get out on the right order
@@ -107,9 +88,7 @@ public abstract class AbstractDialogChatBot(
         var prefix = chatCommand.CommandPrefix;
         if (!_chatCommands.TryAdd(prefix, chatCommand))
         {
-            throw new Exception(
-                $"The command \"{prefix}\" attempting to be registered already exists."
-            );
+            throw new Exception($"The command \"{prefix}\" attempting to be registered already exists.");
         }
     }
 

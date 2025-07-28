@@ -11,11 +11,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Generators;
 
 [Injectable]
-public class BotLevelGenerator(
-    ISptLogger<BotLevelGenerator> logger,
-    RandomUtil randomUtil,
-    DatabaseService databaseService
-)
+public class BotLevelGenerator(ISptLogger<BotLevelGenerator> logger, RandomUtil randomUtil, DatabaseService databaseService)
 {
     /// <summary>
     ///     Return a randomised bot level and exp value
@@ -24,11 +20,7 @@ public class BotLevelGenerator(
     /// <param name="botGenerationDetails">Details to help generate a bot</param>
     /// <param name="bot">Bot the level is being generated for</param>
     /// <returns>IRandomisedBotLevelResult object</returns>
-    public RandomisedBotLevelResult GenerateBotLevel(
-        MinMax<int> levelDetails,
-        BotGenerationDetails botGenerationDetails,
-        BotBase bot
-    )
+    public RandomisedBotLevelResult GenerateBotLevel(MinMax<int> levelDetails, BotGenerationDetails botGenerationDetails, BotBase bot)
     {
         if (!botGenerationDetails.IsPmc)
         {
@@ -36,18 +28,11 @@ public class BotLevelGenerator(
         }
 
         var expTable = databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
-        var botLevelRange = GetRelativePmcBotLevelRange(
-            botGenerationDetails,
-            levelDetails,
-            expTable.Length
-        );
+        var botLevelRange = GetRelativePmcBotLevelRange(botGenerationDetails, levelDetails, expTable.Length);
 
         // Get random level based on the exp table.
         var exp = 0;
-        var level = int.Parse(
-            ChooseBotLevel(botLevelRange.Min, botLevelRange.Max, 1, 1.15)
-                .ToString(CultureInfo.InvariantCulture)
-        ); // TODO - nasty double to string to int conversion
+        var level = int.Parse(ChooseBotLevel(botLevelRange.Min, botLevelRange.Max, 1, 1.15).ToString(CultureInfo.InvariantCulture)); // TODO - nasty double to string to int conversion
         for (var i = 0; i < level; i++)
         {
             exp += expTable[i].Experience;

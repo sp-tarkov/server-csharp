@@ -13,12 +13,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class BotHelper(
-    ISptLogger<BotHelper> logger,
-    DatabaseService databaseService,
-    RandomUtil randomUtil,
-    ConfigServer configServer
-)
+public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseService, RandomUtil randomUtil, ConfigServer configServer)
 {
     private static readonly FrozenSet<string> _pmcTypeIds =
     [
@@ -61,10 +56,7 @@ public class BotHelper(
 
     public bool IsBotBoss(string botRole)
     {
-        return !IsBotFollower(botRole)
-            && _botConfig.Bosses.Any(x =>
-                string.Equals(x, botRole, StringComparison.CurrentCultureIgnoreCase)
-            );
+        return !IsBotFollower(botRole) && _botConfig.Bosses.Any(x => string.Equals(x, botRole, StringComparison.CurrentCultureIgnoreCase));
     }
 
     public bool IsBotFollower(string botRole)
@@ -132,10 +124,7 @@ public class BotHelper(
     /// <param name="botLevel">level of bot</param>
     /// <param name="botEquipConfig">bot equipment json</param>
     /// <returns>RandomisationDetails</returns>
-    public RandomisationDetails? GetBotRandomizationDetails(
-        int botLevel,
-        EquipmentFilters botEquipConfig
-    )
+    public RandomisationDetails? GetBotRandomizationDetails(int botLevel, EquipmentFilters botEquipConfig)
     {
         // No randomisation details found, skip
 
@@ -199,26 +188,18 @@ public class BotHelper(
     /// <returns>name of PMC</returns>
     public string GetPmcNicknameOfMaxLength(int maxLength, string? side = null)
     {
-        var chosenFaction = (
-            side ?? (randomUtil.GetInt(0, 1) == 0 ? Sides.Usec : Sides.Bear)
-        ).ToLowerInvariant();
+        var chosenFaction = (side ?? (randomUtil.GetInt(0, 1) == 0 ? Sides.Usec : Sides.Bear)).ToLowerInvariant();
         var cacheKey = $"{chosenFaction}{maxLength}";
         if (!_pmcNameCache.TryGetValue(cacheKey, out var eligibleNames))
         {
-            if (
-                !databaseService
-                    .GetBots()
-                    .Types.TryGetValue(chosenFaction, out var chosenFactionDetails)
-            )
+            if (!databaseService.GetBots().Types.TryGetValue(chosenFaction, out var chosenFactionDetails))
             {
                 logger.Error($"Unknown faction: {chosenFaction} Defaulting to: {Sides.Usec}");
                 chosenFaction = Sides.Usec.ToLowerInvariant();
                 chosenFactionDetails = databaseService.GetBots().Types[chosenFaction];
             }
 
-            var matchingNames = chosenFactionDetails
-                .FirstNames.Where(name => name.Length <= maxLength)
-                .ToList();
+            var matchingNames = chosenFactionDetails.FirstNames.Where(name => name.Length <= maxLength).ToList();
             if (!matchingNames.Any())
             {
                 logger.Warning(

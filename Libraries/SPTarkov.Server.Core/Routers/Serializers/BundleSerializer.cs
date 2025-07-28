@@ -9,11 +9,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Routers.Serializers;
 
 [Injectable]
-public class BundleSerializer(
-    ISptLogger<BundleSerializer> logger,
-    BundleLoader bundleLoader,
-    HttpFileUtil httpFileUtil
-) : ISerializer
+public class BundleSerializer(ISptLogger<BundleSerializer> logger, BundleLoader bundleLoader, HttpFileUtil httpFileUtil) : ISerializer
 {
     public async Task Serialize(MongoId sessionID, HttpRequest req, HttpResponse resp, object? body)
     {

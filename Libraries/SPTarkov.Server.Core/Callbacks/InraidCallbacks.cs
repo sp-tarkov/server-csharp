@@ -18,11 +18,7 @@ public class InraidCallbacks(InRaidController inRaidController, HttpResponseUtil
     /// <param name="info">register player request</param>
     /// <param name="sessionID">Session id</param>
     /// <returns>Null http response</returns>
-    public ValueTask<string> RegisterPlayer(
-        string url,
-        RegisterPlayerRequestData info,
-        MongoId sessionID
-    )
+    public ValueTask<string> RegisterPlayer(string url, RegisterPlayerRequestData info, MongoId sessionID)
     {
         inRaidController.AddPlayer(sessionID, info);
         return new ValueTask<string>(httpResponseUtil.NullResponse());
@@ -47,24 +43,16 @@ public class InraidCallbacks(InRaidController inRaidController, HttpResponseUtil
     /// <returns>JSON as string</returns>
     public ValueTask<string> GetRaidMenuSettings()
     {
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(inRaidController.GetInRaidConfig().RaidMenuSettings)
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(inRaidController.GetInRaidConfig().RaidMenuSettings));
     }
 
     /// <summary>
     ///     Handle singleplayer/scav/traitorscavhostile
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetTraitorScavHostileChance(
-        string url,
-        EmptyRequestData _,
-        MongoId sessionID
-    )
+    public ValueTask<string> GetTraitorScavHostileChance(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(inRaidController.GetTraitorScavHostileChance(url, sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(inRaidController.GetTraitorScavHostileChance(url, sessionID)));
     }
 
     /// <summary>
@@ -73,8 +61,6 @@ public class InraidCallbacks(InRaidController inRaidController, HttpResponseUtil
     /// <returns></returns>
     public ValueTask<string> GetBossTypes(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(inRaidController.GetBossTypes(url, sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(inRaidController.GetBossTypes(url, sessionID)));
     }
 }

@@ -37,9 +37,7 @@ namespace SPTarkov.Server.Core.Services
             )
             {
                 return profile.Deserialize<SptProfile>(JsonUtil.JsonSerializerOptionsNoIndent)
-                    ?? throw new InvalidOperationException(
-                        $"Could not deserialize the profile {profileId}"
-                    );
+                    ?? throw new InvalidOperationException($"Could not deserialize the profile {profileId}");
             }
 
             var ranMigrations = new List<AbstractProfileMigration>();
@@ -48,9 +46,7 @@ namespace SPTarkov.Server.Core.Services
             {
                 if (profileMigration.CanMigrate(profile, ranMigrations))
                 {
-                    logger.Warning(
-                        $"{profileId} has a pending profile migration: {profileMigration.MigrationName}"
-                    );
+                    logger.Warning($"{profileId} has a pending profile migration: {profileMigration.MigrationName}");
 
                     var migratedProfile = profileMigration.Migrate(profile);
 
@@ -65,27 +61,20 @@ namespace SPTarkov.Server.Core.Services
 
             var sptReadyProfile =
                 profile.Deserialize<SptProfile>(JsonUtil.JsonSerializerOptionsNoIndent)
-                ?? throw new InvalidOperationException(
-                    $"Could not deserialize the profile {profileId}"
-                );
+                ?? throw new InvalidOperationException($"Could not deserialize the profile {profileId}");
 
             foreach (var ranMigration in ranMigrations)
             {
                 if (ranMigration.PostMigrate(sptReadyProfile))
                 {
-                    logger.Success(
-                        $"{profileId} successfully ran profile migration: {ranMigration.MigrationName}"
-                    );
+                    logger.Success($"{profileId} successfully ran profile migration: {ranMigration.MigrationName}");
 
                     if (sptReadyProfile.SptData!.Migrations is null)
                     {
                         sptReadyProfile.SptData.Migrations = [];
                     }
 
-                    sptReadyProfile.SptData.Migrations.Add(
-                        ranMigration.MigrationName,
-                        timeUtil.GetTimeStamp()
-                    );
+                    sptReadyProfile.SptData.Migrations.Add(ranMigration.MigrationName, timeUtil.GetTimeStamp());
                 }
             }
 
@@ -96,18 +85,11 @@ namespace SPTarkov.Server.Core.Services
         {
             var sortedMigrations = new List<AbstractProfileMigration>();
             var visitedMigrations = new Dictionary<Type, bool>();
-            var migrationDict = profileMigrations
-                .Cast<AbstractProfileMigration>()
-                .ToDictionary(m => m.GetType());
+            var migrationDict = profileMigrations.Cast<AbstractProfileMigration>().ToDictionary(m => m.GetType());
 
             foreach (var migration in profileMigrations.Cast<AbstractProfileMigration>())
             {
-                VisitMigrationForSort(
-                    migration,
-                    migrationDict,
-                    visitedMigrations,
-                    sortedMigrations
-                );
+                VisitMigrationForSort(migration, migrationDict, visitedMigrations, sortedMigrations);
             }
 
             return sortedMigrations;
@@ -130,9 +112,7 @@ namespace SPTarkov.Server.Core.Services
                 }
 
                 // Big error, two migrations should never depend on one another
-                throw new InvalidOperationException(
-                    $"Cycle detected in migration prerequisites involving: {migrationType.Name}"
-                );
+                throw new InvalidOperationException($"Cycle detected in migration prerequisites involving: {migrationType.Name}");
             }
 
             // Mark the current migration type for visiting
@@ -146,12 +126,7 @@ namespace SPTarkov.Server.Core.Services
                 }
 
                 // Visit the next prerequisite
-                VisitMigrationForSort(
-                    prereqMigration,
-                    migrationTypeDictionary,
-                    visitedTypeDictionary,
-                    sortedMigrations
-                );
+                VisitMigrationForSort(prereqMigration, migrationTypeDictionary, visitedTypeDictionary, sortedMigrations);
             }
 
             // Done visiting, mark it as fully visited and add it to the sorted migrations

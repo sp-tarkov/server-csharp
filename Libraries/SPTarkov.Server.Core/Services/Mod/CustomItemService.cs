@@ -48,10 +48,7 @@ public class CustomItemService(
         }
 
         // Clone existing item
-        tables.Templates.Items.TryGetValue(
-            newItemDetails.ItemTplToClone.Value,
-            out var itemToClone
-        );
+        tables.Templates.Items.TryGetValue(newItemDetails.ItemTplToClone.Value, out var itemToClone);
         var itemClone = cloner.Clone(itemToClone);
 
         // Update id and parentId of item
@@ -62,11 +59,7 @@ public class CustomItemService(
 
         AddToItemsDb(newItemId, itemClone);
 
-        AddToHandbookDb(
-            newItemId,
-            newItemDetails.HandbookParentId,
-            newItemDetails.HandbookPriceRoubles
-        );
+        AddToHandbookDb(newItemId, newItemDetails.HandbookParentId, newItemDetails.HandbookPriceRoubles);
 
         AddToLocaleDbs(newItemDetails.Locales, newItemId);
 
@@ -110,11 +103,7 @@ public class CustomItemService(
 
         AddToItemsDb(newItem.Id, newItem);
 
-        AddToHandbookDb(
-            newItem.Id,
-            newItemDetails.HandbookParentId,
-            newItemDetails.HandbookPriceRoubles
-        );
+        AddToHandbookDb(newItem.Id, newItemDetails.HandbookParentId, newItemDetails.HandbookPriceRoubles);
 
         AddToLocaleDbs(newItemDetails.Locales, newItem.Id);
 
@@ -148,10 +137,7 @@ public class CustomItemService(
     /// </summary>
     /// <param name="overrideProperties"> New properties to apply </param>
     /// <param name="itemClone"> Item to update </param>
-    protected void UpdateBaseItemPropertiesWithOverrides(
-        Props? overrideProperties,
-        TemplateItem itemClone
-    )
+    protected void UpdateBaseItemPropertiesWithOverrides(Props? overrideProperties, TemplateItem itemClone)
     {
         if (overrideProperties is null || itemClone?.Properties is null)
             return;
@@ -315,9 +301,7 @@ public class CustomItemService(
         var weapon = itemHelper.GetItem(weaponTpl);
         if (!weapon.Key)
         {
-            logger.Warning(
-                $"Unable to add custom weapon {weaponTpl} to PMCs as it cannot be found in the Item db"
-            );
+            logger.Warning($"Unable to add custom weapon {weaponTpl} to PMCs as it cannot be found in the Item db");
 
             return;
         }
@@ -339,9 +323,7 @@ public class CustomItemService(
         botTypes["bear"].BotInventory.Mods[weaponTpl] = baseWeaponModObject;
 
         // Add weapon to array of allowed weapons + weighting to be picked
-        botTypes["usec"].BotInventory.Equipment[Enum.Parse<EquipmentSlots>(weaponSlot)][weaponTpl] =
-            weaponWeight;
-        botTypes["bear"].BotInventory.Equipment[Enum.Parse<EquipmentSlots>(weaponSlot)][weaponTpl] =
-            weaponWeight;
+        botTypes["usec"].BotInventory.Equipment[Enum.Parse<EquipmentSlots>(weaponSlot)][weaponTpl] = weaponWeight;
+        botTypes["bear"].BotInventory.Equipment[Enum.Parse<EquipmentSlots>(weaponSlot)][weaponTpl] = weaponWeight;
     }
 }

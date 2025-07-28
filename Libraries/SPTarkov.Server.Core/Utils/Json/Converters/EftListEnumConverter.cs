@@ -12,16 +12,10 @@ public class EftListEnumConverterFactory : JsonConverterFactory
             && typeToConvert.GenericTypeArguments[0].IsEnum;
     }
 
-    public override JsonConverter? CreateConverter(
-        Type typeToConvert,
-        JsonSerializerOptions options
-    )
+    public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        return Activator.CreateInstance(
-                typeof(EftListEnumConverter<>).MakeGenericType(
-                    typeToConvert.GenericTypeArguments[0]
-                )
-            ) as JsonConverter;
+        return Activator.CreateInstance(typeof(EftListEnumConverter<>).MakeGenericType(typeToConvert.GenericTypeArguments[0]))
+            as JsonConverter;
     }
 }
 
@@ -34,11 +28,7 @@ public class EftListEnumConverter<T> : JsonConverter<List<T>>
         Converters = { new JsonStringEnumConverter(), new EftEnumConverterFactory() },
     };
 
-    public override List<T>? Read(
-        ref Utf8JsonReader reader,
-        Type typeToConvert,
-        JsonSerializerOptions _
-    )
+    public override List<T>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions _)
     {
         if (reader.TokenType == JsonTokenType.StartArray)
         {

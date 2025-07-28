@@ -36,9 +36,7 @@ public class NotifierCallbacks(
          */
         notifierController
             .NotifyAsync(tmpSessionID)
-            .ContinueWith(messages =>
-                messages.Result.Select(message => string.Join("\n", jsonUtil.Serialize(message)))
-            )
+            .ContinueWith(messages => messages.Result.Select(message => string.Join("\n", jsonUtil.Serialize(message))))
             .ContinueWith(text => httpServerHelper.SendTextJson(resp, text.Result));
     }
 
@@ -57,15 +55,9 @@ public class NotifierCallbacks(
     ///     Handle client/notifier/channel/create
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> CreateNotifierChannel(
-        string url,
-        EmptyRequestData _,
-        MongoId sessionID
-    )
+    public ValueTask<string> CreateNotifierChannel(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(notifierController.GetChannel(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(notifierController.GetChannel(sessionID)));
     }
 
     /// <summary>
@@ -74,9 +66,7 @@ public class NotifierCallbacks(
     /// <returns></returns>
     public ValueTask<string> SelectProfile(string url, UIDRequestData info, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(new SelectProfileResponse { Status = "ok" })
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(new SelectProfileResponse { Status = "ok" }));
     }
 
     /// <summary>

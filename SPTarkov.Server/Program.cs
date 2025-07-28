@@ -30,9 +30,7 @@ public static class Program
         // Some users don't know how to create a shortcut...
         if (!IsRunFromInstallationFolder())
         {
-            Console.WriteLine(
-                "You have not created a shortcut properly. Please hold alt when dragging to create a shortcut."
-            );
+            Console.WriteLine("You have not created a shortcut properly. Please hold alt when dragging to create a shortcut.");
             await Task.Delay(-1);
             return;
         }
@@ -59,9 +57,7 @@ public static class Program
             // update the loadedMods list with our validated sorted mods
             loadedMods = sortedLoadedMods;
 
-            diHandler.AddInjectableTypesFromAssemblies(
-                sortedLoadedMods.SelectMany(a => a.Assemblies)
-            );
+            diHandler.AddInjectableTypesFromAssemblies(sortedLoadedMods.SelectMany(a => a.Assemblies));
         }
         diHandler.InjectAll();
 
@@ -77,9 +73,7 @@ public static class Program
         ConfigureWebApp(app);
 
         // In case of exceptions we snatch a Server logger
-        var serverExceptionLogger = app
-            .Services.GetService<ILoggerFactory>()!
-            .CreateLogger("Server");
+        var serverExceptionLogger = app.Services.GetService<ILoggerFactory>()!.CreateLogger("Server");
         // We need any logger instance to use as a finalizer when the app closes
         var loggerFinalizer = app.Services.GetService<ISptLogger<App>>()!;
         try
@@ -123,9 +117,7 @@ public static class Program
             {
                 // This method is not expected to be async so we need to wait for the Task instead of using await keyword
                 options.ApplicationServices.GetService<OnWebAppBuildModLoader>()!.OnLoad().Wait();
-                var httpConfig = options
-                    .ApplicationServices.GetService<ConfigServer>()
-                    ?.GetConfig<HttpConfig>()!;
+                var httpConfig = options.ApplicationServices.GetService<ConfigServer>()?.GetConfig<HttpConfig>()!;
 
                 // Probe the http ip and port to see if its being used, this method will throw an exception and crash
                 // the server if the IP/Port combination is already in use
@@ -224,9 +216,7 @@ public static class Program
         var dirFiles = Directory.GetFiles(Directory.GetCurrentDirectory());
 
         // This file is guaranteed to exist if ran from the correct location, even if the game does not exist here.
-        return dirFiles.Any(dirFile =>
-            dirFile.EndsWith("sptLogger.json") || dirFile.EndsWith("sptLogger.Development.json")
-        );
+        return dirFiles.Any(dirFile => dirFile.EndsWith("sptLogger.json") || dirFile.EndsWith("sptLogger.Development.json"));
     }
 
     [DllImport("kernel32.dll", SetLastError = true)]

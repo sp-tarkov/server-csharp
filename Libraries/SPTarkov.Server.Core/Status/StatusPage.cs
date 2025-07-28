@@ -11,11 +11,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Status
 {
     [Injectable(TypePriority = 0)]
-    public class StatusPage(
-        TimeUtil timeUtil,
-        ProfileActivityService profileActivityService,
-        ConfigServer configServer
-    ) : IHttpListener
+    public class StatusPage(TimeUtil timeUtil, ProfileActivityService profileActivityService, ConfigServer configServer) : IHttpListener
     {
         protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
 
@@ -29,13 +25,10 @@ namespace SPTarkov.Server.Core.Status
             var sptVersion = $"SPT version: {ProgramStatics.SPT_VERSION()}";
             var debugEnabled = $"Debug enabled: {ProgramStatics.DEBUG()}";
             var modsEnabled = $"Mods enabled: {ProgramStatics.MODS()}";
-            var timeStarted =
-                $"Started : {timeUtil.GetDateTimeFromTimeStamp(_coreConfig.ServerStartTime.Value)}";
-            var uptime =
-                $"Uptime: {DateTimeOffset.UtcNow.ToUnixTimeSeconds() - _coreConfig.ServerStartTime} seconds".ToArray();
+            var timeStarted = $"Started : {timeUtil.GetDateTimeFromTimeStamp(_coreConfig.ServerStartTime.Value)}";
+            var uptime = $"Uptime: {DateTimeOffset.UtcNow.ToUnixTimeSeconds() - _coreConfig.ServerStartTime} seconds".ToArray();
             var activeProfiles = profileActivityService.GetActiveProfileIdsWithinMinutes(30);
-            var activePlayerCount =
-                $"Profiles active in last 30 minutes: {activeProfiles.Count}. {string.Join(",", activeProfiles)}";
+            var activePlayerCount = $"Profiles active in last 30 minutes: {activeProfiles.Count}. {string.Join(",", activeProfiles)}";
 
             resp.StatusCode = 200;
             resp.ContentType = "text/html";

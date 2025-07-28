@@ -21,8 +21,7 @@ public class BtrDeliveryCallbacks(
     SaveServer saveServer
 ) : IOnUpdate
 {
-    private readonly BtrDeliveryConfig _btrDeliveryConfig =
-        configServer.GetConfig<BtrDeliveryConfig>();
+    private readonly BtrDeliveryConfig _btrDeliveryConfig = configServer.GetConfig<BtrDeliveryConfig>();
 
     public Task<bool> OnUpdate(long secondsSinceLastRun)
     {
@@ -80,13 +79,9 @@ public class BtrDeliveryCallbacks(
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                logger.Debug(
-                    $"Found {deliveryList.Count} BTR delivery package(s) in profile {sessionId}"
-                );
+                logger.Debug($"Found {deliveryList.Count} BTR delivery package(s) in profile {sessionId}");
             }
-            return deliveryList
-                .Where(toBeDelivered => currentTime >= toBeDelivered.ScheduledTime)
-                .ToList();
+            return deliveryList.Where(toBeDelivered => currentTime >= toBeDelivered.ScheduledTime).ToList();
         }
 
         return [];

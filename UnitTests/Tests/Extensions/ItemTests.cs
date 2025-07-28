@@ -15,11 +15,7 @@ public class ItemTests
     public void GetItemWithChildren_one_child_mods_only()
     {
         var testData = new List<Item>();
-        var rootItem = new Item
-        {
-            Id = new MongoId(),
-            Template = ItemTpl.AMMOBOX_127X33_COPPER_20RND,
-        };
+        var rootItem = new Item { Id = new MongoId(), Template = ItemTpl.AMMOBOX_127X33_COPPER_20RND };
         var childItem = new Item
         {
             Id = new MongoId(),
@@ -38,11 +34,7 @@ public class ItemTests
     public void GetItemWithChildren_mods_only_one_inventory_item()
     {
         var testData = new List<Item>();
-        var rootItem = new Item
-        {
-            Id = new MongoId(),
-            Template = ItemTpl.AMMOBOX_127X33_COPPER_20RND,
-        };
+        var rootItem = new Item { Id = new MongoId(), Template = ItemTpl.AMMOBOX_127X33_COPPER_20RND };
         var childItem = new Item
         {
             Id = new MongoId(),
@@ -70,11 +62,7 @@ public class ItemTests
     public void GetItemWithChildren_mods_and_inventory_item()
     {
         var testData = new List<Item>();
-        var rootItem = new Item
-        {
-            Id = new MongoId(),
-            Template = ItemTpl.AMMOBOX_127X33_COPPER_20RND,
-        };
+        var rootItem = new Item { Id = new MongoId(), Template = ItemTpl.AMMOBOX_127X33_COPPER_20RND };
         var childItem = new Item
         {
             Id = new MongoId(),
@@ -102,11 +90,7 @@ public class ItemTests
     public void GetItemWithChildren_mod_with_child()
     {
         var testData = new List<Item>();
-        var rootItem = new Item
-        {
-            Id = new MongoId(),
-            Template = ItemTpl.AMMOBOX_127X33_COPPER_20RND,
-        };
+        var rootItem = new Item { Id = new MongoId(), Template = ItemTpl.AMMOBOX_127X33_COPPER_20RND };
         var childItem = new Item
         {
             Id = new MongoId(),
@@ -133,11 +117,7 @@ public class ItemTests
     public void GetItemWithChildren_no_matching_children()
     {
         var testData = new List<Item>();
-        var rootItem = new Item
-        {
-            Id = new MongoId(),
-            Template = ItemTpl.AMMOBOX_127X33_COPPER_20RND,
-        };
+        var rootItem = new Item { Id = new MongoId(), Template = ItemTpl.AMMOBOX_127X33_COPPER_20RND };
         var childItem = new Item
         {
             Id = new MongoId(),

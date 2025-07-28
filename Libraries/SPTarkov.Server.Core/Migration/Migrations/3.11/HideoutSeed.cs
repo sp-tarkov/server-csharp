@@ -31,10 +31,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
             get { return []; }
         }
 
-        public override bool CanMigrate(
-            JsonObject profile,
-            IEnumerable<IProfileMigration> previouslyRanMigrations
-        )
+        public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
         {
             var profileVersion = GetProfileVersion(profile);
             var fromRange = Range.Parse(FromVersion);
@@ -43,17 +40,14 @@ namespace SPTarkov.Server.Core.Migration.Migrations
             var seedNode = profile["characters"]?["pmc"]?["Hideout"]?["Seed"];
 
             // Check if the seed still has it's numeric value, this is not valid anymore
-            var seedIsNumeric =
-                seedNode is JsonValue seedValue && seedValue.TryGetValue<long>(out _);
+            var seedIsNumeric = seedNode is JsonValue seedValue && seedValue.TryGetValue<long>(out _);
 
             return profileVersionMatches && seedIsNumeric;
         }
 
         public override JsonObject? Migrate(JsonObject profile)
         {
-            profile["characters"]!["pmc"]!["Hideout"]!["Seed"] = Convert.ToHexStringLower(
-                RandomNumberGenerator.GetBytes(16)
-            );
+            profile["characters"]!["pmc"]!["Hideout"]!["Seed"] = Convert.ToHexStringLower(RandomNumberGenerator.GetBytes(16));
 
             return base.Migrate(profile);
         }

@@ -8,11 +8,7 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Generators;
 
 [Injectable]
-public class PmcWaveGenerator(
-    ISptLogger<PmcWaveGenerator> logger,
-    DatabaseService databaseService,
-    ConfigServer configServer
-)
+public class PmcWaveGenerator(ISptLogger<PmcWaveGenerator> logger, DatabaseService databaseService, ConfigServer configServer)
 {
     protected readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
 
@@ -58,12 +54,7 @@ public class PmcWaveGenerator(
     /// <param name="location"> Location Object </param>
     public void ApplyWaveChangesToMap(LocationBase location)
     {
-        if (
-            !_pmcConfig.CustomPmcWaves.TryGetValue(
-                location.Id.ToLowerInvariant(),
-                out var pmcWavesToAdd
-            )
-        )
+        if (!_pmcConfig.CustomPmcWaves.TryGetValue(location.Id.ToLowerInvariant(), out var pmcWavesToAdd))
         {
             return;
         }

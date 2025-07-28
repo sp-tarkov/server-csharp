@@ -35,14 +35,13 @@ public class EliminationQuestGenerator(
     /// <summary>
     /// Body parts to present to the client as opposed to the body part information in quest data.
     /// </summary>
-    private static readonly FrozenDictionary<string, List<string>> _bodyPartsToClient =
-        new Dictionary<string, List<string>>
-        {
-            { BodyParts.Arms, [BodyParts.LeftArm, BodyParts.RightArm] },
-            { BodyParts.Legs, [BodyParts.LeftLeg, BodyParts.RightLeg] },
-            { BodyParts.Head, [BodyParts.Head] },
-            { BodyParts.Chest, [BodyParts.Chest, BodyParts.Stomach] },
-        }.ToFrozenDictionary();
+    private static readonly FrozenDictionary<string, List<string>> _bodyPartsToClient = new Dictionary<string, List<string>>
+    {
+        { BodyParts.Arms, [BodyParts.LeftArm, BodyParts.RightArm] },
+        { BodyParts.Legs, [BodyParts.LeftLeg, BodyParts.RightLeg] },
+        { BodyParts.Head, [BodyParts.Head] },
+        { BodyParts.Chest, [BodyParts.Chest, BodyParts.Stomach] },
+    }.ToFrozenDictionary();
 
     /// <summary>
     /// MaxDistDifficulty is defined by 2, this could be a tuning parameter if we don't like the reward generation
@@ -83,9 +82,7 @@ public class EliminationQuestGenerator(
         var generationData = GetGenerationData(repeatableConfig, pmcLevel);
         if (generationData is null)
         {
-            logger.Error(
-                localisationService.GetText("repeatable-eliminationQuestGenerationData-is-null")
-            );
+            logger.Error(localisationService.GetText("repeatable-eliminationQuestGenerationData-is-null"));
             return null;
         }
 
@@ -114,18 +111,13 @@ public class EliminationQuestGenerator(
 
         // Target on bodyPart max. difficulty is that of the least probable element
         var maxTargetDifficulty = 1 / generationData.TargetsConfig.MinProbability();
-        var maxBodyPartsDifficulty =
-            generationData.EliminationConfig.MinKills
-            / generationData.BodyPartsConfig.MinProbability();
+        var maxBodyPartsDifficulty = generationData.EliminationConfig.MinKills / generationData.BodyPartsConfig.MinProbability();
 
         var maxKillDifficulty = generationData.EliminationConfig.MaxKills;
         var targetPool = questTypePool.Pool.Elimination;
 
         // Get a random bot type to eliminate
-        var (botTypeToEliminate, targetsConfig) = GetBotTypeToEliminate(
-            generationData,
-            questTypePool
-        );
+        var (botTypeToEliminate, targetsConfig) = GetBotTypeToEliminate(generationData, questTypePool);
         if (botTypeToEliminate is null || targetsConfig is null)
         {
             logger.Warning(localisationService.GetText("repeatable-no-bot-types-remain"));
@@ -143,30 +135,18 @@ public class EliminationQuestGenerator(
         // Try and get a target location pool for this bot type
         if (!targetPool.Targets.TryGetValue(botTypeToEliminate, out var targetLocationPool))
         {
-            logger.Error(
-                localisationService.GetText("repeatable-unable-get-target-pool", botTypeToEliminate)
-            );
+            logger.Error(localisationService.GetText("repeatable-unable-get-target-pool", botTypeToEliminate));
 
             return null;
         }
 
         // Try and get a location key for this quest
         if (
-            !TryGetLocationKey(
-                generationData,
-                targetPool,
-                botTypeToEliminate,
-                targetLocationPool.Locations,
-                out var locationKey
-            ) || locationKey is null
+            !TryGetLocationKey(generationData, targetPool, botTypeToEliminate, targetLocationPool.Locations, out var locationKey)
+            || locationKey is null
         )
         {
-            logger.Error(
-                localisationService.GetText(
-                    "repeatable-unable-get-location-key",
-                    botTypeToEliminate
-                )
-            );
+            logger.Error(localisationService.GetText("repeatable-unable-get-location-key", botTypeToEliminate));
 
             return null;
         }
@@ -174,9 +154,7 @@ public class EliminationQuestGenerator(
         // Generate a body part, make sure we ref the body part difficulty so it can be adjusted
         var bodyPartsToClient = new List<string>();
         var bodyPartDifficulty = 0d;
-        var generateBodyParts = randomUtil.GetChance100(
-            generationData.EliminationConfig.BodyPartChance
-        );
+        var generateBodyParts = randomUtil.GetChance100(generationData.EliminationConfig.BodyPartChance);
         if (generateBodyParts)
         {
             // draw the target body part and calculate the difficulty factor
@@ -184,12 +162,7 @@ public class EliminationQuestGenerator(
         }
 
         // Draw a distance condition
-        var isDistanceRequirementAllowed = IsDistanceRequirementAllowed(
-            generationData,
-            botTypeToEliminate,
-            locationKey,
-            targetsConfig
-        );
+        var isDistanceRequirementAllowed = IsDistanceRequirementAllowed(generationData, botTypeToEliminate, locationKey, targetsConfig);
 
         int? distance = null;
         var distanceDifficulty = 0;
@@ -204,9 +177,7 @@ public class EliminationQuestGenerator(
 
         string? allowedWeaponsCategory = null;
 
-        var generateWeaponCategoryRequirement = randomUtil.GetChance100(
-            generationData.EliminationConfig.WeaponCategoryRequirementChance
-        );
+        var generateWeaponCategoryRequirement = randomUtil.GetChance100(generationData.EliminationConfig.WeaponCategoryRequirementChance);
 
         // Generate a weapon category requirement
         if (generateWeaponCategoryRequirement)
@@ -217,9 +188,7 @@ public class EliminationQuestGenerator(
         // Only allow a specific weapon requirement if a weapon category was not chosen
         MongoId? allowedWeapon = null;
 
-        var generateWeaponRequirement = randomUtil.GetChance100(
-            generationData.EliminationConfig.WeaponRequirementChance
-        );
+        var generateWeaponRequirement = randomUtil.GetChance100(generationData.EliminationConfig.WeaponRequirementChance);
 
         // Generate a weapon requirement
         if (!generateWeaponCategoryRequirement && generateWeaponRequirement)
@@ -228,11 +197,7 @@ public class EliminationQuestGenerator(
         }
 
         // Draw how many npm kills are required
-        var desiredKillCount = GetEliminationKillCount(
-            botTypeToEliminate,
-            targetsConfig,
-            generationData.EliminationConfig
-        );
+        var desiredKillCount = GetEliminationKillCount(botTypeToEliminate, targetsConfig, generationData.EliminationConfig);
 
         var killDifficulty = desiredKillCount;
 
@@ -261,12 +226,7 @@ public class EliminationQuestGenerator(
 
         if (quest is null)
         {
-            logger.Error(
-                localisationService.GetText(
-                    "repeatable-quest_generation_failed_no_template",
-                    "elimination"
-                )
-            );
+            logger.Error(localisationService.GetText("repeatable-quest_generation_failed_no_template", "elimination"));
 
             return null;
         }
@@ -285,19 +245,11 @@ public class EliminationQuestGenerator(
         if (locationKey != "any")
         {
             var locationId = Enum.Parse<ELocationName>(locationKey);
-            availableForFinishCondition.Counter.Conditions.Add(
-                GenerateEliminationLocation(generationData.LocationsConfig[locationId])
-            );
+            availableForFinishCondition.Counter.Conditions.Add(GenerateEliminationLocation(generationData.LocationsConfig[locationId]));
         }
 
         availableForFinishCondition.Counter.Conditions.Add(
-            GenerateEliminationCondition(
-                botTypeToEliminate,
-                bodyPartsToClient,
-                distance,
-                allowedWeapon,
-                allowedWeaponsCategory
-            )
+            GenerateEliminationCondition(botTypeToEliminate, bodyPartsToClient, distance, allowedWeapon, allowedWeaponsCategory)
         );
         availableForFinishCondition.Value = desiredKillCount;
         availableForFinishCondition.Id = new MongoId();
@@ -316,15 +268,9 @@ public class EliminationQuestGenerator(
         return quest;
     }
 
-    protected EliminationQuestGenerationData? GetGenerationData(
-        RepeatableQuestConfig repeatableConfig,
-        int pmcLevel
-    )
+    protected EliminationQuestGenerationData? GetGenerationData(RepeatableQuestConfig repeatableConfig, int pmcLevel)
     {
-        var eliminationConfig = repeatableQuestHelper.GetEliminationConfigByPmcLevel(
-            pmcLevel,
-            repeatableConfig
-        );
+        var eliminationConfig = repeatableQuestHelper.GetEliminationConfigByPmcLevel(pmcLevel, repeatableConfig);
 
         if (eliminationConfig is null)
         {
@@ -334,22 +280,13 @@ public class EliminationQuestGenerator(
 
         var locationsConfig = repeatableConfig.Locations;
 
-        var targetsConfig = new ProbabilityObjectArray<string, BossInfo>(
-            cloner,
-            eliminationConfig.Targets
-        );
-        var bodyPartsConfig = new ProbabilityObjectArray<string, List<string>>(
-            cloner,
-            eliminationConfig.BodyParts
-        );
+        var targetsConfig = new ProbabilityObjectArray<string, BossInfo>(cloner, eliminationConfig.Targets);
+        var bodyPartsConfig = new ProbabilityObjectArray<string, List<string>>(cloner, eliminationConfig.BodyParts);
         var weaponCategoryRequirementConfig = new ProbabilityObjectArray<string, List<MongoId>>(
             cloner,
             eliminationConfig.WeaponCategoryRequirements
         );
-        var weaponRequirementConfig = new ProbabilityObjectArray<string, List<MongoId>>(
-            cloner,
-            eliminationConfig.WeaponRequirements
-        );
+        var weaponRequirementConfig = new ProbabilityObjectArray<string, List<MongoId>>(cloner, eliminationConfig.WeaponRequirements);
 
         return new EliminationQuestGenerationData(
             eliminationConfig,
@@ -374,9 +311,7 @@ public class EliminationQuestGenerator(
     {
         var targetPool = questTypePool.Pool.Elimination;
 
-        var targetsConfig = generationData.TargetsConfig.Filter(x =>
-            targetPool.Targets.ContainsKey(x.Key)
-        );
+        var targetsConfig = generationData.TargetsConfig.Filter(x => targetPool.Targets.ContainsKey(x.Key));
 
         if (targetsConfig.Count != 0 && !targetsConfig.All(x => x.Data?.IsBoss ?? false))
         {
@@ -407,9 +342,7 @@ public class EliminationQuestGenerator(
         out string? locationKey
     )
     {
-        var useSpecificLocation = randomUtil.GetChance100(
-            generationData.EliminationConfig.SpecificLocationChance
-        );
+        var useSpecificLocation = randomUtil.GetChance100(generationData.EliminationConfig.SpecificLocationChance);
 
         switch (useSpecificLocation)
         {
@@ -432,11 +365,7 @@ public class EliminationQuestGenerator(
             if (locations.Count == 0)
             {
                 // Never should reach this if everything works out
-                logger.Error(
-                    localisationService.GetText(
-                        "quest-repeatable_elimination_generation_failed_please_report"
-                    )
-                );
+                logger.Error(localisationService.GetText("quest-repeatable_elimination_generation_failed_please_report"));
 
                 locationKey = null;
                 return false;
@@ -459,9 +388,7 @@ public class EliminationQuestGenerator(
         var tmpKey = locationKey;
 
         // Filter locations bot can be killed on to just those not chosen by key
-        possibleLocationPool.Locations = possibleLocationPool
-            .Locations?.Where(location => location != tmpKey)
-            .ToList();
+        possibleLocationPool.Locations = possibleLocationPool.Locations?.Where(location => location != tmpKey).ToList();
 
         // None left after filtering
         if (possibleLocationPool.Locations?.Count is null or 0)
@@ -480,10 +407,7 @@ public class EliminationQuestGenerator(
     /// <param name="generationData">Generation data</param>
     /// <param name="bodyPartDifficulty">BodyPartDifficulty to modify based on selection</param>
     /// <returns>List of selected body parts</returns>
-    protected List<string> GenerateBodyParts(
-        EliminationQuestGenerationData generationData,
-        ref double bodyPartDifficulty
-    )
+    protected List<string> GenerateBodyParts(EliminationQuestGenerationData generationData, ref double bodyPartDifficulty)
     {
         // if we add a bodyPart condition, we draw randomly one or two parts
         // each bodyPart of the BODYPARTS ProbabilityObjectArray includes the string(s)
@@ -533,9 +457,7 @@ public class EliminationQuestGenerator(
     )
     {
         // This location is can be chosen for a distance requirement
-        var whitelisted = !generationData.EliminationConfig.DistLocationBlacklist.Contains(
-            locationKey
-        );
+        var whitelisted = !generationData.EliminationConfig.DistLocationBlacklist.Contains(locationKey);
 
         // We're not whitelisted, exit early to avoid doing a roll for no reason
         if (!whitelisted)
@@ -544,9 +466,7 @@ public class EliminationQuestGenerator(
         }
 
         // Are we allowed a distance condition by chance?
-        var isAllowedByChance = randomUtil.GetChance100(
-            generationData.EliminationConfig.DistanceProbability
-        );
+        var isAllowedByChance = randomUtil.GetChance100(generationData.EliminationConfig.DistanceProbability);
 
         // Not allowed by chance, return early.
         // We now just assume we rolled this condition and don't take it into account anymore.
@@ -567,25 +487,15 @@ public class EliminationQuestGenerator(
             .GetDictionary()
             .Select(x => x.Value)
             .Where(location => location.Base?.Id != null)
-            .Select(location => new
-            {
-                location.Base.Id,
-                BossSpawn = location.Base.BossLocationSpawn,
-            });
+            .Select(location => new { location.Base.Id, BossSpawn = location.Base.BossLocationSpawn });
 
         // filter for the current boss to spawn on map
         var thisBossSpawns = bossSpawns
-            .Select(x => new
-            {
-                x.Id,
-                BossSpawn = x.BossSpawn.Where(e => e.BossName == botTypeToEliminate),
-            })
+            .Select(x => new { x.Id, BossSpawn = x.BossSpawn.Where(e => e.BossName == botTypeToEliminate) })
             .Where(x => x.BossSpawn.Any());
 
         // remove blacklisted locations
-        var allowedSpawns = thisBossSpawns.Where(x =>
-            !generationData.EliminationConfig.DistLocationBlacklist.Contains(x.Id)
-        );
+        var allowedSpawns = thisBossSpawns.Where(x => !generationData.EliminationConfig.DistLocationBlacklist.Contains(x.Id));
 
         // if the boss spawns on non-blacklisted locations and the current location is allowed,
         // we can generate a distance kill requirement
@@ -603,19 +513,13 @@ public class EliminationQuestGenerator(
         var distance = (int)
             Math.Floor(
                 Math.Abs(randomUtil.Random.NextDouble() - randomUtil.Random.NextDouble())
-                    * (
-                        1
-                        + generationData.EliminationConfig.MaxDistance
-                        - generationData.EliminationConfig.MinDistance
-                    )
+                    * (1 + generationData.EliminationConfig.MaxDistance - generationData.EliminationConfig.MinDistance)
                     + generationData.EliminationConfig.MinDistance
             );
 
         distance = (int)Math.Ceiling((decimal)(distance / 5d)) * 5;
 
-        var distanceDifficulty = (int)(
-            MaxDistDifficulty * distance / generationData.EliminationConfig.MaxDistance
-        );
+        var distanceDifficulty = (int)(MaxDistDifficulty * distance / generationData.EliminationConfig.MaxDistance);
 
         return (distance, distanceDifficulty);
     }
@@ -626,10 +530,7 @@ public class EliminationQuestGenerator(
     /// <param name="generationData">Generation data</param>
     /// <param name="distance">Distance to generate it for, pass null if not required</param>
     /// <returns>Weapon requirement category selected</returns>
-    protected string? GenerateWeaponCategoryRequirement(
-        EliminationQuestGenerationData generationData,
-        int? distance
-    )
+    protected string? GenerateWeaponCategoryRequirement(EliminationQuestGenerationData generationData, int? distance)
     {
         switch (distance)
         {
@@ -639,9 +540,7 @@ public class EliminationQuestGenerator(
                 HashSet<string> weaponTypeBlacklist = ["Shotgun", "Pistol"];
 
                 // Filter out close range weapons from long distance requirement
-                generationData.WeaponCategoryRequirementConfig.RemoveAll(category =>
-                    weaponTypeBlacklist.Contains(category.Key)
-                );
+                generationData.WeaponCategoryRequirementConfig.RemoveAll(category => weaponTypeBlacklist.Contains(category.Key));
                 break;
             }
             // Filter out long range weapons from close distance requirement
@@ -650,9 +549,7 @@ public class EliminationQuestGenerator(
                 HashSet<string> weaponTypeBlacklist = ["MarksmanRifle", "DMR"];
 
                 // Filter out far range weapons from close distance requirement
-                generationData.WeaponCategoryRequirementConfig.RemoveAll(category =>
-                    weaponTypeBlacklist.Contains(category.Key)
-                );
+                generationData.WeaponCategoryRequirementConfig.RemoveAll(category => weaponTypeBlacklist.Contains(category.Key));
                 break;
             }
         }
@@ -669,20 +566,14 @@ public class EliminationQuestGenerator(
     /// </summary>
     /// <param name="generationData">Generation data</param>
     /// <returns>Weapon to use</returns>
-    protected MongoId GenerateSpecificWeaponRequirement(
-        EliminationQuestGenerationData generationData
-    )
+    protected MongoId GenerateSpecificWeaponRequirement(EliminationQuestGenerationData generationData)
     {
         var weaponRequirement = generationData.WeaponRequirementConfig.Draw(1, false);
-        var specificAllowedWeaponCategory = generationData.WeaponRequirementConfig.Data(
-            weaponRequirement[0]
-        );
+        var specificAllowedWeaponCategory = generationData.WeaponRequirementConfig.Data(weaponRequirement[0]);
 
         if (specificAllowedWeaponCategory?[0] is null)
         {
-            logger.Error(
-                localisationService.GetText("repeatable-elimination-specific-weapon-null")
-            );
+            logger.Error(localisationService.GetText("repeatable-elimination-specific-weapon-null"));
             return MongoId.Empty();
         }
 
@@ -706,30 +597,18 @@ public class EliminationQuestGenerator(
     {
         if (targetsConfig.Data(targetKey)?.IsBoss ?? false)
         {
-            return randomUtil.RandInt(
-                eliminationConfig.MinBossKills,
-                eliminationConfig.MaxBossKills + 1
-            );
+            return randomUtil.RandInt(eliminationConfig.MinBossKills, eliminationConfig.MaxBossKills + 1);
         }
 
         if (targetsConfig.Data(targetKey)?.IsPmc ?? false)
         {
-            return randomUtil.RandInt(
-                eliminationConfig.MinPmcKills,
-                eliminationConfig.MaxPmcKills + 1
-            );
+            return randomUtil.RandInt(eliminationConfig.MinPmcKills, eliminationConfig.MaxPmcKills + 1);
         }
 
         return randomUtil.RandInt(eliminationConfig.MinKills, eliminationConfig.MaxKills + 1);
     }
 
-    protected double DifficultyWeighing(
-        double target,
-        double bodyPart,
-        int dist,
-        int kill,
-        int weaponRequirement
-    )
+    protected double DifficultyWeighing(double target, double bodyPart, int dist, int kill, int weaponRequirement)
     {
         return Math.Sqrt(Math.Sqrt(target) + bodyPart + dist + weaponRequirement) * kill;
     }
@@ -796,11 +675,7 @@ public class EliminationQuestGenerator(
         // Don't allow distance + melee requirement
         if (distance is not null && allowedWeaponCategory != "5b5f7a0886f77409407a7f96")
         {
-            killConditionProps.Distance = new CounterConditionDistance
-            {
-                CompareMethod = ">=",
-                Value = distance.Value,
-            };
+            killConditionProps.Distance = new CounterConditionDistance { CompareMethod = ">=", Value = distance.Value };
         }
 
         // Has specific weapon requirement

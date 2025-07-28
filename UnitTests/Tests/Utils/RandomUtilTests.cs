@@ -25,9 +25,7 @@ public sealed class RandomUtilTests
 
             if (result < 0 || result > 10)
             {
-                Assert.Fail(
-                    $"GetInt(0, 10) out of range. Expected range [0, 10] but was {result}."
-                );
+                Assert.Fail($"GetInt(0, 10) out of range. Expected range [0, 10] but was {result}.");
             }
         }
     }
@@ -57,9 +55,7 @@ public sealed class RandomUtilTests
 
             if (result is < 0d or >= 10d)
             {
-                Assert.Fail(
-                    $"GetDouble(0d, 10d) out of range. Expected range [0.0d, 9.999d] but was {result}."
-                );
+                Assert.Fail($"GetDouble(0d, 10d) out of range. Expected range [0.0d, 9.999d] but was {result}.");
             }
         }
     }
@@ -70,12 +66,7 @@ public sealed class RandomUtilTests
         const float expected = 45.5f;
         var result = _randomUtil.GetPercentOfValue(45.5f, 100f);
 
-        Assert.AreEqual(
-            expected,
-            result,
-            0.0001f,
-            $"GetPercentOfValue(45.5f, 100f) out of range. Expected: {expected}. Actual: {result}."
-        );
+        Assert.AreEqual(expected, result, 0.0001f, $"GetPercentOfValue(45.5f, 100f) out of range. Expected: {expected}. Actual: {result}.");
     }
 
     [Test]
@@ -100,11 +91,7 @@ public sealed class RandomUtilTests
             const bool expectedTrue = true;
             var resultTrue = _randomUtil.GetChance100(100f);
 
-            Assert.AreEqual(
-                expectedTrue,
-                resultTrue,
-                $"GetChance100(100f) out of range. Expected: {expectedTrue}. Actual: {resultTrue}."
-            );
+            Assert.AreEqual(expectedTrue, resultTrue, $"GetChance100(100f) out of range. Expected: {expectedTrue}. Actual: {resultTrue}.");
         }
 
         for (var i = 0; i < 100; i++)
@@ -131,9 +118,7 @@ public sealed class RandomUtilTests
 
             if (result < 0 || result > 9)
             {
-                Assert.Fail(
-                    $"RandInt(0, 10) out of range. Expected range [0, 9] but was {result}."
-                );
+                Assert.Fail($"RandInt(0, 10) out of range. Expected range [0, 9] but was {result}.");
             }
         }
 
@@ -143,9 +128,7 @@ public sealed class RandomUtilTests
 
             if (result < 0 || result > 9)
             {
-                Assert.Fail(
-                    $"RandInt(10, null) out of range. Expected range [0, 9] but was {result}."
-                );
+                Assert.Fail($"RandInt(10, null) out of range. Expected range [0, 9] but was {result}.");
             }
         }
     }
@@ -159,9 +142,7 @@ public sealed class RandomUtilTests
 
             if (result < 0 || result >= 10)
             {
-                Assert.Fail(
-                    $"RandNum(0, 10) out of range. Expected range [0, 9.999d] but was {result}."
-                );
+                Assert.Fail($"RandNum(0, 10) out of range. Expected range [0, 9.999d] but was {result}.");
             }
 
             if (_randomUtil.GetNumberPrecision(result) > RandomUtil.MaxSignificantDigits)
@@ -178,9 +159,7 @@ public sealed class RandomUtilTests
 
             if (result < 0 || result >= 10)
             {
-                Assert.Fail(
-                    $"RandNum(10) out of range. Expected range [0, 9.999d] but was {result}."
-                );
+                Assert.Fail($"RandNum(10) out of range. Expected range [0, 9.999d] but was {result}.");
             }
 
             if (_randomUtil.GetNumberPrecision(result) > RandomUtil.MaxSignificantDigits)

@@ -5,10 +5,7 @@ namespace SPTarkov.Server.Core.Extensions
 {
     public static class TemplateItemExtensions
     {
-        public static IEnumerable<TemplateItem> OfClass(
-            this Dictionary<MongoId, TemplateItem> templates,
-            params MongoId[] baseClasses
-        )
+        public static IEnumerable<TemplateItem> OfClass(this Dictionary<MongoId, TemplateItem> templates, params MongoId[] baseClasses)
         {
             return templates.Where(x => baseClasses.Contains(x.Value.Parent)).Select(x => x.Value);
         }
@@ -19,9 +16,7 @@ namespace SPTarkov.Server.Core.Extensions
             params MongoId[] baseClasses
         )
         {
-            return templates
-                .Where(x => baseClasses.Contains(x.Value.Parent) && pred(x.Value))
-                .Select(x => x.Value);
+            return templates.Where(x => baseClasses.Contains(x.Value.Parent) && pred(x.Value)).Select(x => x.Value);
         }
 
         /// <summary>

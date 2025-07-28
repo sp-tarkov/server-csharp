@@ -69,19 +69,9 @@ public class WeatherGenerator(
             Pressure = GetRandomDouble(weatherValues.Pressure.Min, weatherValues.Pressure.Max),
             Temperature = 0,
             Fog = GetWeightedFog(weatherValues),
-            RainIntensity =
-                rain > 1
-                    ? GetRandomDouble(
-                        weatherValues.RainIntensity.Min,
-                        weatherValues.RainIntensity.Max
-                    )
-                    : 0,
+            RainIntensity = rain > 1 ? GetRandomDouble(weatherValues.RainIntensity.Min, weatherValues.RainIntensity.Max) : 0,
             Rain = rain,
-            WindGustiness = GetRandomDouble(
-                weatherValues.WindGustiness.Min,
-                weatherValues.WindGustiness.Max,
-                2
-            ),
+            WindGustiness = GetRandomDouble(weatherValues.WindGustiness.Min, weatherValues.WindGustiness.Max, 2),
             WindDirection = GetWeightedWindDirection(weatherValues),
             WindSpeed = GetWeightedWindSpeed(weatherValues),
             Cloud = clouds,
@@ -100,10 +90,7 @@ public class WeatherGenerator(
 
     protected SeasonalValues GetWeatherValuesBySeason(Season currentSeason)
     {
-        var result = _weatherConfig.Weather.SeasonValues.TryGetValue(
-            currentSeason.ToString(),
-            out var value
-        );
+        var result = _weatherConfig.Weather.SeasonValues.TryGetValue(currentSeason.ToString(), out var value);
         if (!result)
         {
             return _weatherConfig.Weather.SeasonValues["default"];
@@ -122,9 +109,7 @@ public class WeatherGenerator(
     {
         // Convert timestamp to date so we can get current hour and check if its day or night
         var currentRaidTime = new DateTime(inRaidTimestamp);
-        var minMax = weatherHelper.IsHourAtNightTime(currentRaidTime.Hour)
-            ? weather.Temp.Night
-            : weather.Temp.Day;
+        var minMax = weatherHelper.IsHourAtNightTime(currentRaidTime.Hour) ? weather.Temp.Night : weather.Temp.Day;
 
         return Math.Round(randomUtil.GetDouble(minMax.Min, minMax.Max), 2);
     }
@@ -136,15 +121,9 @@ public class WeatherGenerator(
     /// <param name="timestamp"> Optional, timestamp used </param>
     protected void SetCurrentDateTime(Weather weather, long? timestamp = null)
     {
-        var inRaidTime = timestamp is null
-            ? weatherHelper.GetInRaidTime()
-            : weatherHelper.GetInRaidTime(timestamp.Value);
+        var inRaidTime = timestamp is null ? weatherHelper.GetInRaidTime() : weatherHelper.GetInRaidTime(timestamp.Value);
         var normalTime = inRaidTime.GetBsgFormattedWeatherTime();
-        var formattedDate = (
-            timestamp.HasValue
-                ? timeUtil.GetDateTimeFromTimeStamp(timestamp.Value)
-                : DateTime.UtcNow
-        ).FormatToBsgDate();
+        var formattedDate = (timestamp.HasValue ? timeUtil.GetDateTimeFromTimeStamp(timestamp.Value) : DateTime.UtcNow).FormatToBsgDate();
         var datetimeBsgFormat = $"{formattedDate} {normalTime}";
 
         weather.Timestamp = timestamp ?? timeUtil.GetTimeStamp(); // matches weather.date
@@ -155,23 +134,17 @@ public class WeatherGenerator(
 
     protected WindDirection GetWeightedWindDirection(SeasonalValues weather)
     {
-        return weightedRandomHelper
-            .WeightedRandom(weather.WindDirection.Values, weather.WindDirection.Weights)
-            .Item;
+        return weightedRandomHelper.WeightedRandom(weather.WindDirection.Values, weather.WindDirection.Weights).Item;
     }
 
     protected double GetWeightedClouds(SeasonalValues weather)
     {
-        return weightedRandomHelper
-            .WeightedRandom(weather.Clouds.Values, weather.Clouds.Weights)
-            .Item;
+        return weightedRandomHelper.WeightedRandom(weather.Clouds.Values, weather.Clouds.Weights).Item;
     }
 
     protected double GetWeightedWindSpeed(SeasonalValues weather)
     {
-        return weightedRandomHelper
-            .WeightedRandom(weather.WindSpeed.Values, weather.WindSpeed.Weights)
-            .Item;
+        return weightedRandomHelper.WeightedRandom(weather.WindSpeed.Values, weather.WindSpeed.Weights).Item;
     }
 
     protected double GetWeightedFog(SeasonalValues weather)

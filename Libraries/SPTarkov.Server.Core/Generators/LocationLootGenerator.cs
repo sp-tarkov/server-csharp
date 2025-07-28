@@ -33,8 +33,7 @@ public class LocationLootGenerator(
 )
 {
     protected readonly LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
-    protected readonly SeasonalEventConfig _seasonalEventConfig =
-        _configServer.GetConfig<SeasonalEventConfig>();
+    protected readonly SeasonalEventConfig _seasonalEventConfig = _configServer.GetConfig<SeasonalEventConfig>();
 
     /// <summary>
     /// Generate Loot for provided location ()
@@ -68,9 +67,7 @@ public class LocationLootGenerator(
         }
 
         // Create containers with loot
-        result.AddRange(
-            GenerateStaticContainers(locationId.ToLowerInvariant(), staticAmmoDistClone)
-        );
+        result.AddRange(GenerateStaticContainers(locationId.ToLowerInvariant(), staticAmmoDistClone));
 
         // Add dynamic loot to output loot
         var dynamicSpawnPoints = GenerateDynamicLoot(
@@ -82,15 +79,8 @@ public class LocationLootGenerator(
         // Merge dynamic spawns into result
         result.AddRange(dynamicSpawnPoints);
 
-        _logger.Success(
-            _serverLocalisationService.GetText(
-                "location-dynamic_items_spawned_success",
-                dynamicSpawnPoints.Count
-            )
-        );
-        _logger.Success(
-            _serverLocalisationService.GetText("location-generated_success", locationId)
-        );
+        _logger.Success(_serverLocalisationService.GetText("location-dynamic_items_spawned_success", dynamicSpawnPoints.Count));
+        _logger.Success(_serverLocalisationService.GetText("location-generated_success", locationId));
 
         // Clean up tracker
         counterTrackerHelper.Clear();
@@ -115,40 +105,23 @@ public class LocationLootGenerator(
         var staticWeaponsOnMapClone = _cloner.Clone(mapData.StaticContainers.Value.StaticWeapons);
         if (staticWeaponsOnMapClone is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "location-unable_to_find_static_weapon_for_map",
-                    locationId
-                )
-            );
+            _logger.Error(_serverLocalisationService.GetText("location-unable_to_find_static_weapon_for_map", locationId));
         }
 
         // Add mounted weapons to output loot
         result.AddRange(staticWeaponsOnMapClone);
 
-        var allStaticContainersOnMapClone = _cloner.Clone(
-            mapData.StaticContainers.Value.StaticContainers
-        );
+        var allStaticContainersOnMapClone = _cloner.Clone(mapData.StaticContainers.Value.StaticContainers);
         if (allStaticContainersOnMapClone is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "location-unable_to_find_static_container_for_map",
-                    locationId
-                )
-            );
+            _logger.Error(_serverLocalisationService.GetText("location-unable_to_find_static_container_for_map", locationId));
         }
 
         // Containers that MUST be added to map (e.g. quest containers)
         var staticForcedOnMapClone = _cloner.Clone(mapData.StaticContainers.Value.StaticForced);
         if (staticForcedOnMapClone is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "location-unable_to_find_forced_static_data_for_map",
-                    locationId
-                )
-            );
+            _logger.Error(_serverLocalisationService.GetText("location-unable_to_find_forced_static_data_for_map", locationId));
         }
 
         // Remove christmas items from loot data
@@ -159,9 +132,7 @@ public class LocationLootGenerator(
             );
         }
 
-        var staticRandomisableContainersOnMap = GetRandomisableContainersOnMap(
-            allStaticContainersOnMapClone
-        );
+        var staticRandomisableContainersOnMap = GetRandomisableContainersOnMap(allStaticContainersOnMapClone);
 
         // Keep track of static loot count
         var staticContainerCount = 0;
@@ -174,13 +145,7 @@ public class LocationLootGenerator(
         // Add loot to guaranteed containers and add to result
         foreach (
             var containerWithLoot in guaranteedContainers.Select(container =>
-                AddLootToContainer(
-                    container,
-                    staticForcedOnMapClone,
-                    staticLootDist.Value,
-                    staticAmmoDist,
-                    locationId
-                )
+                AddLootToContainer(container, staticForcedOnMapClone, staticLootDist.Value, staticAmmoDist, locationId)
             )
         )
         {
@@ -226,21 +191,13 @@ public class LocationLootGenerator(
         // Group containers by their groupId
         if (mapData.Statics is null)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
-                    "location-unable_to_generate_static_loot",
-                    locationId
-                )
-            );
+            _logger.Warning(_serverLocalisationService.GetText("location-unable_to_generate_static_loot", locationId));
 
             return result;
         }
 
         // For each of the container groups, choose from the pool of containers, hydrate container with loot and add to result array
-        var mapping = GetGroupIdToContainerMappings(
-            mapData.Statics,
-            staticRandomisableContainersOnMap
-        );
+        var mapping = GetGroupIdToContainerMappings(mapData.Statics, staticRandomisableContainersOnMap);
         foreach (var (key, data) in mapping)
         {
             // Count chosen was 0, skip
@@ -253,9 +210,7 @@ public class LocationLootGenerator(
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(
-                        $"Group: {key} has no containers with < 100 % spawn chance to choose from, skipping"
-                    );
+                    _logger.Debug($"Group: {key} has no containers with < 100 % spawn chance to choose from, skipping");
                 }
 
                 continue;
@@ -271,9 +226,7 @@ public class LocationLootGenerator(
                 {
                     if (_randomUtil.GetChance100(containerIdsCopy[containerId.Key] * 100))
                     {
-                        data.ContainerIdsWithProbability[containerId.Key] = containerIdsCopy[
-                            containerId.Key
-                        ];
+                        data.ContainerIdsWithProbability[containerId.Key] = containerIdsCopy[containerId.Key];
                     }
                 }
 
@@ -292,16 +245,14 @@ public class LocationLootGenerator(
             foreach (var chosenContainerId in chosenContainerIds)
             {
                 // Look up container object from full list of containers on map
-                var containerObject = staticRandomisableContainersOnMap.FirstOrDefault(
-                    staticContainer => staticContainer.Template.Id == chosenContainerId
+                var containerObject = staticRandomisableContainersOnMap.FirstOrDefault(staticContainer =>
+                    staticContainer.Template.Id == chosenContainerId
                 );
                 if (containerObject is null)
                 {
                     if (_logger.IsLogEnabled(LogLevel.Debug))
                     {
-                        _logger.Debug(
-                            $"Container: {chosenContainerId} not found in staticRandomisableContainersOnMap, this is bad"
-                        );
+                        _logger.Debug($"Container: {chosenContainerId} not found in staticRandomisableContainersOnMap, this is bad");
                     }
 
                     continue;
@@ -323,12 +274,7 @@ public class LocationLootGenerator(
         }
 
         _logger.Success($"A total of: {staticLootItemCount} static items spawned");
-        _logger.Success(
-            _serverLocalisationService.GetText(
-                "location-containers_generated_success",
-                staticContainerCount
-            )
-        );
+        _logger.Success(_serverLocalisationService.GetText("location-containers_generated_success", staticContainerCount));
 
         return result;
     }
@@ -344,9 +290,7 @@ public class LocationLootGenerator(
     /// </summary>
     /// <param name="staticContainers"></param>
     /// <returns>StaticContainerData array</returns>
-    protected IEnumerable<StaticContainerData> GetRandomisableContainersOnMap(
-        IEnumerable<StaticContainerData> staticContainers
-    )
+    protected IEnumerable<StaticContainerData> GetRandomisableContainersOnMap(IEnumerable<StaticContainerData> staticContainers)
     {
         return staticContainers.Where(staticContainer =>
             staticContainer.Probability != 1
@@ -362,9 +306,7 @@ public class LocationLootGenerator(
     /// </summary>
     /// <param name="staticContainersOnMap"></param>
     /// <returns>IStaticContainerData array</returns>
-    protected IEnumerable<StaticContainerData> GetGuaranteedContainers(
-        IEnumerable<StaticContainerData> staticContainersOnMap
-    )
+    protected IEnumerable<StaticContainerData> GetGuaranteedContainers(IEnumerable<StaticContainerData> staticContainersOnMap)
     {
         return staticContainersOnMap.Where(staticContainer =>
             staticContainer.Probability == 1
@@ -382,10 +324,7 @@ public class LocationLootGenerator(
     /// <param name="groupId">Name of the group the containers are being collected for</param>
     /// <param name="containerData">Containers and probability values for a groupId</param>
     /// <returns>List of chosen container Ids</returns>
-    protected List<string> GetContainersByProbability(
-        string groupId,
-        ContainerGroupCount containerData
-    )
+    protected List<string> GetContainersByProbability(string groupId, ContainerGroupCount containerData)
     {
         var chosenContainerIds = new List<string>();
 
@@ -437,16 +376,12 @@ public class LocationLootGenerator(
                     (int)
                         Math.Round(
                             groupKvP.Value.MinContainers.Value
-                                * _locationConfig
-                                    .ContainerRandomisationSettings
-                                    .ContainerGroupMinSizeMultiplier
+                                * _locationConfig.ContainerRandomisationSettings.ContainerGroupMinSizeMultiplier
                         ),
                     (int)
                         Math.Round(
                             groupKvP.Value.MaxContainers.Value
-                                * _locationConfig
-                                    .ContainerRandomisationSettings
-                                    .ContainerGroupMaxSizeMultiplier
+                                * _locationConfig.ContainerRandomisationSettings.ContainerGroupMaxSizeMultiplier
                         )
                 ),
             };
@@ -456,29 +391,17 @@ public class LocationLootGenerator(
         // Likely bad BSG data, will be fixed...eventually, example of the groupIds: `NEED_TO_BE_FIXED1`,`NEED_TO_BE_FIXED_SE02`, `NEED_TO_BE_FIXED_NW_01`
         mapping.Add(
             string.Empty,
-            new ContainerGroupCount
-            {
-                ContainerIdsWithProbability = new Dictionary<string, double>(),
-                ChosenCount = -1,
-            }
+            new ContainerGroupCount { ContainerIdsWithProbability = new Dictionary<string, double>(), ChosenCount = -1 }
         );
 
         // Iterate over all containers and add to group keyed by groupId
         // Containers without a group go into a group with empty key ""
         foreach (var container in staticContainersOnMap)
         {
-            if (
-                !staticContainerGroupData.Containers.TryGetValue(
-                    container.Template.Id,
-                    out var groupData
-                )
-            )
+            if (!staticContainerGroupData.Containers.TryGetValue(container.Template.Id, out var groupData))
             {
                 _logger.Error(
-                    _serverLocalisationService.GetText(
-                        "location-unable_to_find_container_in_statics_json",
-                        container.Template.Id
-                    )
+                    _serverLocalisationService.GetText("location-unable_to_find_container_in_statics_json", container.Template.Id)
                 );
 
                 continue;
@@ -498,17 +421,9 @@ public class LocationLootGenerator(
 
             mapping.TryAdd(
                 groupData.GroupId,
-                new ContainerGroupCount
-                {
-                    ChosenCount = 0d,
-                    ContainerIdsWithProbability = new Dictionary<string, double>(),
-                }
+                new ContainerGroupCount { ChosenCount = 0d, ContainerIdsWithProbability = new Dictionary<string, double>() }
             );
-            mapping[groupData.GroupId]
-                .ContainerIdsWithProbability.TryAdd(
-                    container.Template.Id,
-                    container.Probability.Value
-                );
+            mapping[groupData.GroupId].ContainerIdsWithProbability.TryAdd(container.Template.Id, container.Probability.Value);
         }
 
         return mapping;
@@ -543,11 +458,7 @@ public class LocationLootGenerator(
         var containerMap = _itemHelper.GetContainerMapping(containerTpl);
 
         // Choose count of items to add to container
-        var itemCountToAdd = GetWeightedCountOfContainerItems(
-            containerTpl,
-            staticLootDist,
-            locationName
-        );
+        var itemCountToAdd = GetWeightedCountOfContainerItems(containerTpl, staticLootDist, locationName);
         if (itemCountToAdd == 0)
         {
             return containerClone;
@@ -595,10 +506,7 @@ public class LocationLootGenerator(
                 : chosenItemWithChildren.Items;
 
             // look for open slot to put chosen item into
-            var result = containerMap.FindSlotForItem(
-                chosenItemWithChildren.Width,
-                chosenItemWithChildren.Height
-            );
+            var result = containerMap.FindSlotForItem(chosenItemWithChildren.Width, chosenItemWithChildren.Height);
             if (!result.Success.GetValueOrDefault(false))
             {
                 if (failedToFitAttemptCount > _locationConfig.FitLootIntoContainerAttempts)
@@ -628,9 +536,7 @@ public class LocationLootGenerator(
             {
                 X = result.X,
                 Y = result.Y,
-                R = result.Rotation.GetValueOrDefault(false)
-                    ? ItemRotation.Vertical
-                    : ItemRotation.Horizontal,
+                R = result.Rotation.GetValueOrDefault(false) ? ItemRotation.Vertical : ItemRotation.Horizontal,
             };
 
             // Add loot to container before returning
@@ -673,16 +579,11 @@ public class LocationLootGenerator(
         {
             // Add each count of items into array
             itemCountArray.Add(
-                new ProbabilityObject<int, float?>(
-                    itemCountDistribution.Count.Value,
-                    itemCountDistribution.RelativeProbability.Value,
-                    null
-                )
+                new ProbabilityObject<int, float?>(itemCountDistribution.Count.Value, itemCountDistribution.RelativeProbability.Value, null)
             );
         }
 
-        return (int)
-            Math.Round(GetStaticLootMultiplierForLocation(locationName) * itemCountArray.Draw()[0]);
+        return (int)Math.Round(GetStaticLootMultiplierForLocation(locationName) * itemCountArray.Draw()[0]);
     }
 
     /// <summary>
@@ -705,12 +606,7 @@ public class LocationLootGenerator(
         var itemContainerDistribution = staticLootDist[containerTypeId]?.ItemDistribution;
         if (itemContainerDistribution is null)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
-                    "location-missing_item_distribution_data",
-                    containerTypeId
-                )
-            );
+            _logger.Warning(_serverLocalisationService.GetText("location-missing_item_distribution_data", containerTypeId));
 
             return itemDistribution;
         }
@@ -729,9 +625,7 @@ public class LocationLootGenerator(
                 continue;
             }
 
-            itemDistribution.Add(
-                new ProbabilityObject<MongoId, float?>(icd.Tpl, icd.RelativeProbability.Value, null)
-            );
+            itemDistribution.Add(new ProbabilityObject<MongoId, float?>(icd.Tpl, icd.RelativeProbability.Value, null));
         }
 
         return itemDistribution;
@@ -780,26 +674,17 @@ public class LocationLootGenerator(
 
         // Build the list of forced loot from both `SpawnpointsForced` and any point marked `IsAlwaysSpawn`
         dynamicForcedSpawnPoints.AddRange(dynamicLootDist.SpawnpointsForced);
-        dynamicForcedSpawnPoints.AddRange(
-            dynamicLootDist.Spawnpoints.Where(point =>
-                point.Template.IsAlwaysSpawn.GetValueOrDefault()
-            )
-        );
+        dynamicForcedSpawnPoints.AddRange(dynamicLootDist.Spawnpoints.Where(point => point.Template.IsAlwaysSpawn.GetValueOrDefault()));
 
         loot.AddRange(GetForcedDynamicLoot(dynamicForcedSpawnPoints, locationName, staticAmmoDist));
 
         // Draw from random distribution
         var desiredSpawnPointCount = Math.Round(
             GetLooseLootMultiplierForLocation(locationName)
-                * _randomUtil.GetNormallyDistributedRandomNumber(
-                    dynamicLootDist.SpawnpointCount.Mean,
-                    dynamicLootDist.SpawnpointCount.Std
-                )
+                * _randomUtil.GetNormallyDistributedRandomNumber(dynamicLootDist.SpawnpointCount.Mean, dynamicLootDist.SpawnpointCount.Std)
         );
 
-        var blacklistedSpawnPoints = _locationConfig.LooseLootBlacklist.GetValueOrDefault(
-            locationName
-        );
+        var blacklistedSpawnPoints = _locationConfig.LooseLootBlacklist.GetValueOrDefault(locationName);
 
         // Init empty array to hold spawn points, letting us pick them pseudo-randomly
         var spawnPointArray = new ProbabilityObjectArray<string, Spawnpoint>(_cloner);
@@ -834,13 +719,7 @@ public class LocationLootGenerator(
                 continue;
             }
 
-            spawnPointArray.Add(
-                new ProbabilityObject<string, Spawnpoint>(
-                    spawnPoint.Template.Id,
-                    spawnPoint.Probability ?? 0,
-                    spawnPoint
-                )
-            );
+            spawnPointArray.Add(new ProbabilityObject<string, Spawnpoint>(spawnPoint.Template.Id, spawnPoint.Probability ?? 0, spawnPoint));
         }
 
         // Select a number of spawn points to add loot to
@@ -860,10 +739,7 @@ public class LocationLootGenerator(
         }
 
         // Filter out duplicate locationIds // prob can be done better
-        chosenSpawnPoints = chosenSpawnPoints
-            .GroupBy(spawnPoint => spawnPoint.LocationId)
-            .Select(group => group.First())
-            .ToList();
+        chosenSpawnPoints = chosenSpawnPoints.GroupBy(spawnPoint => spawnPoint.LocationId).Select(group => group.First()).ToList();
 
         // Do we have enough items in pool to fulfill requirement
         var tooManySpawnPointsRequested = desiredSpawnPointCount - chosenSpawnPoints.Count > 0;
@@ -893,29 +769,20 @@ public class LocationLootGenerator(
             // SpawnPoint is invalid, skip it
             if (spawnPoint.Template is null)
             {
-                _logger.Warning(
-                    _serverLocalisationService.GetText(
-                        "location-missing_dynamic_template",
-                        spawnPoint.LocationId
-                    )
-                );
+                _logger.Warning(_serverLocalisationService.GetText("location-missing_dynamic_template", spawnPoint.LocationId));
 
                 continue;
             }
 
             // Ensure no blacklisted lootable items are in pool
             spawnPoint.Template.Items = spawnPoint
-                .Template.Items.Where(item =>
-                    !_itemFilterService.IsLootableItemBlacklisted(item.Template)
-                )
+                .Template.Items.Where(item => !_itemFilterService.IsLootableItemBlacklisted(item.Template))
                 .ToList();
 
             // Ensure no seasonal items are in pool if not in-season
             if (!seasonalEventActive)
             {
-                spawnPoint.Template.Items = spawnPoint.Template.Items.Where(item =>
-                    !seasonalItemTplBlacklist.Contains(item.Template)
-                );
+                spawnPoint.Template.Items = spawnPoint.Template.Items.Where(item => !seasonalItemTplBlacklist.Contains(item.Template));
             }
 
             // Spawn point has no items after filtering, skip
@@ -923,21 +790,14 @@ public class LocationLootGenerator(
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(
-                        _serverLocalisationService.GetText(
-                            "location-spawnpoint_missing_items",
-                            spawnPoint.Template.Id
-                        )
-                    );
+                    _logger.Debug(_serverLocalisationService.GetText("location-spawnpoint_missing_items", spawnPoint.Template.Id));
                 }
 
                 continue;
             }
 
             // Get an array of allowed IDs after above filtering has occured
-            var validComposedKeys = spawnPoint
-                .Template.Items.Select(item => item.ComposedKey)
-                .ToHashSet();
+            var validComposedKeys = spawnPoint.Template.Items.Select(item => item.ComposedKey).ToHashSet();
 
             // Construct container to hold above filtered items, letting us pick an item for the spot
             var itemArray = new ProbabilityObjectArray<string, double?>(_cloner);
@@ -948,32 +808,19 @@ public class LocationLootGenerator(
                     continue;
                 }
 
-                itemArray.Add(
-                    new ProbabilityObject<string, double?>(
-                        itemDist.ComposedKey.Key,
-                        itemDist.RelativeProbability ?? 0,
-                        null
-                    )
-                );
+                itemArray.Add(new ProbabilityObject<string, double?>(itemDist.ComposedKey.Key, itemDist.RelativeProbability ?? 0, null));
             }
 
             if (itemArray.Count == 0)
             {
-                _logger.Warning(
-                    _serverLocalisationService.GetText(
-                        "location-loot_pool_is_empty_skipping",
-                        spawnPoint.Template.Id
-                    )
-                );
+                _logger.Warning(_serverLocalisationService.GetText("location-loot_pool_is_empty_skipping", spawnPoint.Template.Id));
 
                 continue;
             }
 
             // Draw a random item from the spawn points possible items
             var chosenComposedKey = itemArray.Draw().FirstOrDefault();
-            var chosenItem = spawnPoint.Template.Items.FirstOrDefault(item =>
-                item.ComposedKey == chosenComposedKey
-            );
+            var chosenItem = spawnPoint.Template.Items.FirstOrDefault(item => item.ComposedKey == chosenComposedKey);
             if (chosenItem is null)
             {
                 _logger.Warning(
@@ -982,18 +829,10 @@ public class LocationLootGenerator(
                 continue;
             }
 
-            var createItemResult = CreateDynamicLootItem(
-                chosenItem,
-                spawnPoint.Template.Items,
-                staticAmmoDist
-            );
+            var createItemResult = CreateDynamicLootItem(chosenItem, spawnPoint.Template.Items, staticAmmoDist);
 
             // If count reaches max, skip adding item to loot
-            if (
-                counterTrackerHelper.IncrementCount(
-                    createItemResult.Items.FirstOrDefault().Template
-                )
-            )
+            if (counterTrackerHelper.IncrementCount(createItemResult.Items.FirstOrDefault().Template))
             {
                 continue;
             }
@@ -1047,14 +886,8 @@ public class LocationLootGenerator(
                 continue;
             }
 
-            var chosenItem = forcedLootLocation.Template.Items.FirstOrDefault(item =>
-                item.Id == rootItem.Id
-            );
-            var createItemResult = CreateDynamicLootItem(
-                chosenItem,
-                forcedLootLocation.Template.Items,
-                staticAmmoDist
-            );
+            var chosenItem = forcedLootLocation.Template.Items.FirstOrDefault(item => item.Id == rootItem.Id);
+            var createItemResult = CreateDynamicLootItem(chosenItem, forcedLootLocation.Template.Items, staticAmmoDist);
 
             // Update root ID with the above dynamically generated ID
             forcedLootLocation.Template.Root = createItemResult.Items.FirstOrDefault().Id;
@@ -1065,9 +898,7 @@ public class LocationLootGenerator(
             forcedLootLocation.Template.Items = convertedItems;
 
             // Push forced location into array as long as it doesn't exist already
-            var existingLocation = result.Any(spawnPoint =>
-                spawnPoint.Id == locationTemplateToAdd.Id
-            );
+            var existingLocation = result.Any(spawnPoint => spawnPoint.Id == locationTemplateToAdd.Id);
             if (!existingLocation)
             {
                 result.Add(locationTemplateToAdd);
@@ -1116,10 +947,7 @@ public class LocationLootGenerator(
             var stackCount =
                 itemDbTemplate.Properties.StackMaxSize == 1
                     ? 1
-                    : _randomUtil.GetInt(
-                        itemDbTemplate.Properties.StackMinRandom.Value,
-                        itemDbTemplate.Properties.StackMaxRandom.Value
-                    );
+                    : _randomUtil.GetInt(itemDbTemplate.Properties.StackMinRandom.Value, itemDbTemplate.Properties.StackMaxRandom.Value);
 
             itemWithMods.Add(
                 new Item
@@ -1211,19 +1039,13 @@ public class LocationLootGenerator(
             rootItem.ParentId = parentId;
         }
 
-        if (
-            _itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.MONEY)
-            || _itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.AMMO)
-        )
+        if (_itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.MONEY) || _itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.AMMO))
         {
             // Edge case - some ammos e.g. flares or M406 grenades shouldn't be stacked
             var stackCount =
                 itemTemplate.Properties.StackMaxSize == 1
                     ? 1
-                    : _randomUtil.GetInt(
-                        itemTemplate.Properties.StackMinRandom.Value,
-                        itemTemplate.Properties.StackMaxRandom.Value
-                    );
+                    : _randomUtil.GetInt(itemTemplate.Properties.StackMinRandom.Value, itemTemplate.Properties.StackMaxRandom.Value);
 
             rootItem.Upd = new Upd { StackObjectsCount = stackCount };
         }
@@ -1262,12 +1084,7 @@ public class LocationLootGenerator(
         };
     }
 
-    protected List<Item> GetArmorItems(
-        string chosenTpl,
-        Item? rootItem,
-        List<Item> items,
-        TemplateItem armorDbTemplate
-    )
+    protected List<Item> GetArmorItems(string chosenTpl, Item? rootItem, List<Item> items, TemplateItem armorDbTemplate)
     {
         var defaultPreset = _presetHelper.GetDefaultPreset(chosenTpl);
         if (defaultPreset is not null)
@@ -1282,16 +1099,9 @@ public class LocationLootGenerator(
         else
         {
             // We make base item in calling method, no need to do it here
-            if (
-                armorDbTemplate.Properties?.Slots is not null
-                && armorDbTemplate.Properties.Slots.Any()
-            )
+            if (armorDbTemplate.Properties?.Slots is not null && armorDbTemplate.Properties.Slots.Any())
             {
-                items = _itemHelper.AddChildSlotItems(
-                    items,
-                    armorDbTemplate,
-                    _locationConfig.EquipmentLootSettings.ModSpawnChancePercent
-                );
+                items = _itemHelper.AddChildSlotItems(items, armorDbTemplate, _locationConfig.EquipmentLootSettings.ModSpawnChancePercent);
             }
         }
 
@@ -1322,10 +1132,7 @@ public class LocationLootGenerator(
         {
             try
             {
-                children = _itemHelper.ReparentItemAndChildren(
-                    defaultPreset.Items.FirstOrDefault(),
-                    defaultPreset.Items
-                );
+                children = _itemHelper.ReparentItemAndChildren(defaultPreset.Items.FirstOrDefault(), defaultPreset.Items);
             }
             catch (Exception e)
             {
@@ -1361,16 +1168,9 @@ public class LocationLootGenerator(
         var rootItem = items.FirstOrDefault();
         if (rootItem is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "location-missing_root_item",
-                    new { tpl = chosenTpl, parentId }
-                )
-            );
+            _logger.Error(_serverLocalisationService.GetText("location-missing_root_item", new { tpl = chosenTpl, parentId }));
 
-            throw new Exception(
-                _serverLocalisationService.GetText("location-critical_error_see_log")
-            );
+            throw new Exception(_serverLocalisationService.GetText("location-critical_error_see_log"));
         }
 
         try
@@ -1382,12 +1182,7 @@ public class LocationLootGenerator(
         }
         catch (Exception e)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "location-unable_to_reparent_item",
-                    new { tpl = chosenTpl, parentId }
-                )
-            );
+            _logger.Error(_serverLocalisationService.GetText("location-unable_to_reparent_item", new { tpl = chosenTpl, parentId }));
             _logger.Error(e.StackTrace);
 
             throw;

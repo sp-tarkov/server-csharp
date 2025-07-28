@@ -30,18 +30,13 @@ public class RaidWeatherService(
         var staringTimestamp = timeUtil.GetTodayMidnightTimeStamp();
 
         // How far into future do we generate weather
-        var futureTimestampToReach =
-            staringTimestamp
-            + timeUtil.GetHoursAsSeconds(_weatherConfig.Weather.GenerateWeatherAmountHours ?? 1);
+        var futureTimestampToReach = staringTimestamp + timeUtil.GetHoursAsSeconds(_weatherConfig.Weather.GenerateWeatherAmountHours ?? 1);
 
         // Keep adding new weather until we have reached desired future date
         var nextTimestamp = staringTimestamp;
         while (nextTimestamp <= futureTimestampToReach)
         {
-            var newWeatherToAddToCache = weatherGenerator.GenerateWeather(
-                currentSeason,
-                nextTimestamp
-            );
+            var newWeatherToAddToCache = weatherGenerator.GenerateWeather(currentSeason, nextTimestamp);
 
             // Add generated weather for time period to cache
             _weatherForecast.Add(newWeatherToAddToCache);
@@ -58,10 +53,7 @@ public class RaidWeatherService(
     protected long GetWeightedWeatherTimePeriod()
     {
         var chosenTimePeriodMinutes = weightedRandomHelper
-            .WeightedRandom(
-                _weatherConfig.Weather.TimePeriod.Values,
-                _weatherConfig.Weather.TimePeriod.Weights
-            )
+            .WeightedRandom(_weatherConfig.Weather.TimePeriod.Values, _weatherConfig.Weather.TimePeriod.Weights)
             .Item;
 
         return chosenTimePeriodMinutes * 60;
@@ -98,9 +90,7 @@ public class RaidWeatherService(
         _weatherForecast.RemoveAll(weather => weather.Timestamp < timeUtil.GetTimeStamp());
 
         // Check data exists for current time
-        var result = _weatherForecast.Where(weather =>
-            weather.Timestamp >= timeUtil.GetTimeStamp()
-        );
+        var result = _weatherForecast.Where(weather => weather.Timestamp >= timeUtil.GetTimeStamp());
         if (!result.Any())
         {
             GenerateWeather(currentSeason);

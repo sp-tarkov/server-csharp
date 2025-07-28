@@ -20,12 +20,7 @@ public class DisplayLocationsHandler(MailSendService _mailSendService) : IChatMe
         return string.Equals(message, "locations", StringComparison.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        MongoId sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         // Get all items as an array
         var locations = Enum.GetNames(typeof(ELocationName));
@@ -44,13 +39,7 @@ public class DisplayLocationsHandler(MailSendService _mailSendService) : IChatMe
             Thread.Sleep(500);
 
             // Send to player
-            _mailSendService.SendUserMessageToPlayer(
-                sessionId,
-                sptFriendUser,
-                itemsToSendCsv,
-                [],
-                null
-            );
+            _mailSendService.SendUserMessageToPlayer(sessionId, sptFriendUser, itemsToSendCsv, [], null);
 
             // Increment processed count
             parsedCount += itemsToSend.Count();

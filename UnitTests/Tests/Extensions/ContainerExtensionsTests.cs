@@ -18,12 +18,7 @@ public partial class ContainerExtensionsTests
         var itemWidth = 1;
         var itemHeight = 1;
 
-        var result = container.CanItemBePlacedInContainerAtPosition(
-            itemStartXPos,
-            itemStartYPos,
-            itemWidth,
-            itemHeight
-        );
+        var result = container.CanItemBePlacedInContainerAtPosition(itemStartXPos, itemStartYPos, itemWidth, itemHeight);
 
         Assert.IsTrue(result);
     }
@@ -38,12 +33,7 @@ public partial class ContainerExtensionsTests
         var itemWidth = 1;
         var itemHeight = 1;
 
-        var result = container.CanItemBePlacedInContainerAtPosition(
-            itemStartXPos,
-            itemStartYPos,
-            itemWidth,
-            itemHeight
-        );
+        var result = container.CanItemBePlacedInContainerAtPosition(itemStartXPos, itemStartYPos, itemWidth, itemHeight);
 
         Assert.IsFalse(result);
     }
@@ -57,12 +47,7 @@ public partial class ContainerExtensionsTests
         var itemWidth = 1;
         var itemHeight = 2;
 
-        var result = container.CanItemBePlacedInContainerAtPosition(
-            itemStartXPos,
-            itemStartYPos,
-            itemWidth,
-            itemHeight
-        );
+        var result = container.CanItemBePlacedInContainerAtPosition(itemStartXPos, itemStartYPos, itemWidth, itemHeight);
 
         Assert.IsTrue(result);
     }
@@ -77,12 +62,7 @@ public partial class ContainerExtensionsTests
         var itemWidth = 1;
         var itemHeight = 2;
 
-        var result = container.CanItemBePlacedInContainerAtPosition(
-            itemStartXPos,
-            itemStartYPos,
-            itemWidth,
-            itemHeight
-        );
+        var result = container.CanItemBePlacedInContainerAtPosition(itemStartXPos, itemStartYPos, itemWidth, itemHeight);
 
         Assert.IsFalse(result);
     }
@@ -96,12 +76,7 @@ public partial class ContainerExtensionsTests
         var itemWidth = 2;
         var itemHeight = 2;
 
-        var result = container.CanItemBePlacedInContainerAtPosition(
-            itemStartXPos,
-            itemStartYPos,
-            itemWidth,
-            itemHeight
-        );
+        var result = container.CanItemBePlacedInContainerAtPosition(itemStartXPos, itemStartYPos, itemWidth, itemHeight);
 
         Assert.IsTrue(result);
     }
@@ -115,12 +90,7 @@ public partial class ContainerExtensionsTests
         var itemWidth = 1;
         var itemHeight = 2;
 
-        var result = container.CanItemBePlacedInContainerAtPosition(
-            itemStartXPos,
-            itemStartYPos,
-            itemWidth,
-            itemHeight
-        );
+        var result = container.CanItemBePlacedInContainerAtPosition(itemStartXPos, itemStartYPos, itemWidth, itemHeight);
 
         Assert.IsTrue(result);
     }
@@ -256,13 +226,7 @@ public partial class ContainerExtensionsTests
         var destinationPosY = 0;
         var isRotated = false;
 
-        container.FillContainerMapWithItem(
-            destinationPosX,
-            destinationPosY,
-            itemWidth,
-            itemHeight,
-            isRotated
-        );
+        container.FillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated);
 
         Assert.AreEqual(container[0, 0], 1);
     }
@@ -279,13 +243,7 @@ public partial class ContainerExtensionsTests
         var destinationPosY = 0;
         var isRotated = false;
 
-        container.FillContainerMapWithItem(
-            destinationPosX,
-            destinationPosY,
-            itemWidth,
-            itemHeight,
-            isRotated
-        );
+        container.FillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated);
 
         Assert.AreEqual(container[0, 0], 1);
         Assert.AreEqual(container[1, 0], 1);
@@ -303,13 +261,7 @@ public partial class ContainerExtensionsTests
         var destinationPosY = 0;
         var isRotated = false;
 
-        container.FillContainerMapWithItem(
-            destinationPosX,
-            destinationPosY,
-            itemWidth,
-            itemHeight,
-            isRotated
-        );
+        container.FillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated);
 
         Assert.AreEqual(container[0, 0], 1);
         Assert.AreEqual(container[1, 1], 1);
@@ -327,13 +279,7 @@ public partial class ContainerExtensionsTests
         var destinationPosY = 0;
         var isRotated = true;
 
-        container.FillContainerMapWithItem(
-            destinationPosX,
-            destinationPosY,
-            itemWidth,
-            itemHeight,
-            isRotated
-        );
+        container.FillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated);
 
         Assert.AreEqual(container[0, 0], 1);
         Assert.AreEqual(container[0, 1], 1);
@@ -352,13 +298,7 @@ public partial class ContainerExtensionsTests
         var destinationPosY = 1;
         var isRotated = true;
 
-        container.FillContainerMapWithItem(
-            destinationPosX,
-            destinationPosY,
-            itemWidth,
-            itemHeight,
-            isRotated
-        );
+        container.FillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated);
 
         Assert.AreEqual(container[1, 0], 1);
         Assert.AreEqual(container[1, 1], 1);

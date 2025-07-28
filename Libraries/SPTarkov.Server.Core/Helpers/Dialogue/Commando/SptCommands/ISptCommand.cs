@@ -8,9 +8,5 @@ public interface ISptCommand
 {
     public string Command { get; }
     public string CommandHelp { get; }
-    public ValueTask<string> PerformAction(
-        UserDialogInfo commandHandler,
-        MongoId sessionId,
-        SendMessageRequest request
-    );
+    public ValueTask<string> PerformAction(UserDialogInfo commandHandler, MongoId sessionId, SendMessageRequest request);
 }

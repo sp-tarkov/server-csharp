@@ -12,11 +12,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="output">Response to add item change event into</param>
         /// <param name="sessionId">Session id</param>
         /// <param name="item">Item that was adjusted</param>
-        public static void AddItemStackSizeChangeIntoEventResponse(
-            this ItemEventRouterResponse output,
-            MongoId sessionId,
-            Item item
-        )
+        public static void AddItemStackSizeChangeIntoEventResponse(this ItemEventRouterResponse output, MongoId sessionId, Item item)
         {
             // TODO: replace with something safer like TryGet
             output

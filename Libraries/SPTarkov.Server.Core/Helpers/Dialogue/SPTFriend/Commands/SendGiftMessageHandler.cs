@@ -31,12 +31,7 @@ public class SendGiftMessageHandler(
         return _giftService.GiftExists(message);
     }
 
-    public void Process(
-        MongoId sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         // Gifts may be disabled via config
         if (!_coreConfig.Features.ChatbotFeatures.SptFriendGiftsEnabled)
@@ -70,9 +65,7 @@ public class SendGiftMessageHandler(
                 _mailSendService.SendUserMessageToPlayer(
                     sessionId,
                     sptFriendUser,
-                    _randomUtil.GetArrayValue(
-                        ["Looks like you already used that code", "You already have that!!"]
-                    ),
+                    _randomUtil.GetArrayValue(["Looks like you already used that code", "You already have that!!"]),
                     [],
                     null
                 );

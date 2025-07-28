@@ -26,28 +26,16 @@ public class ForceChristmasMessageHandler(
         return string.Equals(message, "hohoho", StringComparison.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        MongoId sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
-        var enableEventResult = _seasonalEventService.ForceSeasonalEvent(
-            SeasonalEventType.Christmas
-        );
+        var enableEventResult = _seasonalEventService.ForceSeasonalEvent(SeasonalEventType.Christmas);
         if (enableEventResult)
         {
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
                 _randomUtil.GetArrayValue(
-                    [
-                        _serverLocalisationService.GetText(
-                            "chatbot-forced_event_enabled",
-                            SeasonalEventType.Christmas
-                        ),
-                    ]
+                    [_serverLocalisationService.GetText("chatbot-forced_event_enabled", SeasonalEventType.Christmas)]
                 ),
                 [],
                 null

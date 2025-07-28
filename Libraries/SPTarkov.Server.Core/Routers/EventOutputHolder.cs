@@ -11,15 +11,9 @@ using SPTarkov.Server.Core.Utils.Cloners;
 namespace SPTarkov.Server.Core.Routers;
 
 [Injectable]
-public class EventOutputHolder(
-    ISptLogger<EventOutputHolder> logger,
-    ProfileHelper profileHelper,
-    TimeUtil timeUtil,
-    ICloner cloner
-)
+public class EventOutputHolder(ISptLogger<EventOutputHolder> logger, ProfileHelper profileHelper, TimeUtil timeUtil, ICloner cloner)
 {
-    protected readonly Dictionary<MongoId, Dictionary<string, bool>> _clientActiveSessionStorage =
-        new();
+    protected readonly Dictionary<MongoId, Dictionary<string, bool>> _clientActiveSessionStorage = new();
     protected readonly Dictionary<MongoId, ItemEventRouterResponse> _outputStore = new();
 
     /// <summary>
@@ -107,17 +101,12 @@ public class EventOutputHolder(
         var hideoutProductionNull = pmcData.Hideout.Production == null;
         if (!hideoutProductionNull)
         {
-            profileChanges.Production = GetProductionsFromProfileAndFlagComplete(
-                cloner.Clone(pmcData.Hideout.Production),
-                sessionId
-            );
+            profileChanges.Production = GetProductionsFromProfileAndFlagComplete(cloner.Clone(pmcData.Hideout.Production), sessionId);
         }
 
         if (pmcData.Hideout.Improvements != null)
         {
-            profileChanges.Improvements = cloner.Clone(
-                GetImprovementsFromProfileAndFlagComplete(pmcData)
-            );
+            profileChanges.Improvements = cloner.Clone(GetImprovementsFromProfileAndFlagComplete(pmcData));
         }
 
         profileChanges.TraderRelations = ConstructTraderRelations(pmcData.TradersInfo);
@@ -146,10 +135,7 @@ public class EventOutputHolder(
                 // remove production in case client already issued a HideoutDeleteProductionCommand and the item is moved to stash
                 productions.Remove(production.Key);
             }
-            else if (
-                (production.Value.SptIsComplete ?? false)
-                && (production.Value.SptIsContinuous ?? false)
-            )
+            else if ((production.Value.SptIsComplete ?? false) && (production.Value.SptIsContinuous ?? false))
             {
                 // Water collector / Bitcoin etc
                 production.Value.SptIsComplete = false;
@@ -169,9 +155,7 @@ public class EventOutputHolder(
     /// </summary>
     /// <param name="pmcData"> Player profile </param>
     /// <returns> Dictionary of hideout improvements </returns>
-    protected Dictionary<MongoId, HideoutImprovement> GetImprovementsFromProfileAndFlagComplete(
-        PmcData pmcData
-    )
+    protected Dictionary<MongoId, HideoutImprovement> GetImprovementsFromProfileAndFlagComplete(PmcData pmcData)
     {
         foreach (var (key, improvement) in pmcData.Hideout.Improvements)
         {
@@ -210,10 +194,7 @@ public class EventOutputHolder(
             }
 
             // Complete and is Continuous e.g. water collector
-            if (
-                (production.Value.SptIsComplete ?? false)
-                && (production.Value.SptIsContinuous ?? false)
-            )
+            if ((production.Value.SptIsComplete ?? false) && (production.Value.SptIsContinuous ?? false))
             {
                 continue;
             }
@@ -264,9 +245,7 @@ public class EventOutputHolder(
     /// </summary>
     /// <param name="traderData"> Server data for traders </param>
     /// <returns> Dict of trader id + TraderData </returns>
-    protected Dictionary<MongoId, TraderData> ConstructTraderRelations(
-        Dictionary<MongoId, TraderInfo> traderData
-    )
+    protected Dictionary<MongoId, TraderData> ConstructTraderRelations(Dictionary<MongoId, TraderInfo> traderData)
     {
         return traderData.ToDictionary(
             trader => trader.Key,

@@ -51,11 +51,7 @@ public class BotLootGenerator(
             limitsForBotDict[limit.Key] = 0;
         }
 
-        return new ItemSpawnLimitSettings
-        {
-            CurrentLimits = limitsForBotDict,
-            GlobalLimits = GetItemSpawnLimitsForBotType(botRole),
-        };
+        return new ItemSpawnLimitSettings { CurrentLimits = limitsForBotDict, GlobalLimits = GetItemSpawnLimitsForBotType(botRole) };
     }
 
     /// <summary>
@@ -95,20 +91,14 @@ public class BotLootGenerator(
             || itemCounts.Grenades.Weights is null
         )
         {
-            logger.Warning(
-                serverLocalisationService.GetText("bot-unable_to_generate_bot_loot", botRole)
-            );
+            logger.Warning(serverLocalisationService.GetText("bot-unable_to_generate_bot_loot", botRole));
             return;
         }
 
-        var backpackLootCount = weightedRandomHelper.GetWeightedValue(
-            itemCounts.BackpackLoot.Weights
-        );
+        var backpackLootCount = weightedRandomHelper.GetWeightedValue(itemCounts.BackpackLoot.Weights);
         var pocketLootCount = weightedRandomHelper.GetWeightedValue(itemCounts.PocketLoot.Weights);
         var vestLootCount = weightedRandomHelper.GetWeightedValue(itemCounts.VestLoot.Weights);
-        var specialLootItemCount = weightedRandomHelper.GetWeightedValue(
-            itemCounts.SpecialItems.Weights
-        );
+        var specialLootItemCount = weightedRandomHelper.GetWeightedValue(itemCounts.SpecialItems.Weights);
         var healingItemCount = weightedRandomHelper.GetWeightedValue(itemCounts.Healing.Weights);
         var drugItemCount = weightedRandomHelper.GetWeightedValue(itemCounts.Drugs.Weights);
         var foodItemCount = weightedRandomHelper.GetWeightedValue(itemCounts.Food.Weights);
@@ -142,12 +132,7 @@ public class BotLootGenerator(
 
         // Special items
         AddLootFromPool(
-            botLootCacheService.GetLootFromCache(
-                botRole,
-                isPmc,
-                LootCacheType.Special,
-                botJsonTemplate
-            ),
+            botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.Special, botJsonTemplate),
             containersBotHasAvailable,
             specialLootItemCount,
             botInventory,
@@ -158,12 +143,7 @@ public class BotLootGenerator(
 
         // Healing items / Meds
         AddLootFromPool(
-            botLootCacheService.GetLootFromCache(
-                botRole,
-                isPmc,
-                LootCacheType.HealingItems,
-                botJsonTemplate
-            ),
+            botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.HealingItems, botJsonTemplate),
             containersBotHasAvailable,
             healingItemCount,
             botInventory,
@@ -176,12 +156,7 @@ public class BotLootGenerator(
 
         // Drugs
         AddLootFromPool(
-            botLootCacheService.GetLootFromCache(
-                botRole,
-                isPmc,
-                LootCacheType.DrugItems,
-                botJsonTemplate
-            ),
+            botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.DrugItems, botJsonTemplate),
             containersBotHasAvailable,
             drugItemCount,
             botInventory,
@@ -194,12 +169,7 @@ public class BotLootGenerator(
 
         // Food
         AddLootFromPool(
-            botLootCacheService.GetLootFromCache(
-                botRole,
-                isPmc,
-                LootCacheType.FoodItems,
-                botJsonTemplate
-            ),
+            botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.FoodItems, botJsonTemplate),
             containersBotHasAvailable,
             foodItemCount,
             botInventory,
@@ -212,12 +182,7 @@ public class BotLootGenerator(
 
         // Drink
         AddLootFromPool(
-            botLootCacheService.GetLootFromCache(
-                botRole,
-                isPmc,
-                LootCacheType.DrinkItems,
-                botJsonTemplate
-            ),
+            botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.DrinkItems, botJsonTemplate),
             containersBotHasAvailable,
             drinkItemCount,
             botInventory,
@@ -230,12 +195,7 @@ public class BotLootGenerator(
 
         // Currency
         AddLootFromPool(
-            botLootCacheService.GetLootFromCache(
-                botRole,
-                isPmc,
-                LootCacheType.CurrencyItems,
-                botJsonTemplate
-            ),
+            botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.CurrencyItems, botJsonTemplate),
             containersBotHasAvailable,
             currencyItemCount,
             botInventory,
@@ -248,12 +208,7 @@ public class BotLootGenerator(
 
         // Stims
         AddLootFromPool(
-            botLootCacheService.GetLootFromCache(
-                botRole,
-                isPmc,
-                LootCacheType.StimItems,
-                botJsonTemplate
-            ),
+            botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.StimItems, botJsonTemplate),
             containersBotHasAvailable,
             stimItemCount,
             botInventory,
@@ -266,12 +221,7 @@ public class BotLootGenerator(
 
         // Grenades
         AddLootFromPool(
-            botLootCacheService.GetLootFromCache(
-                botRole,
-                isPmc,
-                LootCacheType.GrenadeItems,
-                botJsonTemplate
-            ),
+            botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.GrenadeItems, botJsonTemplate),
             [EquipmentSlots.Pockets, EquipmentSlots.TacticalVest], // Can't use containersBotHasEquipped as we don't want grenades added to backpack
             grenadeCount,
             botInventory,
@@ -304,20 +254,11 @@ public class BotLootGenerator(
             }
 
             var backpackLootRoubleTotal = isPmc
-                ? _pmcConfig.LootSettings.Backpack.GetRoubleValue(
-                    botLevel,
-                    botGenerationDetails.Location
-                )
+                ? _pmcConfig.LootSettings.Backpack.GetRoubleValue(botLevel, botGenerationDetails.Location)
                 : 0;
 
             AddLootFromPool(
-                botLootCacheService.GetLootFromCache(
-                    botRole,
-                    isPmc,
-                    LootCacheType.Backpack,
-                    botJsonTemplate,
-                    itemPriceLimits?.Backpack
-                ),
+                botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.Backpack, botJsonTemplate, itemPriceLimits?.Backpack),
                 [EquipmentSlots.Backpack],
                 backpackLootCount,
                 botInventory,
@@ -329,22 +270,14 @@ public class BotLootGenerator(
             );
         }
 
-        var vestLootRoubleTotal = isPmc
-            ? _pmcConfig.LootSettings.Vest.GetRoubleValue(botLevel, botGenerationDetails.Location)
-            : 0;
+        var vestLootRoubleTotal = isPmc ? _pmcConfig.LootSettings.Vest.GetRoubleValue(botLevel, botGenerationDetails.Location) : 0;
 
         // TacticalVest - generate loot if they have one
         if (containersBotHasAvailable.Contains(EquipmentSlots.TacticalVest))
         // Vest
         {
             AddLootFromPool(
-                botLootCacheService.GetLootFromCache(
-                    botRole,
-                    isPmc,
-                    LootCacheType.Vest,
-                    botJsonTemplate,
-                    itemPriceLimits?.Vest
-                ),
+                botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.Vest, botJsonTemplate, itemPriceLimits?.Vest),
                 [EquipmentSlots.TacticalVest],
                 vestLootCount,
                 botInventory,
@@ -356,19 +289,11 @@ public class BotLootGenerator(
             );
         }
 
-        var pocketLootRoubleTotal = isPmc
-            ? _pmcConfig.LootSettings.Pocket.GetRoubleValue(botLevel, botGenerationDetails.Location)
-            : 0;
+        var pocketLootRoubleTotal = isPmc ? _pmcConfig.LootSettings.Pocket.GetRoubleValue(botLevel, botGenerationDetails.Location) : 0;
 
         // Pockets
         AddLootFromPool(
-            botLootCacheService.GetLootFromCache(
-                botRole,
-                isPmc,
-                LootCacheType.Pocket,
-                botJsonTemplate,
-                itemPriceLimits?.Pocket
-            ),
+            botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.Pocket, botJsonTemplate, itemPriceLimits?.Pocket),
             [EquipmentSlots.Pockets],
             pocketLootCount,
             botInventory,
@@ -385,12 +310,7 @@ public class BotLootGenerator(
         if (!isPmc || (isPmc && _pmcConfig.AddSecureContainerLootFromBotConfig))
         {
             AddLootFromPool(
-                botLootCacheService.GetLootFromCache(
-                    botRole,
-                    isPmc,
-                    LootCacheType.Secure,
-                    botJsonTemplate
-                ),
+                botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.Secure, botJsonTemplate),
                 [EquipmentSlots.SecuredContainer],
                 50,
                 botInventory,
@@ -423,17 +343,11 @@ public class BotLootGenerator(
     /// </summary>
     /// <param name="botInventory">Bot to check</param>
     /// <returns>Array of available slots</returns>
-    protected HashSet<EquipmentSlots> GetAvailableContainersBotCanStoreItemsIn(
-        BotBaseInventory botInventory
-    )
+    protected HashSet<EquipmentSlots> GetAvailableContainersBotCanStoreItemsIn(BotBaseInventory botInventory)
     {
         HashSet<EquipmentSlots> result = [EquipmentSlots.Pockets];
 
-        if (
-            (botInventory.Items ?? []).Any(item =>
-                item.SlotId == nameof(EquipmentSlots.TacticalVest)
-            )
-        )
+        if ((botInventory.Items ?? []).Any(item => item.SlotId == nameof(EquipmentSlots.TacticalVest)))
         {
             result.Add(EquipmentSlots.TacticalVest);
         }
@@ -467,10 +381,7 @@ public class BotLootGenerator(
 
         // AFAK
         AddLootFromPool(
-            new Dictionary<MongoId, double>
-            {
-                { ItemTpl.MEDKIT_AFAK_TACTICAL_INDIVIDUAL_FIRST_AID_KIT, 1 },
-            },
+            new Dictionary<MongoId, double> { { ItemTpl.MEDKIT_AFAK_TACTICAL_INDIVIDUAL_FIRST_AID_KIT, 1 } },
             [EquipmentSlots.SecuredContainer],
             10,
             botInventory,
@@ -527,17 +438,12 @@ public class BotLootGenerator(
 
             if (!key)
             {
-                logger.Warning(
-                    $"Unable to process item tpl: {weightedItemTpl} for slots: {equipmentSlots} on bot: {botRole}"
-                );
+                logger.Warning($"Unable to process item tpl: {weightedItemTpl} for slots: {equipmentSlots} on bot: {botRole}");
 
                 continue;
             }
 
-            if (
-                itemSpawnLimits is not null
-                && ItemHasReachedSpawnLimit(itemToAddTemplate, botRole, itemSpawnLimits)
-            )
+            if (itemSpawnLimits is not null && ItemHasReachedSpawnLimit(itemToAddTemplate, botRole, itemSpawnLimits))
             {
                 // Remove item from pool to prevent it being picked again
                 pool.Remove(weightedItemTpl);
@@ -553,19 +459,14 @@ public class BotLootGenerator(
                 {
                     Id = newRootItemId,
                     Template = itemToAddTemplate?.Id ?? MongoId.Empty(),
-                    Upd = botGeneratorHelper.GenerateExtraPropertiesForItem(
-                        itemToAddTemplate,
-                        botRole
-                    ),
+                    Upd = botGeneratorHelper.GenerateExtraPropertiesForItem(itemToAddTemplate, botRole),
                 },
             ];
 
             // Is Simple-Wallet / WZ wallet
             if (_botConfig.WalletLoot.WalletTplPool.Contains(weightedItemTpl))
             {
-                var addCurrencyToWallet = randomUtil.GetChance100(
-                    _botConfig.WalletLoot.ChancePercent
-                );
+                var addCurrencyToWallet = randomUtil.GetChance100(_botConfig.WalletLoot.ChancePercent);
                 if (addCurrencyToWallet)
                 {
                     // Create the currency items we want to add to wallet
@@ -584,12 +485,7 @@ public class BotLootGenerator(
                         // Add each currency to wallet
                         foreach (var itemToAdd in itemsToAdd)
                         {
-                            inventoryHelper.PlaceItemInContainer(
-                                containerGrid,
-                                itemToAdd,
-                                itemWithChildrenToAdd[0].Id,
-                                "main"
-                            );
+                            inventoryHelper.PlaceItemInContainer(containerGrid, itemToAdd, itemWithChildrenToAdd[0].Id, "main");
                         }
 
                         itemWithChildrenToAdd.AddRange(itemsToAdd.SelectMany(x => x));
@@ -618,9 +514,7 @@ public class BotLootGenerator(
                     // Bot has no container to put item in, exit
                     if (logger.IsLogEnabled(LogLevel.Debug))
                     {
-                        logger.Debug(
-                            $"Unable to add: {totalItemCount} items to bot as it lacks a container to include them"
-                        );
+                        logger.Debug($"Unable to add: {totalItemCount} items to bot as it lacks a container to include them");
                     }
 
                     break;
@@ -670,24 +564,17 @@ public class BotLootGenerator(
         List<List<Item>> result = [];
 
         // Choose how many stacks of currency will be added to wallet
-        var itemCount = randomUtil.GetInt(
-            _botConfig.WalletLoot.ItemCount.Min,
-            _botConfig.WalletLoot.ItemCount.Max
-        );
+        var itemCount = randomUtil.GetInt(_botConfig.WalletLoot.ItemCount.Min, _botConfig.WalletLoot.ItemCount.Max);
         for (var index = 0; index < itemCount; index++)
         {
             // Choose the size of the currency stack - default is 5k, 10k, 15k, 20k, 25k
-            var chosenStackCount = weightedRandomHelper.GetWeightedValue(
-                _botConfig.WalletLoot.StackSizeWeight
-            );
+            var chosenStackCount = weightedRandomHelper.GetWeightedValue(_botConfig.WalletLoot.StackSizeWeight);
             List<Item> items =
             [
                 new()
                 {
                     Id = new MongoId(),
-                    Template = weightedRandomHelper.GetWeightedValue(
-                        _botConfig.WalletLoot.CurrencyWeight
-                    ),
+                    Template = weightedRandomHelper.GetWeightedValue(_botConfig.WalletLoot.CurrencyWeight),
                     ParentId = walletId,
                     Upd = new Upd { StackObjectsCount = int.Parse(chosenStackCount) },
                 },
@@ -705,12 +592,7 @@ public class BotLootGenerator(
     /// <param name="itemToAddChildrenTo">Item to add children to</param>
     /// <param name="isPmc">Is the item being generated for a pmc (affects money/ammo stack sizes)</param>
     /// <param name="botRole">role bot has that owns item</param>
-    public void AddRequiredChildItemsToParent(
-        TemplateItem? itemToAddTemplate,
-        List<Item> itemToAddChildrenTo,
-        bool isPmc,
-        string botRole
-    )
+    public void AddRequiredChildItemsToParent(TemplateItem? itemToAddTemplate, List<Item> itemToAddChildrenTo, bool isPmc, string botRole)
     {
         // Fill ammo box
         if (itemHelper.IsOfBaseclass(itemToAddTemplate.Id, BaseClasses.AMMO_BOX))
@@ -792,9 +674,7 @@ public class BotLootGenerator(
             var weaponRootItem = generatedWeapon.Weapon?.FirstOrDefault();
             if (weaponRootItem is null)
             {
-                logger.Error(
-                    $"Generated null loose weapon: {chosenWeaponType} for: {botRole} level: {botLevel}, skipping"
-                );
+                logger.Error($"Generated null loose weapon: {chosenWeaponType} for: {botRole} level: {botLevel}, skipping");
 
                 continue;
             }
@@ -811,9 +691,7 @@ public class BotLootGenerator(
             {
                 if (logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    logger.Debug(
-                        $"Failed to add additional weapon: {weaponRootItem.Id} to bot backpack, reason: {result.ToString()}"
-                    );
+                    logger.Debug($"Failed to add additional weapon: {weaponRootItem.Id} to bot backpack, reason: {result.ToString()}");
                 }
             }
         }
@@ -826,11 +704,7 @@ public class BotLootGenerator(
     /// <param name="botRole">Bot type</param>
     /// <param name="itemSpawnLimits"></param>
     /// <returns>true if item has reached spawn limit</returns>
-    protected bool ItemHasReachedSpawnLimit(
-        TemplateItem? itemTemplate,
-        string botRole,
-        ItemSpawnLimitSettings? itemSpawnLimits
-    )
+    protected bool ItemHasReachedSpawnLimit(TemplateItem? itemTemplate, string botRole, ItemSpawnLimitSettings? itemSpawnLimits)
     {
         // PMCs and scavs have different sections of bot config for spawn limits
         if (itemSpawnLimits is not null && itemSpawnLimits.GlobalLimits?.Count == 0)
@@ -861,10 +735,7 @@ public class BotLootGenerator(
 
         // Check if over limit
         var currentLimitCount = itemSpawnLimits.CurrentLimits[idToCheckFor.Value];
-        if (
-            itemSpawnLimits.CurrentLimits[idToCheckFor.Value]
-            > itemSpawnLimits.GlobalLimits[idToCheckFor.Value]
-        )
+        if (itemSpawnLimits.CurrentLimits[idToCheckFor.Value] > itemSpawnLimits.GlobalLimits[idToCheckFor.Value])
         {
             // Prevent edge-case of small loot pools + code trying to add limited item over and over infinitely
             if (currentLimitCount > currentLimitCount * 10)
@@ -911,9 +782,7 @@ public class BotLootGenerator(
 
         itemHelper.AddUpdObjectToItem(moneyItem);
 
-        moneyItem.Upd.StackObjectsCount = int.Parse(
-            weightedRandomHelper.GetWeightedValue(currencyWeight)
-        );
+        moneyItem.Upd.StackObjectsCount = int.Parse(weightedRandomHelper.GetWeightedValue(currencyWeight));
     }
 
     /// <summary>
@@ -948,12 +817,7 @@ public class BotLootGenerator(
             return _botConfig.ItemSpawnLimits[botRole.ToLowerInvariant()];
         }
 
-        logger.Warning(
-            serverLocalisationService.GetText(
-                "bot-unable_to_find_spawn_limits_fallback_to_defaults",
-                botRole
-            )
-        );
+        logger.Warning(serverLocalisationService.GetText("bot-unable_to_find_spawn_limits_fallback_to_defaults", botRole));
 
         return [];
     }
@@ -964,10 +828,7 @@ public class BotLootGenerator(
     /// <param name="itemTemplate">item we want to look for in spawn limits</param>
     /// <param name="spawnLimits">Limits to check for item</param>
     /// <returns>id as string, otherwise undefined</returns>
-    public MongoId? GetMatchingIdFromSpawnLimits(
-        TemplateItem itemTemplate,
-        Dictionary<MongoId, double> spawnLimits
-    )
+    public MongoId? GetMatchingIdFromSpawnLimits(TemplateItem itemTemplate, Dictionary<MongoId, double> spawnLimits)
     {
         if (spawnLimits.ContainsKey(itemTemplate.Id))
         {

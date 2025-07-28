@@ -33,9 +33,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
         var weapons = GetDefaultWeaponPresets();
         var equipment = GetDefaultEquipmentPresets();
 
-        return weapons
-            .UnionBy(equipment, kvp => kvp.Key)
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        return weapons.UnionBy(equipment, kvp => kvp.Key).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 
     /// <summary>
@@ -64,10 +62,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
         {
             var tempPresets = databaseService.GetGlobals().ItemPresets;
             _defaultWeaponPresets = tempPresets
-                .Where(p =>
-                    p.Value.Encyclopedia != null
-                    && itemHelper.IsOfBaseclass(p.Value.Encyclopedia.Value, BaseClasses.WEAPON)
-                )
+                .Where(p => p.Value.Encyclopedia != null && itemHelper.IsOfBaseclass(p.Value.Encyclopedia.Value, BaseClasses.WEAPON))
                 .ToDictionary();
         }
 
@@ -84,10 +79,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
         {
             var tempPresets = databaseService.GetGlobals().ItemPresets;
             _defaultEquipmentPresets = tempPresets
-                .Where(p =>
-                    p.Value.Encyclopedia != null
-                    && itemHelper.ArmorItemCanHoldMods(p.Value.Encyclopedia.Value)
-                )
+                .Where(p => p.Value.Encyclopedia != null && itemHelper.ArmorItemCanHoldMods(p.Value.Encyclopedia.Value))
                 .ToDictionary();
         }
 
@@ -117,8 +109,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
     /// <returns>True if the preset is of the given base class, false otherwise</returns>
     public bool IsPresetBaseClass(MongoId id, MongoId baseClass)
     {
-        return IsPreset(id)
-            && itemHelper.IsOfBaseclass(GetPreset(id).Encyclopedia.Value, baseClass);
+        return IsPreset(id) && itemHelper.IsOfBaseclass(GetPreset(id).Encyclopedia.Value, baseClass);
     }
 
     /// <summary>
@@ -160,11 +151,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
         }
 
         // Use gathered preset ids to get full preset objects, clone and return
-        return cloner.Clone(
-            presetDetailsForTpl
-                .PresetIds.Select(x => databaseService.GetGlobals().ItemPresets[x])
-                .ToList()
-        );
+        return cloner.Clone(presetDetailsForTpl.PresetIds.Select(x => databaseService.GetGlobals().ItemPresets[x]).ToList());
     }
 
     /// <summary>
@@ -186,21 +173,12 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
         }
 
         // Use default preset id from above cache to find the weapon/equipment preset
-        if (
-            !_defaultWeaponPresets.TryGetValue(presetDetails.DefaultId.Value, out var defaultPreset)
-        )
+        if (!_defaultWeaponPresets.TryGetValue(presetDetails.DefaultId.Value, out var defaultPreset))
         {
-            if (
-                !_defaultEquipmentPresets.TryGetValue(
-                    presetDetails.DefaultId.Value,
-                    out defaultPreset
-                )
-            )
+            if (!_defaultEquipmentPresets.TryGetValue(presetDetails.DefaultId.Value, out defaultPreset))
             {
                 // Default not found in weapon or equipment, return first preset in list
-                return cloner.Clone(
-                    databaseService.GetGlobals().ItemPresets[presetDetails.PresetIds.First()]
-                );
+                return cloner.Clone(databaseService.GetGlobals().ItemPresets[presetDetails.PresetIds.First()]);
             }
         }
 
@@ -241,9 +219,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
         var defaultPreset = GetDefaultPreset(tpl);
 
         // Bundle up tpls we want price for
-        var tpls = defaultPreset is not null
-            ? defaultPreset.Items.Select(item => item.Template)
-            : [tpl];
+        var tpls = defaultPreset is not null ? defaultPreset.Items.Select(item => item.Template) : [tpl];
 
         // Get price of tpls
         return itemHelper.GetItemAndChildrenPrice(tpls);

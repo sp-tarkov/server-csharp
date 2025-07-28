@@ -16,29 +16,17 @@ public class LauncherV2Callbacks(
 {
     public ValueTask<string> Ping()
     {
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(
-                new LauncherV2PingResponse { Response = launcherV2Controller.Ping() }
-            )
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(new LauncherV2PingResponse { Response = launcherV2Controller.Ping() }));
     }
 
     public ValueTask<string> Types()
     {
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(
-                new LauncherV2TypesResponse { Response = launcherV2Controller.Types() }
-            )
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(new LauncherV2TypesResponse { Response = launcherV2Controller.Types() }));
     }
 
     public ValueTask<string> Login(LoginRequestData info)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(
-                new LauncherV2LoginResponse { Response = launcherV2Controller.Login(info) }
-            )
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(new LauncherV2LoginResponse { Response = launcherV2Controller.Login(info) }));
     }
 
     public async ValueTask<string> Register(RegisterData info)
@@ -94,31 +82,20 @@ public class LauncherV2Callbacks(
 
     public ValueTask<string> Mods()
     {
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(
-                new LauncherV2ModsResponse { Response = launcherV2Controller.LoadedMods() }
-            )
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(new LauncherV2ModsResponse { Response = launcherV2Controller.LoadedMods() }));
     }
 
     public ValueTask<string> Profiles()
     {
         return new ValueTask<string>(
-            httpResponseUtil.NoBody(
-                new LauncherV2ProfilesResponse { Response = profileController.GetMiniProfiles() }
-            )
+            httpResponseUtil.NoBody(new LauncherV2ProfilesResponse { Response = profileController.GetMiniProfiles() })
         );
     }
 
     public ValueTask<string> Profile(MongoId sessionId)
     {
         return new ValueTask<string>(
-            httpResponseUtil.NoBody(
-                new LauncherV2ProfileResponse
-                {
-                    Response = launcherV2Controller.GetProfile(sessionId),
-                }
-            )
+            httpResponseUtil.NoBody(new LauncherV2ProfileResponse { Response = launcherV2Controller.GetProfile(sessionId) })
         );
     }
 }

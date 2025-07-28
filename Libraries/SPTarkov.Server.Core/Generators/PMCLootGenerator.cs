@@ -58,13 +58,7 @@ public class PMCLootGenerator(
             var pocketPriceOverrides = GetPMCPriceOverrides(pmcRole, "pocket");
 
             // Generate loot and cache - Also pass check to ensure only 1x2 items are allowed (Unheard bots have big pockets, hence the need for 1x2)
-            var pool = GenerateLootPool(
-                pmcRole,
-                allowedItemTypeWhitelist,
-                blacklist,
-                pocketPriceOverrides,
-                ItemFitsInto1By2Slot
-            );
+            var pool = GenerateLootPool(pmcRole, allowedItemTypeWhitelist, blacklist, pocketPriceOverrides, ItemFitsInto1By2Slot);
             _pocketLootPool.TryAdd(pmcRole, pool);
 
             return pool;
@@ -97,13 +91,7 @@ public class PMCLootGenerator(
             var vestPriceOverrides = GetPMCPriceOverrides(pmcRole, "vest");
 
             // Generate loot and cache - Also pass check to ensure items up to 2x2 are allowed, some vests have big slots
-            var pool = GenerateLootPool(
-                pmcRole,
-                allowedItemTypeWhitelist,
-                blacklist,
-                vestPriceOverrides,
-                ItemFitsInto2By2Slot
-            );
+            var pool = GenerateLootPool(pmcRole, allowedItemTypeWhitelist, blacklist, vestPriceOverrides, ItemFitsInto2By2Slot);
             _vestLootPool.TryAdd(pmcRole, pool);
 
             return pool;
@@ -133,13 +121,7 @@ public class PMCLootGenerator(
             var backpackPriceOverrides = GetPMCPriceOverrides(pmcRole, "vest");
 
             // Generate loot and cache
-            var pool = GenerateLootPool(
-                pmcRole,
-                allowedItemTypeWhitelist,
-                blacklist,
-                backpackPriceOverrides,
-                null
-            );
+            var pool = GenerateLootPool(pmcRole, allowedItemTypeWhitelist, blacklist, backpackPriceOverrides, null);
             _backpackLootPool.TryAdd(pmcRole, pool);
 
             return pool;
@@ -225,9 +207,7 @@ public class PMCLootGenerator(
     /// <returns>Dictionary of overrides</returns>
     protected Dictionary<MongoId, double> GetPMCPriceOverrides(string pmcRole, string slot)
     {
-        var pmcType = string.Equals(pmcRole, "pmcbear", StringComparison.OrdinalIgnoreCase)
-            ? "bear"
-            : "usec";
+        var pmcType = string.Equals(pmcRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec";
 
         // the usec/bear.json item prices act as overrides we apply over what we dynamically generate
         if (databaseService.GetBots().Types.TryGetValue(pmcType, out var priceOverrides))
@@ -253,15 +233,9 @@ public class PMCLootGenerator(
     /// <param name="tpl">Item tpl to get price of</param>
     /// <param name="pmcPriceOverrides"></param>
     /// <returns>Rouble price</returns>
-    protected double GetItemPrice(
-        MongoId tpl,
-        Dictionary<MongoId, double>? pmcPriceOverrides = null
-    )
+    protected double GetItemPrice(MongoId tpl, Dictionary<MongoId, double>? pmcPriceOverrides = null)
     {
-        if (
-            pmcPriceOverrides is not null
-            && pmcPriceOverrides.TryGetValue(tpl, out var overridePrice)
-        )
+        if (pmcPriceOverrides is not null && pmcPriceOverrides.TryGetValue(tpl, out var overridePrice))
         {
             // There's a price override for this item, use override instead of default price
             return overridePrice;

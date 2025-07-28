@@ -5,11 +5,7 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Services;
 
-public class SptServerBackgroundService(
-    IReadOnlyList<SptMod> loadedMods,
-    BundleLoader bundleLoader,
-    App app
-) : BackgroundService
+public class SptServerBackgroundService(IReadOnlyList<SptMod> loadedMods, BundleLoader bundleLoader, App app) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

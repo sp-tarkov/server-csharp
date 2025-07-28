@@ -42,12 +42,7 @@ public abstract class Router
 
 public abstract class StaticRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> routes) : Router
 {
-    public async ValueTask<object> HandleStatic(
-        string url,
-        string? body,
-        MongoId sessionId,
-        string output
-    )
+    public async ValueTask<object> HandleStatic(string url, string? body, MongoId sessionId, string output)
     {
         var action = routes.Single(route => route.url == url);
         var type = action.bodyType;
@@ -68,12 +63,7 @@ public abstract class StaticRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> r
 
 public abstract class DynamicRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> routes) : Router
 {
-    public async ValueTask<object> HandleDynamic(
-        string url,
-        string? body,
-        MongoId sessionID,
-        string output
-    )
+    public async ValueTask<object> HandleDynamic(string url, string? body, MongoId sessionID, string output)
     {
         var action = routes.First(r => url.Contains(r.url));
         var type = action.bodyType;
@@ -112,9 +102,5 @@ public abstract class SaveLoadRouter : Router
 
 public record HandledRoute(string route, bool dynamic);
 
-public record RouteAction(
-    string url,
-    Func<string, IRequestData?, MongoId, string?, ValueTask<object>> action,
-    Type? bodyType = null
-);
+public record RouteAction(string url, Func<string, IRequestData?, MongoId, string?, ValueTask<object>> action, Type? bodyType = null);
 //public action: (url: string, info: any, sessionID: string, output: string) => Promise<any>,

@@ -11,8 +11,7 @@ using SPTarkov.Server.Core.Servers;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable(TypePriority = OnUpdateOrder.HideoutCallbacks)]
-public class HideoutCallbacks(HideoutController hideoutController, ConfigServer configServer)
-    : IOnUpdate
+public class HideoutCallbacks(HideoutController hideoutController, ConfigServer configServer) : IOnUpdate
 {
     private readonly HideoutConfig _hideoutConfig = configServer.GetConfig<HideoutConfig>();
 
@@ -62,11 +61,7 @@ public class HideoutCallbacks(HideoutController hideoutController, ConfigServer 
     /// <summary>
     ///     Handle HideoutPutItemsInAreaSlots
     /// </summary>
-    public ItemEventRouterResponse PutItemsInAreaSlots(
-        PmcData pmcData,
-        HideoutPutItemInRequestData request,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse PutItemsInAreaSlots(PmcData pmcData, HideoutPutItemInRequestData request, MongoId sessionID)
     {
         return hideoutController.PutItemsInAreaSlots(pmcData, request, sessionID);
     }
@@ -74,11 +69,7 @@ public class HideoutCallbacks(HideoutController hideoutController, ConfigServer 
     /// <summary>
     ///     Handle HideoutTakeItemsFromAreaSlots event
     /// </summary>
-    public ItemEventRouterResponse TakeItemsFromAreaSlots(
-        PmcData pmcData,
-        HideoutTakeItemOutRequestData request,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse TakeItemsFromAreaSlots(PmcData pmcData, HideoutTakeItemOutRequestData request, MongoId sessionID)
     {
         return hideoutController.TakeItemsFromAreaSlots(pmcData, request, sessionID);
     }
@@ -86,11 +77,7 @@ public class HideoutCallbacks(HideoutController hideoutController, ConfigServer 
     /// <summary>
     ///     Handle HideoutToggleArea event
     /// </summary>
-    public ItemEventRouterResponse ToggleArea(
-        PmcData pmcData,
-        HideoutToggleAreaRequestData request,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse ToggleArea(PmcData pmcData, HideoutToggleAreaRequestData request, MongoId sessionID)
     {
         return hideoutController.ToggleArea(pmcData, request, sessionID);
     }
@@ -110,11 +97,7 @@ public class HideoutCallbacks(HideoutController hideoutController, ConfigServer 
     /// <summary>
     ///     Handle HideoutScavCaseProductionStart event
     /// </summary>
-    public ItemEventRouterResponse ScavCaseProductionStart(
-        PmcData pmcData,
-        HideoutScavCaseStartRequestData request,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse ScavCaseProductionStart(PmcData pmcData, HideoutScavCaseStartRequestData request, MongoId sessionID)
     {
         return hideoutController.ScavCaseProductionStart(pmcData, request, sessionID);
     }
@@ -134,11 +117,7 @@ public class HideoutCallbacks(HideoutController hideoutController, ConfigServer 
     /// <summary>
     ///     Handle HideoutTakeProduction event
     /// </summary>
-    public ItemEventRouterResponse TakeProduction(
-        PmcData pmcData,
-        HideoutTakeProductionRequestData request,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse TakeProduction(PmcData pmcData, HideoutTakeProductionRequestData request, MongoId sessionID)
     {
         return hideoutController.TakeProduction(pmcData, request, sessionID);
     }
@@ -176,11 +155,7 @@ public class HideoutCallbacks(HideoutController hideoutController, ConfigServer 
     /// <summary>
     ///     Handle client/game/profile/items/moving - RecordShootingRangePoints
     /// </summary>
-    public ItemEventRouterResponse ImproveArea(
-        PmcData pmcData,
-        HideoutImproveAreaRequestData request,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse ImproveArea(PmcData pmcData, HideoutImproveAreaRequestData request, MongoId sessionID)
     {
         return hideoutController.ImproveArea(sessionID, pmcData, request);
     }
@@ -188,11 +163,7 @@ public class HideoutCallbacks(HideoutController hideoutController, ConfigServer 
     /// <summary>
     ///     Handle client/game/profile/items/moving - HideoutCancelProductionCommand
     /// </summary>
-    public ItemEventRouterResponse CancelProduction(
-        PmcData pmcData,
-        HideoutCancelProductionRequestData request,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse CancelProduction(PmcData pmcData, HideoutCancelProductionRequestData request, MongoId sessionID)
     {
         return hideoutController.CancelProduction(sessionID, pmcData, request);
     }

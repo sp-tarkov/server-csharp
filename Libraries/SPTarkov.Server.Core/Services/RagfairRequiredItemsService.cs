@@ -6,10 +6,7 @@ using SPTarkov.Server.Core.Models.Common;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class RagfairRequiredItemsService(
-    RagfairOfferService ragfairOfferService,
-    PaymentHelper paymentHelper
-)
+public class RagfairRequiredItemsService(RagfairOfferService ragfairOfferService, PaymentHelper paymentHelper)
 {
     /// <summary>
     /// Key = tpl

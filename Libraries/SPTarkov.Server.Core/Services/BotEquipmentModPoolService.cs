@@ -20,14 +20,8 @@ public class BotEquipmentModPoolService(
 {
     private readonly Lock _lockObject = new();
 
-    private ConcurrentDictionary<
-        MongoId,
-        ConcurrentDictionary<string, HashSet<MongoId>>
-    >? _gearModPool;
-    protected ConcurrentDictionary<
-        MongoId,
-        ConcurrentDictionary<string, HashSet<MongoId>>
-    > GearModPool
+    private ConcurrentDictionary<MongoId, ConcurrentDictionary<string, HashSet<MongoId>>>? _gearModPool;
+    protected ConcurrentDictionary<MongoId, ConcurrentDictionary<string, HashSet<MongoId>>> GearModPool
     {
         get
         {
@@ -38,14 +32,8 @@ public class BotEquipmentModPoolService(
         }
     }
 
-    private ConcurrentDictionary<
-        MongoId,
-        ConcurrentDictionary<string, HashSet<MongoId>>
-    >? _weaponModPool;
-    protected ConcurrentDictionary<
-        MongoId,
-        ConcurrentDictionary<string, HashSet<MongoId>>
-    > WeaponModPool
+    private ConcurrentDictionary<MongoId, ConcurrentDictionary<string, HashSet<MongoId>>>? _weaponModPool;
+    protected ConcurrentDictionary<MongoId, ConcurrentDictionary<string, HashSet<MongoId>>> WeaponModPool
     {
         get
         {
@@ -61,32 +49,24 @@ public class BotEquipmentModPoolService(
     /// </summary>
     /// <param name="inputItems"> Items to find related mods and store in modPool </param>
     /// <param name="poolType"> Mod pool to choose from e.g. "weapon" for weaponModPool </param>
-    protected ConcurrentDictionary<
-        MongoId,
-        ConcurrentDictionary<string, HashSet<MongoId>>
-    > GeneratePool(IEnumerable<TemplateItem>? inputItems, string poolType)
+    protected ConcurrentDictionary<MongoId, ConcurrentDictionary<string, HashSet<MongoId>>> GeneratePool(
+        IEnumerable<TemplateItem>? inputItems,
+        string poolType
+    )
     {
         if (inputItems is null || !inputItems.Any())
         {
-            logger.Error(
-                localisationService.GetText("bot-unable_to_generate_item_pool_no_items", poolType)
-            );
+            logger.Error(localisationService.GetText("bot-unable_to_generate_item_pool_no_items", poolType));
 
             return [];
         }
 
-        var pool =
-            new ConcurrentDictionary<MongoId, ConcurrentDictionary<string, HashSet<MongoId>>>();
+        var pool = new ConcurrentDictionary<MongoId, ConcurrentDictionary<string, HashSet<MongoId>>>();
         foreach (var item in inputItems)
         {
             if (item.Properties is null)
             {
-                logger.Error(
-                    localisationService.GetText(
-                        "bot-item_missing_props_property",
-                        new { itemTpl = item.Id, name = item.Name }
-                    )
-                );
+                logger.Error(localisationService.GetText("bot-item_missing_props_property", new { itemTpl = item.Id, name = item.Name }));
 
                 continue;
             }
@@ -122,9 +102,7 @@ public class BotEquipmentModPoolService(
                     }
 
                     var subItemDetails = itemHelper.GetItem(itemToAddTpl).Value;
-                    var hasSubItemsToAdd =
-                        subItemDetails.Properties?.Slots is not null
-                        && subItemDetails.Properties.Slots.Any();
+                    var hasSubItemsToAdd = subItemDetails.Properties?.Slots is not null && subItemDetails.Properties.Slots.Any();
 
                     // Item has Slots + pool doesn't have value
                     if (hasSubItemsToAdd && !pool.ContainsKey(subItemDetails.Id))
@@ -155,10 +133,7 @@ public class BotEquipmentModPoolService(
         }
     }
 
-    private bool InitSetInDict(
-        ConcurrentDictionary<string, HashSet<MongoId>> dictionary,
-        string slotName
-    )
+    private bool InitSetInDict(ConcurrentDictionary<string, HashSet<MongoId>> dictionary, string slotName)
     {
         lock (_lockObject)
         {
@@ -228,11 +203,7 @@ public class BotEquipmentModPoolService(
         if (itemDb.Properties?.Slots is not null)
         // Loop over slots flagged as 'required'
         {
-            foreach (
-                var slot in itemDb.Properties.Slots.Where(slot =>
-                    slot.Required.GetValueOrDefault(false)
-                )
-            )
+            foreach (var slot in itemDb.Properties.Slots.Where(slot => slot.Required.GetValueOrDefault(false)))
             {
                 // Create dict entry for mod slot
                 result.TryAdd(slot.Name, []);
@@ -251,10 +222,7 @@ public class BotEquipmentModPoolService(
     /// <summary>
     ///     Create weapon mod pool and set generated flag to true
     /// </summary>
-    protected ConcurrentDictionary<
-        MongoId,
-        ConcurrentDictionary<string, HashSet<MongoId>>
-    > GenerateWeaponPool()
+    protected ConcurrentDictionary<MongoId, ConcurrentDictionary<string, HashSet<MongoId>>> GenerateWeaponPool()
     {
         var weaponsAndMods = databaseService
             .GetItems()
@@ -269,10 +237,7 @@ public class BotEquipmentModPoolService(
     /// <summary>
     ///     Create gear mod pool and set generated flag to true
     /// </summary>
-    protected ConcurrentDictionary<
-        MongoId,
-        ConcurrentDictionary<string, HashSet<MongoId>>
-    > GenerateGearPool()
+    protected ConcurrentDictionary<MongoId, ConcurrentDictionary<string, HashSet<MongoId>>> GenerateGearPool()
     {
         var gearAndMods = databaseService
             .GetItems()
@@ -280,13 +245,7 @@ public class BotEquipmentModPoolService(
                 string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)
                 && itemHelper.IsOfBaseclasses(
                     item.Id,
-                    [
-                        BaseClasses.ARMORED_EQUIPMENT,
-                        BaseClasses.VEST,
-                        BaseClasses.ARMOR,
-                        BaseClasses.HEADWEAR,
-                        BaseClasses.MOD,
-                    ]
+                    [BaseClasses.ARMORED_EQUIPMENT, BaseClasses.VEST, BaseClasses.ARMOR, BaseClasses.HEADWEAR, BaseClasses.MOD]
                 )
             );
 

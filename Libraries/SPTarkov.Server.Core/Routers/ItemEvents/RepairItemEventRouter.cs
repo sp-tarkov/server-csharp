@@ -15,11 +15,7 @@ public class RepairItemEventRouter(RepairCallbacks repairCallbacks) : ItemEventR
 {
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new List<HandledRoute>
-        {
-            new(ItemEventActions.REPAIR, false),
-            new(ItemEventActions.TRADER_REPAIR, false),
-        };
+        return new List<HandledRoute> { new(ItemEventActions.REPAIR, false), new(ItemEventActions.TRADER_REPAIR, false) };
     }
 
     public override ValueTask<ItemEventRouterResponse> HandleItemEvent(
@@ -33,21 +29,13 @@ public class RepairItemEventRouter(RepairCallbacks repairCallbacks) : ItemEventR
         switch (url)
         {
             case ItemEventActions.REPAIR:
-                return new ValueTask<ItemEventRouterResponse>(
-                    repairCallbacks.Repair(pmcData, body as RepairActionDataRequest, sessionID)
-                );
+                return new ValueTask<ItemEventRouterResponse>(repairCallbacks.Repair(pmcData, body as RepairActionDataRequest, sessionID));
             case ItemEventActions.TRADER_REPAIR:
                 return new ValueTask<ItemEventRouterResponse>(
-                    repairCallbacks.TraderRepair(
-                        pmcData,
-                        body as TraderRepairActionDataRequest,
-                        sessionID
-                    )
+                    repairCallbacks.TraderRepair(pmcData, body as TraderRepairActionDataRequest, sessionID)
                 );
             default:
-                throw new Exception(
-                    $"RepairItemEventRouter being used when it cant handle route {url}"
-                );
+                throw new Exception($"RepairItemEventRouter being used when it cant handle route {url}");
         }
     }
 }

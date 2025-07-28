@@ -18,11 +18,7 @@ public class WishlistController(EventOutputHolder eventOutputHolder)
     /// <param name="request"></param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse AddToWishList(
-        PmcData pmcData,
-        AddToWishlistRequest request,
-        MongoId sessionId
-    )
+    public ItemEventRouterResponse AddToWishList(PmcData pmcData, AddToWishlistRequest request, MongoId sessionId)
     {
         pmcData.WishList ??= new DictionaryOrList<MongoId, int>(new Dictionary<MongoId, int>(), []);
         foreach (var item in request.Items)
@@ -40,11 +36,7 @@ public class WishlistController(EventOutputHolder eventOutputHolder)
     /// <param name="request"></param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse RemoveFromWishList(
-        PmcData pmcData,
-        RemoveFromWishlistRequest request,
-        MongoId sessionId
-    )
+    public ItemEventRouterResponse RemoveFromWishList(PmcData pmcData, RemoveFromWishlistRequest request, MongoId sessionId)
     {
         foreach (var itemId in request.Items)
         {
@@ -61,11 +53,7 @@ public class WishlistController(EventOutputHolder eventOutputHolder)
     /// <param name="request"></param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ChangeWishListItemCategory(
-        PmcData pmcData,
-        ChangeWishlistItemCategoryRequest request,
-        MongoId sessionId
-    )
+    public ItemEventRouterResponse ChangeWishListItemCategory(PmcData pmcData, ChangeWishlistItemCategoryRequest request, MongoId sessionId)
     {
         pmcData.WishList.Dictionary[request.Item] = request.Category.Value;
 

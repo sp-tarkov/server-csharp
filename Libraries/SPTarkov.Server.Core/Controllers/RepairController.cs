@@ -19,32 +19,16 @@ public class RepairController(EventOutputHolder eventOutputHolder, RepairService
     /// <param name="request">endpoint request data</param>
     /// <param name="pmcData">player profile</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse TraderRepair(
-        MongoId sessionID,
-        TraderRepairActionDataRequest request,
-        PmcData pmcData
-    )
+    public ItemEventRouterResponse TraderRepair(MongoId sessionID, TraderRepairActionDataRequest request, PmcData pmcData)
     {
         var output = eventOutputHolder.GetOutput(sessionID);
 
         // find the item to repair
         foreach (var repairItem in request.RepairItems)
         {
-            var repairDetails = repairService.RepairItemByTrader(
-                sessionID,
-                pmcData,
-                repairItem,
-                request.TraderId
-            );
+            var repairDetails = repairService.RepairItemByTrader(sessionID, pmcData, repairItem, request.TraderId);
 
-            repairService.PayForRepair(
-                sessionID,
-                pmcData,
-                repairItem.Id,
-                repairDetails.RepairCost.Value,
-                request.TraderId,
-                output
-            );
+            repairService.PayForRepair(sessionID, pmcData, repairItem.Id, repairDetails.RepairCost.Value, request.TraderId, output);
 
             if (output.Warnings?.Count > 0)
             {
@@ -69,22 +53,12 @@ public class RepairController(EventOutputHolder eventOutputHolder, RepairService
     /// <param name="body">endpoint request data</param>
     /// <param name="pmcData">player profile</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse RepairWithKit(
-        MongoId sessionId,
-        RepairActionDataRequest body,
-        PmcData pmcData
-    )
+    public ItemEventRouterResponse RepairWithKit(MongoId sessionId, RepairActionDataRequest body, PmcData pmcData)
     {
         var output = eventOutputHolder.GetOutput(sessionId);
 
         // repair item
-        var repairDetails = repairService.RepairItemByKit(
-            sessionId,
-            pmcData,
-            body.RepairKitsInfo,
-            body.Target.Value,
-            output
-        );
+        var repairDetails = repairService.RepairItemByKit(sessionId, pmcData, body.RepairKitsInfo, body.Target.Value, output);
 
         repairService.AddBuffToItem(repairDetails, pmcData);
 

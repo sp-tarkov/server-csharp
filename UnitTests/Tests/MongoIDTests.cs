@@ -28,21 +28,9 @@ public class MongoIDTests
         }
     }
 
-    [TestCase(
-        "677ddb67406e9918a0264bbz",
-        false,
-        "677ddb67406e9918a0264bbz contains invalid char `z`, but result was true"
-    )]
-    [TestCase(
-        "677ddb67406e9918a0264bbcc",
-        false,
-        "677ddb67406e9918a0264bbcc is 25 characters, but result was true"
-    )]
-    [TestCase(
-        "677ddb67406e9918a0264bbc",
-        true,
-        "IsValidMongoId() `677ddb67406e9918a0264bbc` is a valid mongoId, but result was false"
-    )]
+    [TestCase("677ddb67406e9918a0264bbz", false, "677ddb67406e9918a0264bbz contains invalid char `z`, but result was true")]
+    [TestCase("677ddb67406e9918a0264bbcc", false, "677ddb67406e9918a0264bbcc is 25 characters, but result was true")]
+    [TestCase("677ddb67406e9918a0264bbc", true, "IsValidMongoId() `677ddb67406e9918a0264bbc` is a valid mongoId, but result was false")]
     public void IsValidMongoIdTest(string mongoId, bool passes, string failMessage)
     {
         var result = new MongoId(mongoId);

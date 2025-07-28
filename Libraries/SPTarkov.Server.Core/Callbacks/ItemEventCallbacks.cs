@@ -10,19 +10,11 @@ namespace SPTarkov.Server.Core.Callbacks;
 [Injectable]
 public class ItemEventCallbacks(HttpResponseUtil httpResponseUtil, ItemEventRouter itemEventRouter)
 {
-    public async ValueTask<string> HandleEvents(
-        string url,
-        ItemEventRouterRequest info,
-        MongoId sessionID
-    )
+    public async ValueTask<string> HandleEvents(string url, ItemEventRouterRequest info, MongoId sessionID)
     {
         var eventResponse = await itemEventRouter.HandleEvents(info, sessionID);
         var result = IsCriticalError(eventResponse.Warnings)
-            ? httpResponseUtil.GetBody(
-                eventResponse,
-                GetErrorCode(eventResponse.Warnings),
-                eventResponse.Warnings[0].ErrorMessage
-            )
+            ? httpResponseUtil.GetBody(eventResponse, GetErrorCode(eventResponse.Warnings), eventResponse.Warnings[0].ErrorMessage)
             : httpResponseUtil.GetBody(eventResponse);
 
         return result;
@@ -41,10 +33,7 @@ public class ItemEventCallbacks(HttpResponseUtil httpResponseUtil, ItemEventRout
         }
 
         // List of non-critical error codes, we return true if any error NOT included is passed in
-        var nonCriticalErrorCodes = new HashSet<BackendErrorCodes>
-        {
-            BackendErrorCodes.NotEnoughSpace,
-        };
+        var nonCriticalErrorCodes = new HashSet<BackendErrorCodes> { BackendErrorCodes.NotEnoughSpace };
 
         foreach (var warning in warnings)
         {

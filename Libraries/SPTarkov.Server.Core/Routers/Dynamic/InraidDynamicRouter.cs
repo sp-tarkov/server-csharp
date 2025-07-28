@@ -16,11 +16,7 @@ public class InraidDynamicRouter : DynamicRouter
                 new RouteAction(
                     "/client/location/getLocalloot",
                     async (url, info, sessionID, output) =>
-                        await inraidCallbacks.RegisterPlayer(
-                            url,
-                            info as RegisterPlayerRequestData,
-                            sessionID
-                        ),
+                        await inraidCallbacks.RegisterPlayer(url, info as RegisterPlayerRequestData, sessionID),
                     typeof(RegisterPlayerRequestData)
                 ),
             ]

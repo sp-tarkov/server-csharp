@@ -47,10 +47,7 @@ public class LauncherV2Controller(
 
         foreach (var (templateName, template) in dbProfiles)
         {
-            result.TryAdd(
-                templateName,
-                serverLocalisationService.GetText(template.DescriptionLocaleKey)
-            );
+            result.TryAdd(templateName, serverLocalisationService.GetText(template.DescriptionLocaleKey));
         }
 
         return result;
@@ -149,10 +146,7 @@ public class LauncherV2Controller(
     /// <returns></returns>
     public Dictionary<string, AbstractModMetadata> LoadedMods()
     {
-        return loadedMods.ToDictionary(
-            sptMod => sptMod.ModMetadata.Name,
-            sptMod => sptMod.ModMetadata
-        );
+        return loadedMods.ToDictionary(sptMod => sptMod.ModMetadata.Name, sptMod => sptMod.ModMetadata);
     }
 
     /// <summary>
@@ -187,10 +181,7 @@ public class LauncherV2Controller(
     {
         foreach (var (sessionId, profile) in saveServer.GetProfiles())
         {
-            if (
-                info.Username == profile.ProfileInfo!.Username
-                && info.Password == profile.ProfileInfo.Password
-            )
+            if (info.Username == profile.ProfileInfo!.Username && info.Password == profile.ProfileInfo.Password)
             {
                 return sessionId;
             }

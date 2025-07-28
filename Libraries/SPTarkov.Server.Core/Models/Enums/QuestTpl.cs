@@ -13,30 +13,20 @@ public static class QuestTpl
     public static readonly MongoId POSTMAN_PAT_PART_2 = new MongoId("596760e186f7741e11214d58");
     public static readonly MongoId SHAKING_UP_THE_TELLER = new MongoId("5967725e86f774601a446662");
     public static readonly MongoId SHORTAGE = new MongoId("5967733e86f774602332fc84");
-    public static readonly MongoId SANITARY_STANDARDS_PART_1 = new MongoId(
-        "59689ee586f7740d1570bbd5"
-    );
-    public static readonly MongoId OPERATION_AQUARIUS_PART_1 = new MongoId(
-        "59689fbd86f7740d137ebfc4"
-    );
-    public static readonly MongoId OPERATION_AQUARIUS_PART_2 = new MongoId(
-        "5968eb3186f7741dde183a4d"
-    );
+    public static readonly MongoId SANITARY_STANDARDS_PART_1 = new MongoId("59689ee586f7740d1570bbd5");
+    public static readonly MongoId OPERATION_AQUARIUS_PART_1 = new MongoId("59689fbd86f7740d137ebfc4");
+    public static readonly MongoId OPERATION_AQUARIUS_PART_2 = new MongoId("5968eb3186f7741dde183a4d");
     public static readonly MongoId PAINKILLER = new MongoId("5969f90786f77420d2328015");
     public static readonly MongoId PHARMACIST = new MongoId("5969f9e986f7741dde183a50");
     public static readonly MongoId SUPPLY_PLANS = new MongoId("596a0e1686f7741ddf17dbee");
     public static readonly MongoId KIND_OF_SABOTAGE = new MongoId("596a101f86f7741ddb481582");
     public static readonly MongoId GENERAL_WARES = new MongoId("596a1e6c86f7741ddc2d3206");
-    public static readonly MongoId SANITARY_STANDARDS_PART_2 = new MongoId(
-        "596a204686f774576d4c95de"
-    );
+    public static readonly MongoId SANITARY_STANDARDS_PART_2 = new MongoId("596a204686f774576d4c95de");
     public static readonly MongoId CAR_REPAIR = new MongoId("596a218586f77420d232807c");
     public static readonly MongoId SUPPLIER = new MongoId("596b36c586f77450d6045ad2");
     public static readonly MongoId THE_EXTORTIONIST = new MongoId("596b43fb86f77457ca186186");
     public static readonly MongoId STIRRUP = new MongoId("596b455186f77457cb50eccb");
-    public static readonly MongoId WHATS_ON_THE_FLASH_DRIVE = new MongoId(
-        "5979ed3886f77431307dc512"
-    );
+    public static readonly MongoId WHATS_ON_THE_FLASH_DRIVE = new MongoId("5979ed3886f77431307dc512");
     public static readonly MongoId GOLDEN_SWAG = new MongoId("5979eee086f774311955e614");
     public static readonly MongoId POLIKHIM_HOBO = new MongoId("5979f8bb86f7743ec214c7a6");
     public static readonly MongoId CHEMICAL_PART_1 = new MongoId("5979f9ba86f7740f6c3fe9f2");
@@ -78,27 +68,13 @@ public static class QuestTpl
     public static readonly MongoId WET_JOB_PART_4 = new MongoId("5a27bc3686f7741c73584026");
     public static readonly MongoId WET_JOB_PART_5 = new MongoId("5a27bc6986f7741c7358402b");
     public static readonly MongoId WET_JOB_PART_6 = new MongoId("5a27bc8586f7741b543d8ea4");
-    public static readonly MongoId FRIEND_FROM_THE_WEST_PART_1 = new MongoId(
-        "5a27c99a86f7747d2c6bdd8e"
-    );
-    public static readonly MongoId FRIEND_FROM_THE_WEST_PART_2 = new MongoId(
-        "5a27d2af86f7744e1115b323"
-    );
-    public static readonly MongoId HEALTH_CARE_PRIVACY_PART_1 = new MongoId(
-        "5a68661a86f774500f48afb0"
-    );
-    public static readonly MongoId HEALTH_CARE_PRIVACY_PART_2 = new MongoId(
-        "5a68663e86f774501078f78a"
-    );
-    public static readonly MongoId HEALTH_CARE_PRIVACY_PART_3 = new MongoId(
-        "5a68665c86f774255929b4c7"
-    );
-    public static readonly MongoId HEALTH_CARE_PRIVACY_PART_4 = new MongoId(
-        "5a68667486f7742607157d28"
-    );
-    public static readonly MongoId HEALTH_CARE_PRIVACY_PART_5 = new MongoId(
-        "5a68669a86f774255929b4d4"
-    );
+    public static readonly MongoId FRIEND_FROM_THE_WEST_PART_1 = new MongoId("5a27c99a86f7747d2c6bdd8e");
+    public static readonly MongoId FRIEND_FROM_THE_WEST_PART_2 = new MongoId("5a27d2af86f7744e1115b323");
+    public static readonly MongoId HEALTH_CARE_PRIVACY_PART_1 = new MongoId("5a68661a86f774500f48afb0");
+    public static readonly MongoId HEALTH_CARE_PRIVACY_PART_2 = new MongoId("5a68663e86f774501078f78a");
+    public static readonly MongoId HEALTH_CARE_PRIVACY_PART_3 = new MongoId("5a68665c86f774255929b4c7");
+    public static readonly MongoId HEALTH_CARE_PRIVACY_PART_4 = new MongoId("5a68667486f7742607157d28");
+    public static readonly MongoId HEALTH_CARE_PRIVACY_PART_5 = new MongoId("5a68669a86f774255929b4d4");
     public static readonly MongoId GUNSMITH_PART_1 = new MongoId("5ac23c6186f7741247042bad");
     public static readonly MongoId GUNSMITH_PART_2 = new MongoId("5ac2426c86f774138762edfe");
     public static readonly MongoId GUNSMITH_PART_3 = new MongoId("5ac2428686f77412450b42bf");
@@ -124,9 +100,7 @@ public static class QuestTpl
     public static readonly MongoId ONLY_BUSINESS = new MongoId("5ae448a386f7744d3730fff0");
     public static readonly MongoId MAKE_ULTRA_GREAT_AGAIN = new MongoId("5ae448bf86f7744d733e55ee");
     public static readonly MongoId BIG_SALE = new MongoId("5ae448e586f7744dcf0c2a67");
-    public static readonly MongoId THE_BLOOD_OF_WAR_PART_1 = new MongoId(
-        "5ae448f286f77448d73c0131"
-    );
+    public static readonly MongoId THE_BLOOD_OF_WAR_PART_1 = new MongoId("5ae448f286f77448d73c0131");
     public static readonly MongoId DRESSED_TO_KILL = new MongoId("5ae4490786f7744ca822adcc");
     public static readonly MongoId DATABASE_PART_1 = new MongoId("5ae4493486f7744efa289417");
     public static readonly MongoId DATABASE_PART_2 = new MongoId("5ae4493d86f7744b8e15aa8f");
@@ -135,9 +109,7 @@ public static class QuestTpl
     public static readonly MongoId SEW_IT_GOOD_PART_3 = new MongoId("5ae4496986f774459e77beb6");
     public static readonly MongoId SEW_IT_GOOD_PART_4 = new MongoId("5ae4497b86f7744cf402ed00");
     public static readonly MongoId THE_KEY_TO_SUCCESS = new MongoId("5ae4498786f7744bde357695");
-    public static readonly MongoId CHARISMA_BRINGS_SUCCESS = new MongoId(
-        "5ae4499a86f77449783815db"
-    );
+    public static readonly MongoId CHARISMA_BRINGS_SUCCESS = new MongoId("5ae4499a86f77449783815db");
     public static readonly MongoId NO_FUSS_NEEDED = new MongoId("5ae449a586f7744bde357696");
     public static readonly MongoId GRATITUDE = new MongoId("5ae449b386f77446d8741719");
     public static readonly MongoId SALES_NIGHT = new MongoId("5ae449c386f7744bde357697");
@@ -147,12 +119,8 @@ public static class QuestTpl
     public static readonly MongoId GUNSMITH_PART_18 = new MongoId("5b477b6f86f7747290681823");
     public static readonly MongoId GUNSMITH_PART_20 = new MongoId("5b477f7686f7744d1b23c4d2");
     public static readonly MongoId GUNSMITH_PART_22 = new MongoId("5b47825886f77468074618d3");
-    public static readonly MongoId THE_BLOOD_OF_WAR_PART_2 = new MongoId(
-        "5b47876e86f7744d1c353205"
-    );
-    public static readonly MongoId LIVING_HIGH_IS_NOT_A_CRIME_PART_1 = new MongoId(
-        "5b47891f86f7744d1b23c571"
-    );
+    public static readonly MongoId THE_BLOOD_OF_WAR_PART_2 = new MongoId("5b47876e86f7744d1c353205");
+    public static readonly MongoId LIVING_HIGH_IS_NOT_A_CRIME_PART_1 = new MongoId("5b47891f86f7744d1b23c571");
     public static readonly MongoId HOT_DELIVERY = new MongoId("5b478b1886f7744d1b23c57d");
     public static readonly MongoId MINIBUS = new MongoId("5b478d0f86f7744d190d91b5");
     public static readonly MongoId VITAMINS_PART_1 = new MongoId("5b478eca86f7744642012254");
@@ -160,116 +128,56 @@ public static class QuestTpl
     public static readonly MongoId INFORMED_MEANS_ARMED = new MongoId("5b47926a86f7747ccc057c15");
     public static readonly MongoId LEND_LEASE_PART_1 = new MongoId("5b4794cb86f774598100d5d4");
     public static readonly MongoId CHUMMING = new MongoId("5b4795fb86f7745876267770");
-    public static readonly MongoId THE_TARKOV_SHOOTER_PART_1 = new MongoId(
-        "5bc4776586f774512d07cf05"
-    );
-    public static readonly MongoId THE_TARKOV_SHOOTER_PART_2 = new MongoId(
-        "5bc479e586f7747f376c7da3"
-    );
-    public static readonly MongoId THE_TARKOV_SHOOTER_PART_3 = new MongoId(
-        "5bc47dbf86f7741ee74e93b9"
-    );
-    public static readonly MongoId THE_TARKOV_SHOOTER_PART_4 = new MongoId(
-        "5bc480a686f7741af0342e29"
-    );
-    public static readonly MongoId THE_TARKOV_SHOOTER_PART_5 = new MongoId(
-        "5bc4826c86f774106d22d88b"
-    );
-    public static readonly MongoId THE_TARKOV_SHOOTER_PART_6 = new MongoId(
-        "5bc4836986f7740c0152911c"
-    );
-    public static readonly MongoId THE_TARKOV_SHOOTER_PART_7 = new MongoId(
-        "5bc4856986f77454c317bea7"
-    );
-    public static readonly MongoId THE_TARKOV_SHOOTER_PART_8 = new MongoId(
-        "5bc4893c86f774626f5ebf3e"
-    );
+    public static readonly MongoId THE_TARKOV_SHOOTER_PART_1 = new MongoId("5bc4776586f774512d07cf05");
+    public static readonly MongoId THE_TARKOV_SHOOTER_PART_2 = new MongoId("5bc479e586f7747f376c7da3");
+    public static readonly MongoId THE_TARKOV_SHOOTER_PART_3 = new MongoId("5bc47dbf86f7741ee74e93b9");
+    public static readonly MongoId THE_TARKOV_SHOOTER_PART_4 = new MongoId("5bc480a686f7741af0342e29");
+    public static readonly MongoId THE_TARKOV_SHOOTER_PART_5 = new MongoId("5bc4826c86f774106d22d88b");
+    public static readonly MongoId THE_TARKOV_SHOOTER_PART_6 = new MongoId("5bc4836986f7740c0152911c");
+    public static readonly MongoId THE_TARKOV_SHOOTER_PART_7 = new MongoId("5bc4856986f77454c317bea7");
+    public static readonly MongoId THE_TARKOV_SHOOTER_PART_8 = new MongoId("5bc4893c86f774626f5ebf3e");
     public static readonly MongoId BULLSHIT = new MongoId("5c0bbaa886f7746941031d82");
     public static readonly MongoId SILENT_CALIBER = new MongoId("5c0bc91486f7746ab41857a2");
     public static readonly MongoId INSOMNIA = new MongoId("5c0bd01e86f7747cdd799e56");
     public static readonly MongoId TEST_DRIVE_PART_1 = new MongoId("5c0bd94186f7747a727f09b2");
     public static readonly MongoId FLINT = new MongoId("5c0bdb5286f774166e38eed4");
-    public static readonly MongoId A_SHOOTER_BORN_IN_HEAVEN = new MongoId(
-        "5c0bde0986f77479cf22c2f8"
-    );
+    public static readonly MongoId A_SHOOTER_BORN_IN_HEAVEN = new MongoId("5c0bde0986f77479cf22c2f8");
     public static readonly MongoId PSYCHO_SNIPER = new MongoId("5c0be13186f7746f016734aa");
     public static readonly MongoId PRIVATE_CLINIC = new MongoId("5c0be5fc86f774467a116593");
     public static readonly MongoId ATHLETE = new MongoId("5c0d0d5086f774363760aef2");
     public static readonly MongoId LEND_LEASE_PART_2 = new MongoId("5c0d0f1886f77457b8210226");
     public static readonly MongoId GRENADIER = new MongoId("5c0d190cd09282029f5390d8");
-    public static readonly MongoId DECONTAMINATION_SERVICE = new MongoId(
-        "5c0d1c4cd0928202a02a6f5c"
-    );
+    public static readonly MongoId DECONTAMINATION_SERVICE = new MongoId("5c0d1c4cd0928202a02a6f5c");
     public static readonly MongoId PEACEKEEPING_MISSION = new MongoId("5c0d4c12d09282029f539173");
     public static readonly MongoId THE_GUIDE = new MongoId("5c0d4e61d09282029f53920e");
-    public static readonly MongoId THE_BLOOD_OF_WAR_PART_3 = new MongoId(
-        "5c10f94386f774227172c572"
-    );
+    public static readonly MongoId THE_BLOOD_OF_WAR_PART_3 = new MongoId("5c10f94386f774227172c572");
     public static readonly MongoId FERTILIZERS = new MongoId("5c1128e386f7746565181106");
     public static readonly MongoId SCAVENGER = new MongoId("5c112d7e86f7740d6f647486");
-    public static readonly MongoId LIVING_HIGH_IS_NOT_A_CRIME_PART_2 = new MongoId(
-        "5c1141f386f77430ff393792"
-    );
+    public static readonly MongoId LIVING_HIGH_IS_NOT_A_CRIME_PART_2 = new MongoId("5c1141f386f77430ff393792");
     public static readonly MongoId SETUP = new MongoId("5c1234c286f77406fa13baeb");
     public static readonly MongoId PERFECT_MEDIATOR = new MongoId("5c12452c86f7744b83469073");
     public static readonly MongoId IMPORT = new MongoId("5c139eb686f7747878361a6f");
     public static readonly MongoId COLLECTOR = new MongoId("5c51aac186f77432ea65c552");
     public static readonly MongoId INTRODUCTION = new MongoId("5d2495a886f77425cd51e403");
     public static readonly MongoId ACQUAINTANCE = new MongoId("5d24b81486f77439c92d6ba8");
-    public static readonly MongoId THE_SURVIVALIST_PATH_UNPROTECTED_BUT_DANGEROUS = new MongoId(
-        "5d25aed386f77442734d25d2"
-    );
-    public static readonly MongoId THE_SURVIVALIST_PATH_THRIFTY = new MongoId(
-        "5d25b6be86f77444001e1b89"
-    );
-    public static readonly MongoId THE_SURVIVALIST_PATH_ZHIVCHIK = new MongoId(
-        "5d25bfd086f77442734d3007"
-    );
-    public static readonly MongoId THE_SURVIVALIST_PATH_WOUNDED_BEAST = new MongoId(
-        "5d25c81b86f77443e625dd71"
-    );
-    public static readonly MongoId THE_SURVIVALIST_PATH_TOUGH_GUY = new MongoId(
-        "5d25cf2686f77443e75488d4"
-    );
-    public static readonly MongoId THE_SURVIVALIST_PATH_COLD_BLOODED = new MongoId(
-        "5d25d2c186f77443e35162e5"
-    );
-    public static readonly MongoId THE_SURVIVALIST_PATH_EAGLE_OWL = new MongoId(
-        "5d25e29d86f7740a22516326"
-    );
-    public static readonly MongoId THE_SURVIVALIST_PATH_COMBAT_MEDIC = new MongoId(
-        "5d25e2a986f77409dd5cdf2a"
-    );
-    public static readonly MongoId THE_HUNTSMAN_PATH_SECURED_PERIMETER = new MongoId(
-        "5d25e2b486f77409de05bba0"
-    );
-    public static readonly MongoId THE_HUNTSMAN_PATH_TROPHY = new MongoId(
-        "5d25e2c386f77443e7549029"
-    );
-    public static readonly MongoId THE_HUNTSMAN_PATH_FOREST_CLEANING = new MongoId(
-        "5d25e2cc86f77443e47ae019"
-    );
-    public static readonly MongoId THE_HUNTSMAN_PATH_CONTROLLER = new MongoId(
-        "5d25e2d886f77442734d335e"
-    );
-    public static readonly MongoId THE_HUNTSMAN_PATH_SELLOUT = new MongoId(
-        "5d25e2e286f77444001e2e48"
-    );
-    public static readonly MongoId THE_HUNTSMAN_PATH_WOODS_KEEPER = new MongoId(
-        "5d25e2ee86f77443e35162ea"
-    );
-    public static readonly MongoId THE_HUNTSMAN_PATH_JUSTICE = new MongoId(
-        "5d25e43786f7740a212217fa"
-    );
-    public static readonly MongoId THE_HUNTSMAN_PATH_EVIL_WATCHMAN = new MongoId(
-        "5d25e44386f77409453bce7b"
-    );
-    public static readonly MongoId THE_HUNTSMAN_PATH_ERASER_PART_1 = new MongoId(
-        "5d25e44f86f77443e625e385"
-    );
-    public static readonly MongoId THE_HUNTSMAN_PATH_ERASER_PART_2 = new MongoId(
-        "5d25e45e86f77408251c4bfa"
-    );
+    public static readonly MongoId THE_SURVIVALIST_PATH_UNPROTECTED_BUT_DANGEROUS = new MongoId("5d25aed386f77442734d25d2");
+    public static readonly MongoId THE_SURVIVALIST_PATH_THRIFTY = new MongoId("5d25b6be86f77444001e1b89");
+    public static readonly MongoId THE_SURVIVALIST_PATH_ZHIVCHIK = new MongoId("5d25bfd086f77442734d3007");
+    public static readonly MongoId THE_SURVIVALIST_PATH_WOUNDED_BEAST = new MongoId("5d25c81b86f77443e625dd71");
+    public static readonly MongoId THE_SURVIVALIST_PATH_TOUGH_GUY = new MongoId("5d25cf2686f77443e75488d4");
+    public static readonly MongoId THE_SURVIVALIST_PATH_COLD_BLOODED = new MongoId("5d25d2c186f77443e35162e5");
+    public static readonly MongoId THE_SURVIVALIST_PATH_EAGLE_OWL = new MongoId("5d25e29d86f7740a22516326");
+    public static readonly MongoId THE_SURVIVALIST_PATH_COMBAT_MEDIC = new MongoId("5d25e2a986f77409dd5cdf2a");
+    public static readonly MongoId THE_HUNTSMAN_PATH_SECURED_PERIMETER = new MongoId("5d25e2b486f77409de05bba0");
+    public static readonly MongoId THE_HUNTSMAN_PATH_TROPHY = new MongoId("5d25e2c386f77443e7549029");
+    public static readonly MongoId THE_HUNTSMAN_PATH_FOREST_CLEANING = new MongoId("5d25e2cc86f77443e47ae019");
+    public static readonly MongoId THE_HUNTSMAN_PATH_CONTROLLER = new MongoId("5d25e2d886f77442734d335e");
+    public static readonly MongoId THE_HUNTSMAN_PATH_SELLOUT = new MongoId("5d25e2e286f77444001e2e48");
+    public static readonly MongoId THE_HUNTSMAN_PATH_WOODS_KEEPER = new MongoId("5d25e2ee86f77443e35162ea");
+    public static readonly MongoId THE_HUNTSMAN_PATH_JUSTICE = new MongoId("5d25e43786f7740a212217fa");
+    public static readonly MongoId THE_HUNTSMAN_PATH_EVIL_WATCHMAN = new MongoId("5d25e44386f77409453bce7b");
+    public static readonly MongoId THE_HUNTSMAN_PATH_ERASER_PART_1 = new MongoId("5d25e44f86f77443e625e385");
+    public static readonly MongoId THE_HUNTSMAN_PATH_ERASER_PART_2 = new MongoId("5d25e45e86f77408251c4bfa");
     public static readonly MongoId AMBULANCE = new MongoId("5d25e46e86f77409453bce7c");
     public static readonly MongoId COURTESY_VISIT = new MongoId("5d25e48186f77443e625e386");
     public static readonly MongoId SHADY_BUSINESS = new MongoId("5d25e48d86f77408251c4bfb");
@@ -278,22 +186,16 @@ public static class QuestTpl
     public static readonly MongoId HUNTING_TRIP = new MongoId("5d25e4ca86f77409dd5cdf2c");
     public static readonly MongoId RESERVE = new MongoId("5d25e4d586f77443e625e388");
     public static readonly MongoId REGULATED_MATERIALS = new MongoId("5d4bec3486f7743cac246665");
-    public static readonly MongoId AN_APPLE_A_DAY_KEEPS_THE_DOCTOR_AWAY = new MongoId(
-        "5d6fb2c086f77449da599c24"
-    );
+    public static readonly MongoId AN_APPLE_A_DAY_KEEPS_THE_DOCTOR_AWAY = new MongoId("5d6fb2c086f77449da599c24");
     public static readonly MongoId MENTOR = new MongoId("5d6fbc2886f77449d825f9d3");
     public static readonly MongoId THE_STYLISH_ONE = new MongoId("5dc53acb86f77469c740c893");
     public static readonly MongoId TEXTILE_PART_1_BEAR = new MongoId("5e381b0286f77420e3417a74");
     public static readonly MongoId TEXTILE_PART_1_USEC = new MongoId("5e383a6386f77465910ce1f3");
     public static readonly MongoId TEXTILE_PART_2_BEAR = new MongoId("5e4d4ac186f774264f758336");
     public static readonly MongoId TEXTILE_PART_2_USEC = new MongoId("5e4d515e86f77438b2195244");
-    public static readonly MongoId THE_SURVIVALIST_PATH_JUNKIE = new MongoId(
-        "5eaaaa7c93afa0558f3b5a1c"
-    );
+    public static readonly MongoId THE_SURVIVALIST_PATH_JUNKIE = new MongoId("5eaaaa7c93afa0558f3b5a1c");
     public static readonly MongoId ANESTHESIA = new MongoId("5eda19f0edce541157209cee");
-    public static readonly MongoId THE_HUNTSMAN_PATH_SADIST = new MongoId(
-        "5edab4b1218d181e29451435"
-    );
+    public static readonly MongoId THE_HUNTSMAN_PATH_SADIST = new MongoId("5edab4b1218d181e29451435");
     public static readonly MongoId COLLEAGUES_PART_1 = new MongoId("5edab736cc183c769d778bc2");
     public static readonly MongoId COLLEAGUES_PART_2 = new MongoId("5edaba7c0c502106f869bc02");
     public static readonly MongoId RIGGED_GAME = new MongoId("5edabd13218d181e29451442");
@@ -306,9 +208,7 @@ public static class QuestTpl
     public static readonly MongoId SEARCH_MISSION = new MongoId("5fd9fad9c1ce6b1a3b486d00");
     public static readonly MongoId HUNTER = new MongoId("600302d73b897b11364cd161");
     public static readonly MongoId REVISION_RESERVE = new MongoId("6086c852c945025d41566124");
-    public static readonly MongoId CLASSIFIED_TECHNOLOGIES = new MongoId(
-        "60896888e4a85c72ef3fa300"
-    );
+    public static readonly MongoId CLASSIFIED_TECHNOLOGIES = new MongoId("60896888e4a85c72ef3fa300");
     public static readonly MongoId DOCUMENTS = new MongoId("60896b7bfa70fc097863b8f5");
     public static readonly MongoId NO_PLACE_FOR_RENEGADES = new MongoId("60896bca6ee58f38c417d4f2");
     public static readonly MongoId DISEASE_HISTORY = new MongoId("60896e28e4a85c72ef3fa301");
@@ -318,9 +218,7 @@ public static class QuestTpl
     public static readonly MongoId INVENTORY_CHECK = new MongoId("608974af4b05530f55550c21");
     public static readonly MongoId A_FUEL_MATTER = new MongoId("608974d01a66564e74191fc0");
     public static readonly MongoId PEST_CONTROL = new MongoId("608a768d82e40b3c727fd17d");
-    public static readonly MongoId THE_HUNTSMAN_PATH_FACTORY_CHIEF = new MongoId(
-        "60c0c018f7afb4354815096a"
-    );
+    public static readonly MongoId THE_HUNTSMAN_PATH_FACTORY_CHIEF = new MongoId("60c0c018f7afb4354815096a");
     public static readonly MongoId ESCORT = new MongoId("60e71b62a0beca400d69efc4");
     public static readonly MongoId CAPTURING_OUTPOSTS = new MongoId("60e71b9bbd90872cb85440f3");
     public static readonly MongoId INTIMIDATOR = new MongoId("60e71bb4e456d449cd47ca75");
@@ -333,16 +231,12 @@ public static class QuestTpl
     public static readonly MongoId THE_COURIER = new MongoId("60e71d6d7fcf9c556f325055");
     public static readonly MongoId LONG_LINE = new MongoId("60e71dc0a94be721b065bbfc");
     public static readonly MongoId BOOZE = new MongoId("60e71dc67fcf9c556f325056");
-    public static readonly MongoId THE_HUNTSMAN_PATH_RELENTLESS = new MongoId(
-        "60e71e8ed54b755a3b53eb67"
-    );
+    public static readonly MongoId THE_HUNTSMAN_PATH_RELENTLESS = new MongoId("60e71e8ed54b755a3b53eb67");
     public static readonly MongoId SWIFT_ONE = new MongoId("60e729cf5698ee7b05057439");
     public static readonly MongoId THE_CHOICE = new MongoId("60effd818b669d08a35bfad5");
     public static readonly MongoId EASY_JOB_PART_1 = new MongoId("6179ac7511973d018217d0b9");
     public static readonly MongoId EASY_JOB_PART_2 = new MongoId("6179acbdc760af5ad2053585");
-    public static readonly MongoId THE_HUNTSMAN_PATH_OUTCASTS = new MongoId(
-        "6179ad0a6e9dd54ac275e3f2"
-    );
+    public static readonly MongoId THE_HUNTSMAN_PATH_OUTCASTS = new MongoId("6179ad0a6e9dd54ac275e3f2");
     public static readonly MongoId SEASIDE_VACATION = new MongoId("6179ad56c760af5ad2053587");
     public static readonly MongoId LOST_CONTACT = new MongoId("6179afd0bca27a099552e040");
     public static readonly MongoId OVERPOPULATION = new MongoId("6179aff8f57fb279792c60a1");
@@ -355,24 +249,12 @@ public static class QuestTpl
     public static readonly MongoId THE_HERMIT = new MongoId("61904daa7d0d857927447b9c");
     public static readonly MongoId LONG_ROAD = new MongoId("6193850f60b34236ee0483de");
     public static readonly MongoId CARGO_X_PART_4 = new MongoId("61958c366726521dd96828ec");
-    public static readonly MongoId COMPENSATION_FOR_DAMAGE_TRUST = new MongoId(
-        "61e6e5e0f5b9633f6719ed95"
-    );
-    public static readonly MongoId COMPENSATION_FOR_DAMAGE_WAGER = new MongoId(
-        "61e6e60223374d168a4576a6"
-    );
-    public static readonly MongoId COMPENSATION_FOR_DAMAGE_BARKEEP = new MongoId(
-        "61e6e615eea2935bc018a2c5"
-    );
-    public static readonly MongoId COMPENSATION_FOR_DAMAGE_COLLECTION = new MongoId(
-        "61e6e621bfeab00251576265"
-    );
-    public static readonly MongoId NETWORK_PROVIDER_PART_1 = new MongoId(
-        "625d6ff5ddc94657c21a1625"
-    );
-    public static readonly MongoId NETWORK_PROVIDER_PART_2 = new MongoId(
-        "625d6ffaf7308432be1d44c5"
-    );
+    public static readonly MongoId COMPENSATION_FOR_DAMAGE_TRUST = new MongoId("61e6e5e0f5b9633f6719ed95");
+    public static readonly MongoId COMPENSATION_FOR_DAMAGE_WAGER = new MongoId("61e6e60223374d168a4576a6");
+    public static readonly MongoId COMPENSATION_FOR_DAMAGE_BARKEEP = new MongoId("61e6e615eea2935bc018a2c5");
+    public static readonly MongoId COMPENSATION_FOR_DAMAGE_COLLECTION = new MongoId("61e6e621bfeab00251576265");
+    public static readonly MongoId NETWORK_PROVIDER_PART_1 = new MongoId("625d6ff5ddc94657c21a1625");
+    public static readonly MongoId NETWORK_PROVIDER_PART_2 = new MongoId("625d6ffaf7308432be1d44c5");
     public static readonly MongoId ASSESSMENT_PART_1 = new MongoId("625d6ffcaa168e51321d69d7");
     public static readonly MongoId ASSESSMENT_PART_2 = new MongoId("625d6fff4149f1149b5b12c9");
     public static readonly MongoId ASSESSMENT_PART_3 = new MongoId("625d7001c4874104f230c0c5");
@@ -387,9 +269,7 @@ public static class QuestTpl
     public static readonly MongoId BROADCAST_PART_1 = new MongoId("626bd75e47ea7f506e5493c5");
     public static readonly MongoId STRAY_DOGS = new MongoId("626bdcc3a371ee3a7a3514c5");
     public static readonly MongoId AUDIT = new MongoId("638fcd23dc65553116701d33");
-    public static readonly MongoId YOUR_CAR_NEEDS_A_SERVICE = new MongoId(
-        "639135534b15ca31f76bc317"
-    );
+    public static readonly MongoId YOUR_CAR_NEEDS_A_SERVICE = new MongoId("639135534b15ca31f76bc317");
     public static readonly MongoId YOUVE_GOT_MAIL = new MongoId("6391359b9444fb141f4e6ee6");
     public static readonly MongoId BALLET_LOVER = new MongoId("639135a7e705511c8a4a1b78");
     public static readonly MongoId GLORY_TO_CPSU_PART_1 = new MongoId("639135b04ed9512be67647d7");
@@ -399,13 +279,9 @@ public static class QuestTpl
     public static readonly MongoId POPULATION_CENSUS = new MongoId("639135d89444fb141f4e6eea");
     public static readonly MongoId URBAN_MEDICINE = new MongoId("639135e0fa894f0a866afde6");
     public static readonly MongoId SURVEILLANCE = new MongoId("639135e8c115f907b14700aa");
-    public static readonly MongoId REVISION_STREETS_OF_TARKOV = new MongoId(
-        "639135f286e646067c176a87"
-    );
+    public static readonly MongoId REVISION_STREETS_OF_TARKOV = new MongoId("639135f286e646067c176a87");
     public static readonly MongoId GREEN_CORRIDOR = new MongoId("639136d68ba6894d155e77cf");
-    public static readonly MongoId THE_HUNTSMAN_PATH_ADMINISTRATOR = new MongoId(
-        "639136df4b15ca31f76bc31f"
-    );
+    public static readonly MongoId THE_HUNTSMAN_PATH_ADMINISTRATOR = new MongoId("639136df4b15ca31f76bc31f");
     public static readonly MongoId CEASE_FIRE = new MongoId("639136e84ed9512be67647db");
     public static readonly MongoId KINGS_OF_THE_ROOFTOPS = new MongoId("639136f086e646067c176a8b");
     public static readonly MongoId WATCHING_YOU = new MongoId("639136fa9444fb141f4e6eee");
@@ -419,14 +295,10 @@ public static class QuestTpl
     public static readonly MongoId PAYBACK = new MongoId("63966fd9ea19ac7ed845db30");
     public static readonly MongoId RETURN_THE_FAVOR = new MongoId("63966fe7ea74a47c2d3fc0e6");
     public static readonly MongoId PROVOCATION = new MongoId("63966ff54c3ef01b6f3ffad8");
-    public static readonly MongoId FOLLOWING_THE_BREAD_CRUMBS = new MongoId(
-        "639670029113f06a7c3b2377"
-    );
+    public static readonly MongoId FOLLOWING_THE_BREAD_CRUMBS = new MongoId("639670029113f06a7c3b2377");
     public static readonly MongoId SPOTTER = new MongoId("6396700fea19ac7ed845db32");
     public static readonly MongoId MAKE_AN_IMPRESSION = new MongoId("6396701b9113f06a7c3b2379");
-    public static readonly MongoId TROUBLE_IN_THE_BIG_CITY = new MongoId(
-        "63967028c4a91c5cb76abd81"
-    );
+    public static readonly MongoId TROUBLE_IN_THE_BIG_CITY = new MongoId("63967028c4a91c5cb76abd81");
     public static readonly MongoId GUNSMITH_PART_4 = new MongoId("639872f9decada40426d3447");
     public static readonly MongoId GUNSMITH_PART_9 = new MongoId("639872fa9b4fb827b200d8e5");
     public static readonly MongoId GUNSMITH_PART_11 = new MongoId("639872fc93ae507d5858c3a6");
@@ -448,16 +320,10 @@ public static class QuestTpl
     public static readonly MongoId HUSTLE = new MongoId("649567f359eab30d1b7c9585");
     public static readonly MongoId TOURISTS = new MongoId("649570491bb4d158bc4d0168");
     public static readonly MongoId COCKTAIL_TASTING = new MongoId("649af47d717cb30e7e4b5e26");
-    public static readonly MongoId THE_HUNTSMAN_PATH_BIG_GAME = new MongoId(
-        "64e7b971f9d6fa49d6769b44"
-    );
+    public static readonly MongoId THE_HUNTSMAN_PATH_BIG_GAME = new MongoId("64e7b971f9d6fa49d6769b44");
     public static readonly MongoId GENDARMERIE_MALL_COP = new MongoId("64e7b99017ab941a6f7bf9d7");
-    public static readonly MongoId GENDARMERIE_TICKETS_PLEASE = new MongoId(
-        "64e7b9a4aac4cd0a726562cb"
-    );
-    public static readonly MongoId GENDARMERIE_DISTRICT_PATROL = new MongoId(
-        "64e7b9bffd30422ed03dad38"
-    );
+    public static readonly MongoId GENDARMERIE_TICKETS_PLEASE = new MongoId("64e7b9a4aac4cd0a726562cb");
+    public static readonly MongoId GENDARMERIE_DISTRICT_PATROL = new MongoId("64e7b9bffd30422ed03dad38");
     public static readonly MongoId BROADCAST_PART_5 = new MongoId("64ee99639878a0569d6ec8c9");
     public static readonly MongoId THE_DOOR = new MongoId("64ee9df4496db64f9b7a4432");
     public static readonly MongoId OVERSEAS_TRUST_PART_1 = new MongoId("64f1cc571a5f313cb144bf90");
@@ -465,15 +331,9 @@ public static class QuestTpl
     public static readonly MongoId AMBULANCES_AGAIN = new MongoId("64f3176921045e77405d63b5");
     public static readonly MongoId GLORY_TO_CPSU_PART_2 = new MongoId("64f5aac4b63b74469b6c14c2");
     public static readonly MongoId TEST_DRIVE_PART_3 = new MongoId("64f5deac39e45b527a7c4232");
-    public static readonly MongoId BEYOND_THE_RED_MEAT_PART_1 = new MongoId(
-        "64f5e20652fc01298e2c61e3"
-    );
-    public static readonly MongoId BEYOND_THE_RED_MEAT_PART_2 = new MongoId(
-        "64f6aafd67e11a7c6206e0d0"
-    );
-    public static readonly MongoId PETS_WONT_NEED_IT_PART_1 = new MongoId(
-        "64f731ab83cfca080a361e42"
-    );
+    public static readonly MongoId BEYOND_THE_RED_MEAT_PART_1 = new MongoId("64f5e20652fc01298e2c61e3");
+    public static readonly MongoId BEYOND_THE_RED_MEAT_PART_2 = new MongoId("64f6aafd67e11a7c6206e0d0");
+    public static readonly MongoId PETS_WONT_NEED_IT_PART_1 = new MongoId("64f731ab83cfca080a361e42");
     public static readonly MongoId GUNSMITH_PART_23 = new MongoId("64f83bb69878a0569d6ecfbe");
     public static readonly MongoId GUNSMITH_PART_24 = new MongoId("64f83bcdde58fc437700d8fa");
     public static readonly MongoId GUNSMITH_PART_25 = new MongoId("64f83bd983cfca080a362c82");
@@ -484,59 +344,31 @@ public static class QuestTpl
     public static readonly MongoId LUXURIOUS_LIFE = new MongoId("657315e1dccd301f1301416a");
     public static readonly MongoId BURNING_RUBBER = new MongoId("657315e270bb0b8dba00cc48");
     public static readonly MongoId SAVING_THE_MOLE = new MongoId("657315e4a6af4ab4b50f3459");
-    public static readonly MongoId DEVELOPERS_SECRETS_PART_1 = new MongoId(
-        "65733403eefc2c312a759ddb"
-    );
-    public static readonly MongoId DEVELOPERS_SECRETS_PART_2 = new MongoId(
-        "6573382e557ff128bf3da536"
-    );
-    public static readonly MongoId PETS_WONT_NEED_IT_PART_2 = new MongoId(
-        "6573387d0b26ed4fde798de3"
-    );
+    public static readonly MongoId DEVELOPERS_SECRETS_PART_1 = new MongoId("65733403eefc2c312a759ddb");
+    public static readonly MongoId DEVELOPERS_SECRETS_PART_2 = new MongoId("6573382e557ff128bf3da536");
+    public static readonly MongoId PETS_WONT_NEED_IT_PART_2 = new MongoId("6573387d0b26ed4fde798de3");
     public static readonly MongoId PROPERTIES_ALL_AROUND = new MongoId("6573397ef3f8344c4575cd87");
     public static readonly MongoId DANDIES = new MongoId("65734c186dc1e402c80dc19e");
     public static readonly MongoId TEST_DRIVE_PART_4 = new MongoId("6574e0dedc0d635f633a5805");
-    public static readonly MongoId THE_HUNTSMAN_PATH_CROOKED_COP = new MongoId(
-        "6578eb36e5020875d64645cd"
-    );
+    public static readonly MongoId THE_HUNTSMAN_PATH_CROOKED_COP = new MongoId("6578eb36e5020875d64645cd");
     public static readonly MongoId STEADY_SIGNAL = new MongoId("6578ec473dbd035d04531a8d");
     public static readonly MongoId NO_SWIPING = new MongoId("658027799634223183395339");
-    public static readonly MongoId NOTHING_FISHY_ABOUT_THIS = new MongoId(
-        "65802b627b44fa5e14638899"
-    );
+    public static readonly MongoId NOTHING_FISHY_ABOUT_THIS = new MongoId("65802b627b44fa5e14638899");
     public static readonly MongoId THE_TARKOV_MYSTERY = new MongoId("6603fe74e773dcf3b0099f88");
     public static readonly MongoId EASY_MONEY_PART_1 = new MongoId("66058cb22cee99303f1ba067");
     public static readonly MongoId EASY_MONEY_PART_2 = new MongoId("66058cb5ae4719735349b9e8");
     public static readonly MongoId BALANCING_PART_1 = new MongoId("66058cb7c7f3584787181476");
     public static readonly MongoId BALANCING_PART_2 = new MongoId("66058cb9e8e4f17985230805");
     public static readonly MongoId SURPRISE = new MongoId("66058cbb06ef1d50a60c1f46");
-    public static readonly MongoId CREATE_A_DISTRACTION_PART_1 = new MongoId(
-        "66058cbd9f59e625462acc8e"
-    );
-    public static readonly MongoId CREATE_A_DISTRACTION_PART_2 = new MongoId(
-        "66058cbf2f19c31a5a1337ec"
-    );
-    public static readonly MongoId TO_GREAT_HEIGHTS_PART_1 = new MongoId(
-        "66058cc1da30b620a34e6e86"
-    );
-    public static readonly MongoId TO_GREAT_HEIGHTS_PART_2 = new MongoId(
-        "66058cc208308761cf390993"
-    );
-    public static readonly MongoId TO_GREAT_HEIGHTS_PART_3 = new MongoId(
-        "66058cc5bb83da7ba474aba9"
-    );
-    public static readonly MongoId TO_GREAT_HEIGHTS_PART_4 = new MongoId(
-        "66058cc72cee99303f1ba069"
-    );
-    public static readonly MongoId TO_GREAT_HEIGHTS_PART_5 = new MongoId(
-        "66058cc9ae4719735349b9ea"
-    );
-    public static readonly MongoId AGAINST_THE_CONSCIENCE_PART_1 = new MongoId(
-        "66058ccbc7f3584787181478"
-    );
-    public static readonly MongoId AGAINST_THE_CONSCIENCE_PART_2 = new MongoId(
-        "66058ccde8e4f17985230807"
-    );
+    public static readonly MongoId CREATE_A_DISTRACTION_PART_1 = new MongoId("66058cbd9f59e625462acc8e");
+    public static readonly MongoId CREATE_A_DISTRACTION_PART_2 = new MongoId("66058cbf2f19c31a5a1337ec");
+    public static readonly MongoId TO_GREAT_HEIGHTS_PART_1 = new MongoId("66058cc1da30b620a34e6e86");
+    public static readonly MongoId TO_GREAT_HEIGHTS_PART_2 = new MongoId("66058cc208308761cf390993");
+    public static readonly MongoId TO_GREAT_HEIGHTS_PART_3 = new MongoId("66058cc5bb83da7ba474aba9");
+    public static readonly MongoId TO_GREAT_HEIGHTS_PART_4 = new MongoId("66058cc72cee99303f1ba069");
+    public static readonly MongoId TO_GREAT_HEIGHTS_PART_5 = new MongoId("66058cc9ae4719735349b9ea");
+    public static readonly MongoId AGAINST_THE_CONSCIENCE_PART_1 = new MongoId("66058ccbc7f3584787181478");
+    public static readonly MongoId AGAINST_THE_CONSCIENCE_PART_2 = new MongoId("66058ccde8e4f17985230807");
     public static readonly MongoId BETWEEN_TWO_FIRES = new MongoId("66058ccf06ef1d50a60c1f48");
     public static readonly MongoId DECISIONS_DECISIONS = new MongoId("66058cd19f59e625462acc90");
     public static readonly MongoId DRIP_OUT_PART_1_BEAR = new MongoId("6613f3007f6666d56807c929");
@@ -587,9 +419,7 @@ public static class QuestTpl
     public static readonly MongoId ALL_IS_REVEALED = new MongoId("669fa39ee749756c920d02c8");
     public static readonly MongoId DRAGNET = new MongoId("669fa3a08b4a64b332041ff7");
     public static readonly MongoId CAPACITY_CHECK = new MongoId("669fa3a1c26f13bd04030f37");
-    public static readonly MongoId HEALTH_CARE_PRIVACY_PART_6 = new MongoId(
-        "669fa3a3ad7f1eac2607ed48"
-    );
+    public static readonly MongoId HEALTH_CARE_PRIVACY_PART_6 = new MongoId("669fa3a3ad7f1eac2607ed48");
     public static readonly MongoId TEST_DRIVE_PART_5 = new MongoId("669fa3a40c828825de06d6a1");
     public static readonly MongoId GUNSMITH_SPECIAL_ORDER = new MongoId("66a74c628410476dd65543be");
     public static readonly MongoId GUN_CONNOISSEUR = new MongoId("66a75b44243a6548ff5e5ff9");
@@ -602,9 +432,7 @@ public static class QuestTpl
     public static readonly MongoId FORESTERS_DUTY = new MongoId("66ab9da7eb102b9bcd08591c");
     public static readonly MongoId BENEATH_THE_STREETS = new MongoId("66aba85403e0ee3101042877");
     public static readonly MongoId ROUGH_TARKOV = new MongoId("66b38c7bf85b8bf7250f9cb6");
-    public static readonly MongoId EVERY_HUNTER_KNOWS_THIS = new MongoId(
-        "66b38e144f2ab7cc530c3fe7"
-    );
+    public static readonly MongoId EVERY_HUNTER_KNOWS_THIS = new MongoId("66b38e144f2ab7cc530c3fe7");
     public static readonly MongoId IS_THIS_A_REFERENCE = new MongoId("66d9cbb67b491f9d5304f6e6");
     public static readonly MongoId INTO_THE_INFERNO = new MongoId("66e01aca214f88109006a4b5");
     public static readonly MongoId IN_AND_OUT = new MongoId("66e01ad15a8890455a0d9eea");
@@ -622,17 +450,13 @@ public static class QuestTpl
     public static readonly MongoId FIND_THE_SOURCE = new MongoId("67040c43ce929d6ee506c7c7");
     public static readonly MongoId GLOVES_OFF = new MongoId("67040c5b4ac6d9c18c0ade26");
     public static readonly MongoId SAMPLE_IV_A_NEW_HOPE = new MongoId("67040c78bf4be8a4ef041a65");
-    public static readonly MongoId DARKEST_HOUR_IS_JUST_BEFORE_DAWN = new MongoId(
-        "67040c92bf4be8a4ef041a6c"
-    );
+    public static readonly MongoId DARKEST_HOUR_IS_JUST_BEFORE_DAWN = new MongoId("67040c92bf4be8a4ef041a6c");
     public static readonly MongoId RADICAL_TREATMENT = new MongoId("67040cae4ac6d9c18c0ade2c");
     public static readonly MongoId FORGOTTEN_OATHS = new MongoId("67040ccdcc1f3752720376ef");
     public static readonly MongoId GLOBAL_THREAT = new MongoId("67190f6c1b3f4964d90d71e9");
     public static readonly MongoId WATCH_THE_WATCHER = new MongoId("67190f9c7b0991dc22064766");
     public static readonly MongoId NOT_A_STEP_BACK = new MongoId("67190febcce4a5fdf605d4f8");
-    public static readonly MongoId PRESSURED_BY_CIRCUMSTANCES = new MongoId(
-        "67191048eddf081d340d4c6e"
-    );
+    public static readonly MongoId PRESSURED_BY_CIRCUMSTANCES = new MongoId("67191048eddf081d340d4c6e");
     public static readonly MongoId CONSERVATION_AREA = new MongoId("671910d5dbd4354ac10e9784");
     public static readonly MongoId IRRESISTIBLE = new MongoId("671a49f77d49aea42c029b5f");
     public static readonly MongoId DANGEROUS_PROPS = new MongoId("671a59e43d73dac1360765cc");
@@ -640,9 +464,7 @@ public static class QuestTpl
     public static readonly MongoId SHIPPING_DELAY_PART_2 = new MongoId("673f2cd5d3346c2167020484");
     public static readonly MongoId SHIPPING_DELAY_PART_1 = new MongoId("673f348dd3346c21670217e7");
     public static readonly MongoId HOT_WHEELS = new MongoId("673f4e956f1b89c7bc0f56ef");
-    public static readonly MongoId HOT_WHEELS_LETS_TRY_AGAIN = new MongoId(
-        "673f5a4976553f78350bdac1"
-    );
+    public static readonly MongoId HOT_WHEELS_LETS_TRY_AGAIN = new MongoId("673f5a4976553f78350bdac1");
     public static readonly MongoId INEVITABLE_RESPONSE = new MongoId("673f6027352b4da8e00322d2");
     public static readonly MongoId ORDER_FROM_OUTSIDE = new MongoId("673f61a066e6a521aa04b62b");
     public static readonly MongoId BUILDING_FOUNDATIONS = new MongoId("673f629c5b555b53460cf827");
@@ -657,12 +479,8 @@ public static class QuestTpl
     public static readonly MongoId BATTERY_CHANGE_2 = new MongoId("6744a9dfef61d56e020b5c4a");
     public static readonly MongoId PROTECT_THE_SKY = new MongoId("6744ab1def61d56e020b5c56");
     public static readonly MongoId DISCOMBOBULATE = new MongoId("6744aca8d3346c216702c583");
-    public static readonly MongoId THE_PRICE_OF_INDEPENDENCE = new MongoId(
-        "6744af0969a58fceba101fed"
-    );
-    public static readonly MongoId THE_PRICE_OF_INDEPENDENCE_2 = new MongoId(
-        "6745cbee909d2013670a4a55"
-    );
+    public static readonly MongoId THE_PRICE_OF_INDEPENDENCE = new MongoId("6744af0969a58fceba101fed");
+    public static readonly MongoId THE_PRICE_OF_INDEPENDENCE_2 = new MongoId("6745cbee909d2013670a4a55");
     public static readonly MongoId THE_HIGHER_THEY_FLY = new MongoId("6745fae369a58fceba10343d");
     public static readonly MongoId SWIFT_RETRIBUTION = new MongoId("6745fcded0fbbc74ca0f721d");
     public static readonly MongoId SIMPLE_SIDE_JOB = new MongoId("6745fdddd3346c216702e0bf");
@@ -670,21 +488,15 @@ public static class QuestTpl
     public static readonly MongoId HINDSIGHT_2020 = new MongoId("674602307e3818d5bb069489");
     public static readonly MongoId KEY_PARTNER = new MongoId("6746053b5b555b53460d9896");
     public static readonly MongoId KILLER_ARGUMENT = new MongoId("674605df60a98cad1b0ec799");
-    public static readonly MongoId CHOOSE_YOUR_FRIENDS_WISELY = new MongoId(
-        "67460662d0fbbc74ca0f7229"
-    );
+    public static readonly MongoId CHOOSE_YOUR_FRIENDS_WISELY = new MongoId("67460662d0fbbc74ca0f7229");
     public static readonly MongoId CHRISTMAS_DINNER = new MongoId("675031be899713ccad00060c");
     public static readonly MongoId CHILLY = new MongoId("675031d3884e1da4a90b3bc9");
     public static readonly MongoId HIDE_IN_PLAIN_SIGHT = new MongoId("675031e1f300496cc4104450");
     public static readonly MongoId CHEER_UP = new MongoId("675031f57775aada6b0f96a1");
-    public static readonly MongoId HOLIDAY_BEYOND_THE_MEANS = new MongoId(
-        "6750320e23fc8fd9cc087d14"
-    );
+    public static readonly MongoId HOLIDAY_BEYOND_THE_MEANS = new MongoId("6750320e23fc8fd9cc087d14");
     public static readonly MongoId ILLEGAL_LOGGING = new MongoId("67503219527c9a38e80496ae");
     public static readonly MongoId KHOROVOD = new MongoId("67503247622398376d0b57cd");
-    public static readonly MongoId ENOUGH_DRINKS_FOR_THAT_ONE = new MongoId(
-        "67503260899713ccad00060e"
-    );
+    public static readonly MongoId ENOUGH_DRINKS_FOR_THAT_ONE = new MongoId("67503260899713ccad00060e");
     public static readonly MongoId A_HELPING_HAND = new MongoId("6752f6d83038f7df520c83e8");
     public static readonly MongoId ABANDONED_CARGO = new MongoId("675c03d1f7da9792a405549a");
     public static readonly MongoId SHIPMENT_TRACKING = new MongoId("675c047fa46173572a0bd878");
@@ -699,28 +511,18 @@ public static class QuestTpl
     public static readonly MongoId BELKA_AND_STRELKA = new MongoId("675c3507a06634b5110e3c18");
     public static readonly MongoId PRIVATE_CLUB = new MongoId("675c3582f6ddc329a90f9c6d");
     public static readonly MongoId CONNECTIONS_UP_NORTH = new MongoId("6764174c86addd02bc033d68");
-    public static readonly MongoId GUNSMITH_OLD_FRIENDS_REQUEST = new MongoId(
-        "676529af9c90953d090882e7"
-    );
-    public static readonly MongoId THE_PRICE_OF_CELEBRATION = new MongoId(
-        "676c243577f0257dd50239e6"
-    );
+    public static readonly MongoId GUNSMITH_OLD_FRIENDS_REQUEST = new MongoId("676529af9c90953d090882e7");
+    public static readonly MongoId THE_PRICE_OF_CELEBRATION = new MongoId("676c243577f0257dd50239e6");
     public static readonly MongoId THIS_IS_MY_PARTY = new MongoId("676c243fb16f4b14b905e7f4");
     public static readonly MongoId SHADY_CONTRACTOR = new MongoId("67a09636b8725511260bc421");
     public static readonly MongoId NEEDLE_IN_A_HAYSTACK = new MongoId("67a0964e972c11a3f507731b");
     public static readonly MongoId HIDDEN_LAYER = new MongoId("67a096577e86e067eb045733");
     public static readonly MongoId FORCED_ALLIANCE = new MongoId("67a0966817e34930e500754c");
     public static readonly MongoId THE_TARKOV_BUTCHER = new MongoId("67a09673972c11a3f507731d");
-    public static readonly MongoId SENSORY_ANALYSIS_PART_1 = new MongoId(
-        "67a0967c003a9986cb0f5ac1"
-    );
-    public static readonly MongoId SENSORY_ANALYSIS_PART_2 = new MongoId(
-        "67a096ed77dd677f600804ba"
-    );
+    public static readonly MongoId SENSORY_ANALYSIS_PART_1 = new MongoId("67a0967c003a9986cb0f5ac1");
+    public static readonly MongoId SENSORY_ANALYSIS_PART_2 = new MongoId("67a096ed77dd677f600804ba");
     public static readonly MongoId HOT_ZONE = new MongoId("67a096f605d1611ed90be75a");
-    public static readonly MongoId OFFENSIVE_RECONNAISSANCE = new MongoId(
-        "67a0970744893b9f3f0d9b68"
-    );
+    public static readonly MongoId OFFENSIVE_RECONNAISSANCE = new MongoId("67a0970744893b9f3f0d9b68");
     public static readonly MongoId HYPOTHESES_TESTING = new MongoId("67a0970f05d1611ed90be75d");
     public static readonly MongoId CONFIDENTIAL_INFO = new MongoId("67a09724972c11a3f5077324");
     public static readonly MongoId THIS_TAPE_SUCKS = new MongoId("67a0972e77dd677f600804bd");
@@ -728,9 +530,7 @@ public static class QuestTpl
     public static readonly MongoId KEEPERS_WORD = new MongoId("67a09761e720611a6a01f288");
     public static readonly MongoId PROFITABLE_VENTURE = new MongoId("67af4c1405c58dc6f7056667");
     public static readonly MongoId SAFETY_GUARANTEE = new MongoId("67af4c169d95ad16e004fd86");
-    public static readonly MongoId NEVER_TOO_LATE_TO_LEARN = new MongoId(
-        "67af4c17f4f1fb58a907f8f6"
-    );
+    public static readonly MongoId NEVER_TOO_LATE_TO_LEARN = new MongoId("67af4c17f4f1fb58a907f8f6");
     public static readonly MongoId GET_A_FOOTHOLD = new MongoId("67af4c1991ee75c6d7060a16");
     public static readonly MongoId PROFIT_RETENTION = new MongoId("67af4c1a6c3ebfd8e6034916");
     public static readonly MongoId A_LIFE_LESSON = new MongoId("67af4c1cc0e59d55e2010b97");

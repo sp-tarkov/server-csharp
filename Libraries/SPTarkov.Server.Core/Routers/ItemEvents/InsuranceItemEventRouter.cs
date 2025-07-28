@@ -11,8 +11,7 @@ using SPTarkov.Server.Core.Models.Enums;
 namespace SPTarkov.Server.Core.Routers.ItemEvents;
 
 [Injectable]
-public class InsuranceItemEventRouter(InsuranceCallbacks insuranceCallbacks)
-    : ItemEventRouterDefinition
+public class InsuranceItemEventRouter(InsuranceCallbacks insuranceCallbacks) : ItemEventRouterDefinition
 {
     protected override List<HandledRoute> GetHandledRoutes()
     {
@@ -30,13 +29,9 @@ public class InsuranceItemEventRouter(InsuranceCallbacks insuranceCallbacks)
         switch (url)
         {
             case ItemEventActions.INSURE:
-                return new ValueTask<ItemEventRouterResponse>(
-                    insuranceCallbacks.Insure(pmcData, body as InsureRequestData, sessionID)
-                );
+                return new ValueTask<ItemEventRouterResponse>(insuranceCallbacks.Insure(pmcData, body as InsureRequestData, sessionID));
             default:
-                throw new Exception(
-                    $"InsuranceItemEventRouter being used when it cant handle route {url}"
-                );
+                throw new Exception($"InsuranceItemEventRouter being used when it cant handle route {url}");
         }
     }
 }

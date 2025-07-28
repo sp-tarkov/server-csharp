@@ -36,10 +36,7 @@ public class InRaidController(
     /// </summary>
     /// <param name="offRaidProfileData"></param>
     /// <param name="sessionId">Session/Player id</param>
-    public void SavePostRaidProfileForScav(
-        ScavSaveRequestData offRaidProfileData,
-        MongoId sessionId
-    )
+    public void SavePostRaidProfileForScav(ScavSaveRequestData offRaidProfileData, MongoId sessionId)
     {
         var serverScavProfile = profileHelper.GetScavProfile(sessionId);
 

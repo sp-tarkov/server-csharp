@@ -8,11 +8,7 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class NotifierController(
-    HttpServerHelper httpServerHelper,
-    NotifierHelper notifierHelper,
-    NotificationService notificationService
-)
+public class NotifierController(HttpServerHelper httpServerHelper, NotifierHelper notifierHelper, NotificationService notificationService)
 {
     protected const int PollInterval = 300;
     protected const int Timeout = 15000;

@@ -10,11 +10,7 @@ using SPTarkov.Server.Core.Utils.Cloners;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable(InjectionType.Singleton)]
-public class HandbookHelper(
-    DatabaseService databaseService,
-    ConfigServer configServer,
-    ICloner cloner
-)
+public class HandbookHelper(DatabaseService databaseService, ConfigServer configServer, ICloner cloner)
 {
     private LookupCollection? _handbookPriceCache;
     protected virtual LookupCollection HandbookPriceCache
@@ -75,10 +71,7 @@ public class HandbookHelper(
                     result.Categories.ByParent.TryAdd(handbookCategory.ParentId.Value, []);
                 }
 
-                result.Categories.ByParent.TryGetValue(
-                    handbookCategory.ParentId.Value,
-                    out var itemIds
-                );
+                result.Categories.ByParent.TryGetValue(handbookCategory.ParentId.Value, out var itemIds);
 
                 itemIds.Add(handbookCategory.Id);
             }
@@ -100,9 +93,7 @@ public class HandbookHelper(
             return itemPrice;
         }
 
-        var handbookItem = databaseService
-            .GetHandbook()
-            .Items?.FirstOrDefault(item => item.Id == tpl);
+        var handbookItem = databaseService.GetHandbook().Items?.FirstOrDefault(item => item.Id == tpl);
         if (handbookItem is null)
         {
             const int newValue = 0;
@@ -207,9 +198,7 @@ public class HandbookHelper(
 
     public HandbookCategory GetCategoryById(MongoId handbookId)
     {
-        return databaseService
-            .GetHandbook()
-            .Categories.FirstOrDefault(category => category.Id == handbookId);
+        return databaseService.GetHandbook().Categories.FirstOrDefault(category => category.Id == handbookId);
     }
 
     protected record LookupItem<T, I>

@@ -24,8 +24,7 @@ public class BtrDeliveryService(
     ServerLocalisationService serverLocalisationService
 )
 {
-    protected readonly BtrDeliveryConfig _btrDeliveryConfig =
-        configServer.GetConfig<BtrDeliveryConfig>();
+    protected readonly BtrDeliveryConfig _btrDeliveryConfig = configServer.GetConfig<BtrDeliveryConfig>();
     protected readonly TraderConfig _traderConfig = configServer.GetConfig<TraderConfig>();
 
     protected static readonly List<string> _transferTypes = ["btr", "transit"];
@@ -71,9 +70,7 @@ public class BtrDeliveryService(
         // Remove any items that were returned by the item delivery, but also insured, from the player's insurance list
         // This is to stop items being duplicated by being returned from both item delivery and insurance
         var deliveredItemIds = items.Select(item => item.Id).ToHashSet();
-        pmcData.InsuredItems = pmcData
-            .InsuredItems.Where(insuredItem => !deliveredItemIds.Contains(insuredItem.ItemId.Value))
-            .ToList();
+        pmcData.InsuredItems = pmcData.InsuredItems.Where(insuredItem => !deliveredItemIds.Contains(insuredItem.ItemId.Value)).ToList();
 
         saveServer.GetProfile(sessionId).BtrDeliveryList ??= [];
 
@@ -95,31 +92,19 @@ public class BtrDeliveryService(
         var dialogueTemplates = databaseService.GetTrader(Traders.BTR).Dialogue;
         if (dialogueTemplates is null)
         {
-            logger.Error(
-                serverLocalisationService.GetText(
-                    "inraid-unable_to_deliver_item_no_trader_found",
-                    Traders.BTR
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("inraid-unable_to_deliver_item_no_trader_found", Traders.BTR));
             return;
         }
 
         if (!dialogueTemplates.TryGetValue("itemsDelivered", out var itemsDelivered))
         {
-            logger.Error(
-                serverLocalisationService.GetText(
-                    "btr-unable_to_find_items_in_dialog_template",
-                    sessionId
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("btr-unable_to_find_items_in_dialog_template", sessionId));
 
             return;
         }
 
         var messageId = randomUtil.GetArrayValue(itemsDelivered);
-        var messageStoreTime = timeUtil.GetHoursAsSeconds(
-            _traderConfig.Fence.BtrDeliveryExpireHours
-        );
+        var messageStoreTime = timeUtil.GetHoursAsSeconds(_traderConfig.Fence.BtrDeliveryExpireHours);
 
         // Send the items to the player
         mailSendService.SendLocalisedNpcMessageToPlayer(
@@ -140,15 +125,11 @@ public class BtrDeliveryService(
     public void RemoveBTRDeliveryPackageFromProfile(MongoId sessionId, BtrDelivery delivery)
     {
         var profile = saveServer.GetProfile(sessionId);
-        profile.BtrDeliveryList = profile
-            .BtrDeliveryList.Where(package => package.Id != delivery.Id)
-            .ToList();
+        profile.BtrDeliveryList = profile.BtrDeliveryList.Where(package => package.Id != delivery.Id).ToList();
 
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            logger.Debug(
-                $"Removed processed BTR delivery package. Remaining packages: {profile.BtrDeliveryList.Count}"
-            );
+            logger.Debug($"Removed processed BTR delivery package. Remaining packages: {profile.BtrDeliveryList.Count}");
         }
     }
 
@@ -163,9 +144,7 @@ public class BtrDeliveryService(
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                logger.Debug(
-                    $"BTR delivery override used: returning in {_btrDeliveryConfig.ReturnTimeOverrideSeconds} seconds"
-                );
+                logger.Debug($"BTR delivery override used: returning in {_btrDeliveryConfig.ReturnTimeOverrideSeconds} seconds");
             }
 
             return timeUtil.GetTimeStamp() + _btrDeliveryConfig.ReturnTimeOverrideSeconds;

@@ -62,9 +62,7 @@ public class RagfairCallbacks(
     /// <returns></returns>
     public ValueTask<string> Search(string url, SearchRequestData info, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(ragfairController.GetOffers(sessionID, info))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(ragfairController.GetOffers(sessionID, info)));
     }
 
     /// <summary>
@@ -74,15 +72,9 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ValueTask<string> GetMarketPrice(
-        string url,
-        GetMarketPriceRequestData info,
-        MongoId sessionID
-    )
+    public ValueTask<string> GetMarketPrice(string url, GetMarketPriceRequestData info, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(ragfairController.GetItemMinAvgMaxFleaPriceValues(info))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(ragfairController.GetItemMinAvgMaxFleaPriceValues(info)));
     }
 
     /// <summary>
@@ -92,11 +84,7 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse AddOffer(
-        PmcData pmcData,
-        AddOfferRequestData info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse AddOffer(PmcData pmcData, AddOfferRequestData info, MongoId sessionID)
     {
         return ragfairController.AddPlayerOffer(pmcData, info, sessionID);
     }
@@ -108,11 +96,7 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse RemoveOffer(
-        PmcData pmcData,
-        RemoveOfferRequestData info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse RemoveOffer(PmcData pmcData, RemoveOfferRequestData info, MongoId sessionID)
     {
         return ragfairController.FlagOfferForRemoval(info.OfferId, sessionID);
     }
@@ -124,11 +108,7 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ExtendOffer(
-        PmcData pmcData,
-        ExtendOfferRequestData info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse ExtendOffer(PmcData pmcData, ExtendOfferRequestData info, MongoId sessionID)
     {
         return ragfairController.ExtendOffer(info, sessionID);
     }
@@ -143,9 +123,7 @@ public class RagfairCallbacks(
     /// <returns></returns>
     public ValueTask<string> GetFleaPrices(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(ragfairController.GetAllFleaPrices())
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(ragfairController.GetAllFleaPrices()));
     }
 
     /// <summary>
@@ -155,20 +133,12 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ValueTask<string> SendReport(
-        string url,
-        SendRagfairReportRequestData info,
-        MongoId sessionID
-    )
+    public ValueTask<string> SendReport(string url, SendRagfairReportRequestData info, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.NullResponse());
     }
 
-    public ValueTask<string> StorePlayerOfferTaxAmount(
-        string url,
-        StorePlayerOfferTaxAmountRequestData info,
-        MongoId sessionID
-    )
+    public ValueTask<string> StorePlayerOfferTaxAmount(string url, StorePlayerOfferTaxAmountRequestData info, MongoId sessionID)
     {
         ragfairTaxService.StoreClientOfferTaxValue(sessionID, info);
         return new ValueTask<string>(httpResponseUtil.NullResponse());
@@ -181,14 +151,8 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ValueTask<string> GetFleaOfferById(
-        string url,
-        GetRagfairOfferByIdRequest info,
-        MongoId sessionID
-    )
+    public ValueTask<string> GetFleaOfferById(string url, GetRagfairOfferByIdRequest info, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(ragfairController.GetOfferByInternalId(sessionID, info))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(ragfairController.GetOfferByInternalId(sessionID, info)));
     }
 }

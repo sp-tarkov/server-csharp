@@ -51,12 +51,7 @@ public class SptCommandoCommands : IChatCommand
         get { return _sptCommands.Keys.ToList(); }
     }
 
-    public async ValueTask<string> Handle(
-        string command,
-        UserDialogInfo commandHandler,
-        MongoId sessionId,
-        SendMessageRequest request
-    )
+    public async ValueTask<string> Handle(string command, UserDialogInfo commandHandler, MongoId sessionId, SendMessageRequest request)
     {
         return await _sptCommands[command].PerformAction(commandHandler, sessionId, request);
     }
@@ -66,12 +61,7 @@ public class SptCommandoCommands : IChatCommand
         var key = command.Command;
         if (!_sptCommands.TryAdd(key, command))
         {
-            throw new Exception(
-                _serverLocalisationService.GetText(
-                    "chat-unable_to_register_command_already_registered",
-                    key
-                )
-            );
+            throw new Exception(_serverLocalisationService.GetText("chat-unable_to_register_command_already_registered", key));
         }
     }
 }

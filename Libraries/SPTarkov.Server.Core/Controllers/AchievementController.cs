@@ -9,11 +9,7 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class AchievementController(
-    ProfileHelper profileHelper,
-    DatabaseService databaseService,
-    ConfigServer configServer
-)
+public class AchievementController(ProfileHelper profileHelper, DatabaseService databaseService, ConfigServer configServer)
 {
     protected readonly CoreConfig coreConfig = configServer.GetConfig<CoreConfig>();
 
@@ -37,11 +33,7 @@ public class AchievementController(
         var stats = new Dictionary<string, int>();
         var profiles = profileHelper
             .GetProfiles()
-            .Where(kvp =>
-                !coreConfig.Features.AchievementProfileIdBlacklist.Contains(
-                    kvp.Value.ProfileInfo.ProfileId
-                )
-            )
+            .Where(kvp => !coreConfig.Features.AchievementProfileIdBlacklist.Contains(kvp.Value.ProfileInfo.ProfileId))
             .ToDictionary();
 
         var achievements = databaseService.GetAchievements();
@@ -70,8 +62,7 @@ public class AchievementController(
             var percentage = 0;
             if (profiles.Count > 0)
             {
-                percentage = (int)
-                    Math.Round((double)profilesHaveAchievement / profiles.Count * 100);
+                percentage = (int)Math.Round((double)profilesHaveAchievement / profiles.Count * 100);
             }
 
             stats.Add(achievementId, percentage);

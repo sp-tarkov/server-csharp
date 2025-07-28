@@ -95,8 +95,7 @@ public class DialogueHelper(ISptLogger<DialogueHelper> logger, ProfileHelper pro
     public Dictionary<string, Models.Eft.Profile.Dialogue> GetDialogsForProfile(MongoId sessionId)
     {
         var profile = profileHelper.GetFullProfile(sessionId);
-        return profile.DialogueRecords
-            ?? (profile.DialogueRecords = new Dictionary<string, Models.Eft.Profile.Dialogue>());
+        return profile.DialogueRecords ?? (profile.DialogueRecords = new Dictionary<string, Models.Eft.Profile.Dialogue>());
     }
 
     /// <summary>

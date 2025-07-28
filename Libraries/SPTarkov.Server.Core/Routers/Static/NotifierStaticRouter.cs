@@ -17,20 +17,11 @@ public class NotifierStaticRouter : StaticRouter
                 new RouteAction(
                     "/client/notifier/channel/create",
                     async (url, info, sessionID, output) =>
-                        await notifierCallbacks.CreateNotifierChannel(
-                            url,
-                            info as EmptyRequestData,
-                            sessionID
-                        )
+                        await notifierCallbacks.CreateNotifierChannel(url, info as EmptyRequestData, sessionID)
                 ),
                 new RouteAction(
                     "/client/game/profile/select",
-                    async (url, info, sessionID, output) =>
-                        await notifierCallbacks.SelectProfile(
-                            url,
-                            info as UIDRequestData,
-                            sessionID
-                        ),
+                    async (url, info, sessionID, output) => await notifierCallbacks.SelectProfile(url, info as UIDRequestData, sessionID),
                     typeof(UIDRequestData)
                 ),
             ]

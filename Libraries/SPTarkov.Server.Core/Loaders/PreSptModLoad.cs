@@ -7,10 +7,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Loaders;
 
 [Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.PreSptModLoader)]
-public class PreSptModLoader(
-    ISptLogger<PreSptModLoader> _logger,
-    IEnumerable<IPreSptLoadModAsync> _preSptLoadMods
-) : IOnLoad
+public class PreSptModLoader(ISptLogger<PreSptModLoader> _logger, IEnumerable<IPreSptLoadModAsync> _preSptLoadMods) : IOnLoad
 {
     public async Task OnLoad()
     {

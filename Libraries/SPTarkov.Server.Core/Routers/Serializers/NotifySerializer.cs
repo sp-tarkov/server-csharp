@@ -9,11 +9,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Routers.Serializers;
 
 [Injectable]
-public class NotifySerializer(
-    NotifierController notifierController,
-    JsonUtil jsonUtil,
-    HttpServerHelper httpServerHelper
-) : ISerializer
+public class NotifySerializer(NotifierController notifierController, JsonUtil jsonUtil, HttpServerHelper httpServerHelper) : ISerializer
 {
     public async Task Serialize(MongoId sessionID, HttpRequest req, HttpResponse resp, object? body)
     {
@@ -26,9 +22,7 @@ public class NotifySerializer(
          */
         await notifierController
             .NotifyAsync(tmpSessionID)
-            .ContinueWith(messages =>
-                messages.Result.Select(message => string.Join("\n", jsonUtil.Serialize(message)))
-            )
+            .ContinueWith(messages => messages.Result.Select(message => string.Join("\n", jsonUtil.Serialize(message))))
             .ContinueWith(text => httpServerHelper.SendTextJson(resp, text));
     }
 

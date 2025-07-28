@@ -14,15 +14,10 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.TraderCommand;
 
 [Injectable]
-public class TraderSptCommand(
-    ISptLogger<TraderSptCommand> _logger,
-    TraderHelper _traderHelper,
-    MailSendService _mailSendService
-) : ISptCommand
+public class TraderSptCommand(ISptLogger<TraderSptCommand> _logger, TraderHelper _traderHelper, MailSendService _mailSendService)
+    : ISptCommand
 {
-    protected readonly Regex _commandRegex = new(
-        @"^spt trader (?<trader>[\w]+) (?<command>rep|spend) (?<quantity>(?!0+)[0-9]+)$"
-    );
+    protected readonly Regex _commandRegex = new(@"^spt trader (?<trader>[\w]+) (?<command>rep|spend) (?<quantity>(?!0+)[0-9]+)$");
 
     public string Command
     {
@@ -37,11 +32,7 @@ public class TraderSptCommand(
         }
     }
 
-    public ValueTask<string> PerformAction(
-        UserDialogInfo commandHandler,
-        MongoId sessionId,
-        SendMessageRequest request
-    )
+    public ValueTask<string> PerformAction(UserDialogInfo commandHandler, MongoId sessionId, SendMessageRequest request)
     {
         if (!_commandRegex.IsMatch(request.Text))
         {
@@ -55,19 +46,9 @@ public class TraderSptCommand(
 
         var result = _commandRegex.Match(request.Text);
 
-        var trader =
-            result.Groups["trader"].Captures.Count > 0
-                ? result.Groups["trader"].Captures[0].Value
-                : null;
-        var command =
-            result.Groups["command"].Captures.Count > 0
-                ? result.Groups["command"].Captures[0].Value
-                : null;
-        var quantity = double.Parse(
-            result.Groups["command"].Captures.Count > 0
-                ? result.Groups["quantity"].Captures[0].Value
-                : "0"
-        );
+        var trader = result.Groups["trader"].Captures.Count > 0 ? result.Groups["trader"].Captures[0].Value : null;
+        var command = result.Groups["command"].Captures.Count > 0 ? result.Groups["command"].Captures[0].Value : null;
+        var quantity = double.Parse(result.Groups["command"].Captures.Count > 0 ? result.Groups["quantity"].Captures[0].Value : "0");
 
         var dbTrader = _traderHelper.GetTraderByNickName(trader);
         if (dbTrader == null)
@@ -123,11 +104,7 @@ public class TraderSptCommand(
         return new ValueTask<string>(request.DialogId);
     }
 
-    protected ProfileChangeEvent CreateProfileChangeEvent(
-        NotificationEventType profileChangeEventType,
-        double quantity,
-        string dbTraderId
-    )
+    protected ProfileChangeEvent CreateProfileChangeEvent(NotificationEventType profileChangeEventType, double quantity, string dbTraderId)
     {
         return new ProfileChangeEvent
         {

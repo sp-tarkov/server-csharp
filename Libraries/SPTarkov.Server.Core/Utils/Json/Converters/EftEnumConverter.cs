@@ -11,28 +11,17 @@ public class EftEnumConverterFactory : JsonConverterFactory
         return typeToConvert.IsEnum;
     }
 
-    public override JsonConverter? CreateConverter(
-        Type typeToConvert,
-        JsonSerializerOptions options
-    )
+    public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        return Activator.CreateInstance(typeof(EftEnumConverter<>).MakeGenericType(typeToConvert))
-            as JsonConverter;
+        return Activator.CreateInstance(typeof(EftEnumConverter<>).MakeGenericType(typeToConvert)) as JsonConverter;
     }
 }
 
 public class EftEnumConverter<T> : JsonConverter<T>
 {
-    public override T? Read(
-        ref Utf8JsonReader reader,
-        Type typeToConvert,
-        JsonSerializerOptions options
-    )
+    public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (
-            reader.TokenType == JsonTokenType.String
-            || reader.TokenType == JsonTokenType.PropertyName
-        )
+        if (reader.TokenType == JsonTokenType.String || reader.TokenType == JsonTokenType.PropertyName)
         {
             var str = reader.GetString();
             return (T)Enum.Parse(typeof(T), str, true);
@@ -70,20 +59,12 @@ public class EftEnumConverter<T> : JsonConverter<T>
         }
     }
 
-    public override T ReadAsPropertyName(
-        ref Utf8JsonReader reader,
-        Type typeToConvert,
-        JsonSerializerOptions options
-    )
+    public override T ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         return Read(ref reader, typeToConvert, options);
     }
 
-    public override void WriteAsPropertyName(
-        Utf8JsonWriter writer,
-        [DisallowNull] T value,
-        JsonSerializerOptions options
-    )
+    public override void WriteAsPropertyName(Utf8JsonWriter writer, [DisallowNull] T value, JsonSerializerOptions options)
     {
         object propertyValue = null;
         if (typeof(T).GetFields().Any(f => f.FieldType == typeof(string)))

@@ -10,14 +10,9 @@ public class ArrayToObjectFactoryConverter : JsonConverterFactory
         return typeToConvert.IsClass;
     }
 
-    public override JsonConverter? CreateConverter(
-        Type typeToConvert,
-        JsonSerializerOptions options
-    )
+    public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        return Activator.CreateInstance(
-                typeof(ArrayToObjectConverter<>).MakeGenericType(typeToConvert)
-            ) as JsonConverter;
+        return Activator.CreateInstance(typeof(ArrayToObjectConverter<>).MakeGenericType(typeToConvert)) as JsonConverter;
     }
 
     private class ArrayToObjectConverter<T> : JsonConverter<T?>
@@ -27,11 +22,7 @@ public class ArrayToObjectFactoryConverter : JsonConverterFactory
             get { return true; }
         }
 
-        public override T? Read(
-            ref Utf8JsonReader reader,
-            Type typeToConvert,
-            JsonSerializerOptions options
-        )
+        public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             switch (reader.TokenType)
             {

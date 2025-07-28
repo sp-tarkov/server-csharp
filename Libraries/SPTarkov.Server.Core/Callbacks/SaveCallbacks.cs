@@ -7,11 +7,7 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable(TypePriority = OnLoadOrder.SaveCallbacks)]
-public class SaveCallbacks(
-    SaveServer saveServer,
-    ConfigServer configServer,
-    BackupService backupService
-) : IOnLoad, IOnUpdate
+public class SaveCallbacks(SaveServer saveServer, ConfigServer configServer, BackupService backupService) : IOnLoad, IOnUpdate
 {
     private readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
 

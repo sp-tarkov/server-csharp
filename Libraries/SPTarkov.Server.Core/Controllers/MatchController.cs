@@ -104,9 +104,7 @@ public class MatchController(
         // Set pmcs to difficulty set in pre-raid screen if override in bot config isnt enabled
         if (!_pmcConfig.UseDifficultyOverride)
         {
-            _pmcConfig.Difficulty = ConvertDifficultyDropdownIntoBotDifficulty(
-                request.WavesSettings.BotDifficulty.ToString()
-            );
+            _pmcConfig.Difficulty = ConvertDifficultyDropdownIntoBotDifficulty(request.WavesSettings.BotDifficulty.ToString());
         }
     }
 
@@ -132,10 +130,7 @@ public class MatchController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Start raid request</param>
     /// <returns>StartLocalRaidResponseData</returns>
-    public StartLocalRaidResponseData StartLocalRaid(
-        MongoId sessionId,
-        StartLocalRaidRequestData request
-    )
+    public StartLocalRaidResponseData StartLocalRaid(MongoId sessionId, StartLocalRaidRequestData request)
     {
         return locationLifecycleService.StartLocalRaid(sessionId, request);
     }

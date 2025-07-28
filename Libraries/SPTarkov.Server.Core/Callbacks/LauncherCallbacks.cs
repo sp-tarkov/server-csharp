@@ -74,26 +74,16 @@ public class LauncherCallbacks(
 
     public ValueTask<string> GetCompatibleTarkovVersion()
     {
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(launcherController.GetCompatibleTarkovVersion())
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(launcherController.GetCompatibleTarkovVersion()));
     }
 
     public ValueTask<string> GetLoadedServerMods()
     {
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(launcherController.GetLoadedServerMods())
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(launcherController.GetLoadedServerMods()));
     }
 
-    public ValueTask<string> GetServerModsProfileUsed(
-        string url,
-        EmptyRequestData _,
-        MongoId sessionID
-    )
+    public ValueTask<string> GetServerModsProfileUsed(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.NoBody(launcherController.GetServerModsProfileUsed(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(launcherController.GetServerModsProfileUsed(sessionID)));
     }
 }

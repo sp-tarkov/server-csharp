@@ -26,28 +26,16 @@ public class ForceHalloweenMessageHandler(
         return string.Equals(message, "veryspooky", StringComparison.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        MongoId sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
-        var enableEventResult = _seasonalEventService.ForceSeasonalEvent(
-            SeasonalEventType.Halloween
-        );
+        var enableEventResult = _seasonalEventService.ForceSeasonalEvent(SeasonalEventType.Halloween);
         if (enableEventResult)
         {
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
                 _randomUtil.GetArrayValue(
-                    [
-                        _serverLocalisationService.GetText(
-                            "chatbot-forced_event_enabled",
-                            SeasonalEventType.Halloween
-                        ),
-                    ]
+                    [_serverLocalisationService.GetText("chatbot-forced_event_enabled", SeasonalEventType.Halloween)]
                 ),
                 [],
                 null

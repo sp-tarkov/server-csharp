@@ -30,12 +30,7 @@ public class ForceSnowMessageHandler(
         return string.Equals(message, "itsonlysnowalan", StringComparison.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        MongoId sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         _weatherConfig.OverrideSeason = Season.WINTER;
 

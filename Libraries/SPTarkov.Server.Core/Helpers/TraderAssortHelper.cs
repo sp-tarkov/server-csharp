@@ -39,11 +39,7 @@ public class TraderAssortHelper(
     /// <param name="traderId">traders id</param>
     /// <param name="showLockedAssorts">Should assorts player hasn't unlocked be returned - default false</param>
     /// <returns>a traders' assorts</returns>
-    public TraderAssort GetAssort(
-        MongoId sessionId,
-        MongoId traderId,
-        bool showLockedAssorts = false
-    )
+    public TraderAssort GetAssort(MongoId sessionId, MongoId traderId, bool showLockedAssorts = false)
     {
         var traderClone = cloner.Clone(databaseService.GetTrader(traderId));
         var fullProfile = profileHelper.GetFullProfile(sessionId);
@@ -57,11 +53,7 @@ public class TraderAssortHelper(
         // Strip assorts player should not see yet
         if (!showLockedAssorts)
         {
-            traderClone.Assort = assortHelper.StripLockedLoyaltyAssort(
-                pmcProfile,
-                traderId,
-                traderClone.Assort
-            );
+            traderClone.Assort = assortHelper.StripLockedLoyaltyAssort(pmcProfile, traderId, traderClone.Assort);
         }
 
         ResetBuyRestrictionCurrentValue(traderClone.Assort.Items);
@@ -70,10 +62,7 @@ public class TraderAssortHelper(
         traderClone.Assort.NextResupply = traderClone.Base.NextResupply;
 
         // Adjust displayed assort counts based on values stored in profile
-        var assortPurchasesfromTrader = traderPurchasePersisterService.GetProfileTraderPurchases(
-            sessionId,
-            traderId
-        );
+        var assortPurchasesfromTrader = traderPurchasePersisterService.GetProfileTraderPurchases(sessionId, traderId);
 
         foreach (var assortId in assortPurchasesfromTrader ?? [])
         {
@@ -103,9 +92,7 @@ public class TraderAssortHelper(
                 continue;
             }
 
-            assortToAdjust.Upd.BuyRestrictionCurrent = (int)(
-                assortPurchasesfromTrader[assortId.Key].PurchaseCount ?? 0
-            );
+            assortToAdjust.Upd.BuyRestrictionCurrent = (int)(assortPurchasesfromTrader[assortId.Key].PurchaseCount ?? 0);
         }
 
         traderClone.Assort = assortHelper.StripLockedQuestAssort(

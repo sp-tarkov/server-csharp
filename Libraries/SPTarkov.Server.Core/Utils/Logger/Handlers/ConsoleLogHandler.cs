@@ -13,20 +13,10 @@ public class ConsoleLogHandler : BaseLogHandler
 
     public override void Log(SptLogMessage message, BaseSptLoggerReference reference)
     {
-        Console.WriteLine(
-            FormatMessage(
-                GetColorizedText(message.Message, message.TextColor, message.BackgroundColor),
-                message,
-                reference
-            )
-        );
+        Console.WriteLine(FormatMessage(GetColorizedText(message.Message, message.TextColor, message.BackgroundColor), message, reference));
     }
 
-    private string GetColorizedText(
-        string data,
-        LogTextColor? textColor = null,
-        LogBackgroundColor? backgroundColor = null
-    )
+    private string GetColorizedText(string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null)
     {
         var colorString = string.Empty;
         if (textColor != null)

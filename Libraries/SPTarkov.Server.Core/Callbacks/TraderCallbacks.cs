@@ -10,11 +10,9 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable(TypePriority = OnLoadOrder.TraderCallbacks)]
-public class TraderCallbacks(
-    HttpResponseUtil httpResponseUtil,
-    TraderController traderController,
-    ConfigServer configServer
-) : IOnLoad, IOnUpdate
+public class TraderCallbacks(HttpResponseUtil httpResponseUtil, TraderController traderController, ConfigServer configServer)
+    : IOnLoad,
+        IOnUpdate
 {
     private readonly TraderConfig _traderConfig = configServer.GetConfig<TraderConfig>();
 
@@ -36,9 +34,7 @@ public class TraderCallbacks(
     /// </summary>
     public ValueTask<string> GetTraderSettings(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(traderController.GetAllTraders(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(traderController.GetAllTraders(sessionID)));
     }
 
     /// <summary>
@@ -47,9 +43,7 @@ public class TraderCallbacks(
     public ValueTask<string> GetTrader(string url, EmptyRequestData _, MongoId sessionID)
     {
         var traderID = url.Replace("/client/trading/api/getTrader/", "");
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(traderController.GetTrader(sessionID, traderID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(traderController.GetTrader(sessionID, traderID)));
     }
 
     /// <summary>
@@ -59,9 +53,7 @@ public class TraderCallbacks(
     public ValueTask<string> GetAssort(string url, EmptyRequestData _, MongoId sessionID)
     {
         var traderID = url.Replace("/client/trading/api/getTraderAssort/", "");
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(traderController.GetAssort(sessionID, traderID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(traderController.GetAssort(sessionID, traderID)));
     }
 
     /// <summary>

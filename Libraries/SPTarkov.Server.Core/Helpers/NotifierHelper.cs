@@ -21,10 +21,7 @@ public class NotifierHelper(HttpServerHelper httpServerHelper)
     /// <param name="dialogueMessage">Message from dialog that was sent</param>
     /// <param name="ragfairData">Ragfair data to attach to notification</param>
     /// <returns></returns>
-    public WsRagfairOfferSold CreateRagfairOfferSoldNotification(
-        Message dialogueMessage,
-        MessageContentRagfair ragfairData
-    )
+    public WsRagfairOfferSold CreateRagfairOfferSoldNotification(Message dialogueMessage, MessageContentRagfair ragfairData)
     {
         return new WsRagfairOfferSold
         {

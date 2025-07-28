@@ -12,11 +12,8 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable(TypePriority = OnUpdateOrder.InsuranceCallbacks)]
-public class InsuranceCallbacks(
-    InsuranceController insuranceController,
-    HttpResponseUtil httpResponseUtil,
-    ConfigServer configServer
-) : IOnUpdate
+public class InsuranceCallbacks(InsuranceController insuranceController, HttpResponseUtil httpResponseUtil, ConfigServer configServer)
+    : IOnUpdate
 {
     private readonly InsuranceConfig _insuranceConfig = configServer.GetConfig<InsuranceConfig>();
 
@@ -39,15 +36,9 @@ public class InsuranceCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ValueTask<string> GetInsuranceCost(
-        string url,
-        GetInsuranceCostRequestData info,
-        MongoId sessionID
-    )
+    public ValueTask<string> GetInsuranceCost(string url, GetInsuranceCostRequestData info, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(insuranceController.Cost(info, sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(insuranceController.Cost(info, sessionID)));
     }
 
     /// <summary>
@@ -57,11 +48,7 @@ public class InsuranceCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse Insure(
-        PmcData pmcData,
-        InsureRequestData info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse Insure(PmcData pmcData, InsureRequestData info, MongoId sessionID)
     {
         return insuranceController.Insure(pmcData, info, sessionID);
     }

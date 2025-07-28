@@ -17,8 +17,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// </summary>
     public const int MaxSignificantDigits = 15;
 
-    private static readonly int DecimalPointRandomPrecisionMultiplier = (int)
-        Math.Pow(10, DecimalPointRandomPrecision);
+    private static readonly int DecimalPointRandomPrecisionMultiplier = (int)Math.Pow(10, DecimalPointRandomPrecision);
     public readonly Random Random = new();
 
     /// <summary>
@@ -50,10 +49,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
         var realMin = (long)(min * DecimalPointRandomPrecisionMultiplier);
         var realMax = (long)(max * DecimalPointRandomPrecisionMultiplier);
 
-        return Math.Round(
-            Random.NextInt64(realMin, realMax) / (double)DecimalPointRandomPrecisionMultiplier,
-            DecimalPointRandomPrecision
-        );
+        return Math.Round(Random.NextInt64(realMin, realMax) / (double)DecimalPointRandomPrecisionMultiplier, DecimalPointRandomPrecision);
     }
 
     /// <summary>
@@ -171,11 +167,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     ///     If the generated number is less than 0, it will recursively attempt to generate a valid number up to 100 times.
     ///     If it fails to generate a valid number after 100 attempts, it will return a random float between 0.01 and twice the mean.
     /// </remarks>
-    public virtual double GetNormallyDistributedRandomNumber(
-        double mean,
-        double sigma,
-        int attempt = 0
-    )
+    public virtual double GetNormallyDistributedRandomNumber(double mean, double sigma, int attempt = 0)
     {
         double u,
             v;
@@ -197,9 +189,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
         // Check if the generated value is valid
         if (valueDrawn < 0)
         {
-            return attempt > 100
-                ? GetDouble(0.01D, mean * 2D)
-                : GetNormallyDistributedRandomNumber(mean, sigma, attempt + 1);
+            return attempt > 100 ? GetDouble(0.01D, mean * 2D) : GetNormallyDistributedRandomNumber(mean, sigma, attempt + 1);
         }
 
         return valueDrawn;
@@ -233,17 +223,11 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     ///     and MaxSignificantDigits(15), inclusive. If not provided, precision is determined by the input values.
     /// </param>
     /// <returns></returns>
-    public virtual double RandNum(
-        double val1,
-        double val2 = 0,
-        int precision = DecimalPointRandomPrecision
-    )
+    public virtual double RandNum(double val1, double val2 = 0, int precision = DecimalPointRandomPrecision)
     {
         if (!double.IsFinite(val1) || !double.IsFinite(val2))
         {
-            throw new ArgumentException(
-                "RandNum() parameters 'value1' and 'value2' must be finite numbers."
-            );
+            throw new ArgumentException("RandNum() parameters 'value1' and 'value2' must be finite numbers.");
         }
 
         // Determine the range
@@ -266,11 +250,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <param name="replacement">Whether to draw with replacement. Defaults to true.</param>
     /// <typeparam name="T">The type of elements in the list.</typeparam>
     /// <returns>A List containing the drawn elements.</returns>
-    public virtual List<T> DrawRandomFromList<T>(
-        List<T> originalList,
-        int count = 1,
-        bool replacement = true
-    )
+    public virtual List<T> DrawRandomFromList<T>(List<T> originalList, int count = 1, bool replacement = true)
     {
         var list = originalList;
         var drawCount = count;
@@ -311,11 +291,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <typeparam name="TKey">The type of elements in keys</typeparam>
     /// <typeparam name="TVal">The type of elements in values</typeparam>
     /// <returns>A list of randomly drawn keys from the dictionary.</returns>
-    public virtual List<TKey> DrawRandomFromDict<TKey, TVal>(
-        Dictionary<TKey, TVal> dict,
-        int count = 1,
-        bool replacement = true
-    )
+    public virtual List<TKey> DrawRandomFromDict<TKey, TVal>(Dictionary<TKey, TVal> dict, int count = 1, bool replacement = true)
         where TKey : notnull
     {
         var keys = dict.Keys.ToList();
@@ -348,9 +324,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
 
         if (max < min)
         {
-            _logger.Error(
-                $"Invalid argument, Bounded random number generation max is smaller than min({max} < {min}"
-            );
+            _logger.Error($"Invalid argument, Bounded random number generation max is smaller than min({max} < {min}");
             return -1;
         }
 
@@ -422,10 +396,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
             currentIndex--;
 
             // Swap it with the current element.
-            (originalList[currentIndex], originalList[randomIndex]) = (
-                originalList[randomIndex],
-                originalList[currentIndex]
-            );
+            (originalList[currentIndex], originalList[randomIndex]) = (originalList[randomIndex], originalList[currentIndex]);
         }
 
         return originalList;

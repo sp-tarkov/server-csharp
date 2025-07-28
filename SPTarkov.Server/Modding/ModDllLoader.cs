@@ -58,11 +58,7 @@ public class ModDllLoader
         {
             if (string.Equals(file.Extension, ".dll", StringComparison.OrdinalIgnoreCase))
             {
-                assemblyList.Add(
-                    AssemblyLoadContext.Default.LoadFromAssemblyPath(
-                        Path.GetFullPath(file.FullName)
-                    )
-                );
+                assemblyList.Add(AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.GetFullPath(file.FullName)));
             }
         }
 
@@ -102,10 +98,7 @@ public class ModDllLoader
     /// <param name="path">Path of the mod directory</param>
     /// <returns>Mod metadata</returns>
     /// <exception cref="Exception">Thrown if duplicate metadata implementations are found</exception>
-    private static AbstractModMetadata LoadModMetadata(
-        IEnumerable<Assembly> assemblies,
-        string path
-    )
+    private static AbstractModMetadata LoadModMetadata(IEnumerable<Assembly> assemblies, string path)
     {
         AbstractModMetadata? result = null;
 
@@ -113,15 +106,11 @@ public class ModDllLoader
         {
             foreach (var module in allAsmModules)
             {
-                var modMetadata = module
-                    .GetTypes()
-                    .SingleOrDefault(t => typeof(AbstractModMetadata).IsAssignableFrom(t));
+                var modMetadata = module.GetTypes().SingleOrDefault(t => typeof(AbstractModMetadata).IsAssignableFrom(t));
 
                 if (result != null && modMetadata != null)
                 {
-                    throw new Exception(
-                        $"Duplicate mod metadata found for mod at path: {Path.GetFullPath(path)}"
-                    );
+                    throw new Exception($"Duplicate mod metadata found for mod at path: {Path.GetFullPath(path)}");
                 }
 
                 if (modMetadata != null)
@@ -133,9 +122,7 @@ public class ModDllLoader
 
         if (result == null)
         {
-            throw new Exception(
-                $"Failed to load mod metadata for: {Path.GetFullPath(path)} \ndid you override `AbstractModMetadata`?"
-            );
+            throw new Exception($"Failed to load mod metadata for: {Path.GetFullPath(path)} \ndid you override `AbstractModMetadata`?");
         }
 
         return result;

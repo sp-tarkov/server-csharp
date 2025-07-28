@@ -56,9 +56,7 @@ public class SptHttpListener(
                 // determine if the payload is compressed. All PUT requests are, and POST requests without
                 // debug = 1 are as well. This should be fixed.
                 // let compressed = req.headers["content-encoding"] === "deflate";
-                var requestIsCompressed =
-                    !req.Headers.TryGetValue("requestcompressed", out var compressHeader)
-                    || compressHeader != "0";
+                var requestIsCompressed = !req.Headers.TryGetValue("requestcompressed", out var compressHeader) || compressHeader != "0";
                 var requestCompressed = req.Method == "PUT" || requestIsCompressed;
 
                 string body;
@@ -76,10 +74,7 @@ public class SptHttpListener(
 
                 if (requestCompressed)
                 {
-                    await using var deflateStream = new ZLibStream(
-                        bufferStream,
-                        CompressionMode.Decompress
-                    );
+                    await using var deflateStream = new ZLibStream(bufferStream, CompressionMode.Decompress);
                     await using var decompressedStream = new MemoryStream();
                     await deflateStream.CopyToAsync(decompressedStream);
                     decompressedStream.Position = 0;
@@ -110,9 +105,7 @@ public class SptHttpListener(
 
             default:
             {
-                _logger.Warning(
-                    $"{_serverLocalisationService.GetText("unknown_request")}: {req.Method}"
-                );
+                _logger.Warning($"{_serverLocalisationService.GetText("unknown_request")}: {req.Method}");
                 break;
             }
         }
@@ -126,13 +119,7 @@ public class SptHttpListener(
     /// <param name="resp"> Outgoing response </param>
     /// <param name="body"> Buffer </param>
     /// <param name="output"> Server generated response data</param>
-    public async Task SendResponse(
-        MongoId sessionID,
-        HttpRequest req,
-        HttpResponse resp,
-        object? body,
-        string output
-    )
+    public async Task SendResponse(MongoId sessionID, HttpRequest req, HttpResponse resp, object? body, string output)
     {
         body ??= new object();
 
@@ -197,14 +184,8 @@ public class SptHttpListener(
         // Route doesn't exist or response is not properly set up
         if (string.IsNullOrEmpty(output))
         {
-            _logger.Error(
-                _serverLocalisationService.GetText("unhandled_response", req.Path.ToString())
-            );
-            output = _httpResponseUtil.GetBody<object?>(
-                null,
-                BackendErrorCodes.HTTPNotFound,
-                $"UNHANDLED RESPONSE: {req.Path.ToString()}"
-            );
+            _logger.Error(_serverLocalisationService.GetText("unhandled_response", req.Path.ToString()));
+            output = _httpResponseUtil.GetBody<object?>(null, BackendErrorCodes.HTTPNotFound, $"UNHANDLED RESPONSE: {req.Path.ToString()}");
         }
 
         if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)

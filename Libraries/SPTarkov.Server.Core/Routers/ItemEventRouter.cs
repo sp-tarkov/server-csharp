@@ -30,10 +30,7 @@ public class ItemEventRouter(
     /// <param name="info"> Event request </param>
     /// <param name="sessionID"> Session ID </param>
     /// <returns> Item response </returns>
-    public async ValueTask<ItemEventRouterResponse> HandleEvents(
-        ItemEventRouterRequest info,
-        MongoId sessionID
-    )
+    public async ValueTask<ItemEventRouterResponse> HandleEvents(ItemEventRouterRequest info, MongoId sessionID)
     {
         var output = eventOutputHolder.GetOutput(sessionID);
 

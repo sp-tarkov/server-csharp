@@ -30,21 +30,13 @@ public class BotDifficultyHelper(
     /// <param name="desiredDifficulty">difficulty to get settings for (easy/normal etc)</param>
     /// <param name="botDb">bots from database</param>
     /// <returns>Difficulty object</returns>
-    public DifficultyCategories GetBotDifficultySettings(
-        string type,
-        string desiredDifficulty,
-        Bots botDb
-    )
+    public DifficultyCategories GetBotDifficultySettings(string type, string desiredDifficulty, Bots botDb)
     {
-        var desiredType = botHelper.IsBotPmc(type)
-            ? botHelper.GetPmcSideByRole(type).ToLowerInvariant()
-            : type.ToLowerInvariant();
+        var desiredType = botHelper.IsBotPmc(type) ? botHelper.GetPmcSideByRole(type).ToLowerInvariant() : type.ToLowerInvariant();
         if (!botDb.Types.ContainsKey(desiredType))
         {
             // No bot found, get fallback difficulty values
-            logger.Warning(
-                serverLocalisationService.GetText("bot-unable_to_get_bot_fallback_to_assault", type)
-            );
+            logger.Warning(serverLocalisationService.GetText("bot-unable_to_get_bot_fallback_to_assault", type));
             botDb.Types[desiredType] = cloner.Clone(botDb.Types["assault"]);
         }
 
@@ -76,11 +68,7 @@ public class BotDifficultyHelper(
     /// <returns>Difficulty object</returns>
     protected DifficultyCategories GetDifficultySettings(string type, string difficulty)
     {
-        var difficultySetting = string.Equals(
-            _pmcConfig.Difficulty,
-            "asonline",
-            StringComparison.OrdinalIgnoreCase
-        )
+        var difficultySetting = string.Equals(_pmcConfig.Difficulty, "asonline", StringComparison.OrdinalIgnoreCase)
             ? difficulty
             : _pmcConfig.Difficulty.ToLowerInvariant();
 

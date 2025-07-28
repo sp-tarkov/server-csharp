@@ -36,8 +36,7 @@ public class PlayerScavGenerator(
     TimeUtil timeUtil
 )
 {
-    protected readonly PlayerScavConfig _playerScavConfig =
-        configServer.GetConfig<PlayerScavConfig>();
+    protected readonly PlayerScavConfig _playerScavConfig = configServer.GetConfig<PlayerScavConfig>();
 
     /// <summary>
     ///     Update a player profile to include a new player scav profile
@@ -62,9 +61,7 @@ public class PlayerScavGenerator(
             )
         )
         {
-            logger.Error(
-                serverLocalisationService.GetText("scav-missing_karma_settings", scavKarmaLevel)
-            );
+            logger.Error(serverLocalisationService.GetText("scav-missing_karma_settings", scavKarmaLevel));
         }
 
         if (logger.IsLogEnabled(LogLevel.Debug))
@@ -110,13 +107,9 @@ public class PlayerScavGenerator(
         scavData.Info.Level = GetScavLevel(existingScavDataClone);
         scavData.Info.Experience = GetScavExperience(existingScavDataClone);
         scavData.Quests = existingScavDataClone.Quests ?? [];
-        scavData.TaskConditionCounters =
-            existingScavDataClone.TaskConditionCounters
-            ?? new Dictionary<MongoId, TaskConditionCounter>();
+        scavData.TaskConditionCounters = existingScavDataClone.TaskConditionCounters ?? new Dictionary<MongoId, TaskConditionCounter>();
         scavData.Notes = existingScavDataClone.Notes ?? new Notes { DataNotes = [] };
-        scavData.WishList =
-            existingScavDataClone.WishList
-            ?? new DictionaryOrList<MongoId, int>(new Dictionary<MongoId, int>(), []);
+        scavData.WishList = existingScavDataClone.WishList ?? new DictionaryOrList<MongoId, int>(new Dictionary<MongoId, int>(), []);
         scavData.Encyclopedia = pmcDataClone.Encyclopedia ?? new Dictionary<MongoId, bool>();
 
         // Add additional items to player scav as loot
@@ -161,9 +154,7 @@ public class PlayerScavGenerator(
             var itemResult = itemHelper.GetItem(tpl.Key);
             if (!itemResult.Key)
             {
-                logger.Warning(
-                    serverLocalisationService.GetText("scav-unable_to_add_item_to_player_scav", tpl)
-                );
+                logger.Warning(serverLocalisationService.GetText("scav-unable_to_add_item_to_player_scav", tpl));
                 continue;
             }
 
@@ -174,10 +165,7 @@ public class PlayerScavGenerator(
                 {
                     Id = new MongoId(),
                     Template = itemTemplate.Id,
-                    Upd = botGeneratorHelper.GenerateExtraPropertiesForItem(
-                        itemTemplate,
-                        "assault"
-                    ),
+                    Upd = botGeneratorHelper.GenerateExtraPropertiesForItem(itemTemplate, "assault"),
                 },
             };
 
@@ -229,22 +217,13 @@ public class PlayerScavGenerator(
     /// </summary>
     /// <param name="karmaSettings">Values to modify the bot template with</param>
     /// <param name="baseBotNode">bot template to modify according to karma level settings</param>
-    protected void AdjustBotTemplateWithKarmaSpecificSettings(
-        KarmaLevel karmaSettings,
-        BotType baseBotNode
-    )
+    protected void AdjustBotTemplateWithKarmaSpecificSettings(KarmaLevel karmaSettings, BotType baseBotNode)
     {
         // Adjust equipment chance values
-        AdjustEquipmentWeights(
-            karmaSettings.Modifiers.Equipment,
-            baseBotNode.BotChances.EquipmentChances
-        );
+        AdjustEquipmentWeights(karmaSettings.Modifiers.Equipment, baseBotNode.BotChances.EquipmentChances);
 
         // Adjust mod chance values
-        AdjustWeaponModWeights(
-            karmaSettings.Modifiers.Mod,
-            baseBotNode.BotChances.WeaponModsChances
-        );
+        AdjustWeaponModWeights(karmaSettings.Modifiers.Mod, baseBotNode.BotChances.WeaponModsChances);
 
         // Adjust item spawn quantity values
         AdjustItemWeights(karmaSettings.ItemLimits, baseBotNode.BotGeneration.Items);
@@ -281,10 +260,7 @@ public class PlayerScavGenerator(
     /// <param name="key">e.g. "healing" / "looseLoot"</param>
     /// <param name="botItemWeights"></param>
     /// <returns>GenerationData</returns>
-    protected GenerationData? GetKarmaLimitValuesByKey(
-        string key,
-        GenerationWeightingItems botItemWeights
-    )
+    protected GenerationData? GetKarmaLimitValuesByKey(string key, GenerationWeightingItems botItemWeights)
     {
         switch (key)
         {
@@ -318,10 +294,7 @@ public class PlayerScavGenerator(
         }
     }
 
-    protected static void AdjustWeaponModWeights(
-        Dictionary<string, double> modChangesToApply,
-        Dictionary<string, double> weaponModChances
-    )
+    protected static void AdjustWeaponModWeights(Dictionary<string, double> modChangesToApply, Dictionary<string, double> weaponModChances)
     {
         foreach (var (modSlot, weight) in modChangesToApply)
         {
@@ -416,26 +389,16 @@ public class PlayerScavGenerator(
     protected PmcData SetScavCooldownTimer(PmcData scavData, PmcData pmcData)
     {
         // Get sum of all scav cooldown reduction timer bonuses
-        var modifier =
-            1d
-            + pmcData
-                .Bonuses.Where(x => x.Type == BonusType.ScavCooldownTimer)
-                .Sum(bonus => (bonus?.Value ?? 1) / 100);
+        var modifier = 1d + pmcData.Bonuses.Where(x => x.Type == BonusType.ScavCooldownTimer).Sum(bonus => (bonus?.Value ?? 1) / 100);
 
         var fenceInfo = fenceService.GetFenceInfo(pmcData);
         modifier *= fenceInfo.SavageCooldownModifier;
 
         // Make sure to apply ScavCooldownTimer bonus from Hideout if the player has it.
-        var scavLockDuration =
-            databaseService.GetGlobals().Configuration.SavagePlayCooldown * modifier;
+        var scavLockDuration = databaseService.GetGlobals().Configuration.SavagePlayCooldown * modifier;
 
         var fullProfile = profileHelper.GetFullProfile(pmcData.SessionId.Value);
-        if (
-            fullProfile?.ProfileInfo?.Edition?.StartsWith(
-                AccountTypes.SPT_DEVELOPER,
-                StringComparison.OrdinalIgnoreCase
-            ) ?? false
-        )
+        if (fullProfile?.ProfileInfo?.Edition?.StartsWith(AccountTypes.SPT_DEVELOPER, StringComparison.OrdinalIgnoreCase) ?? false)
         {
             // Force lock duration to 10seconds for dev profiles
             scavLockDuration = 10;

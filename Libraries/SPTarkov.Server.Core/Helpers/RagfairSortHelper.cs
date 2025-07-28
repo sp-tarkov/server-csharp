@@ -15,11 +15,7 @@ public class RagfairSortHelper(LocaleService localeService)
     /// <param name="type">How to sort it</param>
     /// <param name="direction">Ascending/descending</param>
     /// <returns>Sorted offers</returns>
-    public List<RagfairOffer> SortOffers(
-        List<RagfairOffer> offers,
-        RagfairSort type,
-        int direction = 0
-    )
+    public List<RagfairOffer> SortOffers(List<RagfairOffer> offers, RagfairSort type, int direction = 0)
     {
         // Sort results
         switch (type)
@@ -65,16 +61,8 @@ public class RagfairSortHelper(LocaleService localeService)
 
     protected int SortOffersByBarter(RagfairOffer a, RagfairOffer b)
     {
-        var aIsOnlyMoney =
-            a.Requirements.Count() == 1
-            && Money.GetMoneyTpls().Contains(a.Requirements.First().TemplateId)
-                ? 1
-                : 0;
-        var bIsOnlyMoney =
-            b.Requirements.Count() == 1
-            && Money.GetMoneyTpls().Contains(b.Requirements.First().TemplateId)
-                ? 1
-                : 0;
+        var aIsOnlyMoney = a.Requirements.Count() == 1 && Money.GetMoneyTpls().Contains(a.Requirements.First().TemplateId) ? 1 : 0;
+        var bIsOnlyMoney = b.Requirements.Count() == 1 && Money.GetMoneyTpls().Contains(b.Requirements.First().TemplateId) ? 1 : 0;
 
         return aIsOnlyMoney - bIsOnlyMoney;
     }

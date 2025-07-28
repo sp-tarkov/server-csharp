@@ -130,10 +130,7 @@ public class PostDbLoadService(
 
         if (_botConfig.WeeklyBoss.Enabled)
         {
-            var chosenBoss = GetWeeklyBoss(
-                _botConfig.WeeklyBoss.BossPool,
-                _botConfig.WeeklyBoss.ResetDay
-            );
+            var chosenBoss = GetWeeklyBoss(_botConfig.WeeklyBoss.BossPool, _botConfig.WeeklyBoss.ResetDay);
             FlagMapAsGuaranteedBoss(chosenBoss);
         }
     }
@@ -200,9 +197,7 @@ public class PostDbLoadService(
                 return;
         }
 
-        var bossSpawn = location.Base.BossLocationSpawn.FirstOrDefault(x =>
-            x.BossName == boss.ToString()
-        );
+        var bossSpawn = location.Base.BossLocationSpawn.FirstOrDefault(x => x.BossName == boss.ToString());
         if (bossSpawn is null)
         {
             logger.Warning($"Boss: {boss} not found on map, unable to set as weekly. Skipping");
@@ -223,9 +218,7 @@ public class PostDbLoadService(
             // Check if exists
             if (hideout.Areas!.Exists(area => area.Id == customArea.Id))
             {
-                logger.Warning(
-                    $"Unable to add new hideout area with Id: {customArea.Id} as ID is already in use, skipping"
-                );
+                logger.Warning($"Unable to add new hideout area with Id: {customArea.Id} as ID is already in use, skipping");
 
                 continue;
             }
@@ -244,9 +237,7 @@ public class PostDbLoadService(
         {
             if (achievements.Exists(a => a.Id == customAchievement.Id))
             {
-                logger.Debug(
-                    $"Unable to add custom achievement as id: {customAchievement.Id} already exists"
-                );
+                logger.Debug($"Unable to add custom achievement as id: {customAchievement.Id} already exists");
                 continue;
             }
 
@@ -257,16 +248,10 @@ public class PostDbLoadService(
     private void RemoveNewBeginningRequirementFromPrestige()
     {
         var prestigeDb = databaseService.GetTemplates().Prestige;
-        var newBeginningQuestId = new HashSet<string>
-        {
-            "6761f28a022f60bb320f3e95",
-            "6761ff17cdc36bd66102e9d0",
-        };
+        var newBeginningQuestId = new HashSet<string> { "6761f28a022f60bb320f3e95", "6761ff17cdc36bd66102e9d0" };
         foreach (var prestige in prestigeDb.Elements)
         {
-            var itemToRemove = prestige.Conditions?.FirstOrDefault(cond =>
-                newBeginningQuestId.Contains(cond.Target?.Item)
-            );
+            var itemToRemove = prestige.Conditions?.FirstOrDefault(cond => newBeginningQuestId.Contains(cond.Target?.Item));
             if (itemToRemove is null)
             {
                 continue;
@@ -299,14 +284,10 @@ public class PostDbLoadService(
         var craftsToAdd = _hideoutConfig.HideoutCraftsToAdd;
         foreach (var craftToAdd in craftsToAdd)
         {
-            var clonedCraft = cloner.Clone(
-                hideoutCraftDb.Recipes.FirstOrDefault(x => x.Id == craftToAdd.CraftIdToCopy)
-            );
+            var clonedCraft = cloner.Clone(hideoutCraftDb.Recipes.FirstOrDefault(x => x.Id == craftToAdd.CraftIdToCopy));
             if (clonedCraft is null)
             {
-                logger.Warning(
-                    $"Unable to find hideout craft: {craftToAdd.CraftIdToCopy}, skipping"
-                );
+                logger.Warning($"Unable to find hideout craft: {craftToAdd.CraftIdToCopy}, skipping");
 
                 continue;
             }
@@ -325,11 +306,7 @@ public class PostDbLoadService(
         var reserveBase = databaseService.GetLocation(ELocationName.RezervBase.ToString()).Base;
 
         // Raiders are bosses, get only those from boss spawn array
-        foreach (
-            var raiderSpawn in reserveBase.BossLocationSpawn.Where(boss =>
-                boss.BossName == "pmcBot"
-            )
-        )
+        foreach (var raiderSpawn in reserveBase.BossLocationSpawn.Where(boss => boss.BossName == "pmcBot"))
         {
             var isTriggered = raiderSpawn.TriggerId.Length > 0; // Empty string if not triggered
             var newSpawnChance = isTriggered
@@ -356,12 +333,7 @@ public class PostDbLoadService(
         {
             if (mapId is null)
             {
-                logger.Warning(
-                    serverLocalisationService.GetText(
-                        "location-unable_to_add_custom_loot_position",
-                        mapId
-                    )
-                );
+                logger.Warning(serverLocalisationService.GetText("location-unable_to_add_custom_loot_position", mapId));
 
                 continue;
             }
@@ -372,12 +344,7 @@ public class PostDbLoadService(
                 {
                     if (looselootData is null)
                     {
-                        logger.Warning(
-                            serverLocalisationService.GetText(
-                                "location-map_has_no_loose_loot_data",
-                                mapId
-                            )
-                        );
+                        logger.Warning(serverLocalisationService.GetText("location-map_has_no_loose_loot_data", mapId));
 
                         return looselootData;
                     }
@@ -391,15 +358,11 @@ public class PostDbLoadService(
 
                         if (existingLootPosition is not null)
                         {
-                            existingLootPosition.Template.Items =
-                                existingLootPosition.Template.Items.Union(
-                                    positionToAdd.Template.Items
-                                );
+                            existingLootPosition.Template.Items = existingLootPosition.Template.Items.Union(positionToAdd.Template.Items);
 
-                            existingLootPosition.ItemDistribution =
-                                existingLootPosition.ItemDistribution.Union(
-                                    positionToAdd.ItemDistribution
-                                );
+                            existingLootPosition.ItemDistribution = existingLootPosition.ItemDistribution.Union(
+                                positionToAdd.ItemDistribution
+                            );
 
                             continue;
                         }
@@ -429,9 +392,7 @@ public class PostDbLoadService(
         {
             if (itemDb[shotgunId].Properties.ShotgunDispersion.HasValue)
             {
-                itemDb[shotgunId].Properties.shotgunDispersion = itemDb[shotgunId]
-                    .Properties
-                    .ShotgunDispersion;
+                itemDb[shotgunId].Properties.shotgunDispersion = itemDb[shotgunId].Properties.ShotgunDispersion;
             }
         }
     }
@@ -449,9 +410,7 @@ public class PostDbLoadService(
             }
 
             locationkvP.Value.Base.BossLocationSpawn = locationkvP
-                .Value.Base.BossLocationSpawn.Where(bossSpawn =>
-                    !pmcTypes.Contains(bossSpawn.BossName)
-                )
+                .Value.Base.BossLocationSpawn.Where(bossSpawn => !pmcTypes.Contains(bossSpawn.BossName))
                 .ToList();
         }
     }
@@ -471,12 +430,7 @@ public class PostDbLoadService(
         {
             if (!mapsDb.TryGetValue(mapId, out var map))
             {
-                logger.Warning(
-                    serverLocalisationService.GetText(
-                        "bot-unable_to_edit_limits_of_unknown_map",
-                        mapId
-                    )
-                );
+                logger.Warning(serverLocalisationService.GetText("bot-unable_to_edit_limits_of_unknown_map", mapId));
 
                 continue;
             }
@@ -523,28 +477,18 @@ public class PostDbLoadService(
                 {
                     if (looselootData is null)
                     {
-                        logger.Warning(
-                            serverLocalisationService.GetText(
-                                "location-map_has_no_loose_loot_data",
-                                mapId
-                            )
-                        );
+                        logger.Warning(serverLocalisationService.GetText("location-map_has_no_loose_loot_data", mapId));
 
                         return looselootData;
                     }
 
                     foreach (var (lootKey, newChanceValue) in mapAdjustments)
                     {
-                        var lootPostionToAdjust = looselootData.Spawnpoints.FirstOrDefault(
-                            spawnPoint => spawnPoint.Template.Id == lootKey
-                        );
+                        var lootPostionToAdjust = looselootData.Spawnpoints.FirstOrDefault(spawnPoint => spawnPoint.Template.Id == lootKey);
                         if (lootPostionToAdjust is null)
                         {
                             logger.Warning(
-                                serverLocalisationService.GetText(
-                                    "location-unable_to_adjust_loot_position_on_map",
-                                    new { lootKey, mapId }
-                                )
+                                serverLocalisationService.GetText("location-unable_to_adjust_loot_position_on_map", new { lootKey, mapId })
                             );
 
                             continue;
@@ -583,9 +527,7 @@ public class PostDbLoadService(
     /// </summary>
     protected void FixRoguesSpawningInstantlyOnLighthouse()
     {
-        var rogueSpawnDelaySeconds = _locationConfig
-            .RogueLighthouseSpawnTimeSettings
-            .WaitTimeSeconds;
+        var rogueSpawnDelaySeconds = _locationConfig.RogueLighthouseSpawnTimeSettings.WaitTimeSeconds;
         var lighthouse = databaseService.GetLocations().Lighthouse?.Base;
         if (lighthouse is null)
         // Just in case they remove this cursed map
@@ -594,9 +536,7 @@ public class PostDbLoadService(
         }
 
         // Find Rogues that spawn instantly
-        var instantRogueBossSpawns = lighthouse.BossLocationSpawn.Where(spawn =>
-            spawn.BossName == "exUsec" && spawn.Time == -1
-        );
+        var instantRogueBossSpawns = lighthouse.BossLocationSpawn.Where(spawn => spawn.BossName == "exUsec" && spawn.Time == -1);
         foreach (var wave in instantRogueBossSpawns)
         {
             wave.Time = rogueSpawnDelaySeconds;
@@ -666,9 +606,7 @@ public class PostDbLoadService(
 
         foreach (var craftId in hideoutLootBoxCraftIds)
         {
-            var recipe = databaseService
-                .GetHideout()
-                .Production.Recipes.FirstOrDefault(craft => craft.Id == craftId);
+            var recipe = databaseService.GetHideout().Production.Recipes.FirstOrDefault(craft => craft.Id == craftId);
             if (recipe is not null)
             {
                 recipe.Locked = false;
@@ -707,17 +645,8 @@ public class PostDbLoadService(
                 if (!traderAssorts.LoyalLevelItems.ContainsKey(assortKey))
                 {
                     // Reverse lookup of enum key by value
-                    var messageValues = new
-                    {
-                        traderName = traderId,
-                        questName = quests[questKey]?.QuestName ?? "UNKNOWN",
-                    };
-                    logger.Warning(
-                        serverLocalisationService.GetText(
-                            "assort-missing_quest_assort_unlock",
-                            messageValues
-                        )
-                    );
+                    var messageValues = new { traderName = traderId, questName = quests[questKey]?.QuestName ?? "UNKNOWN" };
+                    logger.Warning(serverLocalisationService.GetText("assort-missing_quest_assort_unlock", messageValues));
                 }
             }
         }
@@ -740,13 +669,8 @@ public class PostDbLoadService(
 
     protected void AddMissingTraderBuyRestrictionMaxValue()
     {
-        var restrictions = databaseService
-            .GetGlobals()
-            .Configuration.TradingSettings.BuyRestrictionMaxBonus;
-        restrictions["unheard_edition"] = new BuyRestrictionMaxBonus
-        {
-            Multiplier = restrictions["edge_of_darkness"].Multiplier,
-        };
+        var restrictions = databaseService.GetGlobals().Configuration.TradingSettings.BuyRestrictionMaxBonus;
+        restrictions["unheard_edition"] = new BuyRestrictionMaxBonus { Multiplier = restrictions["edge_of_darkness"].Multiplier };
     }
 
     protected void ApplyFleaPriceOverrides()
@@ -764,9 +688,7 @@ public class PostDbLoadService(
         {
             if (databaseService.GetGlobals().ItemPresets.ContainsKey(presetToAdd.Id))
             {
-                logger.Warning(
-                    $"Global ItemPreset with Id of: {presetToAdd.Id} already exists, unable to overwrite"
-                );
+                logger.Warning($"Global ItemPreset with Id of: {presetToAdd.Id} already exists, unable to overwrite");
                 continue;
             }
 

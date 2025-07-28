@@ -12,20 +12,13 @@ namespace SPTarkov.Server.Core.Extensions
         /// </summary>
         /// <param name="fullProfile">Profile to add clothing to</param>
         /// <param name="clothingIds">Clothing Ids to add to profile</param>
-        public static void AddSuitsToProfile(
-            this SptProfile fullProfile,
-            IEnumerable<MongoId> clothingIds
-        )
+        public static void AddSuitsToProfile(this SptProfile fullProfile, IEnumerable<MongoId> clothingIds)
         {
             fullProfile.CustomisationUnlocks ??= [];
 
             foreach (var suitId in clothingIds)
             {
-                if (
-                    !fullProfile.CustomisationUnlocks.Exists(customisation =>
-                        customisation.Id == suitId
-                    )
-                )
+                if (!fullProfile.CustomisationUnlocks.Exists(customisation => customisation.Id == suitId))
                 {
                     // Clothing item doesn't exist in profile, add it
                     fullProfile.CustomisationUnlocks.Add(
@@ -207,11 +200,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="fullProfile">Profile to add the extra repeatable to</param>
         /// <param name="repeatableId">The ID of the type of repeatable to increase</param>
         /// <param name="rewardValue">The number of extra repeatables to add</param>
-        public static void AddExtraRepeatableQuest(
-            this SptProfile fullProfile,
-            MongoId repeatableId,
-            double rewardValue
-        )
+        public static void AddExtraRepeatableQuest(this SptProfile fullProfile, MongoId repeatableId, double rewardValue)
         {
             fullProfile.SptData.ExtraRepeatableQuests ??= new Dictionary<MongoId, double>();
 
@@ -228,8 +217,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <returns>True if account is developer</returns>
         public static bool IsDeveloperAccount(this SptProfile fullProfile)
         {
-            return fullProfile?.ProfileInfo?.Edition?.ToLowerInvariant().StartsWith("spt developer")
-                ?? false;
+            return fullProfile?.ProfileInfo?.Edition?.ToLowerInvariant().StartsWith("spt developer") ?? false;
         }
     }
 }

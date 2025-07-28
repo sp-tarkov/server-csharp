@@ -32,23 +32,11 @@ public class GiveMeSpaceMessageHandler(
         return string.Equals(message, "givemespace", StringComparison.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        MongoId sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         const string stashRowGiftId = "StashRows";
-        var maxGiftsToSendCount =
-            _coreConfig.Features.ChatbotFeatures.CommandUseLimits[stashRowGiftId] ?? 5;
-        if (
-            profileHelper.PlayerHasReceivedMaxNumberOfGift(
-                sessionId,
-                stashRowGiftId,
-                maxGiftsToSendCount
-            )
-        )
+        var maxGiftsToSendCount = _coreConfig.Features.ChatbotFeatures.CommandUseLimits[stashRowGiftId] ?? 5;
+        if (profileHelper.PlayerHasReceivedMaxNumberOfGift(sessionId, stashRowGiftId, maxGiftsToSendCount))
         {
             mailSendService.SendUserMessageToPlayer(
                 sessionId,
@@ -76,9 +64,7 @@ public class GiveMeSpaceMessageHandler(
             mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
-                randomUtil.GetArrayValue(
-                    [serverLocalisationService.GetText("chatbot-added_stash_rows_please_restart")]
-                ),
+                randomUtil.GetArrayValue([serverLocalisationService.GetText("chatbot-added_stash_rows_please_restart")]),
                 [],
                 null
             );

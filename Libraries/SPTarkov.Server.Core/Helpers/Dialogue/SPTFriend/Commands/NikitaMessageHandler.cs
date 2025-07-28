@@ -8,8 +8,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
-public class NikitaMessageHandler(MailSendService _mailSendService, RandomUtil _randomUtil)
-    : IChatMessageHandler
+public class NikitaMessageHandler(MailSendService _mailSendService, RandomUtil _randomUtil) : IChatMessageHandler
 {
     public int GetPriority()
     {
@@ -21,12 +20,7 @@ public class NikitaMessageHandler(MailSendService _mailSendService, RandomUtil _
         return string.Equals(message, "nikita", StringComparison.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        MongoId sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         _mailSendService.SendUserMessageToPlayer(
             sessionId,

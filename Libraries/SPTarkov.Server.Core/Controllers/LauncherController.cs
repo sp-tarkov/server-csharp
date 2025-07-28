@@ -38,9 +38,7 @@ public class LauncherController(
         // Get all possible profile types + filter out any that are blacklisted
         var profileTemplates = databaseService
             .GetProfileTemplates()
-            .Where(profile =>
-                !_coreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profile.Key)
-            )
+            .Where(profile => !_coreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profile.Key))
             .ToDictionary();
 
         return new ConnectResponse
@@ -57,17 +55,12 @@ public class LauncherController(
     /// </summary>
     /// <param name="profileTemplates">Profiles to get descriptions of</param>
     /// <returns>Dictionary of profile types with related descriptive text</returns>
-    protected Dictionary<string, string> GetProfileDescriptions(
-        Dictionary<string, ProfileSides> profileTemplates
-    )
+    protected Dictionary<string, string> GetProfileDescriptions(Dictionary<string, ProfileSides> profileTemplates)
     {
         var result = new Dictionary<string, string>();
         foreach (var (profileKey, profile) in profileTemplates)
         {
-            result.TryAdd(
-                profileKey,
-                serverLocalisationService.GetText(profile.DescriptionLocaleKey)
-            );
+            result.TryAdd(profileKey, serverLocalisationService.GetText(profile.DescriptionLocaleKey));
         }
 
         return result;
@@ -79,9 +72,7 @@ public class LauncherController(
     /// <returns></returns>
     public Info? Find(MongoId sessionId)
     {
-        return saveServer.GetProfiles().TryGetValue(sessionId, out var profile)
-            ? profile.ProfileInfo
-            : null;
+        return saveServer.GetProfiles().TryGetValue(sessionId, out var profile) ? profile.ProfileInfo : null;
     }
 
     /// <summary>
@@ -215,10 +206,7 @@ public class LauncherController(
     /// <returns>Dictionary of mod name and mod details</returns>
     public Dictionary<string, AbstractModMetadata> GetLoadedServerMods()
     {
-        return loadedMods.ToDictionary(
-            sptMod => sptMod.ModMetadata?.Name ?? "UNKNOWN MOD",
-            sptMod => sptMod.ModMetadata
-        );
+        return loadedMods.ToDictionary(sptMod => sptMod.ModMetadata?.Name ?? "UNKNOWN MOD", sptMod => sptMod.ModMetadata);
     }
 
     /// <summary>

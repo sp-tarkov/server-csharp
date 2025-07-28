@@ -21,9 +21,7 @@ public class BotEquipmentFilterService(
 )
 {
     protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
-    protected readonly Dictionary<string, EquipmentFilters?> _botEquipmentConfig = configServer
-        .GetConfig<BotConfig>()
-        .Equipment;
+    protected readonly Dictionary<string, EquipmentFilters?> _botEquipmentConfig = configServer.GetConfig<BotConfig>().Equipment;
 
     /// <summary>
     ///     Filter a bots data to exclude equipment and cartridges defines in the botConfig
@@ -32,12 +30,7 @@ public class BotEquipmentFilterService(
     /// <param name="baseBotNode">bots json data to filter</param>
     /// <param name="botLevel">Level of the bot</param>
     /// <param name="botGenerationDetails">details on how to generate a bot</param>
-    public void FilterBotEquipment(
-        MongoId sessionId,
-        BotType baseBotNode,
-        int botLevel,
-        BotGenerationDetails botGenerationDetails
-    )
+    public void FilterBotEquipment(MongoId sessionId, BotType baseBotNode, int botLevel, BotGenerationDetails botGenerationDetails)
     {
         var pmcProfile = profileHelper.GetPmcProfile(sessionId);
 
@@ -45,18 +38,12 @@ public class BotEquipmentFilterService(
         var botEquipmentBlacklist = GetBotEquipmentBlacklist(botRole, botLevel);
         var botEquipmentWhitelist = GetBotEquipmentWhitelist(botRole, botLevel);
         var botWeightingAdjustments = GetBotWeightingAdjustments(botRole, botLevel);
-        var botWeightingAdjustmentsByPlayerLevel = GetBotWeightingAdjustmentsByPlayerLevel(
-            botRole,
-            pmcProfile?.Info?.Level ?? 1
-        );
+        var botWeightingAdjustmentsByPlayerLevel = GetBotWeightingAdjustmentsByPlayerLevel(botRole, pmcProfile?.Info?.Level ?? 1);
 
         RandomisationDetails? randomisationDetails = null;
         if (_botEquipmentConfig.TryGetValue(botRole.ToLowerInvariant(), out var botEquipmentConfig))
         {
-            randomisationDetails = botHelper.GetBotRandomizationDetails(
-                botLevel,
-                botEquipmentConfig
-            );
+            randomisationDetails = botHelper.GetBotRandomizationDetails(botLevel, botEquipmentConfig);
         }
 
         if (botEquipmentBlacklist is not null || botEquipmentWhitelist is not null)
@@ -76,27 +63,15 @@ public class BotEquipmentFilterService(
 
         if (botWeightingAdjustmentsByPlayerLevel is not null)
         {
-            AdjustWeighting(
-                botWeightingAdjustmentsByPlayerLevel.Equipment,
-                baseBotNode.BotInventory.Equipment
-            );
-            AdjustWeighting(
-                botWeightingAdjustmentsByPlayerLevel.Ammo,
-                baseBotNode.BotInventory.Ammo
-            );
+            AdjustWeighting(botWeightingAdjustmentsByPlayerLevel.Equipment, baseBotNode.BotInventory.Equipment);
+            AdjustWeighting(botWeightingAdjustmentsByPlayerLevel.Ammo, baseBotNode.BotInventory.Ammo);
         }
 
         if (randomisationDetails is not null)
         {
             AdjustChances(randomisationDetails.Equipment, baseBotNode.BotChances.EquipmentChances);
-            AdjustChances(
-                randomisationDetails.WeaponMods,
-                baseBotNode.BotChances.WeaponModsChances
-            );
-            AdjustChances(
-                randomisationDetails.EquipmentMods,
-                baseBotNode.BotChances.EquipmentModsChances
-            );
+            AdjustChances(randomisationDetails.WeaponMods, baseBotNode.BotChances.WeaponModsChances);
+            AdjustChances(randomisationDetails.EquipmentMods, baseBotNode.BotChances.EquipmentModsChances);
             AdjustGenerationChances(randomisationDetails.Generation, baseBotNode.BotGeneration);
         }
     }
@@ -106,10 +81,7 @@ public class BotEquipmentFilterService(
     /// </summary>
     /// <param name="equipmentChanges">Changes to apply</param>
     /// <param name="baseValues">data to update</param>
-    protected void AdjustChances(
-        Dictionary<string, double> equipmentChanges,
-        Dictionary<string, double> baseValues
-    )
+    protected void AdjustChances(Dictionary<string, double> equipmentChanges, Dictionary<string, double> baseValues)
     {
         if (equipmentChanges is null)
         {
@@ -127,10 +99,7 @@ public class BotEquipmentFilterService(
     /// </summary>
     /// <param name="generationChanges">Changes to apply</param>
     /// <param name="baseBotGeneration">dictionary to update</param>
-    protected void AdjustGenerationChances(
-        Dictionary<string, GenerationData> generationChanges,
-        Generation baseBotGeneration
-    )
+    protected void AdjustGenerationChances(Dictionary<string, GenerationData> generationChanges, Generation baseBotGeneration)
     {
         if (generationChanges is null)
         {
@@ -139,10 +108,12 @@ public class BotEquipmentFilterService(
 
         foreach (var itemKey in generationChanges)
         {
-            baseBotGeneration.Items.GetByJsonProp<GenerationData>(itemKey.Key).Weights =
-                generationChanges.GetValueOrDefault(itemKey.Key).Weights;
-            baseBotGeneration.Items.GetByJsonProp<GenerationData>(itemKey.Key).Whitelist =
-                generationChanges.GetValueOrDefault(itemKey.Key).Whitelist;
+            baseBotGeneration.Items.GetByJsonProp<GenerationData>(itemKey.Key).Weights = generationChanges
+                .GetValueOrDefault(itemKey.Key)
+                .Weights;
+            baseBotGeneration.Items.GetByJsonProp<GenerationData>(itemKey.Key).Whitelist = generationChanges
+                .GetValueOrDefault(itemKey.Key)
+                .Whitelist;
         }
     }
 
@@ -161,9 +132,7 @@ public class BotEquipmentFilterService(
     /// </summary>
     /// <param name="botEquipmentRole">equipment role of bot to look up</param>
     /// <returns>Dictionary of weapon type and their whitelisted scope types</returns>
-    public Dictionary<MongoId, HashSet<MongoId>>? GetBotWeaponSightWhitelist(
-        string botEquipmentRole
-    )
+    public Dictionary<MongoId, HashSet<MongoId>>? GetBotWeaponSightWhitelist(string botEquipmentRole)
     {
         return _botConfig.Equipment.TryGetValue(botEquipmentRole, out var botEquipmentSettings)
             ? botEquipmentSettings.WeaponSightWhitelist
@@ -181,8 +150,7 @@ public class BotEquipmentFilterService(
         var blacklistDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
         return (blacklistDetailsForBot?.Blacklist ?? []).FirstOrDefault(equipmentFilter =>
-            playerLevel >= equipmentFilter.LevelRange.Min
-            && playerLevel <= equipmentFilter.LevelRange.Max
+            playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
         );
     }
 
@@ -197,8 +165,7 @@ public class BotEquipmentFilterService(
         var whitelistDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
         return (whitelistDetailsForBot?.Whitelist ?? []).FirstOrDefault(equipmentFilter =>
-            playerLevel >= equipmentFilter.LevelRange.Min
-            && playerLevel <= equipmentFilter.LevelRange.Max
+            playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
         );
     }
 
@@ -223,10 +190,7 @@ public class BotEquipmentFilterService(
     /// <param name="botRole">Bot type to get adjustments for</param>
     /// <param name="playerLevel">Level of bot</param>
     /// <returns>Weighting adjustments for bot items</returns>
-    protected WeightingAdjustmentDetails? GetBotWeightingAdjustmentsByPlayerLevel(
-        string botRole,
-        int playerLevel
-    )
+    protected WeightingAdjustmentDetails? GetBotWeightingAdjustmentsByPlayerLevel(string botRole, int playerLevel)
     {
         var weightingDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
@@ -243,11 +207,7 @@ public class BotEquipmentFilterService(
     /// <param name="blacklist">Equipment blacklist</param>
     /// <param name="whitelist">Equipment whitelist</param>
     /// <returns>Filtered bot file</returns>
-    protected void FilterEquipment(
-        BotType baseBotNode,
-        EquipmentFilterDetails? blacklist,
-        EquipmentFilterDetails? whitelist
-    )
+    protected void FilterEquipment(BotType baseBotNode, EquipmentFilterDetails? blacklist, EquipmentFilterDetails? whitelist)
     {
         if (whitelist is not null)
         {
@@ -256,9 +216,7 @@ public class BotEquipmentFilterService(
                 var botEquipment = baseBotNode.BotInventory.Equipment[equipmentSlotKey.Key];
 
                 // Skip equipment slot if whitelist doesn't exist / is empty
-                var whitelistEquipmentForSlot = whitelist.Equipment[
-                    equipmentSlotKey.Key.ToString()
-                ];
+                var whitelistEquipmentForSlot = whitelist.Equipment[equipmentSlotKey.Key.ToString()];
                 if (whitelistEquipmentForSlot is null || whitelistEquipmentForSlot.Count == 0)
                 {
                     continue;
@@ -270,8 +228,7 @@ public class BotEquipmentFilterService(
                 {
                     if (whitelistEquipmentForSlot.Contains(dict.Key))
                     {
-                        baseBotNode.BotInventory.Equipment[equipmentSlotKey.Key][dict.Key] =
-                            botEquipment[dict.Key];
+                        baseBotNode.BotInventory.Equipment[equipmentSlotKey.Key][dict.Key] = botEquipment[dict.Key];
                     }
                 }
             }
@@ -286,12 +243,7 @@ public class BotEquipmentFilterService(
                 var botEquipment = baseBotNode.BotInventory.Equipment[equipmentSlotKvP.Key];
 
                 // Skip equipment slot if blacklist doesn't exist / is empty
-                if (
-                    !blacklist.Equipment.TryGetValue(
-                        equipmentSlotKvP.Key.ToString(),
-                        out var equipmentSlotBlacklist
-                    )
-                )
+                if (!blacklist.Equipment.TryGetValue(equipmentSlotKvP.Key.ToString(), out var equipmentSlotBlacklist))
                 {
                     continue;
                 }
@@ -317,11 +269,7 @@ public class BotEquipmentFilterService(
     /// <param name="blacklist">equipment on this list should be excluded from the bot</param>
     /// <param name="whitelist">equipment on this list should be used exclusively</param>
     /// <returns>Filtered bot file</returns>
-    protected void FilterCartridges(
-        BotType baseBotNode,
-        EquipmentFilterDetails? blacklist,
-        EquipmentFilterDetails? whitelist
-    )
+    protected void FilterCartridges(BotType baseBotNode, EquipmentFilterDetails? blacklist, EquipmentFilterDetails? whitelist)
     {
         if (whitelist is not null)
         {
@@ -396,9 +344,7 @@ public class BotEquipmentFilterService(
         {
             foreach (var poolAdjustmentKvP in weightingAdjustments.Add)
             {
-                var locationToUpdate = botItemPool[
-                    Enum.Parse<EquipmentSlots>(poolAdjustmentKvP.Key)
-                ];
+                var locationToUpdate = botItemPool[Enum.Parse<EquipmentSlots>(poolAdjustmentKvP.Key)];
                 foreach (var itemToAddKvP in poolAdjustmentKvP.Value)
                 {
                     locationToUpdate[itemToAddKvP.Key] = itemToAddKvP.Value;
@@ -410,16 +356,11 @@ public class BotEquipmentFilterService(
         {
             foreach (var poolAdjustmentKvP in weightingAdjustments.Edit)
             {
-                var locationToUpdate = botItemPool[
-                    Enum.Parse<EquipmentSlots>(poolAdjustmentKvP.Key)
-                ];
+                var locationToUpdate = botItemPool[Enum.Parse<EquipmentSlots>(poolAdjustmentKvP.Key)];
                 foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
                 // Only make change if item exists as we're editing, not adding
                 {
-                    if (
-                        locationToUpdate[itemToEditKvP.Key] != null
-                        || locationToUpdate[itemToEditKvP.Key] == 0
-                    )
+                    if (locationToUpdate[itemToEditKvP.Key] != null || locationToUpdate[itemToEditKvP.Key] == 0)
                     {
                         locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
                     }
@@ -429,9 +370,7 @@ public class BotEquipmentFilterService(
                         {
                             if (logger.IsLogEnabled(LogLevel.Debug))
                             {
-                                logger.Debug(
-                                    $"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}"
-                                );
+                                logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
                             }
                         }
                     }
@@ -477,10 +416,7 @@ public class BotEquipmentFilterService(
                 foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
                 // Only make change if item exists as we're editing, not adding
                 {
-                    if (
-                        locationToUpdate.GetValueOrDefault(itemToEditKvP.Key) != null
-                        || locationToUpdate[itemToEditKvP.Key] == 0
-                    )
+                    if (locationToUpdate.GetValueOrDefault(itemToEditKvP.Key) != null || locationToUpdate[itemToEditKvP.Key] == 0)
                     {
                         locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
                     }
@@ -490,9 +426,7 @@ public class BotEquipmentFilterService(
                         {
                             if (logger.IsLogEnabled(LogLevel.Debug))
                             {
-                                logger.Debug(
-                                    $"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}"
-                                );
+                                logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
                             }
                         }
                     }
@@ -507,11 +441,7 @@ public class BotEquipmentFilterService(
     /// <param name="weightingAdjustments">Weighting change to apply to bot</param>
     /// <param name="botItemPool">Bot item dictionary to adjust</param>
     /// <param name="showEditWarnings">When item being adjusted cannot be found at source, show warning message</param>
-    protected void AdjustWeighting(
-        AdjustmentDetails? weightingAdjustments,
-        Appearance botItemPool,
-        bool showEditWarnings = true
-    )
+    protected void AdjustWeighting(AdjustmentDetails? weightingAdjustments, Appearance botItemPool, bool showEditWarnings = true)
     {
         if (weightingAdjustments is null)
         {
@@ -522,9 +452,7 @@ public class BotEquipmentFilterService(
         {
             foreach (var poolAdjustmentKvP in weightingAdjustments.Add)
             {
-                var locationToUpdate = botItemPool.GetByJsonProp<Dictionary<MongoId, double>>(
-                    poolAdjustmentKvP.Key
-                );
+                var locationToUpdate = botItemPool.GetByJsonProp<Dictionary<MongoId, double>>(poolAdjustmentKvP.Key);
                 if (locationToUpdate is null)
                 {
                     continue;
@@ -541,9 +469,7 @@ public class BotEquipmentFilterService(
         {
             foreach (var poolAdjustmentKvP in weightingAdjustments.Edit)
             {
-                var locationToUpdate = botItemPool.GetByJsonProp<Dictionary<MongoId, double>>(
-                    poolAdjustmentKvP.Key
-                );
+                var locationToUpdate = botItemPool.GetByJsonProp<Dictionary<MongoId, double>>(poolAdjustmentKvP.Key);
                 if (locationToUpdate is null)
                 {
                     continue;
@@ -564,9 +490,7 @@ public class BotEquipmentFilterService(
                     {
                         if (logger.IsLogEnabled(LogLevel.Debug))
                         {
-                            logger.Debug(
-                                $"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}"
-                            );
+                            logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
                         }
                     }
                 }

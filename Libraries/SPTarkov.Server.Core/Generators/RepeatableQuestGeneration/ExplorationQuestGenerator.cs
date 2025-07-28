@@ -54,20 +54,9 @@ public class ExplorationQuestGenerator(
         var explorationConfig = repeatableConfig.QuestConfig.Exploration;
 
         // Try and get a location to generate for
-        if (
-            !TryGetLocationInfo(
-                repeatableConfig,
-                explorationConfig,
-                questTypePool,
-                out var locationInfo
-            ) || locationInfo is null
-        )
+        if (!TryGetLocationInfo(repeatableConfig, explorationConfig, questTypePool, out var locationInfo) || locationInfo is null)
         {
-            logger.Warning(
-                localisationService.GetText(
-                    "repeatable-no_location_found_for_exploration_quest_generation"
-                )
-            );
+            logger.Warning(localisationService.GetText("repeatable-no_location_found_for_exploration_quest_generation"));
 
             return null;
         }
@@ -82,12 +71,7 @@ public class ExplorationQuestGenerator(
 
         if (quest is null)
         {
-            logger.Error(
-                localisationService.GetText(
-                    "repeatable-quest_generation_failed_no_template",
-                    "exploration"
-                )
-            );
+            logger.Error(localisationService.GetText("repeatable-quest_generation_failed_no_template", "exploration"));
             return null;
         }
 
@@ -95,45 +79,24 @@ public class ExplorationQuestGenerator(
         if (!TryGenerateAvailableForFinish(quest, locationInfo))
         {
             logger.Error(
-                localisationService.GetText(
-                    "repeatable-available_for_finish_condition_failed_to_generate",
-                    locationInfo.LocationName
-                )
+                localisationService.GetText("repeatable-available_for_finish_condition_failed_to_generate", locationInfo.LocationName)
             );
             return null;
         }
 
         // If we require a specific extract requirement, generate it
-        if (
-            locationInfo.RequiresSpecificExtract
-            && !TryGenerateSpecificExtractRequirement(quest, repeatableConfig, locationInfo)
-        )
+        if (locationInfo.RequiresSpecificExtract && !TryGenerateSpecificExtractRequirement(quest, repeatableConfig, locationInfo))
         {
             logger.Error(
-                localisationService.GetText(
-                    "repeatable-specific_extract_condition_failed_to_generate",
-                    locationInfo.LocationName
-                )
+                localisationService.GetText("repeatable-specific_extract_condition_failed_to_generate", locationInfo.LocationName)
             );
             return null;
         }
 
         // Difficulty for exploration goes from 1 extract to maxExtracts
         // Difficulty for reward goes from 0.2...1 -> map
-        var difficulty = mathUtil.MapToRange(
-            locationInfo.NumOfExtractsRequired,
-            1,
-            explorationConfig.MaximumExtracts,
-            0.2,
-            1
-        );
-        quest.Rewards = repeatableQuestRewardGenerator.GenerateReward(
-            pmcLevel,
-            difficulty,
-            traderId,
-            repeatableConfig,
-            explorationConfig
-        );
+        var difficulty = mathUtil.MapToRange(locationInfo.NumOfExtractsRequired, 1, explorationConfig.MaximumExtracts, 0.2, 1);
+        quest.Rewards = repeatableQuestRewardGenerator.GenerateReward(pmcLevel, difficulty, traderId, repeatableConfig, explorationConfig);
 
         return quest;
     }
@@ -168,18 +131,11 @@ public class ExplorationQuestGenerator(
         // Make the location info object
         var locationTarget = pool.Pool!.Exploration!.Locations![locationKey];
 
-        var requiresSpecificExtract = randomUtil.GetChance100(
-            repeatableConfig.QuestConfig.Exploration.SpecificExits.Chance
-        );
+        var requiresSpecificExtract = randomUtil.GetChance100(repeatableConfig.QuestConfig.Exploration.SpecificExits.Chance);
 
         var numExtracts = GetNumberOfExits(explorationConfig, requiresSpecificExtract);
 
-        locationInfo = new LocationInfo(
-            locationKey,
-            locationTarget.ToList(),
-            requiresSpecificExtract,
-            numExtracts
-        );
+        locationInfo = new LocationInfo(locationKey, locationTarget.ToList(), requiresSpecificExtract, numExtracts);
 
         // Remove the location from the available pool
         pool.Pool.Exploration.Locations.Remove(locationKey);
@@ -196,9 +152,7 @@ public class ExplorationQuestGenerator(
     protected int GetNumberOfExits(Exploration config, bool requiresSpecificExtract)
     {
         // Different max extract count when specific extract needed
-        var exitTimesMax = requiresSpecificExtract
-            ? config.MaximumExtractsWithSpecificExit
-            : config.MaximumExtracts + 1;
+        var exitTimesMax = requiresSpecificExtract ? config.MaximumExtractsWithSpecificExit : config.MaximumExtracts + 1;
 
         return randomUtil.RandInt(1, exitTimesMax);
     }
@@ -209,10 +163,7 @@ public class ExplorationQuestGenerator(
     /// <param name="locationKey">Map id (e.g. factory4_day)</param>
     /// <param name="playerGroup">Pmc/Scav</param>
     /// <returns>List of Exit objects</returns>
-    protected IEnumerable<Exit>? GetLocationExitsForSide(
-        string locationKey,
-        PlayerGroup playerGroup
-    )
+    protected IEnumerable<Exit>? GetLocationExitsForSide(string locationKey, PlayerGroup playerGroup)
     {
         var mapExtracts = databaseService.GetLocation(locationKey.ToLowerInvariant())?.AllExtracts;
 
@@ -235,18 +186,11 @@ public class ExplorationQuestGenerator(
         }
 
         // Lookup the location
-        var location = repeatableQuestHelper.GetQuestLocationByMapId(
-            locationInfo.LocationName.ToString()
-        );
+        var location = repeatableQuestHelper.GetQuestLocationByMapId(locationInfo.LocationName.ToString());
 
         if (location is null)
         {
-            logger.Error(
-                localisationService.GetText(
-                    "repeatable-unable_to_find_location_id_for_location_name",
-                    locationInfo.LocationName
-                )
-            );
+            logger.Error(localisationService.GetText("repeatable-unable_to_find_location_id_for_location_name", locationInfo.LocationName));
             return false;
         }
 
@@ -267,11 +211,7 @@ public class ExplorationQuestGenerator(
         };
 
         quest.Conditions.AvailableForFinish![0].Counter!.Id = new MongoId();
-        quest.Conditions.AvailableForFinish![0].Counter!.Conditions =
-        [
-            exitStatusCondition,
-            locationCondition,
-        ];
+        quest.Conditions.AvailableForFinish![0].Counter!.Conditions = [exitStatusCondition, locationCondition];
         quest.Conditions.AvailableForFinish[0].Value = locationInfo.NumOfExtractsRequired;
         quest.Conditions.AvailableForFinish[0].Id = new MongoId();
 
@@ -294,19 +234,11 @@ public class ExplorationQuestGenerator(
     )
     {
         // Fetch extracts for the requested side
-        var mapExits = GetLocationExitsForSide(
-            locationInfo.LocationName.ToString(),
-            repeatableConfig.Side
-        );
+        var mapExits = GetLocationExitsForSide(locationInfo.LocationName.ToString(), repeatableConfig.Side);
 
         if (mapExits is null)
         {
-            logger.Error(
-                localisationService.GetText(
-                    "repeatable-unable_to_find_exits_for_location",
-                    locationInfo.LocationName
-                )
-            );
+            logger.Error(localisationService.GetText("repeatable-unable_to_find_exits_for_location", locationInfo.LocationName));
             return false;
         }
 
@@ -315,19 +247,12 @@ public class ExplorationQuestGenerator(
 
         // Exclude exits with a requirement to leave (e.g. car extracts)
         var possibleExits = exitPool.Where(exit =>
-            repeatableConfig.QuestConfig.Exploration.SpecificExits.PassageRequirementWhitelist.Contains(
-                "PassageRequirement"
-            )
+            repeatableConfig.QuestConfig.Exploration.SpecificExits.PassageRequirementWhitelist.Contains("PassageRequirement")
         );
 
         if (!possibleExits.Any())
         {
-            logger.Error(
-                localisationService.GetText(
-                    "repeatable-unable_choose_exit_pool_empty",
-                    locationInfo.LocationName
-                )
-            );
+            logger.Error(localisationService.GetText("repeatable-unable_choose_exit_pool_empty", locationInfo.LocationName));
 
             return false;
         }

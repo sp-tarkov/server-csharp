@@ -28,8 +28,7 @@ namespace SPTarkov.Server.Core.Extensions
             for (var i = 0; i < 24; i++)
             {
                 var c = span[i];
-                var isHex =
-                    (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+                var isHex = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
 
                 if (!isHex)
                 {
@@ -58,8 +57,7 @@ namespace SPTarkov.Server.Core.Extensions
             for (var i = 0; i < 24; i++)
             {
                 var c = span[i];
-                var isHex =
-                    (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+                var isHex = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
 
                 if (!isHex)
                 {

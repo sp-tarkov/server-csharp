@@ -50,11 +50,7 @@ public class WeatherController(
     /// <returns>GetLocalWeatherResponseData</returns>
     public GetLocalWeatherResponseData GenerateLocal(MongoId sessionId)
     {
-        var result = new GetLocalWeatherResponseData
-        {
-            Season = seasonalEventService.GetActiveWeatherSeason(),
-            Weather = [],
-        };
+        var result = new GetLocalWeatherResponseData { Season = seasonalEventService.GetActiveWeatherSeason(), Weather = [] };
 
         result.Weather.AddRange(raidWeatherService.GetUpcomingWeather());
 

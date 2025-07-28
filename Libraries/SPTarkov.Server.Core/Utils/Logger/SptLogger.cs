@@ -25,17 +25,11 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
         _category = typeof(T).FullName;
         _loggerQueueManager = loggerQueueManager;
 
-        LoadConfig(
-            fileUtil,
-            jsonUtil,
-            ProgramStatics.DEBUG() ? ConfigurationPathDev : ConfigurationPath
-        );
+        LoadConfig(fileUtil, jsonUtil, ProgramStatics.DEBUG() ? ConfigurationPathDev : ConfigurationPath);
 
         if (_config == null)
         {
-            throw new Exception(
-                "The configuration path was loaded but it contained invalid or incorrect configuration."
-            );
+            throw new Exception("The configuration path was loaded but it contained invalid or incorrect configuration.");
         }
 
         _loggerQueueManager.Initialize(_config);
@@ -45,9 +39,7 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
     {
         if (fileUtil.FileExists(sptloggerDevelopmentJson))
         {
-            _config = jsonUtil.DeserializeFromFile<SptLoggerConfiguration>(
-                sptloggerDevelopmentJson
-            );
+            _config = jsonUtil.DeserializeFromFile<SptLoggerConfiguration>(sptloggerDevelopmentJson);
         }
         else
         {
@@ -60,12 +52,7 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
         _category = category;
     }
 
-    public void LogWithColor(
-        string data,
-        LogTextColor? textColor = null,
-        LogBackgroundColor? backgroundColor = null,
-        Exception? ex = null
-    )
+    public void LogWithColor(string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null, Exception? ex = null)
     {
         _loggerQueueManager.EnqueueMessage(
             new SptLogMessage(

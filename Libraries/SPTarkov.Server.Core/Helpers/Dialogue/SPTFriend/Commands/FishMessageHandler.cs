@@ -19,12 +19,7 @@ public class FishMessageHandler(MailSendService _mailSendService) : IChatMessage
         return string.Equals(message, "fish", StringComparison.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        MongoId sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         _mailSendService.SendUserMessageToPlayer(sessionId, sptFriendUser, "blub", [], null);
     }

@@ -25,13 +25,7 @@ public class QuestTplMongoIdGenerator(
     {
         // Figure out our source and target directories
         var projectDir = Directory.GetParent("./").Parent.Parent.Parent.Parent.Parent;
-        _enumDir = Path.Combine(
-            projectDir.FullName,
-            "Libraries",
-            "SPTarkov.Server.Core",
-            "Models",
-            "Enums"
-        );
+        _enumDir = Path.Combine(projectDir.FullName, "Libraries", "SPTarkov.Server.Core", "Models", "Enums");
 
         _quests = databaseServer.GetTables().Templates.Quests;
         var questTplObject = GenerateQuestTplObject();
@@ -54,18 +48,13 @@ public class QuestTplMongoIdGenerator(
             {
                 if (!result.TryAdd(nameOverride, id))
                 {
-                    logger.Warning(
-                        $"Duplicate locale name: {nameOverride} with id: {id} in quest list"
-                    );
+                    logger.Warning($"Duplicate locale name: {nameOverride} with id: {id} in quest list");
                 }
 
                 continue;
             }
 
-            var locale = localeService
-                .GetLocaleDb()[$"{id} name"]
-                .Replace(" ", "_")
-                .Replace("-", "_");
+            var locale = localeService.GetLocaleDb()[$"{id} name"].Replace(" ", "_").Replace("-", "_");
 
             locale = localeUtil.SanitizeEnumKey(locale);
 
@@ -88,8 +77,7 @@ public class QuestTplMongoIdGenerator(
 
         foreach (var (enumName, data) in enumEntries)
         {
-            enumFileData +=
-                $"    public static readonly MongoId {enumName} = new MongoId(\"{data}\");\n";
+            enumFileData += $"    public static readonly MongoId {enumName} = new MongoId(\"{data}\");\n";
         }
 
         enumFileData += "}\n";

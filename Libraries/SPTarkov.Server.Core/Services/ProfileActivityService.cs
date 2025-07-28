@@ -16,11 +16,7 @@ public class ProfileActivityService(TimeUtil timeUtil)
         _activeProfiles.AddOrUpdate(
             sessionId,
             // On add value
-            key => new ProfileActivityData
-            {
-                ClientStartedTimestamp = clientStartedTimestamp,
-                LastActive = timeUtil.GetTimeStamp(),
-            },
+            key => new ProfileActivityData { ClientStartedTimestamp = clientStartedTimestamp, LastActive = timeUtil.GetTimeStamp() },
             // On Update value, client was started before but crashed or user restarted
             (key, existingValue) =>
             {

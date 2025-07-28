@@ -10,11 +10,7 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class LocationController(
-    ISptLogger<LocationController> logger,
-    DatabaseService databaseService,
-    AirdropService airdropService
-)
+public class LocationController(ISptLogger<LocationController> logger, DatabaseService databaseService, AirdropService airdropService)
 {
     /// <summary>
     ///     Handle client/locations
@@ -49,11 +45,7 @@ public class LocationController(
             locationResult.Add(mapBase.IdField, mapBase);
         }
 
-        return new LocationsGenerateAllResponse
-        {
-            Locations = locationResult,
-            Paths = locationsFromDb.Base!.Paths,
-        };
+        return new LocationsGenerateAllResponse { Locations = locationResult, Paths = locationsFromDb.Base!.Paths };
     }
 
     /// <summary>

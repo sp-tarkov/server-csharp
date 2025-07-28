@@ -11,8 +11,7 @@ using SPTarkov.Server.Core.Models.Enums;
 namespace SPTarkov.Server.Core.Routers.ItemEvents;
 
 [Injectable]
-public class WishlistItemEventRouter(WishlistCallbacks wishlistCallbacks)
-    : ItemEventRouterDefinition
+public class WishlistItemEventRouter(WishlistCallbacks wishlistCallbacks) : ItemEventRouterDefinition
 {
     protected override List<HandledRoute> GetHandledRoutes()
     {
@@ -36,32 +35,18 @@ public class WishlistItemEventRouter(WishlistCallbacks wishlistCallbacks)
         {
             case ItemEventActions.ADD_TO_WISHLIST:
                 return new ValueTask<ItemEventRouterResponse>(
-                    wishlistCallbacks.AddToWishlist(
-                        pmcData,
-                        body as AddToWishlistRequest,
-                        sessionID
-                    )
+                    wishlistCallbacks.AddToWishlist(pmcData, body as AddToWishlistRequest, sessionID)
                 );
             case ItemEventActions.REMOVE_FROM_WISHLIST:
                 return new ValueTask<ItemEventRouterResponse>(
-                    wishlistCallbacks.RemoveFromWishlist(
-                        pmcData,
-                        body as RemoveFromWishlistRequest,
-                        sessionID
-                    )
+                    wishlistCallbacks.RemoveFromWishlist(pmcData, body as RemoveFromWishlistRequest, sessionID)
                 );
             case ItemEventActions.CHANGE_WISHLIST_ITEM_CATEGORY:
                 return new ValueTask<ItemEventRouterResponse>(
-                    wishlistCallbacks.ChangeWishlistItemCategory(
-                        pmcData,
-                        body as ChangeWishlistItemCategoryRequest,
-                        sessionID
-                    )
+                    wishlistCallbacks.ChangeWishlistItemCategory(pmcData, body as ChangeWishlistItemCategoryRequest, sessionID)
                 );
             default:
-                throw new Exception(
-                    $"CustomizationItemEventRouter being used when it cant handle route {url}"
-                );
+                throw new Exception($"CustomizationItemEventRouter being used when it cant handle route {url}");
         }
     }
 }

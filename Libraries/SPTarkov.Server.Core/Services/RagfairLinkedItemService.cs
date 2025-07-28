@@ -9,11 +9,7 @@ using SPTarkov.Server.Core.Models.Utils;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class RagfairLinkedItemService(
-    DatabaseService databaseService,
-    ItemHelper itemHelper,
-    ISptLogger<RagfairLinkedItemService> logger
-)
+public class RagfairLinkedItemService(DatabaseService databaseService, ItemHelper itemHelper, ISptLogger<RagfairLinkedItemService> logger)
 {
     protected readonly Dictionary<MongoId, HashSet<MongoId>> linkedItemsCache = new();
 
@@ -117,10 +113,7 @@ public class RagfairLinkedItemService(
     /// </summary>
     /// <param name="cylinder"> Revolvers cylinder </param>
     /// <param name="itemLinkedSet"> Set to add to </param>
-    protected void AddRevolverCylinderAmmoToLinkedItems(
-        TemplateItem cylinder,
-        HashSet<MongoId> itemLinkedSet
-    )
+    protected void AddRevolverCylinderAmmoToLinkedItems(TemplateItem cylinder, HashSet<MongoId> itemLinkedSet)
     {
         var cylinderMod = cylinder.Properties.Slots?.FirstOrDefault(x => x.Name == "mod_magazine");
         if (cylinderMod == null)
@@ -129,8 +122,7 @@ public class RagfairLinkedItemService(
         }
 
         // Get the first cylinder filter tpl
-        var cylinderTpl =
-            cylinderMod.Props?.Filters?.First().Filter?.FirstOrDefault() ?? new MongoId(null);
+        var cylinderTpl = cylinderMod.Props?.Filters?.First().Filter?.FirstOrDefault() ?? new MongoId(null);
 
         if (!cylinderTpl.IsValidMongoId())
         {

@@ -11,10 +11,7 @@ public record Locations
 
     // sometimes we get the key or value given so save changing logic in each place
     // have it key both
-    private readonly FrozenDictionary<string, string> _locationMappings = new Dictionary<
-        string,
-        string
-    >
+    private readonly FrozenDictionary<string, string> _locationMappings = new Dictionary<string, string>
     {
         // EFT
         { "factory4_day", "Factory4Day" },
@@ -149,9 +146,7 @@ public record Locations
 
     private void HydrateDictionary()
     {
-        var classProps = typeof(Locations)
-            .GetProperties()
-            .Where(p => p.PropertyType == typeof(Eft.Common.Location) && p.Name != "Item");
+        var classProps = typeof(Locations).GetProperties().Where(p => p.PropertyType == typeof(Eft.Common.Location) && p.Name != "Item");
         _locationDictionaryCache = classProps.ToDictionary(
             propertyInfo => propertyInfo.Name,
             propertyInfo => propertyInfo.GetValue(this, null) as Eft.Common.Location,

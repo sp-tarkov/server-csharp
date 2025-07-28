@@ -33,12 +33,7 @@ public class InventoryHelper(
     ICloner cloner
 )
 {
-    private static readonly FrozenSet<MongoId> _variableSizeItemTypes =
-    [
-        BaseClasses.WEAPON,
-        BaseClasses.FUNCTIONAL_MOD,
-        BaseClasses.MOD,
-    ];
+    private static readonly FrozenSet<MongoId> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD, BaseClasses.MOD];
 
     protected readonly InventoryConfig _inventoryConfig = configServer.GetConfig<InventoryConfig>();
 
@@ -49,12 +44,7 @@ public class InventoryHelper(
     /// <param name="request">AddItemsDirectRequest request</param>
     /// <param name="pmcData">Player profile</param>
     /// <param name="output">Client response object</param>
-    public void AddItemsToStash(
-        MongoId sessionId,
-        AddItemsDirectRequest request,
-        PmcData pmcData,
-        ItemEventRouterResponse output
-    )
+    public void AddItemsToStash(MongoId sessionId, AddItemsDirectRequest request, PmcData pmcData, ItemEventRouterResponse output)
     {
         // Check all items fit into inventory before adding
         if (!CanPlaceItemsInInventory(sessionId, request.ItemsWithModsToAdd))
@@ -95,12 +85,7 @@ public class InventoryHelper(
     /// <param name="request">AddItemDirect request</param>
     /// <param name="pmcData">Player profile</param>
     /// <param name="output">Client response object</param>
-    public void AddItemToStash(
-        MongoId sessionId,
-        AddItemDirectRequest request,
-        PmcData pmcData,
-        ItemEventRouterResponse output
-    )
+    public void AddItemToStash(MongoId sessionId, AddItemDirectRequest request, PmcData pmcData, ItemEventRouterResponse output)
     {
         var itemWithModsToAddClone = cloner.Clone(request.ItemWithModsToAdd);
 
@@ -131,10 +116,7 @@ public class InventoryHelper(
         }
 
         // Apply/remove FiR to item + mods
-        SetFindInRaidStatusForItem(
-            itemWithModsToAddClone,
-            request.FoundInRaid.GetValueOrDefault(false)
-        );
+        SetFindInRaidStatusForItem(itemWithModsToAddClone, request.FoundInRaid.GetValueOrDefault(false));
 
         // Remove trader properties from root item
         RemoveTraderRagfairRelatedUpdProperties(itemWithModsToAddClone[0].Upd);
@@ -180,9 +162,7 @@ public class InventoryHelper(
             itemHelper.AddUpdObjectToItem(item);
 
             // Ammo / currency can NEVER be FiR or have a 'SpawnedInSession' property
-            item.Upd.SpawnedInSession = itemHelper.IsOfBaseclass(item.Template, BaseClasses.AMMO)
-                ? null
-                : foundInRaid;
+            item.Upd.SpawnedInSession = itemHelper.IsOfBaseclass(item.Template, BaseClasses.AMMO) ? null : foundInRaid;
         }
     }
 
@@ -214,10 +194,7 @@ public class InventoryHelper(
     /// <param name="sessionId">Player id</param>
     /// <param name="itemsWithChildren">Array of items with children to try and fit</param>
     /// <returns>True all items fit</returns>
-    public bool CanPlaceItemsInInventory(
-        MongoId sessionId,
-        IEnumerable<List<Item>> itemsWithChildren
-    )
+    public bool CanPlaceItemsInInventory(MongoId sessionId, IEnumerable<List<Item>> itemsWithChildren)
     {
         var pmcData = profileHelper.GetPmcProfile(sessionId);
 
@@ -230,9 +207,7 @@ public class InventoryHelper(
         }
 
         // False if ALL items don't fit
-        return itemsWithChildren.All(itemWithChildren =>
-            CanPlaceItemInContainer(stashFS2D, itemWithChildren)
-        );
+        return itemsWithChildren.All(itemWithChildren => CanPlaceItemInContainer(stashFS2D, itemWithChildren));
     }
 
     /// <summary>
@@ -241,14 +216,9 @@ public class InventoryHelper(
     /// <param name="containerFS2D">Container grid to fit items into</param>
     /// <param name="itemsWithChildren">Items to try and fit into grid</param>
     /// <returns>True all fit</returns>
-    public bool CanPlaceItemsInContainer(
-        int[,] containerFS2D,
-        IEnumerable<List<Item>> itemsWithChildren
-    )
+    public bool CanPlaceItemsInContainer(int[,] containerFS2D, IEnumerable<List<Item>> itemsWithChildren)
     {
-        return itemsWithChildren.All(itemWithChildren =>
-            CanPlaceItemInContainer(containerFS2D, itemWithChildren)
-        );
+        return itemsWithChildren.All(itemWithChildren => CanPlaceItemInContainer(containerFS2D, itemWithChildren));
     }
 
     /// <summary>
@@ -279,12 +249,7 @@ public class InventoryHelper(
             }
             catch (Exception ex)
             {
-                logger.Error(
-                    serverLocalisationService.GetText(
-                        "inventory-unable_to_fit_item_into_inventory",
-                        ex.Message
-                    )
-                );
+                logger.Error(serverLocalisationService.GetText("inventory-unable_to_fit_item_into_inventory", ex.Message));
 
                 return false;
             }
@@ -312,11 +277,7 @@ public class InventoryHelper(
     {
         // Get x/y size of item
         var rootItemAdded = itemWithChildren[0];
-        var (sizeX, sizeY) = GetItemSize(
-            rootItemAdded.Template,
-            rootItemAdded.Id,
-            itemWithChildren
-        );
+        var (sizeX, sizeY) = GetItemSize(rootItemAdded.Template, rootItemAdded.Id, itemWithChildren);
 
         // Look for a place to slot item into
         var findSlotResult = containerFS2D.FindSlotForItem(sizeX, sizeY);
@@ -334,9 +295,7 @@ public class InventoryHelper(
             }
             catch (Exception ex)
             {
-                logger.Error(
-                    serverLocalisationService.GetText("inventory-fill_container_failed", ex.Message)
-                );
+                logger.Error(serverLocalisationService.GetText("inventory-fill_container_failed", ex.Message));
 
                 return findSlotResult;
             }
@@ -348,9 +307,7 @@ public class InventoryHelper(
             {
                 X = findSlotResult.X,
                 Y = findSlotResult.Y,
-                R = findSlotResult.Rotation.GetValueOrDefault(false)
-                    ? ItemRotation.Vertical
-                    : ItemRotation.Horizontal,
+                R = findSlotResult.Rotation.GetValueOrDefault(false) ? ItemRotation.Vertical : ItemRotation.Horizontal,
                 Rotation = findSlotResult.Rotation,
             };
 
@@ -446,9 +403,7 @@ public class InventoryHelper(
             {
                 X = findSortingSlotResult.X,
                 Y = findSortingSlotResult.Y,
-                R = findSortingSlotResult.Rotation.Value
-                    ? ItemRotation.Vertical
-                    : ItemRotation.Horizontal,
+                R = findSortingSlotResult.Rotation.Value ? ItemRotation.Vertical : ItemRotation.Horizontal,
                 Rotation = findSortingSlotResult.Rotation,
             };
         }
@@ -464,14 +419,9 @@ public class InventoryHelper(
 
     protected void HandleContainerPlacementError(string errorText, ItemEventRouterResponse output)
     {
-        logger.Error(
-            serverLocalisationService.GetText("inventory-fill_container_failed", errorText)
-        );
+        logger.Error(serverLocalisationService.GetText("inventory-fill_container_failed", errorText));
 
-        httpResponseUtil.AppendErrorToOutput(
-            output,
-            serverLocalisationService.GetText("inventory-no_stash_space")
-        );
+        httpResponseUtil.AppendErrorToOutput(output, serverLocalisationService.GetText("inventory-no_stash_space"));
     }
 
     /// <summary>
@@ -483,18 +433,11 @@ public class InventoryHelper(
     /// <param name="itemId">Items id to remove</param>
     /// <param name="sessionId">Session id</param>
     /// <param name="output">OPTIONAL - ItemEventRouterResponse</param>
-    public void RemoveItem(
-        PmcData profile,
-        MongoId itemId,
-        MongoId sessionId,
-        ItemEventRouterResponse? output = null
-    )
+    public void RemoveItem(PmcData profile, MongoId itemId, MongoId sessionId, ItemEventRouterResponse? output = null)
     {
         if (itemId.IsEmpty())
         {
-            logger.Warning(
-                serverLocalisationService.GetText("inventory-unable_to_remove_item_no_id_given")
-            );
+            logger.Warning(serverLocalisationService.GetText("inventory-unable_to_remove_item_no_id_given"));
 
             return;
         }
@@ -526,9 +469,7 @@ public class InventoryHelper(
         {
             // We expect that each inventory item and each insured item has unique "_id", respective "itemId".
             // Therefore, we want to use a NON-Greedy function and escape the iteration as soon as we find requested item.
-            var inventoryIndex = inventoryItems.FindIndex(inventoryItem =>
-                inventoryItem.Id == item.Id
-            );
+            var inventoryIndex = inventoryItems.FindIndex(inventoryItem => inventoryItem.Id == item.Id);
             if (inventoryIndex != -1)
             {
                 inventoryItems.RemoveAt(inventoryIndex);
@@ -543,9 +484,7 @@ public class InventoryHelper(
                 );
             }
 
-            var insuredItemIndex = insuredItems.FindIndex(insuredItem =>
-                insuredItem.ItemId == item.Id
-            );
+            var insuredItemIndex = insuredItems.FindIndex(insuredItem => insuredItem.ItemId == item.Id);
             if (insuredItemIndex != -1)
             {
                 insuredItems.RemoveAt(insuredItemIndex);
@@ -571,15 +510,11 @@ public class InventoryHelper(
         var dialogs = fullProfile.DialogueRecords;
         foreach (var (_, dialog) in dialogs)
         {
-            var messageWithReward = dialog.Messages.FirstOrDefault(message =>
-                message.Id == removeRequest.FromOwner.Id
-            );
+            var messageWithReward = dialog.Messages.FirstOrDefault(message => message.Id == removeRequest.FromOwner.Id);
             if (messageWithReward is not null)
             {
                 // Find item + any possible children and remove them from mails items array
-                var itemWithChildren = messageWithReward.Items.Data.GetItemWithChildren(
-                    removeRequest.Item
-                );
+                var itemWithChildren = messageWithReward.Items.Data.GetItemWithChildren(removeRequest.Item);
                 foreach (var itemToDelete in itemWithChildren)
                 {
                     // Get index of item to remove from reward array + remove it
@@ -589,11 +524,7 @@ public class InventoryHelper(
                         logger.Error(
                             serverLocalisationService.GetText(
                                 "inventory-unable_to_remove_item_restart_immediately",
-                                new
-                                {
-                                    item = removeRequest.Item,
-                                    mailId = removeRequest.FromOwner.Id,
-                                }
+                                new { item = removeRequest.Item, mailId = removeRequest.FromOwner.Id }
                             )
                         );
 
@@ -687,46 +618,33 @@ public class InventoryHelper(
     /// <param name="itemId">Items id</param>
     /// <param name="inventoryItemHash">Hashmap of inventory items</param>
     /// <returns>An array representing the [width, height] of the item</returns>
-    protected (int, int) GetSizeByInventoryItemHash(
-        MongoId itemTpl,
-        MongoId itemId,
-        InventoryItemHash inventoryItemHash
-    )
+    protected (int, int) GetSizeByInventoryItemHash(MongoId itemTpl, MongoId itemId, InventoryItemHash inventoryItemHash)
     {
         // Invalid item
         var (isValidItem, itemTemplate) = itemHelper.GetItem(itemTpl);
         if (!isValidItem)
         {
-            logger.Error(
-                serverLocalisationService.GetText("inventory-invalid_item_missing_from_db", itemTpl)
-            );
+            logger.Error(serverLocalisationService.GetText("inventory-invalid_item_missing_from_db", itemTpl));
         }
 
         // Item found but no _props property
         if (isValidItem && itemTemplate.Properties is null)
         {
-            serverLocalisationService.GetText(
-                "inventory-item_missing_props_property",
-                new { itemTpl, itemName = itemTemplate?.Name }
-            );
+            serverLocalisationService.GetText("inventory-item_missing_props_property", new { itemTpl, itemName = itemTemplate?.Name });
         }
 
         // No item object or getItem() returned false
         if (!isValidItem && itemTemplate is null)
         {
             // return default size of 1x1
-            logger.Error(
-                serverLocalisationService.GetText("inventory-return_default_size", itemTpl)
-            );
+            logger.Error(serverLocalisationService.GetText("inventory-return_default_size", itemTpl));
 
             return (1, 1); // Invalid input data, return defaults
         }
 
         if (!inventoryItemHash.ByItemId.TryGetValue(itemId, out var rootItem))
         {
-            logger.Error(
-                $"Unable to get root item with Id: {itemId} from player inventory. Defaulting to 1x1"
-            );
+            logger.Error($"Unable to get root item with Id: {itemId} from player inventory. Defaulting to 1x1");
 
             return (1, 1); // Invalid input data, return defaults
         }
@@ -772,9 +690,7 @@ public class InventoryHelper(
                     foreach (var childItem in children)
                     {
                         // Skip mods that don't increase size. e.g. cartridges
-                        if (
-                            !childItem.SlotId.StartsWith("mod_", StringComparison.OrdinalIgnoreCase)
-                        )
+                        if (!childItem.SlotId.StartsWith("mod_", StringComparison.OrdinalIgnoreCase))
                         {
                             continue;
                         }
@@ -787,24 +703,14 @@ public class InventoryHelper(
                         if (!isValid)
                         {
                             logger.Error(
-                                serverLocalisationService.GetText(
-                                    "inventory-get_item_size_item_not_found_by_tpl",
-                                    childItem.Template
-                                )
+                                serverLocalisationService.GetText("inventory-get_item_size_item_not_found_by_tpl", childItem.Template)
                             );
                         }
 
-                        var childCanBeFolded = template.Properties.Foldable.GetValueOrDefault(
-                            false
-                        );
-                        var childIsFolded =
-                            childItem.Upd?.Foldable?.Folded.GetValueOrDefault(false) ?? false;
+                        var childCanBeFolded = template.Properties.Foldable.GetValueOrDefault(false);
+                        var childIsFolded = childItem.Upd?.Foldable?.Folded.GetValueOrDefault(false) ?? false;
 
-                        if (
-                            rootCanBeFolded
-                            && foldedSlot == childItem.SlotId
-                            && (rootIsFolded || childIsFolded)
-                        )
+                        if (rootCanBeFolded && foldedSlot == childItem.SlotId && (rootIsFolded || childIsFolded))
                         {
                             continue;
                         }
@@ -825,22 +731,11 @@ public class InventoryHelper(
                         }
                         else
                         {
-                            sizeUp =
-                                sizeUp < template.Properties.ExtraSizeUp
-                                    ? template.Properties.ExtraSizeUp.Value
-                                    : sizeUp;
-                            sizeDown =
-                                sizeDown < template.Properties.ExtraSizeDown
-                                    ? template.Properties.ExtraSizeDown.Value
-                                    : sizeDown;
-                            sizeLeft =
-                                sizeLeft < template.Properties.ExtraSizeLeft
-                                    ? template.Properties.ExtraSizeLeft.Value
-                                    : sizeLeft;
+                            sizeUp = sizeUp < template.Properties.ExtraSizeUp ? template.Properties.ExtraSizeUp.Value : sizeUp;
+                            sizeDown = sizeDown < template.Properties.ExtraSizeDown ? template.Properties.ExtraSizeDown.Value : sizeDown;
+                            sizeLeft = sizeLeft < template.Properties.ExtraSizeLeft ? template.Properties.ExtraSizeLeft.Value : sizeLeft;
                             sizeRight =
-                                sizeRight < template.Properties.ExtraSizeRight
-                                    ? template.Properties.ExtraSizeRight.Value
-                                    : sizeRight;
+                                sizeRight < template.Properties.ExtraSizeRight ? template.Properties.ExtraSizeRight.Value : sizeRight;
                         }
                     }
                 }
@@ -850,10 +745,7 @@ public class InventoryHelper(
             }
         }
 
-        return (
-            outX.Value + sizeLeft + sizeRight + forcedLeft + forcedRight,
-            outY.Value + sizeUp + sizeDown + forcedUp + forcedDown
-        );
+        return (outX.Value + sizeLeft + sizeRight + forcedLeft + forcedRight, outY.Value + sizeUp + sizeDown + forcedUp + forcedDown);
     }
 
     /// <summary>
@@ -864,12 +756,7 @@ public class InventoryHelper(
     /// <param name="itemList">Players inventory items</param>
     /// <param name="containerId">Id of the container</param>
     /// <returns>Two-dimensional representation of container</returns>
-    public int[,] GetContainerMap(
-        int containerSizeHorizontalX,
-        int containerSizeVerticalY,
-        IEnumerable<Item> itemList,
-        MongoId containerId
-    )
+    public int[,] GetContainerMap(int containerSizeHorizontalX, int containerSizeVerticalY, IEnumerable<Item> itemList, MongoId containerId)
     {
         // Create blank 2d map of container
         var container = itemHelper.GetBlankContainerMap(
@@ -894,19 +781,13 @@ public class InventoryHelper(
             if (itemLocation is null)
             {
                 // Item has no location property
-                logger.Error(
-                    $"Unable to find 'location' property on item with id: {rootItem.Id}, skipping"
-                );
+                logger.Error($"Unable to find 'location' property on item with id: {rootItem.Id}, skipping");
 
                 continue;
             }
 
             // Get x/y size of item (without rotation)
-            var (rawItemXWidth, rawItemYHeight) = GetSizeByInventoryItemHash(
-                rootItem.Template,
-                rootItem.Id,
-                inventoryItemHash
-            );
+            var (rawItemXWidth, rawItemYHeight) = GetSizeByInventoryItemHash(rootItem.Template, rootItem.Id, inventoryItemHash);
             // Items horizontal size
             var itemHeight = itemLocation.IsVertical() ? rawItemXWidth : rawItemYHeight;
 
@@ -923,12 +804,7 @@ public class InventoryHelper(
                     var currentX = itemLocation.X.Value + xOffset;
 
                     // Check still in containers bounds
-                    if (
-                        currentY >= 0
-                        && currentY < containerSizeVerticalY
-                        && currentX >= 0
-                        && currentX < containerSizeHorizontalX
-                    )
+                    if (currentY >= 0 && currentY < containerSizeVerticalY && currentX >= 0 && currentX < containerSizeHorizontalX)
                     {
                         // mark slot used
                         container[currentY, currentX] = 1;
@@ -965,11 +841,7 @@ public class InventoryHelper(
     /// <param name="itemId">Item being moved/split/etc to inventory</param>
     /// <param name="sessionId">Session id / players Id</param>
     /// <returns>OwnerInventoryItems with inventory of player/scav to adjust</returns>
-    public OwnerInventoryItems GetOwnerInventoryItems(
-        InventoryBaseActionRequestData request,
-        MongoId itemId,
-        MongoId sessionId
-    )
+    public OwnerInventoryItems GetOwnerInventoryItems(InventoryBaseActionRequestData request, MongoId itemId, MongoId sessionId)
     {
         var pmcItems = profileHelper.GetPmcProfile(sessionId).Inventory.Items;
         var scavProfile = profileHelper.GetScavProfile(sessionId);
@@ -983,16 +855,10 @@ public class InventoryHelper(
                 fromInventoryItems = scavProfile.Inventory.Items;
                 fromType = "scav";
             }
-            else if (
-                string.Equals(request.FromOwner.Type, "mail", StringComparison.OrdinalIgnoreCase)
-            )
+            else if (string.Equals(request.FromOwner.Type, "mail", StringComparison.OrdinalIgnoreCase))
             {
                 // Split requests don't use 'use' but 'splitItem' property
-                fromInventoryItems = dialogueHelper.GetMessageItemContents(
-                    request.FromOwner.Id.Value,
-                    sessionId,
-                    itemId
-                );
+                fromInventoryItems = dialogueHelper.GetMessageItemContents(request.FromOwner.Id.Value, sessionId, itemId);
                 fromType = "mail";
             }
         }
@@ -1030,12 +896,7 @@ public class InventoryHelper(
     protected int[,] GetStashSlotMap(PmcData pmcData)
     {
         var (horizontal, vertical) = GetPlayerStashSize(pmcData);
-        return GetContainerMap(
-            horizontal,
-            vertical,
-            pmcData.Inventory.Items,
-            pmcData.Inventory.Stash.Value
-        );
+        return GetContainerMap(horizontal, vertical, pmcData.Inventory.Items, pmcData.Inventory.Stash.Value);
     }
 
     /// <summary>
@@ -1061,12 +922,7 @@ public class InventoryHelper(
     /// <returns>two-dimensional array</returns>
     protected int[,] GetSortingTableSlotMap(PmcData pmcData)
     {
-        return GetContainerMap(
-            10,
-            45,
-            pmcData.Inventory.Items,
-            pmcData.Inventory.SortingTable.Value
-        );
+        return GetContainerMap(10, 45, pmcData.Inventory.Items, pmcData.Inventory.SortingTable.Value);
     }
 
     /// <summary>
@@ -1103,9 +959,7 @@ public class InventoryHelper(
         var stashV = firstStashItemGrid.Props.CellsV != 0 ? firstStashItemGrid.Props.CellsV : 66;
 
         // Player has a bonus, apply to vertical size
-        var stashRowBonus = pmcData.Bonuses.FirstOrDefault(bonus =>
-            bonus.Type == BonusType.StashRows
-        );
+        var stashRowBonus = pmcData.Bonuses.FirstOrDefault(bonus => bonus.Type == BonusType.StashRows);
         if (stashRowBonus is not null)
         {
             stashV += (int)stashRowBonus.Value;
@@ -1121,9 +975,7 @@ public class InventoryHelper(
     /// <returns>Stash tpl</returns>
     protected string? GetProfileStashTpl(PmcData profile)
     {
-        var stashObj = profile.Inventory.Items.FirstOrDefault(item =>
-            item.Id == profile.Inventory.Stash
-        );
+        var stashObj = profile.Inventory.Items.FirstOrDefault(item => item.Id == profile.Inventory.Stash);
         if (stashObj is null)
         {
             logger.Error(serverLocalisationService.GetText("inventory-unable_to_find_stash"));
@@ -1138,11 +990,7 @@ public class InventoryHelper(
     /// <param name="sourceItems">Inventory of the source (can be non-player)</param>
     /// <param name="toItems">Inventory of the destination</param>
     /// <param name="request">Move request</param>
-    public void MoveItemToProfile(
-        List<Item> sourceItems,
-        List<Item> toItems,
-        InventoryMoveRequestData request
-    )
+    public void MoveItemToProfile(List<Item> sourceItems, List<Item> toItems, InventoryMoveRequestData request)
     {
         HandleCartridgeMove(sourceItems, request);
 
@@ -1153,12 +1001,7 @@ public class InventoryHelper(
             var itemToMove = sourceItems.FirstOrDefault(item => item.Id == itemId);
             if (itemToMove is null)
             {
-                logger.Error(
-                    serverLocalisationService.GetText(
-                        "inventory-unable_to_find_item_to_move",
-                        itemId
-                    )
-                );
+                logger.Error(serverLocalisationService.GetText("inventory-unable_to_find_item_to_move", itemId));
                 continue;
             }
 
@@ -1196,13 +1039,10 @@ public class InventoryHelper(
         HandleCartridgeMove(inventoryItems, moveRequest);
 
         // Find item we want to 'move'
-        var matchingInventoryItem = inventoryItems.FirstOrDefault(item =>
-            item.Id == moveRequest.Item
-        );
+        var matchingInventoryItem = inventoryItems.FirstOrDefault(item => item.Id == moveRequest.Item);
         if (matchingInventoryItem is null)
         {
-            var noMatchingItemMessage =
-                $"Unable to move item: {moveRequest.Item}, cannot find in inventory";
+            var noMatchingItemMessage = $"Unable to move item: {moveRequest.Item}, cannot find in inventory";
             logger.Error(noMatchingItemMessage);
 
             errorMessage = noMatchingItemMessage;
@@ -1217,19 +1057,12 @@ public class InventoryHelper(
         }
 
         // Don't move shells from camora to cartridges (happens when loading shells into mts-255 revolver shotgun)
-        if (
-            matchingInventoryItem.SlotId?.Contains("camora_") is null
-            && moveRequest.To.Container == "cartridges"
-        )
+        if (matchingInventoryItem.SlotId?.Contains("camora_") is null && moveRequest.To.Container == "cartridges")
         {
             logger.Warning(
                 serverLocalisationService.GetText(
                     "inventory-invalid_move_to_container",
-                    new
-                    {
-                        slotId = matchingInventoryItem.SlotId,
-                        container = moveRequest.To.Container,
-                    }
+                    new { slotId = matchingInventoryItem.SlotId, container = moveRequest.To.Container }
                 )
             );
 
@@ -1275,9 +1108,7 @@ public class InventoryHelper(
         }
 
         // Get moved items parent (should be container item was put into)
-        var itemParent = pmcData.Inventory.Items.FirstOrDefault(item =>
-            item.Id == itemBeingMoved.ParentId
-        );
+        var itemParent = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == itemBeingMoved.ParentId);
         if (itemParent is null)
         {
             return;
@@ -1285,9 +1116,7 @@ public class InventoryHelper(
 
         // Reset fast panel value if item was moved to a container other than pocket/rig (cant be used from fastpanel)
         HashSet<string> slots = ["pockets", "tacticalvest"];
-        var wasMovedToFastPanelAccessibleContainer = slots.Contains(
-            itemParent?.SlotId?.ToLowerInvariant() ?? ""
-        );
+        var wasMovedToFastPanelAccessibleContainer = slots.Contains(itemParent?.SlotId?.ToLowerInvariant() ?? "");
         if (!wasMovedToFastPanelAccessibleContainer)
         {
             pmcData.Inventory.FastPanel[fastPanelSlot.ToString()] = "";

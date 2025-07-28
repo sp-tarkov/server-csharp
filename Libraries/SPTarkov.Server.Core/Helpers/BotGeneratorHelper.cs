@@ -37,11 +37,7 @@ public class BotGeneratorHelper(
         nameof(EquipmentSlots.ArmBand),
     ];
 
-    private static readonly FrozenSet<string> _pmcTypes =
-    [
-        Sides.PmcBear.ToLowerInvariant(),
-        Sides.PmcUsec.ToLowerInvariant(),
-    ];
+    private static readonly FrozenSet<string> _pmcTypes = [Sides.PmcBear.ToLowerInvariant(), Sides.PmcUsec.ToLowerInvariant()];
 
     private readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
 
@@ -55,43 +51,29 @@ public class BotGeneratorHelper(
     public Upd GenerateExtraPropertiesForItem(TemplateItem? itemTemplate, string? botRole = null)
     {
         // Get raid settings, if no raid, default to day
-        var raidSettings = profileActivityService
-            .GetFirstProfileActivityRaidData()
-            ?.RaidConfiguration;
+        var raidSettings = profileActivityService.GetFirstProfileActivityRaidData()?.RaidConfiguration;
 
         RandomisedResourceDetails? randomisationSettings = null;
         if (botRole is not null)
         {
-            _botConfig.LootItemResourceRandomization.TryGetValue(
-                botRole,
-                out randomisationSettings
-            );
+            _botConfig.LootItemResourceRandomization.TryGetValue(botRole, out randomisationSettings);
         }
 
         Upd itemProperties = new();
         var hasProperties = false;
 
-        if (
-            itemTemplate?.Properties?.MaxDurability is not null
-            && itemTemplate.Properties.MaxDurability > 0
-        )
+        if (itemTemplate?.Properties?.MaxDurability is not null && itemTemplate.Properties.MaxDurability > 0)
         {
             if (itemTemplate.Properties.WeapClass is not null)
             {
                 // Is weapon
-                itemProperties.Repairable = GenerateWeaponRepairableProperties(
-                    itemTemplate,
-                    botRole
-                );
+                itemProperties.Repairable = GenerateWeaponRepairableProperties(itemTemplate, botRole);
                 hasProperties = true;
             }
             else if (itemTemplate.Properties.ArmorClass is not null)
             {
                 // Is armor
-                itemProperties.Repairable = GenerateArmorRepairableProperties(
-                    itemTemplate,
-                    botRole
-                );
+                itemProperties.Repairable = GenerateArmorRepairableProperties(itemTemplate, botRole);
                 hasProperties = true;
             }
         }
@@ -112,10 +94,7 @@ public class BotGeneratorHelper(
         {
             itemProperties.FireMode = itemTemplate.Properties.WeapFireType.Contains("fullauto")
                 ? new UpdFireMode { FireMode = "fullauto" }
-                : new UpdFireMode
-                {
-                    FireMode = randomUtil.GetArrayValue(itemTemplate.Properties.WeapFireType),
-                };
+                : new UpdFireMode { FireMode = randomUtil.GetArrayValue(itemTemplate.Properties.WeapFireType) };
             hasProperties = true;
         }
 
@@ -123,25 +102,16 @@ public class BotGeneratorHelper(
         {
             itemProperties.MedKit = new UpdMedKit
             {
-                HpResource = GetRandomizedResourceValue(
-                    itemTemplate.Properties.MaxHpResource ?? 0,
-                    randomisationSettings?.Meds
-                ),
+                HpResource = GetRandomizedResourceValue(itemTemplate.Properties.MaxHpResource ?? 0, randomisationSettings?.Meds),
             };
             hasProperties = true;
         }
 
-        if (
-            itemTemplate?.Properties?.MaxResource is not null
-            && itemTemplate.Properties?.FoodUseTime is not null
-        )
+        if (itemTemplate?.Properties?.MaxResource is not null && itemTemplate.Properties?.FoodUseTime is not null)
         {
             itemProperties.FoodDrink = new UpdFoodDrink
             {
-                HpPercent = GetRandomizedResourceValue(
-                    itemTemplate.Properties.MaxResource ?? 0,
-                    randomisationSettings?.Food
-                ),
+                HpPercent = GetRandomizedResourceValue(itemTemplate.Properties.MaxResource ?? 0, randomisationSettings?.Food),
             };
             hasProperties = true;
         }
@@ -154,11 +124,7 @@ public class BotGeneratorHelper(
                     ? equipmentSettings?.LightIsActiveNightChancePercent ?? 50
                     : equipmentSettings?.LightIsActiveDayChancePercent ?? 25;
 
-            itemProperties.Light = new UpdLight
-            {
-                IsActive = randomUtil.GetChance100(lightLaserActiveChance),
-                SelectedMode = 0,
-            };
+            itemProperties.Light = new UpdLight { IsActive = randomUtil.GetChance100(lightLaserActiveChance), SelectedMode = 0 };
             hasProperties = true;
         }
         else if (itemTemplate?.Parent == BaseClasses.TACTICAL_COMBO)
@@ -166,11 +132,7 @@ public class BotGeneratorHelper(
             // Get chance from botconfig for bot type, use 50% if no value found
             var lightLaserActiveChance = equipmentSettings?.LaserIsActiveChancePercent ?? 50;
 
-            itemProperties.Light = new UpdLight
-            {
-                IsActive = randomUtil.GetChance100(lightLaserActiveChance),
-                SelectedMode = 0,
-            };
+            itemProperties.Light = new UpdLight { IsActive = randomUtil.GetChance100(lightLaserActiveChance), SelectedMode = 0 };
             hasProperties = true;
         }
 
@@ -182,24 +144,15 @@ public class BotGeneratorHelper(
                     ? equipmentSettings?.NvgIsActiveChanceNightPercent ?? 90
                     : equipmentSettings?.NvgIsActiveChanceDayPercent ?? 15;
 
-            itemProperties.Togglable = new UpdTogglable
-            {
-                On = randomUtil.GetChance100(nvgActiveChance),
-            };
+            itemProperties.Togglable = new UpdTogglable { On = randomUtil.GetChance100(nvgActiveChance) };
             hasProperties = true;
         }
 
         // Togglable face shield
-        if (
-            (itemTemplate?.Properties?.HasHinge ?? false)
-            && (itemTemplate.Properties.FaceShieldComponent ?? false)
-        )
+        if ((itemTemplate?.Properties?.HasHinge ?? false) && (itemTemplate.Properties.FaceShieldComponent ?? false))
         {
             var faceShieldActiveChance = equipmentSettings?.FaceShieldIsActiveChancePercent ?? 75;
-            itemProperties.Togglable = new UpdTogglable
-            {
-                On = randomUtil.GetChance100(faceShieldActiveChance),
-            };
+            itemProperties.Togglable = new UpdTogglable { On = randomUtil.GetChance100(faceShieldActiveChance) };
             hasProperties = true;
         }
 
@@ -213,10 +166,7 @@ public class BotGeneratorHelper(
     /// <param name="maxResource">Max resource value of medical items</param>
     /// <param name="randomizationValues">Value provided from config</param>
     /// <returns>Randomized value from maxHpResource</returns>
-    protected double GetRandomizedResourceValue(
-        double maxResource,
-        RandomisedResourceValues? randomizationValues
-    )
+    protected double GetRandomizedResourceValue(double maxResource, RandomisedResourceValues? randomizationValues)
     {
         if (randomizationValues is null)
         {
@@ -228,10 +178,7 @@ public class BotGeneratorHelper(
             return maxResource;
         }
 
-        return randomUtil.GetDouble(
-            randomUtil.GetPercentOfValue(randomizationValues.ResourcePercent, maxResource, 0),
-            maxResource
-        );
+        return randomUtil.GetDouble(randomUtil.GetPercentOfValue(randomizationValues.ResourcePercent, maxResource, 0), maxResource);
     }
 
     /// <summary>
@@ -250,26 +197,12 @@ public class BotGeneratorHelper(
     /// <param name="itemTemplate">weapon object being generated for</param>
     /// <param name="botRole">type of bot being generated for</param>
     /// <returns>Repairable object</returns>
-    protected UpdRepairable GenerateWeaponRepairableProperties(
-        TemplateItem itemTemplate,
-        string? botRole = null
-    )
+    protected UpdRepairable GenerateWeaponRepairableProperties(TemplateItem itemTemplate, string? botRole = null)
     {
-        var maxDurability = durabilityLimitsHelper.GetRandomizedMaxWeaponDurability(
-            itemTemplate,
-            botRole
-        );
-        var currentDurability = durabilityLimitsHelper.GetRandomizedWeaponDurability(
-            itemTemplate,
-            botRole,
-            maxDurability
-        );
+        var maxDurability = durabilityLimitsHelper.GetRandomizedMaxWeaponDurability(itemTemplate, botRole);
+        var currentDurability = durabilityLimitsHelper.GetRandomizedWeaponDurability(itemTemplate, botRole, maxDurability);
 
-        return new UpdRepairable
-        {
-            Durability = Math.Round(currentDurability, 5),
-            MaxDurability = Math.Round(maxDurability, 5),
-        };
+        return new UpdRepairable { Durability = Math.Round(currentDurability, 5), MaxDurability = Math.Round(maxDurability, 5) };
     }
 
     /// <summary>
@@ -278,10 +211,7 @@ public class BotGeneratorHelper(
     /// <param name="itemTemplate">weapon object being generated for</param>
     /// <param name="botRole">type of bot being generated for</param>
     /// <returns>Repairable object</returns>
-    protected UpdRepairable GenerateArmorRepairableProperties(
-        TemplateItem itemTemplate,
-        string? botRole = null
-    )
+    protected UpdRepairable GenerateArmorRepairableProperties(TemplateItem itemTemplate, string? botRole = null)
     {
         double maxDurability;
         double currentDurability;
@@ -292,22 +222,11 @@ public class BotGeneratorHelper(
         }
         else
         {
-            maxDurability = durabilityLimitsHelper.GetRandomizedMaxArmorDurability(
-                itemTemplate,
-                botRole
-            );
-            currentDurability = durabilityLimitsHelper.GetRandomizedArmorDurability(
-                itemTemplate,
-                botRole,
-                maxDurability
-            );
+            maxDurability = durabilityLimitsHelper.GetRandomizedMaxArmorDurability(itemTemplate, botRole);
+            currentDurability = durabilityLimitsHelper.GetRandomizedArmorDurability(itemTemplate, botRole, maxDurability);
         }
 
-        return new UpdRepairable
-        {
-            Durability = Math.Round(currentDurability, 5),
-            MaxDurability = Math.Round(maxDurability, 5),
-        };
+        return new UpdRepairable { Durability = Math.Round(currentDurability, 5), MaxDurability = Math.Round(maxDurability, 5) };
     }
 
     /// <summary>
@@ -335,9 +254,7 @@ public class BotGeneratorHelper(
         }
 
         // TODO: Can probably be optimized to cache itemTemplates as items are added to inventory
-        var equippedItemsDb = itemsEquipped.Select(equippedItem =>
-            itemHelper.GetItem(equippedItem.Template).Value
-        );
+        var equippedItemsDb = itemsEquipped.Select(equippedItem => itemHelper.GetItem(equippedItem.Template).Value);
 
         var (itemIsValid, itemToEquip) = itemHelper.GetItem(tplToCheck);
 
@@ -382,9 +299,7 @@ public class BotGeneratorHelper(
 
         // Does an equipped item have a property that blocks the desired item - check for prop "BlocksX" .e.g BlocksEarpiece / BlocksFaceCover
         var templateItems = equippedItemsDb;
-        var blockingItem = templateItems.FirstOrDefault(item =>
-            HasBlockingProperty(item, equipmentSlot)
-        );
+        var blockingItem = templateItems.FirstOrDefault(item => HasBlockingProperty(item, equipmentSlot));
         if (blockingItem is not null)
         // this.logger.warning(`1 incompatibility found between - {itemToEquip[1]._name} and {blockingItem._name} - {equipmentSlot}`);
         {
@@ -392,16 +307,13 @@ public class BotGeneratorHelper(
             {
                 Incompatible = true,
                 Found = false,
-                Reason =
-                    $"{tplToCheck} {itemToEquip.Name} in slot: {equipmentSlot} blocked by: {blockingItem.Id} {blockingItem.Name}",
+                Reason = $"{tplToCheck} {itemToEquip.Name} in slot: {equipmentSlot} blocked by: {blockingItem.Id} {blockingItem.Name}",
                 SlotBlocked = true,
             };
         }
 
         // Check if any of the current inventory templates have the incoming item defined as incompatible
-        blockingItem = templateItems.FirstOrDefault(x =>
-            x?.Properties?.ConflictingItems?.Contains(tplToCheck) ?? false
-        );
+        blockingItem = templateItems.FirstOrDefault(x => x?.Properties?.ConflictingItems?.Contains(tplToCheck) ?? false);
         if (blockingItem is not null)
         // this.logger.warning(`2 incompatibility found between - {itemToEquip[1]._name} and {blockingItem._props.Name} - {equipmentSlot}`);
         {
@@ -409,8 +321,7 @@ public class BotGeneratorHelper(
             {
                 Incompatible = true,
                 Found = false,
-                Reason =
-                    $"{tplToCheck} {itemToEquip.Name} in slot: {equipmentSlot} blocked by: {blockingItem.Id} {blockingItem.Name}",
+                Reason = $"{tplToCheck} {itemToEquip.Name} in slot: {equipmentSlot} blocked by: {blockingItem.Id} {blockingItem.Name}",
                 SlotBlocked = true,
             };
         }
@@ -418,9 +329,7 @@ public class BotGeneratorHelper(
         // Does item being checked get blocked/block existing item
         if (itemToEquip.Properties.BlocksHeadwear ?? false)
         {
-            var existingHeadwear = itemsEquipped.FirstOrDefault(x =>
-                x.SlotId == Containers.Headwear
-            );
+            var existingHeadwear = itemsEquipped.FirstOrDefault(x => x.SlotId == Containers.Headwear);
             if (existingHeadwear is not null)
             {
                 return new ChooseRandomCompatibleModResult
@@ -437,9 +346,7 @@ public class BotGeneratorHelper(
         // Does item being checked get blocked/block existing item
         if (itemToEquip.Properties.BlocksFaceCover.GetValueOrDefault(false))
         {
-            var existingFaceCover = itemsEquipped.FirstOrDefault(item =>
-                item.SlotId == Containers.FaceCover
-            );
+            var existingFaceCover = itemsEquipped.FirstOrDefault(item => item.SlotId == Containers.FaceCover);
             if (existingFaceCover is not null)
             {
                 return new ChooseRandomCompatibleModResult
@@ -456,9 +363,7 @@ public class BotGeneratorHelper(
         // Does item being checked get blocked/block existing item
         if (itemToEquip.Properties.BlocksEarpiece.GetValueOrDefault(false))
         {
-            var existingEarpiece = itemsEquipped.FirstOrDefault(item =>
-                item.SlotId == Containers.Earpiece
-            );
+            var existingEarpiece = itemsEquipped.FirstOrDefault(item => item.SlotId == Containers.Earpiece);
             if (existingEarpiece is not null)
             {
                 return new ChooseRandomCompatibleModResult
@@ -475,9 +380,7 @@ public class BotGeneratorHelper(
         // Does item being checked get blocked/block existing item
         if (itemToEquip.Properties.BlocksArmorVest.GetValueOrDefault(false))
         {
-            var existingArmorVest = itemsEquipped.FirstOrDefault(item =>
-                item.SlotId == Containers.ArmorVest
-            );
+            var existingArmorVest = itemsEquipped.FirstOrDefault(item => item.SlotId == Containers.ArmorVest);
             if (existingArmorVest is not null)
             {
                 return new ChooseRandomCompatibleModResult
@@ -502,8 +405,7 @@ public class BotGeneratorHelper(
             {
                 Incompatible = true,
                 Found = false,
-                Reason =
-                    $"{tplToCheck} blocks existing item {blockingInventoryItem.Template} in slot {blockingInventoryItem.SlotId}",
+                Reason = $"{tplToCheck} blocks existing item {blockingInventoryItem.Template} in slot {blockingInventoryItem.SlotId}",
             };
         }
 
@@ -512,9 +414,7 @@ public class BotGeneratorHelper(
 
     protected bool HasBlockingProperty(TemplateItem? item, string blockingPropertyName)
     {
-        return item != null
-            && item.Blocks.TryGetValue(blockingPropertyName, out var blocks)
-            && blocks;
+        return item != null && item.Blocks.TryGetValue(blockingPropertyName, out var blocks) && blocks;
     }
 
     /// <summary>
@@ -556,9 +456,7 @@ public class BotGeneratorHelper(
             }
 
             // Get container to put item into
-            var container = inventory.Items.FirstOrDefault(item =>
-                item.SlotId == equipmentSlotId.ToString()
-            );
+            var container = inventory.Items.FirstOrDefault(item => item.SlotId == equipmentSlotId.ToString());
             if (container is null)
             {
                 missingContainerCount++;
@@ -583,12 +481,7 @@ public class BotGeneratorHelper(
             var (isValidItem, itemDbDetails) = itemHelper.GetItem(container.Template);
             if (!isValidItem)
             {
-                logger.Warning(
-                    serverLocalisationService.GetText(
-                        "bot-missing_container_with_tpl",
-                        container.Template
-                    )
-                );
+                logger.Warning(serverLocalisationService.GetText("bot-missing_container_with_tpl", container.Template));
 
                 // Bad item, skip
                 continue;
@@ -601,11 +494,7 @@ public class BotGeneratorHelper(
             }
 
             // Get x/y grid size of item
-            var (itemWidth, itemHeight) = inventoryHelper.GetItemSize(
-                rootItemTplId,
-                rootItemId,
-                itemWithChildren
-            );
+            var (itemWidth, itemHeight) = inventoryHelper.GetItemSize(rootItemTplId, rootItemId, itemWithChildren);
 
             // Iterate over each grid in the container and look for a big enough space for the item to be placed in
             var currentGridCount = 1;
@@ -631,13 +520,8 @@ public class BotGeneratorHelper(
                 );
 
                 // Get root items in container we can iterate over to find out what space is free
-                var containerItemsToCheck = existingContainerItems
-                    .Where(x => x.SlotId == slotGrid.Name)
-                    .ToList();
-                var containerItemsWithChildren = GetContainerItemsWithChildren(
-                    containerItemsToCheck,
-                    inventory.Items
-                );
+                var containerItemsToCheck = existingContainerItems.Where(x => x.SlotId == slotGrid.Name).ToList();
+                var containerItemsWithChildren = GetContainerItemsWithChildren(containerItemsToCheck, inventory.Items);
 
                 if (slotGrid.Props is not null)
                 {
@@ -666,10 +550,7 @@ public class BotGeneratorHelper(
                             {
                                 X = findSlotResult.X,
                                 Y = findSlotResult.Y,
-                                R =
-                                    findSlotResult.Rotation ?? false
-                                        ? ItemRotation.Vertical
-                                        : ItemRotation.Horizontal,
+                                R = findSlotResult.Rotation ?? false ? ItemRotation.Vertical : ItemRotation.Horizontal,
                             };
                         }
 
@@ -718,10 +599,7 @@ public class BotGeneratorHelper(
     /// <param name="containerRootItems"></param>
     /// <param name="inventoryItems"></param>
     /// <returns></returns>
-    protected List<Item> GetContainerItemsWithChildren(
-        IEnumerable<Item> containerRootItems,
-        IEnumerable<Item> inventoryItems
-    )
+    protected List<Item> GetContainerItemsWithChildren(IEnumerable<Item> containerRootItems, IEnumerable<Item> inventoryItems)
     {
         var result = new List<Item>();
         if (!containerRootItems.Any())

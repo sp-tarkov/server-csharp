@@ -87,9 +87,7 @@ public class GiftService(
 
         if (giftData.Items?.Count > 0 && giftData.CollectionTimeHours is null)
         {
-            logger.Warning(
-                $"Gift {giftId} has items but no collection time limit, defaulting to 48 hours"
-            );
+            logger.Warning($"Gift {giftId} has items but no collection time limit, defaulting to 48 hours");
         }
 
         // Handle system messages
@@ -155,9 +153,7 @@ public class GiftService(
                 },
                 MessageText = giftData.MessageText,
                 Items = giftData.Items,
-                ItemsMaxStorageLifetimeSeconds = timeUtil.GetHoursAsSeconds(
-                    giftData.CollectionTimeHours ?? 0
-                ),
+                ItemsMaxStorageLifetimeSeconds = timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 0),
             };
 
             if (giftData.Trader is not null)
@@ -209,12 +205,7 @@ public class GiftService(
             case GiftSenderType.User:
                 return MessageType.UserMessage;
             default:
-                logger.Error(
-                    serverLocalisationService.GetText(
-                        "gift-unable_to_handle_message_type_command",
-                        giftData.Sender
-                    )
-                );
+                logger.Error(serverLocalisationService.GetText("gift-unable_to_handle_message_type_command", giftData.Sender));
                 return null;
         }
     }

@@ -38,9 +38,7 @@ public class MathUtilTests
         {
             if (Math.Abs(expected[i] - actual[i]) > 0.00001f)
             {
-                Assert.Fail(
-                    $"ListCumSum() Expected: {string.Join(", ", expected)}, Actual: {string.Join(", ", actual)}"
-                );
+                Assert.Fail($"ListCumSum() Expected: {string.Join(", ", expected)}, Actual: {string.Join(", ", actual)}");
             }
         }
     }
@@ -57,9 +55,7 @@ public class MathUtilTests
         {
             if (Math.Abs(expected[i] - actual[i]) > 0.00001f)
             {
-                Assert.Fail(
-                    $"ListProduct() Expected: {string.Join(", ", expected)}, Actual: {string.Join(", ", actual)}"
-                );
+                Assert.Fail($"ListProduct() Expected: {string.Join(", ", expected)}, Actual: {string.Join(", ", actual)}");
             }
         }
     }
@@ -76,9 +72,7 @@ public class MathUtilTests
         {
             if (Math.Abs(expected[i] - actual[i]) > 0.00001f)
             {
-                Assert.Fail(
-                    $"ListProduct() Expected: {string.Join(", ", expected)}, Actual: {string.Join(", ", actual)}"
-                );
+                Assert.Fail($"ListProduct() Expected: {string.Join(", ", expected)}, Actual: {string.Join(", ", actual)}");
             }
         }
     }
@@ -93,19 +87,9 @@ public class MathUtilTests
         Assert.AreEqual(expected, actual, $"MapToRange() Expected: {expected}, Actual: {actual}");
     }
 
-    [TestCase(
-        15d,
-        new double[] { 1, 10, 20, 30, 40, 50, 60 },
-        new double[] { 11000, 20000, 32000, 45000, 58000, 70000, 82000 },
-        26000d
-    )]
+    [TestCase(15d, new double[] { 1, 10, 20, 30, 40, 50, 60 }, new double[] { 11000, 20000, 32000, 45000, 58000, 70000, 82000 }, 26000d)]
     [TestCase(5d, new double[] { 1, 10 }, new double[] { 0, 1000 }, 444.44444444444446d)]
-    [TestCase(
-        12d,
-        new double[] { 1, 10, 500, 510 },
-        new double[] { 0, 10, 20, 30 },
-        10.040816326530612d
-    )]
+    [TestCase(12d, new double[] { 1, 10, 500, 510 }, new double[] { 0, 10, 20, 30 }, 10.040816326530612d)]
     [TestCase(1d, new double[] { 1, 10, 500, 510 }, new double[] { 2, 10, 20, 30 }, 2d)]
     [TestCase(11d, new double[] { 1, 10 }, new double[] { 2, 10 }, 10d)]
     public void InterpTest(double input, double[] x, double[] y, double expected)

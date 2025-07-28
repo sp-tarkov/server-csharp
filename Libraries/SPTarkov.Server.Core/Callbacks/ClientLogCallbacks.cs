@@ -42,26 +42,15 @@ public class ClientLogCallbacks(
             ? serverLocalisationService.GetText("release-beta-disclaimer-mods-enabled")
             : serverLocalisationService.GetText("release-beta-disclaimer");
 
-        data.BetaDisclaimerAcceptText = serverLocalisationService.GetText(
-            "release-beta-disclaimer-accept"
-        );
+        data.BetaDisclaimerAcceptText = serverLocalisationService.GetText("release-beta-disclaimer-accept");
         data.ServerModsLoadedText = serverLocalisationService.GetText("release-server-mods-loaded");
-        data.ServerModsLoadedDebugText = serverLocalisationService.GetText(
-            "release-server-mods-debug-message"
-        );
+        data.ServerModsLoadedDebugText = serverLocalisationService.GetText("release-server-mods-debug-message");
         data.ClientModsLoadedText = serverLocalisationService.GetText("release-plugins-loaded");
-        data.ClientModsLoadedDebugText = serverLocalisationService.GetText(
-            "release-plugins-loaded-debug-message"
-        );
-        data.IllegalPluginsLoadedText = serverLocalisationService.GetText(
-            "release-illegal-plugins-loaded"
-        );
-        data.IllegalPluginsExceptionText = serverLocalisationService.GetText(
-            "release-illegal-plugins-exception"
-        );
+        data.ClientModsLoadedDebugText = serverLocalisationService.GetText("release-plugins-loaded-debug-message");
+        data.IllegalPluginsLoadedText = serverLocalisationService.GetText("release-illegal-plugins-loaded");
+        data.IllegalPluginsExceptionText = serverLocalisationService.GetText("release-illegal-plugins-exception");
         data.ReleaseSummaryText = serverLocalisationService.GetText("release-summary");
-        data.IsBeta =
-            ProgramStatics.ENTRY_TYPE() is EntryType.BLEEDING_EDGE or EntryType.BLEEDING_EDGE_MODS;
+        data.IsBeta = ProgramStatics.ENTRY_TYPE() is EntryType.BLEEDING_EDGE or EntryType.BLEEDING_EDGE_MODS;
         data.IsModdable = ProgramStatics.MODS();
         data.IsModded = loadedMods.Count > 0;
 

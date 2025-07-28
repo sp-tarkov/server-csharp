@@ -15,12 +15,7 @@ public class NoteItemEventRouter(NoteCallbacks noteCallbacks) : ItemEventRouterD
 {
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return
-        [
-            new(ItemEventActions.ADD_NOTE, false),
-            new(ItemEventActions.EDIT_NOTE, false),
-            new(ItemEventActions.DELETE_NOTE, false),
-        ];
+        return [new(ItemEventActions.ADD_NOTE, false), new(ItemEventActions.EDIT_NOTE, false), new(ItemEventActions.DELETE_NOTE, false)];
     }
 
     public override ValueTask<ItemEventRouterResponse> HandleItemEvent(
@@ -34,21 +29,13 @@ public class NoteItemEventRouter(NoteCallbacks noteCallbacks) : ItemEventRouterD
         switch (url)
         {
             case ItemEventActions.ADD_NOTE:
-                return new ValueTask<ItemEventRouterResponse>(
-                    noteCallbacks.AddNote(pmcData, body as NoteActionRequest, sessionID)
-                );
+                return new ValueTask<ItemEventRouterResponse>(noteCallbacks.AddNote(pmcData, body as NoteActionRequest, sessionID));
             case ItemEventActions.EDIT_NOTE:
-                return new ValueTask<ItemEventRouterResponse>(
-                    noteCallbacks.EditNote(pmcData, body as NoteActionRequest, sessionID)
-                );
+                return new ValueTask<ItemEventRouterResponse>(noteCallbacks.EditNote(pmcData, body as NoteActionRequest, sessionID));
             case ItemEventActions.DELETE_NOTE:
-                return new ValueTask<ItemEventRouterResponse>(
-                    noteCallbacks.DeleteNote(pmcData, body as NoteActionRequest, sessionID)
-                );
+                return new ValueTask<ItemEventRouterResponse>(noteCallbacks.DeleteNote(pmcData, body as NoteActionRequest, sessionID));
             default:
-                throw new Exception(
-                    $"NoteItemEventRouter being used when it cant handle route {url}"
-                );
+                throw new Exception($"NoteItemEventRouter being used when it cant handle route {url}");
         }
     }
 }

@@ -39,10 +39,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
             get { return [typeof(HideoutSeed)]; }
         }
 
-        public override bool CanMigrate(
-            JsonObject profile,
-            IEnumerable<IProfileMigration> previouslyRanMigrations
-        )
+        public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
         {
             var profileVersion = GetProfileVersion(profile);
 
@@ -57,10 +54,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations
         {
             if (profile["suits"] is JsonArray suitsArray)
             {
-                _oldSuiteData = suitsArray
-                    .Select(node => node?.GetValue<string>())
-                    .Where(suit => suit != null)
-                    .ToList()!;
+                _oldSuiteData = suitsArray.Select(node => node?.GetValue<string>()).Where(suit => suit != null).ToList()!;
             }
 
             profile.Remove("suits");
@@ -80,22 +74,17 @@ namespace SPTarkov.Server.Core.Migration.Migrations
 
             if (profile.CharacterData.PmcData.Inventory.HideoutCustomizationStashId is null)
             {
-                profile.CharacterData.PmcData.Inventory.HideoutCustomizationStashId = new(
-                    "676db384777490e23c45b657"
-                );
+                profile.CharacterData.PmcData.Inventory.HideoutCustomizationStashId = new("676db384777490e23c45b657");
 
                 //Directly injecting CreateProfileService causes a circular dependency which I can't be bothered to fix just for this
-                (
-                    serviceProvider.GetService(typeof(CreateProfileService)) as CreateProfileService
-                )!.AddMissingInternalContainersToProfile(profile.CharacterData.PmcData);
+                (serviceProvider.GetService(typeof(CreateProfileService)) as CreateProfileService)!.AddMissingInternalContainersToProfile(
+                    profile.CharacterData.PmcData
+                );
             }
 
             if (profile.CharacterData.PmcData.Hideout.Customization is null)
             {
-                profile.CharacterData.PmcData.Hideout.Customization = new Dictionary<
-                    string,
-                    Models.Common.MongoId
-                >
+                profile.CharacterData.PmcData.Hideout.Customization = new Dictionary<string, Models.Common.MongoId>
                 {
                     { "Wall", new("675844bdf94a97cbbe096f1a") },
                     { "Floor", new("6758443ff94a97cbbe096f18") },
@@ -130,14 +119,10 @@ namespace SPTarkov.Server.Core.Migration.Migrations
                     }
 
                     // Only hand out the new hideout customization rewards.
-                    var filteredRewards = rewards
-                        .Where(r => r.Type == RewardType.CustomizationDirect)
-                        .ToList();
+                    var filteredRewards = rewards.Where(r => r.Type == RewardType.CustomizationDirect).ToList();
 
                     //Directly injecting RewardHelper causes a circular dependency which I can't be bothered to fix just for this
-                    (
-                        serviceProvider.GetService(typeof(RewardHelper)) as RewardHelper
-                    )!.ApplyRewards(
+                    (serviceProvider.GetService(typeof(RewardHelper)) as RewardHelper)!.ApplyRewards(
                         filteredRewards,
                         CustomisationSource.ACHIEVEMENT,
                         profile,
@@ -160,16 +145,12 @@ namespace SPTarkov.Server.Core.Migration.Migrations
 
             if (profile.CharacterData.PmcData.Info.GameVersion == "edge_of_darkness")
             {
-                profile.CharacterData.PmcData.Customization.DogTag = new(
-                    "6746fd09bafff85008048838"
-                );
+                profile.CharacterData.PmcData.Customization.DogTag = new("6746fd09bafff85008048838");
             }
 
             if (profile.CharacterData.PmcData.Info.GameVersion == "unheard_edition")
             {
-                profile.CharacterData.PmcData.Customization.DogTag = new(
-                    "67471928d17d6431550563b5"
-                );
+                profile.CharacterData.PmcData.Customization.DogTag = new("67471928d17d6431550563b5");
             }
 
             foreach (var oldSuite in _oldSuiteData)
@@ -211,16 +192,12 @@ namespace SPTarkov.Server.Core.Migration.Migrations
 
             if (profile.CharacterData.PmcData.Info.GameVersion == "edge_of_darkness")
             {
-                profile.CharacterData.PmcData.Customization.DogTag = new(
-                    "67471938bafff850080488b7"
-                );
+                profile.CharacterData.PmcData.Customization.DogTag = new("67471938bafff850080488b7");
             }
 
             if (profile.CharacterData.PmcData.Info.GameVersion == "unheard_edition")
             {
-                profile.CharacterData.PmcData.Customization.DogTag = new(
-                    "6747193f170146228c0d2226"
-                );
+                profile.CharacterData.PmcData.Customization.DogTag = new("6747193f170146228c0d2226");
             }
 
             foreach (var oldSuite in _oldSuiteData)

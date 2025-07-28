@@ -5,9 +5,7 @@ using SPTarkov.Server.Core.Models.Enums;
 namespace SPTarkov.Server.Core.Generators.WeaponGen.Implementations;
 
 [Injectable]
-public class UbglExternalMagGen(BotWeaponGeneratorHelper botWeaponGeneratorHelper)
-    : InventoryMagGen,
-        IInventoryMagGen
+public class UbglExternalMagGen(BotWeaponGeneratorHelper botWeaponGeneratorHelper) : InventoryMagGen, IInventoryMagGen
 {
     public int GetPriority()
     {

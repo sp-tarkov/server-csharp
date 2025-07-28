@@ -29,8 +29,7 @@ public class SaveServer(
     protected const string profileFilepath = "user/profiles/";
 
     // onLoad = require("../bindings/SaveLoad");
-    protected readonly Dictionary<string, Func<SptProfile, SptProfile>> onBeforeSaveCallbacks =
-        new();
+    protected readonly Dictionary<string, Func<SptProfile, SptProfile>> onBeforeSaveCallbacks = new();
 
     protected readonly ConcurrentDictionary<MongoId, SptProfile> profiles = new();
     protected readonly ConcurrentDictionary<MongoId, string> saveMd5 = new();
@@ -65,9 +64,7 @@ public class SaveServer(
             fileUtil.CreateDirectory(profileFilepath);
         }
 
-        var files = fileUtil
-            .GetFiles(profileFilepath)
-            .Where(item => fileUtil.GetFileExtension(item) == "json");
+        var files = fileUtil.GetFiles(profileFilepath).Where(item => fileUtil.GetFileExtension(item) == "json");
 
         // load profiles
         var stopwatch = Stopwatch.StartNew();
@@ -79,9 +76,7 @@ public class SaveServer(
         stopwatch.Stop();
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            logger.Debug(
-                $"{files.Count()} Profiles took: {stopwatch.ElapsedMilliseconds}ms to load."
-            );
+            logger.Debug($"{files.Count()} Profiles took: {stopwatch.ElapsedMilliseconds}ms to load.");
         }
     }
 
@@ -113,9 +108,7 @@ public class SaveServer(
     {
         if (sessionId.IsEmpty())
         {
-            throw new Exception(
-                "session id provided was empty, did you restart the server while the game was running?"
-            );
+            throw new Exception("session id provided was empty, did you restart the server while the game was running?");
         }
 
         if (profiles == null || profiles.IsEmpty)
@@ -179,9 +172,7 @@ public class SaveServer(
         if (profiles.ContainsKey(profileInfo.ProfileId.Value))
         {
             // TODO: Localize me
-            throw new Exception(
-                $"Creating profile failed: profile already exists for sessionId: {profileInfo.ProfileId}"
-            );
+            throw new Exception($"Creating profile failed: profile already exists for sessionId: {profileInfo.ProfileId}");
         }
 
         profiles.TryAdd(
@@ -189,11 +180,7 @@ public class SaveServer(
             new SptProfile
             {
                 ProfileInfo = profileInfo,
-                CharacterData = new Characters
-                {
-                    PmcData = new PmcData(),
-                    ScavData = new PmcData(),
-                },
+                CharacterData = new Characters { PmcData = new PmcData(), ScavData = new PmcData() },
             }
         );
     }
@@ -254,21 +241,13 @@ public class SaveServer(
             }
             catch (Exception e)
             {
-                logger.Error(
-                    serverLocalisationService.GetText(
-                        "profile_save_callback_error",
-                        new { callback, error = e }
-                    )
-                );
+                logger.Error(serverLocalisationService.GetText("profile_save_callback_error", new { callback, error = e }));
                 profiles[sessionID] = previous;
             }
         }
 
         var start = Stopwatch.StartNew();
-        var jsonProfile = jsonUtil.Serialize(
-            profiles[sessionID],
-            !configServer.GetConfig<CoreConfig>().Features.CompressProfile
-        );
+        var jsonProfile = jsonUtil.Serialize(profiles[sessionID], !configServer.GetConfig<CoreConfig>().Features.CompressProfile);
         var fmd5 = await hashUtil.GenerateHashForDataAsync(HashingAlgorithm.MD5, jsonProfile);
         if (!saveMd5.TryGetValue(sessionID, out var currentMd5) || currentMd5 != fmd5)
         {

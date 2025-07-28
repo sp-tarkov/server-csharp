@@ -43,16 +43,10 @@ public class HealthItemEventRouter(HealthCallbacks healthCallbacks) : ItemEventR
                 );
             case ItemEventActions.RESTORE_HEALTH:
                 return new ValueTask<ItemEventRouterResponse>(
-                    healthCallbacks.HealthTreatment(
-                        pmcData,
-                        body as HealthTreatmentRequestData,
-                        sessionID
-                    )
+                    healthCallbacks.HealthTreatment(pmcData, body as HealthTreatmentRequestData, sessionID)
                 );
             default:
-                throw new Exception(
-                    $"HealthItemEventRouter being used when it cant handle route {url}"
-                );
+                throw new Exception($"HealthItemEventRouter being used when it cant handle route {url}");
         }
     }
 }

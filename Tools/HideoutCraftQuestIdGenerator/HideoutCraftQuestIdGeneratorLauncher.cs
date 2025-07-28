@@ -18,9 +18,7 @@ public class HideoutCraftQuestIdGeneratorLauncher
             serviceCollection.AddSingleton(WebApplication.CreateBuilder());
             serviceCollection.AddSingleton<IReadOnlyList<SptMod>>([]);
             var diHandler = new DependencyInjectionHandler(serviceCollection);
-            diHandler.AddInjectableTypesFromTypeAssembly(
-                typeof(HideoutCraftQuestIdGeneratorLauncher)
-            );
+            diHandler.AddInjectableTypesFromTypeAssembly(typeof(HideoutCraftQuestIdGeneratorLauncher));
             diHandler.AddInjectableTypesFromTypeAssembly(typeof(App));
             diHandler.InjectAll();
             var serviceProvider = serviceCollection.BuildServiceProvider();

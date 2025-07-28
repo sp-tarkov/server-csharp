@@ -24,9 +24,7 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
 
         if (!IsValidMongoId(id))
         {
-            Console.WriteLine(
-                $"Critical MongoId error: Incorrect format. Must be a hexadecimal [a-f0-9] of 24 characters. id: {id}"
-            );
+            Console.WriteLine($"Critical MongoId error: Incorrect format. Must be a hexadecimal [a-f0-9] of 24 characters. id: {id}");
         }
 
         _stringId = string.Intern(id);

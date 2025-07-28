@@ -53,8 +53,7 @@ public class BotNameService(
         var isPmc = botGenerationDetails.IsPmc;
 
         // Never show for players
-        var showTypeInNickname =
-            !botGenerationDetails.IsPlayerScav && _botConfig.ShowTypeInNickname;
+        var showTypeInNickname = !botGenerationDetails.IsPlayerScav && _botConfig.ShowTypeInNickname;
         var roleShouldBeUnique = uniqueRoles?.Contains(botRole.ToLowerInvariant());
 
         var attempts = 0;
@@ -62,10 +61,7 @@ public class BotNameService(
         {
             // Get bot name with leading/trailing whitespace removed
             var name = isPmc // Explicit handling of PMCs, all other bots will get "first_name last_name"
-                ? botHelper.GetPmcNicknameOfMaxLength(
-                    _botConfig.BotNameLengthLimit,
-                    botGenerationDetails.Side
-                )
+                ? botHelper.GetPmcNicknameOfMaxLength(_botConfig.BotNameLengthLimit, botGenerationDetails.Side)
                 : $"{randomUtil.GetArrayValue(botJsonTemplate.FirstNames)} {(botJsonTemplate.LastNames.Any() ? randomUtil.GetArrayValue(botJsonTemplate.LastNames) : "")}";
 
             name = name.Trim();
@@ -79,9 +75,7 @@ public class BotNameService(
             // Replace pmc bot names with player name + prefix
             if (botGenerationDetails.IsPmc && botGenerationDetails.AllPmcsHaveSameNameAsPlayer)
             {
-                var prefix = serverLocalisationService.GetRandomTextThatMatchesPartialKey(
-                    "pmc-name_prefix_"
-                );
+                var prefix = serverLocalisationService.GetRandomTextThatMatchesPartialKey("pmc-name_prefix_");
                 name = $"{prefix} {name}";
             }
 
@@ -95,8 +89,7 @@ public class BotNameService(
                     if (attempts >= 5)
                     {
                         // 5 attempts to generate a name, pool probably isn't big enough
-                        var genericName =
-                            $"{botGenerationDetails.Side} {randomUtil.GetInt(100000, 999999)}";
+                        var genericName = $"{botGenerationDetails.Side} {randomUtil.GetInt(100000, 999999)}";
                         if (logger.IsLogEnabled(LogLevel.Debug))
                         {
                             logger.Debug(

@@ -35,14 +35,10 @@ public class App(
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
-                $"OS: {Environment.OSVersion.Version} | {Environment.OSVersion.Platform}"
-            );
+            _logger.Debug($"OS: {Environment.OSVersion.Version} | {Environment.OSVersion.Platform}");
             _logger.Debug($"Ran as admin: {Environment.IsPrivilegedProcess}");
             _logger.Debug($"CPU cores: {Environment.ProcessorCount}");
-            _logger.Debug(
-                $"PATH: {(Environment.ProcessPath ?? "null returned").Encode(EncodeType.BASE64)}"
-            );
+            _logger.Debug($"PATH: {(Environment.ProcessPath ?? "null returned").Encode(EncodeType.BASE64)}");
             _logger.Debug($"Server: {ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion}");
 
             // _logger.Debug($"RAM: {(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB");
@@ -68,18 +64,8 @@ public class App(
         // Discard here, as this task will run indefinitely
         _ = Task.Run(Update);
 
-        _logger.Success(
-            _serverLocalisationService.GetText(
-                "started_webserver_success",
-                _httpServer.ListeningUrl()
-            )
-        );
-        _logger.Success(
-            _serverLocalisationService.GetText(
-                "websocket-started",
-                _httpServer.ListeningUrl().Replace("https://", "wss://")
-            )
-        );
+        _logger.Success(_serverLocalisationService.GetText("started_webserver_success", _httpServer.ListeningUrl()));
+        _logger.Success(_serverLocalisationService.GetText("websocket-started", _httpServer.ListeningUrl().Replace("https://", "wss://")));
 
         _logger.Success(GetRandomisedStartMessage());
     }
@@ -88,9 +74,7 @@ public class App(
     {
         if (_randomUtil.GetInt(1, 1000) > 999)
         {
-            return _serverLocalisationService.GetRandomTextThatMatchesPartialKey(
-                "server_start_meme_"
-            );
+            return _serverLocalisationService.GetRandomTextThatMatchesPartialKey("server_start_meme_");
         }
 
         return _serverLocalisationService.GetText("server_start_success");
@@ -114,8 +98,7 @@ public class App(
                 var updateableName = updateable.GetType().FullName;
                 if (string.IsNullOrEmpty(updateableName))
                 {
-                    updateableName =
-                        $"{updateable.GetType().Namespace}.{updateable.GetType().Name}";
+                    updateableName = $"{updateable.GetType().Namespace}.{updateable.GetType().Name}";
                 }
 
                 var lastRunTimeTimestamp = _onUpdateLastRun.GetValueOrDefault(updateableName, 0);
@@ -140,12 +123,7 @@ public class App(
 
     protected void LogUpdateException(Exception err, IOnUpdate updateable)
     {
-        _logger.Error(
-            _serverLocalisationService.GetText(
-                "scheduled_event_failed_to_run",
-                updateable.GetType().FullName
-            )
-        );
+        _logger.Error(_serverLocalisationService.GetText("scheduled_event_failed_to_run", updateable.GetType().FullName));
         _logger.Error(err.ToString());
     }
 }

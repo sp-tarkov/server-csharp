@@ -144,21 +144,13 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
         var distinguishedName = new X500DistinguishedName($"CN={subjectName}");
 
         using var rsa = RSA.Create(2048);
-        var request = new CertificateRequest(
-            distinguishedName,
-            rsa,
-            HashAlgorithmName.SHA256,
-            RSASignaturePadding.Pkcs1
-        );
+        var request = new CertificateRequest(distinguishedName, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
         request.CertificateExtensions.Add(sanBuilder.Build());
 
         //Todo: Enable when Pfx methods can be removed
         //SavePrivateKey(rsa);
 
-        return request.CreateSelfSigned(
-            new DateTimeOffset(DateTime.UtcNow.AddDays(-1)),
-            new DateTimeOffset(DateTime.UtcNow.AddDays(3650))
-        );
+        return request.CreateSelfSigned(new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)));
     }
 
     /// <summary>
@@ -172,10 +164,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
             // Save as PEM (ensure the certificate is in PEM format)
             var certPem =
                 "-----BEGIN CERTIFICATE-----\n"
-                + Convert.ToBase64String(
-                    certificate.Export(X509ContentType.Cert),
-                    Base64FormattingOptions.InsertLineBreaks
-                )
+                + Convert.ToBase64String(certificate.Export(X509ContentType.Cert), Base64FormattingOptions.InsertLineBreaks)
                 + "\n-----END CERTIFICATE-----";
             fileUtil.WriteFile(certificatePath, certPem);
         }

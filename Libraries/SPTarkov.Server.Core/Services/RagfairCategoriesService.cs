@@ -8,10 +8,7 @@ using SPTarkov.Server.Core.Models.Utils;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class RagfairCategoriesService(
-    ISptLogger<RagfairCategoriesService> logger,
-    PaymentHelper paymentHelper
-)
+public class RagfairCategoriesService(ISptLogger<RagfairCategoriesService> logger, PaymentHelper paymentHelper)
 {
     /// <summary>
     ///     Get a dictionary of each item the play can see in their flea menu, filtered by what is available for them to buy
@@ -45,29 +42,20 @@ public class RagfairCategoriesService(
                 if (
                     string.IsNullOrEmpty(searchRequestData.NeededSearchId)
                     && searchRequestData.RemoveBartering.GetValueOrDefault(false)
-                    && (
-                        offer.Requirements.Count() > 1
-                        || !paymentHelper.IsMoneyTpl(offer.Requirements.FirstOrDefault().TemplateId)
-                    )
+                    && (offer.Requirements.Count() > 1 || !paymentHelper.IsMoneyTpl(offer.Requirements.FirstOrDefault().TemplateId))
                 )
                 {
                     return false;
                 }
 
                 // Remove when filter set to players only + offer is from trader
-                if (
-                    searchRequestData.OfferOwnerType == OfferOwnerType.PLAYEROWNERTYPE
-                    && isTraderOffer
-                )
+                if (searchRequestData.OfferOwnerType == OfferOwnerType.PLAYEROWNERTYPE && isTraderOffer)
                 {
                     return false;
                 }
 
                 // Remove when filter set to traders only + offer is not from trader
-                if (
-                    searchRequestData.OfferOwnerType == OfferOwnerType.TRADEROWNERTYPE
-                    && !isTraderOffer
-                )
+                if (searchRequestData.OfferOwnerType == OfferOwnerType.TRADEROWNERTYPE && !isTraderOffer)
                 {
                     return false;
                 }

@@ -46,11 +46,7 @@ public class TradeController(
     /// <param name="request"></param>
     /// <param name="sessionID">Session/Player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ConfirmTrading(
-        PmcData pmcData,
-        ProcessBaseTradeRequestData request,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse ConfirmTrading(PmcData pmcData, ProcessBaseTradeRequestData request, MongoId sessionID)
     {
         var output = eventOutputHolder.GetOutput(sessionID);
 
@@ -76,11 +72,7 @@ public class TradeController(
         var errorMessage = $"Unhandled trade event: {request.Type}";
         logger.Error(errorMessage);
 
-        return httpResponseUtil.AppendErrorToOutput(
-            output,
-            errorMessage,
-            BackendErrorCodes.RagfairUnavailable
-        );
+        return httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.RagfairUnavailable);
     }
 
     /// <summary>
@@ -90,11 +82,7 @@ public class TradeController(
     /// <param name="request"></param>
     /// <param name="sessionID">Session/Player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ConfirmRagfairTrading(
-        PmcData pmcData,
-        ProcessRagfairTradeRequestData request,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse ConfirmRagfairTrading(PmcData pmcData, ProcessRagfairTradeRequestData request, MongoId sessionID)
     {
         var output = eventOutputHolder.GetOutput(sessionID);
 
@@ -103,11 +91,7 @@ public class TradeController(
             var fleaOffer = ragfairServer.GetOffer(offer.Id);
             if (fleaOffer is null)
             {
-                return httpResponseUtil.AppendErrorToOutput(
-                    output,
-                    $"Offer with ID {offer.Id} not found",
-                    BackendErrorCodes.OfferNotFound
-                );
+                return httpResponseUtil.AppendErrorToOutput(output, $"Offer with ID {offer.Id} not found", BackendErrorCodes.OfferNotFound);
             }
 
             if (offer.Count == 0)
@@ -116,11 +100,7 @@ public class TradeController(
                     "ragfair-unable_to_purchase_0_count_item",
                     itemHelper.GetItem(fleaOffer.Items[0].Template).Value.Name
                 );
-                return httpResponseUtil.AppendErrorToOutput(
-                    output,
-                    errorMessage,
-                    BackendErrorCodes.OfferOutOfStock
-                );
+                return httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.OfferOutOfStock);
             }
 
             if (fleaOffer.IsTraderOffer())
@@ -168,11 +148,7 @@ public class TradeController(
                 logger.Debug(errorMessage);
             }
 
-            httpResponseUtil.AppendErrorToOutput(
-                output,
-                errorMessage,
-                BackendErrorCodes.RagfairUnavailable
-            );
+            httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.RagfairUnavailable);
 
             return;
         }
@@ -188,13 +164,7 @@ public class TradeController(
             SchemeId = 0,
             SchemeItems = requestOffer.Items,
         };
-        tradeHelper.BuyItem(
-            pmcData,
-            buyData,
-            sessionId,
-            _traderConfig.PurchasesAreFoundInRaid,
-            output
-        );
+        tradeHelper.BuyItem(pmcData, buyData, sessionId, _traderConfig.PurchasesAreFoundInRaid, output);
 
         // Remove/lower offer quantity of item purchased from trader flea offer
         ragfairServer.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
@@ -228,13 +198,7 @@ public class TradeController(
         };
 
         // buyItem() must occur prior to removing the offer stack, otherwise item inside offer doesn't exist for confirmTrading() to use
-        tradeHelper.BuyItem(
-            pmcData,
-            buyData,
-            sessionId,
-            _ragfairConfig.Dynamic.PurchasesAreFoundInRaid,
-            output
-        );
+        tradeHelper.BuyItem(pmcData, buyData, sessionId, _ragfairConfig.Dynamic.PurchasesAreFoundInRaid, output);
         if (output.Warnings?.Count > 0)
         {
             return;
@@ -274,11 +238,7 @@ public class TradeController(
     /// <param name="request"></param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse SellScavItemsToFence(
-        PmcData pmcData,
-        SellScavItemsToFenceRequestData request,
-        MongoId sessionId
-    )
+    public ItemEventRouterResponse SellScavItemsToFence(PmcData pmcData, SellScavItemsToFenceRequestData request, MongoId sessionId)
     {
         var output = eventOutputHolder.GetOutput(sessionId);
 
@@ -316,11 +276,7 @@ public class TradeController(
             sessionId,
             trader,
             MessageType.MessageWithItems,
-            randomUtil.GetArrayValue(
-                databaseService.GetTrader(trader).Dialogue.TryGetValue("soldItems", out var items)
-                    ? items
-                    : []
-            ),
+            randomUtil.GetArrayValue(databaseService.GetTrader(trader).Dialogue.TryGetValue("soldItems", out var items) ? items : []),
             currencyReward.SelectMany(x => x).ToList(),
             timeUtil.GetHoursAsSeconds(72)
         );
@@ -347,25 +303,14 @@ public class TradeController(
         foreach (var itemToSell in itemWithChildren)
         {
             var itemDetails = itemHelper.GetItem(itemToSell.Template);
-            if (
-                !(
-                    itemDetails.Key
-                    && itemHelper.IsOfBaseclasses(
-                        itemDetails.Value.Id,
-                        traderDetails.ItemsBuy.Category
-                    )
-                )
-            )
+            if (!(itemDetails.Key && itemHelper.IsOfBaseclasses(itemDetails.Value.Id, traderDetails.ItemsBuy.Category)))
             // Skip if tpl isn't item OR item doesn't fulfil match traders buy categories
             {
                 continue;
             }
 
             // Get price of item multiplied by how many are in stack
-            totalPrice += (int)(
-                (handbookPrices[itemToSell.Template] ?? 0)
-                * (itemToSell.Upd?.StackObjectsCount ?? 1)
-            );
+            totalPrice += (int)((handbookPrices[itemToSell.Template] ?? 0) * (itemToSell.Upd?.StackObjectsCount ?? 1));
         }
 
         return totalPrice;

@@ -7,10 +7,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
-public class AchievementCallbacks(
-    AchievementController achievementController,
-    HttpResponseUtil httpResponseUtil
-)
+public class AchievementCallbacks(AchievementController achievementController, HttpResponseUtil httpResponseUtil)
 {
     /// <summary>
     ///     Handle client/achievement/list
@@ -18,9 +15,7 @@ public class AchievementCallbacks(
     /// <returns></returns>
     public ValueTask<string> GetAchievements(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(achievementController.GetAchievements(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(achievementController.GetAchievements(sessionID)));
     }
 
     /// <summary>
@@ -29,8 +24,6 @@ public class AchievementCallbacks(
     /// <returns></returns>
     public ValueTask<string> Statistic(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(achievementController.GetAchievementStatics(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(achievementController.GetAchievementStatics(sessionID)));
     }
 }

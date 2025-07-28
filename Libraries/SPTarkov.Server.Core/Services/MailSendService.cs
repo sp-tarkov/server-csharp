@@ -30,11 +30,7 @@ public class MailSendService(
 )
 {
     private const string _systemSenderId = "59e7125688a45068a6249071";
-    protected readonly FrozenSet<MessageType> _messageTypes =
-    [
-        MessageType.NpcTraderMessage,
-        MessageType.FleamarketMessage,
-    ];
+    protected readonly FrozenSet<MessageType> _messageTypes = [MessageType.NpcTraderMessage, MessageType.FleamarketMessage];
     protected readonly FrozenSet<string> _slotNames = ["hideout", "main"];
 
     /// <summary>
@@ -61,12 +57,7 @@ public class MailSendService(
     {
         if (trader is null)
         {
-            logger.Error(
-                serverLocalisationService.GetText(
-                    "mailsend-missing_trader",
-                    new { messageType, sessionId }
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("mailsend-missing_trader", new { messageType, sessionId }));
 
             return;
         }
@@ -125,12 +116,7 @@ public class MailSendService(
     {
         if (trader is null)
         {
-            logger.Error(
-                serverLocalisationService.GetText(
-                    "mailsend-missing_trader",
-                    new { messageType, sessionId }
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("mailsend-missing_trader", new { messageType, sessionId }));
 
             return;
         }
@@ -149,8 +135,7 @@ public class MailSendService(
         if (items is not null && items.Any())
         {
             details.Items.AddRange(items);
-            details.ItemsMaxStorageLifetimeSeconds =
-                maxStorageTimeSeconds > 0 ? maxStorageTimeSeconds : 172800;
+            details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds > 0 ? maxStorageTimeSeconds : 172800;
         }
 
         if (systemData is not null)
@@ -308,11 +293,7 @@ public class MailSendService(
         }
 
         // Store reward items inside message and set appropriate flags inside message
-        AddRewardItemsToMessage(
-            message,
-            itemsToSendToPlayer,
-            messageDetails.ItemsMaxStorageLifetimeSeconds
-        );
+        AddRewardItemsToMessage(message, itemsToSendToPlayer, messageDetails.ItemsMaxStorageLifetimeSeconds);
 
         if (messageDetails.ProfileChangeEvents is not null)
         {
@@ -324,15 +305,9 @@ public class MailSendService(
 
         // TODO: clean up old code here
         // Offer Sold notifications are now separate from the main notification
-        if (
-            _messageTypes.Contains(senderDialog.Type ?? MessageType.SystemMessage)
-            && messageDetails?.RagfairDetails is not null
-        )
+        if (_messageTypes.Contains(senderDialog.Type ?? MessageType.SystemMessage) && messageDetails?.RagfairDetails is not null)
         {
-            var offerSoldMessage = notifierHelper.CreateRagfairOfferSoldNotification(
-                message,
-                messageDetails.RagfairDetails
-            );
+            var offerSoldMessage = notifierHelper.CreateRagfairOfferSoldNotification(message, messageDetails.RagfairDetails);
             notificationSendHelper.SendMessage(messageDetails.RecipientId, offerSoldMessage);
             message.MessageType = MessageType.MessageWithItems; // Should prevent getting the same notification popup twice
         }
@@ -351,14 +326,9 @@ public class MailSendService(
     public void SendPlayerMessageToNpc(MongoId sessionId, string targetNpcId, string message)
     {
         var playerProfile = saveServer.GetProfile(sessionId);
-        if (
-            playerProfile.DialogueRecords is null
-            || !playerProfile.DialogueRecords.TryGetValue(targetNpcId, out var dialogWithNpc)
-        )
+        if (playerProfile.DialogueRecords is null || !playerProfile.DialogueRecords.TryGetValue(targetNpcId, out var dialogWithNpc))
         {
-            logger.Error(
-                serverLocalisationService.GetText("mailsend-missing_npc_dialog", targetNpcId)
-            );
+            logger.Error(serverLocalisationService.GetText("mailsend-missing_npc_dialog", targetNpcId));
             return;
         }
 
@@ -395,20 +365,13 @@ public class MailSendService(
             HasRewards = false,
             RewardCollected = false,
             SystemData = messageDetails.SystemData,
-            ProfileChangeEvents =
-                messageDetails.ProfileChangeEvents?.Count == 0
-                    ? messageDetails.ProfileChangeEvents
-                    : null,
+            ProfileChangeEvents = messageDetails.ProfileChangeEvents?.Count == 0 ? messageDetails.ProfileChangeEvents : null,
         };
 
         // Handle replyTo
         if (messageDetails.ReplyTo is not null)
         {
-            var replyMessage = GetMessageToReplyTo(
-                messageDetails.RecipientId,
-                messageDetails.ReplyTo,
-                dialogId
-            );
+            var replyMessage = GetMessageToReplyTo(messageDetails.RecipientId, messageDetails.ReplyTo, dialogId);
             if (replyMessage is not null)
             {
                 message.ReplyTo = replyMessage;
@@ -435,9 +398,7 @@ public class MailSendService(
             return null;
         }
 
-        var messageToReplyTo = currentDialogue.Messages?.FirstOrDefault(message =>
-            message.Id == replyToId
-        );
+        var messageToReplyTo = currentDialogue.Messages?.FirstOrDefault(message => message.Id == replyToId);
         if (messageToReplyTo is null)
         {
             return null;
@@ -459,11 +420,7 @@ public class MailSendService(
     /// <param name="message"> Message to add items to </param>
     /// <param name="itemsToSendToPlayer"> Items to add to message </param>
     /// <param name="maxStorageTimeSeconds"> Total time the items are stored in mail before being deleted </param>
-    private void AddRewardItemsToMessage(
-        Message message,
-        MessageItems? itemsToSendToPlayer,
-        long? maxStorageTimeSeconds
-    )
+    private void AddRewardItemsToMessage(Message message, MessageItems? itemsToSendToPlayer, long? maxStorageTimeSeconds)
     {
         if ((itemsToSendToPlayer?.Data?.Count ?? 0) > 0)
         {
@@ -480,10 +437,7 @@ public class MailSendService(
     /// <param name="dialogType"> The type of the dialog that will hold the reward items being processed </param>
     /// <param name="messageDetails"> Details fo the message e.g. Text, items it has etc. </param>
     /// <returns> Sanitised items </returns>
-    private MessageItems ProcessItemsBeforeAddingToMail(
-        MessageType? dialogType,
-        SendMessageDetails messageDetails
-    )
+    private MessageItems ProcessItemsBeforeAddingToMail(MessageType? dialogType, SendMessageDetails messageDetails)
     {
         var items = databaseService.GetItems();
 
@@ -509,11 +463,7 @@ public class MailSendService(
             }
 
             // Prep return object
-            itemsToSendToPlayer = new MessageItems
-            {
-                Stash = new MongoId(parentItem.ParentId),
-                Data = [],
-            };
+            itemsToSendToPlayer = new MessageItems { Stash = new MongoId(parentItem.ParentId), Data = [] };
 
             // Ensure Ids are unique and cont collide with items in player inventory later
             messageDetails.Items = cloner.Clone(messageDetails.Items).ReplaceIDs().ToList();
@@ -524,21 +474,14 @@ public class MailSendService(
                 if (!items.TryGetValue(reward.Template, out var itemTemplate))
                 {
                     logger.Error(
-                        serverLocalisationService.GetText(
-                            "dialog-missing_item_template",
-                            new { tpl = reward.Template, type = dialogType }
-                        )
+                        serverLocalisationService.GetText("dialog-missing_item_template", new { tpl = reward.Template, type = dialogType })
                     );
 
                     continue;
                 }
 
                 // Ensure every 'base/root' item has the same parentId + has a slotId of 'main'
-                if (
-                    reward.SlotId is null
-                    || reward.SlotId == "hideout"
-                    || reward.ParentId == parentItem.ParentId
-                )
+                if (reward.SlotId is null || reward.SlotId == "hideout" || reward.ParentId == parentItem.ParentId)
                 {
                     // Reward items NEED a parent id + slotId
                     reward.ParentId = parentItem.ParentId;
@@ -569,12 +512,7 @@ public class MailSendService(
                 {
                     if (itemTemplate.Properties.StackSlots is not null)
                     {
-                        logger.Error(
-                            serverLocalisationService.GetText(
-                                "mail-unable_to_give_gift_not_handled",
-                                itemTemplate.Id
-                            )
-                        );
+                        logger.Error(serverLocalisationService.GetText("mail-unable_to_give_gift_not_handled", itemTemplate.Id));
                     }
 
                     // Item is sanitised and ready to be pushed into holding array
@@ -634,12 +572,7 @@ public class MailSendService(
         var senderId = GetMessageSenderIdByType(messageDetails);
         if (senderId is null)
         {
-            throw new Exception(
-                serverLocalisationService.GetText(
-                    "mail-unable_to_find_message_sender_by_id",
-                    messageDetails.Sender
-                )
-            );
+            throw new Exception(serverLocalisationService.GetText("mail-unable_to_find_message_sender_by_id", messageDetails.Sender));
         }
 
         var dialogsInProfile = dialogueHelper.GetDialogsForProfile(messageDetails.RecipientId);
@@ -674,10 +607,7 @@ public class MailSendService(
             return _systemSenderId;
         }
 
-        if (
-            messageDetails.Sender == MessageType.NpcTraderMessage
-            || messageDetails.DialogType == MessageType.NpcTraderMessage
-        )
+        if (messageDetails.Sender == MessageType.NpcTraderMessage || messageDetails.DialogType == MessageType.NpcTraderMessage)
         {
             if (messageDetails.Trader == null && logger.IsLogEnabled(LogLevel.Debug))
             {

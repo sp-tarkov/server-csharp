@@ -22,11 +22,7 @@ public class QuestCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ChangeRepeatableQuest(
-        PmcData pmcData,
-        RepeatableQuestChangeRequest info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse ChangeRepeatableQuest(PmcData pmcData, RepeatableQuestChangeRequest info, MongoId sessionID)
     {
         return repeatableQuestController.ChangeRepeatableQuest(pmcData, info, sessionID);
     }
@@ -38,11 +34,7 @@ public class QuestCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse AcceptQuest(
-        PmcData pmcData,
-        AcceptQuestRequestData info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse AcceptQuest(PmcData pmcData, AcceptQuestRequestData info, MongoId sessionID)
     {
         if (info.Type == "repeatable")
         {
@@ -59,11 +51,7 @@ public class QuestCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse CompleteQuest(
-        PmcData pmcData,
-        CompleteQuestRequestData info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse CompleteQuest(PmcData pmcData, CompleteQuestRequestData info, MongoId sessionID)
     {
         return questController.CompleteQuest(pmcData, info, sessionID);
     }
@@ -75,11 +63,7 @@ public class QuestCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse HandoverQuest(
-        PmcData pmcData,
-        HandoverQuestRequestData info,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse HandoverQuest(PmcData pmcData, HandoverQuestRequestData info, MongoId sessionID)
     {
         return questController.HandoverQuest(pmcData, info, sessionID);
     }
@@ -93,9 +77,7 @@ public class QuestCallbacks(
     /// <returns></returns>
     public ValueTask<string> ListQuests(string url, ListQuestsRequestData info, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(questController.GetClientQuests(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(questController.GetClientQuests(sessionID)));
     }
 
     /// <summary>
@@ -107,8 +89,6 @@ public class QuestCallbacks(
     /// <returns></returns>
     public ValueTask<string> ActivityPeriods(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(repeatableQuestController.GetClientRepeatableQuests(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(repeatableQuestController.GetClientRepeatableQuests(sessionID)));
     }
 }

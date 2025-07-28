@@ -20,15 +20,9 @@ public class CustomizationCallbacks(
     ///     Handle client/trading/customization/storage
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetCustomisationUnlocks(
-        string url,
-        EmptyRequestData _,
-        MongoId sessionID
-    )
+    public ValueTask<string> GetCustomisationUnlocks(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(saveServer.GetProfile(sessionID).CustomisationUnlocks)
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(saveServer.GetProfile(sessionID).CustomisationUnlocks));
     }
 
     /// <summary>
@@ -40,20 +34,14 @@ public class CustomizationCallbacks(
         var splitUrl = url.Split('/');
         var traderId = splitUrl[^3];
 
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(customizationController.GetTraderSuits(traderId, sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(customizationController.GetTraderSuits(traderId, sessionID)));
     }
 
     /// <summary>
     ///     Handle CustomizationBuy event
     /// </summary>
     /// <returns></returns>
-    public ItemEventRouterResponse BuyCustomisation(
-        PmcData pmcData,
-        BuyClothingRequestData request,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse BuyCustomisation(PmcData pmcData, BuyClothingRequestData request, MongoId sessionID)
     {
         return customizationController.BuyCustomisation(pmcData, request, sessionID);
     }
@@ -62,15 +50,9 @@ public class CustomizationCallbacks(
     ///     Handle client/hideout/customization/offer/list
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetHideoutCustomisation(
-        string url,
-        EmptyRequestData _,
-        MongoId sessionID
-    )
+    public ValueTask<string> GetHideoutCustomisation(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(customizationController.GetHideoutCustomisation(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(customizationController.GetHideoutCustomisation(sessionID)));
     }
 
     /// <summary>
@@ -79,20 +61,14 @@ public class CustomizationCallbacks(
     /// <returns></returns>
     public ValueTask<string> GetStorage(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            httpResponseUtil.GetBody(customizationController.GetCustomisationStorage(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(customizationController.GetCustomisationStorage(sessionID)));
     }
 
     /// <summary>
     ///     Handle CustomizationSet
     /// </summary>
     /// <returns></returns>
-    public ItemEventRouterResponse SetCustomisation(
-        PmcData pmcData,
-        CustomizationSetRequest request,
-        MongoId sessionID
-    )
+    public ItemEventRouterResponse SetCustomisation(PmcData pmcData, CustomizationSetRequest request, MongoId sessionID)
     {
         return customizationController.SetCustomisation(sessionID, request, pmcData);
     }

@@ -613,9 +613,7 @@ public record EliminationConfig : BaseQuestConfig
     ///     If a weapon category requirement is chosen, pick from these categories
     /// </summary>
     [JsonPropertyName("weaponCategoryRequirements")]
-    public required List<
-        ProbabilityObject<string, List<MongoId>>
-    > WeaponCategoryRequirements { get; set; }
+    public required List<ProbabilityObject<string, List<MongoId>>> WeaponCategoryRequirements { get; set; }
 
     /// <summary>
     ///     If a weapon requirement is chosen, pick from these weapons

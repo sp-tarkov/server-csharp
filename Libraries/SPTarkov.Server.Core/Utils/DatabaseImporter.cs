@@ -88,8 +88,7 @@ public class DatabaseImporter(
 
                 await using var ms = new MemoryStream(jsonBytes);
 
-                var FileHashes =
-                    await _jsonUtil.DeserializeFromMemoryStreamAsync<List<FileHash>>(ms) ?? [];
+                var FileHashes = await _jsonUtil.DeserializeFromMemoryStreamAsync<List<FileHash>>(ms) ?? [];
 
                 foreach (var hash in FileHashes)
                 {
@@ -98,16 +97,12 @@ public class DatabaseImporter(
             }
             else
             {
-                logger.Error(
-                    _serverLocalisationService.GetText("validation_error_exception", checksFilePath)
-                );
+                logger.Error(_serverLocalisationService.GetText("validation_error_exception", checksFilePath));
             }
         }
         catch (Exception)
         {
-            logger.Error(
-                _serverLocalisationService.GetText("validation_error_exception", checksFilePath)
-            );
+            logger.Error(_serverLocalisationService.GetText("validation_error_exception", checksFilePath));
         }
     }
 
@@ -122,10 +117,7 @@ public class DatabaseImporter(
         Stopwatch timer = new();
         timer.Start();
 
-        var dataToImport = await _importerUtil.LoadRecursiveAsync<DatabaseTables>(
-            $"{filePath}database/",
-            VerifyDatabase
-        );
+        var dataToImport = await _importerUtil.LoadRecursiveAsync<DatabaseTables>($"{filePath}database/", VerifyDatabase);
 
         timer.Stop();
 
@@ -159,16 +151,12 @@ public class DatabaseImporter(
                 {
                     if (databaseHashes[relativePath] != hashString)
                     {
-                        logger.Warning(
-                            _serverLocalisationService.GetText("validation_error_file", fileName)
-                        );
+                        logger.Warning(_serverLocalisationService.GetText("validation_error_file", fileName));
                     }
                 }
                 else
                 {
-                    logger.Warning(
-                        _serverLocalisationService.GetText("validation_error_file", fileName)
-                    );
+                    logger.Warning(_serverLocalisationService.GetText("validation_error_file", fileName));
                 }
             }
         }

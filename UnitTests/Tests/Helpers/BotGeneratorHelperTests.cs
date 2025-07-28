@@ -68,11 +68,7 @@ public class BotGeneratorHelperTests
     private static List<Item> CreateMp18(MongoId rootWeaponId)
     {
         var weaponWithChildren = new List<Item>();
-        var weaponRoot = new Item
-        {
-            Id = rootWeaponId,
-            Template = ItemTpl.SHOTGUN_MP18_762X54R_SINGLESHOT_RIFLE,
-        };
+        var weaponRoot = new Item { Id = rootWeaponId, Template = ItemTpl.SHOTGUN_MP18_762X54R_SINGLESHOT_RIFLE };
         weaponWithChildren.Add(weaponRoot);
         var weaponStock = new Item
         {
@@ -134,14 +130,7 @@ public class BotGeneratorHelperTests
             { ItemTpl.BARTER_GOLD_SKULL_RING, 1 },
             { ItemTpl.BARTER_PACK_OF_NAILS, 1 },
         };
-        _botLootGenerator.AddLootFromPool(
-            tplsToAdd,
-            [EquipmentSlots.Backpack],
-            4,
-            botInventory,
-            "assault",
-            null
-        );
+        _botLootGenerator.AddLootFromPool(tplsToAdd, [EquipmentSlots.Backpack], 4, botInventory, "assault", null);
 
         Assert.AreEqual(ItemAddedResult.SUCCESS, result);
 
@@ -152,15 +141,8 @@ public class BotGeneratorHelperTests
         foreach (var item in botInventory.Items.Where(i => tplsToAdd.ContainsKey(i.Template)))
         {
             var location = item.Location as ItemLocation;
-            Assert.True(
-                location.X >= 0 && location.X <= 3,
-                "Error! An item was misplaced on the X axis inside the item grid!"
-            );
-            Assert.AreEqual(
-                1,
-                location.Y,
-                "Error! An item was misplaced on the Y axis inside the item grid!"
-            );
+            Assert.True(location.X >= 0 && location.X <= 3, "Error! An item was misplaced on the X axis inside the item grid!");
+            Assert.AreEqual(1, location.Y, "Error! An item was misplaced on the Y axis inside the item grid!");
         }
     }
 
@@ -445,11 +427,7 @@ public class BotGeneratorHelperTests
 
         var rootWeaponId = new MongoId();
         var weaponWithChildren = new List<Item>();
-        var root = new Item
-        {
-            Id = rootWeaponId,
-            Template = ItemTpl.ASSAULTRIFLE_MOLOT_ARMS_VPO136_VEPRKM_762X39_CARBINE,
-        };
+        var root = new Item { Id = rootWeaponId, Template = ItemTpl.ASSAULTRIFLE_MOLOT_ARMS_VPO136_VEPRKM_762X39_CARBINE };
         weaponWithChildren.Add(root);
 
         var stock = new Item

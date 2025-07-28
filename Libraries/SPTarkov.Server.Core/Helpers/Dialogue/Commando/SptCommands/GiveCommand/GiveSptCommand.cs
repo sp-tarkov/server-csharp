@@ -27,9 +27,7 @@ public class GiveSptCommand(
 ) : ISptCommand
 {
     private const double _acceptableConfidence = 0.9d;
-    private static readonly Regex _commandRegex = new(
-        @"^spt give (((([a-z]{2,5}) )?""(.+)""|\w+) )?([0-9]+)$"
-    );
+    private static readonly Regex _commandRegex = new(@"^spt give (((([a-z]{2,5}) )?""(.+)""|\w+) )?([0-9]+)$");
 
     // Exception for flares
     protected static readonly FrozenSet<MongoId> _excludedPresetItems =
@@ -56,11 +54,7 @@ public class GiveSptCommand(
         }
     }
 
-    public ValueTask<string> PerformAction(
-        UserDialogInfo commandHandler,
-        MongoId sessionId,
-        SendMessageRequest request
-    )
+    public ValueTask<string> PerformAction(UserDialogInfo commandHandler, MongoId sessionId, SendMessageRequest request)
     {
         if (!_commandRegex.IsMatch(request.Text))
         {
@@ -117,10 +111,7 @@ public class GiveSptCommand(
             _savedCommand.Remove(sessionId);
 
             isItemName = (!string.IsNullOrEmpty(result.Groups[5].Value));
-            item =
-                (!string.IsNullOrEmpty(result.Groups[5].Value))
-                    ? result.Groups[5].Value
-                    : result.Groups[2].Value;
+            item = (!string.IsNullOrEmpty(result.Groups[5].Value)) ? result.Groups[5].Value : result.Groups[2].Value;
             quantity = +int.Parse(result.Groups[6].Value);
             if (quantity <= 0)
             {
@@ -136,8 +127,7 @@ public class GiveSptCommand(
             {
                 try
                 {
-                    locale =
-                        result.Groups[4].Value ?? _localeService.GetDesiredGameLocale() ?? "en";
+                    locale = result.Groups[4].Value ?? _localeService.GetDesiredGameLocale() ?? "en";
                 }
                 catch (Exception ex)
                 {
@@ -155,19 +145,11 @@ public class GiveSptCommand(
                 var allAllowedItemNames = databaseService
                     .GetItems()
                     .Values.Where(IsItemAllowed)
-                    .Select(i =>
-                        localizedGlobal
-                            .GetValueOrDefault($"{i.Id} Name", i.Properties.Name)
-                            ?.ToLowerInvariant()
-                    )
+                    .Select(i => localizedGlobal.GetValueOrDefault($"{i.Id} Name", i.Properties.Name)?.ToLowerInvariant())
                     .Where(i => !string.IsNullOrEmpty(i));
 
                 var closestItemsMatchedByName = allAllowedItemNames
-                    .Select(i => new
-                    {
-                        Match = StringSimilarity.Match(item, i, 2, true),
-                        ItemName = i,
-                    })
+                    .Select(i => new { Match = StringSimilarity.Match(item, i, 2, true), ItemName = i })
                     .ToList();
 
                 closestItemsMatchedByName.Sort((a1, a2) => a2.Match.CompareTo(a1.Match));
@@ -181,17 +163,8 @@ public class GiveSptCommand(
                     var i = 1;
                     var slicedItems = closestItemsMatchedByName.Slice(0, 10);
                     // max 10 item names and map them
-                    var itemList = slicedItems.Select(match =>
-                        $"{i++}. {match.ItemName} (conf: {Math.Round(match.Match * 100d), 2})"
-                    );
-                    _savedCommand.Add(
-                        sessionId,
-                        new SavedCommand(
-                            quantity,
-                            slicedItems.Select(item => item.ItemName).ToList(),
-                            locale
-                        )
-                    );
+                    var itemList = slicedItems.Select(match => $"{i++}. {match.ItemName} (conf: {Math.Round(match.Match * 100d), 2})");
+                    _savedCommand.Add(sessionId, new SavedCommand(quantity, slicedItems.Select(item => item.ItemName).ToList(), locale));
                     _mailSendService.SendUserMessageToPlayer(
                         sessionId,
                         commandHandler,
@@ -210,10 +183,7 @@ public class GiveSptCommand(
             ? databaseService
                 .GetItems()
                 .Values.Where(IsItemAllowed)
-                .FirstOrDefault(i =>
-                    (localizedGlobal[$"{i?.Id} Name"]?.ToLowerInvariant() ?? i.Properties.Name)
-                    == item
-                )
+                .FirstOrDefault(i => (localizedGlobal[$"{i?.Id} Name"]?.ToLowerInvariant() ?? i.Properties.Name) == item)
                 .Id
             : item;
 
@@ -299,11 +269,7 @@ public class GiveSptCommand(
         // Flag the items as FiR
         _itemHelper.SetFoundInRaid(itemsToSend);
 
-        _mailSendService.SendSystemMessageToPlayer(
-            sessionId,
-            $"SPT GIVE DELIVERY: {item}",
-            itemsToSend
-        );
+        _mailSendService.SendSystemMessageToPlayer(sessionId, $"SPT GIVE DELIVERY: {item}", itemsToSend);
 
         return new ValueTask<string>(request.DialogId);
     }

@@ -28,11 +28,7 @@ public class ProfileHelper(
     ConfigServer configServer
 )
 {
-    protected static readonly FrozenSet<string> _gameEditionsWithFreeRefresh =
-    [
-        "edge_of_darkness",
-        "unheard_edition",
-    ];
+    protected static readonly FrozenSet<string> _gameEditionsWithFreeRefresh = ["edge_of_darkness", "unheard_edition"];
     protected readonly InventoryConfig _inventoryConfig = configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
@@ -40,10 +36,7 @@ public class ProfileHelper(
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="questConditionId">Quest with condition to remove</param>
-    public void RemoveQuestConditionFromProfile(
-        PmcData pmcData,
-        Dictionary<string, string> questConditionId
-    )
+    public void RemoveQuestConditionFromProfile(PmcData pmcData, Dictionary<string, string> questConditionId)
     {
         foreach (var questId in questConditionId)
         {
@@ -121,10 +114,7 @@ public class ProfileHelper(
             ProfileHasInfoProperty(p)
             && !StringsMatch(p.ProfileInfo.ProfileId, sessionID)
             && // SessionIds dont match
-            StringsMatch(
-                p.CharacterData.PmcData.Info.LowerNickname.ToLowerInvariant(),
-                nicknameRequest.Nickname.ToLowerInvariant()
-            )
+            StringsMatch(p.CharacterData.PmcData.Info.LowerNickname.ToLowerInvariant(), nicknameRequest.Nickname.ToLowerInvariant())
         ); // Nicknames do
     }
 
@@ -163,10 +153,7 @@ public class ProfileHelper(
     /// <returns>PmcData</returns>
     public PmcData? GetProfileByPmcId(MongoId pmcId)
     {
-        return saveServer
-            .GetProfiles()
-            .Values.First(p => p.CharacterData?.PmcData?.Id == pmcId)
-            .CharacterData?.PmcData;
+        return saveServer.GetProfiles().Values.First(p => p.CharacterData?.PmcData?.Id == pmcId).CharacterData?.PmcData;
     }
 
     /// <summary>
@@ -373,9 +360,7 @@ public class ProfileHelper(
         if (secureContainer is not null)
         {
             // Find secure container + children
-            var secureContainerAndChildrenIds = items
-                .GetItemWithChildrenTpls(secureContainer.Id)
-                .ToHashSet();
+            var secureContainerAndChildrenIds = items.GetItemWithChildrenTpls(secureContainer.Id).ToHashSet();
 
             // Remove secure container + its children
             items.RemoveAll(x => secureContainerAndChildrenIds.Contains(x.Id));
@@ -396,9 +381,7 @@ public class ProfileHelper(
         var profileToUpdate = GetFullProfile(playerId);
         profileToUpdate.SptData.ReceivedGifts ??= [];
 
-        var giftData = profileToUpdate.SptData.ReceivedGifts.FirstOrDefault(g =>
-            g.GiftId == giftId
-        );
+        var giftData = profileToUpdate.SptData.ReceivedGifts.FirstOrDefault(g => g.GiftId == giftId);
         if (giftData != null)
         {
             // Increment counter
@@ -437,9 +420,7 @@ public class ProfileHelper(
             return false;
         }
 
-        var giftDataFromProfile = profile.SptData.ReceivedGifts?.FirstOrDefault(g =>
-            g.GiftId == giftId
-        );
+        var giftDataFromProfile = profile.SptData.ReceivedGifts?.FirstOrDefault(g => g.GiftId == giftId);
         if (giftDataFromProfile == null)
         {
             return false;
@@ -503,21 +484,14 @@ public class ProfileHelper(
     {
         if (pointsToAddToSkill < 0D)
         {
-            logger.Warning(
-                serverLocalisationService.GetText(
-                    "player-attempt_to_increment_skill_with_negative_value",
-                    skill
-                )
-            );
+            logger.Warning(serverLocalisationService.GetText("player-attempt_to_increment_skill_with_negative_value", skill));
             return;
         }
 
         var profileSkills = pmcProfile?.Skills?.Common;
         if (profileSkills == null)
         {
-            logger.Warning(
-                $"Unable to add: {pointsToAddToSkill} points to {skill}, Profile has no skills"
-            );
+            logger.Warning($"Unable to add: {pointsToAddToSkill} points to {skill}, Profile has no skills");
             return;
         }
 
@@ -530,9 +504,7 @@ public class ProfileHelper(
 
         if (useSkillProgressRateMultiplier)
         {
-            var skillProgressRate = databaseService
-                .GetGlobals()
-                .Configuration.SkillsSettings.SkillProgressRate;
+            var skillProgressRate = databaseService.GetGlobals().Configuration.SkillsSettings.SkillProgressRate;
             pointsToAddToSkill *= skillProgressRate;
         }
 
@@ -557,9 +529,7 @@ public class ProfileHelper(
     /// <returns>True if account is developer</returns>
     public bool IsDeveloperAccount(MongoId sessionID)
     {
-        return GetFullProfile(sessionID)
-                ?.ProfileInfo?.Edition?.ToLowerInvariant()
-                .StartsWith("spt developer") ?? false;
+        return GetFullProfile(sessionID)?.ProfileInfo?.Edition?.ToLowerInvariant().StartsWith("spt developer") ?? false;
     }
 
     /// <summary>
@@ -620,9 +590,7 @@ public class ProfileHelper(
         var pockets = pmcProfile.Inventory.Items.Where(i => i.SlotId == "Pockets");
         if (!pockets.Any())
         {
-            logger.Error(
-                $"Unable to replace profile: {pmcProfile.Id} pocket tpl with: {newPocketTpl} as Pocket item could not be found."
-            );
+            logger.Error($"Unable to replace profile: {pmcProfile.Id} pocket tpl with: {newPocketTpl} as Pocket item could not be found.");
             return;
         }
 
@@ -721,9 +689,7 @@ public class ProfileHelper(
                     rewardToStore.Type = CustomisationType.UPPER;
                     break;
                 default:
-                    logger.Error(
-                        $"Unhandled customisation unlock type: {matchingCustomisation.Parent} not added to profile"
-                    );
+                    logger.Error($"Unhandled customisation unlock type: {matchingCustomisation.Parent} not added to profile");
                     return;
             }
 

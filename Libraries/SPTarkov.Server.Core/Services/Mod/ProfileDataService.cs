@@ -6,11 +6,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Services.Mod;
 
 [Injectable(InjectionType.Singleton)]
-public class ProfileDataService(
-    ISptLogger<ProfileDataService> logger,
-    FileUtil fileUtil,
-    JsonUtil jsonUtil
-)
+public class ProfileDataService(ISptLogger<ProfileDataService> logger, FileUtil fileUtil, JsonUtil jsonUtil)
 {
     protected const string ProfileDataFilepath = "user/profileData/";
     private readonly ConcurrentDictionary<string, object> _profileDataCache = new();
@@ -27,9 +23,7 @@ public class ProfileDataService(
         {
             if (fileUtil.FileExists($"{ProfileDataFilepath}{profileId}/{modKey}.json"))
             {
-                value = jsonUtil.Deserialize<T>(
-                    fileUtil.ReadFile($"{ProfileDataFilepath}{profileId}/{modKey}.json")
-                );
+                value = jsonUtil.Deserialize<T>(fileUtil.ReadFile($"{ProfileDataFilepath}{profileId}/{modKey}.json"));
                 if (value != null)
                 {
                     while (!_profileDataCache.TryAdd(profileDataKey, value)) { }

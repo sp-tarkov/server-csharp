@@ -6,9 +6,7 @@ using SPTarkov.Server.Core.Models.Utils;
 namespace SPTarkov.Server.Core.Servers.Ws.Message;
 
 [Injectable]
-public class DefaultSptWebSocketMessageHandler(
-    ISptLogger<DefaultSptWebSocketMessageHandler> _logger
-) : ISptWebSocketMessageHandler
+public class DefaultSptWebSocketMessageHandler(ISptLogger<DefaultSptWebSocketMessageHandler> _logger) : ISptWebSocketMessageHandler
 {
     public async Task OnSptMessage(string sessionID, WebSocket client, byte[] rawData)
     {

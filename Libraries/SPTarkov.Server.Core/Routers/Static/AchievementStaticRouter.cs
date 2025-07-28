@@ -16,20 +16,11 @@ public class AchievementStaticRouter : StaticRouter
                 new RouteAction(
                     "/client/achievement/list",
                     async (url, info, sessionID, output) =>
-                        await achievementCallbacks.GetAchievements(
-                            url,
-                            info as EmptyRequestData,
-                            sessionID
-                        )
+                        await achievementCallbacks.GetAchievements(url, info as EmptyRequestData, sessionID)
                 ),
                 new RouteAction(
                     "/client/achievement/statistic",
-                    async (url, info, sessionID, output) =>
-                        await achievementCallbacks.Statistic(
-                            url,
-                            info as EmptyRequestData,
-                            sessionID
-                        )
+                    async (url, info, sessionID, output) => await achievementCallbacks.Statistic(url, info as EmptyRequestData, sessionID)
                 ),
             ]
         ) { }

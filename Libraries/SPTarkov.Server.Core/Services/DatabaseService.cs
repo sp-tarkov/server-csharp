@@ -39,12 +39,7 @@ public class DatabaseService(
     {
         if (databaseServer.GetTables().Bots == null)
         {
-            throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/bots"
-                )
-            );
+            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/bots"));
         }
 
         return databaseServer.GetTables().Bots!;
@@ -55,12 +50,7 @@ public class DatabaseService(
     {
         if (databaseServer.GetTables().Globals == null)
         {
-            throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/globals.json"
-                )
-            );
+            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/globals.json"));
         }
 
         return databaseServer.GetTables().Globals!;
@@ -71,12 +61,7 @@ public class DatabaseService(
     {
         if (databaseServer.GetTables().Hideout == null)
         {
-            throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/hideout"
-                )
-            );
+            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/hideout"));
         }
 
         return databaseServer.GetTables().Hideout!;
@@ -87,12 +72,7 @@ public class DatabaseService(
     {
         if (databaseServer.GetTables().Locales == null)
         {
-            throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/locales"
-                )
-            );
+            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/locales"));
         }
 
         return databaseServer.GetTables().Locales!;
@@ -103,12 +83,7 @@ public class DatabaseService(
     {
         if (databaseServer.GetTables().Locations == null)
         {
-            throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/locations"
-                )
-            );
+            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/locations"));
         }
 
         return databaseServer.GetTables().Locations!;
@@ -121,13 +96,10 @@ public class DatabaseService(
     /// <returns> assets/database/locations/ </returns>
     public Location? GetLocation(string locationId)
     {
-        var desiredLocation = GetLocations()
-            ?.GetByJsonProp<Location>(locationId.ToLowerInvariant());
+        var desiredLocation = GetLocations()?.GetByJsonProp<Location>(locationId.ToLowerInvariant());
         if (desiredLocation == null)
         {
-            logger.Error(
-                serverLocalisationService.GetText("database-no_location_found_with_id", locationId)
-            );
+            logger.Error(serverLocalisationService.GetText("database-no_location_found_with_id", locationId));
 
             return null;
         }
@@ -140,12 +112,7 @@ public class DatabaseService(
     {
         if (databaseServer.GetTables().Match == null)
         {
-            throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/locales"
-                )
-            );
+            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/locales"));
         }
 
         return databaseServer.GetTables().Match!;
@@ -156,12 +123,7 @@ public class DatabaseService(
     {
         if (databaseServer.GetTables().Server == null)
         {
-            throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/server.json"
-                )
-            );
+            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/server.json"));
         }
 
         return databaseServer.GetTables().Server!;
@@ -172,12 +134,7 @@ public class DatabaseService(
     {
         if (databaseServer.GetTables().Settings == null)
         {
-            throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/settings.json"
-                )
-            );
+            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/settings.json"));
         }
 
         return databaseServer.GetTables().Settings!;
@@ -188,12 +145,7 @@ public class DatabaseService(
     {
         if (databaseServer.GetTables().Templates == null)
         {
-            throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/templates"
-                )
-            );
+            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates"));
         }
 
         return databaseServer.GetTables().Templates!;
@@ -205,10 +157,7 @@ public class DatabaseService(
         if (databaseServer.GetTables().Templates?.Achievements == null)
         {
             throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/templates/achievements.json"
-                )
+                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/achievements.json")
             );
         }
 
@@ -221,10 +170,7 @@ public class DatabaseService(
         if (databaseServer.GetTables().Templates?.Achievements == null)
         {
             throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/templates/customAchievements.json"
-                )
+                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/customAchievements.json")
             );
         }
 
@@ -237,10 +183,7 @@ public class DatabaseService(
         if (databaseServer.GetTables().Templates?.Customization == null)
         {
             throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/templates/customization.json"
-                )
+                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/customization.json")
             );
         }
 
@@ -253,10 +196,7 @@ public class DatabaseService(
         if (databaseServer.GetTables().Templates?.Handbook == null)
         {
             throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/templates/handbook.json"
-                )
+                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/handbook.json")
             );
         }
 
@@ -268,12 +208,7 @@ public class DatabaseService(
     {
         if (databaseServer.GetTables().Templates?.Items == null)
         {
-            throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/templates/items.json"
-                )
-            );
+            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/items.json"));
         }
 
         return databaseServer.GetTables().Templates?.Items!;
@@ -285,10 +220,7 @@ public class DatabaseService(
         if (databaseServer.GetTables().Templates?.Prices == null)
         {
             throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/templates/prices.json"
-                )
+                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/prices.json")
             );
         }
 
@@ -301,10 +233,7 @@ public class DatabaseService(
         if (databaseServer.GetTables().Templates?.Profiles == null)
         {
             throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/templates/profiles.json"
-                )
+                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/profiles.json")
             );
         }
 
@@ -317,10 +246,7 @@ public class DatabaseService(
         if (databaseServer.GetTables().Templates?.Quests == null)
         {
             throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/templates/quests.json"
-                )
+                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/quests.json")
             );
         }
 
@@ -332,12 +258,7 @@ public class DatabaseService(
     {
         if (databaseServer.GetTables().Traders == null)
         {
-            throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/traders"
-                )
-            );
+            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/traders"));
         }
 
         return databaseServer.GetTables().Traders!;
@@ -352,9 +273,7 @@ public class DatabaseService(
     {
         if (!databaseServer.GetTables().Traders.TryGetValue(traderId, out var desiredTrader))
         {
-            logger.Error(
-                serverLocalisationService.GetText("database-no_trader_found_with_id", traderId)
-            );
+            logger.Error(serverLocalisationService.GetText("database-no_trader_found_with_id", traderId));
 
             return null;
         }
@@ -368,10 +287,7 @@ public class DatabaseService(
         if (databaseServer.GetTables().Templates?.LocationServices == null)
         {
             throw new Exception(
-                serverLocalisationService.GetText(
-                    "database-data_at_path_missing",
-                    "assets/database/locationServices.json"
-                )
+                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/locationServices.json")
             );
         }
 

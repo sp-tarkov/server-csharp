@@ -65,10 +65,7 @@ public class FenceBaseAssortGenerator(
             // Item base type blacklisted
             if (traderConfig.Fence.Blacklist.Count > 0)
             {
-                if (
-                    traderConfig.Fence.Blacklist.Contains(itemId)
-                    || itemHelper.IsOfBaseclasses(itemId, traderConfig.Fence.Blacklist)
-                )
+                if (traderConfig.Fence.Blacklist.Contains(itemId) || itemHelper.IsOfBaseclasses(itemId, traderConfig.Fence.Blacklist))
                 {
                     continue;
                 }
@@ -131,9 +128,7 @@ public class FenceBaseAssortGenerator(
             // Create barter scheme (price)
             var barterSchemeToAdd = new BarterScheme
             {
-                Count = Math.Round(
-                    (double)fenceService.GetItemPrice(itemId, itemWithChildrenToAdd)
-                ),
+                Count = Math.Round((double)fenceService.GetItemPrice(itemId, itemWithChildrenToAdd)),
                 Template = Money.ROUBLES,
             };
 
@@ -155,11 +150,7 @@ public class FenceBaseAssortGenerator(
         foreach (var defaultPreset in defaultPresets)
         {
             // Skip presets we've already added
-            if (
-                baseFenceAssort.Items.Any(item =>
-                    item.Upd != null && item.Upd.SptPresetId == defaultPreset.Id
-                )
-            )
+            if (baseFenceAssort.Items.Any(item => item.Upd != null && item.Upd.SptPresetId == defaultPreset.Id))
             {
                 continue;
             }
@@ -168,9 +159,7 @@ public class FenceBaseAssortGenerator(
             var itemAndChildren = _cloner.Clone(defaultPreset.Items).ReplaceIDs();
 
             // Find root item and add some properties to it
-            var rootItem = itemAndChildren.FirstOrDefault(item =>
-                string.IsNullOrEmpty(item.ParentId)
-            );
+            var rootItem = itemAndChildren.FirstOrDefault(item => string.IsNullOrEmpty(item.ParentId));
             rootItem.ParentId = "hideout";
             rootItem.SlotId = "hideout";
             rootItem.Upd = new Upd
@@ -191,11 +180,7 @@ public class FenceBaseAssortGenerator(
             [
                 new()
                 {
-                    new BarterScheme
-                    {
-                        Template = Money.ROUBLES,
-                        Count = Math.Round(price * itemQualityModifier),
-                    },
+                    new BarterScheme { Template = Money.ROUBLES, Count = Math.Round(price * itemQualityModifier) },
                 },
             ];
 
@@ -213,12 +198,7 @@ public class FenceBaseAssortGenerator(
         var ammoPenetrationPower = GetAmmoPenetrationPower(rootItemDb);
         if (ammoPenetrationPower == null)
         {
-            logger.Warning(
-                localisationService.GetText(
-                    "fence-unable_to_get_ammo_penetration_value",
-                    rootItemDb.Id
-                )
-            );
+            logger.Warning(localisationService.GetText("fence-unable_to_get_ammo_penetration_value", rootItemDb.Id));
             return false;
         }
 
@@ -235,18 +215,13 @@ public class FenceBaseAssortGenerator(
         if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.AMMO_BOX))
         {
             // Get the cartridge tpl found inside ammo box
-            var cartridgeTplInBox = rootItemDb
-                .Properties.StackSlots.First()
-                .Props.Filters.First()
-                .Filter.FirstOrDefault();
+            var cartridgeTplInBox = rootItemDb.Properties.StackSlots.First().Props.Filters.First().Filter.FirstOrDefault();
 
             // Look up cartridge tpl in db
             var ammoItemDb = itemHelper.GetItem(cartridgeTplInBox);
             if (!ammoItemDb.Key)
             {
-                logger.Warning(
-                    localisationService.GetText("fence-ammo_not_found_in_db", cartridgeTplInBox)
-                );
+                logger.Warning(localisationService.GetText("fence-ammo_not_found_in_db", cartridgeTplInBox));
                 return null;
             }
 
@@ -271,25 +246,20 @@ public class FenceBaseAssortGenerator(
     protected void AddChildrenToArmorModSlots(List<Item> armor, TemplateItem itemDbDetails)
     {
         // Armor has no mods, make no additions
-        var hasMods =
-            itemDbDetails.Properties?.Slots is not null && itemDbDetails.Properties.Slots.Any();
+        var hasMods = itemDbDetails.Properties?.Slots is not null && itemDbDetails.Properties.Slots.Any();
         if (!hasMods)
         {
             return;
         }
 
         // Check for and add required soft inserts to armors
-        var requiredSlots = itemDbDetails
-            .Properties.Slots.Where(slot => slot.Required ?? false)
-            .ToList();
+        var requiredSlots = itemDbDetails.Properties.Slots.Where(slot => slot.Required ?? false).ToList();
         var hasRequiredSlots = requiredSlots.Count > 0;
         if (hasRequiredSlots)
         {
             foreach (var requiredSlot in requiredSlots)
             {
-                var modItemDbDetails = itemHelper
-                    .GetItem(requiredSlot.Props.Filters.First().Plate.Value)
-                    .Value;
+                var modItemDbDetails = itemHelper.GetItem(requiredSlot.Props.Filters.First().Plate.Value).Value;
                 var plateTpl = requiredSlot.Props.Filters.First().Plate; // `Plate` property appears to be the 'default' item for slot
                 if (plateTpl is null || plateTpl.Value.IsEmpty())
                 // Some bsg plate properties are empty, skip mod
@@ -318,9 +288,7 @@ public class FenceBaseAssortGenerator(
         }
 
         // Check for and add plate items
-        var plateSlots = itemDbDetails
-            .Properties.Slots.Where(slot => itemHelper.IsRemovablePlateSlot(slot.Name))
-            .ToList();
+        var plateSlots = itemDbDetails.Properties.Slots.Where(slot => itemHelper.IsRemovablePlateSlot(slot.Name)).ToList();
         if (plateSlots.Count > 0)
         {
             foreach (var plateSlot in plateSlots)

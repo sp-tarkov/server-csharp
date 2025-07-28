@@ -42,9 +42,7 @@ public class SptWebSocketConnectionHandler(
         var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
-                $"[WS] Websocket connect for player {playerInfoText} started with context {sessionIdContext}"
-            );
+            _logger.Debug($"[WS] Websocket connect for player {playerInfoText} started with context {sessionIdContext}");
         }
 
         lock (_socketsLock)
@@ -85,20 +83,13 @@ public class SptWebSocketConnectionHandler(
         }
     }
 
-    public async Task OnMessage(
-        byte[] receivedMessage,
-        WebSocketMessageType messageType,
-        WebSocket ws,
-        HttpContext context
-    )
+    public async Task OnMessage(byte[] receivedMessage, WebSocketMessageType messageType, WebSocket ws, HttpContext context)
     {
         var splitUrl = context.Request.Path.Value.Split("/");
         var sessionID = splitUrl.Last();
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
-                $"[WS] Message for session {sessionID} received. Notifying message handlers."
-            );
+            _logger.Debug($"[WS] Message for session {sessionID} received. Notifying message handlers.");
         }
 
         foreach (var sptWebSocketMessageHandler in _messageHandlers)
@@ -116,24 +107,17 @@ public class SptWebSocketConnectionHandler(
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(
-                    $"Attempting to close websocket session {sessionID} with context {sessionIdContext}"
-                );
+                _logger.Debug($"Attempting to close websocket session {sessionID} with context {sessionIdContext}");
             }
 
             if (_sockets.TryGetValue(sessionID, out var sessionSockets) && sessionSockets.Any())
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(
-                        $"Websockets for session {sessionID} entry matched, attempting to find context {sessionIdContext}"
-                    );
+                    _logger.Debug($"Websockets for session {sessionID} entry matched, attempting to find context {sessionIdContext}");
                 }
 
-                if (
-                    !sessionSockets.TryGetValue(sessionIdContext, out _)
-                    && _logger.IsLogEnabled(LogLevel.Info)
-                )
+                if (!sessionSockets.TryGetValue(sessionIdContext, out _) && _logger.IsLogEnabled(LogLevel.Info))
                 {
                     _logger.Info(
                         $"[ws] The websocket session {sessionID} with reference: {sessionIdContext} has already been removed or reconnected"
@@ -146,9 +130,7 @@ public class SptWebSocketConnectionHandler(
                     {
                         var playerProfile = _profileHelper.GetFullProfile(sessionID);
                         var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
-                        _logger.Info(
-                            $"[ws] player: {playerInfoText} {sessionIdContext} has disconnected"
-                        );
+                        _logger.Info($"[ws] player: {playerInfoText} {sessionIdContext} has disconnected");
                     }
                 }
             }
@@ -185,9 +167,7 @@ public class SptWebSocketConnectionHandler(
 
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(
-                        $"Send message for {sessionID} matched {webSockets.Count()} websockets. Messages being sent"
-                    );
+                    _logger.Debug($"Send message for {sessionID} matched {webSockets.Count()} websockets. Messages being sent");
                 }
 
                 foreach (var webSocket in webSockets)
@@ -219,21 +199,13 @@ public class SptWebSocketConnectionHandler(
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(
-                        _serverLocalisationService.GetText(
-                            "websocket-not_ready_message_not_sent",
-                            sessionID
-                        )
-                    );
+                    _logger.Debug(_serverLocalisationService.GetText("websocket-not_ready_message_not_sent", sessionID));
                 }
             }
         }
         catch (Exception err)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText("websocket-message_send_failed_with_error"),
-                err
-            );
+            _logger.Error(_serverLocalisationService.GetText("websocket-message_send_failed_with_error"), err);
         }
     }
 
@@ -241,8 +213,7 @@ public class SptWebSocketConnectionHandler(
     {
         lock (_socketsLock)
         {
-            return _sockets.TryGetValue(sessionID, out var sockets)
-                && sockets.Any(s => s.Value.State == WebSocketState.Open);
+            return _sockets.TryGetValue(sessionID, out var sockets) && sockets.Any(s => s.Value.State == WebSocketState.Open);
         }
     }
 
@@ -250,9 +221,7 @@ public class SptWebSocketConnectionHandler(
     {
         lock (_socketsLock)
         {
-            return _sockets
-                    .GetValueOrDefault(sessionID)
-                    ?.Values.Where(s => s.State == WebSocketState.Open) ?? [];
+            return _sockets.GetValueOrDefault(sessionID)?.Values.Where(s => s.State == WebSocketState.Open) ?? [];
         }
     }
 }

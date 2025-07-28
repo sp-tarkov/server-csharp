@@ -50,9 +50,7 @@ public class HttpServer(
 
         try
         {
-            var listener = _httpListeners.FirstOrDefault(l =>
-                l.CanHandle(sessionId, context.Request)
-            );
+            var listener = _httpListeners.FirstOrDefault(l => l.CanHandle(sessionId, context.Request));
 
             if (listener != null)
             {
@@ -82,18 +80,11 @@ public class HttpServer(
     {
         if (isLocalRequest)
         {
-            _logger.Info(
-                _serverLocalisationService.GetText("client_request", context.Request.Path.Value)
-            );
+            _logger.Info(_serverLocalisationService.GetText("client_request", context.Request.Path.Value));
         }
         else
         {
-            _logger.Info(
-                _serverLocalisationService.GetText(
-                    "client_request_ip",
-                    new { ip = clientIp, url = context.Request.Path.Value }
-                )
-            );
+            _logger.Info(_serverLocalisationService.GetText("client_request_ip", new { ip = clientIp, url = context.Request.Path.Value }));
         }
     }
 
@@ -122,9 +113,7 @@ public class HttpServer(
             return false;
         }
 
-        return remoteAddress.StartsWith("127.0.0")
-            || remoteAddress.StartsWith("192.168.")
-            || remoteAddress.StartsWith("localhost");
+        return remoteAddress.StartsWith("127.0.0") || remoteAddress.StartsWith("192.168.") || remoteAddress.StartsWith("localhost");
     }
 
     protected Dictionary<string, string> GetCookies(HttpRequest req)
