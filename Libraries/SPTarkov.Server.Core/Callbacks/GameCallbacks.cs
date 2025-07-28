@@ -180,11 +180,7 @@ public class GameCallbacks(
     ///     Handle singleplayer/clientmods
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> ReceiveClientMods(
-        string url,
-        SendClientModsRequest request,
-        MongoId sessionID
-    )
+    public ValueTask<string> ReceiveClientMods(string url, SendClientModsRequest request, MongoId sessionID)
     {
         profileActivityService.SetProfileActiveClientMods(sessionID, request.ActiveClientMods);
 

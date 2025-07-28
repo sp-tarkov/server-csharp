@@ -100,11 +100,7 @@ public class GameStaticRouter : StaticRouter
                 new RouteAction(
                     "/singleplayer/clientmods",
                     async (url, info, sessionID, output) =>
-                        await gameCallbacks.ReceiveClientMods(
-                            url,
-                            info as SendClientModsRequest,
-                            sessionID
-                        ),
+                        await gameCallbacks.ReceiveClientMods(url, info as SendClientModsRequest, sessionID),
                     typeof(SendClientModsRequest)
                 ),
             ]
