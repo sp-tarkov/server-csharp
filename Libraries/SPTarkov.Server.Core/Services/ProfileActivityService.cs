@@ -117,4 +117,32 @@ public class ProfileActivityService(TimeUtil timeUtil)
             currentActiveProfile.LastActive = timeUtil.GetTimeStamp();
         }
     }
+
+    public IReadOnlyList<ProfileActiveClientMods> GetProfileActiveClientMods(MongoId sessionId)
+    {
+        if (!ContainsActiveProfile(sessionId))
+        {
+            return [];
+        }
+
+        if (_activeProfiles.TryGetValue(sessionId, out var currentActiveProfile))
+        {
+            return currentActiveProfile.ActiveClientMods;
+        }
+
+        throw new Exception($"Unable to retrieve active client mods for session: {sessionId}");
+    }
+
+    public void SetProfileActiveClientMods(MongoId sessionId, IReadOnlyList<ProfileActiveClientMods> activeClientMods)
+    {
+        if (!ContainsActiveProfile(sessionId))
+        {
+            AddActiveProfile(sessionId, timeUtil.GetTimeStamp());
+        }
+
+        if (_activeProfiles.TryGetValue(sessionId, out var currentActiveProfile))
+        {
+            currentActiveProfile.ActiveClientMods = activeClientMods;
+        }
+    }
 }

@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Request;
 using SPTarkov.Server.Core.Models.Eft.Game;
 using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
@@ -16,6 +17,7 @@ public class GameCallbacks(
     Watermark watermark,
     SaveServer saveServer,
     GameController gameController,
+    ProfileActivityService profileActivityService,
     TimeUtil timeUtil
 ) : IOnLoad
 {
@@ -171,6 +173,21 @@ public class GameCallbacks(
     /// <returns></returns>
     public ValueTask<string> SendSurveyOpinion(string url, SendSurveyOpinionRequest request, MongoId sessionID)
     {
+        return new ValueTask<string>(httpResponseUtil.NullResponse());
+    }
+
+    /// <summary>
+    ///     Handle singleplayer/clientmods
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> ReceiveClientMods(
+        string url,
+        SendClientModsRequest request,
+        MongoId sessionID
+    )
+    {
+        profileActivityService.SetProfileActiveClientMods(sessionID, request.ActiveClientMods);
+
         return new ValueTask<string>(httpResponseUtil.NullResponse());
     }
 }
