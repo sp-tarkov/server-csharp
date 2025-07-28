@@ -5,7 +5,6 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
@@ -197,51 +196,50 @@ public class LocationLootGenerator(
         }
 
         // For each of the container groups, choose from the pool of containers, hydrate container with loot and add to result array
-        var mapping = GetGroupIdToContainerMappings(mapData.Statics, staticRandomisableContainersOnMap);
-        foreach (var (key, data) in mapping)
+        foreach (var (groupId, containerGroupCount) in GetGroupIdToContainerMappings(mapData.Statics, staticRandomisableContainersOnMap))
         {
             // Count chosen was 0, skip
-            if (data.ChosenCount == 0)
+            if (containerGroupCount.ChosenCount == 0)
             {
                 continue;
             }
 
-            if (data.ContainerIdsWithProbability.Count == 0)
+            if (containerGroupCount.ContainerIdsWithProbability.Count == 0)
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug($"Group: {key} has no containers with < 100 % spawn chance to choose from, skipping");
+                    _logger.Debug($"Group: {groupId} has no containers with < 100 % spawn chance to choose from, skipping");
                 }
 
                 continue;
             }
 
             // EDGE CASE: These are containers without a group and have a probability < 100%
-            if (key == string.Empty)
+            if (groupId == string.Empty)
             {
-                var containerIdsCopy = _cloner.Clone(data.ContainerIdsWithProbability);
+                var containerIdsCopy = _cloner.Clone(containerGroupCount.ContainerIdsWithProbability);
                 // Roll each containers probability, if it passes, it gets added
-                data.ContainerIdsWithProbability = new Dictionary<string, double>();
-                foreach (var containerId in containerIdsCopy)
+                containerGroupCount.ContainerIdsWithProbability = new Dictionary<string, double>();
+                foreach (var (containerId, probability) in containerIdsCopy)
                 {
-                    if (_randomUtil.GetChance100(containerIdsCopy[containerId.Key] * 100))
+                    if (_randomUtil.GetChance100(probability * 100))
                     {
-                        data.ContainerIdsWithProbability[containerId.Key] = containerIdsCopy[containerId.Key];
+                        containerGroupCount.ContainerIdsWithProbability[containerId] = probability;
                     }
                 }
 
                 // Set desired count to size of array (we want all containers chosen)
-                data.ChosenCount = data.ContainerIdsWithProbability.Count;
+                containerGroupCount.ChosenCount = containerGroupCount.ContainerIdsWithProbability.Count;
 
                 // EDGE CASE: chosen container count could be 0
-                if (data.ChosenCount == 0)
+                if (containerGroupCount.ChosenCount == 0)
                 {
                     continue;
                 }
             }
 
             // Pass possible containers into function to choose some
-            var chosenContainerIds = GetContainersByProbability(key, data);
+            var chosenContainerIds = GetContainersByProbability(groupId, containerGroupCount);
             foreach (var chosenContainerId in chosenContainerIds)
             {
                 // Look up container object from full list of containers on map
