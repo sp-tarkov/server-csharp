@@ -118,10 +118,22 @@ public class ProfileActivityService(TimeUtil timeUtil)
         }
     }
 
-    public void SetProfileActiveClientMods(
-        MongoId sessionId,
-        IReadOnlyList<ProfileActiveClientMods> activeClientMods
-    )
+    public IReadOnlyList<ProfileActiveClientMods> GetProfileActiveClientMods(MongoId sessionId)
+    {
+        if (!ContainsActiveProfile(sessionId))
+        {
+            return [];
+        }
+
+        if (_activeProfiles.TryGetValue(sessionId, out var currentActiveProfile))
+        {
+            return currentActiveProfile.ActiveClientMods;
+        }
+
+        throw new Exception($"Unable to retrieve active client mods for session: {sessionId}");
+    }
+
+    public void SetProfileActiveClientMods(MongoId sessionId, IReadOnlyList<ProfileActiveClientMods> activeClientMods)
     {
         if (!ContainsActiveProfile(sessionId))
         {
