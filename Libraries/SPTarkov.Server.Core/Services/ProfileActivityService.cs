@@ -117,4 +117,20 @@ public class ProfileActivityService(TimeUtil timeUtil)
             currentActiveProfile.LastActive = timeUtil.GetTimeStamp();
         }
     }
+
+    public void SetProfileActiveClientMods(
+        MongoId sessionId,
+        IReadOnlyList<ProfileActiveClientMods> activeClientMods
+    )
+    {
+        if (!ContainsActiveProfile(sessionId))
+        {
+            AddActiveProfile(sessionId, timeUtil.GetTimeStamp());
+        }
+
+        if (_activeProfiles.TryGetValue(sessionId, out var currentActiveProfile))
+        {
+            currentActiveProfile.ActiveClientMods = activeClientMods;
+        }
+    }
 }

@@ -97,6 +97,16 @@ public class GameStaticRouter : StaticRouter
                         await gameCallbacks.SendSurveyOpinion(url, info as SendSurveyOpinionRequest, sessionID),
                     typeof(SendSurveyOpinionRequest)
                 ),
+                new RouteAction(
+                    "/singleplayer/clientmods",
+                    async (url, info, sessionID, output) =>
+                        await gameCallbacks.ReceiveClientMods(
+                            url,
+                            info as SendClientModsRequest,
+                            sessionID
+                        ),
+                    typeof(SendClientModsRequest)
+                ),
             ]
         ) { }
 }
