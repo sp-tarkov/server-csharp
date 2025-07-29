@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
@@ -11,7 +12,7 @@ public record Achievement
     public required int Index { get; set; }
 
     [JsonPropertyName("id")]
-    public required string Id { get; set; }
+    public required MongoId Id { get; set; }
 
     [JsonPropertyName("imageUrl")]
     public required string ImageUrl { get; set; }
@@ -23,7 +24,7 @@ public record Achievement
     public string? AssetPath { get; set; }
 
     [JsonPropertyName("rewards")]
-    public required List<Reward> Rewards { get; set; }
+    public required IEnumerable<Reward> Rewards { get; set; }
 
     [JsonPropertyName("conditions")]
     public required AchievementQuestConditionTypes Conditions { get; set; }
@@ -68,5 +69,5 @@ public record AchievementQuestConditionTypes
     public List<QuestCondition>? Success { get; set; }
 
     [JsonPropertyName("fail")]
-    public List<QuestCondition>? Fail { get; set; }
+    public List<QuestCondition> Fail { get; set; }
 }

@@ -1,19 +1,17 @@
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Logging;
 using SPTarkov.Server.Core.Models.Spt.Logging;
 using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Utils.Logger;
 
 namespace UnitTests.Mock;
 
+[Injectable(TypeOverride = typeof(SptLogger<>))]
 public class MockLogger<T> : ISptLogger<T>
 {
-    public void LogWithColor(
-        string data,
-        LogTextColor? textColor = null,
-        LogBackgroundColor? backgroundColor = null,
-        Exception? ex = null
-    )
+    public void LogWithColor(string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null, Exception? ex = null)
     {
-        throw new NotImplementedException();
+        Console.WriteLine(data);
     }
 
     public void Success(string data, Exception? ex = null)
@@ -72,12 +70,7 @@ public class MockLogger<T> : ISptLogger<T>
         throw new NotImplementedException();
     }
 
-    public void LogWithColor(
-        string data,
-        Exception? ex = null,
-        LogTextColor? textColor = null,
-        LogBackgroundColor? backgroundColor = null
-    )
+    public void LogWithColor(string data, Exception? ex = null, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null)
     {
         Console.WriteLine(data);
     }

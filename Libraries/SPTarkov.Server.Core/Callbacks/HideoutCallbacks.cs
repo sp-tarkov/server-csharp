@@ -1,6 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -10,10 +11,9 @@ using SPTarkov.Server.Core.Servers;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable(TypePriority = OnUpdateOrder.HideoutCallbacks)]
-public class HideoutCallbacks(HideoutController _hideoutController, ConfigServer _configServer)
-    : IOnUpdate
+public class HideoutCallbacks(HideoutController hideoutController, ConfigServer configServer) : IOnUpdate
 {
-    private readonly HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
+    private readonly HideoutConfig _hideoutConfig = configServer.GetConfig<HideoutConfig>();
 
     public Task<bool> OnUpdate(long secondsSinceLastRun)
     {
@@ -23,7 +23,7 @@ public class HideoutCallbacks(HideoutController _hideoutController, ConfigServer
             return Task.FromResult(false);
         }
 
-        _hideoutController.Update();
+        hideoutController.Update();
 
         return Task.FromResult(true);
     }
@@ -34,11 +34,11 @@ public class HideoutCallbacks(HideoutController _hideoutController, ConfigServer
     public ItemEventRouterResponse Upgrade(
         PmcData pmcData,
         HideoutUpgradeRequestData request,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _hideoutController.StartUpgrade(pmcData, request, sessionID, output);
+        hideoutController.StartUpgrade(pmcData, request, sessionID, output);
 
         return output;
     }
@@ -49,11 +49,11 @@ public class HideoutCallbacks(HideoutController _hideoutController, ConfigServer
     public ItemEventRouterResponse UpgradeComplete(
         PmcData pmcData,
         HideoutUpgradeCompleteRequestData request,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _hideoutController.UpgradeComplete(pmcData, request, sessionID, output);
+        hideoutController.UpgradeComplete(pmcData, request, sessionID, output);
 
         return output;
     }
@@ -61,37 +61,25 @@ public class HideoutCallbacks(HideoutController _hideoutController, ConfigServer
     /// <summary>
     ///     Handle HideoutPutItemsInAreaSlots
     /// </summary>
-    public ItemEventRouterResponse PutItemsInAreaSlots(
-        PmcData pmcData,
-        HideoutPutItemInRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse PutItemsInAreaSlots(PmcData pmcData, HideoutPutItemInRequestData request, MongoId sessionID)
     {
-        return _hideoutController.PutItemsInAreaSlots(pmcData, request, sessionID);
+        return hideoutController.PutItemsInAreaSlots(pmcData, request, sessionID);
     }
 
     /// <summary>
     ///     Handle HideoutTakeItemsFromAreaSlots event
     /// </summary>
-    public ItemEventRouterResponse TakeItemsFromAreaSlots(
-        PmcData pmcData,
-        HideoutTakeItemOutRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse TakeItemsFromAreaSlots(PmcData pmcData, HideoutTakeItemOutRequestData request, MongoId sessionID)
     {
-        return _hideoutController.TakeItemsFromAreaSlots(pmcData, request, sessionID);
+        return hideoutController.TakeItemsFromAreaSlots(pmcData, request, sessionID);
     }
 
     /// <summary>
     ///     Handle HideoutToggleArea event
     /// </summary>
-    public ItemEventRouterResponse ToggleArea(
-        PmcData pmcData,
-        HideoutToggleAreaRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse ToggleArea(PmcData pmcData, HideoutToggleAreaRequestData request, MongoId sessionID)
     {
-        return _hideoutController.ToggleArea(pmcData, request, sessionID);
+        return hideoutController.ToggleArea(pmcData, request, sessionID);
     }
 
     /// <summary>
@@ -100,22 +88,18 @@ public class HideoutCallbacks(HideoutController _hideoutController, ConfigServer
     public ItemEventRouterResponse SingleProductionStart(
         PmcData pmcData,
         HideoutSingleProductionStartRequestData request,
-        string sessionID
+        MongoId sessionID
     )
     {
-        return _hideoutController.SingleProductionStart(pmcData, request, sessionID);
+        return hideoutController.SingleProductionStart(pmcData, request, sessionID);
     }
 
     /// <summary>
     ///     Handle HideoutScavCaseProductionStart event
     /// </summary>
-    public ItemEventRouterResponse ScavCaseProductionStart(
-        PmcData pmcData,
-        HideoutScavCaseStartRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse ScavCaseProductionStart(PmcData pmcData, HideoutScavCaseStartRequestData request, MongoId sessionID)
     {
-        return _hideoutController.ScavCaseProductionStart(pmcData, request, sessionID);
+        return hideoutController.ScavCaseProductionStart(pmcData, request, sessionID);
     }
 
     /// <summary>
@@ -124,22 +108,18 @@ public class HideoutCallbacks(HideoutController _hideoutController, ConfigServer
     public ItemEventRouterResponse ContinuousProductionStart(
         PmcData pmcData,
         HideoutContinuousProductionStartRequestData request,
-        string sessionID
+        MongoId sessionID
     )
     {
-        return _hideoutController.ContinuousProductionStart(pmcData, request, sessionID);
+        return hideoutController.ContinuousProductionStart(pmcData, request, sessionID);
     }
 
     /// <summary>
     ///     Handle HideoutTakeProduction event
     /// </summary>
-    public ItemEventRouterResponse TakeProduction(
-        PmcData pmcData,
-        HideoutTakeProductionRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse TakeProduction(PmcData pmcData, HideoutTakeProductionRequestData request, MongoId sessionID)
     {
-        return _hideoutController.TakeProduction(pmcData, request, sessionID);
+        return hideoutController.TakeProduction(pmcData, request, sessionID);
     }
 
     /// <summary>
@@ -148,11 +128,11 @@ public class HideoutCallbacks(HideoutController _hideoutController, ConfigServer
     public ItemEventRouterResponse HandleQTEEvent(
         PmcData pmcData,
         HandleQTEEventRequestData request,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _hideoutController.HandleQTEEventOutcome(sessionID, pmcData, request, output);
+        hideoutController.HandleQTEEventOutcome(sessionID, pmcData, request, output);
 
         return output;
     }
@@ -163,11 +143,11 @@ public class HideoutCallbacks(HideoutController _hideoutController, ConfigServer
     public ItemEventRouterResponse RecordShootingRangePoints(
         PmcData pmcData,
         RecordShootingRangePoints request,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _hideoutController.RecordShootingRangePoints(sessionID, pmcData, request);
+        hideoutController.RecordShootingRangePoints(sessionID, pmcData, request);
 
         return output;
     }
@@ -175,25 +155,17 @@ public class HideoutCallbacks(HideoutController _hideoutController, ConfigServer
     /// <summary>
     ///     Handle client/game/profile/items/moving - RecordShootingRangePoints
     /// </summary>
-    public ItemEventRouterResponse ImproveArea(
-        PmcData pmcData,
-        HideoutImproveAreaRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse ImproveArea(PmcData pmcData, HideoutImproveAreaRequestData request, MongoId sessionID)
     {
-        return _hideoutController.ImproveArea(sessionID, pmcData, request);
+        return hideoutController.ImproveArea(sessionID, pmcData, request);
     }
 
     /// <summary>
     ///     Handle client/game/profile/items/moving - HideoutCancelProductionCommand
     /// </summary>
-    public ItemEventRouterResponse CancelProduction(
-        PmcData pmcData,
-        HideoutCancelProductionRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse CancelProduction(PmcData pmcData, HideoutCancelProductionRequestData request, MongoId sessionID)
     {
-        return _hideoutController.CancelProduction(sessionID, pmcData, request);
+        return hideoutController.CancelProduction(sessionID, pmcData, request);
     }
 
     /// <summary>
@@ -202,10 +174,10 @@ public class HideoutCallbacks(HideoutController _hideoutController, ConfigServer
     public ItemEventRouterResponse CicleOfCultistProductionStart(
         PmcData pmcData,
         HideoutCircleOfCultistProductionStartRequestData request,
-        string sessionID
+        MongoId sessionID
     )
     {
-        return _hideoutController.CicleOfCultistProductionStart(sessionID, pmcData, request);
+        return hideoutController.CircleOfCultistProductionStart(sessionID, pmcData, request);
     }
 
     /// <summary>
@@ -214,10 +186,10 @@ public class HideoutCallbacks(HideoutController _hideoutController, ConfigServer
     public ItemEventRouterResponse HideoutDeleteProductionCommand(
         PmcData pmcData,
         HideoutDeleteProductionRequestData request,
-        string sessionID
+        MongoId sessionID
     )
     {
-        return _hideoutController.HideoutDeleteProductionCommand(sessionID, pmcData, request);
+        return hideoutController.HideoutDeleteProductionCommand(sessionID, pmcData, request);
     }
 
     /// <summary>
@@ -226,10 +198,10 @@ public class HideoutCallbacks(HideoutController _hideoutController, ConfigServer
     public ItemEventRouterResponse HideoutCustomizationApplyCommand(
         PmcData pmcData,
         HideoutCustomizationApplyRequestData request,
-        string sessionID
+        MongoId sessionID
     )
     {
-        return _hideoutController.HideoutCustomizationApply(sessionID, pmcData, request);
+        return hideoutController.HideoutCustomizationApply(sessionID, pmcData, request);
     }
 
     /// <summary>
@@ -239,9 +211,9 @@ public class HideoutCallbacks(HideoutController _hideoutController, ConfigServer
     public ItemEventRouterResponse HideoutCustomizationSetMannequinPose(
         PmcData pmcData,
         HideoutCustomizationSetMannequinPoseRequest request,
-        string sessionId
+        MongoId sessionId
     )
     {
-        return _hideoutController.HideoutCustomizationSetMannequinPose(sessionId, pmcData, request);
+        return hideoutController.HideoutCustomizationSetMannequinPose(sessionId, pmcData, request);
     }
 }

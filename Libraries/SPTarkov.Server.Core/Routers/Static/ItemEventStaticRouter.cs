@@ -16,11 +16,7 @@ public class ItemEventStaticRouter : StaticRouter
                 new RouteAction(
                     "/client/game/profile/items/moving",
                     async (url, info, sessionID, output) =>
-                        await itemEventCallbacks.HandleEvents(
-                            url,
-                            info as ItemEventRouterRequest,
-                            sessionID
-                        ),
+                        await itemEventCallbacks.HandleEvents(url, info as ItemEventRouterRequest, sessionID),
                     typeof(ItemEventRouterRequest)
                 ),
             ]

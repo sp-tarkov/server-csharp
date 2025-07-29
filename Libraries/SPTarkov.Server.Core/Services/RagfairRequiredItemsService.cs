@@ -6,10 +6,7 @@ using SPTarkov.Server.Core.Models.Common;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class RagfairRequiredItemsService(
-    RagfairOfferService ragfairOfferService,
-    PaymentHelper paymentHelper
-)
+public class RagfairRequiredItemsService(RagfairOfferService ragfairOfferService, PaymentHelper paymentHelper)
 {
     /// <summary>
     /// Key = tpl
@@ -40,17 +37,17 @@ public class RagfairRequiredItemsService(
         foreach (var offer in ragfairOfferService.GetOffers())
         foreach (var requirement in offer.Requirements)
         {
-            if (paymentHelper.IsMoneyTpl(requirement.Template))
+            if (paymentHelper.IsMoneyTpl(requirement.TemplateId))
             // This would just be too noisy
             {
                 continue;
             }
 
             // Ensure key is init
-            _requiredItemsCache.TryAdd(requirement.Template, []);
+            _requiredItemsCache.TryAdd(requirement.TemplateId, []);
 
             // Add matching offer
-            _requiredItemsCache.GetValueOrDefault(requirement.Template)?.Add(offer.Id);
+            _requiredItemsCache.GetValueOrDefault(requirement.TemplateId)?.Add(offer.Id);
         }
     }
 }

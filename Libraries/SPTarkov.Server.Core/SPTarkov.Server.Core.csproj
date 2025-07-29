@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\Build.props" />
   <PropertyGroup>
     <PackageId>SPTarkov.Server.Core</PackageId>
@@ -12,13 +12,14 @@
     <OutputType>Library</OutputType>
     <IsPackable>true</IsPackable>
     <StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\SPTarkov.DI\SPTarkov.DI.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.IO.Hashing" Version="9.0.5" />
-    <PackageReference Include="FastCloner" Version="3.3.8" />
+    <PackageReference Include="System.IO.Hashing" Version="9.0.7" />
+    <PackageReference Include="FastCloner" Version="3.3.10" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
@@ -31,6 +32,9 @@
     <SptBuildType Condition="'$(SptBuildType)' == ''">LOCAL</SptBuildType>
     <!--  BuildType options - LOCAL, DEBUG, RELEASE, BLEEDING_EDGE, BLEEDING_EDGE_MODS - *must be all caps*-->
   </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="UnitTests" />
+  </ItemGroup>
   <Target Name="AfterEverythingDone" AfterTargets="PostBuildEvent">
     <Exec
       ConsoleToMsBuild="true"

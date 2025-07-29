@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -9,25 +10,22 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class AssortHelper(
-    ISptLogger<AssortHelper> _logger,
-    ServerLocalisationService _serverLocalisationService
-)
+public class AssortHelper(ISptLogger<AssortHelper> logger, ServerLocalisationService serverLocalisationService)
 {
     /// <summary>
     ///     Remove assorts from a trader that have not been unlocked yet (via player completing corresponding quest)
     /// </summary>
     /// <param name="pmcProfile"></param>
-    /// <param name="traderId">Traders id the assort belongs to</param>
+    /// <param name="traderId">Traders id assort belongs to</param>
     /// <param name="traderAssorts">All assort items from same trader</param>
     /// <param name="mergedQuestAssorts">Dict of quest assort to quest id unlocks for all traders (key = started/failed/complete)</param>
     /// <param name="isFlea">Is the trader assort being modified the flea market</param>
     /// <returns>items minus locked quest assorts</returns>
     public TraderAssort StripLockedQuestAssort(
         PmcData pmcProfile,
-        string traderId,
+        MongoId traderId,
         TraderAssort traderAssorts,
-        Dictionary<string, Dictionary<string, string>> mergedQuestAssorts,
+        Dictionary<string, Dictionary<MongoId, string>> mergedQuestAssorts,
         bool isFlea = false
     )
     {
@@ -36,9 +34,7 @@ public class AssortHelper(
         // Trader assort does not always contain loyal_level_items
         if (traderAssorts.LoyalLevelItems is null)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText("assort-missing_loyalty_level_object", traderId)
-            );
+            logger.Warning(serverLocalisationService.GetText("assort-missing_loyalty_level_object", traderId));
 
             return traderAssorts;
         }
@@ -70,38 +66,28 @@ public class AssortHelper(
     /// <param name="mergedQuestAssorts">quest assorts to search for assort id</param>
     /// <param name="assortId">Assort to look for linked quest id</param>
     /// <returns>quest id + array of quest status the assort should show for</returns>
-    protected KeyValuePair<string, List<QuestStatusEnum>>? GetQuestIdAndStatusThatShowAssort(
-        Dictionary<string, Dictionary<string, string>> mergedQuestAssorts,
-        string assortId
+    protected KeyValuePair<MongoId, HashSet<QuestStatusEnum>>? GetQuestIdAndStatusThatShowAssort(
+        Dictionary<string, Dictionary<MongoId, string>> mergedQuestAssorts,
+        MongoId assortId
     )
     {
         if (mergedQuestAssorts.TryGetValue("started", out var dict1) && dict1.ContainsKey(assortId))
         // Assort unlocked by starting quest, assort is visible to player when : started or ready to hand in + handed in
         {
-            return new KeyValuePair<string, List<QuestStatusEnum>>(
+            return new KeyValuePair<MongoId, HashSet<QuestStatusEnum>>(
                 mergedQuestAssorts["started"][assortId],
-                [
-                    QuestStatusEnum.Started,
-                    QuestStatusEnum.AvailableForFinish,
-                    QuestStatusEnum.Success,
-                ]
+                [QuestStatusEnum.Started, QuestStatusEnum.AvailableForFinish, QuestStatusEnum.Success]
             );
         }
 
         if (mergedQuestAssorts.TryGetValue("success", out var dict2) && dict2.ContainsKey(assortId))
         {
-            return new KeyValuePair<string, List<QuestStatusEnum>>(
-                mergedQuestAssorts["success"][assortId],
-                [QuestStatusEnum.Success]
-            );
+            return new KeyValuePair<MongoId, HashSet<QuestStatusEnum>>(mergedQuestAssorts["success"][assortId], [QuestStatusEnum.Success]);
         }
 
         if (mergedQuestAssorts.TryGetValue("fail", out var dict3) && dict3.ContainsKey(assortId))
         {
-            return new KeyValuePair<string, List<QuestStatusEnum>>(
-                mergedQuestAssorts["fail"][assortId],
-                [QuestStatusEnum.Fail]
-            );
+            return new KeyValuePair<MongoId, HashSet<QuestStatusEnum>>(mergedQuestAssorts["fail"][assortId], [QuestStatusEnum.Fail]);
         }
 
         return null;
@@ -114,20 +100,14 @@ public class AssortHelper(
     /// <param name="traderId">Traders id</param>
     /// <param name="assort">Traders assorts</param>
     /// <returns>Trader assorts minus locked loyalty assorts</returns>
-    public TraderAssort StripLockedLoyaltyAssort(
-        PmcData pmcProfile,
-        string traderId,
-        TraderAssort assort
-    )
+    public TraderAssort StripLockedLoyaltyAssort(PmcData pmcProfile, MongoId traderId, TraderAssort assort)
     {
         var strippedAssort = assort;
 
         // Trader assort does not always contain loyal_level_items
         if (assort.LoyalLevelItems is null)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText("assort-missing_loyalty_level_object", traderId)
-            );
+            logger.Warning(serverLocalisationService.GetText("assort-missing_loyalty_level_object", traderId));
 
             return strippedAssort;
         }
@@ -135,10 +115,7 @@ public class AssortHelper(
         // Remove items restricted by loyalty levels above those reached by the player
         foreach (var item in assort.LoyalLevelItems)
         {
-            if (
-                pmcProfile.TradersInfo.TryGetValue(traderId, out var info)
-                && assort.LoyalLevelItems[item.Key] > info.LoyaltyLevel
-            )
+            if (pmcProfile.TradersInfo.TryGetValue(traderId, out var info) && assort.LoyalLevelItems[item.Key] > info.LoyaltyLevel)
             {
                 strippedAssort = assort.RemoveItemFromAssort(item.Key);
             }

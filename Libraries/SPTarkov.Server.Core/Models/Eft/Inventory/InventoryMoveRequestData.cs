@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Inventory;
 
@@ -8,7 +9,7 @@ public record InventoryMoveRequestData : InventoryBaseActionRequestData
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("item")]
-    public string? Item { get; set; }
+    public MongoId? Item { get; set; }
 
     [JsonPropertyName("to")]
     public To? To { get; set; }

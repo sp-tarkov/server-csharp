@@ -6,6 +6,7 @@
   "baseclass-item_not_found_failed": "Element %s wurde nach der Neugenerierung immer noch nicht im Basiscache gefunden",
   "baseclass-missing_db_no_cache": "Die Datenbank war leer, es konnte kein Artikelbasis-Cache generiert werden",
   "bleeding_edge_build": "BLEEDING EDGE",
+  "btr-unable_to_find_items_in_dialog_template": "Es konnten keine gelieferten Items in den Dialogvorlagen gefunden werden, für Spieler: %s",
   "bot-bot-cache_has_zero_bots_of_requested_type": "WARNUNG - Bot Cache hat keinen vorgenerierten Bot vom Typ %s, dieser muss erstellt werden, konfigurieren Sie die bot.json Konfigurationsdatei (presetBatch) auf einen höheren Wert",
   "bot-bot_preset_count_value_missing": "Es konnte keine Voreinstellung gefunden werden, die für den Bot generiert werden soll: %s, setze Standardwert von 30",
   "bot-compatibility_check_missing_props": "Der Gegenstand konnte nicht validiert werden: {{id}} {{name}} im Slot: {{slot}} kann ausgerüstet werden, es fehlt ein _props Wert",
@@ -624,6 +625,7 @@
   "ragfair-unable_to_remove_offer_doesnt_exist": "Das Angebot mit der ID %s konnte nicht entfernt werden, da es nicht auf dem Flohmarkt gefunden werden konnte",
   "ragfair-unable_to_remove_offer_not_found_in_profile": "Angebot: {{offerId}} im Profil: {{profileId}} konnte nicht gefunden werden, da das Angebot nicht definiert ist und erstellt wird",
   "ragfair-generating_offers": "Flohmarkt Angebote werden generiert...",
+  "ragfair-offer_page_doesnt_exist": "Die aktuelle Flohmarktseite existiert nicht mehrt, das Ende der Angebotsliste wird angezeigt",
   "release-beta-disclaimer": "Durch Drücken von OK akzeptierst du, dass kein Support geleistet wird und dieser Build nur zum Testen gedacht ist, NICHT um tatsächlich zu Spielen. Mods sind deaktiviert. Neue Profile werden möglicherweise regelmäßig benötigt. Melde alle Bugs im Report-Channel in Discord oder in den Issues auf Github. Wenn du OK nicht in der vorgegebenen Zeit drückst, schließt sich das Spiel.",
   "release-beta-disclaimer-accept": "Benutzer hat den Beta-Disclaimer akzeptiert",
   "release-beta-disclaimer-mods-enabled": "Durch Drücken von OK akzeptierst du, dass kein Support geleistet wird und dieser Build nur zum Testen gedacht ist, NICHT um tatsächlich zu spielen. Mods sind aktiviert, Mod-Probleme NICHT reporten. Mod-Authoren NICHT nach Mod-Updates fragen. Melde alle Bugs im Report-Channel in Discord oder in den Issues auf Github. Wenn du OK nicht in der vorgegebenen Zeit drückst, schließt sich das Spiel.",
@@ -683,7 +685,7 @@
   "server_start_meme_8": "Es ist Morbin-Zeit",
   "server_start_meme_9": "S-step scav? W-was machst du?",
   "server_start_player_active_botreload_skill": "Bei deinem Charakter ist die Fertigkeit 'BotReload' aktiviert. Dies führt dazu, dass deine Waffen unnatürlich schnell nachladen. Ignoriere diese Meldung, wenn dies beabsichtigt ist",
-  "started_webserver_success": "Webserver bei %s gestartet",
+  "started_webserver_success": "Webserver unter %s gestartet",
   "trader-missing_durability_threshold_value": "Der Haltbarkeitsschwellenwert für Händler: {{traderId}} konnte nicht gefunden werden, es wird auf den Standardwert zurückgegriffen: {{value}}",
   "trader-missing_repair_property_using_default": "Händler {{traderId}} {{nickname}} fehlt ein Reparaturobjekt, Standardwerte werden hinzufügt",
   "trader-missing_repair_quality_property_using_default": "Händler: {{traderId}} {{nickname}} fehlt eine Reparatur-Qualitätseigenschaft, der Standardwert wird hinzufügt",
@@ -695,6 +697,7 @@
   "trader-unable_to_find_trader_by_id": "Händler mit Id: %s konnte nicht gefunden werden",
   "trader-unable_to_find_trader_in_enum": "Händler: %s konnte nicht in Traders enum gefunden werden",
   "trader-unable_to_purchase_item_limit_reached": "Kaufen des Gegenstandes vom Händler: {{traderId}} nicht möglich da das Limit von: {{limit}} erreicht wurde",
+  "trader-unable_to_find_inventory_item_for_selltotrader_counter": "Inventar Item konnte nicht gefunden werden: %s zum verkauf, Zähler kann nicht erhöht werden, übersprungen",
   "unhandled_response": "[UNBEHANDELT][%s]",
   "unknown_request": "Unbekannte Anfrage!",
   "validation_error_decode": "Die Datei checks.dat konnte nicht dekodiert werden. Dateivalidierung übersprungen.",
@@ -723,5 +726,6 @@
   "chatbot-forced_event_enabled": "%s Event wurde aktiviert. Starte das Spiel neu, bevor du einen Raid beginnst",
   "chatbot-added_stash_rows_please_restart": "2 Zeilen wurden dem Lager hinzugefügt. Bitte starte das Spiel neu, um diese zu sehen",
   "chatbot-snow_enabled": "Schnee ist für alle folgenden Raids aktiviert, bis der Server neu gestartet wird",
-  "chatbot-summer_enabled": "Sommer ist für alle folgenden Raids aktiviert, bis der Server neu gestartet wurde"
+  "chatbot-summer_enabled": "Sommer ist für alle folgenden Raids aktiviert, bis der Server neu gestartet wurde",
+  "webserver_already_running": "Eine weitere Kopie des Webservers läuft bereits. Bitte schließe diese bevor du eine neue startest."
 }

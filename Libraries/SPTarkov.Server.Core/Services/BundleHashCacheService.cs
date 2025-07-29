@@ -5,28 +5,11 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class BundleHashCacheService
+public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, JsonUtil jsonUtil, HashUtil hashUtil, FileUtil fileUtil)
 {
     protected const string _bundleHashCachePath = "./user/cache/";
     protected const string _cacheName = "bundleHashCache.json";
-    protected readonly Dictionary<string, uint> _bundleHashes = new();
-    private readonly FileUtil _fileUtil;
-    private readonly HashUtil _hashUtil;
-    private readonly JsonUtil _jsonUtil;
-    private readonly ISptLogger<BundleHashCacheService> _logger;
-
-    public BundleHashCacheService(
-        ISptLogger<BundleHashCacheService> logger,
-        JsonUtil jsonUtil,
-        HashUtil hashUtil,
-        FileUtil fileUtil
-    )
-    {
-        _logger = logger;
-        _jsonUtil = jsonUtil;
-        _hashUtil = hashUtil;
-        _fileUtil = fileUtil;
-    }
+    protected readonly Dictionary<string, uint> _bundleHashes = [];
 
     public uint GetStoredValue(string key)
     {
@@ -38,7 +21,7 @@ public class BundleHashCacheService
         return value;
     }
 
-    public void StoreValue(string bundlePath, uint hash)
+    public async Task StoreValue(string bundlePath, uint hash)
     {
         _bundleHashes.Add(bundlePath, hash);
 
@@ -47,12 +30,9 @@ public class BundleHashCacheService
             Directory.CreateDirectory(_bundleHashCachePath);
         }
 
-        _fileUtil.WriteFile(
-            Path.Join(_bundleHashCachePath, _cacheName),
-            _jsonUtil.Serialize(_bundleHashes)
-        );
+        await fileUtil.WriteFileAsync(Path.Join(_bundleHashCachePath, _cacheName), jsonUtil.Serialize(_bundleHashes));
 
-        _logger.Debug($"Bundle: {bundlePath} hash stored in: ${_bundleHashCachePath}");
+        logger.Debug($"Bundle: {bundlePath} hash stored in: ${_bundleHashCachePath}");
     }
 
     public bool CalculateAndMatchHash(string BundlePath)
@@ -60,15 +40,15 @@ public class BundleHashCacheService
         return MatchWithStoredHash(BundlePath, CalculateHash(BundlePath));
     }
 
-    public void CalculateAndStoreHash(string BundlePath)
+    public async Task CalculateAndStoreHash(string BundlePath)
     {
-        StoreValue(BundlePath, CalculateHash(BundlePath));
+        await StoreValue(BundlePath, CalculateHash(BundlePath));
     }
 
     public uint CalculateHash(string BundlePath)
     {
-        var fileData = _fileUtil.ReadFile(BundlePath);
-        return _hashUtil.GenerateCrc32ForData(fileData);
+        var fileData = fileUtil.ReadFile(BundlePath);
+        return hashUtil.GenerateCrc32ForData(fileData);
     }
 
     public bool MatchWithStoredHash(string BundlePath, uint hash)

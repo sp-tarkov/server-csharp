@@ -83,13 +83,13 @@ public class FileSptLoggerReference : BaseSptLoggerReference
     [JsonPropertyName("filePattern")]
     public string FilePattern { get; set; }
 
-    private int _maxFileSizeMb;
+    private readonly int _maxFileSizeMb;
 
     [JsonPropertyName("maxFileSizeMB")]
     public int MaxFileSizeMb
     {
-        get => _maxFileSizeMb;
-        set
+        get { return _maxFileSizeMb; }
+        init
         {
             if (value < 0)
             {
@@ -99,13 +99,13 @@ public class FileSptLoggerReference : BaseSptLoggerReference
         }
     }
 
-    private int _maxRollingFiles;
+    private readonly int _maxRollingFiles;
 
     [JsonPropertyName("maxRollingFiles")]
     public int MaxRollingFiles
     {
-        get => _maxRollingFiles;
-        set
+        get { return _maxRollingFiles; }
+        init
         {
             if (value < 0)
             {
@@ -138,7 +138,7 @@ public enum SptLoggerFilterType
 
 public static class SptLoggerFilterExtensions
 {
-    private static ConcurrentDictionary<SptLoggerFilter, Regex> _cachedRegexes = new();
+    private static readonly ConcurrentDictionary<SptLoggerFilter, Regex> _cachedRegexes = new();
 
     public static bool Match(this SptLoggerFilter filter, SptLogMessage message)
     {

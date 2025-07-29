@@ -1,5 +1,6 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers.Dialog.Commando.SptCommands;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -20,7 +21,7 @@ public class SptCommandoCommands : IChatCommand
         IEnumerable<ISptCommand> sptCommands
     )
     {
-        _sptCommands = sptCommands.ToDictionary(command => command.GetCommand());
+        _sptCommands = sptCommands.ToDictionary(command => command.Command);
         _serverLocalisationService = localisationService;
         var coreConfigs = configServer.GetConfig<CoreConfig>();
         var commandoId = coreConfigs.Features?.ChatbotFeatures.Ids.GetValueOrDefault("commando");
@@ -35,42 +36,32 @@ public class SptCommandoCommands : IChatCommand
         }
     }
 
-    public string GetCommandPrefix()
+    public string CommandPrefix
     {
-        return "spt";
+        get { return "spt"; }
     }
 
     public string GetCommandHelp(string command)
     {
-        return _sptCommands.TryGetValue(command, out var value) ? value.GetCommandHelp() : "";
+        return _sptCommands.TryGetValue(command, out var value) ? value.CommandHelp : "";
     }
 
-    public List<string> GetCommands()
+    public List<string> Commands
     {
-        return _sptCommands.Keys.ToList();
+        get { return _sptCommands.Keys.ToList(); }
     }
 
-    public async ValueTask<string> Handle(
-        string command,
-        UserDialogInfo commandHandler,
-        string sessionId,
-        SendMessageRequest request
-    )
+    public async ValueTask<string> Handle(string command, UserDialogInfo commandHandler, MongoId sessionId, SendMessageRequest request)
     {
         return await _sptCommands[command].PerformAction(commandHandler, sessionId, request);
     }
 
     public void RegisterSptCommandoCommand(ISptCommand command)
     {
-        var key = command.GetCommand();
+        var key = command.Command;
         if (!_sptCommands.TryAdd(key, command))
         {
-            throw new Exception(
-                _serverLocalisationService.GetText(
-                    "chat-unable_to_register_command_already_registered",
-                    key
-                )
-            );
+            throw new Exception(_serverLocalisationService.GetText("chat-unable_to_register_command_already_registered", key));
         }
     }
 }

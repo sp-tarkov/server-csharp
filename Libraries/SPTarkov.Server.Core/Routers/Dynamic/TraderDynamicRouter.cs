@@ -15,13 +15,11 @@ public class TraderDynamicRouter : DynamicRouter
             [
                 new RouteAction(
                     "/client/trading/api/getTrader/",
-                    async (url, info, sessionID, output) =>
-                        await traderCallbacks.GetTrader(url, info as EmptyRequestData, sessionID)
+                    async (url, info, sessionID, output) => await traderCallbacks.GetTrader(url, info as EmptyRequestData, sessionID)
                 ),
                 new RouteAction(
                     "/client/trading/api/getTraderAssort/",
-                    async (url, info, sessionID, output) =>
-                        await traderCallbacks.GetAssort(url, info as EmptyRequestData, sessionID)
+                    async (url, info, sessionID, output) => await traderCallbacks.GetAssort(url, info as EmptyRequestData, sessionID)
                 ),
             ]
         ) { }

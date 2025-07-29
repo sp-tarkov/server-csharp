@@ -14,10 +14,10 @@ public record WeatherConfig : BaseConfig
     public double? Acceleration { get; set; }
 
     [JsonPropertyName("weather")]
-    public WeatherValues? Weather { get; set; }
+    public required WeatherValues Weather { get; set; }
 
     [JsonPropertyName("seasonDates")]
-    public List<SeasonDateTimes>? SeasonDates { get; set; }
+    public required List<SeasonDateTimes> SeasonDates { get; set; }
 
     [JsonPropertyName("overrideSeason")]
     public Season? OverrideSeason { get; set; }

@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Profile;
+using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
@@ -16,15 +17,16 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class RewardHelper(
-    ISptLogger<RewardHelper> _logger,
-    TimeUtil _timeUtil,
-    ItemHelper _itemHelper,
-    DatabaseService _databaseService,
-    ProfileHelper _profileHelper,
-    ServerLocalisationService _serverLocalisationService,
-    TraderHelper _traderHelper,
-    PresetHelper _presetHelper,
-    ICloner _cloner
+    ISptLogger<RewardHelper> logger,
+    TimeUtil timeUtil,
+    ItemHelper itemHelper,
+    DatabaseService databaseService,
+    ProfileHelper profileHelper,
+    ServerLocalisationService serverLocalisationService,
+    TraderHelper traderHelper,
+    PresetHelper presetHelper,
+    NotificationSendHelper notificationSendHelper,
+    ICloner cloner
 )
 {
     /// <summary>
@@ -38,11 +40,11 @@ public class RewardHelper(
     /// <param name="questResponse">Response to quest completion when a production is unlocked.</param>
     /// <returns>List of items that is the reward.</returns>
     public List<Item> ApplyRewards(
-        List<Reward> rewards,
+        IEnumerable<Reward> rewards,
         string source,
         SptProfile fullProfile,
         PmcData profileData,
-        string rewardSourceId,
+        MongoId rewardSourceId,
         ItemEventRouterResponse? questResponse = null
     )
     {
@@ -50,7 +52,7 @@ public class RewardHelper(
         var pmcProfile = fullProfile?.CharacterData?.PmcData;
         if (pmcProfile is null)
         {
-            _logger.Error($"Unable to get PMC profile for: {sessionId}, no rewards given");
+            logger.Error($"Unable to get PMC profile for: {sessionId}, no rewards given");
 
             return [];
         }
@@ -69,27 +71,18 @@ public class RewardHelper(
             {
                 case RewardType.Skill:
                     // This needs to use the passed in profileData, as it could be the scav profile
-                    _profileHelper.AddSkillPointsToPlayer(
-                        profileData,
-                        Enum.Parse<SkillTypes>(reward.Target),
-                        reward.Value
-                    );
+                    profileHelper.AddSkillPointsToPlayer(profileData, Enum.Parse<SkillTypes>(reward.Target), reward.Value);
                     break;
                 case RewardType.Experience:
-                    _profileHelper.AddExperienceToPmc(
-                        sessionId,
-                        int.Parse(reward.Value.ToString())
-                    ); // this must occur first as the output object needs to take the modified profile exp value
+                    profileHelper.AddExperienceToPmc(sessionId.Value, int.Parse(reward.Value.ToString())); // this must occur first as the output object needs to take the modified profile exp value
                     // Recalculate level in event player leveled up
-                    pmcProfile.Info.Level = pmcProfile.CalculateLevel(
-                        _databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable
-                    );
+                    pmcProfile.Info.Level = pmcProfile.CalculateLevel(databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable);
                     break;
                 case RewardType.TraderStanding:
-                    _traderHelper.AddStandingToTrader(sessionId, reward.Target, reward.Value.Value);
+                    traderHelper.AddStandingToTrader(sessionId.Value, reward.Target, reward.Value.Value);
                     break;
                 case RewardType.TraderUnlock:
-                    _traderHelper.SetTraderUnlockedState(reward.Target, true, sessionId);
+                    traderHelper.SetTraderUnlockedState(reward.Target, true, sessionId.Value);
                     break;
                 case RewardType.Item:
                     // Item rewards are retrieved by getRewardItems() below, and returned to be handled by caller
@@ -101,34 +94,48 @@ public class RewardHelper(
                     AddAchievementToProfile(fullProfile, reward.Target);
                     break;
                 case RewardType.StashRows:
-                    _profileHelper.AddStashRowsBonusToProfile(sessionId, (int)reward.Value); // Add specified stash rows from reward - requires client restart
+                    var bonusId = profileHelper.AddStashRowsBonusToProfile(sessionId.Value, (int)reward.Value); // Add specified stash rows from reward - requires client restart
+
+                    notificationSendHelper.SendMessage(
+                        sessionId.Value,
+                        new WsProfileChangeEvent
+                        {
+                            EventIdentifier = new MongoId(),
+                            EventType = NotificationEventType.StashRows,
+                            Changes = new Dictionary<string, double?> { { bonusId, reward.Value } },
+                        }
+                    );
+
                     break;
                 case RewardType.ProductionScheme:
-                    FindAndAddHideoutProductionIdToProfile(
-                        pmcProfile,
-                        reward,
-                        rewardSourceId,
-                        sessionId,
-                        questResponse
-                    );
+                    FindAndAddHideoutProductionIdToProfile(pmcProfile, reward, rewardSourceId, sessionId.Value, questResponse);
                     break;
                 case RewardType.Pockets:
-                    _profileHelper.ReplaceProfilePocketTpl(pmcProfile, reward.Target);
+                    profileHelper.ReplaceProfilePocketTpl(pmcProfile, reward.Target);
                     break;
                 case RewardType.CustomizationDirect:
-                    _profileHelper.AddHideoutCustomisationUnlock(fullProfile, reward, source);
+                    profileHelper.AddHideoutCustomisationUnlock(fullProfile, reward, source);
+                    notificationSendHelper.SendMessage(
+                        sessionId.Value,
+                        new WsNotificationEvent
+                        {
+                            EventIdentifier = new MongoId(),
+                            EventType = NotificationEventType.CustomizationUpdateRequired,
+                        }
+                    );
+
                     break;
                 case RewardType.NotificationPopup:
                     // TODO: Wire up to notification system
-                    _logger.Error("UNHANDLED: RewardType.NotificationPopup");
+                    logger.Error("UNHANDLED: RewardType.NotificationPopup");
                     break;
                 case RewardType.WebPromoCode:
                     // TODO: ??? (Free arena trial from Balancing - Part 1)
-                    _logger.Error("UNHANDLED: RewardType.WebPromoCode");
+                    logger.Error("UNHANDLED: RewardType.WebPromoCode");
                     break;
                 default:
-                    _logger.Error(
-                        _serverLocalisationService.GetText(
+                    logger.Error(
+                        serverLocalisationService.GetText(
                             "reward-type_not_handled",
                             new { rewardType = reward.Type, questId = rewardSourceId }
                         )
@@ -137,7 +144,7 @@ public class RewardHelper(
             }
         }
 
-        return GetRewardItems(rewards, gameVersion);
+        return GetRewardItems(rewards, gameVersion).ToList();
     }
 
     /// <summary>
@@ -148,19 +155,13 @@ public class RewardHelper(
     /// <returns>True if it has requirement, false if it doesn't pass check.</returns>
     public bool RewardIsForGameEdition(Reward reward, string gameVersion)
     {
-        if (
-            reward.AvailableInGameEditions?.Count > 0
-            && !reward.AvailableInGameEditions.Contains(gameVersion)
-        )
+        if (reward.AvailableInGameEditions?.Count > 0 && !reward.AvailableInGameEditions.Contains(gameVersion))
         // Reward has edition whitelist and game version isn't in it
         {
             return false;
         }
 
-        if (
-            reward.NotAvailableInGameEditions?.Count > 0
-            && reward.NotAvailableInGameEditions.Contains(gameVersion)
-        )
+        if (reward.NotAvailableInGameEditions?.Count > 0 && reward.NotAvailableInGameEditions.Contains(gameVersion))
         // Reward has edition blacklist and game version is in it
         {
             return false;
@@ -182,16 +183,16 @@ public class RewardHelper(
     protected void FindAndAddHideoutProductionIdToProfile(
         PmcData pmcData,
         Reward craftUnlockReward,
-        string questId,
-        string sessionID,
+        MongoId questId,
+        MongoId sessionID,
         ItemEventRouterResponse response
     )
     {
         var matchingProductions = GetRewardProductionMatch(craftUnlockReward, questId);
         if (matchingProductions.Count != 1)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
+            logger.Error(
+                serverLocalisationService.GetText(
                     "reward-unable_to_find_matching_hideout_production",
                     new { questId, matchCount = matchingProductions.Count }
                 )
@@ -216,13 +217,10 @@ public class RewardHelper(
     /// <param name="craftUnlockReward">Reward with craft unlock details.</param>
     /// <param name="questId">Quest or achievement ID with craft unlock reward.</param>
     /// <returns>List of matching HideoutProduction objects.</returns>
-    public List<HideoutProduction> GetRewardProductionMatch(
-        Reward craftUnlockReward,
-        string questId
-    )
+    public List<HideoutProduction> GetRewardProductionMatch(Reward craftUnlockReward, MongoId questId)
     {
         // Get hideout crafts and find those that match by areatype/required level/end product tpl - hope for just one match
-        var craftingRecipes = _databaseService.GetHideout().Production.Recipes;
+        var craftingRecipes = databaseService.GetHideout().Production.Recipes;
 
         // Area that will be used to craft unlocked item
         var desiredHideoutAreaType = (HideoutAreas)int.Parse(craftUnlockReward.TraderId.ToString());
@@ -233,9 +231,7 @@ public class RewardHelper(
                 &&
                 //prod.requirements.some((requirement) => requirement.questId == questId) && // BSG don't store the quest id in requirement any more!
                 prod.Requirements.Any(requirement => requirement.Type == "QuestComplete")
-                && prod.Requirements.Any(requirement =>
-                    requirement.RequiredLevel == craftUnlockReward.LoyaltyLevel
-                )
+                && prod.Requirements.Any(requirement => requirement.RequiredLevel == craftUnlockReward.LoyaltyLevel)
                 && prod.EndProduct == craftUnlockReward.Items.FirstOrDefault().Template
             )
             .ToList();
@@ -258,16 +254,14 @@ public class RewardHelper(
     /// <param name="rewards">Array of rewards to get the items from.</param>
     /// <param name="gameVersion">The game version of the profile.</param>
     /// <returns>Array of items with the correct maxStack.</returns>
-    protected List<Item> GetRewardItems(List<Reward> rewards, string gameVersion)
+    protected IEnumerable<Item> GetRewardItems(IEnumerable<Reward> rewards, string gameVersion)
     {
         // Iterate over all rewards with the desired status, flatten out items that have a type of Item
         var rewardItems = rewards.SelectMany(reward =>
-            reward.Type == RewardType.Item && RewardIsForGameEdition(reward, gameVersion)
-                ? ProcessReward(reward)
-                : []
+            reward.Type == RewardType.Item && RewardIsForGameEdition(reward, gameVersion) ? ProcessReward(reward) : []
         );
 
-        return rewardItems.ToList();
+        return rewardItems;
     }
 
     /// <summary>
@@ -283,10 +277,10 @@ public class RewardHelper(
         List<Item> mods = [];
 
         // Is armor item that may need inserts / plates
-        if (reward.Items.Count == 1 && _itemHelper.ArmorItemCanHoldMods(reward.Items[0].Template))
+        if (reward.Items.Count == 1 && itemHelper.ArmorItemCanHoldMods(reward.Items[0].Template))
         // Only process items with slots
         {
-            if (_itemHelper.ItemHasSlots(reward.Items.FirstOrDefault().Template))
+            if (itemHelper.ItemHasSlots(reward.Items.FirstOrDefault().Template))
             // Attempt to pull default preset from globals and add child items to reward (clones reward.items)
             {
                 GenerateArmorRewardChildSlots(reward.Items.FirstOrDefault(), reward);
@@ -295,10 +289,10 @@ public class RewardHelper(
 
         foreach (var rewardItem in reward.Items)
         {
-            _itemHelper.AddUpdObjectToItem(rewardItem);
+            itemHelper.AddUpdObjectToItem(rewardItem);
 
             // Reward items are granted Found in Raid status
-            _itemHelper.SetFoundInRaid(rewardItem);
+            itemHelper.SetFoundInRaid(rewardItem);
 
             // Is root item, fix stacks
             if (rewardItem.Id == reward.Target)
@@ -317,7 +311,7 @@ public class RewardHelper(
                     rewardItem.Upd.StackObjectsCount = 1;
                 }
 
-                targets = _itemHelper.SplitStack(rewardItem);
+                targets = itemHelper.SplitStack(rewardItem);
                 // splitStack created new ids for the new stacks. This would destroy the relation to possible children.
                 // Instead, we reset the id to preserve relations and generate a new id in the downstream loop, where we are also reparenting if required
                 foreach (var target in targets)
@@ -331,16 +325,9 @@ public class RewardHelper(
                 if (reward.Items.FirstOrDefault().Upd.SpawnedInSession.GetValueOrDefault(false))
                 // Propagate FiR status into child items
                 {
-                    if (
-                        !_itemHelper.IsOfBaseclasses(
-                            rewardItem.Template,
-                            [BaseClasses.AMMO, BaseClasses.MONEY]
-                        )
-                    )
+                    if (!itemHelper.IsOfBaseclasses(rewardItem.Template, [BaseClasses.AMMO, BaseClasses.MONEY]))
                     {
-                        rewardItem.Upd.SpawnedInSession = reward
-                            .Items.FirstOrDefault()
-                            ?.Upd.SpawnedInSession;
+                        rewardItem.Upd.SpawnedInSession = reward.Items.FirstOrDefault()?.Upd.SpawnedInSession;
                     }
                 }
 
@@ -352,19 +339,19 @@ public class RewardHelper(
         foreach (var target in targets)
         {
             // This has all the original id relations since we reset the id to the original after the splitStack
-            var itemsClone = new List<Item> { _cloner.Clone(target) };
+            var itemsClone = new List<Item> { cloner.Clone(target) };
             // Here we generate a new id for the root item
             target.Id = new MongoId();
 
             // Add cloned mods to root item array
-            var clonedMods = _cloner.Clone(mods);
+            var clonedMods = cloner.Clone(mods);
             foreach (var mod in clonedMods)
             {
                 itemsClone.Add(mod);
             }
 
             // Re-parent items + generate new ids to ensure valid ids
-            var itemsToAdd = _itemHelper.ReparentItemAndChildren(target, itemsClone);
+            var itemsToAdd = itemHelper.ReparentItemAndChildren(target, itemsClone);
             rewardItems.AddRange(itemsToAdd);
         }
 
@@ -379,11 +366,11 @@ public class RewardHelper(
     protected void GenerateArmorRewardChildSlots(Item originalRewardRootItem, Reward reward)
     {
         // Look for a default preset from globals for armor
-        var defaultPreset = _presetHelper.GetDefaultPreset(originalRewardRootItem.Template);
+        var defaultPreset = presetHelper.GetDefaultPreset(originalRewardRootItem.Template);
         if (defaultPreset is not null)
         {
             // Found preset, use mods to hydrate reward item
-            var presetAndMods = _cloner.Clone(defaultPreset.Items).ReplaceIDs().ToList();
+            var presetAndMods = cloner.Clone(defaultPreset.Items).ReplaceIDs().ToList();
             var newRootId = presetAndMods.RemapRootItemId();
 
             reward.Items = presetAndMods;
@@ -395,18 +382,16 @@ public class RewardHelper(
             reward.Target = rootItem.Id;
 
             // Copy over stack count otherwise reward shows as missing in client
-            _itemHelper.AddUpdObjectToItem(rootItem);
+            itemHelper.AddUpdObjectToItem(rootItem);
             rootItem.Upd.StackObjectsCount = originalRewardRootItem.Upd.StackObjectsCount;
             return;
         }
 
-        _logger.Warning(
-            "Unable to find default preset for armor {originalRewardRootItem._tpl}, adding mods manually"
-        );
-        var itemDbData = _itemHelper.GetItem(originalRewardRootItem.Template).Value;
+        logger.Warning("Unable to find default preset for armor {originalRewardRootItem._tpl}, adding mods manually");
+        var itemDbData = itemHelper.GetItem(originalRewardRootItem.Template).Value;
 
         // Hydrate reward with only 'required' mods - necessary for things like helmets otherwise you end up with nvgs/visors etc
-        reward.Items = _itemHelper.AddChildSlotItems(reward.Items, itemDbData, null, true);
+        reward.Items = itemHelper.AddChildSlotItems(reward.Items, itemDbData, null, true);
     }
 
     /// <summary>
@@ -415,18 +400,13 @@ public class RewardHelper(
     /// </summary>
     /// <param name="fullProfile">Profile to add achievement to.</param>
     /// <param name="achievementId">Id of achievement to add.</param>
-    public void AddAchievementToProfile(SptProfile fullProfile, string achievementId)
+    public void AddAchievementToProfile(SptProfile fullProfile, MongoId achievementId)
     {
         // Add achievement id to profile with timestamp it was unlocked
-        fullProfile.CharacterData.PmcData.Achievements.TryAdd(
-            achievementId,
-            _timeUtil.GetTimeStamp()
-        );
+        fullProfile.CharacterData.PmcData.Achievements.TryAdd(achievementId, timeUtil.GetTimeStamp());
 
         // Check for any customisation unlocks
-        var achievementDataDb = _databaseService
-            .GetTemplates()
-            .Achievements.FirstOrDefault(achievement => achievement.Id == achievementId);
+        var achievementDataDb = databaseService.GetTemplates().Achievements.FirstOrDefault(achievement => achievement.Id == achievementId);
         if (achievementDataDb is null)
         {
             return;
@@ -438,12 +418,6 @@ public class RewardHelper(
         //       and the achievement reward should only be handled post-wipe.
         // All of that is to say, we are going to ignore the list of returned reward items here
         var pmcProfile = fullProfile.CharacterData.PmcData;
-        ApplyRewards(
-            achievementDataDb.Rewards,
-            CustomisationSource.ACHIEVEMENT,
-            fullProfile,
-            pmcProfile,
-            achievementDataDb.Id
-        );
+        ApplyRewards(achievementDataDb.Rewards, CustomisationSource.ACHIEVEMENT, fullProfile, pmcProfile, achievementDataDb.Id);
     }
 }

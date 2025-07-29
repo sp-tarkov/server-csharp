@@ -13,7 +13,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          lfs: true
+          lfs: false
+
+      - name: Configure Git LFS
+        run: |
+          git lfs install
+          git config -f .lfsconfig lfs.url https://lfs.sp-tarkov.com/sp-tarkov/server-csharp
+          git config -f .lfsconfig lfs.locksverify false
+          git lfs pull
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4

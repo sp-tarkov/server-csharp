@@ -11,7 +11,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="furtherFilter">OPTIONAL - Additional filter code to run</param>
         /// <returns></returns>
         public static List<QuestCondition> GetQuestConditions(
-            this List<QuestCondition> questConditions,
+            this IEnumerable<QuestCondition> questConditions,
             Func<QuestCondition, List<QuestCondition>>? furtherFilter = null
         )
         {
@@ -19,7 +19,7 @@ namespace SPTarkov.Server.Core.Extensions
         }
 
         public static List<QuestCondition> GetLevelConditions(
-            this List<QuestCondition> questConditions,
+            this IEnumerable<QuestCondition> questConditions,
             Func<QuestCondition, List<QuestCondition>>? furtherFilter = null
         )
         {
@@ -27,7 +27,7 @@ namespace SPTarkov.Server.Core.Extensions
         }
 
         public static List<QuestCondition> GetLoyaltyConditions(
-            this List<QuestCondition> questConditions,
+            this IEnumerable<QuestCondition> questConditions,
             Func<QuestCondition, List<QuestCondition>>? furtherFilter = null
         )
         {
@@ -35,7 +35,7 @@ namespace SPTarkov.Server.Core.Extensions
         }
 
         public static List<QuestCondition> GetStandingConditions(
-            this List<QuestCondition> questConditions,
+            this IEnumerable<QuestCondition> questConditions,
             Func<QuestCondition, List<QuestCondition>>? furtherFilter = null
         )
         {
@@ -43,7 +43,7 @@ namespace SPTarkov.Server.Core.Extensions
         }
 
         private static List<QuestCondition> FilterConditions(
-            List<QuestCondition> questConditions,
+            IEnumerable<QuestCondition> questConditions,
             string questType,
             Func<QuestCondition, List<QuestCondition>>? furtherFilter = null
         )

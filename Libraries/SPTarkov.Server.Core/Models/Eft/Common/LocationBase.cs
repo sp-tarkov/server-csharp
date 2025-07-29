@@ -2,7 +2,6 @@ using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils.Json;
-using SPTarkov.Server.Core.Utils.Json.Converters;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common;
 
@@ -12,10 +11,10 @@ public record LocationBase
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("AccessKeys")]
-    public List<string>? AccessKeys { get; set; }
+    public IEnumerable<string>? AccessKeys { get; set; }
 
     [JsonPropertyName("AccessKeysPvE")]
-    public List<string>? AccessKeysPvE { get; set; }
+    public IEnumerable<string>? AccessKeysPvE { get; set; }
 
     [JsonPropertyName("AirdropParameters")]
     public List<AirdropParameter>? AirdropParameters { get; set; }
@@ -72,7 +71,7 @@ public record LocationBase
     public int? BotImpossible { get; set; }
 
     [JsonPropertyName("BotLocationModifier")]
-    public BotLocationModifier? BotLocationModifier { get; set; }
+    public BotLocationModifier BotLocationModifier { get; set; }
 
     [JsonPropertyName("BotMarksman")]
     public int? BotMarksman { get; set; }
@@ -81,7 +80,7 @@ public record LocationBase
     ///     Maximum Number of bots that are currently alive/loading/delayed
     /// </summary>
     [JsonPropertyName("BotMax")]
-    public int? BotMax { get; set; }
+    public int BotMax { get; set; }
 
     /// <summary>
     ///     Is not used in 33420 TODO: still needed?
@@ -138,7 +137,7 @@ public record LocationBase
     ///     How soon bots will be allowed to spawn
     /// </summary>
     [JsonPropertyName("BotStart")]
-    public int? BotStart { get; set; }
+    public int BotStart { get; set; }
 
     /// <summary>
     ///     After this long bots will no longer spawn
@@ -159,7 +158,7 @@ public record LocationBase
     public string? DisabledScavExits { get; set; }
 
     [JsonPropertyName("Enabled")]
-    public bool? Enabled { get; set; }
+    public bool Enabled { get; set; }
 
     [JsonPropertyName("EnableCoop")]
     public bool? EnableCoop { get; set; }
@@ -186,10 +185,10 @@ public record LocationBase
     public double? IconY { get; set; }
 
     [JsonPropertyName("Id")]
-    public string? Id { get; set; }
+    public required string Id { get; set; }
 
     [JsonPropertyName("Insurance")]
-    public bool? Insurance { get; set; }
+    public bool Insurance { get; set; }
 
     [JsonPropertyName("IsSecret")]
     public bool? IsSecret { get; set; }
@@ -198,7 +197,7 @@ public record LocationBase
     public bool? Locked { get; set; }
 
     [JsonPropertyName("Loot")]
-    public List<SpawnpointTemplate>? Loot { get; set; }
+    public IEnumerable<SpawnpointTemplate>? Loot { get; set; }
 
     [JsonPropertyName("MatchMakerMinPlayersByWaitTime")]
     public List<MinPlayerWaitTime>? MatchMakerMinPlayersByWaitTime { get; set; }
@@ -219,7 +218,7 @@ public record LocationBase
     public double? MinDistToFreePoint { get; set; }
 
     [JsonPropertyName("MinMaxBots")]
-    public List<MinMaxBot>? MinMaxBots { get; set; }
+    public List<MinMaxBot> MinMaxBots { get; set; }
 
     [JsonPropertyName("MinPlayers")]
     public int? MinPlayers { get; set; }
@@ -243,7 +242,7 @@ public record LocationBase
     public bool? OldSpawn { get; set; }
 
     [JsonPropertyName("OpenZones")]
-    public string? OpenZones { get; set; }
+    public string OpenZones { get; set; }
 
     [JsonPropertyName("Preview")]
     public Preview? Preview { get; set; }
@@ -282,13 +281,13 @@ public record LocationBase
     public bool? NoGroupSpawn { get; set; }
 
     [JsonPropertyName("SpawnPointParams")]
-    public List<SpawnPointParam>? SpawnPointParams { get; set; }
+    public IEnumerable<SpawnPointParam>? SpawnPointParams { get; set; }
 
     [JsonPropertyName("areas")]
     public Dictionary<string, Area>? Areas { get; set; }
 
     [JsonPropertyName("UnixDateTime")]
-    public long? UnixDateTime { get; set; }
+    public long UnixDateTime { get; set; }
 
     [JsonPropertyName("_Id")]
     public MongoId IdField { get; set; }
@@ -299,7 +298,7 @@ public record LocationBase
     [JsonPropertyName("EscapeTimeLimit")]
     public double? EscapeTimeLimit { get; set; }
 
-    // BSG fucked up another property name
+    [Obsolete("BSG fucked up another property name")]
     [JsonPropertyName("escape_time_limit")]
     public int Escape_Time_Limit_Do_Not_Use
     {
@@ -338,13 +337,13 @@ public record LocationBase
     public bool? OneTimeSpawn { get; set; }
 
     [JsonPropertyName("exits")]
-    public List<Exit>? Exits { get; set; }
+    public IEnumerable<Exit> Exits { get; set; }
 
     [JsonPropertyName("filter_ex")]
-    public List<string>? FilterEx { get; set; }
+    public IEnumerable<string>? FilterEx { get; set; }
 
     [JsonPropertyName("limits")]
-    public List<Limit>? Limits { get; set; }
+    public IEnumerable<Limit>? Limits { get; set; }
 
     [JsonPropertyName("matching_min_seconds")]
     public int? MatchingMinSeconds { get; set; }
@@ -353,7 +352,7 @@ public record LocationBase
     public bool? GenerateLocalLootCache { get; set; }
 
     [JsonPropertyName("maxItemCountInLocation")]
-    public List<MaxItemCountInLocation>? MaxItemCountInLocation { get; set; }
+    public IEnumerable<MaxItemCountInLocation>? MaxItemCountInLocation { get; set; }
 
     [JsonPropertyName("sav_summon_seconds")]
     public int? SavSummonSeconds { get; set; }
@@ -362,7 +361,7 @@ public record LocationBase
     public int? TmpLocationFieldRemoveMe { get; set; }
 
     [JsonPropertyName("transits")]
-    public List<Transit>? Transits { get; set; }
+    public IEnumerable<Transit>? Transits { get; set; }
 
     [JsonPropertyName("users_gather_seconds")]
     public int? UsersGatherSeconds { get; set; }
@@ -454,13 +453,7 @@ public record NonWaveGroupScenario
 public record Limit : MinMax<int>
 {
     [JsonPropertyName("items")]
-    public List<string>? Items { get; set; }
-
-    [JsonPropertyName("min")]
-    public int? Min { get; set; }
-
-    [JsonPropertyName("max")]
-    public int? Max { get; set; }
+    public IEnumerable<string>? Items { get; set; }
 }
 
 public record AirdropParameter
@@ -593,13 +586,13 @@ public record BossLocationSpawn
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("Supports")]
-    public List<BossSupport> Supports { get; set; }
+    public IEnumerable<BossSupport> Supports { get; set; }
 
     [JsonPropertyName("sptId")]
     public string? SptId { get; set; }
 
     [JsonPropertyName("SpawnMode")]
-    public List<string> SpawnMode { get; set; }
+    public IEnumerable<string> SpawnMode { get; set; }
 }
 
 public record BossSupport
@@ -611,7 +604,6 @@ public record BossSupport
     public string? BossEscortAmount { get; set; }
 
     [JsonPropertyName("BossEscortDifficult")]
-    [JsonConverter(typeof(ListOrTConverterFactory))]
     public ListOrT<string> BossEscortDifficulty { get; set; }
 
     [JsonPropertyName("BossEscortType")]
@@ -627,7 +619,7 @@ public record BotLocationModifier
     public double? AccuracySpeed { get; set; }
 
     [JsonPropertyName("AdditionalHostilitySettings")]
-    public List<AdditionalHostilitySettings> AdditionalHostilitySettings { get; set; }
+    public IEnumerable<AdditionalHostilitySettings> AdditionalHostilitySettings { get; set; }
 
     [JsonPropertyName("DistToActivate")]
     public double? DistanceToActivate { get; set; }
@@ -711,10 +703,10 @@ public record AdditionalHostilitySettings
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("AlwaysEnemies")]
-    public List<string>? AlwaysEnemies { get; set; }
+    public HashSet<string>? AlwaysEnemies { get; set; }
 
     [JsonPropertyName("AlwaysFriends")]
-    public List<string>? AlwaysFriends { get; set; }
+    public HashSet<string>? AlwaysFriends { get; set; }
 
     [JsonPropertyName("BearEnemyChance")]
     public double? BearEnemyChance { get; set; }
@@ -729,7 +721,7 @@ public record AdditionalHostilitySettings
     public List<ChancedEnemy>? ChancedEnemies { get; set; }
 
     [JsonPropertyName("Neutral")]
-    public List<string>? Neutral { get; set; }
+    public HashSet<string>? Neutral { get; set; }
 
     [JsonPropertyName("SavagePlayerBehaviour")]
     public string? SavagePlayerBehaviour { get; set; }
@@ -744,7 +736,7 @@ public record AdditionalHostilitySettings
     public string? UsecPlayerBehaviour { get; set; }
 
     [JsonPropertyName("Warn")]
-    public List<string>? Warn { get; set; }
+    public IEnumerable<string>? Warn { get; set; }
 }
 
 public record ChancedEnemy
@@ -810,7 +802,7 @@ public record SpawnPointParam
     public string? BotZoneName { get; set; }
 
     [JsonPropertyName("Categories")]
-    public List<string>? Categories { get; set; }
+    public IEnumerable<string>? Categories { get; set; }
 
     [JsonPropertyName("ColliderParams")]
     public ColliderParams? ColliderParams { get; set; }
@@ -834,7 +826,7 @@ public record SpawnPointParam
     public double? Rotation { get; set; }
 
     [JsonPropertyName("Sides")]
-    public List<string>? Sides { get; set; }
+    public IEnumerable<string>? Sides { get; set; }
 }
 
 public record ColliderParams
@@ -951,7 +943,7 @@ public record Exit
 
     [JsonPropertyName("PassageRequirement")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public RequirementState? PassageRequirement { get; set; }
+    public RequirementState PassageRequirement { get; set; }
 
     [JsonPropertyName("PlayersCount")]
     public int? PlayersCount { get; set; }
@@ -1030,7 +1022,7 @@ public record Wave
     ///     'pve' and/or 'regular'
     /// </summary>
     [JsonPropertyName("SpawnMode")]
-    public List<string>? SpawnMode { get; set; }
+    public HashSet<string>? SpawnMode { get; set; }
 
     [JsonPropertyName("OpenZones")]
     public string? OpenZones { get; set; }
@@ -1064,7 +1056,7 @@ public record Halloween2024
     public double? CrowdAttackBlockRadius { get; set; }
 
     [JsonPropertyName("CrowdAttackSpawnParams")]
-    public List<CrowdAttackSpawnParam>? CrowdAttackSpawnParams { get; set; }
+    public IEnumerable<CrowdAttackSpawnParam>? CrowdAttackSpawnParams { get; set; }
 
     [JsonPropertyName("CrowdCooldownPerPlayerSec")]
     public double? CrowdCooldownPerPlayerSec { get; set; }
@@ -1138,14 +1130,12 @@ public record Area
     public XYZ? Position { get; set; }
 
     [JsonPropertyName("sides")]
-    public List<string>? Sides { get; set; }
+    public HashSet<string>? Sides { get; set; }
 
     [JsonPropertyName("size")]
     public XYZ? Size { get; set; }
 }
 
-[EftEnumConverter]
-[EftListEnumConverter]
 public enum WildSpawnType
 {
     marksman,

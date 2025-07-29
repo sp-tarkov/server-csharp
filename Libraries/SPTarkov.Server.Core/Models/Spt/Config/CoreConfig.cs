@@ -57,6 +57,12 @@ public record CoreConfig : BaseConfig
     public string? BuildTime { get; set; }
 
     /// <summary>
+    ///     Timestamp of server start up
+    /// </summary>
+    [JsonPropertyName("serverStartTime")]
+    public long? ServerStartTime { get; set; }
+
+    /// <summary>
     ///     Server locale keys that will be added to the bottom of the startup watermark
     /// </summary>
     [JsonPropertyName("customWatermarkLocaleKeys")]

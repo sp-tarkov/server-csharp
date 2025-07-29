@@ -20,24 +20,24 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class TradeController(
-    ISptLogger<TradeController> _logger,
-    DatabaseService _databaseService,
-    EventOutputHolder _eventOutputHolder,
-    TradeHelper _tradeHelper,
-    TimeUtil _timeUtil,
-    RandomUtil _randomUtil,
-    ItemHelper _itemHelper,
-    ProfileHelper _profileHelper,
-    RagfairOfferHelper _ragfairOfferHelper,
-    RagfairServer _ragfairServer,
-    HttpResponseUtil _httpResponseUtil,
-    ServerLocalisationService _serverLocalisationService,
-    MailSendService _mailSendService,
-    ConfigServer _configServer
+    ISptLogger<TradeController> logger,
+    DatabaseService databaseService,
+    EventOutputHolder eventOutputHolder,
+    TradeHelper tradeHelper,
+    TimeUtil timeUtil,
+    RandomUtil randomUtil,
+    ItemHelper itemHelper,
+    ProfileHelper profileHelper,
+    RagfairOfferHelper ragfairOfferHelper,
+    RagfairServer ragfairServer,
+    HttpResponseUtil httpResponseUtil,
+    ServerLocalisationService serverLocalisationService,
+    MailSendService mailSendService,
+    ConfigServer configServer
 )
 {
-    protected readonly RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
-    protected readonly TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
+    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected readonly TraderConfig _traderConfig = configServer.GetConfig<TraderConfig>();
 
     /// <summary>
     ///     Handle TradingConfirm event
@@ -46,20 +46,16 @@ public class TradeController(
     /// <param name="request"></param>
     /// <param name="sessionID">Session/Player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ConfirmTrading(
-        PmcData pmcData,
-        ProcessBaseTradeRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse ConfirmTrading(PmcData pmcData, ProcessBaseTradeRequestData request, MongoId sessionID)
     {
-        var output = _eventOutputHolder.GetOutput(sessionID);
+        var output = eventOutputHolder.GetOutput(sessionID);
 
         // Buying
         if (request.Type == "buy_from_trader")
         {
             var foundInRaid = _traderConfig.PurchasesAreFoundInRaid;
             var buyData = (ProcessBuyTradeRequestData)request;
-            _tradeHelper.BuyItem(pmcData, buyData, sessionID, foundInRaid, output);
+            tradeHelper.BuyItem(pmcData, buyData, sessionID, foundInRaid, output);
 
             return output;
         }
@@ -68,19 +64,15 @@ public class TradeController(
         if (request.Type == "sell_to_trader")
         {
             var sellData = (ProcessSellTradeRequestData)request;
-            _tradeHelper.SellItem(pmcData, pmcData, sellData, sessionID, output);
+            tradeHelper.SellItem(pmcData, pmcData, sellData, sessionID, output);
 
             return output;
         }
 
         var errorMessage = $"Unhandled trade event: {request.Type}";
-        _logger.Error(errorMessage);
+        logger.Error(errorMessage);
 
-        return _httpResponseUtil.AppendErrorToOutput(
-            output,
-            errorMessage,
-            BackendErrorCodes.RagfairUnavailable
-        );
+        return httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.RagfairUnavailable);
     }
 
     /// <summary>
@@ -90,40 +82,28 @@ public class TradeController(
     /// <param name="request"></param>
     /// <param name="sessionID">Session/Player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ConfirmRagfairTrading(
-        PmcData pmcData,
-        ProcessRagfairTradeRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse ConfirmRagfairTrading(PmcData pmcData, ProcessRagfairTradeRequestData request, MongoId sessionID)
     {
-        var output = _eventOutputHolder.GetOutput(sessionID);
+        var output = eventOutputHolder.GetOutput(sessionID);
 
         foreach (var offer in request.Offers)
         {
-            var fleaOffer = _ragfairServer.GetOffer(offer.Id);
+            var fleaOffer = ragfairServer.GetOffer(offer.Id);
             if (fleaOffer is null)
             {
-                return _httpResponseUtil.AppendErrorToOutput(
-                    output,
-                    $"Offer with ID {offer.Id} not found",
-                    BackendErrorCodes.OfferNotFound
-                );
+                return httpResponseUtil.AppendErrorToOutput(output, $"Offer with ID {offer.Id} not found", BackendErrorCodes.OfferNotFound);
             }
 
             if (offer.Count == 0)
             {
-                var errorMessage = _serverLocalisationService.GetText(
+                var errorMessage = serverLocalisationService.GetText(
                     "ragfair-unable_to_purchase_0_count_item",
-                    _itemHelper.GetItem(fleaOffer.Items[0].Template).Value.Name
+                    itemHelper.GetItem(fleaOffer.Items[0].Template).Value.Name
                 );
-                return _httpResponseUtil.AppendErrorToOutput(
-                    output,
-                    errorMessage,
-                    BackendErrorCodes.OfferOutOfStock
-                );
+                return httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.OfferOutOfStock);
             }
 
-            if (_ragfairOfferHelper.OfferIsFromTrader(fleaOffer))
+            if (fleaOffer.IsTraderOffer())
             {
                 BuyTraderItemFromRagfair(sessionID, pmcData, fleaOffer, offer, output);
             }
@@ -151,7 +131,7 @@ public class TradeController(
     /// <param name="requestOffer">request data from client</param>
     /// <param name="output">Output to send back to client</param>
     protected void BuyTraderItemFromRagfair(
-        string sessionId,
+        MongoId sessionId,
         PmcData pmcData,
         RagfairOffer fleaOffer,
         OfferRequest requestOffer,
@@ -163,16 +143,12 @@ public class TradeController(
         {
             var errorMessage =
                 $"Unable to buy item: {fleaOffer.Items[0].Template} from trader: {fleaOffer.User.Id} as loyalty level too low, skipping";
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(errorMessage);
+                logger.Debug(errorMessage);
             }
 
-            _httpResponseUtil.AppendErrorToOutput(
-                output,
-                errorMessage,
-                BackendErrorCodes.RagfairUnavailable
-            );
+            httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.RagfairUnavailable);
 
             return;
         }
@@ -188,16 +164,10 @@ public class TradeController(
             SchemeId = 0,
             SchemeItems = requestOffer.Items,
         };
-        _tradeHelper.BuyItem(
-            pmcData,
-            buyData,
-            sessionId,
-            _traderConfig.PurchasesAreFoundInRaid,
-            output
-        );
+        tradeHelper.BuyItem(pmcData, buyData, sessionId, _traderConfig.PurchasesAreFoundInRaid, output);
 
         // Remove/lower offer quantity of item purchased from trader flea offer
-        _ragfairServer.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
+        ragfairServer.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
     }
 
     /// <summary>
@@ -209,7 +179,7 @@ public class TradeController(
     /// <param name="requestOffer">request data from client</param>
     /// <param name="output">Output to send back to client</param>
     protected void BuyPmcItemFromRagfair(
-        string sessionId,
+        MongoId sessionId,
         PmcData pmcData,
         RagfairOffer fleaOffer,
         OfferRequest requestOffer,
@@ -228,13 +198,7 @@ public class TradeController(
         };
 
         // buyItem() must occur prior to removing the offer stack, otherwise item inside offer doesn't exist for confirmTrading() to use
-        _tradeHelper.BuyItem(
-            pmcData,
-            buyData,
-            sessionId,
-            _ragfairConfig.Dynamic.PurchasesAreFoundInRaid,
-            output
-        );
+        tradeHelper.BuyItem(pmcData, buyData, sessionId, _ragfairConfig.Dynamic.PurchasesAreFoundInRaid, output);
         if (output.Warnings?.Count > 0)
         {
             return;
@@ -244,41 +208,16 @@ public class TradeController(
         var offerOwnerId = fleaOffer.User.Id;
         var offerBuyCount = requestOffer.Count;
 
-        if (IsPlayerOffer(fleaOffer.Id, fleaOffer.User?.Id))
+        if (fleaOffer.IsPlayerOffer())
         {
             // Complete selling the offer now it has been purchased
-            _ragfairOfferHelper.CompleteOffer(offerOwnerId, fleaOffer, offerBuyCount ?? 0);
+            ragfairOfferHelper.CompleteOffer(offerOwnerId, fleaOffer, offerBuyCount ?? 0);
 
             return;
         }
 
         // Remove/lower offer quantity of item purchased from PMC flea offer
-        _ragfairServer.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
-    }
-
-    /// <summary>
-    ///     Is the provided offerId and ownerId from a player made offer
-    /// </summary>
-    /// <param name="offerId">id of the offer</param>
-    /// <param name="offerOwnerId">Owner id</param>
-    /// <returns>true if offer was made by a player</returns>
-    protected bool IsPlayerOffer(string offerId, string? offerOwnerId)
-    {
-        // No ownerId, not player offer
-        if (offerOwnerId is null)
-        {
-            return false;
-        }
-
-        var offerCreatorProfile = _profileHelper.GetPmcProfile(offerOwnerId);
-        if (offerCreatorProfile is null || offerCreatorProfile.RagfairInfo.Offers?.Count == 0)
-        // No profile or no offers
-        {
-            return false;
-        }
-
-        // Does offer id exist in profile
-        return offerCreatorProfile.RagfairInfo.Offers.Any(offer => offer.Id == offerId);
+        ragfairServer.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
     }
 
     /// <summary>
@@ -299,13 +238,9 @@ public class TradeController(
     /// <param name="request"></param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse SellScavItemsToFence(
-        PmcData pmcData,
-        SellScavItemsToFenceRequestData request,
-        string sessionId
-    )
+    public ItemEventRouterResponse SellScavItemsToFence(PmcData pmcData, SellScavItemsToFenceRequestData request, MongoId sessionId)
     {
-        var output = _eventOutputHolder.GetOutput(sessionId);
+        var output = eventOutputHolder.GetOutput(sessionId);
 
         MailMoneyToPlayer(sessionId, (int)request.TotalValue, Traders.FENCE);
 
@@ -318,11 +253,11 @@ public class TradeController(
     /// <param name="sessionId">Session id</param>
     /// <param name="roublesToSend">amount of roubles to send</param>
     /// <param name="trader">Trader to sell items to</param>
-    protected void MailMoneyToPlayer(string sessionId, int roublesToSend, string trader)
+    protected void MailMoneyToPlayer(MongoId sessionId, int roublesToSend, MongoId trader)
     {
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"Selling scav items to fence for {roublesToSend} roubles");
+            logger.Debug($"Selling scav items to fence for {roublesToSend} roubles");
         }
 
         // Create single currency item with all currency on it
@@ -334,20 +269,16 @@ public class TradeController(
         };
 
         // Ensure money is properly split to follow its max stack size limit
-        var curencyReward = _itemHelper.SplitStackIntoSeparateItems(rootCurrencyReward);
+        var currencyReward = itemHelper.SplitStackIntoSeparateItems(rootCurrencyReward);
 
         // Send mail from trader
-        _mailSendService.SendLocalisedNpcMessageToPlayer(
+        mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionId,
             trader,
             MessageType.MessageWithItems,
-            _randomUtil.GetArrayValue(
-                _databaseService.GetTrader(trader).Dialogue.TryGetValue("soldItems", out var items)
-                    ? items
-                    : new List<string>()
-            ),
-            curencyReward.SelectMany(x => x).ToList(),
-            _timeUtil.GetHoursAsSeconds(72)
+            randomUtil.GetArrayValue(databaseService.GetTrader(trader).Dialogue.TryGetValue("soldItems", out var items) ? items : []),
+            currencyReward.SelectMany(x => x).ToList(),
+            timeUtil.GetHoursAsSeconds(72)
         );
     }
 
@@ -360,37 +291,26 @@ public class TradeController(
     /// <param name="traderDetails">Trader being sold to, to perform buy category check against</param>
     /// <returns>Rouble price</returns>
     protected int GetPriceOfItemAndChildren(
-        string parentItemId,
-        List<Item> items,
-        Dictionary<string, int?> handbookPrices,
+        MongoId parentItemId,
+        IEnumerable<Item> items,
+        Dictionary<MongoId, int?> handbookPrices,
         TraderBase traderDetails
     )
     {
-        var itemWithChildren = items.FindAndReturnChildrenAsItems(parentItemId);
+        var itemWithChildren = items.GetItemWithChildren(parentItemId);
 
         var totalPrice = 0;
         foreach (var itemToSell in itemWithChildren)
         {
-            var itemDetails = _itemHelper.GetItem(itemToSell.Template);
-            if (
-                !(
-                    itemDetails.Key
-                    && _itemHelper.IsOfBaseclasses(
-                        itemDetails.Value.Id,
-                        traderDetails.ItemsBuy.Category
-                    )
-                )
-            )
+            var itemDetails = itemHelper.GetItem(itemToSell.Template);
+            if (!(itemDetails.Key && itemHelper.IsOfBaseclasses(itemDetails.Value.Id, traderDetails.ItemsBuy.Category)))
             // Skip if tpl isn't item OR item doesn't fulfil match traders buy categories
             {
                 continue;
             }
 
             // Get price of item multiplied by how many are in stack
-            totalPrice += (int)(
-                (handbookPrices[itemToSell.Template] ?? 0)
-                * (itemToSell.Upd?.StackObjectsCount ?? 1)
-            );
+            totalPrice += (int)((handbookPrices[itemToSell.Template] ?? 0) * (itemToSell.Upd?.StackObjectsCount ?? 1));
         }
 
         return totalPrice;

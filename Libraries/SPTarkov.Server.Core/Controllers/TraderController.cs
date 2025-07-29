@@ -2,6 +2,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Game;
 using SPTarkov.Server.Core.Models.Enums;
@@ -57,7 +58,7 @@ public class TraderController(
             }
 
             // Adjust price by traderPriceMultiplier config property
-            if (!TraderConfig.TraderPriceMultiplier.Approx(1, 0.001))
+            if (!TraderConfig.TraderPriceMultiplier.Approx(1))
             {
                 AdjustTraderItemPrices(trader, TraderConfig.TraderPriceMultiplier);
             }
@@ -81,11 +82,8 @@ public class TraderController(
     {
         foreach (var kvp in trader.Assort?.BarterScheme)
         {
-            var barterSchemeItem = kvp.Value?.FirstOrDefault()?.FirstOrDefault();
-            if (
-                barterSchemeItem?.Template != null
-                && paymentHelper.IsMoneyTpl(barterSchemeItem.Template)
-            )
+            var barterSchemeItem = kvp.Value.FirstOrDefault()?.FirstOrDefault();
+            if (barterSchemeItem?.Template != null && paymentHelper.IsMoneyTpl(barterSchemeItem.Template))
             {
                 barterSchemeItem.Count += Math.Round(barterSchemeItem?.Count * multiplier ?? 0D, 2);
             }
@@ -138,7 +136,7 @@ public class TraderController(
     /// </summary>
     /// <param name="sessionId">session id</param>
     /// <returns>Return a list of all traders</returns>
-    public List<TraderBase> GetAllTraders(string sessionId)
+    public List<TraderBase> GetAllTraders(MongoId sessionId)
     {
         var traders = new List<TraderBase>();
         var pmcData = profileHelper.GetPmcProfile(sessionId);
@@ -179,7 +177,7 @@ public class TraderController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="traderId"></param>
     /// <returns></returns>
-    public TraderBase? GetTrader(string sessionId, string traderId)
+    public TraderBase? GetTrader(MongoId sessionId, MongoId traderId)
     {
         return traderHelper.GetTrader(sessionId, traderId);
     }
@@ -190,7 +188,7 @@ public class TraderController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="traderId"></param>
     /// <returns></returns>
-    public TraderAssort GetAssort(string sessionId, string traderId)
+    public TraderAssort GetAssort(MongoId sessionId, MongoId traderId)
     {
         return traderAssortHelper.GetAssort(sessionId, traderId);
     }
@@ -199,7 +197,7 @@ public class TraderController(
     ///     Handle client/items/prices/TRADERID
     /// </summary>
     /// <returns></returns>
-    public GetItemPricesResponse GetItemPrices(string sessionId, string traderId)
+    public GetItemPricesResponse GetItemPrices(MongoId sessionId, MongoId traderId)
     {
         var handbookPrices = ragfairPriceService.GetAllStaticPrices();
 

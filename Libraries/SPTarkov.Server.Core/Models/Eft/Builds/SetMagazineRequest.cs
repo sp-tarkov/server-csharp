@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Utils;
 
@@ -10,7 +11,7 @@ public record SetMagazineRequest : IRequestData
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("Id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("Name")]
     public string? Name { get; set; }

@@ -4,23 +4,24 @@ using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Utils.Json.Converters;
 
+public class EftEnumConverterFactory : JsonConverterFactory
+{
+    public override bool CanConvert(Type typeToConvert)
+    {
+        return typeToConvert.IsEnum;
+    }
+
+    public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
+    {
+        return Activator.CreateInstance(typeof(EftEnumConverter<>).MakeGenericType(typeToConvert)) as JsonConverter;
+    }
+}
+
 public class EftEnumConverter<T> : JsonConverter<T>
 {
-    private static readonly JsonSerializerOptions _options = new()
+    public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        Converters = { new JsonStringEnumConverter() },
-    };
-
-    public override T? Read(
-        ref Utf8JsonReader reader,
-        Type typeToConvert,
-        JsonSerializerOptions options
-    )
-    {
-        if (
-            reader.TokenType == JsonTokenType.String
-            || reader.TokenType == JsonTokenType.PropertyName
-        )
+        if (reader.TokenType == JsonTokenType.String || reader.TokenType == JsonTokenType.PropertyName)
         {
             var str = reader.GetString();
             return (T)Enum.Parse(typeof(T), str, true);
@@ -39,17 +40,17 @@ public class EftEnumConverter<T> : JsonConverter<T>
     {
         if (typeof(T).GetFields().Any(f => f.FieldType == typeof(string)))
         {
-            JsonSerializer.Serialize(writer, value as string, _options);
+            JsonSerializer.Serialize(writer, value as string, options);
         }
         else
         {
             if (typeof(T).GetFields().Any(f => f.FieldType == typeof(int)))
             {
-                JsonSerializer.Serialize(writer, Convert.ToInt32(value), _options);
+                JsonSerializer.Serialize(writer, Convert.ToInt32(value), options);
             }
             else if (typeof(T).GetFields().Any(f => f.FieldType == typeof(byte)))
             {
-                JsonSerializer.Serialize(writer, Convert.ToByte(value), _options);
+                JsonSerializer.Serialize(writer, Convert.ToByte(value), options);
             }
             else
             {
@@ -58,20 +59,12 @@ public class EftEnumConverter<T> : JsonConverter<T>
         }
     }
 
-    public override T ReadAsPropertyName(
-        ref Utf8JsonReader reader,
-        Type typeToConvert,
-        JsonSerializerOptions options
-    )
+    public override T ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         return Read(ref reader, typeToConvert, options);
     }
 
-    public override void WriteAsPropertyName(
-        Utf8JsonWriter writer,
-        [DisallowNull] T value,
-        JsonSerializerOptions options
-    )
+    public override void WriteAsPropertyName(Utf8JsonWriter writer, [DisallowNull] T value, JsonSerializerOptions options)
     {
         object propertyValue = null;
         if (typeof(T).GetFields().Any(f => f.FieldType == typeof(string)))
@@ -97,9 +90,3 @@ public class EftEnumConverter<T> : JsonConverter<T>
         writer.WritePropertyName(propertyValue.ToString());
     }
 }
-
-/// <summary>
-/// This attribute should be applied to enums which should be added as a converter to the json converter
-/// </summary>
-[AttributeUsage(AttributeTargets.Enum)]
-public class EftEnumConverterAttribute : Attribute { }

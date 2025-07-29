@@ -15,7 +15,7 @@ public record SendMessageDetails
     ///     Player id
     /// </summary>
     [JsonPropertyName("recipientId")]
-    public string? RecipientId { get; set; }
+    public MongoId RecipientId { get; set; }
 
     /// <summary>
     ///     Who is sending this message

@@ -32,7 +32,7 @@ public record Difference
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("BodyParts")]
-    public BodyParts? BodyParts { get; set; }
+    public Dictionary<string, BodyPartValues>? BodyParts { get; set; }
 
     [JsonPropertyName("Energy")]
     public double? Energy { get; set; }
@@ -41,34 +41,7 @@ public record Difference
     public double? Hydration { get; set; }
 }
 
-public record BodyParts
-{
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
-    [JsonPropertyName("Head")]
-    public BodyPartEffects? Head { get; set; }
-
-    [JsonPropertyName("Chest")]
-    public BodyPartEffects? Chest { get; set; }
-
-    [JsonPropertyName("Stomach")]
-    public BodyPartEffects? Stomach { get; set; }
-
-    [JsonPropertyName("LeftArm")]
-    public BodyPartEffects? LeftArm { get; set; }
-
-    [JsonPropertyName("RightArm")]
-    public BodyPartEffects? RightArm { get; set; }
-
-    [JsonPropertyName("LeftLeg")]
-    public BodyPartEffects? LeftLeg { get; set; }
-
-    [JsonPropertyName("RightLeg")]
-    public BodyPartEffects? RightLeg { get; set; }
-}
-
-public record BodyPartEffects
+public record BodyPartValues
 {
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
@@ -78,5 +51,5 @@ public record BodyPartEffects
     /// <summary>
     ///     Effects in array to be removed
     /// </summary>
-    public List<string> Effects { get; set; }
+    public List<string>? Effects { get; set; }
 }

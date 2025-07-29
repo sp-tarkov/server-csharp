@@ -8,9 +8,11 @@ public record LocaleBase
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    [JsonPropertyName("global")]
+    /// <summary>
     /// DO NOT USE THIS PROPERTY DIRECTLY, USE LOCALESERVICE INSTEAD
     /// THIS IS LAZY LOADED AND YOUR CHANGES WILL NOT BE SAVED
+    /// </summary>
+    [JsonPropertyName("global")]
     public required Dictionary<string, LazyLoad<Dictionary<string, string>>> Global { get; set; }
 
     [JsonPropertyName("menu")]

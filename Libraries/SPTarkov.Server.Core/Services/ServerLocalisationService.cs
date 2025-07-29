@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Utils;
@@ -20,8 +21,7 @@ public class ServerLocalisationService(
 {
     private readonly Dictionary<string, LazyLoad<Dictionary<string, string>>> _loadedLocales = [];
     private string _serverLocale = localeService.GetDesiredServerLocale();
-    private readonly Dictionary<string, string> _localeFallbacks =
-        localeService.GetLocaleFallbacks();
+    private readonly FrozenDictionary<string, string> _localeFallbacks = localeService.GetLocaleFallbacks().ToFrozenDictionary();
 
     private const string DefaultLocale = "en";
     private const string LocaleDirectory = "./SPT_Data/database/locales/server";
@@ -34,12 +34,9 @@ public class ServerLocalisationService(
             return;
         }
 
-        var files = fileUtil
-            .GetFiles(LocaleDirectory, true)
-            .Where(f => fileUtil.GetFileExtension(f) == "json")
-            .ToList();
+        var files = fileUtil.GetFiles(LocaleDirectory, true).Where(f => fileUtil.GetFileExtension(f) == "json");
 
-        if (files.Count == 0)
+        if (!files.Any())
         {
             throw new Exception($"Localisation files in directory {LocaleDirectory} not found.");
         }
@@ -48,17 +45,13 @@ public class ServerLocalisationService(
         {
             _loadedLocales.Add(
                 fileUtil.StripExtension(file),
-                new LazyLoad<Dictionary<string, string>>(() =>
-                    jsonUtil.DeserializeFromFile<Dictionary<string, string>>(file) ?? []
-                )
+                new LazyLoad<Dictionary<string, string>>(() => jsonUtil.DeserializeFromFile<Dictionary<string, string>>(file) ?? [])
             );
         }
 
         if (!_loadedLocales.ContainsKey(DefaultLocale))
         {
-            throw new Exception(
-                $"The default locale '{DefaultLocale}' does not exist on the loaded locales."
-            );
+            throw new Exception($"The default locale '{DefaultLocale}' does not exist on the loaded locales.");
         }
 
         _serverLocalesHydrated = true;
@@ -129,9 +122,9 @@ public class ServerLocalisationService(
     /// <returns> Locale text </returns>
     public string GetRandomTextThatMatchesPartialKey(string partialKey)
     {
-        var matchingKeys = GetLocaleKeys().Where(x => x.Contains(partialKey)).ToList();
+        var matchingKeys = GetLocaleKeys().Where(x => x.Contains(partialKey));
 
-        if (matchingKeys.Count == 0)
+        if (!matchingKeys.Any())
         {
             logger.Warning($"No locale keys found for: {partialKey}");
 
@@ -164,10 +157,7 @@ public class ServerLocalisationService(
             _loadedLocales.TryGetValue(DefaultLocale, out var defaults);
             if (!defaults.Value.TryGetValue(key, out value))
             {
-                value = localeService
-                    .GetLocaleDb(DefaultLocale)
-                    .FirstOrDefault(x => x.Key == key)
-                    .Value;
+                value = localeService.GetLocaleDb(DefaultLocale).FirstOrDefault(x => x.Key == key).Value;
             }
 
             return value ?? key;
@@ -192,10 +182,7 @@ public class ServerLocalisationService(
             var localizedName = $"{{{{{propertyInfo.GetJsonName()}}}}}";
             if (rawLocalizedString.Contains(localizedName))
             {
-                rawLocalizedString = rawLocalizedString.Replace(
-                    localizedName,
-                    propertyInfo.GetValue(args)?.ToString() ?? string.Empty
-                );
+                rawLocalizedString = rawLocalizedString.Replace(localizedName, propertyInfo.GetValue(args)?.ToString() ?? string.Empty);
             }
         }
 

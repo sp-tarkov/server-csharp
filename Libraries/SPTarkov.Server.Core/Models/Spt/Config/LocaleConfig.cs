@@ -23,7 +23,7 @@ public record LocaleConfig : BaseConfig
     ///     Languages server can be translated into
     /// </summary>
     [JsonPropertyName("serverSupportedLocales")]
-    public required List<string> ServerSupportedLocales { get; set; }
+    public required HashSet<string> ServerSupportedLocales { get; set; }
 
     [JsonPropertyName("fallbacks")]
     public required Dictionary<string, string> Fallbacks { get; set; }

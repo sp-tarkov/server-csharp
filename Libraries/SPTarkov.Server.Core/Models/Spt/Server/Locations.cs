@@ -11,10 +11,7 @@ public record Locations
 
     // sometimes we get the key or value given so save changing logic in each place
     // have it key both
-    private readonly FrozenDictionary<string, string> _locationMappings = new Dictionary<
-        string,
-        string
-    >
+    private readonly FrozenDictionary<string, string> _locationMappings = new Dictionary<string, string>
     {
         // EFT
         { "factory4_day", "Factory4Day" },
@@ -61,46 +58,46 @@ public record Locations
     private Dictionary<string, Eft.Common.Location>? _locationDictionaryCache;
 
     [JsonPropertyName("bigmap")]
-    public Eft.Common.Location? Bigmap { get; set; }
+    public Eft.Common.Location Bigmap { get; set; }
 
     [JsonPropertyName("develop")]
     public Eft.Common.Location? Develop { get; set; }
 
     [JsonPropertyName("factory4_day")]
-    public Eft.Common.Location? Factory4Day { get; set; }
+    public Eft.Common.Location Factory4Day { get; set; }
 
     [JsonPropertyName("factory4_night")]
-    public Eft.Common.Location? Factory4Night { get; set; }
+    public Eft.Common.Location Factory4Night { get; set; }
 
     [JsonPropertyName("hideout")]
     public Eft.Common.Location? Hideout { get; set; }
 
     [JsonPropertyName("interchange")]
-    public Eft.Common.Location? Interchange { get; set; }
+    public Eft.Common.Location Interchange { get; set; }
 
     [JsonPropertyName("laboratory")]
-    public Eft.Common.Location? Laboratory { get; set; }
+    public Eft.Common.Location Laboratory { get; set; }
 
     [JsonPropertyName("lighthouse")]
-    public Eft.Common.Location? Lighthouse { get; set; }
+    public Eft.Common.Location Lighthouse { get; set; }
 
     [JsonPropertyName("privatearea")]
     public Eft.Common.Location? PrivateArea { get; set; }
 
     [JsonPropertyName("rezervbase")]
-    public Eft.Common.Location? RezervBase { get; set; }
+    public Eft.Common.Location RezervBase { get; set; }
 
     [JsonPropertyName("shoreline")]
-    public Eft.Common.Location? Shoreline { get; set; }
+    public Eft.Common.Location Shoreline { get; set; }
 
     [JsonPropertyName("suburbs")]
     public Eft.Common.Location? Suburbs { get; set; }
 
     [JsonPropertyName("tarkovstreets")]
-    public Eft.Common.Location? TarkovStreets { get; set; }
+    public Eft.Common.Location TarkovStreets { get; set; }
 
     [JsonPropertyName("labyrinth")]
-    public Eft.Common.Location? Labyrinth { get; set; }
+    public Eft.Common.Location Labyrinth { get; set; }
 
     [JsonPropertyName("terminal")]
     public Eft.Common.Location? Terminal { get; set; }
@@ -109,13 +106,13 @@ public record Locations
     public Eft.Common.Location? Town { get; set; }
 
     [JsonPropertyName("woods")]
-    public Eft.Common.Location? Woods { get; set; }
+    public Eft.Common.Location Woods { get; set; }
 
     [JsonPropertyName("sandbox")]
-    public Eft.Common.Location? Sandbox { get; set; }
+    public Eft.Common.Location Sandbox { get; set; }
 
     [JsonPropertyName("sandbox_high")]
-    public Eft.Common.Location? SandboxHigh { get; set; }
+    public Eft.Common.Location SandboxHigh { get; set; }
 
     /// <summary>
     ///     Holds a mapping of the linkages between locations on the UI
@@ -149,9 +146,7 @@ public record Locations
 
     private void HydrateDictionary()
     {
-        var classProps = typeof(Locations)
-            .GetProperties()
-            .Where(p => p.PropertyType == typeof(Eft.Common.Location) && p.Name != "Item");
+        var classProps = typeof(Locations).GetProperties().Where(p => p.PropertyType == typeof(Eft.Common.Location) && p.Name != "Item");
         _locationDictionaryCache = classProps.ToDictionary(
             propertyInfo => propertyInfo.Name,
             propertyInfo => propertyInfo.GetValue(this, null) as Eft.Common.Location,

@@ -12,13 +12,13 @@ public record Trader
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("assort")]
-    public TraderAssort? Assort { get; set; }
+    public TraderAssort Assort { get; set; }
 
     [JsonPropertyName("base")]
-    public TraderBase? Base { get; set; }
+    public TraderBase Base { get; set; }
 
     [JsonPropertyName("dialogue")]
-    public Dictionary<string, List<string>?>? Dialogue { get; set; }
+    public Dictionary<string, List<string>?> Dialogue { get; set; }
 
     [JsonPropertyName("questassort")]
     public Dictionary<string, Dictionary<string, string>>? QuestAssort { get; set; }
@@ -138,11 +138,11 @@ public record ItemBuyData
 
     // MongoId
     [JsonPropertyName("category")]
-    public required List<MongoId> Category { get; set; }
+    public required HashSet<MongoId> Category { get; set; }
 
     // MongoId
     [JsonPropertyName("id_list")]
-    public required List<MongoId> IdList { get; set; }
+    public required HashSet<MongoId> IdList { get; set; }
 }
 
 public record ItemSellData
@@ -151,10 +151,10 @@ public record ItemSellData
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("category")]
-    public required List<MongoId> Category { get; set; }
+    public required HashSet<MongoId> Category { get; set; }
 
     [JsonPropertyName("id_list")]
-    public required List<MongoId> IdList { get; set; }
+    public required HashSet<MongoId> IdList { get; set; }
 }
 
 public record TraderInsurance
@@ -257,13 +257,13 @@ public record TraderAssort
     public double? NextResupply { get; set; }
 
     [JsonPropertyName("items")]
-    public List<Item>? Items { get; set; }
+    public List<Item> Items { get; set; }
 
     [JsonPropertyName("barter_scheme")]
-    public Dictionary<MongoId, List<List<BarterScheme>>>? BarterScheme { get; set; }
+    public Dictionary<MongoId, List<List<BarterScheme>>> BarterScheme { get; set; }
 
     [JsonPropertyName("loyal_level_items")]
-    public Dictionary<MongoId, int>? LoyalLevelItems { get; set; }
+    public Dictionary<MongoId, int> LoyalLevelItems { get; set; }
 }
 
 public record BarterScheme
@@ -298,7 +298,7 @@ public record Suit
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("externalObtain")]
     public bool? ExternalObtain { get; set; }
@@ -310,10 +310,10 @@ public record Suit
     public bool? IsHiddenInPVE { get; set; }
 
     [JsonPropertyName("tid")]
-    public string? Tid { get; set; }
+    public MongoId Tid { get; set; }
 
     [JsonPropertyName("suiteId")]
-    public string? SuiteId { get; set; }
+    public MongoId SuiteId { get; set; }
 
     [JsonPropertyName("isActive")]
     public bool? IsActive { get; set; }
@@ -336,6 +336,9 @@ public record SuitRequirements
     [JsonPropertyName("loyaltyLevel")]
     public double? LoyaltyLevel { get; set; }
 
+    [JsonPropertyName("prestigeLevel")]
+    public double? PrestigeLevel { get; set; }
+
     [JsonPropertyName("profileLevel")]
     public double? ProfileLevel { get; set; }
 
@@ -353,7 +356,7 @@ public record SuitRequirements
     public List<ItemRequirement>? ItemRequirements { get; set; }
 
     [JsonPropertyName("requiredTid")]
-    public string? RequiredTid { get; set; }
+    public MongoId? RequiredTid { get; set; }
 }
 
 public record ItemRequirement
@@ -365,7 +368,7 @@ public record ItemRequirement
     public double? Count { get; set; }
 
     [JsonPropertyName("_tpl")]
-    public string? Tpl { get; set; }
+    public MongoId Tpl { get; set; }
 
     [JsonPropertyName("id")]
     public string? Id { get; set; }

@@ -1,6 +1,5 @@
 {
   "dynamic": {
-    "_currencies": "what percentage of the offers are in each currency",
     "armor": {
       "plateSlotIdToRemovePool": [
         "front_plate",
@@ -39,7 +38,7 @@
         "5737250c2459776125652acc",
         "657023a9126cc4a57d0e17a6",
         "5c1127d0d174af29be75cf68"
-	  ],
+      ],
       "customItemCategoryList": [],
       "damagedAmmoPacks": true,
       "enableBsgList": true,
@@ -229,7 +228,7 @@
         }
       }
     },
-    "currencies": {
+    "offerCurrencyChancePercent": {
       "5449016a4bdc2d6f028b456f": 78,
       "5696686a4bdc2da3298b456a": 14,
       "569668774bdc2da2298b4568": 8
@@ -261,20 +260,20 @@
     },
     "offerAdjustment": {
       "adjustPriceWhenBelowHandbookPrice": false,
-      "handbookPriceMultipier": 1.1,
+      "handbookPriceMultiplier": 1.1,
       "maxPriceDifferenceBelowHandbookPercent": 64,
-      "priceThreshholdRub": 20000
+      "priceThresholdRub": 20000
     },
     "offerItemCount": {
-		"default": {
-		  "max": 30,
-		  "min": 7
-		},
-		"543be5cb4bdc2deb348b4568": {
-		  "max": 3,
-		  "min": 0
-		}
-	},
+      "default": {
+        "max": 30,
+        "min": 7
+      },
+      "543be5cb4bdc2deb348b4568": {
+        "max": 3,
+        "min": 0
+      }
+    },
     "pack": {
       "chancePercent": 0.5,
       "itemCountMax": 17,
@@ -323,7 +322,7 @@
       "57bef4c42459772e8d35a53b",
       "55802f4a4bdc2ddb688b4569",
       "616eb7aea207f41933308f46",
-	  "543be5cb4bdc2deb348b4568"
+      "543be5cb4bdc2deb348b4568"
     ],
     "showDefaultPresetsOnly": true,
     "stackablePercent": {

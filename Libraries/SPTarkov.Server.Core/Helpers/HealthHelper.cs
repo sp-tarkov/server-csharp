@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -9,14 +10,9 @@ using BodyPartHealth = SPTarkov.Server.Core.Models.Eft.Common.Tables.BodyPartHea
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class HealthHelper(
-    TimeUtil _timeUtil,
-    SaveServer _saveServer,
-    ProfileHelper _profileHelper,
-    ConfigServer _configServer
-)
+public class HealthHelper(TimeUtil timeUtil, SaveServer saveServer, ProfileHelper profileHelper, ConfigServer configServer)
 {
-    protected readonly HealthConfig _healthConfig = _configServer.GetConfig<HealthConfig>();
+    protected readonly HealthConfig _healthConfig = configServer.GetConfig<HealthConfig>();
 
     /// <summary>
     ///     Update player profile vitality values with changes from client request object
@@ -25,35 +21,25 @@ public class HealthHelper(
     /// <param name="pmcProfileToUpdate">Player profile to apply changes to</param>
     /// <param name="healthChanges">Changes to apply </param>
     /// <param name="isDead">OPTIONAL - Is player dead</param>
-    public void ApplyHealthChangesToProfile(
-        string sessionID,
-        PmcData pmcProfileToUpdate,
-        BotBaseHealth healthChanges,
-        bool isDead = false
-    )
+    public void ApplyHealthChangesToProfile(MongoId sessionID, PmcData pmcProfileToUpdate, BotBaseHealth healthChanges, bool isDead = false)
     {
-        var fullProfile = _saveServer.GetProfile(sessionID);
+        var fullProfile = saveServer.GetProfile(sessionID);
         var profileEdition = fullProfile.ProfileInfo.Edition;
         var profileSide = fullProfile.CharacterData.PmcData.Info.Side;
 
         // Get matching 'side' e.g. USEC
-        var matchingSide = _profileHelper.GetProfileTemplateForSide(profileEdition, profileSide);
+        var matchingSide = profileHelper.GetProfileTemplateForSide(profileEdition, profileSide);
 
-        var defaultTemperature =
-            matchingSide?.Character?.Health?.Temperature ?? new CurrentMinMax { Current = 36.6 };
+        var defaultTemperature = matchingSide?.Character?.Health?.Temperature ?? new CurrentMinMax { Current = 36.6 };
 
         // Alter saved profiles Health with values from post-raid client data
-        ModifyProfileHealthProperties(
-            pmcProfileToUpdate,
-            healthChanges.BodyParts,
-            ["Dehydration", "Exhaustion"]
-        );
+        ModifyProfileHealthProperties(pmcProfileToUpdate, healthChanges.BodyParts, ["Dehydration", "Exhaustion"]);
 
         // Adjust hydration/energy/temperature
         AdjustProfileHydrationEnergyTemperature(pmcProfileToUpdate, healthChanges);
 
         // Update last edited timestamp
-        pmcProfileToUpdate.Health.UpdateTime = _timeUtil.GetTimeStamp();
+        pmcProfileToUpdate.Health.UpdateTime = timeUtil.GetTimeStamp();
     }
 
     /// <summary>
@@ -70,9 +56,7 @@ public class HealthHelper(
     {
         foreach (var (partName, partProperties) in bodyPartChanges)
         {
-            if (
-                !profileToAdjust.Health.BodyParts.TryGetValue(partName, out var matchingProfilePart)
-            )
+            if (!profileToAdjust.Health.BodyParts.TryGetValue(partName, out var matchingProfilePart))
             {
                 continue;
             }
@@ -127,10 +111,7 @@ public class HealthHelper(
     /// </summary>
     /// <param name="profileToUpdate">Profile to update</param>
     /// <param name="healthChanges"></param>
-    protected void AdjustProfileHydrationEnergyTemperature(
-        PmcData profileToUpdate,
-        BotBaseHealth healthChanges
-    )
+    protected void AdjustProfileHydrationEnergyTemperature(PmcData profileToUpdate, BotBaseHealth healthChanges)
     {
         // Ensure current hydration/energy/temp are copied over and don't exceed maximum
         var profileHealth = profileToUpdate.Health;

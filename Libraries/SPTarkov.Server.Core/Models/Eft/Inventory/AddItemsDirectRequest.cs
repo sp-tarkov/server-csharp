@@ -12,7 +12,7 @@ public record AddItemsDirectRequest
     ///     Item and child mods to add to player inventory
     /// </summary>
     [JsonPropertyName("itemsWithModsToAdd")]
-    public List<List<Item>>? ItemsWithModsToAdd { get; set; }
+    public IEnumerable<List<Item>>? ItemsWithModsToAdd { get; set; }
 
     [JsonPropertyName("foundInRaid")]
     public bool? FoundInRaid { get; set; }

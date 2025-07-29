@@ -11,13 +11,18 @@ namespace SPTarkov.Server.Core.Services;
 /// </summary>
 [Injectable(InjectionType.Singleton)]
 public class ItemBaseClassService(
-    ISptLogger<ItemBaseClassService> _logger,
-    DatabaseService _databaseService,
-    ServerLocalisationService _serverLocalisationService
+    ISptLogger<ItemBaseClassService> logger,
+    DatabaseService databaseService,
+    ServerLocalisationService serverLocalisationService
 )
 {
     private bool _cacheGenerated;
+
+    /// <summary>
+    /// Key = Item tpl, values = Ids of its parents
+    /// </summary>
     private Dictionary<MongoId, HashSet<MongoId>> _itemBaseClassesCache = [];
+    private readonly HashSet<MongoId> _rootNodeIds = [];
 
     /// <summary>
     ///     Create cache and store inside ItemBaseClassService <br />
@@ -28,19 +33,23 @@ public class ItemBaseClassService(
         // Clear existing cache
         _itemBaseClassesCache = new Dictionary<MongoId, HashSet<MongoId>>();
 
-        var items = _databaseService.GetItems();
-        var filteredDbItems = items.Where(x =>
-            string.Equals(x.Value.Type, "Item", StringComparison.OrdinalIgnoreCase)
-        );
-        foreach (var item in filteredDbItems)
+        var items = databaseService.GetItems();
+        foreach (var item in items)
         {
-            var itemIdToUpdate = item.Value.Id;
-            if (!_itemBaseClassesCache.ContainsKey(item.Value.Id))
+            if (string.Equals(item.Value.Type, "Item", StringComparison.OrdinalIgnoreCase))
             {
-                _itemBaseClassesCache[item.Value.Id] = [];
-            }
+                var itemIdToUpdate = item.Value.Id;
+                if (!_itemBaseClassesCache.ContainsKey(item.Value.Id))
+                {
+                    _itemBaseClassesCache[item.Value.Id] = [];
+                }
 
-            AddBaseItems(itemIdToUpdate, item.Value);
+                AddBaseItems(itemIdToUpdate, item.Value);
+            }
+            else
+            {
+                _rootNodeIds.Add(item.Key);
+            }
         }
 
         _cacheGenerated = true;
@@ -54,7 +63,7 @@ public class ItemBaseClassService(
     protected void AddBaseItems(MongoId itemIdToUpdate, TemplateItem item)
     {
         _itemBaseClassesCache[itemIdToUpdate].Add(item.Parent);
-        _databaseService.GetItems().TryGetValue(item.Parent, out var parent);
+        databaseService.GetItems().TryGetValue(item.Parent, out var parent);
 
         if (parent is not null && !parent.Parent.IsEmpty())
         {
@@ -68,7 +77,7 @@ public class ItemBaseClassService(
     /// <param name="itemTpl"> ItemTpl item to check base classes of </param>
     /// <param name="baseClasses"> BaseClass base class to check for </param>
     /// <returns> true if item inherits from base class passed in </returns>
-    public bool ItemHasBaseClass(MongoId itemTpl, ICollection<MongoId> baseClasses)
+    public bool ItemHasBaseClass(MongoId itemTpl, IEnumerable<MongoId> baseClasses)
     {
         if (!_cacheGenerated)
         {
@@ -77,56 +86,93 @@ public class ItemBaseClassService(
 
         if (itemTpl.IsEmpty())
         {
-            _logger.Warning("Unable to check itemTpl base class as value passed is null");
+            logger.Warning("Unable to check itemTpl base class as value passed is null");
 
             return false;
         }
 
         // The cache is only generated for item templates with `_type == "Item"`, so return false for any other type,
         // including item templates that simply don't exist.
-        if (!CachedItemIsOfItemType(itemTpl))
+        if (_rootNodeIds.Contains(itemTpl))
         {
             return false;
         }
 
-        if (_itemBaseClassesCache.TryGetValue(itemTpl, out var baseClassList))
+        var existsInCache = _itemBaseClassesCache.TryGetValue(itemTpl, out var baseClassList);
+        if (!existsInCache)
+        {
+            // Not found
+            if (logger.IsLogEnabled(LogLevel.Debug))
+            {
+                logger.Debug(serverLocalisationService.GetText("baseclass-item_not_found", itemTpl));
+            }
+
+            // Not found in cache, Hydrate again - some mods add items late in server startup lifecycle
+            HydrateItemBaseClassCache();
+
+            existsInCache = _itemBaseClassesCache.TryGetValue(itemTpl, out baseClassList);
+        }
+
+        if (existsInCache)
         {
             return baseClassList.Overlaps(baseClasses);
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug(_serverLocalisationService.GetText("baseclass-item_not_found", itemTpl));
-        }
-
-        // Not found in cache, Hydrate again - some mods add items late
-        HydrateItemBaseClassCache();
-
-        // Check for item again, return false if item not found a second time
-        if (_itemBaseClassesCache.TryGetValue(itemTpl, out var value))
-        {
-            return value.Any(baseClasses.Contains);
-        }
-
-        _logger.Warning(
-            _serverLocalisationService.GetText("baseclass-item_not_found_failed", itemTpl)
-        );
+        logger.Warning(serverLocalisationService.GetText("baseclass-item_not_found_failed", itemTpl));
 
         return false;
     }
 
     /// <summary>
-    ///     Check if cached item template is of type Item
+    ///     Does item tpl inherit from the requested base class
     /// </summary>
-    /// <param name="itemTemplateId"> ItemTemplateId item to check </param>
-    /// <returns> True if item is of type Item </returns>
-    private bool CachedItemIsOfItemType(MongoId itemTemplateId)
+    /// <param name="itemTpl"> ItemTpl item to check base classes of </param>
+    /// <param name="baseClasses"> BaseClass base class to check for </param>
+    /// <returns> true if item inherits from base class passed in </returns>
+    public bool ItemHasBaseClass(MongoId itemTpl, MongoId baseClasses)
     {
-        return string.Equals(
-            _databaseService.GetItems()[itemTemplateId]?.Type,
-            "Item",
-            StringComparison.OrdinalIgnoreCase
-        );
+        if (!_cacheGenerated)
+        {
+            HydrateItemBaseClassCache();
+        }
+
+        if (itemTpl.IsEmpty())
+        {
+            logger.Warning("Unable to check itemTpl base class as value passed is null");
+
+            return false;
+        }
+
+        // The cache is only generated for item templates with `_type == "Item"`, so return false for any other type,
+        // including item templates that simply don't exist.
+        if (_rootNodeIds.Contains(itemTpl))
+        {
+            return false;
+        }
+
+        var existsInCache = _itemBaseClassesCache.TryGetValue(itemTpl, out var baseClassList);
+        if (!existsInCache)
+        {
+            // Not found
+            if (logger.IsLogEnabled(LogLevel.Debug))
+            {
+                logger.Debug(serverLocalisationService.GetText("baseclass-item_not_found", itemTpl));
+            }
+
+            // Not found in cache, Hydrate again - some mods add items late in server startup lifecycle
+            HydrateItemBaseClassCache();
+
+            existsInCache = _itemBaseClassesCache.TryGetValue(itemTpl, out baseClassList);
+        }
+
+        if (existsInCache)
+        {
+            return baseClassList.Contains(baseClasses);
+        }
+
+        logger.Warning(serverLocalisationService.GetText("baseclass-item_not_found_failed", itemTpl));
+
+        return false;
     }
 
     /// <summary>
@@ -134,18 +180,18 @@ public class ItemBaseClassService(
     /// </summary>
     /// <param name="itemTpl"> ItemTpl item to get base classes for </param>
     /// <returns> array of base classes </returns>
-    public List<MongoId> GetItemBaseClasses(MongoId itemTpl)
+    public HashSet<MongoId> GetItemBaseClasses(MongoId itemTpl)
     {
         if (!_cacheGenerated)
         {
             HydrateItemBaseClassCache();
         }
 
-        if (!_itemBaseClassesCache.ContainsKey(itemTpl))
+        if (!_itemBaseClassesCache.TryGetValue(itemTpl, out var value))
         {
             return [];
         }
 
-        return _itemBaseClassesCache[itemTpl].ToList();
+        return value;
     }
 }

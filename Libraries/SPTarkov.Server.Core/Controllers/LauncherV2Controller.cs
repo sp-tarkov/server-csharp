@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -13,19 +14,17 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class LauncherV2Controller(
-    ISptLogger<LauncherV2Controller> _logger,
-    IReadOnlyList<SptMod> _loadedMods,
-    HashUtil _hashUtil,
-    TimeUtil _timeUtil,
-    RandomUtil _randomUtil,
-    SaveServer _saveServer,
-    DatabaseService _databaseService,
-    ServerLocalisationService _serverLocalisationService,
-    ConfigServer _configServer,
-    Watermark _watermark
+    ISptLogger<LauncherV2Controller> logger,
+    IReadOnlyList<SptMod> loadedMods,
+    HashUtil hashUtil,
+    SaveServer saveServer,
+    DatabaseService databaseService,
+    ServerLocalisationService serverLocalisationService,
+    ConfigServer configServer,
+    Watermark watermark
 )
 {
-    protected readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
 
     /// <summary>
     ///     Returns a simple string of Pong!
@@ -40,18 +39,15 @@ public class LauncherV2Controller(
     ///     Returns all available profile types and descriptions for creation.
     ///     - This is also localised.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>dict of profile names + description</returns>
     public Dictionary<string, string> Types()
     {
         var result = new Dictionary<string, string>();
-        var dbProfiles = _databaseService.GetProfileTemplates();
+        var dbProfiles = databaseService.GetProfileTemplates();
 
-        foreach (var profileKvP in dbProfiles)
+        foreach (var (templateName, template) in dbProfiles)
         {
-            result.TryAdd(
-                profileKvP.Key,
-                _serverLocalisationService.GetText(profileKvP.Value.DescriptionLocaleKey)
-            );
+            result.TryAdd(templateName, serverLocalisationService.GetText(template.DescriptionLocaleKey));
         }
 
         return result;
@@ -66,7 +62,7 @@ public class LauncherV2Controller(
     {
         var sessionId = GetSessionId(info);
 
-        return sessionId is not null;
+        return !sessionId.IsEmpty();
     }
 
     /// <summary>
@@ -76,7 +72,7 @@ public class LauncherV2Controller(
     /// <returns></returns>
     public async Task<bool> Register(RegisterData info)
     {
-        foreach (var (_, profile) in _saveServer.GetProfiles())
+        foreach (var (_, profile) in saveServer.GetProfiles())
         {
             if (info.Username == profile.ProfileInfo!.Username)
             {
@@ -97,7 +93,7 @@ public class LauncherV2Controller(
     {
         var sessionId = GetSessionId(info);
 
-        if (sessionId is null)
+        if (sessionId.IsEmpty())
         {
             return false;
         }
@@ -107,8 +103,8 @@ public class LauncherV2Controller(
             return false;
         }
 
-        _saveServer.GetProfile(sessionId).ProfileInfo!.Password = info.Change;
-        await _saveServer.SaveProfileAsync(sessionId);
+        saveServer.GetProfile(sessionId).ProfileInfo!.Password = info.Change;
+        await saveServer.SaveProfileAsync(sessionId);
         return true;
     }
 
@@ -121,7 +117,7 @@ public class LauncherV2Controller(
     {
         var sessionId = GetSessionId(info);
 
-        return sessionId is not null && _saveServer.RemoveProfile(sessionId);
+        return !sessionId.IsEmpty() && saveServer.RemoveProfile(sessionId);
     }
 
     /// <summary>
@@ -131,7 +127,7 @@ public class LauncherV2Controller(
     /// <returns></returns>
     public string SptVersion()
     {
-        return _watermark.GetVersionTag();
+        return watermark.GetVersionTag();
     }
 
     /// <summary>
@@ -150,10 +146,7 @@ public class LauncherV2Controller(
     /// <returns></returns>
     public Dictionary<string, AbstractModMetadata> LoadedMods()
     {
-        return _loadedMods.ToDictionary(
-            sptMod => sptMod.ModMetadata.Name,
-            sptMod => sptMod.ModMetadata
-        );
+        return loadedMods.ToDictionary(sptMod => sptMod.ModMetadata.Name, sptMod => sptMod.ModMetadata);
     }
 
     /// <summary>
@@ -161,62 +154,44 @@ public class LauncherV2Controller(
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
-    protected async Task<string> CreateAccount(RegisterData info)
+    protected async Task<MongoId> CreateAccount(RegisterData info)
     {
-        var profileId = GenerateProfileId();
-        var scavId = GenerateProfileId();
+        var profileId = new MongoId();
+        var scavId = new MongoId();
         var newProfileDetails = new Info
         {
             ProfileId = profileId,
             ScavengerId = scavId,
-            Aid = _hashUtil.GenerateAccountId(),
+            Aid = hashUtil.GenerateAccountId(),
             Username = info.Username,
             Password = info.Password,
             IsWiped = true,
             Edition = info.Edition,
         };
 
-        _saveServer.CreateProfile(newProfileDetails);
+        saveServer.CreateProfile(newProfileDetails);
 
-        await _saveServer.LoadProfileAsync(profileId);
-        await _saveServer.SaveProfileAsync(profileId);
+        await saveServer.LoadProfileAsync(profileId);
+        await saveServer.SaveProfileAsync(profileId);
 
         return profileId;
     }
 
-    protected string GenerateProfileId()
+    protected MongoId GetSessionId(LoginRequestData info)
     {
-        var timestamp = _timeUtil.GetTimeStamp();
-
-        return FormatID(timestamp, timestamp * _randomUtil.GetInt(1, 1000000));
-    }
-
-    protected string FormatID(long timeStamp, long counter)
-    {
-        var timeStampStr = Convert.ToString(timeStamp, 16).PadLeft(8, '0');
-        var counterStr = Convert.ToString(counter, 16).PadLeft(16, '0');
-
-        return timeStampStr.ToLowerInvariant() + counterStr.ToLowerInvariant();
-    }
-
-    protected string? GetSessionId(LoginRequestData info)
-    {
-        foreach (var (sessionId, profile) in _saveServer.GetProfiles())
+        foreach (var (sessionId, profile) in saveServer.GetProfiles())
         {
-            if (
-                info.Username == profile.ProfileInfo!.Username
-                && info.Password == profile.ProfileInfo.Password
-            )
+            if (info.Username == profile.ProfileInfo!.Username && info.Password == profile.ProfileInfo.Password)
             {
                 return sessionId;
             }
         }
 
-        return null;
+        return MongoId.Empty();
     }
 
-    public SptProfile GetProfile(string? sessionId)
+    public SptProfile GetProfile(MongoId sessionId)
     {
-        return _saveServer.GetProfile(sessionId);
+        return saveServer.GetProfile(sessionId);
     }
 }

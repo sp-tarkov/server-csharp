@@ -38,9 +38,9 @@ public class CustomItemService(
         var newItemId = GetOrGenerateIdForItem(newItemDetails.NewId);
 
         // Fail if itemId already exists
-        if (tables.Templates.Items.ContainsKey(newItemId))
+        if (tables.Templates.Items.TryGetValue(newItemId, out var item))
         {
-            result.Errors.Add($"ItemId already exists. {tables.Templates.Items[newItemId].Name}");
+            result.Errors.Add($"ItemId already exists. {item.Name}");
             result.Success = false;
             result.ItemId = newItemId;
 
@@ -48,10 +48,7 @@ public class CustomItemService(
         }
 
         // Clone existing item
-        tables.Templates.Items.TryGetValue(
-            newItemDetails.ItemTplToClone.Value,
-            out var itemToClone
-        );
+        tables.Templates.Items.TryGetValue(newItemDetails.ItemTplToClone.Value, out var itemToClone);
         var itemClone = cloner.Clone(itemToClone);
 
         // Update id and parentId of item
@@ -62,11 +59,7 @@ public class CustomItemService(
 
         AddToItemsDb(newItemId, itemClone);
 
-        AddToHandbookDb(
-            newItemId,
-            newItemDetails.HandbookParentId,
-            newItemDetails.HandbookPriceRoubles
-        );
+        AddToHandbookDb(newItemId, newItemDetails.HandbookParentId, newItemDetails.HandbookPriceRoubles);
 
         AddToLocaleDbs(newItemDetails.Locales, newItemId);
 
@@ -102,19 +95,15 @@ public class CustomItemService(
         var newItem = newItemDetails.NewItem;
 
         // Fail if itemId already exists
-        if (tables.Templates.Items.ContainsKey(newItem.Id))
+        if (tables.Templates.Items.TryGetValue(newItem.Id, out var item))
         {
-            result.Errors.Add($"ItemId already exists. {tables.Templates.Items[newItem.Id].Name}");
+            result.Errors.Add($"ItemId already exists. {item.Name}");
             return result;
         }
 
         AddToItemsDb(newItem.Id, newItem);
 
-        AddToHandbookDb(
-            newItem.Id,
-            newItemDetails.HandbookParentId,
-            newItemDetails.HandbookPriceRoubles
-        );
+        AddToHandbookDb(newItem.Id, newItemDetails.HandbookParentId, newItemDetails.HandbookPriceRoubles);
 
         AddToLocaleDbs(newItemDetails.Locales, newItem.Id);
 
@@ -148,10 +137,7 @@ public class CustomItemService(
     /// </summary>
     /// <param name="overrideProperties"> New properties to apply </param>
     /// <param name="itemClone"> Item to update </param>
-    protected void UpdateBaseItemPropertiesWithOverrides(
-        Props? overrideProperties,
-        TemplateItem itemClone
-    )
+    protected void UpdateBaseItemPropertiesWithOverrides(Props? overrideProperties, TemplateItem itemClone)
     {
         if (overrideProperties is null || itemClone?.Properties is null)
             return;
@@ -221,7 +207,7 @@ public class CustomItemService(
     /// <param name="newItemId"> ID of the item being added </param>
     /// <param name="parentId"> Parent ID of the item being added </param>
     /// <param name="priceRoubles"> Price of the item being added </param>
-    protected void AddToHandbookDb(string newItemId, string parentId, double? priceRoubles)
+    protected void AddToHandbookDb(MongoId newItemId, string parentId, double? priceRoubles)
     {
         databaseService
             .GetTemplates()
@@ -288,7 +274,7 @@ public class CustomItemService(
     protected void AddToWeaponShelf(string newItemId)
     {
         // Ids for wall stashes in db
-        List<string> wallStashIds =
+        List<MongoId> wallStashIds =
         [
             ItemTpl.HIDEOUTAREACONTAINER_WEAPONSTAND_STASH_1,
             ItemTpl.HIDEOUTAREACONTAINER_WEAPONSTAND_STASH_2,
@@ -299,7 +285,7 @@ public class CustomItemService(
             var wall = itemHelper.GetItem(wallId);
             if (wall.Key)
             {
-                wall.Value.Properties.Grids[0].Props.Filters[0].Filter.Add(newItemId);
+                wall.Value.Properties.Grids.First().Props.Filters.First().Filter.Add(newItemId);
             }
         }
     }
@@ -315,9 +301,7 @@ public class CustomItemService(
         var weapon = itemHelper.GetItem(weaponTpl);
         if (!weapon.Key)
         {
-            logger.Warning(
-                $"Unable to add custom weapon {weaponTpl} to PMCs as it cannot be found in the Item db"
-            );
+            logger.Warning($"Unable to add custom weapon {weaponTpl} to PMCs as it cannot be found in the Item db");
 
             return;
         }
@@ -328,7 +312,7 @@ public class CustomItemService(
         var weaponSlots = weapon.Value.Properties.Slots;
         foreach (var slot in weaponSlots)
         {
-            baseWeaponModObject[slot.Name] = [.. slot.Props.Filters[0].Filter];
+            baseWeaponModObject[slot.Name] = [.. slot.Props.Filters.First().Filter];
         }
 
         // Get PMCs
@@ -339,9 +323,7 @@ public class CustomItemService(
         botTypes["bear"].BotInventory.Mods[weaponTpl] = baseWeaponModObject;
 
         // Add weapon to array of allowed weapons + weighting to be picked
-        botTypes["usec"].BotInventory.Equipment[Enum.Parse<EquipmentSlots>(weaponSlot)][weaponTpl] =
-            weaponWeight;
-        botTypes["bear"].BotInventory.Equipment[Enum.Parse<EquipmentSlots>(weaponSlot)][weaponTpl] =
-            weaponWeight;
+        botTypes["usec"].BotInventory.Equipment[Enum.Parse<EquipmentSlots>(weaponSlot)][weaponTpl] = weaponWeight;
+        botTypes["bear"].BotInventory.Equipment[Enum.Parse<EquipmentSlots>(weaponSlot)][weaponTpl] = weaponWeight;
     }
 }

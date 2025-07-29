@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Spt.Presets;
 
@@ -8,8 +9,8 @@ public record PresetCacheDetails
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     // Preset Ids related to the tpl
-    public HashSet<string> PresetIds { get; set; }
+    public HashSet<MongoId> PresetIds { get; set; }
 
     // Id of the default preset for this tpl
-    public string? DefaultId { get; set; }
+    public MongoId? DefaultId { get; set; }
 }

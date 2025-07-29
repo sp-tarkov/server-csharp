@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -13,15 +14,15 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class GiftService(
-    ISptLogger<GiftService> _logger,
-    MailSendService _mailSendService,
-    ServerLocalisationService _serverLocalisationService,
-    TimeUtil _timeUtil,
-    ProfileHelper _profileHelper,
-    ConfigServer _configServer
+    ISptLogger<GiftService> logger,
+    MailSendService mailSendService,
+    ServerLocalisationService serverLocalisationService,
+    TimeUtil timeUtil,
+    ProfileHelper profileHelper,
+    ConfigServer configServer
 )
 {
-    protected readonly GiftsConfig _giftConfig = _configServer.GetConfig<GiftsConfig>();
+    protected readonly GiftsConfig _giftConfig = configServer.GetConfig<GiftsConfig>();
 
     /// <summary>
     ///     Does a gift with a specific ID exist in db
@@ -53,9 +54,9 @@ public class GiftService(
     ///     Get an array of all gift ids
     /// </summary>
     /// <returns> String list of gift ids </returns>
-    public List<string> GetGiftIds()
+    public IEnumerable<string> GetGiftIds()
     {
-        return _giftConfig.Gifts.Keys.ToList();
+        return _giftConfig.Gifts.Keys;
     }
 
     /// <summary>
@@ -64,7 +65,7 @@ public class GiftService(
     /// <param name="playerId"> Player to send gift to / sessionID </param>
     /// <param name="giftId"> ID of gift in configs/gifts.json to send player </param>
     /// <returns> Outcome of sending gift to player </returns>
-    public GiftSentResult SendGiftToPlayer(string playerId, string giftId)
+    public GiftSentResult SendGiftToPlayer(MongoId playerId, string giftId)
     {
         var giftData = GetGiftById(giftId);
         if (giftData is null)
@@ -74,11 +75,11 @@ public class GiftService(
 
         var maxGiftsToSendCount = giftData.MaxToSendPlayer ?? 1;
 
-        if (_profileHelper.PlayerHasReceivedMaxNumberOfGift(playerId, giftId, maxGiftsToSendCount))
+        if (profileHelper.PlayerHasReceivedMaxNumberOfGift(playerId, giftId, maxGiftsToSendCount))
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Player already received gift: {giftId}");
+                logger.Debug($"Player already received gift: {giftId}");
             }
 
             return GiftSentResult.FAILED_GIFT_ALREADY_RECEIVED;
@@ -86,9 +87,7 @@ public class GiftService(
 
         if (giftData.Items?.Count > 0 && giftData.CollectionTimeHours is null)
         {
-            _logger.Warning(
-                $"Gift {giftId} has items but no collection time limit, defaulting to 48 hours"
-            );
+            logger.Warning($"Gift {giftId} has items but no collection time limit, defaulting to 48 hours");
         }
 
         // Handle system messages
@@ -97,21 +96,21 @@ public class GiftService(
             // Has a localisable text id to send to player
             if (giftData.LocaleTextId is not null)
             {
-                _mailSendService.SendLocalisedSystemMessageToPlayer(
+                mailSendService.SendLocalisedSystemMessageToPlayer(
                     playerId,
                     giftData.LocaleTextId,
                     giftData.Items,
                     giftData.ProfileChangeEvents,
-                    _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1)
+                    timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1)
                 );
             }
             else
             {
-                _mailSendService.SendSystemMessageToPlayer(
+                mailSendService.SendSystemMessageToPlayer(
                     playerId,
                     giftData.MessageText,
                     giftData.Items,
-                    _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1),
+                    timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1),
                     giftData.ProfileChangeEvents
                 );
             }
@@ -119,38 +118,24 @@ public class GiftService(
         // Handle user messages
         else if (giftData.Sender == GiftSenderType.User)
         {
-            _mailSendService.SendUserMessageToPlayer(
+            mailSendService.SendUserMessageToPlayer(
                 playerId,
                 giftData.SenderDetails,
                 giftData.MessageText,
                 giftData.Items,
-                _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1)
+                timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1)
             );
         }
         else if (giftData.Sender == GiftSenderType.Trader)
         {
-            if (giftData.LocaleTextId is not null)
-            {
-                _mailSendService.SendLocalisedNpcMessageToPlayer(
-                    playerId,
-                    giftData.Trader,
-                    MessageType.MessageWithItems,
-                    giftData.LocaleTextId,
-                    giftData.Items,
-                    _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1)
-                );
-            }
-            else
-            {
-                _mailSendService.SendLocalisedNpcMessageToPlayer(
-                    playerId,
-                    giftData.Trader,
-                    MessageType.MessageWithItems,
-                    giftData.MessageText,
-                    giftData.Items,
-                    _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1)
-                );
-            }
+            mailSendService.SendLocalisedNpcMessageToPlayer(
+                playerId,
+                giftData.Trader,
+                MessageType.MessageWithItems,
+                giftData.LocaleTextId ?? giftData.LocaleTextId,
+                giftData.Items,
+                timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1)
+            );
         }
         else
         {
@@ -168,9 +153,7 @@ public class GiftService(
                 },
                 MessageText = giftData.MessageText,
                 Items = giftData.Items,
-                ItemsMaxStorageLifetimeSeconds = _timeUtil.GetHoursAsSeconds(
-                    giftData.CollectionTimeHours ?? 0
-                ),
+                ItemsMaxStorageLifetimeSeconds = timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 0),
             };
 
             if (giftData.Trader is not null)
@@ -178,10 +161,10 @@ public class GiftService(
                 details.Trader = giftData.Trader;
             }
 
-            _mailSendService.SendMessageToPlayer(details);
+            mailSendService.SendMessageToPlayer(details);
         }
 
-        _profileHelper.FlagGiftReceivedInProfile(playerId, giftId, maxGiftsToSendCount);
+        profileHelper.FlagGiftReceivedInProfile(playerId, giftId, maxGiftsToSendCount);
 
         return GiftSentResult.SUCCESS;
     }
@@ -222,12 +205,7 @@ public class GiftService(
             case GiftSenderType.User:
                 return MessageType.UserMessage;
             default:
-                _logger.Error(
-                    _serverLocalisationService.GetText(
-                        "gift-unable_to_handle_message_type_command",
-                        giftData.Sender
-                    )
-                );
+                logger.Error(serverLocalisationService.GetText("gift-unable_to_handle_message_type_command", giftData.Sender));
                 return null;
         }
     }
@@ -237,7 +215,7 @@ public class GiftService(
     /// </summary>
     /// <param name="sessionId"> Player ID </param>
     /// <param name="day"> What day to give gift for </param>
-    public void SendPraporStartingGift(string sessionId, int day)
+    public void SendPraporStartingGift(MongoId sessionId, int day)
     {
         var giftId = day switch
         {
@@ -248,7 +226,7 @@ public class GiftService(
 
         if (giftId is not null)
         {
-            if (!_profileHelper.PlayerHasReceivedMaxNumberOfGift(sessionId, giftId, 1))
+            if (!profileHelper.PlayerHasReceivedMaxNumberOfGift(sessionId, giftId, 1))
             {
                 SendGiftToPlayer(sessionId, giftId);
             }
@@ -261,9 +239,9 @@ public class GiftService(
     /// <param name="giftId"> ID of gift to send </param>
     /// <param name="sessionId"> Session ID of player to send to </param>
     /// <param name="giftCount"> Optional, how many to send </param>
-    public void SendGiftWithSilentReceivedCheck(string giftId, string? sessionId, int giftCount)
+    public void SendGiftWithSilentReceivedCheck(string giftId, MongoId sessionId, int giftCount)
     {
-        if (!_profileHelper.PlayerHasReceivedMaxNumberOfGift(sessionId, giftId, giftCount))
+        if (!profileHelper.PlayerHasReceivedMaxNumberOfGift(sessionId, giftId, giftCount))
         {
             SendGiftToPlayer(sessionId, giftId);
         }

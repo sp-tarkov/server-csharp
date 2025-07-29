@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -10,7 +11,7 @@ namespace SPTarkov.Server.Core.Servers;
 [Injectable(InjectionType.Singleton)]
 public class ConfigServer
 {
-    protected readonly string[] acceptableFileExtensions = ["json", "jsonc"];
+    protected readonly FrozenSet<string> acceptableFileExtensions = ["json", "jsonc"];
     protected readonly FileUtil _fileUtil;
     protected readonly JsonUtil _jsonUtil;
     protected readonly ISptLogger<ConfigServer> _logger;
@@ -34,9 +35,7 @@ public class ConfigServer
         var configKey = GetConfigKey(typeof(T));
         if (!_configs.ContainsKey(configKey.GetValue()))
         {
-            throw new Exception(
-                $"Config: {configKey} is undefined. Ensure you have not broken it via editing"
-            );
+            throw new Exception($"Config: {configKey} is undefined. Ensure you have not broken it via editing");
         }
 
         return _configs[configKey.GetValue()] as T;
@@ -80,12 +79,8 @@ public class ConfigServer
 
                 if (deserializedContent == null)
                 {
-                    _logger.Error(
-                        $"Config file: {file} is corrupt. Use a site like: https://jsonlint.com to find the issue."
-                    );
-                    throw new Exception(
-                        $"Server will not run until the: {file} config error mentioned above is  fixed"
-                    );
+                    _logger.Error($"Config file: {file} is corrupt. Use a site like: https://jsonlint.com to find the issue.");
+                    throw new Exception($"Server will not run until the: {file} config error mentioned above is  fixed");
                 }
 
                 _configs[$"spt-{_fileUtil.StripExtension(file)}"] = deserializedContent;
@@ -95,8 +90,7 @@ public class ConfigServer
 
     private Type GetConfigTypeByFilename(string filename)
     {
-        var type = Enum.GetValues<ConfigTypes>()
-            .First(en => en.GetValue().Contains(_fileUtil.StripExtension(filename)));
+        var type = Enum.GetValues<ConfigTypes>().First(en => en.GetValue().Contains(_fileUtil.StripExtension(filename)));
         return type.GetConfigType();
     }
 }

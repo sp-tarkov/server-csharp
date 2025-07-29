@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Utils.Logger;
 [Injectable(InjectionType.Singleton)]
 public class SptLoggerQueueManager(IEnumerable<ILogHandler> logHandlers)
 {
-    private readonly Dictionary<string, List<BaseSptLoggerReference>> _resolvedMessageLoggerTypes =
-        new();
+    private readonly Dictionary<string, List<BaseSptLoggerReference>> _resolvedMessageLoggerTypes = new();
     private readonly Lock _resolvedMessageLoggerTypesLock = new();
     private Thread? _loggerTask;
     private readonly Lock LoggerTaskLock = new();
@@ -20,17 +19,13 @@ public class SptLoggerQueueManager(IEnumerable<ILogHandler> logHandlers)
     {
         _config = config;
 
-        if (_logHandlers == null)
-        {
-            _logHandlers = logHandlers.ToDictionary(lh => lh.LoggerType, lh => lh);
-        }
+        _logHandlers ??= logHandlers.ToDictionary(lh => lh.LoggerType, lh => lh);
 
         lock (LoggerTaskLock)
         {
             if (_loggerTask == null)
             {
-                _loggerTask = new Thread(LoggerWorkerThread);
-                _loggerTask.IsBackground = true;
+                _loggerTask = new Thread(LoggerWorkerThread) { IsBackground = true };
                 _loggerTask.Start();
             }
         }
@@ -77,12 +72,8 @@ public class SptLoggerQueueManager(IEnumerable<ILogHandler> logHandlers)
                 messageLoggers = _config
                     .Loggers.Where(logger =>
                     {
-                        var excludeFilters = logger.Filters?.Where(filter =>
-                            filter.Type == SptLoggerFilterType.Exclude
-                        );
-                        var includeFilters = logger.Filters?.Where(filter =>
-                            filter.Type == SptLoggerFilterType.Include
-                        );
+                        var excludeFilters = logger.Filters?.Where(filter => filter.Type == SptLoggerFilterType.Exclude);
+                        var includeFilters = logger.Filters?.Where(filter => filter.Type == SptLoggerFilterType.Include);
                         var passed = true;
                         if (excludeFilters?.Any() ?? false)
                         {
@@ -105,10 +96,7 @@ public class SptLoggerQueueManager(IEnumerable<ILogHandler> logHandlers)
         {
             messageLoggers.ForEach(logger =>
             {
-                if (
-                    logger.LogLevel.CanLog(message.LogLevel)
-                    && (_logHandlers?.TryGetValue(logger.Type, out var handler) ?? false)
-                )
+                if (logger.LogLevel.CanLog(message.LogLevel) && (_logHandlers?.TryGetValue(logger.Type, out var handler) ?? false))
                 {
                     handler.Log(message, logger);
                 }

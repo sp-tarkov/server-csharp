@@ -1,8 +1,5 @@
-using SPTarkov.Server.Core.Utils.Json.Converters;
-
 namespace SPTarkov.Server.Core.Models.Enums;
 
-[EftEnumConverter]
 [Flags]
 public enum PlayerSideMask
 {

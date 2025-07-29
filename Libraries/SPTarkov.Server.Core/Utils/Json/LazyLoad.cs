@@ -60,10 +60,7 @@ public class LazyLoad<T>(Func<T> deserialize)
                     {
                         _result = default;
                         _isLoaded = false;
-                        autoCleanerTimeout?.Change(
-                            Timeout.InfiniteTimeSpan,
-                            Timeout.InfiniteTimeSpan
-                        );
+                        autoCleanerTimeout?.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
                         autoCleanerTimeout = null;
                     },
                     null,

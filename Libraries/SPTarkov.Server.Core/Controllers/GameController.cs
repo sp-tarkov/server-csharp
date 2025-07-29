@@ -20,28 +20,28 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class GameController(
-    ISptLogger<GameController> _logger,
-    IReadOnlyList<SptMod> _loadedMods,
-    ConfigServer _configServer,
-    DatabaseService _databaseService,
-    TimeUtil _timeUtil,
-    HttpServerHelper _httpServerHelper,
-    HideoutHelper _hideoutHelper,
-    ProfileHelper _profileHelper,
-    ProfileFixerService _profileFixerService,
-    ServerLocalisationService _serverLocalisationService,
-    PostDbLoadService _postDbLoadService,
-    SeasonalEventService _seasonalEventService,
-    GiftService _giftService,
-    RaidTimeAdjustmentService _raidTimeAdjustmentService,
-    ProfileActivityService _profileActivityService
+    ISptLogger<GameController> logger,
+    IReadOnlyList<SptMod> loadedMods,
+    ConfigServer configServer,
+    DatabaseService databaseService,
+    TimeUtil timeUtil,
+    HttpServerHelper httpServerHelper,
+    HideoutHelper hideoutHelper,
+    ProfileHelper profileHelper,
+    ProfileFixerService profileFixerService,
+    ServerLocalisationService serverLocalisationService,
+    PostDbLoadService postDbLoadService,
+    SeasonalEventService seasonalEventService,
+    GiftService giftService,
+    RaidTimeAdjustmentService raidTimeAdjustmentService,
+    ProfileActivityService profileActivityService
 )
 {
-    protected readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
+    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
     protected readonly double _deviation = 0.0001;
-    protected readonly HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
-    protected readonly HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
+    protected readonly HideoutConfig _hideoutConfig = configServer.GetConfig<HideoutConfig>();
+    protected readonly HttpConfig _httpConfig = configServer.GetConfig<HttpConfig>();
 
     /// <summary>
     ///     Handle client/game/start
@@ -49,13 +49,13 @@ public class GameController(
     /// <param name="url"></param>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="startTimeStampMs"></param>
-    public void GameStart(string url, string? sessionId, long startTimeStampMs)
+    public void GameStart(string url, MongoId sessionId, long startTimeStampMs)
     {
-        _profileActivityService.AddActiveProfile(sessionId, startTimeStampMs);
+        profileActivityService.AddActiveProfile(sessionId, startTimeStampMs);
 
-        if (sessionId is null)
+        if (sessionId.IsEmpty())
         {
-            _logger.Error($"{nameof(sessionId)} is null on GameController.GameStart");
+            logger.Error($"{nameof(sessionId)} is empty on GameController.GameStart");
             return;
         }
 
@@ -63,19 +63,13 @@ public class GameController(
         // offraidData). Since we don't want to clutter the Quests list, we need to remove all completed (failed or
         // successful) repeatable quests. We also have to remove the Counters from the repeatableQuests
 
-        var fullProfile = _profileHelper.GetFullProfile(sessionId);
+        var fullProfile = profileHelper.GetFullProfile(sessionId);
         if (fullProfile is null)
         {
-            _logger.Error($"{nameof(fullProfile)} is null on GameController.GameStart");
+            logger.Error($"{nameof(fullProfile)} is null on GameController.GameStart");
             return;
         }
 
-        fullProfile.SptData ??= new Spt
-        {
-            //TODO: complete
-            Version = "Replace_me",
-        };
-        fullProfile.SptData.Migrations ??= new Dictionary<string, long>();
         fullProfile.FriendProfileIds ??= [];
 
         if (fullProfile.ProfileInfo?.IsWiped is not null && fullProfile.ProfileInfo.IsWiped.Value)
@@ -83,32 +77,24 @@ public class GameController(
             return;
         }
 
-        fullProfile.CharacterData!.PmcData!.WishList ??= new DictionaryOrList<MongoId, int>(
-            new Dictionary<MongoId, int>(),
-            []
-        );
-        fullProfile.CharacterData.ScavData!.WishList ??= new DictionaryOrList<MongoId, int>(
-            new Dictionary<MongoId, int>(),
-            []
-        );
+        fullProfile.CharacterData!.PmcData!.WishList ??= new DictionaryOrList<MongoId, int>(new Dictionary<MongoId, int>(), []);
+        fullProfile.CharacterData.ScavData!.WishList ??= new DictionaryOrList<MongoId, int>(new Dictionary<MongoId, int>(), []);
 
         if (fullProfile.DialogueRecords is not null)
         {
-            _profileFixerService.CheckForAndFixDialogueAttachments(fullProfile);
+            profileFixerService.CheckForAndFixDialogueAttachments(fullProfile);
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
-                $"Started game with session {sessionId} {fullProfile.ProfileInfo?.Username}"
-            );
+            logger.Debug($"Started game with session {sessionId} {fullProfile.ProfileInfo?.Username}");
         }
 
         var pmcProfile = fullProfile.CharacterData.PmcData;
 
         if (_coreConfig.Fixes.FixProfileBreakingInventoryItemIssues)
         {
-            _profileFixerService.FixProfileBreakingInventoryItemIssues(pmcProfile);
+            profileFixerService.FixProfileBreakingInventoryItemIssues(pmcProfile);
         }
 
         if (pmcProfile.Health is not null)
@@ -120,30 +106,22 @@ public class GameController(
         {
             SendPraporGiftsToNewProfiles(pmcProfile);
             SendMechanicGiftsToNewProfile(pmcProfile);
-            _profileFixerService.CheckForOrphanedModdedItems(sessionId, fullProfile);
+            profileFixerService.CheckForOrphanedModdedItems(sessionId, fullProfile);
         }
 
-        _profileFixerService.CheckForAndRemoveInvalidTraders(fullProfile);
-        _profileFixerService.CheckForAndFixPmcProfileIssues(pmcProfile);
+        profileFixerService.CheckForAndRemoveInvalidTraders(fullProfile);
+        profileFixerService.CheckForAndFixPmcProfileIssues(pmcProfile);
 
         if (pmcProfile.Hideout is not null)
         {
-            _profileFixerService.AddMissingHideoutBonusesToProfile(
-                pmcProfile,
-                _databaseService.GetHideout().Areas
-            );
-            _hideoutHelper.SetHideoutImprovementsToCompleted(pmcProfile);
+            profileFixerService.AddMissingHideoutBonusesToProfile(pmcProfile, databaseService.GetHideout().Areas);
+            hideoutHelper.SetHideoutImprovementsToCompleted(pmcProfile);
             pmcProfile.UnlockHideoutWallInProfile();
 
             // Handle if player has been inactive for a long time, catch up on hideout update before the user goes to his hideout
-            if (
-                !_profileActivityService.ActiveWithinLastMinutes(
-                    sessionId,
-                    _hideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes
-                )
-            )
+            if (!profileActivityService.ActiveWithinLastMinutes(sessionId, _hideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes))
             {
-                _hideoutHelper.UpdatePlayerHideout(sessionId);
+                hideoutHelper.UpdatePlayerHideout(sessionId);
             }
         }
 
@@ -161,10 +139,10 @@ public class GameController(
             WarnOnActiveBotReloadSkill(pmcProfile);
         }
 
-        _seasonalEventService.GivePlayerSeasonalGifts(sessionId);
+        seasonalEventService.GivePlayerSeasonalGifts(sessionId);
 
         // Set activity timestamp at the end of the method, so that code that checks for an older timestamp (Updating hideout) can still run
-        _profileActivityService.SetActivityTimestamp(sessionId);
+        profileActivityService.SetActivityTimestamp(sessionId);
     }
 
     /// <summary>
@@ -172,19 +150,16 @@ public class GameController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>GameConfigResponse</returns>
-    public GameConfigResponse GetGameConfig(string sessionId)
+    public GameConfigResponse GetGameConfig(MongoId sessionId)
     {
-        var profile = _profileHelper.GetPmcProfile(sessionId);
+        var profile = profileHelper.GetPmcProfile(sessionId);
         var gameTime =
-            profile
-                ?.Stats?.Eft?.OverallCounters?.Items?.FirstOrDefault(c =>
-                    c.Key!.Contains("LifeTime") && c.Key.Contains("Pmc")
-                )
-                ?.Value ?? 0D;
+            profile?.Stats?.Eft?.OverallCounters?.Items?.FirstOrDefault(c => c.Key!.Contains("LifeTime") && c.Key.Contains("Pmc"))?.Value
+            ?? 0D;
 
         var config = new GameConfigResponse
         {
-            Languages = _databaseService.GetLocales().Languages,
+            Languages = databaseService.GetLocales().Languages,
             IsNdaFree = false,
             IsReportAvailable = false,
             IsTwitchEventMember = false,
@@ -194,14 +169,14 @@ public class GameController(
             ActiveProfileId = sessionId,
             Backend = new Backend
             {
-                Lobby = _httpServerHelper.GetBackendUrl(),
-                Trading = _httpServerHelper.GetBackendUrl(),
-                Messaging = _httpServerHelper.GetBackendUrl(),
-                Main = _httpServerHelper.GetBackendUrl(),
-                RagFair = _httpServerHelper.GetBackendUrl(),
+                Lobby = httpServerHelper.GetBackendUrl(),
+                Trading = httpServerHelper.GetBackendUrl(),
+                Messaging = httpServerHelper.GetBackendUrl(),
+                Main = httpServerHelper.GetBackendUrl(),
+                RagFair = httpServerHelper.GetBackendUrl(),
             },
             UseProtobuf = false,
-            UtcTime = _timeUtil.GetTimeStamp(),
+            UtcTime = timeUtil.GetTimeStamp(),
             TotalInGame = gameTime,
             SessionMode = "pve",
             PurchasedGames = new PurchasedGames { IsEftPurchased = true, IsArenaPurchased = false },
@@ -217,13 +192,9 @@ public class GameController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="requestData"></param>
     /// <returns></returns>
-    public GameModeResponse GetGameMode(string sessionId, GameModeRequestData requestData)
+    public GameModeResponse GetGameMode(MongoId sessionId, GameModeRequestData requestData)
     {
-        return new GameModeResponse
-        {
-            GameMode = "pve",
-            BackendUrl = _httpServerHelper.GetBackendUrl(),
-        };
+        return new GameModeResponse { GameMode = "pve", BackendUrl = httpServerHelper.GetBackendUrl() };
     }
 
     /// <summary>
@@ -231,7 +202,7 @@ public class GameController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public List<ServerDetails> GetServer(string sessionId)
+    public List<ServerDetails> GetServer(MongoId sessionId)
     {
         return [new ServerDetails { Ip = _httpConfig.BackendIp, Port = _httpConfig.BackendPort }];
     }
@@ -241,7 +212,7 @@ public class GameController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public CurrentGroupResponse GetCurrentGroup(string sessionId)
+    public CurrentGroupResponse GetCurrentGroup(MongoId sessionId)
     {
         return new CurrentGroupResponse { Squad = [] };
     }
@@ -251,13 +222,9 @@ public class GameController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public CheckVersionResponse GetValidGameVersion(string sessionId)
+    public CheckVersionResponse GetValidGameVersion(MongoId sessionId)
     {
-        return new CheckVersionResponse
-        {
-            IsValid = true,
-            LatestVersion = _coreConfig.CompatibleTarkovVersion,
-        };
+        return new CheckVersionResponse { IsValid = true, LatestVersion = _coreConfig.CompatibleTarkovVersion };
     }
 
     /// <summary>
@@ -265,10 +232,10 @@ public class GameController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public GameKeepAliveResponse GetKeepAlive(string sessionId)
+    public GameKeepAliveResponse GetKeepAlive(MongoId sessionId)
     {
-        _profileActivityService.SetActivityTimestamp(sessionId);
-        return new GameKeepAliveResponse { Message = "OK", UtcTime = _timeUtil.GetTimeStamp() };
+        profileActivityService.SetActivityTimestamp(sessionId);
+        return new GameKeepAliveResponse { Message = "OK", UtcTime = timeUtil.GetTimeStamp() };
     }
 
     /// <summary>
@@ -277,16 +244,16 @@ public class GameController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public RaidChanges GetRaidTime(string sessionId, GetRaidTimeRequest request)
+    public RaidChanges GetRaidTime(MongoId sessionId, GetRaidTimeRequest request)
     {
-        return _raidTimeAdjustmentService.GetRaidAdjustments(sessionId, request);
+        return raidTimeAdjustmentService.GetRaidAdjustments(sessionId, request);
     }
 
     /// <summary>
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public SurveyResponseData GetSurvey(string sessionId)
+    public SurveyResponseData GetSurvey(MongoId sessionId)
     {
         return _coreConfig.Survey;
     }
@@ -300,9 +267,7 @@ public class GameController(
         var botReloadSkill = pmcProfile.GetSkillFromProfile(SkillTypes.BotReload);
         if (botReloadSkill?.Progress > 0)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText("server_start_player_active_botreload_skill")
-            );
+            logger.Warning(serverLocalisationService.GetText("server_start_player_active_botreload_skill"));
         }
     }
 
@@ -313,7 +278,7 @@ public class GameController(
     protected void UpdateProfileHealthValues(PmcData pmcProfile)
     {
         var healthLastUpdated = pmcProfile.Health?.UpdateTime;
-        var currentTimeStamp = _timeUtil.GetTimeStamp();
+        var currentTimeStamp = timeUtil.GetTimeStamp();
         var diffSeconds = currentTimeStamp - healthLastUpdated;
 
         // Update just occurred
@@ -344,9 +309,7 @@ public class GameController(
         if (pmcProfile.Health?.Energy?.Current - pmcProfile.Health?.Energy?.Maximum <= _deviation)
         {
             // Set new value, whatever is smallest
-            pmcProfile.Health!.Energy!.Current += Math.Round(
-                energyRegenPerHour * (diffSeconds!.Value / 3600)
-            );
+            pmcProfile.Health!.Energy!.Current += Math.Round(energyRegenPerHour * (diffSeconds!.Value / 3600));
             if (pmcProfile.Health.Energy.Current > pmcProfile.Health.Energy.Maximum)
             {
                 pmcProfile.Health.Energy.Current = pmcProfile.Health.Energy.Maximum;
@@ -354,14 +317,9 @@ public class GameController(
         }
 
         // Player has hydration deficit
-        if (
-            pmcProfile.Health?.Hydration?.Current - pmcProfile.Health?.Hydration?.Maximum
-            <= _deviation
-        )
+        if (pmcProfile.Health?.Hydration?.Current - pmcProfile.Health?.Hydration?.Maximum <= _deviation)
         {
-            pmcProfile.Health!.Hydration!.Current += Math.Round(
-                hydrationRegenPerHour * (diffSeconds!.Value / 3600)
-            );
+            pmcProfile.Health!.Hydration!.Current += Math.Round(hydrationRegenPerHour * (diffSeconds!.Value / 3600));
             if (pmcProfile.Health.Hydration.Current > pmcProfile.Health.Hydration.Maximum)
             {
                 pmcProfile.Health.Hydration.Current = pmcProfile.Health.Hydration.Maximum;
@@ -381,15 +339,9 @@ public class GameController(
     /// <param name="pmcProfile">Player</param>
     /// <param name="hpRegenPerHour"></param>
     /// <param name="diffSeconds"></param>
-    protected void DecreaseBodyPartEffectTimes(
-        PmcData pmcProfile,
-        double hpRegenPerHour,
-        double diffSeconds
-    )
+    protected void DecreaseBodyPartEffectTimes(PmcData pmcProfile, double hpRegenPerHour, double diffSeconds)
     {
-        foreach (
-            var bodyPart in pmcProfile.Health!.BodyParts!.Select(bodyPartKvP => bodyPartKvP.Value)
-        )
+        foreach (var bodyPart in pmcProfile.Health!.BodyParts!.Select(bodyPartKvP => bodyPartKvP.Value))
         {
             // Check part hp
             if (bodyPart.Health!.Current < bodyPart.Health.Maximum)
@@ -440,19 +392,19 @@ public class GameController(
     protected void SendPraporGiftsToNewProfiles(PmcData pmcProfile)
     {
         var timeStampProfileCreated = pmcProfile.Info?.RegistrationDate;
-        var oneDaySeconds = _timeUtil.GetHoursAsSeconds(24);
-        var currentTimeStamp = _timeUtil.GetTimeStamp();
+        var oneDaySeconds = timeUtil.GetHoursAsSeconds(24);
+        var currentTimeStamp = timeUtil.GetTimeStamp();
 
         // One day post-profile creation
         if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds)
         {
-            _giftService.SendPraporStartingGift(pmcProfile.SessionId!, 1);
+            giftService.SendPraporStartingGift(pmcProfile.SessionId.Value, 1);
         }
 
         // Two day post-profile creation
         if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds * 2)
         {
-            _giftService.SendPraporStartingGift(pmcProfile.SessionId!, 2);
+            giftService.SendPraporStartingGift(pmcProfile.SessionId.Value, 2);
         }
     }
 
@@ -462,7 +414,7 @@ public class GameController(
     /// <param name="pmcProfile"></param>
     protected void SendMechanicGiftsToNewProfile(PmcData pmcProfile)
     {
-        _giftService.SendGiftWithSilentReceivedCheck("MechanicGiftDay1", pmcProfile.SessionId, 1);
+        giftService.SendGiftWithSilentReceivedCheck("MechanicGiftDay1", pmcProfile.SessionId.Value, 1);
     }
 
     /// <summary>
@@ -473,13 +425,11 @@ public class GameController(
     {
         fullProfile.SptData!.Mods ??= [];
 
-        foreach (var mod in _loadedMods)
+        foreach (var mod in loadedMods)
         {
             if (
                 fullProfile.SptData.Mods.Any(m =>
-                    m.Author == mod.ModMetadata.Author
-                    && m.Version == mod.ModMetadata.Version
-                    && m.Name == mod.ModMetadata.Name
+                    m.Author == mod.ModMetadata.Author && m.Version == mod.ModMetadata.Version && m.Name == mod.ModMetadata.Name
                 )
             )
             {
@@ -494,7 +444,7 @@ public class GameController(
                     Version = mod.ModMetadata.Version,
                     Name = mod.ModMetadata.Name,
                     Url = mod.ModMetadata.Url,
-                    DateAdded = _timeUtil.GetTimeStamp(),
+                    DateAdded = timeUtil.GetTimeStamp(),
                 }
             );
         }
@@ -509,7 +459,7 @@ public class GameController(
         var playerName = pmcProfile.Info?.Nickname;
         if (playerName is not null)
         {
-            var bots = _databaseService.GetBots().Types;
+            var bots = databaseService.GetBots().Types;
 
             // Official names can only be 15 chars in length
             if (playerName.Length > _botConfig.BotNameLengthLimit)
@@ -553,19 +503,17 @@ public class GameController(
     /// <param name="fullProfile"></param>
     protected void LogProfileDetails(SptProfile fullProfile)
     {
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"Profile made with: {fullProfile.SptData?.Version}");
-            _logger.Debug(
-                $"Server version: {ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion} {ProgramStatics.COMMIT()}"
-            );
-            _logger.Debug($"Debug enabled: {ProgramStatics.DEBUG()}");
-            _logger.Debug($"Mods enabled: {ProgramStatics.MODS()}");
+            logger.Debug($"Profile made with: {fullProfile.SptData?.Version}");
+            logger.Debug($"Server version: {ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion} {ProgramStatics.COMMIT()}");
+            logger.Debug($"Debug enabled: {ProgramStatics.DEBUG()}");
+            logger.Debug($"Mods enabled: {ProgramStatics.MODS()}");
         }
     }
 
     public void Load()
     {
-        _postDbLoadService.PerformPostDbLoadActions();
+        postDbLoadService.PerformPostDbLoadActions();
     }
 }

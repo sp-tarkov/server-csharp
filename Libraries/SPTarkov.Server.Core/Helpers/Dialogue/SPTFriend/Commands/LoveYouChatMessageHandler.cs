@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Services;
@@ -7,8 +8,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
-public class LoveYouChatMessageHandler(MailSendService _mailSendService, RandomUtil _randomUtil)
-    : IChatMessageHandler
+public class LoveYouChatMessageHandler(MailSendService _mailSendService, RandomUtil _randomUtil) : IChatMessageHandler
 {
     public int GetPriority()
     {
@@ -20,12 +20,7 @@ public class LoveYouChatMessageHandler(MailSendService _mailSendService, RandomU
         return string.Equals(message, "love you", StringComparison.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        string sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         _mailSendService.SendUserMessageToPlayer(
             sessionId,

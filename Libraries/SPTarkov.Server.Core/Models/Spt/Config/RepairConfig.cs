@@ -14,9 +14,6 @@ public record RepairConfig : BaseConfig
     [JsonPropertyName("applyRandomizeDurabilityLoss")]
     public bool ApplyRandomizeDurabilityLoss { get; set; }
 
-    [JsonPropertyName("weaponSkillRepairGain")]
-    public double WeaponSkillRepairGain { get; set; }
-
     [JsonPropertyName("armorKitSkillPointGainPerRepairPointMultiplier")]
     public double ArmorKitSkillPointGainPerRepairPointMultiplier { get; set; }
 

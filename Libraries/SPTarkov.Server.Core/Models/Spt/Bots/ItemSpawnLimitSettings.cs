@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
@@ -8,8 +9,8 @@ public record ItemSpawnLimitSettings
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("currentLimits")]
-    public Dictionary<string, double>? CurrentLimits { get; set; }
+    public Dictionary<MongoId, double>? CurrentLimits { get; set; }
 
     [JsonPropertyName("globalLimits")]
-    public Dictionary<string, double>? GlobalLimits { get; set; }
+    public Dictionary<MongoId, double>? GlobalLimits { get; set; }
 }

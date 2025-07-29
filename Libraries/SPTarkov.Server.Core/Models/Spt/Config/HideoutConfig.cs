@@ -78,14 +78,8 @@ public record CultistCircleSettings
     [JsonPropertyName("maxAttemptsToPickRewardsWithinBudget")]
     public int MaxAttemptsToPickRewardsWithinBudget { get; set; }
 
-    [JsonPropertyName("rewardPriceMultiplerMinMax")]
+    [JsonPropertyName("rewardPriceMultiplierMinMax")]
     public required MinMax<double> RewardPriceMultiplierMinMax { get; set; }
-
-    /// <summary>
-    ///     The odds that meeting the highest threshold gives you a bonus to crafting time
-    /// </summary>
-    [JsonPropertyName("bonusAmountMultiplier")]
-    public double BonusAmountMultiplier { get; set; }
 
     [JsonPropertyName("bonusChanceMultiplier")]
     public double BonusChanceMultiplier { get; set; }
@@ -108,8 +102,8 @@ public record CultistCircleSettings
     [JsonPropertyName("hideoutCraftSacrificeThresholdRub")]
     public int HideoutCraftSacrificeThresholdRub { get; set; }
 
-    [JsonPropertyName("craftTimeThreshholds")]
-    public required List<CraftTimeThreshold> CraftTimeThreshholds { get; set; }
+    [JsonPropertyName("craftTimeThresholds")]
+    public required List<CraftTimeThreshold> CraftTimeThresholds { get; set; }
 
     /// <summary>
     ///     -1 means no override, value in seconds
@@ -139,7 +133,7 @@ public record CultistCircleSettings
     ///     Item tpls to include in the reward pool
     /// </summary>
     [JsonPropertyName("additionalRewardItemPool")]
-    public required List<string> AdditionalRewardItemPool { get; set; }
+    public required List<MongoId> AdditionalRewardItemPool { get; set; }
 
     [JsonPropertyName("currencyRewards")]
     public required Dictionary<MongoId, MinMax<int>> CurrencyRewards { get; set; }

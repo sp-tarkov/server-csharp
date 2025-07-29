@@ -1,11 +1,10 @@
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Helpers.Dialog.Commando;
 using SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 
@@ -19,8 +18,7 @@ public class SptDialogueChatBot(
     IEnumerable<IChatMessageHandler> chatMessageHandlers
 ) : IDialogueChatBot
 {
-    protected readonly IEnumerable<IChatMessageHandler> _chatMessageHandlers =
-        ChatMessageHandlerSetup(chatMessageHandlers);
+    protected readonly IEnumerable<IChatMessageHandler> _chatMessageHandlers = ChatMessageHandlerSetup(chatMessageHandlers);
     protected readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
     public UserDialogInfo GetChatBot()
@@ -40,7 +38,7 @@ public class SptDialogueChatBot(
         };
     }
 
-    public ValueTask<string> HandleMessage(string sessionId, SendMessageRequest request)
+    public ValueTask<string> HandleMessage(MongoId sessionId, SendMessageRequest request)
     {
         var sender = _profileHelper.GetPmcProfile(sessionId);
         var sptFriendUser = GetChatBot();
@@ -58,20 +56,12 @@ public class SptDialogueChatBot(
             return new ValueTask<string>(request.DialogId);
         }
 
-        _mailSendService.SendUserMessageToPlayer(
-            sessionId,
-            GetChatBot(),
-            GetUnrecognizedCommandMessage(),
-            [],
-            null
-        );
+        _mailSendService.SendUserMessageToPlayer(sessionId, GetChatBot(), GetUnrecognizedCommandMessage(), [], null);
 
         return new ValueTask<string>(request.DialogId);
     }
 
-    protected static List<IChatMessageHandler> ChatMessageHandlerSetup(
-        IEnumerable<IChatMessageHandler> components
-    )
+    protected static List<IChatMessageHandler> ChatMessageHandlerSetup(IEnumerable<IChatMessageHandler> components)
     {
         var chatMessageHandlers = components.ToList();
         chatMessageHandlers.Sort((a, b) => a.GetPriority() - b.GetPriority());
@@ -84,7 +74,7 @@ public class SptDialogueChatBot(
         return "Unknown command.";
     }
 
-    protected ValueTask<string> SendPlayerHelpMessage(string sessionId, SendMessageRequest request)
+    protected ValueTask<string> SendPlayerHelpMessage(MongoId sessionId, SendMessageRequest request)
     {
         _mailSendService.SendUserMessageToPlayer(
             sessionId,

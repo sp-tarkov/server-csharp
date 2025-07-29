@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Notifier;
 
@@ -11,7 +12,7 @@ public record NotifierChannel
     public string? Server { get; set; }
 
     [JsonPropertyName("channel_id")]
-    public string? ChannelId { get; set; }
+    public MongoId? ChannelId { get; set; }
 
     [JsonPropertyName("url")]
     public string? Url { get; set; }

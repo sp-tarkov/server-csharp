@@ -9,19 +9,9 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable]
-public class HttpResponseUtil(
-    JsonUtil jsonUtil,
-    ServerLocalisationService serverLocalisationService
-)
+public class HttpResponseUtil(JsonUtil jsonUtil, ServerLocalisationService serverLocalisationService)
 {
-    protected readonly ImmutableList<Regex> _cleanupRegexList =
-    [
-        new("[\\b]"),
-        new("[\\f]"),
-        new("[\\n]"),
-        new("[\\r]"),
-        new("[\\t]"),
-    ];
+    protected readonly ImmutableList<Regex> _cleanupRegexList = [new("[\\b]"), new("[\\f]"), new("[\\n]"), new("[\\r]"), new("[\\t]")];
 
     protected string ClearString(string? s)
     {
@@ -34,40 +24,32 @@ public class HttpResponseUtil(
         return value;
     }
 
-    /**
-     * Return passed in data as JSON string
-     * @param data
-     * @returns
-     */
+    /// <summary>
+    /// Return passed in data as JSON string
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="data">Object to serialise into string</param>
+    /// <returns>response as string</returns>
     public string NoBody<T>(T data)
     {
         return ClearString(jsonUtil.Serialize(data));
     }
 
-    /**
-     * Game client needs server responses in a particular format
-     * @param data
-     * @param err
-     * @param errmsg
-     * @returns
-     */
-    public string GetBody<T>(
-        T data,
-        BackendErrorCodes err = BackendErrorCodes.None,
-        string? errmsg = null,
-        bool sanitize = true
-    )
+    /// <summary>
+    /// Game client needs server responses in a particular format
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="data"></param>
+    /// <param name="err"></param>
+    /// <param name="errmsg"></param>
+    /// <param name="sanitize"></param>
+    /// <returns>response as string</returns>
+    public string GetBody<T>(T data, BackendErrorCodes err = BackendErrorCodes.None, string? errmsg = null, bool sanitize = true)
     {
-        return sanitize
-            ? ClearString(GetUnclearedBody(data, err, errmsg))
-            : GetUnclearedBody(data, err, errmsg);
+        return sanitize ? ClearString(GetUnclearedBody(data, err, errmsg)) : GetUnclearedBody(data, err, errmsg);
     }
 
-    public string GetUnclearedBody<T>(
-        T? data,
-        BackendErrorCodes err = BackendErrorCodes.None,
-        string? errmsg = null
-    )
+    public string GetUnclearedBody<T>(T? data, BackendErrorCodes err = BackendErrorCodes.None, string? errmsg = null)
     {
         return jsonUtil.Serialize(
             new GetBodyResponseData<T>
@@ -79,6 +61,10 @@ public class HttpResponseUtil(
         );
     }
 
+    /// <summary>
+    /// Get empty string as a response
+    /// </summary>
+    /// <returns>Client response</returns>
     public string EmptyResponse()
     {
         return GetBody("", BackendErrorCodes.None, "");
@@ -94,13 +80,13 @@ public class HttpResponseUtil(
         return GetBody(new List<object>());
     }
 
-    /**
-     * Add an error into the 'warnings' array of the client response message
-     * @param output IItemEventRouterResponse
-     * @param message Error message
-     * @param errorCode Error code
-     * @returns IItemEventRouterResponse
-     */
+    /// <summary>
+    /// Add an error into the 'warnings' array of the client response message
+    /// </summary>
+    /// <param name="output">IItemEventRouterResponse</param>
+    /// <param name="message">Error message</param>
+    /// <param name="errorCode">Error code</param>
+    /// <returns>IItemEventRouterResponse</returns>
     public ItemEventRouterResponse AppendErrorToOutput(
         ItemEventRouterResponse output,
         string? message = null,

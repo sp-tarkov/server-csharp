@@ -96,6 +96,7 @@
   "inventory-stash_not_found": "Não foi possível encontrar o esconderijo %s na base de dados",
   "inventory-unable_to_fill_container": "[OOB] para o item: {{id}}; Mensagem de erro: {{error}}",
   "inventory-unable_to_find_item": "getExaminedItemTpl() Não foi possível encontrar o item com tpl: %s na base de dados ou flea",
+  "inventory-unable_to_find_item_to_move": "Impossível encontrar o item a mover: %s",
   "inventory-unable_to_find_stash": "Nenhum esconderijo encontrado",
   "inventory-unable_to_toggle_item_not_found": "Não é possível alternar o item do inventário com id: %s, item não encontrado",
   "item-durability_value_invalid_use_default": "getRepairableItemQualityValue() arma tpl: %s valor de durabilidade inválido, retornando a 1",

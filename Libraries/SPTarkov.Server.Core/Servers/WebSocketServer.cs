@@ -1,4 +1,5 @@
 ﻿using System.Net.WebSockets;
+using Microsoft.AspNetCore.Http;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers.Ws;
@@ -7,10 +8,7 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
-public class WebSocketServer(
-    IEnumerable<IWebSocketConnectionHandler> _webSocketConnectionHandler,
-    ISptLogger<WebSocketServer> _logger
-)
+public class WebSocketServer(IEnumerable<IWebSocketConnectionHandler> _webSocketConnectionHandler, ISptLogger<WebSocketServer> _logger)
 {
     public async Task OnConnection(HttpContext httpContext)
     {
@@ -20,23 +18,17 @@ public class WebSocketServer(
 
     private async Task HandleWebSocket(HttpContext context, WebSocket webSocket)
     {
-        var socketHandlers = _webSocketConnectionHandler
-            .Where(wsh => context.Request.Path.Value.Contains(wsh.GetHookUrl()))
-            .ToList();
+        var socketHandlers = _webSocketConnectionHandler.Where(wsh => context.Request.Path.Value.Contains(wsh.GetHookUrl()));
 
         var cts = new CancellationTokenSource();
         var wsToken = cts.Token;
 
-        if (socketHandlers.Count == 0)
+        if (!socketHandlers.Any())
         {
             var message =
                 $"Socket connection received for url {context.Request.Path.Value}, but there is no websocket handler configured for it!";
             _logger.Debug(message);
-            await webSocket.CloseAsync(
-                WebSocketCloseStatus.ProtocolError,
-                message,
-                CancellationToken.None
-            );
+            await webSocket.CloseAsync(WebSocketCloseStatus.ProtocolError, message, CancellationToken.None);
             return;
         }
 
@@ -44,9 +36,7 @@ public class WebSocketServer(
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
-                $"[WS] Notifying handlers of new websocket connection opening with reference {webSocketIdContext}"
-            );
+            _logger.Debug($"[WS] Notifying handlers of new websocket connection opening with reference {webSocketIdContext}");
         }
 
         foreach (var wsh in socketHandlers)
@@ -87,8 +77,7 @@ public class WebSocketServer(
                     catch (WebSocketException wsException)
                     {
                         if (
-                            wsException.WebSocketErrorCode
-                                == WebSocketError.ConnectionClosedPrematurely
+                            wsException.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely
                             || webSocket.State == WebSocketState.Aborted
                             || webSocket.State == WebSocketState.Closed
                         )
@@ -109,14 +98,8 @@ public class WebSocketServer(
                     // If this is not handled an exception is thrown on the client
                     if (result.MessageType == WebSocketMessageType.Close)
                     {
-                        _logger.Debug(
-                            $"[WS] WebSocket reference {webSocketIdContext} sent close frame, stopping."
-                        );
-                        await webSocket.CloseOutputAsync(
-                            WebSocketCloseStatus.NormalClosure,
-                            "Closing..",
-                            wsToken
-                        );
+                        _logger.Debug($"[WS] WebSocket reference {webSocketIdContext} sent close frame, stopping.");
+                        await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Closing..", wsToken);
                         socketClosing = true;
                         break;
                     }
@@ -136,12 +119,7 @@ public class WebSocketServer(
 
                         foreach (var wsh in socketHandlers)
                         {
-                            await wsh.OnMessage(
-                                message,
-                                WebSocketMessageType.Text,
-                                webSocket,
-                                context
-                            );
+                            await wsh.OnMessage(message, WebSocketMessageType.Text, webSocket, context);
                         }
 
                         messageBuffer.Clear();
@@ -174,9 +152,7 @@ public class WebSocketServer(
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
-                $"[WS] State for websocket reference {webSocketIdContext} is now {webSocket.State}, closing"
-            );
+            _logger.Debug($"[WS] State for websocket reference {webSocketIdContext} is now {webSocket.State}, closing");
         }
 
         // Disconnect has been received, cancel the token and send OnClose to the relevant WebSockets.
@@ -186,9 +162,7 @@ public class WebSocketServer(
 
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(
-                    $"[WS] OnClose for websocket reference {webSocketIdContext} requested"
-                );
+                _logger.Debug($"[WS] OnClose for websocket reference {webSocketIdContext} requested");
             }
 
             await wsh.OnClose(webSocket, context, webSocketIdContext);

@@ -1,10 +1,8 @@
-﻿using System.Net;
-using System.Security.Authentication;
-using Microsoft.AspNetCore.Server.Kestrel.Https;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers.Http;
@@ -14,83 +12,17 @@ namespace SPTarkov.Server.Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
 public class HttpServer(
-    WebApplicationBuilder _builder,
     ISptLogger<HttpServer> _logger,
     ServerLocalisationService _serverLocalisationService,
     ConfigServer _configServer,
-    CertificateHelper _certificateHelper,
     WebSocketServer _webSocketServer,
     ProfileActivityService _profileActivityService,
     IEnumerable<IHttpListener> _httpListeners
 )
 {
     private readonly HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
-    private bool _started;
-    private WebApplication? _webApplication;
 
-    /// <summary>
-    ///     Handle server loading event
-    /// </summary>
-    /// <param name="builder"> Server builder </param>
-    /// <exception cref="Exception"> Throws Exception when WebApplicationBuiler or WebApplication are null </exception>
-    public void Load()
-    {
-        if (_builder is null)
-        {
-            throw new Exception("WebApplicationBuilder is null in HttpServer.Load()");
-        }
-
-        _builder.WebHost.ConfigureKestrel(options =>
-        {
-            options.Listen(
-                IPAddress.Parse(_httpConfig.Ip),
-                _httpConfig.Port,
-                listenOptions =>
-                {
-                    listenOptions.UseHttps(opts =>
-                    {
-                        opts.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
-                        opts.ServerCertificate = _certificateHelper.LoadOrGenerateCertificatePfx();
-                        opts.ClientCertificateMode = ClientCertificateMode.NoCertificate;
-                    });
-                }
-            );
-        });
-
-        _webApplication = _builder.Build();
-
-        if (_webApplication is null)
-        {
-            throw new Exception("WebApplication is null in HttpServer.Load()");
-        }
-
-        // Enable web socket
-        _webApplication.UseWebSockets(
-            new WebSocketOptions
-            {
-                // Every minute a heartbeat is sent to keep the connection alive.
-                KeepAliveInterval = TimeSpan.FromSeconds(60),
-            }
-        );
-
-        _webApplication.Use(
-            async (HttpContext req, RequestDelegate _) =>
-            {
-                await HandleFallback(req);
-            }
-        );
-    }
-
-    public async Task StartAsync()
-    {
-        if (_webApplication != null && !_started)
-        {
-            _started = true;
-            await _webApplication.RunAsync();
-        }
-    }
-
-    private async Task HandleFallback(HttpContext context)
+    public async Task HandleRequest(HttpContext context)
     {
         if (context.WebSockets.IsWebSocketRequest)
         {
@@ -98,8 +30,11 @@ public class HttpServer(
             return;
         }
 
-        context.Request.Cookies.TryGetValue("PHPSESSID", out var sessionId);
-        if (sessionId != null)
+        // Use default empty mongoId if not found in cookie
+        var sessionId = context.Request.Cookies.TryGetValue("PHPSESSID", out var sessionIdString)
+            ? new MongoId(sessionIdString)
+            : MongoId.Empty();
+        if (!string.IsNullOrEmpty(sessionIdString))
         {
             _profileActivityService.SetActivityTimestamp(sessionId);
         }
@@ -115,9 +50,7 @@ public class HttpServer(
 
         try
         {
-            var listener = _httpListeners.FirstOrDefault(l =>
-                l.CanHandle(sessionId, context.Request)
-            );
+            var listener = _httpListeners.FirstOrDefault(l => l.CanHandle(sessionId, context.Request));
 
             if (listener != null)
             {
@@ -147,18 +80,11 @@ public class HttpServer(
     {
         if (isLocalRequest)
         {
-            _logger.Info(
-                _serverLocalisationService.GetText("client_request", context.Request.Path.Value)
-            );
+            _logger.Info(_serverLocalisationService.GetText("client_request", context.Request.Path.Value));
         }
         else
         {
-            _logger.Info(
-                _serverLocalisationService.GetText(
-                    "client_request_ip",
-                    new { ip = clientIp, url = context.Request.Path.Value }
-                )
-            );
+            _logger.Info(_serverLocalisationService.GetText("client_request_ip", new { ip = clientIp, url = context.Request.Path.Value }));
         }
     }
 
@@ -187,9 +113,7 @@ public class HttpServer(
             return false;
         }
 
-        return remoteAddress.StartsWith("127.0.0")
-            || remoteAddress.StartsWith("192.168.")
-            || remoteAddress.StartsWith("localhost");
+        return remoteAddress.StartsWith("127.0.0") || remoteAddress.StartsWith("192.168.") || remoteAddress.StartsWith("localhost");
     }
 
     protected Dictionary<string, string> GetCookies(HttpRequest req)
@@ -202,11 +126,6 @@ public class HttpServer(
         }
 
         return found;
-    }
-
-    public bool IsStarted()
-    {
-        return _started;
     }
 
     public string ListeningUrl()

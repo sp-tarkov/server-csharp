@@ -1,6 +1,7 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 
@@ -17,7 +18,7 @@ public class TraderStore(
     ISptLogger<TraderStore> logger
 ) : IOnLoad
 {
-    private readonly Dictionary<string, ITrader> _traders = new();
+    private readonly Dictionary<MongoId, ITrader> _traders = new();
 
     public Task OnLoad()
     {
@@ -60,9 +61,7 @@ public class TraderStore(
             }
         }
 
-        logger.Info(
-            $"Importing traders complete {(customTraders == 0 ? "" : $"[{customTraders} traders loaded]")}"
-        );
+        logger.Info($"Importing traders complete {(customTraders == 0 ? "" : $"[{customTraders} traders loaded]")}");
         return Task.CompletedTask;
     }
 
@@ -71,7 +70,7 @@ public class TraderStore(
     /// </summary>
     /// <param name="traderId"></param>
     /// <returns></returns>
-    public ITrader? GetTraderById(string traderId)
+    public ITrader? GetTraderById(MongoId traderId)
     {
         return _traders.GetValueOrDefault(traderId);
     }

@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Constants;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -12,12 +13,11 @@ namespace SPTarkov.Server.Core.Services;
 ///     Cache bots in a dictionary, keyed by the bots ID
 /// </summary>
 [Injectable(InjectionType.Singleton)]
-public class MatchBotDetailsCacheService(ISptLogger<MatchBotDetailsCacheService> _logger)
+public class MatchBotDetailsCacheService(ISptLogger<MatchBotDetailsCacheService> logger)
 {
-    private static readonly HashSet<string> _sidesToCache = [Sides.PmcUsec, Sides.PmcBear];
+    private static readonly FrozenSet<string> _sidesToCache = [Sides.PmcUsec, Sides.PmcBear];
 
-    protected readonly ConcurrentDictionary<string, BotDetailsForChatMessages> BotDetailsCache =
-        new();
+    protected readonly ConcurrentDictionary<string, BotDetailsForChatMessages> BotDetailsCache = new();
 
     /// <summary>
     ///     Store a bot in the cache, keyed by its ID.
@@ -25,24 +25,19 @@ public class MatchBotDetailsCacheService(ISptLogger<MatchBotDetailsCacheService>
     /// <param name="botToCache"> Bot details to cache </param>
     public void CacheBot(BotBase botToCache)
     {
-        if (botToCache is null || botToCache.Id is null)
+        if (botToCache?.Id is null)
         {
             return;
         }
 
         if (botToCache.Info?.Nickname is null)
         {
-            _logger.Warning(
-                $"Unable to cache: {botToCache.Info?.Settings?.Role} bot with id: {botToCache.Id} as it lacks a nickname"
-            );
+            logger.Warning($"Unable to cache: {botToCache.Info?.Settings?.Role} bot with id: {botToCache.Id} as it lacks a nickname");
             return;
         }
 
         // If bot isn't a PMC, skip
-        if (
-            botToCache.Info?.Settings?.Role is null
-            || !_sidesToCache.Contains(botToCache.Info.Settings.Role)
-        )
+        if (botToCache.Info?.Settings?.Role is null || !_sidesToCache.Contains(botToCache.Info.Settings.Role))
         {
             return;
         }
@@ -83,7 +78,7 @@ public class MatchBotDetailsCacheService(ISptLogger<MatchBotDetailsCacheService>
         var botInCache = BotDetailsCache.GetValueOrDefault(id, null);
         if (botInCache is null)
         {
-            _logger.Warning($"Bot not found in match bot cache: {id}");
+            logger.Warning($"Bot not found in match bot cache: {id}");
             return null;
         }
 

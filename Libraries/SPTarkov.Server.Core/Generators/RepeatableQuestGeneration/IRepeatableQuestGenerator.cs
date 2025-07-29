@@ -8,7 +8,7 @@ namespace SPTarkov.Server.Core.Generators.RepeatableQuestGeneration;
 public interface IRepeatableQuestGenerator
 {
     public RepeatableQuest? Generate(
-        string sessionId,
+        MongoId sessionId,
         int pmcLevel,
         MongoId traderId,
         QuestTypePool questTypePool,

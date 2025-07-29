@@ -11,11 +11,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="itemWidthX">Width of item</param>
         /// <param name="itemHeightY">Height of item</param>
         /// <returns>Location to place item in container</returns>
-        public static FindSlotResult FindSlotForItem(
-            this int[,] container2D,
-            int? itemWidthX,
-            int? itemHeightY
-        )
+        public static FindSlotResult FindSlotForItem(this int[,] container2D, int? itemWidthX, int? itemHeightY)
         {
             // Assume not rotated
             var rotation = false;
@@ -45,15 +41,7 @@ namespace SPTarkov.Server.Core.Extensions
                 for (var column = 0; column < limitX; column++)
                 {
                     // Does item fit
-                    if (
-                        CanItemBePlacedInContainerAtPosition(
-                            container2D,
-                            row,
-                            column,
-                            itemWidthX.Value,
-                            itemHeightY.Value
-                        )
-                    )
+                    if (CanItemBePlacedInContainerAtPosition(container2D, row, column, itemWidthX.Value, itemHeightY.Value))
                     {
                         // Success, found a spot it fits
                         return new FindSlotResult(true, column, row, rotation);

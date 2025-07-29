@@ -2,20 +2,28 @@
 
 /// <summary>
 /// Represents a collection of metadata used to determine things such as author, version,
-/// pre-defined load order and incompatibilities. This record is required to be overriden by all mods.
+/// pre-defined load order and incompatibilities. This record is required to be overridden by all mods.
 /// All properties must be overridden. For properties, that you don't need, just assign null.
 /// </summary>
 public abstract record AbstractModMetadata
 {
     /// <summary>
+    /// A Global Unique ID (GUID) to distinguish this mod from all others.
+    /// <br />
+    /// It is recommended (but not mandatory) to use
+    /// <see href="https://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html">reverse domain name notation</see>.
+    /// </summary>
+    public abstract string ModGuid { get; init; }
+
+    /// <summary>
     /// Name of this mod
     /// </summary>
-    public abstract string Name { get; set; }
+    public abstract string Name { get; init; }
 
     /// <summary>
     /// Your username
     /// </summary>
-    public abstract string Author { get; set; }
+    public abstract string Author { get; init; }
 
     /// <summary>
     /// People who have contributed to this mod
@@ -25,12 +33,12 @@ public abstract record AbstractModMetadata
     /// <summary>
     /// Semantic version of this mod, this uses the semver standard
     /// </summary>
-    public abstract string Version { get; set; }
+    public abstract string Version { get; init; }
 
     /// <summary>
     /// SPT version this mod was built for
     /// </summary>
-    public abstract string SptVersion { get; set; }
+    public abstract string SptVersion { get; init; }
 
     /// <summary>
     /// List of mods this mod should load before
@@ -67,5 +75,5 @@ public abstract record AbstractModMetadata
     /// <summary>
     /// Name of the license this mod uses
     /// </summary>
-    public abstract string? Licence { get; set; }
+    public abstract string License { get; init; }
 }

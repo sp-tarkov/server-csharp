@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Match;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
@@ -11,16 +12,16 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class MatchController(
-    ISptLogger<MatchController> _logger,
-    MatchLocationService _matchLocationService,
-    ConfigServer _configServer,
-    LocationLifecycleService _locationLifecycleService,
-    ProfileActivityService _profileActivityService,
-    WeatherHelper _weatherHelper
+    ISptLogger<MatchController> logger,
+    MatchLocationService matchLocationService,
+    ConfigServer configServer,
+    LocationLifecycleService locationLifecycleService,
+    ProfileActivityService profileActivityService,
+    WeatherHelper weatherHelper
 )
 {
-    protected readonly MatchConfig _matchConfig = _configServer.GetConfig<MatchConfig>();
-    protected readonly PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
+    protected readonly MatchConfig _matchConfig = configServer.GetConfig<MatchConfig>();
+    protected readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
 
     /// <summary>
     ///     Handle client/match/available
@@ -37,7 +38,7 @@ public class MatchController(
     /// <param name="request">Delete group request</param>
     public void DeleteGroup(DeleteGroupRequest request)
     {
-        _matchLocationService.DeleteGroup(request);
+        matchLocationService.DeleteGroup(request);
     }
 
     /// <summary>
@@ -46,7 +47,7 @@ public class MatchController(
     /// <param name="request">Start game request</param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>ProfileStatusResponse</returns>
-    public ProfileStatusResponse JoinMatch(MatchGroupJoinRequest request, string sessionId)
+    public ProfileStatusResponse JoinMatch(MatchGroupJoinRequest request, MongoId sessionId)
     {
         var output = new ProfileStatusResponse
         {
@@ -90,22 +91,20 @@ public class MatchController(
     /// </summary>
     /// <param name="request"></param>
     /// <param name="sessionId">Session/Player id</param>
-    public void ConfigureOfflineRaid(GetRaidConfigurationRequestData request, string sessionId)
+    public void ConfigureOfflineRaid(GetRaidConfigurationRequestData request, MongoId sessionId)
     {
         // set IsNightRaid to use it later for bot inventory generation
-        request.IsNightRaid = _weatherHelper.IsNightTime(request.TimeVariant, request.Location);
+        request.IsNightRaid = weatherHelper.IsNightTime(request.TimeVariant, request.Location);
 
         // Store request data for access during bot generation
-        _profileActivityService.GetProfileActivityRaidData(sessionId).RaidConfiguration = request;
+        profileActivityService.GetProfileActivityRaidData(sessionId).RaidConfiguration = request;
 
         // TODO: add code to strip PMC of equipment now they've started the raid
 
         // Set pmcs to difficulty set in pre-raid screen if override in bot config isnt enabled
         if (!_pmcConfig.UseDifficultyOverride)
         {
-            _pmcConfig.Difficulty = ConvertDifficultyDropdownIntoBotDifficulty(
-                request.WavesSettings.BotDifficulty.ToString()
-            );
+            _pmcConfig.Difficulty = ConvertDifficultyDropdownIntoBotDifficulty(request.WavesSettings.BotDifficulty.ToString());
         }
     }
 
@@ -131,12 +130,9 @@ public class MatchController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Start raid request</param>
     /// <returns>StartLocalRaidResponseData</returns>
-    public StartLocalRaidResponseData StartLocalRaid(
-        string sessionId,
-        StartLocalRaidRequestData request
-    )
+    public StartLocalRaidResponseData StartLocalRaid(MongoId sessionId, StartLocalRaidRequestData request)
     {
-        return _locationLifecycleService.StartLocalRaid(sessionId, request);
+        return locationLifecycleService.StartLocalRaid(sessionId, request);
     }
 
     /// <summary>
@@ -144,8 +140,8 @@ public class MatchController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Emd local raid request</param>
-    public void EndLocalRaid(string sessionId, EndLocalRaidRequestData request)
+    public void EndLocalRaid(MongoId sessionId, EndLocalRaidRequestData request)
     {
-        _locationLifecycleService.EndLocalRaid(sessionId, request);
+        locationLifecycleService.EndLocalRaid(sessionId, request);
     }
 }

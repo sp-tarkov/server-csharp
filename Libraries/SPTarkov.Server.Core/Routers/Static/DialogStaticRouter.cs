@@ -18,249 +18,146 @@ public class DialogStaticRouter : StaticRouter
                 new RouteAction(
                     "/client/chatServer/list",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.GetChatServerList(
-                            url,
-                            info as GetChatServerListRequestData,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.GetChatServerList(url, info as GetChatServerListRequestData, sessionID),
                     typeof(GetChatServerListRequestData)
                 ),
                 new RouteAction(
                     "/client/mail/dialog/list",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.GetMailDialogList(
-                            url,
-                            info as GetMailDialogListRequestData,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.GetMailDialogList(url, info as GetMailDialogListRequestData, sessionID),
                     typeof(GetMailDialogListRequestData)
                 ),
                 new RouteAction(
                     "/client/mail/dialog/view",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.GetMailDialogView(
-                            url,
-                            info as GetMailDialogViewRequestData,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.GetMailDialogView(url, info as GetMailDialogViewRequestData, sessionID),
                     typeof(GetMailDialogViewRequestData)
                 ),
                 new RouteAction(
                     "/client/mail/dialog/info",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.GetMailDialogInfo(
-                            url,
-                            info as GetMailDialogInfoRequestData,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.GetMailDialogInfo(url, info as GetMailDialogInfoRequestData, sessionID),
                     typeof(GetMailDialogInfoRequestData)
                 ),
                 new RouteAction(
                     "/client/mail/dialog/remove",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.RemoveDialog(
-                            url,
-                            info as RemoveDialogRequestData,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.RemoveDialog(url, info as RemoveDialogRequestData, sessionID),
                     typeof(RemoveDialogRequestData)
                 ),
                 new RouteAction(
                     "/client/mail/dialog/pin",
-                    async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.PinDialog(
-                            url,
-                            info as PinDialogRequestData,
-                            sessionID
-                        ),
+                    async (url, info, sessionID, output) => await dialogueCallbacks.PinDialog(url, info as PinDialogRequestData, sessionID),
                     typeof(PinDialogRequestData)
                 ),
                 new RouteAction(
                     "/client/mail/dialog/unpin",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.UnpinDialog(
-                            url,
-                            info as PinDialogRequestData,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.UnpinDialog(url, info as PinDialogRequestData, sessionID),
                     typeof(PinDialogRequestData)
                 ),
                 new RouteAction(
                     "/client/mail/dialog/read",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.SetRead(
-                            url,
-                            info as SetDialogReadRequestData,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.SetRead(url, info as SetDialogReadRequestData, sessionID),
                     typeof(SetDialogReadRequestData)
                 ),
                 new RouteAction(
                     "/client/mail/dialog/getAllAttachments",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.GetAllAttachments(
-                            url,
-                            info as GetAllAttachmentsRequestData,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.GetAllAttachments(url, info as GetAllAttachmentsRequestData, sessionID),
                     typeof(GetAllAttachmentsRequestData)
                 ),
                 new RouteAction(
                     "/client/mail/msg/send",
-                    async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.SendMessage(
-                            url,
-                            info as SendMessageRequest,
-                            sessionID
-                        ),
+                    async (url, info, sessionID, output) => await dialogueCallbacks.SendMessage(url, info as SendMessageRequest, sessionID),
                     typeof(SendMessageRequest)
                 ),
                 new RouteAction(
                     "/client/mail/dialog/clear",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.ClearMail(
-                            url,
-                            info as ClearMailMessageRequest,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.ClearMail(url, info as ClearMailMessageRequest, sessionID),
                     typeof(ClearMailMessageRequest)
                 ),
                 new RouteAction(
                     "/client/mail/dialog/group/create",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.CreateGroupMail(
-                            url,
-                            info as CreateGroupMailRequest,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.CreateGroupMail(url, info as CreateGroupMailRequest, sessionID),
                     typeof(CreateGroupMailRequest)
                 ),
                 new RouteAction(
                     "/client/mail/dialog/group/owner/change",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.ChangeMailGroupOwner(
-                            url,
-                            info as ChangeGroupMailOwnerRequest,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.ChangeMailGroupOwner(url, info as ChangeGroupMailOwnerRequest, sessionID),
                     typeof(ChangeGroupMailOwnerRequest)
                 ),
                 new RouteAction(
                     "/client/mail/dialog/group/users/add",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.AddUserToMail(
-                            url,
-                            info as AddUserGroupMailRequest,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.AddUserToMail(url, info as AddUserGroupMailRequest, sessionID),
                     typeof(AddUserGroupMailRequest)
                 ),
                 new RouteAction(
                     "/client/mail/dialog/group/users/remove",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.RemoveUserFromMail(
-                            url,
-                            info as RemoveUserGroupMailRequest,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.RemoveUserFromMail(url, info as RemoveUserGroupMailRequest, sessionID),
                     typeof(RemoveUserGroupMailRequest)
                 ),
                 new RouteAction(
                     "/client/friend/list",
-                    async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.GetFriendList(
-                            url,
-                            info as EmptyRequestData,
-                            sessionID
-                        )
+                    async (url, info, sessionID, output) => await dialogueCallbacks.GetFriendList(url, info as EmptyRequestData, sessionID)
                 ),
                 new RouteAction(
                     "/client/friend/request/list/outbox",
-                    async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.ListOutbox(url, info as EmptyRequestData, sessionID)
+                    async (url, info, sessionID, output) => await dialogueCallbacks.ListOutbox(url, info as EmptyRequestData, sessionID)
                 ),
                 new RouteAction(
                     "/client/friend/request/list/inbox",
-                    async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.ListInbox(url, info as EmptyRequestData, sessionID)
+                    async (url, info, sessionID, output) => await dialogueCallbacks.ListInbox(url, info as EmptyRequestData, sessionID)
                 ),
                 new RouteAction(
                     "/client/friend/request/send",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.SendFriendRequest(
-                            url,
-                            info as FriendRequestData,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.SendFriendRequest(url, info as FriendRequestData, sessionID),
                     typeof(FriendRequestData)
                 ),
                 new RouteAction(
                     "/client/friend/request/accept-all",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.AcceptAllFriendRequests(
-                            url,
-                            info as EmptyRequestData,
-                            sessionID
-                        )
+                        await dialogueCallbacks.AcceptAllFriendRequests(url, info as EmptyRequestData, sessionID)
                 ),
                 new RouteAction(
                     "/client/friend/request/accept",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.AcceptFriendRequest(
-                            url,
-                            info as AcceptFriendRequestData,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.AcceptFriendRequest(url, info as AcceptFriendRequestData, sessionID),
                     typeof(AcceptFriendRequestData)
                 ),
                 new RouteAction(
                     "/client/friend/request/decline",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.DeclineFriendRequest(
-                            url,
-                            info as DeclineFriendRequestData,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.DeclineFriendRequest(url, info as DeclineFriendRequestData, sessionID),
                     typeof(DeclineFriendRequestData)
                 ),
                 new RouteAction(
                     "/client/friend/request/cancel",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.CancelFriendRequest(
-                            url,
-                            info as CancelFriendRequestData,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.CancelFriendRequest(url, info as CancelFriendRequestData, sessionID),
                     typeof(CancelFriendRequestData)
                 ),
                 new RouteAction(
                     "/client/friend/delete",
                     async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.DeleteFriend(
-                            url,
-                            info as DeleteFriendRequest,
-                            sessionID
-                        ),
+                        await dialogueCallbacks.DeleteFriend(url, info as DeleteFriendRequest, sessionID),
                     typeof(DeleteFriendRequest)
                 ),
                 new RouteAction(
                     "/client/friend/ignore/set",
-                    async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.IgnoreFriend(
-                            url,
-                            info as UIDRequestData,
-                            sessionID
-                        ),
+                    async (url, info, sessionID, output) => await dialogueCallbacks.IgnoreFriend(url, info as UIDRequestData, sessionID),
                     typeof(UIDRequestData)
                 ),
                 new RouteAction(
                     "/client/friend/ignore/remove",
-                    async (url, info, sessionID, output) =>
-                        await dialogueCallbacks.UnIgnoreFriend(
-                            url,
-                            info as UIDRequestData,
-                            sessionID
-                        ),
+                    async (url, info, sessionID, output) => await dialogueCallbacks.UnIgnoreFriend(url, info as UIDRequestData, sessionID),
                     typeof(UIDRequestData)
                 ),
             ]

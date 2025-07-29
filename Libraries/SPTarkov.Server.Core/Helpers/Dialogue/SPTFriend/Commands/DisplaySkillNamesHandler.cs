@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
@@ -19,12 +20,7 @@ public class DisplaySkillNamesHandler(MailSendService _mailSendService) : IChatM
         return string.Equals(message, "skills", StringComparison.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        string sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         // Get all items as an array
         var skills = Enum.GetNames(typeof(SkillTypes)).Order();
@@ -43,13 +39,7 @@ public class DisplaySkillNamesHandler(MailSendService _mailSendService) : IChatM
             Thread.Sleep(500);
 
             // Send to player
-            _mailSendService.SendUserMessageToPlayer(
-                sessionId,
-                sptFriendUser,
-                itemsToSendCsv,
-                [],
-                null
-            );
+            _mailSendService.SendUserMessageToPlayer(sessionId, sptFriendUser, itemsToSendCsv, [], null);
 
             // Increment processed count
             parsedCount += itemsToSend.Count();

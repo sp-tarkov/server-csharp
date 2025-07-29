@@ -1,6 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Dialogue;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Eft.Ws;
@@ -15,19 +16,19 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class DialogueController(
-    ISptLogger<DialogueController> _logger,
-    TimeUtil _timeUtil,
-    DialogueHelper _dialogueHelper,
-    NotificationSendHelper _notificationSendHelper,
-    ProfileHelper _profileHelper,
-    ConfigServer _configServer,
-    SaveServer _saveServer,
-    ServerLocalisationService _serverLocalisationService,
-    MailSendService _mailSendService,
+    ISptLogger<DialogueController> logger,
+    TimeUtil timeUtil,
+    DialogueHelper dialogueHelper,
+    NotificationSendHelper notificationSendHelper,
+    ProfileHelper profileHelper,
+    ConfigServer configServer,
+    SaveServer saveServer,
+    ServerLocalisationService serverLocalisationService,
+    MailSendService mailSendService,
     IEnumerable<IDialogueChatBot> dialogueChatBots
 )
 {
-    protected readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
     protected readonly List<IDialogueChatBot> _dialogueChatBots = dialogueChatBots.ToList();
 
     /// <summary>
@@ -37,12 +38,7 @@ public class DialogueController(
     {
         if (_dialogueChatBots.Any(cb => cb.GetChatBot().Id == chatBot.GetChatBot().Id))
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "dialog-chatbot_id_already_exists",
-                    chatBot.GetChatBot().Id
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("dialog-chatbot_id_already_exists", chatBot.GetChatBot().Id));
         }
 
         _dialogueChatBots.Add(chatBot);
@@ -53,10 +49,10 @@ public class DialogueController(
     /// </summary>
     public void Update()
     {
-        var profiles = _saveServer.GetProfiles();
-        foreach (var kvp in profiles)
+        var profiles = saveServer.GetProfiles();
+        foreach (var (sessionId, _) in profiles)
         {
-            RemoveExpiredItemsFromMessages(kvp.Key);
+            RemoveExpiredItemsFromMessages(sessionId);
         }
     }
 
@@ -65,18 +61,18 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionId">session id</param>
     /// <returns>GetFriendListDataResponse</returns>
-    public virtual GetFriendListDataResponse GetFriendList(string sessionId)
+    public virtual GetFriendListDataResponse GetFriendList(MongoId sessionId)
     {
         // Add all chatbots to the friends list
         var friends = GetActiveChatBots();
 
         // Add any friends the user has after the chatbots
-        var profile = _profileHelper.GetFullProfile(sessionId);
+        var profile = profileHelper.GetFullProfile(sessionId);
         if (profile?.FriendProfileIds is not null)
         {
             foreach (var friendId in profile.FriendProfileIds)
             {
-                var friendProfile = _profileHelper.GetChatRoomMemberFromSessionId(friendId);
+                var friendProfile = profileHelper.GetChatRoomMemberFromSessionId(friendId);
                 if (friendProfile is not null)
                 {
                     friends.Add(
@@ -124,10 +120,10 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionId">Session Id</param>
     /// <returns>list of dialogs</returns>
-    public virtual List<DialogueInfo> GenerateDialogueList(string sessionId)
+    public virtual List<DialogueInfo> GenerateDialogueList(MongoId sessionId)
     {
         var data = new List<DialogueInfo>();
-        foreach (var (_, dialog) in _dialogueHelper.GetDialogsForProfile(sessionId))
+        foreach (var (_, dialog) in dialogueHelper.GetDialogsForProfile(sessionId))
         {
             var dialogueInfo = GetDialogueInfo(dialog, sessionId);
             if (dialogueInfo is null)
@@ -147,9 +143,9 @@ public class DialogueController(
     /// <param name="dialogueId">Dialog id</param>
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
-    public virtual DialogueInfo? GetDialogueInfo(string? dialogueId, string sessionId)
+    public virtual DialogueInfo? GetDialogueInfo(string? dialogueId, MongoId sessionId)
     {
-        var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
+        var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
         var dialogue = dialogs!.GetValueOrDefault(dialogueId);
 
         return GetDialogueInfo(dialogue, sessionId);
@@ -161,7 +157,7 @@ public class DialogueController(
     /// <param name="dialogue">Dialog</param>
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
-    public virtual DialogueInfo? GetDialogueInfo(Dialogue dialogue, string sessionId)
+    public virtual DialogueInfo? GetDialogueInfo(Dialogue dialogue, MongoId sessionId)
     {
         if (!dialogue.Messages.Any())
         {
@@ -171,8 +167,8 @@ public class DialogueController(
         var result = new DialogueInfo
         {
             Id = dialogue.Id,
-            Type = dialogue?.Type ?? MessageType.NpcTraderMessage,
-            Message = _dialogueHelper.GetMessagePreview(dialogue),
+            Type = dialogue.Type ?? MessageType.NpcTraderMessage,
+            Message = dialogueHelper.GetMessagePreview(dialogue),
             New = dialogue?.New,
             AttachmentsNew = dialogue?.AttachmentsNew,
             Pinned = dialogue?.Pinned,
@@ -189,27 +185,21 @@ public class DialogueController(
     /// <param name="messageType">What type of message is being sent</param>
     /// <param name="sessionId">Player id</param>
     /// <returns>UserDialogInfo list</returns>
-    public virtual List<UserDialogInfo> GetDialogueUsers(
-        Dialogue? dialog,
-        MessageType? messageType,
-        string sessionId
-    )
+    public virtual List<UserDialogInfo> GetDialogueUsers(Dialogue? dialog, MessageType? messageType, MongoId sessionId)
     {
-        var profile = _saveServer.GetProfile(sessionId);
+        var profile = saveServer.GetProfile(sessionId);
 
         // User to user messages are special in that they need the player to exist in them, add if they don't
         if (
             messageType == MessageType.UserMessage
             && dialog?.Users is not null
-            && dialog.Users.All(userDialog =>
-                userDialog.Id != profile.CharacterData?.PmcData?.SessionId
-            )
+            && dialog.Users.All(userDialog => userDialog.Id != profile.CharacterData?.PmcData?.SessionId)
         )
         {
             dialog.Users.Add(
                 new UserDialogInfo
                 {
-                    Id = profile.CharacterData?.PmcData?.SessionId,
+                    Id = profile.CharacterData.PmcData.SessionId.Value,
                     Aid = profile.CharacterData?.PmcData?.Aid,
                     Info = new UserDialogDetails
                     {
@@ -217,11 +207,7 @@ public class DialogueController(
                         Nickname = profile.CharacterData?.PmcData?.Info?.Nickname,
                         Side = profile.CharacterData?.PmcData?.Info?.Side,
                         MemberCategory = profile.CharacterData?.PmcData?.Info?.MemberCategory,
-                        SelectedMemberCategory = profile
-                            .CharacterData
-                            ?.PmcData
-                            ?.Info
-                            ?.SelectedMemberCategory,
+                        SelectedMemberCategory = profile.CharacterData?.PmcData?.Info?.SelectedMemberCategory,
                     },
                 }
             );
@@ -239,13 +225,10 @@ public class DialogueController(
     /// <param name="request">Get dialog request</param>
     /// <param name="sessionId">Session id</param>
     /// <returns>GetMailDialogViewResponseData object</returns>
-    public virtual GetMailDialogViewResponseData GenerateDialogueView(
-        GetMailDialogViewRequestData request,
-        string sessionId
-    )
+    public virtual GetMailDialogViewResponseData GenerateDialogueView(GetMailDialogViewRequestData request, MongoId sessionId)
     {
         var dialogueId = request.DialogId;
-        var fullProfile = _saveServer.GetProfile(sessionId);
+        var fullProfile = saveServer.GetProfile(sessionId);
         var dialogue = GetDialogByIdFromProfile(fullProfile, request);
 
         if (!dialogue.Messages.Any())
@@ -278,18 +261,11 @@ public class DialogueController(
     /// <param name="profile">Player profile</param>
     /// <param name="request">get dialog request</param>
     /// <returns>Dialogue</returns>
-    protected Dialogue GetDialogByIdFromProfile(
-        SptProfile profile,
-        GetMailDialogViewRequestData request
-    )
+    protected Dialogue GetDialogByIdFromProfile(SptProfile profile, GetMailDialogViewRequestData request)
     {
-        if (
-            profile.DialogueRecords is null
-            || profile.DialogueRecords.ContainsKey(request.DialogId!)
-        )
+        if (profile.DialogueRecords is null || profile.DialogueRecords.ContainsKey(request.DialogId!))
         {
-            return profile.DialogueRecords?[request.DialogId!]
-                ?? throw new NullReferenceException();
+            return profile.DialogueRecords?[request.DialogId!] ?? throw new NullReferenceException();
         }
 
         profile.DialogueRecords[request.DialogId!] = new Dialogue
@@ -309,9 +285,7 @@ public class DialogueController(
 
         var dialogue = profile.DialogueRecords[request.DialogId!];
         dialogue.Users = [];
-        var chatBot = _dialogueChatBots.FirstOrDefault(cb =>
-            cb.GetChatBot().Id == request.DialogId
-        );
+        var chatBot = _dialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId);
 
         if (chatBot is null)
         {
@@ -330,10 +304,7 @@ public class DialogueController(
     /// <param name="fullProfile">Player profile</param>
     /// <param name="userDialogs">The participants of the mail</param>
     /// <returns>UserDialogInfo list</returns>
-    protected List<UserDialogInfo> GetProfilesForMail(
-        SptProfile fullProfile,
-        List<UserDialogInfo>? userDialogs
-    )
+    protected List<UserDialogInfo> GetProfilesForMail(SptProfile fullProfile, List<UserDialogInfo>? userDialogs)
     {
         List<UserDialogInfo> result = [];
         if (userDialogs is null)
@@ -354,7 +325,7 @@ public class DialogueController(
         result.Add(
             new UserDialogInfo
             {
-                Id = fullProfile.ProfileInfo?.ProfileId,
+                Id = fullProfile.ProfileInfo.ProfileId.Value,
                 Aid = fullProfile.ProfileInfo?.Aid,
                 Info = new UserDialogDetails
                 {
@@ -376,16 +347,13 @@ public class DialogueController(
     /// <param name="sessionId">Session id</param>
     /// <param name="dialogueId">Dialog id</param>
     /// <returns>Count of messages with attachments</returns>
-    protected int GetUnreadMessagesWithAttachmentsCount(string sessionId, string dialogueId)
+    protected int GetUnreadMessagesWithAttachmentsCount(MongoId sessionId, string dialogueId)
     {
         var newAttachmentCount = 0;
         var activeMessages = GetActiveMessagesFromDialog(sessionId, dialogueId);
         foreach (var message in activeMessages)
         {
-            if (
-                message.HasRewards.GetValueOrDefault(false)
-                && !message.RewardCollected.GetValueOrDefault(false)
-            )
+            if (message.HasRewards.GetValueOrDefault(false) && !message.RewardCollected.GetValueOrDefault(false))
             {
                 newAttachmentCount++;
             }
@@ -397,13 +365,13 @@ public class DialogueController(
     /// <summary>
     ///     Get messages from a specific dialog that have items not expired
     /// </summary>
-    /// <param name="sessionID">Session/Player id</param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="dialogueId">Dialog to get mail attachments from</param>
     /// <returns>Message array</returns>
-    protected List<Message> GetActiveMessagesFromDialog(string sessionId, string dialogueId)
+    protected List<Message> GetActiveMessagesFromDialog(MongoId sessionId, string dialogueId)
     {
-        var timeNow = _timeUtil.GetTimeStamp();
-        var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
+        var timeNow = timeUtil.GetTimeStamp();
+        var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
 
         return dialogs[dialogueId]
                 .Messages?.Where(message =>
@@ -430,22 +398,13 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueId">id of the dialog to remove</param>
     /// <param name="sessionId">Player id</param>
-    public virtual void RemoveDialogue(string? dialogueId, string sessionId)
+    public virtual void RemoveDialogue(string? dialogueId, MongoId sessionId)
     {
-        var profile = _saveServer.GetProfile(sessionId);
-        if (!profile.DialogueRecords.ContainsKey(dialogueId))
+        var profile = saveServer.GetProfile(sessionId);
+        if (!profile.DialogueRecords.Remove(dialogueId))
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "dialogue-unable_to_find_in_profile",
-                    new { sessionId, dialogueId }
-                )
-            );
-
-            return;
+            logger.Error(serverLocalisationService.GetText("dialogue-unable_to_find_in_profile", new { sessionId, dialogueId }));
         }
-
-        profile.DialogueRecords.Remove(dialogueId);
     }
 
     /// <summary>
@@ -454,17 +413,12 @@ public class DialogueController(
     /// <param name="dialogueId"></param>
     /// <param name="shouldPin"></param>
     /// <param name="sessionId">Session/Player id</param>
-    public virtual void SetDialoguePin(string? dialogueId, bool shouldPin, string sessionId)
+    public virtual void SetDialoguePin(string? dialogueId, bool shouldPin, MongoId sessionId)
     {
-        var dialog = _dialogueHelper.GetDialogsForProfile(sessionId).GetValueOrDefault(dialogueId);
+        var dialog = dialogueHelper.GetDialogsForProfile(sessionId).GetValueOrDefault(dialogueId);
         if (dialog is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "dialogue-unable_to_find_in_profile",
-                    new { sessionId, dialogueId }
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("dialogue-unable_to_find_in_profile", new { sessionId, dialogueId }));
 
             return;
         }
@@ -478,17 +432,12 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueIds">Dialog ids to set as read</param>
     /// <param name="sessionId">Player profile id</param>
-    public virtual void SetRead(List<string>? dialogueIds, string sessionId)
+    public virtual void SetRead(List<string>? dialogueIds, MongoId sessionId)
     {
-        var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
-        if (dialogs is null || !dialogs.Any())
+        var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
+        if (dialogs.Any() != true)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "dialogue-unable_to_find_dialogs_in_profile",
-                    new { sessionId }
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("dialogue-unable_to_find_dialogs_in_profile", new { sessionId }));
 
             return;
         }
@@ -506,20 +455,20 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueId">Dialog to get mail attachments from</param>
     /// <param name="sessionId">Session id</param>
-    /// <returns>GetAllAttachmentsResponse or null if dialogue doesnt exist</returns>
-    public virtual GetAllAttachmentsResponse GetAllAttachments(string dialogueId, string sessionId)
+    /// <returns>GetAllAttachmentsResponse or null if dialogue doesn't exist</returns>
+    public virtual GetAllAttachmentsResponse? GetAllAttachments(string dialogueId, MongoId sessionId)
     {
-        var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
+        var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
         var dialog = dialogs.TryGetValue(dialogueId, out var dialogInfo);
         if (!dialog)
         {
-            _logger.Error(_serverLocalisationService.GetText("dialogue-unable_to_find_in_profile"));
+            logger.Error(serverLocalisationService.GetText("dialogue-unable_to_find_in_profile"));
 
             return null;
         }
 
         // Removes corner 'new messages' tag
-        dialogInfo.AttachmentsNew = 0;
+        dialogInfo!.AttachmentsNew = 0;
 
         var activeMessages = GetActiveMessagesFromDialog(sessionId, dialogueId);
         var messagesWithAttachments = GetMessageWithAttachments(activeMessages);
@@ -538,13 +487,11 @@ public class DialogueController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public virtual async ValueTask<string> SendMessage(string sessionId, SendMessageRequest request)
+    public virtual async ValueTask<string> SendMessage(MongoId sessionId, SendMessageRequest request)
     {
-        _mailSendService.SendPlayerMessageToNpc(sessionId, request.DialogId!, request.Text!);
+        mailSendService.SendPlayerMessageToNpc(sessionId, request.DialogId, request.Text);
 
-        var chatBot = _dialogueChatBots.FirstOrDefault(cb =>
-            cb.GetChatBot().Id == request.DialogId
-        );
+        var chatBot = _dialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId);
 
         if (chatBot is not null)
         {
@@ -570,9 +517,9 @@ public class DialogueController(
     ///     Delete expired items from all messages in player profile. triggers when updating traders.
     /// </summary>
     /// <param name="sessionId">Session id</param>
-    protected void RemoveExpiredItemsFromMessages(string sessionId)
+    protected void RemoveExpiredItemsFromMessages(MongoId sessionId)
     {
-        foreach (var (dialogId, _) in _dialogueHelper.GetDialogsForProfile(sessionId))
+        foreach (var (dialogId, _) in dialogueHelper.GetDialogsForProfile(sessionId))
         {
             RemoveExpiredItemsFromMessage(sessionId, dialogId);
         }
@@ -583,9 +530,9 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="dialogueId">Dialog id</param>
-    protected void RemoveExpiredItemsFromMessage(string sessionId, string dialogueId)
+    protected void RemoveExpiredItemsFromMessage(MongoId sessionId, string dialogueId)
     {
-        var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
+        var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
         if (!dialogs.TryGetValue(dialogueId, out var dialog))
         {
             return;
@@ -607,7 +554,7 @@ public class DialogueController(
     /// <returns>True = expired</returns>
     protected bool MessageHasExpired(Message message)
     {
-        return _timeUtil.GetTimeStamp() > message.DateTime + (message.MaxStorageTime ?? 0);
+        return timeUtil.GetTimeStamp() > message.DateTime + (message.MaxStorageTime ?? 0);
     }
 
     /// <summary>
@@ -616,13 +563,10 @@ public class DialogueController(
     /// <param name="sessionID">Session/player id</param>
     /// <param name="request">Sent friend request</param>
     /// <returns></returns>
-    public virtual FriendRequestSendResponse SendFriendRequest(
-        string sessionID,
-        FriendRequestData request
-    )
+    public virtual FriendRequestSendResponse SendFriendRequest(MongoId sessionID, FriendRequestData request)
     {
         // To avoid needing to jump between profiles, auto-accept all friend requests
-        var friendProfile = _profileHelper.GetFullProfile(request.To);
+        var friendProfile = profileHelper.GetFullProfile(request.To.Value);
         if (friendProfile?.CharacterData?.PmcData is null)
         {
             return new FriendRequestSendResponse
@@ -634,11 +578,8 @@ public class DialogueController(
         }
 
         // Only add the profile to the friends list if it doesn't already exist
-        var profile = _saveServer.GetProfile(sessionID);
-        if (!profile.FriendProfileIds.Contains(request.To))
-        {
-            profile.FriendProfileIds.Add(request.To);
-        }
+        var profile = saveServer.GetProfile(sessionID);
+        profile.FriendProfileIds.Add(request.To.Value);
 
         // We need to delay this so that the friend request gets properly added to the clientside list before we accept it
         _ = new Timer(
@@ -647,11 +588,9 @@ public class DialogueController(
                 var notification = new WsFriendsListAccept
                 {
                     EventType = NotificationEventType.friendListRequestAccept,
-                    Profile = _profileHelper.GetChatRoomMemberFromPmcProfile(
-                        friendProfile.CharacterData.PmcData
-                    ),
+                    Profile = profileHelper.GetChatRoomMemberFromPmcProfile(friendProfile.CharacterData.PmcData),
                 };
-                _notificationSendHelper.SendMessage(sessionID, notification);
+                notificationSendHelper.SendMessage(sessionID, notification);
             },
             null,
             TimeSpan.FromMicroseconds(1000),
@@ -671,14 +610,10 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionID">Session/player id</param>
     /// <param name="request">Sent delete friend request</param>
-    public virtual void DeleteFriend(string sessionID, DeleteFriendRequest request)
+    public virtual void DeleteFriend(MongoId sessionID, DeleteFriendRequest request)
     {
-        var profile = _saveServer.GetProfile(sessionID);
-        var friendIndex = profile.FriendProfileIds.IndexOf(request.FriendId);
-        if (friendIndex != -1)
-        {
-            profile.FriendProfileIds.RemoveAt(friendIndex);
-        }
+        var profile = saveServer.GetProfile(sessionID);
+        profile?.FriendProfileIds?.Remove(request.FriendId);
     }
 
     /// <summary>
@@ -686,14 +621,12 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Client request to clear messages</param>
-    public void ClearMessages(string sessionId, ClearMailMessageRequest request)
+    public void ClearMessages(MongoId sessionId, ClearMailMessageRequest request)
     {
-        var profile = _saveServer.GetProfile(sessionId);
+        var profile = saveServer.GetProfile(sessionId);
         if (!profile.DialogueRecords.TryGetValue(request.DialogId, out var dialogToClear))
         {
-            _logger.Warning(
-                $"unable to clear messages from dialog: {request.DialogId} as it cannot be found in profile: {sessionId}"
-            );
+            logger.Warning($"unable to clear messages from dialog: {request.DialogId} as it cannot be found in profile: {sessionId}");
 
             return;
         }

@@ -1,4 +1,5 @@
-﻿using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+﻿using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Services;
 
 namespace SPTarkov.Server.Core.Models;
@@ -6,13 +7,13 @@ namespace SPTarkov.Server.Core.Models;
 public interface ITrader
 {
     public string Name { get; }
-    public string Id { get; }
+    public MongoId Id { get; }
 }
 
 public abstract record ICustomTrader : ITrader
 {
     public abstract string Name { get; }
-    public abstract string Id { get; }
+    public abstract MongoId Id { get; }
 
     public abstract TraderAssort? GetAssort();
 

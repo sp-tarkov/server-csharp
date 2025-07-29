@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Routers;
@@ -7,25 +8,14 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
-public class ItemEventCallbacks(
-    HttpResponseUtil _httpResponseUtil,
-    ItemEventRouter _itemEventRouter
-)
+public class ItemEventCallbacks(HttpResponseUtil httpResponseUtil, ItemEventRouter itemEventRouter)
 {
-    public async ValueTask<string> HandleEvents(
-        string url,
-        ItemEventRouterRequest info,
-        string sessionID
-    )
+    public async ValueTask<string> HandleEvents(string url, ItemEventRouterRequest info, MongoId sessionID)
     {
-        var eventResponse = await _itemEventRouter.HandleEvents(info, sessionID);
+        var eventResponse = await itemEventRouter.HandleEvents(info, sessionID);
         var result = IsCriticalError(eventResponse.Warnings)
-            ? _httpResponseUtil.GetBody(
-                eventResponse,
-                GetErrorCode(eventResponse.Warnings),
-                eventResponse.Warnings[0].ErrorMessage
-            )
-            : _httpResponseUtil.GetBody(eventResponse);
+            ? httpResponseUtil.GetBody(eventResponse, GetErrorCode(eventResponse.Warnings), eventResponse.Warnings[0].ErrorMessage)
+            : httpResponseUtil.GetBody(eventResponse);
 
         return result;
     }
@@ -43,10 +33,7 @@ public class ItemEventCallbacks(
         }
 
         // List of non-critical error codes, we return true if any error NOT included is passed in
-        var nonCriticalErrorCodes = new HashSet<BackendErrorCodes>
-        {
-            BackendErrorCodes.NotEnoughSpace,
-        };
+        var nonCriticalErrorCodes = new HashSet<BackendErrorCodes> { BackendErrorCodes.NotEnoughSpace };
 
         foreach (var warning in warnings)
         {

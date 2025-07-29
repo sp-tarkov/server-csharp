@@ -14,36 +14,35 @@ using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
+using SPTarkov.Server.Core.Utils.Json;
 
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable]
 public class CreateProfileService(
-    ISptLogger<CreateProfileService> _logger,
-    TimeUtil _timeUtil,
-    DatabaseService _databaseService,
-    ServerLocalisationService _serverLocalisationService,
-    ProfileHelper _profileHelper,
-    ItemHelper _itemHelper,
-    TraderHelper _traderHelper,
-    QuestHelper _questHelper,
-    QuestRewardHelper _questRewardHelper,
-    PrestigeHelper _prestigeHelper,
-    RewardHelper _rewardHelper,
-    ProfileFixerService _profileFixerService,
-    SaveServer _saveServer,
-    EventOutputHolder _eventOutputHolder,
-    PlayerScavGenerator _playerScavGenerator,
-    ICloner _cloner,
-    MailSendService _mailSendService
+    ISptLogger<CreateProfileService> logger,
+    TimeUtil timeUtil,
+    DatabaseService databaseService,
+    ServerLocalisationService serverLocalisationService,
+    ProfileHelper profileHelper,
+    ItemHelper itemHelper,
+    TraderHelper traderHelper,
+    QuestHelper questHelper,
+    QuestRewardHelper questRewardHelper,
+    PrestigeHelper prestigeHelper,
+    RewardHelper rewardHelper,
+    ProfileFixerService profileFixerService,
+    SaveServer saveServer,
+    EventOutputHolder eventOutputHolder,
+    PlayerScavGenerator playerScavGenerator,
+    ICloner cloner,
+    MailSendService mailSendService
 )
 {
-    public async ValueTask<string> CreateProfile(string sessionId, ProfileCreateRequestData request)
+    public async ValueTask<string> CreateProfile(MongoId sessionId, ProfileCreateRequestData request)
     {
-        var account = _cloner.Clone(_saveServer.GetProfile(sessionId));
-        var profileTemplateClone = _cloner.Clone(
-            _profileHelper.GetProfileTemplateForSide(account.ProfileInfo.Edition, request.Side)
-        );
+        var account = cloner.Clone(saveServer.GetProfile(sessionId));
+        var profileTemplateClone = cloner.Clone(profileHelper.GetProfileTemplateForSide(account.ProfileInfo.Edition, request.Side));
 
         var pmcData = profileTemplateClone.Character;
 
@@ -56,18 +55,20 @@ public class CreateProfileService(
         pmcData.SessionId = sessionId;
         pmcData.Info.Nickname = request.Nickname;
         pmcData.Info.LowerNickname = request.Nickname.ToLowerInvariant();
-        pmcData.Info.RegistrationDate = (int)_timeUtil.GetTimeStamp();
-        pmcData.Info.Voice = _databaseService.GetCustomization()[request.VoiceId].Name;
-        pmcData.Stats = _profileHelper.GetDefaultCounters();
+        pmcData.Info.RegistrationDate = (int)timeUtil.GetTimeStamp();
+        pmcData.Customization.Voice = databaseService.GetCustomization()[request.VoiceId].Id;
+        pmcData.Stats = profileHelper.GetDefaultCounters();
         pmcData.Info.NeedWipeOptions = [];
         pmcData.Customization.Head = request.HeadId;
-        pmcData.Health.UpdateTime = _timeUtil.GetTimeStamp();
+        pmcData.Health.UpdateTime = timeUtil.GetTimeStamp();
         pmcData.Quests = [];
         pmcData.Hideout.Seed = Convert.ToHexStringLower(RandomNumberGenerator.GetBytes(16));
         pmcData.RepeatableQuests = [];
-        pmcData.CarExtractCounts = new Dictionary<string, int>();
-        pmcData.CoopExtractCounts = new Dictionary<string, int>();
-        pmcData.Achievements = new Dictionary<MongoId, long>();
+        pmcData.CarExtractCounts = [];
+        pmcData.CoopExtractCounts = [];
+        pmcData.Achievements = [];
+
+        pmcData.WishList = new DictionaryOrList<MongoId, int>([], []);
 
         // Process handling if the account has been forced to wipe
         // BSG keeps both the achievements, prestige level and the total in-game time in a wipe
@@ -82,19 +83,6 @@ public class CreateProfileService(
             pmcData.Info.PrestigeLevel = account.CharacterData.PmcData.Info.PrestigeLevel;
         }
 
-        if (account.CharacterData?.PmcData?.Stats?.Eft is not null)
-        {
-            if (pmcData.Stats.Eft is not null)
-            {
-                pmcData.Stats.Eft.TotalInGameTime = account
-                    .CharacterData
-                    .PmcData
-                    .Stats
-                    .Eft
-                    .TotalInGameTime;
-            }
-        }
-
         UpdateInventoryEquipmentId(pmcData);
 
         pmcData.UnlockedInfo ??= new UnlockedInfo { UnlockedProductionRecipe = [] };
@@ -103,7 +91,7 @@ public class CreateProfileService(
         AddMissingInternalContainersToProfile(pmcData);
 
         // Change item IDs to be unique
-        _itemHelper.ReplaceProfileInventoryIds(pmcData.Inventory);
+        itemHelper.ReplaceProfileInventoryIds(pmcData.Inventory);
 
         // Create profile
         var profileDetails = new SptProfile
@@ -112,31 +100,51 @@ public class CreateProfileService(
             CharacterData = new Characters { PmcData = pmcData, ScavData = new PmcData() },
             UserBuildData = profileTemplateClone.UserBuilds,
             DialogueRecords = profileTemplateClone.Dialogues,
-            SptData = _profileHelper.GetDefaultSptDataObject(),
+            SptData = profileHelper.GetDefaultSptDataObject(),
             InraidData = new Inraid(),
             InsuranceList = [],
             BtrDeliveryList = [],
-            TraderPurchases = new Dictionary<string, Dictionary<string, TraderPurchaseData>?>(),
+            TraderPurchases = [],
             FriendProfileIds = [],
             CustomisationUnlocks = [],
         };
+
+        // Set old account in-game time data on wipe, if it exists to the pmc
+        if (account.CharacterData?.PmcData?.Stats?.Eft is not null)
+        {
+            if (pmcData.Stats.Eft is not null)
+            {
+                pmcData.Stats.Eft.TotalInGameTime = account.CharacterData.PmcData.Stats.Eft.TotalInGameTime;
+
+                // Get the old profile's scav lifetime counter, if it exists
+                var lifetimeCounter = account.CharacterData?.PmcData?.Stats?.Eft?.OverallCounters?.Items?.FirstOrDefault(x =>
+                    x.Key?.Contains("LifeTime") == true
+                );
+
+                if (lifetimeCounter is not null)
+                {
+                    // Set the old lifetime counter back, bsg seems to use this as well to keep track of the total amount of time played
+                    profileDetails.CharacterData.PmcData.Stats.Eft.OverallCounters.Items.Add(lifetimeCounter);
+                }
+            }
+        }
 
         profileDetails.AddCustomisationUnlocksToProfile();
 
         profileDetails.AddSuitsToProfile(profileTemplateClone.Suits);
 
-        _profileFixerService.CheckForAndFixPmcProfileIssues(profileDetails.CharacterData.PmcData);
+        profileFixerService.CheckForAndFixPmcProfileIssues(profileDetails.CharacterData.PmcData);
+
+        saveServer.AddProfile(profileDetails);
 
         if (profileDetails.CharacterData.PmcData.Achievements.Count > 0)
         {
-            var achievementsDb = _databaseService.GetTemplates().Achievements;
+            var achievementsDb = databaseService.GetTemplates().Achievements;
             var achievementRewardItemsToSend = new List<Item>();
 
             foreach (var (achievementId, _) in profileDetails.CharacterData.PmcData.Achievements)
             {
-                var rewards = achievementsDb
-                    .FirstOrDefault(achievementDb => achievementDb.Id == achievementId)
-                    ?.Rewards;
+                var rewards = achievementsDb.FirstOrDefault(achievementDb => achievementDb.Id == achievementId)?.Rewards;
 
                 if (rewards is null)
                 {
@@ -144,7 +152,7 @@ public class CreateProfileService(
                 }
 
                 achievementRewardItemsToSend.AddRange(
-                    _rewardHelper.ApplyRewards(
+                    rewardHelper.ApplyRewards(
                         rewards,
                         CustomisationSource.ACHIEVEMENT,
                         profileDetails,
@@ -156,8 +164,8 @@ public class CreateProfileService(
 
             if (achievementRewardItemsToSend.Count > 0)
             {
-                _mailSendService.SendLocalisedSystemMessageToPlayer(
-                    profileDetails.ProfileInfo.ProfileId,
+                mailSendService.SendLocalisedSystemMessageToPlayer(
+                    profileDetails.ProfileInfo.ProfileId.Value,
                     "670547bb5fa0b1a7c30d5836 0",
                     achievementRewardItemsToSend,
                     [],
@@ -167,42 +175,28 @@ public class CreateProfileService(
         }
 
         // Process handling if the account is forced to prestige, or if the account currently has any pending prestiges
-        if (
-            request.SptForcePrestigeLevel is not null
-            || account.SptData?.PendingPrestige is not null
-        )
+        if (request.SptForcePrestigeLevel is not null || account.SptData?.PendingPrestige is not null)
         {
-            var pendingPrestige = account.SptData.PendingPrestige is not null
-                ? account.SptData.PendingPrestige
-                : new PendingPrestige { PrestigeLevel = request.SptForcePrestigeLevel };
+            var pendingPrestige = account.SptData.PendingPrestige ?? new PendingPrestige { PrestigeLevel = request.SptForcePrestigeLevel };
 
-            _prestigeHelper.ProcessPendingPrestige(account, profileDetails, pendingPrestige);
+            prestigeHelper.ProcessPendingPrestige(account, profileDetails, pendingPrestige);
         }
-
-        _saveServer.AddProfile(profileDetails);
 
         if (profileTemplateClone.Trader.SetQuestsAvailableForStart ?? false)
         {
-            _questHelper.AddAllQuestsToProfile(
-                profileDetails.CharacterData.PmcData,
-                [QuestStatusEnum.AvailableForStart]
-            );
+            questHelper.AddAllQuestsToProfile(profileDetails.CharacterData.PmcData, [QuestStatusEnum.AvailableForStart]);
         }
 
         // Profile is flagged as wanting quests set to ready to hand in and collect rewards
         if (profileTemplateClone.Trader.SetQuestsAvailableForFinish ?? false)
         {
-            _questHelper.AddAllQuestsToProfile(
+            questHelper.AddAllQuestsToProfile(
                 profileDetails.CharacterData.PmcData,
-                [
-                    QuestStatusEnum.AvailableForStart,
-                    QuestStatusEnum.Started,
-                    QuestStatusEnum.AvailableForFinish,
-                ]
+                [QuestStatusEnum.AvailableForStart, QuestStatusEnum.Started, QuestStatusEnum.AvailableForFinish]
             );
 
             // Make unused response so applyQuestReward works
-            var response = _eventOutputHolder.GetOutput(sessionId);
+            var response = eventOutputHolder.GetOutput(sessionId);
 
             // Add rewards for starting quests to profile
             GivePlayerStartingQuestRewards(profileDetails, sessionId, response);
@@ -210,17 +204,35 @@ public class CreateProfileService(
 
         ResetAllTradersInProfile(sessionId);
 
-        _saveServer.GetProfile(sessionId).CharacterData.ScavData = _playerScavGenerator.Generate(
-            sessionId
-        );
+        saveServer.GetProfile(sessionId).CharacterData.ScavData = playerScavGenerator.Generate(sessionId);
+
+        // Set old account in-game time data on wipe, if it exists to the scav
+        if (account.CharacterData?.ScavData?.Stats?.Eft is not null)
+        {
+            if (profileDetails.CharacterData.ScavData.Stats?.Eft is not null)
+            {
+                profileDetails.CharacterData.ScavData.Stats.Eft.TotalInGameTime = account.CharacterData.ScavData.Stats.Eft.TotalInGameTime;
+
+                // Get the old profile's scav lifetime counter, if it exists
+                var lifetimeCounter = account.CharacterData?.ScavData?.Stats?.Eft?.OverallCounters?.Items?.FirstOrDefault(x =>
+                    x.Key?.Contains("LifeTime") == true
+                );
+
+                if (lifetimeCounter is not null)
+                {
+                    // Set the old lifetime counter back, bsg seems to use this as well to keep track of the total amount of time played
+                    saveServer.GetProfile(sessionId).CharacterData.ScavData.Stats.Eft.OverallCounters.Items.Add(lifetimeCounter);
+                }
+            }
+        }
 
         // Store minimal profile and reload it
-        await _saveServer.SaveProfileAsync(sessionId);
-        await _saveServer.LoadProfileAsync(sessionId);
+        await saveServer.SaveProfileAsync(sessionId);
+        await saveServer.LoadProfileAsync(sessionId);
 
         // Completed account creation
-        _saveServer.GetProfile(sessionId).ProfileInfo.IsWiped = false;
-        await _saveServer.SaveProfileAsync(sessionId);
+        saveServer.GetProfile(sessionId).ProfileInfo.IsWiped = false;
+        await saveServer.SaveProfileAsync(sessionId);
 
         return pmcData.Id;
     }
@@ -229,20 +241,15 @@ public class CreateProfileService(
     ///     Delete a profile
     /// </summary>
     /// <param name="sessionID"> ID of profile to delete </param>
-    protected void DeleteProfileBySessionId(string sessionID)
+    protected void DeleteProfileBySessionId(MongoId sessionID)
     {
-        if (_saveServer.GetProfiles().ContainsKey(sessionID))
+        if (saveServer.GetProfiles().ContainsKey(sessionID))
         {
-            _saveServer.DeleteProfileById(sessionID);
+            saveServer.DeleteProfileById(sessionID);
         }
         else
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
-                    "profile-unable_to_find_profile_by_id_cannot_delete",
-                    sessionID
-                )
-            );
+            logger.Warning(serverLocalisationService.GetText("profile-unable_to_find_profile_by_id_cannot_delete", sessionID));
         }
     }
 
@@ -274,11 +281,11 @@ public class CreateProfileService(
     ///     For each trader reset their state to what a level 1 player would see
     /// </summary>
     /// <param name="sessionId"> Session ID of profile to reset </param>
-    protected void ResetAllTradersInProfile(string sessionId)
+    protected void ResetAllTradersInProfile(MongoId sessionId)
     {
-        foreach (var traderId in _databaseService.GetTraders().Keys)
+        foreach (var traderId in databaseService.GetTraders().Keys)
         {
-            _traderHelper.ResetTrader(sessionId, traderId);
+            traderHelper.ResetTrader(sessionId, traderId);
         }
     }
 
@@ -287,54 +294,30 @@ public class CreateProfileService(
     ///     DOES NOT check that stash exists
     /// </summary>
     /// <param name="pmcData"> Profile to check </param>
-    protected void AddMissingInternalContainersToProfile(PmcData pmcData)
+    public void AddMissingInternalContainersToProfile(PmcData pmcData)
     {
-        if (
-            !pmcData.Inventory.Items.Any(item =>
-                item.Id == pmcData.Inventory.HideoutCustomizationStashId
-            )
-        )
+        if (!pmcData.Inventory.Items.Any(item => item.Id == pmcData.Inventory.HideoutCustomizationStashId))
         {
             pmcData.Inventory.Items.Add(
-                new Item
-                {
-                    Id = pmcData.Inventory.HideoutCustomizationStashId.Value,
-                    Template = ItemTpl.HIDEOUTAREACONTAINER_CUSTOMIZATION,
-                }
+                new Item { Id = pmcData.Inventory.HideoutCustomizationStashId.Value, Template = ItemTpl.HIDEOUTAREACONTAINER_CUSTOMIZATION }
             );
         }
 
         if (!pmcData.Inventory.Items.Any(item => item.Id == pmcData.Inventory.SortingTable))
         {
             pmcData.Inventory.Items.Add(
-                new Item
-                {
-                    Id = pmcData.Inventory.SortingTable.Value,
-                    Template = ItemTpl.SORTINGTABLE_SORTING_TABLE,
-                }
+                new Item { Id = pmcData.Inventory.SortingTable.Value, Template = ItemTpl.SORTINGTABLE_SORTING_TABLE }
             );
         }
 
         if (!pmcData.Inventory.Items.Any(item => item.Id == pmcData.Inventory.QuestStashItems))
         {
-            pmcData.Inventory.Items.Add(
-                new Item
-                {
-                    Id = pmcData.Inventory.QuestStashItems.Value,
-                    Template = ItemTpl.STASH_QUESTOFFLINE,
-                }
-            );
+            pmcData.Inventory.Items.Add(new Item { Id = pmcData.Inventory.QuestStashItems.Value, Template = ItemTpl.STASH_QUESTOFFLINE });
         }
 
         if (!pmcData.Inventory.Items.Any(item => item.Id == pmcData.Inventory.QuestRaidItems))
         {
-            pmcData.Inventory.Items.Add(
-                new Item
-                {
-                    Id = pmcData.Inventory.QuestRaidItems.Value,
-                    Template = ItemTpl.STASH_QUESTRAID,
-                }
-            );
+            pmcData.Inventory.Items.Add(new Item { Id = pmcData.Inventory.QuestRaidItems.Value, Template = ItemTpl.STASH_QUESTRAID });
         }
     }
 
@@ -345,42 +328,30 @@ public class CreateProfileService(
     /// <param name="profileDetails"> Player profile </param>
     /// <param name="sessionID"> Session ID </param>
     /// <param name="response"> Event router response </param>
-    protected void GivePlayerStartingQuestRewards(
-        SptProfile profileDetails,
-        string sessionID,
-        ItemEventRouterResponse response
-    )
+    protected void GivePlayerStartingQuestRewards(SptProfile profileDetails, MongoId sessionID, ItemEventRouterResponse response)
     {
         foreach (var quest in profileDetails.CharacterData.PmcData.Quests)
         {
-            var questFromDb = _questHelper.GetQuestFromDb(
-                quest.QId,
-                profileDetails.CharacterData.PmcData
-            );
+            var questFromDb = questHelper.GetQuestFromDb(quest.QId, profileDetails.CharacterData.PmcData);
 
             // Get messageId of text to send to player as text message in game
             // Copy of code from QuestController.acceptQuest()
-            var messageId = _questHelper.GetMessageIdForQuestStart(
-                questFromDb.StartedMessageText,
-                questFromDb.Description
+            var messageId = questHelper.GetMessageIdForQuestStart(questFromDb.StartedMessageText, questFromDb.Description);
+            var itemRewards = questRewardHelper.ApplyQuestReward(
+                profileDetails.CharacterData.PmcData,
+                quest.QId,
+                QuestStatusEnum.Started,
+                sessionID,
+                response
             );
-            var itemRewards = _questRewardHelper
-                .ApplyQuestReward(
-                    profileDetails.CharacterData.PmcData,
-                    quest.QId,
-                    QuestStatusEnum.Started,
-                    sessionID,
-                    response
-                )
-                .ToList();
 
-            _mailSendService.SendLocalisedNpcMessageToPlayer(
+            mailSendService.SendLocalisedNpcMessageToPlayer(
                 sessionID,
                 questFromDb.TraderId,
                 MessageType.QuestStart,
                 messageId,
                 itemRewards,
-                _timeUtil.GetHoursAsSeconds(100)
+                timeUtil.GetHoursAsSeconds(100)
             );
         }
     }

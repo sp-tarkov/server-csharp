@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Ws;
 
@@ -12,5 +13,5 @@ public record WsNotificationEvent
     public NotificationEventType? EventType { get; set; }
 
     [JsonPropertyName("eventId")]
-    public string? EventIdentifier { get; set; }
+    public MongoId EventIdentifier { get; set; }
 }

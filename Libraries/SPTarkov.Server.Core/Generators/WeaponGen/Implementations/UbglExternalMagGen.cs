@@ -5,9 +5,7 @@ using SPTarkov.Server.Core.Models.Enums;
 namespace SPTarkov.Server.Core.Generators.WeaponGen.Implementations;
 
 [Injectable]
-public class UbglExternalMagGen(BotWeaponGeneratorHelper _botWeaponGeneratorHelper)
-    : InventoryMagGen,
-        IInventoryMagGen
+public class UbglExternalMagGen(BotWeaponGeneratorHelper botWeaponGeneratorHelper) : InventoryMagGen, IInventoryMagGen
 {
     public int GetPriority()
     {
@@ -16,16 +14,16 @@ public class UbglExternalMagGen(BotWeaponGeneratorHelper _botWeaponGeneratorHelp
 
     public bool CanHandleInventoryMagGen(InventoryMagGen inventoryMagGen)
     {
-        return inventoryMagGen.GetWeaponTemplate().Parent == BaseClasses.UBGL;
+        return inventoryMagGen.GetWeaponTemplate().Parent == BaseClasses.LAUNCHER;
     }
 
     public void Process(InventoryMagGen inventoryMagGen)
     {
-        var bulletCount = _botWeaponGeneratorHelper.GetRandomizedBulletCount(
+        var bulletCount = botWeaponGeneratorHelper.GetRandomizedBulletCount(
             inventoryMagGen.GetMagCount(),
             inventoryMagGen.GetMagazineTemplate()
         );
-        _botWeaponGeneratorHelper.AddAmmoIntoEquipmentSlots(
+        botWeaponGeneratorHelper.AddAmmoIntoEquipmentSlots(
             inventoryMagGen.GetAmmoTemplate().Id,
             (int)bulletCount,
             inventoryMagGen.GetPmcInventory(),

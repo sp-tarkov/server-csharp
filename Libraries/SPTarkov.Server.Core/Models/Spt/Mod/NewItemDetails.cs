@@ -79,7 +79,7 @@ public record CreateItemResult
     public CreateItemResult()
     {
         Success = false;
-        Errors = new List<string>();
+        Errors = [];
     }
 
     [JsonPropertyName("success")]

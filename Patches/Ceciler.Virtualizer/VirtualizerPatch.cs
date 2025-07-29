@@ -73,10 +73,8 @@ public class VirtualizerPatch : IPatcher
             || ContainsAttribute(method.CustomAttributes, "OnDeserializedAttribute");
     }
 
-    public static bool ContainsAttribute(
-        IEnumerable<CustomAttribute> attributes,
-        string attributeName
-    ) => attributes.Any(attribute => attribute.Constructor.DeclaringType.Name == attributeName);
+    public static bool ContainsAttribute(IEnumerable<CustomAttribute> attributes, string attributeName) =>
+        attributes.Any(attribute => attribute.Constructor.DeclaringType.Name == attributeName);
 
     public string Name
     {

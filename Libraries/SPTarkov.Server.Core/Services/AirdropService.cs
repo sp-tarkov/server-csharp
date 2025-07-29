@@ -16,9 +16,10 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable]
 public class AirdropService(
-    ConfigServer configServer,
     ISptLogger<AirdropService> _logger,
+    ConfigServer configServer,
     LootGenerator _lootGenerator,
+    DatabaseService databaseService,
     WeightedRandomHelper _weightedRandomHelper,
     ServerLocalisationService _serverLocalisationService,
     ItemFilterService _itemFilterService,
@@ -29,23 +30,13 @@ public class AirdropService(
 
     public GetAirdropLootResponse GenerateCustomAirdropLoot(GetAirdropLootRequest request)
     {
-        if (
-            _airdropConfig.CustomAirdropMapping.TryGetValue(
-                request.ContainerId,
-                out var customAirdropInformation
-            )
-        )
+        if (_airdropConfig.CustomAirdropMapping.TryGetValue(request.ContainerId, out var customAirdropInformation))
         {
             // Found container id, generate specific loot
             return GenerateAirdropLoot(customAirdropInformation);
         }
 
-        _logger.Warning(
-            _serverLocalisationService.GetText(
-                "airdrop-unable_to_find_container_id_generating_random",
-                request.ContainerId
-            )
-        );
+        _logger.Warning(_serverLocalisationService.GetText("airdrop-unable_to_find_container_id_generating_random", request.ContainerId));
 
         return GenerateAirdropLoot();
     }
@@ -79,14 +70,12 @@ public class AirdropService(
         // Filter loot pool to just items that fit crate
         var crateLoot = GetLootThatFitsContainer(airdropCrateItem, crateLootPool);
 
-        // Flatten loot into single array ready to be returned
-        var flattenedCrateLoot = crateLoot.SelectMany(x => x).ToList();
+        // Create new array with crate at front + loot behind
+        var containerWithLoot = Enumerable.Empty<Item>().Append(airdropCrateItem);
+        containerWithLoot = containerWithLoot.Union(crateLoot.SelectMany(x => x));
 
-        // Add crate to front of loot rewards
-        flattenedCrateLoot.Insert(0, airdropCrateItem);
-
-        // Re-parent loot items to crate we just added
-        foreach (var item in flattenedCrateLoot)
+        // Re-parent root loot items to have crate as parent
+        foreach (var item in containerWithLoot)
         {
             if (item.Id == airdropCrateItem.Id)
             // Crate itself, skip
@@ -102,11 +91,7 @@ public class AirdropService(
             }
         }
 
-        return new GetAirdropLootResponse
-        {
-            Icon = airdropConfig.Icon,
-            Container = flattenedCrateLoot,
-        };
+        return new GetAirdropLootResponse { Icon = airdropConfig.Icon.Value, Container = containerWithLoot };
     }
 
     /// <summary>
@@ -115,10 +100,7 @@ public class AirdropService(
     /// <param name="container">Crate item to fit items into</param>
     /// <param name="crateLootPool">Item pool to try and fit into container</param>
     /// <returns>Items that will fit container</returns>
-    protected List<List<Item>> GetLootThatFitsContainer(
-        Item container,
-        List<List<Item>> crateLootPool
-    )
+    protected IEnumerable<List<Item>> GetLootThatFitsContainer(Item container, IEnumerable<List<Item>> crateLootPool)
     {
         // list of root item + children in list
         var lootResult = new List<List<Item>>();
@@ -196,8 +178,7 @@ public class AirdropService(
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_COMMON_SUPPLY_CRATE;
                 break;
             case SptAirdropTypeEnum.radar:
-                airdropContainer.Template =
-                    ItemTpl.LOOTCONTAINER_AIRDROP_TECHNICAL_SUPPLY_CRATE_EVENT_1;
+                airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_TECHNICAL_SUPPLY_CRATE_EVENT_1;
                 break;
             default:
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_COMMON_SUPPLY_CRATE;
@@ -227,12 +208,7 @@ public class AirdropService(
     {
         if (!_airdropConfig.Loot.TryGetValue(airdropType.ToString(), out var lootSettingsByType))
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "location-unable_to_find_airdrop_drop_config_of_type",
-                    airdropType
-                )
-            );
+            _logger.Error(_serverLocalisationService.GetText("location-unable_to_find_airdrop_drop_config_of_type", airdropType));
 
             // TODO: Get Radar airdrop to work. Atm Radar will default to common supply drop (mixed)
             // Default to common
@@ -241,13 +217,11 @@ public class AirdropService(
 
         // Get all items that match the blacklisted types and fold into item blacklist
         var itemTypeBlacklist = _itemFilterService.GetItemRewardBaseTypeBlacklist();
-        var itemsMatchingTypeBlacklist = _itemHelper
+        var itemsMatchingTypeBlacklist = databaseService
             .GetItems()
-            .Where(templateItem => !string.IsNullOrEmpty(templateItem.Parent))
-            .Where(templateItem =>
-                _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist)
-            )
-            .Select(templateItem => templateItem.Id)
+            .Where(kvp => !kvp.Value.Parent.IsEmpty())
+            .Where(kvp => _itemHelper.IsOfBaseclasses(kvp.Value.Parent, itemTypeBlacklist))
+            .Select(kvp => kvp.Key)
             .ToHashSet();
         var itemBlacklist = new HashSet<MongoId>();
         itemBlacklist.UnionWith(lootSettingsByType.ItemBlacklist);

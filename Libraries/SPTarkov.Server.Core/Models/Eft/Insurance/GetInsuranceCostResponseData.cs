@@ -1,3 +1,5 @@
+using SPTarkov.Server.Core.Models.Common;
+
 namespace SPTarkov.Server.Core.Models.Eft.Insurance;
 
-public class GetInsuranceCostResponseData : Dictionary<string, Dictionary<string, double>> { }
+public class GetInsuranceCostResponseData : Dictionary<MongoId, Dictionary<MongoId, double>> { }

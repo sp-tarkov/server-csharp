@@ -18,19 +18,13 @@ public record SeasonalEventConfig : BaseConfig
     ///     event / botType / equipSlot / itemid
     /// </summary>
     [JsonPropertyName("eventGear")]
-    public required Dictionary<
-        SeasonalEventType,
-        Dictionary<string, Dictionary<string, Dictionary<MongoId, int>>>
-    > EventGear { get; set; }
+    public required Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<MongoId, int>>>> EventGear { get; set; }
 
     /// <summary>
     ///     event / bot type / equipSlot / itemid
     /// </summary>
     [JsonPropertyName("eventLoot")]
-    public required Dictionary<
-        SeasonalEventType,
-        Dictionary<string, Dictionary<string, Dictionary<MongoId, int>>>
-    > EventLoot { get; set; }
+    public required Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<MongoId, int>>>> EventLoot { get; set; }
 
     [JsonPropertyName("events")]
     public required List<SeasonalEvent> Events { get; set; }
@@ -39,10 +33,7 @@ public record SeasonalEventConfig : BaseConfig
     public required Dictionary<string, string> EventBotMapping { get; set; }
 
     [JsonPropertyName("eventBossSpawns")]
-    public required Dictionary<
-        string,
-        Dictionary<string, List<BossLocationSpawn>>
-    > EventBossSpawns { get; set; }
+    public required Dictionary<string, Dictionary<string, List<BossLocationSpawn>>> EventBossSpawns { get; set; }
 
     [JsonPropertyName("eventWaves")]
     public required Dictionary<string, Dictionary<string, List<Wave>>> EventWaves { get; set; }
@@ -54,16 +45,13 @@ public record SeasonalEventConfig : BaseConfig
     ///     key = event, second key = map name
     /// </summary>
     [JsonPropertyName("hostilitySettingsForEvent")]
-    public required Dictionary<
-        string,
-        Dictionary<string, List<AdditionalHostilitySettings>>
-    > HostilitySettingsForEvent { get; set; }
+    public required Dictionary<string, Dictionary<string, List<AdditionalHostilitySettings>>> HostilitySettingsForEvent { get; set; }
 
     /// <summary>
     ///     Ids of containers on locations that only have Christmas loot
     /// </summary>
     [JsonPropertyName("christmasContainerIds")]
-    public required List<string> ChristmasContainerIds { get; set; }
+    public required HashSet<string> ChristmasContainerIds { get; set; }
 
     /// <summary>
     ///     Season - botType - location (body/feet/hands/head)

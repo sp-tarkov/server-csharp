@@ -21,21 +21,19 @@ public class ModValidator(
 {
     protected readonly string basepath = "user/mods/";
     protected readonly string modOrderPath = "user/mods/order.json";
-    protected Dictionary<string, SptMod> imported = [];
-    protected Dictionary<string, int> order = [];
-    protected HashSet<string> skippedMods = [];
+    protected readonly Dictionary<string, SptMod> imported = [];
+    protected readonly Dictionary<string, int> order = [];
+    protected readonly HashSet<string> skippedMods = [];
 
-    protected CoreConfig sptConfig = configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig sptConfig = configServer.GetConfig<CoreConfig>();
 
-    public List<SptMod> ValidateAndSort(List<SptMod> mods)
+    public List<SptMod> ValidateAndSort(IEnumerable<SptMod> mods)
     {
         if (ProgramStatics.MODS())
         {
             ValidateMods(mods);
 
-            var sortedModLoadOrder = modLoadOrder.SetModList(
-                imported.ToDictionary(m => m.Key, m => m.Value.ModMetadata)
-            );
+            var sortedModLoadOrder = modLoadOrder.SetModList(imported.ToDictionary(m => m.Key, m => m.Value.ModMetadata));
             var finalList = new List<SptMod>();
             foreach (var orderMod in SortModsLoadOrder())
             {
@@ -58,9 +56,9 @@ public class ModValidator(
         return $"{basepath}{mod}/";
     }
 
-    protected void ValidateMods(List<SptMod> mods)
+    protected void ValidateMods(IEnumerable<SptMod> mods)
     {
-        logger.Info(localisationService.GetText("modloader-loading_mods", mods.Count));
+        logger.Info(localisationService.GetText("modloader-loading_mods", mods.Count()));
 
         // Mod order
         if (!fileUtil.FileExists(modOrderPath))
@@ -88,7 +86,7 @@ public class ModValidator(
         }
 
         // Validate and remove broken mods from mod list
-        var validMods = GetValidMods(mods);
+        var validMods = GetValidMods(mods).ToList(); // ToList now so we can .Sort later
 
         var modPackageData = validMods.ToDictionary(m => m.ModMetadata!.Name!, m => m.ModMetadata!);
         CheckForDuplicateMods(modPackageData);
@@ -138,13 +136,11 @@ public class ModValidator(
         {
             foreach (var missingMod in missingFromOrderJSON.Keys)
             {
-                logger.Debug(
-                    localisationService.GetText("modloader-mod_order_missing_from_json", missingMod)
-                );
+                logger.Debug(localisationService.GetText("modloader-mod_order_missing_from_json", missingMod));
             }
         }
 
-        // add mods
+        // Add mods
         foreach (var mod in validMods)
         {
             if (ShouldSkipMod(mod.ModMetadata))
@@ -189,7 +185,7 @@ public class ModValidator(
             groupedMods.Add(name, [.. groupedMods.GetValueOrDefault(name) ?? [], mod]);
 
             // if there's more than one entry for a given mod it means there's at least 2 mods with the same author and name trying to load.
-            if (groupedMods[name].Count > 1 && !skippedMods.Contains(name))
+            if (groupedMods[name].Count > 1)
             {
                 skippedMods.Add(name);
             }
@@ -207,9 +203,9 @@ public class ModValidator(
     /// </summary>
     /// <param name="mods">mods to validate</param>
     /// <returns>array of mod folder names</returns>
-    protected List<SptMod> GetValidMods(List<SptMod> mods)
+    protected IEnumerable<SptMod> GetValidMods(IEnumerable<SptMod> mods)
     {
-        return mods.Where(ValidMod).ToList();
+        return mods.Where(ValidMod);
     }
 
     /// <summary>
@@ -225,9 +221,7 @@ public class ModValidator(
         // Error and prevent loading if sptVersion property is not a valid semver string
         if (!(semVer.IsValid(mod.SptVersion) || semVer.IsValidRange(mod.SptVersion)))
         {
-            logger.Error(
-                localisationService.GetText("modloader-invalid_sptversion_field", modName)
-            );
+            logger.Error(localisationService.GetText("modloader-invalid_sptversion_field", modName));
             return false;
         }
 
@@ -299,10 +293,7 @@ public class ModValidator(
         return skippedMods.Contains($"{pkg.Author}-{pkg.Name}");
     }
 
-    protected bool AreModDependenciesFulfilled(
-        AbstractModMetadata pkg,
-        Dictionary<string, AbstractModMetadata> loadedMods
-    )
+    protected bool AreModDependenciesFulfilled(AbstractModMetadata pkg, Dictionary<string, AbstractModMetadata> loadedMods)
     {
         if (pkg.ModDependencies == null)
         {
@@ -317,12 +308,7 @@ public class ModValidator(
             // Raise dependency version incompatible if the dependency is not found in the mod list
             if (!loadedMods.ContainsKey(modDependency))
             {
-                logger.Error(
-                    localisationService.GetText(
-                        "modloader-missing_dependency",
-                        new { mod = modName, modDependency }
-                    )
-                );
+                logger.Error(localisationService.GetText("modloader-missing_dependency", new { mod = modName, modDependency }));
                 return false;
             }
 
@@ -347,10 +333,7 @@ public class ModValidator(
         return true;
     }
 
-    protected bool IsModCompatible(
-        AbstractModMetadata mod,
-        Dictionary<string, AbstractModMetadata> loadedMods
-    )
+    protected bool IsModCompatible(AbstractModMetadata mod, Dictionary<string, AbstractModMetadata> loadedMods)
     {
         var incompatbileModsList = mod.Incompatibilities;
         if (incompatbileModsList == null)
@@ -391,11 +374,7 @@ public class ModValidator(
         var modName = mod.ModMetadata.Name;
         var modPath = GetModPath(modName);
 
-        var modIsCalledBepinEx = string.Equals(
-            modName,
-            "bepinex",
-            StringComparison.OrdinalIgnoreCase
-        );
+        var modIsCalledBepinEx = string.Equals(modName, "bepinex", StringComparison.OrdinalIgnoreCase);
         var modIsCalledUser = string.Equals(modName, "user", StringComparison.OrdinalIgnoreCase);
         var modIsCalledSrc = string.Equals(modName, "src", StringComparison.OrdinalIgnoreCase);
         var modIsCalledDb = string.Equals(modName, "db", StringComparison.OrdinalIgnoreCase);
@@ -427,9 +406,7 @@ public class ModValidator(
 
         if (!semVer.IsValid(config.Version))
         {
-            logger.Error(
-                localisationService.GetText("modloader-invalid_version_property", modName)
-            );
+            logger.Error(localisationService.GetText("modloader-invalid_version_property", modName));
             issue = true;
         }
 

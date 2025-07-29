@@ -1,5 +1,6 @@
 using System.Collections.Frozen;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
@@ -9,18 +10,9 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
-public class HelloMessageHandler(MailSendService _mailSendService, RandomUtil _randomUtil)
-    : IChatMessageHandler
+public class HelloMessageHandler(MailSendService mailSendService, RandomUtil randomUtil) : IChatMessageHandler
 {
-    protected static readonly FrozenSet<string> _listOfGreetings =
-    [
-        "hello",
-        "hi",
-        "sup",
-        "yo",
-        "hey",
-        "bonjour",
-    ];
+    protected static readonly FrozenSet<string> _greetings = ["hello", "hi", "sup", "yo", "hey", "bonjour"];
 
     public int GetPriority()
     {
@@ -29,20 +21,15 @@ public class HelloMessageHandler(MailSendService _mailSendService, RandomUtil _r
 
     public bool CanHandle(string message)
     {
-        return _listOfGreetings.Contains(message, StringComparer.OrdinalIgnoreCase);
+        return _greetings.Contains(message, StringComparer.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        string sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
-        _mailSendService.SendUserMessageToPlayer(
+        mailSendService.SendUserMessageToPlayer(
             sessionId,
             sptFriendUser,
-            _randomUtil.GetArrayValue(
+            randomUtil.GetArrayValue(
                 [
                     "Howdy",
                     "Hi",
@@ -77,29 +64,12 @@ public class HelloMessageHandler(MailSendService _mailSendService, RandomUtil _r
         return "'hello' replies to the player with a random greeting";
     }
 
-    public string PerformAction(
-        UserDialogInfo commandHandler,
-        string sessionId,
-        SendMessageRequest request
-    )
+    public string PerformAction(UserDialogInfo commandHandler, MongoId sessionId, SendMessageRequest request)
     {
-        _mailSendService.SendUserMessageToPlayer(
+        mailSendService.SendUserMessageToPlayer(
             sessionId,
             commandHandler,
-            _randomUtil.GetArrayValue(
-                [
-                    "Howdy",
-                    "Hi",
-                    "Greetings",
-                    "Hello",
-                    "Bonjor",
-                    "Yo",
-                    "Sup",
-                    "Heyyyyy",
-                    "Hey there",
-                    "OH its you",
-                ]
-            ),
+            randomUtil.GetArrayValue(["Howdy", "Hi", "Greetings", "Hello", "Bonjor", "Yo", "Sup", "Heyyyyy", "Hey there", "OH its you"]),
             [],
             null
         );

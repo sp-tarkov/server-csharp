@@ -24,13 +24,7 @@ public class CodeWithLabel : Code
         Label = label;
     }
 
-    public CodeWithLabel(
-        OpCode opCode,
-        Label label,
-        Type callerType,
-        object operandTarget,
-        Type[] parameters = null
-    )
+    public CodeWithLabel(OpCode opCode, Label label, Type callerType, object operandTarget, Type[] parameters = null)
         : base(opCode, callerType, operandTarget, parameters)
     {
         Label = label;

@@ -6,20 +6,16 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class RagfairSortHelper(LocaleService _localeService)
+public class RagfairSortHelper(LocaleService localeService)
 {
-    /**
-     * Sort a list of ragfair offers by something (id/rating/offer name/price/expiry time)
-     * @param offers Offers to sort
-     * @param type How to sort it
-     * @param direction Ascending/descending
-     * @returns Sorted offers
-     */
-    public List<RagfairOffer> SortOffers(
-        List<RagfairOffer> offers,
-        RagfairSort type,
-        int direction = 0
-    )
+    /// <summary>
+    /// Sort a list of ragfair offers by something (id/rating/offer name/price/expiry time)
+    /// </summary>
+    /// <param name="offers">Offers to sort</param>
+    /// <param name="type">How to sort it</param>
+    /// <param name="direction">Ascending/descending</param>
+    /// <returns>Sorted offers</returns>
+    public List<RagfairOffer> SortOffers(List<RagfairOffer> offers, RagfairSort type, int direction = 0)
     {
         // Sort results
         switch (type)
@@ -37,7 +33,7 @@ public class RagfairSortHelper(LocaleService _localeService)
                 break;
 
             case RagfairSort.OFFER_TITLE:
-                offers.Sort((a, b) => SortOffersByName(a, b));
+                offers.Sort(SortOffersByName);
                 break;
 
             case RagfairSort.PRICE:
@@ -65,48 +61,51 @@ public class RagfairSortHelper(LocaleService _localeService)
 
     protected int SortOffersByBarter(RagfairOffer a, RagfairOffer b)
     {
-        var aIsOnlyMoney =
-            a.Requirements.Count == 1 && Money.GetMoneyTpls().Contains(a.Requirements[0].Template)
-                ? 1
-                : 0;
-        var bIsOnlyMoney =
-            b.Requirements.Count == 1 && Money.GetMoneyTpls().Contains(b.Requirements[0].Template)
-                ? 1
-                : 0;
+        var aIsOnlyMoney = a.Requirements.Count() == 1 && Money.GetMoneyTpls().Contains(a.Requirements.First().TemplateId) ? 1 : 0;
+        var bIsOnlyMoney = b.Requirements.Count() == 1 && Money.GetMoneyTpls().Contains(b.Requirements.First().TemplateId) ? 1 : 0;
 
         return aIsOnlyMoney - bIsOnlyMoney;
     }
 
     protected int SortOffersByRating(RagfairOffer a, RagfairOffer b)
     {
-        return (int)(a.User.Rating.Value - b.User.Rating.Value);
+        var ratingA = a.User?.Rating ?? 0.0;
+        var ratingB = b.User?.Rating ?? 0.0;
+
+        return ratingA.CompareTo(ratingB);
     }
 
     protected int SortOffersByName(RagfairOffer a, RagfairOffer b)
     {
-        var locale = _localeService.GetLocaleDb();
+        var locale = localeService.GetLocaleDb();
 
         var tplA = a.Items[0].Template;
         var tplB = b.Items[0].Template;
         var nameA = locale.GetValueOrDefault($"{tplA} Name", tplA);
         var nameB = locale.GetValueOrDefault($"{tplB} Name", tplB);
 
-        return string.Compare(nameA, nameB);
+        return string.CompareOrdinal(nameA, nameB);
     }
 
-    /**
-     * Order two offers by rouble price value
-     * @param a Offer a
-     * @param b Offer b
-     * @returns
-     */
+    /// <summary>
+    /// Order two offers by rouble price value
+    /// </summary>
+    /// <param name="a">Offer a</param>
+    /// <param name="b">Offer b</param>
+    /// <returns>-1, 0, 1</returns>
     protected int SortOffersByPrice(RagfairOffer a, RagfairOffer b)
     {
         return (int)(a.RequirementsCost.Value - b.RequirementsCost.Value);
     }
 
+    /// <summary>
+    /// Order two offers by rouble price value
+    /// </summary>
+    /// <param name="a">Offer a</param>
+    /// <param name="b">Offer b</param>
+    /// <returns>-1, 0, 1</returns>
     protected int SortOffersByExpiry(RagfairOffer a, RagfairOffer b)
     {
-        return (int)(a.EndTime - b.EndTime);
+        return (int)((a.EndTime ?? 0) - (b.EndTime ?? 0));
     }
 }

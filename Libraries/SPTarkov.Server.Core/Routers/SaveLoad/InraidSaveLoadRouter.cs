@@ -14,10 +14,7 @@ public class InraidSaveLoadRouter : SaveLoadRouter
 
     public override SptProfile HandleLoad(SptProfile profile)
     {
-        if (profile.InraidData == null)
-        {
-            profile.InraidData = new Inraid { Location = "none", Character = "none" };
-        }
+        profile.InraidData ??= new Inraid { Location = "none", Character = "none" };
 
         return profile;
     }

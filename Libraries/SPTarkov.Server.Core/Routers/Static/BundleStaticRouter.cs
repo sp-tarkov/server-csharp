@@ -15,8 +15,7 @@ public class BundleStaticRouter : StaticRouter
             [
                 new RouteAction(
                     "/singleplayer/bundles",
-                    async (url, info, sessionID, output) =>
-                        await bundleCallbacks.GetBundles(url, info as EmptyRequestData, sessionID)
+                    async (url, info, sessionID, output) => await bundleCallbacks.GetBundles(url, info as EmptyRequestData, sessionID)
                 ),
             ]
         ) { }

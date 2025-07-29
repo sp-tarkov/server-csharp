@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Inventory;
 
@@ -11,7 +12,7 @@ public record OpenRandomLootContainerRequestData : InventoryBaseActionRequestDat
     ///     Container item id being opened
     /// </summary>
     [JsonPropertyName("item")]
-    public string? Item { get; set; }
+    public MongoId Item { get; set; }
 
     [JsonPropertyName("to")]
     public List<ItemEvent.To>? To { get; set; }

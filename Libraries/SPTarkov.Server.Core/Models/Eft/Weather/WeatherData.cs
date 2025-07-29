@@ -57,7 +57,7 @@ public record Weather
     public double? WindSpeed { get; set; }
 
     /// <summary>
-    ///     < -0.4 = clear day
+    ///     less than -0.4 = clear day
     /// </summary>
     [JsonPropertyName("cloud")]
     public double? Cloud { get; set; }

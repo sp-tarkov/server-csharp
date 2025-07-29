@@ -9,11 +9,11 @@ public class SptMod
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("directory")]
-    public string Directory { get; set; }
+    public required string Directory { get; init; }
 
     [JsonPropertyName("modMetadata")]
-    public AbstractModMetadata? ModMetadata { get; set; }
+    public required AbstractModMetadata ModMetadata { get; init; }
 
     [JsonPropertyName("assemblies")]
-    public List<Assembly>? Assemblies { get; set; }
+    public required IEnumerable<Assembly> Assemblies { get; init; }
 }

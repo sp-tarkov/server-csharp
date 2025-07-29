@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
@@ -15,7 +16,7 @@ public record ItemEventRouterBase
     public List<Warning>? Warnings { get; set; }
 
     [JsonPropertyName("profileChanges")]
-    public Dictionary<string, ProfileChange> ProfileChanges { get; set; }
+    public Dictionary<MongoId, ProfileChange> ProfileChanges { get; set; }
 }
 
 public record Warning
@@ -64,13 +65,13 @@ public record ProfileChange
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("production")]
-    public Dictionary<string, Production>? Production { get; set; }
+    public Dictionary<MongoId, Production>? Production { get; set; }
 
     /// <summary>
     ///     Hideout area improvement id
     /// </summary>
     [JsonPropertyName("improvements")]
-    public Dictionary<string, HideoutImprovement>? Improvements { get; set; }
+    public Dictionary<MongoId, HideoutImprovement>? Improvements { get; set; }
 
     [JsonPropertyName("skills")]
     public Skills? Skills { get; set; }
@@ -79,7 +80,7 @@ public record ProfileChange
     public BotBaseHealth Health { get; set; }
 
     [JsonPropertyName("traderRelations")]
-    public Dictionary<string, TraderData>? TraderRelations { get; set; }
+    public Dictionary<MongoId, TraderData>? TraderRelations { get; set; }
 
     [JsonPropertyName("moneyTransferLimitData")]
     public MoneyTransferLimits? MoneyTransferLimitData { get; set; }
@@ -105,10 +106,10 @@ public record HideoutStashItem
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("tpl")]
-    public string? Template { get; set; }
+    public MongoId? Template { get; set; }
 }
 
 public record WeaponBuildChange
@@ -173,8 +174,11 @@ public record ItemChanges
 
 public record DeletedItem
 {
+    [JsonExtensionData]
+    public Dictionary<string, object>? ExtensionData { get; set; }
+
     [JsonPropertyName("_id")]
-    public string Id { get; set; }
+    public MongoId Id { get; set; }
 }
 
 /// <summary>

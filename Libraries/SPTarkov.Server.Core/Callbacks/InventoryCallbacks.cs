@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -8,10 +9,7 @@ using SPTarkov.Server.Core.Models.Eft.Quests;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
-public class InventoryCallbacks(
-    InventoryController _inventoryController,
-    QuestController _questController
-)
+public class InventoryCallbacks(InventoryController inventoryController, QuestController questController)
 {
     /// <summary>
     ///     Handle client/game/profile/items/moving Move event
@@ -24,11 +22,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse MoveItem(
         PmcData pmcData,
         InventoryMoveRequestData info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.MoveItem(pmcData, info, sessionID, output);
+        inventoryController.MoveItem(pmcData, info, sessionID, output);
         return output;
     }
 
@@ -43,11 +41,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse RemoveItem(
         PmcData pmcData,
         InventoryRemoveRequestData info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.DiscardItem(pmcData, info, sessionID, output);
+        inventoryController.DiscardItem(pmcData, info, sessionID, output);
         return output;
     }
 
@@ -62,11 +60,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse SplitItem(
         PmcData pmcData,
         InventorySplitRequestData info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.SplitItem(pmcData, info, sessionID, output);
+        inventoryController.SplitItem(pmcData, info, sessionID, output);
         return output;
     }
 
@@ -80,11 +78,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse MergeItem(
         PmcData pmcData,
         InventoryMergeRequestData info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.MergeItem(pmcData, info, sessionID, output);
+        inventoryController.MergeItem(pmcData, info, sessionID, output);
         return output;
     }
 
@@ -98,11 +96,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse TransferItem(
         PmcData pmcData,
         InventoryTransferRequestData info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.TransferItem(pmcData, info, sessionID, output);
+        inventoryController.TransferItem(pmcData, info, sessionID, output);
         return output;
     }
 
@@ -113,13 +111,9 @@ public class InventoryCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse SwapItem(
-        PmcData pmcData,
-        InventorySwapRequestData info,
-        string sessionID
-    )
+    public ItemEventRouterResponse SwapItem(PmcData pmcData, InventorySwapRequestData info, MongoId sessionID)
     {
-        return _inventoryController.SwapItem(pmcData, info, sessionID);
+        return inventoryController.SwapItem(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -128,13 +122,9 @@ public class InventoryCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse FoldItem(
-        PmcData pmcData,
-        InventoryFoldRequestData info,
-        string sessionID
-    )
+    public ItemEventRouterResponse FoldItem(PmcData pmcData, InventoryFoldRequestData info, MongoId sessionID)
     {
-        return _inventoryController.FoldItem(pmcData, info, sessionID);
+        return inventoryController.FoldItem(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -143,13 +133,9 @@ public class InventoryCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ToggleItem(
-        PmcData pmcData,
-        InventoryToggleRequestData info,
-        string sessionID
-    )
+    public ItemEventRouterResponse ToggleItem(PmcData pmcData, InventoryToggleRequestData info, MongoId sessionID)
     {
-        return _inventoryController.ToggleItem(pmcData, info, sessionID);
+        return inventoryController.ToggleItem(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -158,13 +144,9 @@ public class InventoryCallbacks(
     /// <param name="request"></param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse TagItem(
-        PmcData pmcData,
-        InventoryTagRequestData request,
-        string sessionId
-    )
+    public ItemEventRouterResponse TagItem(PmcData pmcData, InventoryTagRequestData request, MongoId sessionId)
     {
-        return _inventoryController.TagItem(pmcData, request, sessionId);
+        return inventoryController.TagItem(pmcData, request, sessionId);
     }
 
     /// <summary>
@@ -177,11 +159,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse BindItem(
         PmcData pmcData,
         InventoryBindRequestData info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.BindItem(pmcData, info, sessionID, output);
+        inventoryController.BindItem(pmcData, info, sessionID, output);
         return output;
     }
 
@@ -195,11 +177,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse UnBindItem(
         PmcData pmcData,
         InventoryBindRequestData info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.UnBindItem(pmcData, info, sessionID, output);
+        inventoryController.UnBindItem(pmcData, info, sessionID, output);
         return output;
     }
 
@@ -213,11 +195,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse ExamineItem(
         PmcData pmcData,
         InventoryExamineRequestData info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.ExamineItem(pmcData, info, sessionID, output);
+        inventoryController.ExamineItem(pmcData, info, sessionID, output);
         return output;
     }
 
@@ -228,13 +210,9 @@ public class InventoryCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ReadEncyclopedia(
-        PmcData pmcData,
-        InventoryReadEncyclopediaRequestData info,
-        string sessionID
-    )
+    public ItemEventRouterResponse ReadEncyclopedia(PmcData pmcData, InventoryReadEncyclopediaRequestData info, MongoId sessionID)
     {
-        return _inventoryController.ReadEncyclopedia(pmcData, info, sessionID);
+        return inventoryController.ReadEncyclopedia(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -248,11 +226,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse SortInventory(
         PmcData pmcData,
         InventorySortRequestData info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.SortInventory(pmcData, info, sessionID, output);
+        inventoryController.SortInventory(pmcData, info, sessionID, output);
         return output;
     }
 
@@ -266,11 +244,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse CreateMapMarker(
         PmcData pmcData,
         InventoryCreateMarkerRequestData info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.CreateMapMarker(pmcData, info, sessionID, output);
+        inventoryController.CreateMapMarker(pmcData, info, sessionID, output);
         return output;
     }
 
@@ -284,11 +262,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse DeleteMapMarker(
         PmcData pmcData,
         InventoryDeleteMarkerRequestData info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.DeleteMapMarker(pmcData, info, sessionID, output);
+        inventoryController.DeleteMapMarker(pmcData, info, sessionID, output);
         return output;
     }
 
@@ -302,11 +280,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse EditMapMarker(
         PmcData pmcData,
         InventoryEditMarkerRequestData info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.EditMapMarker(pmcData, info, sessionID, output);
+        inventoryController.EditMapMarker(pmcData, info, sessionID, output);
         return output;
     }
 
@@ -321,11 +299,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse OpenRandomLootContainer(
         PmcData pmcData,
         OpenRandomLootContainerRequestData info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.OpenRandomLootContainer(pmcData, info, sessionID, output);
+        inventoryController.OpenRandomLootContainer(pmcData, info, sessionID, output);
         return output;
     }
 
@@ -339,11 +317,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse RedeemProfileReward(
         PmcData pmcData,
         RedeemProfileRequestData info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.RedeemProfileReward(pmcData, info, sessionID);
+        inventoryController.RedeemProfileReward(pmcData, info, sessionID);
         return output;
     }
 
@@ -358,11 +336,11 @@ public class InventoryCallbacks(
     public ItemEventRouterResponse SetFavoriteItem(
         PmcData pmcData,
         SetFavoriteItems info,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        _inventoryController.SetFavoriteItem(pmcData, info, sessionID);
+        inventoryController.SetFavoriteItem(pmcData, info, sessionID);
         return output;
     }
 
@@ -375,14 +353,9 @@ public class InventoryCallbacks(
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse FailQuest(
-        PmcData pmcData,
-        FailQuestRequestData info,
-        string sessionID,
-        ItemEventRouterResponse output
-    )
+    public ItemEventRouterResponse FailQuest(PmcData pmcData, FailQuestRequestData info, MongoId sessionID, ItemEventRouterResponse output)
     {
-        _questController.FailQuest(pmcData, info, sessionID, output);
+        questController.FailQuest(pmcData, info, sessionID, output);
         return output;
     }
 
@@ -393,14 +366,9 @@ public class InventoryCallbacks(
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse PinOrLock(
-        PmcData pmcData,
-        PinOrLockItemRequest info,
-        string sessionID,
-        ItemEventRouterResponse output
-    )
+    public ItemEventRouterResponse PinOrLock(PmcData pmcData, PinOrLockItemRequest info, MongoId sessionID, ItemEventRouterResponse output)
     {
-        _inventoryController.PinOrLock(pmcData, info, sessionID, output);
+        inventoryController.PinOrLock(pmcData, info, sessionID, output);
         return output;
     }
 }

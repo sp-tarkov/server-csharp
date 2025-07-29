@@ -25,9 +25,6 @@ public record HttpConfig : BaseConfig
     [JsonPropertyName("backendPort")]
     public required int BackendPort { get; set; }
 
-    [JsonPropertyName("webSocketPingDelayMs")]
-    public required int WebSocketPingDelayMs { get; set; }
-
     [JsonPropertyName("logRequests")]
     public required bool LogRequests { get; set; }
 
@@ -36,7 +33,4 @@ public record HttpConfig : BaseConfig
     /// </summary>
     [JsonPropertyName("serverImagePathOverride")]
     public required Dictionary<string, string> ServerImagePathOverride { get; set; }
-
-    [JsonPropertyName("certificatePassword")]
-    public required string CertificatePassword { get; set; }
 }

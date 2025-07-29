@@ -9,9 +9,9 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class WeightedRandomHelper(
-    ISptLogger<WeightedRandomHelper> _logger,
+    ISptLogger<WeightedRandomHelper> logger,
     ServerLocalisationService localisationService,
-    RandomUtil _randomUtil
+    RandomUtil randomUtil
 )
 {
     /// <summary>
@@ -30,7 +30,7 @@ public class WeightedRandomHelper(
         var itemKeys = values.Keys.ToList();
         var weights = values.Values.ToList();
 
-        var chosenItem = WeightedRandom<T>(itemKeys, weights);
+        var chosenItem = WeightedRandom(itemKeys, weights);
 
         return chosenItem.Item;
     }
@@ -47,23 +47,21 @@ public class WeightedRandomHelper(
     /// <param name="items">List of items</param>
     /// <param name="weights">List of weights</param>
     /// <returns>Dictionary with item and index</returns>
-    public WeightedRandomResult<T> WeightedRandom<T>(List<T> items, List<double> weights)
+    public WeightedRandomResult<T> WeightedRandom<T>(IList<T> items, IList<double> weights)
     {
         if (items.Count == 0)
         {
-            _logger.Error(localisationService.GetText("weightedrandomhelper-supplied_items_empty"));
+            logger.Error(localisationService.GetText("weightedrandomhelper-supplied_items_empty"));
         }
 
         if (weights.Count == 0)
         {
-            _logger.Error(
-                localisationService.GetText("weightedrandomhelper-supplied_weights_empty")
-            );
+            logger.Error(localisationService.GetText("weightedrandomhelper-supplied_weights_empty"));
         }
 
         if (items.Count != weights.Count)
         {
-            _logger.Error(
+            logger.Error(
                 localisationService.GetText(
                     "weightedrandomhelper-supplied_data_doesnt_match",
                     new { itemCount = items.Count, weightCount = weights.Count }
@@ -78,7 +76,7 @@ public class WeightedRandomHelper(
         {
             if (weights[i] < 0)
             {
-                _logger.Warning($"Weight at index: {i} is negative ({weights[i]}), skipping");
+                logger.Warning($"Weight at index: {i} is negative ({weights[i]}), skipping");
                 continue;
             }
 
@@ -89,12 +87,12 @@ public class WeightedRandomHelper(
         if (sumOfWeights == weights.Count)
         {
             // Weights are all the same, early exit
-            var randomIndex = _randomUtil.GetInt(0, items.Count - 1);
+            var randomIndex = randomUtil.GetInt(0, items.Count - 1);
             return new WeightedRandomResult<T> { Item = items[randomIndex], Index = randomIndex };
         }
 
         // Getting the random number in a range of [0...sum(weights)]
-        var randomNumber = sumOfWeights * _randomUtil.GetDouble(0, 1);
+        var randomNumber = sumOfWeights * randomUtil.GetDouble(0, 1);
 
         // Picking the random item based on its weight.
         for (var itemIndex = 0; itemIndex < items.Count; itemIndex++)
@@ -109,7 +107,7 @@ public class WeightedRandomHelper(
     }
 
     /// <summary>
-    ///     Find the greated common divisor of all weights and use it on the passed in dictionary
+    ///     Find the greatest common divisor of all weights and use it on the passed in dictionary
     /// </summary>
     /// <param name="weightedDict">Values to reduce</param>
     public void ReduceWeightValues(IDictionary<MongoId, double> weightedDict)
@@ -144,9 +142,11 @@ public class WeightedRandomHelper(
         }
     }
 
-    /**
-     * Get the common divisor between all values in the passed in list and returns it
-     */
+    /// <summary>
+    /// Get the common divisor between all values from provided list and return it
+    /// </summary>
+    /// <param name="numbers">Numbers to get common divisor of</param>
+    /// <returns>Common divisor</returns>
     protected double CommonDivisor(List<double> numbers)
     {
         var result = numbers[0];

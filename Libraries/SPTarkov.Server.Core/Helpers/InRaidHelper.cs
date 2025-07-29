@@ -1,4 +1,5 @@
-﻿using SPTarkov.Common.Extensions;
+﻿using System.Collections.Frozen;
+using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
@@ -12,23 +13,11 @@ using SPTarkov.Server.Core.Utils.Cloners;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class InRaidHelper(
-    InventoryHelper _inventoryHelper,
-    ConfigServer _configServer,
-    ICloner _cloner,
-    DatabaseService _databaseService
-)
+public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configServer, ICloner cloner, DatabaseService databaseService)
 {
-    protected static readonly List<string> _pocketSlots =
-    [
-        "pocket1",
-        "pocket2",
-        "pocket3",
-        "pocket4",
-    ];
-    protected readonly InRaidConfig _inRaidConfig = _configServer.GetConfig<InRaidConfig>();
-    protected readonly LostOnDeathConfig _lostOnDeathConfig =
-        _configServer.GetConfig<LostOnDeathConfig>();
+    protected static readonly FrozenSet<string> _pocketSlots = ["pocket1", "pocket2", "pocket3", "pocket4"];
+    protected readonly InRaidConfig _inRaidConfig = configServer.GetConfig<InRaidConfig>();
+    protected readonly LostOnDeathConfig _lostOnDeathConfig = configServer.GetConfig<LostOnDeathConfig>();
 
     /// <summary>
     ///     Deprecated. Reset the skill points earned in a raid to 0, ready for next raid.
@@ -53,40 +42,22 @@ public class InRaidHelper(
     /// <param name="postRaidProfile">Profile returned by client after a raid</param>
     /// <param name="isSurvived">Indicates if the player survived the raid</param>
     /// <param name="isTransfer">Indicates if it is a transfer operation</param>
-    public void SetInventory(
-        string sessionID,
-        PmcData serverProfile,
-        PmcData postRaidProfile,
-        bool isSurvived,
-        bool isTransfer
-    )
+    public void SetInventory(MongoId sessionID, PmcData serverProfile, PmcData postRaidProfile, bool isSurvived, bool isTransfer)
     {
         // Store insurance (as removeItem() removes insured items)
-        var insured = _cloner.Clone(serverProfile.InsuredItems);
+        var insured = cloner.Clone(serverProfile.InsuredItems);
 
         // Remove equipment and loot items stored on player from server profile in preparation for data from client being added
-        _inventoryHelper.RemoveItem(
-            serverProfile,
-            serverProfile.Inventory.Equipment.Value,
-            sessionID
-        );
+        inventoryHelper.RemoveItem(serverProfile, serverProfile.Inventory.Equipment.Value, sessionID);
 
         // Remove quest items stored on player from server profile in preparation for data from client being added
-        _inventoryHelper.RemoveItem(
-            serverProfile,
-            serverProfile.Inventory.QuestRaidItems.Value,
-            sessionID
-        );
+        inventoryHelper.RemoveItem(serverProfile, serverProfile.Inventory.QuestRaidItems.Value, sessionID);
 
         // Get all items that have a parent of `serverProfile.Inventory.equipment` (All items player had on them at end of raid)
-        var postRaidInventoryItems = postRaidProfile.Inventory.Items.FindAndReturnChildrenAsItems(
-            postRaidProfile.Inventory.Equipment.Value
-        );
+        var postRaidInventoryItems = postRaidProfile.Inventory.Items.GetItemWithChildren(postRaidProfile.Inventory.Equipment.Value);
 
         // Get all items that have a parent of `serverProfile.Inventory.questRaidItems` (Quest items player had on them at end of raid)
-        var postRaidQuestItems = postRaidProfile.Inventory.Items.FindAndReturnChildrenAsItems(
-            postRaidProfile.Inventory.QuestRaidItems.Value
-        );
+        var postRaidQuestItems = postRaidProfile.Inventory.Items.GetItemWithChildren(postRaidProfile.Inventory.QuestRaidItems.Value);
 
         // Handle Removing of FIR status if player did not survive + not transferring
         // Do after above filtering code to reduce work done
@@ -109,19 +80,16 @@ public class InRaidHelper(
     ///     Remove FiR status from items.
     /// </summary>
     /// <param name="items">Items to process</param>
-    protected void RemoveFiRStatusFromItems(List<Item> items)
+    protected void RemoveFiRStatusFromItems(IEnumerable<Item> items)
     {
-        var dbItems = _databaseService.GetItems();
+        var dbItems = databaseService.GetItems();
 
         var itemsToRemovePropertyFrom = items.Where(item =>
         {
             // Has upd object + upd.SpawnedInSession property + not a quest item
             return (item.Upd?.SpawnedInSession ?? false)
                 && !(dbItems[item.Template].Properties.QuestItem ?? false)
-                && !(
-                    _inRaidConfig.KeepFiRSecureContainerOnDeath
-                    && item.ItemIsInsideContainer("SecuredContainer", items)
-                );
+                && !(_inRaidConfig.KeepFiRSecureContainerOnDeath && item.ItemIsInsideContainer("SecuredContainer", items));
         });
 
         foreach (var item in itemsToRemovePropertyFrom)
@@ -138,17 +106,12 @@ public class InRaidHelper(
     /// </summary>
     /// <param name="itemsToAdd">Items we want to add</param>
     /// <param name="serverInventoryItems">Location to add items to</param>
-    protected void AddItemsToInventory(
-        IEnumerable<Item> itemsToAdd,
-        List<Item> serverInventoryItems
-    )
+    protected void AddItemsToInventory(IEnumerable<Item> itemsToAdd, List<Item> serverInventoryItems)
     {
         foreach (var itemToAdd in itemsToAdd)
         {
             // Try to find index of item to determine if we should add or replace
-            var existingItemIndex = serverInventoryItems.FindIndex(inventoryItem =>
-                inventoryItem.Id == itemToAdd.Id
-            );
+            var existingItemIndex = serverInventoryItems.FindIndex(inventoryItem => inventoryItem.Id == itemToAdd.Id);
             if (existingItemIndex != -1)
             {
                 // Replace existing item
@@ -165,20 +128,20 @@ public class InRaidHelper(
     ///     Used post-raid to remove items after death.
     /// </summary>
     /// <param name="pmcData">Player profile</param>
-    /// <param name="sessionId">Session id</param>
-    public void DeleteInventory(PmcData pmcData, string sessionId)
+    /// <param name="sessionId">Player/Session id</param>
+    public void DeleteInventory(PmcData pmcData, MongoId sessionId)
     {
-        // Get inventory item ids to remove from players profile
-        var itemIdsToDeleteFromProfile = GetInventoryItemsLostOnDeath(pmcData)
-            .Select(item => item.Id);
-        foreach (var itemIdToDelete in itemIdsToDeleteFromProfile)
-        // Items inside containers are handled as part of function
+        // Get inventory items to remove from players profile
+        var itemsToDeleteFromProfile = GetInventoryItemsLostOnDeath(pmcData).ToList();
+
+        foreach (var itemToDelete in itemsToDeleteFromProfile)
         {
-            _inventoryHelper.RemoveItem(pmcData, itemIdToDelete, sessionId);
+            // Items inside containers are handled as part of function
+            inventoryHelper.RemoveItem(pmcData, itemToDelete.Id, sessionId);
         }
 
         // Remove contents of fast panel
-        pmcData.Inventory.FastPanel = new Dictionary<string, MongoId>();
+        pmcData.Inventory.FastPanel = new();
     }
 
     /// <summary>
@@ -187,11 +150,7 @@ public class InRaidHelper(
     /// <param name="sessionId">Session id</param>
     /// <param name="pmcData">Player profile</param>
     /// <param name="secureContainerSlotId">Container slot id to find items for and remove FiR from</param>
-    public void RemoveFiRStatusFromItemsInContainer(
-        string sessionId,
-        PmcData pmcData,
-        string secureContainerSlotId
-    )
+    public void RemoveFiRStatusFromItemsInContainer(MongoId sessionId, PmcData pmcData, string secureContainerSlotId)
     {
         if (!pmcData.Inventory.Items.Any(item => item.SlotId == secureContainerSlotId))
         {
@@ -199,11 +158,7 @@ public class InRaidHelper(
         }
 
         List<Item> itemsInsideContainer = [];
-        foreach (
-            var inventoryItem in pmcData.Inventory.Items.Where(item =>
-                item.Upd is not null && item.SlotId != "hideout"
-            )
-        )
+        foreach (var inventoryItem in pmcData.Inventory.Items.Where(item => item.Upd is not null && item.SlotId != "hideout"))
         {
             if (inventoryItem.ItemIsInsideContainer(secureContainerSlotId, pmcData.Inventory.Items))
             {
@@ -211,9 +166,7 @@ public class InRaidHelper(
             }
         }
 
-        foreach (
-            var item in itemsInsideContainer.Where(item => item.Upd?.SpawnedInSession ?? false)
-        )
+        foreach (var item in itemsInsideContainer.Where(item => item.Upd?.SpawnedInSession ?? false))
         {
             item.Upd.SpawnedInSession = false;
         }
@@ -224,40 +177,35 @@ public class InRaidHelper(
     /// </summary>
     /// <param name="pmcProfile">Profile to get items from</param>
     /// <returns>List of items lost on death</returns>
-    protected List<Item> GetInventoryItemsLostOnDeath(PmcData pmcProfile)
+    protected IEnumerable<Item> GetInventoryItemsLostOnDeath(PmcData pmcProfile)
     {
         var inventoryItems = pmcProfile.Inventory.Items ?? [];
         var equipmentRootId = pmcProfile?.Inventory?.Equipment;
         var questRaidItemContainerId = pmcProfile?.Inventory?.QuestRaidItems;
 
-        return inventoryItems
-            .Where(item =>
+        return inventoryItems.Where(item =>
+        {
+            // Keep items flagged as kept after death
+            if (IsItemKeptAfterDeath(pmcProfile, item))
             {
-                // Keep items flagged as kept after death
-                if (IsItemKeptAfterDeath(pmcProfile, item))
-                {
-                    return false;
-                }
-
-                // Remove normal items or quest raid items
-                if (item.ParentId == equipmentRootId || item.ParentId == questRaidItemContainerId)
-                {
-                    return true;
-                }
-
-                // Pocket items are lost on death
-                // Ensure we don't pick up pocket items from mannequins
-                if (
-                    item.SlotId.StartsWith("pocket")
-                    && pmcProfile.DoesItemHaveRootId(item, pmcProfile.Inventory.Equipment)
-                )
-                {
-                    return true;
-                }
-
                 return false;
-            })
-            .ToList();
+            }
+
+            // Remove normal items or quest raid items
+            if (item.ParentId == equipmentRootId || item.ParentId == questRaidItemContainerId)
+            {
+                return true;
+            }
+
+            // Pocket items are lost on death
+            // Ensure we don't pick up pocket items from mannequins
+            if (item.SlotId.StartsWith("pocket") && pmcProfile.DoesItemHaveRootId(item, pmcProfile.Inventory.Equipment.Value))
+            {
+                return true;
+            }
+
+            return false;
+        });
     }
 
     /// <summary>
@@ -295,19 +243,13 @@ public class InRaidHelper(
         }
 
         // Is quest item + quest item not lost on death
-        if (
-            itemToCheck.ParentId == pmcData.Inventory.QuestRaidItems
-            && !_lostOnDeathConfig.QuestItems
-        )
+        if (itemToCheck.ParentId == pmcData.Inventory.QuestRaidItems && !_lostOnDeathConfig.QuestItems)
         {
             return true;
         }
 
         // special slots are always kept after death
-        if (
-            (itemToCheck.SlotId?.Contains("SpecialSlot") ?? false)
-            && _lostOnDeathConfig.SpecialSlotItems
-        )
+        if ((itemToCheck.SlotId?.Contains("SpecialSlot") ?? false) && _lostOnDeathConfig.SpecialSlotItems)
         {
             return true;
         }

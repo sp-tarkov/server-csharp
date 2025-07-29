@@ -12,10 +12,10 @@ public record LooseLoot
     public SpawnpointCount? SpawnpointCount { get; set; }
 
     [JsonPropertyName("spawnpointsForced")]
-    public List<Spawnpoint>? SpawnpointsForced { get; set; }
+    public IEnumerable<Spawnpoint>? SpawnpointsForced { get; set; }
 
     [JsonPropertyName("spawnpoints")]
-    public List<Spawnpoint>? Spawnpoints { get; set; }
+    public IEnumerable<Spawnpoint>? Spawnpoints { get; set; }
 }
 
 public record SpawnpointCount
@@ -37,6 +37,9 @@ public record SpawnpointTemplate
 
     private string? _root;
 
+    /// <summary>
+    /// Not a mongoId
+    /// </summary>
     [JsonPropertyName("Id")]
     public string? Id { get; set; }
 
@@ -62,7 +65,7 @@ public record SpawnpointTemplate
     public bool? IsGroupPosition { get; set; }
 
     [JsonPropertyName("GroupPositions")]
-    public List<GroupPosition>? GroupPositions { get; set; }
+    public IEnumerable<GroupPosition>? GroupPositions { get; set; }
 
     [JsonPropertyName("Root")]
     public string? Root
@@ -72,7 +75,7 @@ public record SpawnpointTemplate
     }
 
     [JsonPropertyName("Items")]
-    public List<SptLootItem>? Items { get; set; }
+    public IEnumerable<SptLootItem>? Items { get; set; }
 }
 
 public record SptLootItem : Item
@@ -120,7 +123,7 @@ public record Spawnpoint
     public SpawnpointTemplate? Template { get; set; }
 
     [JsonPropertyName("itemDistribution")]
-    public List<LooseLootItemDistribution>? ItemDistribution { get; set; }
+    public IEnumerable<LooseLootItemDistribution>? ItemDistribution { get; set; }
 }
 
 public record LooseLootItemDistribution

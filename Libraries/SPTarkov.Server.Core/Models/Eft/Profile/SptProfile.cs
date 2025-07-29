@@ -48,16 +48,13 @@ public record SptProfile
     ///     Assort purchases made by player since last trader refresh
     /// </summary>
     [JsonPropertyName("traderPurchases")]
-    public Dictionary<
-        string,
-        Dictionary<string, TraderPurchaseData>?
-    >? TraderPurchases { get; set; }
+    public Dictionary<MongoId, Dictionary<MongoId, TraderPurchaseData>?>? TraderPurchases { get; set; }
 
     /// <summary>
     ///     List of friend profile IDs
     /// </summary>
     [JsonPropertyName("friends")]
-    public List<string>? FriendProfileIds { get; set; }
+    public HashSet<MongoId>? FriendProfileIds { get; set; }
 
     /// <summary>
     ///     Stores profile-related customisation, e.g. clothing / hideout walls / floors
@@ -90,7 +87,7 @@ public record Info
     public MongoId? ProfileId { get; set; }
 
     [JsonPropertyName("scavId")]
-    public string? ScavengerId { get; set; }
+    public MongoId? ScavengerId { get; set; }
 
     [JsonPropertyName("aid")]
     public int? Aid { get; set; }
@@ -144,7 +141,7 @@ public record UserBuild
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("Id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("Name")]
     public string? Name { get; set; }
@@ -162,14 +159,14 @@ public record WeaponBuild : UserBuild
 public record EquipmentBuild : UserBuild
 {
     [JsonPropertyName("Root")]
-    public string? Root { get; set; }
+    public MongoId Root { get; set; }
 
     [JsonPropertyName("Items")]
-    public List<Item>? Items { get; set; } // Same as PMC inventory items
+    public List<Item> Items { get; set; } // Same as PMC inventory items
 
     [JsonPropertyName("BuildType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public EquipmentBuildType? BuildType { get; set; }
+    public EquipmentBuildType BuildType { get; set; }
 }
 
 public record MagazineBuild : UserBuild
@@ -193,7 +190,7 @@ public record MagazineTemplateAmmoItem
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("TemplateId")]
-    public string? TemplateId { get; set; }
+    public MongoId TemplateId { get; set; }
 
     [JsonPropertyName("Count")]
     public int? Count { get; set; }
@@ -205,7 +202,7 @@ public record MagazineTemplateAmmoItem
 public record DefaultEquipmentPreset : EquipmentBuild
 {
     [JsonPropertyName("type")]
-    public string? Type { get; set; }
+    public string Type { get; set; }
 }
 
 public record Dialogue
@@ -232,7 +229,7 @@ public record Dialogue
     public List<Message>? Messages { get; set; }
 
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 }
 
 //TODO: @Cleanup: Maybe the same as Dialogue?
@@ -269,10 +266,10 @@ public record Message
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("uid")]
-    public string? UserId { get; set; }
+    public MongoId UserId { get; set; }
 
     [JsonPropertyName("type")]
     public MessageType? MessageType { get; set; }
@@ -311,7 +308,7 @@ public record Message
     public SystemData? SystemData { get; set; }
 
     [JsonPropertyName("profileChangeEvents")]
-    public List<ProfileChangeEvent>? ProfileChangeEvents { get; set; }
+    public IEnumerable<ProfileChangeEvent>? ProfileChangeEvents { get; set; }
 }
 
 public record ReplyTo
@@ -422,7 +419,7 @@ public record Spt
     ///     item TPLs blacklisted from being sold on flea for this profile
     /// </summary>
     [JsonPropertyName("blacklistedItemTpls")]
-    public HashSet<string>? BlacklistedItemTemplates { get; set; }
+    public HashSet<MongoId>? BlacklistedItemTemplates { get; set; }
 
     /// <summary>
     ///     key: daily type
@@ -446,7 +443,7 @@ public record Spt
     public PendingPrestige? PendingPrestige { get; set; }
 
     [JsonPropertyName("extraRepeatableQuests")]
-    public Dictionary<string, double>? ExtraRepeatableQuests { get; set; }
+    public Dictionary<MongoId, double>? ExtraRepeatableQuests { get; set; }
 }
 
 public record AcceptedCultistReward
@@ -533,7 +530,7 @@ public record Insurance
     public int? ScheduledTime { get; set; }
 
     [JsonPropertyName("traderId")]
-    public string? TraderId { get; set; }
+    public MongoId TraderId { get; set; }
 
     [JsonPropertyName("maxStorageTime")]
     public int? MaxStorageTime { get; set; }
@@ -557,7 +554,7 @@ public record BtrDelivery
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("scheduledTime")]
     public int? ScheduledTime { get; set; }

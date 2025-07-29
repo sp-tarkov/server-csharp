@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Http;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Routers;
 
@@ -9,10 +11,7 @@ public class HttpRouter
     protected readonly IEnumerable<DynamicRouter> _dynamicRoutes;
     protected readonly IEnumerable<StaticRouter> _staticRouters;
 
-    public HttpRouter(
-        IEnumerable<StaticRouter> staticRouters,
-        IEnumerable<DynamicRouter> dynamicRoutes
-    )
+    public HttpRouter(IEnumerable<StaticRouter> staticRouters, IEnumerable<DynamicRouter> dynamicRoutes)
     {
         _staticRouters = staticRouters;
         _dynamicRoutes = dynamicRoutes;
@@ -34,7 +33,7 @@ public class HttpRouter
     }
     */
 
-    public async ValueTask<string?> GetResponse(HttpRequest req, string sessionID, string? body)
+    public async ValueTask<string?> GetResponse(HttpRequest req, MongoId sessionID, string? body)
     {
         var wrapper = new ResponseWrapper("");
 
@@ -49,7 +48,7 @@ public class HttpRouter
 
     protected async ValueTask<bool> HandleRoute(
         HttpRequest request,
-        string sessionID,
+        MongoId sessionID,
         ResponseWrapper wrapper,
         IEnumerable<Router> routers,
         bool dynamic,
@@ -71,23 +70,11 @@ public class HttpRouter
             {
                 if (dynamic)
                 {
-                    wrapper.Output =
-                        await (route as DynamicRouter).HandleDynamic(
-                            url,
-                            body,
-                            sessionID,
-                            wrapper.Output
-                        ) as string;
+                    wrapper.Output = await (route as DynamicRouter).HandleDynamic(url, body, sessionID, wrapper.Output) as string;
                 }
                 else
                 {
-                    wrapper.Output =
-                        await (route as StaticRouter).HandleStatic(
-                            url,
-                            body,
-                            sessionID,
-                            wrapper.Output
-                        ) as string;
+                    wrapper.Output = await (route as StaticRouter).HandleStatic(url, body, sessionID, wrapper.Output) as string;
                 }
 
                 matched = true;

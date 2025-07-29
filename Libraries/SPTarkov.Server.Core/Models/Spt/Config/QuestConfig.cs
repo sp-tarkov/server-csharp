@@ -326,13 +326,13 @@ public record TraderWhitelist
     ///     Quest types this trader can provide: Completion/Exploration/Elimination.
     /// </summary>
     [JsonPropertyName("questTypes")]
-    public required List<string> QuestTypes { get; set; }
+    public required HashSet<string> QuestTypes { get; set; }
 
     /// <summary>
     ///     Item categories that the reward can be
     /// </summary>
     [JsonPropertyName("rewardBaseWhitelist")]
-    public required List<MongoId> RewardBaseWhitelist { get; set; }
+    public required IEnumerable<MongoId> RewardBaseWhitelist { get; set; }
 
     /// <summary>
     ///     Can this reward be a weapon?
@@ -413,7 +413,7 @@ public record SpecificExits
     ///     Whitelist of specific extract types
     /// </summary>
     [JsonPropertyName("passageRequirementWhitelist")]
-    public required List<string> PassageRequirementWhitelist { get; set; }
+    public required HashSet<string> PassageRequirementWhitelist { get; set; }
 }
 
 public record Completion : BaseQuestConfig
@@ -541,7 +541,7 @@ public record EliminationConfig : BaseQuestConfig
     ///     Locations that should be blacklisted as a requirement
     /// </summary>
     [JsonPropertyName("distLocationBlacklist")]
-    public required List<string> DistLocationBlacklist { get; set; }
+    public required HashSet<string> DistLocationBlacklist { get; set; }
 
     /// <summary>
     ///     Probability that a distance requirement is chosen
@@ -613,9 +613,7 @@ public record EliminationConfig : BaseQuestConfig
     ///     If a weapon category requirement is chosen, pick from these categories
     /// </summary>
     [JsonPropertyName("weaponCategoryRequirements")]
-    public required List<
-        ProbabilityObject<string, List<MongoId>>
-    > WeaponCategoryRequirements { get; set; }
+    public required List<ProbabilityObject<string, List<MongoId>>> WeaponCategoryRequirements { get; set; }
 
     /// <summary>
     ///     If a weapon requirement is chosen, pick from these weapons

@@ -15,18 +15,10 @@ public class ClientLogStaticRouter : StaticRouter
             [
                 new RouteAction(
                     "/singleplayer/log",
-                    async (url, info, sessionID, output) =>
-                        await clientLogCallbacks.ClientLog(
-                            url,
-                            info as ClientLogRequest,
-                            sessionID
-                        ),
+                    async (url, info, sessionID, output) => await clientLogCallbacks.ClientLog(url, info as ClientLogRequest, sessionID),
                     typeof(ClientLogRequest)
                 ),
-                new RouteAction(
-                    "/singleplayer/release",
-                    async (url, info, sessionID, output) => await clientLogCallbacks.ReleaseNotes()
-                ),
+                new RouteAction("/singleplayer/release", async (url, info, sessionID, output) => await clientLogCallbacks.ReleaseNotes()),
                 new RouteAction(
                     "/singleplayer/enableBSGlogging",
                     async (url, info, sessionID, output) => await clientLogCallbacks.BsgLogging()

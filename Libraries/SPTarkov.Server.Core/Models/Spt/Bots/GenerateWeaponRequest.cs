@@ -43,7 +43,7 @@ public record GenerateWeaponRequest
     ///     Ammo tpl to use when generating magazines/cartridges
     /// </summary>
     [JsonPropertyName("ammoTpl")]
-    public string? AmmoTpl { get; set; }
+    public MongoId? AmmoTpl { get; set; }
 
     /// <summary>
     ///     Bot-specific properties

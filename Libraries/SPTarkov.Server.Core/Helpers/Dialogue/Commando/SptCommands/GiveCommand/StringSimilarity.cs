@@ -5,12 +5,7 @@ public static class StringSimilarity
     /// <summary>
     /// Converted from: https://github.com/stephenjjbrown/string-similarity-js/blob/master/src/string-similarity.ts
     /// </summary>
-    public static double Match(
-        string str1,
-        string str2,
-        int substringLength = 2,
-        bool caseSensitive = false
-    )
+    public static double Match(string str1, string str2, int substringLength = 2, bool caseSensitive = false)
     {
         if (!caseSensitive)
         {

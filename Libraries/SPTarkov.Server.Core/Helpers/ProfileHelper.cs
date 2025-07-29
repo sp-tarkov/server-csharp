@@ -18,33 +18,25 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class ProfileHelper(
-    ISptLogger<ProfileHelper> _logger,
-    ICloner _cloner,
-    SaveServer _saveServer,
-    DatabaseService _databaseService,
-    Watermark _watermark,
-    TimeUtil _timeUtil,
-    ServerLocalisationService _serverLocalisationService,
-    ConfigServer _configServer
+    ISptLogger<ProfileHelper> logger,
+    ICloner cloner,
+    SaveServer saveServer,
+    DatabaseService databaseService,
+    Watermark watermark,
+    TimeUtil timeUtil,
+    ServerLocalisationService serverLocalisationService,
+    ConfigServer configServer
 )
 {
-    protected static readonly FrozenSet<string> _gameEditionsWithFreeRefresh =
-    [
-        "edge_of_darkness",
-        "unheard_edition",
-    ];
-    protected readonly InventoryConfig _inventoryConfig =
-        _configServer.GetConfig<InventoryConfig>();
+    protected static readonly FrozenSet<string> _gameEditionsWithFreeRefresh = ["edge_of_darkness", "unheard_edition"];
+    protected readonly InventoryConfig _inventoryConfig = configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
     ///     Remove/reset a completed quest condition from players profile quest data
     /// </summary>
-    /// <param name="sessionID">Session id</param>
+    /// <param name="pmcData">Player profile</param>
     /// <param name="questConditionId">Quest with condition to remove</param>
-    public void RemoveQuestConditionFromProfile(
-        PmcData pmcData,
-        Dictionary<string, string> questConditionId
-    )
+    public void RemoveQuestConditionFromProfile(PmcData pmcData, Dictionary<string, string> questConditionId)
     {
         foreach (var questId in questConditionId)
         {
@@ -62,9 +54,9 @@ public class ProfileHelper(
     ///     Get all profiles from server
     /// </summary>
     /// <returns>Dictionary of profiles</returns>
-    public Dictionary<string, SptProfile> GetProfiles()
+    public Dictionary<MongoId, SptProfile> GetProfiles()
     {
-        return _saveServer.GetProfiles();
+        return saveServer.GetProfiles();
     }
 
     /// <summary>
@@ -72,7 +64,7 @@ public class ProfileHelper(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>Array of PmcData objects</returns>
-    public List<PmcData> GetCompleteProfile(string sessionId)
+    public List<PmcData> GetCompleteProfile(MongoId sessionId)
     {
         var output = new List<PmcData>();
 
@@ -81,7 +73,7 @@ public class ProfileHelper(
             return output;
         }
 
-        var FullProfileClone = _cloner.Clone(GetFullProfile(sessionId));
+        var FullProfileClone = cloner.Clone(GetFullProfile(sessionId));
 
         // Sanitize any data the client can not receive
         SanitizeProfileForClient(FullProfileClone);
@@ -113,19 +105,16 @@ public class ProfileHelper(
     /// <param name="nicknameRequest">nickname request object</param>
     /// <param name="sessionID">Session id</param>
     /// <returns>True if already in use</returns>
-    public bool IsNicknameTaken(ValidateNicknameRequestData nicknameRequest, string sessionID)
+    public bool IsNicknameTaken(ValidateNicknameRequestData nicknameRequest, MongoId sessionID)
     {
-        var allProfiles = _saveServer.GetProfiles().Values;
+        var allProfiles = saveServer.GetProfiles().Values;
 
         // Find a profile that doesn't have same session id but has same name
         return allProfiles.Any(p =>
             ProfileHasInfoProperty(p)
             && !StringsMatch(p.ProfileInfo.ProfileId, sessionID)
             && // SessionIds dont match
-            StringsMatch(
-                p.CharacterData.PmcData.Info.LowerNickname.ToLowerInvariant(),
-                nicknameRequest.Nickname.ToLowerInvariant()
-            )
+            StringsMatch(p.CharacterData.PmcData.Info.LowerNickname.ToLowerInvariant(), nicknameRequest.Nickname.ToLowerInvariant())
         ); // Nicknames do
     }
 
@@ -144,7 +133,7 @@ public class ProfileHelper(
     /// </summary>
     /// <param name="sessionID">Session id</param>
     /// <param name="experienceToAdd">Experience to add to PMC character</param>
-    public void AddExperienceToPmc(string sessionID, int experienceToAdd)
+    public void AddExperienceToPmc(MongoId sessionID, int experienceToAdd)
     {
         var pmcData = GetPmcProfile(sessionID);
         if (pmcData != null)
@@ -153,7 +142,7 @@ public class ProfileHelper(
         }
         else
         {
-            _logger.Error($"Profile {sessionID} does not exist");
+            logger.Error($"Profile {sessionID} does not exist");
         }
     }
 
@@ -162,12 +151,9 @@ public class ProfileHelper(
     /// </summary>
     /// <param name="pmcId">Profile id to find</param>
     /// <returns>PmcData</returns>
-    public PmcData? GetProfileByPmcId(string pmcId)
+    public PmcData? GetProfileByPmcId(MongoId pmcId)
     {
-        return _saveServer
-            .GetProfiles()
-            .Values.First(p => p.CharacterData?.PmcData?.Id == pmcId)
-            .CharacterData.PmcData;
+        return saveServer.GetProfiles().Values.First(p => p.CharacterData?.PmcData?.Id == pmcId).CharacterData?.PmcData;
     }
 
     /// <summary>
@@ -178,7 +164,7 @@ public class ProfileHelper(
     public int? GetExperience(int level)
     {
         var playerLevel = level;
-        var expTable = _databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
+        var expTable = databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
         int? exp = 0;
 
         if (playerLevel >= expTable.Length) // make sure to not go out of bounds
@@ -200,7 +186,7 @@ public class ProfileHelper(
     /// <returns>Max level</returns>
     public int GetMaxLevel()
     {
-        return _databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable.Length - 1;
+        return databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable.Length - 1;
     }
 
     /// <summary>
@@ -211,15 +197,15 @@ public class ProfileHelper(
     {
         return new Spt
         {
-            Version = _watermark.GetVersionTag(true),
+            Version = watermark.GetVersionTag(true),
             Mods = [],
             ReceivedGifts = [],
             BlacklistedItemTemplates = [],
-            FreeRepeatableRefreshUsedCount = new Dictionary<string, int>(),
-            Migrations = new Dictionary<string, long>(),
-            CultistRewards = new Dictionary<string, AcceptedCultistReward>(),
+            FreeRepeatableRefreshUsedCount = new(),
+            Migrations = new(),
+            CultistRewards = new(),
             PendingPrestige = null,
-            ExtraRepeatableQuests = new Dictionary<string, double>(),
+            ExtraRepeatableQuests = new(),
         };
     }
 
@@ -228,9 +214,9 @@ public class ProfileHelper(
     /// </summary>
     /// <param name="sessionID">Profile id to get</param>
     /// <returns>SptProfile object</returns>
-    public SptProfile? GetFullProfile(string sessionID)
+    public SptProfile GetFullProfile(MongoId sessionID)
     {
-        return _saveServer.ProfileExists(sessionID) ? _saveServer.GetProfile(sessionID) : null;
+        return saveServer.GetProfile(sessionID);
     }
 
     /// <summary>
@@ -243,13 +229,10 @@ public class ProfileHelper(
         var check = int.TryParse(accountId, out var aid);
         if (!check)
         {
-            _logger.Error($"Account {accountId} does not exist");
+            logger.Error($"Account {accountId} does not exist");
         }
 
-        return _saveServer
-            .GetProfiles()
-            .FirstOrDefault(p => p.Value?.ProfileInfo?.Aid == aid)
-            .Value;
+        return saveServer.GetProfiles().FirstOrDefault(p => p.Value?.ProfileInfo?.Aid == aid).Value;
     }
 
     /// <summary>
@@ -257,7 +240,7 @@ public class ProfileHelper(
     /// </summary>
     /// <param name="sessionID">The session ID to return the profile for</param>
     /// <returns></returns>
-    public SearchFriendResponse? GetChatRoomMemberFromSessionId(string sessionID)
+    public SearchFriendResponse? GetChatRoomMemberFromSessionId(MongoId sessionID)
     {
         var pmcProfile = GetFullProfile(sessionID)?.CharacterData?.PmcData;
         if (pmcProfile == null)
@@ -277,7 +260,7 @@ public class ProfileHelper(
     {
         return new SearchFriendResponse
         {
-            Id = pmcProfile.Id,
+            Id = pmcProfile.Id.Value,
             Aid = pmcProfile.Aid,
             Info = new UserDialogDetails
             {
@@ -295,7 +278,7 @@ public class ProfileHelper(
     /// </summary>
     /// <param name="sessionID">Profile id to return</param>
     /// <returns>PmcData object</returns>
-    public PmcData? GetPmcProfile(string sessionID)
+    public PmcData? GetPmcProfile(MongoId sessionID)
     {
         return GetFullProfile(sessionID)?.CharacterData?.PmcData;
     }
@@ -306,9 +289,9 @@ public class ProfileHelper(
     /// <param name="userId">Id to validate</param>
     /// <returns>True is a player</returns>
     /// UNUSED?
-    public bool IsPlayer(string userId)
+    public bool IsPlayer(MongoId userId)
     {
-        return _saveServer.ProfileExists(userId);
+        return saveServer.ProfileExists(userId);
     }
 
     /// <summary>
@@ -316,9 +299,9 @@ public class ProfileHelper(
     /// </summary>
     /// <param name="sessionID">Profiles id</param>
     /// <returns>IPmcData object</returns>
-    public PmcData? GetScavProfile(string sessionID)
+    public PmcData? GetScavProfile(MongoId sessionID)
     {
-        return _saveServer.GetProfile(sessionID)?.CharacterData?.ScavData;
+        return saveServer.GetProfile(sessionID).CharacterData?.ScavData;
     }
 
     /// <summary>
@@ -360,9 +343,9 @@ public class ProfileHelper(
     /// <param name="sessionID">Profile id</param>
     /// <returns>True if profile is to be wiped of data/progress</returns>
     /// TODO: logic doesn't feel right to have IsWiped being nullable
-    protected bool IsWiped(string sessionID)
+    protected bool IsWiped(MongoId sessionID)
     {
-        return _saveServer.GetProfile(sessionID)?.ProfileInfo?.IsWiped ?? false;
+        return saveServer.GetProfile(sessionID)?.ProfileInfo?.IsWiped ?? false;
     }
 
     /// <summary>
@@ -376,15 +359,11 @@ public class ProfileHelper(
         var secureContainer = items.FirstOrDefault(i => i.SlotId == "SecuredContainer");
         if (secureContainer is not null)
         {
-            // Find and remove container + children
-            var childItemsInSecureContainer = items.FindAndReturnChildrenByItems(
-                secureContainer.Id
-            );
+            // Find secure container + children
+            var secureContainerAndChildrenIds = items.GetItemWithChildrenTpls(secureContainer.Id).ToHashSet();
 
-            // Remove child items + secure container
-            profile.Inventory.Items = items
-                .Where(i => !childItemsInSecureContainer.Contains(i.Id))
-                .ToList();
+            // Remove secure container + its children
+            items.RemoveAll(x => secureContainerAndChildrenIds.Contains(x.Id));
         }
 
         return profile;
@@ -397,14 +376,12 @@ public class ProfileHelper(
     /// <param name="playerId">Player to add gift flag to</param>
     /// <param name="giftId">Gift player received</param>
     /// <param name="maxCount">Limit of how many of this gift a player can have</param>
-    public void FlagGiftReceivedInProfile(string playerId, string giftId, int maxCount)
+    public void FlagGiftReceivedInProfile(MongoId playerId, string giftId, int maxCount)
     {
         var profileToUpdate = GetFullProfile(playerId);
         profileToUpdate.SptData.ReceivedGifts ??= [];
 
-        var giftData = profileToUpdate.SptData.ReceivedGifts.FirstOrDefault(g =>
-            g.GiftId == giftId
-        );
+        var giftData = profileToUpdate.SptData.ReceivedGifts.FirstOrDefault(g => g.GiftId == giftId);
         if (giftData != null)
         {
             // Increment counter
@@ -417,7 +394,7 @@ public class ProfileHelper(
             new ReceivedGift
             {
                 GiftId = giftId,
-                TimestampLastAccepted = _timeUtil.GetTimeStamp(),
+                TimestampLastAccepted = timeUtil.GetTimeStamp(),
                 Current = 1,
             }
         );
@@ -430,22 +407,20 @@ public class ProfileHelper(
     /// <param name="giftId">Gift to check for</param>
     /// <param name="maxGiftCount">Max times gift can be given to player</param>
     /// <returns>True if player has received gift previously</returns>
-    public bool PlayerHasReceivedMaxNumberOfGift(string playerId, string giftId, int maxGiftCount)
+    public bool PlayerHasReceivedMaxNumberOfGift(MongoId playerId, string giftId, int maxGiftCount)
     {
         var profile = GetFullProfile(playerId);
         if (profile == null)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Unable to gift {giftId}, Profile: {playerId} does not exist");
+                logger.Debug($"Unable to gift {giftId}, Profile: {playerId} does not exist");
             }
 
             return false;
         }
 
-        var giftDataFromProfile = profile.SptData.ReceivedGifts?.FirstOrDefault(g =>
-            g.GiftId == giftId
-        );
+        var giftDataFromProfile = profile.SptData.ReceivedGifts?.FirstOrDefault(g => g.GiftId == giftId);
         if (giftDataFromProfile == null)
         {
             return false;
@@ -486,7 +461,7 @@ public class ProfileHelper(
         var profileSkill = profileSkills.FirstOrDefault(s => s.Id == skill);
         if (profileSkill == null)
         {
-            _logger.Error(_serverLocalisationService.GetText("quest-no_skill_found", skill));
+            logger.Error(serverLocalisationService.GetText("quest-no_skill_found", skill));
             return false;
         }
 
@@ -509,36 +484,27 @@ public class ProfileHelper(
     {
         if (pointsToAddToSkill < 0D)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
-                    "player-attempt_to_increment_skill_with_negative_value",
-                    skill
-                )
-            );
+            logger.Warning(serverLocalisationService.GetText("player-attempt_to_increment_skill_with_negative_value", skill));
             return;
         }
 
         var profileSkills = pmcProfile?.Skills?.Common;
         if (profileSkills == null)
         {
-            _logger.Warning(
-                $"Unable to add: {pointsToAddToSkill} points to {skill}, Profile has no skills"
-            );
+            logger.Warning($"Unable to add: {pointsToAddToSkill} points to {skill}, Profile has no skills");
             return;
         }
 
         var profileSkill = profileSkills.FirstOrDefault(s => s.Id == skill);
         if (profileSkill == null)
         {
-            _logger.Error(_serverLocalisationService.GetText("quest-no_skill_found", skill));
+            logger.Error(serverLocalisationService.GetText("quest-no_skill_found", skill));
             return;
         }
 
         if (useSkillProgressRateMultiplier)
         {
-            var skillProgressRate = _databaseService
-                .GetGlobals()
-                .Configuration.SkillsSettings.SkillProgressRate;
+            var skillProgressRate = databaseService.GetGlobals().Configuration.SkillsSettings.SkillProgressRate;
             pointsToAddToSkill *= skillProgressRate;
         }
 
@@ -553,7 +519,7 @@ public class ProfileHelper(
         profileSkill.PointsEarnedDuringSession ??= 0;
         profileSkill.PointsEarnedDuringSession += pointsToAddToSkill;
 
-        profileSkill.LastAccess = _timeUtil.GetTimeStamp();
+        profileSkill.LastAccess = timeUtil.GetTimeStamp();
     }
 
     /// <summary>
@@ -561,11 +527,9 @@ public class ProfileHelper(
     /// </summary>
     /// <param name="sessionID">Profile id to check</param>
     /// <returns>True if account is developer</returns>
-    public bool IsDeveloperAccount(string sessionID)
+    public bool IsDeveloperAccount(MongoId sessionID)
     {
-        return GetFullProfile(sessionID)
-                ?.ProfileInfo?.Edition?.ToLowerInvariant()
-                .StartsWith("spt developer") ?? false;
+        return GetFullProfile(sessionID)?.ProfileInfo?.Edition?.ToLowerInvariant().StartsWith("spt developer") ?? false;
     }
 
     /// <summary>
@@ -573,21 +537,26 @@ public class ProfileHelper(
     /// </summary>
     /// <param name="sessionId">Profile id to give rows to</param>
     /// <param name="rowsToAdd">How many rows to give profile</param>
-    public void AddStashRowsBonusToProfile(string sessionId, int rowsToAdd)
+    /// <returns>The stash rows bonus id, this is needed for ws notification if we send one</returns>
+    public MongoId? AddStashRowsBonusToProfile(MongoId sessionId, int rowsToAdd)
     {
         var profile = GetPmcProfile(sessionId);
         if (profile?.Bonuses is null)
         {
             // Something is very wrong with profile to lack bonuses array, likely broken profile, exit early
-            return;
+            return null;
         }
-        var existingBonus = profile?.Bonuses.FirstOrDefault(b => b.Type == BonusType.StashRows);
+
+        var existingBonus = profile.Bonuses.FirstOrDefault(b => b.Type == BonusType.StashRows);
+
+        var bonusId = existingBonus?.Id;
         if (existingBonus is null)
         {
-            profile!.Bonuses.Add(
+            bonusId = new MongoId();
+            profile.Bonuses.Add(
                 new Bonus
                 {
-                    Id = new MongoId(),
+                    Id = bonusId.Value,
                     Value = rowsToAdd,
                     Type = BonusType.StashRows,
                     IsPassive = true,
@@ -600,6 +569,8 @@ public class ProfileHelper(
         {
             existingBonus.Value += rowsToAdd;
         }
+
+        return bonusId!.Value;
     }
 
     public bool HasAccessToRepeatableFreeRefreshSystem(PmcData pmcProfile)
@@ -619,9 +590,7 @@ public class ProfileHelper(
         var pockets = pmcProfile.Inventory.Items.Where(i => i.SlotId == "Pockets");
         if (!pockets.Any())
         {
-            _logger.Error(
-                $"Unable to replace profile: {pmcProfile.Id} pocket tpl with: {newPocketTpl} as Pocket item could not be found."
-            );
+            logger.Error($"Unable to replace profile: {pmcProfile.Id} pocket tpl with: {newPocketTpl} as Pocket item could not be found.");
             return;
         }
 
@@ -643,11 +612,11 @@ public class ProfileHelper(
         foreach (var itemId in profile.Inventory?.FavoriteItems ?? [])
         {
             // When viewing another users profile, the client expects a full item with children, so get that
-            var itemAndChildren = profile.Inventory.Items.FindAndReturnChildrenAsItems(itemId);
+            var itemAndChildren = profile.Inventory.Items.GetItemWithChildren(itemId);
             if (itemAndChildren?.Count > 0)
             {
                 // To get the client to actually see the items, we set the main item's parent to null, so it's treated as a root item
-                var clonedItems = _cloner.Clone(itemAndChildren);
+                var clonedItems = cloner.Clone(itemAndChildren);
                 clonedItems.First().ParentId = null;
 
                 fullFavorites.AddRange(clonedItems);
@@ -666,20 +635,20 @@ public class ProfileHelper(
 
         if (fullProfile?.CustomisationUnlocks?.Any(u => u.Id == reward.Target) ?? false)
         {
-            _logger.Warning(
+            logger.Warning(
                 $"Profile: {fullProfile.ProfileInfo.ProfileId} already has hideout customisation reward: {reward.Target}, skipping"
             );
             return;
         }
 
-        var customisationTemplateDb = _databaseService.GetTemplates().Customization;
+        var customisationTemplateDb = databaseService.GetTemplates().Customization;
         var matchingCustomisation = customisationTemplateDb.GetValueOrDefault(reward.Target, null);
 
         if (matchingCustomisation is not null)
         {
             var rewardToStore = new CustomisationStorage
             {
-                Id = reward.Target,
+                Id = new MongoId(reward.Target),
                 Source = source,
                 Type = null,
             };
@@ -710,10 +679,17 @@ public class ProfileHelper(
                 case CustomisationTypeId.SHOOTING_RANGE_MARK:
                     rewardToStore.Type = CustomisationType.SHOOTING_RANGE_MARK;
                     break;
+                case CustomisationTypeId.VOICE:
+                    rewardToStore.Type = CustomisationType.VOICE;
+                    break;
+                case CustomisationTypeId.LIGHT:
+                    rewardToStore.Type = CustomisationType.LIGHT;
+                    break;
+                case CustomisationTypeId.UPPER:
+                    rewardToStore.Type = CustomisationType.UPPER;
+                    break;
                 default:
-                    _logger.Error(
-                        $"Unhandled customisation unlock type: {matchingCustomisation.Parent} not added to profile"
-                    );
+                    logger.Error($"Unhandled customisation unlock type: {matchingCustomisation.Parent} not added to profile");
                     return;
             }
 
@@ -729,7 +705,7 @@ public class ProfileHelper(
     /// <returns></returns>
     public TemplateSide GetProfileTemplateForSide(string accountEdition, string side)
     {
-        var profileTemplates = _databaseService.GetProfileTemplates();
+        var profileTemplates = databaseService.GetProfileTemplates();
 
         // Get matching profile 'type' e.g. 'standard'
         profileTemplates.TryGetValue(accountEdition, out var matchingProfileTemplate);

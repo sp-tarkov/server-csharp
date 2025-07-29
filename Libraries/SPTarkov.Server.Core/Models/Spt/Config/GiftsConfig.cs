@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
@@ -32,12 +33,6 @@ public record Gift
     [JsonPropertyName("sender")]
     public GiftSenderType Sender { get; set; }
 
-    /// <summary>
-    ///     Optional - supply a users id to send from, not necessary when sending from SYSTEM or TRADER
-    /// </summary>
-    [JsonPropertyName("senderId")]
-    public string? SenderId { get; set; }
-
     [JsonPropertyName("senderDetails")]
     public UserDialogInfo? SenderDetails { get; set; }
 
@@ -45,7 +40,7 @@ public record Gift
     ///     Optional - supply a trader type to send from, not necessary when sending from SYSTEM or USER
     /// </summary>
     [JsonPropertyName("trader")]
-    public string? Trader { get; set; }
+    public MongoId? Trader { get; set; }
 
     [JsonPropertyName("messageText")]
     public string? MessageText { get; set; }
@@ -55,12 +50,6 @@ public record Gift
     /// </summary>
     [JsonPropertyName("localeTextId")]
     public string? LocaleTextId { get; set; }
-
-    /// <summary>
-    ///     Optional - Used by Seasonal events to send on specific day
-    /// </summary>
-    [JsonPropertyName("timestampToSend")]
-    public long? TimestampToSend { get; set; }
 
     [JsonPropertyName("associatedEvent")]
     public SeasonalEventType AssociatedEvent { get; set; }
@@ -76,7 +65,4 @@ public record Gift
 
     [JsonPropertyName("maxToSendPlayer")]
     public int? MaxToSendPlayer { get; set; }
-
-    [JsonPropertyName("maxToSendToPlayer")]
-    public int? MaxToSendToPlayer { get; set; }
 }

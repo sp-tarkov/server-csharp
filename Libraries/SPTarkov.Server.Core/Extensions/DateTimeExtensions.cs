@@ -93,13 +93,7 @@
         /// <param name="endMonth">Upper bound for month</param>
         /// <param name="endDay">Upper bound for day</param>
         /// <returns>True when inside date range</returns>
-        public static bool DateIsBetweenTwoDates(
-            this DateTime dateToCheck,
-            int startMonth,
-            int startDay,
-            int endMonth,
-            int endDay
-        )
+        public static bool DateIsBetweenTwoDates(this DateTime dateToCheck, int startMonth, int startDay, int endMonth, int endDay)
         {
             var eventStartDate = new DateTime(dateToCheck.Year, startMonth, startDay);
             var eventEndDate = new DateTime(dateToCheck.Year, endMonth, endDay, 23, 59, 0);
@@ -113,10 +107,7 @@
         /// <param name="dateTime">Date to get closest monday of</param>
         /// <param name="startDay">Starting day of week - Default = Monday</param>
         /// <returns>Monday as DateTime</returns>
-        public static DateTime GetClosestDate(
-            this DateTime dateTime,
-            DayOfWeek startDay = DayOfWeek.Monday
-        )
+        public static DateTime GetClosestDate(this DateTime dateTime, DayOfWeek startDay = DayOfWeek.Monday)
         {
             // Calculate difference from current day to Monday
             var diff = (7 + (dateTime.DayOfWeek - startDay)) % 7;
@@ -132,11 +123,7 @@
         /// <param name="desiredDay">Desired day to find</param>
         /// <param name="inclusiveOfToday">Should today be included in check, default = true</param>
         /// <returns>Datetime of desired day</returns>
-        public static DateTime GetMostRecentPreviousDay(
-            this DateTime dateTime,
-            DayOfWeek desiredDay,
-            bool inclusiveOfToday = true
-        )
+        public static DateTime GetMostRecentPreviousDay(this DateTime dateTime, DayOfWeek desiredDay, bool inclusiveOfToday = true)
         {
             // Get difference in day count from today to what day we want
             var dayDifferenceCount = (dateTime.DayOfWeek - desiredDay + 7) % 7;

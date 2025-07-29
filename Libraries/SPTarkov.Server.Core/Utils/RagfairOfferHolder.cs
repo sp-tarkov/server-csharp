@@ -14,7 +14,6 @@ namespace SPTarkov.Server.Core.Utils;
 public class RagfairOfferHolder(
     ISptLogger<RagfairOfferHolder> _logger,
     RagfairServerHelper _ragfairServerHelper,
-    ProfileHelper _profileHelper,
     ServerLocalisationService _serverLocalisationService,
     ItemHelper _itemHelper
 )
@@ -22,7 +21,7 @@ public class RagfairOfferHolder(
     /// <summary>
     /// Expired offer Ids
     /// </summary>
-    private readonly HashSet<string> _expiredOfferIds = [];
+    private readonly HashSet<MongoId> _expiredOfferIds = [];
 
     /// <summary>
     /// Ragfair offer cache, keyed by offer Id
@@ -32,12 +31,12 @@ public class RagfairOfferHolder(
     /// <summary>
     /// Offer Ids keyed by tpl
     /// </summary>
-    private readonly ConcurrentDictionary<MongoId, HashSet<string>> _offersByTemplate = new();
+    private readonly ConcurrentDictionary<MongoId, HashSet<MongoId>> _offersByTemplate = new();
 
     /// <summary>
     /// Offer ids keyed by trader Id
     /// </summary>
-    private readonly ConcurrentDictionary<MongoId, HashSet<string>> _offersByTrader = new();
+    private readonly ConcurrentDictionary<MongoId, HashSet<MongoId>> _offersByTrader = new();
 
     private readonly Lock _expiredOfferIdsLock = new();
     private readonly Lock _ragfairOperationLock = new();
@@ -56,7 +55,7 @@ public class RagfairOfferHolder(
     ///     Get a ragfair offer by its id
     /// </summary>
     /// <returns>RagfairOffer</returns>
-    public HashSet<string> GetStaleOfferIds()
+    public HashSet<MongoId> GetStaleOfferIds()
     {
         lock (_expiredOfferIdsLock)
         {
@@ -69,7 +68,7 @@ public class RagfairOfferHolder(
     /// </summary>
     /// <param name="templateId">Tpl to get offers for</param>
     /// <returns>RagfairOffer list</returns>
-    public List<RagfairOffer>? GetOffersByTemplate(string templateId)
+    public IEnumerable<RagfairOffer>? GetOffersByTemplate(MongoId templateId)
     {
         // Get the offerIds we want to return
         if (!_offersByTemplate.TryGetValue(templateId, out var offerIds))
@@ -77,7 +76,7 @@ public class RagfairOfferHolder(
             return null;
         }
 
-        var result = _offersById.Where(x => offerIds.Contains(x.Key)).Select(x => x.Value).ToList();
+        var result = _offersById.Where(x => offerIds.Contains(x.Key)).Select(x => x.Value);
 
         return result;
     }
@@ -87,17 +86,14 @@ public class RagfairOfferHolder(
     /// </summary>
     /// <param name="traderId">Id of trader to get offers for</param>
     /// <returns>RagfairOffer list</returns>
-    public List<RagfairOffer> GetOffersByTrader(string traderId)
+    public IEnumerable<RagfairOffer> GetOffersByTrader(MongoId traderId)
     {
         if (!_offersByTrader.TryGetValue(traderId, out var offerIds))
         {
             return [];
         }
 
-        return offerIds
-            .Select(offerId => _offersById.GetValueOrDefault(offerId))
-            .Where(offer => offer != null)
-            .ToList();
+        return offerIds.Select(offerId => _offersById.GetValueOrDefault(offerId)).Where(offer => offer != null);
     }
 
     /// <summary>
@@ -118,7 +114,7 @@ public class RagfairOfferHolder(
     ///     Add a collection of offers to ragfair
     /// </summary>
     /// <param name="offers">Offers to add</param>
-    public void AddOffers(List<RagfairOffer> offers)
+    public void AddOffers(IEnumerable<RagfairOffer> offers)
     {
         foreach (var offer in offers)
         {
@@ -143,14 +139,13 @@ public class RagfairOfferHolder(
             var itemTpl = offer.Items?.FirstOrDefault()?.Template ?? new MongoId(null);
 
             var sellerId = offer.User.Id;
-            var sellerIsTrader = _ragfairServerHelper.IsTrader(sellerId);
+            var sellerIsTrader = offer.IsTraderOffer();
             var itemSoldTemplate = _itemHelper.GetItem(itemTpl);
             if (
-                !string.IsNullOrEmpty(itemTpl)
-                && !(sellerIsTrader || _profileHelper.IsPlayer(sellerId))
+                !itemTpl.IsEmpty() // Has tpl
+                && !(sellerIsTrader || offer.IsPlayerOffer())
                 && _offersByTemplate.TryGetValue(itemTpl, out var offers)
-                && offers?.Count
-                    >= _ragfairServerHelper.GetOfferCountByBaseType(itemSoldTemplate.Value.Parent)
+                && offers?.Count >= _ragfairServerHelper.GetOfferCountByBaseType(itemSoldTemplate.Value.Parent)
             )
             {
                 // If it is an NPC PMC offer AND we have already reached the maximum amount of possible offers
@@ -177,16 +172,11 @@ public class RagfairOfferHolder(
     /// </summary>
     /// <param name="offerId">Offer id to remove</param>
     /// <param name="checkTraderOffers">OPTIONAL - Should trader offers be checked for offer id</param>
-    public void RemoveOffer(string offerId, bool checkTraderOffers = true)
+    public void RemoveOffer(MongoId offerId, bool checkTraderOffers = true)
     {
         if (!_offersById.TryGetValue(offerId, out var offer))
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
-                    "ragfair-unable_to_remove_offer_doesnt_exist",
-                    offerId
-                )
-            );
+            _logger.Warning(_serverLocalisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId));
 
             return;
         }
@@ -248,7 +238,7 @@ public class RagfairOfferHolder(
     /// <param name="template">Tpl to store offer against</param>
     /// <param name="offerId">Offer to store against tpl</param>
     /// <returns>True - offer was added</returns>
-    protected bool AddOfferByTemplates(string template, string offerId)
+    protected bool AddOfferByTemplates(MongoId template, MongoId offerId)
     {
         // Look for hashset for tpl first
         if (_offersByTemplate.TryGetValue(template, out var offerIds))
@@ -275,7 +265,7 @@ public class RagfairOfferHolder(
     /// <param name="trader">Trader id to store offer against</param>
     /// <param name="offerId">Offer to store against</param>
     /// <returns>True - offer was added</returns>
-    protected bool AddOfferByTrader(string trader, string offerId)
+    protected bool AddOfferByTrader(MongoId trader, MongoId offerId)
     {
         // Look for hashset for trader first
         if (_offersByTrader.TryGetValue(trader, out var traderOfferIds))
@@ -300,7 +290,7 @@ public class RagfairOfferHolder(
     ///     Add a stale offers id to _expiredOfferIds collection for later processing
     /// </summary>
     /// <param name="staleOfferId">Id of offer to add to stale collection</param>
-    public void FlagOfferAsExpired(string staleOfferId)
+    public void FlagOfferAsExpired(MongoId staleOfferId)
     {
         lock (_expiredOfferIdsLock)
         {
@@ -327,7 +317,7 @@ public class RagfairOfferHolder(
     ///     Get an array of arrays of expired offer items + children
     /// </summary>
     /// <returns>Expired offer assorts</returns>
-    public List<List<Item>> GetExpiredOfferItems()
+    public IEnumerable<List<Item>> GetExpiredOfferItems()
     {
         lock (_expiredOfferIdsLock)
         {
@@ -376,10 +366,7 @@ public class RagfairOfferHolder(
         {
             foreach (var offer in GetOffers())
             {
-                if (
-                    _expiredOfferIds.Contains(offer.Id)
-                    || _ragfairServerHelper.IsTrader(offer.User.Id)
-                )
+                if (_expiredOfferIds.Contains(offer.Id) || _ragfairServerHelper.IsTrader(offer.User.Id))
                 {
                     // Already flagged or trader offer (handled separately), skip
                     continue;
@@ -389,9 +376,7 @@ public class RagfairOfferHolder(
                 {
                     if (!_expiredOfferIds.Add(offer.Id))
                     {
-                        _logger.Warning(
-                            $"Unable to add offer: {offer.Id} to expired offers as it already exists"
-                        );
+                        _logger.Warning($"Unable to add offer: {offer.Id} to expired offers as it already exists");
                     }
                 }
             }

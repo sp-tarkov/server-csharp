@@ -12,11 +12,9 @@ namespace SPTarkov.Server.Core.Extensions
         /// </summary>
         /// <param name="profile">Profile to get quest items from</param>
         /// <returns>List of item objects</returns>
-        public static List<Item> GetQuestItemsInProfile(this PmcData profile)
+        public static IEnumerable<Item> GetQuestItemsInProfile(this PmcData profile)
         {
-            return profile
-                ?.Inventory?.Items.Where(i => i.ParentId == profile.Inventory.QuestRaidItems)
-                .ToList();
+            return profile?.Inventory?.Items.Where(i => i.ParentId == profile.Inventory.QuestRaidItems).ToList();
         }
 
         /// <summary>
@@ -26,15 +24,9 @@ namespace SPTarkov.Server.Core.Extensions
         public static void UnlockHideoutWallInProfile(this PmcData profile)
         {
             var profileHideoutAreas = profile.Hideout.Areas;
-            var waterCollector = profileHideoutAreas.FirstOrDefault(x =>
-                x.Type == HideoutAreas.WaterCollector
-            );
-            var medStation = profileHideoutAreas.FirstOrDefault(x =>
-                x.Type == HideoutAreas.MedStation
-            );
-            var wall = profileHideoutAreas.FirstOrDefault(x =>
-                x.Type == HideoutAreas.EmergencyWall
-            );
+            var waterCollector = profileHideoutAreas.FirstOrDefault(x => x.Type == HideoutAreas.WaterCollector);
+            var medStation = profileHideoutAreas.FirstOrDefault(x => x.Type == HideoutAreas.MedStation);
+            var wall = profileHideoutAreas.FirstOrDefault(x => x.Type == HideoutAreas.EmergencyWall);
 
             // No collector or med station, skip
             if (waterCollector is null && medStation is null)
@@ -151,10 +143,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="pmcProfile">Player profile</param>
         /// <param name="desiredBonus">Bonus to sum up</param>
         /// <returns>Summed bonus value or 0 if no bonus found</returns>
-        public static double GetBonusValueFromProfile(
-            this PmcData pmcProfile,
-            BonusType desiredBonus
-        )
+        public static double GetBonusValueFromProfile(this PmcData pmcProfile, BonusType desiredBonus)
         {
             var bonuses = pmcProfile?.Bonuses?.Where(b => b.Type == desiredBonus);
             if (!bonuses.Any())
@@ -168,9 +157,7 @@ namespace SPTarkov.Server.Core.Extensions
 
         public static bool PlayerIsFleaBanned(this PmcData pmcProfile, long currentTimestamp)
         {
-            return pmcProfile?.Info?.Bans?.Any(b =>
-                    b.BanType == BanType.RagFair && currentTimestamp < b.DateTime
-                ) ?? false;
+            return pmcProfile?.Info?.Bans?.Any(b => b.BanType == BanType.RagFair && currentTimestamp < b.DateTime) ?? false;
         }
 
         /// <summary>
@@ -189,7 +176,7 @@ namespace SPTarkov.Server.Core.Extensions
             var accExp = 0;
             for (var i = 0; i < expTable.Length; i++)
             {
-                accExp += expTable[i].Experience ?? 0;
+                accExp += expTable[i].Experience;
 
                 if (pmcData.Info.Experience < accExp)
                 {
@@ -209,7 +196,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="item">Item to check</param>
         /// <param name="rootId">Root item id to check for</param>
         /// <returns>True when item has rootId, false when not</returns>
-        public static bool DoesItemHaveRootId(this PmcData pmcData, Item item, string rootId)
+        public static bool DoesItemHaveRootId(this PmcData pmcData, Item item, MongoId rootId)
         {
             var currentItem = item;
             while (currentItem is not null)
@@ -221,9 +208,7 @@ namespace SPTarkov.Server.Core.Extensions
                 }
 
                 // Otherwise get the parent item
-                currentItem = pmcData.Inventory.Items.FirstOrDefault(item =>
-                    item.Id == currentItem.ParentId
-                );
+                currentItem = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == currentItem.ParentId);
             }
 
             return false;
@@ -235,11 +220,24 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="pmcData">Profile to search</param>
         /// <param name="questId">Quest id to look up</param>
         /// <returns>QuestStatus enum</returns>
-        public static QuestStatusEnum GetQuestStatus(this PmcData pmcData, string questId)
+        public static QuestStatusEnum GetQuestStatus(this PmcData pmcData, MongoId questId)
         {
             var quest = pmcData.Quests?.FirstOrDefault(q => q.QId == questId);
 
             return quest?.Status ?? QuestStatusEnum.Locked;
+        }
+
+        /// <summary>
+        /// Use values from the profiles template to reset all body part max values
+        /// </summary>
+        /// <param name="profile">Profile to update</param>
+        /// <param name="profileTemplate">Template used to create profile</param>
+        public static void ResetMaxLimbHp(this PmcData profile, TemplateSide profileTemplate)
+        {
+            foreach (var (partKey, bodyPart) in profile.Health.BodyParts)
+            {
+                bodyPart.Health.Maximum = profileTemplate.Character.Health.BodyParts[partKey].Health.Maximum;
+            }
         }
     }
 }

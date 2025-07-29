@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Customization;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -10,89 +11,65 @@ namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
 public class CustomizationCallbacks(
-    CustomizationController _customizationController,
-    SaveServer _saveServer,
-    HttpResponseUtil _httpResponseUtil
+    CustomizationController customizationController,
+    SaveServer saveServer,
+    HttpResponseUtil httpResponseUtil
 )
 {
     /// <summary>
     ///     Handle client/trading/customization/storage
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetCustomisationUnlocks(
-        string url,
-        EmptyRequestData _,
-        string sessionID
-    )
+    public ValueTask<string> GetCustomisationUnlocks(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            _httpResponseUtil.GetBody(_saveServer.GetProfile(sessionID).CustomisationUnlocks)
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(saveServer.GetProfile(sessionID).CustomisationUnlocks));
     }
 
     /// <summary>
     ///     Handle client/trading/customization
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetTraderSuits(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetTraderSuits(string url, EmptyRequestData _, MongoId sessionID)
     {
         var splitUrl = url.Split('/');
         var traderId = splitUrl[^3];
 
-        return new ValueTask<string>(
-            _httpResponseUtil.GetBody(_customizationController.GetTraderSuits(traderId, sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(customizationController.GetTraderSuits(traderId, sessionID)));
     }
 
     /// <summary>
     ///     Handle CustomizationBuy event
     /// </summary>
     /// <returns></returns>
-    public ItemEventRouterResponse BuyCustomisation(
-        PmcData pmcData,
-        BuyClothingRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse BuyCustomisation(PmcData pmcData, BuyClothingRequestData request, MongoId sessionID)
     {
-        return _customizationController.BuyCustomisation(pmcData, request, sessionID);
+        return customizationController.BuyCustomisation(pmcData, request, sessionID);
     }
 
     /// <summary>
     ///     Handle client/hideout/customization/offer/list
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetHideoutCustomisation(
-        string url,
-        EmptyRequestData _,
-        string sessionID
-    )
+    public ValueTask<string> GetHideoutCustomisation(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            _httpResponseUtil.GetBody(_customizationController.GetHideoutCustomisation(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(customizationController.GetHideoutCustomisation(sessionID)));
     }
 
     /// <summary>
     ///     Handle client/customization/storage
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetStorage(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> GetStorage(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            _httpResponseUtil.GetBody(_customizationController.GetCustomisationStorage(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(customizationController.GetCustomisationStorage(sessionID)));
     }
 
     /// <summary>
     ///     Handle CustomizationSet
     /// </summary>
     /// <returns></returns>
-    public ItemEventRouterResponse SetCustomisation(
-        PmcData pmcData,
-        CustomizationSetRequest request,
-        string sessionID
-    )
+    public ItemEventRouterResponse SetCustomisation(PmcData pmcData, CustomizationSetRequest request, MongoId sessionID)
     {
-        return _customizationController.SetCustomisation(sessionID, request, pmcData);
+        return customizationController.SetCustomisation(sessionID, request, pmcData);
     }
 }

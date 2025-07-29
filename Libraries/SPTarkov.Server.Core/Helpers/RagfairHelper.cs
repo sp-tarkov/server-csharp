@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
@@ -27,28 +28,26 @@ public class RagfairHelper(
     /// </summary>
     /// <param name="currencyTpl">Currency tpl</param>
     /// <returns>Currency tag, e.g. RUB</returns>
-    public string GetCurrencyTag(string currencyTpl)
+    public string GetCurrencyTag(MongoId currencyTpl)
     {
         if (currencyTpl == Money.EUROS)
         {
             return "EUR";
         }
-        else if (currencyTpl == Money.DOLLARS)
+        if (currencyTpl == Money.DOLLARS)
         {
             return "USD";
         }
-        else if (currencyTpl == Money.ROUBLES)
+        if (currencyTpl == Money.ROUBLES)
         {
             return "RUB";
         }
-        else if (currencyTpl == Money.GP)
+        if (currencyTpl == Money.GP)
         {
             return "GP";
         }
-        else
-        {
-            return "";
-        }
+
+        return "";
     }
 
     /// <summary>
@@ -71,9 +70,9 @@ public class RagfairHelper(
         }
     }
 
-    public List<string> FilterCategories(string sessionId, SearchRequestData request)
+    public List<MongoId> FilterCategories(MongoId sessionId, SearchRequestData request)
     {
-        var result = new List<string>();
+        var result = new List<MongoId>();
 
         // Case: weapon builds
         if (request.BuildCount > 0)
@@ -84,28 +83,24 @@ public class RagfairHelper(
         // Case: search
         if (!string.IsNullOrEmpty(request.LinkedSearchId))
         {
-            var data = ragfairLinkedItemService.GetLinkedItems(request.LinkedSearchId);
+            var data = ragfairLinkedItemService.GetLinkedItems(request.LinkedSearchId.Value);
             result = [.. data];
         }
 
         // Case: category
-        if (!string.IsNullOrEmpty(request.HandbookId))
+        if (request.HandbookId.HasValue && !request.HandbookId.Value.IsEmpty())
         {
-            var handbook = GetCategoryList(request.HandbookId);
-            result = result?.Count > 0 ? result.IntersectWith(handbook) : handbook;
+            var handbook = GetCategoryList(request.HandbookId.Value);
+            result = (result?.Count > 0 ? result.IntersectWith(handbook) : handbook).ToList();
         }
 
         return result;
     }
 
-    public Dictionary<string, TraderAssort> GetDisplayableAssorts(string sessionId)
+    public Dictionary<MongoId, TraderAssort> GetDisplayableAssorts(MongoId sessionId)
     {
-        var result = new Dictionary<string, TraderAssort>();
-        foreach (
-            var traderId in databaseService
-                .GetTraders()
-                .Keys.Where(traderId => _ragfairConfig.Traders.ContainsKey(traderId))
-        )
+        var result = new Dictionary<MongoId, TraderAssort>();
+        foreach (var traderId in databaseService.GetTraders().Keys.Where(traderId => _ragfairConfig.Traders.ContainsKey(traderId)))
         {
             result[traderId] = traderAssortHelper.GetAssort(sessionId, traderId, true);
         }
@@ -113,12 +108,12 @@ public class RagfairHelper(
         return result;
     }
 
-    protected List<string> GetCategoryList(string handbookId)
+    protected List<MongoId> GetCategoryList(MongoId handbookId)
     {
-        var result = new List<string>();
+        var result = new List<MongoId>();
 
         // if its "mods" great-parent category, do double recursive loop
-        if (handbookId == "5b5f71a686f77447ed5636ab")
+        if (handbookId == new MongoId("5b5f71a686f77447ed5636ab"))
         {
             foreach (var category in handbookHelper.ChildrenCategories(handbookId))
             {
@@ -139,11 +134,7 @@ public class RagfairHelper(
 
             return handbookHelper
                 .ChildrenCategories(handbookId)
-                .Aggregate(
-                    result,
-                    (current, category) =>
-                        [.. current, .. handbookHelper.TemplatesWithParent(category)]
-                );
+                .Aggregate(result, (current, category) => [.. current, .. handbookHelper.TemplatesWithParent(category)]);
         }
 
         // It's a specific item searched
@@ -152,11 +143,13 @@ public class RagfairHelper(
         return result;
     }
 
-    /**
-     * Iterate over array of identical items and merge stack count
-     * Ragfair allows abnormally large stacks.
-     */
-    public List<Item> MergeStackable(List<Item> items)
+    /// <summary>
+    /// Iterate over array of identical items and merge stack count
+    /// Ragfair allows abnormally large stacks
+    /// </summary>
+    /// <param name="items">Items to merge</param>
+    /// <returns></returns>
+    public List<Item> MergeStackable(IEnumerable<Item> items)
     {
         var list = new List<Item>();
         Item? rootItem = null;
@@ -188,12 +181,12 @@ public class RagfairHelper(
         return [rootItem, .. list];
     }
 
-    /**
-     * Return the symbol for a currency
-     * e.g. 5449016a4bdc2d6f028b456f return ₽
-     * @param currencyTpl currency to get symbol for
-     * @returns symbol of currency
-     */
+    /// <summary>
+    /// Return the symbol for a currency
+    /// e.g. 5449016a4bdc2d6f028b456f return ₽
+    /// </summary>
+    /// <param name="currencyTpl">currency to get symbol for</param>
+    /// <returns>symbol of currency</returns>
     public string GetCurrencySymbol(string currencyTpl)
     {
         return currencyTpl == Money.EUROS ? "€"

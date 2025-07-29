@@ -18,17 +18,13 @@ namespace SPTarkov.Server.Core.Utils.Collections;
 ///     // count the elements which should be distributed according to the relative probabilities
 ///     res.filter(x => x==="b").reduce((sum, x) => sum + 1 , 0)
 /// </summary>
-/// <typeparam name="T"></typeparam>
 /// <typeparam name="K"></typeparam>
 /// <typeparam name="V"></typeparam>
 public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
 {
     private readonly ICloner _cloner;
 
-    public ProbabilityObjectArray(
-        ICloner cloner,
-        ICollection<ProbabilityObject<K, V>>? items = null
-    )
+    public ProbabilityObjectArray(ICloner cloner, ICollection<ProbabilityObject<K, V>>? items = null)
         : base(items ?? [])
     {
         _cloner = cloner;
@@ -39,7 +35,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     /// </summary>
     /// <param name="probValues">The relative probability values of which to calculate the normalized cumulative sum</param>
     /// <returns>Cumulative Sum normalized to 1</returns>
-    public List<double> CumulativeProbability(List<double> probValues)
+    public List<double> CumulativeProbability(IEnumerable<double> probValues)
     {
         var sum = probValues.Sum();
         var probCumsum = probValues.CumulativeSum();
@@ -74,10 +70,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     public ProbabilityObjectArray<K, V> Clone()
     {
         var clone = _cloner.Clone(this);
-        var probabilityObjects = new ProbabilityObjectArray<K, V>(
-            _cloner,
-            new List<ProbabilityObject<K, V>>()
-        );
+        var probabilityObjects = new ProbabilityObjectArray<K, V>(_cloner, new List<ProbabilityObject<K, V>>());
         probabilityObjects.AddRange(clone);
 
         return probabilityObjects;
@@ -118,15 +111,13 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
         return element?.RelativeProbability;
     }
 
-    /**
-     * Get the maximum relative probability out of a ProbabilityObjectArray
-     *
-     * Example:
-     * po = new ProbabilityObjectArray(new ProbabilityObject("a", 5), new ProbabilityObject("b", 1))
-     * po.maxProbability() // returns 5
-     *
-     * @return      {number}                                                the maximum value of all relative probabilities in this ProbabilityObjectArray
-     */
+    /// <summary>
+    /// Get the maximum relative probability out of a ProbabilityObjectArray
+    /// Example:
+    /// po = new ProbabilityObjectArray(new ProbabilityObject("a", 5), new ProbabilityObject("b", 1))
+    /// po.maxProbability() // returns 5
+    /// </summary>
+    /// <returns>the maximum value of all relative probabilities in this ProbabilityObjectArray</returns>
     public double MaxProbability()
     {
         return this.Max(x => x.RelativeProbability).Value;
@@ -152,11 +143,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     /// <param name="removeAfterDraw">Draw with or without replacement from the input dict (true = don't remove after drawing)</param>
     /// <param name="neverRemoveWhitelist">List of keys which shall be replaced even if drawing without replacement</param>
     /// <returns>Collection consisting of N random keys for this ProbabilityObjectArray</returns>
-    public List<K> Draw(
-        int drawCount = 1,
-        bool removeAfterDraw = true,
-        List<K>? neverRemoveWhitelist = null
-    )
+    public List<K> Draw(int drawCount = 1, bool removeAfterDraw = true, List<K>? neverRemoveWhitelist = null)
     {
         neverRemoveWhitelist ??= [];
         if (Count == 0)
@@ -218,12 +205,12 @@ public class ProbabilityObject<K, V>
 {
     public ProbabilityObject() { }
 
-    /**
-     * constructor for the ProbabilityObject
-     * @param       {string}                        key                         The key of the element
-     * @param       {number}                        relativeProbability         The relative probability of this element
-     * @param       {any}                           data                        Optional data attached to the element
-     */
+    /// <summary>
+    /// constructor for the ProbabilityObject
+    /// </summary>
+    /// <param name="key">The key of the element</param>
+    /// <param name="relativeProbability">The relative probability of this element</param>
+    /// <param name="data">Optional data attached to the element</param>
     public ProbabilityObject(K key, double? relativeProbability, V? data)
     {
         Key = key;

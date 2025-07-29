@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Eft.Profile;
@@ -15,20 +16,18 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class LauncherController(
-    ISptLogger<LauncherController> _logger,
-    IReadOnlyList<SptMod> _loadedMods,
-    HashUtil _hashUtil,
-    TimeUtil _timeUtil,
-    RandomUtil _randomUtil,
-    SaveServer _saveServer,
-    HttpServerHelper _httpServerHelper,
-    ProfileHelper _profileHelper,
-    DatabaseService _databaseService,
-    ServerLocalisationService _serverLocalisationService,
-    ConfigServer _configServer
+    ISptLogger<LauncherController> logger,
+    IReadOnlyList<SptMod> loadedMods,
+    HashUtil hashUtil,
+    SaveServer saveServer,
+    HttpServerHelper httpServerHelper,
+    ProfileHelper profileHelper,
+    DatabaseService databaseService,
+    ServerLocalisationService serverLocalisationService,
+    ConfigServer configServer
 )
 {
-    protected readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
 
     /// <summary>
     ///     Handle launcher connecting to server
@@ -37,16 +36,14 @@ public class LauncherController(
     public ConnectResponse Connect()
     {
         // Get all possible profile types + filter out any that are blacklisted
-        var profileTemplates = _databaseService
+        var profileTemplates = databaseService
             .GetProfileTemplates()
-            .Where(profile =>
-                !_coreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profile.Key)
-            )
+            .Where(profile => !_coreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profile.Key))
             .ToDictionary();
 
         return new ConnectResponse
         {
-            BackendUrl = _httpServerHelper.GetBackendUrl(),
+            BackendUrl = httpServerHelper.GetBackendUrl(),
             Name = _coreConfig.ServerName,
             Editions = profileTemplates.Select(x => x.Key).ToList(),
             ProfileDescriptions = GetProfileDescriptions(profileTemplates),
@@ -58,17 +55,12 @@ public class LauncherController(
     /// </summary>
     /// <param name="profileTemplates">Profiles to get descriptions of</param>
     /// <returns>Dictionary of profile types with related descriptive text</returns>
-    protected Dictionary<string, string> GetProfileDescriptions(
-        Dictionary<string, ProfileSides> profileTemplates
-    )
+    protected Dictionary<string, string> GetProfileDescriptions(Dictionary<string, ProfileSides> profileTemplates)
     {
         var result = new Dictionary<string, string>();
         foreach (var (profileKey, profile) in profileTemplates)
         {
-            result.TryAdd(
-                profileKey,
-                _serverLocalisationService.GetText(profile.DescriptionLocaleKey)
-            );
+            result.TryAdd(profileKey, serverLocalisationService.GetText(profile.DescriptionLocaleKey));
         }
 
         return result;
@@ -78,22 +70,18 @@ public class LauncherController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public Info? Find(string? sessionId)
+    public Info? Find(MongoId sessionId)
     {
-        return
-            sessionId is not null
-            && _saveServer.GetProfiles().TryGetValue(sessionId, out var profile)
-            ? profile.ProfileInfo
-            : null;
+        return saveServer.GetProfiles().TryGetValue(sessionId, out var profile) ? profile.ProfileInfo : null;
     }
 
     /// <summary>
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
-    public string? Login(LoginRequestData? info)
+    public MongoId Login(LoginRequestData? info)
     {
-        foreach (var (sessionId, profile) in _saveServer.GetProfiles())
+        foreach (var (sessionId, profile) in saveServer.GetProfiles())
         {
             var account = profile.ProfileInfo;
             if (info?.Username == account?.Username)
@@ -102,20 +90,20 @@ public class LauncherController(
             }
         }
 
-        return null;
+        return MongoId.Empty();
     }
 
     /// <summary>
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
-    public async Task<string> Register(RegisterData info)
+    public async Task<MongoId> Register(RegisterData info)
     {
-        foreach (var (_, profile) in _saveServer.GetProfiles())
+        foreach (var (_, profile) in saveServer.GetProfiles())
         {
             if (info.Username == profile.ProfileInfo?.Username)
             {
-                return "";
+                return MongoId.Empty();
             }
         }
 
@@ -126,62 +114,39 @@ public class LauncherController(
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
-    protected async Task<string> CreateAccount(RegisterData info)
+    protected async Task<MongoId> CreateAccount(RegisterData info)
     {
-        var profileId = GenerateProfileId();
-        var scavId = GenerateProfileId();
+        var profileId = new MongoId();
+        var scavId = new MongoId();
         var newProfileDetails = new Info
         {
             ProfileId = profileId,
             ScavengerId = scavId,
-            Aid = _hashUtil.GenerateAccountId(),
+            Aid = hashUtil.GenerateAccountId(),
             Username = info.Username,
             Password = info.Password,
             IsWiped = true,
             Edition = info.Edition,
         };
-        _saveServer.CreateProfile(newProfileDetails);
+        saveServer.CreateProfile(newProfileDetails);
 
-        await _saveServer.LoadProfileAsync(profileId);
-        await _saveServer.SaveProfileAsync(profileId);
+        await saveServer.LoadProfileAsync(profileId);
+        await saveServer.SaveProfileAsync(profileId);
 
         return profileId;
     }
 
     /// <summary>
     /// </summary>
-    /// <returns></returns>
-    protected string GenerateProfileId()
-    {
-        var timestamp = _timeUtil.GetTimeStamp();
-
-        return FormatID(timestamp, timestamp * _randomUtil.GetInt(1, 1000000));
-    }
-
-    /// <summary>
-    /// </summary>
-    /// <param name="timeStamp"></param>
-    /// <param name="counter"></param>
-    /// <returns></returns>
-    protected string FormatID(long timeStamp, long counter)
-    {
-        var timeStampStr = Convert.ToString(timeStamp, 16).PadLeft(8, '0');
-        var counterStr = Convert.ToString(counter, 16).PadLeft(16, '0');
-
-        return timeStampStr.ToLowerInvariant() + counterStr.ToLowerInvariant();
-    }
-
-    /// <summary>
-    /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
-    public string? ChangeUsername(ChangeRequestData info)
+    public MongoId ChangeUsername(ChangeRequestData info)
     {
         var sessionID = Login(info);
 
-        if (!string.IsNullOrEmpty(sessionID))
+        if (!sessionID.IsEmpty())
         {
-            _saveServer.GetProfile(sessionID).ProfileInfo!.Username = info.Change;
+            saveServer.GetProfile(sessionID).ProfileInfo!.Username = info.Change;
         }
 
         return sessionID;
@@ -197,7 +162,7 @@ public class LauncherController(
 
         if (!string.IsNullOrEmpty(sessionID))
         {
-            _saveServer.GetProfile(sessionID).ProfileInfo!.Password = info.Change;
+            saveServer.GetProfile(sessionID).ProfileInfo!.Password = info.Change;
         }
 
         return sessionID;
@@ -208,23 +173,23 @@ public class LauncherController(
     /// </summary>
     /// <param name="info">Registration data</param>
     /// <returns>Session id</returns>
-    public string? Wipe(RegisterData info)
+    public MongoId Wipe(RegisterData info)
     {
         if (!_coreConfig.AllowProfileWipe)
         {
-            return null;
+            return MongoId.Empty();
         }
 
-        var sessionID = Login(info);
+        var sessionId = Login(info);
 
-        if (!string.IsNullOrEmpty(sessionID))
+        if (!sessionId.IsEmpty())
         {
-            var profileInfo = _saveServer.GetProfile(sessionID).ProfileInfo;
+            var profileInfo = saveServer.GetProfile(sessionId).ProfileInfo;
             profileInfo!.Edition = info.Edition;
             profileInfo.IsWiped = true;
         }
 
-        return sessionID;
+        return sessionId;
     }
 
     /// <summary>
@@ -241,20 +206,17 @@ public class LauncherController(
     /// <returns>Dictionary of mod name and mod details</returns>
     public Dictionary<string, AbstractModMetadata> GetLoadedServerMods()
     {
-        return _loadedMods.ToDictionary(
-            sptMod => sptMod.ModMetadata?.Name ?? "UNKNOWN MOD",
-            sptMod => sptMod.ModMetadata
-        );
+        return loadedMods.ToDictionary(sptMod => sptMod.ModMetadata?.Name ?? "UNKNOWN MOD", sptMod => sptMod.ModMetadata);
     }
 
     /// <summary>
     ///     Get the mods a profile has ever loaded into game with
     /// </summary>
-    /// <param name="sessionID">Session/Player id</param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns>Array of mod details</returns>
-    public List<ModDetails> GetServerModsProfileUsed(string sessionId)
+    public List<ModDetails> GetServerModsProfileUsed(MongoId sessionId)
     {
-        var profile = _profileHelper.GetFullProfile(sessionId);
+        var profile = profileHelper.GetFullProfile(sessionId);
 
         if (profile?.SptData?.Mods is not null)
         {

@@ -77,7 +77,7 @@ public record Stage
     ///     Containers inventory tpl
     /// </summary>
     [JsonPropertyName("container")]
-    public string? Container { get; set; }
+    public MongoId? Container { get; set; }
 
     [JsonPropertyName("description")]
     public string? Description { get; set; }

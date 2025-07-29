@@ -11,6 +11,7 @@ using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Ragfair;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
@@ -21,106 +22,50 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class RagfairController
+public class RagfairController(
+    ISptLogger<RagfairController> logger,
+    TimeUtil timeUtil,
+    JsonUtil jsonUtil,
+    HttpResponseUtil httpResponseUtil,
+    EventOutputHolder eventOutputHolder,
+    RagfairServer ragfairServer,
+    ItemHelper itemHelper,
+    InventoryHelper inventoryHelper,
+    RagfairSellHelper ragfairSellHelper,
+    HandbookHelper handbookHelper,
+    ProfileHelper profileHelper,
+    PaymentHelper paymentHelper,
+    RagfairHelper ragfairHelper,
+    RagfairSortHelper ragfairSortHelper,
+    RagfairOfferHelper ragfairOfferHelper,
+    TraderHelper traderHelper,
+    DatabaseService databaseService,
+    ServerLocalisationService localisationService,
+    RagfairTaxService ragfairTaxService,
+    RagfairOfferService ragfairOfferService,
+    PaymentService paymentService,
+    RagfairPriceService ragfairPriceService,
+    RagfairOfferGenerator ragfairOfferGenerator,
+    ConfigServer configServer
+)
 {
-    protected ConfigServer _configServer;
-    protected DatabaseService _databaseService;
-    protected EventOutputHolder _eventOutputHolder;
-    protected HandbookHelper _handbookHelper;
-    protected HttpResponseUtil _httpResponseUtil;
-    protected InventoryHelper _inventoryHelper;
-    protected ItemHelper _itemHelper;
-    protected JsonUtil _jsonUtil;
-    protected ServerLocalisationService _serverLocalisationService;
-    protected ISptLogger<RagfairController> _logger;
-    protected PaymentHelper _paymentHelper;
-    protected PaymentService _paymentService;
-    protected ProfileHelper _profileHelper;
-
-    protected RagfairConfig _ragfairConfig;
-    protected RagfairHelper _ragfairHelper;
-    protected RagfairOfferGenerator _ragfairOfferGenerator;
-    protected RagfairOfferHelper _ragfairOfferHelper;
-    protected RagfairOfferService _ragfairOfferService;
-    protected RagfairPriceService _ragfairPriceService;
-    protected RagfairSellHelper _ragfairSellHelper;
-    protected RagfairServer _ragfairServer;
-    protected RagfairSortHelper _ragfairSortHelper;
-    protected RagfairTaxService _ragfairTaxService;
-    protected TimeUtil _timeUtil;
-    protected TraderHelper _traderHelper;
-
-    public RagfairController(
-        ISptLogger<RagfairController> logger,
-        TimeUtil timeUtil,
-        JsonUtil jsonUtil,
-        HttpResponseUtil httpResponseUtil,
-        EventOutputHolder eventOutputHolder,
-        RagfairServer ragfairServer,
-        ItemHelper itemHelper,
-        InventoryHelper inventoryHelper,
-        RagfairSellHelper ragfairSellHelper,
-        HandbookHelper handbookHelper,
-        ProfileHelper profileHelper,
-        PaymentHelper paymentHelper,
-        RagfairHelper ragfairHelper,
-        RagfairSortHelper ragfairSortHelper,
-        RagfairOfferHelper ragfairOfferHelper,
-        TraderHelper traderHelper,
-        DatabaseService databaseService,
-        ServerLocalisationService localisationService,
-        RagfairTaxService ragfairTaxService,
-        RagfairOfferService ragfairOfferService,
-        PaymentService paymentService,
-        RagfairPriceService ragfairPriceService,
-        RagfairOfferGenerator ragfairOfferGenerator,
-        ConfigServer configServer
-    )
-    {
-        _logger = logger;
-        _timeUtil = timeUtil;
-        _jsonUtil = jsonUtil;
-        _httpResponseUtil = httpResponseUtil;
-        _eventOutputHolder = eventOutputHolder;
-        _ragfairServer = ragfairServer;
-        _itemHelper = itemHelper;
-        _inventoryHelper = inventoryHelper;
-        _ragfairSellHelper = ragfairSellHelper;
-        _handbookHelper = handbookHelper;
-        _profileHelper = profileHelper;
-        _paymentHelper = paymentHelper;
-        _ragfairHelper = ragfairHelper;
-        _ragfairSortHelper = ragfairSortHelper;
-        _ragfairOfferHelper = ragfairOfferHelper;
-        _traderHelper = traderHelper;
-        _databaseService = databaseService;
-        _serverLocalisationService = localisationService;
-        _ragfairTaxService = ragfairTaxService;
-        _ragfairOfferService = ragfairOfferService;
-        _paymentService = paymentService;
-        _ragfairPriceService = ragfairPriceService;
-        _ragfairOfferGenerator = ragfairOfferGenerator;
-        _configServer = configServer;
-
-        _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
-    }
+    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
     ///     Check all profiles and sell player offers / send player money for listing if it sold
     /// </summary>
     public void Update()
     {
-        foreach (var (sessionId, profile) in _profileHelper.GetProfiles())
+        foreach (var (sessionId, profile) in profileHelper.GetProfiles())
         {
             // Check profile is capable of creating offers
             var pmcProfile = profile.CharacterData.PmcData;
             if (
                 pmcProfile.RagfairInfo is not null
-                && pmcProfile.Info.Level
-                    >= _databaseService.GetGlobals().Configuration.RagFair.MinUserLevel
+                && pmcProfile.Info.Level >= databaseService.GetGlobals().Configuration.RagFair.MinUserLevel
             )
             {
-                _ragfairOfferHelper.ProcessOffersOnProfile(sessionId);
+                ragfairOfferHelper.ProcessOffersOnProfile(sessionId);
             }
         }
     }
@@ -132,11 +77,11 @@ public class RagfairController
     /// <param name="sessionID">Session/Player id</param>
     /// <param name="searchRequest">Search request data from client</param>
     /// <returns>Flea offers that match required search parameters</returns>
-    public GetOffersResult GetOffers(string sessionID, SearchRequestData searchRequest)
+    public GetOffersResult GetOffers(MongoId sessionID, SearchRequestData searchRequest)
     {
-        var profile = _profileHelper.GetFullProfile(sessionID);
-        var itemsToAdd = _ragfairHelper.FilterCategories(sessionID, searchRequest);
-        var traderAssorts = _ragfairHelper.GetDisplayableAssorts(sessionID);
+        var profile = profileHelper.GetFullProfile(sessionID);
+        var itemsToAdd = ragfairHelper.FilterCategories(sessionID, searchRequest);
+        var traderAssorts = ragfairHelper.GetDisplayableAssorts(sessionID);
         var result = new GetOffersResult
         {
             Offers = [],
@@ -145,28 +90,19 @@ public class RagfairController
         };
 
         // Get all offers ready for sorting/filtering below
-        result.Offers = GetOffersForSearchType(
-            searchRequest,
-            itemsToAdd,
-            traderAssorts,
-            profile.CharacterData.PmcData
-        );
+        result.Offers = GetOffersForSearchType(searchRequest, itemsToAdd, traderAssorts, profile.CharacterData.PmcData);
 
         // Client requested a category refresh
         if (searchRequest.UpdateOfferCount.GetValueOrDefault(false))
         {
-            result.Categories = GetSpecificCategories(
-                profile.CharacterData.PmcData,
-                searchRequest,
-                result.Offers
-            );
+            result.Categories = GetSpecificCategories(profile.CharacterData.PmcData, searchRequest, result.Offers);
         }
 
         // Adjust index value of offers found to start at 0
         AddIndexValueToOffers(result.Offers);
 
         // Sort offers
-        result.Offers = _ragfairSortHelper.SortOffers(
+        result.Offers = ragfairSortHelper.SortOffers(
             result.Offers,
             searchRequest.SortType.GetValueOrDefault(RagfairSort.ID),
             searchRequest.SortDirection.GetValueOrDefault(0)
@@ -182,15 +118,11 @@ public class RagfairController
         }
 
         // Update trader offers' values, Lock quest-linked offers + adjust offer buy limits
-        foreach (
-            var traderOffer in result.Offers.Where(offer =>
-                _ragfairOfferHelper.OfferIsFromTrader(offer)
-            )
-        )
+        foreach (var traderOffer in result.Offers.Where(x => x.IsTraderOffer()))
         {
             // For the items, check the barter schemes. The method getDisplayableAssorts sets a flag sptQuestLocked
             // to true if the quest is not completed yet
-            if (_ragfairOfferHelper.TraderOfferItemQuestLocked(traderOffer, traderAssorts))
+            if (ragfairOfferHelper.TraderOfferItemQuestLocked(traderOffer, traderAssorts))
             {
                 traderOffer.Locked = true;
             }
@@ -231,7 +163,7 @@ public class RagfairController
         {
             // Occurs when player edits "item count shown per page" value when on page near end of offer list
             // The page no longer exists due to the larger number of items on each page, show them the very end of the offer list instead
-            _logger.Warning(_serverLocalisationService.GetText("ragfair-offer_page_doesnt_exist"));
+            logger.Warning(localisationService.GetText("ragfair-offer_page_doesnt_exist"));
             startIndex = result.Offers.Count - perPageLimit;
             endIndex = result.Offers.Count;
         }
@@ -246,13 +178,13 @@ public class RagfairController
     private void SetTraderOfferStackSize(RagfairOffer offer)
     {
         var firstItem = offer.Items[0];
-        var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(offer.User.Id).Items;
+        var traderAssorts = traderHelper.GetTraderAssortsByTraderId(offer.User.Id).Items;
 
         var assortPurchased = traderAssorts?.FirstOrDefault(x => x.Id == offer.Items.First().Id);
         if (assortPurchased is null)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
+            logger.Warning(
+                localisationService.GetText(
                     "ragfair-unable_to_adjust_stack_count_assort_not_found",
                     new { offerId = offer.Items.First().Id, traderId = offer.User.Id }
                 )
@@ -275,16 +207,13 @@ public class RagfairController
         var assortId = offerRootItem.Id;
 
         // No trader found in profile, create a blank record for them
-        var existsInProfile = !fullProfile.TraderPurchases.TryAdd(
-            offer.User.Id,
-            new Dictionary<string, TraderPurchaseData>()
-        );
+        var existsInProfile = !fullProfile.TraderPurchases.TryAdd(offer.User.Id, new Dictionary<MongoId, TraderPurchaseData>());
         if (!existsInProfile)
         {
             // Not purchased by player before, use value from assort data
 
             // Find patching assort by its id
-            var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(offer.User.Id).Items;
+            var traderAssorts = traderHelper.GetTraderAssortsByTraderId(offer.User.Id).Items;
             var assortData = traderAssorts.FirstOrDefault(item => item.Id == assortId);
 
             // Set restriction based on data found above
@@ -307,7 +236,7 @@ public class RagfairController
     ///     Add index to all offers passed in (0-indexed)
     /// </summary>
     /// <param name="offers">Offers to add index value to</param>
-    protected void AddIndexValueToOffers(List<RagfairOffer> offers)
+    protected void AddIndexValueToOffers(IEnumerable<RagfairOffer> offers)
     {
         var counter = 0;
 
@@ -324,17 +253,11 @@ public class RagfairController
     /// <param name="searchRequest">Client search request data</param>
     /// <param name="offers">Ragfair offers to get categories for</param>
     /// <returns>Record with templates + counts</returns>
-    protected Dictionary<MongoId, int> GetSpecificCategories(
-        PmcData pmcProfile,
-        SearchRequestData searchRequest,
-        List<RagfairOffer> offers
-    )
+    protected Dictionary<MongoId, int> GetSpecificCategories(PmcData pmcProfile, SearchRequestData searchRequest, List<RagfairOffer> offers)
     {
         // Linked/required search categories
-        var playerHasFleaUnlocked =
-            pmcProfile.Info.Level
-            >= _databaseService.GetGlobals().Configuration.RagFair.MinUserLevel;
-        List<RagfairOffer> offerPool = [];
+        var playerHasFleaUnlocked = pmcProfile.Info.Level >= databaseService.GetGlobals().Configuration.RagFair.MinUserLevel;
+        List<RagfairOffer> offerPool;
         if (IsLinkedSearch(searchRequest) || IsRequiredSearch(searchRequest))
         {
             offerPool = offers;
@@ -342,24 +265,20 @@ public class RagfairController
         else if (!(IsLinkedSearch(searchRequest) || IsRequiredSearch(searchRequest)))
         {
             // Get all categories
-            offerPool = _ragfairOfferService.GetOffers();
+            offerPool = ragfairOfferService.GetOffers();
         }
         else
         {
-            _logger.Error(_serverLocalisationService.GetText("ragfair-unable_to_get_categories"));
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            logger.Error(localisationService.GetText("ragfair-unable_to_get_categories"));
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug(_jsonUtil.Serialize(searchRequest));
+                logger.Debug(jsonUtil.Serialize(searchRequest));
             }
 
             return [];
         }
 
-        return _ragfairServer.GetAllActiveCategories(
-            playerHasFleaUnlocked,
-            searchRequest,
-            offerPool
-        );
+        return ragfairServer.GetAllActiveCategories(playerHasFleaUnlocked, searchRequest, offerPool);
     }
 
     /// <summary>
@@ -392,34 +311,24 @@ public class RagfairController
     /// <returns>Array of offers</returns>
     protected List<RagfairOffer> GetOffersForSearchType(
         SearchRequestData searchRequest,
-        List<string> itemsToAdd,
-        Dictionary<string, TraderAssort> traderAssorts,
+        List<MongoId> itemsToAdd,
+        Dictionary<MongoId, TraderAssort> traderAssorts,
         PmcData pmcProfile
     )
     {
         // Searching for items in preset menu
         if (searchRequest.BuildCount > 0)
         {
-            return _ragfairOfferHelper.GetOffersForBuild(
-                searchRequest,
-                itemsToAdd,
-                traderAssorts,
-                pmcProfile
-            );
+            return ragfairOfferHelper.GetOffersForBuild(searchRequest, itemsToAdd, traderAssorts, pmcProfile);
         }
 
-        if (searchRequest.NeededSearchId?.Length > 0)
+        if (searchRequest.NeededSearchId != null && !searchRequest.NeededSearchId.Value.IsEmpty())
         {
-            return _ragfairOfferHelper.GetOffersThatRequireItem(searchRequest, pmcProfile);
+            return ragfairOfferHelper.GetOffersThatRequireItem(searchRequest, pmcProfile);
         }
 
         // Searching for general items
-        return _ragfairOfferHelper.GetValidOffers(
-            searchRequest,
-            itemsToAdd,
-            traderAssorts,
-            pmcProfile
-        );
+        return ragfairOfferHelper.GetValidOffers(searchRequest, itemsToAdd, traderAssorts, pmcProfile);
     }
 
     /// <summary>
@@ -428,16 +337,13 @@ public class RagfairController
     /// <param name="getPriceRequest">Client request object</param>
     /// <param name="ignoreTraderOffers">OPTIONAL - Should trader offers be ignored in the calculation</param>
     /// <returns>min/avg/max values for an item based on flea offers available</returns>
-    public GetItemPriceResult GetItemMinAvgMaxFleaPriceValues(
-        GetMarketPriceRequestData getPriceRequest,
-        bool ignoreTraderOffers = true
-    )
+    public GetItemPriceResult GetItemMinAvgMaxFleaPriceValues(GetMarketPriceRequestData getPriceRequest, bool ignoreTraderOffers = true)
     {
         // Get all items of tpl
-        var offers = _ragfairOfferService.GetOffersOfType(getPriceRequest.TemplateId);
+        var offers = ragfairOfferService.GetOffersOfType(getPriceRequest.TemplateId);
 
         // Offers exist for item, get averages of what's listed
-        if (offers?.Count > 0)
+        if (offers.Any())
         {
             // These get calculated while iterating through the list below
             var minMax = new MinMax<double>(int.MaxValue, 0);
@@ -455,10 +361,10 @@ public class RagfairController
 
         // No offers listed, get price from live ragfair price list prices.json
         // No flea price, get handbook price
-        var fleaPrices = _databaseService.GetPrices();
+        var fleaPrices = databaseService.GetPrices();
         if (!fleaPrices.TryGetValue(getPriceRequest.TemplateId, out var tplPrice))
         {
-            tplPrice = _handbookHelper.GetTemplatePrice(getPriceRequest.TemplateId);
+            tplPrice = handbookHelper.GetTemplatePrice(getPriceRequest.TemplateId);
         }
 
         return new GetItemPriceResult
@@ -469,11 +375,7 @@ public class RagfairController
         };
     }
 
-    protected double GetAveragePriceFromOffers(
-        List<RagfairOffer> offers,
-        MinMax<double> minMax,
-        bool ignoreTraderOffers
-    )
+    protected double GetAveragePriceFromOffers(IEnumerable<RagfairOffer> offers, MinMax<double> minMax, bool ignoreTraderOffers)
     {
         var sum = 0d;
         var totalOfferCount = 0;
@@ -481,20 +383,18 @@ public class RagfairController
         foreach (var offer in offers)
         {
             // Exclude barter items, they tend to have outrageous equivalent prices
-            if (offer.Requirements.Any(req => !_paymentHelper.IsMoneyTpl(req.Template)))
+            if (offer.Requirements.Any(req => !paymentHelper.IsMoneyTpl(req.TemplateId)))
             {
                 continue;
             }
 
-            if (ignoreTraderOffers && _ragfairOfferHelper.OfferIsFromTrader(offer))
+            if (ignoreTraderOffers && offer.IsTraderOffer())
             {
                 continue;
             }
 
             // Figure out how many items the requirementsCost is applying to, and what the per-item price is
-            var offerItemCount = offer.SellInOnePiece.GetValueOrDefault(false)
-                ? offer.Items.First().Upd?.StackObjectsCount ?? 1
-                : 1;
+            var offerItemCount = offer.SellInOnePiece.GetValueOrDefault(false) ? offer.Items.First().Upd?.StackObjectsCount ?? 1 : 1;
             var perItemPrice = offer.RequirementsCost / offerItemCount;
 
             // Handle min/max calculations based on the per-item price
@@ -526,30 +426,20 @@ public class RagfairController
     /// <param name="offerRequest">Flea list creation offer</param>
     /// <param name="sessionID">Session/Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse AddPlayerOffer(
-        PmcData pmcData,
-        AddOfferRequestData offerRequest,
-        string sessionID
-    )
+    public ItemEventRouterResponse AddPlayerOffer(PmcData pmcData, AddOfferRequestData offerRequest, MongoId sessionID)
     {
-        var output = _eventOutputHolder.GetOutput(sessionID);
-        var fullProfile = _profileHelper.GetFullProfile(sessionID);
+        var output = eventOutputHolder.GetOutput(sessionID);
+        var fullProfile = profileHelper.GetFullProfile(sessionID);
 
         if (!IsValidPlayerOfferRequest(offerRequest))
         {
-            return _httpResponseUtil.AppendErrorToOutput(
-                output,
-                "Unable to add offer, check server for error"
-            );
+            return httpResponseUtil.AppendErrorToOutput(output, "Unable to add offer, check server for error");
         }
 
         var typeOfOffer = GetOfferType(offerRequest);
         if (typeOfOffer == FleaOfferType.UNKNOWN)
         {
-            return _httpResponseUtil.AppendErrorToOutput(
-                output,
-                $"Unknown offer type: {typeOfOffer}, cannot list item on flea"
-            );
+            return httpResponseUtil.AppendErrorToOutput(output, $"Unknown offer type: {typeOfOffer}, cannot list item on flea");
         }
 
         switch (typeOfOffer)
@@ -562,10 +452,7 @@ public class RagfairController
                 return CreatePackOffer(sessionID, offerRequest, fullProfile, output);
             case FleaOfferType.UNKNOWN:
             default:
-                return _httpResponseUtil.AppendErrorToOutput(
-                    output,
-                    $"Unknown offer type: {typeOfOffer}, cannot list item on flea"
-                );
+                return httpResponseUtil.AppendErrorToOutput(output, $"Unknown offer type: {typeOfOffer}, cannot list item on flea");
         }
     }
 
@@ -576,22 +463,16 @@ public class RagfairController
     /// <returns>Is offer valid</returns>
     protected bool IsValidPlayerOfferRequest(AddOfferRequestData offerRequest)
     {
-        if (offerRequest?.Items is null || offerRequest.Items.Count == 0)
+        if (offerRequest.Items is null || offerRequest.Items.Count == 0)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText("ragfair-invalid_player_offer_request")
-            );
+            logger.Error(localisationService.GetText("ragfair-invalid_player_offer_request"));
 
             return false;
         }
 
         if (offerRequest.Requirements is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "ragfair-unable_to_place_offer_with_no_requirements"
-                )
-            );
+            logger.Error(localisationService.GetText("ragfair-unable_to_place_offer_with_no_requirements"));
 
             return false;
         }
@@ -640,7 +521,7 @@ public class RagfairController
     /// <param name="output">output Response to send to client</param>
     /// <returns>ItemEventRouterResponse</returns>
     protected ItemEventRouterResponse CreateMultiOffer(
-        string sessionID,
+        MongoId sessionID,
         AddOfferRequestData offerRequest,
         SptProfile fullProfile,
         ItemEventRouterResponse output
@@ -653,7 +534,7 @@ public class RagfairController
 
         // multi-offers are all the same item,
         // Get first item and its children and use as template
-        var inventoryItems = pmcData.Inventory.Items.FindAndReturnChildrenAsItems(
+        var inventoryItems = pmcData.Inventory.Items.GetItemWithChildren(
             firstOfferItemId // Choose first item as they're all the same item
         );
 
@@ -661,11 +542,11 @@ public class RagfairController
         var result = GetItemsToListOnFleaFromInventory(pmcData, offerRequest.Items);
         if (result.Items is null || !string.IsNullOrEmpty(result.ErrorMessage))
         {
-            _httpResponseUtil.AppendErrorToOutput(output, result.ErrorMessage);
+            httpResponseUtil.AppendErrorToOutput(output, result.ErrorMessage);
         }
 
         // Total count of items summed using their individual stack counts
-        var stackCountTotal = _ragfairOfferHelper.GetTotalStackCountSize(result.Items);
+        var stackCountTotal = ragfairOfferHelper.GetTotalStackCountSize(result.Items);
 
         // When listing identical items on flea, condense separate items into one stack with a merged stack count
         // e.g. 2 ammo items each with stackObjectCount = 3, will result in 1 stack of 6
@@ -675,9 +556,7 @@ public class RagfairController
 
         // Average offer price for single item (or whole weapon)
         // MUST occur prior to CreatePlayerOffer(), otherwise offer ends up in averages calculation
-        var averages = GetItemMinAvgMaxFleaPriceValues(
-            new GetMarketPriceRequestData { TemplateId = firstInventoryItem.Template }
-        );
+        var averages = GetItemMinAvgMaxFleaPriceValues(new GetMarketPriceRequestData { TemplateId = firstInventoryItem.Template });
 
         // Create flea object
         var offer = CreatePlayerOffer(sessionID, offerRequest.Requirements, inventoryItems, false);
@@ -687,18 +566,13 @@ public class RagfairController
 
         // Check for and apply item price modifer if it exists in config
         var averageOfferPrice = averages.Avg;
-        if (
-            _ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(
-                rootOfferItem.Template,
-                out var itemPriceModifer
-            )
-        )
+        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(rootOfferItem.Template, out var itemPriceModifer))
         {
             averageOfferPrice *= itemPriceModifer;
         }
 
         // Get average of item+children quality
-        var qualityMultiplier = _itemHelper.GetItemQualityModifierForItems(offer.Items, true);
+        var qualityMultiplier = itemHelper.GetItemQualityModifierForItems(offer.Items, true);
 
         // Multiply single item price by quality
         averageOfferPrice *= qualityMultiplier;
@@ -707,14 +581,10 @@ public class RagfairController
         var playerListedPriceInRub = CalculateRequirementsPriceInRub(offerRequest.Requirements);
 
         // Roll sale chance
-        var sellChancePercent = _ragfairSellHelper.CalculateSellChance(
-            averageOfferPrice.Value,
-            playerListedPriceInRub,
-            qualityMultiplier
-        );
+        var sellChancePercent = ragfairSellHelper.CalculateSellChance(averageOfferPrice.Value, playerListedPriceInRub, qualityMultiplier);
 
         // Create array of sell times for items listed
-        offer.SellResults = _ragfairSellHelper.RollForSale(sellChancePercent, (int)stackCountTotal);
+        offer.SellResults = ragfairSellHelper.RollForSale(sellChancePercent, (int)stackCountTotal);
 
         // Subtract flea market fee from stash
         if (_ragfairConfig.Sell.Fees)
@@ -741,7 +611,7 @@ public class RagfairController
         // Remove items from inventory after creating offer
         foreach (var itemToRemove in offerRequest.Items)
         {
-            _inventoryHelper.RemoveItem(pmcData, itemToRemove, sessionID, output);
+            inventoryHelper.RemoveItem(pmcData, itemToRemove, sessionID, output);
         }
 
         return output;
@@ -758,7 +628,7 @@ public class RagfairController
     /// <param name="output">Response to send to client</param>
     /// <returns>ItemEventRouterResponse</returns>
     protected ItemEventRouterResponse CreatePackOffer(
-        string sessionID,
+        MongoId sessionID,
         AddOfferRequestData offerRequest,
         SptProfile fullProfile,
         ItemEventRouterResponse output
@@ -769,19 +639,17 @@ public class RagfairController
 
         // multi-offers are all the same item,
         // Get first item and its children and use as template
-        var firstInventoryItemAndChildren = pmcData.Inventory.Items.FindAndReturnChildrenAsItems(
-            offerRequest.Items.FirstOrDefault()
-        );
+        var firstInventoryItemAndChildren = pmcData.Inventory.Items.GetItemWithChildren(offerRequest.Items.FirstOrDefault());
 
         // Find items to be listed on flea (+ children) from player inventory
         var result = GetItemsToListOnFleaFromInventory(pmcData, offerRequest.Items);
         if (result.Items is null || !string.IsNullOrEmpty(result.ErrorMessage))
         {
-            _httpResponseUtil.AppendErrorToOutput(output, result.ErrorMessage);
+            httpResponseUtil.AppendErrorToOutput(output, result.ErrorMessage);
         }
 
         // Total count of items summed using their stack counts
-        var stackCountTotal = _ragfairOfferHelper.GetTotalStackCountSize(result.Items);
+        var stackCountTotal = ragfairOfferHelper.GetTotalStackCountSize(result.Items);
 
         // When listing identical items on flea, condense separate items into one stack with a merged stack count
         // e.g. 2 ammo items, stackObjectCount = 3 for each, will result in 1 stack of 6
@@ -791,35 +659,23 @@ public class RagfairController
 
         // Single price for an item
         // MUST occur prior to CreatePlayerOffer(), otherwise offer ends up in averages calculation
-        var averages = GetItemMinAvgMaxFleaPriceValues(
-            new GetMarketPriceRequestData { TemplateId = firstInventoryItem.Template }
-        );
+        var averages = GetItemMinAvgMaxFleaPriceValues(new GetMarketPriceRequestData { TemplateId = firstInventoryItem.Template });
         var singleItemPrice = averages.Avg;
 
         // Create flea object
-        var offer = CreatePlayerOffer(
-            sessionID,
-            offerRequest.Requirements,
-            firstInventoryItemAndChildren,
-            true
-        );
+        var offer = CreatePlayerOffer(sessionID, offerRequest.Requirements, firstInventoryItemAndChildren, true);
 
         // This is the item that will be listed on flea, has merged stackObjectCount
         var newRootOfferItem = offer.Items[0]; // TODO: add logic like single/multi offers to find root item
 
         // Check for and apply item price modifer if it exists in config
-        if (
-            _ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(
-                newRootOfferItem.Template,
-                out var itemPriceModifer
-            )
-        )
+        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(newRootOfferItem.Template, out var itemPriceModifer))
         {
             singleItemPrice *= itemPriceModifer;
         }
 
         // Get average of item+children quality
-        var qualityMultiplier = _itemHelper.GetItemQualityModifierForItems(offer.Items, true);
+        var qualityMultiplier = itemHelper.GetItemQualityModifierForItems(offer.Items, true);
 
         // Multiply single item price by quality
         singleItemPrice *= qualityMultiplier;
@@ -828,18 +684,14 @@ public class RagfairController
         var playerListedPriceInRub = CalculateRequirementsPriceInRub(offerRequest.Requirements);
 
         // Roll sale chance
-        var sellChancePercent = _ragfairSellHelper.CalculateSellChance(
+        var sellChancePercent = ragfairSellHelper.CalculateSellChance(
             singleItemPrice.Value * stackCountTotal,
             playerListedPriceInRub,
             qualityMultiplier
         );
 
         // Create array of sell times for items listed + sell all at once as it's a pack
-        offer.SellResults = _ragfairSellHelper.RollForSale(
-            sellChancePercent,
-            (int)stackCountTotal,
-            true
-        );
+        offer.SellResults = ragfairSellHelper.RollForSale(sellChancePercent, (int)stackCountTotal, true);
 
         // Subtract flea market fee from stash
         if (_ragfairConfig.Sell.Fees)
@@ -866,7 +718,7 @@ public class RagfairController
         // Remove items from inventory after creating offer
         foreach (var itemToRemove in offerRequest.Items)
         {
-            _inventoryHelper.RemoveItem(pmcData, itemToRemove, sessionID, output);
+            inventoryHelper.RemoveItem(pmcData, itemToRemove, sessionID, output);
         }
 
         return output;
@@ -882,7 +734,7 @@ public class RagfairController
     /// <param name="output">Response to send to client</param>
     /// <returns>ItemEventRouterResponse</returns>
     protected ItemEventRouterResponse CreateSingleOffer(
-        string sessionID,
+        MongoId sessionID,
         AddOfferRequestData offerRequest,
         SptProfile fullProfile,
         ItemEventRouterResponse output
@@ -893,26 +745,19 @@ public class RagfairController
 
         // Find items to be listed on flea from player inventory
         var inventoryItemsToSell = GetItemsToListOnFleaFromInventory(pmcData, offerRequest.Items);
-        if (
-            inventoryItemsToSell.Items is null
-            || !string.IsNullOrEmpty(inventoryItemsToSell.ErrorMessage)
-        )
+        if (inventoryItemsToSell.Items is null || !string.IsNullOrEmpty(inventoryItemsToSell.ErrorMessage))
         {
-            _httpResponseUtil.AppendErrorToOutput(output, inventoryItemsToSell.ErrorMessage);
+            httpResponseUtil.AppendErrorToOutput(output, inventoryItemsToSell.ErrorMessage);
         }
 
         var firstItemToSell = inventoryItemsToSell.Items.FirstOrDefault().FirstOrDefault();
 
         // Total count of items summed using their stack counts
-        var stackCountTotal = _ragfairOfferHelper.GetTotalStackCountSize(
-            inventoryItemsToSell.Items
-        );
+        var stackCountTotal = ragfairOfferHelper.GetTotalStackCountSize(inventoryItemsToSell.Items);
 
         // Average offer price for single item (or whole weapon)
         // MUST occur prior to CreatePlayerOffer(), otherwise offer ends up in averages calculation
-        var averages = GetItemMinAvgMaxFleaPriceValues(
-            new GetMarketPriceRequestData { TemplateId = firstItemToSell.Template }
-        );
+        var averages = GetItemMinAvgMaxFleaPriceValues(new GetMarketPriceRequestData { TemplateId = firstItemToSell.Template });
         var averageOfferPriceSingleItem = averages.Avg;
 
         // Checks are done, create offer
@@ -927,15 +772,10 @@ public class RagfairController
         var offerRootItem = offer.Items.FirstOrDefault(x => x.Id == offerRequest.Items[0]);
 
         // Get average of items quality+children
-        var qualityMultiplier = _itemHelper.GetItemQualityModifierForItems(offer.Items, true);
+        var qualityMultiplier = itemHelper.GetItemQualityModifierForItems(offer.Items, true);
 
         // Check for and apply item price modifer if it exists in config
-        if (
-            _ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(
-                offerRootItem.Template,
-                out var itemPriceModifer
-            )
-        )
+        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(offerRootItem.Template, out var itemPriceModifer))
         {
             averageOfferPriceSingleItem *= itemPriceModifer;
         }
@@ -944,12 +784,12 @@ public class RagfairController
         averageOfferPriceSingleItem *= qualityMultiplier;
 
         // Packs are reduced to the average price of a single item in the pack vs the averaged single price of an item
-        var sellChancePercent = _ragfairSellHelper.CalculateSellChance(
+        var sellChancePercent = ragfairSellHelper.CalculateSellChance(
             averageOfferPriceSingleItem.Value,
             playerListedPriceInRub,
             qualityMultiplier
         );
-        offer.SellResults = _ragfairSellHelper.RollForSale(sellChancePercent, (int)stackCountTotal);
+        offer.SellResults = ragfairSellHelper.RollForSale(sellChancePercent, (int)stackCountTotal);
 
         // Subtract flea market fee from stash
         if (_ragfairConfig.Sell.Fees)
@@ -976,7 +816,7 @@ public class RagfairController
         // Remove items from inventory after creating offer
         foreach (var itemToRemove in offerRequest.Items)
         {
-            _inventoryHelper.RemoveItem(pmcData, itemToRemove, sessionID, output);
+            inventoryHelper.RemoveItem(pmcData, itemToRemove, sessionID, output);
         }
 
         return output;
@@ -994,7 +834,7 @@ public class RagfairController
     /// <param name="output">ItemEventRouterResponse</param>
     /// <returns>True if charging tax to player failed</returns>
     protected bool ChargePlayerTaxFee(
-        string sessionId,
+        MongoId sessionId,
         Item rootItem,
         PmcData pmcData,
         double requirementsPriceInRub,
@@ -1004,12 +844,11 @@ public class RagfairController
     )
     {
         // Get tax from cache hydrated earlier by client, if that's missing fall back to server calculation (inaccurate)
-        var storedClientTaxValue = _ragfairTaxService.GetStoredClientOfferTaxValueById(
-            offerRequest.Items[0]
-        );
+        var requestRootItemId = offerRequest.Items.FirstOrDefault();
+        var storedClientTaxValue = ragfairTaxService.GetStoredClientOfferTaxValueById(requestRootItemId);
         var tax = storedClientTaxValue is not null
             ? storedClientTaxValue.Fee
-            : _ragfairTaxService.CalculateTax(
+            : ragfairTaxService.CalculateTax(
                 rootItem,
                 pmcData,
                 requirementsPriceInRub,
@@ -1017,28 +856,23 @@ public class RagfairController
                 offerRequest.SellInOnePiece.GetValueOrDefault(false)
             );
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
-                $"Offer tax to charge: {tax}, pulled from client: {storedClientTaxValue.Count is not null}"
-            );
+            logger.Debug($"Offer tax to charge: {tax}, pulled from client: {storedClientTaxValue.Count is not null}");
         }
 
-        // cleanup of cache now we've used the tax value from it
-        _ragfairTaxService.ClearStoredOfferTaxById(offerRequest.Items.First());
+        // Cleanup of cache now we've used the tax value from it
+        ragfairTaxService.ClearStoredOfferTaxById(requestRootItemId);
 
         var buyTradeRequest = CreateBuyTradeRequestObject(CurrencyType.RUB, tax.Value);
-        _paymentService.PayMoney(pmcData, buyTradeRequest, sessionId, output);
+        paymentService.PayMoney(pmcData, buyTradeRequest, sessionId, output);
         if (output.Warnings.Count > 0)
         {
-            _httpResponseUtil.AppendErrorToOutput(
-                output,
-                _serverLocalisationService.GetText("ragfair-unable_to_pay_commission_fee", tax)
-            );
-            return true;
+            httpResponseUtil.AppendErrorToOutput(output, localisationService.GetText("ragfair-unable_to_pay_commission_fee", tax));
+            return true; // Fee failed
         }
 
-        return false;
+        return false; // Fee charge didn't fail
     }
 
     /// <summary>
@@ -1049,12 +883,7 @@ public class RagfairController
     /// <param name="items">Item(s) to list on flea (with children)</param>
     /// <param name="sellInOnePiece">Is this a pack offer</param>
     /// <returns>RagfairOffer</returns>
-    protected RagfairOffer CreatePlayerOffer(
-        string sessionId,
-        List<Requirement> requirements,
-        List<Item> items,
-        bool sellInOnePiece
-    )
+    protected RagfairOffer CreatePlayerOffer(MongoId sessionId, List<Requirement> requirements, List<Item> items, bool sellInOnePiece)
     {
         const int loyalLevel = 1;
         var formattedItems = items.Select(item =>
@@ -1078,15 +907,19 @@ public class RagfairController
             OnlyFunctional = item.OnlyFunctional,
         });
 
-        return _ragfairOfferGenerator.CreateAndAddFleaOffer(
-            sessionId,
-            _timeUtil.GetTimeStamp(),
-            formattedItems.ToList(),
-            formattedRequirements.ToList(),
-            loyalLevel,
-            (int?)items.FirstOrDefault()?.Upd?.StackObjectsCount ?? 1,
-            sellInOnePiece
-        );
+        var createOfferDetails = new CreateFleaOfferDetails
+        {
+            UserId = sessionId,
+            Time = timeUtil.GetTimeStamp(),
+            Items = formattedItems.ToList(),
+            BarterScheme = formattedRequirements.ToList(),
+            LoyalLevel = loyalLevel,
+            Quantity = (int?)items.FirstOrDefault()?.Upd?.StackObjectsCount ?? 1,
+            Creator = OfferCreator.Player,
+            SellInOnePiece = sellInOnePiece,
+        };
+
+        return ragfairOfferGenerator.CreateAndAddFleaOffer(createOfferDetails);
     }
 
     /// <summary>
@@ -1098,19 +931,14 @@ public class RagfairController
     {
         return requirements.Sum(requirement =>
         {
-            if (
-                string.IsNullOrEmpty(requirement.Template)
-                || !requirement.Count.HasValue
-                || requirement.Count == 0
-            )
+            if (requirement.Template.IsEmpty() || !requirement.Count.HasValue || requirement.Count == 0)
             {
                 return 0;
             }
 
-            return _paymentHelper.IsMoneyTpl(requirement.Template)
-                ? _handbookHelper.InRUB(requirement.Count.Value, requirement.Template)
-                : _itemHelper.GetDynamicItemPrice(requirement.Template).Value
-                    * requirement.Count.Value;
+            return paymentHelper.IsMoneyTpl(requirement.Template)
+                ? handbookHelper.InRUB(requirement.Count.Value, requirement.Template)
+                : itemHelper.GetDynamicItemPrice(requirement.Template).Value * requirement.Count.Value;
         });
     }
 
@@ -1122,7 +950,7 @@ public class RagfairController
     /// <returns>GetItemsToListOnFleaFromInventoryResult</returns>
     protected GetItemsToListOnFleaFromInventoryResult GetItemsToListOnFleaFromInventory(
         PmcData pmcData,
-        List<string> itemIdsFromFleaOfferRequest
+        List<MongoId> itemIdsFromFleaOfferRequest
     )
     {
         List<List<Item>> itemsToReturn = [];
@@ -1134,39 +962,26 @@ public class RagfairController
             var rootItem = pmcData.Inventory?.Items?.FirstOrDefault(i => i.Id == itemId);
             if (rootItem is null)
             {
-                errorMessage = _serverLocalisationService.GetText(
-                    "ragfair-unable_to_find_item_in_inventory",
-                    new { id = itemId }
-                );
-                _logger.Error(errorMessage);
+                errorMessage = localisationService.GetText("ragfair-unable_to_find_item_in_inventory", new { id = itemId.ToString() });
+                logger.Error(errorMessage);
 
-                return new GetItemsToListOnFleaFromInventoryResult
-                {
-                    Items = itemsToReturn,
-                    ErrorMessage = errorMessage,
-                };
+                return new GetItemsToListOnFleaFromInventoryResult { Items = itemsToReturn, ErrorMessage = errorMessage };
             }
 
             rootItem.FixItemStackCount();
 
-            itemsToReturn.Add(pmcData.Inventory.Items.FindAndReturnChildrenAsItems(itemId));
+            itemsToReturn.Add(pmcData.Inventory.Items.GetItemWithChildren(itemId));
         }
 
-        if (itemsToReturn?.Count == 0)
+        if (itemsToReturn.Count == 0)
         {
-            errorMessage = _serverLocalisationService.GetText(
-                "ragfair-unable_to_find_requested_items_in_inventory"
-            );
-            _logger.Error(errorMessage);
+            errorMessage = localisationService.GetText("ragfair-unable_to_find_requested_items_in_inventory");
+            logger.Error(errorMessage);
 
             return new GetItemsToListOnFleaFromInventoryResult { ErrorMessage = errorMessage };
         }
 
-        return new GetItemsToListOnFleaFromInventoryResult
-        {
-            Items = itemsToReturn,
-            ErrorMessage = errorMessage,
-        };
+        return new GetItemsToListOnFleaFromInventoryResult { Items = itemsToReturn, ErrorMessage = errorMessage };
     }
 
     /// <summary>
@@ -1176,19 +991,16 @@ public class RagfairController
     /// <param name="offerId">Id of offer to remove</param>
     /// <param name="sessionId">Session id of requesting player</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse FlagOfferForRemoval(string offerId, string sessionId)
+    public ItemEventRouterResponse FlagOfferForRemoval(MongoId offerId, MongoId sessionId)
     {
-        var output = _eventOutputHolder.GetOutput(sessionId);
+        var output = eventOutputHolder.GetOutput(sessionId);
 
-        var pmcData = _profileHelper.GetPmcProfile(sessionId);
+        var pmcData = profileHelper.GetPmcProfile(sessionId);
         var playerProfileOffers = pmcData?.RagfairInfo?.Offers;
         if (playerProfileOffers is null)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
-                    "ragfair-unable_to_remove_offer_not_found_in_profile",
-                    new { profileId = sessionId, offerId }
-                )
+            logger.Warning(
+                localisationService.GetText("ragfair-unable_to_remove_offer_not_found_in_profile", new { profileId = sessionId, offerId })
             );
 
             pmcData.RagfairInfo.Offers = [];
@@ -1197,31 +1009,21 @@ public class RagfairController
         var playerOffer = playerProfileOffers?.FirstOrDefault(x => x.Id == offerId);
         if (playerOffer is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "ragfair-offer_not_found_in_profile",
-                    new { offerId }
-                )
-            );
+            logger.Error(localisationService.GetText("ragfair-offer_not_found_in_profile", new { offerId }));
 
-            return _httpResponseUtil.AppendErrorToOutput(
-                output,
-                _serverLocalisationService.GetText("ragfair-offer_not_found_in_profile_short")
-            );
+            return httpResponseUtil.AppendErrorToOutput(output, localisationService.GetText("ragfair-offer_not_found_in_profile_short"));
         }
 
         // Only reduce time to end if time remaining is greater than what we would set it to
-        var differenceInSeconds = playerOffer.EndTime - _timeUtil.GetTimeStamp();
+        var differenceInSeconds = playerOffer.EndTime - timeUtil.GetTimeStamp();
         if (differenceInSeconds > _ragfairConfig.Sell.ExpireSeconds)
         {
             // `expireSeconds` Default is 71 seconds
-            var newEndTime = _ragfairConfig.Sell.ExpireSeconds + _timeUtil.GetTimeStamp();
+            var newEndTime = _ragfairConfig.Sell.ExpireSeconds + timeUtil.GetTimeStamp();
             playerOffer.EndTime = (long?)Math.Round((double)newEndTime);
         }
 
-        _logger.Debug(
-            $"Flagged player offer: {offerId} for expiry in: {TimeSpan.FromTicks(playerOffer.EndTime.Value).ToString()}"
-        );
+        logger.Debug($"Flagged player offer: {offerId} for expiry in: {TimeSpan.FromTicks(playerOffer.EndTime.Value).ToString()}");
 
         return output;
     }
@@ -1232,30 +1034,19 @@ public class RagfairController
     /// <param name="extendRequest">Extend time request</param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse ExtendOffer(
-        ExtendOfferRequestData extendRequest,
-        string sessionId
-    )
+    public ItemEventRouterResponse ExtendOffer(ExtendOfferRequestData extendRequest, MongoId sessionId)
     {
-        var output = _eventOutputHolder.GetOutput(sessionId);
+        var output = eventOutputHolder.GetOutput(sessionId);
 
-        var pmcData = _profileHelper.GetPmcProfile(sessionId);
+        var pmcData = profileHelper.GetPmcProfile(sessionId);
         var playerOffers = pmcData.RagfairInfo.Offers;
         var playerOfferIndex = playerOffers.FindIndex(offer => offer.Id == extendRequest.OfferId);
         var secondsToAdd = extendRequest.RenewalTime * TimeUtil.OneHourAsSeconds;
 
         if (playerOfferIndex == -1)
         {
-            _logger.Warning(
-                _serverLocalisationService.GetText(
-                    "ragfair-offer_not_found_in_profile",
-                    new { offerId = extendRequest.OfferId }
-                )
-            );
-            return _httpResponseUtil.AppendErrorToOutput(
-                output,
-                _serverLocalisationService.GetText("ragfair-offer_not_found_in_profile_short")
-            );
+            logger.Warning(localisationService.GetText("ragfair-offer_not_found_in_profile", new { offerId = extendRequest.OfferId }));
+            return httpResponseUtil.AppendErrorToOutput(output, localisationService.GetText("ragfair-offer_not_found_in_profile_short"));
         }
 
         var playerOffer = playerOffers[playerOfferIndex];
@@ -1267,11 +1058,10 @@ public class RagfairController
             var sellInOncePiece = playerOffer.SellInOnePiece.GetValueOrDefault(false);
             if (!sellInOncePiece)
             {
-                count = (int)
-                    playerOffer.Items.Sum(offerItem => offerItem.Upd?.StackObjectsCount ?? 0);
+                count = (int)playerOffer.Items.Sum(offerItem => offerItem.Upd?.StackObjectsCount ?? 0);
             }
 
-            var tax = _ragfairTaxService.CalculateTax(
+            var tax = ragfairTaxService.CalculateTax(
                 playerOffer.Items.First(),
                 pmcData,
                 playerOffer.RequirementsCost.Value,
@@ -1280,13 +1070,10 @@ public class RagfairController
             );
 
             var request = CreateBuyTradeRequestObject(CurrencyType.RUB, tax);
-            _paymentService.PayMoney(pmcData, request, sessionId, output);
+            paymentService.PayMoney(pmcData, request, sessionId, output);
             if (output.Warnings.Count > 0)
             {
-                return _httpResponseUtil.AppendErrorToOutput(
-                    output,
-                    _serverLocalisationService.GetText("ragfair-unable_to_pay_commission_fee")
-                );
+                return httpResponseUtil.AppendErrorToOutput(output, localisationService.GetText("ragfair-unable_to_pay_commission_fee"));
             }
         }
 
@@ -1302,21 +1089,15 @@ public class RagfairController
     /// <param name="currency">What currency: RUB, EURO, USD</param>
     /// <param name="value">Amount of currency</param>
     /// <returns>ProcessBuyTradeRequestData</returns>
-    protected ProcessBuyTradeRequestData CreateBuyTradeRequestObject(
-        CurrencyType currency,
-        double value
-    )
+    protected ProcessBuyTradeRequestData CreateBuyTradeRequestObject(CurrencyType currency, double value)
     {
         return new ProcessBuyTradeRequestData
         {
             TransactionId = "ragfair",
             Action = "TradingConfirm",
-            SchemeItems =
-            [
-                new IdWithCount { Id = currency.GetCurrencyTpl(), Count = Math.Round(value) },
-            ],
+            SchemeItems = [new IdWithCount { Id = currency.GetCurrencyTpl(), Count = Math.Round(value) }],
             Type = "",
-            ItemId = "",
+            ItemId = MongoId.Empty(),
             Count = 0,
             SchemeId = 0,
         };
@@ -1328,23 +1109,23 @@ public class RagfairController
     /// <returns>Dictionary of tpl and item price</returns>
     public Dictionary<MongoId, double> GetAllFleaPrices()
     {
-        return _ragfairPriceService.GetAllFleaPrices();
+        return ragfairPriceService.GetAllFleaPrices();
     }
 
     public Dictionary<MongoId, double> GetStaticPrices()
     {
-        return _ragfairPriceService.GetAllStaticPrices();
+        return ragfairPriceService.GetAllStaticPrices();
     }
 
-    public RagfairOffer? GetOfferByInternalId(string sessionId, GetRagfairOfferByIdRequest request)
+    public RagfairOffer? GetOfferByInternalId(MongoId sessionId, GetRagfairOfferByIdRequest request)
     {
-        var offers = _ragfairOfferService.GetOffers();
+        var offers = ragfairOfferService.GetOffers();
         var offerToReturn = offers.FirstOrDefault(offer => offer.InternalId == request.Id);
 
         return offerToReturn;
     }
 
-    public record GetItemsToListOnFleaFromInventoryResult
+    protected record GetItemsToListOnFleaFromInventoryResult
     {
         public List<List<Item>>? Items { get; set; }
 

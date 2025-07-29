@@ -1,6 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
@@ -13,36 +14,28 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairTaxService(
-    ISptLogger<RagfairTaxService> _logger,
-    DatabaseService _databaseService,
-    RagfairPriceService _ragfairPriceService,
-    ItemHelper _itemHelper,
-    ICloner _cloner
+    ISptLogger<RagfairTaxService> logger,
+    DatabaseService databaseService,
+    RagfairPriceService ragfairPriceService,
+    ItemHelper itemHelper,
+    ICloner cloner
 )
 {
-    protected readonly Dictionary<
-        string,
-        StorePlayerOfferTaxAmountRequestData
-    > _playerOfferTaxCache = new();
+    protected readonly Dictionary<MongoId, StorePlayerOfferTaxAmountRequestData> _playerOfferTaxCache = new();
 
-    public void StoreClientOfferTaxValue(
-        string sessionId,
-        StorePlayerOfferTaxAmountRequestData offer
-    )
+    public void StoreClientOfferTaxValue(MongoId sessionId, StorePlayerOfferTaxAmountRequestData offer)
     {
-        _playerOfferTaxCache[offer.Id] = offer;
+        _playerOfferTaxCache[offer.Id.Value] = offer;
     }
 
-    public void ClearStoredOfferTaxById(string offerIdToRemove)
+    public void ClearStoredOfferTaxById(MongoId offerIdToRemove)
     {
         _playerOfferTaxCache.Remove(offerIdToRemove);
     }
 
-    public StorePlayerOfferTaxAmountRequestData GetStoredClientOfferTaxValueById(
-        string offerIdToGet
-    )
+    public StorePlayerOfferTaxAmountRequestData? GetStoredClientOfferTaxValueById(MongoId offerIdToGet)
     {
-        return _playerOfferTaxCache[offerIdToGet];
+        return _playerOfferTaxCache.GetValueOrDefault(offerIdToGet);
     }
 
     /// <summary>
@@ -55,13 +48,7 @@ public class RagfairTaxService(
     /// <param name="offerItemCount"> Number of offers being created </param>
     /// <param name="sellInOnePiece"></param>
     /// <returns> Tax in roubles </returns>
-    public double CalculateTax(
-        Item item,
-        PmcData pmcData,
-        double? requirementsValue,
-        int? offerItemCount,
-        bool sellInOnePiece
-    )
+    public double CalculateTax(Item item, PmcData pmcData, double? requirementsValue, int? offerItemCount, bool sellInOnePiece)
     {
         if (requirementsValue is null)
         {
@@ -73,9 +60,9 @@ public class RagfairTaxService(
             return 0;
         }
 
-        var globals = _databaseService.GetGlobals();
+        var globals = databaseService.GetGlobals();
 
-        var itemTemplate = _itemHelper.GetItem(item.Template).Value;
+        var itemTemplate = itemHelper.GetItem(item.Template).Value;
         var itemWorth = CalculateItemWorth(item, itemTemplate, offerItemCount.Value, pmcData);
         var requirementsPrice = requirementsValue * (sellInOnePiece ? 1 : offerItemCount);
 
@@ -97,40 +84,23 @@ public class RagfairTaxService(
         itemPriceMult = Math.Pow(4.0, itemPriceMult);
         requirementPriceMult = Math.Pow(4.0, requirementPriceMult);
 
-        var hideoutFleaTaxDiscountBonusSum = pmcData.GetBonusValueFromProfile(
-            BonusType.RagfairCommission
-        );
+        var hideoutFleaTaxDiscountBonusSum = pmcData.GetBonusValueFromProfile(BonusType.RagfairCommission);
         // A negative bonus implies a lower discount, since we subtract later, invert the value here
         var taxDiscountPercent = -(hideoutFleaTaxDiscountBonusSum / 100.0);
 
-        var tax =
-            itemWorth * itemTaxMult * itemPriceMult
-            + requirementsPrice * requirementTaxMult * requirementPriceMult;
+        var tax = itemWorth * itemTaxMult * itemPriceMult + requirementsPrice * requirementTaxMult * requirementPriceMult;
         var discountedTax = tax * (1.0 - taxDiscountPercent);
-        var itemComissionMult = itemTemplate.Properties.RagFairCommissionModifier.HasValue
-            ? itemTemplate.Properties.RagFairCommissionModifier.Value
-            : 1;
+        var itemComissionMult = itemTemplate.Properties.RagFairCommissionModifier ?? 1;
 
         if (item.Upd.Buff is not null)
         {
             var buffType = item.Upd.Buff.BuffType;
-            var itemEnhancementSettings = _databaseService
-                .GetGlobals()
-                .Configuration.RepairSettings.ItemEnhancementSettings;
+            var itemEnhancementSettings = databaseService.GetGlobals().Configuration.RepairSettings.ItemEnhancementSettings;
             var priceModiferValue = buffType switch
             {
-                BuffType.DamageReduction => itemEnhancementSettings
-                    .DamageReduction
-                    .PriceModifierValue
-                    .Value,
-                BuffType.MalfunctionProtections => itemEnhancementSettings
-                    .MalfunctionProtections
-                    .PriceModifierValue
-                    .Value,
-                BuffType.WeaponSpread => itemEnhancementSettings
-                    .WeaponSpread
-                    .PriceModifierValue
-                    .Value,
+                BuffType.DamageReduction => itemEnhancementSettings.DamageReduction.PriceModifierValue,
+                BuffType.MalfunctionProtections => itemEnhancementSettings.MalfunctionProtections.PriceModifierValue,
+                BuffType.WeaponSpread => itemEnhancementSettings.WeaponSpread.PriceModifierValue,
                 _ => 1d,
             };
             discountedTax *= 1.0 + Math.Abs(item.Upd.Buff.Value.Value - 1.0) * priceModiferValue;
@@ -138,9 +108,9 @@ public class RagfairTaxService(
 
         var taxValue = Math.Round(discountedTax.Value * itemComissionMult);
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"Tax Calculated to be: {taxValue}");
+            logger.Debug($"Tax Calculated to be: {taxValue}");
         }
 
         return taxValue;
@@ -156,31 +126,25 @@ public class RagfairTaxService(
     /// <param name="pmcData"></param>
     /// <param name="isRootItem"></param>
     /// <returns></returns>
-    protected double CalculateItemWorth(
-        Item item,
-        TemplateItem itemTemplate,
-        int itemCount,
-        PmcData pmcData,
-        bool isRootItem = true
-    )
+    protected double CalculateItemWorth(Item item, TemplateItem itemTemplate, int itemCount, PmcData pmcData, bool isRootItem = true)
     {
-        var worth = _ragfairPriceService.GetFleaPriceForItem(item.Template);
+        var worth = ragfairPriceService.GetFleaPriceForItem(item.Template);
 
         // In client, all item slots are traversed and any items contained within have their values added
         if (isRootItem)
         {
             // Since we get a flat list of all child items, we only want to recurse from parent item
-            var itemChildren = pmcData.Inventory.Items.FindAndReturnChildrenAsItems(item.Id);
+            var itemChildren = pmcData.Inventory.Items.GetItemWithChildren(item.Id);
             if (itemChildren.Count > 1)
             {
-                var itemChildrenClone = _cloner.Clone(itemChildren); // Clone is expensive, only run if necessary
+                var itemChildrenClone = cloner.Clone(itemChildren); // Clone is expensive, only run if necessary
                 foreach (var child in itemChildrenClone.Where(child => child.Id != item.Id))
                 {
                     child.Upd ??= new Upd();
 
                     worth += CalculateItemWorth(
                         child,
-                        _itemHelper.GetItem(child.Template).Value,
+                        itemHelper.GetItem(child.Template).Value,
                         (int)(child.Upd.StackObjectsCount ?? 1),
                         pmcData,
                         false
@@ -198,9 +162,7 @@ public class RagfairTaxService(
 
         if (itemTemplate.Properties is null)
         {
-            _logger.Warning(
-                $"Item: {item.Id} lacks _props and cannot have its worth calculated properly"
-            );
+            logger.Warning($"Item: {item.Id} lacks _props and cannot have its worth calculated properly");
 
             return worth;
         }
@@ -210,53 +172,36 @@ public class RagfairTaxService(
             worth =
                 worth
                 / (itemTemplate.Properties.MaximumNumberOfUsage ?? 1)
-                * (
-                    (itemTemplate.Properties.MaximumNumberOfUsage ?? 1)
-                    - upd.Key.NumberOfUsages.Value
-                );
+                * ((itemTemplate.Properties.MaximumNumberOfUsage ?? 1) - upd.Key.NumberOfUsages.Value);
         }
 
         if (upd.Resource is not null && (itemTemplate.Properties.MaxResource ?? 0) > 0)
         {
-            worth = (double)(
-                worth * 0.1
-                + worth * 0.9 / (itemTemplate.Properties.MaxResource ?? 1) * upd.Resource.Value
-            );
+            worth = (double)(worth * 0.1 + worth * 0.9 / (itemTemplate.Properties.MaxResource ?? 1) * upd.Resource.Value);
         }
 
         if (upd.SideEffect is not null && (itemTemplate.Properties.MaxResource ?? 0) > 0)
         {
-            worth = (double)(
-                worth * 0.1
-                + worth * 0.9 / (itemTemplate.Properties.MaxResource ?? 1) * upd.SideEffect.Value
-            );
+            worth = (double)(worth * 0.1 + worth * 0.9 / (itemTemplate.Properties.MaxResource ?? 1) * upd.SideEffect.Value);
         }
 
         if (upd.MedKit is not null && (itemTemplate.Properties.MaxHpResource ?? 0) > 0)
         {
-            worth =
-                worth / (itemTemplate.Properties.MaxHpResource ?? 1) * upd.MedKit.HpResource.Value;
+            worth = worth / (itemTemplate.Properties.MaxHpResource ?? 1) * upd.MedKit.HpResource.Value;
         }
 
         if (upd.FoodDrink is not null && (itemTemplate.Properties.MaxResource ?? 0) > 0)
         {
-            worth =
-                worth / (itemTemplate.Properties.MaxResource ?? 1) * upd.FoodDrink.HpPercent.Value;
+            worth = worth / (itemTemplate.Properties.MaxResource ?? 1) * upd.FoodDrink.HpPercent.Value;
         }
 
         if (upd.Repairable is not null && (itemTemplate.Properties.ArmorClass ?? 0) > 0)
         {
             var num2 = 0.01 * Math.Pow(0.0, upd.Repairable.MaxDurability.Value);
             worth =
-                worth
-                    * (
-                        upd.Repairable.MaxDurability.Value
-                            / (itemTemplate.Properties.Durability ?? 1)
-                        - num2
-                    )
+                worth * (upd.Repairable.MaxDurability.Value / (itemTemplate.Properties.Durability ?? 1) - num2)
                 - Math.Floor(
-                    (itemTemplate.Properties.RepairCost ?? 0)
-                        * (upd.Repairable.MaxDurability.Value - upd.Repairable.Durability.Value)
+                    (itemTemplate.Properties.RepairCost ?? 0) * (upd.Repairable.MaxDurability.Value - upd.Repairable.Durability.Value)
                 );
         }
 

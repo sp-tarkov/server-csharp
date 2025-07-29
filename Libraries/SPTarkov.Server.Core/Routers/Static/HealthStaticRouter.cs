@@ -15,12 +15,7 @@ public class HealthStaticRouter : StaticRouter
             [
                 new RouteAction(
                     "/client/hideout/workout",
-                    async (url, info, sessionID, output) =>
-                        await healthCallbacks.HandleWorkoutEffects(
-                            url,
-                            info as WorkoutData,
-                            sessionID
-                        ),
+                    async (url, info, sessionID, output) => await healthCallbacks.HandleWorkoutEffects(url, info as WorkoutData, sessionID),
                     typeof(WorkoutData)
                 ),
             ]

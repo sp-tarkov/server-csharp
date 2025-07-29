@@ -1,9 +1,8 @@
-﻿using System.Runtime.CompilerServices;
-using SPTarkov.Server.Core.Extensions;
+﻿using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Models.Common;
 
-public readonly struct MongoId : IEquatable<MongoId>
+public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
 {
     private readonly string? _stringId;
 
@@ -25,9 +24,7 @@ public readonly struct MongoId : IEquatable<MongoId>
 
         if (!IsValidMongoId(id))
         {
-            Console.WriteLine(
-                $"Critical MongoId error: Incorrect format. Must be a hexadecimal [a-f0-9] of 24 characters. id: {id}"
-            );
+            Console.WriteLine($"Critical MongoId error: Incorrect format. Must be a hexadecimal [a-f0-9] of 24 characters. id: {id}");
         }
 
         _stringId = string.Intern(id);
@@ -75,7 +72,7 @@ public readonly struct MongoId : IEquatable<MongoId>
     {
         if (other is null)
         {
-            return other == this;
+            return false;
         }
 
         return other.ToString().Equals(ToString(), StringComparison.InvariantCultureIgnoreCase);
@@ -85,7 +82,7 @@ public readonly struct MongoId : IEquatable<MongoId>
     {
         if (other is null)
         {
-            return this == null;
+            return _stringId == null;
         }
 
         return other.Equals(ToString(), StringComparison.InvariantCultureIgnoreCase);
@@ -108,7 +105,12 @@ public readonly struct MongoId : IEquatable<MongoId>
 
     public bool Equals(MongoId other)
     {
-        return _stringId == other._stringId;
+        return string.Equals(_stringId, other._stringId, StringComparison.OrdinalIgnoreCase);
+    }
+
+    public int CompareTo(MongoId other)
+    {
+        return string.CompareOrdinal(_stringId, other._stringId);
     }
 
     public override bool Equals(object? obj)
@@ -117,6 +119,16 @@ public readonly struct MongoId : IEquatable<MongoId>
     }
 
     public static bool operator ==(MongoId left, MongoId right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(MongoId left, MongoId? right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator ==(MongoId left, MongoId? right)
     {
         return left.Equals(right);
     }
@@ -133,7 +145,7 @@ public readonly struct MongoId : IEquatable<MongoId>
 
     public bool IsEmpty()
     {
-        if (_stringId == "000000000000000000000000" || string.IsNullOrEmpty(_stringId))
+        if (string.IsNullOrEmpty(_stringId) || _stringId == "000000000000000000000000")
         {
             return true;
         }

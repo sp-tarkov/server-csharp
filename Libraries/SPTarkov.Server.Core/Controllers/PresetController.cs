@@ -8,24 +8,20 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class PresetController(
-    ISptLogger<PresetController> _logger,
-    PresetHelper _presetHelper,
-    DatabaseService _databaseService
-)
+public class PresetController(ISptLogger<PresetController> logger, PresetHelper presetHelper, DatabaseService databaseService)
 {
     /// <summary>
     ///     Keyed by item tpl, value = collection of preset ids
     /// </summary>
     public void Initialize()
     {
-        var presets = _databaseService.GetGlobals().ItemPresets;
+        var presets = databaseService.GetGlobals().ItemPresets;
         var result = new Dictionary<MongoId, PresetCacheDetails>();
         foreach (var (presetId, preset) in presets)
         {
             if (presetId != preset.Id)
             {
-                _logger.Error(
+                logger.Error(
                     $"Preset for template tpl: '{preset.Items.FirstOrDefault()?.Template} {preset.Name}' has invalid key: ({presetId} != {preset.Id}). Skipping"
                 );
 
@@ -45,6 +41,6 @@ public class PresetController(
             }
         }
 
-        _presetHelper.HydratePresetStore(result);
+        presetHelper.HydratePresetStore(result);
     }
 }

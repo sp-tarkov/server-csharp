@@ -9,10 +9,9 @@ public static class OnLoadOrder
     public const int PostDBModLoader = 4000;
     public const int TraderRegistration = 5000;
     public const int HandbookCallbacks = 6000;
-    public const int HttpCallbacks = 7000;
-    public const int SaveCallbacks = 8000;
-    public const int TraderCallbacks = 9000;
-    public const int PresetCallbacks = 10000;
-    public const int RagfairCallbacks = 11000;
-    public const int PostSptModLoader = 12000;
+    public const int SaveCallbacks = 7000;
+    public const int TraderCallbacks = 8000;
+    public const int PresetCallbacks = 9000;
+    public const int RagfairCallbacks = 10000;
+    public const int PostSptModLoader = 11000;
 }

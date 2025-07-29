@@ -1,9 +1,12 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Spt.Inventory;
 
 public class FindSlotResult
 {
+    [JsonExtensionData]
+    public Dictionary<string, object>? ExtensionData { get; set; }
+
     public FindSlotResult(bool success)
     {
         Success = success;

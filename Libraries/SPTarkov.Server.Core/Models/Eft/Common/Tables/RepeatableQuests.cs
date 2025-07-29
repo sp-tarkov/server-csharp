@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
@@ -15,18 +16,6 @@ public record RepeatableQuest : Quest
 
     [JsonPropertyName("acceptanceAndFinishingSource")]
     public string? AcceptanceAndFinishingSource { get; set; }
-
-    [JsonPropertyName("progressSource")]
-    public string? ProgressSource { get; set; }
-
-    [JsonPropertyName("rankingModes")]
-    public List<string?>? RankingModes { get; set; }
-
-    [JsonPropertyName("gameModes")]
-    public List<string>? GameModes { get; set; }
-
-    [JsonPropertyName("arenaLocations")]
-    public List<string>? ArenaLocations { get; set; }
 
     [JsonPropertyName("questStatus")]
     public RepeatableQuestStatus? QuestStatus { get; set; }
@@ -56,13 +45,13 @@ public record RepeatableQuestStatus
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("uid")]
     public string? Uid { get; set; }
 
     [JsonPropertyName("qid")]
-    public string? QId { get; set; }
+    public MongoId QId { get; set; }
 
     [JsonPropertyName("startTime")]
     public long? StartTime { get; set; }
@@ -150,7 +139,7 @@ public record ChangeCost
     ///     What item it will take to reset daily
     /// </summary>
     [JsonPropertyName("templateId")]
-    public string? TemplateId { get; set; }
+    public MongoId TemplateId { get; set; }
 
     /// <summary>
     ///     Amount of item needed to reset
@@ -200,7 +189,7 @@ public record ItemsBlacklist
     public int? MinPlayerLevel { get; set; }
 
     [JsonPropertyName("itemIds")]
-    public List<string>? ItemIds { get; set; }
+    public HashSet<MongoId>? ItemIds { get; set; }
 }
 
 public record ItemsWhitelist
@@ -212,7 +201,7 @@ public record ItemsWhitelist
     public int? MinPlayerLevel { get; set; }
 
     [JsonPropertyName("itemIds")]
-    public List<string>? ItemIds { get; set; }
+    public HashSet<MongoId>? ItemIds { get; set; }
 }
 
 public record SampleQuests
@@ -251,7 +240,7 @@ public record SampleQuests
     public bool? CanShowNotificationsInGame { get; set; }
 
     [JsonPropertyName("rewards")]
-    public QuestRewards? Rewards { get; set; }
+    public Dictionary<string, List<Reward>>? Rewards { get; set; }
 
     [JsonPropertyName("conditions")]
     public QuestConditionTypes? Conditions { get; set; }

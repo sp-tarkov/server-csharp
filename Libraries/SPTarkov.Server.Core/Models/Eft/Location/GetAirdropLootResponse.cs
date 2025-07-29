@@ -13,8 +13,8 @@ public record GetAirdropLootResponse
     ///     The type of airdrop
     /// </summary>
     [JsonPropertyName("icon")]
-    public AirdropTypeEnum? Icon { get; set; }
+    public AirdropTypeEnum Icon { get; set; }
 
     [JsonPropertyName("container")]
-    public List<Item>? Container { get; set; }
+    public IEnumerable<Item> Container { get; set; }
 }

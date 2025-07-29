@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Models.Spt.Bots;
@@ -12,10 +13,10 @@ public record GenerateWeaponResult
     public List<Item>? Weapon { get; set; }
 
     [JsonPropertyName("chosenAmmoTpl")]
-    public string? ChosenAmmoTemplate { get; set; }
+    public MongoId ChosenAmmoTemplate { get; set; }
 
     [JsonPropertyName("chosenUbglAmmoTpl")]
-    public string? ChosenUbglAmmoTemplate { get; set; }
+    public MongoId? ChosenUbglAmmoTemplate { get; set; }
 
     [JsonPropertyName("weaponMods")]
     public GlobalMods? WeaponMods { get; set; }

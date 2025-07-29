@@ -2,12 +2,12 @@
 {
     public static class UtilityExtensions
     {
-        public static List<T> IntersectWith<T>(this List<T> first, List<T> second)
+        public static IEnumerable<T> IntersectWith<T>(this IEnumerable<T> first, IEnumerable<T> second)
         {
             //a.Intersect(x => b.Contains(x)).ToList();
-            // gives error Delegate type could not be infered
+            // gives error Delegate type could not be inferred
 
-            return first.Where(x => second.Contains(x)).ToList();
+            return first.Where(second.Contains);
         }
     }
 }

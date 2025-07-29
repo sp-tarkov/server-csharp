@@ -5,6 +5,7 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
+using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
@@ -48,7 +49,7 @@ public class RagfairOfferService(
         return ragfairOfferHolder.GetOfferById(offerId);
     }
 
-    public List<RagfairOffer>? GetOffersOfType(MongoId templateId)
+    public IEnumerable<RagfairOffer>? GetOffersOfType(MongoId templateId)
     {
         return ragfairOfferHolder.GetOffersByTemplate(templateId);
     }
@@ -63,7 +64,7 @@ public class RagfairOfferService(
     /// </summary>
     /// <param name="offerId"> Offer id to check for </param>
     /// <returns> True when offer exists </returns>
-    public bool DoesOfferExist(string offerId)
+    public bool DoesOfferExist(MongoId offerId)
     {
         return ragfairOfferHolder.GetOfferById(offerId) != null;
     }
@@ -72,7 +73,7 @@ public class RagfairOfferService(
     ///     Remove an offer from ragfair by offer id
     /// </summary>
     /// <param name="offerId"> Offer id to remove </param>
-    public void RemoveOfferById(string offerId)
+    public void RemoveOfferById(MongoId offerId)
     {
         ragfairOfferHolder.RemoveOffer(offerId);
     }
@@ -82,7 +83,7 @@ public class RagfairOfferService(
     /// </summary>
     /// <param name="offerId"> Offer to adjust stack size of </param>
     /// <param name="amount"> How much to deduct from offers stack size </param>
-    public void ReduceOfferQuantity(string offerId, int amount)
+    public void ReduceOfferQuantity(MongoId offerId, int amount)
     {
         var offer = ragfairOfferHolder.GetOfferById(offerId);
         if (offer == null)
@@ -102,7 +103,7 @@ public class RagfairOfferService(
     /// Remove all offers from ragfair made by trader
     /// </summary>
     /// <param name="traderId">Trader to remove offers for</param>
-    public void RemoveAllOffersByTrader(string traderId)
+    public void RemoveAllOffersByTrader(MongoId traderId)
     {
         ragfairOfferHolder.RemoveAllOffersByTrader(traderId);
     }
@@ -112,7 +113,7 @@ public class RagfairOfferService(
     /// </summary>
     /// <param name="traderID"> Trader to check </param>
     /// <returns> True if they do </returns>
-    public bool TraderOffersNeedRefreshing(string traderID)
+    public bool TraderOffersNeedRefreshing(MongoId traderID)
     {
         var trader = databaseService.GetTrader(traderID);
         if (trader?.Base == null)
@@ -146,6 +147,16 @@ public class RagfairOfferService(
                 continue;
             }
 
+            if (!pmcData.RagfairInfo.Offers.Any())
+            {
+                continue;
+            }
+
+            foreach (var offer in pmcData.RagfairInfo.Offers)
+            {
+                offer.CreatedBy = OfferCreator.Player;
+            }
+
             ragfairOfferHolder.AddOffers(pmcData.RagfairInfo.Offers);
         }
 
@@ -175,7 +186,7 @@ public class RagfairOfferService(
     /// </summary>
     /// <param name="staleOfferId"> Stale offer id to process </param>
     /// <param name="flagOfferAsExpired">OPTIONAL - Flag the passed in offer as expired default = true</param>
-    protected void ProcessStaleOffer(string staleOfferId, bool flagOfferAsExpired = true)
+    protected void ProcessStaleOffer(MongoId staleOfferId, bool flagOfferAsExpired = true)
     {
         var staleOffer = ragfairOfferHolder.GetOfferById(staleOfferId);
         if (staleOffer is null)
@@ -190,7 +201,7 @@ public class RagfairOfferService(
         }
 
         // Handle dynamic offer from PMCs
-        var isPlayer = profileHelper.IsPlayer(staleOffer.User.Id.RegexReplace("^pmc", ""));
+        var isPlayer = staleOffer.CreatedBy == OfferCreator.Player;
         if (flagOfferAsExpired && !isPlayer)
         {
             // Not trader or a player offer
@@ -222,32 +233,21 @@ public class RagfairOfferService(
         var offerCreatorProfile = profileHelper.GetProfileByPmcId(offerCreatorId);
         if (offerCreatorProfile == null)
         {
-            logger.Error(
-                $"Unable to return flea offer: {playerOffer.Id} as the profile: {offerCreatorId} could not be found"
-            );
+            logger.Error($"Unable to return flea offer: {playerOffer.Id} as the profile: {offerCreatorId} could not be found");
 
             return;
         }
 
-        var indexOfOfferInProfile = offerCreatorProfile.RagfairInfo.Offers.FindIndex(o =>
-            o.Id == playerOffer.Id
-        );
+        var indexOfOfferInProfile = offerCreatorProfile.RagfairInfo.Offers.FindIndex(o => o.Id == playerOffer.Id);
         if (indexOfOfferInProfile == -1)
         {
-            logger.Warning(
-                localisationService.GetText(
-                    "ragfair-unable_to_find_offer_to_remove",
-                    playerOffer.Id
-                )
-            );
+            logger.Warning(localisationService.GetText("ragfair-unable_to_find_offer_to_remove", playerOffer.Id));
 
             return;
         }
 
         // Reduce player ragfair rep
-        offerCreatorProfile.RagfairInfo.Rating -= databaseService
-            .GetGlobals()
-            .Configuration.RagFair.RatingDecreaseCount;
+        offerCreatorProfile.RagfairInfo.Rating -= databaseService.GetGlobals().Configuration.RagFair.RatingDecreaseCount;
         offerCreatorProfile.RagfairInfo.IsRatingGrowing = false;
 
         // Increment players 'notSellSum' value
@@ -286,7 +286,7 @@ public class RagfairOfferService(
         );
         notificationSendHelper.SendMessage(offerCreatorId, notificationMessage);
 
-        ragfairServerHelper.ReturnItems(offerCreatorProfile.SessionId, unstackedItems);
+        ragfairServerHelper.ReturnItems(offerCreatorProfile.SessionId.Value, unstackedItems);
         offerCreatorProfile.RagfairInfo.Offers.Splice(indexOfOfferInProfile, 1);
 
         if (logger.IsLogEnabled(LogLevel.Debug))
@@ -314,7 +314,7 @@ public class RagfairOfferService(
         // Items within stack tolerance, return existing data - no changes needed
         if (totalItemCount <= itemMaxStackSize)
         {
-            // Edge case - Ensure items stack count isnt < 1
+            // Edge case - Ensure items stack count isn't < 1
             if (items[0]?.Upd?.StackObjectsCount < 1)
             {
                 items[0].Upd.StackObjectsCount = 1;
@@ -342,10 +342,7 @@ public class RagfairOfferService(
             itemAndChildrenClone[0].Upd.StackObjectsCount = 1;
 
             // Ensure items IDs are unique to prevent collisions when added to player inventory
-            var reparentedItemAndChildren = itemHelper.ReparentItemAndChildren(
-                itemAndChildrenClone.FirstOrDefault(),
-                itemAndChildrenClone
-            );
+            var reparentedItemAndChildren = itemHelper.ReparentItemAndChildren(itemAndChildrenClone.FirstOrDefault(), itemAndChildrenClone);
             reparentedItemAndChildren.RemapRootItemId();
 
             result.AddRange(reparentedItemAndChildren);
@@ -360,7 +357,6 @@ public class RagfairOfferService(
     /// <returns>True if enough offers have expired</returns>
     public bool EnoughExpiredOffersExistToProcess()
     {
-        return ragfairOfferHolder.GetExpiredOfferCount()
-            >= _ragfairConfig.Dynamic.ExpiredOfferThreshold;
+        return ragfairOfferHolder.GetExpiredOfferCount() >= _ragfairConfig.Dynamic.ExpiredOfferThreshold;
     }
 }

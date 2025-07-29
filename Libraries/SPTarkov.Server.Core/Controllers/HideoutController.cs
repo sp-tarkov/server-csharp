@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
@@ -22,30 +23,30 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class HideoutController(
-    ISptLogger<HideoutController> _logger,
-    TimeUtil _timeUtil,
-    DatabaseService _databaseService,
-    InventoryHelper _inventoryHelper,
-    ItemHelper _itemHelper,
-    SaveServer _saveServer,
-    PresetHelper _presetHelper,
-    PaymentHelper _paymentHelper,
-    EventOutputHolder _eventOutputHolder,
-    HttpResponseUtil _httpResponseUtil,
-    ProfileHelper _profileHelper,
-    HideoutHelper _hideoutHelper,
-    ScavCaseRewardGenerator _scavCaseRewardGenerator,
-    ServerLocalisationService _serverLocalisationService,
-    ProfileActivityService _profileActivityService,
-    FenceService _fenceService,
-    CircleOfCultistService _circleOfCultistService,
-    ICloner _cloner,
-    ConfigServer _configServer
+    ISptLogger<HideoutController> logger,
+    TimeUtil timeUtil,
+    DatabaseService databaseService,
+    InventoryHelper inventoryHelper,
+    ItemHelper itemHelper,
+    SaveServer saveServer,
+    PresetHelper presetHelper,
+    PaymentHelper paymentHelper,
+    EventOutputHolder eventOutputHolder,
+    HttpResponseUtil httpResponseUtil,
+    ProfileHelper profileHelper,
+    HideoutHelper hideoutHelper,
+    ScavCaseRewardGenerator scavCaseRewardGenerator,
+    ServerLocalisationService serverLocalisationService,
+    ProfileActivityService profileActivityService,
+    FenceService fenceService,
+    CircleOfCultistService circleOfCultistService,
+    ICloner cloner,
+    ConfigServer configServer
 )
 {
-    public const string NameTaskConditionCountersCraftingId = "673f5d6fdd6ed700c703afdc";
+    public static readonly MongoId NameTaskConditionCountersCraftingId = new("673f5d6fdd6ed700c703afdc");
 
-    protected readonly HashSet<HideoutAreas> _areasWithResources =
+    protected readonly FrozenSet<HideoutAreas> _areasWithResources =
     [
         HideoutAreas.AirFilteringUnit,
         HideoutAreas.WaterCollector,
@@ -53,7 +54,7 @@ public class HideoutController(
         HideoutAreas.BitcoinFarm,
     ];
 
-    protected readonly HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
+    protected readonly HideoutConfig _hideoutConfig = configServer.GetConfig<HideoutConfig>();
 
     /// <summary>
     ///     Handle HideoutUpgrade event
@@ -63,19 +64,12 @@ public class HideoutController(
     /// <param name="request">Start upgrade request</param>
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
-    public void StartUpgrade(
-        PmcData pmcData,
-        HideoutUpgradeRequestData request,
-        string sessionID,
-        ItemEventRouterResponse output
-    )
+    public void StartUpgrade(PmcData pmcData, HideoutUpgradeRequestData request, MongoId sessionID, ItemEventRouterResponse output)
     {
         var items = request
             .Items.Select(reqItem =>
             {
-                var item = pmcData.Inventory.Items.FirstOrDefault(invItem =>
-                    invItem.Id == reqItem.Id
-                );
+                var item = pmcData.Inventory.Items.FirstOrDefault(invItem => invItem.Id == reqItem.Id);
                 return new { inventoryItem = item, requestedItem = reqItem };
             })
             .ToList();
@@ -85,19 +79,14 @@ public class HideoutController(
         {
             if (item.inventoryItem is null)
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText(
-                        "hideout-unable_to_find_item_in_inventory",
-                        item.requestedItem.Id
-                    )
-                );
-                _httpResponseUtil.AppendErrorToOutput(output);
+                logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_item_in_inventory", item.requestedItem.Id));
+                httpResponseUtil.AppendErrorToOutput(output);
 
                 return;
             }
 
             if (
-                _paymentHelper.IsMoneyTpl(item.inventoryItem.Template)
+                paymentHelper.IsMoneyTpl(item.inventoryItem.Template)
                 && item.inventoryItem.Upd is not null
                 && item.inventoryItem.Upd.StackObjectsCount is not null
                 && item.inventoryItem.Upd.StackObjectsCount > item.requestedItem.Count
@@ -107,51 +96,38 @@ public class HideoutController(
             }
             else
             {
-                _inventoryHelper.RemoveItem(pmcData, item.inventoryItem.Id, sessionID, output);
+                inventoryHelper.RemoveItem(pmcData, item.inventoryItem.Id, sessionID, output);
             }
         }
 
         // Construction time management
-        var profileHideoutArea = pmcData.Hideout.Areas.FirstOrDefault(area =>
-            area.Type == request.AreaType
-        );
+        var profileHideoutArea = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == request.AreaType);
         if (profileHideoutArea is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType)
-            );
-            _httpResponseUtil.AppendErrorToOutput(output);
+            logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType));
+            httpResponseUtil.AppendErrorToOutput(output);
 
             return;
         }
 
-        var hideoutDataDb = _databaseService
-            .GetTables()
-            .Hideout.Areas.FirstOrDefault(area => area.Type == request.AreaType);
+        var hideoutDataDb = databaseService.GetTables().Hideout.Areas.FirstOrDefault(area => area.Type == request.AreaType);
         if (hideoutDataDb is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "hideout-unable_to_find_area_in_database",
-                    request.AreaType
-                )
-            );
-            _httpResponseUtil.AppendErrorToOutput(output);
+            logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area_in_database", request.AreaType));
+            httpResponseUtil.AppendErrorToOutput(output);
 
             return;
         }
 
-        var ctime = hideoutDataDb
-            .Stages[(profileHideoutArea.Level + 1).ToString()]
-            .ConstructionTime;
+        var ctime = hideoutDataDb.Stages[(profileHideoutArea.Level + 1).ToString()].ConstructionTime;
         if (ctime > 0)
         {
-            if (_profileHelper.IsDeveloperAccount(sessionID))
+            if (profileHelper.IsDeveloperAccount(sessionID))
             {
                 ctime = 40;
             }
 
-            var timestamp = _timeUtil.GetTimeStamp();
+            var timestamp = timeUtil.GetTimeStamp();
 
             profileHideoutArea.CompleteTime = (int)Math.Round(timestamp + ctime.Value);
             profileHideoutArea.Constructing = true;
@@ -169,22 +145,18 @@ public class HideoutController(
     public void UpgradeComplete(
         PmcData pmcData,
         HideoutUpgradeCompleteRequestData request,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
-        var hideout = _databaseService.GetHideout();
-        var globals = _databaseService.GetGlobals();
+        var hideout = databaseService.GetHideout();
+        var globals = databaseService.GetGlobals();
 
-        var profileHideoutArea = pmcData.Hideout.Areas.FirstOrDefault(area =>
-            area.Type == request.AreaType
-        );
+        var profileHideoutArea = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == request.AreaType);
         if (profileHideoutArea is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType)
-            );
-            _httpResponseUtil.AppendErrorToOutput(output);
+            logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType));
+            httpResponseUtil.AppendErrorToOutput(output);
 
             return;
         }
@@ -194,51 +166,39 @@ public class HideoutController(
         profileHideoutArea.CompleteTime = 0;
         profileHideoutArea.Constructing = false;
 
-        var hideoutData = hideout.Areas.FirstOrDefault(area =>
-            area.Type == profileHideoutArea.Type
-        );
+        var hideoutData = hideout.Areas.FirstOrDefault(area => area.Type == profileHideoutArea.Type);
         if (hideoutData is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "hideout-unable_to_find_area_in_database",
-                    request.AreaType
-                )
-            );
-            _httpResponseUtil.AppendErrorToOutput(output);
+            logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area_in_database", request.AreaType));
+            httpResponseUtil.AppendErrorToOutput(output);
 
             return;
         }
 
         // Apply bonuses
-        var hideoutStage = hideoutData.Stages[profileHideoutArea.Level.ToString()];
+        if (!hideoutData.Stages.TryGetValue(profileHideoutArea.Level.ToString(), out var hideoutStage))
+        {
+            logger.Error($"Stage level: {profileHideoutArea.Level} not found for area: {request.AreaType}");
+
+            return;
+        }
         var bonuses = hideoutStage.Bonuses;
         if (bonuses?.Count > 0)
         {
             foreach (var bonus in bonuses)
             {
-                _hideoutHelper.ApplyPlayerUpgradesBonuses(pmcData, bonus);
+                hideoutHelper.ApplyPlayerUpgradesBonuses(pmcData, bonus);
             }
         }
 
         // Upgrade includes a container improvement/addition
-        if (!string.IsNullOrEmpty(hideoutStage?.Container))
+        if (!string.IsNullOrEmpty(hideoutStage.Container))
         {
-            AddContainerImprovementToProfile(
-                output,
-                sessionID,
-                pmcData,
-                profileHideoutArea,
-                hideoutData,
-                hideoutStage
-            );
+            AddContainerImprovementToProfile(output, sessionID, pmcData, profileHideoutArea, hideoutData, hideoutStage);
         }
 
         // Upgrading water collector / med station
-        if (
-            profileHideoutArea.Type == HideoutAreas.WaterCollector
-            || profileHideoutArea.Type == HideoutAreas.MedStation
-        )
+        if (profileHideoutArea.Type == HideoutAreas.WaterCollector || profileHideoutArea.Type == HideoutAreas.MedStation)
         {
             SetWallVisibleIfPrereqsMet(pmcData);
         }
@@ -246,11 +206,11 @@ public class HideoutController(
         // Cleanup temporary buffs/debuffs from wall if complete
         if (profileHideoutArea.Type == HideoutAreas.EmergencyWall && profileHideoutArea.Level == 6)
         {
-            _hideoutHelper.RemoveHideoutWallBuffsAndDebuffs(hideoutData, pmcData);
+            hideoutHelper.RemoveHideoutWallBuffsAndDebuffs(hideoutData, pmcData);
         }
 
         // Add Skill Points Per Area Upgrade
-        _profileHelper.AddSkillPointsToPlayer(
+        profileHelper.AddSkillPointsToPlayer(
             pmcData,
             SkillTypes.HideoutManagement,
             globals.Configuration.SkillsSettings.HideoutManagement.SkillPointsPerAreaUpgrade
@@ -263,17 +223,11 @@ public class HideoutController(
     /// <param name="pmcData">Player profile</param>
     protected void SetWallVisibleIfPrereqsMet(PmcData pmcData)
     {
-        var medStation = pmcData.Hideout.Areas.FirstOrDefault(area =>
-            area.Type == HideoutAreas.MedStation
-        );
-        var waterCollector = pmcData.Hideout.Areas.FirstOrDefault(area =>
-            area.Type == HideoutAreas.WaterCollector
-        );
+        var medStation = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.MedStation);
+        var waterCollector = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.WaterCollector);
         if (medStation?.Level >= 1 && waterCollector?.Level >= 1)
         {
-            var wall = pmcData.Hideout.Areas.FirstOrDefault(area =>
-                area.Type == HideoutAreas.EmergencyWall
-            );
+            var wall = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.EmergencyWall);
             if (wall?.Level == 0)
             {
                 wall.Level = 3;
@@ -292,7 +246,7 @@ public class HideoutController(
     /// <param name="hideoutStage">Stage player is upgrading to</param>
     protected void AddContainerImprovementToProfile(
         ItemEventRouterResponse output,
-        string sessionId,
+        MongoId sessionId,
         PmcData pmcData,
         BotHideoutArea profileParentHideoutArea,
         HideoutArea dbHideoutArea,
@@ -304,14 +258,9 @@ public class HideoutController(
         var keyForHideoutAreaStash = ((int)dbHideoutArea.Type).ToString();
         if (!pmcData.Inventory.HideoutAreaStashes.ContainsKey(keyForHideoutAreaStash))
         {
-            if (
-                !pmcData.Inventory.HideoutAreaStashes.TryAdd(
-                    keyForHideoutAreaStash,
-                    dbHideoutArea.Id
-                )
-            )
+            if (!pmcData.Inventory.HideoutAreaStashes.TryAdd(keyForHideoutAreaStash, dbHideoutArea.Id))
             {
-                _logger.Error($"Unable to add key: {dbHideoutArea.Type} to HideoutAreaStashes");
+                logger.Error($"Unable to add key: {dbHideoutArea.Type} to HideoutAreaStashes");
             }
         }
 
@@ -322,27 +271,13 @@ public class HideoutController(
         if (dbHideoutArea.Type == HideoutAreas.EquipmentPresetsStand)
         // Can have multiple 'standx' children depending on upgrade level
         {
-            AddMissingPresetStandItemsToProfile(
-                sessionId,
-                hideoutStage,
-                pmcData,
-                dbHideoutArea,
-                output
-            );
+            AddMissingPresetStandItemsToProfile(sessionId, hideoutStage, pmcData, dbHideoutArea, output);
         }
 
-        AddContainerUpgradeToClientOutput(
-            sessionId,
-            keyForHideoutAreaStash,
-            dbHideoutArea,
-            hideoutStage,
-            output
-        );
+        AddContainerUpgradeToClientOutput(sessionId, keyForHideoutAreaStash, dbHideoutArea, hideoutStage, output);
 
         // Some hideout areas (Gun stand) have child areas linked to it
-        var childDbArea = _databaseService
-            .GetHideout()
-            .Areas.FirstOrDefault(area => area.ParentArea == dbHideoutArea.Id);
+        var childDbArea = databaseService.GetHideout().Areas.FirstOrDefault(area => area.ParentArea == dbHideoutArea.Id);
         if (childDbArea is null)
         {
             // No child db area, we're complete
@@ -357,23 +292,14 @@ public class HideoutController(
         }
 
         // Set child area level to same as parent area
-        pmcData
-            .Hideout.Areas.FirstOrDefault(hideoutArea => hideoutArea.Type == childDbArea.Type)
-            .Level = pmcData
+        pmcData.Hideout.Areas.FirstOrDefault(hideoutArea => hideoutArea.Type == childDbArea.Type).Level = pmcData
             .Hideout.Areas.FirstOrDefault(area => area.Type == profileParentHideoutArea.Type)
             .Level;
 
         // Add/upgrade stash item in player inventory
-        if (
-            !childDbArea.Stages.TryGetValue(
-                profileParentHideoutArea.Level.ToString(),
-                out var childDbAreaStage
-            )
-        )
+        if (!childDbArea.Stages.TryGetValue(profileParentHideoutArea.Level.ToString(), out var childDbAreaStage))
         {
-            _logger.Error(
-                $"Unable to find stage: {profileParentHideoutArea.Level} of area: {dbHideoutArea.Id}"
-            );
+            logger.Error($"Unable to find stage: {profileParentHideoutArea.Level} of area: {dbHideoutArea.Id}");
 
             return;
         }
@@ -381,13 +307,7 @@ public class HideoutController(
         AddUpdateInventoryItemToProfile(sessionId, pmcData, childDbArea, childDbAreaStage);
 
         // Inform client of the changes
-        AddContainerUpgradeToClientOutput(
-            sessionId,
-            childAreaTypeKey,
-            childDbArea,
-            childDbAreaStage,
-            output
-        );
+        AddContainerUpgradeToClientOutput(sessionId, childAreaTypeKey, childDbArea, childDbAreaStage, output);
     }
 
     /// <summary>
@@ -397,30 +317,19 @@ public class HideoutController(
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="dbHideoutArea">Hideout area from db being upgraded</param>
     /// <param name="hideoutStage">Stage area upgraded to</param>
-    protected void AddUpdateInventoryItemToProfile(
-        string sessionId,
-        PmcData pmcData,
-        HideoutArea dbHideoutArea,
-        Stage hideoutStage
-    )
+    protected void AddUpdateInventoryItemToProfile(MongoId sessionId, PmcData pmcData, HideoutArea dbHideoutArea, Stage hideoutStage)
     {
-        var existingInventoryItem = pmcData.Inventory.Items.FirstOrDefault(item =>
-            item.Id == dbHideoutArea.Id
-        );
+        var existingInventoryItem = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == dbHideoutArea.Id);
         if (existingInventoryItem is not null)
         {
             // Update existing items container tpl to point to new id (tpl)
-            existingInventoryItem.Template = hideoutStage.Container;
+            existingInventoryItem.Template = hideoutStage.Container.Value;
 
             return;
         }
 
         // Add new item as none exists (don't inform client of newContainerItem, will be done in `profileChanges.changedHideoutStashes`)
-        var newContainerItem = new Item
-        {
-            Id = dbHideoutArea.Id,
-            Template = hideoutStage.Container,
-        };
+        var newContainerItem = new Item { Id = dbHideoutArea.Id, Template = hideoutStage.Container.Value };
         pmcData.Inventory.Items.Add(newContainerItem);
     }
 
@@ -433,7 +342,7 @@ public class HideoutController(
     /// <param name="hideoutStage"></param>
     /// <param name="output">Client response</param>
     protected void AddContainerUpgradeToClientOutput(
-        string sessionId,
+        MongoId sessionId,
         string changedHideoutStashesKey,
         HideoutArea hideoutDbData,
         Stage hideoutStage,
@@ -441,12 +350,14 @@ public class HideoutController(
     )
     {
         // Ensure ChangedHideoutStashes isn't null
-        output.ProfileChanges[sessionId].ChangedHideoutStashes ??=
-            new Dictionary<string, HideoutStashItem>();
+        output.ProfileChanges[sessionId].ChangedHideoutStashes ??= new Dictionary<string, HideoutStashItem>();
 
         // Inform client of changes
-        output.ProfileChanges[sessionId].ChangedHideoutStashes[changedHideoutStashesKey] =
-            new HideoutStashItem { Id = hideoutDbData.Id, Template = hideoutStage.Container };
+        output.ProfileChanges[sessionId].ChangedHideoutStashes[changedHideoutStashesKey] = new HideoutStashItem
+        {
+            Id = hideoutDbData.Id,
+            Template = hideoutStage.Container,
+        };
     }
 
     /// <summary>
@@ -460,16 +371,14 @@ public class HideoutController(
     public ItemEventRouterResponse PutItemsInAreaSlots(
         PmcData pmcData,
         HideoutPutItemInRequestData addItemToHideoutRequest,
-        string sessionID
+        MongoId sessionID
     )
     {
-        var output = _eventOutputHolder.GetOutput(sessionID);
+        var output = eventOutputHolder.GetOutput(sessionID);
 
         var itemsToAdd = addItemToHideoutRequest.Items.Select(kvp =>
         {
-            var item = pmcData.Inventory.Items.FirstOrDefault(invItem =>
-                invItem.Id == kvp.Value.Id
-            );
+            var item = pmcData.Inventory.Items.FirstOrDefault(invItem => invItem.Id == kvp.Value.Id);
             return new
             {
                 inventoryItem = item,
@@ -478,41 +387,32 @@ public class HideoutController(
             };
         });
 
-        var hideoutArea = pmcData.Hideout.Areas.FirstOrDefault(area =>
-            area.Type == addItemToHideoutRequest.AreaType
-        );
+        var hideoutArea = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == addItemToHideoutRequest.AreaType);
         if (hideoutArea is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "hideout-unable_to_find_area_in_database",
-                    addItemToHideoutRequest.AreaType
-                )
-            );
-            return _httpResponseUtil.AppendErrorToOutput(output);
+            logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area_in_database", addItemToHideoutRequest.AreaType));
+            return httpResponseUtil.AppendErrorToOutput(output);
         }
 
         foreach (var item in itemsToAdd)
         {
             if (item.inventoryItem is null)
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText(
+                logger.Error(
+                    serverLocalisationService.GetText(
                         "hideout-unable_to_find_item_in_inventory",
                         new { itemId = item.requestedItem.Id, area = hideoutArea.Type }
                     )
                 );
-                return _httpResponseUtil.AppendErrorToOutput(output);
+                return httpResponseUtil.AppendErrorToOutput(output);
             }
 
             // Add item to area.slots
             var destinationLocationIndex = int.Parse(item.slot);
-            var hideoutSlotIndex = hideoutArea.Slots.FindIndex(slot =>
-                slot.LocationIndex == destinationLocationIndex
-            );
+            var hideoutSlotIndex = hideoutArea.Slots.FindIndex(slot => slot.LocationIndex == destinationLocationIndex);
             if (hideoutSlotIndex == -1)
             {
-                _logger.Error(
+                logger.Error(
                     $"Unable to put item: {item.requestedItem.Id} into slot as slot cannot be found for area: {addItemToHideoutRequest.AreaType}, skipping"
                 );
                 continue;
@@ -528,11 +428,11 @@ public class HideoutController(
                 },
             ];
 
-            _inventoryHelper.RemoveItem(pmcData, item.inventoryItem.Id, sessionID, output);
+            inventoryHelper.RemoveItem(pmcData, item.inventoryItem.Id, sessionID, output);
         }
 
         // Trigger a forced update
-        _hideoutHelper.UpdatePlayerHideout(sessionID);
+        hideoutHelper.UpdatePlayerHideout(sessionID);
 
         return output;
     }
@@ -545,34 +445,21 @@ public class HideoutController(
     /// <param name="request">Take item out of area request</param>
     /// <param name="sessionID">Session/Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse TakeItemsFromAreaSlots(
-        PmcData pmcData,
-        HideoutTakeItemOutRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse TakeItemsFromAreaSlots(PmcData pmcData, HideoutTakeItemOutRequestData request, MongoId sessionID)
     {
-        var output = _eventOutputHolder.GetOutput(sessionID);
+        var output = eventOutputHolder.GetOutput(sessionID);
 
-        var hideoutArea = pmcData.Hideout.Areas.FirstOrDefault(area =>
-            area.Type == request.AreaType
-        );
+        var hideoutArea = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == request.AreaType);
         if (hideoutArea is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType)
-            );
-            return _httpResponseUtil.AppendErrorToOutput(output);
+            logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType));
+            return httpResponseUtil.AppendErrorToOutput(output);
         }
 
         if (hideoutArea.Slots is null || hideoutArea.Slots.Count == 0)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "hideout-unable_to_find_item_to_remove_from_area",
-                    hideoutArea.Type
-                )
-            );
-            return _httpResponseUtil.AppendErrorToOutput(output);
+            logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_item_to_remove_from_area", hideoutArea.Type));
+            return httpResponseUtil.AppendErrorToOutput(output);
         }
 
         // Handle areas that have resources that can be placed in/taken out of slots from the area
@@ -581,16 +468,11 @@ public class HideoutController(
             var response = RemoveResourceFromArea(sessionID, pmcData, request, output, hideoutArea);
 
             // Force a refresh of productions/hideout areas with resources
-            _hideoutHelper.UpdatePlayerHideout(sessionID);
+            hideoutHelper.UpdatePlayerHideout(sessionID);
             return response;
         }
 
-        throw new Exception(
-            _serverLocalisationService.GetText(
-                "hideout-unhandled_remove_item_from_area_request",
-                hideoutArea.Type
-            )
-        );
+        throw new Exception(serverLocalisationService.GetText("hideout-unhandled_remove_item_from_area_request", hideoutArea.Type));
     }
 
     /// <summary>
@@ -603,17 +485,17 @@ public class HideoutController(
     /// <param name="hideoutArea">Area fuel is being removed from</param>
     /// <returns>ItemEventRouterResponse</returns>
     protected ItemEventRouterResponse RemoveResourceFromArea(
-        string sessionID,
+        MongoId sessionID,
         PmcData pmcData,
         HideoutTakeItemOutRequestData removeResourceRequest,
         ItemEventRouterResponse output,
         BotHideoutArea hideoutArea
     )
     {
-        var slotIndexToRemove = removeResourceRequest?.Slots?.FirstOrDefault();
+        var slotIndexToRemove = removeResourceRequest.Slots?.FirstOrDefault();
         if (slotIndexToRemove is null)
         {
-            _logger.Error(
+            logger.Error(
                 $"Unable to remove resource from area: {removeResourceRequest.AreaType} slot as no slots found in request, RESTART CLIENT IMMEDIATELY"
             );
 
@@ -621,12 +503,10 @@ public class HideoutController(
         }
 
         // Assume only one item in slot
-        var itemToReturn = hideoutArea
-            .Slots?.FirstOrDefault(slot => slot.LocationIndex == slotIndexToRemove)
-            ?.Items?.FirstOrDefault();
+        var itemToReturn = hideoutArea.Slots?.FirstOrDefault(slot => slot.LocationIndex == slotIndexToRemove)?.Items?.FirstOrDefault();
         if (itemToReturn is null)
         {
-            _logger.Error(
+            logger.Error(
                 $"Unable to remove resource from area: {removeResourceRequest.AreaType} slot as no item found, RESTART CLIENT IMMEDIATELY"
             );
 
@@ -642,7 +522,7 @@ public class HideoutController(
             UseSortingTable = false,
         };
 
-        _inventoryHelper.AddItemToStash(sessionID, request, pmcData, output);
+        inventoryHelper.AddItemToStash(sessionID, request, pmcData, output);
         if (output.Warnings?.Count > 0)
         // Adding to stash failed, drop out - don't remove item from hideout area slot
         {
@@ -650,9 +530,7 @@ public class HideoutController(
         }
 
         // Remove items from slot, keep locationIndex object
-        var hideoutSlotIndex = hideoutArea.Slots.FindIndex(slot =>
-            slot.LocationIndex == slotIndexToRemove
-        );
+        var hideoutSlotIndex = hideoutArea.Slots.FindIndex(slot => slot.LocationIndex == slotIndexToRemove);
         hideoutArea.Slots[hideoutSlotIndex].Items = null;
 
         return output;
@@ -666,26 +544,18 @@ public class HideoutController(
     /// <param name="request">Toggle area request</param>
     /// <param name="sessionID">Session/Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse ToggleArea(
-        PmcData pmcData,
-        HideoutToggleAreaRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse ToggleArea(PmcData pmcData, HideoutToggleAreaRequestData request, MongoId sessionID)
     {
-        var output = _eventOutputHolder.GetOutput(sessionID);
+        var output = eventOutputHolder.GetOutput(sessionID);
 
         // Force a production update (occur before area is toggled as it could be generator and doing it after generator enabled would cause incorrect calculaton of production progress)
-        _hideoutHelper.UpdatePlayerHideout(sessionID);
+        hideoutHelper.UpdatePlayerHideout(sessionID);
 
-        var hideoutArea = pmcData.Hideout.Areas.FirstOrDefault(area =>
-            area.Type == request.AreaType
-        );
+        var hideoutArea = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == request.AreaType);
         if (hideoutArea is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType)
-            );
-            return _httpResponseUtil.AppendErrorToOutput(output);
+            logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType));
+            return httpResponseUtil.AppendErrorToOutput(output);
         }
 
         hideoutArea.Active = request.Enabled;
@@ -703,33 +573,27 @@ public class HideoutController(
     public ItemEventRouterResponse SingleProductionStart(
         PmcData pmcData,
         HideoutSingleProductionStartRequestData request,
-        string sessionID
+        MongoId sessionID
     )
     {
         // Start production
-        _hideoutHelper.RegisterProduction(pmcData, request, sessionID);
+        hideoutHelper.RegisterProduction(pmcData, request, sessionID);
 
         // Find the recipe of the production
-        var recipe = _databaseService
-            .GetHideout()
-            .Production.Recipes.FirstOrDefault(production => production.Id == request.RecipeId);
+        var recipe = databaseService.GetHideout().Production.Recipes.FirstOrDefault(production => production.Id == request.RecipeId);
 
         // Find the actual amount of items we need to remove because body can send weird data
-        var recipeRequirementsClone = _cloner.Clone(
-            recipe.Requirements.Where(r => r.Type == "Item" || r.Type == "Tool")
-        );
+        var recipeRequirementsClone = cloner.Clone(recipe.Requirements.Where(r => r.Type == "Item" || r.Type == "Tool"));
 
         List<IdWithCount> itemsToDelete = [];
-        var output = _eventOutputHolder.GetOutput(sessionID);
+        var output = eventOutputHolder.GetOutput(sessionID);
         itemsToDelete.AddRange(request.Tools);
         itemsToDelete.AddRange(request.Items);
 
         foreach (var itemToDelete in itemsToDelete)
         {
             var itemToCheck = pmcData.Inventory.Items.FirstOrDefault(i => i.Id == itemToDelete.Id);
-            var requirement = recipeRequirementsClone.FirstOrDefault(requirement =>
-                requirement.TemplateId == itemToCheck.Template
-            );
+            var requirement = recipeRequirementsClone.FirstOrDefault(requirement => requirement.TemplateId == itemToCheck.Template);
 
             // Handle tools not having a `count`, but always only requiring 1
             var requiredCount = requirement.Count ?? 1;
@@ -738,13 +602,7 @@ public class HideoutController(
                 continue;
             }
 
-            _inventoryHelper.RemoveItemByCount(
-                pmcData,
-                itemToDelete.Id,
-                requiredCount,
-                sessionID,
-                output
-            );
+            inventoryHelper.RemoveItemByCount(pmcData, itemToDelete.Id, requiredCount, sessionID, output);
 
             // Tools don't have a count
             if (requirement.Type != "Tool")
@@ -764,56 +622,40 @@ public class HideoutController(
     /// <param name="request"></param>
     /// <param name="sessionID">Session/Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse ScavCaseProductionStart(
-        PmcData pmcData,
-        HideoutScavCaseStartRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse ScavCaseProductionStart(PmcData pmcData, HideoutScavCaseStartRequestData request, MongoId sessionID)
     {
-        var output = _eventOutputHolder.GetOutput(sessionID);
+        var output = eventOutputHolder.GetOutput(sessionID);
 
         foreach (var requestedItem in request.Items)
         {
-            var inventoryItem = pmcData.Inventory.Items.FirstOrDefault(item =>
-                item.Id == requestedItem.Id
-            );
+            var inventoryItem = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == requestedItem.Id);
             if (inventoryItem is null)
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText(
+                logger.Error(
+                    serverLocalisationService.GetText(
                         "hideout-unable_to_find_scavcase_requested_item_in_profile_inventory",
                         requestedItem.Id
                     )
                 );
-                return _httpResponseUtil.AppendErrorToOutput(output);
+                return httpResponseUtil.AppendErrorToOutput(output);
             }
 
-            if (
-                inventoryItem.Upd?.StackObjectsCount is not null
-                && inventoryItem.Upd.StackObjectsCount > requestedItem.Count
-            )
+            if (inventoryItem.Upd?.StackObjectsCount is not null && inventoryItem.Upd.StackObjectsCount > requestedItem.Count)
             {
                 inventoryItem.Upd.StackObjectsCount -= requestedItem.Count;
             }
             else
             {
-                _inventoryHelper.RemoveItem(pmcData, requestedItem.Id, sessionID, output);
+                inventoryHelper.RemoveItem(pmcData, requestedItem.Id, sessionID, output);
             }
         }
 
-        var recipe = _databaseService
-            .GetHideout()
-            .Production?.ScavRecipes?.FirstOrDefault(r => r.Id == request.RecipeId);
+        var recipe = databaseService.GetHideout().Production?.ScavRecipes?.FirstOrDefault(r => r.Id == request.RecipeId);
         if (recipe is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "hideout-unable_to_find_scav_case_recipie_in_database",
-                    request.RecipeId
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_scav_case_recipie_in_database", request.RecipeId));
 
-            return _httpResponseUtil.AppendErrorToOutput(output);
+            return httpResponseUtil.AppendErrorToOutput(output);
         }
 
         // @Important: Here we need to be very exact:
@@ -821,20 +663,18 @@ public class HideoutController(
         // - scav case recipe: Production time value is stored in attribute "ProductionTime" with capital "P"
         var adjustedCraftTime =
             recipe.ProductionTime
-            - _hideoutHelper.GetSkillProductionTimeReduction(
+            - hideoutHelper.GetSkillProductionTimeReduction(
                 pmcData,
                 recipe.ProductionTime ?? 0,
                 SkillTypes.Crafting,
-                _databaseService
-                    .GetGlobals()
-                    .Configuration.SkillsSettings.Crafting.CraftTimeReductionPerLevel ?? 0
+                databaseService.GetGlobals().Configuration.SkillsSettings.Crafting.CraftTimeReductionPerLevel
             );
 
         var modifiedScavCaseTime = GetScavCaseTime(pmcData, adjustedCraftTime);
 
-        pmcData.Hideout.Production[request.RecipeId] = _hideoutHelper.InitProduction(
+        pmcData.Hideout.Production[request.RecipeId] = hideoutHelper.InitProduction(
             request.RecipeId,
-            (int)(_profileHelper.IsDeveloperAccount(sessionID) ? 40 : modifiedScavCaseTime),
+            (int)(profileHelper.IsDeveloperAccount(sessionID) ? 40 : modifiedScavCaseTime),
             false
         );
         pmcData.Hideout.Production[request.RecipeId].SptIsScavCase = true;
@@ -850,28 +690,13 @@ public class HideoutController(
     /// <returns>Adjusted scav case time in seconds</returns>
     protected double? GetScavCaseTime(PmcData pmcData, double? productionTime)
     {
-        var fenceLevel = _fenceService.GetFenceInfo(pmcData);
+        var fenceLevel = fenceService.GetFenceInfo(pmcData);
         if (fenceLevel is null)
         {
             return productionTime;
         }
 
         return productionTime * fenceLevel.ScavCaseTimeModifier;
-    }
-
-    /// <summary>
-    ///     Add generated scav case rewards to player profile
-    /// </summary>
-    /// <param name="pmcData">Players PMC profile</param>
-    /// <param name="rewards">reward items to add to profile</param>
-    /// <param name="recipeId">recipe id to save into Production dict</param>
-    public void AddScavCaseRewardsToProfile(PmcData pmcData, List<Item> rewards, string recipeId)
-    {
-        pmcData.Hideout.Production[$"ScavCase{recipeId}"] = new Production
-        {
-            Products = rewards,
-            RecipeId = recipeId,
-        };
     }
 
     /// <summary>
@@ -884,12 +709,12 @@ public class HideoutController(
     public ItemEventRouterResponse ContinuousProductionStart(
         PmcData pmcData,
         HideoutContinuousProductionStartRequestData request,
-        string sessionID
+        MongoId sessionID
     )
     {
-        _hideoutHelper.RegisterProduction(pmcData, request, sessionID);
+        hideoutHelper.RegisterProduction(pmcData, request, sessionID);
 
-        return _eventOutputHolder.GetOutput(sessionID);
+        return eventOutputHolder.GetOutput(sessionID);
     }
 
     /// <summary>
@@ -900,20 +725,16 @@ public class HideoutController(
     /// <param name="request">Remove production from area request</param>
     /// <param name="sessionID">Session/Player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse TakeProduction(
-        PmcData pmcData,
-        HideoutTakeProductionRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse TakeProduction(PmcData pmcData, HideoutTakeProductionRequestData request, MongoId sessionID)
     {
-        var output = _eventOutputHolder.GetOutput(sessionID);
-        var hideoutDb = _databaseService.GetHideout();
+        var output = eventOutputHolder.GetOutput(sessionID);
+        var hideoutDb = databaseService.GetHideout();
 
         if (request.RecipeId == HideoutHelper.BitcoinProductionId)
         {
             // Ensure server and client are in-sync when player presses 'get items' on farm
-            _hideoutHelper.UpdatePlayerHideout(sessionID);
-            _hideoutHelper.GetBTC(pmcData, request, sessionID, output);
+            hideoutHelper.UpdatePlayerHideout(sessionID);
+            hideoutHelper.GetBTC(pmcData, request, sessionID, output);
 
             return output;
         }
@@ -926,9 +747,7 @@ public class HideoutController(
             return output;
         }
 
-        var scavCase = hideoutDb.Production.ScavRecipes.FirstOrDefault(r =>
-            r.Id == request.RecipeId
-        );
+        var scavCase = hideoutDb.Production.ScavRecipes.FirstOrDefault(r => r.Id == request.RecipeId);
         if (scavCase is not null)
         {
             HandleScavCase(sessionID, pmcData, request, output);
@@ -936,14 +755,9 @@ public class HideoutController(
             return output;
         }
 
-        _logger.Error(
-            _serverLocalisationService.GetText(
-                "hideout-unable_to_find_production_in_profile_by_recipie_id",
-                request.RecipeId
-            )
-        );
+        logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_production_in_profile_by_recipie_id", request.RecipeId));
 
-        return _httpResponseUtil.AppendErrorToOutput(output);
+        return httpResponseUtil.AppendErrorToOutput(output);
     }
 
     /// <summary>
@@ -955,7 +769,7 @@ public class HideoutController(
     /// <param name="request">Remove production from area request</param>
     /// <param name="output">Client response</param>
     protected void HandleRecipe(
-        string sessionID,
+        MongoId sessionID,
         HideoutProduction recipe,
         PmcData pmcData,
         HideoutTakeProductionRequestData request,
@@ -964,7 +778,7 @@ public class HideoutController(
     {
         // Validate that we have a matching production
         var productionDict = pmcData.Hideout.Production;
-        string? prodId = null;
+        MongoId? prodId = null;
         foreach (var (productionId, production) in productionDict)
         {
             // Skip undefined production objects
@@ -986,19 +800,11 @@ public class HideoutController(
         // If we're unable to find the production, send an error to the client
         if (prodId is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "hideout-unable_to_find_production_in_profile_by_recipie_id",
-                    request.RecipeId
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_production_in_profile_by_recipie_id", request.RecipeId));
 
-            _httpResponseUtil.AppendErrorToOutput(
+            httpResponseUtil.AppendErrorToOutput(
                 output,
-                _serverLocalisationService.GetText(
-                    "hideout-unable_to_find_production_in_profile_by_recipie_id",
-                    request.RecipeId
-                )
+                serverLocalisationService.GetText("hideout-unable_to_find_production_in_profile_by_recipie_id", request.RecipeId)
             );
 
             return;
@@ -1007,14 +813,14 @@ public class HideoutController(
         // Variables for management of skill
         var craftingExpAmount = 0;
 
-        var counterHoursCrafting = GetHoursCraftingTaskConditionCounter(pmcData, recipe);
-        var hoursCrafting = counterHoursCrafting.Value;
+        var counterHoursCrafting = GetCustomSptHoursCraftingTaskConditionCounter(pmcData, recipe);
+        var totalCraftingHours = counterHoursCrafting.Value;
 
         // Array of arrays of item + children
         List<List<Item>> itemAndChildrenToSendToPlayer = [];
 
         // Reward is weapon/armor preset, handle differently compared to 'normal' items
-        var rewardIsPreset = _presetHelper.HasPreset(recipe.EndProduct);
+        var rewardIsPreset = presetHelper.HasPreset(recipe.EndProduct);
         if (rewardIsPreset)
         {
             itemAndChildrenToSendToPlayer = HandlePresetReward(recipe);
@@ -1027,18 +833,15 @@ public class HideoutController(
         {
             foreach (var reward in itemAndChildrenToSendToPlayer)
             {
-                _itemHelper.AddUpdObjectToItem(reward.FirstOrDefault());
+                itemHelper.AddUpdObjectToItem(reward.FirstOrDefault());
 
-                reward.FirstOrDefault().Upd.RecodableComponent = new UpdRecodableComponent
-                {
-                    IsEncoded = true,
-                };
+                reward.FirstOrDefault().Upd.RecodableComponent = new UpdRecodableComponent { IsEncoded = true };
             }
         }
 
         // Build an array of the tools that need to be returned to the player
         List<List<Item>> toolsToSendToPlayer = [];
-        var hideoutProduction = pmcData.Hideout.Production[prodId];
+        pmcData.Hideout.Production.TryGetValue(prodId.Value, out Production hideoutProduction);
         if (hideoutProduction.SptRequiredTools?.Count > 0)
         {
             foreach (var tool in hideoutProduction.SptRequiredTools)
@@ -1057,15 +860,13 @@ public class HideoutController(
 
         // Update variable with time spent crafting item(s)
         // 1 point per 8 hours of crafting
-        hoursCrafting += recipe.ProductionTime;
-        if (hoursCrafting / _hideoutConfig.HoursForSkillCrafting >= 1)
+        totalCraftingHours += recipe.ProductionTime;
+        if (totalCraftingHours / _hideoutConfig.HoursForSkillCrafting >= 1)
         {
             // Spent enough time crafting to get a bonus xp multiplier
-            var multiplierCrafting = Math.Floor(
-                hoursCrafting.Value / _hideoutConfig.HoursForSkillCrafting
-            );
+            var multiplierCrafting = Math.Floor(totalCraftingHours.Value / _hideoutConfig.HoursForSkillCrafting);
             craftingExpAmount += (int)(1 * multiplierCrafting);
-            hoursCrafting -= _hideoutConfig.HoursForSkillCrafting * multiplierCrafting;
+            totalCraftingHours -= _hideoutConfig.HoursForSkillCrafting * multiplierCrafting;
         }
 
         // Make sure we can fit both the craft result and tools in the stash
@@ -1073,11 +874,11 @@ public class HideoutController(
         totalResultItems.AddRange(itemAndChildrenToSendToPlayer);
         totalResultItems.AddRange(toolsToSendToPlayer);
 
-        if (!_inventoryHelper.CanPlaceItemsInInventory(sessionID, totalResultItems))
+        if (!inventoryHelper.CanPlaceItemsInInventory(sessionID, totalResultItems))
         {
-            _httpResponseUtil.AppendErrorToOutput(
+            httpResponseUtil.AppendErrorToOutput(
                 output,
-                _serverLocalisationService.GetText("inventory-no_stash_space"),
+                serverLocalisationService.GetText("inventory-no_stash_space"),
                 BackendErrorCodes.NotEnoughSpace
             );
             return;
@@ -1095,7 +896,7 @@ public class HideoutController(
                 Callback = null,
             };
 
-            _inventoryHelper.AddItemsToStash(sessionID, addToolsRequest, pmcData, output);
+            inventoryHelper.AddItemsToStash(sessionID, addToolsRequest, pmcData, output);
             if (output.Warnings?.Count > 0)
             {
                 return;
@@ -1110,7 +911,7 @@ public class HideoutController(
             UseSortingTable = false,
             Callback = null,
         };
-        _inventoryHelper.AddItemsToStash(sessionID, addItemsRequest, pmcData, output);
+        inventoryHelper.AddItemsToStash(sessionID, addItemsRequest, pmcData, output);
         if (output.Warnings?.Count > 0)
         {
             return;
@@ -1120,8 +921,8 @@ public class HideoutController(
         //  - delete the production in profile Hideout.Production
         // Hideout Management skill
         // ? use a configuration variable for the value?
-        var globals = _databaseService.GetGlobals();
-        _profileHelper.AddSkillPointsToPlayer(
+        var globals = databaseService.GetGlobals();
+        profileHelper.AddSkillPointsToPlayer(
             pmcData,
             SkillTypes.HideoutManagement,
             globals.Configuration.SkillsSettings.HideoutManagement.SkillPointsPerCraft,
@@ -1131,23 +932,19 @@ public class HideoutController(
         // Add Crafting skill to player profile
         if (craftingExpAmount > 0)
         {
-            _profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Crafting, craftingExpAmount);
+            profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Crafting, craftingExpAmount);
 
             var intellectAmountToGive = 0.5 * Math.Round((double)(craftingExpAmount / 15));
             if (intellectAmountToGive > 0)
             {
-                _profileHelper.AddSkillPointsToPlayer(
-                    pmcData,
-                    SkillTypes.Intellect,
-                    intellectAmountToGive
-                );
+                profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Intellect, intellectAmountToGive);
             }
         }
 
         area.LastRecipe = request.RecipeId;
 
         // Update profiles hours crafting value
-        counterHoursCrafting.Value = hoursCrafting;
+        counterHoursCrafting.Value = totalCraftingHours;
 
         // Continuous crafts have special handling in EventOutputHolder.updateOutputProperties()
         hideoutProduction.SptIsComplete = true;
@@ -1157,11 +954,7 @@ public class HideoutController(
         // production.json is set to
         if (recipe.Continuous.GetValueOrDefault(false))
         {
-            hideoutProduction.ProductionTime = _hideoutHelper.GetAdjustedCraftTimeWithSkills(
-                pmcData,
-                recipe.Id,
-                true
-            );
+            hideoutProduction.ProductionTime = hideoutHelper.GetAdjustedCraftTimeWithSkills(pmcData, recipe.Id, true);
         }
 
         // Flag normal (not continuous) crafts as complete
@@ -1177,13 +970,9 @@ public class HideoutController(
     /// <param name="recipe"></param>
     /// <param name="itemAndChildrenToSendToPlayer"></param>
     /// <param name="rewardIsPreset">Reward is a preset</param>
-    protected void HandleStackableState(
-        HideoutProduction recipe,
-        List<List<Item>> itemAndChildrenToSendToPlayer,
-        bool rewardIsPreset
-    )
+    protected void HandleStackableState(HideoutProduction recipe, List<List<Item>> itemAndChildrenToSendToPlayer, bool rewardIsPreset)
     {
-        var rewardIsStackable = _itemHelper.IsItemTplStackable(recipe.EndProduct);
+        var rewardIsStackable = itemHelper.IsItemTplStackable(recipe.EndProduct);
         if (rewardIsStackable.GetValueOrDefault(false))
         {
             // Create root item
@@ -1195,7 +984,7 @@ public class HideoutController(
             };
 
             // Split item into separate items with acceptable stack sizes
-            var splitReward = _itemHelper.SplitStackIntoSeparateItems(rewardToAdd);
+            var splitReward = itemHelper.SplitStackIntoSeparateItems(rewardToAdd);
             itemAndChildrenToSendToPlayer.AddRange(splitReward);
 
             return;
@@ -1206,9 +995,7 @@ public class HideoutController(
         // Add the first reward item to array when not a preset (first preset added above earlier)
         if (!rewardIsPreset)
         {
-            itemAndChildrenToSendToPlayer.Add(
-                [new Item { Id = new MongoId(), Template = recipe.EndProduct }]
-            );
+            itemAndChildrenToSendToPlayer.Add([new Item { Id = new MongoId(), Template = recipe.EndProduct }]);
         }
 
         // Add multiple of item if recipe requests it
@@ -1216,10 +1003,7 @@ public class HideoutController(
         var countOfItemsToReward = recipe.Count;
         for (var index = 1; index < countOfItemsToReward; index++)
         {
-            var firstItemWithChildrenClone = _cloner
-                .Clone(itemAndChildrenToSendToPlayer.FirstOrDefault())
-                .ReplaceIDs()
-                .ToList();
+            var firstItemWithChildrenClone = cloner.Clone(itemAndChildrenToSendToPlayer.FirstOrDefault()).ReplaceIDs().ToList();
 
             itemAndChildrenToSendToPlayer.AddRange([firstItemWithChildrenClone]);
         }
@@ -1231,10 +1015,10 @@ public class HideoutController(
     /// <returns></returns>
     protected List<List<Item>> HandlePresetReward(HideoutProduction recipe)
     {
-        var defaultPreset = _presetHelper.GetDefaultPreset(recipe.EndProduct);
+        var defaultPreset = presetHelper.GetDefaultPreset(recipe.EndProduct);
 
         // Ensure preset has unique ids and is cloned so we don't alter the preset data stored in memory
-        var presetAndModsClone = _cloner.Clone(defaultPreset.Items).ReplaceIDs().ToList();
+        var presetAndModsClone = cloner.Clone(defaultPreset.Items).ReplaceIDs().ToList();
 
         presetAndModsClone.RemapRootItemId();
 
@@ -1243,30 +1027,27 @@ public class HideoutController(
     }
 
     /// <summary>
+    ///     Create our own craft counter
     ///     Get the "CounterHoursCrafting" TaskConditionCounter from a profile
     /// </summary>
     /// <param name="pmcData">Profile to get counter from</param>
     /// <param name="recipe">Recipe being crafted</param>
     /// <returns>TaskConditionCounter</returns>
-    protected TaskConditionCounter GetHoursCraftingTaskConditionCounter(
-        PmcData pmcData,
-        HideoutProduction recipe
-    )
+    protected TaskConditionCounter GetCustomSptHoursCraftingTaskConditionCounter(PmcData pmcData, HideoutProduction recipe)
     {
-        if (!pmcData.TaskConditionCounters.TryGetValue(NameTaskConditionCountersCraftingId, out _))
-        // Doesn't exist, create
-        {
-            pmcData.TaskConditionCounters[NameTaskConditionCountersCraftingId] =
-                new TaskConditionCounter
-                {
-                    Id = recipe.Id,
-                    Type = NameTaskConditionCountersCraftingId,
-                    SourceId = "CounterCrafting",
-                    Value = 0,
-                };
-        }
+        // Add if doesn't exist
+        pmcData.TaskConditionCounters.TryAdd(
+            NameTaskConditionCountersCraftingId,
+            new TaskConditionCounter
+            {
+                Id = recipe.Id,
+                Type = "CounterCrafting",
+                SourceId = NameTaskConditionCountersCraftingId,
+                Value = 0,
+            }
+        );
 
-        return pmcData.TaskConditionCounters[NameTaskConditionCountersCraftingId];
+        return pmcData.TaskConditionCounters.GetValueOrDefault(NameTaskConditionCountersCraftingId);
     }
 
     /// <summary>
@@ -1277,40 +1058,35 @@ public class HideoutController(
     /// <param name="request">Get rewards from scavcase craft request</param>
     /// <param name="output">Client response</param>
     protected void HandleScavCase(
-        string sessionID,
+        MongoId sessionID,
         PmcData pmcData,
         HideoutTakeProductionRequestData request,
         ItemEventRouterResponse output
     )
     {
         var ongoingProductions = pmcData.Hideout.Production;
-        string? prodId = null;
-        foreach (var production in ongoingProductions)
+        MongoId? prodId = null;
+        foreach (var (ongoingProdId, ongoingProduction) in ongoingProductions)
         // Production or ScavCase
         {
-            if (production.Value.RecipeId == request.RecipeId)
+            if (ongoingProduction?.RecipeId == request.RecipeId)
             {
-                prodId = production.Key; // Set to objects key
+                prodId = ongoingProdId; // Set to objects key
                 break;
             }
         }
 
         if (prodId == null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "hideout-unable_to_find_production_in_profile_by_recipie_id",
-                    request.RecipeId
-                )
-            );
+            logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_production_in_profile_by_recipie_id", request.RecipeId));
 
-            _httpResponseUtil.AppendErrorToOutput(output);
+            httpResponseUtil.AppendErrorToOutput(output);
 
             return;
         }
 
         // Create rewards for scav case
-        var scavCaseRewards = _scavCaseRewardGenerator.Generate(request.RecipeId);
+        var scavCaseRewards = scavCaseRewardGenerator.Generate(request.RecipeId);
 
         var addItemsRequest = new AddItemsDirectRequest
         {
@@ -1320,7 +1096,7 @@ public class HideoutController(
             UseSortingTable = false,
         };
 
-        _inventoryHelper.AddItemsToStash(sessionID, addItemsRequest, pmcData, output);
+        inventoryHelper.AddItemsToStash(sessionID, addItemsRequest, pmcData, output);
         if (output.Warnings?.Count > 0)
         {
             return;
@@ -1330,10 +1106,10 @@ public class HideoutController(
         output.ProfileChanges[sessionID].Production.Remove(request.RecipeId);
 
         // Flag as complete - will be cleaned up later by hideoutController.update()
-        pmcData.Hideout.Production[prodId].SptIsComplete = true;
+        pmcData.Hideout.Production[prodId.Value].SptIsComplete = true;
 
         // Crafting complete, flag
-        pmcData.Hideout.Production[prodId].InProgress = false;
+        pmcData.Hideout.Production[prodId.Value].InProgress = false;
     }
 
     /// <summary>
@@ -1344,12 +1120,7 @@ public class HideoutController(
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">QTE result object</param>
     /// <param name="output">Client response</param>
-    public void HandleQTEEventOutcome(
-        string sessionId,
-        PmcData pmcData,
-        HandleQTEEventRequestData request,
-        ItemEventRouterResponse output
-    )
+    public void HandleQTEEventOutcome(MongoId sessionId, PmcData pmcData, HandleQTEEventRequestData request, ItemEventRouterResponse output)
     {
         // {
         //     "Action": "HideoutQuickTimeEvent",
@@ -1361,29 +1132,21 @@ public class HideoutController(
         // Skill changes are done in
         // /client/hideout/workout (applyWorkoutChanges).
 
-        var qteDb = _databaseService.GetHideout().Qte;
+        var qteDb = databaseService.GetHideout().Qte;
         var relevantQte = qteDb.FirstOrDefault(qte => qte.Id == request.Id);
         foreach (var outcome in request.Results)
         {
             if (outcome)
             {
                 // Success
-                pmcData.Health.Energy.Current += relevantQte
-                    .Results[QteEffectType.singleSuccessEffect]
-                    .Energy;
-                pmcData.Health.Hydration.Current += relevantQte
-                    .Results[QteEffectType.singleSuccessEffect]
-                    .Hydration;
+                pmcData.Health.Energy.Current += relevantQte.Results[QteEffectType.singleSuccessEffect].Energy;
+                pmcData.Health.Hydration.Current += relevantQte.Results[QteEffectType.singleSuccessEffect].Hydration;
             }
             else
             {
                 // Failed
-                pmcData.Health.Energy.Current += relevantQte
-                    .Results[QteEffectType.singleFailEffect]
-                    .Energy;
-                pmcData.Health.Hydration.Current += relevantQte
-                    .Results[QteEffectType.singleFailEffect]
-                    .Hydration;
+                pmcData.Health.Energy.Current += relevantQte.Results[QteEffectType.singleFailEffect].Energy;
+                pmcData.Health.Hydration.Current += relevantQte.Results[QteEffectType.singleFailEffect].Hydration;
             }
         }
 
@@ -1408,21 +1171,17 @@ public class HideoutController(
     protected void HandleMusclePain(PmcData pmcData, QteResult finishEffect)
     {
         var hasMildPain = pmcData.Health.BodyParts["Chest"].Effects?.ContainsKey("MildMusclePain");
-        var hasSeverePain = pmcData
-            .Health.BodyParts["Chest"]
-            .Effects?.ContainsKey("SevereMusclePain");
+        var hasSeverePain = pmcData.Health.BodyParts["Chest"].Effects?.ContainsKey("SevereMusclePain");
 
         // Has no muscle pain at all, add mild
         if (!hasMildPain.GetValueOrDefault(false) && !hasSeverePain.GetValueOrDefault(false))
         {
             // Nullguard
-            pmcData.Health.BodyParts["Chest"].Effects ??=
-                new Dictionary<string, BodyPartEffectProperties>();
-            pmcData.Health.BodyParts["Chest"].Effects["MildMusclePain"] =
-                new BodyPartEffectProperties
-                {
-                    Time = finishEffect.RewardEffects.FirstOrDefault().Time, // TODO - remove hard coded access, get value properly
-                };
+            pmcData.Health.BodyParts["Chest"].Effects ??= new Dictionary<string, BodyPartEffectProperties>();
+            pmcData.Health.BodyParts["Chest"].Effects["MildMusclePain"] = new BodyPartEffectProperties
+            {
+                Time = finishEffect.RewardEffects.FirstOrDefault().Time, // TODO - remove hard coded access, get value properly
+            };
 
             return;
         }
@@ -1432,11 +1191,10 @@ public class HideoutController(
             // Already has mild pain, remove mild and add severe
             pmcData.Health.BodyParts["Chest"].Effects.Remove("MildMusclePain");
 
-            pmcData.Health.BodyParts["Chest"].Effects["SevereMusclePain"] =
-                new BodyPartEffectProperties
-                {
-                    Time = finishEffect.RewardEffects.FirstOrDefault().Time,
-                };
+            pmcData.Health.BodyParts["Chest"].Effects["SevereMusclePain"] = new BodyPartEffectProperties
+            {
+                Time = finishEffect.RewardEffects.FirstOrDefault().Time,
+            };
         }
     }
 
@@ -1446,26 +1204,18 @@ public class HideoutController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">shooting range score request></param>
-    public void RecordShootingRangePoints(
-        string sessionId,
-        PmcData pmcData,
-        RecordShootingRangePoints request
-    )
+    public void RecordShootingRangePoints(MongoId sessionId, PmcData pmcData, RecordShootingRangePoints request)
     {
         const string shootingRangeKey = "ShootingRangePoints";
         var overallCounterItems = pmcData.Stats.Eft.OverallCounters.Items;
 
         // Find counter by key
-        var shootingRangeHighScore = overallCounterItems.FirstOrDefault(counter =>
-            counter.Key.Contains(shootingRangeKey)
-        );
+        var shootingRangeHighScore = overallCounterItems.FirstOrDefault(counter => counter.Key.Contains(shootingRangeKey));
         if (shootingRangeHighScore is null)
         {
             // Counter not found, add blank one
             overallCounterItems.Add(new CounterKeyValue { Key = [shootingRangeKey], Value = 0 });
-            shootingRangeHighScore = overallCounterItems.FirstOrDefault(counter =>
-                counter.Key.Contains(shootingRangeKey)
-            );
+            shootingRangeHighScore = overallCounterItems.FirstOrDefault(counter => counter.Key.Contains(shootingRangeKey));
         }
 
         shootingRangeHighScore.Value = request.Points;
@@ -1478,13 +1228,9 @@ public class HideoutController(
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Improve area request</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse ImproveArea(
-        string sessionId,
-        PmcData pmcData,
-        HideoutImproveAreaRequestData request
-    )
+    public ItemEventRouterResponse ImproveArea(MongoId sessionId, PmcData pmcData, HideoutImproveAreaRequestData request)
     {
-        var output = _eventOutputHolder.GetOutput(sessionId);
+        var output = eventOutputHolder.GetOutput(sessionId);
 
         // Create mapping of required item with corresponding item from player inventory
         var items = request.Items.Select(reqItem =>
@@ -1498,17 +1244,12 @@ public class HideoutController(
         {
             if (item.inventoryItem is null)
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText(
-                        "hideout-unable_to_find_item_in_inventory",
-                        item.requestedItem.Id
-                    )
-                );
-                return _httpResponseUtil.AppendErrorToOutput(output);
+                logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_item_in_inventory", item.requestedItem.Id));
+                return httpResponseUtil.AppendErrorToOutput(output);
             }
 
             if (
-                _paymentHelper.IsMoneyTpl(item.inventoryItem.Template)
+                paymentHelper.IsMoneyTpl(item.inventoryItem.Template)
                 && item.inventoryItem.Upd is not null
                 && item.inventoryItem.Upd.StackObjectsCount is not null
                 && item.inventoryItem.Upd.StackObjectsCount > item.requestedItem.Count
@@ -1518,56 +1259,42 @@ public class HideoutController(
             }
             else
             {
-                _inventoryHelper.RemoveItem(pmcData, item.inventoryItem.Id, sessionId, output);
+                inventoryHelper.RemoveItem(pmcData, item.inventoryItem.Id, sessionId, output);
             }
         }
 
-        var profileHideoutArea = pmcData.Hideout.Areas.FirstOrDefault(x =>
-            x.Type == request.AreaType
-        );
+        var profileHideoutArea = pmcData.Hideout.Areas.FirstOrDefault(x => x.Type == request.AreaType);
         if (profileHideoutArea is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType)
-            );
-            return _httpResponseUtil.AppendErrorToOutput(output);
+            logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType));
+            return httpResponseUtil.AppendErrorToOutput(output);
         }
 
-        var hideoutDbData = _databaseService
-            .GetHideout()
-            .Areas.FirstOrDefault(area => area.Type == request.AreaType);
+        var hideoutDbData = databaseService.GetHideout().Areas.FirstOrDefault(area => area.Type == request.AreaType);
         if (hideoutDbData is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "hideout-unable_to_find_area_in_database",
-                    request.AreaType
-                )
-            );
-            return _httpResponseUtil.AppendErrorToOutput(output);
+            logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area_in_database", request.AreaType));
+            return httpResponseUtil.AppendErrorToOutput(output);
         }
 
-        // Add all improvemets to output object
+        // Add all improvements to output object
         var improvements = hideoutDbData.Stages[profileHideoutArea.Level.ToString()].Improvements;
-        var timestamp = _timeUtil.GetTimeStamp();
+        var timestamp = timeUtil.GetTimeStamp();
 
-        if (output.ProfileChanges[sessionId].Improvements is null)
-        {
-            output.ProfileChanges[sessionId].Improvements =
-                new Dictionary<string, HideoutImprovement>();
-        }
+        // nullguard
+        output.ProfileChanges[sessionId].Improvements ??= [];
 
-        foreach (var improvement in improvements)
+        foreach (var stageImprovement in improvements)
         {
             var improvementDetails = new HideoutImprovement
             {
                 Completed = false,
-                ImproveCompleteTimestamp = (long)(timestamp + improvement.ImprovementTime),
+                ImproveCompleteTimestamp = (long)(timestamp + stageImprovement.ImprovementTime),
             };
-            output.ProfileChanges[sessionId].Improvements[improvement.Id] = improvementDetails;
+            output.ProfileChanges[sessionId].Improvements[stageImprovement.Id] = improvementDetails;
 
-            pmcData.Hideout.Improvements ??= new Dictionary<string, HideoutImprovement>();
-            pmcData.Hideout.Improvements[improvement.Id] = improvementDetails;
+            pmcData.Hideout.Improvements ??= [];
+            pmcData.Hideout.Improvements[stageImprovement.Id] = improvementDetails;
         }
 
         return output;
@@ -1580,21 +1307,17 @@ public class HideoutController(
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Cancel production request data</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse CancelProduction(
-        string sessionId,
-        PmcData pmcData,
-        HideoutCancelProductionRequestData request
-    )
+    public ItemEventRouterResponse CancelProduction(MongoId sessionId, PmcData pmcData, HideoutCancelProductionRequestData request)
     {
-        var output = _eventOutputHolder.GetOutput(sessionId);
+        var output = eventOutputHolder.GetOutput(sessionId);
 
         var craftToCancel = pmcData.Hideout.Production[request.RecipeId];
         if (craftToCancel is null)
         {
             var errorMessage = $"Unable to find craft {request.RecipeId} to cancel";
-            _logger.Error(errorMessage);
+            logger.Error(errorMessage);
 
-            return _httpResponseUtil.AppendErrorToOutput(output, errorMessage);
+            return httpResponseUtil.AppendErrorToOutput(output, errorMessage);
         }
 
         // Null out production data so client gets informed when response send back
@@ -1605,13 +1328,13 @@ public class HideoutController(
         return output;
     }
 
-    public ItemEventRouterResponse CicleOfCultistProductionStart(
-        string sessionId,
+    public ItemEventRouterResponse CircleOfCultistProductionStart(
+        MongoId sessionId,
         PmcData pmcData,
         HideoutCircleOfCultistProductionStartRequestData request
     )
     {
-        return _circleOfCultistService.StartSacrifice(sessionId, pmcData, request);
+        return circleOfCultistService.StartSacrifice(sessionId, pmcData, request);
     }
 
     /// <summary>
@@ -1622,12 +1345,12 @@ public class HideoutController(
     /// <param name="request">Delete production request</param>
     /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse HideoutDeleteProductionCommand(
-        string sessionId,
+        MongoId sessionId,
         PmcData pmcData,
         HideoutDeleteProductionRequestData request
     )
     {
-        var output = _eventOutputHolder.GetOutput(sessionId);
+        var output = eventOutputHolder.GetOutput(sessionId);
 
         pmcData.Hideout.Production[request.RecipeId] = null;
         output.ProfileChanges[sessionId].Production = null;
@@ -1643,27 +1366,22 @@ public class HideoutController(
     /// <param name="request">Apply hideout customisation request</param>
     /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse HideoutCustomizationApply(
-        string sessionId,
+        MongoId sessionId,
         PmcData pmcData,
         HideoutCustomizationApplyRequestData request
     )
     {
-        var output = _eventOutputHolder.GetOutput(sessionId);
+        var output = eventOutputHolder.GetOutput(sessionId);
 
-        var itemDetails = _databaseService
-            .GetHideout()
-            .Customisation.Globals.FirstOrDefault(cust => cust.Id == request.OfferId);
+        var itemDetails = databaseService.GetHideout().Customisation.Globals.FirstOrDefault(cust => cust.Id == request.OfferId);
         if (itemDetails is null)
         {
-            _logger.Error(
-                $"Unable to find customisation: {request.OfferId} in db, cannot apply to hideout"
-            );
+            logger.Error($"Unable to find customisation: {request.OfferId} in db, cannot apply to hideout");
 
             return output;
         }
 
-        pmcData.Hideout.Customization[GetHideoutCustomisationType(itemDetails.Type)] =
-            itemDetails.ItemId;
+        pmcData.Hideout.Customization[GetHideoutCustomisationType(itemDetails.Type)] = itemDetails.ItemId.Value;
 
         return output;
     }
@@ -1688,7 +1406,7 @@ public class HideoutController(
             case "shootingRangeMark":
                 return "ShootingRangeMark";
             default:
-                _logger.Warning($"Unknown {type}, unable to map");
+                logger.Warning($"Unknown {type}, unable to map");
                 return type;
         }
     }
@@ -1702,7 +1420,7 @@ public class HideoutController(
     /// <param name="equipmentPresetHideoutArea"></param>
     /// <param name="output">Client response</param>
     protected void AddMissingPresetStandItemsToProfile(
-        string sessionId,
+        MongoId sessionId,
         Stage equipmentPresetStage,
         PmcData pmcData,
         HideoutArea equipmentPresetHideoutArea,
@@ -1710,7 +1428,7 @@ public class HideoutController(
     )
     {
         // Each slot is a single Mannequin
-        var slots = _itemHelper.GetItem(equipmentPresetStage.Container).Value.Properties.Slots;
+        var slots = itemHelper.GetItem(equipmentPresetStage.Container.Value).Value.Properties.Slots;
         foreach (var mannequinSlot in slots)
         {
             // Check if we've already added this mannequin
@@ -1736,9 +1454,7 @@ public class HideoutController(
                 {
                     Id = new MongoId(),
                     Template = pmcData
-                        .Inventory.Items.FirstOrDefault(item =>
-                            item.SlotId == "Pockets" && item.ParentId == pmcData.Inventory.Equipment
-                        )
+                        .Inventory.Items.FirstOrDefault(item => item.SlotId == "Pockets" && item.ParentId == pmcData.Inventory.Equipment)
                         .Template, // Same pocket tpl as players profile (unheard get bigger, matching pockets etc)
                     ParentId = standId,
                     SlotId = "Pockets",
@@ -1758,27 +1474,25 @@ public class HideoutController(
     /// <param name="request">Client request</param>
     /// <returns></returns>
     public ItemEventRouterResponse HideoutCustomizationSetMannequinPose(
-        string sessionId,
+        MongoId sessionId,
         PmcData pmcData,
         HideoutCustomizationSetMannequinPoseRequest request
     )
     {
         if (request.Poses is null)
         {
-            _logger.Warning(
-                "this really shouldnt be possible, but a request has come in with a pose change without poses"
-            );
-            return _eventOutputHolder.GetOutput(sessionId);
+            logger.Warning("this really shouldnt be possible, but a request has come in with a pose change without poses");
+            return eventOutputHolder.GetOutput(sessionId);
         }
 
-        foreach (var poseKvP in request.Poses)
+        foreach (var (poseKey, poseValue) in request.Poses)
         {
             // Nullguard
-            pmcData.Hideout.MannequinPoses ??= new Dictionary<string, MongoId>();
-            pmcData.Hideout.MannequinPoses[poseKvP.Key] = poseKvP.Value;
+            pmcData.Hideout.MannequinPoses ??= [];
+            pmcData.Hideout.MannequinPoses[poseKey] = poseValue;
         }
 
-        return _eventOutputHolder.GetOutput(sessionId);
+        return eventOutputHolder.GetOutput(sessionId);
     }
 
     /// <summary>
@@ -1787,9 +1501,9 @@ public class HideoutController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public List<QteData> GetQteList(string sessionId)
+    public List<QteData> GetQteList(MongoId sessionId)
     {
-        return _databaseService.GetHideout().Qte;
+        return databaseService.GetHideout().Qte;
     }
 
     /// <summary>
@@ -1798,17 +1512,14 @@ public class HideoutController(
     /// </summary>
     public void Update()
     {
-        foreach (var (sessionId, profile) in _saveServer.GetProfiles())
+        foreach (var (sessionId, profile) in saveServer.GetProfiles())
         {
             if (
                 profile.CharacterData.PmcData.Hideout is not null
-                && _profileActivityService.ActiveWithinLastMinutes(
-                    sessionId,
-                    _hideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes
-                )
+                && profileActivityService.ActiveWithinLastMinutes(sessionId, _hideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes)
             )
             {
-                _hideoutHelper.UpdatePlayerHideout(sessionId);
+                hideoutHelper.UpdatePlayerHideout(sessionId);
             }
         }
     }

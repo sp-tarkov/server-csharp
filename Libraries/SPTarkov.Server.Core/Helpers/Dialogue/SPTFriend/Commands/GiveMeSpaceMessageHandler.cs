@@ -1,6 +1,8 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
+using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -10,14 +12,15 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
 public class GiveMeSpaceMessageHandler(
-    ProfileHelper _profileHelper,
-    ServerLocalisationService _serverLocalisationService,
-    MailSendService _mailSendService,
-    RandomUtil _randomUtil,
-    ConfigServer _configServer
+    ProfileHelper profileHelper,
+    NotificationSendHelper notificationSendHelper,
+    ServerLocalisationService serverLocalisationService,
+    MailSendService mailSendService,
+    RandomUtil randomUtil,
+    ConfigServer configServer
 ) : IChatMessageHandler
 {
-    private readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    private readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
 
     public int GetPriority()
     {
@@ -29,51 +32,44 @@ public class GiveMeSpaceMessageHandler(
         return string.Equals(message, "givemespace", StringComparison.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        string sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         const string stashRowGiftId = "StashRows";
-        var maxGiftsToSendCount =
-            _coreConfig.Features.ChatbotFeatures.CommandUseLimits[stashRowGiftId] ?? 5;
-        if (
-            _profileHelper.PlayerHasReceivedMaxNumberOfGift(
-                sessionId,
-                stashRowGiftId,
-                maxGiftsToSendCount
-            )
-        )
+        var maxGiftsToSendCount = _coreConfig.Features.ChatbotFeatures.CommandUseLimits[stashRowGiftId] ?? 5;
+        if (profileHelper.PlayerHasReceivedMaxNumberOfGift(sessionId, stashRowGiftId, maxGiftsToSendCount))
         {
-            _mailSendService.SendUserMessageToPlayer(
+            mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
-                _serverLocalisationService.GetText("chatbot-cannot_accept_any_more_of_gift"),
+                serverLocalisationService.GetText("chatbot-cannot_accept_any_more_of_gift"),
                 [],
                 null
             );
         }
         else
         {
-            _profileHelper.AddStashRowsBonusToProfile(sessionId, 2);
+            const int rowsToAdd = 2;
+            var bonusId = profileHelper.AddStashRowsBonusToProfile(sessionId, rowsToAdd);
 
-            _mailSendService.SendUserMessageToPlayer(
+            notificationSendHelper.SendMessage(
+                sessionId,
+                new WsProfileChangeEvent
+                {
+                    EventIdentifier = new MongoId(),
+                    EventType = NotificationEventType.StashRows,
+                    Changes = new Dictionary<string, double?> { { bonusId, rowsToAdd } },
+                }
+            );
+
+            mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
-                _randomUtil.GetArrayValue(
-                    [_serverLocalisationService.GetText("chatbot-added_stash_rows_please_restart")]
-                ),
+                randomUtil.GetArrayValue([serverLocalisationService.GetText("chatbot-added_stash_rows_please_restart")]),
                 [],
                 null
             );
 
-            _profileHelper.FlagGiftReceivedInProfile(
-                sessionId,
-                stashRowGiftId,
-                maxGiftsToSendCount
-            );
+            profileHelper.FlagGiftReceivedInProfile(sessionId, stashRowGiftId, maxGiftsToSendCount);
         }
     }
 }

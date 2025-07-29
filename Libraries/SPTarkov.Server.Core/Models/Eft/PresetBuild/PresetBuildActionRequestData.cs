@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 
@@ -13,7 +14,7 @@ public record PresetBuildActionRequestData : IRequestData
     public string? Action { get; set; }
 
     [JsonPropertyName("Id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     /// <summary>
     ///     name of preset given by player
@@ -25,5 +26,5 @@ public record PresetBuildActionRequestData : IRequestData
     public string? Root { get; set; }
 
     [JsonPropertyName("Items")]
-    public List<Item>? Items { get; set; }
+    public IEnumerable<Item>? Items { get; set; }
 }

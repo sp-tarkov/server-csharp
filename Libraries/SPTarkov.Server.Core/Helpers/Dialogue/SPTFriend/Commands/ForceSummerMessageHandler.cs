@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
@@ -29,21 +30,14 @@ public class ForceSummerMessageHandler(
         return string.Equals(message, "givemesunshine", StringComparison.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        string sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         _weatherConfig.OverrideSeason = Season.SUMMER;
 
         _mailSendService.SendUserMessageToPlayer(
             sessionId,
             sptFriendUser,
-            _randomUtil.GetArrayValue(
-                [_serverLocalisationService.GetText("chatbot-summer_enabled")]
-            ),
+            _randomUtil.GetArrayValue([_serverLocalisationService.GetText("chatbot-summer_enabled")]),
             [],
             null
         );

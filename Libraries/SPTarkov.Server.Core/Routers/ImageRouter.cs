@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Http;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services.Image;
 using SPTarkov.Server.Core.Utils;
@@ -6,45 +8,32 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Routers;
 
 [Injectable]
-public class ImageRouter
+public class ImageRouter(
+    FileUtil fileUtil,
+    ImageRouterService imageRouterService,
+    HttpFileUtil httpFileUtil,
+    ISptLogger<ImageRouter> logger
+)
 {
-    private readonly ISptLogger<ImageRouter> _logger;
-    protected FileUtil _fileUtil;
-    protected HttpFileUtil _httpFileUtil;
-    protected ImageRouterService _imageRouterService;
-
-    public ImageRouter(
-        FileUtil fileUtil,
-        ImageRouterService imageRouteService,
-        HttpFileUtil httpFileUtil,
-        ISptLogger<ImageRouter> logger
-    )
-    {
-        _fileUtil = fileUtil;
-        _imageRouterService = imageRouteService;
-        _httpFileUtil = httpFileUtil;
-        _logger = logger;
-    }
-
     public void AddRoute(string key, string valueToAdd)
     {
-        _imageRouterService.AddRoute(key.ToLowerInvariant(), valueToAdd);
+        imageRouterService.AddRoute(key.ToLowerInvariant(), valueToAdd);
     }
 
-    public async Task SendImage(string sessionId, HttpRequest req, HttpResponse resp, object body)
+    public async Task SendImage(MongoId sessionId, HttpRequest req, HttpResponse resp, object body)
     {
         // remove file extension
-        var url = _fileUtil.StripExtension(req.Path, true);
+        var url = fileUtil.StripExtension(req.Path, true);
 
         // Send image
         var urlKeyLower = url.ToLowerInvariant();
-        if (_imageRouterService.ExistsByKey(urlKeyLower))
+        if (imageRouterService.ExistsByKey(urlKeyLower))
         {
-            await _httpFileUtil.SendFile(resp, _imageRouterService.GetByKey(urlKeyLower));
+            await httpFileUtil.SendFile(resp, imageRouterService.GetByKey(urlKeyLower));
             return;
         }
 
-        _logger.Warning($"IMAGE: {url} not found");
+        logger.Warning($"IMAGE: {url} not found");
     }
 
     public ValueTask<string> GetImage()

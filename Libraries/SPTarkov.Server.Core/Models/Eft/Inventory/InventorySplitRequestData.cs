@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Inventory;
 
@@ -11,13 +12,13 @@ public record InventorySplitRequestData : InventoryBaseActionRequestData
     ///     Id of item to split
     /// </summary>
     [JsonPropertyName("splitItem")]
-    public string? SplitItem { get; set; }
+    public MongoId? SplitItem { get; set; }
 
     /// <summary>
     ///     Id of new item stack
     /// </summary>
     [JsonPropertyName("newItem")]
-    public string? NewItem { get; set; }
+    public MongoId? NewItem { get; set; }
 
     /// <summary>
     ///     Destination new item will be placed in

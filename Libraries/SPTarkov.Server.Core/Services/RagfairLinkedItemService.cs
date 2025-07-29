@@ -9,11 +9,7 @@ using SPTarkov.Server.Core.Models.Utils;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class RagfairLinkedItemService(
-    DatabaseService databaseService,
-    ItemHelper itemHelper,
-    ISptLogger<RagfairLinkedItemService> logger
-)
+public class RagfairLinkedItemService(DatabaseService databaseService, ItemHelper itemHelper, ISptLogger<RagfairLinkedItemService> logger)
 {
     protected readonly Dictionary<MongoId, HashSet<MongoId>> linkedItemsCache = new();
 
@@ -62,7 +58,7 @@ public class RagfairLinkedItemService(
     /// </summary>
     protected void BuildLinkedItemTable()
     {
-        var linkedItems = new Dictionary<string, HashSet<MongoId>>();
+        var linkedItems = new Dictionary<MongoId, HashSet<MongoId>>();
 
         foreach (var item in databaseService.GetItems().Values)
         {
@@ -117,10 +113,7 @@ public class RagfairLinkedItemService(
     /// </summary>
     /// <param name="cylinder"> Revolvers cylinder </param>
     /// <param name="itemLinkedSet"> Set to add to </param>
-    protected void AddRevolverCylinderAmmoToLinkedItems(
-        TemplateItem cylinder,
-        HashSet<MongoId> itemLinkedSet
-    )
+    protected void AddRevolverCylinderAmmoToLinkedItems(TemplateItem cylinder, HashSet<MongoId> itemLinkedSet)
     {
         var cylinderMod = cylinder.Properties.Slots?.FirstOrDefault(x => x.Name == "mod_magazine");
         if (cylinderMod == null)
@@ -129,8 +122,7 @@ public class RagfairLinkedItemService(
         }
 
         // Get the first cylinder filter tpl
-        var cylinderTpl =
-            cylinderMod.Props?.Filters?[0].Filter?.FirstOrDefault() ?? new MongoId(null);
+        var cylinderTpl = cylinderMod.Props?.Filters?.First().Filter?.FirstOrDefault() ?? new MongoId(null);
 
         if (!cylinderTpl.IsValidMongoId())
         {
@@ -153,7 +145,7 @@ public class RagfairLinkedItemService(
         var result = new HashSet<MongoId>();
 
         var slots = item.Properties?.Slots;
-        if (slots is null || slots.Count == 0)
+        if (slots is null || !slots.Any())
         {
             // No slots, skip
             return result;
@@ -181,7 +173,7 @@ public class RagfairLinkedItemService(
         var result = new HashSet<MongoId>();
 
         var chambers = item.Properties?.Chambers;
-        if (chambers is null || chambers.Count == 0)
+        if (chambers is null || !chambers.Any())
         {
             return result;
         }
@@ -207,7 +199,7 @@ public class RagfairLinkedItemService(
         var result = new HashSet<MongoId>();
 
         var cartridges = item.Properties?.Cartridges;
-        if (cartridges is null || cartridges.Count == 0)
+        if (cartridges is null || !cartridges.Any())
         {
             return result;
         }

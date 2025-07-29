@@ -1,7 +1,9 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -14,23 +16,23 @@ namespace SPTarkov.Server.Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
 public class SaveServer(
-    FileUtil _fileUtil,
-    IEnumerable<SaveLoadRouter> _saveLoadRouters,
-    JsonUtil _jsonUtil,
-    HashUtil _hashUtil,
-    ServerLocalisationService _serverLocalisationService,
-    ISptLogger<SaveServer> _logger,
-    ConfigServer _configServer
+    FileUtil fileUtil,
+    IEnumerable<SaveLoadRouter> saveLoadRouters,
+    JsonUtil jsonUtil,
+    HashUtil hashUtil,
+    ServerLocalisationService serverLocalisationService,
+    ProfileMigratorService profileMigratorService,
+    ISptLogger<SaveServer> logger,
+    ConfigServer configServer
 )
 {
     protected const string profileFilepath = "user/profiles/";
 
     // onLoad = require("../bindings/SaveLoad");
-    protected readonly Dictionary<string, Func<SptProfile, SptProfile>> onBeforeSaveCallbacks =
-        new();
+    protected readonly Dictionary<string, Func<SptProfile, SptProfile>> onBeforeSaveCallbacks = new();
 
-    protected readonly ConcurrentDictionary<string, SptProfile> profiles = new();
-    protected readonly ConcurrentDictionary<string, string> saveMd5 = new();
+    protected readonly ConcurrentDictionary<MongoId, SptProfile> profiles = new();
+    protected readonly ConcurrentDictionary<MongoId, string> saveMd5 = new();
 
     /// <summary>
     ///     Add callback to occur prior to saving profile changes
@@ -48,10 +50,7 @@ public class SaveServer(
     /// <param name="id"> ID of Callback to remove </param>
     public void RemoveBeforeSaveCallback(string id)
     {
-        if (onBeforeSaveCallbacks.ContainsKey(id))
-        {
-            onBeforeSaveCallbacks.Remove(id);
-        }
+        onBeforeSaveCallbacks.Remove(id);
     }
 
     /// <summary>
@@ -60,28 +59,24 @@ public class SaveServer(
     public async Task LoadAsync()
     {
         // get files to load
-        if (!_fileUtil.DirectoryExists(profileFilepath))
+        if (!fileUtil.DirectoryExists(profileFilepath))
         {
-            _fileUtil.CreateDirectory(profileFilepath);
+            fileUtil.CreateDirectory(profileFilepath);
         }
 
-        var files = _fileUtil
-            .GetFiles(profileFilepath)
-            .Where(item => _fileUtil.GetFileExtension(item) == "json");
+        var files = fileUtil.GetFiles(profileFilepath).Where(item => fileUtil.GetFileExtension(item) == "json");
 
         // load profiles
         var stopwatch = Stopwatch.StartNew();
         foreach (var file in files)
         {
-            await LoadProfileAsync(_fileUtil.StripExtension(file));
+            await LoadProfileAsync(fileUtil.StripExtension(file));
         }
 
         stopwatch.Stop();
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
-                $"{files.Count()} Profiles took: {stopwatch.ElapsedMilliseconds}ms to load."
-            );
+            logger.Debug($"{files.Count()} Profiles took: {stopwatch.ElapsedMilliseconds}ms to load.");
         }
     }
 
@@ -97,9 +92,9 @@ public class SaveServer(
             totalTime += await SaveProfileAsync(sessionID.Key);
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"Saved {profiles.Count} profiles, took: {totalTime}ms");
+            logger.Debug($"Saved {profiles.Count} profiles, took: {totalTime}ms");
         }
     }
 
@@ -109,16 +104,14 @@ public class SaveServer(
     /// <param name="sessionId"> Session ID </param>
     /// <returns> SptProfile of the player </returns>
     /// <exception cref="Exception"> Thrown when sessionId is null / empty or no profiles with that ID are found </exception>
-    public SptProfile GetProfile(string sessionId)
+    public SptProfile GetProfile(MongoId sessionId)
     {
-        if (string.IsNullOrEmpty(sessionId))
+        if (sessionId.IsEmpty())
         {
-            throw new Exception(
-                "session id provided was empty, did you restart the server while the game was running?"
-            );
+            throw new Exception("session id provided was empty, did you restart the server while the game was running?");
         }
 
-        if (profiles == null || profiles.Count == 0)
+        if (profiles == null || profiles.IsEmpty)
         {
             throw new Exception($"no profiles found in saveServer with id: {sessionId}");
         }
@@ -131,7 +124,7 @@ public class SaveServer(
         return sptProfile;
     }
 
-    public bool ProfileExists(string id)
+    public bool ProfileExists(MongoId id)
     {
         return profiles.ContainsKey(id);
     }
@@ -140,7 +133,7 @@ public class SaveServer(
     ///     Gets all profiles from memory
     /// </summary>
     /// <returns> Dictionary of Profiles with their ID as Keys. </returns>
-    public Dictionary<string, SptProfile> GetProfiles()
+    public Dictionary<MongoId, SptProfile> GetProfiles()
     {
         return profiles.ToDictionary();
     }
@@ -150,7 +143,7 @@ public class SaveServer(
     /// </summary>
     /// <param name="sessionID"> ID of profile to remove </param>
     /// <returns> True when deleted, false when profile not found </returns>
-    public bool DeleteProfileById(string sessionID)
+    public bool DeleteProfileById(MongoId sessionID)
     {
         if (profiles.ContainsKey(sessionID))
         {
@@ -170,21 +163,24 @@ public class SaveServer(
     /// <exception cref="Exception"> Thrown when profile already exists </exception>
     public void CreateProfile(Info profileInfo)
     {
-        if (profiles.ContainsKey(profileInfo.ProfileId))
+        if (!profileInfo.ProfileId.HasValue)
         {
-            throw new Exception($"profile already exists for sessionId: {profileInfo.ProfileId}");
+            // TODO: Localize me
+            throw new Exception("Creating profile failed: profile has no sessionId");
+        }
+
+        if (profiles.ContainsKey(profileInfo.ProfileId.Value))
+        {
+            // TODO: Localize me
+            throw new Exception($"Creating profile failed: profile already exists for sessionId: {profileInfo.ProfileId}");
         }
 
         profiles.TryAdd(
-            profileInfo.ProfileId,
+            profileInfo.ProfileId.Value,
             new SptProfile
             {
                 ProfileInfo = profileInfo,
-                CharacterData = new Characters
-                {
-                    PmcData = new PmcData(),
-                    ScavData = new PmcData(),
-                },
+                CharacterData = new Characters { PmcData = new PmcData(), ScavData = new PmcData() },
             }
         );
     }
@@ -195,7 +191,7 @@ public class SaveServer(
     /// <param name="profileDetails"> Profile to save </param>
     public void AddProfile(SptProfile profileDetails)
     {
-        profiles.TryAdd(profileDetails.ProfileInfo.ProfileId, profileDetails);
+        profiles.TryAdd(profileDetails.ProfileInfo!.ProfileId!.Value, profileDetails);
     }
 
     /// <summary>
@@ -203,18 +199,23 @@ public class SaveServer(
     ///     Execute saveLoadRouters callbacks after being loaded into memory.
     /// </summary>
     /// <param name="sessionID"> ID of profile to store in memory </param>
-    public async Task LoadProfileAsync(string sessionID)
+    public async Task LoadProfileAsync(MongoId sessionID)
     {
-        var filename = $"{sessionID}.json";
+        var filename = $"{sessionID.ToString()}.json";
         var filePath = $"{profileFilepath}{filename}";
-        if (_fileUtil.FileExists(filePath))
+        if (fileUtil.FileExists(filePath))
         // File found, store in profiles[]
         {
-            profiles[sessionID] = await _jsonUtil.DeserializeFromFileAsync<SptProfile>(filePath);
+            var profile = await jsonUtil.DeserializeFromFileAsync<JsonObject>(filePath);
+
+            if (profile is not null)
+            {
+                profiles[sessionID] = profileMigratorService.HandlePendingMigrations(profile);
+            }
         }
 
         // Run callbacks
-        foreach (var callback in _saveLoadRouters) // HealthSaveLoadRouter, InraidSaveLoadRouter, InsuranceSaveLoadRouter, ProfileSaveLoadRouter. THESE SHOULD EXIST IN HERE
+        foreach (var callback in saveLoadRouters) // HealthSaveLoadRouter, InraidSaveLoadRouter, InsuranceSaveLoadRouter, ProfileSaveLoadRouter. THESE SHOULD EXIST IN HERE
         {
             profiles[sessionID] = callback.HandleLoad(GetProfile(sessionID));
         }
@@ -226,9 +227,9 @@ public class SaveServer(
     /// </summary>
     /// <param name="sessionID"> Profile id (user/profiles/id.json) </param>
     /// <returns> Time taken to save the profile in seconds </returns>
-    public async Task<long> SaveProfileAsync(string sessionID)
+    public async Task<long> SaveProfileAsync(MongoId sessionID)
     {
-        var filePath = $"{profileFilepath}{sessionID}.json";
+        var filePath = $"{profileFilepath}{sessionID.ToString()}.json";
 
         // Run pre-save callbacks before we save into json
         foreach (var callback in onBeforeSaveCallbacks)
@@ -240,27 +241,19 @@ public class SaveServer(
             }
             catch (Exception e)
             {
-                _logger.Error(
-                    _serverLocalisationService.GetText(
-                        "profile_save_callback_error",
-                        new { callback, error = e }
-                    )
-                );
+                logger.Error(serverLocalisationService.GetText("profile_save_callback_error", new { callback, error = e }));
                 profiles[sessionID] = previous;
             }
         }
 
         var start = Stopwatch.StartNew();
-        var jsonProfile = _jsonUtil.Serialize(
-            profiles[sessionID],
-            !_configServer.GetConfig<CoreConfig>().Features.CompressProfile
-        );
-        var fmd5 = await _hashUtil.GenerateHashForDataAsync(HashingAlgorithm.MD5, jsonProfile);
+        var jsonProfile = jsonUtil.Serialize(profiles[sessionID], !configServer.GetConfig<CoreConfig>().Features.CompressProfile);
+        var fmd5 = await hashUtil.GenerateHashForDataAsync(HashingAlgorithm.MD5, jsonProfile);
         if (!saveMd5.TryGetValue(sessionID, out var currentMd5) || currentMd5 != fmd5)
         {
             saveMd5[sessionID] = fmd5;
             // save profile to disk
-            await _fileUtil.WriteFileAsync(filePath, jsonProfile);
+            await fileUtil.WriteFileAsync(filePath, jsonProfile);
         }
 
         start.Stop();
@@ -272,18 +265,18 @@ public class SaveServer(
     /// </summary>
     /// <param name="sessionID"> Profile ID to remove </param>
     /// <returns> True if successful </returns>
-    public bool RemoveProfile(string sessionID)
+    public bool RemoveProfile(MongoId sessionID)
     {
         var file = $"{profileFilepath}{sessionID}.json";
         if (profiles.ContainsKey(sessionID))
         {
             profiles.TryRemove(sessionID, out _);
-            if (!_fileUtil.DeleteFile(file))
+            if (!fileUtil.DeleteFile(file))
             {
-                _logger.Error($"Unable to delete file, not found: {file}");
+                logger.Error($"Unable to delete file, not found: {file}");
             }
         }
 
-        return !_fileUtil.FileExists(file);
+        return !fileUtil.FileExists(file);
     }
 }

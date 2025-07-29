@@ -70,7 +70,7 @@ public record Requirement
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("templateId")]
-    public MongoId TemplateId { get; set; }
+    public MongoId? TemplateId { get; set; }
 
     [JsonPropertyName("count")]
     public int? Count { get; set; }
@@ -91,7 +91,7 @@ public record Requirement
     public int? Resource { get; set; }
 
     [JsonPropertyName("questId")]
-    public string? QuestId { get; set; }
+    public MongoId? QuestId { get; set; }
 
     [JsonPropertyName("isSpawnedInSession")]
     public bool? IsSpawnedInSession { get; set; }

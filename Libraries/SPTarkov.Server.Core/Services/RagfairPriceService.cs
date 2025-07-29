@@ -17,18 +17,18 @@ namespace SPTarkov.Server.Core.Services;
 /// </summary>
 [Injectable(InjectionType.Singleton)]
 public class RagfairPriceService(
-    ISptLogger<RagfairPriceService> _logger,
-    RandomUtil _randomUtil,
-    HandbookHelper _handbookHelper,
-    TraderHelper _traderHelper,
-    PresetHelper _presetHelper,
-    ItemHelper _itemHelper,
-    DatabaseService _databaseService,
-    ServerLocalisationService _serverLocalisationService,
-    ConfigServer _configServer
+    ISptLogger<RagfairPriceService> logger,
+    RandomUtil randomUtil,
+    HandbookHelper handbookHelper,
+    TraderHelper traderHelper,
+    PresetHelper presetHelper,
+    ItemHelper itemHelper,
+    DatabaseService databaseService,
+    ServerLocalisationService serverLocalisationService,
+    ConfigServer configServer
 )
 {
-    private readonly RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
+    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
     protected Dictionary<MongoId, double>? _staticPrices;
 
     /// <summary>
@@ -52,14 +52,12 @@ public class RagfairPriceService(
     {
         _staticPrices = new Dictionary<MongoId, double>();
         foreach (
-            var item in _databaseService
+            var item in databaseService
                 .GetItems()
-                .Values.Where(item =>
-                    string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)
-                )
+                .Values.Where(item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase))
         )
         {
-            _staticPrices[item.Id] = _handbookHelper.GetTemplatePrice(item.Id);
+            _staticPrices[item.Id] = handbookHelper.GetTemplatePrice(item.Id);
         }
     }
 
@@ -80,12 +78,12 @@ public class RagfairPriceService(
     public double GetFleaPriceForItem(MongoId tplId)
     {
         // Get dynamic price (templates/prices), if that doesn't exist get price from static array (templates/handbook)
-        var itemPrice = _itemHelper.GetDynamicItemPrice(tplId) ?? GetStaticPriceForItem(tplId);
+        var itemPrice = itemHelper.GetDynamicItemPrice(tplId) ?? GetStaticPriceForItem(tplId);
         if (itemPrice is null)
         {
-            var itemFromDb = _itemHelper.GetItem(tplId);
-            _logger.Warning(
-                _serverLocalisationService.GetText(
+            var itemFromDb = itemHelper.GetItem(tplId);
+            logger.Warning(
+                serverLocalisationService.GetText(
                     "ragfair-unable_to_find_item_price_for_item_in_flea_handbook",
                     new { tpl = tplId, name = itemFromDb.Value.Name ?? "" }
                 )
@@ -102,29 +100,13 @@ public class RagfairPriceService(
     }
 
     /// <summary>
-    ///     Get the flea price for an offers items + children
-    /// </summary>
-    /// <param name="offerItems">offer item + children to process</param>
-    /// <returns>Rouble price</returns>
-    public double GetFleaPriceForOfferItems(List<Item> offerItems)
-    {
-        // Preset weapons take the direct prices.json value, otherwise they're massively inflated
-        if (_itemHelper.IsOfBaseclass(offerItems[0].Template, BaseClasses.WEAPON))
-        {
-            return GetFleaPriceForItem(offerItems[0].Template);
-        }
-
-        return offerItems.Sum(item => GetFleaPriceForItem(item.Template));
-    }
-
-    /// <summary>
     ///     Get the dynamic (flea) price for an item
     /// </summary>
     /// <param name="itemTpl"> Item template id to look up </param>
     /// <returns> Price in roubles </returns>
     public double? GetDynamicPriceForItem(MongoId itemTpl)
     {
-        _databaseService.GetPrices().TryGetValue(itemTpl, out var value);
+        databaseService.GetPrices().TryGetValue(itemTpl, out var value);
 
         return value;
     }
@@ -136,7 +118,7 @@ public class RagfairPriceService(
     /// <returns>price in roubles</returns>
     public double? GetStaticPriceForItem(MongoId itemTpl)
     {
-        return _handbookHelper.GetTemplatePrice(itemTpl);
+        return handbookHelper.GetTemplatePrice(itemTpl);
     }
 
     /// <summary>
@@ -146,12 +128,9 @@ public class RagfairPriceService(
     /// <returns>Dictionary of item tpls and rouble cost</returns>
     public Dictionary<MongoId, double> GetAllFleaPrices()
     {
-        var dynamicPrices = _databaseService.GetPrices();
+        var dynamicPrices = databaseService.GetPrices();
         // Use dynamic prices first, fill in any gaps with data from static prices (handbook)
-        return dynamicPrices
-            .Concat(_staticPrices)
-            .GroupBy(x => x.Key)
-            .ToDictionary(x => x.Key, x => x.First().Value);
+        return dynamicPrices.Concat(_staticPrices).GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.First().Value);
     }
 
     public Dictionary<MongoId, double> GetAllStaticPrices()
@@ -177,34 +156,13 @@ public class RagfairPriceService(
     }
 
     /// <summary>
-    ///     Get the rouble price for an assorts barter scheme
-    /// </summary>
-    /// <param name="barterScheme"></param>
-    /// <returns>Rouble price</returns>
-    public double GetBarterPrice(List<BarterScheme> barterScheme)
-    {
-        var price = 0d;
-
-        foreach (var item in barterScheme)
-        {
-            price += GetStaticPriceForItem(item.Template).Value * item.Count.Value;
-        }
-
-        return Math.Round(price);
-    }
-
-    /// <summary>
     ///     Generate a currency cost for an item and its mods
     /// </summary>
     /// <param name="offerItems">Item with mods to get price for</param>
     /// <param name="desiredCurrency">Currency price desired in</param>
     /// <param name="isPackOffer">Price is for a pack type offer</param>
     /// <returns>cost of item in desired currency</returns>
-    public double GetDynamicOfferPriceForOffer(
-        List<Item> offerItems,
-        string desiredCurrency,
-        bool isPackOffer
-    )
+    public double GetDynamicOfferPriceForOffer(IEnumerable<Item> offerItems, MongoId desiredCurrency, bool isPackOffer)
     {
         // Price to return.
         var price = 0d;
@@ -213,25 +171,16 @@ public class RagfairPriceService(
         foreach (var item in offerItems)
         {
             // Skip over armor inserts as those are not factored into item prices.
-            if (_itemHelper.IsOfBaseclass(item.Template, BaseClasses.BUILT_IN_INSERTS))
+            if (itemHelper.IsOfBaseclass(item.Template, BaseClasses.BUILT_IN_INSERTS))
             {
                 continue;
             }
 
-            price += GetDynamicItemPrice(
-                item.Template,
-                desiredCurrency,
-                item,
-                offerItems,
-                isPackOffer
-            ).Value;
+            price += GetDynamicItemPrice(item.Template, desiredCurrency, item, offerItems, isPackOffer).Value;
 
             // Check if the item is a weapon preset.
-            if (
-                item?.Upd?.SptPresetId is not null
-                && _presetHelper.IsPresetBaseClass(item.Upd.SptPresetId, BaseClasses.WEAPON)
-            )
-            // This is a weapon preset, which has it's own price calculation that takes into account the mods in the
+            if (item?.Upd?.SptPresetId is not null && presetHelper.IsPresetBaseClass(item.Upd.SptPresetId.Value, BaseClasses.WEAPON))
+            // This is a weapon preset, which has its own price calculation that takes into account the mods in the
             // preset. Since we've already calculated the price for the preset entire preset in
             // `getDynamicItemPrice`, we can skip the rest of the items in the offer.
             {
@@ -252,9 +201,9 @@ public class RagfairPriceService(
     /// <returns></returns>
     public double? GetDynamicItemPrice(
         MongoId itemTemplateId,
-        string desiredCurrency,
+        MongoId desiredCurrency,
         Item? item = null,
-        List<Item>? offerItems = null,
+        IEnumerable<Item>? offerItems = null,
         bool? isPackOffer = null
     )
     {
@@ -270,7 +219,7 @@ public class RagfairPriceService(
         // Use trader price if higher, based on config.
         if (_ragfairConfig.Dynamic.UseTraderPriceForOffersIfHigher)
         {
-            var traderPrice = _traderHelper.GetHighestSellToTraderPrice(itemTemplateId);
+            var traderPrice = traderHelper.GetHighestSellToTraderPrice(itemTemplateId);
             if (traderPrice > price)
             {
                 price = traderPrice;
@@ -281,7 +230,7 @@ public class RagfairPriceService(
         if (
             item?.Upd?.SptPresetId is not null
             && offerItems is not null
-            && _presetHelper.IsPresetBaseClass(item.Upd.SptPresetId, BaseClasses.WEAPON)
+            && presetHelper.IsPresetBaseClass(item.Upd.SptPresetId.Value, BaseClasses.WEAPON)
         )
         {
             price = GetWeaponPresetPrice(item, offerItems, price);
@@ -289,30 +238,22 @@ public class RagfairPriceService(
         }
 
         // Check for existence of manual price adjustment multiplier
-        if (
-            _ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(
-                itemTemplateId,
-                out var multiplier
-            )
-        )
+        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(itemTemplateId, out var multiplier))
         {
             price *= multiplier;
         }
 
         // The quality of the item affects the price + not on the ignore list
-        if (
-            item is not null
-            && !_ragfairConfig.Dynamic.IgnoreQualityPriceVarianceBlacklist.Contains(itemTemplateId)
-        )
+        if (item is not null && !_ragfairConfig.Dynamic.IgnoreQualityPriceVarianceBlacklist.Contains(itemTemplateId))
         {
-            var qualityModifier = _itemHelper.GetItemQualityModifier(item);
+            var qualityModifier = itemHelper.GetItemQualityModifier(item);
             price *= qualityModifier;
         }
 
         // Make adjustments for unreasonably priced items.
         foreach (var (key, value) in _ragfairConfig.Dynamic.UnreasonableModPrices)
         {
-            if (!_itemHelper.IsOfBaseclass(itemTemplateId, key) || !value.Enabled)
+            if (!value.Enabled || !itemHelper.IsOfBaseclass(itemTemplateId, key))
             {
                 continue;
             }
@@ -327,7 +268,7 @@ public class RagfairPriceService(
         // Convert to different currency if required.
         if (desiredCurrency != Money.ROUBLES)
         {
-            price = _handbookHelper.FromRUB(price, desiredCurrency);
+            price = handbookHelper.FromRUB(price, desiredCurrency);
         }
 
         if (price <= 0)
@@ -345,13 +286,9 @@ public class RagfairPriceService(
     /// <param name="itemTpl">Item being adjusted</param>
     /// <param name="price">Current price of item</param>
     /// <returns>Adjusted price of item</returns>
-    protected double AdjustUnreasonablePrice(
-        UnreasonableModPrices unreasonableItemChange,
-        MongoId itemTpl,
-        double price
-    )
+    protected double AdjustUnreasonablePrice(UnreasonableModPrices unreasonableItemChange, MongoId itemTpl, double price)
     {
-        var itemHandbookPrice = _handbookHelper.GetTemplatePrice(itemTpl);
+        var itemHandbookPrice = handbookHelper.GetTemplatePrice(itemTpl);
         if (itemHandbookPrice > 0)
         {
             return price;
@@ -416,9 +353,7 @@ public class RagfairPriceService(
         // var itemDetails = this.itemHelper.getItem(itemTpl);
         // this.logger.debug(`item below handbook price {itemDetails[1]._name} handbook: {itemHandbookPrice} flea: ${itemPrice} {priceDifferencePercent}%`);
         {
-            return Math.Round(
-                itemHandbookPrice.Value * offerAdjustmentSettings.HandbookPriceMultiplier
-            );
+            return Math.Round(itemHandbookPrice.Value * offerAdjustmentSettings.HandbookPriceMultiplier);
         }
 
         return itemPrice;
@@ -433,12 +368,7 @@ public class RagfairPriceService(
     protected double RandomiseOfferPrice(double existingPrice, MinMax<double> rangeValues)
     {
         // Multiply by 100 to get 2 decimal places of precision
-        var multiplier = _randomUtil.GetBiasedRandomNumber(
-            rangeValues.Min * 100,
-            rangeValues.Max * 100,
-            2,
-            2
-        );
+        var multiplier = randomUtil.GetBiasedRandomNumber(rangeValues.Min * 100, rangeValues.Max * 100, 2, 2);
 
         // return multiplier back to its original decimal place location
         return existingPrice * (multiplier / 100);
@@ -451,11 +381,7 @@ public class RagfairPriceService(
     /// <param name="weaponWithChildren">weapon plus mods</param>
     /// <param name="existingPrice">price of existing base weapon</param>
     /// <returns>price of weapon in roubles</returns>
-    protected double GetWeaponPresetPrice(
-        Item weaponRootItem,
-        List<Item> weaponWithChildren,
-        double existingPrice
-    )
+    protected double GetWeaponPresetPrice(Item weaponRootItem, IEnumerable<Item> weaponWithChildren, double existingPrice)
     {
         // Get the default preset for this weapon
         var presetResult = GetWeaponPreset(weaponRootItem);
@@ -489,9 +415,7 @@ public class RagfairPriceService(
             var replacedModsPrice = 0d;
             foreach (var replacedMod in modsReplacedByNewMods)
             {
-                replacedModsPrice += GetHighestHandbookOrTraderPriceAsRouble(
-                    replacedMod.Template
-                ).Value;
+                replacedModsPrice += GetHighestHandbookOrTraderPriceAsRouble(replacedMod.Template).Value;
             }
 
             // Subtract replaced mods total from extra mods total
@@ -510,7 +434,7 @@ public class RagfairPriceService(
     protected double? GetHighestHandbookOrTraderPriceAsRouble(MongoId itemTpl)
     {
         var price = GetStaticPriceForItem(itemTpl);
-        var traderPrice = _traderHelper.GetHighestSellToTraderPrice(itemTpl);
+        var traderPrice = traderHelper.GetHighestSellToTraderPrice(itemTpl);
         if (traderPrice > price)
         {
             price = traderPrice;
@@ -523,21 +447,21 @@ public class RagfairPriceService(
     ///     Attempt to get the default preset for a weapon, failing that get the first preset in the array
     ///     (assumes default = has encyclopedia entry)
     /// </summary>
-    /// <param name="presets">weapon presets to choose from</param>
+    /// <param name="weapon">weapon item to get preset of</param>
     /// <returns>Default preset object</returns>
     protected WeaponPreset GetWeaponPreset(Item weapon)
     {
-        var defaultPreset = _presetHelper.GetDefaultPreset(weapon.Template);
+        var defaultPreset = presetHelper.GetDefaultPreset(weapon.Template);
         if (defaultPreset is not null)
         {
             return new WeaponPreset { IsDefault = true, Preset = defaultPreset };
         }
 
-        var nonDefaultPresets = _presetHelper.GetPresets(weapon.Template);
+        var nonDefaultPresets = presetHelper.GetPresets(weapon.Template);
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug(
+            logger.Debug(
                 nonDefaultPresets.Count == 1
                     ? $"Item Id: {weapon.Template} has no default encyclopedia entry but only one preset: ({nonDefaultPresets[0].Name}), choosing preset: ({nonDefaultPresets[0].Name})"
                     : $"Item Id: {weapon.Template} has no default encyclopedia entry, choosing first preset({nonDefaultPresets[0].Name}) of {nonDefaultPresets.Count}"

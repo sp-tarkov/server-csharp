@@ -14,22 +14,16 @@ public record InRaidConfig : BaseConfig
     public required RaidMenuSettings RaidMenuSettings { get; set; }
 
     /// <summary>
-    ///     What effects should be saved post-raid
-    /// </summary>
-    [JsonPropertyName("save")]
-    public RaidSave Save { get; set; }
-
-    /// <summary>
     ///     Names of car extracts
     /// </summary>
     [JsonPropertyName("carExtracts")]
-    public required List<string> CarExtracts { get; set; }
+    public required HashSet<string> CarExtracts { get; set; }
 
     /// <summary>
     ///     Names of coop extracts
     /// </summary>
     [JsonPropertyName("coopExtracts")]
-    public required List<string> CoopExtracts { get; set; }
+    public required HashSet<string> CoopExtracts { get; set; }
 
     /// <summary>
     ///     Fence rep gain from a single car extract
@@ -48,12 +42,6 @@ public record InRaidConfig : BaseConfig
     /// </summary>
     [JsonPropertyName("scavExtractStandingGain")]
     public double ScavExtractStandingGain { get; set; }
-
-    /// <summary>
-    ///     The likelihood of PMC eliminating a minimum of 2 scavs while you engage them as a pscav.
-    /// </summary>
-    [JsonPropertyName("pmcKillProbabilityForScavGain")]
-    public double PmcKillProbabilityForScavGain { get; set; }
 
     /// <summary>
     ///     On death should items in your secure keep their Find in raid status regardless of how you finished the raid
@@ -102,16 +90,4 @@ public record RaidMenuSettings
 
     [JsonPropertyName("randomTime")]
     public bool RandomTime { get; set; }
-}
-
-public record RaidSave
-{
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
-    /// <summary>
-    ///     Should loot gained from raid be saved
-    /// </summary>
-    [JsonPropertyName("loot")]
-    public bool Loot { get; set; }
 }

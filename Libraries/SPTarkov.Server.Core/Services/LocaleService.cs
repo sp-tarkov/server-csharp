@@ -7,13 +7,9 @@ using SPTarkov.Server.Core.Servers;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class LocaleService(
-    ISptLogger<LocaleService> _logger,
-    DatabaseServer _databaseServer,
-    ConfigServer _configServer
-)
+public class LocaleService(ISptLogger<LocaleService> logger, DatabaseServer databaseServer, ConfigServer configServer)
 {
-    protected readonly LocaleConfig _localeConfig = _configServer.GetConfig<LocaleConfig>();
+    protected readonly LocaleConfig _localeConfig = configServer.GetConfig<LocaleConfig>();
     private string _chosenServerLocale = string.Empty;
     private string _chosenClientLocale = string.Empty;
 
@@ -26,10 +22,7 @@ public class LocaleService(
         var languageToUse = string.IsNullOrEmpty(language) ? GetDesiredGameLocale() : language;
 
         // if it can't get locales for language provided, default to en
-        if (
-            TryGetLocaleDb(languageToUse, out var localeToReturn)
-            || TryGetLocaleDb("en", out localeToReturn)
-        )
+        if (TryGetLocaleDb(languageToUse, out var localeToReturn) || TryGetLocaleDb("en", out localeToReturn))
         {
             return localeToReturn;
         }
@@ -43,17 +36,10 @@ public class LocaleService(
     /// <param name="languageKey">The language key for which the locale database should be retrieved.</param>
     /// <param name="localeToReturn">The resulting locale database as a dictionary, or null if the operation fails.</param>
     /// <returns>True if the locale database was successfully retrieved, otherwise false.</returns>
-    protected bool TryGetLocaleDb(
-        string languageKey,
-        out Dictionary<string, string>? localeToReturn
-    )
+    protected bool TryGetLocaleDb(string languageKey, out Dictionary<string, string>? localeToReturn)
     {
         localeToReturn = null;
-        if (
-            !_databaseServer
-                .GetTables()
-                .Locales.Global.TryGetValue(languageKey, out var keyedLocales)
-        )
+        if (!databaseServer.GetTables().Locales.Global.TryGetValue(languageKey, out var keyedLocales))
         {
             return false;
         }
@@ -72,11 +58,7 @@ public class LocaleService(
     {
         if (string.IsNullOrEmpty(_chosenClientLocale))
         {
-            _chosenClientLocale = string.Equals(
-                _localeConfig.GameLocale,
-                "system",
-                StringComparison.OrdinalIgnoreCase
-            )
+            _chosenClientLocale = string.Equals(_localeConfig.GameLocale, "system", StringComparison.OrdinalIgnoreCase)
                 ? GetPlatformForClientLocale()
                 : _localeConfig.GameLocale.ToLowerInvariant(); // Use custom locale value
         }
@@ -93,11 +75,7 @@ public class LocaleService(
     {
         if (string.IsNullOrEmpty(_chosenServerLocale))
         {
-            _chosenServerLocale = string.Equals(
-                _localeConfig.ServerLocale,
-                "system",
-                StringComparison.OrdinalIgnoreCase
-            )
+            _chosenServerLocale = string.Equals(_localeConfig.ServerLocale, "system", StringComparison.OrdinalIgnoreCase)
                 ? GetPlatformForServerLocale()
                 : _localeConfig.ServerLocale.ToLowerInvariant(); // Use custom locale value
         }
@@ -109,7 +87,7 @@ public class LocaleService(
     ///     Get array of languages supported for localisation
     /// </summary>
     /// <returns> List of locales e.g. en/fr/cn </returns>
-    public List<string> GetServerSupportedLocales()
+    public HashSet<string> GetServerSupportedLocales()
     {
         return _localeConfig.ServerSupportedLocales;
     }
@@ -132,7 +110,7 @@ public class LocaleService(
         var platformLocale = GetPlatformLocale();
         if (platformLocale == null)
         {
-            _logger.Warning("System language not found, falling back to english");
+            logger.Warning("System language not found, falling back to english");
             return "en";
         }
 
@@ -162,7 +140,7 @@ public class LocaleService(
             return "pt-pt";
         }
 
-        _logger.Debug(
+        logger.Debug(
             $"Unsupported system language found: {baseNameCode}, langCode: {languageCode} falling back to english for server locale"
         );
 
@@ -178,11 +156,11 @@ public class LocaleService(
         var platformLocale = GetPlatformLocale();
         if (platformLocale == null)
         {
-            _logger.Warning("System language not found, falling back to english");
+            logger.Warning("System language not found, falling back to english");
             return "en";
         }
 
-        var locales = _databaseServer.GetTables().Locales;
+        var locales = databaseServer.GetTables().Locales;
         var baseNameCode = platformLocale.TwoLetterISOLanguageName.ToLowerInvariant();
         if (locales.Global.ContainsKey(baseNameCode))
         {
@@ -218,7 +196,7 @@ public class LocaleService(
             return "cn";
         }
 
-        _logger.Debug(
+        logger.Debug(
             $"Unsupported system language found: {languageCode} baseLocale: {baseNameCode}, falling back to english for client locale"
         );
         return "en";
@@ -231,21 +209,5 @@ public class LocaleService(
     protected static CultureInfo GetPlatformLocale()
     {
         return CultureInfo.InstalledUICulture;
-    }
-
-    public List<string> GetLocaleKeysThatStartsWithValue(string partialKey)
-    {
-        return GetLocaleDb().Keys.Where(x => x.StartsWith(partialKey)).ToList();
-    }
-
-    /// <summary>
-    ///     Blank out the "test" mail message from prapor
-    /// </summary>
-    protected Dictionary<string, string> RemovePraporTestMessage(
-        Dictionary<string, string> dbLocales
-    )
-    {
-        dbLocales["61687e2c3e526901fa76baf9"] = "";
-        return dbLocales;
     }
 }

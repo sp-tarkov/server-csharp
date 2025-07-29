@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 
@@ -13,7 +14,7 @@ public record GetMailDialogViewRequestData : IRequestData
     public MessageType? Type { get; set; }
 
     [JsonPropertyName("dialogId")]
-    public string? DialogId { get; set; }
+    public MongoId DialogId { get; set; }
 
     [JsonPropertyName("limit")]
     public int? Limit { get; set; }

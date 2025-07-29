@@ -1,19 +1,17 @@
-﻿using SPTarkov.DI.Annotations;
+﻿using Microsoft.AspNetCore.Http;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Routers.Serializers;
 
 [Injectable]
-public class NotifySerializer(
-    NotifierController notifierController,
-    JsonUtil jsonUtil,
-    HttpServerHelper httpServerHelper
-) : ISerializer
+public class NotifySerializer(NotifierController notifierController, JsonUtil jsonUtil, HttpServerHelper httpServerHelper) : ISerializer
 {
-    public async Task Serialize(string sessionID, HttpRequest req, HttpResponse resp, object? body)
+    public async Task Serialize(MongoId sessionID, HttpRequest req, HttpResponse resp, object? body)
     {
         var splittedUrl = req.Path.Value.Split("/");
         var tmpSessionID = splittedUrl[^1].Split("?last_id")[0];
@@ -24,9 +22,7 @@ public class NotifySerializer(
          */
         await notifierController
             .NotifyAsync(tmpSessionID)
-            .ContinueWith(messages =>
-                messages.Result.Select(message => string.Join("\n", jsonUtil.Serialize(message)))
-            )
+            .ContinueWith(messages => messages.Result.Select(message => string.Join("\n", jsonUtil.Serialize(message))))
             .ContinueWith(text => httpServerHelper.SendTextJson(resp, text));
     }
 

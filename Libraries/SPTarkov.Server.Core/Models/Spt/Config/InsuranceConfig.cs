@@ -15,18 +15,6 @@ public record InsuranceConfig : BaseConfig
     public Dictionary<MongoId, double> ReturnChancePercent { get; set; } = [];
 
     /// <summary>
-    ///     Item slots that should never be returned as insurance
-    /// </summary>
-    [JsonPropertyName("blacklistedEquipment")]
-    public List<string> BlacklistedEquipment { get; set; } = [];
-
-    /// <summary>
-    ///     Some slots should always be removed, e.g. 'cartridges'
-    /// </summary>
-    [JsonPropertyName("slotIdsToAlwaysRemove")]
-    public List<string> SlotIdsToAlwaysRemove { get; set; } = [];
-
-    /// <summary>
     ///     Override to control how quickly insurance is processed/returned in seconds
     /// </summary>
     [JsonPropertyName("returnTimeOverrideSeconds")]

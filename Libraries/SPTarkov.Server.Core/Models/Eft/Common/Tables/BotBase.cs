@@ -24,7 +24,7 @@ public record BotBase
     ///     SPT property - use to store player id - TODO - move to AID ( account id as guid of choice)
     /// </summary>
     [JsonPropertyName("sessionId")]
-    public string? SessionId { get; set; }
+    public MongoId? SessionId { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("savage")]
@@ -69,7 +69,7 @@ public record BotBase
     public List<QuestStatus>? Quests { get; set; }
 
     [JsonPropertyName("TradersInfo")]
-    public Dictionary<string, TraderInfo>? TradersInfo { get; set; }
+    public Dictionary<MongoId, TraderInfo> TradersInfo { get; set; }
 
     [JsonPropertyName("UnlockedInfo")]
     public UnlockedInfo? UnlockedInfo { get; set; }
@@ -108,7 +108,7 @@ public record BotBase
     public DictionaryOrList<MongoId, int>? WishList { get; set; }
 
     [JsonPropertyName("moneyTransferLimitData")]
-    public MoneyTransferLimits? MoneyTransferLimitData { get; set; }
+    public MoneyTransferLimits MoneyTransferLimitData { get; set; }
 
     /// <summary>
     ///     SPT specific property used during bot generation in raid
@@ -145,7 +145,7 @@ public record TaskConditionCounter
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public MongoId? Id { get; set; }
 
     [JsonPropertyName("type")]
     public string? Type { get; set; }
@@ -157,7 +157,7 @@ public record TaskConditionCounter
     ///     Quest id
     /// </summary>
     [JsonPropertyName("sourceId")]
-    public string? SourceId { get; set; }
+    public MongoId? SourceId { get; set; }
 }
 
 public record UnlockedInfo
@@ -166,7 +166,7 @@ public record UnlockedInfo
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("unlockedProductionRecipe")]
-    public HashSet<string>? UnlockedProductionRecipe { get; set; }
+    public HashSet<MongoId>? UnlockedProductionRecipe { get; set; }
 }
 
 public record Info
@@ -175,8 +175,6 @@ public record Info
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     private string? _side;
-
-    private string? _voice;
 
     public string? EntryPoint { get; set; }
 
@@ -192,30 +190,11 @@ public record Info
         set { _side = string.Intern(value); }
     }
 
-    public bool? SquadInviteRestriction { get; set; }
-
-    // Confirmed in client
-    public int? PrestigeLevel { get; set; }
-
-    public string? Voice
-    {
-        get { return _voice; }
-        set { _voice = value == null ? null : string.Intern(value); }
-    }
-
     public int? Level { get; set; }
 
     //Experience the bot has gained
     // Confirmed in client
     public int? Experience { get; set; }
-
-    public List<Ban>? Bans { get; set; }
-
-    public bool? BannedState { get; set; }
-
-    public long? BannedUntil { get; set; }
-
-    public bool? IsStreamerModeAvailable { get; set; }
 
     // Confirmed in client
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
@@ -223,9 +202,13 @@ public record Info
 
     public string? GameVersion { get; set; }
 
+    public double? AccountType { get; set; }
+
     public MemberCategory? MemberCategory { get; set; }
 
     public MemberCategory? SelectedMemberCategory { get; set; }
+
+    public IEnumerable<Ban>? Bans { get; set; }
 
     [JsonPropertyName("lockedMoveCommands")]
     public bool? LockedMoveCommands { get; set; }
@@ -235,6 +218,8 @@ public record Info
     public long? LastTimePlayedAsSavage { get; set; }
 
     public BotInfoSettings? Settings { get; set; }
+
+    public long? NicknameChangeDate { get; set; }
 
     public List<object>? NeedWipeOptions { get; set; }
 
@@ -246,26 +231,33 @@ public record Info
     [JsonPropertyName("lastWipeTimestamp")]
     public LastCompleted? LastWipeTimestamp { get; set; }
 
-    public double? AccountType { get; set; }
-
-    public long? NicknameChangeDate { get; set; }
-
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("lastCompletedEvent")]
     public LastCompleted? LastCompletedEvent { get; set; }
-
-    [JsonPropertyName("isMigratedSkills")]
-    public bool? IsMigratedSkills { get; set; }
 
     public string? GroupId { get; set; }
 
     public string? TeamId { get; set; }
 
+    public bool? BannedState { get; set; }
+
+    public long? BannedUntil { get; set; }
+
+    public bool? IsStreamerModeAvailable { get; set; }
+
+    public bool? SquadInviteRestriction { get; set; }
+
     public bool? HasCoopExtension { get; set; }
 
     public bool? HasPveGame { get; set; }
 
+    [JsonPropertyName("isMigratedSkills")]
+    public bool? IsMigratedSkills { get; set; }
+
     public string? Type { get; set; }
+
+    // Confirmed in client
+    public int? PrestigeLevel { get; set; }
 }
 
 public record BotInfoSettings
@@ -310,7 +302,6 @@ public record Ban
     public long? DateTime { get; set; }
 }
 
-[EftEnumConverter]
 public enum BanType
 {
     Chat,
@@ -327,44 +318,17 @@ public record Customization
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    private string? _body;
+    public MongoId? Head { get; set; }
 
-    private string? _dogtag;
+    public MongoId? Body { get; set; }
 
-    private string? _feet;
+    public MongoId? Feet { get; set; }
 
-    private string? _hands;
-    private string? _head;
+    public MongoId? Hands { get; set; }
 
-    public string? Head
-    {
-        get { return _head; }
-        set { _head = value == null ? null : string.Intern(value); }
-    }
+    public MongoId? DogTag { get; set; }
 
-    public string? Body
-    {
-        get { return _body; }
-        set { _body = value == null ? null : string.Intern(value); }
-    }
-
-    public string? Feet
-    {
-        get { return _feet; }
-        set { _feet = value == null ? null : string.Intern(value); }
-    }
-
-    public string? Hands
-    {
-        get { return _hands; }
-        set { _hands = value == null ? null : string.Intern(value); }
-    }
-
-    public string? DogTag
-    {
-        get { return _dogtag; }
-        set { _dogtag = value == null ? null : string.Intern(value); }
-    }
+    public MongoId? Voice { get; set; }
 }
 
 public record BotBaseHealth
@@ -396,7 +360,7 @@ public record BodyPartHealth
 
     public CurrentMinMax? Health { get; set; }
 
-    public Dictionary<string, BodyPartEffectProperties>? Effects { get; set; } // TODO: change key to DamageEffectType enum
+    public Dictionary<string, BodyPartEffectProperties?>? Effects { get; set; } // TODO: change key to DamageEffectType enum
 }
 
 public record BodyPartEffectProperties
@@ -458,13 +422,16 @@ public record BotBaseInventory
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("hideoutAreaStashes")]
     // TODO: key should be EAreaType enum
-    public Dictionary<string, MongoId>? HideoutAreaStashes { get; set; }
+    public Dictionary<string, MongoId>? HideoutAreaStashes { get; set; } // Key = hideout area key as string
 
+    /// <summary>
+    /// key = "Item4", "Item10"
+    /// </summary>
     [JsonPropertyName("fastPanel")]
     public Dictionary<string, MongoId>? FastPanel { get; set; }
 
     [JsonPropertyName("favoriteItems")]
-    public List<MongoId>? FavoriteItems { get; set; }
+    public IEnumerable<MongoId>? FavoriteItems { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("hideoutCustomizationStashId")]
@@ -476,9 +443,9 @@ public record Skills
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public List<CommonSkill>? Common { get; set; }
+    public IEnumerable<CommonSkill> Common { get; set; }
 
-    public List<MasterySkill>? Mastering { get; set; }
+    public IEnumerable<MasterySkill>? Mastering { get; set; }
 
     public double? Points { get; set; }
 }
@@ -526,9 +493,9 @@ public record EftStats
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public List<string>? CarriedQuestItems { get; set; }
+    public IEnumerable<string>? CarriedQuestItems { get; set; }
 
-    public List<Victim>? Victims { get; set; }
+    public IEnumerable<Victim>? Victims { get; set; }
 
     public double? TotalSessionExperience { get; set; }
 
@@ -545,9 +512,9 @@ public record EftStats
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public Aggressor? Aggressor { get; set; }
 
-    public List<DroppedItem>? DroppedItems { get; set; }
+    public IEnumerable<DroppedItem>? DroppedItems { get; set; }
 
-    public List<FoundInRaidItem>? FoundInRaidItems { get; set; }
+    public IEnumerable<FoundInRaidItem>? FoundInRaidItems { get; set; }
 
     public DamageHistory? DamageHistory { get; set; }
 
@@ -569,7 +536,7 @@ public record DroppedItem
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public string? QuestId { get; set; }
+    public MongoId QuestId { get; set; }
 
     public MongoId? ItemId { get; set; }
 
@@ -581,7 +548,7 @@ public record FoundInRaidItem
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public string? QuestId { get; set; }
+    public MongoId QuestId { get; set; }
 
     public MongoId? ItemId { get; set; }
 }
@@ -593,7 +560,7 @@ public record Victim
 
     public string? AccountId { get; set; }
 
-    public string? ProfileId { get; set; }
+    public MongoId? ProfileId { get; set; }
 
     public string? Name { get; set; }
 
@@ -623,7 +590,7 @@ public record SessionCounters
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public List<CounterKeyValue>? Items { get; set; }
+    public IEnumerable<CounterKeyValue>? Items { get; set; }
 }
 
 public record OverallCounters
@@ -639,7 +606,7 @@ public record CounterKeyValue
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public List<string>? Key { get; set; }
+    public HashSet<string>? Key { get; set; }
 
     public double? Value { get; set; }
 }
@@ -655,7 +622,7 @@ public record Aggressor
     public string? AccountId { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public string? ProfileId { get; set; }
+    public MongoId? ProfileId { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? MainProfileNickname { get; set; }
@@ -786,7 +753,7 @@ public record BackendCounter
     public string? Id { get; set; }
 
     [JsonPropertyName("qid")]
-    public string? QId { get; set; }
+    public MongoId? QId { get; set; }
 
     [JsonPropertyName("value")]
     public double? Value { get; set; }
@@ -801,7 +768,7 @@ public record InsuredItem
     ///     Trader ID item was insured by
     /// </summary>
     [JsonPropertyName("tid")]
-    public string? TId { get; set; }
+    public MongoId TId { get; set; }
 
     [JsonPropertyName("itemId")]
     public MongoId? ItemId { get; set; }
@@ -812,11 +779,11 @@ public record Hideout
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public Dictionary<string, Production?>? Production { get; set; }
+    public Dictionary<MongoId, Production?>? Production { get; set; }
 
     public List<BotHideoutArea>? Areas { get; set; }
 
-    public Dictionary<string, HideoutImprovement>? Improvements { get; set; }
+    public Dictionary<MongoId, HideoutImprovement>? Improvements { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public HideoutCounters? HideoutCounters { get; set; }
@@ -826,12 +793,12 @@ public record Hideout
     /// </summary>
     public string? Seed { get; set; }
 
-    public Dictionary<string, MongoId>? MannequinPoses { get; set; }
+    public Dictionary<MongoId, MongoId>? MannequinPoses { get; set; }
 
     [JsonPropertyName("sptUpdateLastRunTimestamp")]
     public long? SptUpdateLastRunTimestamp { get; set; }
 
-    public Dictionary<string, string>? Customization { get; set; }
+    public Dictionary<string, MongoId>? Customization { get; set; } // Key = Area customisation type as string, e.g. "Wall", "Light", "ShootingRangeMark"
 }
 
 public record HideoutCounters
@@ -971,7 +938,7 @@ public record BotHideoutArea
     public List<HideoutSlot>? Slots { get; set; }
 
     [JsonPropertyName("lastRecipe")]
-    public string? LastRecipe { get; set; }
+    public MongoId? LastRecipe { get; set; }
 }
 
 public record HideoutSlot
@@ -1014,33 +981,6 @@ public enum SurvivorClass
     MARAUDER = 2,
     PARAMEDIC = 3,
     SURVIVOR = 4,
-}
-
-public record Quests
-{
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
-    [JsonPropertyName("qid")]
-    public string? QId { get; set; }
-
-    [JsonPropertyName("startTime")]
-    public long? StartTime { get; set; }
-
-    [JsonPropertyName("status")]
-    public QuestStatusEnum? Status { get; set; }
-
-    [JsonPropertyName("statusTimers")]
-    public Dictionary<QuestStatusEnum, long>? StatusTimers { get; set; }
-
-    /// <summary>
-    ///     Property does not exist in live profile data, but is used by ProfileChanges.questsStatus when sent to client
-    /// </summary>
-    [JsonPropertyName("completedConditions")]
-    public List<string>? CompletedConditions { get; set; }
-
-    [JsonPropertyName("availableAfter")]
-    public long? AvailableAfter { get; set; }
 }
 
 public record TraderInfo
@@ -1101,7 +1041,7 @@ public record Bonus
     public BonusType? Type { get; set; }
 
     [JsonPropertyName("templateId")]
-    public string? TemplateId { get; set; }
+    public MongoId? TemplateId { get; set; }
 
     [JsonPropertyName("passive")]
     public bool? IsPassive { get; set; }

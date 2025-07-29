@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
@@ -14,7 +15,7 @@ public record ChooseRandomCompatibleModResult
     public bool? Found { get; set; }
 
     [JsonPropertyName("chosenTpl")]
-    public string? ChosenTemplate { get; set; }
+    public MongoId? ChosenTemplate { get; set; }
 
     [JsonPropertyName("reason")]
     public string? Reason { get; set; }

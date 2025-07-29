@@ -1,6 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Callbacks;
 using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Request;
 using SPTarkov.Server.Core.Models.Eft.Insurance;
@@ -10,38 +11,27 @@ using SPTarkov.Server.Core.Models.Enums;
 namespace SPTarkov.Server.Core.Routers.ItemEvents;
 
 [Injectable]
-public class InsuranceItemEventRouter : ItemEventRouterDefinition
+public class InsuranceItemEventRouter(InsuranceCallbacks insuranceCallbacks) : ItemEventRouterDefinition
 {
-    protected InsuranceCallbacks _insuranceCallbacks;
-
-    public InsuranceItemEventRouter(InsuranceCallbacks insuranceCallbacks)
-    {
-        _insuranceCallbacks = insuranceCallbacks;
-    }
-
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new List<HandledRoute> { new(ItemEventActions.INSURE, false) };
+        return [new(ItemEventActions.INSURE, false)];
     }
 
     public override ValueTask<ItemEventRouterResponse> HandleItemEvent(
         string url,
         PmcData pmcData,
         BaseInteractionRequestData body,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
         switch (url)
         {
             case ItemEventActions.INSURE:
-                return new ValueTask<ItemEventRouterResponse>(
-                    _insuranceCallbacks.Insure(pmcData, body as InsureRequestData, sessionID)
-                );
+                return new ValueTask<ItemEventRouterResponse>(insuranceCallbacks.Insure(pmcData, body as InsureRequestData, sessionID));
             default:
-                throw new Exception(
-                    $"InsuranceItemEventRouter being used when it cant handle route {url}"
-                );
+                throw new Exception($"InsuranceItemEventRouter being used when it cant handle route {url}");
         }
     }
 }

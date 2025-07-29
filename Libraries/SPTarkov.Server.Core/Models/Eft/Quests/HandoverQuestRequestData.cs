@@ -10,10 +10,10 @@ public record HandoverQuestRequestData : InventoryBaseActionRequestData
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("qid")]
-    public string? QuestId { get; set; }
+    public MongoId QuestId { get; set; }
 
     [JsonPropertyName("conditionId")]
-    public string? ConditionId { get; set; }
+    public MongoId ConditionId { get; set; }
 
     [JsonPropertyName("items")]
     public List<IdWithCount>? Items { get; set; }

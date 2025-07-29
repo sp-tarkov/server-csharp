@@ -6,11 +6,11 @@ namespace SPTarkov.Server.Core.Generators.WeaponGen;
 [Injectable]
 public class InventoryMagGen()
 {
-    private readonly TemplateItem _ammoTemplate;
-    private readonly TemplateItem _magazineTemplate;
-    private readonly GenerationData _magCounts;
-    private readonly BotBaseInventory _pmcInventory;
-    private readonly TemplateItem _weaponTemplate;
+    private readonly TemplateItem? _ammoTemplate;
+    private readonly TemplateItem? _magazineTemplate;
+    private readonly GenerationData? _magCounts;
+    private readonly BotBaseInventory? _pmcInventory;
+    private readonly TemplateItem? _weaponTemplate;
 
     public InventoryMagGen(
         GenerationData magCounts,
@@ -30,26 +30,26 @@ public class InventoryMagGen()
 
     public GenerationData GetMagCount()
     {
-        return _magCounts;
+        return _magCounts!;
     }
 
     public TemplateItem GetMagazineTemplate()
     {
-        return _magazineTemplate;
+        return _magazineTemplate!;
     }
 
     public TemplateItem GetWeaponTemplate()
     {
-        return _weaponTemplate;
+        return _weaponTemplate!;
     }
 
     public TemplateItem GetAmmoTemplate()
     {
-        return _ammoTemplate;
+        return _ammoTemplate!;
     }
 
     public BotBaseInventory GetPmcInventory()
     {
-        return _pmcInventory;
+        return _pmcInventory!;
     }
 }

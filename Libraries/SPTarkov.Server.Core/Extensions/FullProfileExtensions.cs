@@ -1,4 +1,5 @@
-﻿using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+﻿using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 
@@ -11,17 +12,13 @@ namespace SPTarkov.Server.Core.Extensions
         /// </summary>
         /// <param name="fullProfile">Profile to add clothing to</param>
         /// <param name="clothingIds">Clothing Ids to add to profile</param>
-        public static void AddSuitsToProfile(this SptProfile fullProfile, List<string> clothingIds)
+        public static void AddSuitsToProfile(this SptProfile fullProfile, IEnumerable<MongoId> clothingIds)
         {
             fullProfile.CustomisationUnlocks ??= [];
 
             foreach (var suitId in clothingIds)
             {
-                if (
-                    !fullProfile.CustomisationUnlocks.Exists(customisation =>
-                        customisation.Id == suitId
-                    )
-                )
+                if (!fullProfile.CustomisationUnlocks.Exists(customisation => customisation.Id == suitId))
                 {
                     // Clothing item doesn't exist in profile, add it
                     fullProfile.CustomisationUnlocks.Add(
@@ -129,10 +126,11 @@ namespace SPTarkov.Server.Core.Extensions
                     break;
             }
 
-            var pretigeLevel = fullProfile?.CharacterData?.PmcData?.Info?.PrestigeLevel;
-            if (pretigeLevel is not null)
+            var prestigeLevel = fullProfile?.CharacterData?.PmcData?.Info?.PrestigeLevel;
+
+            if (prestigeLevel is not null)
             {
-                if (pretigeLevel >= 1)
+                if (prestigeLevel >= 1)
                 {
                     fullProfile.CustomisationUnlocks.Add(
                         new CustomisationStorage
@@ -144,7 +142,7 @@ namespace SPTarkov.Server.Core.Extensions
                     );
                 }
 
-                if (pretigeLevel >= 2)
+                if (prestigeLevel >= 2)
                 {
                     fullProfile.CustomisationUnlocks.Add(
                         new CustomisationStorage
@@ -202,13 +200,9 @@ namespace SPTarkov.Server.Core.Extensions
         /// <param name="fullProfile">Profile to add the extra repeatable to</param>
         /// <param name="repeatableId">The ID of the type of repeatable to increase</param>
         /// <param name="rewardValue">The number of extra repeatables to add</param>
-        public static void AddExtraRepeatableQuest(
-            this SptProfile fullProfile,
-            string repeatableId,
-            double rewardValue
-        )
+        public static void AddExtraRepeatableQuest(this SptProfile fullProfile, MongoId repeatableId, double rewardValue)
         {
-            fullProfile.SptData.ExtraRepeatableQuests ??= new Dictionary<string, double>();
+            fullProfile.SptData.ExtraRepeatableQuests ??= new Dictionary<MongoId, double>();
 
             if (!fullProfile.SptData.ExtraRepeatableQuests.TryAdd(repeatableId, 0))
             {
@@ -223,8 +217,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <returns>True if account is developer</returns>
         public static bool IsDeveloperAccount(this SptProfile fullProfile)
         {
-            return fullProfile?.ProfileInfo?.Edition?.ToLowerInvariant().StartsWith("spt developer")
-                ?? false;
+            return fullProfile?.ProfileInfo?.Edition?.ToLowerInvariant().StartsWith("spt developer") ?? false;
         }
     }
 }

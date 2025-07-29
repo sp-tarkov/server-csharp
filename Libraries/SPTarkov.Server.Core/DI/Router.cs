@@ -1,3 +1,4 @@
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Request;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -9,18 +10,18 @@ namespace SPTarkov.Server.Core.DI;
 
 public abstract class Router
 {
-    protected List<HandledRoute> handledRoutes = [];
+    protected IEnumerable<HandledRoute> handledRoutes = [];
 
     public virtual string GetTopLevelRoute()
     {
         return "spt";
     }
 
-    protected abstract List<HandledRoute> GetHandledRoutes();
+    protected abstract IEnumerable<HandledRoute> GetHandledRoutes();
 
-    protected List<HandledRoute> GetInternalHandledRoutes()
+    protected IEnumerable<HandledRoute> GetInternalHandledRoutes()
     {
-        if (handledRoutes.Count == 0)
+        if (!handledRoutes.Any())
         {
             handledRoutes = GetHandledRoutes();
         }
@@ -39,73 +40,45 @@ public abstract class Router
     }
 }
 
-public abstract class StaticRouter : Router
+public abstract class StaticRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> routes) : Router
 {
-    private readonly List<RouteAction> _actions;
-    private readonly JsonUtil _jsonUtil;
-
-    public StaticRouter(JsonUtil jsonUtil, List<RouteAction> routes)
+    public async ValueTask<object> HandleStatic(string url, string? body, MongoId sessionId, string output)
     {
-        _actions = routes;
-        _jsonUtil = jsonUtil;
-    }
-
-    public async ValueTask<object> HandleStatic(
-        string url,
-        string? body,
-        string sessionID,
-        string output
-    )
-    {
-        var action = _actions.Single(route => route.url == url);
+        var action = routes.Single(route => route.url == url);
         var type = action.bodyType;
         IRequestData? info = null;
         if (type != null && !string.IsNullOrEmpty(body))
         {
-            info = (IRequestData?)_jsonUtil.Deserialize(body, type);
+            info = (IRequestData?)jsonUtil.Deserialize(body, type);
         }
 
-        return await action.action(url, info, sessionID, output);
+        return await action.action(url, info, sessionId, output);
     }
 
-    protected override List<HandledRoute> GetHandledRoutes()
+    protected override IEnumerable<HandledRoute> GetHandledRoutes()
     {
-        return _actions.Select(route => new HandledRoute(route.url, false)).ToList();
+        return routes.Select(route => new HandledRoute(route.url, false));
     }
 }
 
-public abstract class DynamicRouter : Router
+public abstract class DynamicRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> routes) : Router
 {
-    private readonly JsonUtil _jsonUtil;
-    private readonly List<RouteAction> actions;
-
-    public DynamicRouter(JsonUtil jsonUtil, List<RouteAction> routes)
+    public async ValueTask<object> HandleDynamic(string url, string? body, MongoId sessionID, string output)
     {
-        actions = routes;
-        _jsonUtil = jsonUtil;
-    }
-
-    public async ValueTask<object> HandleDynamic(
-        string url,
-        string? body,
-        string sessionID,
-        string output
-    )
-    {
-        var action = actions.First(r => url.Contains(r.url));
+        var action = routes.First(r => url.Contains(r.url));
         var type = action.bodyType;
         IRequestData? info = null;
         if (type != null && !string.IsNullOrEmpty(body))
         {
-            info = (IRequestData?)_jsonUtil.Deserialize(body, type);
+            info = (IRequestData?)jsonUtil.Deserialize(body, type);
         }
 
         return await action.action(url, info, sessionID, output);
     }
 
-    protected override List<HandledRoute> GetHandledRoutes()
+    protected override IEnumerable<HandledRoute> GetHandledRoutes()
     {
-        return actions.Select(route => new HandledRoute(route.url, true)).ToList();
+        return routes.Select(route => new HandledRoute(route.url, true));
     }
 }
 
@@ -117,7 +90,7 @@ public abstract class ItemEventRouterDefinition : Router
         string url,
         PmcData pmcData,
         BaseInteractionRequestData body,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     );
 }
@@ -129,9 +102,5 @@ public abstract class SaveLoadRouter : Router
 
 public record HandledRoute(string route, bool dynamic);
 
-public record RouteAction(
-    string url,
-    Func<string, IRequestData?, string?, string?, ValueTask<object>> action,
-    Type? bodyType = null
-);
+public record RouteAction(string url, Func<string, IRequestData?, MongoId, string?, ValueTask<object>> action, Type? bodyType = null);
 //public action: (url: string, info: any, sessionID: string, output: string) => Promise<any>,

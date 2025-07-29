@@ -6,11 +6,7 @@ public abstract class BaseLogHandler : ILogHandler
 
     public abstract void Log(SptLogMessage message, BaseSptLoggerReference reference);
 
-    protected string FormatMessage(
-        string processedMessage,
-        SptLogMessage message,
-        BaseSptLoggerReference reference
-    )
+    protected string FormatMessage(string processedMessage, SptLogMessage message, BaseSptLoggerReference reference)
     {
         var formattedMessage = reference
             .Format.Replace("%date%", message.LogTime.ToString("yyyy-MM-dd"))

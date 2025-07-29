@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
 
 namespace SPTarkov.Server.Core.Models.Eft.Ragfair;
@@ -12,7 +13,7 @@ public record AddOfferRequestData : InventoryBaseActionRequestData
     public bool? SellInOnePiece { get; set; }
 
     [JsonPropertyName("items")]
-    public List<string>? Items { get; set; }
+    public List<MongoId>? Items { get; set; }
 
     [JsonPropertyName("requirements")]
     public List<Requirement>? Requirements { get; set; }
@@ -24,7 +25,7 @@ public record Requirement
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("_tpl")]
-    public string? Template { get; set; }
+    public MongoId Template { get; set; }
 
     // Can be decimal value
     [JsonPropertyName("count")]

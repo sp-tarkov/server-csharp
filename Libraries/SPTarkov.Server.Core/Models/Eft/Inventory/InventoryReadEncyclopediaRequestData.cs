@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Inventory;
 
@@ -8,5 +9,5 @@ public record InventoryReadEncyclopediaRequestData : InventoryBaseActionRequestD
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("ids")]
-    public List<string> Ids { get; set; }
+    public List<MongoId> Ids { get; set; }
 }

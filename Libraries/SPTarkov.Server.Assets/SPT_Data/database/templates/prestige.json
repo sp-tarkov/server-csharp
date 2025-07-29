@@ -254,13 +254,13 @@
             "isBigImage": false
           },
           "isHidden": false,
-          "target": "67f699408d7c5eb3fe15b21e",
+          "target": "686e887c9c31930d65108c94",
           "value": 1,
           "isEncoded": false,
           "findInRaid": true,
           "items": [
             {
-              "_id": "67f699408d7c5eb3fe15b21e",
+              "_id": "686e887c9c31930d65108c94",
               "_tpl": "6759bb94b8913ff13e049669",
               "upd": {
                 "SpawnedInSession": true,
@@ -284,13 +284,13 @@
             "isBigImage": false
           },
           "isHidden": false,
-          "target": "67f699408d7c5eb3fe15b220",
+          "target": "686e887c9c31930d65108c96",
           "value": 1,
           "isEncoded": false,
           "findInRaid": true,
           "items": [
             {
-              "_id": "67f699408d7c5eb3fe15b220",
+              "_id": "686e887c9c31930d65108c96",
               "_tpl": "67614b542eb91250020f2b86",
               "upd": {
                 "SpawnedInSession": true,
@@ -316,6 +316,22 @@
           "isHidden": false,
           "target": "67604ac650dfa9253901a548",
           "type": "CustomizationDirect"
+        },
+        {
+          "id": "6842fc2ea285406df4ad89c6",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/6842ca183a9cb5e0a609b26c.png",
+            "bigImage": "/files/prestige/reward/big/683db75f3102b7f7030b0e0a.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "type": "Stub"
         }
       ],
       "transferConfigs": {
@@ -520,11 +536,6 @@
               "67614b3ab8c060ebb204b106",
               "619bdfd4c9546643a67df6fa",
               "664a5480bfcc521bad3192ca",
-              "679b9d55708cfcb2060b9ae3",
-              "679b9d4b3374fb14f40efe6d",
-              "679b9d43597ba2ed120c3d44",
-              "679b9cce4e4ed4b3b40ae5c5",
-              "679b9d6390622daf9708da76",
               "5df8a77486f77412672a1e3f",
               "5df8a72c86f77412640e2e83",
               "5df8a6a186f77412640e2e80",
@@ -696,13 +707,13 @@
             "isBigImage": true
           },
           "isHidden": false,
-          "target": "67f699408d7c5eb3fe15b222",
+          "target": "686e887c9c31930d65108c98",
           "value": 1,
           "isEncoded": false,
           "findInRaid": true,
           "items": [
             {
-              "_id": "67f699408d7c5eb3fe15b222",
+              "_id": "686e887c9c31930d65108c98",
               "_tpl": "674d90b55704568fe60bc8f5",
               "upd": {
                 "SpawnedInSession": true,
@@ -832,13 +843,13 @@
             "isBigImage": false
           },
           "isHidden": false,
-          "target": "67f699408d7c5eb3fe15b224",
+          "target": "686e887c9c31930d65108c9a",
           "value": 1,
           "isEncoded": false,
           "findInRaid": true,
           "items": [
             {
-              "_id": "67f699408d7c5eb3fe15b224",
+              "_id": "686e887c9c31930d65108c9a",
               "_tpl": "6759e07e4ff23436160d7fed",
               "upd": {
                 "SpawnedInSession": true,
@@ -896,13 +907,13 @@
             "isBigImage": false
           },
           "isHidden": false,
-          "target": "67f699408d7c5eb3fe15b226",
+          "target": "686e887c9c31930d65108c9c",
           "value": 1,
           "isEncoded": false,
           "findInRaid": true,
           "items": [
             {
-              "_id": "67f699408d7c5eb3fe15b226",
+              "_id": "686e887c9c31930d65108c9c",
               "_tpl": "67614b6b47c71ea3d40256d7",
               "upd": {
                 "SpawnedInSession": true,
@@ -911,6 +922,22 @@
             }
           ],
           "type": "Item"
+        },
+        {
+          "id": "6842fbd6007b16f2aad926ac",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/6842ca1eb2ac2ad20403f949.png",
+            "bigImage": "/files/prestige/reward/big/683db767774e9c6edc0e878a.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "type": "Stub"
         }
       ],
       "transferConfigs": {
@@ -1104,12 +1131,7 @@
               "679b944d597ba2ed120c3d3c",
               "679b946f90622daf9708da6d",
               "679b94734e9ca6b3d80586a7",
-              "679b9477708cfcb2060b9ade",
-              "679b9d43597ba2ed120c3d44",
-              "679b9d6390622daf9708da76",
-              "679b9cce4e4ed4b3b40ae5c5",
-              "679b9d4b3374fb14f40efe6d",
-              "679b9d55708cfcb2060b9ae3"
+              "679b9477708cfcb2060b9ade"
             ],
             "excludedItems": []
           }
@@ -1121,8 +1143,1118 @@
           "transferMultiplier": 0.9
         }
       },
-      "image": "/files/prestige/675864efbe287595450c7686.png",
-      "bigImage": "/files/prestige/675864ffa4c475834b0de8ff.png"
+      "image": "/files/prestige/682b39c18a28d3c859088f5f.png",
+      "bigImage": "/files/prestige/682b39cb4e93305029030ca8.png"
+    },
+    {
+      "id": "683da91d6f472cfa738c52f2",
+      "conditions": [
+        {
+          "id": "683da91dc19b0046298f13ba",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 55,
+          "compareMethod": ">=",
+          "conditionType": "Level"
+        },
+        {
+          "id": "683da91d9f3ab0951363bdea",
+          "index": 2,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "target": "5c51aac186f77432ea65c552",
+          "status": [
+            4
+          ],
+          "availableAfter": 0,
+          "dispersion": 0,
+          "conditionType": "Quest"
+        },
+        {
+          "id": "683da91de231c42903872790",
+          "index": 2,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "target": "6848100b00afffa81f09e365",
+          "status": [
+            4
+          ],
+          "availableAfter": 0,
+          "dispersion": 0,
+          "conditionType": "Quest"
+        },
+        {
+          "id": "683da91df9d6f7178e4028bf",
+          "index": 3,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 20,
+          "compareMethod": ">=",
+          "target": "Strength",
+          "conditionType": "Skill"
+        },
+        {
+          "id": "683da91db5a1742fce1ab919",
+          "index": 4,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 20,
+          "compareMethod": ">=",
+          "target": "Endurance",
+          "conditionType": "Skill"
+        },
+        {
+          "id": "683da91da64e2f4c163c0a71",
+          "index": 5,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 20,
+          "compareMethod": ">=",
+          "target": "Charisma",
+          "conditionType": "Skill"
+        },
+        {
+          "id": "683da91d3ba6beee15ae15e5",
+          "index": 6,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 2,
+          "compareMethod": ">=",
+          "areaType": 11,
+          "conditionType": "HideoutArea"
+        },
+        {
+          "id": "683da91d40f707cf9d70acb3",
+          "index": 7,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 3,
+          "compareMethod": ">=",
+          "areaType": 1,
+          "conditionType": "HideoutArea"
+        },
+        {
+          "id": "683da91de6fa1f57116cd578",
+          "index": 8,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 3,
+          "compareMethod": ">=",
+          "areaType": 9,
+          "conditionType": "HideoutArea"
+        },
+        {
+          "id": "683da91dcbaecbd131ba3a36",
+          "index": 9,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "target": [
+            "5449016a4bdc2d6f028b456f"
+          ],
+          "value": 20000000,
+          "minDurability": 0.0,
+          "maxDurability": 100.0,
+          "dogtagLevel": 0,
+          "onlyFoundInRaid": false,
+          "isEncoded": false,
+          "conditionType": "HasItem"
+        }
+      ],
+      "rewards": [
+        {
+          "id": "6842ef4de9f02c7880a3f218",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/67673412a49c2307370ea310.png",
+            "bigImage": "/files/prestige/reward/big/67673265a49c2307370ea307.png",
+            "isBigImage": true
+          },
+          "isHidden": false,
+          "target": "675468a924c9a7ccb509d633",
+          "type": "CustomizationDirect"
+        },
+        {
+          "id": "6842c967f7807b2895222ec9",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/683db7f2a8ab4447590fef6c.png",
+            "bigImage": "/files/prestige/reward/big/683db43a8abee978cc0b310c.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "target": "6841818c20f5c35b53017729",
+          "type": "CustomizationDirect"
+        },
+        {
+          "id": "6842c945768eced84bd40e85",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/683db9e43102b7f7030b0e0d.png",
+            "bigImage": "/files/prestige/reward/big/683db5d355241b17d40de945.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "target": "686e887c9c31930d65108c9e",
+          "value": 1,
+          "isEncoded": false,
+          "findInRaid": true,
+          "items": [
+            {
+              "_id": "686e887c9c31930d65108c9e",
+              "_tpl": "6841b6b674a3c16f5e03d653",
+              "upd": {
+                "SpawnedInSession": true,
+                "StackObjectsCount": 1
+              }
+            }
+          ],
+          "type": "Item"
+        },
+        {
+          "id": "683da91d827f393f13f04cfc",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "arena",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/676c801645d80f6cea04f0bc.png",
+            "bigImage": "/files/prestige/reward/big/676c7ffa005e2661180b0d5c.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "target": "Charisma",
+          "value": 100,
+          "type": "Skill"
+        },
+        {
+          "id": "6842efae6c1ac1e5836331b4",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/684abdc9ad66a32a180a7398.png",
+            "bigImage": "/files/prestige/reward/big/684abd982968803c700d002b.png",
+            "isBigImage": true
+          },
+          "isHidden": false,
+          "target": "6846990ed5d969efe3078408",
+          "type": "CustomizationDirect"
+        },
+        {
+          "id": "6842c990daa15ec334d9e358",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/683db800bc09186e3502392d.png",
+            "bigImage": "/files/prestige/reward/big/683db45c7db340a9a202f952.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "target": "686e887c9c31930d65108ca0",
+          "value": 1,
+          "isEncoded": false,
+          "findInRaid": true,
+          "items": [
+            {
+              "_id": "686e887c9c31930d65108ca0",
+              "_tpl": "6841b179322db20d190b4b99",
+              "upd": {
+                "SpawnedInSession": true,
+                "StackObjectsCount": 1
+              }
+            }
+          ],
+          "type": "Item"
+        },
+        {
+          "id": "6842eea21847b5e5c4e41035",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/683db9ce433949ccc70ccdf9.png",
+            "bigImage": "/files/prestige/reward/big/683db4773b269cb0d201af74.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "target": "686e887c9c31930d65108ca2",
+          "value": 1,
+          "isEncoded": false,
+          "findInRaid": true,
+          "items": [
+            {
+              "_id": "686e887c9c31930d65108ca2",
+              "_tpl": "6841b2506c1fcc41ed0db319",
+              "upd": {
+                "SpawnedInSession": true,
+                "StackObjectsCount": 1
+              }
+            }
+          ],
+          "type": "Item"
+        },
+        {
+          "id": "6842ef0cefd524b9eb836370",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/683db7d03102b7f7030b0e0b.png",
+            "bigImage": "/files/prestige/reward/big/683db41d9248b507f60a19c6.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "target": "683dacd53a9ebd9a650ce8a0",
+          "type": "CustomizationDirect"
+        },
+        {
+          "id": "6842eff568fe21742b7e2794",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/684abda5ad66a32a180a7395.png",
+            "bigImage": "/files/prestige/reward/big/684abd91b59b2cdfc10ce74a.png",
+            "isBigImage": true
+          },
+          "isHidden": false,
+          "target": "684696e8199c6a77dc0f9bc8",
+          "type": "CustomizationDirect"
+        },
+        {
+          "id": "6842ef20bf310d6fd19c819c",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/683dba06dc5dfe2acd0debce.png",
+            "bigImage": "/files/prestige/reward/big/683db62557f38ea79c0073e5.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "target": "6841c50c3fcc417de40a676a",
+          "type": "CustomizationDirect"
+        },
+        {
+          "id": "6842ee4e110d3f922de72162",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/6842ca2412825ba65b0c9f88.png",
+            "bigImage": "/files/prestige/reward/big/683db774f014f6c51008371a.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "type": "Stub"
+        }
+      ],
+      "transferConfigs": {
+        "stashConfig": {
+          "xCellCount": 8,
+          "yCellCount": 5,
+          "filters": {
+            "includedItems": [
+              "5448f3a14bdc2d27728b4569",
+              "5448f3ac4bdc2dce718b4569",
+              "60098ad7c2240c0fe85c570a",
+              "590c661e86f7741e566b646a",
+              "590c678286f77426c9660122",
+              "5755356824597772cb798962",
+              "5e99711486f7744bfc4af328",
+              "66507eabf5ddb0818b085b68",
+              "5ed515c8d380ab312177c0fa",
+              "5ed515f6915ec335206e4152",
+              "5c10c8fd86f7743d7d706df3",
+              "5ed515e03a40a50460332579",
+              "5ed51652f6c34d2cc26336a1",
+              "5ed5160a87bb8443d10680b5",
+              "5ed5166ad380ab312177c100",
+              "637b60c3b7afa97bfc3d7001",
+              "5ed515ece452db0eb56fc028",
+              "637b6179104668754b72f8f5",
+              "637b6251104668754b72f8f9",
+              "5c0e530286f7747fa1419862",
+              "637b612fb7afa97bfc3d7005",
+              "5c0e531286f7747fa54205c2",
+              "5c0e531d86f7747fa23f4d42",
+              "5fca13ca637ee0341a484f46",
+              "637b620db7afa97bfc3d7009",
+              "5c0e533786f7747fa23f4d47",
+              "5c0e534186f7747fa1419867",
+              "5fca138c2a7b221b2852a5c6",
+              "567849dd4bdc2d150f8b456e",
+              "675a06b84ff23436160d802f",
+              "675a0288c3102563bd01c9c3",
+              "675a046b8f547d6cae01922e",
+              "675a04c01474133a0d0bb212",
+              "675a0a91af26c56ee1090728",
+              "675a0b8d4ff23436160d8031",
+              "675a0d2d57dd12f0260c4a31",
+              "675a0eacf905bde03d0f8253",
+              "675a0fbbb98bf391510bafcd",
+              "6759e19a8367ee2b0c0f4b92",
+              "6759e61067c8eb5cd10352f1",
+              "6759e6c39422e1708e0e9b81",
+              "6759e7a44ff23436160d7ff5",
+              "6759e8b1c3102563bd01c985",
+              "6759e91d8367ee2b0c0f4b94",
+              "675a125caf26c56ee109072a",
+              "675a04fdb8913ff13e0496bb",
+              "675a191f67c8eb5cd1035305",
+              "675a1a244ff23436160d8033",
+              "675a1af21474133a0d0bb216",
+              "675a1c129422e1708e0e9baa",
+              "675a1e502eac6c76e104ea1e",
+              "675a1f5c1474133a0d0bb218",
+              "675a081c1474133a0d0bb214",
+              "675a202b6aaafea7210915fd",
+              "675a20c83fb2de89670113b4",
+              "675a213ff905bde03d0f8255",
+              "543be6674bdc2df1348b4569",
+              "57864c322459775490116fbf",
+              "57864bb7245977548b3b66c2",
+              "5e2aee0a86f774755a234b62",
+              "5e2aedd986f7746d404f3aa4",
+              "5af0561e86f7745f5f3ad6ac",
+              "5672cb124bdc2d1a0f8b4568",
+              "5672cb304bdc2dc2088b456a",
+              "590a358486f77429692b2790",
+              "59e35cbb86f7741778269d83",
+              "5e2af29386f7746d4159f077",
+              "61bf7b6302b3924be92fa8c3",
+              "590c31c586f774245e3141b2",
+              "59e366c186f7741778269d85",
+              "5e2af22086f7746d3f3c33fa",
+              "5d1b327086f7742525194449",
+              "59e35ef086f7741777737012",
+              "5d1b39a386f774252339976f",
+              "5d1b32c186f774252167a530",
+              "590c346786f77423e50ed342",
+              "619cbf476b8a1b37a54eebf8",
+              "590c35a486f774273531c822",
+              "57347c5b245977448d35f6e1",
+              "57347c77245977448d35f6e2",
+              "655c652d60d0ac437100fed7",
+              "655c67ab0d37ca5135388f4b",
+              "655c66e40b2de553b618d4b8",
+              "66572c82ad599021091c6118",
+              "66572be36a723f7f005a066e",
+              "655c67782a1356436041c9c5",
+              "655c673673a43e23e857aebd",
+              "66572cbdad599021091c611a",
+              "655c663a6689c676ce57af85",
+              "655c669103999d3c810c025b",
+              "573474f924597738002c6174",
+              "5734758f24597738025ee253",
+              "573478bc24597738002c6175",
+              "66572b8d80b1cd4b6a67847f",
+              "59faff1d86f7746c51718c9c",
+              "59e3658a86f7741776641ac4",
+              "5bc9bc53d4351e00367fbcee",
+              "62a09cfe4f842e1bd12da3e4",
+              "5bc9bdb8d4351e003562b8a1",
+              "66b37ea4c5d72b0277488439",
+              "6656560053eaaa7a23349c86",
+              "59e3639286f7741777737013",
+              "5f745ee30acaeb0d490d8c5b",
+              "5df8a6a186f77412640e2e80",
+              "5df8a72c86f77412640e2e83",
+              "5df8a77486f77412672a1e3f",
+              "62a091170b9d3c46de5b6cf2",
+              "5c1267ee86f77416ec610f72",
+              "5e54f62086f774219b0f1937",
+              "59faf7ca86f7740dbe19f6c2",
+              "5d235a5986f77443f6329bc6",
+              "66b37eb4acff495a29492407",
+              "59e3647686f774176a362507",
+              "5d650c3e815116009f6201d2",
+              "60391b0fb847c71012789415",
+              "67586bee39b1b82b0d0f9d06",
+              "590a373286f774287540368b",
+              "59fafb5d86f774067a6f2084",
+              "5e2af2bc86f7746d3f3c33fc",
+              "5bc9b355d4351e6d1509862a",
+              "5e2af37686f774755a234b65",
+              "60391a8b3364dc22b04d0ce5",
+              "590c5bbd86f774785762df04",
+              "590c5c9f86f77477c91c36e7",
+              "5b43575a86f77424f443fe62",
+              "57347b8b24597737dd42e192",
+              "56742c2e4bdc2d95058b456d",
+              "6389c6c7dbfd5e4b95197e68",
+              "5b4335ba86f7744d2837a264",
+              "5af0534a86f7743b6f354284",
+              "59e361e886f774176c10a2a5",
+              "59e3606886f77417674759a5",
+              "5d1b3a5d86f774252167ba22",
+              "5d1b3f2d86f774253763b735",
+              "62a0a043cf4a99369e2624a5",
+              "619cc01e0a7c3a1a2731940c",
+              "62a09cb7a04c0c5c6e0a84f8",
+              "5e2af4d286f7746d4159f07a",
+              "5e2af41e86f774755a234b67",
+              "5e2af47786f7746d404f3aaa",
+              "5e2af4a786f7746d3f3c3400",
+              "5e2af51086f7746d3f3c3402",
+              "573476d324597737da2adc13",
+              "573475fb24597737fb1379e1",
+              "5734770f24597738025ee254",
+              "573476f124597737e04bf328",
+              "60b0f7057897d47c5b04ab94",
+              "5af0484c86f7740f02001f7f",
+              "67449b6c89d5e1ddc603f504",
+              "5bc9c049d4351e44f824d360",
+              "6389c6463485cf0eeb260715",
+              "5e54f6af86f7742199090bf3",
+              "5c12688486f77426843c7d32",
+              "67586af7036d7f3da60c3612",
+              "67586b7e49c2fa592e0d8ed9",
+              "5bc9be8fd4351e00334cae6e",
+              "62a08f4c4f842e1bd12d9d62",
+              "5d1b385e86f774252167b98a",
+              "5d1c819a86f774771b0acd6c",
+              "590c595c86f7747884343ad7",
+              "590c5a7286f7747884343aea",
+              "5d6fc78386f77449d825f9dc",
+              "5d6fc87386f77449db3db94e",
+              "5733279d245977289b77ec24",
+              "5b3f3af486f774679e752c1f",
+              "5b3f3b0186f774021a2afef7",
+              "5b3f3ade86f7746b6b790d8e",
+              "60b0f988c4449e4cb624c1da",
+              "5b3f16c486f7747c327f55f7",
+              "5b3f3b0e86f7746752107cda",
+              "664a5480bfcc521bad3192ca",
+              "619bdd8886e01e16f839a99c",
+              "619bddc6c9546643a67df6ee",
+              "619bddffc9546643a67df6f0",
+              "619bde3dc9546643a67df6f2",
+              "619bde7fc9546643a67df6f4",
+              "5f9949d869e2777a0e779ba5",
+              "619bdeb986e01e16f839a99e",
+              "619bdef8c9546643a67df6f6",
+              "619bdf9cc9546643a67df6f8",
+              "619bdfd4c9546643a67df6fa",
+              "67614b3ab8c060ebb204b106",
+              "57bef4c42459772e8d35a53b",
+              "5645bcb74bdc2ded0b8b4578",
+              "5422acb9af1c889c16000029",
+              "5448fe124bdc2da5018b4567"
+            ],
+            "excludedItems": []
+          }
+        },
+        "skillConfig": {
+          "transferMultiplier": 0.85
+        },
+        "masteringConfig": {
+          "transferMultiplier": 0.85
+        }
+      },
+      "image": "/files/prestige/682b39eeeaa00df0990783ce.png",
+      "bigImage": "/files/prestige/682b39f6254221461f05e10c.png"
+    },
+    {
+      "id": "6842f121000d98ce33b9a60f",
+      "conditions": [
+        {
+          "id": "6842f121cef417ef53cc90a0",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 55,
+          "compareMethod": ">=",
+          "conditionType": "Level"
+        },
+        {
+          "id": "6842f121382cb1ce6d992685",
+          "index": 2,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "target": "5c51aac186f77432ea65c552",
+          "status": [
+            4
+          ],
+          "availableAfter": 0,
+          "dispersion": 0,
+          "conditionType": "Quest"
+        },
+        {
+          "id": "6842f121c033d3512e2682d2",
+          "index": 2,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "target": "68481881f43abfdda2058369",
+          "status": [
+            4
+          ],
+          "availableAfter": 0,
+          "dispersion": 0,
+          "conditionType": "Quest"
+        },
+        {
+          "id": "6842f121b2b5feddbb55172d",
+          "index": 3,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 20,
+          "compareMethod": ">=",
+          "target": "Strength",
+          "conditionType": "Skill"
+        },
+        {
+          "id": "6842f121b524778424c2faab",
+          "index": 4,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 20,
+          "compareMethod": ">=",
+          "target": "Endurance",
+          "conditionType": "Skill"
+        },
+        {
+          "id": "6842f12139a9154e5a9014cd",
+          "index": 5,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 20,
+          "compareMethod": ">=",
+          "target": "Charisma",
+          "conditionType": "Skill"
+        },
+        {
+          "id": "6842f121ddf9d10aa5a1c254",
+          "index": 6,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 2,
+          "compareMethod": ">=",
+          "areaType": 11,
+          "conditionType": "HideoutArea"
+        },
+        {
+          "id": "6842f121f096afd0c30ac1a1",
+          "index": 7,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 3,
+          "compareMethod": ">=",
+          "areaType": 1,
+          "conditionType": "HideoutArea"
+        },
+        {
+          "id": "6842f12162f7d28696db3a3e",
+          "index": 8,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 3,
+          "compareMethod": ">=",
+          "areaType": 9,
+          "conditionType": "HideoutArea"
+        },
+        {
+          "id": "6842f121065f0486f7c5bb56",
+          "index": 9,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "target": [
+            "5449016a4bdc2d6f028b456f"
+          ],
+          "value": 20000000,
+          "minDurability": 0.0,
+          "maxDurability": 100.0,
+          "dogtagLevel": 0,
+          "onlyFoundInRaid": false,
+          "isEncoded": false,
+          "conditionType": "HasItem"
+        }
+      ],
+      "rewards": [
+        {
+          "id": "6842f6917d6ac4f358182f4d",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/684abdd07b2090d3020a1d19.png",
+            "bigImage": "/files/prestige/reward/big/684abd87ed4bb101840211ea.png",
+            "isBigImage": true
+          },
+          "isHidden": false,
+          "target": "6847e76f3f4cd20a97097a93",
+          "type": "CustomizationDirect"
+        },
+        {
+          "id": "6842f1210f9588d9d9437464",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "arena",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/676c801645d80f6cea04f0bc.png",
+            "bigImage": "/files/prestige/reward/big/676c7ffa005e2661180b0d5c.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "target": "Charisma",
+          "value": 100,
+          "type": "Skill"
+        },
+        {
+          "id": "6842f6d61c9d927b2349a185",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/683db9f14efbd1959b0039ae.png",
+            "bigImage": "/files/prestige/reward/big/683db5f5675dbd613909cac1.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "target": "6841c7963fcc417de40a676c",
+          "type": "CustomizationDirect"
+        },
+        {
+          "id": "6842f6eff3dbd5029d8e09d5",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/683db7dc4efbd1959b0039ac.png",
+            "bigImage": "/files/prestige/reward/big/683db42b4c69f3a07408fc3f.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "target": "683dadc8675dbd613909cabb",
+          "type": "CustomizationDirect"
+        },
+        {
+          "id": "6842f6b4943c12dd97d0ba93",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/684abdd6e361378c540d21e9.png",
+            "bigImage": "/files/prestige/reward/big/684abd7e93163fb11c02e2fa.png",
+            "isBigImage": true
+          },
+          "isHidden": false,
+          "target": "6847e663f43abfdda205835a",
+          "type": "CustomizationDirect"
+        },
+        {
+          "id": "6842f9930a40cb2b3304c497",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/683db9d2f014f6c51008371d.png",
+            "bigImage": "/files/prestige/reward/big/683db6d5bc09186e3502392a.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "target": "686e887c9c31930d65108ca4",
+          "value": 1,
+          "isEncoded": false,
+          "findInRaid": true,
+          "items": [
+            {
+              "_id": "686e887c9c31930d65108ca4",
+              "_tpl": "6841b3463fcc417de40a6768",
+              "upd": {
+                "SpawnedInSession": true,
+                "StackObjectsCount": 1
+              }
+            }
+          ],
+          "type": "Item"
+        },
+        {
+          "id": "6842f9b9eb9fe022e0428881",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/683db7f9dc5dfe2acd0debcc.png",
+            "bigImage": "/files/prestige/reward/big/683db44168d0c86684039740.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "target": "6841b11620f5c35b5301772b",
+          "type": "CustomizationDirect"
+        },
+        {
+          "id": "6842fa056e463e017d8c76a8",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/683db80a164933a0450b3bad.png",
+            "bigImage": "/files/prestige/reward/big/683db462d079529a0907a7ff.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "target": "686e887c9c31930d65108ca6",
+          "value": 1,
+          "isEncoded": false,
+          "findInRaid": true,
+          "items": [
+            {
+              "_id": "686e887c9c31930d65108ca6",
+              "_tpl": "6841b1ff51bf8645f7067bca",
+              "upd": {
+                "SpawnedInSession": true,
+                "StackObjectsCount": 1
+              }
+            }
+          ],
+          "type": "Item"
+        },
+        {
+          "id": "6842f937a2589822fd780a43",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/683db7bff014f6c51008371b.png",
+            "bigImage": "/files/prestige/reward/big/683db46b2c255eb9220a3495.png",
+            "isBigImage": true
+          },
+          "isHidden": false,
+          "target": "683dc6c1baa42e2bb4024922",
+          "type": "CustomizationDirect"
+        },
+        {
+          "id": "6842f66bc045dd8b3c083e80",
+          "unknown": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "availableInGameEditions": [],
+          "illustrationConfig": {
+            "image": "/files/prestige/reward/small/6842ca292a5c207ec7024bfa.png",
+            "bigImage": "/files/prestige/reward/big/683db77bdc5dfe2acd0debca.png",
+            "isBigImage": false
+          },
+          "isHidden": false,
+          "type": "Stub"
+        }
+      ],
+      "transferConfigs": {
+        "stashConfig": {
+          "xCellCount": 8,
+          "yCellCount": 6,
+          "filters": {
+            "includedItems": [
+              "5448f3a14bdc2d27728b4569",
+              "5448f3ac4bdc2dce718b4569",
+              "60098ad7c2240c0fe85c570a",
+              "590c661e86f7741e566b646a",
+              "590c678286f77426c9660122",
+              "5755356824597772cb798962",
+              "5e99711486f7744bfc4af328",
+              "66507eabf5ddb0818b085b68",
+              "5ed515c8d380ab312177c0fa",
+              "5ed515f6915ec335206e4152",
+              "5c10c8fd86f7743d7d706df3",
+              "5ed515e03a40a50460332579",
+              "5ed51652f6c34d2cc26336a1",
+              "5ed5160a87bb8443d10680b5",
+              "5ed5166ad380ab312177c100",
+              "637b60c3b7afa97bfc3d7001",
+              "5ed515ece452db0eb56fc028",
+              "637b6179104668754b72f8f5",
+              "637b6251104668754b72f8f9",
+              "5c0e530286f7747fa1419862",
+              "637b612fb7afa97bfc3d7005",
+              "5c0e531286f7747fa54205c2",
+              "5c0e531d86f7747fa23f4d42",
+              "5fca13ca637ee0341a484f46",
+              "637b620db7afa97bfc3d7009",
+              "5c0e533786f7747fa23f4d47",
+              "5c0e534186f7747fa1419867",
+              "5fca138c2a7b221b2852a5c6",
+              "567849dd4bdc2d150f8b456e",
+              "675a06b84ff23436160d802f",
+              "675a0288c3102563bd01c9c3",
+              "675a046b8f547d6cae01922e",
+              "675a04c01474133a0d0bb212",
+              "675a0a91af26c56ee1090728",
+              "675a0b8d4ff23436160d8031",
+              "675a0d2d57dd12f0260c4a31",
+              "675a0eacf905bde03d0f8253",
+              "675a0fbbb98bf391510bafcd",
+              "6759e19a8367ee2b0c0f4b92",
+              "6759e61067c8eb5cd10352f1",
+              "6759e6c39422e1708e0e9b81",
+              "6759e7a44ff23436160d7ff5",
+              "6759e8b1c3102563bd01c985",
+              "6759e91d8367ee2b0c0f4b94",
+              "675a125caf26c56ee109072a",
+              "675a04fdb8913ff13e0496bb",
+              "675a191f67c8eb5cd1035305",
+              "675a1a244ff23436160d8033",
+              "675a1af21474133a0d0bb216",
+              "675a1c129422e1708e0e9baa",
+              "675a1e502eac6c76e104ea1e",
+              "675a1f5c1474133a0d0bb218",
+              "675a081c1474133a0d0bb214",
+              "675a202b6aaafea7210915fd",
+              "675a20c83fb2de89670113b4",
+              "675a213ff905bde03d0f8255",
+              "543be6674bdc2df1348b4569",
+              "57864c322459775490116fbf",
+              "57864bb7245977548b3b66c2",
+              "5e2aee0a86f774755a234b62",
+              "5e2aedd986f7746d404f3aa4",
+              "5af0561e86f7745f5f3ad6ac",
+              "5672cb124bdc2d1a0f8b4568",
+              "5672cb304bdc2dc2088b456a",
+              "590a358486f77429692b2790",
+              "59e35cbb86f7741778269d83",
+              "5e2af29386f7746d4159f077",
+              "61bf7b6302b3924be92fa8c3",
+              "590c31c586f774245e3141b2",
+              "59e366c186f7741778269d85",
+              "5e2af22086f7746d3f3c33fa",
+              "5d1b327086f7742525194449",
+              "59e35ef086f7741777737012",
+              "5d1b39a386f774252339976f",
+              "5d1b32c186f774252167a530",
+              "590c346786f77423e50ed342",
+              "619cbf476b8a1b37a54eebf8",
+              "590c35a486f774273531c822",
+              "57347c5b245977448d35f6e1",
+              "57347c77245977448d35f6e2",
+              "655c652d60d0ac437100fed7",
+              "655c67ab0d37ca5135388f4b",
+              "655c66e40b2de553b618d4b8",
+              "66572c82ad599021091c6118",
+              "66572be36a723f7f005a066e",
+              "655c67782a1356436041c9c5",
+              "655c673673a43e23e857aebd",
+              "66572cbdad599021091c611a",
+              "655c663a6689c676ce57af85",
+              "655c669103999d3c810c025b",
+              "573474f924597738002c6174",
+              "5734758f24597738025ee253",
+              "573478bc24597738002c6175",
+              "66572b8d80b1cd4b6a67847f",
+              "59faff1d86f7746c51718c9c",
+              "59e3658a86f7741776641ac4",
+              "5bc9bc53d4351e00367fbcee",
+              "62a09cfe4f842e1bd12da3e4",
+              "5bc9bdb8d4351e003562b8a1",
+              "66b37ea4c5d72b0277488439",
+              "6656560053eaaa7a23349c86",
+              "59e3639286f7741777737013",
+              "5f745ee30acaeb0d490d8c5b",
+              "5df8a6a186f77412640e2e80",
+              "5df8a72c86f77412640e2e83",
+              "5df8a77486f77412672a1e3f",
+              "62a091170b9d3c46de5b6cf2",
+              "5c1267ee86f77416ec610f72",
+              "5e54f62086f774219b0f1937",
+              "59faf7ca86f7740dbe19f6c2",
+              "5d235a5986f77443f6329bc6",
+              "66b37eb4acff495a29492407",
+              "59e3647686f774176a362507",
+              "5d650c3e815116009f6201d2",
+              "60391b0fb847c71012789415",
+              "67586bee39b1b82b0d0f9d06",
+              "590a373286f774287540368b",
+              "59fafb5d86f774067a6f2084",
+              "5e2af2bc86f7746d3f3c33fc",
+              "5bc9b355d4351e6d1509862a",
+              "5e2af37686f774755a234b65",
+              "60391a8b3364dc22b04d0ce5",
+              "590c5bbd86f774785762df04",
+              "590c5c9f86f77477c91c36e7",
+              "5b43575a86f77424f443fe62",
+              "57347b8b24597737dd42e192",
+              "56742c2e4bdc2d95058b456d",
+              "6389c6c7dbfd5e4b95197e68",
+              "5b4335ba86f7744d2837a264",
+              "5af0534a86f7743b6f354284",
+              "59e361e886f774176c10a2a5",
+              "59e3606886f77417674759a5",
+              "5d1b3a5d86f774252167ba22",
+              "5d1b3f2d86f774253763b735",
+              "62a0a043cf4a99369e2624a5",
+              "619cc01e0a7c3a1a2731940c",
+              "62a09cb7a04c0c5c6e0a84f8",
+              "5e2af4d286f7746d4159f07a",
+              "5e2af41e86f774755a234b67",
+              "5e2af47786f7746d404f3aaa",
+              "5e2af4a786f7746d3f3c3400",
+              "5e2af51086f7746d3f3c3402",
+              "573476d324597737da2adc13",
+              "573475fb24597737fb1379e1",
+              "5734770f24597738025ee254",
+              "573476f124597737e04bf328",
+              "60b0f7057897d47c5b04ab94",
+              "5af0484c86f7740f02001f7f",
+              "67449b6c89d5e1ddc603f504",
+              "5bc9c049d4351e44f824d360",
+              "6389c6463485cf0eeb260715",
+              "5e54f6af86f7742199090bf3",
+              "5c12688486f77426843c7d32",
+              "67586af7036d7f3da60c3612",
+              "67586b7e49c2fa592e0d8ed9",
+              "5bc9be8fd4351e00334cae6e",
+              "62a08f4c4f842e1bd12d9d62",
+              "5d1b385e86f774252167b98a",
+              "5d1c819a86f774771b0acd6c",
+              "590c595c86f7747884343ad7",
+              "590c5a7286f7747884343aea",
+              "5d6fc78386f77449d825f9dc",
+              "5d6fc87386f77449db3db94e",
+              "5733279d245977289b77ec24",
+              "5b3f3af486f774679e752c1f",
+              "5b3f3b0186f774021a2afef7",
+              "5b3f3ade86f7746b6b790d8e",
+              "60b0f988c4449e4cb624c1da",
+              "5b3f16c486f7747c327f55f7",
+              "5b3f3b0e86f7746752107cda",
+              "664a5480bfcc521bad3192ca",
+              "619bdd8886e01e16f839a99c",
+              "619bddc6c9546643a67df6ee",
+              "619bddffc9546643a67df6f0",
+              "619bde3dc9546643a67df6f2",
+              "619bde7fc9546643a67df6f4",
+              "5f9949d869e2777a0e779ba5",
+              "619bdeb986e01e16f839a99e",
+              "619bdef8c9546643a67df6f6",
+              "619bdf9cc9546643a67df6f8",
+              "619bdfd4c9546643a67df6fa",
+              "67614b3ab8c060ebb204b106",
+              "57bef4c42459772e8d35a53b",
+              "5645bcb74bdc2ded0b8b4578",
+              "5422acb9af1c889c16000029",
+              "5448fe124bdc2da5018b4567"
+            ],
+            "excludedItems": []
+          }
+        },
+        "skillConfig": {
+          "transferMultiplier": 0.8
+        },
+        "masteringConfig": {
+          "transferMultiplier": 0.8
+        }
+      },
+      "image": "/files/prestige/682b39faa79f41a98906fc95.png",
+      "bigImage": "/files/prestige/682b39fe8a28d3c859088f60.png"
     }
   ]
 }

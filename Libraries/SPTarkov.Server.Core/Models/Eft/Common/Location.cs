@@ -13,7 +13,7 @@ public record Location
     ///     Map meta-data
     /// </summary>
     [JsonPropertyName("base")]
-    public LocationBase? Base { get; set; }
+    public LocationBase Base { get; set; }
 
     /// <summary>
     ///     Loose loot positions and item weights
@@ -34,7 +34,7 @@ public record Location
     public LazyLoad<StaticContainerDetails>? StaticContainers { get; set; }
 
     [JsonPropertyName("staticAmmo")]
-    public Dictionary<string, List<StaticAmmoDetails>> StaticAmmo { get; set; }
+    public Dictionary<string, IEnumerable<StaticAmmoDetails>> StaticAmmo { get; set; }
 
     /// <summary>
     ///     All possible static containers on map + their assign groupings
@@ -46,7 +46,7 @@ public record Location
     ///     All possible map extracts
     /// </summary>
     [JsonPropertyName("allExtracts")]
-    public Exit[] AllExtracts { get; set; }
+    public IEnumerable<Exit> AllExtracts { get; set; }
 }
 
 public record StaticContainer
@@ -118,7 +118,7 @@ public record ItemDistribution
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("tpl")]
-    public string? Tpl { get; set; }
+    public MongoId Tpl { get; set; }
 
     [JsonPropertyName("relativeProbability")]
     public float? RelativeProbability { get; set; }
@@ -130,13 +130,13 @@ public record StaticContainerDetails
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("staticWeapons")]
-    public List<SpawnpointTemplate> StaticWeapons { get; set; }
+    public IEnumerable<SpawnpointTemplate> StaticWeapons { get; set; }
 
     [JsonPropertyName("staticContainers")]
-    public List<StaticContainerData> StaticContainers { get; set; }
+    public IEnumerable<StaticContainerData> StaticContainers { get; set; }
 
     [JsonPropertyName("staticForced")]
-    public List<StaticForced> StaticForced { get; set; }
+    public IEnumerable<StaticForced> StaticForced { get; set; }
 }
 
 public record StaticForced
@@ -169,7 +169,7 @@ public record StaticAmmoDetails
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("tpl")]
-    public string? Tpl { get; set; }
+    public MongoId? Tpl { get; set; }
 
     [JsonPropertyName("relativeProbability")]
     public float? RelativeProbability { get; set; }

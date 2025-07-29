@@ -18,8 +18,5 @@ public record LootConfig : BaseConfig
     ///     Loose loot probability adjustments to apply on game start
     /// </summary>
     [JsonPropertyName("looseLootSpawnPointAdjustments")]
-    public required Dictionary<
-        string,
-        Dictionary<string, double>
-    > LooseLootSpawnPointAdjustments { get; set; }
+    public required Dictionary<string, Dictionary<string, double>> LooseLootSpawnPointAdjustments { get; set; }
 }

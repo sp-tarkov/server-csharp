@@ -31,11 +31,8 @@ public record KarmaLevel
     [JsonPropertyName("equipmentBlacklist")]
     public required Dictionary<EquipmentSlots, List<MongoId>> EquipmentBlacklist { get; set; }
 
-    [JsonPropertyName("labsAccessCardChancePercent")]
-    public double? LabsAccessCardChancePercent { get; set; }
-
     [JsonPropertyName("lootItemsToAddChancePercent")]
-    public required Dictionary<string, double> LootItemsToAddChancePercent { get; set; }
+    public required Dictionary<MongoId, double> LootItemsToAddChancePercent { get; set; }
 }
 
 public record Modifiers

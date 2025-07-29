@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Utils;
 
 namespace SPTarkov.Server.Core.Models.Eft.Dialog;
@@ -18,5 +19,5 @@ public record FriendRequestData : IRequestData
     public int? RetryAfter { get; set; }
 
     [JsonPropertyName("to")]
-    public string? To { get; set; }
+    public MongoId? To { get; set; }
 }

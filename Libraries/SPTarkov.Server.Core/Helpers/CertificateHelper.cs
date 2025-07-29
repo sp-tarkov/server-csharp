@@ -8,7 +8,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class CertificateHelper(ISptLogger<CertificateHelper> _logger, FileUtil _fileUtil)
+public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fileUtil)
 {
     private const string certificatePath = "./user/certs/server.crt";
     private const string certificateKeyPath = "./user/certs/server.key";
@@ -16,7 +16,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> _logger, FileUtil _
 
     //Todo: Finish off to match TS server
     /// <summary>
-    ///     Currently not in use
+    ///     Not currently in use
     /// </summary>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
@@ -41,7 +41,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> _logger, FileUtil _
                 throw new Exception("Certificate could not be loaded for the second time.");
             }
 
-            _logger.Success($"Generated and stored self-signed certificate ({certificatePath})");
+            logger.Success($"Generated and stored self-signed certificate ({certificatePath})");
         }
 
         return certificate;
@@ -57,12 +57,12 @@ public class CertificateHelper(ISptLogger<CertificateHelper> _logger, FileUtil _
 
         if (TryLoadCertificatePfx(out var cert))
         {
-            _logger.Success($"Loaded self-signed certificate ({certificatePath})");
+            logger.Success($"Loaded self-signed certificate ({certificatePath})");
             return cert;
         }
 
         // shit went wrong, throw a wobbly and close app
-        _logger.Critical("Certificate pfx could not be loaded. Stopping server...");
+        logger.Critical("Certificate pfx could not be loaded. Stopping server...");
         Environment.Exit(1);
         return null;
     }
@@ -85,17 +85,17 @@ public class CertificateHelper(ISptLogger<CertificateHelper> _logger, FileUtil _
     /// <returns></returns>
     private bool TryLoadCertificatePfx(out X509Certificate2? certificate)
     {
-        X509Certificate2 cert = null;
         if (!File.Exists(certificatePfxPath))
         {
-            // file doesnt exist so create straight away
-            cert = GenerateSelfSignedCertificate("localhost");
+            // file doesn't exist so create straight away
+            var cert = GenerateSelfSignedCertificate("localhost");
             SaveCertificatePfx(cert);
-            _logger.Success($"Generated and stored self-signed certificate ({certificatePath})");
+            logger.Success($"Generated and stored self-signed certificate ({certificatePath})");
         }
 
         try
         {
+            // TODO:
             //Archangel: For some reason despite this being deprecated this is the only way to load a certificate file
             //No idea why, I want to eventually switch over to the other format so it lines up with the TS server
             //But for now this works fine
@@ -107,12 +107,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> _logger, FileUtil _
             throw;
         }
 
-        if (certificate is not null)
-        {
-            return true;
-        }
-
-        return false;
+        return certificate is not null;
     }
 
     /// <summary>
@@ -149,21 +144,13 @@ public class CertificateHelper(ISptLogger<CertificateHelper> _logger, FileUtil _
         var distinguishedName = new X500DistinguishedName($"CN={subjectName}");
 
         using var rsa = RSA.Create(2048);
-        var request = new CertificateRequest(
-            distinguishedName,
-            rsa,
-            HashAlgorithmName.SHA256,
-            RSASignaturePadding.Pkcs1
-        );
+        var request = new CertificateRequest(distinguishedName, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
         request.CertificateExtensions.Add(sanBuilder.Build());
 
         //Todo: Enable when Pfx methods can be removed
         //SavePrivateKey(rsa);
 
-        return request.CreateSelfSigned(
-            new DateTimeOffset(DateTime.UtcNow.AddDays(-1)),
-            new DateTimeOffset(DateTime.UtcNow.AddDays(3650))
-        );
+        return request.CreateSelfSigned(new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)));
     }
 
     /// <summary>
@@ -177,16 +164,13 @@ public class CertificateHelper(ISptLogger<CertificateHelper> _logger, FileUtil _
             // Save as PEM (ensure the certificate is in PEM format)
             var certPem =
                 "-----BEGIN CERTIFICATE-----\n"
-                + Convert.ToBase64String(
-                    certificate.Export(X509ContentType.Cert),
-                    Base64FormattingOptions.InsertLineBreaks
-                )
+                + Convert.ToBase64String(certificate.Export(X509ContentType.Cert), Base64FormattingOptions.InsertLineBreaks)
                 + "\n-----END CERTIFICATE-----";
-            _fileUtil.WriteFile(certificatePath, certPem);
+            fileUtil.WriteFile(certificatePath, certPem);
         }
         catch (Exception ex)
         {
-            _logger.Error($"Error saving certificate: {ex.Message}");
+            logger.Error($"Error saving certificate: {ex.Message}");
         }
     }
 
@@ -198,11 +182,11 @@ public class CertificateHelper(ISptLogger<CertificateHelper> _logger, FileUtil _
     {
         try
         {
-            _fileUtil.WriteFile(certificatePfxPath, certificate.Export(X509ContentType.Pfx));
+            fileUtil.WriteFile(certificatePfxPath, certificate.Export(X509ContentType.Pfx));
         }
         catch (Exception ex)
         {
-            _logger.Error($"Error saving certificate: {ex.Message}");
+            logger.Error($"Error saving certificate: {ex.Message}");
         }
     }
 
@@ -218,11 +202,11 @@ public class CertificateHelper(ISptLogger<CertificateHelper> _logger, FileUtil _
                 + Convert.ToBase64String(privateKeyBytes, Base64FormattingOptions.InsertLineBreaks)
                 + "\n-----END PRIVATE KEY-----";
 
-            _fileUtil.WriteFile(certificateKeyPath, privateKeyString);
+            fileUtil.WriteFile(certificateKeyPath, privateKeyString);
         }
         catch (Exception ex)
         {
-            _logger.Error($"Error saving certificate key: {ex.Message}");
+            logger.Error($"Error saving certificate key: {ex.Message}");
         }
     }
 }

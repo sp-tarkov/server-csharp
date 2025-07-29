@@ -19,9 +19,6 @@ public record HealthMultipliers
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    [JsonPropertyName("death")]
-    public double Death { get; set; }
-
     [JsonPropertyName("blacked")]
     public double Blacked { get; set; }
 }
@@ -33,7 +30,4 @@ public record HealthSave
 
     [JsonPropertyName("health")]
     public bool Health { get; set; }
-
-    [JsonPropertyName("effects")]
-    public bool Effects { get; set; }
 }

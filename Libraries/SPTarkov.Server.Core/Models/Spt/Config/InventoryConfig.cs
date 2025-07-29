@@ -8,12 +8,6 @@ public record InventoryConfig : BaseConfig
     [JsonPropertyName("kind")]
     public override string Kind { get; set; } = "spt-inventory";
 
-    /// <summary>
-    ///     Should new items purchased by flagged as found in raid
-    /// </summary>
-    [JsonPropertyName("newItemsMarkedFound")]
-    public bool NewItemsMarkedFound { get; set; }
-
     [JsonPropertyName("randomLootContainers")]
     public required Dictionary<MongoId, RewardDetails> RandomLootContainers { get; set; }
 
@@ -29,7 +23,7 @@ public record InventoryConfig : BaseConfig
     /// <summary>
     ///     Multipliers for skill gain when inside menus, NOT in-game
     /// </summary>
-    [JsonPropertyName("skillGainMultiplers")]
+    [JsonPropertyName("skillGainMultipliers")]
     public required Dictionary<string, double> SkillGainMultipliers { get; set; }
 
     /// <summary>
@@ -57,7 +51,7 @@ public record RewardDetails
     public Dictionary<MongoId, double>? RewardTplPool { get; set; }
 
     [JsonPropertyName("rewardTypePool")]
-    public List<MongoId>? RewardTypePool { get; set; }
+    public HashSet<MongoId>? RewardTypePool { get; set; }
 }
 
 public record SealedAirdropContainerSettings

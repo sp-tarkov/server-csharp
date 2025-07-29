@@ -47,9 +47,7 @@ public class TimeUtil
     /// <returns>Unix epoch for the start of day of the calculated date</returns>
     public long GetStartOfDayTimeStamp(long? timestamp)
     {
-        var now = timestamp.HasValue
-            ? DateTimeOffset.FromUnixTimeMilliseconds(timestamp.Value).DateTime
-            : GetDateTimeNow();
+        var now = timestamp.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(timestamp.Value).DateTime : GetDateTimeNow();
 
         var startOfDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
         return ((DateTimeOffset)startOfDay).ToUnixTimeMilliseconds();

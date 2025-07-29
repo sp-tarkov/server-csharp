@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.InRaid;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
@@ -9,21 +10,21 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class InRaidController(
-    ISptLogger<InRaidController> _logger,
-    ProfileHelper _profileHelper,
+    ISptLogger<InRaidController> logger,
+    ProfileHelper profileHelper,
     //ApplicationContext _applicationContext,
-    ConfigServer _configServer
+    ConfigServer configServer
 )
 {
-    protected readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected readonly InRaidConfig _inRaidConfig = _configServer.GetConfig<InRaidConfig>();
+    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
+    protected readonly InRaidConfig _inRaidConfig = configServer.GetConfig<InRaidConfig>();
 
     /// <summary>
     ///     Save locationId to active profiles in-raid object AND app context
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="info">Register player request</param>
-    public void AddPlayer(string sessionId, RegisterPlayerRequestData info)
+    public void AddPlayer(MongoId sessionId, RegisterPlayerRequestData info)
     {
         // _applicationContext.AddValue(ContextVariableType.REGISTER_PLAYER_REQUEST, info);
     }
@@ -35,9 +36,9 @@ public class InRaidController(
     /// </summary>
     /// <param name="offRaidProfileData"></param>
     /// <param name="sessionId">Session/Player id</param>
-    public void SavePostRaidProfileForScav(ScavSaveRequestData offRaidProfileData, string sessionId)
+    public void SavePostRaidProfileForScav(ScavSaveRequestData offRaidProfileData, MongoId sessionId)
     {
-        var serverScavProfile = _profileHelper.GetScavProfile(sessionId);
+        var serverScavProfile = profileHelper.GetScavProfile(sessionId);
 
         // If equipment match overwrite existing data from update to date raid data for scavenger screen to work correctly.
         // otherwise Scav inventory will be overwritten and break scav regeneration, breaking profile.
@@ -62,7 +63,7 @@ public class InRaidController(
     /// <param name="url"></param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>% chance scav is hostile to player</returns>
-    public double GetTraitorScavHostileChance(string url, string sessionId)
+    public double GetTraitorScavHostileChance(string url, MongoId sessionId)
     {
         return _inRaidConfig.PlayerScavHostileChancePercent;
     }
@@ -73,7 +74,7 @@ public class InRaidController(
     /// <param name="url"></param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>string array of boss types</returns>
-    public List<string> GetBossTypes(string url, string sessionId)
+    public List<string> GetBossTypes(string url, MongoId sessionId)
     {
         return _botConfig.Bosses;
     }

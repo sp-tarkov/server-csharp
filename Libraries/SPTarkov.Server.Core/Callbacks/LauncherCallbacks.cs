@@ -1,5 +1,6 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Servers;
@@ -9,92 +10,80 @@ namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
 public class LauncherCallbacks(
-    HttpResponseUtil _httpResponseUtil,
-    LauncherController _launcherController,
-    SaveServer _saveServer,
-    Watermark _watermark
+    HttpResponseUtil httpResponseUtil,
+    LauncherController launcherController,
+    SaveServer saveServer,
+    Watermark watermark
 )
 {
     public ValueTask<string> Connect()
     {
-        return new ValueTask<string>(_httpResponseUtil.NoBody(_launcherController.Connect()));
+        return new ValueTask<string>(httpResponseUtil.NoBody(launcherController.Connect()));
     }
 
-    public ValueTask<string> Login(string url, LoginRequestData info, string sessionID)
+    public ValueTask<string> Login(string url, LoginRequestData info, MongoId sessionID)
     {
-        var output = _launcherController.Login(info);
-        return new ValueTask<string>(output ?? "FAILED");
+        var output = launcherController.Login(info);
+        return new ValueTask<string>(output.IsEmpty() ? "FAILED" : output.ToString());
     }
 
-    public async ValueTask<string> Register(string url, RegisterData info, string sessionID)
+    public async ValueTask<string> Register(string url, RegisterData info, MongoId sessionID)
     {
-        var output = await _launcherController.Register(info);
-        return string.IsNullOrEmpty(output) ? "FAILED" : "OK";
+        var output = await launcherController.Register(info);
+        return output.IsEmpty() ? string.Empty : output.ToString();
     }
 
-    public ValueTask<string> Get(string url, LoginRequestData info, string sessionID)
+    public ValueTask<string> Get(string url, LoginRequestData info, MongoId sessionID)
     {
-        var output = _launcherController.Find(_launcherController.Login(info));
-        return new ValueTask<string>(_httpResponseUtil.NoBody(output));
+        var output = launcherController.Find(launcherController.Login(info));
+        return new ValueTask<string>(httpResponseUtil.NoBody(output));
     }
 
-    public ValueTask<string> ChangeUsername(string url, ChangeRequestData info, string sessionID)
+    public ValueTask<string> ChangeUsername(string url, ChangeRequestData info, MongoId sessionID)
     {
-        var output = _launcherController.ChangeUsername(info);
+        var output = launcherController.ChangeUsername(info);
         return new ValueTask<string>(string.IsNullOrEmpty(output) ? "FAILED" : "OK");
     }
 
-    public ValueTask<string> ChangePassword(string url, ChangeRequestData info, string sessionID)
+    public ValueTask<string> ChangePassword(string url, ChangeRequestData info, MongoId sessionID)
     {
-        var output = _launcherController.ChangePassword(info);
+        var output = launcherController.ChangePassword(info);
         return new ValueTask<string>(string.IsNullOrEmpty(output) ? "FAILED" : "OK");
     }
 
-    public ValueTask<string> Wipe(string url, RegisterData info, string sessionID)
+    public ValueTask<string> Wipe(string url, RegisterData info, MongoId sessionID)
     {
-        var output = _launcherController.Wipe(info);
-        return new ValueTask<string>(string.IsNullOrEmpty(output) ? "FAILED" : "OK");
+        var output = launcherController.Wipe(info);
+        return new ValueTask<string>(output.IsEmpty() ? "FAILED" : "OK");
     }
 
     public ValueTask<string> GetServerVersion()
     {
-        return new ValueTask<string>(_httpResponseUtil.NoBody(_watermark.GetVersionTag()));
+        return new ValueTask<string>(httpResponseUtil.NoBody(watermark.GetVersionTag()));
     }
 
-    public ValueTask<string> Ping(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> Ping(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(_httpResponseUtil.NoBody("pong!"));
+        return new ValueTask<string>(httpResponseUtil.NoBody("pong!"));
     }
 
-    public ValueTask<string> RemoveProfile(string url, RemoveProfileData info, string sessionID)
+    public ValueTask<string> RemoveProfile(string url, RemoveProfileData info, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            _httpResponseUtil.NoBody(_saveServer.RemoveProfile(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(saveServer.RemoveProfile(sessionID)));
     }
 
     public ValueTask<string> GetCompatibleTarkovVersion()
     {
-        return new ValueTask<string>(
-            _httpResponseUtil.NoBody(_launcherController.GetCompatibleTarkovVersion())
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(launcherController.GetCompatibleTarkovVersion()));
     }
 
     public ValueTask<string> GetLoadedServerMods()
     {
-        return new ValueTask<string>(
-            _httpResponseUtil.NoBody(_launcherController.GetLoadedServerMods())
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(launcherController.GetLoadedServerMods()));
     }
 
-    public ValueTask<string> GetServerModsProfileUsed(
-        string url,
-        EmptyRequestData _,
-        string sessionID
-    )
+    public ValueTask<string> GetServerModsProfileUsed(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            _httpResponseUtil.NoBody(_launcherController.GetServerModsProfileUsed(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.NoBody(launcherController.GetServerModsProfileUsed(sessionID)));
     }
 }

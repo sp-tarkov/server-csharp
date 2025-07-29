@@ -12,24 +12,27 @@ namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class BotNameService(
-    ISptLogger<BotNameService> _logger,
-    BotHelper _botHelper,
-    RandomUtil _randomUtil,
-    ServerLocalisationService _serverLocalisationService,
-    DatabaseService _databaseService,
-    ConfigServer _configServer
+    ISptLogger<BotNameService> logger,
+    BotHelper botHelper,
+    RandomUtil randomUtil,
+    ServerLocalisationService serverLocalisationService,
+    DatabaseService databaseService,
+    ConfigServer configServer
 )
 {
     protected readonly Lock _lockObject = new();
-    protected readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected readonly HashSet<string> _usedNameCache = new();
+    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
+    protected readonly HashSet<string> _usedNameCache = [];
 
     /// <summary>
-    ///     Clear out any entries in Name Set
+    ///     Clear out generated pmc names from cache
     /// </summary>
     public void ClearNameCache()
     {
-        _usedNameCache.Clear();
+        lock (_lockObject)
+        {
+            _usedNameCache.Clear();
+        }
     }
 
     /// <summary>
@@ -50,21 +53,16 @@ public class BotNameService(
         var isPmc = botGenerationDetails.IsPmc;
 
         // Never show for players
-        var showTypeInNickname =
-            !botGenerationDetails.IsPlayerScav.GetValueOrDefault(false)
-            && _botConfig.ShowTypeInNickname;
+        var showTypeInNickname = !botGenerationDetails.IsPlayerScav && _botConfig.ShowTypeInNickname;
         var roleShouldBeUnique = uniqueRoles?.Contains(botRole.ToLowerInvariant());
 
         var attempts = 0;
         while (attempts <= 5)
         {
             // Get bot name with leading/trailing whitespace removed
-            var name = isPmc.GetValueOrDefault(false) // Explicit handling of PMCs, all other bots will get "first_name last_name"
-                ? _botHelper.GetPmcNicknameOfMaxLength(
-                    _botConfig.BotNameLengthLimit,
-                    botGenerationDetails.Side
-                )
-                : $"{_randomUtil.GetArrayValue(botJsonTemplate.FirstNames)} {(botJsonTemplate.LastNames.Count > 0 ? _randomUtil.GetArrayValue(botJsonTemplate.LastNames) : "")}";
+            var name = isPmc // Explicit handling of PMCs, all other bots will get "first_name last_name"
+                ? botHelper.GetPmcNicknameOfMaxLength(_botConfig.BotNameLengthLimit, botGenerationDetails.Side)
+                : $"{randomUtil.GetArrayValue(botJsonTemplate.FirstNames)} {(botJsonTemplate.LastNames.Any() ? randomUtil.GetArrayValue(botJsonTemplate.LastNames) : "")}";
 
             name = name.Trim();
 
@@ -75,14 +73,9 @@ public class BotNameService(
             }
 
             // Replace pmc bot names with player name + prefix
-            if (
-                botGenerationDetails.IsPmc.GetValueOrDefault(false)
-                && botGenerationDetails.AllPmcsHaveSameNameAsPlayer.GetValueOrDefault(false)
-            )
+            if (botGenerationDetails.IsPmc && botGenerationDetails.AllPmcsHaveSameNameAsPlayer)
             {
-                var prefix = _serverLocalisationService.GetRandomTextThatMatchesPartialKey(
-                    "pmc-name_prefix_"
-                );
+                var prefix = serverLocalisationService.GetRandomTextThatMatchesPartialKey("pmc-name_prefix_");
                 name = $"{prefix} {name}";
             }
 
@@ -96,11 +89,10 @@ public class BotNameService(
                     if (attempts >= 5)
                     {
                         // 5 attempts to generate a name, pool probably isn't big enough
-                        var genericName =
-                            $"{botGenerationDetails.Side} {_randomUtil.GetInt(100000, 999999)}";
-                        if (_logger.IsLogEnabled(LogLevel.Debug))
+                        var genericName = $"{botGenerationDetails.Side} {randomUtil.GetInt(100000, 999999)}";
+                        if (logger.IsLogEnabled(LogLevel.Debug))
                         {
-                            _logger.Debug(
+                            logger.Debug(
                                 $"Failed to find unique name for: {botRole} {botGenerationDetails.Side} after 5 attempts, using: {genericName}"
                             );
                         }
@@ -158,12 +150,12 @@ public class BotNameService(
     /// <returns>PMC name as string</returns>
     protected string GetRandomPmcName()
     {
-        var bots = _databaseService.GetBots().Types;
+        var bots = databaseService.GetBots().Types;
 
         var pmcNames = new List<string>();
         pmcNames.AddRange(bots["usec"].FirstNames);
         pmcNames.AddRange(bots["bear"].FirstNames);
 
-        return _randomUtil.GetArrayValue(pmcNames);
+        return randomUtil.GetArrayValue(pmcNames);
     }
 }

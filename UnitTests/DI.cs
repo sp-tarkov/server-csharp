@@ -1,19 +1,32 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SPTarkov.Server.Core.Models.Utils;
+using NUnit.Framework;
+using SPTarkov.DI;
+using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Server.Core.Utils.Json.Converters;
+using SPTarkov.Server.Core.Utils.Logger.Handlers;
 using UnitTests.Mock;
 
 namespace UnitTests;
 
-[TestClass]
+[TestFixture]
 public class DI
 {
     private static IServiceProvider _serviceProvider;
 
-    [AssemblyInitialize]
-    public static void ConfigureServices(TestContext context)
+    private static DI? _instance;
+
+    private DI()
+    {
+        ConfigureServices();
+    }
+
+    public static DI GetInstance()
+    {
+        return _instance ??= new DI();
+    }
+
+    private void ConfigureServices()
     {
         if (_serviceProvider != null)
         {
@@ -21,20 +34,33 @@ public class DI
         }
 
         var services = new ServiceCollection();
-        var jsonUtil = new JsonUtil([new SptJsonConverterRegistrator()]);
-        var mathUtil = new MathUtil();
 
-        services.AddSingleton<JsonUtil>(jsonUtil);
-        services.AddSingleton<MathUtil>(mathUtil);
-        services.AddSingleton<ICloner, JsonCloner>();
-        services.AddSingleton<ISptLogger<RandomUtil>, MockLogger<RandomUtil>>();
-        services.AddSingleton<RandomUtil>();
-        services.AddSingleton<HashUtil>();
+        var diHandler = new DependencyInjectionHandler(services);
+
+        diHandler.AddInjectableTypesFromTypeAssembly(typeof(App));
+        diHandler.AddInjectableTypesFromTypeList(
+            [
+                typeof(MockLogger<>), // TODO: this needs to be enabled but the randomizer needs to NOT be random, typeof(MockRandomUtil)
+            ]
+        );
+
+        diHandler.InjectAll();
+
+        services.AddSingleton<IReadOnlyList<SptMod>>(_ => []);
 
         _serviceProvider = services.BuildServiceProvider();
+
+        foreach (var onLoad in _serviceProvider.GetServices<IOnLoad>())
+        {
+            if (onLoad is FileLogHandler)
+            {
+                continue;
+            }
+            onLoad.OnLoad().Wait();
+        }
     }
 
-    public static T GetService<T>()
+    public T GetService<T>()
         where T : notnull
     {
         return _serviceProvider.GetRequiredService<T>();

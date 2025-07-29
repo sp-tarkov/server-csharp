@@ -7,7 +7,7 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class ClientLogController(ISptLogger<ClientLogController> _logger)
+public class ClientLogController(ISptLogger<ClientLogController> logger)
 {
     /// <summary>
     ///     Handle /singleplayer/log
@@ -20,6 +20,6 @@ public class ClientLogController(ISptLogger<ClientLogController> _logger)
         var color = logRequest.Color ?? LogTextColor.White;
         var backgroundColor = logRequest.BackgroundColor ?? LogBackgroundColor.Default;
 
-        _logger.Log(logRequest.Level ?? LogLevel.Info, message, color, backgroundColor);
+        logger.Log(logRequest.Level ?? LogLevel.Info, message, color, backgroundColor);
     }
 }

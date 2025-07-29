@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -24,13 +25,13 @@ public record EndLocalRaidRequestData : IRequestData
     ///     Insured items left in raid by player
     /// </summary>
     [JsonPropertyName("lostInsuredItems")]
-    public List<Item>? LostInsuredItems { get; set; }
+    public IEnumerable<Item>? LostInsuredItems { get; set; }
 
     /// <summary>
     ///     Items sent via traders to player, keyed to service e.g. BTRTransferStash
     /// </summary>
     [JsonPropertyName("transferItems")]
-    public Dictionary<string, List<Item>>? TransferItems { get; set; }
+    public Dictionary<string, IEnumerable<Item>>? TransferItems { get; set; }
 
     [JsonPropertyName("locationTransit")]
     public LocationTransit? LocationTransit { get; set; }
@@ -52,7 +53,7 @@ public record EndRaidResult
     public ExitStatus? Result { get; set; }
 
     [JsonPropertyName("killerId")]
-    public string? KillerId { get; set; }
+    public MongoId? KillerId { get; set; }
 
     [JsonPropertyName("killerAid")]
     public string? KillerAid { get; set; }

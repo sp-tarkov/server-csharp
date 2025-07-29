@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Spt.Services;
 using SPTarkov.Server.Core.Utils;
 
@@ -8,18 +9,14 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class ProfileActivityService(TimeUtil timeUtil)
 {
-    private readonly ConcurrentDictionary<string, ProfileActivityData> _activeProfiles = [];
+    private readonly ConcurrentDictionary<MongoId, ProfileActivityData> _activeProfiles = [];
 
-    public void AddActiveProfile(string sessionId, long clientStartedTimestamp)
+    public void AddActiveProfile(MongoId sessionId, long clientStartedTimestamp)
     {
         _activeProfiles.AddOrUpdate(
             sessionId,
             // On add value
-            key => new ProfileActivityData
-            {
-                ClientStartedTimestamp = clientStartedTimestamp,
-                LastActive = timeUtil.GetTimeStamp(),
-            },
+            key => new ProfileActivityData { ClientStartedTimestamp = clientStartedTimestamp, LastActive = timeUtil.GetTimeStamp() },
             // On Update value, client was started before but crashed or user restarted
             (key, existingValue) =>
             {
@@ -31,7 +28,7 @@ public class ProfileActivityService(TimeUtil timeUtil)
         );
     }
 
-    public bool ContainsActiveProfile(string sessionId)
+    public bool ContainsActiveProfile(MongoId sessionId)
     {
         if (_activeProfiles.ContainsKey(sessionId))
         {
@@ -52,7 +49,7 @@ public class ProfileActivityService(TimeUtil timeUtil)
         return null;
     }
 
-    public ProfileActivityRaidData GetProfileActivityRaidData(string sessionId)
+    public ProfileActivityRaidData GetProfileActivityRaidData(MongoId sessionId)
     {
         // Handle edge cases where people might close the server but keep the client alive
         if (!ContainsActiveProfile(sessionId))
@@ -76,7 +73,7 @@ public class ProfileActivityService(TimeUtil timeUtil)
     /// <param name="sessionId"> Profile to check </param>
     /// <param name="minutes"> Minutes to check for activity in </param>
     /// <returns> True when profile was active within past x minutes </returns>
-    public bool ActiveWithinLastMinutes(string sessionId, int minutes)
+    public bool ActiveWithinLastMinutes(MongoId sessionId, int minutes)
     {
         if (!_activeProfiles.TryGetValue(sessionId, out var profileActivity))
         {
@@ -113,11 +110,39 @@ public class ProfileActivityService(TimeUtil timeUtil)
     ///     Update the timestamp a profile was last observed active
     /// </summary>
     /// <param name="sessionId"> Profile to update </param>
-    public void SetActivityTimestamp(string sessionId)
+    public void SetActivityTimestamp(MongoId sessionId)
     {
         if (_activeProfiles.TryGetValue(sessionId, out var currentActiveProfile))
         {
             currentActiveProfile.LastActive = timeUtil.GetTimeStamp();
+        }
+    }
+
+    public IReadOnlyList<ProfileActiveClientMods> GetProfileActiveClientMods(MongoId sessionId)
+    {
+        if (!ContainsActiveProfile(sessionId))
+        {
+            return [];
+        }
+
+        if (_activeProfiles.TryGetValue(sessionId, out var currentActiveProfile))
+        {
+            return currentActiveProfile.ActiveClientMods;
+        }
+
+        throw new Exception($"Unable to retrieve active client mods for session: {sessionId}");
+    }
+
+    public void SetProfileActiveClientMods(MongoId sessionId, IReadOnlyList<ProfileActiveClientMods> activeClientMods)
+    {
+        if (!ContainsActiveProfile(sessionId))
+        {
+            AddActiveProfile(sessionId, timeUtil.GetTimeStamp());
+        }
+
+        if (_activeProfiles.TryGetValue(sessionId, out var currentActiveProfile))
+        {
+            currentActiveProfile.ActiveClientMods = activeClientMods;
         }
     }
 }

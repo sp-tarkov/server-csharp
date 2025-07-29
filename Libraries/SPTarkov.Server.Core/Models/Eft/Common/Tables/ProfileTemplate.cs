@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -27,7 +28,7 @@ public record TemplateSide
     public PmcData? Character { get; set; }
 
     [JsonPropertyName("suits")]
-    public List<string>? Suits { get; set; }
+    public List<MongoId>? Suits { get; set; }
 
     [JsonPropertyName("dialogues")]
     public Dictionary<string, Dialogue>? Dialogues { get; set; }
@@ -51,7 +52,7 @@ public record ProfileTraderTemplate
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("initialLoyaltyLevel")]
-    public Dictionary<string, int?>? InitialLoyaltyLevel { get; set; }
+    public Dictionary<MongoId, int?>? InitialLoyaltyLevel { get; set; }
 
     [JsonPropertyName("initialStanding")]
     public Dictionary<string, double?>? InitialStanding { get; set; }
@@ -78,11 +79,11 @@ public record ProfileTraderTemplate
     ///     What traders default to being locked on profile creation
     /// </summary>
     [JsonPropertyName("lockedByDefaultOverride")]
-    public List<string>? LockedByDefaultOverride { get; set; }
+    public HashSet<MongoId>? LockedByDefaultOverride { get; set; }
 
     /// <summary>
     ///     What traders should have their clothing unlocked/purchased on creation
     /// </summary>
     [JsonPropertyName("purchaseAllClothingByDefaultForTrader")]
-    public List<string>? PurchaseAllClothingByDefaultForTrader { get; set; }
+    public HashSet<MongoId>? PurchaseAllClothingByDefaultForTrader { get; set; }
 }

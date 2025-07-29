@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
@@ -25,28 +26,16 @@ public class ForceChristmasMessageHandler(
         return string.Equals(message, "hohoho", StringComparison.OrdinalIgnoreCase);
     }
 
-    public void Process(
-        string sessionId,
-        UserDialogInfo sptFriendUser,
-        PmcData? sender,
-        object? extraInfo = null
-    )
+    public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
-        var enableEventResult = _seasonalEventService.ForceSeasonalEvent(
-            SeasonalEventType.Christmas
-        );
+        var enableEventResult = _seasonalEventService.ForceSeasonalEvent(SeasonalEventType.Christmas);
         if (enableEventResult)
         {
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
                 _randomUtil.GetArrayValue(
-                    [
-                        _serverLocalisationService.GetText(
-                            "chatbot-forced_event_enabled",
-                            SeasonalEventType.Christmas
-                        ),
-                    ]
+                    [_serverLocalisationService.GetText("chatbot-forced_event_enabled", SeasonalEventType.Christmas)]
                 ),
                 [],
                 null

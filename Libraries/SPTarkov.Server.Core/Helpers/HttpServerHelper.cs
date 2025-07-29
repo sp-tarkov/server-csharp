@@ -1,5 +1,5 @@
-﻿using System.Net;
-using System.Net.Sockets;
+﻿using System.Collections.Frozen;
+using Microsoft.AspNetCore.Http;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
@@ -11,7 +11,7 @@ public class HttpServerHelper(ConfigServer configServer)
 {
     protected readonly HttpConfig _httpConfig = configServer.GetConfig<HttpConfig>();
 
-    protected readonly Dictionary<string, string> mime = new()
+    protected readonly FrozenDictionary<string, string> mime = new Dictionary<string, string>
     {
         { "css", "text/css" },
         { "bin", "application/octet-stream" },
@@ -22,7 +22,7 @@ public class HttpServerHelper(ConfigServer configServer)
         { "png", "image/png" },
         { "svg", "image/svg+xml" },
         { "txt", "text/plain" },
-    };
+    }.ToFrozenDictionary();
 
     public string? GetMimeText(string key)
     {
@@ -56,39 +56,14 @@ public class HttpServerHelper(ConfigServer configServer)
         return $"wss://{BuildUrl()}";
     }
 
-    /// <summary>
-    /// Method to determine if another version of the server is already running
-    /// </summary>
-    /// <returns>bool isAlreadyRunning</returns>
-    public bool IsAlreadyRunning()
-    {
-        TcpListener? listener = null;
-
-        try
-        {
-            listener = new(IPAddress.Parse(_httpConfig.Ip), _httpConfig.Port);
-            listener.Start();
-            return false;
-        }
-        catch (Exception)
-        {
-            return true;
-        }
-        finally
-        {
-            listener?.Stop();
-        }
-    }
-
     public void SendTextJson(HttpResponse resp, object output)
     {
         resp.Headers.Append("Content-Type", mime["json"]);
         resp.StatusCode = 200;
-        /* TODO: figure this one out
-        resp.writeHead(200, "OK",  {
-            "Content-Type": this.mime.json
-        });
-        resp.end(output);
-        */
+        //  TODO: figure this one out
+        // resp.writeHead(200, "OK",  {
+        //     "Content-Type": this.mime.json
+        // });
+        // resp.end(output);
     }
 }

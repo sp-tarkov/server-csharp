@@ -65,7 +65,7 @@ public record HideoutItem
     public MongoId Id { get; set; }
 
     [JsonPropertyName("_tpl")]
-    public required MongoId Template { get; set; }
+    public MongoId Template { get; set; }
 
     [JsonPropertyName("upd")]
     public Upd? Upd { get; set; }
@@ -137,7 +137,7 @@ public record Upd
     ///     SPT specific property, not made by BSG
     /// </summary>
     [JsonPropertyName("sptPresetId")]
-    public string? SptPresetId { get; set; }
+    public MongoId? SptPresetId { get; set; }
 
     public UpdFaceShield? FaceShield { get; set; }
 
@@ -199,12 +199,11 @@ public record LockableComponent
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public string[]? KeyIds { get; set; }
+    public IEnumerable<string>? KeyIds { get; set; }
     public bool? Locked { get; set; }
     public LockableKeyComponent? KeyComponent { get; set; }
 }
 
-[EftEnumConverter]
 public enum PinLockState
 {
     Free,
@@ -327,10 +326,10 @@ public record UpdSight
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("ScopesCurrentCalibPointIndexes")]
-    public List<int>? ScopesCurrentCalibPointIndexes { get; set; }
+    public IEnumerable<int>? ScopesCurrentCalibPointIndexes { get; set; }
 
     [JsonPropertyName("ScopesSelectedModes")]
-    public List<int>? ScopesSelectedModes { get; set; }
+    public IEnumerable<int>? ScopesSelectedModes { get; set; }
 
     [JsonPropertyName("SelectedScope")]
     public int? SelectedScope { get; set; }

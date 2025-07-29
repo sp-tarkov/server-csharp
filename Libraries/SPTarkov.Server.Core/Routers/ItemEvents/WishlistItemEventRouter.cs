@@ -1,6 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Callbacks;
 using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Request;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -10,15 +11,8 @@ using SPTarkov.Server.Core.Models.Enums;
 namespace SPTarkov.Server.Core.Routers.ItemEvents;
 
 [Injectable]
-public class WishlistItemEventRouter : ItemEventRouterDefinition
+public class WishlistItemEventRouter(WishlistCallbacks wishlistCallbacks) : ItemEventRouterDefinition
 {
-    protected WishlistCallbacks _wishlistCallbacks;
-
-    public WishlistItemEventRouter(WishlistCallbacks wishlistCallbacks)
-    {
-        _wishlistCallbacks = wishlistCallbacks;
-    }
-
     protected override List<HandledRoute> GetHandledRoutes()
     {
         return new List<HandledRoute>
@@ -33,7 +27,7 @@ public class WishlistItemEventRouter : ItemEventRouterDefinition
         string url,
         PmcData pmcData,
         BaseInteractionRequestData body,
-        string sessionID,
+        MongoId sessionID,
         ItemEventRouterResponse output
     )
     {
@@ -41,32 +35,18 @@ public class WishlistItemEventRouter : ItemEventRouterDefinition
         {
             case ItemEventActions.ADD_TO_WISHLIST:
                 return new ValueTask<ItemEventRouterResponse>(
-                    _wishlistCallbacks.AddToWishlist(
-                        pmcData,
-                        body as AddToWishlistRequest,
-                        sessionID
-                    )
+                    wishlistCallbacks.AddToWishlist(pmcData, body as AddToWishlistRequest, sessionID)
                 );
             case ItemEventActions.REMOVE_FROM_WISHLIST:
                 return new ValueTask<ItemEventRouterResponse>(
-                    _wishlistCallbacks.RemoveFromWishlist(
-                        pmcData,
-                        body as RemoveFromWishlistRequest,
-                        sessionID
-                    )
+                    wishlistCallbacks.RemoveFromWishlist(pmcData, body as RemoveFromWishlistRequest, sessionID)
                 );
             case ItemEventActions.CHANGE_WISHLIST_ITEM_CATEGORY:
                 return new ValueTask<ItemEventRouterResponse>(
-                    _wishlistCallbacks.ChangeWishlistItemCategory(
-                        pmcData,
-                        body as ChangeWishlistItemCategoryRequest,
-                        sessionID
-                    )
+                    wishlistCallbacks.ChangeWishlistItemCategory(pmcData, body as ChangeWishlistItemCategoryRequest, sessionID)
                 );
             default:
-                throw new Exception(
-                    $"CustomizationItemEventRouter being used when it cant handle route {url}"
-                );
+                throw new Exception($"CustomizationItemEventRouter being used when it cant handle route {url}");
         }
     }
 }

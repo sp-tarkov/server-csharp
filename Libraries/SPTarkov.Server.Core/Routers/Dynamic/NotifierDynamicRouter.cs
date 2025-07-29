@@ -12,25 +12,15 @@ public class NotifierDynamicRouter : DynamicRouter
         : base(
             jsonUtil,
             [
+                new RouteAction("/?last_id", async (url, info, sessionID, _) => await notifierCallbacks.Notify(url, info, sessionID)),
+                new RouteAction("/notifierServer", async (url, info, sessionID, _) => await notifierCallbacks.Notify(url, info, sessionID)),
                 new RouteAction(
-                    "/?last_id",
-                    async (url, info, sessionID, _) =>
-                        await notifierCallbacks.Notify(url, info, sessionID)
-                ),
-                new RouteAction(
-                    "/notifierServer",
-                    async (url, info, sessionID, _) =>
-                        await notifierCallbacks.Notify(url, info, sessionID)
+                    "/push/notifier/get/",
+                    async (url, info, sessionID, _) => await notifierCallbacks.GetNotifier(url, info, sessionID)
                 ),
                 new RouteAction(
                     "/push/notifier/get/",
-                    async (url, info, sessionID, _) =>
-                        await notifierCallbacks.GetNotifier(url, info, sessionID)
-                ),
-                new RouteAction(
-                    "/push/notifier/get/",
-                    async (url, info, sessionID, _) =>
-                        await notifierCallbacks.GetNotifier(url, info, sessionID)
+                    async (url, info, sessionID, _) => await notifierCallbacks.GetNotifier(url, info, sessionID)
                 ),
             ]
         ) { }

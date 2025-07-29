@@ -1,8 +1,5 @@
-using SPTarkov.Server.Core.Utils.Json.Converters;
-
 namespace SPTarkov.Server.Core.Models.Enums;
 
-[EftEnumConverter]
 public enum RewardType
 {
     Experience,
@@ -23,6 +20,7 @@ public enum RewardType
     CustomizationOffer,
     ExtraDailyQuest,
     CustomizationDirect,
+    Stub,
     WebPromoCode,
     NotificationPopup,
     Customization = 116,

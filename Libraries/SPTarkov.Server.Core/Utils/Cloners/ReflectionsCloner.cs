@@ -74,21 +74,12 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
                 (result as IDictionary).Add(clonedKey, clonedValue);
             }
         }
-        else if (
-            objectType.IsGenericType
-            && objectType.GetGenericTypeDefinition() == typeof(HashSet<>)
-        )
+        else if (objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(HashSet<>))
         {
             if (!AddMethodInfoCache.TryGetValue(objectType, out var addMethodInfo))
             {
-                addMethodInfo = objectType.GetMethod(
-                    "Add",
-                    BindingFlags.Instance | BindingFlags.Public
-                );
-                while (!AddMethodInfoCache.TryAdd(objectType, addMethodInfo))
-                {
-                    ;
-                }
+                addMethodInfo = objectType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public);
+                while (!AddMethodInfoCache.TryAdd(objectType, addMethodInfo)) { }
             }
 
             var toCloneEnumerable = (IEnumerable)obj;
@@ -112,10 +103,7 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
             if (!MemberInfoCache.TryGetValue(objectType, out var memberInfos))
             {
                 memberInfos = objectType.GetMembers(BindingFlags.Public | BindingFlags.Instance);
-                while (!MemberInfoCache.TryAdd(objectType, memberInfos))
-                {
-                    ;
-                }
+                while (!MemberInfoCache.TryAdd(objectType, memberInfos)) { }
             }
 
             foreach (var member in memberInfos)
@@ -127,10 +115,7 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
                         case PropertyInfo propertyInfo:
 
                             var propertyValue = propertyInfo.GetValue(obj, null);
-                            var propertyCloned = await Clone(
-                                propertyValue,
-                                propertyInfo.PropertyType
-                            );
+                            var propertyCloned = await Clone(propertyValue, propertyInfo.PropertyType);
                             propertyInfo.SetValue(result, propertyCloned, null);
 
                             break;
@@ -146,9 +131,7 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
                         default:
                             if (logger.IsLogEnabled(LogLevel.Debug))
                             {
-                                logger.Debug(
-                                    $"Unknown member type {member.Name} {member.MemberType}"
-                                );
+                                logger.Debug($"Unknown member type {member.Name} {member.MemberType}");
                             }
 
                             break;
@@ -181,25 +164,17 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
             if (!_itemPropertyInfoCache.TryGetValue(type, out var item))
             {
                 item = objectType.GetProperty("Item", BindingFlags.Public | BindingFlags.Instance);
-                while (!_itemPropertyInfoCache.TryAdd(type, item))
-                {
-                    ;
-                }
+                while (!_itemPropertyInfoCache.TryAdd(type, item)) { }
             }
 
             if (!_listPropertyInfoCache.TryGetValue(type, out var list))
             {
                 list = objectType.GetProperty("List", BindingFlags.Public | BindingFlags.Instance);
-                while (!_listPropertyInfoCache.TryAdd(type, list))
-                {
-                    ;
-                }
+                while (!_listPropertyInfoCache.TryAdd(type, list)) { }
             }
 
-            item.GetSetMethod(true)
-                .Invoke(clone, [await Clone(item.GetValue(obj), item.PropertyType)]);
-            list.GetSetMethod(true)
-                .Invoke(clone, [await Clone(list.GetValue(obj), list.PropertyType)]);
+            item.GetSetMethod(true).Invoke(clone, [await Clone(item.GetValue(obj), item.PropertyType)]);
+            list.GetSetMethod(true).Invoke(clone, [await Clone(list.GetValue(obj), list.PropertyType)]);
             return clone;
         }
 

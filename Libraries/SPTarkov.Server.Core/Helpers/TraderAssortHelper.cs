@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
@@ -12,19 +13,19 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable(InjectionType.Singleton)]
 public class TraderAssortHelper(
-    ISptLogger<TraderAssortHelper> _logger,
-    TimeUtil _timeUtil,
-    DatabaseService _databaseService,
-    ProfileHelper _profileHelper,
-    AssortHelper _assortHelper,
-    TraderPurchasePersisterService _traderPurchasePersisterService,
-    TraderHelper _traderHelper,
-    FenceService _fenceService,
-    ICloner _cloner
+    ISptLogger<TraderAssortHelper> logger,
+    TimeUtil timeUtil,
+    DatabaseService databaseService,
+    ProfileHelper profileHelper,
+    AssortHelper assortHelper,
+    TraderPurchasePersisterService traderPurchasePersisterService,
+    TraderHelper traderHelper,
+    FenceService fenceService,
+    ICloner cloner
 )
 {
-    private Dictionary<string, Dictionary<string, string>>? _mergedQuestAssorts;
-    protected virtual Dictionary<string, Dictionary<string, string>> MergedQuestAssorts
+    private Dictionary<string, Dictionary<MongoId, string>>? _mergedQuestAssorts;
+    protected virtual Dictionary<string, Dictionary<MongoId, string>> MergedQuestAssorts
     {
         get { return _mergedQuestAssorts ??= HydrateMergedQuestAssorts(); }
     }
@@ -38,25 +39,21 @@ public class TraderAssortHelper(
     /// <param name="traderId">traders id</param>
     /// <param name="showLockedAssorts">Should assorts player hasn't unlocked be returned - default false</param>
     /// <returns>a traders' assorts</returns>
-    public TraderAssort GetAssort(string sessionId, string traderId, bool showLockedAssorts = false)
+    public TraderAssort GetAssort(MongoId sessionId, MongoId traderId, bool showLockedAssorts = false)
     {
-        var traderClone = _cloner.Clone(_databaseService.GetTrader(traderId));
-        var fullProfile = _profileHelper.GetFullProfile(sessionId);
+        var traderClone = cloner.Clone(databaseService.GetTrader(traderId));
+        var fullProfile = profileHelper.GetFullProfile(sessionId);
         var pmcProfile = fullProfile?.CharacterData?.PmcData;
 
         if (traderId == Traders.FENCE)
         {
-            return _fenceService.GetFenceAssorts(pmcProfile);
+            return fenceService.GetFenceAssorts(pmcProfile);
         }
 
         // Strip assorts player should not see yet
         if (!showLockedAssorts)
         {
-            traderClone.Assort = _assortHelper.StripLockedLoyaltyAssort(
-                pmcProfile,
-                traderId,
-                traderClone.Assort
-            );
+            traderClone.Assort = assortHelper.StripLockedLoyaltyAssort(pmcProfile, traderId, traderClone.Assort);
         }
 
         ResetBuyRestrictionCurrentValue(traderClone.Assort.Items);
@@ -65,10 +62,7 @@ public class TraderAssortHelper(
         traderClone.Assort.NextResupply = traderClone.Base.NextResupply;
 
         // Adjust displayed assort counts based on values stored in profile
-        var assortPurchasesfromTrader = _traderPurchasePersisterService.GetProfileTraderPurchases(
-            sessionId,
-            traderId
-        );
+        var assortPurchasesfromTrader = traderPurchasePersisterService.GetProfileTraderPurchases(sessionId, traderId);
 
         foreach (var assortId in assortPurchasesfromTrader ?? [])
         {
@@ -76,9 +70,9 @@ public class TraderAssortHelper(
             var assortToAdjust = traderClone.Assort.Items.FirstOrDefault(x => x.Id == assortId.Key);
             if (assortToAdjust is null)
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
+                if (logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(
+                    logger.Debug(
                         $"Cannot find trader: {traderClone.Base.Nickname} assort: {assortId} to adjust BuyRestrictionCurrent value, skipping"
                     );
                 }
@@ -88,9 +82,9 @@ public class TraderAssortHelper(
 
             if (assortToAdjust.Upd is null)
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
+                if (logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug(
+                    logger.Debug(
                         $"Unable to adjust assort: {assortToAdjust.Id} item: {assortToAdjust.Template} BuyRestrictionCurrent value, assort has a null upd object"
                     );
                 }
@@ -98,12 +92,10 @@ public class TraderAssortHelper(
                 continue;
             }
 
-            assortToAdjust.Upd.BuyRestrictionCurrent = (int)(
-                assortPurchasesfromTrader[assortId.Key].PurchaseCount ?? 0
-            );
+            assortToAdjust.Upd.BuyRestrictionCurrent = (int)(assortPurchasesfromTrader[assortId.Key].PurchaseCount ?? 0);
         }
 
-        traderClone.Assort = _assortHelper.StripLockedQuestAssort(
+        traderClone.Assort = assortHelper.StripLockedQuestAssort(
             pmcProfile,
             traderId,
             traderClone.Assort,
@@ -124,7 +116,7 @@ public class TraderAssortHelper(
     ///     Reset every traders root item `BuyRestrictionCurrent` property to 0
     /// </summary>
     /// <param name="assortItems">Items to adjust</param>
-    protected void ResetBuyRestrictionCurrentValue(List<Item> assortItems)
+    protected void ResetBuyRestrictionCurrentValue(IEnumerable<Item> assortItems)
     {
         // iterate over root items
         foreach (var assort in assortItems.Where(item => item.SlotId == "hideout"))
@@ -143,12 +135,12 @@ public class TraderAssortHelper(
     /// Create a dictionary keyed by quest status (started/success) with every assortId to QuestId from every trader
     /// </summary>
     /// <returns>Dictionary</returns>
-    protected Dictionary<string, Dictionary<string, string>> HydrateMergedQuestAssorts()
+    protected Dictionary<string, Dictionary<MongoId, string>> HydrateMergedQuestAssorts()
     {
-        var result = new Dictionary<string, Dictionary<string, string>>();
+        var result = new Dictionary<string, Dictionary<MongoId, string>>();
 
         // Loop every trader
-        var traders = _databaseService.GetTraders();
+        var traders = databaseService.GetTraders();
         foreach (var (_, trader) in traders)
         {
             if (trader?.QuestAssort is null)
@@ -166,7 +158,7 @@ public class TraderAssortHelper(
                 }
 
                 // Null guard - ensure Started/Success/fail exists
-                result.TryAdd(unlockStatus, new Dictionary<string, string>());
+                result.TryAdd(unlockStatus, new Dictionary<MongoId, string>());
 
                 foreach (var (assortId, questId) in assortToQuestDict)
                 {
@@ -188,7 +180,7 @@ public class TraderAssortHelper(
         trader.Assort.Items = GetPristineTraderAssorts(trader.Base.Id);
 
         // Update resupply value to next timestamp
-        trader.Base.NextResupply = (int)_traderHelper.GetNextUpdateTimestamp(trader.Base.Id);
+        trader.Base.NextResupply = (int)traderHelper.GetNextUpdateTimestamp(trader.Base.Id);
 
         // Flag a refresh is needed so ragfair update() will pick it up
         trader.Base.RefreshTraderRagfairOffers = true;
@@ -199,10 +191,10 @@ public class TraderAssortHelper(
     /// </summary>
     /// <param name="traderID">Trader to check</param>
     /// <returns>true they need refreshing</returns>
-    public bool TraderAssortsHaveExpired(string traderID)
+    public bool TraderAssortsHaveExpired(MongoId traderID)
     {
-        var time = _timeUtil.GetTimeStamp();
-        var trader = _databaseService.GetTables().Traders[traderID];
+        var time = timeUtil.GetTimeStamp();
+        var trader = databaseService.GetTables().Traders[traderID];
 
         return trader.Base.NextResupply <= time;
     }
@@ -212,8 +204,8 @@ public class TraderAssortHelper(
     /// </summary>
     /// <param name="traderId">trader id</param>
     /// <returns>array of Items</returns>
-    protected List<Item> GetPristineTraderAssorts(string traderId)
+    protected List<Item> GetPristineTraderAssorts(MongoId traderId)
     {
-        return _cloner.Clone(_traderHelper.GetTraderAssortsByTraderId(traderId).Items);
+        return cloner.Clone(traderHelper.GetTraderAssortsByTraderId(traderId).Items);
     }
 }

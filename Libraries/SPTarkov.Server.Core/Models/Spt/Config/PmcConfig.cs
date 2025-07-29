@@ -73,9 +73,6 @@ public record PmcConfig : BaseConfig
     [JsonPropertyName("looseWeaponInBackpackLootMinMax")]
     public required MinMax<int> LooseWeaponInBackpackLootMinMax { get; set; }
 
-    [JsonPropertyName("_isUsec")]
-    public string? IsUsecDescription { get; set; }
-
     /// <summary>
     ///     Percentage chance PMC will be USEC
     /// </summary>
@@ -101,19 +98,10 @@ public record PmcConfig : BaseConfig
     ///     What 'brain' does a PMC use, keyed by map and side (USEC/BEAR) key: map location, value: type for usec/bear
     /// </summary>
     [JsonPropertyName("pmcType")]
-    public required Dictionary<
-        string,
-        Dictionary<string, Dictionary<string, double>>
-    > PmcType { get; set; }
+    public required Dictionary<string, Dictionary<string, Dictionary<string, double>>> PmcType { get; set; }
 
-    [JsonPropertyName("maxBackpackLootTotalRub")]
-    public required List<MinMaxLootValue> MaxBackpackLootTotalRub { get; set; }
-
-    [JsonPropertyName("maxPocketLootTotalRub")]
-    public required int MaxPocketLootTotalRub { get; set; }
-
-    [JsonPropertyName("maxVestLootTotalRub")]
-    public required int MaxVestLootTotalRub { get; set; }
+    [JsonPropertyName("lootSettings")]
+    public required PmcLootSettings LootSettings { get; set; }
 
     /// <summary>
     ///     How many levels above player level can a PMC be
@@ -148,17 +136,38 @@ public record PmcConfig : BaseConfig
     [JsonPropertyName("addSecureContainerLootFromBotConfig")]
     public required bool AddSecureContainerLootFromBotConfig { get; set; }
 
-    [JsonPropertyName("addPrefixToSameNamePMCAsPlayerChance")]
-    public required int? AddPrefixToSameNamePMCAsPlayerChance { get; set; }
-
     [JsonPropertyName("lootItemLimitsRub")]
-    public required List<MinMaxLootItemValue>? LootItemLimitsRub { get; set; }
+    public required List<MinMaxLootItemValue> LootItemLimitsRub { get; set; }
 
     [JsonPropertyName("removeExistingPmcWaves")]
-    public required bool? RemoveExistingPmcWaves { get; set; }
+    public required bool RemoveExistingPmcWaves { get; set; }
+
+    [JsonPropertyName("dogtags")]
+    public required Dictionary<string, Dictionary<string, Dictionary<MongoId, double>>> DogtagSettings { get; set; }
 
     [JsonPropertyName("customPmcWaves")]
     public required Dictionary<string, List<BossLocationSpawn>> CustomPmcWaves { get; set; }
+}
+
+public record PmcLootSettings
+{
+    [JsonPropertyName("pocket")]
+    public LootContainerSettings Pocket { get; set; }
+
+    [JsonPropertyName("vest")]
+    public LootContainerSettings Vest { get; set; }
+
+    [JsonPropertyName("backpack")]
+    public LootContainerSettings Backpack { get; set; }
+}
+
+public record LootContainerSettings
+{
+    [JsonPropertyName("totalRubByLevel")]
+    public List<MinMaxLootValue> TotalRubByLevel { get; set; }
+
+    [JsonPropertyName("locationMultiplier")]
+    public Dictionary<string, double> LocationMultiplier { get; set; }
 }
 
 public record HostilitySettings

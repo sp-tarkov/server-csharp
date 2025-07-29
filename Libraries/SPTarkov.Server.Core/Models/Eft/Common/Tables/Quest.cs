@@ -42,7 +42,7 @@ public record Quest
     public string? Note { get; set; }
 
     [JsonPropertyName("traderId")]
-    public required string TraderId { get; set; }
+    public required MongoId TraderId { get; set; }
 
     [JsonPropertyName("location")]
     public required string Location { get; set; }
@@ -85,7 +85,7 @@ public record Quest
     public string? TemplateId { get; set; }
 
     [JsonPropertyName("rewards")]
-    public QuestRewards? Rewards { get; set; }
+    public Dictionary<string, List<Reward>>? Rewards { get; set; }
 
     /// <summary>
     ///     Becomes 'AppearStatus' inside client
@@ -105,9 +105,6 @@ public record Quest
     [JsonPropertyName("side")]
     public required string Side { get; set; }
 
-    [JsonPropertyName("acceptanceAndFinishingSource")]
-    public string? AcceptanceAndFinishingSource { get; set; }
-
     [JsonPropertyName("progressSource")]
     public string? ProgressSource { get; set; }
 
@@ -125,15 +122,6 @@ public record Quest
     /// </summary>
     [JsonPropertyName("sptStatus")]
     public QuestStatusEnum? SptStatus { get; set; }
-
-    [JsonPropertyName("questStatus")]
-    public QuestStatus? QuestStatus { get; set; }
-
-    [JsonPropertyName("changeCost")]
-    public List<object> ChangeCost { get; set; }
-
-    [JsonPropertyName("changeStandingCost")]
-    public double ChangeStandingCost { get; set; }
 }
 
 /// <summary>
@@ -212,9 +200,9 @@ public record QuestCondition
 
     /// <summary>
     ///     Can be: string[] or string
+    ///     Can be mongoId or string e.g. event_labyrinth_06_mech_place_01
     /// </summary>
     [JsonPropertyName("target")]
-    [JsonConverter(typeof(ListOrTConverterFactory))]
     public ListOrT<string>? Target { get; set; }
 
     [JsonPropertyName("value")]
@@ -225,7 +213,7 @@ public record QuestCondition
     public string? Type { get; set; }
 
     [JsonPropertyName("status")]
-    public List<QuestStatusEnum>? Status { get; set; }
+    public HashSet<QuestStatusEnum>? Status { get; set; }
 
     [JsonPropertyName("availableAfter")]
     public int? AvailableAfter { get; set; }
@@ -349,7 +337,6 @@ public record QuestConditionCounterCondition
     public bool? DynamicLocale { get; set; }
 
     [JsonPropertyName("target")]
-    [JsonConverter(typeof(ListOrTConverterFactory))]
     public ListOrT<string>? Target { get; set; }
 
     [JsonPropertyName("completeInSeconds")]
@@ -374,25 +361,25 @@ public record QuestConditionCounterCondition
     public object? Value { get; set; }
 
     [JsonPropertyName("weapon")]
-    public List<string>? Weapon { get; set; }
+    public HashSet<string>? Weapon { get; set; }
 
     [JsonPropertyName("distance")]
     public CounterConditionDistance? Distance { get; set; }
 
     [JsonPropertyName("equipmentInclusive")]
-    public List<List<string>>? EquipmentInclusive { get; set; }
+    public IEnumerable<List<string>>? EquipmentInclusive { get; set; }
 
     [JsonPropertyName("weaponModsInclusive")]
-    public List<List<string>>? WeaponModsInclusive { get; set; }
+    public IEnumerable<List<string>>? WeaponModsInclusive { get; set; }
 
     [JsonPropertyName("weaponModsExclusive")]
-    public List<List<string>>? WeaponModsExclusive { get; set; }
+    public IEnumerable<List<string>>? WeaponModsExclusive { get; set; }
 
     [JsonPropertyName("enemyEquipmentInclusive")]
-    public List<List<string>>? EnemyEquipmentInclusive { get; set; }
+    public IEnumerable<List<string>>? EnemyEquipmentInclusive { get; set; }
 
     [JsonPropertyName("enemyEquipmentExclusive")]
-    public List<List<string>>? EnemyEquipmentExclusive { get; set; }
+    public IEnumerable<List<string>>? EnemyEquipmentExclusive { get; set; }
 
     [JsonPropertyName("weaponCaliber")]
     public List<string>? WeaponCaliber { get; set; }
@@ -501,31 +488,4 @@ public record VisibilityCondition
 
     [JsonPropertyName("conditionType")]
     public required string ConditionType { get; set; }
-}
-
-public record QuestRewards
-{
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
-    [JsonPropertyName("AvailableForStart")]
-    public List<Reward>? AvailableForStart { get; set; }
-
-    [JsonPropertyName("AvailableForFinish")]
-    public List<Reward>? AvailableForFinish { get; set; }
-
-    [JsonPropertyName("Started")]
-    public List<Reward>? Started { get; set; }
-
-    [JsonPropertyName("Success")]
-    public List<Reward>? Success { get; set; }
-
-    [JsonPropertyName("Fail")]
-    public List<Reward>? Fail { get; set; }
-
-    [JsonPropertyName("FailRestartable")]
-    public List<Reward>? FailRestartable { get; set; }
-
-    [JsonPropertyName("Expired")]
-    public List<Reward>? Expired { get; set; }
 }

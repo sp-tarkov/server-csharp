@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -20,7 +21,7 @@ public record GenerateEquipmentProperties
     ///     Equipment pool for root slot being generated
     /// </summary>
     [JsonPropertyName("rootEquipmentPool")]
-    public Dictionary<string, double>? RootEquipmentPool { get; set; }
+    public Dictionary<MongoId, double>? RootEquipmentPool { get; set; }
 
     [JsonPropertyName("modPool")]
     public GlobalMods? ModPool { get; set; }
@@ -53,7 +54,7 @@ public record GenerateEquipmentProperties
     ///     OPTIONAL - Do not generate mods for tpls in this array
     /// </summary>
     [JsonPropertyName("generateModsBlacklist")]
-    public HashSet<string>? GenerateModsBlacklist { get; set; }
+    public HashSet<MongoId>? GenerateModsBlacklist { get; set; }
 
     [JsonPropertyName("generatingPlayerLevel")]
     public double? GeneratingPlayerLevel { get; set; }

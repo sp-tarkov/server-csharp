@@ -30,7 +30,7 @@ public record ModToSpawnRequest
     ///     Parent slot the item will be a part of
     /// </summary>
     [JsonPropertyName("botWeaponSightWhitelist")]
-    public Dictionary<MongoId, List<MongoId>>? BotWeaponSightWhitelist { get; set; }
+    public Dictionary<MongoId, HashSet<MongoId>>? BotWeaponSightWhitelist { get; set; }
 
     /// <summary>
     ///     Blacklist to prevent mods from being picked
@@ -48,13 +48,13 @@ public record ModToSpawnRequest
     ///     List with only weapon tpl in it, ready for mods to be added
     /// </summary>
     [JsonPropertyName("weapon")]
-    public List<Item>? Weapon { get; set; }
+    public IEnumerable<Item>? Weapon { get; set; }
 
     /// <summary>
     ///     Ammo tpl to use if slot requires a cartridge to be added (e.g. mod_magazine)
     /// </summary>
     [JsonPropertyName("ammoTpl")]
-    public string? AmmoTpl { get; set; }
+    public MongoId? AmmoTpl { get; set; }
 
     /// <summary>
     ///     Parent item the mod will go into

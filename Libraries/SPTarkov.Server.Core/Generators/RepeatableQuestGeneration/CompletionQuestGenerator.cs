@@ -40,7 +40,7 @@ public class CompletionQuestGenerator(
     /// </param>
     /// <returns>quest type format for "Completion" (see assets/database/templates/repeatableQuests.json)</returns>
     public RepeatableQuest? Generate(
-        string sessionId,
+        MongoId sessionId,
         int pmcLevel,
         MongoId traderId,
         QuestTypePool questTypePool,
@@ -60,25 +60,15 @@ public class CompletionQuestGenerator(
 
         if (quest is null)
         {
-            logger.Error(
-                "Quest template null when attempting to create completion operational task."
-            );
+            logger.Error("Quest template null when attempting to create completion operational task.");
             return null;
         }
 
         // Filter the items.json items to items the player must retrieve to complete quest: shouldn't be a quest item or "non-existent"
-        var itemsToRetrievePool = GetItemsToRetrievePool(
-            completionConfig,
-            repeatableConfig.RewardBlacklist
-        );
+        var itemsToRetrievePool = GetItemsToRetrievePool(completionConfig, repeatableConfig.RewardBlacklist);
 
         // Filter items within our budget
-        var (hashSet, budget) = GetItemsWithinBudget(
-            pmcLevel,
-            levelsConfig,
-            roublesConfig,
-            itemsToRetrievePool
-        );
+        var (hashSet, budget) = GetItemsWithinBudget(pmcLevel, levelsConfig, roublesConfig, itemsToRetrievePool);
         itemsToRetrievePool = hashSet;
 
         // We also have the option to use whitelist and/or blacklist which is defined in repeatableQuests.json as
@@ -96,22 +86,12 @@ public class CompletionQuestGenerator(
         // Filtering too harsh
         if (itemsToRetrievePool.Count == 0)
         {
-            logger.Error(
-                localisationService.GetText(
-                    "repeatable-completion_quest_whitelist_too_small_or_blacklist_too_restrictive"
-                )
-            );
+            logger.Error(localisationService.GetText("repeatable-completion_quest_whitelist_too_small_or_blacklist_too_restrictive"));
 
             return null;
         }
 
-        var selectedItems = GenerateAvailableForFinish(
-            quest,
-            completionConfig,
-            repeatableConfig,
-            itemsToRetrievePool.ToList(),
-            budget
-        );
+        var selectedItems = GenerateAvailableForFinish(quest, completionConfig, repeatableConfig, itemsToRetrievePool.ToList(), budget);
 
         quest.Rewards = repeatableQuestRewardGenerator.GenerateReward(
             pmcLevel,
@@ -119,7 +99,7 @@ public class CompletionQuestGenerator(
             traderId,
             repeatableConfig,
             completionConfig,
-            selectedItems
+            selectedItems.ToHashSet()
         );
 
         return quest;
@@ -131,10 +111,7 @@ public class CompletionQuestGenerator(
     /// <param name="completionConfig">Completion quest type config</param>
     /// <param name="itemTplBlacklist">Item tpls to not add to pool</param>
     /// <returns>Set of item tpls</returns>
-    protected HashSet<MongoId> GetItemsToRetrievePool(
-        Completion completionConfig,
-        HashSet<MongoId> itemTplBlacklist
-    )
+    protected HashSet<MongoId> GetItemsToRetrievePool(Completion completionConfig, HashSet<MongoId> itemTplBlacklist)
     {
         // Get seasonal items that should not be added to pool as seasonal event is not active
         var seasonalItems = seasonalEventService.GetInactiveSeasonalEventItems();
@@ -146,7 +123,7 @@ public class CompletionQuestGenerator(
             .Values.Where(itemTemplate =>
             {
                 // Base "Item" item has no parent, ignore it
-                if (itemTemplate.Parent == string.Empty)
+                if (itemTemplate.Parent == MongoId.Empty())
                 {
                     return false;
                 }
@@ -184,19 +161,12 @@ public class CompletionQuestGenerator(
     {
         // Be fair, don't value the items be more expensive than the reward
         var multiplier = randomUtil.GetDouble(0.5, 1);
-        var roublesBudget = Math.Floor(
-            mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) * multiplier
-        );
+        var roublesBudget = Math.Floor(mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) * multiplier);
 
         // Make sure there is always a 5000 rouble budget available for selection
         roublesBudget = Math.Max(roublesBudget, 5000d);
 
-        return (
-            itemsToRetrievePool
-                .Where(itemTpl => itemHelper.GetItemPrice(itemTpl) < roublesBudget)
-                .ToHashSet(),
-            roublesBudget
-        );
+        return (itemsToRetrievePool.Where(itemTpl => itemHelper.GetItemPrice(itemTpl) < roublesBudget).ToHashSet(), roublesBudget);
     }
 
     /// <summary>
@@ -205,14 +175,9 @@ public class CompletionQuestGenerator(
     /// <param name="itemSelection">Item selection to filter</param>
     /// <param name="pmcLevel">Level of pmc</param>
     /// <returns>Filtered selection, or original if null or empty</returns>
-    protected HashSet<MongoId> GetWhitelistedItemSelection(
-        HashSet<MongoId> itemSelection,
-        int pmcLevel
-    )
+    protected HashSet<MongoId> GetWhitelistedItemSelection(HashSet<MongoId> itemSelection, int pmcLevel)
     {
-        var itemWhitelist = databaseService
-            .GetTemplates()
-            .RepeatableQuests?.Data?.Completion?.ItemsWhitelist;
+        var itemWhitelist = databaseService.GetTemplates().RepeatableQuests?.Data?.Completion?.ItemsWhitelist;
 
         // Whitelist doesn't exist or is empty, return original
         if (itemWhitelist is null || itemWhitelist.Count == 0)
@@ -221,17 +186,13 @@ public class CompletionQuestGenerator(
         }
 
         // Filter and concatenate items according to current player level
-        var itemIdsWhitelisted = itemWhitelist
-            .Where(p => p.MinPlayerLevel <= pmcLevel)
-            .SelectMany(x => x.ItemIds)
-            .ToHashSet(); //.Aggregate((a, p) => a.Concat(p.ItemIds), []);
+        var itemIdsWhitelisted = itemWhitelist.Where(p => p.MinPlayerLevel <= pmcLevel).SelectMany(x => x.ItemIds).ToHashSet(); //.Aggregate((a, p) => a.Concat(p.ItemIds), []);
 
         var filteredSelection = itemSelection
             .Where(x =>
             {
                 // Whitelist can contain item tpls and item base type ids
-                return itemIdsWhitelisted.Any(v => itemHelper.IsOfBaseclass(x, v))
-                    || itemIdsWhitelisted.Contains(x);
+                return itemIdsWhitelisted.Any(v => itemHelper.IsOfBaseclass(x, v)) || itemIdsWhitelisted.Contains(x);
             })
             .ToHashSet();
 
@@ -248,14 +209,9 @@ public class CompletionQuestGenerator(
     /// <param name="itemSelection">Item selection to filter</param>
     /// <param name="pmcLevel">Level of pmc</param>
     /// <returns>Filtered selection, or original if null or empty</returns>
-    protected HashSet<MongoId> GetBlacklistedItemSelection(
-        HashSet<MongoId> itemSelection,
-        int pmcLevel
-    )
+    protected HashSet<MongoId> GetBlacklistedItemSelection(HashSet<MongoId> itemSelection, int pmcLevel)
     {
-        var itemBlacklist = databaseService
-            .GetTemplates()
-            .RepeatableQuests?.Data?.Completion?.ItemsBlacklist;
+        var itemBlacklist = databaseService.GetTemplates().RepeatableQuests?.Data?.Completion?.ItemsBlacklist;
 
         // Blacklist doesn't exist or is empty, return original
         if (itemBlacklist is null || itemBlacklist.Count == 0)
@@ -272,8 +228,7 @@ public class CompletionQuestGenerator(
         var filteredSelection = itemSelection
             .Where(x =>
             {
-                return itemIdsBlacklisted.All(v => !itemHelper.IsOfBaseclass(x, v))
-                    || !itemIdsBlacklisted.Contains(x);
+                return itemIdsBlacklisted.All(v => !itemHelper.IsOfBaseclass(x, v)) || !itemIdsBlacklisted.Contains(x);
             })
             .ToHashSet();
 
@@ -289,7 +244,7 @@ public class CompletionQuestGenerator(
     /// <param name="itemSelection">Filtered item selection</param>
     /// <param name="roublesBudget">Budget in roubles</param>
     /// <returns>Chosen item template Ids</returns>
-    protected List<string> GenerateAvailableForFinish(
+    protected List<MongoId> GenerateAvailableForFinish(
         RepeatableQuest quest,
         Completion completionConfig,
         RepeatableQuestConfig repeatableConfig,
@@ -299,7 +254,7 @@ public class CompletionQuestGenerator(
     {
         // Store the indexes of items we are asking player to supply
         var distinctItemsToRetrieveCount = randomUtil.GetInt(1, completionConfig.UniqueItemCount);
-        var chosenRequirementItemsTpls = new List<string>();
+        var chosenRequirementItemsTpls = new List<MongoId>();
         var usedItemIndexes = new HashSet<int>();
 
         for (var i = 0; i < distinctItemsToRetrieveCount; i++)
@@ -323,10 +278,7 @@ public class CompletionQuestGenerator(
             if (!found)
             {
                 logger.Error(
-                    localisationService.GetText(
-                        "repeatable-no_reward_item_found_in_price_range",
-                        new { minPrice = 0, roublesBudget }
-                    )
+                    localisationService.GetText("repeatable-no_reward_item_found_in_price_range", new { minPrice = 0, roublesBudget })
                 );
 
                 return chosenRequirementItemsTpls;
@@ -356,17 +308,13 @@ public class CompletionQuestGenerator(
 
             // Push a CompletionCondition with the item and the amount of the item into quest
             chosenRequirementItemsTpls.Add(tplChosen);
-            quest.Conditions.AvailableForFinish.Add(
-                GenerateCondition(tplChosen, value, repeatableConfig.QuestConfig.Completion)
-            );
+            quest.Conditions.AvailableForFinish.Add(GenerateCondition(tplChosen, value, repeatableConfig.QuestConfig.Completion));
 
             // Is there budget left for more items
             if (roublesBudget > 0)
             {
                 // Reduce item pool to fit budget
-                itemSelection = itemSelection
-                    .Where(tpl => itemHelper.GetItemPrice(tpl) < roublesBudget)
-                    .ToList();
+                itemSelection = itemSelection.Where(tpl => itemHelper.GetItemPrice(tpl) < roublesBudget).ToList();
 
                 if (itemSelection.Count == 0)
                 {
@@ -393,27 +341,17 @@ public class CompletionQuestGenerator(
     /// <param name="value">Amount of items of this specific type to request</param>
     /// <param name="completionConfig">Completion config from quest.json</param>
     /// <returns>object of "Completion"-condition</returns>
-    protected QuestCondition GenerateCondition(
-        MongoId itemTpl,
-        double value,
-        Completion completionConfig
-    )
+    protected QuestCondition GenerateCondition(MongoId itemTpl, double value, Completion completionConfig)
     {
         var onlyFoundInRaid = completionConfig.RequiredItemsAreFiR;
-        var minDurability = itemHelper.IsOfBaseclasses(
-            itemTpl,
-            [BaseClasses.WEAPON, BaseClasses.ARMOR]
-        )
+        var minDurability = itemHelper.IsOfBaseclasses(itemTpl, [BaseClasses.WEAPON, BaseClasses.ARMOR])
             ? randomUtil.GetArrayValue(
-                [
-                    completionConfig.RequiredItemMinDurabilityMinMax.Min,
-                    completionConfig.RequiredItemMinDurabilityMinMax.Max,
-                ]
+                [completionConfig.RequiredItemMinDurabilityMinMax.Min, completionConfig.RequiredItemMinDurabilityMinMax.Max]
             )
             : 0;
 
         // Dog tags MUST NOT be FiR for them to work
-        if (itemHelper.IsDogtag(itemTpl))
+        if (itemHelper.IsDogtag(itemTpl) || itemHelper.IsOfBaseclass(itemTpl, BaseClasses.AMMO))
         {
             onlyFoundInRaid = false;
         }

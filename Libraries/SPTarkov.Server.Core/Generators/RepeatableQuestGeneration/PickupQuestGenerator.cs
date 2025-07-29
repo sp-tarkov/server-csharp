@@ -24,9 +24,9 @@ public class PickupQuestGenerator(
     HashUtil hashUtil
 ) : IRepeatableQuestGenerator
 {
-    // TODO: This isn't really implemented well at all, what even is this.
+    // TODO: This isn't really implemented, not in the current pool.
     public RepeatableQuest? Generate(
-        string sessionId,
+        MongoId sessionId,
         int pmcLevel,
         MongoId traderId,
         QuestTypePool questTypePool,
@@ -42,9 +42,7 @@ public class PickupQuestGenerator(
             sessionId
         );
 
-        var itemTypeToFetchWithCount = randomUtil.GetArrayValue(
-            pickupConfig.ItemTypeToFetchWithMaxCount
-        );
+        var itemTypeToFetchWithCount = randomUtil.GetArrayValue(pickupConfig.ItemTypeToFetchWithMaxCount);
 
         var itemCountToFetch = randomUtil.RandInt(
             itemTypeToFetchWithCount.MinimumPickupCount.Value,
@@ -54,34 +52,22 @@ public class PickupQuestGenerator(
         // var locationKey: string = this.randomUtil.drawRandomFromDict(questTypePool.pool.Pickup.locations)[0];
         // var locationTarget = questTypePool.pool.Pickup.locations[locationKey];
 
-        var findCondition = quest.Conditions.AvailableForFinish.FirstOrDefault(x =>
-            x.ConditionType == "FindItem"
-        );
+        var findCondition = quest.Conditions.AvailableForFinish.FirstOrDefault(x => x.ConditionType == "FindItem");
         findCondition.Target = new ListOrT<string>([itemTypeToFetchWithCount.ItemType], null);
         findCondition.Value = itemCountToFetch;
 
-        var counterCreatorCondition = quest.Conditions.AvailableForFinish.FirstOrDefault(x =>
-            x.ConditionType == "CounterCreator"
-        );
+        var counterCreatorCondition = quest.Conditions.AvailableForFinish.FirstOrDefault(x => x.ConditionType == "CounterCreator");
         // var locationCondition = counterCreatorCondition._props.counter.conditions.find(x => x._parent === "Location");
         // (locationCondition._props as ILocationConditionProps).target = [...locationTarget];
 
-        var equipmentCondition = counterCreatorCondition.Counter.Conditions.FirstOrDefault(x =>
-            x.ConditionType == "Equipment"
-        );
+        var equipmentCondition = counterCreatorCondition.Counter.Conditions.FirstOrDefault(x => x.ConditionType == "Equipment");
         equipmentCondition.EquipmentInclusive =
         [
             [itemTypeToFetchWithCount.ItemType],
         ];
 
         // Add rewards
-        quest.Rewards = repeatableQuestRewardGenerator.GenerateReward(
-            pmcLevel,
-            1,
-            traderId,
-            repeatableConfig,
-            pickupConfig
-        );
+        quest.Rewards = repeatableQuestRewardGenerator.GenerateReward(pmcLevel, 1, traderId, repeatableConfig, pickupConfig);
 
         return quest;
     }

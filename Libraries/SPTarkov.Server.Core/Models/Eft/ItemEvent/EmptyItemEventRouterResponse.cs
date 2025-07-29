@@ -8,5 +8,5 @@ public record EmptyItemEventRouterResponse : ItemEventRouterBase
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("profileChanges")]
-    public string? ProfileChanges { get; set; } = "";
+    public new string? ProfileChanges { get; set; } = string.Empty;
 }

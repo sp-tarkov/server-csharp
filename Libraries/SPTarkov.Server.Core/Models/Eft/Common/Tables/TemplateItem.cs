@@ -88,7 +88,7 @@ public record Props
     private string? _unlootableFromSlot;
 
     [JsonPropertyName("AllowSpawnOnLocations")]
-    public List<string>? AllowSpawnOnLocations { get; set; }
+    public IEnumerable<string>? AllowSpawnOnLocations { get; set; }
 
     [JsonPropertyName("BeltMagazineRefreshCount")]
     public double? BeltMagazineRefreshCount { get; set; }
@@ -257,7 +257,7 @@ public record Props
     public int? ExtraSizeUp { get; set; }
 
     [JsonPropertyName("FlareTypes")]
-    public List<string>? FlareTypes { get; set; }
+    public IEnumerable<string>? FlareTypes { get; set; }
 
     [JsonPropertyName("ExtraSizeDown")]
     public int? ExtraSizeDown { get; set; }
@@ -313,7 +313,7 @@ public record Props
     }
 
     [JsonPropertyName("UnlootableFromSide")]
-    public List<PlayerSideMask>? UnlootableFromSide { get; set; }
+    public IEnumerable<PlayerSideMask>? UnlootableFromSide { get; set; }
 
     // Type confirmed via client
     [JsonPropertyName("AnimationVariantsNumber")]
@@ -353,19 +353,19 @@ public record Props
     public bool? DogTagQualities { get; set; }
 
     [JsonPropertyName("Grids")]
-    public List<Grid>? Grids { get; set; }
+    public IEnumerable<Grid>? Grids { get; set; }
 
     [JsonPropertyName("Slots")]
-    public List<Slot>? Slots { get; set; }
+    public IEnumerable<Slot>? Slots { get; set; }
 
     [JsonPropertyName("CanPutIntoDuringTheRaid")]
     public bool? CanPutIntoDuringTheRaid { get; set; }
 
     [JsonPropertyName("CantRemoveFromSlotsDuringRaid")]
-    public List<EquipmentSlots>? CantRemoveFromSlotsDuringRaid { get; set; }
+    public IEnumerable<EquipmentSlots>? CantRemoveFromSlotsDuringRaid { get; set; }
 
     [JsonPropertyName("KeyIds")]
-    public List<string>? KeyIds { get; set; }
+    public IEnumerable<string>? KeyIds { get; set; }
 
     [JsonPropertyName("TagColor")]
     public double? TagColor { get; set; }
@@ -464,7 +464,7 @@ public record Props
     public double? SightModesCount { get; set; }
 
     [JsonPropertyName("OpticCalibrationDistances")]
-    public List<double>? OpticCalibrationDistances { get; set; }
+    public IEnumerable<double>? OpticCalibrationDistances { get; set; }
 
     [JsonPropertyName("ScopesCount")]
     public double? ScopesCount { get; set; }
@@ -473,10 +473,10 @@ public record Props
     public object? AimSensitivity { get; set; } // TODO: object here
 
     [JsonPropertyName("Zooms")]
-    public List<List<double>>? Zooms { get; set; }
+    public IEnumerable<List<double>>? Zooms { get; set; }
 
     [JsonPropertyName("CalibrationDistances")]
-    public List<List<double>>? CalibrationDistances { get; set; }
+    public IEnumerable<List<double>>? CalibrationDistances { get; set; }
 
     [JsonPropertyName("Intensity")]
     public double? Intensity { get; set; }
@@ -560,7 +560,7 @@ public record Props
     public double? MagAnimationIndex { get; set; }
 
     [JsonPropertyName("Cartridges")]
-    public List<Slot>? Cartridges { get; set; }
+    public IEnumerable<Slot>? Cartridges { get; set; }
 
     [JsonPropertyName("CanFast")]
     public bool? CanFast { get; set; }
@@ -630,10 +630,10 @@ public record Props
     public double? ContainerSpawnChanceModifier { get; set; }
 
     [JsonPropertyName("SpawnFilter")]
-    public List<object>? SpawnFilter { get; set; } // TODO: object here
+    public IEnumerable<object>? SpawnFilter { get; set; } // TODO: object here
 
     [JsonPropertyName("containType")]
-    public List<object>? ContainType { get; set; } // TODO: object here
+    public IEnumerable<object>? ContainType { get; set; } // TODO: object here
 
     [JsonPropertyName("sizeWidth")]
     public double? SizeWidth { get; set; }
@@ -648,7 +648,7 @@ public record Props
     public string? SpawnTypes { get; set; }
 
     [JsonPropertyName("lootFilter")]
-    public List<object>? LootFilter { get; set; } // TODO: object here
+    public IEnumerable<object>? LootFilter { get; set; } // TODO: object here
 
     [JsonPropertyName("spawnRarity")]
     public string? SpawnRarity { get; set; }
@@ -660,7 +660,7 @@ public record Props
     public double? MaxCountSpawn { get; set; }
 
     [JsonPropertyName("openedByKeyID")]
-    public List<string>? OpenedByKeyID { get; set; }
+    public IEnumerable<string>? OpenedByKeyID { get; set; }
 
     [JsonPropertyName("RigLayoutName")]
     public string? RigLayoutName { get; set; }
@@ -669,7 +669,7 @@ public record Props
     public double? MaxDurability { get; set; }
 
     [JsonPropertyName("armorZone")]
-    public List<string>? ArmorZone { get; set; }
+    public IEnumerable<string>? ArmorZone { get; set; }
 
     // Type confirmed via client
     [JsonPropertyName("armorClass")]
@@ -677,10 +677,10 @@ public record Props
     public int? ArmorClass { get; set; }
 
     [JsonPropertyName("armorColliders")]
-    public List<string>? ArmorColliders { get; set; }
+    public IEnumerable<string>? ArmorColliders { get; set; }
 
     [JsonPropertyName("armorPlateColliders")]
-    public List<string>? ArmorPlateColliders { get; set; }
+    public IEnumerable<string>? ArmorPlateColliders { get; set; }
 
     [JsonPropertyName("bluntDamageReduceFromSoftArmor")]
     public bool? BluntDamageReduceFromSoftArmor { get; set; }
@@ -786,10 +786,10 @@ public record Props
     public bool? IsBoltCatch { get; set; }
 
     [JsonPropertyName("defMagType")]
-    public string? DefMagType { get; set; }
+    public MongoId? DefMagType { get; set; }
 
     [JsonPropertyName("defAmmo")]
-    public string? DefAmmo { get; set; }
+    public MongoId? DefAmmo { get; set; }
 
     [JsonPropertyName("AdjustCollimatorsToTrajectory")]
     public bool? AdjustCollimatorsToTrajectory { get; set; }
@@ -801,7 +801,7 @@ public record Props
     public double? shotgunDispersion { get; set; }
 
     [JsonPropertyName("Chambers")]
-    public List<Slot>? Chambers { get; set; }
+    public IEnumerable<Slot>? Chambers { get; set; }
 
     [JsonPropertyName("CameraSnap")]
     public double? CameraSnap { get; set; }
@@ -835,7 +835,7 @@ public record Props
     public XYZ? RotationCenterNoStock { get; set; }
 
     [JsonPropertyName("ShotsGroupSettings")]
-    public List<ShotsGroupSettings>? ShotsGroupSettings { get; set; }
+    public IEnumerable<ShotsGroupSettings>? ShotsGroupSettings { get; set; }
 
     [JsonPropertyName("FoldedSlot")]
     public string? FoldedSlot { get; set; }
@@ -1226,7 +1226,7 @@ public record Props
 
     // Confirmed on client - MongoId
     [JsonPropertyName("TargetItemFilter")]
-    public List<MongoId>? TargetItemFilter { get; set; }
+    public IEnumerable<MongoId>? TargetItemFilter { get; set; }
 
     [JsonPropertyName("RepairQuality")]
     public double? RepairQuality { get; set; }
@@ -1434,7 +1434,7 @@ public record Props
     public double? MalfFeedChance { get; set; }
 
     [JsonPropertyName("StackSlots")]
-    public List<StackSlot>? StackSlots { get; set; }
+    public IEnumerable<StackSlot>? StackSlots { get; set; }
 
     [JsonPropertyName("type")]
     public string? Type { get; set; }
@@ -1497,7 +1497,7 @@ public record Props
     public bool? RemoveShellAfterFire { get; set; }
 
     [JsonPropertyName("RepairStrategyTypes")]
-    public List<RepairStrategyType>? RepairStrategyTypes { get; set; }
+    public IEnumerable<RepairStrategyType>? RepairStrategyTypes { get; set; }
 
     [JsonPropertyName("IsEncoded")]
     public bool? IsEncoded { get; set; }
@@ -1539,10 +1539,10 @@ public record Props
     public bool? AvailableAsDefault { get; set; }
 
     [JsonPropertyName("ProfileVersions")]
-    public List<string>? ProfileVersions { get; set; }
+    public IEnumerable<string>? ProfileVersions { get; set; }
 
     [JsonPropertyName("Side")]
-    public List<string>? Side { get; set; }
+    public IEnumerable<string>? Side { get; set; }
 
     [JsonPropertyName("BipodCameraSnapMultiplier")]
     public double? BipodCameraSnapMultiplier { get; set; }
@@ -1578,7 +1578,7 @@ public record WeaponRecoilSettings
     public bool? Enable { get; set; }
 
     [JsonPropertyName("Values")]
-    public List<WeaponRecoilSettingValues>? Values { get; set; }
+    public IEnumerable<WeaponRecoilSettingValues>? Values { get; set; }
 }
 
 public record WeaponRecoilSettingValues
@@ -1623,7 +1623,7 @@ public record WeaponRecoilTransformationCurve
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("Keys")]
-    public List<WeaponRecoilTransformationCurveKey>? Keys { get; set; }
+    public IEnumerable<WeaponRecoilTransformationCurveKey>? Keys { get; set; }
 }
 
 public record WeaponRecoilTransformationCurveKey
@@ -1695,7 +1695,7 @@ public record GridProps
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("filters")]
-    public List<GridFilter>? Filters { get; set; }
+    public IEnumerable<GridFilter>? Filters { get; set; }
 
     [JsonPropertyName("cellsH")]
     public int? CellsH { get; set; }
@@ -1725,7 +1725,7 @@ public record GridFilter
     public HashSet<string>? Filter { get; set; }
 
     [JsonPropertyName("ExcludedFilter")]
-    public List<string>? ExcludedFilter { get; set; }
+    public HashSet<string>? ExcludedFilter { get; set; }
 
     [JsonPropertyName("locked")]
     public bool? Locked { get; set; }
@@ -1779,7 +1779,7 @@ public record SlotProps
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("filters")]
-    public List<SlotFilter>? Filters { get; set; }
+    public IEnumerable<SlotFilter>? Filters { get; set; }
 
     [JsonPropertyName("MaxStackCount")]
     public double? MaxStackCount { get; set; }
@@ -1797,13 +1797,13 @@ public record SlotFilter
     public bool? Locked { get; set; }
 
     [JsonPropertyName("Plate")]
-    public string? Plate { get; set; }
+    public MongoId? Plate { get; set; }
 
     [JsonPropertyName("armorColliders")]
-    public List<string>? ArmorColliders { get; set; }
+    public IEnumerable<string>? ArmorColliders { get; set; }
 
     [JsonPropertyName("armorPlateColliders")]
-    public List<string>? ArmorPlateColliders { get; set; }
+    public IEnumerable<string>? ArmorPlateColliders { get; set; }
 
     [JsonPropertyName("Filter")]
     public HashSet<MongoId>? Filter { get; set; }
@@ -1851,7 +1851,7 @@ public record StackSlotProps
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("filters")]
-    public List<SlotFilter>? Filters { get; set; }
+    public IEnumerable<SlotFilter>? Filters { get; set; }
 }
 
 public record RandomLootSettings
@@ -1866,13 +1866,13 @@ public record RandomLootSettings
     public bool? AllowToSpawnQuestItems { get; set; }
 
     [JsonPropertyName("countByRarity")]
-    public List<object>? CountByRarity { get; set; } // TODO: object here
+    public IEnumerable<object>? CountByRarity { get; set; } // TODO: object here
 
     [JsonPropertyName("excluded")]
     public RandomLootExcluded? Excluded { get; set; }
 
     [JsonPropertyName("filters")]
-    public List<object>? Filters { get; set; } // TODO: object here
+    public IEnumerable<object>? Filters { get; set; } // TODO: object here
 
     [JsonPropertyName("findInRaid")]
     public bool? FindInRaid { get; set; }
@@ -1890,13 +1890,13 @@ public record RandomLootExcluded
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("categoryTemplates")]
-    public List<object>? CategoryTemplates { get; set; } // TODO: object here
+    public IEnumerable<object>? CategoryTemplates { get; set; } // TODO: object here
 
     [JsonPropertyName("rarity")]
-    public List<string>? Rarity { get; set; }
+    public IEnumerable<string>? Rarity { get; set; }
 
     [JsonPropertyName("templates")]
-    public List<object>? Templates { get; set; } // TODO: object here
+    public IEnumerable<object>? Templates { get; set; } // TODO: object here
 }
 
 public record EffectsHealth

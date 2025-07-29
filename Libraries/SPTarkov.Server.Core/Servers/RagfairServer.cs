@@ -85,33 +85,24 @@ public class RagfairServer(
     public Dictionary<MongoId, int> GetAllActiveCategories(
         bool fleaUnlocked,
         SearchRequestData searchRequestData,
-        List<RagfairOffer> offers
+        IEnumerable<RagfairOffer> offers
     )
     {
-        return _ragfairCategoriesService.GetCategoriesFromOffers(
-            offers,
-            searchRequestData,
-            fleaUnlocked
-        );
+        return _ragfairCategoriesService.GetCategoriesFromOffers(offers, searchRequestData, fleaUnlocked);
     }
 
     /// <summary>
     ///     Disable/Hide an offer from flea
     /// </summary>
     /// <param name="offerId"> OfferID to hide </param>
-    public void HideOffer(string offerId)
+    public void HideOffer(MongoId offerId)
     {
         var offers = _ragfairOfferService.GetOffers();
         var offer = offers.FirstOrDefault(x => x.Id == offerId);
 
         if (offer is null)
         {
-            _logger.Error(
-                _serverLocalisationService.GetText(
-                    "ragfair-offer_not_found_unable_to_hide",
-                    offerId
-                )
-            );
+            _logger.Error(_serverLocalisationService.GetText("ragfair-offer_not_found_unable_to_hide", offerId));
 
             return;
         }
@@ -119,7 +110,7 @@ public class RagfairServer(
         offer.Locked = true;
     }
 
-    public RagfairOffer? GetOffer(string offerId)
+    public RagfairOffer? GetOffer(MongoId offerId)
     {
         return _ragfairOfferService.GetOfferByOfferId(offerId);
     }
@@ -129,12 +120,12 @@ public class RagfairServer(
         return _ragfairOfferService.GetOffers();
     }
 
-    public void ReduceOfferQuantity(string offerId, int amount)
+    public void ReduceOfferQuantity(MongoId offerId, int amount)
     {
         _ragfairOfferService.ReduceOfferQuantity(offerId, amount);
     }
 
-    public bool DoesOfferExist(string offerId)
+    public bool DoesOfferExist(MongoId offerId)
     {
         return _ragfairOfferService.DoesOfferExist(offerId);
     }

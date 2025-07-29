@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Prestige;
 using SPTarkov.Server.Core.Models.Eft.Profile;
@@ -11,10 +12,10 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class PrestigeController(
-    ISptLogger<PrestigeController> _logger,
-    ProfileHelper _profileHelper,
-    DatabaseService _databaseService,
-    SaveServer _saveServer
+    ISptLogger<PrestigeController> logger,
+    ProfileHelper profileHelper,
+    DatabaseService databaseService,
+    SaveServer saveServer
 )
 {
     /// <summary>
@@ -23,9 +24,9 @@ public class PrestigeController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>Prestige</returns>
-    public Prestige GetPrestige(string sessionId)
+    public Prestige GetPrestige(MongoId sessionId)
     {
-        return _databaseService.GetTemplates().Prestige;
+        return databaseService.GetTemplates().Prestige;
     }
 
     /// <summary>
@@ -58,21 +59,21 @@ public class PrestigeController(
     ///     </list>
     /// </summary>
     /// <returns></returns>
-    public async Task ObtainPrestige(string sessionId, ObtainPrestigeRequestList request)
+    public async Task ObtainPrestige(MongoId sessionId, ObtainPrestigeRequestList request)
     {
-        var profile = _profileHelper.GetFullProfile(sessionId);
+        var profile = profileHelper.GetFullProfile(sessionId);
         if (profile is not null)
         {
             var pendingPrestige = new PendingPrestige
             {
-                PrestigeLevel = profile.CharacterData.PmcData.Info.PrestigeLevel + 1,
+                PrestigeLevel = (profile.CharacterData?.PmcData?.Info?.PrestigeLevel ?? 0) + 1,
                 Items = request,
             };
 
             profile.SptData.PendingPrestige = pendingPrestige;
             profile.ProfileInfo.IsWiped = true;
 
-            await _saveServer.SaveProfileAsync(sessionId);
+            await saveServer.SaveProfileAsync(sessionId);
         }
     }
 }

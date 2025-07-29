@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Generators;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Weather;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -12,14 +13,14 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class WeatherController(
-    ISptLogger<WeatherController> _logger,
-    WeatherGenerator _weatherGenerator,
-    SeasonalEventService _seasonalEventService,
-    RaidWeatherService _raidWeatherService,
-    ConfigServer _configServer
+    ISptLogger<WeatherController> logger,
+    WeatherGenerator weatherGenerator,
+    SeasonalEventService seasonalEventService,
+    RaidWeatherService raidWeatherService,
+    ConfigServer configServer
 )
 {
-    protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
+    protected WeatherConfig _weatherConfig = configServer.GetConfig<WeatherConfig>();
 
     /// <summary>
     ///     Handle client/weather
@@ -36,8 +37,8 @@ public class WeatherController(
             Season = Season.AUTUMN,
         };
 
-        _weatherGenerator.CalculateGameTime(result);
-        result.Weather = _weatherGenerator.GenerateWeather(result.Season.Value);
+        weatherGenerator.CalculateGameTime(result);
+        result.Weather = weatherGenerator.GenerateWeather(result.Season.Value);
 
         return result;
     }
@@ -47,15 +48,11 @@ public class WeatherController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>GetLocalWeatherResponseData</returns>
-    public GetLocalWeatherResponseData GenerateLocal(string sessionId)
+    public GetLocalWeatherResponseData GenerateLocal(MongoId sessionId)
     {
-        var result = new GetLocalWeatherResponseData
-        {
-            Season = _seasonalEventService.GetActiveWeatherSeason(),
-            Weather = [],
-        };
+        var result = new GetLocalWeatherResponseData { Season = seasonalEventService.GetActiveWeatherSeason(), Weather = [] };
 
-        result.Weather.AddRange(_raidWeatherService.GetUpcomingWeather());
+        result.Weather.AddRange(raidWeatherService.GetUpcomingWeather());
 
         return result;
     }

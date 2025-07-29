@@ -27940,14 +27940,14 @@
         {
           "isNotRandom": true,
           "side": [
-            "Savage"
+            "Usec"
           ],
           "voice": "Arena_Guard_1"
         },
         {
           "isNotRandom": true,
           "side": [
-            "Savage"
+            "Bear"
           ],
           "voice": "Arena_Guard_2"
         },
@@ -28053,6 +28053,16 @@
             "Savage"
           ],
           "voice": "BossAgroTagilla"
+        },
+        {
+          "isNotRandom": true,
+          "side": [],
+          "voice": "Usec_Rob_Voice"
+        },
+        {
+          "isNotRandom": false,
+          "side": [],
+          "voice": "Bear_Vitaly_Voice"
         }
       ],
       "SavageBody": {
@@ -32675,7 +32685,8 @@
       "OnlyInDeathCase": false
     },
     "ItemsCommonSettings": {
-      "ItemRemoveAfterInterruptionTime": 2
+      "ItemRemoveAfterInterruptionTime": 2,
+      "MaxBackpackInserting": 7
     },
     "KarmaCalculationSettings": {
       "defaultPveKarmaValue": 0.5,
@@ -33410,6 +33421,14 @@
         "Name": "SAKO",
         "Templates": [
           "673cab3e03c6a20581028bc1"
+        ]
+      },
+      {
+        "Level2": 200,
+        "Level3": 300,
+        "Name": "AK50",
+        "Templates": [
+          "67d0576f29f580ebc10efd08"
         ]
       }
     ],
@@ -34992,6 +35011,21 @@
         "MaxInLobby": 2,
         "MaxInRaid": 2,
         "TemplateId": "676bf44c5539167c3603e869"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 0,
+        "TemplateId": "6841b6b674a3c16f5e03d653"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 0,
+        "TemplateId": "6841b179322db20d190b4b99"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 0,
+        "TemplateId": "6841b1ff51bf8645f7067bca"
       }
     ],
     "RunddansSettings": {

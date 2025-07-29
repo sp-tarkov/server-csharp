@@ -13,12 +13,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class BotHelper(
-    ISptLogger<BotHelper> _logger,
-    DatabaseService _databaseService,
-    RandomUtil _randomUtil,
-    ConfigServer _configServer
-)
+public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseService, RandomUtil randomUtil, ConfigServer configServer)
 {
     private static readonly FrozenSet<string> _pmcTypeIds =
     [
@@ -28,8 +23,8 @@ public class BotHelper(
         Sides.PmcUsec.ToLowerInvariant(),
     ];
 
-    private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    private readonly PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
+    private readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
+    private readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
     private readonly ConcurrentDictionary<string, List<string>> _pmcNameCache = new();
 
     /// <summary>
@@ -39,9 +34,9 @@ public class BotHelper(
     /// <returns>BotType object</returns>
     public BotType? GetBotTemplate(string role)
     {
-        if (!_databaseService.GetBots().Types.TryGetValue(role?.ToLowerInvariant(), out var bot))
+        if (!databaseService.GetBots().Types.TryGetValue(role.ToLowerInvariant(), out var bot))
         {
-            _logger.Error($"Unable to get bot of type: {role} from DB");
+            logger.Error($"Unable to get bot of type: {role} from DB");
 
             return null;
         }
@@ -61,20 +56,17 @@ public class BotHelper(
 
     public bool IsBotBoss(string botRole)
     {
-        return !IsBotFollower(botRole)
-            && _botConfig.Bosses.Any(x =>
-                string.Equals(x, botRole, StringComparison.CurrentCultureIgnoreCase)
-            );
+        return !IsBotFollower(botRole) && _botConfig.Bosses.Any(x => string.Equals(x, botRole, StringComparison.CurrentCultureIgnoreCase));
     }
 
     public bool IsBotFollower(string botRole)
     {
-        return botRole?.StartsWith("follower", StringComparison.CurrentCultureIgnoreCase) ?? false;
+        return botRole.StartsWith("follower", StringComparison.CurrentCultureIgnoreCase);
     }
 
     public bool IsBotZombie(string botRole)
     {
-        return botRole?.StartsWith("infected", StringComparison.CurrentCultureIgnoreCase) ?? false;
+        return botRole.StartsWith("infected", StringComparison.CurrentCultureIgnoreCase);
     }
 
     /// <summary>
@@ -87,7 +79,7 @@ public class BotHelper(
         const string friendlyBotTypesKey = "FRIENDLY_BOT_TYPES";
 
         // Null guard
-        if (difficultySettings.Mind[friendlyBotTypesKey] is null)
+        if (!difficultySettings.Mind.ContainsKey(friendlyBotTypesKey))
         {
             difficultySettings.Mind[friendlyBotTypesKey] = new List<string>();
         }
@@ -105,13 +97,13 @@ public class BotHelper(
         const string revengePropKey = "REVENGE_BOT_TYPES";
 
         // Nothing to add
-        if (typesToAdd is null)
+        if (typesToAdd.Length == 0)
         {
             return;
         }
 
         // Null guard
-        if (difficultySettings.Mind[revengePropKey] is null)
+        if (!difficultySettings.Mind.ContainsKey(revengePropKey))
         {
             difficultySettings.Mind[revengePropKey] = new List<string>();
         }
@@ -127,34 +119,16 @@ public class BotHelper(
     }
 
     /// <summary>
-    ///     is the provided role a PMC, case-agnostic
-    /// </summary>
-    /// <param name="botRole">Role to check</param>
-    /// <returns>True if role is PMC</returns>
-    public bool BotRoleIsPmc(string botRole)
-    {
-        HashSet<string> listToCheck =
-        [
-            _pmcConfig.UsecType.ToLowerInvariant(),
-            _pmcConfig.BearType.ToLowerInvariant(),
-        ];
-        return listToCheck.Contains(botRole.ToLowerInvariant());
-    }
-
-    /// <summary>
     ///     Get randomization settings for bot from config/bot.json
     /// </summary>
     /// <param name="botLevel">level of bot</param>
     /// <param name="botEquipConfig">bot equipment json</param>
     /// <returns>RandomisationDetails</returns>
-    public RandomisationDetails? GetBotRandomizationDetails(
-        int botLevel,
-        EquipmentFilters botEquipConfig
-    )
+    public RandomisationDetails? GetBotRandomizationDetails(int botLevel, EquipmentFilters botEquipConfig)
     {
         // No randomisation details found, skip
 
-        return botEquipConfig?.Randomisation?.FirstOrDefault(randDetails =>
+        return botEquipConfig.Randomisation?.FirstOrDefault(randDetails =>
             botLevel >= randDetails.LevelRange.Min && botLevel <= randDetails.LevelRange.Max
         );
     }
@@ -203,7 +177,7 @@ public class BotHelper(
     /// <returns>pmc side as string</returns>
     protected string GetRandomizedPmcSide()
     {
-        return _randomUtil.GetChance100(_pmcConfig.IsUsec) ? Sides.Usec : Sides.Bear;
+        return randomUtil.GetChance100(_pmcConfig.IsUsec) ? Sides.Usec : Sides.Bear;
     }
 
     /// <summary>
@@ -214,34 +188,26 @@ public class BotHelper(
     /// <returns>name of PMC</returns>
     public string GetPmcNicknameOfMaxLength(int maxLength, string? side = null)
     {
-        var chosenFaction = (
-            side ?? (_randomUtil.GetInt(0, 1) == 0 ? Sides.Usec : Sides.Bear)
-        ).ToLowerInvariant();
+        var chosenFaction = (side ?? (randomUtil.GetInt(0, 1) == 0 ? Sides.Usec : Sides.Bear)).ToLowerInvariant();
         var cacheKey = $"{chosenFaction}{maxLength}";
         if (!_pmcNameCache.TryGetValue(cacheKey, out var eligibleNames))
         {
-            if (
-                !_databaseService
-                    .GetBots()
-                    .Types.TryGetValue(chosenFaction, out var chosenFactionDetails)
-            )
+            if (!databaseService.GetBots().Types.TryGetValue(chosenFaction, out var chosenFactionDetails))
             {
-                _logger.Error($"Unknown faction: {chosenFaction} Defaulting to: {Sides.Usec}");
+                logger.Error($"Unknown faction: {chosenFaction} Defaulting to: {Sides.Usec}");
                 chosenFaction = Sides.Usec.ToLowerInvariant();
-                chosenFactionDetails = _databaseService.GetBots().Types[chosenFaction];
+                chosenFactionDetails = databaseService.GetBots().Types[chosenFaction];
             }
 
-            var matchingNames = chosenFactionDetails
-                .FirstNames.Where(name => name.Length <= maxLength)
-                .ToList();
+            var matchingNames = chosenFactionDetails.FirstNames.Where(name => name.Length <= maxLength).ToList();
             if (!matchingNames.Any())
             {
-                _logger.Warning(
+                logger.Warning(
                     $"Unable to filter: {chosenFaction} PMC names to only those under: {maxLength}, none found that match that criteria, selecting from entire name pool instead"
                 );
 
                 // Return a random string from names
-                return _randomUtil.GetCollectionValue(chosenFactionDetails.FirstNames);
+                return randomUtil.GetRandomElement(chosenFactionDetails.FirstNames);
             }
 
             _pmcNameCache.TryAdd(cacheKey, matchingNames);
@@ -249,6 +215,6 @@ public class BotHelper(
             eligibleNames = matchingNames;
         }
 
-        return _randomUtil.GetCollectionValue(eligibleNames);
+        return randomUtil.GetRandomElement(eligibleNames);
     }
 }

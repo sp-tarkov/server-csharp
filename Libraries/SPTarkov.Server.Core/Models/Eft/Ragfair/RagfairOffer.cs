@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 
@@ -17,24 +18,16 @@ public record RagfairOffer
     public List<SellResult>? SellResults { get; set; }
 
     [JsonPropertyName("_id")]
-    public string? Id
-    {
-        get { return _id; }
-        set { _id = string.Intern(value); }
-    }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("items")]
     public List<Item>? Items { get; set; }
 
     [JsonPropertyName("requirements")]
-    public List<OfferRequirement>? Requirements { get; set; }
+    public IEnumerable<OfferRequirement>? Requirements { get; set; }
 
     [JsonPropertyName("root")]
-    public string? Root
-    {
-        get { return _root; }
-        set { _root = string.Intern(value); }
-    }
+    public MongoId Root { get; set; }
 
     [JsonPropertyName("intId")]
     public int? InternalId { get; set; }
@@ -95,7 +88,13 @@ public record RagfairOffer
     ///     Tightly bound to offer.items[0].upd.stackObjectsCount
     /// </summary>
     [JsonPropertyName("quantity")]
-    public int? Quantity { get; set; }
+    public int Quantity { get; set; }
+
+    /// <summary>
+    /// SPT property - offer made by player
+    /// </summary>
+    [JsonIgnore]
+    public OfferCreator? CreatedBy { get; set; }
 }
 
 public record OfferRequirement
@@ -103,14 +102,8 @@ public record OfferRequirement
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    private string? _tpl;
-
     [JsonPropertyName("_tpl")]
-    public string? Template
-    {
-        get { return _tpl; }
-        set { _tpl = string.Intern(value); }
-    }
+    public required MongoId TemplateId { get; set; }
 
     [JsonPropertyName("count")]
     public double? Count { get; set; }
@@ -133,11 +126,7 @@ public record RagfairOfferUser
     private string? _id;
 
     [JsonPropertyName("id")]
-    public string? Id
-    {
-        get { return _id; }
-        set { _id = string.Intern(value); }
-    }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("nickname")]
     public string? Nickname { get; set; }

@@ -1,6 +1,7 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Insurance;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -11,13 +12,10 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable(TypePriority = OnUpdateOrder.InsuranceCallbacks)]
-public class InsuranceCallbacks(
-    InsuranceController _insuranceController,
-    HttpResponseUtil _httpResponseUtil,
-    ConfigServer _configServer
-) : IOnUpdate
+public class InsuranceCallbacks(InsuranceController insuranceController, HttpResponseUtil httpResponseUtil, ConfigServer configServer)
+    : IOnUpdate
 {
-    private readonly InsuranceConfig _insuranceConfig = _configServer.GetConfig<InsuranceConfig>();
+    private readonly InsuranceConfig _insuranceConfig = configServer.GetConfig<InsuranceConfig>();
 
     public Task<bool> OnUpdate(long secondsSinceLastRun)
     {
@@ -26,7 +24,7 @@ public class InsuranceCallbacks(
             return Task.FromResult(false);
         }
 
-        _insuranceController.ProcessReturn();
+        insuranceController.ProcessReturn();
 
         return Task.FromResult(true);
     }
@@ -38,15 +36,9 @@ public class InsuranceCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ValueTask<string> GetInsuranceCost(
-        string url,
-        GetInsuranceCostRequestData info,
-        string sessionID
-    )
+    public ValueTask<string> GetInsuranceCost(string url, GetInsuranceCostRequestData info, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            _httpResponseUtil.GetBody(_insuranceController.Cost(info, sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(insuranceController.Cost(info, sessionID)));
     }
 
     /// <summary>
@@ -56,8 +48,8 @@ public class InsuranceCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse Insure(PmcData pmcData, InsureRequestData info, string sessionID)
+    public ItemEventRouterResponse Insure(PmcData pmcData, InsureRequestData info, MongoId sessionID)
     {
-        return _insuranceController.Insure(pmcData, info, sessionID);
+        return insuranceController.Insure(pmcData, info, sessionID);
     }
 }

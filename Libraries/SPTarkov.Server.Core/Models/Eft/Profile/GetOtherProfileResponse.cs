@@ -98,6 +98,9 @@ public record OtherProfileCustomization
 
     [JsonPropertyName("dogtag")]
     public string? Dogtag { get; set; }
+
+    [JsonPropertyName("voice")]
+    public string? Voice { get; set; }
 }
 
 public record OtherProfileEquipment

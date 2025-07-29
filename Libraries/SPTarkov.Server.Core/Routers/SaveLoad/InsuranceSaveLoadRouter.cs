@@ -14,10 +14,7 @@ public class InsuranceSaveLoadRouter : SaveLoadRouter
 
     public override SptProfile HandleLoad(SptProfile profile)
     {
-        if (profile.InsuranceList == null)
-        {
-            profile.InsuranceList = new List<Insurance>();
-        }
+        profile.InsuranceList ??= [];
 
         return profile;
     }

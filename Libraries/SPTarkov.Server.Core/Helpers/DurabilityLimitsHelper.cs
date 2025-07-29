@@ -23,10 +23,7 @@ public class DurabilityLimitsHelper(
     /// <param name="itemTemplate">UNUSED - Item to get durability for</param>
     /// <param name="botRole">Role of bot to get max durability for</param>
     /// <returns>Max durability of weapon</returns>
-    public double GetRandomizedMaxWeaponDurability(
-        TemplateItem itemTemplate,
-        string? botRole = null
-    )
+    public double GetRandomizedMaxWeaponDurability(TemplateItem itemTemplate, string? botRole = null)
     {
         var durabilityRole = GetDurabilityRole(botRole);
 
@@ -39,10 +36,7 @@ public class DurabilityLimitsHelper(
     /// <param name="itemTemplate">Item to get max durability for</param>
     /// <param name="botRole">Role of bot to get max durability for</param>
     /// <returns>max durability</returns>
-    public double GetRandomizedMaxArmorDurability(
-        TemplateItem? itemTemplate,
-        string? botRole = null
-    )
+    public double GetRandomizedMaxArmorDurability(TemplateItem? itemTemplate, string? botRole = null)
     {
         var itemMaxDurability = itemTemplate.Properties.MaxDurability.Value;
         if (botRole is null)
@@ -66,11 +60,7 @@ public class DurabilityLimitsHelper(
     /// <param name="botRole">Role of bot to get current durability for</param>
     /// <param name="maxDurability">Max durability of weapon</param>
     /// <returns>Current weapon durability</returns>
-    public double GetRandomizedWeaponDurability(
-        TemplateItem itemTemplate,
-        string? botRole,
-        double maxDurability
-    )
+    public double GetRandomizedWeaponDurability(TemplateItem itemTemplate, string? botRole, double maxDurability)
     {
         var durabilityRole = GetDurabilityRole(botRole);
 
@@ -115,9 +105,7 @@ public class DurabilityLimitsHelper(
             return botRole;
         }
 
-        logger.Debug(
-            $"{botRole} doesn't exist in bot config durability values, using default fallback"
-        );
+        logger.Debug($"{botRole} doesn't exist in bot config durability values, using default fallback");
 
         return "default";
     }
@@ -129,11 +117,7 @@ public class DurabilityLimitsHelper(
     /// <param name="botRole">Role of bot to get current durability for</param>
     /// <param name="maxDurability">Max durability of armor</param>
     /// <returns>Current armor durability</returns>
-    public double GetRandomizedArmorDurability(
-        TemplateItem? itemTemplate,
-        string? botRole,
-        double maxDurability
-    )
+    public double GetRandomizedArmorDurability(TemplateItem? itemTemplate, string? botRole, double maxDurability)
     {
         var durabilityRole = GetDurabilityRole(botRole);
 
@@ -195,9 +179,7 @@ public class DurabilityLimitsHelper(
         var maxDelta = GetMaxWeaponDeltaFromConfig(botRole);
         var delta = randomUtil.GetInt(minDelta, maxDelta);
         var result = maxDurability - delta;
-        var durabilityValueMinLimit = Math.Round(
-            GetMinWeaponLimitPercentFromConfig(botRole) / 100 * maxDurability
-        );
+        var durabilityValueMinLimit = Math.Round(GetMinWeaponLimitPercentFromConfig(botRole) / 100 * maxDurability);
 
         // Don't let weapon durability go below the percent defined in config
         return result >= durabilityValueMinLimit ? result : durabilityValueMinLimit;
@@ -209,9 +191,7 @@ public class DurabilityLimitsHelper(
         var maxDelta = GetMaxArmorDeltaFromConfig(botRole);
         var delta = randomUtil.GetInt(minDelta, maxDelta);
         var result = maxDurability - delta;
-        var durabilityValueMinLimit = Math.Round(
-            GetMinArmorLimitPercentFromConfig(botRole) / 100 * maxDurability
-        );
+        var durabilityValueMinLimit = Math.Round(GetMinArmorLimitPercentFromConfig(botRole) / 100 * maxDurability);
 
         // Don't let armor durability go below the percent defined in config
         return result >= durabilityValueMinLimit ? result : durabilityValueMinLimit;

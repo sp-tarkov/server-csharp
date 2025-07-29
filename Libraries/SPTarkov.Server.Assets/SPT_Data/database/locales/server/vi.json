@@ -1,9 +1,24 @@
 {
   "assort-missing_loyalty_level_object": "stripQuestAssort(): Phân loại dành cho thương nhân {{traderId}} không chứa vật phẩm loyal_level_items, hủy bỏ nhiệm vụ phân loại",
+  "baseclass-item_not_found": "Không tìm thấy vật phẩm %s trong bộ đệm nền, đang tạo lại cache",
+  "baseclass-item_not_found_failed": "Vẫn không tìm thấy vật phẩm %s sau khi tạo lại cache gốc",
+  "baseclass-missing_db_no_cache": "Cơ sở dữ liệu trống, không thể tạo ra cache gốc cho vật phẩm",
+  "btr-unable_to_find_items_in_dialog_template": "Không thể tìm thấy itemDelivered trong dialogueTemplates cho người chơi: %s",
   "bot-generation_failed": "tạo bot không thành công, kiểm tra log của server để biết thêm chi tiết",
+  "bot-incompatible_ammo_for_weapon_falling_back_to_default": "Đạn {{chosenAmmo}} không tương thích với {{weaponId}} - {{weaponName}}, quay về đạn mặc định: {{defaultAmmo}}",
+  "bot-invalid_item_compatibility_check": "Không thể kiểm tra độ tương thích giữa vật phẩm đang trang bị, vật phẩm mong muốn: {{itemTpl}} ở ô: {{slot}} không phải vật phẩm hợp lệ",
+  "bot-item_missing_props_property": "Vật phẩm {{itemTpl}} {{name}} bị thiếu mất đặc tính _props",
+  "bot-item_spawn_limit_reached_skipping_item": "{{botRole}} Không thể tạo ra vật phẩm {{itemName}} sau {{attempts}} lần thử, bỏ qua giới hạn tạo",
+  "bot-missing_container_with_tpl": "Không tìm thấy mẫu vật đựng với tpl: %s",
+  "bot-missing_equipment_settings": "Bot {{botRole}} thiếu cài đặt trang bị: không tìm thấy giá trị cho: {{setting}}, quay về mặc định với: {{defaultValue}}",
+  "bot-missing_saved_match_info": "getBotCap() Không thể lưu thông tin trận, quay về mặc định. Bạn có khởi động Server lại nhưng không khỏi động Client lại?",
   "bot-no_ammo_found_in_bot_json": "Không tìm được đạn cho loại bot: %s",
   "bot-no_bot_cap_found_for_location": "Không tìm thấy giới hạn bot của địa điểm này cho bot: %s, sử dụng giới hạn mặc định",
+  "bot-no_bot_type_in_cache": "WARNING - Bot cache không xác định được type %s",
+  "bot-no_caliber_data_for_weapon_falling_back_to_default": "Không tìm được dữ liệu cỡ đạn của {{weaponId}} - {{weaponName}}. quay về đạn mặc định: {{defaultAmmo}}",
+  "bot-no_compatible_camora_ammo_found": "Không tìm thấy đạn tương thích với slot : %s. Bỏ qua filling of camora slots",
   "bot-unable_to_find_ammo_item": "Không tìm được mẫu băng đạn với tpl: %s",
   "bot-unable_to_find_default_magazine_item": "Không tìm được mẫu băng đạn: %s trong cơ sở dữ liệu",
-  "bot-unable_to_find_magazine_item": "Không tìm được mẫu băng đạn: %s trong cơ sở dữ liệu"
+  "bot-unable_to_find_magazine_item": "Không tìm được mẫu băng đạn: %s trong cơ sở dữ liệu",
+  "hideout-unable_to_find_area_in_database": "Không tìm được khu vực: %s trong cơ sở dữ liệu"
 }

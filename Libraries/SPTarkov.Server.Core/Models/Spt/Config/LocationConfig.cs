@@ -106,7 +106,7 @@ public record LocationConfig : BaseConfig
     ///     Key: map, value: loose loot ids to ignore
     /// </summary>
     [JsonPropertyName("looseLootBlacklist")]
-    public required Dictionary<string, List<string>> LooseLootBlacklist { get; set; }
+    public required Dictionary<string, HashSet<string>> LooseLootBlacklist { get; set; }
 
     /// <summary>
     ///     Key: map, value: settings to control how long scav raids are

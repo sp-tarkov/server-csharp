@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Http;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Request;
 using SPTarkov.Server.Core.Models.Eft.Notifier;
@@ -11,8 +13,8 @@ namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
 public class NotifierCallbacks(
-    HttpResponseUtil _httpResponseUtil,
-    NotifierController _notifierController,
+    HttpResponseUtil httpResponseUtil,
+    NotifierController notifierController,
     JsonUtil jsonUtil,
     HttpServerHelper httpServerHelper
 )
@@ -23,7 +25,7 @@ public class NotifierCallbacks(
     ///     until we actually have something to send because otherwise we'd spam the client
     ///     and the client would abort the connection due to spam.
     /// </summary>
-    public void SendNotification(string sessionID, HttpRequest req, HttpResponse resp, object data)
+    public void SendNotification(MongoId sessionID, HttpRequest req, HttpResponse resp, object data)
     {
         var splittedUrl = req.Path.Value.Split("/");
         var tmpSessionID = splittedUrl[^1].Split("?last_id")[0];
@@ -32,11 +34,9 @@ public class NotifierCallbacks(
          * Take our array of JSON message objects and cast them to JSON strings, so that they can then
          *  be sent to client as NEWLINE separated strings... yup.
          */
-        _notifierController
+        notifierController
             .NotifyAsync(tmpSessionID)
-            .ContinueWith(messages =>
-                messages.Result.Select(message => string.Join("\n", jsonUtil.Serialize(message)))
-            )
+            .ContinueWith(messages => messages.Result.Select(message => string.Join("\n", jsonUtil.Serialize(message))))
             .ContinueWith(text => httpServerHelper.SendTextJson(resp, text.Result));
     }
 
@@ -46,37 +46,33 @@ public class NotifierCallbacks(
     ///     Handle push/notifier/getwebsocket
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetNotifier(string url, IRequestData info, string sessionID)
+    public ValueTask<string> GetNotifier(string url, IRequestData info, MongoId sessionID)
     {
-        return new ValueTask<string>(_httpResponseUtil.EmptyArrayResponse());
+        return new ValueTask<string>(httpResponseUtil.EmptyArrayResponse());
     }
 
     /// <summary>
     ///     Handle client/notifier/channel/create
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> CreateNotifierChannel(string url, EmptyRequestData _, string sessionID)
+    public ValueTask<string> CreateNotifierChannel(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            _httpResponseUtil.GetBody(_notifierController.GetChannel(sessionID))
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(notifierController.GetChannel(sessionID)));
     }
 
     /// <summary>
     ///     Handle client/game/profile/select
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> SelectProfile(string url, UIDRequestData info, string sessionID)
+    public ValueTask<string> SelectProfile(string url, UIDRequestData info, MongoId sessionID)
     {
-        return new ValueTask<string>(
-            _httpResponseUtil.GetBody(new SelectProfileResponse { Status = "ok" })
-        );
+        return new ValueTask<string>(httpResponseUtil.GetBody(new SelectProfileResponse { Status = "ok" }));
     }
 
     /// <summary>
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> Notify(string url, object info, string sessionID)
+    public ValueTask<string> Notify(string url, object info, MongoId sessionID)
     {
         return new ValueTask<string>("NOTIFY");
     }

@@ -1,6 +1,6 @@
-using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Health;
@@ -17,14 +17,14 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class HealthController(
-    ISptLogger<HealthController> _logger,
-    EventOutputHolder _eventOutputHolder,
-    ItemHelper _itemHelper,
-    PaymentService _paymentService,
-    InventoryHelper _inventoryHelper,
-    ServerLocalisationService _serverLocalisationService,
-    HttpResponseUtil _httpResponseUtil,
-    ICloner _cloner
+    ISptLogger<HealthController> logger,
+    EventOutputHolder eventOutputHolder,
+    ItemHelper itemHelper,
+    PaymentService paymentService,
+    InventoryHelper inventoryHelper,
+    ServerLocalisationService serverLocalisationService,
+    HttpResponseUtil httpResponseUtil,
+    ICloner cloner
 )
 {
     /// <summary>
@@ -34,31 +34,22 @@ public class HealthController(
     /// <param name="request">Healing request</param>
     /// <param name="sessionID">Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse OffRaidHeal(
-        PmcData pmcData,
-        OffraidHealRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse OffRaidHeal(PmcData pmcData, OffraidHealRequestData request, MongoId sessionID)
     {
-        var output = _eventOutputHolder.GetOutput(sessionID);
+        var output = eventOutputHolder.GetOutput(sessionID);
 
         // Update medkit used (hpresource)
-        var healingItemToUse = pmcData.Inventory.Items.FirstOrDefault(item =>
-            item.Id == request.Item
-        );
+        var healingItemToUse = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
         if (healingItemToUse is null)
         {
-            var errorMessage = _serverLocalisationService.GetText(
-                "health-healing_item_not_found",
-                request.Item
-            );
-            _logger.Error(errorMessage);
+            var errorMessage = serverLocalisationService.GetText("health-healing_item_not_found", request.Item);
+            logger.Error(errorMessage);
 
-            return _httpResponseUtil.AppendErrorToOutput(output, errorMessage);
+            return httpResponseUtil.AppendErrorToOutput(output, errorMessage);
         }
 
         // Ensure item has a upd object
-        _itemHelper.AddUpdObjectToItem(healingItemToUse);
+        itemHelper.AddUpdObjectToItem(healingItemToUse);
 
         if (healingItemToUse.Upd.MedKit is not null)
         {
@@ -67,9 +58,7 @@ public class HealthController(
         else
         {
             // Get max healing from db
-            var maxHp = _itemHelper
-                .GetItem(healingItemToUse.Template)
-                .Value.Properties.MaxHpResource;
+            var maxHp = itemHelper.GetItem(healingItemToUse.Template).Value.Properties.MaxHpResource;
             healingItemToUse.Upd.MedKit = new UpdMedKit { HpResource = maxHp - request.Count }; // Subtract amout used from max
             // request.count appears to take into account healing effects removed, e.g. bleeds
             // Salewa heals limb for 20 and fixes light bleed = (20+45 = 65)
@@ -78,18 +67,16 @@ public class HealthController(
         // Resource in medkit is spent, delete it
         if (healingItemToUse.Upd.MedKit.HpResource <= 0)
         {
-            _inventoryHelper.RemoveItem(pmcData, request.Item, sessionID, output);
+            inventoryHelper.RemoveItem(pmcData, request.Item, sessionID, output);
         }
 
-        var healingItemDbDetails = _itemHelper.GetItem(healingItemToUse.Template);
+        var healingItemDbDetails = itemHelper.GetItem(healingItemToUse.Template);
 
         var healItemEffectDetails = healingItemDbDetails.Value.Properties.EffectsDamage;
         var bodyPartToHeal = pmcData.Health.BodyParts.GetValueOrDefault(request.Part);
         if (bodyPartToHeal is null)
         {
-            _logger.Warning(
-                $"Player: {sessionID} Tried to heal a non-existent body part: {request.Part}"
-            );
+            logger.Warning($"Player: {sessionID} Tried to heal a non-existent body part: {request.Part}");
 
             return output;
         }
@@ -112,12 +99,7 @@ public class HealthController(
                 }
 
                 // Check if healing item removes the effect on limb
-                if (
-                    !healItemEffectDetails.TryGetValue(
-                        effect,
-                        out var matchingEffectFromHealingItem
-                    )
-                )
+                if (!healItemEffectDetails.TryGetValue(effect, out var matchingEffectFromHealingItem))
                 // Healing item doesn't have matching effect, it doesn't remove the effect
                 {
                     continue;
@@ -149,42 +131,30 @@ public class HealthController(
     /// <param name="request">Eat request</param>
     /// <param name="sessionID">Session id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse OffRaidEat(
-        PmcData pmcData,
-        OffraidEatRequestData request,
-        string sessionID
-    )
+    public ItemEventRouterResponse OffRaidEat(PmcData pmcData, OffraidEatRequestData request, MongoId sessionID)
     {
-        var output = _eventOutputHolder.GetOutput(sessionID);
+        var output = eventOutputHolder.GetOutput(sessionID);
         var resourceLeft = 0d;
 
         var itemToConsume = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
         if (itemToConsume is null)
         // Item not found, very bad
         {
-            return _httpResponseUtil.AppendErrorToOutput(
+            return httpResponseUtil.AppendErrorToOutput(
                 output,
-                _serverLocalisationService.GetText(
-                    "health-unable_to_find_item_to_consume",
-                    request.Item
-                )
+                serverLocalisationService.GetText("health-unable_to_find_item_to_consume", request.Item)
             );
         }
 
-        var consumedItemMaxResource = _itemHelper
-            .GetItem(itemToConsume.Template)
-            .Value.Properties.MaxResource;
+        var consumedItemMaxResource = itemHelper.GetItem(itemToConsume.Template).Value.Properties.MaxResource;
         if (consumedItemMaxResource > 1)
         {
             // Ensure item has a upd object
-            _itemHelper.AddUpdObjectToItem(itemToConsume);
+            itemHelper.AddUpdObjectToItem(itemToConsume);
 
             if (itemToConsume.Upd.FoodDrink is null)
             {
-                itemToConsume.Upd.FoodDrink = new UpdFoodDrink
-                {
-                    HpPercent = consumedItemMaxResource - request.Count,
-                };
+                itemToConsume.Upd.FoodDrink = new UpdFoodDrink { HpPercent = consumedItemMaxResource - request.Count };
             }
             else
             {
@@ -197,11 +167,11 @@ public class HealthController(
         // Remove item from inventory if resource has dropped below threshold
         if (consumedItemMaxResource == 1 || resourceLeft < 1)
         {
-            _inventoryHelper.RemoveItem(pmcData, request.Item, sessionID, output);
+            inventoryHelper.RemoveItem(pmcData, request.Item, sessionID, output);
         }
 
         // Check what effect eating item has and handle
-        var foodItemDbDetails = _itemHelper.GetItem(itemToConsume.Template).Value;
+        var foodItemDbDetails = itemHelper.GetItem(itemToConsume.Template).Value;
         var foodItemEffectDetails = foodItemDbDetails.Properties.EffectsHealth;
         var foodIsSingleUse = foodItemDbDetails.Properties.MaxResource == 1;
 
@@ -210,21 +180,14 @@ public class HealthController(
             switch (key)
             {
                 case HealthFactor.Hydration:
-                    ApplyEdibleEffect(
-                        pmcData.Health.Hydration,
-                        effectProps,
-                        foodIsSingleUse,
-                        request
-                    );
+                    ApplyEdibleEffect(pmcData.Health.Hydration, effectProps, foodIsSingleUse, request);
                     break;
                 case HealthFactor.Energy:
                     ApplyEdibleEffect(pmcData.Health.Energy, effectProps, foodIsSingleUse, request);
                     break;
 
                 default:
-                    _logger.Warning(
-                        $"Unhandled effect after consuming: {itemToConsume.Template}, {key}"
-                    );
+                    logger.Warning($"Unhandled effect after consuming: {itemToConsume.Template}, {key}");
                     break;
             }
         }
@@ -279,62 +242,61 @@ public class HealthController(
     /// <param name="healthTreatmentRequest">Request data from client</param>
     /// <param name="sessionID">Session id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse HealthTreatment(
-        PmcData pmcData,
-        HealthTreatmentRequestData healthTreatmentRequest,
-        string sessionID
-    )
+    public ItemEventRouterResponse HealthTreatment(PmcData pmcData, HealthTreatmentRequestData healthTreatmentRequest, MongoId sessionID)
     {
-        var output = _eventOutputHolder.GetOutput(sessionID);
+        var output = eventOutputHolder.GetOutput(sessionID);
         var payMoneyRequest = new ProcessBuyTradeRequestData
         {
             Action = healthTreatmentRequest.Action,
             TransactionId = Traders.THERAPIST,
             SchemeItems = healthTreatmentRequest.Items,
             Type = "",
-            ItemId = "",
+            ItemId = MongoId.Empty(),
             Count = 0,
             SchemeId = 0,
         };
 
-        _paymentService.PayMoney(pmcData, payMoneyRequest, sessionID, output);
+        paymentService.PayMoney(pmcData, payMoneyRequest, sessionID, output);
         if (output.Warnings.Count > 0)
         {
             return output;
         }
 
-        foreach (var bodyPartKvP in healthTreatmentRequest.Difference.BodyParts.GetAllPropsAsDict())
+        foreach (var (key, partValues) in healthTreatmentRequest.Difference?.BodyParts)
         {
             // Get body part from request + from pmc profile
-            var partRequest = (BodyPartEffects)bodyPartKvP.Value;
-            var profilePart = pmcData.Health.BodyParts[bodyPartKvP.Key];
+            if (!pmcData.Health.BodyParts.TryGetValue(key, out var profilePart))
+            {
+                // Profile somehow doesn't have part therapist health, skip
+                continue;
+            }
 
-            // Bodypart healing is chosen when part request hp is above 0
-            if (partRequest.Health > 0)
-            // Heal bodypart
+            // Update hp value when health value is above 0, indicating healing was performed
+            if (partValues.Health > 0)
             {
                 profilePart.Health.Current = profilePart.Health.Maximum;
             }
 
             // Check for effects to remove
-            if (partRequest.Effects?.Count > 0)
+            if (partValues.Effects?.Count > 0)
             {
-                // Found some, loop over them and remove from pmc profile
-                foreach (var effect in partRequest.Effects)
+                // Found effects that have been healed by therapist
+                // key e.g. "LightBleeding"
+                foreach (var effectKey in partValues.Effects)
                 {
-                    pmcData.Health.BodyParts[bodyPartKvP.Key].Effects.Remove(effect);
+                    profilePart.Effects.Remove(effectKey);
                 }
 
-                // Remove empty effect object
-                if (pmcData.Health.BodyParts[bodyPartKvP.Key].Effects.Count == 0)
+                // Remove empty effect object to match what live data shows
+                if (profilePart.Effects.Count == 0)
                 {
-                    pmcData.Health.BodyParts[bodyPartKvP.Key].Effects = null;
+                    profilePart.Effects = null;
                 }
             }
         }
 
         // Inform client of new post-raid, post-therapist heal values
-        output.ProfileChanges[sessionID].Health = _cloner.Clone(pmcData.Health);
+        output.ProfileChanges[sessionID].Health = cloner.Clone(pmcData.Health);
 
         return output;
     }
@@ -345,7 +307,7 @@ public class HealthController(
     /// <param name="pmcData">Player profile</param>
     /// <param name="request">Request data</param>
     /// <param name="sessionId">session id</param>
-    public void ApplyWorkoutChanges(PmcData? pmcData, WorkoutData request, string sessionId)
+    public void ApplyWorkoutChanges(PmcData? pmcData, WorkoutData request, MongoId sessionId)
     {
         pmcData.Skills.Common = request.Skills.Common;
     }

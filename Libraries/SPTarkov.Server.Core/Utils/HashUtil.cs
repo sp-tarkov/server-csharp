@@ -34,9 +34,7 @@ public class HashUtil(RandomUtil _randomUtil)
                 return Convert.ToHexString(sha1HashData).Replace("-", string.Empty);
         }
 
-        throw new NotImplementedException(
-            $"Provided hash algorithm: {algorithm} is not supported."
-        );
+        throw new NotImplementedException($"Provided hash algorithm: {algorithm} is not supported.");
     }
 
     /// <summary>
@@ -66,9 +64,7 @@ public class HashUtil(RandomUtil _randomUtil)
             }
         }
 
-        throw new NotImplementedException(
-            $"Provided hash algorithm: {algorithm} is not supported."
-        );
+        throw new NotImplementedException($"Provided hash algorithm: {algorithm} is not supported.");
     }
 
     /// <summary>

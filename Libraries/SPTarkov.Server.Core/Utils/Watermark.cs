@@ -65,14 +65,14 @@ public class WatermarkLocale
 [Injectable(TypePriority = OnLoadOrder.Watermark)]
 public class Watermark : IOnLoad
 {
-    protected ConfigServer _configServer;
-    protected ServerLocalisationService _serverLocalisationService;
+    protected readonly ConfigServer _configServer;
+    protected readonly ServerLocalisationService _serverLocalisationService;
 
-    protected ISptLogger<Watermark> _logger;
-    protected WatermarkLocale _watermarkLocale;
-    protected CoreConfig sptConfig;
-    protected List<string> text = [];
-    protected string versionLabel = "";
+    protected readonly ISptLogger<Watermark> _logger;
+    protected readonly WatermarkLocale _watermarkLocale;
+    protected readonly CoreConfig sptConfig;
+    protected readonly List<string> text = [];
+    protected string versionLabel = string.Empty;
 
     public Watermark(
         ISptLogger<Watermark> logger,
@@ -97,8 +97,8 @@ public class Watermark : IOnLoad
 
         versionLabel = $"{sptConfig.ProjectName} {versionTag} {sptConfig.CompatibleTarkovVersion}";
 
-        text = [versionLabel];
-        text = [.. text, .. description];
+        text.Add(versionLabel);
+        text.AddRange(description);
 
         if (ProgramStatics.DEBUG())
         {
@@ -213,9 +213,9 @@ public class Watermark : IOnLoad
         result.Add($"└─{line}─┘");
 
         // Log watermark to screen
-        foreach (var text in result)
+        foreach (var resultText in result)
         {
-            _logger.LogWithColor(text, color);
+            _logger.LogWithColor(resultText, color);
         }
     }
 }
