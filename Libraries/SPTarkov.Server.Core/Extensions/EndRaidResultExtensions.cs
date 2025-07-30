@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Extensions
 {
     public static class EndRaidResultExtensions
     {
-        private static HashSet<ExitStatus> deathStates = [ExitStatus.KILLED, ExitStatus.MISSINGINACTION, ExitStatus.LEFT];
+        private static readonly HashSet<ExitStatus> _deathStates = [ExitStatus.KILLED, ExitStatus.MISSINGINACTION, ExitStatus.LEFT];
 
         /// <summary>
         ///     Checks to see if player survives. run through will return false
@@ -24,7 +24,7 @@ namespace SPTarkov.Server.Core.Extensions
         /// <returns> True if dead </returns>
         public static bool IsPlayerDead(this EndRaidResult results)
         {
-            return deathStates.Contains(results.Result.Value);
+            return _deathStates.Contains(results.Result.Value);
         }
 
         /// <summary>
