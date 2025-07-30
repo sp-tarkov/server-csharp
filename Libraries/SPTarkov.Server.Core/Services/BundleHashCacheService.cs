@@ -9,9 +9,27 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
 {
     protected const string _bundleHashCachePath = "./user/cache/";
     protected const string _cacheName = "bundleHashCache.json";
-    protected readonly Dictionary<string, uint> _bundleHashes = [];
+    protected Dictionary<string, uint> _bundleHashes = [];
 
-    public uint GetStoredValue(string key)
+    public async Task HydrateCache()
+    {
+        if (!Directory.Exists(_bundleHashCachePath))
+        {
+            Directory.CreateDirectory(_bundleHashCachePath);
+        }
+
+        var fullCachePath = Path.Join(_bundleHashCachePath, _cacheName);
+
+        // File doesn't exist, assume this is the first time we're trying to load in bundles
+        if (!File.Exists(fullCachePath))
+        {
+            return;
+        }
+
+        _bundleHashes = await jsonUtil.DeserializeFromFileAsync<Dictionary<string, uint>>(fullCachePath) ?? [];
+    }
+
+    protected uint GetStoredValue(string key)
     {
         if (!_bundleHashes.TryGetValue(key, out var value))
         {
@@ -21,37 +39,44 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
         return value;
     }
 
-    public async Task StoreValue(string bundlePath, uint hash)
+    protected async Task StoreValue(string bundlePath, uint hash)
     {
         _bundleHashes.Add(bundlePath, hash);
 
-        if (!Directory.Exists(_bundleHashCachePath))
+        var bundleHashesSerialized = jsonUtil.Serialize(_bundleHashes);
+
+        if (bundleHashesSerialized is null)
         {
-            Directory.CreateDirectory(_bundleHashCachePath);
+            return;
         }
 
-        await fileUtil.WriteFileAsync(Path.Join(_bundleHashCachePath, _cacheName), jsonUtil.Serialize(_bundleHashes));
+        await fileUtil.WriteFileAsync(Path.Join(_bundleHashCachePath, _cacheName), bundleHashesSerialized);
 
         logger.Debug($"Bundle: {bundlePath} hash stored in: ${_bundleHashCachePath}");
     }
 
-    public bool CalculateAndMatchHash(string BundlePath)
+    /// <summary>
+    /// Calculate, match the current hash and store the correct hash of the bundle
+    /// </summary>
+    /// <param name="BundlePath">The path to the bundle</param>
+    public async Task<uint> CalculateMatchAndStoreHash(string BundlePath)
     {
-        return MatchWithStoredHash(BundlePath, CalculateHash(BundlePath));
+        var hash = await CalculateHash(BundlePath);
+
+        if (!MatchWithStoredHash(BundlePath, hash))
+        {
+            await StoreValue(BundlePath, await CalculateHash(BundlePath));
+        }
+
+        return hash;
     }
 
-    public async Task CalculateAndStoreHash(string BundlePath)
+    protected async Task<uint> CalculateHash(string BundlePath)
     {
-        await StoreValue(BundlePath, CalculateHash(BundlePath));
+        return hashUtil.GenerateCrc32ForData(await fileUtil.ReadFileAsBytesAsync(BundlePath));
     }
 
-    public uint CalculateHash(string BundlePath)
-    {
-        var fileData = fileUtil.ReadFile(BundlePath);
-        return hashUtil.GenerateCrc32ForData(fileData);
-    }
-
-    public bool MatchWithStoredHash(string BundlePath, uint hash)
+    protected bool MatchWithStoredHash(string BundlePath, uint hash)
     {
         return GetStoredValue(BundlePath) == hash;
     }

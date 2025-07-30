@@ -13,7 +13,7 @@ public class SptServerBackgroundService(IReadOnlyList<SptMod> loadedMods, Bundle
         {
             foreach (var mod in loadedMods)
             {
-                if (mod.ModMetadata?.IsBundleMod == true)
+                if (mod.ModMetadata.IsBundleMod == true)
                 {
                     await bundleLoader.LoadBundlesAsync(mod);
                 }

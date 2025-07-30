@@ -13,6 +13,11 @@ public class HashUtil(RandomUtil _randomUtil)
         return Crc32.HashToUInt32(new ArraySegment<byte>(Encoding.UTF8.GetBytes(data)));
     }
 
+    public uint GenerateCrc32ForData(ReadOnlySpan<byte> data)
+    {
+        return Crc32.HashToUInt32(data);
+    }
+
     /// <summary>
     ///     Create a hash for the data parameter
     /// </summary>
