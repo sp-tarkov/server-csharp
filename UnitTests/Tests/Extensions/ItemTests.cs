@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace UnitTests.Tests.Extensions;
@@ -138,5 +139,157 @@ public class ItemTests
 
         Assert.AreEqual(result[0].Id, rootItem.Id);
         Assert.AreEqual(result.Count, 1);
+    }
+
+    [Test]
+    public void RemoveFiRStatusFromItemsInContainer_twoItemsInBackpack()
+    {
+        var profile = new PmcData() { Inventory = new BotBaseInventory() { Items = [] } };
+        profile.Inventory.Equipment = new MongoId();
+
+        // Add backpack
+        var backpackId = new MongoId();
+        profile.Inventory.Items.Add(
+            new Item
+            {
+                Id = backpackId,
+                Template = ItemTpl.BACKPACK_HAZARD_4_PILLBOX_BACKPACK_BLACK,
+                ParentId = profile.Inventory.Equipment,
+                SlotId = "Backpack",
+            }
+        );
+
+        // Add ifak to first slot in backpack
+        var item1Id = new MongoId();
+        profile.Inventory.Items.Add(
+            new Item
+            {
+                Id = item1Id,
+                Template = ItemTpl.MEDKIT_AFAK_TACTICAL_INDIVIDUAL_FIRST_AID_KIT,
+                ParentId = backpackId,
+                SlotId = "main",
+                Upd = new Upd { SpawnedInSession = true },
+                Location = new ItemLocation
+                {
+                    X = 0,
+                    Y = 0,
+                    R = ItemRotation.Horizontal,
+                },
+            }
+        );
+
+        // Add wrench to first slot of ifak
+        var item2Id = new MongoId();
+        profile.Inventory.Items.Add(
+            new Item
+            {
+                Id = item2Id,
+                Template = ItemTpl.BARTER_WRENCH,
+                ParentId = backpackId,
+                SlotId = "main",
+                Upd = new Upd { SpawnedInSession = true },
+                Location = new ItemLocation
+                {
+                    X = 1,
+                    Y = 0,
+                    R = ItemRotation.Horizontal,
+                },
+            }
+        );
+
+        // Add armband to armband slot as root
+        var item3Id = new MongoId();
+        profile.Inventory.Items.Add(
+            new Item
+            {
+                Id = item3Id,
+                Template = ItemTpl.ARMBAND_RED,
+                ParentId = profile.Inventory.Equipment,
+                SlotId = "Armband",
+                Upd = new Upd { SpawnedInSession = true },
+            }
+        );
+
+        profile.RemoveFiRStatusFromItemsInContainer("Backpack");
+
+        Assert.AreEqual(false, profile.Inventory.Items.FirstOrDefault(item => item.Id == item1Id).Upd.SpawnedInSession);
+        Assert.AreEqual(false, profile.Inventory.Items.FirstOrDefault(item => item.Id == item2Id).Upd.SpawnedInSession);
+        Assert.AreEqual(true, profile.Inventory.Items.FirstOrDefault(item => item.Id == item3Id).Upd.SpawnedInSession);
+    }
+
+    [Test]
+    public void RemoveFiRStatusFromItemsInContainer_oneItemWithChildInBackpack()
+    {
+        var profile = new PmcData { Inventory = new BotBaseInventory { Items = [] } };
+        profile.Inventory.Equipment = new MongoId();
+
+        // Add backpack
+        var backpackId = new MongoId();
+        profile.Inventory.Items.Add(
+            new Item
+            {
+                Id = backpackId,
+                Template = ItemTpl.BACKPACK_HAZARD_4_PILLBOX_BACKPACK_BLACK,
+                ParentId = profile.Inventory.Equipment,
+                SlotId = "Backpack",
+            }
+        );
+
+        // Add ifak to first slot in backpack
+        var item1Id = new MongoId();
+        profile.Inventory.Items.Add(
+            new Item
+            {
+                Id = item1Id,
+                Template = ItemTpl.MEDKIT_AFAK_TACTICAL_INDIVIDUAL_FIRST_AID_KIT,
+                ParentId = backpackId,
+                SlotId = "main",
+                Upd = new Upd { SpawnedInSession = true },
+                Location = new ItemLocation
+                {
+                    X = 0,
+                    Y = 0,
+                    R = ItemRotation.Horizontal,
+                },
+            }
+        );
+
+        // Add wrench to first slot of ifak as child
+        var item2Id = new MongoId();
+        profile.Inventory.Items.Add(
+            new Item
+            {
+                Id = item2Id,
+                Template = ItemTpl.BARTER_WRENCH,
+                ParentId = item1Id,
+                SlotId = "main",
+                Upd = new Upd { SpawnedInSession = true },
+                Location = new ItemLocation
+                {
+                    X = 1,
+                    Y = 0,
+                    R = ItemRotation.Horizontal,
+                },
+            }
+        );
+
+        // Add armband to armband slot as root
+        var item3Id = new MongoId();
+        profile.Inventory.Items.Add(
+            new Item
+            {
+                Id = item3Id,
+                Template = ItemTpl.ARMBAND_RED,
+                ParentId = profile.Inventory.Equipment,
+                SlotId = "Armband",
+                Upd = new Upd { SpawnedInSession = true },
+            }
+        );
+
+        profile.RemoveFiRStatusFromItemsInContainer("Backpack");
+
+        Assert.AreEqual(false, profile.Inventory.Items.FirstOrDefault(item => item.Id == item1Id).Upd.SpawnedInSession);
+        Assert.AreEqual(false, profile.Inventory.Items.FirstOrDefault(item => item.Id == item2Id).Upd.SpawnedInSession);
+        Assert.AreEqual(true, profile.Inventory.Items.FirstOrDefault(item => item.Id == item3Id).Upd.SpawnedInSession);
     }
 }

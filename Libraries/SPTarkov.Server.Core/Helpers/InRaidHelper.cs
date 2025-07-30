@@ -145,34 +145,6 @@ public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configSe
     }
 
     /// <summary>
-    ///     Remove FiR status from designated container.
-    /// </summary>
-    /// <param name="sessionId">Session id</param>
-    /// <param name="pmcData">Player profile</param>
-    /// <param name="secureContainerSlotId">Container slot id to find items for and remove FiR from</param>
-    public void RemoveFiRStatusFromItemsInContainer(MongoId sessionId, PmcData pmcData, string secureContainerSlotId)
-    {
-        if (!pmcData.Inventory.Items.Any(item => item.SlotId == secureContainerSlotId))
-        {
-            return;
-        }
-
-        List<Item> itemsInsideContainer = [];
-        foreach (var inventoryItem in pmcData.Inventory.Items.Where(item => item.Upd is not null && item.SlotId != "hideout"))
-        {
-            if (inventoryItem.ItemIsInsideContainer(secureContainerSlotId, pmcData.Inventory.Items))
-            {
-                itemsInsideContainer.Add(inventoryItem);
-            }
-        }
-
-        foreach (var item in itemsInsideContainer.Where(item => item.Upd?.SpawnedInSession ?? false))
-        {
-            item.Upd.SpawnedInSession = false;
-        }
-    }
-
-    /// <summary>
     ///     Get a list of items from a profile that will be lost on death.
     /// </summary>
     /// <param name="pmcProfile">Profile to get items from</param>
