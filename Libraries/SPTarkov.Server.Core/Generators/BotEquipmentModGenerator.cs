@@ -176,7 +176,8 @@ public class BotEquipmentModGenerator(
                 );
                 switch (plateSlotFilteringOutcome.Result)
                 {
-                    case Result.UNKNOWN_FAILURE or Result.NO_DEFAULT_FILTER:
+                    case Result.UNKNOWN_FAILURE
+                    or Result.NO_DEFAULT_FILTER:
                         if (logger.IsLogEnabled(LogLevel.Debug))
                         {
                             logger.Debug(
@@ -281,17 +282,8 @@ public class BotEquipmentModGenerator(
             settings.BotData.Level >= armorWeight.LevelRange.Min && settings.BotData.Level <= armorWeight.LevelRange.Max
         );
 
-        if (plateSlotWeights is null)
-        {
-            // No weights, return original array of plate tpls
-            result.Result = Result.LACKS_PLATE_WEIGHTS;
-            result.PlateModTemplates = existingPlateTplPool;
-
-            return result;
-        }
-
         // Get the specific plate slot weights (front/back/side)
-        if (!plateSlotWeights.Values.TryGetValue(modSlot, out var plateWeights))
+        if (plateSlotWeights is null || !plateSlotWeights.Values.TryGetValue(modSlot, out var plateWeights))
         {
             // No weights, return original array of plate tpls
             result.Result = Result.LACKS_PLATE_WEIGHTS;
