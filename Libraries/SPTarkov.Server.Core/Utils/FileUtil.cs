@@ -1,3 +1,4 @@
+using System.Security.AccessControl;
 using SPTarkov.DI.Annotations;
 
 namespace SPTarkov.Server.Core.Utils;
@@ -61,8 +62,17 @@ public class FileUtil
 
     public string ReadFile(string path)
     {
-        using var reader = new StreamReader(path);
-        return reader.ReadToEnd();
+        return File.ReadAllText(path);
+    }
+
+    public async Task<string> ReadFileAsync(string path)
+    {
+        return await File.ReadAllTextAsync(path);
+    }
+
+    public async Task<byte[]> ReadFileAsBytesAsync(string path)
+    {
+        return await File.ReadAllBytesAsync(path);
     }
 
     public void WriteFile(string filePath, string fileContent)

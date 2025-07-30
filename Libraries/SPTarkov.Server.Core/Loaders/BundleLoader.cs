@@ -39,6 +39,8 @@ public class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonUtil, Bu
 
     public async Task LoadBundlesAsync(SptMod mod)
     {
+        await bundleHashCacheService.HydrateCache();
+
         var modPath = mod.GetModPath();
 
         var modBundles = await jsonUtil.DeserializeFromFileAsync<BundleManifest>(
@@ -59,12 +61,7 @@ public class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonUtil, Bu
                 continue;
             }
 
-            if (!bundleHashCacheService.CalculateAndMatchHash(bundleLocalPath))
-            {
-                await bundleHashCacheService.CalculateAndStoreHash(bundleLocalPath);
-            }
-
-            var bundleHash = bundleHashCacheService.GetStoredValue(bundleLocalPath);
+            var bundleHash = await bundleHashCacheService.CalculateMatchAndStoreHash(bundleLocalPath);
 
             AddBundle(bundleManifest.Key, new BundleInfo(relativeModPath, bundleManifest, bundleHash));
         }
