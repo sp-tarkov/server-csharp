@@ -777,7 +777,7 @@ public class LocationLifecycleService(
 
             inRaidHelper.DeleteInventory(serverPmcProfile, sessionId);
 
-            inRaidHelper.RemoveFiRStatusFromItemsInContainer(sessionId, serverPmcProfile, "SecuredContainer");
+            serverPmcProfile.RemoveFiRStatusFromItemsInContainer("SecuredContainer");
         }
 
         // Must occur AFTER killer messages have been sent

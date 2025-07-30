@@ -416,5 +416,37 @@ namespace SPTarkov.Server.Core.Extensions
 
             return new InventoryItemHash { ByItemId = inventoryItems.ToDictionary(item => item.Id), ByParentId = byParentId };
         }
+
+        /// <summary>
+        ///     Remove spawned in session (FiR) status from items inside a container
+        /// </summary>
+        /// <param name="pmcData">Player profile</param>
+        /// <param name="containerSlotId">Container slot id to find items for and remove FiR from e.g. "Backpack"</param>
+        public static void RemoveFiRStatusFromItemsInContainer(this PmcData pmcData, string containerSlotId)
+        {
+            var container = pmcData?.Inventory?.Items?.FirstOrDefault(item => item.SlotId == containerSlotId);
+            if (container is null)
+            {
+                return;
+            }
+
+            var parentItemLookup = pmcData.Inventory.Items.ToLookup(item => item.ParentId);
+            var parentIdsToSearch = new Queue<string>();
+            parentIdsToSearch.Enqueue(container.Id);
+
+            while (parentIdsToSearch.Count > 0)
+            {
+                var currentParentId = parentIdsToSearch.Dequeue();
+                foreach (var childItem in parentItemLookup[currentParentId])
+                {
+                    if (childItem.Upd?.SpawnedInSession != null && childItem.Upd.SpawnedInSession.Value)
+                    {
+                        childItem.Upd.SpawnedInSession = false;
+                    }
+
+                    parentIdsToSearch.Enqueue(childItem.Id);
+                }
+            }
+        }
     }
 }
