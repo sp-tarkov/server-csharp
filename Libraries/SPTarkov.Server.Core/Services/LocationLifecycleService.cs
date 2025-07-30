@@ -332,9 +332,9 @@ public class LocationLifecycleService(
 
         var locationName = serverDetails[0].ToLowerInvariant();
         var isPmc = serverDetails[1].ToLowerInvariant().Contains("pmc");
-        var isDead = IsPlayerDead(request.Results);
-        var isTransfer = IsMapToMapTransfer(request.Results);
-        var isSurvived = IsPlayerSurvived(request.Results);
+        var isDead = request.Results.IsPlayerDead();
+        var isTransfer = request.Results.IsMapToMapTransfer();
+        var isSurvived = request.Results.IsPlayerSurvived();
 
         // Handle items transferred via BTR or transit to player mailbox
         btrDeliveryService.HandleItemTransferEvent(sessionId, request);
@@ -360,13 +360,13 @@ public class LocationLifecycleService(
         HandlePostRaidPmc(sessionId, fullProfile, scavProfile, isDead, isSurvived, isTransfer, request, locationName);
 
         // Handle car extracts
-        if (TookCarExtract(request.Results))
+        if (request.Results.TookCarExtract(_inRaidConfig.CarExtracts))
         {
             HandleCarExtract(request.Results.ExitName, pmcProfile, sessionId);
         }
 
         // Handle coop exit
-        if (TookCoopExtract(request.Results) && _traderConfig.Fence.CoopExtractGift.SendGift)
+        if (request.Results.TookCoopExtract(_inRaidConfig.CoopExtracts) && _traderConfig.Fence.CoopExtractGift.SendGift)
         {
             HandleCoopExtract(sessionId, pmcProfile, request.Results.ExitName);
             SendCoopTakenFenceMessage(sessionId);
@@ -401,37 +401,6 @@ public class LocationLifecycleService(
             mailableLoot,
             timeUtil.GetHoursAsSeconds(_traderConfig.Fence.CoopExtractGift.GiftExpiryHours)
         );
-    }
-
-    /// <summary>
-    ///     Was extract by car
-    /// </summary>
-    /// <param name="requestResults">Result object from completed raid</param>
-    /// <returns> True if extract was by car </returns>
-    protected bool TookCarExtract(EndRaidResult? requestResults)
-    {
-        // exit name is undefined on death
-        if (string.IsNullOrEmpty(requestResults?.ExitName))
-        {
-            return false;
-        }
-
-        if (requestResults.ExitName.ToLowerInvariant().Contains("v-ex"))
-        {
-            return true;
-        }
-
-        return _inRaidConfig.CarExtracts.Contains(requestResults.ExitName.Trim());
-    }
-
-    /// <summary>
-    /// Raid exit was via coop extract
-    /// </summary>
-    /// <param name="raidResult">Result object from completed raid</param>
-    /// <returns>True when exit was coop extract</returns>
-    protected bool TookCoopExtract(EndRaidResult? raidResult)
-    {
-        return raidResult?.ExitName is not null && ExtractTakenWasCoop(raidResult.ExitName);
     }
 
     /// <summary>
@@ -526,22 +495,6 @@ public class LocationLifecycleService(
     }
 
     /// <summary>
-    ///     Did player take a COOP extract
-    /// </summary>
-    /// <param name="extractName"> Name of extract player took </param>
-    /// <returns> True if coop extract </returns>
-    protected bool ExtractTakenWasCoop(string? extractName)
-    {
-        // No extract name, not a coop extract
-        if (extractName is null)
-        {
-            return false;
-        }
-
-        return _inRaidConfig.CoopExtracts.Contains(extractName.Trim());
-    }
-
-    /// <summary>
     /// Perform post-raid profile changes
     /// </summary>
     /// <param name="sessionId">Player id</param>
@@ -604,7 +557,7 @@ public class LocationLifecycleService(
         scavProfile.TradersInfo[Traders.FENCE].Standing = Math.Clamp(postRaidFenceData.Standing.Value, fenceMin, fenceMax);
 
         // Successful extract as scav, give some rep
-        if (IsPlayerSurvived(request.Results) && scavProfile.TradersInfo[Traders.FENCE].Standing < fenceMax)
+        if (request.Results.IsPlayerSurvived() && scavProfile.TradersInfo[Traders.FENCE].Standing < fenceMax)
         {
             scavProfile.TradersInfo[Traders.FENCE].Standing += _inRaidConfig.ScavExtractStandingGain;
         }
@@ -1031,37 +984,6 @@ public class LocationLifecycleService(
 
             insuranceService.StartPostRaidInsuranceLostProcess(preRaidPmcProfile, sessionId, locationName);
         }
-    }
-
-    /// <summary>
-    ///     Checks to see if player survives. run through will return false
-    /// </summary>
-    /// <param name="results"> Post raid request </param>
-    /// <returns> True if survived </returns>
-    protected bool IsPlayerSurvived(EndRaidResult results)
-    {
-        return results.Result == ExitStatus.SURVIVED;
-    }
-
-    /// <summary>
-    ///     Is the player dead after a raid - dead = anything other than "survived" / "runner"
-    /// </summary>
-    /// <param name="results"> Post raid request </param>
-    /// <returns> True if dead </returns>
-    protected bool IsPlayerDead(EndRaidResult results)
-    {
-        var deathEnums = new List<ExitStatus> { ExitStatus.KILLED, ExitStatus.MISSINGINACTION, ExitStatus.LEFT };
-        return deathEnums.Contains(results.Result.Value);
-    }
-
-    /// <summary>
-    ///     Has the player moved from one map to another
-    /// </summary>
-    /// <param name="results"> Post raid request </param>
-    /// <returns> True if players transferred </returns>
-    protected bool IsMapToMapTransfer(EndRaidResult results)
-    {
-        return results.Result == ExitStatus.TRANSIT;
     }
 
     /// <summary>
