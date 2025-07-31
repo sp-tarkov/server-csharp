@@ -1,9 +1,8 @@
-﻿namespace SPTarkov.Server.Core.Models.Spt.Launcher
+﻿namespace SPTarkov.Server.Core.Models.Spt.Launcher;
+
+public enum NicknameValidationResult
 {
-    public enum NicknameValidationResult
-    {
-        Taken,
-        Short,
-        Valid,
-    }
+    Taken,
+    Short,
+    Valid,
 }

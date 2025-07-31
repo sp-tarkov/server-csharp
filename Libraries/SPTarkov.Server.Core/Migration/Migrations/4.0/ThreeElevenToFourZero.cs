@@ -4,72 +4,71 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Utils;
 using Range = SemanticVersioning.Range;
 
-namespace SPTarkov.Server.Core.Migration.Migrations
+namespace SPTarkov.Server.Core.Migration.Migrations;
+
+[Injectable]
+public class ThreeElevenToFourZero(Watermark watermark) : AbstractProfileMigration
 {
-    [Injectable]
-    public class ThreeElevenToFourZero(Watermark watermark) : AbstractProfileMigration
+    public override string FromVersion
     {
-        public override string FromVersion
+        get { return "~3.11"; }
+    }
+
+    public override string ToVersion
+    {
+        get { return "4.0"; }
+    }
+
+    public override string MigrationName
+    {
+        get { return "311x-SPTSharp"; }
+    }
+
+    public override IEnumerable<Type> PrerequisiteMigrations
+    {
+        get { return [typeof(ThreeTenToThreeEleven)]; }
+    }
+
+    public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
+    {
+        var profileVersion = GetProfileVersion(profile);
+
+        var fromRange = Range.Parse(FromVersion);
+
+        var versionMatches =
+            fromRange.IsSatisfied(profileVersion)
+            || PrerequisiteMigrations.All(prereq => previouslyRanMigrations.Any(r => r.GetType() == prereq));
+
+        return versionMatches;
+    }
+
+    public override JsonObject? Migrate(JsonObject profile)
+    {
+        if (profile["characters"]!["pmc"]!["Hideout"]!["Production"] is JsonObject production)
         {
-            get { return "~3.11"; }
-        }
-
-        public override string ToVersion
-        {
-            get { return "4.0"; }
-        }
-
-        public override string MigrationName
-        {
-            get { return "311x-SPTSharp"; }
-        }
-
-        public override IEnumerable<Type> PrerequisiteMigrations
-        {
-            get { return [typeof(ThreeTenToThreeEleven)]; }
-        }
-
-        public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
-        {
-            var profileVersion = GetProfileVersion(profile);
-
-            var fromRange = Range.Parse(FromVersion);
-
-            var versionMatches =
-                fromRange.IsSatisfied(profileVersion)
-                || PrerequisiteMigrations.All(prereq => previouslyRanMigrations.Any(r => r.GetType() == prereq));
-
-            return versionMatches;
-        }
-
-        public override JsonObject? Migrate(JsonObject profile)
-        {
-            if (profile["characters"]!["pmc"]!["Hideout"]!["Production"] is JsonObject production)
+            foreach (var entry in production)
             {
-                foreach (var entry in production)
+                if (
+                    entry.Value is JsonObject productionEntry
+                    && productionEntry["StartTimestamp"] is JsonValue startTimestampValue
+                    && startTimestampValue.TryGetValue<string>(out var startTimestampStr)
+                    && long.TryParse(startTimestampStr, out var startTimestampInt)
+                )
                 {
-                    if (
-                        entry.Value is JsonObject productionEntry
-                        && productionEntry["StartTimestamp"] is JsonValue startTimestampValue
-                        && startTimestampValue.TryGetValue<string>(out var startTimestampStr)
-                        && long.TryParse(startTimestampStr, out var startTimestampInt)
-                    )
-                    {
-                        productionEntry["StartTimestamp"] = startTimestampInt;
-                    }
+                    productionEntry["StartTimestamp"] = startTimestampInt;
                 }
             }
-
-            return base.Migrate(profile);
         }
 
-        public override bool PostMigrate(SptProfile profile)
-        {
-            profile.SptData.ExtraRepeatableQuests = [];
+        return base.Migrate(profile);
+    }
 
-            profile.SptData.Version = $"{watermark.GetVersionTag()} (Migrated from 3.11)";
+    public override bool PostMigrate(SptProfile profile)
+    {
+        profile.SptData.ExtraRepeatableQuests = [];
 
-            return base.PostMigrate(profile);
-        }
+        profile.SptData.Version = $"{watermark.GetVersionTag()} (Migrated from 3.11)";
+
+        return base.PostMigrate(profile);
     }
 }
