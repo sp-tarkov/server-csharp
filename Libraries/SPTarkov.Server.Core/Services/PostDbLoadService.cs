@@ -514,7 +514,6 @@ public class PostDbLoadService(
                 continue;
             }
 
-            map.Base.BotMaxPvE = cap;
             map.Base.BotMax = cap;
 
             // make values no larger than 30 secs

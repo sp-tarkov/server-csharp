@@ -83,22 +83,16 @@ public record LocationBase
     public int BotMax { get; set; }
 
     /// <summary>
-    ///     Is not used in 33420 TODO: still needed?
+    ///     Is not used in 33420
     /// </summary>
     [JsonPropertyName("BotMaxPlayer")]
     public int? BotMaxPlayer { get; set; }
 
     /// <summary>
-    ///     Is not used in 33420 TODO: still needed?
+    ///     Is not used in 33420
     /// </summary>
     [JsonPropertyName("BotMaxTimePlayer")]
     public int? BotMaxTimePlayer { get; set; }
-
-    /// <summary>
-    ///     Does not even exist in the client in 33420 TODO: still needed?
-    /// </summary>
-    [JsonPropertyName("BotMaxPvE")]
-    public int? BotMaxPvE { get; set; }
 
     /// <summary>
     ///     Weighting on how likely a bot will be Normal difficulty

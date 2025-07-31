@@ -1,14 +1,13 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SPTarkov.Server.Core.Models.Enums
+namespace SPTarkov.Server.Core.Models.Enums;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum SkillClass
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum SkillClass
-    {
-        Physical,
-        Combat,
-        Special,
-        Practical,
-        Mental,
-    }
+    Physical,
+    Combat,
+    Special,
+    Practical,
+    Mental,
 }
