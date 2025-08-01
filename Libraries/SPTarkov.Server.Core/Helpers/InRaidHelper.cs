@@ -131,17 +131,16 @@ public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configSe
     /// <param name="sessionId">Player/Session id</param>
     public void DeleteInventory(PmcData pmcData, MongoId sessionId)
     {
-        // Get inventory items to remove from players profile
-        var itemsToDeleteFromProfile = GetInventoryItemsLostOnDeath(pmcData).ToList();
+        // Get inventory item ids to remove from players profile
+        var itemIdsToDeleteFromProfile = GetInventoryItemsLostOnDeath(pmcData).Select(item => item.Id);
 
-        foreach (var itemToDelete in itemsToDeleteFromProfile)
+        foreach (var itemIdToDelete in itemIdsToDeleteFromProfile)
         {
-            // Items inside containers are handled as part of function
-            inventoryHelper.RemoveItem(pmcData, itemToDelete.Id, sessionId);
+            inventoryHelper.RemoveItem(pmcData, itemIdToDelete, sessionId);
         }
 
         // Remove contents of fast panel
-        pmcData.Inventory.FastPanel = new();
+        pmcData.Inventory.FastPanel = [];
     }
 
     /// <summary>
@@ -149,35 +148,37 @@ public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configSe
     /// </summary>
     /// <param name="pmcProfile">Profile to get items from</param>
     /// <returns>List of items lost on death</returns>
-    protected IEnumerable<Item> GetInventoryItemsLostOnDeath(PmcData pmcProfile)
+    protected List<Item> GetInventoryItemsLostOnDeath(PmcData pmcProfile)
     {
         var inventoryItems = pmcProfile.Inventory.Items ?? [];
         var equipmentRootId = pmcProfile?.Inventory?.Equipment;
         var questRaidItemContainerId = pmcProfile?.Inventory?.QuestRaidItems;
 
-        return inventoryItems.Where(item =>
-        {
-            // Keep items flagged as kept after death
-            if (IsItemKeptAfterDeath(pmcProfile, item))
+        return inventoryItems
+            .Where(item =>
             {
+                // Keep items flagged as kept after death
+                if (IsItemKeptAfterDeath(pmcProfile, item))
+                {
+                    return false;
+                }
+
+                // Remove normal items or quest raid items
+                if (item.ParentId == equipmentRootId || item.ParentId == questRaidItemContainerId)
+                {
+                    return true;
+                }
+
+                // Pocket items are lost on death
+                // Ensure we don't pick up pocket items from mannequins
+                if (item.SlotId.StartsWith("pocket") && pmcProfile.DoesItemHaveRootId(item, pmcProfile.Inventory.Equipment.Value))
+                {
+                    return true;
+                }
+
                 return false;
-            }
-
-            // Remove normal items or quest raid items
-            if (item.ParentId == equipmentRootId || item.ParentId == questRaidItemContainerId)
-            {
-                return true;
-            }
-
-            // Pocket items are lost on death
-            // Ensure we don't pick up pocket items from mannequins
-            if (item.SlotId.StartsWith("pocket") && pmcProfile.DoesItemHaveRootId(item, pmcProfile.Inventory.Equipment.Value))
-            {
-                return true;
-            }
-
-            return false;
-        });
+            })
+            .ToList();
     }
 
     /// <summary>
