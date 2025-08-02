@@ -74,26 +74,24 @@ public class RagfairOfferGenerator(
     /// <returns>RagfairOffer</returns>
     protected RagfairOffer CreateOffer(CreateFleaOfferDetails details)
     {
-        var offerRequirements = details
-            .BarterScheme.Select(barter =>
+        var offerRequirements = details.BarterScheme.Select(barter =>
+        {
+            var offerRequirement = new OfferRequirement
             {
-                var offerRequirement = new OfferRequirement
-                {
-                    TemplateId = barter.Template,
-                    Count = Math.Round(barter.Count.Value, 2),
-                    OnlyFunctional = barter.OnlyFunctional ?? false,
-                };
+                TemplateId = barter.Template,
+                Count = Math.Round(barter.Count.Value, 2),
+                OnlyFunctional = barter.OnlyFunctional ?? false,
+            };
 
-                // Dogtags define level and side
-                if (barter.Level != null)
-                {
-                    offerRequirement.Level = barter.Level;
-                    offerRequirement.Side = barter.Side;
-                }
+            // Dogtags define level and side
+            if (barter.Level != null)
+            {
+                offerRequirement.Level = barter.Level;
+                offerRequirement.Side = barter.Side;
+            }
 
-                return offerRequirement;
-            })
-            .ToList();
+            return offerRequirement;
+        });
 
         // Clone to avoid modifying original array
         var itemsClone = cloner.Clone(details.Items);
@@ -295,7 +293,7 @@ public class RagfairOfferGenerator(
 
         var stopwatch = Stopwatch.StartNew();
         // get assort items from param if they exist, otherwise grab freshly generated assorts
-        var assortItemsToProcess = replacingExpiredOffers ? expiredOffers ?? [] : ragfairAssortGenerator.GetAssortItems();
+        var assortItemsToProcess = replacingExpiredOffers ? expiredOffers ?? [] : ragfairAssortGenerator.GenerateRagfairAssortItems();
         stopwatch.Stop();
         if (logger.IsLogEnabled(LogLevel.Debug) && stopwatch.ElapsedMilliseconds > 0)
         {

@@ -38,6 +38,11 @@ public class RagfairOfferHolder(
     /// </summary>
     private readonly ConcurrentDictionary<MongoId, HashSet<MongoId>> _offersByTrader = new();
 
+    /// <summary>
+    /// Fake player offer ids keyed by itemTPl
+    /// </summary>
+    private readonly ConcurrentDictionary<MongoId, HashSet<MongoId>> _fakePlayerOffers = new();
+
     private readonly Lock _expiredOfferIdsLock = new();
     private readonly Lock _ragfairOperationLock = new();
 
@@ -136,20 +141,16 @@ public class RagfairOfferHolder(
                 offer.Id = new MongoId();
             }
 
-            var itemTpl = offer.Items?.FirstOrDefault()?.Template ?? new MongoId(null);
-
-            var sellerId = offer.User.Id;
-            var sellerIsTrader = offer.IsTraderOffer();
-            var itemSoldTemplate = _itemHelper.GetItem(itemTpl);
+            var itemTpl = offer.Items?.FirstOrDefault()?.Template ?? new MongoId();
             if (
                 !itemTpl.IsEmpty() // Has tpl
-                && !(sellerIsTrader || offer.IsPlayerOffer())
-                && _offersByTemplate.TryGetValue(itemTpl, out var offers)
-                && offers?.Count >= _ragfairServerHelper.GetOfferCountByBaseType(itemSoldTemplate.Value.Parent)
+                && offer.IsFakePlayerOffer()
+                && _fakePlayerOffers.TryGetValue(itemTpl, out var offers)
+                && offers?.Count >= _ragfairServerHelper.GetOfferCountByBaseType(_itemHelper.GetItem(itemTpl).Value.Parent)
             )
             {
                 // If it is an NPC PMC offer AND we have already reached the maximum amount of possible offers
-                // for this template, just don't add in more
+                // for this template, don't add more
                 return;
             }
 
@@ -158,9 +159,14 @@ public class RagfairOfferHolder(
                 _logger.Warning($"Offer: {offer.Id} already exists");
             }
 
-            if (sellerIsTrader)
+            if (offer.IsTraderOffer())
             {
-                AddOfferByTrader(sellerId, offer.Id);
+                AddOfferByTrader(offer.User.Id, offer.Id);
+            }
+
+            if (offer.IsFakePlayerOffer())
+            {
+                AddFakePlayerOffer(itemTpl, offer.Id);
             }
 
             AddOfferByTemplates(itemTpl, offer.Id);
@@ -205,6 +211,11 @@ public class RagfairOfferHolder(
         if (_offersByTemplate.TryGetValue(rootItem.Template, out var offers))
         {
             offers.Remove(offer.Id);
+        }
+
+        if (offer.IsFakePlayerOffer() && _fakePlayerOffers.TryGetValue(offer.Items.FirstOrDefault().Template, out var fakePlayerOfferIds))
+        {
+            fakePlayerOfferIds.Remove(offer.Id);
         }
     }
 
@@ -282,6 +293,27 @@ public class RagfairOfferHolder(
         }
 
         _logger.Error($"Unable to add offer: {offerId} to _offersByTrader");
+
+        return false;
+    }
+
+    protected bool AddFakePlayerOffer(MongoId itemTpl, MongoId offerId)
+    {
+        // Look for hashset for trader first
+        if (_fakePlayerOffers.TryGetValue(itemTpl, out var fakePlayerOfferIds))
+        {
+            fakePlayerOfferIds.Add(offerId);
+
+            return true;
+        }
+
+        // Add new KvP of trader and offer id in new hashset
+        if (_fakePlayerOffers.TryAdd(itemTpl, [offerId]))
+        {
+            return true;
+        }
+
+        _logger.Error($"Unable to add offer: {offerId} to _fakePlayerOffers");
 
         return false;
     }

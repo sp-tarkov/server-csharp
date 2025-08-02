@@ -45,4 +45,19 @@ public static class RagfairOfferExtensions
 
         return false;
     }
+
+    /// <summary>
+    /// Was this offer created by a fake player
+    /// </summary>
+    /// <param name="offer"></param>
+    /// <returns></returns>
+    public static bool IsFakePlayerOffer(this RagfairOffer offer)
+    {
+        if (offer.CreatedBy is not null)
+        {
+            return offer.CreatedBy == OfferCreator.FakePlayer;
+        }
+
+        return false;
+    }
 }

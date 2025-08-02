@@ -36,20 +36,10 @@ public class RagfairAssortGenerator(
     ];
 
     /// <summary>
-    ///     Get a list of lists that can be sold on the flea. <br />
-    ///     Each sub list contains item + children (if any)
-    /// </summary>
-    /// <returns> List with children lists of items </returns>
-    public IEnumerable<List<Item>> GetAssortItems()
-    {
-        return GenerateRagfairAssortItems();
-    }
-
-    /// <summary>
     ///     Generate a list of lists (item + children) the flea can sell
     /// </summary>
     /// <returns> List of lists (item + children)</returns>
-    protected IEnumerable<List<Item>> GenerateRagfairAssortItems()
+    public IEnumerable<List<Item>> GenerateRagfairAssortItems()
     {
         IEnumerable<List<Item>> results = [];
 
