@@ -13,6 +13,7 @@
     <OutputType>Library</OutputType>
     <ContentTargetFolders>content</ContentTargetFolders>
     <RootNamespace>SptAssets</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="SPT_Data\**">
