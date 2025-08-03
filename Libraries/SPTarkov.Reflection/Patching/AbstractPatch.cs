@@ -3,8 +3,29 @@ using HarmonyLib;
 
 namespace SPTarkov.Reflection.Patching;
 
+/// <summary>
+///     Harmony patch wrapper class. See mod example 6.1 for usage.
+/// </summary>
 public abstract class AbstractPatch
 {
+    /// <summary>
+    ///     Method this patch targets
+    /// </summary>
+    public MethodBase? TargetMethod { get; private set; }
+
+    /// <summary>
+    ///     Is this patch active?
+    /// </summary>
+    public bool IsActive { get; private set; }
+
+    /// <summary>
+    ///     The harmony Id assigned to this patch, usually the name of the patch class.
+    /// </summary>
+    public string HarmonyId
+    {
+        get { return _harmony.Id; }
+    }
+
     private readonly Harmony _harmony;
     private readonly List<HarmonyMethod> _prefixList;
     private readonly List<HarmonyMethod> _postfixList;
@@ -69,9 +90,15 @@ public abstract class AbstractPatch
     /// </summary>
     public void Enable()
     {
-        var target = GetTargetMethod();
+        // We never want to have duplicated patches, prevent it.
+        if (IsActive)
+        {
+            return;
+        }
 
-        if (target == null)
+        TargetMethod = GetTargetMethod();
+
+        if (TargetMethod == null)
         {
             throw new InvalidOperationException($"{_harmony.Id}: TargetMethod is null");
         }
@@ -80,28 +107,31 @@ public abstract class AbstractPatch
         {
             foreach (var prefix in _prefixList)
             {
-                _harmony.Patch(target, prefix: prefix);
+                _harmony.Patch(TargetMethod, prefix: prefix);
             }
 
             foreach (var postfix in _postfixList)
             {
-                _harmony.Patch(target, postfix: postfix);
+                _harmony.Patch(TargetMethod, postfix: postfix);
             }
 
             foreach (var transpiler in _transpilerList)
             {
-                _harmony.Patch(target, transpiler: transpiler);
+                _harmony.Patch(TargetMethod, transpiler: transpiler);
             }
 
             foreach (var finalizer in _finalizerList)
             {
-                _harmony.Patch(target, finalizer: finalizer);
+                _harmony.Patch(TargetMethod, finalizer: finalizer);
             }
 
             foreach (var ilmanipulator in _ilManipulatorList)
             {
-                _harmony.Patch(target, ilmanipulator: ilmanipulator);
+                _harmony.Patch(TargetMethod, ilmanipulator: ilmanipulator);
             }
+
+            ModPatchCache.AddPatch(this);
+            IsActive = true;
         }
         catch (Exception ex)
         {
@@ -114,6 +144,12 @@ public abstract class AbstractPatch
     /// </summary>
     public void Disable()
     {
+        // Nothing to disable
+        if (!IsActive)
+        {
+            return;
+        }
+
         var target = GetTargetMethod();
 
         if (target == null)
@@ -129,5 +165,12 @@ public abstract class AbstractPatch
         {
             throw new Exception($"{_harmony.Id}:", ex);
         }
+
+        if (!ModPatchCache.RemovePatch(this))
+        {
+            throw new Exception($"{_harmony.Id}: Target patch not present in cache, a mod is likely externally altering it.");
+        }
+
+        IsActive = false;
     }
 }
