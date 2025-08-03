@@ -747,7 +747,7 @@ public class RagfairController(
         var inventoryItemsToSell = GetItemsToListOnFleaFromInventory(pmcData, offerRequest.Items);
         if (inventoryItemsToSell.Items is null || !string.IsNullOrEmpty(inventoryItemsToSell.ErrorMessage))
         {
-            httpResponseUtil.AppendErrorToOutput(output, inventoryItemsToSell.ErrorMessage);
+            return httpResponseUtil.AppendErrorToOutput(output, inventoryItemsToSell.ErrorMessage);
         }
 
         var firstItemToSell = inventoryItemsToSell.Items.FirstOrDefault().FirstOrDefault();
