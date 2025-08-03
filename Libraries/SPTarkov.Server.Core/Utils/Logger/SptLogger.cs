@@ -15,11 +15,6 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
     private const string ConfigurationPathDev = "./sptLogger.Development.json";
     private SptLoggerConfiguration _config;
 
-    ~SptLogger()
-    {
-        _loggerQueueManager.DumpAndStop();
-    }
-
     public SptLogger(FileUtil fileUtil, JsonUtil jsonUtil, SptLoggerQueueManager loggerQueueManager)
     {
         _category = typeof(T).FullName;
