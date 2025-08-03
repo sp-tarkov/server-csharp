@@ -65,8 +65,23 @@ public record Reward
 
     // This is always Null atm in the achievements.json
     [JsonPropertyName("illustrationConfig")]
-    public object? IllustrationConfig { get; set; }
+    public IllustrationConfig? IllustrationConfig { get; set; }
 
     [JsonPropertyName("isHidden")]
     public bool? IsHidden { get; set; }
+}
+
+public record IllustrationConfig
+{
+    [JsonExtensionData]
+    public Dictionary<string, object>? ExtensionData { get; set; }
+
+    [JsonPropertyName("Image")]
+    public string image { get; set; }
+
+    [JsonPropertyName("BigImage")]
+    public string bigImage { get; set; }
+
+    [JsonPropertyName("IsBigImage")]
+    public bool isBigImage { get; set; }
 }

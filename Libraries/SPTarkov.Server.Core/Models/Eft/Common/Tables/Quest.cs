@@ -191,6 +191,9 @@ public record QuestCondition
     [JsonPropertyName("dynamicLocale")]
     public required bool DynamicLocale { get; set; }
 
+    [JsonPropertyName("globalQuestCounterId")]
+    public string? GlobalQuestCounterId { get; set; }
+
     [JsonPropertyName("visibilityConditions")]
     public List<VisibilityCondition>? VisibilityConditions { get; set; }
 
