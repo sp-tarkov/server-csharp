@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Server", "SPTarkov.Server\SPTarkov.Server.csproj", "{1F5ED9C6-8B1F-4776-85AB-B387CBBC5557}"
 EndProject
@@ -35,6 +35,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Patches", "Patches", "{9E41CD5A-271C-4294-AAF9-8EB379311416}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ceciler.Virtualizer", "Patches\Ceciler.Virtualizer\Ceciler.Virtualizer.csproj", "{20A5EBD3-75D1-4E06-8240-09EEF874017A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Web", "Libraries\SPTarkov.Web\SPTarkov.Web.csproj", "{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,6 +92,10 @@ Global
 		{20A5EBD3-75D1-4E06-8240-09EEF874017A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20A5EBD3-75D1-4E06-8240-09EEF874017A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20A5EBD3-75D1-4E06-8240-09EEF874017A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -104,5 +110,9 @@ Global
 		{9073A593-A2F5-471E-9678-B896A7226FD4} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
 		{6F4670CD-6861-47A8-9A02-2B63AD73A929} = {587959C2-5AFA-4B77-B327-566610F9A289}
 		{20A5EBD3-75D1-4E06-8240-09EEF874017A} = {9E41CD5A-271C-4294-AAF9-8EB379311416}
+		{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6F730FC0-94A8-40B8-8E0E-5D6558E8422A}
 	EndGlobalSection
 EndGlobal

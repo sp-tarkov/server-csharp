@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Authentication;
 using System.Text;
@@ -18,6 +19,7 @@ using SPTarkov.Server.Core.Utils.Logger;
 using SPTarkov.Server.Logger;
 using SPTarkov.Server.Modding;
 using SPTarkov.Server.Services;
+using SPTarkov.Web;
 
 namespace SPTarkov.Server;
 
@@ -40,6 +42,7 @@ public static class Program
 
         // Create web builder and logger
         var builder = CreateNewHostBuilder(args);
+        builder.InitializeSptWeb();
 
         var diHandler = new DependencyInjectionHandler(builder.Services);
         // register SPT components
@@ -58,6 +61,9 @@ public static class Program
             loadedMods = sortedLoadedMods;
 
             diHandler.AddInjectableTypesFromAssemblies(sortedLoadedMods.SelectMany(a => a.Assemblies));
+
+            //Archangel: Todo: Fix up
+            //ConfigureRazorPagesForMods(builder.Services, loadedMods);
         }
         diHandler.InjectAll();
 
@@ -95,6 +101,8 @@ public static class Program
 
     private static void ConfigureWebApp(WebApplication app)
     {
+        app.MapRazorPages();
+
         app.UseWebSockets(
             new WebSocketOptions
             {
@@ -102,10 +110,11 @@ public static class Program
                 KeepAliveInterval = TimeSpan.FromSeconds(60),
             }
         );
+
         app.Use(
-            async (HttpContext context, RequestDelegate _) =>
+            async (context, next) =>
             {
-                await context.RequestServices.GetService<HttpServer>()!.HandleRequest(context);
+                await context.RequestServices.GetService<HttpServer>()!.HandleRequest(context, next);
             }
         );
     }
@@ -148,6 +157,46 @@ public static class Program
                 );
             }
         );
+    }
+
+    private static void ConfigureRazorPagesForMods(IServiceCollection services, List<SptMod> mods)
+    {
+        //Todo: Might need more for controllers and the like? Check after the application in general is working
+        //Todo: Fix routing
+
+        var assembliesWithPages = new List<Assembly>();
+
+        foreach (var mod in mods)
+        {
+            foreach (var assembly in mod.Assemblies)
+            {
+                if (AssemblyHasRazorPages(assembly))
+                {
+                    assembliesWithPages.Add(assembly);
+                }
+            }
+        }
+
+        if (assembliesWithPages.Count > 0)
+        {
+            var mvcBuilder = services.AddRazorPages();
+
+            foreach (var assembly in assembliesWithPages)
+            {
+                mvcBuilder.AddApplicationPart(assembly);
+            }
+        }
+    }
+
+    private static bool AssemblyHasRazorPages(Assembly assembly)
+    {
+        // Check for types that inherit from PageModel (Razor Pages)
+        var hasPageModels = assembly.GetTypes().Any(t => t.IsSubclassOf(typeof(Microsoft.AspNetCore.Mvc.RazorPages.PageModel)));
+
+        // Check for compiled Razor views (they implement IRazorPage)
+        var hasCompiledViews = assembly.GetTypes().Any(t => typeof(Microsoft.AspNetCore.Mvc.Razor.IRazorPage).IsAssignableFrom(t));
+
+        return hasPageModels || hasCompiledViews;
     }
 
     private static WebApplicationBuilder CreateNewHostBuilder(string[]? args = null)
