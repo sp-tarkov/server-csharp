@@ -25,7 +25,7 @@ public class BotWeaponGeneratorHelper(
     /// <returns>Bullet count number</returns>
     public double? GetRandomizedBulletCount(GenerationData magCounts, TemplateItem magTemplate)
     {
-        var randomizedMagazineCount = GetRandomizedMagazineCount(magCounts);
+        var randomizedMagazineCount = Math.Max(GetRandomizedMagazineCount(magCounts), 1); // Never return lower than 1 to prevent a multiplication by 0
         var parentItem = itemHelper.GetItem(magTemplate.Parent).Value;
         double? chamberBulletCount;
         if (MagazineIsCylinderRelated(parentItem.Name))
