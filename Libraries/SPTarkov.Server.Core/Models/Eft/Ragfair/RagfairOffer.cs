@@ -120,16 +120,20 @@ public record OfferRequirement
 
 public record RagfairOfferUser
 {
+    private string? _nickname;
+
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
-
-    private string? _id;
 
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 
     [JsonPropertyName("nickname")]
-    public string? Nickname { get; set; }
+    public string? Nickname
+    {
+        get { return _nickname; }
+        set { _nickname = value == null ? null : string.Intern(value); }
+    }
 
     [JsonPropertyName("rating")]
     public double? Rating { get; set; }

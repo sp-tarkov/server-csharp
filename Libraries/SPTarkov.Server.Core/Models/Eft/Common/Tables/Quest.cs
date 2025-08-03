@@ -174,6 +174,8 @@ public record QuestConditionTypes
 
 public record QuestCondition
 {
+    private string _conditionType;
+
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
@@ -268,7 +270,11 @@ public record QuestCondition
     public bool? IsEncoded { get; set; }
 
     [JsonPropertyName("conditionType")]
-    public required string ConditionType { get; set; }
+    public required string ConditionType
+    {
+        get { return _conditionType; }
+        set { _conditionType = string.Intern(value); }
+    }
 
     [JsonPropertyName("areaType")]
     public HideoutAreas? AreaType { get; set; }
