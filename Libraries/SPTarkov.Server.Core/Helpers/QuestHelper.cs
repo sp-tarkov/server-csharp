@@ -140,7 +140,7 @@ public class QuestHelper(
                 logger.Debug($"currentLevelRemainingProgress: {currentLevelRemainingProgress}");
             }
 
-            var progressToAdd = Math.Min(remainingProgress, currentLevelRemainingProgress ?? 0);
+            var progressToAdd = Math.Min(remainingProgress, currentLevelRemainingProgress);
             var adjustedProgressToAdd = 10 / (currentLevel + 1) * progressToAdd;
             if (logger.IsLogEnabled(LogLevel.Debug))
             {

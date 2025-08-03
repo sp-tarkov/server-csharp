@@ -71,7 +71,11 @@ public class RewardHelper(
             {
                 case RewardType.Skill:
                     // This needs to use the passed in profileData, as it could be the scav profile
-                    profileHelper.AddSkillPointsToPlayer(profileData, Enum.Parse<SkillTypes>(reward.Target), reward.Value);
+                    profileHelper.AddSkillPointsToPlayer(
+                        profileData,
+                        Enum.Parse<SkillTypes>(reward.Target),
+                        reward.Value.GetValueOrDefault(0)
+                    );
                     break;
                 case RewardType.Experience:
                     profileHelper.AddExperienceToPmc(sessionId.Value, int.Parse(reward.Value.ToString())); // this must occur first as the output object needs to take the modified profile exp value

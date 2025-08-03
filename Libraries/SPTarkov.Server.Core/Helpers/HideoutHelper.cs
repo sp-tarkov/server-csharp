@@ -1138,7 +1138,7 @@ public class HideoutHelper(
         // If the level is 51 we need to round it at 50 so on elite you dont get 25.5%
         // at level 1 you already get 0.5%, so it goes up until level 50. For some reason the wiki
         // says that it caps at level 51 with 25% but as per dump data that is incorrect apparently
-        var roundedLevel = Math.Floor(hideoutManagementSkill.Progress / 100 ?? 0D);
+        var roundedLevel = Math.Floor(hideoutManagementSkill.Progress / 100);
         roundedLevel = roundedLevel == 51 ? roundedLevel - 1 : roundedLevel;
 
         return roundedLevel
@@ -1164,7 +1164,7 @@ public class HideoutHelper(
         // If the level is 51 we need to round it at 50 so on elite you dont get 25.5%
         // at level 1 you already get 0.5%, so it goes up until level 50. For some reason the wiki
         // says that it caps at level 51 with 25% but as per dump data that is incorrect apparently
-        var roundedLevel = Math.Floor(profileSkill.Progress / 100 ?? 0D);
+        var roundedLevel = Math.Floor(profileSkill.Progress / 100);
         roundedLevel = roundedLevel == 51 ? roundedLevel - 1 : roundedLevel;
 
         return roundedLevel * valuePerLevel / 100;
@@ -1309,7 +1309,7 @@ public class HideoutHelper(
         var bonus = GetDogtagCombatSkillBonusPercent(pmcData, activeDogtags) * hideoutManagementSkillBonusPercent;
 
         // Update bonus value to above calcualted value
-        combatBonusProfile.Value = Math.Round(bonus ?? 0, 2);
+        combatBonusProfile.Value = Math.Round(bonus, 2);
     }
 
     /// <summary>

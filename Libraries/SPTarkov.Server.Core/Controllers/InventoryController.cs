@@ -192,7 +192,7 @@ public class InventoryController(
                         continue;
                     }
 
-                    profileSkill.Progress = mailEvent.Value;
+                    profileSkill.Progress = (double)mailEvent.Value;
                     logger.Success($"Set profile skill: {mailEvent.Entity} to: {mailEvent.Value}");
                     break;
                 }

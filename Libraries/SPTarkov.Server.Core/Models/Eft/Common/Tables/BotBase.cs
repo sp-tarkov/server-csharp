@@ -447,7 +447,7 @@ public record Skills
 
     public IEnumerable<MasterySkill>? Mastering { get; set; }
 
-    public double? Points { get; set; }
+    public double Points { get; set; }
 }
 
 public record MasterySkill
@@ -455,9 +455,9 @@ public record MasterySkill
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public string? Id { get; set; }
+    public string Id { get; set; }
 
-    public double? Progress { get; set; }
+    public double Progress { get; set; }
 }
 
 public record CommonSkill
@@ -465,13 +465,14 @@ public record CommonSkill
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    public double? PointsEarnedDuringSession { get; set; }
+    public double PointsEarnedDuringSession { get; set; }
 
-    public long? LastAccess { get; set; }
+    public long LastAccess { get; set; }
 
-    public SkillTypes? Id { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public SkillTypes Id { get; set; }
 
-    public double? Progress { get; set; }
+    public double Progress { get; set; }
 
     [JsonPropertyName("max")]
     public int? Max { get; set; }

@@ -478,7 +478,7 @@ public class ProfileHelper(
     public void AddSkillPointsToPlayer(
         PmcData pmcProfile,
         SkillTypes skill,
-        double? pointsToAddToSkill,
+        double pointsToAddToSkill,
         bool useSkillProgressRateMultiplier = false
     )
     {
@@ -516,7 +516,6 @@ public class ProfileHelper(
         profileSkill.Progress += pointsToAddToSkill;
         profileSkill.Progress = Math.Min(profileSkill?.Progress ?? 0D, 5100); // Prevent skill from ever going above level 51 (5100)
 
-        profileSkill.PointsEarnedDuringSession ??= 0;
         profileSkill.PointsEarnedDuringSession += pointsToAddToSkill;
 
         profileSkill.LastAccess = timeUtil.GetTimeStamp();
