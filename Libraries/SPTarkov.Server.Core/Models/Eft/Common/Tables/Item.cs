@@ -419,9 +419,15 @@ public record UpdDogtag
     [JsonPropertyName("Level")]
     public double? Level { get; set; }
 
+    /// <summary>
+    /// e.g. 2024-11-14T21:24:59.329+03:00
+    /// </summary>
     [JsonPropertyName("Time")]
     public string? Time { get; set; }
 
+    /// <summary>
+    /// e.g. "Killed by"
+    /// </summary>
     [JsonPropertyName("Status")]
     public string? Status { get; set; }
 
@@ -434,6 +440,9 @@ public record UpdDogtag
     [JsonPropertyName("KillerName")]
     public string? KillerName { get; set; }
 
+    /// <summary>
+    /// e.g. 5fbcc1d9016cce60e8341ab3 ShortName
+    /// </summary>
     [JsonPropertyName("WeaponName")]
     public string? WeaponName { get; set; }
 

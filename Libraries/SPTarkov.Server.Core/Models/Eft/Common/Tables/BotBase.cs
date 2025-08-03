@@ -141,6 +141,8 @@ public record MoneyTransferLimits
 
 public record TaskConditionCounter
 {
+    private string? _type;
+
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
@@ -148,7 +150,11 @@ public record TaskConditionCounter
     public MongoId? Id { get; set; }
 
     [JsonPropertyName("type")]
-    public string? Type { get; set; }
+    public string? Type
+    {
+        get { return _type; }
+        set { _type = value == null ? null : string.Intern(value); }
+    }
 
     [JsonPropertyName("value")]
     public double? Value { get; set; }
@@ -684,12 +690,18 @@ public record BodyPartsDamageHistory
 
 public record DamageStats
 {
+    private string? _type;
+
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     public double? Amount { get; set; }
 
-    public string? Type { get; set; }
+    public string? Type
+    {
+        get { return _type; }
+        set { _type = value == null ? null : string.Intern(value); }
+    }
 
     public string? SourceId { get; set; }
 
