@@ -223,7 +223,7 @@ public class RagfairOfferHolder(
     ///     Remove all offers a trader has
     /// </summary>
     /// <param name="traderId">Trader id to remove offers from</param>
-    public void RemoveAllOffersByTrader(string traderId)
+    public void RemoveAllOffersByTrader(MongoId traderId)
     {
         if (!_offersByTrader.TryGetValue(traderId, out var offerIdsToRemove))
         {
