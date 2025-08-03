@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Server", "SPTarkov.Server\SPTarkov.Server.csproj", "{1F5ED9C6-8B1F-4776-85AB-B387CBBC5557}"
 EndProject
@@ -42,6 +42,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMod", "Testing\TestMod\TestMod.csproj", "{755E473C-14F2-40BC-9377-2FAB11CA91DC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ceciler.JsonExtensionData", "Patches\Ceciler.JsonExtensionData\Ceciler.JsonExtensionData.csproj", "{5D09182A-B0B3-406C-AE88-EE0929F9260C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Web", "Libraries\SPTarkov.Web\SPTarkov.Web.csproj", "{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,6 +107,10 @@ Global
 		{5D09182A-B0B3-406C-AE88-EE0929F9260C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D09182A-B0B3-406C-AE88-EE0929F9260C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D09182A-B0B3-406C-AE88-EE0929F9260C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,5 +129,9 @@ Global
 		{28B90486-1436-4CD7-88D0-122B6963AB58} = {07B50C44-6D38-474E-87AF-68672D241EEB}
 		{755E473C-14F2-40BC-9377-2FAB11CA91DC} = {07B50C44-6D38-474E-87AF-68672D241EEB}
 		{5D09182A-B0B3-406C-AE88-EE0929F9260C} = {9E41CD5A-271C-4294-AAF9-8EB379311416}
+		{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6F730FC0-94A8-40B8-8E0E-5D6558E8422A}
 	EndGlobalSection
 EndGlobal
