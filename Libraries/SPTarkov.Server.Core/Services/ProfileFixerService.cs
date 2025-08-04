@@ -406,10 +406,10 @@ public class ProfileFixerService(
         var generator = pmcProfile.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.Generator);
         if (generator is not null)
         {
-            var genSlots = generator.Slots.Count;
+            var fuelSlots = generator.Slots.Count;
             var extraGenSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.Generator.Slots;
 
-            if (genSlots < 6 + extraGenSlots)
+            if (fuelSlots < 6 + extraGenSlots)
             {
                 if (logger.IsLogEnabled(LogLevel.Debug))
                 {
@@ -420,10 +420,10 @@ public class ProfileFixerService(
             }
         }
 
-        var waterCollSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.WaterCollector).Slots.Count;
+        var waterCollSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.WaterCollector)?.Slots?.Count;
         var extraWaterCollSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.WaterCollector.Slots;
 
-        if (waterCollSlots < 1 + extraWaterCollSlots)
+        if (waterCollSlots.GetValueOrDefault(0) < 1 + extraWaterCollSlots)
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
@@ -433,10 +433,10 @@ public class ProfileFixerService(
             AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.WaterCollector, (int)(1 + extraWaterCollSlots), pmcProfile);
         }
 
-        var filterSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.AirFilteringUnit).Slots.Count;
+        var filterSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.AirFilteringUnit)?.Slots?.Count;
         var extraFilterSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.AirFilteringUnit.Slots;
 
-        if (filterSlots < 3 + extraFilterSlots)
+        if (filterSlots.GetValueOrDefault(0) < 3 + extraFilterSlots)
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
