@@ -1,4 +1,3 @@
-using System.Collections.Frozen;
 using System.Text.RegularExpressions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
@@ -30,7 +29,6 @@ public class ProfileFixerService(
     InventoryHelper inventoryHelper
 )
 {
-    protected readonly FrozenSet<string> _areas = ["hideout", "main"];
     protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
 
     /// <summary>
@@ -397,7 +395,7 @@ public class ProfileFixerService(
     }
 
     /// <summary>
-    ///     If the profile has elite Hideout Managment skill, add the additional slots from globals
+    ///     If the profile has elite Hideout Management skill, add the additional slots from globals
     ///     NOTE: This seems redundant, but we will leave it here just in case.
     /// </summary>
     /// <param name="pmcProfile">profile to add slots to</param>
@@ -451,7 +449,7 @@ public class ProfileFixerService(
         var btcFarmSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.BitcoinFarm).Slots.Count;
         var extraBtcSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.BitcoinFarm.Slots;
 
-        // BTC Farm doesnt have extra slots for hideout management, but we still check for modded stuff!!
+        // BTC Farm doesn't have extra slots for hideout management, but we still check for modded stuff!!
         if (btcFarmSlots < 50 + extraBtcSlots)
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
@@ -524,37 +522,20 @@ public class ProfileFixerService(
         var itemsDb = databaseService.GetItems();
         var pmcProfile = fullProfile.CharacterData.PmcData;
 
-        // Get items placed in root of stash
-        // TODO: extend to other areas / sub items
-        List<MongoId> itemIdsToRemove = [];
-        var inventoryItemsToCheck = pmcProfile.Inventory.Items.Where(item => _areas.Contains(item.SlotId ?? ""));
-        if (inventoryItemsToCheck.Any())
-        // Check each item in inventory to ensure item exists in itemDb
+        var invalidItemIds = pmcProfile.Inventory.Items.Where(item => !itemsDb.ContainsKey(item.Template)).Select(item => item.Id).ToList();
+        foreach (var invalidItemId in invalidItemIds)
         {
-            foreach (var item in inventoryItemsToCheck)
+            if (_coreConfig.Fixes.RemoveModItemsFromProfile)
             {
-                if (itemsDb.ContainsKey(item.Template))
-                {
-                    // Exists in itemsDb, ignore
-                    continue;
-                }
+                logger.Warning($"Deleting item id: {invalidItemId} from inventory and insurance");
 
-                logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template));
-                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-                {
-                    logger.Success($"Deleting item from inventory and insurance with id: {item.Id} tpl: {item.Template}");
-
-                    // Add here so we can remove below
-                    itemIdsToRemove.Add(item.Id);
-                }
+                // Add here so we can remove below
+                inventoryHelper.RemoveItem(pmcProfile, invalidItemId, sessionId);
             }
-        }
-
-        if (itemIdsToRemove.Any())
-        {
-            foreach (var itemId in itemIdsToRemove)
+            else
             {
-                inventoryHelper.RemoveItem(pmcProfile, itemId, sessionId);
+                logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", invalidItemId.ToString()));
+                break;
             }
         }
 
@@ -598,30 +579,21 @@ public class ProfileFixerService(
                     continue;
                 }
 
-                // Iterate over all items in message
-                List<Message> messagesToRemove = [];
-                foreach (var item in message.Items.Data)
+                // Find invalid items and remove from message
+                var itemsToRemove = message.Items.Data.Where(item => !itemsDb.ContainsKey(item.Template)).ToList();
+                foreach (var itemToRemove in itemsToRemove)
                 {
-                    // Check item exists in itemsDb
-                    if (!itemsDb.ContainsKey(item.Template))
-                    {
-                        logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template));
-                    }
-
                     if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                     {
-                        messagesToRemove.Add(message);
-                        logger.Warning($"Item: {item.Template} has resulted in the deletion of message: {message.Id} from dialog {dialog}");
+                        message.Items.Data.Remove(itemToRemove);
+                        logger.Warning(
+                            $"Item: {itemToRemove.Template} has resulted in the deletion of message: {message.Id} from dialog: {dialog.Key}"
+                        );
                     }
-
-                    break;
-                }
-
-                if (messagesToRemove.Any())
-                {
-                    foreach (var messageToRemove in messagesToRemove)
+                    else
                     {
-                        dialog.Value.Messages.Remove(messageToRemove);
+                        logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", itemToRemove.Template.ToString()));
+                        break;
                     }
                 }
             }
@@ -637,7 +609,7 @@ public class ProfileFixerService(
             if (!clothingDb.ContainsKey(clothingItem.Id))
             {
                 // Item in profile not found in db, not good
-                logger.Error(serverLocalisationService.GetText("fixer-clothing_item_found", clothingItem));
+                logger.Error(serverLocalisationService.GetText("fixer-clothing_item_found", clothingItem.ToString()));
 
                 if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                 {
@@ -659,13 +631,17 @@ public class ProfileFixerService(
             {
                 if (!traderHelper.TraderExists(activeQuest.TraderId))
                 {
-                    logger.Error(serverLocalisationService.GetText("fixer-trader_found", activeQuest.TraderId));
                     if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                     {
                         logger.Warning(
                             $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
                         );
                         repeatable.ActiveQuests.Remove(activeQuest);
+                    }
+                    else
+                    {
+                        logger.Error(serverLocalisationService.GetText("fixer-trader_found", activeQuest.TraderId.ToString()));
+                        break;
                     }
 
                     continue;
@@ -678,12 +654,11 @@ public class ProfileFixerService(
 
                 // Get Item rewards only
                 foreach (var successReward in activeQuest.Rewards["Success"].Where(reward => reward.Type == RewardType.Item))
-                foreach (var item in successReward.Items)
                 {
-                    if (!itemsDb.ContainsKey(item.Template))
+                    if (successReward.Items.Any(item => !itemsDb.ContainsKey(item.Template)))
                     {
                         logger.Warning(
-                            $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
+                            $"Non-default repeatable quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
                         );
                         repeatable.ActiveQuests.Remove(activeQuest);
                     }
@@ -693,11 +668,15 @@ public class ProfileFixerService(
 
         foreach (var (traderId, _) in fullProfile.TraderPurchases.Where(traderPurchase => !traderHelper.TraderExists(traderPurchase.Key)))
         {
-            logger.Error(serverLocalisationService.GetText("fixer-trader_found", traderId));
             if (_coreConfig.Fixes.RemoveModItemsFromProfile)
             {
                 logger.Warning($"Non-default trader: {traderId} purchase removed from traderPurchases list in profile");
                 fullProfile.TraderPurchases.Remove(traderId);
+            }
+            else
+            {
+                logger.Error(serverLocalisationService.GetText("fixer-trader_found", traderId.ToString()));
+                break;
             }
         }
     }
@@ -716,7 +695,7 @@ public class ProfileFixerService(
         {
             foreach (var item in (build as WeaponBuild).Items.Where(item => !itemsDb.ContainsKey(item.Template)))
             {
-                logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template));
+                logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template.ToString()));
 
                 if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                 {
@@ -736,7 +715,7 @@ public class ProfileFixerService(
         {
             foreach (var item in (build as EquipmentBuild).Items.Where(item => !itemsDb.ContainsKey(item.Template)))
             {
-                logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template));
+                logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template.ToString()));
 
                 if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                 {
@@ -772,7 +751,7 @@ public class ProfileFixerService(
             // Check item exists in itemsDb
             if (!itemsDb.ContainsKey(item.TemplateId))
             {
-                logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.TemplateId));
+                logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.TemplateId.ToString()));
 
                 if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                 {
@@ -873,12 +852,10 @@ public class ProfileFixerService(
 
     public void CheckForAndRemoveInvalidTraders(SptProfile fullProfile)
     {
-        foreach (var traderKvP in fullProfile.CharacterData?.PmcData?.TradersInfo)
+        foreach (var (traderId, _) in fullProfile.CharacterData?.PmcData?.TradersInfo)
         {
-            var traderId = traderKvP.Key;
             if (!traderHelper.TraderExists(traderId))
             {
-                logger.Error(serverLocalisationService.GetText("fixer-trader_found", traderId));
                 if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
                     logger.Warning(
@@ -886,21 +863,27 @@ public class ProfileFixerService(
                     );
                     fullProfile.CharacterData.PmcData.TradersInfo.Remove(traderId);
                 }
+                else
+                {
+                    logger.Error(serverLocalisationService.GetText("fixer-trader_found", traderId.ToString()));
+                }
             }
         }
 
-        foreach (var traderKvP in fullProfile.CharacterData.ScavData?.TradersInfo)
+        foreach (var (traderId, _) in fullProfile.CharacterData.ScavData?.TradersInfo)
         {
-            var traderId = traderKvP.Key;
             if (!traderHelper.TraderExists(traderId))
             {
-                logger.Error(serverLocalisationService.GetText("fixer-trader_found", traderId));
                 if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
                     logger.Warning(
                         $"Non - default trader: {traderId} removed from Scav TradersInfo in: {fullProfile.ProfileInfo?.ProfileId} profile"
                     );
                     fullProfile.CharacterData.ScavData.TradersInfo.Remove(traderId);
+                }
+                else
+                {
+                    logger.Error(serverLocalisationService.GetText("fixer-trader_found", traderId.ToString()));
                 }
             }
         }
