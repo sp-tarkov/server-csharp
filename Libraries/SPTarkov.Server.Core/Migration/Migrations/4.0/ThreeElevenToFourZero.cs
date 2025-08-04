@@ -60,6 +60,21 @@ public class ThreeElevenToFourZero(Watermark watermark) : AbstractProfileMigrati
             }
         }
 
+        if (profile["insurance"] is JsonArray insuranceArray)
+        {
+            foreach (var item in insuranceArray)
+            {
+                if (item is JsonObject insuranceEntry && insuranceEntry["scheduledTime"] is JsonValue scheduledTimeValue)
+                {
+                    if (scheduledTimeValue.TryGetValue<double>(out var timeAsDouble))
+                    {
+                        // Handle the node server having turned this value into a double
+                        insuranceEntry["scheduledTime"] = Convert.ToInt32(timeAsDouble);
+                    }
+                }
+            }
+        }
+
         return base.Migrate(profile);
     }
 
