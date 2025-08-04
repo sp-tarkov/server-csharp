@@ -526,24 +526,35 @@ public class ProfileFixerService(
 
         // Get items placed in root of stash
         // TODO: extend to other areas / sub items
+        List<MongoId> itemIdsToRemove = [];
         var inventoryItemsToCheck = pmcProfile.Inventory.Items.Where(item => _areas.Contains(item.SlotId ?? ""));
-        if (inventoryItemsToCheck is not null)
-        // Check each item in inventory to ensure item exists in itemdb
+        if (inventoryItemsToCheck.Any())
+        // Check each item in inventory to ensure item exists in itemDb
         {
             foreach (var item in inventoryItemsToCheck)
             {
-                if (!itemsDb.ContainsKey(item.Template))
+                if (itemsDb.ContainsKey(item.Template))
                 {
-                    logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template));
-
-                    if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-                    {
-                        logger.Success($"Deleting item from inventory and insurance with id: {item.Id} tpl: {item.Template}");
-
-                        // also deletes from insured array
-                        inventoryHelper.RemoveItem(pmcProfile, item.Id, sessionId);
-                    }
+                    // Exists in itemsDb, ignore
+                    continue;
                 }
+
+                logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template));
+                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+                {
+                    logger.Success($"Deleting item from inventory and insurance with id: {item.Id} tpl: {item.Template}");
+
+                    // Add here so we can remove below
+                    itemIdsToRemove.Add(item.Id);
+                }
+            }
+        }
+
+        if (itemIdsToRemove.Any())
+        {
+            foreach (var itemId in itemIdsToRemove)
+            {
+                inventoryHelper.RemoveItem(pmcProfile, itemId, sessionId);
             }
         }
 
@@ -588,6 +599,7 @@ public class ProfileFixerService(
                 }
 
                 // Iterate over all items in message
+                List<Message> messagesToRemove = [];
                 foreach (var item in message.Items.Data)
                 {
                     // Check item exists in itemsDb
@@ -598,11 +610,19 @@ public class ProfileFixerService(
 
                     if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                     {
-                        dialog.Value.Messages.Remove(message);
+                        messagesToRemove.Add(message);
                         logger.Warning($"Item: {item.Template} has resulted in the deletion of message: {message.Id} from dialog {dialog}");
                     }
 
                     break;
+                }
+
+                if (messagesToRemove.Any())
+                {
+                    foreach (var messageToRemove in messagesToRemove)
+                    {
+                        dialog.Value.Messages.Remove(messageToRemove);
+                    }
                 }
             }
         }
@@ -634,7 +654,8 @@ public class ProfileFixerService(
                 continue;
             }
 
-            foreach (var activeQuest in repeatable.ActiveQuests.ToArray())
+            // ToList to prevent `Collection was modified` exception
+            foreach (var activeQuest in repeatable.ActiveQuests.ToList())
             {
                 if (!traderHelper.TraderExists(activeQuest.TraderId))
                 {
@@ -670,15 +691,13 @@ public class ProfileFixerService(
             }
         }
 
-        foreach (
-            var TraderPurchaseKvP in fullProfile.TraderPurchases.Where(TraderPurchase => !traderHelper.TraderExists(TraderPurchase.Key))
-        )
+        foreach (var (traderId, _) in fullProfile.TraderPurchases.Where(traderPurchase => !traderHelper.TraderExists(traderPurchase.Key)))
         {
-            logger.Error(serverLocalisationService.GetText("fixer-trader_found", TraderPurchaseKvP.Key));
+            logger.Error(serverLocalisationService.GetText("fixer-trader_found", traderId));
             if (_coreConfig.Fixes.RemoveModItemsFromProfile)
             {
-                logger.Warning($"Non-default trader: {TraderPurchaseKvP.Key} purchase removed from traderPurchases list in profile");
-                fullProfile.TraderPurchases.Remove(TraderPurchaseKvP.Key);
+                logger.Warning($"Non-default trader: {traderId} purchase removed from traderPurchases list in profile");
+                fullProfile.TraderPurchases.Remove(traderId);
             }
         }
     }
