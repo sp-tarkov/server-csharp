@@ -241,7 +241,7 @@ public class DatabaseService(
     }
 
     /// <returns> assets/database/templates/quests.json </returns>
-    public Dictionary<string, Quest> GetQuests()
+    public Dictionary<MongoId, Quest> GetQuests()
     {
         if (databaseServer.GetTables().Templates?.Quests == null)
         {

@@ -921,8 +921,7 @@ public class LocationLifecycleService(
         var failedQuests = questsToProcess.Where(quest => quest.Status == QuestStatusEnum.MarkedAsFailed);
         foreach (var failedQuest in failedQuests)
         {
-            var dbQuest = databaseService.GetQuests()[failedQuest.QId];
-            if (dbQuest is null)
+            if (!databaseService.GetQuests().TryGetValue(failedQuest.QId, out var dbQuest))
             {
                 continue;
             }

@@ -23,7 +23,7 @@ public record Templates
     public Prestige? Prestige { get; set; }
 
     [JsonPropertyName("quests")]
-    public Dictionary<string, Quest> Quests { get; set; }
+    public Dictionary<MongoId, Quest> Quests { get; set; }
 
     [JsonPropertyName("repeatableQuests")]
     public RepeatableQuestDatabase RepeatableQuests { get; set; }
