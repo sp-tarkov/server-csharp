@@ -230,6 +230,7 @@ public static class ItemExtensions
     }
 
     /// <summary>
+    /// TODO: return IEnumerable and update all calling code
     /// Get an item with its attachments (children)
     /// </summary>
     /// <param name="items">List of items (item + possible children)</param>

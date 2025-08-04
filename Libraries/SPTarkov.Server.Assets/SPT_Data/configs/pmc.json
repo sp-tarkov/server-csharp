@@ -167,8 +167,10 @@
   ],
   "useDifficultyOverride": false,
   "difficulty": "AsOnline",
-  "botRelativeLevelDeltaMax": 10,
-  "botRelativeLevelDeltaMin": 70,
+  "botRelativeLevelDelta": {
+	  "min": 70,
+	  "max": 10
+  },
   "isUsec": 60,
   "_pmcType": "Controls what bot brain can be chosen for each PMC bot type, the number is the weighting to be picked",
   "pmcType": {

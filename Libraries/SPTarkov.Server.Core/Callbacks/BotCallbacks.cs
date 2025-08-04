@@ -52,9 +52,9 @@ public class BotCallbacks(BotController botController, HttpResponseUtil httpResp
     ///     Handle client/game/bot/generate
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GenerateBots(string url, GenerateBotsRequestData info, MongoId sessionID)
+    public async ValueTask<string> GenerateBots(string url, GenerateBotsRequestData info, MongoId sessionID)
     {
-        return new ValueTask<string>(httpResponseUtil.GetBody(botController.Generate(sessionID, info)));
+        return httpResponseUtil.GetBody(await botController.Generate(sessionID, info));
     }
 
     /// <summary>

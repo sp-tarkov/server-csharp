@@ -106,14 +106,8 @@ public record PmcConfig : BaseConfig
     /// <summary>
     ///     How many levels above player level can a PMC be
     /// </summary>
-    [JsonPropertyName("botRelativeLevelDeltaMax")]
-    public required int BotRelativeLevelDeltaMax { get; set; }
-
-    /// <summary>
-    ///     How many levels below player level can a PMC be
-    /// </summary>
-    [JsonPropertyName("botRelativeLevelDeltaMin")]
-    public required int BotRelativeLevelDeltaMin { get; set; }
+    [JsonPropertyName("botRelativeLevelDelta")]
+    public required MinMax<int> BotRelativeLevelDelta { get; set; }
 
     /// <summary>
     ///     Force a number of healing items into PMCs secure container to ensure they can heal

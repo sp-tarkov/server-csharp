@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Frozen;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Constants;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
@@ -15,9 +16,9 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class MatchBotDetailsCacheService(ISptLogger<MatchBotDetailsCacheService> logger)
 {
-    private static readonly FrozenSet<string> _sidesToCache = [Sides.PmcUsec, Sides.PmcBear];
+    private static readonly FrozenSet<string> _rolesToCache = [Sides.PmcUsec, Sides.PmcBear];
 
-    protected readonly ConcurrentDictionary<string, BotDetailsForChatMessages> BotDetailsCache = new();
+    protected readonly ConcurrentDictionary<MongoId, BotDetailsForChatMessages> BotDetailsCache = new();
 
     /// <summary>
     ///     Store a bot in the cache, keyed by its ID.
@@ -36,21 +37,22 @@ public class MatchBotDetailsCacheService(ISptLogger<MatchBotDetailsCacheService>
             return;
         }
 
-        // If bot isn't a PMC, skip
-        if (botToCache.Info?.Settings?.Role is null || !_sidesToCache.Contains(botToCache.Info.Settings.Role))
+        // ignore bot when not in role whitelist
+        if (botToCache.Info?.Settings?.Role is null || !_rolesToCache.Contains(botToCache.Info.Settings.Role))
         {
             return;
         }
 
         BotDetailsCache.TryAdd(
-            botToCache.Id,
-            new BotDetailsForChatMessages()
+            botToCache.Id.Value,
+            new BotDetailsForChatMessages
             {
                 Nickname = botToCache.Info.Nickname.Trim(),
                 Side = botToCache.Info.Side == Sides.PmcUsec ? DogtagSide.Usec : DogtagSide.Bear,
                 Aid = botToCache.Aid,
                 Type = botToCache.Info.MemberCategory,
                 Level = botToCache.Info.Level,
+                PrimaryWeapon = botToCache.Inventory.Items.FirstOrDefault(x => x.SlotId == "FirstPrimaryWeapon")?.Template,
             }
         );
     }
@@ -68,17 +70,18 @@ public class MatchBotDetailsCacheService(ISptLogger<MatchBotDetailsCacheService>
     /// </summary>
     /// <param name="id"> ID of bot to find </param>
     /// <returns></returns>
-    public BotDetailsForChatMessages? GetBotById(string? id)
+    public BotDetailsForChatMessages? GetBotById(MongoId? id)
     {
         if (id == null)
         {
             return null;
         }
 
-        var botInCache = BotDetailsCache.GetValueOrDefault(id, null);
+        var botInCache = BotDetailsCache.GetValueOrDefault(id.Value, null);
         if (botInCache is null)
         {
             logger.Warning($"Bot not found in match bot cache: {id}");
+
             return null;
         }
 

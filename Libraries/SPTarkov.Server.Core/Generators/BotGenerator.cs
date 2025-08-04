@@ -115,7 +115,7 @@ public class BotGenerator(
     /// <returns>constructed bot</returns>
     public BotBase PrepareAndGenerateBot(MongoId sessionId, BotGenerationDetails botGenerationDetails)
     {
-        var preparedBotBase = GetPreparedBotBase(
+        var botBaseClone = GetPreparedBotBaseClone(
             botGenerationDetails.EventRole ?? botGenerationDetails.Role, // Use eventRole if provided
             botGenerationDetails.Side,
             botGenerationDetails.BotDifficulty
@@ -123,7 +123,7 @@ public class BotGenerator(
 
         // Get raw json data for bot (Cloned)
         var botRole = botGenerationDetails.IsPmc
-            ? preparedBotBase.Info.Side // Use side to get usec.json or bear.json when bot will be PMC
+            ? botBaseClone.Info.Side // Use side to get usec.json or bear.json when bot will be PMC
             : botGenerationDetails.Role;
         var botJsonTemplateClone = cloner.Clone(botHelper.GetBotTemplate(botRole));
         if (botJsonTemplateClone is null)
@@ -131,7 +131,7 @@ public class BotGenerator(
             logger.Error($"Unable to retrieve: {botRole} bot template, cannot generate bot of this type");
         }
 
-        return GenerateBot(sessionId, preparedBotBase, botJsonTemplateClone, botGenerationDetails);
+        return GenerateBot(sessionId, botBaseClone, botJsonTemplateClone, botGenerationDetails);
     }
 
     /// <summary>
@@ -141,7 +141,7 @@ public class BotGenerator(
     /// <param name="botSide">Side bot should have</param>
     /// <param name="difficulty">Difficult bot should have</param>
     /// <returns>Cloned bot base</returns>
-    protected BotBase GetPreparedBotBase(string botRole, string botSide, string difficulty)
+    protected BotBase GetPreparedBotBaseClone(string botRole, string botSide, string difficulty)
     {
         var botBaseClone = GetBotBaseClone();
         botBaseClone.Info.Settings.Role = botRole;
@@ -186,7 +186,7 @@ public class BotGenerator(
             _botConfig.BotRolesThatMustHaveUniqueName
         );
 
-        // Only Pmcs should have a lower nickname
+        // Only PMCs need a lower nickname
         bot.Info.LowerNickname = botGenerationDetails.IsPmc ? bot.Info.Nickname.ToLowerInvariant() : string.Empty;
 
         // Only run when generating a 'fake' playerscav, not actual player scav

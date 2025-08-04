@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 
 namespace SPTarkov.Server.Core.Models.Spt.Bots;
@@ -17,4 +18,5 @@ public record BotDetailsForChatMessages
     public int? Level { get; set; }
 
     public MemberCategory? Type { get; set; }
+    public MongoId? PrimaryWeapon { get; set; }
 }

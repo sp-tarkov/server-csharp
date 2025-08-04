@@ -166,70 +166,73 @@ public class BotController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     /// <returns>List of bots</returns>
-    public List<BotBase> Generate(MongoId sessionId, GenerateBotsRequestData request)
+    public async Task<IEnumerable<BotBase>> Generate(MongoId sessionId, GenerateBotsRequestData request)
     {
         var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
 
-        return GenerateBotWaves(request, pmcProfile, sessionId);
+        return await GenerateBotWaves(sessionId, request, pmcProfile);
     }
 
     /// <summary>
     ///     Generate bots for passed in wave data
     /// </summary>
-    /// <param name="request"></param>
-    /// <param name="pmcProfile">Player generating bots</param>
     /// <param name="sessionId">Session/Player id</param>
+    /// <param name="request">Client bot generation request</param>
+    /// <param name="pmcProfile">Player profile generating bots</param>
     /// <returns>List of generated bots</returns>
-    protected List<BotBase> GenerateBotWaves(GenerateBotsRequestData request, PmcData? pmcProfile, MongoId sessionId)
+    protected async Task<IEnumerable<BotBase>> GenerateBotWaves(MongoId sessionId, GenerateBotsRequestData request, PmcData? pmcProfile)
     {
-        var generatedBotList = new List<BotBase>();
+        if (request.Conditions is null || !request.Conditions.Any())
+        {
+            return [];
+        }
+
+        var stopwatch = Stopwatch.StartNew();
+
+        // Get chosen raid settings from app context
         var raidSettings = GetMostRecentRaidSettings(sessionId);
         var allPmcsHaveSameNameAsPlayer = _randomUtil.GetChance100(_pmcConfig.AllPMCsHavePlayerNameWithRandomPrefixChance);
 
-        var stopwatch = Stopwatch.StartNew();
-        // Map conditions to promises for bot generation
+        // Split each bot wave into its own task
+        var waveGenerationTasks = request.Conditions.Select(condition =>
+            Task.Run(() =>
+            {
+                var botWaveGenerationDetails = GetBotGenerationDetailsForWave(
+                    condition,
+                    pmcProfile,
+                    allPmcsHaveSameNameAsPlayer,
+                    raidSettings
+                );
 
-        Task.WaitAll(
-            (request.Conditions ?? [])
-                .Select(condition =>
-                    Task.Factory.StartNew(() =>
-                    {
-                        var botWaveGenerationDetails = GetBotGenerationDetailsForWave(
-                            condition,
-                            pmcProfile,
-                            allPmcsHaveSameNameAsPlayer,
-                            raidSettings
-                        );
-
-                        GenerateBotWave(condition, botWaveGenerationDetails, generatedBotList, sessionId);
-                    })
-                )
-                .ToArray()
+                // Add bot wave results directly to `botsInWave`
+                return GenerateBotWave(sessionId, condition, botWaveGenerationDetails);
+            })
         );
 
-        stopwatch.Stop();
+        // Wait for all above tasks to complete
+        var results = await Task.WhenAll(waveGenerationTasks);
 
+        stopwatch.Stop();
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
             _logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to GenerateMultipleBotsAndCache()");
         }
 
-        return generatedBotList;
+        // Merge + flatten results of all wave generations
+        return results.SelectMany(botList => botList);
     }
 
     /// <summary>
     ///     Generate bots for a single wave request
     /// </summary>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="generateRequest"></param>
     /// <param name="botGenerationDetails"></param>
-    /// <param name="botList">List of bots to fill</param>
-    /// <param name="sessionId">Session/Player id</param>
-    /// <returns></returns>
-    protected void GenerateBotWave(
+    /// <returns>Result of generating bot wave</returns>
+    protected IEnumerable<BotBase> GenerateBotWave(
+        MongoId sessionId,
         GenerateCondition generateRequest,
-        BotGenerationDetails botGenerationDetails,
-        List<BotBase> botList,
-        MongoId sessionId
+        BotGenerationDetails botGenerationDetails
     )
     {
         var isEventBot = generateRequest.Role?.Contains("event", StringComparison.OrdinalIgnoreCase);
@@ -240,6 +243,7 @@ public class BotController(
             botGenerationDetails.Role = _seasonalEventService.GetBaseRoleForEventBot(botGenerationDetails.EventRole);
         }
 
+        // Event role must take priority to generate correctly
         var role = botGenerationDetails.EventRole ?? botGenerationDetails.Role;
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
@@ -249,46 +253,14 @@ public class BotController(
             );
         }
 
-        var maxThreads = botGenerationDetails.BotCountToGenerate;
-
-#if DEBUG
-        // Make debugging bot gen easier
-        maxThreads = 1;
-#endif
-
-        Parallel.For(
-            0,
-            maxThreads,
-            (i) =>
-            {
-                BotBase bot = null;
-
-                try
-                {
-                    bot = _botGenerator.PrepareAndGenerateBot(sessionId, _cloner.Clone(botGenerationDetails));
-                }
-                catch (Exception e)
-                {
-                    _logger.Error($"Failed to generate bot: {botGenerationDetails.Role} #{i + 1}: {e.Message} {e.StackTrace}");
-                    return;
-                }
-
-                // The client expects the Side for PMCs to be `Savage`
-                // We do this here so it's after we cache the bot in the match details lookup, as when you die, they will have the right side
-                if (bot.Info.Side is Sides.Bear or Sides.Usec)
-                {
-                    bot.Info.Side = Sides.Savage;
-                }
-
-                lock (_botListLock)
-                {
-                    botList.Add(bot);
-                }
-
-                // Store bot details in cache so post-raid PMC messages can use data
-                _matchBotDetailsCacheService.CacheBot(bot);
-            }
-        );
+        var generatedBots = Enumerable
+            .Range(0, botGenerationDetails.BotCountToGenerate)
+            .AsParallel() // Parallelise above range of values so they can each generate a bot
+            .Select(i => TryGenerateSingleBot(sessionId, botGenerationDetails, i))
+            .Where(bot =>
+                bot is not null
+            ) // Skip failed bots
+        ; // Materialise parallel query into data
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
@@ -296,6 +268,37 @@ public class BotController(
                 $"Generated: {botGenerationDetails.BotCountToGenerate} {botGenerationDetails.Role}"
                     + $"({botGenerationDetails.EventRole ?? botGenerationDetails.Role ?? ""}) {botGenerationDetails.BotDifficulty} bots"
             );
+        }
+
+        return generatedBots;
+    }
+
+    /// <summary>
+    /// Try to generate and cache a single bot
+    /// </summary>
+    /// <returns>BotBase object or null.</returns>
+    protected BotBase? TryGenerateSingleBot(MongoId sessionId, BotGenerationDetails generationDetails, int botIndex)
+    {
+        try
+        {
+            // Clone for thread safety TODO: confirm if clone is necessary (likely not)
+            var bot = _botGenerator.PrepareAndGenerateBot(sessionId, _cloner.Clone(generationDetails));
+
+            // Client expects Side for PMCs to be `Savage`, must be altered here before it's cached
+            if (bot.Info.Side is Sides.Bear or Sides.Usec)
+            {
+                bot.Info.Side = Sides.Savage;
+            }
+
+            // Store bot details in cache before returning.
+            _matchBotDetailsCacheService.CacheBot(bot);
+
+            return bot;
+        }
+        catch (Exception e)
+        {
+            _logger.Error($"Failed to generate bot #{botIndex + 1} ({generationDetails.Role}): {e.Message}");
+            return null;
         }
     }
 
@@ -349,8 +352,8 @@ public class BotController(
             Role = condition.Role,
             PlayerLevel = pmcProfile?.Info?.Level ?? 1,
             PlayerName = pmcProfile?.Info?.Nickname,
-            BotRelativeLevelDeltaMax = _pmcConfig.BotRelativeLevelDeltaMax,
-            BotRelativeLevelDeltaMin = _pmcConfig.BotRelativeLevelDeltaMin,
+            BotRelativeLevelDeltaMax = _pmcConfig.BotRelativeLevelDelta.Max,
+            BotRelativeLevelDeltaMin = _pmcConfig.BotRelativeLevelDelta.Min,
             BotCountToGenerate = Math.Max(GetBotPresetGenerationLimit(condition.Role), condition.Limit), // Choose largest between value passed in from request vs what's in bot.config
             BotDifficulty = condition.Difficulty,
             LocationSpecificPmcLevelOverride = GetPmcLevelRangeForMap(raidSettings?.Location), // Min/max levels for PMCs to generate within
