@@ -77,6 +77,11 @@ public class GameController(
             return;
         }
 
+        if (fullProfile.ProfileInfo?.InvalidOrUnloadableProfile is not null && fullProfile.ProfileInfo.InvalidOrUnloadableProfile.Value)
+        {
+            return;
+        }
+
         fullProfile.CharacterData!.PmcData!.WishList ??= new DictionaryOrList<MongoId, int>(new Dictionary<MongoId, int>(), []);
         fullProfile.CharacterData.ScavData!.WishList ??= new DictionaryOrList<MongoId, int>(new Dictionary<MongoId, int>(), []);
 
