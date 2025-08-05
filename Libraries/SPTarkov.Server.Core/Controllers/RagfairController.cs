@@ -59,10 +59,10 @@ public class RagfairController(
         foreach (var (sessionId, profile) in profileHelper.GetProfiles())
         {
             // Check profile is capable of creating offers
-            var pmcProfile = profile.CharacterData.PmcData;
+            var pmcProfile = profile?.CharacterData?.PmcData;
             if (
-                pmcProfile.RagfairInfo is not null
-                && pmcProfile.Info.Level >= databaseService.GetGlobals().Configuration.RagFair.MinUserLevel
+                pmcProfile?.RagfairInfo is not null
+                && pmcProfile?.Info?.Level >= databaseService.GetGlobals().Configuration.RagFair.MinUserLevel
             )
             {
                 ragfairOfferHelper.ProcessOffersOnProfile(sessionId);

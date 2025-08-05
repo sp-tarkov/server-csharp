@@ -1515,7 +1515,7 @@ public class HideoutController(
         foreach (var (sessionId, profile) in saveServer.GetProfiles())
         {
             if (
-                profile.CharacterData.PmcData.Hideout is not null
+                profile.CharacterData?.PmcData?.Hideout is not null
                 && profileActivityService.ActiveWithinLastMinutes(sessionId, _hideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes)
             )
             {
