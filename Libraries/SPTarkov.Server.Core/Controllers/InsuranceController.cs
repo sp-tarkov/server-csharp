@@ -52,6 +52,11 @@ public class InsuranceController(
         // Process each installed profile.
         foreach (var (sessionId, _) in saveServer.GetProfiles())
         {
+            if (saveServer.IsProfileInvalidOrUnloadable(sessionId))
+            {
+                continue;
+            }
+
             ProcessReturnByProfile(sessionId);
         }
     }

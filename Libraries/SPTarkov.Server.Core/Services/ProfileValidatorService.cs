@@ -56,7 +56,7 @@ public class ProfileValidatorService(
             }
         }
 
-        SptProfile sptReadyProfile;
+        SptProfile? sptReadyProfile = null;
 
         try
         {
@@ -76,15 +76,24 @@ public class ProfileValidatorService(
                 logger.Critical(ex.StackTrace);
             }
 
-            sptReadyProfile = new()
+            // If profile has passed deserialization, but caught an exception on CheckForOrphanedModdedItems
+            if (sptReadyProfile?.ProfileInfo is not null)
             {
-                ProfileInfo = new Info
+                sptReadyProfile.ProfileInfo.InvalidOrUnloadableProfile = true;
+            }
+            else
+            {
+                // Profile couldn't deserialize, make a small 'mock' profile to emulate it.
+                sptReadyProfile = new()
                 {
-                    ProfileId = new Models.Common.MongoId(profileId),
-                    Username = profile["info"]?["username"]?.GetValue<string>() ?? "",
-                    InvalidOrUnloadableProfile = true,
-                },
-            };
+                    ProfileInfo = new Info
+                    {
+                        ProfileId = new Models.Common.MongoId(profileId),
+                        Username = profile["info"]?["username"]?.GetValue<string>() ?? "",
+                        InvalidOrUnloadableProfile = true,
+                    },
+                };
+            }
 
             return sptReadyProfile;
         }

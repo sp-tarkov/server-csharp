@@ -52,6 +52,11 @@ public class DialogueController(
         var profiles = saveServer.GetProfiles();
         foreach (var (sessionId, _) in profiles)
         {
+            if (saveServer.IsProfileInvalidOrUnloadable(sessionId))
+            {
+                continue;
+            }
+
             RemoveExpiredItemsFromMessages(sessionId);
         }
     }

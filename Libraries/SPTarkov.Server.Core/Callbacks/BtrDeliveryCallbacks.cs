@@ -43,6 +43,11 @@ public class BtrDeliveryCallbacks(
         // Process each installed profile.
         foreach (var (sessionId, _) in saveServer.GetProfiles())
         {
+            if (saveServer.IsProfileInvalidOrUnloadable(sessionId))
+            {
+                continue;
+            }
+
             ProcessDeliveryByProfile(sessionId);
         }
     }
