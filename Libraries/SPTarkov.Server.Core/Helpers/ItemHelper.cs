@@ -1571,13 +1571,20 @@ public class ItemHelper(
     public string GetItemName(MongoId itemTpl)
     {
         var localeDb = localeService.GetLocaleDb();
-        var result = localeDb[$"{itemTpl} Name"];
-        if (result?.Length > 0)
+
+        // Key exists and it's not empty
+        if (localeDb.TryGetValue($"{itemTpl} Name", out var result) && result.Length > 0)
         {
             return result;
         }
 
-        return localeDb[$"{itemTpl} ShortName"];
+        // Main item "name" property not found, try the backup
+        if (localeDb.TryGetValue($"{itemTpl} ShortName", out result))
+        {
+            return result;
+        }
+
+        return string.Empty;
     }
 
     /// <summary>

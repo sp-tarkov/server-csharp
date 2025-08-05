@@ -704,7 +704,7 @@ public class InsuranceController(
         var roll = returnChance >= traderReturnChance;
 
         // Log the roll with as much detail as possible.
-        var itemName = insuredItem is not null ? $"{itemHelper.GetItemName(insuredItem.Template)}" : "";
+        var itemName = insuredItem is not null ? $"{itemHelper.GetItemName(insuredItem.Template)}" : string.Empty;
         var status = roll ? "Delete" : "Keep";
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
