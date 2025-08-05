@@ -85,11 +85,7 @@ public class ProfileValidatorService(
                     InvalidOrUnloadableProfile = true,
                 },
             };
-        }
 
-        // Return early here, the profile is messed up and we need no further migration work
-        if (sptReadyProfile.ProfileInfo!.InvalidOrUnloadableProfile == true)
-        {
             return sptReadyProfile;
         }
 
