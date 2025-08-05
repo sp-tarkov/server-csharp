@@ -73,7 +73,7 @@
   "database-no_location_found_with_id": "No location found with an Id of: %s in database",
   "database-no_trader_found_with_id": "Unable to find trader: %s in database",
   "dialog-chatbot_id_already_exists": "Chat bot: %s being registered already exists, unable to register bot",
-  "dialog-missing_item_template": "Unable to find item tpl {{tpl}} in db, cannot send message of type {{type}}, skipping",
+  "dialog-missing_item_template": "Unable to find item tpl: {{tpl}} in db, cannot send message of type: {{type}}, skipping",
   "dialogue-unable_to_find_dialogs_in_profile": "No dialog object in profile: {{sessionId}}",
   "dialogue-list_from_client_empty": "No dialog object sent from client: {{sessionId}}",
   "dialogue-unable_to_find_in_profile": "No dialog in profile: {{sessionId}} found with id: {{dialogueId}}",
