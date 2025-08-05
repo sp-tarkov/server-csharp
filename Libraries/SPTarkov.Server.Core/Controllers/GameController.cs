@@ -365,7 +365,7 @@ public class GameController(
                 if (effect.Time < 1)
                 {
                     // More than 30 minutes has passed
-                    if (diffSeconds > 1800)
+                    if (diffSeconds > timeUtil.GetMinutesAsSeconds(30))
                     {
                         bodyPart.Effects.Remove(effectId);
                     }

@@ -156,4 +156,14 @@ public class TimeUtil
     {
         return seconds * 60 * 1000;
     }
+
+    /// <summary>
+    /// Get passed in minutes as seconds
+    /// </summary>
+    /// <param name="minutes">Minutes</param>
+    /// <returns>Seconds</returns>
+    public double GetMinutesAsSeconds(int minutes)
+    {
+        return minutes * 60;
+    }
 }
