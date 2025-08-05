@@ -52,7 +52,7 @@ public class CustomizationCallbacks(
     /// <returns></returns>
     public ValueTask<string> GetHideoutCustomisation(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(httpResponseUtil.GetBody(customizationController.GetHideoutCustomisation(sessionID)));
+        return new ValueTask<string>(httpResponseUtil.GetBody(customizationController.GetHideoutCustomisation()));
     }
 
     /// <summary>

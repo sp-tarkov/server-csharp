@@ -13,6 +13,7 @@ using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
+using Customization = SPTarkov.Server.Core.Models.Eft.Common.Tables.Customization;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -38,7 +39,7 @@ public class CustomizationController(
     {
         var pmcData = profileHelper.GetPmcProfile(sessionId);
         var clothing = databaseService.GetCustomization();
-        var suits = databaseService.GetTrader(traderId).Suits;
+        var suits = databaseService.GetTrader(traderId)?.Suits;
 
         var matchingSuits = suits?.Where(s => clothing.ContainsKey(s.SuiteId));
         matchingSuits = matchingSuits?.Where(s =>
@@ -99,7 +100,7 @@ public class CustomizationController(
             Type = CustomisationType.SUITE,
         };
 
-        profile.CustomisationUnlocks.Add(rewardToStore);
+        profile.CustomisationUnlocks?.Add(rewardToStore);
 
         return output;
     }
@@ -115,7 +116,7 @@ public class CustomizationController(
         var fullProfile = profileHelper.GetFullProfile(sessionId);
 
         // Check if clothing can be found by id
-        return fullProfile.CustomisationUnlocks.Exists(customisation => Equals(customisation.Id, suitId));
+        return fullProfile.CustomisationUnlocks?.Exists(customisation => Equals(customisation.Id, suitId)) ?? false;
     }
 
     /// <summary>
@@ -158,11 +159,11 @@ public class CustomizationController(
         {
             var options = new ProcessBuyTradeRequestData
             {
-                SchemeItems = [new IdWithCount { Count = inventoryItemToProcess.Count.Value, Id = inventoryItemToProcess.Id }],
+                SchemeItems = [new IdWithCount { Count = inventoryItemToProcess.Count!.Value, Id = inventoryItemToProcess.Id }],
                 TransactionId = Traders.RAGMAN,
                 Action = "BuyCustomization",
                 Type = "",
-                ItemId = "",
+                ItemId = MongoId.Empty(),
                 Count = 0,
                 SchemeId = 0,
             };
@@ -183,7 +184,7 @@ public class CustomizationController(
 
         foreach (var (traderId, trader) in traders)
         {
-            if (trader.Base?.CustomizationSeller is not null && trader.Base.CustomizationSeller.Value)
+            if (trader.Base.CustomizationSeller is not null && trader.Base.CustomizationSeller.Value)
             {
                 result.AddRange(GetTraderSuits(traderId, sessionId));
             }
@@ -195,11 +196,10 @@ public class CustomizationController(
     /// <summary>
     ///     Handle client/hideout/customization/offer/list
     /// </summary>
-    /// <param name="sessionId">Session/Player id</param>
-    /// <returns></returns>
-    public HideoutCustomisation GetHideoutCustomisation(MongoId sessionId)
+    /// <returns>Hideout customizations</returns>
+    public HideoutCustomisation GetHideoutCustomisation()
     {
-        return databaseService.GetHideout().Customisation!;
+        return databaseService.GetHideout().Customisation;
     }
 
     /// <summary>
@@ -212,10 +212,6 @@ public class CustomizationController(
         var customisationResultsClone = cloner.Clone(databaseService.GetTemplates().CustomisationStorage);
 
         var profile = profileHelper.GetFullProfile(sessionId);
-        if (profile is null)
-        {
-            return customisationResultsClone!;
-        }
 
         customisationResultsClone!.AddRange(profile.CustomisationUnlocks ?? []);
 
@@ -231,7 +227,7 @@ public class CustomizationController(
     /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse SetCustomisation(MongoId sessionId, CustomizationSetRequest request, PmcData pmcData)
     {
-        foreach (var customisation in request.Customizations)
+        foreach (var customisation in request.Customizations!)
         {
             switch (customisation.Type)
             {
@@ -268,19 +264,19 @@ public class CustomizationController(
             return;
         }
 
-        // Body
-        if (dbSuit.Parent == CustomisationTypeId.UPPER)
-        {
-            pmcData.Customization.Body = dbSuit.Properties.Body;
-            pmcData.Customization.Hands = dbSuit.Properties.Hands;
+        pmcData.Customization ??= new Customization();
 
-            return;
-        }
-
-        // Feet
-        if (dbSuit.Parent == CustomisationTypeId.LOWER)
+        switch (dbSuit?.Parent)
         {
-            pmcData.Customization.Feet = dbSuit.Properties.Feet;
+            // Body
+            case CustomisationTypeId.UPPER:
+                pmcData.Customization.Body = dbSuit.Properties.Body;
+                pmcData.Customization.Hands = dbSuit.Properties.Hands;
+                return;
+            // Feet
+            case CustomisationTypeId.LOWER:
+                pmcData.Customization.Feet = dbSuit.Properties.Feet;
+                break;
         }
     }
 }

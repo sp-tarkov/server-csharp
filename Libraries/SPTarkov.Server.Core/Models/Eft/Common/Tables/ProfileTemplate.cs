@@ -31,7 +31,7 @@ public record TemplateSide
     public List<MongoId>? Suits { get; set; }
 
     [JsonPropertyName("dialogues")]
-    public Dictionary<string, Dialogue>? Dialogues { get; set; }
+    public Dictionary<MongoId, Dialogue>? Dialogues { get; set; }
 
     [JsonPropertyName("userbuilds")]
     public UserBuilds? UserBuilds { get; set; }
