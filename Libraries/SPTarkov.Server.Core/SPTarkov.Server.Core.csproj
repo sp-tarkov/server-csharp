@@ -40,7 +40,7 @@
     <Exec
       ConsoleToMsBuild="true"
       Condition="'$(IsPublish)' == 'true'"
-      Command="dotnet build -c $(Configuration) $(MSBuildProjectDirectory)/../../Patches/Ceciler.Virtualizer/Ceciler.Virtualizer.csproj"
+      Command="dotnet build -c &quot;$(Configuration)&quot; &quot;$(MSBuildProjectDirectory)/../../Patches/Ceciler.Virtualizer/Ceciler.Virtualizer.csproj&quot;"
     />
     <Exec
       ConsoleToMsBuild="true"
