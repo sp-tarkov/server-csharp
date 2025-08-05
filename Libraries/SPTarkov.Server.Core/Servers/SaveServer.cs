@@ -21,7 +21,7 @@ public class SaveServer(
     JsonUtil jsonUtil,
     HashUtil hashUtil,
     ServerLocalisationService serverLocalisationService,
-    ProfileMigratorService profileMigratorService,
+    ProfileValidatorService profileValidatorService,
     ISptLogger<SaveServer> logger,
     ConfigServer configServer
 )
@@ -210,8 +210,14 @@ public class SaveServer(
 
             if (profile is not null)
             {
-                profiles[sessionID] = profileMigratorService.HandlePendingMigrations(profile);
+                profiles[sessionID] = profileValidatorService.MigrateAndValidateProfile(profile);
             }
+        }
+
+        // We don't proceed further here as only one object in the profile has data in it.
+        if (profiles[sessionID].ProfileInfo!.InvalidOrUnloadableProfile)
+        {
+            return;
         }
 
         // Run callbacks
@@ -229,6 +235,12 @@ public class SaveServer(
     /// <returns> Time taken to save the profile in seconds </returns>
     public async Task<long> SaveProfileAsync(MongoId sessionID)
     {
+        // No need to save profiles that have been marked as invalid
+        if (profiles[sessionID].ProfileInfo!.InvalidOrUnloadableProfile)
+        {
+            return 0;
+        }
+
         var filePath = $"{profileFilepath}{sessionID.ToString()}.json";
 
         // Run pre-save callbacks before we save into json
