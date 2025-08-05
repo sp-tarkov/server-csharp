@@ -55,7 +55,7 @@
       Overwrite="true"
     />
   </Target>
-  <!-- This is necessary to force MSBuild to look for this file after CoreCompile generated it-->
+  <!-- This is necessary to force MSBuild to look for this file before compilation-->
   <ItemGroup>
     <Compile Include="Utils/ProgramStatics.Generated.cs" />
   </ItemGroup>
