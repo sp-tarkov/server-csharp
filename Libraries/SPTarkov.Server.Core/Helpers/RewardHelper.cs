@@ -293,7 +293,7 @@ public class RewardHelper(
 
         foreach (var rewardItem in reward.Items)
         {
-            itemHelper.AddUpdObjectToItem(rewardItem);
+            rewardItem.AddUpd();
 
             // Reward items are granted Found in Raid status
             itemHelper.SetFoundInRaid(rewardItem);
@@ -386,7 +386,7 @@ public class RewardHelper(
             reward.Target = rootItem.Id;
 
             // Copy over stack count otherwise reward shows as missing in client
-            itemHelper.AddUpdObjectToItem(rootItem);
+            rootItem.AddUpd();
             rootItem.Upd.StackObjectsCount = originalRewardRootItem.Upd.StackObjectsCount;
             return;
         }

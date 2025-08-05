@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -695,7 +696,7 @@ public class RagfairOfferGenerator(
             );
             if (randomUtil.GetChance100(25) && visorMod != null)
             {
-                itemHelper.AddUpdObjectToItem(visorMod);
+                visorMod.AddUpd();
 
                 visorMod.Upd.FaceShield = new UpdFaceShield { Hits = randomUtil.GetInt(1, 3) };
             }
@@ -787,7 +788,7 @@ public class RagfairOfferGenerator(
             var itemDbDetails = itemHelper.GetItem(armorItem.Template).Value;
             if (itemDbDetails.Properties.ArmorClass > 1)
             {
-                itemHelper.AddUpdObjectToItem(armorItem);
+                armorItem.AddUpd();
 
                 var baseMaxDurability = itemDbDetails.Properties.MaxDurability;
                 var lowestMaxDurability = randomUtil.GetDouble(maxMultiplier, 1) * baseMaxDurability;

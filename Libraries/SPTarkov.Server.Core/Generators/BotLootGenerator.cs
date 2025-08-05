@@ -780,7 +780,7 @@ public class BotLootGenerator(
 
         var currencyWeight = currencyWeights[moneyItem.Template];
 
-        itemHelper.AddUpdObjectToItem(moneyItem);
+        moneyItem.AddUpd();
 
         moneyItem.Upd.StackObjectsCount = int.Parse(weightedRandomHelper.GetWeightedValue(currencyWeight));
     }
@@ -794,7 +794,7 @@ public class BotLootGenerator(
     public void RandomiseAmmoStackSize(bool isPmc, TemplateItem itemTemplate, Item ammoItem)
     {
         var randomSize = itemHelper.GetRandomisedAmmoStackSize(itemTemplate);
-        itemHelper.AddUpdObjectToItem(ammoItem);
+        ammoItem.AddUpd();
 
         ammoItem.Upd.StackObjectsCount = randomSize;
     }

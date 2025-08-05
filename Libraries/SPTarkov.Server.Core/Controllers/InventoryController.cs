@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -685,7 +686,7 @@ public class InventoryController(
         }
 
         // Item may not have upd object
-        itemHelper.AddUpdObjectToItem(itemToFold);
+        itemToFold.AddUpd();
 
         itemToFold.Upd.Foldable = new UpdFoldable { Folded = request.Value };
 

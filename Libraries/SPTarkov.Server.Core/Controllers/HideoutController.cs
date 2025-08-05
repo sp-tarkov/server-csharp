@@ -831,11 +831,11 @@ public class HideoutController(
         // Recipe has an `isEncoded` requirement for reward(s), Add `RecodableComponent` property
         if (recipe.IsEncoded ?? false)
         {
-            foreach (var reward in itemAndChildrenToSendToPlayer)
+            foreach (var rewardItems in itemAndChildrenToSendToPlayer)
             {
-                itemHelper.AddUpdObjectToItem(reward.FirstOrDefault());
+                rewardItems.FirstOrDefault()?.AddUpd();
 
-                reward.FirstOrDefault().Upd.RecodableComponent = new UpdRecodableComponent { IsEncoded = true };
+                rewardItems.FirstOrDefault().Upd.RecodableComponent = new UpdRecodableComponent { IsEncoded = true };
             }
         }
 

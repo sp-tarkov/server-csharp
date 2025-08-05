@@ -559,7 +559,7 @@ public class QuestHelper(
         if (newStackSize > 0)
         {
             var item = pmcData.Inventory.Items[inventoryItemIndex];
-            itemHelper.AddUpdObjectToItem(item);
+            item.AddUpd();
 
             item.Upd.StackObjectsCount = newStackSize;
 

@@ -72,9 +72,15 @@ public class HideoutHelper(
             foreach (var tool in productionRequest.Tools)
             {
                 var toolItem = cloner.Clone(pmcData.Inventory.Items.FirstOrDefault(x => x.Id == tool.Id));
+                if (toolItem is null)
+                {
+                    logger.Warning($"Unable to find tool item: {tool.Id}");
+
+                    continue;
+                }
 
                 // Make sure we only return as many as we took
-                itemHelper.AddUpdObjectToItem(toolItem);
+                toolItem.AddUpd();
 
                 toolItem.Upd.StackObjectsCount = tool.Count;
 

@@ -1167,7 +1167,7 @@ public class FenceService(
                 string.Equals(mod.SlotId, requiredSlot.Name.ToLowerInvariant(), StringComparison.OrdinalIgnoreCase)
             );
 
-            itemHelper.AddUpdObjectToItem(modItemToAdjust);
+            modItemToAdjust.AddUpd();
 
             // Fence assorts can be null, ensure they have defaults
             modItemToAdjust.Upd.Repairable ??= new UpdRepairable
@@ -1241,7 +1241,7 @@ public class FenceService(
                 continue;
             }
 
-            itemHelper.AddUpdObjectToItem(modItemToAdjust);
+            modItemToAdjust.AddUpd();
 
             if (modItemToAdjust?.Upd?.Repairable == null)
             {
