@@ -28,25 +28,23 @@ public class ProfileActivityService(TimeUtil timeUtil)
         );
     }
 
+    /// <summary>
+    /// Does profile exist in activity cache
+    /// </summary>
+    /// <param name="sessionId">Profile id to check for</param>
+    /// <returns>True when profile exists in cache</returns>
     public bool ContainsActiveProfile(MongoId sessionId)
     {
-        if (_activeProfiles.ContainsKey(sessionId))
-        {
-            return true;
-        }
-
-        return false;
+        return _activeProfiles.ContainsKey(sessionId);
     }
 
-    // Yes this is terrible, the other alternative is re-doing half of bot-gen which is currently doing guess-work anyway
+    /// <summary>
+    /// TODO: Yes this is terrible, the other alternative is re-doing half of bot-gen which is currently doing guess-work anyway
+    /// </summary>
+    /// <returns>ProfileActivityRaidData</returns>
     public ProfileActivityRaidData? GetFirstProfileActivityRaidData()
     {
-        if (!_activeProfiles.IsEmpty)
-        {
-            return _activeProfiles.First().Value.RaidData;
-        }
-
-        return null;
+        return !_activeProfiles.IsEmpty ? _activeProfiles.First().Value.RaidData : null;
     }
 
     public ProfileActivityRaidData GetProfileActivityRaidData(MongoId sessionId)
