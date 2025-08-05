@@ -398,7 +398,7 @@ public class InventoryHelper(
                 return;
             }
 
-            // Store details for object, incuding container item will be placed in
+            // Store details for object, including container item will be placed in
             itemWithChildren[0].ParentId = playerInventory.SortingTable;
             itemWithChildren[0].Location = new ItemLocation
             {
@@ -507,39 +507,41 @@ public class InventoryHelper(
     {
         var fullProfile = profileHelper.GetFullProfile(sessionId);
 
-        // Iterate over all dialogs and look for mesasage with key from request, that has item (and maybe its children) we want to remove
+        // Iterate over all dialogs and look for message with key from request, that has item (and maybe its children) we want to remove
         var dialogs = fullProfile.DialogueRecords;
         foreach (var (_, dialog) in dialogs)
         {
             var messageWithReward = dialog.Messages.FirstOrDefault(message => message.Id == removeRequest.FromOwner.Id);
-            if (messageWithReward is not null)
+            if (messageWithReward is null)
             {
-                // Find item + any possible children and remove them from mails items array
-                var itemWithChildren = messageWithReward.Items.Data.GetItemWithChildren(removeRequest.Item);
-                foreach (var itemToDelete in itemWithChildren)
+                continue;
+            }
+
+            // Find item + any possible children and remove them from mails items array
+            var itemWithChildren = messageWithReward.Items.Data.GetItemWithChildren(removeRequest.Item);
+            foreach (var itemToDelete in itemWithChildren)
+            {
+                // Get index of item to remove from reward array + remove it
+                var indexOfItemToRemove = messageWithReward.Items.Data.IndexOf(itemToDelete);
+                if (indexOfItemToRemove == -1)
                 {
-                    // Get index of item to remove from reward array + remove it
-                    var indexOfItemToRemove = messageWithReward.Items.Data.IndexOf(itemToDelete);
-                    if (indexOfItemToRemove == -1)
-                    {
-                        logger.Error(
-                            serverLocalisationService.GetText(
-                                "inventory-unable_to_remove_item_restart_immediately",
-                                new { item = removeRequest.Item, mailId = removeRequest.FromOwner.Id }
-                            )
-                        );
+                    logger.Error(
+                        serverLocalisationService.GetText(
+                            "inventory-unable_to_remove_item_restart_immediately",
+                            new { item = removeRequest.Item, mailId = removeRequest.FromOwner.Id }
+                        )
+                    );
 
-                        continue;
-                    }
-
-                    messageWithReward.Items.Data.RemoveAt(indexOfItemToRemove);
+                    continue;
                 }
 
-                // Flag message as having no rewards if all removed
-                var hasRewardItemsRemaining = messageWithReward?.Items.Data?.Count > 0;
-                messageWithReward.HasRewards = hasRewardItemsRemaining;
-                messageWithReward.RewardCollected = !hasRewardItemsRemaining;
+                messageWithReward.Items.Data.RemoveAt(indexOfItemToRemove);
             }
+
+            // Flag message as having no rewards if all removed
+            var hasRewardItemsRemaining = messageWithReward?.Items.Data?.Count > 0;
+            messageWithReward.HasRewards = hasRewardItemsRemaining;
+            messageWithReward.RewardCollected = !hasRewardItemsRemaining;
         }
     }
 
@@ -557,7 +559,7 @@ public class InventoryHelper(
         MongoId itemId,
         int countToRemove,
         MongoId sessionId,
-        ItemEventRouterResponse? output
+        ItemEventRouterResponse output
     )
     {
         if (itemId.IsEmpty())
@@ -582,10 +584,7 @@ public class InventoryHelper(
             {
                 itemToReduce.Upd.StackObjectsCount -= remainingCount;
                 remainingCount = 0;
-                if (output is not null)
-                {
-                    output.ProfileChanges[sessionId].Items.ChangedItems.Add(itemToReduce);
-                }
+                output.ProfileChanges[sessionId].Items.ChangedItems.Add(itemToReduce);
             }
 
             if (remainingCount == 0)
@@ -595,7 +594,7 @@ public class InventoryHelper(
             }
         }
 
-        return output ?? eventOutputHolder.GetOutput(sessionId);
+        return output;
     }
 
     /// <summary>
@@ -944,7 +943,7 @@ public class InventoryHelper(
         }
 
         // Look up details of stash in db
-        var (isValidItem, stashItemDbItem) = itemHelper.GetItem(stashTpl);
+        var (isValidItem, stashItemDbItem) = itemHelper.GetItem(stashTpl.Value);
         if (!isValidItem)
         {
             logger.Error(serverLocalisationService.GetText("inventory-stash_not_found", stashTpl));
@@ -974,7 +973,7 @@ public class InventoryHelper(
     /// </summary>
     /// <param name="profile">Profile to get tpl</param>
     /// <returns>Stash tpl</returns>
-    protected string? GetProfileStashTpl(PmcData profile)
+    protected MongoId? GetProfileStashTpl(PmcData profile)
     {
         var stashObj = profile.Inventory.Items.FirstOrDefault(item => item.Id == profile.Inventory.Stash);
         if (stashObj is null)

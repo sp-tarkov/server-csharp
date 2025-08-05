@@ -1242,25 +1242,26 @@ public class ItemHelper(
         var forcedLeft = 0;
         var forcedRight = 0;
 
-        var children = items.GetItemWithChildren(rootItemId);
-        foreach (var child in children)
+        var itemWithChildren = items.GetItemWithChildren(rootItemId);
+        foreach (var item in itemWithChildren)
         {
-            var itemTemplate = GetItem(child.Template).Value;
+            var itemDbTemplate = GetItem(item.Template).Value;
 
             // Calculating child ExtraSize
-            if (itemTemplate.Properties.ExtraSizeForceAdd ?? false)
+            if (itemDbTemplate.Properties.ExtraSizeForceAdd ?? false)
             {
-                forcedUp += itemTemplate.Properties.ExtraSizeUp.Value;
-                forcedDown += itemTemplate.Properties.ExtraSizeDown.Value;
-                forcedLeft += itemTemplate.Properties.ExtraSizeLeft.Value;
-                forcedRight += itemTemplate.Properties.ExtraSizeRight.Value;
+                forcedUp += itemDbTemplate.Properties.ExtraSizeUp.Value;
+                forcedDown += itemDbTemplate.Properties.ExtraSizeDown.Value;
+                forcedLeft += itemDbTemplate.Properties.ExtraSizeLeft.Value;
+                forcedRight += itemDbTemplate.Properties.ExtraSizeRight.Value;
             }
             else
             {
-                sizeUp = sizeUp < itemTemplate.Properties.ExtraSizeUp ? itemTemplate.Properties.ExtraSizeUp.Value : sizeUp;
-                sizeDown = sizeDown < itemTemplate.Properties.ExtraSizeDown ? itemTemplate.Properties.ExtraSizeDown.Value : sizeDown;
-                sizeLeft = sizeLeft < itemTemplate.Properties.ExtraSizeLeft ? itemTemplate.Properties.ExtraSizeLeft.Value : sizeLeft;
-                sizeRight = sizeRight < itemTemplate.Properties.ExtraSizeRight ? itemTemplate.Properties.ExtraSizeRight.Value : sizeRight;
+                sizeUp = sizeUp < itemDbTemplate.Properties.ExtraSizeUp ? itemDbTemplate.Properties.ExtraSizeUp.Value : sizeUp;
+                sizeDown = sizeDown < itemDbTemplate.Properties.ExtraSizeDown ? itemDbTemplate.Properties.ExtraSizeDown.Value : sizeDown;
+                sizeLeft = sizeLeft < itemDbTemplate.Properties.ExtraSizeLeft ? itemDbTemplate.Properties.ExtraSizeLeft.Value : sizeLeft;
+                sizeRight =
+                    sizeRight < itemDbTemplate.Properties.ExtraSizeRight ? itemDbTemplate.Properties.ExtraSizeRight.Value : sizeRight;
             }
         }
 
