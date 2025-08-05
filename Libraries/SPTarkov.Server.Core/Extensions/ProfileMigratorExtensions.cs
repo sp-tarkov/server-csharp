@@ -4,6 +4,12 @@ namespace SPTarkov.Server.Core.Extensions;
 
 public static class ProfileMigratorExtensions
 {
+    /// <summary>
+    /// Sorts the profile migrations in dependency order, ensuring that each migration appears
+    /// after all of its prerequisite migrations.
+    /// </summary>
+    /// <param name="profileMigrations">The collection of profile migrations to sort.</param>
+    /// <returns>A topologically sorted list of migrations.</returns>
     public static IEnumerable<IProfileMigration> Sort(this IEnumerable<IProfileMigration> profileMigrations)
     {
         var sortedMigrations = new List<IProfileMigration>();
