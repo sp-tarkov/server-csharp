@@ -37,7 +37,7 @@ public class ProfileMigratorService(
         )
         {
             return profile.Deserialize<SptProfile>(JsonUtil.JsonSerializerOptionsNoIndent)
-                ?? throw new InvalidOperationException($"Could not deserialize the profile {profileId}");
+                ?? throw new InvalidOperationException($"Could not deserialize the profile: {profileId}");
         }
 
         var ranMigrations = new List<AbstractProfileMigration>();
@@ -59,9 +59,27 @@ public class ProfileMigratorService(
             }
         }
 
-        var sptReadyProfile =
-            profile.Deserialize<SptProfile>(JsonUtil.JsonSerializerOptionsNoIndent)
-            ?? throw new InvalidOperationException($"Could not deserialize the profile {profileId}");
+        SptProfile sptReadyProfile;
+
+        try
+        {
+            sptReadyProfile =
+                profile.Deserialize<SptProfile>(JsonUtil.JsonSerializerOptionsNoIndent)
+                ?? throw new InvalidOperationException($"Could not deserialize the profile.");
+        }
+        catch (Exception ex)
+        {
+            logger.Critical($"Could not load profile: {profileId}");
+            logger.Critical(ex.ToString());
+
+            if (ex.StackTrace is not null)
+            {
+                logger.Critical(ex.StackTrace);
+            }
+
+            // Throw here, immediately stops execution of the server upon detecting a messed up profile
+            throw;
+        }
 
         foreach (var ranMigration in ranMigrations)
         {
