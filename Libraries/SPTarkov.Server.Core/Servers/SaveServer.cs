@@ -215,7 +215,10 @@ public class SaveServer(
         }
 
         // We don't proceed further here as only one object in the profile has data in it.
-        if (profiles[sessionID].ProfileInfo!.InvalidOrUnloadableProfile)
+        if (
+            profiles[sessionID].ProfileInfo!.InvalidOrUnloadableProfile is not null
+            && profiles[sessionID].ProfileInfo!.InvalidOrUnloadableProfile!.Value
+        )
         {
             return;
         }
@@ -236,7 +239,10 @@ public class SaveServer(
     public async Task<long> SaveProfileAsync(MongoId sessionID)
     {
         // No need to save profiles that have been marked as invalid
-        if (profiles[sessionID].ProfileInfo!.InvalidOrUnloadableProfile)
+        if (
+            profiles[sessionID].ProfileInfo!.InvalidOrUnloadableProfile is not null
+            && profiles[sessionID].ProfileInfo!.InvalidOrUnloadableProfile!.Value
+        )
         {
             return 0;
         }

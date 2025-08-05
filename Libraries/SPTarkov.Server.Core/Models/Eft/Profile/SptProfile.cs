@@ -104,8 +104,9 @@ public record Info
     [JsonPropertyName("edition")]
     public string? Edition { get; set; }
 
-    [JsonIgnore]
-    public bool InvalidOrUnloadableProfile { get; internal set; } = false;
+    [JsonPropertyName("invalidOrUnloadableProfile")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? InvalidOrUnloadableProfile { get; internal set; }
 }
 
 public record Characters
