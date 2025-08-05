@@ -103,6 +103,9 @@ public record Info
 
     [JsonPropertyName("edition")]
     public string? Edition { get; set; }
+
+    [JsonIgnore]
+    public bool InvalidOrUnloadableProfile { get; internal set; } = false;
 }
 
 public record Characters

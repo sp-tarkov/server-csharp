@@ -1,7 +1,10 @@
-﻿using SPTarkov.Server.Core.Models.Common;
+﻿using Microsoft.Extensions.Logging;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Core.Extensions;
 
@@ -237,6 +240,53 @@ public static class ProfileExtensions
         foreach (var (partKey, bodyPart) in profile.Health.BodyParts)
         {
             bodyPart.Health.Maximum = profileTemplate.Character.Health.BodyParts[partKey].Health.Maximum;
+        }
+    }
+
+    /// <summary>
+    ///     Handle Remove event
+    ///     Remove item from player inventory + insured items array
+    ///     Also deletes child items
+    /// </summary>
+    /// <param name="profile">Profile to remove item from (pmc or scav)</param>
+    /// <param name="itemId">Items id to remove</param>
+    /// <param name="sessionId">Session id</param>
+    /// <param name="output">OPTIONAL - ItemEventRouterResponse</param>
+    public static void RemoveItem(this PmcData profile, MongoId itemId, MongoId sessionId, ItemEventRouterResponse? output = null)
+    {
+        if (itemId.IsEmpty())
+        {
+            return;
+        }
+
+        // Get children of item, they get deleted too
+        var itemAndChildrenToRemove = profile.Inventory.Items.GetItemWithChildren(itemId);
+        if (!itemAndChildrenToRemove.Any())
+        {
+            return;
+        }
+
+        var inventoryItems = profile.Inventory.Items;
+        var insuredItems = profile.InsuredItems;
+
+        // We have output object, inform client of root item deletion, not children
+        output?.ProfileChanges[sessionId].Items.DeletedItems.Add(new DeletedItem { Id = itemId });
+
+        foreach (var item in itemAndChildrenToRemove)
+        {
+            // We expect that each inventory item and each insured item has unique "_id", respective "itemId".
+            // Therefore, we want to use a NON-Greedy function and escape the iteration as soon as we find requested item.
+            var inventoryIndex = inventoryItems.FindIndex(inventoryItem => inventoryItem.Id == item.Id);
+            if (inventoryIndex != -1)
+            {
+                inventoryItems.RemoveAt(inventoryIndex);
+            }
+
+            var insuredItemIndex = insuredItems.FindIndex(insuredItem => insuredItem.ItemId == item.Id);
+            if (insuredItemIndex != -1)
+            {
+                insuredItems.RemoveAt(insuredItemIndex);
+            }
         }
     }
 }
