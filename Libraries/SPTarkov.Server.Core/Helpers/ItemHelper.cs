@@ -15,7 +15,7 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Helpers;
 
-[Injectable]
+[Injectable(InjectionType.Singleton)]
 public class ItemHelper(
     ISptLogger<ItemHelper> logger,
     RandomUtil randomUtil,
@@ -1650,7 +1650,7 @@ public class ItemHelper(
             }
 
             var chosenTpl = GetCompatibleTplFromArray(itemPool, incompatibleModTpls);
-            if (chosenTpl is null)
+            if (chosenTpl.IsEmpty())
             {
                 if (logger.IsLogEnabled(LogLevel.Debug))
                 {
@@ -1666,7 +1666,7 @@ public class ItemHelper(
             Item modItemToAdd = new()
             {
                 Id = new MongoId(),
-                Template = chosenTpl.Value,
+                Template = chosenTpl,
                 ParentId = result[0].Id,
                 SlotId = slot.Name,
             };
@@ -1686,38 +1686,18 @@ public class ItemHelper(
     /// <summary>
     ///     Get a compatible tpl from the array provided where it is not found in the provided incompatible mod tpls parameter
     /// </summary>
-    /// <param name="possibleTpls">Tpls to randomly choose from</param>
-    /// <param name="incompatibleModTpls">Incompatible tpls to not allow</param>
+    /// <param name="tplPool">Tpls to randomly choose from</param>
+    /// <param name="tplBlacklist">Incompatible tpls to disallow</param>
     /// <returns>Chosen tpl or undefined</returns>
-    public MongoId? GetCompatibleTplFromArray(HashSet<MongoId> possibleTpls, HashSet<MongoId> incompatibleModTpls)
+    public MongoId GetCompatibleTplFromArray(HashSet<MongoId> tplPool, HashSet<MongoId> tplBlacklist)
     {
-        if (!possibleTpls.Any())
+        if (!tplPool.Any())
         {
-            return null;
+            return MongoId.Empty();
         }
 
-        MongoId? chosenTpl = null;
-        var count = 0;
-        while (chosenTpl is null)
-        {
-            // Loop over choosing a random tpl until one is found or count variable reaches the same size as the possible tpls array
-            var tpl = randomUtil.GetArrayValue(possibleTpls);
-            if (incompatibleModTpls.Contains(tpl))
-            {
-                // Incompatible tpl was chosen, try again
-                count++;
-                if (count >= possibleTpls.Count)
-                {
-                    return null;
-                }
-
-                continue;
-            }
-
-            chosenTpl = tpl;
-        }
-
-        return chosenTpl;
+        var compatibleTpls = tplPool.Except(tplBlacklist).ToList();
+        return compatibleTpls.Any() ? randomUtil.GetArrayValue(compatibleTpls) : MongoId.Empty();
     }
 
     /// <summary>
@@ -1784,10 +1764,12 @@ public class ItemHelper(
         return itemWithChildren;
     }
 
-    // Add a blank upd object to passed in item if it does not exist already
-    // item to add upd to
-    // text to write to log when upd object was not found
-    // Returns True when upd object was added
+    /// <summary>
+    /// Add a blank upd object to passed in item if it does not exist already
+    /// </summary>
+    /// <param name="item">item to add upd to</param>
+    /// <param name="warningMessageWhenMissing">text to write to log when upd object was not found</param>
+    /// <returns>True when upd object was added</returns>
     public bool AddUpdObjectToItem(Item item, string? warningMessageWhenMissing = null)
     {
         if (item.Upd is not null)
