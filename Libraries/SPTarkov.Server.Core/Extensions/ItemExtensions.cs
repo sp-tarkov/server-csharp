@@ -449,4 +449,22 @@ public static class ItemExtensions
             }
         }
     }
+
+    /// <summary>
+    /// Add a blank Upd object to an item
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns>True = Upd added</returns>
+    public static bool AddUpd(this Item item)
+    {
+        if (item.Upd is not null)
+        {
+            // Already exists, exit early
+            return false;
+        }
+
+        item.Upd = new Upd();
+
+        return true;
+    }
 }
