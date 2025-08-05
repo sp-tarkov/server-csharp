@@ -73,22 +73,30 @@ public class DialogueController(
 
         // Add any friends the user has after the chatbots
         var profile = profileHelper.GetFullProfile(sessionId);
-        if (profile?.FriendProfileIds is not null)
+
+        if (profile.FriendProfileIds is null)
         {
-            foreach (var friendId in profile.FriendProfileIds)
+            return new GetFriendListDataResponse
             {
-                var friendProfile = profileHelper.GetChatRoomMemberFromSessionId(friendId);
-                if (friendProfile is not null)
-                {
-                    friends.Add(
-                        new UserDialogInfo
-                        {
-                            Id = friendProfile.Id,
-                            Aid = friendProfile.Aid,
-                            Info = friendProfile.Info,
-                        }
-                    );
-                }
+                Friends = friends,
+                Ignore = [],
+                InIgnoreList = [],
+            };
+        }
+
+        foreach (var friendId in profile.FriendProfileIds)
+        {
+            var friendProfile = profileHelper.GetChatRoomMemberFromSessionId(friendId);
+            if (friendProfile is not null)
+            {
+                friends.Add(
+                    new UserDialogInfo
+                    {
+                        Id = friendProfile.Id,
+                        Aid = friendProfile.Aid,
+                        Info = friendProfile.Info,
+                    }
+                );
             }
         }
 
@@ -100,6 +108,10 @@ public class DialogueController(
         };
     }
 
+    /// <summary>
+    ///     Get all active chatbots
+    /// </summary>
+    /// <returns>Active chatbots</returns>
     public List<UserDialogInfo> GetActiveChatBots()
     {
         var activeBots = new List<UserDialogInfo>();
@@ -109,7 +121,7 @@ public class DialogueController(
         foreach (var bot in _dialogueChatBots)
         {
             var botData = bot.GetChatBot();
-            if (chatBotConfig.EnabledBots.ContainsKey(botData.Id!))
+            if (chatBotConfig.EnabledBots.ContainsKey(botData.Id))
             {
                 activeBots.Add(botData);
             }
@@ -148,10 +160,10 @@ public class DialogueController(
     /// <param name="dialogueId">Dialog id</param>
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
-    public virtual DialogueInfo? GetDialogueInfo(string? dialogueId, MongoId sessionId)
+    public virtual DialogueInfo? GetDialogueInfo(MongoId dialogueId, MongoId sessionId)
     {
         var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
-        var dialogue = dialogs!.GetValueOrDefault(dialogueId);
+        var dialogue = dialogs.GetValueOrDefault(dialogueId);
 
         return GetDialogueInfo(dialogue, sessionId);
     }
@@ -162,9 +174,9 @@ public class DialogueController(
     /// <param name="dialogue">Dialog</param>
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
-    public virtual DialogueInfo? GetDialogueInfo(Dialogue dialogue, MongoId sessionId)
+    public virtual DialogueInfo? GetDialogueInfo(Dialogue? dialogue, MongoId sessionId)
     {
-        if (!dialogue.Messages.Any())
+        if (dialogue is null || dialogue.Messages?.Count == 0)
         {
             return null;
         }
@@ -236,7 +248,7 @@ public class DialogueController(
         var fullProfile = saveServer.GetProfile(sessionId);
         var dialogue = GetDialogByIdFromProfile(fullProfile, request);
 
-        if (!dialogue.Messages.Any())
+        if (dialogue.Messages?.Count == 0)
         {
             return new GetMailDialogViewResponseData
             {
@@ -250,7 +262,7 @@ public class DialogueController(
         dialogue.New = 0;
 
         // Set number of new attachments, but ignore those that have expired.
-        dialogue.AttachmentsNew = GetUnreadMessagesWithAttachmentsCount(sessionId, dialogueId!);
+        dialogue.AttachmentsNew = GetUnreadMessagesWithAttachmentsCount(sessionId, dialogueId);
 
         return new GetMailDialogViewResponseData
         {
@@ -268,12 +280,12 @@ public class DialogueController(
     /// <returns>Dialogue</returns>
     protected Dialogue GetDialogByIdFromProfile(SptProfile profile, GetMailDialogViewRequestData request)
     {
-        if (profile.DialogueRecords is null || profile.DialogueRecords.ContainsKey(request.DialogId!))
+        if (profile.DialogueRecords is null || profile.DialogueRecords.ContainsKey(request.DialogId))
         {
-            return profile.DialogueRecords?[request.DialogId!] ?? throw new NullReferenceException();
+            return profile.DialogueRecords?[request.DialogId] ?? throw new NullReferenceException();
         }
 
-        profile.DialogueRecords[request.DialogId!] = new Dialogue
+        profile.DialogueRecords[request.DialogId] = new Dialogue
         {
             Id = request.DialogId,
             AttachmentsNew = 0,
@@ -285,22 +297,22 @@ public class DialogueController(
 
         if (request.Type != MessageType.UserMessage)
         {
-            return profile.DialogueRecords[request.DialogId!];
+            return profile.DialogueRecords[request.DialogId];
         }
 
-        var dialogue = profile.DialogueRecords[request.DialogId!];
+        var dialogue = profile.DialogueRecords[request.DialogId];
         dialogue.Users = [];
         var chatBot = _dialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId);
 
         if (chatBot is null)
         {
-            return profile.DialogueRecords[request.DialogId!];
+            return profile.DialogueRecords[request.DialogId];
         }
 
         dialogue.Users ??= [];
         dialogue.Users.Add(chatBot.GetChatBot());
 
-        return profile.DialogueRecords[request.DialogId!];
+        return profile.DialogueRecords[request.DialogId];
     }
 
     /// <summary>
@@ -352,7 +364,7 @@ public class DialogueController(
     /// <param name="sessionId">Session id</param>
     /// <param name="dialogueId">Dialog id</param>
     /// <returns>Count of messages with attachments</returns>
-    protected int GetUnreadMessagesWithAttachmentsCount(MongoId sessionId, string dialogueId)
+    protected int GetUnreadMessagesWithAttachmentsCount(MongoId sessionId, MongoId dialogueId)
     {
         var newAttachmentCount = 0;
         var activeMessages = GetActiveMessagesFromDialog(sessionId, dialogueId);
@@ -373,7 +385,7 @@ public class DialogueController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="dialogueId">Dialog to get mail attachments from</param>
     /// <returns>Message array</returns>
-    protected List<Message> GetActiveMessagesFromDialog(MongoId sessionId, string dialogueId)
+    protected List<Message> GetActiveMessagesFromDialog(MongoId sessionId, MongoId dialogueId)
     {
         var timeNow = timeUtil.GetTimeStamp();
         var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
@@ -403,10 +415,10 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueId">id of the dialog to remove</param>
     /// <param name="sessionId">Player id</param>
-    public virtual void RemoveDialogue(string? dialogueId, MongoId sessionId)
+    public virtual void RemoveDialogue(MongoId dialogueId, MongoId sessionId)
     {
         var profile = saveServer.GetProfile(sessionId);
-        if (!profile.DialogueRecords.Remove(dialogueId))
+        if (!profile.DialogueRecords?.Remove(dialogueId) ?? false)
         {
             logger.Error(serverLocalisationService.GetText("dialogue-unable_to_find_in_profile", new { sessionId, dialogueId }));
         }
@@ -418,7 +430,7 @@ public class DialogueController(
     /// <param name="dialogueId"></param>
     /// <param name="shouldPin"></param>
     /// <param name="sessionId">Session/Player id</param>
-    public virtual void SetDialoguePin(string? dialogueId, bool shouldPin, MongoId sessionId)
+    public virtual void SetDialoguePin(MongoId dialogueId, bool shouldPin, MongoId sessionId)
     {
         var dialog = dialogueHelper.GetDialogsForProfile(sessionId).GetValueOrDefault(dialogueId);
         if (dialog is null)
@@ -437,10 +449,17 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueIds">Dialog ids to set as read</param>
     /// <param name="sessionId">Player profile id</param>
-    public virtual void SetRead(List<string>? dialogueIds, MongoId sessionId)
+    public virtual void SetRead(List<MongoId>? dialogueIds, MongoId sessionId)
     {
+        if (dialogueIds is null)
+        {
+            logger.Error(serverLocalisationService.GetText("dialogue-list_from_client_empty", new { sessionId }));
+
+            return;
+        }
+
         var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
-        if (dialogs.Any() != true)
+        if (dialogs.Count == 0)
         {
             logger.Error(serverLocalisationService.GetText("dialogue-unable_to_find_dialogs_in_profile", new { sessionId }));
 
@@ -629,7 +648,7 @@ public class DialogueController(
     public void ClearMessages(MongoId sessionId, ClearMailMessageRequest request)
     {
         var profile = saveServer.GetProfile(sessionId);
-        if (!profile.DialogueRecords.TryGetValue(request.DialogId, out var dialogToClear))
+        if (profile.DialogueRecords is null || !profile.DialogueRecords.TryGetValue(request.DialogId, out var dialogToClear))
         {
             logger.Warning($"unable to clear messages from dialog: {request.DialogId} as it cannot be found in profile: {sessionId}");
 

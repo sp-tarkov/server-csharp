@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Game;
 
 namespace SPTarkov.Server.Core.Models.Spt.Config;
@@ -258,7 +259,7 @@ public record ChatbotFeatures
     ///     Bot Ids player is allowed to interact with
     /// </summary>
     [JsonPropertyName("enabledBots")]
-    public required Dictionary<string, bool> EnabledBots { get; set; }
+    public required Dictionary<MongoId, bool> EnabledBots { get; set; }
 }
 
 public record CommandoFeatures

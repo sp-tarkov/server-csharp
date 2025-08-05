@@ -17,7 +17,7 @@ public class DialogueHelper(ISptLogger<DialogueHelper> logger, ProfileHelper pro
     public MessagePreview GetMessagePreview(Models.Eft.Profile.Dialogue? dialogue)
     {
         // The last message of the dialogue should be shown on the preview.
-        var message = dialogue.Messages.LastOrDefault();
+        var message = dialogue?.Messages?.LastOrDefault();
 
         MessagePreview result = new()
         {
@@ -92,10 +92,10 @@ public class DialogueHelper(ISptLogger<DialogueHelper> logger, ProfileHelper pro
     /// </summary>
     /// <param name="sessionId">Session/player id</param>
     /// <returns>Dialog dictionary</returns>
-    public Dictionary<string, Models.Eft.Profile.Dialogue> GetDialogsForProfile(MongoId sessionId)
+    public Dictionary<MongoId, Models.Eft.Profile.Dialogue> GetDialogsForProfile(MongoId sessionId)
     {
         var profile = profileHelper.GetFullProfile(sessionId);
-        return profile.DialogueRecords ?? (profile.DialogueRecords = new Dictionary<string, Models.Eft.Profile.Dialogue>());
+        return profile.DialogueRecords ?? (profile.DialogueRecords = new Dictionary<MongoId, Models.Eft.Profile.Dialogue>());
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public class DialogueHelper(ISptLogger<DialogueHelper> logger, ProfileHelper pro
     /// <param name="profileId">Profile to look in</param>
     /// <param name="dialogueId">Dialog to return</param>
     /// <returns>Dialogue</returns>
-    public Models.Eft.Profile.Dialogue? GetDialogueFromProfile(MongoId profileId, string dialogueId)
+    public Models.Eft.Profile.Dialogue? GetDialogueFromProfile(MongoId profileId, MongoId dialogueId)
     {
         var dialogues = GetDialogsForProfile(profileId);
         if (dialogues.TryGetValue(dialogueId, out var dialogue))

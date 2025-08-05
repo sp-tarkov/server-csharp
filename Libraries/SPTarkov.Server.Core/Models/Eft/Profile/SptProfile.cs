@@ -30,7 +30,7 @@ public record SptProfile
     public UserBuilds? UserBuildData { get; set; }
 
     [JsonPropertyName("dialogues")]
-    public Dictionary<string, Dialogue>? DialogueRecords { get; set; }
+    public Dictionary<MongoId, Dialogue>? DialogueRecords { get; set; }
 
     [JsonPropertyName("spt")]
     public Spt? SptData { get; set; }
@@ -249,7 +249,7 @@ public record DialogueInfo
     public int? New { get; set; }
 
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public MongoId Id { get; set; }
 
     [JsonPropertyName("type")]
     public MessageType? Type { get; set; }
