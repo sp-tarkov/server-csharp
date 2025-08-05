@@ -37,7 +37,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
         {
             new()
             {
-                Id = new Models.Common.MongoId(),
+                Id = new MongoId(),
                 RegistrationId = 20,
                 DateTime = timeUtil.GetTimeStamp(),
                 IsDeveloper = true,
@@ -80,7 +80,9 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     /// <returns></returns>
     public virtual ValueTask<string> GetMailDialogInfo(string url, GetMailDialogInfoRequestData request, MongoId sessionID)
     {
-        return new ValueTask<string>(httpResponseUtil.GetBody(dialogueController.GetDialogueInfo(request.DialogId, sessionID)));
+        return new ValueTask<string>(
+            httpResponseUtil.GetBody(dialogueController.GetDialogueInfo(request.DialogId ?? MongoId.Empty(), sessionID))
+        );
     }
 
     /// <summary>
@@ -89,7 +91,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     /// <returns></returns>
     public virtual ValueTask<string> RemoveDialog(string url, RemoveDialogRequestData request, MongoId sessionID)
     {
-        dialogueController.RemoveDialogue(request.DialogId, sessionID);
+        dialogueController.RemoveDialogue(request.DialogId ?? MongoId.Empty(), sessionID);
         return new ValueTask<string>(httpResponseUtil.EmptyArrayResponse());
     }
 
@@ -99,7 +101,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     /// <returns></returns>
     public virtual ValueTask<string> PinDialog(string url, PinDialogRequestData request, MongoId sessionID)
     {
-        dialogueController.SetDialoguePin(request.DialogId, true, sessionID);
+        dialogueController.SetDialoguePin(request.DialogId ?? MongoId.Empty(), true, sessionID);
         return new ValueTask<string>(httpResponseUtil.EmptyArrayResponse());
     }
 
@@ -109,7 +111,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     /// <returns></returns>
     public virtual ValueTask<string> UnpinDialog(string url, PinDialogRequestData request, MongoId sessionID)
     {
-        dialogueController.SetDialoguePin(request.DialogId, false, sessionID);
+        dialogueController.SetDialoguePin(request.DialogId ?? MongoId.Empty(), false, sessionID);
         return new ValueTask<string>(httpResponseUtil.EmptyArrayResponse());
     }
 
@@ -232,6 +234,10 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
         return new ValueTask<string>(httpResponseUtil.NullResponse());
     }
 
+    /// <summary>
+    ///     Handle /client/mail/dialog/clear
+    /// </summary>
+    /// <returns></returns>
     public virtual ValueTask<string> ClearMail(string url, ClearMailMessageRequest request, MongoId sessionID)
     {
         dialogueController.ClearMessages(sessionID, request);
@@ -239,21 +245,37 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
         return new ValueTask<string>(httpResponseUtil.EmptyArrayResponse());
     }
 
+    /// <summary>
+    ///     Handle /client/mail/dialog/group/create
+    /// </summary>
+    /// <returns></returns>
     public virtual ValueTask<string> CreateGroupMail(string url, CreateGroupMailRequest request, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.EmptyArrayResponse());
     }
 
+    /// <summary>
+    ///     Handle /client/mail/dialog/group/owner/change
+    /// </summary>
+    /// <returns></returns>
     public virtual ValueTask<string> ChangeMailGroupOwner(string url, ChangeGroupMailOwnerRequest request, MongoId sessionID)
     {
         return new ValueTask<string>("Not Implemented!"); // Not implemented in Node
     }
 
+    /// <summary>
+    ///     Handle /client/mail/dialog/group/users/add
+    /// </summary>
+    /// <returns></returns>
     public virtual ValueTask<string> AddUserToMail(string url, AddUserGroupMailRequest request, MongoId sessionID)
     {
         return new ValueTask<string>("Not Implemented!"); // Not implemented in Node
     }
 
+    /// <summary>
+    ///     Handle /client/mail/dialog/group/users/remove
+    /// </summary>
+    /// <returns></returns>
     public virtual ValueTask<string> RemoveUserFromMail(string url, RemoveUserGroupMailRequest request, MongoId sessionID)
     {
         return new ValueTask<string>("Not Implemented!"); // Not implemented in Node

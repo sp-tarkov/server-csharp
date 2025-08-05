@@ -104,7 +104,7 @@ public class DialogueHelper(ISptLogger<DialogueHelper> logger, ProfileHelper pro
     /// <param name="profileId">Profile to look in</param>
     /// <param name="dialogueId">Dialog to return</param>
     /// <returns>Dialogue</returns>
-    public Models.Eft.Profile.Dialogue? GetDialogueFromProfile(MongoId profileId, string dialogueId)
+    public Models.Eft.Profile.Dialogue? GetDialogueFromProfile(MongoId profileId, MongoId dialogueId)
     {
         var dialogues = GetDialogsForProfile(profileId);
         if (dialogues.TryGetValue(dialogueId, out var dialogue))

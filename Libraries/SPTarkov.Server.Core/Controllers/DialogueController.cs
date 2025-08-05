@@ -155,10 +155,10 @@ public class DialogueController(
     /// <param name="dialogueId">Dialog id</param>
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
-    public virtual DialogueInfo? GetDialogueInfo(string? dialogueId, MongoId sessionId)
+    public virtual DialogueInfo? GetDialogueInfo(MongoId dialogueId, MongoId sessionId)
     {
         var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
-        var dialogue = dialogs!.GetValueOrDefault(dialogueId);
+        var dialogue = dialogs.GetValueOrDefault(dialogueId);
 
         return GetDialogueInfo(dialogue, sessionId);
     }
@@ -275,12 +275,12 @@ public class DialogueController(
     /// <returns>Dialogue</returns>
     protected Dialogue GetDialogByIdFromProfile(SptProfile profile, GetMailDialogViewRequestData request)
     {
-        if (profile.DialogueRecords is null || profile.DialogueRecords.ContainsKey(request.DialogId!))
+        if (profile.DialogueRecords is null || profile.DialogueRecords.ContainsKey(request.DialogId))
         {
-            return profile.DialogueRecords?[request.DialogId!] ?? throw new NullReferenceException();
+            return profile.DialogueRecords?[request.DialogId] ?? throw new NullReferenceException();
         }
 
-        profile.DialogueRecords[request.DialogId!] = new Dialogue
+        profile.DialogueRecords[request.DialogId] = new Dialogue
         {
             Id = request.DialogId,
             AttachmentsNew = 0,
@@ -292,22 +292,22 @@ public class DialogueController(
 
         if (request.Type != MessageType.UserMessage)
         {
-            return profile.DialogueRecords[request.DialogId!];
+            return profile.DialogueRecords[request.DialogId];
         }
 
-        var dialogue = profile.DialogueRecords[request.DialogId!];
+        var dialogue = profile.DialogueRecords[request.DialogId];
         dialogue.Users = [];
         var chatBot = _dialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId);
 
         if (chatBot is null)
         {
-            return profile.DialogueRecords[request.DialogId!];
+            return profile.DialogueRecords[request.DialogId];
         }
 
         dialogue.Users ??= [];
         dialogue.Users.Add(chatBot.GetChatBot());
 
-        return profile.DialogueRecords[request.DialogId!];
+        return profile.DialogueRecords[request.DialogId];
     }
 
     /// <summary>
@@ -410,10 +410,10 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueId">id of the dialog to remove</param>
     /// <param name="sessionId">Player id</param>
-    public virtual void RemoveDialogue(string? dialogueId, MongoId sessionId)
+    public virtual void RemoveDialogue(MongoId dialogueId, MongoId sessionId)
     {
         var profile = saveServer.GetProfile(sessionId);
-        if (!profile.DialogueRecords.Remove(dialogueId))
+        if (!profile.DialogueRecords?.Remove(dialogueId) ?? false)
         {
             logger.Error(serverLocalisationService.GetText("dialogue-unable_to_find_in_profile", new { sessionId, dialogueId }));
         }
@@ -425,7 +425,7 @@ public class DialogueController(
     /// <param name="dialogueId"></param>
     /// <param name="shouldPin"></param>
     /// <param name="sessionId">Session/Player id</param>
-    public virtual void SetDialoguePin(string? dialogueId, bool shouldPin, MongoId sessionId)
+    public virtual void SetDialoguePin(MongoId dialogueId, bool shouldPin, MongoId sessionId)
     {
         var dialog = dialogueHelper.GetDialogsForProfile(sessionId).GetValueOrDefault(dialogueId);
         if (dialog is null)
@@ -444,10 +444,17 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueIds">Dialog ids to set as read</param>
     /// <param name="sessionId">Player profile id</param>
-    public virtual void SetRead(List<string>? dialogueIds, MongoId sessionId)
+    public virtual void SetRead(List<MongoId>? dialogueIds, MongoId sessionId)
     {
+        if (dialogueIds is null)
+        {
+            logger.Error(serverLocalisationService.GetText("dialogue-list_from_client_empty", new { sessionId }));
+
+            return;
+        }
+
         var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
-        if (dialogs.Any() != true)
+        if (dialogs.Count == 0)
         {
             logger.Error(serverLocalisationService.GetText("dialogue-unable_to_find_dialogs_in_profile", new { sessionId }));
 
@@ -636,7 +643,7 @@ public class DialogueController(
     public void ClearMessages(MongoId sessionId, ClearMailMessageRequest request)
     {
         var profile = saveServer.GetProfile(sessionId);
-        if (!profile.DialogueRecords.TryGetValue(request.DialogId, out var dialogToClear))
+        if (profile.DialogueRecords is null || !profile.DialogueRecords.TryGetValue(request.DialogId, out var dialogToClear))
         {
             logger.Warning($"unable to clear messages from dialog: {request.DialogId} as it cannot be found in profile: {sessionId}");
 
