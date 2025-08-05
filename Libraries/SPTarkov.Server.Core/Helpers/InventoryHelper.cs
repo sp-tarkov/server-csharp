@@ -59,20 +59,21 @@ public class InventoryHelper(
             return;
         }
 
-        foreach (var itemToAdd in request.ItemsWithModsToAdd)
+        var addItemRequest = new AddItemDirectRequest
         {
-            var addItemRequest = new AddItemDirectRequest
-            {
-                ItemWithModsToAdd = itemToAdd,
-                FoundInRaid = request.FoundInRaid,
-                UseSortingTable = request.UseSortingTable,
-                Callback = request.Callback,
-            };
+            FoundInRaid = request.FoundInRaid,
+            UseSortingTable = request.UseSortingTable,
+            Callback = request.Callback,
+        };
+        foreach (var itemAndChildren in request.ItemsWithModsToAdd)
+        {
+            addItemRequest.ItemWithModsToAdd = itemAndChildren;
 
             // Add to player inventory
             AddItemToStash(sessionId, addItemRequest, pmcData, output);
             if (output.Warnings?.Count > 0)
             {
+                // Adding item to stash failed, don't add remainder
                 return;
             }
         }
