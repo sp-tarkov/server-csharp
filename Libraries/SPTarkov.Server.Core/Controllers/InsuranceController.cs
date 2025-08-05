@@ -86,6 +86,12 @@ public class InsuranceController(
         var insuranceTime = time ?? timeUtil.GetTimeStamp();
 
         var profileInsuranceDetails = saveServer.GetProfile(sessionId).InsuranceList;
+
+        if (profileInsuranceDetails is null)
+        {
+            return [];
+        }
+
         if (profileInsuranceDetails.Count > 0)
         {
             if (logger.IsLogEnabled(LogLevel.Debug))

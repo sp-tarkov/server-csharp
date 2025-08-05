@@ -106,7 +106,6 @@ public class GameController(
         {
             SendPraporGiftsToNewProfiles(pmcProfile);
             SendMechanicGiftsToNewProfile(pmcProfile);
-            profileFixerService.CheckForOrphanedModdedItems(sessionId, fullProfile);
         }
 
         profileFixerService.CheckForAndRemoveInvalidTraders(fullProfile);

@@ -2,6 +2,7 @@
 using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Migration;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Utils;
@@ -10,15 +11,16 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class ProfileMigratorService(
+public class ProfileValidatorService(
     IEnumerable<IProfileMigration> profileMigrations,
+    ProfileValidatorHelper profileValidatorHelper,
     TimeUtil timeUtil,
-    ISptLogger<ProfileMigratorService> logger
+    ISptLogger<ProfileValidatorService> logger
 )
 {
     private readonly IEnumerable<IProfileMigration> _sortedMigrations = profileMigrations.Sort();
 
-    public SptProfile HandlePendingMigrations(JsonObject profile)
+    public SptProfile MigrateAndValidateProfile(JsonObject profile)
     {
         var profileId = profile["info"]?["id"]?.GetValue<string>();
 
@@ -35,6 +37,8 @@ public class ProfileMigratorService(
 
         var ranMigrations = new List<IProfileMigration>();
 
+        // The initial part of the profile migrations, this allows for fixing up
+        // Any incorrect typing that might not allow the profile to load
         foreach (var profileMigration in _sortedMigrations)
         {
             if (profileMigration.CanMigrate(profile, ranMigrations))
@@ -59,10 +63,12 @@ public class ProfileMigratorService(
             sptReadyProfile =
                 profile.Deserialize<SptProfile>(JsonUtil.JsonSerializerOptionsNoIndent)
                 ?? throw new InvalidOperationException($"Could not deserialize the profile.");
+
+            profileValidatorHelper.CheckForOrphanedModdedItems(new Models.Common.MongoId(profileId), sptReadyProfile);
         }
         catch (Exception ex)
         {
-            logger.Critical($"Could not load profile: {profileId}");
+            logger.Critical($"Failed to load profile with ID '{profileId}'. The profile will be marked as invalid.");
             logger.Critical(ex.ToString());
 
             if (ex.StackTrace is not null)
@@ -70,8 +76,17 @@ public class ProfileMigratorService(
                 logger.Critical(ex.StackTrace);
             }
 
-            // Throw here, immediately stops execution of the server upon detecting a messed up profile
-            throw;
+            sptReadyProfile = new()
+            {
+                ProfileInfo = new Info
+                {
+                    ProfileId = new Models.Common.MongoId(profileId),
+                    Username = profile["info"]?["username"]?.GetValue<string>() ?? "",
+                    InvalidOrUnloadableProfile = true,
+                },
+            };
+
+            return sptReadyProfile;
         }
 
         foreach (var ranMigration in ranMigrations)
