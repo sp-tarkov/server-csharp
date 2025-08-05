@@ -43,15 +43,12 @@ public class App(
 
             // _logger.Debug($"RAM: {(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB");
 
-            if (ProgramStatics.BUILD_TIME() is not null)
+            if (ProgramStatics.BUILD_TIME() != 0)
             {
                 _logger.Debug($"Date: {ProgramStatics.BUILD_TIME()}");
             }
 
-            if (ProgramStatics.COMMIT() is not null)
-            {
-                _logger.Debug($"Commit: {ProgramStatics.COMMIT()}");
-            }
+            _logger.Debug($"Commit: {ProgramStatics.COMMIT()}");
         }
 
         // execute onLoad callbacks

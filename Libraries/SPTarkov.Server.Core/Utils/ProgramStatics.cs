@@ -10,9 +10,7 @@ public static partial class ProgramStatics
 
     public static void Initialize()
     {
-        var _entryType = BuildType ?? EntryType.LOCAL;
-
-        switch (_entryType)
+        switch (BuildType)
         {
             case EntryType.RELEASE:
                 _debug = false;
@@ -41,7 +39,7 @@ public static partial class ProgramStatics
         }
 
 #if DEBUG
-        Console.WriteLine($"SPTarkov.Server.Core: entrytype: {_entryType}");
+        Console.WriteLine($"SPTarkov.Server.Core: entrytype: {BuildType}");
         Console.WriteLine($"SPTarkov.Server.Core: debug: {_debug}");
         Console.WriteLine($"SPTarkov.Server.Core: compiled: {_compiled}");
         Console.WriteLine($"SPTarkov.Server.Core: mods: {_mods}");
@@ -49,7 +47,7 @@ public static partial class ProgramStatics
     }
 
     // Public Static Getters
-    public static EntryType? ENTRY_TYPE()
+    public static EntryType ENTRY_TYPE()
     {
         return BuildType;
     }
@@ -69,18 +67,18 @@ public static partial class ProgramStatics
         return _mods;
     }
 
-    public static string? SPT_VERSION()
+    public static string SPT_VERSION()
     {
-        return _sptVersion;
+        return SptVersion;
     }
 
-    public static string? COMMIT()
+    public static string COMMIT()
     {
-        return _commit;
+        return Commit;
     }
 
-    public static double? BUILD_TIME()
+    public static double BUILD_TIME()
     {
-        return _buildTime;
+        return BuildTime;
     }
 }
