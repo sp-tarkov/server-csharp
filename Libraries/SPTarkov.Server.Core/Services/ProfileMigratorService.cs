@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Migration;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Utils;
@@ -15,18 +16,10 @@ public class ProfileMigratorService(
     ISptLogger<ProfileMigratorService> logger
 )
 {
-    private IEnumerable<AbstractProfileMigration> _sortedMigrations = [];
+    private readonly IEnumerable<IProfileMigration> _sortedMigrations = profileMigrations.Sort();
 
     public SptProfile HandlePendingMigrations(JsonObject profile)
     {
-        // On the initial run, begin sorting our migrations
-        // This will sort it so that any non-prerequisite migrations go first
-        // And then all the prerequisite ones.
-        if (!_sortedMigrations.Any())
-        {
-            _sortedMigrations = SortMigrations();
-        }
-
         var profileId = profile["info"]?["id"]?.GetValue<string>();
 
         // Profile is due for a wipe or a reset, do not continue here.
@@ -40,7 +33,7 @@ public class ProfileMigratorService(
                 ?? throw new InvalidOperationException($"Could not deserialize the profile: {profileId}");
         }
 
-        var ranMigrations = new List<AbstractProfileMigration>();
+        var ranMigrations = new List<IProfileMigration>();
 
         foreach (var profileMigration in _sortedMigrations)
         {
@@ -97,58 +90,5 @@ public class ProfileMigratorService(
         }
 
         return sptReadyProfile;
-    }
-
-    protected IEnumerable<AbstractProfileMigration> SortMigrations()
-    {
-        var sortedMigrations = new List<AbstractProfileMigration>();
-        var visitedMigrations = new Dictionary<Type, bool>();
-        var migrationDict = profileMigrations.Cast<AbstractProfileMigration>().ToDictionary(m => m.GetType());
-
-        foreach (var migration in profileMigrations.Cast<AbstractProfileMigration>())
-        {
-            VisitMigrationForSort(migration, migrationDict, visitedMigrations, sortedMigrations);
-        }
-
-        return sortedMigrations;
-    }
-
-    protected void VisitMigrationForSort(
-        AbstractProfileMigration migration,
-        Dictionary<Type, AbstractProfileMigration> migrationTypeDictionary,
-        Dictionary<Type, bool> visitedTypeDictionary,
-        List<AbstractProfileMigration> sortedMigrations
-    )
-    {
-        var migrationType = migration.GetType();
-
-        if (visitedTypeDictionary.TryGetValue(migrationType, out var isVisited))
-        {
-            if (isVisited)
-            {
-                return;
-            }
-
-            // Big error, two migrations should never depend on one another
-            throw new InvalidOperationException($"Cycle detected in migration prerequisites involving: {migrationType.Name}");
-        }
-
-        // Mark the current migration type for visiting
-        visitedTypeDictionary[migrationType] = false;
-
-        foreach (var prerequisiteType in migration.PrerequisiteMigrations)
-        {
-            if (!migrationTypeDictionary.TryGetValue(prerequisiteType, out var prereqMigration))
-            {
-                continue;
-            }
-
-            // Visit the next prerequisite
-            VisitMigrationForSort(prereqMigration, migrationTypeDictionary, visitedTypeDictionary, sortedMigrations);
-        }
-
-        // Done visiting, mark it as fully visited and add it to the sorted migrations
-        visitedTypeDictionary[migrationType] = true;
-        sortedMigrations.Add(migration);
     }
 }

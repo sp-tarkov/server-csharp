@@ -6,6 +6,16 @@ namespace SPTarkov.Server.Core.Migration;
 public interface IProfileMigration
 {
     /// <summary>
+    /// The name of the migration
+    /// </summary>
+    public abstract string MigrationName { get; }
+
+    /// <summary>
+    /// An IEnumerable of migrations that need to come before the current one
+    /// </summary>
+    public abstract IEnumerable<Type> PrerequisiteMigrations { get; }
+
+    /// <summary>
     /// Allows for adding checks if the profile in question can migrate
     /// </summary>
     /// <param name="profile">The profile to check</param>

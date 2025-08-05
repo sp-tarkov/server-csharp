@@ -5,11 +5,11 @@ namespace SPTarkov.Server.Core.Migration;
 
 public abstract class AbstractProfileMigration : IProfileMigration
 {
+    public virtual string MigrationName { get; }
+    public virtual IEnumerable<Type> PrerequisiteMigrations { get; }
+
     public abstract string FromVersion { get; }
     public abstract string ToVersion { get; }
-    public abstract string MigrationName { get; }
-
-    public abstract IEnumerable<Type> PrerequisiteMigrations { get; }
 
     public abstract bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations);
 
