@@ -45,6 +45,8 @@ One of the following is required:
 5. Open the `project/server-csharp.sln` file in Visual Studio or Rider
 6. Run `Build > Build Solution (CTRL + SHIFT + B)` in the IDE
 
+Note: The first build will fail as the `ProgramStatistics` class needs to be initially generated in a `PreBuild` action. The second build onward will be a passing build.
+
 ## Development
 
 ### Commands
@@ -83,7 +85,7 @@ We're really excited that you're interested in contributing! Before submitting y
 
 - **master**
   The default branch used for the latest stable release. This branch is protected and typically is only merged with release branches.
-- **development**
+- **develop**
   The main branch for server development. **PRs should target this.**
 
 ### Pull Request Guidelines
