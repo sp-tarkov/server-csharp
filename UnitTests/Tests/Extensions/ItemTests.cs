@@ -63,7 +63,12 @@ public class ItemTests
     public void GetItemWithChildren_mods_and_inventory_item()
     {
         var testData = new List<Item>();
-        var rootItem = new Item { Id = new MongoId(), Template = ItemTpl.AMMOBOX_127X33_COPPER_20RND };
+        var rootItem = new Item
+        {
+            Id = new MongoId(),
+            Template = ItemTpl.AMMOBOX_127X33_COPPER_20RND,
+            ParentId = new MongoId(),
+        };
         var childItem = new Item
         {
             Id = new MongoId(),
@@ -83,7 +88,8 @@ public class ItemTests
 
         var result = testData.GetItemWithChildren(rootItem.Id, false);
 
-        Assert.AreEqual(result[1].Id, childItem.Id);
+        Assert.Contains(childItem, result);
+        Assert.Contains(childItem2, result);
         Assert.AreEqual(result.Count, 3);
     }
 
@@ -291,5 +297,31 @@ public class ItemTests
         Assert.AreEqual(false, profile.Inventory.Items.FirstOrDefault(item => item.Id == item1Id).Upd.SpawnedInSession);
         Assert.AreEqual(false, profile.Inventory.Items.FirstOrDefault(item => item.Id == item2Id).Upd.SpawnedInSession);
         Assert.AreEqual(true, profile.Inventory.Items.FirstOrDefault(item => item.Id == item3Id).Upd.SpawnedInSession);
+    }
+
+    [Test]
+    public void GetItemWithChildren_rootIdNotFound()
+    {
+        var testData = new List<Item>();
+        var rootItem = new Item { Id = new MongoId(), Template = ItemTpl.AMMOBOX_127X33_COPPER_20RND };
+        var childItem = new Item
+        {
+            Id = new MongoId(),
+            Template = ItemTpl.AMMO_127X33_COPPER,
+            ParentId = rootItem.Id,
+        };
+        var childOfChild = new Item
+        {
+            Id = new MongoId(),
+            Template = ItemTpl.AMMO_26X75_GREEN,
+            ParentId = childItem.Id,
+        };
+        testData.Add(rootItem);
+        testData.Add(childItem);
+        testData.Add(childOfChild);
+
+        var result = testData.GetItemWithChildren(new MongoId(), true);
+
+        Assert.AreEqual(result.Count, 0);
     }
 }

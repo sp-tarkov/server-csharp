@@ -230,7 +230,6 @@ public static class ItemExtensions
     }
 
     /// <summary>
-    /// TODO: return IEnumerable and update all calling code
     /// Get an item with its attachments (children)
     /// </summary>
     /// <param name="items">List of items (item + possible children)</param>
@@ -239,48 +238,63 @@ public static class ItemExtensions
     /// <returns>list of Item objects</returns>
     public static List<Item> GetItemWithChildren(this IEnumerable<Item> items, MongoId baseItemId, bool excludeStoredItems = false)
     {
-        // Use dictionary to make key lookup faster, convert to list before being returned
+        // Convert to list if not already
         var itemList = items.ToList();
-        OrderedDictionary<MongoId, Item> result = [];
 
-        // Find desired root item
-        var desiredRootItem = itemList.FirstOrDefault(item => item.Id == baseItemId);
-        if (desiredRootItem is null)
+        // Create dict of items by parentId
+        var childrenByParent = new Dictionary<string, List<Item>>(itemList.Count);
+        foreach (var child in itemList)
+        {
+            var key = child.ParentId;
+            if (key is null)
+            {
+                continue;
+            }
+            if (childrenByParent.TryGetValue(key, out var list))
+            {
+                list.Add(child);
+            }
+            else
+            {
+                childrenByParent[key] = [child];
+            }
+        }
+
+        // Find root item
+        var root = itemList.FirstOrDefault(i => i.Id == baseItemId);
+        if (root is null)
         {
             // Root not found, nothing to return, exit
             return [];
         }
-        result.Add(desiredRootItem.Id, desiredRootItem);
-        var rootItemIdString = desiredRootItem.Id.ToString();
 
-        foreach (var item in itemList)
+        var result = new List<Item>();
+        var stack = new Stack<Item>();
+        stack.Push(root);
+
+        while (stack.Count > 0)
         {
-            if (result.ContainsKey(item.Id))
+            var current = stack.Pop();
+            result.Add(current);
+
+            if (!childrenByParent.TryGetValue(current.Id.ToString(), out var children))
             {
-                // Already processed, skip
+                // No children, skip to next
                 continue;
             }
 
-            // Skip items with different parentId
-            if (item.ParentId != rootItemIdString)
+            foreach (var child in children)
             {
-                continue;
-            }
-
-            // Is stored in parent and disallowed
-            if (excludeStoredItems && item.Location is not null)
-            {
-                continue;
-            }
-
-            // Item may have children, check
-            foreach (var subItem in GetItemWithChildren(itemList, item.Id))
-            {
-                result.Add(subItem.Id, subItem);
+                // child item has a location property = is stored inside parent
+                if (excludeStoredItems && child.Location is not null)
+                {
+                    continue;
+                }
+                stack.Push(child);
             }
         }
 
-        return result.Values.ToList();
+        return result;
     }
 
     /// <summary>

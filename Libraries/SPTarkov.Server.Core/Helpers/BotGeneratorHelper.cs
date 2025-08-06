@@ -435,7 +435,7 @@ public class BotGeneratorHelper(
     /// <param name="rootItemTplId">Root items tpl id</param>
     /// <param name="itemWithChildren">Item to add</param>
     /// <param name="inventory">Inventory to add item+children into</param>
-    /// <param name="containersIdFull"></param>
+    /// <param name="containersIdFull">Container Ids with no space for more items</param>
     /// <returns>ItemAddedResult result object</returns>
     public ItemAddedResult AddItemWithChildrenToEquipmentSlot(
         HashSet<EquipmentSlots> equipmentSlots,
@@ -446,6 +446,8 @@ public class BotGeneratorHelper(
         HashSet<string>? containersIdFull = null
     )
     {
+        var itemWithChildrenList = itemWithChildren.ToList();
+
         // Track how many containers are unable to be found
         var missingContainerCount = 0;
         foreach (var equipmentSlotId in equipmentSlots)
@@ -455,8 +457,8 @@ public class BotGeneratorHelper(
                 continue;
             }
 
-            // Get container to put item into
-            var container = inventory.Items.FirstOrDefault(item => item.SlotId == equipmentSlotId.ToString());
+            // Get container from inventory to put item into
+            var container = inventory.Items?.FirstOrDefault(item => item.SlotId == equipmentSlotId.ToString());
             if (container is null)
             {
                 missingContainerCount++;
@@ -466,7 +468,7 @@ public class BotGeneratorHelper(
                     if (logger.IsLogEnabled(LogLevel.Debug))
                     {
                         logger.Debug(
-                            $"Unable to add item: {itemWithChildren.FirstOrDefault()?.Template} to bot as it lacks the following containers: {string.Join(",", equipmentSlots)}"
+                            $"Unable to add item: {itemWithChildrenList.FirstOrDefault()?.Template} to bot as it lacks the following containers: {string.Join(",", equipmentSlots)}"
                         );
                     }
 
@@ -494,7 +496,7 @@ public class BotGeneratorHelper(
             }
 
             // Get x/y grid size of item
-            var (itemWidth, itemHeight) = inventoryHelper.GetItemSize(rootItemTplId, rootItemId, itemWithChildren);
+            var (itemWidth, itemHeight) = inventoryHelper.GetItemSize(rootItemTplId, rootItemId, itemWithChildrenList);
 
             // Iterate over each grid in the container and look for a big enough space for the item to be placed in
             var currentGridCount = 1;
@@ -520,7 +522,7 @@ public class BotGeneratorHelper(
                 );
 
                 // Get root items in container we can iterate over to find out what space is free
-                var containerItemsToCheck = existingContainerItems.Where(x => x.SlotId == slotGrid.Name).ToList();
+                var containerItemsToCheck = existingContainerItems.Where(x => x.SlotId == slotGrid.Name);
                 var containerItemsWithChildren = GetContainerItemsWithChildren(containerItemsToCheck, inventory.Items);
 
                 if (slotGrid.Props is not null)
@@ -539,7 +541,7 @@ public class BotGeneratorHelper(
                     // Free slot found, add item
                     if (findSlotResult.Success ?? false)
                     {
-                        var parentItem = itemWithChildren.FirstOrDefault(i => i.Id == rootItemId);
+                        var parentItem = itemWithChildrenList.FirstOrDefault(i => i.Id == rootItemId);
 
                         // Set items parent to container id
                         if (parentItem is not null)
@@ -554,7 +556,7 @@ public class BotGeneratorHelper(
                             };
                         }
 
-                        (inventory.Items ?? []).AddRange(itemWithChildren);
+                        (inventory.Items ?? []).AddRange(itemWithChildrenList);
 
                         return ItemAddedResult.SUCCESS;
                     }
@@ -570,7 +572,7 @@ public class BotGeneratorHelper(
                 // No space in this grid, move to next container grid and try again
             }
 
-            // if we got to this point, the item couldn't be placed on the container
+            // If we got to this point, the item couldn't be placed on the container
             if (containersIdFull is null)
             {
                 continue;
@@ -608,14 +610,14 @@ public class BotGeneratorHelper(
             return result;
         }
 
-        // Filter out all items without location prop, (child items)
-        var itemsWithoutLocation = inventoryItems.Where(item => item.Location is null);
+        // Get collection of items likely to be children of root items
+        var itemsWithoutLocation = inventoryItems.Where(item => item.Location is null && item.ParentId is not null).ToList();
         foreach (var rootItem in containerRootItems)
         {
             // Check item in container for children, store for later insertion into `containerItemsToCheck`
             // (used later when figuring out how much space weapon takes up)
-            List<Item> itemsToFilter = [.. itemsWithoutLocation, rootItem];
-            var itemWithChildItems = itemsToFilter.GetItemWithChildren(rootItem.Id);
+            itemsWithoutLocation.Insert(0, rootItem);
+            var itemWithChildItems = itemsWithoutLocation.GetItemWithChildren(rootItem.Id);
 
             // Item had children, replace existing data with item + its children
             result.AddRange(itemWithChildItems);
