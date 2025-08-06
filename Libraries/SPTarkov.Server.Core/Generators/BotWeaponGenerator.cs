@@ -358,34 +358,42 @@ public class BotWeaponGenerator(
     /// <summary>
     ///     Checks if all required slots are occupied on a weapon and all its mods.
     /// </summary>
-    /// <param name="weaponItemList">Weapon + mods</param>
+    /// <param name="weaponAndChildren">Weapon + mods</param>
     /// <param name="botRole">Role of bot weapon is for</param>
     /// <returns>True if valid</returns>
-    protected bool IsWeaponValid(IEnumerable<Item> weaponItemList, string botRole)
+    protected bool IsWeaponValid(List<Item> weaponAndChildren, string botRole)
     {
-        foreach (var mod in weaponItemList)
+        // Key weapon + children by parentId + slot name, ignore items without parentId or slotId
+        var slotItemLookup = weaponAndChildren.ToLookup(item => (item.ParentId, item.SlotId));
+
+        foreach (var item in weaponAndChildren)
         {
-            var modTemplate = itemHelper.GetItem(mod.Template).Value;
-            if (!modTemplate.Properties.Slots?.Any() ?? false)
+            var modTemplate = itemHelper.GetItem(item.Template).Value;
+            if (!modTemplate?.Properties?.Slots?.Any() ?? false)
             {
                 continue;
             }
 
-            // Iterate over required slots in db item, check mod exists for that slot
-            foreach (var modSlotTemplate in modTemplate.Properties.Slots?.Where(slot => slot.Required.GetValueOrDefault(false)) ?? [])
+            var requiredSlots = modTemplate?.Properties?.Slots?.Where(slot => slot.Required.GetValueOrDefault(false)) ?? [];
+            if (!requiredSlots.Any())
             {
-                var slotName = modSlotTemplate.Name;
-                var hasWeaponSlotItem = weaponItemList.Any(weaponItem => weaponItem.ParentId == mod.Id && weaponItem.SlotId == slotName);
-                if (!hasWeaponSlotItem)
+                // No required slots, skip to next item in weapon
+                continue;
+            }
+
+            foreach (var requiredSlot in requiredSlots.ToList())
+            {
+                // Check if slot exists in cache
+                if (!slotItemLookup[(item.Id, requiredSlot.Name)].Any())
                 {
                     logger.Warning(
                         serverLocalisationService.GetText(
                             "bot-weapons_required_slot_missing_item",
                             new
                             {
-                                modSlot = modSlotTemplate.Name,
+                                modSlot = requiredSlot.Name,
                                 modName = modTemplate.Name,
-                                slotId = mod.SlotId,
+                                slotId = item.SlotId,
                                 botRole,
                             }
                         )
@@ -394,6 +402,8 @@ public class BotWeaponGenerator(
                     return false;
                 }
             }
+
+            return true;
         }
 
         return true;
