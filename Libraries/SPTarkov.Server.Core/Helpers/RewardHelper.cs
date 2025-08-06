@@ -33,7 +33,7 @@ public class RewardHelper(
     /// Apply the given rewards to the passed in profile.
     /// </summary>
     /// <param name="rewards">List of rewards to apply.</param>
-    /// <param name="source">The source of the rewards (Achievement, quest).</param>
+    /// <param name="rewardSource">The source of the rewards (Achievement, quest).</param>
     /// <param name="fullProfile">The full profile to apply the rewards to.</param>
     /// <param name="profileData">The profile data (could be the scav profile).</param>
     /// <param name="rewardSourceId">The quest or achievement ID, used for finding production unlocks.</param>
@@ -41,7 +41,7 @@ public class RewardHelper(
     /// <returns>List of items that is the reward.</returns>
     public List<Item> ApplyRewards(
         IEnumerable<Reward> rewards,
-        string source,
+        string rewardSource,
         SptProfile fullProfile,
         PmcData profileData,
         MongoId rewardSourceId,
@@ -118,7 +118,7 @@ public class RewardHelper(
                     profileHelper.ReplaceProfilePocketTpl(pmcProfile, reward.Target);
                     break;
                 case RewardType.CustomizationDirect:
-                    profileHelper.AddHideoutCustomisationUnlock(fullProfile, reward, source);
+                    profileHelper.AddHideoutCustomisationUnlock(fullProfile, reward, rewardSource);
                     notificationSendHelper.SendMessage(
                         sessionId.Value,
                         new WsNotificationEvent
@@ -208,11 +208,10 @@ public class RewardHelper(
         // Add above match to pmc profile + client response
         var matchingCraftId = matchingProductions[0].Id;
         pmcData.UnlockedInfo.UnlockedProductionRecipe.Add(matchingCraftId);
-        if (response is not null)
-        {
-            response.ProfileChanges[sessionID].RecipeUnlocked ??= new Dictionary<string, bool>();
-            response.ProfileChanges[sessionID].RecipeUnlocked[matchingCraftId] = true;
-        }
+
+        // Update Inform client of change
+        response.ProfileChanges[sessionID].RecipeUnlocked ??= new();
+        response.ProfileChanges[sessionID].RecipeUnlocked[matchingCraftId] = true;
     }
 
     /// <summary>

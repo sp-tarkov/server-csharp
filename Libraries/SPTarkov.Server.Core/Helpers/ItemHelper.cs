@@ -1730,7 +1730,7 @@ public class ItemHelper(
         var oldRootId = itemWithChildren[0].Id;
         Dictionary<string, MongoId> idMappings = [];
 
-        idMappings[oldRootId.ToString()] = rootItem.Id;
+        idMappings[oldRootId] = rootItem.Id;
 
         foreach (var mod in itemWithChildren)
         {
@@ -1805,42 +1805,11 @@ public class ItemHelper(
     public int GetRandomisedAmmoStackSize(TemplateItem ammoItemTemplate, int maxLimit = 60)
     {
         return ammoItemTemplate.Properties?.StackMaxSize == 1
-            ? 1
+            ? 1 // Max is one, nothing to randomise
             : randomUtil.GetInt(
                 ammoItemTemplate.Properties?.StackMinRandom ?? 1,
                 Math.Min(ammoItemTemplate.Properties?.StackMaxRandom ?? 1, maxLimit)
             );
-    }
-
-    public MongoId? GetItemBaseType(MongoId tpl, bool rootOnly = true)
-    {
-        var result = GetItem(tpl);
-        if (!result.Key)
-        // Not an item
-        {
-            return null;
-        }
-
-        var currentItem = result.Value;
-        while (currentItem is not null)
-        {
-            if (currentItem.Type == "Node" && !rootOnly)
-            // Hit first base type
-            {
-                return currentItem.Id;
-            }
-
-            if (currentItem.Parent.IsEmpty())
-            // No parent, reached root
-            {
-                return currentItem.Id;
-            }
-
-            // Get parent item and start loop again
-            currentItem = GetItem(tpl).Value;
-        }
-
-        return null;
     }
 
     /// <summary>

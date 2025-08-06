@@ -33,24 +33,6 @@ public class RepeatableQuestHelper(
     }
 
     /// <summary>
-    ///     Returns the repeatable template ids for the provided side
-    /// </summary>
-    /// <param name="playerGroup">Side to get the templates for</param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public Dictionary<string, MongoId> GetRepeatableQuestTemplatesByGroup(PlayerGroup playerGroup)
-    {
-        var templates = QuestConfig.RepeatableQuestTemplates;
-
-        return playerGroup switch
-        {
-            PlayerGroup.Pmc => templates.Pmc,
-            PlayerGroup.Scav => templates.Scav,
-            _ => throw new ArgumentOutOfRangeException(nameof(playerGroup), playerGroup, null),
-        };
-    }
-
-    /// <summary>
     ///     Gets a cloned repeatable quest template for the provided type with a unique id
     /// </summary>
     /// <param name="type">Type of template to retrieve</param>
@@ -59,12 +41,13 @@ public class RepeatableQuestHelper(
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     public RepeatableQuest? GetClonedQuestTemplateForType(RepeatableQuestType type, MongoId traderId)
     {
+        var repeatableQuestTemplates = databaseService.GetTemplates().RepeatableQuests.Templates;
         var quest = type switch
         {
-            RepeatableQuestType.Elimination => cloner.Clone(databaseService.GetTemplates().RepeatableQuests?.Templates?.Elimination),
-            RepeatableQuestType.Completion => cloner.Clone(databaseService.GetTemplates().RepeatableQuests?.Templates?.Completion),
-            RepeatableQuestType.Exploration => cloner.Clone(databaseService.GetTemplates().RepeatableQuests?.Templates?.Exploration),
-            RepeatableQuestType.Pickup => cloner.Clone(databaseService.GetTemplates().RepeatableQuests?.Templates?.Pickup),
+            RepeatableQuestType.Elimination => cloner.Clone(repeatableQuestTemplates?.Elimination),
+            RepeatableQuestType.Completion => cloner.Clone(repeatableQuestTemplates?.Completion),
+            RepeatableQuestType.Exploration => cloner.Clone(repeatableQuestTemplates?.Exploration),
+            RepeatableQuestType.Pickup => cloner.Clone(repeatableQuestTemplates?.Pickup),
             _ => null,
         };
 
@@ -100,28 +83,24 @@ public class RepeatableQuestHelper(
     )
     {
         var questData = GetClonedQuestTemplateForType(type, traderId);
-
         if (questData is null)
         {
             logger.Error(serverLocalisationService.GetText("repeatable-quest_helper_template_not_found", type));
             return null;
         }
 
-        // Get template id from config based on side and type of quest
-        var typeIds = GetRepeatableQuestTemplatesByGroup(playerGroup);
-
         var templateName = Enum.GetName(type);
-
         if (templateName is null)
         {
             logger.Error(serverLocalisationService.GetText("repeatable-quest_helper_template_name_not_found", type));
             return null;
         }
 
-        questData.TemplateId = typeIds[templateName];
+        // Get template id from config based on side and type of quest
+        var typeIds = GetRepeatableQuestTemplatesByGroup(playerGroup);
+        questData.TemplateId = typeIds.GetValueOrDefault(templateName);
 
         // Force REF templates to use prapors ID - solves missing text issue
-        // TODO: Get rid of this new mongoid generation, needs handled in `Traders` but can't be done right now.
         var desiredTraderId = traderId == Traders.REF ? Traders.PRAPOR : traderId;
 
         //  In locale, these id correspond to the text of quests
@@ -173,6 +152,24 @@ public class RepeatableQuestHelper(
         questData.QuestStatus.QId = questData.Id; // Needs to match quest id
 
         return questData;
+    }
+
+    /// <summary>
+    ///     Returns the repeatable template ids for the provided side
+    /// </summary>
+    /// <param name="playerGroup">Side to get the templates for</param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    protected Dictionary<string, MongoId> GetRepeatableQuestTemplatesByGroup(PlayerGroup playerGroup)
+    {
+        var templates = QuestConfig.RepeatableQuestTemplates;
+
+        return playerGroup switch
+        {
+            PlayerGroup.Pmc => templates.Pmc,
+            PlayerGroup.Scav => templates.Scav,
+            _ => throw new ArgumentOutOfRangeException(nameof(playerGroup), playerGroup, null),
+        };
     }
 
     /// <summary>

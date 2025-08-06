@@ -91,7 +91,7 @@ public record ProfileChange
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("recipeUnlocked")]
-    public Dictionary<string, bool>? RecipeUnlocked { get; set; }
+    public Dictionary<MongoId, bool>? RecipeUnlocked { get; set; }
 
     [JsonPropertyName("changedHideoutStashes")]
     public Dictionary<string, HideoutStashItem>? ChangedHideoutStashes { get; set; }
