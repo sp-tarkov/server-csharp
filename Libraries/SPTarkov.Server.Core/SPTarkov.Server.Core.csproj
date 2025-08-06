@@ -55,7 +55,7 @@
       Overwrite="true"
     />
     <!-- This is necessary to force MSBuild to look for this file before compilation-->
-    <ItemGroup>
+    <ItemGroup Condition="'@(Compile)' == '' OR !@(Compile-&gt;AnyHaveMetadataValue('Identity', 'Utils/ProgramStatics.Generated.cs'))">
       <Compile Include="Utils/ProgramStatics.Generated.cs" />
     </ItemGroup>
   </Target>
