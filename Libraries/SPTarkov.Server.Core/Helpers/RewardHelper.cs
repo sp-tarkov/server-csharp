@@ -250,30 +250,18 @@ public class RewardHelper(
     /// <returns>Hideout crafts that match input parameters</returns>
     protected List<HideoutProduction> GetMatchingProductions(HideoutAreas desiredHideoutAreaType, MongoId questId, Reward craftUnlockReward)
     {
-        var craftingRecipes = databaseService.GetHideout().Production.Recipes;
-
-        // Some crafts have the quest id stored in their requirements, check for that first
-        var matchingCraft = craftingRecipes.FirstOrDefault(craft => craft.Requirements.Any(requirement => requirement.QuestId == questId));
-        if (matchingCraft is not null)
-        {
-            return [matchingCraft];
-        }
-
         var rewardItemTpl = craftUnlockReward.Items.FirstOrDefault()?.Template;
-        if (rewardItemTpl is null)
-        {
-            return [];
-        }
 
+        var craftingRecipes = databaseService.GetHideout().Production.Recipes;
         return craftingRecipes
             .Where(production =>
-                // Primary condition: A requirement explicitly references the quest ID.
+                // Some crafts have the questId, easy match
                 production.Requirements.Any(req => req.QuestId == questId)
                 ||
-                // Fallback condition: Infer the match from reward and area details.
-                // This part only runs if the primary condition is false and a reward item exists.
+                // Couldn't get craft by questId, get the closest match based on information we know
                 (
-                    production.AreaType == desiredHideoutAreaType
+                    rewardItemTpl is not null
+                    && production.AreaType == desiredHideoutAreaType
                     && production.EndProduct == rewardItemTpl.Value
                     && production.Requirements.Any(req => req.Type is "QuestComplete")
                     && production.Requirements.Any(req => req.RequiredLevel == craftUnlockReward.LoyaltyLevel)
