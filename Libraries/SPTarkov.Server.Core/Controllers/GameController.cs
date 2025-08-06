@@ -13,7 +13,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Server.Core.Utils.Json;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Controllers;
@@ -82,8 +81,8 @@ public class GameController(
             return;
         }
 
-        fullProfile.CharacterData!.PmcData!.WishList ??= new DictionaryOrList<MongoId, int>(new Dictionary<MongoId, int>(), []);
-        fullProfile.CharacterData.ScavData!.WishList ??= new DictionaryOrList<MongoId, int>(new Dictionary<MongoId, int>(), []);
+        fullProfile.CharacterData!.PmcData!.WishList ??= new();
+        fullProfile.CharacterData.ScavData!.WishList ??= new();
 
         if (fullProfile.DialogueRecords is not null)
         {

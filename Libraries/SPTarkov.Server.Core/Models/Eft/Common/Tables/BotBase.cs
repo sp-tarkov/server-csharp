@@ -3,7 +3,6 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Notes;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Utils.Json;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -105,7 +104,7 @@ public record BotBase
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("WishList")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public DictionaryOrList<MongoId, int>? WishList { get; set; }
+    public Dictionary<MongoId, int>? WishList { get; set; }
 
     [JsonPropertyName("moneyTransferLimitData")]
     public MoneyTransferLimits MoneyTransferLimitData { get; set; }

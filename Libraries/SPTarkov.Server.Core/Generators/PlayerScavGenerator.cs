@@ -12,7 +12,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Server.Core.Utils.Json;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators;
@@ -109,7 +108,7 @@ public class PlayerScavGenerator(
         scavData.Quests = existingScavDataClone.Quests ?? [];
         scavData.TaskConditionCounters = existingScavDataClone.TaskConditionCounters ?? new Dictionary<MongoId, TaskConditionCounter>();
         scavData.Notes = existingScavDataClone.Notes ?? new Notes { DataNotes = [] };
-        scavData.WishList = existingScavDataClone.WishList ?? new DictionaryOrList<MongoId, int>(new Dictionary<MongoId, int>(), []);
+        scavData.WishList = existingScavDataClone.WishList ?? new();
         scavData.Encyclopedia = pmcDataClone.Encyclopedia ?? new Dictionary<MongoId, bool>();
 
         // Add additional items to player scav as loot
