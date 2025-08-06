@@ -351,30 +351,33 @@ public class RagfairOfferHolder(
     /// <returns>Expired offer assorts</returns>
     public IEnumerable<List<Item>> GetExpiredOfferItems()
     {
+        List<MongoId> expiredOfferIdsCopy;
         lock (_expiredOfferIdsLock)
         {
-            // list of lists of item+children
-            var expiredItems = new List<List<Item>>();
-            foreach (var expiredOfferId in _expiredOfferIds)
+            expiredOfferIdsCopy = _expiredOfferIds.ToList();
+        }
+
+        // list of lists of item+children
+        var expiredItems = new List<List<Item>>();
+        foreach (var expiredOfferId in expiredOfferIdsCopy)
+        {
+            var offer = GetOfferById(expiredOfferId);
+            if (offer is null)
             {
-                var offer = GetOfferById(expiredOfferId);
-                if (offer is null)
-                {
-                    _logger.Warning($"Expired offerId: {expiredOfferId} not found, skipping");
-                    continue;
-                }
-
-                if (offer.Items?.Count == 0)
-                {
-                    _logger.Error($"Expired offerId: {expiredOfferId} has no items, skipping");
-                    continue;
-                }
-
-                expiredItems.Add(offer.Items);
+                _logger.Warning($"Expired offerId: {expiredOfferId} not found, skipping");
+                continue;
             }
 
-            return expiredItems;
+            if (offer.Items?.Count == 0)
+            {
+                _logger.Error($"Expired offerId: {expiredOfferId} has no items, skipping");
+                continue;
+            }
+
+            expiredItems.Add(offer.Items);
         }
+
+        return expiredItems;
     }
 
     /// <summary>
