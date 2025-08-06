@@ -535,7 +535,7 @@ public class LocationLootGenerator(
     /// <param name="locationName">Map name (to get per-map multiplier for from config)</param>
     /// <returns>item count</returns>
     protected int GetWeightedCountOfContainerItems(
-        string containerTypeId,
+        MongoId containerTypeId,
         Dictionary<string, StaticLootDetails> staticLootDist,
         string locationName
     )
