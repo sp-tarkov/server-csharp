@@ -460,10 +460,11 @@ public class LocationLootGenerator(
 
         // Choose items to add to container, factor in weighting + lock money down
         // Filter out items picked that are already in the above `tplsForced` array
-        var chosenTpls = containerLootPool
-            .Draw(itemCountToAdd, _locationConfig.AllowDuplicateItemsInStaticContainers, lockList)
-            .Where(tpl => !tplsForced.Contains(tpl))
-            .Where(tpl => !counterTrackerHelper.IncrementCount(tpl));
+        var chosenTpls = _locationConfig.AllowDuplicateItemsInStaticContainers
+            ? containerLootPool.Draw(itemCountToAdd).Where(tpl => !tplsForced.Contains(tpl) && !counterTrackerHelper.IncrementCount(tpl))
+            : containerLootPool
+                .DrawAndRemove(itemCountToAdd, lockList)
+                .Where(tpl => !tplsForced.Contains(tpl) && !counterTrackerHelper.IncrementCount(tpl));
 
         // Add forced loot to chosen item pool
         var tplsToAddToContainer = tplsForced.Concat(chosenTpls);
@@ -710,9 +711,9 @@ public class LocationLootGenerator(
         var randomSpawnPointCount = desiredSpawnPointCount - chosenSpawnPoints.Count;
         // Only draw random spawn points if needed
         if (randomSpawnPointCount > 0 && spawnPointArray.Count > 0)
-        // Add randomly chosen spawn points
+        // Add randomly chosen spawn points, remove from pool after being picked
         {
-            foreach (var si in spawnPointArray.Draw((int)randomSpawnPointCount, false))
+            foreach (var si in spawnPointArray.DrawAndRemove((int)randomSpawnPointCount))
             {
                 chosenSpawnPoints.Add(spawnPointArray.Data(si));
             }

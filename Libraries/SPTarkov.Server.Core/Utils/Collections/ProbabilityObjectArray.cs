@@ -35,13 +35,13 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     /// </summary>
     /// <param name="probValues">The relative probability values of which to calculate the normalized cumulative sum</param>
     /// <returns>Cumulative Sum normalized to 1</returns>
-    public List<double> CumulativeProbability(IEnumerable<double> probValues)
+    public IEnumerable<double> CumulativeProbability(IEnumerable<double> probValues)
     {
         var sum = probValues.Sum();
         var probCumsum = probValues.CumulativeSum();
         probCumsum = probCumsum.Product(1D / sum);
 
-        return probCumsum.ToList();
+        return probCumsum;
     }
 
     /// <summary>
@@ -136,58 +136,95 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     }
 
     /// <summary>
-    /// Draw random element of the ProbabilityObject N times to return an array of N keys.
-    /// Drawing can be with or without replacement
+    ///Draw random element of the ProbabilityObject N times to return an array of N keys
+    /// Keeps chosen element in place
+    /// Chosen items can be duplicates
     /// </summary>
-    /// <param name="drawCount">The number of times we want to draw</param>
-    /// <param name="removeAfterDraw">Draw with or without replacement from the input dict (true = don't remove after drawing)</param>
-    /// <param name="neverRemoveWhitelist">List of keys which shall be replaced even if drawing without replacement</param>
+    /// <param name="itemCountToDraw">The number of times we want to draw</param>
     /// <returns>Collection consisting of N random keys for this ProbabilityObjectArray</returns>
-    public List<K> Draw(int drawCount = 1, bool removeAfterDraw = true, List<K>? neverRemoveWhitelist = null)
+    public List<K> Draw(int itemCountToDraw = 1)
     {
-        neverRemoveWhitelist ??= [];
         if (Count == 0)
         {
+            // Nothing in pool
             return [];
         }
 
-        var totals = this.Aggregate(
-            new { probArray = new List<double>(), keyArray = new List<K>() },
-            (acc, x) =>
-            {
-                acc.probArray.Add(x.RelativeProbability.Value);
-                acc.keyArray.Add(x.Key);
-                return acc;
-            }
-        );
+        var cumulativeProbabilities = CumulativeProbability(this.Select(x => x.RelativeProbability.Value)).ToList();
 
-        var probCumsum = CumulativeProbability(totals.probArray);
+        // Init results collection
+        var results = new List<K>(itemCountToDraw);
 
-        var drawnKeys = new List<K>();
-        for (var i = 0; i < drawCount; i++)
+        // Loop until we've picked to desired item count
+        for (var i = 0; i < itemCountToDraw; i++)
         {
             var rand = Random.Shared.NextDouble();
-            var randomIndex = probCumsum.FindIndex(x => x > rand);
-            // We cannot put Math.random() directly in the findIndex because then it draws anew for each of its iteration
-            if (removeAfterDraw || neverRemoveWhitelist.Contains(totals.keyArray[randomIndex]))
+            var randomIndex = cumulativeProbabilities.FindIndex(probability => probability > rand);
+            results.Add(this[randomIndex].Key);
+        }
+
+        return results;
+    }
+
+    /// <summary>
+    ///Draw random element of the ProbabilityObject N times to return an array of N keys
+    /// Removes drawn elements
+    /// </summary>
+    /// <param name="itemCountToDraw">The number of times we want to draw</param>
+    /// <param name="neverRemoveWhitelist">List of keys which shall be replaced even if drawing without replacement</param>
+    /// <returns>Collection consisting of N random keys for this ProbabilityObjectArray</returns>
+    public List<K> DrawAndRemove(int itemCountToDraw = 1, List<K>? neverRemoveWhitelist = null)
+    {
+        if (Count == 0)
+        {
+            // Nothing in pool
+            return [];
+        }
+
+        var availableItems = this.Select(x => (x.Key, Weight: x.RelativeProbability.Value)).ToList();
+
+        // Calculate total weighting of all items combined
+        var totalWeight = availableItems.Sum(x => x.Weight);
+
+        // Init results collection
+        var drawnKeys = new List<K>(itemCountToDraw);
+
+        // Loop until we have drawn to desired count or pool is empty
+        for (var i = 0; i < itemCountToDraw && availableItems.Any(); i++)
+        {
+            // Get value between 0 and 1 to act as a target to aim for
+            var randomTarget = Random.Shared.NextDouble() * totalWeight;
+
+            // Set default index to start
+            var chosenIndex = -1;
+
+            // Find element related to random target (greedy)
+            for (var j = 0; j < availableItems.Count; j++)
             {
-                // Add random item from possible value into return array
-                drawnKeys.Add(totals.keyArray[randomIndex]);
-            }
-            else
-            {
-                // We draw without replacement -> remove the key and its probability from array
-                var key = totals.keyArray[randomIndex];
-                totals.keyArray.RemoveAt(randomIndex);
-                _ = totals.probArray[randomIndex];
-                totals.probArray.RemoveAt(randomIndex);
-                drawnKeys.Add(key);
-                probCumsum = CumulativeProbability(totals.probArray);
-                // If we draw without replacement and the ProbabilityObjectArray is exhausted we need to break
-                if (totals.keyArray.Count < 1)
+                // Subtract weight of item from above chosen value
+                randomTarget -= availableItems[j].Weight;
+                if (randomTarget <= 0)
                 {
+                    // Item falls within 'slice' of desired target,
+                    // item has weight that eclipses accumulated weight of randomTarget
+                    chosenIndex = j;
                     break;
                 }
+            }
+
+            // If index not found choose the last element
+            chosenIndex = (chosenIndex == -1) ? availableItems.Count - 1 : chosenIndex;
+
+            // Get chosen item via index and add to results
+            var chosenItem = availableItems[chosenIndex];
+            drawnKeys.Add(chosenItem.Key);
+
+            // Only remove item if it's not in whitelist
+            if (neverRemoveWhitelist is not null && !neverRemoveWhitelist.Contains(chosenItem.Key))
+            {
+                // Reduce total weight value by items weight + Remove item from pool
+                totalWeight -= chosenItem.Weight;
+                availableItems.RemoveAt(chosenIndex);
             }
         }
 
