@@ -60,7 +60,7 @@ public class RepairHelper(
             newCurrentMaxDurability = itemMaxDurability;
         }
 
-        // Ensure new current isnt above items max
+        // Ensure new current isn't above items max
         if (newCurrentDurability > itemMaxDurability)
         {
             newCurrentDurability = itemMaxDurability;
@@ -69,7 +69,7 @@ public class RepairHelper(
         // Update Repairable properties with new values after repair
         itemToRepair.Upd.Repairable = new UpdRepairable { Durability = newCurrentDurability, MaxDurability = newCurrentMaxDurability };
 
-        // when modders set the repair coefficient to 0 it means that they dont want to lose durability on items
+        // when modders set the repair coefficient to 0 it means that they don't want to lose durability on items
         // the code below generates a random degradation on the weapon durability
         if (applyMaxDurabilityDegradation)
         {
@@ -141,13 +141,13 @@ public class RepairHelper(
     /// <param name="itemProps">Weapon properties</param>
     /// <param name="isRepairKit">Was a repair kit used</param>
     /// <param name="weaponMax">Max amount of durability item can have</param>
-    /// <param name="traderQualityMultipler">Different traders produce different loss values</param>
+    /// <param name="traderQualityMultiplier">Different traders produce different loss values</param>
     /// <returns>Amount to reduce max durability by</returns>
     protected double GetRandomisedWeaponRepairDegradationValue(
         Props itemProps,
         bool isRepairKit,
         double weaponMax,
-        double traderQualityMultipler
+        double traderQualityMultiplier
     )
     {
         var minRepairDeg = isRepairKit ? itemProps.MinRepairKitDegradation : itemProps.MinRepairDegradation;
@@ -160,7 +160,7 @@ public class RepairHelper(
         }
 
         var duraLossPercent = randomUtil.GetDouble((double)minRepairDeg, (double)maxRepairDeg);
-        var duraLossMultipliedByTraderMultiplier = duraLossPercent * weaponMax * traderQualityMultipler;
+        var duraLossMultipliedByTraderMultiplier = duraLossPercent * weaponMax * traderQualityMultiplier;
 
         return Math.Round(duraLossMultipliedByTraderMultiplier, 2);
     }

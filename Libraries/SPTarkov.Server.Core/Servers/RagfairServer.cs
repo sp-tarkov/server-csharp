@@ -36,41 +36,52 @@ public class RagfairServer(
 
     public void Update()
     {
-        // Generate/refresh trader offers
-        var traders = GetUpdateableTraders();
-        foreach (var traderId in traders)
-        {
-            // Edge case - skip generating fence offers
-            if (traderId == Traders.FENCE)
-            {
-                continue;
-            }
+        RefreshTraderOffers();
+        ProcessExpiredFleaOffers();
 
+        // Update requirements now the offers have been expired/regenerated to ensure they're accurate
+        _ragfairRequiredItemsService.BuildRequiredItemTable();
+    }
+
+    protected void RefreshTraderOffers()
+    {
+        // Generate/refresh trader offers - skip fence as his offers are separately handled
+        var tradersToProcess = GetUpdateableTraders().Where(trader => trader != Traders.FENCE);
+        foreach (var traderId in tradersToProcess)
+        {
+            // Each trader has its own expiry time
             if (_ragfairOfferService.TraderOffersNeedRefreshing(traderId))
             {
-                // Trader has passed its offer cycle time, update stock and set offer times
+                // Trader has passed its offer expiry time, update stock and reset offer times
                 _ragfairOfferGenerator.GenerateFleaOffersForTrader(traderId);
             }
         }
+    }
 
-        // Regenerate expired offers when over threshold limit
+    private void ProcessExpiredFleaOffers()
+    {
+        // Regenerate expired offers when over timestamp threshold
         _ragfairOfferHolder.FlagExpiredOffersAfterDate(timeUtil.GetTimeStamp());
 
-        if (_ragfairOfferService.EnoughExpiredOffersExistToProcess())
+        if (!_ragfairOfferService.EnoughExpiredOffersExistToProcess())
         {
-            // Must occur BEFORE "RemoveExpiredOffers" + clone items as they'll be purged by `RemoveExpiredOffers()`
-            var expiredOfferItemsClone = cloner.Clone(_ragfairOfferHolder.GetExpiredOfferItems());
+            // Not enough expired offers to process, exit
+            return;
+        }
 
-            _ragfairOfferService.RemoveExpiredOffers();
+        // Must occur BEFORE "RemoveExpiredOffers" + clone items as they'll be purged by `RemoveExpiredOffers()`
+        var expiredOfferItemsClone = cloner.Clone(_ragfairOfferHolder.GetExpiredOfferItems());
 
-            // Force a cleanup+compact now all the expired offers are gone
-            GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized, true, true);
+        _ragfairOfferService.RemoveExpiredOffers();
 
+        // Force a cleanup+compact now all the expired offers are gone
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized, true, true);
+
+        if (expiredOfferItemsClone is not null)
+        {
             // Replace the expired offers with new ones
             _ragfairOfferGenerator.GenerateDynamicOffers(expiredOfferItemsClone);
         }
-
-        _ragfairRequiredItemsService.BuildRequiredItemTable();
     }
 
     /// <summary>

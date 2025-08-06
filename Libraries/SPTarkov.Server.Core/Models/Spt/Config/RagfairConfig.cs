@@ -196,7 +196,7 @@ public record Dynamic
     public required ArmorSettings Armor { get; set; }
 
     /// <summary>
-    ///     A multipler to apply to individual tpls price just prior to item quality adjustment
+    ///     A multiplier to apply to individual tpls price just prior to item quality adjustment
     /// </summary>
     [JsonPropertyName("itemPriceMultiplier")]
     public Dictionary<MongoId, double>? ItemPriceMultiplier { get; set; }
