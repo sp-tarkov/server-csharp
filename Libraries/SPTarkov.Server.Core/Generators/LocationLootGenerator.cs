@@ -69,11 +69,7 @@ public class LocationLootGenerator(
         result.AddRange(GenerateStaticContainers(locationId.ToLowerInvariant(), staticAmmoDistClone));
 
         // Add dynamic loot to output loot
-        var dynamicSpawnPoints = GenerateDynamicLoot(
-            cloner.Clone(locationDetails.LooseLoot.Value),
-            staticAmmoDistClone,
-            locationId.ToLowerInvariant()
-        );
+        var dynamicSpawnPoints = GenerateDynamicLoot(locationDetails.LooseLoot.Value, staticAmmoDistClone, locationId.ToLowerInvariant());
 
         // Merge dynamic spawns into result
         result.AddRange(dynamicSpawnPoints);
