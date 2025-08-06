@@ -181,40 +181,79 @@ public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseSer
     }
 
     /// <summary>
-    ///     Get a name from a PMC that fits the desired length
+    ///     Get a PMC name that fits the desired length
     /// </summary>
     /// <param name="maxLength">Max length of name, inclusive</param>
     /// <param name="side">OPTIONAL - what side PMC to get name from (usec/bear)</param>
     /// <returns>name of PMC</returns>
     public string GetPmcNicknameOfMaxLength(int maxLength, string? side = null)
     {
-        var chosenFaction = (side ?? (randomUtil.GetInt(0, 1) == 0 ? Sides.Usec : Sides.Bear)).ToLowerInvariant();
-        var cacheKey = $"{chosenFaction}{maxLength}";
-        if (!_pmcNameCache.TryGetValue(cacheKey, out var eligibleNames))
-        {
-            if (!databaseService.GetBots().Types.TryGetValue(chosenFaction, out var chosenFactionDetails))
-            {
-                logger.Error($"Unknown faction: {chosenFaction} Defaulting to: {Sides.Usec}");
-                chosenFaction = Sides.Usec.ToLowerInvariant();
-                chosenFactionDetails = databaseService.GetBots().Types[chosenFaction];
-            }
-
-            var matchingNames = chosenFactionDetails.FirstNames.Where(name => name.Length <= maxLength).ToList();
-            if (!matchingNames.Any())
-            {
-                logger.Warning(
-                    $"Unable to filter: {chosenFaction} PMC names to only those under: {maxLength}, none found that match that criteria, selecting from entire name pool instead"
-                );
-
-                // Return a random string from names
-                return randomUtil.GetRandomElement(chosenFactionDetails.FirstNames);
-            }
-
-            _pmcNameCache.TryAdd(cacheKey, matchingNames);
-
-            eligibleNames = matchingNames;
-        }
+        var chosenFaction = GetPmcFactionBySide(side);
+        var eligibleNames = GetOrAddEligiblePmcNamesFromCache(chosenFaction, maxLength);
 
         return randomUtil.GetRandomElement(eligibleNames);
+    }
+
+    /// <summary>
+    /// Choose a faction based on the passed in side (usec/bear) or choose randomly if not provided
+    /// </summary>
+    /// <param name="side">usec/bear</param>
+    /// <returns>usec/bear</returns>
+    protected string GetPmcFactionBySide(string? side)
+    {
+        var chosenFaction = (side ?? (randomUtil.GetInt(0, 1) == 0 ? Sides.Usec : Sides.Bear)).ToLowerInvariant();
+        return chosenFaction;
+    }
+
+    /// <summary>
+    /// Cache Pmcs against their length and faction, return values that match requirement
+    /// </summary>
+    /// <param name="chosenFaction">bear/usec</param>
+    /// <param name="maxLength">Max length of name</param>
+    /// <returns>Collection of names</returns>
+    protected List<string> GetOrAddEligiblePmcNamesFromCache(string chosenFaction, int maxLength)
+    {
+        var cacheKey = $"{chosenFaction}{maxLength.ToString()}";
+        if (_pmcNameCache.TryGetValue(cacheKey, out var eligibleNames))
+        {
+            // Exists in cache, return
+            return eligibleNames;
+        }
+
+        // Not found in cache, generate and store
+        var generatedNames = GatherPmcNamesOfLength(chosenFaction, maxLength);
+        _pmcNameCache.TryAdd(cacheKey, generatedNames);
+
+        return generatedNames;
+    }
+
+    /// <summary>
+    /// Get names that match the side and length defined in parameters
+    /// </summary>
+    /// <param name="chosenFaction">bear/usec</param>
+    /// <param name="maxLength">max length of name to return</param>
+    /// <returns></returns>
+    protected List<string> GatherPmcNamesOfLength(string chosenFaction, int maxLength)
+    {
+        // Ensure faction is legit before gathering
+        if (!databaseService.GetBots().Types.TryGetValue(chosenFaction, out var chosenFactionDetails))
+        {
+            logger.Error($"Unknown faction: {chosenFaction} Defaulting to: {Sides.Usec}");
+            chosenFaction = Sides.Usec.ToLowerInvariant();
+            chosenFactionDetails = databaseService.GetBots().Types[chosenFaction];
+        }
+
+        var matchingNames = chosenFactionDetails.FirstNames.Where(name => name.Length <= maxLength).ToList();
+        if (matchingNames.Any())
+        {
+            return matchingNames;
+        }
+
+        logger.Warning(
+            $"Unable to filter: {chosenFaction} PMC names to only those under: {maxLength}, none found that match that criteria, selecting from entire name pool instead"
+        );
+
+        // Return a random string from names
+        return chosenFactionDetails.FirstNames.ToList();
     }
 }
