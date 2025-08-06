@@ -17,7 +17,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// </summary>
     public const int MaxSignificantDigits = 15;
 
-    private static readonly int DecimalPointRandomPrecisionMultiplier = (int)Math.Pow(10, DecimalPointRandomPrecision);
+    private static readonly int _decimalPointRandomPrecisionMultiplier = (int)Math.Pow(10, DecimalPointRandomPrecision);
     public readonly Random Random = new();
 
     /// <summary>
@@ -46,10 +46,10 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <returns>A random floating-point number between `min` (inclusive) and `max` (exclusive).</returns>
     public virtual double GetDouble(double min, double max)
     {
-        var realMin = (long)(min * DecimalPointRandomPrecisionMultiplier);
-        var realMax = (long)(max * DecimalPointRandomPrecisionMultiplier);
+        var realMin = (long)(min * _decimalPointRandomPrecisionMultiplier);
+        var realMax = (long)(max * _decimalPointRandomPrecisionMultiplier);
 
-        return Math.Round(Random.NextInt64(realMin, realMax) / (double)DecimalPointRandomPrecisionMultiplier, DecimalPointRandomPrecision);
+        return Math.Round(Random.NextInt64(realMin, realMax) / (double)_decimalPointRandomPrecisionMultiplier, DecimalPointRandomPrecision);
     }
 
     /// <summary>
@@ -364,12 +364,12 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
         return num;
     }
 
-    private double GetBoundedGaussian(double start, double end, double n)
+    protected double GetBoundedGaussian(double start, double end, double n)
     {
         return Math.Round(start + GetGaussianRandom(n) * (end - start + 1));
     }
 
-    private double GetGaussianRandom(double n)
+    protected double GetGaussianRandom(double n)
     {
         var rand = 0d;
         for (var i = 0; i < n; i += 1)
