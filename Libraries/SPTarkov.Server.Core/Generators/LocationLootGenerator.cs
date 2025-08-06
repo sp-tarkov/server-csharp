@@ -101,24 +101,24 @@ public class LocationLootGenerator(
 
         var mapData = databaseService.GetLocation(locationId);
 
-        var staticWeaponsOnMapClone = cloner.Clone(mapData.StaticContainers.Value.StaticWeapons);
-        if (staticWeaponsOnMapClone is null)
+        var staticWeaponsOnMap = mapData.StaticContainers.Value.StaticWeapons;
+        if (staticWeaponsOnMap is null)
         {
             logger.Error(serverLocalisationService.GetText("location-unable_to_find_static_weapon_for_map", locationId));
         }
 
         // Add mounted weapons to output loot
-        result.AddRange(staticWeaponsOnMapClone);
+        result.AddRange(staticWeaponsOnMap);
 
-        var allStaticContainersOnMapClone = cloner.Clone(mapData.StaticContainers.Value.StaticContainers);
-        if (allStaticContainersOnMapClone is null)
+        var allStaticContainersOnMap = mapData.StaticContainers.Value.StaticContainers;
+        if (allStaticContainersOnMap is null)
         {
             logger.Error(serverLocalisationService.GetText("location-unable_to_find_static_container_for_map", locationId));
         }
 
         // Containers that MUST be added to map (e.g. quest containers)
-        var staticForcedOnMapClone = cloner.Clone(mapData.StaticContainers.Value.StaticForced);
-        if (staticForcedOnMapClone is null)
+        var staticForcedOnMap = mapData.StaticContainers.Value.StaticForced;
+        if (staticForcedOnMap is null)
         {
             logger.Error(serverLocalisationService.GetText("location-unable_to_find_forced_static_data_for_map", locationId));
         }
@@ -126,25 +126,25 @@ public class LocationLootGenerator(
         // Remove christmas items from loot data
         if (!seasonalEventService.ChristmasEventEnabled())
         {
-            allStaticContainersOnMapClone = allStaticContainersOnMapClone.Where(item =>
+            allStaticContainersOnMap = allStaticContainersOnMap.Where(item =>
                 !_seasonalEventConfig.ChristmasContainerIds.Contains(item.Template.Id)
             );
         }
 
-        var staticRandomisableContainersOnMap = GetRandomisableContainersOnMap(allStaticContainersOnMapClone);
+        var staticRandomisableContainersOnMap = GetRandomisableContainersOnMap(allStaticContainersOnMap);
 
         // Keep track of static loot count
         var staticContainerCount = 0;
 
         // Find all 100% spawn containers
-        var staticLootDist = mapData.StaticLoot;
-        var guaranteedContainers = GetGuaranteedContainers(allStaticContainersOnMapClone);
+        var staticLootDist = mapData.StaticLoot.Value;
+        var guaranteedContainers = GetGuaranteedContainers(allStaticContainersOnMap);
         staticContainerCount += guaranteedContainers.Count();
 
         // Add loot to guaranteed containers and add to result
         foreach (
             var containerWithLoot in guaranteedContainers.Select(container =>
-                AddLootToContainer(container, staticForcedOnMapClone, staticLootDist.Value, staticAmmoDist, locationId)
+                AddLootToContainer(container, staticForcedOnMap, staticLootDist, staticAmmoDist, locationId)
             )
         )
         {
@@ -170,13 +170,7 @@ public class LocationLootGenerator(
 
             foreach (var container in staticRandomisableContainersOnMap)
             {
-                var containerWithLoot = AddLootToContainer(
-                    container,
-                    staticForcedOnMapClone,
-                    staticLootDist.Value,
-                    staticAmmoDist,
-                    locationId
-                );
+                var containerWithLoot = AddLootToContainer(container, staticForcedOnMap, staticLootDist, staticAmmoDist, locationId);
                 result.Add(containerWithLoot.Template);
 
                 staticLootItemCount += containerWithLoot.Template.Items.Count();
@@ -257,13 +251,7 @@ public class LocationLootGenerator(
                 }
 
                 // Add loot to container and push into result object
-                var containerWithLoot = AddLootToContainer(
-                    containerObject,
-                    staticForcedOnMapClone,
-                    staticLootDist.Value,
-                    staticAmmoDist,
-                    locationId
-                );
+                var containerWithLoot = AddLootToContainer(containerObject, staticForcedOnMap, staticLootDist, staticAmmoDist, locationId);
                 result.Add(containerWithLoot.Template);
                 staticContainerCount++;
 

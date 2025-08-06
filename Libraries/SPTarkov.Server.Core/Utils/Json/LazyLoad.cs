@@ -4,11 +4,6 @@ public class LazyLoad<T>(Func<T> deserialize)
 {
     private readonly List<Func<T?, T?>> _lazyLoadTransformers = [];
     private readonly ReaderWriterLockSlim _lazyLoadTransformersLock = new();
-    private static readonly TimeSpan _autoCleanerTimeout = TimeSpan.FromSeconds(30);
-    private bool _isLoaded;
-    private T? _result;
-
-    private Timer? autoCleanerTimeout;
 
     /// <summary>
     /// Adds a transformer to modify the value during lazy loading. Transformers execute
@@ -33,44 +28,22 @@ public class LazyLoad<T>(Func<T> deserialize)
     {
         get
         {
-            if (!_isLoaded)
+            var result = deserialize();
+
+            _lazyLoadTransformersLock.EnterReadLock();
+            try
             {
-                _result = deserialize();
-                _isLoaded = true;
-
-                _lazyLoadTransformersLock.EnterReadLock();
-                try
+                foreach (var transform in _lazyLoadTransformers)
                 {
-                    foreach (var transform in _lazyLoadTransformers)
-                    {
-                        _result = transform(_result);
-                    }
+                    result = transform(result);
                 }
-                catch (Exception)
-                {
-                    throw;
-                }
-                finally
-                {
-                    _lazyLoadTransformersLock.ExitReadLock();
-                }
-
-                autoCleanerTimeout = new Timer(
-                    _ =>
-                    {
-                        _result = default;
-                        _isLoaded = false;
-                        autoCleanerTimeout?.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-                        autoCleanerTimeout = null;
-                    },
-                    null,
-                    _autoCleanerTimeout,
-                    Timeout.InfiniteTimeSpan
-                );
+            }
+            finally
+            {
+                _lazyLoadTransformersLock.ExitReadLock();
             }
 
-            autoCleanerTimeout?.Change(_autoCleanerTimeout, Timeout.InfiniteTimeSpan);
-            return _result;
+            return result;
         }
     }
 }
