@@ -134,7 +134,6 @@ public class GameController(
         if (pmcProfile.Info is not null)
         {
             AddPlayerToPmcNames(pmcProfile);
-            CheckForAndRemoveUndefinedDialogues(fullProfile);
         }
 
         if (pmcProfile.Skills?.Common is not null)
@@ -486,18 +485,6 @@ public class GameController(
                     usecBot.FirstNames!.Add(playerName);
                 }
             }
-        }
-    }
-
-    /// <summary>
-    ///     Check for a dialog with the key 'undefined', and remove it
-    /// </summary>
-    /// <param name="fullProfile">Profile to check for dialog in</param>
-    protected void CheckForAndRemoveUndefinedDialogues(SptProfile fullProfile)
-    {
-        if (fullProfile.DialogueRecords!.TryGetValue("undefined", out _))
-        {
-            fullProfile.DialogueRecords.Remove("undefined");
         }
     }
 
