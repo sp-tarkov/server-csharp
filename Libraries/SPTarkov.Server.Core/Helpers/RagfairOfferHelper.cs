@@ -67,12 +67,21 @@ public class RagfairOfferHelper(
             .GetOffers()
             .Where(offer =>
             {
-                if (!PassesSearchFilterCriteria(searchRequest, offer, pmcData))
+                var offerRootItem = offer.Items.FirstOrDefault();
+                if (!PassesSearchFilterCriteria(searchRequest, offer, offerRootItem, pmcData))
                 {
                     return false;
                 }
 
-                var isDisplayable = IsDisplayableOffer(searchRequest, itemsToAdd, traderAssorts, offer, pmcData, playerIsFleaBanned);
+                var isDisplayable = IsDisplayableOffer(
+                    searchRequest,
+                    itemsToAdd,
+                    traderAssorts,
+                    offer,
+                    offerRootItem,
+                    pmcData,
+                    playerIsFleaBanned
+                );
 
                 if (!isDisplayable)
                 {
@@ -168,17 +177,18 @@ public class RagfairOfferHelper(
 
         var tieredFlea = _ragfairConfig.TieredFlea;
         var tieredFleaLimitTypes = tieredFlea.UnlocksType;
+        var tieredFleaKeys = tieredFleaLimitTypes.Keys.ToHashSet();
 
         var result = new List<RagfairOffer>();
         foreach (
             var offer in offerIDsForItem
                 .Select(ragfairOfferService.GetOfferByOfferId)
-                .Where(offer => PassesSearchFilterCriteria(searchRequest, offer, pmcData))
+                .Where(offer => PassesSearchFilterCriteria(searchRequest, offer, offer.Items.FirstOrDefault(), pmcData))
         )
         {
             if (tieredFlea.Enabled && !offer.IsTraderOffer())
             {
-                CheckAndLockOfferFromPlayerTieredFlea(tieredFlea, offer, tieredFleaLimitTypes.Keys.ToHashSet(), pmcData.Info.Level.Value);
+                CheckAndLockOfferFromPlayerTieredFlea(tieredFlea, offer, tieredFleaKeys, pmcData.Info.Level.Value);
             }
 
             result.Add(offer);
@@ -225,12 +235,13 @@ public class RagfairOfferHelper(
                     continue;
                 }
 
-                if (!PassesSearchFilterCriteria(searchRequest, offer, pmcData))
+                var rootOfferItem = offer.Items.FirstOrDefault();
+                if (!PassesSearchFilterCriteria(searchRequest, offer, rootOfferItem, pmcData))
                 {
                     continue;
                 }
 
-                if (!IsDisplayableOffer(searchRequest, itemsToAdd, traderAssorts, offer, pmcData, playerIsFleaBanned))
+                if (!IsDisplayableOffer(searchRequest, itemsToAdd, traderAssorts, offer, rootOfferItem, pmcData, playerIsFleaBanned))
                 {
                     continue;
                 }
@@ -324,6 +335,7 @@ public class RagfairOfferHelper(
     /// <param name="itemsToAdd"></param>
     /// <param name="traderAssorts">Trader assort items - used for filtering out locked trader items</param>
     /// <param name="offer">Flea offer</param>
+    /// <param name="offerRootItem">Root offer item</param>
     /// <param name="pmcProfile">Player profile</param>
     /// <param name="playerIsFleaBanned">Player cannot view flea yet/ever</param>
     /// <returns>True = should be shown to player</returns>
@@ -332,16 +344,12 @@ public class RagfairOfferHelper(
         HashSet<MongoId> itemsToAdd,
         Dictionary<MongoId, TraderAssort> traderAssorts,
         RagfairOffer offer,
+        Item offerRootItem,
         PmcData pmcProfile,
         bool playerIsFleaBanned = false
     )
     {
-        var offerRootItem = offer.Items.FirstOrDefault();
-
-        // Currency offer is sold for
-        var moneyTypeTpl = offer.Requirements.FirstOrDefault().TemplateId;
         var isTraderOffer = offer.IsTraderOffer();
-
         if (!isTraderOffer && playerIsFleaBanned)
         {
             return false;
@@ -356,7 +364,8 @@ public class RagfairOfferHelper(
 
         // Performing a required search and offer doesn't have requirement for item
         if (
-            !string.IsNullOrEmpty(searchRequest.NeededSearchId)
+            !searchRequest.NeededSearchId.HasValue
+            && !searchRequest.NeededSearchId.Value.IsEmpty()
             && !offer.Requirements.Any(requirement => requirement.TemplateId == searchRequest.NeededSearchId)
         )
         {
@@ -374,6 +383,8 @@ public class RagfairOfferHelper(
             return false;
         }
 
+        // Currency offer is sold for
+        var moneyTypeTpl = offer.Requirements.FirstOrDefault().TemplateId;
         // commented out as required search "which is for checking offers that are barters"
         // has info.removeBartering as true, this if statement removed barter items.
         if (searchRequest.RemoveBartering.GetValueOrDefault(false) && !paymentHelper.IsMoneyTpl(moneyTypeTpl))
@@ -394,7 +405,7 @@ public class RagfairOfferHelper(
         if (isTraderOffer)
         {
             if (!traderAssorts.TryGetValue(offer.User.Id, out var assort))
-            // trader not visible on flea market
+            // Trader not visible on flea market
             {
                 return false;
             }
@@ -832,9 +843,10 @@ public class RagfairOfferHelper(
     /// </summary>
     /// <param name="searchRequest">Client search request</param>
     /// <param name="offer">Offer to check</param>
+    /// <param name="offerRootItem">root item of offer</param>
     /// <param name="pmcData">Player profile</param>
     /// <returns>True if offer passes criteria</returns>
-    protected bool PassesSearchFilterCriteria(SearchRequestData searchRequest, RagfairOffer offer, PmcData pmcData)
+    protected bool PassesSearchFilterCriteria(SearchRequestData searchRequest, RagfairOffer offer, Item offerRootItem, PmcData pmcData)
     {
         var isDefaultUserOffer = offer.User.MemberType == MemberCategory.Default;
         if (pmcData.Info.Level < databaseService.GetGlobals().Configuration.RagFair.MinUserLevel && isDefaultUserOffer)
@@ -862,7 +874,6 @@ public class RagfairOfferHelper(
             return false;
         }
 
-        var offerRootItem = offer.Items.FirstOrDefault();
         if (searchRequest.QuantityFrom > 0 && offerRootItem.Upd.StackObjectsCount < searchRequest.QuantityFrom)
         // Too few items to offer
         {

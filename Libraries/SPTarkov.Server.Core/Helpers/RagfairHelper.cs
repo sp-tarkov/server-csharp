@@ -97,15 +97,13 @@ public class RagfairHelper(
         return result;
     }
 
-    public Dictionary<MongoId, TraderAssort> GetDisplayableAssorts(MongoId sessionId)
+    public Dictionary<MongoId, TraderAssort> GetDisplayableAssorts(MongoId sessionId, bool showLockedAssorts = true)
     {
-        var result = new Dictionary<MongoId, TraderAssort>();
-        foreach (var traderId in databaseService.GetTraders().Keys.Where(traderId => _ragfairConfig.Traders.ContainsKey(traderId)))
-        {
-            result[traderId] = traderAssortHelper.GetAssort(sessionId, traderId, true);
-        }
+        var traders = databaseService.GetTraders();
 
-        return result;
+        return traders
+            .Keys.Where(traderId => _ragfairConfig.Traders.ContainsKey(traderId)) // Trader enabled in config
+            .ToDictionary(traderId => traderId, traderId => traderAssortHelper.GetAssort(sessionId, traderId, showLockedAssorts));
     }
 
     protected List<MongoId> GetCategoryList(MongoId handbookId)
