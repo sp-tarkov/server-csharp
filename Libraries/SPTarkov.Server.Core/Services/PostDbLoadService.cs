@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -630,7 +631,7 @@ public class PostDbLoadService(
             }
 
             // Merge started/success/fail quest assorts into one dictionary
-            var mergedQuestAssorts = new Dictionary<string, string>();
+            var mergedQuestAssorts = new Dictionary<MongoId, MongoId>();
             mergedQuestAssorts = mergedQuestAssorts
                 .Concat(traderData.QuestAssort["started"])
                 .Concat(traderData.QuestAssort["success"])

@@ -21,7 +21,7 @@ public record Trader
     public Dictionary<string, List<string>?> Dialogue { get; set; }
 
     [JsonPropertyName("questassort")]
-    public Dictionary<string, Dictionary<string, string>>? QuestAssort { get; set; }
+    public Dictionary<string, Dictionary<MongoId, MongoId>>? QuestAssort { get; set; }
 
     [JsonPropertyName("suits")]
     public List<Suit>? Suits { get; set; }

@@ -25,7 +25,7 @@ public class AssortHelper(ISptLogger<AssortHelper> logger, ServerLocalisationSer
         PmcData pmcProfile,
         MongoId traderId,
         TraderAssort traderAssorts,
-        Dictionary<string, Dictionary<MongoId, string>> mergedQuestAssorts,
+        Dictionary<string, Dictionary<MongoId, MongoId>> mergedQuestAssorts,
         bool isFlea = false
     )
     {
@@ -40,10 +40,10 @@ public class AssortHelper(ISptLogger<AssortHelper> logger, ServerLocalisationSer
         }
 
         // Iterate over all assorts, removing items that haven't yet been unlocked by quests (ASSORTMENT_UNLOCK)
-        foreach (var assortId in traderAssorts.LoyalLevelItems)
+        foreach (var (assortId, _) in traderAssorts.LoyalLevelItems)
         {
             // Get quest id that unlocks assort + statuses quest can be in to show assort
-            var unlockValues = GetQuestIdAndStatusThatShowAssort(mergedQuestAssorts, assortId.Key);
+            var unlockValues = GetQuestIdAndStatusThatShowAssort(mergedQuestAssorts, assortId);
             if (unlockValues is null)
             {
                 continue;
@@ -53,7 +53,7 @@ public class AssortHelper(ISptLogger<AssortHelper> logger, ServerLocalisationSer
             var questStatusInProfile = pmcProfile.GetQuestStatus(unlockValues.Value.Key);
             if (!unlockValues.Value.Value.Contains(questStatusInProfile))
             {
-                strippedTraderAssorts = traderAssorts.RemoveItemFromAssort(assortId.Key, isFlea);
+                strippedTraderAssorts = traderAssorts.RemoveItemFromAssort(assortId, isFlea);
             }
         }
 
@@ -67,7 +67,7 @@ public class AssortHelper(ISptLogger<AssortHelper> logger, ServerLocalisationSer
     /// <param name="assortId">Assort to look for linked quest id</param>
     /// <returns>quest id + array of quest status the assort should show for</returns>
     protected KeyValuePair<MongoId, HashSet<QuestStatusEnum>>? GetQuestIdAndStatusThatShowAssort(
-        Dictionary<string, Dictionary<MongoId, string>> mergedQuestAssorts,
+        Dictionary<string, Dictionary<MongoId, MongoId>> mergedQuestAssorts,
         MongoId assortId
     )
     {

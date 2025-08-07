@@ -17,7 +17,7 @@ public abstract record ICustomTrader : ITrader
 
     public abstract TraderAssort? GetAssort();
 
-    public abstract Dictionary<string, Dictionary<string, string>>? GetQuestAssort();
+    public abstract Dictionary<string, Dictionary<MongoId, MongoId>>? GetQuestAssort();
 
     public abstract TraderBase? GetBase();
 
