@@ -21,6 +21,7 @@ public record CustomizationSetOption
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 
+    // TODO: convert into enum (dogTag/suite/voice)
     [JsonPropertyName("type")]
     public string? Type { get; set; }
 
