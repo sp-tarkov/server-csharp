@@ -123,13 +123,7 @@ public class HandbookHelper(DatabaseService databaseService, ConfigServer config
     /// <returns></returns>
     public double GetTemplatePriceForItems(IEnumerable<Item> items)
     {
-        var total = 0D;
-        foreach (var item in items)
-        {
-            total += GetTemplatePrice(item.Template);
-        }
-
-        return total;
+        return items.Where(item => item?.Template != null).Sum(item => GetTemplatePrice(item.Template));
     }
 
     /// <summary>
