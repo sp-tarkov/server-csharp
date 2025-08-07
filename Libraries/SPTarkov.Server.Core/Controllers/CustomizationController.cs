@@ -177,20 +177,12 @@ public class CustomizationController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    protected List<Suit> GetAllTraderSuits(MongoId sessionId)
+    protected IEnumerable<Suit> GetAllTraderSuits(MongoId sessionId)
     {
-        var traders = databaseService.GetTraders();
-        var result = new List<Suit>();
-
-        foreach (var (traderId, trader) in traders)
-        {
-            if (trader.Base.CustomizationSeller is not null && trader.Base.CustomizationSeller.Value)
-            {
-                result.AddRange(GetTraderSuits(traderId, sessionId));
-            }
-        }
-
-        return result;
+        return databaseService
+            .GetTraders()
+            .Where(trader => trader.Value.Base.CustomizationSeller.GetValueOrDefault(false))
+            .SelectMany(trader => GetTraderSuits(trader.Key, sessionId));
     }
 
     /// <summary>
