@@ -635,10 +635,7 @@ public class BotGeneratorHelper(
     protected bool ItemAllowedInContainer(Grid? slotGrid, MongoId itemTpl)
     {
         var propFilters = slotGrid?.Props?.Filters;
-        var excludedFilter = propFilters?.FirstOrDefault()?.ExcludedFilter ?? [];
-        var filter = propFilters?.FirstOrDefault()?.Filter ?? [];
-
-        if (!propFilters.Any())
+        if (propFilters is null || !propFilters.Any())
         // no filters, item is fine to add
         {
             return true;
@@ -648,12 +645,14 @@ public class BotGeneratorHelper(
         var itemDetails = itemHelper.GetItem(itemTpl).Value;
 
         // if item to add is found in exclude filter, not allowed
+        var excludedFilter = propFilters.FirstOrDefault()?.ExcludedFilter ?? [];
         if (excludedFilter.Contains(itemDetails?.Parent ?? string.Empty))
         {
             return false;
         }
 
         // If Filter array only contains 1 filter and it is for basetype 'item', allow it
+        var filter = propFilters.FirstOrDefault()?.Filter ?? [];
         if (filter.Count == 1 && filter.Contains(BaseClasses.ITEM))
         {
             return true;
