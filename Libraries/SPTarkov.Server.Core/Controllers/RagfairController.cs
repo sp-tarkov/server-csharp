@@ -80,7 +80,7 @@ public class RagfairController(
     public GetOffersResult GetOffers(MongoId sessionID, SearchRequestData searchRequest)
     {
         var profile = profileHelper.GetFullProfile(sessionID);
-        var itemsToAdd = ragfairHelper.FilterCategories(sessionID, searchRequest);
+        var itemsToAdd = ragfairHelper.FilterCategories(sessionID, searchRequest).ToHashSet();
         var traderAssorts = ragfairHelper.GetDisplayableAssorts(sessionID);
         var result = new GetOffersResult
         {
@@ -311,7 +311,7 @@ public class RagfairController(
     /// <returns>Array of offers</returns>
     protected List<RagfairOffer> GetOffersForSearchType(
         SearchRequestData searchRequest,
-        List<MongoId> itemsToAdd,
+        HashSet<MongoId> itemsToAdd,
         Dictionary<MongoId, TraderAssort> traderAssorts,
         PmcData pmcProfile
     )

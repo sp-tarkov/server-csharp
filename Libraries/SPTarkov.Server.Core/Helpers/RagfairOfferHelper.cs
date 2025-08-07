@@ -55,7 +55,7 @@ public class RagfairOfferHelper(
     /// <returns>Offers the player should see</returns>
     public List<RagfairOffer> GetValidOffers(
         SearchRequestData searchRequest,
-        List<MongoId> itemsToAdd,
+        HashSet<MongoId> itemsToAdd,
         Dictionary<MongoId, TraderAssort> traderAssorts,
         PmcData pmcData
     )
@@ -197,7 +197,7 @@ public class RagfairOfferHelper(
     /// <returns>RagfairOffer array</returns>
     public List<RagfairOffer> GetOffersForBuild(
         SearchRequestData searchRequest,
-        List<MongoId> itemsToAdd,
+        HashSet<MongoId> itemsToAdd,
         Dictionary<MongoId, TraderAssort> traderAssorts,
         PmcData pmcData
     )
@@ -327,9 +327,9 @@ public class RagfairOfferHelper(
     /// <param name="pmcProfile">Player profile</param>
     /// <param name="playerIsFleaBanned">Player cannot view flea yet/ever</param>
     /// <returns>True = should be shown to player</returns>
-    private bool IsDisplayableOffer(
+    protected bool IsDisplayableOffer(
         SearchRequestData searchRequest,
-        List<MongoId> itemsToAdd,
+        HashSet<MongoId> itemsToAdd,
         Dictionary<MongoId, TraderAssort> traderAssorts,
         RagfairOffer offer,
         PmcData pmcProfile,
@@ -837,9 +837,6 @@ public class RagfairOfferHelper(
     protected bool PassesSearchFilterCriteria(SearchRequestData searchRequest, RagfairOffer offer, PmcData pmcData)
     {
         var isDefaultUserOffer = offer.User.MemberType == MemberCategory.Default;
-        var offerRootItem = offer.Items.FirstOrDefault();
-        var offerMoneyTypeTpl = offer.Requirements.FirstOrDefault().TemplateId;
-
         if (pmcData.Info.Level < databaseService.GetGlobals().Configuration.RagFair.MinUserLevel && isDefaultUserOffer)
         // Skip item if player is < global unlock level (default is 15) and item is from a dynamically generated source
         {
@@ -865,6 +862,7 @@ public class RagfairOfferHelper(
             return false;
         }
 
+        var offerRootItem = offer.Items.FirstOrDefault();
         if (searchRequest.QuantityFrom > 0 && offerRootItem.Upd.StackObjectsCount < searchRequest.QuantityFrom)
         // Too few items to offer
         {
@@ -909,15 +907,20 @@ public class RagfairOfferHelper(
             }
         }
 
-        if (searchRequest.Currency > 0 && paymentHelper.IsMoneyTpl(offerMoneyTypeTpl))
+        if (searchRequest.Currency > 0)
         {
-            // Only want offers with specific currency
-            if (
-                ragfairHelper.GetCurrencyTag(offerMoneyTypeTpl) != ragfairHelper.GetCurrencyTag(searchRequest.Currency.GetValueOrDefault(0))
-            )
+            var offerMoneyTypeTpl = offer.Requirements.FirstOrDefault().TemplateId;
+            if (paymentHelper.IsMoneyTpl(offerMoneyTypeTpl))
             {
-                // Offer is for different currency to what search params allow, skip
-                return false;
+                // Only want offers with specific currency
+                if (
+                    ragfairHelper.GetCurrencyTag(offerMoneyTypeTpl)
+                    != ragfairHelper.GetCurrencyTag(searchRequest.Currency.GetValueOrDefault(0))
+                )
+                {
+                    // Offer is for different currency to what search params allow, skip
+                    return false;
+                }
             }
         }
 
