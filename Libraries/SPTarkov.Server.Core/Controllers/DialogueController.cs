@@ -554,7 +554,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="dialogueId">Dialog id</param>
-    protected void RemoveExpiredItemsFromMessage(MongoId sessionId, string dialogueId)
+    protected void RemoveExpiredItemsFromMessage(MongoId sessionId, MongoId dialogueId)
     {
         var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
         if (!dialogs.TryGetValue(dialogueId, out var dialog))
@@ -562,12 +562,15 @@ public class DialogueController(
             return;
         }
 
-        foreach (var message in dialog.Messages ?? [])
+        if (dialog.Messages is null)
         {
-            if (MessageHasExpired(message))
-            {
-                message.Items = new MessageItems();
-            }
+            return;
+        }
+
+        foreach (var message in dialog.Messages.Where(MessageHasExpired))
+        {
+            // Reset expired message items data
+            message.Items = new();
         }
     }
 
