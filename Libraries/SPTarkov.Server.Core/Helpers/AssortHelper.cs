@@ -112,13 +112,17 @@ public class AssortHelper(ISptLogger<AssortHelper> logger, ServerLocalisationSer
             return strippedAssort;
         }
 
-        // Remove items restricted by loyalty levels above those reached by the player
-        foreach (var item in assort.LoyalLevelItems)
+        // Get trader info from profile
+        // Assumption - Assort is for single trader only
+        if (!pmcProfile.TradersInfo.TryGetValue(traderId, out var traderInfo))
         {
-            if (pmcProfile.TradersInfo.TryGetValue(traderId, out var info) && assort.LoyalLevelItems[item.Key] > info.LoyaltyLevel)
-            {
-                strippedAssort = assort.RemoveItemFromAssort(item.Key);
-            }
+            return assort;
+        }
+
+        // Remove items restricted by loyalty levels above those reached by the player
+        foreach (var item in assort.LoyalLevelItems.Where(item => assort.LoyalLevelItems[item.Key] > traderInfo.LoyaltyLevel))
+        {
+            strippedAssort = assort.RemoveItemFromAssort(item.Key);
         }
 
         return strippedAssort;
