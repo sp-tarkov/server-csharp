@@ -50,7 +50,7 @@ public class ClientLogCallbacks(
         data.IllegalPluginsLoadedText = serverLocalisationService.GetText("release-illegal-plugins-loaded");
         data.IllegalPluginsExceptionText = serverLocalisationService.GetText("release-illegal-plugins-exception");
         data.ReleaseSummaryText = serverLocalisationService.GetText("release-summary");
-        data.IsBeta = ProgramStatics.ENTRY_TYPE() is EntryType.BLEEDING_EDGE or EntryType.BLEEDING_EDGE_MODS;
+        data.IsBeta = ProgramStatics.ENTRY_TYPE() is EntryType.BLEEDINGEDGE or EntryType.BLEEDINGEDGEMODS;
         data.IsModdable = ProgramStatics.MODS();
         data.IsModded = loadedMods.Count > 0;
 

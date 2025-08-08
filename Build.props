@@ -5,7 +5,7 @@
     <SptCommit Condition="'$(SptCommit)' == ''">a12b34</SptCommit>
     <SptBuildTime Condition="'$(SptBuildTime)' == ''">0000000000</SptBuildTime>
     <SptBuildType Condition="'$(SptBuildType)' == ''">LOCAL</SptBuildType>
-    <!--  BuildType options - LOCAL, DEBUG, RELEASE, BLEEDING_EDGE, BLEEDING_EDGE_MODS - *must be all caps*-->
+    <!--  BuildType options - LOCAL, DEBUG, RELEASE, BLEEDINGEDGE, BLEEDINGEDGEMODS - *must be all caps*-->
 
     <!-- SemVer-compliant version -->
     <!-- Format: 4.0.0-LOCAL+a12b34.0000000000 -->

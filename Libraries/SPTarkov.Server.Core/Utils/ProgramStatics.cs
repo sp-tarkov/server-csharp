@@ -17,13 +17,13 @@ public static partial class ProgramStatics
                 _compiled = true;
                 _mods = true;
                 break;
-            case EntryType.BLEEDING_EDGE:
+            case EntryType.BLEEDINGEDGE:
                 _debug = true;
                 _compiled = true;
                 _mods = false;
                 break;
             case EntryType.DEBUG:
-            case EntryType.BLEEDING_EDGE_MODS:
+            case EntryType.BLEEDINGEDGEMODS:
                 _debug = true;
                 _compiled = true;
                 _mods = true;
