@@ -23,7 +23,7 @@ public class SemanticVersioningSemVer : ISemVer
     public string MaxSatisfying(string version, IEnumerable<Version> versions)
     {
         var versionRanges = versions.Select(versionInner => versionInner.ToString());
-        return Range.MaxSatisfying(version.ToString(), versionRanges, true);
+        return Range.MaxSatisfying(version, versionRanges, true);
     }
 
     public bool Satisfies(Version version, Version testVersion)

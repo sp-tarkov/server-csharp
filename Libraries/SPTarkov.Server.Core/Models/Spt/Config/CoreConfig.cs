@@ -9,9 +9,6 @@ public record CoreConfig : BaseConfig
     [JsonPropertyName("kind")]
     public override string Kind { get; set; } = "spt-core";
 
-    [JsonPropertyName("sptVersion")]
-    public required string SptVersion { get; set; }
-
     [JsonPropertyName("projectName")]
     public required string ProjectName { get; set; }
 
