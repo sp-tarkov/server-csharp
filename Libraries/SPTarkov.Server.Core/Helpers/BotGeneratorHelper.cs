@@ -452,8 +452,9 @@ public class BotGeneratorHelper(
         var missingContainerCount = 0;
         foreach (var equipmentSlotId in equipmentSlots)
         {
-            if (containersIdFull?.Contains(equipmentSlotId.ToString()) ?? false)
+            if (containersIdFull is not null && containersIdFull.Contains(equipmentSlotId.ToString()))
             {
+                // Container has been flagged as full already, skip trying to add item into it
                 continue;
             }
 
@@ -490,8 +491,8 @@ public class BotGeneratorHelper(
             }
 
             if (itemDbDetails?.Properties?.Grids is null || !itemDbDetails.Properties.Grids.Any())
-            // Container has no slots to hold items
             {
+                // Container has no slots to hold items, skip to next container
                 continue;
             }
 
@@ -516,14 +517,13 @@ public class BotGeneratorHelper(
                     break;
                 }
 
-                // Get all root items in found container
-                var existingContainerItems = (inventory.Items ?? []).Where(item =>
-                    item.ParentId == container.Id && item.SlotId == slotGrid.Name
-                );
+                // Get all root items in container
+                var rootItemsInContainer = inventory.Items is null
+                    ? []
+                    : inventory.Items.Where(item => item.SlotId == slotGrid.Name && item.ParentId == container.Id);
 
                 // Get root items in container we can iterate over to find out what space is free
-                var containerItemsToCheck = existingContainerItems.Where(x => x.SlotId == slotGrid.Name);
-                var containerItemsWithChildren = GetContainerItemsWithChildren(containerItemsToCheck, inventory.Items);
+                var containerItemsWithChildren = GetContainerItemsWithChildren(rootItemsInContainer, inventory.Items);
 
                 if (slotGrid.Props is not null)
                 {

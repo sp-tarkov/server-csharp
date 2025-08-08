@@ -238,43 +238,20 @@ public static class ItemExtensions
     /// <returns>list of Item objects</returns>
     public static List<Item> GetItemWithChildren(this IEnumerable<Item> items, MongoId baseItemId, bool excludeStoredItems = false)
     {
-        // Convert to list if not already
-        var itemList = items.ToList();
-
-        // Create dict of items by parentId
-        var childrenByParent = new Dictionary<string, List<Item>>(itemList.Count);
-        foreach (var child in itemList)
-        {
-            var key = child.ParentId;
-            if (key is null)
-            {
-                continue;
-            }
-            if (childrenByParent.TryGetValue(key, out var list))
-            {
-                list.Add(child);
-            }
-            else
-            {
-                childrenByParent[key] = [child];
-            }
-        }
-
-        // Find root item
-        var root = itemList.FirstOrDefault(i => i.Id == baseItemId);
-        if (root is null)
+        var childrenByParent = items.CreateParentIdLookupCache(out var rootItem, baseItemId);
+        if (rootItem is null)
         {
             // Root not found, nothing to return, exit
             return [];
         }
 
         var result = new List<Item>();
-        var stack = new Stack<Item>();
-        stack.Push(root);
+        var processingStack = new Stack<Item>();
+        processingStack.Push(rootItem);
 
-        while (stack.Count > 0)
+        while (processingStack.Count > 0)
         {
-            var current = stack.Pop();
+            var current = processingStack.Pop();
             result.Add(current);
 
             if (!childrenByParent.TryGetValue(current.Id.ToString(), out var children))
@@ -285,16 +262,65 @@ public static class ItemExtensions
 
             foreach (var child in children)
             {
-                // child item has a location property = is stored inside parent
+                // Child item has a location property = is stored inside parent and not a mod, skip
                 if (excludeStoredItems && child.Location is not null)
                 {
                     continue;
                 }
-                stack.Push(child);
+
+                // Add item to stack to check if it has children we need to add to result
+                processingStack.Push(child);
             }
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Cache items by their parentId
+    /// </summary>
+    /// <param name="items">items to process</param>
+    /// <param name="baseItemId">Id of root item</param>
+    /// <param name="rootItem">Root item from inputted data</param>
+    /// <returns>Dictionary of items keyed by their parentId</returns>
+    public static Dictionary<string, List<Item>> CreateParentIdLookupCache(
+        this IEnumerable<Item> items,
+        out Item? rootItem,
+        MongoId? baseItemId = null
+    )
+    {
+        rootItem = null;
+
+        // If passed in items implements ICollection, we can determine size and pre-allocate to avoid re-allocations
+        var capacity = items is ICollection<Item> collection ? collection.Count : 0;
+
+        // Create lookup of items keyed by parentId
+        var childrenByParent = new Dictionary<string, List<Item>>(capacity);
+        foreach (var item in items)
+        {
+            if (baseItemId is not null && item.Id == baseItemId)
+            {
+                // Root item found, store in out param
+                rootItem = item;
+            }
+
+            if (item.ParentId is null)
+            {
+                // no parent, nothing to key item against
+                continue;
+            }
+
+            if (!childrenByParent.TryGetValue(item.ParentId, out var children))
+            {
+                // No collection for this parentId, create
+                children = [];
+                childrenByParent[item.ParentId] = children;
+            }
+
+            children.Add(item);
+        }
+
+        return childrenByParent;
     }
 
     /// <summary>
@@ -417,19 +443,38 @@ public static class ItemExtensions
     }
 
     /// <summary>
-    /// Create hashsets for passed in items, keyed by the items ID and by the items parentId
+    /// Create 2 hashsets for passed in items, keyed by the items ID and by the items parentId
     /// </summary>
     /// <param name="inventoryItems">Items to hash</param>
     /// <returns>InventoryItemHash</returns>
     public static InventoryItemHash GetInventoryItemHash(this IEnumerable<Item> inventoryItems)
     {
-        // Group by parentId + turn value into mongoId as we've filtered out non-mongoId values
-        var byParentId = inventoryItems
-            .Where(item => !string.IsNullOrEmpty(item.ParentId) && item.ParentId != "hideout")
-            .GroupBy(item => new MongoId(item.ParentId))
-            .ToDictionary(kvp => kvp.Key, group => group.ToHashSet());
+        Dictionary<MongoId, Item> byItemId = new();
+        Dictionary<MongoId, HashSet<Item>> byParentId = new();
 
-        return new InventoryItemHash { ByItemId = inventoryItems.ToDictionary(item => item.Id), ByParentId = byParentId };
+        foreach (var item in inventoryItems)
+        {
+            // Add every item to 'byItemId'
+            byItemId[item.Id] = item;
+
+            if (string.IsNullOrEmpty(item.ParentId) || item.ParentId == "hideout")
+            {
+                // Inventory non-items, skip
+                continue;
+            }
+
+            var parentId = new MongoId(item.ParentId);
+            if (!byParentId.TryGetValue(parentId, out var childItems))
+            {
+                // Hashset doesn't exist for this parentId, create and add blank set
+                childItems = [];
+                byParentId[parentId] = childItems;
+            }
+
+            childItems.Add(item);
+        }
+
+        return new InventoryItemHash { ByItemId = byItemId, ByParentId = byParentId };
     }
 
     /// <summary>

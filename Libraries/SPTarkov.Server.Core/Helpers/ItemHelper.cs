@@ -675,19 +675,39 @@ public class ItemHelper(
     /// <returns>List of children of requested item</returns>
     public List<Item> FindAndReturnChildrenByAssort(MongoId itemIdToFind, IEnumerable<Item> assort)
     {
-        List<Item> list = [];
-        var itemIdToFindString = itemIdToFind.ToString();
-        foreach (var itemFromAssort in assort)
+        // Group items by ParentId
+        var lookup = assort.CreateParentIdLookupCache(out _);
+
+        var results = new List<Item>();
+        var visitedCache = new HashSet<string>();
+
+        var explorationStack = new Stack<string>();
+        explorationStack.Push(itemIdToFind.ToString());
+
+        while (explorationStack.Count > 0)
         {
-            // Parent matches desired item + all items in list do not match
-            if (itemFromAssort.ParentId == itemIdToFindString && list.All(item => itemFromAssort.Id != item.Id))
+            var currentId = explorationStack.Pop();
+
+            if (!lookup.TryGetValue(currentId, out var childItems))
             {
-                list.Add(itemFromAssort);
-                list = list.Concat(FindAndReturnChildrenByAssort(itemFromAssort.Id, assort)).ToList();
+                continue;
+            }
+
+            foreach (var childItem in childItems)
+            {
+                // Store item in visited cache so it's not added to results more than once
+                if (visitedCache.Add(childItem.Id))
+                {
+                    // Item not in visited cache, take it
+                    results.Add(childItem);
+
+                    // Add item to stack so it gets processed
+                    explorationStack.Push(childItem.Id);
+                }
             }
         }
 
-        return list;
+        return results;
     }
 
     /// <summary>

@@ -392,11 +392,11 @@ public class BotGenerator(
                 continue;
             }
 
-            // Create a set of tpls to remove
+            // Create list of blacklisted keys to remove
             var keysToRemove = container
                 .Where(item => itemFilterService.IsLootableItemBlacklisted(item.Key))
                 .Select(item => item.Key)
-                .ToHashSet();
+                .ToList();
 
             // Remove from container by key
             foreach (var key in keysToRemove)
