@@ -149,12 +149,6 @@ public class FenceBaseAssortGenerator(
         var defaultPresets = presetHelper.GetDefaultPresets().Values;
         foreach (var defaultPreset in defaultPresets)
         {
-            // Skip presets we've already added
-            if (baseFenceAssort.Items.Any(item => item.Upd != null && item.Upd.SptPresetId == defaultPreset.Id))
-            {
-                continue;
-            }
-
             // Construct preset + mods
             var itemAndChildren = _cloner.Clone(defaultPreset.Items).ReplaceIDs();
 
