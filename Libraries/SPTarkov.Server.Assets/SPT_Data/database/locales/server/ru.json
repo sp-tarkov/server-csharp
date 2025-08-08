@@ -207,7 +207,6 @@
   "modloader-incompatibilities_not_string_array": "В файле package.json мода %s свойство 'incompatibilities' должно быть массивом строк",
   "modloader-incompatible_mod_found": "Мод {{author}}-{{name}} не совместим с модом {{incompatibleModName}}",
   "modloader-invalid_sptVersion_field": "В поле sptVersion мода %s содержится некорректная семвер-строка. См. примеры корректных значений: https://github.com/npm/node-semver#versions",
-  "modloader-invalid_version_property": "В моде %s package.json содержит недопустимую строку версии",
   "modloader-is_client_mod": "Мод (%s) является модом для клиента и должен находиться в следующей папке: /spt/bepinex/plugins",
   "modloader-is-old-js-mod": "Мод (%s) - это серверный мод, выпущенный до версии 4.0.0. Пожалуйста, найдите подходящую версию или дождитесь обновления.",
   "modloader-load_order_conflict": "`{{modOneName}}` и `{{modTwoName}}` имеют конфликтующие требования к порядку загрузки, сервер не запустится и закроется, пока это не будет исправлено",

@@ -207,7 +207,6 @@
   "modloader-incompatibilities_not_string_array": "Le proprietà 'incompatibilities' della mod %s, nel package.json, devono essere uno string array",
   "modloader-incompatible_mod_found": "La mod {{author}}-{{name}} è incompatibile con {{incompatibleModName}}",
   "modloader-invalid_sptVersion_field": "La mod %s contiene una stringa semver non valida nel campo akiVersion. Esempi di valori validi: https://github.com/npm/node-semver#versions",
-  "modloader-invalid_version_property": "Il package.json della Mod %s contiene una stringa 'version' non valida",
   "modloader-is_client_mod": "La mod (%s) è una mod del client e dovrebbe essere posizionata nella seguente cartella: /spt/bepinex/plugins",
   "modloader-is-old-js-mod": "La Mod (%s) è una server mod pre-4.0.0. Si prega di utilizzare la versione appropriata della mod o aspettare che venga aggiornata.",
   "modloader-load_order_conflict": "Il server si spegnerà perché i requisiti dell'ordine di carico per `{{modOneName}}` e `{{modTwoName}}` sono in conflitto. Sistemali prima di avviare",

@@ -201,7 +201,6 @@
   "modloader-incompatibilities_not_string_array": "Die Mod %s package.json Eigenschaft 'Inkompatibilitäten' sollte ein String-Array sein",
   "modloader-incompatible_mod_found": "Mod {{author}}-{{name}} ist nicht kompatibel mit {{incompatibleModName}}",
   "modloader-invalid_sptVersion_field": "Mod: %s enthält eine ungültige ´semver´ Zeichenkette im ´sptversions´ Feld. Beispiele für gültige Werte: https://github.com/npm/node-semver#versions",
-  "modloader-invalid_version_property": "Mod %s package.json enthält eine ungültige Versionszeichenfolge",
   "modloader-is_client_mod": "Mod (%s) ist ein Client-Mod und sollte im folgenden Ordner abgelegt werden: /spt/bepinex/plugins",
   "modloader-load_order_conflict": "'{{modOneName}}' und '{{modTwoName}}' haben widersprüchliche Anforderungen an die Ladereihenfolge. Der Server kann erst gestartet werden, wenn dies behoben ist, und wird heruntergefahren",
   "modloader-loaded_mod": "Mod: {{name}} Version: {{version}} von: {{author}} geladen",

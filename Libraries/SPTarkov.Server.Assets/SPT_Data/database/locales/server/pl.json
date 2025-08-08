@@ -207,7 +207,6 @@
   "modloader-incompatibilities_not_string_array": "Mod %s właściwość package.json 'incompatibilities' powinna być tabelą string",
   "modloader-incompatible_mod_found": "Mod {{author}}-{{name}} jest niezgodny z {{incompatibleModName}}",
   "modloader-invalid_sptVersion_field": "Mod %s zawiera nieprawidłowy string semver w polu sptVersion. Przykłady prawidłowych wartości: https://github.com/npm/node-semver#versions",
-  "modloader-invalid_version_property": "Mod %s package.json zawiera nieprawidłowy string wersji",
   "modloader-is_client_mod": "Mod (%s) jest modem klienta i powinien zostać umieszczony w następującym folderze: /spt/bepinex/plugins",
   "modloader-is-old-js-mod": "Modyfikacja (%s) jest modem serwera sprzed wersji 4.0.0. Znajdź odpowiednią wersję lub poczekaj na aktualizację.",
   "modloader-load_order_conflict": "`{{modOneName}}` and `{{modTwoName}}` mają sprzeczne wymagania dotyczące kolejności ładowania, serwer nie może się uruchomić, dopóki błąd występuje i zostanie teraz wyłączony",

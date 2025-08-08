@@ -1,4 +1,6 @@
-﻿namespace SPTarkov.Server.Core.Models.Spt.Mod;
+﻿using Version = SemanticVersioning.Version;
+
+namespace SPTarkov.Server.Core.Models.Spt.Mod;
 
 /// <summary>
 /// Represents a collection of metadata used to determine things such as author, version,
@@ -31,14 +33,22 @@ public abstract record AbstractModMetadata
     public abstract List<string>? Contributors { get; set; }
 
     /// <summary>
-    /// Semantic version of this mod, this uses the semver standard
+    /// Semantic version of this mod, this uses the semver standard: https://semver.org/
+    /// <br/><br/>
+    /// Version = new Version("1.0.0"); is valid
+    /// <br/>
+    /// Version = new Version("1.0.0.0"); is not
     /// </summary>
-    public abstract string Version { get; init; }
+    public abstract Version Version { get; }
 
     /// <summary>
-    /// SPT version this mod was built for
+    /// SPT version this mod was built for, this uses the semver standard: https://semver.org/
+    /// <br/><br/>
+    /// Version = new Version("4.0.0"); is valid
+    /// <br/>
+    /// Version = new Version("4.0.0.0"); is not
     /// </summary>
-    public abstract string SptVersion { get; init; }
+    public abstract Version SptVersion { get; }
 
     /// <summary>
     /// List of mods this mod should load before
@@ -60,7 +70,7 @@ public abstract record AbstractModMetadata
     ///
     /// Mod dependency is the key, version is the value
     /// </summary>
-    public abstract Dictionary<string, string>? ModDependencies { get; set; }
+    public abstract Dictionary<string, Version>? ModDependencies { get; set; }
 
     /// <summary>
     /// Link to this mod's mod page, or GitHub page

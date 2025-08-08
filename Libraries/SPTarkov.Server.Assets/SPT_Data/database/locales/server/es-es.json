@@ -202,7 +202,6 @@
   "modloader-incompatibilities_not_string_array": "La propiedad 'incompatibilities' de la modificacion %s package.json deberia ser un arreglo de string",
   "modloader-incompatible_mod_found": "La modificación {{author}}-{{name}} no es compatible con {{incompatibleModName}}",
   "modloader-invalid_sptVersion_field": "Mod %s contiene una cadena semver inválida en el campo sptVersion. Ejemplos de valores válidos: https://github.com/npm/node-semver#versions",
-  "modloader-invalid_version_property": "La modificacion %s package.json contiene un valor invalido de version",
   "modloader-is_client_mod": "La modificación (%s) es de cliente, esta debería ponerse en el directorio: /spt/bepinex/plugins",
   "modloader-is-old-js-mod": "El Mod (%s) es para una versión anterior a la 4.0.0 del servidor. Por favor encuentre la versión adecuada o espere a una actualización.",
   "modloader-load_order_conflict": "`{{modOneName}}` y `{{modTwoName}}` tienen un conflicto de requerimientos en orden de carga, el servidor en incapaz de iniciarse asta que se solucione y se apagara",

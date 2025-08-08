@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using Version = SemanticVersioning.Version;
 
 namespace SPTarkov.Server.Modding;
 
@@ -215,7 +216,7 @@ public class ModValidator(
     /// <returns>True if compatible</returns>
     protected bool IsModCompatibleWithSpt(AbstractModMetadata mod)
     {
-        var sptVersion = ProgramStatics.SPT_VERSION() ?? sptConfig.SptVersion;
+        var sptVersion = ProgramStatics.SPT_VERSION();
         var modName = $"{mod.Author}-{mod.Name}";
 
         // Error and prevent loading if sptVersion property is not a valid semver string
@@ -306,13 +307,13 @@ public class ModValidator(
         foreach (var (modDependency, requiredVersion) in pkg.ModDependencies)
         {
             // Raise dependency version incompatible if the dependency is not found in the mod list
-            if (!loadedMods.ContainsKey(modDependency))
+            if (!loadedMods.TryGetValue(modDependency, out var value))
             {
                 logger.Error(localisationService.GetText("modloader-missing_dependency", new { mod = modName, modDependency }));
                 return false;
             }
 
-            if (!semVer.Satisfies(loadedMods[modDependency].Version, requiredVersion))
+            if (!semVer.Satisfies(value.Version, requiredVersion))
             {
                 logger.Error(
                     localisationService.GetText(
@@ -321,7 +322,7 @@ public class ModValidator(
                         {
                             mod = modName,
                             modDependency,
-                            currentVersion = loadedMods[modDependency].Version,
+                            currentVersion = value.Version,
                             requiredVersion,
                         }
                     )
@@ -335,13 +336,12 @@ public class ModValidator(
 
     protected bool IsModCompatible(AbstractModMetadata mod, Dictionary<string, AbstractModMetadata> loadedMods)
     {
-        var incompatbileModsList = mod.Incompatibilities;
-        if (incompatbileModsList == null)
+        if (mod.Incompatibilities == null)
         {
             return true;
         }
 
-        foreach (var incompatibleModName in incompatbileModsList)
+        foreach (var incompatibleModName in mod.Incompatibilities)
         {
             // Raise dependency version incompatible if any incompatible mod is found
             if (loadedMods.ContainsKey(incompatibleModName))
@@ -400,16 +400,6 @@ public class ModValidator(
             return false;
         }
 
-        // Validate mod
-        var config = mod.ModMetadata;
-        var issue = false;
-
-        if (!semVer.IsValid(config.Version))
-        {
-            logger.Error(localisationService.GetText("modloader-invalid_version_property", modName));
-            issue = true;
-        }
-
-        return !issue;
+        return true;
     }
 }
