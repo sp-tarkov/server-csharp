@@ -522,7 +522,7 @@ public class BotGeneratorHelper(
                     ? []
                     : inventory.Items.Where(item => item.SlotId == slotGrid.Name && item.ParentId == container.Id);
 
-                // Get root items in container we can iterate over to find out what space is free
+                // Get each root item + children
                 var containerItemsWithChildren = GetContainerItemsWithChildren(rootItemsInContainer, inventory.Items);
 
                 if (slotGrid.Props is not null)
