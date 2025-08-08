@@ -16,7 +16,7 @@ namespace SPTarkov.Server.Core.Models.Common;
 /// <remarks>
 /// <para>
 /// This struct stores the ObjectId in two packed fields for efficient memory usage
-/// and comparison: 
+/// and comparison:
 /// <list type="bullet">
 ///   <item><see cref="_timestampAndMachine"/><description>: First 8 bytes (timestamp + machine ID)</description></item>
 ///   <item><see cref="_pidAndIncrement"/><description>: Last 4 bytes (process ID + counter)</description></item>
@@ -32,21 +32,19 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
     /// The first 8 bytes: 4-byte timestamp + 3-byte machine ID + 1 byte of PID.
     /// </summary>
     private readonly long _timestampAndMachine;
+
     /// <summary>
     /// The last 4 bytes: remaining 1 byte of PID + 3-byte counter.
     /// </summary>
     private readonly int _pidAndIncrement;
 
     private static readonly int _machine = BitConverter.ToInt32(RandomNumberGenerator.GetBytes(4), 0) & 0xFFFFFF;
-    private static readonly short _pid = (short) Environment.ProcessId;
+    private static readonly short _pid = (short)Environment.ProcessId;
     private static int _increment = RandomNumberGenerator.GetInt32(0, 0xFFFFFF);
 
     public bool IsEmpty
     {
-        get
-        {
-            return _timestampAndMachine == 0 && _pidAndIncrement == 0;
-        }
+        get { return _timestampAndMachine == 0 && _pidAndIncrement == 0; }
     }
 
     /// <summary>
@@ -55,25 +53,25 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
     /// </summary>
     public MongoId()
     {
-        var timestamp = (int) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        var timestamp = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         Span<byte> bytes = stackalloc byte[12];
 
         // timestamp (4 bytes, big-endian)
         BinaryPrimitives.WriteInt32BigEndian(bytes, timestamp);
 
         // machine ID (3 bytes)
-        bytes[4] = (byte) (_machine >> 16);
-        bytes[5] = (byte) (_machine >> 8);
-        bytes[6] = (byte) _machine;
+        bytes[4] = (byte)(_machine >> 16);
+        bytes[5] = (byte)(_machine >> 8);
+        bytes[6] = (byte)_machine;
 
         // PID (2 bytes)
         BinaryPrimitives.WriteInt16BigEndian(bytes[7..9], _pid);
 
         // increment (3 bytes, big-endian)
         var inc = Interlocked.Increment(ref _increment) & 0xFFFFFF;
-        bytes[9] = (byte) (inc >> 16);
-        bytes[10] = (byte) (inc >> 8);
-        bytes[11] = (byte) inc;
+        bytes[9] = (byte)(inc >> 16);
+        bytes[10] = (byte)(inc >> 8);
+        bytes[11] = (byte)inc;
 
         // pack into fields (avoids array allocations later)
         _timestampAndMachine = BitConverter.ToInt64(bytes);
@@ -108,19 +106,19 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
                 throw new FormatException("ObjectId contains invalid hex characters.");
             }
 
-            bytes[i] = (byte) ((hi << 4) | lo);
+            bytes[i] = (byte)((hi << 4) | lo);
         }
 
         _timestampAndMachine = BitConverter.ToInt64(bytes);
         _pidAndIncrement = BitConverter.ToInt32(bytes[8..]);
     }
-    
+
     private static int HexCharToValue(char c)
     {
-        return c >= '0' && c <= '9' ? c - '0' :
-        c >= 'a' && c <= 'f' ? c - 'a' + 10 :
-        c >= 'A' && c <= 'F' ? c - 'A' + 10 :
-        -1;
+        return c >= '0' && c <= '9' ? c - '0'
+            : c >= 'a' && c <= 'f' ? c - 'a' + 10
+            : c >= 'A' && c <= 'F' ? c - 'A' + 10
+            : -1;
     }
 
     /// <summary>
@@ -141,15 +139,13 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
             return false;
         }
 
-        return _timestampAndMachine == other.Value._timestampAndMachine
-            && _pidAndIncrement == other.Value._pidAndIncrement;
+        return _timestampAndMachine == other.Value._timestampAndMachine && _pidAndIncrement == other.Value._pidAndIncrement;
     }
 
     /// <inheritdoc/>
     public bool Equals(MongoId other)
     {
-        return _timestampAndMachine == other._timestampAndMachine
-            && _pidAndIncrement == other._pidAndIncrement;
+        return _timestampAndMachine == other._timestampAndMachine && _pidAndIncrement == other._pidAndIncrement;
     }
 
     public bool Equals(string? other)
@@ -169,7 +165,7 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
                 return false;
             }
 
-            bytes[i] = (byte) ((hi << 4) | lo);
+            bytes[i] = (byte)((hi << 4) | lo);
         }
 
         var a = BitConverter.ToInt64(bytes);
