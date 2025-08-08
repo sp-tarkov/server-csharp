@@ -144,7 +144,7 @@ public class LauncherController(
     {
         var sessionID = Login(info);
 
-        if (!sessionID.IsEmpty())
+        if (!sessionID.IsEmpty)
         {
             saveServer.GetProfile(sessionID).ProfileInfo!.Username = info.Change;
         }
@@ -182,7 +182,7 @@ public class LauncherController(
 
         var sessionId = Login(info);
 
-        if (!sessionId.IsEmpty())
+        if (!sessionId.IsEmpty)
         {
             var profileInfo = saveServer.GetProfile(sessionId).ProfileInfo;
             profileInfo!.Edition = info.Edition;

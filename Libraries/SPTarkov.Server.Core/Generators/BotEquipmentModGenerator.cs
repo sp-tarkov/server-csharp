@@ -204,7 +204,7 @@ public class BotEquipmentModGenerator(
             {
                 modTpl = exhaustableModPool.GetRandomValue();
                 if (
-                    !modTpl.Value.IsEmpty()
+                    !modTpl.Value.IsEmpty
                     && !botGeneratorHelper
                         .IsItemIncompatibleWithCurrentItems(equipment, modTpl.Value, modSlotName)
                         .Incompatible.GetValueOrDefault(false)

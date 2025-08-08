@@ -254,7 +254,7 @@ public static class ProfileExtensions
     /// <param name="output">OPTIONAL - ItemEventRouterResponse</param>
     public static void RemoveItem(this PmcData profile, MongoId itemId, MongoId sessionId, ItemEventRouterResponse? output = null)
     {
-        if (itemId.IsEmpty())
+        if (itemId.IsEmpty)
         {
             return;
         }
