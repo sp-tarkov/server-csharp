@@ -707,6 +707,7 @@ public class FenceService(
     )
     {
         var priceLimits = traderConfig.Fence.ItemCategoryRoublePriceLimit;
+
         var assortRootItems = baseFenceAssortClone
             .Items.Where(item =>
                 string.Equals(item.ParentId, "hideout", StringComparison.OrdinalIgnoreCase) && item.Upd?.SptPresetId == null
@@ -720,6 +721,7 @@ public class FenceService(
             return;
         }
 
+        // Create new assorts until we've fulfilled the count requirement
         for (var i = 0; i < assortCount; i++)
         {
             if (!assortRootItems.Any())
@@ -758,7 +760,7 @@ public class FenceService(
             }
 
             var itemDbDetails = itemHelper.GetItem(chosenBaseAssortRoot.Template).Value;
-            if (priceLimits.ContainsKey(itemDbDetails.Parent) && price > priceLimits[itemDbDetails.Parent])
+            if (priceLimits.TryGetValue(itemDbDetails.Parent, out var priceLimit) && price > priceLimit)
             {
                 // Too expensive for fence, try another item
                 i--;
