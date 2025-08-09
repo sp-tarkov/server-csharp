@@ -128,6 +128,11 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
     /// </summary>
     public override string ToString()
     {
+        if (_timestampAndMachine == 0 && _pidAndIncrement == 0)
+        {
+            return string.Empty;
+        }
+
         Span<byte> bytes = stackalloc byte[12];
         BitConverter.TryWriteBytes(bytes, _timestampAndMachine);
         BitConverter.TryWriteBytes(bytes[8..], _pidAndIncrement);
