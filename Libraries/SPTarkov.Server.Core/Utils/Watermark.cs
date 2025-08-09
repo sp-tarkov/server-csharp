@@ -95,7 +95,7 @@ public class Watermark : IOnLoad
         var modding = _watermarkLocale.GetModding();
         var versionTag = GetVersionTag();
 
-        versionLabel = $"{sptConfig.ProjectName} {versionTag} {sptConfig.CompatibleTarkovVersion}";
+        versionLabel = $"{sptConfig.ProjectName} {versionTag} | EFT {sptConfig.CompatibleTarkovVersion}";
 
         text.Add(versionLabel);
         text.AddRange(description);
