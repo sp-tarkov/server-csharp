@@ -431,7 +431,7 @@ public class GameController(
         {
             if (
                 fullProfile.SptData.Mods.Any(m =>
-                    m.Author == mod.ModMetadata.Author && m.Version == mod.ModMetadata.Version && m.Name == mod.ModMetadata.Name
+                    m.Author == mod.ModMetadata.Author && m.Version == mod.ModMetadata.Version.ToString() && m.Name == mod.ModMetadata.Name
                 )
             )
             {
@@ -443,7 +443,7 @@ public class GameController(
                 new ModDetails
                 {
                     Author = mod.ModMetadata.Author,
-                    Version = mod.ModMetadata.Version,
+                    Version = mod.ModMetadata.Version.ToString(),
                     Name = mod.ModMetadata.Name,
                     Url = mod.ModMetadata.Url,
                     DateAdded = timeUtil.GetTimeStamp(),
@@ -496,7 +496,7 @@ public class GameController(
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
             logger.Debug($"Profile made with: {fullProfile.SptData?.Version}");
-            logger.Debug($"Server version: {ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion} {ProgramStatics.COMMIT()}");
+            logger.Debug($"Server version: {ProgramStatics.SPT_VERSION()} {ProgramStatics.COMMIT()}");
             logger.Debug($"Debug enabled: {ProgramStatics.DEBUG()}");
             logger.Debug($"Mods enabled: {ProgramStatics.MODS()}");
         }

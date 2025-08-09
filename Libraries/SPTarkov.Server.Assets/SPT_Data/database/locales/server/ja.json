@@ -189,7 +189,6 @@
   "modloader-incompatibilities_not_string_array": "Mod %s package.json プロパティ '非互換性' は文字列配列でなければなりません。",
   "modloader-incompatible_mod_found": "Mod {{author}}-{{name}} is incompatible with {{incompatibleModName}}。",
   "modloader-invalid_sptVersion_field": "Mod %s の sptVersion フィールドで不正な Semver 文字列が使用されています。正しい例はこちら: https://github.com/npm/node-semver#versions",
-  "modloader-invalid_version_property": "モッド %s のpackage.jsonにで不正確なバージョン文字列が使用されています。",
   "modloader-is_client_mod": "モッド %s はクライアントタイプのモッドです。正しいインストール先はこちら： /spt/bepinex/plugins",
   "modloader-is-old-js-mod": "Mod %s は 4.0.0 より前のバージョン向けのModです。適切なバージョンを見つけるか、アップデートされるまでお待ちください。",
   "modloader-load_order_conflict": "`{{modOneName}}` と `{{modTwoName}}` のロードの順序の条件が競合しています。 これが修正されるまでサーバーを起動できずシャットダウンします",

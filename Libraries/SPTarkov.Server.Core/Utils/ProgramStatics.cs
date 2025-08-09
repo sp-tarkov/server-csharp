@@ -1,5 +1,6 @@
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Logging;
+using Version = SemanticVersioning.Version;
 
 namespace SPTarkov.Server.Core.Utils;
 
@@ -68,7 +69,7 @@ public static partial class ProgramStatics
         return _mods;
     }
 
-    public static string SPT_VERSION()
+    public static Version SPT_VERSION()
     {
         return SptVersion;
     }

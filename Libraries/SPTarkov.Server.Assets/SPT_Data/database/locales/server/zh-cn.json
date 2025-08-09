@@ -207,7 +207,6 @@
   "modloader-incompatibilities_not_string_array": "模组%s package.json属性“incompatibilities”应该是字符串数组",
   "modloader-incompatible_mod_found": "模组 {{author}}-{{name}} 不兼容 {{incompatibleModName}}",
   "modloader-invalid_sptVersion_field": "模组 %s 在sptVersion字段中包含无效的semver字符串。有效值示例：https://github.com/npm/node-semver#versions",
-  "modloader-invalid_version_property": "模组 %s package.json包含无效的版本字符串",
   "modloader-is_client_mod": "模组 %s 是一个客户端模组，应该被放置在这个文件夹：/spt/bepinex/plugins",
   "modloader-is-old-js-mod": "模组 (%s) 是 4.0.0 版本前的服务端模组，请使用对应版本的客户端或等待该模组更新适配。",
   "modloader-load_order_conflict": "模组`{{modOneName}} `和`{{modTwoName}} `存在载入顺序冲突，在解决此冲突前服务器将因无法正常启动而关闭",

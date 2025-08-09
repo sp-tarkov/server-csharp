@@ -39,7 +39,7 @@ public class App(
             _logger.Debug($"Ran as admin: {Environment.IsPrivilegedProcess}");
             _logger.Debug($"CPU cores: {Environment.ProcessorCount}");
             _logger.Debug($"PATH: {(Environment.ProcessPath ?? "null returned").Encode(EncodeType.BASE64)}");
-            _logger.Debug($"Server: {ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion}");
+            _logger.Debug($"Server: {ProgramStatics.SPT_VERSION()}");
 
             // _logger.Debug($"RAM: {(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB");
 
