@@ -382,7 +382,7 @@ public class PostDbLoadService(
     {
         var itemDb = databaseService.GetItems();
 
-        var shotguns = new List<string>
+        var shotguns = new List<MongoId>
         {
             Weapons.SHOTGUN_12G_SAIGA_12K,
             Weapons.SHOTGUN_20G_TOZ_106,
@@ -391,9 +391,9 @@ public class PostDbLoadService(
         };
         foreach (var shotgunId in shotguns)
         {
-            if (itemDb[shotgunId].Properties.ShotgunDispersion.HasValue)
+            if (itemDb.TryGetValue(shotgunId, out var shotgun) && shotgun.Properties.ShotgunDispersion.HasValue)
             {
-                itemDb[shotgunId].Properties.shotgunDispersion = itemDb[shotgunId].Properties.ShotgunDispersion;
+                shotgun.Properties.shotgunDispersion = shotgun.Properties.ShotgunDispersion;
             }
         }
     }
