@@ -1,5 +1,7 @@
-﻿using SPTarkov.Server.Core.DI;
+﻿using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Models.Utils;
 
 namespace TestMod;
 
@@ -20,7 +22,8 @@ public record TestModMetadata : AbstractModMetadata
     public override string? License { get; init; } = "MIT";
 }
 
-public class TestMod : IOnLoad
+[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
+public class TestMod(ISptLogger<TestMod> logger) : IOnLoad
 {
     public Task OnLoad()
     {
