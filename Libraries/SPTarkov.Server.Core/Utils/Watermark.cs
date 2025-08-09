@@ -81,14 +81,7 @@ public class Watermark(
 
         SetTitle();
 
-        if (ProgramStatics.DEBUG())
-        {
-            Draw(LogTextColor.Magenta);
-        }
-        else
-        {
-            Draw();
-        }
+        Draw(ProgramStatics.BUILD_TEXT_COLOR());
 
         return Task.CompletedTask;
     }
