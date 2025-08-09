@@ -12,32 +12,32 @@ namespace SPTarkov.Server.Core.Utils;
 public class WatermarkLocale(ServerLocalisationService serverLocalisationService)
 {
     public IReadOnlyList<string> Description { get; } =
-        [
-            serverLocalisationService.GetText("watermark-discord_url"),
-            "",
-            serverLocalisationService.GetText("watermark-free_of_charge"),
-            serverLocalisationService.GetText("watermark-paid_scammed"),
-            serverLocalisationService.GetText("watermark-commercial_use_prohibited"),
-        ];
+    [
+        serverLocalisationService.GetText("watermark-discord_url"),
+        "",
+        serverLocalisationService.GetText("watermark-free_of_charge"),
+        serverLocalisationService.GetText("watermark-paid_scammed"),
+        serverLocalisationService.GetText("watermark-commercial_use_prohibited"),
+    ];
     public IReadOnlyList<string> Modding { get; } =
-        [
-            "",
-            serverLocalisationService.GetText("watermark-modding_disabled"),
-            "",
-            serverLocalisationService.GetText("watermark-not_an_issue"),
-            serverLocalisationService.GetText("watermark-do_not_report"),
-        ];
+    [
+        "",
+        serverLocalisationService.GetText("watermark-modding_disabled"),
+        "",
+        serverLocalisationService.GetText("watermark-not_an_issue"),
+        serverLocalisationService.GetText("watermark-do_not_report"),
+    ];
     public IReadOnlyList<string> Warning { get; } =
-        [
-            "",
-            serverLocalisationService.GetText("watermark-testing_build"),
-            serverLocalisationService.GetText("watermark-no_support"),
-            "",
-            $"{serverLocalisationService.GetText("watermark-report_issues_to")}:",
-            serverLocalisationService.GetText("watermark-issue_tracker_url"),
-            "",
-            serverLocalisationService.GetText("watermark-use_at_own_risk"),
-        ];
+    [
+        "",
+        serverLocalisationService.GetText("watermark-testing_build"),
+        serverLocalisationService.GetText("watermark-no_support"),
+        "",
+        $"{serverLocalisationService.GetText("watermark-report_issues_to")}:",
+        serverLocalisationService.GetText("watermark-issue_tracker_url"),
+        "",
+        serverLocalisationService.GetText("watermark-use_at_own_risk"),
+    ];
 }
 
 [Injectable(TypePriority = OnLoadOrder.Watermark)]
