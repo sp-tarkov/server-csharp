@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\Build.props" />
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\SPTarkov.Common\SPTarkov.Common.csproj" />
+    <ProjectReference Include="..\..\Libraries\SPTarkov.DI\SPTarkov.DI.csproj" />
+    <ProjectReference Include="..\..\Libraries\SPTarkov.Reflection\SPTarkov.Reflection.csproj" />
+    <ProjectReference Include="..\..\Libraries\SPTarkov.Server.Assets\SPTarkov.Server.Assets.csproj" />
+    <ProjectReference Include="..\..\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
+  </ItemGroup>
+  <Target Name="CopyToServer" AfterTargets="PostBuildEvent">
+    <ItemGroup>
+      <OutputDLL Include="$(ProjectDir)$(OutDir)$(TargetName).dll" />
+      <Resources Include="$(ProjectDir)Resources\**\*.*" />
+    </ItemGroup>
+    <!-- Copies the output dll -->
+    <Copy SourceFiles="@(OutputDLL);" DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net9.0\user\mods\TestMod" />
+    <Copy
+      SourceFiles="@(Resources);"
+      DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net9.0\user\mods\TestMod\Resources\%(RecursiveDir)"
+    />
+  </Target>
+</Project>
