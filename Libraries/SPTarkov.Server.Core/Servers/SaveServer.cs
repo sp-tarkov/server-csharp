@@ -295,8 +295,9 @@ public class SaveServer(
     public bool IsProfileInvalidOrUnloadable(MongoId sessionID)
     {
         if (
-            profiles[sessionID].ProfileInfo!.InvalidOrUnloadableProfile is not null
-            && profiles[sessionID].ProfileInfo!.InvalidOrUnloadableProfile!.Value
+            profiles.TryGetValue(sessionID, out var profile)
+            && profile.ProfileInfo!.InvalidOrUnloadableProfile is not null
+            && profile.ProfileInfo!.InvalidOrUnloadableProfile!.Value
         )
         {
             return true;
