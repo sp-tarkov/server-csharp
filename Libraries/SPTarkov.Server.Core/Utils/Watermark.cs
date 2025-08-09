@@ -9,50 +9,35 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable]
-public class WatermarkLocale(ServerLocalisationService localisationService)
+public class WatermarkLocale(ServerLocalisationService serverLocalisationService)
 {
-    protected readonly List<string> Description =
-    [
-        localisationService.GetText("watermark-discord_url"),
-        "",
-        localisationService.GetText("watermark-free_of_charge"),
-        localisationService.GetText("watermark-paid_scammed"),
-        localisationService.GetText("watermark-commercial_use_prohibited"),
-    ];
-    protected readonly List<string> Modding =
-    [
-        "",
-        localisationService.GetText("watermark-modding_disabled"),
-        "",
-        localisationService.GetText("watermark-not_an_issue"),
-        localisationService.GetText("watermark-do_not_report"),
-    ];
-    protected readonly List<string> Warning =
-    [
-        "",
-        localisationService.GetText("watermark-testing_build"),
-        localisationService.GetText("watermark-no_support"),
-        "",
-        $"{localisationService.GetText("watermark-report_issues_to")}:",
-        localisationService.GetText("watermark-issue_tracker_url"),
-        "",
-        localisationService.GetText("watermark-use_at_own_risk"),
-    ];
-
-    public List<string> GetDescription()
-    {
-        return Description;
-    }
-
-    public List<string> GetWarning()
-    {
-        return Warning;
-    }
-
-    public List<string> GetModding()
-    {
-        return Modding;
-    }
+    public List<string> Description { get; } =
+        [
+            serverLocalisationService.GetText("watermark-discord_url"),
+            "",
+            serverLocalisationService.GetText("watermark-free_of_charge"),
+            serverLocalisationService.GetText("watermark-paid_scammed"),
+            serverLocalisationService.GetText("watermark-commercial_use_prohibited"),
+        ];
+    public List<string> Modding { get; } =
+        [
+            "",
+            serverLocalisationService.GetText("watermark-modding_disabled"),
+            "",
+            serverLocalisationService.GetText("watermark-not_an_issue"),
+            serverLocalisationService.GetText("watermark-do_not_report"),
+        ];
+    public List<string> Warning { get; } =
+        [
+            "",
+            serverLocalisationService.GetText("watermark-testing_build"),
+            serverLocalisationService.GetText("watermark-no_support"),
+            "",
+            $"{serverLocalisationService.GetText("watermark-report_issues_to")}:",
+            serverLocalisationService.GetText("watermark-issue_tracker_url"),
+            "",
+            serverLocalisationService.GetText("watermark-use_at_own_risk"),
+        ];
 }
 
 [Injectable(TypePriority = OnLoadOrder.Watermark)]
@@ -69,9 +54,9 @@ public class Watermark(
 
     public virtual Task OnLoad()
     {
-        var description = watermarkLocale.GetDescription();
-        var warning = watermarkLocale.GetWarning();
-        var modding = watermarkLocale.GetModding();
+        var description = watermarkLocale.Description;
+        var warning = watermarkLocale.Warning;
+        var modding = watermarkLocale.Modding;
         var versionTag = GetVersionTag();
 
         versionLabel = $"{sptConfig.ProjectName} {versionTag} | EFT {sptConfig.CompatibleTarkovVersion}";
