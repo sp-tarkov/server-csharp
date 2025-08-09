@@ -9,42 +9,35 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable]
-public class WatermarkLocale
+public class WatermarkLocale(ServerLocalisationService localisationService)
 {
-    protected readonly List<string> Description;
-    protected readonly List<string> Modding;
-    protected readonly List<string> Warning;
-
-    public WatermarkLocale(ServerLocalisationService localisationService)
-    {
-        Description =
-        [
-            localisationService.GetText("watermark-discord_url"),
-            "",
-            localisationService.GetText("watermark-free_of_charge"),
-            localisationService.GetText("watermark-paid_scammed"),
-            localisationService.GetText("watermark-commercial_use_prohibited"),
-        ];
-        Warning =
-        [
-            "",
-            localisationService.GetText("watermark-testing_build"),
-            localisationService.GetText("watermark-no_support"),
-            "",
-            $"{localisationService.GetText("watermark-report_issues_to")}:",
-            localisationService.GetText("watermark-issue_tracker_url"),
-            "",
-            localisationService.GetText("watermark-use_at_own_risk"),
-        ];
-        Modding =
-        [
-            "",
-            localisationService.GetText("watermark-modding_disabled"),
-            "",
-            localisationService.GetText("watermark-not_an_issue"),
-            localisationService.GetText("watermark-do_not_report"),
-        ];
-    }
+    protected readonly List<string> Description =
+    [
+        localisationService.GetText("watermark-discord_url"),
+        "",
+        localisationService.GetText("watermark-free_of_charge"),
+        localisationService.GetText("watermark-paid_scammed"),
+        localisationService.GetText("watermark-commercial_use_prohibited"),
+    ];
+    protected readonly List<string> Modding =
+    [
+        "",
+        localisationService.GetText("watermark-modding_disabled"),
+        "",
+        localisationService.GetText("watermark-not_an_issue"),
+        localisationService.GetText("watermark-do_not_report"),
+    ];
+    protected readonly List<string> Warning =
+    [
+        "",
+        localisationService.GetText("watermark-testing_build"),
+        localisationService.GetText("watermark-no_support"),
+        "",
+        $"{localisationService.GetText("watermark-report_issues_to")}:",
+        localisationService.GetText("watermark-issue_tracker_url"),
+        "",
+        localisationService.GetText("watermark-use_at_own_risk"),
+    ];
 
     public List<string> GetDescription()
     {
@@ -63,36 +56,22 @@ public class WatermarkLocale
 }
 
 [Injectable(TypePriority = OnLoadOrder.Watermark)]
-public class Watermark : IOnLoad
+public class Watermark(
+    ISptLogger<Watermark> logger,
+    ConfigServer configServer,
+    ServerLocalisationService serverLocalisationService,
+    WatermarkLocale watermarkLocale
+) : IOnLoad
 {
-    protected readonly ConfigServer _configServer;
-    protected readonly ServerLocalisationService _serverLocalisationService;
-
-    protected readonly ISptLogger<Watermark> _logger;
-    protected readonly WatermarkLocale _watermarkLocale;
-    protected readonly CoreConfig sptConfig;
+    protected readonly CoreConfig sptConfig = configServer.GetConfig<CoreConfig>();
     protected readonly List<string> text = [];
     protected string versionLabel = string.Empty;
 
-    public Watermark(
-        ISptLogger<Watermark> logger,
-        ConfigServer configServer,
-        ServerLocalisationService localisationService,
-        WatermarkLocale watermarkLocale
-    )
-    {
-        _logger = logger;
-        _configServer = configServer;
-        _serverLocalisationService = localisationService;
-        _watermarkLocale = watermarkLocale;
-        sptConfig = _configServer.GetConfig<CoreConfig>();
-    }
-
     public virtual Task OnLoad()
     {
-        var description = _watermarkLocale.GetDescription();
-        var warning = _watermarkLocale.GetWarning();
-        var modding = _watermarkLocale.GetModding();
+        var description = watermarkLocale.GetDescription();
+        var warning = watermarkLocale.GetWarning();
+        var modding = watermarkLocale.GetModding();
         var versionTag = GetVersionTag();
 
         versionLabel = $"{sptConfig.ProjectName} {versionTag} | EFT {sptConfig.CompatibleTarkovVersion}";
@@ -114,7 +93,7 @@ public class Watermark : IOnLoad
         {
             foreach (var key in sptConfig.CustomWatermarkLocaleKeys)
             {
-                text.AddRange(["", _serverLocalisationService.GetText(key)]);
+                text.AddRange(["", serverLocalisationService.GetText(key)]);
             }
         }
 
@@ -140,9 +119,7 @@ public class Watermark : IOnLoad
     public string GetVersionTag(bool withEftVersion = false)
     {
         var sptVersion = ProgramStatics.SPT_VERSION() ?? sptConfig.SptVersion;
-        var versionTag = ProgramStatics.DEBUG()
-            ? $"{sptVersion} - {_serverLocalisationService.GetText("bleeding_edge_build")}"
-            : sptVersion;
+        var versionTag = ProgramStatics.DEBUG() ? $"{sptVersion} - {serverLocalisationService.GetText("bleeding_edge_build")}" : sptVersion;
 
         if (withEftVersion)
         {
@@ -216,7 +193,7 @@ public class Watermark : IOnLoad
         // Log watermark to screen
         foreach (var resultText in result)
         {
-            _logger.LogWithColor(resultText, color);
+            logger.LogWithColor(resultText, color);
         }
     }
 }
