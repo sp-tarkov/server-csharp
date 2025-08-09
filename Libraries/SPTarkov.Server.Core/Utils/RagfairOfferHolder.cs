@@ -143,7 +143,7 @@ public class RagfairOfferHolder(
 
             var itemTpl = offer.Items?.FirstOrDefault()?.Template ?? new MongoId();
             if (
-                !itemTpl.IsEmpty() // Has tpl
+                !itemTpl.IsEmpty // Has tpl
                 && offer.IsFakePlayerOffer()
                 && _fakePlayerOffers.TryGetValue(itemTpl, out var offers)
                 && offers?.Count >= _ragfairServerHelper.GetOfferCountByBaseType(_itemHelper.GetItem(itemTpl).Value.Parent)

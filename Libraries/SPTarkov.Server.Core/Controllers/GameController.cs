@@ -52,7 +52,7 @@ public class GameController(
     {
         profileActivityService.AddActiveProfile(sessionId, startTimeStampMs);
 
-        if (sessionId.IsEmpty())
+        if (sessionId.IsEmpty)
         {
             logger.Error($"{nameof(sessionId)} is empty on GameController.GameStart");
             return;

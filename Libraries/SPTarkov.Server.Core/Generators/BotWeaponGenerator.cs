@@ -446,7 +446,7 @@ public class BotWeaponGenerator(
         }
 
         // Has an UBGL
-        if (generatedWeaponResult.ChosenUbglAmmoTemplate is not null && !generatedWeaponResult.ChosenUbglAmmoTemplate.Value.IsEmpty())
+        if (generatedWeaponResult.ChosenUbglAmmoTemplate is not null && !generatedWeaponResult.ChosenUbglAmmoTemplate.Value.IsEmpty)
         {
             AddUbglGrenadesToBotInventory(weaponAndMods, generatedWeaponResult, inventory);
         }

@@ -65,7 +65,7 @@ public class ItemBaseClassService(
         _itemBaseClassesCache[itemIdToUpdate].Add(item.Parent);
         databaseService.GetItems().TryGetValue(item.Parent, out var parent);
 
-        if (parent is not null && !parent.Parent.IsEmpty())
+        if (parent is not null && !parent.Parent.IsEmpty)
         {
             AddBaseItems(itemIdToUpdate, parent);
         }
@@ -84,7 +84,7 @@ public class ItemBaseClassService(
             HydrateItemBaseClassCache();
         }
 
-        if (itemTpl.IsEmpty())
+        if (itemTpl.IsEmpty)
         {
             logger.Warning("Unable to check itemTpl base class as value passed is null");
 
@@ -136,7 +136,7 @@ public class ItemBaseClassService(
             HydrateItemBaseClassCache();
         }
 
-        if (itemTpl.IsEmpty())
+        if (itemTpl.IsEmpty)
         {
             logger.Warning("Unable to check itemTpl base class as value passed is null");
 
