@@ -365,7 +365,7 @@ public class RagfairOfferHelper(
         // Performing a required search and offer doesn't have requirement for item
         if (
             !searchRequest.NeededSearchId.HasValue
-            && !searchRequest.NeededSearchId.Value.IsEmpty()
+            && !searchRequest.NeededSearchId.Value.IsEmpty
             && !offer.Requirements.Any(requirement => requirement.TemplateId == searchRequest.NeededSearchId)
         )
         {

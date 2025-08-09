@@ -192,7 +192,7 @@ public class HideoutController(
         }
 
         // Upgrade includes a container improvement/addition
-        if (hideoutStage.Container.HasValue && !hideoutStage.Container.Value.IsEmpty())
+        if (hideoutStage.Container.HasValue && !hideoutStage.Container.Value.IsEmpty)
         {
             AddContainerImprovementToProfile(output, sessionID, pmcData, profileHideoutArea, hideoutData, hideoutStage);
         }

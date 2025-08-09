@@ -219,7 +219,7 @@ public class AirdropService(
         var itemTypeBlacklist = _itemFilterService.GetItemRewardBaseTypeBlacklist();
         var itemsMatchingTypeBlacklist = databaseService
             .GetItems()
-            .Where(kvp => !kvp.Value.Parent.IsEmpty())
+            .Where(kvp => !kvp.Value.Parent.IsEmpty)
             .Where(kvp => _itemHelper.IsOfBaseclasses(kvp.Value.Parent, itemTypeBlacklist))
             .Select(kvp => kvp.Key)
             .ToHashSet();

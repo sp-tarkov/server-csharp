@@ -378,7 +378,7 @@ public class RepeatableQuestController(
             .ToList();
 
         var traderId = randomUtil.DrawRandomFromList(traders).FirstOrDefault();
-        if (traderId.IsEmpty())
+        if (traderId.IsEmpty)
         {
             logger.Error(serverLocalisationService.GetText("repeatable-unable_to_find_trader_in_pool"));
 

@@ -62,7 +62,7 @@ public class LauncherV2Controller(
     {
         var sessionId = GetSessionId(info);
 
-        return !sessionId.IsEmpty();
+        return !sessionId.IsEmpty;
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ public class LauncherV2Controller(
     {
         var sessionId = GetSessionId(info);
 
-        if (sessionId.IsEmpty())
+        if (sessionId.IsEmpty)
         {
             return false;
         }
@@ -117,7 +117,7 @@ public class LauncherV2Controller(
     {
         var sessionId = GetSessionId(info);
 
-        return !sessionId.IsEmpty() && saveServer.RemoveProfile(sessionId);
+        return !sessionId.IsEmpty && saveServer.RemoveProfile(sessionId);
     }
 
     /// <summary>

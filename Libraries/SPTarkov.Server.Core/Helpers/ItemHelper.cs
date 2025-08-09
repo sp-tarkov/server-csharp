@@ -1670,7 +1670,7 @@ public class ItemHelper(
             }
 
             var chosenTpl = GetCompatibleTplFromArray(itemPool, incompatibleModTpls);
-            if (chosenTpl.IsEmpty())
+            if (chosenTpl.IsEmpty)
             {
                 if (logger.IsLogEnabled(LogLevel.Debug))
                 {

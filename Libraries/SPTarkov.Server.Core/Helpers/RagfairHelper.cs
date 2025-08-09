@@ -88,7 +88,7 @@ public class RagfairHelper(
         }
 
         // Case: category
-        if (request.HandbookId.HasValue && !request.HandbookId.Value.IsEmpty())
+        if (request.HandbookId.HasValue && !request.HandbookId.Value.IsEmpty)
         {
             var handbook = GetCategoryList(request.HandbookId.Value);
             result = (result?.Count > 0 ? result.IntersectWith(handbook) : handbook).ToList();

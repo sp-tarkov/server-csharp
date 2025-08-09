@@ -1158,7 +1158,7 @@ public class FenceService(
 
             var durabilityValues = GetRandomisedArmorDurabilityValues(modItemDbDetails, traderConfig.Fence.ArmorMaxDurabilityPercentMinMax);
             var plateTpl = requiredSlot.Props.Filters.First().Plate ?? string.Empty; // "Plate" property appears to be the 'default' item for slot
-            if (plateTpl.IsEmpty())
+            if (plateTpl.IsEmpty)
             // Some bsg plate properties are empty, skip mod
             {
                 continue;
@@ -1206,7 +1206,7 @@ public class FenceService(
         foreach (var plateSlot in plateSlots)
         {
             var plateTpl = plateSlot.Props.Filters.First().Plate;
-            if (plateTpl == null || plateTpl.Value.IsEmpty())
+            if (plateTpl == null || plateTpl.Value.IsEmpty)
             // Bsg data lacks a default plate, skip randomising for this mod
             {
                 continue;

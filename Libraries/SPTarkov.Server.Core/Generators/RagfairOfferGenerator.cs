@@ -94,15 +94,13 @@ public class RagfairOfferGenerator(
             return offerRequirement;
         });
 
-        // Clone to avoid modifying original array
-        var itemsClone = cloner.Clone(details.Items);
-        var rootItem = itemsClone.FirstOrDefault();
+        var rootItem = details.Items.FirstOrDefault();
 
         // Hydrate ammo boxes with cartridges + ensure only 1 item is present (ammo box)
         // On offer refresh don't re-add cartridges to ammo box that already has cartridges
-        if (itemsClone.Count == 1 && itemHelper.IsOfBaseclass(itemsClone[0].Template, BaseClasses.AMMO_BOX))
+        if (details.Items.Count == 1 && itemHelper.IsOfBaseclass(details.Items[0].Template, BaseClasses.AMMO_BOX))
         {
-            itemHelper.AddCartridgesToAmmoBox(itemsClone, itemHelper.GetItem(rootItem.Template).Value);
+            itemHelper.AddCartridgesToAmmoBox(details.Items, itemHelper.GetItem(rootItem.Template).Value);
         }
 
         var roubleListingPrice = Math.Round(ConvertOfferRequirementsIntoRoubles(offerRequirements));
@@ -117,7 +115,7 @@ public class RagfairOfferGenerator(
                     ? CreatePlayerUserDataForFleaOffer(details.UserId)
                     : CreateUserDataForFleaOffer(details.UserId, details.Creator == OfferCreator.Trader),
             Root = rootItem.Id,
-            Items = itemsClone,
+            Items = details.Items,
             ItemsCost = Math.Round(handbookHelper.GetTemplatePrice(rootItem.Template)), // Handbook price
             Requirements = offerRequirements,
             RequirementsCost = Math.Round(singleItemListingPrice),
