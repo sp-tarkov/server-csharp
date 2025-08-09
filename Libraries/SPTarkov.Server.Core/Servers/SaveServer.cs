@@ -106,7 +106,7 @@ public class SaveServer(
     /// <exception cref="Exception"> Thrown when sessionId is null / empty or no profiles with that ID are found </exception>
     public SptProfile GetProfile(MongoId sessionId)
     {
-        if (sessionId.IsEmpty())
+        if (sessionId.IsEmpty)
         {
             throw new Exception("session id provided was empty, did you restart the server while the game was running?");
         }
@@ -295,8 +295,9 @@ public class SaveServer(
     public bool IsProfileInvalidOrUnloadable(MongoId sessionID)
     {
         if (
-            profiles[sessionID].ProfileInfo!.InvalidOrUnloadableProfile is not null
-            && profiles[sessionID].ProfileInfo!.InvalidOrUnloadableProfile!.Value
+            profiles.TryGetValue(sessionID, out var profile)
+            && profile.ProfileInfo!.InvalidOrUnloadableProfile is not null
+            && profile.ProfileInfo!.InvalidOrUnloadableProfile!.Value
         )
         {
             return true;

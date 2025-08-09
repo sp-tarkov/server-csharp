@@ -436,7 +436,7 @@ public class InventoryHelper(
     /// <param name="output">OPTIONAL - ItemEventRouterResponse</param>
     public void RemoveItem(PmcData profile, MongoId itemId, MongoId sessionId, ItemEventRouterResponse? output = null)
     {
-        if (itemId.IsEmpty())
+        if (itemId.IsEmpty)
         {
             logger.Warning(serverLocalisationService.GetText("inventory-unable_to_remove_item_no_id_given"));
 
@@ -562,7 +562,7 @@ public class InventoryHelper(
         ItemEventRouterResponse output
     )
     {
-        if (itemId.IsEmpty())
+        if (itemId.IsEmpty)
         {
             return output;
         }

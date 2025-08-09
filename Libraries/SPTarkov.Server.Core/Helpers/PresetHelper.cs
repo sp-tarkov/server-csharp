@@ -92,7 +92,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
     /// <returns>True = preset exists for this id</returns>
     public bool IsPreset(MongoId id)
     {
-        if (id.IsEmpty())
+        if (id.IsEmpty)
         {
             return false;
         }

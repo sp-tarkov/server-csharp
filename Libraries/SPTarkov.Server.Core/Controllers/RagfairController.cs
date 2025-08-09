@@ -322,7 +322,7 @@ public class RagfairController(
             return ragfairOfferHelper.GetOffersForBuild(searchRequest, itemsToAdd, traderAssorts, pmcProfile);
         }
 
-        if (searchRequest.NeededSearchId != null && !searchRequest.NeededSearchId.Value.IsEmpty())
+        if (searchRequest.NeededSearchId != null && !searchRequest.NeededSearchId.Value.IsEmpty)
         {
             return ragfairOfferHelper.GetOffersThatRequireItem(searchRequest, pmcProfile);
         }
@@ -931,7 +931,7 @@ public class RagfairController(
     {
         return requirements.Sum(requirement =>
         {
-            if (requirement.Template.IsEmpty() || !requirement.Count.HasValue || requirement.Count == 0)
+            if (requirement.Template.IsEmpty || !requirement.Count.HasValue || requirement.Count == 0)
             {
                 return 0;
             }

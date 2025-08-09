@@ -191,7 +191,7 @@ public class QuestController(
             isItemHandoverQuest = condition.ConditionType == handoverQuestTypes.FirstOrDefault(); // TODO: there's 2 values, why does it only check for the first
             handoverRequirements = condition;
 
-            if (pmcData.TaskConditionCounters.TryGetValue("ConditionId", out var counter))
+            if (pmcData.TaskConditionCounters.TryGetValue(request.ConditionId, out var counter))
             {
                 handedInCount -= (int)(counter.Value ?? 0);
 
