@@ -140,8 +140,9 @@ public class Watermark : IOnLoad
     public string GetVersionTag(bool withEftVersion = false)
     {
         var sptVersion = ProgramStatics.SPT_VERSION() ?? sptConfig.SptVersion;
-        var versionTag = /*ProgramStatics.DEBUG*/
-            $"{sptVersion} - {_serverLocalisationService.GetText("bleeding_edge_build")}";
+        var versionTag = ProgramStatics.DEBUG()
+            ? $"{sptVersion} - {_serverLocalisationService.GetText("bleeding_edge_build")}"
+            : sptVersion;
 
         if (withEftVersion)
         {
