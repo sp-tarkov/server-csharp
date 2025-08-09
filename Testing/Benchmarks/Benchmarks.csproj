@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Build.props" />
+  <Import Project="..\..\Build.props" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -7,14 +7,16 @@
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.15.2" />
     <PackageReference Include="FastCloner" Version="3.3.10" />
-    <ProjectReference Include="..\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
-    <ProjectReference Include="..\Libraries\SPTarkov.Server.Assets\SPTarkov.Server.Assets.csproj" />
-    <ProjectReference Include="..\Libraries\SPTarkov.Common\SPTarkov.Common.csproj" />
-    <ProjectReference Include="..\Libraries\SPTarkov.DI\SPTarkov.DI.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\SPTarkov.Common\SPTarkov.Common.csproj" />
+    <ProjectReference Include="..\..\Libraries\SPTarkov.DI\SPTarkov.DI.csproj" />
+    <ProjectReference Include="..\..\Libraries\SPTarkov.Server.Assets\SPTarkov.Server.Assets.csproj" />
+    <ProjectReference Include="..\..\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
   </ItemGroup>
 </Project>
