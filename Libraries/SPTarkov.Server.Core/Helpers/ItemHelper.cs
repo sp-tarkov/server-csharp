@@ -1091,43 +1091,6 @@ public class ItemHelper(
     }
 
     /// <summary>
-    ///     WARNING, SLOW. Recursively loop down through an items hierarchy to see if any of the ids match the supplied list, return true if any do
-    /// </summary>
-    /// <param name="tpl">Items tpl to check parents of</param>
-    /// <param name="tplsToCheck">Tpl values to check if parents of item match</param>
-    /// <returns>bool Match found</returns>
-    public bool DoesItemOrParentsIdMatch(MongoId tpl, HashSet<MongoId> tplsToCheck)
-    {
-        var (itemExists, item) = GetItem(tpl);
-
-        // not an item, drop out
-        if (!itemExists || item == null)
-        {
-            return false;
-        }
-
-        // no parent to check
-        if (item.Parent == null)
-        {
-            return false;
-        }
-
-        // Does templateId match any values in tplsToCheck array
-        if (tplsToCheck.Contains(item.Id))
-        {
-            return true;
-        }
-
-        // check items parent with same method
-        if (tplsToCheck.Contains(item.Parent))
-        {
-            return true;
-        }
-
-        return DoesItemOrParentsIdMatch(item.Parent, tplsToCheck);
-    }
-
-    /// <summary>
     ///     Checks to see if the item is *actually* moddable in-raid. Checks include the items existence in the database, the
     ///     parent items existence in the database, the existence (and value) of the items `RaidModdable` property, and that
     ///     the parents slot-required property exists, matches that of the item, and its value.
