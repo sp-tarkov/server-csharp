@@ -87,7 +87,7 @@ public record PmcDataRepeatableQuest
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public MongoId? Id { get; set; }
 
     [JsonPropertyName("name")]
     public string? Name { get; set; }
@@ -109,7 +109,7 @@ public record PmcDataRepeatableQuest
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("changeRequirement")]
-    public Dictionary<string?, ChangeRequirement?>? ChangeRequirement { get; set; }
+    public Dictionary<MongoId, ChangeRequirement?>? ChangeRequirement { get; set; }
 
     [JsonPropertyName("freeChanges")]
     public int? FreeChanges { get; set; }
