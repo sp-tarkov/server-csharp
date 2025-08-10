@@ -33,8 +33,8 @@ public class MongoIDTests
     [TestCase("677ddb67406e9918a0264bbc", true, "IsValidMongoId() `677ddb67406e9918a0264bbc` is a valid mongoId, but result was false")]
     public void IsValidMongoIdTest(string mongoId, bool passes, string failMessage)
     {
-        var result = new MongoId(mongoId);
-        Assert.AreEqual(passes, passes, result, failMessage);
+        var isValid = MongoId.IsValidMongoId(mongoId);
+        Assert.AreEqual(passes, isValid, failMessage);
     }
 
     [Test]
