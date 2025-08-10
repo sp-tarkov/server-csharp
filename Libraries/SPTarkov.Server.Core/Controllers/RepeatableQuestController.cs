@@ -638,6 +638,14 @@ public class RepeatableQuestController(
         return returnData;
     }
 
+    /// <summary>
+    ///     Try to generate a repeatable task at random
+    /// </summary>
+    /// <param name="sessionId">sessionId to generate for</param>
+    /// <param name="pmcData">Pmc profile to add the quest to</param>
+    /// <param name="questTypePool">Pool of quests to pick from</param>
+    /// <param name="repeatableConfig">Repeatable quest config</param>
+    /// <returns></returns>
     protected RepeatableQuest? TryGenerateRandomRepeatable(
         MongoId sessionId,
         PmcData pmcData,
