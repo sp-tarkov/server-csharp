@@ -30,20 +30,26 @@ public class BotDifficultyHelper(
     /// <param name="desiredDifficulty">difficulty to get settings for (easy/normal etc)</param>
     /// <param name="botDb">bots from database</param>
     /// <returns>Difficulty object</returns>
-    public DifficultyCategories GetBotDifficultySettings(string type, string desiredDifficulty, Bots botDb)
+    public DifficultyCategories? GetBotDifficultySettings(string type, string desiredDifficulty, Bots botDb)
     {
         var desiredType = botHelper.IsBotPmc(type) ? botHelper.GetPmcSideByRole(type).ToLowerInvariant() : type.ToLowerInvariant();
-        if (!botDb.Types.ContainsKey(desiredType))
+        if (!botDb.Types.TryGetValue(desiredType, out var botType))
         {
             // No bot found, get fallback difficulty values
             logger.Warning(serverLocalisationService.GetText("bot-unable_to_get_bot_fallback_to_assault", type));
-            botDb.Types[desiredType] = cloner.Clone(botDb.Types["assault"]);
+            botType = cloner.Clone(botDb.Types["assault"]);
+            botDb.Types[desiredType] = botType;
         }
 
         // Get settings from raw bot json template file
         var botTemplate = botHelper.GetBotTemplate(desiredType);
-        botTemplate.BotDifficulty.TryGetValue(desiredDifficulty, out var difficultySettings);
-        if (difficultySettings is null)
+        if (botTemplate is null)
+        {
+            logger.Error($"Bot template for bot type `{desiredType}` is null when trying to get difficulty settings");
+            return null;
+        }
+
+        if (!botTemplate.BotDifficulty.TryGetValue(desiredDifficulty, out var difficultySettings))
         {
             // No bot settings found, use 'assault' bot difficulty instead
             logger.Warning(
@@ -52,9 +58,7 @@ public class BotDifficultyHelper(
                     new { botType = desiredType, difficulty = desiredDifficulty }
                 )
             );
-            botDb.Types[desiredType].BotDifficulty[desiredDifficulty] = cloner.Clone(
-                botDb.Types["assault"].BotDifficulty[desiredDifficulty]
-            );
+            botType!.BotDifficulty[desiredDifficulty] = cloner.Clone(botDb.Types["assault"]!.BotDifficulty[desiredDifficulty])!;
         }
 
         return cloner.Clone(difficultySettings);
@@ -66,7 +70,7 @@ public class BotDifficultyHelper(
     /// <param name="type">"usec" / "bear"</param>
     /// <param name="difficulty">what difficulty to retrieve</param>
     /// <returns>Difficulty object</returns>
-    protected DifficultyCategories GetDifficultySettings(string type, string difficulty)
+    protected DifficultyCategories? GetDifficultySettings(string type, string difficulty)
     {
         var difficultySetting = string.Equals(_pmcConfig.Difficulty, "asonline", StringComparison.OrdinalIgnoreCase)
             ? difficulty
@@ -74,7 +78,12 @@ public class BotDifficultyHelper(
 
         difficultySetting = ConvertBotDifficultyDropdownToBotDifficulty(difficultySetting);
 
-        return cloner.Clone(databaseService.GetBots().Types[type].BotDifficulty[difficultySetting]);
+        if (difficultySetting is null)
+        {
+            return null;
+        }
+
+        return cloner.Clone(databaseService.GetBots().Types[type]?.BotDifficulty[difficultySetting]);
     }
 
     /// <summary>
@@ -82,24 +91,21 @@ public class BotDifficultyHelper(
     /// </summary>
     /// <param name="dropDownDifficulty">Dropdown difficulty value to convert</param>
     /// <returns>bot difficulty</returns>
-    public string ConvertBotDifficultyDropdownToBotDifficulty(string dropDownDifficulty)
+    public string? ConvertBotDifficultyDropdownToBotDifficulty(string dropDownDifficulty)
     {
-        switch (dropDownDifficulty.ToLowerInvariant())
+        return dropDownDifficulty.ToLowerInvariant() switch
         {
-            case "medium":
-                return "normal";
-            case "random":
-                return ChooseRandomDifficulty();
-            default:
-                return dropDownDifficulty.ToLowerInvariant();
-        }
+            "medium" => "normal",
+            "random" => ChooseRandomDifficulty(),
+            _ => dropDownDifficulty.ToLowerInvariant(),
+        };
     }
 
     /// <summary>
     ///     Choose a random difficulty from - easy/normal/hard/impossible
     /// </summary>
     /// <returns>random difficulty</returns>
-    public string ChooseRandomDifficulty()
+    public string? ChooseRandomDifficulty()
     {
         return randomUtil.GetArrayValue(["easy", "normal", "hard", "impossible"]);
     }

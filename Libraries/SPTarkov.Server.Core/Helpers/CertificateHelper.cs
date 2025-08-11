@@ -10,9 +10,9 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fileUtil)
 {
-    private const string certificatePath = "./user/certs/server.crt";
-    private const string certificateKeyPath = "./user/certs/server.key";
-    private const string certificatePfxPath = "./user/certs/certificate.pfx";
+    private const string CertificatePath = "./user/certs/server.crt";
+    private const string CertificateKeyPath = "./user/certs/server.key";
+    private const string CertificatePfxPath = "./user/certs/certificate.pfx";
 
     //Todo: Finish off to match TS server
     /// <summary>
@@ -41,14 +41,14 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
                 throw new Exception("Certificate could not be loaded for the second time.");
             }
 
-            logger.Success($"Generated and stored self-signed certificate ({certificatePath})");
+            logger.Success($"Generated and stored self-signed certificate ({CertificatePath})");
         }
 
         return certificate;
     }
 
     //Todo: When the above is finished off, remove any method with Pfx in the name
-    public X509Certificate2 LoadOrGenerateCertificatePfx()
+    public X509Certificate2? LoadOrGenerateCertificatePfx()
     {
         if (!Directory.Exists("./user/certs"))
         {
@@ -57,7 +57,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
 
         if (TryLoadCertificatePfx(out var cert))
         {
-            logger.Success($"Loaded self-signed certificate ({certificatePath})");
+            logger.Success($"Loaded self-signed certificate ({CertificatePath})");
             return cert;
         }
 
@@ -71,7 +71,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
     {
         try
         {
-            return X509Certificate2.CreateFromPemFile(certificatePath, certificateKeyPath);
+            return X509Certificate2.CreateFromPemFile(CertificatePath, CertificateKeyPath);
         }
         catch (Exception)
         {
@@ -85,12 +85,12 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
     /// <returns></returns>
     private bool TryLoadCertificatePfx(out X509Certificate2? certificate)
     {
-        if (!File.Exists(certificatePfxPath))
+        if (!File.Exists(CertificatePfxPath))
         {
             // file doesn't exist so create straight away
             var cert = GenerateSelfSignedCertificate("localhost");
             SaveCertificatePfx(cert);
-            logger.Success($"Generated and stored self-signed certificate ({certificatePath})");
+            logger.Success($"Generated and stored self-signed certificate ({CertificatePath})");
         }
 
         try
@@ -99,7 +99,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
             //Archangel: For some reason despite this being deprecated this is the only way to load a certificate file
             //No idea why, I want to eventually switch over to the other format so it lines up with the TS server
             //But for now this works fine
-            certificate = new X509Certificate2(certificatePfxPath);
+            certificate = new X509Certificate2(CertificatePfxPath);
         }
         catch (Exception e)
         {
@@ -107,7 +107,8 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
             throw;
         }
 
-        return certificate is not null;
+        // Just return true, we're throwing an exception if creating the cert fails
+        return true;
     }
 
     /// <summary>
@@ -121,7 +122,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
             //Archangel: For some reason despite this being deprecated this is the only way to load a certificate file
             //No idea why, I want to eventually switch over to the other format so it lines up with the TS server
             //But for now this works fine
-            return new X509Certificate2(certificatePfxPath);
+            return new X509Certificate2(CertificatePfxPath);
         }
         catch (Exception)
         {
@@ -166,7 +167,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
                 "-----BEGIN CERTIFICATE-----\n"
                 + Convert.ToBase64String(certificate.Export(X509ContentType.Cert), Base64FormattingOptions.InsertLineBreaks)
                 + "\n-----END CERTIFICATE-----";
-            fileUtil.WriteFile(certificatePath, certPem);
+            fileUtil.WriteFile(CertificatePath, certPem);
         }
         catch (Exception ex)
         {
@@ -182,7 +183,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
     {
         try
         {
-            fileUtil.WriteFile(certificatePfxPath, certificate.Export(X509ContentType.Pfx));
+            fileUtil.WriteFile(CertificatePfxPath, certificate.Export(X509ContentType.Pfx));
         }
         catch (Exception ex)
         {
@@ -202,7 +203,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
                 + Convert.ToBase64String(privateKeyBytes, Base64FormattingOptions.InsertLineBreaks)
                 + "\n-----END PRIVATE KEY-----";
 
-            fileUtil.WriteFile(certificateKeyPath, privateKeyString);
+            fileUtil.WriteFile(CertificateKeyPath, privateKeyString);
         }
         catch (Exception ex)
         {

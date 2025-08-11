@@ -188,7 +188,7 @@ public class BotGeneratorHelper(
     /// <returns>Equipment filter settings</returns>
     protected EquipmentFilters? GetBotEquipmentSettingFromConfig(string botRole)
     {
-        return _botConfig.Equipment?.GetValueOrDefault(GetBotEquipmentRole(botRole));
+        return _botConfig.Equipment.GetValueOrDefault(GetBotEquipmentRole(botRole));
     }
 
     /// <summary>
@@ -199,8 +199,8 @@ public class BotGeneratorHelper(
     /// <returns>Repairable object</returns>
     protected UpdRepairable GenerateWeaponRepairableProperties(TemplateItem itemTemplate, string? botRole = null)
     {
-        var maxDurability = durabilityLimitsHelper.GetRandomizedMaxWeaponDurability(itemTemplate, botRole);
-        var currentDurability = durabilityLimitsHelper.GetRandomizedWeaponDurability(itemTemplate, botRole, maxDurability);
+        var maxDurability = durabilityLimitsHelper.GetRandomizedMaxWeaponDurability(botRole);
+        var currentDurability = durabilityLimitsHelper.GetRandomizedWeaponDurability(botRole, maxDurability);
 
         return new UpdRepairable { Durability = Math.Round(currentDurability, 5), MaxDurability = Math.Round(maxDurability, 5) };
     }
