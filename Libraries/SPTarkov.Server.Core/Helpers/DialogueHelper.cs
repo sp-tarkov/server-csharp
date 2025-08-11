@@ -43,23 +43,34 @@ public class DialogueHelper(ISptLogger<DialogueHelper> logger, ProfileHelper pro
     /// <summary>
     ///     Get the item contents for a particular message.
     /// </summary>
-    /// <param name="messageID"></param>
-    /// <param name="sessionID">Session/player id</param>
+    /// <param name="messageId"></param>
+    /// <param name="sessionId">Session/player id</param>
     /// <param name="itemId">Item being moved to inventory</param>
     /// <returns>Collection of items from message</returns>
-    public List<Item> GetMessageItemContents(MongoId messageID, MongoId sessionID, MongoId itemId)
+    public List<Item>? GetMessageItemContents(MongoId messageId, MongoId sessionId, MongoId itemId)
     {
-        var fullProfile = profileHelper.GetFullProfile(sessionID);
+        var fullProfile = profileHelper.GetFullProfile(sessionId);
         var dialogueData = fullProfile.DialogueRecords;
+        if (dialogueData is null)
+        {
+            logger.Error("DialogueData is null when trying to get message item contents");
+            return [];
+        }
+
         foreach (var (dialogId, dialog) in dialogueData)
         {
-            var message = dialog.Messages?.FirstOrDefault(x => x.Id == messageID);
+            var message = dialog.Messages?.FirstOrDefault(x => x.Id == messageId);
             if (message is null)
             {
                 continue;
             }
 
-            if (message.Id != messageID)
+            if (message.Id != messageId)
+            {
+                continue;
+            }
+
+            if (fullProfile.DialogueRecords is null)
             {
                 continue;
             }
@@ -72,6 +83,7 @@ public class DialogueHelper(ISptLogger<DialogueHelper> logger, ProfileHelper pro
 
             // Check reward count when item being moved isn't in reward list
             // If count is 0, it means after this move occurs the reward array will be empty and all rewards collected
+            message.Items ??= new MessageItems();
             message.Items.Data ??= [];
 
             var messageItems = message.Items.Data?.Where(x => x.Id != itemId);

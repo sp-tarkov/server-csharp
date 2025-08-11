@@ -51,7 +51,7 @@ public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseSer
     /// <returns>true if is pmc</returns>
     public bool IsBotPmc(string? botRole)
     {
-        return _pmcTypeIds.Contains(botRole?.ToLowerInvariant());
+        return _pmcTypeIds.Contains(botRole?.ToLowerInvariant() ?? string.Empty);
     }
 
     public bool IsBotBoss(string botRole)
@@ -244,7 +244,7 @@ public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseSer
         }
 
         var matchingNames = chosenFactionDetails.FirstNames.Where(name => name.Length <= maxLength).ToList();
-        if (matchingNames.Any())
+        if (matchingNames.Count != 0)
         {
             return matchingNames;
         }

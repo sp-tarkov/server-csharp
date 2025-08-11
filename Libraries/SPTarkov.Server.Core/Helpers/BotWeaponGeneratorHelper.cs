@@ -27,16 +27,23 @@ public class BotWeaponGeneratorHelper(
     {
         var randomizedMagazineCount = Math.Max(GetRandomizedMagazineCount(magCounts), 1); // Never return lower than 1 to prevent a multiplication by 0
         var parentItem = itemHelper.GetItem(magTemplate.Parent).Value;
+
+        if (parentItem is null)
+        {
+            logger.Error("Parent item is null when trying to get randomized bullet count");
+            return null;
+        }
+
         double? chamberBulletCount;
-        if (MagazineIsCylinderRelated(parentItem.Name))
+        if (MagazineIsCylinderRelated(parentItem.Name ?? string.Empty))
         {
             var firstSlotAmmoTpl =
-                magTemplate.Properties.Cartridges.FirstOrDefault()?.Props.Filters.First().Filter.FirstOrDefault() ?? new MongoId(null);
+                magTemplate.Properties?.Cartridges?.FirstOrDefault()?.Props?.Filters?.First().Filter?.FirstOrDefault() ?? new MongoId(null);
             var ammoMaxStackSize = itemHelper.GetItem(firstSlotAmmoTpl).Value?.Properties?.StackMaxSize ?? 1;
             chamberBulletCount =
                 ammoMaxStackSize == 1
                     ? 1 // Rotating grenade launcher
-                    : magTemplate.Properties.Slots.Count(); // Shotguns/revolvers. We count the number of camoras as the _max_count of the magazine is 0
+                    : magTemplate.Properties?.Slots?.Count(); // Shotguns/revolvers. We count the number of camoras as the _max_count of the magazine is 0
         }
         else if (parentItem.Id == BaseClasses.LAUNCHER)
         {
@@ -45,7 +52,7 @@ public class BotWeaponGeneratorHelper(
         }
         else
         {
-            chamberBulletCount = magTemplate.Properties.Cartridges?.First().MaxCount;
+            chamberBulletCount = magTemplate.Properties?.Cartridges?.First().MaxCount;
         }
 
         // Get the amount of bullets that would fit in the internal magazine
