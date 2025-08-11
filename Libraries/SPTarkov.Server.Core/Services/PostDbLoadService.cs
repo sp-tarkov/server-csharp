@@ -102,7 +102,7 @@ public class PostDbLoadService(
 
         CloneExistingCraftsAndAddNew();
 
-        RemoveNewBeginningRequirementFromPrestige();
+        RemovePrestigeQuestRequirementsIfQuestNotFound();
 
         RemovePraporTestMessage();
 
@@ -246,22 +246,22 @@ public class PostDbLoadService(
         }
     }
 
-    private void RemoveNewBeginningRequirementFromPrestige()
+    private void RemovePrestigeQuestRequirementsIfQuestNotFound()
     {
         var prestigeDb = databaseService.GetTemplates().Prestige;
-        var newBeginningQuestId = new HashSet<string> { "6761f28a022f60bb320f3e95", "6761ff17cdc36bd66102e9d0" };
+
         foreach (var prestige in prestigeDb.Elements)
         {
-            var itemToRemove = prestige.Conditions?.FirstOrDefault(cond => newBeginningQuestId.Contains(cond.Target?.Item));
-            if (itemToRemove is null)
-            {
-                continue;
-            }
+            var conditionsToRemove = prestige
+                .Conditions.Where(c =>
+                    c.ConditionType == "Quest" && c.Target.IsItem && !databaseService.GetTemplates().Quests.ContainsKey(c.Target.Item)
+                )
+                .ToList();
 
-            var indexToRemove = prestige.Conditions.IndexOf(itemToRemove);
-            if (indexToRemove != -1)
+            foreach (var conditionToRemove in conditionsToRemove)
             {
-                prestige.Conditions.RemoveAt(indexToRemove);
+                logger.Debug($"Removing required quest from prestige: {conditionToRemove.Target.Item}");
+                prestige.Conditions.Remove(conditionToRemove);
             }
         }
     }
