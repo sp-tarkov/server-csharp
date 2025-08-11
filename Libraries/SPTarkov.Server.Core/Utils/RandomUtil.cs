@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Utils;
 
 // TODO: Finish porting this class
 [Injectable(InjectionType.Singleton)]
-public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
+public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
 {
     private const int DecimalPointRandomPrecision = 6;
 
@@ -257,7 +257,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
 
         if (!replacement)
         {
-            list = _cloner.Clone(originalList);
+            list = cloner.Clone(originalList);
             // Adjust drawCount to avoid drawing more elements than available
             if (drawCount > list.Count)
             {
@@ -324,13 +324,13 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
 
         if (max < min)
         {
-            _logger.Error($"Invalid argument, Bounded random number generation max is smaller than min({max} < {min}");
+            logger.Error($"Invalid argument, Bounded random number generation max is smaller than min({max} < {min}");
             return -1;
         }
 
         if (n < 1)
         {
-            _logger.Error($"Invalid argument, 'n' must be 1 or greater(received {n})");
+            logger.Error($"Invalid argument, 'n' must be 1 or greater(received {n})");
             return -1;
         }
 
@@ -346,10 +346,10 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
             // A shift that is equal to the available range only has a 50% chance of rolling correctly, theoretically halving performance.
             // Shifting even further drops the success chance very rapidly - so we want to warn against that
 
-            _logger.Warning(
+            logger.Warning(
                 "Bias shift for random number generation is greater than the range of available numbers. This will have a severe performance impact"
             );
-            _logger.Warning($"min-> {min}; max-> {max}; shift-> {shift}");
+            logger.Warning($"min-> {min}; max-> {max}; shift-> {shift}");
         }
 
         var biasedMin = shift >= 0 ? min - shift : min;

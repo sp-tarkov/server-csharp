@@ -12,10 +12,10 @@ namespace SPTarkov.Server.Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairOfferHolder(
-    ISptLogger<RagfairOfferHolder> _logger,
-    RagfairServerHelper _ragfairServerHelper,
-    ServerLocalisationService _serverLocalisationService,
-    ItemHelper _itemHelper
+    ISptLogger<RagfairOfferHolder> logger,
+    RagfairServerHelper ragfairServerHelper,
+    ServerLocalisationService serverLocalisationService,
+    ItemHelper itemHelper
 )
 {
     /// <summary>
@@ -146,7 +146,7 @@ public class RagfairOfferHolder(
                 !itemTpl.IsEmpty // Has tpl
                 && offer.IsFakePlayerOffer()
                 && _fakePlayerOffers.TryGetValue(itemTpl, out var offers)
-                && offers?.Count >= _ragfairServerHelper.GetOfferCountByBaseType(_itemHelper.GetItem(itemTpl).Value.Parent)
+                && offers?.Count >= ragfairServerHelper.GetOfferCountByBaseType(itemHelper.GetItem(itemTpl).Value.Parent)
             )
             {
                 // If it is an NPC PMC offer AND we have already reached the maximum amount of possible offers
@@ -156,7 +156,7 @@ public class RagfairOfferHolder(
 
             if (!_offersById.TryAdd(offer.Id, offer))
             {
-                _logger.Warning($"Offer: {offer.Id} already exists");
+                logger.Warning($"Offer: {offer.Id} already exists");
             }
 
             if (offer.IsTraderOffer())
@@ -182,14 +182,14 @@ public class RagfairOfferHolder(
     {
         if (!_offersById.TryGetValue(offerId, out var offer))
         {
-            _logger.Warning(_serverLocalisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId));
+            logger.Warning(serverLocalisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId));
 
             return;
         }
 
         if (!_offersById.TryRemove(offer.Id, out _))
         {
-            _logger.Warning($"Unable to remove offer by id: {offer.Id} not found");
+            logger.Warning($"Unable to remove offer by id: {offer.Id} not found");
         }
 
         if (checkTraderOffers && _offersByTrader.TryGetValue(offer.User.Id, out var traderOfferIds))
@@ -202,7 +202,7 @@ public class RagfairOfferHolder(
                 // Users with no offers were never cleaned up
                 if (!_offersByTrader.TryRemove(offer.User.Id, out _))
                 {
-                    _logger.Warning($"Unable to remove Trader offer: {offer.Id} not found");
+                    logger.Warning($"Unable to remove Trader offer: {offer.Id} not found");
                 }
             }
         }
@@ -235,7 +235,7 @@ public class RagfairOfferHolder(
         {
             if (!_offersById.TryRemove(offerId, out _))
             {
-                _logger.Warning($"Unable to remove offer: {offerId}");
+                logger.Warning($"Unable to remove offer: {offerId}");
             }
         }
 
@@ -265,7 +265,7 @@ public class RagfairOfferHolder(
             return true;
         }
 
-        _logger.Warning($"Unable to add offer: {offerId} to _offersByTemplate");
+        logger.Warning($"Unable to add offer: {offerId} to _offersByTemplate");
 
         return false;
     }
@@ -292,7 +292,7 @@ public class RagfairOfferHolder(
             return true;
         }
 
-        _logger.Error($"Unable to add offer: {offerId} to _offersByTrader");
+        logger.Error($"Unable to add offer: {offerId} to _offersByTrader");
 
         return false;
     }
@@ -313,7 +313,7 @@ public class RagfairOfferHolder(
             return true;
         }
 
-        _logger.Error($"Unable to add offer: {offerId} to _fakePlayerOffers");
+        logger.Error($"Unable to add offer: {offerId} to _fakePlayerOffers");
 
         return false;
     }
@@ -328,7 +328,7 @@ public class RagfairOfferHolder(
         {
             if (!_expiredOfferIds.Add(staleOfferId))
             {
-                _logger.Warning($"Unable to add offer: {staleOfferId} to expired offers");
+                logger.Warning($"Unable to add offer: {staleOfferId} to expired offers");
             }
         }
     }
@@ -364,13 +364,13 @@ public class RagfairOfferHolder(
             var offer = GetOfferById(expiredOfferId);
             if (offer is null)
             {
-                _logger.Warning($"Expired offerId: {expiredOfferId} not found, skipping");
+                logger.Warning($"Expired offerId: {expiredOfferId} not found, skipping");
                 continue;
             }
 
             if (offer.Items?.Count == 0)
             {
-                _logger.Error($"Expired offerId: {expiredOfferId} has no items, skipping");
+                logger.Error($"Expired offerId: {expiredOfferId} has no items, skipping");
                 continue;
             }
 
@@ -401,7 +401,7 @@ public class RagfairOfferHolder(
         {
             foreach (var offer in GetOffers())
             {
-                if (_expiredOfferIds.Contains(offer.Id) || _ragfairServerHelper.IsTrader(offer.User.Id))
+                if (_expiredOfferIds.Contains(offer.Id) || ragfairServerHelper.IsTrader(offer.User.Id))
                 {
                     // Already flagged or trader offer (handled separately), skip
                     continue;
@@ -411,7 +411,7 @@ public class RagfairOfferHolder(
                 {
                     if (!_expiredOfferIds.Add(offer.Id))
                     {
-                        _logger.Warning($"Unable to add offer: {offer.Id} to expired offers as it already exists");
+                        logger.Warning($"Unable to add offer: {offer.Id} to expired offers as it already exists");
                     }
                 }
             }

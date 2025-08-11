@@ -13,24 +13,24 @@ namespace SPTarkov.Server.Core.Servers;
 
 [Injectable]
 public class RagfairServer(
-    ISptLogger<RagfairServer> _logger,
+    ISptLogger<RagfairServer> logger,
     TimeUtil timeUtil,
-    RagfairOfferService _ragfairOfferService,
-    RagfairCategoriesService _ragfairCategoriesService,
-    RagfairRequiredItemsService _ragfairRequiredItemsService,
-    ServerLocalisationService _serverLocalisationService,
-    RagfairOfferGenerator _ragfairOfferGenerator,
-    RagfairOfferHolder _ragfairOfferHolder,
-    ConfigServer _configServer,
+    RagfairOfferService ragfairOfferService,
+    RagfairCategoriesService ragfairCategoriesService,
+    RagfairRequiredItemsService ragfairRequiredItemsService,
+    ServerLocalisationService serverLocalisationService,
+    RagfairOfferGenerator ragfairOfferGenerator,
+    RagfairOfferHolder ragfairOfferHolder,
+    ConfigServer configServer,
     ICloner cloner
 )
 {
-    protected readonly RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
+    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
     public void Load()
     {
-        _logger.Info(_serverLocalisationService.GetText("ragfair-generating_offers"));
-        _ragfairOfferGenerator.GenerateDynamicOffers();
+        logger.Info(serverLocalisationService.GetText("ragfair-generating_offers"));
+        ragfairOfferGenerator.GenerateDynamicOffers();
         Update();
     }
 
@@ -40,7 +40,7 @@ public class RagfairServer(
         ProcessExpiredFleaOffers();
 
         // Update requirements now the offers have been expired/regenerated to ensure they're accurate
-        _ragfairRequiredItemsService.BuildRequiredItemTable();
+        ragfairRequiredItemsService.BuildRequiredItemTable();
     }
 
     protected void RefreshTraderOffers()
@@ -50,10 +50,10 @@ public class RagfairServer(
         foreach (var traderId in tradersToProcess)
         {
             // Each trader has its own expiry time
-            if (_ragfairOfferService.TraderOffersNeedRefreshing(traderId))
+            if (ragfairOfferService.TraderOffersNeedRefreshing(traderId))
             {
                 // Trader has passed its offer expiry time, update stock and reset offer times
-                _ragfairOfferGenerator.GenerateFleaOffersForTrader(traderId);
+                ragfairOfferGenerator.GenerateFleaOffersForTrader(traderId);
             }
         }
     }
@@ -61,18 +61,18 @@ public class RagfairServer(
     private void ProcessExpiredFleaOffers()
     {
         // Regenerate expired offers when over timestamp threshold
-        _ragfairOfferHolder.FlagExpiredOffersAfterDate(timeUtil.GetTimeStamp());
+        ragfairOfferHolder.FlagExpiredOffersAfterDate(timeUtil.GetTimeStamp());
 
-        if (!_ragfairOfferService.EnoughExpiredOffersExistToProcess())
+        if (!ragfairOfferService.EnoughExpiredOffersExistToProcess())
         {
             // Not enough expired offers to process, exit
             return;
         }
 
         // Must occur BEFORE "RemoveExpiredOffers" + clone items as they'll be purged by `RemoveExpiredOffers()`
-        var expiredOfferItemsClone = cloner.Clone(_ragfairOfferHolder.GetExpiredOfferItems());
+        var expiredOfferItemsClone = cloner.Clone(ragfairOfferHolder.GetExpiredOfferItems());
 
-        _ragfairOfferService.RemoveExpiredOffers();
+        ragfairOfferService.RemoveExpiredOffers();
 
         // Force a cleanup+compact now all the expired offers are gone
         GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized, true, true);
@@ -80,7 +80,7 @@ public class RagfairServer(
         if (expiredOfferItemsClone is not null)
         {
             // Replace the expired offers with new ones
-            _ragfairOfferGenerator.GenerateDynamicOffers(expiredOfferItemsClone);
+            ragfairOfferGenerator.GenerateDynamicOffers(expiredOfferItemsClone);
         }
     }
 
@@ -99,7 +99,7 @@ public class RagfairServer(
         IEnumerable<RagfairOffer> offers
     )
     {
-        return _ragfairCategoriesService.GetCategoriesFromOffers(offers, searchRequestData, fleaUnlocked);
+        return ragfairCategoriesService.GetCategoriesFromOffers(offers, searchRequestData, fleaUnlocked);
     }
 
     /// <summary>
@@ -108,12 +108,12 @@ public class RagfairServer(
     /// <param name="offerId"> OfferID to hide </param>
     public void HideOffer(MongoId offerId)
     {
-        var offers = _ragfairOfferService.GetOffers();
+        var offers = ragfairOfferService.GetOffers();
         var offer = offers.FirstOrDefault(x => x.Id == offerId);
 
         if (offer is null)
         {
-            _logger.Error(_serverLocalisationService.GetText("ragfair-offer_not_found_unable_to_hide", offerId));
+            logger.Error(serverLocalisationService.GetText("ragfair-offer_not_found_unable_to_hide", offerId));
 
             return;
         }
@@ -123,26 +123,26 @@ public class RagfairServer(
 
     public RagfairOffer? GetOffer(MongoId offerId)
     {
-        return _ragfairOfferService.GetOfferByOfferId(offerId);
+        return ragfairOfferService.GetOfferByOfferId(offerId);
     }
 
     public List<RagfairOffer> GetOffers()
     {
-        return _ragfairOfferService.GetOffers();
+        return ragfairOfferService.GetOffers();
     }
 
     public void ReduceOfferQuantity(MongoId offerId, int amount)
     {
-        _ragfairOfferService.ReduceOfferQuantity(offerId, amount);
+        ragfairOfferService.ReduceOfferQuantity(offerId, amount);
     }
 
     public bool DoesOfferExist(MongoId offerId)
     {
-        return _ragfairOfferService.DoesOfferExist(offerId);
+        return ragfairOfferService.DoesOfferExist(offerId);
     }
 
     public void AddPlayerOffers()
     {
-        _ragfairOfferService.AddPlayerOffers();
+        ragfairOfferService.AddPlayerOffers();
     }
 }

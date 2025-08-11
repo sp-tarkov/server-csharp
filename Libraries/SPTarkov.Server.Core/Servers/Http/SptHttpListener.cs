@@ -16,13 +16,13 @@ namespace SPTarkov.Server.Core.Servers.Http;
 
 [Injectable]
 public class SptHttpListener(
-    HttpRouter _httpRouter,
-    IEnumerable<ISerializer> _serializers,
-    ISptLogger<SptHttpListener> _logger,
-    ISptLogger<RequestLogger> _requestsLogger,
-    JsonUtil _jsonUtil,
-    HttpResponseUtil _httpResponseUtil,
-    ServerLocalisationService _serverLocalisationService
+    HttpRouter httpRouter,
+    IEnumerable<ISerializer> serializers,
+    ISptLogger<SptHttpListener> logger,
+    ISptLogger<RequestLogger> requestsLogger,
+    JsonUtil jsonUtil,
+    HttpResponseUtil httpResponseUtil,
+    ServerLocalisationService serverLocalisationService
 ) : IHttpListener
 {
     // We want to read 1KB at a time, for most request this is already big enough
@@ -30,8 +30,8 @@ public class SptHttpListener(
 
     private static readonly ImmutableHashSet<string> SupportedMethods = ["GET", "PUT", "POST"];
 
-    protected readonly HttpRouter _router = _httpRouter;
-    protected readonly IEnumerable<ISerializer> _serializers = _serializers;
+    protected readonly HttpRouter _router = httpRouter;
+    protected readonly IEnumerable<ISerializer> _serializers = serializers;
 
     public bool CanHandle(MongoId _, HttpRequest req)
     {
@@ -92,9 +92,9 @@ public class SptHttpListener(
 
                 if (!requestIsCompressed)
                 {
-                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    if (logger.IsLogEnabled(LogLevel.Debug))
                     {
-                        _logger.Debug(body);
+                        logger.Debug(body);
                     }
                 }
 
@@ -105,7 +105,7 @@ public class SptHttpListener(
 
             default:
             {
-                _logger.Warning($"{_serverLocalisationService.GetText("unknown_request")}: {req.Method}");
+                logger.Warning($"{serverLocalisationService.GetText("unknown_request")}: {req.Method}");
                 break;
             }
         }
@@ -123,15 +123,15 @@ public class SptHttpListener(
     {
         body ??= new object();
 
-        var bodyInfo = _jsonUtil.Serialize(body);
+        var bodyInfo = jsonUtil.Serialize(body);
 
         if (IsDebugRequest(req))
         {
             // Send only raw response without transformation
             await SendJson(resp, output, sessionID);
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Response: {output}");
+                logger.Debug($"Response: {output}");
             }
 
             LogRequest(req, output);
@@ -173,7 +173,7 @@ public class SptHttpListener(
         if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
         {
             var log = new Response(req.Method, output);
-            _requestsLogger.Info($"RESPONSE={_jsonUtil.Serialize(log)}");
+            requestsLogger.Info($"RESPONSE={jsonUtil.Serialize(log)}");
         }
     }
 
@@ -184,15 +184,15 @@ public class SptHttpListener(
         // Route doesn't exist or response is not properly set up
         if (string.IsNullOrEmpty(output))
         {
-            _logger.Error(_serverLocalisationService.GetText("unhandled_response", req.Path.ToString()));
-            output = _httpResponseUtil.GetBody<object?>(null, BackendErrorCodes.HTTPNotFound, $"UNHANDLED RESPONSE: {req.Path.ToString()}");
+            logger.Error(serverLocalisationService.GetText("unhandled_response", req.Path.ToString()));
+            output = httpResponseUtil.GetBody<object?>(null, BackendErrorCodes.HTTPNotFound, $"UNHANDLED RESPONSE: {req.Path.ToString()}");
         }
 
         if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
         {
             // Parse quest info into object
             var log = new Request(req.Method, new RequestData(req.Path.ToString(), req.Headers));
-            _requestsLogger.Info($"REQUEST={_jsonUtil.Serialize(log)}");
+            requestsLogger.Info($"REQUEST={jsonUtil.Serialize(log)}");
         }
 
         return output;

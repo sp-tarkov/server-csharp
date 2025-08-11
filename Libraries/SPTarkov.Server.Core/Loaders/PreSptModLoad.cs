@@ -7,19 +7,19 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Loaders;
 
 [Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.PreSptModLoader)]
-public class PreSptModLoader(ISptLogger<PreSptModLoader> _logger, IEnumerable<IPreSptLoadModAsync> _preSptLoadMods) : IOnLoad
+public class PreSptModLoader(ISptLogger<PreSptModLoader> logger, IEnumerable<IPreSptLoadModAsync> preSptLoadMods) : IOnLoad
 {
     public async Task OnLoad()
     {
         if (ProgramStatics.MODS())
         {
-            _logger.Info("Loading PreSptMods...");
-            foreach (var postSptLoadMod in _preSptLoadMods)
+            logger.Info("Loading PreSptMods...");
+            foreach (var postSptLoadMod in preSptLoadMods)
             {
                 await postSptLoadMod.PreSptLoadAsync();
             }
 
-            _logger.Info("Finished loading PreSptMods...");
+            logger.Info("Finished loading PreSptMods...");
         }
     }
 }

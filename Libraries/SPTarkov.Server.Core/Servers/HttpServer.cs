@@ -12,21 +12,21 @@ namespace SPTarkov.Server.Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
 public class HttpServer(
-    ISptLogger<HttpServer> _logger,
-    ServerLocalisationService _serverLocalisationService,
-    ConfigServer _configServer,
-    WebSocketServer _webSocketServer,
-    ProfileActivityService _profileActivityService,
-    IEnumerable<IHttpListener> _httpListeners
+    ISptLogger<HttpServer> logger,
+    ServerLocalisationService serverLocalisationService,
+    ConfigServer configServer,
+    WebSocketServer webSocketServer,
+    ProfileActivityService profileActivityService,
+    IEnumerable<IHttpListener> httpListeners
 )
 {
-    private readonly HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
+    private readonly HttpConfig _httpConfig = configServer.GetConfig<HttpConfig>();
 
     public async Task HandleRequest(HttpContext context)
     {
         if (context.WebSockets.IsWebSocketRequest)
         {
-            await _webSocketServer.OnConnection(context);
+            await webSocketServer.OnConnection(context);
             return;
         }
 
@@ -36,7 +36,7 @@ public class HttpServer(
             : MongoId.Empty();
         if (!string.IsNullOrEmpty(sessionIdString))
         {
-            _profileActivityService.SetActivityTimestamp(sessionId);
+            profileActivityService.SetActivityTimestamp(sessionId);
         }
 
         // Extract header for original IP detection
@@ -50,7 +50,7 @@ public class HttpServer(
 
         try
         {
-            var listener = _httpListeners.FirstOrDefault(l => l.CanHandle(sessionId, context.Request));
+            var listener = httpListeners.FirstOrDefault(l => l.CanHandle(sessionId, context.Request));
 
             if (listener != null)
             {
@@ -59,9 +59,9 @@ public class HttpServer(
         }
         catch (Exception ex)
         {
-            _logger.Critical("Error handling request: " + context.Request.Path);
-            _logger.Critical(ex.Message);
-            _logger.Critical(ex.StackTrace);
+            logger.Critical("Error handling request: " + context.Request.Path);
+            logger.Critical(ex.Message);
+            logger.Critical(ex.StackTrace);
 #if DEBUG
             throw; // added this so we can debug something.
 #endif
@@ -80,11 +80,11 @@ public class HttpServer(
     {
         if (isLocalRequest)
         {
-            _logger.Info(_serverLocalisationService.GetText("client_request", context.Request.Path.Value));
+            logger.Info(serverLocalisationService.GetText("client_request", context.Request.Path.Value));
         }
         else
         {
-            _logger.Info(_serverLocalisationService.GetText("client_request_ip", new { ip = clientIp, url = context.Request.Path.Value }));
+            logger.Info(serverLocalisationService.GetText("client_request_ip", new { ip = clientIp, url = context.Request.Path.Value }));
         }
     }
 

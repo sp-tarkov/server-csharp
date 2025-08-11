@@ -12,16 +12,16 @@ namespace SPTarkov.Server.Core.Servers;
 public class ConfigServer
 {
     protected readonly FrozenSet<string> acceptableFileExtensions = ["json", "jsonc"];
-    protected readonly FileUtil _fileUtil;
-    protected readonly JsonUtil _jsonUtil;
-    protected readonly ISptLogger<ConfigServer> _logger;
+    protected readonly FileUtil FileUtil;
+    protected readonly JsonUtil JsonUtil;
+    protected readonly ISptLogger<ConfigServer> Logger;
     private static readonly Dictionary<string, object> _configs = new();
 
     public ConfigServer(ISptLogger<ConfigServer> logger, JsonUtil jsonUtil, FileUtil fileUtil)
     {
-        _logger = logger;
-        _jsonUtil = jsonUtil;
-        _fileUtil = fileUtil;
+        Logger = logger;
+        JsonUtil = jsonUtil;
+        FileUtil = fileUtil;
 
         if (_configs.Count == 0)
         {
@@ -60,37 +60,37 @@ public class ConfigServer
 
     public void Initialize()
     {
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (Logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug("Importing configs...");
+            Logger.Debug("Importing configs...");
         }
 
         // Get all filepaths
         const string filepath = "./SPT_Data/configs/";
-        var files = _fileUtil.GetFiles(filepath);
+        var files = FileUtil.GetFiles(filepath);
 
         // Add file content to result
         foreach (var file in files)
         {
-            if (acceptableFileExtensions.Contains(_fileUtil.GetFileExtension(file)))
+            if (acceptableFileExtensions.Contains(FileUtil.GetFileExtension(file)))
             {
                 var type = GetConfigTypeByFilename(file);
-                var deserializedContent = _jsonUtil.DeserializeFromFile(file, type);
+                var deserializedContent = JsonUtil.DeserializeFromFile(file, type);
 
                 if (deserializedContent == null)
                 {
-                    _logger.Error($"Config file: {file} is corrupt. Use a site like: https://jsonlint.com to find the issue.");
+                    Logger.Error($"Config file: {file} is corrupt. Use a site like: https://jsonlint.com to find the issue.");
                     throw new Exception($"Server will not run until the: {file} config error mentioned above is  fixed");
                 }
 
-                _configs[$"spt-{_fileUtil.StripExtension(file)}"] = deserializedContent;
+                _configs[$"spt-{FileUtil.StripExtension(file)}"] = deserializedContent;
             }
         }
     }
 
     private Type GetConfigTypeByFilename(string filename)
     {
-        var type = Enum.GetValues<ConfigTypes>().First(en => en.GetValue().Contains(_fileUtil.StripExtension(filename)));
+        var type = Enum.GetValues<ConfigTypes>().First(en => en.GetValue().Contains(FileUtil.StripExtension(filename)));
         return type.GetConfigType();
     }
 }

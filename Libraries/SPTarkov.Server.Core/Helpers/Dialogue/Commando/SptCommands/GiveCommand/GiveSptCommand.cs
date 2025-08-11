@@ -15,14 +15,14 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.GiveCommand
 
 [Injectable]
 public class GiveSptCommand(
-    ISptLogger<GiveSptCommand> _logger,
-    ItemHelper _itemHelper,
+    ISptLogger<GiveSptCommand> logger,
+    ItemHelper itemHelper,
     DatabaseService databaseService,
-    PresetHelper _presetHelper,
-    ItemFilterService _itemFilterService,
-    MailSendService _mailSendService,
-    LocaleService _localeService,
-    ICloner _cloner
+    PresetHelper presetHelper,
+    ItemFilterService itemFilterService,
+    MailSendService mailSendService,
+    LocaleService localeService,
+    ICloner cloner
 ) : ISptCommand
 {
     private const double _acceptableConfidence = 0.9d;
@@ -57,7 +57,7 @@ public class GiveSptCommand(
     {
         if (!_commandRegex.IsMatch(request.Text))
         {
-            _mailSendService.SendUserMessageToPlayer(
+            mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 commandHandler,
                 "Invalid use of give command. Use 'help' for more information."
@@ -78,7 +78,7 @@ public class GiveSptCommand(
         {
             if (!_savedCommand.ContainsKey(sessionId))
             {
-                _mailSendService.SendUserMessageToPlayer(
+                mailSendService.SendUserMessageToPlayer(
                     sessionId,
                     commandHandler,
                     "Invalid use of give command. Use 'help' for more information."
@@ -90,7 +90,7 @@ public class GiveSptCommand(
             var locationSixValue = +int.Parse(result.Groups[6].Value);
             if (locationSixValue > savedCommand.PotentialItemNames.Count)
             {
-                _mailSendService.SendUserMessageToPlayer(
+                mailSendService.SendUserMessageToPlayer(
                     sessionId,
                     commandHandler,
                     "Invalid selection. Outside of bounds! Use 'help' for more information."
@@ -114,7 +114,7 @@ public class GiveSptCommand(
             quantity = +int.Parse(result.Groups[6].Value);
             if (quantity <= 0)
             {
-                _mailSendService.SendUserMessageToPlayer(
+                mailSendService.SendUserMessageToPlayer(
                     sessionId,
                     commandHandler,
                     "Invalid quantity! Must be 1 or higher. Use 'help' for more information."
@@ -126,17 +126,17 @@ public class GiveSptCommand(
             {
                 try
                 {
-                    locale = result.Groups[4].Value ?? _localeService.GetDesiredGameLocale() ?? "en";
+                    locale = result.Groups[4].Value ?? localeService.GetDesiredGameLocale() ?? "en";
                 }
                 catch (Exception ex)
                 {
-                    _mailSendService.SendUserMessageToPlayer(
+                    mailSendService.SendUserMessageToPlayer(
                         sessionId,
                         commandHandler,
                         $"An error occurred while trying to use localized text. Locale will be defaulted to 'en'. {ex.Message}"
                     );
 
-                    _logger.Warning(ex.Message);
+                    logger.Warning(ex.Message);
                     locale = "en";
                 }
 
@@ -164,7 +164,7 @@ public class GiveSptCommand(
                     // max 10 item names and map them
                     var itemList = slicedItems.Select(match => $"{i++}. {match.ItemName} (conf: {Math.Round(match.Match * 100d), 2})");
                     _savedCommand.Add(sessionId, new SavedCommand(quantity, slicedItems.Select(item => item.ItemName).ToList(), locale));
-                    _mailSendService.SendUserMessageToPlayer(
+                    mailSendService.SendUserMessageToPlayer(
                         sessionId,
                         commandHandler,
                         $"Could not find exact match. Closest are:\n{string.Join("\n", itemList)}\n\nUse 'spt give [above number]' to select one."
@@ -186,10 +186,10 @@ public class GiveSptCommand(
                 .Id
             : item;
 
-        var checkedItem = _itemHelper.GetItem(tplId);
+        var checkedItem = itemHelper.GetItem(tplId);
         if (!checkedItem.Key)
         {
-            _mailSendService.SendUserMessageToPlayer(
+            mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 commandHandler,
                 "That item could not be found. Please refine your request and try again."
@@ -198,17 +198,17 @@ public class GiveSptCommand(
         }
 
         List<Item> itemsToSend = [];
-        var preset = _presetHelper.GetDefaultPreset(checkedItem.Value.Id);
+        var preset = presetHelper.GetDefaultPreset(checkedItem.Value.Id);
         if (preset is not null && !_excludedPresetItems.Contains(checkedItem.Value.Id))
         {
             for (var i = 0; i < quantity; i++)
             {
-                var items = _cloner.Clone(preset.Items);
+                var items = cloner.Clone(preset.Items);
                 items = items.ReplaceIDs().ToList();
                 itemsToSend.AddRange(items);
             }
         }
-        else if (_itemHelper.IsOfBaseclass(checkedItem.Value.Id, BaseClasses.AMMO_BOX))
+        else if (itemHelper.IsOfBaseclass(checkedItem.Value.Id, BaseClasses.AMMO_BOX))
         {
             for (var i = 0; i < quantity; i++)
             {
@@ -234,7 +234,7 @@ public class GiveSptCommand(
                         {
                             Id = new MongoId(),
                             Template = checkedItem.Value.Id,
-                            Upd = _itemHelper.GenerateUpdForItem(checkedItem.Value),
+                            Upd = itemHelper.GenerateUpdForItem(checkedItem.Value),
                         }
                     );
                 }
@@ -245,16 +245,16 @@ public class GiveSptCommand(
                 {
                     Id = new MongoId(),
                     Template = checkedItem.Value.Id,
-                    Upd = _itemHelper.GenerateUpdForItem(checkedItem.Value),
+                    Upd = itemHelper.GenerateUpdForItem(checkedItem.Value),
                 };
                 itemToSend.Upd.StackObjectsCount = quantity;
                 try
                 {
-                    itemsToSend.AddRange(_itemHelper.SplitStack(itemToSend));
+                    itemsToSend.AddRange(itemHelper.SplitStack(itemToSend));
                 }
                 catch
                 {
-                    _mailSendService.SendUserMessageToPlayer(
+                    mailSendService.SendUserMessageToPlayer(
                         sessionId,
                         commandHandler,
                         "Too many items requested. Please lower the amount and try again."
@@ -266,9 +266,9 @@ public class GiveSptCommand(
         }
 
         // Flag the items as FiR
-        _itemHelper.SetFoundInRaid(itemsToSend);
+        itemHelper.SetFoundInRaid(itemsToSend);
 
-        _mailSendService.SendSystemMessageToPlayer(sessionId, $"SPT GIVE DELIVERY: {item}", itemsToSend);
+        mailSendService.SendSystemMessageToPlayer(sessionId, $"SPT GIVE DELIVERY: {item}", itemsToSend);
 
         return new ValueTask<string>(request.DialogId);
     }
@@ -280,7 +280,7 @@ public class GiveSptCommand(
     /// <returns></returns>
     protected Dictionary<string, string> GetGlobalsLocale(string desiredLocale)
     {
-        return _localeService.GetLocaleDb(desiredLocale);
+        return localeService.GetLocaleDb(desiredLocale);
     }
 
     /// <summary>
@@ -292,9 +292,9 @@ public class GiveSptCommand(
     {
         return templateItem.Type != "Node"
             && !templateItem.IsQuestItem()
-            && !_itemFilterService.IsItemBlacklisted(templateItem.Id)
+            && !itemFilterService.IsItemBlacklisted(templateItem.Id)
             && (templateItem.Properties?.Prefab?.Path ?? "") != ""
-            && !_itemHelper.IsOfBaseclasses(
+            && !itemHelper.IsOfBaseclasses(
                 templateItem.Id,
                 [
                     BaseClasses.HIDEOUT_AREA_CONTAINER,

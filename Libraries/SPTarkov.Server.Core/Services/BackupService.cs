@@ -19,11 +19,12 @@ public class BackupService
 
     // Runs Init() every x minutes
     protected Timer _backupIntervalTimer;
-    protected readonly FileUtil _fileUtil;
-    protected readonly JsonUtil _jsonUtil;
-    protected readonly ISptLogger<BackupService> _logger;
-    protected readonly TimeUtil _timeUtil;
-    protected readonly IReadOnlyList<SptMod> _loadedMods;
+
+    protected readonly FileUtil FileUtil;
+    protected readonly JsonUtil JsonUtil;
+    protected readonly ISptLogger<BackupService> Logger;
+    protected readonly TimeUtil TimeUtil;
+    protected readonly IReadOnlyList<SptMod> LoadedMods;
 
     public BackupService(
         ISptLogger<BackupService> logger,
@@ -34,11 +35,11 @@ public class BackupService
         FileUtil fileUtil
     )
     {
-        _logger = logger;
-        _jsonUtil = jsonUtil;
-        _timeUtil = timeUtil;
-        _fileUtil = fileUtil;
-        _loadedMods = loadedMods;
+        Logger = logger;
+        JsonUtil = jsonUtil;
+        TimeUtil = timeUtil;
+        FileUtil = fileUtil;
+        LoadedMods = loadedMods;
 
         _activeServerMods = GetActiveServerMods();
         _backupConfig = configServer.GetConfig<BackupConfig>();
@@ -66,7 +67,7 @@ public class BackupService
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error($"Profile backup failed: {ex.Message}, {ex.StackTrace}");
+                    Logger.Error($"Profile backup failed: {ex.Message}, {ex.StackTrace}");
                 }
             },
             null,
@@ -93,19 +94,19 @@ public class BackupService
         List<string> currentProfilePaths;
         try
         {
-            currentProfilePaths = _fileUtil.GetFiles(_profileDir);
+            currentProfilePaths = FileUtil.GetFiles(_profileDir);
         }
         catch (Exception ex)
         {
-            _logger.Debug($"Skipping profile backup: Unable to read profiles directory, {ex.Message}");
+            Logger.Debug($"Skipping profile backup: Unable to read profiles directory, {ex.Message}");
             return;
         }
 
         if (currentProfilePaths.Count == 0)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (Logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug("No profiles to backup");
+                Logger.Debug("No profiles to backup");
             }
 
             return;
@@ -113,33 +114,33 @@ public class BackupService
 
         try
         {
-            _fileUtil.CreateDirectory(targetDir);
+            FileUtil.CreateDirectory(targetDir);
 
             foreach (var profilePath in currentProfilePaths)
             {
                 // Get filename + extension, removing the path
-                var profileFileName = _fileUtil.GetFileNameAndExtension(profilePath);
+                var profileFileName = FileUtil.GetFileNameAndExtension(profilePath);
 
                 // Create absolute path to file
                 var relativeSourceFilePath = Path.Combine(_profileDir, profileFileName);
                 var absoluteDestinationFilePath = Path.Combine(targetDir, profileFileName);
-                if (!_fileUtil.CopyFile(relativeSourceFilePath, absoluteDestinationFilePath))
+                if (!FileUtil.CopyFile(relativeSourceFilePath, absoluteDestinationFilePath))
                 {
-                    _logger.Error($"Source file not found: {relativeSourceFilePath}. Cannot copy to: {absoluteDestinationFilePath}");
+                    Logger.Error($"Source file not found: {relativeSourceFilePath}. Cannot copy to: {absoluteDestinationFilePath}");
                 }
             }
 
             // Write a copy of active mods.
-            await _fileUtil.WriteFileAsync(Path.Combine(targetDir, "activeMods.json"), _jsonUtil.Serialize(_activeServerMods));
+            await FileUtil.WriteFileAsync(Path.Combine(targetDir, "activeMods.json"), JsonUtil.Serialize(_activeServerMods));
 
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (Logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Profile backup created in: {targetDir}");
+                Logger.Debug($"Profile backup created in: {targetDir}");
             }
         }
         catch (Exception ex)
         {
-            _logger.Error($"Unable to write to backup profile directory: {ex.Message}");
+            Logger.Error($"Unable to write to backup profile directory: {ex.Message}");
             return;
         }
 
@@ -157,9 +158,9 @@ public class BackupService
             return true;
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (Logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug("Profile backups disabled");
+            Logger.Debug("Profile backups disabled");
         }
 
         return false;
@@ -182,7 +183,7 @@ public class BackupService
     /// <returns> The formatted backup date string. </returns>
     protected string GenerateBackupDate()
     {
-        return _timeUtil.GetDateTimeNow().ToString("yyyy-MM-dd_HH-mm-ss");
+        return TimeUtil.GetDateTimeNow().ToString("yyyy-MM-dd_HH-mm-ss");
     }
 
     /// <summary>
@@ -229,7 +230,7 @@ public class BackupService
     /// <returns> List of sorted backup file paths. </returns>
     protected List<string> GetBackupPaths(string dir)
     {
-        var backups = _fileUtil.GetDirectories(dir).ToList();
+        var backups = FileUtil.GetDirectories(dir).ToList();
         backups.Sort(CompareBackupDates);
 
         return backups;
@@ -269,7 +270,7 @@ public class BackupService
             return dateTime;
         }
 
-        _logger.Warning($"Invalid backup folder name format: {folderPath}, [{folderName}]");
+        Logger.Warning($"Invalid backup folder name format: {folderPath}, [{folderName}]");
         return null;
     }
 
@@ -283,11 +284,11 @@ public class BackupService
         var filePathsToDelete = backupFilenames.Select(x => x);
         foreach (var pathToDelete in filePathsToDelete)
         {
-            _fileUtil.DeleteDirectory(Path.Combine(pathToDelete), true);
+            FileUtil.DeleteDirectory(Path.Combine(pathToDelete), true);
 
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (Logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Deleted old backup: {pathToDelete}");
+                Logger.Debug($"Deleted old backup: {pathToDelete}");
             }
         }
     }
@@ -300,7 +301,7 @@ public class BackupService
     {
         List<string> result = [];
 
-        foreach (var mod in _loadedMods)
+        foreach (var mod in LoadedMods)
         {
             result.Add($"{mod.ModMetadata.Author} - {mod.ModMetadata.Version}");
         }

@@ -10,7 +10,7 @@ using SPTarkov.Server.Core.Utils.Json;
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
-public class ImporterUtil(ISptLogger<ImporterUtil> _logger, FileUtil _fileUtil, JsonUtil _jsonUtil)
+public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, JsonUtil jsonUtil)
 {
     private readonly FrozenSet<string> _directoriesToIgnore = ["./SPT_Data/database/locales/server"];
     private readonly FrozenSet<string> _filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
@@ -46,15 +46,15 @@ public class ImporterUtil(ISptLogger<ImporterUtil> _logger, FileUtil _fileUtil, 
         var result = Activator.CreateInstance(loadedType);
 
         // get all filepaths
-        var files = _fileUtil.GetFiles(filePath);
-        var directories = _fileUtil.GetDirectories(filePath);
+        var files = fileUtil.GetFiles(filePath);
+        var directories = fileUtil.GetDirectories(filePath);
 
         // Process files
         foreach (var file in files)
         {
             if (
-                _fileUtil.GetFileExtension(file) != "json"
-                || _filesToIgnore.Contains(_fileUtil.GetFileNameAndExtension(file).ToLowerInvariant())
+                fileUtil.GetFileExtension(file) != "json"
+                || _filesToIgnore.Contains(fileUtil.GetFileNameAndExtension(file).ToLowerInvariant())
             )
             {
                 continue;
@@ -98,7 +98,7 @@ public class ImporterUtil(ISptLogger<ImporterUtil> _logger, FileUtil _fileUtil, 
 
             // Get the set method to update the object
             var setMethod = GetSetMethod(
-                _fileUtil.StripExtension(file).ToLowerInvariant(),
+                fileUtil.StripExtension(file).ToLowerInvariant(),
                 loadedType,
                 out var propertyType,
                 out var isDictionary
@@ -113,7 +113,7 @@ public class ImporterUtil(ISptLogger<ImporterUtil> _logger, FileUtil _fileUtil, 
 
             lock (dictionaryLock)
             {
-                setMethod.Invoke(result, isDictionary ? [_fileUtil.StripExtension(file), fileDeserialized] : [fileDeserialized]);
+                setMethod.Invoke(result, isDictionary ? [fileUtil.StripExtension(file), fileDeserialized] : [fileDeserialized]);
             }
         }
         catch (Exception ex)
@@ -179,7 +179,7 @@ public class ImporterUtil(ISptLogger<ImporterUtil> _logger, FileUtil _fileUtil, 
             return CreateLazyLoadDeserialization(file, propertyType);
         }
 
-        return await _jsonUtil.DeserializeFromFileAsync(file, propertyType);
+        return await jsonUtil.DeserializeFromFileAsync(file, propertyType);
     }
 
     private object CreateLazyLoadDeserialization(string file, Type propertyType)
@@ -187,7 +187,7 @@ public class ImporterUtil(ISptLogger<ImporterUtil> _logger, FileUtil _fileUtil, 
         var genericArgument = propertyType.GetGenericArguments()[0];
 
         var deserializeCall = Expression.Call(
-            Expression.Constant(_jsonUtil),
+            Expression.Constant(jsonUtil),
             "DeserializeFromFile",
             Type.EmptyTypes,
             Expression.Constant(file),
@@ -220,14 +220,14 @@ public class ImporterUtil(ISptLogger<ImporterUtil> _logger, FileUtil _fileUtil, 
                 .FirstOrDefault(prop =>
                     string.Equals(
                         prop.Name.ToLowerInvariant(),
-                        _fileUtil.StripExtension(propertyName).ToLowerInvariant(),
+                        fileUtil.StripExtension(propertyName).ToLowerInvariant(),
                         StringComparison.Ordinal
                     )
                 );
 
             if (matchedProperty == null)
             {
-                throw new Exception($"Unable to find property '{_fileUtil.StripExtension(propertyName)}' for type '{type.Name}'");
+                throw new Exception($"Unable to find property '{fileUtil.StripExtension(propertyName)}' for type '{type.Name}'");
             }
 
             propertyType = matchedProperty.PropertyType;

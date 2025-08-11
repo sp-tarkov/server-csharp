@@ -6,9 +6,9 @@ using SPTarkov.Server.Core.Utils.Cloners;
 namespace UnitTests.Mock;
 
 [Injectable(TypeOverride = typeof(RandomUtil))]
-public class MockRandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner) : RandomUtil(_logger, _cloner)
+public class MockRandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner) : RandomUtil(logger, cloner)
 {
-    public override int GetInt(int min, int max = Int32.MaxValue, bool exclusive = false)
+    public override int GetInt(int min, int max = int.MaxValue, bool exclusive = false)
     {
         return min;
     }
