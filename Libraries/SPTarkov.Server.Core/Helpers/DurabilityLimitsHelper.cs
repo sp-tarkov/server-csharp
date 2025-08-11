@@ -149,8 +149,8 @@ public class DurabilityLimitsHelper(
     {
         switch (botRole)
         {
-            case null
-            or "default":
+            case null:
+            case "default":
                 return _botConfig.Durability.Default.Weapon.LowestMax;
             case "pmc":
                 return _botConfig.Durability.Pmc.Weapon.LowestMax;
