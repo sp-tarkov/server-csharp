@@ -634,7 +634,7 @@ public class RepeatableQuestRewardGenerator(
         var currency = traderId == Traders.PEACEKEEPER || traderId == Traders.FENCE ? Money.EUROS : Money.ROUBLES;
 
         // Convert reward amount to Euros if necessary
-        var rewardAmountToGivePlayer = currency == Money.EUROS ? handbookHelper.FromRUB(rewardRoubles, Money.EUROS) : rewardRoubles;
+        var rewardAmountToGivePlayer = currency == Money.EUROS ? handbookHelper.FromRoubles(rewardRoubles, Money.EUROS) : rewardRoubles;
 
         // Get chosen currency + amount and return
         return GenerateItemReward(currency, rewardAmountToGivePlayer, rewardIndex, false);

@@ -268,7 +268,7 @@ public class RagfairPriceService(
         // Convert to different currency if required.
         if (desiredCurrency != Money.ROUBLES)
         {
-            price = handbookHelper.FromRUB(price, desiredCurrency);
+            price = handbookHelper.FromRoubles(price, desiredCurrency);
         }
 
         if (price <= 0)

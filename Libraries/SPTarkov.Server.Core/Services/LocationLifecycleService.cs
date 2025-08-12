@@ -744,7 +744,7 @@ public class LocationLifecycleService(
         MergePmcAndScavEncyclopedias(serverPmcProfile, scavProfile);
 
         // Handle temp, hydration, limb hp/effects
-        healthHelper.ApplyHealthChangesToProfile(sessionId, serverPmcProfile, postRaidProfile.Health, isDead);
+        healthHelper.ApplyHealthChangesToProfile(sessionId, serverPmcProfile, postRaidProfile.Health);
 
         // Required when player loses limb in-raid and fixes it, max now stuck at 50% or less if lost multiple times
         var profileTemplate = profileHelper.GetProfileTemplateForSide(fullServerProfile.ProfileInfo.Edition, serverPmcProfile.Info.Side);
