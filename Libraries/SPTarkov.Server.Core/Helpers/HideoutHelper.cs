@@ -1471,7 +1471,7 @@ public class HideoutHelper(
         var combatBonusProfile = pmcData.Bonuses?.FirstOrDefault(bonus => bonus.Id == combatBoostBonusDb?.Id);
         if (combatBonusProfile is null)
         {
-            logger.Error("Could not locate: ");
+            logger.Error($"Could not locate SkillGroupLevelingBoost: {combatBoostBonusDb?.Id.ToString() ?? "`Id is null`"} in profile");
             return;
         }
 
