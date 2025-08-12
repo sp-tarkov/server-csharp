@@ -565,7 +565,7 @@ public class ProfileFixerService(
                     {
                         // no bonus, add to profile
                         logger.Debug($"Profile has level {level} area {profileArea.Type} but no bonus found, adding {bonus.Type}");
-                        hideoutHelper.ApplyPlayerUpgradesBonuses(pmcProfile, bonus);
+                        hideoutHelper.ApplyPlayerUpgradesBonus(pmcProfile, bonus);
                     }
                 }
             }

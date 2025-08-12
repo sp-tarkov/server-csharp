@@ -228,7 +228,7 @@ public class RagfairOfferGenerator(
             return currencyCount;
         }
 
-        return handbookHelper.InRUB(currencyCount, currencyType);
+        return handbookHelper.InRoubles(currencyCount, currencyType);
     }
 
     /// <summary>

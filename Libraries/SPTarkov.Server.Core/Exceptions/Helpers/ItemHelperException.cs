@@ -1,4 +1,4 @@
-namespace SPTarkov.Server.Core.Exceptions.Items;
+namespace SPTarkov.Server.Core.Exceptions.Helpers;
 
 public class ItemHelperException : Exception
 {

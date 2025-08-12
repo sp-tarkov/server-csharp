@@ -937,7 +937,7 @@ public class RagfairController(
             }
 
             return paymentHelper.IsMoneyTpl(requirement.Template)
-                ? handbookHelper.InRUB(requirement.Count.Value, requirement.Template)
+                ? handbookHelper.InRoubles(requirement.Count.Value, requirement.Template)
                 : itemHelper.GetDynamicItemPrice(requirement.Template).Value * requirement.Count.Value;
         });
     }

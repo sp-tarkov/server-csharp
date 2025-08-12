@@ -187,7 +187,7 @@ public class HideoutController(
         {
             foreach (var bonus in bonuses)
             {
-                hideoutHelper.ApplyPlayerUpgradesBonuses(pmcData, bonus);
+                hideoutHelper.ApplyPlayerUpgradesBonus(pmcData, bonus);
             }
         }
 
