@@ -113,6 +113,7 @@ public class PlayerScavGenerator(
 
         // Add additional items to player scav as loot
         AddAdditionalLootToPlayerScavContainers(
+            scavData.Id.Value,
             playerScavKarmaSettings.LootItemsToAddChancePercent,
             scavData,
             [EquipmentSlots.TacticalVest, EquipmentSlots.Pockets, EquipmentSlots.Backpack]
@@ -137,6 +138,7 @@ public class PlayerScavGenerator(
     /// <param name="scavData"></param>
     /// <param name="containersToAddTo">Possible slotIds to add loot to</param>
     protected void AddAdditionalLootToPlayerScavContainers(
+        MongoId botId,
         Dictionary<MongoId, double> possibleItemsToAdd,
         BotBase scavData,
         HashSet<EquipmentSlots> containersToAddTo
@@ -169,6 +171,7 @@ public class PlayerScavGenerator(
             };
 
             var result = botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
+                botId,
                 containersToAddTo,
                 itemsToAdd[0].Id,
                 itemTemplate.Id,

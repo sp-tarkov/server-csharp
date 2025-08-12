@@ -38,6 +38,7 @@ public class BarrelInventoryMagGen(RandomUtil randomUtil, BotWeaponGeneratorHelp
         }
 
         botWeaponGeneratorHelper.AddAmmoIntoEquipmentSlots(
+            inventoryMagGen.GetBotId(),
             inventoryMagGen.GetAmmoTemplate().Id,
             (int)randomisedAmmoStackSize,
             inventoryMagGen.GetPmcInventory(),

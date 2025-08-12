@@ -65,6 +65,7 @@ public class BotLootGenerator(
     /// <param name="botInventory">Inventory to add loot to</param>
     /// <param name="botLevel">Level of bot</param>
     public void GenerateLoot(
+        MongoId botId,
         MongoId sessionId,
         BotType botJsonTemplate,
         BotGenerationDetails botGenerationDetails,
@@ -119,7 +120,7 @@ public class BotLootGenerator(
         // Forced pmc healing loot into secure container
         if (isPmc && _pmcConfig.ForceHealingItemsIntoSecure)
         {
-            AddForcedMedicalItemsToPmcSecure(botInventory, botRole);
+            AddForcedMedicalItemsToPmcSecure(botInventory, botRole, botId);
         }
 
         var botItemLimits = GetItemSpawnLimitsForBot(botRole);
@@ -132,6 +133,7 @@ public class BotLootGenerator(
 
         // Special items
         AddLootFromPool(
+            botId,
             botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.Special, botJsonTemplate),
             containersBotHasAvailable,
             specialLootItemCount,
@@ -143,6 +145,7 @@ public class BotLootGenerator(
 
         // Healing items / Meds
         AddLootFromPool(
+            botId,
             botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.HealingItems, botJsonTemplate),
             containersBotHasAvailable,
             healingItemCount,
@@ -156,6 +159,7 @@ public class BotLootGenerator(
 
         // Drugs
         AddLootFromPool(
+            botId,
             botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.DrugItems, botJsonTemplate),
             containersBotHasAvailable,
             drugItemCount,
@@ -169,6 +173,7 @@ public class BotLootGenerator(
 
         // Food
         AddLootFromPool(
+            botId,
             botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.FoodItems, botJsonTemplate),
             containersBotHasAvailable,
             foodItemCount,
@@ -182,6 +187,7 @@ public class BotLootGenerator(
 
         // Drink
         AddLootFromPool(
+            botId,
             botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.DrinkItems, botJsonTemplate),
             containersBotHasAvailable,
             drinkItemCount,
@@ -195,6 +201,7 @@ public class BotLootGenerator(
 
         // Currency
         AddLootFromPool(
+            botId,
             botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.CurrencyItems, botJsonTemplate),
             containersBotHasAvailable,
             currencyItemCount,
@@ -208,6 +215,7 @@ public class BotLootGenerator(
 
         // Stims
         AddLootFromPool(
+            botId,
             botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.StimItems, botJsonTemplate),
             containersBotHasAvailable,
             stimItemCount,
@@ -221,6 +229,7 @@ public class BotLootGenerator(
 
         // Grenades
         AddLootFromPool(
+            botId,
             botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.GrenadeItems, botJsonTemplate),
             [EquipmentSlots.Pockets, EquipmentSlots.TacticalVest], // Can't use containersBotHasEquipped as we don't want grenades added to backpack
             grenadeCount,
@@ -241,6 +250,7 @@ public class BotLootGenerator(
             if (isPmc && randomUtil.GetChance100(_pmcConfig.LooseWeaponInBackpackChancePercent))
             {
                 AddLooseWeaponsToInventorySlot(
+                    botId,
                     sessionId,
                     botInventory,
                     EquipmentSlots.Backpack,
@@ -258,6 +268,7 @@ public class BotLootGenerator(
                 : 0;
 
             AddLootFromPool(
+                botId,
                 botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.Backpack, botJsonTemplate, itemPriceLimits?.Backpack),
                 [EquipmentSlots.Backpack],
                 backpackLootCount,
@@ -277,6 +288,7 @@ public class BotLootGenerator(
         // Vest
         {
             AddLootFromPool(
+                botId,
                 botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.Vest, botJsonTemplate, itemPriceLimits?.Vest),
                 [EquipmentSlots.TacticalVest],
                 vestLootCount,
@@ -293,6 +305,7 @@ public class BotLootGenerator(
 
         // Pockets
         AddLootFromPool(
+            botId,
             botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.Pocket, botJsonTemplate, itemPriceLimits?.Pocket),
             [EquipmentSlots.Pockets],
             pocketLootCount,
@@ -310,6 +323,7 @@ public class BotLootGenerator(
         if (!isPmc || (isPmc && _pmcConfig.AddSecureContainerLootFromBotConfig))
         {
             AddLootFromPool(
+                botId,
                 botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.Secure, botJsonTemplate),
                 [EquipmentSlots.SecuredContainer],
                 50,
@@ -365,10 +379,11 @@ public class BotLootGenerator(
     /// </summary>
     /// <param name="botInventory">Inventory to add items to</param>
     /// <param name="botRole">Role of bot (pmcBEAR/pmcUSEC)</param>
-    protected void AddForcedMedicalItemsToPmcSecure(BotBaseInventory botInventory, string botRole)
+    protected void AddForcedMedicalItemsToPmcSecure(BotBaseInventory botInventory, string botRole, MongoId botId)
     {
         // surv12
         AddLootFromPool(
+            botId,
             new Dictionary<MongoId, double> { { ItemTpl.MEDICAL_SURV12_FIELD_SURGICAL_KIT, 1 } },
             [EquipmentSlots.SecuredContainer],
             1,
@@ -380,16 +395,8 @@ public class BotLootGenerator(
         );
 
         // AFAK
-        AddLootFromPool(
-            new Dictionary<MongoId, double> { { ItemTpl.MEDKIT_AFAK_TACTICAL_INDIVIDUAL_FIRST_AID_KIT, 1 } },
-            [EquipmentSlots.SecuredContainer],
-            10,
-            botInventory,
-            botRole,
-            null,
-            0,
-            true
-        );
+        var afaks = new Dictionary<MongoId, double> { { ItemTpl.MEDKIT_AFAK_TACTICAL_INDIVIDUAL_FIRST_AID_KIT, 1 } };
+        AddLootFromPool(botId, afaks, [EquipmentSlots.SecuredContainer], 10, botInventory, botRole, null, 0, true);
     }
 
     /// <summary>
@@ -405,6 +412,7 @@ public class BotLootGenerator(
     /// <param name="totalValueLimitRub">Total value of loot allowed in roubles</param>
     /// <param name="isPmc">Is bot being generated for a pmc</param>
     protected internal void AddLootFromPool(
+        MongoId botId,
         Dictionary<MongoId, double> pool,
         HashSet<EquipmentSlots> equipmentSlots,
         double totalItemCount,
@@ -498,6 +506,7 @@ public class BotLootGenerator(
 
             // Attempt to add item to container(s)
             var itemAddedResult = botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
+                botId,
                 equipmentSlots,
                 newRootItemId,
                 itemToAddTemplate.Id,
@@ -629,6 +638,7 @@ public class BotLootGenerator(
     /// <param name="botLevel"></param>
     /// <param name="containersIdFull"></param>
     public void AddLooseWeaponsToInventorySlot(
+        MongoId botId,
         MongoId sessionId,
         BotBaseInventory botInventory,
         EquipmentSlots equipmentSlot,
@@ -679,6 +689,7 @@ public class BotLootGenerator(
                 continue;
             }
             var result = botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
+                botId,
                 [equipmentSlot],
                 weaponRootItem.Id,
                 weaponRootItem.Template,

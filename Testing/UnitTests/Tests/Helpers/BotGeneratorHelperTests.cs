@@ -26,6 +26,7 @@ public class BotGeneratorHelperTests
     [Test]
     public void AddItemWithChildrenToEquipmentSlot_fit_vertical()
     {
+        var botId = new MongoId();
         var stashId = new MongoId();
         var equipmentId = new MongoId();
         var botInventory = new BotBaseInventory
@@ -50,6 +51,7 @@ public class BotGeneratorHelperTests
         var weaponWithChildren = CreateMp18(rootWeaponId);
 
         var result = _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
+            botId,
             [EquipmentSlots.Backpack],
             rootWeaponId,
             ItemTpl.SHOTGUN_MP18_762X54R_SINGLESHOT_RIFLE,
@@ -93,6 +95,7 @@ public class BotGeneratorHelperTests
     [Test]
     public void AddItemWithChildrenToEquipmentSlot_fit_horizontal()
     {
+        var botId = new MongoId();
         var stashId = new MongoId();
         var equipmentId = new MongoId();
         var botInventory = new BotBaseInventory
@@ -116,6 +119,7 @@ public class BotGeneratorHelperTests
         var weaponWithChildren = CreateMp18(rootWeaponId);
 
         var result = _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
+            botId,
             [EquipmentSlots.Backpack],
             rootWeaponId,
             ItemTpl.SHOTGUN_MP18_762X54R_SINGLESHOT_RIFLE,
@@ -130,7 +134,7 @@ public class BotGeneratorHelperTests
             { ItemTpl.BARTER_GOLD_SKULL_RING, 1 },
             { ItemTpl.BARTER_PACK_OF_NAILS, 1 },
         };
-        _botLootGenerator.AddLootFromPool(tplsToAdd, [EquipmentSlots.Backpack], 4, botInventory, "assault", null);
+        _botLootGenerator.AddLootFromPool(botId, tplsToAdd, [EquipmentSlots.Backpack], 4, botInventory, "assault", null);
 
         Assert.AreEqual(ItemAddedResult.SUCCESS, result);
 
@@ -152,6 +156,7 @@ public class BotGeneratorHelperTests
     [Test]
     public void AddItemWithChildrenToEquipmentSlot_fit_vertical_with_items_in_backpack()
     {
+        var botId = new MongoId();
         var botInventory = new BotBaseInventory { Items = [] };
         var backpack = new Item
         {
@@ -183,6 +188,7 @@ public class BotGeneratorHelperTests
         var weaponWithChildren = CreateMp18(rootWeaponId);
 
         var result = _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
+            botId,
             [EquipmentSlots.Backpack],
             rootWeaponId,
             ItemTpl.SHOTGUN_MP18_762X54R_SINGLESHOT_RIFLE,
@@ -204,6 +210,7 @@ public class BotGeneratorHelperTests
     [Test]
     public void AddItemWithChildrenToEquipmentSlot_no_space_in_first_grid_choose_second_grid()
     {
+        var botId = new MongoId();
         var botInventory = new BotBaseInventory { Items = [] };
         var backpack = new Item
         {
@@ -263,6 +270,7 @@ public class BotGeneratorHelperTests
         var weaponWithChildren = CreateMp18(rootWeaponId);
 
         var result = _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
+            botId,
             [EquipmentSlots.Backpack],
             rootWeaponId,
             ItemTpl.SHOTGUN_MP18_762X54R_SINGLESHOT_RIFLE,
@@ -284,6 +292,7 @@ public class BotGeneratorHelperTests
     [Test]
     public void AddItemWithChildrenToEquipmentSlot_no_space()
     {
+        var botId = new MongoId();
         var botInventory = new BotBaseInventory { Items = [] };
         var backpack = new Item
         {
@@ -357,6 +366,7 @@ public class BotGeneratorHelperTests
         var weaponWithChildren = CreateMp18(rootWeaponId);
 
         var result = _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
+            botId,
             [EquipmentSlots.Backpack],
             rootWeaponId,
             ItemTpl.SHOTGUN_MP18_762X54R_SINGLESHOT_RIFLE,
@@ -373,6 +383,7 @@ public class BotGeneratorHelperTests
     [Test]
     public void AddItemWithChildrenToEquipmentSlot_custom_gun_no_space()
     {
+        var botId = new MongoId();
         var botInventory = new BotBaseInventory { Items = [] };
         var backpack = new Item
         {
@@ -427,7 +438,12 @@ public class BotGeneratorHelperTests
 
         var rootWeaponId = new MongoId();
         var weaponWithChildren = new List<Item>();
-        var root = new Item { Id = rootWeaponId, Template = ItemTpl.ASSAULTRIFLE_MOLOT_ARMS_VPO136_VEPRKM_762X39_CARBINE };
+        var root = new Item
+        {
+            Id = rootWeaponId,
+            Template = ItemTpl.ASSAULTRIFLE_MOLOT_ARMS_VPO136_VEPRKM_762X39_CARBINE,
+            ParentId = backpack.Id,
+        };
         weaponWithChildren.Add(root);
 
         var stock = new Item
@@ -458,6 +474,7 @@ public class BotGeneratorHelperTests
         weaponWithChildren.Add(muzzle);
 
         var result = _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
+            botId,
             [EquipmentSlots.Backpack],
             rootWeaponId,
             root.Template,

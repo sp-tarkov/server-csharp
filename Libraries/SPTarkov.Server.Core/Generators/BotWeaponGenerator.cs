@@ -418,6 +418,7 @@ public class BotWeaponGenerator(
     /// <param name="inventory">Inventory to add magazines to</param>
     /// <param name="botRole">The bot type we're generating extra mags for</param>
     public void AddExtraMagazinesToInventory(
+        MongoId botId,
         GenerateWeaponResult generatedWeaponResult,
         GenerationData magWeights,
         BotBaseInventory inventory,
@@ -448,15 +449,16 @@ public class BotWeaponGenerator(
         // Has an UBGL
         if (generatedWeaponResult.ChosenUbglAmmoTemplate is not null && !generatedWeaponResult.ChosenUbglAmmoTemplate.Value.IsEmpty)
         {
-            AddUbglGrenadesToBotInventory(weaponAndMods, generatedWeaponResult, inventory);
+            AddUbglGrenadesToBotInventory(botId, weaponAndMods, generatedWeaponResult, inventory);
         }
 
-        var inventoryMagGenModel = new InventoryMagGen(magWeights, magTemplate, weaponTemplate, ammoTemplate.Value, inventory);
+        var inventoryMagGenModel = new InventoryMagGen(magWeights, magTemplate, weaponTemplate, ammoTemplate.Value, inventory, botId);
 
         _inventoryMagGenComponents.FirstOrDefault(v => v.CanHandleInventoryMagGen(inventoryMagGenModel)).Process(inventoryMagGenModel);
 
         // Add x stacks of bullets to SecuredContainer (bots use a magic mag packing skill to reload instantly)
         AddAmmoToSecureContainer(
+            botId,
             _botConfig.SecureContainerAmmoStackCount,
             generatedWeaponResult.ChosenAmmoTemplate,
             ammoTemplate.Value.Properties.StackMaxSize ?? 0,
@@ -471,6 +473,7 @@ public class BotWeaponGenerator(
     /// <param name="generatedWeaponResult">Result of weapon generation</param>
     /// <param name="inventory">Bot inventory to add grenades to</param>
     protected void AddUbglGrenadesToBotInventory(
+        MongoId botId,
         List<Item> weaponMods,
         GenerateWeaponResult generatedWeaponResult,
         BotBaseInventory inventory
@@ -491,11 +494,11 @@ public class BotWeaponGenerator(
         var ubglAmmoDbTemplate = itemHelper.GetItem(generatedWeaponResult.ChosenUbglAmmoTemplate.Value).Value;
 
         // Add greandes to bot inventory
-        var ubglAmmoGenModel = new InventoryMagGen(ubglMinMax, ubglDbTemplate, ubglDbTemplate, ubglAmmoDbTemplate, inventory);
+        var ubglAmmoGenModel = new InventoryMagGen(ubglMinMax, ubglDbTemplate, ubglDbTemplate, ubglAmmoDbTemplate, inventory, botId);
         _inventoryMagGenComponents.FirstOrDefault(v => v.CanHandleInventoryMagGen(ubglAmmoGenModel)).Process(ubglAmmoGenModel);
 
         // Store extra grenades in secure container
-        AddAmmoToSecureContainer(5, generatedWeaponResult.ChosenUbglAmmoTemplate.Value, 20, inventory);
+        AddAmmoToSecureContainer(botId, 5, generatedWeaponResult.ChosenUbglAmmoTemplate.Value, 20, inventory);
     }
 
     /// <summary>
@@ -505,13 +508,14 @@ public class BotWeaponGenerator(
     /// <param name="ammoTpl">Ammo type to add.</param>
     /// <param name="stackSize">Size of the ammo stack to add.</param>
     /// <param name="inventory">Player inventory.</param>
-    protected void AddAmmoToSecureContainer(int stackCount, MongoId ammoTpl, int stackSize, BotBaseInventory inventory)
+    protected void AddAmmoToSecureContainer(MongoId botId, int stackCount, MongoId ammoTpl, int stackSize, BotBaseInventory inventory)
     {
         var container = new HashSet<EquipmentSlots> { EquipmentSlots.SecuredContainer };
         for (var i = 0; i < stackCount; i++)
         {
             var id = new MongoId();
             botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
+                botId,
                 container,
                 id,
                 ammoTpl,

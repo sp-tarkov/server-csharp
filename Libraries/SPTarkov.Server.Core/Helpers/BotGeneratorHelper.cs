@@ -24,6 +24,7 @@ public class BotGeneratorHelper(
     InventoryHelper inventoryHelper,
     ProfileActivityService profileActivityService,
     ServerLocalisationService serverLocalisationService,
+    BotInventoryContainerService botInventoryContainerService,
     ConfigServer configServer
 )
 {
@@ -438,6 +439,7 @@ public class BotGeneratorHelper(
     /// <param name="containersIdFull">Container Ids with no space for more items</param>
     /// <returns>ItemAddedResult result object</returns>
     public ItemAddedResult AddItemWithChildrenToEquipmentSlot(
+        MongoId botId,
         HashSet<EquipmentSlots> equipmentSlots,
         MongoId rootItemId,
         MongoId rootItemTplId,
@@ -481,7 +483,7 @@ public class BotGeneratorHelper(
             }
 
             // Get container details from db
-            var (isValidItem, itemDbDetails) = itemHelper.GetItem(container.Template);
+            var (isValidItem, containerDbDetails) = itemHelper.GetItem(container.Template);
             if (!isValidItem)
             {
                 logger.Warning(serverLocalisationService.GetText("bot-missing_container_with_tpl", container.Template));
@@ -490,7 +492,7 @@ public class BotGeneratorHelper(
                 continue;
             }
 
-            if (itemDbDetails?.Properties?.Grids is null || !itemDbDetails.Properties.Grids.Any())
+            if (containerDbDetails?.Properties?.Grids is null || !containerDbDetails.Properties.Grids.Any())
             {
                 // Container has no slots to hold items, skip to next container
                 continue;
@@ -499,10 +501,27 @@ public class BotGeneratorHelper(
             // Get x/y grid size of item
             var (itemWidth, itemHeight) = inventoryHelper.GetItemSize(rootItemTplId, rootItemId, itemWithChildrenList);
 
+            // TODO: replace with call to BotInventoryContainerService.AddItemToBotContainer()
+            botInventoryContainerService.AddEmptyContainerToBot(botId, equipmentSlotId, containerDbDetails, container);
+            var result = botInventoryContainerService.AddItemToBotContainer(
+                botId,
+                equipmentSlotId,
+                itemWithChildrenList,
+                itemWidth,
+                itemHeight
+            );
+            if (result != ItemAddedResult.SUCCESS)
+            {
+                // failed to add to container, try next
+                continue;
+            }
+
+            return result;
+
             // Iterate over each grid in the container and look for a big enough space for the item to be placed in
             var currentGridCount = 1;
-            var totalSlotGridCount = itemDbDetails?.Properties?.Grids?.Count();
-            foreach (var slotGrid in itemDbDetails?.Properties?.Grids ?? [])
+            var totalSlotGridCount = containerDbDetails?.Properties?.Grids?.Count();
+            foreach (var slotGrid in containerDbDetails?.Properties?.Grids ?? [])
             {
                 // Grid is empty, skip or item size is bigger than grid
                 if (IsGridSmallerThanItem(slotGrid, itemWidth, itemHeight))
@@ -523,6 +542,7 @@ public class BotGeneratorHelper(
                     : inventory.Items.Where(item => item.SlotId == slotGrid.Name && item.ParentId == container.Id);
 
                 // Get each root item + children
+                // TODO: call BotInventoryContainerService.GetItemsInContainer()
                 var containerItemsWithChildren = GetContainerItemsWithChildren(rootItemsInContainer, inventory.Items);
 
                 if (slotGrid.Props is not null)

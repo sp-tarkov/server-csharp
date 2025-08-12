@@ -173,6 +173,9 @@ public class BotGenerator(
         var botRoleLowercase = botGenerationDetails.Role.ToLowerInvariant();
         var botLevel = botLevelGenerator.GenerateBotLevel(botJsonTemplate.BotExperience.Level, botGenerationDetails, bot);
 
+        // Generate new bot ID
+        AddIdsToBot(bot, botGenerationDetails);
+
         // Only filter bot equipment, never players
         if (!botGenerationDetails.IsPlayerScav)
         {
@@ -254,6 +257,7 @@ public class BotGenerator(
         SetBotAppearance(bot, botJsonTemplate.BotAppearance, botGenerationDetails);
 
         bot.Inventory = botInventoryGenerator.GenerateInventory(
+            bot.Id.Value,
             sessionId,
             botJsonTemplate,
             botRoleLowercase,
@@ -266,9 +270,6 @@ public class BotGenerator(
         {
             AddDogtagToBot(bot);
         }
-
-        // Generate new bot ID
-        AddIdsToBot(bot, botGenerationDetails);
 
         // Generate new inventory ID
         GenerateInventoryId(bot);
