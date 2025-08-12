@@ -28,8 +28,7 @@ public class HideoutHelper(
     ProfileHelper profileHelper,
     InventoryHelper inventoryHelper,
     ItemHelper itemHelper,
-    ICloner cloner,
-    MathUtil mathUtil
+    ICloner cloner
 )
 {
     public static readonly MongoId BitcoinProductionId = new("5d5c205bd582a50d042a3c0e");

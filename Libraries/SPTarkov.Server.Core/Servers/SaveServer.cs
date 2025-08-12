@@ -210,7 +210,15 @@ public class SaveServer(
 
             if (profile is not null)
             {
-                profiles[sessionID] = profileValidatorService.MigrateAndValidateProfile(profile);
+                try
+                {
+                    profiles[sessionID] = profileValidatorService.MigrateAndValidateProfile(profile);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    logger.Critical($"Failed to load profile with ID '{sessionID}'");
+                    logger.Critical(ex.ToString());
+                }
             }
         }
 
@@ -292,6 +300,13 @@ public class SaveServer(
         return !fileUtil.FileExists(file);
     }
 
+    /// <summary>
+    /// Determines whether the specified profile is marked as invalid or cannot be loaded.
+    /// </summary>
+    /// <param name="sessionID">The ID of the profile to check.</param>
+    /// <returns>
+    /// <c>true</c> if the profile is invalid or unloadable; otherwise, <c>false</c>.
+    /// </returns>
     public bool IsProfileInvalidOrUnloadable(MongoId sessionID)
     {
         if (

@@ -16,7 +16,6 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class LauncherController(
-    ISptLogger<LauncherController> logger,
     IReadOnlyList<SptMod> loadedMods,
     HashUtil hashUtil,
     SaveServer saveServer,

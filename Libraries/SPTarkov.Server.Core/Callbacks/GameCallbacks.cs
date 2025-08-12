@@ -132,7 +132,7 @@ public class GameCallbacks(
     }
 
     /// <summary>
-    ///     Handle /client/report/send & /client/reports/lobby/send
+    ///     Handle /client/report/send and handle /client/reports/lobby/send
     /// </summary>
     /// <returns></returns>
     public ValueTask<string> ReportNickname(string url, UIDRequestData request, MongoId sessionID)

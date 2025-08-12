@@ -3,14 +3,12 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.InRaid;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class InRaidController(
-    ISptLogger<InRaidController> logger,
     ProfileHelper profileHelper,
     //ApplicationContext _applicationContext,
     ConfigServer configServer

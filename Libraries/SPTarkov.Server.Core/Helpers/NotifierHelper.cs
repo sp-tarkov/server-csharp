@@ -29,7 +29,7 @@ public class NotifierHelper(HttpServerHelper httpServerHelper)
             EventIdentifier = dialogueMessage.Id,
             OfferId = ragfairData.OfferId,
             HandbookId = ragfairData.HandbookId,
-            Count = (int)ragfairData.Count,
+            Count = Convert.ToInt32(ragfairData.Count),
         };
     }
 

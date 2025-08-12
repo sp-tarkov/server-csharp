@@ -116,7 +116,7 @@ public static class ObjectExtensions
         return resultDict;
     }
 
-    public static T ToObject<T>(this JsonElement element)
+    public static T? ToObject<T>(this JsonElement element)
     {
         var json = element.GetRawText();
         return JsonSerializer.Deserialize<T>(json);

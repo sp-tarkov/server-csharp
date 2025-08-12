@@ -3,14 +3,13 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Bot;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Bots;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Generators;
 
 [Injectable]
-public class BotLevelGenerator(ISptLogger<BotLevelGenerator> logger, RandomUtil randomUtil, DatabaseService databaseService)
+public class BotLevelGenerator(RandomUtil randomUtil, DatabaseService databaseService)
 {
     /// <summary>
     ///     Return a randomised bot level and exp value

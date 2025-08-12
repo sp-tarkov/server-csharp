@@ -172,7 +172,7 @@ public static class ProfileExtensions
     /// <param name="expTable">Experience table from globals.json</param>
     /// <returns>
     ///     The calculated level of the player as an integer, or null if the level cannot be determined.
-    ///     This value is also assigned to <see cref="PmcData.Info.Level" /> within the provided profile.
+    ///     This value is also assigned to <see cref="Info.Level" /> within the provided profile.
     /// </returns>
     public static int? CalculateLevel(this PmcData pmcData, ExpTable[] expTable)
     {

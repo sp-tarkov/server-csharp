@@ -10,10 +10,6 @@ public record RagfairOffer
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    private string? _id;
-
-    private string? _root;
-
     [JsonPropertyName("sellResult")]
     public List<SellResult>? SellResults { get; set; }
 
