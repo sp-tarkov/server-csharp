@@ -9,9 +9,9 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable(InjectionType.Singleton)]
 public class HttpServerHelper(ConfigServer configServer)
 {
-    protected readonly HttpConfig _httpConfig = configServer.GetConfig<HttpConfig>();
+    protected readonly HttpConfig HttpConfig = configServer.GetConfig<HttpConfig>();
 
-    protected readonly FrozenDictionary<string, string> mime = new Dictionary<string, string>
+    protected readonly FrozenDictionary<string, string> Mime = new Dictionary<string, string>
     {
         { "css", "text/css" },
         { "bin", "application/octet-stream" },
@@ -26,7 +26,7 @@ public class HttpServerHelper(ConfigServer configServer)
 
     public string? GetMimeText(string key)
     {
-        return mime.GetValueOrDefault(key);
+        return Mime.GetValueOrDefault(key);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class HttpServerHelper(ConfigServer configServer)
     /// <returns>URI</returns>
     public string BuildUrl()
     {
-        return $"{_httpConfig.BackendIp}:{_httpConfig.BackendPort}";
+        return $"{HttpConfig.BackendIp}:{HttpConfig.BackendPort}";
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public class HttpServerHelper(ConfigServer configServer)
 
     public void SendTextJson(HttpResponse resp, object output)
     {
-        resp.Headers.Append("Content-Type", mime["json"]);
+        resp.Headers.Append("Content-Type", Mime["json"]);
         resp.StatusCode = 200;
         //  TODO: figure this one out
         // resp.writeHead(200, "OK",  {

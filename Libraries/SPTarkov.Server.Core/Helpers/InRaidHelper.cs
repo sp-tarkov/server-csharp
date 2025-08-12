@@ -1,11 +1,13 @@
 ﻿using System.Collections.Frozen;
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Exceptions.Helpers;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -13,23 +15,17 @@ using SPTarkov.Server.Core.Utils.Cloners;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configServer, ICloner cloner, DatabaseService databaseService)
+public class InRaidHelper(
+    ISptLogger<InRaidHelper> logger,
+    InventoryHelper inventoryHelper,
+    ConfigServer configServer,
+    ICloner cloner,
+    DatabaseService databaseService
+)
 {
-    protected static readonly FrozenSet<string> _pocketSlots = ["pocket1", "pocket2", "pocket3", "pocket4"];
-    protected readonly InRaidConfig _inRaidConfig = configServer.GetConfig<InRaidConfig>();
-    protected readonly LostOnDeathConfig _lostOnDeathConfig = configServer.GetConfig<LostOnDeathConfig>();
-
-    /// <summary>
-    ///     Deprecated. Reset the skill points earned in a raid to 0, ready for next raid.
-    /// </summary>
-    /// <param name="profile">Profile to update</param>
-    protected void ResetSkillPointsEarnedDuringRaid(PmcData profile)
-    {
-        foreach (var skill in profile.Skills.Common)
-        {
-            skill.PointsEarnedDuringSession = 0.0;
-        }
-    }
+    protected static readonly FrozenSet<string> PocketSlots = ["pocket1", "pocket2", "pocket3", "pocket4"];
+    protected readonly InRaidConfig InRaidConfig = configServer.GetConfig<InRaidConfig>();
+    protected readonly LostOnDeathConfig LostOnDeathConfig = configServer.GetConfig<LostOnDeathConfig>();
 
     /// <summary>
     ///     Update a player's inventory post-raid.
@@ -37,21 +33,54 @@ public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configSe
     ///     Add new items found in raid to profile.
     ///     Store insurance items in profile.
     /// </summary>
-    /// <param name="sessionID">Session id</param>
+    /// <param name="sessionId">Session id</param>
     /// <param name="serverProfile">Profile to update</param>
     /// <param name="postRaidProfile">Profile returned by client after a raid</param>
     /// <param name="isSurvived">Indicates if the player survived the raid</param>
     /// <param name="isTransfer">Indicates if it is a transfer operation</param>
-    public void SetInventory(MongoId sessionID, PmcData serverProfile, PmcData postRaidProfile, bool isSurvived, bool isTransfer)
+    public void SetInventory(MongoId sessionId, PmcData serverProfile, PmcData postRaidProfile, bool isSurvived, bool isTransfer)
     {
+        if (serverProfile.InsuredItems is null)
+        {
+            throw new InRaidHelperException("Insured items are null when trying to set inventory post raid");
+        }
+
+        if (
+            serverProfile.Inventory?.Items is null
+            || serverProfile.Inventory.QuestRaidItems is null
+            || serverProfile.Inventory?.Equipment is null
+        )
+        {
+            throw new InRaidHelperException(
+                "Server profile inventory items, quest raid items, or equipment are null when trying to set inventory post raid"
+            );
+        }
+
+        if (
+            postRaidProfile.Inventory?.Items is null
+            || postRaidProfile.Inventory.QuestRaidItems is null
+            || postRaidProfile.Inventory.Equipment is null
+        )
+        {
+            throw new InRaidHelperException(
+                "Post raid profile inventory items, quest raid items, or equipment are null when trying to set inventory post raid"
+            );
+        }
+
         // Store insurance (as removeItem() removes insured items)
         var insured = cloner.Clone(serverProfile.InsuredItems);
+        if (insured is null)
+        {
+            const string message = "Cloned insured items are null when trying to set inventory post raid";
+            logger.Error(message);
+            throw new InRaidHelperException(message);
+        }
 
         // Remove equipment and loot items stored on player from server profile in preparation for data from client being added
-        inventoryHelper.RemoveItem(serverProfile, serverProfile.Inventory.Equipment.Value, sessionID);
+        inventoryHelper.RemoveItem(serverProfile, serverProfile.Inventory.Equipment.Value, sessionId);
 
         // Remove quest items stored on player from server profile in preparation for data from client being added
-        inventoryHelper.RemoveItem(serverProfile, serverProfile.Inventory.QuestRaidItems.Value, sessionID);
+        inventoryHelper.RemoveItem(serverProfile, serverProfile.Inventory.QuestRaidItems.Value, sessionId);
 
         // Get all items that have a parent of `serverProfile.Inventory.equipment` (All items player had on them at end of raid)
         var postRaidInventoryItems = postRaidProfile.Inventory.Items.GetItemWithChildren(postRaidProfile.Inventory.Equipment.Value);
@@ -61,7 +90,7 @@ public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configSe
 
         // Handle Removing of FIR status if player did not survive + not transferring
         // Do after above filtering code to reduce work done
-        if (!isSurvived && !isTransfer && !_inRaidConfig.AlwaysKeepFoundInRaidOnRaidEnd)
+        if (!isSurvived && !isTransfer && !InRaidConfig.AlwaysKeepFoundInRaidOnRaidEnd)
         {
             RemoveFiRStatusFromItems(postRaidProfile.Inventory.Items);
         }
@@ -85,12 +114,10 @@ public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configSe
         var dbItems = databaseService.GetItems();
 
         var itemsToRemovePropertyFrom = items.Where(item =>
-        {
-            // Has upd object + upd.SpawnedInSession property + not a quest item
-            return (item.Upd?.SpawnedInSession ?? false)
-                && !(dbItems[item.Template].Properties.QuestItem ?? false)
-                && !(_inRaidConfig.KeepFiRSecureContainerOnDeath && item.ItemIsInsideContainer("SecuredContainer", items));
-        });
+            (item.Upd?.SpawnedInSession ?? false)
+            && !(dbItems[item.Template].Properties?.QuestItem ?? false)
+            && !(InRaidConfig.KeepFiRSecureContainerOnDeath && item.ItemIsInsideContainer("SecuredContainer", items))
+        );
 
         foreach (var item in itemsToRemovePropertyFrom)
         {
@@ -131,6 +158,11 @@ public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configSe
     /// <param name="sessionId">Player/Session id</param>
     public void DeleteInventory(PmcData pmcData, MongoId sessionId)
     {
+        if (pmcData.Inventory is null)
+        {
+            throw new InRaidHelperException("Pmc profile inventory is null when trying to delete inventory");
+        }
+
         // Get inventory items to remove from players profile
         var itemsToDeleteFromProfile = GetInventoryItemsLostOnDeath(pmcData).ToList();
 
@@ -141,7 +173,7 @@ public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configSe
         }
 
         // Remove contents of fast panel
-        pmcData.Inventory.FastPanel = new();
+        pmcData.Inventory.FastPanel = new Dictionary<string, MongoId>();
     }
 
     /// <summary>
@@ -151,9 +183,9 @@ public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configSe
     /// <returns>List of items lost on death</returns>
     protected IEnumerable<Item> GetInventoryItemsLostOnDeath(PmcData pmcProfile)
     {
-        var inventoryItems = pmcProfile.Inventory.Items ?? [];
-        var equipmentRootId = pmcProfile?.Inventory?.Equipment;
-        var questRaidItemContainerId = pmcProfile?.Inventory?.QuestRaidItems;
+        var inventoryItems = pmcProfile.Inventory?.Items ?? [];
+        var equipmentRootId = pmcProfile.Inventory?.Equipment;
+        var questRaidItemContainerId = pmcProfile.Inventory?.QuestRaidItems;
 
         return inventoryItems.Where(item =>
         {
@@ -171,7 +203,7 @@ public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configSe
 
             // Pocket items are lost on death
             // Ensure we don't pick up pocket items from mannequins
-            if (item.SlotId.StartsWith("pocket") && pmcProfile.DoesItemHaveRootId(item, pmcProfile.Inventory.Equipment.Value))
+            if ((item.SlotId?.StartsWith("pocket") ?? false) && pmcProfile.DoesItemHaveRootId(item, pmcProfile.Inventory!.Equipment!.Value))
             {
                 return true;
             }
@@ -188,6 +220,11 @@ public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configSe
     /// <returns>true if item is kept after death</returns>
     protected bool IsItemKeptAfterDeath(PmcData pmcData, Item itemToCheck)
     {
+        if (pmcData.Inventory is null)
+        {
+            throw new InRaidHelperException("Pmc profile inventory is null when checking if an item is kept on death");
+        }
+
         // Base inventory items are always kept
         if (itemToCheck.ParentId is null)
         {
@@ -198,7 +235,7 @@ public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configSe
         if (itemToCheck.ParentId == pmcData.Inventory.Equipment)
         {
             // Check slot id against config, true = delete, false = keep, undefined = delete
-            var discard = _lostOnDeathConfig.Equipment.GetByJsonProp<bool>(itemToCheck.SlotId);
+            var discard = LostOnDeathConfig.Equipment.GetByJsonProp<bool>(itemToCheck.SlotId);
             if (discard)
             // Lost on death
             {
@@ -209,19 +246,19 @@ public class InRaidHelper(InventoryHelper inventoryHelper, ConfigServer configSe
         }
 
         // Should we keep items in pockets on death
-        if (!_lostOnDeathConfig.Equipment.PocketItems && _pocketSlots.Contains(itemToCheck.SlotId))
+        if (!LostOnDeathConfig.Equipment.PocketItems && PocketSlots.Contains(itemToCheck.SlotId ?? string.Empty))
         {
             return true;
         }
 
         // Is quest item + quest item not lost on death
-        if (itemToCheck.ParentId == pmcData.Inventory.QuestRaidItems && !_lostOnDeathConfig.QuestItems)
+        if (itemToCheck.ParentId == pmcData.Inventory.QuestRaidItems && !LostOnDeathConfig.QuestItems)
         {
             return true;
         }
 
         // special slots are always kept after death
-        if ((itemToCheck.SlotId?.Contains("SpecialSlot") ?? false) && _lostOnDeathConfig.SpecialSlotItems)
+        if ((itemToCheck.SlotId?.Contains("SpecialSlot") ?? false) && LostOnDeathConfig.SpecialSlotItems)
         {
             return true;
         }
