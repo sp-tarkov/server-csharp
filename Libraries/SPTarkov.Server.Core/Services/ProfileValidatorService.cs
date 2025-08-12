@@ -20,6 +20,12 @@ public class ProfileValidatorService(
 {
     private readonly IEnumerable<IProfileMigration> _sortedMigrations = profileMigrations.Sort();
 
+    /// <summary>
+    /// Migrates and verifies if profiles are compatible
+    /// </summary>
+    /// <param name="profile">The profile as a <see cref="JsonObject"/> to verify and migrate</param>
+    /// <returns>The migrated and validated profile</returns>
+    /// <exception cref="InvalidOperationException">Thrown if a profile file cannot be loaded at all</exception>
     public SptProfile MigrateAndValidateProfile(JsonObject profile)
     {
         var profileId = profile["info"]?["id"]?.GetValue<string>();

@@ -98,7 +98,7 @@ public class SptWebSocketConnectionHandler(
         }
     }
 
-    public async Task OnClose(WebSocket ws, HttpContext context, string sessionIdContext)
+    public Task OnClose(WebSocket ws, HttpContext context, string sessionIdContext)
     {
         var splitUrl = context.Request.Path.Value.Split("/");
         var sessionID = splitUrl.Last();
@@ -144,6 +144,8 @@ public class SptWebSocketConnectionHandler(
                 }
             }
         }
+
+        return Task.CompletedTask;
     }
 
     public void SendMessageToAll(WsNotificationEvent output)

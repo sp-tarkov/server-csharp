@@ -425,7 +425,7 @@ public class DialogueController(
     }
 
     /// <summary>
-    ///     Handle client/mail/dialog/pin && Handle client/mail/dialog/unpin
+    ///     Handle client/mail/dialog/pin and handle client/mail/dialog/unpin
     /// </summary>
     /// <param name="dialogueId"></param>
     /// <param name="shouldPin"></param>

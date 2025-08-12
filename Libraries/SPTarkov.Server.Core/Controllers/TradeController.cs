@@ -27,7 +27,6 @@ public class TradeController(
     TimeUtil timeUtil,
     RandomUtil randomUtil,
     ItemHelper itemHelper,
-    ProfileHelper profileHelper,
     RagfairOfferHelper ragfairOfferHelper,
     RagfairServer ragfairServer,
     HttpResponseUtil httpResponseUtil,

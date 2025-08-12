@@ -8,8 +8,9 @@ namespace SPTarkov.Server.Core.Servers.Ws.Message;
 [Injectable]
 public class DefaultSptWebSocketMessageHandler(ISptLogger<DefaultSptWebSocketMessageHandler> logger) : ISptWebSocketMessageHandler
 {
-    public async Task OnSptMessage(string sessionID, WebSocket client, byte[] rawData)
+    public Task OnSptMessage(string sessionID, WebSocket client, byte[] rawData)
     {
         logger.Debug($"[{sessionID}] SPT message received: {Encoding.UTF8.GetString(rawData)}");
+        return Task.CompletedTask;
     }
 }

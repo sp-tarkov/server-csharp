@@ -15,9 +15,7 @@ public record TemplateItem
 
     private string? _name;
 
-    private string? _parent;
-
-    private string _prototype;
+    private string? _prototype;
 
     private string? _type;
 
@@ -78,9 +76,9 @@ public record Props
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
-    private string _backgroundColor;
+    private string? _backgroundColor;
 
-    private string _itemSound;
+    private string? _itemSound;
     private string? _metascoreGroup;
 
     private string? _rarityPvE;

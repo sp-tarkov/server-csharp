@@ -4,7 +4,6 @@ using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -14,7 +13,6 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class LauncherV2Controller(
-    ISptLogger<LauncherV2Controller> logger,
     IReadOnlyList<SptMod> loadedMods,
     HashUtil hashUtil,
     SaveServer saveServer,
