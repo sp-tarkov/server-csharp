@@ -28,6 +28,9 @@ public class ProfileValidatorHelper(
     /// </summary>
     /// <param name="sessionId"> Session ID </param>
     /// <param name="fullProfile"> Profile to check inventory of </param>
+    /// <exception cref="InvalidModdedItemException">Thrown if <see cref="GameFixes.RemoveModItemsFromProfile">RemoveModItemsFromProfile</see> is false.</exception>
+    /// <exception cref="InvalidModdedClothingException">Thrown if <see cref="GameFixes.RemoveModItemsFromProfile">RemoveModItemsFromProfile</see> is false.</exception>
+    /// <exception cref="InvalidModdedTraderException">Thrown if <see cref="GameFixes.RemoveModItemsFromProfile">RemoveModItemsFromProfile</see> is false.</exception>
     public void CheckForOrphanedModdedItems(MongoId sessionId, SptProfile fullProfile)
     {
         var itemsDb = databaseService.GetItems();
