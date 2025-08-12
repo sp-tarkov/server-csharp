@@ -41,7 +41,9 @@ public class DurabilityLimitsHelper(
         var itemMaxDurability = itemTemplate?.Properties?.MaxDurability;
         if (!itemMaxDurability.HasValue)
         {
-            throw new DurabilityHelperException("Item max durability amount is null when trying to get max armor durability");
+            const string message = "Item max durability amount is null when trying to get max armor durability";
+            logger.Error(message);
+            throw new DurabilityHelperException(message);
         }
 
         if (botRole is null)
@@ -158,7 +160,9 @@ public class DurabilityLimitsHelper(
 
         if (!_botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var durability))
         {
-            throw new DurabilityHelperException($"Bot role {botRole} durability doesn't exist");
+            var message = $"Bot role {botRole} durability doesn't exist";
+            logger.Error(message);
+            throw new DurabilityHelperException(message);
         }
 
         return durability.Weapon.LowestMax;
@@ -177,7 +181,9 @@ public class DurabilityLimitsHelper(
 
         if (!_botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var durability))
         {
-            throw new DurabilityHelperException($"Bot role {botRole} durability doesn't exist");
+            var message = $"Bot role {botRole} durability doesn't exist";
+            logger.Error(message);
+            throw new DurabilityHelperException(message);
         }
 
         return durability.Weapon.HighestMax;
@@ -221,7 +227,9 @@ public class DurabilityLimitsHelper(
 
         if (!_botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var durability))
         {
-            throw new DurabilityHelperException($"Bot role {botRole} durability doesn't exist");
+            var message = $"Bot role {botRole} durability doesn't exist";
+            logger.Error(message);
+            throw new DurabilityHelperException(message);
         }
 
         return durability.Weapon.MinDelta;
@@ -241,7 +249,9 @@ public class DurabilityLimitsHelper(
 
         if (!_botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value))
         {
-            throw new DurabilityHelperException($"Bot role {botRole} durability doesn't exist");
+            var message = $"Bot role {botRole} durability doesn't exist";
+            logger.Error(message);
+            throw new DurabilityHelperException(message);
         }
 
         return value.Weapon.MaxDelta;
@@ -261,7 +271,9 @@ public class DurabilityLimitsHelper(
 
         if (!_botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value))
         {
-            throw new DurabilityHelperException($"Bot role {botRole} durability doesn't exist");
+            var message = $"Bot role {botRole} durability doesn't exist";
+            logger.Error(message);
+            throw new DurabilityHelperException(message);
         }
 
         return value.Armor.MinDelta;
@@ -281,7 +293,9 @@ public class DurabilityLimitsHelper(
 
         if (!_botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value))
         {
-            throw new DurabilityHelperException($"Bot role {botRole} durability doesn't exist");
+            var message = $"Bot role {botRole} durability doesn't exist";
+            logger.Error(message);
+            throw new DurabilityHelperException(message);
         }
 
         return value.Armor.MaxDelta;
@@ -301,7 +315,9 @@ public class DurabilityLimitsHelper(
 
         if (!_botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value))
         {
-            throw new DurabilityHelperException($"Bot role {botRole} durability doesn't exist");
+            var message = $"Bot role {botRole} durability doesn't exist";
+            logger.Error(message);
+            throw new DurabilityHelperException(message);
         }
 
         return value.Armor.MinLimitPercent;
@@ -321,7 +337,9 @@ public class DurabilityLimitsHelper(
 
         if (!_botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value))
         {
-            throw new DurabilityHelperException($"Bot role {botRole} durability doesn't exist");
+            var message = $"Bot role {botRole} durability doesn't exist";
+            logger.Error(message);
+            throw new DurabilityHelperException(message);
         }
 
         return value.Weapon.MinLimitPercent;

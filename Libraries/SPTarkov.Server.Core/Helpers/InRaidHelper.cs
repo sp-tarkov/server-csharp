@@ -42,7 +42,9 @@ public class InRaidHelper(
     {
         if (serverProfile.InsuredItems is null)
         {
-            throw new InRaidHelperException("Insured items are null when trying to set inventory post raid");
+            const string message = "Insured items are null when trying to set inventory post raid";
+            logger.Error(message);
+            throw new InRaidHelperException(message);
         }
 
         if (
@@ -51,9 +53,10 @@ public class InRaidHelper(
             || serverProfile.Inventory?.Equipment is null
         )
         {
-            throw new InRaidHelperException(
-                "Server profile inventory items, quest raid items, or equipment are null when trying to set inventory post raid"
-            );
+            const string message =
+                "Server profile inventory items, quest raid items, or equipment are null when trying to set inventory post raid";
+            logger.Error(message);
+            throw new InRaidHelperException(message);
         }
 
         if (
@@ -62,9 +65,10 @@ public class InRaidHelper(
             || postRaidProfile.Inventory.Equipment is null
         )
         {
-            throw new InRaidHelperException(
-                "Post raid profile inventory items, quest raid items, or equipment are null when trying to set inventory post raid"
-            );
+            const string message =
+                "Post raid profile inventory items, quest raid items, or equipment are null when trying to set inventory post raid";
+            logger.Error(message);
+            throw new InRaidHelperException(message);
         }
 
         // Store insurance (as removeItem() removes insured items)
@@ -160,7 +164,9 @@ public class InRaidHelper(
     {
         if (pmcData.Inventory is null)
         {
-            throw new InRaidHelperException("Pmc profile inventory is null when trying to delete inventory");
+            const string message = "Pmc profile inventory is null when trying to delete inventory";
+            logger.Error(message);
+            throw new InRaidHelperException(message);
         }
 
         // Get inventory items to remove from players profile
@@ -222,7 +228,9 @@ public class InRaidHelper(
     {
         if (pmcData.Inventory is null)
         {
-            throw new InRaidHelperException("Pmc profile inventory is null when checking if an item is kept on death");
+            const string message = "Pmc profile inventory is null when checking if an item is kept on death";
+            logger.Error(message);
+            throw new InRaidHelperException(message);
         }
 
         // Base inventory items are always kept

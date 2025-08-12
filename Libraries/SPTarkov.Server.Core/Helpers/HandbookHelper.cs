@@ -74,7 +74,9 @@ public class HandbookHelper(ISptLogger<HandbookHelper> logger, DatabaseService d
         {
             if (!result.Categories.ById.TryAdd(handbookCategory.Id, handbookCategory.ParentId))
             {
-                throw new HandbookHelperException($"Unable to add `{handbookCategory.Id}`. Key already exists.");
+                var message = $"Unable to add `{handbookCategory.Id}`. Key already exists.";
+                logger.Error(message);
+                throw new HandbookHelperException(message);
             }
 
             if (handbookCategory.ParentId is not null)

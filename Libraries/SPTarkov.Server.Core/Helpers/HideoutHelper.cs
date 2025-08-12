@@ -57,7 +57,9 @@ public class HideoutHelper(
 
         if (pmcData.Hideout is null)
         {
-            throw new HideoutHelperException($"Hideout is null when trying to register production for recipe id `{recipe.Id}`");
+            var message = $"Hideout is null when trying to register production for recipe id `{recipe.Id}`";
+            logger.Error(message);
+            throw new HideoutHelperException(message);
         }
 
         // @Important: Here we need to be very exact:
@@ -131,9 +133,9 @@ public class HideoutHelper(
 
         if (pmcData.Hideout is null)
         {
-            throw new HideoutHelperException(
-                $"Hideout is null when trying to register production for recipe id `{productionRequest.RecipeId.Value}`"
-            );
+            var message = $"Hideout is null when trying to register production for recipe id `{productionRequest.RecipeId.Value}`";
+            logger.Error(message);
+            throw new HideoutHelperException(message);
         }
 
         // @Important: Here we need to be very exact:
@@ -209,7 +211,9 @@ public class HideoutHelper(
             case BonusType.MaximumEnergyReserve:
                 if (profileData.Health?.Energy is null)
                 {
-                    throw new HideoutHelperException("Profile Energy is null when trying to apply MaximumEnergyReserve");
+                    const string message = "Profile Energy is null when trying to apply MaximumEnergyReserve";
+                    logger.Error(message);
+                    throw new HideoutHelperException(message);
                 }
 
                 // Amend max energy in profile
@@ -231,7 +235,9 @@ public class HideoutHelper(
 
         if (profileData.Bonuses is null)
         {
-            throw new HideoutHelperException($"Profile bonuses are null when trying to add: {bonus.Type}");
+            var message = $"Profile bonuses are null when trying to add: {bonus.Type}";
+            logger.Error(message);
+            throw new HideoutHelperException(message);
         }
 
         // Add bonus to player bonuses array in profile
@@ -255,7 +261,9 @@ public class HideoutHelper(
 
         if (pmcData.Hideout is null)
         {
-            throw new HideoutHelperException("Hideout is null when trying to update player hideout");
+            const string message = "Hideout is null when trying to update player hideout";
+            logger.Error(message);
+            throw new HideoutHelperException(message);
         }
 
         pmcData.Hideout.SptUpdateLastRunTimestamp ??= timeUtil.GetTimeStamp();
@@ -402,7 +410,9 @@ public class HideoutHelper(
     {
         if (pmcData.Hideout?.Production is null)
         {
-            throw new HideoutHelperException("Hideout productions are null when trying to update water collector production timer");
+            const string message = "Hideout productions are null when trying to update water collector production timer";
+            logger.Error(message);
+            throw new HideoutHelperException(message);
         }
 
         if (!pmcData.Hideout.Production.TryGetValue(productionId, out var production) || production is null)
@@ -430,7 +440,9 @@ public class HideoutHelper(
     {
         if (pmcData.Hideout?.Production is null)
         {
-            throw new HideoutHelperException("Hideout productions are null when trying to update production progress");
+            const string message = "Hideout productions are null when trying to update production";
+            logger.Error(message);
+            throw new HideoutHelperException(message);
         }
 
         // Production is complete, no need to do any calculations
@@ -472,7 +484,9 @@ public class HideoutHelper(
     {
         if (pmcData.Hideout?.Production is null)
         {
-            throw new HideoutHelperException("Hideout productions are null when trying to update cultist progress");
+            const string message = "Hideout productions are null when trying to update cultist progress";
+            logger.Error(message);
+            throw new HideoutHelperException(message);
         }
 
         if (!pmcData.Hideout.Production.TryGetValue(prodId, out var production) || production is null)
@@ -528,7 +542,9 @@ public class HideoutHelper(
     {
         if (pmcData.Hideout?.Production is null)
         {
-            throw new HideoutHelperException("Hideout productions are null when trying to match production progress");
+            const string message = "Hideout productions are null when trying to update production";
+            logger.Error(message);
+            throw new HideoutHelperException(message);
         }
 
         // Production doesn't exist or progress or production time is null
@@ -558,7 +574,9 @@ public class HideoutHelper(
     {
         if (pmcData.Hideout?.Production is null)
         {
-            throw new HideoutHelperException("Hideout productions are null when trying to update scav case production timer");
+            const string message = "Hideout productions are null when trying to update scav case";
+            logger.Error(message);
+            throw new HideoutHelperException(message);
         }
 
         if (!pmcData.Hideout.Production.TryGetValue(productionId, out var production) || production is null)
@@ -583,7 +601,9 @@ public class HideoutHelper(
     {
         if (pmcData.Hideout is null)
         {
-            throw new HideoutHelperException("Hideout is null when trying update areas with resources");
+            const string message = "Hideout is null when trying update areas with resources";
+            logger.Error(message);
+            throw new HideoutHelperException(message);
         }
 
         foreach (var area in pmcData.Hideout.Areas ?? [])
@@ -1217,7 +1237,9 @@ public class HideoutHelper(
     {
         if (pmcData.Hideout is null)
         {
-            throw new HideoutHelperException("Pmc Hideout is null when trying get last elasped server tick");
+            const string message = "Pmc Hideout is null when trying get last elapsed server tick";
+            logger.Error(message);
+            throw new HideoutHelperException(message);
         }
 
         // Reduce time elapsed (and progress) when generator is off
@@ -1341,7 +1363,9 @@ public class HideoutHelper(
     {
         if (pmcData.Hideout?.Production is null)
         {
-            throw new HideoutHelperException("Hideout productions are null when trying to retrieve bitcoin productions");
+            const string message = "Hideout productions are null when trying to retrieve bitcoin productions";
+            logger.Error(message);
+            throw new HideoutHelperException(message);
         }
 
         if (pmcData.Hideout?.Production?.TryGetValue(BitcoinProductionId, out var bitcoinCraft) is null or false)

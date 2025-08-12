@@ -4,6 +4,7 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using BodyPartHealth = SPTarkov.Server.Core.Models.Eft.Common.Tables.BodyPartHealth;
@@ -11,7 +12,7 @@ using BodyPartHealth = SPTarkov.Server.Core.Models.Eft.Common.Tables.BodyPartHea
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class HealthHelper(TimeUtil timeUtil, ConfigServer configServer)
+public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, ConfigServer configServer)
 {
     protected readonly HealthConfig HealthConfig = configServer.GetConfig<HealthConfig>();
     protected readonly HashSet<string> EffectsToSkip = ["Dehydration", "Exhaustion"];
@@ -35,7 +36,9 @@ public class HealthHelper(TimeUtil timeUtil, ConfigServer configServer)
 
         if (healthChanges.BodyParts is null)
         {
-            throw new HealthHelperException("healthChanges.BodyParts is null when trying to apply health changes");
+            const string message = "healthChanges.BodyParts is null when trying to apply health changes";
+            logger.Error(message);
+            throw new HealthHelperException(message);
         }
 
         // Alter saved profiles Health with values from post-raid client data
@@ -46,7 +49,9 @@ public class HealthHelper(TimeUtil timeUtil, ConfigServer configServer)
 
         if (pmcProfileToUpdate.Health is null)
         {
-            throw new HealthHelperException("pmcProfileToUpdate.Health is null when trying to apply health changes");
+            const string message = "pmcProfileToUpdate.Health is null when trying to apply health changes";
+            logger.Error(message);
+            throw new HealthHelperException(message);
         }
 
         // Update last edited timestamp
@@ -76,9 +81,10 @@ public class HealthHelper(TimeUtil timeUtil, ConfigServer configServer)
 
             if (partProperties.Health is null || matchingProfilePart.Health is null)
             {
-                throw new HealthHelperException(
-                    "partProperties.Health or matchingBodyPart.Health is null when trying to modify profile health properties"
-                );
+                const string message =
+                    "partProperties.Health or matchingBodyPart.Health is null when trying to modify profile health properties";
+                logger.Error(message);
+                throw new HealthHelperException(message);
             }
 
             if (HealthConfig.Save.Health)

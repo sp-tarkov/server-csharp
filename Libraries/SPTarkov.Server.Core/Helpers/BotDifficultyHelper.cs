@@ -21,7 +21,7 @@ public class BotDifficultyHelper(
     ICloner cloner
 )
 {
-    protected readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
+    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
 
     /// <summary>
     ///     Get difficulty settings for desired bot type, if not found use assault bot types
@@ -72,9 +72,9 @@ public class BotDifficultyHelper(
     /// <returns>Difficulty object</returns>
     protected DifficultyCategories? GetDifficultySettings(string type, string difficulty)
     {
-        var difficultySetting = string.Equals(_pmcConfig.Difficulty, "asonline", StringComparison.OrdinalIgnoreCase)
+        var difficultySetting = string.Equals(PMCConfig.Difficulty, "asonline", StringComparison.OrdinalIgnoreCase)
             ? difficulty
-            : _pmcConfig.Difficulty.ToLowerInvariant();
+            : PMCConfig.Difficulty.ToLowerInvariant();
 
         difficultySetting = ConvertBotDifficultyDropdownToBotDifficulty(difficultySetting);
 
