@@ -1425,7 +1425,7 @@ public class HideoutHelper(
     {
         foreach (var improvementId in profileData.Hideout?.Improvements ?? [])
         {
-            if (!profileData.Hideout?.Improvements?.TryGetValue(improvementId.Key, out var improvementDetails) is null or false)
+            if (profileData.Hideout?.Improvements?.TryGetValue(improvementId.Key, out var improvementDetails) is null or false)
             {
                 continue;
             }
