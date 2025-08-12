@@ -71,8 +71,9 @@ public class InRaidHelper(
         var insured = cloner.Clone(serverProfile.InsuredItems);
         if (insured is null)
         {
-            logger.Error("Cloned insured items are null when trying to set inventory post raid");
-            return;
+            const string message = "Cloned insured items are null when trying to set inventory post raid";
+            logger.Error(message);
+            throw new InRaidHelperException(message);
         }
 
         // Remove equipment and loot items stored on player from server profile in preparation for data from client being added
