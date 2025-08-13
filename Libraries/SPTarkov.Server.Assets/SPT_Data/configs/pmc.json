@@ -339,15 +339,15 @@
       "max": 64,
       "backpack": {
         "min": 5000,
-        "max": 0
+        "max": -1
       },
       "pocket": {
         "min": 5000,
-        "max": 0
+        "max": -1
       },
       "vest": {
         "min": 5000,
-        "max": 0
+        "max": -1
       }
     },
     {
@@ -355,15 +355,15 @@
       "max": 100,
       "backpack": {
         "min": 10000,
-        "max": 0
+        "max": -1
       },
       "pocket": {
         "min": 10000,
-        "max": 0
+        "max": -1
       },
       "vest": {
         "min": 10000,
-        "max": 0
+        "max": -1
       }
     }
   ],
