@@ -57,6 +57,7 @@ public class BotLootGenerator(
     /// <summary>
     ///     Add loot to bots containers
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="sessionId">Session id</param>
     /// <param name="botJsonTemplate">Clone of Base JSON db file for the bot having its loot generated</param>
     /// <param name="botGenerationDetails">Details relating to generating a bot</param>
@@ -379,6 +380,7 @@ public class BotLootGenerator(
     /// </summary>
     /// <param name="botInventory">Inventory to add items to</param>
     /// <param name="botRole">Role of bot (pmcBEAR/pmcUSEC)</param>
+    /// <param name="botId">Bots unique identifier</param>
     protected void AddForcedMedicalItemsToPmcSecure(BotBaseInventory botInventory, string botRole, MongoId botId)
     {
         // surv12
@@ -402,6 +404,7 @@ public class BotLootGenerator(
     /// <summary>
     ///     Take random items from a pool and add to an inventory until totalItemCount or totalValueLimit or space limit is reached
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="pool">Pool of items to pick from with weight</param>
     /// <param name="equipmentSlots">What equipment slot will the loot items be added to</param>
     /// <param name="totalItemCount">Max count of items to add</param>
@@ -628,6 +631,7 @@ public class BotLootGenerator(
     /// <summary>
     ///     Add generated weapons to inventory as loot
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="botInventory">Inventory to add preset to</param>
     /// <param name="equipmentSlot">Slot to place the preset in (backpack)</param>

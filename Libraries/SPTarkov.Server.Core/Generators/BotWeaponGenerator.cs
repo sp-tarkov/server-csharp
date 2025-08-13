@@ -413,6 +413,7 @@ public class BotWeaponGenerator(
     ///     Generates extra magazines or bullets (if magazine is internal) and adds them to TacticalVest and Pockets.
     ///     Additionally, adds extra bullets to SecuredContainer
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="generatedWeaponResult">Object with properties for generated weapon (weapon mods pool / weapon template / ammo tpl)</param>
     /// <param name="magWeights">Magazine weights for count to add to inventory</param>
     /// <param name="inventory">Inventory to add magazines to</param>
@@ -469,6 +470,7 @@ public class BotWeaponGenerator(
     /// <summary>
     ///     Add Grenades for UBGL to bot's vest and secure container
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="weaponMods">Weapon list with mods</param>
     /// <param name="generatedWeaponResult">Result of weapon generation</param>
     /// <param name="inventory">Bot inventory to add grenades to</param>

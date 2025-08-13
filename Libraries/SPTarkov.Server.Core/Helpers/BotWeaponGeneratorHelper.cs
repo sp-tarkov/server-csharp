@@ -99,6 +99,7 @@ public class BotWeaponGeneratorHelper(
     /// <summary>
     ///     Add a specific number of cartridges to a bots inventory (defaults to vest and pockets)
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="ammoTpl">Ammo tpl to add to vest/pockets</param>
     /// <param name="cartridgeCount">Number of cartridges to add to vest/pockets</param>
     /// <param name="inventory">Bot inventory to add cartridges to</param>

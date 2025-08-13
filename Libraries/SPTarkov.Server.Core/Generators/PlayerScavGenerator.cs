@@ -134,6 +134,7 @@ public class PlayerScavGenerator(
     /// <summary>
     ///     Add items picked from `playerscav.lootItemsToAddChancePercent`
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="possibleItemsToAdd">dict of tpl + % chance to be added</param>
     /// <param name="scavData"></param>
     /// <param name="containersToAddTo">Possible slotIds to add loot to</param>

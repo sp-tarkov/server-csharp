@@ -66,6 +66,7 @@ public class BotInventoryGenerator(
     /// <summary>
     ///     Add equipment/weapons/loot to bot
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="sessionId">Session id</param>
     /// <param name="botJsonTemplate">Base json db file for the bot having its loot generated</param>
     /// <param name="botRole">Role bot has (assault/pmcBot)</param>
@@ -169,6 +170,7 @@ public class BotInventoryGenerator(
     /// <summary>
     ///     Add equipment to a bot
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="sessionId">Session id</param>
     /// <param name="templateInventory">bot/x.json data from db</param>
     /// <param name="wornItemChances">Chances items will be added to bot</param>
@@ -652,6 +654,7 @@ public class BotInventoryGenerator(
     /// <summary>
     ///     Work out what weapons bot should have equipped and add them to bot inventory
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="templateInventory">bot/x.json data from db</param>
     /// <param name="equipmentChances">Chances bot can have equipment equipped</param>
     /// <param name="sessionId">Session id</param>
@@ -721,6 +724,7 @@ public class BotInventoryGenerator(
     /// <summary>
     ///     Add weapon + spare mags/ammo to bots inventory
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="sessionId">Session id</param>
     /// <param name="weaponSlot">Weapon slot being generated</param>
     /// <param name="templateInventory">bot/x.json data from db</param>
