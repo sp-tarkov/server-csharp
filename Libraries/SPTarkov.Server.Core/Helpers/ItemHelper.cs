@@ -897,7 +897,7 @@ public class ItemHelper(
         // Update all parentIds of items attached to base item to use new id
         foreach (var item in itemWithChildren)
         {
-            if (item.ParentId == oldId)
+            if (item.ParentId != null && item.ParentId == oldId)
             {
                 item.ParentId = newId;
             }
@@ -905,10 +905,11 @@ public class ItemHelper(
     }
 
     /// <summary>
-    /// TODO - Write
+    ///    Regenerate all GUIDs with new IDs, except special item types (e.g. quest, sorting table, etc.) This
+    /// function will not mutate the original items list, but will return a new list with new GUIDs.
     /// </summary>
-    /// <param name="inventory"></param>
-    /// <param name="insuredItems"></param>
+    /// <param name="inventory">Inventory to replace Ids in</param>
+    /// <param name="insuredItems">Insured items that should not have their IDs replaced</param>
     public void ReplaceProfileInventoryIds(BotBaseInventory inventory, IEnumerable<InsuredItem>? insuredItems = null)
     {
         // Blacklist
@@ -916,20 +917,24 @@ public class ItemHelper(
         itemIdBlacklist.UnionWith(
             new List<MongoId>
             {
-                inventory.Equipment.Value,
-                inventory.QuestRaidItems.Value,
-                inventory.QuestStashItems.Value,
-                inventory.SortingTable.Value,
-                inventory.Stash.Value,
-                inventory.HideoutCustomizationStashId.Value,
+                inventory.Equipment!.Value,
+                inventory.QuestRaidItems!.Value,
+                inventory.QuestStashItems!.Value,
+                inventory.SortingTable!.Value,
+                inventory.Stash!.Value,
+                inventory.HideoutCustomizationStashId!.Value,
             }
         );
-        itemIdBlacklist.UnionWith(inventory.HideoutAreaStashes.Values);
+
+        if (inventory.HideoutAreaStashes != null)
+        {
+            itemIdBlacklist.UnionWith(inventory.HideoutAreaStashes.Values);
+        }
 
         // Add insured items ids to blacklist
         if (insuredItems is not null)
         {
-            itemIdBlacklist.UnionWith(insuredItems.Select(x => x.ItemId.Value));
+            itemIdBlacklist.UnionWith(insuredItems.Select(x => x.ItemId!.Value));
         }
 
         if (inventory.Items is null)
@@ -967,9 +972,12 @@ public class ItemHelper(
             }
 
             // Update quick-slot id
-            if (inventory.FastPanel.ContainsKey(originalId))
+            var fastPanel = inventory.FastPanel;
+            if (fastPanel.ContainsValue(originalId) && !TryReplaceFastPanelId(fastPanel, originalId, newId))
             {
-                inventory.FastPanel[originalId] = newId;
+                logger.Error(
+                    $"Original Id: {originalId.ToString()} is contained in the fast panel, but was unable to replace it with new Id: {newId.ToString()}"
+                );
             }
         }
     }
@@ -992,21 +1000,24 @@ public class ItemHelper(
             itemIdBlacklist.UnionWith(
                 new List<MongoId>
                 {
-                    pmcData.Inventory.Equipment.Value,
-                    pmcData.Inventory.QuestRaidItems.Value,
-                    pmcData.Inventory.QuestStashItems.Value,
-                    pmcData.Inventory.SortingTable.Value,
-                    pmcData.Inventory.Stash.Value,
-                    pmcData.Inventory.HideoutCustomizationStashId.Value,
+                    pmcData.Inventory!.Equipment!.Value,
+                    pmcData.Inventory.QuestRaidItems!.Value,
+                    pmcData.Inventory.QuestStashItems!.Value,
+                    pmcData.Inventory.SortingTable!.Value,
+                    pmcData.Inventory.Stash!.Value,
+                    pmcData.Inventory.HideoutCustomizationStashId!.Value,
                 }
             );
-            itemIdBlacklist.UnionWith(pmcData.Inventory.HideoutAreaStashes.Values);
+            if (pmcData.Inventory?.HideoutAreaStashes != null)
+            {
+                itemIdBlacklist.UnionWith(pmcData.Inventory.HideoutAreaStashes.Values);
+            }
         }
 
         // Add insured items ids to blacklist
         if (insuredItems is not null)
         {
-            itemIdBlacklist.UnionWith(insuredItems.Select(x => x.ItemId.Value));
+            itemIdBlacklist.UnionWith(insuredItems.Select(x => x.ItemId!.Value));
         }
 
         foreach (var item in originalItems)
@@ -1026,7 +1037,7 @@ public class ItemHelper(
             item.Id = newId;
 
             // Find all children of item and update their parent ids to match
-            var childItems = originalItems.Where(x => x.ParentId == originalId);
+            var childItems = originalItems.Where(x => x.ParentId != null && x.ParentId == originalId);
             foreach (var childItem in childItems)
             {
                 childItem.ParentId = newId;
@@ -1039,14 +1050,35 @@ public class ItemHelper(
             }
 
             // Update quick-slot id
-            // TODO: i dont think the fast panel key is a mongoid, it should be e.g. "Item4"
-            if (pmcData.Inventory.FastPanel.ContainsKey(originalId))
+            var fastPanel = pmcData.Inventory.FastPanel;
+            if (fastPanel.ContainsValue(originalId) && !TryReplaceFastPanelId(fastPanel, originalId, newId))
             {
-                pmcData.Inventory.FastPanel[originalId] = newId;
+                logger.Error(
+                    $"Original Id: {originalId.ToString()} is contained in the fast panel, but was unable to replace it with new Id: {newId.ToString()}"
+                );
             }
         }
 
         return originalItems;
+    }
+
+    /// <summary>
+    ///     Trys to find the original id in FastPanel, if it exists set it to the new value
+    /// </summary>
+    /// <param name="fastPanel">Fast panel dictionary to check</param>
+    /// <param name="originalId">Original id of the item</param>
+    /// <param name="newId">New Id of the item</param>
+    /// <returns>True if replaced, otherwise false</returns>
+    public bool TryReplaceFastPanelId(Dictionary<string, MongoId> fastPanel, MongoId originalId, MongoId newId)
+    {
+        var key = fastPanel.FirstOrDefault(kvp => kvp.Value == originalId).Key;
+        if (key is null)
+        {
+            return false;
+        }
+
+        fastPanel[key] = newId;
+        return true;
     }
 
     /// <summary>
@@ -1122,7 +1154,7 @@ public class ItemHelper(
         if (parentTemplate.Key && parentTemplate.Value?.Properties?.Slots != null)
         {
             isRequiredSlot =
-                parentTemplate.Value?.Properties?.Slots?.Any(slot => slot?.Name == item?.SlotId && (slot?.Required ?? false)) ?? false;
+                parentTemplate.Value?.Properties?.Slots?.Any(slot => slot.Name == item.SlotId && (slot.Required ?? false)) ?? false;
         }
 
         return itemTemplate.Key && parentTemplate.Key && !(isNotRaidModdable || isRequiredSlot);
@@ -1147,7 +1179,7 @@ public class ItemHelper(
 
         while (currentItem != null && IsAttachmentAttached(currentItem))
         {
-            currentItem = itemsMap.FirstOrDefault(kvp => kvp.Key == currentItem.ParentId).Value;
+            currentItem = itemsMap.FirstOrDefault(kvp => kvp.Key == currentItem.ParentId!).Value;
             if (currentItem == null)
             {
                 return null;
@@ -1246,10 +1278,10 @@ public class ItemHelper(
             // Calculating child ExtraSize
             if (itemDbTemplate?.Properties?.ExtraSizeForceAdd ?? false)
             {
-                forcedUp += itemDbTemplate.Properties.ExtraSizeUp.Value;
-                forcedDown += itemDbTemplate.Properties.ExtraSizeDown.Value;
-                forcedLeft += itemDbTemplate.Properties.ExtraSizeLeft.Value;
-                forcedRight += itemDbTemplate.Properties.ExtraSizeRight.Value;
+                forcedUp += itemDbTemplate.Properties.ExtraSizeUp!.Value;
+                forcedDown += itemDbTemplate.Properties.ExtraSizeDown!.Value;
+                forcedLeft += itemDbTemplate.Properties.ExtraSizeLeft!.Value;
+                forcedRight += itemDbTemplate.Properties.ExtraSizeRight!.Value;
             }
             else
             {
@@ -1275,10 +1307,10 @@ public class ItemHelper(
     /// <returns>Valid caliber for cartridge</returns>
     public MongoId? GetRandomCompatibleCaliberTemplateId(TemplateItem item)
     {
-        var cartridges = item?.Properties?.Cartridges?.FirstOrDefault()?.Props?.Filters?.FirstOrDefault()?.Filter;
+        var cartridges = item.Properties?.Cartridges?.FirstOrDefault()?.Props?.Filters?.FirstOrDefault()?.Filter;
         if (cartridges is null)
         {
-            logger.Warning($"Failed to find cartridge for item: {item?.Id} {item?.Name}");
+            logger.Warning($"Failed to find cartridge for item: {item.Id} {item.Name}");
             return null;
         }
 
@@ -1294,7 +1326,7 @@ public class ItemHelper(
     {
         var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties?.StackSlots?.First().MaxCount;
         var cartridgeTpl = ammoBoxDetails.Properties?.StackSlots?.First().Props?.Filters?.First().Filter?.FirstOrDefault();
-        var cartridgeDetails = GetItem(cartridgeTpl.Value);
+        var cartridgeDetails = GetItem(cartridgeTpl!.Value);
         var cartridgeMaxStackSize = cartridgeDetails.Value?.Properties?.StackMaxSize;
 
         // Exit early if ammo already exists in box
@@ -1339,7 +1371,7 @@ public class ItemHelper(
     {
         var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties?.StackSlots?.First().MaxCount ?? 0;
         var cartridgeTpl = ammoBoxDetails.Properties?.StackSlots?.First().Props?.Filters?.First().Filter?.FirstOrDefault();
-        ammoBox.Add(CreateCartridges(ammoBox[0].Id, cartridgeTpl.Value, (int)ammoBoxMaxCartridgeCount, 0));
+        ammoBox.Add(CreateCartridges(ammoBox[0].Id, cartridgeTpl!.Value, (int)ammoBoxMaxCartridgeCount, 0));
     }
 
     /// <summary>
@@ -1470,7 +1502,7 @@ public class ItemHelper(
                 CreateCartridges(magazineWithChildCartridges[0].Id, cartridgeTpl, cartridgeCountToAdd ?? 0, location)
             );
 
-            currentStoredCartridgeCount += cartridgeCountToAdd.Value;
+            currentStoredCartridgeCount += cartridgeCountToAdd!.Value;
             location++;
         }
 
@@ -1547,7 +1579,9 @@ public class ItemHelper(
                 continue;
             }
 
-            ammoArray.Add(new ProbabilityObject<MongoId, float?>(ammoDetails.Tpl.Value, (double)ammoDetails.RelativeProbability, null));
+            ammoArray.Add(
+                new ProbabilityObject<MongoId, float?>(ammoDetails.Tpl.Value, (double)ammoDetails.RelativeProbability!.Value, null)
+            );
         }
 
         return ammoArray.Draw().FirstOrDefault();
@@ -1757,7 +1791,7 @@ public class ItemHelper(
             if (mod.ParentId != null && (!idMappings.ContainsKey(mod.ParentId) || idMappings?[mod.ParentId] is null))
             // Make remapping for items parentId
             {
-                idMappings[mod.ParentId] = new MongoId();
+                idMappings![mod.ParentId] = new MongoId();
             }
 
             mod.Id = idMappings[mod.Id.ToString()];
