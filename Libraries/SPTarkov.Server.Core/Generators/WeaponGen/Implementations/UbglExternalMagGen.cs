@@ -24,6 +24,7 @@ public class UbglExternalMagGen(BotWeaponGeneratorHelper botWeaponGeneratorHelpe
             inventoryMagGen.GetMagazineTemplate()
         );
         botWeaponGeneratorHelper.AddAmmoIntoEquipmentSlots(
+            inventoryMagGen.GetBotId(),
             inventoryMagGen.GetAmmoTemplate().Id,
             (int)bulletCount,
             inventoryMagGen.GetPmcInventory(),

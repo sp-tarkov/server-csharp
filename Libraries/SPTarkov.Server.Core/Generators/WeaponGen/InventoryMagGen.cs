@@ -1,4 +1,5 @@
 ﻿using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Generators.WeaponGen;
@@ -10,6 +11,7 @@ public class InventoryMagGen()
     private readonly TemplateItem? _magazineTemplate;
     private readonly GenerationData? _magCounts;
     private readonly BotBaseInventory? _pmcInventory;
+    private readonly MongoId _botId;
     private readonly TemplateItem? _weaponTemplate;
 
     public InventoryMagGen(
@@ -17,7 +19,8 @@ public class InventoryMagGen()
         TemplateItem magazineTemplate,
         TemplateItem weaponTemplate,
         TemplateItem ammoTemplate,
-        BotBaseInventory pmcInventory
+        BotBaseInventory pmcInventory,
+        MongoId botId
     )
         : this()
     {
@@ -26,6 +29,7 @@ public class InventoryMagGen()
         _weaponTemplate = weaponTemplate;
         _ammoTemplate = ammoTemplate;
         _pmcInventory = pmcInventory;
+        _botId = botId;
     }
 
     public GenerationData GetMagCount()
@@ -51,5 +55,10 @@ public class InventoryMagGen()
     public BotBaseInventory GetPmcInventory()
     {
         return _pmcInventory!;
+    }
+
+    public MongoId GetBotId()
+    {
+        return _botId;
     }
 }

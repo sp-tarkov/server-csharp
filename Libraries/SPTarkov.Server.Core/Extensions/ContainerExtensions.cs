@@ -24,7 +24,7 @@ public static class ContainerExtensions
         var limitX = containerX - minVolume;
 
         // Every x+y slot taken up in container, exit
-        if (ContainerIsFull(container2D))
+        if (container2D.ContainerIsFull())
         {
             return new FindSlotResult(false);
         }
@@ -84,7 +84,8 @@ public static class ContainerExtensions
     /// <param name="itemXWidth">Items width</param>
     /// <param name="itemYHeight">Items height</param>
     /// <param name="isRotated">is item rotated</param>
-    public static void FillContainerMapWithItem(
+    /// <returns>bool = true when successful, string = error message if failed</returns>
+    public static (bool, string) FillContainerMapWithItem(
         this int[,] container2D,
         int columnStartPositionX,
         int rowStartPositionY,
@@ -108,7 +109,7 @@ public static class ContainerExtensions
         {
             container2D[rowStartPositionY, columnStartPositionX] = 1;
 
-            return;
+            return (true, string.Empty);
         }
 
         // Loop over rows and columns and flag each as taken by item
@@ -123,12 +124,15 @@ public static class ContainerExtensions
                 }
                 else
                 {
-                    throw new Exception(
+                    return (
+                        false,
                         $"Slot at: ({containerX}, {containerY}) is already filled. Cannot fit: {itemXWidth} by {itemYHeight} item"
                     );
                 }
             }
         }
+
+        return (true, string.Empty);
     }
 
     /// <summary>
@@ -158,7 +162,7 @@ public static class ContainerExtensions
     /// </summary>
     /// <param name="container2D">Container to check</param>
     /// <returns>True = full</returns>
-    private static bool ContainerIsFull(int[,] container2D)
+    public static bool ContainerIsFull(this int[,] container2D)
     {
         var containerY = container2D.GetLength(0); // rows
         var containerX = container2D.GetLength(1); // columns

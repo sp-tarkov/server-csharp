@@ -1720,10 +1720,10 @@ public record GridFilter
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("Filter")]
-    public HashSet<string>? Filter { get; set; }
+    public HashSet<MongoId>? Filter { get; set; }
 
     [JsonPropertyName("ExcludedFilter")]
-    public HashSet<string>? ExcludedFilter { get; set; }
+    public HashSet<MongoId>? ExcludedFilter { get; set; }
 
     [JsonPropertyName("locked")]
     public bool? Locked { get; set; }

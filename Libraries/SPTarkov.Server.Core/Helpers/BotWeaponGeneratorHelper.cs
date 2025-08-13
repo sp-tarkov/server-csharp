@@ -99,11 +99,13 @@ public class BotWeaponGeneratorHelper(
     /// <summary>
     ///     Add a specific number of cartridges to a bots inventory (defaults to vest and pockets)
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="ammoTpl">Ammo tpl to add to vest/pockets</param>
     /// <param name="cartridgeCount">Number of cartridges to add to vest/pockets</param>
     /// <param name="inventory">Bot inventory to add cartridges to</param>
     /// <param name="equipmentSlotsToAddTo">What equipment slots should bullets be added into</param>
     public void AddAmmoIntoEquipmentSlots(
+        MongoId botId,
         MongoId ammoTpl,
         int cartridgeCount,
         BotBaseInventory inventory,
@@ -125,6 +127,7 @@ public class BotWeaponGeneratorHelper(
         foreach (var ammoItem in ammoItems)
         {
             var result = botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
+                botId,
                 equipmentSlotsToAddTo,
                 ammoItem.Id,
                 ammoItem.Template,

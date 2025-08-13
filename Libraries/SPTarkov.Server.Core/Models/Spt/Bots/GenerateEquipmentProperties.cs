@@ -11,6 +11,8 @@ public record GenerateEquipmentProperties
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
+    public MongoId BotId { get; set; }
+
     /// <summary>
     ///     Root Slot being generated
     /// </summary>
