@@ -261,8 +261,7 @@ public class BotGeneratorHelperTests
                 botInventory,
                 1,
                 1,
-                (int)takenSlot.X.Value,
-                (int)takenSlot.Y.Value
+                (ItemLocation)itemToAdd.Location
             );
         }
 
@@ -338,8 +337,7 @@ public class BotGeneratorHelperTests
                 botInventory,
                 1,
                 1,
-                (int)takenSlot.X.Value,
-                (int)takenSlot.Y.Value
+                (ItemLocation)itemToAdd.Location
             );
         }
 
@@ -424,8 +422,7 @@ public class BotGeneratorHelperTests
                 botInventory,
                 1,
                 1,
-                (int)takenSlot.X.Value,
-                (int)takenSlot.Y.Value
+                (ItemLocation)itemToAdd.Location
             );
         }
 

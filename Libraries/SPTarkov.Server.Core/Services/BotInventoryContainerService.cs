@@ -16,7 +16,7 @@ namespace SPTarkov.Server.Core.Services;
 public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger, ItemHelper itemHelper)
 {
     // botId/containerName
-    private static readonly ConcurrentDictionary<MongoId, Dictionary<EquipmentSlots, ContainerDetails>> _botContainers = new();
+    private readonly ConcurrentDictionary<MongoId, Dictionary<EquipmentSlots, ContainerDetails>> _botContainers = new();
 
     /// <summary>
     /// Add a container + details to a bots cache ready to accept loot
@@ -30,11 +30,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
         _botContainers.TryAdd(botId, new());
 
         // Get the bots' currently cached containers
-        if (!_botContainers.TryGetValue(botId, out var containers))
-        {
-            // Create blank dict of items against container id
-            containers = new();
-        }
+        var containers = GetOrCreateBotContainerDictionary(botId);
 
         // Add container to bot
         if (!containers.ContainsKey(containerName))
@@ -66,12 +62,8 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
         var addResult = ItemAddedResult.UNKNOWN;
 
         // Find bot and the container we will attempt to add into
-        if (!_botContainers.TryGetValue(botId, out var botContainers))
-        {
-            botContainers = new();
-        }
+        var botContainers = GetOrCreateBotContainerDictionary(botId);
 
-        // TODO: add containerDetails if not found - removes need for AddEmptyContainerToBot()
         botContainers.TryGetValue(containerName, out var containerDetails);
 
         if (containerDetails.ContainerGridDetails.Count == 0)
@@ -86,7 +78,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
             return ItemAddedResult.INCOMPATIBLE_ITEM;
         }
 
-        // Try to fit item into one of the containers grids
+        // Try to fit item into one of the containers' grids
         var rootItem = itemAndChildren.FirstOrDefault();
         var gridIndex = 0;
         foreach (var gridDb in containerDetails.ContainerDbItem.Properties.Grids)
@@ -97,7 +89,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
                 continue;
             }
 
-            if (IsGridSmallerThanItem(gridDetails.GridMap, itemWidth, itemHeight))
+            if (IsItemBiggerThanGrid(gridDetails.GridMap, itemWidth, itemHeight))
             {
                 // Skip to next grid
                 continue;
@@ -113,7 +105,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
                 if (rootItem is not null)
                 {
                     rootItem.ParentId = containerDetails.ContainerInventoryItem.Id;
-                    rootItem.SlotId = gridDb.Name; // Can be name of container e.g. "Backpack" OR "2/3/4/5" if its not the 'main' grid of a container
+                    rootItem.SlotId = gridDb.Name; // Can be name of container e.g. "Backpack" OR "2/3/4/5" depending on which grid of a container item is added to
                     rootItem.Location = new ItemLocation
                     {
                         X = findSlotResult.X,
@@ -138,7 +130,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
                 //containerDetails.ItemsAndChildrenInContainer.AddRange(itemAndChildren);
 
                 // Add item into bots inventory
-                // TODO: Rework this to use containerDetails.ItemsAndChildrenInContainer elsewhere not in this class
+                // TODO: Poor separation of concerns, perhaps this can be refactored out of this method
                 botInventory.Items.AddRange(itemAndChildren);
 
                 // Exit loop, we've found a slot for item
@@ -167,19 +159,17 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
         return addResult;
     }
 
-    /// <summary>
-    ///Attempt to add an item + children to a container at a specific x/y grid position
-    /// </summary>
-    /// <param name="botId">Bots unique id</param>
-    /// <param name="containerName">Name of container to add to e.g. "Backpack"</param>
-    /// <param name="itemAndChildren">Item and its children to add to container</param>
-    /// <param name="botInventory">Inventory to add Item+children to</param>
-    /// <param name="itemWidth">Width of item with its children</param>
-    /// <param name="itemHeight">Height of item with its children</param>
-    /// <param name="rootItemXPos">X position to store item at</param>
-    /// <param name="rootItemYPos">Y position to store at item</param>
-    /// <param name="rotated">Is the item rotated</param>
-    /// <returns>ItemAddedResult</returns>
+    ///  <summary>
+    /// Attempt to add an item + children to a container at a specific x/y grid position
+    ///  </summary>
+    ///  <param name="botId">Bots unique id</param>
+    ///  <param name="containerName">Name of container to add to e.g. "Backpack"</param>
+    ///  <param name="itemAndChildren">Item and its children to add to container</param>
+    ///  <param name="botInventory">Inventory to add Item+children to</param>
+    ///  <param name="itemWidth">Width of item with its children</param>
+    ///  <param name="itemHeight">Height of item with its children</param>
+    ///  <param name="fixedLocation">Details for where to place item in container grid</param>
+    ///  <returns>ItemAddedResult</returns>
     public ItemAddedResult AddItemToBotContainerFixedPosition(
         MongoId botId,
         EquipmentSlots containerName,
@@ -187,19 +177,14 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
         BotBaseInventory botInventory,
         int itemWidth,
         int itemHeight,
-        int rootItemXPos,
-        int rootItemYPos,
-        bool rotated = false
+        ItemLocation fixedLocation
     )
     {
         // Default result
         var addResult = ItemAddedResult.UNKNOWN;
 
         // Find bot and the container we are attempting to store item in
-        if (!_botContainers.TryGetValue(botId, out var botContainers))
-        {
-            botContainers = new();
-        }
+        var botContainers = GetOrCreateBotContainerDictionary(botId);
 
         // TODO: can we add the missing data if it's not found here, would mean no need for separate "AddEmptyContainerToBot" call
         botContainers.TryGetValue(containerName, out var containerDetails);
@@ -230,14 +215,20 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
                 continue;
             }
 
-            if (IsGridSmallerThanItem(gridDetails.GridMap, itemWidth, itemHeight))
+            if (IsItemBiggerThanGrid(gridDetails.GridMap, itemWidth, itemHeight))
             {
                 // Skip early
                 continue;
             }
 
             // Look for a slot in the grid to place item
-            var result = gridDetails.GridMap.FillContainerMapWithItem(rootItemXPos, rootItemYPos, itemWidth, itemHeight, rotated);
+            var result = gridDetails.GridMap.FillContainerMapWithItem(
+                fixedLocation.X.Value,
+                fixedLocation.Y.Value,
+                itemWidth,
+                itemHeight,
+                fixedLocation.R == ItemRotation.Vertical
+            );
             if (result.Item1)
             {
                 // It Fits!
@@ -247,9 +238,9 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
                 rootItem.SlotId = containerName.ToString();
                 rootItem.Location = new ItemLocation
                 {
-                    X = rootItemXPos,
-                    Y = rootItemYPos,
-                    R = rotated ? ItemRotation.Vertical : ItemRotation.Horizontal,
+                    X = fixedLocation.X.Value,
+                    Y = fixedLocation.Y.Value,
+                    R = fixedLocation.R,
                 };
 
                 // Flag result as success to report to caller
@@ -258,10 +249,10 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
                 // Update internal grid with slots taken up by above item
                 FillGridRegion(
                     gridDetails.GridMap,
-                    rootItemXPos,
-                    rootItemYPos,
-                    rotated ? itemHeight : itemWidth,
-                    rotated ? itemWidth : itemHeight
+                    fixedLocation.X.Value,
+                    fixedLocation.Y.Value,
+                    fixedLocation.R == ItemRotation.Vertical ? itemHeight : itemWidth,
+                    fixedLocation.R == ItemRotation.Vertical ? itemWidth : itemHeight
                 );
 
                 // Item fits + Added to layout grid, add item and children
@@ -293,6 +284,22 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
         }
 
         return addResult;
+    }
+
+    /// <summary>
+    /// Helper - Get the bot-specific container details, create if data doesn't exist
+    /// </summary>
+    /// <param name="botId">Bot unique identifier</param>
+    /// <returns>Dictionary</returns>
+    protected Dictionary<EquipmentSlots, ContainerDetails> GetOrCreateBotContainerDictionary(MongoId botId)
+    {
+        if (!_botContainers.TryGetValue(botId, out var botContainers))
+        {
+            // Create blank dict ready for containers to be added
+            botContainers = new();
+        }
+
+        return botContainers;
     }
 
     /// <summary>
@@ -366,9 +373,17 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
     /// <param name="itemWidth">Width of item</param>
     /// <param name="itemHeight">Height of item</param>
     /// <returns>true = item bigger than grid</returns>
-    private bool IsGridSmallerThanItem(int[,] grid, int itemWidth, int itemHeight)
+    private bool IsItemBiggerThanGrid(int[,] grid, int itemWidth, int itemHeight)
     {
-        return itemWidth * itemHeight > grid.GetLength(0) * grid.GetLength(1);
+        var gridHeight = grid.GetLength(0);
+        var gridWidth = grid.GetLength(1);
+
+        // Check if it can fit in either orientation
+        var fitsNormally = itemWidth <= gridWidth && itemHeight <= gridHeight;
+        var fitsRotated = itemHeight <= gridWidth && itemWidth <= gridHeight;
+
+        // Fails both checks
+        return !fitsNormally && !fitsRotated;
     }
 
     /// <summary>
@@ -378,9 +393,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
     /// <returns>Dictionary of containers and their details</returns>
     public Dictionary<EquipmentSlots, ContainerDetails>? GetBotContainer(MongoId botId)
     {
-        _botContainers.TryGetValue(botId, out var containers);
-
-        return containers;
+        return GetOrCreateBotContainerDictionary(botId);
     }
 
     /// <summary>
@@ -391,9 +404,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
     /// <returns></returns>
     public ContainerDetails? GetBotContainerDetails(MongoId botId, EquipmentSlots containerName)
     {
-        _botContainers.TryGetValue(botId, out var containers);
-
-        return containers.GetValueOrDefault(containerName);
+        return GetOrCreateBotContainerDictionary(botId).GetValueOrDefault(containerName);
     }
 
     /// <summary>
