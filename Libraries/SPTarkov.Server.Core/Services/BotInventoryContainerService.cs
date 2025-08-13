@@ -254,7 +254,6 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
                 //containerDetails.ItemsAndChildrenInContainer.AddRange(itemAndChildren);
 
                 // Add item into bots inventory
-                // TODO: Rework this to use containerDetails.ItemsAndChildrenInContainer elsewhere not in this class
                 botInventory.Items.AddRange(itemAndChildren);
 
                 // Exit loop, we've found a position for item and can stop
