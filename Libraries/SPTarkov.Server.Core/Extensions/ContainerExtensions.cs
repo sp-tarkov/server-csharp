@@ -84,7 +84,7 @@ public static class ContainerExtensions
     /// <param name="itemXWidth">Items width</param>
     /// <param name="itemYHeight">Items height</param>
     /// <param name="isRotated">is item rotated</param>
-    public static void FillContainerMapWithItem(
+    public static (bool, string) FillContainerMapWithItem(
         this int[,] container2D,
         int columnStartPositionX,
         int rowStartPositionY,
@@ -108,7 +108,7 @@ public static class ContainerExtensions
         {
             container2D[rowStartPositionY, columnStartPositionX] = 1;
 
-            return;
+            return (true, string.Empty);
         }
 
         // Loop over rows and columns and flag each as taken by item
@@ -123,12 +123,15 @@ public static class ContainerExtensions
                 }
                 else
                 {
-                    throw new Exception(
+                    return (
+                        false,
                         $"Slot at: ({containerX}, {containerY}) is already filled. Cannot fit: {itemXWidth} by {itemYHeight} item"
                     );
                 }
             }
         }
+
+        return (true, string.Empty);
     }
 
     /// <summary>

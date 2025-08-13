@@ -37,6 +37,15 @@ public class BotInventoryGenerator(
 )
 {
     // Slots handled individually inside `GenerateAndAddEquipmentToBot`
+    private static readonly FrozenSet<EquipmentSlots> _equipmentSlotsWithInventory =
+    [
+        EquipmentSlots.Pockets,
+        EquipmentSlots.TacticalVest,
+        EquipmentSlots.Backpack,
+        EquipmentSlots.SecuredContainer,
+    ];
+
+    // Slots handled individually inside `GenerateAndAddEquipmentToBot`
     private static readonly FrozenSet<EquipmentSlots> _excludedEquipmentSlots =
     [
         EquipmentSlots.Pockets,
@@ -114,6 +123,9 @@ public class BotInventoryGenerator(
 
         // Pick loot and add to bots containers (rig/backpack/pockets/secure)
         botLootGenerator.GenerateLoot(botId, sessionId, botJsonTemplate, botGenerationDetails, isPmc, botRole, botInventory, botLevel);
+
+        // Inventory cache isn't needed, clear to save memory
+        botInventoryContainerService.ClearCache(botId);
 
         return botInventory;
     }
@@ -585,7 +597,11 @@ public class BotInventoryGenerator(
                 settings.Inventory.Items.Add(item);
             }
 
-            botInventoryContainerService.AddEmptyContainerToBot(settings.BotId, settings.RootEquipmentSlot, pickedItemDb, item);
+            // Cache container ready for items to be added in
+            if (_equipmentSlotsWithInventory.Contains(settings.RootEquipmentSlot))
+            {
+                botInventoryContainerService.AddEmptyContainerToBot(settings.BotId, settings.RootEquipmentSlot, item);
+            }
 
             return true;
         }
