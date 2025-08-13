@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -133,30 +134,26 @@ public class BotLootCacheService(
 
         if (itemPriceMinMax is null)
         {
-            // No filtering requested, exit
+            // No filtering requested, return all results
             return cloner.Clone(result);
         }
 
-        // Filter the loot pool prior to returning
+        // Filter the loot pool by item value prior to returning
         var filteredResult = result.Where(i =>
         {
             var itemPrice = itemHelper.GetItemPrice(i.Key);
-            if (itemPriceMinMax?.Min is not null && itemPriceMinMax?.Max is not null)
+
+            var priceLimitMin = itemPriceMinMax.Min;
+            var priceLimitMax = itemPriceMinMax.Max;
+
+            // Treat -1 as no limit
+            if (priceLimitMax.Approx(-1))
             {
-                return itemPrice >= itemPriceMinMax?.Min && itemPrice <= itemPriceMinMax?.Max;
+                // only check min limit value
+                return itemPrice >= priceLimitMin;
             }
 
-            if (itemPriceMinMax?.Min is not null && itemPriceMinMax?.Max is null)
-            {
-                return itemPrice >= itemPriceMinMax?.Min;
-            }
-
-            if (itemPriceMinMax?.Min is null && itemPriceMinMax?.Max is not null)
-            {
-                return itemPrice <= itemPriceMinMax?.Max;
-            }
-
-            return false;
+            return itemPrice >= priceLimitMin && itemPrice <= priceLimitMax;
         });
 
         return cloner.Clone(filteredResult.ToDictionary(pair => pair.Key, pair => pair.Value));
