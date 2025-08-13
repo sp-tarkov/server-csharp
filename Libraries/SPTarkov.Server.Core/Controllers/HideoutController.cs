@@ -467,7 +467,7 @@ public class HideoutController(
         }
 
         // Handle areas that have resources that can be placed in/taken out of slots from the area
-        if (_areasWithResources.Contains(hideoutArea.Type ?? HideoutAreas.NotSet))
+        if (_areasWithResources.Contains(hideoutArea.Type))
         {
             var response = RemoveResourceFromArea(sessionID, pmcData, request, output, hideoutArea);
 

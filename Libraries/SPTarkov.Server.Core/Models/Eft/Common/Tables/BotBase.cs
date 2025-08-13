@@ -926,7 +926,7 @@ public record BotHideoutArea
     public Dictionary<string, object>? ExtensionData { get; set; }
 
     [JsonPropertyName("type")]
-    public HideoutAreas? Type { get; set; }
+    public HideoutAreas Type { get; set; }
 
     [JsonPropertyName("level")]
     public int? Level { get; set; }

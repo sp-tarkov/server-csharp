@@ -606,7 +606,8 @@ public class HideoutHelper(
             throw new HideoutHelperException(message);
         }
 
-        foreach (var area in pmcData.Hideout.Areas ?? [])
+        var areas = GetAreasWithResourceUse(pmcData.Hideout.Areas ?? []);
+        foreach (var area in areas)
         {
             switch (area.Type)
             {
@@ -628,11 +629,22 @@ public class HideoutHelper(
                 default:
                     if (logger.IsLogEnabled(LogLevel.Debug))
                     {
-                        logger.Debug($"Unhandled area type {area.Type} when trying to update areas with resources");
+                        logger.Debug($"Unhandled area type: {area.Type} when trying to update areas with resources");
                     }
                     break;
             }
         }
+    }
+
+    /// <summary>
+    /// Get Hideout areas that consume resources
+    /// </summary>
+    /// <param name="hideoutAreas">Areas to filter</param>
+    /// <returns>Collection of hideout areas</returns>
+    protected IEnumerable<BotHideoutArea> GetAreasWithResourceUse(List<BotHideoutArea> hideoutAreas)
+    {
+        HashSet<HideoutAreas> resourceUseAreas = [HideoutAreas.Generator, HideoutAreas.WaterCollector, HideoutAreas.AirFilteringUnit];
+        return hideoutAreas.Where(area => resourceUseAreas.Contains(area.Type));
     }
 
     /// <summary>
