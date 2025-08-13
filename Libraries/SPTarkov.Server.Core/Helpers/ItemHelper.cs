@@ -995,7 +995,7 @@ public class ItemHelper(
         // Blacklist
         var itemIdBlacklist = new HashSet<MongoId>();
 
-        if (pmcData != null && pmcData.Inventory?.HideoutAreaStashes?.Values.Count != 0)
+        if (pmcData != null)
         {
             itemIdBlacklist.UnionWith(
                 new List<MongoId>
@@ -1008,7 +1008,10 @@ public class ItemHelper(
                     pmcData.Inventory.HideoutCustomizationStashId!.Value,
                 }
             );
-            itemIdBlacklist.UnionWith(pmcData.Inventory.HideoutAreaStashes?.Values!);
+            if (pmcData.Inventory?.HideoutAreaStashes != null)
+            {
+                itemIdBlacklist.UnionWith(pmcData.Inventory.HideoutAreaStashes.Values);
+            }
         }
 
         // Add insured items ids to blacklist
