@@ -126,11 +126,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
                     findSlotResult.Rotation.GetValueOrDefault() ? itemWidth : itemHeight
                 );
 
-                // Item fits + Added to layout grid, add item and children
-                //containerDetails.ItemsAndChildrenInContainer.AddRange(itemAndChildren);
-
                 // Add item into bots inventory
-                // TODO: Poor separation of concerns, perhaps this can be refactored out of this method
                 botInventory.Items.AddRange(itemAndChildren);
 
                 // Exit loop, we've found a slot for item
@@ -186,7 +182,6 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
         // Find bot and the container we are attempting to store item in
         var botContainers = GetOrCreateBotContainerDictionary(botId);
 
-        // TODO: can we add the missing data if it's not found here, would mean no need for separate "AddEmptyContainerToBot" call
         botContainers.TryGetValue(containerName, out var containerDetails);
 
         if (containerDetails.ContainerGridDetails.Count == 0)
@@ -397,29 +392,6 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
     }
 
     /// <summary>
-    /// Get a specific containers details for a bot by its id
-    /// </summary>
-    /// <param name="botId">Identifier of bot to get details of</param>
-    /// <param name="containerName">Identifier of container type to get details of</param>
-    /// <returns></returns>
-    public ContainerDetails? GetBotContainerDetails(MongoId botId, EquipmentSlots containerName)
-    {
-        return GetOrCreateBotContainerDictionary(botId).GetValueOrDefault(containerName);
-    }
-
-    /// <summary>
-    /// TODO: remove, `ItemsAndChildrenInContainer` not currently used
-    /// </summary>
-    /// <param name="botId"></param>
-    /// <param name="containerName"></param>
-    /// <returns></returns>
-    public List<List<Item>> GetItemsInContainer(MongoId botId, EquipmentSlots containerName)
-    {
-        var details = GetBotContainerDetails(botId, containerName);
-        return details.ItemsAndChildrenInContainer;
-    }
-
-    /// <summary>
     ///  Clear the cache of all bot containers
     /// </summary>
     public void ClearCache()
@@ -454,11 +426,6 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
                 );
             }
         }
-
-        /// <summary>
-        /// Items and their children stored in the container
-        /// </summary>
-        public List<List<Item>> ItemsAndChildrenInContainer { get; } = [];
 
         /// <summary>
         /// Grid layout and flag if grid is full
