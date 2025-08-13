@@ -84,6 +84,7 @@ public static class ContainerExtensions
     /// <param name="itemXWidth">Items width</param>
     /// <param name="itemYHeight">Items height</param>
     /// <param name="isRotated">is item rotated</param>
+    /// <returns>bool = true when successful, string = error message if failed</returns>
     public static (bool, string) FillContainerMapWithItem(
         this int[,] container2D,
         int columnStartPositionX,
