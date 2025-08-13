@@ -1,7 +1,6 @@
 using System.Collections.Frozen;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Exceptions.Helpers;
-using SPTarkov.Server.Core.Exceptions.Items;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -905,8 +904,8 @@ public class ItemHelper(
     }
 
     /// <summary>
-    ///    Regenerate all GUIDs with new IDs, except special item types (e.g. quest, sorting table, etc.) This
-    /// function will not mutate the original items list, but will return a new list with new GUIDs.
+    ///    Regenerate all GUIDs with new IDs, except special item types (e.g. quest, sorting table, etc.)
+    /// This function mutates the bot inventory list.
     /// </summary>
     /// <param name="inventory">Inventory to replace Ids in</param>
     /// <param name="insuredItems">Insured items that should not have their IDs replaced</param>
