@@ -22,9 +22,9 @@ public class PrestigeHelper(
 {
     public void ProcessPendingPrestige(SptProfile oldProfile, SptProfile newProfile, PendingPrestige prestige)
     {
-        var prePrestigePmc = oldProfile.CharacterData.PmcData;
-        var sessionId = newProfile.ProfileInfo.ProfileId;
-        var prestigeLevels = databaseService.GetTemplates().Prestige.Elements;
+        var prePrestigePmc = oldProfile.CharacterData?.PmcData;
+        var sessionId = newProfile.ProfileInfo?.ProfileId;
+        var prestigeLevels = databaseService.GetTemplates().Prestige?.Elements ?? [];
         var indexOfPrestigeObtained = Math.Clamp((prestige.PrestigeLevel ?? 1) - 1, 0, prestigeLevels.Count - 1); // Levels are 1 to 4, Index is 0 to 3
 
         // Skill copy
@@ -34,37 +34,39 @@ public class PrestigeHelper(
             1 - prestigeLevels[indexOfPrestigeObtained].TransferConfigs.MasteringConfig.TransferMultiplier
         );
 
-        if (prePrestigePmc.Skills.Common is not null)
+        if (prePrestigePmc?.Skills?.Common is not null)
         {
             var commonSKillsToCopy = prePrestigePmc.Skills.Common;
             foreach (var skillToCopy in commonSKillsToCopy)
             {
                 // Set progress for 5% of what it was, multiplied by prestige level
                 skillToCopy.Progress *= skillProgressCopyAmount;
-                var existingSkill = newProfile.CharacterData.PmcData.Skills.Common.FirstOrDefault(skill => skill.Id == skillToCopy.Id);
+                var existingSkill = newProfile.CharacterData?.PmcData?.Skills?.Common.FirstOrDefault(skill => skill.Id == skillToCopy.Id);
                 if (existingSkill is not null)
                 {
                     existingSkill.Progress = skillToCopy.Progress;
                 }
                 else
                 {
-                    newProfile.CharacterData.PmcData.Skills.Common = newProfile.CharacterData.PmcData.Skills.Common.Union([skillToCopy]);
+                    newProfile.CharacterData!.PmcData!.Skills!.Common = newProfile.CharacterData.PmcData.Skills.Common.Union([skillToCopy]);
                 }
             }
 
             var masteringSkillsToCopy = prePrestigePmc.Skills.Mastering;
-            foreach (var skillToCopy in masteringSkillsToCopy)
+            foreach (var skillToCopy in masteringSkillsToCopy ?? [])
             {
                 // Set progress 5% of what it was, multiplied by prestige level
                 skillToCopy.Progress *= masteringProgressCopyAmount;
-                var existingSkill = newProfile.CharacterData.PmcData.Skills.Mastering.FirstOrDefault(skill => skill.Id == skillToCopy.Id);
+                var existingSkill = newProfile.CharacterData?.PmcData?.Skills?.Mastering?.FirstOrDefault(skill =>
+                    skill.Id == skillToCopy.Id
+                );
                 if (existingSkill is not null)
                 {
                     existingSkill.Progress = skillToCopy.Progress;
                 }
                 else
                 {
-                    newProfile.CharacterData.PmcData.Skills.Mastering = newProfile.CharacterData.PmcData.Skills.Mastering.Union(
+                    newProfile.CharacterData!.PmcData!.Skills!.Mastering = newProfile.CharacterData.PmcData.Skills.Mastering?.Union(
                         [skillToCopy]
                     );
                 }
@@ -73,30 +75,35 @@ public class PrestigeHelper(
 
         // Add "Prestigious" achievement
         var prestigiousAchievement = new MongoId("676091c0f457869a94017a23");
-        if (!newProfile.CharacterData.PmcData.Achievements.ContainsKey(prestigiousAchievement))
+        if (newProfile.CharacterData?.PmcData?.Achievements?.ContainsKey(prestigiousAchievement) is false)
         {
             rewardHelper.AddAchievementToProfile(newProfile, prestigiousAchievement);
         }
 
         // Assumes Prestige data is in descending order
-        var currentPrestigeData = databaseService.GetTemplates().Prestige.Elements[indexOfPrestigeObtained];
+        var currentPrestigeData = databaseService.GetTemplates().Prestige?.Elements[indexOfPrestigeObtained];
 
         // Get all prestige rewards from prestige 1 up to desired prestige
         var prestigeRewards = prestigeLevels
             .Slice(0, indexOfPrestigeObtained + 1) // Index back to PrestigeLevel
-            .SelectMany(prestige => prestige.Rewards);
+            .SelectMany(prestigeInner => prestigeInner.Rewards);
 
-        AddPrestigeRewardsToProfile(sessionId.Value, newProfile, prestigeRewards);
+        AddPrestigeRewardsToProfile(sessionId!.Value, newProfile, prestigeRewards);
 
         // Flag profile as having achieved this prestige level
-        newProfile.CharacterData.PmcData.Prestige.TryAdd(currentPrestigeData.Id, timeUtil.GetTimeStamp());
+        if (newProfile.CharacterData?.PmcData?.Prestige?.TryAdd(currentPrestigeData!.Id, timeUtil.GetTimeStamp()) is false)
+        {
+            logger.Error(
+                $"Failed to add prestige element with id: {currentPrestigeData.Id} to new profile during processing of pending prestige."
+            );
+        }
 
         var itemsToTransfer = new List<Item>();
 
         // Copy transferred items
         foreach (var transferRequest in prestige.Items ?? [])
         {
-            var item = prePrestigePmc.Inventory.Items.FirstOrDefault(item => item.Id == transferRequest.Id);
+            var item = prePrestigePmc?.Inventory?.Items?.FirstOrDefault(item => item.Id == transferRequest.Id);
             if (item is null)
             {
                 logger.Error($"Unable to find item with id: {transferRequest.Id} in profile: {sessionId}, skipping");
@@ -116,7 +123,7 @@ public class PrestigeHelper(
             );
         }
 
-        newProfile.CharacterData.PmcData.Info.PrestigeLevel = prestige.PrestigeLevel;
+        newProfile.CharacterData!.PmcData!.Info!.PrestigeLevel = prestige.PrestigeLevel;
     }
 
     private void AddPrestigeRewardsToProfile(MongoId sessionId, SptProfile newProfile, IEnumerable<Reward> rewards)
@@ -135,7 +142,7 @@ public class PrestigeHelper(
                 case RewardType.Skill:
                     if (Enum.TryParse(reward.Target, out SkillTypes result))
                     {
-                        profileHelper.AddSkillPointsToPlayer(newProfile.CharacterData.PmcData, result, reward.Value.GetValueOrDefault(0));
+                        profileHelper.AddSkillPointsToPlayer(newProfile.CharacterData!.PmcData!, result, reward.Value.GetValueOrDefault(0));
                     }
                     else
                     {
@@ -145,12 +152,12 @@ public class PrestigeHelper(
                     break;
                 case RewardType.Item:
                 {
-                    itemsToSend.AddRange(reward.Items);
+                    itemsToSend.AddRange(reward.Items ?? []);
                     break;
                 }
                 case RewardType.ExtraDailyQuest:
                 {
-                    newProfile.AddExtraRepeatableQuest(new MongoId(reward.Target), (double)reward.Value);
+                    newProfile.AddExtraRepeatableQuest(new MongoId(reward.Target), (double)reward.Value!);
                     break;
                 }
                 default:
