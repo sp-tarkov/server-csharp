@@ -634,59 +634,57 @@ public class ProfileHelper(
         if (!customisationTemplateDb.TryGetValue(reward.Target, out var template))
         {
             logger.Error("Unable to find customisation reward template");
+            return;
         }
 
-        if (template is not null)
+        var rewardToStore = new CustomisationStorage
         {
-            var rewardToStore = new CustomisationStorage
-            {
-                Id = new MongoId(reward.Target),
-                Source = source,
-                Type = null,
-            };
+            Id = new MongoId(reward.Target),
+            Source = source,
+            Type = null,
+        };
 
-            switch (template.Parent)
-            {
-                case CustomisationTypeId.MANNEQUIN_POSE:
-                    rewardToStore.Type = CustomisationType.MANNEQUIN_POSE;
-                    break;
-                case CustomisationTypeId.GESTURES:
-                    rewardToStore.Type = CustomisationType.GESTURE;
-                    break;
-                case CustomisationTypeId.FLOOR:
-                    rewardToStore.Type = CustomisationType.FLOOR;
-                    break;
-                case CustomisationTypeId.DOG_TAGS:
-                    rewardToStore.Type = CustomisationType.DOG_TAG;
-                    break;
-                case CustomisationTypeId.CEILING:
-                    rewardToStore.Type = CustomisationType.CEILING;
-                    break;
-                case CustomisationTypeId.WALL:
-                    rewardToStore.Type = CustomisationType.WALL;
-                    break;
-                case CustomisationTypeId.ENVIRONMENT_UI:
-                    rewardToStore.Type = CustomisationType.ENVIRONMENT;
-                    break;
-                case CustomisationTypeId.SHOOTING_RANGE_MARK:
-                    rewardToStore.Type = CustomisationType.SHOOTING_RANGE_MARK;
-                    break;
-                case CustomisationTypeId.VOICE:
-                    rewardToStore.Type = CustomisationType.VOICE;
-                    break;
-                case CustomisationTypeId.LIGHT:
-                    rewardToStore.Type = CustomisationType.LIGHT;
-                    break;
-                case CustomisationTypeId.UPPER:
-                    rewardToStore.Type = CustomisationType.UPPER;
-                    break;
-                default:
-                    logger.Error($"Unhandled customisation unlock type: {template.Parent} not added to profile");
-                    return;
-            }
-
-            fullProfile.CustomisationUnlocks?.Add(rewardToStore);
+        switch (template.Parent)
+        {
+            case CustomisationTypeId.MANNEQUIN_POSE:
+                rewardToStore.Type = CustomisationType.MANNEQUIN_POSE;
+                break;
+            case CustomisationTypeId.GESTURES:
+                rewardToStore.Type = CustomisationType.GESTURE;
+                break;
+            case CustomisationTypeId.FLOOR:
+                rewardToStore.Type = CustomisationType.FLOOR;
+                break;
+            case CustomisationTypeId.DOG_TAGS:
+                rewardToStore.Type = CustomisationType.DOG_TAG;
+                break;
+            case CustomisationTypeId.CEILING:
+                rewardToStore.Type = CustomisationType.CEILING;
+                break;
+            case CustomisationTypeId.WALL:
+                rewardToStore.Type = CustomisationType.WALL;
+                break;
+            case CustomisationTypeId.ENVIRONMENT_UI:
+                rewardToStore.Type = CustomisationType.ENVIRONMENT;
+                break;
+            case CustomisationTypeId.SHOOTING_RANGE_MARK:
+                rewardToStore.Type = CustomisationType.SHOOTING_RANGE_MARK;
+                break;
+            case CustomisationTypeId.VOICE:
+                rewardToStore.Type = CustomisationType.VOICE;
+                break;
+            case CustomisationTypeId.LIGHT:
+                rewardToStore.Type = CustomisationType.LIGHT;
+                break;
+            case CustomisationTypeId.UPPER:
+                rewardToStore.Type = CustomisationType.UPPER;
+                break;
+            default:
+                logger.Error($"Unhandled customisation unlock type: {template.Parent} not added to profile");
+                return;
         }
+
+        fullProfile.CustomisationUnlocks?.Add(rewardToStore);
     }
 
     /// <summary>
