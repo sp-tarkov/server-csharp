@@ -122,12 +122,13 @@ public class AirdropService(
                 lootResult.AddRange(itemAndChildren);
 
                 // Update container with item we just added
-                containerMap.FillContainerMapWithItem(
+                containerMap.TryFillContainerMapWithItem(
                     result.X.Value,
                     result.Y.Value,
                     itemSize.Width,
                     itemSize.Height,
-                    result.Rotation.GetValueOrDefault(false)
+                    result.Rotation.GetValueOrDefault(false),
+                    out _
                 );
 
                 continue;

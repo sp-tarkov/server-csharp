@@ -226,7 +226,7 @@ public partial class ContainerExtensionsTests
         var destinationPosY = 0;
         var isRotated = false;
 
-        container.FillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated);
+        container.TryFillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated, out _);
 
         Assert.AreEqual(container[0, 0], 1);
     }
@@ -243,7 +243,7 @@ public partial class ContainerExtensionsTests
         var destinationPosY = 0;
         var isRotated = false;
 
-        container.FillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated);
+        container.TryFillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated, out _);
 
         Assert.AreEqual(container[0, 0], 1);
         Assert.AreEqual(container[1, 0], 1);
@@ -261,7 +261,7 @@ public partial class ContainerExtensionsTests
         var destinationPosY = 0;
         var isRotated = false;
 
-        container.FillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated);
+        container.TryFillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated, out _);
 
         Assert.AreEqual(container[0, 0], 1);
         Assert.AreEqual(container[1, 1], 1);
@@ -279,7 +279,7 @@ public partial class ContainerExtensionsTests
         var destinationPosY = 0;
         var isRotated = true;
 
-        container.FillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated);
+        container.TryFillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated, out _);
 
         Assert.AreEqual(container[0, 0], 1);
         Assert.AreEqual(container[0, 1], 1);
@@ -298,7 +298,7 @@ public partial class ContainerExtensionsTests
         var destinationPosY = 1;
         var isRotated = true;
 
-        container.FillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated);
+        container.TryFillContainerMapWithItem(destinationPosX, destinationPosY, itemWidth, itemHeight, isRotated, out _);
 
         Assert.AreEqual(container[1, 0], 1);
         Assert.AreEqual(container[1, 1], 1);

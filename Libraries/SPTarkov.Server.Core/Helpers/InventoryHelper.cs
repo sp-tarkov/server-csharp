@@ -240,12 +240,13 @@ public class InventoryHelper(
         {
             try
             {
-                containerFS2D.FillContainerMapWithItem(
+                containerFS2D.TryFillContainerMapWithItem(
                     findSlotResult.X.Value,
                     findSlotResult.Y.Value,
                     sizeX,
                     sizeY,
-                    findSlotResult.Rotation.Value
+                    findSlotResult.Rotation.Value,
+                    out _
                 );
             }
             catch (Exception ex)
@@ -286,12 +287,13 @@ public class InventoryHelper(
         {
             try
             {
-                containerFS2D.FillContainerMapWithItem(
+                containerFS2D.TryFillContainerMapWithItem(
                     findSlotResult.X.Value,
                     findSlotResult.Y.Value,
                     sizeX,
                     sizeY,
-                    findSlotResult.Rotation.Value
+                    findSlotResult.Rotation.Value,
+                    out _
                 );
             }
             catch (Exception ex)
@@ -346,12 +348,13 @@ public class InventoryHelper(
         {
             try
             {
-                stashFS2D.FillContainerMapWithItem(
+                stashFS2D.TryFillContainerMapWithItem(
                     findSlotResult.X.Value,
                     findSlotResult.Y.Value,
                     sizeX,
                     sizeY,
-                    findSlotResult.Rotation.Value
+                    findSlotResult.Rotation.Value,
+                    out _
                 );
             }
             catch (Exception ex)
@@ -383,12 +386,13 @@ public class InventoryHelper(
 
             try
             {
-                sortingTableFS2D.FillContainerMapWithItem(
+                sortingTableFS2D.TryFillContainerMapWithItem(
                     findSortingSlotResult.X.Value,
                     findSortingSlotResult.Y.Value,
                     sizeX,
                     sizeY,
-                    findSortingSlotResult.Rotation.Value
+                    findSortingSlotResult.Rotation.Value,
+                    out _
                 );
             }
             catch (Exception ex)

@@ -503,12 +503,13 @@ public class LocationLootGenerator(
             }
 
             // Find somewhere for item inside container
-            containerMap.FillContainerMapWithItem(
+            containerMap.TryFillContainerMapWithItem(
                 result.X.Value,
                 result.Y.Value,
                 chosenItemWithChildren.Width,
                 chosenItemWithChildren.Height,
-                result.Rotation.GetValueOrDefault(false)
+                result.Rotation.GetValueOrDefault(false),
+                out _
             );
 
             // Update root item properties with result of position finder

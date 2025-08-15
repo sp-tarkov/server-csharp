@@ -84,16 +84,20 @@ public static class ContainerExtensions
     /// <param name="itemXWidth">Items width</param>
     /// <param name="itemYHeight">Items height</param>
     /// <param name="isRotated">is item rotated</param>
-    /// <returns>bool = true when successful, string = error message if failed</returns>
-    public static (bool, string) FillContainerMapWithItem(
+    /// <param name="errorMessage">Error message if failed</param>
+    /// <returns>bool = true when successful</returns>
+    public static bool TryFillContainerMapWithItem(
         this int[,] container2D,
         int columnStartPositionX,
         int rowStartPositionY,
         int? itemXWidth,
         int? itemYHeight,
-        bool isRotated
+        bool isRotated,
+        out string errorMessage
     )
     {
+        errorMessage = string.Empty;
+
         var containerY = container2D.GetLength(0); // rows
         var containerX = container2D.GetLength(1); // columns
 
@@ -109,7 +113,7 @@ public static class ContainerExtensions
         {
             container2D[rowStartPositionY, columnStartPositionX] = 1;
 
-            return (true, string.Empty);
+            return true;
         }
 
         // Loop over rows and columns and flag each as taken by item
@@ -124,15 +128,14 @@ public static class ContainerExtensions
                 }
                 else
                 {
-                    return (
-                        false,
-                        $"Slot at: ({containerX}, {containerY}) is already filled. Cannot fit: {itemXWidth} by {itemYHeight} item"
-                    );
+                    errorMessage =
+                        $"Slot at: ({containerX}, {containerY}) is already filled. Cannot fit: {itemXWidth} by {itemYHeight} item";
+                    return false;
                 }
             }
         }
 
-        return (true, string.Empty);
+        return true;
     }
 
     /// <summary>

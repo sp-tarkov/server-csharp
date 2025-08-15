@@ -217,14 +217,15 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
             }
 
             // Look for a slot in the grid to place item
-            var result = gridDetails.GridMap.FillContainerMapWithItem(
+            var result = gridDetails.GridMap.TryFillContainerMapWithItem(
                 fixedLocation.X.Value,
                 fixedLocation.Y.Value,
                 itemWidth,
                 itemHeight,
-                fixedLocation.R == ItemRotation.Vertical
+                fixedLocation.R == ItemRotation.Vertical,
+                out _
             );
-            if (result.Item1)
+            if (result)
             {
                 // It Fits!
 
