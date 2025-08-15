@@ -2,6 +2,7 @@
 using SPTarkov.Server.Core.Exceptions.Items;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
@@ -21,7 +22,7 @@ public class ProfileValidatorHelper(
     TraderStore traderStore
 )
 {
-    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
     /// <summary>
     ///     Checks profile inventory for items that do not exist inside the items DB
@@ -31,43 +32,97 @@ public class ProfileValidatorHelper(
     /// <exception cref="InvalidModdedItemException">Thrown if <see cref="GameFixes.RemoveModItemsFromProfile">RemoveModItemsFromProfile</see> is false.</exception>
     /// <exception cref="InvalidModdedClothingException">Thrown if <see cref="GameFixes.RemoveModItemsFromProfile">RemoveModItemsFromProfile</see> is false.</exception>
     /// <exception cref="InvalidModdedTraderException">Thrown if <see cref="GameFixes.RemoveModItemsFromProfile">RemoveModItemsFromProfile</see> is false.</exception>
-    public void CheckForOrphanedModdedItems(MongoId sessionId, SptProfile fullProfile)
+    /// <remarks>Exceptions thrown are from called methods, this method does not throw exceptions directly, but they are possible.</remarks>
+    public void CheckForOrphanedModdedData(MongoId sessionId, SptProfile fullProfile)
+    {
+        RemoveInvalidItems(sessionId, fullProfile);
+        RemoveInvalidUserBuilds(fullProfile);
+        RemoveInvalidDialogRecords(fullProfile);
+        RemoveInvalidClothing(fullProfile);
+        RemoveInvalidRepeatableQuests(fullProfile);
+        RemoveInvalidTraderPurchases(fullProfile);
+    }
+
+    /// <summary>
+    ///     Removes all invalid item ids from the provided profile
+    /// </summary>
+    /// <param name="sessionId">SessionId to check</param>
+    /// <param name="fullProfile">Full profile to check</param>
+    /// <exception cref="InvalidModdedItemException">Thrown if <see cref="GameFixes.RemoveModItemsFromProfile">RemoveModItemsFromProfile</see> is false.</exception>
+    protected void RemoveInvalidItems(MongoId sessionId, SptProfile fullProfile)
     {
         var itemsDb = databaseService.GetItems();
-        var pmcProfile = fullProfile.CharacterData.PmcData;
+        var pmcProfile = fullProfile.CharacterData?.PmcData;
 
-        var invalidItemIds = pmcProfile.Inventory.Items.Where(item => !itemsDb.ContainsKey(item.Template)).Select(item => item.Id).ToList();
+        var invalidItemIds = pmcProfile
+            ?.Inventory?.Items?.Where(item => !itemsDb.ContainsKey(item.Template))
+            .Select(item => item.Id)
+            .ToList();
+
+        // No invalid items
+        if (invalidItemIds is null || invalidItemIds.Count == 0)
+        {
+            return;
+        }
+
         foreach (var invalidItemId in invalidItemIds)
         {
-            if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+            if (CoreConfig.Fixes.RemoveModItemsFromProfile)
             {
                 logger.Warning($"Deleting item id: {invalidItemId} from inventory and insurance");
 
                 // Add here so we can remove below
-                pmcProfile.RemoveItem(invalidItemId, sessionId);
+                pmcProfile?.RemoveItem(invalidItemId, sessionId);
             }
             else
             {
                 throw new InvalidModdedItemException(serverLocalisationService.GetText("fixer-mod_item_found", invalidItemId.ToString()));
             }
         }
+    }
 
-        if (fullProfile.UserBuildData is not null)
+    /// <summary>
+    ///     Checks for and removes invalid user builds containing items that no longer exist
+    /// </summary>
+    /// <param name="fullProfile">Full profile to check</param>
+    protected void RemoveInvalidUserBuilds(SptProfile fullProfile)
+    {
+        // No user build data to remove
+        if (fullProfile.UserBuildData is null)
         {
-            // Remove invalid builds from weapon, equipment and magazine build lists
-            var weaponBuilds = fullProfile.UserBuildData?.WeaponBuilds ?? [];
-            fullProfile.UserBuildData.WeaponBuilds = weaponBuilds
-                .Where(build => !ShouldRemoveWeaponEquipmentBuild("weapon", build, itemsDb))
-                .ToList();
-
-            var equipmentBuilds = fullProfile.UserBuildData.EquipmentBuilds ?? [];
-            fullProfile.UserBuildData.EquipmentBuilds = equipmentBuilds
-                .Where(build => !ShouldRemoveWeaponEquipmentBuild("equipment", build, itemsDb))
-                .ToList();
-
-            var magazineBuild = fullProfile.UserBuildData.MagazineBuilds ?? [];
-            fullProfile.UserBuildData.MagazineBuilds = magazineBuild.Where(build => !ShouldRemoveMagazineBuild(build, itemsDb)).ToList();
+            return;
         }
+
+        var itemsDb = databaseService.GetItems();
+
+        // Remove invalid builds from weapon, equipment and magazine build lists
+        var weaponBuilds = fullProfile.UserBuildData?.WeaponBuilds ?? [];
+        fullProfile.UserBuildData!.WeaponBuilds = weaponBuilds
+            .Where(build => !ShouldRemoveWeaponEquipmentBuild("weapon", build, itemsDb))
+            .ToList();
+
+        var equipmentBuilds = fullProfile.UserBuildData.EquipmentBuilds ?? [];
+        fullProfile.UserBuildData.EquipmentBuilds = equipmentBuilds
+            .Where(build => !ShouldRemoveWeaponEquipmentBuild("equipment", build, itemsDb))
+            .ToList();
+
+        var magazineBuild = fullProfile.UserBuildData.MagazineBuilds ?? [];
+        fullProfile.UserBuildData.MagazineBuilds = magazineBuild.Where(build => !ShouldRemoveMagazineBuild(build, itemsDb)).ToList();
+    }
+
+    /// <summary>
+    ///     Check for and remove invalid user dialogs
+    /// </summary>
+    /// <param name="fullProfile">Full profile to check</param>
+    /// <exception cref="InvalidModdedTraderException">Thrown if <see cref="GameFixes.RemoveModItemsFromProfile">RemoveModItemsFromProfile</see> is false.</exception>
+    protected void RemoveInvalidDialogRecords(SptProfile fullProfile)
+    {
+        if (fullProfile.DialogueRecords is null)
+        {
+            return;
+        }
+
+        var itemsDb = databaseService.GetItems();
 
         // Iterate over dialogs, looking for messages with items not found in item db, remove message if item found
         foreach (var dialog in fullProfile.DialogueRecords)
@@ -96,47 +151,79 @@ public class ProfileValidatorHelper(
                 var itemsToRemove = message.Items.Data.Where(item => !itemsDb.ContainsKey(item.Template)).ToList();
                 foreach (var itemToRemove in itemsToRemove)
                 {
-                    if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-                    {
-                        message.Items.Data.Remove(itemToRemove);
-                        logger.Warning(
-                            $"Item: {itemToRemove.Template} has resulted in the deletion of message: {message.Id} from dialog: {dialog.Key}"
-                        );
-                    }
-                    else
+                    // We've found an item to remove, but the remove config isn't enabled, throw an exception
+                    if (!CoreConfig.Fixes.RemoveModItemsFromProfile)
                     {
                         throw new InvalidModdedItemException(
                             serverLocalisationService.GetText("fixer-mod_item_found", itemToRemove.Template.ToString())
                         );
                     }
-                }
-            }
-        }
 
-        var clothingDb = databaseService.GetTemplates().Customization;
-        foreach (
-            var clothingItem in fullProfile
-                .CustomisationUnlocks.Where(customisation => customisation.Type == CustomisationType.SUITE)
-                .ToList() // We're removing element, ToList to allow that to occur
-        )
-        {
-            if (!clothingDb.ContainsKey(clothingItem.Id))
-            {
-                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-                {
-                    fullProfile.CustomisationUnlocks.Remove(clothingItem);
-                    logger.Warning($"Non-default clothing purchase: {clothingItem} removed from profile");
-                }
-                else
-                {
-                    throw new InvalidModdedClothingException(
-                        serverLocalisationService.GetText("fixer-clothing_item_found", clothingItem.ToString())
+                    message.Items.Data.Remove(itemToRemove);
+                    logger.Warning(
+                        $"Item: {itemToRemove.Template} has resulted in the deletion of message: {message.Id} from dialog: {dialog.Key}"
                     );
                 }
             }
         }
+    }
 
-        foreach (var repeatable in fullProfile.CharacterData.PmcData.RepeatableQuests ?? [])
+    /// <summary>
+    ///     Check for and remove invalid clothing items
+    /// </summary>
+    /// <param name="fullProfile">Full profile to check</param>
+    /// <exception cref="InvalidModdedClothingException">Thrown if <see cref="GameFixes.RemoveModItemsFromProfile">RemoveModItemsFromProfile</see> is false.</exception>
+    protected void RemoveInvalidClothing(SptProfile fullProfile)
+    {
+        var clothingDb = databaseService.GetTemplates().Customization;
+
+        // We're removing element, ToList to allow that to occur
+        var clothingItems = fullProfile
+            .CustomisationUnlocks?.Where(customisation => customisation.Type == CustomisationType.SUITE)
+            .ToList();
+
+        // Nothing to remove
+        if (clothingItems is null || clothingItems.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var clothingItem in clothingItems)
+        {
+            // Valid item, skip
+            if (clothingDb.ContainsKey(clothingItem.Id))
+            {
+                continue;
+            }
+
+            // Found a clothing item to remove but the fixer isn't enabled, throw an exception
+            if (!CoreConfig.Fixes.RemoveModItemsFromProfile)
+            {
+                throw new InvalidModdedClothingException(
+                    serverLocalisationService.GetText("fixer-clothing_item_found", clothingItem.ToString())
+                );
+            }
+
+            fullProfile.CustomisationUnlocks?.Remove(clothingItem);
+            logger.Warning($"Non-default clothing purchase: {clothingItem} removed from profile");
+        }
+    }
+
+    /// <summary>
+    ///     Check for and remove invalid repeatable quests
+    /// </summary>
+    /// <param name="fullProfile">Full profile to check</param>
+    /// <exception cref="InvalidModdedTraderException">Thrown if <see cref="GameFixes.RemoveModItemsFromProfile">RemoveModItemsFromProfile</see> is false.</exception>
+    protected void RemoveInvalidRepeatableQuests(SptProfile fullProfile)
+    {
+        // Nothing to remove
+        if (fullProfile.CharacterData?.PmcData?.RepeatableQuests is null)
+        {
+            return;
+        }
+
+        var itemsDb = databaseService.GetItems();
+        foreach (var repeatable in fullProfile.CharacterData.PmcData.RepeatableQuests)
         {
             if (repeatable.ActiveQuests is null)
             {
@@ -148,19 +235,18 @@ public class ProfileValidatorHelper(
             {
                 if (!DoesTraderExist(activeQuest.TraderId))
                 {
-                    if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-                    {
-                        logger.Warning(
-                            $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
-                        );
-                        repeatable.ActiveQuests.Remove(activeQuest);
-                    }
-                    else
+                    // We found a trader that doesn't exist, but the fixer isnt enabled, throw an exception
+                    if (!CoreConfig.Fixes.RemoveModItemsFromProfile)
                     {
                         throw new InvalidModdedTraderException(
                             serverLocalisationService.GetText("fixer-trader_found", activeQuest.TraderId.ToString())
                         );
                     }
+
+                    repeatable.ActiveQuests.Remove(activeQuest);
+                    logger.Warning(
+                        $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
+                    );
 
                     continue;
                 }
@@ -173,7 +259,7 @@ public class ProfileValidatorHelper(
                 // Get Item rewards only
                 foreach (var successReward in activeQuest.Rewards["Success"].Where(reward => reward.Type == RewardType.Item))
                 {
-                    if (successReward.Items.Any(item => !itemsDb.ContainsKey(item.Template)))
+                    if (successReward.Items?.Any(item => !itemsDb.ContainsKey(item.Template)) ?? false)
                     {
                         logger.Warning(
                             $"Non-default repeatable quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
@@ -183,18 +269,33 @@ public class ProfileValidatorHelper(
                 }
             }
         }
+    }
 
-        foreach (var (traderId, _) in fullProfile.TraderPurchases.Where(traderPurchase => !DoesTraderExist(traderPurchase.Key)))
+    /// <summary>
+    ///     Check for and remove invalid trader purchases from traders that no longer exist
+    /// </summary>
+    /// <param name="fullProfile">Full profile to check</param>
+    /// <exception cref="InvalidModdedTraderException">Thrown if <see cref="GameFixes.RemoveModItemsFromProfile">RemoveModItemsFromProfile</see> is false.</exception>
+    protected void RemoveInvalidTraderPurchases(SptProfile fullProfile)
+    {
+        var purchases = fullProfile.TraderPurchases?.Where(traderPurchase => !DoesTraderExist(traderPurchase.Key));
+
+        // Nothing to remove
+        if (purchases is null || !purchases.Any())
         {
-            if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-            {
-                logger.Warning($"Non-default trader: {traderId} purchase removed from traderPurchases list in profile");
-                fullProfile.TraderPurchases.Remove(traderId);
-            }
-            else
+            return;
+        }
+
+        foreach (var (traderId, _) in purchases)
+        {
+            // We have purchases to remove and the fixer isn't enabled, throw an exception
+            if (!CoreConfig.Fixes.RemoveModItemsFromProfile)
             {
                 throw new InvalidModdedTraderException(serverLocalisationService.GetText("fixer-trader_found", traderId.ToString()));
             }
+
+            logger.Warning($"Non-default trader: {traderId} purchase removed from traderPurchases list in profile");
+            fullProfile.TraderPurchases?.Remove(traderId);
         }
     }
 
@@ -214,7 +315,7 @@ public class ProfileValidatorHelper(
             {
                 logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template.ToString()));
 
-                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+                if (CoreConfig.Fixes.RemoveModItemsFromProfile)
                 {
                     logger.Warning($"Item: {item.Template} has resulted in the deletion of {buildType} build: {build.Name}");
 
@@ -234,7 +335,7 @@ public class ProfileValidatorHelper(
             {
                 logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template.ToString()));
 
-                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+                if (CoreConfig.Fixes.RemoveModItemsFromProfile)
                 {
                     logger.Warning($"Item: {item.Template} has resulted in the deletion of {buildType} build: {build.Name}");
 
@@ -270,7 +371,7 @@ public class ProfileValidatorHelper(
             {
                 logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.TemplateId.ToString()));
 
-                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+                if (CoreConfig.Fixes.RemoveModItemsFromProfile)
                 {
                     logger.Warning($"Item: {item.TemplateId} has resulted in the deletion of magazine build: {magazineBuild.Name}");
 

@@ -70,7 +70,7 @@ public class ProfileValidatorService(
                 profile.Deserialize<SptProfile>(JsonUtil.JsonSerializerOptionsNoIndent)
                 ?? throw new InvalidOperationException($"Could not deserialize the profile.");
 
-            profileValidatorHelper.CheckForOrphanedModdedItems(new Models.Common.MongoId(profileId), sptReadyProfile);
+            profileValidatorHelper.CheckForOrphanedModdedData(new Models.Common.MongoId(profileId), sptReadyProfile);
         }
         catch (Exception ex)
         {
