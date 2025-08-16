@@ -60,6 +60,7 @@ public class BotInventoryGenerator(
     ];
 
     private readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
+    private readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
 
     private readonly FrozenSet<string> _slotsToCheck = [nameof(EquipmentSlots.Pockets), nameof(EquipmentSlots.SecuredContainer)];
 
@@ -193,7 +194,12 @@ public class BotInventoryGenerator(
         GetRaidConfigurationRequestData? raidConfig
     )
     {
-        _botConfig.Equipment.TryGetValue(botGeneratorHelper.GetBotEquipmentRole(botRole), out var botEquipConfig);
+        if (!_botConfig.Equipment.TryGetValue(botGeneratorHelper.GetBotEquipmentRole(botRole), out var botEquipConfig))
+        {
+            logger.Error($"Bot Equipment generation failed, unable to find equipment filters for: {botRole}");
+
+            return;
+        }
         var randomistionDetails = botHelper.GetBotRandomizationDetails(botLevel, botEquipConfig);
 
         // Apply nighttime changes if its nighttime + there's changes to make
@@ -211,6 +217,23 @@ public class BotInventoryGenerator(
             }
         }
 
+        // Is PMC + generating armband + armband forcing is enabled
+        if (_pmcConfig.ForceArmband.Enabled && isPmc)
+        {
+            // Replace armband pool with single tpl from config
+            if (templateInventory.Equipment.TryGetValue(EquipmentSlots.ArmBand, out var armbands))
+            {
+                // Get tpl based on pmc side
+                var armbandTpl = botRole == "pmcusec" ? _pmcConfig.ForceArmband.Usec : _pmcConfig.ForceArmband.Bear;
+
+                armbands.Clear();
+                armbands.Add(armbandTpl, 1);
+
+                // Force armband spawn to 100%
+                wornItemChances.EquipmentChances["Armband"] = 100;
+            }
+        }
+
         // Get profile of player generating bots, we use their level later on
         var pmcProfile = profileHelper.GetPmcProfile(sessionId);
         var botEquipmentRole = botGeneratorHelper.GetBotEquipmentRole(botRole);
@@ -218,7 +241,7 @@ public class BotInventoryGenerator(
         // Iterate over all equipment slots of bot, do it in specific order to reduce conflicts
         // e.g. ArmorVest should be generated after TacticalVest
         // or FACE_COVER before HEADWEAR
-        foreach (var (equipmentSlot, value) in templateInventory.Equipment)
+        foreach (var (equipmentSlot, itemsWithWeightPool) in templateInventory.Equipment)
         {
             // Skip some slots as they need to be done in a specific order + with specific parameter values
             // e.g. Weapons
@@ -232,7 +255,7 @@ public class BotInventoryGenerator(
                 {
                     BotId = botId,
                     RootEquipmentSlot = equipmentSlot,
-                    RootEquipmentPool = value,
+                    RootEquipmentPool = itemsWithWeightPool,
                     ModPool = templateInventory.Mods,
                     SpawnChances = wornItemChances,
                     BotData = new BotData

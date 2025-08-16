@@ -80,6 +80,12 @@ public record PmcConfig : BaseConfig
     public required double IsUsec { get; set; }
 
     /// <summary>
+    ///     Force PMCs to use specific armband Tpls
+    /// </summary>
+    [JsonPropertyName("forceArmband")]
+    public required ForceArmbandSettings ForceArmband { get; set; }
+
+    /// <summary>
     ///     WildSpawnType enum value USEC PMCs use
     /// </summary>
     [JsonPropertyName("usecType")]
@@ -141,6 +147,18 @@ public record PmcConfig : BaseConfig
 
     [JsonPropertyName("customPmcWaves")]
     public required Dictionary<string, List<BossLocationSpawn>> CustomPmcWaves { get; set; }
+}
+
+public record ForceArmbandSettings
+{
+    [JsonPropertyName("enabled")]
+    public bool Enabled { get; set; }
+
+    [JsonPropertyName("usec")]
+    public MongoId Usec { get; set; }
+
+    [JsonPropertyName("bear")]
+    public MongoId Bear { get; set; }
 }
 
 public record PmcLootSettings
