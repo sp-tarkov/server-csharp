@@ -173,9 +173,9 @@
   },
   "isUsec": 50,
   "forceArmband": {
-	  "enabled": true,
-	  "usec": "5b3f3af486f774679e752c1f",
-	  "bear": "5b3f3ade86f7746b6b790d8e"
+    "enabled": true,
+    "usec": "5b3f3af486f774679e752c1f",
+    "bear": "5b3f3ade86f7746b6b790d8e"
   },
   "_pmcType": "Controls what bot brain can be chosen for each PMC bot type, the number is the weighting to be picked",
   "pmcType": {
