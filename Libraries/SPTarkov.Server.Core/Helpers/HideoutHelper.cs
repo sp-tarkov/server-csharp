@@ -179,12 +179,6 @@ public class HideoutHelper(
     /// <param name="bonus">Bonus to add to profile</param>
     public void ApplyPlayerUpgradesBonus(PmcData profileData, Bonus bonus)
     {
-        if (!bonus.TemplateId.HasValue)
-        {
-            logger.Error("Bonus template id is null");
-            return;
-        }
-
         // Handle additional changes some bonuses need before being added
         switch (bonus.Type)
         {
@@ -204,8 +198,13 @@ public class HideoutHelper(
                     return;
                 }
 
-                stashItem.Template = bonus.TemplateId.Value;
+                if (bonus.TemplateId.HasValue)
+                {
+                    stashItem.Template = bonus.TemplateId.Value;
+                    break;
+                }
 
+                logger.Error("Bonus template id is null when trying to apply stash size bonus");
                 break;
             }
             case BonusType.MaximumEnergyReserve:
