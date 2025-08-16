@@ -16,6 +16,8 @@ public class JsonUtil
     {
         JsonSerializerOptionsNoIndent = new JsonSerializerOptions()
         {
+            // This is required for JSONC support
+            ReadCommentHandling = JsonCommentHandling.Skip,
             WriteIndented = false,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
