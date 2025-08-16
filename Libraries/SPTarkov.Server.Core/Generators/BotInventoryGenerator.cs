@@ -210,10 +210,13 @@ public class BotInventoryGenerator(
         )
         {
             foreach (var (equipment, weight) in randomistionDetails.NighttimeChanges.EquipmentModsModifiers)
-            // Never let mod chance go outside 0 - 100
             {
-                var newWeight = weight + randomistionDetails.EquipmentMods[equipment];
-                randomistionDetails.EquipmentMods[equipment] = Math.Clamp(newWeight, 0, 100);
+                if (randomistionDetails.EquipmentMods.TryGetValue(equipment, out var value))
+                {
+                    // Never let mod chance go outside 0 - 100
+                    var newWeight = weight + value;
+                    randomistionDetails.EquipmentMods[equipment] = Math.Clamp(newWeight, 0, 100);
+                }
             }
         }
 
