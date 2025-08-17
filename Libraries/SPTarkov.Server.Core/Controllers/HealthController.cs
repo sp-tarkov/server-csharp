@@ -252,7 +252,7 @@ public class HealthController(
             Action = healthTreatmentRequest.Action,
             TransactionId = Traders.THERAPIST,
             SchemeItems = healthTreatmentRequest.Items,
-            Type = "",
+            Type = string.Empty,
             ItemId = MongoId.Empty(),
             Count = 0,
             SchemeId = 0,

@@ -747,8 +747,8 @@ public class InsuranceController(
             SchemeItems = itemsToPay,
             TransactionId = request.TransactionId,
             Action = "SptInsure",
-            Type = "",
-            ItemId = "",
+            Type = string.Empty,
+            ItemId = MongoId.Empty(),
             Count = 0,
             SchemeId = 0,
         };

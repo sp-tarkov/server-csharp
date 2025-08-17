@@ -117,7 +117,7 @@ public class PrestigeHelper(
         {
             mailSendService.SendSystemMessageToPlayer(
                 sessionId.Value,
-                "",
+                string.Empty,
                 itemsToTransfer,
                 timeUtil.GetHoursAsSeconds(8760) // Year
             );
@@ -168,7 +168,7 @@ public class PrestigeHelper(
 
         if (itemsToSend.Count > 0)
         {
-            mailSendService.SendSystemMessageToPlayer(sessionId, "", itemsToSend, 31536000);
+            mailSendService.SendSystemMessageToPlayer(sessionId, string.Empty, itemsToSend, 31536000);
         }
     }
 }

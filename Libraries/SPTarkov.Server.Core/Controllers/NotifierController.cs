@@ -58,7 +58,7 @@ public class NotifierController(HttpServerHelper httpServerHelper, NotifierHelpe
         {
             Server = httpServerHelper.BuildUrl(),
             ChannelId = sessionId,
-            Url = "",
+            Url = string.Empty,
             NotifierServer = GetServer(sessionId),
             WebSocket = notifierHelper.GetWebSocketServer(sessionId),
         };

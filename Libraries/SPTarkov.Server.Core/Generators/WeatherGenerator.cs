@@ -75,8 +75,8 @@ public class WeatherGenerator(
             WindDirection = GetWeightedWindDirection(weatherValues),
             WindSpeed = GetWeightedWindSpeed(weatherValues),
             Cloud = clouds,
-            Time = "",
-            Date = "",
+            Time = string.Empty,
+            Date = string.Empty,
             Timestamp = 0,
             SptInRaidTimestamp = 0,
         };

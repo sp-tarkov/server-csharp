@@ -1096,7 +1096,7 @@ public class RagfairController(
             TransactionId = "ragfair",
             Action = "TradingConfirm",
             SchemeItems = [new IdWithCount { Id = currency.GetCurrencyTpl(), Count = Math.Round(value) }],
-            Type = "",
+            Type = string.Empty,
             ItemId = MongoId.Empty(),
             Count = 0,
             SchemeId = 0,

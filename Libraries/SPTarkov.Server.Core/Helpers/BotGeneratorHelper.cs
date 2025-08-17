@@ -249,7 +249,7 @@ public class BotGeneratorHelper(
             {
                 Incompatible = false,
                 Found = false,
-                Reason = "",
+                Reason = string.Empty,
             };
         }
 
@@ -409,7 +409,7 @@ public class BotGeneratorHelper(
             };
         }
 
-        return new ChooseRandomCompatibleModResult { Incompatible = false, Reason = "" };
+        return new ChooseRandomCompatibleModResult { Incompatible = false, Reason = string.Empty };
     }
 
     protected bool HasBlockingProperty(TemplateItem? item, string blockingPropertyName)

@@ -134,7 +134,7 @@ public class PmcChatResponseService(
                 playerName = pmcData.Info.Nickname,
                 playerLevel = pmcData.Info.Level,
                 playerSide = pmcData.Info.Side,
-                victimDeathLocation = victimData is not null ? GetLocationName(victimData.Location) : "",
+                victimDeathLocation = victimData is not null ? GetLocationName(victimData.Location) : string.Empty,
             }
         );
 

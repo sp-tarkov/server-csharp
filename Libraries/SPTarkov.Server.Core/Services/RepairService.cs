@@ -126,8 +126,8 @@ public class RepairService(
             SchemeItems = [new IdWithCount { Count = Math.Round(repairCost), Id = Money.ROUBLES }],
             TransactionId = traderId,
             Action = "SptRepair",
-            Type = "",
-            ItemId = "",
+            Type = string.Empty,
+            ItemId = MongoId.Empty(),
             Count = 0,
             SchemeId = 0,
         };

@@ -57,17 +57,17 @@ public class ProfileController(
         {
             return new MiniProfile
             {
-                Username = profile.ProfileInfo?.Username ?? "",
+                Username = profile.ProfileInfo?.Username ?? string.Empty,
                 Nickname = "unknown",
-                HasPassword = profile.ProfileInfo?.Password != "",
+                HasPassword = profile.ProfileInfo?.Password != string.Empty,
                 Side = "unknown",
                 CurrentLevel = 0,
                 CurrentExperience = 0,
                 PreviousExperience = 0,
                 NextLevel = xpToNextLevel,
                 MaxLevel = maxLvl,
-                Edition = profile.ProfileInfo?.Edition ?? "",
-                ProfileId = profile.ProfileInfo?.ProfileId ?? "",
+                Edition = profile.ProfileInfo?.Edition ?? string.Empty,
+                ProfileId = profile.ProfileInfo?.ProfileId ?? string.Empty,
                 SptData = profileHelper.GetDefaultSptDataObject(),
             };
         }
@@ -83,8 +83,8 @@ public class ProfileController(
             PreviousExperience = currentLevel == 0 ? 0 : profileHelper.GetExperience(currentLevel.Value),
             NextLevel = xpToNextLevel,
             MaxLevel = maxLvl,
-            Edition = profile.ProfileInfo?.Edition ?? "",
-            ProfileId = profile.ProfileInfo?.ProfileId ?? "",
+            Edition = profile.ProfileInfo?.Edition ?? string.Empty,
+            ProfileId = profile.ProfileInfo?.ProfileId ?? string.Empty,
             SptData = profile.SptData,
         };
     }

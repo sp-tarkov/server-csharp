@@ -599,7 +599,7 @@ public class DialogueController(
             return new FriendRequestSendResponse
             {
                 Status = BackendErrorCodes.PlayerProfileNotFound,
-                RequestId = "", // Unused in an error state
+                RequestId = string.Empty, // Unused in an error state
                 RetryAfter = 600,
             };
         }

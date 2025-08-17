@@ -85,7 +85,7 @@ public class ScavCaseRewardGenerator(
                 .Values.Where(item =>
                 {
                     // Base "Item" item has no parent, ignore it
-                    if (item.Parent == "")
+                    if (item.Parent == MongoId.Empty())
                     {
                         return false;
                     }
@@ -144,7 +144,7 @@ public class ScavCaseRewardGenerator(
                 .Values.Where(item =>
                 {
                     // Base "Item" item has no parent, ignore it
-                    if (item.Parent == "")
+                    if (item.Parent == MongoId.Empty())
                     {
                         return false;
                     }

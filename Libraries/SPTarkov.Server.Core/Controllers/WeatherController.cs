@@ -29,8 +29,8 @@ public class WeatherController(
         var result = new WeatherData
         {
             Acceleration = 0,
-            Time = "",
-            Date = "",
+            Time = string.Empty,
+            Date = string.Empty,
             Weather = null,
             Season = Season.AUTUMN,
         };

@@ -1052,7 +1052,7 @@ public class BotEquipmentModGenerator(
         // Get random mod to attach from items db for required slots if none found above
         if (!(chosenModResult.Found ?? false) && parentSlot != null && (parentSlot.Required ?? false))
         {
-            chosenModResult.ChosenTemplate = GetRandomModTplFromItemDb("", parentSlot, request.ModSlot, request.Weapon);
+            chosenModResult.ChosenTemplate = GetRandomModTplFromItemDb(MongoId.Empty(), parentSlot, request.ModSlot, request.Weapon);
             chosenModResult.Found = true;
         }
 

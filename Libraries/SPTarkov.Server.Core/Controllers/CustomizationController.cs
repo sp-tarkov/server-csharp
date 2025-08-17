@@ -162,7 +162,7 @@ public class CustomizationController(
                 SchemeItems = [new IdWithCount { Count = inventoryItemToProcess.Count!.Value, Id = inventoryItemToProcess.Id }],
                 TransactionId = Traders.RAGMAN,
                 Action = "BuyCustomization",
-                Type = "",
+                Type = string.Empty,
                 ItemId = MongoId.Empty(),
                 Count = 0,
                 SchemeId = 0,

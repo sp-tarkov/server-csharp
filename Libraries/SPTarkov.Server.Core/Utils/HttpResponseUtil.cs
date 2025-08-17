@@ -67,7 +67,7 @@ public class HttpResponseUtil(JsonUtil jsonUtil, ServerLocalisationService serve
     /// <returns>Client response</returns>
     public string EmptyResponse()
     {
-        return GetBody("", BackendErrorCodes.None, "");
+        return GetBody(string.Empty, BackendErrorCodes.None, "");
     }
 
     public string NullResponse()

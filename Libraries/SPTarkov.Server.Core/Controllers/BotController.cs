@@ -324,7 +324,7 @@ public class BotController(
     /// <returns>MinMax values</returns>
     protected MinMax<int>? GetPmcLevelRangeForMap(string? location)
     {
-        return pmcConfig.LocationSpecificPmcLevelOverride!.GetValueOrDefault(location?.ToLowerInvariant() ?? "", null);
+        return pmcConfig.LocationSpecificPmcLevelOverride!.GetValueOrDefault(location?.ToLowerInvariant() ?? string.Empty, null);
     }
 
     /// <summary>

@@ -663,7 +663,7 @@ public class RepeatableQuestRewardGenerator(
             .Values.Where(itemTemplate =>
             {
                 // Base "Item" item has no parent, ignore it
-                if (itemTemplate.Parent == "")
+                if (itemTemplate.Parent == MongoId.Empty())
                 {
                     return false;
                 }
