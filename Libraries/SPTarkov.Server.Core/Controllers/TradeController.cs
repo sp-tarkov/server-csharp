@@ -227,7 +227,20 @@ public class TradeController(
     /// <returns>True if player can buy offer</returns>
     protected bool PlayerLacksTraderLoyaltyLevelToBuyOffer(RagfairOffer fleaOffer, PmcData pmcData)
     {
-        return fleaOffer.LoyaltyLevel > pmcData.TradersInfo[fleaOffer.User.Id].LoyaltyLevel;
+        if (fleaOffer.LoyaltyLevel == 0)
+        {
+            // No requirement, always passes
+            return true;
+        }
+
+        if (pmcData.TradersInfo.TryGetValue(fleaOffer.User.Id, out var traderInfo))
+        {
+            // Trader exists in profile ,do loyalty level check
+            return traderInfo.LoyaltyLevel >= fleaOffer.LoyaltyLevel;
+        }
+
+        // No trader data on player profile, fail check
+        return false;
     }
 
     /// <summary>
