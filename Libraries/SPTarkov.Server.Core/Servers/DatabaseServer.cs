@@ -18,7 +18,7 @@ public class DatabaseServer
     {
         if (TableData is null)
         {
-            throw new DatabaseNullException("Database tables have not been initialized!");
+            throw new DatabaseNullException("The database has not been initialized!");
         }
 
         return TableData;
