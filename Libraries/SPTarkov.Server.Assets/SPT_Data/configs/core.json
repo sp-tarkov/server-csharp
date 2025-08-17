@@ -13,7 +13,7 @@
     "betaDisclaimerTimeoutDelay": 30
   },
   "onStart": {
-	  "validateProfiles": true
+    "validateProfiles": true
   },
   "fixes": {
     "fixShotgunDispersion": true,
