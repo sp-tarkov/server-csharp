@@ -9,20 +9,20 @@ public record Hideout
     public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("areas")]
-    public List<HideoutArea> Areas { get; set; }
+    public required List<HideoutArea> Areas { get; init; }
 
     [JsonPropertyName("customAreas")]
-    public List<HideoutArea>? CustomAreas { get; set; }
+    public required List<HideoutArea>? CustomAreas { get; init; }
 
     [JsonPropertyName("customisation")]
-    public HideoutCustomisation Customisation { get; set; }
+    public required HideoutCustomisation Customisation { get; init; }
 
     [JsonPropertyName("production")]
-    public HideoutProductionData Production { get; set; }
+    public required HideoutProductionData Production { get; init; }
 
     [JsonPropertyName("settings")]
-    public HideoutSettingsBase Settings { get; set; }
+    public required HideoutSettingsBase Settings { get; init; }
 
     [JsonPropertyName("qte")]
-    public List<QteData> Qte { get; set; }
+    public required List<QteData> Qte { get; init; }
 }

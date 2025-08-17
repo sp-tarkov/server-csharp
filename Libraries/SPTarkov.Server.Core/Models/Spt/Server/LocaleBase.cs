@@ -13,11 +13,11 @@ public record LocaleBase
     /// THIS IS LAZY LOADED AND YOUR CHANGES WILL NOT BE SAVED
     /// </summary>
     [JsonPropertyName("global")]
-    public required Dictionary<string, LazyLoad<Dictionary<string, string>>> Global { get; set; }
+    public required Dictionary<string, LazyLoad<Dictionary<string, string>>> Global { get; init; }
 
     [JsonPropertyName("menu")]
-    public required Dictionary<string, Dictionary<string, object>> Menu { get; set; }
+    public required Dictionary<string, Dictionary<string, object>> Menu { get; init; }
 
     [JsonPropertyName("languages")]
-    public required Dictionary<string, string> Languages { get; set; }
+    public required Dictionary<string, string> Languages { get; init; }
 }

@@ -9,7 +9,7 @@ public record SettingsBase
     public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("config")]
-    public Config Configuration { get; set; }
+    public required Config Configuration { get; init; }
 }
 
 public record Config

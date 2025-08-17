@@ -12,16 +12,16 @@ public record Trader
     public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("assort")]
-    public TraderAssort Assort { get; set; }
+    public required TraderAssort Assort { get; set; }
 
     [JsonPropertyName("base")]
-    public TraderBase Base { get; set; }
+    public required TraderBase Base { get; init; }
 
     [JsonPropertyName("dialogue")]
-    public Dictionary<string, List<string>?> Dialogue { get; set; }
+    public required Dictionary<string, List<string>?> Dialogue { get; init; }
 
     [JsonPropertyName("questassort")]
-    public Dictionary<string, Dictionary<MongoId, MongoId>>? QuestAssort { get; set; }
+    public required Dictionary<string, Dictionary<MongoId, MongoId>> QuestAssort { get; init; }
 
     [JsonPropertyName("suits")]
     public List<Suit>? Suits { get; set; }

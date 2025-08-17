@@ -58,67 +58,67 @@ public record Locations
     private Dictionary<string, Eft.Common.Location>? _locationDictionaryCache;
 
     [JsonPropertyName("bigmap")]
-    public Eft.Common.Location Bigmap { get; set; }
+    public required Eft.Common.Location Bigmap { get; init; }
 
     [JsonPropertyName("develop")]
-    public Eft.Common.Location? Develop { get; set; }
+    public required Eft.Common.Location? Develop { get; init; }
 
     [JsonPropertyName("factory4_day")]
-    public Eft.Common.Location Factory4Day { get; set; }
+    public required Eft.Common.Location Factory4Day { get; init; }
 
     [JsonPropertyName("factory4_night")]
-    public Eft.Common.Location Factory4Night { get; set; }
+    public required Eft.Common.Location Factory4Night { get; init; }
 
     [JsonPropertyName("hideout")]
-    public Eft.Common.Location? Hideout { get; set; }
+    public required Eft.Common.Location? Hideout { get; init; }
 
     [JsonPropertyName("interchange")]
-    public Eft.Common.Location Interchange { get; set; }
+    public required Eft.Common.Location Interchange { get; init; }
 
     [JsonPropertyName("laboratory")]
-    public Eft.Common.Location Laboratory { get; set; }
+    public required Eft.Common.Location Laboratory { get; init; }
 
     [JsonPropertyName("lighthouse")]
-    public Eft.Common.Location Lighthouse { get; set; }
+    public required Eft.Common.Location Lighthouse { get; init; }
 
     [JsonPropertyName("privatearea")]
-    public Eft.Common.Location? PrivateArea { get; set; }
+    public required Eft.Common.Location? PrivateArea { get; init; }
 
     [JsonPropertyName("rezervbase")]
-    public Eft.Common.Location RezervBase { get; set; }
+    public required Eft.Common.Location RezervBase { get; init; }
 
     [JsonPropertyName("shoreline")]
-    public Eft.Common.Location Shoreline { get; set; }
+    public required Eft.Common.Location Shoreline { get; init; }
 
     [JsonPropertyName("suburbs")]
-    public Eft.Common.Location? Suburbs { get; set; }
+    public required Eft.Common.Location? Suburbs { get; init; }
 
     [JsonPropertyName("tarkovstreets")]
-    public Eft.Common.Location TarkovStreets { get; set; }
+    public required Eft.Common.Location TarkovStreets { get; init; }
 
     [JsonPropertyName("labyrinth")]
-    public Eft.Common.Location Labyrinth { get; set; }
+    public required Eft.Common.Location Labyrinth { get; init; }
 
     [JsonPropertyName("terminal")]
-    public Eft.Common.Location? Terminal { get; set; }
+    public required Eft.Common.Location? Terminal { get; init; }
 
     [JsonPropertyName("town")]
-    public Eft.Common.Location? Town { get; set; }
+    public required Eft.Common.Location? Town { get; init; }
 
     [JsonPropertyName("woods")]
-    public Eft.Common.Location Woods { get; set; }
+    public required Eft.Common.Location Woods { get; init; }
 
     [JsonPropertyName("sandbox")]
-    public Eft.Common.Location Sandbox { get; set; }
+    public required Eft.Common.Location Sandbox { get; init; }
 
     [JsonPropertyName("sandbox_high")]
-    public Eft.Common.Location SandboxHigh { get; set; }
+    public required Eft.Common.Location SandboxHigh { get; init; }
 
     /// <summary>
     ///     Holds a mapping of the linkages between locations on the UI
     /// </summary>
     [JsonPropertyName("base")]
-    public LocationsBase? Base { get; set; }
+    public required LocationsBase Base { get; init; }
 
     /// <summary>
     ///     Get map locations as a dictionary, keyed by its name e.g. Factory4Day

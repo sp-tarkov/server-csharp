@@ -10,23 +10,23 @@ public record DatabaseTables
     [JsonExtensionData]
     public Dictionary<string, object> ExtensionData { get; init; } = [];
 
-    public required Bots.Bots Bots { get; set; }
+    public required Bots.Bots Bots { get; init; }
 
-    public required Hideout.Hideout Hideout { get; set; }
+    public required Hideout.Hideout Hideout { get; init; }
 
-    public required LocaleBase Locales { get; set; }
+    public required LocaleBase Locales { get; init; }
 
-    public required Locations Locations { get; set; }
+    public required Locations Locations { get; init; }
 
-    public required Match Match { get; set; }
+    public required Match Match { get; init; }
 
-    public required Templates.Templates Templates { get; set; }
+    public required Templates.Templates Templates { get; init; }
 
-    public required Dictionary<MongoId, Trader> Traders { get; set; }
+    public required Dictionary<MongoId, Trader> Traders { get; init; }
 
-    public required Globals Globals { get; set; }
+    public required Globals Globals { get; init; }
 
-    public required ServerBase Server { get; set; }
+    public required ServerBase Server { get; init; }
 
-    public required SettingsBase Settings { get; set; }
+    public required SettingsBase Settings { get; init; }
 }

@@ -11,62 +11,62 @@ public record Templates
     public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("character")]
-    public List<string> Character { get; set; }
+    public required List<string> Character { get; init; }
 
     [JsonPropertyName("customisationStorage")]
-    public List<CustomisationStorage> CustomisationStorage { get; set; }
+    public required List<CustomisationStorage> CustomisationStorage { get; init; }
 
     [JsonPropertyName("items")]
-    public Dictionary<MongoId, TemplateItem> Items { get; set; }
+    public required Dictionary<MongoId, TemplateItem> Items { get; init; }
 
     [JsonPropertyName("prestige")]
-    public Prestige? Prestige { get; set; }
+    public required Prestige Prestige { get; init; }
 
     [JsonPropertyName("quests")]
-    public Dictionary<MongoId, Quest> Quests { get; set; }
+    public required Dictionary<MongoId, Quest> Quests { get; init; }
 
     [JsonPropertyName("repeatableQuests")]
-    public RepeatableQuestDatabase RepeatableQuests { get; set; }
+    public required RepeatableQuestDatabase RepeatableQuests { get; init; }
 
     [JsonPropertyName("handbook")]
-    public HandbookBase Handbook { get; set; }
+    public required HandbookBase Handbook { get; init; }
 
     [JsonPropertyName("customization")]
-    public Dictionary<MongoId, CustomizationItem> Customization { get; set; }
+    public required Dictionary<MongoId, CustomizationItem> Customization { get; init; }
 
     /// <summary>
     ///     The profile templates listed in the launcher on profile creation, split by account type (e.g. Standard) then side (e.g. bear/usec)
     /// </summary>
     [JsonPropertyName("profiles")]
-    public Dictionary<string, ProfileSides> Profiles { get; set; }
+    public required Dictionary<string, ProfileSides> Profiles { get; init; }
 
     /// <summary>
     ///     Flea prices of items - gathered from online flea market dump
     /// </summary>
     [JsonPropertyName("prices")]
-    public Dictionary<MongoId, double> Prices { get; set; }
+    public required Dictionary<MongoId, double> Prices { get; init; }
 
     /// <summary>
     ///     Default equipment loadouts that show on main inventory screen
     /// </summary>
     [JsonPropertyName("defaultEquipmentPresets")]
-    public List<DefaultEquipmentPreset> DefaultEquipmentPresets { get; set; }
+    public required List<DefaultEquipmentPreset> DefaultEquipmentPresets { get; init; }
 
     /// <summary>
     ///     Achievements
     /// </summary>
     [JsonPropertyName("achievements")]
-    public List<Achievement> Achievements { get; set; }
+    public required List<Achievement> Achievements { get; init; }
 
     /// <summary>
     ///     Achievements
     /// </summary>
     [JsonPropertyName("customAchievements")]
-    public List<Achievement> CustomAchievements { get; set; }
+    public required List<Achievement> CustomAchievements { get; init; }
 
     /// <summary>
     ///     Location services data
     /// </summary>
     [JsonPropertyName("locationServices")]
-    public LocationServices LocationServices { get; set; }
+    public required LocationServices LocationServices { get; init; }
 }

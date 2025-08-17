@@ -12,19 +12,19 @@ public record Globals
     public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("config")]
-    public Config Configuration { get; set; }
+    public required Config Configuration { get; init; }
 
     [JsonPropertyName("LocationInfection")]
-    public LocationInfection LocationInfection { get; set; }
+    public required LocationInfection LocationInfection { get; init; }
 
     [JsonPropertyName("bot_presets")]
-    public IEnumerable<BotPreset> BotPresets { get; set; }
+    public required IEnumerable<BotPreset> BotPresets { get; init; }
 
     [JsonPropertyName("BotWeaponScatterings")]
-    public IEnumerable<BotWeaponScattering> BotWeaponScatterings { get; set; }
+    public required IEnumerable<BotWeaponScattering> BotWeaponScatterings { get; init; }
 
     [JsonPropertyName("ItemPresets")]
-    public Dictionary<MongoId, Preset> ItemPresets { get; set; }
+    public required Dictionary<MongoId, Preset> ItemPresets { get; init; }
 }
 
 public record PlayerSettings

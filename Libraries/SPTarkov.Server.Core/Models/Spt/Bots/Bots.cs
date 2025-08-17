@@ -9,11 +9,11 @@ public record Bots
     public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("types")]
-    public Dictionary<string, BotType?> Types { get; set; }
+    public required Dictionary<string, BotType?> Types { get; init; }
 
     [JsonPropertyName("base")]
-    public BotBase Base { get; set; }
+    public required BotBase Base { get; init; }
 
     [JsonPropertyName("core")]
-    public Dictionary<string, object> Core { get; set; }
+    public required Dictionary<string, object> Core { get; init; }
 }
