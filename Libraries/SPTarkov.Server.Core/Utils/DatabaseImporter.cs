@@ -14,72 +14,59 @@ namespace SPTarkov.Server.Core.Utils;
 [Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.Database)]
 public class DatabaseImporter(
     ISptLogger<DatabaseImporter> logger,
-    FileUtil _fileUtil,
-    ServerLocalisationService _serverLocalisationService,
-    DatabaseServer _databaseServer,
-    ImageRouter _imageRouter,
-    ImporterUtil _importerUtil,
-    JsonUtil _jsonUtil
+    FileUtil fileUtil,
+    ServerLocalisationService serverLocalisationService,
+    DatabaseServer databaseServer,
+    ImageRouter imageRouter,
+    ImporterUtil importerUtil,
+    JsonUtil jsonUtil
 ) : IOnLoad
 {
-    private const string _sptDataPath = "./SPT_Data/";
-    protected readonly Dictionary<string, string> databaseHashes = [];
+    private const string SptDataPath = "./SPT_Data/";
+    protected readonly Dictionary<string, string> DatabaseHashes = [];
 
     public async Task OnLoad()
     {
-        await LoadHashes();
-        await HydrateDatabase(_sptDataPath);
+        var shouldVerify = !ProgramStatics.DEBUG();
 
-        var imageFilePath = $"{_sptDataPath}images/";
+        if (shouldVerify)
+        {
+            await LoadHashes();
+        }
+
+        await HydrateDatabase(SptDataPath, shouldVerify);
+
+        var imageFilePath = $"{SptDataPath}images/";
         CreateRouteMapping(imageFilePath, "files");
     }
 
     private void CreateRouteMapping(string directory, string newBasePath)
     {
-        var directoryContent = GetAllFilesInDirectory(directory);
+        var directoryContent = Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories);
 
         foreach (var fileNameWithPath in directoryContent)
         {
-            var fileNameWithNoSPTPath = fileNameWithPath.Replace(directory, "");
-            var filePathNoExtension = _fileUtil.StripExtension(fileNameWithNoSPTPath, true);
+            var fileNameWithNoSPTPath = Path.GetRelativePath(directory, fileNameWithPath);
+            var filePathNoExtension = fileUtil.StripExtension(fileNameWithNoSPTPath, true);
             if (filePathNoExtension.StartsWith("/") || fileNameWithPath.StartsWith("\\"))
             {
                 filePathNoExtension = $"{filePathNoExtension.Substring(1)}";
             }
 
             var bsgPath = $"/{newBasePath}/{filePathNoExtension}".Replace("\\", "/");
-            _imageRouter.AddRoute(bsgPath, fileNameWithPath);
+            imageRouter.AddRoute(bsgPath, fileNameWithPath);
         }
-    }
-
-    private List<string> GetAllFilesInDirectory(string directoryPath)
-    {
-        List<string> result = [];
-        result.AddRange(Directory.GetFiles(directoryPath));
-
-        foreach (var subdirectory in Directory.GetDirectories(directoryPath))
-        {
-            result.AddRange(GetAllFilesInDirectory(subdirectory));
-        }
-
-        return result;
     }
 
     protected async Task LoadHashes()
     {
-        // The checks hash file is only made in Release mode
-        if (ProgramStatics.DEBUG())
-        {
-            return;
-        }
-
-        var checksFilePath = System.IO.Path.Combine(_sptDataPath, "checks.dat");
+        var checksFilePath = Path.Combine(SptDataPath, "checks.dat");
 
         try
         {
             if (File.Exists(checksFilePath))
             {
-                await using FileStream fs = File.OpenRead(checksFilePath);
+                await using var fs = File.OpenRead(checksFilePath);
 
                 using var reader = new StreamReader(fs, Encoding.ASCII);
                 string base64Content = await reader.ReadToEndAsync();
@@ -88,21 +75,21 @@ public class DatabaseImporter(
 
                 await using var ms = new MemoryStream(jsonBytes);
 
-                var FileHashes = await _jsonUtil.DeserializeFromMemoryStreamAsync<List<FileHash>>(ms) ?? [];
+                var FileHashes = await jsonUtil.DeserializeFromMemoryStreamAsync<List<FileHash>>(ms) ?? [];
 
                 foreach (var hash in FileHashes)
                 {
-                    databaseHashes.Add(hash.Path, hash.Hash);
+                    DatabaseHashes.Add(hash.Path, hash.Hash);
                 }
             }
             else
             {
-                logger.Error(_serverLocalisationService.GetText("validation_error_exception", checksFilePath));
+                logger.Error(serverLocalisationService.GetText("validation_error_exception", checksFilePath));
             }
         }
         catch (Exception)
         {
-            logger.Error(_serverLocalisationService.GetText("validation_error_exception", checksFilePath));
+            logger.Error(serverLocalisationService.GetText("validation_error_exception", checksFilePath));
         }
     }
 
@@ -110,32 +97,30 @@ public class DatabaseImporter(
     /// Read all json files in database folder and map into a json object
     /// </summary>
     /// <param name="filePath">path to database folder</param>
+    /// <param name="shouldVerifyDatabase">if the database should be verified after deserialization</param>
     /// <returns></returns>
-    protected async Task HydrateDatabase(string filePath)
+    protected async Task HydrateDatabase(string filePath, bool shouldVerifyDatabase)
     {
-        logger.Info(_serverLocalisationService.GetText("importing_database"));
+        logger.Info(serverLocalisationService.GetText("importing_database"));
         Stopwatch timer = new();
         timer.Start();
 
-        var dataToImport = await _importerUtil.LoadRecursiveAsync<DatabaseTables>($"{filePath}database/", VerifyDatabase);
+        var dataToImport = await importerUtil.LoadRecursiveAsync<DatabaseTables>(
+            $"{filePath}database/",
+            shouldVerifyDatabase ? VerifyDatabase : null
+        );
 
         timer.Stop();
 
-        logger.Info(_serverLocalisationService.GetText("importing_database_finish"));
+        logger.Info(serverLocalisationService.GetText("importing_database_finish"));
         logger.Debug($"Database import took {timer.ElapsedMilliseconds}ms");
-        _databaseServer.SetTables(dataToImport);
+        databaseServer.SetTables(dataToImport);
     }
 
     protected async Task VerifyDatabase(string fileName)
     {
-        // The checks hash file is only made in Release mode
-        if (ProgramStatics.DEBUG())
-        {
-            return;
-        }
-
-        var relativePath = fileName.StartsWith(_sptDataPath, StringComparison.OrdinalIgnoreCase)
-            ? fileName.Substring(_sptDataPath.Length)
+        var relativePath = fileName.StartsWith(SptDataPath, StringComparison.OrdinalIgnoreCase)
+            ? fileName.Substring(SptDataPath.Length)
             : fileName;
 
         using (var md5 = MD5.Create())
@@ -145,18 +130,16 @@ public class DatabaseImporter(
                 var hashBytes = await md5.ComputeHashAsync(stream);
                 var hashString = Convert.ToHexString(hashBytes);
 
-                bool hashKeyExists = databaseHashes.ContainsKey(relativePath);
-
-                if (hashKeyExists)
+                if (DatabaseHashes.TryGetValue(relativePath, out var expectedHash))
                 {
-                    if (databaseHashes[relativePath] != hashString)
+                    if (expectedHash != hashString)
                     {
-                        logger.Warning(_serverLocalisationService.GetText("validation_error_file", fileName));
+                        logger.Warning(serverLocalisationService.GetText("validation_error_file", fileName));
                     }
                 }
                 else
                 {
-                    logger.Warning(_serverLocalisationService.GetText("validation_error_file", fileName));
+                    logger.Warning(serverLocalisationService.GetText("validation_error_file", fileName));
                 }
             }
         }
