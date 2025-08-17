@@ -39,7 +39,7 @@ public class RagfairServer(
         RefreshTraderOffers();
         ProcessExpiredFleaOffers();
 
-        // Update requirements now the offers have been expired/regenerated to ensure they're accurate
+        // Update requirements now offers have been expired/regenerated, ensuring accuracy
         ragfairRequiredItemsService.BuildRequiredItemTable();
     }
 
