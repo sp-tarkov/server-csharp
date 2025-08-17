@@ -401,7 +401,7 @@ public class RagfairOfferHolder(
         {
             foreach (var offer in GetOffers())
             {
-                if (_expiredOfferIds.Contains(offer.Id) || ragfairServerHelper.IsTrader(offer.User.Id))
+                if (_expiredOfferIds.Contains(offer.Id) || offer.IsTraderOffer())
                 {
                     // Already flagged or trader offer (handled separately), skip
                     continue;

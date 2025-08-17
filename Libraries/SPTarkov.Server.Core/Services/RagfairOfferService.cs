@@ -194,8 +194,8 @@ public class RagfairOfferService(
             return;
         }
 
-        // Skip trader offers, managed by RagfairServer.Update() + should remain on flea as 'expired'
-        if (ragfairServerHelper.IsTrader(staleOffer.User.Id))
+        // Skip trader offers, managed by RagfairServer.Update() + should remain on flea as 'expired' until trader refresh occurs
+        if (staleOffer.IsTraderOffer())
         {
             return;
         }
