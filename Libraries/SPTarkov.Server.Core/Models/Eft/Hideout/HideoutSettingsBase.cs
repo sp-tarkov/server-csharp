@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 public record HideoutSettingsBase
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("generatorSpeedWithoutFuel")]
     public double? GeneratorSpeedWithoutFuel { get; set; }

@@ -15,7 +15,7 @@ public record ProcessSellTradeRequestData : ProcessBaseTradeRequestData
 public record SoldItem
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }

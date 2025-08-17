@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Launcher;
 public record GetMiniProfileRequestData : IRequestData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("username")]
     public string? Username { get; set; }

@@ -66,7 +66,7 @@ public record SeasonalEventConfig : BaseConfig
 public record SeasonalEvent
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
@@ -106,7 +106,7 @@ public record SeasonalEvent
 public record SeasonalEventSettings
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("enableSummoning")]
     public bool? EnableSummoning { get; set; }
@@ -151,7 +151,7 @@ public record SeasonalEventSettings
 public record ZombieSettings
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("enabled")]
     public bool? Enabled { get; set; }
@@ -169,7 +169,7 @@ public record ZombieSettings
 public record GifterSetting
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("map")]
     public string? Map { get; set; }

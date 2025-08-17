@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Hideout;
 public record ScavCaseRewardCountsAndPrices
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("Common")]
     public RewardCountAndPriceDetails? Common { get; set; }
@@ -20,7 +20,7 @@ public record ScavCaseRewardCountsAndPrices
 public record RewardCountAndPriceDetails
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("minCount")]
     public double? MinCount { get; set; }

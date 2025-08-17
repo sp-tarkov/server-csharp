@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Services;
 public record LootItem
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("id")]
     public MongoId? Id { get; set; }

@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 public record GetItemPricesResponse
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("supplyNextTime")]
     public double? SupplyNextTime { get; set; }

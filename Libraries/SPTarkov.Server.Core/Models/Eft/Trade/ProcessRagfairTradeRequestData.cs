@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Trade;
 
 public record ProcessRagfairTradeRequestData : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("offers")]
     public List<OfferRequest>? Offers { get; set; }
 }
@@ -16,7 +13,7 @@ public record ProcessRagfairTradeRequestData : InventoryBaseActionRequestData
 public record OfferRequest
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("id")]
     public string? Id { get; set; }

@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 public record Achievement
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("index")]
     public required int Index { get; set; }
@@ -54,7 +54,7 @@ public record Achievement
 public record AchievementQuestConditionTypes
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("started")]
     public List<QuestCondition>? Started { get; set; }

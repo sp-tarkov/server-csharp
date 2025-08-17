@@ -11,7 +11,7 @@ public abstract record BaseConfig
 public record RunIntervalValues
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("inRaid")]
     public int InRaid { get; set; }

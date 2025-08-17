@@ -9,7 +9,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 public record GenerateEquipmentProperties
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     public MongoId BotId { get; set; }
 

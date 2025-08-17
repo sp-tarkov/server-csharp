@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 public record Bots
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("types")]
     public Dictionary<string, BotType?> Types { get; set; }

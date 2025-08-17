@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common;
 public record Location
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     Map meta-data
@@ -52,7 +52,7 @@ public record Location
 public record StaticContainer
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("containersGroups")]
     public Dictionary<string, ContainerMinMax>? ContainersGroups { get; set; }
@@ -64,7 +64,7 @@ public record StaticContainer
 public record ContainerMinMax
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("minContainers")]
     public int? MinContainers { get; set; }
@@ -82,7 +82,7 @@ public record ContainerMinMax
 public record ContainerData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("groupId")]
     public string? GroupId { get; set; }
@@ -91,7 +91,7 @@ public record ContainerData
 public record StaticLootDetails
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("itemcountDistribution")]
     public ItemCountDistribution[] ItemCountDistribution { get; set; }
@@ -103,7 +103,7 @@ public record StaticLootDetails
 public record ItemCountDistribution
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("count")]
     public int? Count { get; set; }
@@ -115,7 +115,7 @@ public record ItemCountDistribution
 public record ItemDistribution
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("tpl")]
     public MongoId Tpl { get; set; }
@@ -127,7 +127,7 @@ public record ItemDistribution
 public record StaticContainerDetails
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("staticWeapons")]
     public IEnumerable<SpawnpointTemplate> StaticWeapons { get; set; }
@@ -142,7 +142,7 @@ public record StaticContainerDetails
 public record StaticForced
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("containerId")]
     public string ContainerId { get; set; }
@@ -154,7 +154,7 @@ public record StaticForced
 public record StaticContainerData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("probability")]
     public float? Probability { get; set; }
@@ -166,7 +166,7 @@ public record StaticContainerData
 public record StaticAmmoDetails
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("tpl")]
     public MongoId? Tpl { get; set; }

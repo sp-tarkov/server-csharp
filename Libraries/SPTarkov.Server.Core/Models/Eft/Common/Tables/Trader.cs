@@ -9,7 +9,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 public record Trader
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("assort")]
     public TraderAssort Assort { get; set; }
@@ -33,7 +33,7 @@ public record Trader
 public record TraderBase
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("refreshTraderRagfairOffers")]
     public bool? RefreshTraderRagfairOffers { get; set; }
@@ -134,7 +134,7 @@ public record TraderBase
 public record ItemBuyData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     // MongoId
     [JsonPropertyName("category")]
@@ -148,7 +148,7 @@ public record ItemBuyData
 public record ItemSellData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("category")]
     public required HashSet<MongoId> Category { get; set; }
@@ -160,7 +160,7 @@ public record ItemSellData
 public record TraderInsurance
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("availability")]
     public bool? Availability { get; set; }
@@ -188,7 +188,7 @@ public record TraderInsurance
 public record TraderLoyaltyLevel
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("buy_price_coef")]
     public double? BuyPriceCoefficient { get; set; }
@@ -220,7 +220,7 @@ public record TraderLoyaltyLevel
 public record TraderRepair
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("availability")]
     public bool? Availability { get; set; }
@@ -251,7 +251,7 @@ public record TraderRepair
 public record TraderAssort
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("nextResupply")]
     public double? NextResupply { get; set; }
@@ -269,7 +269,7 @@ public record TraderAssort
 public record BarterScheme
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     // Confirmed in client
     [JsonPropertyName("count")]
@@ -295,7 +295,7 @@ public record BarterScheme
 public record Suit
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
@@ -328,7 +328,7 @@ public record Suit
 public record SuitRequirements
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("achievementRequirements")]
     public List<string>? AchievementRequirements { get; set; }
@@ -362,7 +362,7 @@ public record SuitRequirements
 public record ItemRequirement
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("count")]
     public double? Count { get; set; }

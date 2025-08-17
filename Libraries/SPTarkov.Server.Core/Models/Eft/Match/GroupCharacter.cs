@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 public record GroupCharacter
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -37,7 +37,7 @@ public record GroupCharacter
 public record CharacterInfo
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("Nickname")]
     public string? Nickname { get; set; }
@@ -67,7 +67,7 @@ public record CharacterInfo
 public record PlayerVisualRepresentation
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("Info")]
     public VisualInfo? Info { get; set; }
@@ -82,7 +82,7 @@ public record PlayerVisualRepresentation
 public record VisualInfo
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("Side")]
     public string? Side { get; set; }
@@ -103,7 +103,7 @@ public record VisualInfo
 public record Customization
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("Head")]
     public string? Head { get; set; }
@@ -121,7 +121,7 @@ public record Customization
 public record Equipment
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("Id")]
     public string? Id { get; set; }

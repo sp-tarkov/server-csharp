@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 public record ProfileChangeVoiceRequestData : IRequestData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("voice")]
     public MongoId Voice { get; set; }

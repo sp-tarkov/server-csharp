@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Ragfair;
 
 public record AddOfferRequestData : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("sellInOnePiece")]
     public bool? SellInOnePiece { get; set; }
 
@@ -22,7 +19,7 @@ public record AddOfferRequestData : InventoryBaseActionRequestData
 public record Requirement
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("_tpl")]
     public MongoId Template { get; set; }

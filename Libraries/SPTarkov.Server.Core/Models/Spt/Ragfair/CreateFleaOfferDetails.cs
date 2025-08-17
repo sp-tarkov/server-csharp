@@ -1,4 +1,5 @@
-﻿using SPTarkov.Server.Core.Models.Common;
+using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 
@@ -6,6 +7,9 @@ namespace SPTarkov.Server.Core.Models.Spt.Ragfair;
 
 public record CreateFleaOfferDetails
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
     /// <summary>
     /// Owner of the offer
     /// </summary>

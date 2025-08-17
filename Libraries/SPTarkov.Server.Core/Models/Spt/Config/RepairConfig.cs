@@ -39,7 +39,7 @@ public record RepairConfig : BaseConfig
 public record IntellectGainValues
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("weapon")]
     public double Weapon { get; set; }
@@ -51,7 +51,7 @@ public record IntellectGainValues
 public record MaxIntellectGainValues
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("kit")]
     public double Kit { get; set; }
@@ -63,7 +63,7 @@ public record MaxIntellectGainValues
 public record WeaponTreatmentRepairValues
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     The chance to gain more weapon maintenance skill
@@ -93,7 +93,7 @@ public record WeaponTreatmentRepairValues
 public record RepairKit
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("armor")]
     public required BonusSettings Armor { get; set; }
@@ -111,7 +111,7 @@ public record RepairKit
 public record BonusSettings
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("rarityWeight")]
     public required Dictionary<string, double> RarityWeight { get; set; }
@@ -129,7 +129,7 @@ public record BonusSettings
 public record BonusValues
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("valuesMinMax")]
     public required MinMax<double> ValuesMinMax { get; set; }

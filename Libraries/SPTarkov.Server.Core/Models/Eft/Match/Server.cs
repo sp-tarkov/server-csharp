@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 public record Server
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("ping")]
     public int? Ping { get; set; }

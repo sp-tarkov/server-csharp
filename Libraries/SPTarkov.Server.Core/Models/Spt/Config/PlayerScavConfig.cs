@@ -17,7 +17,7 @@ public record PlayerScavConfig : BaseConfig
 public record KarmaLevel
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("botTypeForLoot")]
     public required string BotTypeForLoot { get; set; }
@@ -38,7 +38,7 @@ public record KarmaLevel
 public record Modifiers
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("equipment")]
     public required Dictionary<string, double> Equipment { get; set; }

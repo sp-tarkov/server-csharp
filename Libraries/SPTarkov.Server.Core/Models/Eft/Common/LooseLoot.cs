@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common;
 public record LooseLoot
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("spawnpointCount")]
     public SpawnpointCount? SpawnpointCount { get; set; }
@@ -21,7 +21,7 @@ public record LooseLoot
 public record SpawnpointCount
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("mean")]
     public required double Mean { get; set; }
@@ -33,7 +33,7 @@ public record SpawnpointCount
 public record SpawnpointTemplate
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     private string? _root;
 
@@ -80,6 +80,9 @@ public record SpawnpointTemplate
 
 public record SptLootItem : Item
 {
+    [JsonExtensionData]
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
     [JsonPropertyName("composedKey")]
     public string? ComposedKey { get; set; }
 }
@@ -87,7 +90,7 @@ public record SptLootItem : Item
 public record GroupPosition
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     private string? _name;
 
@@ -111,7 +114,7 @@ public record GroupPosition
 public record Spawnpoint
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("locationId")]
     public string? LocationId { get; set; }
@@ -129,7 +132,7 @@ public record Spawnpoint
 public record LooseLootItemDistribution
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("composedKey")]
     public ComposedKey? ComposedKey { get; set; }
@@ -141,7 +144,7 @@ public record LooseLootItemDistribution
 public record ComposedKey
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     private string? _key;
 

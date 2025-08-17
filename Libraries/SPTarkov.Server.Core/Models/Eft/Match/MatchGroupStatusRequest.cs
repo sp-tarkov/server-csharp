@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 public record MatchGroupStatusRequest : IRequestData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("location")]
     public string? Location { get; set; }

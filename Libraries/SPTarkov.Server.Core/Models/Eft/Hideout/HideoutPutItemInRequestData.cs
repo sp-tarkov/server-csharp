@@ -7,9 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record HideoutPutItemInRequestData : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("areaType")]
     public HideoutAreas? AreaType { get; set; }
 

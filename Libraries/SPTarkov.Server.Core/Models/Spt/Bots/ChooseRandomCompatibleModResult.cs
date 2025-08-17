@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 public record ChooseRandomCompatibleModResult
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("incompatible")]
     public bool? Incompatible { get; set; }

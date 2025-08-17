@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common;
 public record MetricsTableData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("Keys")]
     public List<int>? Keys { get; set; }

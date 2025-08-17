@@ -8,7 +8,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Server;
 public record DatabaseTables
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     public Bots.Bots Bots { get; set; }
 

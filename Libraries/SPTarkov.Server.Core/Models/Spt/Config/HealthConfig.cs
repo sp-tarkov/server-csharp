@@ -17,7 +17,7 @@ public record HealthConfig : BaseConfig
 public record HealthMultipliers
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("blacked")]
     public double Blacked { get; set; }
@@ -26,7 +26,7 @@ public record HealthMultipliers
 public record HealthSave
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("health")]
     public bool Health { get; set; }

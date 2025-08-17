@@ -6,5 +6,5 @@ namespace SPTarkov.Server.Core.Models.Eft.Common;
 public record EmptyRequestData : IRequestData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 }

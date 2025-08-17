@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 public record AddUserGroupMailRequest : IRequestData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("dialogId")]
     public string? DialogId { get; set; }

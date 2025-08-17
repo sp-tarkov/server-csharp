@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 public record GameModeRequestData : IRequestData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("sessionMode")]
     public string? SessionMode { get; set; }

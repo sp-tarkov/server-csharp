@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Request;
 public record BaseInteractionRequestData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("Action")]
     public string? Action { get; set; }
@@ -21,7 +21,7 @@ public record BaseInteractionRequestData
 public record OwnerInfo
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("id")]
     public MongoId? Id { get; set; }

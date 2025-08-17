@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Services;
 public record TraderServiceModel
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("serviceType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -28,7 +28,7 @@ public record TraderServiceModel
 public record TraderServiceRequirementsModel
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("completedQuests")]
     public List<string>? CompletedQuests { get; set; }

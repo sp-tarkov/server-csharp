@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common;
 public record XYZ
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("x")]
     public double? X { get; set; }

@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Bot;
 public record GenerateBotsRequestData : IRequestData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("conditions")]
     public List<GenerateCondition>? Conditions { get; set; }
@@ -15,7 +15,7 @@ public record GenerateBotsRequestData : IRequestData
 public record GenerateCondition
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     e.g. assault/pmcBot/bossKilla

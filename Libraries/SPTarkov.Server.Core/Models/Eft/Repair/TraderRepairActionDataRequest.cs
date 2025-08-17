@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Repair;
 
 public record TraderRepairActionDataRequest : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("tid")]
     public MongoId TraderId { get; set; }
 
@@ -19,7 +16,7 @@ public record TraderRepairActionDataRequest : InventoryBaseActionRequestData
 public record RepairItem
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }

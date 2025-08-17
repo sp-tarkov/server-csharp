@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 public record SendSurveyOpinionRequest : IRequestData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("resultJson")]
     public string? ResultJson { get; set; }
@@ -21,7 +21,7 @@ public record SendSurveyOpinionRequest : IRequestData
 public record SurveyOpinionAnswer
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("questionId")]
     public int? QuestionId { get; set; }

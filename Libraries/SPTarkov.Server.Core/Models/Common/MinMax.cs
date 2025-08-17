@@ -7,7 +7,7 @@ public record MinMax<T>
     where T : IMinMaxValue<T>
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     public MinMax(T min, T max)
     {

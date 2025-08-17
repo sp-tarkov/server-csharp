@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Customization;
 
 public record CustomizationSetRequest : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("customizations")]
     public List<CustomizationSetOption>? Customizations { get; set; }
 }
@@ -16,7 +13,7 @@ public record CustomizationSetRequest : InventoryBaseActionRequestData
 public record CustomizationSetOption
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }

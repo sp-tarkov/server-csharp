@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 public record HandbookBase
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("Categories")]
     public List<HandbookCategory> Categories { get; set; }
@@ -18,7 +18,7 @@ public record HandbookBase
 public record HandbookCategory
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("Id")]
     public MongoId Id { get; set; }
@@ -41,7 +41,7 @@ public record HandbookCategory
 public record HandbookItem
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("Id")]
     public MongoId Id { get; set; }

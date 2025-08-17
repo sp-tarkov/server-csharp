@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 public record MatchGroupStartGameRequest : IRequestData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("groupId")]
     public string? GroupId { get; set; }

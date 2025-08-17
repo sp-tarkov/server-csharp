@@ -8,7 +8,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 public record LocationServices
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("TraderServerSettings")]
     public TraderServerSettings TraderServerSettings { get; set; }
@@ -20,7 +20,7 @@ public record LocationServices
 public record TraderServerSettings
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("TraderServices")]
     public TraderServices TraderServices { get; set; }
@@ -29,7 +29,7 @@ public record TraderServerSettings
 public record TraderServices
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("ExUsecLoyalty")]
     public TraderService ExUsecLoyalty { get; set; }
@@ -56,7 +56,7 @@ public record TraderServices
 public record TraderService
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("TraderId")]
     public string TraderId { get; set; }
@@ -79,7 +79,7 @@ public record TraderService
 public record ServiceRequirements
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("CompletedQuests")]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
@@ -94,7 +94,7 @@ public record ServiceRequirements
 public record CompletedQuest
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("QuestId")]
     public string QuestId { get; set; }
@@ -103,7 +103,7 @@ public record CompletedQuest
 public record StandingRequirement
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("Value")]
     public double Value { get; set; }
@@ -112,7 +112,7 @@ public record StandingRequirement
 public record ServiceItemCostDetails
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("Count")]
     public int Count { get; set; }
@@ -121,7 +121,7 @@ public record ServiceItemCostDetails
 public record BtrServerSettings
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("ChanceSpawn")]
     public double ChanceSpawn { get; set; }
@@ -172,7 +172,7 @@ public record BtrServerSettings
 public record ServerMapBtrsettings
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("MapID")]
     public string MapID { get; set; }

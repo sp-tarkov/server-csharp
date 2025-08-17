@@ -136,7 +136,7 @@ public record BotConfig : BaseConfig
 public record WeeklyBossSettings
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     /// Should a weekly boss be picked to 100% spawn
@@ -161,7 +161,7 @@ public record WeeklyBossSettings
 public record WalletLootSettings
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     Chance wallets have loot in them
@@ -188,7 +188,7 @@ public record WalletLootSettings
 public record EquipmentFilters
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     Limits for mod types per weapon .e.g. scopes
@@ -293,7 +293,7 @@ public record EquipmentFilters
 public record ModLimits
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     How many scopes are allowed on a weapon - hard coded to work with OPTIC_SCOPE, ASSAULT_SCOPE, COLLIMATOR, COMPACT_COLLIMATOR
@@ -311,7 +311,7 @@ public record ModLimits
 public record RandomisationDetails
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     Between what levels do these randomisation setting apply to
@@ -365,7 +365,7 @@ public record RandomisationDetails
 public record NighttimeChanges
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     Applies changes to values stored in equipmentMods
@@ -377,7 +377,7 @@ public record NighttimeChanges
 public record EquipmentFilterDetails
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     Between what levels do these equipment filter setting apply to
@@ -401,7 +401,7 @@ public record EquipmentFilterDetails
 public record WeightingAdjustmentDetails
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     Between what levels do these weight settings apply to
@@ -431,7 +431,7 @@ public record WeightingAdjustmentDetails
 public record AdjustmentDetails
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("add")]
     public Dictionary<string, Dictionary<MongoId, float>>? Add { get; set; }
@@ -443,7 +443,7 @@ public record AdjustmentDetails
 public class ArmorPlateWeights
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("levelRange")]
     public required MinMax<int> LevelRange { get; set; }
@@ -455,7 +455,7 @@ public class ArmorPlateWeights
 public record RandomisedResourceDetails
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("food")]
     public RandomisedResourceValues? Food { get; set; }
@@ -467,7 +467,7 @@ public record RandomisedResourceDetails
 public record RandomisedResourceValues
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     Minimum percent of item to randomized between min and max resource

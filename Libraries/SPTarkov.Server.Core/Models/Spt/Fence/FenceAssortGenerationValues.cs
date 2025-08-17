@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Fence;
 public record FenceAssortGenerationValues
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("normal")]
     public GenerationAssortValues? Normal { get; set; }
@@ -17,7 +17,7 @@ public record FenceAssortGenerationValues
 public record GenerationAssortValues
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("item")]
     public int? Item { get; set; }

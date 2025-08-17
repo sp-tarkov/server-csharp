@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Weather;
 public record GetLocalWeatherResponseData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("season")]
     public Season? Season { get; set; }

@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Enums;
 public record ItemEventActions
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     public const string MOVE = "Move";
     public const string REMOVE = "Remove";

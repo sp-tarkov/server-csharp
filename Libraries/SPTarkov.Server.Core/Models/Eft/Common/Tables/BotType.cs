@@ -8,7 +8,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 public record BotType
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("appearance")]
     public Appearance BotAppearance { get; set; }
@@ -44,7 +44,7 @@ public record BotType
 public record Appearance
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("body")]
     public Dictionary<MongoId, double> Body { get; set; }
@@ -68,7 +68,7 @@ public record Appearance
 public record Chances
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("equipment")]
     public Dictionary<string, double> EquipmentChances { get; set; }
@@ -88,7 +88,7 @@ public record Chances
 public record ModsChances
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("mod_charge")]
 public double? ModCharge { get; set; }
@@ -251,7 +251,7 @@ public double? ModPistol_Grip { get; set; }
 public record DifficultyCategories
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     public Dictionary<string, object>? Aiming { get; set; } // TODO: string | number | boolean
 
@@ -285,7 +285,7 @@ public record DifficultyCategories
 public record Experience
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     key = bot difficulty
@@ -315,7 +315,7 @@ public record Experience
 public record Generation
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("items")]
     public GenerationWeightingItems Items { get; set; }
@@ -324,7 +324,7 @@ public record Generation
 public record GenerationData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     key: number of items, value: weighting
@@ -343,7 +343,7 @@ public record GenerationData
 public record GenerationWeightingItems
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("grenades")]
     public GenerationData Grenades { get; set; }
@@ -388,7 +388,7 @@ public record GenerationWeightingItems
 public record BotTypeHealth
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     public IEnumerable<BodyPart> BodyParts { get; set; }
 
@@ -402,7 +402,7 @@ public record BotTypeHealth
 public record BodyPart
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     public MinMax<double> Chest { get; set; }
 
@@ -422,7 +422,7 @@ public record BodyPart
 public record BotTypeInventory
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("equipment")]
     public Dictionary<EquipmentSlots, Dictionary<MongoId, double>> Equipment { get; set; }
@@ -439,7 +439,7 @@ public record BotTypeInventory
 public record ItemPools
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     public Dictionary<MongoId, double> Backpack { get; set; }
 
@@ -455,7 +455,7 @@ public record ItemPools
 public record BotDbSkills
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     public Dictionary<string, MinMax<double>> Common { get; set; }
 

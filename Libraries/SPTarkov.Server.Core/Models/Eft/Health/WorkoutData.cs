@@ -8,7 +8,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Health;
 public class WorkoutData : IRequestData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("skills")]
     public WorkoutSkills? Skills { get; set; }
@@ -17,7 +17,7 @@ public class WorkoutData : IRequestData
 public record WorkoutSkills
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("Common")]
     public List<CommonSkill> Common { get; set; }

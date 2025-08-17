@@ -10,7 +10,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 public record EndLocalRaidRequestData : IRequestData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     ID of server player just left
@@ -40,7 +40,7 @@ public record EndLocalRaidRequestData : IRequestData
 public record EndRaidResult
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("profile")]
     public PmcData? Profile { get; set; }
@@ -80,7 +80,7 @@ public record EndRaidResult
 public record LocationTransit
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("hash")]
     public string? Hash { get; set; }
@@ -125,7 +125,7 @@ public record LocationTransit
 public record TransitProfile
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("_id")]
     public string? Id { get; set; }

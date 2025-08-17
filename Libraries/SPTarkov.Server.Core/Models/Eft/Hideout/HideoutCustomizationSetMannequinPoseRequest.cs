@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record HideoutCustomizationSetMannequinPoseRequest : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("poses")]
     public Dictionary<MongoId, MongoId>? Poses { get; set; }
 

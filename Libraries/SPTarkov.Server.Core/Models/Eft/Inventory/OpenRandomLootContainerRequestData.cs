@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Inventory;
 
 public record OpenRandomLootContainerRequestData : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Container item id being opened
     /// </summary>

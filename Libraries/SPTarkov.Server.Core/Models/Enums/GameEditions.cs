@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Enums;
 public record GameEditions
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     public const string STANDARD = "standard";
     public const string LEFT_BEHIND = "left_behind";

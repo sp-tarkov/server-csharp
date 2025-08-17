@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Insurance;
 
 public record InsureRequestData : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("tid")]
     public string? TransactionId { get; set; }
 

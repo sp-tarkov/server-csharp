@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Server;
 public record Locations
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     // sometimes we get the key or value given so save changing logic in each place
     // have it key both

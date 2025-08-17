@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Common;
 public record IdWithCount
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     ID of stack to take money from

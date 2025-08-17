@@ -9,7 +9,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 public record SearchFriendResponse
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }

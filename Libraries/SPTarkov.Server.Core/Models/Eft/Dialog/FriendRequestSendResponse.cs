@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 public record FriendRequestSendResponse
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("status")]
     public BackendErrorCodes? Status { get; set; }

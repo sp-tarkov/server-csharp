@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Server;
 public record LocaleBase
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     /// DO NOT USE THIS PROPERTY DIRECTLY, USE LOCALESERVICE INSTEAD

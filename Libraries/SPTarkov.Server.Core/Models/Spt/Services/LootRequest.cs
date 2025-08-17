@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Services;
 public record LootRequest
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     Count of weapons to generate

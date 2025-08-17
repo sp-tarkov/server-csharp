@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 public record SystemData
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("date")]
     public string? Date { get; set; }

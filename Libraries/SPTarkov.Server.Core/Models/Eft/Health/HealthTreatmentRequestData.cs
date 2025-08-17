@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Health;
 
 public record HealthTreatmentRequestData : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("trader")]
     public string? Trader { get; set; }
 
@@ -29,7 +26,7 @@ public record HealthTreatmentRequestData : InventoryBaseActionRequestData
 public record Difference
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("BodyParts")]
     public Dictionary<string, BodyPartValues>? BodyParts { get; set; }
@@ -44,7 +41,7 @@ public record Difference
 public record BodyPartValues
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     public double Health { get; set; }
 

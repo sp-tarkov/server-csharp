@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Inventory;
 public record ItemSize
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("width")]
     public required int Width { get; set; }

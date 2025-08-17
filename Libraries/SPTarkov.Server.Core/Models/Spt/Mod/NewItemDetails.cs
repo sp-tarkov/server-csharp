@@ -41,7 +41,7 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
 public record NewItemDetailsBase
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("fleaPriceRoubles")]
     public double? FleaPriceRoubles { get; set; }
@@ -59,7 +59,7 @@ public record NewItemDetailsBase
 public record LocaleDetails
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("name")]
     public string? Name { get; set; }
@@ -74,7 +74,7 @@ public record LocaleDetails
 public record CreateItemResult
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     public CreateItemResult()
     {

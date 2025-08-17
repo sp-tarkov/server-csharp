@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 public record BotGenerationDetails
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     /// <summary>
     ///     Should the bot be generated as a PMC

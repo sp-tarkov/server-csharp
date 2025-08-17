@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 public record ProfileSides
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("descriptionLocaleKey")]
     public string? DescriptionLocaleKey { get; set; }
@@ -22,7 +22,7 @@ public record ProfileSides
 public record TemplateSide
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("character")]
     public PmcData? Character { get; set; }
@@ -49,7 +49,7 @@ public record TemplateSide
 public record ProfileTraderTemplate
 {
     [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("initialLoyaltyLevel")]
     public Dictionary<MongoId, int?>? InitialLoyaltyLevel { get; set; }
