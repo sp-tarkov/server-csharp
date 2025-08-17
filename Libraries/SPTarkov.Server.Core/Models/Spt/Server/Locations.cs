@@ -61,7 +61,7 @@ public record Locations
     public required Eft.Common.Location Bigmap { get; init; }
 
     [JsonPropertyName("develop")]
-    public required Eft.Common.Location? Develop { get; init; }
+    public Eft.Common.Location? Develop { get; init; }
 
     [JsonPropertyName("factory4_day")]
     public required Eft.Common.Location Factory4Day { get; init; }
@@ -70,7 +70,7 @@ public record Locations
     public required Eft.Common.Location Factory4Night { get; init; }
 
     [JsonPropertyName("hideout")]
-    public required Eft.Common.Location? Hideout { get; init; }
+    public Eft.Common.Location? Hideout { get; init; }
 
     [JsonPropertyName("interchange")]
     public required Eft.Common.Location Interchange { get; init; }
@@ -82,7 +82,7 @@ public record Locations
     public required Eft.Common.Location Lighthouse { get; init; }
 
     [JsonPropertyName("privatearea")]
-    public required Eft.Common.Location? PrivateArea { get; init; }
+    public Eft.Common.Location? PrivateArea { get; init; }
 
     [JsonPropertyName("rezervbase")]
     public required Eft.Common.Location RezervBase { get; init; }
@@ -91,7 +91,7 @@ public record Locations
     public required Eft.Common.Location Shoreline { get; init; }
 
     [JsonPropertyName("suburbs")]
-    public required Eft.Common.Location? Suburbs { get; init; }
+    public Eft.Common.Location? Suburbs { get; init; }
 
     [JsonPropertyName("tarkovstreets")]
     public required Eft.Common.Location TarkovStreets { get; init; }
@@ -100,10 +100,10 @@ public record Locations
     public required Eft.Common.Location Labyrinth { get; init; }
 
     [JsonPropertyName("terminal")]
-    public required Eft.Common.Location? Terminal { get; init; }
+    public Eft.Common.Location? Terminal { get; init; }
 
     [JsonPropertyName("town")]
-    public required Eft.Common.Location? Town { get; init; }
+    public Eft.Common.Location? Town { get; init; }
 
     [JsonPropertyName("woods")]
     public required Eft.Common.Location Woods { get; init; }
