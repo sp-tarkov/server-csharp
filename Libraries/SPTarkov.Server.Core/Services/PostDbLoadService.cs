@@ -1,6 +1,5 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Enums;
@@ -21,8 +20,6 @@ public class PostDbLoadService(
     OpenZoneService openZoneService,
     ItemBaseClassService itemBaseClassService,
     RaidWeatherService raidWeatherService,
-    ProfileHelper profileHelper,
-    ProfileValidatorHelper profileValidatorHelper,
     ConfigServer configServer,
     ICloner cloner
 )
@@ -136,14 +133,6 @@ public class PostDbLoadService(
         {
             var chosenBoss = GetWeeklyBoss(_botConfig.WeeklyBoss.BossPool, _botConfig.WeeklyBoss.ResetDay);
             FlagMapAsGuaranteedBoss(chosenBoss);
-        }
-
-        if (_coreConfig.OnStart.ValidateProfiles)
-        {
-            foreach (var (profileId, profile) in profileHelper.GetProfiles())
-            {
-                profileValidatorHelper.CheckForOrphanedModdedData(profileId, profile);
-            }
         }
     }
 

@@ -12,9 +12,6 @@
   "release": {
     "betaDisclaimerTimeoutDelay": 30
   },
-  "onStart": {
-    "validateProfiles": true
-  },
   "fixes": {
     "fixShotgunDispersion": true,
     "removeModItemsFromProfile": false,

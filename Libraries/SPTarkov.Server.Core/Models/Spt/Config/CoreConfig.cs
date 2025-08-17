@@ -36,9 +36,6 @@ public record CoreConfig : BaseConfig
     [JsonPropertyName("fixes")]
     public required GameFixes Fixes { get; set; }
 
-    [JsonPropertyName("onStart")]
-    public required OnStart OnStart { get; set; }
-
     [JsonPropertyName("survey")]
     public required SurveyResponseData Survey { get; set; }
 
@@ -209,15 +206,6 @@ public record GameFixes
     /// </summary>
     [JsonPropertyName("fixProfileBreakingInventoryItemIssues")]
     public bool FixProfileBreakingInventoryItemIssues { get; set; }
-}
-
-public record OnStart
-{
-    /// <summary>
-    ///     Run profile templateId checks on all profiles when server starts
-    /// </summary>
-    [JsonPropertyName("validateProfiles")]
-    public bool ValidateProfiles { get; set; }
 }
 
 public record ServerFeatures
