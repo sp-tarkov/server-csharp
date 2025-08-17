@@ -8,6 +8,8 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class RagfairRequiredItemsService(RagfairOfferService ragfairOfferService, PaymentHelper paymentHelper)
 {
+    private bool _cacheIsStale = true;
+
     /// <summary>
     /// Key = tpl
     /// </summary>
@@ -25,6 +27,11 @@ public class RagfairRequiredItemsService(RagfairOfferService ragfairOfferService
     /// <returns>Set of OfferIds</returns>
     public IReadOnlySet<MongoId> GetRequiredOffersById(MongoId tpl)
     {
+        if (_cacheIsStale)
+        {
+            BuildRequiredItemTable();
+        }
+
         return RequiredItemsCache.TryGetValue(tpl, out var offerIds) ? offerIds : EmptyOfferIdSet;
     }
 
@@ -33,13 +40,13 @@ public class RagfairRequiredItemsService(RagfairOfferService ragfairOfferService
     /// </summary>
     public void BuildRequiredItemTable()
     {
-        RequiredItemsCache.Clear();
+        Clear();
+
         foreach (var offer in ragfairOfferService.GetOffers())
         {
             foreach (var requirement in offer.Requirements ?? [])
             {
-                // Skip offers for currency, it's too expensive to process
-                // Only process barter offers
+                // Skip offers for currency, we only need barter offers as this cache is used by `GetOffersThatRequireItem`
                 if (paymentHelper.IsMoneyTpl(requirement.TemplateId))
                 {
                     continue;
@@ -52,5 +59,24 @@ public class RagfairRequiredItemsService(RagfairOfferService ragfairOfferService
                 offerIds.Add(offer.Id);
             }
         }
+
+        // Cache is now fresh
+        _cacheIsStale = false;
+    }
+
+    /// <summary>
+    /// Clear all data from cache
+    /// </summary>
+    public void Clear()
+    {
+        RequiredItemsCache.Clear();
+    }
+
+    /// <summary>
+    /// Flag the cache as stale
+    /// </summary>
+    public void CacheIsStale()
+    {
+        _cacheIsStale = true;
     }
 }

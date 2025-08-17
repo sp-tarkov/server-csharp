@@ -39,8 +39,8 @@ public class RagfairServer(
         RefreshTraderOffers();
         ProcessExpiredFleaOffers();
 
-        // Update requirements now offers have been expired/regenerated, ensuring accuracy
-        ragfairRequiredItemsService.BuildRequiredItemTable();
+        // Flag data as stale and in need of regeneration
+        ragfairRequiredItemsService.CacheIsStale();
     }
 
     protected void RefreshTraderOffers()
