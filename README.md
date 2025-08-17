@@ -128,4 +128,4 @@ We have a number of tests that are run automatically when you submit a pull requ
 
 ## License
 
-This project is licensed under the NCSA Open Source License. See the [LICENSE](LICENSE.md) file for details.
+This project is licensed under the NCSA Open Source License. See the [LICENSE](LICENSE) file for details.
