@@ -409,7 +409,7 @@ public class RewardHelper(
             return;
         }
 
-        logger.Warning("Unable to find default preset for armor {originalRewardRootItem._tpl}, adding mods manually");
+        logger.Warning($"Unable to find default preset for armor: {originalRewardRootItem.Template}, adding mods manually");
         var itemDbData = itemHelper.GetItem(originalRewardRootItem.Template).Value;
 
         // Hydrate reward with only 'required' mods - necessary for things like helmets otherwise you end up with nvgs/visors etc

@@ -549,7 +549,9 @@ public class RepeatableQuestController(
 
                     if (questType is null)
                     {
-                        logger.Error("index `i` is out of range for valid quest types, this should never be hit, report it.");
+                        logger.Error(
+                            $"Repeatable index: `{i}` is out of range for valid quest types, this should never be hit, report it."
+                        );
                         continue;
                     }
 
