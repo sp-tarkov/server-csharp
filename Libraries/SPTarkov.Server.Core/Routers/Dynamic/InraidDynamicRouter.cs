@@ -7,21 +7,17 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Routers.Dynamic;
 
 [Injectable]
-public class InraidDynamicRouter : DynamicRouter
+public class InraidDynamicRouter(JsonUtil jsonUtil, InraidCallbacks inraidCallbacks)
+    : DynamicRouter(
+        jsonUtil,
+        [
+            new RouteAction<RegisterPlayerRequestData>(
+                "/client/location/getLocalloot",
+                async (url, info, sessionID, output) => await inraidCallbacks.RegisterPlayer(url, info, sessionID)
+            ),
+        ]
+    )
 {
-    public InraidDynamicRouter(JsonUtil jsonUtil, InraidCallbacks inraidCallbacks)
-        : base(
-            jsonUtil,
-            [
-                new RouteAction(
-                    "/client/location/getLocalloot",
-                    async (url, info, sessionID, output) =>
-                        await inraidCallbacks.RegisterPlayer(url, info as RegisterPlayerRequestData, sessionID),
-                    typeof(RegisterPlayerRequestData)
-                ),
-            ]
-        ) { }
-
     public override string GetTopLevelRoute()
     {
         return "spt-name";
