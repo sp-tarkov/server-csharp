@@ -52,7 +52,7 @@ public abstract class StaticRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> r
             info = (IRequestData?)jsonUtil.Deserialize(body, type);
         }
 
-        return await action.action(url, info, sessionId, output);
+        return await action.action(url, info ?? new EmptyRequestData(), sessionId, output);
     }
 
     protected override IEnumerable<HandledRoute> GetHandledRoutes()
@@ -73,7 +73,7 @@ public abstract class DynamicRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> 
             info = (IRequestData?)jsonUtil.Deserialize(body, type);
         }
 
-        return await action.action(url, info, sessionID, output);
+        return await action.action(url, info ?? new EmptyRequestData(), sessionID, output);
     }
 
     protected override IEnumerable<HandledRoute> GetHandledRoutes()
@@ -102,5 +102,8 @@ public abstract class SaveLoadRouter : Router
 
 public record HandledRoute(string route, bool dynamic);
 
-public record RouteAction(string url, Func<string, IRequestData?, MongoId, string?, ValueTask<object>> action, Type? bodyType = null);
-//public action: (url: string, info: any, sessionID: string, output: string) => Promise<any>,
+public record RouteAction(string url, Func<string, IRequestData, MongoId, string?, ValueTask<object>> action, Type? bodyType = null);
+
+public record RouteAction<TRequest>(string url, Func<string, TRequest, MongoId, string?, ValueTask<string>> typedAction)
+    : RouteAction(url, async (url, info, sessionId, output) => await typedAction(url, (TRequest)info, sessionId, output), typeof(TRequest))
+    where TRequest : class;

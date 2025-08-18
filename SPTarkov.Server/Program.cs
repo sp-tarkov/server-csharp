@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Security.Authentication;
 using System.Text;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
@@ -78,6 +79,11 @@ public static class Program
         var loggerFinalizer = app.Services.GetService<ISptLogger<App>>()!;
         try
         {
+            // Handle edge cases where reverse proxies might pass X-Forwarded-For, use this as the actual IP address
+            app.UseForwardedHeaders(
+                new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto }
+            );
+
             SetConsoleOutputMode();
 
             await app.RunAsync();

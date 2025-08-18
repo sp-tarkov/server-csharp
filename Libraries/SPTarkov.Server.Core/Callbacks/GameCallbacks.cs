@@ -62,7 +62,7 @@ public class GameCallbacks(
     ///     Handle client/game/config
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetGameConfig(string url, GameEmptyCrcRequestData info, MongoId sessionID)
+    public ValueTask<string> GetGameConfig(string url, EmptyRequestData info, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetBody(gameController.GetGameConfig(sessionID)));
     }
