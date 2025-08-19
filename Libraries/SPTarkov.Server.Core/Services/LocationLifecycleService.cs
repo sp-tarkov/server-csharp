@@ -73,10 +73,6 @@ public class LocationLifecycleService(
                 : playerProfile.CharacterData.ScavData.Skills.Common
         );
 
-        // If config enabled, remove players equipped items to prevent alt-F4 from persisting items
-        if (_lostOnDeathConfig.WipeOnRaidStart)
-            inRaidHelper.DeleteInventory(playerProfile.CharacterData.PmcData, sessionId);
-
         // Raid is starting, adjust run times to reduce server load while player is in raid
         _ragfairConfig.RunIntervalSeconds = _ragfairConfig.RunIntervalValues.InRaid;
         _hideoutConfig.RunIntervalSeconds = _hideoutConfig.RunIntervalValues.InRaid;
@@ -133,7 +129,23 @@ public class LocationLifecycleService(
 
         GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
 
+        // Handle Player Inventory Wiping checks for alt-f4 prevention
+        HandlePreRaidInventoryChecks(request.PlayerSide, playerProfile.CharacterData.PmcData, sessionId);
+
         return result;
+    }
+
+    /// <summary>
+    /// Handle Pre Raid checks Alt-F4 Prevention and player inventory wiping
+    /// </summary>
+    protected void HandlePreRaidInventoryChecks(string playerSide, PmcData pmcData, string sessionId)
+    {
+        // If config enabled, remove players equipped items to prevent alt-F4 from persisting items
+        if (string.Equals(playerSide, "pmc", StringComparison.OrdinalIgnoreCase) && _lostOnDeathConfig.WipeOnRaidStart)
+        {
+            logger.Debug("Wiping player inventory on raid start to prevent alt-f4");
+            inRaidHelper.DeleteInventory(pmcData, sessionId);
+        }
     }
 
     /// <summary>

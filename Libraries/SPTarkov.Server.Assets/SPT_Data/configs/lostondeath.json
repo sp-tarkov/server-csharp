@@ -18,5 +18,5 @@
   },
   "questItems": true,
   "specialSlotItems": false,
-  "wipeOnRaidStart": true
+  "wipeOnRaidStart": false
 }
