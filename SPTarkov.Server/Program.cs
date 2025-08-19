@@ -85,7 +85,7 @@ public static class Program
 
             SetConsoleOutputMode();
 
-            await app.Services.GetService<SptServerStartupService>()!.Startup();
+            await app.Services.GetRequiredService<SptServerStartupService>().Startup();
 
             await app.RunAsync();
         }
