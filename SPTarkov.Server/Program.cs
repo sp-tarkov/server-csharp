@@ -64,7 +64,6 @@ public static class Program
 
         builder.Services.AddSingleton(builder);
         builder.Services.AddSingleton<IReadOnlyList<SptMod>>(loadedMods);
-        // builder.Services.AddHostedService<SptServerBackgroundService>();
         // Configure Kestrel options
         ConfigureKestrel(builder);
 
