@@ -90,7 +90,7 @@ public class ProfileHelper(
     {
         // Remove `loyaltyLevel` from `TradersInfo`, as otherwise it causes the client to not
         // properly calculate the player's `loyaltyLevel`
-        foreach (var trader in clonedProfile.CharacterData?.PmcData?.TradersInfo.Values!)
+        foreach (var trader in clonedProfile.CharacterData?.PmcData?.TradersInfo?.Values!)
         {
             trader.LoyaltyLevel = null;
         }

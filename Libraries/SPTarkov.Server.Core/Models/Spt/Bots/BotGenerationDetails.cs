@@ -81,4 +81,11 @@ public record BotGenerationDetails
     /// Map bots will be spawned on
     /// </summary>
     public string? Location { get; set; }
+
+    /// <summary>
+    /// DEFAULT: True
+    /// Should the bot container cache be cleared after generating bot equipment + loot
+    /// </summary>
+    [JsonPropertyName("clearBotContainerCacheAfterGeneration")]
+    public bool ClearBotContainerCacheAfterGeneration { get; set; } = true;
 }
