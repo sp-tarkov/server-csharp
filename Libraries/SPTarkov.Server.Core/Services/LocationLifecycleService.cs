@@ -57,6 +57,20 @@ public class LocationLifecycleService(
     protected readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
     protected readonly LostOnDeathConfig _lostOnDeathConfig = configServer.GetConfig<LostOnDeathConfig>();
 
+    protected const string Pmc = "pmc";
+    protected const string Savage = "savage";
+    protected const string Scav = "scav";
+
+    /// <summary>
+    /// Check player type for pmc or scav
+    /// </summary>
+    /// <param name="playerSide">string</param>
+    /// <returns>bool</returns>
+    protected bool IsSide(string playerSide, string sideCheck = Pmc)
+    {
+        return string.Equals(playerSide, sideCheck, StringComparison.OrdinalIgnoreCase);
+    }
+
     /// <summary>
     ///     Handle client/match/local/start
     /// </summary>
@@ -68,7 +82,7 @@ public class LocationLifecycleService(
 
         // Remove skill fatigue values
         ResetSkillPointsEarnedDuringRaid(
-            string.Equals(request.PlayerSide, "pmc", StringComparison.OrdinalIgnoreCase)
+            IsSide(request.PlayerSide)
                 ? playerProfile.CharacterData.PmcData.Skills.Common
                 : playerProfile.CharacterData.ScavData.Skills.Common
         );
@@ -141,11 +155,12 @@ public class LocationLifecycleService(
     protected void HandlePreRaidInventoryChecks(string playerSide, PmcData pmcData, string sessionId)
     {
         // If config enabled, remove players equipped items to prevent alt-F4 from persisting items
-        if (string.Equals(playerSide, "pmc", StringComparison.OrdinalIgnoreCase) && _lostOnDeathConfig.WipeOnRaidStart)
+        if (!IsSide(playerSide) || !_lostOnDeathConfig.WipeOnRaidStart)
         {
-            logger.Debug("Wiping player inventory on raid start to prevent alt-f4");
-            inRaidHelper.DeleteInventory(pmcData, sessionId);
+            return;
         }
+        logger.Debug("Wiping player inventory on raid start to prevent alt-f4");
+        inRaidHelper.DeleteInventory(pmcData, sessionId);
     }
 
     /// <summary>
@@ -156,7 +171,7 @@ public class LocationLifecycleService(
     /// <param name="locationData"> Maps location base data </param>
     protected void AdjustExtracts(string playerSide, string location, LocationBase locationData)
     {
-        var playerIsScav = string.Equals(playerSide, "savage", StringComparison.OrdinalIgnoreCase);
+        var playerIsScav = IsSide(playerSide, Savage);
         if (!playerIsScav)
         {
             return;
@@ -172,7 +187,7 @@ public class LocationLifecycleService(
         }
 
         // Find only scav extracts and overwrite existing exits with them
-        var scavExtracts = mapExtracts.Where(extract => string.Equals(extract.Side, "scav", StringComparison.OrdinalIgnoreCase));
+        var scavExtracts = mapExtracts.Where(extract => IsSide(extract.Side, Scav));
         if (scavExtracts.Any())
         // Scav extracts found, use them
         {
