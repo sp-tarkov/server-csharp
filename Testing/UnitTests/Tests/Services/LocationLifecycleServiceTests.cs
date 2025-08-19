@@ -19,10 +19,7 @@ public class LocationLifecycleServiceTests
 
     private static bool InvokeIsSide(object instance, string playerSide, string sideCheck)
     {
-        var mi = typeof(LocationLifecycleService).GetMethod(
-            "IsSide",
-            BindingFlags.Instance | BindingFlags.NonPublic
-        );
+        var mi = typeof(LocationLifecycleService).GetMethod("IsSide", BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.IsNotNull(mi, "Could not find protected method IsSide via reflection");
 
         var result = mi!.Invoke(instance, new object[] { playerSide, sideCheck });
