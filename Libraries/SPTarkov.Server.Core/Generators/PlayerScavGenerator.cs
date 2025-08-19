@@ -123,13 +123,13 @@ public class PlayerScavGenerator(
         scavData.WishList = existingScavDataClone.WishList ?? new();
         scavData.Encyclopedia = pmcDataClone.Encyclopedia ?? new();
 
-        // Remove secure container
+        // Player scavs don't have a secure
         scavData = profileHelper.RemoveSecureContainer(scavData);
 
         // Set cooldown timer
-        scavData = SetScavCooldownTimer(scavData, pmcDataClone);
+        SetScavCooldownTimer(scavData, pmcDataClone);
 
-        // Add scav to profile
+        // Assign newly generated scav profile
         saveServer.GetProfile(sessionID).CharacterData.ScavData = scavData;
 
         return scavData;
@@ -392,8 +392,7 @@ public class PlayerScavGenerator(
     /// </summary>
     /// <param name="scavData">scav profile</param>
     /// <param name="pmcData">pmc profile</param>
-    /// <returns>PmcData</returns>
-    protected PmcData SetScavCooldownTimer(PmcData scavData, PmcData pmcData)
+    protected void SetScavCooldownTimer(PmcData scavData, PmcData pmcData)
     {
         // Get sum of all scav cooldown reduction timer bonuses
         var modifier = 1d + pmcData.Bonuses.Where(x => x.Type == BonusType.ScavCooldownTimer).Sum(bonus => (bonus?.Value ?? 1) / 100);
@@ -415,7 +414,5 @@ public class PlayerScavGenerator(
         {
             scavData.Info.SavageLockTime = Math.Round(timeUtil.GetTimeStamp() + (scavLockDuration));
         }
-
-        return scavData;
     }
 }
