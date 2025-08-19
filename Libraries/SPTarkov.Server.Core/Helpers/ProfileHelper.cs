@@ -88,9 +88,14 @@ public class ProfileHelper(
     /// <param name="clonedProfile">A clone of the full player profile</param>
     protected void SanitizeProfileForClient(SptProfile clonedProfile)
     {
+        if (clonedProfile.CharacterData?.PmcData?.TradersInfo?.Values is null)
+        {
+            return;
+        }
+
         // Remove `loyaltyLevel` from `TradersInfo`, as otherwise it causes the client to not
         // properly calculate the player's `loyaltyLevel`
-        foreach (var trader in clonedProfile.CharacterData?.PmcData?.TradersInfo?.Values!)
+        foreach (var trader in clonedProfile.CharacterData.PmcData.TradersInfo.Values)
         {
             trader.LoyaltyLevel = null;
         }

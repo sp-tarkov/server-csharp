@@ -82,7 +82,18 @@ public class PlayerScavGenerator(
             pmcDataClone
         );
 
-        // Remove cached bot data after scav was generated
+        // Add additional items to player scav as loot
+        AddAdditionalLootToPlayerScavContainers(
+            scavData.Id.Value,
+            playerScavKarmaSettings.LootItemsToAddChancePercent,
+            scavData,
+            [EquipmentSlots.TacticalVest, EquipmentSlots.Pockets, EquipmentSlots.Backpack]
+        );
+
+        // No need for cache data, clear up
+        botInventoryContainerService.ClearCache(scavData.Id.Value);
+
+        // Remove cached bot loot cache now scav is generated
         botLootCacheService.ClearCache();
 
         // Add scav metadata
@@ -111,17 +122,6 @@ public class PlayerScavGenerator(
         scavData.Notes = existingScavDataClone.Notes ?? new Notes { DataNotes = [] };
         scavData.WishList = existingScavDataClone.WishList ?? new();
         scavData.Encyclopedia = pmcDataClone.Encyclopedia ?? new();
-
-        // Add additional items to player scav as loot
-        AddAdditionalLootToPlayerScavContainers(
-            scavData.Id.Value,
-            playerScavKarmaSettings.LootItemsToAddChancePercent,
-            scavData,
-            [EquipmentSlots.TacticalVest, EquipmentSlots.Pockets, EquipmentSlots.Backpack]
-        );
-
-        // No need for cache data, clear up
-        botInventoryContainerService.ClearCache(scavData.Id.Value);
 
         // Remove secure container
         scavData = profileHelper.RemoveSecureContainer(scavData);
