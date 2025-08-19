@@ -55,6 +55,7 @@ public class LocationLifecycleService(
     protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
     protected readonly HideoutConfig _hideoutConfig = configServer.GetConfig<HideoutConfig>();
     protected readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
+    protected readonly LostOnDeathConfig _lostOnDeathConfig = configServer.GetConfig<LostOnDeathConfig>();
 
     /// <summary>
     ///     Handle client/match/local/start
@@ -71,6 +72,10 @@ public class LocationLifecycleService(
                 ? playerProfile.CharacterData.PmcData.Skills.Common
                 : playerProfile.CharacterData.ScavData.Skills.Common
         );
+
+        // If config enabled, remove players equipped items to prevent alt-F4 from persisting items
+        if (_lostOnDeathConfig.WipeOnRaidStart)
+            inRaidHelper.DeleteInventory(playerProfile.CharacterData.PmcData, sessionId);
 
         // Raid is starting, adjust run times to reduce server load while player is in raid
         _ragfairConfig.RunIntervalSeconds = _ragfairConfig.RunIntervalValues.InRaid;
