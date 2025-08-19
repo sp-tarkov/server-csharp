@@ -152,14 +152,14 @@ public class TimeUtil
         return DateTimeOffset.FromUnixTimeSeconds(timeStamp).DateTime;
     }
 
+    /// <summary>
+    ///     Takes a unix timestamp and converts to its UTC date
+    /// </summary>
+    /// <param name="timeStamp"></param>
+    /// <returns></returns>
     public DateTime GetUtcDateTimeFromTimeStamp(long timeStamp)
     {
         return DateTimeOffset.FromUnixTimeSeconds(timeStamp).UtcDateTime;
-    }
-
-    public int GetSecondsAsMilliseconds(int seconds)
-    {
-        return seconds * 60 * 1000;
     }
 
     /// <summary>
