@@ -65,6 +65,7 @@ public class BotGenerator(
             BotCountToGenerate = 1,
             BotDifficulty = difficulty,
             IsPlayerScav = true,
+            ClearBotContainerCacheAfterGeneration = false,
         };
 
         bot = GenerateBot(sessionId, bot, botTemplate, botGenDetails);
@@ -173,7 +174,7 @@ public class BotGenerator(
         var botRoleLowercase = botGenerationDetails.Role.ToLowerInvariant();
         var botLevel = botLevelGenerator.GenerateBotLevel(botJsonTemplate.BotExperience.Level, botGenerationDetails, bot);
 
-        // Generate new bot ID
+        // Generate Id/AId for bot
         AddIdsToBot(bot, botGenerationDetails);
 
         // Only filter bot equipment, never players

@@ -6,41 +6,16 @@ using SPTarkov.Server.Core.Models.Common;
 namespace SPTarkov.Server.Core.Routers;
 
 [Injectable]
-public class HttpRouter
+public class HttpRouter(IEnumerable<StaticRouter> staticRouters, IEnumerable<DynamicRouter> dynamicRoutes)
 {
-    protected readonly IEnumerable<DynamicRouter> _dynamicRoutes;
-    protected readonly IEnumerable<StaticRouter> _staticRouters;
-
-    public HttpRouter(IEnumerable<StaticRouter> staticRouters, IEnumerable<DynamicRouter> dynamicRoutes)
-    {
-        _staticRouters = staticRouters;
-        _dynamicRoutes = dynamicRoutes;
-    }
-
-    /*
-    protected groupBy<T>(list: T[], keyGetter: (t: T) => string): Map<string, T[]> {
-        const map: Map<string, T[]> = new Map();
-        for (const item of list) {
-            const key = keyGetter(item);
-            const collection = map.get(key);
-            if (!collection) {
-                map.set(key, [item]);
-            } else {
-                collection.push(item);
-            }
-        }
-        return map;
-    }
-    */
-
     public async ValueTask<string?> GetResponse(HttpRequest req, MongoId sessionID, string? body)
     {
         var wrapper = new ResponseWrapper("");
 
-        var handled = await HandleRoute(req, sessionID, wrapper, _staticRouters, false, body);
+        var handled = await HandleRoute(req, sessionID, wrapper, staticRouters, false, body);
         if (!handled)
         {
-            await HandleRoute(req, sessionID, wrapper, _dynamicRoutes, true, body);
+            await HandleRoute(req, sessionID, wrapper, dynamicRoutes, true, body);
         }
 
         return wrapper.Output;

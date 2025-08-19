@@ -29,6 +29,7 @@ public class PlayerScavGenerator(
     FenceService fenceService,
     BotLootCacheService botLootCacheService,
     ServerLocalisationService serverLocalisationService,
+    BotInventoryContainerService botInventoryContainerService,
     BotGenerator botGenerator,
     ConfigServer configServer,
     ICloner cloner,
@@ -81,14 +82,25 @@ public class PlayerScavGenerator(
             pmcDataClone
         );
 
-        // Remove cached bot data after scav was generated
+        // Add additional items to player scav as loot
+        AddAdditionalLootToPlayerScavContainers(
+            scavData.Id.Value,
+            playerScavKarmaSettings.LootItemsToAddChancePercent,
+            scavData,
+            [EquipmentSlots.TacticalVest, EquipmentSlots.Pockets, EquipmentSlots.Backpack]
+        );
+
+        // No need for cache data, clear up
+        botInventoryContainerService.ClearCache(scavData.Id.Value);
+
+        // Remove cached bot loot cache now scav is generated
         botLootCacheService.ClearCache();
 
         // Add scav metadata
         scavData.Savage = null;
         scavData.Aid = pmcDataClone.Aid;
         scavData.TradersInfo = pmcDataClone.TradersInfo;
-        scavData.Info.Settings = new BotInfoSettings();
+        scavData.Info.Settings = new();
         scavData.Info.Bans = [];
         scavData.Info.RegistrationDate = pmcDataClone.Info.RegistrationDate;
         scavData.Info.GameVersion = pmcDataClone.Info.GameVersion;
@@ -106,26 +118,18 @@ public class PlayerScavGenerator(
         scavData.Info.Level = GetScavLevel(existingScavDataClone);
         scavData.Info.Experience = GetScavExperience(existingScavDataClone);
         scavData.Quests = existingScavDataClone.Quests ?? [];
-        scavData.TaskConditionCounters = existingScavDataClone.TaskConditionCounters ?? new Dictionary<MongoId, TaskConditionCounter>();
+        scavData.TaskConditionCounters = existingScavDataClone.TaskConditionCounters ?? new();
         scavData.Notes = existingScavDataClone.Notes ?? new Notes { DataNotes = [] };
         scavData.WishList = existingScavDataClone.WishList ?? new();
-        scavData.Encyclopedia = pmcDataClone.Encyclopedia ?? new Dictionary<MongoId, bool>();
+        scavData.Encyclopedia = pmcDataClone.Encyclopedia ?? new();
 
-        // Add additional items to player scav as loot
-        AddAdditionalLootToPlayerScavContainers(
-            scavData.Id.Value,
-            playerScavKarmaSettings.LootItemsToAddChancePercent,
-            scavData,
-            [EquipmentSlots.TacticalVest, EquipmentSlots.Pockets, EquipmentSlots.Backpack]
-        );
-
-        // Remove secure container
+        // Player scavs don't have a secure
         scavData = profileHelper.RemoveSecureContainer(scavData);
 
-        // set cooldown timer
-        scavData = SetScavCooldownTimer(scavData, pmcDataClone);
+        // Set cooldown timer
+        SetScavCooldownTimer(scavData, pmcDataClone);
 
-        // add scav to profile
+        // Assign newly generated scav profile
         saveServer.GetProfile(sessionID).CharacterData.ScavData = scavData;
 
         return scavData;
@@ -388,8 +392,7 @@ public class PlayerScavGenerator(
     /// </summary>
     /// <param name="scavData">scav profile</param>
     /// <param name="pmcData">pmc profile</param>
-    /// <returns>PmcData</returns>
-    protected PmcData SetScavCooldownTimer(PmcData scavData, PmcData pmcData)
+    protected void SetScavCooldownTimer(PmcData scavData, PmcData pmcData)
     {
         // Get sum of all scav cooldown reduction timer bonuses
         var modifier = 1d + pmcData.Bonuses.Where(x => x.Type == BonusType.ScavCooldownTimer).Sum(bonus => (bonus?.Value ?? 1) / 100);
@@ -411,7 +414,5 @@ public class PlayerScavGenerator(
         {
             scavData.Info.SavageLockTime = Math.Round(timeUtil.GetTimeStamp() + (scavLockDuration));
         }
-
-        return scavData;
     }
 }

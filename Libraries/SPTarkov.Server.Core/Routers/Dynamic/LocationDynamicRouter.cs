@@ -5,11 +5,8 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Routers.Dynamic;
 
 [Injectable]
-public class LocationDynamicRouter : DynamicRouter
+public class LocationDynamicRouter(JsonUtil jsonUtil) : DynamicRouter(jsonUtil, [])
 {
-    public LocationDynamicRouter(JsonUtil jsonUtil)
-        : base(jsonUtil, []) { }
-
     public override string GetTopLevelRoute()
     {
         return "spt-loot";

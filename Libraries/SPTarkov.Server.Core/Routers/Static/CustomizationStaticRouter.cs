@@ -7,27 +7,21 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Routers.Static;
 
 [Injectable]
-public class CustomizationStaticRouter : StaticRouter
-{
-    public CustomizationStaticRouter(JsonUtil jsonUtil, CustomizationCallbacks customizationCallbacks)
-        : base(
-            jsonUtil,
-            [
-                new RouteAction(
-                    "/client/trading/customization/storage",
-                    async (url, info, sessionID, output) =>
-                        await customizationCallbacks.GetCustomisationUnlocks(url, info as EmptyRequestData, sessionID)
-                ),
-                new RouteAction(
-                    "/client/hideout/customization/offer/list",
-                    async (url, info, sessionID, output) =>
-                        await customizationCallbacks.GetHideoutCustomisation(url, info as EmptyRequestData, sessionID)
-                ),
-                new RouteAction(
-                    "/client/customization/storage",
-                    async (url, info, sessionID, output) =>
-                        await customizationCallbacks.GetStorage(url, info as EmptyRequestData, sessionID)
-                ),
-            ]
-        ) { }
-}
+public class CustomizationStaticRouter(JsonUtil jsonUtil, CustomizationCallbacks customizationCallbacks)
+    : StaticRouter(
+        jsonUtil,
+        [
+            new RouteAction<EmptyRequestData>(
+                "/client/trading/customization/storage",
+                async (url, info, sessionID, output) => await customizationCallbacks.GetCustomisationUnlocks(url, info, sessionID)
+            ),
+            new RouteAction<EmptyRequestData>(
+                "/client/hideout/customization/offer/list",
+                async (url, info, sessionID, output) => await customizationCallbacks.GetHideoutCustomisation(url, info, sessionID)
+            ),
+            new RouteAction<EmptyRequestData>(
+                "/client/customization/storage",
+                async (url, info, sessionID, output) => await customizationCallbacks.GetStorage(url, info, sessionID)
+            ),
+        ]
+    ) { }
