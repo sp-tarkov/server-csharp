@@ -66,7 +66,7 @@ public class LocationLifecycleService(
     /// </summary>
     /// <param name="playerSide">string</param>
     /// <returns>bool</returns>
-    protected bool IsSide(string playerSide, string sideCheck = Pmc)
+    protected internal bool IsSide(string playerSide, string sideCheck = Pmc)
     {
         return string.Equals(playerSide, sideCheck, StringComparison.OrdinalIgnoreCase);
     }
