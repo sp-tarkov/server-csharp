@@ -83,6 +83,7 @@ public record BotGenerationDetails
     public string? Location { get; set; }
 
     /// <summary>
+    /// DEFAULT: True
     /// Should the bot container cache be cleared after generating bot equipment + loot
     /// </summary>
     [JsonPropertyName("clearBotContainerCacheAfterGeneration")]
