@@ -22,7 +22,8 @@ public class WeatherHelperTests
         long timestamp,
         int expectedHour,
         int expectedMinute,
-        int expectedSecond)
+        int expectedSecond
+    )
     {
         var timeOutput = _weatherHelper.GetInRaidTime(timestamp);
 
