@@ -24,6 +24,9 @@ public record LostOnDeathConfig : BaseConfig
     /// </summary>
     [JsonPropertyName("questItems")]
     public bool QuestItems { get; set; }
+
+    [JsonPropertyName("wipeOnRaidStart")]
+    public bool WipeOnRaidStart { get; set; }
 }
 
 public record LostEquipment
