@@ -112,7 +112,7 @@ public static class Program
         app.Use(
             async (HttpContext context, RequestDelegate _) =>
             {
-                await context.RequestServices.GetRequiredService<HttpServer>()!.HandleRequest(context);
+                await context.RequestServices.GetRequiredService<HttpServer>().HandleRequest(context);
             }
         );
     }
