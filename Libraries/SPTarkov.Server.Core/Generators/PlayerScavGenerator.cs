@@ -29,6 +29,7 @@ public class PlayerScavGenerator(
     FenceService fenceService,
     BotLootCacheService botLootCacheService,
     ServerLocalisationService serverLocalisationService,
+    BotInventoryContainerService botInventoryContainerService,
     BotGenerator botGenerator,
     ConfigServer configServer,
     ICloner cloner,
@@ -88,7 +89,7 @@ public class PlayerScavGenerator(
         scavData.Savage = null;
         scavData.Aid = pmcDataClone.Aid;
         scavData.TradersInfo = pmcDataClone.TradersInfo;
-        scavData.Info.Settings = new BotInfoSettings();
+        scavData.Info.Settings = new();
         scavData.Info.Bans = [];
         scavData.Info.RegistrationDate = pmcDataClone.Info.RegistrationDate;
         scavData.Info.GameVersion = pmcDataClone.Info.GameVersion;
@@ -106,10 +107,10 @@ public class PlayerScavGenerator(
         scavData.Info.Level = GetScavLevel(existingScavDataClone);
         scavData.Info.Experience = GetScavExperience(existingScavDataClone);
         scavData.Quests = existingScavDataClone.Quests ?? [];
-        scavData.TaskConditionCounters = existingScavDataClone.TaskConditionCounters ?? new Dictionary<MongoId, TaskConditionCounter>();
+        scavData.TaskConditionCounters = existingScavDataClone.TaskConditionCounters ?? new();
         scavData.Notes = existingScavDataClone.Notes ?? new Notes { DataNotes = [] };
         scavData.WishList = existingScavDataClone.WishList ?? new();
-        scavData.Encyclopedia = pmcDataClone.Encyclopedia ?? new Dictionary<MongoId, bool>();
+        scavData.Encyclopedia = pmcDataClone.Encyclopedia ?? new();
 
         // Add additional items to player scav as loot
         AddAdditionalLootToPlayerScavContainers(
@@ -119,13 +120,16 @@ public class PlayerScavGenerator(
             [EquipmentSlots.TacticalVest, EquipmentSlots.Pockets, EquipmentSlots.Backpack]
         );
 
+        // No need for cache data, clear up
+        botInventoryContainerService.ClearCache(scavData.Id.Value);
+
         // Remove secure container
         scavData = profileHelper.RemoveSecureContainer(scavData);
 
-        // set cooldown timer
+        // Set cooldown timer
         scavData = SetScavCooldownTimer(scavData, pmcDataClone);
 
-        // add scav to profile
+        // Add scav to profile
         saveServer.GetProfile(sessionID).CharacterData.ScavData = scavData;
 
         return scavData;

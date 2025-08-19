@@ -127,7 +127,10 @@ public class BotInventoryGenerator(
         botLootGenerator.GenerateLoot(botId, sessionId, botJsonTemplate, botGenerationDetails, isPmc, botRole, botInventory, botLevel);
 
         // Inventory cache isn't needed, clear to save memory
-        botInventoryContainerService.ClearCache(botId);
+        if (botGenerationDetails.ClearBotContainerCacheAfterGeneration)
+        {
+            botInventoryContainerService.ClearCache(botId);
+        }
 
         return botInventory;
     }
