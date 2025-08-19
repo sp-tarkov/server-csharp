@@ -7,16 +7,13 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Routers.Dynamic;
 
 [Injectable]
-public class BundleDynamicRouter : DynamicRouter
-{
-    public BundleDynamicRouter(JsonUtil jsonUtil, BundleCallbacks bundleCallbacks)
-        : base(
-            jsonUtil,
-            [
-                new RouteAction(
-                    "/files/bundle",
-                    async (url, info, sessionID, output) => await bundleCallbacks.GetBundle(url, info as EmptyRequestData, sessionID)
-                ),
-            ]
-        ) { }
-}
+public class BundleDynamicRouter(JsonUtil jsonUtil, BundleCallbacks bundleCallbacks)
+    : DynamicRouter(
+        jsonUtil,
+        [
+            new RouteAction<EmptyRequestData>(
+                "/files/bundle",
+                async (url, info, sessionID, output) => await bundleCallbacks.GetBundle(url, info, sessionID)
+            ),
+        ]
+    ) { }

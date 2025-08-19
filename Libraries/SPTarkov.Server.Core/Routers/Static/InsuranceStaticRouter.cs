@@ -7,18 +7,13 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Routers.Static;
 
 [Injectable]
-public class InsuranceStaticRouter : StaticRouter
-{
-    public InsuranceStaticRouter(JsonUtil jsonUtil, InsuranceCallbacks insuranceCallbacks)
-        : base(
-            jsonUtil,
-            [
-                new RouteAction(
-                    "/client/insurance/items/list/cost",
-                    async (url, info, sessionID, output) =>
-                        await insuranceCallbacks.GetInsuranceCost(url, info as GetInsuranceCostRequestData, sessionID),
-                    typeof(GetInsuranceCostRequestData)
-                ),
-            ]
-        ) { }
-}
+public class InsuranceStaticRouter(JsonUtil jsonUtil, InsuranceCallbacks insuranceCallbacks)
+    : StaticRouter(
+        jsonUtil,
+        [
+            new RouteAction<GetInsuranceCostRequestData>(
+                "/client/insurance/items/list/cost",
+                async (url, info, sessionID, output) => await insuranceCallbacks.GetInsuranceCost(url, info, sessionID)
+            ),
+        ]
+    ) { }

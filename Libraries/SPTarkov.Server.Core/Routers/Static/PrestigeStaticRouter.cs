@@ -8,22 +8,17 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Routers.Static;
 
 [Injectable]
-public class PrestigeStaticRouter : StaticRouter
-{
-    public PrestigeStaticRouter(JsonUtil jsonUtil, PrestigeCallbacks prestigeCallbacks)
-        : base(
-            jsonUtil,
-            [
-                new RouteAction(
-                    "/client/prestige/list",
-                    async (url, info, sessionID, output) => await prestigeCallbacks.GetPrestige(url, info as EmptyRequestData, sessionID)
-                ),
-                new RouteAction(
-                    "/client/prestige/obtain",
-                    async (url, info, sessionID, output) =>
-                        await prestigeCallbacks.ObtainPrestige(url, info as ObtainPrestigeRequestList, sessionID),
-                    typeof(ObtainPrestigeRequestList)
-                ),
-            ]
-        ) { }
-}
+public class PrestigeStaticRouter(JsonUtil jsonUtil, PrestigeCallbacks prestigeCallbacks)
+    : StaticRouter(
+        jsonUtil,
+        [
+            new RouteAction<EmptyRequestData>(
+                "/client/prestige/list",
+                async (url, info, sessionID, output) => await prestigeCallbacks.GetPrestige(url, info, sessionID)
+            ),
+            new RouteAction<ObtainPrestigeRequestList>(
+                "/client/prestige/obtain",
+                async (url, info, sessionID, output) => await prestigeCallbacks.ObtainPrestige(url, info, sessionID)
+            ),
+        ]
+    ) { }

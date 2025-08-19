@@ -25,13 +25,7 @@ public class SptHttpListener(
     ServerLocalisationService serverLocalisationService
 ) : IHttpListener
 {
-    // We want to read 1KB at a time, for most request this is already big enough
-    private const int BodyReadBufferSize = 1024 * 1;
-
     private static readonly ImmutableHashSet<string> SupportedMethods = ["GET", "PUT", "POST"];
-
-    protected readonly HttpRouter _router = httpRouter;
-    protected readonly IEnumerable<ISerializer> _serializers = serializers;
 
     public bool CanHandle(MongoId _, HttpRequest req)
     {
@@ -60,33 +54,16 @@ public class SptHttpListener(
                 var requestCompressed = req.Method == "PUT" || requestIsCompressed;
 
                 string body;
-                using MemoryStream bufferStream = new();
-
-                var buffer = new byte[BodyReadBufferSize];
-                int bytesRead;
-
-                while ((bytesRead = await req.Body.ReadAsync(buffer)) > 0)
-                {
-                    await bufferStream.WriteAsync(buffer.AsMemory(0, bytesRead));
-                }
-
-                bufferStream.Position = 0;
 
                 if (requestCompressed)
                 {
-                    await using var deflateStream = new ZLibStream(bufferStream, CompressionMode.Decompress);
-                    await using var decompressedStream = new MemoryStream();
-                    await deflateStream.CopyToAsync(decompressedStream);
-                    decompressedStream.Position = 0;
-
-                    using var reader = new StreamReader(decompressedStream, Encoding.UTF8);
+                    await using var deflateStream = new ZLibStream(req.Body, CompressionMode.Decompress);
+                    using var reader = new StreamReader(deflateStream, Encoding.UTF8);
                     body = await reader.ReadToEndAsync();
                 }
                 else
                 {
-                    // No decompression needed, decode directly from the bufferStream's buffer
-                    bufferStream.Position = 0;
-                    using var reader = new StreamReader(bufferStream, Encoding.UTF8);
+                    using var reader = new StreamReader(req.Body, Encoding.UTF8);
                     body = await reader.ReadToEndAsync();
                 }
 
@@ -139,7 +116,7 @@ public class SptHttpListener(
         }
 
         // Not debug, minority of requests need a serializer to do the job (IMAGE/BUNDLE/NOTIFY)
-        var serialiser = _serializers.FirstOrDefault(x => x.CanHandle(output));
+        var serialiser = serializers.FirstOrDefault(x => x.CanHandle(output));
         if (serialiser != null)
         {
             await serialiser.Serialize(sessionID, req, resp, bodyInfo);
@@ -179,7 +156,7 @@ public class SptHttpListener(
 
     public async ValueTask<string> GetResponse(MongoId sessionId, HttpRequest req, string? body)
     {
-        var output = await _router.GetResponse(req, sessionId, body);
+        var output = await httpRouter.GetResponse(req, sessionId, body);
 
         // Route doesn't exist or response is not properly set up
         if (string.IsNullOrEmpty(output))
@@ -203,30 +180,23 @@ public class SptHttpListener(
         resp.StatusCode = 200;
         resp.ContentType = "application/json";
         resp.Headers.Append("Set-Cookie", $"PHPSESSID={sessionID.ToString()}");
+
         if (!string.IsNullOrEmpty(output))
         {
             await resp.WriteAsync(output);
         }
-
-        await resp.StartAsync();
-        await resp.CompleteAsync();
     }
 
-    public async Task SendZlibJson(HttpResponse resp, string? output, MongoId sessionID)
+    public async Task SendZlibJson(HttpResponse resp, string output, MongoId sessionID)
     {
-        using (var ms = new MemoryStream())
+        resp.StatusCode = 200;
+        resp.ContentType = "application/json";
+        resp.Headers.Append("Set-Cookie", $"PHPSESSID={sessionID.ToString()}");
+
+        await using (var deflateStream = new ZLibStream(resp.Body, CompressionLevel.SmallestSize))
         {
-            await using (var deflateStream = new ZLibStream(ms, CompressionLevel.SmallestSize))
-            {
-                await deflateStream.WriteAsync(Encoding.UTF8.GetBytes(output));
-            }
-
-            var bytes = ms.ToArray();
-            await resp.Body.WriteAsync(bytes);
+            await deflateStream.WriteAsync(Encoding.UTF8.GetBytes(output));
         }
-
-        await resp.StartAsync();
-        await resp.CompleteAsync();
     }
 
     private record Response(string Method, string jsonData);
