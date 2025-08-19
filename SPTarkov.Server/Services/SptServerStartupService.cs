@@ -1,13 +1,15 @@
 ﻿using System.Runtime;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Loaders;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Services;
 
-public class SptServerBackgroundService(IReadOnlyList<SptMod> loadedMods, BundleLoader bundleLoader, App app) : BackgroundService
+[Injectable(InjectionType.Singleton)]
+public class SptServerStartupService(IReadOnlyList<SptMod> loadedMods, BundleLoader bundleLoader, App app)
 {
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    public async Task Startup()
     {
         if (ProgramStatics.MODS())
         {
