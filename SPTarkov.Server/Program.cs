@@ -64,7 +64,7 @@ public static class Program
 
         builder.Services.AddSingleton(builder);
         builder.Services.AddSingleton<IReadOnlyList<SptMod>>(loadedMods);
-        builder.Services.AddHostedService<SptServerBackgroundService>();
+        // builder.Services.AddHostedService<SptServerBackgroundService>();
         // Configure Kestrel options
         ConfigureKestrel(builder);
 
@@ -85,6 +85,8 @@ public static class Program
             );
 
             SetConsoleOutputMode();
+
+            await app.Services.GetService<SptServerStartupService>()!.Startup();
 
             await app.RunAsync();
         }
