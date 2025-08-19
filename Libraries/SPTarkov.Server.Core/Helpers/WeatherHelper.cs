@@ -34,7 +34,7 @@ public class WeatherHelper(ISptLogger<WeatherHelper> logger, TimeUtil timeUtil, 
         var twentyFourHoursSeconds = timeUtil.GetHoursAsSeconds(24);
         var currentTimestampSeconds = timestamp;
 
-        var tarkovTime = timeUtil.GetDateTimeFromTimeStamp(
+        var tarkovTime = timeUtil.GetUtcDateTimeFromTimeStamp(
             (long)(russiaOffsetSeconds + currentTimestampSeconds * _weatherConfig.Acceleration) % twentyFourHoursSeconds
         );
 

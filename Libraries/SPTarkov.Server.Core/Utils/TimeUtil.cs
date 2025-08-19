@@ -152,6 +152,11 @@ public class TimeUtil
         return DateTimeOffset.FromUnixTimeSeconds(timeStamp).DateTime;
     }
 
+    public DateTime GetUtcDateTimeFromTimeStamp(long timeStamp)
+    {
+        return DateTimeOffset.FromUnixTimeSeconds(timeStamp).UtcDateTime;
+    }
+
     public int GetSecondsAsMilliseconds(int seconds)
     {
         return seconds * 60 * 1000;
