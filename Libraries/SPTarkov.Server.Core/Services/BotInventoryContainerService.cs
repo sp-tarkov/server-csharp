@@ -146,29 +146,6 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
         return addResult;
     }
 
-    /// <summary>
-    /// Flag a container grid as full if a 1x1 item cannot fit or there are no spaces left in the 2d array
-    /// </summary>
-    /// <param name="gridDetails"></param>
-    /// <param name="itemWidth"></param>
-    /// <param name="itemHeight"></param>
-    protected static void FlagGridIfFull(ContainerMapDetails gridDetails, int itemWidth, int itemHeight)
-    {
-        // If item is 1x1 and it failed to fit, grid must be full
-        if (itemHeight == 1 && itemWidth == 1)
-        {
-            gridDetails.GridFull = true; // Flag now so later items can skip grid
-
-            return;
-        }
-
-        // Check if grid is full and flag
-        if (gridDetails.GridMap.ContainerIsFull())
-        {
-            gridDetails.GridFull = true;
-        }
-    }
-
     ///  <summary>
     /// Attempt to add an item + children to a container at a specific x/y grid position
     ///  </summary>
@@ -190,15 +167,17 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
         ItemLocation fixedLocation
     )
     {
+        if (itemAndChildren.Count == 0)
+        {
+            return ItemAddedResult.INCOMPATIBLE_ITEM;
+        }
+
         // Default result
         var addResult = ItemAddedResult.UNKNOWN;
 
         // Find bot and the container we are attempting to store item in
         var botContainers = GetOrCreateBotContainerDictionary(botId);
-
-        botContainers.TryGetValue(containerName, out var containerDetails);
-
-        if (containerDetails.ContainerGridDetails.Count == 0)
+        if (!botContainers.TryGetValue(containerName, out var containerDetails) || containerDetails.ContainerGridDetails.Count == 0)
         {
             // No grids, cannot add item
             return ItemAddedResult.NO_CONTAINERS;
@@ -278,18 +257,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
             // Didn't fit, flag as no space, hopefully next grid has space
             addResult = ItemAddedResult.NO_SPACE;
 
-            // If the item is 1x1 and it failed to fit, grid must be full
-            if (itemHeight == 1 && itemWidth == 1)
-            {
-                gridDetails.GridFull = true;
-                continue;
-            }
-
-            // Check if grid is full and flag
-            if (gridDetails.GridMap.ContainerIsFull())
-            {
-                gridDetails.GridFull = true;
-            }
+            FlagGridIfFull(gridDetails, itemWidth, itemHeight);
         }
 
         return addResult;
@@ -319,7 +287,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
     /// <param name="y">The starting row index (top)</param>
     /// <param name="itemWidth">The number of cells to update horizontally</param>
     /// <param name="itemHeight">The number of cells to update vertically</param>
-    private void FillGridRegion(int[,] grid, int x, int y, int itemWidth, int itemHeight)
+    protected void FillGridRegion(int[,] grid, int x, int y, int itemWidth, int itemHeight)
     {
         // Outer loop iterates through rows (from starting y position)
         for (var row = y; row < y + itemHeight; row++)
@@ -329,6 +297,29 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
             {
                 grid[row, col] = 1;
             }
+        }
+    }
+
+    /// <summary>
+    /// Flag a container grid as full if a 1x1 item cannot fit or there are no spaces left in the 2d array
+    /// </summary>
+    /// <param name="gridDetails"></param>
+    /// <param name="itemWidth"></param>
+    /// <param name="itemHeight"></param>
+    protected static void FlagGridIfFull(ContainerMapDetails gridDetails, int itemWidth, int itemHeight)
+    {
+        // If item is 1x1 and it failed to fit, grid must be full
+        if (itemHeight == 1 && itemWidth == 1)
+        {
+            gridDetails.GridFull = true; // Flag now so later items can skip grid
+
+            return;
+        }
+
+        // Check if grid is full and flag
+        if (gridDetails.GridMap.ContainerIsFull())
+        {
+            gridDetails.GridFull = true;
         }
     }
 
