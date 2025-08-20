@@ -59,6 +59,11 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
         int itemHeight
     )
     {
+        if (itemAndChildren.Count == 0)
+        {
+            return ItemAddedResult.INCOMPATIBLE_ITEM;
+        }
+
         var addResult = ItemAddedResult.UNKNOWN;
 
         // Find bot and the container we will attempt to add into
@@ -78,7 +83,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
         }
 
         // Try to fit item into one of the containers' grids
-        var rootItem = itemAndChildren.FirstOrDefault();
+        var rootItem = itemAndChildren.First();
         var gridIndex = -1; // start at -1 as we increment index first thing each grid we iterate over
         foreach (var gridDb in containerDetails.ContainerDbItem.Properties.Grids)
         {
@@ -104,17 +109,14 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
                 // It Fits!
 
                 // Set items parent to Id of container
-                if (rootItem is not null)
+                rootItem.ParentId = containerDetails.ContainerInventoryItem.Id;
+                rootItem.SlotId = gridDb.Name; // Can be name of container e.g. "Backpack" OR "2/3/4/5" depending on which grid of a container item is added to
+                rootItem.Location = new ItemLocation
                 {
-                    rootItem.ParentId = containerDetails.ContainerInventoryItem.Id;
-                    rootItem.SlotId = gridDb.Name; // Can be name of container e.g. "Backpack" OR "2/3/4/5" depending on which grid of a container item is added to
-                    rootItem.Location = new ItemLocation
-                    {
-                        X = findSlotResult.X,
-                        Y = findSlotResult.Y,
-                        R = findSlotResult.Rotation ?? false ? ItemRotation.Vertical : ItemRotation.Horizontal,
-                    };
-                }
+                    X = findSlotResult.X,
+                    Y = findSlotResult.Y,
+                    R = findSlotResult.Rotation ?? false ? ItemRotation.Vertical : ItemRotation.Horizontal,
+                };
 
                 // Flag result as success to report to caller
                 addResult = ItemAddedResult.SUCCESS;
@@ -138,21 +140,33 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
             // Didn't fit, flag as no space, hopefully next grid has space
             addResult = ItemAddedResult.NO_SPACE;
 
-            // If item is 1x1 and it failed to fit, grid must be full
-            if (itemHeight == 1 && itemWidth == 1)
-            {
-                gridDetails.GridFull = true; // Flag now so later items can skip grid
-                continue;
-            }
-
-            // Check if grid is full and flag
-            if (gridDetails.GridMap.ContainerIsFull())
-            {
-                gridDetails.GridFull = true;
-            }
+            FlagGridIfFull(gridDetails, itemWidth, itemHeight);
         }
 
         return addResult;
+    }
+
+    /// <summary>
+    /// Flag a container grid as full if a 1x1 item cannot fit or there are no spaces left in the 2d array
+    /// </summary>
+    /// <param name="gridDetails"></param>
+    /// <param name="itemWidth"></param>
+    /// <param name="itemHeight"></param>
+    protected static void FlagGridIfFull(ContainerMapDetails gridDetails, int itemWidth, int itemHeight)
+    {
+        // If item is 1x1 and it failed to fit, grid must be full
+        if (itemHeight == 1 && itemWidth == 1)
+        {
+            gridDetails.GridFull = true; // Flag now so later items can skip grid
+
+            return;
+        }
+
+        // Check if grid is full and flag
+        if (gridDetails.GridMap.ContainerIsFull())
+        {
+            gridDetails.GridFull = true;
+        }
     }
 
     ///  <summary>
