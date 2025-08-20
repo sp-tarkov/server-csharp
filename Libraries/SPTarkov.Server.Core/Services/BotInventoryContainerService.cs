@@ -62,11 +62,10 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
         var addResult = ItemAddedResult.UNKNOWN;
 
         // Find bot and the container we will attempt to add into
-        var botContainers = GetOrCreateBotContainerDictionary(botId);
-
-        botContainers.TryGetValue(containerName, out var containerDetails);
-
-        if (containerDetails.ContainerGridDetails.Count == 0)
+        if (
+            !GetOrCreateBotContainerDictionary(botId).TryGetValue(containerName, out var containerDetails)
+            || containerDetails.ContainerGridDetails.Count == 0
+        )
         {
             // No grids, cannot add item
             return ItemAddedResult.NO_CONTAINERS;
@@ -80,7 +79,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
 
         // Try to fit item into one of the containers' grids
         var rootItem = itemAndChildren.FirstOrDefault();
-        var gridIndex = -1;
+        var gridIndex = -1; // start at -1 as we increment index first thing each grid we iterate over
         foreach (var gridDb in containerDetails.ContainerDbItem.Properties.Grids)
         {
             gridIndex++;
@@ -88,6 +87,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
             var gridDetails = containerDetails.ContainerGridDetails[gridIndex];
             if (gridDetails.GridFull)
             {
+                // Skip to next grid
                 continue;
             }
 
@@ -138,10 +138,10 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
             // Didn't fit, flag as no space, hopefully next grid has space
             addResult = ItemAddedResult.NO_SPACE;
 
-            // If the item is 1x1 and it failed to fit, grid must be full
+            // If item is 1x1 and it failed to fit, grid must be full
             if (itemHeight == 1 && itemWidth == 1)
             {
-                gridDetails.GridFull = true;
+                gridDetails.GridFull = true; // Flag now so later items can skip grid
                 continue;
             }
 
