@@ -15,11 +15,11 @@ public abstract record ICustomTrader : ITrader
     public abstract string Name { get; }
     public abstract MongoId Id { get; }
 
-    public abstract TraderAssort? GetAssort();
+    public abstract TraderAssort GetAssort();
 
-    public abstract Dictionary<string, Dictionary<MongoId, MongoId>>? GetQuestAssort();
+    public abstract Dictionary<string, Dictionary<MongoId, MongoId>> GetQuestAssort();
 
-    public abstract TraderBase? GetBase();
+    public abstract TraderBase GetBase();
 
     public virtual List<Suit>? GetSuits()
     {
@@ -31,7 +31,7 @@ public abstract record ICustomTrader : ITrader
         return null;
     }
 
-    public virtual Dictionary<string, List<string>?>? GetDialogues()
+    public virtual Dictionary<string, List<string>?> GetDialogues()
     {
         return null;
     }
