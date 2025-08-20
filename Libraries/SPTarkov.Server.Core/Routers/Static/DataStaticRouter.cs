@@ -55,5 +55,9 @@ public class DataStaticRouter(JsonUtil jsonUtil, DataCallbacks dataCallbacks)
                 "/client/hideout/qte/list",
                 async (url, info, sessionID, output) => await dataCallbacks.GetQteList(url, info, sessionID)
             ),
+            new RouteAction<EmptyRequestData>(
+                "/client/dialogue",
+                async (url, info, sessionID, output) => await dataCallbacks.GetDialogue(url, info, sessionID)
+            ),
         ]
     ) { }

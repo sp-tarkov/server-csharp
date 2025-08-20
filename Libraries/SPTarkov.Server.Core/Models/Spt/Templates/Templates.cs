@@ -34,6 +34,9 @@ public record Templates
     [JsonPropertyName("customization")]
     public required Dictionary<MongoId, CustomizationItem> Customization { get; init; }
 
+    [JsonPropertyName("dialogue")]
+    public required object Dialogue { get; init; }
+
     /// <summary>
     ///     The profile templates listed in the launcher on profile creation, split by account type (e.g. Standard) then side (e.g. bear/usec)
     /// </summary>

@@ -159,4 +159,12 @@ public class DataCallbacks(
 
         return new ValueTask<string>(httpResponseUtil.GetBody(traderController.GetItemPrices(sessionID, traderId)));
     }
+
+    /// <summary>
+    /// Handle /client/dialogue
+    /// </summary>
+    public ValueTask<string> GetDialogue(string url, object request, MongoId sessionID)
+    {
+        return new ValueTask<string>(httpResponseUtil.NoBody(databaseService.GetTemplates().Dialogue));
+    }
 }
