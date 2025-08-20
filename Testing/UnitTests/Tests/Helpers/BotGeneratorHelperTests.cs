@@ -190,7 +190,7 @@ public class BotGeneratorHelperTests
             },
             Upd = new Upd { StackObjectsCount = 1 },
         };
-        _botInventoryContainerService.AddItemToBotContainer(botId, EquipmentSlots.Backpack, [akbsCartridge], botInventory, 1, 1);
+        _botInventoryContainerService.TryAddItemToBotContainer(botId, EquipmentSlots.Backpack, [akbsCartridge], botInventory, 1, 1);
 
         var rootWeaponId = new MongoId();
         var weaponWithChildren = CreateMp18(rootWeaponId);

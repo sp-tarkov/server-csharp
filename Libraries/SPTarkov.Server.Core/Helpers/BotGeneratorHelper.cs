@@ -501,7 +501,7 @@ public class BotGeneratorHelper(
             // Get x/y grid size of item
             var (itemWidth, itemHeight) = inventoryHelper.GetItemSize(rootItemTplId, rootItemId, itemWithChildrenList);
 
-            var result = botInventoryContainerService.AddItemToBotContainer(
+            var result = botInventoryContainerService.TryAddItemToBotContainer(
                 botId,
                 equipmentSlotId,
                 itemWithChildrenList,

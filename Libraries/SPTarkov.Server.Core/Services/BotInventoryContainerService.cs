@@ -50,7 +50,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
     /// <param name="itemWidth">Width of item with its children</param>
     /// <param name="itemHeight">Height of item with its children</param>
     /// <returns>ItemAddedResult</returns>
-    public ItemAddedResult AddItemToBotContainer(
+    public ItemAddedResult TryAddItemToBotContainer(
         MongoId botId,
         EquipmentSlots containerName,
         List<Item> itemAndChildren,
