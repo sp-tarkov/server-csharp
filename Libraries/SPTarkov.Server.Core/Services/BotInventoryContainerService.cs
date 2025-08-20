@@ -80,9 +80,11 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
 
         // Try to fit item into one of the containers' grids
         var rootItem = itemAndChildren.FirstOrDefault();
-        var gridIndex = 0;
+        var gridIndex = -1;
         foreach (var gridDb in containerDetails.ContainerDbItem.Properties.Grids)
         {
+            gridIndex++;
+
             var gridDetails = containerDetails.ContainerGridDetails[gridIndex];
             if (gridDetails.GridFull)
             {
@@ -132,8 +134,6 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
                 // Exit loop, we've found a slot for item
                 break;
             }
-
-            gridIndex++;
 
             // Didn't fit, flag as no space, hopefully next grid has space
             addResult = ItemAddedResult.NO_SPACE;
