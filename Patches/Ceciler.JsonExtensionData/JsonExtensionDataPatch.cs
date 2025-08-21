@@ -138,12 +138,9 @@ public class JsonExtensionDataPatch : IPatcher
 
             processed.Add(typeDefinition.FullName);
         }
-#if DEBUG
-        var writerParams = new WriterParameters() { WriteSymbols = true };
+
+        var writerParams = new WriterParameters { WriteSymbols = true };
         assembly.Write(writerParams);
-#else
-        assembly.Write();
-#endif
     }
 
     private bool IsStaticClass(TypeDefinition type)
