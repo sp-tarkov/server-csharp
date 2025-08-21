@@ -46,6 +46,11 @@ public class JsonExtensionDataPatch : IPatcher
             assembly.MainModule.ImportReference(
                 typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute).GetConstructor(Type.EmptyTypes)));
 
+        var nullableAttrType = assembly.MainModule.ImportReference(typeof(System.Runtime.CompilerServices.NullableAttribute));
+        var attrCtor = assembly.MainModule.ImportReference(nullableAttrType.Resolve().Methods.First(m => m.IsConstructor && m.Parameters.Count == 1 && m.Parameters[0].ParameterType.Name == "Byte"));
+        var attr = new CustomAttribute(attrCtor);
+        attr.ConstructorArguments.Add(new CustomAttributeArgument(assembly.MainModule.TypeSystem.Byte, (byte)1));
+
         var processed = new HashSet<string>();
         foreach (var typeDefinition in assembly.MainModule.Types)
         {
@@ -60,12 +65,14 @@ public class JsonExtensionDataPatch : IPatcher
 
             var propertyDefinition = new PropertyDefinition("ExtensionData", PropertyAttributes.None, _dictionaryStringObjectReference);
             propertyDefinition.CustomAttributes.Add(new CustomAttribute(_jsonExtensionDataAttributeReference));
+            propertyDefinition.CustomAttributes.Add(attr);
 
             // Add backing field
             var field = new FieldDefinition("<ExtensionData>k__BackingField",
                 FieldAttributes.Private | FieldAttributes.InitOnly,
                 _dictionaryStringObjectReference);
             field.CustomAttributes.Add(new CustomAttribute(compilerGenerated));
+            field.CustomAttributes.Add(attr);
             typeDefinition.Fields.Add(field);
 
             // Add getter
