@@ -70,7 +70,10 @@ public record Quest
     public string? SuccessMessageText { get; set; }
 
     [JsonPropertyName("acceptPlayerMessage")]
-    public string? AcceptPlayerMessage { get; set; }
+    public string AcceptPlayerMessage { get; set; }
+
+    [JsonPropertyName("acceptanceAndFinishingSource")]
+    public string AcceptanceAndFinishingSource { get; set; }
 
     [JsonPropertyName("declinePlayerMessage")]
     public string? DeclinePlayerMessage { get; set; }

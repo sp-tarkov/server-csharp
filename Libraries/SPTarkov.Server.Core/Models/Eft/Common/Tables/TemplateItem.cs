@@ -106,6 +106,9 @@ public record Props
     [JsonPropertyName("Weight")]
     public double? Weight { get; set; }
 
+    [JsonPropertyName("DialogId")]
+    public MongoId? DialogId { get; set; }
+
     [JsonPropertyName("WeightMultipliers")]
     public object? WeightMultipliers { get; set; }
 
@@ -1478,6 +1481,9 @@ public record Props
 
     [JsonPropertyName("MinTimeToContactExplode")]
     public double? MinTimeToContactExplode { get; set; }
+
+    [JsonPropertyName("PlayFuzeSound")]
+    public bool MinTimeToCPlayFuzeSoundontactExplode { get; set; }
 
     [JsonPropertyName("ExplosionEffectType")]
     public string? ExplosionEffectType { get; set; }
