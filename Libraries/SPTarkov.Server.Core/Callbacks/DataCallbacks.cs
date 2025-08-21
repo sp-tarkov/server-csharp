@@ -165,6 +165,6 @@ public class DataCallbacks(
     /// </summary>
     public ValueTask<string> GetDialogue(string url, object request, MongoId sessionID)
     {
-        return new ValueTask<string>(httpResponseUtil.NoBody(databaseService.GetTemplates().Dialogue));
+        return new ValueTask<string>(httpResponseUtil.GetUnclearedBody(databaseService.GetTemplates().Dialogue));
     }
 }
