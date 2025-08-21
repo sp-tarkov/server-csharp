@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Launcher;
 
 public record LauncherV2VersionResponse : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     public required LauncherV2CompatibleVersion Response { get; set; }
 }

@@ -22,8 +22,7 @@ public record PostRaidPmcData : PmcData { }
 
 public record PostRaidStats
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("Eft")]
     public EftStats? Eft { get; set; }

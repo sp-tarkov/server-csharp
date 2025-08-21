@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Location;
 
 public record AirdropLootResult
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("dropType")]
     public string? DropType { get; set; }

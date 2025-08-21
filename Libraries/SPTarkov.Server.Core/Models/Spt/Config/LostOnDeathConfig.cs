@@ -31,8 +31,7 @@ public record LostOnDeathConfig : BaseConfig
 
 public record LostEquipment
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("ArmBand")]
     public bool ArmBand { get; set; }

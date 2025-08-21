@@ -4,8 +4,7 @@ namespace SPTarkov.Server.Core.Models.Enums;
 
 public record HideoutEventActions
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     public const string HIDEOUT_UPGRADE = "HideoutUpgrade";
     public const string HIDEOUT_UPGRADE_COMPLETE = "HideoutUpgradeComplete";

@@ -16,8 +16,7 @@ public record PmcChatResponse : BaseConfig
 
 public record ResponseSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("responseChancePercent")]
     public double ResponseChancePercent { get; set; }

@@ -8,8 +8,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record ModToSpawnRequest
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     /// <summary>
     ///     Slot mod will fit into

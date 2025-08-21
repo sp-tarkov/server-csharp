@@ -144,8 +144,7 @@ public record LocationConfig : BaseConfig
 
 public record TransitSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("effectsToRemove")]
     public HashSet<string>? EffectsToRemove { get; set; }
@@ -159,8 +158,7 @@ public record TransitSettings
 
 public record ReserveRaiderSpawnChanceOverrides
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("nonTriggered")]
     public int NonTriggered { get; set; }
@@ -171,8 +169,7 @@ public record ReserveRaiderSpawnChanceOverrides
 
 public record EquipmentLootSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     /// <summary>
     ///     Percentage chance item will be added to equipment
@@ -183,8 +180,7 @@ public record EquipmentLootSettings
 
 public record RogueLighthouseSpawnTimeSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
@@ -195,8 +191,7 @@ public record RogueLighthouseSpawnTimeSettings
 
 public record CustomWaves
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     /// <summary>
     ///     Bosses spawn on raid start
@@ -216,8 +211,7 @@ public record BotTypeLimit : MinMax<int>
 
 public record ContainerRandomisationSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
@@ -243,8 +237,7 @@ public record ContainerRandomisationSettings
 
 public record ScavRaidTimeSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("settings")]
     public required ScavRaidTimeConfigSettings Settings { get; set; }
@@ -255,8 +248,7 @@ public record ScavRaidTimeSettings
 
 public record ScavRaidTimeConfigSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("trainArrivalDelayObservedSeconds")]
     public int TrainArrivalDelayObservedSeconds { get; set; }
@@ -264,8 +256,7 @@ public record ScavRaidTimeConfigSettings
 
 public record ScavRaidTimeLocationSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     /// <summary>
     ///     Should loot be reduced by same percent length of raid is reduced by

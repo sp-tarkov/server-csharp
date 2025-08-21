@@ -23,8 +23,7 @@ public record RepeatableQuest : Quest
 
 public record RepeatableQuestDatabase
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("templates")]
     public RepeatableTemplates? Templates { get; set; }
@@ -41,8 +40,7 @@ public record RepeatableQuestDatabase
 
 public record RepeatableQuestStatus
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
@@ -65,8 +63,7 @@ public record RepeatableQuestStatus
 
 public record RepeatableTemplates
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("Elimination")]
     public RepeatableQuest? Elimination { get; set; }
@@ -83,8 +80,7 @@ public record RepeatableTemplates
 
 public record PmcDataRepeatableQuest
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("id")]
     public MongoId? Id { get; set; }
@@ -120,8 +116,7 @@ public record PmcDataRepeatableQuest
 
 public record ChangeRequirement
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("changeCost")]
     public List<ChangeCost?>? ChangeCost { get; set; }
@@ -132,8 +127,7 @@ public record ChangeRequirement
 
 public record ChangeCost
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     /// <summary>
     ///     What item it will take to reset daily
@@ -152,8 +146,7 @@ public record ChangeCost
 
 public record RewardOptions
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("itemsBlacklist")]
     public List<string>? ItemsBlacklist { get; set; }
@@ -161,8 +154,7 @@ public record RewardOptions
 
 public record Options
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("Completion")]
     public CompletionFilter? Completion { get; set; }
@@ -170,8 +162,7 @@ public record Options
 
 public record CompletionFilter
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("itemsBlacklist")]
     public List<ItemsBlacklist>? ItemsBlacklist { get; set; }
@@ -182,8 +173,7 @@ public record CompletionFilter
 
 public record ItemsBlacklist
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("minPlayerLevel")]
     public int? MinPlayerLevel { get; set; }
@@ -194,8 +184,7 @@ public record ItemsBlacklist
 
 public record ItemsWhitelist
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("minPlayerLevel")]
     public int? MinPlayerLevel { get; set; }
@@ -206,8 +195,7 @@ public record ItemsWhitelist
 
 public record SampleQuests
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("_id")]
     public string? Id { get; set; }

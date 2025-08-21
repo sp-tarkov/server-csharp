@@ -15,8 +15,7 @@ public record HideoutContinuousProductionStartRequestData : InventoryBaseActionR
 
 public record HideoutProperties
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     public int? BtcFarmGcs { get; set; }
 

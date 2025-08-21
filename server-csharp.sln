@@ -8,6 +8,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Server.Core", "Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj", "{AC8643DC-8779-4B4A-BBDA-2D4CC466F765}"
 	ProjectSection(ProjectDependencies) = postProject
 		{20A5EBD3-75D1-4E06-8240-09EEF874017A} = {20A5EBD3-75D1-4E06-8240-09EEF874017A}
+		{5D09182A-B0B3-406C-AE88-EE0929F9260C} = {5D09182A-B0B3-406C-AE88-EE0929F9260C}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}"
@@ -39,6 +40,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "Testing\UnitTests\UnitTests.csproj", "{28B90486-1436-4CD7-88D0-122B6963AB58}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMod", "Testing\TestMod\TestMod.csproj", "{755E473C-14F2-40BC-9377-2FAB11CA91DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ceciler.JsonExtensionData", "Patches\Ceciler.JsonExtensionData\Ceciler.JsonExtensionData.csproj", "{5D09182A-B0B3-406C-AE88-EE0929F9260C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,6 +101,10 @@ Global
 		{755E473C-14F2-40BC-9377-2FAB11CA91DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{755E473C-14F2-40BC-9377-2FAB11CA91DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{755E473C-14F2-40BC-9377-2FAB11CA91DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D09182A-B0B3-406C-AE88-EE0929F9260C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D09182A-B0B3-406C-AE88-EE0929F9260C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D09182A-B0B3-406C-AE88-EE0929F9260C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D09182A-B0B3-406C-AE88-EE0929F9260C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,5 +122,6 @@ Global
 		{3E342BAC-EE44-44E4-8E99-393F0C9F787C} = {07B50C44-6D38-474E-87AF-68672D241EEB}
 		{28B90486-1436-4CD7-88D0-122B6963AB58} = {07B50C44-6D38-474E-87AF-68672D241EEB}
 		{755E473C-14F2-40BC-9377-2FAB11CA91DC} = {07B50C44-6D38-474E-87AF-68672D241EEB}
+		{5D09182A-B0B3-406C-AE88-EE0929F9260C} = {9E41CD5A-271C-4294-AAF9-8EB379311416}
 	EndGlobalSection
 EndGlobal

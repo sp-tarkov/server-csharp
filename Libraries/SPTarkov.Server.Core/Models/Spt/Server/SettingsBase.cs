@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Server;
 
 public record SettingsBase
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("config")]
     public required Config Configuration { get; init; }
@@ -14,8 +13,7 @@ public record SettingsBase
 
 public record Config
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("AFKTimeoutSeconds")]
     public int AFKTimeoutSeconds { get; set; }
@@ -104,8 +102,7 @@ public record Config
 
 public record AudioSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("AudioGroupPresets")]
     public List<AudioGroupPreset> AudioGroupPresets { get; set; }
@@ -128,8 +125,7 @@ public record AudioSettings
 
 public record FramerateLimit
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("MaxFramerateGameLimit")]
     public int MaxFramerateGameLimit { get; set; }
@@ -143,8 +139,7 @@ public record FramerateLimit
 
 public record MemoryManagementSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("AggressiveGC")]
     public bool AggressiveGC { get; set; }
@@ -167,8 +162,7 @@ public record MemoryManagementSettings
 
 public record ReleaseProfiler
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("Enabled")]
     public bool Enabled { get; set; }
@@ -182,8 +176,7 @@ public record ReleaseProfiler
 
 public record NetworkStateView
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("LossThreshold")]
     public int LossThreshold { get; set; }
@@ -194,8 +187,7 @@ public record NetworkStateView
 
 public record AudioGroupPreset
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("AngleToAllowBinaural")]
     public double? AngleToAllowBinaural { get; set; }
@@ -230,8 +222,7 @@ public record AudioGroupPreset
 
 public record EnvironmentSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("AutumnLateSettings")]
     public SeasonEnvironmentSettings AutumnLateSettings { get; set; }
@@ -260,8 +251,7 @@ public record EnvironmentSettings
 
 public record SeasonEnvironmentSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("RainSettings")]
     public List<RainSetting> RainSettings { get; set; }
@@ -275,8 +265,7 @@ public record SeasonEnvironmentSettings
 
 public record SurfaceMultiplier
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     public string SurfaceType { get; set; }
 
@@ -285,8 +274,7 @@ public record SurfaceMultiplier
 
 public record WindMultiplier
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("VolumeMult")]
     public double VolumeMult { get; set; }
@@ -297,8 +285,7 @@ public record WindMultiplier
 
 public record RainSetting
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("IndoorVolumeMult")]
     public int IndoorVolumeMult { get; set; }
@@ -312,8 +299,7 @@ public record RainSetting
 
 public record HeadphoneSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     public double FadeDuration { get; set; }
 
@@ -324,8 +310,7 @@ public record HeadphoneSettings
 
 public record MetaXRAudioPluginSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     public bool EnabledPluginErrorChecker { get; set; }
 

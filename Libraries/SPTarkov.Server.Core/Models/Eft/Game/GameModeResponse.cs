@@ -10,8 +10,7 @@ public enum SessionMode
 
 public record GameModeResponse
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("gameMode")]
     public string? GameMode { get; set; }

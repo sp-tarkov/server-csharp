@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Mod;
 
 public class SptMod
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("directory")]
     public required string Directory { get; init; }

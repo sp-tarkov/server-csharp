@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Inventory;
 
 public record AddItemTempObject
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("itemRef")]
     public Item? ItemReference { get; set; }

@@ -6,8 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Location;
 
 public record GetAirdropLootResponse
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     /// <summary>
     ///     The type of airdrop

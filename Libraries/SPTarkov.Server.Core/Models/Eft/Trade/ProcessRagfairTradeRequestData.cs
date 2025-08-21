@@ -12,8 +12,7 @@ public record ProcessRagfairTradeRequestData : InventoryBaseActionRequestData
 
 public record OfferRequest
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("id")]
     public string? Id { get; set; }

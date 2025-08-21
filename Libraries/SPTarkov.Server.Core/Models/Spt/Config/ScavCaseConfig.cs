@@ -35,8 +35,7 @@ public record ScavCaseConfig : BaseConfig
 
 public record MoneyRewards
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("moneyRewardChancePercent")]
     public int MoneyRewardChancePercent { get; set; }
@@ -56,8 +55,7 @@ public record MoneyRewards
 
 public record MoneyLevels
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("common")]
     public required MinMax<int> Common { get; set; }
@@ -71,8 +69,7 @@ public record MoneyLevels
 
 public record AmmoRewards
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("ammoRewardChancePercent")]
     public int AmmoRewardChancePercent { get; set; }

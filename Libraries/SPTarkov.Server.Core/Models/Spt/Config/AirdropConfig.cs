@@ -27,8 +27,7 @@ public record AirdropConfig : BaseConfig
 /// </summary>
 public record AirdropLoot
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("icon")]
     [JsonConverter(typeof(JsonStringEnumConverter))]

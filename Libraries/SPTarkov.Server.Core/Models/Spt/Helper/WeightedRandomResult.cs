@@ -4,8 +4,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Helper;
 
 public record WeightedRandomResult<T>
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     public required T Item { get; set; }
 

@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record FilterPlateModsForSlotByLevelResult
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("result")]
     public Result? Result { get; set; }

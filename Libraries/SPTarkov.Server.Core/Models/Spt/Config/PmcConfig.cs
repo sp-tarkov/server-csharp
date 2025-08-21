@@ -151,8 +151,7 @@ public record PmcConfig : BaseConfig
 
 public record ForceArmbandSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
@@ -166,8 +165,7 @@ public record ForceArmbandSettings
 
 public record PmcLootSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("pocket")]
     public LootContainerSettings Pocket { get; set; }
@@ -181,8 +179,7 @@ public record PmcLootSettings
 
 public record LootContainerSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("totalRubByLevel")]
     public List<MinMaxLootValue> TotalRubByLevel { get; set; }
@@ -193,8 +190,7 @@ public record LootContainerSettings
 
 public record HostilitySettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     /// <summary>
     ///     Bot roles that are 100% an enemy
@@ -229,8 +225,7 @@ public record HostilitySettings
 
 public record SlotLootSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     /// <summary>
     ///     Item Type whitelist

@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.InRaid;
 
 public record RegisterPlayerRequestData : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("crc")]
     public int? Crc { get; set; }

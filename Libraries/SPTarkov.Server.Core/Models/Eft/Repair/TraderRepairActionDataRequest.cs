@@ -15,8 +15,7 @@ public record TraderRepairActionDataRequest : InventoryBaseActionRequestData
 
 public record RepairItem
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }

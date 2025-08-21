@@ -7,8 +7,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Server;
 /// </summary>
 public record ServerBase
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("ip")]
     public required string Ip { get; set; }

@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Inventory;
 
 public record OwnerInventoryItems
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     /// <summary>
     ///     Inventory items from source

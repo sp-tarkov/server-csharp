@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Prestige
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("elements")]
     public List<PrestigeElement> Elements { get; set; }
@@ -14,8 +13,7 @@ public record Prestige
 
 public record PrestigeElement
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("id")]
     public string Id { get; set; }
@@ -38,8 +36,7 @@ public record PrestigeElement
 
 public record TransferConfigs
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("stashConfig")]
     public StashPrestigeConfig StashConfig { get; set; }
@@ -53,8 +50,7 @@ public record TransferConfigs
 
 public record StashPrestigeConfig
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("xCellCount")]
     public int? XCellCount { get; set; }
@@ -68,8 +64,7 @@ public record StashPrestigeConfig
 
 public record StashPrestigeFilters
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("includedItems")]
     public List<MongoId> IncludedItems { get; set; }
@@ -80,8 +75,7 @@ public record StashPrestigeFilters
 
 public record PrestigeSkillConfig
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("transferMultiplier")]
     public double TransferMultiplier { get; set; }
@@ -89,8 +83,7 @@ public record PrestigeSkillConfig
 
 public record PrestigeMasteringConfig
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("transferMultiplier")]
     public double TransferMultiplier { get; set; }

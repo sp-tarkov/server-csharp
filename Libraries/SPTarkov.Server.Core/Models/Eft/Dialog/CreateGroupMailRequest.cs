@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record CreateGroupMailRequest : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("Name")]
     public string? Name { get; set; }

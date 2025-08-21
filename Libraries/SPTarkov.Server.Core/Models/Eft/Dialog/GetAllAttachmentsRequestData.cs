@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record GetAllAttachmentsRequestData : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("dialogId")]
     public string DialogId { get; set; }

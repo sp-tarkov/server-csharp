@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Hideout;
 
 public record Hideout
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("areas")]
     public required List<HideoutArea> Areas { get; init; }

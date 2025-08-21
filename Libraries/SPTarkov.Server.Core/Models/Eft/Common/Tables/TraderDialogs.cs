@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record TraderDialogs
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
 
     [JsonPropertyName("elements")]
     public required List<TraderDialogElements> Elements;
@@ -14,9 +12,6 @@ public record TraderDialogs
 
 public record TraderDialogElements
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
-
     [JsonPropertyName("CanBeFirstDialogue")]
     public bool CanBeFirstDialog { get; set; } = true;
 

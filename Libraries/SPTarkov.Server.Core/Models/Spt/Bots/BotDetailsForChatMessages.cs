@@ -6,8 +6,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record BotDetailsForChatMessages
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     public string Nickname { get; set; } = string.Empty;
 

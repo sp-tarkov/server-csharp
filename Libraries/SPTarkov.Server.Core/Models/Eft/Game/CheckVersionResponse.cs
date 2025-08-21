@@ -4,8 +4,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 
 public record CheckVersionResponse
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("isvalid")]
     public bool? IsValid { get; set; }

@@ -4,8 +4,7 @@ namespace SPTarkov.Server.Core.Models.Eft.HttpResponse;
 
 public record NullResponseData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("err")]
     public int? Err { get; set; }

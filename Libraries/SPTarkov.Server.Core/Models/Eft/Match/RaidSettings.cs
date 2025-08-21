@@ -7,8 +7,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record RaidSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("keyId")]
     public string? KeyId { get; set; }
@@ -55,8 +54,7 @@ public record RaidSettings
 
 public record TimeAndWeatherSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("isRandomTime")]
     public bool? IsRandomTime { get; set; }
@@ -90,8 +88,7 @@ public record TimeAndWeatherSettings
 
 public record BotSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("isScavWars")]
     public bool? IsScavWars { get; set; }
@@ -103,8 +100,7 @@ public record BotSettings
 
 public record WavesSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("botAmount")]
     [JsonConverter(typeof(JsonStringEnumConverter))]

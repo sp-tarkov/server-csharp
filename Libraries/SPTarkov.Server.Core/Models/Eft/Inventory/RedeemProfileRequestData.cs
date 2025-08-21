@@ -11,8 +11,7 @@ public record RedeemProfileRequestData : InventoryBaseActionRequestData
 
 public record RedeemProfileRequestEvent
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("MessageId")]
     public MongoId MessageId { get; set; }

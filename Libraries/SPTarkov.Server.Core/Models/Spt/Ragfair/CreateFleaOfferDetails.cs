@@ -7,8 +7,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Ragfair;
 
 public record CreateFleaOfferDetails
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     /// <summary>
     /// Owner of the offer

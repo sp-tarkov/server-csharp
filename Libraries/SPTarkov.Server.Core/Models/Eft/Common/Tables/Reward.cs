@@ -7,8 +7,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Reward
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("value")]
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
@@ -73,8 +72,7 @@ public record Reward
 
 public record IllustrationConfig
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("Image")]
     public string image { get; set; }
