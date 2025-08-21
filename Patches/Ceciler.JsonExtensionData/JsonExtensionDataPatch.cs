@@ -150,6 +150,6 @@ public class JsonExtensionDataPatch : IPatcher
 
     public string Name
     {
-        get { return "Virtualizer"; }
+        get { return "ExtensionData"; }
     }
 }
