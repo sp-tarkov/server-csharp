@@ -60,7 +60,8 @@
   "botRolesThatMustHaveUniqueName": [
     "assault",
     "pmcusec",
-    "pmcbear"
+    "pmcbear",
+	"exusec"
   ],
   "botRolesWithDogTags": [
     "pmcbear",
