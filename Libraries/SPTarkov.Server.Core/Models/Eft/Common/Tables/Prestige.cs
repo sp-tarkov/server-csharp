@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 public record Prestige
 {
     [JsonPropertyName("elements")]
-    public List<PrestigeElement> Elements { get; set; }
+    public required List<PrestigeElement> Elements { get; init; }
 }
 
 public record PrestigeElement

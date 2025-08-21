@@ -6,10 +6,10 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 public record HandbookBase
 {
     [JsonPropertyName("Categories")]
-    public List<HandbookCategory> Categories { get; set; }
+    public required List<HandbookCategory> Categories { get; init; }
 
     [JsonPropertyName("Items")]
-    public List<HandbookItem> Items { get; set; }
+    public required List<HandbookItem> Items { get; init; }
 }
 
 public record HandbookCategory

@@ -6,10 +6,10 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 public record TraderDialogs
 {
     [JsonPropertyName("elements")]
-    public required List<TraderDialogElements> Elements;
+    public required List<TraderDialogElement> Elements { get; init; }
 }
 
-public record TraderDialogElements
+public record TraderDialogElement
 {
     [JsonPropertyName("CanBeFirstDialogue")]
     public bool CanBeFirstDialog { get; set; } = true;
