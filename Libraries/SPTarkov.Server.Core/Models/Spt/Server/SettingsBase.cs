@@ -59,6 +59,16 @@ public record Config
     [JsonPropertyName("NextCycleDelaySeconds")]
     public int NextCycleDelaySeconds { get; set; }
 
+    // TODO: this property currently is an empty array on json
+    [JsonPropertyName("NotifierLobbyAidsForce")]
+    public object[] NotifierLobbyAidsForce { get; set; }
+
+    [JsonPropertyName("NotifierLobbyPercentage")]
+    public int NotifierLobbyPercentage { get; set; }
+
+    [JsonPropertyName("NotifierUseLobby")]
+    public bool NotifierUseLobby { get; set; }
+
     [JsonPropertyName("PingServerResultSendInterval")]
     public int PingServerResultSendInterval { get; set; }
 
@@ -301,7 +311,7 @@ public record AudioGroupAcousticSetting
 
 public record AcousticSettings
 {
-    [JsonPropertyName("EnabledPrewarm")]
+    [JsonPropertyName("enabledPrewarm")]
     public bool enabledPrewarm { get; set; }
 
     [JsonPropertyName("mono")]
