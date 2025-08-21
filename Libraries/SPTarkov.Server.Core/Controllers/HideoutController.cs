@@ -52,6 +52,7 @@ public class HideoutController(
         HideoutAreas.WaterCollector,
         HideoutAreas.Generator,
         HideoutAreas.BitcoinFarm,
+        HideoutAreas.RestSpace, // Can insert disk
     ];
 
     protected readonly HideoutConfig _hideoutConfig = configServer.GetConfig<HideoutConfig>();
