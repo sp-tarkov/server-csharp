@@ -9,6 +9,7 @@ public class JsonExtensionDataPatch : IPatcher
 {
     private TypeReference? _dictionaryStringObjectReference;
 
+    private MethodReference? _dictionaryStringObjectCtorReference;
     private MethodReference? _jsonExtensionDataAttributeReference;
 
     private MethodReference? _jsonIgnoreAttributeReference;
@@ -16,6 +17,7 @@ public class JsonExtensionDataPatch : IPatcher
     public void Patch(AssemblyDefinition assembly)
     {
         _dictionaryStringObjectReference ??= assembly.MainModule.ImportReference(typeof(Dictionary<string, object>));
+        _dictionaryStringObjectCtorReference ??= assembly.MainModule.ImportReference(typeof(Dictionary<string, object>).GetConstructor(Type.EmptyTypes));
 
         if (_jsonExtensionDataAttributeReference is null)
         {
@@ -36,16 +38,22 @@ public class JsonExtensionDataPatch : IPatcher
 
             _jsonIgnoreAttributeReference = assembly.MainModule.ImportReference(jsonIgnoreConstructorReference);
         }
+        var isExternalInitType = assembly.MainModule.ImportReference(
+            typeof(System.Runtime.CompilerServices.IsExternalInit)
+        );
+
+        var compilerGenerated = assembly.MainModule.ImportReference(
+            assembly.MainModule.ImportReference(
+                typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute).GetConstructor(Type.EmptyTypes)));
 
         var processed = new HashSet<string>();
         foreach (var typeDefinition in assembly.MainModule.Types)
         {
-            if (
-                !typeDefinition.Namespace.Contains("SPTarkov.Server.Core.Models")
-                || typeDefinition.IsInterface
-                || typeDefinition.IsEnum
-                || processed.Contains(typeDefinition.FullName)
-            )
+            if (!typeDefinition.Namespace.Contains("SPTarkov.Server.Core.Models") ||
+                typeDefinition.IsInterface ||
+                typeDefinition.IsEnum ||
+                IsStaticClass(typeDefinition) ||
+                processed.Contains(typeDefinition.FullName))
             {
                 continue;
             }
@@ -54,18 +62,18 @@ public class JsonExtensionDataPatch : IPatcher
             propertyDefinition.CustomAttributes.Add(new CustomAttribute(_jsonExtensionDataAttributeReference));
 
             // Add backing field
-            var field = new FieldDefinition("_extensionData", FieldAttributes.Private, _dictionaryStringObjectReference);
-
-            field.CustomAttributes.Add(new CustomAttribute(_jsonIgnoreAttributeReference));
+            var field = new FieldDefinition("<ExtensionData>k__BackingField",
+                FieldAttributes.Private | FieldAttributes.InitOnly,
+                _dictionaryStringObjectReference);
+            field.CustomAttributes.Add(new CustomAttribute(compilerGenerated));
             typeDefinition.Fields.Add(field);
 
             // Add getter
             var get = new MethodDefinition(
                 "get_ExtensionData",
                 MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig,
-                _dictionaryStringObjectReference
-            );
-
+                _dictionaryStringObjectReference);
+            get.CustomAttributes.Add(new CustomAttribute(compilerGenerated));
             get.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
             get.Body.Instructions.Add(Instruction.Create(OpCodes.Ldfld, field));
             get.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
@@ -81,6 +89,10 @@ public class JsonExtensionDataPatch : IPatcher
                 assembly.MainModule.TypeSystem.Void
             );
 
+            var returnType = set.ReturnType;
+            var modifiedReturnType = new RequiredModifierType(isExternalInitType, returnType);
+            set.MethodReturnType.ReturnType = modifiedReturnType;
+            set.CustomAttributes.Add(new CustomAttribute(compilerGenerated));
             set.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, _dictionaryStringObjectReference));
             set.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
             set.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_1));
@@ -92,6 +104,19 @@ public class JsonExtensionDataPatch : IPatcher
             typeDefinition.Methods.Add(set);
             typeDefinition.Properties.Add(propertyDefinition);
 
+            foreach (var methodDefinition in typeDefinition.GetConstructors().Where(c => !c.IsStatic))
+            {
+                var ilCtor = methodDefinition.Body.GetILProcessor();
+
+                var loadArg = ilCtor.Create(OpCodes.Ldarg_0);
+                var createObj = ilCtor.Create(OpCodes.Newobj, _dictionaryStringObjectCtorReference);
+                var setField = ilCtor.Create(OpCodes.Stfld, field);
+                var first = ilCtor.Body.Instructions.First();
+                ilCtor.InsertBefore(first, loadArg);
+                ilCtor.InsertAfter(loadArg, createObj);
+                ilCtor.InsertAfter(createObj, setField);
+            }
+
             processed.Add(typeDefinition.FullName);
         }
 #if DEBUG
@@ -100,6 +125,13 @@ public class JsonExtensionDataPatch : IPatcher
 #else
         assembly.Write();
 #endif
+    }
+
+    private bool IsStaticClass(TypeDefinition type)
+    {
+        return type.IsClass &&
+               type.IsAbstract &&
+               type.IsSealed;
     }
 
     public string Name
