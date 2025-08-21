@@ -5,16 +5,12 @@ namespace SPTarkov.Server.Core.Models.Spt.Server;
 
 public record SettingsBase
 {
-
-
     [JsonPropertyName("config")]
     public required Config Configuration { get; init; }
 }
 
 public record Config
 {
-
-
     [JsonPropertyName("AFKTimeoutSeconds")]
     public int AFKTimeoutSeconds { get; set; }
 
@@ -102,8 +98,6 @@ public record Config
 
 public record AudioSettings
 {
-
-
     [JsonPropertyName("AudioGroupPresets")]
     public List<AudioGroupPreset> AudioGroupPresets { get; set; }
 
@@ -125,8 +119,6 @@ public record AudioSettings
 
 public record FramerateLimit
 {
-
-
     [JsonPropertyName("MaxFramerateGameLimit")]
     public int MaxFramerateGameLimit { get; set; }
 
@@ -139,8 +131,6 @@ public record FramerateLimit
 
 public record MemoryManagementSettings
 {
-
-
     [JsonPropertyName("AggressiveGC")]
     public bool AggressiveGC { get; set; }
 
@@ -162,8 +152,6 @@ public record MemoryManagementSettings
 
 public record ReleaseProfiler
 {
-
-
     [JsonPropertyName("Enabled")]
     public bool Enabled { get; set; }
 
@@ -176,8 +164,6 @@ public record ReleaseProfiler
 
 public record NetworkStateView
 {
-
-
     [JsonPropertyName("LossThreshold")]
     public int LossThreshold { get; set; }
 
@@ -187,8 +173,6 @@ public record NetworkStateView
 
 public record AudioGroupPreset
 {
-
-
     [JsonPropertyName("AngleToAllowBinaural")]
     public double? AngleToAllowBinaural { get; set; }
 
@@ -222,8 +206,6 @@ public record AudioGroupPreset
 
 public record EnvironmentSettings
 {
-
-
     [JsonPropertyName("AutumnLateSettings")]
     public SeasonEnvironmentSettings AutumnLateSettings { get; set; }
 
@@ -251,8 +233,6 @@ public record EnvironmentSettings
 
 public record SeasonEnvironmentSettings
 {
-
-
     [JsonPropertyName("RainSettings")]
     public List<RainSetting> RainSettings { get; set; }
 
@@ -265,8 +245,6 @@ public record SeasonEnvironmentSettings
 
 public record SurfaceMultiplier
 {
-
-
     public string SurfaceType { get; set; }
 
     public double VolumeMult { get; set; }
@@ -274,8 +252,6 @@ public record SurfaceMultiplier
 
 public record WindMultiplier
 {
-
-
     [JsonPropertyName("VolumeMult")]
     public double VolumeMult { get; set; }
 
@@ -285,8 +261,6 @@ public record WindMultiplier
 
 public record RainSetting
 {
-
-
     [JsonPropertyName("IndoorVolumeMult")]
     public int IndoorVolumeMult { get; set; }
 
@@ -299,8 +273,6 @@ public record RainSetting
 
 public record HeadphoneSettings
 {
-
-
     public double FadeDuration { get; set; }
 
     public string FadeIn { get; set; }
@@ -310,8 +282,6 @@ public record HeadphoneSettings
 
 public record MetaXRAudioPluginSettings
 {
-
-
     public bool EnabledPluginErrorChecker { get; set; }
 
     public double OutputVolumeCheckCooldown { get; set; }

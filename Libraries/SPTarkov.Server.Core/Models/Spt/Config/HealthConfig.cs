@@ -16,16 +16,12 @@ public record HealthConfig : BaseConfig
 
 public record HealthMultipliers
 {
-
-
     [JsonPropertyName("blacked")]
     public double Blacked { get; set; }
 }
 
 public record HealthSave
 {
-
-
     [JsonPropertyName("health")]
     public bool Health { get; set; }
 }

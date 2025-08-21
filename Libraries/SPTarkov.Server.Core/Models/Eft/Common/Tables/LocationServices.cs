@@ -7,8 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record LocationServices
 {
-
-
     [JsonPropertyName("TraderServerSettings")]
     public TraderServerSettings TraderServerSettings { get; set; }
 
@@ -18,16 +16,12 @@ public record LocationServices
 
 public record TraderServerSettings
 {
-
-
     [JsonPropertyName("TraderServices")]
     public TraderServices TraderServices { get; set; }
 }
 
 public record TraderServices
 {
-
-
     [JsonPropertyName("ExUsecLoyalty")]
     public TraderService ExUsecLoyalty { get; set; }
 
@@ -52,8 +46,6 @@ public record TraderServices
 
 public record TraderService
 {
-
-
     [JsonPropertyName("TraderId")]
     public string TraderId { get; set; }
 
@@ -74,8 +66,6 @@ public record TraderService
 
 public record ServiceRequirements
 {
-
-
     [JsonPropertyName("CompletedQuests")]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public List<CompletedQuest> CompletedQuests { get; set; }
@@ -88,32 +78,24 @@ public record ServiceRequirements
 
 public record CompletedQuest
 {
-
-
     [JsonPropertyName("QuestId")]
     public string QuestId { get; set; }
 }
 
 public record StandingRequirement
 {
-
-
     [JsonPropertyName("Value")]
     public double Value { get; set; }
 }
 
 public record ServiceItemCostDetails
 {
-
-
     [JsonPropertyName("Count")]
     public int Count { get; set; }
 }
 
 public record BtrServerSettings
 {
-
-
     [JsonPropertyName("ChanceSpawn")]
     public double ChanceSpawn { get; set; }
 
@@ -162,8 +144,6 @@ public record BtrServerSettings
 
 public record ServerMapBtrsettings
 {
-
-
     [JsonPropertyName("MapID")]
     public string MapID { get; set; }
 

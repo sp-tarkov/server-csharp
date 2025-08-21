@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Inventory;
 
 public class FindSlotResult
 {
-
-
     public FindSlotResult(bool success)
     {
         Success = success;

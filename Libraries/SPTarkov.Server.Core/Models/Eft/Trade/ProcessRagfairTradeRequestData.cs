@@ -12,8 +12,6 @@ public record ProcessRagfairTradeRequestData : InventoryBaseActionRequestData
 
 public record OfferRequest
 {
-
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 

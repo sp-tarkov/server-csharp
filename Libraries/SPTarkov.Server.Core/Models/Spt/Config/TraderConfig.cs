@@ -36,8 +36,6 @@ public record TraderConfig : BaseConfig
 
 public record UpdateTime
 {
-
-
     [JsonPropertyName("_name")]
     public string Name { get; set; } = string.Empty;
 
@@ -53,8 +51,6 @@ public record UpdateTime
 
 public record FenceConfig
 {
-
-
     [JsonPropertyName("discountOptions")]
     public required DiscountOptions DiscountOptions { get; set; }
 
@@ -157,8 +153,6 @@ public record FenceConfig
 
 public record ItemDurabilityCurrentMax
 {
-
-
     [JsonPropertyName("current")]
     public required MinMax<double> Current { get; set; }
 
@@ -183,8 +177,6 @@ public record CoopExtractReward : LootRequest
 
 public record DiscountOptions
 {
-
-
     [JsonPropertyName("assortSize")]
     public int AssortSize { get; set; }
 
@@ -206,8 +198,6 @@ public record DiscountOptions
 /// </summary>
 public record ModdedTraders
 {
-
-
     /// <summary>
     ///     Trader Ids to enable the clothing service for
     /// </summary>

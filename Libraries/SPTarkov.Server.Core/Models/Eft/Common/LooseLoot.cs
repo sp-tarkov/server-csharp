@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common;
 
 public record LooseLoot
 {
-
-
     [JsonPropertyName("spawnpointCount")]
     public SpawnpointCount? SpawnpointCount { get; set; }
 
@@ -19,8 +17,6 @@ public record LooseLoot
 
 public record SpawnpointCount
 {
-
-
     [JsonPropertyName("mean")]
     public required double Mean { get; set; }
 
@@ -30,8 +26,6 @@ public record SpawnpointCount
 
 public record SpawnpointTemplate
 {
-
-
     private string? _root;
 
     /// <summary>
@@ -77,16 +71,12 @@ public record SpawnpointTemplate
 
 public record SptLootItem : Item
 {
-
-
     [JsonPropertyName("composedKey")]
     public string? ComposedKey { get; set; }
 }
 
 public record GroupPosition
 {
-
-
     private string? _name;
 
     [JsonPropertyName("Name")]
@@ -108,8 +98,6 @@ public record GroupPosition
 
 public record Spawnpoint
 {
-
-
     [JsonPropertyName("locationId")]
     public string? LocationId { get; set; }
 
@@ -125,8 +113,6 @@ public record Spawnpoint
 
 public record LooseLootItemDistribution
 {
-
-
     [JsonPropertyName("composedKey")]
     public ComposedKey? ComposedKey { get; set; }
 
@@ -136,8 +122,6 @@ public record LooseLootItemDistribution
 
 public record ComposedKey
 {
-
-
     private string? _key;
 
     [JsonPropertyName("key")]

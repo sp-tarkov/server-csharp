@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record Bots
 {
-
-
     [JsonPropertyName("types")]
     public required Dictionary<string, BotType?> Types { get; init; }
 

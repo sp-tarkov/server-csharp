@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record LocationsBase
 {
-
-
     [JsonPropertyName("locations")]
     public Locations? Locations { get; set; }
 
@@ -16,14 +14,11 @@ public record LocationsBase
 public record Locations
 {
 
-
     // Add properties as necessary
 }
 
 public record Path
 {
-
-
     [JsonPropertyName("Source")]
     public string? Source { get; set; }
 

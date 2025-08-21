@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record MatchGroupStatusRequest : IRequestData
 {
-
-
     [JsonPropertyName("location")]
     public string? Location { get; set; }
 

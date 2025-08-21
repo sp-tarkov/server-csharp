@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record GetAllAttachmentsResponse
 {
-
-
     [JsonPropertyName("messages")]
     public List<Message>? Messages { get; set; }
 

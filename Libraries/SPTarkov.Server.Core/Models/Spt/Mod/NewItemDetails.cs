@@ -40,8 +40,6 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
 
 public record NewItemDetailsBase
 {
-
-
     [JsonPropertyName("fleaPriceRoubles")]
     public double? FleaPriceRoubles { get; set; }
 
@@ -57,8 +55,6 @@ public record NewItemDetailsBase
 
 public record LocaleDetails
 {
-
-
     [JsonPropertyName("name")]
     public string? Name { get; set; }
 
@@ -71,8 +67,6 @@ public record LocaleDetails
 
 public record CreateItemResult
 {
-
-
     public CreateItemResult()
     {
         Success = false;

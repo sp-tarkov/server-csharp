@@ -15,8 +15,6 @@ public record TraderRepairActionDataRequest : InventoryBaseActionRequestData
 
 public record RepairItem
 {
-
-
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
 

@@ -16,8 +16,6 @@ public record PmcChatResponse : BaseConfig
 
 public record ResponseSettings
 {
-
-
     [JsonPropertyName("responseChancePercent")]
     public double ResponseChancePercent { get; set; }
 

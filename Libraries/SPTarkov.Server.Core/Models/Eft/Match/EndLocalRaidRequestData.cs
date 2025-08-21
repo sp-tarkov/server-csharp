@@ -9,8 +9,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record EndLocalRaidRequestData : IRequestData
 {
-
-
     /// <summary>
     ///     ID of server player just left
     /// </summary>
@@ -38,8 +36,6 @@ public record EndLocalRaidRequestData : IRequestData
 
 public record EndRaidResult
 {
-
-
     [JsonPropertyName("profile")]
     public PmcData? Profile { get; set; }
 
@@ -77,8 +73,6 @@ public record EndRaidResult
 
 public record LocationTransit
 {
-
-
     [JsonPropertyName("hash")]
     public string? Hash { get; set; }
 
@@ -121,8 +115,6 @@ public record LocationTransit
 
 public record TransitProfile
 {
-
-
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
 

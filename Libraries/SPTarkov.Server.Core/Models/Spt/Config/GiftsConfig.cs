@@ -18,8 +18,6 @@ public record GiftsConfig : BaseConfig
 
 public record Gift
 {
-
-
     /// <summary>
     ///     Items to send to player
     /// </summary>

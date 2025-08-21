@@ -65,8 +65,6 @@ public record SeasonalEventConfig : BaseConfig
 
 public record SeasonalEvent
 {
-
-
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
 
@@ -104,8 +102,6 @@ public record SeasonalEvent
 
 public record SeasonalEventSettings
 {
-
-
     [JsonPropertyName("enableSummoning")]
     public bool? EnableSummoning { get; set; }
 
@@ -148,8 +144,6 @@ public record SeasonalEventSettings
 
 public record ZombieSettings
 {
-
-
     [JsonPropertyName("enabled")]
     public bool? Enabled { get; set; }
 
@@ -165,8 +159,6 @@ public record ZombieSettings
 
 public record GifterSetting
 {
-
-
     [JsonPropertyName("map")]
     public string? Map { get; set; }
 

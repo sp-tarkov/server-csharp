@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Fence;
 
 public record FenceAssortGenerationValues
 {
-
-
     [JsonPropertyName("normal")]
     public GenerationAssortValues? Normal { get; set; }
 
@@ -15,8 +13,6 @@ public record FenceAssortGenerationValues
 
 public record GenerationAssortValues
 {
-
-
     [JsonPropertyName("item")]
     public int? Item { get; set; }
 

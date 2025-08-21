@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Notifier;
 
 public record NotifierChannel
 {
-
-
     [JsonPropertyName("server")]
     public string? Server { get; set; }
 

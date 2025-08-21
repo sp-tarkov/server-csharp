@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record HideoutSettingsBase
 {
-
-
     [JsonPropertyName("generatorSpeedWithoutFuel")]
     public double? GeneratorSpeedWithoutFuel { get; set; }
 

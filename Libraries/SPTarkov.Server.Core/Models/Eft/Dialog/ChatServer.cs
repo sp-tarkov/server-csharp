@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record ChatServer
 {
-
-
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
 
@@ -40,8 +38,6 @@ public record ChatServer
 
 public record Chat
 {
-
-
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
 

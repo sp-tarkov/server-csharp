@@ -7,8 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Reward
 {
-
-
     [JsonPropertyName("value")]
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public double? Value { get; set; }
@@ -72,8 +70,6 @@ public record Reward
 
 public record IllustrationConfig
 {
-
-
     [JsonPropertyName("Image")]
     public string image { get; set; }
 

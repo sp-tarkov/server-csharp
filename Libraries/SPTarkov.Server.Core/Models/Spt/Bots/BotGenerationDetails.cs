@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record BotGenerationDetails
 {
-
-
     /// <summary>
     ///     Should the bot be generated as a PMC
     /// </summary>

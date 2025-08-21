@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record StartLocalRaidRequestData : IRequestData
 {
-
-
     [JsonPropertyName("serverId")]
     public string? ServerId { get; set; }
 

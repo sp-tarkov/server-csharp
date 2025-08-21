@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.HttpResponse;
 
 public record GetBodyResponseData<T>
 {
-
-
     [JsonPropertyName("err")]
     public BackendErrorCodes? Err { get; set; }
 

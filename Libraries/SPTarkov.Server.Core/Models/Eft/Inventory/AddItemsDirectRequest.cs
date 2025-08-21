@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Inventory;
 
 public record AddItemsDirectRequest
 {
-
-
     /// <summary>
     ///     Item and child mods to add to player inventory
     /// </summary>

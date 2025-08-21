@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common;
 
 public record XY
 {
-
-
     [JsonPropertyName("x")]
     public double? X { get; set; }
 

@@ -15,8 +15,6 @@ public record HideoutContinuousProductionStartRequestData : InventoryBaseActionR
 
 public record HideoutProperties
 {
-
-
     public int? BtcFarmGcs { get; set; }
 
     public bool IsGeneratorOn { get; set; }

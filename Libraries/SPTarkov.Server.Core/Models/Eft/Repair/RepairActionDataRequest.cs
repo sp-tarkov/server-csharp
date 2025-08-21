@@ -18,8 +18,6 @@ public record RepairActionDataRequest : InventoryBaseActionRequestData
 
 public record RepairKitsInfo
 {
-
-
     /// <summary>
     ///     id of repair kit to use
     /// </summary>

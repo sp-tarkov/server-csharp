@@ -14,8 +14,6 @@ public record NoteActionRequest : BaseInteractionRequestData
 
 public record Note
 {
-
-
     [JsonPropertyName("Time")]
     public double? Time { get; set; }
 

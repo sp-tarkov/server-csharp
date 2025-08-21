@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 
 public record GetItemPricesResponse
 {
-
-
     [JsonPropertyName("supplyNextTime")]
     public double? SupplyNextTime { get; set; }
 

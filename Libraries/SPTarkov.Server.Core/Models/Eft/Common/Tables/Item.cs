@@ -7,7 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Item
 {
-
     private string? _parentId;
 
     private string? _slotId;
@@ -46,8 +45,6 @@ public record Item
 
 public record HideoutItem
 {
-
-
     /// <summary>
     ///     Hideout inventory id that was used by improvement action
     /// </summary>
@@ -83,8 +80,6 @@ public record HideoutItem
 
 public record ItemLocation
 {
-
-
     [JsonPropertyName("x")]
     public int? X { get; set; }
 
@@ -116,8 +111,6 @@ public enum ItemRotation
 
 public record Upd
 {
-
-
     public UpdBuff? Buff { get; set; }
 
     public double? OriginalStackObjectsCount { get; set; }
@@ -182,16 +175,12 @@ public record Upd
 
 public record LockableKeyComponent
 {
-
-
     public float? RelativeValue { get; set; }
     public int? NumberOfUsages { get; set; }
 }
 
 public record LockableComponent
 {
-
-
     public IEnumerable<string>? KeyIds { get; set; }
     public bool? Locked { get; set; }
     public LockableKeyComponent? KeyComponent { get; set; }
@@ -206,8 +195,6 @@ public enum PinLockState
 
 public record UpdBuff
 {
-
-
     [JsonPropertyName("Rarity")]
     public string? Rarity { get; set; }
 
@@ -224,24 +211,18 @@ public record UpdBuff
 
 public record UpdTogglable
 {
-
-
     [JsonPropertyName("On")]
     public bool? On { get; set; }
 }
 
 public record UpdMap
 {
-
-
     [JsonPropertyName("Markers")]
     public List<MapMarker>? Markers { get; set; }
 }
 
 public record MapMarker
 {
-
-
     [JsonPropertyName("Type")]
     public string? Type { get; set; }
 
@@ -257,8 +238,6 @@ public record MapMarker
 
 public record UpdTag
 {
-
-
     [JsonPropertyName("Color")]
     public int? Color { get; set; }
 
@@ -268,8 +247,6 @@ public record UpdTag
 
 public record UpdFaceShield
 {
-
-
     [JsonPropertyName("Hits")]
     public int? Hits { get; set; }
 
@@ -279,8 +256,6 @@ public record UpdFaceShield
 
 public record UpdRepairable
 {
-
-
     [JsonPropertyName("Durability")]
     public double? Durability { get; set; }
 
@@ -290,24 +265,18 @@ public record UpdRepairable
 
 public record UpdRecodableComponent
 {
-
-
     [JsonPropertyName("IsEncoded")]
     public bool? IsEncoded { get; set; }
 }
 
 public record UpdMedKit
 {
-
-
     [JsonPropertyName("HpResource")]
     public double? HpResource { get; set; }
 }
 
 public record UpdSight
 {
-
-
     [JsonPropertyName("ScopesCurrentCalibPointIndexes")]
     public IEnumerable<int>? ScopesCurrentCalibPointIndexes { get; set; }
 
@@ -322,32 +291,24 @@ public record UpdSight
 
 public record UpdFoldable
 {
-
-
     [JsonPropertyName("Folded")]
     public bool? Folded { get; set; }
 }
 
 public record UpdFireMode
 {
-
-
     [JsonPropertyName("FireMode")]
     public string? FireMode { get; set; }
 }
 
 public record UpdFoodDrink
 {
-
-
     [JsonPropertyName("HpPercent")]
     public double? HpPercent { get; set; }
 }
 
 public record UpdKey
 {
-
-
     // Checked in client
     [JsonPropertyName("NumberOfUsages")]
     public int? NumberOfUsages { get; set; }
@@ -355,8 +316,6 @@ public record UpdKey
 
 public record UpdResource
 {
-
-
     [JsonPropertyName("Value")]
     public double? Value { get; set; }
 
@@ -366,8 +325,6 @@ public record UpdResource
 
 public record UpdLight
 {
-
-
     [JsonPropertyName("IsActive")]
     public bool? IsActive { get; set; }
 
@@ -377,8 +334,6 @@ public record UpdLight
 
 public record UpdDogtag
 {
-
-
     [JsonPropertyName("AccountId")]
     public string? AccountId { get; set; }
 
@@ -427,24 +382,18 @@ public record UpdDogtag
 
 public record UpdSideEffect
 {
-
-
     [JsonPropertyName("Value")]
     public double? Value { get; set; }
 }
 
 public record UpdRepairKit
 {
-
-
     [JsonPropertyName("Resource")]
     public double? Resource { get; set; }
 }
 
 public record UpdCultistAmulet
 {
-
-
     [JsonPropertyName("NumberOfUsages")]
     public double? NumberOfUsages { get; set; }
 }

@@ -7,8 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.PresetBuild;
 
 public record PresetBuildActionRequestData : IRequestData
 {
-
-
     [JsonPropertyName("Action")]
     public string? Action { get; set; }
 

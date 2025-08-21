@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record BotCore
 {
-
-
     [JsonPropertyName("SAVAGE_KILL_DIST")]
     public double? SavageKillDistance { get; set; }
 

@@ -15,8 +15,6 @@ public record BuyClothingRequestData : InventoryBaseActionRequestData
 
 public record PaymentItemForClothing
 {
-
-
     [JsonPropertyName("del")]
     public bool? Del { get; set; }
 

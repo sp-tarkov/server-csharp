@@ -23,8 +23,6 @@ public record RepeatableQuest : Quest
 
 public record RepeatableQuestDatabase
 {
-
-
     [JsonPropertyName("templates")]
     public RepeatableTemplates? Templates { get; set; }
 
@@ -40,8 +38,6 @@ public record RepeatableQuestDatabase
 
 public record RepeatableQuestStatus
 {
-
-
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 
@@ -63,8 +59,6 @@ public record RepeatableQuestStatus
 
 public record RepeatableTemplates
 {
-
-
     [JsonPropertyName("Elimination")]
     public RepeatableQuest? Elimination { get; set; }
 
@@ -80,8 +74,6 @@ public record RepeatableTemplates
 
 public record PmcDataRepeatableQuest
 {
-
-
     [JsonPropertyName("id")]
     public MongoId? Id { get; set; }
 
@@ -116,8 +108,6 @@ public record PmcDataRepeatableQuest
 
 public record ChangeRequirement
 {
-
-
     [JsonPropertyName("changeCost")]
     public List<ChangeCost?>? ChangeCost { get; set; }
 
@@ -127,8 +117,6 @@ public record ChangeRequirement
 
 public record ChangeCost
 {
-
-
     /// <summary>
     ///     What item it will take to reset daily
     /// </summary>
@@ -146,24 +134,18 @@ public record ChangeCost
 
 public record RewardOptions
 {
-
-
     [JsonPropertyName("itemsBlacklist")]
     public List<string>? ItemsBlacklist { get; set; }
 }
 
 public record Options
 {
-
-
     [JsonPropertyName("Completion")]
     public CompletionFilter? Completion { get; set; }
 }
 
 public record CompletionFilter
 {
-
-
     [JsonPropertyName("itemsBlacklist")]
     public List<ItemsBlacklist>? ItemsBlacklist { get; set; }
 
@@ -173,8 +155,6 @@ public record CompletionFilter
 
 public record ItemsBlacklist
 {
-
-
     [JsonPropertyName("minPlayerLevel")]
     public int? MinPlayerLevel { get; set; }
 
@@ -184,8 +164,6 @@ public record ItemsBlacklist
 
 public record ItemsWhitelist
 {
-
-
     [JsonPropertyName("minPlayerLevel")]
     public int? MinPlayerLevel { get; set; }
 
@@ -195,8 +173,6 @@ public record ItemsWhitelist
 
 public record SampleQuests
 {
-
-
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
 

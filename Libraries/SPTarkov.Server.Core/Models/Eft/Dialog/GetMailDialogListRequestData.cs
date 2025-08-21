@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record GetMailDialogListRequestData : IRequestData
 {
-
-
     [JsonPropertyName("limit")]
     public int? Limit { get; set; }
 

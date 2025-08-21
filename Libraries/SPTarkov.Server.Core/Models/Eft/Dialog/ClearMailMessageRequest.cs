@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record ClearMailMessageRequest : IRequestData
 {
-
-
     [JsonPropertyName("dialogId")]
     public required MongoId DialogId { get; set; }
 }

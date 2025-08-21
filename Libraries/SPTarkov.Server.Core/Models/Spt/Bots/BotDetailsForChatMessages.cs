@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record BotDetailsForChatMessages
 {
-
-
     public string Nickname { get; set; } = string.Empty;
 
     public DogtagSide Side { get; set; }

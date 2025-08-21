@@ -8,8 +8,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record GenerateEquipmentProperties
 {
-
-
     public MongoId BotId { get; set; }
 
     /// <summary>

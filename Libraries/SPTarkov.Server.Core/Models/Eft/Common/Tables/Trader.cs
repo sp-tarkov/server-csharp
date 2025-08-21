@@ -8,8 +8,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Trader
 {
-
-
     [JsonPropertyName("assort")]
     public required TraderAssort Assort { get; set; }
 
@@ -31,8 +29,6 @@ public record Trader
 
 public record TraderBase
 {
-
-
     [JsonPropertyName("refreshTraderRagfairOffers")]
     public bool? RefreshTraderRagfairOffers { get; set; }
 
@@ -131,8 +127,6 @@ public record TraderBase
 
 public record ItemBuyData
 {
-
-
     // MongoId
     [JsonPropertyName("category")]
     public required HashSet<MongoId> Category { get; set; }
@@ -144,8 +138,6 @@ public record ItemBuyData
 
 public record ItemSellData
 {
-
-
     [JsonPropertyName("category")]
     public required HashSet<MongoId> Category { get; set; }
 
@@ -155,8 +147,6 @@ public record ItemSellData
 
 public record TraderInsurance
 {
-
-
     [JsonPropertyName("availability")]
     public bool? Availability { get; set; }
 
@@ -182,8 +172,6 @@ public record TraderInsurance
 
 public record TraderLoyaltyLevel
 {
-
-
     [JsonPropertyName("buy_price_coef")]
     public double? BuyPriceCoefficient { get; set; }
 
@@ -213,8 +201,6 @@ public record TraderLoyaltyLevel
 
 public record TraderRepair
 {
-
-
     [JsonPropertyName("availability")]
     public bool? Availability { get; set; }
 
@@ -243,8 +229,6 @@ public record TraderRepair
 
 public record TraderAssort
 {
-
-
     [JsonPropertyName("nextResupply")]
     public double? NextResupply { get; set; }
 
@@ -260,8 +244,6 @@ public record TraderAssort
 
 public record BarterScheme
 {
-
-
     // Confirmed in client
     [JsonPropertyName("count")]
     public double? Count { get; set; }
@@ -285,8 +267,6 @@ public record BarterScheme
 
 public record Suit
 {
-
-
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
 
@@ -317,8 +297,6 @@ public record Suit
 
 public record SuitRequirements
 {
-
-
     [JsonPropertyName("achievementRequirements")]
     public List<string>? AchievementRequirements { get; set; }
 
@@ -350,8 +328,6 @@ public record SuitRequirements
 
 public record ItemRequirement
 {
-
-
     [JsonPropertyName("count")]
     public double? Count { get; set; }
 

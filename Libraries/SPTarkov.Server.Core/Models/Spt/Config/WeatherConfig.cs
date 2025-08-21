@@ -25,8 +25,6 @@ public record WeatherConfig : BaseConfig
 
 public record SeasonDateTimes
 {
-
-
     [JsonPropertyName("seasonType")]
     public Season? SeasonType { get; set; }
 
@@ -52,8 +50,6 @@ public record SeasonDateTimes
 
 public record WeatherValues
 {
-
-
     [JsonPropertyName("seasonValues")]
     public Dictionary<string, SeasonalValues>? SeasonValues { get; set; }
 
@@ -72,8 +68,6 @@ public record WeatherValues
 
 public record SeasonalValues
 {
-
-
     [JsonPropertyName("clouds")]
     public WeatherSettings<double>? Clouds { get; set; }
 
@@ -104,8 +98,6 @@ public record SeasonalValues
 
 public record TempDayNight
 {
-
-
     [JsonPropertyName("day")]
     public MinMax<double>? Day { get; set; }
 
@@ -115,8 +107,6 @@ public record TempDayNight
 
 public record WeatherSettings<T>
 {
-
-
     [JsonPropertyName("values")]
     public List<T>? Values { get; set; }
 

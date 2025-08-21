@@ -7,8 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common;
 
 public record LocationBase
 {
-
-
     [JsonPropertyName("AccessKeys")]
     public IEnumerable<string>? AccessKeys { get; set; }
 
@@ -374,8 +372,6 @@ public record LocationBase
 
 public record EventTrapsData
 {
-
-
     public double MaxBarbedWires { get; set; }
 
     public double MaxTrapDoors { get; set; }
@@ -387,8 +383,6 @@ public record EventTrapsData
 
 public record Transit
 {
-
-
     [JsonPropertyName("activateAfterSec")]
     public int? ActivateAfterSeconds { get; set; }
 
@@ -425,8 +419,6 @@ public record Transit
 
 public record NonWaveGroupScenario
 {
-
-
     [JsonPropertyName("Chance")]
     public double? Chance { get; set; }
 
@@ -448,8 +440,6 @@ public record Limit : MinMax<int>
 
 public record AirdropParameter
 {
-
-
     [JsonPropertyName("AirdropPointDeactivateDistance")]
     public int? AirdropPointDeactivateDistance { get; set; }
 
@@ -483,8 +473,6 @@ public record AirdropParameter
 
 public record Banner
 {
-
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -494,8 +482,6 @@ public record Banner
 
 public record Pic
 {
-
-
     [JsonPropertyName("file")]
     public string? File { get; set; }
 
@@ -511,8 +497,6 @@ public record Pic
 
 public record BossLocationSpawn
 {
-
-
     [JsonPropertyName("BossChance")]
     public double? BossChance { get; set; }
 
@@ -583,8 +567,6 @@ public record BossLocationSpawn
 
 public record BossSupport
 {
-
-
     [JsonPropertyName("BossEscortAmount")]
     public string? BossEscortAmount { get; set; }
 
@@ -597,8 +579,6 @@ public record BossSupport
 
 public record BotLocationModifier
 {
-
-
     [JsonPropertyName("AccuracySpeed")]
     public double? AccuracySpeed { get; set; }
 
@@ -683,8 +663,6 @@ public record BotLocationModifier
 
 public record AdditionalHostilitySettings
 {
-
-
     [JsonPropertyName("AlwaysEnemies")]
     public HashSet<string>? AlwaysEnemies { get; set; }
 
@@ -724,8 +702,6 @@ public record AdditionalHostilitySettings
 
 public record ChancedEnemy
 {
-
-
     [JsonPropertyName("EnemyChance")]
     public int? EnemyChance { get; set; }
 
@@ -741,8 +717,6 @@ public record MinMaxBot : MinMax<int>
 
 public record MinPlayerWaitTime
 {
-
-
     [JsonPropertyName("minPlayers")]
     public int? MinPlayers { get; set; }
 
@@ -752,8 +726,6 @@ public record MinPlayerWaitTime
 
 public record Preview
 {
-
-
     [JsonPropertyName("path")]
     public string? Path { get; set; }
 
@@ -763,8 +735,6 @@ public record Preview
 
 public record Scene
 {
-
-
     [JsonPropertyName("path")]
     public string? Path { get; set; }
 
@@ -774,8 +744,6 @@ public record Scene
 
 public record SpawnPointParam
 {
-
-
     [JsonPropertyName("BotZoneName")]
     public string? BotZoneName { get; set; }
 
@@ -809,8 +777,6 @@ public record SpawnPointParam
 
 public record ColliderParams
 {
-
-
     private string? _parent;
 
     [JsonPropertyName("_parent")]
@@ -826,8 +792,6 @@ public record ColliderParams
 
 public record ColliderProps
 {
-
-
     [JsonPropertyName("Center")]
     public XYZ? Center { get; set; }
 
@@ -840,8 +804,6 @@ public record ColliderProps
 
 public record Exit
 {
-
-
     /// <summary>
     ///     % Chance out of 100 exit will appear in raid
     /// </summary>
@@ -935,8 +897,6 @@ public record Exit
 
 public record MaxItemCountInLocation
 {
-
-
     [JsonPropertyName("TemplateId")]
     public string? TemplateId { get; set; }
 
@@ -946,8 +906,6 @@ public record MaxItemCountInLocation
 
 public record Wave
 {
-
-
     [JsonPropertyName("BotPreset")]
     public string? BotPreset { get; set; }
 
@@ -1003,8 +961,6 @@ public record Wave
 
 public record LocationEvents
 {
-
-
     [JsonPropertyName("Halloween2024")]
     public Halloween2024? Halloween2024 { get; set; }
 
@@ -1013,15 +969,11 @@ public record LocationEvents
 
 public record Khorovod
 {
-
-
     public double? Chance { get; set; }
 }
 
 public record Halloween2024
 {
-
-
     [JsonPropertyName("CrowdAttackBlockRadius")]
     public double? CrowdAttackBlockRadius { get; set; }
 
@@ -1069,8 +1021,6 @@ public record Halloween2024
 
 public record CrowdAttackSpawnParam
 {
-
-
     [JsonPropertyName("Difficulty")]
     public string? Difficulty { get; set; }
 
@@ -1083,8 +1033,6 @@ public record CrowdAttackSpawnParam
 
 public record Area
 {
-
-
     [JsonPropertyName("center")]
     public XYZ? Center { get; set; }
 

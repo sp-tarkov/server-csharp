@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record UpdatePingRequestData : IRequestData
 {
-
-
     [JsonPropertyName("servers")]
     public List<object>? servers { get; set; }
 }

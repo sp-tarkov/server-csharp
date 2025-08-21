@@ -7,8 +7,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Templates;
 
 public record Templates
 {
-
-
     [JsonPropertyName("character")]
     public required List<string> Character { get; init; }
 

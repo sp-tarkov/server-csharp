@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.HttpResponse;
 
 public record NullResponseData
 {
-
-
     [JsonPropertyName("err")]
     public int? Err { get; set; }
 

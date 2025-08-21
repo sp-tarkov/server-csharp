@@ -7,8 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record BotType
 {
-
-
     [JsonPropertyName("appearance")]
     public Appearance BotAppearance { get; set; }
 
@@ -42,8 +40,6 @@ public record BotType
 
 public record Appearance
 {
-
-
     [JsonPropertyName("body")]
     public Dictionary<MongoId, double> Body { get; set; }
 
@@ -65,8 +61,6 @@ public record Appearance
 
 public record Chances
 {
-
-
     [JsonPropertyName("equipment")]
     public Dictionary<string, double> EquipmentChances { get; set; }
 
@@ -246,8 +240,6 @@ public double? ModPistol_Grip { get; set; }
 
 public record DifficultyCategories
 {
-
-
     public Dictionary<string, object>? Aiming { get; set; } // TODO: string | number | boolean
 
     public Dictionary<string, object>? Boss { get; set; } // TODO: string | number | boolean
@@ -279,8 +271,6 @@ public record DifficultyCategories
 
 public record Experience
 {
-
-
     /// <summary>
     ///     key = bot difficulty
     /// </summary>
@@ -308,16 +298,12 @@ public record Experience
 
 public record Generation
 {
-
-
     [JsonPropertyName("items")]
     public GenerationWeightingItems Items { get; set; }
 }
 
 public record GenerationData
 {
-
-
     /// <summary>
     ///     key: number of items, value: weighting
     /// </summary>
@@ -334,8 +320,6 @@ public record GenerationData
 
 public record GenerationWeightingItems
 {
-
-
     [JsonPropertyName("grenades")]
     public GenerationData Grenades { get; set; }
 
@@ -378,8 +362,6 @@ public record GenerationWeightingItems
 
 public record BotTypeHealth
 {
-
-
     public IEnumerable<BodyPart> BodyParts { get; set; }
 
     public MinMax<double> Energy { get; set; }
@@ -391,8 +373,6 @@ public record BotTypeHealth
 
 public record BodyPart
 {
-
-
     public MinMax<double> Chest { get; set; }
 
     public MinMax<double> Head { get; set; }
@@ -410,8 +390,6 @@ public record BodyPart
 
 public record BotTypeInventory
 {
-
-
     [JsonPropertyName("equipment")]
     public Dictionary<EquipmentSlots, Dictionary<MongoId, double>> Equipment { get; set; }
 
@@ -426,8 +404,6 @@ public record BotTypeInventory
 
 public record ItemPools
 {
-
-
     public Dictionary<MongoId, double> Backpack { get; set; }
 
     public Dictionary<MongoId, double> Pockets { get; set; }
@@ -441,8 +417,6 @@ public record ItemPools
 
 public record BotDbSkills
 {
-
-
     public Dictionary<string, MinMax<double>> Common { get; set; }
 
     public Dictionary<string, MinMax<double>>? Mastering { get; set; }

@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record CustomizationItem
 {
-
-
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
 
@@ -28,8 +26,6 @@ public record CustomizationItem
 
 public class CustomizationProps
 {
-
-
     [JsonPropertyName("Prefab")]
     public object? Prefab { get; set; } // Prefab object or string
 

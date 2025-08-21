@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record LocationsGenerateAllResponse
 {
-
-
     [JsonPropertyName("locations")]
     public Dictionary<MongoId, LocationBase> Locations { get; set; }
 

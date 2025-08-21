@@ -14,8 +14,6 @@ public record ProcessSellTradeRequestData : ProcessBaseTradeRequestData
 
 public record SoldItem
 {
-
-
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 

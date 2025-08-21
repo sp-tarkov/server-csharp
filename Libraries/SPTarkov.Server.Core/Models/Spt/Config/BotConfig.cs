@@ -135,8 +135,6 @@ public record BotConfig : BaseConfig
 
 public record WeeklyBossSettings
 {
-
-
     /// <summary>
     /// Should a weekly boss be picked to 100% spawn
     /// </summary>
@@ -159,8 +157,6 @@ public record WeeklyBossSettings
 
 public record WalletLootSettings
 {
-
-
     /// <summary>
     ///     Chance wallets have loot in them
     /// </summary>
@@ -185,8 +181,6 @@ public record WalletLootSettings
 
 public record EquipmentFilters
 {
-
-
     /// <summary>
     ///     Limits for mod types per weapon .e.g. scopes
     /// </summary>
@@ -289,8 +283,6 @@ public record EquipmentFilters
 
 public record ModLimits
 {
-
-
     /// <summary>
     ///     How many scopes are allowed on a weapon - hard coded to work with OPTIC_SCOPE, ASSAULT_SCOPE, COLLIMATOR, COMPACT_COLLIMATOR
     /// </summary>
@@ -306,8 +298,6 @@ public record ModLimits
 
 public record RandomisationDetails
 {
-
-
     /// <summary>
     ///     Between what levels do these randomisation setting apply to
     /// </summary>
@@ -359,8 +349,6 @@ public record RandomisationDetails
 
 public record NighttimeChanges
 {
-
-
     /// <summary>
     ///     Applies changes to values stored in equipmentMods
     /// </summary>
@@ -370,8 +358,6 @@ public record NighttimeChanges
 
 public record EquipmentFilterDetails
 {
-
-
     /// <summary>
     ///     Between what levels do these equipment filter setting apply to
     /// </summary>
@@ -393,8 +379,6 @@ public record EquipmentFilterDetails
 
 public record WeightingAdjustmentDetails
 {
-
-
     /// <summary>
     ///     Between what levels do these weight settings apply to
     /// </summary>
@@ -422,8 +406,6 @@ public record WeightingAdjustmentDetails
 
 public record AdjustmentDetails
 {
-
-
     [JsonPropertyName("add")]
     public Dictionary<string, Dictionary<MongoId, float>>? Add { get; set; }
 
@@ -433,8 +415,6 @@ public record AdjustmentDetails
 
 public class ArmorPlateWeights
 {
-
-
     [JsonPropertyName("levelRange")]
     public required MinMax<int> LevelRange { get; set; }
 
@@ -444,8 +424,6 @@ public class ArmorPlateWeights
 
 public record RandomisedResourceDetails
 {
-
-
     [JsonPropertyName("food")]
     public RandomisedResourceValues? Food { get; set; }
 
@@ -455,8 +433,6 @@ public record RandomisedResourceDetails
 
 public record RandomisedResourceValues
 {
-
-
     /// <summary>
     ///     Minimum percent of item to randomized between min and max resource
     /// </summary>

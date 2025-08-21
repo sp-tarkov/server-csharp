@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common;
 
 public record Location
 {
-
-
     /// <summary>
     ///     Map meta-data
     /// </summary>
@@ -50,8 +48,6 @@ public record Location
 
 public record StaticContainer
 {
-
-
     [JsonPropertyName("containersGroups")]
     public Dictionary<string, ContainerMinMax>? ContainersGroups { get; set; }
 
@@ -61,8 +57,6 @@ public record StaticContainer
 
 public record ContainerMinMax
 {
-
-
     [JsonPropertyName("minContainers")]
     public int? MinContainers { get; set; }
 
@@ -78,16 +72,12 @@ public record ContainerMinMax
 
 public record ContainerData
 {
-
-
     [JsonPropertyName("groupId")]
     public string? GroupId { get; set; }
 }
 
 public record StaticLootDetails
 {
-
-
     [JsonPropertyName("itemcountDistribution")]
     public ItemCountDistribution[] ItemCountDistribution { get; set; }
 
@@ -97,8 +87,6 @@ public record StaticLootDetails
 
 public record ItemCountDistribution
 {
-
-
     [JsonPropertyName("count")]
     public int? Count { get; set; }
 
@@ -108,8 +96,6 @@ public record ItemCountDistribution
 
 public record ItemDistribution
 {
-
-
     [JsonPropertyName("tpl")]
     public MongoId Tpl { get; set; }
 
@@ -119,8 +105,6 @@ public record ItemDistribution
 
 public record StaticContainerDetails
 {
-
-
     [JsonPropertyName("staticWeapons")]
     public IEnumerable<SpawnpointTemplate> StaticWeapons { get; set; }
 
@@ -133,8 +117,6 @@ public record StaticContainerDetails
 
 public record StaticForced
 {
-
-
     [JsonPropertyName("containerId")]
     public string ContainerId { get; set; }
 
@@ -144,8 +126,6 @@ public record StaticForced
 
 public record StaticContainerData
 {
-
-
     [JsonPropertyName("probability")]
     public float? Probability { get; set; }
 
@@ -155,8 +135,6 @@ public record StaticContainerData
 
 public record StaticAmmoDetails
 {
-
-
     [JsonPropertyName("tpl")]
     public MongoId? Tpl { get; set; }
 

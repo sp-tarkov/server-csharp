@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Location;
 
 public record GetAirdropLootRequest : IRequestData
 {
-
-
     [JsonPropertyName("containerId")]
     public MongoId ContainerId { get; set; }
 }

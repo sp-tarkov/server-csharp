@@ -18,8 +18,6 @@ public record AddOfferRequestData : InventoryBaseActionRequestData
 
 public record Requirement
 {
-
-
     [JsonPropertyName("_tpl")]
     public MongoId Template { get; set; }
 

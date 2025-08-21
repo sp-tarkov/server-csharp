@@ -5,16 +5,12 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Prestige
 {
-
-
     [JsonPropertyName("elements")]
     public List<PrestigeElement> Elements { get; set; }
 }
 
 public record PrestigeElement
 {
-
-
     [JsonPropertyName("id")]
     public string Id { get; set; }
 
@@ -36,8 +32,6 @@ public record PrestigeElement
 
 public record TransferConfigs
 {
-
-
     [JsonPropertyName("stashConfig")]
     public StashPrestigeConfig StashConfig { get; set; }
 
@@ -50,8 +44,6 @@ public record TransferConfigs
 
 public record StashPrestigeConfig
 {
-
-
     [JsonPropertyName("xCellCount")]
     public int? XCellCount { get; set; }
 
@@ -64,8 +56,6 @@ public record StashPrestigeConfig
 
 public record StashPrestigeFilters
 {
-
-
     [JsonPropertyName("includedItems")]
     public List<MongoId> IncludedItems { get; set; }
 
@@ -75,16 +65,12 @@ public record StashPrestigeFilters
 
 public record PrestigeSkillConfig
 {
-
-
     [JsonPropertyName("transferMultiplier")]
     public double TransferMultiplier { get; set; }
 }
 
 public record PrestigeMasteringConfig
 {
-
-
     [JsonPropertyName("transferMultiplier")]
     public double TransferMultiplier { get; set; }
 }

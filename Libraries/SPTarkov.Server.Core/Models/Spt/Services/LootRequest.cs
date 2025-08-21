@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Services;
 
 public record LootRequest
 {
-
-
     /// <summary>
     ///     Count of weapons to generate
     /// </summary>

@@ -11,8 +11,6 @@ public record RedeemProfileRequestData : InventoryBaseActionRequestData
 
 public record RedeemProfileRequestEvent
 {
-
-
     [JsonPropertyName("MessageId")]
     public MongoId MessageId { get; set; }
 

@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 
 public record GetRaidTimeResponse
 {
-
-
     [JsonPropertyName("NewSurviveTimeSeconds")]
     public double? NewSurviveTimeSeconds { get; set; }
 

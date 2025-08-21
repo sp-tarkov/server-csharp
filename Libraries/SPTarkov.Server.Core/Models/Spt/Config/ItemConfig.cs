@@ -51,8 +51,6 @@ public record ItemConfig : BaseConfig
 
 public record HandbookPriceOverride
 {
-
-
     /// <summary>
     ///     Price in roubles
     /// </summary>

@@ -7,8 +7,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Ragfair;
 
 public record CreateFleaOfferDetails
 {
-
-
     /// <summary>
     /// Owner of the offer
     /// </summary>

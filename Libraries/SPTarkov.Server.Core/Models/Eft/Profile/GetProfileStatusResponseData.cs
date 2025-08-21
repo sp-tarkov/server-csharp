@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 
 public record GetProfileStatusResponseData
 {
-
-
     [JsonPropertyName("maxPveCountExceeded")]
     public bool? MaxPveCountExceeded { get; set; } = false;
 
@@ -15,8 +13,6 @@ public record GetProfileStatusResponseData
 
 public record ProfileStatusData
 {
-
-
     [JsonPropertyName("profileid")]
     public string? ProfileId { get; set; }
 

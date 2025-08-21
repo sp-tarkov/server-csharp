@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record ProfileSides
 {
-
-
     [JsonPropertyName("descriptionLocaleKey")]
     public string? DescriptionLocaleKey { get; set; }
 
@@ -20,8 +18,6 @@ public record ProfileSides
 
 public record TemplateSide
 {
-
-
     [JsonPropertyName("character")]
     public PmcData? Character { get; set; }
 
@@ -46,8 +42,6 @@ public record TemplateSide
 
 public record ProfileTraderTemplate
 {
-
-
     [JsonPropertyName("initialLoyaltyLevel")]
     public Dictionary<MongoId, int?>? InitialLoyaltyLevel { get; set; }
 

@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record HandbookBase
 {
-
-
     [JsonPropertyName("Categories")]
     public List<HandbookCategory> Categories { get; set; }
 
@@ -16,8 +14,6 @@ public record HandbookBase
 
 public record HandbookCategory
 {
-
-
     [JsonPropertyName("Id")]
     public MongoId Id { get; set; }
 
@@ -38,8 +34,6 @@ public record HandbookCategory
 
 public record HandbookItem
 {
-
-
     [JsonPropertyName("Id")]
     public MongoId Id { get; set; }
 

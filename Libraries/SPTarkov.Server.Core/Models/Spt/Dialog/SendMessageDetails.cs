@@ -8,8 +8,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Dialog;
 
 public record SendMessageDetails
 {
-
-
     /// <summary>
     ///     Player id
     /// </summary>
@@ -91,8 +89,6 @@ public record SendMessageDetails
 
 public record ProfileChangeEvent
 {
-
-
     [JsonPropertyName("_id")]
     public MongoId? Id { get; set; }
 

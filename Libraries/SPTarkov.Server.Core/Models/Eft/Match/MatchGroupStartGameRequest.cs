@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record MatchGroupStartGameRequest : IRequestData
 {
-
-
     [JsonPropertyName("groupId")]
     public string? GroupId { get; set; }
 

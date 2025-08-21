@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 
 public record SystemData
 {
-
-
     [JsonPropertyName("date")]
     public string? Date { get; set; }
 
