@@ -11,8 +11,7 @@ public record DeclineFriendRequestData : BaseFriendRequest { }
 
 public record BaseFriendRequest : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("profileId")]
     public string? ProfileId { get; set; }

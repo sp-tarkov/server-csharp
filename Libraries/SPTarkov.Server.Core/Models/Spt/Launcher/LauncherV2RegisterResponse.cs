@@ -6,8 +6,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Launcher;
 
 public class LauncherV2RegisterResponse : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     public required bool Response { get; set; }
 

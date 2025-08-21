@@ -8,8 +8,7 @@ namespace SPTarkov.Server.Core.Models.Eft.ItemEvent;
 
 public record ItemEventRouterRequest : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("data")]
     public List<BaseInteractionRequestData>? Data { get; set; }
@@ -23,8 +22,7 @@ public record ItemEventRouterRequest : IRequestData
 
 public record Daum
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("Action")]
     public string? Action { get; set; }
@@ -53,8 +51,7 @@ public record Daum
 
 public record FromOwner
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -65,8 +62,7 @@ public record FromOwner
 
 public record To
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -80,8 +76,7 @@ public record To
 
 public record Location
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("x")]
     public int? X { get; set; }

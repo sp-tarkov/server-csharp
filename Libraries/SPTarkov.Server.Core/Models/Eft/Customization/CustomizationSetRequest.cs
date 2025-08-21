@@ -12,8 +12,7 @@ public record CustomizationSetRequest : InventoryBaseActionRequestData
 
 public record CustomizationSetOption
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }

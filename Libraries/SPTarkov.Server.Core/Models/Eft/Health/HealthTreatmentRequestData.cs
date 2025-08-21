@@ -25,8 +25,7 @@ public record HealthTreatmentRequestData : InventoryBaseActionRequestData
 
 public record Difference
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("BodyParts")]
     public Dictionary<string, BodyPartValues>? BodyParts { get; set; }
@@ -40,8 +39,7 @@ public record Difference
 
 public record BodyPartValues
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     public double Health { get; set; }
 

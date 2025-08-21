@@ -7,8 +7,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Templates;
 
 public record Templates
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("character")]
     public required List<string> Character { get; init; }

@@ -7,6 +7,5 @@ namespace SPTarkov.Server.Core.Models.Eft.ItemEvent;
 /// </summary>
 public record ItemEventRouterResponse : ItemEventRouterBase
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 }

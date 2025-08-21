@@ -15,8 +15,7 @@ public record BuyClothingRequestData : InventoryBaseActionRequestData
 
 public record PaymentItemForClothing
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("del")]
     public bool? Del { get; set; }

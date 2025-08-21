@@ -4,8 +4,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Launcher;
 
 public record MiniProfile
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("username")]
     public string? Username { get; set; }

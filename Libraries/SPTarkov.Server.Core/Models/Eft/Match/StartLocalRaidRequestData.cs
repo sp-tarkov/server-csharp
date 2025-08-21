@@ -6,8 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record StartLocalRaidRequestData : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("serverId")]
     public string? ServerId { get; set; }

@@ -18,8 +18,7 @@ public record AddOfferRequestData : InventoryBaseActionRequestData
 
 public record Requirement
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("_tpl")]
     public MongoId Template { get; set; }

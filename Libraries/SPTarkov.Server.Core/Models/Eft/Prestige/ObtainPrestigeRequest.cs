@@ -8,8 +8,7 @@ public class ObtainPrestigeRequestList : List<ObtainPrestigeRequest>, IRequestDa
 
 public record ObtainPrestigeRequest : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
@@ -20,8 +19,7 @@ public record ObtainPrestigeRequest : IRequestData
 
 public record Location
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("x")]
     public int X { get; set; }

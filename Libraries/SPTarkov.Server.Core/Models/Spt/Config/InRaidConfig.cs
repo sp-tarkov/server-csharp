@@ -64,8 +64,7 @@ public record InRaidConfig : BaseConfig
 
 public record RaidMenuSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("aiAmount")]
     public required string AiAmount { get; set; }

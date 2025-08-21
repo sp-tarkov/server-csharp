@@ -18,8 +18,7 @@ public record RepairActionDataRequest : InventoryBaseActionRequestData
 
 public record RepairKitsInfo
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     /// <summary>
     ///     id of repair kit to use

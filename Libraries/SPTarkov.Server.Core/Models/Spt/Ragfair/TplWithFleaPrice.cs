@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Ragfair;
 
 public record TplWithFleaPrice
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("tpl")]
     public MongoId Tpl { get; set; }

@@ -340,7 +340,7 @@ public static class ItemExtensions
             SlotId = item.SlotId,
             Location = item.Location,
             Desc = item.Desc,
-            ExtensionData = item.ExtensionData,
+            // TODO: re-enable ExtensionData = item.ExtensionData,
         };
     }
 

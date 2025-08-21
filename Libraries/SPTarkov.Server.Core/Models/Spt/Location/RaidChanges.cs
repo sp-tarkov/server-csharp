@@ -4,8 +4,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Location;
 
 public record RaidChanges
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     /// <summary>
     ///     What percentage of dynamic loot should the map contain
@@ -52,8 +51,7 @@ public record RaidChanges
 
 public record ExtractChange
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("Name")]
     public string? Name { get; set; }

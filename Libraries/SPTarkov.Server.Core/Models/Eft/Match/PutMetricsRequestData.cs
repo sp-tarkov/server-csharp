@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record PutMetricsRequestData : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("sid")]
     public string? SessionId { get; set; }
@@ -38,8 +37,7 @@ public record PutMetricsRequestData : IRequestData
 
 public record SharedSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("StatedFieldOfView")]
     public double? StatedFieldOfView { get; set; }
@@ -47,8 +45,7 @@ public record SharedSettings
 
 public record HardwareDescription
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("deviceUniqueIdentifier")]
     public string? DeviceUniqueIdentifier { get; set; }
@@ -104,8 +101,7 @@ public record HardwareDescription
 
 public record ClientEvents
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("MatchingCompleted")]
     public double? MatchingCompleted { get; set; }

@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record MatchGroupTransferRequest : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("aidToChange")]
     public string? AidToChange { get; set; }

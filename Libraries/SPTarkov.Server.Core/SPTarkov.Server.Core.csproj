@@ -30,6 +30,7 @@
     <InternalsVisibleTo Include="UnitTests" />
   </ItemGroup>
   <Target Name="AfterEverythingDone" AfterTargets="PostBuildEvent">
+    <!-- Run virtualizer patch -->
     <Exec
       ConsoleToMsBuild="true"
       Condition="'$(IsPublish)' == 'true'"
@@ -38,6 +39,16 @@
     <Exec
       ConsoleToMsBuild="true"
       Command="dotnet &quot;$(MSBuildProjectDirectory)/../../Ceciler/Ceciler.Launcher.dll&quot; &quot;$(OutDir)SPTarkov.Server.Core.dll&quot; &quot;$(MSBuildProjectDirectory)/../../Patches/Ceciler.Virtualizer/bin/$(Configuration)/$(TargetFramework)/Ceciler.Virtualizer.dll&quot;"
+    />
+    <!-- Run ExtensionData patch -->
+    <Exec
+      ConsoleToMsBuild="true"
+      Condition="'$(IsPublish)' == 'true'"
+      Command="dotnet build -c &quot;$(Configuration)&quot; &quot;$(MSBuildProjectDirectory)/../../Patches/Ceciler.JsonExtensionData/Ceciler.JsonExtensionData.csproj&quot;"
+    />
+    <Exec
+      ConsoleToMsBuild="true"
+      Command="dotnet &quot;$(MSBuildProjectDirectory)/../../Ceciler/Ceciler.Launcher.dll&quot; &quot;$(OutDir)SPTarkov.Server.Core.dll&quot; &quot;$(MSBuildProjectDirectory)/../../Patches/Ceciler.JsonExtensionData/bin/$(Configuration)/$(TargetFramework)/Ceciler.JsonExtensionData.dll&quot;"
     />
   </Target>
   <!--  Generates the ProgramStatics class with the build information -->

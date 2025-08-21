@@ -4,8 +4,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record ProfileStatusRequest
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("groupId")]
     public int? GroupId { get; set; }

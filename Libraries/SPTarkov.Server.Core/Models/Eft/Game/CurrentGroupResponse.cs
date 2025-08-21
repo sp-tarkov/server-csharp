@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 
 public record CurrentGroupResponse
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("squad")]
     public List<CurrentGroupSquadMember>? Squad { get; set; }
@@ -14,8 +13,7 @@ public record CurrentGroupResponse
 
 public record CurrentGroupSquadMember
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -35,8 +33,7 @@ public record CurrentGroupSquadMember
 
 public record CurrentGroupMemberInfo
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("Nickname")]
     public string? Nickname { get; set; }

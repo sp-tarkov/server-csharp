@@ -5,8 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 
 public record VersionValidateRequestData : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("version")]
     public Version? Version { get; set; }
@@ -17,8 +16,7 @@ public record VersionValidateRequestData : IRequestData
 
 public record Version
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("major")]
     public string? Major { get; set; }

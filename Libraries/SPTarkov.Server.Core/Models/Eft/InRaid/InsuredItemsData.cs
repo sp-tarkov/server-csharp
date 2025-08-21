@@ -4,8 +4,7 @@ namespace SPTarkov.Server.Core.Models.Eft.InRaid;
 
 public record InsuredItemsData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object> ExtensionData { get; init; } = [];
+
 
     [JsonPropertyName("id")]
     public string? Id { get; set; }
