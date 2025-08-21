@@ -154,15 +154,18 @@ public static class ObjectExtensions
     {
         if (!obj.TryGetExtensionData(out var extensionData))
         {
-            throw new Exception($"Attempted to get from extension data for type {obj.GetType().FullName}, but the type doesnt contain ExtensionData or it is null");
+            throw new Exception(
+                $"Attempted to get from extension data for type {obj.GetType().FullName}, but the type doesnt contain ExtensionData or it is null"
+            );
         }
         return extensionData!;
     }
 
     public static bool TryGetExtensionData(this object obj, out Dictionary<string, object>? extensionData)
     {
-        extensionData = obj.GetType().GetProperty("ExtensionData", BindingFlags.Instance | BindingFlags.Public)?.GetValue(obj) as
-            Dictionary<string, object>;
+        extensionData =
+            obj.GetType().GetProperty("ExtensionData", BindingFlags.Instance | BindingFlags.Public)?.GetValue(obj)
+            as Dictionary<string, object>;
         return extensionData is not null;
     }
 }

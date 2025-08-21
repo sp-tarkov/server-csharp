@@ -339,7 +339,7 @@ public static class ItemExtensions
             ParentId = item.ParentId,
             SlotId = item.SlotId,
             Location = item.Location,
-            Desc = item.Desc
+            Desc = item.Desc,
         };
         if (item.TryGetExtensionData(out var extensionData))
         {
