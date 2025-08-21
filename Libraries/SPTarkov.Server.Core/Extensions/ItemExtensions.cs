@@ -330,7 +330,7 @@ public static class ItemExtensions
     /// <returns>Converted SptLootItem</returns>
     public static SptLootItem ToLootItem(this Item item)
     {
-        return new SptLootItem
+        var lootItem = new SptLootItem
         {
             ComposedKey = null,
             Id = item.Id,
@@ -339,9 +339,13 @@ public static class ItemExtensions
             ParentId = item.ParentId,
             SlotId = item.SlotId,
             Location = item.Location,
-            Desc = item.Desc,
-            // TODO: re-enable ExtensionData = item.ExtensionData,
+            Desc = item.Desc
         };
+        if (item.TryGetExtensionData(out var extensionData))
+        {
+            lootItem.AddAllToExtensionData(extensionData!);
+        }
+        return lootItem;
     }
 
     public static ItemLocation? GetParsedLocation(this Item item)

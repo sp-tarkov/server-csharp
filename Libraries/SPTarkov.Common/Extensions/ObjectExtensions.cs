@@ -121,4 +121,48 @@ public static class ObjectExtensions
         var json = element.GetRawText();
         return JsonSerializer.Deserialize<T>(json);
     }
+
+    public static object AddAllToExtensionData(this object obj, Dictionary<string, object> extensionData)
+    {
+        foreach (var keyValuePair in extensionData)
+        {
+            obj.AddToExtensionData(keyValuePair.Key, keyValuePair.Value);
+        }
+
+        return obj;
+    }
+
+    public static object AddToExtensionData(this object obj, string key, object value)
+    {
+        obj.GetExtensionData().Add(key, value);
+        return obj;
+    }
+
+    public static object RemoveFromExtensionData(this object obj, string key)
+    {
+        obj.GetExtensionData().Remove(key);
+        return obj;
+    }
+
+    public static object RemoveAllFromExtensionData(this object obj)
+    {
+        obj.GetExtensionData().Clear();
+        return obj;
+    }
+
+    public static Dictionary<string, object> GetExtensionData(this object obj)
+    {
+        if (!obj.TryGetExtensionData(out var extensionData))
+        {
+            throw new Exception($"Attempted to get from extension data for type {obj.GetType().FullName}, but the type doesnt contain ExtensionData or it is null");
+        }
+        return extensionData!;
+    }
+
+    public static bool TryGetExtensionData(this object obj, out Dictionary<string, object>? extensionData)
+    {
+        extensionData = obj.GetType().GetProperty("ExtensionData", BindingFlags.Instance | BindingFlags.Public)?.GetValue(obj) as
+            Dictionary<string, object>;
+        return extensionData is not null;
+    }
 }

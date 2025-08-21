@@ -43,10 +43,11 @@
     <!-- Run ExtensionData patch -->
     <Exec
       ConsoleToMsBuild="true"
-      Condition="'$(IsPublish)' == 'true'"
+      Condition="'$(IsPublish)' == 'true' and '$(Configuration)' == 'Release'"
       Command="dotnet build -c &quot;$(Configuration)&quot; &quot;$(MSBuildProjectDirectory)/../../Patches/Ceciler.JsonExtensionData/Ceciler.JsonExtensionData.csproj&quot;"
     />
     <Exec
+      Condition="'$(Configuration)' == 'Release'"
       ConsoleToMsBuild="true"
       Command="dotnet &quot;$(MSBuildProjectDirectory)/../../Ceciler/Ceciler.Launcher.dll&quot; &quot;$(OutDir)SPTarkov.Server.Core.dll&quot; &quot;$(MSBuildProjectDirectory)/../../Patches/Ceciler.JsonExtensionData/bin/$(Configuration)/$(TargetFramework)/Ceciler.JsonExtensionData.dll&quot;"
     />
