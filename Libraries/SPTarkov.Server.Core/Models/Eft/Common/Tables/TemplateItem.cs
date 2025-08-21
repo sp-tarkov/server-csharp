@@ -1483,7 +1483,7 @@ public record Props
     public double? MinTimeToContactExplode { get; set; }
 
     [JsonPropertyName("PlayFuzeSound")]
-    public bool MinTimeToCPlayFuzeSoundontactExplode { get; set; }
+    public bool PlayFuzeSound { get; set; }
 
     [JsonPropertyName("ExplosionEffectType")]
     public string? ExplosionEffectType { get; set; }
