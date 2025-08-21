@@ -92,7 +92,7 @@ public class SaveServer(
             totalTime += await SaveProfileAsync(sessionID.Key);
         }
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
+        if (profiles.Count > 0 && logger.IsLogEnabled(LogLevel.Debug))
         {
             logger.Debug($"Saved {profiles.Count} profiles, took: {totalTime}ms");
         }
