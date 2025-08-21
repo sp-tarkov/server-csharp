@@ -1,4 +1,4 @@
-﻿using Ceciler.Interfaces;
+using Ceciler.Interfaces;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
@@ -54,6 +54,7 @@ public class JsonExtensionDataPatch : IPatcher
         var processed = new HashSet<string>();
         foreach (var typeDefinition in assembly.MainModule.Types)
         {
+
             if (!typeDefinition.Namespace.Contains("SPTarkov.Server.Core.Models") ||
                 typeDefinition.IsInterface ||
                 typeDefinition.IsEnum ||
@@ -80,6 +81,7 @@ public class JsonExtensionDataPatch : IPatcher
                 "get_ExtensionData",
                 MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig,
                 _dictionaryStringObjectReference);
+
             get.CustomAttributes.Add(new CustomAttribute(compilerGenerated));
             get.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
             get.Body.Instructions.Add(Instruction.Create(OpCodes.Ldfld, field));
