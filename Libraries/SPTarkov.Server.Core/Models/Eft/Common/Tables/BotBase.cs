@@ -526,6 +526,18 @@ public record Victim
     public string? Role { get; set; }
 
     public string? Location { get; set; }
+
+    [JsonPropertyName("GInterface187.ProfileId")]
+    public object profileIdTest { get; set; }
+
+    [JsonPropertyName("GInterface187.Nickname")]
+    public object NicknameTest { get; set; }
+
+    [JsonPropertyName("GInterface187.Side")]
+    public object SideTest { get; set; }
+
+    [JsonPropertyName("GInterface187.PrestigeLevel")]
+    public object PrestigeLevelTest { get; set; }
 }
 
 public record SessionCounters
