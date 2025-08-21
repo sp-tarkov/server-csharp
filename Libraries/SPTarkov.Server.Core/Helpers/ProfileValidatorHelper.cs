@@ -17,8 +17,7 @@ public class ProfileValidatorHelper(
     ConfigServer configServer,
     DatabaseService databaseService,
     ISptLogger<ProfileValidatorHelper> logger,
-    ServerLocalisationService serverLocalisationService,
-    TraderStore traderStore
+    ServerLocalisationService serverLocalisationService
 )
 {
     protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
@@ -386,6 +385,6 @@ public class ProfileValidatorHelper(
 
     protected bool DoesTraderExist(MongoId traderId)
     {
-        return traderStore.GetTraderById(traderId) != null;
+        return databaseService.GetTrader(traderId) != null;
     }
 }

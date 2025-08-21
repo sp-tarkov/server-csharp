@@ -37,7 +37,6 @@ public class InsuranceController(
     RagfairPriceService ragfairPriceService,
     ServerLocalisationService serverLocalisationService,
     SaveServer saveServer,
-    TraderStore traderStore,
     ConfigServer configServer,
     ICloner cloner
 )
@@ -690,7 +689,7 @@ public class InsuranceController(
     /// <returns>Should item be deleted</returns>
     protected bool? RollForDelete(MongoId traderId, Item? insuredItem = null)
     {
-        var trader = traderStore.GetTraderById(traderId);
+        var trader = databaseService.GetTrader(traderId);
         if (trader is null)
         {
             return null;

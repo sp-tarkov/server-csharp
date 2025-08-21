@@ -23,7 +23,6 @@ public class TraderHelper(
     HandbookHelper handbookHelper,
     ServerLocalisationService serverLocalisationService,
     FenceService fenceService,
-    TraderStore traderStore,
     TimeUtil timeUtil,
     RandomUtil randomUtil,
     ConfigServer configServer
@@ -490,10 +489,10 @@ public class TraderHelper(
             {
                 highestPrice = 1d; // Default price
                 var itemHandbookPrice = handbookHelper.GetTemplatePrice(tpl);
-                foreach (var trader in traderStore.GetAllTraders())
+                foreach ((var traderKey, var trader) in databaseService.GetTraders())
                 {
                     // Get trader and check buy category allows tpl
-                    var traderBase = databaseService.GetTrader(trader.Id).Base;
+                    var traderBase = trader.Base;
 
                     if (traderBase is null)
                     {
@@ -527,6 +526,6 @@ public class TraderHelper(
     /// <returns>True if a Trader exists with given ID</returns>
     public bool TraderExists(MongoId traderId)
     {
-        return traderStore.GetTraderById(traderId) != null;
+        return databaseService.GetTrader(traderId) != null;
     }
 }

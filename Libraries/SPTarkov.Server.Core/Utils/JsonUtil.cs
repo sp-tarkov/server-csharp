@@ -20,7 +20,7 @@ public class JsonUtil
             ReadCommentHandling = JsonCommentHandling.Skip,
             WriteIndented = false,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+            UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip,
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
         };
 

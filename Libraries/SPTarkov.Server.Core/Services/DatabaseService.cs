@@ -169,8 +169,6 @@ public class DatabaseService(
     {
         if (!databaseServer.GetTables().Traders.TryGetValue(traderId, out var desiredTrader))
         {
-            logger.Error(serverLocalisationService.GetText("database-no_trader_found_with_id", traderId));
-
             return null;
         }
 
