@@ -10,8 +10,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 
 public record SptProfile
 {
-
-
     [JsonPropertyName("info")]
     public Info? ProfileInfo { get; set; }
 
@@ -64,8 +62,6 @@ public record SptProfile
 
 public record TraderPurchaseData
 {
-
-
     [JsonPropertyName("count")]
     public double? PurchaseCount { get; set; }
 
@@ -75,8 +71,6 @@ public record TraderPurchaseData
 
 public record Info
 {
-
-
     /// <summary>
     ///     main profile id
     /// </summary>
@@ -108,8 +102,6 @@ public record Info
 
 public record Characters
 {
-
-
     [JsonPropertyName("pmc")]
     public PmcData? PmcData { get; set; }
 
@@ -122,8 +114,6 @@ public record Characters
 /// </summary>
 public record UserBuilds
 {
-
-
     [JsonPropertyName("weaponBuilds")]
     public List<WeaponBuild>? WeaponBuilds { get; set; }
 
@@ -136,8 +126,6 @@ public record UserBuilds
 
 public record UserBuild
 {
-
-
     [JsonPropertyName("Id")]
     public MongoId Id { get; set; }
 
@@ -184,8 +172,6 @@ public record MagazineBuild : UserBuild
 
 public record MagazineTemplateAmmoItem
 {
-
-
     [JsonPropertyName("TemplateId")]
     public MongoId TemplateId { get; set; }
 
@@ -204,8 +190,6 @@ public record DefaultEquipmentPreset : EquipmentBuild
 
 public record Dialogue
 {
-
-
     [JsonPropertyName("attachmentsNew")]
     public int? AttachmentsNew { get; set; }
 
@@ -231,8 +215,6 @@ public record Dialogue
 //TODO: @Cleanup: Maybe the same as Dialogue?
 public record DialogueInfo
 {
-
-
     [JsonPropertyName("attachmentsNew")]
     public int? AttachmentsNew { get; set; }
 
@@ -257,8 +239,6 @@ public record DialogueInfo
 
 public record Message
 {
-
-
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
 
@@ -307,8 +287,6 @@ public record Message
 
 public record ReplyTo
 {
-
-
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
 
@@ -327,8 +305,6 @@ public record ReplyTo
 
 public record MessagePreview
 {
-
-
     [JsonPropertyName("uid")]
     public string? UserId { get; set; }
 
@@ -350,8 +326,6 @@ public record MessagePreview
 
 public record MessageItems
 {
-
-
     [JsonPropertyName("stash")]
     public MongoId? Stash { get; set; }
 
@@ -361,8 +335,6 @@ public record MessageItems
 
 public record UpdatableChatMember
 {
-
-
     [JsonPropertyName("Nickname")]
     public string? Nickname { get; set; }
 
@@ -384,8 +356,6 @@ public record UpdatableChatMember
 
 public record Spt
 {
-
-
     /// <summary>
     ///     What version of SPT was this profile made with
     /// </summary>
@@ -437,8 +407,6 @@ public record Spt
 
 public record AcceptedCultistReward
 {
-
-
     [JsonPropertyName("timestamp")]
     public long? Timestamp { get; set; }
 
@@ -451,8 +419,6 @@ public record AcceptedCultistReward
 
 public record PendingPrestige
 {
-
-
     [JsonPropertyName("prestigeLevel")]
     public int? PrestigeLevel { get; set; }
 
@@ -462,8 +428,6 @@ public record PendingPrestige
 
 public record ModDetails
 {
-
-
     [JsonPropertyName("name")]
     public string? Name { get; set; }
 
@@ -482,8 +446,6 @@ public record ModDetails
 
 public record ReceivedGift
 {
-
-
     [JsonPropertyName("giftId")]
     public string? GiftId { get; set; }
 
@@ -496,8 +458,6 @@ public record ReceivedGift
 
 public record Inraid
 {
-
-
     [JsonPropertyName("location")]
     public string? Location { get; set; }
 
@@ -507,8 +467,6 @@ public record Inraid
 
 public record Insurance
 {
-
-
     [JsonPropertyName("scheduledTime")]
     public int? ScheduledTime { get; set; }
 
@@ -533,8 +491,6 @@ public record Insurance
 
 public record BtrDelivery
 {
-
-
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
 

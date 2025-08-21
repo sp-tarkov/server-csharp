@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record FilterPlateModsForSlotByLevelResult
 {
-
-
     [JsonPropertyName("result")]
     public Result? Result { get; set; }
 

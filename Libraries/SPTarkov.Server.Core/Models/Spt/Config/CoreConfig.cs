@@ -69,8 +69,6 @@ public record CoreConfig : BaseConfig
 
 public record BsgLogging
 {
-
-
     /// <summary>
     ///     verbosity of what to log, yes I know this is backwards, but its how nlog deals with ordinals. <br />
     ///     complain to them about it! In all cases, better exceptions will be logged.<br />
@@ -95,8 +93,6 @@ public record BsgLogging
 
 public record Release
 {
-
-
     /// <summary>
     ///     Disclaimer outlining the intended usage of bleeding edge
     /// </summary>
@@ -178,8 +174,6 @@ public record Release
 
 public record GameFixes
 {
-
-
     /// <summary>
     ///     Shotguns use a different value than normal guns causing huge pellet dispersion
     /// </summary>
@@ -207,8 +201,6 @@ public record GameFixes
 
 public record ServerFeatures
 {
-
-
     [JsonPropertyName("compressProfile")]
     public bool CompressProfile { get; set; }
 
@@ -230,8 +222,6 @@ public record ServerFeatures
 
 public record ChatbotFeatures
 {
-
-
     [JsonPropertyName("sptFriendGiftsEnabled")]
     public bool SptFriendGiftsEnabled { get; set; }
 
@@ -256,8 +246,6 @@ public record ChatbotFeatures
 
 public record CommandoFeatures
 {
-
-
     [JsonPropertyName("giveCommandEnabled")]
     public bool GiveCommandEnabled { get; set; }
 }

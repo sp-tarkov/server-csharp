@@ -10,8 +10,6 @@ public abstract record BaseConfig
 
 public record RunIntervalValues
 {
-
-
     [JsonPropertyName("inRaid")]
     public int InRaid { get; set; }
 

@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Location;
 
 public record AirdropLootResult
 {
-
-
     [JsonPropertyName("dropType")]
     public string? DropType { get; set; }
 

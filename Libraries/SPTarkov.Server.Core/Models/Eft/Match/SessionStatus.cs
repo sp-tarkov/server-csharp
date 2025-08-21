@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record SessionStatus
 {
-
-
     [JsonPropertyName("profileid")]
     public string? ProfileId { get; set; }
 

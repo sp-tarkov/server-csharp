@@ -8,8 +8,6 @@ namespace SPTarkov.Server.Core.Models;
 [Injectable]
 public record Prapor : ITrader
 {
-
-
     public string Name { get; } = "Prapor";
     public MongoId Id { get; } = Traders.PRAPOR;
 }
@@ -17,8 +15,6 @@ public record Prapor : ITrader
 [Injectable]
 public record Therapist : ITrader
 {
-
-
     public string Name { get; } = "Therapist";
     public MongoId Id { get; } = Traders.THERAPIST;
 }
@@ -26,8 +22,6 @@ public record Therapist : ITrader
 [Injectable]
 public record Fence : ITrader
 {
-
-
     public string Name { get; } = "Fence";
     public MongoId Id { get; } = Traders.FENCE;
 }
@@ -35,8 +29,6 @@ public record Fence : ITrader
 [Injectable]
 public record Skier : ITrader
 {
-
-
     public string Name { get; } = "Skier";
     public MongoId Id { get; } = Traders.SKIER;
 }
@@ -44,8 +36,6 @@ public record Skier : ITrader
 [Injectable]
 public record Peacekeeper : ITrader
 {
-
-
     public string Name { get; } = "Peacekeeper";
     public MongoId Id { get; } = Traders.PEACEKEEPER;
 }
@@ -53,8 +43,6 @@ public record Peacekeeper : ITrader
 [Injectable]
 public record Mechanic : ITrader
 {
-
-
     public string Name { get; } = "Mechanic";
     public MongoId Id { get; } = Traders.MECHANIC;
 }
@@ -62,8 +50,6 @@ public record Mechanic : ITrader
 [Injectable]
 public record Ragman : ITrader
 {
-
-
     public string Name { get; } = "Ragman";
     public MongoId Id { get; } = Traders.RAGMAN;
 }
@@ -71,8 +57,6 @@ public record Ragman : ITrader
 [Injectable]
 public record Jaeger : ITrader
 {
-
-
     public string Name { get; } = "Jaeger";
     public MongoId Id { get; } = Traders.JAEGER;
 }
@@ -80,8 +64,6 @@ public record Jaeger : ITrader
 [Injectable]
 public record LighthouseKeeper : ITrader
 {
-
-
     public string Name { get; } = "LighthouseKeeper";
     public MongoId Id { get; } = Traders.LIGHTHOUSEKEEPER;
 }
@@ -89,8 +71,6 @@ public record LighthouseKeeper : ITrader
 [Injectable]
 public record Btr : ITrader
 {
-
-
     public string Name { get; } = "Btr";
     public MongoId Id { get; } = Traders.BTR;
 }
@@ -98,8 +78,6 @@ public record Btr : ITrader
 [Injectable]
 public record Ref : ITrader
 {
-
-
     public string Name { get; } = "Ref";
     public MongoId Id { get; } = Traders.REF;
 }

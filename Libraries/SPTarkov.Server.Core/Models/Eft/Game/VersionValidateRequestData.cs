@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 
 public record VersionValidateRequestData : IRequestData
 {
-
-
     [JsonPropertyName("version")]
     public Version? Version { get; set; }
 
@@ -16,8 +14,6 @@ public record VersionValidateRequestData : IRequestData
 
 public record Version
 {
-
-
     [JsonPropertyName("major")]
     public string? Major { get; set; }
 

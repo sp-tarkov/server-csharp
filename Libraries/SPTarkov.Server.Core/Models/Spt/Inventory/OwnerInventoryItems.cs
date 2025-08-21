@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Inventory;
 
 public record OwnerInventoryItems
 {
-
-
     /// <summary>
     ///     Inventory items from source
     /// </summary>

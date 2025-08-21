@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Achievement
 {
-
-
     [JsonPropertyName("index")]
     public required int Index { get; set; }
 
@@ -52,8 +50,6 @@ public record Achievement
 
 public record AchievementQuestConditionTypes
 {
-
-
     [JsonPropertyName("started")]
     public List<QuestCondition>? Started { get; set; }
 

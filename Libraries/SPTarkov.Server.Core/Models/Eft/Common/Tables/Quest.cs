@@ -8,8 +8,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Quest
 {
-
-
     /// <summary>
     ///     SPT addition - human readable quest name
     /// </summary>
@@ -128,8 +126,6 @@ public record Quest
 /// </summary>
 public record QuestStatus
 {
-
-
     [JsonPropertyName("qid")]
     public required MongoId QId { get; set; }
 
@@ -151,8 +147,6 @@ public record QuestStatus
 
 public record QuestConditionTypes
 {
-
-
     [JsonPropertyName("Started")]
     public List<QuestCondition>? Started { get; set; }
 
@@ -172,8 +166,6 @@ public record QuestConditionTypes
 public record QuestCondition
 {
     private string _conditionType;
-
-
 
     [JsonPropertyName("id")]
     public required MongoId Id { get; set; }
@@ -320,8 +312,6 @@ public record QuestCondition
 
 public record QuestConditionCounter
 {
-
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -331,8 +321,6 @@ public record QuestConditionCounter
 
 public record QuestConditionCounterCondition
 {
-
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -423,8 +411,6 @@ public record QuestConditionCounterCondition
 
 public record EnemyHealthEffect
 {
-
-
     [JsonPropertyName("bodyParts")]
     public List<string>? BodyParts { get; set; }
 
@@ -434,8 +420,6 @@ public record EnemyHealthEffect
 
 public record ValueCompare
 {
-
-
     [JsonPropertyName("compareMethod")]
     public string? CompareMethod { get; set; }
 
@@ -445,8 +429,6 @@ public record ValueCompare
 
 public record CounterConditionDistance
 {
-
-
     [JsonPropertyName("value")]
     public double? Value { get; set; }
 
@@ -456,8 +438,6 @@ public record CounterConditionDistance
 
 public record DaytimeCounter
 {
-
-
     [JsonPropertyName("from")]
     public int? From { get; set; }
 
@@ -467,8 +447,6 @@ public record DaytimeCounter
 
 public record VisibilityCondition
 {
-
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 

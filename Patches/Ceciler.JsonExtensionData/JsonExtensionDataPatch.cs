@@ -9,12 +9,9 @@ public class JsonExtensionDataPatch : IPatcher
 {
     private TypeReference? _dictionaryStringObjectReference;
 
-
     private MethodReference? _jsonExtensionDataAttributeReference;
 
-
     private MethodReference? _jsonIgnoreAttributeReference;
-
 
     public void Patch(AssemblyDefinition assembly)
     {
@@ -22,20 +19,20 @@ public class JsonExtensionDataPatch : IPatcher
 
         if (_jsonExtensionDataAttributeReference is null)
         {
-            var jsonConstructorReference = assembly.MainModule.AssemblyResolver
-                .Resolve(AssemblyNameReference.Parse("System.Text.Json")).MainModule
-                .GetType("System.Text.Json.Serialization.JsonExtensionDataAttribute").Methods
-                .First(m => m.IsConstructor && !m.HasParameters);
+            var jsonConstructorReference = assembly
+                .MainModule.AssemblyResolver.Resolve(AssemblyNameReference.Parse("System.Text.Json"))
+                .MainModule.GetType("System.Text.Json.Serialization.JsonExtensionDataAttribute")
+                .Methods.First(m => m.IsConstructor && !m.HasParameters);
 
             _jsonExtensionDataAttributeReference = assembly.MainModule.ImportReference(jsonConstructorReference);
         }
 
         if (_jsonIgnoreAttributeReference is null)
         {
-            var jsonIgnoreConstructorReference = assembly.MainModule.AssemblyResolver
-                .Resolve(AssemblyNameReference.Parse("System.Text.Json")).MainModule
-                .GetType("System.Text.Json.Serialization.JsonIgnoreAttribute").Methods
-                .First(m => m.IsConstructor && !m.HasParameters);
+            var jsonIgnoreConstructorReference = assembly
+                .MainModule.AssemblyResolver.Resolve(AssemblyNameReference.Parse("System.Text.Json"))
+                .MainModule.GetType("System.Text.Json.Serialization.JsonIgnoreAttribute")
+                .Methods.First(m => m.IsConstructor && !m.HasParameters);
 
             _jsonIgnoreAttributeReference = assembly.MainModule.ImportReference(jsonIgnoreConstructorReference);
         }
@@ -43,10 +40,12 @@ public class JsonExtensionDataPatch : IPatcher
         var processed = new HashSet<string>();
         foreach (var typeDefinition in assembly.MainModule.Types)
         {
-            if (!typeDefinition.Namespace.Contains("SPTarkov.Server.Core.Models") ||
-                typeDefinition.IsInterface ||
-                typeDefinition.IsEnum ||
-                processed.Contains(typeDefinition.FullName))
+            if (
+                !typeDefinition.Namespace.Contains("SPTarkov.Server.Core.Models")
+                || typeDefinition.IsInterface
+                || typeDefinition.IsEnum
+                || processed.Contains(typeDefinition.FullName)
+            )
             {
                 continue;
             }
@@ -55,17 +54,17 @@ public class JsonExtensionDataPatch : IPatcher
             propertyDefinition.CustomAttributes.Add(new CustomAttribute(_jsonExtensionDataAttributeReference));
 
             // Add backing field
-            var field = new FieldDefinition("_extensionData",
-                FieldAttributes.Private,
-                _dictionaryStringObjectReference);
+            var field = new FieldDefinition("_extensionData", FieldAttributes.Private, _dictionaryStringObjectReference);
 
             field.CustomAttributes.Add(new CustomAttribute(_jsonIgnoreAttributeReference));
             typeDefinition.Fields.Add(field);
 
             // Add getter
-            var get = new MethodDefinition("get_ExtensionData",
+            var get = new MethodDefinition(
+                "get_ExtensionData",
                 MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig,
-                _dictionaryStringObjectReference);
+                _dictionaryStringObjectReference
+            );
 
             get.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
             get.Body.Instructions.Add(Instruction.Create(OpCodes.Ldfld, field));
@@ -76,9 +75,11 @@ public class JsonExtensionDataPatch : IPatcher
             typeDefinition.Methods.Add(get);
 
             // Add setter
-            var set = new MethodDefinition("set_ExtensionData",
+            var set = new MethodDefinition(
+                "set_ExtensionData",
                 MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig,
-                assembly.MainModule.TypeSystem.Void);
+                assembly.MainModule.TypeSystem.Void
+            );
 
             set.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, _dictionaryStringObjectReference));
             set.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));

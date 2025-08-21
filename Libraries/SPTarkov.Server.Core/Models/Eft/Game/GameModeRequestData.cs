@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 
 public record GameModeRequestData : IRequestData
 {
-
-
     [JsonPropertyName("sessionMode")]
     public string? SessionMode { get; set; }
 }

@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Services;
 
 public record LootItem
 {
-
-
     [JsonPropertyName("id")]
     public MongoId? Id { get; set; }
 

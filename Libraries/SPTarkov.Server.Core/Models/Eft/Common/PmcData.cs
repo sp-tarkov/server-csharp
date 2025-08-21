@@ -22,8 +22,6 @@ public record PostRaidPmcData : PmcData { }
 
 public record PostRaidStats
 {
-
-
     [JsonPropertyName("Eft")]
     public EftStats? Eft { get; set; }
 

@@ -7,8 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record QteData
 {
-
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -47,8 +45,6 @@ public record QteData
 
 public record QuickTimeEvent
 {
-
-
     [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public QteType? EventType { get; set; }
@@ -74,16 +70,12 @@ public record QuickTimeEvent
 
 public record QteRequirement
 {
-
-
     [JsonPropertyName("type")]
     public RequirementType? RequirementType { get; set; }
 }
 
 public record QteResult
 {
-
-
     [JsonPropertyName("energy")]
     public int? Energy { get; set; }
 
@@ -96,8 +88,6 @@ public record QteResult
 
 public record QteEffect
 {
-
-
     [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public QteRewardType? Type { get; set; }
@@ -122,8 +112,6 @@ public record QteEffect
 
 public record SkillLevelMultiplier
 {
-
-
     [JsonPropertyName("level")]
     public int? Level { get; set; }
 
@@ -133,8 +121,6 @@ public record SkillLevelMultiplier
 
 public record Position
 {
-
-
     [JsonPropertyName("x")]
     public float? X { get; set; }
 

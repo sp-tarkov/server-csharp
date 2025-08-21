@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Hideout;
 
 public record CircleCraftDetails
 {
-
-
     [JsonPropertyName("time")]
     public required long Time { get; set; }
 

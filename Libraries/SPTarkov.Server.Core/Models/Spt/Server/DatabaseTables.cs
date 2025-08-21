@@ -7,8 +7,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Server;
 
 public record DatabaseTables
 {
-
-
     public required Bots.Bots Bots { get; init; }
 
     public required Hideout.Hideout Hideout { get; init; }

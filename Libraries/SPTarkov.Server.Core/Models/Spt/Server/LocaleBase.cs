@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Server;
 
 public record LocaleBase
 {
-
-
     /// <summary>
     /// DO NOT USE THIS PROPERTY DIRECTLY, USE LOCALESERVICE INSTEAD
     /// THIS IS LAZY LOADED AND YOUR CHANGES WILL NOT BE SAVED

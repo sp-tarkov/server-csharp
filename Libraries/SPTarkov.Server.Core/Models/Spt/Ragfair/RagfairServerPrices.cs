@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Ragfair;
 
 public record RagfairServerPrices
 {
-
-
     [JsonPropertyName("staticPrices")]
     public Dictionary<string, double>? StaticPrices { get; set; }
 

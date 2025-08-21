@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Quests;
 
 public record GetRepeatableByIdResult
 {
-
-
     [JsonPropertyName("quest")]
     public RepeatableQuest? Quest { get; set; }
 

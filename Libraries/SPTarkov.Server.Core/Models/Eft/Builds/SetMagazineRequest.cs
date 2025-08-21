@@ -7,8 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Builds;
 
 public record SetMagazineRequest : IRequestData
 {
-
-
     [JsonPropertyName("Id")]
     public MongoId Id { get; set; }
 

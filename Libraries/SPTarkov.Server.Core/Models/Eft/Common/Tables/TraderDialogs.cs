@@ -5,7 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record TraderDialogs
 {
-
     [JsonPropertyName("elements")]
     public required List<TraderDialogElements> Elements;
 }

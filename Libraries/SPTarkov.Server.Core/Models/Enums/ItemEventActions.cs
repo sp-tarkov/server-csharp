@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Enums;
 
 public record ItemEventActions
 {
-
-
     public const string MOVE = "Move";
     public const string REMOVE = "Remove";
     public const string SPLIT = "Split";

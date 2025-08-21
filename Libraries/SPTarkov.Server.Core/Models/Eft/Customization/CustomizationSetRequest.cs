@@ -12,8 +12,6 @@ public record CustomizationSetRequest : InventoryBaseActionRequestData
 
 public record CustomizationSetOption
 {
-
-
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 

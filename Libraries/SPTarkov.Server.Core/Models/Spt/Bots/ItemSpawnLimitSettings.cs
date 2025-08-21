@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record ItemSpawnLimitSettings
 {
-
-
     [JsonPropertyName("currentLimits")]
     public Dictionary<MongoId, double>? CurrentLimits { get; set; }
 

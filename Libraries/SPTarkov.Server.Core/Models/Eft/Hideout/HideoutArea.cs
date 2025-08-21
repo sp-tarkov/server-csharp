@@ -7,8 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record HideoutArea
 {
-
-
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
 
@@ -45,8 +43,6 @@ public record HideoutArea
 
 public record HideoutAreaRequirement
 {
-
-
     [JsonPropertyName("areaType")]
     public int? AreaType { get; set; }
 
@@ -59,8 +55,6 @@ public record HideoutAreaRequirement
 
 public record Stage
 {
-
-
     [JsonPropertyName("autoUpgrade")]
     public bool? AutoUpgrade { get; set; }
 
@@ -97,8 +91,6 @@ public record Stage
 
 public record StageImprovement
 {
-
-
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 
@@ -114,8 +106,6 @@ public record StageImprovement
 
 public record StageImprovementBonus
 {
-
-
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 
@@ -140,8 +130,6 @@ public record StageImprovementBonus
 
 public record StageImprovementRequirement
 {
-
-
     [JsonPropertyName("count")]
     public int? Count { get; set; }
 
@@ -163,8 +151,6 @@ public record StageImprovementRequirement
 
 public record StageRequirement
 {
-
-
     [JsonPropertyName("areaType")]
     public int? AreaType { get; set; }
 

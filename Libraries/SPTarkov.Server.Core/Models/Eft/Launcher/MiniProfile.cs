@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Launcher;
 
 public record MiniProfile
 {
-
-
     [JsonPropertyName("username")]
     public string? Username { get; set; }
 

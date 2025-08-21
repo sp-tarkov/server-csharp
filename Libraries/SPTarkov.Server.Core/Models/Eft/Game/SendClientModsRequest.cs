@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 
 public record SendClientModsRequest : IRequestData
 {
-
-
     [JsonPropertyName("activeClientMods")]
     public List<ProfileActiveClientMods> ActiveClientMods { get; set; } = [];
 }

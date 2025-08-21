@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 
 public record GetProfileSettingsRequest : IRequestData
 {
-
-
     /// <summary>
     ///     Chosen value for profile.Info.SelectedMemberCategory
     /// </summary>

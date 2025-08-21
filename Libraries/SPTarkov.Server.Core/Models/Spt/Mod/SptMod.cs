@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Mod;
 
 public class SptMod
 {
-
-
     [JsonPropertyName("directory")]
     public required string Directory { get; init; }
 

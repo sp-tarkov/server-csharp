@@ -22,8 +22,6 @@ public record BackupConfig : BaseConfig
 
 public record BackupConfigInterval
 {
-
-
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
 

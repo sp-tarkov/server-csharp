@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record MatchGroupJoinRequest : IRequestData
 {
-
-
     [JsonPropertyName("location")]
     public string? Location { get; set; }
 
@@ -25,8 +23,6 @@ public record MatchGroupJoinRequest : IRequestData
 
 public record JoinServer
 {
-
-
     [JsonPropertyName("ping")]
     public int? Ping { get; set; }
 

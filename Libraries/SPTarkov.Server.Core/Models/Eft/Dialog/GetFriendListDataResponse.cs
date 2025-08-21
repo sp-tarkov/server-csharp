@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record GetFriendListDataResponse
 {
-
-
     [JsonPropertyName("Friends")]
     public List<UserDialogInfo>? Friends { get; set; }
 

@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Repeatable;
 
 public record QuestTypePool
 {
-
-
     [JsonPropertyName("types")]
     public required List<string> Types { get; set; }
 
@@ -16,8 +14,6 @@ public record QuestTypePool
 
 public record QuestPool
 {
-
-
     [JsonPropertyName("Exploration")]
     public required ExplorationPool Exploration { get; set; }
 
@@ -30,24 +26,18 @@ public record QuestPool
 
 public record ExplorationPool
 {
-
-
     [JsonPropertyName("locations")]
     public Dictionary<ELocationName, List<string>>? Locations { get; set; } // TODO: check the type, originally - Partial<Record<ELocationName, string[]>>
 }
 
 public record EliminationPool
 {
-
-
     [JsonPropertyName("targets")]
     public Dictionary<string, TargetLocation>? Targets { get; set; }
 }
 
 public record TargetLocation
 {
-
-
     [JsonPropertyName("locations")]
     public List<string>? Locations { get; set; }
 }

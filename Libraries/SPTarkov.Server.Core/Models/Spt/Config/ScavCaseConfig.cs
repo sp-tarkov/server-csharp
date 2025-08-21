@@ -35,8 +35,6 @@ public record ScavCaseConfig : BaseConfig
 
 public record MoneyRewards
 {
-
-
     [JsonPropertyName("moneyRewardChancePercent")]
     public int MoneyRewardChancePercent { get; set; }
 
@@ -55,8 +53,6 @@ public record MoneyRewards
 
 public record MoneyLevels
 {
-
-
     [JsonPropertyName("common")]
     public required MinMax<int> Common { get; set; }
 
@@ -69,8 +65,6 @@ public record MoneyLevels
 
 public record AmmoRewards
 {
-
-
     [JsonPropertyName("ammoRewardChancePercent")]
     public int AmmoRewardChancePercent { get; set; }
 

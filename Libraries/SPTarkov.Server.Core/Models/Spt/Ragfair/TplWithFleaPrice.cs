@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Ragfair;
 
 public record TplWithFleaPrice
 {
-
-
     [JsonPropertyName("tpl")]
     public MongoId Tpl { get; set; }
 

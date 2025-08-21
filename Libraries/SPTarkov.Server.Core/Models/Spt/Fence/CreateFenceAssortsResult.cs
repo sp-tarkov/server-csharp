@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Fence;
 
 public record CreateFenceAssortsResult
 {
-
-
     [JsonPropertyName("sptItems")]
     public List<List<Item>>? SptItems { get; set; }
 

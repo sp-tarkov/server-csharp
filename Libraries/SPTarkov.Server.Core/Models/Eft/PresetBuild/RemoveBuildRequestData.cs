@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.PresetBuild;
 
 public record RemoveBuildRequestData : IRequestData
 {
-
-
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 }

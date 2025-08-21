@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common;
 
 public record MetricsTableData
 {
-
-
     [JsonPropertyName("Keys")]
     public List<int>? Keys { get; set; }
 

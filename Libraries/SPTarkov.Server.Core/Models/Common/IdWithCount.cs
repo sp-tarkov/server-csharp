@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Common;
 
 public record IdWithCount
 {
-
-
     /// <summary>
     ///     ID of stack to take money from
     /// </summary>

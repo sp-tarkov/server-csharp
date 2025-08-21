@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 
 public record GameKeepAliveResponse
 {
-
-
     [JsonPropertyName("msg")]
     public string? Message { get; set; }
 

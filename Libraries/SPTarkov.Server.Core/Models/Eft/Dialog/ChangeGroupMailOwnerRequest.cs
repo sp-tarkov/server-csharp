@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record ChangeGroupMailOwnerRequest : IRequestData
 {
-
-
     [JsonPropertyName("dialogId")]
     public string? DialogId { get; set; }
 

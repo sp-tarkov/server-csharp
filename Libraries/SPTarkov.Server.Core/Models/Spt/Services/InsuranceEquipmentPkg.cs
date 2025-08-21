@@ -7,8 +7,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Services;
 
 public record InsuranceEquipmentPkg
 {
-
-
     [JsonPropertyName("sessionID")]
     public MongoId SessionId { get; set; }
 

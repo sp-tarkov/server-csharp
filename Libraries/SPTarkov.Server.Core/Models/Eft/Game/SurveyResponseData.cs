@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 
 public record SurveyResponseData
 {
-
-
     [JsonPropertyName("locale")]
     public Dictionary<string, Dictionary<string, string>>? Locale { get; set; }
 
@@ -15,8 +13,6 @@ public record SurveyResponseData
 
 public record Survey
 {
-
-
     [JsonPropertyName("id")]
     public int? Id { get; set; }
 
@@ -38,8 +34,6 @@ public record Survey
 
 public record WelcomePageData
 {
-
-
     [JsonPropertyName("titleLocaleKey")]
     public string? TitleLocaleKey { get; set; }
 
@@ -52,16 +46,12 @@ public record WelcomePageData
 
 public record FarewellPageData
 {
-
-
     [JsonPropertyName("textLocaleKey")]
     public string? TextLocaleKey { get; set; }
 }
 
 public record SurveyQuestion
 {
-
-
     [JsonPropertyName("id")]
     public int? Id { get; set; }
 
@@ -86,8 +76,6 @@ public record SurveyQuestion
 
 public record SurveyAnswer
 {
-
-
     [JsonPropertyName("id")]
     public int? Id { get; set; }
 

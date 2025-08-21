@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 
 public record UserDialogInfo
 {
-
-
     /// <summary>
     ///     _id
     /// </summary>
@@ -23,8 +21,6 @@ public record UserDialogInfo
 
 public record UserDialogDetails
 {
-
-
     [JsonPropertyName("Nickname")]
     public string? Nickname { get; set; }
 

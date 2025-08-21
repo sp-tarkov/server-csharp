@@ -8,8 +8,6 @@ namespace SPTarkov.Server.Core.Models.Eft.ItemEvent;
 
 public record ItemEventRouterBase
 {
-
-
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("warnings")]
     public List<Warning>? Warnings { get; set; }
@@ -20,8 +18,6 @@ public record ItemEventRouterBase
 
 public record Warning
 {
-
-
     [JsonPropertyName("index")]
     public int? Index { get; set; }
 
@@ -37,8 +33,6 @@ public record Warning
 
 public record ProfileChange
 {
-
-
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
 
@@ -99,8 +93,6 @@ public record ProfileChange
 
 public record HideoutStashItem
 {
-
-
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 
@@ -110,8 +102,6 @@ public record HideoutStashItem
 
 public record WeaponBuildChange
 {
-
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -127,8 +117,6 @@ public record WeaponBuildChange
 
 public record EquipmentBuildChange
 {
-
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -153,8 +141,6 @@ public record EquipmentBuildChange
 
 public record ItemChanges
 {
-
-
     [JsonPropertyName("new")]
     public List<Item>? NewItems { get; set; }
 
@@ -167,8 +153,6 @@ public record ItemChanges
 
 public record DeletedItem
 {
-
-
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
 }
@@ -178,8 +162,6 @@ public record DeletedItem
 /// </summary>
 public record TraderData
 {
-
-
     [JsonPropertyName("salesSum")]
     public double? SalesSum { get; set; }
 

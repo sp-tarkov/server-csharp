@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Weather;
 
 public record GetLocalWeatherResponseData
 {
-
-
     [JsonPropertyName("season")]
     public Season? Season { get; set; }
 

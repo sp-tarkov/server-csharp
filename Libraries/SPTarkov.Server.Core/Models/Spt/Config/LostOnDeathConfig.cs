@@ -31,8 +31,6 @@ public record LostOnDeathConfig : BaseConfig
 
 public record LostEquipment
 {
-
-
     [JsonPropertyName("ArmBand")]
     public bool ArmBand { get; set; }
 

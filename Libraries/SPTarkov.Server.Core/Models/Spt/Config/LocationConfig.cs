@@ -144,8 +144,6 @@ public record LocationConfig : BaseConfig
 
 public record TransitSettings
 {
-
-
     [JsonPropertyName("effectsToRemove")]
     public HashSet<string>? EffectsToRemove { get; set; }
 
@@ -158,8 +156,6 @@ public record TransitSettings
 
 public record ReserveRaiderSpawnChanceOverrides
 {
-
-
     [JsonPropertyName("nonTriggered")]
     public int NonTriggered { get; set; }
 
@@ -169,8 +165,6 @@ public record ReserveRaiderSpawnChanceOverrides
 
 public record EquipmentLootSettings
 {
-
-
     /// <summary>
     ///     Percentage chance item will be added to equipment
     /// </summary>
@@ -180,8 +174,6 @@ public record EquipmentLootSettings
 
 public record RogueLighthouseSpawnTimeSettings
 {
-
-
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
 
@@ -191,8 +183,6 @@ public record RogueLighthouseSpawnTimeSettings
 
 public record CustomWaves
 {
-
-
     /// <summary>
     ///     Bosses spawn on raid start
     /// </summary>
@@ -211,8 +201,6 @@ public record BotTypeLimit : MinMax<int>
 
 public record ContainerRandomisationSettings
 {
-
-
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
 
@@ -237,8 +225,6 @@ public record ContainerRandomisationSettings
 
 public record ScavRaidTimeSettings
 {
-
-
     [JsonPropertyName("settings")]
     public required ScavRaidTimeConfigSettings Settings { get; set; }
 
@@ -248,16 +234,12 @@ public record ScavRaidTimeSettings
 
 public record ScavRaidTimeConfigSettings
 {
-
-
     [JsonPropertyName("trainArrivalDelayObservedSeconds")]
     public int TrainArrivalDelayObservedSeconds { get; set; }
 }
 
 public record ScavRaidTimeLocationSettings
 {
-
-
     /// <summary>
     ///     Should loot be reduced by same percent length of raid is reduced by
     /// </summary>

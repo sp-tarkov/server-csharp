@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Server;
 
 public record Locations
 {
-
-
     // sometimes we get the key or value given so save changing logic in each place
     // have it key both
     private readonly FrozenDictionary<string, string> _locationMappings = new Dictionary<string, string>

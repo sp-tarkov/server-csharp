@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Insurance;
 
 public record GetInsuranceCostRequestData : IRequestData
 {
-
-
     [JsonPropertyName("traders")]
     public List<MongoId>? Traders { get; set; }
 

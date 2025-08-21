@@ -9,8 +9,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record BotBase
 {
-
-
     [JsonPropertyName("_id")]
     public MongoId? Id { get; set; }
 
@@ -117,8 +115,6 @@ public record BotBase
 
 public record MoneyTransferLimits
 {
-
-
     // Resets every 24 hours in live
     /// <summary>
     ///     TODO: Implement
@@ -139,8 +135,6 @@ public record MoneyTransferLimits
 public record TaskConditionCounter
 {
     private string? _type;
-
-
 
     [JsonPropertyName("id")]
     public MongoId? Id { get; set; }
@@ -164,16 +158,12 @@ public record TaskConditionCounter
 
 public record UnlockedInfo
 {
-
-
     [JsonPropertyName("unlockedProductionRecipe")]
     public HashSet<MongoId>? UnlockedProductionRecipe { get; set; }
 }
 
 public record Info
 {
-
-
     private string? _side;
 
     public string? EntryPoint { get; set; }
@@ -262,8 +252,6 @@ public record Info
 
 public record BotInfoSettings
 {
-
-
     private string? _botDifficulty;
     private string? _role;
 
@@ -291,8 +279,6 @@ public record BotInfoSettings
 
 public record Ban
 {
-
-
     [JsonPropertyName("banType")]
     public BanType? BanType { get; set; }
 
@@ -313,8 +299,6 @@ public enum BanType
 
 public record Customization
 {
-
-
     public MongoId? Head { get; set; }
 
     public MongoId? Body { get; set; }
@@ -330,8 +314,6 @@ public record Customization
 
 public record BotBaseHealth
 {
-
-
     public CurrentMinMax? Hydration { get; set; }
 
     public CurrentMinMax? Energy { get; set; }
@@ -351,8 +333,6 @@ public record BotBaseHealth
 
 public record BodyPartHealth
 {
-
-
     public CurrentMinMax? Health { get; set; }
 
     public Dictionary<string, BodyPartEffectProperties?>? Effects { get; set; } // TODO: change key to DamageEffectType enum
@@ -360,8 +340,6 @@ public record BodyPartHealth
 
 public record BodyPartEffectProperties
 {
-
-
     // TODO: this was any, what actual type is it?
     public object? ExtraData { get; set; }
 
@@ -370,8 +348,6 @@ public record BodyPartEffectProperties
 
 public record CurrentMinMax
 {
-
-
     public double? Current { get; set; }
 
     public double? Minimum { get; set; }
@@ -385,8 +361,6 @@ public record CurrentMinMax
 
 public record BotBaseInventory
 {
-
-
     [JsonPropertyName("items")]
     public List<Item>? Items { get; set; }
 
@@ -432,8 +406,6 @@ public record BotBaseInventory
 
 public record Skills
 {
-
-
     public IEnumerable<CommonSkill> Common { get; set; }
 
     public IEnumerable<MasterySkill>? Mastering { get; set; }
@@ -443,8 +415,6 @@ public record Skills
 
 public record MasterySkill
 {
-
-
     public string Id { get; set; }
 
     public double Progress { get; set; }
@@ -452,8 +422,6 @@ public record MasterySkill
 
 public record CommonSkill
 {
-
-
     public double PointsEarnedDuringSession { get; set; }
 
     public long LastAccess { get; set; }
@@ -472,15 +440,11 @@ public record CommonSkill
 
 public record Stats
 {
-
-
     public EftStats? Eft { get; set; }
 }
 
 public record EftStats
 {
-
-
     public IEnumerable<string>? CarriedQuestItems { get; set; }
 
     public IEnumerable<Victim>? Victims { get; set; }
@@ -521,8 +485,6 @@ public record EftStats
 
 public record DroppedItem
 {
-
-
     public MongoId QuestId { get; set; }
 
     public MongoId? ItemId { get; set; }
@@ -532,8 +494,6 @@ public record DroppedItem
 
 public record FoundInRaidItem
 {
-
-
     public MongoId QuestId { get; set; }
 
     public MongoId? ItemId { get; set; }
@@ -541,8 +501,6 @@ public record FoundInRaidItem
 
 public record Victim
 {
-
-
     public string? AccountId { get; set; }
 
     public MongoId? ProfileId { get; set; }
@@ -572,22 +530,16 @@ public record Victim
 
 public record SessionCounters
 {
-
-
     public IEnumerable<CounterKeyValue>? Items { get; set; }
 }
 
 public record OverallCounters
 {
-
-
     public List<CounterKeyValue>? Items { get; set; }
 }
 
 public record CounterKeyValue
 {
-
-
     public HashSet<string>? Key { get; set; }
 
     public double? Value { get; set; }
@@ -595,8 +547,6 @@ public record CounterKeyValue
 
 public record Aggressor
 {
-
-
     public double? PrestigeLevel { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
@@ -627,8 +577,6 @@ public record Aggressor
 
 public record DamageHistory
 {
-
-
     public string? LethalDamagePart { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
@@ -641,8 +589,6 @@ public record DamageHistory
 
 public record BodyPartsDamageHistory
 {
-
-
     public List<DamageStats>? Head { get; set; }
 
     public List<DamageStats>? Chest { get; set; }
@@ -664,8 +610,6 @@ public record DamageStats
 {
     private string? _type;
 
-
-
     public double? Amount { get; set; }
 
     public string? Type
@@ -686,8 +630,6 @@ public record DamageStats
 
 public record DeathCause
 {
-
-
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public DamageType? DamageType { get; set; }
 
@@ -702,8 +644,6 @@ public record DeathCause
 
 public record LastPlayerState
 {
-
-
     public LastPlayerStateInfo? Info { get; set; }
 
     public Dictionary<string, string>? Customization { get; set; }
@@ -714,8 +654,6 @@ public record LastPlayerState
 
 public record LastPlayerStateInfo
 {
-
-
     public string? Nickname { get; set; }
 
     public string? Side { get; set; }
@@ -727,8 +665,6 @@ public record LastPlayerStateInfo
 
 public record BackendCounter
 {
-
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -741,8 +677,6 @@ public record BackendCounter
 
 public record InsuredItem
 {
-
-
     /// <summary>
     ///     Trader ID item was insured by
     /// </summary>
@@ -755,8 +689,6 @@ public record InsuredItem
 
 public record Hideout
 {
-
-
     public Dictionary<MongoId, Production?>? Production { get; set; }
 
     public List<BotHideoutArea>? Areas { get; set; }
@@ -781,8 +713,6 @@ public record Hideout
 
 public record HideoutCounters
 {
-
-
     [JsonPropertyName("fuelCounter")]
     public double? FuelCounter { get; set; }
 
@@ -798,8 +728,6 @@ public record HideoutCounters
 
 public record HideoutImprovement
 {
-
-
     [JsonPropertyName("completed")]
     public bool? Completed { get; set; }
 
@@ -809,8 +737,6 @@ public record HideoutImprovement
 
 public record Production // use this instead of productive and scavcase
 {
-
-
     public List<Item>? Products { get; set; }
 
     /// <summary>
@@ -885,8 +811,6 @@ public record Production // use this instead of productive and scavcase
 
 public record BotHideoutArea
 {
-
-
     [JsonPropertyName("type")]
     public HideoutAreas Type { get; set; }
 
@@ -917,8 +841,6 @@ public record BotHideoutArea
 
 public record HideoutSlot
 {
-
-
     /// <summary>
     ///     SPT specific value to keep track of what index this slot is (0,1,2,3 etc.)
     /// </summary>
@@ -931,16 +853,12 @@ public record HideoutSlot
 
 public record LastCompleted
 {
-
-
     [JsonPropertyName("$oid")]
     public string? OId { get; set; }
 }
 
 public record Notes
 {
-
-
     [JsonPropertyName("Notes")]
     public List<Note>? DataNotes { get; set; }
 }
@@ -956,8 +874,6 @@ public enum SurvivorClass
 
 public record TraderInfo
 {
-
-
     [JsonPropertyName("loyaltyLevel")]
     public int? LoyaltyLevel { get; set; }
 
@@ -979,8 +895,6 @@ public record TraderInfo
 
 public record RagfairInfo
 {
-
-
     [JsonPropertyName("rating")]
     public double? Rating { get; set; }
 
@@ -999,8 +913,6 @@ public record RagfairInfo
 
 public record Bonus
 {
-
-
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 

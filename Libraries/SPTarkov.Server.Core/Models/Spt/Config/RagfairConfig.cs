@@ -41,8 +41,6 @@ public record RagfairConfig : BaseConfig
 
 public record Sell
 {
-
-
     /// <summary>
     ///     Should a fee be deducted from player when listing an item for sale
     /// </summary>
@@ -70,8 +68,6 @@ public record Sell
 
 public record Chance
 {
-
-
     /// <summary>
     ///     Base chance percent to sell an item
     /// </summary>
@@ -99,8 +95,6 @@ public record Chance
 
 public record Dynamic
 {
-
-
     /// <summary>
     ///     Should a purchased dynamic offers items be flagged as found in raid
     /// </summary>
@@ -237,8 +231,6 @@ public record Dynamic
 
 public record PriceRanges
 {
-
-
     [JsonPropertyName("default")]
     public required MinMax<double> Default { get; set; }
 
@@ -251,8 +243,6 @@ public record PriceRanges
 
 public record BarterDetails
 {
-
-
     /// <summary>
     ///     Percentage change an offer is listed as a barter
     /// </summary>
@@ -298,8 +288,6 @@ public record BarterDetails
 
 public record PackDetails
 {
-
-
     /// <summary>
     ///     Percentage change an offer is listed as a pack
     /// </summary>
@@ -327,8 +315,6 @@ public record PackDetails
 
 public record OfferAdjustment
 {
-
-
     /// <summary>
     ///     Shuld offer price be adjusted when below handbook price
     /// </summary>
@@ -356,8 +342,6 @@ public record OfferAdjustment
 
 public record Condition
 {
-
-
     /// <summary>
     ///     Percentage change durability is altered
     /// </summary>
@@ -376,8 +360,6 @@ public record Condition
 
 public record RagfairBlacklist
 {
-
-
     /// <summary>
     ///     Damaged ammo packs
     /// </summary>
@@ -429,8 +411,6 @@ public record RagfairBlacklist
 
 public record ArmorPlateBlacklistSettings
 {
-
-
     /// <summary>
     ///     Max level of plates an armor can have without being removed
     /// </summary>
@@ -446,8 +426,6 @@ public record ArmorPlateBlacklistSettings
 
 public record UnreasonableModPrices
 {
-
-
     /// <summary>
     ///     Enable a system that adjusts very high ragfair prices to be below a max multiple of items the handbook values
     /// </summary>
@@ -472,8 +450,6 @@ public record UnreasonableModPrices
 
 public record ArmorSettings
 {
-
-
     /// <summary>
     ///     % chance / 100 that armor plates will be removed from an offer before listing
     /// </summary>
@@ -489,8 +465,6 @@ public record ArmorSettings
 
 public record TieredFlea
 {
-
-
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
 

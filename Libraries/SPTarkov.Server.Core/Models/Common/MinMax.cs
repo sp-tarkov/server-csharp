@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Common;
 public record MinMax<T>
     where T : IMinMaxValue<T>
 {
-
-
     public MinMax(T min, T max)
     {
         Min = min;

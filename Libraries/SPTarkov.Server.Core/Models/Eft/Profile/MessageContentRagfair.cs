@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 
 public record MessageContentRagfair
 {
-
-
     [JsonPropertyName("offerId")]
     public string? OfferId { get; set; }
 

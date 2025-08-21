@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record GetMailDialogInfoRequestData : IRequestData
 {
-
-
     [JsonPropertyName("dialogId")]
     public MongoId? DialogId { get; set; }
 }

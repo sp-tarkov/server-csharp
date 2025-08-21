@@ -7,8 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record GetMailDialogViewRequestData : IRequestData
 {
-
-
     [JsonPropertyName("type")]
     public MessageType? Type { get; set; }
 

@@ -74,8 +74,6 @@ public record QuestConfig : BaseConfig
 
 public record RepeatableQuestTemplates
 {
-
-
     /// <summary>
     ///     Pmc repeatable quest template ids keyed by type of quest
     /// Keys: elimination, completion, exploration
@@ -93,8 +91,6 @@ public record RepeatableQuestTemplates
 
 public record EventQuestData
 {
-
-
     /// <summary>
     ///     Name of the event quest
     /// </summary>
@@ -129,8 +125,6 @@ public record EventQuestData
 
 public record RepeatableQuestConfig
 {
-
-
     /// <summary>
     ///     Id for type of repeatable quest
     /// </summary>
@@ -244,8 +238,6 @@ public record RepeatableQuestConfig
 
 public record RewardScaling
 {
-
-
     /// <summary>
     ///     Levels at which to increase to the next level of reward potential
     /// </summary>
@@ -303,8 +295,6 @@ public record RewardScaling
 
 public record TraderWhitelist
 {
-
-
     /// <summary>
     ///     Trader Id
     /// </summary>
@@ -344,8 +334,6 @@ public record TraderWhitelist
 
 public record RepeatableQuestTypesConfig
 {
-
-
     /// <summary>
     ///     Defines exploration repeatable task generation parameters
     /// </summary>
@@ -394,8 +382,6 @@ public record Exploration : BaseQuestConfig
 
 public record SpecificExits
 {
-
-
     /// <summary>
     ///     Chance that an operational task is generated with a specific extract
     /// </summary>
@@ -485,8 +471,6 @@ public record Pickup : BaseQuestConfig
 
 public record PickupTypeWithMaxCount
 {
-
-
     [JsonPropertyName("itemType")]
     public string? ItemType { get; set; }
 
@@ -616,8 +600,6 @@ public record EliminationConfig : BaseQuestConfig
 
 public record BaseQuestConfig
 {
-
-
     /// <summary>
     ///     Possible skills that can be rewarded expirence points
     /// </summary>
@@ -627,8 +609,6 @@ public record BaseQuestConfig
 
 public record BossInfo
 {
-
-
     /// <summary>
     ///     Is this target a boss
     /// </summary>

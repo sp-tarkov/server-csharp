@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record EndOfflineRaidRequestData
 {
-
-
     [JsonPropertyName("crc")]
     public int? Crc { get; set; }
 

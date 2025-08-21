@@ -38,8 +38,6 @@ public record RepairConfig : BaseConfig
 
 public record IntellectGainValues
 {
-
-
     [JsonPropertyName("weapon")]
     public double Weapon { get; set; }
 
@@ -49,8 +47,6 @@ public record IntellectGainValues
 
 public record MaxIntellectGainValues
 {
-
-
     [JsonPropertyName("kit")]
     public double Kit { get; set; }
 
@@ -60,8 +56,6 @@ public record MaxIntellectGainValues
 
 public record WeaponTreatmentRepairValues
 {
-
-
     /// <summary>
     ///     The chance to gain more weapon maintenance skill
     /// </summary>
@@ -89,8 +83,6 @@ public record WeaponTreatmentRepairValues
 
 public record RepairKit
 {
-
-
     [JsonPropertyName("armor")]
     public required BonusSettings Armor { get; set; }
 
@@ -106,8 +98,6 @@ public record RepairKit
 
 public record BonusSettings
 {
-
-
     [JsonPropertyName("rarityWeight")]
     public required Dictionary<string, double> RarityWeight { get; set; }
 
@@ -123,8 +113,6 @@ public record BonusSettings
 
 public record BonusValues
 {
-
-
     [JsonPropertyName("valuesMinMax")]
     public required MinMax<double> ValuesMinMax { get; set; }
 

@@ -8,8 +8,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record TemplateItem
 {
-
-
     private Dictionary<string, bool>? _blocks;
 
     private string? _name;
@@ -72,8 +70,6 @@ public record TemplateItem
 
 public record Props
 {
-
-
     private string? _backgroundColor;
 
     private string? _itemSound;
@@ -1576,8 +1572,6 @@ public record Props
 
 public record WeaponRecoilSettings
 {
-
-
     [JsonPropertyName("Enable")]
     public bool? Enable { get; set; }
 
@@ -1587,8 +1581,6 @@ public record WeaponRecoilSettings
 
 public record WeaponRecoilSettingValues
 {
-
-
     [JsonPropertyName("Enable")]
     public bool? Enable { get; set; }
 
@@ -1601,8 +1593,6 @@ public record WeaponRecoilSettingValues
 
 public record WeaponRecoilProcess
 {
-
-
     [JsonPropertyName("ComponentType")]
     public string? ComponentType { get; set; }
 
@@ -1621,16 +1611,12 @@ public record WeaponRecoilProcess
 
 public record WeaponRecoilTransformationCurve
 {
-
-
     [JsonPropertyName("Keys")]
     public IEnumerable<WeaponRecoilTransformationCurveKey>? Keys { get; set; }
 }
 
 public record WeaponRecoilTransformationCurveKey
 {
-
-
     [JsonPropertyName("inTangent")]
     public double? InTangent { get; set; }
 
@@ -1646,8 +1632,6 @@ public record WeaponRecoilTransformationCurveKey
 
 public record HealthEffect
 {
-
-
     [JsonPropertyName("type")]
     public string? Type { get; set; }
 
@@ -1657,8 +1641,6 @@ public record HealthEffect
 
 public record Prefab
 {
-
-
     [JsonPropertyName("path")]
     public string? Path { get; set; }
 
@@ -1668,8 +1650,6 @@ public record Prefab
 
 public record Grid
 {
-
-
     [JsonPropertyName("_name")]
     public string? Name { get; set; }
 
@@ -1688,8 +1668,6 @@ public record Grid
 
 public record GridProps
 {
-
-
     [JsonPropertyName("filters")]
     public IEnumerable<GridFilter>? Filters { get; set; }
 
@@ -1714,8 +1692,6 @@ public record GridProps
 
 public record GridFilter
 {
-
-
     [JsonPropertyName("Filter")]
     public HashSet<MongoId>? Filter { get; set; }
 
@@ -1728,8 +1704,6 @@ public record GridFilter
 
 public record Slot
 {
-
-
     private string? _name;
 
     private string? _proto;
@@ -1769,8 +1743,6 @@ public record Slot
 
 public record SlotProps
 {
-
-
     [JsonPropertyName("filters")]
     public IEnumerable<SlotFilter>? Filters { get; set; }
 
@@ -1780,8 +1752,6 @@ public record SlotProps
 
 public record SlotFilter
 {
-
-
     [JsonPropertyName("Shift")]
     public double? Shift { get; set; }
 
@@ -1812,8 +1782,6 @@ public record SlotFilter
 
 public record StackSlot
 {
-
-
     [JsonPropertyName("_name")]
     public string? Name { get; set; }
 
@@ -1838,16 +1806,12 @@ public record StackSlot
 
 public record StackSlotProps
 {
-
-
     [JsonPropertyName("filters")]
     public IEnumerable<SlotFilter>? Filters { get; set; }
 }
 
 public record RandomLootSettings
 {
-
-
     [JsonPropertyName("allowToSpawnIdenticalItems")]
     public bool? AllowToSpawnIdenticalItems { get; set; }
 
@@ -1875,8 +1839,6 @@ public record RandomLootSettings
 
 public record RandomLootExcluded
 {
-
-
     [JsonPropertyName("categoryTemplates")]
     public IEnumerable<object>? CategoryTemplates { get; set; } // TODO: object here
 
@@ -1889,8 +1851,6 @@ public record RandomLootExcluded
 
 public record EffectsHealth
 {
-
-
     [JsonPropertyName("Energy")]
     public EffectsHealthProps? Energy { get; set; }
 
@@ -1900,8 +1860,6 @@ public record EffectsHealth
 
 public record EffectsHealthProps
 {
-
-
     [JsonPropertyName("value")]
     public double? Value { get; set; }
 
@@ -1914,8 +1872,6 @@ public record EffectsHealthProps
 
 public record EffectsDamage
 {
-
-
     [JsonPropertyName("Pain")]
     public EffectDamageProps? Pain { get; set; }
 
@@ -1940,8 +1896,6 @@ public record EffectsDamage
 
 public record EffectDamageProps
 {
-
-
     [JsonPropertyName("value")]
     public double? Value { get; set; }
 
@@ -1966,8 +1920,6 @@ public record EffectDamageProps
 
 public record Color
 {
-
-
     [JsonPropertyName("r")]
     public double? R { get; set; }
 
@@ -1983,8 +1935,6 @@ public record Color
 
 public record ShotsGroupSettings
 {
-
-
     [JsonPropertyName("EndShotIndex")]
     public double? EndShotIndex { get; set; }
 

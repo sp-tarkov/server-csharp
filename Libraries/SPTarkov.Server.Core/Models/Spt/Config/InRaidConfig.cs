@@ -64,8 +64,6 @@ public record InRaidConfig : BaseConfig
 
 public record RaidMenuSettings
 {
-
-
     [JsonPropertyName("aiAmount")]
     public required string AiAmount { get; set; }
 

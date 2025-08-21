@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record ChooseRandomCompatibleModResult
 {
-
-
     [JsonPropertyName("incompatible")]
     public bool? Incompatible { get; set; }
 

@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Hideout;
 
 public record ScavCaseRewardCountsAndPrices
 {
-
-
     [JsonPropertyName("Common")]
     public RewardCountAndPriceDetails? Common { get; set; }
 
@@ -18,8 +16,6 @@ public record ScavCaseRewardCountsAndPrices
 
 public record RewardCountAndPriceDetails
 {
-
-
     [JsonPropertyName("minCount")]
     public double? MinCount { get; set; }
 

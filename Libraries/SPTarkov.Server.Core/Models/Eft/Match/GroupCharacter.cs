@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record GroupCharacter
 {
-
-
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
 
@@ -35,8 +33,6 @@ public record GroupCharacter
 
 public record CharacterInfo
 {
-
-
     [JsonPropertyName("Nickname")]
     public string? Nickname { get; set; }
 
@@ -64,8 +60,6 @@ public record CharacterInfo
 
 public record PlayerVisualRepresentation
 {
-
-
     [JsonPropertyName("Info")]
     public VisualInfo? Info { get; set; }
 
@@ -78,8 +72,6 @@ public record PlayerVisualRepresentation
 
 public record VisualInfo
 {
-
-
     [JsonPropertyName("Side")]
     public string? Side { get; set; }
 
@@ -98,8 +90,6 @@ public record VisualInfo
 
 public record Customization
 {
-
-
     [JsonPropertyName("Head")]
     public string? Head { get; set; }
 
@@ -115,8 +105,6 @@ public record Customization
 
 public record Equipment
 {
-
-
     [JsonPropertyName("Id")]
     public string? Id { get; set; }
 

@@ -7,16 +7,12 @@ namespace SPTarkov.Server.Core.Models.Eft.Health;
 
 public class WorkoutData : IRequestData
 {
-
-
     [JsonPropertyName("skills")]
     public WorkoutSkills? Skills { get; set; }
 }
 
 public record WorkoutSkills
 {
-
-
     [JsonPropertyName("Common")]
     public List<CommonSkill> Common { get; set; }
 

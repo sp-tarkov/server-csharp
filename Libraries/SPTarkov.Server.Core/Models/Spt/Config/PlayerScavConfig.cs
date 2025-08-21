@@ -16,8 +16,6 @@ public record PlayerScavConfig : BaseConfig
 
 public record KarmaLevel
 {
-
-
     [JsonPropertyName("botTypeForLoot")]
     public required string BotTypeForLoot { get; set; }
 
@@ -36,8 +34,6 @@ public record KarmaLevel
 
 public record Modifiers
 {
-
-
     [JsonPropertyName("equipment")]
     public required Dictionary<string, double> Equipment { get; set; }
 

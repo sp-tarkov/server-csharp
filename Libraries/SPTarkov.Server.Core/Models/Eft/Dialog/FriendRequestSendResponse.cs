@@ -5,8 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record FriendRequestSendResponse
 {
-
-
     [JsonPropertyName("status")]
     public BackendErrorCodes? Status { get; set; }
 

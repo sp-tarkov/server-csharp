@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record SendMessageRequest : IRequestData
 {
-
-
     [JsonPropertyName("dialogId")]
     public required string DialogId { get; set; }
 

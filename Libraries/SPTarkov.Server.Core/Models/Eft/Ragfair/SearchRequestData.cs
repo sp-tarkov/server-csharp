@@ -7,8 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Ragfair;
 
 public record SearchRequestData : IRequestData
 {
-
-
     [JsonPropertyName("page")]
     public int? Page { get; set; }
 

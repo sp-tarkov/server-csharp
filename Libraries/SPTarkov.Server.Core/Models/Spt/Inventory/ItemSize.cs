@@ -4,8 +4,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Inventory;
 
 public record ItemSize
 {
-
-
     [JsonPropertyName("width")]
     public required int Width { get; set; }
 

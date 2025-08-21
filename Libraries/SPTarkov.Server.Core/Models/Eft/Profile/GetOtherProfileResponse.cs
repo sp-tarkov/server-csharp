@@ -6,8 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 
 public record GetOtherProfileResponse
 {
-
-
     [JsonPropertyName("id")]
     public MongoId? Id { get; set; }
 
@@ -53,8 +51,6 @@ public record GetOtherProfileResponse
 
 public record OtherProfileInfo
 {
-
-
     [JsonPropertyName("nickname")]
     public string? Nickname { get; set; }
 
@@ -79,8 +75,6 @@ public record OtherProfileInfo
 
 public record OtherProfileCustomization
 {
-
-
     [JsonPropertyName("head")]
     public string? Head { get; set; }
 
@@ -102,8 +96,6 @@ public record OtherProfileCustomization
 
 public record OtherProfileEquipment
 {
-
-
     [JsonPropertyName("Id")]
     public string? Id { get; set; }
 
@@ -113,16 +105,12 @@ public record OtherProfileEquipment
 
 public record OtherProfileStats
 {
-
-
     [JsonPropertyName("eft")]
     public OtherProfileSubStats? Eft { get; set; }
 }
 
 public record OtherProfileSubStats
 {
-
-
     [JsonPropertyName("totalInGameTime")]
     public long? TotalInGameTime { get; set; }
 

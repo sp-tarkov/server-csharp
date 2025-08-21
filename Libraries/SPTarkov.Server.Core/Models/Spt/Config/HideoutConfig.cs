@@ -48,8 +48,6 @@ public record HideoutConfig : BaseConfig
 
 public record HideoutCraftToAdd
 {
-
-
     /// <summary>
     ///     The new mongoId for the craft to use
     /// </summary>
@@ -68,8 +66,6 @@ public record HideoutCraftToAdd
 
 public record CultistCircleSettings
 {
-
-
     [JsonPropertyName("maxRewardItemCount")]
     public int MaxRewardItemCount { get; set; }
 
@@ -145,8 +141,6 @@ public record CraftTimeThreshold : MinMax<int>
 
 public record DirectRewardSettings
 {
-
-
     [JsonPropertyName("reward")]
     public required List<MongoId> Reward { get; set; }
 
