@@ -29,11 +29,6 @@ public class RemoveGInterfaceFromVictims : AbstractProfileMigration
 
     public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
     {
-        if (!ProgramStatics.DEBUG())
-        {
-            return false;
-        }
-
         if (profile?["characters"]?["pmc"]?["Stats"]?["Eft"]?["Victims"] is JsonArray victims)
         {
             foreach (var victim in victims)
