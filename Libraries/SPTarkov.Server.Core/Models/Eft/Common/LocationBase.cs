@@ -85,6 +85,9 @@ public record LocationBase
     [JsonPropertyName("BotMaxPlayer")]
     public int? BotMaxPlayer { get; set; }
 
+    [JsonPropertyName("BotMaxPvE")]
+    public int? BotMaxPvE { get; set; }
+
     /// <summary>
     ///     Is not used in 33420
     /// </summary>

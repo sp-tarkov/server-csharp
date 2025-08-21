@@ -26,11 +26,20 @@ public record Achievement
     [JsonPropertyName("conditions")]
     public required AchievementQuestConditionTypes Conditions { get; set; }
 
+    [JsonPropertyName("instantComplete")]
+    public bool? InstantComplete { get; set; }
+
+    [JsonPropertyName("showNotificationsInGame")]
+    public bool? ShowNotificationsInGame { get; set; }
+
     /// <summary>
     /// Unused in the client
     /// </summary>
     [JsonPropertyName("showProgress")]
     public bool? ShowProgress { get; set; }
+
+    [JsonPropertyName("prefab")]
+    public string? prefab { get; set; }
 
     [JsonPropertyName("rarity")]
     public required string Rarity { get; set; }

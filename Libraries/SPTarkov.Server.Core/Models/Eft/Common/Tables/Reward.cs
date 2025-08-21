@@ -70,12 +70,12 @@ public record Reward
 
 public record IllustrationConfig
 {
-    [JsonPropertyName("Image")]
-    public string image { get; set; }
+    [JsonPropertyName("image")]
+    public string Image { get; set; }
 
-    [JsonPropertyName("BigImage")]
-    public string bigImage { get; set; }
+    [JsonPropertyName("bigImage")]
+    public string BigImage { get; set; }
 
-    [JsonPropertyName("IsBigImage")]
-    public bool isBigImage { get; set; }
+    [JsonPropertyName("isBigImage")]
+    public bool IsBigImage { get; set; }
 }
