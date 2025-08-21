@@ -2,6 +2,7 @@
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
+using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
@@ -13,7 +14,7 @@ public class AchievementCallbacks(AchievementController achievementController, H
     ///     Handle client/achievement/list
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> GetAchievements(string url, EmptyRequestData _, MongoId sessionID)
+    public ValueTask<string> GetAchievements(string url, GetAchievementListRequest _, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetBody(achievementController.GetAchievements(sessionID)));
     }

@@ -2,6 +2,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
+using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 
@@ -163,7 +164,7 @@ public class DataCallbacks(
     /// <summary>
     /// Handle /client/dialogue
     /// </summary>
-    public ValueTask<string> GetDialogue(string url, object request, MongoId sessionID)
+    public ValueTask<string> GetDialogue(string url, GetClientDialogueRequestData request, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetUnclearedBody(databaseService.GetTemplates().Dialogue));
     }

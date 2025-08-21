@@ -2,6 +2,7 @@
 using SPTarkov.Server.Core.Callbacks;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common;
+using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Routers.Static;
@@ -55,7 +56,7 @@ public class DataStaticRouter(JsonUtil jsonUtil, DataCallbacks dataCallbacks)
                 "/client/hideout/qte/list",
                 async (url, info, sessionID, output) => await dataCallbacks.GetQteList(url, info, sessionID)
             ),
-            new RouteAction<EmptyRequestData>(
+            new RouteAction<GetClientDialogueRequestData>(
                 "/client/dialogue",
                 async (url, info, sessionID, output) => await dataCallbacks.GetDialogue(url, info, sessionID)
             ),
