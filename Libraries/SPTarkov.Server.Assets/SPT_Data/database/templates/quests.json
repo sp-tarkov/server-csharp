@@ -173115,7 +173115,7 @@
                 "id": "6863d358174b4154c6482db8",
                 "target": "tar_event_1_1_exp1",
                 "value": 1
-  }
+              }
             ],
             "id": "6863d34868d088f8ddefb648"
           },
@@ -173143,7 +173143,7 @@
                 "id": "6863d373c33500b2639df4cd",
                 "target": "tar_event_1_1_exp3",
                 "value": 1
-}
+              }
             ],
             "id": "6863d36f05ccd1bc5570c253"
           },
