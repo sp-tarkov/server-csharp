@@ -84,8 +84,14 @@ public record TraderBase
     [JsonPropertyName("items_sell")]
     public Dictionary<string, ItemSellData>? ItemsSell { get; set; }
 
+    [JsonPropertyName("isAvailableInPVE")]
+    public bool IsAvailableInPVE { get; set; }
+
     [JsonPropertyName("isCanTransferItems")]
-    public bool? IsCanTransferItems { get; set; }
+    public bool IsCanTransferItems { get; set; }
+
+    [JsonPropertyName("isCanTransferItemsFromPve")]
+    public bool IsCanTransferItemsFromPve { get; set; }
 
     [JsonPropertyName("transferableItems")]
     public ItemBuyData? TransferableItems { get; set; }
@@ -99,11 +105,14 @@ public record TraderBase
     [JsonPropertyName("loyaltyLevels")]
     public List<TraderLoyaltyLevel>? LoyaltyLevels { get; set; }
 
+    [JsonPropertyName("mainDialogue")]
+    public string? MainDialogue { get; set; }
+
     [JsonPropertyName("medic")]
     public bool? Medic { get; set; }
 
     [JsonPropertyName("name")]
-    public string? Name { get; set; }
+    public string Name { get; set; }
 
     // Confirmed in client
     [JsonPropertyName("nextResupply")]
