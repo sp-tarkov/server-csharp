@@ -22,12 +22,12 @@
       "Experience": -1,
       "StandingForKill": -0.04,
       "AggressorBonus": 0.02,
-	  "UseSimpleAnimator": false
+      "UseSimpleAnimator": false
     },
     "NicknameChangeDate": 0,
     "NeedWipeOptions": [],
     "lastCompletedWipe": null,
-	"lastWipeTimestamp": null,
+    "lastWipeTimestamp": null,
     "lastCompletedEvent": null,
     "BannedState": false,
     "BannedUntil": 0,
