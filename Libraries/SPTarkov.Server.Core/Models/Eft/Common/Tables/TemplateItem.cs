@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Constants;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Health;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
@@ -109,6 +110,9 @@ public record Props
     [JsonPropertyName("Description")]
     public string? Description { get; set; }
 
+    [JsonPropertyName("DialogId")]
+    public string? DialogId { get; set; }
+
     [JsonPropertyName("Weight")]
     public double? Weight { get; set; }
 
@@ -150,6 +154,9 @@ public record Props
         get { return _itemSound; }
         set { _itemSound = string.Intern(value); }
     }
+
+    [JsonPropertyName("LeftHandItem")]
+    public bool? LeftHandItem { get; set; }
 
     [JsonPropertyName("Prefab")] // TODO: TYPE FUCKERY: can be a Prefab object or empty string or a string
     public Prefab? Prefab { get; set; }
@@ -1209,6 +1216,9 @@ public record Props
     [JsonPropertyName("hpResourceRate")]
     public double? HpResourceRate { get; set; }
 
+    [JsonPropertyName("bodyPartPriority")]
+    public string[]? BodyPartPriority { get; set; }
+
     [JsonPropertyName("apResource")]
     public double? ApResource { get; set; }
 
@@ -1475,6 +1485,9 @@ public record Props
 
     [JsonPropertyName("MinTimeToContactExplode")]
     public double? MinTimeToContactExplode { get; set; }
+
+    [JsonPropertyName("PlayFuzeSound")]
+    public bool? PlayFuzeSound { get; set; }
 
     [JsonPropertyName("ExplosionEffectType")]
     public string? ExplosionEffectType { get; set; }

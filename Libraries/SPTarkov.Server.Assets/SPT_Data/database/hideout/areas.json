@@ -2240,26 +2240,16 @@
         "requirements": [
           {
             "areaType": 4,
-            "requiredLevel": 2,
-            "type": "Area"
-          },
-          {
-            "areaType": 5,
-            "requiredLevel": 2,
+            "requiredLevel": 1,
             "type": "Area"
           },
           {
             "templateId": "5449016a4bdc2d6f028b456f",
-            "count": 35000,
+            "count": 75000,
             "isFunctional": false,
             "isEncoded": false,
             "isSpawnedInSession": false,
             "type": "Item"
-          },
-          {
-            "traderId": "5ac3b934156ae10c4430e83c",
-            "loyaltyLevel": 2,
-            "type": "TraderLoyalty"
           },
           {
             "areaType": 9,
@@ -2284,7 +2274,7 @@
           },
           {
             "templateId": "590a3cd386f77436f20848cb",
-            "count": 3,
+            "count": 2,
             "isFunctional": false,
             "isEncoded": false,
             "isSpawnedInSession": true,
@@ -2310,7 +2300,7 @@
           }
         ],
         "slots": 0,
-        "constructionTime": 7200.0,
+        "constructionTime": 3600.0,
         "description": "",
         "container": "",
         "autoUpgrade": false,
@@ -2321,18 +2311,8 @@
       "3": {
         "requirements": [
           {
-            "areaType": 4,
-            "requiredLevel": 3,
-            "type": "Area"
-          },
-          {
-            "areaType": 5,
-            "requiredLevel": 3,
-            "type": "Area"
-          },
-          {
             "templateId": "59e36c6f86f774176c10a2a7",
-            "count": 4,
+            "count": 3,
             "isFunctional": false,
             "isEncoded": false,
             "isSpawnedInSession": true,
@@ -2340,7 +2320,7 @@
           },
           {
             "templateId": "5c06782b86f77426df5407d2",
-            "count": 5,
+            "count": 3,
             "isFunctional": false,
             "isEncoded": false,
             "isSpawnedInSession": true,
@@ -2348,14 +2328,6 @@
           },
           {
             "templateId": "5c06779c86f77426e00dd782",
-            "count": 7,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "5e2aedd986f7746d404f3aa4",
             "count": 5,
             "isFunctional": false,
             "isEncoded": false,
@@ -2363,9 +2335,12 @@
             "type": "Item"
           },
           {
-            "traderId": "58330581ace78e27b8b10cee",
-            "loyaltyLevel": 3,
-            "type": "TraderLoyalty"
+            "templateId": "5e2aedd986f7746d404f3aa4",
+            "count": 4,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
           },
           {
             "areaType": 9,
@@ -2389,10 +2364,24 @@
             "production": false,
             "visible": true,
             "type": "MaximumEnergyReserve"
+          },
+          {
+            "id": "684160627de758fa180b3728",
+            "value": 1.0,
+            "passive": true,
+            "production": false,
+            "visible": true,
+            "filter": [
+              "68406efe068a2d99940c1ce3",
+              "68750378555049ec270cdab7",
+              "689f6f33b3b8c90a1c0545b8"
+            ],
+            "icon": "/files/Hideout/icon_hideout_fuelslots.png",
+            "type": "AdditionalSlots"
           }
         ],
         "slots": 0,
-        "constructionTime": 36000.0,
+        "constructionTime": 7200.0,
         "description": "",
         "container": "",
         "autoUpgrade": false,
@@ -2670,12 +2659,12 @@
         "requirements": [
           {
             "areaType": 1,
-            "requiredLevel": 2,
+            "requiredLevel": 1,
             "type": "Area"
           },
           {
             "areaType": 0,
-            "requiredLevel": 2,
+            "requiredLevel": 1,
             "type": "Area"
           },
           {
@@ -5995,7 +5984,7 @@
           },
           {
             "areaType": 1,
-            "requiredLevel": 2,
+            "requiredLevel": 1,
             "type": "Area"
           },
           {
@@ -6063,7 +6052,7 @@
           }
         ],
         "slots": 0,
-        "constructionTime": 21600.0,
+        "constructionTime": 3600.0,
         "description": "",
         "container": "66740c3739b9da6ce402ee65",
         "autoUpgrade": false,

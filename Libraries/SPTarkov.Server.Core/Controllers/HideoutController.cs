@@ -52,6 +52,7 @@ public class HideoutController(
         HideoutAreas.WaterCollector,
         HideoutAreas.Generator,
         HideoutAreas.BitcoinFarm,
+        HideoutAreas.RestSpace,
     ];
 
     protected readonly HideoutConfig _hideoutConfig = configServer.GetConfig<HideoutConfig>();
@@ -417,7 +418,7 @@ public class HideoutController(
             if (hideoutSlotIndex == -1)
             {
                 logger.Error(
-                    $"Unable to put item: {item.requestedItem.Id} into slot as slot cannot be found for area: {addItemToHideoutRequest.AreaType}, skipping"
+                    $"Unable to put item: {item.requestedItem.Id} into slot {destinationLocationIndex} as slot cannot be found for area: {addItemToHideoutRequest.AreaType}, skipping"
                 );
                 continue;
             }
