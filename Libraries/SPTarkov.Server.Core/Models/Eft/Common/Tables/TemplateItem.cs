@@ -151,6 +151,9 @@ public record Props
         set { _itemSound = string.Intern(value); }
     }
 
+    [JsonPropertyName("LeftHandItem")]
+    public bool? LeftHandItem { get; set; }
+
     [JsonPropertyName("Prefab")] // TODO: TYPE FUCKERY: can be a Prefab object or empty string or a string
     public Prefab? Prefab { get; set; }
 
@@ -1201,6 +1204,12 @@ public record Props
 
     [JsonPropertyName("medEffectType")]
     public string? MedEffectType { get; set; }
+
+    /// <summary>
+    /// E.g. "Stomach" or "RightLeg"
+    /// </summary>
+    [JsonPropertyName("BodyPartPriority")]
+    public List<string>? BodyPartPriority { get; set; }
 
     // Confirmed in client
     [JsonPropertyName("MaxHpResource")]
