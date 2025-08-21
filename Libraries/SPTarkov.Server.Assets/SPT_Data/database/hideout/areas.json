@@ -2164,247 +2164,6 @@
     "parentArea": null
   },
   {
-    "_id": "5d484fd6654e76051d3cc791",
-    "type": 9,
-    "enabled": true,
-    "needsFuel": true,
-    "takeFromSlotLocked": false,
-    "craftGivesExp": true,
-    "displayLevel": true,
-    "requirements": [],
-    "stages": {
-      "0": {
-        "requirements": [],
-        "bonuses": [],
-        "slots": 0,
-        "constructionTime": 0.0,
-        "description": "",
-        "container": "",
-        "autoUpgrade": false,
-        "displayInterface": true,
-        "improvements": [],
-        "globalCounterId": null
-      },
-      "1": {
-        "requirements": [
-          {
-            "areaType": 0,
-            "requiredLevel": 1,
-            "type": "Area"
-          },
-          {
-            "templateId": "5449016a4bdc2d6f028b456f",
-            "count": 10000,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": false,
-            "type": "Item"
-          },
-          {
-            "templateId": "57347c1124597737fb1379e3",
-            "count": 1,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "57347b8b24597737dd42e192",
-            "count": 1,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          }
-        ],
-        "bonuses": [
-          {
-            "id": "64f5b9e5fa34f11b380756e0",
-            "value": -10,
-            "passive": true,
-            "production": false,
-            "visible": true,
-            "type": "DebuffEndDelay"
-          }
-        ],
-        "slots": 0,
-        "constructionTime": 0.0,
-        "description": "",
-        "container": "",
-        "autoUpgrade": false,
-        "displayInterface": true,
-        "improvements": [],
-        "globalCounterId": null
-      },
-      "2": {
-        "requirements": [
-          {
-            "areaType": 4,
-            "requiredLevel": 2,
-            "type": "Area"
-          },
-          {
-            "areaType": 5,
-            "requiredLevel": 2,
-            "type": "Area"
-          },
-          {
-            "templateId": "5449016a4bdc2d6f028b456f",
-            "count": 35000,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": false,
-            "type": "Item"
-          },
-          {
-            "traderId": "5ac3b934156ae10c4430e83c",
-            "loyaltyLevel": 2,
-            "type": "TraderLoyalty"
-          },
-          {
-            "areaType": 9,
-            "requiredLevel": 1,
-            "type": "Area"
-          },
-          {
-            "templateId": "5734781f24597737e04bf32a",
-            "count": 1,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "590a391c86f774385a33c404",
-            "count": 1,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "590a3cd386f77436f20848cb",
-            "count": 3,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          }
-        ],
-        "bonuses": [
-          {
-            "id": "64f5b9e5fa34f11b380756e3",
-            "value": 5.0,
-            "passive": true,
-            "production": false,
-            "visible": true,
-            "type": "EnergyRegeneration"
-          },
-          {
-            "id": "64f5b9e5fa34f11b380756e4",
-            "value": 5.0,
-            "passive": true,
-            "production": false,
-            "visible": true,
-            "type": "HealthRegeneration"
-          }
-        ],
-        "slots": 0,
-        "constructionTime": 7200.0,
-        "description": "",
-        "container": "",
-        "autoUpgrade": false,
-        "displayInterface": true,
-        "improvements": [],
-        "globalCounterId": null
-      },
-      "3": {
-        "requirements": [
-          {
-            "areaType": 4,
-            "requiredLevel": 3,
-            "type": "Area"
-          },
-          {
-            "areaType": 5,
-            "requiredLevel": 3,
-            "type": "Area"
-          },
-          {
-            "templateId": "59e36c6f86f774176c10a2a7",
-            "count": 4,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "5c06782b86f77426df5407d2",
-            "count": 5,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "5c06779c86f77426e00dd782",
-            "count": 7,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "5e2aedd986f7746d404f3aa4",
-            "count": 5,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "traderId": "58330581ace78e27b8b10cee",
-            "loyaltyLevel": 3,
-            "type": "TraderLoyalty"
-          },
-          {
-            "areaType": 9,
-            "requiredLevel": 2,
-            "type": "Area"
-          }
-        ],
-        "bonuses": [
-          {
-            "id": "64f5b9e5fa34f11b380756e7",
-            "value": 10.0,
-            "passive": true,
-            "production": false,
-            "visible": true,
-            "type": "HealthRegeneration"
-          },
-          {
-            "id": "64f5b9e5fa34f11b380756e8",
-            "value": 10.0,
-            "passive": true,
-            "production": false,
-            "visible": true,
-            "type": "MaximumEnergyReserve"
-          }
-        ],
-        "slots": 0,
-        "constructionTime": 36000.0,
-        "description": "",
-        "container": "",
-        "autoUpgrade": false,
-        "displayInterface": true,
-        "improvements": [],
-        "globalCounterId": null
-      }
-    },
-    "enableAreaRequirements": false,
-    "parentArea": null
-  },
-  {
     "_id": "5d484fda654e7600681d9315",
     "type": 10,
     "enabled": true,
@@ -2633,286 +2392,6 @@
         ],
         "slots": 0,
         "constructionTime": 39600.0,
-        "description": "",
-        "container": "",
-        "autoUpgrade": false,
-        "displayInterface": true,
-        "improvements": [],
-        "globalCounterId": null
-      }
-    },
-    "enableAreaRequirements": false,
-    "parentArea": null
-  },
-  {
-    "_id": "5d484fdf654e7600691aadf8",
-    "type": 11,
-    "enabled": true,
-    "needsFuel": true,
-    "takeFromSlotLocked": false,
-    "craftGivesExp": true,
-    "displayLevel": true,
-    "requirements": [],
-    "stages": {
-      "0": {
-        "requirements": [],
-        "bonuses": [],
-        "slots": 0,
-        "constructionTime": 0.0,
-        "description": "",
-        "container": "",
-        "autoUpgrade": false,
-        "displayInterface": true,
-        "improvements": [],
-        "globalCounterId": null
-      },
-      "1": {
-        "requirements": [
-          {
-            "areaType": 1,
-            "requiredLevel": 2,
-            "type": "Area"
-          },
-          {
-            "areaType": 0,
-            "requiredLevel": 2,
-            "type": "Area"
-          },
-          {
-            "templateId": "5c12613b86f7743bbe2c3f76",
-            "count": 1,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "62a0a124de7ac81993580542",
-            "count": 1,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "574eb85c245977648157eec3",
-            "count": 1,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": false,
-            "type": "Item"
-          }
-        ],
-        "bonuses": [
-          {
-            "id": "64f5b9e5fa34f11b380756eb",
-            "value": -15,
-            "passive": true,
-            "production": false,
-            "visible": true,
-            "type": "ScavCooldownTimer"
-          },
-          {
-            "id": "64f5b9e5fa34f11b380756ec",
-            "value": 5.0,
-            "passive": true,
-            "production": false,
-            "visible": true,
-            "type": "QuestMoneyReward"
-          }
-        ],
-        "slots": 0,
-        "constructionTime": 0.0,
-        "description": "",
-        "container": "",
-        "autoUpgrade": false,
-        "displayInterface": true,
-        "improvements": [],
-        "globalCounterId": null
-      },
-      "2": {
-        "requirements": [
-          {
-            "templateId": "5c12613b86f7743bbe2c3f76",
-            "count": 3,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "590c621186f774138d11ea29",
-            "count": 3,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "59e36c6f86f774176c10a2a7",
-            "count": 7,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "590a386e86f77429692b27ab",
-            "count": 4,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "areaType": 1,
-            "requiredLevel": 3,
-            "type": "Area"
-          },
-          {
-            "areaType": 7,
-            "requiredLevel": 3,
-            "type": "Area"
-          },
-          {
-            "areaType": 8,
-            "requiredLevel": 3,
-            "type": "Area"
-          },
-          {
-            "skillName": "Attention",
-            "skillLevel": 3,
-            "type": "Skill"
-          },
-          {
-            "areaType": 11,
-            "requiredLevel": 1,
-            "type": "Area"
-          },
-          {
-            "traderId": "5a7c2eca46aef81a7ca2145d",
-            "loyaltyLevel": 2,
-            "type": "TraderLoyalty"
-          }
-        ],
-        "bonuses": [
-          {
-            "id": "64f5b9e5fa34f11b380756ef",
-            "value": 10.0,
-            "passive": true,
-            "production": false,
-            "visible": true,
-            "type": "QuestMoneyReward"
-          },
-          {
-            "id": "64f5b9e5fa34f11b380756f0",
-            "value": -20,
-            "passive": true,
-            "production": false,
-            "visible": true,
-            "type": "InsuranceReturnTime"
-          }
-        ],
-        "slots": 0,
-        "constructionTime": 21600.0,
-        "description": "",
-        "container": "",
-        "autoUpgrade": false,
-        "displayInterface": true,
-        "improvements": [],
-        "globalCounterId": null
-      },
-      "3": {
-        "requirements": [
-          {
-            "templateId": "5c052f6886f7746b1e3db148",
-            "count": 2,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "5c05300686f7746dce784e5d",
-            "count": 2,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "62a0a16d0b9d3c46de5b6e97",
-            "count": 5,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "templateId": "5d0375ff86f774186372f685",
-            "count": 5,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": true,
-            "type": "Item"
-          },
-          {
-            "traderId": "54cb50c76803fa8b248b4571",
-            "loyaltyLevel": 3,
-            "type": "TraderLoyalty"
-          },
-          {
-            "areaType": 10,
-            "requiredLevel": 3,
-            "type": "Area"
-          },
-          {
-            "areaType": 4,
-            "requiredLevel": 3,
-            "type": "Area"
-          },
-          {
-            "areaType": 11,
-            "requiredLevel": 2,
-            "type": "Area"
-          },
-          {
-            "templateId": "61bf7c024770ee6f9c6b8b53",
-            "count": 2,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": false,
-            "type": "Item"
-          },
-          {
-            "templateId": "6389c7f115805221fb410466",
-            "count": 1,
-            "isFunctional": false,
-            "isEncoded": false,
-            "isSpawnedInSession": false,
-            "type": "Item"
-          }
-        ],
-        "bonuses": [
-          {
-            "id": "64f5b9e5fa34f11b380756f3",
-            "value": -20,
-            "passive": true,
-            "production": false,
-            "visible": true,
-            "type": "ScavCooldownTimer"
-          },
-          {
-            "id": "64f5b9e5fa34f11b380756f4",
-            "value": -30,
-            "passive": true,
-            "production": false,
-            "visible": true,
-            "type": "RagfairCommission"
-          }
-        ],
-        "slots": 0,
-        "constructionTime": 86400.0,
         "description": "",
         "container": "",
         "autoUpgrade": false,
@@ -5962,6 +5441,516 @@
     "parentArea": null
   },
   {
+    "_id": "5d484fd6654e76051d3cc791",
+    "type": 9,
+    "enabled": true,
+    "needsFuel": true,
+    "takeFromSlotLocked": false,
+    "craftGivesExp": true,
+    "displayLevel": true,
+    "requirements": [],
+    "stages": {
+      "0": {
+        "requirements": [],
+        "bonuses": [],
+        "slots": 0,
+        "constructionTime": 0.0,
+        "description": "",
+        "container": "",
+        "autoUpgrade": false,
+        "displayInterface": true,
+        "improvements": [],
+        "globalCounterId": null
+      },
+      "1": {
+        "requirements": [
+          {
+            "areaType": 0,
+            "requiredLevel": 1,
+            "type": "Area"
+          },
+          {
+            "templateId": "5449016a4bdc2d6f028b456f",
+            "count": 10000,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": false,
+            "type": "Item"
+          },
+          {
+            "templateId": "57347c1124597737fb1379e3",
+            "count": 1,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "templateId": "57347b8b24597737dd42e192",
+            "count": 1,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          }
+        ],
+        "bonuses": [
+          {
+            "id": "64f5b9e5fa34f11b380756e0",
+            "value": -10,
+            "passive": true,
+            "production": false,
+            "visible": true,
+            "type": "DebuffEndDelay"
+          }
+        ],
+        "slots": 0,
+        "constructionTime": 0.0,
+        "description": "",
+        "container": "",
+        "autoUpgrade": false,
+        "displayInterface": true,
+        "improvements": [],
+        "globalCounterId": null
+      },
+      "2": {
+        "requirements": [
+          {
+            "areaType": 4,
+            "requiredLevel": 1,
+            "type": "Area"
+          },
+          {
+            "templateId": "5449016a4bdc2d6f028b456f",
+            "count": 75000,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": false,
+            "type": "Item"
+          },
+          {
+            "areaType": 9,
+            "requiredLevel": 1,
+            "type": "Area"
+          },
+          {
+            "templateId": "5734781f24597737e04bf32a",
+            "count": 1,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "templateId": "590a391c86f774385a33c404",
+            "count": 1,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "templateId": "590a3cd386f77436f20848cb",
+            "count": 2,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          }
+        ],
+        "bonuses": [
+          {
+            "id": "64f5b9e5fa34f11b380756e3",
+            "value": 5.0,
+            "passive": true,
+            "production": false,
+            "visible": true,
+            "type": "EnergyRegeneration"
+          },
+          {
+            "id": "64f5b9e5fa34f11b380756e4",
+            "value": 5.0,
+            "passive": true,
+            "production": false,
+            "visible": true,
+            "type": "HealthRegeneration"
+          }
+        ],
+        "slots": 0,
+        "constructionTime": 3600.0,
+        "description": "",
+        "container": "",
+        "autoUpgrade": false,
+        "displayInterface": true,
+        "improvements": [],
+        "globalCounterId": null
+      },
+      "3": {
+        "requirements": [
+          {
+            "templateId": "59e36c6f86f774176c10a2a7",
+            "count": 3,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "templateId": "5c06782b86f77426df5407d2",
+            "count": 3,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "templateId": "5c06779c86f77426e00dd782",
+            "count": 5,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "templateId": "5e2aedd986f7746d404f3aa4",
+            "count": 4,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "areaType": 9,
+            "requiredLevel": 2,
+            "type": "Area"
+          }
+        ],
+        "bonuses": [
+          {
+            "id": "64f5b9e5fa34f11b380756e7",
+            "value": 10.0,
+            "passive": true,
+            "production": false,
+            "visible": true,
+            "type": "HealthRegeneration"
+          },
+          {
+            "id": "64f5b9e5fa34f11b380756e8",
+            "value": 10.0,
+            "passive": true,
+            "production": false,
+            "visible": true,
+            "type": "MaximumEnergyReserve"
+          },
+          {
+            "id": "684160627de758fa180b3728",
+            "value": 1.0,
+            "passive": true,
+            "production": false,
+            "visible": true,
+            "filter": [
+              "68406efe068a2d99940c1ce3",
+              "68750378555049ec270cdab7",
+              "689f6f33b3b8c90a1c0545b8"
+            ],
+            "icon": "/files/Hideout/icon_hideout_fuelslots.png",
+            "type": "AdditionalSlots"
+          }
+        ],
+        "slots": 0,
+        "constructionTime": 7200.0,
+        "description": "",
+        "container": "",
+        "autoUpgrade": false,
+        "displayInterface": true,
+        "improvements": [],
+        "globalCounterId": null
+      }
+    },
+    "enableAreaRequirements": false,
+    "parentArea": null
+  },
+  {
+    "_id": "5d484fdf654e7600691aadf8",
+    "type": 11,
+    "enabled": true,
+    "needsFuel": true,
+    "takeFromSlotLocked": false,
+    "craftGivesExp": true,
+    "displayLevel": true,
+    "requirements": [],
+    "stages": {
+      "0": {
+        "requirements": [],
+        "bonuses": [],
+        "slots": 0,
+        "constructionTime": 0.0,
+        "description": "",
+        "container": "",
+        "autoUpgrade": false,
+        "displayInterface": true,
+        "improvements": [],
+        "globalCounterId": null
+      },
+      "1": {
+        "requirements": [
+          {
+            "areaType": 1,
+            "requiredLevel": 1,
+            "type": "Area"
+          },
+          {
+            "areaType": 0,
+            "requiredLevel": 1,
+            "type": "Area"
+          },
+          {
+            "templateId": "5c12613b86f7743bbe2c3f76",
+            "count": 1,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "templateId": "62a0a124de7ac81993580542",
+            "count": 1,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "templateId": "574eb85c245977648157eec3",
+            "count": 1,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": false,
+            "type": "Item"
+          }
+        ],
+        "bonuses": [
+          {
+            "id": "64f5b9e5fa34f11b380756eb",
+            "value": -15,
+            "passive": true,
+            "production": false,
+            "visible": true,
+            "type": "ScavCooldownTimer"
+          },
+          {
+            "id": "64f5b9e5fa34f11b380756ec",
+            "value": 5.0,
+            "passive": true,
+            "production": false,
+            "visible": true,
+            "type": "QuestMoneyReward"
+          }
+        ],
+        "slots": 0,
+        "constructionTime": 0.0,
+        "description": "",
+        "container": "",
+        "autoUpgrade": false,
+        "displayInterface": true,
+        "improvements": [],
+        "globalCounterId": null
+      },
+      "2": {
+        "requirements": [
+          {
+            "templateId": "5c12613b86f7743bbe2c3f76",
+            "count": 3,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "templateId": "590c621186f774138d11ea29",
+            "count": 3,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "templateId": "59e36c6f86f774176c10a2a7",
+            "count": 7,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "templateId": "590a386e86f77429692b27ab",
+            "count": 4,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "areaType": 1,
+            "requiredLevel": 3,
+            "type": "Area"
+          },
+          {
+            "areaType": 7,
+            "requiredLevel": 3,
+            "type": "Area"
+          },
+          {
+            "areaType": 8,
+            "requiredLevel": 3,
+            "type": "Area"
+          },
+          {
+            "skillName": "Attention",
+            "skillLevel": 3,
+            "type": "Skill"
+          },
+          {
+            "areaType": 11,
+            "requiredLevel": 1,
+            "type": "Area"
+          },
+          {
+            "traderId": "5a7c2eca46aef81a7ca2145d",
+            "loyaltyLevel": 2,
+            "type": "TraderLoyalty"
+          }
+        ],
+        "bonuses": [
+          {
+            "id": "64f5b9e5fa34f11b380756ef",
+            "value": 10.0,
+            "passive": true,
+            "production": false,
+            "visible": true,
+            "type": "QuestMoneyReward"
+          },
+          {
+            "id": "64f5b9e5fa34f11b380756f0",
+            "value": -20,
+            "passive": true,
+            "production": false,
+            "visible": true,
+            "type": "InsuranceReturnTime"
+          }
+        ],
+        "slots": 0,
+        "constructionTime": 21600.0,
+        "description": "",
+        "container": "",
+        "autoUpgrade": false,
+        "displayInterface": true,
+        "improvements": [],
+        "globalCounterId": null
+      },
+      "3": {
+        "requirements": [
+          {
+            "templateId": "5c052f6886f7746b1e3db148",
+            "count": 2,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "templateId": "5c05300686f7746dce784e5d",
+            "count": 2,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "templateId": "62a0a16d0b9d3c46de5b6e97",
+            "count": 5,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "templateId": "5d0375ff86f774186372f685",
+            "count": 5,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": true,
+            "type": "Item"
+          },
+          {
+            "traderId": "54cb50c76803fa8b248b4571",
+            "loyaltyLevel": 3,
+            "type": "TraderLoyalty"
+          },
+          {
+            "areaType": 10,
+            "requiredLevel": 3,
+            "type": "Area"
+          },
+          {
+            "areaType": 4,
+            "requiredLevel": 3,
+            "type": "Area"
+          },
+          {
+            "areaType": 11,
+            "requiredLevel": 2,
+            "type": "Area"
+          },
+          {
+            "templateId": "61bf7c024770ee6f9c6b8b53",
+            "count": 2,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": false,
+            "type": "Item"
+          },
+          {
+            "templateId": "6389c7f115805221fb410466",
+            "count": 1,
+            "isFunctional": false,
+            "isEncoded": false,
+            "isSpawnedInSession": false,
+            "type": "Item"
+          }
+        ],
+        "bonuses": [
+          {
+            "id": "64f5b9e5fa34f11b380756f3",
+            "value": -20,
+            "passive": true,
+            "production": false,
+            "visible": true,
+            "type": "ScavCooldownTimer"
+          },
+          {
+            "id": "64f5b9e5fa34f11b380756f4",
+            "value": -30,
+            "passive": true,
+            "production": false,
+            "visible": true,
+            "type": "RagfairCommission"
+          }
+        ],
+        "slots": 0,
+        "constructionTime": 86400.0,
+        "description": "",
+        "container": "",
+        "autoUpgrade": false,
+        "displayInterface": true,
+        "improvements": [],
+        "globalCounterId": null
+      }
+    },
+    "enableAreaRequirements": false,
+    "parentArea": null
+  },
+  {
     "_id": "667298e75ea6b4493c08f266",
     "type": 27,
     "enabled": true,
@@ -5995,7 +5984,7 @@
           },
           {
             "areaType": 1,
-            "requiredLevel": 2,
+            "requiredLevel": 1,
             "type": "Area"
           },
           {
@@ -6063,7 +6052,7 @@
           }
         ],
         "slots": 0,
-        "constructionTime": 21600.0,
+        "constructionTime": 3600.0,
         "description": "",
         "container": "66740c3739b9da6ce402ee65",
         "autoUpgrade": false,

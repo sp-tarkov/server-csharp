@@ -19,7 +19,9 @@
     "min_payment": 0,
     "min_return_hour": 30
   },
+  "isAvailableInPVE": true,
   "isCanTransferItems": false,
+  "isCanTransferItemsFromPve": false,
   "items_buy": {
     "category": [
       "5661632d4bdc2d903d8b456b",
@@ -209,7 +211,9 @@
       "6759bb94b8913ff13e049669",
       "6759e07e4ff23436160d7fed",
       "6841b179322db20d190b4b99",
-      "6841b1ff51bf8645f7067bca"
+      "6841b1ff51bf8645f7067bca",
+      "68406efe068a2d99940c1ce3",
+      "68750378555049ec270cdab7"
     ]
   },
   "items_sell": [],
@@ -236,6 +240,7 @@
       "repair_price_coef": 250
     }
   ],
+  "mainDialogue": null,
   "medic": false,
   "name": "<Настоящее имя неизвестно>",
   "nextResupply": 1631484143,

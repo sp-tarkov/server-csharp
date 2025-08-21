@@ -94,8 +94,8 @@
     {
       "id": "5c1b857086f77465f465faa4",
       "pic": {
-        "file": "67e404c722d6081b78031de0.jpg",
-        "path": "banners/67e404c722d6081b78031de0.jpg",
+        "file": "67e404c5bec96f5d8e09732f.jpg",
+        "path": "banners/67e404c5bec96f5d8e09732f.jpg",
         "rcid": "",
         "type": "banners"
       }
@@ -10888,6 +10888,10 @@
     {
       "TemplateId": "676bf44c5539167c3603e869",
       "Value": 0
+    },
+    {
+      "TemplateId": "689f6f33b3b8c90a1c0545b8",
+      "Value": 1
     }
   ],
   "sav_summon_seconds": 60,

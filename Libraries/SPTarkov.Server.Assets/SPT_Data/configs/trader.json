@@ -79,6 +79,14 @@
         "min": 3000,
         "max": 7500
       }
+    },
+    {
+      "_name": "x",
+      "traderId": "6864e812f9fe664cb8b8e152",
+      "seconds": {
+        "min": 3000,
+        "max": 7500
+      }
     }
   ],
   "updateTimeDefault": 3600,
