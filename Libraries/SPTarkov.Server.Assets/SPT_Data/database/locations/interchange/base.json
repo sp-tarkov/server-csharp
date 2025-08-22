@@ -40,8 +40,8 @@
     {
       "id": "5c1b857086f77465f465faa4",
       "pic": {
-        "file": "67e404c722d6081b78031de0.jpg",
-        "path": "banners/67e404c722d6081b78031de0.jpg",
+        "file": "67e404c5bec96f5d8e09732f.jpg",
+        "path": "banners/67e404c5bec96f5d8e09732f.jpg",
         "rcid": "",
         "type": "banners"
       }
@@ -49,8 +49,8 @@
     {
       "id": "64c0acf85174e095610734a0",
       "pic": {
-        "file": "67e404c5bec96f5d8e09732f.jpg",
-        "path": "banners/67e404c5bec96f5d8e09732f.jpg",
+        "file": "67e404c722d6081b78031de0.jpg",
+        "path": "banners/67e404c722d6081b78031de0.jpg",
         "rcid": "",
         "type": "banners"
       }
@@ -465,10 +465,10 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 0,
-  "BotMax": 30,
-  "BotMaxPlayer": 0,
+  "BotMax": 19,
+  "BotMaxPlayer": 10,
   "BotMaxPvE": 30,
-  "BotMaxTimePlayer": 0,
+  "BotMaxTimePlayer": 1200,
   "BotNormal": 50,
   "BotSpawnCountStep": 4,
   "BotSpawnPeriodCheck": 15,
@@ -477,7 +477,7 @@
   "BotSpawnTimeOnMax": 350,
   "BotSpawnTimeOnMin": 340,
   "BotStart": 20,
-  "BotStartPlayer": 0,
+  "BotStartPlayer": 720,
   "BotStop": 2400,
   "Description": "The South-Eastern highway interchange is a critical point in the transportation system of the city. Essentially, it is a strategical node connecting the port and harbour infrastructure with the industrial outskirts of Tarkov. ",
   "DisabledForScav": false,
@@ -8449,7 +8449,7 @@
     {
       "Chance": 50,
       "ChancePVE": 50,
-      "Count": 5000,
+      "Count": 40000,
       "CountPVE": 5000,
       "EntryPoints": "MallSE,MallNW",
       "EventAvailable": false,
@@ -8594,22 +8594,6 @@
   "users_summon_seconds": 0,
   "waves": [
     {
-      "BotPreset": "hard",
-      "BotSide": "Savage",
-      "KeepZoneOnSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "SpawnPoints": "ZoneCenter",
-      "WildSpawnType": "assault",
-      "isPlayers": false,
-      "number": 0,
-      "slots_max": 2,
-      "slots_min": 0,
-      "time_max": -1,
-      "time_min": -1
-    },
-    {
       "BotPreset": "normal",
       "BotSide": "Savage",
       "KeepZoneOnSpawn": true,
@@ -8623,118 +8607,6 @@
       "number": 1,
       "slots_max": 3,
       "slots_min": 1,
-      "time_max": -1,
-      "time_min": -1
-    },
-    {
-      "BotPreset": "normal",
-      "BotSide": "Savage",
-      "KeepZoneOnSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "SpawnPoints": "ZoneOLI",
-      "WildSpawnType": "assault",
-      "isPlayers": false,
-      "number": 2,
-      "slots_max": 2,
-      "slots_min": 0,
-      "time_max": -1,
-      "time_min": -1
-    },
-    {
-      "BotPreset": "normal",
-      "BotSide": "Savage",
-      "KeepZoneOnSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "SpawnPoints": "ZoneIDEA",
-      "WildSpawnType": "assault",
-      "isPlayers": false,
-      "number": 3,
-      "slots_max": 2,
-      "slots_min": 0,
-      "time_max": -1,
-      "time_min": -1
-    },
-    {
-      "BotPreset": "easy",
-      "BotSide": "Savage",
-      "KeepZoneOnSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "SpawnPoints": "ZoneRoad",
-      "WildSpawnType": "assault",
-      "isPlayers": false,
-      "number": 4,
-      "slots_max": 2,
-      "slots_min": 0,
-      "time_max": -1,
-      "time_min": -1
-    },
-    {
-      "BotPreset": "hard",
-      "BotSide": "Savage",
-      "KeepZoneOnSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "SpawnPoints": "ZoneIDEAPark",
-      "WildSpawnType": "assault",
-      "isPlayers": false,
-      "number": 5,
-      "slots_max": 2,
-      "slots_min": 0,
-      "time_max": -1,
-      "time_min": -1
-    },
-    {
-      "BotPreset": "normal",
-      "BotSide": "Savage",
-      "KeepZoneOnSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "SpawnPoints": "ZoneGoshan",
-      "WildSpawnType": "assault",
-      "isPlayers": false,
-      "number": 6,
-      "slots_max": 2,
-      "slots_min": 0,
-      "time_max": -1,
-      "time_min": -1
-    },
-    {
-      "BotPreset": "normal",
-      "BotSide": "Savage",
-      "KeepZoneOnSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "SpawnPoints": "ZonePowerStation",
-      "WildSpawnType": "assault",
-      "isPlayers": false,
-      "number": 7,
-      "slots_max": 2,
-      "slots_min": 0,
-      "time_max": -1,
-      "time_min": -1
-    },
-    {
-      "BotPreset": "normal",
-      "BotSide": "Savage",
-      "KeepZoneOnSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "SpawnPoints": "ZoneTrucks",
-      "WildSpawnType": "assault",
-      "isPlayers": false,
-      "number": 8,
-      "slots_max": 2,
-      "slots_min": 0,
       "time_max": -1,
       "time_min": -1
     }

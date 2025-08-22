@@ -38,92 +38,7 @@
       }
     }
   ],
-  "BossLocationSpawn": [
-    {
-      "BossChance": 50,
-      "BossDifficult": "easy",
-      "BossEscortAmount": "0,0,2,2,2,1,1,1,1,1,0",
-      "BossEscortDifficult": "easy",
-      "BossEscortType": "pmcBEAR",
-      "BossName": "pmcBEAR",
-      "BossPlayer": false,
-      "BossZone": "",
-      "IgnoreMaxBots": true,
-      "RandomTimeSpawn": false,
-      "ShowOnTarkovMap": false,
-      "ShowOnTarkovMapPvE": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "Supports": null,
-      "Time": -1,
-      "TriggerId": "",
-      "TriggerName": ""
-    },
-    {
-      "BossChance": 50,
-      "BossDifficult": "easy",
-      "BossEscortAmount": "0,0,2,2,2,1,1,1,1,1,0",
-      "BossEscortDifficult": "easy",
-      "BossEscortType": "pmcBEAR",
-      "BossName": "pmcBEAR",
-      "BossPlayer": false,
-      "BossZone": "",
-      "IgnoreMaxBots": true,
-      "RandomTimeSpawn": false,
-      "ShowOnTarkovMap": false,
-      "ShowOnTarkovMapPvE": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "Supports": null,
-      "Time": -1,
-      "TriggerId": "",
-      "TriggerName": ""
-    },
-    {
-      "BossChance": 50,
-      "BossDifficult": "easy",
-      "BossEscortAmount": "0,0,2,2,2,1,1,1,1,1,0",
-      "BossEscortDifficult": "easy",
-      "BossEscortType": "pmcUSEC",
-      "BossName": "pmcUSEC",
-      "BossPlayer": false,
-      "BossZone": "",
-      "IgnoreMaxBots": true,
-      "RandomTimeSpawn": false,
-      "ShowOnTarkovMap": false,
-      "ShowOnTarkovMapPvE": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "Supports": null,
-      "Time": -1,
-      "TriggerId": "",
-      "TriggerName": ""
-    },
-    {
-      "BossChance": 50,
-      "BossDifficult": "easy",
-      "BossEscortAmount": "0,0,2,2,2,1,1,1,1,1,0",
-      "BossEscortDifficult": "easy",
-      "BossEscortType": "pmcUSEC",
-      "BossName": "pmcUSEC",
-      "BossPlayer": false,
-      "BossZone": "",
-      "IgnoreMaxBots": true,
-      "RandomTimeSpawn": false,
-      "ShowOnTarkovMap": false,
-      "ShowOnTarkovMapPvE": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "Supports": null,
-      "Time": -1,
-      "TriggerId": "",
-      "TriggerName": ""
-    }
-  ],
+  "BossLocationSpawn": [],
   "BotAssault": 100,
   "BotEasy": 100,
   "BotHard": 0,
@@ -321,10 +236,10 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 0,
-  "BotMax": 20,
-  "BotMaxPlayer": 0,
+  "BotMax": 10,
+  "BotMaxPlayer": 10,
   "BotMaxPvE": 20,
-  "BotMaxTimePlayer": 0,
+  "BotMaxTimePlayer": 1000,
   "BotNormal": 0,
   "BotSpawnCountStep": 3,
   "BotSpawnPeriodCheck": 14,
@@ -333,10 +248,10 @@
   "BotSpawnTimeOnMax": 380,
   "BotSpawnTimeOnMin": 290,
   "BotStart": 120,
-  "BotStartPlayer": 0,
+  "BotStartPlayer": 900,
   "BotStop": 1800,
   "Description": "The downtown Tarkov with banks, malls, hotels and all the other things a striving modern city could have needed.",
-  "DisabledForScav": false,
+  "DisabledForScav": true,
   "DisabledScavExits": "",
   "EnableCoop": true,
   "Enabled": true,
@@ -514,7 +429,7 @@
     "path": "",
     "rcid": ""
   },
-  "RequiredPlayerLevelMax": 20,
+  "RequiredPlayerLevelMax": 0,
   "RequiredPlayerLevelMin": 0,
   "Rules": "Normal",
   "SafeLocation": false,
@@ -7761,7 +7676,7 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
-      "Count": 5000,
+      "Count": 40000,
       "CountPVE": 5000,
       "EntryPoints": "west,east",
       "ExfiltrationTime": 60,
@@ -7911,102 +7826,5 @@
   "users_spawn_seconds_n": 120,
   "users_spawn_seconds_n2": 200,
   "users_summon_seconds": 0,
-  "waves": [
-    {
-      "BotPreset": "easy",
-      "BotSide": "Savage",
-      "KeepZoneOnSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "SpawnPoints": "",
-      "WildSpawnType": "assault",
-      "isPlayers": false,
-      "number": 0,
-      "slots_max": 3,
-      "slots_min": 1,
-      "time_max": -1,
-      "time_min": -1
-    },
-    {
-      "BotPreset": "normal",
-      "BotSide": "Savage",
-      "KeepZoneOnSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "SpawnPoints": "",
-      "WildSpawnType": "assault",
-      "isPlayers": false,
-      "number": 1,
-      "slots_max": 3,
-      "slots_min": 1,
-      "time_max": -1,
-      "time_min": -1
-    },
-    {
-      "BotPreset": "normal",
-      "BotSide": "Savage",
-      "KeepZoneOnSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "SpawnPoints": "",
-      "WildSpawnType": "assault",
-      "isPlayers": false,
-      "number": 2,
-      "slots_max": 3,
-      "slots_min": 0,
-      "time_max": -1,
-      "time_min": -1
-    },
-    {
-      "BotPreset": "easy",
-      "BotSide": "Savage",
-      "KeepZoneOnSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "SpawnPoints": "",
-      "WildSpawnType": "assault",
-      "isPlayers": false,
-      "number": 9,
-      "slots_max": 3,
-      "slots_min": 0,
-      "time_max": -1,
-      "time_min": -1
-    },
-    {
-      "BotPreset": "easy",
-      "BotSide": "Savage",
-      "KeepZoneOnSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "SpawnPoints": "",
-      "WildSpawnType": "marksman",
-      "isPlayers": false,
-      "number": 3,
-      "slots_max": 1,
-      "slots_min": 0,
-      "time_max": -1,
-      "time_min": -1
-    },
-    {
-      "BotPreset": "normal",
-      "BotSide": "Savage",
-      "KeepZoneOnSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "SpawnPoints": "",
-      "WildSpawnType": "assault",
-      "isPlayers": false,
-      "number": 4,
-      "slots_max": 3,
-      "slots_min": 0,
-      "time_max": -1,
-      "time_min": -1
-    }
-  ]
+  "waves": []
 }
