@@ -272,7 +272,7 @@ public record WindMultiplier
 public record RainSetting
 {
     [JsonPropertyName("IndoorVolumeMult")]
-    public int IndoorVolumeMult { get; set; }
+    public double IndoorVolumeMult { get; set; }
 
     [JsonPropertyName("OutdoorVolumeMult")]
     public double OutdoorVolumeMult { get; set; }
