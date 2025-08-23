@@ -118,6 +118,7 @@ public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, Js
         }
         catch (Exception ex)
         {
+            logger.Critical($"Unable to deserialize or find properties on file '{file}'", ex);
             throw new Exception($"Unable to deserialize or find properties on file '{file}'", ex);
         }
     }

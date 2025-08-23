@@ -78,16 +78,16 @@ public record BotGlobalsMindSettings
     public EWarnBehaviour DefaultSavageBehaviour { get; set; }
 
     [JsonPropertyName("FRIENDLY_BOT_TYPES")]
-    public WildSpawnType[] FriendlyBotTypes { get; set; }
+    public WildSpawnType[]? FriendlyBotTypes { get; set; }
 
     [JsonPropertyName("WARN_BOT_TYPES")]
-    public WildSpawnType[] WarnBotTypes { get; set; }
+    public WildSpawnType[]? WarnBotTypes { get; set; }
 
     [JsonPropertyName("ENEMY_BOT_TYPES")]
-    public WildSpawnType[] EnemyBotTypes { get; set; }
+    public WildSpawnType[]? EnemyBotTypes { get; set; }
 
     [JsonPropertyName("REVENGE_BOT_TYPES")]
-    public WildSpawnType[] RevengeBotTypes { get; set; }
+    public WildSpawnType[]? RevengeBotTypes { get; set; }
 
     [JsonPropertyName("FOLLOWER_AND_BOSS_WARN_EQUAL_PRIORITY")]
     public bool FollowerAndBossWarnEqualPriority { get; set; }
@@ -372,7 +372,7 @@ public record BotGlobalsMindSettings
     public bool UseAddToEnemyValidation { get; set; }
 
     [JsonPropertyName("VALID_REASONS_TO_ADD_ENEMY")]
-    public EBotEnemyCause[] ValidReasonsToAddEnemy { get; set; }
+    public EBotEnemyCause[]? ValidReasonsToAddEnemy { get; set; }
 
     [JsonPropertyName("CHECK_MARK_OF_UNKNOWS")]
     public bool CheckMarkOfUnknows { get; set; }
@@ -422,9 +422,46 @@ public record BotGlobalsMindSettings
 
     public enum EBotEnemyCause
     {
-        PlayerKilledBot,
-        PlayerShotAtBot,
-        PlayerInRestrictedArea,
-        PlayerTrespassingBossZone,
+        pairLogic,
+        initial,
+        zryachiyLogic,
+        addPlayerToBoss,
+        addPlayer,
+        addCauseGroup,
+        initCauseEnemy,
+        checkAddTODO,
+        addBotAtGroup,
+        addBotNoGroup,
+        AddNewMember,
+        byKill,
+        AddEnemyToAllGroupsInBotZone,
+        AddEnemyToAllGroups,
+        warn,
+        callBot,
+        followGetHit,
+        gifterKill,
+        bossKillArena,
+        KillaSyncTagilla,
+        tagillaFindENemy,
+        fuckGestus,
+        pmcBossKill,
+        rndWanrRequest,
+        christmas,
+        synWithKilla,
+        death,
+        doFollow2,
+        doFollow,
+        callForHelp2,
+        callForHelp1,
+        ravangeZryachiy,
+        lighthouseKeeperServices,
+        lighthouseKeeperServicesTarget,
+        partisanBadKarma,
+        attackBTR,
+        serviceBTR,
+        tagillaAlarm,
+        drunk,
+        Unknown,
+        MarkOfUnknowsDist,
     }
 }

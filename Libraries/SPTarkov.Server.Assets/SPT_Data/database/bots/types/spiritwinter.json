@@ -353,7 +353,6 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": true,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
         "DIST_CHECK_WALL": 20,
@@ -376,7 +375,6 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
         "POSIBLE_VISION_SPACE": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 100,
         "WAIT_NEW_SENSOR": 2.1,
@@ -392,7 +390,7 @@
         "BULLET_FEEL_CLOSE_SDIST": 1,
         "BULLET_FEEL_DIST": 360,
         "CAN_PANIC_IS_PROTECT": false,
-        "CAN_RECIVE_PLAYER_REQUESTS": true,
+         
         "CAN_STAND_BY": false,
         "CAN_TAKE_ANY_ITEM": true,
         "CAN_TAKE_ITEMS": true,
@@ -408,9 +406,9 @@
         "DAMAGE_REDUCTION_TIME_SEC": 20,
         "DANGER_POINT_CHOOSE_COEF": 1,
         "DEFAULT_BEAR_BEHAVIOUR": "Neutral",
-        "DEFAULT_ENEMY_BEAR": false,
-        "DEFAULT_ENEMY_SAVAGE": false,
-        "DEFAULT_ENEMY_USEC": false,
+         
+         
+          
         "DEFAULT_SAVAGE_BEHAVIOUR": "Neutral",
         "DEFAULT_USEC_BEHAVIOUR": "Neutral",
         "DIST_TO_ENEMY_YO_CAN_HEAL": 30,
@@ -836,7 +834,6 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": true,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
         "DIST_CHECK_WALL": 20,
@@ -859,7 +856,6 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
         "POSIBLE_VISION_SPACE": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 100,
         "WAIT_NEW_SENSOR": 2.1,
@@ -875,7 +871,7 @@
         "BULLET_FEEL_CLOSE_SDIST": 1,
         "BULLET_FEEL_DIST": 360,
         "CAN_PANIC_IS_PROTECT": false,
-        "CAN_RECIVE_PLAYER_REQUESTS": true,
+         
         "CAN_STAND_BY": false,
         "CAN_TAKE_ANY_ITEM": true,
         "CAN_TAKE_ITEMS": true,
@@ -891,9 +887,9 @@
         "DAMAGE_REDUCTION_TIME_SEC": 20,
         "DANGER_POINT_CHOOSE_COEF": 1,
         "DEFAULT_BEAR_BEHAVIOUR": "Neutral",
-        "DEFAULT_ENEMY_BEAR": false,
-        "DEFAULT_ENEMY_SAVAGE": false,
-        "DEFAULT_ENEMY_USEC": false,
+         
+         
+          
         "DEFAULT_SAVAGE_BEHAVIOUR": "Neutral",
         "DEFAULT_USEC_BEHAVIOUR": "Neutral",
         "DIST_TO_ENEMY_YO_CAN_HEAL": 30,
@@ -1319,7 +1315,6 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": true,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
         "DIST_CHECK_WALL": 20,
@@ -1342,7 +1337,6 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
         "POSIBLE_VISION_SPACE": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 100,
         "WAIT_NEW_SENSOR": 2.1,
@@ -1358,7 +1352,7 @@
         "BULLET_FEEL_CLOSE_SDIST": 1,
         "BULLET_FEEL_DIST": 360,
         "CAN_PANIC_IS_PROTECT": false,
-        "CAN_RECIVE_PLAYER_REQUESTS": true,
+         
         "CAN_STAND_BY": false,
         "CAN_TAKE_ANY_ITEM": true,
         "CAN_TAKE_ITEMS": true,
@@ -1374,9 +1368,9 @@
         "DAMAGE_REDUCTION_TIME_SEC": 20,
         "DANGER_POINT_CHOOSE_COEF": 1,
         "DEFAULT_BEAR_BEHAVIOUR": "Neutral",
-        "DEFAULT_ENEMY_BEAR": false,
-        "DEFAULT_ENEMY_SAVAGE": false,
-        "DEFAULT_ENEMY_USEC": false,
+         
+         
+          
         "DEFAULT_SAVAGE_BEHAVIOUR": "Neutral",
         "DEFAULT_USEC_BEHAVIOUR": "Neutral",
         "DIST_TO_ENEMY_YO_CAN_HEAL": 30,
@@ -1802,7 +1796,6 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": true,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
         "DIST_CHECK_WALL": 20,
@@ -1825,7 +1818,6 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
         "POSIBLE_VISION_SPACE": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 100,
         "WAIT_NEW_SENSOR": 2.1,
@@ -1841,7 +1833,7 @@
         "BULLET_FEEL_CLOSE_SDIST": 1,
         "BULLET_FEEL_DIST": 360,
         "CAN_PANIC_IS_PROTECT": false,
-        "CAN_RECIVE_PLAYER_REQUESTS": true,
+         
         "CAN_STAND_BY": false,
         "CAN_TAKE_ANY_ITEM": true,
         "CAN_TAKE_ITEMS": true,
@@ -1857,9 +1849,9 @@
         "DAMAGE_REDUCTION_TIME_SEC": 20,
         "DANGER_POINT_CHOOSE_COEF": 1,
         "DEFAULT_BEAR_BEHAVIOUR": "Neutral",
-        "DEFAULT_ENEMY_BEAR": false,
-        "DEFAULT_ENEMY_SAVAGE": false,
-        "DEFAULT_ENEMY_USEC": false,
+         
+         
+          
         "DEFAULT_SAVAGE_BEHAVIOUR": "Neutral",
         "DEFAULT_USEC_BEHAVIOUR": "Neutral",
         "DIST_TO_ENEMY_YO_CAN_HEAL": 30,

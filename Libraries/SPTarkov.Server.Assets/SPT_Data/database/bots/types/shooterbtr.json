@@ -361,7 +361,6 @@
       "Look": {
         "ANGLE_FOR_GETUP": 30,
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": false,
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
@@ -388,7 +387,7 @@
         "NO_GRASS_DIST": 5,
         "NO_GREEN_DIST": 5,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
+         
         "POSIBLE_VISION_SPACE": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 43,
         "WAIT_NEW_SENSOR": 2.1,
@@ -406,7 +405,7 @@
         "CAN_RECEIVE_PLAYER_REQUESTS_BEAR": false,
         "CAN_RECEIVE_PLAYER_REQUESTS_SAVAGE": false,
         "CAN_RECEIVE_PLAYER_REQUESTS_USEC": false,
-        "CAN_RECIVE_PLAYER_REQUESTS": false,
+         
         "CAN_STAND_BY": true,
         "CAN_TAKE_ITEMS": true,
         "CAN_TALK": false,
@@ -422,7 +421,7 @@
         "DAMAGE_REDUCTION_TIME_SEC": 20,
         "DANGER_POINT_CHOOSE_COEF": 1,
         "DEFAULT_BEAR_BEHAVIOUR": "Neutral",
-        "DEFAULT_ENEMY_SAVAGE": true,
+         
         "DEFAULT_SAVAGE_BEHAVIOUR": "Neutral",
         "DEFAULT_USEC_BEHAVIOUR": "Neutral",
         "DIST_TO_ENEMY_YO_CAN_HEAL": 30,
@@ -474,7 +473,7 @@
         "SURGE_KIT_ONLY_SAFE_CONTAINER": false,
         "SUSPETION_POINT_CHANCE_ADD100": 0,
         "TALK_WITH_QUERY": false,
-        "TIME_LEAVE_MAP": 23,
+         
         "TIME_TO_FIND_ENEMY": 22,
         "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 52,
         "TIME_TO_RUN_TO_COVER_CAUSE_SHOOT_SEC": 15,
@@ -906,7 +905,6 @@
       "Look": {
         "ANGLE_FOR_GETUP": 30,
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": false,
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
@@ -933,7 +931,7 @@
         "NO_GRASS_DIST": 5,
         "NO_GREEN_DIST": 5,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
+         
         "POSIBLE_VISION_SPACE": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 43,
         "WAIT_NEW_SENSOR": 2.1,
@@ -951,7 +949,7 @@
         "CAN_RECEIVE_PLAYER_REQUESTS_BEAR": false,
         "CAN_RECEIVE_PLAYER_REQUESTS_SAVAGE": false,
         "CAN_RECEIVE_PLAYER_REQUESTS_USEC": false,
-        "CAN_RECIVE_PLAYER_REQUESTS": false,
+         
         "CAN_STAND_BY": true,
         "CAN_TAKE_ITEMS": true,
         "CAN_TALK": false,
@@ -967,7 +965,7 @@
         "DAMAGE_REDUCTION_TIME_SEC": 20,
         "DANGER_POINT_CHOOSE_COEF": 1,
         "DEFAULT_BEAR_BEHAVIOUR": "Neutral",
-        "DEFAULT_ENEMY_SAVAGE": true,
+         
         "DEFAULT_SAVAGE_BEHAVIOUR": "Neutral",
         "DEFAULT_USEC_BEHAVIOUR": "Neutral",
         "DIST_TO_ENEMY_YO_CAN_HEAL": 30,
@@ -1019,7 +1017,7 @@
         "SURGE_KIT_ONLY_SAFE_CONTAINER": false,
         "SUSPETION_POINT_CHANCE_ADD100": 0,
         "TALK_WITH_QUERY": false,
-        "TIME_LEAVE_MAP": 23,
+         
         "TIME_TO_FIND_ENEMY": 22,
         "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 52,
         "TIME_TO_RUN_TO_COVER_CAUSE_SHOOT_SEC": 15,
@@ -1451,7 +1449,6 @@
       "Look": {
         "ANGLE_FOR_GETUP": 30,
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": false,
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
@@ -1478,7 +1475,6 @@
         "NO_GRASS_DIST": 5,
         "NO_GREEN_DIST": 5,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
         "POSIBLE_VISION_SPACE": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 43,
         "WAIT_NEW_SENSOR": 2.1,
@@ -1496,7 +1492,7 @@
         "CAN_RECEIVE_PLAYER_REQUESTS_BEAR": false,
         "CAN_RECEIVE_PLAYER_REQUESTS_SAVAGE": false,
         "CAN_RECEIVE_PLAYER_REQUESTS_USEC": false,
-        "CAN_RECIVE_PLAYER_REQUESTS": false,
+         
         "CAN_STAND_BY": true,
         "CAN_TAKE_ITEMS": true,
         "CAN_TALK": false,
@@ -1512,7 +1508,7 @@
         "DAMAGE_REDUCTION_TIME_SEC": 20,
         "DANGER_POINT_CHOOSE_COEF": 1,
         "DEFAULT_BEAR_BEHAVIOUR": "Neutral",
-        "DEFAULT_ENEMY_SAVAGE": true,
+         
         "DEFAULT_SAVAGE_BEHAVIOUR": "Neutral",
         "DEFAULT_USEC_BEHAVIOUR": "Neutral",
         "DIST_TO_ENEMY_YO_CAN_HEAL": 30,
@@ -1564,7 +1560,7 @@
         "SURGE_KIT_ONLY_SAFE_CONTAINER": false,
         "SUSPETION_POINT_CHANCE_ADD100": 0,
         "TALK_WITH_QUERY": false,
-        "TIME_LEAVE_MAP": 23,
+         
         "TIME_TO_FIND_ENEMY": 22,
         "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 52,
         "TIME_TO_RUN_TO_COVER_CAUSE_SHOOT_SEC": 15,
@@ -1996,7 +1992,6 @@
       "Look": {
         "ANGLE_FOR_GETUP": 30,
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": false,
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
@@ -2023,7 +2018,7 @@
         "NO_GRASS_DIST": 5,
         "NO_GREEN_DIST": 5,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
+         
         "POSIBLE_VISION_SPACE": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 43,
         "WAIT_NEW_SENSOR": 2.1,
@@ -2041,7 +2036,7 @@
         "CAN_RECEIVE_PLAYER_REQUESTS_BEAR": false,
         "CAN_RECEIVE_PLAYER_REQUESTS_SAVAGE": false,
         "CAN_RECEIVE_PLAYER_REQUESTS_USEC": false,
-        "CAN_RECIVE_PLAYER_REQUESTS": false,
+         
         "CAN_STAND_BY": true,
         "CAN_TAKE_ITEMS": true,
         "CAN_TALK": false,
@@ -2057,7 +2052,7 @@
         "DAMAGE_REDUCTION_TIME_SEC": 20,
         "DANGER_POINT_CHOOSE_COEF": 1,
         "DEFAULT_BEAR_BEHAVIOUR": "Neutral",
-        "DEFAULT_ENEMY_SAVAGE": true,
+         
         "DEFAULT_SAVAGE_BEHAVIOUR": "Neutral",
         "DEFAULT_USEC_BEHAVIOUR": "Neutral",
         "DIST_TO_ENEMY_YO_CAN_HEAL": 30,
@@ -2109,7 +2104,7 @@
         "SURGE_KIT_ONLY_SAFE_CONTAINER": false,
         "SUSPETION_POINT_CHANCE_ADD100": 0,
         "TALK_WITH_QUERY": false,
-        "TIME_LEAVE_MAP": 23,
+         
         "TIME_TO_FIND_ENEMY": 22,
         "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 52,
         "TIME_TO_RUN_TO_COVER_CAUSE_SHOOT_SEC": 15,
