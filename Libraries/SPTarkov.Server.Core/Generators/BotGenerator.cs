@@ -235,11 +235,7 @@ public class BotGenerator(
             botGenerationDetails.Role
         );
         bot.Info.Settings.UseSimpleAnimator = botJsonTemplate.BotExperience.UseSimpleAnimator;
-        var chosenVoiceName = weightedRandomHelper.GetWeightedValue(botJsonTemplate.BotAppearance.Voice);
-        bot.Customization.Voice = databaseService
-            .GetCustomization()
-            .FirstOrDefault(customisation => customisation.Value.Name.Equals(chosenVoiceName, StringComparison.OrdinalIgnoreCase))
-            .Key;
+        bot.Customization.Voice = weightedRandomHelper.GetWeightedValue(botJsonTemplate.BotAppearance.Voice);
         bot.Health = GenerateHealth(botJsonTemplate.BotHealth, botGenerationDetails.IsPlayerScav);
         bot.Skills = GenerateSkills(botJsonTemplate.BotSkills);
         bot.Info.PrestigeLevel = 0;

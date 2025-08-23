@@ -1,4 +1,3 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Bot.GlobalSettings;
@@ -58,7 +57,7 @@ public record Appearance
 
     [JsonPropertyName("voice")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, double> Voice { get; set; }
+    public Dictionary<MongoId, double> Voice { get; set; }
 }
 
 public record Chances
