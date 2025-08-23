@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using System.Text.Json;
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
@@ -920,13 +921,31 @@ public class SeasonalEventService(
     protected void AddLootItemsToGifterDropItemsList()
     {
         var gifterBot = databaseService.GetBots().Types["gifter"];
-        var itemsCSV = string.Join(",", gifterBot.BotInventory.Items.Backpack.Keys);
         string[] difficulties = ["easy", "normal", "hard", "impossible"];
 
         foreach (var difficulty in difficulties)
         {
-            gifterBot.BotDifficulty[difficulty].Patrol.TryAdd("ITEMS_TO_DROP", "");
-            gifterBot.BotDifficulty[difficulty].Patrol["ITEMS_TO_DROP"] = itemsCSV;
+            var gifterPatrolValues = gifterBot.BotDifficulty[difficulty].Patrol;
+
+            // Read existing value from property
+            var existingItems = Enumerable.Empty<string>();
+            if (gifterPatrolValues.TryGetValue("ITEMS_TO_DROP", out var jsonElement) && jsonElement.ValueKind == JsonValueKind.String)
+            {
+                var existingCsv = jsonElement.GetString();
+                if (!string.IsNullOrWhiteSpace(existingCsv))
+                {
+                    existingItems = existingCsv.Split(',');
+                }
+            }
+
+            // Merge existing and new tpls we want
+            var combinedItems = new HashSet<string>(existingItems);
+            combinedItems.UnionWith(gifterBot.BotInventory.Items.Backpack.Keys.Select(x => x.ToString()));
+
+            // Turn set into a comma separated list ready for insertion
+            var finalItemsCsv = string.Join(",", combinedItems);
+
+            gifterPatrolValues["ITEMS_TO_DROP"] = JsonDocument.Parse($"\"{finalItemsCsv}\"").RootElement.Clone();
         }
     }
 

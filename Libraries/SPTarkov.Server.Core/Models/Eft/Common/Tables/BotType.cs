@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
@@ -240,33 +241,33 @@ public double? ModPistol_Grip { get; set; }
 
 public record DifficultyCategories
 {
-    public Dictionary<string, object>? Aiming { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, JsonElement>? Aiming { get; set; } // TODO: string | number | boolean
 
-    public Dictionary<string, object>? Boss { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, JsonElement>? Boss { get; set; } // TODO: string | number | boolean
 
-    public Dictionary<string, object>? Change { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, JsonElement>? Change { get; set; } // TODO: string | number | boolean
 
-    public Dictionary<string, object>? Core { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, JsonElement>? Core { get; set; } // TODO: string | number | boolean
 
-    public Dictionary<string, object>? Cover { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, JsonElement>? Cover { get; set; } // TODO: string | number | boolean
 
-    public Dictionary<string, object>? Grenade { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, JsonElement>? Grenade { get; set; } // TODO: string | number | boolean
 
-    public Dictionary<string, object>? Hearing { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, JsonElement>? Hearing { get; set; } // TODO: string | number | boolean
 
-    public Dictionary<string, object>? Lay { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, JsonElement>? Lay { get; set; } // TODO: string | number | boolean
 
-    public Dictionary<string, object>? Look { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, JsonElement>? Look { get; set; } // TODO: string | number | boolean
 
-    public Dictionary<string, object>? Mind { get; set; } // TODO: string | number | boolean | string[]
+    public Dictionary<string, JsonElement>? Mind { get; set; } // TODO: string | number | boolean | string[]
 
-    public Dictionary<string, object>? Move { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, JsonElement>? Move { get; set; } // TODO: string | number | boolean
 
-    public Dictionary<string, object>? Patrol { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, JsonElement>? Patrol { get; set; } // TODO: string | number | boolean
 
-    public Dictionary<string, object>? Scattering { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, JsonElement>? Scattering { get; set; } // TODO: string | number | boolean
 
-    public Dictionary<string, object>? Shoot { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, JsonElement>? Shoot { get; set; } // TODO: string | number | boolean
 }
 
 public record Experience

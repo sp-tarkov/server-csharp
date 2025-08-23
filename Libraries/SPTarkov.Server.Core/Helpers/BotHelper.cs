@@ -70,55 +70,6 @@ public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseSer
     }
 
     /// <summary>
-    ///     Add a bot to the FRIENDLY_BOT_TYPES list
-    /// </summary>
-    /// <param name="difficultySettings">bot settings to alter</param>
-    /// <param name="typeToAdd">bot type to add to friendly list</param>
-    public void AddBotToFriendlyList(DifficultyCategories difficultySettings, string typeToAdd)
-    {
-        const string friendlyBotTypesKey = "FRIENDLY_BOT_TYPES";
-
-        // Null guard
-        if (!difficultySettings.Mind.ContainsKey(friendlyBotTypesKey))
-        {
-            difficultySettings.Mind[friendlyBotTypesKey] = new List<string>();
-        }
-
-        ((List<string>)difficultySettings.Mind[friendlyBotTypesKey]).Add(typeToAdd);
-    }
-
-    /// <summary>
-    ///     Add a bot to the REVENGE_BOT_TYPES list
-    /// </summary>
-    /// <param name="difficultySettings">bot settings to alter</param>
-    /// <param name="typesToAdd">bot type to add to revenge list</param>
-    public void AddBotToRevengeList(DifficultyCategories difficultySettings, string[] typesToAdd)
-    {
-        const string revengePropKey = "REVENGE_BOT_TYPES";
-
-        // Nothing to add
-        if (typesToAdd.Length == 0)
-        {
-            return;
-        }
-
-        // Null guard
-        if (!difficultySettings.Mind.ContainsKey(revengePropKey))
-        {
-            difficultySettings.Mind[revengePropKey] = new List<string>();
-        }
-
-        var revengeArray = (List<string>)difficultySettings.Mind[revengePropKey];
-        foreach (var botTypeToAdd in typesToAdd)
-        {
-            if (!revengeArray.Contains(botTypeToAdd))
-            {
-                revengeArray.Add(botTypeToAdd);
-            }
-        }
-    }
-
-    /// <summary>
     ///     Get randomization settings for bot from config/bot.json
     /// </summary>
     /// <param name="botLevel">level of bot</param>
