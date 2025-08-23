@@ -731,10 +731,7 @@ public class SeasonalEventService(
     {
         // Flag zombies as being enabled
         var botData = databaseService.GetBots();
-        if (!botData.Core.TryAdd("ACTIVE_HALLOWEEN_ZOMBIES_EVENT", true))
-        {
-            botData.Core["ACTIVE_HALLOWEEN_ZOMBIES_EVENT"] = true;
-        }
+        botData.Core["ACTIVE_HALLOWEEN_ZOMBIES_EVENT"] = JsonDocument.Parse("true").RootElement.Clone();
 
         var globals = databaseService.GetGlobals();
         var infectionHalloween = globals.Configuration.SeasonActivity.InfectionHalloween;
@@ -750,7 +747,7 @@ public class SeasonalEventService(
                     ? infectionPercentage
                     : Convert.ToDouble(randomUtil.GetInt(Convert.ToInt32(infectionPercentage), 100));
             if (logger.IsLogEnabled(LogLevel.Debug))
-                logger.Debug($"Percent infected from map {locationId} is {randomInfectionPercentage}");
+                logger.Debug($"Percent infected from map: {locationId} is: {randomInfectionPercentage}");
             // Infection rates sometimes apply to multiple maps, e.g. Factory day/night or Sandbox/sandbox_high
             // Get the list of maps that should have infection value applied to their base
             // 90% of locations are just 1 map e.g. bigmap = customs
