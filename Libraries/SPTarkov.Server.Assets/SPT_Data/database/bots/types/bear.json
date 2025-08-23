@@ -447,7 +447,7 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-         
+
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
@@ -473,7 +473,7 @@
         "NO_GRASS_DIST": 8,
         "NO_GREEN_DIST": 8,
         "OLD_TIME_POINT": 11,
-         
+
         "POSIBLE_VISION_SPACE": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 100,
         "WAIT_NEW_SENSOR": 2.1,
@@ -995,7 +995,7 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-         
+
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
@@ -1542,7 +1542,7 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-         
+
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
@@ -2086,7 +2086,7 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-         
+
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,

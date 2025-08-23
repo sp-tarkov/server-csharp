@@ -348,7 +348,7 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-         
+
         "POSIBLE_VISION_SPACE": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 95,
         "WAIT_NEW_SENSOR": 2.1,
@@ -785,7 +785,7 @@
       },
       "Lay": {
         "ATTACK_LAY_CHANCE": 25,
-         
+
         "CHECK_SHOOT_WHEN_LAYING": false,
         "CLEAR_POINTS_OF_SCARE_SEC": 20,
         "DAMAGE_TIME_TO_GETUP": 3,
@@ -839,7 +839,7 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-         
+
         "POSIBLE_VISION_SPACE": 1.2,
         "SELF_NIGHTVISION": true,
         "VISIBLE_DISNACE_WITH_LIGHT": 100,
@@ -912,7 +912,7 @@
         "STANDART_AMBUSH_DIST": 200,
         "SUSPETION_POINT_CHANCE_ADD100": 0,
         "TALK_WITH_QUERY": true,
-         
+
         "TIME_TO_FIND_ENEMY": 22,
         "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 52,
         "TIME_TO_RUN_TO_COVER_CAUSE_SHOOT_SEC": 15,
@@ -1287,7 +1287,7 @@
       },
       "Lay": {
         "ATTACK_LAY_CHANCE": 25,
-         
+
         "CHECK_SHOOT_WHEN_LAYING": false,
         "CLEAR_POINTS_OF_SCARE_SEC": 20,
         "DAMAGE_TIME_TO_GETUP": 3,
@@ -1413,7 +1413,7 @@
         "STANDART_AMBUSH_DIST": 200,
         "SUSPETION_POINT_CHANCE_ADD100": 0,
         "TALK_WITH_QUERY": true,
-         
+
         "TIME_TO_FIND_ENEMY": 22,
         "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 52,
         "TIME_TO_RUN_TO_COVER_CAUSE_SHOOT_SEC": 15,
@@ -1788,7 +1788,7 @@
       },
       "Lay": {
         "ATTACK_LAY_CHANCE": 25,
-         
+
         "CHECK_SHOOT_WHEN_LAYING": false,
         "CLEAR_POINTS_OF_SCARE_SEC": 20,
         "DAMAGE_TIME_TO_GETUP": 3,
@@ -1842,7 +1842,7 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-         
+
         "POSIBLE_VISION_SPACE": 1.2,
         "SELF_NIGHTVISION": true,
         "VISIBLE_DISNACE_WITH_LIGHT": 100,
@@ -1915,7 +1915,7 @@
         "STANDART_AMBUSH_DIST": 200,
         "SUSPETION_POINT_CHANCE_ADD100": 0,
         "TALK_WITH_QUERY": true,
-         
+
         "TIME_TO_FIND_ENEMY": 22,
         "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 52,
         "TIME_TO_RUN_TO_COVER_CAUSE_SHOOT_SEC": 15,

@@ -390,7 +390,7 @@
         "BULLET_FEEL_CLOSE_SDIST": 1,
         "BULLET_FEEL_DIST": 360,
         "CAN_PANIC_IS_PROTECT": false,
-         
+
         "CAN_STAND_BY": false,
         "CAN_TAKE_ANY_ITEM": true,
         "CAN_TAKE_ITEMS": true,
@@ -406,9 +406,7 @@
         "DAMAGE_REDUCTION_TIME_SEC": 20,
         "DANGER_POINT_CHOOSE_COEF": 1,
         "DEFAULT_BEAR_BEHAVIOUR": "Neutral",
-         
-         
-          
+
         "DEFAULT_SAVAGE_BEHAVIOUR": "Neutral",
         "DEFAULT_USEC_BEHAVIOUR": "Neutral",
         "DIST_TO_ENEMY_YO_CAN_HEAL": 30,
@@ -871,7 +869,7 @@
         "BULLET_FEEL_CLOSE_SDIST": 1,
         "BULLET_FEEL_DIST": 360,
         "CAN_PANIC_IS_PROTECT": false,
-         
+
         "CAN_STAND_BY": false,
         "CAN_TAKE_ANY_ITEM": true,
         "CAN_TAKE_ITEMS": true,
@@ -887,9 +885,7 @@
         "DAMAGE_REDUCTION_TIME_SEC": 20,
         "DANGER_POINT_CHOOSE_COEF": 1,
         "DEFAULT_BEAR_BEHAVIOUR": "Neutral",
-         
-         
-          
+
         "DEFAULT_SAVAGE_BEHAVIOUR": "Neutral",
         "DEFAULT_USEC_BEHAVIOUR": "Neutral",
         "DIST_TO_ENEMY_YO_CAN_HEAL": 30,
@@ -1352,7 +1348,7 @@
         "BULLET_FEEL_CLOSE_SDIST": 1,
         "BULLET_FEEL_DIST": 360,
         "CAN_PANIC_IS_PROTECT": false,
-         
+
         "CAN_STAND_BY": false,
         "CAN_TAKE_ANY_ITEM": true,
         "CAN_TAKE_ITEMS": true,
@@ -1368,9 +1364,7 @@
         "DAMAGE_REDUCTION_TIME_SEC": 20,
         "DANGER_POINT_CHOOSE_COEF": 1,
         "DEFAULT_BEAR_BEHAVIOUR": "Neutral",
-         
-         
-          
+
         "DEFAULT_SAVAGE_BEHAVIOUR": "Neutral",
         "DEFAULT_USEC_BEHAVIOUR": "Neutral",
         "DIST_TO_ENEMY_YO_CAN_HEAL": 30,
@@ -1833,7 +1827,7 @@
         "BULLET_FEEL_CLOSE_SDIST": 1,
         "BULLET_FEEL_DIST": 360,
         "CAN_PANIC_IS_PROTECT": false,
-         
+
         "CAN_STAND_BY": false,
         "CAN_TAKE_ANY_ITEM": true,
         "CAN_TAKE_ITEMS": true,
@@ -1849,9 +1843,7 @@
         "DAMAGE_REDUCTION_TIME_SEC": 20,
         "DANGER_POINT_CHOOSE_COEF": 1,
         "DEFAULT_BEAR_BEHAVIOUR": "Neutral",
-         
-         
-          
+
         "DEFAULT_SAVAGE_BEHAVIOUR": "Neutral",
         "DEFAULT_USEC_BEHAVIOUR": "Neutral",
         "DIST_TO_ENEMY_YO_CAN_HEAL": 30,
