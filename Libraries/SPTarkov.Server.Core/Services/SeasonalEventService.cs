@@ -925,24 +925,16 @@ public class SeasonalEventService(
             var gifterPatrolValues = gifterBot.BotDifficulty[difficulty].Patrol;
 
             // Read existing value from property
-            var existingItems = Enumerable.Empty<string>();
-            if (gifterPatrolValues.TryGetValue("ITEMS_TO_DROP", out var jsonElement) && jsonElement.ValueKind == JsonValueKind.String)
-            {
-                var existingCsv = jsonElement.GetString();
-                if (!string.IsNullOrWhiteSpace(existingCsv))
-                {
-                    existingItems = existingCsv.Split(',');
-                }
-            }
+            var existingItems = string.IsNullOrWhiteSpace(gifterPatrolValues.ItemsToDrop)
+                ? Enumerable.Empty<string>()
+                : gifterPatrolValues.ItemsToDrop.Split(',');
 
             // Merge existing and new tpls we want
             var combinedItems = new HashSet<string>(existingItems);
             combinedItems.UnionWith(gifterBot.BotInventory.Items.Backpack.Keys.Select(x => x.ToString()));
 
             // Turn set into a comma separated list ready for insertion
-            var finalItemsCsv = string.Join(",", combinedItems);
-
-            gifterPatrolValues["ITEMS_TO_DROP"] = JsonDocument.Parse($"\"{finalItemsCsv}\"").RootElement.Clone();
+            gifterPatrolValues.ItemsToDrop = string.Join(",", combinedItems);
         }
     }
 
