@@ -12,6 +12,7 @@ public class TheVoices(DatabaseService databaseService) : AbstractProfileMigrati
 {
     private bool _pmcVoiceIsMissing = false;
     private bool _scavVoiceIsMissing = false;
+    private bool _hasScavVoiceFromPreviousSPTVer = false;
 
     public override string FromVersion
     {
@@ -40,7 +41,9 @@ public class TheVoices(DatabaseService databaseService) : AbstractProfileMigrati
 
         _scavVoiceIsMissing = profile["characters"]?["scav"]?["Customization"]?["Voice"] == null;
 
-        return _pmcVoiceIsMissing || _scavVoiceIsMissing;
+        _hasScavVoiceFromPreviousSPTVer = profile["characters"]?["scav"]?["Info"]?["Voice"] is not null;
+
+        return _pmcVoiceIsMissing || _scavVoiceIsMissing || _hasScavVoiceFromPreviousSPTVer;
     }
 
     public override JsonObject? Migrate(JsonObject profile)
@@ -53,6 +56,14 @@ public class TheVoices(DatabaseService databaseService) : AbstractProfileMigrati
         if (_scavVoiceIsMissing)
         {
             HandleScavVoice(profile);
+        }
+
+        // Handle this only if _scavVoiceIsMissing hasn't already processed, there was a time the SPT server still saved this
+        // Old var to profiles
+        if (_hasScavVoiceFromPreviousSPTVer && !_scavVoiceIsMissing)
+        {
+            var scavInfo = profile["characters"]!["scav"]!["Info"] as JsonObject;
+            scavInfo?.Remove("Voice");
         }
 
         return base.Migrate(profile);
