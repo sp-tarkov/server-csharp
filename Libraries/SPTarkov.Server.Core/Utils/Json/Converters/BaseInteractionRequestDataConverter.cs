@@ -185,6 +185,8 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
                 return JsonSerializer.Deserialize<FailQuestRequestData>(jsonText, options);
             case ItemEventActions.PIN_LOCK:
                 return JsonSerializer.Deserialize<PinOrLockItemRequest>(jsonText, options);
+            case ItemEventActions.SAVE_DIALOGUE_STATE:
+                return JsonSerializer.Deserialize<SaveDialogueStateRequest>(jsonText, options);
             default:
                 if (_modHandlers.TryGetValue(action, out var handler))
                 {

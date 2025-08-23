@@ -1,6 +1,5 @@
 using System.Text.RegularExpressions;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Exceptions;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -418,6 +417,22 @@ public class ProfileFixerService(
                 }
 
                 AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.Generator, (int)(6 + extraGenSlots), pmcProfile);
+            }
+        }
+
+        var restArea = pmcProfile.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.RestSpace);
+        if (restArea is not null)
+        {
+            var slots = restArea.Slots.Count;
+
+            if (slots < 1)
+            {
+                if (logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    logger.Debug("Updating restArea slots to a size of 1");
+                }
+
+                AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.RestSpace, 1, pmcProfile);
             }
         }
 

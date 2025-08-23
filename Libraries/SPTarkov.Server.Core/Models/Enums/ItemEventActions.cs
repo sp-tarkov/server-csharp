@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace SPTarkov.Server.Core.Models.Enums;
 
 public record ItemEventActions
@@ -58,4 +56,5 @@ public record ItemEventActions
     public const string EAT = "Eat";
     public const string CUSTOMIZATION_SET = "CustomizationSet";
     public const string CUSTOMIZATION_BUY = "CustomizationBuy";
+    public const string SAVE_DIALOGUE_STATE = "SaveDialogueState";
 }

@@ -147,6 +147,10 @@ public class InventoryItemEventRouter(InventoryCallbacks inventoryCallbacks, Hid
                 return new ValueTask<ItemEventRouterResponse>(
                     inventoryCallbacks.PinOrLock(pmcData, body as PinOrLockItemRequest, sessionID, output)
                 );
+            case ItemEventActions.SAVE_DIALOGUE_STATE:
+                return new ValueTask<ItemEventRouterResponse>(
+                    inventoryCallbacks.SaveDialogueState(pmcData, body as SaveDialogueStateRequest, sessionID, output)
+                );
             default:
                 throw new Exception($"InventoryItemEventRouter being used when it cant handle route {url}");
         }
