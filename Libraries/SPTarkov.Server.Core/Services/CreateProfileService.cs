@@ -68,6 +68,7 @@ public class CreateProfileService(
         pmcData.Achievements = [];
 
         pmcData.WishList = new();
+        pmcData.Variables = new();
 
         // Process handling if the account has been forced to wipe
         // BSG keeps both the achievements, prestige level and the total in-game time in a wipe

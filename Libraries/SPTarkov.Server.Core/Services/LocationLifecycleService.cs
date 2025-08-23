@@ -750,6 +750,8 @@ public class LocationLifecycleService(
 
         serverPmcProfile.WishList = postRaidProfile.WishList;
 
+        serverPmcProfile.Variables = postRaidProfile.Variables;
+
         serverPmcProfile.Info.Experience = postRaidProfile.Info.Experience;
 
         ApplyTraderStandingAdjustments(serverPmcProfile.TradersInfo, postRaidProfile.TradersInfo);

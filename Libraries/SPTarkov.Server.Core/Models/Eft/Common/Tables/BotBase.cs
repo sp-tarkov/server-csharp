@@ -103,6 +103,8 @@ public record BotBase
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<MongoId, int>? WishList { get; set; }
 
+    public Dictionary<MongoId, int>? Variables { get; set; }
+
     [JsonPropertyName("moneyTransferLimitData")]
     public MoneyTransferLimits MoneyTransferLimitData { get; set; }
 

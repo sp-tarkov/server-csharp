@@ -122,6 +122,7 @@ public class PlayerScavGenerator(
         scavData.Notes = existingScavDataClone.Notes ?? new Notes { DataNotes = [] };
         scavData.WishList = existingScavDataClone.WishList ?? new();
         scavData.Encyclopedia = pmcDataClone.Encyclopedia ?? new();
+        scavData.Variables = existingScavDataClone.Variables ?? new();
 
         // Player scavs don't have a secure
         scavData = profileHelper.RemoveSecureContainer(scavData);
