@@ -4,96 +4,96 @@ namespace SPTarkov.Server.Core.Models.Eft.Bot.GlobalSettings;
 
 public record BotGlobalsScatteringSettings
 {
-    [JsonPropertyName("min_scatter")]
+    [JsonPropertyName("MinScatter")]
     public float MinScatter { get; set; }
 
-    [JsonPropertyName("working_scatter")]
+    [JsonPropertyName("WorkingScatter")]
     public float WorkingScatter { get; set; }
 
-    [JsonPropertyName("max_scatter")]
+    [JsonPropertyName("MaxScatter")]
     public float MaxScatter { get; set; }
 
-    [JsonPropertyName("scatter_speed_up")]
+    [JsonPropertyName("SpeedUp")]
     public float SpeedUp { get; set; }
 
-    [JsonPropertyName("scatter_speed_up_aim")]
+    [JsonPropertyName("SpeedUpAim")]
     public float SpeedUpAim { get; set; }
 
-    [JsonPropertyName("scatter_speed_down")]
+    [JsonPropertyName("SpeedDown")]
     public float SpeedDown { get; set; }
 
-    [JsonPropertyName("to_slow_bot_speed")]
+    [JsonPropertyName("ToSlowBotSpeed")]
     public float ToSlowBotSpeed { get; set; }
 
-    [JsonPropertyName("to_low_bot_speed")]
+    [JsonPropertyName("ToLowBotSpeed")]
     public float ToLowBotSpeed { get; set; }
 
-    [JsonPropertyName("to_up_bot_speed")]
+    [JsonPropertyName("ToUpBotSpeed")]
     public float ToUpBotSpeed { get; set; }
 
-    [JsonPropertyName("moving_slow_coef")]
+    [JsonPropertyName("MovingSlowCoef")]
     public float MovingSlowCoef { get; set; }
 
-    [JsonPropertyName("to_low_angular_speed")]
+    [JsonPropertyName("ToLowBotAngularSpeed")]
     public float ToLowBotAngularSpeed { get; set; }
 
-    [JsonPropertyName("to_stop_angular_speed")]
+    [JsonPropertyName("ToStopBotAngularSpeed")]
     public float ToStopBotAngularSpeed { get; set; }
 
-    [JsonPropertyName("scatter_from_shot")]
+    [JsonPropertyName("FromShot")]
     public float FromShot { get; set; }
 
-    [JsonPropertyName("tracer_coef")]
+    [JsonPropertyName("TracerCoef")]
     public float TracerCoef { get; set; }
 
-    [JsonPropertyName("hand_damage_scattering")]
+    [JsonPropertyName("HandDamageScatteringMinMax")]
     public float HandDamageScatteringMinMax { get; set; }
 
-    [JsonPropertyName("hand_damage_accuracy_speed")]
+    [JsonPropertyName("HandDamageAccuracySpeed")]
     public float HandDamageAccuracySpeed { get; set; }
 
-    [JsonPropertyName("blood_fall_coef")]
+    [JsonPropertyName("BloodFall")]
     public float BloodFall { get; set; }
 
-    [JsonPropertyName("caution_threshold")]
+    [JsonPropertyName("Caution")]
     public float Caution { get; set; }
 
-    [JsonPropertyName("to_caution_coef")]
+    [JsonPropertyName("ToCaution")]
     public float ToCaution { get; set; }
 
-    [JsonPropertyName("recoil_control_coef_single")]
+    [JsonPropertyName("RecoilControlCoefShootDone")]
     public float RecoilControlCoefShootDone { get; set; }
 
-    [JsonPropertyName("recoil_control_coef_auto")]
+    [JsonPropertyName("RecoilControlCoefShootDoneAuto")]
     public float RecoilControlCoefShootDoneAuto { get; set; }
 
-    [JsonPropertyName("amplitude_factor")]
+    [JsonPropertyName("AMPLITUDE_FACTOR")]
     public float AmplitudeFactor { get; set; }
 
-    [JsonPropertyName("amplitude_speed")]
+    [JsonPropertyName("AMPLITUDE_SPEED")]
     public float AmplitudeSpeed { get; set; }
 
-    [JsonPropertyName("dist_to_not_aim")]
+    [JsonPropertyName("DIST_FROM_OLD_POINT_TO_NOT_AIM")]
     public float DistFromOldPointToNotAim { get; set; }
 
-    [JsonPropertyName("dist_to_not_aim_sqrt")]
+    [JsonPropertyName("DIST_FROM_OLD_POINT_TO_NOT_AIM_SQRT")]
     public float DistFromOldPointToNotAimSqrt { get; set; }
 
-    [JsonPropertyName("min_dist_to_shoot")]
+    [JsonPropertyName("DIST_NOT_TO_SHOOT")]
     public float DistNotToShoot { get; set; }
 
-    [JsonPropertyName("pose_change_coef")]
+    [JsonPropertyName("PoseChnageCoef")]
     public float PoseChangeCoef { get; set; }
 
-    [JsonPropertyName("lay_factor")]
+    [JsonPropertyName("LayFactor")]
     public float LayFactor { get; set; }
 
-    [JsonPropertyName("recoil_y_coef")]
+    [JsonPropertyName("RecoilYCoef")]
     public float RecoilYCoef { get; set; }
 
-    [JsonPropertyName("recoil_y_speed_down")]
+    [JsonPropertyName("RecoilYCoefSppedDown")]
     public float RecoilYCoefSpeedDown { get; set; }
 
-    [JsonPropertyName("recoil_y_max")]
+    [JsonPropertyName("RecoilYMax")]
     public float RecoilYMax { get; set; }
 }

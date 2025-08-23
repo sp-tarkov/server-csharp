@@ -203,7 +203,7 @@ public record BotGlobalAimingSettings
     public float MissDist { get; set; }
 
     [JsonPropertyName("UnderbarrelLauncherAiming")]
-    public required BotUnderbarrelLauncherAimingSettings UnderbarrelLauncherAiming { get; set; }
+    public BotUnderbarrelLauncherAimingSettings UnderbarrelLauncherAiming { get; set; }
 }
 
 /// <summary>
