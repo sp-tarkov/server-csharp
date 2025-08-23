@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Bot.GlobalSettings;
 /// <para>
 /// See BotGlobasHearingSettings in the client (Yes, with the typo), this record should match that
 /// </para>
-/// 
+///
 /// <para>
 /// These are all nullable so that only values get written if they are set, we don't want default values to be written to the client
 /// </para>

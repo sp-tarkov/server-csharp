@@ -1,11 +1,12 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Eft.Bot.GlobalSettings;
+
 /// <summary>
 /// <para>
 /// See BotGlobalsMoveSettings in the client, this record should match that
 /// </para>
-/// 
+///
 /// <para>
 /// These are all nullable so that only values get written if they are set, we don't want default values to be written to the client
 /// </para>
