@@ -63,7 +63,7 @@ public record SptProfile
     /// <summary>
     ///     Stores the most recently sent dialog progress result from the client
     /// </summary>
-    [JsonPropertyName("DialogueProgress")]
+    [JsonPropertyName("dialogueProgress")]
     public List<NodePathTraveled>? DialogueProgress { get; set; }
 }
 
