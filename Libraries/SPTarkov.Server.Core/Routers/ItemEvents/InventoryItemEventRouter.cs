@@ -42,6 +42,7 @@ public class InventoryItemEventRouter(InventoryCallbacks inventoryCallbacks, Hid
             new(ItemEventActions.SET_FAVORITE_ITEMS, false),
             new(ItemEventActions.QUEST_FAIL, false),
             new(ItemEventActions.PIN_LOCK, false),
+            new(ItemEventActions.SAVE_DIALOGUE_STATE, false),
         };
     }
 

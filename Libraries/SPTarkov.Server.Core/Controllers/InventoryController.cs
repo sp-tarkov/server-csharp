@@ -137,6 +137,19 @@ public class InventoryController(
     }
 
     /// <summary>
+    ///     Handle /client/game/profile/items/moving SaveDialogueState
+    /// </summary>
+    /// <param name="pmcData">Player's PMC profile</param>
+    /// <param name="request"></param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="output"></param>
+    public void SetDialogueProgress(PmcData pmcData, SaveDialogueStateRequest request, MongoId sessionId, ItemEventRouterResponse output)
+    {
+        var fullProfile = profileHelper.GetFullProfile(sessionId);
+        fullProfile.DialogueProgress = request.DialogueProgress;
+    }
+
+    /// <summary>
     ///     Handle /client/game/profile/items/moving SetFavoriteItems
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
