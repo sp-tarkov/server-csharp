@@ -379,6 +379,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
         ItemEventRouterResponse output
     )
     {
-        throw new NotImplementedException();
+        inventoryController.SetDialogueProgress(pmcData, request, sessionId, output);
+        return output;
     }
 }

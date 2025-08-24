@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Eft.Inventory;
 using SPTarkov.Server.Core.Models.Eft.Prestige;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Dialog;
@@ -58,6 +59,12 @@ public record SptProfile
     /// </summary>
     [JsonPropertyName("customisationUnlocks")]
     public List<CustomisationStorage>? CustomisationUnlocks { get; set; }
+
+    /// <summary>
+    ///     Stores the most recently sent dialog progress result from the client
+    /// </summary>
+    [JsonPropertyName("dialogueProgress")]
+    public List<NodePathTraveled>? DialogueProgress { get; set; }
 }
 
 public record TraderPurchaseData
