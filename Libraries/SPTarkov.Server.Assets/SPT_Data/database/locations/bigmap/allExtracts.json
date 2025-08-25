@@ -25,7 +25,7 @@
   {
     "Chance": 50,
     "ChancePVE": 50,
-    "Count": 5000,
+    "Count": 40000,
     "CountPve": 0,
     "EntryPoints": "Customs,Boiler Tanks",
     "EventAvailable": false,
@@ -138,8 +138,8 @@
     "Side": "Pmc"
   },
   {
-    "Chance": 100,
-    "ChancePVE": 100,
+    "Chance": 0,
+    "ChancePVE": 0,
     "Count": 0,
     "CountPve": 0,
     "EntryPoints": "Boiler Tanks",
