@@ -115,7 +115,14 @@ public class ProfileValidatorService(
                     sptReadyProfile.SptData.Migrations = [];
                 }
 
-                sptReadyProfile.SptData.Migrations.Add(ranMigration.MigrationName, timeUtil.GetTimeStamp());
+                if (!sptReadyProfile.SptData.Migrations.ContainsKey(ranMigration.MigrationName))
+                {
+                    sptReadyProfile.SptData.Migrations.Add(ranMigration.MigrationName, timeUtil.GetTimeStamp());
+                }
+                else
+                {
+                    sptReadyProfile.SptData.Migrations[ranMigration.MigrationName] = timeUtil.GetTimeStamp();
+                }
             }
         }
 
