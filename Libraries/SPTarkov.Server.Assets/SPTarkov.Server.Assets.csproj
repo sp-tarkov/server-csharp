@@ -16,6 +16,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="build\PostBuild.cs" />
     <None Include="build\SPTarkov.Server.Assets.targets" Pack="true" PackagePath="build\" />
     <Content Include="SPT_Data\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -27,6 +28,9 @@
   <Target Name="PostBuildHashFile" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
     <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)PostBuild.ps1&quot;" />
   </Target>
+  <ItemGroup>
+    <Compile Remove="build\PostBuild.cs" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
