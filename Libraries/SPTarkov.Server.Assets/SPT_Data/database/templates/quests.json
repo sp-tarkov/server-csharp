@@ -175224,7 +175224,21 @@
           }
         }
       ],
-      "AvailableForStart": [],
+      "AvailableForStart": [
+        {
+          "availableAfter": 0,
+          "conditionType": "Quest",
+          "dynamicLocale": false,
+          "id": "fa90876f0c3a5f4129a24d1d",
+          "index": 0,
+          "parentId": "",
+          "status": [
+            4
+          ],
+          "target": "686404d348e7bb4146002cac",
+          "visibilityConditions": []
+        }
+      ],
       "Fail": []
     },
     "declinePlayerMessage": "6864fcef9809a149400dd2ee declinePlayerMessage",
