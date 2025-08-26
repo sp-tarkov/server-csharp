@@ -66,6 +66,12 @@ public record Reward
 
     [JsonPropertyName("isHidden")]
     public bool? IsHidden { get; set; }
+
+    /// <summary>
+    /// Only found with `NotificationPopup` rewards
+    /// </summary>
+    [JsonPropertyName("message")]
+    public MongoId? Message { get; set; }
 }
 
 public record IllustrationConfig
