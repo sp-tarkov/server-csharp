@@ -117,6 +117,9 @@ public record Quest
     [JsonPropertyName("arenaLocations")]
     public List<string>? ArenaLocations { get; set; }
 
+    [JsonPropertyName("dialogueId")]
+    public MongoId? DialogueId { get; set; }
+
     /// <summary>
     ///     Status of quest to player
     /// </summary>
