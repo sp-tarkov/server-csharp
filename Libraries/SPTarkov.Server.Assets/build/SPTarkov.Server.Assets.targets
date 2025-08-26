@@ -1,0 +1,12 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Target Name="CopySPTDataFromNuGet" AfterTargets="Build">
+        <ItemGroup>
+            <SPTContentFiles Include="$(MSBuildThisFileDirectory)..\contentFiles\any\any\SPT_Data\**\*" />
+        </ItemGroup>
+        <Copy
+            SourceFiles="@(SPTContentFiles)"
+            DestinationFiles="@(SPTContentFiles-&gt;'$(OutDir)SPT_Data\%(RecursiveDir)%(Filename)%(Extension)')"
+            SkipUnchangedFiles="true"
+        />
+    </Target>
+</Project>

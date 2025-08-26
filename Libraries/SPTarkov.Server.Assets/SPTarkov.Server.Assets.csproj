@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\Build.props" />
   <PropertyGroup>
     <PackageId>SPTarkov.Server.Assets</PackageId>
@@ -16,9 +16,12 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="build\SPTarkov.Server.Assets.targets" Pack="true" PackagePath="build\" />
     <Content Include="SPT_Data\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <ExcludeFromSingleFile>True</ExcludeFromSingleFile>
+      <Pack>true</Pack>
+      <PackagePath>contentFiles\any\any\SPT_Data\</PackagePath>
     </Content>
   </ItemGroup>
   <Target Name="PostBuildHashFile" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
