@@ -328,14 +328,14 @@ public class BotGenerator(
     /// <returns>Standing change value</returns>
     protected double GetStandingChangeForKillByDifficulty(Dictionary<string, double> standingsForKill, string botDifficulty, string role)
     {
-        if (!standingsForKill.TryGetValue(botDifficulty.ToLowerInvariant(), out var result))
+        if (standingsForKill.TryGetValue(botDifficulty.ToLowerInvariant(), out var result))
         {
-            logger.Warning($"Unable to find standing for kill value for: {role} {botDifficulty}, falling back to `normal`");
-
-            return standingsForKill["normal"];
+            return result;
         }
 
-        return result;
+        logger.Debug($"Unable to find 'standing for kill' value for: {role} {botDifficulty}, using `normal` value");
+
+        return standingsForKill["normal"];
     }
 
     /// <summary>
@@ -347,14 +347,14 @@ public class BotGenerator(
     /// <returns>Standing change value</returns>
     protected double GetAggressorBonusByDifficulty(Dictionary<string, double> aggressorBonuses, string botDifficulty, string role)
     {
-        if (!aggressorBonuses.TryGetValue(botDifficulty.ToLowerInvariant(), out var result))
+        if (aggressorBonuses.TryGetValue(botDifficulty.ToLowerInvariant(), out var result))
         {
-            logger.Warning($"Unable to find aggressor bonus for kill value for: {role} {botDifficulty}, falling back to `normal`");
-
-            return aggressorBonuses["normal"];
+            return result;
         }
 
-        return result;
+        logger.Debug($"Unable to find 'aggressor bonus for kill' value for: {role} {botDifficulty}, using `normal` value");
+
+        return aggressorBonuses["normal"];
     }
 
     /// <summary>
