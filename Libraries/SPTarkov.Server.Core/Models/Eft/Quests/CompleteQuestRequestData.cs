@@ -14,4 +14,10 @@ public record CompleteQuestRequestData : InventoryBaseActionRequestData
 
     [JsonPropertyName("removeExcessItems")]
     public bool? RemoveExcessItems { get; set; }
+
+    /// <summary>
+    /// This is only set if the quest is repeatable
+    /// </summary>
+    [JsonPropertyName("type")]
+    public string? Type { get; set; }
 }
