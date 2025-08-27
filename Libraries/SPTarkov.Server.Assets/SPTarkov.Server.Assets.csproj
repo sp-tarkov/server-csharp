@@ -17,10 +17,11 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="build\PostBuild.cs" />
-    <None Include="build\SPTarkov.Server.Assets.targets" Pack="true" PackagePath="build\" />
     <None Include="SPT_Data\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <PackageCopyToOutput>True</PackageCopyToOutput>
       <ExcludeFromSingleFile>True</ExcludeFromSingleFile>
+      <buildAction>None</buildAction>
       <Pack>true</Pack>
       <PackagePath>contentFiles\any\any\SPT_Data\</PackagePath>
     </None>
