@@ -11,7 +11,14 @@ namespace SPTarkov.Server.Core.Utils;
 [Injectable]
 public class HttpResponseUtil(JsonUtil jsonUtil, ServerLocalisationService serverLocalisationService)
 {
-    protected readonly ImmutableList<Regex> _cleanupRegexList = [new("[\\b]"), new("[\\f]"), new("[\\n]"), new("[\\r]"), new("[\\t]")];
+    protected static readonly ImmutableList<Regex> _cleanupRegexList =
+    [
+        new("[\\b]"),
+        new("[\\f]"),
+        new("[\\n]"),
+        new("[\\r]"),
+        new("[\\t]"),
+    ];
 
     protected string ClearString(string? s)
     {
@@ -46,6 +53,15 @@ public class HttpResponseUtil(JsonUtil jsonUtil, ServerLocalisationService serve
     /// <returns>response as string</returns>
     public string GetBody<T>(T data, BackendErrorCodes err = BackendErrorCodes.None, string? errmsg = null, bool sanitize = true)
     {
+        // No idea why, this fixes an AccessViolationException on release builds
+        // Cast explicitly as object fixes this, exception happens in System.Text.Json?
+#if RELEASE
+        if (typeof(T) == typeof(bool))
+        {
+            return sanitize ? ClearString(GetUnclearedBody<object>(data, err, errmsg)) : GetUnclearedBody<object>(data, err, errmsg);
+        }
+#endif
+
         return sanitize ? ClearString(GetUnclearedBody(data, err, errmsg)) : GetUnclearedBody(data, err, errmsg);
     }
 
