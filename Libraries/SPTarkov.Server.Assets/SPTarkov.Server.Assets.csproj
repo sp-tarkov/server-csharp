@@ -18,12 +18,12 @@
   <ItemGroup>
     <None Include="build\PostBuild.cs" />
     <None Include="build\SPTarkov.Server.Assets.targets" Pack="true" PackagePath="build\" />
-    <Content Include="SPT_Data\**">
+    <None Include="SPT_Data\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <ExcludeFromSingleFile>True</ExcludeFromSingleFile>
       <Pack>true</Pack>
       <PackagePath>contentFiles\any\any\SPT_Data\</PackagePath>
-    </Content>
+    </None>
   </ItemGroup>
   <Target Name="PostBuildHashFile" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
     <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)PostBuild.ps1&quot;" />
