@@ -85,6 +85,8 @@ public class RaidTimeAdjustmentService(
         if (mapSettings.AdjustWaves)
         {
             AdjustWaves(mapBase, raidAdjustments);
+
+            AdjustPMCSpawns(mapBase, raidAdjustments);
         }
     }
 
@@ -110,7 +112,7 @@ public class RaidTimeAdjustmentService(
     {
         // Remove waves that spawned before the player joined
         var originalWaveCount = mapBase.Waves.Count;
-        mapBase.Waves = mapBase.Waves.Where(x => x.TimeMax > raidAdjustments.SimulatedRaidStartSeconds).ToList();
+        mapBase.Waves = mapBase.Waves.Where(wave => wave.TimeMax > raidAdjustments.SimulatedRaidStartSeconds).ToList();
 
         // Adjust wave min/max times to match new simulated start
         var startSeconds = raidAdjustments.SimulatedRaidStartSeconds.GetValueOrDefault(1);
@@ -122,7 +124,41 @@ public class RaidTimeAdjustmentService(
         }
 
         logger.Debug(
-            $"Removed {originalWaveCount - mapBase.Waves.Count} wave from map due to simulated raid start time of {raidAdjustments.SimulatedRaidStartSeconds / 60} minutes"
+            $"Removed: {originalWaveCount - mapBase.Waves.Count} wave from map due to simulated raid start time of {raidAdjustments.SimulatedRaidStartSeconds / 60} minutes"
+        );
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="mapBase">Map to adjust</param>
+    /// <param name="raidAdjustments">Map adjustments</param>
+    protected void AdjustPMCSpawns(LocationBase mapBase, RaidChanges raidAdjustments)
+    {
+        var originalPmcWaveCount = mapBase.BossLocationSpawn.Count;
+
+        // Filter PMCs by spawn time but allow all normal boss types (e.g. Tagilla/Killa)
+        mapBase.BossLocationSpawn = mapBase
+            .BossLocationSpawn.Where(boss =>
+                boss.Time > raidAdjustments.SimulatedRaidStartSeconds // Spawns after simulated player start
+                || (
+                    !string.Equals(boss.BossName, "pmcusec", StringComparison.OrdinalIgnoreCase) // or
+                    && !string.Equals(boss.BossName, "pmcbear", StringComparison.OrdinalIgnoreCase) // isn't a pmc
+                )
+            )
+            .ToList();
+
+        // Adjust wave min/max times to match new simulated start
+        var startSeconds = raidAdjustments.SimulatedRaidStartSeconds.GetValueOrDefault(1);
+        foreach (var wave in mapBase.Waves)
+        {
+            // Don't let time fall below 0
+            wave.TimeMin -= (int)Math.Max(startSeconds, 0);
+            wave.TimeMax -= (int)Math.Max(startSeconds, 0);
+        }
+
+        logger.Debug(
+            $"Removed: {originalPmcWaveCount - mapBase.BossLocationSpawn.Count} boss waves from map due to simulated raid start time of {raidAdjustments.SimulatedRaidStartSeconds / 60} minutes"
         );
     }
 
