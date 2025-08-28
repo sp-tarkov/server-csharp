@@ -12,7 +12,7 @@ public class InsuranceSaveLoadRouter : SaveLoadRouter
         return [new HandledRoute("spt-insurance", false)];
     }
 
-    public override SptProfile HandleLoad(SptProfile profile)
+    protected override SptProfile HandleLoadInternal(SptProfile profile)
     {
         profile.InsuranceList ??= [];
 

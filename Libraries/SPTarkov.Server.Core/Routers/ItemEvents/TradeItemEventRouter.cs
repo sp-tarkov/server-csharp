@@ -23,7 +23,7 @@ public class TradeItemEventRouter(TradeCallbacks tradeCallbacks) : ItemEventRout
         ];
     }
 
-    public override ValueTask<ItemEventRouterResponse> HandleItemEvent(
+    protected override ValueTask<ItemEventRouterResponse> HandleItemEventInternal(
         string url,
         PmcData pmcData,
         BaseInteractionRequestData body,

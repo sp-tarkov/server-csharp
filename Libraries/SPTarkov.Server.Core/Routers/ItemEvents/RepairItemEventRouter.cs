@@ -18,7 +18,7 @@ public class RepairItemEventRouter(RepairCallbacks repairCallbacks) : ItemEventR
         return new List<HandledRoute> { new(ItemEventActions.REPAIR, false), new(ItemEventActions.TRADER_REPAIR, false) };
     }
 
-    public override ValueTask<ItemEventRouterResponse> HandleItemEvent(
+    protected override ValueTask<ItemEventRouterResponse> HandleItemEventInternal(
         string url,
         PmcData pmcData,
         BaseInteractionRequestData body,

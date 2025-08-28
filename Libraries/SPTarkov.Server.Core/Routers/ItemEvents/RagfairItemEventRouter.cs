@@ -23,7 +23,7 @@ public class RagfairItemEventRouter(RagfairCallbacks ragfairCallbacks) : ItemEve
         };
     }
 
-    public override ValueTask<ItemEventRouterResponse> HandleItemEvent(
+    protected override ValueTask<ItemEventRouterResponse> HandleItemEventInternal(
         string url,
         PmcData pmcData,
         BaseInteractionRequestData body,

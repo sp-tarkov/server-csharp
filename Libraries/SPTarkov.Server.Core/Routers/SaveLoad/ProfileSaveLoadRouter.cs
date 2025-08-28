@@ -13,7 +13,7 @@ public class ProfileSaveLoadRouter : SaveLoadRouter
         return [new HandledRoute("spt-profile", false)];
     }
 
-    public override SptProfile HandleLoad(SptProfile profile)
+    protected override SptProfile HandleLoadInternal(SptProfile profile)
     {
         profile.CharacterData ??= new Characters { PmcData = new PmcData(), ScavData = new PmcData() };
 
