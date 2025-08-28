@@ -1306,7 +1306,7 @@ public class ItemHelper(
     /// <returns>Valid caliber for cartridge</returns>
     public MongoId? GetRandomCompatibleCaliberTemplateId(TemplateItem item)
     {
-        var cartridges = item.Properties?.Cartridges?.FirstOrDefault()?.Props?.Filters?.FirstOrDefault()?.Filter;
+        var cartridges = item.Properties?.Cartridges?.FirstOrDefault()?.Properties?.Filters?.FirstOrDefault()?.Filter;
         if (cartridges is null)
         {
             logger.Warning($"Failed to find cartridge for item: {item.Id} {item.Name}");
@@ -1324,7 +1324,7 @@ public class ItemHelper(
     public void AddCartridgesToAmmoBox(List<Item> ammoBox, TemplateItem ammoBoxDetails)
     {
         var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties?.StackSlots?.First().MaxCount;
-        var cartridgeTpl = ammoBoxDetails.Properties?.StackSlots?.First().Props?.Filters?.First().Filter?.FirstOrDefault();
+        var cartridgeTpl = ammoBoxDetails.Properties?.StackSlots?.First().Properties?.Filters?.First().Filter?.FirstOrDefault();
         var cartridgeDetails = GetItem(cartridgeTpl!.Value);
         var cartridgeMaxStackSize = cartridgeDetails.Value?.Properties?.StackMaxSize;
 
@@ -1369,7 +1369,7 @@ public class ItemHelper(
     public void AddSingleStackCartridgesToAmmoBox(List<Item> ammoBox, TemplateItem ammoBoxDetails)
     {
         var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties?.StackSlots?.First().MaxCount ?? 0;
-        var cartridgeTpl = ammoBoxDetails.Properties?.StackSlots?.First().Props?.Filters?.First().Filter?.FirstOrDefault();
+        var cartridgeTpl = ammoBoxDetails.Properties?.StackSlots?.First().Properties?.Filters?.First().Filter?.FirstOrDefault();
         ammoBox.Add(CreateCartridges(ammoBox[0].Id, cartridgeTpl!.Value, (int)ammoBoxMaxCartridgeCount, 0));
     }
 
@@ -1409,7 +1409,7 @@ public class ItemHelper(
             chosenCaliber,
             staticAmmoDist,
             defaultCartridgeTpl,
-            weapon?.Properties?.Chambers?.FirstOrDefault()?.Props?.Filters?.FirstOrDefault()?.Filter ?? null
+            weapon?.Properties?.Chambers?.FirstOrDefault()?.Properties?.Filters?.FirstOrDefault()?.Filter ?? null
         );
         if (cartridgeTpl is null)
         {
@@ -1459,10 +1459,10 @@ public class ItemHelper(
         }
 
         // Get max number of cartridges in magazine, choose random value between min/max
-        var magProps = magTemplate.Properties;
+        var magProperties = magTemplate.Properties;
         var magazineCartridgeMaxCount = IsOfBaseclass(magTemplate.Id, BaseClasses.SPRING_DRIVEN_CYLINDER)
-            ? magProps?.Slots?.Count() // Edge case for rotating grenade launcher magazine
-            : magProps?.Cartridges?.FirstOrDefault()?.MaxCount;
+            ? magProperties?.Slots?.Count() // Edge case for rotating grenade launcher magazine
+            : magProperties?.Cartridges?.FirstOrDefault()?.MaxCount;
 
         if (magazineCartridgeMaxCount is null)
         {
@@ -1519,7 +1519,7 @@ public class ItemHelper(
     /// <returns>Tpl of cartridge</returns>
     protected string? GetRandomValidCaliber(TemplateItem magTemplate)
     {
-        var ammoTpls = magTemplate.Properties?.Cartridges?.First().Props?.Filters?.First().Filter;
+        var ammoTpls = magTemplate.Properties?.Cartridges?.First().Properties?.Filters?.First().Filter;
         var calibers = ammoTpls?.Where(x => GetItem(x).Key).Select(x => GetItem(x).Value?.Properties?.Caliber).ToList();
 
         if (calibers is null)
@@ -1679,7 +1679,7 @@ public class ItemHelper(
                 }
             }
 
-            var itemPool = slot.Props?.Filters?.FirstOrDefault()?.Filter ?? [];
+            var itemPool = slot.Properties?.Filters?.FirstOrDefault()?.Filter ?? [];
             if (itemPool.Count == 0)
             {
                 if (logger.IsLogEnabled(LogLevel.Debug))
@@ -1869,8 +1869,8 @@ public class ItemHelper(
         var containerTemplate = GetItem(containerTpl).Value;
 
         // Get height/width
-        var height = containerTemplate?.Properties?.Grids?.First().Props?.CellsV;
-        var width = containerTemplate?.Properties?.Grids?.First().Props?.CellsH;
+        var height = containerTemplate?.Properties?.Grids?.First().Properties?.CellsV;
+        var width = containerTemplate?.Properties?.Grids?.First().Properties?.CellsH;
 
         if (height is null || width is null)
         {

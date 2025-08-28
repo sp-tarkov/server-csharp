@@ -376,14 +376,14 @@ public class ItemTplMongoIdGenerator(
 
     private string GetAmmoBoxPrefix(TemplateItem item)
     {
-        var ammoTpl = item.Properties?.StackSlots?.First()?.Props?.Filters?.First()?.Filter?.FirstOrDefault();
+        var ammoTpl = item.Properties?.StackSlots?.First()?.Properties?.Filters?.First()?.Filter?.FirstOrDefault();
 
         return GetAmmoPrefix(_items[ammoTpl.Value]);
     }
 
     private string GetMagazinePrefix(TemplateItem item)
     {
-        var ammoTpl = item.Properties?.Cartridges?.First()?.Props?.Filters?.First()?.Filter?.FirstOrDefault();
+        var ammoTpl = item.Properties?.Cartridges?.First()?.Properties?.Filters?.First()?.Filter?.FirstOrDefault();
 
         return GetAmmoPrefix(_items[ammoTpl.Value]);
     }
@@ -459,7 +459,7 @@ public class ItemTplMongoIdGenerator(
         // Add grid size for lootable containers
         if (itemHelper.IsOfBaseclass(item.Id, BaseClasses.LOOT_CONTAINER))
         {
-            return $"{item.Properties.Grids.First()?.Props.CellsH}X{item.Properties.Grids.First()?.Props.CellsV}";
+            return $"{item.Properties.Grids.First()?.Properties.CellsH}X{item.Properties.Grids.First()?.Properties.CellsV}";
         }
 
         // Add ammo caliber to conflicting weapons

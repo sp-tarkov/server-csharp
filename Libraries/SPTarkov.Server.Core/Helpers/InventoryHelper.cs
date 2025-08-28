@@ -913,8 +913,8 @@ public class InventoryHelper(
         var containerTemplate = itemHelper.GetItem(containerTpl).Value;
 
         var firstContainerGrid = containerTemplate.Properties.Grids.FirstOrDefault();
-        var containerRowCount = firstContainerGrid.Props.CellsH;
-        var containerColumnCount = firstContainerGrid.Props.CellsV;
+        var containerRowCount = firstContainerGrid.Properties.CellsH;
+        var containerColumnCount = firstContainerGrid.Properties.CellsV;
 
         return itemHelper.GetBlankContainerMap(containerColumnCount.Value, containerRowCount.Value);
     }
@@ -959,8 +959,8 @@ public class InventoryHelper(
         var firstStashItemGrid = stashItemDbItem?.Properties?.Grids?.FirstOrDefault();
 
         // Get horizontal and vertical size
-        var stashH = firstStashItemGrid.Props.CellsH != 0 ? firstStashItemGrid.Props.CellsH : 10;
-        var stashV = firstStashItemGrid.Props.CellsV != 0 ? firstStashItemGrid.Props.CellsV : 66;
+        var stashH = firstStashItemGrid.Properties.CellsH != 0 ? firstStashItemGrid.Properties.CellsH : 10;
+        var stashV = firstStashItemGrid.Properties.CellsV != 0 ? firstStashItemGrid.Properties.CellsV : 66;
 
         // Player has a bonus, apply to vertical size
         var stashRowBonus = pmcData.Bonuses.FirstOrDefault(bonus => bonus.Type == BonusType.StashRows);

@@ -333,7 +333,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
     {
         // Assume all grids have same limitations
         var firstSlotGrid = containerDetails.ContainerDbItem.Properties.Grids.FirstOrDefault();
-        var propFilters = firstSlotGrid?.Props?.Filters;
+        var propFilters = firstSlotGrid?.Properties?.Filters;
         if (propFilters is null || !propFilters.Any())
         // No filters, item is fine to add
         {
@@ -425,7 +425,7 @@ public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger,
                 ContainerGridDetails.Add(
                     new ContainerMapDetails
                     {
-                        GridMap = new int[grid.Props.CellsV.GetValueOrDefault(), grid.Props.CellsH.GetValueOrDefault()],
+                        GridMap = new int[grid.Properties.CellsV.GetValueOrDefault(), grid.Properties.CellsH.GetValueOrDefault()],
                         GridFull = false,
                     }
                 );

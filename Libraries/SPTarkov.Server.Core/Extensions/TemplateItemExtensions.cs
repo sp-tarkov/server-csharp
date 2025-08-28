@@ -56,7 +56,7 @@ public static class TemplateItemExtensions
             string.Equals(slot.Name, modSlot, StringComparison.OrdinalIgnoreCase)
         );
 
-        return relatedItemDbModSlot?.Props?.Filters?.FirstOrDefault()?.Plate;
+        return relatedItemDbModSlot?.Properties?.Filters?.FirstOrDefault()?.Plate;
     }
 
     /// <summary>

@@ -18,13 +18,13 @@ public record CustomizationItem
     public string Type { get; set; }
 
     [JsonPropertyName("_props")]
-    public CustomizationProps Properties { get; set; }
+    public CustomizationProperties Properties { get; set; }
 
     [JsonPropertyName("_proto")]
     public string Proto { get; set; }
 }
 
-public class CustomizationProps
+public class CustomizationProperties
 {
     [JsonPropertyName("Prefab")]
     public object? Prefab { get; set; } // Prefab object or string

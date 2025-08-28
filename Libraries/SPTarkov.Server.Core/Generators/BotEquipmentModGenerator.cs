@@ -1137,7 +1137,7 @@ public class BotEquipmentModGenerator(
         }
 
         // Filter modpool to only items that appear in parents allowed list
-        preFilteredModPool = preFilteredModPool.Where(tpl => parentSlot.Props.Filters.First().Filter.Contains(tpl)).ToHashSet();
+        preFilteredModPool = preFilteredModPool.Where(tpl => parentSlot.Properties.Filters.First().Filter.Contains(tpl)).ToHashSet();
         if (preFilteredModPool.Count == 0)
         {
             return new ChooseRandomCompatibleModResult
@@ -1326,7 +1326,7 @@ public class BotEquipmentModGenerator(
             .ParentTemplate.Properties.Slots?.FirstOrDefault(slot =>
                 string.Equals(slot.Name.ToLowerInvariant(), request.ModSlot.ToLowerInvariant(), StringComparison.Ordinal)
             )
-            ?.Props.Filters?.First()
+            ?.Properties.Filters?.First()
             .Filter;
 
         // Mod isn't in existing pool, only add if it has no children and exists inside parent filter
@@ -1476,7 +1476,7 @@ public class BotEquipmentModGenerator(
     public MongoId? GetRandomModTplFromItemDb(MongoId fallbackModTpl, Slot parentSlot, string modSlot, IEnumerable<Item> items)
     {
         // Find compatible mods and make an array of them
-        var allowedItems = parentSlot.Props.Filters.First().Filter;
+        var allowedItems = parentSlot.Properties.Filters.First().Filter;
 
         // Find mod item that fits slot from sorted mod array
         var exhaustableModPool = CreateExhaustableArray(allowedItems);
@@ -1573,7 +1573,7 @@ public class BotEquipmentModGenerator(
     {
         var desiredSlotObject = modTemplate.Properties?.Slots?.FirstOrDefault(slot => slot.Name.Contains(desiredSlotName));
 
-        var supportedSubMods = desiredSlotObject?.Props?.Filters?.FirstOrDefault()?.Filter;
+        var supportedSubMods = desiredSlotObject?.Properties?.Filters?.FirstOrDefault()?.Filter;
         if (supportedSubMods is null)
         {
             return;
@@ -1689,7 +1689,7 @@ public class BotEquipmentModGenerator(
             modPool[cylinderMagTemplate.Id] = new Dictionary<string, HashSet<MongoId>>();
             foreach (var camora in camoraSlots)
             {
-                modPool[cylinderMagTemplate.Id][camora.Name] = camora.Props.Filters.First().Filter.ToHashSet();
+                modPool[cylinderMagTemplate.Id][camora.Name] = camora.Properties.Filters.First().Filter.ToHashSet();
             }
 
             itemModPool = modPool[cylinderMagTemplate.Id];
@@ -1818,7 +1818,7 @@ public class BotEquipmentModGenerator(
                 // Mods scope slot found must allow ALL whitelisted scope types OR be a mount
                 if (
                     scopeSlot?.All(slot =>
-                        slot.Props.Filters.FirstOrDefault()
+                        slot.Properties.Filters.FirstOrDefault()
                             .Filter.All(tpl =>
                                 itemHelper.IsOfBaseclasses(tpl, whitelistedSightTypes) || itemHelper.IsOfBaseclass(tpl, BaseClasses.MOUNT)
                             )

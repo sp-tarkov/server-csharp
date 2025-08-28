@@ -492,41 +492,41 @@ public class BotLootCacheService(
     /// <summary>
     ///     Ammo/grenades have this property
     /// </summary>
-    /// <param name="props"></param>
+    /// <param name="properties"></param>
     /// <returns></returns>
-    protected bool IsBulletOrGrenade(Props props)
+    protected bool IsBulletOrGrenade(TemplateItemProperties properties)
     {
-        return props.AmmoType is not null;
+        return properties.AmmoType is not null;
     }
 
     /// <summary>
     ///     Internal and external magazine have this property
     /// </summary>
-    /// <param name="props"></param>
+    /// <param name="properties"></param>
     /// <returns></returns>
-    protected bool IsMagazine(Props props)
+    protected bool IsMagazine(TemplateItemProperties properties)
     {
-        return props.ReloadMagType is not null;
+        return properties.ReloadMagType is not null;
     }
 
     /// <summary>
     ///     Medical use items (e.g. morphine/lip balm/grizzly)
     /// </summary>
-    /// <param name="props"></param>
+    /// <param name="properties"></param>
     /// <returns></returns>
-    protected bool IsMedicalItem(Props props)
+    protected bool IsMedicalItem(TemplateItemProperties properties)
     {
-        return props.MedUseTime is not null;
+        return properties.MedUseTime is not null;
     }
 
     /// <summary>
     ///     Grenades have this property (e.g. smoke/frag/flash grenades)
     /// </summary>
-    /// <param name="props"></param>
+    /// <param name="properties"></param>
     /// <returns></returns>
-    protected bool IsGrenade(Props props)
+    protected bool IsGrenade(TemplateItemProperties properties)
     {
-        return props.ThrowType is not null;
+        return properties.ThrowType is not null;
     }
 
     protected bool IsFood(MongoId tpl)

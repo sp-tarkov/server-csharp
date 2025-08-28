@@ -37,7 +37,7 @@ public record TemplateItem
     }
 
     [JsonPropertyName("_props")]
-    public Props? Properties { get; set; }
+    public TemplateItemProperties? Properties { get; set; }
 
     [JsonPropertyName("_proto")]
     public string? Prototype
@@ -68,7 +68,7 @@ public record TemplateItem
     }
 }
 
-public record Props
+public record TemplateItemProperties
 {
     private string? _backgroundColor;
 
@@ -1108,12 +1108,12 @@ public record Props
     [JsonPropertyName("effects_health")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public Dictionary<HealthFactor, EffectsHealthProps>? EffectsHealth { get; set; }
+    public Dictionary<HealthFactor, EffectsHealthProperties>? EffectsHealth { get; set; }
 
     [JsonPropertyName("effects_damage")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public Dictionary<DamageEffectType, EffectDamageProps>? EffectsDamage { get; set; }
+    public Dictionary<DamageEffectType, EffectsDamageProperties>? EffectsDamage { get; set; }
 
     // Confirmed in client
     [JsonPropertyName("MaximumNumberOfUsage")]
@@ -1666,13 +1666,13 @@ public record Grid
     public string? Parent { get; set; }
 
     [JsonPropertyName("_props")]
-    public GridProps? Props { get; set; }
+    public GridProperties? Properties { get; set; }
 
     [JsonPropertyName("_proto")]
     public string? Proto { get; set; }
 }
 
-public record GridProps
+public record GridProperties
 {
     [JsonPropertyName("filters")]
     public IEnumerable<GridFilter>? Filters { get; set; }
@@ -1728,7 +1728,7 @@ public record Slot
     public string? Parent { get; set; }
 
     [JsonPropertyName("_props")]
-    public SlotProps? Props { get; set; }
+    public SlotProperties? Properties { get; set; }
 
     [JsonPropertyName("_max_count")]
     public double? MaxCount { get; set; }
@@ -1747,7 +1747,7 @@ public record Slot
     }
 }
 
-public record SlotProps
+public record SlotProperties
 {
     [JsonPropertyName("filters")]
     public IEnumerable<SlotFilter>? Filters { get; set; }
@@ -1801,7 +1801,7 @@ public record StackSlot
     public double? MaxCount { get; set; }
 
     [JsonPropertyName("_props")]
-    public StackSlotProps? Props { get; set; }
+    public StackSlotProperties? Properties { get; set; }
 
     [JsonPropertyName("_proto")]
     public string? Proto { get; set; }
@@ -1810,7 +1810,7 @@ public record StackSlot
     public object? Upd { get; set; } // TODO: object here
 }
 
-public record StackSlotProps
+public record StackSlotProperties
 {
     [JsonPropertyName("filters")]
     public IEnumerable<SlotFilter>? Filters { get; set; }
@@ -1858,13 +1858,13 @@ public record RandomLootExcluded
 public record EffectsHealth
 {
     [JsonPropertyName("Energy")]
-    public EffectsHealthProps? Energy { get; set; }
+    public EffectsHealthProperties? Energy { get; set; }
 
     [JsonPropertyName("Hydration")]
-    public EffectsHealthProps? Hydration { get; set; }
+    public EffectsHealthProperties? Hydration { get; set; }
 }
 
-public record EffectsHealthProps
+public record EffectsHealthProperties
 {
     [JsonPropertyName("value")]
     public double? Value { get; set; }
@@ -1879,28 +1879,28 @@ public record EffectsHealthProps
 public record EffectsDamage
 {
     [JsonPropertyName("Pain")]
-    public EffectDamageProps? Pain { get; set; }
+    public EffectsDamageProperties? Pain { get; set; }
 
     [JsonPropertyName("LightBleeding")]
-    public EffectDamageProps? LightBleeding { get; set; }
+    public EffectsDamageProperties? LightBleeding { get; set; }
 
     [JsonPropertyName("HeavyBleeding")]
-    public EffectDamageProps? HeavyBleeding { get; set; }
+    public EffectsDamageProperties? HeavyBleeding { get; set; }
 
     [JsonPropertyName("Contusion")]
-    public EffectDamageProps? Contusion { get; set; }
+    public EffectsDamageProperties? Contusion { get; set; }
 
     [JsonPropertyName("RadExposure")]
-    public EffectDamageProps? RadExposure { get; set; }
+    public EffectsDamageProperties? RadExposure { get; set; }
 
     [JsonPropertyName("Fracture")]
-    public EffectDamageProps? Fracture { get; set; }
+    public EffectsDamageProperties? Fracture { get; set; }
 
     [JsonPropertyName("DestroyedPart")]
-    public EffectDamageProps? DestroyedPart { get; set; }
+    public EffectsDamageProperties? DestroyedPart { get; set; }
 }
 
-public record EffectDamageProps
+public record EffectsDamageProperties
 {
     [JsonPropertyName("value")]
     public double? Value { get; set; }

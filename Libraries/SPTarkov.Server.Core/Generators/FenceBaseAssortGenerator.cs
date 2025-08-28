@@ -209,7 +209,7 @@ public class FenceBaseAssortGenerator(
         if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.AMMO_BOX))
         {
             // Get the cartridge tpl found inside ammo box
-            var cartridgeTplInBox = rootItemDb.Properties.StackSlots.First().Props.Filters.First().Filter.FirstOrDefault();
+            var cartridgeTplInBox = rootItemDb.Properties.StackSlots.First().Properties.Filters.First().Filter.FirstOrDefault();
 
             // Look up cartridge tpl in db
             var ammoItemDb = itemHelper.GetItem(cartridgeTplInBox);
@@ -253,8 +253,8 @@ public class FenceBaseAssortGenerator(
         {
             foreach (var requiredSlot in requiredSlots)
             {
-                var modItemDbDetails = itemHelper.GetItem(requiredSlot.Props.Filters.First().Plate.Value).Value;
-                var plateTpl = requiredSlot.Props.Filters.First().Plate; // `Plate` property appears to be the 'default' item for slot
+                var modItemDbDetails = itemHelper.GetItem(requiredSlot.Properties.Filters.First().Plate.Value).Value;
+                var plateTpl = requiredSlot.Properties.Filters.First().Plate; // `Plate` property appears to be the 'default' item for slot
                 if (plateTpl is null || plateTpl.Value.IsEmpty)
                 // Some bsg plate properties are empty, skip mod
                 {
@@ -287,7 +287,7 @@ public class FenceBaseAssortGenerator(
         {
             foreach (var plateSlot in plateSlots)
             {
-                var plateTpl = plateSlot.Props.Filters.First().Plate;
+                var plateTpl = plateSlot.Properties.Filters.First().Plate;
                 if (string.IsNullOrEmpty(plateTpl))
                 // Bsg data lacks a default plate, skip adding mod
                 {
@@ -299,7 +299,7 @@ public class FenceBaseAssortGenerator(
                     new Item
                     {
                         Id = new MongoId(),
-                        Template = plateSlot.Props.Filters.First().Plate.Value, // `Plate` property appears to be the 'default' item for slot
+                        Template = plateSlot.Properties.Filters.First().Plate.Value, // `Plate` property appears to be the 'default' item for slot
                         ParentId = armor[0].Id,
                         SlotId = plateSlot.Name,
                         Upd = new Upd

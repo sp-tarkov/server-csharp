@@ -22,7 +22,7 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
     ///     Item properties that should be applied over the top of the cloned base
     /// </summary>
     [JsonPropertyName("overrideProperties")]
-    public Props? OverrideProperties { get; set; }
+    public TemplateItemProperties? OverrideProperties { get; set; }
 
     /// <summary>
     ///     ParentId for the new item (item type)

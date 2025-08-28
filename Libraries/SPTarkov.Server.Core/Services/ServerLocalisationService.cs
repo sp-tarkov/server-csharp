@@ -175,9 +175,9 @@ public class ServerLocalisationService(
             return rawLocalizedString;
         }
 
-        var typeProps = args.GetType().GetProperties();
+        var typeProperties = args.GetType().GetProperties();
 
-        foreach (var propertyInfo in typeProps)
+        foreach (var propertyInfo in typeProperties)
         {
             var localizedName = $"{{{{{propertyInfo.GetJsonName()}}}}}";
             if (rawLocalizedString.Contains(localizedName))

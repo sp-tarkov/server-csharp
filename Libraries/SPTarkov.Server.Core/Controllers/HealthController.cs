@@ -177,15 +177,15 @@ public class HealthController(
         var foodItemEffectDetails = foodItemDbDetails.Properties.EffectsHealth;
         var foodIsSingleUse = foodItemDbDetails.Properties.MaxResource == 1;
 
-        foreach (var (key, effectProps) in foodItemEffectDetails)
+        foreach (var (key, effectProperties) in foodItemEffectDetails)
         {
             switch (key)
             {
                 case HealthFactor.Hydration:
-                    ApplyEdibleEffect(pmcData.Health.Hydration, effectProps, foodIsSingleUse, request);
+                    ApplyEdibleEffect(pmcData.Health.Hydration, effectProperties, foodIsSingleUse, request);
                     break;
                 case HealthFactor.Energy:
-                    ApplyEdibleEffect(pmcData.Health.Energy, effectProps, foodIsSingleUse, request);
+                    ApplyEdibleEffect(pmcData.Health.Energy, effectProperties, foodIsSingleUse, request);
                     break;
 
                 default:
@@ -206,7 +206,7 @@ public class HealthController(
     /// <param name="request">Client request</param>
     protected void ApplyEdibleEffect(
         CurrentMinMax bodyValue,
-        EffectsHealthProps consumptionDetails,
+        EffectsHealthProperties consumptionDetails,
         bool foodIsSingleUse,
         OffraidEatRequestData request
     )

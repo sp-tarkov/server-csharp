@@ -204,7 +204,7 @@ public class BotWeaponGenerator(
         // Add cartridge(s) to gun chamber(s)
         if (
             (weaponItemTemplate.Properties?.Chambers).Any()
-            && weaponItemTemplate.Properties.Chambers.FirstOrDefault().Props.Filters.FirstOrDefault().Filter.Contains(ammoTpl)
+            && weaponItemTemplate.Properties.Chambers.FirstOrDefault().Properties.Filters.FirstOrDefault().Filter.Contains(ammoTpl)
         )
         {
             // Guns have variety of possible Chamber ids, patron_in_weapon/patron_in_weapon_000/patron_in_weapon_001
@@ -671,7 +671,7 @@ public class BotWeaponGenerator(
     {
         ArgumentNullException.ThrowIfNull(weaponTemplate);
 
-        var cartridges = weaponTemplate.Properties?.Chambers?.FirstOrDefault()?.Props?.Filters?.First().Filter;
+        var cartridges = weaponTemplate.Properties?.Chambers?.FirstOrDefault()?.Properties?.Filters?.First().Filter;
         if (cartridges is not null)
         {
             return cartridges;
@@ -699,7 +699,7 @@ public class BotWeaponGenerator(
         }
 
         var magazineTemplate = itemHelper.GetItem(
-            magazineSlot.Props?.Filters.FirstOrDefault()?.Filter?.FirstOrDefault() ?? new MongoId(null)
+            magazineSlot.Properties?.Filters.FirstOrDefault()?.Filter?.FirstOrDefault() ?? new MongoId(null)
         );
         if (!magazineTemplate.Key)
         {
@@ -708,10 +708,8 @@ public class BotWeaponGenerator(
 
         // Try to get cartridges from slots array first, if none found, try Cartridges array
         var cartridges =
-            magazineTemplate.Value.Properties.Slots.FirstOrDefault()?.Props?.Filters.FirstOrDefault()?.Filter ?? magazineTemplate
-                .Value.Properties.Cartridges.FirstOrDefault()
-                ?.Props?.Filters.FirstOrDefault()
-                ?.Filter;
+            magazineTemplate.Value.Properties.Slots.FirstOrDefault()?.Properties?.Filters.FirstOrDefault()?.Filter
+            ?? magazineTemplate.Value.Properties.Cartridges.FirstOrDefault()?.Properties?.Filters.FirstOrDefault()?.Filter;
 
         return cartridges ?? [];
     }
@@ -737,7 +735,7 @@ public class BotWeaponGenerator(
         if (!string.IsNullOrEmpty(weaponTemplate.Properties.LinkedWeapon))
         {
             var ammoInChamber = itemHelper.GetItem(
-                weaponTemplate.Properties.Chambers.First().Props.Filters.First().Filter.FirstOrDefault()
+                weaponTemplate.Properties.Chambers.First().Properties.Filters.First().Filter.FirstOrDefault()
             );
             return !ammoInChamber.Key ? null : ammoInChamber.Value.Properties.Caliber;
         }

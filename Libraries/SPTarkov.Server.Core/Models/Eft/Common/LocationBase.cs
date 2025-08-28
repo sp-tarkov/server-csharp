@@ -790,10 +790,10 @@ public record ColliderParams
     }
 
     [JsonPropertyName("_props")]
-    public ColliderProps? Props { get; set; }
+    public ColliderProperties? Properties { get; set; }
 }
 
-public record ColliderProps
+public record ColliderProperties
 {
     [JsonPropertyName("Center")]
     public XYZ? Center { get; set; }

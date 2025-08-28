@@ -137,25 +137,25 @@ public class RepairHelper(
     /// <summary>
     ///     Repairing weapons reduces the total durability value slightly, get a randomised (to 2dp) amount
     /// </summary>
-    /// <param name="itemProps">Weapon properties</param>
+    /// <param name="itemProperties">Weapon properties</param>
     /// <param name="isRepairKit">Was a repair kit used</param>
     /// <param name="weaponMax">Max amount of durability item can have</param>
     /// <param name="traderQualityMultiplier">Different traders produce different loss values</param>
     /// <returns>Amount to reduce max durability by</returns>
     protected double GetRandomisedWeaponRepairDegradationValue(
-        Props itemProps,
+        TemplateItemProperties itemProperties,
         bool isRepairKit,
         double weaponMax,
         double traderQualityMultiplier
     )
     {
-        var minRepairDeg = isRepairKit ? itemProps.MinRepairKitDegradation : itemProps.MinRepairDegradation;
-        var maxRepairDeg = isRepairKit ? itemProps.MaxRepairKitDegradation : itemProps.MaxRepairDegradation;
+        var minRepairDeg = isRepairKit ? itemProperties.MinRepairKitDegradation : itemProperties.MinRepairDegradation;
+        var maxRepairDeg = isRepairKit ? itemProperties.MaxRepairKitDegradation : itemProperties.MaxRepairDegradation;
 
         // WORKAROUND: Some items are always 0 when repairkit is true
         if (maxRepairDeg == 0)
         {
-            maxRepairDeg = itemProps.MaxRepairDegradation;
+            maxRepairDeg = itemProperties.MaxRepairDegradation;
         }
 
         var duraLossPercent = randomUtil.GetDouble((double)minRepairDeg, (double)maxRepairDeg);
