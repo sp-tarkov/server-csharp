@@ -12,7 +12,7 @@ public class HealthSaveLoadRouter : SaveLoadRouter
         return [new HandledRoute("spt-health", false)];
     }
 
-    public override SptProfile HandleLoad(SptProfile profile)
+    protected override SptProfile HandleLoadInternal(SptProfile profile)
     {
         return profile;
     }

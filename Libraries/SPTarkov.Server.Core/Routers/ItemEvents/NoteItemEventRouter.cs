@@ -18,7 +18,7 @@ public class NoteItemEventRouter(NoteCallbacks noteCallbacks) : ItemEventRouterD
         return [new(ItemEventActions.ADD_NOTE, false), new(ItemEventActions.EDIT_NOTE, false), new(ItemEventActions.DELETE_NOTE, false)];
     }
 
-    public override ValueTask<ItemEventRouterResponse> HandleItemEvent(
+    protected override ValueTask<ItemEventRouterResponse> HandleItemEventInternal(
         string url,
         PmcData pmcData,
         BaseInteractionRequestData body,

@@ -18,7 +18,7 @@ public class InsuranceItemEventRouter(InsuranceCallbacks insuranceCallbacks) : I
         return [new(ItemEventActions.INSURE, false)];
     }
 
-    public override ValueTask<ItemEventRouterResponse> HandleItemEvent(
+    protected override ValueTask<ItemEventRouterResponse> HandleItemEventInternal(
         string url,
         PmcData pmcData,
         BaseInteractionRequestData body,
