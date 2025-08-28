@@ -9,12 +9,15 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.DI;
 
 public interface IOnBeforeEventRequestData;
+
 public interface IOnAfterEventRequestData;
 
 public record StaticDynamicOnBeforeEventRequestData(string Url, IRequestData RequestData, MongoId SessionId, string Output)
     : IOnBeforeEventRequestData;
+
 public record StaticDynamicOnAfterEventRequestData(string Url, IRequestData RequestData, MongoId SessionId, string Output, object Result)
     : IOnAfterEventRequestData;
+
 public abstract class Router
 {
     public event EventHandler<IOnBeforeEventRequestData>? OnBeforeAction;
@@ -43,6 +46,7 @@ public abstract class Router
     {
         OnBeforeAction?.Invoke(this, requestData);
     }
+
     protected void TriggerOnAfterAction(IOnAfterEventRequestData requestData)
     {
         OnAfterAction?.Invoke(this, requestData);
@@ -114,16 +118,21 @@ public record ItemRouterOnBeforeEventRequestData(
     PmcData PmcData,
     BaseInteractionRequestData Body,
     MongoId SessionId,
-    ItemEventRouterResponse Output) : IOnBeforeEventRequestData;
+    ItemEventRouterResponse Output
+) : IOnBeforeEventRequestData;
+
 public record ItemRouterOnAfterEventRequestData(
     string Url,
     PmcData PmcData,
     BaseInteractionRequestData Body,
     MongoId SessionId,
     ItemEventRouterResponse Output,
-    ValueTask<ItemEventRouterResponse> Result) : IOnAfterEventRequestData;
+    ValueTask<ItemEventRouterResponse> Result
+) : IOnAfterEventRequestData;
 
-public record OnAfterEventRequestData<T, R>(string Url, T RequestData, MongoId SessionId, R Output, object Result) : IOnAfterEventRequestData;
+public record OnAfterEventRequestData<T, R>(string Url, T RequestData, MongoId SessionId, R Output, object Result)
+    : IOnAfterEventRequestData;
+
 // The name of this class should be ItemEventRouter, but that name is taken,
 // So instead I added the definition
 public abstract class ItemEventRouterDefinition : Router
@@ -152,6 +161,7 @@ public abstract class ItemEventRouterDefinition : Router
 }
 
 public record SaveLoadOnBeforeEventRequestData(SptProfile Profile) : IOnBeforeEventRequestData;
+
 public record SaveLoadRouterOnAfterEventRequestData(SptProfile Profile) : IOnAfterEventRequestData;
 
 public abstract class SaveLoadRouter : Router
