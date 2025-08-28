@@ -528,7 +528,7 @@ public class RepairService(
             return false;
         }
 
-        var skillSettings = globals.Configuration.SkillsSettings.GetAllPropsAsDict();
+        var skillSettings = globals.Configuration.SkillsSettings.GetAllPropertiesAsDictionary();
         BuffSettings? buffSettings = null;
         switch (itemSkillType)
         {

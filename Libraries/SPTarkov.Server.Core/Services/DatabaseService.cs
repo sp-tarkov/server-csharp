@@ -71,7 +71,7 @@ public class DatabaseService(
     /// <returns> assets/database/locations/ </returns>
     public Location? GetLocation(string locationId)
     {
-        var desiredLocation = GetLocations().GetByJsonProp<Location>(locationId.ToLowerInvariant());
+        var desiredLocation = GetLocations().GetByJsonProperty<Location>(locationId.ToLowerInvariant());
         if (desiredLocation == null)
         {
             logger.Error(serverLocalisationService.GetText("database-no_location_found_with_id", locationId));

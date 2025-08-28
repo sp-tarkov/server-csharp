@@ -738,7 +738,7 @@ public class SeasonalEventService(
         infectionHalloween.DisplayUIEnabled = true;
         infectionHalloween.Enabled = true;
 
-        var globalInfectionDict = globals.LocationInfection.GetAllPropsAsDict();
+        var globalInfectionDict = globals.LocationInfection.GetAllPropertiesAsDictionary();
         foreach (var (locationId, infectionPercentage) in zombieSettings.MapInfectionAmount)
         {
             // calculate a random value unless the rate is 100
@@ -821,7 +821,7 @@ public class SeasonalEventService(
             return;
         }
 
-        var locations = databaseService.GetLocations().GetAllPropsAsDict();
+        var locations = databaseService.GetLocations().GetAllPropertiesAsDictionary();
         foreach (var map in wavesToAddByMap)
         {
             var wavesToAdd = wavesToAddByMap[map.Key];
@@ -849,7 +849,7 @@ public class SeasonalEventService(
             return;
         }
 
-        var locations = databaseService.GetLocations().GetAllPropsAsDict();
+        var locations = databaseService.GetLocations().GetAllPropertiesAsDictionary();
         foreach (var (locationKey, bossesToAdd) in botsToAddPerMap)
         {
             if (bossesToAdd.Count == 0)
@@ -1015,7 +1015,7 @@ public class SeasonalEventService(
                 var itemTplsToAdd = slotKvP.Value;
                 foreach (var itemKvP in itemTplsToAdd)
                 {
-                    var dict = botToUpdate.BotInventory.Items.GetAllPropsAsDict();
+                    var dict = botToUpdate.BotInventory.Items.GetAllPropertiesAsDictionary();
                     dict[itemKvP.Key] = itemTplsToAdd[itemKvP.Key];
                 }
             }

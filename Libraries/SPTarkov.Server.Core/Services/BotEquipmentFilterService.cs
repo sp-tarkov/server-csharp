@@ -108,10 +108,10 @@ public class BotEquipmentFilterService(
 
         foreach (var itemKey in generationChanges)
         {
-            baseBotGeneration.Items.GetByJsonProp<GenerationData>(itemKey.Key).Weights = generationChanges
+            baseBotGeneration.Items.GetByJsonProperty<GenerationData>(itemKey.Key).Weights = generationChanges
                 .GetValueOrDefault(itemKey.Key)
                 .Weights;
-            baseBotGeneration.Items.GetByJsonProp<GenerationData>(itemKey.Key).Whitelist = generationChanges
+            baseBotGeneration.Items.GetByJsonProperty<GenerationData>(itemKey.Key).Whitelist = generationChanges
                 .GetValueOrDefault(itemKey.Key)
                 .Whitelist;
         }
@@ -452,7 +452,7 @@ public class BotEquipmentFilterService(
         {
             foreach (var poolAdjustmentKvP in weightingAdjustments.Add)
             {
-                var locationToUpdate = botItemPool.GetByJsonProp<Dictionary<MongoId, double>>(poolAdjustmentKvP.Key);
+                var locationToUpdate = botItemPool.GetByJsonProperty<Dictionary<MongoId, double>>(poolAdjustmentKvP.Key);
                 if (locationToUpdate is null)
                 {
                     continue;
@@ -469,7 +469,7 @@ public class BotEquipmentFilterService(
         {
             foreach (var poolAdjustmentKvP in weightingAdjustments.Edit)
             {
-                var locationToUpdate = botItemPool.GetByJsonProp<Dictionary<MongoId, double>>(poolAdjustmentKvP.Key);
+                var locationToUpdate = botItemPool.GetByJsonProperty<Dictionary<MongoId, double>>(poolAdjustmentKvP.Key);
                 if (locationToUpdate is null)
                 {
                     continue;

@@ -31,7 +31,7 @@ public static class ObjectExtensions
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static bool ContainsJsonProp<T>(this object? obj, T key)
+    public static bool ContainsJsonProperty<T>(this object? obj, T key)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(key);
@@ -39,7 +39,7 @@ public static class ObjectExtensions
         return TryGetCachedProperty(obj.GetType(), key.ToString(), out _);
     }
 
-    public static T? GetByJsonProp<T>(this object? obj, string? toLower)
+    public static T? GetByJsonProperty<T>(this object? obj, string? toLower)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(toLower);
@@ -52,7 +52,7 @@ public static class ObjectExtensions
         return (T?)cachedProperty.GetValue(obj);
     }
 
-    public static List<object> GetAllPropValuesAsList(this object? obj)
+    public static List<object> GetAllPropertyValuesAsList(this object? obj)
     {
         ArgumentNullException.ThrowIfNull(obj);
 
@@ -81,7 +81,7 @@ public static class ObjectExtensions
         return result;
     }
 
-    public static Dictionary<string, object?> GetAllPropsAsDict(this object? obj)
+    public static Dictionary<string, object?> GetAllPropertiesAsDictionary(this object? obj)
     {
         if (obj is null)
         {

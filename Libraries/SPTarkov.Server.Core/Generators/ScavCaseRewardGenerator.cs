@@ -465,29 +465,29 @@ public class ScavCaseRewardGenerator(
         if (id == Money.ROUBLES)
         {
             return randomUtil.GetInt(
-                _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax<int>>(rarity).Min,
-                _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax<int>>(rarity).Max
+                _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProperty<MinMax<int>>(rarity).Min,
+                _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProperty<MinMax<int>>(rarity).Max
             );
         }
         else if (id == Money.EUROS)
         {
             return randomUtil.GetInt(
-                _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMax<int>>(rarity).Min,
-                _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMax<int>>(rarity).Max
+                _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProperty<MinMax<int>>(rarity).Min,
+                _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProperty<MinMax<int>>(rarity).Max
             );
         }
         else if (id == Money.DOLLARS)
         {
             return randomUtil.GetInt(
-                _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMax<int>>(rarity).Min,
-                _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMax<int>>(rarity).Max
+                _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProperty<MinMax<int>>(rarity).Min,
+                _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProperty<MinMax<int>>(rarity).Max
             );
         }
         else if (id == Money.GP)
         {
             return randomUtil.GetInt(
-                _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMax<int>>(rarity).Min,
-                _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMax<int>>(rarity).Max
+                _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProperty<MinMax<int>>(rarity).Min,
+                _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProperty<MinMax<int>>(rarity).Max
             );
         }
         else

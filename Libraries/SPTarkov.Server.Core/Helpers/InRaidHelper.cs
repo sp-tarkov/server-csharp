@@ -243,7 +243,7 @@ public class InRaidHelper(
         if (itemToCheck.ParentId == pmcData.Inventory.Equipment)
         {
             // Check slot id against config, true = delete, false = keep, undefined = delete
-            var discard = LostOnDeathConfig.Equipment.GetByJsonProp<bool>(itemToCheck.SlotId);
+            var discard = LostOnDeathConfig.Equipment.GetByJsonProperty<bool>(itemToCheck.SlotId);
             if (discard)
             // Lost on death
             {
