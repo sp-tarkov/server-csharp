@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Eft.Ws;
 
@@ -30,6 +31,23 @@ public class NotifierHelper(HttpServerHelper httpServerHelper)
             OfferId = ragfairData.OfferId,
             HandbookId = ragfairData.HandbookId,
             Count = Convert.ToInt32(ragfairData.Count),
+        };
+    }
+
+    /// <summary>
+    /// Create a new notification that displays a message to the player - currently used by quests as a reward
+    /// </summary>
+    /// <param name="config">IllustrationConfig object from quest reward</param>
+    /// <param name="messageId">Message Id from quest reward</param>
+    /// <returns>WsNotificationPopup</returns>
+    public WsNotificationPopup CreateNotificationPopup(IllustrationConfig config, MongoId messageId)
+    {
+        return new WsNotificationPopup
+        {
+            EventType = NotificationEventType.NotificationPopup,
+            EventId = new MongoId(),
+            Image = config.BigImage,
+            Message = messageId,
         };
     }
 

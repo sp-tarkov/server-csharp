@@ -25,6 +25,7 @@ public class RewardHelper(
     ServerLocalisationService serverLocalisationService,
     TraderHelper traderHelper,
     PresetHelper presetHelper,
+    NotifierHelper notifierHelper,
     NotificationSendHelper notificationSendHelper,
     ICloner cloner
 )
@@ -130,8 +131,8 @@ public class RewardHelper(
 
                     break;
                 case RewardType.NotificationPopup:
-                    // TODO: Wire up to notification system
-                    logger.Error("UNHANDLED: RewardType.NotificationPopup");
+                    var notification = notifierHelper.CreateNotificationPopup(reward.IllustrationConfig, reward.Message.Value);
+                    notificationSendHelper.SendMessage(sessionId.Value, notification);
                     break;
                 case RewardType.WebPromoCode:
                     // TODO: ??? (Free arena trial from Balancing - Part 1)
