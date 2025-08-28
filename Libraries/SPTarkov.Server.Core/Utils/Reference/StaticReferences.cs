@@ -7,6 +7,7 @@ public class StaticReferences
 {
     [JsonIgnore]
     private Dictionary<string, object> _reference = new();
+
     [JsonExtensionData]
     public Dictionary<string, object> Reference
     {
