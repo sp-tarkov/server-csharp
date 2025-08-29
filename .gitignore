@@ -426,3 +426,6 @@ fabric.properties
 
 # Automatically generated file containing metadata on build
 Libraries/SPTarkov.Server.Core/Utils/ProgramStatics.Generated.cs
+
+# Ignore loose loot files
+**/looseLoot.json
