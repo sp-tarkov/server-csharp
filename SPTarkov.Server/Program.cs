@@ -44,7 +44,6 @@ public static class Program
 
         // Create web builder and logger
         var builder = CreateNewHostBuilder(args);
-        builder.InitializeSptWeb();
 
         var diHandler = new DependencyInjectionHandler(builder.Services);
         // register SPT components
@@ -69,6 +68,8 @@ public static class Program
             //ConfigureRazorPagesForMods(builder.Services, loadedMods);
         }
         diHandler.InjectAll();
+
+        builder.InitializeSptBlazor(loadedMods);
 
         builder.Services.AddSingleton(builder);
         builder.Services.AddSingleton<IReadOnlyList<SptMod>>(loadedMods);
@@ -115,7 +116,7 @@ public static class Program
 
     private static void ConfigureWebApp(WebApplication app)
     {
-        app.MapRazorPages();
+        app.UseSptBlazor();
 
         app.UseWebSockets(
             new WebSocketOptions

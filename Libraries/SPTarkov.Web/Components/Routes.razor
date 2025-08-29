@@ -1,0 +1,37 @@
+﻿@using SPTarkov.Web.Components.Layout
+@using System.Reflection
+@inject IServiceProvider ServiceProvider
+
+<Router AppAssembly="@typeof(SPTBlazor).Assembly"
+        AdditionalAssemblies="@GetModAssemblies()">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+
+@code {
+
+    private Assembly[] GetModAssemblies()
+    {
+        // Get all registered Blazor mods and return their assemblies
+        var blazorMods = ServiceProvider.GetServices<IBlazorMod>();
+
+        /*
+        return blazorMods
+            .SelectMany(mod => mod.GetBlazorComponents())
+            .Select(componentType => componentType.Assembly)
+            .Distinct()
+            .ToArray();
+        */
+
+
+        return [];
+    }
+}
