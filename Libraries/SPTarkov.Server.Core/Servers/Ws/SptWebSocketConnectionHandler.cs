@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.AspNetCore.Http;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers.Ws.Message;
@@ -21,7 +22,7 @@ public class SptWebSocketConnectionHandler(
     IEnumerable<ISptWebSocketMessageHandler> messageHandlers
 ) : IWebSocketConnectionHandler
 {
-    protected readonly Dictionary<string, Dictionary<string, WebSocket>> _sockets = new();
+    protected readonly Dictionary<MongoId, Dictionary<string, WebSocket>> _sockets = new();
     protected readonly Lock _socketsLock = new();
 
     public string GetHookUrl()
@@ -37,12 +38,12 @@ public class SptWebSocketConnectionHandler(
     public Task OnConnection(WebSocket ws, HttpContext context, string sessionIdContext)
     {
         var splitUrl = context.Request.Path.Value.Split("/");
-        var sessionID = splitUrl.Last();
+        var sessionID = new MongoId(splitUrl.Last());
         var playerProfile = profileHelper.GetFullProfile(sessionID);
         var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            logger.Debug($"[WS] Websocket connect for player {playerInfoText} started with context {sessionIdContext}");
+            logger.Debug($"[WS] Websocket connect for player: {playerInfoText} started with context: {sessionIdContext}");
         }
 
         lock (_socketsLock)
@@ -159,7 +160,7 @@ public class SptWebSocketConnectionHandler(
         }
     }
 
-    public void SendMessage(string sessionID, WsNotificationEvent output)
+    public void SendMessage(MongoId sessionID, WsNotificationEvent output)
     {
         try
         {
@@ -211,7 +212,7 @@ public class SptWebSocketConnectionHandler(
         }
     }
 
-    public bool IsWebSocketConnected(string sessionID)
+    public bool IsWebSocketConnected(MongoId sessionID)
     {
         lock (_socketsLock)
         {
@@ -219,7 +220,7 @@ public class SptWebSocketConnectionHandler(
         }
     }
 
-    public IEnumerable<WebSocket> GetSessionWebSocket(string sessionID)
+    public IEnumerable<WebSocket> GetSessionWebSocket(MongoId sessionID)
     {
         lock (_socketsLock)
         {

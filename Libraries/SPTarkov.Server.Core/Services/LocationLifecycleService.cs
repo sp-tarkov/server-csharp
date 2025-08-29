@@ -141,10 +141,10 @@ public class LocationLifecycleService(
         // Clear bot cache ready for bot generation call that occurs after this
         botNameService.ClearNameCache();
 
-        GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
-
         // Handle Player Inventory Wiping checks for alt-f4 prevention
         HandlePreRaidInventoryChecks(request.PlayerSide, playerProfile.CharacterData.PmcData, sessionId);
+
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
 
         return result;
     }
@@ -152,7 +152,7 @@ public class LocationLifecycleService(
     /// <summary>
     /// Handle Pre Raid checks Alt-F4 Prevention and player inventory wiping
     /// </summary>
-    protected void HandlePreRaidInventoryChecks(string playerSide, PmcData pmcData, string sessionId)
+    protected void HandlePreRaidInventoryChecks(string playerSide, PmcData pmcData, MongoId sessionId)
     {
         // If config enabled, remove players equipped items to prevent alt-F4 from persisting items
         if (!IsSide(playerSide) || !_lostOnDeathConfig.WipeOnRaidStart)
