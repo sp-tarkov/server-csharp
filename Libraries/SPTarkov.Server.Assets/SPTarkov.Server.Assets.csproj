@@ -16,7 +16,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="build\PostBuild.cs" />
     <None Include="SPT_Data\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <PackageCopyToOutput>True</PackageCopyToOutput>
@@ -26,13 +25,14 @@
       <PackagePath>contentFiles\any\any\SPT_Data\</PackagePath>
     </None>
   </ItemGroup>
-  <Target Name="PostBuildHashFile" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)PostBuild.ps1&quot;" />
+  <Target Name="PostBuildHashFile" AfterTargets="Build">
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)Bootstrap.ps1&quot; -BuildConfig &quot;$(Configuration)&quot; -SptBuildType &quot;$(SptBuildType)&quot;" />
   </Target>
   <ItemGroup>
     <Compile Remove="build\PostBuild.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
+    <None Include="build\PostBuild.cs" />
   </ItemGroup>
 </Project>
