@@ -38,8 +38,8 @@ One of the following is required:
 
 ### Initial Setup
 
-1. Download and install the [.net 9.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
-2. Download and install [Powershell 7.5](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5) as this is required for post build scripts
+1. Download and install the [.Net 9.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
+2. Download and install [.Net 10.0 Preview SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) as this is required for post build scripts (Dont worry, we don't use it for anything else.. Yet..)
 3. Run `git clone https://github.com/sp-tarkov/server-csharp.git server` to clone the repository
 4. Run `git lfs pull` to download LFS files locally.
 5. Open the `project/server-csharp.sln` file in Visual Studio or Rider
