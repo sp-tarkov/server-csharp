@@ -623,10 +623,10 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 20,
-  "BotMax": 23,
-  "BotMaxPlayer": 10,
+  "BotMax": 48,
+  "BotMaxPlayer": 0,
   "BotMaxPvE": 48,
-  "BotMaxTimePlayer": 1300,
+  "BotMaxTimePlayer": 0,
   "BotNormal": 40,
   "BotSpawnCountStep": 3,
   "BotSpawnPeriodCheck": 14,
@@ -635,7 +635,7 @@
   "BotSpawnTimeOnMax": 360,
   "BotSpawnTimeOnMin": 290,
   "BotStart": 122,
-  "BotStartPlayer": 720,
+  "BotStartPlayer": 0,
   "BotStop": 2200,
   "Description": "The downtown Tarkov with banks, malls, hotels and all the other things a striving modern city could have needed.",
   "DisabledForScav": false,
@@ -15204,7 +15204,7 @@
     {
       "Chance": 50,
       "ChancePVE": 50,
-      "Count": 40000,
+      "Count": 5000,
       "CountPVE": 5000,
       "EntryPoints": "E1_2,E6_1,E2_3,E3_4,E4_5,E5_6,E6_1",
       "EventAvailable": false,
@@ -15389,30 +15389,6 @@
     {
       "TemplateId": "5c94bbff86f7747ee735c08f",
       "Value": 2
-    },
-    {
-      "TemplateId": "5c1e495a86f7743109743dfb",
-      "Value": 1
-    },
-    {
-      "TemplateId": "5c1d0d6d86f7744bb2683e1f",
-      "Value": 1
-    },
-    {
-      "TemplateId": "5c1d0efb86f7744baf2e7b7b",
-      "Value": 1
-    },
-    {
-      "TemplateId": "5c1d0dc586f7744baf2e7b79",
-      "Value": 1
-    },
-    {
-      "TemplateId": "5c1d0c5f86f7744bb2683cf0",
-      "Value": 1
-    },
-    {
-      "TemplateId": "5c1d0f4986f7744bb01837fa",
-      "Value": 1
     }
   ],
   "sav_summon_seconds": 60,

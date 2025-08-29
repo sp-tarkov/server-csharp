@@ -526,10 +526,10 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 20,
-  "BotMax": 17,
-  "BotMaxPlayer": 9,
+  "BotMax": 30,
+  "BotMaxPlayer": 0,
   "BotMaxPvE": 30,
-  "BotMaxTimePlayer": 1000,
+  "BotMaxTimePlayer": 0,
   "BotNormal": 50,
   "BotSpawnCountStep": 4,
   "BotSpawnPeriodCheck": 15,
@@ -538,7 +538,7 @@
   "BotSpawnTimeOnMax": 320,
   "BotSpawnTimeOnMin": 260,
   "BotStart": 10,
-  "BotStartPlayer": 200,
+  "BotStartPlayer": 0,
   "BotStop": 1900,
   "Description": "The Priozersk Natural Reserve was recently included into the list of state-protected wildlife reserves of the North-Western Federal District.",
   "DisabledForScav": false,
@@ -1246,26 +1246,6 @@
     {
       "TemplateId": "676bf44c5539167c3603e869",
       "Value": 0
-    },
-    {
-      "TemplateId": "5c1d0f4986f7744bb01837fa",
-      "Value": 1
-    },
-    {
-      "TemplateId": "5c1d0c5f86f7744bb2683cf0",
-      "Value": 1
-    },
-    {
-      "TemplateId": "5c1d0dc586f7744baf2e7b79",
-      "Value": 1
-    },
-    {
-      "TemplateId": "5c1d0efb86f7744baf2e7b7b",
-      "Value": 1
-    },
-    {
-      "TemplateId": "5c1e495a86f7743109743dfb",
-      "Value": 1
     }
   ],
   "sav_summon_seconds": 60,
@@ -1333,5 +1313,70 @@
   "users_spawn_seconds_n": 120,
   "users_spawn_seconds_n2": 200,
   "users_summon_seconds": 0,
-  "waves": []
+  "waves": [
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "BotZone",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "BotZone",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 1,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    }
+  ]
 }
