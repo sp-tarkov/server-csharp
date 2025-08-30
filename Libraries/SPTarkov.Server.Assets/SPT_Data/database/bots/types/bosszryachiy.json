@@ -330,8 +330,8 @@
     },
     "items": {
       "TacticalVest": {
-        "5c88f24b2e22160bc12c69a6": 177,
-        "55d482194bdc2d1d4e8b456b": 179,
+        "5c88f24b2e22160bc12c69a6": 179,
+        "55d482194bdc2d1d4e8b456b": 181,
         "67d418d0ffb910d21f04720e": 2
       },
       "Pockets": {
@@ -344,8 +344,8 @@
         "5e023d48186a883be655e551": 100000,
         "56dff4a2d2720bbd668b456a": 100000,
         "5a26abfac4a28232980eabff": 10000,
-        "5e023cf8186a883be655e54f": 33880,
-        "67dc255ee3028a8b120efc48": 8627
+        "5e023cf8186a883be655e54f": 29320,
+        "67dc255ee3028a8b120efc48": 7877
       },
       "SpecialLoot": {}
     }
@@ -501,7 +501,7 @@
         "HearingSense": 4.9,
         "CanRun": true,
         "CanGrenade": true,
-        "AimingType": 0,
+        "AimingType": "normal",
         "PistolFireDistancePref": 35,
         "ShotgunFireDistancePref": 50,
         "RifleFireDistancePref": 100,
@@ -695,7 +695,7 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "BOSS_IGNORE_LOYALTY": true,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": "AlwaysEnemies",
         "FRIENDLY_BOT_TYPES": [
           "bossZryachiy",
           "followerZryachiy"
@@ -1019,7 +1019,7 @@
         "HearingSense": 4.9,
         "CanRun": true,
         "CanGrenade": true,
-        "AimingType": 0,
+        "AimingType": "normal",
         "PistolFireDistancePref": 35,
         "ShotgunFireDistancePref": 50,
         "RifleFireDistancePref": 100,
@@ -1213,7 +1213,7 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "BOSS_IGNORE_LOYALTY": true,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": "AlwaysEnemies",
         "FRIENDLY_BOT_TYPES": [
           "bossZryachiy",
           "followerZryachiy"
@@ -1537,7 +1537,7 @@
         "HearingSense": 4.9,
         "CanRun": true,
         "CanGrenade": true,
-        "AimingType": 0,
+        "AimingType": "normal",
         "PistolFireDistancePref": 35,
         "ShotgunFireDistancePref": 50,
         "RifleFireDistancePref": 100,
@@ -1731,7 +1731,7 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "BOSS_IGNORE_LOYALTY": true,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": "AlwaysEnemies",
         "FRIENDLY_BOT_TYPES": [
           "bossZryachiy",
           "followerZryachiy"
@@ -2055,7 +2055,7 @@
         "HearingSense": 4.9,
         "CanRun": true,
         "CanGrenade": true,
-        "AimingType": 0,
+        "AimingType": "normal",
         "PistolFireDistancePref": 35,
         "ShotgunFireDistancePref": 50,
         "RifleFireDistancePref": 100,
@@ -2249,7 +2249,7 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "BOSS_IGNORE_LOYALTY": true,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": "AlwaysEnemies",
         "FRIENDLY_BOT_TYPES": [
           "bossZryachiy",
           "followerZryachiy"

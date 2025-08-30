@@ -16,17 +16,17 @@
     },
     "head": {
       "5cc2e4d014c02e000d0115f8": 1497,
-      "5d28afe786f774292668618d": 1495,
-      "5f68c4c217d579077152a252": 1515,
       "5f68c4a7c174a17c0f4c8945": 1529,
+      "5f68c4c217d579077152a252": 1515,
+      "5d28afe786f774292668618d": 1495,
       "5cde9ff17d6c8b0474535daa": 1490
     },
     "voice": {
       "5fc6144b0b735e7b024c76e7": 1253,
       "5fc614290b735e7b024c76e5": 1252,
+      "5fc614390b735e7b024c76e6": 1256,
       "5fc614130b735e7b024c76e4": 1255,
       "5fc613c80b735e7b024c76e2": 1251,
-      "5fc614390b735e7b024c76e6": 1256,
       "5fc613e10b735e7b024c76e3": 1259
     }
   },
@@ -108,8 +108,8 @@
       "Headwear": {
         "5a16bb52fcdbcb001a3b00dc": 19450,
         "5d96141523f0ea1b7f2aacab": 2039,
-        "5c066ef40db834001966a595": 8785,
-        "60b52e5bc7d8103275739d67": 2588
+        "60b52e5bc7d8103275739d67": 2588,
+        "5c066ef40db834001966a595": 8785
       },
       "Earpiece": {
         "6033fa48ffd42c541047f728": 1
@@ -140,8 +140,8 @@
       },
       "Backpack": {
         "56e335e4d2720b6c058b456d": 2732,
-        "5ca20d5986f774331e7c9602": 2689,
-        "5ab8ee7786f7742d8f33f0b9": 35890
+        "5ab8ee7786f7742d8f33f0b9": 35890,
+        "5ca20d5986f774331e7c9602": 2689
       },
       "FirstPrimaryWeapon": {
         "5ae08f0a5acfc408fb1398a1": 16530,
@@ -175,8 +175,8 @@
         "64b8f7968532cf95ee0a0dbf": 2330,
         "64b8f7b5389d7ffd620ccba2": 965,
         "59e77a2386f7742ee578960a": 2720,
-        "560d61e84bdc2da74d8b4571": 1850,
         "64b8f7c241772715af0f9c3d": 980,
+        "560d61e84bdc2da74d8b4571": 1850,
         "5887431f2459777e1612938f": 99
       },
       "Caliber12g": {
@@ -191,8 +191,8 @@
         "57a0e5022459774d1673f889": 1
       },
       "Caliber762x51": {
-        "5e023e88277cce2b522ff2b1": 4690,
         "5e023e53d4353e3302577c4c": 2140,
+        "5e023e88277cce2b522ff2b1": 4690,
         "58dd3ad986f77403051cba8f": 223
       }
     },
@@ -431,6 +431,53 @@
           "5b3a337e5acfc4704b4a19a0"
         ]
       },
+      "56dee2bdd2720bc8328b4567": {
+        "mod_barrel": [
+          "56deec93d2720bec348b4568",
+          "588200af24597742fa221dfb"
+        ],
+        "mod_handguard": [
+          "56deed6ed2720b4c698b4583"
+        ],
+        "mod_magazine": [
+          "56deee15d2720bee328b4567"
+        ],
+        "mod_stock": [
+          "56083be64bdc2d20478b456f",
+          "5bfe7fb30db8340018089fed"
+        ],
+        "mod_mount_000": [
+          "55d48ebc4bdc2d8c2f8b456c"
+        ],
+        "mod_mount": [
+          "55d48a634bdc2d8b2f8b456a"
+        ]
+      },
+      "57838ad32459774a17445cd2": {
+        "mod_muzzle": [
+          "57838c962459774a1651ec63"
+        ],
+        "mod_reciever": [
+          "578395402459774a256959b5"
+        ],
+        "mod_stock": [
+          "578395e82459774a0e553c7b"
+        ],
+        "mod_handguard": [
+          "6565bb7eb4b12a56eb04b084"
+        ],
+        "mod_mount_004": [
+          "5cf638cbd7f00c06595bc936"
+        ],
+        "mod_magazine": [
+          "57838f9f2459774a150289a0"
+        ]
+      },
+      "57838c962459774a1651ec63": {
+        "mod_sight_rear": [
+          "57838e1b2459774a256959b1"
+        ]
+      },
       "5c066ef40db834001966a595": {
         "mod_nvg": [
           "5c066e3a0db834001b7353f0"
@@ -465,56 +512,14 @@
           "65708165696fe382cf073255"
         ]
       },
-      "57838ad32459774a17445cd2": {
-        "mod_muzzle": [
-          "57838c962459774a1651ec63"
-        ],
-        "mod_reciever": [
-          "578395402459774a256959b5"
-        ],
-        "mod_stock": [
-          "578395e82459774a0e553c7b"
-        ],
-        "mod_handguard": [
-          "6565bb7eb4b12a56eb04b084"
-        ],
-        "mod_mount_004": [
-          "5cf638cbd7f00c06595bc936"
-        ],
-        "mod_magazine": [
-          "57838f9f2459774a150289a0"
-        ]
-      },
-      "57838c962459774a1651ec63": {
-        "mod_sight_rear": [
-          "57838e1b2459774a256959b1"
-        ]
-      },
-      "56dee2bdd2720bc8328b4567": {
-        "mod_barrel": [
-          "56deec93d2720bec348b4568",
-          "588200af24597742fa221dfb"
-        ],
-        "mod_handguard": [
-          "56deed6ed2720b4c698b4583"
-        ],
-        "mod_magazine": [
-          "56deee15d2720bee328b4567"
-        ],
-        "mod_stock": [
-          "56083be64bdc2d20478b456f",
-          "5bfe7fb30db8340018089fed"
-        ],
-        "mod_mount_000": [
-          "55d48ebc4bdc2d8c2f8b456c"
-        ],
-        "mod_mount": [
-          "55d48a634bdc2d8b2f8b456a"
-        ]
-      },
       "5bfe7fb30db8340018089fed": {
         "mod_stock": [
           "5bfe86a20db834001d23e8f7"
+        ]
+      },
+      "5bbdb870d4351e00367fb67d": {
+        "mod_bipod": [
+          "5888961624597754281f93f3"
         ]
       },
       "5c501a4d2e221602b412b540": {
@@ -556,11 +561,6 @@
         "mod_scope": [
           "591c4efa86f7741030027726",
           "5c0505e00db834001b735073"
-        ]
-      },
-      "5bbdb870d4351e00367fb67d": {
-        "mod_bipod": [
-          "5888961624597754281f93f3"
         ]
       },
       "5aafa857e5b5b00018480968": {
@@ -759,38 +759,38 @@
         "5df8f541c41b2312ea3335e3": 20
       },
       "Pockets": {
-        "64b8f7968532cf95ee0a0dbf": 5813,
-        "560d5e524bdc2d25448b4571": 10000,
-        "590c678286f77426c9660122": 8719,
-        "64b8f7b5389d7ffd620ccba2": 2603,
-        "5e32f56fcb6d5863cc5e5ee4": 3363,
-        "59e77a2386f7742ee578960a": 6826,
-        "5e340dcdcb6d5863cc5e5efb": 2354,
-        "560d61e84bdc2da74d8b4571": 6056,
-        "64b8f7c241772715af0f9c3d": 2634,
-        "5c503ad32e2216398b5aada2": 10000,
-        "5710c24ad2720bc3458b45a3": 864,
-        "64b9e2037fdfb81df81e3c25": 2408,
-        "5b7bef1e5acfc43d82528402": 1719,
-        "6422e1ea3c0f06190302161a": 774
+        "64b8f7968532cf95ee0a0dbf": 2782,
+        "560d5e524bdc2d25448b4571": 8751,
+        "590c678286f77426c9660122": 3347,
+        "64b8f7b5389d7ffd620ccba2": 1486,
+        "5e32f56fcb6d5863cc5e5ee4": 1967,
+        "59e77a2386f7742ee578960a": 2950,
+        "64b8f7c241772715af0f9c3d": 1531,
+        "560d61e84bdc2da74d8b4571": 2804,
+        "5e340dcdcb6d5863cc5e5efb": 1371,
+        "5c503ad32e2216398b5aada2": 3798,
+        "5710c24ad2720bc3458b45a3": 509,
+        "64b9e2037fdfb81df81e3c25": 1380,
+        "5b7bef1e5acfc43d82528402": 1019,
+        "6422e1ea3c0f06190302161a": 425
       },
       "Backpack": {
+        "544fb37f4bdc2dee738b4567": 322,
         "5448fee04bdc2dbc018b4567": 8500,
         "569668774bdc2da2298b4568": 4567,
-        "544fb37f4bdc2dee738b4567": 322,
         "5449016a4bdc2d6f028b456f": 7733,
         "590c311186f77424d1667482": 26,
         "5af0561e86f7745f5f3ad6ac": 10,
-        "5c0e534186f7747fa1419867": 79,
+        "544fb45d4bdc2dee738b4568": 246,
+        "5696686a4bdc2da3298b456a": 4452,
         "5e2af2bc86f7746d3f3c33fc": 41,
         "5734795124597738002c6176": 41,
-        "5696686a4bdc2da3298b456a": 4452,
-        "544fb45d4bdc2dee738b4568": 246,
+        "5c0e534186f7747fa1419867": 79,
         "56742c284bdc2d98058b456d": 45,
+        "60098ad7c2240c0fe85c570a": 148,
         "544fb25a4bdc2dfb738b4567": 657,
         "61bf7b6302b3924be92fa8c3": 54,
         "5c0fa877d174af02a012e1cf": 7408,
-        "60098ad7c2240c0fe85c570a": 148,
         "573476f124597737e04bf328": 43,
         "5e54f62086f774219b0f1937": 11,
         "590c661e86f7741e566b646a": 202,
@@ -1001,13 +1001,13 @@
         "560d5e524bdc2d25448b4571": 100000,
         "64b8f7b5389d7ffd620ccba2": 32210,
         "64b7af5a8532cf95ee0a0dbd": 93670,
-        "59e77a2386f7742ee578960a": 98360,
         "57a0e5022459774d1673f889": 8031,
-        "560d61e84bdc2da74d8b4571": 66450,
+        "59e77a2386f7742ee578960a": 98370,
         "64b7af434b75259c590fa893": 35800,
         "64b8f7c241772715af0f9c3d": 32630,
-        "5e023e88277cce2b522ff2b1": 100000,
+        "560d61e84bdc2da74d8b4571": 66450,
         "5e023e53d4353e3302577c4c": 63780,
+        "5e023e88277cce2b522ff2b1": 100000,
         "59e0d99486f7744a32234762": 19210,
         "58dd3ad986f77403051cba8f": 6793,
         "5887431f2459777e1612938f": 1167
@@ -1018,16 +1018,16 @@
   "firstName": [
     "Мальчик",
     "Мотыль",
-    "Пашок",
+    "Шмыга",
     "Угрюм",
     "Качок",
     "Марат",
-    "Шмыга",
+    "Пашок",
+    "Женя",
     "Димон",
     "Тоха",
-    "Женя",
-    "Енчик",
     "Серега",
+    "Енчик",
     "Саня",
     "Робинзон",
     "Крыса",
@@ -1189,7 +1189,7 @@
         "HearingSense": 3.9,
         "CanRun": true,
         "CanGrenade": true,
-        "AimingType": 0,
+        "AimingType": "normal",
         "PistolFireDistancePref": 35,
         "ShotgunFireDistancePref": 50,
         "RifleFireDistancePref": 100,
@@ -1378,9 +1378,9 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 8,
-        "DEFAULT_USEC_BEHAVIOUR": 8,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 4,
+        "DEFAULT_BEAR_BEHAVIOUR": "AlwaysEnemies",
+        "DEFAULT_USEC_BEHAVIOUR": "AlwaysEnemies",
+        "DEFAULT_SAVAGE_BEHAVIOUR": "Warn",
         "FRIENDLY_BOT_TYPES": [],
         "WARN_BOT_TYPES": [
           "assault"
@@ -1709,7 +1709,7 @@
         "HearingSense": 3.9,
         "CanRun": true,
         "CanGrenade": true,
-        "AimingType": 0,
+        "AimingType": "normal",
         "PistolFireDistancePref": 35,
         "ShotgunFireDistancePref": 50,
         "RifleFireDistancePref": 100,
@@ -1898,9 +1898,9 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 8,
-        "DEFAULT_USEC_BEHAVIOUR": 8,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 4,
+        "DEFAULT_BEAR_BEHAVIOUR": "AlwaysEnemies",
+        "DEFAULT_USEC_BEHAVIOUR": "AlwaysEnemies",
+        "DEFAULT_SAVAGE_BEHAVIOUR": "Warn",
         "FRIENDLY_BOT_TYPES": [],
         "WARN_BOT_TYPES": [
           "assault"
@@ -2229,7 +2229,7 @@
         "HearingSense": 3.9,
         "CanRun": true,
         "CanGrenade": true,
-        "AimingType": 0,
+        "AimingType": "normal",
         "PistolFireDistancePref": 35,
         "ShotgunFireDistancePref": 50,
         "RifleFireDistancePref": 100,
@@ -2418,9 +2418,9 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 8,
-        "DEFAULT_USEC_BEHAVIOUR": 8,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 4,
+        "DEFAULT_BEAR_BEHAVIOUR": "AlwaysEnemies",
+        "DEFAULT_USEC_BEHAVIOUR": "AlwaysEnemies",
+        "DEFAULT_SAVAGE_BEHAVIOUR": "Warn",
         "FRIENDLY_BOT_TYPES": [],
         "WARN_BOT_TYPES": [
           "assault"
@@ -2749,7 +2749,7 @@
         "HearingSense": 3.9,
         "CanRun": true,
         "CanGrenade": true,
-        "AimingType": 0,
+        "AimingType": "normal",
         "PistolFireDistancePref": 35,
         "ShotgunFireDistancePref": 50,
         "RifleFireDistancePref": 100,
@@ -2938,9 +2938,9 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 8,
-        "DEFAULT_USEC_BEHAVIOUR": 8,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 4,
+        "DEFAULT_BEAR_BEHAVIOUR": "AlwaysEnemies",
+        "DEFAULT_USEC_BEHAVIOUR": "AlwaysEnemies",
+        "DEFAULT_SAVAGE_BEHAVIOUR": "Warn",
         "FRIENDLY_BOT_TYPES": [],
         "WARN_BOT_TYPES": [
           "assault"
@@ -3158,8 +3158,8 @@
       "mod_charge": 0,
       "mod_mount_004": 77,
       "mod_foregrip": 21,
-      "mod_stock_000": 100,
       "mod_bipod": 49,
+      "mod_stock_000": 100,
       "mod_flashlight": 100
     },
     "equipmentMods": {

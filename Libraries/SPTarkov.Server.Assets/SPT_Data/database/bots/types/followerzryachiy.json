@@ -345,10 +345,10 @@
       },
       "Backpack": {},
       "SecuredContainer": {
-        "5887431f2459777e1612938f": 4580,
-        "56dff4a2d2720bbd668b456a": 1170,
-        "560d61e84bdc2da74d8b4571": 2950,
-        "56d59d3ad2720bdb418b4577": 639
+        "5887431f2459777e1612938f": 19390,
+        "56dff4a2d2720bbd668b456a": 4937,
+        "560d61e84bdc2da74d8b4571": 12480,
+        "56d59d3ad2720bdb418b4577": 2940
       },
       "SpecialLoot": {}
     }
@@ -499,7 +499,7 @@
         "HearingSense": 2.9,
         "CanRun": true,
         "CanGrenade": true,
-        "AimingType": 0,
+        "AimingType": "normal",
         "PistolFireDistancePref": 35,
         "ShotgunFireDistancePref": 50,
         "RifleFireDistancePref": 100,
@@ -1008,7 +1008,7 @@
         "HearingSense": 2.9,
         "CanRun": true,
         "CanGrenade": true,
-        "AimingType": 0,
+        "AimingType": "normal",
         "PistolFireDistancePref": 35,
         "ShotgunFireDistancePref": 50,
         "RifleFireDistancePref": 100,
@@ -1517,7 +1517,7 @@
         "HearingSense": 2.9,
         "CanRun": true,
         "CanGrenade": true,
-        "AimingType": 0,
+        "AimingType": "normal",
         "PistolFireDistancePref": 35,
         "ShotgunFireDistancePref": 50,
         "RifleFireDistancePref": 100,
@@ -2026,7 +2026,7 @@
         "HearingSense": 2.9,
         "CanRun": true,
         "CanGrenade": true,
-        "AimingType": 0,
+        "AimingType": "normal",
         "PistolFireDistancePref": 35,
         "ShotgunFireDistancePref": 50,
         "RifleFireDistancePref": 100,
