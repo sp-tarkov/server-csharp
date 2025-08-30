@@ -84,15 +84,19 @@ public record BotGlobalsMindSettings
     public EWarnBehaviour? DefaultSavageBehaviour { get; set; }
 
     [JsonPropertyName("FRIENDLY_BOT_TYPES")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public WildSpawnType[]? FriendlyBotTypes { get; set; }
 
     [JsonPropertyName("WARN_BOT_TYPES")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public WildSpawnType[]? WarnBotTypes { get; set; }
 
     [JsonPropertyName("ENEMY_BOT_TYPES")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public WildSpawnType[]? EnemyBotTypes { get; set; }
 
     [JsonPropertyName("REVENGE_BOT_TYPES")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public WildSpawnType[]? RevengeBotTypes { get; set; }
 
     [JsonPropertyName("FOLLOWER_AND_BOSS_WARN_EQUAL_PRIORITY")]
