@@ -102,118 +102,123 @@
   },
   "TraderServerSettings": {
     "TraderServices": {
-                    "BtrBotCover": {
-                        "Requirements": {
-                            "CompletedQuests": [],
-                            "Standings": []
-                        },
-                        "ServiceItemCost": [],
-                        "TraderId": "656f0f98d80a697f855d34b1",
-                        "TraderServiceType": "BtrBotCover",
-                        "UniqueItems": []
-                    },
-                    "BtrItemsDelivery": {
-                        "Requirements": {
-                            "CompletedQuests": [],
-                            "Standings": []
-                        },
-                        "ServiceItemCost": [],
-                        "TraderId": "656f0f98d80a697f855d34b1",
-                        "TraderServiceType": "BtrItemsDelivery",
-                        "UniqueItems": []
-                    },
-                    "CultistsAid": {
-                        "Requirements": {
-                            "CompletedQuests": [{
-                                    "QuestId": "63966fccac6f8f3c677b9d89"
-                                }
-                            ],
-                            "Standings": {
-                                "638f541a29ffd1183d187f57": {
-                                    "Value": 0.01
-                                }
-                            }
-                        },
-                        "ServiceItemCost": {
-                            "5c12613b86f7743bbe2c3f76": {
-                                "Count": 3
-                            },
-                            "5696686a4bdc2da3298b456a": {
-                                "Count": 1000
-                            }
-                        },
-                        "TraderId": "638f541a29ffd1183d187f57",
-                        "TraderServiceType": "CultistsAid",
-                        "UniqueItems": ["64d0b40fbe2eed70e254e2d4"]
-                    },
-                    "ExUsecLoyalty": {
-                        "Requirements": {
-                            "CompletedQuests": [{
-                                    "QuestId": "63966ff54c3ef01b6f3ffad8"
-                                }
-                            ],
-                            "Standings": {
-                                "638f541a29ffd1183d187f57": {
-                                    "Value": 0.01
-                                }
-                            }
-                        },
-                        "ServiceItemCost": {
-                            "569668774bdc2da2298b4568": {
-                                "Count": 2500
-                            },
-                            "61bf7c024770ee6f9c6b8b53": {
-                                "Count": 2
-                            }
-                        },
-                        "TraderId": "638f541a29ffd1183d187f57",
-                        "TraderServiceType": "ExUsecLoyalty",
-                        "UniqueItems": []
-                    },
-                    "PlayerTaxi": {
-                        "Requirements": {
-                            "CompletedQuests": [],
-                            "Standings": []
-                        },
-                        "ServiceItemCost": [],
-                        "TraderId": "656f0f98d80a697f855d34b1",
-                        "TraderServiceType": "PlayerTaxi",
-                        "UniqueItems": []
-                    },
-                    "TransitItemsDelivery": {
-                        "Requirements": {
-                            "CompletedQuests": [],
-                            "Standings": []
-                        },
-                        "ServiceItemCost": [],
-                        "TraderId": "656f0f98d80a697f855d34b1",
-                        "TraderServiceType": "TransitItemsDelivery",
-                        "UniqueItems": []
-                    },
-                    "ZryachiyAid": {
-                        "Requirements": {
-                            "CompletedQuests": [{
-                                    "QuestId": "6396701b9113f06a7c3b2379"
-                                }
-                            ],
-                            "Standings": {
-                                "638f541a29ffd1183d187f57": {
-                                    "Value": 0.01
-                                }
-                            }
-                        },
-                        "ServiceItemCost": {
-                            "62a0a16d0b9d3c46de5b6e97": {
-                                "Count": 3
-                            },
-                            "5696686a4bdc2da3298b456a": {
-                                "Count": 2000
-                            }
-                        },
-                        "TraderId": "638f541a29ffd1183d187f57",
-                        "TraderServiceType": "ZryachiyAid",
-                        "UniqueItems": []
-                    }
-                }
+      "BtrBotCover": {
+        "Requirements": {
+          "CompletedQuests": [],
+          "Standings": []
+        },
+        "ServiceItemCost": [],
+        "TraderId": "656f0f98d80a697f855d34b1",
+        "TraderServiceType": "BtrBotCover",
+        "UniqueItems": []
+      },
+      "BtrItemsDelivery": {
+        "Requirements": {
+          "CompletedQuests": [],
+          "Standings": []
+        },
+        "ServiceItemCost": [],
+        "TraderId": "656f0f98d80a697f855d34b1",
+        "TraderServiceType": "BtrItemsDelivery",
+        "UniqueItems": []
+      },
+      "CultistsAid": {
+        "Requirements": {
+          "CompletedQuests": [
+            {
+              "QuestId": "63966fccac6f8f3c677b9d89"
+            }
+          ],
+          "Standings": {
+            "638f541a29ffd1183d187f57": {
+              "Value": 0.01
+            }
+          }
+        },
+        "ServiceItemCost": {
+          "5c12613b86f7743bbe2c3f76": {
+            "Count": 3
+          },
+          "5696686a4bdc2da3298b456a": {
+            "Count": 1000
+          }
+        },
+        "TraderId": "638f541a29ffd1183d187f57",
+        "TraderServiceType": "CultistsAid",
+        "UniqueItems": [
+          "64d0b40fbe2eed70e254e2d4"
+        ]
+      },
+      "ExUsecLoyalty": {
+        "Requirements": {
+          "CompletedQuests": [
+            {
+              "QuestId": "63966ff54c3ef01b6f3ffad8"
+            }
+          ],
+          "Standings": {
+            "638f541a29ffd1183d187f57": {
+              "Value": 0.01
+            }
+          }
+        },
+        "ServiceItemCost": {
+          "569668774bdc2da2298b4568": {
+            "Count": 2500
+          },
+          "61bf7c024770ee6f9c6b8b53": {
+            "Count": 2
+          }
+        },
+        "TraderId": "638f541a29ffd1183d187f57",
+        "TraderServiceType": "ExUsecLoyalty",
+        "UniqueItems": []
+      },
+      "PlayerTaxi": {
+        "Requirements": {
+          "CompletedQuests": [],
+          "Standings": []
+        },
+        "ServiceItemCost": [],
+        "TraderId": "656f0f98d80a697f855d34b1",
+        "TraderServiceType": "PlayerTaxi",
+        "UniqueItems": []
+      },
+      "TransitItemsDelivery": {
+        "Requirements": {
+          "CompletedQuests": [],
+          "Standings": []
+        },
+        "ServiceItemCost": [],
+        "TraderId": "656f0f98d80a697f855d34b1",
+        "TraderServiceType": "TransitItemsDelivery",
+        "UniqueItems": []
+      },
+      "ZryachiyAid": {
+        "Requirements": {
+          "CompletedQuests": [
+            {
+              "QuestId": "6396701b9113f06a7c3b2379"
+            }
+          ],
+          "Standings": {
+            "638f541a29ffd1183d187f57": {
+              "Value": 0.01
+            }
+          }
+        },
+        "ServiceItemCost": {
+          "62a0a16d0b9d3c46de5b6e97": {
+            "Count": 3
+          },
+          "5696686a4bdc2da3298b456a": {
+            "Count": 2000
+          }
+        },
+        "TraderId": "638f541a29ffd1183d187f57",
+        "TraderServiceType": "ZryachiyAid",
+        "UniqueItems": []
+      }
+    }
   }
 }
