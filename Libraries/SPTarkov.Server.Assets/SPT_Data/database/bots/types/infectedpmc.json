@@ -500,11 +500,11 @@
         "DEFAULT_USEC_BEHAVIOUR": 2,
         "DEFAULT_SAVAGE_BEHAVIOUR": 2,
         "FRIENDLY_BOT_TYPES": [
-          62,
-          61,
-          63,
-          60,
-          64
+          "infectedCivil",
+          "infectedPmc",
+          "infectedLaborant",
+          "infectedAssault",
+          "infectedTagilla"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [],
@@ -1025,11 +1025,11 @@
         "DEFAULT_USEC_BEHAVIOUR": 2,
         "DEFAULT_SAVAGE_BEHAVIOUR": 2,
         "FRIENDLY_BOT_TYPES": [
-          62,
-          61,
-          63,
-          60,
-          64
+          "infectedCivil",
+          "infectedPmc",
+          "infectedLaborant",
+          "infectedAssault",
+          "infectedTagilla"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [],
@@ -1548,11 +1548,11 @@
         "DEFAULT_USEC_BEHAVIOUR": 2,
         "DEFAULT_SAVAGE_BEHAVIOUR": 2,
         "FRIENDLY_BOT_TYPES": [
-          62,
-          61,
-          63,
-          60,
-          64
+          "infectedCivil",
+          "infectedPmc",
+          "infectedLaborant",
+          "infectedAssault",
+          "infectedTagilla"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [],
@@ -2073,11 +2073,11 @@
         "DEFAULT_USEC_BEHAVIOUR": 2,
         "DEFAULT_SAVAGE_BEHAVIOUR": 2,
         "FRIENDLY_BOT_TYPES": [
-          62,
-          61,
-          63,
-          60,
-          64
+          "infectedCivil",
+          "infectedPmc",
+          "infectedLaborant",
+          "infectedAssault",
+          "infectedTagilla"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [],

@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using SPTarkov.Server.Core.Models.Eft.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Bot.GlobalSettings;
 
@@ -83,21 +82,33 @@ public record BotGlobalsMindSettings
     [JsonPropertyName("DEFAULT_SAVAGE_BEHAVIOUR")]
     public EWarnBehaviour? DefaultSavageBehaviour { get; set; }
 
+    /// <summary>
+    /// typeof(WildSpawnType)
+    /// Must be sent to client as strings
+    /// </summary>
     [JsonPropertyName("FRIENDLY_BOT_TYPES")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public WildSpawnType[]? FriendlyBotTypes { get; set; }
+    public List<string>? FriendlyBotTypes { get; set; }
 
+    /// <summary>
+    /// typeof(WildSpawnType)
+    /// Must be sent to client as strings
+    /// </summary>
     [JsonPropertyName("WARN_BOT_TYPES")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public WildSpawnType[]? WarnBotTypes { get; set; }
+    public List<string>? WarnBotTypes { get; set; }
 
+    /// <summary>
+    /// typeof(WildSpawnType)
+    /// Must be sent to client as strings
+    /// </summary>
     [JsonPropertyName("ENEMY_BOT_TYPES")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public WildSpawnType[]? EnemyBotTypes { get; set; }
+    public List<string>? EnemyBotTypes { get; set; }
 
+    /// <summary>
+    /// typeof(WildSpawnType)
+    /// Must be sent to client as strings
+    /// </summary>
     [JsonPropertyName("REVENGE_BOT_TYPES")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public WildSpawnType[]? RevengeBotTypes { get; set; }
+    public List<string>? RevengeBotTypes { get; set; }
 
     [JsonPropertyName("FOLLOWER_AND_BOSS_WARN_EQUAL_PRIORITY")]
     public bool? FollowerAndBossWarnEqualPriority { get; set; }
