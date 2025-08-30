@@ -200,7 +200,7 @@ public record UpdBuff
 
     [JsonPropertyName("BuffType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public BuffType? BuffType { get; set; }
+    public RepairBuffType? BuffType { get; set; }
 
     [JsonPropertyName("Value")]
     public double? Value { get; set; }

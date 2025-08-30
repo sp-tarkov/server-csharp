@@ -12,4 +12,5 @@ public enum RequirementType
     QuestComplete,
     Health,
     BodyPartBuff,
+    GameVersion,
 }

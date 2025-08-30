@@ -82,7 +82,7 @@ public record SearchRequestData : IRequestData
 
 public enum OfferOwnerType
 {
-    ANYOWNERTYPE = 0,
-    TRADEROWNERTYPE = 1,
-    PLAYEROWNERTYPE = 2,
+    AnyOwnerType,
+    TraderOwnerType,
+    PlayerOwnerType,
 }

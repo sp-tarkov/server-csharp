@@ -1,6 +1,6 @@
 namespace SPTarkov.Server.Core.Models.Enums;
 
-public enum BuffType
+public enum RepairBuffType
 {
     WeaponSpread,
     DamageReduction,

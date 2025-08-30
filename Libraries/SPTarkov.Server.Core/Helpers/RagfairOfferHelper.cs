@@ -856,13 +856,13 @@ public class RagfairOfferHelper(
         }
 
         var isTraderOffer = offer.IsTraderOffer();
-        if (searchRequest.OfferOwnerType == OfferOwnerType.TRADEROWNERTYPE && !isTraderOffer)
+        if (searchRequest.OfferOwnerType == OfferOwnerType.TraderOwnerType && !isTraderOffer)
         // don't include player offers
         {
             return false;
         }
 
-        if (searchRequest.OfferOwnerType == OfferOwnerType.PLAYEROWNERTYPE && isTraderOffer)
+        if (searchRequest.OfferOwnerType == OfferOwnerType.PlayerOwnerType && isTraderOffer)
         // don't include trader offers
         {
             return false;

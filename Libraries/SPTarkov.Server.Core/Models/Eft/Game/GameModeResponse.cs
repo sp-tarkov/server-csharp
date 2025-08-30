@@ -4,8 +4,8 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 
 public enum SessionMode
 {
-    REGULAR,
-    PVE,
+    Regular,
+    Pve,
 }
 
 public record GameModeResponse

@@ -879,11 +879,11 @@ public record Notes
 
 public enum SurvivorClass
 {
-    UNKNOWN = 0,
-    NEUTRALIZER = 1,
-    MARAUDER = 2,
-    PARAMEDIC = 3,
-    SURVIVOR = 4,
+    Unknown,
+    Neutralizer,
+    Marauder,
+    Paramedic,
+    Survivor,
 }
 
 public record TraderInfo

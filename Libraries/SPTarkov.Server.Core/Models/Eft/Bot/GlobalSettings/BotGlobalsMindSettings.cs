@@ -421,9 +421,12 @@ public record BotGlobalsMindSettings
 
     public enum EWarnBehaviour
     {
-        Neutral,
-        Warn,
-        AlwaysEnemies,
+        Default = 1,
+        Neutral = 2,
+        Warn = 4,
+        AlwaysEnemies = 8,
+        AlwaysFriends = 16,
+        ChancedEnemies = 32,
     }
 
     public enum EBotEnemyCause

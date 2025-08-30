@@ -1956,9 +1956,3 @@ public record ShotsGroupSettings
     [JsonPropertyName("StartShotIndex")]
     public double? StartShotIndex { get; set; }
 }
-
-public enum ItemType
-{
-    NODE = 1,
-    ITEM = 2,
-}
