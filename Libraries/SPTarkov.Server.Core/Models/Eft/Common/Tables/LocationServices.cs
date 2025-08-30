@@ -50,6 +50,7 @@ public record TraderService
     public string TraderId { get; set; }
 
     [JsonPropertyName("TraderServiceType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public TraderServiceType TraderServiceType { get; set; }
 
     [JsonPropertyName("Requirements")]

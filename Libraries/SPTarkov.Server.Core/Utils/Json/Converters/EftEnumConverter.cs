@@ -21,7 +21,7 @@ public class EftEnumConverter<T> : JsonConverter<T>
 {
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (reader.TokenType == JsonTokenType.String || reader.TokenType == JsonTokenType.PropertyName)
+        if (reader.TokenType is JsonTokenType.String or JsonTokenType.PropertyName)
         {
             var str = reader.GetString();
             return (T)Enum.Parse(typeof(T), str, true);
