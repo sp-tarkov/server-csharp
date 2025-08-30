@@ -19,8 +19,8 @@
     },
     "voice": {
       "670a57f082b46e0e55096b09": 2976,
-      "67199b72b79a024c140a17b7": 3067,
-      "6720aa2d1c5e609cb70d5528": 1484
+      "6720aa2d1c5e609cb70d5528": 1484,
+      "67199b72b79a024c140a17b7": 3067
     }
   },
   "experience": {
@@ -495,9 +495,9 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
           "infectedCivil",
           "infectedPmc",
@@ -1038,9 +1038,9 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
           "infectedCivil",
           "infectedPmc",
@@ -1582,9 +1582,9 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
           "infectedCivil",
           "infectedPmc",
@@ -2120,9 +2120,9 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
           "infectedCivil",
           "infectedPmc",

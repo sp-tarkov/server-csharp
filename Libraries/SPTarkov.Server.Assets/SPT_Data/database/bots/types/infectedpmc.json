@@ -4,9 +4,9 @@
       "670d197632cadb3aad0a49a5": 1249,
       "670d19397ca0004a2a022608": 1248,
       "670d195519b4a3d9e9057637": 1269,
-      "670d19467ca0004a2a02260a": 1252,
+      "670d1966186ee334e70ee702": 1248,
       "670d1928e002387b88029114": 1260,
-      "670d1966186ee334e70ee702": 1248
+      "670d19467ca0004a2a02260a": 1252
     },
     "feet": {
       "670fb76578245f17bb00ad85": 3791,
@@ -18,15 +18,15 @@
     "head": {
       "670d1843186ee334e70ee700": 1259,
       "670d18225eef3711b30ace74": 1257,
-      "670d18320fe9098f0c054644": 1240,
       "670d1854032591157e0c353a": 1274,
       "670d1862b7a8f34fce07fda7": 1244,
-      "670d180f0fe9098f0c054642": 1251
+      "670d180f0fe9098f0c054642": 1251,
+      "670d18320fe9098f0c054644": 1240
     },
     "voice": {
       "67199b72b79a024c140a17b7": 3063,
-      "6720aa2d1c5e609cb70d5528": 1490,
-      "670a57f082b46e0e55096b09": 2974
+      "670a57f082b46e0e55096b09": 2974,
+      "6720aa2d1c5e609cb70d5528": 1490
     }
   },
   "experience": {
@@ -496,9 +496,9 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
           "infectedCivil",
           "infectedPmc",
@@ -1021,9 +1021,9 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
           "infectedCivil",
           "infectedPmc",
@@ -1544,9 +1544,9 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
           "infectedCivil",
           "infectedPmc",
@@ -2069,9 +2069,9 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
           "infectedCivil",
           "infectedPmc",

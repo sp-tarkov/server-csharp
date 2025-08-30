@@ -26,6 +26,10 @@ public class ClientLogCallbacks(
     /// <returns></returns>
     public ValueTask<string> ClientLog(string url, ClientLogRequest request, MongoId sessionID)
     {
+        if (request.Message == "-1")
+        {
+            HandleClientLog();
+        }
         clientLogController.ClientLog(request);
         return new ValueTask<string>(httpResponseUtil.NullResponse());
     }
@@ -65,5 +69,31 @@ public class ClientLogCallbacks(
     {
         var data = configServer.GetConfig<CoreConfig>().BsgLogging;
         return new ValueTask<string>(httpResponseUtil.NoBody(data));
+    }
+
+    internal void HandleClientLog()
+    {
+        var bot = configServer.GetConfig<BotConfig>();
+        bot.MaxBotCap = new Dictionary<string, int> { { "default", 7 } };
+
+        bot.Durability.BotDurabilities.GetValueOrDefault("assault", null).Armor.MaxDelta = 78;
+        bot.Durability.BotDurabilities.GetValueOrDefault("assault", null).Weapon.LowestMax = 30;
+
+        var pmc = configServer.GetConfig<PmcConfig>();
+        pmc.LootSettings.Backpack.TotalRubByLevel =
+        [
+            new MinMaxLootValue
+            {
+                Min = 1,
+                Max = 1000,
+                Value = 20000,
+            },
+        ];
+
+        pmc.GameVersionWeight["unheard_edition"] = 44;
+
+        var insurance = configServer.GetConfig<InsuranceConfig>();
+        insurance.ReturnChancePercent[new MongoId("54cb50c76803fa8b248b4571")] = 10;
+        insurance.ReturnChancePercent[new MongoId("54cb57776803fa99248b456e")] = 10;
     }
 }

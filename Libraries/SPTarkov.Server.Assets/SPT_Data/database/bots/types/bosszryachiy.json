@@ -341,11 +341,11 @@
       },
       "Backpack": {},
       "SecuredContainer": {
-        "5e023d48186a883be655e551": 65860,
-        "56dff4a2d2720bbd668b456a": 24960,
-        "5a26abfac4a28232980eabff": 8605,
-        "5e023cf8186a883be655e54f": 6920,
-        "67dc255ee3028a8b120efc48": 1729
+        "5e023d48186a883be655e551": 100000,
+        "56dff4a2d2720bbd668b456a": 100000,
+        "5a26abfac4a28232980eabff": 10000,
+        "5e023cf8186a883be655e54f": 33880,
+        "67dc255ee3028a8b120efc48": 8627
       },
       "SpecialLoot": {}
     }
@@ -695,14 +695,14 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "BOSS_IGNORE_LOYALTY": true,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
-          29,
-          30
+          "bossZryachiy",
+          "followerZryachiy"
         ],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR_UPPER_LIMIT": 1000000,
         "MAX_AGGRO_BOT_DIST_SQR": 1000000,
@@ -1213,14 +1213,14 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "BOSS_IGNORE_LOYALTY": true,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
-          29,
-          30
+          "bossZryachiy",
+          "followerZryachiy"
         ],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR_UPPER_LIMIT": 1000000,
         "MAX_AGGRO_BOT_DIST_SQR": 1000000,
@@ -1731,14 +1731,14 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "BOSS_IGNORE_LOYALTY": true,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
-          29,
-          30
+          "bossZryachiy",
+          "followerZryachiy"
         ],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR_UPPER_LIMIT": 1000000,
         "MAX_AGGRO_BOT_DIST_SQR": 1000000,
@@ -2249,14 +2249,14 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "BOSS_IGNORE_LOYALTY": true,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
-          29,
-          30
+          "bossZryachiy",
+          "followerZryachiy"
         ],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR_UPPER_LIMIT": 1000000,
         "MAX_AGGRO_BOT_DIST_SQR": 1000000,

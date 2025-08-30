@@ -261,9 +261,9 @@
     },
     "items": {
       "TacticalVest": {
-        "5fca138c2a7b221b2852a5c6": 13,
-        "5ed515e03a40a50460332579": 7,
-        "55d482194bdc2d1d4e8b456b": 11
+        "5fca138c2a7b221b2852a5c6": 19,
+        "5ed515e03a40a50460332579": 11,
+        "55d482194bdc2d1d4e8b456b": 19
       },
       "Pockets": {
         "674fe8f6f34d761ab8020cc8": 10000,
@@ -271,15 +271,15 @@
         "590de71386f774347051a052": 483,
         "679b992329acd1f2f60985a5": 10000,
         "679b9819a2f2dd4da9023512": 8232,
-        "5e54f62086f774219b0f1937": 498,
-        "61a64428a8c6aa1b795f0ba1": 55,
+        "573474f924597738002c6174": 1829,
         "61a6444b8c141d68246e2d2f": 72,
         "679bab714e9ca6b3d80586b4": 4462,
         "5755383e24597772cb798966": 10000,
         "573478bc24597738002c6175": 1301,
-        "573474f924597738002c6174": 1829,
-        "5780d07a2459777de4559324": 50,
+        "5e54f62086f774219b0f1937": 498,
+        "61a64428a8c6aa1b795f0ba1": 55,
         "5937ee6486f77408994ba448": 377,
+        "5780d07a2459777de4559324": 50,
         "62a09ec84f842e1bd12da3f2": 90,
         "5f745ee30acaeb0d490d8c5b": 476,
         "63a71ed21031ac76fe773c7f": 66,
@@ -290,8 +290,8 @@
         "5da46e3886f774653b7a83fe": 34,
         "5a0eeb8e86f77461257ed71a": 49,
         "5a0eff2986f7741fd654e684": 55,
-        "658199972dc4e60f6d556a2f": 493,
         "63a399193901f439517cafb6": 34,
+        "658199972dc4e60f6d556a2f": 493,
         "63a39ce4cd6db0635c1975fa": 53,
         "5eff09cd30a7dc22fd1ddfed": 101,
         "5a0eb38b86f774153b320eb0": 60,
@@ -307,11 +307,11 @@
         "5af0548586f7743a532b7e99": 102,
         "5938504186f7740991483f30": 484,
         "5913915886f774123603c392": 79,
-        "591383f186f7744a4c5edcf3": 165,
-        "5bc9bdb8d4351e003562b8a1": 499,
         "5a0eee1486f77402aa773226": 64,
-        "5780d0652459777df90dcb74": 62,
+        "5bc9bdb8d4351e003562b8a1": 499,
+        "591383f186f7744a4c5edcf3": 165,
         "6582dbe43a2e5248357dbe9a": 397,
+        "5780d0652459777df90dcb74": 62,
         "59148f8286f7741b951ea113": 59,
         "59faf7ca86f7740dbe19f6c2": 539,
         "64ccc1fe088064307e14a6f7": 53,
@@ -319,9 +319,9 @@
         "62a091170b9d3c46de5b6cf2": 501,
         "64ccc2111779ad6ba200a139": 62,
         "593aa4be86f77457f56379f8": 526,
-        "5d80ccdd86f77474f7575e02": 33,
         "63a39c7964283b5e9c56b280": 274,
         "5ad5d20586f77449be26d877": 195,
+        "5d80ccdd86f77474f7575e02": 33,
         "5780cf942459777df90dcb72": 657,
         "5a0ea64786f7741707720468": 63,
         "59e3639286f7741777737013": 198,
@@ -348,8 +348,8 @@
         "61a64492ba05ef10d62adcc1": 53,
         "5a13ee1986f774794d4c14cd": 54,
         "5d235a5986f77443f6329bc6": 518,
-        "5a0ee34586f774023b6ee092": 70,
         "64d4b23dc1b37504b41ac2b6": 5,
+        "5a0ee34586f774023b6ee092": 70,
         "64ccc25f95763a1ae376e447": 10,
         "6582dc4b6ba9e979af6b79f4": 214,
         "5780cf722459777a5108b9a1": 62,
@@ -379,8 +379,8 @@
         "66b37ea4c5d72b0277488439": 220,
         "5c1e2d1f86f77431e9280bee": 46,
         "63a71e86b7f4570d3a293169": 45,
-        "61aa5b7db225ac1ead7957c1": 71,
         "5a0ee62286f774369454a7ac": 62,
+        "61aa5b7db225ac1ead7957c1": 71,
         "5d8e0e0e86f774321140eb56": 24,
         "5a13f46386f7741dd7384b04": 55,
         "5a0ec6d286f7742c0b518fb5": 28,
@@ -392,13 +392,13 @@
         "590c695186f7741e566b64a2": 175,
         "5d80c93086f7744036212b41": 31,
         "64ccc268c41e91416064ebc7": 60,
-        "5d80cb8786f774405611c7d9": 28,
         "5a0ec70e86f7742c0b518fba": 46,
+        "5d80cb8786f774405611c7d9": 28,
         "5d80cd1a86f77402aa362f42": 30,
         "5c1e2a1e86f77431ea0ea84c": 45,
         "5d80cb3886f77440556dbf09": 50,
-        "5c1d0efb86f7744baf2e7b7b": 54,
         "6761a6ccd9bbb27ad703c48a": 30,
+        "5c1d0efb86f7744baf2e7b7b": 54,
         "59e3647686f774176a362507": 225,
         "5a0f0f5886f7741c4e32a472": 71,
         "67ab3d4b83869afd170fdd3f": 11,
@@ -461,8 +461,8 @@
         "5913877a86f774432f15d444": 46,
         "5672c92d4bdc2d180f8b4567": 56,
         "5a0eeb1a86f774688b70aa5c": 58,
-        "64ccc246ff54fb38131acf29": 51,
         "63a71eb5b7f4570d3a29316b": 48,
+        "64ccc246ff54fb38131acf29": 51,
         "5d80c62a86f7744036212b3f": 17,
         "64ccc1ec1779ad6ba200a137": 53,
         "5c1d0f4986f7744bb01837fa": 44,
@@ -509,9 +509,9 @@
       "SecuredContainer": {
         "5710c24ad2720bc3458b45a3": 100000,
         "5d6e68a8a4b9360b6c0d54e2": 100000,
-        "56dff026d2720bb8668b4567": 24880,
-        "5c0d5e4486f77478390952fe": 49670,
-        "56dff3afd2720bba668b4567": 8141
+        "56dff026d2720bb8668b4567": 21190,
+        "5c0d5e4486f77478390952fe": 42130,
+        "56dff3afd2720bba668b4567": 6757
       },
       "SpecialLoot": {}
     }
@@ -846,17 +846,17 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 1,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 4,
         "FRIENDLY_BOT_TYPES": [
-          6,
-          1
+          "bossKilla",
+          "assault"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR": 10000,
         "DIST_TO_STOP_RUN_ENEMY": 15,
@@ -1361,17 +1361,17 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 1,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 4,
         "FRIENDLY_BOT_TYPES": [
-          6,
-          1
+          "bossKilla",
+          "assault"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR": 10000,
         "DIST_TO_STOP_RUN_ENEMY": 15,
@@ -1876,17 +1876,17 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 1,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 4,
         "FRIENDLY_BOT_TYPES": [
-          6,
-          1
+          "bossKilla",
+          "assault"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR": 10000,
         "DIST_TO_STOP_RUN_ENEMY": 15,
@@ -2391,17 +2391,17 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 1,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 4,
         "FRIENDLY_BOT_TYPES": [
-          6,
-          1
+          "bossKilla",
+          "assault"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR": 10000,
         "DIST_TO_STOP_RUN_ENEMY": 15,

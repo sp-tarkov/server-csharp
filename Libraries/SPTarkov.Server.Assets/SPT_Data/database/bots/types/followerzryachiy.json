@@ -335,9 +335,9 @@
     },
     "items": {
       "TacticalVest": {
-        "55d482194bdc2d1d4e8b456b": 41,
-        "5c88f24b2e22160bc12c69a6": 30,
-        "599860ac86f77436b225ed1a": 12
+        "55d482194bdc2d1d4e8b456b": 149,
+        "5c88f24b2e22160bc12c69a6": 122,
+        "599860ac86f77436b225ed1a": 68
       },
       "Pockets": {
         "559ba5b34bdc2d1f1a8b4582": 9,
@@ -345,10 +345,10 @@
       },
       "Backpack": {},
       "SecuredContainer": {
-        "5887431f2459777e1612938f": 6450,
-        "56dff4a2d2720bbd668b456a": 1660,
-        "560d61e84bdc2da74d8b4571": 4160,
-        "56d59d3ad2720bdb418b4577": 873
+        "5887431f2459777e1612938f": 4580,
+        "56dff4a2d2720bbd668b456a": 1170,
+        "560d61e84bdc2da74d8b4571": 2950,
+        "56d59d3ad2720bdb418b4577": 639
       },
       "SpecialLoot": {}
     }
@@ -691,12 +691,12 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "FRIENDLY_BOT_TYPES": [
-          29,
-          30
+          "bossZryachiy",
+          "followerZryachiy"
         ],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR_UPPER_LIMIT": 1000000,
         "MAX_AGGRO_BOT_DIST_SQR": 1000000,
@@ -1200,12 +1200,12 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "FRIENDLY_BOT_TYPES": [
-          29,
-          30
+          "bossZryachiy",
+          "followerZryachiy"
         ],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR_UPPER_LIMIT": 1000000,
         "MAX_AGGRO_BOT_DIST_SQR": 1000000,
@@ -1709,12 +1709,12 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "FRIENDLY_BOT_TYPES": [
-          29,
-          30
+          "bossZryachiy",
+          "followerZryachiy"
         ],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR_UPPER_LIMIT": 1000000,
         "MAX_AGGRO_BOT_DIST_SQR": 1000000,
@@ -2218,12 +2218,12 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "FRIENDLY_BOT_TYPES": [
-          29,
-          30
+          "bossZryachiy",
+          "followerZryachiy"
         ],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR_UPPER_LIMIT": 1000000,
         "MAX_AGGRO_BOT_DIST_SQR": 1000000,

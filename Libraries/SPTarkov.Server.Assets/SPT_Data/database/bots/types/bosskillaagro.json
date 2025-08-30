@@ -150,8 +150,8 @@
     "Ammo": {
       "Caliber545x39": {
         "5c0d5e4486f77478390952fe": 381,
-        "56dff026d2720bb8668b4567": 931,
-        "61962b617c6c7b169525f168": 951
+        "61962b617c6c7b169525f168": 951,
+        "56dff026d2720bb8668b4567": 931
       },
       "Caliber762x25TT": {
         "5736026a245977644601dc61": 1
@@ -368,9 +368,9 @@
         "5a0eecf686f7740350630097": 11,
         "658199972dc4e60f6d556a2f": 87,
         "544fb37f4bdc2dee738b4567": 111,
-        "63a39e49cd6db0635c1975fc": 13,
         "5a0ee76686f7743698200d5c": 12,
         "679b992329acd1f2f60985a5": 701,
+        "63a39e49cd6db0635c1975fc": 13,
         "5c1e495a86f7743109743dfb": 15,
         "5a144dfd86f77445cb5a0982": 7,
         "5eff09cd30a7dc22fd1ddfed": 23,
@@ -570,12 +570,12 @@
       },
       "Backpack": {},
       "SecuredContainer": {
-        "5c0d5e4486f77478390952fe": 215,
-        "5736026a245977644601dc61": 363,
-        "601aa3d2b2bcb34913271e6d": 250,
-        "56dff026d2720bb8668b4567": 425,
-        "61962b617c6c7b169525f168": 625,
-        "59e0d99486f7744a32234762": 300
+        "5c0d5e4486f77478390952fe": 105,
+        "5736026a245977644601dc61": 186,
+        "601aa3d2b2bcb34913271e6d": 100,
+        "61962b617c6c7b169525f168": 375,
+        "56dff026d2720bb8668b4567": 200,
+        "59e0d99486f7744a32234762": 150
       },
       "SpecialLoot": {}
     }
@@ -904,17 +904,17 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 1,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 4,
         "FRIENDLY_BOT_TYPES": [
-          6,
-          1
+          "bossKilla",
+          "assault"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR": 10000,
         "DIST_TO_STOP_RUN_ENEMY": 15,
@@ -1412,17 +1412,17 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 1,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 4,
         "FRIENDLY_BOT_TYPES": [
-          6,
-          1
+          "bossKilla",
+          "assault"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR": 10000,
         "DIST_TO_STOP_RUN_ENEMY": 15,
@@ -1920,17 +1920,17 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 1,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 4,
         "FRIENDLY_BOT_TYPES": [
-          6,
-          1
+          "bossKilla",
+          "assault"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR": 10000,
         "DIST_TO_STOP_RUN_ENEMY": 15,
@@ -2428,17 +2428,17 @@
         "LASTSEEN_POINT_CHOOSE_COEF": 0.2,
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 1,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 4,
         "FRIENDLY_BOT_TYPES": [
-          6,
-          1
+          "bossKilla",
+          "assault"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "MAX_AGGRO_BOT_DIST_SQR": 10000,
         "DIST_TO_STOP_RUN_ENEMY": 15,

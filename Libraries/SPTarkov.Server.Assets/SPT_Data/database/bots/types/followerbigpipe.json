@@ -116,8 +116,8 @@
       },
       "Earpiece": {
         "628e4e576d783146b124c64d": 2564,
-        "5645bcc04bdc2d363b8b4572": 16135,
         "66b5f6985891c84aab75ca76": 2585,
+        "5645bcc04bdc2d363b8b4572": 16135,
         "66b5f693acff495a294927e3": 2578
       },
       "FaceCover": {
@@ -139,9 +139,9 @@
       },
       "SecondPrimaryWeapon": {
         "5a7828548dc32e5a9c28b516": 45100,
+        "661cec09b2c6356b4d0c7a36": 2240,
         "5e81ebcd8e146c7080625e15": 9407,
-        "6275303a9f372d6ea97f9ec7": 2232,
-        "661cec09b2c6356b4d0c7a36": 2240
+        "6275303a9f372d6ea97f9ec7": 2232
       },
       "Holster": {
         "668fe5a998b5ad715703ddd6": 3187,
@@ -172,16 +172,16 @@
         "5e81f423763d9f754677bf2e": 685,
         "5efb0cabfb3e451d70735af5": 122
       },
-      "Caliber40x46": {
-        "5ede474b0c226a66f5402622": 94,
-        "5f0c892565703e5c461894e9": 133
-      },
       "Caliber762x35": {
         "619636be6db0f2477964e710": 1
       },
       "Caliber762x51": {
         "5a608bf24f39f98ffc77720e": 671,
         "58dd3ad986f77403051cba8f": 1340
+      },
+      "Caliber40x46": {
+        "5ede474b0c226a66f5402622": 94,
+        "5f0c892565703e5c461894e9": 133
       }
     },
     "mods": {
@@ -320,49 +320,28 @@
           "5f3e78a7fbf956000b716b8e"
         ]
       },
-      "5e81ebcd8e146c7080625e15": {
-        "mod_pistol_grip": [
-          "571659bb2459771fb2755a12"
+      "669fa3f88abd2662d80eee77": {
+        "mod_barrel": [
+          "669fa4ba1bd4416eaa09b3c6"
         ],
-        "mod_scope": [
-          "6284bd5f95250a29bc628a30"
+        "mod_pistolgrip": [
+          "66a0da76b6f47fcfeb025e96"
         ],
-        "patron_in_weapon": [
-          "5ede474b0c226a66f5402622"
-        ]
-      },
-      "6275303a9f372d6ea97f9ec7": {
-        "mod_pistol_grip": [
-          "5bb20e18d4351e00320205d5"
-        ],
-        "mod_stock": [
-          "5d135e83d7ad1a21b83f42d8"
-        ],
-        "mod_scope": [
-          "6284bd5f95250a29bc628a30"
+        "mod_reciever": [
+          "669fa5019aa2a422600442f6"
         ],
         "mod_magazine": [
-          "627bce33f21bc425b06ab967"
+          "668fe5c5f35310705d02b696"
         ]
       },
-      "627bce33f21bc425b06ab967": {
-        "camora_000": [
-          "5f0c892565703e5c461894e9"
-        ],
-        "camora_001": [
-          "5f0c892565703e5c461894e9"
-        ],
-        "camora_002": [
-          "5f0c892565703e5c461894e9"
-        ],
-        "camora_003": [
-          "5f0c892565703e5c461894e9"
-        ],
-        "camora_004": [
-          "5f0c892565703e5c461894e9"
-        ],
-        "camora_005": [
-          "5f0c892565703e5c461894e9"
+      "669fa4ba1bd4416eaa09b3c6": {
+        "mod_sight_front": [
+          "668fe5ec4315934ba10c6f96"
+        ]
+      },
+      "669fa5019aa2a422600442f6": {
+        "mod_sight_rear": [
+          "668fe5e1800f0244f9036e46"
         ]
       },
       "5fbcc1d9016cce60e8341ab3": {
@@ -447,30 +426,6 @@
           "57d17c5e2459775a5c57d17d"
         ]
       },
-      "669fa3f88abd2662d80eee77": {
-        "mod_barrel": [
-          "669fa4ba1bd4416eaa09b3c6"
-        ],
-        "mod_pistolgrip": [
-          "66a0da76b6f47fcfeb025e96"
-        ],
-        "mod_reciever": [
-          "669fa5019aa2a422600442f6"
-        ],
-        "mod_magazine": [
-          "668fe5c5f35310705d02b696"
-        ]
-      },
-      "669fa4ba1bd4416eaa09b3c6": {
-        "mod_sight_front": [
-          "668fe5ec4315934ba10c6f96"
-        ]
-      },
-      "669fa5019aa2a422600442f6": {
-        "mod_sight_rear": [
-          "668fe5e1800f0244f9036e46"
-        ]
-      },
       "661cec09b2c6356b4d0c7a36": {
         "mod_stock": [
           "661520fb6f8e1a96340afaa6"
@@ -506,16 +461,61 @@
         "mod_pistolgrip_001": [
           "6615211ca031cbb5570e346d"
         ]
+      },
+      "5e81ebcd8e146c7080625e15": {
+        "mod_pistol_grip": [
+          "571659bb2459771fb2755a12"
+        ],
+        "mod_scope": [
+          "6284bd5f95250a29bc628a30"
+        ],
+        "patron_in_weapon": [
+          "5ede474b0c226a66f5402622"
+        ]
+      },
+      "6275303a9f372d6ea97f9ec7": {
+        "mod_pistol_grip": [
+          "5bb20e18d4351e00320205d5"
+        ],
+        "mod_stock": [
+          "5d135e83d7ad1a21b83f42d8"
+        ],
+        "mod_scope": [
+          "6284bd5f95250a29bc628a30"
+        ],
+        "mod_magazine": [
+          "627bce33f21bc425b06ab967"
+        ]
+      },
+      "627bce33f21bc425b06ab967": {
+        "camora_000": [
+          "5f0c892565703e5c461894e9"
+        ],
+        "camora_001": [
+          "5f0c892565703e5c461894e9"
+        ],
+        "camora_002": [
+          "5f0c892565703e5c461894e9"
+        ],
+        "camora_003": [
+          "5f0c892565703e5c461894e9"
+        ],
+        "camora_004": [
+          "5f0c892565703e5c461894e9"
+        ],
+        "camora_005": [
+          "5f0c892565703e5c461894e9"
+        ]
       }
     },
     "items": {
       "TacticalVest": {
-        "5ba26586d4351e44f824b340": 1011,
-        "544fb45d4bdc2dee738b4568": 586,
-        "619256e5f8af2c1a4e1f5d92": 613,
-        "66dae7cbeb28f0f96809f325": 358,
-        "5d1340cad7ad1a0b0b249869": 75,
-        "5c6d46132e221601da357d56": 86
+        "5ba26586d4351e44f824b340": 647,
+        "544fb45d4bdc2dee738b4568": 375,
+        "619256e5f8af2c1a4e1f5d92": 381,
+        "66dae7cbeb28f0f96809f325": 232,
+        "5d1340cad7ad1a0b0b249869": 49,
+        "5c6d46132e221601da357d56": 54
       },
       "Pockets": {
         "668fe5c5f35310705d02b696": 10000,
@@ -526,28 +526,28 @@
         "5448be9a4bdc2dfd2f8b456a": 10000,
         "57514643245977207f2c2d09": 10000,
         "64ccc2111779ad6ba200a139": 53,
+        "660ea4453786cc0af808a1be": 4480,
         "5ede474b0c226a66f5402622": 95730,
+        "5780cf942459777df90dcb72": 621,
+        "5755383e24597772cb798966": 10000,
+        "593aa4be86f77457f56379f8": 521,
         "5780cda02459777b272ede61": 64,
         "5f0c892565703e5c461894e9": 23980,
-        "5780cf942459777df90dcb72": 621,
-        "593aa4be86f77457f56379f8": 521,
-        "5755383e24597772cb798966": 10000,
-        "660ea4453786cc0af808a1be": 4480,
         "544fb37f4bdc2dee738b4567": 736,
-        "64ccc1fe088064307e14a6f7": 67,
-        "6581998038c79576a2569e11": 376,
         "5780d0532459777a5108b9a2": 93,
         "5c94bbff86f7747ee735c08f": 4651,
         "5d8e0db586f7744450412a42": 37,
+        "64ccc1fe088064307e14a6f7": 67,
+        "6581998038c79576a2569e11": 376,
         "6582dbe43a2e5248357dbe9a": 392,
+        "63a39f08cd6db0635c197600": 98,
         "5938994586f774523a425196": 244,
         "5da46e3886f774653b7a83fe": 39,
-        "63a39f08cd6db0635c197600": 98,
         "5d80cb8786f774405611c7d9": 35,
         "590c695186f7741e566b64a2": 180,
         "5938603e86f77435642354f4": 775,
-        "5e42c81886f7742a01529f57": 130,
         "5914578086f774123569ffa4": 175,
+        "5e42c81886f7742a01529f57": 130,
         "62987cb98081af308d7558c8": 63,
         "5a13ee1986f774794d4c14cd": 62,
         "5937ee6486f77408994ba448": 425,
@@ -561,8 +561,8 @@
         "63a39c7964283b5e9c56b280": 274,
         "679baa9091966fe40408f149": 112,
         "5a0f006986f7741ffd2fe484": 63,
-        "63a39e49cd6db0635c1975fc": 35,
         "591afe0186f77431bd616a11": 397,
+        "63a39e49cd6db0635c1975fc": 35,
         "5d80ca9086f774403a401e40": 33,
         "5913611c86f77479e0084092": 327,
         "5a0ee76686f7743698200d5c": 72,
@@ -739,16 +739,16 @@
       },
       "Backpack": {},
       "SecuredContainer": {
-        "64b6979341772715af0f9c39": 67500,
-        "668fe62ac62660a5d8071446": 1107,
-        "5d6e6911a4b9361bd5780d52": 25170,
-        "5e81f423763d9f754677bf2e": 2304,
-        "5ede474b0c226a66f5402622": 49350,
-        "5f0c892565703e5c461894e9": 10920,
-        "619636be6db0f2477964e710": 11400,
-        "5efb0cabfb3e451d70735af5": 437,
-        "5a608bf24f39f98ffc77720e": 658,
-        "58dd3ad986f77403051cba8f": 980
+        "64b6979341772715af0f9c39": 52650,
+        "668fe62ac62660a5d8071446": 850,
+        "5d6e6911a4b9361bd5780d52": 19240,
+        "5e81f423763d9f754677bf2e": 1790,
+        "619636be6db0f2477964e710": 9465,
+        "5a608bf24f39f98ffc77720e": 523,
+        "5ede474b0c226a66f5402622": 38530,
+        "5efb0cabfb3e451d70735af5": 333,
+        "5f0c892565703e5c461894e9": 7935,
+        "58dd3ad986f77403051cba8f": 755
       },
       "SpecialLoot": {}
     }
@@ -1092,23 +1092,23 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "BOSS_IGNORE_LOYALTY": true,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
-          24
+          "exUsec"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "REVENGE_BOT_TYPES": [
-          24,
-          25,
-          26,
-          27,
-          28
+          "exUsec",
+          "gifter",
+          "bossKnight",
+          "followerBigPipe",
+          "followerBirdEye"
         ],
         "MAX_AGGRO_BOT_DIST_SQR": 10000,
         "DIST_TO_STOP_RUN_ENEMY": 15,
@@ -1611,23 +1611,23 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "BOSS_IGNORE_LOYALTY": true,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
-          24
+          "exUsec"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "REVENGE_BOT_TYPES": [
-          24,
-          25,
-          26,
-          27,
-          28
+          "exUsec",
+          "gifter",
+          "bossKnight",
+          "followerBigPipe",
+          "followerBirdEye"
         ],
         "MAX_AGGRO_BOT_DIST_SQR": 10000,
         "DIST_TO_STOP_RUN_ENEMY": 15,
@@ -2130,23 +2130,23 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "BOSS_IGNORE_LOYALTY": true,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
-          24
+          "exUsec"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "REVENGE_BOT_TYPES": [
-          24,
-          25,
-          26,
-          27,
-          28
+          "exUsec",
+          "gifter",
+          "bossKnight",
+          "followerBigPipe",
+          "followerBirdEye"
         ],
         "MAX_AGGRO_BOT_DIST_SQR": 10000,
         "DIST_TO_STOP_RUN_ENEMY": 15,
@@ -2649,23 +2649,23 @@
         "COVER_DIST_COEF": 1.5,
         "DIST_TO_FOUND_SQRT": 400,
         "BOSS_IGNORE_LOYALTY": true,
-        "DEFAULT_BEAR_BEHAVIOUR": 2,
-        "DEFAULT_USEC_BEHAVIOUR": 2,
-        "DEFAULT_SAVAGE_BEHAVIOUR": 2,
+        "DEFAULT_BEAR_BEHAVIOUR": 8,
+        "DEFAULT_USEC_BEHAVIOUR": 8,
+        "DEFAULT_SAVAGE_BEHAVIOUR": 8,
         "FRIENDLY_BOT_TYPES": [
-          24
+          "exUsec"
         ],
         "WARN_BOT_TYPES": [],
         "ENEMY_BOT_TYPES": [
-          51,
-          52
+          "pmcBEAR",
+          "pmcUSEC"
         ],
         "REVENGE_BOT_TYPES": [
-          24,
-          25,
-          26,
-          27,
-          28
+          "exUsec",
+          "gifter",
+          "bossKnight",
+          "followerBigPipe",
+          "followerBirdEye"
         ],
         "MAX_AGGRO_BOT_DIST_SQR": 10000,
         "DIST_TO_STOP_RUN_ENEMY": 15,
