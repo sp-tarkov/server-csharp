@@ -41,6 +41,7 @@ public record BotGlobalCoreSettings
     public bool? CanGrenade { get; set; }
 
     [JsonPropertyName("AimingType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public EAimingType? AimingType { get; set; }
 
     [JsonPropertyName("PistolFireDistancePref")]

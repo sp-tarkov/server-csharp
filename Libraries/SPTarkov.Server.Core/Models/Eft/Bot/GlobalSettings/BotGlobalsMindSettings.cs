@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Eft.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Bot.GlobalSettings;
 
@@ -74,41 +75,40 @@ public record BotGlobalsMindSettings
     public bool? BossIgnoreLoyalty { get; set; }
 
     [JsonPropertyName("DEFAULT_BEAR_BEHAVIOUR")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public EWarnBehaviour? DefaultBearBehaviour { get; set; }
 
     [JsonPropertyName("DEFAULT_USEC_BEHAVIOUR")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public EWarnBehaviour? DefaultUsecBehaviour { get; set; }
 
     [JsonPropertyName("DEFAULT_SAVAGE_BEHAVIOUR")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public EWarnBehaviour? DefaultSavageBehaviour { get; set; }
 
     /// <summary>
-    /// typeof(WildSpawnType)
     /// Must be sent to client as strings
     /// </summary>
     [JsonPropertyName("FRIENDLY_BOT_TYPES")]
-    public List<string>? FriendlyBotTypes { get; set; }
+    public List<WildSpawnType>? FriendlyBotTypes { get; set; }
 
     /// <summary>
-    /// typeof(WildSpawnType)
     /// Must be sent to client as strings
     /// </summary>
     [JsonPropertyName("WARN_BOT_TYPES")]
-    public List<string>? WarnBotTypes { get; set; }
+    public List<WildSpawnType>? WarnBotTypes { get; set; }
 
     /// <summary>
-    /// typeof(WildSpawnType)
     /// Must be sent to client as strings
     /// </summary>
     [JsonPropertyName("ENEMY_BOT_TYPES")]
-    public List<string>? EnemyBotTypes { get; set; }
+    public List<WildSpawnType>? EnemyBotTypes { get; set; }
 
     /// <summary>
-    /// typeof(WildSpawnType)
     /// Must be sent to client as strings
     /// </summary>
     [JsonPropertyName("REVENGE_BOT_TYPES")]
-    public List<string>? RevengeBotTypes { get; set; }
+    public List<WildSpawnType>? RevengeBotTypes { get; set; }
 
     [JsonPropertyName("FOLLOWER_AND_BOSS_WARN_EQUAL_PRIORITY")]
     public bool? FollowerAndBossWarnEqualPriority { get; set; }
@@ -393,7 +393,7 @@ public record BotGlobalsMindSettings
     public bool? UseAddToEnemyValidation { get; set; }
 
     [JsonPropertyName("VALID_REASONS_TO_ADD_ENEMY")]
-    public EBotEnemyCause[]? ValidReasonsToAddEnemy { get; set; }
+    public List<EBotEnemyCause>? ValidReasonsToAddEnemy { get; set; }
 
     [JsonPropertyName("CHECK_MARK_OF_UNKNOWS")]
     public bool? CheckMarkOfUnknows { get; set; }
