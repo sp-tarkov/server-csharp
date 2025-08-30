@@ -557,7 +557,7 @@
         "TriggerId": "",
         "TriggerName": ""
       },
-	  {
+      {
         "BossChance": 100,
         "BossDifficult": "normal",
         "BossEscortAmount": "0,0,1,1,1,1,1,2,2",
@@ -595,7 +595,7 @@
         "TriggerId": "",
         "TriggerName": ""
       },
-	  {
+      {
         "BossChance": 100,
         "BossDifficult": "normal",
         "BossEscortAmount": "0,0,1,1,1,1,1,2,2",
@@ -824,7 +824,8 @@
         "Time": -1.0,
         "TriggerId": "",
         "TriggerName": ""
-      },{
+      },
+      {
         "BossChance": 100,
         "BossDifficult": "normal",
         "BossEscortAmount": "0,0,0,0,0,1,1,1,1,1,2",
@@ -862,7 +863,7 @@
         "TriggerId": "",
         "TriggerName": ""
       },
-	  {
+      {
         "BossChance": 100,
         "BossDifficult": "normal",
         "BossEscortAmount": "0,0,0,0,0,1,1,1,1,1,2",
@@ -1543,7 +1544,7 @@
         "TriggerId": "",
         "TriggerName": ""
       },
-	  {
+      {
         "BossChance": 100,
         "BossDifficult": "normal",
         "BossEscortAmount": "2,2,2,1,1,1,1,1",
@@ -1583,7 +1584,7 @@
         "TriggerId": "",
         "TriggerName": ""
       },
-	  {
+      {
         "BossChance": 100,
         "BossDifficult": "normal",
         "BossEscortAmount": "2,2,2,1,1,1,1,1",
@@ -2107,7 +2108,7 @@
         "TriggerId": "",
         "TriggerName": ""
       },
-	  {
+      {
         "BossChance": 100,
         "BossDifficult": "normal",
         "BossEscortAmount": "2,2,1,1,1,1,1,0",
@@ -2147,7 +2148,7 @@
         "TriggerId": "",
         "TriggerName": ""
       },
-	  {
+      {
         "BossChance": 100,
         "BossDifficult": "normal",
         "BossEscortAmount": "2,2,1,1,1,1,1,0",
@@ -2913,7 +2914,7 @@
         "TriggerId": "",
         "TriggerName": ""
       },
-	  {
+      {
         "BossChance": 100,
         "BossDifficult": "normal",
         "BossEscortAmount": "2,2,2,1,2",
@@ -2953,7 +2954,7 @@
         "TriggerId": "",
         "TriggerName": ""
       },
-	  {
+      {
         "BossChance": 100,
         "BossDifficult": "normal",
         "BossEscortAmount": "2,2,2,1,2",
@@ -3195,7 +3196,7 @@
         "TriggerId": "",
         "TriggerName": ""
       },
-	  {
+      {
         "BossChance": 100,
         "BossDifficult": "normal",
         "BossEscortAmount": "0,1,0",
@@ -3234,7 +3235,8 @@
         "Time": -1,
         "TriggerId": "",
         "TriggerName": ""
-      },{
+      },
+      {
         "BossChance": 100,
         "BossDifficult": "normal",
         "BossEscortAmount": "0,1,0",
@@ -3436,7 +3438,7 @@
         "TriggerId": "",
         "TriggerName": ""
       },
-	  {
+      {
         "BossChance": 100,
         "BossDifficult": "normal",
         "BossEscortAmount": "1,1,1,1,2,2,2,2",
@@ -3476,7 +3478,7 @@
         "TriggerId": "",
         "TriggerName": ""
       },
-	  {
+      {
         "BossChance": 100,
         "BossDifficult": "normal",
         "BossEscortAmount": "1,1,1,1,2,2,2,2",
