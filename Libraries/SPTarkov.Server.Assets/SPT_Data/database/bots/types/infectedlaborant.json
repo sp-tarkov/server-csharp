@@ -1042,7 +1042,7 @@
         "DEFAULT_USEC_BEHAVIOUR": 2,
         "DEFAULT_SAVAGE_BEHAVIOUR": 2,
         "FRIENDLY_BOT_TYPES": [
-			"infectedCivil",
+          "infectedCivil",
           "infectedPmc",
           "infectedLaborant",
           "infectedAssault",
@@ -1586,7 +1586,7 @@
         "DEFAULT_USEC_BEHAVIOUR": 2,
         "DEFAULT_SAVAGE_BEHAVIOUR": 2,
         "FRIENDLY_BOT_TYPES": [
-"infectedCivil",
+          "infectedCivil",
           "infectedPmc",
           "infectedLaborant",
           "infectedAssault",
@@ -2124,7 +2124,7 @@
         "DEFAULT_USEC_BEHAVIOUR": 2,
         "DEFAULT_SAVAGE_BEHAVIOUR": 2,
         "FRIENDLY_BOT_TYPES": [
-"infectedCivil",
+          "infectedCivil",
           "infectedPmc",
           "infectedLaborant",
           "infectedAssault",
