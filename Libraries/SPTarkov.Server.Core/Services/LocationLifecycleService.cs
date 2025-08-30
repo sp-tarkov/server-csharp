@@ -961,14 +961,7 @@ public class LocationLifecycleService(
             }
 
             // Handle this somewhat close to QuestClass.SetStatus in the client
-            if (failedQuest.Status == QuestStatusEnum.MarkedAsFailed && dbQuest.Restartable)
-            {
-                failedQuest.Status = QuestStatusEnum.FailRestartable;
-            }
-            else
-            {
-                failedQuest.Status = QuestStatusEnum.Fail;
-            }
+            failedQuest.status = dbQuest.restartable ? QuestStatus.FailRestartable : QuestStatus.Fail
         }
 
         return questsToProcess;
