@@ -1669,7 +1669,7 @@ public record Grid
     public GridProperties? Properties { get; set; }
 
     [JsonPropertyName("_proto")]
-    public string? Proto { get; set; }
+    public string? Prototype { get; set; }
 }
 
 public record GridProperties
@@ -1712,7 +1712,7 @@ public record Slot
 {
     private string? _name;
 
-    private string? _proto;
+    private string? _prototype;
 
     [JsonPropertyName("_name")]
     public string? Name
@@ -1740,10 +1740,10 @@ public record Slot
     public bool? MergeSlotWithChildren { get; set; }
 
     [JsonPropertyName("_proto")]
-    public string? Proto
+    public string? Prototype
     {
-        get { return _proto; }
-        set { _proto = value == null ? null : string.Intern(value); }
+        get { return _prototype; }
+        set { _prototype = value == null ? null : string.Intern(value); }
     }
 }
 
@@ -1804,7 +1804,7 @@ public record StackSlot
     public StackSlotProperties? Properties { get; set; }
 
     [JsonPropertyName("_proto")]
-    public string? Proto { get; set; }
+    public string? Prototype { get; set; }
 
     [JsonPropertyName("upd")]
     public object? Upd { get; set; } // TODO: object here

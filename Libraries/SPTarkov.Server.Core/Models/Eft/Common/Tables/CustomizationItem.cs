@@ -21,7 +21,7 @@ public record CustomizationItem
     public CustomizationProperties Properties { get; set; }
 
     [JsonPropertyName("_proto")]
-    public string Proto { get; set; }
+    public string Prototype { get; set; }
 }
 
 public class CustomizationProperties
