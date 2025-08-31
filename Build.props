@@ -17,5 +17,6 @@
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <RepositoryType>Git</RepositoryType>
+        <CETCompat>false</CETCompat>
     </PropertyGroup>
 </Project>
