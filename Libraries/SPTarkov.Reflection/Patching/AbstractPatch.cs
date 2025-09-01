@@ -62,7 +62,7 @@ public abstract class AbstractPatch
     /// Get original method
     /// </summary>
     /// <returns>Method</returns>
-    protected abstract MethodBase GetTargetMethod();
+    protected abstract MethodBase? GetTargetMethod();
 
     /// <summary>
     /// Get HarmonyMethod from string
