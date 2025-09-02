@@ -22,7 +22,7 @@ public record Location
     ///     Static loot item weights
     /// </summary>
     [JsonPropertyName("staticLoot")]
-    public LazyLoad<Dictionary<string, StaticLootDetails>>? StaticLoot { get; set; }
+    public LazyLoad<Dictionary<MongoId, StaticLootDetails>>? StaticLoot { get; set; }
 
     /// <summary>
     ///     Static container positions and item weights

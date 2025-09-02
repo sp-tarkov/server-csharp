@@ -422,7 +422,7 @@ public class LocationLootGenerator(
     protected StaticContainerData AddLootToContainer(
         StaticContainerData staticContainer,
         IEnumerable<StaticForced>? staticForced,
-        Dictionary<string, StaticLootDetails> staticLootDist,
+        Dictionary<MongoId, StaticLootDetails> staticLootDist,
         Dictionary<string, IEnumerable<StaticAmmoDetails>> staticAmmoDist,
         string locationName
     )
@@ -538,7 +538,7 @@ public class LocationLootGenerator(
     /// <returns>item count</returns>
     protected int GetWeightedCountOfContainerItems(
         MongoId containerTypeId,
-        Dictionary<string, StaticLootDetails> staticLootDist,
+        Dictionary<MongoId, StaticLootDetails> staticLootDist,
         string locationName
     )
     {
@@ -577,7 +577,7 @@ public class LocationLootGenerator(
     /// <returns>ProbabilityObjectArray of item tpls + probability</returns>
     protected ProbabilityObjectArray<MongoId, float?> GetPossibleLootItemsForContainer(
         MongoId containerTypeId,
-        Dictionary<string, StaticLootDetails> staticLootDist
+        Dictionary<MongoId, StaticLootDetails> staticLootDist
     )
     {
         var seasonalEventActive = seasonalEventService.SeasonalEventEnabled();
