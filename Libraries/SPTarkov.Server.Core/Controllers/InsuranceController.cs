@@ -707,7 +707,9 @@ public class InsuranceController(
         var status = roll ? "Delete" : "Keep";
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            logger.Debug($"Rolling {itemName} with {trader} - Return {traderReturnChance}% - Roll: {returnChance} - Status: {status}");
+            logger.Debug(
+                $"Rolling {itemName} with {traderId.ToString()} - Return {traderReturnChance}% - Roll: {returnChance} - Status: {status}"
+            );
         }
 
         return roll;
