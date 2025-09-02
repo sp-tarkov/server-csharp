@@ -576,7 +576,7 @@ public class LocationLootGenerator(
     /// <param name="staticLootDist">staticLoot.json</param>
     /// <returns>ProbabilityObjectArray of item tpls + probability</returns>
     protected ProbabilityObjectArray<MongoId, float?> GetPossibleLootItemsForContainer(
-        string containerTypeId,
+        MongoId containerTypeId,
         Dictionary<string, StaticLootDetails> staticLootDist
     )
     {
