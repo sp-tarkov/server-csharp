@@ -261,6 +261,11 @@ public class LocationLootGenerator(
         return result;
     }
 
+    /// <summary>
+    /// Is loot container randomisation enabled for this location + globally
+    /// </summary>
+    /// <param name="locationId">Location to check</param>
+    /// <returns>true = enabled</returns>
     protected bool LocationRandomisationEnabled(string locationId)
     {
         return _locationConfig.ContainerRandomisationSettings.Enabled
@@ -316,7 +321,7 @@ public class LocationLootGenerator(
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
                 logger.Debug(
-                    $"Group: {groupId} wants: {containerData.ChosenCount} containers but pool only has: {containerIds.Count}, add what's available"
+                    $"Group: {groupId} wants: {containerData.ChosenCount} containers but pool only has: {containerIds.Count}, adding what's available"
                 );
             }
 
@@ -325,10 +330,10 @@ public class LocationLootGenerator(
 
         // Create probability array with all possible container ids in this group and their relative probability of spawning
         var containerDistribution = new ProbabilityObjectArray<string, double>(cloner);
-        foreach (var x in containerIds)
+        foreach (var containerId in containerIds)
         {
-            var value = containerData.ContainerIdsWithProbability[x];
-            containerDistribution.Add(new ProbabilityObject<string, double>(x, value, value));
+            var value = containerData.ContainerIdsWithProbability[containerId];
+            containerDistribution.Add(new ProbabilityObject<string, double>(containerId, value, value));
         }
 
         chosenContainerIds.AddRange(containerDistribution.Draw((int)containerData.ChosenCount));
@@ -377,7 +382,7 @@ public class LocationLootGenerator(
         );
 
         // Iterate over all containers and add to group keyed by groupId
-        // Containers without a group go into a group with empty key ""
+        // Containers without a group go into a group with the empty key: ""
         foreach (var container in staticContainersOnMap)
         {
             if (!staticContainerGroupData.Containers.TryGetValue(container.Template.Id, out var groupData))
@@ -613,6 +618,11 @@ public class LocationLootGenerator(
         return itemDistribution;
     }
 
+    /// <summary>
+    /// Get the loose loot multiplier for this location, or the default if location not found
+    /// </summary>
+    /// <param name="location">Location to get value for</param>
+    /// <returns>multiplier</returns>
     protected double GetLooseLootMultiplierForLocation(string location)
     {
         return _locationConfig.LooseLootMultiplier.TryGetValue(location, out var value)
@@ -620,6 +630,11 @@ public class LocationLootGenerator(
             : _locationConfig.LooseLootMultiplier["default"];
     }
 
+    /// <summary>
+    /// Get the static loot multiplier for this location, or the default if location not found
+    /// </summary>
+    /// <param name="location">Location to get value for</param>
+    /// <returns>multiplier</returns>
     protected double GetStaticLootMultiplierForLocation(string location)
     {
         return _locationConfig.StaticLootMultiplier.TryGetValue(location, out var value)
@@ -995,7 +1010,14 @@ public class LocationLootGenerator(
         };
     }
 
-    // TODO: rewrite, BIG yikes
+    /// <summary>
+    /// Hydrate an item with children if necessary
+    /// HIGHLY BRITTLE, LEGACY CODE
+    /// </summary>
+    /// <param name="chosenTpl">Item tpl to add children to</param>
+    /// <param name="staticAmmoDist">Ammo pool</param>
+    /// <param name="parentId"></param>
+    /// <returns>ContainerItem</returns>
     protected ContainerItem? CreateStaticLootItem(
         MongoId chosenTpl,
         Dictionary<string, IEnumerable<StaticAmmoDetails>> staticAmmoDist,
@@ -1003,7 +1025,7 @@ public class LocationLootGenerator(
     )
     {
         var itemTemplate = itemHelper.GetItem(chosenTpl).Value;
-        if (itemTemplate.Properties is null)
+        if (itemTemplate?.Properties is null)
         {
             logger.Error($"Unable to process item: {chosenTpl}. it lacks _props");
 
@@ -1021,6 +1043,7 @@ public class LocationLootGenerator(
             rootItem.ParentId = parentId;
         }
 
+        // Money needs its stack size randomised
         if (itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.MONEY) || itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.AMMO))
         {
             // Edge case - some ammos e.g. flares or M406 grenades shouldn't be stacked
@@ -1066,7 +1089,15 @@ public class LocationLootGenerator(
         };
     }
 
-    protected List<Item> GetArmorItems(string chosenTpl, Item? rootItem, List<Item> items, TemplateItem armorDbTemplate)
+    /// <summary>
+    /// Get an armor with its children
+    /// </summary>
+    /// <param name="chosenTpl">Armor tpl</param>
+    /// <param name="rootItem">Base armor item</param>
+    /// <param name="items">Pool of items to look for armor in</param>
+    /// <param name="armorDbTemplate">Db template of armor we are looking for</param>
+    /// <returns>Armor + children</returns>
+    protected List<Item> GetArmorItems(MongoId chosenTpl, Item? rootItem, List<Item> items, TemplateItem armorDbTemplate)
     {
         var defaultPreset = presetHelper.GetDefaultPreset(chosenTpl);
         if (defaultPreset is not null)
@@ -1099,8 +1130,8 @@ public class LocationLootGenerator(
     /// <param name="parentId"></param>
     /// <param name="items">Root item + children</param>
     /// <returns>Root Item</returns>
-    protected Item? CreateWeaponRootAndChildren(
-        string chosenTpl,
+    protected Item CreateWeaponRootAndChildren(
+        MongoId chosenTpl,
         Dictionary<string, IEnumerable<StaticAmmoDetails>> cartridgePool,
         string? parentId,
         ref List<Item> items
@@ -1202,6 +1233,13 @@ public class LocationLootGenerator(
         return rootItem;
     }
 
+    /// <summary>
+    /// Given the provided magazine root item, add cartridges to a magazine
+    /// </summary>
+    /// <param name="staticAmmoDist"></param>
+    /// <param name="rootItem">Magazine item</param>
+    /// <param name="itemTemplate">Db item of magazine</param>
+    /// <param name="items">Item pool with magazine</param>
     protected void GenerateStaticMagazineItem(
         Dictionary<string, IEnumerable<StaticAmmoDetails>> staticAmmoDist,
         Item rootItem,
