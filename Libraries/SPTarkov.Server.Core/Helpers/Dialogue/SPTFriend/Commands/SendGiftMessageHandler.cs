@@ -13,41 +13,41 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
 public class SendGiftMessageHandler(
-    MailSendService _mailSendService,
-    RandomUtil _randomUtil,
-    GiftService _giftService,
-    ConfigServer _configServer
+    MailSendService mailSendService,
+    RandomUtil randomUtil,
+    GiftService giftService,
+    ConfigServer configServer
 ) : IChatMessageHandler
 {
-    private readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
     public int GetPriority()
     {
         return 1;
     }
 
-    public bool CanHandle(string message)
+    public bool CanHandle(string? message)
     {
-        return _giftService.GiftExists(message);
+        return giftService.GiftExists(message);
     }
 
     public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         // Gifts may be disabled via config
-        if (!_coreConfig.Features.ChatbotFeatures.SptFriendGiftsEnabled)
+        if (!CoreConfig.Features.ChatbotFeatures.SptFriendGiftsEnabled)
         {
             return;
         }
 
         var messageTest = ((SendMessageRequest)extraInfo).Text;
-        var giftSent = _giftService.SendGiftToPlayer(sessionId, messageTest);
+        var giftSent = giftService.SendGiftToPlayer(sessionId, messageTest);
         switch (giftSent)
         {
             case GiftSentResult.SUCCESS:
-                _mailSendService.SendUserMessageToPlayer(
+                mailSendService.SendUserMessageToPlayer(
                     sessionId,
                     sptFriendUser,
-                    _randomUtil.GetArrayValue(
+                    randomUtil.GetArrayValue(
                         [
                             "Hey! you got the right code!",
                             "A secret code, how exciting!",
@@ -62,10 +62,10 @@ public class SendGiftMessageHandler(
 
                 return;
             case GiftSentResult.FAILED_GIFT_ALREADY_RECEIVED:
-                _mailSendService.SendUserMessageToPlayer(
+                mailSendService.SendUserMessageToPlayer(
                     sessionId,
                     sptFriendUser,
-                    _randomUtil.GetArrayValue(["Looks like you already used that code", "You already have that!!"]),
+                    randomUtil.GetArrayValue(["Looks like you already used that code", "You already have that!!"]),
                     [],
                     null
                 );

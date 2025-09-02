@@ -28,7 +28,7 @@ public class SptCommandoCommands : IChatCommand
         if (
             !(
                 coreConfigs.Features.ChatbotFeatures.CommandoFeatures.GiveCommandEnabled
-                && coreConfigs.Features.ChatbotFeatures.EnabledBots.ContainsKey(commandoId)
+                && coreConfigs.Features.ChatbotFeatures.EnabledBots.ContainsKey(commandoId.Value)
             )
         )
         {

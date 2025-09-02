@@ -28,20 +28,20 @@ public class DialogueController(
     IEnumerable<IDialogueChatBot> dialogueChatBots
 )
 {
-    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
-    protected readonly List<IDialogueChatBot> _dialogueChatBots = dialogueChatBots.ToList();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
+    protected readonly List<IDialogueChatBot> DialogueChatBots = dialogueChatBots.ToList();
 
     /// <summary>
     /// </summary>
     /// <param name="chatBot"></param>
     public virtual void RegisterChatBot(IDialogueChatBot chatBot) // TODO: this is in with the helper types
     {
-        if (_dialogueChatBots.Any(cb => cb.GetChatBot().Id == chatBot.GetChatBot().Id))
+        if (DialogueChatBots.Any(cb => cb.GetChatBot().Id == chatBot.GetChatBot().Id))
         {
             logger.Error(serverLocalisationService.GetText("dialog-chatbot_id_already_exists", chatBot.GetChatBot().Id));
         }
 
-        _dialogueChatBots.Add(chatBot);
+        DialogueChatBots.Add(chatBot);
     }
 
     /// <summary>
@@ -116,9 +116,9 @@ public class DialogueController(
     {
         var activeBots = new List<UserDialogInfo>();
 
-        var chatBotConfig = _coreConfig.Features.ChatbotFeatures;
+        var chatBotConfig = CoreConfig.Features.ChatbotFeatures;
 
-        foreach (var bot in _dialogueChatBots)
+        foreach (var bot in DialogueChatBots)
         {
             var botData = bot.GetChatBot();
             if (chatBotConfig.EnabledBots.ContainsKey(botData.Id))
@@ -302,7 +302,7 @@ public class DialogueController(
 
         var dialogue = profile.DialogueRecords[request.DialogId];
         dialogue.Users = [];
-        var chatBot = _dialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId);
+        var chatBot = DialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId);
 
         if (chatBot is null)
         {
@@ -515,7 +515,7 @@ public class DialogueController(
     {
         mailSendService.SendPlayerMessageToNpc(sessionId, request.DialogId, request.Text);
 
-        var chatBot = _dialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId);
+        var chatBot = DialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId);
 
         if (chatBot is not null)
         {

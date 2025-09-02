@@ -23,8 +23,8 @@ public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseSer
         Sides.PmcUsec.ToLowerInvariant(),
     ];
 
-    private readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
-    private readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
+    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
     private readonly ConcurrentDictionary<string, List<string>> _pmcNameCache = new();
 
     /// <summary>
@@ -56,7 +56,7 @@ public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseSer
 
     public bool IsBotBoss(string botRole)
     {
-        return !IsBotFollower(botRole) && _botConfig.Bosses.Any(x => string.Equals(x, botRole, StringComparison.CurrentCultureIgnoreCase));
+        return !IsBotFollower(botRole) && BotConfig.Bosses.Any(x => string.Equals(x, botRole, StringComparison.CurrentCultureIgnoreCase));
     }
 
     public bool IsBotFollower(string botRole)
@@ -91,12 +91,12 @@ public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseSer
     /// <returns>side (usec/bear)</returns>
     public string GetPmcSideByRole(string botRole)
     {
-        if (string.Equals(_pmcConfig.BearType, botRole, StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(PMCConfig.BearType, botRole, StringComparison.OrdinalIgnoreCase))
         {
             return Sides.Bear;
         }
 
-        if (string.Equals(_pmcConfig.UsecType, botRole, StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(PMCConfig.UsecType, botRole, StringComparison.OrdinalIgnoreCase))
         {
             return Sides.Usec;
         }
@@ -128,7 +128,7 @@ public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseSer
     /// <returns>pmc side as string</returns>
     protected string GetRandomizedPmcSide()
     {
-        return randomUtil.GetChance100(_pmcConfig.IsUsec) ? Sides.Usec : Sides.Bear;
+        return randomUtil.GetChance100(PMCConfig.IsUsec) ? Sides.Usec : Sides.Bear;
     }
 
     /// <summary>

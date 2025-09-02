@@ -32,8 +32,8 @@ public class BotLootGenerator(
     ICloner cloner
 )
 {
-    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
-    protected readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
+    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
 
     /// <summary>
     /// </summary>
@@ -110,7 +110,7 @@ public class BotLootGenerator(
         var grenadeCount = weightedRandomHelper.GetWeightedValue(itemCounts.Grenades.Weights);
 
         // If bot has been flagged as not having loot, set below counts to 0
-        if (_botConfig.DisableLootOnBotTypes.Contains(botRole.ToLowerInvariant()))
+        if (BotConfig.DisableLootOnBotTypes.Contains(botRole.ToLowerInvariant()))
         {
             backpackLootCount = 0;
             pocketLootCount = 0;
@@ -119,7 +119,7 @@ public class BotLootGenerator(
         }
 
         // Forced pmc healing loot into secure container
-        if (isPmc && _pmcConfig.ForceHealingItemsIntoSecure)
+        if (isPmc && PMCConfig.ForceHealingItemsIntoSecure)
         {
             AddForcedMedicalItemsToPmcSecure(botInventory, botRole, botId);
         }
@@ -248,7 +248,7 @@ public class BotLootGenerator(
         if (containersBotHasAvailable.Contains(EquipmentSlots.Backpack) && backpackLootCount > 0)
         {
             // Add randomly generated weapon to PMC backpacks
-            if (isPmc && randomUtil.GetChance100(_pmcConfig.LooseWeaponInBackpackChancePercent))
+            if (isPmc && randomUtil.GetChance100(PMCConfig.LooseWeaponInBackpackChancePercent))
             {
                 AddLooseWeaponsToInventorySlot(
                     botId,
@@ -265,7 +265,7 @@ public class BotLootGenerator(
             }
 
             var backpackLootRoubleTotal = isPmc
-                ? _pmcConfig.LootSettings.Backpack.GetRoubleValue(botLevel, botGenerationDetails.Location)
+                ? PMCConfig.LootSettings.Backpack.GetRoubleValue(botLevel, botGenerationDetails.Location)
                 : 0;
 
             AddLootFromPool(
@@ -282,7 +282,7 @@ public class BotLootGenerator(
             );
         }
 
-        var vestLootRoubleTotal = isPmc ? _pmcConfig.LootSettings.Vest.GetRoubleValue(botLevel, botGenerationDetails.Location) : 0;
+        var vestLootRoubleTotal = isPmc ? PMCConfig.LootSettings.Vest.GetRoubleValue(botLevel, botGenerationDetails.Location) : 0;
 
         // TacticalVest - generate loot if they have one
         if (containersBotHasAvailable.Contains(EquipmentSlots.TacticalVest))
@@ -302,7 +302,7 @@ public class BotLootGenerator(
             );
         }
 
-        var pocketLootRoubleTotal = isPmc ? _pmcConfig.LootSettings.Pocket.GetRoubleValue(botLevel, botGenerationDetails.Location) : 0;
+        var pocketLootRoubleTotal = isPmc ? PMCConfig.LootSettings.Pocket.GetRoubleValue(botLevel, botGenerationDetails.Location) : 0;
 
         // Pockets
         AddLootFromPool(
@@ -321,7 +321,7 @@ public class BotLootGenerator(
         // Secure
 
         // only add if not a pmc or is pmc and flag is true
-        if (!isPmc || (isPmc && _pmcConfig.AddSecureContainerLootFromBotConfig))
+        if (!isPmc || (isPmc && PMCConfig.AddSecureContainerLootFromBotConfig))
         {
             AddLootFromPool(
                 botId,
@@ -346,7 +346,7 @@ public class BotLootGenerator(
             return null;
         }
 
-        var matchingValue = _pmcConfig?.LootItemLimitsRub.FirstOrDefault(minMaxValue =>
+        var matchingValue = PMCConfig?.LootItemLimitsRub.FirstOrDefault(minMaxValue =>
             botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max
         );
 
@@ -475,9 +475,9 @@ public class BotLootGenerator(
             ];
 
             // Is Simple-Wallet / WZ wallet
-            if (_botConfig.WalletLoot.WalletTplPool.Contains(weightedItemTpl))
+            if (BotConfig.WalletLoot.WalletTplPool.Contains(weightedItemTpl))
             {
-                var addCurrencyToWallet = randomUtil.GetChance100(_botConfig.WalletLoot.ChancePercent);
+                var addCurrencyToWallet = randomUtil.GetChance100(BotConfig.WalletLoot.ChancePercent);
                 if (addCurrencyToWallet)
                 {
                     // Create the currency items we want to add to wallet
@@ -576,17 +576,17 @@ public class BotLootGenerator(
         List<List<Item>> result = [];
 
         // Choose how many stacks of currency will be added to wallet
-        var itemCount = randomUtil.GetInt(_botConfig.WalletLoot.ItemCount.Min, _botConfig.WalletLoot.ItemCount.Max);
+        var itemCount = randomUtil.GetInt(BotConfig.WalletLoot.ItemCount.Min, BotConfig.WalletLoot.ItemCount.Max);
         for (var index = 0; index < itemCount; index++)
         {
             // Choose the size of the currency stack - default is 5k, 10k, 15k, 20k, 25k
-            var chosenStackCount = weightedRandomHelper.GetWeightedValue(_botConfig.WalletLoot.StackSizeWeight);
+            var chosenStackCount = weightedRandomHelper.GetWeightedValue(BotConfig.WalletLoot.StackSizeWeight);
             List<Item> items =
             [
                 new()
                 {
                     Id = new MongoId(),
-                    Template = weightedRandomHelper.GetWeightedValue(_botConfig.WalletLoot.CurrencyWeight),
+                    Template = weightedRandomHelper.GetWeightedValue(BotConfig.WalletLoot.CurrencyWeight),
                     ParentId = walletId,
                     Upd = new Upd { StackObjectsCount = int.Parse(chosenStackCount) },
                 },
@@ -663,8 +663,8 @@ public class BotLootGenerator(
             ]
         );
         var randomisedWeaponCount = randomUtil.GetInt(
-            _pmcConfig.LooseWeaponInBackpackLootMinMax.Min,
-            _pmcConfig.LooseWeaponInBackpackLootMinMax.Max
+            PMCConfig.LooseWeaponInBackpackLootMinMax.Min,
+            PMCConfig.LooseWeaponInBackpackLootMinMax.Max
         );
 
         if (randomisedWeaponCount <= 0)
@@ -788,9 +788,9 @@ public class BotLootGenerator(
     public void RandomiseMoneyStackSize(string botRole, TemplateItem itemTemplate, Item moneyItem)
     {
         // Get all currency weights for this bot type
-        if (!_botConfig.CurrencyStackSize.TryGetValue(botRole, out var currencyWeights))
+        if (!BotConfig.CurrencyStackSize.TryGetValue(botRole, out var currencyWeights))
         {
-            currencyWeights = _botConfig.CurrencyStackSize["default"];
+            currencyWeights = BotConfig.CurrencyStackSize["default"];
         }
 
         var currencyWeight = currencyWeights[moneyItem.Template];
@@ -824,12 +824,12 @@ public class BotLootGenerator(
     {
         if (botHelper.IsBotPmc(botRole))
         {
-            return _botConfig.ItemSpawnLimits["pmc"];
+            return BotConfig.ItemSpawnLimits["pmc"];
         }
 
-        if (_botConfig.ItemSpawnLimits.ContainsKey(botRole.ToLowerInvariant()))
+        if (BotConfig.ItemSpawnLimits.ContainsKey(botRole.ToLowerInvariant()))
         {
-            return _botConfig.ItemSpawnLimits[botRole.ToLowerInvariant()];
+            return BotConfig.ItemSpawnLimits[botRole.ToLowerInvariant()];
         }
 
         logger.Warning(serverLocalisationService.GetText("bot-unable_to_find_spawn_limits_fallback_to_defaults", botRole));

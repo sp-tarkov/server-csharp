@@ -26,11 +26,11 @@ public class AirdropService(
     ItemHelper itemHelper
 )
 {
-    protected readonly AirdropConfig _airdropConfig = configServer.GetConfig<AirdropConfig>();
+    protected readonly AirdropConfig AirdropConfig = configServer.GetConfig<AirdropConfig>();
 
     public GetAirdropLootResponse GenerateCustomAirdropLoot(GetAirdropLootRequest request)
     {
-        if (_airdropConfig.CustomAirdropMapping.TryGetValue(request.ContainerId, out var customAirdropInformation))
+        if (AirdropConfig.CustomAirdropMapping.TryGetValue(request.ContainerId, out var customAirdropInformation))
         {
             // Found container id, generate specific loot
             return GenerateAirdropLoot(customAirdropInformation);
@@ -195,7 +195,7 @@ public class AirdropService(
     /// <returns>airdrop type value</returns>
     protected SptAirdropTypeEnum ChooseAirdropType()
     {
-        var possibleAirdropTypes = _airdropConfig.AirdropTypeWeightings;
+        var possibleAirdropTypes = AirdropConfig.AirdropTypeWeightings;
 
         return weightedRandomHelper.GetWeightedValue(possibleAirdropTypes);
     }
@@ -207,13 +207,13 @@ public class AirdropService(
     /// <returns>LootRequest</returns>
     protected AirdropLootRequest GetAirdropLootConfigByType(SptAirdropTypeEnum? airdropType)
     {
-        if (!_airdropConfig.Loot.TryGetValue(airdropType.ToString(), out var lootSettingsByType))
+        if (!AirdropConfig.Loot.TryGetValue(airdropType.ToString(), out var lootSettingsByType))
         {
             logger.Error(serverLocalisationService.GetText("location-unable_to_find_airdrop_drop_config_of_type", airdropType));
 
             // TODO: Get Radar airdrop to work. Atm Radar will default to common supply drop (mixed)
             // Default to common
-            lootSettingsByType = _airdropConfig.Loot[nameof(AirdropTypeEnum.Common)];
+            lootSettingsByType = AirdropConfig.Loot[nameof(AirdropTypeEnum.Common)];
         }
 
         // Get all items that match the blacklisted types and fold into item blacklist

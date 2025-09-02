@@ -9,7 +9,7 @@ namespace SPTarkov.Server.Core.Callbacks;
 [Injectable(TypePriority = OnLoadOrder.SaveCallbacks)]
 public class SaveCallbacks(SaveServer saveServer, ConfigServer configServer, BackupService backupService) : IOnLoad, IOnUpdate
 {
-    private readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
     public async Task OnLoad()
     {
@@ -19,7 +19,7 @@ public class SaveCallbacks(SaveServer saveServer, ConfigServer configServer, Bac
 
     public async Task<bool> OnUpdate(long secondsSinceLastRun)
     {
-        if (secondsSinceLastRun < _coreConfig.ProfileSaveIntervalInSeconds)
+        if (secondsSinceLastRun < CoreConfig.ProfileSaveIntervalInSeconds)
         {
             // Not enough time has passed since last run, exit early
             return false;

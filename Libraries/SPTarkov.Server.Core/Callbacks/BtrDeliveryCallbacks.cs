@@ -21,11 +21,11 @@ public class BtrDeliveryCallbacks(
     SaveServer saveServer
 ) : IOnUpdate
 {
-    private readonly BtrDeliveryConfig _btrDeliveryConfig = configServer.GetConfig<BtrDeliveryConfig>();
+    protected readonly BtrDeliveryConfig BtrDeliveryConfig = configServer.GetConfig<BtrDeliveryConfig>();
 
     public Task<bool> OnUpdate(long secondsSinceLastRun)
     {
-        if (secondsSinceLastRun < _btrDeliveryConfig.RunIntervalSeconds)
+        if (secondsSinceLastRun < BtrDeliveryConfig.RunIntervalSeconds)
         {
             return Task.FromResult(false);
         }

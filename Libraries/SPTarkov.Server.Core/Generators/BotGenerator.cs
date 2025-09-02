@@ -36,8 +36,8 @@ public class BotGenerator(
     ICloner cloner
 )
 {
-    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
-    protected readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
+    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
 
     /// <summary>
     ///     Generate a player scav bot object
@@ -187,7 +187,7 @@ public class BotGenerator(
             botJsonTemplate,
             botGenerationDetails,
             botRoleLowercase,
-            _botConfig.BotRolesThatMustHaveUniqueName
+            BotConfig.BotRolesThatMustHaveUniqueName
         );
 
         // Only PMCs need a lower nickname
@@ -263,7 +263,7 @@ public class BotGenerator(
             bot.Info.GameVersion
         );
 
-        if (_botConfig.BotRolesWithDogTags.Contains(botRoleLowercase))
+        if (BotConfig.BotRolesWithDogTags.Contains(botRoleLowercase))
         {
             AddDogtagToBot(bot);
         }
@@ -287,7 +287,7 @@ public class BotGenerator(
     /// <returns>True if name should be simulated pscav</returns>
     protected bool ShouldSimulatePlayerScav(string botRole)
     {
-        return botRole == Roles.Assault && randomUtil.GetChance100(_botConfig.ChanceAssaultScavHasPlayerScavName);
+        return botRole == Roles.Assault && randomUtil.GetChance100(BotConfig.ChanceAssaultScavHasPlayerScavName);
     }
 
     /// <summary>
@@ -708,7 +708,7 @@ public class BotGenerator(
         }
 
         // Choose random weighted game version for bot
-        botInfo.GameVersion = weightedRandomHelper.GetWeightedValue(_pmcConfig.GameVersionWeight);
+        botInfo.GameVersion = weightedRandomHelper.GetWeightedValue(PMCConfig.GameVersionWeight);
 
         // Choose appropriate member category value
         switch (botInfo.GameVersion)
@@ -721,7 +721,7 @@ public class BotGenerator(
                 break;
             default:
                 // Everyone else gets a weighted randomised category
-                botInfo.MemberCategory = weightedRandomHelper.GetWeightedValue(_pmcConfig.AccountTypeWeight);
+                botInfo.MemberCategory = weightedRandomHelper.GetWeightedValue(PMCConfig.AccountTypeWeight);
                 break;
         }
 
@@ -758,7 +758,7 @@ public class BotGenerator(
     /// <returns>item tpl</returns>
     protected MongoId GetDogtagTplByGameVersionAndSide(string side, string gameVersion)
     {
-        _pmcConfig.DogtagSettings.TryGetValue(side.ToLower(), out var gameVersionWeights);
+        PMCConfig.DogtagSettings.TryGetValue(side.ToLower(), out var gameVersionWeights);
         if (!gameVersionWeights.TryGetValue(gameVersion, out var possibleDogtags))
         {
             gameVersionWeights.TryGetValue("default", out possibleDogtags);

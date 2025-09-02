@@ -14,17 +14,17 @@ public class CommandoDialogChatBot(
     ISptLogger<AbstractDialogChatBot> logger,
     MailSendService mailSendService,
     ServerLocalisationService localisationService,
-    ConfigServer _configServer,
+    ConfigServer configServer,
     IEnumerable<IChatCommand> chatCommands
 ) : AbstractDialogChatBot(logger, mailSendService, localisationService, chatCommands)
 {
-    protected readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
     public override UserDialogInfo GetChatBot()
     {
         return new UserDialogInfo
         {
-            Id = _coreConfig.Features.ChatbotFeatures.Ids["commando"],
+            Id = CoreConfig.Features.ChatbotFeatures.Ids["commando"],
             Aid = 1234566,
             Info = new UserDialogDetails
             {

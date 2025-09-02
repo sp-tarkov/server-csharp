@@ -12,27 +12,27 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue;
 
 [Injectable]
 public class SptDialogueChatBot(
-    MailSendService _mailSendService,
-    ConfigServer _configServer,
-    ProfileHelper _profileHelper,
+    MailSendService mailSendService,
+    ConfigServer configServer,
+    ProfileHelper profileHelper,
     IEnumerable<IChatMessageHandler> chatMessageHandlers
 ) : IDialogueChatBot
 {
-    protected readonly IEnumerable<IChatMessageHandler> _chatMessageHandlers = ChatMessageHandlerSetup(chatMessageHandlers);
-    protected readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    protected readonly IEnumerable<IChatMessageHandler> ChatMessageHandlers = ChatMessageHandlerSetup(chatMessageHandlers);
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
     public UserDialogInfo GetChatBot()
     {
         return new UserDialogInfo
         {
-            Id = _coreConfig.Features.ChatbotFeatures.Ids["spt"],
+            Id = CoreConfig.Features.ChatbotFeatures.Ids["spt"],
             Aid = 1234566,
             Info = new UserDialogDetails
             {
                 Level = 1,
                 MemberCategory = MemberCategory.Developer,
                 SelectedMemberCategory = MemberCategory.Developer,
-                Nickname = _coreConfig.SptFriendNickname,
+                Nickname = CoreConfig.SptFriendNickname,
                 Side = "Usec",
             },
         };
@@ -40,7 +40,7 @@ public class SptDialogueChatBot(
 
     public ValueTask<string> HandleMessage(MongoId sessionId, SendMessageRequest request)
     {
-        var sender = _profileHelper.GetPmcProfile(sessionId);
+        var sender = profileHelper.GetPmcProfile(sessionId);
         var sptFriendUser = GetChatBot();
 
         if (string.Equals(request.Text, "help", StringComparison.OrdinalIgnoreCase))
@@ -48,7 +48,7 @@ public class SptDialogueChatBot(
             return SendPlayerHelpMessage(sessionId, request);
         }
 
-        var handler = _chatMessageHandlers.FirstOrDefault(h => h.CanHandle(request.Text));
+        var handler = ChatMessageHandlers.FirstOrDefault(h => h.CanHandle(request.Text));
         if (handler is not null)
         {
             handler.Process(sessionId, sptFriendUser, sender, request);
@@ -56,7 +56,7 @@ public class SptDialogueChatBot(
             return new ValueTask<string>(request.DialogId);
         }
 
-        _mailSendService.SendUserMessageToPlayer(sessionId, GetChatBot(), GetUnrecognizedCommandMessage(), [], null);
+        mailSendService.SendUserMessageToPlayer(sessionId, GetChatBot(), GetUnrecognizedCommandMessage(), [], null);
 
         return new ValueTask<string>(request.DialogId);
     }
@@ -76,7 +76,7 @@ public class SptDialogueChatBot(
 
     protected ValueTask<string> SendPlayerHelpMessage(MongoId sessionId, SendMessageRequest request)
     {
-        _mailSendService.SendUserMessageToPlayer(
+        mailSendService.SendUserMessageToPlayer(
             sessionId,
             GetChatBot(),
             "The available commands are:\n GIVEMESPACE \n HOHOHO \n VERYSPOOKY \n ITSONLYSNOWALAN \n GIVEMESUNSHINE \n GARBAGE",

@@ -22,7 +22,7 @@ public class GiftService(
     ConfigServer configServer
 )
 {
-    protected readonly GiftsConfig _giftConfig = configServer.GetConfig<GiftsConfig>();
+    protected readonly GiftsConfig GiftConfig = configServer.GetConfig<GiftsConfig>();
 
     /// <summary>
     ///     Does a gift with a specific ID exist in db
@@ -31,12 +31,12 @@ public class GiftService(
     /// <returns> True if it exists in db </returns>
     public bool GiftExists(string giftId)
     {
-        return _giftConfig.Gifts.ContainsKey(giftId);
+        return GiftConfig.Gifts.ContainsKey(giftId);
     }
 
     public Gift? GetGiftById(string giftId)
     {
-        _giftConfig.Gifts.TryGetValue(giftId, out var gift);
+        GiftConfig.Gifts.TryGetValue(giftId, out var gift);
 
         return gift;
     }
@@ -47,7 +47,7 @@ public class GiftService(
     /// <returns> Dict keyed by gift id </returns>
     public Dictionary<string, Gift> GetGifts()
     {
-        return _giftConfig.Gifts;
+        return GiftConfig.Gifts;
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ public class GiftService(
     /// <returns> String list of gift ids </returns>
     public IEnumerable<string> GetGiftIds()
     {
-        return _giftConfig.Gifts.Keys;
+        return GiftConfig.Gifts.Keys;
     }
 
     /// <summary>

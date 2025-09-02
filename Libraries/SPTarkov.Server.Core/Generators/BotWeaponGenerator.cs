@@ -35,11 +35,11 @@ public class BotWeaponGenerator(
     IEnumerable<IInventoryMagGen> inventoryMagGenComponents
 )
 {
-    protected const string _modMagazineSlotId = "mod_magazine";
-    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
-    protected readonly IEnumerable<IInventoryMagGen> _inventoryMagGenComponents = MagGenSetUp(inventoryMagGenComponents);
-    protected readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
-    protected readonly RepairConfig _repairConfig = configServer.GetConfig<RepairConfig>();
+    private const string ModMagazineSlotId = "mod_magazine";
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
+    protected readonly IEnumerable<IInventoryMagGen> InventoryMagGenComponents = MagGenSetUp(inventoryMagGenComponents);
+    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
+    protected readonly RepairConfig RepairConfig = configServer.GetConfig<RepairConfig>();
 
     protected static List<IInventoryMagGen> MagGenSetUp(IEnumerable<IInventoryMagGen> components)
     {
@@ -151,10 +151,10 @@ public class BotWeaponGenerator(
         var weaponWithModsArray = ConstructWeaponBaseList(weaponTpl, weaponParentId, slotName, weaponItemTemplate, botRole).ToList();
 
         // Chance to add randomised weapon enhancement
-        if (isPmc && randomUtil.GetChance100(_pmcConfig.WeaponHasEnhancementChancePercent))
+        if (isPmc && randomUtil.GetChance100(PMCConfig.WeaponHasEnhancementChancePercent))
         // Add buff to weapon root
         {
-            repairService.AddBuff(_repairConfig.RepairKit.Weapon, weaponWithModsArray[0]);
+            repairService.AddBuff(RepairConfig.RepairKit.Weapon, weaponWithModsArray[0]);
         }
 
         // Add mods to weapon base
@@ -194,7 +194,7 @@ public class BotWeaponGenerator(
             weaponWithModsArray = GetPresetWeaponMods(weaponTpl, slotName, weaponParentId, weaponItemTemplate, botRole);
         }
 
-        var tempList = cloner.Clone(weaponWithModsArray.Where(item => item.SlotId == _modMagazineSlotId));
+        var tempList = cloner.Clone(weaponWithModsArray.Where(item => item.SlotId == ModMagazineSlotId));
         // Fill existing magazines to full and sync ammo type
         foreach (var magazine in tempList)
         {
@@ -455,12 +455,12 @@ public class BotWeaponGenerator(
 
         var inventoryMagGenModel = new InventoryMagGen(magWeights, magTemplate, weaponTemplate, ammoTemplate.Value, inventory, botId);
 
-        _inventoryMagGenComponents.FirstOrDefault(v => v.CanHandleInventoryMagGen(inventoryMagGenModel)).Process(inventoryMagGenModel);
+        InventoryMagGenComponents.FirstOrDefault(v => v.CanHandleInventoryMagGen(inventoryMagGenModel)).Process(inventoryMagGenModel);
 
         // Add x stacks of bullets to SecuredContainer (bots use a magic mag packing skill to reload instantly)
         AddAmmoToSecureContainer(
             botId,
-            _botConfig.SecureContainerAmmoStackCount,
+            BotConfig.SecureContainerAmmoStackCount,
             generatedWeaponResult.ChosenAmmoTemplate,
             ammoTemplate.Value.Properties.StackMaxSize ?? 0,
             inventory
@@ -497,7 +497,7 @@ public class BotWeaponGenerator(
 
         // Add greandes to bot inventory
         var ubglAmmoGenModel = new InventoryMagGen(ubglMinMax, ubglDbTemplate, ubglDbTemplate, ubglAmmoDbTemplate, inventory, botId);
-        _inventoryMagGenComponents.FirstOrDefault(v => v.CanHandleInventoryMagGen(ubglAmmoGenModel)).Process(ubglAmmoGenModel);
+        InventoryMagGenComponents.FirstOrDefault(v => v.CanHandleInventoryMagGen(ubglAmmoGenModel)).Process(ubglAmmoGenModel);
 
         // Store extra grenades in secure container
         AddAmmoToSecureContainer(botId, 5, generatedWeaponResult.ChosenUbglAmmoTemplate.Value, 20, inventory);
@@ -543,7 +543,7 @@ public class BotWeaponGenerator(
     /// <returns>Magazine template string.</returns>
     protected MongoId? GetMagazineTemplateFromWeaponTemplate(IEnumerable<Item> weaponMods, TemplateItem weaponTemplate, string botRole)
     {
-        var magazine = weaponMods.FirstOrDefault(m => m.SlotId == _modMagazineSlotId);
+        var magazine = weaponMods.FirstOrDefault(m => m.SlotId == ModMagazineSlotId);
         if (magazine is null)
         {
             // Edge case - magazineless chamber loaded weapons don't have magazines, e.g. mp18
@@ -708,10 +708,8 @@ public class BotWeaponGenerator(
 
         // Try to get cartridges from slots array first, if none found, try Cartridges array
         var cartridges =
-            magazineTemplate.Value.Properties.Slots.FirstOrDefault()?.Properties?.Filters.FirstOrDefault()?.Filter ?? magazineTemplate
-                .Value.Properties.Cartridges.FirstOrDefault()
-                ?.Properties?.Filters.FirstOrDefault()
-                ?.Filter;
+            magazineTemplate.Value.Properties.Slots.FirstOrDefault()?.Properties?.Filters.FirstOrDefault()?.Filter
+            ?? magazineTemplate.Value.Properties.Cartridges.FirstOrDefault()?.Properties?.Filters.FirstOrDefault()?.Filter;
 
         return cartridges ?? [];
     }

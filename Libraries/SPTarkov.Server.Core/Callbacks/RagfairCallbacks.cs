@@ -22,7 +22,7 @@ public class RagfairCallbacks(
     ConfigServer configServer
 ) : IOnLoad, IOnUpdate
 {
-    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
 
     public Task OnLoad()
     {
@@ -34,7 +34,7 @@ public class RagfairCallbacks(
 
     public Task<bool> OnUpdate(long secondsSinceLastRun)
     {
-        if (secondsSinceLastRun < _ragfairConfig.RunIntervalSeconds)
+        if (secondsSinceLastRun < RagfairConfig.RunIntervalSeconds)
         {
             // Not enough time has passed since last run, exit early
             return Task.FromResult(false);

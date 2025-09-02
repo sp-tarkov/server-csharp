@@ -44,6 +44,14 @@ public class BotLevelGenerator(RandomUtil randomUtil, DatabaseService databaseSe
         return new RandomisedBotLevelResult { Exp = baseExp + fractionalExp, Level = level };
     }
 
+    /// <summary>
+    /// Choose a randomised level based on inputs
+    /// </summary>
+    /// <param name="min">Lowest level to choose</param>
+    /// <param name="max">Highest level to choose</param>
+    /// <param name="shift">Bias shift to apply to the random number generation</param>
+    /// <param name="number">Number of iterations to use for generating a Gaussian random number</param>
+    /// <returns>Bot level</returns>
     public int ChooseBotLevel(double min, double max, int shift, double number)
     {
         return (int)randomUtil.GetBiasedRandomNumber(min, max, shift, number);

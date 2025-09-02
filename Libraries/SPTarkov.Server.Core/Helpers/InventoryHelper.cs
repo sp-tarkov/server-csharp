@@ -11,7 +11,6 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Inventory;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -25,7 +24,6 @@ public class InventoryHelper(
     ISptLogger<InventoryHelper> logger,
     HttpResponseUtil httpResponseUtil,
     DialogueHelper dialogueHelper,
-    EventOutputHolder eventOutputHolder,
     ProfileHelper profileHelper,
     ItemHelper itemHelper,
     ServerLocalisationService serverLocalisationService,
@@ -35,7 +33,7 @@ public class InventoryHelper(
 {
     private static readonly FrozenSet<MongoId> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD, BaseClasses.MOD];
 
-    protected readonly InventoryConfig _inventoryConfig = configServer.GetConfig<InventoryConfig>();
+    protected readonly InventoryConfig InventoryConfig = configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
     ///     Add multiple items to player stash (assuming they all fit)
@@ -1153,7 +1151,7 @@ public class InventoryHelper(
     /// <returns>Reward details</returns>
     public RewardDetails? GetRandomLootContainerRewardDetails(MongoId itemTpl)
     {
-        _inventoryConfig.RandomLootContainers.TryGetValue(itemTpl, out var result);
+        InventoryConfig.RandomLootContainers.TryGetValue(itemTpl, out var result);
 
         return result;
     }
@@ -1164,7 +1162,7 @@ public class InventoryHelper(
     /// <returns>Inventory configuration</returns>
     public InventoryConfig GetInventoryConfig()
     {
-        return _inventoryConfig;
+        return InventoryConfig;
     }
 
     public void ValidateInventoryUsesMongoIds(IEnumerable<Item> itemsToValidate)

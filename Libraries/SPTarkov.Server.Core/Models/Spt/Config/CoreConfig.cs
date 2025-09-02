@@ -235,7 +235,7 @@ public record ChatbotFeatures
     ///     Human readable id to guid for each bot
     /// </summary>
     [JsonPropertyName("ids")]
-    public required Dictionary<string, string> Ids { get; set; }
+    public required Dictionary<string, MongoId> Ids { get; set; }
 
     /// <summary>
     ///     Bot Ids player is allowed to interact with

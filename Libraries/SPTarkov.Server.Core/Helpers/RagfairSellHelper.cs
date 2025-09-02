@@ -19,7 +19,7 @@ public class RagfairSellHelper(
     ConfigServer configServer
 )
 {
-    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
     ///     Get the percent chance to sell an item based on its average listed price vs player chosen listing price
@@ -30,7 +30,7 @@ public class RagfairSellHelper(
     /// <returns>percent value</returns>
     public double CalculateSellChance(double averageOfferPriceRub, double playerListedPriceRub, double qualityMultiplier)
     {
-        var sellConfig = _ragfairConfig.Sell.Chance;
+        var sellConfig = RagfairConfig.Sell.Chance;
 
         // Base sell chance modified by items quality
         var baseSellChancePercent = sellConfig.Base * qualityMultiplier;
@@ -77,8 +77,8 @@ public class RagfairSellHelper(
 
         if (sellChancePercent is null)
         {
-            effectiveSellChance = _ragfairConfig.Sell.Chance.Base;
-            logger.Warning($"Sell chance was not a number: {sellChancePercent}, defaulting to {_ragfairConfig.Sell.Chance.Base}%");
+            effectiveSellChance = RagfairConfig.Sell.Chance.Base;
+            logger.Warning($"Sell chance was not a number: {sellChancePercent}, defaulting to {RagfairConfig.Sell.Chance.Base}%");
         }
 
         if (logger.IsLogEnabled(LogLevel.Debug))
@@ -100,8 +100,8 @@ public class RagfairSellHelper(
                 // Passed roll check, item will be sold
                 // Weight time to sell towards selling faster based on how cheap the item sold
                 var weighting = (100 - effectiveSellChance) / 100;
-                var maximumTime = weighting * _ragfairConfig.Sell.Time.Max * 60d;
-                var minimumTime = _ragfairConfig.Sell.Time.Min * 60d;
+                var maximumTime = weighting * RagfairConfig.Sell.Time.Max * 60d;
+                var minimumTime = RagfairConfig.Sell.Time.Min * 60d;
                 if (maximumTime < minimumTime)
                 {
                     maximumTime = minimumTime + 5;

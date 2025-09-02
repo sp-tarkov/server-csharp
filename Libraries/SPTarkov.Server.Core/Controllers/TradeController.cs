@@ -35,8 +35,8 @@ public class TradeController(
     ConfigServer configServer
 )
 {
-    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
-    protected readonly TraderConfig _traderConfig = configServer.GetConfig<TraderConfig>();
+    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
 
     /// <summary>
     ///     Handle TradingConfirm event
@@ -52,7 +52,7 @@ public class TradeController(
         // Buying
         if (request.Type == "buy_from_trader")
         {
-            var foundInRaid = _traderConfig.PurchasesAreFoundInRaid;
+            var foundInRaid = TraderConfig.PurchasesAreFoundInRaid;
             var buyData = (ProcessBuyTradeRequestData)request;
             tradeHelper.BuyItem(pmcData, buyData, sessionID, foundInRaid, output);
 
@@ -163,7 +163,7 @@ public class TradeController(
             SchemeId = 0,
             SchemeItems = requestOffer.Items,
         };
-        tradeHelper.BuyItem(pmcData, buyData, sessionId, _traderConfig.PurchasesAreFoundInRaid, output);
+        tradeHelper.BuyItem(pmcData, buyData, sessionId, TraderConfig.PurchasesAreFoundInRaid, output);
 
         // Remove/lower offer quantity of item purchased from trader flea offer
         ragfairServer.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
@@ -197,7 +197,7 @@ public class TradeController(
         };
 
         // buyItem() must occur prior to removing the offer stack, otherwise item inside offer doesn't exist for confirmTrading() to use
-        tradeHelper.BuyItem(pmcData, buyData, sessionId, _ragfairConfig.Dynamic.PurchasesAreFoundInRaid, output);
+        tradeHelper.BuyItem(pmcData, buyData, sessionId, RagfairConfig.Dynamic.PurchasesAreFoundInRaid, output);
         if (output.Warnings?.Count > 0)
         {
             return;

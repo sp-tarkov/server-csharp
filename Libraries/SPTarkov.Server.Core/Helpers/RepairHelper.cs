@@ -1,9 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -12,16 +10,8 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class RepairHelper(
-    ISptLogger<RepairHelper> logger,
-    RandomUtil randomUtil,
-    DatabaseService databaseService,
-    ConfigServer configServer,
-    ICloner cloner
-)
+public class RepairHelper(ISptLogger<RepairHelper> logger, RandomUtil randomUtil, DatabaseService databaseService, ICloner cloner)
 {
-    protected RepairConfig _repairConfig = configServer.GetConfig<RepairConfig>();
-
     /// <summary>
     ///     Alter an items durability after a repair by trader/repair kit
     /// </summary>

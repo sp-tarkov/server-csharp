@@ -46,7 +46,7 @@ public class HideoutController(
 {
     public static readonly MongoId NameTaskConditionCountersCraftingId = new("673f5d6fdd6ed700c703afdc");
 
-    protected readonly FrozenSet<HideoutAreas> _areasWithResources =
+    protected readonly FrozenSet<HideoutAreas> AreasWithResources =
     [
         HideoutAreas.AirFilteringUnit,
         HideoutAreas.WaterCollector,
@@ -55,7 +55,7 @@ public class HideoutController(
         HideoutAreas.RestSpace, // Can insert disk
     ];
 
-    protected readonly HideoutConfig _hideoutConfig = configServer.GetConfig<HideoutConfig>();
+    protected readonly HideoutConfig HideoutConfig = configServer.GetConfig<HideoutConfig>();
 
     /// <summary>
     ///     Handle HideoutUpgrade event
@@ -468,7 +468,7 @@ public class HideoutController(
         }
 
         // Handle areas that have resources that can be placed in/taken out of slots from the area
-        if (_areasWithResources.Contains(hideoutArea.Type))
+        if (AreasWithResources.Contains(hideoutArea.Type))
         {
             var response = RemoveResourceFromArea(sessionID, pmcData, request, output, hideoutArea);
 
@@ -860,18 +860,18 @@ public class HideoutController(
         if (area is not null && request.RecipeId != area.LastRecipe)
         // 1 point per craft upon the end of production for alternating between 2 different crafting recipes in the same module
         {
-            craftingExpAmount += _hideoutConfig.ExpCraftAmount; // Default is 10
+            craftingExpAmount += HideoutConfig.ExpCraftAmount; // Default is 10
         }
 
         // Update variable with time spent crafting item(s)
         // 1 point per 8 hours of crafting
         totalCraftingHours += recipe.ProductionTime;
-        if (totalCraftingHours / _hideoutConfig.HoursForSkillCrafting >= 1)
+        if (totalCraftingHours / HideoutConfig.HoursForSkillCrafting >= 1)
         {
             // Spent enough time crafting to get a bonus xp multiplier
-            var multiplierCrafting = Math.Floor(totalCraftingHours.Value / _hideoutConfig.HoursForSkillCrafting);
+            var multiplierCrafting = Math.Floor(totalCraftingHours.Value / HideoutConfig.HoursForSkillCrafting);
             craftingExpAmount += (int)(1 * multiplierCrafting);
-            totalCraftingHours -= _hideoutConfig.HoursForSkillCrafting * multiplierCrafting;
+            totalCraftingHours -= HideoutConfig.HoursForSkillCrafting * multiplierCrafting;
         }
 
         // Make sure we can fit both the craft result and tools in the stash
@@ -1526,7 +1526,7 @@ public class HideoutController(
 
             if (
                 profile.CharacterData?.PmcData?.Hideout is not null
-                && profileActivityService.ActiveWithinLastMinutes(sessionId, _hideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes)
+                && profileActivityService.ActiveWithinLastMinutes(sessionId, HideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes)
             )
             {
                 hideoutHelper.UpdatePlayerHideout(sessionId);

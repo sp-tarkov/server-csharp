@@ -13,7 +13,7 @@ namespace SPTarkov.Server.Core.Status;
 [Injectable(TypePriority = 0)]
 public class StatusPage(TimeUtil timeUtil, ProfileActivityService profileActivityService, ConfigServer configServer) : IHttpListener
 {
-    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
     public bool CanHandle(MongoId sessionId, HttpRequest req)
     {
@@ -25,8 +25,8 @@ public class StatusPage(TimeUtil timeUtil, ProfileActivityService profileActivit
         var sptVersion = $"SPT version: {ProgramStatics.SPT_VERSION()}";
         var debugEnabled = $"Debug enabled: {ProgramStatics.DEBUG()}";
         var modsEnabled = $"Mods enabled: {ProgramStatics.MODS()}";
-        var timeStarted = $"Started : {timeUtil.GetDateTimeFromTimeStamp(_coreConfig.ServerStartTime.Value)}";
-        var uptime = $"Uptime: {DateTimeOffset.UtcNow.ToUnixTimeSeconds() - _coreConfig.ServerStartTime} seconds".ToArray();
+        var timeStarted = $"Started : {timeUtil.GetDateTimeFromTimeStamp(CoreConfig.ServerStartTime.Value)}";
+        var uptime = $"Uptime: {DateTimeOffset.UtcNow.ToUnixTimeSeconds() - CoreConfig.ServerStartTime} seconds".ToArray();
         var activeProfiles = profileActivityService.GetActiveProfileIdsWithinMinutes(30);
         var activePlayerCount = $"Profiles active in last 30 minutes: {activeProfiles.Count}. {string.Join(",", activeProfiles)}";
 

@@ -3,9 +3,7 @@ using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Weather;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Weather;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Core.Controllers;
@@ -14,12 +12,9 @@ namespace SPTarkov.Server.Core.Controllers;
 public class WeatherController(
     WeatherGenerator weatherGenerator,
     SeasonalEventService seasonalEventService,
-    RaidWeatherService raidWeatherService,
-    ConfigServer configServer
+    RaidWeatherService raidWeatherService
 )
 {
-    protected WeatherConfig _weatherConfig = configServer.GetConfig<WeatherConfig>();
-
     /// <summary>
     ///     Handle client/weather
     /// </summary>

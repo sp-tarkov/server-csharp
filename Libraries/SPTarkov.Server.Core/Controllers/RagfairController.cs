@@ -49,7 +49,7 @@ public class RagfairController(
     ConfigServer configServer
 )
 {
-    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
     ///     Check all profiles and sell player offers / send player money for listing if it sold
@@ -566,7 +566,7 @@ public class RagfairController(
 
         // Check for and apply item price modifer if it exists in config
         var averageOfferPrice = averages.Avg;
-        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(rootOfferItem.Template, out var itemPriceModifer))
+        if (RagfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(rootOfferItem.Template, out var itemPriceModifer))
         {
             averageOfferPrice *= itemPriceModifer;
         }
@@ -587,7 +587,7 @@ public class RagfairController(
         offer.SellResults = ragfairSellHelper.RollForSale(sellChancePercent, (int)stackCountTotal);
 
         // Subtract flea market fee from stash
-        if (_ragfairConfig.Sell.Fees)
+        if (RagfairConfig.Sell.Fees)
         {
             var taxFeeChargeFailed = ChargePlayerTaxFee(
                 sessionID,
@@ -669,7 +669,7 @@ public class RagfairController(
         var newRootOfferItem = offer.Items[0]; // TODO: add logic like single/multi offers to find root item
 
         // Check for and apply item price modifer if it exists in config
-        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(newRootOfferItem.Template, out var itemPriceModifer))
+        if (RagfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(newRootOfferItem.Template, out var itemPriceModifer))
         {
             singleItemPrice *= itemPriceModifer;
         }
@@ -694,7 +694,7 @@ public class RagfairController(
         offer.SellResults = ragfairSellHelper.RollForSale(sellChancePercent, (int)stackCountTotal, true);
 
         // Subtract flea market fee from stash
-        if (_ragfairConfig.Sell.Fees)
+        if (RagfairConfig.Sell.Fees)
         {
             var taxFeeChargeFailed = ChargePlayerTaxFee(
                 sessionID,
@@ -775,7 +775,7 @@ public class RagfairController(
         var qualityMultiplier = itemHelper.GetItemQualityModifierForItems(offer.Items, true);
 
         // Check for and apply item price modifer if it exists in config
-        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(offerRootItem.Template, out var itemPriceModifer))
+        if (RagfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(offerRootItem.Template, out var itemPriceModifer))
         {
             averageOfferPriceSingleItem *= itemPriceModifer;
         }
@@ -792,7 +792,7 @@ public class RagfairController(
         offer.SellResults = ragfairSellHelper.RollForSale(sellChancePercent, (int)stackCountTotal);
 
         // Subtract flea market fee from stash
-        if (_ragfairConfig.Sell.Fees)
+        if (RagfairConfig.Sell.Fees)
         {
             var taxFeeChargeFailed = ChargePlayerTaxFee(
                 sessionID,
@@ -1016,10 +1016,10 @@ public class RagfairController(
 
         // Only reduce time to end if time remaining is greater than what we would set it to
         var differenceInSeconds = playerOffer.EndTime - timeUtil.GetTimeStamp();
-        if (differenceInSeconds > _ragfairConfig.Sell.ExpireSeconds)
+        if (differenceInSeconds > RagfairConfig.Sell.ExpireSeconds)
         {
             // `expireSeconds` Default is 71 seconds
-            var newEndTime = _ragfairConfig.Sell.ExpireSeconds + timeUtil.GetTimeStamp();
+            var newEndTime = RagfairConfig.Sell.ExpireSeconds + timeUtil.GetTimeStamp();
             playerOffer.EndTime = (long?)Math.Round((double)newEndTime);
         }
 
@@ -1052,7 +1052,7 @@ public class RagfairController(
         var playerOffer = playerOffers[playerOfferIndex];
 
         // MOD: Pay flea market fee
-        if (_ragfairConfig.Sell.Fees)
+        if (RagfairConfig.Sell.Fees)
         {
             var count = 1;
             var sellInOncePiece = playerOffer.SellInOnePiece.GetValueOrDefault(false);

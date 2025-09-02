@@ -24,7 +24,6 @@ namespace SPTarkov.Server.Core.Helpers;
 public class QuestHelper(
     ISptLogger<QuestHelper> logger,
     TimeUtil timeUtil,
-    ItemHelper itemHelper,
     DatabaseService databaseService,
     EventOutputHolder eventOutputHolder,
     LocaleService localeService,
@@ -38,8 +37,8 @@ public class QuestHelper(
     ICloner cloner
 )
 {
-    protected readonly FrozenSet<QuestStatusEnum> _startedOrAvailToFinish = [QuestStatusEnum.Started, QuestStatusEnum.AvailableForFinish];
-    protected readonly QuestConfig _questConfig = configServer.GetConfig<QuestConfig>();
+    protected readonly FrozenSet<QuestStatusEnum> StartedOrAvailToFinish = [QuestStatusEnum.Started, QuestStatusEnum.AvailableForFinish];
+    protected readonly QuestConfig QuestConfig = configServer.GetConfig<QuestConfig>();
     private Dictionary<MongoId, List<QuestCondition>>? _sellToTraderQuestConditionCache;
 
     /// <summary>
@@ -400,7 +399,7 @@ public class QuestHelper(
                 }
 
                 // Include if quest found in profile and is started or ready to hand in
-                return startedQuestInProfile is not null && _startedOrAvailToFinish.Contains(startedQuestInProfile.Status);
+                return startedQuestInProfile is not null && StartedOrAvailToFinish.Contains(startedQuestInProfile.Status);
             });
 
         return GetQuestsWithOnlyLevelRequirementStartCondition(eligibleQuests).ToList();
@@ -429,7 +428,7 @@ public class QuestHelper(
         }
 
         // Should non-season event quests be shown to player
-        if (!_questConfig.ShowNonSeasonalEventQuests && seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.None))
+        if (!QuestConfig.ShowNonSeasonalEventQuests && seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.None))
         {
             return false;
         }
@@ -446,13 +445,13 @@ public class QuestHelper(
     public bool QuestIsForOtherSide(string playerSide, MongoId questId)
     {
         var isUsec = string.Equals(playerSide, "usec", StringComparison.OrdinalIgnoreCase);
-        if (isUsec && _questConfig.BearOnlyQuests.Contains(questId))
+        if (isUsec && QuestConfig.BearOnlyQuests.Contains(questId))
         // Player is usec and quest is bear only, skip
         {
             return true;
         }
 
-        if (!isUsec && _questConfig.UsecOnlyQuests.Contains(questId))
+        if (!isUsec && QuestConfig.UsecOnlyQuests.Contains(questId))
         // Player is bear and quest is usec only, skip
         {
             return true;
@@ -471,7 +470,7 @@ public class QuestHelper(
     /// <returns>True = Quest should not be visible to game version</returns>
     protected bool QuestIsProfileBlacklisted(string gameVersion, MongoId questId)
     {
-        var questBlacklist = _questConfig.ProfileBlacklist.GetValueOrDefault(gameVersion);
+        var questBlacklist = QuestConfig.ProfileBlacklist.GetValueOrDefault(gameVersion);
         if (questBlacklist is null)
         {
             // Not blacklisted
@@ -490,7 +489,7 @@ public class QuestHelper(
     /// <returns>True = Quest should be visible to game version</returns>
     protected bool QuestIsProfileWhitelisted(string gameVersion, MongoId questId)
     {
-        var questBlacklist = _questConfig.ProfileBlacklist.GetValueOrDefault(gameVersion);
+        var questBlacklist = QuestConfig.ProfileBlacklist.GetValueOrDefault(gameVersion);
         if (questBlacklist is null)
         // Not blacklisted
         {
@@ -1013,9 +1012,9 @@ public class QuestHelper(
     /// <returns>Hours item will be available for</returns>
     public double GetMailItemRedeemTimeHoursForProfile(PmcData pmcData)
     {
-        if (!_questConfig.MailRedeemTimeHours.TryGetValue(pmcData.Info.GameVersion, out var hours))
+        if (!QuestConfig.MailRedeemTimeHours.TryGetValue(pmcData.Info.GameVersion, out var hours))
         {
-            return _questConfig.MailRedeemTimeHours["default"];
+            return QuestConfig.MailRedeemTimeHours["default"];
         }
 
         return hours;

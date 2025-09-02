@@ -29,7 +29,7 @@ public class PaymentService(
     ConfigServer configServer
 )
 {
-    protected readonly InventoryConfig _inventoryConfig = configServer.GetConfig<InventoryConfig>();
+    protected readonly InventoryConfig InventoryConfig = configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
     ///     Take money and insert items into return to server request
@@ -443,8 +443,8 @@ public class PaymentService(
                 var aImmediateParent = inventoryItems.FirstOrDefault(item => item.Id == a.ParentId);
                 var bImmediateParent = inventoryItems.FirstOrDefault(item => item.Id == b.ParentId);
 
-                var aInDeprioContainer = _inventoryConfig.DeprioritisedMoneyContainers.Contains(aImmediateParent.Template);
-                var bInDeprioContainer = _inventoryConfig.DeprioritisedMoneyContainers.Contains(bImmediateParent.Template);
+                var aInDeprioContainer = InventoryConfig.DeprioritisedMoneyContainers.Contains(aImmediateParent.Template);
+                var bInDeprioContainer = InventoryConfig.DeprioritisedMoneyContainers.Contains(bImmediateParent.Template);
 
                 // Prioritize B
                 if (!aInDeprioContainer && bInDeprioContainer)

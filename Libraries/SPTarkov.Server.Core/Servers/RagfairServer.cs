@@ -25,7 +25,7 @@ public class RagfairServer(
     ICloner cloner
 )
 {
-    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
 
     public void Load()
     {
@@ -90,7 +90,7 @@ public class RagfairServer(
     /// <returns> List of traders </returns>
     public List<MongoId> GetUpdateableTraders()
     {
-        return _ragfairConfig.Traders.Keys.ToList();
+        return RagfairConfig.Traders.Keys.ToList();
     }
 
     public Dictionary<MongoId, int> GetAllActiveCategories(

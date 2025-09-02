@@ -24,10 +24,10 @@ public class FenceBaseAssortGenerator(
     ServerLocalisationService localisationService,
     ConfigServer configServer,
     FenceService fenceService,
-    ICloner _cloner
+    ICloner cloner
 )
 {
-    protected readonly TraderConfig traderConfig = configServer.GetConfig<TraderConfig>();
+    protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
 
     /// <summary>
     ///     Create base fence assorts dynamically and store in memory
@@ -63,9 +63,9 @@ public class FenceBaseAssortGenerator(
             }
 
             // Item base type blacklisted
-            if (traderConfig.Fence.Blacklist.Count > 0)
+            if (TraderConfig.Fence.Blacklist.Count > 0)
             {
-                if (traderConfig.Fence.Blacklist.Contains(itemId) || itemHelper.IsOfBaseclasses(itemId, traderConfig.Fence.Blacklist))
+                if (TraderConfig.Fence.Blacklist.Contains(itemId) || itemHelper.IsOfBaseclasses(itemId, TraderConfig.Fence.Blacklist))
                 {
                     continue;
                 }
@@ -81,7 +81,7 @@ public class FenceBaseAssortGenerator(
             }
 
             // Skip seasonal event items when not in seasonal event
-            if (traderConfig.Fence.BlacklistSeasonalItems && blockedSeasonalItems.Contains(itemId))
+            if (TraderConfig.Fence.BlacklistSeasonalItems && blockedSeasonalItems.Contains(itemId))
             {
                 continue;
             }
@@ -150,7 +150,7 @@ public class FenceBaseAssortGenerator(
         foreach (var defaultPreset in defaultPresets)
         {
             // Construct preset + mods
-            var itemAndChildren = _cloner.Clone(defaultPreset.Items).ReplaceIDs();
+            var itemAndChildren = cloner.Clone(defaultPreset.Items).ReplaceIDs();
 
             // Find root item and add some properties to it
             var rootItem = itemAndChildren.FirstOrDefault(item => string.IsNullOrEmpty(item.ParentId));
@@ -196,7 +196,7 @@ public class FenceBaseAssortGenerator(
             return false;
         }
 
-        return ammoPenetrationPower > traderConfig.Fence.AmmoMaxPenLimit;
+        return ammoPenetrationPower > TraderConfig.Fence.AmmoMaxPenLimit;
     }
 
     /// <summary>

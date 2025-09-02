@@ -41,7 +41,7 @@ public class InsuranceController(
     ICloner cloner
 )
 {
-    protected readonly InsuranceConfig _insuranceConfig = configServer.GetConfig<InsuranceConfig>();
+    protected readonly InsuranceConfig InsuranceConfig = configServer.GetConfig<InsuranceConfig>();
 
     /// <summary>
     ///     Process insurance items of all profiles prior to being given back to the player through the mail service
@@ -130,7 +130,7 @@ public class InsuranceController(
             // Update the insured items to have the new root parent ID for root/orphaned items
             insured.Items = insured.Items.AdoptOrphanedItems(rootItemParentId);
 
-            var simulateItemsBeingTaken = _insuranceConfig.SimulateItemsBeingTaken;
+            var simulateItemsBeingTaken = InsuranceConfig.SimulateItemsBeingTaken;
             if (simulateItemsBeingTaken)
             {
                 // Find items that could be taken by another player off the players body
@@ -556,14 +556,14 @@ public class InsuranceController(
     {
         const int removeCount = 0;
 
-        if (randomUtil.GetChance100(_insuranceConfig.ChanceNoAttachmentsTakenPercent))
+        if (randomUtil.GetChance100(InsuranceConfig.ChanceNoAttachmentsTakenPercent))
         {
             return removeCount;
         }
 
         // Get attachments count above or equal to price set in config
         return weightedAttachmentByPrice
-            .Where(attachment => attachment.Value >= _insuranceConfig.MinAttachmentRoublePriceToBeTaken)
+            .Where(attachment => attachment.Value >= InsuranceConfig.MinAttachmentRoublePriceToBeTaken)
             .Count(_ => RollForDelete(traderId) ?? false);
     }
 
@@ -699,7 +699,7 @@ public class InsuranceController(
         const int conversionFactor = 100;
 
         var returnChance = randomUtil.GetInt(0, maxRoll) / conversionFactor;
-        var traderReturnChance = _insuranceConfig.ReturnChancePercent[traderId];
+        var traderReturnChance = InsuranceConfig.ReturnChancePercent[traderId];
         var roll = returnChance >= traderReturnChance;
 
         // Log the roll with as much detail as possible.

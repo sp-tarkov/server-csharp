@@ -12,10 +12,10 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServer configServer)
 {
-    protected readonly ItemConfig _itemConfig = configServer.GetConfig<ItemConfig>();
+    protected readonly ItemConfig ItemConfig = configServer.GetConfig<ItemConfig>();
 
-    protected readonly HashSet<MongoId> _itemBlacklistCache = [];
-    protected readonly HashSet<MongoId> _lootableItemBlacklistCache = [];
+    protected readonly HashSet<MongoId> ItemBlacklistCache = [];
+    protected readonly HashSet<MongoId> LootableItemBlacklistCache = [];
 
     /// <summary>
     ///     Get an HashSet of items that should never be given as a reward to player
@@ -23,7 +23,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>HashSet of item tpls</returns>
     public HashSet<MongoId> GetItemRewardBlacklist()
     {
-        return _itemConfig.RewardItemBlacklist;
+        return ItemConfig.RewardItemBlacklist;
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>HashSet of item base ids</returns>
     public HashSet<MongoId> GetItemRewardBaseTypeBlacklist()
     {
-        return _itemConfig.RewardItemTypeBlacklist;
+        return ItemConfig.RewardItemTypeBlacklist;
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>HashSet of blacklisted template ids</returns>
     public HashSet<MongoId> GetBlacklistedItems()
     {
-        return _itemConfig.Blacklist;
+        return ItemConfig.Blacklist;
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>HashSet of blacklisted template ids</returns>
     public HashSet<MongoId> GetBlacklistedLootableItems()
     {
-        return _itemConfig.LootableItemBlacklist;
+        return ItemConfig.LootableItemBlacklist;
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>HashSet of boss item template ids</returns>
     public HashSet<MongoId> GetBossItems()
     {
-        return _itemConfig.BossItems;
+        return ItemConfig.BossItems;
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <param name="itemTplsToBlacklist">Tpls to blacklist</param>
     public void AddItemToLootableBlacklistCache(IEnumerable<MongoId> itemTplsToBlacklist)
     {
-        _lootableItemBlacklistCache.UnionWith(itemTplsToBlacklist);
+        LootableItemBlacklistCache.UnionWith(itemTplsToBlacklist);
     }
 
     /// <summary>
@@ -78,12 +78,12 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>True if blacklisted</returns>
     public bool IsLootableItemBlacklisted(MongoId itemKey)
     {
-        if (!_lootableItemBlacklistCache.Any())
+        if (!LootableItemBlacklistCache.Any())
         {
-            _lootableItemBlacklistCache.UnionWith(_itemConfig.LootableItemBlacklist);
+            LootableItemBlacklistCache.UnionWith(ItemConfig.LootableItemBlacklist);
         }
 
-        return _lootableItemBlacklistCache.Contains(itemKey);
+        return LootableItemBlacklistCache.Contains(itemKey);
     }
 
     /// <summary>
@@ -92,17 +92,17 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <param name="itemTplsToBlacklist">Tpls to blacklist</param>
     public void AddItemToBlacklistCache(IEnumerable<MongoId> itemTplsToBlacklist)
     {
-        _itemBlacklistCache.UnionWith(itemTplsToBlacklist);
+        ItemBlacklistCache.UnionWith(itemTplsToBlacklist);
     }
 
     public bool IsItemBlacklisted(MongoId tpl)
     {
-        if (!_itemBlacklistCache.Any())
+        if (!ItemBlacklistCache.Any())
         {
-            _itemBlacklistCache.UnionWith(_itemConfig.Blacklist);
+            ItemBlacklistCache.UnionWith(ItemConfig.Blacklist);
         }
 
-        return _itemBlacklistCache.Contains(tpl);
+        return ItemBlacklistCache.Contains(tpl);
     }
 
     /// <summary>
@@ -112,7 +112,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>True if boss item</returns>
     public bool IsBossItem(MongoId tpl)
     {
-        return _itemConfig.BossItems.Contains(tpl);
+        return ItemConfig.BossItems.Contains(tpl);
     }
 
     /// <summary>
@@ -122,6 +122,6 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>true when blacklisted</returns>
     public bool IsItemRewardBlacklisted(MongoId tpl)
     {
-        return _itemConfig.RewardItemBlacklist.Contains(tpl);
+        return ItemConfig.RewardItemBlacklist.Contains(tpl);
     }
 }

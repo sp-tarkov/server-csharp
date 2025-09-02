@@ -18,8 +18,8 @@ public class MatchController(
     WeatherHelper weatherHelper
 )
 {
-    protected readonly MatchConfig _matchConfig = configServer.GetConfig<MatchConfig>();
-    protected readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
+    protected readonly MatchConfig MatchConfig = configServer.GetConfig<MatchConfig>();
+    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
 
     /// <summary>
     ///     Handle client/match/available
@@ -27,7 +27,7 @@ public class MatchController(
     /// <returns>True if server should be available</returns>
     public bool GetEnabled()
     {
-        return _matchConfig.Enabled;
+        return MatchConfig.Enabled;
     }
 
     /// <summary>
@@ -100,9 +100,9 @@ public class MatchController(
         // TODO: add code to strip PMC of equipment now they've started the raid
 
         // Set pmcs to difficulty set in pre-raid screen if override in bot config isnt enabled
-        if (!_pmcConfig.UseDifficultyOverride)
+        if (!PMCConfig.UseDifficultyOverride)
         {
-            _pmcConfig.Difficulty = ConvertDifficultyDropdownIntoBotDifficulty(request.WavesSettings.BotDifficulty.ToString());
+            PMCConfig.Difficulty = ConvertDifficultyDropdownIntoBotDifficulty(request.WavesSettings.BotDifficulty.ToString());
         }
     }
 

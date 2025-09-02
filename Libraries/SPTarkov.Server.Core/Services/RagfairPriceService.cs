@@ -28,8 +28,8 @@ public class RagfairPriceService(
     ConfigServer configServer
 )
 {
-    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
-    protected Dictionary<MongoId, double>? _staticPrices;
+    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected Dictionary<MongoId, double>? StaticPrices;
 
     /// <summary>
     ///     Generate static (handbook) and dynamic (prices.json) flea prices, store inside class as dictionaries
@@ -50,14 +50,14 @@ public class RagfairPriceService(
     /// </summary>
     public void RefreshStaticPrices()
     {
-        _staticPrices = new Dictionary<MongoId, double>();
+        StaticPrices = new Dictionary<MongoId, double>();
         foreach (
             var item in databaseService
                 .GetItems()
                 .Values.Where(item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase))
         )
         {
-            _staticPrices[item.Id] = handbookHelper.GetTemplatePrice(item.Id);
+            StaticPrices[item.Id] = handbookHelper.GetTemplatePrice(item.Id);
         }
     }
 
@@ -130,18 +130,18 @@ public class RagfairPriceService(
     {
         var dynamicPrices = databaseService.GetPrices();
         // Use dynamic prices first, fill in any gaps with data from static prices (handbook)
-        return dynamicPrices.Concat(_staticPrices).GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.First().Value);
+        return dynamicPrices.Concat(StaticPrices).GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.First().Value);
     }
 
     public Dictionary<MongoId, double> GetAllStaticPrices()
     {
         // Refresh the cache so we include any newly added custom items
-        if (_staticPrices is null)
+        if (StaticPrices is null)
         {
             RefreshStaticPrices();
         }
 
-        return _staticPrices;
+        return StaticPrices;
     }
 
     /// <summary>
@@ -211,13 +211,13 @@ public class RagfairPriceService(
         var price = GetFleaPriceForItem(itemTemplateId);
 
         // Adjust price if below handbook price, based on config.
-        if (_ragfairConfig.Dynamic.OfferAdjustment.AdjustPriceWhenBelowHandbookPrice)
+        if (RagfairConfig.Dynamic.OfferAdjustment.AdjustPriceWhenBelowHandbookPrice)
         {
             price = AdjustPriceIfBelowHandbook(price, itemTemplateId);
         }
 
         // Use trader price if higher, based on config.
-        if (_ragfairConfig.Dynamic.UseTraderPriceForOffersIfHigher)
+        if (RagfairConfig.Dynamic.UseTraderPriceForOffersIfHigher)
         {
             var traderPrice = traderHelper.GetHighestSellToTraderPrice(itemTemplateId);
             if (traderPrice > price)
@@ -238,20 +238,20 @@ public class RagfairPriceService(
         }
 
         // Check for existence of manual price adjustment multiplier
-        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(itemTemplateId, out var multiplier))
+        if (RagfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(itemTemplateId, out var multiplier))
         {
             price *= multiplier;
         }
 
         // The quality of the item affects the price + not on the ignore list
-        if (item is not null && !_ragfairConfig.Dynamic.IgnoreQualityPriceVarianceBlacklist.Contains(itemTemplateId))
+        if (item is not null && !RagfairConfig.Dynamic.IgnoreQualityPriceVarianceBlacklist.Contains(itemTemplateId))
         {
             var qualityModifier = itemHelper.GetItemQualityModifier(item);
             price *= qualityModifier;
         }
 
         // Make adjustments for unreasonably priced items.
-        foreach (var (key, value) in _ragfairConfig.Dynamic.UnreasonableModPrices)
+        foreach (var (key, value) in RagfairConfig.Dynamic.UnreasonableModPrices)
         {
             if (!value.Enabled || !itemHelper.IsOfBaseclass(itemTemplateId, key))
             {
@@ -319,7 +319,7 @@ public class RagfairPriceService(
     protected MinMax<double> GetOfferTypeRangeValues(bool isPreset, bool isPack)
     {
         // Use different min/max values if the item is a preset or pack
-        var priceRanges = _ragfairConfig.Dynamic.PriceRanges;
+        var priceRanges = RagfairConfig.Dynamic.PriceRanges;
         if (isPreset)
         {
             return priceRanges.Preset;
@@ -343,7 +343,7 @@ public class RagfairPriceService(
     {
         var itemHandbookPrice = GetStaticPriceForItem(itemTpl);
         var priceDifferencePercent = GetPriceDifference(itemHandbookPrice.Value, itemPrice);
-        var offerAdjustmentSettings = _ragfairConfig.Dynamic.OfferAdjustment;
+        var offerAdjustmentSettings = RagfairConfig.Dynamic.OfferAdjustment;
 
         // Only adjust price if difference is > a percent AND item price passes threshold set in config
         if (

@@ -25,11 +25,10 @@ public class ProfileFixerService(
     HideoutHelper hideoutHelper,
     DatabaseService databaseService,
     ServerLocalisationService serverLocalisationService,
-    ConfigServer configServer,
-    InventoryHelper inventoryHelper
+    ConfigServer configServer
 )
 {
-    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
     /// <summary>
     ///     Find issues in the pmc profile data that may cause issues and fix them
@@ -617,7 +616,7 @@ public class ProfileFixerService(
         {
             if (!traderHelper.TraderExists(traderId))
             {
-                if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
+                if (CoreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
                     logger.Warning(
                         $"Non - default trader: {traderId} removed from PMC TradersInfo in: {fullProfile.ProfileInfo?.ProfileId} profile"
@@ -635,7 +634,7 @@ public class ProfileFixerService(
         {
             if (!traderHelper.TraderExists(traderId))
             {
-                if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
+                if (CoreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
                     logger.Warning(
                         $"Non - default trader: {traderId} removed from Scav TradersInfo in: {fullProfile.ProfileInfo?.ProfileId} profile"

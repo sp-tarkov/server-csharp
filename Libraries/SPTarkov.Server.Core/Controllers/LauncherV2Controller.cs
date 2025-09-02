@@ -22,7 +22,7 @@ public class LauncherV2Controller(
     Watermark watermark
 )
 {
-    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
     /// <summary>
     ///     Returns a simple string of Pong!
@@ -135,7 +135,7 @@ public class LauncherV2Controller(
     /// <returns></returns>
     public string EftVersion()
     {
-        return _coreConfig.CompatibleTarkovVersion;
+        return CoreConfig.CompatibleTarkovVersion;
     }
 
     /// <summary>

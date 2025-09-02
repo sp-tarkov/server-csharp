@@ -80,7 +80,7 @@ public class BotEquipmentModGenerator(
     const string modScopeKey = "mod_scope";
     const string modScope000Key = "mod_scope_000";
 
-    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
 
     /// <summary>
     ///     Check mods are compatible and add to array
@@ -460,7 +460,7 @@ public class BotEquipmentModGenerator(
         // Get pool of mods that fit weapon
         request.ModPool.TryGetValue(request.ParentTemplate.Id, out var compatibleModsPool);
 
-        _botConfig.Equipment.TryGetValue(request.BotData.EquipmentRole, out var botEquipConfig);
+        BotConfig.Equipment.TryGetValue(request.BotData.EquipmentRole, out var botEquipConfig);
         var botEquipBlacklist = botEquipmentFilterService.GetBotEquipmentBlacklist(
             request.BotData.EquipmentRole,
             pmcProfile?.Info?.Level ?? 0
@@ -996,7 +996,7 @@ public class BotEquipmentModGenerator(
             if ((request.WeaponStats?.HasOptic ?? false) && modPool.Count > 1)
             {
                 // Attempt to limit modpool to low profile gas blocks when weapon has an optic
-                var onlyLowProfileGasBlocks = modPool.Where(tpl => _botConfig.LowProfileGasBlockTpls.Contains(tpl));
+                var onlyLowProfileGasBlocks = modPool.Where(tpl => BotConfig.LowProfileGasBlockTpls.Contains(tpl));
                 if (onlyLowProfileGasBlocks.Any())
                 {
                     modPool = onlyLowProfileGasBlocks.ToHashSet();
@@ -1005,7 +1005,7 @@ public class BotEquipmentModGenerator(
             else if ((request.WeaponStats?.HasRearIronSight ?? false) && modPool.Count > 1)
             {
                 // Attempt to limit modpool to high profile gas blocks when weapon has rear iron sight + no front iron sight
-                var onlyHighProfileGasBlocks = modPool.Where(tpl => !_botConfig.LowProfileGasBlockTpls.Contains(tpl));
+                var onlyHighProfileGasBlocks = modPool.Where(tpl => !BotConfig.LowProfileGasBlockTpls.Contains(tpl));
                 if (onlyHighProfileGasBlocks.Any())
                 {
                     modPool = onlyHighProfileGasBlocks.ToHashSet();

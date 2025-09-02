@@ -20,8 +20,8 @@ public class BotEquipmentFilterService(
     ConfigServer configServer
 )
 {
-    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
-    protected readonly Dictionary<string, EquipmentFilters?> _botEquipmentConfig = configServer.GetConfig<BotConfig>().Equipment;
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
+    protected readonly Dictionary<string, EquipmentFilters?> BotEquipmentConfig = configServer.GetConfig<BotConfig>().Equipment;
 
     /// <summary>
     ///     Filter a bots data to exclude equipment and cartridges defines in the botConfig
@@ -41,7 +41,7 @@ public class BotEquipmentFilterService(
         var botWeightingAdjustmentsByPlayerLevel = GetBotWeightingAdjustmentsByPlayerLevel(botRole, pmcProfile?.Info?.Level ?? 1);
 
         RandomisationDetails? randomisationDetails = null;
-        if (_botEquipmentConfig.TryGetValue(botRole.ToLowerInvariant(), out var botEquipmentConfig))
+        if (BotEquipmentConfig.TryGetValue(botRole.ToLowerInvariant(), out var botEquipmentConfig))
         {
             randomisationDetails = botHelper.GetBotRandomizationDetails(botLevel, botEquipmentConfig);
         }
@@ -124,7 +124,7 @@ public class BotEquipmentFilterService(
     /// <returns>EquipmentFilters object</returns>
     public EquipmentFilters GetBotEquipmentSettings(string botEquipmentRole)
     {
-        return _botEquipmentConfig[botEquipmentRole];
+        return BotEquipmentConfig[botEquipmentRole];
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ public class BotEquipmentFilterService(
     /// <returns>Dictionary of weapon type and their whitelisted scope types</returns>
     public Dictionary<MongoId, HashSet<MongoId>>? GetBotWeaponSightWhitelist(string botEquipmentRole)
     {
-        return _botConfig.Equipment.TryGetValue(botEquipmentRole, out var botEquipmentSettings)
+        return BotConfig.Equipment.TryGetValue(botEquipmentRole, out var botEquipmentSettings)
             ? botEquipmentSettings.WeaponSightWhitelist
             : null;
     }
@@ -147,7 +147,7 @@ public class BotEquipmentFilterService(
     /// <returns>EquipmentBlacklistDetails object</returns>
     public EquipmentFilterDetails? GetBotEquipmentBlacklist(string botRole, double playerLevel)
     {
-        var blacklistDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
+        var blacklistDetailsForBot = BotEquipmentConfig.GetValueOrDefault(botRole, null);
 
         return (blacklistDetailsForBot?.Blacklist ?? []).FirstOrDefault(equipmentFilter =>
             playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
@@ -162,7 +162,7 @@ public class BotEquipmentFilterService(
     /// <returns>EquipmentFilterDetails object</returns>
     protected EquipmentFilterDetails? GetBotEquipmentWhitelist(string botRole, int playerLevel)
     {
-        var whitelistDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
+        var whitelistDetailsForBot = BotEquipmentConfig.GetValueOrDefault(botRole, null);
 
         return (whitelistDetailsForBot?.Whitelist ?? []).FirstOrDefault(equipmentFilter =>
             playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
@@ -177,7 +177,7 @@ public class BotEquipmentFilterService(
     /// <returns>Weighting adjustments for bot items</returns>
     protected WeightingAdjustmentDetails? GetBotWeightingAdjustments(string botRole, int botLevel)
     {
-        var weightingDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
+        var weightingDetailsForBot = BotEquipmentConfig.GetValueOrDefault(botRole, null);
 
         return (weightingDetailsForBot?.WeightingAdjustmentsByBotLevel ?? []).FirstOrDefault(x =>
             botLevel >= x.LevelRange.Min && botLevel <= x.LevelRange.Max
@@ -192,7 +192,7 @@ public class BotEquipmentFilterService(
     /// <returns>Weighting adjustments for bot items</returns>
     protected WeightingAdjustmentDetails? GetBotWeightingAdjustmentsByPlayerLevel(string botRole, int playerLevel)
     {
-        var weightingDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
+        var weightingDetailsForBot = BotEquipmentConfig.GetValueOrDefault(botRole, null);
 
         return (weightingDetailsForBot?.WeightingAdjustmentsByBotLevel ?? []).FirstOrDefault(x =>
             playerLevel >= x.LevelRange.Min && playerLevel <= x.LevelRange.Max

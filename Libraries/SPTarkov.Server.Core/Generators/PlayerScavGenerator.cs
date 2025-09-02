@@ -36,7 +36,7 @@ public class PlayerScavGenerator(
     TimeUtil timeUtil
 )
 {
-    protected readonly PlayerScavConfig _playerScavConfig = configServer.GetConfig<PlayerScavConfig>();
+    protected readonly PlayerScavConfig PlayerScavConfig = configServer.GetConfig<PlayerScavConfig>();
 
     /// <summary>
     ///     Update a player profile to include a new player scav profile
@@ -55,10 +55,7 @@ public class PlayerScavGenerator(
 
         // use karma level to get correct karmaSettings
         if (
-            !_playerScavConfig.KarmaLevel.TryGetValue(
-                scavKarmaLevel.ToString(CultureInfo.InvariantCulture),
-                out var playerScavKarmaSettings
-            )
+            !PlayerScavConfig.KarmaLevel.TryGetValue(scavKarmaLevel.ToString(CultureInfo.InvariantCulture), out var playerScavKarmaSettings)
         )
         {
             logger.Error(serverLocalisationService.GetText("scav-missing_karma_settings", scavKarmaLevel));

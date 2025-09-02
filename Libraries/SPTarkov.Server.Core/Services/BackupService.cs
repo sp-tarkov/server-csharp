@@ -12,10 +12,10 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class BackupService
 {
-    protected const string _profileDir = "./user/profiles";
+    protected const string ProfileDir = "./user/profiles";
 
-    protected readonly List<string> _activeServerMods;
-    protected readonly BackupConfig _backupConfig;
+    protected readonly List<string> ActiveServerMods;
+    protected readonly BackupConfig BackupConfig;
 
     // Runs Init() every x minutes
     protected Timer _backupIntervalTimer;
@@ -41,8 +41,8 @@ public class BackupService
         FileUtil = fileUtil;
         LoadedMods = loadedMods;
 
-        _activeServerMods = GetActiveServerMods();
-        _backupConfig = configServer.GetConfig<BackupConfig>();
+        ActiveServerMods = GetActiveServerMods();
+        BackupConfig = configServer.GetConfig<BackupConfig>();
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ public class BackupService
     /// </summary>
     public async Task StartBackupSystem()
     {
-        if (!_backupConfig.BackupInterval.Enabled)
+        if (!BackupConfig.BackupInterval.Enabled)
         {
             // Not backing up at regular intervals, run once and exit
             await Init();
@@ -72,7 +72,7 @@ public class BackupService
             },
             null,
             TimeSpan.Zero,
-            TimeSpan.FromMinutes(_backupConfig.BackupInterval.IntervalMinutes)
+            TimeSpan.FromMinutes(BackupConfig.BackupInterval.IntervalMinutes)
         );
     }
 
@@ -94,7 +94,7 @@ public class BackupService
         List<string> currentProfilePaths;
         try
         {
-            currentProfilePaths = FileUtil.GetFiles(_profileDir);
+            currentProfilePaths = FileUtil.GetFiles(ProfileDir);
         }
         catch (Exception ex)
         {
@@ -122,7 +122,7 @@ public class BackupService
                 var profileFileName = FileUtil.GetFileNameAndExtension(profilePath);
 
                 // Create absolute path to file
-                var relativeSourceFilePath = Path.Combine(_profileDir, profileFileName);
+                var relativeSourceFilePath = Path.Combine(ProfileDir, profileFileName);
                 var absoluteDestinationFilePath = Path.Combine(targetDir, profileFileName);
                 if (!FileUtil.CopyFile(relativeSourceFilePath, absoluteDestinationFilePath))
                 {
@@ -131,7 +131,7 @@ public class BackupService
             }
 
             // Write a copy of active mods.
-            await FileUtil.WriteFileAsync(Path.Combine(targetDir, "activeMods.json"), JsonUtil.Serialize(_activeServerMods));
+            await FileUtil.WriteFileAsync(Path.Combine(targetDir, "activeMods.json"), JsonUtil.Serialize(ActiveServerMods));
 
             if (Logger.IsLogEnabled(LogLevel.Debug))
             {
@@ -153,7 +153,7 @@ public class BackupService
     /// <returns> True if enabled, false otherwise. </returns>
     protected bool IsEnabled()
     {
-        if (_backupConfig.Enabled)
+        if (BackupConfig.Enabled)
         {
             return true;
         }
@@ -174,7 +174,7 @@ public class BackupService
     protected string GenerateBackupTargetDir()
     {
         var backupDate = GenerateBackupDate();
-        return Path.GetFullPath($"{_backupConfig.Directory}/{backupDate}");
+        return Path.GetFullPath($"{BackupConfig.Directory}/{backupDate}");
     }
 
     /// <summary>
@@ -193,12 +193,12 @@ public class BackupService
     /// </summary>
     protected void CleanBackups()
     {
-        var backupDir = _backupConfig.Directory;
+        var backupDir = BackupConfig.Directory;
         var backupPaths = GetBackupPaths(backupDir);
 
         // Filter out invalid backup paths by ensuring they contain a valid date.
         var backupPathsWithCreationDateTime = GetBackupPathsWithCreationTimestamp(backupPaths);
-        var excessCount = backupPathsWithCreationDateTime.Count - _backupConfig.MaxBackups;
+        var excessCount = backupPathsWithCreationDateTime.Count - BackupConfig.MaxBackups;
         if (excessCount > 0)
         {
             var excessBackupPaths = backupPaths.GetRange(0, excessCount);

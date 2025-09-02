@@ -21,7 +21,7 @@ public class RagfairHelper(
     ICloner cloner
 )
 {
-    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
     /// Gets currency TAG from currency tpl value
@@ -102,7 +102,7 @@ public class RagfairHelper(
         var traders = databaseService.GetTraders();
 
         return traders
-            .Keys.Where(traderId => _ragfairConfig.Traders.ContainsKey(traderId)) // Trader enabled in config
+            .Keys.Where(traderId => RagfairConfig.Traders.ContainsKey(traderId)) // Trader enabled in config
             .ToDictionary(traderId => traderId, traderId => traderAssortHelper.GetAssort(sessionId, traderId, showLockedAssorts));
     }
 

@@ -14,7 +14,7 @@ public class CustomLocationWaveService(
     ConfigServer configServer
 )
 {
-    protected readonly LocationConfig _locationConfig = configServer.GetConfig<LocationConfig>();
+    protected readonly LocationConfig LocationConfig = configServer.GetConfig<LocationConfig>();
 
     /// <summary>
     ///     Add a boss wave to a map
@@ -23,7 +23,7 @@ public class CustomLocationWaveService(
     /// <param name="waveToAdd">Boss wave to add to map</param>
     public void AddBossWaveToMap(string locationId, BossLocationSpawn waveToAdd)
     {
-        _locationConfig.CustomWaves.Boss[locationId].Add(waveToAdd);
+        LocationConfig.CustomWaves.Boss[locationId].Add(waveToAdd);
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public class CustomLocationWaveService(
     /// <param name="waveToAdd">Wave to add to map</param>
     public void AddNormalWaveToMap(string locationId, Wave waveToAdd)
     {
-        _locationConfig.CustomWaves.Normal[locationId].Add(waveToAdd);
+        LocationConfig.CustomWaves.Normal[locationId].Add(waveToAdd);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public class CustomLocationWaveService(
     /// <param name="locationId">e.g. factory4_day, bigmap</param>
     public void ClearBossWavesForMap(string locationId)
     {
-        _locationConfig.CustomWaves.Boss[locationId] = [];
+        LocationConfig.CustomWaves.Boss[locationId] = [];
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public class CustomLocationWaveService(
     /// <param name="locationId">e.g. factory4_day, bigmap</param>
     public void ClearNormalWavesForMap(string locationId)
     {
-        _locationConfig.CustomWaves.Normal[locationId] = [];
+        LocationConfig.CustomWaves.Normal[locationId] = [];
     }
 
     /// <summary>
@@ -59,8 +59,8 @@ public class CustomLocationWaveService(
     /// </summary>
     public void ApplyWaveChangesToAllMaps()
     {
-        var bossWavesToApply = _locationConfig.CustomWaves.Boss;
-        var normalWavesToApply = _locationConfig.CustomWaves.Normal;
+        var bossWavesToApply = LocationConfig.CustomWaves.Boss;
+        var normalWavesToApply = LocationConfig.CustomWaves.Normal;
 
         foreach (var mapKvP in bossWavesToApply)
         {

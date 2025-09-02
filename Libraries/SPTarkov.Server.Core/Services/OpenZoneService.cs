@@ -16,7 +16,7 @@ public class OpenZoneService(
     ConfigServer configServer
 )
 {
-    protected readonly LocationConfig _locationConfig = configServer.GetConfig<LocationConfig>();
+    protected readonly LocationConfig LocationConfig = configServer.GetConfig<LocationConfig>();
 
     /// <summary>
     ///     Add open zone to specified map
@@ -25,11 +25,11 @@ public class OpenZoneService(
     /// <param name="zoneToAdd">zone to add</param>
     public void AddZoneToMap(string locationId, string zoneToAdd)
     {
-        _locationConfig.OpenZones.TryAdd(locationId, []);
+        LocationConfig.OpenZones.TryAdd(locationId, []);
 
-        if (!_locationConfig.OpenZones[locationId].Contains(zoneToAdd))
+        if (!LocationConfig.OpenZones[locationId].Contains(zoneToAdd))
         {
-            _locationConfig.OpenZones[locationId].Add(zoneToAdd);
+            LocationConfig.OpenZones[locationId].Add(zoneToAdd);
         }
     }
 
@@ -39,7 +39,7 @@ public class OpenZoneService(
     public void ApplyZoneChangesToAllMaps()
     {
         var dbLocations = databaseService.GetLocations().GetDictionary();
-        foreach (var mapKvP in _locationConfig.OpenZones)
+        foreach (var mapKvP in LocationConfig.OpenZones)
         {
             if (!dbLocations.ContainsKey(mapKvP.Key))
             {
@@ -48,7 +48,7 @@ public class OpenZoneService(
                 continue;
             }
 
-            var zonesToAdd = _locationConfig.OpenZones[mapKvP.Key];
+            var zonesToAdd = LocationConfig.OpenZones[mapKvP.Key];
 
             // Convert openzones string into list, easier to work wih
             var mapOpenZonesArray = dbLocations[mapKvP.Key].Base.OpenZones.Split(",").ToHashSet();

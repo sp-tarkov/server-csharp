@@ -22,7 +22,7 @@ public class RaidTimeAdjustmentService(
     ConfigServer configServer
 )
 {
-    protected readonly LocationConfig _locationConfig = configServer.GetConfig<LocationConfig>();
+    protected readonly LocationConfig LocationConfig = configServer.GetConfig<LocationConfig>();
 
     /// <summary>
     ///     Make alterations to the base map data passed in
@@ -42,12 +42,12 @@ public class RaidTimeAdjustmentService(
         // Change loot multiplier values before they're used below
         if (raidAdjustments.DynamicLootPercent < 100)
         {
-            AdjustLootMultipliers(_locationConfig.LooseLootMultiplier, raidAdjustments.DynamicLootPercent);
+            AdjustLootMultipliers(LocationConfig.LooseLootMultiplier, raidAdjustments.DynamicLootPercent);
         }
 
         if (raidAdjustments.StaticLootPercent < 100)
         {
-            AdjustLootMultipliers(_locationConfig.StaticLootMultiplier, raidAdjustments.StaticLootPercent);
+            AdjustLootMultipliers(LocationConfig.StaticLootMultiplier, raidAdjustments.StaticLootPercent);
         }
 
         // Adjust the escape time limit
@@ -253,7 +253,7 @@ public class RaidTimeAdjustmentService(
     /// <returns>ScavRaidTimeLocationSettings</returns>
     protected ScavRaidTimeLocationSettings GetMapSettings(string location)
     {
-        var mapSettings = _locationConfig.ScavRaidTimeSettings.Maps[location.ToLowerInvariant()];
+        var mapSettings = LocationConfig.ScavRaidTimeSettings.Maps[location.ToLowerInvariant()];
         if (mapSettings is null)
         {
             logger.Warning($"Unable to find scav raid time settings for map: {location}, using defaults");
@@ -309,7 +309,7 @@ public class RaidTimeAdjustmentService(
             //
             // I added 2 seconds just to be safe...
             //
-            var trainArrivalDelaySeconds = _locationConfig.ScavRaidTimeSettings.Settings.TrainArrivalDelayObservedSeconds;
+            var trainArrivalDelaySeconds = LocationConfig.ScavRaidTimeSettings.Settings.TrainArrivalDelayObservedSeconds;
 
             // Determine the earliest possible time in the raid when the train would leave
             var earliestPossibleDepartureMinutes = (exit.MinTime + exit.Count + exit.ExfiltrationTime + trainArrivalDelaySeconds) / 60;

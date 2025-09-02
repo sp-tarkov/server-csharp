@@ -33,7 +33,7 @@ public class RagfairOfferService(
 )
 {
     private bool _playerOffersLoaded;
-    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
     ///     Get all offers
@@ -357,6 +357,6 @@ public class RagfairOfferService(
     /// <returns>True if enough offers have expired</returns>
     public bool EnoughExpiredOffersExistToProcess()
     {
-        return ragfairOfferHolder.GetExpiredOfferCount() >= _ragfairConfig.Dynamic.ExpiredOfferThreshold;
+        return ragfairOfferHolder.GetExpiredOfferCount() >= RagfairConfig.Dynamic.ExpiredOfferThreshold;
     }
 }

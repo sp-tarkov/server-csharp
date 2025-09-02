@@ -36,11 +36,11 @@ public class GameController(
     ProfileActivityService profileActivityService
 )
 {
-    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
-    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
-    protected readonly double _deviation = 0.0001;
-    protected readonly HideoutConfig _hideoutConfig = configServer.GetConfig<HideoutConfig>();
-    protected readonly HttpConfig _httpConfig = configServer.GetConfig<HttpConfig>();
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
+    protected const double Deviation = 0.0001;
+    protected readonly HideoutConfig HideoutConfig = configServer.GetConfig<HideoutConfig>();
+    protected readonly HttpConfig HttpConfig = configServer.GetConfig<HttpConfig>();
 
     /// <summary>
     ///     Handle client/game/start
@@ -96,7 +96,7 @@ public class GameController(
 
         var pmcProfile = fullProfile.CharacterData.PmcData;
 
-        if (_coreConfig.Fixes.FixProfileBreakingInventoryItemIssues)
+        if (CoreConfig.Fixes.FixProfileBreakingInventoryItemIssues)
         {
             profileFixerService.FixProfileBreakingInventoryItemIssues(pmcProfile);
         }
@@ -122,7 +122,7 @@ public class GameController(
             pmcProfile.UnlockHideoutWallInProfile();
 
             // Handle if player has been inactive for a long time, catch up on hideout update before the user goes to his hideout
-            if (!profileActivityService.ActiveWithinLastMinutes(sessionId, _hideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes))
+            if (!profileActivityService.ActiveWithinLastMinutes(sessionId, HideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes))
             {
                 hideoutHelper.UpdatePlayerHideout(sessionId);
             }
@@ -206,7 +206,7 @@ public class GameController(
     /// <returns></returns>
     public List<ServerDetails> GetServer(MongoId sessionId)
     {
-        return [new ServerDetails { Ip = _httpConfig.BackendIp, Port = _httpConfig.BackendPort }];
+        return [new ServerDetails { Ip = HttpConfig.BackendIp, Port = HttpConfig.BackendPort }];
     }
 
     /// <summary>
@@ -226,7 +226,7 @@ public class GameController(
     /// <returns></returns>
     public CheckVersionResponse GetValidGameVersion(MongoId sessionId)
     {
-        return new CheckVersionResponse { IsValid = true, LatestVersion = _coreConfig.CompatibleTarkovVersion };
+        return new CheckVersionResponse { IsValid = true, LatestVersion = CoreConfig.CompatibleTarkovVersion };
     }
 
     /// <summary>
@@ -257,7 +257,7 @@ public class GameController(
     /// <returns></returns>
     public SurveyResponseData GetSurvey(MongoId sessionId)
     {
-        return _coreConfig.Survey;
+        return CoreConfig.Survey;
     }
 
     /// <summary>
@@ -308,7 +308,7 @@ public class GameController(
             .Aggregate(0d, (sum, bonus) => sum + bonus.Value!.Value);
 
         // Player has energy deficit
-        if (pmcProfile.Health?.Energy?.Current - pmcProfile.Health?.Energy?.Maximum <= _deviation)
+        if (pmcProfile.Health?.Energy?.Current - pmcProfile.Health?.Energy?.Maximum <= Deviation)
         {
             // Set new value, whatever is smallest
             pmcProfile.Health!.Energy!.Current += Math.Round(energyRegenPerHour * (diffSeconds!.Value / 3600));
@@ -319,7 +319,7 @@ public class GameController(
         }
 
         // Player has hydration deficit
-        if (pmcProfile.Health?.Hydration?.Current - pmcProfile.Health?.Hydration?.Maximum <= _deviation)
+        if (pmcProfile.Health?.Hydration?.Current - pmcProfile.Health?.Hydration?.Maximum <= Deviation)
         {
             pmcProfile.Health!.Hydration!.Current += Math.Round(hydrationRegenPerHour * (diffSeconds!.Value / 3600));
             if (pmcProfile.Health.Hydration.Current > pmcProfile.Health.Hydration.Maximum)
@@ -464,7 +464,7 @@ public class GameController(
             var bots = databaseService.GetBots().Types;
 
             // Official names can only be 15 chars in length
-            if (playerName.Length > _botConfig.BotNameLengthLimit)
+            if (playerName.Length > BotConfig.BotNameLengthLimit)
             {
                 return;
             }

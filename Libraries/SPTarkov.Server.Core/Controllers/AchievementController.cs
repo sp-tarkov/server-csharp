@@ -11,7 +11,7 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class AchievementController(ProfileHelper profileHelper, DatabaseService databaseService, ConfigServer configServer)
 {
-    protected readonly CoreConfig coreConfig = configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
     /// <summary>
     ///     Get base achievements
@@ -33,7 +33,7 @@ public class AchievementController(ProfileHelper profileHelper, DatabaseService 
         var stats = new Dictionary<string, int>();
         var profiles = profileHelper
             .GetProfiles()
-            .Where(kvp => !coreConfig.Features.AchievementProfileIdBlacklist.Contains(kvp.Value.ProfileInfo.ProfileId))
+            .Where(kvp => !CoreConfig.Features.AchievementProfileIdBlacklist.Contains(kvp.Value.ProfileInfo.ProfileId))
             .ToDictionary();
 
         var achievements = databaseService.GetAchievements();

@@ -39,7 +39,7 @@ public class BotGeneratorHelper(
 
     private static readonly FrozenSet<string> _pmcTypes = [Sides.PmcBear.ToLowerInvariant(), Sides.PmcUsec.ToLowerInvariant()];
 
-    private readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
 
     /// <summary>
     ///     Adds properties to an item
@@ -56,7 +56,7 @@ public class BotGeneratorHelper(
         RandomisedResourceDetails? randomisationSettings = null;
         if (botRole is not null)
         {
-            _botConfig.LootItemResourceRandomization.TryGetValue(botRole, out randomisationSettings);
+            BotConfig.LootItemResourceRandomization.TryGetValue(botRole, out randomisationSettings);
         }
 
         Upd itemProperties = new();
@@ -188,7 +188,7 @@ public class BotGeneratorHelper(
     /// <returns>Equipment filter settings</returns>
     protected EquipmentFilters? GetBotEquipmentSettingFromConfig(string botRole)
     {
-        return _botConfig.Equipment.GetValueOrDefault(GetBotEquipmentRole(botRole));
+        return BotConfig.Equipment.GetValueOrDefault(GetBotEquipmentRole(botRole));
     }
 
     /// <summary>

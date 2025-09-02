@@ -41,13 +41,13 @@ public class RagfairOfferGenerator(
     ICloner cloner
 )
 {
-    protected List<TplWithFleaPrice>? allowedFleaPriceItemsForBarter;
-    protected readonly BotConfig botConfig = configServer.GetConfig<BotConfig>();
+    protected List<TplWithFleaPrice>? AllowedFleaPriceItemsForBarter;
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
 
     /// Internal counter to ensure each offer created has a unique value for its intId property
-    protected int offerCounter;
+    protected int OfferCounter;
 
-    protected readonly RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
     ///     Create a flea offer and store it in the Ragfair server offers array
@@ -109,7 +109,7 @@ public class RagfairOfferGenerator(
         var offer = new RagfairOffer
         {
             Id = new MongoId(),
-            InternalId = offerCounter,
+            InternalId = OfferCounter,
             User =
                 details.Creator == OfferCreator.Player
                     ? CreatePlayerUserDataForFleaOffer(details.UserId)
@@ -128,7 +128,7 @@ public class RagfairOfferGenerator(
             Quantity = details.Quantity,
         };
 
-        offerCounter++;
+        OfferCounter++;
 
         return offer;
     }
@@ -152,8 +152,8 @@ public class RagfairOfferGenerator(
         {
             Id = userId,
             MemberType = MemberCategory.Default,
-            Nickname = botHelper.GetPmcNicknameOfMaxLength(botConfig.BotNameLengthLimit),
-            Rating = randomUtil.GetDouble(ragfairConfig.Dynamic.Rating.Min, ragfairConfig.Dynamic.Rating.Max),
+            Nickname = botHelper.GetPmcNicknameOfMaxLength(BotConfig.BotNameLengthLimit),
+            Rating = randomUtil.GetDouble(RagfairConfig.Dynamic.Rating.Min, RagfairConfig.Dynamic.Rating.Max),
             IsRatingGrowing = randomUtil.GetBool(),
             Avatar = null,
             Aid = hashUtil.GenerateAccountId(),
@@ -188,15 +188,11 @@ public class RagfairOfferGenerator(
     /// <returns> rouble cost of offer </returns>
     protected double ConvertOfferRequirementsIntoRoubles(IEnumerable<OfferRequirement> offerRequirements)
     {
-        var roublePrice = 0d;
-        foreach (var requirement in offerRequirements)
-        {
-            roublePrice += paymentHelper.IsMoneyTpl(requirement.TemplateId)
+        return offerRequirements.Sum(requirement =>
+            paymentHelper.IsMoneyTpl(requirement.TemplateId)
                 ? Math.Round(CalculateRoublePrice(requirement.Count.Value, requirement.TemplateId))
-                : ragfairPriceService.GetFleaPriceForItem(requirement.TemplateId) * requirement.Count.Value; // Get flea price for barter offer items
-        }
-
-        return roublePrice;
+                : ragfairPriceService.GetFleaPriceForItem(requirement.TemplateId) * requirement.Count.Value
+        );
     }
 
     /// <summary>
@@ -251,32 +247,31 @@ public class RagfairOfferGenerator(
         }
 
         // Generated pmc offer
-        return randomUtil.GetDouble(ragfairConfig.Dynamic.Rating.Min, ragfairConfig.Dynamic.Rating.Max);
+        return randomUtil.GetDouble(RagfairConfig.Dynamic.Rating.Min, RagfairConfig.Dynamic.Rating.Max);
     }
 
     /// <summary>
     ///     Get number of section until offer should expire
     /// </summary>
     /// <param name="creatorType"></param>
-    /// <param name="userID"> ID of the offer owner </param>
+    /// <param name="userId"> ID of the offer owner </param>
     /// <param name="time"> Time the offer is posted in seconds </param>
     /// <returns> Number of seconds until offer expires </returns>
-    protected long GetOfferEndTime(OfferCreator creatorType, MongoId userID, long time)
+    protected long GetOfferEndTime(OfferCreator creatorType, MongoId userId, long time)
     {
         if (creatorType == OfferCreator.Player)
         {
             // Player offer = current time + offerDurationTimeInHour;
             var offerDurationTimeHours = databaseService.GetGlobals().Configuration.RagFair.OfferDurationTimeInHour;
-            return (long)(timeUtil.GetTimeStamp() + Math.Round((double)offerDurationTimeHours * TimeUtil.OneHourAsSeconds));
+            return (long)(timeUtil.GetTimeStamp() + Math.Round(offerDurationTimeHours * TimeUtil.OneHourAsSeconds));
         }
 
         if (creatorType == OfferCreator.Trader)
-        // Trader offer
         {
-            return (long)databaseService.GetTrader(userID).Base.NextResupply;
+            return (long)databaseService.GetTrader(userId).Base.NextResupply;
         }
 
-        var randomSpread = randomUtil.GetDouble(ragfairConfig.Dynamic.EndTimeSeconds.Min, ragfairConfig.Dynamic.EndTimeSeconds.Max);
+        var randomSpread = randomUtil.GetDouble(RagfairConfig.Dynamic.EndTimeSeconds.Min, RagfairConfig.Dynamic.EndTimeSeconds.Max);
 
         // Fake-player offer
         return (long)Math.Round(time + randomSpread);
@@ -306,7 +301,7 @@ public class RagfairOfferGenerator(
             tasks.Add(
                 Task.Factory.StartNew(() =>
                 {
-                    CreateOffersFromAssort(assortItemWithChildren, replacingExpiredOffers, ragfairConfig.Dynamic);
+                    CreateOffersFromAssort(assortItemWithChildren, replacingExpiredOffers, RagfairConfig.Dynamic);
                 })
             );
         }
@@ -338,9 +333,9 @@ public class RagfairOfferGenerator(
 
         // Armor presets can hold plates above the allowed flea level, remove if necessary
         var isPreset = rootItem?.Upd?.SptPresetId is not null && presetHelper.IsPreset(rootItem.Upd.SptPresetId.Value);
-        if (!isExpiredOffer && isPreset && ragfairConfig.Dynamic.Blacklist.EnableBsgList)
+        if (!isExpiredOffer && isPreset && RagfairConfig.Dynamic.Blacklist.EnableBsgList)
         {
-            RemoveBannedPlatesFromPreset(assortItemWithChildren, ragfairConfig.Dynamic.Blacklist.ArmorPlate);
+            RemoveBannedPlatesFromPreset(assortItemWithChildren, RagfairConfig.Dynamic.Blacklist.ArmorPlate);
         }
 
         // Get number of offers to create
@@ -443,18 +438,18 @@ public class RagfairOfferGenerator(
             RemoveArmorPlates(itemWithChildren, rootItem);
         }
 
-        var isBarterOffer = randomUtil.GetChance100(ragfairConfig.Dynamic.Barter.ChancePercent);
+        var isBarterOffer = randomUtil.GetChance100(RagfairConfig.Dynamic.Barter.ChancePercent);
         var isPackOffer =
             !isBarterOffer
-            && randomUtil.GetChance100(ragfairConfig.Dynamic.Pack.ChancePercent)
+            && randomUtil.GetChance100(RagfairConfig.Dynamic.Pack.ChancePercent)
             && itemWithChildren.Count == 1
-            && itemHelper.IsOfBaseclasses(rootItem.Template, ragfairConfig.Dynamic.Pack.ItemTypeWhitelist);
+            && itemHelper.IsOfBaseclasses(rootItem.Template, RagfairConfig.Dynamic.Pack.ItemTypeWhitelist);
 
         List<BarterScheme> barterScheme;
         if (isPackOffer)
         {
             // Set pack size
-            desiredStackSize = randomUtil.GetInt(ragfairConfig.Dynamic.Pack.ItemCountMin, ragfairConfig.Dynamic.Pack.ItemCountMax);
+            desiredStackSize = randomUtil.GetInt(RagfairConfig.Dynamic.Pack.ItemCountMin, RagfairConfig.Dynamic.Pack.ItemCountMax);
 
             // Don't randomise pack items
             barterScheme = CreateCurrencyBarterScheme(itemWithChildren, isPackOffer, desiredStackSize);
@@ -463,8 +458,8 @@ public class RagfairOfferGenerator(
         {
             // Apply randomised properties
             RandomiseOfferItemUpdProperties(sellerId, itemWithChildren, itemToSellDetails, offerCreator);
-            barterScheme = CreateBarterBarterScheme(itemWithChildren, ragfairConfig.Dynamic.Barter);
-            if (ragfairConfig.Dynamic.Barter.MakeSingleStackOnly)
+            barterScheme = CreateBarterBarterScheme(itemWithChildren, RagfairConfig.Dynamic.Barter);
+            if (RagfairConfig.Dynamic.Barter.MakeSingleStackOnly)
             {
                 var rootBarterItem = itemWithChildren.FirstOrDefault();
                 if (rootBarterItem?.Upd != null)
@@ -502,7 +497,7 @@ public class RagfairOfferGenerator(
     /// <param name="rootItem">Root armor item</param>
     protected void RemoveArmorPlates(List<Item> itemWithChildren, Item rootItem)
     {
-        var armorConfig = ragfairConfig.Dynamic.Armor;
+        var armorConfig = RagfairConfig.Dynamic.Armor;
 
         var shouldRemovePlates = randomUtil.GetChance100(armorConfig.RemoveRemovablePlateChance);
         if (!shouldRemovePlates || !itemHelper.ArmorItemHasRemovablePlateSlots(rootItem.Template))
@@ -542,7 +537,7 @@ public class RagfairOfferGenerator(
             return;
         }
 
-        var blacklist = ragfairConfig.Dynamic.Blacklist;
+        var blacklist = RagfairConfig.Dynamic.Blacklist;
         var childAssortItems = assortsClone.Items.Where(x => !string.Equals(x.ParentId, "hideout", StringComparison.Ordinal)).ToList();
         foreach (var item in assortsClone.Items)
         {
@@ -601,7 +596,7 @@ public class RagfairOfferGenerator(
                 Items = items,
                 BarterScheme = barterSchemeItems,
                 LoyalLevel = loyalLevel,
-                Quantity = (int?)item.Upd.StackObjectsCount ?? 1,
+                Quantity = (int?)item.Upd?.StackObjectsCount ?? 1,
                 Creator = OfferCreator.Trader,
             };
             CreateAndAddFleaOffer(createOfferDetails);
@@ -615,12 +610,12 @@ public class RagfairOfferGenerator(
     ///     Get array of an item with its mods + condition properties (e.g. durability) <br />
     ///     Apply randomisation adjustments to condition if item base is found in ragfair.json/dynamic/condition
     /// </summary>
-    /// <param name="userID"> ID of owner of item </param>
+    /// <param name="userId"> ID of owner of item </param>
     /// <param name="itemWithMods"> Item and mods, get condition of first item (only first array item is modified) </param>
     /// <param name="itemDetails"> DB details of first item</param>
     /// <param name="offerCreator"></param>
     protected void RandomiseOfferItemUpdProperties(
-        MongoId userID,
+        MongoId userId,
         IEnumerable<Item> itemWithMods,
         TemplateItem itemDetails,
         OfferCreator offerCreator
@@ -639,7 +634,7 @@ public class RagfairOfferGenerator(
             }
 
             // Roll random chance to randomise item condition
-            if (randomUtil.GetChance100(ragfairConfig.Dynamic.Condition[parentId.Value].ConditionChance * 100))
+            if (randomUtil.GetChance100(RagfairConfig.Dynamic.Condition[parentId.Value].ConditionChance * 100))
             {
                 RandomiseItemCondition(parentId.Value, itemWithMods, itemDetails);
             }
@@ -654,7 +649,7 @@ public class RagfairOfferGenerator(
     protected MongoId? GetDynamicConditionIdForTpl(MongoId tpl)
     {
         // Get keys from condition config dictionary
-        var configConditions = ragfairConfig.Dynamic.Condition.Keys;
+        var configConditions = RagfairConfig.Dynamic.Condition.Keys;
         foreach (var baseClass in configConditions)
         {
             if (itemHelper.IsOfBaseclass(tpl, baseClass))
@@ -676,7 +671,7 @@ public class RagfairOfferGenerator(
     {
         var rootItem = itemWithMods.First();
 
-        var itemConditionValues = ragfairConfig.Dynamic.Condition[conditionSettingsId];
+        var itemConditionValues = RagfairConfig.Dynamic.Condition[conditionSettingsId];
         var maxMultiplier = randomUtil.GetDouble(itemConditionValues.Max.Min, itemConditionValues.Max.Min);
         var currentMultiplier = randomUtil.GetDouble(itemConditionValues.Current.Min, itemConditionValues.Current.Max);
 
@@ -692,7 +687,7 @@ public class RagfairOfferGenerator(
             var visorMod = itemWithMods.FirstOrDefault(item =>
                 item.ParentId == BaseClasses.ARMORED_EQUIPMENT.ToString() && item.SlotId == "mod_equipment_000"
             );
-            if (randomUtil.GetChance100(25) && visorMod != null)
+            if (visorMod != null && randomUtil.GetChance100(25))
             {
                 visorMod.AddUpd();
 
@@ -806,7 +801,7 @@ public class RagfairOfferGenerator(
 
     /// <summary>
     ///     Add missing conditions to an item if needed. <br />
-    ///     Durabiltiy for repairable items. <br />
+    ///     Durability for repairable items. <br />
     ///     HpResource for medical items.
     /// </summary>
     /// <param name="item"> Item to add conditions to </param>
@@ -911,7 +906,7 @@ public class RagfairOfferGenerator(
     protected List<TplWithFleaPrice> GetFleaPricesAsArray()
     {
         // Generate if needed
-        if (allowedFleaPriceItemsForBarter == null)
+        if (AllowedFleaPriceItemsForBarter == null)
         {
             var fleaPrices = databaseService.GetPrices();
 
@@ -920,13 +915,13 @@ public class RagfairOfferGenerator(
                 .Select(kvTpl => new TplWithFleaPrice { Tpl = kvTpl.Key, Price = kvTpl.Value })
                 .Where(item => itemHelper.GetItem(item.Tpl).Key);
 
-            var itemTypeBlacklist = ragfairConfig.Dynamic.Barter.ItemTypeBlacklist;
-            allowedFleaPriceItemsForBarter = filteredFleaItems
+            var itemTypeBlacklist = RagfairConfig.Dynamic.Barter.ItemTypeBlacklist;
+            AllowedFleaPriceItemsForBarter = filteredFleaItems
                 .Where(item => !itemHelper.IsOfBaseclasses(item.Tpl, itemTypeBlacklist))
                 .ToList();
         }
 
-        return allowedFleaPriceItemsForBarter;
+        return AllowedFleaPriceItemsForBarter;
     }
 
     /// <summary>

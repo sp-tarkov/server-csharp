@@ -59,8 +59,8 @@ public class BotInventoryGenerator(
         EquipmentSlots.Earpiece,
     ];
 
-    private readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
-    private readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
+    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
 
     private readonly FrozenSet<string> _slotsToCheck = [nameof(EquipmentSlots.Pockets), nameof(EquipmentSlots.SecuredContainer)];
 
@@ -197,7 +197,7 @@ public class BotInventoryGenerator(
         GetRaidConfigurationRequestData? raidConfig
     )
     {
-        if (!_botConfig.Equipment.TryGetValue(botGeneratorHelper.GetBotEquipmentRole(botRole), out var botEquipConfig))
+        if (!BotConfig.Equipment.TryGetValue(botGeneratorHelper.GetBotEquipmentRole(botRole), out var botEquipConfig))
         {
             logger.Error($"Bot Equipment generation failed, unable to find equipment filters for: {botRole}");
 
@@ -224,13 +224,13 @@ public class BotInventoryGenerator(
         }
 
         // Is PMC + generating armband + armband forcing is enabled
-        if (_pmcConfig.ForceArmband.Enabled && isPmc)
+        if (PMCConfig.ForceArmband.Enabled && isPmc)
         {
             // Replace armband pool with single tpl from config
             if (templateInventory.Equipment.TryGetValue(EquipmentSlots.ArmBand, out var armbands))
             {
                 // Get tpl based on pmc side
-                var armbandTpl = botRole == "pmcusec" ? _pmcConfig.ForceArmband.Usec : _pmcConfig.ForceArmband.Bear;
+                var armbandTpl = botRole == "pmcusec" ? PMCConfig.ForceArmband.Usec : PMCConfig.ForceArmband.Bear;
 
                 armbands.Clear();
                 armbands.Add(armbandTpl, 1);
@@ -599,7 +599,7 @@ public class BotInventoryGenerator(
 
             // Edge case: Filter the armor items mod pool if bot exists in config dict + config has armor slot
             if (
-                _botConfig.Equipment.ContainsKey(settings.BotData.EquipmentRole)
+                BotConfig.Equipment.ContainsKey(settings.BotData.EquipmentRole)
                 && settings.RandomisationDetails?.RandomisedArmorSlots != null
                 && settings.RandomisationDetails.RandomisedArmorSlots.Contains(settings.RootEquipmentSlot.ToString())
             )

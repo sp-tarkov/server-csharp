@@ -14,7 +14,7 @@ public class TraderCallbacks(HttpResponseUtil httpResponseUtil, TraderController
     : IOnLoad,
         IOnUpdate
 {
-    private readonly TraderConfig _traderConfig = configServer.GetConfig<TraderConfig>();
+    protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
 
     public Task OnLoad()
     {
@@ -65,6 +65,6 @@ public class TraderCallbacks(HttpResponseUtil httpResponseUtil, TraderController
     /// <returns></returns>
     public ValueTask<string> GetModdedTraderData(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(httpResponseUtil.NoBody(_traderConfig.ModdedTraders));
+        return new ValueTask<string>(httpResponseUtil.NoBody(TraderConfig.ModdedTraders));
     }
 }

@@ -41,9 +41,9 @@ public class RagfairOfferHelper(
     ConfigServer configServer
 )
 {
-    protected const string _goodSoldTemplate = "5bdabfb886f7743e152e867e 0"; // Your {soldItem} {itemCount} items were bought by {buyerNickname}.
-    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
-    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected const string GoodSoldTemplate = "5bdabfb886f7743e152e867e 0"; // Your {soldItem} {itemCount} items were bought by {buyerNickname}.
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
+    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
     ///     Pass through to ragfairOfferService.getOffers(), get flea offers a player should see
@@ -61,7 +61,7 @@ public class RagfairOfferHelper(
     )
     {
         var playerIsFleaBanned = pmcData.PlayerIsFleaBanned(timeUtil.GetTimeStamp());
-        var tieredFlea = _ragfairConfig.TieredFlea;
+        var tieredFlea = RagfairConfig.TieredFlea;
         var tieredFleaLimitTypes = tieredFlea.UnlocksType;
         return ragfairOfferService
             .GetOffers()
@@ -175,7 +175,7 @@ public class RagfairOfferHelper(
         // Get all offers that require the desired item and filter out offers from non traders if player below ragfair unlock
         var offerIDsForItem = ragfairRequiredItemsService.GetRequiredOffersById(searchRequest.NeededSearchId.Value);
 
-        var tieredFlea = _ragfairConfig.TieredFlea;
+        var tieredFlea = RagfairConfig.TieredFlea;
         var tieredFleaLimitTypes = tieredFlea.UnlocksType;
         var tieredFleaKeys = tieredFleaLimitTypes.Keys.ToHashSet();
 
@@ -215,7 +215,7 @@ public class RagfairOfferHelper(
         var offersMap = new Dictionary<MongoId, List<RagfairOffer>>();
         var offersToReturn = new List<RagfairOffer>();
         var playerIsFleaBanned = pmcData.PlayerIsFleaBanned(timeUtil.GetTimeStamp());
-        var tieredFlea = _ragfairConfig.TieredFlea;
+        var tieredFlea = RagfairConfig.TieredFlea;
         var tieredFleaLimitTypes = tieredFlea.UnlocksType;
 
         foreach (var desiredItemTpl in searchRequest.BuildItems)
@@ -810,9 +810,9 @@ public class RagfairOfferHelper(
     {
         // Generate a message to inform that item was sold
         var globalLocales = localeService.GetLocaleDb();
-        if (!globalLocales.TryGetValue(_goodSoldTemplate, out var soldMessageLocaleGuid))
+        if (!globalLocales.TryGetValue(GoodSoldTemplate, out var soldMessageLocaleGuid))
         {
-            logger.Error(serverLocalisationService.GetText("ragfair-unable_to_find_locale_by_key", _goodSoldTemplate));
+            logger.Error(serverLocalisationService.GetText("ragfair-unable_to_find_locale_by_key", GoodSoldTemplate));
         }
 
         // Used to replace tokens in sold message sent to player
@@ -822,7 +822,7 @@ public class RagfairOfferHelper(
         var tplVars = new SystemData
         {
             SoldItem = hasKey ? value : itemTpl,
-            BuyerNickname = botHelper.GetPmcNicknameOfMaxLength(_botConfig.BotNameLengthLimit),
+            BuyerNickname = botHelper.GetPmcNicknameOfMaxLength(BotConfig.BotNameLengthLimit),
             ItemCount = boughtAmount,
         };
 

@@ -31,8 +31,8 @@ public class LocationLootGenerator(
     ICloner cloner
 )
 {
-    protected readonly LocationConfig _locationConfig = configServer.GetConfig<LocationConfig>();
-    protected readonly SeasonalEventConfig _seasonalEventConfig = configServer.GetConfig<SeasonalEventConfig>();
+    protected readonly LocationConfig LocationConfig = configServer.GetConfig<LocationConfig>();
+    protected readonly SeasonalEventConfig SeasonalEventConfig = configServer.GetConfig<SeasonalEventConfig>();
 
     /// <summary>
     /// Generate Loot for provided location ()
@@ -56,7 +56,7 @@ public class LocationLootGenerator(
 
         // Pull location-specific spawn limits from db
         var itemsWithSpawnCountLimitsClone = cloner.Clone(
-            _locationConfig.LootMaxSpawnLimits.GetValueOrDefault(locationId.ToLowerInvariant())
+            LocationConfig.LootMaxSpawnLimits.GetValueOrDefault(locationId.ToLowerInvariant())
         );
 
         // Store items with spawn count limits inside so they can be accessed later inside static/dynamic loot spawn methods
@@ -123,7 +123,7 @@ public class LocationLootGenerator(
         if (!seasonalEventService.ChristmasEventEnabled())
         {
             allStaticContainersOnMap = allStaticContainersOnMap.Where(item =>
-                !_seasonalEventConfig.ChristmasContainerIds.Contains(item.Template.Id)
+                !SeasonalEventConfig.ChristmasContainerIds.Contains(item.Template.Id)
             );
         }
 
@@ -268,8 +268,8 @@ public class LocationLootGenerator(
     /// <returns>true = enabled</returns>
     protected bool LocationRandomisationEnabled(string locationId)
     {
-        return _locationConfig.ContainerRandomisationSettings.Enabled
-            && _locationConfig.ContainerRandomisationSettings.Maps.ContainsKey(locationId);
+        return LocationConfig.ContainerRandomisationSettings.Enabled
+            && LocationConfig.ContainerRandomisationSettings.Maps.ContainsKey(locationId);
     }
 
     /// <summary>
@@ -282,7 +282,7 @@ public class LocationLootGenerator(
         return staticContainers.Where(staticContainer =>
             staticContainer.Probability != 1
             && !staticContainer.Template.IsAlwaysSpawn.GetValueOrDefault(false)
-            && !_locationConfig.ContainerRandomisationSettings.ContainerTypesToNotRandomise.Contains(
+            && !LocationConfig.ContainerRandomisationSettings.ContainerTypesToNotRandomise.Contains(
                 staticContainer.Template.Items.FirstOrDefault().Template
             )
         );
@@ -298,7 +298,7 @@ public class LocationLootGenerator(
         return staticContainersOnMap.Where(staticContainer =>
             staticContainer.Probability == 1
             || staticContainer.Template.IsAlwaysSpawn.GetValueOrDefault(false)
-            || _locationConfig.ContainerRandomisationSettings.ContainerTypesToNotRandomise.Contains(
+            || LocationConfig.ContainerRandomisationSettings.ContainerTypesToNotRandomise.Contains(
                 staticContainer.Template.Items.FirstOrDefault().Template
             )
         );
@@ -363,12 +363,12 @@ public class LocationLootGenerator(
                     (int)
                         Math.Round(
                             groupKvP.Value.MinContainers.Value
-                                * _locationConfig.ContainerRandomisationSettings.ContainerGroupMinSizeMultiplier
+                                * LocationConfig.ContainerRandomisationSettings.ContainerGroupMinSizeMultiplier
                         ),
                     (int)
                         Math.Round(
                             groupKvP.Value.MaxContainers.Value
-                                * _locationConfig.ContainerRandomisationSettings.ContainerGroupMaxSizeMultiplier
+                                * LocationConfig.ContainerRandomisationSettings.ContainerGroupMaxSizeMultiplier
                         )
                 ),
             };
@@ -465,7 +465,7 @@ public class LocationLootGenerator(
 
         // Choose items to add to container, factor in weighting + lock money down
         // Filter out items picked that are already in the above `tplsForced` array
-        var chosenTpls = _locationConfig.AllowDuplicateItemsInStaticContainers
+        var chosenTpls = LocationConfig.AllowDuplicateItemsInStaticContainers
             ? containerLootPool.Draw(itemCountToAdd).Where(tpl => !tplsForced.Contains(tpl) && !counterTrackerHelper.IncrementCount(tpl))
             : containerLootPool
                 .DrawAndRemove(itemCountToAdd, lockList)
@@ -487,7 +487,7 @@ public class LocationLootGenerator(
             }
 
             // Check if item should have children removed
-            var items = _locationConfig.TplsToStripChildItemsFrom.Contains(tplToAdd)
+            var items = LocationConfig.TplsToStripChildItemsFrom.Contains(tplToAdd)
                 ? [chosenItemWithChildren.Items.FirstOrDefault()] // Strip children from parent
                 : chosenItemWithChildren.Items;
 
@@ -495,7 +495,7 @@ public class LocationLootGenerator(
             var result = containerMap.FindSlotForItem(chosenItemWithChildren.Width, chosenItemWithChildren.Height);
             if (!result.Success.GetValueOrDefault(false))
             {
-                if (failedToFitAttemptCount > _locationConfig.FitLootIntoContainerAttempts)
+                if (failedToFitAttemptCount > LocationConfig.FitLootIntoContainerAttempts)
                 // x attempts to fit an item, container is probably full, stop trying to add more
                 {
                     break;
@@ -625,9 +625,9 @@ public class LocationLootGenerator(
     /// <returns>multiplier</returns>
     protected double GetLooseLootMultiplierForLocation(string location)
     {
-        return _locationConfig.LooseLootMultiplier.TryGetValue(location, out var value)
+        return LocationConfig.LooseLootMultiplier.TryGetValue(location, out var value)
             ? value
-            : _locationConfig.LooseLootMultiplier["default"];
+            : LocationConfig.LooseLootMultiplier["default"];
     }
 
     /// <summary>
@@ -637,9 +637,9 @@ public class LocationLootGenerator(
     /// <returns>multiplier</returns>
     protected double GetStaticLootMultiplierForLocation(string location)
     {
-        return _locationConfig.StaticLootMultiplier.TryGetValue(location, out var value)
+        return LocationConfig.StaticLootMultiplier.TryGetValue(location, out var value)
             ? value
-            : _locationConfig.StaticLootMultiplier["default"];
+            : LocationConfig.StaticLootMultiplier["default"];
     }
 
     /// <summary>
@@ -681,7 +681,7 @@ public class LocationLootGenerator(
                 * randomUtil.GetNormallyDistributedRandomNumber(dynamicLootDist.SpawnpointCount.Mean, dynamicLootDist.SpawnpointCount.Std)
         );
 
-        var blacklistedSpawnPoints = _locationConfig.LooseLootBlacklist.GetValueOrDefault(locationName);
+        var blacklistedSpawnPoints = LocationConfig.LooseLootBlacklist.GetValueOrDefault(locationName);
 
         // Init empty array to hold spawn points, letting us pick them pseudo-randomly
         var spawnPointArray = new ProbabilityObjectArray<string, Spawnpoint>(cloner);
@@ -967,7 +967,7 @@ public class LocationLootGenerator(
             // Create array with just magazine
             List<Item> magazineItem = [new() { Id = new MongoId(), Template = chosenTpl }];
 
-            if (randomUtil.GetChance100(_locationConfig.StaticMagazineLootHasAmmoChancePercent))
+            if (randomUtil.GetChance100(LocationConfig.StaticMagazineLootHasAmmoChancePercent))
             // Add randomised amount of cartridges
             {
                 itemHelper.FillMagazineWithRandomCartridge(
@@ -975,7 +975,7 @@ public class LocationLootGenerator(
                     itemDbTemplate, // Magazine template
                     staticAmmoDist,
                     null,
-                    _locationConfig.MinFillLooseMagazinePercent / 100d
+                    LocationConfig.MinFillLooseMagazinePercent / 100d
                 );
             }
 
@@ -990,7 +990,7 @@ public class LocationLootGenerator(
             // Ensure all IDs are unique
             itemWithChildren = cloner.Clone(itemWithChildren).ReplaceIDs().ToList();
 
-            if (_locationConfig.TplsToStripChildItemsFrom.Contains(chosenItem.Template))
+            if (LocationConfig.TplsToStripChildItemsFrom.Contains(chosenItem.Template))
             // Strip children from parent before adding
             {
                 itemWithChildren = [itemWithChildren.FirstOrDefault()];
@@ -1070,7 +1070,7 @@ public class LocationLootGenerator(
         }
         else if (itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.MAGAZINE))
         {
-            if (randomUtil.GetChance100(_locationConfig.MagazineLootHasAmmoChancePercent))
+            if (randomUtil.GetChance100(LocationConfig.MagazineLootHasAmmoChancePercent))
             {
                 // Create array with just magazine
                 GenerateStaticMagazineItem(staticAmmoDist, rootItem, itemTemplate, items);
@@ -1114,7 +1114,7 @@ public class LocationLootGenerator(
             // We make base item in calling method, no need to do it here
             if (armorDbTemplate.Properties?.Slots is not null && armorDbTemplate.Properties.Slots.Any())
             {
-                items = itemHelper.AddChildSlotItems(items, armorDbTemplate, _locationConfig.EquipmentLootSettings.ModSpawnChancePercent);
+                items = itemHelper.AddChildSlotItems(items, armorDbTemplate, LocationConfig.EquipmentLootSettings.ModSpawnChancePercent);
             }
         }
 
@@ -1253,7 +1253,7 @@ public class LocationLootGenerator(
             itemTemplate,
             staticAmmoDist,
             null,
-            _locationConfig.MinFillStaticMagazinePercent / 100d
+            LocationConfig.MinFillStaticMagazinePercent / 100d
         );
 
         // Replace existing magazine with above array
