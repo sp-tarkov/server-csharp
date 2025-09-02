@@ -580,34 +580,34 @@ public class LocationLootGenerator(
         Dictionary<MongoId, StaticLootDetails> staticLootDist
     )
     {
-        var seasonalEventActive = seasonalEventService.SeasonalEventEnabled();
-        var seasonalItemTplBlacklist = seasonalEventService.GetInactiveSeasonalEventItems();
-
-        var itemDistribution = new ProbabilityObjectArray<MongoId, float?>(cloner);
-
-        var itemContainerDistribution = staticLootDist[containerTypeId]?.ItemDistribution;
-        if (itemContainerDistribution is null)
+        if (!staticLootDist.TryGetValue(containerTypeId, out var staticLoot) || staticLoot?.ItemDistribution is null)
         {
             logger.Warning(serverLocalisationService.GetText("location-missing_item_distribution_data", containerTypeId));
 
-            return itemDistribution;
+            return new ProbabilityObjectArray<MongoId, float?>(cloner);
         }
 
-        foreach (var icd in itemContainerDistribution)
+        var itemDistribution = new ProbabilityObjectArray<MongoId, float?>(cloner);
+        var seasonalEventActive = seasonalEventService.SeasonalEventEnabled();
+        var seasonalItemTplBlacklist = seasonalEventService.GetInactiveSeasonalEventItems();
+
+        foreach (var itemWithProbability in staticLoot.ItemDistribution)
         {
-            if (!seasonalEventActive && seasonalItemTplBlacklist.Contains(icd.Tpl))
+            if (!seasonalEventActive && seasonalItemTplBlacklist.Contains(itemWithProbability.Tpl))
             {
-                // Skip seasonal event items if they're not enabled
+                // Prevent seasonal loot when not inside season
                 continue;
             }
 
-            if (itemFilterService.IsLootableItemBlacklisted(icd.Tpl))
+            if (itemFilterService.IsLootableItemBlacklisted(itemWithProbability.Tpl))
             {
-                // Ensure no blacklisted lootable items are in pool
+                // Prevent non-loot items getting into pool
                 continue;
             }
 
-            itemDistribution.Add(new ProbabilityObject<MongoId, float?>(icd.Tpl, icd.RelativeProbability.Value, null));
+            itemDistribution.Add(
+                new ProbabilityObject<MongoId, float?>(itemWithProbability.Tpl, itemWithProbability.RelativeProbability.Value, null)
+            );
         }
 
         return itemDistribution;
