@@ -708,8 +708,10 @@ public class BotWeaponGenerator(
 
         // Try to get cartridges from slots array first, if none found, try Cartridges array
         var cartridges =
-            magazineTemplate.Value.Properties.Slots.FirstOrDefault()?.Properties?.Filters.FirstOrDefault()?.Filter
-            ?? magazineTemplate.Value.Properties.Cartridges.FirstOrDefault()?.Properties?.Filters.FirstOrDefault()?.Filter;
+            magazineTemplate.Value.Properties.Slots.FirstOrDefault()?.Properties?.Filters.FirstOrDefault()?.Filter ?? magazineTemplate
+                .Value.Properties.Cartridges.FirstOrDefault()
+                ?.Properties?.Filters.FirstOrDefault()
+                ?.Filter;
 
         return cartridges ?? [];
     }
