@@ -1204,7 +1204,7 @@ public class LocationLootGenerator(
 
     protected void GenerateStaticMagazineItem(
         Dictionary<string, IEnumerable<StaticAmmoDetails>> staticAmmoDist,
-        Item? rootItem,
+        Item rootItem,
         TemplateItem itemTemplate,
         List<Item> items
     )
