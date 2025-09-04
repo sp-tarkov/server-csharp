@@ -15,8 +15,7 @@ public record TestModMetadata : AbstractModMetadata
     public override Version Version { get; init; } = new("1.0.0");
     public override Version SptVersion { get; init; } = new("4.0.0");
     public override List<string>? Incompatibilities { get; init; }
-    public override Dictionary<string, Version>? ModDependencies { get; init; } =
-        new() { ["com.sp-tarkov.test-mod"] = new Version("1.0.0") };
+    public override Dictionary<string, Version>? ModDependencies { get; init; }
     public override string? Url { get; init; }
     public override bool? IsBundleMod { get; init; }
     public override string License { get; init; } = "MIT";
