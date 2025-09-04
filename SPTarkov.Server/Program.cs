@@ -53,12 +53,12 @@ public static class Program
             // Search for mod dlls
             loadedMods = ModDllLoader.LoadAllMods();
             // validate and sort mods, this will also discard any mods that are invalid
-            var sortedLoadedMods = ValidateMods(loadedMods);
+            var validatedLoadedMods = ValidateMods(loadedMods);
 
-            // update the loadedMods list with our validated sorted mods
-            loadedMods = sortedLoadedMods;
+            // update the loadedMods list with our validated mods
+            loadedMods = validatedLoadedMods;
 
-            diHandler.AddInjectableTypesFromAssemblies(sortedLoadedMods.SelectMany(a => a.Assemblies));
+            diHandler.AddInjectableTypesFromAssemblies(validatedLoadedMods.SelectMany(a => a.Assemblies));
         }
         diHandler.InjectAll();
 
@@ -187,10 +187,9 @@ public static class Program
             .Services.AddScoped(typeof(ISptLogger<ModValidator>), typeof(SptLogger<ModValidator>))
             .AddScoped(typeof(ISemVer), typeof(SemanticVersioningSemVer))
             .AddSingleton<ModValidator>()
-            .AddSingleton<ModLoadOrder>()
             .BuildServiceProvider();
         var modValidator = provider.GetRequiredService<ModValidator>();
-        return modValidator.ValidateAndSort(mods);
+        return modValidator.ValidateMods(mods);
     }
 
     private static void SetConsoleOutputMode()
