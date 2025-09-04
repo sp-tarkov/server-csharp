@@ -192,8 +192,7 @@
     "containerTypesToNotRandomise": [
       "578f87b7245977356274f2cd",
       "578f8782245977354405a1e3",
-      "578f879c24597735401e6bc6",
-      "578f8782245977354405a1e3"
+      "578f879c24597735401e6bc6"
     ],
     "containerGroupMinSizeMultiplier": 1,
     "containerGroupMaxSizeMultiplier": 1
