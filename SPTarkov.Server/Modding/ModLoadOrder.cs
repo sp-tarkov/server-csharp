@@ -5,91 +5,90 @@ namespace SPTarkov.Server.Modding;
 
 public class ModLoadOrder(ICloner cloner)
 {
-    protected Dictionary<string, AbstractModMetadata> loadOrder = new();
-    protected Dictionary<string, AbstractModMetadata> mods = new();
-    protected Dictionary<string, AbstractModMetadata> modsAvailable = new();
+    protected readonly Dictionary<string, AbstractModMetadata> LoadOrder = new();
+    protected Dictionary<string, AbstractModMetadata> Mods = new();
+    protected Dictionary<string, AbstractModMetadata> ModsAvailable = new();
 
     public Dictionary<string, AbstractModMetadata> SetModList(Dictionary<string, AbstractModMetadata> mods)
     {
-        this.mods = mods;
-        modsAvailable = cloner.Clone(this.mods);
-        loadOrder = new Dictionary<string, AbstractModMetadata>();
+        this.Mods = mods;
+        ModsAvailable = cloner.Clone(this.Mods);
+        LoadOrder.Clear();
 
         var visited = new HashSet<string>();
 
         // invert loadBefore into loadAfter on specified mods
-        foreach (var (modName, modConfig) in modsAvailable)
+        foreach (var (modGuid, modConfig) in ModsAvailable)
         {
             if ((modConfig.LoadBefore ?? []).Count > 0)
             {
-                InvertLoadBefore(modName);
+                InvertLoadBefore(modGuid);
             }
         }
 
-        foreach (var modName in modsAvailable.Keys)
+        foreach (var modGuid in ModsAvailable.Keys)
         {
-            GetLoadOrderRecursive(modName, visited);
+            GetLoadOrderRecursive(modGuid, visited);
         }
 
-        return loadOrder;
+        return LoadOrder;
     }
 
     public List<string> GetLoadOrder()
     {
-        return [.. loadOrder.Keys];
+        return [.. LoadOrder.Keys];
     }
 
-    public HashSet<string> GetModsOnLoadBefore(string mod)
+    public HashSet<string> GetModsOnLoadBefore(string modGuid)
     {
-        if (!mods.TryGetValue(mod, out var config))
+        if (!Mods.TryGetValue(modGuid, out var config))
         {
-            throw new Exception($"The mod {mod} does not exist!");
+            throw new Exception($"The mod: {modGuid} does not exist!");
         }
 
         var loadBefore = new HashSet<string>(config.LoadBefore);
-
-        foreach (var loadBeforeMod in loadBefore)
+        foreach (var loadBeforeModGuid in loadBefore)
         {
-            if (!mods.ContainsKey(loadBeforeMod))
+            if (!Mods.ContainsKey(loadBeforeModGuid))
             {
-                loadBefore.Remove(loadBeforeMod);
+                loadBefore.Remove(loadBeforeModGuid);
             }
         }
 
         return loadBefore;
     }
 
-    protected void InvertLoadBefore(string mod)
+    protected void InvertLoadBefore(string modGuid)
     {
-        var loadBefore = GetModsOnLoadBefore(mod);
+        var loadBefore = GetModsOnLoadBefore(modGuid);
 
         foreach (var loadBeforeMod in loadBefore)
         {
-            var loadBeforeModConfig = modsAvailable[loadBeforeMod];
+            var loadBeforeModConfig = ModsAvailable[loadBeforeMod];
 
             loadBeforeModConfig.LoadAfter ??= [];
-            loadBeforeModConfig.LoadAfter.Add(mod);
+            loadBeforeModConfig.LoadAfter.Add(modGuid);
 
-            modsAvailable.Add(loadBeforeMod, loadBeforeModConfig);
+            ModsAvailable.Add(loadBeforeMod, loadBeforeModConfig);
         }
     }
 
-    protected void GetLoadOrderRecursive(string mod, HashSet<string> visited)
+    protected void GetLoadOrderRecursive(string modGuid, HashSet<string> visited)
     {
         // Validate package
-        if (loadOrder.ContainsKey(mod))
+        if (LoadOrder.ContainsKey(modGuid))
         {
             return;
         }
 
-        if (visited.Contains(mod))
+        if (visited.Contains(modGuid))
         {
             // Additional info to help debug
-            throw new Exception($"Cyclic dependency detected for mod {mod}!");
+            throw new Exception($"Cyclic dependency detected for mod: {modGuid}!");
         }
 
         // Check dependencies
-        if (!modsAvailable.TryGetValue(mod, out var config))
+        if (!ModsAvailable.TryGetValue(modGuid, out var config))
         {
             throw new Exception("modloader-error_parsing_mod_load_order");
         }
@@ -99,27 +98,27 @@ public class ModLoadOrder(ICloner cloner)
 
         var dependencies = new HashSet<string>(config.ModDependencies.Keys);
 
-        foreach (var modAfter in config.LoadAfter)
+        foreach (var modAfterGuid in config.LoadAfter)
         {
-            if (modsAvailable.TryGetValue(modAfter, out var value))
+            if (ModsAvailable.TryGetValue(modAfterGuid, out var value))
             {
-                if (value?.LoadAfter?.Contains(mod) ?? false)
+                if (value?.LoadAfter?.Contains(modGuid) ?? false)
                 {
                     throw new Exception("modloader-load_order_conflict");
                 }
 
-                dependencies.Add(modAfter);
+                dependencies.Add(modAfterGuid);
             }
         }
 
-        visited.Add(mod);
+        visited.Add(modGuid);
 
-        foreach (var nextMod in dependencies)
+        foreach (var nextModGuid in dependencies)
         {
-            GetLoadOrderRecursive(nextMod, visited);
+            GetLoadOrderRecursive(nextModGuid, visited);
         }
 
-        visited.Remove(mod);
-        loadOrder.Add(mod, config);
+        visited.Remove(modGuid);
+        LoadOrder.Add(modGuid, config);
     }
 }
