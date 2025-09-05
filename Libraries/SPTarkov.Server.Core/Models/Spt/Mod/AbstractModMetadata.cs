@@ -30,7 +30,7 @@ public abstract record AbstractModMetadata
     /// <summary>
     /// People who have contributed to this mod
     /// </summary>
-    public abstract List<string>? Contributors { get; set; }
+    public abstract List<string>? Contributors { get; init; }
 
     /// <summary>
     /// Semantic version of this mod, this uses the semver standard: https://semver.org/
@@ -39,7 +39,7 @@ public abstract record AbstractModMetadata
     /// <br/>
     /// Version = new Version("1.0.0.0"); is not
     /// </summary>
-    public abstract Version Version { get; }
+    public abstract Version Version { get; init; }
 
     /// <summary>
     /// SPT version this mod was built for, this uses the semver standard: https://semver.org/
@@ -48,39 +48,29 @@ public abstract record AbstractModMetadata
     /// <br/>
     /// Version = new Version("4.0.0.0"); is not
     /// </summary>
-    public abstract Version SptVersion { get; }
-
-    /// <summary>
-    /// List of mods this mod should load before
-    /// </summary>
-    public abstract List<string>? LoadBefore { get; set; }
-
-    /// <summary>
-    /// List of mods this mod should load after
-    /// </summary>
-    public abstract List<string>? LoadAfter { get; set; }
+    public abstract Version SptVersion { get; init; }
 
     /// <summary>
     /// List of mods not compatible with this mod
     /// </summary>
-    public abstract List<string>? Incompatibilities { get; set; }
+    public abstract List<string>? Incompatibilities { get; init; }
 
     /// <summary>
     /// Dictionary of mods this mod depends on.
     ///
     /// Mod dependency is the key, version is the value
     /// </summary>
-    public abstract Dictionary<string, Version>? ModDependencies { get; set; }
+    public abstract Dictionary<string, Version>? ModDependencies { get; init; }
 
     /// <summary>
     /// Link to this mod's mod page, or GitHub page
     /// </summary>
-    public abstract string? Url { get; set; }
+    public abstract string? Url { get; init; }
 
     /// <summary>
     /// Does this mod load bundles
     /// </summary>
-    public abstract bool? IsBundleMod { get; set; }
+    public abstract bool? IsBundleMod { get; init; }
 
     /// <summary>
     /// Name of the license this mod uses
