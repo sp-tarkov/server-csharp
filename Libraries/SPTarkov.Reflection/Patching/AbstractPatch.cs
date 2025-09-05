@@ -6,6 +6,9 @@ namespace SPTarkov.Reflection.Patching;
 /// <summary>
 ///     Harmony patch wrapper class. See mod example 6.1 for usage.
 /// </summary>
+/// <remarks>
+///     A known limitation is that exceptions and logging are only sent to the console and are not color coded. There is no disk logging here.
+/// </remarks>
 public abstract class AbstractPatch
 {
     /// <summary>
@@ -19,14 +22,20 @@ public abstract class AbstractPatch
     public bool IsActive { get; private set; }
 
     /// <summary>
+    ///     Is this patch managed by the PatchManager?
+    /// </summary>
+    public bool IsManaged { get; private set; }
+
+    /// <summary>
     ///     The harmony Id assigned to this patch, usually the name of the patch class.
     /// </summary>
     public string HarmonyId
     {
-        get { return _harmony.Id; }
+        get { return _harmony?.Id ?? "Harmony Id is null for this patch"; }
     }
 
-    private readonly Harmony _harmony;
+    private Harmony? _harmony;
+
     private readonly List<HarmonyMethod> _prefixList;
     private readonly List<HarmonyMethod> _postfixList;
     private readonly List<HarmonyMethod> _transpilerList;
@@ -54,7 +63,7 @@ public abstract class AbstractPatch
             && _ilManipulatorList.Count == 0
         )
         {
-            throw new Exception($"{_harmony.Id}: At least one of the patch methods must be specified");
+            throw new PatchException($"{HarmonyId}: At least one of the patch methods must be specified");
         }
     }
 
@@ -100,34 +109,36 @@ public abstract class AbstractPatch
 
         if (TargetMethod == null)
         {
-            throw new InvalidOperationException($"{_harmony.Id}: TargetMethod is null");
+            throw new PatchException($"{HarmonyId}: TargetMethod is null");
         }
 
         try
         {
+            // Using null forgiving operator here because we want to throw if _harmony is null, but want the compiler to shut up about it.
+
             foreach (var prefix in _prefixList)
             {
-                _harmony.Patch(TargetMethod, prefix: prefix);
+                _harmony!.Patch(TargetMethod, prefix: prefix);
             }
 
             foreach (var postfix in _postfixList)
             {
-                _harmony.Patch(TargetMethod, postfix: postfix);
+                _harmony!.Patch(TargetMethod, postfix: postfix);
             }
 
             foreach (var transpiler in _transpilerList)
             {
-                _harmony.Patch(TargetMethod, transpiler: transpiler);
+                _harmony!.Patch(TargetMethod, transpiler: transpiler);
             }
 
             foreach (var finalizer in _finalizerList)
             {
-                _harmony.Patch(TargetMethod, finalizer: finalizer);
+                _harmony!.Patch(TargetMethod, finalizer: finalizer);
             }
 
             foreach (var ilmanipulator in _ilManipulatorList)
             {
-                _harmony.Patch(TargetMethod, ilmanipulator: ilmanipulator);
+                _harmony!.Patch(TargetMethod, ilmanipulator: ilmanipulator);
             }
 
             ModPatchCache.AddPatch(this);
@@ -135,8 +146,24 @@ public abstract class AbstractPatch
         }
         catch (Exception ex)
         {
-            throw new Exception($"{_harmony.Id}:", ex);
+            throw new Exception($"{HarmonyId}:", ex);
         }
+    }
+
+    /// <summary>
+    ///     Internal use only, called from the patch manager.
+    /// </summary>
+    /// <param name="harmony">Harmony instance of the patch manager</param>
+    internal void Enable(Harmony harmony)
+    {
+        if (!ReferenceEquals(_harmony, harmony))
+        {
+            // Override the initial harmony instance with the PatchManagers instance
+            _harmony = harmony;
+        }
+
+        IsManaged = true;
+        Enable();
     }
 
     /// <summary>
@@ -154,23 +181,44 @@ public abstract class AbstractPatch
 
         if (target == null)
         {
-            throw new InvalidOperationException($"{_harmony.Id}: TargetMethod is null");
+            throw new PatchException($"{HarmonyId}: TargetMethod is null");
         }
 
         try
         {
-            _harmony.Unpatch(target, HarmonyPatchType.All, _harmony.Id);
+            // Using null forgiving operator here because we want to throw if _harmony is null, but want the compiler to shut up about it.
+            _harmony!.Unpatch(target, HarmonyPatchType.All, _harmony.Id);
         }
         catch (Exception ex)
         {
-            throw new Exception($"{_harmony.Id}:", ex);
+            throw new PatchException($"{HarmonyId}:", ex);
         }
 
         if (!ModPatchCache.RemovePatch(this))
         {
-            throw new Exception($"{_harmony.Id}: Target patch not present in cache, a mod is likely externally altering it.");
+            throw new PatchException($"{HarmonyId}: Target patch not present in cache, a mod is likely externally altering it.");
         }
 
         IsActive = false;
+    }
+
+    /// <summary>
+    ///     Internal use only, called from the patch manager.
+    /// </summary>
+    /// <param name="harmony">Harmony instance of the patch manager</param>
+    internal void Disable(Harmony harmony)
+    {
+        //  Attempting to disable a patch that is not managed by the patch manager
+        if (harmony is null || !ReferenceEquals(_harmony, harmony))
+        {
+            throw new PatchException(
+                $"Patch: {GetType().Name} is attempting to be disabled internally while not managed by the patch manager."
+            );
+        }
+
+        Disable();
+
+        // This patch is no longer considered managed.
+        IsManaged = false;
     }
 }

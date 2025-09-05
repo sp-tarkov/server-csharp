@@ -19,4 +19,7 @@
   <ItemGroup>
     <PackageReference Include="HarmonyX" Version="2.14.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SPTarkov.DI\SPTarkov.DI.csproj" />
+  </ItemGroup>
 </Project>

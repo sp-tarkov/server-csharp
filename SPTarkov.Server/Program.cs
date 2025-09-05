@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Https;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.DI;
+using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Loaders;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -46,6 +47,7 @@ public static class Program
         // register SPT components
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(Program));
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(App));
+        diHandler.AddInjectableTypesFromTypeAssembly(typeof(PatchManager));
 
         List<SptMod> loadedMods = [];
         if (ProgramStatics.MODS())
