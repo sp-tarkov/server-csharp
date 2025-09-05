@@ -275,8 +275,8 @@ public class LocationLootGenerator(
     /// <summary>
     ///     Get containers with a non-100% chance to spawn OR are NOT on the container type randomistion blacklist
     /// </summary>
-    /// <param name="staticContainers"></param>
-    /// <returns>StaticContainerData array</returns>
+    /// <param name="staticContainers">All static containers to pick from</param>
+    /// <returns>StaticContainerData collection</returns>
     protected IEnumerable<StaticContainerData> GetRandomisableContainersOnMap(IEnumerable<StaticContainerData> staticContainers)
     {
         return staticContainers.Where(staticContainer =>
@@ -292,7 +292,7 @@ public class LocationLootGenerator(
     ///     Get containers with 100% spawn rate or have a type on the randomistion ignore list
     /// </summary>
     /// <param name="staticContainersOnMap"></param>
-    /// <returns>IStaticContainerData array</returns>
+    /// <returns>IStaticContainerData collection</returns>
     protected IEnumerable<StaticContainerData> GetGuaranteedContainers(IEnumerable<StaticContainerData> staticContainersOnMap)
     {
         return staticContainersOnMap.Where(staticContainer =>
@@ -354,20 +354,20 @@ public class LocationLootGenerator(
     {
         // Create dictionary of all group ids and choose a count of containers the map will spawn of that group
         var mapping = new Dictionary<string, ContainerGroupCount>();
-        foreach (var groupKvP in staticContainerGroupData.ContainersGroups)
+        foreach (var (containerGroupId, containerMinMax) in staticContainerGroupData.ContainersGroups)
         {
-            mapping[groupKvP.Key] = new ContainerGroupCount
+            mapping[containerGroupId] = new ContainerGroupCount
             {
                 ContainerIdsWithProbability = new Dictionary<string, double>(),
                 ChosenCount = randomUtil.GetInt(
                     (int)
                         Math.Round(
-                            groupKvP.Value.MinContainers.Value
+                            containerMinMax.MinContainers.Value
                                 * LocationConfig.ContainerRandomisationSettings.ContainerGroupMinSizeMultiplier
                         ),
                     (int)
                         Math.Round(
-                            groupKvP.Value.MaxContainers.Value
+                            containerMinMax.MaxContainers.Value
                                 * LocationConfig.ContainerRandomisationSettings.ContainerGroupMaxSizeMultiplier
                         )
                 ),
