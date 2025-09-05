@@ -14,7 +14,14 @@ namespace SPTarkov.Reflection.Patching;
 [Injectable]
 public class PatchManager
 {
+    /// <summary>
+    ///     Patcher name to be assigned to the harmony instance this manager controls. MUST be set prior to patching
+    /// </summary>
     public string? PatcherName { get; set; }
+
+    /// <summary>
+    ///     Should the manager find and enable patches on its own?
+    /// </summary>
     public bool AutoPatch { get; set; }
 
     private Harmony? _harmony;
