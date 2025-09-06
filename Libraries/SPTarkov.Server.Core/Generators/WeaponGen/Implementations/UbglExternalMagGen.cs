@@ -28,7 +28,7 @@ public class UbglExternalMagGen(BotWeaponGeneratorHelper botWeaponGeneratorHelpe
             inventoryMagGen.GetAmmoTemplate().Id,
             (int)bulletCount,
             inventoryMagGen.GetPmcInventory(),
-            [EquipmentSlots.TacticalVest]
+            [EquipmentSlots.TacticalVest, EquipmentSlots.Pockets]
         );
     }
 }

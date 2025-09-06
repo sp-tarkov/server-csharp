@@ -140,7 +140,7 @@ public class BotWeaponGeneratorHelper(
             {
                 logger.Debug($"Unable to add ammo: {ammoItem.Template} to bot inventory, {result.ToString()}");
 
-                if (result == ItemAddedResult.NO_SPACE || result == ItemAddedResult.NO_CONTAINERS)
+                if (result is ItemAddedResult.NO_SPACE or ItemAddedResult.NO_CONTAINERS)
                 // If there's no space for 1 stack or no containers to hold item, there's no space for the others
                 {
                     break;
