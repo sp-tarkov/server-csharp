@@ -20,14 +20,14 @@ public class GiveMeSpaceMessageHandler(
     ConfigServer configServer
 ) : IChatMessageHandler
 {
-    private readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
     public int GetPriority()
     {
         return 100;
     }
 
-    public bool CanHandle(string message)
+    public bool CanHandle(string? message)
     {
         return string.Equals(message, "givemespace", StringComparison.OrdinalIgnoreCase);
     }
@@ -35,7 +35,7 @@ public class GiveMeSpaceMessageHandler(
     public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         const string stashRowGiftId = "StashRows";
-        var maxGiftsToSendCount = _coreConfig.Features.ChatbotFeatures.CommandUseLimits[stashRowGiftId] ?? 5;
+        var maxGiftsToSendCount = CoreConfig.Features.ChatbotFeatures.CommandUseLimits[stashRowGiftId] ?? 5;
         if (profileHelper.PlayerHasReceivedMaxNumberOfGift(sessionId, stashRowGiftId, maxGiftsToSendCount))
         {
             mailSendService.SendUserMessageToPlayer(

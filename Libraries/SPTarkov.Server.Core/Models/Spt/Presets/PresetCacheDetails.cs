@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Presets;
 
 public record PresetCacheDetails
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     // Preset Ids related to the tpl
     public HashSet<MongoId> PresetIds { get; set; }
 

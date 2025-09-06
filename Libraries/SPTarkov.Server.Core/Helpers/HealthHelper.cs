@@ -1,8 +1,10 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Exceptions.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using BodyPartHealth = SPTarkov.Server.Core.Models.Eft.Common.Tables.BodyPartHealth;
@@ -10,33 +12,47 @@ using BodyPartHealth = SPTarkov.Server.Core.Models.Eft.Common.Tables.BodyPartHea
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class HealthHelper(TimeUtil timeUtil, SaveServer saveServer, ProfileHelper profileHelper, ConfigServer configServer)
+public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, ConfigServer configServer)
 {
-    protected readonly HealthConfig _healthConfig = configServer.GetConfig<HealthConfig>();
+    protected readonly HealthConfig HealthConfig = configServer.GetConfig<HealthConfig>();
+    protected readonly HashSet<string> EffectsToSkip = ["Dehydration", "Exhaustion"];
 
     /// <summary>
     ///     Update player profile vitality values with changes from client request object
     /// </summary>
-    /// <param name="sessionID">Session id</param>
+    /// <param name="sessionId">Session id</param>
     /// <param name="pmcProfileToUpdate">Player profile to apply changes to</param>
     /// <param name="healthChanges">Changes to apply </param>
-    /// <param name="isDead">OPTIONAL - Is player dead</param>
-    public void ApplyHealthChangesToProfile(MongoId sessionID, PmcData pmcProfileToUpdate, BotBaseHealth healthChanges, bool isDead = false)
+    public void ApplyHealthChangesToProfile(MongoId sessionId, PmcData pmcProfileToUpdate, BotBaseHealth healthChanges)
     {
-        var fullProfile = saveServer.GetProfile(sessionID);
-        var profileEdition = fullProfile.ProfileInfo.Edition;
-        var profileSide = fullProfile.CharacterData.PmcData.Info.Side;
-
+        /* TODO: Not used here, need to check node or a live profile, commented out for now to avoid the potential alloc - Cj
+        var fullProfile = saveServer.GetProfile(sessionId);
+        var profileEdition = fullProfile.ProfileInfo?.Edition;
+        var profileSide = fullProfile.CharacterData?.PmcData?.Info?.Side;
         // Get matching 'side' e.g. USEC
         var matchingSide = profileHelper.GetProfileTemplateForSide(profileEdition, profileSide);
-
         var defaultTemperature = matchingSide?.Character?.Health?.Temperature ?? new CurrentMinMax { Current = 36.6 };
+        */
+
+        if (healthChanges.BodyParts is null)
+        {
+            const string message = "healthChanges.BodyParts is null when trying to apply health changes";
+            logger.Error(message);
+            throw new HealthHelperException(message);
+        }
 
         // Alter saved profiles Health with values from post-raid client data
-        ModifyProfileHealthProperties(pmcProfileToUpdate, healthChanges.BodyParts, ["Dehydration", "Exhaustion"]);
+        ModifyProfileHealthProperties(pmcProfileToUpdate, healthChanges.BodyParts, EffectsToSkip);
 
         // Adjust hydration/energy/temperature
         AdjustProfileHydrationEnergyTemperature(pmcProfileToUpdate, healthChanges);
+
+        if (pmcProfileToUpdate.Health is null)
+        {
+            const string message = "pmcProfileToUpdate.Health is null when trying to apply health changes";
+            logger.Error(message);
+            throw new HealthHelperException(message);
+        }
 
         // Update last edited timestamp
         pmcProfileToUpdate.Health.UpdateTime = timeUtil.GetTimeStamp();
@@ -56,27 +72,37 @@ public class HealthHelper(TimeUtil timeUtil, SaveServer saveServer, ProfileHelpe
     {
         foreach (var (partName, partProperties) in bodyPartChanges)
         {
-            if (!profileToAdjust.Health.BodyParts.TryGetValue(partName, out var matchingProfilePart))
+            // Pattern matching null and false because otherwise the compiler throws a fit because `matchingProfilePart`
+            // might not be initialized, very cool
+            if (profileToAdjust.Health?.BodyParts?.TryGetValue(partName, out var matchingProfilePart) is null or false)
             {
                 continue;
             }
 
-            if (_healthConfig.Save.Health)
+            if (partProperties.Health is null || matchingProfilePart.Health is null)
+            {
+                const string message =
+                    "partProperties.Health or matchingBodyPart.Health is null when trying to modify profile health properties";
+                logger.Error(message);
+                throw new HealthHelperException(message);
+            }
+
+            if (HealthConfig.Save.Health)
             {
                 // Apply hp changes to profile
                 matchingProfilePart.Health.Current =
                     partProperties.Health.Current == 0
-                        ? partProperties.Health.Maximum * _healthConfig.HealthMultipliers.Blacked
+                        ? partProperties.Health.Maximum * HealthConfig.HealthMultipliers.Blacked
                         : partProperties.Health.Current;
 
                 matchingProfilePart.Health.Maximum = partProperties.Health.Maximum;
             }
 
             // Process each effect for each part
-            foreach (var (key, effectDetails) in partProperties.Effects)
+            foreach (var (key, effectDetails) in partProperties.Effects ?? [])
             {
                 // Null guard
-                matchingProfilePart.Effects ??= new Dictionary<string, BodyPartEffectProperties>();
+                matchingProfilePart.Effects ??= new Dictionary<string, BodyPartEffectProperties?>();
 
                 // Effect already exists on limb in server profile, skip
                 if (matchingProfilePart.Effects.ContainsKey(key))
@@ -96,7 +122,7 @@ public class HealthHelper(TimeUtil timeUtil, SaveServer saveServer, ProfileHelpe
                     continue;
                 }
 
-                var effectToAdd = new BodyPartEffectProperties { Time = effectDetails.Time ?? -1 };
+                var effectToAdd = new BodyPartEffectProperties { Time = effectDetails?.Time ?? -1 };
                 // Add effect to server profile
                 if (matchingProfilePart.Effects.TryAdd(key, effectToAdd))
                 {

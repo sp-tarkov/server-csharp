@@ -1,5 +1,6 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -23,18 +24,18 @@ public class PostDbLoadService(
     ICloner cloner
 )
 {
-    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
-    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
-    protected readonly HideoutConfig _hideoutConfig = configServer.GetConfig<HideoutConfig>();
-    protected readonly ItemConfig _itemConfig = configServer.GetConfig<ItemConfig>();
-    protected readonly LocationConfig _locationConfig = configServer.GetConfig<LocationConfig>();
-    protected readonly LootConfig _lootConfig = configServer.GetConfig<LootConfig>();
-    protected readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
-    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
+    protected readonly HideoutConfig HideoutConfig = configServer.GetConfig<HideoutConfig>();
+    protected readonly ItemConfig ItemConfig = configServer.GetConfig<ItemConfig>();
+    protected readonly LocationConfig LocationConfig = configServer.GetConfig<LocationConfig>();
+    protected readonly LootConfig LootConfig = configServer.GetConfig<LootConfig>();
+    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
+    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
 
     public void PerformPostDbLoadActions()
     {
-        _coreConfig.ServerStartTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        CoreConfig.ServerStartTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         // Regenerate base cache now mods are loaded and game is starting
         // Mods that add items and use the baseClass service generate the cache including their items, the next mod that
@@ -56,27 +57,27 @@ public class PostDbLoadService(
 
         AdjustMinReserveRaiderSpawnChance();
 
-        if (_coreConfig.Fixes.FixShotgunDispersion)
+        if (CoreConfig.Fixes.FixShotgunDispersion)
         {
             FixShotgunDispersions();
         }
 
-        if (_locationConfig.AddOpenZonesToAllMaps)
+        if (LocationConfig.AddOpenZonesToAllMaps)
         {
             openZoneService.ApplyZoneChangesToAllMaps();
         }
 
-        if (_pmcConfig.RemoveExistingPmcWaves)
+        if (PMCConfig.RemoveExistingPmcWaves)
         {
             RemoveExistingPmcWaves();
         }
 
-        if (_locationConfig.AddCustomBotWavesToMaps)
+        if (LocationConfig.AddCustomBotWavesToMaps)
         {
             customLocationWaveService.ApplyWaveChangesToAllMaps();
         }
 
-        if (_locationConfig.EnableBotTypeLimits)
+        if (LocationConfig.EnableBotTypeLimits)
         {
             AdjustMapBotLimits();
         }
@@ -87,21 +88,21 @@ public class PostDbLoadService(
 
         MergeCustomHideoutAreas();
 
-        if (_locationConfig.RogueLighthouseSpawnTimeSettings.Enabled)
+        if (LocationConfig.RogueLighthouseSpawnTimeSettings.Enabled)
         {
             FixRoguesSpawningInstantlyOnLighthouse();
         }
 
         AdjustLabsRaiderSpawnRate();
 
-        AdjustHideoutCraftTimes(_hideoutConfig.OverrideCraftTimeSeconds);
-        AdjustHideoutBuildTimes(_hideoutConfig.OverrideBuildTimeSeconds);
+        AdjustHideoutCraftTimes(HideoutConfig.OverrideCraftTimeSeconds);
+        AdjustHideoutBuildTimes(HideoutConfig.OverrideBuildTimeSeconds);
 
         UnlockHideoutLootCrateCrafts();
 
         CloneExistingCraftsAndAddNew();
 
-        RemoveNewBeginningRequirementFromPrestige();
+        RemovePrestigeQuestRequirementsIfQuestNotFound();
 
         RemovePraporTestMessage();
 
@@ -114,7 +115,7 @@ public class PostDbLoadService(
         }
 
         // Flea bsg blacklist is off
-        if (!_ragfairConfig.Dynamic.Blacklist.EnableBsgList)
+        if (!RagfairConfig.Dynamic.Blacklist.EnableBsgList)
         {
             SetAllDbItemsAsSellableOnFlea();
         }
@@ -128,9 +129,9 @@ public class PostDbLoadService(
         var currentSeason = seasonalEventService.GetActiveWeatherSeason();
         raidWeatherService.GenerateWeather(currentSeason);
 
-        if (_botConfig.WeeklyBoss.Enabled)
+        if (BotConfig.WeeklyBoss.Enabled)
         {
-            var chosenBoss = GetWeeklyBoss(_botConfig.WeeklyBoss.BossPool, _botConfig.WeeklyBoss.ResetDay);
+            var chosenBoss = GetWeeklyBoss(BotConfig.WeeklyBoss.BossPool, BotConfig.WeeklyBoss.ResetDay);
             FlagMapAsGuaranteedBoss(chosenBoss);
         }
     }
@@ -245,22 +246,22 @@ public class PostDbLoadService(
         }
     }
 
-    private void RemoveNewBeginningRequirementFromPrestige()
+    private void RemovePrestigeQuestRequirementsIfQuestNotFound()
     {
         var prestigeDb = databaseService.GetTemplates().Prestige;
-        var newBeginningQuestId = new HashSet<string> { "6761f28a022f60bb320f3e95", "6761ff17cdc36bd66102e9d0" };
+
         foreach (var prestige in prestigeDb.Elements)
         {
-            var itemToRemove = prestige.Conditions?.FirstOrDefault(cond => newBeginningQuestId.Contains(cond.Target?.Item));
-            if (itemToRemove is null)
-            {
-                continue;
-            }
+            var conditionsToRemove = prestige
+                .Conditions.Where(c =>
+                    c.ConditionType == "Quest" && c.Target.IsItem && !databaseService.GetTemplates().Quests.ContainsKey(c.Target.Item)
+                )
+                .ToList();
 
-            var indexToRemove = prestige.Conditions.IndexOf(itemToRemove);
-            if (indexToRemove != -1)
+            foreach (var conditionToRemove in conditionsToRemove)
             {
-                prestige.Conditions.RemoveAt(indexToRemove);
+                logger.Debug($"Removing required quest from prestige: {conditionToRemove.Target.Item}");
+                prestige.Conditions.Remove(conditionToRemove);
             }
         }
     }
@@ -281,7 +282,7 @@ public class PostDbLoadService(
     protected void CloneExistingCraftsAndAddNew()
     {
         var hideoutCraftDb = databaseService.GetHideout().Production;
-        var craftsToAdd = _hideoutConfig.HideoutCraftsToAdd;
+        var craftsToAdd = HideoutConfig.HideoutCraftsToAdd;
         foreach (var craftToAdd in craftsToAdd)
         {
             var clonedCraft = cloner.Clone(hideoutCraftDb.Recipes.FirstOrDefault(x => x.Id == craftToAdd.CraftIdToCopy));
@@ -310,8 +311,8 @@ public class PostDbLoadService(
         {
             var isTriggered = raiderSpawn.TriggerId.Length > 0; // Empty string if not triggered
             var newSpawnChance = isTriggered
-                ? _locationConfig.ReserveRaiderSpawnChanceOverrides.Triggered
-                : _locationConfig.ReserveRaiderSpawnChanceOverrides.NonTriggered;
+                ? LocationConfig.ReserveRaiderSpawnChanceOverrides.Triggered
+                : LocationConfig.ReserveRaiderSpawnChanceOverrides.NonTriggered;
 
             if (newSpawnChance == -1)
             {
@@ -328,7 +329,7 @@ public class PostDbLoadService(
 
     protected void AddCustomLooseLootPositions()
     {
-        var looseLootPositionsToAdd = _lootConfig.LooseLoot;
+        var looseLootPositionsToAdd = LootConfig.LooseLoot;
         foreach (var (mapId, positionsToAdd) in looseLootPositionsToAdd)
         {
             if (mapId is null)
@@ -381,7 +382,7 @@ public class PostDbLoadService(
     {
         var itemDb = databaseService.GetItems();
 
-        var shotguns = new List<string>
+        var shotguns = new List<MongoId>
         {
             Weapons.SHOTGUN_12G_SAIGA_12K,
             Weapons.SHOTGUN_20G_TOZ_106,
@@ -390,9 +391,9 @@ public class PostDbLoadService(
         };
         foreach (var shotgunId in shotguns)
         {
-            if (itemDb[shotgunId].Properties.ShotgunDispersion.HasValue)
+            if (itemDb.TryGetValue(shotgunId, out var shotgun) && shotgun.Properties.ShotgunDispersion.HasValue)
             {
-                itemDb[shotgunId].Properties.shotgunDispersion = itemDb[shotgunId].Properties.ShotgunDispersion;
+                shotgun.Properties.shotgunDispersion = shotgun.Properties.ShotgunDispersion;
             }
         }
     }
@@ -421,12 +422,12 @@ public class PostDbLoadService(
     protected void AdjustMapBotLimits()
     {
         var mapsDb = databaseService.GetLocations().GetDictionary();
-        if (_locationConfig.BotTypeLimits is null)
+        if (LocationConfig.BotTypeLimits is null)
         {
             return;
         }
 
-        foreach (var (mapId, limits) in _locationConfig.BotTypeLimits)
+        foreach (var (mapId, limits) in LocationConfig.BotTypeLimits)
         {
             if (!mapsDb.TryGetValue(mapId, out var map))
             {
@@ -464,12 +465,12 @@ public class PostDbLoadService(
 
     protected void AdjustLooseLootSpawnProbabilities()
     {
-        if (_lootConfig.LooseLootSpawnPointAdjustments is null)
+        if (LootConfig.LooseLootSpawnPointAdjustments is null)
         {
             return;
         }
 
-        foreach (var (mapId, mapAdjustments) in _lootConfig.LooseLootSpawnPointAdjustments)
+        foreach (var (mapId, mapAdjustments) in LootConfig.LooseLootSpawnPointAdjustments)
         {
             databaseService
                 .GetLocation(mapId)
@@ -506,7 +507,7 @@ public class PostDbLoadService(
     {
         var mapsDb = databaseService.GetLocations();
         var mapsDict = mapsDb.GetDictionary();
-        foreach (var (key, cap) in _botConfig.MaxBotCap)
+        foreach (var (key, cap) in BotConfig.MaxBotCap)
         {
             // Keys given are like this: "factory4_night" use GetMappedKey to change to "Factory4Night" which the dictionary contains
             if (!mapsDict.TryGetValue(mapsDb.GetMappedKey(key), out var map))
@@ -514,7 +515,6 @@ public class PostDbLoadService(
                 continue;
             }
 
-            map.Base.BotMaxPvE = cap;
             map.Base.BotMax = cap;
 
             // make values no larger than 30 secs
@@ -527,7 +527,7 @@ public class PostDbLoadService(
     /// </summary>
     protected void FixRoguesSpawningInstantlyOnLighthouse()
     {
-        var rogueSpawnDelaySeconds = _locationConfig.RogueLighthouseSpawnTimeSettings.WaitTimeSeconds;
+        var rogueSpawnDelaySeconds = LocationConfig.RogueLighthouseSpawnTimeSettings.WaitTimeSeconds;
         var lighthouse = databaseService.GetLocations().Lighthouse?.Base;
         if (lighthouse is null)
         // Just in case they remove this cursed map
@@ -631,7 +631,7 @@ public class PostDbLoadService(
             }
 
             // Merge started/success/fail quest assorts into one dictionary
-            var mergedQuestAssorts = new Dictionary<string, string>();
+            var mergedQuestAssorts = new Dictionary<MongoId, MongoId>();
             mergedQuestAssorts = mergedQuestAssorts
                 .Concat(traderData.QuestAssort["started"])
                 .Concat(traderData.QuestAssort["success"])
@@ -659,7 +659,7 @@ public class PostDbLoadService(
             var item in dbItems.Where(item =>
                 string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)
                 && !item.Properties.CanSellOnRagfair.GetValueOrDefault(false)
-                && !_ragfairConfig.Dynamic.Blacklist.Custom.Contains(item.Id)
+                && !RagfairConfig.Dynamic.Blacklist.Custom.Contains(item.Id)
             )
         )
         {
@@ -676,7 +676,7 @@ public class PostDbLoadService(
     protected void ApplyFleaPriceOverrides()
     {
         var fleaPrices = databaseService.GetPrices();
-        foreach (var (itemTpl, price) in _ragfairConfig.Dynamic.ItemPriceOverrideRouble)
+        foreach (var (itemTpl, price) in RagfairConfig.Dynamic.ItemPriceOverrideRouble)
         {
             fleaPrices[itemTpl] = price;
         }
@@ -684,7 +684,7 @@ public class PostDbLoadService(
 
     protected void AddCustomItemPresetsToGlobals()
     {
-        foreach (var presetToAdd in _itemConfig.CustomItemGlobalPresets)
+        foreach (var presetToAdd in ItemConfig.CustomItemGlobalPresets)
         {
             if (databaseService.GetGlobals().ItemPresets.ContainsKey(presetToAdd.Id))
             {

@@ -32,9 +32,19 @@ public class BotInventoryGenerator(
     BotEquipmentFilterService botEquipmentFilterService,
     BotEquipmentModPoolService botEquipmentModPoolService,
     BotEquipmentModGenerator botEquipmentModGenerator,
+    BotInventoryContainerService botInventoryContainerService,
     ConfigServer configServer
 )
 {
+    // Slots handled individually inside `GenerateAndAddEquipmentToBot`
+    private static readonly FrozenSet<EquipmentSlots> _equipmentSlotsWithInventory =
+    [
+        EquipmentSlots.Pockets,
+        EquipmentSlots.TacticalVest,
+        EquipmentSlots.Backpack,
+        EquipmentSlots.SecuredContainer,
+    ];
+
     // Slots handled individually inside `GenerateAndAddEquipmentToBot`
     private static readonly FrozenSet<EquipmentSlots> _excludedEquipmentSlots =
     [
@@ -49,13 +59,15 @@ public class BotInventoryGenerator(
         EquipmentSlots.Earpiece,
     ];
 
-    private readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
+    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
 
     private readonly FrozenSet<string> _slotsToCheck = [nameof(EquipmentSlots.Pockets), nameof(EquipmentSlots.SecuredContainer)];
 
     /// <summary>
     ///     Add equipment/weapons/loot to bot
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="sessionId">Session id</param>
     /// <param name="botJsonTemplate">Base json db file for the bot having its loot generated</param>
     /// <param name="botRole">Role bot has (assault/pmcBot)</param>
@@ -64,6 +76,7 @@ public class BotInventoryGenerator(
     /// <param name="chosenGameVersion">Game version for bot, only really applies for PMCs</param>
     /// <returns>PmcInventory object with equipment/weapons/loot</returns>
     public BotBaseInventory GenerateInventory(
+        MongoId botId,
         MongoId sessionId,
         BotType botJsonTemplate,
         string botRole,
@@ -85,6 +98,7 @@ public class BotInventoryGenerator(
         var raidConfig = profileActivityService.GetProfileActivityRaidData(sessionId)?.RaidConfiguration;
 
         GenerateAndAddEquipmentToBot(
+            botId,
             sessionId,
             templateInventory,
             wornItemChances,
@@ -98,6 +112,7 @@ public class BotInventoryGenerator(
 
         // Roll weapon spawns (primary/secondary/holster) and generate a weapon for each roll that passed
         GenerateAndAddWeaponsToBot(
+            botId,
             templateInventory,
             wornItemChances,
             sessionId,
@@ -109,7 +124,13 @@ public class BotInventoryGenerator(
         );
 
         // Pick loot and add to bots containers (rig/backpack/pockets/secure)
-        botLootGenerator.GenerateLoot(sessionId, botJsonTemplate, botGenerationDetails, isPmc, botRole, botInventory, botLevel);
+        botLootGenerator.GenerateLoot(botId, sessionId, botJsonTemplate, botGenerationDetails, isPmc, botRole, botInventory, botLevel);
+
+        // Inventory cache isn't needed, clear to save memory
+        if (botGenerationDetails.ClearBotContainerCacheAfterGeneration)
+        {
+            botInventoryContainerService.ClearCache(botId);
+        }
 
         return botInventory;
     }
@@ -153,6 +174,7 @@ public class BotInventoryGenerator(
     /// <summary>
     ///     Add equipment to a bot
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="sessionId">Session id</param>
     /// <param name="templateInventory">bot/x.json data from db</param>
     /// <param name="wornItemChances">Chances items will be added to bot</param>
@@ -163,6 +185,7 @@ public class BotInventoryGenerator(
     /// <param name="isPmc">Is the generated bot a PMC</param>
     /// <param name="raidConfig">RadiConfig</param>
     public void GenerateAndAddEquipmentToBot(
+        MongoId botId,
         MongoId sessionId,
         BotTypeInventory templateInventory,
         Chances wornItemChances,
@@ -174,7 +197,12 @@ public class BotInventoryGenerator(
         GetRaidConfigurationRequestData? raidConfig
     )
     {
-        _botConfig.Equipment.TryGetValue(botGeneratorHelper.GetBotEquipmentRole(botRole), out var botEquipConfig);
+        if (!BotConfig.Equipment.TryGetValue(botGeneratorHelper.GetBotEquipmentRole(botRole), out var botEquipConfig))
+        {
+            logger.Error($"Bot Equipment generation failed, unable to find equipment filters for: {botRole}");
+
+            return;
+        }
         var randomistionDetails = botHelper.GetBotRandomizationDetails(botLevel, botEquipConfig);
 
         // Apply nighttime changes if its nighttime + there's changes to make
@@ -185,10 +213,30 @@ public class BotInventoryGenerator(
         )
         {
             foreach (var (equipment, weight) in randomistionDetails.NighttimeChanges.EquipmentModsModifiers)
-            // Never let mod chance go outside 0 - 100
             {
-                var newWeight = weight + randomistionDetails.EquipmentMods[equipment];
-                randomistionDetails.EquipmentMods[equipment] = Math.Clamp(newWeight, 0, 100);
+                if (randomistionDetails.EquipmentMods.TryGetValue(equipment, out var value))
+                {
+                    // Never let mod chance go outside 0 - 100
+                    var newWeight = weight + value;
+                    randomistionDetails.EquipmentMods[equipment] = Math.Clamp(newWeight, 0, 100);
+                }
+            }
+        }
+
+        // Is PMC + generating armband + armband forcing is enabled
+        if (PMCConfig.ForceArmband.Enabled && isPmc)
+        {
+            // Replace armband pool with single tpl from config
+            if (templateInventory.Equipment.TryGetValue(EquipmentSlots.ArmBand, out var armbands))
+            {
+                // Get tpl based on pmc side
+                var armbandTpl = botRole == "pmcusec" ? PMCConfig.ForceArmband.Usec : PMCConfig.ForceArmband.Bear;
+
+                armbands.Clear();
+                armbands.Add(armbandTpl, 1);
+
+                // Force armband spawn to 100%
+                wornItemChances.EquipmentChances["Armband"] = 100;
             }
         }
 
@@ -199,7 +247,7 @@ public class BotInventoryGenerator(
         // Iterate over all equipment slots of bot, do it in specific order to reduce conflicts
         // e.g. ArmorVest should be generated after TacticalVest
         // or FACE_COVER before HEADWEAR
-        foreach (var (equipmentSlot, value) in templateInventory.Equipment)
+        foreach (var (equipmentSlot, itemsWithWeightPool) in templateInventory.Equipment)
         {
             // Skip some slots as they need to be done in a specific order + with specific parameter values
             // e.g. Weapons
@@ -211,8 +259,9 @@ public class BotInventoryGenerator(
             GenerateEquipment(
                 new GenerateEquipmentProperties
                 {
+                    BotId = botId,
                     RootEquipmentSlot = equipmentSlot,
-                    RootEquipmentPool = value,
+                    RootEquipmentPool = itemsWithWeightPool,
                     ModPool = templateInventory.Mods,
                     SpawnChances = wornItemChances,
                     BotData = new BotData
@@ -233,6 +282,7 @@ public class BotInventoryGenerator(
         GenerateEquipment(
             new GenerateEquipmentProperties
             {
+                BotId = botId,
                 RootEquipmentSlot = EquipmentSlots.Pockets,
                 // Unheard profiles have unique sized pockets
                 RootEquipmentPool = GetPocketPoolByGameEdition(chosenGameVersion, templateInventory, isPmc),
@@ -255,6 +305,7 @@ public class BotInventoryGenerator(
         GenerateEquipment(
             new GenerateEquipmentProperties
             {
+                BotId = botId,
                 RootEquipmentSlot = EquipmentSlots.FaceCover,
                 RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.FaceCover],
                 ModPool = templateInventory.Mods,
@@ -275,6 +326,7 @@ public class BotInventoryGenerator(
         GenerateEquipment(
             new GenerateEquipmentProperties
             {
+                BotId = botId,
                 RootEquipmentSlot = EquipmentSlots.Headwear,
                 RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.Headwear],
                 ModPool = templateInventory.Mods,
@@ -295,6 +347,7 @@ public class BotInventoryGenerator(
         GenerateEquipment(
             new GenerateEquipmentProperties
             {
+                BotId = botId,
                 RootEquipmentSlot = EquipmentSlots.Earpiece,
                 RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.Earpiece],
                 ModPool = templateInventory.Mods,
@@ -315,6 +368,7 @@ public class BotInventoryGenerator(
         var hasArmorVest = GenerateEquipment(
             new GenerateEquipmentProperties
             {
+                BotId = botId,
                 RootEquipmentSlot = EquipmentSlots.ArmorVest,
                 RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.ArmorVest],
                 ModPool = templateInventory.Mods,
@@ -355,6 +409,7 @@ public class BotInventoryGenerator(
         GenerateEquipment(
             new GenerateEquipmentProperties
             {
+                BotId = botId,
                 RootEquipmentSlot = EquipmentSlots.TacticalVest,
                 RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.TacticalVest],
                 ModPool = templateInventory.Mods,
@@ -544,7 +599,7 @@ public class BotInventoryGenerator(
 
             // Edge case: Filter the armor items mod pool if bot exists in config dict + config has armor slot
             if (
-                _botConfig.Equipment.ContainsKey(settings.BotData.EquipmentRole)
+                BotConfig.Equipment.ContainsKey(settings.BotData.EquipmentRole)
                 && settings.RandomisationDetails?.RandomisedArmorSlots != null
                 && settings.RandomisationDetails.RandomisedArmorSlots.Contains(settings.RootEquipmentSlot.ToString())
             )
@@ -571,6 +626,12 @@ public class BotInventoryGenerator(
             {
                 // No slots, add root item only
                 settings.Inventory.Items.Add(item);
+            }
+
+            // Cache container ready for items to be added in
+            if (_equipmentSlotsWithInventory.Contains(settings.RootEquipmentSlot))
+            {
+                botInventoryContainerService.AddEmptyContainerToBot(settings.BotId, settings.RootEquipmentSlot, item);
             }
 
             return true;
@@ -622,6 +683,7 @@ public class BotInventoryGenerator(
     /// <summary>
     ///     Work out what weapons bot should have equipped and add them to bot inventory
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="templateInventory">bot/x.json data from db</param>
     /// <param name="equipmentChances">Chances bot can have equipment equipped</param>
     /// <param name="sessionId">Session id</param>
@@ -631,6 +693,7 @@ public class BotInventoryGenerator(
     /// <param name="itemGenerationLimitsMinMax">Limits for items the bot can have</param>
     /// <param name="botLevel">level of bot having weapon generated</param>
     public void GenerateAndAddWeaponsToBot(
+        MongoId botId,
         BotTypeInventory templateInventory,
         Chances equipmentChances,
         MongoId sessionId,
@@ -648,6 +711,7 @@ public class BotInventoryGenerator(
             if (desiredWeapons.ShouldSpawn && templateInventory.Equipment[desiredWeapons.Slot].Any())
             {
                 AddWeaponAndMagazinesToInventory(
+                    botId,
                     sessionId,
                     desiredWeapons,
                     templateInventory,
@@ -689,6 +753,7 @@ public class BotInventoryGenerator(
     /// <summary>
     ///     Add weapon + spare mags/ammo to bots inventory
     /// </summary>
+    /// <param name="botId">Bots unique identifier</param>
     /// <param name="sessionId">Session id</param>
     /// <param name="weaponSlot">Weapon slot being generated</param>
     /// <param name="templateInventory">bot/x.json data from db</param>
@@ -699,6 +764,7 @@ public class BotInventoryGenerator(
     /// <param name="itemGenerationWeights"></param>
     /// <param name="botLevel"></param>
     public void AddWeaponAndMagazinesToInventory(
+        MongoId botId,
         MongoId sessionId,
         DesiredWeapons weaponSlot,
         BotTypeInventory templateInventory,
@@ -723,7 +789,13 @@ public class BotInventoryGenerator(
 
         botInventory.Items.AddRange(generatedWeapon.Weapon);
 
-        botWeaponGenerator.AddExtraMagazinesToInventory(generatedWeapon, itemGenerationWeights.Items.Magazines, botInventory, botRole);
+        botWeaponGenerator.AddExtraMagazinesToInventory(
+            botId,
+            generatedWeapon,
+            itemGenerationWeights.Items.Magazines,
+            botInventory,
+            botRole
+        );
     }
 }
 

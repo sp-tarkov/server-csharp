@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Request;
 
 public record UIDRequestData : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("uid")]
     public string? Uid { get; set; }
 }

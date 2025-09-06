@@ -4,9 +4,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Config;
 
 public record BotDurability
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("default")]
     public required DefaultDurability Default { get; set; }
 
@@ -22,9 +19,6 @@ public record BotDurability
 /// </summary>
 public record DefaultDurability
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("armor")]
     public required ArmorDurability Armor { get; set; }
 
@@ -34,9 +28,6 @@ public record DefaultDurability
 
 public record PmcDurability
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("armor")]
     public required PmcDurabilityArmor Armor { get; set; }
 
@@ -46,9 +37,6 @@ public record PmcDurability
 
 public record PmcDurabilityArmor
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("lowestMaxPercent")]
     public int LowestMaxPercent { get; set; }
 
@@ -67,9 +55,6 @@ public record PmcDurabilityArmor
 
 public record ArmorDurability
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("maxDelta")]
     public int MaxDelta { get; set; }
 
@@ -88,9 +73,6 @@ public record ArmorDurability
 
 public record WeaponDurability
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("lowestMax")]
     public int LowestMax { get; set; }
 

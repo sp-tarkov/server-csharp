@@ -20,7 +20,7 @@ public class WeatherGenerator(
     RandomUtil randomUtil
 )
 {
-    protected readonly WeatherConfig _weatherConfig = configServer.GetConfig<WeatherConfig>();
+    protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
 
     /// <summary>
     ///     Get current + raid datetime and format into correct BSG format.
@@ -34,7 +34,7 @@ public class WeatherGenerator(
 
         data.Date = formattedDate;
         data.Time = GetBsgFormattedInRaidTime();
-        data.Acceleration = _weatherConfig.Acceleration;
+        data.Acceleration = WeatherConfig.Acceleration;
 
         data.Season = seasonalEventService.GetActiveWeatherSeason();
     }
@@ -75,8 +75,8 @@ public class WeatherGenerator(
             WindDirection = GetWeightedWindDirection(weatherValues),
             WindSpeed = GetWeightedWindSpeed(weatherValues),
             Cloud = clouds,
-            Time = "",
-            Date = "",
+            Time = string.Empty,
+            Date = string.Empty,
             Timestamp = 0,
             SptInRaidTimestamp = 0,
         };
@@ -90,10 +90,10 @@ public class WeatherGenerator(
 
     protected SeasonalValues GetWeatherValuesBySeason(Season currentSeason)
     {
-        var result = _weatherConfig.Weather.SeasonValues.TryGetValue(currentSeason.ToString(), out var value);
+        var result = WeatherConfig.Weather.SeasonValues.TryGetValue(currentSeason.ToString(), out var value);
         if (!result)
         {
-            return _weatherConfig.Weather.SeasonValues["default"];
+            return WeatherConfig.Weather.SeasonValues["default"];
         }
 
         return value!;

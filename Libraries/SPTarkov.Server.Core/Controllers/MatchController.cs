@@ -3,7 +3,6 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Match;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using static SPTarkov.Server.Core.Services.MatchLocationService;
@@ -12,7 +11,6 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class MatchController(
-    ISptLogger<MatchController> logger,
     MatchLocationService matchLocationService,
     ConfigServer configServer,
     LocationLifecycleService locationLifecycleService,
@@ -20,8 +18,8 @@ public class MatchController(
     WeatherHelper weatherHelper
 )
 {
-    protected readonly MatchConfig _matchConfig = configServer.GetConfig<MatchConfig>();
-    protected readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
+    protected readonly MatchConfig MatchConfig = configServer.GetConfig<MatchConfig>();
+    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
 
     /// <summary>
     ///     Handle client/match/available
@@ -29,7 +27,7 @@ public class MatchController(
     /// <returns>True if server should be available</returns>
     public bool GetEnabled()
     {
-        return _matchConfig.Enabled;
+        return MatchConfig.Enabled;
     }
 
     /// <summary>
@@ -60,8 +58,8 @@ public class MatchController(
                     ProfileId = "TODO",
                     ProfileToken = "TODO",
                     Status = "MatchWait",
-                    Sid = "",
-                    Ip = "",
+                    Sid = string.Empty,
+                    Ip = string.Empty,
                     Port = 0,
                     Version = "live",
                     Location = "TODO get location",
@@ -102,9 +100,9 @@ public class MatchController(
         // TODO: add code to strip PMC of equipment now they've started the raid
 
         // Set pmcs to difficulty set in pre-raid screen if override in bot config isnt enabled
-        if (!_pmcConfig.UseDifficultyOverride)
+        if (!PMCConfig.UseDifficultyOverride)
         {
-            _pmcConfig.Difficulty = ConvertDifficultyDropdownIntoBotDifficulty(request.WavesSettings.BotDifficulty.ToString());
+            PMCConfig.Difficulty = ConvertDifficultyDropdownIntoBotDifficulty(request.WavesSettings.BotDifficulty.ToString());
         }
     }
 

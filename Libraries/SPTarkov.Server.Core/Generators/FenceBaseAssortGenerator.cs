@@ -24,10 +24,10 @@ public class FenceBaseAssortGenerator(
     ServerLocalisationService localisationService,
     ConfigServer configServer,
     FenceService fenceService,
-    ICloner _cloner
+    ICloner cloner
 )
 {
-    protected readonly TraderConfig traderConfig = configServer.GetConfig<TraderConfig>();
+    protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
 
     /// <summary>
     ///     Create base fence assorts dynamically and store in memory
@@ -63,9 +63,9 @@ public class FenceBaseAssortGenerator(
             }
 
             // Item base type blacklisted
-            if (traderConfig.Fence.Blacklist.Count > 0)
+            if (TraderConfig.Fence.Blacklist.Count > 0)
             {
-                if (traderConfig.Fence.Blacklist.Contains(itemId) || itemHelper.IsOfBaseclasses(itemId, traderConfig.Fence.Blacklist))
+                if (TraderConfig.Fence.Blacklist.Contains(itemId) || itemHelper.IsOfBaseclasses(itemId, TraderConfig.Fence.Blacklist))
                 {
                     continue;
                 }
@@ -81,7 +81,7 @@ public class FenceBaseAssortGenerator(
             }
 
             // Skip seasonal event items when not in seasonal event
-            if (traderConfig.Fence.BlacklistSeasonalItems && blockedSeasonalItems.Contains(itemId))
+            if (TraderConfig.Fence.BlacklistSeasonalItems && blockedSeasonalItems.Contains(itemId))
             {
                 continue;
             }
@@ -149,14 +149,8 @@ public class FenceBaseAssortGenerator(
         var defaultPresets = presetHelper.GetDefaultPresets().Values;
         foreach (var defaultPreset in defaultPresets)
         {
-            // Skip presets we've already added
-            if (baseFenceAssort.Items.Any(item => item.Upd != null && item.Upd.SptPresetId == defaultPreset.Id))
-            {
-                continue;
-            }
-
             // Construct preset + mods
-            var itemAndChildren = _cloner.Clone(defaultPreset.Items).ReplaceIDs();
+            var itemAndChildren = cloner.Clone(defaultPreset.Items).ReplaceIDs();
 
             // Find root item and add some properties to it
             var rootItem = itemAndChildren.FirstOrDefault(item => string.IsNullOrEmpty(item.ParentId));
@@ -202,7 +196,7 @@ public class FenceBaseAssortGenerator(
             return false;
         }
 
-        return ammoPenetrationPower > traderConfig.Fence.AmmoMaxPenLimit;
+        return ammoPenetrationPower > TraderConfig.Fence.AmmoMaxPenLimit;
     }
 
     /// <summary>
@@ -215,7 +209,7 @@ public class FenceBaseAssortGenerator(
         if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.AMMO_BOX))
         {
             // Get the cartridge tpl found inside ammo box
-            var cartridgeTplInBox = rootItemDb.Properties.StackSlots.First().Props.Filters.First().Filter.FirstOrDefault();
+            var cartridgeTplInBox = rootItemDb.Properties.StackSlots.First().Properties.Filters.First().Filter.FirstOrDefault();
 
             // Look up cartridge tpl in db
             var ammoItemDb = itemHelper.GetItem(cartridgeTplInBox);
@@ -259,9 +253,9 @@ public class FenceBaseAssortGenerator(
         {
             foreach (var requiredSlot in requiredSlots)
             {
-                var modItemDbDetails = itemHelper.GetItem(requiredSlot.Props.Filters.First().Plate.Value).Value;
-                var plateTpl = requiredSlot.Props.Filters.First().Plate; // `Plate` property appears to be the 'default' item for slot
-                if (plateTpl is null || plateTpl.Value.IsEmpty())
+                var modItemDbDetails = itemHelper.GetItem(requiredSlot.Properties.Filters.First().Plate.Value).Value;
+                var plateTpl = requiredSlot.Properties.Filters.First().Plate; // `Plate` property appears to be the 'default' item for slot
+                if (plateTpl is null || plateTpl.Value.IsEmpty)
                 // Some bsg plate properties are empty, skip mod
                 {
                     continue;
@@ -293,7 +287,7 @@ public class FenceBaseAssortGenerator(
         {
             foreach (var plateSlot in plateSlots)
             {
-                var plateTpl = plateSlot.Props.Filters.First().Plate;
+                var plateTpl = plateSlot.Properties.Filters.First().Plate;
                 if (string.IsNullOrEmpty(plateTpl))
                 // Bsg data lacks a default plate, skip adding mod
                 {
@@ -305,7 +299,7 @@ public class FenceBaseAssortGenerator(
                     new Item
                     {
                         Id = new MongoId(),
-                        Template = plateSlot.Props.Filters.First().Plate.Value, // `Plate` property appears to be the 'default' item for slot
+                        Template = plateSlot.Properties.Filters.First().Plate.Value, // `Plate` property appears to be the 'default' item for slot
                         ParentId = armor[0].Id,
                         SlotId = plateSlot.Name,
                         Upd = new Upd

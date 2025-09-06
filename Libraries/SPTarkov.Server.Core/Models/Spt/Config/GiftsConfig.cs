@@ -18,9 +18,6 @@ public record GiftsConfig : BaseConfig
 
 public record Gift
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Items to send to player
     /// </summary>

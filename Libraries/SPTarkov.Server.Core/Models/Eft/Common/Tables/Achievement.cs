@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Achievement
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("index")]
     public required int Index { get; set; }
 
@@ -29,11 +26,20 @@ public record Achievement
     [JsonPropertyName("conditions")]
     public required AchievementQuestConditionTypes Conditions { get; set; }
 
+    [JsonPropertyName("instantComplete")]
+    public bool? InstantComplete { get; set; }
+
+    [JsonPropertyName("showNotificationsInGame")]
+    public bool? ShowNotificationsInGame { get; set; }
+
     /// <summary>
     /// Unused in the client
     /// </summary>
     [JsonPropertyName("showProgress")]
     public bool? ShowProgress { get; set; }
+
+    [JsonPropertyName("prefab")]
+    public string? prefab { get; set; }
 
     [JsonPropertyName("rarity")]
     public required string Rarity { get; set; }
@@ -53,9 +59,6 @@ public record Achievement
 
 public record AchievementQuestConditionTypes
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("started")]
     public List<QuestCondition>? Started { get; set; }
 

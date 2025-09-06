@@ -8,9 +8,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Quest
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     SPT addition - human readable quest name
     /// </summary>
@@ -73,7 +70,10 @@ public record Quest
     public string? SuccessMessageText { get; set; }
 
     [JsonPropertyName("acceptPlayerMessage")]
-    public string? AcceptPlayerMessage { get; set; }
+    public string AcceptPlayerMessage { get; set; }
+
+    [JsonPropertyName("acceptanceAndFinishingSource")]
+    public string AcceptanceAndFinishingSource { get; set; }
 
     [JsonPropertyName("declinePlayerMessage")]
     public string? DeclinePlayerMessage { get; set; }
@@ -117,6 +117,9 @@ public record Quest
     [JsonPropertyName("arenaLocations")]
     public List<string>? ArenaLocations { get; set; }
 
+    [JsonPropertyName("dialogueId")]
+    public MongoId? DialogueId { get; set; }
+
     /// <summary>
     ///     Status of quest to player
     /// </summary>
@@ -129,9 +132,6 @@ public record Quest
 /// </summary>
 public record QuestStatus
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("qid")]
     public required MongoId QId { get; set; }
 
@@ -153,9 +153,6 @@ public record QuestStatus
 
 public record QuestConditionTypes
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Started")]
     public List<QuestCondition>? Started { get; set; }
 
@@ -174,8 +171,7 @@ public record QuestConditionTypes
 
 public record QuestCondition
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    private string _conditionType;
 
     [JsonPropertyName("id")]
     public required MongoId Id { get; set; }
@@ -188,6 +184,9 @@ public record QuestCondition
 
     [JsonPropertyName("dynamicLocale")]
     public required bool DynamicLocale { get; set; }
+
+    [JsonPropertyName("globalQuestCounterId")]
+    public string? GlobalQuestCounterId { get; set; }
 
     [JsonPropertyName("visibilityConditions")]
     public List<VisibilityCondition>? VisibilityConditions { get; set; }
@@ -268,7 +267,11 @@ public record QuestCondition
     public bool? IsEncoded { get; set; }
 
     [JsonPropertyName("conditionType")]
-    public required string ConditionType { get; set; }
+    public required string ConditionType
+    {
+        get { return _conditionType; }
+        set { _conditionType = string.Intern(value); }
+    }
 
     [JsonPropertyName("areaType")]
     public HideoutAreas? AreaType { get; set; }
@@ -315,9 +318,6 @@ public record QuestCondition
 
 public record QuestConditionCounter
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -327,9 +327,6 @@ public record QuestConditionCounter
 
 public record QuestConditionCounterCondition
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -420,9 +417,6 @@ public record QuestConditionCounterCondition
 
 public record EnemyHealthEffect
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("bodyParts")]
     public List<string>? BodyParts { get; set; }
 
@@ -432,9 +426,6 @@ public record EnemyHealthEffect
 
 public record ValueCompare
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("compareMethod")]
     public string? CompareMethod { get; set; }
 
@@ -444,9 +435,6 @@ public record ValueCompare
 
 public record CounterConditionDistance
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("value")]
     public double? Value { get; set; }
 
@@ -456,9 +444,6 @@ public record CounterConditionDistance
 
 public record DaytimeCounter
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("from")]
     public int? From { get; set; }
 
@@ -468,9 +453,6 @@ public record DaytimeCounter
 
 public record VisibilityCondition
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 

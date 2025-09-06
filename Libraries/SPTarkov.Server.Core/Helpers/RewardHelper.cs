@@ -25,6 +25,7 @@ public class RewardHelper(
     ServerLocalisationService serverLocalisationService,
     TraderHelper traderHelper,
     PresetHelper presetHelper,
+    NotifierHelper notifierHelper,
     NotificationSendHelper notificationSendHelper,
     ICloner cloner
 )
@@ -33,7 +34,7 @@ public class RewardHelper(
     /// Apply the given rewards to the passed in profile.
     /// </summary>
     /// <param name="rewards">List of rewards to apply.</param>
-    /// <param name="source">The source of the rewards (Achievement, quest).</param>
+    /// <param name="rewardSource">The source of the rewards (Achievement, quest).</param>
     /// <param name="fullProfile">The full profile to apply the rewards to.</param>
     /// <param name="profileData">The profile data (could be the scav profile).</param>
     /// <param name="rewardSourceId">The quest or achievement ID, used for finding production unlocks.</param>
@@ -41,7 +42,7 @@ public class RewardHelper(
     /// <returns>List of items that is the reward.</returns>
     public List<Item> ApplyRewards(
         IEnumerable<Reward> rewards,
-        string source,
+        string rewardSource,
         SptProfile fullProfile,
         PmcData profileData,
         MongoId rewardSourceId,
@@ -71,7 +72,11 @@ public class RewardHelper(
             {
                 case RewardType.Skill:
                     // This needs to use the passed in profileData, as it could be the scav profile
-                    profileHelper.AddSkillPointsToPlayer(profileData, Enum.Parse<SkillTypes>(reward.Target), reward.Value);
+                    profileHelper.AddSkillPointsToPlayer(
+                        profileData,
+                        Enum.Parse<SkillTypes>(reward.Target),
+                        reward.Value.GetValueOrDefault(0)
+                    );
                     break;
                 case RewardType.Experience:
                     profileHelper.AddExperienceToPmc(sessionId.Value, int.Parse(reward.Value.ToString())); // this must occur first as the output object needs to take the modified profile exp value
@@ -114,7 +119,7 @@ public class RewardHelper(
                     profileHelper.ReplaceProfilePocketTpl(pmcProfile, reward.Target);
                     break;
                 case RewardType.CustomizationDirect:
-                    profileHelper.AddHideoutCustomisationUnlock(fullProfile, reward, source);
+                    profileHelper.AddHideoutCustomisationUnlock(fullProfile, reward, rewardSource);
                     notificationSendHelper.SendMessage(
                         sessionId.Value,
                         new WsNotificationEvent
@@ -126,8 +131,8 @@ public class RewardHelper(
 
                     break;
                 case RewardType.NotificationPopup:
-                    // TODO: Wire up to notification system
-                    logger.Error("UNHANDLED: RewardType.NotificationPopup");
+                    var notification = notifierHelper.CreateNotificationPopup(reward.IllustrationConfig, reward.Message.Value);
+                    notificationSendHelper.SendMessage(sessionId.Value, notification);
                     break;
                 case RewardType.WebPromoCode:
                     // TODO: ??? (Free arena trial from Balancing - Part 1)
@@ -204,11 +209,10 @@ public class RewardHelper(
         // Add above match to pmc profile + client response
         var matchingCraftId = matchingProductions[0].Id;
         pmcData.UnlockedInfo.UnlockedProductionRecipe.Add(matchingCraftId);
-        if (response is not null)
-        {
-            response.ProfileChanges[sessionID].RecipeUnlocked ??= new Dictionary<string, bool>();
-            response.ProfileChanges[sessionID].RecipeUnlocked[matchingCraftId] = true;
-        }
+
+        // Update Inform client of change
+        response.ProfileChanges[sessionID].RecipeUnlocked ??= new();
+        response.ProfileChanges[sessionID].RecipeUnlocked[matchingCraftId] = true;
     }
 
     /// <summary>
@@ -219,22 +223,12 @@ public class RewardHelper(
     /// <returns>List of matching HideoutProduction objects.</returns>
     public List<HideoutProduction> GetRewardProductionMatch(Reward craftUnlockReward, MongoId questId)
     {
-        // Get hideout crafts and find those that match by areatype/required level/end product tpl - hope for just one match
-        var craftingRecipes = databaseService.GetHideout().Production.Recipes;
+        // Get hideout crafts and find those that match by areaType/required level/end product tpl - hope for just one match
 
-        // Area that will be used to craft unlocked item
+        // "TraderId" holds area ID that will be used to craft unlocked item
         var desiredHideoutAreaType = (HideoutAreas)int.Parse(craftUnlockReward.TraderId.ToString());
 
-        var matchingProductions = craftingRecipes
-            .Where(prod =>
-                prod.AreaType == desiredHideoutAreaType
-                &&
-                //prod.requirements.some((requirement) => requirement.questId == questId) && // BSG don't store the quest id in requirement any more!
-                prod.Requirements.Any(requirement => requirement.Type == "QuestComplete")
-                && prod.Requirements.Any(requirement => requirement.RequiredLevel == craftUnlockReward.LoyaltyLevel)
-                && prod.EndProduct == craftUnlockReward.Items.FirstOrDefault().Template
-            )
-            .ToList();
+        var matchingProductions = GetMatchingProductions(desiredHideoutAreaType, questId, craftUnlockReward);
 
         // More/less than single match, above filtering wasn't strict enough
         if (matchingProductions.Count != 1)
@@ -246,6 +240,35 @@ public class RewardHelper(
         }
 
         return matchingProductions;
+    }
+
+    /// <summary>
+    /// Find a hideout craft (production) based on input parameter data
+    /// </summary>
+    /// <param name="desiredHideoutAreaType">Hideout area craft is for</param>
+    /// <param name="questId">Id of quest with production unlock</param>
+    /// <param name="craftUnlockReward">Reward given by quest</param>
+    /// <returns>Hideout crafts that match input parameters</returns>
+    protected List<HideoutProduction> GetMatchingProductions(HideoutAreas desiredHideoutAreaType, MongoId questId, Reward craftUnlockReward)
+    {
+        var rewardItemTpl = craftUnlockReward.Items.FirstOrDefault()?.Template;
+
+        var craftingRecipes = databaseService.GetHideout().Production.Recipes;
+        return craftingRecipes
+            .Where(production =>
+                // Some crafts have the questId, easy match
+                production.Requirements.Any(req => req.QuestId == questId)
+                ||
+                // Couldn't get craft by questId, get the closest match based on information we know
+                (
+                    rewardItemTpl is not null
+                    && production.AreaType == desiredHideoutAreaType
+                    && production.EndProduct == rewardItemTpl.Value
+                    && production.Requirements.Any(req => req.Type is "QuestComplete")
+                    && production.Requirements.Any(req => req.RequiredLevel == craftUnlockReward.LoyaltyLevel)
+                )
+            )
+            .ToList();
     }
 
     /// <summary>
@@ -289,7 +312,7 @@ public class RewardHelper(
 
         foreach (var rewardItem in reward.Items)
         {
-            itemHelper.AddUpdObjectToItem(rewardItem);
+            rewardItem.AddUpd();
 
             // Reward items are granted Found in Raid status
             itemHelper.SetFoundInRaid(rewardItem);
@@ -382,12 +405,12 @@ public class RewardHelper(
             reward.Target = rootItem.Id;
 
             // Copy over stack count otherwise reward shows as missing in client
-            itemHelper.AddUpdObjectToItem(rootItem);
+            rootItem.AddUpd();
             rootItem.Upd.StackObjectsCount = originalRewardRootItem.Upd.StackObjectsCount;
             return;
         }
 
-        logger.Warning("Unable to find default preset for armor {originalRewardRootItem._tpl}, adding mods manually");
+        logger.Warning($"Unable to find default preset for armor: {originalRewardRootItem.Template}, adding mods manually");
         var itemDbData = itemHelper.GetItem(originalRewardRootItem.Template).Value;
 
         // Hydrate reward with only 'required' mods - necessary for things like helmets otherwise you end up with nvgs/visors etc

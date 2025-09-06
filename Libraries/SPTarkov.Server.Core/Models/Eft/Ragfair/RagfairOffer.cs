@@ -7,13 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Ragfair;
 
 public record RagfairOffer
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
-    private string? _id;
-
-    private string? _root;
-
     [JsonPropertyName("sellResult")]
     public List<SellResult>? SellResults { get; set; }
 
@@ -99,9 +92,6 @@ public record RagfairOffer
 
 public record OfferRequirement
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("_tpl")]
     public required MongoId TemplateId { get; set; }
 
@@ -120,16 +110,17 @@ public record OfferRequirement
 
 public record RagfairOfferUser
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
-    private string? _id;
+    private string? _nickname;
 
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 
     [JsonPropertyName("nickname")]
-    public string? Nickname { get; set; }
+    public string? Nickname
+    {
+        get { return _nickname; }
+        set { _nickname = value == null ? null : string.Intern(value); }
+    }
 
     [JsonPropertyName("rating")]
     public double? Rating { get; set; }
@@ -152,9 +143,6 @@ public record RagfairOfferUser
 
 public record SellResult
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("sellTime")]
     public long? SellTime { get; set; }
 

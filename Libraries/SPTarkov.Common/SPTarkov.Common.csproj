@@ -12,6 +12,7 @@
     <OutputType>Library</OutputType>
     <IsPackable>true</IsPackable>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SemanticVersioning" Version="3.0.0" />

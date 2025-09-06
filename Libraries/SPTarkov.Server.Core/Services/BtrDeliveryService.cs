@@ -24,8 +24,8 @@ public class BtrDeliveryService(
     ServerLocalisationService serverLocalisationService
 )
 {
-    protected readonly BtrDeliveryConfig _btrDeliveryConfig = configServer.GetConfig<BtrDeliveryConfig>();
-    protected readonly TraderConfig _traderConfig = configServer.GetConfig<TraderConfig>();
+    protected readonly BtrDeliveryConfig BtrDeliveryConfig = configServer.GetConfig<BtrDeliveryConfig>();
+    protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
 
     protected static readonly List<string> _transferTypes = ["btr", "transit"];
 
@@ -104,7 +104,7 @@ public class BtrDeliveryService(
         }
 
         var messageId = randomUtil.GetArrayValue(itemsDelivered);
-        var messageStoreTime = timeUtil.GetHoursAsSeconds(_traderConfig.Fence.BtrDeliveryExpireHours);
+        var messageStoreTime = timeUtil.GetHoursAsSeconds(TraderConfig.Fence.BtrDeliveryExpireHours);
 
         // Send the items to the player
         mailSendService.SendLocalisedNpcMessageToPlayer(
@@ -140,14 +140,14 @@ public class BtrDeliveryService(
     protected double GetBTRDeliveryReturnTimestamp()
     {
         // If override in config is non-zero, use that
-        if (_btrDeliveryConfig.ReturnTimeOverrideSeconds > 0)
+        if (BtrDeliveryConfig.ReturnTimeOverrideSeconds > 0)
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                logger.Debug($"BTR delivery override used: returning in {_btrDeliveryConfig.ReturnTimeOverrideSeconds} seconds");
+                logger.Debug($"BTR delivery override used: returning in {BtrDeliveryConfig.ReturnTimeOverrideSeconds} seconds");
             }
 
-            return timeUtil.GetTimeStamp() + _btrDeliveryConfig.ReturnTimeOverrideSeconds;
+            return timeUtil.GetTimeStamp() + BtrDeliveryConfig.ReturnTimeOverrideSeconds;
         }
 
         return timeUtil.GetTimeStamp();

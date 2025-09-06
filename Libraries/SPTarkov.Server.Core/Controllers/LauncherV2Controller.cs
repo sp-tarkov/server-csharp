@@ -4,7 +4,6 @@ using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -14,7 +13,6 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class LauncherV2Controller(
-    ISptLogger<LauncherV2Controller> logger,
     IReadOnlyList<SptMod> loadedMods,
     HashUtil hashUtil,
     SaveServer saveServer,
@@ -24,7 +22,7 @@ public class LauncherV2Controller(
     Watermark watermark
 )
 {
-    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
     /// <summary>
     ///     Returns a simple string of Pong!
@@ -62,7 +60,7 @@ public class LauncherV2Controller(
     {
         var sessionId = GetSessionId(info);
 
-        return !sessionId.IsEmpty();
+        return !sessionId.IsEmpty;
     }
 
     /// <summary>
@@ -93,7 +91,7 @@ public class LauncherV2Controller(
     {
         var sessionId = GetSessionId(info);
 
-        if (sessionId.IsEmpty())
+        if (sessionId.IsEmpty)
         {
             return false;
         }
@@ -117,7 +115,7 @@ public class LauncherV2Controller(
     {
         var sessionId = GetSessionId(info);
 
-        return !sessionId.IsEmpty() && saveServer.RemoveProfile(sessionId);
+        return !sessionId.IsEmpty && saveServer.RemoveProfile(sessionId);
     }
 
     /// <summary>
@@ -137,7 +135,7 @@ public class LauncherV2Controller(
     /// <returns></returns>
     public string EftVersion()
     {
-        return _coreConfig.CompatibleTarkovVersion;
+        return CoreConfig.CompatibleTarkovVersion;
     }
 
     /// <summary>

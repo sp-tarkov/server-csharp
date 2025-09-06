@@ -19,7 +19,9 @@
     "min_payment": 0,
     "min_return_hour": 0
   },
+  "isAvailableInPVE": true,
   "isCanTransferItems": false,
+  "isCanTransferItemsFromPve": false,
   "items_buy": {
     "category": [],
     "id_list": []
@@ -62,6 +64,7 @@
       "repair_price_coef": 0
     }
   ],
+  "mainDialogue": "67f6916731de488b189fac00",
   "medic": false,
   "name": "APC",
   "nextResupply": 1703691958,

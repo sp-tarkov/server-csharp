@@ -2,84 +2,94 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Services;
 
-namespace SPTarkov.Server.Core.Migration.Migrations
+namespace SPTarkov.Server.Core.Migration.Migrations;
+
+/// <summary>
+/// In 16.8.0.37972 BSG added customization for voices, technically this only affects BE profiles, but this should fix these.
+/// </summary>
+[Injectable]
+public class TheVoices(DatabaseService databaseService) : AbstractProfileMigration
 {
-    /// <summary>
-    /// In 16.8.0.37972 BSG added customization for voices, technically this only affects BE profiles, but this should fix these.
-    /// </summary>
-    [Injectable]
-    public class TheVoices(DatabaseService databaseService) : AbstractProfileMigration
+    private bool _pmcVoiceIsMissing = false;
+    private bool _scavVoiceIsMissing = false;
+    private bool _hasScavVoiceFromPreviousSPTVer = false;
+
+    public override string FromVersion
     {
-        private bool _pmcVoiceIsMissing = false;
-        private bool _scavVoiceIsMissing = false;
+        get { return "~4.0"; }
+    }
 
-        public override string FromVersion
+    public override string ToVersion
+    {
+        get { return "~4.0"; }
+    }
+
+    public override string MigrationName
+    {
+        get { return "TheVoices400"; }
+    }
+
+    public override IEnumerable<Type> PrerequisiteMigrations
+    {
+        // Requires ThreeTenToThreeEleven on legacy profiles, due to that adding the customization object for the first time
+        get { return [typeof(ThreeTenToThreeEleven)]; }
+    }
+
+    public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
+    {
+        _pmcVoiceIsMissing = profile["characters"]?["pmc"]?["Customization"]?["Voice"] == null;
+
+        _scavVoiceIsMissing = profile["characters"]?["scav"]?["Customization"]?["Voice"] == null;
+
+        _hasScavVoiceFromPreviousSPTVer = profile["characters"]?["scav"]?["Info"]?["Voice"] is not null;
+
+        return _pmcVoiceIsMissing || _scavVoiceIsMissing || _hasScavVoiceFromPreviousSPTVer;
+    }
+
+    public override JsonObject? Migrate(JsonObject profile)
+    {
+        if (_pmcVoiceIsMissing)
         {
-            get { return "~4.0"; }
+            HandlePmcVoice(profile);
         }
 
-        public override string ToVersion
+        if (_scavVoiceIsMissing)
         {
-            get { return "~4.0"; }
+            HandleScavVoice(profile);
         }
 
-        public override string MigrationName
+        // Handle this only if _scavVoiceIsMissing hasn't already processed, there was a time the SPT server still saved this
+        // Old var to profiles
+        if (_hasScavVoiceFromPreviousSPTVer && !_scavVoiceIsMissing)
         {
-            get { return "TheVoices400"; }
+            var scavInfo = profile["characters"]!["scav"]!["Info"] as JsonObject;
+            scavInfo?.Remove("Voice");
         }
 
-        public override IEnumerable<Type> PrerequisiteMigrations
-        {
-            // Requires ThreeTenToThreeEleven on legacy profiles, due to that adding the customization object for the first time
-            get { return [typeof(ThreeTenToThreeEleven)]; }
-        }
+        return base.Migrate(profile);
+    }
 
-        public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
-        {
-            _pmcVoiceIsMissing = profile["characters"]?["pmc"]?["Customization"]?["Voice"] == null;
+    private void HandlePmcVoice(JsonObject profileObject)
+    {
+        var pmcInfo = profileObject["characters"]!["pmc"]!["Info"] as JsonObject;
 
-            _scavVoiceIsMissing = profile["characters"]?["scav"]?["Customization"]?["Voice"] == null;
+        var oldVoice = pmcInfo["Voice"]?.ToString() ?? "";
+        pmcInfo.Remove("Voice");
 
-            return _pmcVoiceIsMissing || _scavVoiceIsMissing;
-        }
+        var voiceMongoId = databaseService.GetCustomization().FirstOrDefault(x => x.Value.Properties.Name == oldVoice).Key;
 
-        public override JsonObject? Migrate(JsonObject profile)
-        {
-            if (_pmcVoiceIsMissing)
-            {
-                HandlePmcVoice(profile);
-            }
+        profileObject["characters"]!["pmc"]!["Customization"]!["Voice"] = voiceMongoId.ToString();
+    }
 
-            if (_scavVoiceIsMissing)
-            {
-                HandleScavVoice(profile);
-            }
+    private void HandleScavVoice(JsonObject profileObject)
+    {
+        var pmcInfo = profileObject["characters"]!["scav"]!["Info"] as JsonObject;
 
-            return base.Migrate(profile);
-        }
+        var oldVoice = pmcInfo["Voice"]?.ToString() ?? "";
+        pmcInfo.Remove("Voice");
 
-        private void HandlePmcVoice(JsonObject profileObject)
-        {
-            var pmcInfo = profileObject["characters"]!["pmc"]!["Info"] as JsonObject;
+        var voiceMongoId = databaseService.GetCustomization().FirstOrDefault(x => x.Value.Properties.Name == oldVoice).Key;
 
-            var oldVoice = pmcInfo["Voice"]?.ToString() ?? "";
-            pmcInfo.Remove("Voice");
-
-            var voiceMongoId = databaseService.GetCustomization().FirstOrDefault(x => x.Value.Properties.Name == oldVoice).Key;
-
-            profileObject["characters"]!["pmc"]!["Customization"]!["Voice"] = voiceMongoId.ToString();
-        }
-
-        private void HandleScavVoice(JsonObject profileObject)
-        {
-            var pmcInfo = profileObject["characters"]!["scav"]!["Info"] as JsonObject;
-
-            var oldVoice = pmcInfo["Voice"]?.ToString() ?? "";
-            pmcInfo.Remove("Voice");
-
-            var voiceMongoId = databaseService.GetCustomization().FirstOrDefault(x => x.Value.Properties.Name == oldVoice).Key;
-
-            profileObject["characters"]!["scav"]!["Customization"]!["Voice"] = voiceMongoId.ToString();
-        }
+        profileObject["characters"]!["scav"]!["Customization"]!["Voice"] = voiceMongoId.ToString();
     }
 }

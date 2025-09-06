@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record DeleteFriendRequest : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("friend_id")]
     public MongoId FriendId { get; set; }
 }

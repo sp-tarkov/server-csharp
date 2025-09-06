@@ -1,8 +1,11 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Exceptions.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Logging;
+using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -10,7 +13,7 @@ using SPTarkov.Server.Core.Utils.Cloners;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable(InjectionType.Singleton)]
-public class HandbookHelper(DatabaseService databaseService, ConfigServer configServer, ICloner cloner)
+public class HandbookHelper(ISptLogger<HandbookHelper> logger, DatabaseService databaseService, ConfigServer configServer, ICloner cloner)
 {
     private LookupCollection? _handbookPriceCache;
     protected virtual LookupCollection HandbookPriceCache
@@ -18,7 +21,7 @@ public class HandbookHelper(DatabaseService databaseService, ConfigServer config
         get { return _handbookPriceCache ??= HydrateHandbookCache(); }
     }
 
-    protected readonly ItemConfig _itemConfig = configServer.GetConfig<ItemConfig>();
+    protected readonly ItemConfig ItemConfig = configServer.GetConfig<ItemConfig>();
 
     /// <summary>
     ///     Create an in-memory cache of all items with associated handbook price in handbookPriceCache class
@@ -28,7 +31,7 @@ public class HandbookHelper(DatabaseService databaseService, ConfigServer config
         var result = new LookupCollection();
         var handbook = databaseService.GetHandbook();
         // Add handbook overrides found in items.json config into db
-        foreach (var (key, priceOverride) in _itemConfig.HandbookPriceOverride)
+        foreach (var (key, priceOverride) in ItemConfig.HandbookPriceOverride)
         {
             var itemToUpdate = handbook.Items.FirstOrDefault(item => item.Id == key);
             if (itemToUpdate is null)
@@ -44,11 +47,11 @@ public class HandbookHelper(DatabaseService databaseService, ConfigServer config
                 itemToUpdate = handbook.Items.FirstOrDefault(item => item.Id == key);
             }
 
-            itemToUpdate.Price = priceOverride.Price;
+            itemToUpdate!.Price = priceOverride.Price;
             itemToUpdate.ParentId = priceOverride.ParentId;
         }
 
-        var handbookDbClone = cloner.Clone(handbook);
+        var handbookDbClone = cloner.Clone(handbook)!;
         foreach (var handbookItem in handbookDbClone.Items)
         {
             result.Items.ById.TryAdd(handbookItem.Id, handbookItem.Price ?? 0);
@@ -57,13 +60,25 @@ public class HandbookHelper(DatabaseService databaseService, ConfigServer config
                 result.Items.ByParent.TryAdd(handbookItem.ParentId, []);
             }
 
-            result.Items.ByParent.TryGetValue(handbookItem.ParentId, out var itemIds);
+            if (!result.Items.ByParent.TryGetValue(handbookItem.ParentId, out var itemIds))
+            {
+                throw new HandbookHelperException(
+                    $"Cannot add item id `{handbookItem.Id}` to parent id `{handbookItem.ParentId}`. Parent does not exist."
+                );
+            }
+
             itemIds.Add(handbookItem.Id);
         }
 
         foreach (var handbookCategory in handbookDbClone.Categories)
         {
-            result.Categories.ById.TryAdd(handbookCategory.Id, handbookCategory.ParentId);
+            if (!result.Categories.ById.TryAdd(handbookCategory.Id, handbookCategory.ParentId))
+            {
+                var message = $"Unable to add `{handbookCategory.Id}`. Key already exists.";
+                logger.Error(message);
+                throw new HandbookHelperException(message);
+            }
+
             if (handbookCategory.ParentId is not null)
             {
                 if (!result.Categories.ByParent.TryGetValue(handbookCategory.ParentId.Value, out _))
@@ -71,7 +86,12 @@ public class HandbookHelper(DatabaseService databaseService, ConfigServer config
                     result.Categories.ByParent.TryAdd(handbookCategory.ParentId.Value, []);
                 }
 
-                result.Categories.ByParent.TryGetValue(handbookCategory.ParentId.Value, out var itemIds);
+                if (!result.Categories.ByParent.TryGetValue(handbookCategory.ParentId.Value, out var itemIds))
+                {
+                    throw new HandbookHelperException(
+                        $"Cannot add item id `{handbookCategory.Id}` to parent id `{handbookCategory.ParentId.Value}`. Parent does not exist."
+                    );
+                }
 
                 itemIds.Add(handbookCategory.Id);
             }
@@ -117,19 +137,13 @@ public class HandbookHelper(DatabaseService databaseService, ConfigServer config
     }
 
     /// <summary>
-    /// Sum price of supplied items with handbook prices
+    ///     Sum price of supplied items with handbook prices
     /// </summary>
     /// <param name="items">Items to Sum</param>
     /// <returns></returns>
     public double GetTemplatePriceForItems(IEnumerable<Item> items)
     {
-        var total = 0D;
-        foreach (var item in items)
-        {
-            total += GetTemplatePrice(item.Template);
-        }
-
-        return total;
+        return items.Sum(item => GetTemplatePrice(item.Template));
     }
 
     /// <summary>
@@ -139,9 +153,17 @@ public class HandbookHelper(DatabaseService databaseService, ConfigServer config
     /// <returns>string array</returns>
     public List<MongoId> TemplatesWithParent(MongoId parentId)
     {
-        HandbookPriceCache.Items.ByParent.TryGetValue(parentId, out var template);
+        if (HandbookPriceCache.Items.ByParent.TryGetValue(parentId, out var templates))
+        {
+            return templates;
+        }
 
-        return template ?? [];
+        if (logger.IsLogEnabled(LogLevel.Debug))
+        {
+            logger.Debug($"Template ids with parent id `{parentId}` not found when trying to get templates by parent");
+        }
+
+        return [];
     }
 
     /// <summary>
@@ -159,10 +181,19 @@ public class HandbookHelper(DatabaseService databaseService, ConfigServer config
     /// </summary>
     /// <param name="categoryParent"></param>
     /// <returns>string array</returns>
-    public List<string> ChildrenCategories(string categoryParent)
+    public List<string> ChildrenCategories(MongoId categoryParent)
     {
-        HandbookPriceCache.Categories.ByParent.TryGetValue(categoryParent, out var category);
-        return category ?? [];
+        if (HandbookPriceCache.Categories.ByParent.TryGetValue(categoryParent, out var childrenCategories))
+        {
+            return childrenCategories;
+        }
+
+        if (logger.IsLogEnabled(LogLevel.Debug))
+        {
+            logger.Debug($"Children categories with parent id `{categoryParent}` not found when trying to get children categories");
+        }
+
+        return [];
     }
 
     /// <summary>
@@ -171,7 +202,7 @@ public class HandbookHelper(DatabaseService databaseService, ConfigServer config
     /// <param name="nonRoubleCurrencyCount">Currency count to convert</param>
     /// <param name="currencyTypeFrom">What current currency is</param>
     /// <returns>Count in roubles</returns>
-    public double InRUB(double nonRoubleCurrencyCount, MongoId currencyTypeFrom)
+    public double InRoubles(double nonRoubleCurrencyCount, MongoId currencyTypeFrom)
     {
         return currencyTypeFrom == Money.ROUBLES
             ? nonRoubleCurrencyCount
@@ -184,7 +215,7 @@ public class HandbookHelper(DatabaseService databaseService, ConfigServer config
     /// <param name="roubleCurrencyCount">roubles to convert</param>
     /// <param name="currencyTypeTo">Currency to convert roubles into</param>
     /// <returns>currency count in desired type</returns>
-    public double FromRUB(double roubleCurrencyCount, MongoId currencyTypeTo)
+    public double FromRoubles(double roubleCurrencyCount, MongoId currencyTypeTo)
     {
         if (currencyTypeTo == Money.ROUBLES)
         {
@@ -196,7 +227,7 @@ public class HandbookHelper(DatabaseService databaseService, ConfigServer config
         return price > 0 ? Math.Max(1, Math.Round(roubleCurrencyCount / price)) : 0;
     }
 
-    public HandbookCategory GetCategoryById(MongoId handbookId)
+    public HandbookCategory? GetCategoryById(MongoId handbookId)
     {
         return databaseService.GetHandbook().Categories.FirstOrDefault(category => category.Id == handbookId);
     }

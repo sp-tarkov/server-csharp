@@ -8,20 +8,17 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Trader
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("assort")]
-    public TraderAssort Assort { get; set; }
+    public required TraderAssort Assort { get; set; }
 
     [JsonPropertyName("base")]
-    public TraderBase Base { get; set; }
+    public required TraderBase Base { get; init; }
 
     [JsonPropertyName("dialogue")]
-    public Dictionary<string, List<string>?> Dialogue { get; set; }
+    public required Dictionary<string, List<string>?> Dialogue { get; init; }
 
     [JsonPropertyName("questassort")]
-    public Dictionary<string, Dictionary<string, string>>? QuestAssort { get; set; }
+    public required Dictionary<string, Dictionary<MongoId, MongoId>> QuestAssort { get; init; }
 
     [JsonPropertyName("suits")]
     public List<Suit>? Suits { get; set; }
@@ -32,9 +29,6 @@ public record Trader
 
 public record TraderBase
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("refreshTraderRagfairOffers")]
     public bool? RefreshTraderRagfairOffers { get; set; }
 
@@ -90,8 +84,14 @@ public record TraderBase
     [JsonPropertyName("items_sell")]
     public Dictionary<string, ItemSellData>? ItemsSell { get; set; }
 
+    [JsonPropertyName("isAvailableInPVE")]
+    public bool IsAvailableInPVE { get; set; }
+
     [JsonPropertyName("isCanTransferItems")]
-    public bool? IsCanTransferItems { get; set; }
+    public bool IsCanTransferItems { get; set; }
+
+    [JsonPropertyName("isCanTransferItemsFromPve")]
+    public bool IsCanTransferItemsFromPve { get; set; }
 
     [JsonPropertyName("transferableItems")]
     public ItemBuyData? TransferableItems { get; set; }
@@ -105,11 +105,14 @@ public record TraderBase
     [JsonPropertyName("loyaltyLevels")]
     public List<TraderLoyaltyLevel>? LoyaltyLevels { get; set; }
 
+    [JsonPropertyName("mainDialogue")]
+    public string? MainDialogue { get; set; }
+
     [JsonPropertyName("medic")]
     public bool? Medic { get; set; }
 
     [JsonPropertyName("name")]
-    public string? Name { get; set; }
+    public string Name { get; set; }
 
     // Confirmed in client
     [JsonPropertyName("nextResupply")]
@@ -133,9 +136,6 @@ public record TraderBase
 
 public record ItemBuyData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     // MongoId
     [JsonPropertyName("category")]
     public required HashSet<MongoId> Category { get; set; }
@@ -147,9 +147,6 @@ public record ItemBuyData
 
 public record ItemSellData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("category")]
     public required HashSet<MongoId> Category { get; set; }
 
@@ -159,9 +156,6 @@ public record ItemSellData
 
 public record TraderInsurance
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("availability")]
     public bool? Availability { get; set; }
 
@@ -187,9 +181,6 @@ public record TraderInsurance
 
 public record TraderLoyaltyLevel
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("buy_price_coef")]
     public double? BuyPriceCoefficient { get; set; }
 
@@ -219,9 +210,6 @@ public record TraderLoyaltyLevel
 
 public record TraderRepair
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("availability")]
     public bool? Availability { get; set; }
 
@@ -250,9 +238,6 @@ public record TraderRepair
 
 public record TraderAssort
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("nextResupply")]
     public double? NextResupply { get; set; }
 
@@ -268,9 +253,6 @@ public record TraderAssort
 
 public record BarterScheme
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     // Confirmed in client
     [JsonPropertyName("count")]
     public double? Count { get; set; }
@@ -294,9 +276,6 @@ public record BarterScheme
 
 public record Suit
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
 
@@ -327,9 +306,6 @@ public record Suit
 
 public record SuitRequirements
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("achievementRequirements")]
     public List<string>? AchievementRequirements { get; set; }
 
@@ -361,9 +337,6 @@ public record SuitRequirements
 
 public record ItemRequirement
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("count")]
     public double? Count { get; set; }
 

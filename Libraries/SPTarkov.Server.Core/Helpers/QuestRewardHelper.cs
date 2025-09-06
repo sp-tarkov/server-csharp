@@ -138,7 +138,7 @@ public class QuestRewardHelper(
         var hideoutManagementBonusMultiplier = hideoutManagementSkill != null ? 2 + hideoutManagementSkill.Progress / 1000 : 1;
 
         // e.g 15% * 1.4
-        return moneyRewardBonusPercent + hideoutManagementBonusMultiplier ?? 1;
+        return moneyRewardBonusPercent + hideoutManagementBonusMultiplier;
     }
 
     /// <summary>

@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record HandleQTEEventRequestData : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     true if QTE was successful, otherwise false
     /// </summary>

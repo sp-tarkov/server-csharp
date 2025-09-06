@@ -7,9 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Item
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     private string? _parentId;
 
     private string? _slotId;
@@ -48,9 +45,6 @@ public record Item
 
 public record HideoutItem
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Hideout inventory id that was used by improvement action
     /// </summary>
@@ -86,9 +80,6 @@ public record HideoutItem
 
 public record ItemLocation
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("x")]
     public int? X { get; set; }
 
@@ -120,9 +111,6 @@ public enum ItemRotation
 
 public record Upd
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public UpdBuff? Buff { get; set; }
 
     public double? OriginalStackObjectsCount { get; set; }
@@ -187,18 +175,12 @@ public record Upd
 
 public record LockableKeyComponent
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public float? RelativeValue { get; set; }
     public int? NumberOfUsages { get; set; }
 }
 
 public record LockableComponent
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public IEnumerable<string>? KeyIds { get; set; }
     public bool? Locked { get; set; }
     public LockableKeyComponent? KeyComponent { get; set; }
@@ -213,15 +195,12 @@ public enum PinLockState
 
 public record UpdBuff
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Rarity")]
     public string? Rarity { get; set; }
 
     [JsonPropertyName("BuffType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public BuffType? BuffType { get; set; }
+    public RepairBuffType? BuffType { get; set; }
 
     [JsonPropertyName("Value")]
     public double? Value { get; set; }
@@ -232,27 +211,18 @@ public record UpdBuff
 
 public record UpdTogglable
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("On")]
     public bool? On { get; set; }
 }
 
 public record UpdMap
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Markers")]
     public List<MapMarker>? Markers { get; set; }
 }
 
 public record MapMarker
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Type")]
     public string? Type { get; set; }
 
@@ -268,9 +238,6 @@ public record MapMarker
 
 public record UpdTag
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Color")]
     public int? Color { get; set; }
 
@@ -280,9 +247,6 @@ public record UpdTag
 
 public record UpdFaceShield
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Hits")]
     public int? Hits { get; set; }
 
@@ -292,9 +256,6 @@ public record UpdFaceShield
 
 public record UpdRepairable
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Durability")]
     public double? Durability { get; set; }
 
@@ -304,27 +265,18 @@ public record UpdRepairable
 
 public record UpdRecodableComponent
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("IsEncoded")]
     public bool? IsEncoded { get; set; }
 }
 
 public record UpdMedKit
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("HpResource")]
     public double? HpResource { get; set; }
 }
 
 public record UpdSight
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ScopesCurrentCalibPointIndexes")]
     public IEnumerable<int>? ScopesCurrentCalibPointIndexes { get; set; }
 
@@ -339,36 +291,24 @@ public record UpdSight
 
 public record UpdFoldable
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Folded")]
     public bool? Folded { get; set; }
 }
 
 public record UpdFireMode
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("FireMode")]
     public string? FireMode { get; set; }
 }
 
 public record UpdFoodDrink
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("HpPercent")]
     public double? HpPercent { get; set; }
 }
 
 public record UpdKey
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     // Checked in client
     [JsonPropertyName("NumberOfUsages")]
     public int? NumberOfUsages { get; set; }
@@ -376,9 +316,6 @@ public record UpdKey
 
 public record UpdResource
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Value")]
     public double? Value { get; set; }
 
@@ -388,9 +325,6 @@ public record UpdResource
 
 public record UpdLight
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("IsActive")]
     public bool? IsActive { get; set; }
 
@@ -400,9 +334,6 @@ public record UpdLight
 
 public record UpdDogtag
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("AccountId")]
     public string? AccountId { get; set; }
 
@@ -419,9 +350,15 @@ public record UpdDogtag
     [JsonPropertyName("Level")]
     public double? Level { get; set; }
 
+    /// <summary>
+    /// e.g. 2024-11-14T21:24:59.329+03:00
+    /// </summary>
     [JsonPropertyName("Time")]
     public string? Time { get; set; }
 
+    /// <summary>
+    /// e.g. "Killed by"
+    /// </summary>
     [JsonPropertyName("Status")]
     public string? Status { get; set; }
 
@@ -434,6 +371,9 @@ public record UpdDogtag
     [JsonPropertyName("KillerName")]
     public string? KillerName { get; set; }
 
+    /// <summary>
+    /// e.g. 5fbcc1d9016cce60e8341ab3 ShortName
+    /// </summary>
     [JsonPropertyName("WeaponName")]
     public string? WeaponName { get; set; }
 
@@ -442,27 +382,18 @@ public record UpdDogtag
 
 public record UpdSideEffect
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Value")]
     public double? Value { get; set; }
 }
 
 public record UpdRepairKit
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Resource")]
     public double? Resource { get; set; }
 }
 
 public record UpdCultistAmulet
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("NumberOfUsages")]
     public double? NumberOfUsages { get; set; }
 }

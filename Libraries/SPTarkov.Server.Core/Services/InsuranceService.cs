@@ -30,8 +30,8 @@ public class InsuranceService(
     ConfigServer configServer
 )
 {
-    protected readonly InsuranceConfig _insuranceConfig = configServer.GetConfig<InsuranceConfig>();
-    protected readonly Dictionary<MongoId, Dictionary<MongoId, List<Item>>?> _insured = new();
+    protected readonly InsuranceConfig InsuranceConfig = configServer.GetConfig<InsuranceConfig>();
+    protected readonly Dictionary<MongoId, Dictionary<MongoId, List<Item>>?> Insured = new();
 
     /// <summary>
     ///     Does player have insurance dictionary exists
@@ -40,7 +40,7 @@ public class InsuranceService(
     /// <returns>True if exists</returns>
     public bool InsuranceDictionaryExists(MongoId sessionId)
     {
-        return _insured.TryGetValue(sessionId, out _);
+        return Insured.TryGetValue(sessionId, out _);
     }
 
     /// <summary>
@@ -50,14 +50,14 @@ public class InsuranceService(
     /// <returns>Item list</returns>
     public Dictionary<MongoId, List<Item>>? GetInsurance(MongoId sessionId)
     {
-        return _insured[sessionId];
+        return Insured[sessionId];
     }
 
     public void ResetInsurance(MongoId sessionId)
     {
-        if (!_insured.TryAdd(sessionId, new Dictionary<MongoId, List<Item>>()))
+        if (!Insured.TryAdd(sessionId, new Dictionary<MongoId, List<Item>>()))
         {
-            _insured[sessionId] = new Dictionary<MongoId, List<Item>>();
+            Insured[sessionId] = new Dictionary<MongoId, List<Item>>();
         }
     }
 
@@ -139,14 +139,14 @@ public class InsuranceService(
     protected double GetInsuranceReturnTimestamp(PmcData pmcData, TraderBase trader)
     {
         // If override in config is non-zero, use that instead of trader values
-        if (_insuranceConfig.ReturnTimeOverrideSeconds > 0)
+        if (InsuranceConfig.ReturnTimeOverrideSeconds > 0)
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                logger.Debug($"Insurance override used: returning in {_insuranceConfig.ReturnTimeOverrideSeconds} seconds");
+                logger.Debug($"Insurance override used: returning in {InsuranceConfig.ReturnTimeOverrideSeconds} seconds");
             }
 
-            return timeUtil.GetTimeStamp() + _insuranceConfig.ReturnTimeOverrideSeconds;
+            return timeUtil.GetTimeStamp() + InsuranceConfig.ReturnTimeOverrideSeconds;
         }
 
         var insuranceReturnTimeBonusSum = pmcData.GetBonusValueFromProfile(BonusType.InsuranceReturnTime);
@@ -180,10 +180,10 @@ public class InsuranceService(
 
     protected double GetMaxInsuranceStorageTime(TraderBase traderBase)
     {
-        if (_insuranceConfig.StorageTimeOverrideSeconds > 0)
+        if (InsuranceConfig.StorageTimeOverrideSeconds > 0)
         // Override exists, use instead of traders value
         {
-            return _insuranceConfig.StorageTimeOverrideSeconds;
+            return InsuranceConfig.StorageTimeOverrideSeconds;
         }
 
         return timeUtil.GetHoursAsSeconds((int)traderBase.Insurance.MaxStorageTime);
@@ -303,7 +303,7 @@ public class InsuranceService(
     /// <returns>True if exists</returns>
     protected bool InsuranceTraderArrayExists(MongoId sessionId, MongoId traderId)
     {
-        return _insured[sessionId].GetValueOrDefault(traderId) is not null;
+        return Insured[sessionId].GetValueOrDefault(traderId) is not null;
     }
 
     /// <summary>
@@ -313,7 +313,7 @@ public class InsuranceService(
     /// <param name="traderId">Trader items insured with</param>
     public void ResetInsuranceTraderArray(MongoId sessionId, MongoId traderId)
     {
-        _insured[sessionId][traderId] = [];
+        Insured[sessionId][traderId] = [];
     }
 
     /// <summary>
@@ -324,7 +324,7 @@ public class InsuranceService(
     /// <param name="itemToAdd">Insured item (with children)</param>
     public void AddInsuranceItemToArray(MongoId sessionId, MongoId traderId, Item itemToAdd)
     {
-        _insured[sessionId][traderId].Add(itemToAdd);
+        Insured[sessionId][traderId].Add(itemToAdd);
     }
 
     /// <summary>

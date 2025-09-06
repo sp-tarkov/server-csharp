@@ -415,7 +415,7 @@ public class EliminationQuestGenerator(
         // e.g. we draw "Arms" from the probability array but must present ["LeftArm", "RightArm"] to the client
         var bodyPartsToClient = new List<string>();
 
-        var bodyParts = generationData.BodyPartsConfig.Draw(randomUtil.RandInt(1, 3), false);
+        var bodyParts = generationData.BodyPartsConfig.DrawAndRemove(randomUtil.RandInt(1, 3));
 
         var probability = 0d;
 
@@ -555,7 +555,7 @@ public class EliminationQuestGenerator(
         }
 
         // Pick a weighted weapon category
-        var weaponRequirement = generationData.WeaponCategoryRequirementConfig.Draw(1, false);
+        var weaponRequirement = generationData.WeaponCategoryRequirementConfig.DrawAndRemove();
 
         // Get the hideout id value stored in the .data array
         return generationData.WeaponCategoryRequirementConfig.Data(weaponRequirement[0])?[0];
@@ -568,7 +568,7 @@ public class EliminationQuestGenerator(
     /// <returns>Weapon to use</returns>
     protected MongoId GenerateSpecificWeaponRequirement(EliminationQuestGenerationData generationData)
     {
-        var weaponRequirement = generationData.WeaponRequirementConfig.Draw(1, false);
+        var weaponRequirement = generationData.WeaponRequirementConfig.DrawAndRemove();
         var specificAllowedWeaponCategory = generationData.WeaponRequirementConfig.Data(weaponRequirement[0]);
 
         if (specificAllowedWeaponCategory?[0] is null)

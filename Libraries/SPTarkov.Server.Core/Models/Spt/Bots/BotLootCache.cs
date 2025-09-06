@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record BotLootCache
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("backpackLoot")]
     public Dictionary<MongoId, double> BackpackLoot { get; set; } = [];
 
@@ -50,9 +47,6 @@ public record BotLootCache
 
 public record LootCacheType
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public const string Special = "Special";
     public const string Backpack = "Backpack";
     public const string Pocket = "Pocket";

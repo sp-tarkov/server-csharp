@@ -21,7 +21,7 @@ public class SaveServer(
     JsonUtil jsonUtil,
     HashUtil hashUtil,
     ServerLocalisationService serverLocalisationService,
-    ProfileMigratorService profileMigratorService,
+    ProfileValidatorService profileValidatorService,
     ISptLogger<SaveServer> logger,
     ConfigServer configServer
 )
@@ -92,7 +92,7 @@ public class SaveServer(
             totalTime += await SaveProfileAsync(sessionID.Key);
         }
 
-        if (logger.IsLogEnabled(LogLevel.Debug))
+        if (profiles.Count > 0 && logger.IsLogEnabled(LogLevel.Debug))
         {
             logger.Debug($"Saved {profiles.Count} profiles, took: {totalTime}ms");
         }
@@ -106,7 +106,7 @@ public class SaveServer(
     /// <exception cref="Exception"> Thrown when sessionId is null / empty or no profiles with that ID are found </exception>
     public SptProfile GetProfile(MongoId sessionId)
     {
-        if (sessionId.IsEmpty())
+        if (sessionId.IsEmpty)
         {
             throw new Exception("session id provided was empty, did you restart the server while the game was running?");
         }
@@ -210,8 +210,22 @@ public class SaveServer(
 
             if (profile is not null)
             {
-                profiles[sessionID] = profileMigratorService.HandlePendingMigrations(profile);
+                try
+                {
+                    profiles[sessionID] = profileValidatorService.MigrateAndValidateProfile(profile);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    logger.Critical($"Failed to load profile with ID '{sessionID}'");
+                    logger.Critical(ex.ToString());
+                }
             }
+        }
+
+        // We don't proceed further here as only one object in the profile has data in it.
+        if (IsProfileInvalidOrUnloadable(sessionID))
+        {
+            return;
         }
 
         // Run callbacks
@@ -229,6 +243,12 @@ public class SaveServer(
     /// <returns> Time taken to save the profile in seconds </returns>
     public async Task<long> SaveProfileAsync(MongoId sessionID)
     {
+        // No need to save profiles that have been marked as invalid
+        if (IsProfileInvalidOrUnloadable(sessionID))
+        {
+            return 0;
+        }
+
         var filePath = $"{profileFilepath}{sessionID.ToString()}.json";
 
         // Run pre-save callbacks before we save into json
@@ -278,5 +298,26 @@ public class SaveServer(
         }
 
         return !fileUtil.FileExists(file);
+    }
+
+    /// <summary>
+    /// Determines whether the specified profile is marked as invalid or cannot be loaded.
+    /// </summary>
+    /// <param name="sessionID">The ID of the profile to check.</param>
+    /// <returns>
+    /// <c>true</c> if the profile is invalid or unloadable; otherwise, <c>false</c>.
+    /// </returns>
+    public bool IsProfileInvalidOrUnloadable(MongoId sessionID)
+    {
+        if (
+            profiles.TryGetValue(sessionID, out var profile)
+            && profile.ProfileInfo!.InvalidOrUnloadableProfile is not null
+            && profile.ProfileInfo!.InvalidOrUnloadableProfile!.Value
+        )
+        {
+            return true;
+        }
+
+        return false;
     }
 }

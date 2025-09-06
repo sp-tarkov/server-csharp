@@ -11,11 +11,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Library</OutputType>
     <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HarmonyX" Version="2.14.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SPTarkov.DI\SPTarkov.DI.csproj" />
   </ItemGroup>
 </Project>

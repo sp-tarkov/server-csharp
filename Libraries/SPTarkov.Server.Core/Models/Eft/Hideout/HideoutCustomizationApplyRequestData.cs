@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record HideoutCustomizationApplyRequestData : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Id of the newly picked item to apply to hideout
     /// </summary>

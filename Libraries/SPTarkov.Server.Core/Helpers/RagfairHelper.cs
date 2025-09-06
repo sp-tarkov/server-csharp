@@ -21,7 +21,7 @@ public class RagfairHelper(
     ICloner cloner
 )
 {
-    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
     /// Gets currency TAG from currency tpl value
@@ -88,7 +88,7 @@ public class RagfairHelper(
         }
 
         // Case: category
-        if (request.HandbookId.HasValue && !request.HandbookId.Value.IsEmpty())
+        if (request.HandbookId.HasValue && !request.HandbookId.Value.IsEmpty)
         {
             var handbook = GetCategoryList(request.HandbookId.Value);
             result = (result?.Count > 0 ? result.IntersectWith(handbook) : handbook).ToList();
@@ -97,15 +97,13 @@ public class RagfairHelper(
         return result;
     }
 
-    public Dictionary<MongoId, TraderAssort> GetDisplayableAssorts(MongoId sessionId)
+    public Dictionary<MongoId, TraderAssort> GetDisplayableAssorts(MongoId sessionId, bool showLockedAssorts = true)
     {
-        var result = new Dictionary<MongoId, TraderAssort>();
-        foreach (var traderId in databaseService.GetTraders().Keys.Where(traderId => _ragfairConfig.Traders.ContainsKey(traderId)))
-        {
-            result[traderId] = traderAssortHelper.GetAssort(sessionId, traderId, true);
-        }
+        var traders = databaseService.GetTraders();
 
-        return result;
+        return traders
+            .Keys.Where(traderId => RagfairConfig.Traders.ContainsKey(traderId)) // Trader enabled in config
+            .ToDictionary(traderId => traderId, traderId => traderAssortHelper.GetAssort(sessionId, traderId, showLockedAssorts));
     }
 
     protected List<MongoId> GetCategoryList(MongoId handbookId)

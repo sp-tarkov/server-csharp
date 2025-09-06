@@ -48,12 +48,12 @@
       "5f68c4c217d579077152a252": 34592
     },
     "voice": {
-      "Scav_1": 1,
-      "Scav_2": 1,
-      "Scav_3": 1,
-      "Scav_4": 1,
-      "Scav_5": 1,
-      "Scav_6": 1
+      "5fc613c80b735e7b024c76e2": 2578,
+      "5fc613e10b735e7b024c76e3": 2618,
+      "5fc614130b735e7b024c76e4": 2596,
+      "5fc6144b0b735e7b024c76e7": 2602,
+      "5fc614390b735e7b024c76e6": 2673,
+      "5fc614290b735e7b024c76e5": 2629
     }
   },
   "chances": {
@@ -377,7 +377,6 @@
       "Look": {
         "ANGLE_FOR_GETUP": 30,
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": false,
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
@@ -402,7 +401,7 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
+
         "POSIBLE_VISION_SPACE": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 43,
         "WAIT_NEW_SENSOR": 2.1,
@@ -475,7 +474,7 @@
         "SURGE_KIT_ONLY_SAFE_CONTAINER": false,
         "SUSPETION_POINT_CHANCE_ADD100": 0,
         "TALK_WITH_QUERY": true,
-        "TIME_LEAVE_MAP": 23,
+
         "TIME_TO_FIND_ENEMY": 22,
         "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 52,
         "TIME_TO_RUN_TO_COVER_CAUSE_SHOOT_SEC": 15,
@@ -878,7 +877,6 @@
       "Look": {
         "ANGLE_FOR_GETUP": 30,
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": false,
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
@@ -903,7 +901,7 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
+
         "POSIBLE_VISION_SPACE": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 43,
         "WAIT_NEW_SENSOR": 2.1,
@@ -976,7 +974,7 @@
         "SURGE_KIT_ONLY_SAFE_CONTAINER": false,
         "SUSPETION_POINT_CHANCE_ADD100": 0,
         "TALK_WITH_QUERY": true,
-        "TIME_LEAVE_MAP": 23,
+
         "TIME_TO_FIND_ENEMY": 22,
         "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 52,
         "TIME_TO_RUN_TO_COVER_CAUSE_SHOOT_SEC": 15,
@@ -1123,13 +1121,11 @@
         "BETTER_PRECICING_COEF": 0.7,
         "BOTTOM_COEF": 0.1,
         "BOT_MOVE_IF_DELTA": 0.01,
-        "CAN_HARD_AIM": true,
         "COEF_FROM_COVER": 0.65,
         "COEF_IF_MOVE": 1,
         "DAMAGE_PANIC_TIME": 15,
         "DAMAGE_TO_DISCARD_AIM_0_100": 86,
         "DANGER_UP_POINT": 1.3,
-        "DEAD_BODY_LOOK_PERIOD": 8,
         "DIST_TO_SHOOT_NO_OFFSET": 3,
         "DIST_TO_SHOOT_TO_CENTER": 3,
         "FIRST_CONTACT_ADD_CHANCE_100": 80,
@@ -1378,7 +1374,6 @@
       "Look": {
         "ANGLE_FOR_GETUP": 30,
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
         "DIST_CHECK_WALL": 20,
@@ -1402,7 +1397,7 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
+
         "POSIBLE_VISION_SPACE": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 43,
         "WAIT_NEW_SENSOR": 2.1,
@@ -1472,7 +1467,7 @@
         "SURGE_KIT_ONLY_SAFE_CONTAINER": false,
         "SUSPETION_POINT_CHANCE_ADD100": 0,
         "TALK_WITH_QUERY": true,
-        "TIME_LEAVE_MAP": 23,
+
         "TIME_TO_FIND_ENEMY": 22,
         "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 52,
         "TIME_TO_RUN_TO_COVER_CAUSE_SHOOT_SEC": 15,
@@ -1870,7 +1865,7 @@
       "Look": {
         "ANGLE_FOR_GETUP": 30,
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": false,
+
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
@@ -1895,7 +1890,7 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
+
         "POSIBLE_VISION_SPACE": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 43,
         "WAIT_NEW_SENSOR": 2.1,
@@ -1913,7 +1908,7 @@
         "CAN_RECEIVE_PLAYER_REQUESTS_BEAR": false,
         "CAN_RECEIVE_PLAYER_REQUESTS_SAVAGE": true,
         "CAN_RECEIVE_PLAYER_REQUESTS_USEC": false,
-        "CAN_RECIVE_PLAYER_REQUESTS": true,
+
         "CAN_STAND_BY": true,
         "CAN_TAKE_ITEMS": true,
         "CAN_THROW_REQUESTS": true,
@@ -1930,7 +1925,7 @@
         "COVER_SELF_ALWAYS_IF_DAMAGED": false,
         "DAMAGE_REDUCTION_TIME_SEC": 20,
         "DANGER_POINT_CHOOSE_COEF": 1,
-        "DEFAULT_ENEMY_SAVAGE": true,
+
         "DIST_TO_ENEMY_YO_CAN_HEAL": 30,
         "DIST_TO_FOUND_SQRT": 400,
         "DIST_TO_STOP_RUN_ENEMY": 15,
@@ -1971,7 +1966,7 @@
         "SURGE_KIT_ONLY_SAFE_CONTAINER": false,
         "SUSPETION_POINT_CHANCE_ADD100": 0,
         "TALK_WITH_QUERY": true,
-        "TIME_LEAVE_MAP": 23,
+
         "TIME_TO_FIND_ENEMY": 22,
         "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 52,
         "TIME_TO_RUN_TO_COVER_CAUSE_SHOOT_SEC": 15,

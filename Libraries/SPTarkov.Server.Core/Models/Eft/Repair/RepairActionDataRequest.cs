@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Repair;
 
 public record RepairActionDataRequest : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("repairKitsInfo")]
     public List<RepairKitsInfo>? RepairKitsInfo { get; set; }
 
@@ -21,9 +18,6 @@ public record RepairActionDataRequest : InventoryBaseActionRequestData
 
 public record RepairKitsInfo
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     id of repair kit to use
     /// </summary>

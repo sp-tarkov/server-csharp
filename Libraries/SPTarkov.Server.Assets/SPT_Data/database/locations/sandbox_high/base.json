@@ -40,8 +40,8 @@
     {
       "id": "64c0acf85174e095610734a0",
       "pic": {
-        "file": "67e404c5bec96f5d8e09732f.jpg",
-        "path": "banners/67e404c5bec96f5d8e09732f.jpg",
+        "file": "67e404c722d6081b78031de0.jpg",
+        "path": "banners/67e404c722d6081b78031de0.jpg",
         "rcid": "",
         "type": "banners"
       }
@@ -212,28 +212,6 @@
       "ShowOnTarkovMapPvE": false,
       "SpawnMode": [
         "pve"
-      ],
-      "Supports": null,
-      "Time": -1,
-      "TriggerId": "",
-      "TriggerName": ""
-    },
-    {
-      "BossChance": 0,
-      "BossDifficult": "normal",
-      "BossEscortAmount": "0",
-      "BossEscortDifficult": "normal",
-      "BossEscortType": "gifter",
-      "BossName": "gifter",
-      "BossPlayer": false,
-      "BossZone": "",
-      "IgnoreMaxBots": true,
-      "RandomTimeSpawn": false,
-      "ShowOnTarkovMap": false,
-      "ShowOnTarkovMapPvE": false,
-      "SpawnMode": [
-        "pve",
-        "regular"
       ],
       "Supports": null,
       "Time": -1,
@@ -453,7 +431,7 @@
   "BotStartPlayer": 0,
   "BotStop": 1800,
   "Description": "The downtown Tarkov with banks, malls, hotels and all the other things a striving modern city could have needed.",
-  "DisabledForScav": false,
+  "DisabledForScav": true,
   "DisabledScavExits": "",
   "EnableCoop": true,
   "Enabled": true,

@@ -1,5 +1,6 @@
 using MongoIdTplGenerator.Utils;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
@@ -19,7 +20,7 @@ public class QuestTplMongoIdGenerator(
 ) : IMongoIdGenerator
 {
     private string? _enumDir;
-    private Dictionary<string, Quest>? _quests;
+    private Dictionary<MongoId, Quest>? _quests;
 
     public Task Run()
     {

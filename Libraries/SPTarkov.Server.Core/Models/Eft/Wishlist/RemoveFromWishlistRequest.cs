@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Wishlist;
 
 public record RemoveFromWishlistRequest : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("items")]
     public List<MongoId>? Items { get; set; }
 }

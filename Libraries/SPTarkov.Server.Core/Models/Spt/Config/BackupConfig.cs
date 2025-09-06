@@ -22,9 +22,6 @@ public record BackupConfig : BaseConfig
 
 public record BackupConfigInterval
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
 

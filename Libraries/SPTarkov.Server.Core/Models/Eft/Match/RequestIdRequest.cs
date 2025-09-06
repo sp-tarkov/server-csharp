@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record RequestIdRequest : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("requestId")]
     public string? RequestId { get; set; }
 }

@@ -4,9 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 
 public record ConnectResponse
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("backendUrl")]
     public string? BackendUrl { get; set; }
 

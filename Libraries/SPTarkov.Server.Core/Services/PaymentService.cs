@@ -29,7 +29,7 @@ public class PaymentService(
     ConfigServer configServer
 )
 {
-    protected readonly InventoryConfig _inventoryConfig = configServer.GetConfig<InventoryConfig>();
+    protected readonly InventoryConfig InventoryConfig = configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
     ///     Take money and insert items into return to server request
@@ -105,8 +105,8 @@ public class PaymentService(
             if (payToTrader)
             {
                 // Convert the amount to the trader's currency and update the sales sum.
-                var costOfPurchaseInCurrency = handbookHelper.FromRUB(
-                    handbookHelper.InRUB(currencyAmount, currencyTpl),
+                var costOfPurchaseInCurrency = handbookHelper.FromRoubles(
+                    handbookHelper.InRoubles(currencyAmount, currencyTpl),
                     trader.Currency.Value.GetCurrencyTpl()
                 );
 
@@ -121,7 +121,7 @@ public class PaymentService(
             logger.Debug(serverLocalisationService.GetText("payment-zero_price_no_payment"));
 
             // Convert the handbook price to the trader's currency and update the sales sum.
-            var costOfPurchaseInCurrency = handbookHelper.FromRUB(
+            var costOfPurchaseInCurrency = handbookHelper.FromRoubles(
                 GetTraderItemHandbookPriceRouble(request.ItemId, requestTransactionId) ?? 0,
                 trader.Currency.Value.GetCurrencyTpl()
             );
@@ -190,7 +190,7 @@ public class PaymentService(
         }
 
         var currencyTpl = trader.Currency.Value.GetCurrencyTpl();
-        var calcAmount = handbookHelper.FromRUB(handbookHelper.InRUB(amountToSend ?? 0, currencyTpl), currencyTpl);
+        var calcAmount = handbookHelper.FromRoubles(handbookHelper.InRoubles(amountToSend ?? 0, currencyTpl), currencyTpl);
         var currencyMaxStackSize = itemHelper.GetItem(currencyTpl).Value.Properties?.StackMaxSize;
         if (currencyMaxStackSize is null)
         {
@@ -443,8 +443,8 @@ public class PaymentService(
                 var aImmediateParent = inventoryItems.FirstOrDefault(item => item.Id == a.ParentId);
                 var bImmediateParent = inventoryItems.FirstOrDefault(item => item.Id == b.ParentId);
 
-                var aInDeprioContainer = _inventoryConfig.DeprioritisedMoneyContainers.Contains(aImmediateParent.Template);
-                var bInDeprioContainer = _inventoryConfig.DeprioritisedMoneyContainers.Contains(bImmediateParent.Template);
+                var aInDeprioContainer = InventoryConfig.DeprioritisedMoneyContainers.Contains(aImmediateParent.Template);
+                var bInDeprioContainer = InventoryConfig.DeprioritisedMoneyContainers.Contains(bImmediateParent.Template);
 
                 // Prioritize B
                 if (!aInDeprioContainer && bInDeprioContainer)

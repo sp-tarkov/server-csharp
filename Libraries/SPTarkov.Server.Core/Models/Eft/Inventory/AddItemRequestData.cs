@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Inventory;
 
 public record AddItemRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Trader id
     /// </summary>
@@ -20,9 +17,6 @@ public record AddItemRequestData
 
 public record ItemToAdd
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("count")]
     public int? Count { get; set; }
 

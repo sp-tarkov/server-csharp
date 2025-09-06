@@ -24,13 +24,13 @@ public record LostOnDeathConfig : BaseConfig
     /// </summary>
     [JsonPropertyName("questItems")]
     public bool QuestItems { get; set; }
+
+    [JsonPropertyName("wipeOnRaidStart")]
+    public bool WipeOnRaidStart { get; set; }
 }
 
 public record LostEquipment
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ArmBand")]
     public bool ArmBand { get; set; }
 

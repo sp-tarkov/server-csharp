@@ -31,7 +31,7 @@ public static class ObjectExtensions
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static bool ContainsJsonProp<T>(this object? obj, T key)
+    public static bool ContainsJsonProperty<T>(this object? obj, T key)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(key);
@@ -39,7 +39,7 @@ public static class ObjectExtensions
         return TryGetCachedProperty(obj.GetType(), key.ToString(), out _);
     }
 
-    public static T? GetByJsonProp<T>(this object? obj, string? toLower)
+    public static T? GetByJsonProperty<T>(this object? obj, string? toLower)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(toLower);
@@ -52,7 +52,7 @@ public static class ObjectExtensions
         return (T?)cachedProperty.GetValue(obj);
     }
 
-    public static List<object> GetAllPropValuesAsList(this object? obj)
+    public static List<object> GetAllPropertyValuesAsList(this object? obj)
     {
         ArgumentNullException.ThrowIfNull(obj);
 
@@ -81,7 +81,7 @@ public static class ObjectExtensions
         return result;
     }
 
-    public static Dictionary<string, object?> GetAllPropsAsDict(this object? obj)
+    public static Dictionary<string, object?> GetAllPropertiesAsDictionary(this object? obj)
     {
         if (obj is null)
         {
@@ -116,9 +116,56 @@ public static class ObjectExtensions
         return resultDict;
     }
 
-    public static T ToObject<T>(this JsonElement element)
+    public static T? ToObject<T>(this JsonElement element)
     {
         var json = element.GetRawText();
         return JsonSerializer.Deserialize<T>(json);
+    }
+
+    public static object AddAllToExtensionData(this object obj, Dictionary<string, object> extensionData)
+    {
+        foreach (var keyValuePair in extensionData)
+        {
+            obj.AddToExtensionData(keyValuePair.Key, keyValuePair.Value);
+        }
+
+        return obj;
+    }
+
+    public static object AddToExtensionData(this object obj, string key, object value)
+    {
+        obj.GetExtensionData().Add(key, value);
+        return obj;
+    }
+
+    public static object RemoveFromExtensionData(this object obj, string key)
+    {
+        obj.GetExtensionData().Remove(key);
+        return obj;
+    }
+
+    public static object RemoveAllFromExtensionData(this object obj)
+    {
+        obj.GetExtensionData().Clear();
+        return obj;
+    }
+
+    public static Dictionary<string, object> GetExtensionData(this object obj)
+    {
+        if (!obj.TryGetExtensionData(out var extensionData))
+        {
+            throw new Exception(
+                $"Attempted to get from extension data for type {obj.GetType().FullName}, but the type doesnt contain ExtensionData or it is null"
+            );
+        }
+        return extensionData!;
+    }
+
+    public static bool TryGetExtensionData(this object obj, out Dictionary<string, object>? extensionData)
+    {
+        extensionData =
+            obj.GetType().GetProperty("ExtensionData", BindingFlags.Instance | BindingFlags.Public)?.GetValue(obj)
+            as Dictionary<string, object>;
+        return extensionData is not null;
     }
 }

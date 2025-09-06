@@ -25,30 +25,31 @@ public class NotificationSendHelper(
     /// <summary>
     ///     Send notification message to the appropriate channel
     /// </summary>
-    /// <param name="sessionID">Session/player id</param>
+    /// <param name="sessionId">Session/player id</param>
     /// <param name="notificationMessage"></param>
-    public void SendMessage(MongoId sessionID, WsNotificationEvent notificationMessage)
+    public void SendMessage(MongoId sessionId, WsNotificationEvent notificationMessage)
     {
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            logger.Debug($"Send message for {sessionID} started, message: {jsonUtil.Serialize(notificationMessage)}");
+            logger.Debug($"Send message for {sessionId} started, message: {jsonUtil.Serialize(notificationMessage)}");
         }
-        if (sptWebSocketConnectionHandler.IsWebSocketConnected(sessionID))
+
+        if (sptWebSocketConnectionHandler.IsWebSocketConnected(sessionId))
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                logger.Debug($"Send message for {sessionID} websocket available, message being sent");
+                logger.Debug($"Send message for {sessionId} websocket available, message being sent");
             }
-            sptWebSocketConnectionHandler.SendMessage(sessionID, notificationMessage);
+            sptWebSocketConnectionHandler.SendMessage(sessionId, notificationMessage);
+            return;
         }
-        else
+
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"Send message for {sessionID} websocket not available, queueing into profile");
-            }
-            notificationService.Add(sessionID, notificationMessage);
+            logger.Debug($"Send message for {sessionId} websocket not available, queueing into profile");
         }
+
+        notificationService.Add(sessionId, notificationMessage);
     }
 
     /// <summary>
@@ -61,6 +62,11 @@ public class NotificationSendHelper(
     public void SendMessageToPlayer(MongoId sessionId, UserDialogInfo senderDetails, string messageText, MessageType messageType)
     {
         var dialog = GetDialog(sessionId, messageType, senderDetails);
+        if (dialog is null)
+        {
+            // Error is logged in GetDialog
+            return;
+        }
 
         dialog.New += 1;
         var message = new Message
@@ -74,7 +80,18 @@ public class NotificationSendHelper(
             RewardCollected = null,
             Items = null,
         };
-        dialog.Messages.Add(message);
+
+        if (dialog.Messages != null)
+        {
+            dialog.Messages.Add(message);
+        }
+        else
+        {
+            logger.Error(
+                $"Could not add message Id: {message.Id.ToString()} to dialogue for player Id: {sessionId.ToString()}. dialog.Messages is null. Message was not sent."
+            );
+            return;
+        }
 
         var notification = new WsChatMessageReceived
         {
@@ -93,7 +110,7 @@ public class NotificationSendHelper(
     /// <param name="messageType">Type of message to generate</param>
     /// <param name="senderDetails">Who is sending the message</param>
     /// <returns>Dialogue</returns>
-    protected Models.Eft.Profile.Dialogue GetDialog(MongoId sessionId, MessageType messageType, UserDialogInfo senderDetails)
+    protected Models.Eft.Profile.Dialogue? GetDialog(MongoId sessionId, MessageType messageType, UserDialogInfo senderDetails)
     {
         // Use trader id if sender is trader, otherwise use nickname
         var dialogKey = senderDetails.Id;
@@ -102,12 +119,23 @@ public class NotificationSendHelper(
         var dialogueData = saveServer.GetProfile(sessionId).DialogueRecords;
 
         // Ensure empty dialog exists based on sender details passed in
-        dialogueData.TryAdd(dialogKey, GetEmptyDialogTemplate(dialogKey, messageType, senderDetails));
+        if (dialogueData?.TryAdd(dialogKey, GetEmptyDialogTemplate(dialogKey, messageType, senderDetails)) ?? false)
+        {
+            return dialogueData[dialogKey];
+        }
 
-        return dialogueData[dialogKey];
+        logger.Error($"Could not add dialog key: {dialogKey.ToString()} to dialogueData for player Id: {sessionId.ToString()}.");
+        return null;
     }
 
-    protected Models.Eft.Profile.Dialogue GetEmptyDialogTemplate(string dialogKey, MessageType messageType, UserDialogInfo senderDetails)
+    /// <summary>
+    ///     Get an empty dialog template
+    /// </summary>
+    /// <param name="dialogKey">Key to assign</param>
+    /// <param name="messageType">Type of message</param>
+    /// <param name="senderDetails">Sender details</param>
+    /// <returns>Empty dialog template</returns>
+    protected Models.Eft.Profile.Dialogue GetEmptyDialogTemplate(MongoId dialogKey, MessageType messageType, UserDialogInfo senderDetails)
     {
         return new Models.Eft.Profile.Dialogue
         {
@@ -117,7 +145,7 @@ public class NotificationSendHelper(
             Pinned = false,
             New = 0,
             AttachmentsNew = 0,
-            Users = senderDetails.Info.MemberCategory == MemberCategory.Trader ? null : [senderDetails],
+            Users = senderDetails.Info?.MemberCategory == MemberCategory.Trader ? null : [senderDetails],
         };
     }
 }

@@ -5,6 +5,6 @@ public enum EntryType
     LOCAL,
     DEBUG,
     RELEASE,
-    BLEEDING_EDGE,
-    BLEEDING_EDGE_MODS,
+    BLEEDINGEDGE,
+    BLEEDINGEDGEMODS,
 }

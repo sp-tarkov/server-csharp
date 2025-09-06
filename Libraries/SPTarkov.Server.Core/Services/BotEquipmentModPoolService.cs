@@ -3,7 +3,6 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 
@@ -84,7 +83,7 @@ public class BotEquipmentModPoolService(
             foreach (var slot in item.Properties.Slots)
             {
                 // Get mods that fit into the current mod slot
-                var itemsThatFit = slot.Props.Filters.FirstOrDefault().Filter;
+                var itemsThatFit = slot.Properties.Filters.FirstOrDefault().Filter;
 
                 // Get weapon/armor pool to add mod slots + mod tpls to
 
@@ -209,7 +208,7 @@ public class BotEquipmentModPoolService(
                 result.TryAdd(slot.Name, []);
 
                 // Add compatible tpls to dicts hashset
-                foreach (var compatibleItemTpl in slot.Props.Filters.FirstOrDefault().Filter)
+                foreach (var compatibleItemTpl in slot.Properties.Filters.FirstOrDefault().Filter)
                 {
                     result[slot.Name].Add(compatibleItemTpl);
                 }

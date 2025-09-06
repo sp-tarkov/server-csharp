@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -48,8 +49,8 @@ public class HealthController(
             return httpResponseUtil.AppendErrorToOutput(output, errorMessage);
         }
 
-        // Ensure item has a upd object
-        itemHelper.AddUpdObjectToItem(healingItemToUse);
+        // Ensure item has an upd object
+        healingItemToUse.AddUpd();
 
         if (healingItemToUse.Upd.MedKit is not null)
         {
@@ -125,7 +126,7 @@ public class HealthController(
 
     /// <summary>
     ///     Handle Eat event
-    ///     Consume food/water outside of a raid
+    ///     Consume food/water outside a raid
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="request">Eat request</param>
@@ -138,19 +139,20 @@ public class HealthController(
 
         var itemToConsume = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
         if (itemToConsume is null)
-        // Item not found, very bad
         {
+            // Item not found, very bad
             return httpResponseUtil.AppendErrorToOutput(
                 output,
                 serverLocalisationService.GetText("health-unable_to_find_item_to_consume", request.Item)
             );
         }
 
-        var consumedItemMaxResource = itemHelper.GetItem(itemToConsume.Template).Value.Properties.MaxResource;
+        var foodItemDbDetails = itemHelper.GetItem(itemToConsume.Template).Value;
+        var consumedItemMaxResource = foodItemDbDetails.Properties.MaxResource;
         if (consumedItemMaxResource > 1)
         {
-            // Ensure item has a upd object
-            itemHelper.AddUpdObjectToItem(itemToConsume);
+            // Ensure item has an upd object
+            itemToConsume.AddUpd();
 
             if (itemToConsume.Upd.FoodDrink is null)
             {
@@ -171,19 +173,19 @@ public class HealthController(
         }
 
         // Check what effect eating item has and handle
-        var foodItemDbDetails = itemHelper.GetItem(itemToConsume.Template).Value;
+
         var foodItemEffectDetails = foodItemDbDetails.Properties.EffectsHealth;
         var foodIsSingleUse = foodItemDbDetails.Properties.MaxResource == 1;
 
-        foreach (var (key, effectProps) in foodItemEffectDetails)
+        foreach (var (key, effectProperties) in foodItemEffectDetails)
         {
             switch (key)
             {
                 case HealthFactor.Hydration:
-                    ApplyEdibleEffect(pmcData.Health.Hydration, effectProps, foodIsSingleUse, request);
+                    ApplyEdibleEffect(pmcData.Health.Hydration, effectProperties, foodIsSingleUse, request);
                     break;
                 case HealthFactor.Energy:
-                    ApplyEdibleEffect(pmcData.Health.Energy, effectProps, foodIsSingleUse, request);
+                    ApplyEdibleEffect(pmcData.Health.Energy, effectProperties, foodIsSingleUse, request);
                     break;
 
                 default:
@@ -204,7 +206,7 @@ public class HealthController(
     /// <param name="request">Client request</param>
     protected void ApplyEdibleEffect(
         CurrentMinMax bodyValue,
-        EffectsHealthProps consumptionDetails,
+        EffectsHealthProperties consumptionDetails,
         bool foodIsSingleUse,
         OffraidEatRequestData request
     )
@@ -250,7 +252,7 @@ public class HealthController(
             Action = healthTreatmentRequest.Action,
             TransactionId = Traders.THERAPIST,
             SchemeItems = healthTreatmentRequest.Items,
-            Type = "",
+            Type = string.Empty,
             ItemId = MongoId.Empty(),
             Count = 0,
             SchemeId = 0,

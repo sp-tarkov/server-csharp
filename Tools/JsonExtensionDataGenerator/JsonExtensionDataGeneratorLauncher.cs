@@ -18,7 +18,7 @@ public class JsonExtensionDataGeneratorLauncher
     private static readonly Regex _extensionCleanup = new(",.*");
 
     private const string Insertion =
-        "    [JsonExtensionData]\r\n    public Dictionary<string, object>? ExtensionData { get; set; }\r\n\r\n";
+        "    [JsonExtensionData]\r\n    public Dictionary<string, object> ExtensionData { get; init; } = [];\r\n\r\n";
 
     private const string Using = "using System.Text.Json.Serialization;\r\n";
 
@@ -63,9 +63,16 @@ public class JsonExtensionDataGeneratorLauncher
 
                 if (TryGetExtensions(content, startIndex, endIndex, out var extensions))
                 {
-                    if (extensions.Any(e => !e.StartsWith("I")))
+                    if (InheritsFromBaseInteractionRequestData(extensions))
                     {
-                        Console.WriteLine($"Class index {i} for {fileName} extends a parent class, skipping...");
+                        Console.WriteLine(
+                            $"Class index {i} for {fileName} inherits from BaseInteractionRequestData hierarchy, skipping..."
+                        );
+                        continue;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Class index {i} for {fileName} extends a different parent class, skipping...");
                         continue;
                     }
                 }
@@ -116,6 +123,20 @@ public class JsonExtensionDataGeneratorLauncher
         }
 
         return false;
+    }
+
+    private static bool InheritsFromBaseInteractionRequestData(IEnumerable<string> extensions)
+    {
+        var baseClasses = extensions.Where(e => !e.StartsWith("I")).ToList();
+
+        if (baseClasses.Contains("BaseInteractionRequestData"))
+        {
+            return true;
+        }
+
+        var knownDescendants = new[] { "InventoryBaseActionRequestData" };
+
+        return baseClasses.Any(baseClass => knownDescendants.Contains(baseClass));
     }
 
     private static int FindEndClassIndex(string content, int currentIndex)

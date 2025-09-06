@@ -4,9 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record SessionStatus
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("profileid")]
     public string? ProfileId { get; set; }
 

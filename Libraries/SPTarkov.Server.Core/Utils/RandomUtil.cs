@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Utils;
 
 // TODO: Finish porting this class
 [Injectable(InjectionType.Singleton)]
-public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
+public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
 {
     private const int DecimalPointRandomPrecision = 6;
 
@@ -17,7 +17,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// </summary>
     public const int MaxSignificantDigits = 15;
 
-    private static readonly int DecimalPointRandomPrecisionMultiplier = (int)Math.Pow(10, DecimalPointRandomPrecision);
+    private static readonly int _decimalPointRandomPrecisionMultiplier = (int)Math.Pow(10, DecimalPointRandomPrecision);
     public readonly Random Random = new();
 
     /// <summary>
@@ -46,10 +46,10 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <returns>A random floating-point number between `min` (inclusive) and `max` (exclusive).</returns>
     public virtual double GetDouble(double min, double max)
     {
-        var realMin = (long)(min * DecimalPointRandomPrecisionMultiplier);
-        var realMax = (long)(max * DecimalPointRandomPrecisionMultiplier);
+        var realMin = (long)(min * _decimalPointRandomPrecisionMultiplier);
+        var realMax = (long)(max * _decimalPointRandomPrecisionMultiplier);
 
-        return Math.Round(Random.NextInt64(realMin, realMax) / (double)DecimalPointRandomPrecisionMultiplier, DecimalPointRandomPrecision);
+        return Math.Round(Random.NextInt64(realMin, realMax) / (double)_decimalPointRandomPrecisionMultiplier, DecimalPointRandomPrecision);
     }
 
     /// <summary>
@@ -257,7 +257,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
 
         if (!replacement)
         {
-            list = _cloner.Clone(originalList);
+            list = cloner.Clone(originalList);
             // Adjust drawCount to avoid drawing more elements than available
             if (drawCount > list.Count)
             {
@@ -324,13 +324,13 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
 
         if (max < min)
         {
-            _logger.Error($"Invalid argument, Bounded random number generation max is smaller than min({max} < {min}");
+            logger.Error($"Invalid argument, Bounded random number generation max is smaller than min({max} < {min}");
             return -1;
         }
 
         if (n < 1)
         {
-            _logger.Error($"Invalid argument, 'n' must be 1 or greater(received {n})");
+            logger.Error($"Invalid argument, 'n' must be 1 or greater(received {n})");
             return -1;
         }
 
@@ -346,10 +346,10 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
             // A shift that is equal to the available range only has a 50% chance of rolling correctly, theoretically halving performance.
             // Shifting even further drops the success chance very rapidly - so we want to warn against that
 
-            _logger.Warning(
+            logger.Warning(
                 "Bias shift for random number generation is greater than the range of available numbers. This will have a severe performance impact"
             );
-            _logger.Warning($"min-> {min}; max-> {max}; shift-> {shift}");
+            logger.Warning($"min-> {min}; max-> {max}; shift-> {shift}");
         }
 
         var biasedMin = shift >= 0 ? min - shift : min;
@@ -364,12 +364,12 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
         return num;
     }
 
-    private double GetBoundedGaussian(double start, double end, double n)
+    protected double GetBoundedGaussian(double start, double end, double n)
     {
         return Math.Round(start + GetGaussianRandom(n) * (end - start + 1));
     }
 
-    private double GetGaussianRandom(double n)
+    protected double GetGaussianRandom(double n)
     {
         var rand = 0d;
         for (var i = 0; i < n; i += 1)

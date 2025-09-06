@@ -4,9 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Health;
 
 public record SyncHealthRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Health")]
     public List<BodyPartHealth>? Health { get; set; }
 
@@ -25,9 +22,6 @@ public record SyncHealthRequestData
 
 public record BodyPartCollection
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Head")]
     public BodyPartHealth? Head { get; set; }
 
@@ -52,9 +46,6 @@ public record BodyPartCollection
 
 public record BodyPartHealth
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Maximum")]
     public int? Maximum { get; set; }
 

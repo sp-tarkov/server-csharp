@@ -3,10 +3,12 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Security.Authentication;
 using System.Text;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.DI;
+using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Loaders;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -45,6 +47,7 @@ public static class Program
         // register SPT components
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(Program));
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(App));
+        diHandler.AddInjectableTypesFromTypeAssembly(typeof(PatchManager));
 
         List<SptMod> loadedMods = [];
         if (ProgramStatics.MODS())
@@ -52,18 +55,17 @@ public static class Program
             // Search for mod dlls
             loadedMods = ModDllLoader.LoadAllMods();
             // validate and sort mods, this will also discard any mods that are invalid
-            var sortedLoadedMods = ValidateMods(loadedMods);
+            var validatedLoadedMods = ValidateMods(loadedMods);
 
-            // update the loadedMods list with our validated sorted mods
-            loadedMods = sortedLoadedMods;
+            // update the loadedMods list with our validated mods
+            loadedMods = validatedLoadedMods;
 
-            diHandler.AddInjectableTypesFromAssemblies(sortedLoadedMods.SelectMany(a => a.Assemblies));
+            diHandler.AddInjectableTypesFromAssemblies(validatedLoadedMods.SelectMany(a => a.Assemblies));
         }
         diHandler.InjectAll();
 
         builder.Services.AddSingleton(builder);
         builder.Services.AddSingleton<IReadOnlyList<SptMod>>(loadedMods);
-        builder.Services.AddHostedService<SptServerBackgroundService>();
         // Configure Kestrel options
         ConfigureKestrel(builder);
 
@@ -73,12 +75,19 @@ public static class Program
         ConfigureWebApp(app);
 
         // In case of exceptions we snatch a Server logger
-        var serverExceptionLogger = app.Services.GetService<ILoggerFactory>()!.CreateLogger("Server");
+        var serverExceptionLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Server");
         // We need any logger instance to use as a finalizer when the app closes
-        var loggerFinalizer = app.Services.GetService<ISptLogger<App>>()!;
+        var loggerFinalizer = app.Services.GetRequiredService<ISptLogger<App>>();
         try
         {
+            // Handle edge cases where reverse proxies might pass X-Forwarded-For, use this as the actual IP address
+            app.UseForwardedHeaders(
+                new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto }
+            );
+
             SetConsoleOutputMode();
+
+            await app.Services.GetRequiredService<SptServerStartupService>().Startup();
 
             await app.RunAsync();
         }
@@ -105,7 +114,7 @@ public static class Program
         app.Use(
             async (HttpContext context, RequestDelegate _) =>
             {
-                await context.RequestServices.GetService<HttpServer>()!.HandleRequest(context);
+                await context.RequestServices.GetRequiredService<HttpServer>().HandleRequest(context);
             }
         );
     }
@@ -116,8 +125,8 @@ public static class Program
             (_, options) =>
             {
                 // This method is not expected to be async so we need to wait for the Task instead of using await keyword
-                options.ApplicationServices.GetService<OnWebAppBuildModLoader>()!.OnLoad().Wait();
-                var httpConfig = options.ApplicationServices.GetService<ConfigServer>()?.GetConfig<HttpConfig>()!;
+                options.ApplicationServices.GetRequiredService<OnWebAppBuildModLoader>().OnLoad().Wait();
+                var httpConfig = options.ApplicationServices.GetRequiredService<ConfigServer>().GetConfig<HttpConfig>();
 
                 // Probe the http ip and port to see if its being used, this method will throw an exception and crash
                 // the server if the IP/Port combination is already in use
@@ -132,7 +141,7 @@ public static class Program
                     listener?.Stop();
                 }
 
-                var certHelper = options.ApplicationServices.GetService<CertificateHelper>()!;
+                var certHelper = options.ApplicationServices.GetRequiredService<CertificateHelper>();
                 options.Listen(
                     IPAddress.Parse(httpConfig.Ip),
                     httpConfig.Port,
@@ -180,10 +189,9 @@ public static class Program
             .Services.AddScoped(typeof(ISptLogger<ModValidator>), typeof(SptLogger<ModValidator>))
             .AddScoped(typeof(ISemVer), typeof(SemanticVersioningSemVer))
             .AddSingleton<ModValidator>()
-            .AddSingleton<ModLoadOrder>()
             .BuildServiceProvider();
         var modValidator = provider.GetRequiredService<ModValidator>();
-        return modValidator.ValidateAndSort(mods);
+        return modValidator.ValidateMods(mods);
     }
 
     private static void SetConsoleOutputMode()

@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Utils;
 

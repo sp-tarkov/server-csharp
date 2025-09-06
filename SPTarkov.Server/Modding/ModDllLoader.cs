@@ -78,13 +78,11 @@ public class ModDllLoader
             string.IsNullOrEmpty(result.ModMetadata.ModGuid)
             || string.IsNullOrEmpty(result.ModMetadata.Name)
             || string.IsNullOrEmpty(result.ModMetadata.Author)
-            || string.IsNullOrEmpty(result.ModMetadata.Version)
             || string.IsNullOrEmpty(result.ModMetadata.License)
-            || string.IsNullOrEmpty(result.ModMetadata.SptVersion)
         )
         {
             throw new Exception(
-                $"The mod metadata for: {Path.GetFullPath(path)} is missing one of these properties: ModGuid, Name, Author, License, Version or SptVersion"
+                $"The mod metadata for: {Path.GetFullPath(path)} is missing one of these properties: ModGuid, Name, Author, or License"
             );
         }
 

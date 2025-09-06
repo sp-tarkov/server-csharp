@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Weather;
 
 public record WeatherData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("acceleration")]
     public double? Acceleration { get; set; }
 
@@ -26,9 +23,6 @@ public record WeatherData
 
 public record Weather
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("pressure")]
     public double? Pressure { get; set; }
 

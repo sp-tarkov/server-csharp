@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Insurance;
 
 public record GetInsuranceCostRequestData : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("traders")]
     public List<MongoId>? Traders { get; set; }
 

@@ -3,7 +3,6 @@ using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 
 namespace SPTarkov.Server.Core.Services;
@@ -122,7 +121,7 @@ public class RagfairLinkedItemService(DatabaseService databaseService, ItemHelpe
         }
 
         // Get the first cylinder filter tpl
-        var cylinderTpl = cylinderMod.Props?.Filters?.First().Filter?.FirstOrDefault() ?? new MongoId(null);
+        var cylinderTpl = cylinderMod.Properties?.Filters?.First().Filter?.FirstOrDefault() ?? new MongoId(null);
 
         if (!cylinderTpl.IsValidMongoId())
         {
@@ -154,12 +153,12 @@ public class RagfairLinkedItemService(DatabaseService databaseService, ItemHelpe
         // Check each slot and merge contents together into result set
         foreach (var slot in slots)
         {
-            if (slot.Props?.Filters is null)
+            if (slot.Properties?.Filters is null)
             {
                 continue;
             }
 
-            foreach (var slotFilters in slot.Props.Filters)
+            foreach (var slotFilters in slot.Properties.Filters)
             {
                 result.UnionWith(slotFilters.Filter);
             }
@@ -180,12 +179,12 @@ public class RagfairLinkedItemService(DatabaseService databaseService, ItemHelpe
 
         foreach (var chamber in chambers)
         {
-            if (chamber.Props?.Filters is null)
+            if (chamber.Properties?.Filters is null)
             {
                 continue;
             }
 
-            foreach (var slotFilters in chamber.Props.Filters)
+            foreach (var slotFilters in chamber.Properties.Filters)
             {
                 result.UnionWith(slotFilters.Filter);
             }
@@ -206,12 +205,12 @@ public class RagfairLinkedItemService(DatabaseService databaseService, ItemHelpe
 
         foreach (var cartridge in cartridges)
         {
-            if (cartridge.Props?.Filters is null)
+            if (cartridge.Properties?.Filters is null)
             {
                 continue;
             }
 
-            foreach (var slotFilters in cartridge.Props.Filters)
+            foreach (var slotFilters in cartridge.Properties.Filters)
             {
                 result.UnionWith(slotFilters.Filter);
             }

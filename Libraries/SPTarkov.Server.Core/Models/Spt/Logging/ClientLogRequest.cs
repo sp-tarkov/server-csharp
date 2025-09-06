@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Logging;
 
 public record ClientLogRequest : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Source")]
     public string? Source { get; set; }
 

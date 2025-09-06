@@ -15,4 +15,6 @@ public enum QuestTypeEnum
     Skill,
     Multi,
     WeaponAssembly,
+    ArenaWinMatch,
+    ArenaWinRound,
 }

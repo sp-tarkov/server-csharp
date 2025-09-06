@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.InRaid;
 
 public record ItemDeliveryRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("items")]
     public List<Item>? Items { get; set; }
 

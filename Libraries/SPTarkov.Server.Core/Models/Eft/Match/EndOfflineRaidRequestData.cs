@@ -4,9 +4,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Match;
 
 public record EndOfflineRaidRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("crc")]
     public int? Crc { get; set; }
 

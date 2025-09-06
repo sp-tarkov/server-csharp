@@ -1,71 +1,140 @@
-﻿using SPTarkov.Server.Core.Extensions;
+﻿using System.Buffers.Binary;
+using System.Security.Cryptography;
+using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Models.Common;
 
+/// <summary>
+/// Represents a 12-byte MongoDB-style ObjectId, consisting of:
+/// <list type="bullet">
+///   <item><description>4-byte timestamp (seconds since Unix epoch, big-endian)</description></item>
+///   <item><description>3-byte machine identifier</description></item>
+///   <item><description>2-byte process identifier (big-endian)</description></item>
+///   <item><description>3-byte incrementing counter (big-endian)</description></item>
+/// </list>
+/// </summary>
+/// <remarks>
+/// <para>
+/// This struct stores the ObjectId in two packed fields for efficient memory usage
+/// and comparison:
+/// <list type="bullet">
+///   <item><see cref="_timestampAndMachine"/><description>: First 8 bytes (timestamp + machine ID)</description></item>
+///   <item><see cref="_pidAndIncrement"/><description>: Last 4 bytes (process ID + counter)</description></item>
+/// </list>
+/// </para>
+/// <para>
+/// The struct is immutable and implements <see cref="IEquatable{MongoId}"/> for fast comparisons.
+/// </para>
+/// </remarks>
 public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
 {
-    private readonly string? _stringId;
+    /// <summary>
+    /// The first 8 bytes: 4-byte timestamp + 3-byte machine ID + 1 byte of PID.
+    /// </summary>
+    private readonly long _timestampAndMachine;
 
-    public MongoId(string? id)
+    /// <summary>
+    /// The last 4 bytes: remaining 1 byte of PID + 3-byte counter.
+    /// </summary>
+    private readonly int _pidAndIncrement;
+
+    private static readonly int _machine = BitConverter.ToInt32(RandomNumberGenerator.GetBytes(4), 0) & 0xFFFFFF;
+    private static readonly short _pid = (short)Environment.ProcessId;
+    private static int _increment = RandomNumberGenerator.GetInt32(0, 0xFFFFFF);
+
+    public bool IsEmpty
     {
-        // Handle null strings, various id's are null either by BSG or by our own doing with LINQ
-        if (string.IsNullOrEmpty(id))
-        {
-            _stringId = null;
-
-            return;
-        }
-
-        if (id.Length != 24)
-        {
-            // TODO: Items.json root item has an empty parentId property
-            Console.WriteLine($"Critical MongoId error: Incorrect length. id: {id}");
-        }
-
-        if (!IsValidMongoId(id))
-        {
-            Console.WriteLine($"Critical MongoId error: Incorrect format. Must be a hexadecimal [a-f0-9] of 24 characters. id: {id}");
-        }
-
-        _stringId = string.Intern(id);
-    }
-
-    public MongoId()
-    {
-        _stringId = Generate();
+        get { return _timestampAndMachine == 0 && _pidAndIncrement == 0; }
     }
 
     /// <summary>
-    /// Create a 24 character MongoId
+    /// Initializes a new <see cref="MongoId"/> with a generated value
+    /// based on the current time, machine ID, process ID, and counter.
     /// </summary>
-    /// <returns>24 character objectId</returns>
-    private static string Generate()
+    public MongoId()
     {
-        Span<byte> objectId = stackalloc byte[12];
-
-        // 4 bytes: current timestamp (big endian)
         var timestamp = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        objectId[0] = (byte)(timestamp >> 24);
-        objectId[1] = (byte)(timestamp >> 16);
-        objectId[2] = (byte)(timestamp >> 8);
-        objectId[3] = (byte)timestamp;
+        Span<byte> bytes = stackalloc byte[12];
 
-        // 5 bytes: random machine/process identifier
-        Random.Shared.NextBytes(objectId.Slice(4, 5));
+        // timestamp (4 bytes, big-endian)
+        BinaryPrimitives.WriteInt32BigEndian(bytes, timestamp);
 
-        // 3 bytes: random counter fallback (no static state)
-        var counter = Random.Shared.Next(0, 0xFFFFFF);
-        objectId[9] = (byte)(counter >> 16);
-        objectId[10] = (byte)(counter >> 8);
-        objectId[11] = (byte)counter;
+        // machine ID (3 bytes)
+        bytes[4] = (byte)(_machine >> 16);
+        bytes[5] = (byte)(_machine >> 8);
+        bytes[6] = (byte)_machine;
 
-        // Convert to lowercase hex string (24 chars)
-        return Convert.ToHexStringLower(objectId);
+        // PID (2 bytes)
+        BinaryPrimitives.WriteInt16BigEndian(bytes[7..9], _pid);
+
+        // increment (3 bytes, big-endian)
+        var inc = Interlocked.Increment(ref _increment) & 0xFFFFFF;
+        bytes[9] = (byte)(inc >> 16);
+        bytes[10] = (byte)(inc >> 8);
+        bytes[11] = (byte)inc;
+
+        // pack into fields (avoids array allocations later)
+        _timestampAndMachine = BitConverter.ToInt64(bytes);
+        _pidAndIncrement = BitConverter.ToInt32(bytes[8..]);
     }
 
+    public MongoId(string? hex)
+    {
+        if (string.IsNullOrEmpty(hex) || hex == "000000000000000000000000")
+        {
+            _timestampAndMachine = 0;
+            _pidAndIncrement = 0;
+            return;
+        }
+
+        if (hex.Length != 24)
+        {
+            throw new ArgumentException("ObjectId must be a 24-character hex string.", nameof(hex));
+        }
+
+        Span<byte> bytes = stackalloc byte[12];
+        Span<char> chars = stackalloc char[24];
+        hex.AsSpan().CopyTo(chars);
+
+        for (var i = 0; i < 12; i++)
+        {
+            var hi = HexCharToValue(hex[2 * i]);
+            var lo = HexCharToValue(hex[2 * i + 1]);
+
+            if (hi == -1 || lo == -1)
+            {
+                throw new FormatException("ObjectId contains invalid hex characters.");
+            }
+
+            bytes[i] = (byte)((hi << 4) | lo);
+        }
+
+        _timestampAndMachine = BitConverter.ToInt64(bytes);
+        _pidAndIncrement = BitConverter.ToInt32(bytes[8..]);
+    }
+
+    private static int HexCharToValue(char c)
+    {
+        return c >= '0' && c <= '9' ? c - '0'
+            : c >= 'a' && c <= 'f' ? c - 'a' + 10
+            : c >= 'A' && c <= 'F' ? c - 'A' + 10
+            : -1;
+    }
+
+    /// <summary>
+    /// Returns the MongoId as a 24-character lowercase hexadecimal string.
+    /// </summary>
     public override string ToString()
     {
-        return _stringId ?? string.Empty;
+        if (_timestampAndMachine == 0 && _pidAndIncrement == 0)
+        {
+            return string.Empty;
+        }
+
+        Span<byte> bytes = stackalloc byte[12];
+        BitConverter.TryWriteBytes(bytes, _timestampAndMachine);
+        BitConverter.TryWriteBytes(bytes[8..], _pidAndIncrement);
+        return Convert.ToHexString(bytes).ToLowerInvariant();
     }
 
     public bool Equals(MongoId? other)
@@ -75,17 +144,39 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
             return false;
         }
 
-        return other.ToString().Equals(ToString(), StringComparison.InvariantCultureIgnoreCase);
+        return _timestampAndMachine == other.Value._timestampAndMachine && _pidAndIncrement == other.Value._pidAndIncrement;
+    }
+
+    /// <inheritdoc/>
+    public bool Equals(MongoId other)
+    {
+        return _timestampAndMachine == other._timestampAndMachine && _pidAndIncrement == other._pidAndIncrement;
     }
 
     public bool Equals(string? other)
     {
-        if (other is null)
+        if (other == null || other.Length != 24)
         {
-            return _stringId == null;
+            return false;
         }
 
-        return other.Equals(ToString(), StringComparison.InvariantCultureIgnoreCase);
+        Span<byte> bytes = stackalloc byte[12];
+        for (var i = 0; i < 12; i++)
+        {
+            var hi = HexCharToValue(other[2 * i]);
+            var lo = HexCharToValue(other[2 * i + 1]);
+            if (hi == -1 || lo == -1)
+            {
+                return false;
+            }
+
+            bytes[i] = (byte)((hi << 4) | lo);
+        }
+
+        var a = BitConverter.ToInt64(bytes);
+        var b = BitConverter.ToInt32(bytes[8..]);
+
+        return _timestampAndMachine == a && _pidAndIncrement == b;
     }
 
     public static bool IsValidMongoId(string stringToCheck)
@@ -103,16 +194,13 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
         return new MongoId(mongoId);
     }
 
-    public bool Equals(MongoId other)
-    {
-        return string.Equals(_stringId, other._stringId, StringComparison.OrdinalIgnoreCase);
-    }
-
     public int CompareTo(MongoId other)
     {
-        return string.CompareOrdinal(_stringId, other._stringId);
+        var compare = _timestampAndMachine.CompareTo(other._timestampAndMachine);
+        return compare != 0 ? compare : _pidAndIncrement.CompareTo(other._pidAndIncrement);
     }
 
+    /// <inheritdoc/>
     public override bool Equals(object? obj)
     {
         return obj is MongoId other && Equals(other);
@@ -125,7 +213,7 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
 
     public static bool operator !=(MongoId left, MongoId? right)
     {
-        return left.Equals(right);
+        return !left.Equals(right);
     }
 
     public static bool operator ==(MongoId left, MongoId? right)
@@ -138,19 +226,10 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
         return !left.Equals(right);
     }
 
+    /// <inheritdoc/>
     public override int GetHashCode()
     {
-        return (_stringId ?? string.Empty).GetHashCode();
-    }
-
-    public bool IsEmpty()
-    {
-        if (string.IsNullOrEmpty(_stringId) || _stringId == "000000000000000000000000")
-        {
-            return true;
-        }
-
-        return false;
+        return HashCode.Combine(_timestampAndMachine, _pidAndIncrement);
     }
 
     public static MongoId Empty()

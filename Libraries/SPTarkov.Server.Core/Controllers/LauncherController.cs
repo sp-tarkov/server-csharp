@@ -6,7 +6,6 @@ using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -16,7 +15,6 @@ namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class LauncherController(
-    ISptLogger<LauncherController> logger,
     IReadOnlyList<SptMod> loadedMods,
     HashUtil hashUtil,
     SaveServer saveServer,
@@ -27,7 +25,7 @@ public class LauncherController(
     ConfigServer configServer
 )
 {
-    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
     /// <summary>
     ///     Handle launcher connecting to server
@@ -38,13 +36,13 @@ public class LauncherController(
         // Get all possible profile types + filter out any that are blacklisted
         var profileTemplates = databaseService
             .GetProfileTemplates()
-            .Where(profile => !_coreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profile.Key))
+            .Where(profile => !CoreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profile.Key))
             .ToDictionary();
 
         return new ConnectResponse
         {
             BackendUrl = httpServerHelper.GetBackendUrl(),
-            Name = _coreConfig.ServerName,
+            Name = CoreConfig.ServerName,
             Editions = profileTemplates.Select(x => x.Key).ToList(),
             ProfileDescriptions = GetProfileDescriptions(profileTemplates),
         };
@@ -144,7 +142,7 @@ public class LauncherController(
     {
         var sessionID = Login(info);
 
-        if (!sessionID.IsEmpty())
+        if (!sessionID.IsEmpty)
         {
             saveServer.GetProfile(sessionID).ProfileInfo!.Username = info.Change;
         }
@@ -175,14 +173,14 @@ public class LauncherController(
     /// <returns>Session id</returns>
     public MongoId Wipe(RegisterData info)
     {
-        if (!_coreConfig.AllowProfileWipe)
+        if (!CoreConfig.AllowProfileWipe)
         {
             return MongoId.Empty();
         }
 
         var sessionId = Login(info);
 
-        if (!sessionId.IsEmpty())
+        if (!sessionId.IsEmpty)
         {
             var profileInfo = saveServer.GetProfile(sessionId).ProfileInfo;
             profileInfo!.Edition = info.Edition;
@@ -197,7 +195,7 @@ public class LauncherController(
     /// <returns></returns>
     public string GetCompatibleTarkovVersion()
     {
-        return _coreConfig.CompatibleTarkovVersion;
+        return CoreConfig.CompatibleTarkovVersion;
     }
 
     /// <summary>

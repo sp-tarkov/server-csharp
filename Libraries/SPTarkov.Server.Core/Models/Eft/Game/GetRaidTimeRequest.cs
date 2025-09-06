@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Game;
 
 public record GetRaidTimeRequest : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Side")]
     public string? Side { get; set; }
 

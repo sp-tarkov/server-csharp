@@ -707,6 +707,7 @@ public class FenceService(
     )
     {
         var priceLimits = traderConfig.Fence.ItemCategoryRoublePriceLimit;
+
         var assortRootItems = baseFenceAssortClone
             .Items.Where(item =>
                 string.Equals(item.ParentId, "hideout", StringComparison.OrdinalIgnoreCase) && item.Upd?.SptPresetId == null
@@ -720,6 +721,7 @@ public class FenceService(
             return;
         }
 
+        // Create new assorts until we've fulfilled the count requirement
         for (var i = 0; i < assortCount; i++)
         {
             if (!assortRootItems.Any())
@@ -758,7 +760,7 @@ public class FenceService(
             }
 
             var itemDbDetails = itemHelper.GetItem(chosenBaseAssortRoot.Template).Value;
-            if (priceLimits.ContainsKey(itemDbDetails.Parent) && price > priceLimits[itemDbDetails.Parent])
+            if (priceLimits.TryGetValue(itemDbDetails.Parent, out var priceLimit) && price > priceLimit)
             {
                 // Too expensive for fence, try another item
                 i--;
@@ -1152,11 +1154,11 @@ public class FenceService(
     {
         foreach (var requiredSlot in softInsertSlots)
         {
-            var modItemDbDetails = itemHelper.GetItem(requiredSlot.Props.Filters.First().Plate.Value).Value;
+            var modItemDbDetails = itemHelper.GetItem(requiredSlot.Properties.Filters.First().Plate.Value).Value;
 
             var durabilityValues = GetRandomisedArmorDurabilityValues(modItemDbDetails, traderConfig.Fence.ArmorMaxDurabilityPercentMinMax);
-            var plateTpl = requiredSlot.Props.Filters.First().Plate ?? string.Empty; // "Plate" property appears to be the 'default' item for slot
-            if (plateTpl.IsEmpty())
+            var plateTpl = requiredSlot.Properties.Filters.First().Plate ?? string.Empty; // "Plate" property appears to be the 'default' item for slot
+            if (plateTpl.IsEmpty)
             // Some bsg plate properties are empty, skip mod
             {
                 continue;
@@ -1167,7 +1169,7 @@ public class FenceService(
                 string.Equals(mod.SlotId, requiredSlot.Name.ToLowerInvariant(), StringComparison.OrdinalIgnoreCase)
             );
 
-            itemHelper.AddUpdObjectToItem(modItemToAdjust);
+            modItemToAdjust.AddUpd();
 
             // Fence assorts can be null, ensure they have defaults
             modItemToAdjust.Upd.Repairable ??= new UpdRepairable
@@ -1203,8 +1205,8 @@ public class FenceService(
     {
         foreach (var plateSlot in plateSlots)
         {
-            var plateTpl = plateSlot.Props.Filters.First().Plate;
-            if (plateTpl == null || plateTpl.Value.IsEmpty())
+            var plateTpl = plateSlot.Properties.Filters.First().Plate;
+            if (plateTpl == null || plateTpl.Value.IsEmpty)
             // Bsg data lacks a default plate, skip randomising for this mod
             {
                 continue;
@@ -1241,7 +1243,7 @@ public class FenceService(
                 continue;
             }
 
-            itemHelper.AddUpdObjectToItem(modItemToAdjust);
+            modItemToAdjust.AddUpd();
 
             if (modItemToAdjust?.Upd?.Repairable == null)
             {

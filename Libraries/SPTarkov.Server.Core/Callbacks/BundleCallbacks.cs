@@ -2,6 +2,7 @@
 using SPTarkov.Server.Core.Loaders;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
+using SPTarkov.Server.Core.Routers.Serializers;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
@@ -19,9 +20,10 @@ public class BundleCallbacks(HttpResponseUtil httpResponseUtil, BundleLoader bun
     }
 
     /// <summary>
-    ///     TODO: what does it do
+    ///    Handle requests to /files/bundle <br/>
+    ///    <br/>
+    ///    Makes sure the output is set to BUNDLE so that the BundleSerializer's <see cref="BundleSerializer.CanHandle"/> can handle it.
     /// </summary>
-    /// <returns></returns>
     public ValueTask<string> GetBundle(string url, object info, MongoId sessionID)
     {
         return new ValueTask<string>("BUNDLE");

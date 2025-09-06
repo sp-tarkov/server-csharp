@@ -1,10 +1,10 @@
 using System.Collections.Concurrent;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -134,30 +134,26 @@ public class BotLootCacheService(
 
         if (itemPriceMinMax is null)
         {
-            // No filtering requested, exit
+            // No filtering requested, return all results
             return cloner.Clone(result);
         }
 
-        // Filter the loot pool prior to returning
+        // Filter the loot pool by item value prior to returning
         var filteredResult = result.Where(i =>
         {
             var itemPrice = itemHelper.GetItemPrice(i.Key);
-            if (itemPriceMinMax?.Min is not null && itemPriceMinMax?.Max is not null)
+
+            var priceLimitMin = itemPriceMinMax.Min;
+            var priceLimitMax = itemPriceMinMax.Max;
+
+            // Treat -1 as no limit
+            if (priceLimitMax.Approx(-1))
             {
-                return itemPrice >= itemPriceMinMax?.Min && itemPrice <= itemPriceMinMax?.Max;
+                // only check min limit value
+                return itemPrice >= priceLimitMin;
             }
 
-            if (itemPriceMinMax?.Min is not null && itemPriceMinMax?.Max is null)
-            {
-                return itemPrice >= itemPriceMinMax?.Min;
-            }
-
-            if (itemPriceMinMax?.Min is null && itemPriceMinMax?.Max is not null)
-            {
-                return itemPrice <= itemPriceMinMax?.Max;
-            }
-
-            return false;
+            return itemPrice >= priceLimitMin && itemPrice <= priceLimitMax;
         });
 
         return cloner.Clone(filteredResult.ToDictionary(pair => pair.Key, pair => pair.Value));
@@ -496,41 +492,41 @@ public class BotLootCacheService(
     /// <summary>
     ///     Ammo/grenades have this property
     /// </summary>
-    /// <param name="props"></param>
+    /// <param name="properties"></param>
     /// <returns></returns>
-    protected bool IsBulletOrGrenade(Props props)
+    protected bool IsBulletOrGrenade(TemplateItemProperties properties)
     {
-        return props.AmmoType is not null;
+        return properties.AmmoType is not null;
     }
 
     /// <summary>
     ///     Internal and external magazine have this property
     /// </summary>
-    /// <param name="props"></param>
+    /// <param name="properties"></param>
     /// <returns></returns>
-    protected bool IsMagazine(Props props)
+    protected bool IsMagazine(TemplateItemProperties properties)
     {
-        return props.ReloadMagType is not null;
+        return properties.ReloadMagType is not null;
     }
 
     /// <summary>
     ///     Medical use items (e.g. morphine/lip balm/grizzly)
     /// </summary>
-    /// <param name="props"></param>
+    /// <param name="properties"></param>
     /// <returns></returns>
-    protected bool IsMedicalItem(Props props)
+    protected bool IsMedicalItem(TemplateItemProperties properties)
     {
-        return props.MedUseTime is not null;
+        return properties.MedUseTime is not null;
     }
 
     /// <summary>
     ///     Grenades have this property (e.g. smoke/frag/flash grenades)
     /// </summary>
-    /// <param name="props"></param>
+    /// <param name="properties"></param>
     /// <returns></returns>
-    protected bool IsGrenade(Props props)
+    protected bool IsGrenade(TemplateItemProperties properties)
     {
-        return props.ThrowType is not null;
+        return properties.ThrowType is not null;
     }
 
     protected bool IsFood(MongoId tpl)

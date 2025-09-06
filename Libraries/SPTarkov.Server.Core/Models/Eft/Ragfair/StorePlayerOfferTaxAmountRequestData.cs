@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Ragfair;
 
 public record StorePlayerOfferTaxAmountRequestData : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public MongoId? Id { get; set; }
 

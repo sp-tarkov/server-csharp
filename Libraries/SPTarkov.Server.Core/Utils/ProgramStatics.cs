@@ -1,4 +1,6 @@
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Logging;
+using Version = SemanticVersioning.Version;
 
 namespace SPTarkov.Server.Core.Utils;
 
@@ -10,22 +12,20 @@ public static partial class ProgramStatics
 
     public static void Initialize()
     {
-        var _entryType = BuildType ?? EntryType.LOCAL;
-
-        switch (_entryType)
+        switch (BuildType)
         {
             case EntryType.RELEASE:
                 _debug = false;
                 _compiled = true;
                 _mods = true;
                 break;
-            case EntryType.BLEEDING_EDGE:
+            case EntryType.BLEEDINGEDGE:
                 _debug = true;
                 _compiled = true;
                 _mods = false;
                 break;
             case EntryType.DEBUG:
-            case EntryType.BLEEDING_EDGE_MODS:
+            case EntryType.BLEEDINGEDGEMODS:
                 _debug = true;
                 _compiled = true;
                 _mods = true;
@@ -41,7 +41,7 @@ public static partial class ProgramStatics
         }
 
 #if DEBUG
-        Console.WriteLine($"SPTarkov.Server.Core: entrytype: {_entryType}");
+        Console.WriteLine($"SPTarkov.Server.Core: entrytype: {BuildType}");
         Console.WriteLine($"SPTarkov.Server.Core: debug: {_debug}");
         Console.WriteLine($"SPTarkov.Server.Core: compiled: {_compiled}");
         Console.WriteLine($"SPTarkov.Server.Core: mods: {_mods}");
@@ -49,7 +49,7 @@ public static partial class ProgramStatics
     }
 
     // Public Static Getters
-    public static EntryType? ENTRY_TYPE()
+    public static EntryType ENTRY_TYPE()
     {
         return BuildType;
     }
@@ -69,18 +69,29 @@ public static partial class ProgramStatics
         return _mods;
     }
 
-    public static string? SPT_VERSION()
+    public static Version SPT_VERSION()
     {
-        return _sptVersion;
+        return SptVersion;
     }
 
-    public static string? COMMIT()
+    public static string COMMIT()
     {
-        return _commit;
+        return Commit;
     }
 
-    public static double? BUILD_TIME()
+    public static double BUILD_TIME()
     {
-        return _buildTime;
+        return BuildTime;
+    }
+
+    public static LogTextColor BUILD_TEXT_COLOR()
+    {
+        return BuildType switch
+        {
+            EntryType.RELEASE => LogTextColor.Yellow,
+            EntryType.LOCAL or EntryType.DEBUG => LogTextColor.Cyan,
+            EntryType.BLEEDINGEDGE or EntryType.BLEEDINGEDGEMODS => LogTextColor.Magenta,
+            _ => LogTextColor.Yellow,
+        };
     }
 }

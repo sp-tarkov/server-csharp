@@ -2,9 +2,9 @@
 
 public enum ProfileStatus
 {
-    FREE,
-    MATCH_WAIT,
-    BUSY,
-    LEAVING,
-    TRANSFER,
+    Free,
+    MatchWait,
+    Busy,
+    Leaving,
+    Transfer,
 }

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
@@ -5,15 +6,12 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record Bots
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("types")]
-    public Dictionary<string, BotType?> Types { get; set; }
+    public required Dictionary<string, BotType?> Types { get; init; }
 
     [JsonPropertyName("base")]
-    public BotBase Base { get; set; }
+    public required BotBase Base { get; init; }
 
     [JsonPropertyName("core")]
-    public Dictionary<string, object> Core { get; set; }
+    public required Dictionary<string, JsonElement> Core { get; init; }
 }

@@ -8,16 +8,11 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record TemplateItem
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     private Dictionary<string, bool>? _blocks;
 
     private string? _name;
 
-    private string? _parent;
-
-    private string _prototype;
+    private string? _prototype;
 
     private string? _type;
 
@@ -42,7 +37,7 @@ public record TemplateItem
     }
 
     [JsonPropertyName("_props")]
-    public Props? Properties { get; set; }
+    public TemplateItemProperties? Properties { get; set; }
 
     [JsonPropertyName("_proto")]
     public string? Prototype
@@ -73,14 +68,11 @@ public record TemplateItem
     }
 }
 
-public record Props
+public record TemplateItemProperties
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    private string? _backgroundColor;
 
-    private string _backgroundColor;
-
-    private string _itemSound;
+    private string? _itemSound;
     private string? _metascoreGroup;
 
     private string? _rarityPvE;
@@ -113,6 +105,9 @@ public record Props
 
     [JsonPropertyName("Weight")]
     public double? Weight { get; set; }
+
+    [JsonPropertyName("DialogId")]
+    public MongoId? DialogId { get; set; }
 
     [JsonPropertyName("WeightMultipliers")]
     public object? WeightMultipliers { get; set; }
@@ -152,6 +147,9 @@ public record Props
         get { return _itemSound; }
         set { _itemSound = string.Intern(value); }
     }
+
+    [JsonPropertyName("LeftHandItem")]
+    public bool? LeftHandItem { get; set; }
 
     [JsonPropertyName("Prefab")] // TODO: TYPE FUCKERY: can be a Prefab object or empty string or a string
     public Prefab? Prefab { get; set; }
@@ -1110,12 +1108,12 @@ public record Props
     [JsonPropertyName("effects_health")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public Dictionary<HealthFactor, EffectsHealthProps>? EffectsHealth { get; set; }
+    public Dictionary<HealthFactor, EffectsHealthProperties>? EffectsHealth { get; set; }
 
     [JsonPropertyName("effects_damage")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public Dictionary<DamageEffectType, EffectDamageProps>? EffectsDamage { get; set; }
+    public Dictionary<DamageEffectType, EffectsDamageProperties>? EffectsDamage { get; set; }
 
     // Confirmed in client
     [JsonPropertyName("MaximumNumberOfUsage")]
@@ -1203,6 +1201,12 @@ public record Props
 
     [JsonPropertyName("medEffectType")]
     public string? MedEffectType { get; set; }
+
+    /// <summary>
+    /// E.g. "Stomach" or "RightLeg"
+    /// </summary>
+    [JsonPropertyName("BodyPartPriority")]
+    public List<string>? BodyPartPriority { get; set; }
 
     // Confirmed in client
     [JsonPropertyName("MaxHpResource")]
@@ -1478,6 +1482,9 @@ public record Props
     [JsonPropertyName("MinTimeToContactExplode")]
     public double? MinTimeToContactExplode { get; set; }
 
+    [JsonPropertyName("PlayFuzeSound")]
+    public bool PlayFuzeSound { get; set; }
+
     [JsonPropertyName("ExplosionEffectType")]
     public string? ExplosionEffectType { get; set; }
 
@@ -1571,9 +1578,6 @@ public record Props
 
 public record WeaponRecoilSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Enable")]
     public bool? Enable { get; set; }
 
@@ -1583,9 +1587,6 @@ public record WeaponRecoilSettings
 
 public record WeaponRecoilSettingValues
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Enable")]
     public bool? Enable { get; set; }
 
@@ -1598,9 +1599,6 @@ public record WeaponRecoilSettingValues
 
 public record WeaponRecoilProcess
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ComponentType")]
     public string? ComponentType { get; set; }
 
@@ -1619,18 +1617,12 @@ public record WeaponRecoilProcess
 
 public record WeaponRecoilTransformationCurve
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Keys")]
     public IEnumerable<WeaponRecoilTransformationCurveKey>? Keys { get; set; }
 }
 
 public record WeaponRecoilTransformationCurveKey
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("inTangent")]
     public double? InTangent { get; set; }
 
@@ -1646,9 +1638,6 @@ public record WeaponRecoilTransformationCurveKey
 
 public record HealthEffect
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("type")]
     public string? Type { get; set; }
 
@@ -1658,9 +1647,6 @@ public record HealthEffect
 
 public record Prefab
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("path")]
     public string? Path { get; set; }
 
@@ -1670,9 +1656,6 @@ public record Prefab
 
 public record Grid
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("_name")]
     public string? Name { get; set; }
 
@@ -1683,17 +1666,14 @@ public record Grid
     public string? Parent { get; set; }
 
     [JsonPropertyName("_props")]
-    public GridProps? Props { get; set; }
+    public GridProperties? Properties { get; set; }
 
     [JsonPropertyName("_proto")]
-    public string? Proto { get; set; }
+    public string? Prototype { get; set; }
 }
 
-public record GridProps
+public record GridProperties
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("filters")]
     public IEnumerable<GridFilter>? Filters { get; set; }
 
@@ -1718,14 +1698,11 @@ public record GridProps
 
 public record GridFilter
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Filter")]
-    public HashSet<string>? Filter { get; set; }
+    public HashSet<MongoId>? Filter { get; set; }
 
     [JsonPropertyName("ExcludedFilter")]
-    public HashSet<string>? ExcludedFilter { get; set; }
+    public HashSet<MongoId>? ExcludedFilter { get; set; }
 
     [JsonPropertyName("locked")]
     public bool? Locked { get; set; }
@@ -1733,12 +1710,9 @@ public record GridFilter
 
 public record Slot
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     private string? _name;
 
-    private string? _proto;
+    private string? _prototype;
 
     [JsonPropertyName("_name")]
     public string? Name
@@ -1754,7 +1728,7 @@ public record Slot
     public string? Parent { get; set; }
 
     [JsonPropertyName("_props")]
-    public SlotProps? Props { get; set; }
+    public SlotProperties? Properties { get; set; }
 
     [JsonPropertyName("_max_count")]
     public double? MaxCount { get; set; }
@@ -1766,18 +1740,15 @@ public record Slot
     public bool? MergeSlotWithChildren { get; set; }
 
     [JsonPropertyName("_proto")]
-    public string? Proto
+    public string? Prototype
     {
-        get { return _proto; }
-        set { _proto = value == null ? null : string.Intern(value); }
+        get { return _prototype; }
+        set { _prototype = value == null ? null : string.Intern(value); }
     }
 }
 
-public record SlotProps
+public record SlotProperties
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("filters")]
     public IEnumerable<SlotFilter>? Filters { get; set; }
 
@@ -1787,9 +1758,6 @@ public record SlotProps
 
 public record SlotFilter
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Shift")]
     public double? Shift { get; set; }
 
@@ -1820,9 +1788,6 @@ public record SlotFilter
 
 public record StackSlot
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("_name")]
     public string? Name { get; set; }
 
@@ -1836,29 +1801,23 @@ public record StackSlot
     public double? MaxCount { get; set; }
 
     [JsonPropertyName("_props")]
-    public StackSlotProps? Props { get; set; }
+    public StackSlotProperties? Properties { get; set; }
 
     [JsonPropertyName("_proto")]
-    public string? Proto { get; set; }
+    public string? Prototype { get; set; }
 
     [JsonPropertyName("upd")]
     public object? Upd { get; set; } // TODO: object here
 }
 
-public record StackSlotProps
+public record StackSlotProperties
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("filters")]
     public IEnumerable<SlotFilter>? Filters { get; set; }
 }
 
 public record RandomLootSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("allowToSpawnIdenticalItems")]
     public bool? AllowToSpawnIdenticalItems { get; set; }
 
@@ -1886,9 +1845,6 @@ public record RandomLootSettings
 
 public record RandomLootExcluded
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("categoryTemplates")]
     public IEnumerable<object>? CategoryTemplates { get; set; } // TODO: object here
 
@@ -1901,21 +1857,15 @@ public record RandomLootExcluded
 
 public record EffectsHealth
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Energy")]
-    public EffectsHealthProps? Energy { get; set; }
+    public EffectsHealthProperties? Energy { get; set; }
 
     [JsonPropertyName("Hydration")]
-    public EffectsHealthProps? Hydration { get; set; }
+    public EffectsHealthProperties? Hydration { get; set; }
 }
 
-public record EffectsHealthProps
+public record EffectsHealthProperties
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("value")]
     public double? Value { get; set; }
 
@@ -1928,36 +1878,30 @@ public record EffectsHealthProps
 
 public record EffectsDamage
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Pain")]
-    public EffectDamageProps? Pain { get; set; }
+    public EffectsDamageProperties? Pain { get; set; }
 
     [JsonPropertyName("LightBleeding")]
-    public EffectDamageProps? LightBleeding { get; set; }
+    public EffectsDamageProperties? LightBleeding { get; set; }
 
     [JsonPropertyName("HeavyBleeding")]
-    public EffectDamageProps? HeavyBleeding { get; set; }
+    public EffectsDamageProperties? HeavyBleeding { get; set; }
 
     [JsonPropertyName("Contusion")]
-    public EffectDamageProps? Contusion { get; set; }
+    public EffectsDamageProperties? Contusion { get; set; }
 
     [JsonPropertyName("RadExposure")]
-    public EffectDamageProps? RadExposure { get; set; }
+    public EffectsDamageProperties? RadExposure { get; set; }
 
     [JsonPropertyName("Fracture")]
-    public EffectDamageProps? Fracture { get; set; }
+    public EffectsDamageProperties? Fracture { get; set; }
 
     [JsonPropertyName("DestroyedPart")]
-    public EffectDamageProps? DestroyedPart { get; set; }
+    public EffectsDamageProperties? DestroyedPart { get; set; }
 }
 
-public record EffectDamageProps
+public record EffectsDamageProperties
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("value")]
     public double? Value { get; set; }
 
@@ -1982,9 +1926,6 @@ public record EffectDamageProps
 
 public record Color
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("r")]
     public double? R { get; set; }
 
@@ -2000,9 +1941,6 @@ public record Color
 
 public record ShotsGroupSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("EndShotIndex")]
     public double? EndShotIndex { get; set; }
 
@@ -2017,10 +1955,4 @@ public record ShotsGroupSettings
 
     [JsonPropertyName("StartShotIndex")]
     public double? StartShotIndex { get; set; }
-}
-
-public enum ItemType
-{
-    NODE = 1,
-    ITEM = 2,
 }

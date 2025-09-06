@@ -368,17 +368,9 @@ public class RepeatableQuestController(
     )
     {
         var questType = randomUtil.DrawRandomFromList(questTypePool.Types).First();
+        var traderId = DrawRandomTraderId(pmcTraderInfo, questType, repeatableConfig);
 
-        // Get traders from whitelist and filter by quest type availability
-        var traders = repeatableConfig
-            .TraderWhitelist.Where(whitelist => whitelist.QuestTypes.Contains(questType))
-            .Select(x => x.TraderId)
-            // filter out locked traders
-            .Where(mongoId => pmcTraderInfo[mongoId].Unlocked.GetValueOrDefault(false))
-            .ToList();
-
-        var traderId = randomUtil.DrawRandomFromList(traders).FirstOrDefault();
-        if (traderId.IsEmpty())
+        if (traderId.IsEmpty)
         {
             logger.Error(serverLocalisationService.GetText("repeatable-unable_to_find_trader_in_pool"));
 
@@ -398,6 +390,30 @@ public class RepeatableQuestController(
             "Pickup" => pickupQuestGenerator.Generate(sessionId, pmcLevel, traderId, questTypePool, repeatableConfig),
             _ => null,
         };
+    }
+
+    /// <summary>
+    ///     Draws a random trader to assign a repeatable task to
+    /// </summary>
+    /// <param name="traderInfos">Trader info</param>
+    /// <param name="questType">Type of quest</param>
+    /// <param name="repeatableConfig">Repeatable config</param>
+    /// <returns>Randomly selected traderId</returns>
+    protected MongoId DrawRandomTraderId(
+        Dictionary<MongoId, TraderInfo> traderInfos,
+        string questType,
+        RepeatableQuestConfig repeatableConfig
+    )
+    {
+        // Get traders from whitelist and filter by quest type availability
+        var traders = repeatableConfig
+            .TraderWhitelist.Where(whitelist => whitelist.QuestTypes.Contains(questType))
+            .Select(x => x.TraderId)
+            // filter out locked traders
+            .Where(mongoId => traderInfos[mongoId].Unlocked.GetValueOrDefault(false))
+            .ToList();
+
+        return randomUtil.DrawRandomFromList(traders).FirstOrDefault();
     }
 
     /// <summary>
@@ -518,24 +534,59 @@ public class RepeatableQuestController(
             // Add repeatable quests of this loops sub-type (daily/weekly)
             for (var i = 0; i < GetQuestCount(repeatableConfig, fullProfile); i++)
             {
-                RepeatableQuest? quest = null;
-                var lifeline = 0;
-                while (quest?.Id == null && questTypePool.Types.Count > 0)
-                {
-                    quest = PickAndGenerateRandomRepeatableQuest(
-                        sessionID,
-                        pmcData.Info.Level ?? 0,
-                        pmcData.TradersInfo,
-                        questTypePool,
-                        repeatableConfig
-                    );
-                    lifeline++;
-                    if (lifeline > 10)
-                    {
-                        logger.Error("We were stuck in repeatable quest generation. This should never happen. Please report");
+                RepeatableQuest? quest;
 
-                        break;
+                // The first 3 initial dailies generated need to be of separate types
+                if (repeatableConfig.Name == "Daily" && i < 3)
+                {
+                    var questType = i switch
+                    {
+                        0 => "Elimination",
+                        1 => "Completion",
+                        2 => "Exploration",
+                        _ => null,
+                    };
+
+                    if (questType is null)
+                    {
+                        logger.Error(
+                            $"Repeatable index: `{i}` is out of range for valid quest types, this should never be hit, report it."
+                        );
+                        continue;
                     }
+
+                    var traderId = DrawRandomTraderId(pmcData.TradersInfo, questType, repeatableConfig);
+
+                    quest = i switch
+                    {
+                        0 => eliminationQuestGenerator.Generate(
+                            sessionID,
+                            pmcData.Info.Level ?? 0,
+                            traderId,
+                            questTypePool,
+                            repeatableConfig
+                        ),
+                        1 => completionQuestGenerator.Generate(
+                            sessionID,
+                            pmcData.Info.Level ?? 0,
+                            traderId,
+                            questTypePool,
+                            repeatableConfig
+                        ),
+                        2 => explorationQuestGenerator.Generate(
+                            sessionID,
+                            pmcData.Info.Level ?? 0,
+                            traderId,
+                            questTypePool,
+                            repeatableConfig
+                        ),
+                        _ => null,
+                    };
+                }
+                // Not part of the first 3 dailies generated or not a daily task, generate a random type of task
+                else
+                {
+                    quest = TryGenerateRandomRepeatable(sessionID, pmcData, questTypePool, repeatableConfig);
                 }
 
                 // check if there are no more quest types available
@@ -555,7 +606,7 @@ public class RepeatableQuestController(
             fullProfile.SptData.FreeRepeatableRefreshUsedCount[repeatableTypeLower] = 0;
 
             // Create stupid redundant change requirements from quest data
-            generatedRepeatables.ChangeRequirement = new Dictionary<string, ChangeRequirement>();
+            generatedRepeatables.ChangeRequirement = new Dictionary<MongoId, ChangeRequirement?>();
             foreach (var quest in generatedRepeatables.ActiveQuests)
             {
                 generatedRepeatables.ChangeRequirement.TryAdd(
@@ -587,6 +638,48 @@ public class RepeatableQuestController(
         }
 
         return returnData;
+    }
+
+    /// <summary>
+    ///     Try to generate a repeatable task at random
+    /// </summary>
+    /// <param name="sessionId">sessionId to generate for</param>
+    /// <param name="pmcData">Pmc profile to add the quest to</param>
+    /// <param name="questTypePool">Pool of quests to pick from</param>
+    /// <param name="repeatableConfig">Repeatable quest config</param>
+    /// <returns></returns>
+    protected RepeatableQuest? TryGenerateRandomRepeatable(
+        MongoId sessionId,
+        PmcData pmcData,
+        QuestTypePool questTypePool,
+        RepeatableQuestConfig repeatableConfig
+    )
+    {
+        RepeatableQuest? quest = null;
+        var lifeline = 0;
+
+        while (quest?.Id == null && questTypePool.Types.Count > 0)
+        {
+            quest = PickAndGenerateRandomRepeatableQuest(
+                sessionId,
+                pmcData.Info.Level ?? 0,
+                pmcData.TradersInfo,
+                questTypePool,
+                repeatableConfig
+            );
+
+            lifeline++;
+            if (lifeline <= 10)
+            {
+                continue;
+            }
+
+            logger.Error("We were stuck in repeatable quest generation. This should never happen. Please report");
+
+            break;
+        }
+
+        return quest;
     }
 
     /// <summary>

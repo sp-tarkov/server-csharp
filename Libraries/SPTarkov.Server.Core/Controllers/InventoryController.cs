@@ -1,4 +1,5 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -136,6 +137,19 @@ public class InventoryController(
     }
 
     /// <summary>
+    ///     Handle /client/game/profile/items/moving SaveDialogueState
+    /// </summary>
+    /// <param name="pmcData">Player's PMC profile</param>
+    /// <param name="request"></param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="output"></param>
+    public void SetDialogueProgress(PmcData pmcData, SaveDialogueStateRequest request, MongoId sessionId, ItemEventRouterResponse output)
+    {
+        var fullProfile = profileHelper.GetFullProfile(sessionId);
+        fullProfile.DialogueProgress = request.DialogueProgress;
+    }
+
+    /// <summary>
     ///     Handle /client/game/profile/items/moving SetFavoriteItems
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
@@ -192,7 +206,7 @@ public class InventoryController(
                         continue;
                     }
 
-                    profileSkill.Progress = mailEvent.Value;
+                    profileSkill.Progress = (double)mailEvent.Value;
                     logger.Success($"Set profile skill: {mailEvent.Entity} to: {mailEvent.Value}");
                     break;
                 }
@@ -685,7 +699,7 @@ public class InventoryController(
         }
 
         // Item may not have upd object
-        itemHelper.AddUpdObjectToItem(itemToFold);
+        itemToFold.AddUpd();
 
         itemToFold.Upd.Foldable = new UpdFoldable { Folded = request.Value };
 
@@ -815,7 +829,7 @@ public class InventoryController(
     /// <param name="output">Client response</param>
     public void MergeItem(PmcData pmcData, InventoryMergeRequestData request, MongoId sessionID, ItemEventRouterResponse output)
     {
-        // Changes made to result apply to character inventory
+        // Get source and destination inventories, they are not always the same (e.g. moving post-raid scav item stack into pmc inventory stack)
         var inventoryItems = inventoryHelper.GetOwnerInventoryItems(request, request.Item, sessionID);
 
         // Get source item (can be from player or trader or mail)
@@ -842,43 +856,48 @@ public class InventoryController(
             return;
         }
 
-        if (destinationItem.Upd?.StackObjectsCount is null)
-        // No stackcount on destination, add one
-        {
-            destinationItem.Upd = new Upd { StackObjectsCount = 1 };
-        }
+        EnsureItemHasValidStackCount(destinationItem);
+        EnsureItemHasValidStackCount(sourceItem);
 
-        if (sourceItem.Upd is null)
-        {
-            sourceItem.Upd = new Upd { StackObjectsCount = 1 };
-        }
-        else if (sourceItem.Upd.StackObjectsCount is null)
-        // Items pulled out of raid can have no stack count if the stack should be 1
-        {
-            sourceItem.Upd.StackObjectsCount = 1;
-        }
-
-        // Remove FiR status from destination stack when source stack has no FiR but destination does
+        // Merging non Found in Raid (SpawnedInSession) items with FiR item causing result to be not Found in Raid
         if (!sourceItem.Upd.SpawnedInSession.GetValueOrDefault(false) && destinationItem.Upd.SpawnedInSession.GetValueOrDefault(false))
         {
             destinationItem.Upd.SpawnedInSession = false;
         }
 
-        destinationItem.Upd.StackObjectsCount += sourceItem.Upd.StackObjectsCount; // Add source stackcount to destination
+        // Add source stackcount to destination
+        destinationItem.Upd.StackObjectsCount += sourceItem.Upd.StackObjectsCount;
+
+        // Update output to inform client of source stack being deleted
         output.ProfileChanges[sessionID].Items.DeletedItems.Add(new DeletedItem { Id = sourceItem.Id }); // Inform client source item being deleted
 
-        var indexOfItemToRemove = inventoryItems.From.FindIndex(x => x.Id == sourceItem.Id);
-        if (indexOfItemToRemove == -1)
+        // Remove source item from server profile now it has been merged into destination item
+        if (!inventoryItems.From.Remove(sourceItem))
         {
             var errorMessage = $"Unable to find item: {sourceItem.Id} to remove from sender inventory";
             logger.Error(errorMessage);
 
             httpResponseUtil.AppendErrorToOutput(output, errorMessage);
+        }
+    }
 
-            return;
+    /// <summary>
+    /// Ensure an item has a upd object with a stack count of 1
+    /// </summary>
+    /// <param name="item">Item to check</param>
+    protected void EnsureItemHasValidStackCount(Item item)
+    {
+        if (item.Upd is null)
+        {
+            item.AddUpd();
+            item.Upd.StackObjectsCount = 1;
         }
 
-        inventoryItems.From.RemoveAt(indexOfItemToRemove); // Remove source item from 'from' inventory
+        if (item.Upd.StackObjectsCount is null or 0)
+        {
+            // Items pulled out of raid can have no stack count, default to 1
+            item.Upd.StackObjectsCount = 1;
+        }
     }
 
     /// <summary>

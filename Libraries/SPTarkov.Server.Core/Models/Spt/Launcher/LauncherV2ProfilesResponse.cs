@@ -6,8 +6,5 @@ namespace SPTarkov.Server.Core.Models.Spt.Launcher;
 
 public class LauncherV2ProfilesResponse : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public required List<MiniProfile> Response { get; set; }
 }

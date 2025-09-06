@@ -83,7 +83,7 @@ We're really excited that you're interested in contributing! Before submitting y
 
 - **master**
   The default branch used for the latest stable release. This branch is protected and typically is only merged with release branches.
-- **development**
+- **develop**
   The main branch for server development. **PRs should target this.**
 
 ### Pull Request Guidelines
@@ -128,4 +128,4 @@ We have a number of tests that are run automatically when you submit a pull requ
 
 ## License
 
-This project is licensed under the NCSA Open Source License. See the [LICENSE](LICENSE.md) file for details.
+This project is licensed under the NCSA Open Source License. See the [LICENSE](LICENSE) file for details.

@@ -94,8 +94,8 @@
     {
       "id": "5c1b857086f77465f465faa4",
       "pic": {
-        "file": "67e404c722d6081b78031de0.jpg",
-        "path": "banners/67e404c722d6081b78031de0.jpg",
+        "file": "67e404c5bec96f5d8e09732f.jpg",
+        "path": "banners/67e404c5bec96f5d8e09732f.jpg",
         "rcid": "",
         "type": "banners"
       }
@@ -658,10 +658,10 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 20,
-  "BotMax": 30,
-  "BotMaxPlayer": 0,
+  "BotMax": 19,
+  "BotMaxPlayer": 9,
   "BotMaxPvE": 30,
-  "BotMaxTimePlayer": 0,
+  "BotMaxTimePlayer": 1200,
   "BotNormal": 50,
   "BotSpawnCountStep": 4,
   "BotSpawnPeriodCheck": 15,
@@ -670,7 +670,7 @@
   "BotSpawnTimeOnMax": 320,
   "BotSpawnTimeOnMin": 260,
   "BotStart": 20,
-  "BotStartPlayer": 0,
+  "BotStartPlayer": 720,
   "BotStop": 1500,
   "Description": "Very Big Map",
   "DisabledForScav": false,
@@ -10888,6 +10888,10 @@
     {
       "TemplateId": "676bf44c5539167c3603e869",
       "Value": 0
+    },
+    {
+      "TemplateId": "689f6f33b3b8c90a1c0545b8",
+      "Value": 1
     }
   ],
   "sav_summon_seconds": 60,

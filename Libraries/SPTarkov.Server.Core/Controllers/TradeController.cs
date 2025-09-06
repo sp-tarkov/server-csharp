@@ -27,7 +27,6 @@ public class TradeController(
     TimeUtil timeUtil,
     RandomUtil randomUtil,
     ItemHelper itemHelper,
-    ProfileHelper profileHelper,
     RagfairOfferHelper ragfairOfferHelper,
     RagfairServer ragfairServer,
     HttpResponseUtil httpResponseUtil,
@@ -36,8 +35,8 @@ public class TradeController(
     ConfigServer configServer
 )
 {
-    protected readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
-    protected readonly TraderConfig _traderConfig = configServer.GetConfig<TraderConfig>();
+    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
 
     /// <summary>
     ///     Handle TradingConfirm event
@@ -53,7 +52,7 @@ public class TradeController(
         // Buying
         if (request.Type == "buy_from_trader")
         {
-            var foundInRaid = _traderConfig.PurchasesAreFoundInRaid;
+            var foundInRaid = TraderConfig.PurchasesAreFoundInRaid;
             var buyData = (ProcessBuyTradeRequestData)request;
             tradeHelper.BuyItem(pmcData, buyData, sessionID, foundInRaid, output);
 
@@ -139,7 +138,7 @@ public class TradeController(
     )
     {
         // Skip buying items when player doesn't have needed loyalty
-        if (PlayerLacksTraderLoyaltyLevelToBuyOffer(fleaOffer, pmcData))
+        if (!PlayerMeetsTraderLoyaltyLevelToBuyOffer(fleaOffer, pmcData))
         {
             var errorMessage =
                 $"Unable to buy item: {fleaOffer.Items[0].Template} from trader: {fleaOffer.User.Id} as loyalty level too low, skipping";
@@ -164,7 +163,7 @@ public class TradeController(
             SchemeId = 0,
             SchemeItems = requestOffer.Items,
         };
-        tradeHelper.BuyItem(pmcData, buyData, sessionId, _traderConfig.PurchasesAreFoundInRaid, output);
+        tradeHelper.BuyItem(pmcData, buyData, sessionId, TraderConfig.PurchasesAreFoundInRaid, output);
 
         // Remove/lower offer quantity of item purchased from trader flea offer
         ragfairServer.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
@@ -198,7 +197,7 @@ public class TradeController(
         };
 
         // buyItem() must occur prior to removing the offer stack, otherwise item inside offer doesn't exist for confirmTrading() to use
-        tradeHelper.BuyItem(pmcData, buyData, sessionId, _ragfairConfig.Dynamic.PurchasesAreFoundInRaid, output);
+        tradeHelper.BuyItem(pmcData, buyData, sessionId, RagfairConfig.Dynamic.PurchasesAreFoundInRaid, output);
         if (output.Warnings?.Count > 0)
         {
             return;
@@ -226,9 +225,22 @@ public class TradeController(
     /// <param name="fleaOffer">Flea offer being bought</param>
     /// <param name="pmcData">Player profile</param>
     /// <returns>True if player can buy offer</returns>
-    protected bool PlayerLacksTraderLoyaltyLevelToBuyOffer(RagfairOffer fleaOffer, PmcData pmcData)
+    protected bool PlayerMeetsTraderLoyaltyLevelToBuyOffer(RagfairOffer fleaOffer, PmcData pmcData)
     {
-        return fleaOffer.LoyaltyLevel > pmcData.TradersInfo[fleaOffer.User.Id].LoyaltyLevel;
+        if (fleaOffer.LoyaltyLevel == 0)
+        {
+            // No requirement, always passes
+            return true;
+        }
+
+        if (pmcData.TradersInfo.TryGetValue(fleaOffer.User.Id, out var traderInfo))
+        {
+            // Trader exists in profile ,do loyalty level check
+            return traderInfo.LoyaltyLevel >= fleaOffer.LoyaltyLevel;
+        }
+
+        // No trader data on player profile, fail check
+        return false;
     }
 
     /// <summary>

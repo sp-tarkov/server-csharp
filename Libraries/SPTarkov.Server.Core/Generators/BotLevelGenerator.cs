@@ -1,17 +1,15 @@
-using System.Globalization;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Bot;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Bots;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Generators;
 
 [Injectable]
-public class BotLevelGenerator(ISptLogger<BotLevelGenerator> logger, RandomUtil randomUtil, DatabaseService databaseService)
+public class BotLevelGenerator(RandomUtil randomUtil, DatabaseService databaseService)
 {
     /// <summary>
     ///     Return a randomised bot level and exp value
@@ -30,26 +28,33 @@ public class BotLevelGenerator(ISptLogger<BotLevelGenerator> logger, RandomUtil 
         var expTable = databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
         var botLevelRange = GetRelativePmcBotLevelRange(botGenerationDetails, levelDetails, expTable.Length);
 
-        // Get random level based on the exp table.
-        var exp = 0;
-        var level = int.Parse(ChooseBotLevel(botLevelRange.Min, botLevelRange.Max, 1, 1.15).ToString(CultureInfo.InvariantCulture)); // TODO - nasty double to string to int conversion
-        for (var i = 0; i < level; i++)
-        {
-            exp += expTable[i].Experience;
-        }
+        // ChooseBotLevel now returns int directly
+        var level = ChooseBotLevel(botLevelRange.Min, botLevelRange.Max, 1, 1.15);
+        var maxLevelIndex = expTable.Length - 1;
 
-        // Sprinkle in some random exp within the level, unless we are at max level.
-        if (level < expTable.Length - 1)
-        {
-            exp += randomUtil.GetInt(0, expTable[level].Experience - 1);
-        }
+        // Clamp chosen level to max
+        level = Math.Clamp(level, 0, maxLevelIndex + 1);
 
-        return new RandomisedBotLevelResult { Level = level, Exp = exp };
+        // Sum up total exp required for all full levels before desired
+        var baseExp = expTable.Take(level).Sum(entry => entry.Experience);
+
+        // Sprinkle in some random exp within the level, unless we are at max level
+        var fractionalExp = level < maxLevelIndex ? randomUtil.GetInt(0, expTable[level].Experience - 1) : 0;
+
+        return new RandomisedBotLevelResult { Exp = baseExp + fractionalExp, Level = level };
     }
 
-    public double ChooseBotLevel(double min, double max, int shift, double number)
+    /// <summary>
+    /// Choose a randomised level based on inputs
+    /// </summary>
+    /// <param name="min">Lowest level to choose</param>
+    /// <param name="max">Highest level to choose</param>
+    /// <param name="shift">Bias shift to apply to the random number generation</param>
+    /// <param name="number">Number of iterations to use for generating a Gaussian random number</param>
+    /// <returns>Bot level</returns>
+    public int ChooseBotLevel(double min, double max, int shift, double number)
     {
-        return randomUtil.GetBiasedRandomNumber(min, max, shift, number);
+        return (int)randomUtil.GetBiasedRandomNumber(min, max, shift, number);
     }
 
     /// <summary>

@@ -634,7 +634,7 @@ public class RepeatableQuestRewardGenerator(
         var currency = traderId == Traders.PEACEKEEPER || traderId == Traders.FENCE ? Money.EUROS : Money.ROUBLES;
 
         // Convert reward amount to Euros if necessary
-        var rewardAmountToGivePlayer = currency == Money.EUROS ? handbookHelper.FromRUB(rewardRoubles, Money.EUROS) : rewardRoubles;
+        var rewardAmountToGivePlayer = currency == Money.EUROS ? handbookHelper.FromRoubles(rewardRoubles, Money.EUROS) : rewardRoubles;
 
         // Get chosen currency + amount and return
         return GenerateItemReward(currency, rewardAmountToGivePlayer, rewardIndex, false);
@@ -663,7 +663,7 @@ public class RepeatableQuestRewardGenerator(
             .Values.Where(itemTemplate =>
             {
                 // Base "Item" item has no parent, ignore it
-                if (itemTemplate.Parent == "")
+                if (itemTemplate.Parent == MongoId.Empty())
                 {
                     return false;
                 }

@@ -3,25 +3,18 @@ using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Weather;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Weather;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class WeatherController(
-    ISptLogger<WeatherController> logger,
     WeatherGenerator weatherGenerator,
     SeasonalEventService seasonalEventService,
-    RaidWeatherService raidWeatherService,
-    ConfigServer configServer
+    RaidWeatherService raidWeatherService
 )
 {
-    protected WeatherConfig _weatherConfig = configServer.GetConfig<WeatherConfig>();
-
     /// <summary>
     ///     Handle client/weather
     /// </summary>
@@ -31,8 +24,8 @@ public class WeatherController(
         var result = new WeatherData
         {
             Acceleration = 0,
-            Time = "",
-            Date = "",
+            Time = string.Empty,
+            Date = string.Empty,
             Weather = null,
             Season = Season.AUTUMN,
         };

@@ -7,9 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Ragfair;
 
 public record SearchRequestData : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("page")]
     public int? Page { get; set; }
 
@@ -85,7 +82,7 @@ public record SearchRequestData : IRequestData
 
 public enum OfferOwnerType
 {
-    ANYOWNERTYPE = 0,
-    TRADEROWNERTYPE = 1,
-    PLAYEROWNERTYPE = 2,
+    AnyOwnerType,
+    TraderOwnerType,
+    PlayerOwnerType,
 }

@@ -53,7 +53,7 @@
   ],
   "BossLocationSpawn": [
     {
-      "BossChance": 40,
+      "BossChance": 100,
       "BossDifficult": "normal",
       "BossEscortAmount": "0",
       "BossEscortDifficult": "normal",
@@ -79,7 +79,7 @@
       "TriggerName": ""
     },
     {
-      "BossChance": 30,
+      "BossChance": 100,
       "BossDifficult": "normal",
       "BossEscortAmount": "0",
       "BossEscortDifficult": "normal",
@@ -105,7 +105,7 @@
       "TriggerName": "botEvent"
     },
     {
-      "BossChance": 30,
+      "BossChance": 50,
       "BossDifficult": "normal",
       "BossEscortAmount": "0",
       "BossEscortDifficult": "normal",
@@ -157,7 +157,7 @@
       "TriggerName": "botEvent"
     },
     {
-      "BossChance": 30,
+      "BossChance": 50,
       "BossDifficult": "normal",
       "BossEscortAmount": "0",
       "BossEscortDifficult": "normal",
@@ -183,7 +183,7 @@
       "TriggerName": "botEvent"
     },
     {
-      "BossChance": 30,
+      "BossChance": 50,
       "BossDifficult": "normal",
       "BossEscortAmount": "0",
       "BossEscortDifficult": "normal",
@@ -209,7 +209,7 @@
       "TriggerName": ""
     },
     {
-      "BossChance": 30,
+      "BossChance": 50,
       "BossDifficult": "normal",
       "BossEscortAmount": "0",
       "BossEscortDifficult": "normal",

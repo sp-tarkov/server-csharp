@@ -80,6 +80,12 @@ public record PmcConfig : BaseConfig
     public required double IsUsec { get; set; }
 
     /// <summary>
+    ///     Force PMCs to use specific armband Tpls
+    /// </summary>
+    [JsonPropertyName("forceArmband")]
+    public required ForceArmbandSettings ForceArmband { get; set; }
+
+    /// <summary>
     ///     WildSpawnType enum value USEC PMCs use
     /// </summary>
     [JsonPropertyName("usecType")]
@@ -106,14 +112,8 @@ public record PmcConfig : BaseConfig
     /// <summary>
     ///     How many levels above player level can a PMC be
     /// </summary>
-    [JsonPropertyName("botRelativeLevelDeltaMax")]
-    public required int BotRelativeLevelDeltaMax { get; set; }
-
-    /// <summary>
-    ///     How many levels below player level can a PMC be
-    /// </summary>
-    [JsonPropertyName("botRelativeLevelDeltaMin")]
-    public required int BotRelativeLevelDeltaMin { get; set; }
+    [JsonPropertyName("botRelativeLevelDelta")]
+    public required MinMax<int> BotRelativeLevelDelta { get; set; }
 
     /// <summary>
     ///     Force a number of healing items into PMCs secure container to ensure they can heal
@@ -149,6 +149,18 @@ public record PmcConfig : BaseConfig
     public required Dictionary<string, List<BossLocationSpawn>> CustomPmcWaves { get; set; }
 }
 
+public record ForceArmbandSettings
+{
+    [JsonPropertyName("enabled")]
+    public bool Enabled { get; set; }
+
+    [JsonPropertyName("usec")]
+    public MongoId Usec { get; set; }
+
+    [JsonPropertyName("bear")]
+    public MongoId Bear { get; set; }
+}
+
 public record PmcLootSettings
 {
     [JsonPropertyName("pocket")]
@@ -172,9 +184,6 @@ public record LootContainerSettings
 
 public record HostilitySettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Bot roles that are 100% an enemy
     /// </summary>
@@ -208,9 +217,6 @@ public record HostilitySettings
 
 public record SlotLootSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Item Type whitelist
     /// </summary>

@@ -5,7 +5,6 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -37,20 +36,10 @@ public class RagfairAssortGenerator(
     ];
 
     /// <summary>
-    ///     Get a list of lists that can be sold on the flea. <br />
-    ///     Each sub list contains item + children (if any)
-    /// </summary>
-    /// <returns> List with children lists of items </returns>
-    public IEnumerable<List<Item>> GetAssortItems()
-    {
-        return GenerateRagfairAssortItems();
-    }
-
-    /// <summary>
     ///     Generate a list of lists (item + children) the flea can sell
     /// </summary>
     /// <returns> List of lists (item + children)</returns>
-    protected IEnumerable<List<Item>> GenerateRagfairAssortItems()
+    public IEnumerable<List<Item>> GenerateRagfairAssortItems()
     {
         IEnumerable<List<Item>> results = [];
 
@@ -84,7 +73,7 @@ public class RagfairAssortGenerator(
             results = results.Union([presetAndModsClone]);
         }
 
-        foreach (var (id, item) in dbItems)
+        foreach (var (tpl, item) in dbItems)
         {
             if (!itemHelper.IsValidItem(item, RagfairItemInvalidBaseTypes))
             {
@@ -92,18 +81,18 @@ public class RagfairAssortGenerator(
             }
 
             // Skip seasonal items when not in-season
-            if (RagfairConfig.Dynamic.RemoveSeasonalItemsWhenNotInEvent && !seasonalEventActive && seasonalItemTplBlacklist.Contains(id))
+            if (RagfairConfig.Dynamic.RemoveSeasonalItemsWhenNotInEvent && !seasonalEventActive && seasonalItemTplBlacklist.Contains(tpl))
             {
                 continue;
             }
 
             // Already processed
-            if (processedArmorItems.Contains(id))
+            if (processedArmorItems.Contains(tpl))
             {
                 continue;
             }
 
-            var assortItemToAdd = new List<Item> { CreateRagfairAssortRootItem(id, id) }; // tpl and id must be the same so hideout recipe rewards work
+            var assortItemToAdd = new List<Item> { CreateRagfairAssortRootItem(tpl, tpl) }; // tpl and id must be the same so hideout recipe rewards work
             results = results.Union([assortItemToAdd]);
         }
 
@@ -125,12 +114,12 @@ public class RagfairAssortGenerator(
     /// <summary>
     ///     Create a base assort item and return it with populated values + 999999 stack count + unlimited count = true
     /// </summary>
-    /// <param name="tplId"> tplid to add to item </param>
+    /// <param name="tplId"> tplId to add to item </param>
     /// <param name="id"> id to add to item </param>
     /// <returns> Hydrated Item object </returns>
     protected Item CreateRagfairAssortRootItem(MongoId tplId, MongoId? id = null)
     {
-        if (id == null || id.Value.IsEmpty())
+        if (id == null || id.Value.IsEmpty)
         {
             id = new MongoId();
         }

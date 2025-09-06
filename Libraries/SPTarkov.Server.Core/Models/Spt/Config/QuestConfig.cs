@@ -74,9 +74,6 @@ public record QuestConfig : BaseConfig
 
 public record RepeatableQuestTemplates
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Pmc repeatable quest template ids keyed by type of quest
     /// Keys: elimination, completion, exploration
@@ -94,9 +91,6 @@ public record RepeatableQuestTemplates
 
 public record EventQuestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Name of the event quest
     /// </summary>
@@ -131,9 +125,6 @@ public record EventQuestData
 
 public record RepeatableQuestConfig
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Id for type of repeatable quest
     /// </summary>
@@ -247,9 +238,6 @@ public record RepeatableQuestConfig
 
 public record RewardScaling
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Levels at which to increase to the next level of reward potential
     /// </summary>
@@ -307,9 +295,6 @@ public record RewardScaling
 
 public record TraderWhitelist
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Trader Id
     /// </summary>
@@ -349,9 +334,6 @@ public record TraderWhitelist
 
 public record RepeatableQuestTypesConfig
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Defines exploration repeatable task generation parameters
     /// </summary>
@@ -400,9 +382,6 @@ public record Exploration : BaseQuestConfig
 
 public record SpecificExits
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Chance that an operational task is generated with a specific extract
     /// </summary>
@@ -492,9 +471,6 @@ public record Pickup : BaseQuestConfig
 
 public record PickupTypeWithMaxCount
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("itemType")]
     public string? ItemType { get; set; }
 
@@ -624,9 +600,6 @@ public record EliminationConfig : BaseQuestConfig
 
 public record BaseQuestConfig
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Possible skills that can be rewarded expirence points
     /// </summary>
@@ -636,9 +609,6 @@ public record BaseQuestConfig
 
 public record BossInfo
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Is this target a boss
     /// </summary>

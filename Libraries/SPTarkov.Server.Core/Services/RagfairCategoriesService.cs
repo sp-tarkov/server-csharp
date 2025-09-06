@@ -49,13 +49,13 @@ public class RagfairCategoriesService(ISptLogger<RagfairCategoriesService> logge
                 }
 
                 // Remove when filter set to players only + offer is from trader
-                if (searchRequestData.OfferOwnerType == OfferOwnerType.PLAYEROWNERTYPE && isTraderOffer)
+                if (searchRequestData.OfferOwnerType == OfferOwnerType.PlayerOwnerType && isTraderOffer)
                 {
                     return false;
                 }
 
                 // Remove when filter set to traders only + offer is not from trader
-                if (searchRequestData.OfferOwnerType == OfferOwnerType.TRADEROWNERTYPE && !isTraderOffer)
+                if (searchRequestData.OfferOwnerType == OfferOwnerType.TraderOwnerType && !isTraderOffer)
                 {
                     return false;
                 }

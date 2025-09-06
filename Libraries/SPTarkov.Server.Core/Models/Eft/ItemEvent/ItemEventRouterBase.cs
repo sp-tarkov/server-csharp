@@ -8,9 +8,6 @@ namespace SPTarkov.Server.Core.Models.Eft.ItemEvent;
 
 public record ItemEventRouterBase
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("warnings")]
     public List<Warning>? Warnings { get; set; }
@@ -21,9 +18,6 @@ public record ItemEventRouterBase
 
 public record Warning
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("index")]
     public int? Index { get; set; }
 
@@ -39,9 +33,6 @@ public record Warning
 
 public record ProfileChange
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
 
@@ -91,7 +82,7 @@ public record ProfileChange
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("recipeUnlocked")]
-    public Dictionary<string, bool>? RecipeUnlocked { get; set; }
+    public Dictionary<MongoId, bool>? RecipeUnlocked { get; set; }
 
     [JsonPropertyName("changedHideoutStashes")]
     public Dictionary<string, HideoutStashItem>? ChangedHideoutStashes { get; set; }
@@ -102,9 +93,6 @@ public record ProfileChange
 
 public record HideoutStashItem
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 
@@ -114,9 +102,6 @@ public record HideoutStashItem
 
 public record WeaponBuildChange
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -132,9 +117,6 @@ public record WeaponBuildChange
 
 public record EquipmentBuildChange
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -159,9 +141,6 @@ public record EquipmentBuildChange
 
 public record ItemChanges
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("new")]
     public List<Item>? NewItems { get; set; }
 
@@ -174,9 +153,6 @@ public record ItemChanges
 
 public record DeletedItem
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
 }
@@ -186,9 +162,6 @@ public record DeletedItem
 /// </summary>
 public record TraderData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("salesSum")]
     public double? SalesSum { get; set; }
 

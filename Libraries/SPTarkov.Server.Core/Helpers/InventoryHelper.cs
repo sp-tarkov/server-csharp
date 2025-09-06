@@ -11,7 +11,6 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Inventory;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -25,7 +24,6 @@ public class InventoryHelper(
     ISptLogger<InventoryHelper> logger,
     HttpResponseUtil httpResponseUtil,
     DialogueHelper dialogueHelper,
-    EventOutputHolder eventOutputHolder,
     ProfileHelper profileHelper,
     ItemHelper itemHelper,
     ServerLocalisationService serverLocalisationService,
@@ -35,7 +33,7 @@ public class InventoryHelper(
 {
     private static readonly FrozenSet<MongoId> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD, BaseClasses.MOD];
 
-    protected readonly InventoryConfig _inventoryConfig = configServer.GetConfig<InventoryConfig>();
+    protected readonly InventoryConfig InventoryConfig = configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
     ///     Add multiple items to player stash (assuming they all fit)
@@ -59,20 +57,21 @@ public class InventoryHelper(
             return;
         }
 
-        foreach (var itemToAdd in request.ItemsWithModsToAdd)
+        var addItemRequest = new AddItemDirectRequest
         {
-            var addItemRequest = new AddItemDirectRequest
-            {
-                ItemWithModsToAdd = itemToAdd,
-                FoundInRaid = request.FoundInRaid,
-                UseSortingTable = request.UseSortingTable,
-                Callback = request.Callback,
-            };
+            FoundInRaid = request.FoundInRaid,
+            UseSortingTable = request.UseSortingTable,
+            Callback = request.Callback,
+        };
+        foreach (var itemAndChildren in request.ItemsWithModsToAdd)
+        {
+            addItemRequest.ItemWithModsToAdd = itemAndChildren;
 
             // Add to player inventory
             AddItemToStash(sessionId, addItemRequest, pmcData, output);
             if (output.Warnings?.Count > 0)
             {
+                // Adding item to stash failed, don't add remainder
                 return;
             }
         }
@@ -159,7 +158,7 @@ public class InventoryHelper(
         foreach (var item in itemWithChildren)
         {
             // Ensure item has upd object
-            itemHelper.AddUpdObjectToItem(item);
+            item.AddUpd();
 
             // Ammo / currency can NEVER be FiR or have a 'SpawnedInSession' property
             item.Upd.SpawnedInSession = itemHelper.IsOfBaseclass(item.Template, BaseClasses.AMMO) ? null : foundInRaid;
@@ -239,12 +238,13 @@ public class InventoryHelper(
         {
             try
             {
-                containerFS2D.FillContainerMapWithItem(
+                containerFS2D.TryFillContainerMapWithItem(
                     findSlotResult.X.Value,
                     findSlotResult.Y.Value,
                     sizeX,
                     sizeY,
-                    findSlotResult.Rotation.Value
+                    findSlotResult.Rotation.Value,
+                    out _
                 );
             }
             catch (Exception ex)
@@ -285,12 +285,13 @@ public class InventoryHelper(
         {
             try
             {
-                containerFS2D.FillContainerMapWithItem(
+                containerFS2D.TryFillContainerMapWithItem(
                     findSlotResult.X.Value,
                     findSlotResult.Y.Value,
                     sizeX,
                     sizeY,
-                    findSlotResult.Rotation.Value
+                    findSlotResult.Rotation.Value,
+                    out _
                 );
             }
             catch (Exception ex)
@@ -345,12 +346,13 @@ public class InventoryHelper(
         {
             try
             {
-                stashFS2D.FillContainerMapWithItem(
+                stashFS2D.TryFillContainerMapWithItem(
                     findSlotResult.X.Value,
                     findSlotResult.Y.Value,
                     sizeX,
                     sizeY,
-                    findSlotResult.Rotation.Value
+                    findSlotResult.Rotation.Value,
+                    out _
                 );
             }
             catch (Exception ex)
@@ -382,12 +384,13 @@ public class InventoryHelper(
 
             try
             {
-                sortingTableFS2D.FillContainerMapWithItem(
+                sortingTableFS2D.TryFillContainerMapWithItem(
                     findSortingSlotResult.X.Value,
                     findSortingSlotResult.Y.Value,
                     sizeX,
                     sizeY,
-                    findSortingSlotResult.Rotation.Value
+                    findSortingSlotResult.Rotation.Value,
+                    out _
                 );
             }
             catch (Exception ex)
@@ -397,7 +400,7 @@ public class InventoryHelper(
                 return;
             }
 
-            // Store details for object, incuding container item will be placed in
+            // Store details for object, including container item will be placed in
             itemWithChildren[0].ParentId = playerInventory.SortingTable;
             itemWithChildren[0].Location = new ItemLocation
             {
@@ -435,7 +438,7 @@ public class InventoryHelper(
     /// <param name="output">OPTIONAL - ItemEventRouterResponse</param>
     public void RemoveItem(PmcData profile, MongoId itemId, MongoId sessionId, ItemEventRouterResponse? output = null)
     {
-        if (itemId.IsEmpty())
+        if (itemId.IsEmpty)
         {
             logger.Warning(serverLocalisationService.GetText("inventory-unable_to_remove_item_no_id_given"));
 
@@ -506,39 +509,41 @@ public class InventoryHelper(
     {
         var fullProfile = profileHelper.GetFullProfile(sessionId);
 
-        // Iterate over all dialogs and look for mesasage with key from request, that has item (and maybe its children) we want to remove
+        // Iterate over all dialogs and look for message with key from request, that has item (and maybe its children) we want to remove
         var dialogs = fullProfile.DialogueRecords;
         foreach (var (_, dialog) in dialogs)
         {
             var messageWithReward = dialog.Messages.FirstOrDefault(message => message.Id == removeRequest.FromOwner.Id);
-            if (messageWithReward is not null)
+            if (messageWithReward is null)
             {
-                // Find item + any possible children and remove them from mails items array
-                var itemWithChildren = messageWithReward.Items.Data.GetItemWithChildren(removeRequest.Item);
-                foreach (var itemToDelete in itemWithChildren)
+                continue;
+            }
+
+            // Find item + any possible children and remove them from mails items array
+            var itemWithChildren = messageWithReward.Items.Data.GetItemWithChildren(removeRequest.Item);
+            foreach (var itemToDelete in itemWithChildren)
+            {
+                // Get index of item to remove from reward array + remove it
+                var indexOfItemToRemove = messageWithReward.Items.Data.IndexOf(itemToDelete);
+                if (indexOfItemToRemove == -1)
                 {
-                    // Get index of item to remove from reward array + remove it
-                    var indexOfItemToRemove = messageWithReward.Items.Data.IndexOf(itemToDelete);
-                    if (indexOfItemToRemove == -1)
-                    {
-                        logger.Error(
-                            serverLocalisationService.GetText(
-                                "inventory-unable_to_remove_item_restart_immediately",
-                                new { item = removeRequest.Item, mailId = removeRequest.FromOwner.Id }
-                            )
-                        );
+                    logger.Error(
+                        serverLocalisationService.GetText(
+                            "inventory-unable_to_remove_item_restart_immediately",
+                            new { item = removeRequest.Item, mailId = removeRequest.FromOwner.Id }
+                        )
+                    );
 
-                        continue;
-                    }
-
-                    messageWithReward.Items.Data.RemoveAt(indexOfItemToRemove);
+                    continue;
                 }
 
-                // Flag message as having no rewards if all removed
-                var hasRewardItemsRemaining = messageWithReward?.Items.Data?.Count > 0;
-                messageWithReward.HasRewards = hasRewardItemsRemaining;
-                messageWithReward.RewardCollected = !hasRewardItemsRemaining;
+                messageWithReward.Items.Data.RemoveAt(indexOfItemToRemove);
             }
+
+            // Flag message as having no rewards if all removed
+            var hasRewardItemsRemaining = messageWithReward?.Items.Data?.Count > 0;
+            messageWithReward.HasRewards = hasRewardItemsRemaining;
+            messageWithReward.RewardCollected = !hasRewardItemsRemaining;
         }
     }
 
@@ -556,10 +561,10 @@ public class InventoryHelper(
         MongoId itemId,
         int countToRemove,
         MongoId sessionId,
-        ItemEventRouterResponse? output
+        ItemEventRouterResponse output
     )
     {
-        if (itemId.IsEmpty())
+        if (itemId.IsEmpty)
         {
             return output;
         }
@@ -581,10 +586,7 @@ public class InventoryHelper(
             {
                 itemToReduce.Upd.StackObjectsCount -= remainingCount;
                 remainingCount = 0;
-                if (output is not null)
-                {
-                    output.ProfileChanges[sessionId].Items.ChangedItems.Add(itemToReduce);
-                }
+                output.ProfileChanges[sessionId].Items.ChangedItems.Add(itemToReduce);
             }
 
             if (remainingCount == 0)
@@ -594,7 +596,7 @@ public class InventoryHelper(
             }
         }
 
-        return output ?? eventOutputHolder.GetOutput(sessionId);
+        return output;
     }
 
     /// <summary>
@@ -909,8 +911,8 @@ public class InventoryHelper(
         var containerTemplate = itemHelper.GetItem(containerTpl).Value;
 
         var firstContainerGrid = containerTemplate.Properties.Grids.FirstOrDefault();
-        var containerRowCount = firstContainerGrid.Props.CellsH;
-        var containerColumnCount = firstContainerGrid.Props.CellsV;
+        var containerRowCount = firstContainerGrid.Properties.CellsH;
+        var containerColumnCount = firstContainerGrid.Properties.CellsV;
 
         return itemHelper.GetBlankContainerMap(containerColumnCount.Value, containerRowCount.Value);
     }
@@ -943,7 +945,7 @@ public class InventoryHelper(
         }
 
         // Look up details of stash in db
-        var (isValidItem, stashItemDbItem) = itemHelper.GetItem(stashTpl);
+        var (isValidItem, stashItemDbItem) = itemHelper.GetItem(stashTpl.Value);
         if (!isValidItem)
         {
             logger.Error(serverLocalisationService.GetText("inventory-stash_not_found", stashTpl));
@@ -955,8 +957,8 @@ public class InventoryHelper(
         var firstStashItemGrid = stashItemDbItem?.Properties?.Grids?.FirstOrDefault();
 
         // Get horizontal and vertical size
-        var stashH = firstStashItemGrid.Props.CellsH != 0 ? firstStashItemGrid.Props.CellsH : 10;
-        var stashV = firstStashItemGrid.Props.CellsV != 0 ? firstStashItemGrid.Props.CellsV : 66;
+        var stashH = firstStashItemGrid.Properties.CellsH != 0 ? firstStashItemGrid.Properties.CellsH : 10;
+        var stashV = firstStashItemGrid.Properties.CellsV != 0 ? firstStashItemGrid.Properties.CellsV : 66;
 
         // Player has a bonus, apply to vertical size
         var stashRowBonus = pmcData.Bonuses.FirstOrDefault(bonus => bonus.Type == BonusType.StashRows);
@@ -973,7 +975,7 @@ public class InventoryHelper(
     /// </summary>
     /// <param name="profile">Profile to get tpl</param>
     /// <returns>Stash tpl</returns>
-    protected string? GetProfileStashTpl(PmcData profile)
+    protected MongoId? GetProfileStashTpl(PmcData profile)
     {
         var stashObj = profile.Inventory.Items.FirstOrDefault(item => item.Id == profile.Inventory.Stash);
         if (stashObj is null)
@@ -1149,7 +1151,7 @@ public class InventoryHelper(
     /// <returns>Reward details</returns>
     public RewardDetails? GetRandomLootContainerRewardDetails(MongoId itemTpl)
     {
-        _inventoryConfig.RandomLootContainers.TryGetValue(itemTpl, out var result);
+        InventoryConfig.RandomLootContainers.TryGetValue(itemTpl, out var result);
 
         return result;
     }
@@ -1160,7 +1162,7 @@ public class InventoryHelper(
     /// <returns>Inventory configuration</returns>
     public InventoryConfig GetInventoryConfig()
     {
-        return _inventoryConfig;
+        return InventoryConfig;
     }
 
     public void ValidateInventoryUsesMongoIds(IEnumerable<Item> itemsToValidate)

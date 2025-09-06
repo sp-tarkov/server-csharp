@@ -6,7 +6,6 @@
     "Nickname": "BOTNAME",
     "LowerNickname": "",
     "Side": "Savage",
-    "Voice": "Scav_1",
     "Level": 1,
     "Experience": 0,
     "RegistrationDate": 0,
@@ -22,11 +21,13 @@
       "BotDifficulty": "normal",
       "Experience": -1,
       "StandingForKill": -0.04,
-      "AggressorBonus": 0.02
+      "AggressorBonus": 0.02,
+      "UseSimpleAnimator": false
     },
     "NicknameChangeDate": 0,
     "NeedWipeOptions": [],
     "lastCompletedWipe": null,
+    "lastWipeTimestamp": null,
     "lastCompletedEvent": null,
     "BannedState": false,
     "BannedUntil": 0,
@@ -34,13 +35,15 @@
     "SquadInviteRestriction": false,
     "HasCoopExtension": false,
     "isMigratedSkills": false,
-    "HasPveGame": false
+    "HasPveGame": false,
+    "PrestigeLevel": 0
   },
   "Customization": {
     "Head": "5cc2e4d014c02e000d0115f8",
     "Body": "5cc2e59214c02e000f16684e",
     "Feet": "5cde9fb87d6c8b0474535da9",
-    "Hands": "5cc2e68f14c02e28b47de290"
+    "Hands": "5cc2e68f14c02e28b47de290",
+    "Voice": "67b877e7d2dc6a01d5059dd9"
   },
   "Health": {
     "UpdateTime": 0,
@@ -88,5 +91,6 @@
   "InsuredItems": [],
   "Hideout": null,
   "Bonuses": [],
-  "WishList": []
+  "WishList": [],
+  "Variables": {}
 }

@@ -40,8 +40,8 @@
     {
       "id": "5c1b857086f77465f465faa4",
       "pic": {
-        "file": "67e404c722d6081b78031de0.jpg",
-        "path": "banners/67e404c722d6081b78031de0.jpg",
+        "file": "67e404c5bec96f5d8e09732f.jpg",
+        "path": "banners/67e404c5bec96f5d8e09732f.jpg",
         "rcid": "",
         "type": "banners"
       }
@@ -49,8 +49,8 @@
     {
       "id": "64c0acf85174e095610734a0",
       "pic": {
-        "file": "67e404c5bec96f5d8e09732f.jpg",
-        "path": "banners/67e404c5bec96f5d8e09732f.jpg",
+        "file": "67e404c722d6081b78031de0.jpg",
+        "path": "banners/67e404c722d6081b78031de0.jpg",
         "rcid": "",
         "type": "banners"
       }
@@ -84,7 +84,7 @@
       "TriggerName": ""
     },
     {
-      "BossChance": 20,
+      "BossChance": 50,
       "BossDifficult": "normal",
       "BossEscortAmount": "2",
       "BossEscortDifficult": "normal",
@@ -97,7 +97,7 @@
       "DependKarmaPVE": false,
       "ForceSpawn": false,
       "IgnoreMaxBots": true,
-      "RandomTimeSpawn": true,
+      "RandomTimeSpawn": false,
       "ShowOnTarkovMap": false,
       "ShowOnTarkovMapPvE": false,
       "SpawnMode": [
@@ -132,7 +132,7 @@
       "TriggerName": ""
     },
     {
-      "BossChance": 15,
+      "BossChance": 30,
       "BossDifficult": "normal",
       "BossEscortAmount": "0",
       "BossEscortDifficult": "normal",
@@ -158,7 +158,7 @@
       "TriggerName": "botEvent"
     },
     {
-      "BossChance": 40,
+      "BossChance": 80,
       "BossDifficult": "normal",
       "BossEscortAmount": "1",
       "BossEscortDifficult": "normal",

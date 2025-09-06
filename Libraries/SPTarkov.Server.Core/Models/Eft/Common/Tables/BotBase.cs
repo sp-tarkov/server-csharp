@@ -3,16 +3,12 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Notes;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Utils.Json;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record BotBase
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("_id")]
     public MongoId? Id { get; set; }
 
@@ -105,7 +101,9 @@ public record BotBase
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("WishList")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public DictionaryOrList<MongoId, int>? WishList { get; set; }
+    public Dictionary<MongoId, int>? WishList { get; set; }
+
+    public Dictionary<MongoId, int>? Variables { get; set; }
 
     [JsonPropertyName("moneyTransferLimitData")]
     public MoneyTransferLimits MoneyTransferLimitData { get; set; }
@@ -119,9 +117,6 @@ public record BotBase
 
 public record MoneyTransferLimits
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     // Resets every 24 hours in live
     /// <summary>
     ///     TODO: Implement
@@ -141,14 +136,17 @@ public record MoneyTransferLimits
 
 public record TaskConditionCounter
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    private string? _type;
 
     [JsonPropertyName("id")]
     public MongoId? Id { get; set; }
 
     [JsonPropertyName("type")]
-    public string? Type { get; set; }
+    public string? Type
+    {
+        get { return _type; }
+        set { _type = value == null ? null : string.Intern(value); }
+    }
 
     [JsonPropertyName("value")]
     public double? Value { get; set; }
@@ -162,18 +160,12 @@ public record TaskConditionCounter
 
 public record UnlockedInfo
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("unlockedProductionRecipe")]
     public HashSet<MongoId>? UnlockedProductionRecipe { get; set; }
 }
 
 public record Info
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     private string? _side;
 
     public string? EntryPoint { get; set; }
@@ -262,9 +254,6 @@ public record Info
 
 public record BotInfoSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     private string? _botDifficulty;
     private string? _role;
 
@@ -292,9 +281,6 @@ public record BotInfoSettings
 
 public record Ban
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("banType")]
     public BanType? BanType { get; set; }
 
@@ -315,9 +301,6 @@ public enum BanType
 
 public record Customization
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public MongoId? Head { get; set; }
 
     public MongoId? Body { get; set; }
@@ -333,9 +316,6 @@ public record Customization
 
 public record BotBaseHealth
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public CurrentMinMax? Hydration { get; set; }
 
     public CurrentMinMax? Energy { get; set; }
@@ -355,9 +335,6 @@ public record BotBaseHealth
 
 public record BodyPartHealth
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public CurrentMinMax? Health { get; set; }
 
     public Dictionary<string, BodyPartEffectProperties?>? Effects { get; set; } // TODO: change key to DamageEffectType enum
@@ -365,9 +342,6 @@ public record BodyPartHealth
 
 public record BodyPartEffectProperties
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     // TODO: this was any, what actual type is it?
     public object? ExtraData { get; set; }
 
@@ -376,9 +350,6 @@ public record BodyPartEffectProperties
 
 public record CurrentMinMax
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double? Current { get; set; }
 
     public double? Minimum { get; set; }
@@ -392,9 +363,6 @@ public record CurrentMinMax
 
 public record BotBaseInventory
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("items")]
     public List<Item>? Items { get; set; }
 
@@ -440,38 +408,30 @@ public record BotBaseInventory
 
 public record Skills
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public IEnumerable<CommonSkill> Common { get; set; }
 
     public IEnumerable<MasterySkill>? Mastering { get; set; }
 
-    public double? Points { get; set; }
+    public double Points { get; set; }
 }
 
 public record MasterySkill
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public string Id { get; set; }
 
-    public string? Id { get; set; }
-
-    public double? Progress { get; set; }
+    public double Progress { get; set; }
 }
 
 public record CommonSkill
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public double PointsEarnedDuringSession { get; set; }
 
-    public double? PointsEarnedDuringSession { get; set; }
+    public long LastAccess { get; set; }
 
-    public long? LastAccess { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public SkillTypes Id { get; set; }
 
-    public SkillTypes? Id { get; set; }
-
-    public double? Progress { get; set; }
+    public double Progress { get; set; }
 
     [JsonPropertyName("max")]
     public int? Max { get; set; }
@@ -482,17 +442,11 @@ public record CommonSkill
 
 public record Stats
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public EftStats? Eft { get; set; }
 }
 
 public record EftStats
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public IEnumerable<string>? CarriedQuestItems { get; set; }
 
     public IEnumerable<Victim>? Victims { get; set; }
@@ -533,9 +487,6 @@ public record EftStats
 
 public record DroppedItem
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public MongoId QuestId { get; set; }
 
     public MongoId? ItemId { get; set; }
@@ -545,9 +496,6 @@ public record DroppedItem
 
 public record FoundInRaidItem
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public MongoId QuestId { get; set; }
 
     public MongoId? ItemId { get; set; }
@@ -555,9 +503,6 @@ public record FoundInRaidItem
 
 public record Victim
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public string? AccountId { get; set; }
 
     public MongoId? ProfileId { get; set; }
@@ -583,29 +528,32 @@ public record Victim
     public string? Role { get; set; }
 
     public string? Location { get; set; }
+
+    [JsonPropertyName("GInterface187.ProfileId")]
+    public object profileIdTest { get; set; }
+
+    [JsonPropertyName("GInterface187.Nickname")]
+    public object NicknameTest { get; set; }
+
+    [JsonPropertyName("GInterface187.Side")]
+    public object SideTest { get; set; }
+
+    [JsonPropertyName("GInterface187.PrestigeLevel")]
+    public object PrestigeLevelTest { get; set; }
 }
 
 public record SessionCounters
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public IEnumerable<CounterKeyValue>? Items { get; set; }
 }
 
 public record OverallCounters
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public List<CounterKeyValue>? Items { get; set; }
 }
 
 public record CounterKeyValue
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public HashSet<string>? Key { get; set; }
 
     public double? Value { get; set; }
@@ -613,9 +561,6 @@ public record CounterKeyValue
 
 public record Aggressor
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double? PrestigeLevel { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
@@ -646,9 +591,6 @@ public record Aggressor
 
 public record DamageHistory
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public string? LethalDamagePart { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
@@ -661,9 +603,6 @@ public record DamageHistory
 
 public record BodyPartsDamageHistory
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public List<DamageStats>? Head { get; set; }
 
     public List<DamageStats>? Chest { get; set; }
@@ -683,12 +622,15 @@ public record BodyPartsDamageHistory
 
 public record DamageStats
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    private string? _type;
 
     public double? Amount { get; set; }
 
-    public string? Type { get; set; }
+    public string? Type
+    {
+        get { return _type; }
+        set { _type = value == null ? null : string.Intern(value); }
+    }
 
     public string? SourceId { get; set; }
 
@@ -702,9 +644,6 @@ public record DamageStats
 
 public record DeathCause
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public DamageType? DamageType { get; set; }
 
@@ -719,9 +658,6 @@ public record DeathCause
 
 public record LastPlayerState
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public LastPlayerStateInfo? Info { get; set; }
 
     public Dictionary<string, string>? Customization { get; set; }
@@ -732,9 +668,6 @@ public record LastPlayerState
 
 public record LastPlayerStateInfo
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public string? Nickname { get; set; }
 
     public string? Side { get; set; }
@@ -746,9 +679,6 @@ public record LastPlayerStateInfo
 
 public record BackendCounter
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -761,9 +691,6 @@ public record BackendCounter
 
 public record InsuredItem
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Trader ID item was insured by
     /// </summary>
@@ -776,9 +703,6 @@ public record InsuredItem
 
 public record Hideout
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public Dictionary<MongoId, Production?>? Production { get; set; }
 
     public List<BotHideoutArea>? Areas { get; set; }
@@ -803,9 +727,6 @@ public record Hideout
 
 public record HideoutCounters
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("fuelCounter")]
     public double? FuelCounter { get; set; }
 
@@ -821,9 +742,6 @@ public record HideoutCounters
 
 public record HideoutImprovement
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("completed")]
     public bool? Completed { get; set; }
 
@@ -833,9 +751,6 @@ public record HideoutImprovement
 
 public record Production // use this instead of productive and scavcase
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public List<Item>? Products { get; set; }
 
     /// <summary>
@@ -910,11 +825,8 @@ public record Production // use this instead of productive and scavcase
 
 public record BotHideoutArea
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("type")]
-    public HideoutAreas? Type { get; set; }
+    public HideoutAreas Type { get; set; }
 
     [JsonPropertyName("level")]
     public int? Level { get; set; }
@@ -943,9 +855,6 @@ public record BotHideoutArea
 
 public record HideoutSlot
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     SPT specific value to keep track of what index this slot is (0,1,2,3 etc.)
     /// </summary>
@@ -958,36 +867,27 @@ public record HideoutSlot
 
 public record LastCompleted
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("$oid")]
     public string? OId { get; set; }
 }
 
 public record Notes
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Notes")]
     public List<Note>? DataNotes { get; set; }
 }
 
 public enum SurvivorClass
 {
-    UNKNOWN = 0,
-    NEUTRALIZER = 1,
-    MARAUDER = 2,
-    PARAMEDIC = 3,
-    SURVIVOR = 4,
+    Unknown,
+    Neutralizer,
+    Marauder,
+    Paramedic,
+    Survivor,
 }
 
 public record TraderInfo
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("loyaltyLevel")]
     public int? LoyaltyLevel { get; set; }
 
@@ -1009,9 +909,6 @@ public record TraderInfo
 
 public record RagfairInfo
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("rating")]
     public double? Rating { get; set; }
 
@@ -1030,9 +927,6 @@ public record RagfairInfo
 
 public record Bonus
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 

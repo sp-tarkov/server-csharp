@@ -27,6 +27,7 @@ csharp_new_line_before_finally = true
 csharp_new_line_before_members_in_object_initializers = true
 csharp_new_line_before_members_in_anonymous_types = true
 csharp_new_line_between_query_expression_clauses = true
+csharp_style_namespace_declarations = file_scoped:warning
 
 # Indentation preferences
 csharp_indent_block_contents = true
@@ -144,6 +145,12 @@ csharp_space_between_square_brackets = false
 # ReSharper properties
 resharper_wrap_object_and_collection_initializer_style = chop_always
 resharper_merge_into_pattern_highlighting = none
+resharper_member_can_be_made_static_global_highlighting = none
+resharper_possible_multiple_enumeration_highlighting = none
+
+# Ignored warnings
+dotnet_diagnostic.CS1591.severity = none
+dotnet_diagnostic.CA1822.severity = none
 
 # Xml project files
 [*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,nativeproj,locproj}]

@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Quests;
 
 public record CompleteQuestRequestData : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Quest Id
     /// </summary>
@@ -17,4 +14,10 @@ public record CompleteQuestRequestData : InventoryBaseActionRequestData
 
     [JsonPropertyName("removeExcessItems")]
     public bool? RemoveExcessItems { get; set; }
+
+    /// <summary>
+    /// This is only set if the quest is repeatable
+    /// </summary>
+    [JsonPropertyName("type")]
+    public string? Type { get; set; }
 }

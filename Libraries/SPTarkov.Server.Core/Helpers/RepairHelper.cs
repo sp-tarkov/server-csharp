@@ -1,9 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -12,16 +10,8 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class RepairHelper(
-    ISptLogger<RepairHelper> logger,
-    RandomUtil randomUtil,
-    DatabaseService databaseService,
-    ConfigServer configServer,
-    ICloner cloner
-)
+public class RepairHelper(ISptLogger<RepairHelper> logger, RandomUtil randomUtil, DatabaseService databaseService, ICloner cloner)
 {
-    protected RepairConfig _repairConfig = configServer.GetConfig<RepairConfig>();
-
     /// <summary>
     ///     Alter an items durability after a repair by trader/repair kit
     /// </summary>
@@ -60,7 +50,7 @@ public class RepairHelper(
             newCurrentMaxDurability = itemMaxDurability;
         }
 
-        // Ensure new current isnt above items max
+        // Ensure new current isn't above items max
         if (newCurrentDurability > itemMaxDurability)
         {
             newCurrentDurability = itemMaxDurability;
@@ -69,7 +59,7 @@ public class RepairHelper(
         // Update Repairable properties with new values after repair
         itemToRepair.Upd.Repairable = new UpdRepairable { Durability = newCurrentDurability, MaxDurability = newCurrentMaxDurability };
 
-        // when modders set the repair coefficient to 0 it means that they dont want to lose durability on items
+        // when modders set the repair coefficient to 0 it means that they don't want to lose durability on items
         // the code below generates a random degradation on the weapon durability
         if (applyMaxDurabilityDegradation)
         {
@@ -126,10 +116,9 @@ public class RepairHelper(
         }
 
         var minMultiplier = isRepairKit ? armorMaterialSettings.MinRepairKitDegradation : armorMaterialSettings.MinRepairDegradation;
-
         var maxMultiplier = isRepairKit ? armorMaterialSettings.MaxRepairKitDegradation : armorMaterialSettings.MaxRepairDegradation;
 
-        var duraLossPercent = randomUtil.GetDouble((double)minMultiplier, (double)maxMultiplier);
+        var duraLossPercent = randomUtil.GetDouble(minMultiplier, maxMultiplier);
         var duraLossMultipliedByTraderMultiplier = duraLossPercent * armorMax * traderQualityMultiplier;
 
         return Math.Round(duraLossMultipliedByTraderMultiplier, 2);
@@ -138,29 +127,29 @@ public class RepairHelper(
     /// <summary>
     ///     Repairing weapons reduces the total durability value slightly, get a randomised (to 2dp) amount
     /// </summary>
-    /// <param name="itemProps">Weapon properties</param>
+    /// <param name="itemProperties">Weapon properties</param>
     /// <param name="isRepairKit">Was a repair kit used</param>
     /// <param name="weaponMax">Max amount of durability item can have</param>
-    /// <param name="traderQualityMultipler">Different traders produce different loss values</param>
+    /// <param name="traderQualityMultiplier">Different traders produce different loss values</param>
     /// <returns>Amount to reduce max durability by</returns>
     protected double GetRandomisedWeaponRepairDegradationValue(
-        Props itemProps,
+        TemplateItemProperties itemProperties,
         bool isRepairKit,
         double weaponMax,
-        double traderQualityMultipler
+        double traderQualityMultiplier
     )
     {
-        var minRepairDeg = isRepairKit ? itemProps.MinRepairKitDegradation : itemProps.MinRepairDegradation;
-        var maxRepairDeg = isRepairKit ? itemProps.MaxRepairKitDegradation : itemProps.MaxRepairDegradation;
+        var minRepairDeg = isRepairKit ? itemProperties.MinRepairKitDegradation : itemProperties.MinRepairDegradation;
+        var maxRepairDeg = isRepairKit ? itemProperties.MaxRepairKitDegradation : itemProperties.MaxRepairDegradation;
 
         // WORKAROUND: Some items are always 0 when repairkit is true
         if (maxRepairDeg == 0)
         {
-            maxRepairDeg = itemProps.MaxRepairDegradation;
+            maxRepairDeg = itemProperties.MaxRepairDegradation;
         }
 
         var duraLossPercent = randomUtil.GetDouble((double)minRepairDeg, (double)maxRepairDeg);
-        var duraLossMultipliedByTraderMultiplier = duraLossPercent * weaponMax * traderQualityMultipler;
+        var duraLossMultipliedByTraderMultiplier = duraLossPercent * weaponMax * traderQualityMultiplier;
 
         return Math.Round(duraLossMultipliedByTraderMultiplier, 2);
     }

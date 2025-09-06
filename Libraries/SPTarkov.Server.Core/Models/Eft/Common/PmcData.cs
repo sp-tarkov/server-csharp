@@ -22,9 +22,6 @@ public record PostRaidPmcData : PmcData { }
 
 public record PostRaidStats
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Eft")]
     public EftStats? Eft { get; set; }
 

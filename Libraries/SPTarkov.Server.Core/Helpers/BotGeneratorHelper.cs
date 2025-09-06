@@ -1,7 +1,6 @@
 using System.Collections.Frozen;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Constants;
-using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -24,6 +23,7 @@ public class BotGeneratorHelper(
     InventoryHelper inventoryHelper,
     ProfileActivityService profileActivityService,
     ServerLocalisationService serverLocalisationService,
+    BotInventoryContainerService botInventoryContainerService,
     ConfigServer configServer
 )
 {
@@ -39,7 +39,7 @@ public class BotGeneratorHelper(
 
     private static readonly FrozenSet<string> _pmcTypes = [Sides.PmcBear.ToLowerInvariant(), Sides.PmcUsec.ToLowerInvariant()];
 
-    private readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
 
     /// <summary>
     ///     Adds properties to an item
@@ -56,7 +56,7 @@ public class BotGeneratorHelper(
         RandomisedResourceDetails? randomisationSettings = null;
         if (botRole is not null)
         {
-            _botConfig.LootItemResourceRandomization.TryGetValue(botRole, out randomisationSettings);
+            BotConfig.LootItemResourceRandomization.TryGetValue(botRole, out randomisationSettings);
         }
 
         Upd itemProperties = new();
@@ -188,7 +188,7 @@ public class BotGeneratorHelper(
     /// <returns>Equipment filter settings</returns>
     protected EquipmentFilters? GetBotEquipmentSettingFromConfig(string botRole)
     {
-        return _botConfig.Equipment?.GetValueOrDefault(GetBotEquipmentRole(botRole));
+        return BotConfig.Equipment.GetValueOrDefault(GetBotEquipmentRole(botRole));
     }
 
     /// <summary>
@@ -199,8 +199,8 @@ public class BotGeneratorHelper(
     /// <returns>Repairable object</returns>
     protected UpdRepairable GenerateWeaponRepairableProperties(TemplateItem itemTemplate, string? botRole = null)
     {
-        var maxDurability = durabilityLimitsHelper.GetRandomizedMaxWeaponDurability(itemTemplate, botRole);
-        var currentDurability = durabilityLimitsHelper.GetRandomizedWeaponDurability(itemTemplate, botRole, maxDurability);
+        var maxDurability = durabilityLimitsHelper.GetRandomizedMaxWeaponDurability(botRole);
+        var currentDurability = durabilityLimitsHelper.GetRandomizedWeaponDurability(botRole, maxDurability);
 
         return new UpdRepairable { Durability = Math.Round(currentDurability, 5), MaxDurability = Math.Round(maxDurability, 5) };
     }
@@ -249,7 +249,7 @@ public class BotGeneratorHelper(
             {
                 Incompatible = false,
                 Found = false,
-                Reason = "",
+                Reason = string.Empty,
             };
         }
 
@@ -409,7 +409,7 @@ public class BotGeneratorHelper(
             };
         }
 
-        return new ChooseRandomCompatibleModResult { Incompatible = false, Reason = "" };
+        return new ChooseRandomCompatibleModResult { Incompatible = false, Reason = string.Empty };
     }
 
     protected bool HasBlockingProperty(TemplateItem? item, string blockingPropertyName)
@@ -428,16 +428,18 @@ public class BotGeneratorHelper(
     }
 
     /// <summary>
-    ///     Adds an item with all its children into specified equipmentSlots, wherever it fits.
+    ///     Adds an item with all its children into specified equipmentSlots, wherever it fits
     /// </summary>
-    /// <param name="equipmentSlots">Slot to add item+children into</param>
+    /// <param name="botId">Bots unique identifier</param>
+    /// <param name="equipmentSlots">Slot to try and add item+children into</param>
     /// <param name="rootItemId">Root item id to use as mod items parentId</param>
     /// <param name="rootItemTplId">Root items tpl id</param>
     /// <param name="itemWithChildren">Item to add</param>
     /// <param name="inventory">Inventory to add item+children into</param>
-    /// <param name="containersIdFull"></param>
+    /// <param name="containersIdFull">Container Ids with no space for more items</param>
     /// <returns>ItemAddedResult result object</returns>
     public ItemAddedResult AddItemWithChildrenToEquipmentSlot(
+        MongoId botId,
         HashSet<EquipmentSlots> equipmentSlots,
         MongoId rootItemId,
         MongoId rootItemTplId,
@@ -446,17 +448,20 @@ public class BotGeneratorHelper(
         HashSet<string>? containersIdFull = null
     )
     {
+        var itemWithChildrenList = itemWithChildren.ToList();
+
         // Track how many containers are unable to be found
         var missingContainerCount = 0;
         foreach (var equipmentSlotId in equipmentSlots)
         {
-            if (containersIdFull?.Contains(equipmentSlotId.ToString()) ?? false)
+            if (containersIdFull is not null && containersIdFull.Contains(equipmentSlotId.ToString()))
             {
+                // Container has been flagged as full already, skip trying to add item into it
                 continue;
             }
 
-            // Get container to put item into
-            var container = inventory.Items.FirstOrDefault(item => item.SlotId == equipmentSlotId.ToString());
+            // Get container from inventory to put item into
+            var container = inventory.Items?.FirstOrDefault(item => item.SlotId == equipmentSlotId.ToString());
             if (container is null)
             {
                 missingContainerCount++;
@@ -466,7 +471,7 @@ public class BotGeneratorHelper(
                     if (logger.IsLogEnabled(LogLevel.Debug))
                     {
                         logger.Debug(
-                            $"Unable to add item: {itemWithChildren.FirstOrDefault()?.Template} to bot as it lacks the following containers: {string.Join(",", equipmentSlots)}"
+                            $"Unable to add item: {itemWithChildrenList.FirstOrDefault()?.Template} to bot as it lacks the following containers: {string.Join(",", equipmentSlots)}"
                         );
                     }
 
@@ -478,7 +483,7 @@ public class BotGeneratorHelper(
             }
 
             // Get container details from db
-            var (isValidItem, itemDbDetails) = itemHelper.GetItem(container.Template);
+            var (isValidItem, containerDbDetails) = itemHelper.GetItem(container.Template);
             if (!isValidItem)
             {
                 logger.Warning(serverLocalisationService.GetText("bot-missing_container_with_tpl", container.Template));
@@ -487,182 +492,32 @@ public class BotGeneratorHelper(
                 continue;
             }
 
-            if (itemDbDetails?.Properties?.Grids is null || !itemDbDetails.Properties.Grids.Any())
-            // Container has no slots to hold items
+            if (containerDbDetails?.Properties?.Grids is null || !containerDbDetails.Properties.Grids.Any())
             {
+                // Container has no slots to hold items, skip to next container
                 continue;
             }
 
             // Get x/y grid size of item
-            var (itemWidth, itemHeight) = inventoryHelper.GetItemSize(rootItemTplId, rootItemId, itemWithChildren);
+            var (itemWidth, itemHeight) = inventoryHelper.GetItemSize(rootItemTplId, rootItemId, itemWithChildrenList);
 
-            // Iterate over each grid in the container and look for a big enough space for the item to be placed in
-            var currentGridCount = 1;
-            var totalSlotGridCount = itemDbDetails?.Properties?.Grids?.Count();
-            foreach (var slotGrid in itemDbDetails?.Properties?.Grids ?? [])
+            var result = botInventoryContainerService.TryAddItemToBotContainer(
+                botId,
+                equipmentSlotId,
+                itemWithChildrenList,
+                inventory,
+                itemWidth,
+                itemHeight
+            );
+            if (result != ItemAddedResult.SUCCESS)
             {
-                // Grid is empty, skip or item size is bigger than grid
-                if (IsGridSmallerThanItem(slotGrid, itemWidth, itemHeight))
-                {
-                    continue;
-                }
-
-                // Can't put item type in grid, skip all grids as we're assuming they have the same rules
-                if (!ItemAllowedInContainer(slotGrid, rootItemTplId))
-                // Multiple containers, maybe next one allows item, only break out of loop for the containers grids
-                {
-                    break;
-                }
-
-                // Get all root items in found container
-                var existingContainerItems = (inventory.Items ?? []).Where(item =>
-                    item.ParentId == container.Id && item.SlotId == slotGrid.Name
-                );
-
-                // Get root items in container we can iterate over to find out what space is free
-                var containerItemsToCheck = existingContainerItems.Where(x => x.SlotId == slotGrid.Name).ToList();
-                var containerItemsWithChildren = GetContainerItemsWithChildren(containerItemsToCheck, inventory.Items);
-
-                if (slotGrid.Props is not null)
-                {
-                    // Get rid of an items free/used spots in current grid
-                    var slotGridMap = inventoryHelper.GetContainerMap(
-                        slotGrid.Props.CellsH.GetValueOrDefault(),
-                        slotGrid.Props.CellsV.GetValueOrDefault(),
-                        containerItemsWithChildren,
-                        container.Id
-                    );
-
-                    // Try to fit item into grid
-                    var findSlotResult = slotGridMap.FindSlotForItem(itemWidth, itemHeight);
-
-                    // Free slot found, add item
-                    if (findSlotResult.Success ?? false)
-                    {
-                        var parentItem = itemWithChildren.FirstOrDefault(i => i.Id == rootItemId);
-
-                        // Set items parent to container id
-                        if (parentItem is not null)
-                        {
-                            parentItem.ParentId = container.Id;
-                            parentItem.SlotId = slotGrid.Name;
-                            parentItem.Location = new ItemLocation
-                            {
-                                X = findSlotResult.X,
-                                Y = findSlotResult.Y,
-                                R = findSlotResult.Rotation ?? false ? ItemRotation.Vertical : ItemRotation.Horizontal,
-                            };
-                        }
-
-                        (inventory.Items ?? []).AddRange(itemWithChildren);
-
-                        return ItemAddedResult.SUCCESS;
-                    }
-                }
-
-                // If we've checked all grids in container and reached this point, there's no space for item
-                if (currentGridCount >= totalSlotGridCount)
-                {
-                    break;
-                }
-
-                currentGridCount++;
-                // No space in this grid, move to next container grid and try again
-            }
-
-            // if we got to this point, the item couldn't be placed on the container
-            if (containersIdFull is null)
-            {
+                // Failed to add to container, try next
                 continue;
             }
 
-            // if the item was a one by one, we know it must be full. Or if the maps cant find a slot for a one by one
-            if (itemWidth == 1 && itemHeight == 1)
-            {
-                containersIdFull.Add(equipmentSlotId.ToString());
-            }
-        }
-
-        return ItemAddedResult.NO_SPACE;
-    }
-
-    protected static bool IsGridSmallerThanItem(Grid slotGrid, int itemWidth, int itemHeight)
-    {
-        return slotGrid.Props?.CellsH == 0
-            || slotGrid.Props?.CellsV == 0
-            || itemWidth * itemHeight > slotGrid.Props?.CellsV * slotGrid.Props?.CellsH;
-    }
-
-    /// <summary>
-    ///     Take a list of items and check if they need children + add them
-    /// </summary>
-    /// <param name="containerRootItems"></param>
-    /// <param name="inventoryItems"></param>
-    /// <returns></returns>
-    protected List<Item> GetContainerItemsWithChildren(IEnumerable<Item> containerRootItems, IEnumerable<Item> inventoryItems)
-    {
-        var result = new List<Item>();
-        if (!containerRootItems.Any())
-        {
-            // Container has no root items
             return result;
         }
 
-        // Filter out all items without location prop, (child items)
-        var itemsWithoutLocation = inventoryItems.Where(item => item.Location is null);
-        foreach (var rootItem in containerRootItems)
-        {
-            // Check item in container for children, store for later insertion into `containerItemsToCheck`
-            // (used later when figuring out how much space weapon takes up)
-            List<Item> itemsToFilter = [.. itemsWithoutLocation, rootItem];
-            var itemWithChildItems = itemsToFilter.GetItemWithChildren(rootItem.Id);
-
-            // Item had children, replace existing data with item + its children
-            result.AddRange(itemWithChildItems);
-        }
-
-        return result;
-    }
-
-    /// <summary>
-    ///     Is the provided item allowed inside a container
-    /// </summary>
-    /// <param name="slotGrid">Items sub-grid we want to place item inside</param>
-    /// <param name="itemTpl">Item tpl being placed</param>
-    /// <returns>True if allowed</returns>
-    protected bool ItemAllowedInContainer(Grid? slotGrid, MongoId itemTpl)
-    {
-        var propFilters = slotGrid?.Props?.Filters;
-        var excludedFilter = propFilters?.FirstOrDefault()?.ExcludedFilter ?? [];
-        var filter = propFilters?.FirstOrDefault()?.Filter ?? [];
-
-        if (!propFilters.Any())
-        // no filters, item is fine to add
-        {
-            return true;
-        }
-
-        // Check if item base type is excluded
-        var itemDetails = itemHelper.GetItem(itemTpl).Value;
-
-        // if item to add is found in exclude filter, not allowed
-        if (excludedFilter.Contains(itemDetails?.Parent ?? string.Empty))
-        {
-            return false;
-        }
-
-        // If Filter array only contains 1 filter and it is for basetype 'item', allow it
-        if (filter.Count == 1 && filter.Contains(BaseClasses.ITEM))
-        {
-            return true;
-        }
-
-        // If allowed filter has something in it + filter doesn't have basetype 'item', not allowed
-        if (filter.Count > 0 && !filter.Contains(itemDetails?.Parent ?? string.Empty))
-        {
-            return false;
-        }
-
-        return true;
+        return ItemAddedResult.NO_SPACE;
     }
 }

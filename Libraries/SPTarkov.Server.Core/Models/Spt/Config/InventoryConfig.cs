@@ -35,9 +35,6 @@ public record InventoryConfig : BaseConfig
 
 public record RewardDetails
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("_type")]
     public string? Type { get; set; }
 
@@ -56,9 +53,6 @@ public record RewardDetails
 
 public record SealedAirdropContainerSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("weaponRewardWeight")]
     public required Dictionary<MongoId, double> WeaponRewardWeight { get; set; }
 

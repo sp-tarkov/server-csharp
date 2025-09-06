@@ -8,30 +8,24 @@ namespace SPTarkov.Server.Core.Models.Eft.Common;
 
 public record Globals
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("config")]
-    public Config Configuration { get; set; }
+    public required Config Configuration { get; init; }
 
     [JsonPropertyName("LocationInfection")]
-    public LocationInfection LocationInfection { get; set; }
+    public required LocationInfection LocationInfection { get; init; }
 
     [JsonPropertyName("bot_presets")]
-    public IEnumerable<BotPreset> BotPresets { get; set; }
+    public required IEnumerable<BotPreset> BotPresets { get; init; }
 
     [JsonPropertyName("BotWeaponScatterings")]
-    public IEnumerable<BotWeaponScattering> BotWeaponScatterings { get; set; }
+    public required IEnumerable<BotWeaponScattering> BotWeaponScatterings { get; init; }
 
     [JsonPropertyName("ItemPresets")]
-    public Dictionary<MongoId, Preset> ItemPresets { get; set; }
+    public required Dictionary<MongoId, Preset> ItemPresets { get; init; }
 }
 
 public record PlayerSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("BaseMaxMovementRolloff")]
     public double BaseMaxMovementRolloff { get; set; }
 
@@ -59,9 +53,6 @@ public record PlayerSettings
 
 public record SearchSoundVolumeSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double FpVolume { get; set; }
 
     public double TpVolume { get; set; }
@@ -69,9 +60,6 @@ public record SearchSoundVolumeSettings
 
 public record MovementRolloffMultiplier
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("MovementState")]
     public string MovementState { get; set; }
 
@@ -81,9 +69,6 @@ public record MovementRolloffMultiplier
 
 public record RadioBroadcastSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("EnabledBroadcast")]
     public bool EnabledBroadcast { get; set; }
 
@@ -93,9 +78,6 @@ public record RadioBroadcastSettings
 
 public record RadioStation
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Enabled")]
     public bool Enabled { get; set; }
 
@@ -105,9 +87,6 @@ public record RadioStation
 
 public record LocationInfection
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Interchange")]
     public double Interchange { get; set; }
 
@@ -141,9 +120,6 @@ public record LocationInfection
 
 public record ArtilleryShelling
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ArtilleryMapsConfigs")]
     public Dictionary<string, ArtilleryMapSettings> ArtilleryMapsConfigs { get; set; }
 
@@ -156,9 +132,6 @@ public record ArtilleryShelling
 
 public record ArtilleryMapSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("PlanedShellingOn")]
     public bool PlanedShellingOn { get; set; }
 
@@ -195,9 +168,6 @@ public record ArtilleryMapSettings
 
 public record ShellingZone
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ID")]
     public double ID { get; set; }
 
@@ -252,18 +222,12 @@ public record ShellingZone
 
 public record AlarmStage
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Value")]
     public Position Value { get; set; }
 }
 
 public record Brigade
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ID")]
     public double Id { get; set; }
 
@@ -273,18 +237,12 @@ public record Brigade
 
 public record ArtilleryGun
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Position")]
     public XYZ Position { get; set; }
 }
 
 public record ArtilleryShellingAirDropSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("UseAirDrop")]
     public bool UseAirDrop { get; set; }
 
@@ -300,9 +258,6 @@ public record ArtilleryShellingAirDropSettings
 
 public record ProjectileExplosionParams
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Blindness")]
     public XYZ Blindness { get; set; }
 
@@ -353,9 +308,6 @@ public record ProjectileExplosionParams
 
 public record Config
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ArtilleryShelling")]
     public ArtilleryShelling ArtilleryShelling { get; set; }
 
@@ -679,26 +631,17 @@ public record Config
 
 public record GlobalAudioSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("RadioBroadcastSettings")]
     public RadioBroadcastSettings RadioBroadcastSettings { get; set; }
 }
 
 public record Triggers
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public Dictionary<string, List<DamageData>> HandlerDamage { get; set; }
 }
 
 public record DamageData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public int Amount { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -707,9 +650,6 @@ public record DamageData
 
 public record HandlerDamageObject
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public int Amount { get; set; }
 
     public string BodyPartColliderType { get; set; }
@@ -717,9 +657,6 @@ public record HandlerDamageObject
 
 public record PveSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public IEnumerable<string> AvailableVersions { get; set; }
 
     public bool ModeEnabled { get; set; }
@@ -727,17 +664,11 @@ public record PveSettings
 
 public record CoopSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public IEnumerable<string> AvailableVersions { get; set; }
 }
 
 public record RunddansSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("accessKeys")]
     public IEnumerable<string> AccessKeys { get; set; }
 
@@ -795,18 +726,12 @@ public record RunddansSettings
 
 public record SeasonActivity
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("InfectionHalloween")]
     public SeasonActivityHalloween InfectionHalloween { get; set; }
 }
 
 public record SeasonActivityHalloween
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DisplayUIEnabled")]
     public bool DisplayUIEnabled { get; set; }
 
@@ -819,25 +744,16 @@ public record SeasonActivityHalloween
 
 public record EnvironmentUISettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public EnvironmentUIData EnvironmentUIData { get; set; }
 }
 
 public record EnvironmentUIData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public required string[] TheUnheardEditionEnvironmentUiType { get; set; }
 }
 
 public record BodyPartColliderSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public BodyPartColliderPart BackHead { get; set; }
 
     public BodyPartColliderPart Ears { get; set; }
@@ -893,9 +809,6 @@ public record BodyPartColliderSettings
 
 public record BodyPartColliderPart
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("PenetrationChance")]
     public double PenetrationChance { get; set; }
 
@@ -908,9 +821,6 @@ public record BodyPartColliderPart
 
 public record WeaponFastDrawSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("HandShakeCurveFrequency")]
     public double HandShakeCurveFrequency { get; set; }
 
@@ -938,9 +848,6 @@ public record WeaponFastDrawSettings
 
 public record EventSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("EventActive")]
     public bool EventActive { get; set; }
 
@@ -968,9 +875,6 @@ public record EventSettings
 
 public record EventWeather
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Cloudness")]
     public double Cloudness { get; set; }
 
@@ -1001,9 +905,6 @@ public record EventWeather
 
 public record TransitSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("BearPriceMod")]
     public double BearPriceMod { get; set; }
 
@@ -1046,9 +947,6 @@ public record TransitSettings
 
 public record TripwiresSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("CollisionCapsuleCheckCoef")]
     public double CollisionCapsuleCheckCoef { get; set; }
 
@@ -1094,9 +992,6 @@ public record TripwiresSettings
 
 public record MountingSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("MovementSettings")]
     public MountingMovementSettings MovementSettings { get; set; }
 
@@ -1106,9 +1001,6 @@ public record MountingSettings
 
 public record MountingMovementSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ApproachTime")]
     public double ApproachTime { get; set; }
 
@@ -1157,9 +1049,6 @@ public record MountingMovementSettings
 
 public record MountingPointDetectionSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("CheckHorizontalSecondaryOffset")]
     public double CheckHorizontalSecondaryOffset { get; set; }
 
@@ -1226,18 +1115,12 @@ public record MountingPointDetectionSettings
 
 public record GraphicSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ExperimentalFogInCity")]
     public bool ExperimentalFogInCity { get; set; }
 }
 
 public record BufferZone
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("CustomerAccessTime")]
     public double CustomerAccessTime { get; set; }
 
@@ -1250,9 +1133,6 @@ public record BufferZone
 
 public record ItemsCommonSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ItemRemoveAfterInterruptionTime")]
     public double ItemRemoveAfterInterruptionTime { get; set; }
 
@@ -1262,9 +1142,6 @@ public record ItemsCommonSettings
 
 public record TradingSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("BuyRestrictionMaxBonus")]
     public Dictionary<string, BuyRestrictionMaxBonus> BuyRestrictionMaxBonus { get; set; }
 
@@ -1274,18 +1151,12 @@ public record TradingSettings
 
 public record BuyRestrictionMaxBonus
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("multiplier")]
     public double Multiplier { get; set; }
 }
 
 public record BuyoutRestrictions
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("MinDurability")]
     public double MinDurability { get; set; }
 
@@ -1298,9 +1169,6 @@ public record BuyoutRestrictions
 
 public record Content
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ip")]
     public string Ip { get; set; }
 
@@ -1313,9 +1181,6 @@ public record Content
 
 public record Exp
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("heal")]
     public Heal Heal { get; set; }
 
@@ -1349,9 +1214,6 @@ public record Exp
 
 public record Heal
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("expForHeal")]
     public double ExpForHeal { get; set; }
 
@@ -1364,9 +1226,6 @@ public record Heal
 
 public record MatchEnd
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("README")]
     public string ReadMe { get; set; }
 
@@ -1413,9 +1272,6 @@ public record MatchEnd
 
 public record Kill
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("combo")]
     public required Combo[] Combos { get; set; }
 
@@ -1452,18 +1308,12 @@ public record Kill
 
 public record Combo
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("percent")]
     public double Percentage { get; set; }
 }
 
 public record Level
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("exp_table")]
     public required ExpTable[] ExperienceTable { get; set; }
 
@@ -1485,36 +1335,24 @@ public record Level
 
 public record ExpTable
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("exp")]
     public int Experience { get; set; }
 }
 
 public record LootAttempt
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("k_exp")]
     public double ExperiencePoints { get; set; }
 }
 
 public record Armor
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("class")]
     public IEnumerable<Class> Classes { get; set; }
 }
 
 public record Class
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     // Checked in client
     [JsonPropertyName("resistance")]
     public int Resistance { get; set; }
@@ -1522,9 +1360,6 @@ public record Class
 
 public record Mastering
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Name")]
     public string Name { get; set; }
 
@@ -1545,9 +1380,6 @@ public record Mastering
 
 public record Customization
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("SavageHead")]
     public Dictionary<string, WildHead> Head { get; set; }
 
@@ -1566,9 +1398,6 @@ public record Customization
 
 public record WildHead
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("head")]
     public string Head { get; set; }
 
@@ -1584,9 +1413,6 @@ public record WildHead
 
 public record WildBody
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("body")]
     public MongoId Body { get; set; }
 
@@ -1602,9 +1428,6 @@ public record WildBody
 
 public record WildFeet
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("feet")]
     public string Feet { get; set; }
 
@@ -1620,9 +1443,6 @@ public record WildFeet
 
 public record CustomizationVoice
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("voice")]
     public string Voice { get; set; }
 
@@ -1635,9 +1455,6 @@ public record CustomizationVoice
 
 public record BodyParts
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public string Head { get; set; }
 
     public string Body { get; set; }
@@ -1649,9 +1466,6 @@ public record BodyParts
 
 public record AirdropGlobalSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public string AirdropViewType { get; set; }
 
     public double ParachuteEndOpenHeight { get; set; }
@@ -1677,9 +1491,6 @@ public record AirdropGlobalSettings
 
 public record KarmaCalculationSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("defaultPveKarmaValue")]
     public double DefaultPveKarmaValue { get; set; }
 
@@ -1701,9 +1512,6 @@ public record KarmaCalculationSettings
 
 public record ArenaEftTransferSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double ArenaManagerReputationTaxMultiplier { get; set; }
 
     public double CharismaTaxMultiplier { get; set; }
@@ -1719,9 +1527,6 @@ public record ArenaEftTransferSettings
 
 public record ArmorType
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Destructibility")]
     public double Destructibility { get; set; }
 
@@ -1743,9 +1548,6 @@ public record ArmorType
 
 public record Health
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Falling")]
     public Falling Falling { get; set; }
 
@@ -1761,9 +1563,6 @@ public record Health
 
 public record Falling
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DamagePerMeter")]
     public double DamagePerMeter { get; set; }
 
@@ -1773,9 +1572,6 @@ public record Falling
 
 public record Effects
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Existence")]
     public Existence Existence { get; set; }
 
@@ -1863,9 +1659,6 @@ public record Effects
 
 public record ZombieInfection
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Dehydration")]
     public double Dehydration { get; set; }
 
@@ -1880,9 +1673,6 @@ public record ZombieInfection
 
 public record Existence
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("EnergyLoopTime")]
     public double EnergyLoopTime { get; set; }
 
@@ -1904,9 +1694,6 @@ public record Existence
 
 public record Dehydration
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DefaultDelay")]
     public double DefaultDelay { get; set; }
 
@@ -1931,9 +1718,6 @@ public record Dehydration
 
 public record BreakPart
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DefaultDelay")]
     public double DefaultDelay { get; set; }
 
@@ -1964,27 +1748,18 @@ public record BreakPart
 
 public record Contusion
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Dummy")]
     public double Dummy { get; set; }
 }
 
 public record Disorientation
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Dummy")]
     public double Dummy { get; set; }
 }
 
 public record Exhaustion
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DefaultDelay")]
     public double DefaultDelay { get; set; }
 
@@ -2000,9 +1775,6 @@ public record Exhaustion
 
 public record LowEdgeHealth
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DefaultDelay")]
     public double DefaultDelay { get; set; }
 
@@ -2015,9 +1787,6 @@ public record LowEdgeHealth
 
 public record RadExposure
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Damage")]
     public double Damage { get; set; }
 
@@ -2027,18 +1796,12 @@ public record RadExposure
 
 public record Stun
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Dummy")]
     public double Dummy { get; set; }
 }
 
 public record Intoxication
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DefaultDelay")]
     public double DefaultDelay { get; set; }
 
@@ -2069,9 +1832,6 @@ public record Intoxication
 
 public record Regeneration
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("LoopTime")]
     public double LoopTime { get; set; }
 
@@ -2093,9 +1853,6 @@ public record Regeneration
 
 public record BodyHealth
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Head")]
     public BodyHealthValue Head { get; set; }
 
@@ -2120,18 +1877,12 @@ public record BodyHealth
 
 public record BodyHealthValue
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Value")]
     public double Value { get; set; }
 }
 
 public record Influences
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("LightBleeding")]
     public Influence LightBleeding { get; set; }
 
@@ -2150,9 +1901,6 @@ public record Influences
 
 public record Influence
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("HealthSlowDownPercentage")]
     public double HealthSlowDownPercentage { get; set; }
 
@@ -2165,9 +1913,6 @@ public record Influence
 
 public record Wound
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("WorkingTime")]
     public double WorkingTime { get; set; }
 
@@ -2180,9 +1925,6 @@ public record Wound
 
 public record Berserk
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DefaultDelay")]
     public double DefaultDelay { get; set; }
 
@@ -2195,18 +1937,12 @@ public record Berserk
 
 public record Flash
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Dummy")]
     public double Dummy { get; set; }
 }
 
 public record MedEffect
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("LoopTime")]
     public double LoopTime { get; set; }
 
@@ -2234,9 +1970,6 @@ public record MedEffect
 
 public record Pain
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("TremorDelay")]
     public double TremorDelay { get; set; }
 
@@ -2246,25 +1979,16 @@ public record Pain
 
 public record PainKiller
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double Dummy { get; set; }
 }
 
 public record SandingScreen
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double Dummy { get; set; }
 }
 
 public record MusclePainEffect
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double GymEffectivity { get; set; }
 
     public double OfflineDurationMax { get; set; }
@@ -2276,9 +2000,6 @@ public record MusclePainEffect
 
 public record Stimulator
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double BuffLoopTime { get; set; }
 
     public Dictionary<string, IEnumerable<Buff>> Buffs { get; set; }
@@ -2286,9 +2007,6 @@ public record Stimulator
 
 public record Buff
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("BuffType")]
     public string BuffType { get; set; }
 
@@ -2315,9 +2033,6 @@ public record Buff
 
 public record Tremor
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DefaultDelay")]
     public double DefaultDelay { get; set; }
 
@@ -2327,9 +2042,6 @@ public record Tremor
 
 public record ChronicStaminaFatigue
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("EnergyRate")]
     public double EnergyRate { get; set; }
 
@@ -2345,9 +2057,6 @@ public record ChronicStaminaFatigue
 
 public record Fracture
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DefaultDelay")]
     public double DefaultDelay { get; set; }
 
@@ -2378,9 +2087,6 @@ public record Fracture
 
 public record HeavyBleeding
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DefaultDelay")]
     public double DefaultDelay { get; set; }
 
@@ -2432,9 +2138,6 @@ public record HeavyBleeding
 
 public record Probability
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("FunctionType")]
     public string FunctionType { get; set; }
 
@@ -2450,9 +2153,6 @@ public record Probability
 
 public record LightBleeding
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DefaultDelay")]
     public double DefaultDelay { get; set; }
 
@@ -2504,9 +2204,6 @@ public record LightBleeding
 
 public record BodyTemperature
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DefaultBuildUpTime")]
     public double DefaultBuildUpTime { get; set; }
 
@@ -2519,9 +2216,6 @@ public record BodyTemperature
 
 public record HealPrice
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("HealthPointPrice")]
     public double HealthPointPrice { get; set; }
 
@@ -2540,9 +2234,6 @@ public record HealPrice
 
 public record ProfileHealthSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("BodyPartsSettings")]
     public BodyPartsSettings BodyPartsSettings { get; set; }
 
@@ -2555,9 +2246,6 @@ public record ProfileHealthSettings
 
 public record BodyPartsSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Head")]
     public BodyPartsSetting Head { get; set; }
 
@@ -2582,9 +2270,6 @@ public record BodyPartsSettings
 
 public record BodyPartsSetting
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Minimum")]
     public double Minimum { get; set; }
 
@@ -2603,9 +2288,6 @@ public record BodyPartsSetting
 
 public record HealthFactorsSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Energy")]
     public HealthFactorSetting Energy { get; set; }
 
@@ -2624,9 +2306,6 @@ public record HealthFactorsSettings
 
 public record HealthFactorSetting
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Minimum")]
     public double Minimum { get; set; }
 
@@ -2639,9 +2318,6 @@ public record HealthFactorSetting
 
 public record Rating
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("levelRequired")]
     public double LevelRequired { get; set; }
 
@@ -2654,9 +2330,6 @@ public record Rating
 
 public record Categories
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("experience")]
     public bool Experience { get; set; }
 
@@ -2690,9 +2363,6 @@ public record Categories
 
 public record Tournament
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("categories")]
     public TournamentCategories Categories { get; set; }
 
@@ -2705,18 +2375,12 @@ public record Tournament
 
 public record TournamentCategories
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("dogtags")]
     public bool Dogtags { get; set; }
 }
 
 public record RagFair
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
 
@@ -2833,9 +2497,6 @@ public record RagFair
 
 public record ItemGlobalRestrictions
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("MaxFlea")]
     public double MaxFlea { get; set; }
 
@@ -2848,9 +2509,6 @@ public record ItemGlobalRestrictions
 
 public record MaxActiveOfferCount
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("from")]
     public double From { get; set; }
 
@@ -2866,9 +2524,6 @@ public record MaxActiveOfferCount
 
 public record MaxSumForRarity
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Common")]
     public RarityMaxSum Common { get; set; }
 
@@ -2884,27 +2539,18 @@ public record MaxSumForRarity
 
 public record RarityMaxSum
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("value")]
     public double Value { get; set; }
 }
 
 public record Handbook
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("defaultCategory")]
     public string DefaultCategory { get; set; }
 }
 
 public record Stamina
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Capacity")]
     public double Capacity { get; set; }
 
@@ -3065,9 +2711,6 @@ public record Stamina
 
 public record StaminaRestoration
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("LowerLeftPoint")]
     public double LowerLeftPoint { get; set; }
 
@@ -3089,9 +2732,6 @@ public record StaminaRestoration
 
 public record StaminaDrain
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("LowerLeftPoint")]
     public double LowerLeftPoint { get; set; }
 
@@ -3113,18 +2753,12 @@ public record StaminaDrain
 
 public record RequirementReferences
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Alpinist")]
     public IEnumerable<Alpinist> Alpinists { get; set; }
 }
 
 public record Alpinist
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Requirement")]
     public string Requirement { get; set; }
 
@@ -3143,9 +2777,6 @@ public record Alpinist
 
 public record RestrictionsInRaid
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("MaxInLobby")]
     public double MaxInLobby { get; set; }
 
@@ -3158,9 +2789,6 @@ public record RestrictionsInRaid
 
 public record FavoriteItemsSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("WeaponStandMaxItemsCount")]
     public double WeaponStandMaxItemsCount { get; set; }
 
@@ -3170,9 +2798,6 @@ public record FavoriteItemsSettings
 
 public record VaultingSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("IsActive")]
     public bool IsActive { get; set; }
 
@@ -3188,9 +2813,6 @@ public record VaultingSettings
 
 public record VaultingGridSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("GridSizeX")]
     public double GridSizeX { get; set; }
 
@@ -3224,9 +2846,6 @@ public record VaultingGridSettings
 
 public record VaultingMovesSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("VaultSettings")]
     public VaultingSubMoveSettings VaultSettings { get; set; }
 
@@ -3236,9 +2855,6 @@ public record VaultingMovesSettings
 
 public record VaultingSubMoveSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("IsActive")]
     public bool IsActive { get; set; }
 
@@ -3259,9 +2875,6 @@ public record VaultingSubMoveSettings
 
 public record MoveRestrictions
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("IsActive")]
     public bool IsActive { get; set; }
 
@@ -3283,9 +2896,6 @@ public record MoveRestrictions
 
 public record BTRSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("LocationsWithBTR")]
     public IEnumerable<string> LocationsWithBTR { get; set; }
 
@@ -3352,9 +2962,6 @@ public record BTRSettings
 
 public record BtrMapConfig
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("BtrSkin")]
     public string BtrSkin { get; set; }
 
@@ -3403,9 +3010,6 @@ public record BtrMapConfig
 
 public record PathConfig
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("active")]
     public bool Active { get; set; }
 
@@ -3439,9 +3043,6 @@ public record PathConfig
 
 public record SquadSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("CountOfRequestsToOnePlayer")]
     public double CountOfRequestsToOnePlayer { get; set; }
 
@@ -3454,9 +3055,6 @@ public record SquadSettings
 
 public record Insurance
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ChangeForReturnItemsInOfflineRaid")]
     public double ChangeForReturnItemsInOfflineRaid { get; set; }
 
@@ -3478,18 +3076,12 @@ public record Insurance
 
 public record MessageSendTimeMultiplier
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("multiplier")]
     public double Multiplier { get; set; }
 }
 
 public record SkillsSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("SkillProgressRate")]
     public double SkillProgressRate { get; set; }
 
@@ -3700,17 +3292,11 @@ public record SkillsSettings
 
 public record MeleeSkill
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public BuffSettings BuffSettings { get; set; }
 }
 
 public record ArmorSkills
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double BluntThroughputDamageHVestsReducePerLevel { get; set; }
 
     public double WearAmountRepairHVestsReducePerLevel { get; set; }
@@ -3742,18 +3328,12 @@ public record ArmorSkills
 
 public record ArmorCounters
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("armorDurability")]
     public SkillCounter ArmorDurability { get; set; }
 }
 
 public record HideoutManagement
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double SkillPointsPerAreaUpgrade { get; set; }
 
     public double SkillPointsPerCraft { get; set; }
@@ -3771,9 +3351,6 @@ public record HideoutManagement
 
 public record SkillPointsRate
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public SkillPointRate Generator { get; set; }
 
     public SkillPointRate AirFilteringUnit { get; set; }
@@ -3785,9 +3362,6 @@ public record SkillPointsRate
 
 public record SkillPointRate
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double ResourceSpent { get; set; }
 
     public double PointsGained { get; set; }
@@ -3795,9 +3369,6 @@ public record SkillPointRate
 
 public record EliteSlots
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public EliteSlot Generator { get; set; }
 
     public EliteSlot AirFilteringUnit { get; set; }
@@ -3809,9 +3380,6 @@ public record EliteSlots
 
 public record EliteSlot
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double Slots { get; set; }
 
     public double Container { get; set; }
@@ -3819,9 +3387,6 @@ public record EliteSlot
 
 public record Crafting
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DependentSkillRatios")]
     public IEnumerable<DependentSkillRatio> DependentSkillRatios { get; set; }
 
@@ -3853,9 +3418,6 @@ public record Crafting
 
 public record Metabolism
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("HydrationRecoveryRate")]
     public double HydrationRecoveryRate { get; set; }
 
@@ -3874,9 +3436,6 @@ public record Metabolism
 
 public record Immunity
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ImmunityMiscEffects")]
     public double ImmunityMiscEffects { get; set; }
 
@@ -3895,9 +3454,6 @@ public record Immunity
 
 public record Endurance
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("MovementAction")]
     public double MovementAction { get; set; }
 
@@ -3916,9 +3472,6 @@ public record Endurance
 
 public record Strength
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DependentSkillRatios")]
     public IEnumerable<DependentSkillRatio> DependentSkillRatios { get; set; }
 
@@ -3952,9 +3505,6 @@ public record Strength
 
 public record DependentSkillRatio
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Ratio")]
     public double Ratio { get; set; }
 
@@ -3964,9 +3514,6 @@ public record DependentSkillRatio
 
 public record QTELevelMultiplier
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Level")]
     public double Level { get; set; }
 
@@ -3976,9 +3523,6 @@ public record QTELevelMultiplier
 
 public record Vitality
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DamageTakenAction")]
     public double DamageTakenAction { get; set; }
 
@@ -3988,18 +3532,12 @@ public record Vitality
 
 public record HealthSkillProgress
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("SkillProgress")]
     public double SkillProgress { get; set; }
 }
 
 public record StressResistance
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("HealthNegativeEffect")]
     public double HealthNegativeEffect { get; set; }
 
@@ -4009,18 +3547,12 @@ public record StressResistance
 
 public record Throwing
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ThrowAction")]
     public double ThrowAction { get; set; }
 }
 
 public record RecoilControl
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("RecoilAction")]
     public double RecoilAction { get; set; }
 
@@ -4030,9 +3562,6 @@ public record RecoilControl
 
 public record WeaponSkills
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("WeaponReloadAction")]
     public double WeaponReloadAction { get; set; }
 
@@ -4048,18 +3577,12 @@ public record WeaponSkills
 
 public record CovertMovement
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("MovementAction")]
     public double MovementAction { get; set; }
 }
 
 public record Search
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("SearchAction")]
     public double SearchAction { get; set; }
 
@@ -4069,9 +3592,6 @@ public record Search
 
 public record WeaponTreatment
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("BuffMaxCount")]
     public double BuffMaxCount { get; set; }
 
@@ -4099,18 +3619,12 @@ public record WeaponTreatment
 
 public record WeaponTreatmentCounters
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("firearmsDurability")]
     public SkillCounter FirearmsDurability { get; set; }
 }
 
 public record BuffSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("CommonBuffChanceLevelBonus")]
     public double CommonBuffChanceLevelBonus { get; set; }
 
@@ -4132,9 +3646,6 @@ public record BuffSettings
 
 public record MagDrills
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("RaidLoadedAmmoAction")]
     public double RaidLoadedAmmoAction { get; set; }
 
@@ -4147,9 +3658,6 @@ public record MagDrills
 
 public record Perception
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DependentSkillRatios")]
     public IEnumerable<SkillRatio> DependentSkillRatios { get; set; }
 
@@ -4162,9 +3670,6 @@ public record Perception
 
 public record SkillRatio
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Ratio")]
     public double Ratio { get; set; }
 
@@ -4174,9 +3679,6 @@ public record SkillRatio
 
 public record Intellect
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public required SkillRatio[] DependentSkillRatios { get; set; }
 
     [JsonPropertyName("Counters")]
@@ -4203,9 +3705,6 @@ public record Intellect
 
 public record IntellectCounters
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("armorDurability")]
     public SkillCounter ArmorDurability { get; set; }
 
@@ -4218,9 +3717,6 @@ public record IntellectCounters
 
 public record SkillCounter
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("divisor")]
     public double Divisor { get; set; }
 
@@ -4230,9 +3726,6 @@ public record SkillCounter
 
 public record Attention
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DependentSkillRatios")]
     public required SkillRatio[] DependentSkillRatios { get; set; }
 
@@ -4248,9 +3741,6 @@ public record Attention
 
 public record Charisma
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("BonusSettings")]
     public BonusSettings BonusSettings { get; set; }
 
@@ -4269,9 +3759,6 @@ public record Charisma
 
 public record CharismaSkillCounters
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("insuranceCost")]
     public SkillCounter InsuranceCost { get; set; }
 
@@ -4290,9 +3777,6 @@ public record CharismaSkillCounters
 
 public record BonusSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("EliteBonusSettings")]
     public EliteBonusSettings EliteBonusSettings { get; set; }
 
@@ -4302,9 +3786,6 @@ public record BonusSettings
 
 public record EliteBonusSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("FenceStandingLossDiscount")]
     public double FenceStandingLossDiscount { get; set; }
 
@@ -4317,9 +3798,6 @@ public record EliteBonusSettings
 
 public record LevelBonusSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("HealthRestoreDiscount")]
     public double HealthRestoreDiscount { get; set; }
 
@@ -4341,9 +3819,6 @@ public record LevelBonusSettings
 
 public record Memory
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("AnySkillUp")]
     public double AnySkillUp { get; set; }
 
@@ -4353,9 +3828,6 @@ public record Memory
 
 public record Surgery
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("SurgeryAction")]
     public double SurgeryAction { get; set; }
 
@@ -4365,18 +3837,12 @@ public record Surgery
 
 public record AimDrills
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("WeaponShotAction")]
     public double WeaponShotAction { get; set; }
 }
 
 public record TroubleShooting
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("MalfRepairSpeedBonusPerLevel")]
     public double MalfRepairSpeedBonusPerLevel { get; set; }
 
@@ -4395,9 +3861,6 @@ public record TroubleShooting
 
 public record Aiming
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ProceduralIntensityByPose")]
     public XYZ ProceduralIntensityByPose { get; set; }
 
@@ -4458,9 +3921,6 @@ public record Aiming
 
 public record Malfunction
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("AmmoMalfChanceMult")]
     public double AmmoMalfChanceMult { get; set; }
 
@@ -4539,9 +3999,6 @@ public record Malfunction
 
 public record Overheat
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("MinOverheat")]
     public double MinimumOverheat { get; set; }
 
@@ -4629,9 +4086,6 @@ public record Overheat
 
 public record FenceSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     // MongoId
     [JsonPropertyName("FenceId")]
     public string FenceIdentifier { get; set; }
@@ -4648,9 +4102,6 @@ public record FenceSettings
 
 public record FenceLevel
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ReachOnMarkOnUnknowns")]
     public bool CanReachOnMarkOnUnknowns { get; set; }
 
@@ -4732,9 +4183,6 @@ public record FenceLevel
 
 public record Inertia
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("InertiaLimits")]
     public XYZ InertiaLimits { get; set; }
 
@@ -4854,18 +4302,12 @@ public record Inertia
 
 public record Ballistic
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("GlobalDamageDegradationCoefficient")]
     public double GlobalDamageDegradationCoefficient { get; set; }
 }
 
 public record RepairSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("ItemEnhancementSettings")]
     public ItemEnhancementSettings ItemEnhancementSettings { get; set; }
 
@@ -4887,9 +4329,6 @@ public record RepairSettings
 
 public record ItemEnhancementSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("DamageReduction")]
     public PriceModifier DamageReduction { get; set; }
 
@@ -4902,18 +4341,12 @@ public record ItemEnhancementSettings
 
 public record PriceModifier
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("PriceModifier")]
     public double PriceModifierValue { get; set; }
 }
 
 public record RepairStrategies
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Armor")]
     public RepairStrategy Armor { get; set; }
 
@@ -4923,9 +4356,6 @@ public record RepairStrategies
 
 public record RepairStrategy
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("BuffTypes")]
     public IEnumerable<string> BuffTypes { get; set; }
 
@@ -4935,9 +4365,6 @@ public record RepairStrategy
 
 public record BotPreset
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("UseThis")]
     public bool UseThis { get; set; }
 
@@ -4974,9 +4401,6 @@ public record BotPreset
 
 public record BotWeaponScattering
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Name")]
     public string Name { get; set; }
 
@@ -4992,9 +4416,6 @@ public record BotWeaponScattering
 
 public record Preset
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
 
@@ -5022,9 +4443,6 @@ public record Preset
 
 public record QuestSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("GlobalRewardRepModifierDailyQuestPvE")]
     public double GlobalRewardRepModifierDailyQuestPvE { get; set; }
 

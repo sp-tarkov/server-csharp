@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 
 public record ProfileChangeNicknameRequestData : IRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("nickname")]
     public string? Nickname { get; set; }
 }

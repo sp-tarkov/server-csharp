@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record ChatServer
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
 
@@ -41,9 +38,6 @@ public record ChatServer
 
 public record Chat
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
 

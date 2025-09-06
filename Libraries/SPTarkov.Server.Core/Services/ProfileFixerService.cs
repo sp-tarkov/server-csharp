@@ -1,4 +1,3 @@
-using System.Collections.Frozen;
 using System.Text.RegularExpressions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
@@ -26,12 +25,10 @@ public class ProfileFixerService(
     HideoutHelper hideoutHelper,
     DatabaseService databaseService,
     ServerLocalisationService serverLocalisationService,
-    ConfigServer configServer,
-    InventoryHelper inventoryHelper
+    ConfigServer configServer
 )
 {
-    protected readonly FrozenSet<string> _areas = ["hideout", "main"];
-    protected readonly CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
+    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
     /// <summary>
     ///     Find issues in the pmc profile data that may cause issues and fix them
@@ -397,7 +394,7 @@ public class ProfileFixerService(
     }
 
     /// <summary>
-    ///     If the profile has elite Hideout Managment skill, add the additional slots from globals
+    ///     If the profile has elite Hideout Management skill, add the additional slots from globals
     ///     NOTE: This seems redundant, but we will leave it here just in case.
     /// </summary>
     /// <param name="pmcProfile">profile to add slots to</param>
@@ -408,10 +405,10 @@ public class ProfileFixerService(
         var generator = pmcProfile.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.Generator);
         if (generator is not null)
         {
-            var genSlots = generator.Slots.Count;
+            var fuelSlots = generator.Slots.Count;
             var extraGenSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.Generator.Slots;
 
-            if (genSlots < 6 + extraGenSlots)
+            if (fuelSlots < 6 + extraGenSlots)
             {
                 if (logger.IsLogEnabled(LogLevel.Debug))
                 {
@@ -422,10 +419,26 @@ public class ProfileFixerService(
             }
         }
 
-        var waterCollSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.WaterCollector).Slots.Count;
+        var restArea = pmcProfile.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.RestSpace);
+        if (restArea is not null)
+        {
+            var slots = restArea.Slots.Count;
+
+            if (slots < 1)
+            {
+                if (logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    logger.Debug("Updating restArea slots to a size of 1");
+                }
+
+                AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.RestSpace, 1, pmcProfile);
+            }
+        }
+
+        var waterCollSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.WaterCollector)?.Slots?.Count;
         var extraWaterCollSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.WaterCollector.Slots;
 
-        if (waterCollSlots < 1 + extraWaterCollSlots)
+        if (waterCollSlots.GetValueOrDefault(0) < 1 + extraWaterCollSlots)
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
@@ -435,10 +448,10 @@ public class ProfileFixerService(
             AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.WaterCollector, (int)(1 + extraWaterCollSlots), pmcProfile);
         }
 
-        var filterSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.AirFilteringUnit).Slots.Count;
+        var filterSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.AirFilteringUnit)?.Slots?.Count;
         var extraFilterSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.AirFilteringUnit.Slots;
 
-        if (filterSlots < 3 + extraFilterSlots)
+        if (filterSlots.GetValueOrDefault(0) < 3 + extraFilterSlots)
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
@@ -451,7 +464,7 @@ public class ProfileFixerService(
         var btcFarmSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.BitcoinFarm).Slots.Count;
         var extraBtcSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.BitcoinFarm.Slots;
 
-        // BTC Farm doesnt have extra slots for hideout management, but we still check for modded stuff!!
+        // BTC Farm doesn't have extra slots for hideout management, but we still check for modded stuff!!
         if (btcFarmSlots < 50 + extraBtcSlots)
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
@@ -515,261 +528,6 @@ public class ProfileFixerService(
     }
 
     /// <summary>
-    ///     Checks profile inventory for items that do not exist inside the items DB
-    /// </summary>
-    /// <param name="sessionId"> Session ID </param>
-    /// <param name="fullProfile"> Profile to check inventory of </param>
-    public void CheckForOrphanedModdedItems(MongoId sessionId, SptProfile fullProfile)
-    {
-        var itemsDb = databaseService.GetItems();
-        var pmcProfile = fullProfile.CharacterData.PmcData;
-
-        // Get items placed in root of stash
-        // TODO: extend to other areas / sub items
-        var inventoryItemsToCheck = pmcProfile.Inventory.Items.Where(item => _areas.Contains(item.SlotId ?? ""));
-        if (inventoryItemsToCheck is not null)
-        // Check each item in inventory to ensure item exists in itemdb
-        {
-            foreach (var item in inventoryItemsToCheck)
-            {
-                if (!itemsDb.ContainsKey(item.Template))
-                {
-                    logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template));
-
-                    if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-                    {
-                        logger.Success($"Deleting item from inventory and insurance with id: {item.Id} tpl: {item.Template}");
-
-                        // also deletes from insured array
-                        inventoryHelper.RemoveItem(pmcProfile, item.Id, sessionId);
-                    }
-                }
-            }
-        }
-
-        if (fullProfile.UserBuildData is not null)
-        {
-            // Remove invalid builds from weapon, equipment and magazine build lists
-            var weaponBuilds = fullProfile.UserBuildData?.WeaponBuilds ?? [];
-            fullProfile.UserBuildData.WeaponBuilds = weaponBuilds
-                .Where(build => !ShouldRemoveWeaponEquipmentBuild("weapon", build, itemsDb))
-                .ToList();
-
-            var equipmentBuilds = fullProfile.UserBuildData.EquipmentBuilds ?? [];
-            fullProfile.UserBuildData.EquipmentBuilds = equipmentBuilds
-                .Where(build => !ShouldRemoveWeaponEquipmentBuild("equipment", build, itemsDb))
-                .ToList();
-
-            var magazineBuild = fullProfile.UserBuildData.MagazineBuilds ?? [];
-            fullProfile.UserBuildData.MagazineBuilds = magazineBuild.Where(build => !ShouldRemoveMagazineBuild(build, itemsDb)).ToList();
-        }
-
-        // Iterate over dialogs, looking for messages with items not found in item db, remove message if item found
-        foreach (var dialog in fullProfile.DialogueRecords)
-        {
-            if (dialog.Value.Messages is null)
-            {
-                continue; // Skip dialog with no messages
-            }
-
-            foreach (var message in dialog.Value.Messages)
-            {
-                if (message.Items?.Data is null)
-                {
-                    continue; // skip messages with no items
-                }
-
-                // Fix message with no items but have the flags to indicate items to collect
-                if (message.Items.Data.Count == 0 && message.HasRewards.GetValueOrDefault(false))
-                {
-                    message.HasRewards = false;
-                    message.RewardCollected = true;
-                    continue;
-                }
-
-                // Iterate over all items in message
-                foreach (var item in message.Items.Data)
-                {
-                    // Check item exists in itemsDb
-                    if (!itemsDb.ContainsKey(item.Template))
-                    {
-                        logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template));
-                    }
-
-                    if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-                    {
-                        dialog.Value.Messages.Remove(message);
-                        logger.Warning($"Item: {item.Template} has resulted in the deletion of message: {message.Id} from dialog {dialog}");
-                    }
-
-                    break;
-                }
-            }
-        }
-
-        var clothingDb = databaseService.GetTemplates().Customization;
-        foreach (
-            var clothingItem in fullProfile
-                .CustomisationUnlocks.Where(customisation => customisation.Type == CustomisationType.SUITE)
-                .ToList() // We're removing element, ToList to allow that to occur
-        )
-        {
-            if (!clothingDb.ContainsKey(clothingItem.Id))
-            {
-                // Item in profile not found in db, not good
-                logger.Error(serverLocalisationService.GetText("fixer-clothing_item_found", clothingItem));
-
-                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-                {
-                    fullProfile.CustomisationUnlocks.Remove(clothingItem);
-                    logger.Warning($"Non-default clothing purchase: {clothingItem} removed from profile");
-                }
-            }
-        }
-
-        foreach (var repeatable in fullProfile.CharacterData.PmcData.RepeatableQuests ?? [])
-        {
-            if (repeatable.ActiveQuests is null)
-            {
-                continue;
-            }
-
-            foreach (var activeQuest in repeatable.ActiveQuests.ToArray())
-            {
-                if (!traderHelper.TraderExists(activeQuest.TraderId))
-                {
-                    logger.Error(serverLocalisationService.GetText("fixer-trader_found", activeQuest.TraderId));
-                    if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-                    {
-                        logger.Warning(
-                            $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
-                        );
-                        repeatable.ActiveQuests.Remove(activeQuest);
-                    }
-
-                    continue;
-                }
-
-                if (activeQuest.Rewards?["Success"] is null)
-                {
-                    continue;
-                }
-
-                // Get Item rewards only
-                foreach (var successReward in activeQuest.Rewards["Success"].Where(reward => reward.Type == RewardType.Item))
-                foreach (var item in successReward.Items)
-                {
-                    if (!itemsDb.ContainsKey(item.Template))
-                    {
-                        logger.Warning(
-                            $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
-                        );
-                        repeatable.ActiveQuests.Remove(activeQuest);
-                    }
-                }
-            }
-        }
-
-        foreach (
-            var TraderPurchaseKvP in fullProfile.TraderPurchases.Where(TraderPurchase => !traderHelper.TraderExists(TraderPurchase.Key))
-        )
-        {
-            logger.Error(serverLocalisationService.GetText("fixer-trader_found", TraderPurchaseKvP.Key));
-            if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-            {
-                logger.Warning($"Non-default trader: {TraderPurchaseKvP.Key} purchase removed from traderPurchases list in profile");
-                fullProfile.TraderPurchases.Remove(TraderPurchaseKvP.Key);
-            }
-        }
-    }
-
-    /// <summary>
-    ///     Check whether a weapon build should be removed from the equipment list.
-    /// </summary>
-    /// <param name="buildType"> The type of build, used for logging only </param>
-    /// <param name="build"> The build to check for invalid items </param>
-    /// <param name="itemsDb"> The items database to use for item lookup </param>
-    /// <returns> True if the build should be removed from the build list, false otherwise </returns>
-    protected bool ShouldRemoveWeaponEquipmentBuild(string buildType, UserBuild build, Dictionary<MongoId, TemplateItem> itemsDb)
-    {
-        if (buildType == "weapon")
-        // Get items not found in items db
-        {
-            foreach (var item in (build as WeaponBuild).Items.Where(item => !itemsDb.ContainsKey(item.Template)))
-            {
-                logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template));
-
-                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-                {
-                    logger.Warning($"Item: {item.Template} has resulted in the deletion of {buildType} build: {build.Name}");
-
-                    return true;
-                }
-
-                break;
-            }
-        }
-
-        // TODO: refactor to be generic
-
-        if (buildType == "equipment")
-        // Get items not found in items db
-        {
-            foreach (var item in (build as EquipmentBuild).Items.Where(item => !itemsDb.ContainsKey(item.Template)))
-            {
-                logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template));
-
-                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-                {
-                    logger.Warning($"Item: {item.Template} has resulted in the deletion of {buildType} build: {build.Name}");
-
-                    return true;
-                }
-
-                // Found a broken item
-                break;
-            }
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    ///     Checks whether magazine build shou8ld be removed form the build list.
-    /// </summary>
-    /// <param name="magazineBuild"> The magazine build to check for validity </param>
-    /// <param name="itemsDb"> The items database to use for item lookup </param>
-    /// <returns> True if the build should be removed from the build list, false otherwise </returns>
-    protected bool ShouldRemoveMagazineBuild(MagazineBuild magazineBuild, Dictionary<MongoId, TemplateItem> itemsDb)
-    {
-        foreach (var item in magazineBuild.Items)
-        {
-            // Magazine builds can have undefined items in them, skip those
-            if (item is null)
-            {
-                continue;
-            }
-
-            // Check item exists in itemsDb
-            if (!itemsDb.ContainsKey(item.TemplateId))
-            {
-                logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.TemplateId));
-
-                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-                {
-                    logger.Warning($"Item: {item.TemplateId} has resulted in the deletion of magazine build: {magazineBuild.Name}");
-
-                    return true;
-                }
-
-                break;
-            }
-        }
-
-        return false;
-    }
-
-    /// <summary>
     ///     REQUIRED for dev profiles <br />
     ///     Iterate over players hideout areas and find what's built, look for missing bonuses those areas give and add them if missing
     /// </summary>
@@ -821,7 +579,7 @@ public class ProfileFixerService(
                     {
                         // no bonus, add to profile
                         logger.Debug($"Profile has level {level} area {profileArea.Type} but no bonus found, adding {bonus.Type}");
-                        hideoutHelper.ApplyPlayerUpgradesBonuses(pmcProfile, bonus);
+                        hideoutHelper.ApplyPlayerUpgradesBonus(pmcProfile, bonus);
                     }
                 }
             }
@@ -837,7 +595,7 @@ public class ProfileFixerService(
     protected Bonus? GetBonusFromProfile(IEnumerable<Bonus>? profileBonuses, Bonus bonus)
     {
         // match by id first, used by "TextBonus" bonuses
-        if (!bonus.Id.IsEmpty())
+        if (!bonus.Id.IsEmpty)
         {
             return profileBonuses?.FirstOrDefault(x => x.Id == bonus.Id);
         }
@@ -854,34 +612,38 @@ public class ProfileFixerService(
 
     public void CheckForAndRemoveInvalidTraders(SptProfile fullProfile)
     {
-        foreach (var traderKvP in fullProfile.CharacterData?.PmcData?.TradersInfo)
+        foreach (var (traderId, _) in fullProfile.CharacterData?.PmcData?.TradersInfo)
         {
-            var traderId = traderKvP.Key;
             if (!traderHelper.TraderExists(traderId))
             {
-                logger.Error(serverLocalisationService.GetText("fixer-trader_found", traderId));
-                if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
+                if (CoreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
                     logger.Warning(
                         $"Non - default trader: {traderId} removed from PMC TradersInfo in: {fullProfile.ProfileInfo?.ProfileId} profile"
                     );
                     fullProfile.CharacterData.PmcData.TradersInfo.Remove(traderId);
                 }
+                else
+                {
+                    logger.Error(serverLocalisationService.GetText("fixer-trader_found", traderId.ToString()));
+                }
             }
         }
 
-        foreach (var traderKvP in fullProfile.CharacterData.ScavData?.TradersInfo)
+        foreach (var (traderId, _) in fullProfile.CharacterData.ScavData?.TradersInfo)
         {
-            var traderId = traderKvP.Key;
             if (!traderHelper.TraderExists(traderId))
             {
-                logger.Error(serverLocalisationService.GetText("fixer-trader_found", traderId));
-                if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
+                if (CoreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
                     logger.Warning(
                         $"Non - default trader: {traderId} removed from Scav TradersInfo in: {fullProfile.ProfileInfo?.ProfileId} profile"
                     );
                     fullProfile.CharacterData.ScavData.TradersInfo.Remove(traderId);
+                }
+                else
+                {
+                    logger.Error(serverLocalisationService.GetText("fixer-trader_found", traderId.ToString()));
                 }
             }
         }

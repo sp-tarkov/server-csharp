@@ -1,9 +1,22 @@
 <Project>
     <PropertyGroup>
-        <Version>4.0.0-prerelease2</Version>
+        <!--  SPT specific  -->
+        <SptVersion Condition="'$(SptVersion)' == ''">4.0.0</SptVersion>
+        <SptCommit Condition="'$(SptCommit)' == ''">a12b34</SptCommit>
+        <SptBuildTime Condition="'$(SptBuildTime)' == ''">0000000000</SptBuildTime>
+        <SptBuildType Condition="'$(SptBuildType)' == ''">LOCAL</SptBuildType>
+        <!--  BuildType options - LOCAL, DEBUG, RELEASE, BLEEDINGEDGE, BLEEDINGEDGEMODS - *must be all caps*-->
+        <!-- SemVer-compliant version -->
+        <!-- Format: 4.0.0-LOCAL+a12b34.0000000000 -->
+        <Version>$(SptVersion)-$(SptBuildType)+$(SptCommit).$(SptBuildTime)</Version>
+        <AssemblyVersion>$(SptVersion)</AssemblyVersion>
+        <FileVersion>$(SptVersion)</FileVersion>
+        <InformationalVersion>$(Version)</InformationalVersion>
+        <!-- Project settings -->
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <RepositoryType>Git</RepositoryType>
+        <CETCompat>false</CETCompat>
     </PropertyGroup>
 </Project>

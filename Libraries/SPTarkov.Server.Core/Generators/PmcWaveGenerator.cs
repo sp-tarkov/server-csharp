@@ -1,16 +1,15 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Core.Generators;
 
 [Injectable]
-public class PmcWaveGenerator(ISptLogger<PmcWaveGenerator> logger, DatabaseService databaseService, ConfigServer configServer)
+public class PmcWaveGenerator(DatabaseService databaseService, ConfigServer configServer)
 {
-    protected readonly PmcConfig _pmcConfig = configServer.GetConfig<PmcConfig>();
+    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
 
     /// <summary>
     ///     Add a pmc wave to a map
@@ -19,7 +18,7 @@ public class PmcWaveGenerator(ISptLogger<PmcWaveGenerator> logger, DatabaseServi
     /// <param name="waveToAdd"> Boss wave to add to map </param>
     public void AddPmcWaveToLocation(string locationId, BossLocationSpawn waveToAdd)
     {
-        _pmcConfig.CustomPmcWaves[locationId].Add(waveToAdd);
+        PMCConfig.CustomPmcWaves[locationId].Add(waveToAdd);
     }
 
     /// <summary>
@@ -27,7 +26,7 @@ public class PmcWaveGenerator(ISptLogger<PmcWaveGenerator> logger, DatabaseServi
     /// </summary>
     public void ApplyWaveChangesToAllMaps()
     {
-        foreach (var location in _pmcConfig.CustomPmcWaves)
+        foreach (var location in PMCConfig.CustomPmcWaves)
         {
             ApplyWaveChangesToMapByName(location.Key);
         }
@@ -39,7 +38,7 @@ public class PmcWaveGenerator(ISptLogger<PmcWaveGenerator> logger, DatabaseServi
     /// <param name="name"> e.g. factory4_day, bigmap </param>
     public void ApplyWaveChangesToMapByName(string name)
     {
-        if (!_pmcConfig.CustomPmcWaves.TryGetValue(name, out var pmcWavesToAdd))
+        if (!PMCConfig.CustomPmcWaves.TryGetValue(name, out var pmcWavesToAdd))
         {
             return;
         }
@@ -54,7 +53,7 @@ public class PmcWaveGenerator(ISptLogger<PmcWaveGenerator> logger, DatabaseServi
     /// <param name="location"> Location Object </param>
     public void ApplyWaveChangesToMap(LocationBase location)
     {
-        if (!_pmcConfig.CustomPmcWaves.TryGetValue(location.Id.ToLowerInvariant(), out var pmcWavesToAdd))
+        if (!PMCConfig.CustomPmcWaves.TryGetValue(location.Id.ToLowerInvariant(), out var pmcWavesToAdd))
         {
             return;
         }

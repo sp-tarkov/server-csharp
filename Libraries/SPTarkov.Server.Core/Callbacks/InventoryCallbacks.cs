@@ -371,4 +371,15 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
         inventoryController.PinOrLock(pmcData, info, sessionID, output);
         return output;
     }
+
+    public ItemEventRouterResponse SaveDialogueState(
+        PmcData pmcData,
+        SaveDialogueStateRequest request,
+        MongoId sessionId,
+        ItemEventRouterResponse output
+    )
+    {
+        inventoryController.SetDialogueProgress(pmcData, request, sessionId, output);
+        return output;
+    }
 }

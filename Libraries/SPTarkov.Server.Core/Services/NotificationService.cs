@@ -56,7 +56,7 @@ public class NotificationService
     /// <param name="sessionID">Session/player id</param>
     public List<WsNotificationEvent> Get(MongoId sessionID)
     {
-        if (sessionID.IsEmpty())
+        if (sessionID.IsEmpty)
         {
             throw new Exception("sessionID missing");
         }

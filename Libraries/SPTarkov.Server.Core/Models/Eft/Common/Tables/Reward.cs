@@ -7,9 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Reward
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("value")]
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public double? Value { get; set; }
@@ -65,8 +62,26 @@ public record Reward
 
     // This is always Null atm in the achievements.json
     [JsonPropertyName("illustrationConfig")]
-    public object? IllustrationConfig { get; set; }
+    public IllustrationConfig? IllustrationConfig { get; set; }
 
     [JsonPropertyName("isHidden")]
     public bool? IsHidden { get; set; }
+
+    /// <summary>
+    /// Only found with `NotificationPopup` rewards
+    /// </summary>
+    [JsonPropertyName("message")]
+    public MongoId? Message { get; set; }
+}
+
+public record IllustrationConfig
+{
+    [JsonPropertyName("image")]
+    public string Image { get; set; }
+
+    [JsonPropertyName("bigImage")]
+    public string BigImage { get; set; }
+
+    [JsonPropertyName("isBigImage")]
+    public bool IsBigImage { get; set; }
 }

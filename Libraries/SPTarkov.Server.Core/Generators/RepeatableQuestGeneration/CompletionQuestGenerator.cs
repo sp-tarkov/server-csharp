@@ -360,7 +360,7 @@ public class CompletionQuestGenerator(
         {
             Id = new MongoId(),
             Index = 0,
-            ParentId = "",
+            ParentId = string.Empty,
             DynamicLocale = true,
             VisibilityConditions = [],
             Target = new ListOrT<string>([itemTpl], null),

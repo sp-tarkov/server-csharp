@@ -14,8 +14,7 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.TraderCommand;
 
 [Injectable]
-public class TraderSptCommand(ISptLogger<TraderSptCommand> _logger, TraderHelper _traderHelper, MailSendService _mailSendService)
-    : ISptCommand
+public class TraderSptCommand(ISptLogger<TraderSptCommand> logger, TraderHelper traderHelper, MailSendService mailSendService) : ISptCommand
 {
     protected readonly Regex _commandRegex = new(@"^spt trader (?<trader>[\w]+) (?<command>rep|spend) (?<quantity>(?!0+)[0-9]+)$");
 
@@ -36,7 +35,7 @@ public class TraderSptCommand(ISptLogger<TraderSptCommand> _logger, TraderHelper
     {
         if (!_commandRegex.IsMatch(request.Text))
         {
-            _mailSendService.SendUserMessageToPlayer(
+            mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 commandHandler,
                 "Invalid use of trader command. Use 'help' for more information."
@@ -50,10 +49,10 @@ public class TraderSptCommand(ISptLogger<TraderSptCommand> _logger, TraderHelper
         var command = result.Groups["command"].Captures.Count > 0 ? result.Groups["command"].Captures[0].Value : null;
         var quantity = double.Parse(result.Groups["command"].Captures.Count > 0 ? result.Groups["quantity"].Captures[0].Value : "0");
 
-        var dbTrader = _traderHelper.GetTraderByNickName(trader);
+        var dbTrader = traderHelper.GetTraderByNickName(trader);
         if (dbTrader == null)
         {
-            _mailSendService.SendUserMessageToPlayer(
+            mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 commandHandler,
                 "Invalid use of trader command, the trader was not found. Use 'help' for more information."
@@ -74,7 +73,7 @@ public class TraderSptCommand(ISptLogger<TraderSptCommand> _logger, TraderHelper
                 break;
             default:
             {
-                _mailSendService.SendUserMessageToPlayer(
+                mailSendService.SendUserMessageToPlayer(
                     sessionId,
                     commandHandler,
                     "Invalid use of trader command, ProfileChangeEventType was not found. Use 'help' for more information."
@@ -84,7 +83,7 @@ public class TraderSptCommand(ISptLogger<TraderSptCommand> _logger, TraderHelper
             }
         }
 
-        _mailSendService.SendSystemMessageToPlayer(
+        mailSendService.SendSystemMessageToPlayer(
             sessionId,
             "A single ruble is being attached, required by BSG logic.",
             [

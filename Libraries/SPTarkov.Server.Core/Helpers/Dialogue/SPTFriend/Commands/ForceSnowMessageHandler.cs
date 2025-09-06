@@ -12,32 +12,32 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
 public class ForceSnowMessageHandler(
-    ServerLocalisationService _serverLocalisationService,
-    MailSendService _mailSendService,
-    RandomUtil _randomUtil,
-    ConfigServer _configServer
+    ServerLocalisationService serverLocalisationService,
+    MailSendService mailSendService,
+    RandomUtil randomUtil,
+    ConfigServer configServer
 ) : IChatMessageHandler
 {
-    private readonly WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
+    protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
 
     public int GetPriority()
     {
         return 99;
     }
 
-    public bool CanHandle(string message)
+    public bool CanHandle(string? message)
     {
         return string.Equals(message, "itsonlysnowalan", StringComparison.OrdinalIgnoreCase);
     }
 
     public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
-        _weatherConfig.OverrideSeason = Season.WINTER;
+        WeatherConfig.OverrideSeason = Season.WINTER;
 
-        _mailSendService.SendUserMessageToPlayer(
+        mailSendService.SendUserMessageToPlayer(
             sessionId,
             sptFriendUser,
-            _randomUtil.GetArrayValue([_serverLocalisationService.GetText("chatbot-snow_enabled")]),
+            randomUtil.GetArrayValue([serverLocalisationService.GetText("chatbot-snow_enabled")]),
             [],
             null
         );

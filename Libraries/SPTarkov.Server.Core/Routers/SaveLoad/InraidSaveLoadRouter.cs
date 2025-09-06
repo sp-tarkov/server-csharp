@@ -12,7 +12,7 @@ public class InraidSaveLoadRouter : SaveLoadRouter
         return [new HandledRoute("spt-inraid", false)];
     }
 
-    public override SptProfile HandleLoad(SptProfile profile)
+    protected override SptProfile HandleLoadInternal(SptProfile profile)
     {
         profile.InraidData ??= new Inraid { Location = "none", Character = "none" };
 

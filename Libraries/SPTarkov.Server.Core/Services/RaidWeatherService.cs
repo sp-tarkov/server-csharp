@@ -18,8 +18,8 @@ public class RaidWeatherService(
     ConfigServer configServer
 )
 {
-    protected readonly WeatherConfig _weatherConfig = configServer.GetConfig<WeatherConfig>();
-    protected readonly List<Weather> _weatherForecast = [];
+    protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
+    protected readonly List<Weather> WeatherForecast = [];
 
     /// <summary>
     ///     Generate 24 hours of weather data starting from midnight today
@@ -30,7 +30,7 @@ public class RaidWeatherService(
         var staringTimestamp = timeUtil.GetTodayMidnightTimeStamp();
 
         // How far into future do we generate weather
-        var futureTimestampToReach = staringTimestamp + timeUtil.GetHoursAsSeconds(_weatherConfig.Weather.GenerateWeatherAmountHours ?? 1);
+        var futureTimestampToReach = staringTimestamp + timeUtil.GetHoursAsSeconds(WeatherConfig.Weather.GenerateWeatherAmountHours ?? 1);
 
         // Keep adding new weather until we have reached desired future date
         var nextTimestamp = staringTimestamp;
@@ -39,7 +39,7 @@ public class RaidWeatherService(
             var newWeatherToAddToCache = weatherGenerator.GenerateWeather(currentSeason, nextTimestamp);
 
             // Add generated weather for time period to cache
-            _weatherForecast.Add(newWeatherToAddToCache);
+            WeatherForecast.Add(newWeatherToAddToCache);
 
             // Increment timestamp so next loop can begin at correct time
             nextTimestamp += GetWeightedWeatherTimePeriod();
@@ -53,7 +53,7 @@ public class RaidWeatherService(
     protected long GetWeightedWeatherTimePeriod()
     {
         var chosenTimePeriodMinutes = weightedRandomHelper
-            .WeightedRandom(_weatherConfig.Weather.TimePeriod.Values, _weatherConfig.Weather.TimePeriod.Weights)
+            .WeightedRandom(WeatherConfig.Weather.TimePeriod.Values, WeatherConfig.Weather.TimePeriod.Weights)
             .Item;
 
         return chosenTimePeriodMinutes * 60;
@@ -67,7 +67,7 @@ public class RaidWeatherService(
         var currentSeason = seasonalEventService.GetActiveWeatherSeason();
         ValidateWeatherDataExists(currentSeason);
 
-        return _weatherForecast.Find(weather => weather.Timestamp >= timeUtil.GetTimeStamp());
+        return WeatherForecast.Find(weather => weather.Timestamp >= timeUtil.GetTimeStamp());
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ public class RaidWeatherService(
         var currentSeason = seasonalEventService.GetActiveWeatherSeason();
         ValidateWeatherDataExists(currentSeason);
 
-        return _weatherForecast.Where(weather => weather.Timestamp >= timeUtil.GetTimeStamp());
+        return WeatherForecast.Where(weather => weather.Timestamp >= timeUtil.GetTimeStamp());
     }
 
     /// <summary>
@@ -87,10 +87,10 @@ public class RaidWeatherService(
     protected void ValidateWeatherDataExists(Season currentSeason)
     {
         // Clear expired weather data
-        _weatherForecast.RemoveAll(weather => weather.Timestamp < timeUtil.GetTimeStamp());
+        WeatherForecast.RemoveAll(weather => weather.Timestamp < timeUtil.GetTimeStamp());
 
         // Check data exists for current time
-        var result = _weatherForecast.Where(weather => weather.Timestamp >= timeUtil.GetTimeStamp());
+        var result = WeatherForecast.Where(weather => weather.Timestamp >= timeUtil.GetTimeStamp());
         if (!result.Any())
         {
             GenerateWeather(currentSeason);

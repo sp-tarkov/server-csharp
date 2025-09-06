@@ -4,14 +4,13 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Routers;
 
 [Injectable]
-public class EventOutputHolder(ISptLogger<EventOutputHolder> logger, ProfileHelper profileHelper, TimeUtil timeUtil, ICloner cloner)
+public class EventOutputHolder(ProfileHelper profileHelper, TimeUtil timeUtil, ICloner cloner)
 {
     protected readonly Dictionary<MongoId, Dictionary<string, bool>> _clientActiveSessionStorage = new();
     protected readonly Dictionary<MongoId, ItemEventRouterResponse> _outputStore = new();

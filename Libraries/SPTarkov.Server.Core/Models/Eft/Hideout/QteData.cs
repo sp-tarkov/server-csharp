@@ -7,9 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record QteData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -48,9 +45,6 @@ public record QteData
 
 public record QuickTimeEvent
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public QteType? EventType { get; set; }
@@ -76,18 +70,12 @@ public record QuickTimeEvent
 
 public record QteRequirement
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("type")]
     public RequirementType? RequirementType { get; set; }
 }
 
 public record QteResult
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("energy")]
     public int? Energy { get; set; }
 
@@ -100,9 +88,6 @@ public record QteResult
 
 public record QteEffect
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public QteRewardType? Type { get; set; }
@@ -127,9 +112,6 @@ public record QteEffect
 
 public record SkillLevelMultiplier
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("level")]
     public int? Level { get; set; }
 
@@ -139,9 +121,6 @@ public record SkillLevelMultiplier
 
 public record Position
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("x")]
     public float? X { get; set; }
 

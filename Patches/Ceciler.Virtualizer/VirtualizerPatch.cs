@@ -57,12 +57,8 @@ public class VirtualizerPatch : IPatcher
             }
         }
 
-#if DEBUG
         var writerParams = new WriterParameters() { WriteSymbols = true };
         assembly.Write(writerParams);
-#else
-        assembly.Write();
-#endif
     }
 
     static bool MethodIsSerializationCallback(MethodDefinition method)

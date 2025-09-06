@@ -24,13 +24,13 @@ public class LauncherCallbacks(
     public ValueTask<string> Login(string url, LoginRequestData info, MongoId sessionID)
     {
         var output = launcherController.Login(info);
-        return new ValueTask<string>(output.IsEmpty() ? "FAILED" : output.ToString());
+        return new ValueTask<string>(output.IsEmpty ? "FAILED" : output.ToString());
     }
 
     public async ValueTask<string> Register(string url, RegisterData info, MongoId sessionID)
     {
         var output = await launcherController.Register(info);
-        return output.IsEmpty() ? string.Empty : output.ToString();
+        return output.IsEmpty ? string.Empty : output.ToString();
     }
 
     public ValueTask<string> Get(string url, LoginRequestData info, MongoId sessionID)
@@ -54,7 +54,7 @@ public class LauncherCallbacks(
     public ValueTask<string> Wipe(string url, RegisterData info, MongoId sessionID)
     {
         var output = launcherController.Wipe(info);
-        return new ValueTask<string>(output.IsEmpty() ? "FAILED" : "OK");
+        return new ValueTask<string>(output.IsEmpty ? "FAILED" : "OK");
     }
 
     public ValueTask<string> GetServerVersion()

@@ -1,40 +1,39 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 
-namespace SPTarkov.Server.Core.Migration
+namespace SPTarkov.Server.Core.Migration;
+
+public abstract class AbstractProfileMigration : IProfileMigration
 {
-    public abstract class AbstractProfileMigration : IProfileMigration
+    public virtual string MigrationName { get; }
+    public virtual IEnumerable<Type> PrerequisiteMigrations { get; }
+
+    public abstract string FromVersion { get; }
+    public abstract string ToVersion { get; }
+
+    public abstract bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations);
+
+    public virtual JsonObject? Migrate(JsonObject profile)
     {
-        public abstract string FromVersion { get; }
-        public abstract string ToVersion { get; }
-        public abstract string MigrationName { get; }
+        return profile;
+    }
 
-        public abstract IEnumerable<Type> PrerequisiteMigrations { get; }
+    public virtual bool PostMigrate(SptProfile profile)
+    {
+        return true;
+    }
 
-        public abstract bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations);
+    protected SemanticVersioning.Version? GetProfileVersion(JsonObject profile)
+    {
+        var versionString = profile["spt"]?["version"]?.GetValue<string>();
 
-        public virtual JsonObject? Migrate(JsonObject profile)
+        if (versionString is null)
         {
-            return profile;
+            return null;
         }
 
-        public virtual bool PostMigrate(SptProfile profile)
-        {
-            return true;
-        }
+        var versionNumber = versionString.Split(' ')[0];
 
-        protected SemanticVersioning.Version? GetProfileVersion(JsonObject profile)
-        {
-            var versionString = profile["spt"]?["version"]?.GetValue<string>();
-
-            if (versionString is null)
-            {
-                return null;
-            }
-
-            var versionNumber = versionString.Split(' ')[0];
-
-            return SemanticVersioning.Version.TryParse(versionNumber, out var version) ? version : null;
-        }
+        return SemanticVersioning.Version.TryParse(versionNumber, out var version) ? version : null;
     }
 }

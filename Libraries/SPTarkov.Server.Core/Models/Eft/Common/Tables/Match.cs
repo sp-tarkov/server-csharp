@@ -4,18 +4,12 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Match
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("metrics")]
     public Metrics Metrics { get; set; }
 }
 
 public record Metrics
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Keys")]
     public List<int> Keys { get; set; }
 

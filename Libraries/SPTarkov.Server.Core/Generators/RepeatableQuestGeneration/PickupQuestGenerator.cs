@@ -5,8 +5,6 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Repeatable;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Json;
 
@@ -14,14 +12,9 @@ namespace SPTarkov.Server.Core.Generators.RepeatableQuestGeneration;
 
 [Injectable]
 public class PickupQuestGenerator(
-    ISptLogger<PickupQuestGenerator> logger,
     RepeatableQuestHelper repeatableQuestHelper,
     RepeatableQuestRewardGenerator repeatableQuestRewardGenerator,
-    DatabaseService databaseService,
-    ServerLocalisationService localisationService,
-    RandomUtil randomUtil,
-    MathUtil mathUtil,
-    HashUtil hashUtil
+    RandomUtil randomUtil
 ) : IRepeatableQuestGenerator
 {
     // TODO: This isn't really implemented, not in the current pool.

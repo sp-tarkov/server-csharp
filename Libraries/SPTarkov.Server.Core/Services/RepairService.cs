@@ -34,7 +34,7 @@ public class RepairService(
     WeightedRandomHelper weightedRandomHelper
 )
 {
-    protected readonly RepairConfig _repairConfig = configServer.GetConfig<RepairConfig>();
+    protected readonly RepairConfig RepairConfig = configServer.GetConfig<RepairConfig>();
 
     /// <summary>
     ///     Use trader to repair an items durability
@@ -73,7 +73,7 @@ public class RepairService(
             repairItemDetails.Count.Value,
             false,
             repairQualityMultiplier.Value,
-            repairQualityMultiplier != 0 && _repairConfig.ApplyRandomizeDurabilityLoss
+            repairQualityMultiplier != 0 && RepairConfig.ApplyRandomizeDurabilityLoss
         );
 
         // get repair price
@@ -83,14 +83,12 @@ public class RepairService(
             logger.Error(serverLocalisationService.GetText("repair-unable_to_find_item_repair_cost", itemToRepair.Template));
         }
 
-        var repairCost = Math.Round(
-            itemRepairCost.Value * repairItemDetails.Count.Value * repairRate.Value * _repairConfig.PriceMultiplier
-        );
+        var repairCost = Math.Round(itemRepairCost.Value * repairItemDetails.Count.Value * repairRate.Value * RepairConfig.PriceMultiplier);
 
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
             logger.Debug($"item base repair cost: {itemRepairCost}");
-            logger.Debug($"price multiplier: {_repairConfig.PriceMultiplier}");
+            logger.Debug($"price multiplier: {RepairConfig.PriceMultiplier}");
             logger.Debug($"repair cost: {repairCost}");
         }
 
@@ -126,8 +124,8 @@ public class RepairService(
             SchemeItems = [new IdWithCount { Count = Math.Round(repairCost), Id = Money.ROUBLES }],
             TransactionId = traderId,
             Action = "SptRepair",
-            Type = "",
-            ItemId = "",
+            Type = string.Empty,
+            ItemId = MongoId.Empty(),
             Count = 0,
             SchemeId = 0,
         };
@@ -180,10 +178,10 @@ public class RepairService(
                 logger.Error(serverLocalisationService.GetText("repair-item_has_no_repair_points", repairDetails.RepairedItem.Template));
             }
 
-            var pointsToAddToVestSkill = repairDetails.RepairPoints * _repairConfig.ArmorKitSkillPointGainPerRepairPointMultiplier;
+            var pointsToAddToVestSkill = repairDetails.RepairPoints * RepairConfig.ArmorKitSkillPointGainPerRepairPointMultiplier;
 
             logger.Debug($"Added: {pointsToAddToVestSkill} {vestSkillToLevel} skill");
-            profileHelper.AddSkillPointsToPlayer(pmcData, vestSkillToLevel, pointsToAddToVestSkill);
+            profileHelper.AddSkillPointsToPlayer(pmcData, vestSkillToLevel, pointsToAddToVestSkill.GetValueOrDefault(0));
         }
 
         // Handle giving INT to player - differs if using kit/trader and weapon vs armor
@@ -201,8 +199,8 @@ public class RepairService(
         {
             // Weapons/armor have different multipliers
             var intRepairMultiplier = itemHelper.IsOfBaseclass(repairDetails.RepairedItem.Template, BaseClasses.WEAPON)
-                ? _repairConfig.RepairKitIntellectGainMultiplier.Weapon
-                : _repairConfig.RepairKitIntellectGainMultiplier.Armor;
+                ? RepairConfig.RepairKitIntellectGainMultiplier.Weapon
+                : RepairConfig.RepairKitIntellectGainMultiplier.Armor;
 
             // Limit gain to a max value defined in config.maxIntellectGainPerRepair
             if (repairDetails.RepairPoints is null)
@@ -210,11 +208,11 @@ public class RepairService(
                 logger.Error(serverLocalisationService.GetText("repair-item_has_no_repair_points", repairDetails.RepairedItem.Template));
             }
 
-            return Math.Min(repairDetails.RepairPoints.Value * intRepairMultiplier, _repairConfig.MaxIntellectGainPerRepair.Kit);
+            return Math.Min(repairDetails.RepairPoints.Value * intRepairMultiplier, RepairConfig.MaxIntellectGainPerRepair.Kit);
         }
 
         // Trader repair - Not as accurate as kit, needs data from live
-        return Math.Min(repairDetails.RepairAmount.Value / 10, _repairConfig.MaxIntellectGainPerRepair.Trader);
+        return Math.Min(repairDetails.RepairAmount.Value / 10, RepairConfig.MaxIntellectGainPerRepair.Trader);
     }
 
     /// <summary>
@@ -227,7 +225,7 @@ public class RepairService(
         var random = new Random();
         // This formula and associated configs is calculated based on 30 repairs done on live
         // The points always came out 2-aligned, which is why there's a divide/multiply by 2 with ceil calls
-        var gainMult = _repairConfig.WeaponTreatment.PointGainMultiplier;
+        var gainMult = RepairConfig.WeaponTreatment.PointGainMultiplier;
 
         // First we get a baseline based on our repair amount, and gain multiplier with a bit of rounding
         var step1 = Math.Ceiling(repairDetails.RepairAmount.Value / 2) * gainMult;
@@ -240,15 +238,15 @@ public class RepairService(
 
         // You can both crit fail and succeed at the same time, for fun (Balances out to 0 with default settings)
         // Add a random chance to crit-fail
-        if (random.Next() <= _repairConfig.WeaponTreatment.CritFailureChance)
+        if (random.Next() <= RepairConfig.WeaponTreatment.CritFailureChance)
         {
-            skillPoints -= _repairConfig.WeaponTreatment.CritFailureAmount;
+            skillPoints -= RepairConfig.WeaponTreatment.CritFailureAmount;
         }
 
         // Add a random chance to crit-succeed
-        if (random.Next() <= _repairConfig.WeaponTreatment.CritSuccessChance)
+        if (random.Next() <= RepairConfig.WeaponTreatment.CritSuccessChance)
         {
-            skillPoints += _repairConfig.WeaponTreatment.CritSuccessAmount;
+            skillPoints += RepairConfig.WeaponTreatment.CritSuccessAmount;
         }
 
         return Math.Max(skillPoints, 0);
@@ -281,7 +279,7 @@ public class RepairService(
         var itemToRepairDetails = itemsDb[itemToRepair.Template];
         var repairItemIsArmor = itemToRepairDetails.Properties.ArmorMaterial is not null;
         var repairAmount = repairKits[0].Count / GetKitDivisor(itemToRepairDetails, repairItemIsArmor, pmcData);
-        var shouldApplyDurabilityLoss = ShouldRepairKitApplyDurabilityLoss(pmcData, _repairConfig.ApplyRandomizeDurabilityLoss);
+        var shouldApplyDurabilityLoss = ShouldRepairKitApplyDurabilityLoss(pmcData, RepairConfig.ApplyRandomizeDurabilityLoss);
 
         repairHelper.UpdateItemDurability(
             itemToRepair,
@@ -450,12 +448,12 @@ public class RepairService(
                 )
             )
             {
-                var armorConfig = _repairConfig.RepairKit.Armor;
+                var armorConfig = RepairConfig.RepairKit.Armor;
                 AddBuff(armorConfig, repairDetails.RepairedItem);
             }
             else if (itemHelper.IsOfBaseclass(repairDetails.RepairedItem.Template, BaseClasses.WEAPON))
             {
-                var weaponConfig = _repairConfig.RepairKit.Weapon;
+                var weaponConfig = RepairConfig.RepairKit.Weapon;
                 AddBuff(weaponConfig, repairDetails.RepairedItem);
             }
             // TODO: Knife repair kits may be added at some point, a bracket needs to be added here
@@ -482,7 +480,7 @@ public class RepairService(
         item.Upd.Buff = new UpdBuff
         {
             Rarity = bonusRarityName,
-            BuffType = Enum.Parse<BuffType>(bonusTypeName),
+            BuffType = Enum.Parse<RepairBuffType>(bonusTypeName),
             Value = bonusValue,
             ThresholdDurability = randomUtil.GetPercentOfValue(bonusThresholdPercent, item.Upd.Repairable.Durability.Value, 0),
         };
@@ -528,7 +526,7 @@ public class RepairService(
             return false;
         }
 
-        var skillSettings = globals.Configuration.SkillsSettings.GetAllPropsAsDict();
+        var skillSettings = globals.Configuration.SkillsSettings.GetAllPropertiesAsDictionary();
         BuffSettings? buffSettings = null;
         switch (itemSkillType)
         {

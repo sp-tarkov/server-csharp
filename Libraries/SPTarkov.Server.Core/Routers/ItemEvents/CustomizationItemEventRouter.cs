@@ -20,7 +20,7 @@ public class CustomizationItemEventRouter(ISptLogger<CustomizationItemEventRoute
         return [new(ItemEventActions.CUSTOMIZATION_BUY, false), new(ItemEventActions.CUSTOMIZATION_SET, false)];
     }
 
-    public override ValueTask<ItemEventRouterResponse> HandleItemEvent(
+    protected override ValueTask<ItemEventRouterResponse> HandleItemEventInternal(
         string url,
         PmcData pmcData,
         BaseInteractionRequestData body,

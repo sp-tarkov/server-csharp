@@ -7,17 +7,13 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Routers.Dynamic;
 
 [Injectable]
-public class CustomizationDynamicRouter : DynamicRouter
-{
-    public CustomizationDynamicRouter(JsonUtil jsonUtil, CustomizationCallbacks customizationCallbacks)
-        : base(
-            jsonUtil,
-            [
-                new RouteAction(
-                    "/client/trading/customization/",
-                    async (url, info, sessionID, output) =>
-                        await customizationCallbacks.GetTraderSuits(url, info as EmptyRequestData, sessionID)
-                ),
-            ]
-        ) { }
-}
+public class CustomizationDynamicRouter(JsonUtil jsonUtil, CustomizationCallbacks customizationCallbacks)
+    : DynamicRouter(
+        jsonUtil,
+        [
+            new RouteAction<EmptyRequestData>(
+                "/client/trading/customization/",
+                async (url, info, sessionID, output) => await customizationCallbacks.GetTraderSuits(url, info, sessionID)
+            ),
+        ]
+    ) { }

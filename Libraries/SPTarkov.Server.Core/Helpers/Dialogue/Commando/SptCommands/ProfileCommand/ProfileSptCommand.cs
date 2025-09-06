@@ -13,7 +13,7 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.ProfileCommand;
 
 [Injectable]
-public class ProfileSptCommand(ISptLogger<ProfileSptCommand> _logger, MailSendService _mailSendService, ProfileHelper _profileHelper)
+public class ProfileSptCommand(ISptLogger<ProfileSptCommand> logger, MailSendService mailSendService, ProfileHelper profileHelper)
     : ISptCommand
 {
     /// <summary>
@@ -49,7 +49,7 @@ public class ProfileSptCommand(ISptLogger<ProfileSptCommand> _logger, MailSendSe
 
         if (!isCommand && !isExamine)
         {
-            _mailSendService.SendUserMessageToPlayer(
+            mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 commandHandler,
                 "Invalid use of trader command. Use 'help' for more information."
@@ -67,9 +67,9 @@ public class ProfileSptCommand(ISptLogger<ProfileSptCommand> _logger, MailSendSe
         switch (command)
         {
             case "level":
-                if (quantity < 1 || quantity > _profileHelper.GetMaxLevel())
+                if (quantity < 1 || quantity > profileHelper.GetMaxLevel())
                 {
-                    _mailSendService.SendUserMessageToPlayer(
+                    mailSendService.SendUserMessageToPlayer(
                         sessionId,
                         commandHandler,
                         "Invalid use of profile command, the level was outside bounds: 1 to 70. Use 'help' for more information."
@@ -87,7 +87,7 @@ public class ProfileSptCommand(ISptLogger<ProfileSptCommand> _logger, MailSendSe
 
                 if (enumSkill == null)
                 {
-                    _mailSendService.SendUserMessageToPlayer(
+                    mailSendService.SendUserMessageToPlayer(
                         sessionId,
                         commandHandler,
                         "Invalid use of profile command, the skill was not found. Use 'help' for more information."
@@ -97,7 +97,7 @@ public class ProfileSptCommand(ISptLogger<ProfileSptCommand> _logger, MailSendSe
 
                 if (quantity is < 0 or > 51)
                 {
-                    _mailSendService.SendUserMessageToPlayer(
+                    mailSendService.SendUserMessageToPlayer(
                         sessionId,
                         commandHandler,
                         "Invalid use of profile command, the skill level was outside bounds: 1 to 51. Use 'help' for more information."
@@ -114,7 +114,7 @@ public class ProfileSptCommand(ISptLogger<ProfileSptCommand> _logger, MailSendSe
                 break;
             }
             default:
-                _mailSendService.SendUserMessageToPlayer(
+                mailSendService.SendUserMessageToPlayer(
                     sessionId,
                     commandHandler,
                     $"If you are reading this, this is bad. Please report this to SPT staff with a screenshot. Command: {command}."
@@ -122,7 +122,7 @@ public class ProfileSptCommand(ISptLogger<ProfileSptCommand> _logger, MailSendSe
                 return new ValueTask<string>(request.DialogId);
         }
 
-        _mailSendService.SendSystemMessageToPlayer(
+        mailSendService.SendSystemMessageToPlayer(
             sessionId,
             "A single ruble is being attached, required by BSG logic.",
             [
@@ -156,7 +156,7 @@ public class ProfileSptCommand(ISptLogger<ProfileSptCommand> _logger, MailSendSe
 
     protected ProfileChangeEvent HandleLevelCommand(int level)
     {
-        var exp = _profileHelper.GetExperience(level);
+        var exp = profileHelper.GetExperience(level);
         var profileChangeEvent = new ProfileChangeEvent
         {
             Id = new MongoId(),

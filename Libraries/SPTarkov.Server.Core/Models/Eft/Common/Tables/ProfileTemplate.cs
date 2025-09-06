@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record ProfileSides
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("descriptionLocaleKey")]
     public string? DescriptionLocaleKey { get; set; }
 
@@ -21,9 +18,6 @@ public record ProfileSides
 
 public record TemplateSide
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("character")]
     public PmcData? Character { get; set; }
 
@@ -31,7 +25,7 @@ public record TemplateSide
     public List<MongoId>? Suits { get; set; }
 
     [JsonPropertyName("dialogues")]
-    public Dictionary<string, Dialogue>? Dialogues { get; set; }
+    public Dictionary<MongoId, Dialogue>? Dialogues { get; set; }
 
     [JsonPropertyName("userbuilds")]
     public UserBuilds? UserBuilds { get; set; }
@@ -48,9 +42,6 @@ public record TemplateSide
 
 public record ProfileTraderTemplate
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("initialLoyaltyLevel")]
     public Dictionary<MongoId, int?>? InitialLoyaltyLevel { get; set; }
 

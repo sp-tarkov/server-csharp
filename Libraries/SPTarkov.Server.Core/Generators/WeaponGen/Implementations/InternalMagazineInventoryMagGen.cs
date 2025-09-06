@@ -24,6 +24,7 @@ public class InternalMagazineInventoryMagGen(BotWeaponGeneratorHelper botWeaponG
             inventoryMagGen.GetMagazineTemplate()
         );
         botWeaponGeneratorHelper.AddAmmoIntoEquipmentSlots(
+            inventoryMagGen.GetBotId(),
             inventoryMagGen.GetAmmoTemplate().Id,
             (int)bulletCount,
             inventoryMagGen.GetPmcInventory(),

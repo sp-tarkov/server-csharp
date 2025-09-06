@@ -15,11 +15,11 @@ namespace SPTarkov.Server.Core.Callbacks;
 public class InsuranceCallbacks(InsuranceController insuranceController, HttpResponseUtil httpResponseUtil, ConfigServer configServer)
     : IOnUpdate
 {
-    private readonly InsuranceConfig _insuranceConfig = configServer.GetConfig<InsuranceConfig>();
+    protected readonly InsuranceConfig InsuranceConfig = configServer.GetConfig<InsuranceConfig>();
 
     public Task<bool> OnUpdate(long secondsSinceLastRun)
     {
-        if (secondsSinceLastRun < _insuranceConfig.RunIntervalSeconds)
+        if (secondsSinceLastRun < InsuranceConfig.RunIntervalSeconds)
         {
             return Task.FromResult(false);
         }

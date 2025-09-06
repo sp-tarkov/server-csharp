@@ -13,7 +13,7 @@
       "5cc2e4d014c02e000d0115f8": 1
     },
     "voice": {
-      "Scav_5": 1
+      "5fc614390b735e7b024c76e6": 1
     }
   },
   "chances": {
@@ -193,7 +193,6 @@
         "HearingSense": 3.95,
         "PistolFireDistancePref": 35,
         "RifleFireDistancePref": 100,
-        "START_DIST_TO_COV": 50,
         "ScatteringClosePerMeter": 0.1,
         "ScatteringPerMeter": 0.1,
         "ShotgunFireDistancePref": 50,
@@ -334,7 +333,6 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
         "DIST_CHECK_WALL": 20,
@@ -357,7 +355,7 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
+
         "POSIBLE_VISION_SPACE": 1.2,
         "SELF_NIGHTVISION": true,
         "VISIBLE_DISNACE_WITH_LIGHT": 95,
@@ -693,7 +691,6 @@
         "HearingSense": 3.95,
         "PistolFireDistancePref": 35,
         "RifleFireDistancePref": 100,
-        "START_DIST_TO_COV": 50,
         "ScatteringClosePerMeter": 0.1,
         "ScatteringPerMeter": 0.1,
         "ShotgunFireDistancePref": 50,
@@ -834,7 +831,6 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
         "DIST_CHECK_WALL": 20,
@@ -857,7 +853,7 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
+
         "POSIBLE_VISION_SPACE": 1.2,
         "SELF_NIGHTVISION": true,
         "VISIBLE_DISNACE_WITH_LIGHT": 95,
@@ -1193,7 +1189,6 @@
         "HearingSense": 3.95,
         "PistolFireDistancePref": 35,
         "RifleFireDistancePref": 100,
-        "START_DIST_TO_COV": 50,
         "ScatteringClosePerMeter": 0.1,
         "ScatteringPerMeter": 0.1,
         "ShotgunFireDistancePref": 50,
@@ -1334,7 +1329,6 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
         "DIST_CHECK_WALL": 20,
@@ -1357,7 +1351,7 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
+
         "POSIBLE_VISION_SPACE": 1.2,
         "SELF_NIGHTVISION": true,
         "VISIBLE_DISNACE_WITH_LIGHT": 95,
@@ -1693,7 +1687,6 @@
         "HearingSense": 3.95,
         "PistolFireDistancePref": 35,
         "RifleFireDistancePref": 100,
-        "START_DIST_TO_COV": 50,
         "ScatteringClosePerMeter": 0.1,
         "ScatteringPerMeter": 0.1,
         "ShotgunFireDistancePref": 50,
@@ -1834,7 +1827,6 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-        "CAN_LOOK_TO_WALL": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
         "DIST_CHECK_WALL": 20,
@@ -1857,7 +1849,7 @@
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
         "OLD_TIME_POINT": 11,
-        "OPTIMIZE_TO_ONLY_BODY": true,
+
         "POSIBLE_VISION_SPACE": 1.2,
         "SELF_NIGHTVISION": true,
         "VISIBLE_DISNACE_WITH_LIGHT": 95,

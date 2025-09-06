@@ -137,7 +137,7 @@ public class CustomItemService(
     /// </summary>
     /// <param name="overrideProperties"> New properties to apply </param>
     /// <param name="itemClone"> Item to update </param>
-    protected void UpdateBaseItemPropertiesWithOverrides(Props? overrideProperties, TemplateItem itemClone)
+    protected void UpdateBaseItemPropertiesWithOverrides(TemplateItemProperties? overrideProperties, TemplateItem itemClone)
     {
         if (overrideProperties is null || itemClone?.Properties is null)
             return;
@@ -285,7 +285,7 @@ public class CustomItemService(
             var wall = itemHelper.GetItem(wallId);
             if (wall.Key)
             {
-                wall.Value.Properties.Grids.First().Props.Filters.First().Filter.Add(newItemId);
+                wall.Value.Properties.Grids.First().Properties.Filters.First().Filter.Add(newItemId);
             }
         }
     }
@@ -312,7 +312,7 @@ public class CustomItemService(
         var weaponSlots = weapon.Value.Properties.Slots;
         foreach (var slot in weaponSlots)
         {
-            baseWeaponModObject[slot.Name] = [.. slot.Props.Filters.First().Filter];
+            baseWeaponModObject[slot.Name] = [.. slot.Properties.Filters.First().Filter];
         }
 
         // Get PMCs

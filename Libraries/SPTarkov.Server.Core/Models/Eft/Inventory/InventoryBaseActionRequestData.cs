@@ -7,9 +7,6 @@ public abstract record InventoryBaseActionRequestData : BaseInteractionRequestDa
 
 public record To
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -25,9 +22,6 @@ public record To
 
 public record Container
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -40,9 +34,6 @@ public record Container
 
 public record Location
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("x")]
     public double? X { get; set; }
 

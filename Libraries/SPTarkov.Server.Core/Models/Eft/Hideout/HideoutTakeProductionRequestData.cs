@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record HideoutTakeProductionRequestData : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("recipeId")]
     public MongoId RecipeId { get; set; }
 

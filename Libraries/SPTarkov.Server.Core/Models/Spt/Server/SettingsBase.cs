@@ -5,18 +5,12 @@ namespace SPTarkov.Server.Core.Models.Spt.Server;
 
 public record SettingsBase
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("config")]
-    public Config Configuration { get; set; }
+    public required Config Configuration { get; init; }
 }
 
 public record Config
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("AFKTimeoutSeconds")]
     public int AFKTimeoutSeconds { get; set; }
 
@@ -65,6 +59,16 @@ public record Config
     [JsonPropertyName("NextCycleDelaySeconds")]
     public int NextCycleDelaySeconds { get; set; }
 
+    // TODO: this property currently is an empty array on json
+    [JsonPropertyName("NotifierLobbyAidsForce")]
+    public object[] NotifierLobbyAidsForce { get; set; }
+
+    [JsonPropertyName("NotifierLobbyPercentage")]
+    public int NotifierLobbyPercentage { get; set; }
+
+    [JsonPropertyName("NotifierUseLobby")]
+    public bool NotifierUseLobby { get; set; }
+
     [JsonPropertyName("PingServerResultSendInterval")]
     public int PingServerResultSendInterval { get; set; }
 
@@ -104,9 +108,6 @@ public record Config
 
 public record AudioSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("AudioGroupPresets")]
     public List<AudioGroupPreset> AudioGroupPresets { get; set; }
 
@@ -119,18 +120,15 @@ public record AudioSettings
     [JsonPropertyName("MetaXRAudioPluginSettings")]
     public MetaXRAudioPluginSettings MetaXRAudioPluginSettings { get; set; }
 
+    [JsonPropertyName("OcclusionSettings")]
+    public AudioOcclusionSettings OcclusionSettings { get; set; }
+
     [JsonPropertyName("PlayerSettings")]
     public PlayerSettings PlayerSettings { get; set; }
-
-    [JsonPropertyName("RadioBroadcastSettings")]
-    public RadioBroadcastSettings RadioBroadcastSettings { get; set; }
 }
 
 public record FramerateLimit
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("MaxFramerateGameLimit")]
     public int MaxFramerateGameLimit { get; set; }
 
@@ -143,9 +141,6 @@ public record FramerateLimit
 
 public record MemoryManagementSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("AggressiveGC")]
     public bool AggressiveGC { get; set; }
 
@@ -167,9 +162,6 @@ public record MemoryManagementSettings
 
 public record ReleaseProfiler
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Enabled")]
     public bool Enabled { get; set; }
 
@@ -182,9 +174,6 @@ public record ReleaseProfiler
 
 public record NetworkStateView
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("LossThreshold")]
     public int LossThreshold { get; set; }
 
@@ -194,9 +183,6 @@ public record NetworkStateView
 
 public record AudioGroupPreset
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("AngleToAllowBinaural")]
     public double? AngleToAllowBinaural { get; set; }
 
@@ -230,9 +216,6 @@ public record AudioGroupPreset
 
 public record EnvironmentSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("AutumnLateSettings")]
     public SeasonEnvironmentSettings AutumnLateSettings { get; set; }
 
@@ -260,9 +243,6 @@ public record EnvironmentSettings
 
 public record SeasonEnvironmentSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("RainSettings")]
     public List<RainSetting> RainSettings { get; set; }
 
@@ -275,9 +255,6 @@ public record SeasonEnvironmentSettings
 
 public record SurfaceMultiplier
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public string SurfaceType { get; set; }
 
     public double VolumeMult { get; set; }
@@ -285,9 +262,6 @@ public record SurfaceMultiplier
 
 public record WindMultiplier
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("VolumeMult")]
     public double VolumeMult { get; set; }
 
@@ -297,11 +271,8 @@ public record WindMultiplier
 
 public record RainSetting
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("IndoorVolumeMult")]
-    public int IndoorVolumeMult { get; set; }
+    public double IndoorVolumeMult { get; set; }
 
     [JsonPropertyName("OutdoorVolumeMult")]
     public double OutdoorVolumeMult { get; set; }
@@ -312,9 +283,6 @@ public record RainSetting
 
 public record HeadphoneSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double FadeDuration { get; set; }
 
     public string FadeIn { get; set; }
@@ -324,10 +292,403 @@ public record HeadphoneSettings
 
 public record MetaXRAudioPluginSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public bool EnabledPluginErrorChecker { get; set; }
 
-    public bool? EnabledPluginErrorChecker { get; set; }
+    public double OutputVolumeCheckCooldown { get; set; }
 
-    public double? OutputVolumeCheckCooldown { get; set; }
+    [JsonPropertyName("audioGroupAcousticSettings")]
+    public List<AudioGroupAcousticSetting> AudioGroupAcousticSettings { get; set; }
+}
+
+public record AudioGroupAcousticSetting
+{
+    [JsonPropertyName("acousticSettings")]
+    public AcousticSettings AcousticSettings { get; set; }
+
+    [JsonPropertyName("groupType")]
+    public string GroupType { get; set; }
+}
+
+public record AcousticSettings
+{
+    [JsonPropertyName("enabledPrewarm")]
+    public bool enabledPrewarm { get; set; }
+
+    [JsonPropertyName("mono")]
+    public AudioProperties Mono { get; set; }
+
+    [JsonPropertyName("stereo")]
+    public AudioProperties Stereo { get; set; }
+}
+
+public record AudioProperties
+{
+    [JsonPropertyName("earlyReflectionsSendDb")]
+    public int EarlyReflectionsSendDb { get; set; }
+
+    [JsonPropertyName("enabledReverb")]
+    public bool EnabledReverb { get; set; }
+
+    [JsonPropertyName("reverbReach")]
+    public double ReverbReach { get; set; }
+
+    [JsonPropertyName("reverbSendDb")]
+    public int ReverbSendDb { get; set; }
+}
+
+public record AudioOcclusionSettings
+{
+    [JsonPropertyName("audioGroupOcclusionSettings")]
+    public List<AudioGroupOcclusionSetting> AudioGroupOcclusionSettings { get; set; }
+
+    [JsonPropertyName("locationOcclusionSettings")]
+    public LocationOcclusionSettings LocationOcclusionSettings { get; set; }
+}
+
+public record AudioGroupOcclusionSetting
+{
+    [JsonPropertyName("groupType")]
+    public string GroupType { get; set; }
+
+    [JsonPropertyName("occlusionSettings")]
+    public OcclusionSettings OcclusionSettings { get; set; }
+}
+
+public record OcclusionSettings
+{
+    [JsonPropertyName("indoorToOutdoorFactor")]
+    public double IndoorToOutdoorFactor { get; set; }
+
+    [JsonPropertyName("maxQualityFactor")]
+    public double MaxQualityFactor { get; set; }
+
+    [JsonPropertyName("obstructionEQPreset")]
+    public EQPreset ObstructionEQPreset { get; set; }
+
+    [JsonPropertyName("occlusionEnabled")]
+    public bool OcclusionEnabled { get; set; }
+
+    [JsonPropertyName("occlusionIntensity")]
+    public int OcclusionIntensity { get; set; }
+
+    [JsonPropertyName("outdoorToIndoorFactor")]
+    public double OutdoorToIndoorFactor { get; set; }
+
+    [JsonPropertyName("propagationEQPreset")]
+    public EQPreset PropagationEQPreset { get; set; }
+
+    [JsonPropertyName("rolloffScale")]
+    public double RolloffScale { get; set; }
+
+    [JsonPropertyName("stairsHeightCurve")]
+    public VolumeCurve StairsHeightCurve { get; set; }
+
+    [JsonPropertyName("useQualityCompression")]
+    public bool UseQualityCompression { get; set; }
+}
+
+public record EQPreset
+{
+    [JsonPropertyName("distanceCoefficient")]
+    public double DistanceCoefficient { get; set; }
+
+    [JsonPropertyName("environmentVolumeThresholds")]
+    public EnvironmentVolumeThresholds EnvironmentVolumeThresholds { get; set; }
+
+    [JsonPropertyName("heightVolumeCurve")]
+    public VolumeCurve HeightVolumeCurve { get; set; }
+
+    [JsonPropertyName("hpfSettings")]
+    public PfSettings HpfSettings { get; set; }
+
+    [JsonPropertyName("lpfSettings")]
+    public PfSettings LpfSettings { get; set; }
+
+    [JsonPropertyName("rotationCoefficient")]
+    public double RotationCoefficient { get; set; }
+
+    [JsonPropertyName("volumeCurve")]
+    public VolumeCurve VolumeCurve { get; set; }
+}
+
+public record EnvironmentVolumeThresholds
+{
+    [JsonPropertyName("baseValue")]
+    public double BaseValue { get; set; }
+
+    [JsonPropertyName("diffEnvironmentIsolated")]
+    public double DiffEnvironmentIsolated { get; set; }
+
+    [JsonPropertyName("diffRoomsTypeIsolated")]
+    public double DiffRoomsTypeIsolated { get; set; }
+
+    [JsonPropertyName("indoorIsolated")]
+    public double IndoorIsolated { get; set; }
+
+    [JsonPropertyName("indoorToOutdoor")]
+    public double IndoorToOutdoor { get; set; }
+
+    [JsonPropertyName("outdoorToIndoor")]
+    public double OutdoorToIndoor { get; set; }
+}
+
+public record PfSettings
+{
+    [JsonPropertyName("distanceCurve")]
+    public VolumeCurve DistanceCurve { get; set; }
+
+    [JsonPropertyName("environmentEqThresholds")]
+    public EnvironmentEqThresholds EnvironmentEqThresholds { get; set; }
+
+    [JsonPropertyName("frequencyCurve")]
+    public VolumeCurve FrequencyCurve { get; set; }
+
+    [JsonPropertyName("heightCurve")]
+    public VolumeCurve HeightCurve { get; set; }
+
+    [JsonPropertyName("positionEqThresholds")]
+    public PositionEqThresholds PositionEqThresholds { get; set; }
+
+    [JsonPropertyName("resonanceCurve")]
+    public VolumeCurve ResonanceCurve { get; set; }
+}
+
+public record VolumeCurve
+{
+    [JsonPropertyName("m_Curve")]
+    public List<MCurve> MCurve { get; set; }
+
+    [JsonPropertyName("m_PostInfinity")]
+    public int MPostInfinity { get; set; }
+
+    [JsonPropertyName("m_PreInfinity")]
+    public int MPreInfinity { get; set; }
+
+    [JsonPropertyName("m_RotationOrder")]
+    public int MRotationOrder { get; set; }
+
+    [JsonPropertyName("serializedVersion")]
+    public string SerializedVersion { get; set; }
+}
+
+public class EnvironmentEqThresholds
+{
+    [JsonPropertyName("baseValue")]
+    public double BaseValue { get; set; }
+
+    [JsonPropertyName("diffEnvironmentIsolated")]
+    public int DiffEnvironmentIsolated { get; set; }
+
+    [JsonPropertyName("diffRoomsTypeIsolated")]
+    public double DiffRoomsTypeIsolated { get; set; }
+
+    [JsonPropertyName("indoorIsolated")]
+    public double IndoorIsolated { get; set; }
+
+    [JsonPropertyName("indoorToOutdoor")]
+    public double IndoorToOutdoor { get; set; }
+
+    [JsonPropertyName("outdoorToIndoor")]
+    public double OutdoorToIndoor { get; set; }
+}
+
+public class PositionEqThresholds
+{
+    [JsonPropertyName("aboveFreq")]
+    public int AboveFreq { get; set; }
+
+    [JsonPropertyName("behindFreq")]
+    public int BehindFreq { get; set; }
+
+    [JsonPropertyName("belowFreq")]
+    public int BelowFreq { get; set; }
+
+    [JsonPropertyName("levelFreq")]
+    public int LevelFreq { get; set; }
+}
+
+public class MCurve
+{
+    [JsonPropertyName("inSlope")]
+    public double InSlope { get; set; }
+
+    [JsonPropertyName("inWeight")]
+    public double InWeight { get; set; }
+
+    [JsonPropertyName("outSlope")]
+    public double OutSlope { get; set; }
+
+    [JsonPropertyName("outWeight")]
+    public double OutWeight { get; set; }
+
+    [JsonPropertyName("serializedVersion")]
+    public string SerializedVersion { get; set; }
+
+    [JsonPropertyName("tangentMode")]
+    public int TangentMode { get; set; }
+
+    [JsonPropertyName("time")]
+    public double Time { get; set; }
+
+    [JsonPropertyName("value")]
+    public double Value { get; set; }
+
+    [JsonPropertyName("weightedMode")]
+    public int WeightedMode { get; set; }
+}
+
+public record LocationOcclusionSettings
+{
+    [JsonPropertyName("commonSettings")]
+    public CommonSettings CommonSettings { get; set; }
+
+    [JsonPropertyName("diffractionSettings")]
+    public DiffractionSettings DiffractionSettings { get; set; }
+
+    [JsonPropertyName("propagationSettings")]
+    public PropagationSettings PropagationSettings { get; set; }
+
+    [JsonPropertyName("reflectionSettings")]
+    public ReflectionSettings ReflectionSettings { get; set; }
+
+    [JsonPropertyName("transmissionSettings")]
+    public TransmissionSettings TransmissionSettings { get; set; }
+}
+
+public class CommonSettings
+{
+    [JsonPropertyName("diffractionThreshold")]
+    public double DiffractionThreshold { get; set; }
+
+    [JsonPropertyName("effectChangeThreshold")]
+    public double EffectChangeThreshold { get; set; }
+
+    [JsonPropertyName("floorHeight")]
+    public double FloorHeight { get; set; }
+
+    [JsonPropertyName("maxDistance")]
+    public int MaxDistance { get; set; }
+
+    [JsonPropertyName("playerObstructionYOffset")]
+    public double PlayerObstructionYOffset { get; set; }
+
+    [JsonPropertyName("positionChangeThreshold")]
+    public List<ChangeThreshold> PositionChangeThreshold { get; set; }
+
+    [JsonPropertyName("smoothingFactor")]
+    public int SmoothingFactor { get; set; }
+
+    [JsonPropertyName("transmissionThreshold")]
+    public double TransmissionThreshold { get; set; }
+}
+
+public class ChangeThreshold
+{
+    [JsonPropertyName("audioQuality")]
+    public string AudioQuality { get; set; }
+
+    [JsonPropertyName("value")]
+    public double Value { get; set; }
+}
+
+public class DiffractionSettings
+{
+    [JsonPropertyName("edgeSearchRayCount")]
+    public List<ChangeThreshold> EdgeSearchRayCount { get; set; }
+
+    [JsonPropertyName("edgeSearchRayLength")]
+    public double EdgeSearchRayLength { get; set; }
+
+    [JsonPropertyName("edgeValidationRayOffset")]
+    public double EdgeValidationRayOffset { get; set; }
+
+    [JsonPropertyName("maxEdgeDist")]
+    public double MaxEdgeDist { get; set; }
+
+    [JsonPropertyName("maxPathFactor")]
+    public int MaxPathFactor { get; set; }
+}
+
+public class PropagationSettings
+{
+    [JsonPropertyName("absoluteHeightWeight")]
+    public double AbsoluteHeightWeight { get; set; }
+
+    [JsonPropertyName("diffractionExponent")]
+    public double DiffractionExponent { get; set; }
+
+    [JsonPropertyName("distanceWeight")]
+    public double DistanceWeight { get; set; }
+
+    [JsonPropertyName("heightExponent")]
+    public double HeightExponent { get; set; }
+
+    [JsonPropertyName("maxSegmentLength")]
+    public int MaxSegmentLength { get; set; }
+
+    [JsonPropertyName("minPortalCostPercent")]
+    public double MinPortalCostPercent { get; set; }
+
+    [JsonPropertyName("relaxationIterations")]
+    public int RelaxationIterations { get; set; }
+
+    [JsonPropertyName("routesCompressionFactorByQuality")]
+    public List<ChangeThreshold> RoutesCompressionFactorByQuality { get; set; }
+
+    [JsonPropertyName("segmentHeightWeightDown")]
+    public double SegmentHeightWeightDown { get; set; }
+
+    [JsonPropertyName("segmentHeightWeightUp")]
+    public double SegmentHeightWeightUp { get; set; }
+
+    [JsonPropertyName("typicalRoomHeight")]
+    public double TypicalRoomHeight { get; set; }
+}
+
+public class ReflectionSettings
+{
+    [JsonPropertyName("energyLossFactorPerReflection")]
+    public double EnergyLossFactorPerReflection { get; set; }
+
+    [JsonPropertyName("initialRaysCount")]
+    public List<ChangeThreshold> InitialRaysCount { get; set; }
+
+    [JsonPropertyName("maxReflections")]
+    public int MaxReflections { get; set; }
+
+    [JsonPropertyName("minEnergyAtMaxDistance")]
+    public double MinEnergyAtMaxDistance { get; set; }
+}
+
+public class TransmissionSettings
+{
+    [JsonPropertyName("absorptionPerUnit")]
+    public double AbsorptionPerUnit { get; set; }
+
+    [JsonPropertyName("initialRaysCount")]
+    public List<ChangeThreshold> InitialRaysCount { get; set; }
+
+    [JsonPropertyName("listenerHeightSamplingOffset")]
+    public double ListenerHeightSamplingOffset { get; set; }
+
+    [JsonPropertyName("minClearPathScore")]
+    public double MinClearPathScore { get; set; }
+
+    [JsonPropertyName("minEnergyThreshold")]
+    public double MinEnergyThreshold { get; set; }
+
+    [JsonPropertyName("obstacleMaxThickness")]
+    public double ObstacleMaxThickness { get; set; }
+
+    [JsonPropertyName("obstacleMinThickness")]
+    public double ObstacleMinThickness { get; set; }
+
+    [JsonPropertyName("raysWideningRadius")]
+    public double RaysWideningRadius { get; set; }
+
+    [JsonPropertyName("sourceHeightSamplingOffset")]
+    public double SourceHeightSamplingOffset { get; set; }
+
+    [JsonPropertyName("useRaycast")]
+    public bool UseRaycast { get; set; }
 }

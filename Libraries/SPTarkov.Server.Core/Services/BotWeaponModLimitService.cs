@@ -2,7 +2,6 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
@@ -14,7 +13,7 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class BotWeaponModLimitService(ISptLogger<BotWeaponModLimitService> logger, ConfigServer configServer, ItemHelper itemHelper)
 {
-    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
 
     /// <summary>
     ///     Initalise mod limits to be used when generating a weapon
@@ -26,7 +25,7 @@ public class BotWeaponModLimitService(ISptLogger<BotWeaponModLimitService> logge
         return new BotModLimits
         {
             Scope = new ItemCount { Count = 0 },
-            ScopeMax = _botConfig.Equipment[botRole]?.WeaponModLimits?.ScopeLimit,
+            ScopeMax = BotConfig.Equipment[botRole]?.WeaponModLimits?.ScopeLimit,
             ScopeBaseTypes =
             [
                 BaseClasses.OPTIC_SCOPE,
@@ -36,7 +35,7 @@ public class BotWeaponModLimitService(ISptLogger<BotWeaponModLimitService> logge
                 BaseClasses.SPECIAL_SCOPE,
             ],
             FlashlightLaser = new ItemCount { Count = 0 },
-            FlashlightLaserMax = _botConfig.Equipment[botRole]?.WeaponModLimits?.LightLaserLimit,
+            FlashlightLaserMax = BotConfig.Equipment[botRole]?.WeaponModLimits?.LightLaserLimit,
             FlashlightLaserBaseTypes = [BaseClasses.TACTICAL_COMBO, BaseClasses.FLASHLIGHT, BaseClasses.PORTABLE_RANGE_FINDER],
         };
     }

@@ -23,17 +23,16 @@ public class TraderHelper(
     HandbookHelper handbookHelper,
     ServerLocalisationService serverLocalisationService,
     FenceService fenceService,
-    TraderStore traderStore,
     TimeUtil timeUtil,
     RandomUtil randomUtil,
     ConfigServer configServer
 )
 {
-    protected readonly FrozenSet<string> _gameVersionsWithHigherBuyRestrictions = [GameEditions.EDGE_OF_DARKNESS, GameEditions.UNHEARD];
-    protected readonly Dictionary<MongoId, double> _highestTraderPriceItems = new();
-    protected readonly TraderConfig _traderConfig = configServer.GetConfig<TraderConfig>();
+    protected readonly FrozenSet<string> GameVersionsWithHigherBuyRestrictions = [GameEditions.EDGE_OF_DARKNESS, GameEditions.UNHEARD];
+    protected readonly Dictionary<MongoId, double> HighestTraderPriceItems = new();
+    protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
 
-    protected Lock _highestPriceLock = new Lock();
+    protected readonly Lock _highestPriceLock = new Lock();
 
     /// <summary>
     /// Get a traders base data from its nickname, case insensitive
@@ -355,22 +354,22 @@ public class TraderHelper(
     /// <returns>Time in seconds.</returns>
     public long? GetTraderUpdateSeconds(MongoId traderId)
     {
-        var traderDetails = _traderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == traderId);
+        var traderDetails = TraderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == traderId);
         if (traderDetails?.Seconds?.Min is null || traderDetails.Seconds?.Max is null)
         {
             logger.Warning(
                 serverLocalisationService.GetText(
                     "trader-missing_trader_details_using_default_refresh_time",
-                    new { traderId, updateTime = _traderConfig.UpdateTimeDefault }
+                    new { traderId, updateTime = TraderConfig.UpdateTimeDefault }
                 )
             );
 
-            _traderConfig.UpdateTime.Add(
+            TraderConfig.UpdateTime.Add(
                 new UpdateTime
                 // create temporary entry to prevent logger spam
                 {
                     TraderId = traderId,
-                    Seconds = new MinMax<int>(_traderConfig.UpdateTimeDefault, _traderConfig.UpdateTimeDefault),
+                    Seconds = new MinMax<int>(TraderConfig.UpdateTimeDefault, TraderConfig.UpdateTimeDefault),
                 }
             );
 
@@ -469,7 +468,7 @@ public class TraderHelper(
     /// <returns>buyRestrictionMax value</returns>
     public double GetAccountTypeAdjustedTraderPurchaseLimit(double buyRestrictionMax, string gameVersion)
     {
-        if (_gameVersionsWithHigherBuyRestrictions.Contains(gameVersion))
+        if (GameVersionsWithHigherBuyRestrictions.Contains(gameVersion))
         {
             return Math.Floor(buyRestrictionMax * 1.2);
         }
@@ -486,14 +485,14 @@ public class TraderHelper(
     {
         lock (_highestPriceLock)
         {
-            if (!_highestTraderPriceItems.TryGetValue(tpl, out var highestPrice))
+            if (!HighestTraderPriceItems.TryGetValue(tpl, out var highestPrice))
             {
                 highestPrice = 1d; // Default price
                 var itemHandbookPrice = handbookHelper.GetTemplatePrice(tpl);
-                foreach (var trader in traderStore.GetAllTraders())
+                foreach ((var traderKey, var trader) in databaseService.GetTraders())
                 {
                     // Get trader and check buy category allows tpl
-                    var traderBase = databaseService.GetTrader(trader.Id).Base;
+                    var traderBase = trader.Base;
 
                     if (traderBase is null)
                     {
@@ -511,7 +510,7 @@ public class TraderHelper(
                     if (priceTraderBuysItemAt > highestPrice)
                     {
                         highestPrice = priceTraderBuysItemAt;
-                        _highestTraderPriceItems[tpl] = highestPrice;
+                        HighestTraderPriceItems[tpl] = highestPrice;
                     }
                 }
             }
@@ -527,6 +526,6 @@ public class TraderHelper(
     /// <returns>True if a Trader exists with given ID</returns>
     public bool TraderExists(MongoId traderId)
     {
-        return traderStore.GetTraderById(traderId) != null;
+        return databaseService.GetTrader(traderId) != null;
     }
 }

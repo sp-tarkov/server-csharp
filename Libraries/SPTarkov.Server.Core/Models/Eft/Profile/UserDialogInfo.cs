@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Profile;
 
 public record UserDialogInfo
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     _id
     /// </summary>
@@ -24,9 +21,6 @@ public record UserDialogInfo
 
 public record UserDialogDetails
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Nickname")]
     public string? Nickname { get; set; }
 

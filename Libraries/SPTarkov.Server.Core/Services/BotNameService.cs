@@ -20,18 +20,18 @@ public class BotNameService(
     ConfigServer configServer
 )
 {
-    protected readonly Lock _lockObject = new();
-    protected readonly BotConfig _botConfig = configServer.GetConfig<BotConfig>();
-    protected readonly HashSet<string> _usedNameCache = [];
+    protected readonly Lock LockObject = new();
+    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
+    protected readonly HashSet<string> UsedNameCache = [];
 
     /// <summary>
     ///     Clear out generated pmc names from cache
     /// </summary>
     public void ClearNameCache()
     {
-        lock (_lockObject)
+        lock (LockObject)
         {
-            _usedNameCache.Clear();
+            UsedNameCache.Clear();
         }
     }
 
@@ -53,7 +53,7 @@ public class BotNameService(
         var isPmc = botGenerationDetails.IsPmc;
 
         // Never show for players
-        var showTypeInNickname = !botGenerationDetails.IsPlayerScav && _botConfig.ShowTypeInNickname;
+        var showTypeInNickname = !botGenerationDetails.IsPlayerScav && BotConfig.ShowTypeInNickname;
         var roleShouldBeUnique = uniqueRoles?.Contains(botRole.ToLowerInvariant());
 
         var attempts = 0;
@@ -61,7 +61,7 @@ public class BotNameService(
         {
             // Get bot name with leading/trailing whitespace removed
             var name = isPmc // Explicit handling of PMCs, all other bots will get "first_name last_name"
-                ? botHelper.GetPmcNicknameOfMaxLength(_botConfig.BotNameLengthLimit, botGenerationDetails.Side)
+                ? botHelper.GetPmcNicknameOfMaxLength(BotConfig.BotNameLengthLimit, botGenerationDetails.Side)
                 : $"{randomUtil.GetArrayValue(botJsonTemplate.FirstNames)} {(botJsonTemplate.LastNames.Any() ? randomUtil.GetArrayValue(botJsonTemplate.LastNames) : "")}";
 
             name = name.Trim();
@@ -119,17 +119,17 @@ public class BotNameService(
 
     private bool AddNameToCache(string name)
     {
-        lock (_lockObject)
+        lock (LockObject)
         {
-            return _usedNameCache.Add(name);
+            return UsedNameCache.Add(name);
         }
     }
 
     protected bool CacheContainsName(string name)
     {
-        lock (_lockObject)
+        lock (LockObject)
         {
-            return _usedNameCache.Contains(name);
+            return UsedNameCache.Contains(name);
         }
     }
 

@@ -7,9 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record HideoutArea
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
 
@@ -46,9 +43,6 @@ public record HideoutArea
 
 public record HideoutAreaRequirement
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("areaType")]
     public int? AreaType { get; set; }
 
@@ -61,9 +55,6 @@ public record HideoutAreaRequirement
 
 public record Stage
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("autoUpgrade")]
     public bool? AutoUpgrade { get; set; }
 
@@ -100,9 +91,6 @@ public record Stage
 
 public record StageImprovement
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 
@@ -118,9 +106,6 @@ public record StageImprovement
 
 public record StageImprovementBonus
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public MongoId Id { get; set; }
 
@@ -145,9 +130,6 @@ public record StageImprovementBonus
 
 public record StageImprovementRequirement
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("count")]
     public int? Count { get; set; }
 
@@ -169,9 +151,6 @@ public record StageImprovementRequirement
 
 public record StageRequirement
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("areaType")]
     public int? AreaType { get; set; }
 

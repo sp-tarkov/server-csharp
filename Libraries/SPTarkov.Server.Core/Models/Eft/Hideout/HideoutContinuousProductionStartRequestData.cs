@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 
 public record HideoutContinuousProductionStartRequestData : InventoryBaseActionRequestData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("recipeId")]
     public MongoId? RecipeId { get; set; }
 
@@ -18,9 +15,6 @@ public record HideoutContinuousProductionStartRequestData : InventoryBaseActionR
 
 public record HideoutProperties
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public int? BtcFarmGcs { get; set; }
 
     public bool IsGeneratorOn { get; set; }

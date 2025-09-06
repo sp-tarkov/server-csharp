@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Ragfair;
 
 public record GetOffersResult
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("categories")]
     public Dictionary<MongoId, int>? Categories { get; set; }
 

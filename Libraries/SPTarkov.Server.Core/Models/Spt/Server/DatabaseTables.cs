@@ -7,26 +7,23 @@ namespace SPTarkov.Server.Core.Models.Spt.Server;
 
 public record DatabaseTables
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
+    public required Bots.Bots Bots { get; init; }
 
-    public Bots.Bots Bots { get; set; }
+    public required Hideout.Hideout Hideout { get; init; }
 
-    public Hideout.Hideout Hideout { get; set; }
+    public required LocaleBase Locales { get; init; }
 
-    public LocaleBase Locales { get; set; }
+    public required Locations Locations { get; init; }
 
-    public Locations Locations { get; set; }
+    public required Match Match { get; init; }
 
-    public Match Match { get; set; }
+    public required Templates.Templates Templates { get; init; }
 
-    public Templates.Templates Templates { get; set; }
+    public required Dictionary<MongoId, Trader> Traders { get; init; }
 
-    public Dictionary<MongoId, Trader> Traders { get; set; }
+    public required Globals Globals { get; init; }
 
-    public Globals Globals { get; set; }
+    public required ServerBase Server { get; init; }
 
-    public ServerBase Server { get; set; }
-
-    public SettingsBase Settings { get; set; }
+    public required SettingsBase Settings { get; init; }
 }

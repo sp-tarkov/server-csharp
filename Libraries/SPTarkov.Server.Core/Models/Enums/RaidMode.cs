@@ -2,7 +2,8 @@
 
 public enum RaidMode
 {
-    ONLINE,
-    LOCAL,
-    COOP,
+    Online,
+    Local,
+    Coop,
+    Narrate,
 }

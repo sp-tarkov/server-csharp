@@ -41,9 +41,6 @@ public record RagfairConfig : BaseConfig
 
 public record Sell
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Should a fee be deducted from player when listing an item for sale
     /// </summary>
@@ -71,9 +68,6 @@ public record Sell
 
 public record Chance
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Base chance percent to sell an item
     /// </summary>
@@ -101,9 +95,6 @@ public record Chance
 
 public record Dynamic
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Should a purchased dynamic offers items be flagged as found in raid
     /// </summary>
@@ -196,7 +187,7 @@ public record Dynamic
     public required ArmorSettings Armor { get; set; }
 
     /// <summary>
-    ///     A multipler to apply to individual tpls price just prior to item quality adjustment
+    ///     A multiplier to apply to individual tpls price just prior to item quality adjustment
     /// </summary>
     [JsonPropertyName("itemPriceMultiplier")]
     public Dictionary<MongoId, double>? ItemPriceMultiplier { get; set; }
@@ -240,9 +231,6 @@ public record Dynamic
 
 public record PriceRanges
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("default")]
     public required MinMax<double> Default { get; set; }
 
@@ -255,9 +243,6 @@ public record PriceRanges
 
 public record BarterDetails
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Percentage change an offer is listed as a barter
     /// </summary>
@@ -303,9 +288,6 @@ public record BarterDetails
 
 public record PackDetails
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Percentage change an offer is listed as a pack
     /// </summary>
@@ -333,9 +315,6 @@ public record PackDetails
 
 public record OfferAdjustment
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Shuld offer price be adjusted when below handbook price
     /// </summary>
@@ -363,9 +342,6 @@ public record OfferAdjustment
 
 public record Condition
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Percentage change durability is altered
     /// </summary>
@@ -384,9 +360,6 @@ public record Condition
 
 public record RagfairBlacklist
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Damaged ammo packs
     /// </summary>
@@ -438,9 +411,6 @@ public record RagfairBlacklist
 
 public record ArmorPlateBlacklistSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Max level of plates an armor can have without being removed
     /// </summary>
@@ -456,9 +426,6 @@ public record ArmorPlateBlacklistSettings
 
 public record UnreasonableModPrices
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Enable a system that adjusts very high ragfair prices to be below a max multiple of items the handbook values
     /// </summary>
@@ -483,9 +450,6 @@ public record UnreasonableModPrices
 
 public record ArmorSettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     % chance / 100 that armor plates will be removed from an offer before listing
     /// </summary>
@@ -501,9 +465,6 @@ public record ArmorSettings
 
 public record TieredFlea
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
 

@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-using SPTarkov.Common.Extensions;
+﻿using System.Net;
+using System.Net.Sockets;
+using Microsoft.AspNetCore.Http;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -12,21 +12,21 @@ namespace SPTarkov.Server.Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
 public class HttpServer(
-    ISptLogger<HttpServer> _logger,
-    ServerLocalisationService _serverLocalisationService,
-    ConfigServer _configServer,
-    WebSocketServer _webSocketServer,
-    ProfileActivityService _profileActivityService,
-    IEnumerable<IHttpListener> _httpListeners
+    ISptLogger<HttpServer> logger,
+    ServerLocalisationService serverLocalisationService,
+    ConfigServer configServer,
+    WebSocketServer webSocketServer,
+    ProfileActivityService profileActivityService,
+    IEnumerable<IHttpListener> httpListeners
 )
 {
-    private readonly HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
+    protected readonly HttpConfig HttpConfig = configServer.GetConfig<HttpConfig>();
 
     public async Task HandleRequest(HttpContext context)
     {
         if (context.WebSockets.IsWebSocketRequest)
         {
-            await _webSocketServer.OnConnection(context);
+            await webSocketServer.OnConnection(context);
             return;
         }
 
@@ -36,21 +36,19 @@ public class HttpServer(
             : MongoId.Empty();
         if (!string.IsNullOrEmpty(sessionIdString))
         {
-            _profileActivityService.SetActivityTimestamp(sessionId);
+            profileActivityService.SetActivityTimestamp(sessionId);
         }
 
-        // Extract header for original IP detection
-        var realIp = context.GetHeaderIfExists("x-real-ip");
-        var clientIp = GetClientIp(context, realIp);
+        var realIp = context.Connection.RemoteIpAddress ?? IPAddress.Parse("127.0.0.1");
 
-        if (_httpConfig.LogRequests)
+        if (HttpConfig.LogRequests)
         {
-            LogRequest(context, clientIp, IsLocalRequest(clientIp));
+            LogRequest(context, realIp, IsPrivateOrLocalAddress(realIp));
         }
 
         try
         {
-            var listener = _httpListeners.FirstOrDefault(l => l.CanHandle(sessionId, context.Request));
+            var listener = httpListeners.FirstOrDefault(listener => listener.CanHandle(sessionId, context.Request));
 
             if (listener != null)
             {
@@ -59,9 +57,9 @@ public class HttpServer(
         }
         catch (Exception ex)
         {
-            _logger.Critical("Error handling request: " + context.Request.Path);
-            _logger.Critical(ex.Message);
-            _logger.Critical(ex.StackTrace);
+            logger.Critical("Error handling request: " + context.Request.Path);
+            logger.Critical(ex.Message);
+            logger.Critical(ex.StackTrace);
 #if DEBUG
             throw; // added this so we can debug something.
 #endif
@@ -76,29 +74,16 @@ public class HttpServer(
     /// <param name="context">HttpContext of request</param>
     /// <param name="clientIp">Ip of requester</param>
     /// <param name="isLocalRequest">Is this local request</param>
-    protected void LogRequest(HttpContext context, string clientIp, bool isLocalRequest)
+    protected void LogRequest(HttpContext context, IPAddress clientIp, bool isLocalRequest)
     {
         if (isLocalRequest)
         {
-            _logger.Info(_serverLocalisationService.GetText("client_request", context.Request.Path.Value));
+            logger.Info(serverLocalisationService.GetText("client_request", context.Request.Path.Value));
         }
         else
         {
-            _logger.Info(_serverLocalisationService.GetText("client_request_ip", new { ip = clientIp, url = context.Request.Path.Value }));
+            logger.Info(serverLocalisationService.GetText("client_request_ip", new { ip = clientIp, url = context.Request.Path.Value }));
         }
-    }
-
-    protected static string GetClientIp(HttpContext context, StringValues? realIp)
-    {
-        if (realIp.HasValue)
-        {
-            return realIp.Value.First();
-        }
-
-        var forwardedFor = context.GetHeaderIfExists("x-forwarded-for");
-        return forwardedFor.HasValue
-            ? forwardedFor.Value.First()!.Split(",")[0].Trim()
-            : context.Connection.RemoteIpAddress!.ToString().Split(":").Last();
     }
 
     /// <summary>
@@ -106,14 +91,45 @@ public class HttpServer(
     /// </summary>
     /// <param name="remoteAddress"> Address to check </param>
     /// <returns> True if its local </returns>
-    protected bool IsLocalRequest(string? remoteAddress)
+    protected bool IsPrivateOrLocalAddress(IPAddress remoteAddress)
     {
-        if (remoteAddress == null)
+        if (IPAddress.IsLoopback(remoteAddress))
         {
-            return false;
+            return true;
         }
 
-        return remoteAddress.StartsWith("127.0.0") || remoteAddress.StartsWith("192.168.") || remoteAddress.StartsWith("localhost");
+        if (remoteAddress.AddressFamily == AddressFamily.InterNetwork)
+        {
+            var bytes = remoteAddress.GetAddressBytes();
+
+            switch (bytes[0])
+            {
+                case 10:
+                    return true; // 10.0.0.0/8 (private)
+
+                case 169:
+                    return bytes[1] == 254; // 169.254.0.0/16 (APIPA/link-local)
+
+                case 172:
+                    return bytes[1] >= 16 && bytes[1] <= 31; // 172.16.0.0/12 (private)
+
+                case 192:
+                    return bytes[1] == 168; // 192.168.0.0/16 (private)
+
+                default:
+                    return false;
+            }
+        }
+
+        if (remoteAddress.AddressFamily == AddressFamily.InterNetworkV6)
+        {
+            if (remoteAddress.IsIPv6LinkLocal)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected Dictionary<string, string> GetCookies(HttpRequest req)
@@ -130,6 +146,6 @@ public class HttpServer(
 
     public string ListeningUrl()
     {
-        return $"https://{_httpConfig.Ip}:{_httpConfig.Port}";
+        return $"https://{HttpConfig.Ip}:{HttpConfig.Port}";
     }
 }

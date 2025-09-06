@@ -2,9 +2,9 @@
   "staticWeapons": [],
   "staticContainers": [
     {
-      "probability": 0.42,
+      "probability": 0.38,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00111",
+        "Id": "container_Factory_Rework_DesignStuff_00101",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -21,75 +21,43 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d1b63fa42a1d0d0d70",
+        "Root": "678a04e9e4d203290e122100",
         "Items": [
           {
-            "_id": "678878d1b63fa42a1d0d0d70",
+            "_id": "678a04e9e4d203290e122100",
+            "_tpl": "5909d24f86f77466f56e6855",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.44,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00108",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a04e9e4d203290e12210c",
+        "Items": [
+          {
+            "_id": "678a04e9e4d203290e12210c",
             "_tpl": "578f87a3245977356274f2cb",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.22,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00054",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d1b63fa42a1d0d0d7c",
-        "Items": [
-          {
-            "_id": "678878d1b63fa42a1d0d0d7c",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.33,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00138",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0d82",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d0d82",
-            "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -117,11 +85,43 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0d90",
+        "Root": "678a04e9e4d203290e12211c",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0d90",
+            "_id": "678a04e9e4d203290e12211c",
             "_tpl": "5909e4b686f7747f5b744fa4",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.3,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00084",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a04e9e4d203290e122124",
+        "Items": [
+          {
+            "_id": "678a04e9e4d203290e122124",
+            "_tpl": "5909d36d86f774660f0bb900",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -149,107 +149,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d0da4",
+        "Root": "678a04e9e4d203290e12212c",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0da4",
+            "_id": "678a04e9e4d203290e12212c",
             "_tpl": "578f87b7245977356274f2cd",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.41,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00136",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0da8",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d0da8",
-            "_tpl": "5909d5ef86f77467974efbd8",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.33,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00143",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0db2",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d0db2",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.43,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00088",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0dc0",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d0dc0",
-            "_tpl": "578f87a3245977356274f2cb",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -260,7 +164,7 @@
     {
       "probability": 0.3,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00060",
+        "Id": "container_Factory_Rework_DesignStuff_00072",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -277,11 +181,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0dc4",
+        "Root": "678a04e9e4d203290e12213e",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0dc4",
-            "_tpl": "578f87ad245977356274f2cc",
+            "_id": "678a04e9e4d203290e12213e",
+            "_tpl": "5909d36d86f774660f0bb900",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -291,38 +195,6 @@
     },
     {
       "probability": 0.43,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00094",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0dca",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d0dca",
-            "_tpl": "578f87a3245977356274f2cb",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.42,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00000",
         "IsContainer": true,
@@ -341,10 +213,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0dd0",
+        "Root": "678a04e9e4d203290e122146",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0dd0",
+            "_id": "678a04e9e4d203290e122146",
             "_tpl": "5909d5ef86f77467974efbd8",
             "upd": {
               "StackObjectsCount": 1
@@ -354,9 +226,9 @@
       }
     },
     {
-      "probability": 0.21,
+      "probability": 0.33,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00047",
+        "Id": "container_Factory_Rework_DesignStuff_00141",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -373,10 +245,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0ddc",
+        "Root": "678a04e9e4d203290e12214a",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0ddc",
+            "_id": "678a04e9e4d203290e12214a",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -405,43 +277,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0dec",
+        "Root": "678a04e9e4d203290e122152",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0dec",
+            "_id": "678a04e9e4d203290e122152",
             "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.3,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00085",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0df8",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d0df8",
-            "_tpl": "5909d36d86f774660f0bb900",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -469,10 +309,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0e00",
+        "Root": "678a04e9e4d203290e12215c",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0e00",
+            "_id": "678a04e9e4d203290e12215c",
             "_tpl": "578f8778245977358849a9b5",
             "upd": {
               "StackObjectsCount": 1
@@ -482,9 +322,9 @@
       }
     },
     {
-      "probability": 0.32,
+      "probability": 0.33,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00142",
+        "Id": "container_Factory_Rework_DesignStuff_00113",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -501,11 +341,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0e04",
+        "Root": "678a04e9e4d203290e122160",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0e04",
-            "_tpl": "578f87ad245977356274f2cc",
+            "_id": "678a04e9e4d203290e122160",
+            "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -533,10 +373,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0e14",
+        "Root": "678a04e9e4d203290e122164",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0e14",
+            "_id": "678a04e9e4d203290e122164",
             "_tpl": "578f8778245977358849a9b5",
             "upd": {
               "StackObjectsCount": 1
@@ -546,9 +386,9 @@
       }
     },
     {
-      "probability": 0.32,
+      "probability": 0.65,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00018",
+        "Id": "container_Factory_Rework_DesignStuff_00137",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -564,12 +404,12 @@
         },
         "IsGroupPosition": false,
         "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0e34",
+        "IsAlwaysSpawn": true,
+        "Root": "678a04e9e4d203290e122175",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0e34",
-            "_tpl": "5909d50c86f774659e6aaebe",
+            "_id": "678a04e9e4d203290e122175",
+            "_tpl": "66acff0a1d8e1083b303f5af",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -578,9 +418,9 @@
       }
     },
     {
-      "probability": 0.41,
+      "probability": 0.31,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00003",
+        "Id": "container_Factory_Rework_DesignStuff_00081",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -597,11 +437,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0e46",
+        "Root": "678a04e9e4d203290e122183",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0e46",
-            "_tpl": "5909d5ef86f77467974efbd8",
+            "_id": "678a04e9e4d203290e122183",
+            "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -610,9 +450,9 @@
       }
     },
     {
-      "probability": 0.29,
+      "probability": 0.34,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00017",
+        "Id": "container_Factory_Rework_DesignStuff_00079",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -629,11 +469,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0e58",
+        "Root": "678a04e9e4d203290e12218f",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0e58",
-            "_tpl": "5909d36d86f774660f0bb900",
+            "_id": "678a04e9e4d203290e12218f",
+            "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -661,10 +501,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d0e60",
+        "Root": "678a04e9e4d203290e122197",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0e60",
+            "_id": "678a04e9e4d203290e122197",
             "_tpl": "578f87b7245977356274f2cd",
             "upd": {
               "StackObjectsCount": 1
@@ -693,10 +533,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d0e64",
+        "Root": "678a04e9e4d203290e12219b",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0e64",
+            "_id": "678a04e9e4d203290e12219b",
             "_tpl": "578f87b7245977356274f2cd",
             "upd": {
               "StackObjectsCount": 1
@@ -725,10 +565,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0e68",
+        "Root": "678a04e9e4d203290e12219f",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0e68",
+            "_id": "678a04e9e4d203290e12219f",
             "_tpl": "578f8778245977358849a9b5",
             "upd": {
               "StackObjectsCount": 1
@@ -757,10 +597,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0e6c",
+        "Root": "678a04e9e4d203290e1221a3",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0e6c",
+            "_id": "678a04e9e4d203290e1221a3",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -770,7 +610,7 @@
       }
     },
     {
-      "probability": 0.52,
+      "probability": 0.53,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00044",
         "IsContainer": true,
@@ -789,10 +629,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0e7a",
+        "Root": "678a04e9e4d203290e1221bf",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0e7a",
+            "_id": "678a04e9e4d203290e1221bf",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -821,10 +661,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0e82",
+        "Root": "678a04e9e4d203290e1221cf",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0e82",
+            "_id": "678a04e9e4d203290e1221cf",
             "_tpl": "578f8778245977358849a9b5",
             "upd": {
               "StackObjectsCount": 1
@@ -853,10 +693,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0e86",
+        "Root": "678a04e9e4d203290e1221d3",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0e86",
+            "_id": "678a04e9e4d203290e1221d3",
             "_tpl": "578f8778245977358849a9b5",
             "upd": {
               "StackObjectsCount": 1
@@ -866,9 +706,9 @@
       }
     },
     {
-      "probability": 0.38,
+      "probability": 0.23,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00070",
+        "Id": "container_Factory_Rework_DesignStuff_00016",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -885,10 +725,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0e90",
+        "Root": "678a04e9e4d203290e1221eb",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0e90",
+            "_id": "678a04e9e4d203290e1221eb",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -898,9 +738,9 @@
       }
     },
     {
-      "probability": 0.29,
+      "probability": 0.44,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00061",
+        "Id": "container_Factory_Rework_DesignStuff_00102",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -917,11 +757,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0eaa",
+        "Root": "678a04e9e4d203290e1221f5",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0eaa",
-            "_tpl": "578f87ad245977356274f2cc",
+            "_id": "678a04e9e4d203290e1221f5",
+            "_tpl": "578f87a3245977356274f2cb",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -930,39 +770,7 @@
       }
     },
     {
-      "probability": 0.41,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00008",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0eae",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d0eae",
-            "_tpl": "5909d5ef86f77467974efbd8",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.31,
+      "probability": 0.33,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00087",
         "IsContainer": true,
@@ -981,10 +789,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0eca",
+        "Root": "678a04e9e4d203290e122201",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0eca",
+            "_id": "678a04e9e4d203290e122201",
             "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
@@ -1013,10 +821,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d0ed2",
+        "Root": "678a04e9e4d203290e122209",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0ed2",
+            "_id": "678a04e9e4d203290e122209",
             "_tpl": "578f8782245977354405a1e3",
             "upd": {
               "StackObjectsCount": 1
@@ -1045,10 +853,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d0eda",
+        "Root": "678a04e9e4d203290e12220d",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0eda",
+            "_id": "678a04e9e4d203290e12220d",
             "_tpl": "578f87b7245977356274f2cd",
             "upd": {
               "StackObjectsCount": 1
@@ -1077,10 +885,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0ede",
+        "Root": "678a04e9e4d203290e122211",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0ede",
+            "_id": "678a04e9e4d203290e122211",
             "_tpl": "6582e6d7b14c3f72eb071420",
             "upd": {
               "StackObjectsCount": 1
@@ -1091,38 +899,6 @@
     },
     {
       "probability": 0.44,
-      "template": {
-        "Id": "container_Test_for_export_00000",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0eea",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d0eea",
-            "_tpl": "578f87a3245977356274f2cb",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.43,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00089",
         "IsContainer": true,
@@ -1141,10 +917,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0eee",
+        "Root": "678a04e9e4d203290e122217",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0eee",
+            "_id": "678a04e9e4d203290e122217",
             "_tpl": "578f87a3245977356274f2cb",
             "upd": {
               "StackObjectsCount": 1
@@ -1154,7 +930,7 @@
       }
     },
     {
-      "probability": 0.33,
+      "probability": 0.34,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00140",
         "IsContainer": true,
@@ -1173,10 +949,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0ef6",
+        "Root": "678a04e9e4d203290e12221f",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0ef6",
+            "_id": "678a04e9e4d203290e12221f",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -1186,9 +962,9 @@
       }
     },
     {
-      "probability": 0.28,
+      "probability": 0.55,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00025",
+        "Id": "container_Factory_Rework_DesignStuff_00043",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -1205,10 +981,74 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f02",
+        "Root": "678a04e9e4d203290e122223",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0f02",
+            "_id": "678a04e9e4d203290e122223",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.39,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00012",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a04e9e4d203290e12222b",
+        "Items": [
+          {
+            "_id": "678a04e9e4d203290e12222b",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.31,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00103",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a04e9e4d203290e122239",
+        "Items": [
+          {
+            "_id": "678a04e9e4d203290e122239",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -1237,10 +1077,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f33",
+        "Root": "678a04e9e4d203290e12223f",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0f33",
+            "_id": "678a04e9e4d203290e12223f",
             "_tpl": "578f8778245977358849a9b5",
             "upd": {
               "StackObjectsCount": 1
@@ -1269,10 +1109,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f37",
+        "Root": "678a04e9e4d203290e122243",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0f37",
+            "_id": "678a04e9e4d203290e122243",
             "_tpl": "5909e4b686f7747f5b744fa4",
             "upd": {
               "StackObjectsCount": 1
@@ -1282,7 +1122,7 @@
       }
     },
     {
-      "probability": 0.42,
+      "probability": 0.43,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00005",
         "IsContainer": true,
@@ -1301,10 +1141,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f44",
+        "Root": "678a04e9e4d203290e122249",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0f44",
+            "_id": "678a04e9e4d203290e122249",
             "_tpl": "5909d5ef86f77467974efbd8",
             "upd": {
               "StackObjectsCount": 1
@@ -1333,10 +1173,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f4c",
+        "Root": "678a04e9e4d203290e12224f",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0f4c",
+            "_id": "678a04e9e4d203290e12224f",
             "_tpl": "578f8778245977358849a9b5",
             "upd": {
               "StackObjectsCount": 1
@@ -1365,10 +1205,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f56",
+        "Root": "678a04e9e4d203290e122253",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0f56",
+            "_id": "678a04e9e4d203290e122253",
             "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
@@ -1397,10 +1237,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f5c",
+        "Root": "678a04e9e4d203290e122257",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0f5c",
+            "_id": "678a04e9e4d203290e122257",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -1410,7 +1250,7 @@
       }
     },
     {
-      "probability": 0.53,
+      "probability": 0.54,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00042",
         "IsContainer": true,
@@ -1429,75 +1269,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f64",
+        "Root": "678a04e9e4d203290e12225d",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0f64",
+            "_id": "678a04e9e4d203290e12225d",
             "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.42,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00001",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f6e",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d0f6e",
-            "_tpl": "5909d5ef86f77467974efbd8",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.44,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00091",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f74",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d0f74",
-            "_tpl": "578f87a3245977356274f2cb",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -1525,10 +1301,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f78",
+        "Root": "678a04e9e4d203290e12226f",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0f78",
+            "_id": "678a04e9e4d203290e12226f",
             "_tpl": "6582e6d7b14c3f72eb071420",
             "upd": {
               "StackObjectsCount": 1
@@ -1557,10 +1333,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d0f7e",
+        "Root": "678a04e9e4d203290e122279",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0f7e",
+            "_id": "678a04e9e4d203290e122279",
             "_tpl": "5d6fd45b86f774317075ed43",
             "upd": {
               "StackObjectsCount": 1
@@ -1589,10 +1365,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f84",
+        "Root": "678a04e9e4d203290e122285",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0f84",
+            "_id": "678a04e9e4d203290e122285",
             "_tpl": "578f8778245977358849a9b5",
             "upd": {
               "StackObjectsCount": 1
@@ -1621,10 +1397,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f88",
+        "Root": "678a04e9e4d203290e122289",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0f88",
+            "_id": "678a04e9e4d203290e122289",
             "_tpl": "578f87a3245977356274f2cb",
             "upd": {
               "StackObjectsCount": 1
@@ -1653,10 +1429,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f90",
+        "Root": "678a04e9e4d203290e12229f",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0f90",
+            "_id": "678a04e9e4d203290e12229f",
             "_tpl": "578f8778245977358849a9b5",
             "upd": {
               "StackObjectsCount": 1
@@ -1666,7 +1442,7 @@
       }
     },
     {
-      "probability": 0.32,
+      "probability": 0.33,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00069",
         "IsContainer": true,
@@ -1685,10 +1461,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0f94",
+        "Root": "678a04e9e4d203290e1222a3",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0f94",
+            "_id": "678a04e9e4d203290e1222a3",
             "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
@@ -1698,9 +1474,9 @@
       }
     },
     {
-      "probability": 0.32,
+      "probability": 0.54,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00075",
+        "Id": "container_Factory_Rework_DesignStuff_00055",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -1717,11 +1493,75 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0fa8",
+        "Root": "678a04e9e4d203290e1222a7",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0fa8",
-            "_tpl": "5909d50c86f774659e6aaebe",
+            "_id": "678a04e9e4d203290e1222a7",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.34,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00146",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a04e9e4d203290e1222b9",
+        "Items": [
+          {
+            "_id": "678a04e9e4d203290e1222b9",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.3,
+      "template": {
+        "Id": "Lootable_00003",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a04e9e4d203290e1222c5",
+        "Items": [
+          {
+            "_id": "678a04e9e4d203290e1222c5",
+            "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -1749,10 +1589,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0fba",
+        "Root": "678a04e9e4d203290e1222d8",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0fba",
+            "_id": "678a04e9e4d203290e1222d8",
             "_tpl": "578f8778245977358849a9b5",
             "upd": {
               "StackObjectsCount": 1
@@ -1781,10 +1621,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0fbe",
+        "Root": "678a04e9e4d203290e1222dc",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0fbe",
+            "_id": "678a04e9e4d203290e1222dc",
             "_tpl": "578f8778245977358849a9b5",
             "upd": {
               "StackObjectsCount": 1
@@ -1813,10 +1653,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0fc2",
+        "Root": "678a04e9e4d203290e1222e0",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0fc2",
+            "_id": "678a04e9e4d203290e1222e0",
             "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
@@ -1845,10 +1685,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d0fc6",
+        "Root": "678a04e9e4d203290e1222e6",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0fc6",
+            "_id": "678a04e9e4d203290e1222e6",
             "_tpl": "578f87b7245977356274f2cd",
             "upd": {
               "StackObjectsCount": 1
@@ -1877,10 +1717,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0fca",
+        "Root": "678a04e9e4d203290e1222ea",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0fca",
+            "_id": "678a04e9e4d203290e1222ea",
             "_tpl": "6582e6d7b14c3f72eb071420",
             "upd": {
               "StackObjectsCount": 1
@@ -1909,10 +1749,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d0fd4",
+        "Root": "678a04e9e4d203290e1222f6",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0fd4",
+            "_id": "678a04e9e4d203290e1222f6",
             "_tpl": "578f87b7245977356274f2cd",
             "upd": {
               "StackObjectsCount": 1
@@ -1941,10 +1781,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0fee",
+        "Root": "678a04e9e4d203290e1222fa",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0fee",
+            "_id": "678a04e9e4d203290e1222fa",
             "_tpl": "578f8778245977358849a9b5",
             "upd": {
               "StackObjectsCount": 1
@@ -1973,10 +1813,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0ff2",
+        "Root": "678a04e9e4d203290e122302",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d0ff2",
+            "_id": "678a04e9e4d203290e122302",
             "_tpl": "578f8778245977358849a9b5",
             "upd": {
               "StackObjectsCount": 1
@@ -1986,39 +1826,7 @@
       }
     },
     {
-      "probability": 0.29,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00057",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d0ff6",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d0ff6",
-            "_tpl": "5909d36d86f774660f0bb900",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.32,
+      "probability": 0.34,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00078",
         "IsContainer": true,
@@ -2037,75 +1845,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d1006",
+        "Root": "678a04e9e4d203290e12230e",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d1006",
+            "_id": "678a04e9e4d203290e12230e",
             "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.38,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00096",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d1017",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d1017",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.32,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00105",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d1027",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d1027",
-            "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -2133,11 +1877,43 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d102b",
+        "Root": "678a04e9e4d203290e12231c",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d102b",
+            "_id": "678a04e9e4d203290e12231c",
             "_tpl": "578f8778245977358849a9b5",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.34,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00077",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a04e9e4d203290e122320",
+        "Items": [
+          {
+            "_id": "678a04e9e4d203290e122320",
+            "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -2165,10 +1941,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d102f",
+        "Root": "678a04e9e4d203290e122324",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d102f",
+            "_id": "678a04e9e4d203290e122324",
             "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
@@ -2197,43 +1973,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d1035",
+        "Root": "678a04e9e4d203290e12232c",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d1035",
+            "_id": "678a04e9e4d203290e12232c",
             "_tpl": "578f8778245977358849a9b5",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.39,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00109",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d1039",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d1039",
-            "_tpl": "5909d76c86f77471e53d2adf",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -2261,10 +2005,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d103d",
+        "Root": "678a04e9e4d203290e122349",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d103d",
+            "_id": "678a04e9e4d203290e122349",
             "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
@@ -2293,43 +2037,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d1043",
+        "Root": "678a04e9e4d203290e122351",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d1043",
+            "_id": "678a04e9e4d203290e122351",
             "_tpl": "578f8778245977358849a9b5",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.32,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00019",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d1047",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d1047",
-            "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -2357,10 +2069,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d104b",
+        "Root": "678a04e9e4d203290e122355",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d104b",
+            "_id": "678a04e9e4d203290e122355",
             "_tpl": "578f8778245977358849a9b5",
             "upd": {
               "StackObjectsCount": 1
@@ -2370,9 +2082,9 @@
       }
     },
     {
-      "probability": 0.33,
+      "probability": 0.39,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00097",
+        "Id": "container_Factory_Rework_DesignStuff_00011",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -2389,43 +2101,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d104f",
+        "Root": "678a04e9e4d203290e122359",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d104f",
-            "_tpl": "5909d50c86f774659e6aaebe",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.37,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00100",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d1055",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d1055",
-            "_tpl": "5909d24f86f77466f56e6855",
+            "_id": "678a04e9e4d203290e122359",
+            "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -2453,10 +2133,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d1059",
+        "Root": "678a04e9e4d203290e122365",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d1059",
+            "_id": "678a04e9e4d203290e122365",
             "_tpl": "578f8782245977354405a1e3",
             "upd": {
               "StackObjectsCount": 1
@@ -2466,41 +2146,9 @@
       }
     },
     {
-      "probability": 0.38,
+      "probability": 0.34,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00010",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d1063",
-        "Items": [
-          {
-            "_id": "678878d2b63fa42a1d0d1063",
-            "_tpl": "5909d76c86f77471e53d2adf",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.36,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00114",
+        "Id": "container_Factory_Rework_DesignStuff_00121",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -2517,11 +2165,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d1073",
+        "Root": "678a04e9e4d203290e12236f",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d1073",
-            "_tpl": "5909d24f86f77466f56e6855",
+            "_id": "678a04e9e4d203290e12236f",
+            "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -2549,11 +2197,43 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d107b",
+        "Root": "678a04e9e4d203290e122387",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d107b",
+            "_id": "678a04e9e4d203290e122387",
             "_tpl": "5d6fd45b86f774317075ed43",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.38,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00021",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a04e9e4d203290e12238d",
+        "Items": [
+          {
+            "_id": "678a04e9e4d203290e12238d",
+            "_tpl": "5909d24f86f77466f56e6855",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -2581,10 +2261,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d1083",
+        "Root": "678a04e9e4d203290e122395",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d1083",
+            "_id": "678a04e9e4d203290e122395",
             "_tpl": "5909e4b686f7747f5b744fa4",
             "upd": {
               "StackObjectsCount": 1
@@ -2613,10 +2293,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d108b",
+        "Root": "678a04e9e4d203290e1223ac",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d108b",
+            "_id": "678a04e9e4d203290e1223ac",
             "_tpl": "578f87b7245977356274f2cd",
             "upd": {
               "StackObjectsCount": 1
@@ -2645,10 +2325,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": true,
-        "Root": "678878d2b63fa42a1d0d108f",
+        "Root": "678a04e9e4d203290e1223b0",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d108f",
+            "_id": "678a04e9e4d203290e1223b0",
             "_tpl": "578f87b7245977356274f2cd",
             "upd": {
               "StackObjectsCount": 1
@@ -2677,1483 +2357,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "678878d2b63fa42a1d0d1093",
+        "Root": "678a04e9e4d203290e1223b4",
         "Items": [
           {
-            "_id": "678878d2b63fa42a1d0d1093",
+            "_id": "678a04e9e4d203290e1223b4",
             "_tpl": "5909e4b686f7747f5b744fa4",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.43,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00108",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cb2f",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cb2f",
-            "_tpl": "578f87a3245977356274f2cb",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.32,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00123",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cb37",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cb37",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.29,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00084",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cb47",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cb47",
-            "_tpl": "5909d36d86f774660f0bb900",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.29,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00072",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cb65",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cb65",
-            "_tpl": "5909d36d86f774660f0bb900",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.23,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00052",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cb7c",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cb7c",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.22,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00050",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cb82",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cb82",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.29,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00133",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cbc2",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cbc2",
-            "_tpl": "5909d36d86f774660f0bb900",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.64,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00137",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": true,
-        "Root": "67887b29ea3dfca49904cbc6",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cbc6",
-            "_tpl": "66acff0a1d8e1083b303f5af",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.37,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00023",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cbf3",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cbf3",
-            "_tpl": "5909d24f86f77466f56e6855",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.43,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00098",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cc0f",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cc0f",
-            "_tpl": "578f87a3245977356274f2cb",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.39,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00112",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": true,
-        "Root": "67887b29ea3dfca49904cc41",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cc41",
-            "_tpl": "5909d76c86f77471e53d2adf",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.3,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00082",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cc5d",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cc5d",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.32,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00132",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cc63",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cc63",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.32,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00090",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cc67",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cc67",
-            "_tpl": "5909d50c86f774659e6aaebe",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.39,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00071",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cc91",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cc91",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.52,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00055",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cce9",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cce9",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.39,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00135",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": true,
-        "Root": "67887b29ea3dfca49904ccef",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904ccef",
-            "_tpl": "5909d76c86f77471e53d2adf",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.43,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00073",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904ccfb",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904ccfb",
-            "_tpl": "578f87a3245977356274f2cb",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.63,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00148",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": true,
-        "Root": "67887b29ea3dfca49904cd0b",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cd0b",
-            "_tpl": "66acff0a1d8e1083b303f5af",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.42,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00002",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cd3d",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cd3d",
-            "_tpl": "5909d5ef86f77467974efbd8",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.3,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00009",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cd4d",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cd4d",
-            "_tpl": "5909d36d86f774660f0bb900",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.42,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00007",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cd51",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cd51",
-            "_tpl": "5909d5ef86f77467974efbd8",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.33,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00077",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cd5f",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cd5f",
-            "_tpl": "5909d50c86f774659e6aaebe",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.39,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00011",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cd99",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cd99",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.33,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00121",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cdad",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cdad",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.32,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00076",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cdb9",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cdb9",
-            "_tpl": "5909d50c86f774659e6aaebe",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.29,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00053",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cdc7",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cdc7",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.33,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00080",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887b29ea3dfca49904cdd9",
-        "Items": [
-          {
-            "_id": "67887b29ea3dfca49904cdd9",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.33,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00116",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d0949",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d0949",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.33,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00079",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d0951",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d0951",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.43,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00095",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d0983",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d0983",
-            "_tpl": "578f87a3245977356274f2cb",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.29,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00058",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d0987",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d0987",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.22,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00016",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d0991",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d0991",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.32,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00104",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d099f",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d099f",
-            "_tpl": "5909d50c86f774659e6aaebe",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.43,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00102",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d09a3",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d09a3",
-            "_tpl": "578f87a3245977356274f2cb",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.53,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00043",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d09e3",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d09e3",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.38,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00012",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d09e7",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d09e7",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.29,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00024",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d0a27",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d0a27",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.33,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00146",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d0a7b",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d0a7b",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.29,
-      "template": {
-        "Id": "Lootable_00003",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d0a87",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d0a87",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.22,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00064",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d0ab4",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d0ab4",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.22,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00014",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d0aba",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d0aba",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.43,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00040",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d0ac2",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d0ac2",
-            "_tpl": "578f87a3245977356274f2cb",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.32,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00134",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d0afa",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d0afa",
-            "_tpl": "5909d50c86f774659e6aaebe",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.32,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00139",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678882310ebc3aae8c0d0b18",
-        "Items": [
-          {
-            "_id": "678882310ebc3aae8c0d0b18",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.38,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00013",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "6788767a61f65ba8740b5fa2",
-        "Items": [
-          {
-            "_id": "6788767a61f65ba8740b5fa2",
-            "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -4181,10 +2389,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "6788767a61f65ba8740b5fb0",
+        "Root": "678a02913319b87e3203f99f",
         "Items": [
           {
-            "_id": "6788767a61f65ba8740b5fb0",
+            "_id": "678a02913319b87e3203f99f",
             "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
@@ -4194,9 +2402,9 @@
       }
     },
     {
-      "probability": 0.32,
+      "probability": 0.45,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00141",
+        "Id": "container_Factory_Rework_DesignStuff_00094",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -4213,10 +2421,42 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "6788767a61f65ba8740b5fcc",
+        "Root": "678a02913319b87e3203f9b1",
         "Items": [
           {
-            "_id": "6788767a61f65ba8740b5fcc",
+            "_id": "678a02913319b87e3203f9b1",
+            "_tpl": "578f87a3245977356274f2cb",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.23,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00047",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203f9bf",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203f9bf",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -4226,9 +2466,9 @@
       }
     },
     {
-      "probability": 0.3,
+      "probability": 0.31,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00041",
+        "Id": "container_Factory_Rework_DesignStuff_00085",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -4245,10 +2485,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "6788767a61f65ba8740b6006",
+        "Root": "678a02913319b87e3203f9d6",
         "Items": [
           {
-            "_id": "6788767a61f65ba8740b6006",
+            "_id": "678a02913319b87e3203f9d6",
             "_tpl": "5909d36d86f774660f0bb900",
             "upd": {
               "StackObjectsCount": 1
@@ -4258,137 +2498,9 @@
       }
     },
     {
-      "probability": 0.32,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00113",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "6788767a61f65ba8740b600a",
-        "Items": [
-          {
-            "_id": "6788767a61f65ba8740b600a",
-            "_tpl": "5909d50c86f774659e6aaebe",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.21,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00015",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "6788767a61f65ba8740b601e",
-        "Items": [
-          {
-            "_id": "6788767a61f65ba8740b601e",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.3,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00103",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "6788767a61f65ba8740b60c1",
-        "Items": [
-          {
-            "_id": "6788767a61f65ba8740b60c1",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.42,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00074",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "6788767a61f65ba8740b610d",
-        "Items": [
-          {
-            "_id": "6788767a61f65ba8740b610d",
-            "_tpl": "5909d5ef86f77467974efbd8",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
       "probability": 0.33,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00117",
+        "Id": "container_Factory_Rework_DesignStuff_00116",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -4405,10 +2517,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "6788767a61f65ba8740b61a7",
+        "Root": "678a02913319b87e3203f9e8",
         "Items": [
           {
-            "_id": "6788767a61f65ba8740b61a7",
+            "_id": "678a02913319b87e3203f9e8",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -4418,199 +2530,7 @@
       }
     },
     {
-      "probability": 0.37,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00021",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "6788767a61f65ba8740b6213",
-        "Items": [
-          {
-            "_id": "6788767a61f65ba8740b6213",
-            "_tpl": "5909d24f86f77466f56e6855",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.22,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00062",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "6788767a61f65ba8740b6233",
-        "Items": [
-          {
-            "_id": "6788767a61f65ba8740b6233",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.36,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00022",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "6788767a61f65ba8740b624c",
-        "Items": [
-          {
-            "_id": "6788767a61f65ba8740b624c",
-            "_tpl": "5909d24f86f77466f56e6855",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.37,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00101",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a70922c3",
-        "Items": [
-          {
-            "_id": "67887fd8091fcb57a70922c3",
-            "_tpl": "5909d24f86f77466f56e6855",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.33,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00144",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a70922f2",
-        "Items": [
-          {
-            "_id": "67887fd8091fcb57a70922f2",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.22,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00063",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a7092328",
-        "Items": [
-          {
-            "_id": "67887fd8091fcb57a7092328",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.29,
+      "probability": 0.31,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00067",
         "IsContainer": true,
@@ -4629,11 +2549,75 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a709232e",
+        "Root": "678a02913319b87e3203f9f0",
         "Items": [
           {
-            "_id": "67887fd8091fcb57a709232e",
+            "_id": "678a02913319b87e3203f9f0",
             "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.22,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00015",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203f9fd",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203f9fd",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.33,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00018",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203fa0d",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203fa0d",
+            "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -4644,7 +2628,7 @@
     {
       "probability": 0.3,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00081",
+        "Id": "container_Factory_Rework_DesignStuff_00017",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -4661,11 +2645,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a7092338",
+        "Root": "678a02913319b87e3203fa1f",
         "Items": [
           {
-            "_id": "67887fd8091fcb57a7092338",
-            "_tpl": "578f87ad245977356274f2cc",
+            "_id": "678a02913319b87e3203fa1f",
+            "_tpl": "5909d36d86f774660f0bb900",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -4674,9 +2658,9 @@
       }
     },
     {
-      "probability": 0.3,
+      "probability": 0.44,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00026",
+        "Id": "container_Factory_Rework_DesignStuff_00095",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -4693,11 +2677,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a709233f",
+        "Root": "678a02913319b87e3203fa41",
         "Items": [
           {
-            "_id": "67887fd8091fcb57a709233f",
-            "_tpl": "578f87ad245977356274f2cc",
+            "_id": "678a02913319b87e3203fa41",
+            "_tpl": "578f87a3245977356274f2cb",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -4706,9 +2690,9 @@
       }
     },
     {
-      "probability": 0.23,
+      "probability": 0.31,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00065",
+        "Id": "container_Factory_Rework_DesignStuff_00061",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -4725,10 +2709,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a7092363",
+        "Root": "678a02913319b87e3203fa5d",
         "Items": [
           {
-            "_id": "67887fd8091fcb57a7092363",
+            "_id": "678a02913319b87e3203fa5d",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -4738,9 +2722,9 @@
       }
     },
     {
-      "probability": 0.23,
+      "probability": 0.42,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00046",
+        "Id": "container_Factory_Rework_DesignStuff_00008",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -4757,11 +2741,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a709236d",
+        "Root": "678a02913319b87e3203fa6e",
         "Items": [
           {
-            "_id": "67887fd8091fcb57a709236d",
-            "_tpl": "578f87ad245977356274f2cc",
+            "_id": "678a02913319b87e3203fa6e",
+            "_tpl": "5909d5ef86f77467974efbd8",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -4770,7 +2754,7 @@
       }
     },
     {
-      "probability": 0.32,
+      "probability": 0.33,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00115",
         "IsContainer": true,
@@ -4789,10 +2773,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a70923a7",
+        "Root": "678a02913319b87e3203fa76",
         "Items": [
           {
-            "_id": "67887fd8091fcb57a70923a7",
+            "_id": "678a02913319b87e3203fa76",
             "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
@@ -4802,9 +2786,41 @@
       }
     },
     {
-      "probability": 0.29,
+      "probability": 0.4,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00066",
+        "Id": "container_Factory_Rework_DesignStuff_00112",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": true,
+        "Root": "678a02913319b87e3203fa8c",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203fa8c",
+            "_tpl": "5909d76c86f77471e53d2adf",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.45,
+      "template": {
+        "Id": "container_Test_for_export_00000",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -4821,10 +2837,42 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a70923bf",
+        "Root": "678a02913319b87e3203fa90",
         "Items": [
           {
-            "_id": "67887fd8091fcb57a70923bf",
+            "_id": "678a02913319b87e3203fa90",
+            "_tpl": "578f87a3245977356274f2cb",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.3,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00082",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203faaa",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203faaa",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -4834,9 +2882,9 @@
       }
     },
     {
-      "probability": 0.31,
+      "probability": 0.34,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00086",
+        "Id": "container_Factory_Rework_DesignStuff_00090",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -4853,10 +2901,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a70923eb",
+        "Root": "678a02913319b87e3203fab0",
         "Items": [
           {
-            "_id": "67887fd8091fcb57a70923eb",
+            "_id": "678a02913319b87e3203fab0",
             "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
@@ -4866,9 +2914,9 @@
       }
     },
     {
-      "probability": 0.33,
+      "probability": 0.45,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00145",
+        "Id": "container_Factory_Rework_DesignStuff_00091",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -4885,11 +2933,11 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a7092406",
+        "Root": "678a02913319b87e3203fae2",
         "Items": [
           {
-            "_id": "67887fd8091fcb57a7092406",
-            "_tpl": "578f87ad245977356274f2cc",
+            "_id": "678a02913319b87e3203fae2",
+            "_tpl": "578f87a3245977356274f2cb",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -4898,7 +2946,7 @@
       }
     },
     {
-      "probability": 0.32,
+      "probability": 0.34,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00110",
         "IsContainer": true,
@@ -4917,10 +2965,234 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a7092471",
+        "Root": "678a02913319b87e3203fb04",
         "Items": [
           {
-            "_id": "67887fd8091fcb57a7092471",
+            "_id": "678a02913319b87e3203fb04",
+            "_tpl": "5909d50c86f774659e6aaebe",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.4,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00135",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": true,
+        "Root": "678a02913319b87e3203fb10",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203fb10",
+            "_tpl": "5909d76c86f77471e53d2adf",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.44,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00073",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203fb2d",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203fb2d",
+            "_tpl": "578f87a3245977356274f2cb",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.23,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00064",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203fb51",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203fb51",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.44,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00040",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203fb57",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203fb57",
+            "_tpl": "578f87a3245977356274f2cb",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.3,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00048",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203fb5f",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203fb5f",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.43,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00007",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203fb7d",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203fb7d",
+            "_tpl": "5909d5ef86f77467974efbd8",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.33,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00134",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203fb9d",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203fb9d",
             "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
@@ -4931,6 +3203,518 @@
     },
     {
       "probability": 0.33,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00139",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203fbb5",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203fbb5",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.33,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00097",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203fbc5",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203fbc5",
+            "_tpl": "5909d50c86f774659e6aaebe",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.38,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00100",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203fbcf",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203fbcf",
+            "_tpl": "5909d24f86f77466f56e6855",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.31,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00083",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203fbf1",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203fbf1",
+            "_tpl": "5909d36d86f774660f0bb900",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.34,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00080",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a02913319b87e3203fc0d",
+        "Items": [
+          {
+            "_id": "678a02913319b87e3203fc0d",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.39,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00013",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789fb8860258785690aacc2",
+        "Items": [
+          {
+            "_id": "6789fb8860258785690aacc2",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.23,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00050",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789fb8860258785690aad0f",
+        "Items": [
+          {
+            "_id": "6789fb8860258785690aad0f",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.31,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00041",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789fb8860258785690aad29",
+        "Items": [
+          {
+            "_id": "6789fb8860258785690aad29",
+            "_tpl": "5909d36d86f774660f0bb900",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.24,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00046",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789fb8860258785690aad9e",
+        "Items": [
+          {
+            "_id": "6789fb8860258785690aad9e",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.3,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00058",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789fb8860258785690aadaa",
+        "Items": [
+          {
+            "_id": "6789fb8860258785690aadaa",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.44,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00098",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789fb8860258785690aadb8",
+        "Items": [
+          {
+            "_id": "6789fb8860258785690aadb8",
+            "_tpl": "578f87a3245977356274f2cb",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.34,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00104",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789fb8860258785690aadbc",
+        "Items": [
+          {
+            "_id": "6789fb8860258785690aadbc",
+            "_tpl": "5909d50c86f774659e6aaebe",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.29,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00025",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789fb8860258785690aade6",
+        "Items": [
+          {
+            "_id": "6789fb8860258785690aade6",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.34,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00145",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789fb8860258785690aae06",
+        "Items": [
+          {
+            "_id": "6789fb8860258785690aae06",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.4,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00071",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789fb8860258785690aae16",
+        "Items": [
+          {
+            "_id": "6789fb8860258785690aae16",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.43,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00074",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789fb8860258785690aae1a",
+        "Items": [
+          {
+            "_id": "6789fb8860258785690aae1a",
+            "_tpl": "5909d5ef86f77467974efbd8",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.34,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00118",
         "IsContainer": true,
@@ -4949,10 +3733,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a709248f",
+        "Root": "6789fb8960258785690aae92",
         "Items": [
           {
-            "_id": "67887fd8091fcb57a709248f",
+            "_id": "6789fb8960258785690aae92",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -4962,7 +3746,7 @@
       }
     },
     {
-      "probability": 0.32,
+      "probability": 0.33,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00092",
         "IsContainer": true,
@@ -4981,10 +3765,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a709250b",
+        "Root": "6789fb8960258785690aaf05",
         "Items": [
           {
-            "_id": "67887fd8091fcb57a709250b",
+            "_id": "6789fb8960258785690aaf05",
             "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
@@ -4994,7 +3778,39 @@
       }
     },
     {
-      "probability": 0.52,
+      "probability": 0.4,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00109",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": true,
+        "Root": "6789fb8960258785690aaf0f",
+        "Items": [
+          {
+            "_id": "6789fb8960258785690aaf0f",
+            "_tpl": "5909d76c86f77471e53d2adf",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.53,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00056",
         "IsContainer": true,
@@ -5013,10 +3829,170 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67887fd8091fcb57a709253e",
+        "Root": "6789fb8960258785690aaf31",
         "Items": [
           {
-            "_id": "67887fd8091fcb57a709253e",
+            "_id": "6789fb8960258785690aaf31",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.39,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00010",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": true,
+        "Root": "6789fb8960258785690aaf4f",
+        "Items": [
+          {
+            "_id": "6789fb8960258785690aaf4f",
+            "_tpl": "5909d76c86f77471e53d2adf",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.44,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00111",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a003dcc85358875099805",
+        "Items": [
+          {
+            "_id": "678a003dcc85358875099805",
+            "_tpl": "578f87a3245977356274f2cb",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.42,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00136",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a003dcc8535887509982e",
+        "Items": [
+          {
+            "_id": "678a003dcc8535887509982e",
+            "_tpl": "5909d5ef86f77467974efbd8",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.34,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00143",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a003dcc8535887509983a",
+        "Items": [
+          {
+            "_id": "678a003dcc8535887509983a",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.23,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00052",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a003dcc85358875099864",
+        "Items": [
+          {
+            "_id": "678a003dcc85358875099864",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -5027,6 +4003,294 @@
     },
     {
       "probability": 0.33,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00142",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a003dcc85358875099872",
+        "Items": [
+          {
+            "_id": "678a003dcc85358875099872",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.42,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00003",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a003dcc85358875099895",
+        "Items": [
+          {
+            "_id": "678a003dcc85358875099895",
+            "_tpl": "5909d5ef86f77467974efbd8",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.31,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00059",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a003dcc853588750998a5",
+        "Items": [
+          {
+            "_id": "678a003dcc853588750998a5",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.34,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00132",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a003dcc85358875099921",
+        "Items": [
+          {
+            "_id": "678a003dcc85358875099921",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.3,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00024",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a003dcc85358875099945",
+        "Items": [
+          {
+            "_id": "678a003dcc85358875099945",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.33,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00075",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a003dcc853588750999bb",
+        "Items": [
+          {
+            "_id": "678a003dcc853588750999bb",
+            "_tpl": "5909d50c86f774659e6aaebe",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.64,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00148",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": true,
+        "Root": "678a003dcc853588750999cb",
+        "Items": [
+          {
+            "_id": "678a003dcc853588750999cb",
+            "_tpl": "66acff0a1d8e1083b303f5af",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.31,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00009",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a003dcc85358875099a1f",
+        "Items": [
+          {
+            "_id": "678a003dcc85358875099a1f",
+            "_tpl": "5909d36d86f774660f0bb900",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.39,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00096",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a003dcc85358875099a27",
+        "Items": [
+          {
+            "_id": "678a003dcc85358875099a27",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.34,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00045",
         "IsContainer": true,
@@ -5045,10 +4309,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67886ac079199e31d9134b65",
+        "Root": "678a003dcc85358875099a31",
         "Items": [
           {
-            "_id": "67886ac079199e31d9134b65",
+            "_id": "678a003dcc85358875099a31",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -5058,7 +4322,135 @@
       }
     },
     {
-      "probability": 0.36,
+      "probability": 0.37,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00114",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a003dcc85358875099aa3",
+        "Items": [
+          {
+            "_id": "678a003dcc85358875099aa3",
+            "_tpl": "5909d24f86f77466f56e6855",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.31,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00093",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "678a003dcc85358875099aa7",
+        "Items": [
+          {
+            "_id": "678a003dcc85358875099aa7",
+            "_tpl": "5909d36d86f774660f0bb900",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.23,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00054",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789f6d71459837ca50bd35f",
+        "Items": [
+          {
+            "_id": "6789f6d71459837ca50bd35f",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.33,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00123",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789f6d71459837ca50bd36e",
+        "Items": [
+          {
+            "_id": "6789f6d71459837ca50bd36e",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.38,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00099",
         "IsContainer": true,
@@ -5077,10 +4469,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "6788742039eaace6be04e232",
+        "Root": "6789f6d71459837ca50bd505",
         "Items": [
           {
-            "_id": "6788742039eaace6be04e232",
+            "_id": "6789f6d71459837ca50bd505",
             "_tpl": "5909d24f86f77466f56e6855",
             "upd": {
               "StackObjectsCount": 1
@@ -5109,11 +4501,43 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "6788742039eaace6be04e24c",
+        "Root": "6789f6d71459837ca50bd51f",
         "Items": [
           {
-            "_id": "6788742039eaace6be04e24c",
+            "_id": "6789f6d71459837ca50bd51f",
             "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.33,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00019",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789f6d71459837ca50bd60c",
+        "Items": [
+          {
+            "_id": "6789f6d71459837ca50bd60c",
+            "_tpl": "5909d50c86f774659e6aaebe",
             "upd": {
               "StackObjectsCount": 1
             }
@@ -5123,102 +4547,6 @@
     },
     {
       "probability": 0.3,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00093",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "6788742039eaace6be04e310",
-        "Items": [
-          {
-            "_id": "6788742039eaace6be04e310",
-            "_tpl": "5909d36d86f774660f0bb900",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.3,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00059",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678863ba9f1e87e16c059feb",
-        "Items": [
-          {
-            "_id": "678863ba9f1e87e16c059feb",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.21,
-      "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00051",
-        "IsContainer": true,
-        "useGravity": false,
-        "randomRotation": false,
-        "Position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "Rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "IsGroupPosition": false,
-        "GroupPositions": [],
-        "IsAlwaysSpawn": false,
-        "Root": "678863ba9f1e87e16c05a150",
-        "Items": [
-          {
-            "_id": "678863ba9f1e87e16c05a150",
-            "_tpl": "578f87ad245977356274f2cc",
-            "upd": {
-              "StackObjectsCount": 1
-            }
-          }
-        ]
-      }
-    },
-    {
-      "probability": 0.29,
       "template": {
         "Id": "container_Factory_Rework_DesignStuff_00068",
         "IsContainer": true,
@@ -5237,10 +4565,330 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67884ea1c3aa24e5a211169c",
+        "Root": "6789f9302112e86ba1124f70",
         "Items": [
           {
-            "_id": "67884ea1c3aa24e5a211169c",
+            "_id": "6789f9302112e86ba1124f70",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.23,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00063",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789f9302112e86ba1124fb9",
+        "Items": [
+          {
+            "_id": "6789f9302112e86ba1124fb9",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.39,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00070",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789f9302112e86ba1125005",
+        "Items": [
+          {
+            "_id": "6789f9302112e86ba1125005",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.32,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00086",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789f9302112e86ba1125064",
+        "Items": [
+          {
+            "_id": "6789f9302112e86ba1125064",
+            "_tpl": "5909d50c86f774659e6aaebe",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.43,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00002",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789f9302112e86ba1125162",
+        "Items": [
+          {
+            "_id": "6789f9302112e86ba1125162",
+            "_tpl": "5909d5ef86f77467974efbd8",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.3,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00133",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789f4819c02668b710b8204",
+        "Items": [
+          {
+            "_id": "6789f4819c02668b710b8204",
+            "_tpl": "5909d36d86f774660f0bb900",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.31,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00026",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789f4819c02668b710b8218",
+        "Items": [
+          {
+            "_id": "6789f4819c02668b710b8218",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.34,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00105",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789f4819c02668b710b839b",
+        "Items": [
+          {
+            "_id": "6789f4819c02668b710b839b",
+            "_tpl": "5909d50c86f774659e6aaebe",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.44,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00088",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789f228725f3420a708874b",
+        "Items": [
+          {
+            "_id": "6789f228725f3420a708874b",
+            "_tpl": "578f87a3245977356274f2cb",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.38,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00023",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789f228725f3420a70887d6",
+        "Items": [
+          {
+            "_id": "6789f228725f3420a70887d6",
+            "_tpl": "5909d24f86f77466f56e6855",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.31,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00066",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789f228725f3420a7088835",
+        "Items": [
+          {
+            "_id": "6789f228725f3420a7088835",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1
@@ -5252,7 +4900,7 @@
     {
       "probability": 0.3,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00083",
+        "Id": "container_Factory_Rework_DesignStuff_00057",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -5269,10 +4917,10 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67884ea1c3aa24e5a21118d3",
+        "Root": "6789f228725f3420a7088968",
         "Items": [
           {
-            "_id": "67884ea1c3aa24e5a21118d3",
+            "_id": "6789f228725f3420a7088968",
             "_tpl": "5909d36d86f774660f0bb900",
             "upd": {
               "StackObjectsCount": 1
@@ -5282,9 +4930,9 @@
       }
     },
     {
-      "probability": 0.28,
+      "probability": 0.37,
       "template": {
-        "Id": "container_Factory_Rework_DesignStuff_00048",
+        "Id": "container_Factory_Rework_DesignStuff_00022",
         "IsContainer": true,
         "useGravity": false,
         "randomRotation": false,
@@ -5301,10 +4949,362 @@
         "IsGroupPosition": false,
         "GroupPositions": [],
         "IsAlwaysSpawn": false,
-        "Root": "67886d19ea203f8b380f6641",
+        "Root": "6789f228725f3420a7088a49",
         "Items": [
           {
-            "_id": "67886d19ea203f8b380f6641",
+            "_id": "6789f228725f3420a7088a49",
+            "_tpl": "5909d24f86f77466f56e6855",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.34,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00117",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789eb1f3eb4ddebaa08142f",
+        "Items": [
+          {
+            "_id": "6789eb1f3eb4ddebaa08142f",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.33,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00076",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789eb1f3eb4ddebaa081487",
+        "Items": [
+          {
+            "_id": "6789eb1f3eb4ddebaa081487",
+            "_tpl": "5909d50c86f774659e6aaebe",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.3,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00053",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789eb1f3eb4ddebaa081495",
+        "Items": [
+          {
+            "_id": "6789eb1f3eb4ddebaa081495",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.43,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00001",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789d3b0e97ecb66540be2f2",
+        "Items": [
+          {
+            "_id": "6789d3b0e97ecb66540be2f2",
+            "_tpl": "5909d5ef86f77467974efbd8",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.23,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00062",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789d3b0e97ecb66540be427",
+        "Items": [
+          {
+            "_id": "6789d3b0e97ecb66540be427",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.35,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00138",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789efd07445a07f5310176d",
+        "Items": [
+          {
+            "_id": "6789efd07445a07f5310176d",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.34,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00144",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789efd07445a07f531017ac",
+        "Items": [
+          {
+            "_id": "6789efd07445a07f531017ac",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.3,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00060",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789dab9d9b839611905daf9",
+        "Items": [
+          {
+            "_id": "6789dab9d9b839611905daf9",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.23,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00014",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789d862669c10f0b7042b5f",
+        "Items": [
+          {
+            "_id": "6789d862669c10f0b7042b5f",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.23,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00051",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789d862669c10f0b7042b7d",
+        "Items": [
+          {
+            "_id": "6789d862669c10f0b7042b7d",
+            "_tpl": "578f87ad245977356274f2cc",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.24,
+      "template": {
+        "Id": "container_Factory_Rework_DesignStuff_00065",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "6789e671adbcaf209e05224d",
+        "Items": [
+          {
+            "_id": "6789e671adbcaf209e05224d",
             "_tpl": "578f87ad245977356274f2cc",
             "upd": {
               "StackObjectsCount": 1

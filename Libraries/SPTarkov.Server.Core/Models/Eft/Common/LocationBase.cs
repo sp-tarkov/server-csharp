@@ -7,9 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Common;
 
 public record LocationBase
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("AccessKeys")]
     public IEnumerable<string>? AccessKeys { get; set; }
 
@@ -83,22 +80,19 @@ public record LocationBase
     public int BotMax { get; set; }
 
     /// <summary>
-    ///     Is not used in 33420 TODO: still needed?
+    ///     Is not used in 33420
     /// </summary>
     [JsonPropertyName("BotMaxPlayer")]
     public int? BotMaxPlayer { get; set; }
 
+    [JsonPropertyName("BotMaxPvE")]
+    public int? BotMaxPvE { get; set; }
+
     /// <summary>
-    ///     Is not used in 33420 TODO: still needed?
+    ///     Is not used in 33420
     /// </summary>
     [JsonPropertyName("BotMaxTimePlayer")]
     public int? BotMaxTimePlayer { get; set; }
-
-    /// <summary>
-    ///     Does not even exist in the client in 33420 TODO: still needed?
-    /// </summary>
-    [JsonPropertyName("BotMaxPvE")]
-    public int? BotMaxPvE { get; set; }
 
     /// <summary>
     ///     Weighting on how likely a bot will be Normal difficulty
@@ -381,9 +375,6 @@ public record LocationBase
 
 public record EventTrapsData
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double MaxBarbedWires { get; set; }
 
     public double MaxTrapDoors { get; set; }
@@ -395,9 +386,6 @@ public record EventTrapsData
 
 public record Transit
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("activateAfterSec")]
     public int? ActivateAfterSeconds { get; set; }
 
@@ -434,9 +422,6 @@ public record Transit
 
 public record NonWaveGroupScenario
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Chance")]
     public double? Chance { get; set; }
 
@@ -458,9 +443,6 @@ public record Limit : MinMax<int>
 
 public record AirdropParameter
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("AirdropPointDeactivateDistance")]
     public int? AirdropPointDeactivateDistance { get; set; }
 
@@ -494,9 +476,6 @@ public record AirdropParameter
 
 public record Banner
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
@@ -506,9 +485,6 @@ public record Banner
 
 public record Pic
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("file")]
     public string? File { get; set; }
 
@@ -524,9 +500,6 @@ public record Pic
 
 public record BossLocationSpawn
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("BossChance")]
     public double? BossChance { get; set; }
 
@@ -597,9 +570,6 @@ public record BossLocationSpawn
 
 public record BossSupport
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("BossEscortAmount")]
     public string? BossEscortAmount { get; set; }
 
@@ -612,9 +582,6 @@ public record BossSupport
 
 public record BotLocationModifier
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("AccuracySpeed")]
     public double? AccuracySpeed { get; set; }
 
@@ -699,9 +666,6 @@ public record BotLocationModifier
 
 public record AdditionalHostilitySettings
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("AlwaysEnemies")]
     public HashSet<string>? AlwaysEnemies { get; set; }
 
@@ -741,9 +705,6 @@ public record AdditionalHostilitySettings
 
 public record ChancedEnemy
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("EnemyChance")]
     public int? EnemyChance { get; set; }
 
@@ -759,9 +720,6 @@ public record MinMaxBot : MinMax<int>
 
 public record MinPlayerWaitTime
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("minPlayers")]
     public int? MinPlayers { get; set; }
 
@@ -771,9 +729,6 @@ public record MinPlayerWaitTime
 
 public record Preview
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("path")]
     public string? Path { get; set; }
 
@@ -783,9 +738,6 @@ public record Preview
 
 public record Scene
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("path")]
     public string? Path { get; set; }
 
@@ -795,9 +747,6 @@ public record Scene
 
 public record SpawnPointParam
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("BotZoneName")]
     public string? BotZoneName { get; set; }
 
@@ -831,9 +780,6 @@ public record SpawnPointParam
 
 public record ColliderParams
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     private string? _parent;
 
     [JsonPropertyName("_parent")]
@@ -844,14 +790,11 @@ public record ColliderParams
     }
 
     [JsonPropertyName("_props")]
-    public ColliderProps? Props { get; set; }
+    public ColliderProperties? Properties { get; set; }
 }
 
-public record ColliderProps
+public record ColliderProperties
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Center")]
     public XYZ? Center { get; set; }
 
@@ -864,9 +807,6 @@ public record ColliderProps
 
 public record Exit
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     % Chance out of 100 exit will appear in raid
     /// </summary>
@@ -960,9 +900,6 @@ public record Exit
 
 public record MaxItemCountInLocation
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("TemplateId")]
     public string? TemplateId { get; set; }
 
@@ -972,9 +909,6 @@ public record MaxItemCountInLocation
 
 public record Wave
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("BotPreset")]
     public string? BotPreset { get; set; }
 
@@ -1030,9 +964,6 @@ public record Wave
 
 public record LocationEvents
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Halloween2024")]
     public Halloween2024? Halloween2024 { get; set; }
 
@@ -1041,17 +972,11 @@ public record LocationEvents
 
 public record Khorovod
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public double? Chance { get; set; }
 }
 
 public record Halloween2024
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("CrowdAttackBlockRadius")]
     public double? CrowdAttackBlockRadius { get; set; }
 
@@ -1099,9 +1024,6 @@ public record Halloween2024
 
 public record CrowdAttackSpawnParam
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("Difficulty")]
     public string? Difficulty { get; set; }
 
@@ -1114,9 +1036,6 @@ public record CrowdAttackSpawnParam
 
 public record Area
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("center")]
     public XYZ? Center { get; set; }
 

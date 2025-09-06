@@ -46,15 +46,16 @@ public class HideoutController(
 {
     public static readonly MongoId NameTaskConditionCountersCraftingId = new("673f5d6fdd6ed700c703afdc");
 
-    protected readonly FrozenSet<HideoutAreas> _areasWithResources =
+    protected readonly FrozenSet<HideoutAreas> AreasWithResources =
     [
         HideoutAreas.AirFilteringUnit,
         HideoutAreas.WaterCollector,
         HideoutAreas.Generator,
         HideoutAreas.BitcoinFarm,
+        HideoutAreas.RestSpace, // Can insert disk
     ];
 
-    protected readonly HideoutConfig _hideoutConfig = configServer.GetConfig<HideoutConfig>();
+    protected readonly HideoutConfig HideoutConfig = configServer.GetConfig<HideoutConfig>();
 
     /// <summary>
     ///     Handle HideoutUpgrade event
@@ -187,18 +188,18 @@ public class HideoutController(
         {
             foreach (var bonus in bonuses)
             {
-                hideoutHelper.ApplyPlayerUpgradesBonuses(pmcData, bonus);
+                hideoutHelper.ApplyPlayerUpgradesBonus(pmcData, bonus);
             }
         }
 
         // Upgrade includes a container improvement/addition
-        if (!string.IsNullOrEmpty(hideoutStage.Container))
+        if (hideoutStage.Container.HasValue && !hideoutStage.Container.Value.IsEmpty)
         {
             AddContainerImprovementToProfile(output, sessionID, pmcData, profileHideoutArea, hideoutData, hideoutStage);
         }
 
         // Upgrading water collector / med station
-        if (profileHideoutArea.Type == HideoutAreas.WaterCollector || profileHideoutArea.Type == HideoutAreas.MedStation)
+        if (profileHideoutArea.Type is HideoutAreas.WaterCollector or HideoutAreas.MedStation)
         {
             SetWallVisibleIfPrereqsMet(pmcData);
         }
@@ -274,6 +275,7 @@ public class HideoutController(
             AddMissingPresetStandItemsToProfile(sessionId, hideoutStage, pmcData, dbHideoutArea, output);
         }
 
+        // Inform client of upgrade to container
         AddContainerUpgradeToClientOutput(sessionId, keyForHideoutAreaStash, dbHideoutArea, hideoutStage, output);
 
         // Some hideout areas (Gun stand) have child areas linked to it
@@ -350,7 +352,7 @@ public class HideoutController(
     )
     {
         // Ensure ChangedHideoutStashes isn't null
-        output.ProfileChanges[sessionId].ChangedHideoutStashes ??= new Dictionary<string, HideoutStashItem>();
+        output.ProfileChanges[sessionId].ChangedHideoutStashes ??= new();
 
         // Inform client of changes
         output.ProfileChanges[sessionId].ChangedHideoutStashes[changedHideoutStashesKey] = new HideoutStashItem
@@ -361,8 +363,8 @@ public class HideoutController(
     }
 
     /// <summary>
-    ///     Handle HideoutPutItemsInAreaSlots
-    ///     Create item in hideout slot item array, remove item from player inventory
+    /// Handle HideoutPutItemsInAreaSlots
+    /// Take item from player inventory and place it inside hideout area slot
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="addItemToHideoutRequest">request from client to place item in area slot</param>
@@ -376,6 +378,7 @@ public class HideoutController(
     {
         var output = eventOutputHolder.GetOutput(sessionID);
 
+        // Find item in player inventory we want to move
         var itemsToAdd = addItemToHideoutRequest.Items.Select(kvp =>
         {
             var item = pmcData.Inventory.Items.FirstOrDefault(invItem => invItem.Id == kvp.Value.Id);
@@ -387,10 +390,12 @@ public class HideoutController(
             };
         });
 
+        // Find area we want to put item into
         var hideoutArea = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == addItemToHideoutRequest.AreaType);
         if (hideoutArea is null)
         {
             logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area_in_database", addItemToHideoutRequest.AreaType));
+
             return httpResponseUtil.AppendErrorToOutput(output);
         }
 
@@ -449,7 +454,7 @@ public class HideoutController(
     {
         var output = eventOutputHolder.GetOutput(sessionID);
 
-        var hideoutArea = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == request.AreaType);
+        var hideoutArea = pmcData.Hideout?.Areas.FirstOrDefault(area => area.Type == request.AreaType);
         if (hideoutArea is null)
         {
             logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area", request.AreaType));
@@ -463,7 +468,7 @@ public class HideoutController(
         }
 
         // Handle areas that have resources that can be placed in/taken out of slots from the area
-        if (_areasWithResources.Contains(hideoutArea.Type ?? HideoutAreas.NotSet))
+        if (AreasWithResources.Contains(hideoutArea.Type))
         {
             var response = RemoveResourceFromArea(sessionID, pmcData, request, output, hideoutArea);
 
@@ -826,16 +831,16 @@ public class HideoutController(
             itemAndChildrenToSendToPlayer = HandlePresetReward(recipe);
         }
 
-        HandleStackableState(recipe, itemAndChildrenToSendToPlayer, rewardIsPreset);
+        UnstackRewardIntoValidSize(recipe, itemAndChildrenToSendToPlayer, rewardIsPreset);
 
         // Recipe has an `isEncoded` requirement for reward(s), Add `RecodableComponent` property
         if (recipe.IsEncoded ?? false)
         {
-            foreach (var reward in itemAndChildrenToSendToPlayer)
+            foreach (var rewardItems in itemAndChildrenToSendToPlayer)
             {
-                itemHelper.AddUpdObjectToItem(reward.FirstOrDefault());
+                rewardItems.FirstOrDefault()?.AddUpd();
 
-                reward.FirstOrDefault().Upd.RecodableComponent = new UpdRecodableComponent { IsEncoded = true };
+                rewardItems.FirstOrDefault().Upd.RecodableComponent = new UpdRecodableComponent { IsEncoded = true };
             }
         }
 
@@ -855,18 +860,18 @@ public class HideoutController(
         if (area is not null && request.RecipeId != area.LastRecipe)
         // 1 point per craft upon the end of production for alternating between 2 different crafting recipes in the same module
         {
-            craftingExpAmount += _hideoutConfig.ExpCraftAmount; // Default is 10
+            craftingExpAmount += HideoutConfig.ExpCraftAmount; // Default is 10
         }
 
         // Update variable with time spent crafting item(s)
         // 1 point per 8 hours of crafting
         totalCraftingHours += recipe.ProductionTime;
-        if (totalCraftingHours / _hideoutConfig.HoursForSkillCrafting >= 1)
+        if (totalCraftingHours / HideoutConfig.HoursForSkillCrafting >= 1)
         {
             // Spent enough time crafting to get a bonus xp multiplier
-            var multiplierCrafting = Math.Floor(totalCraftingHours.Value / _hideoutConfig.HoursForSkillCrafting);
+            var multiplierCrafting = Math.Floor(totalCraftingHours.Value / HideoutConfig.HoursForSkillCrafting);
             craftingExpAmount += (int)(1 * multiplierCrafting);
-            totalCraftingHours -= _hideoutConfig.HoursForSkillCrafting * multiplierCrafting;
+            totalCraftingHours -= HideoutConfig.HoursForSkillCrafting * multiplierCrafting;
         }
 
         // Make sure we can fit both the craft result and tools in the stash
@@ -965,12 +970,12 @@ public class HideoutController(
     }
 
     /// <summary>
-    ///     Ensure non-stackable items are 'unstacked'
+    ///     Ensure non-stackable rewards are 'unstacked' into something valid for a players stash
     /// </summary>
-    /// <param name="recipe"></param>
-    /// <param name="itemAndChildrenToSendToPlayer"></param>
+    /// <param name="recipe">Recipe with reward</param>
+    /// <param name="itemAndChildrenToSendToPlayer">Reward items to unstack</param>
     /// <param name="rewardIsPreset">Reward is a preset</param>
-    protected void HandleStackableState(HideoutProduction recipe, List<List<Item>> itemAndChildrenToSendToPlayer, bool rewardIsPreset)
+    protected void UnstackRewardIntoValidSize(HideoutProduction recipe, List<List<Item>> itemAndChildrenToSendToPlayer, bool rewardIsPreset)
     {
         var rewardIsStackable = itemHelper.IsItemTplStackable(recipe.EndProduct);
         if (rewardIsStackable.GetValueOrDefault(false))
@@ -1177,7 +1182,7 @@ public class HideoutController(
         if (!hasMildPain.GetValueOrDefault(false) && !hasSeverePain.GetValueOrDefault(false))
         {
             // Nullguard
-            pmcData.Health.BodyParts["Chest"].Effects ??= new Dictionary<string, BodyPartEffectProperties>();
+            pmcData.Health.BodyParts["Chest"].Effects ??= new();
             pmcData.Health.BodyParts["Chest"].Effects["MildMusclePain"] = new BodyPartEffectProperties
             {
                 Time = finishEffect.RewardEffects.FirstOrDefault().Time, // TODO - remove hard coded access, get value properly
@@ -1514,9 +1519,14 @@ public class HideoutController(
     {
         foreach (var (sessionId, profile) in saveServer.GetProfiles())
         {
+            if (saveServer.IsProfileInvalidOrUnloadable(sessionId))
+            {
+                continue;
+            }
+
             if (
-                profile.CharacterData.PmcData.Hideout is not null
-                && profileActivityService.ActiveWithinLastMinutes(sessionId, _hideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes)
+                profile.CharacterData?.PmcData?.Hideout is not null
+                && profileActivityService.ActiveWithinLastMinutes(sessionId, HideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes)
             )
             {
                 hideoutHelper.UpdatePlayerHideout(sessionId);

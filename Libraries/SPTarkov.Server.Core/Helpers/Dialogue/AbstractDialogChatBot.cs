@@ -8,8 +8,8 @@ using SPTarkov.Server.Core.Services;
 namespace SPTarkov.Server.Core.Helpers.Dialogue;
 
 public abstract class AbstractDialogChatBot(
-    ISptLogger<AbstractDialogChatBot> _logger,
-    MailSendService _mailSendService,
+    ISptLogger<AbstractDialogChatBot> logger,
+    MailSendService mailSendService,
     ServerLocalisationService localisationService,
     IEnumerable<IChatCommand> chatCommands
 ) : IDialogueChatBot
@@ -22,7 +22,7 @@ public abstract class AbstractDialogChatBot(
     {
         if (request.Text.Length == 0)
         {
-            _logger.Error(localisationService.GetText("chatbot-command_was_empty"));
+            logger.Error(localisationService.GetText("chatbot-command_was_empty"));
 
             return request.DialogId;
         }
@@ -43,20 +43,20 @@ public abstract class AbstractDialogChatBot(
             return await SendPlayerHelpMessage(sessionId, request);
         }
 
-        _mailSendService.SendUserMessageToPlayer(sessionId, GetChatBot(), GetUnrecognizedCommandMessage(), [], null);
+        mailSendService.SendUserMessageToPlayer(sessionId, GetChatBot(), GetUnrecognizedCommandMessage(), [], null);
 
         return string.Empty;
     }
 
     protected async ValueTask<string> SendPlayerHelpMessage(MongoId sessionId, SendMessageRequest request)
     {
-        _mailSendService.SendUserMessageToPlayer(sessionId, GetChatBot(), "The available commands will be listed below:", [], null);
+        mailSendService.SendUserMessageToPlayer(sessionId, GetChatBot(), "The available commands will be listed below:", [], null);
         foreach (var chatCommand in _chatCommands.Values)
         {
             // due to BSG being dumb with messages we need a mandatory timeout between messages so they get out on the right order
             await Task.Delay(TimeSpan.FromSeconds(1));
 
-            _mailSendService.SendUserMessageToPlayer(
+            mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 GetChatBot(),
                 $"Commands available for \"{chatCommand.CommandPrefix}\" prefix:",
@@ -68,7 +68,7 @@ public abstract class AbstractDialogChatBot(
 
             foreach (var subCommand in chatCommand.Commands)
             {
-                _mailSendService.SendUserMessageToPlayer(
+                mailSendService.SendUserMessageToPlayer(
                     sessionId,
                     GetChatBot(),
                     $"Subcommand {subCommand}:\n{chatCommand.GetCommandHelp(subCommand)}",

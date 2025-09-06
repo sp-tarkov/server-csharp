@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Game;
 
 namespace SPTarkov.Server.Core.Models.Spt.Config;
@@ -7,9 +8,6 @@ public record CoreConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public override string Kind { get; set; } = "spt-core";
-
-    [JsonPropertyName("sptVersion")]
-    public required string SptVersion { get; set; }
 
     [JsonPropertyName("projectName")]
     public required string ProjectName { get; set; }
@@ -71,9 +69,6 @@ public record CoreConfig : BaseConfig
 
 public record BsgLogging
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     verbosity of what to log, yes I know this is backwards, but its how nlog deals with ordinals. <br />
     ///     complain to them about it! In all cases, better exceptions will be logged.<br />
@@ -98,9 +93,6 @@ public record BsgLogging
 
 public record Release
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Disclaimer outlining the intended usage of bleeding edge
     /// </summary>
@@ -182,9 +174,6 @@ public record Release
 
 public record GameFixes
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Shotguns use a different value than normal guns causing huge pellet dispersion
     /// </summary>
@@ -212,9 +201,6 @@ public record GameFixes
 
 public record ServerFeatures
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("compressProfile")]
     public bool CompressProfile { get; set; }
 
@@ -236,9 +222,6 @@ public record ServerFeatures
 
 public record ChatbotFeatures
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("sptFriendGiftsEnabled")]
     public bool SptFriendGiftsEnabled { get; set; }
 
@@ -252,20 +235,17 @@ public record ChatbotFeatures
     ///     Human readable id to guid for each bot
     /// </summary>
     [JsonPropertyName("ids")]
-    public required Dictionary<string, string> Ids { get; set; }
+    public required Dictionary<string, MongoId> Ids { get; set; }
 
     /// <summary>
     ///     Bot Ids player is allowed to interact with
     /// </summary>
     [JsonPropertyName("enabledBots")]
-    public required Dictionary<string, bool> EnabledBots { get; set; }
+    public required Dictionary<MongoId, bool> EnabledBots { get; set; }
 }
 
 public record CommandoFeatures
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("giveCommandEnabled")]
     public bool GiveCommandEnabled { get; set; }
 }

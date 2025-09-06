@@ -37,56 +37,31 @@ public class DatabaseService(
     /// <returns> assets/database/bots/ </returns>
     public Bots GetBots()
     {
-        if (databaseServer.GetTables().Bots == null)
-        {
-            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/bots"));
-        }
-
-        return databaseServer.GetTables().Bots!;
+        return databaseServer.GetTables().Bots;
     }
 
     /// <returns> assets/database/globals.json </returns>
     public Globals GetGlobals()
     {
-        if (databaseServer.GetTables().Globals == null)
-        {
-            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/globals.json"));
-        }
-
-        return databaseServer.GetTables().Globals!;
+        return databaseServer.GetTables().Globals;
     }
 
     /// <returns> assets/database/hideout/ </returns>
     public Hideout GetHideout()
     {
-        if (databaseServer.GetTables().Hideout == null)
-        {
-            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/hideout"));
-        }
-
-        return databaseServer.GetTables().Hideout!;
+        return databaseServer.GetTables().Hideout;
     }
 
     /// <returns> assets/database/locales/ </returns>
     public LocaleBase GetLocales()
     {
-        if (databaseServer.GetTables().Locales == null)
-        {
-            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/locales"));
-        }
-
-        return databaseServer.GetTables().Locales!;
+        return databaseServer.GetTables().Locales;
     }
 
     /// <returns> assets/database/locations </returns>
     public Locations GetLocations()
     {
-        if (databaseServer.GetTables().Locations == null)
-        {
-            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/locations"));
-        }
-
-        return databaseServer.GetTables().Locations!;
+        return databaseServer.GetTables().Locations;
     }
 
     /// <summary>
@@ -96,7 +71,7 @@ public class DatabaseService(
     /// <returns> assets/database/locations/ </returns>
     public Location? GetLocation(string locationId)
     {
-        var desiredLocation = GetLocations()?.GetByJsonProp<Location>(locationId.ToLowerInvariant());
+        var desiredLocation = GetLocations().GetByJsonProperty<Location>(locationId.ToLowerInvariant());
         if (desiredLocation == null)
         {
             logger.Error(serverLocalisationService.GetText("database-no_location_found_with_id", locationId));
@@ -110,158 +85,79 @@ public class DatabaseService(
     /// <returns> assets/database/match/ </returns>
     public Match GetMatch()
     {
-        if (databaseServer.GetTables().Match == null)
-        {
-            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/locales"));
-        }
-
-        return databaseServer.GetTables().Match!;
+        return databaseServer.GetTables().Match;
     }
 
     /// <returns> assets/database/server.json </returns>
     public ServerBase GetServer()
     {
-        if (databaseServer.GetTables().Server == null)
-        {
-            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/server.json"));
-        }
-
-        return databaseServer.GetTables().Server!;
+        return databaseServer.GetTables().Server;
     }
 
     /// <returns> assets/database/settings.json </returns>
     public SettingsBase GetSettings()
     {
-        if (databaseServer.GetTables().Settings == null)
-        {
-            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/settings.json"));
-        }
-
-        return databaseServer.GetTables().Settings!;
+        return databaseServer.GetTables().Settings;
     }
 
     /// <returns> assets/database/templates/ </returns>
     public Templates GetTemplates()
     {
-        if (databaseServer.GetTables().Templates == null)
-        {
-            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates"));
-        }
-
-        return databaseServer.GetTables().Templates!;
+        return databaseServer.GetTables().Templates;
     }
 
     /// <returns> assets/database/templates/achievements.json </returns>
     public List<Achievement> GetAchievements()
     {
-        if (databaseServer.GetTables().Templates?.Achievements == null)
-        {
-            throw new Exception(
-                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/achievements.json")
-            );
-        }
-
-        return databaseServer.GetTables().Templates?.Achievements!;
+        return databaseServer.GetTables().Templates.Achievements;
     }
 
     /// <returns> assets/database/templates/customAchievements.json </returns>
     public List<Achievement> GetCustomAchievements()
     {
-        if (databaseServer.GetTables().Templates?.Achievements == null)
-        {
-            throw new Exception(
-                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/customAchievements.json")
-            );
-        }
-
-        return databaseServer.GetTables().Templates?.CustomAchievements!;
+        return databaseServer.GetTables().Templates.CustomAchievements;
     }
 
     /// <returns> assets/database/templates/customisation.json </returns>
-    public Dictionary<MongoId, CustomizationItem?> GetCustomization()
+    public Dictionary<MongoId, CustomizationItem> GetCustomization()
     {
-        if (databaseServer.GetTables().Templates?.Customization == null)
-        {
-            throw new Exception(
-                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/customization.json")
-            );
-        }
-
-        return databaseServer.GetTables().Templates?.Customization!;
+        return databaseServer.GetTables().Templates.Customization;
     }
 
     /// <returns> assets/database/templates/handbook.json </returns>
     public HandbookBase GetHandbook()
     {
-        if (databaseServer.GetTables().Templates?.Handbook == null)
-        {
-            throw new Exception(
-                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/handbook.json")
-            );
-        }
-
-        return databaseServer.GetTables().Templates?.Handbook!;
+        return databaseServer.GetTables().Templates.Handbook;
     }
 
     /// <returns> assets/database/templates/items.json </returns>
     public Dictionary<MongoId, TemplateItem> GetItems()
     {
-        if (databaseServer.GetTables().Templates?.Items == null)
-        {
-            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/items.json"));
-        }
-
-        return databaseServer.GetTables().Templates?.Items!;
+        return databaseServer.GetTables().Templates.Items;
     }
 
     /// <returns> assets/database/templates/prices.json </returns>
     public Dictionary<MongoId, double> GetPrices()
     {
-        if (databaseServer.GetTables().Templates?.Prices == null)
-        {
-            throw new Exception(
-                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/prices.json")
-            );
-        }
-
-        return databaseServer.GetTables().Templates?.Prices!;
+        return databaseServer.GetTables().Templates.Prices;
     }
 
     /// <returns> assets/database/templates/profiles.json </returns>
     public Dictionary<string, ProfileSides> GetProfileTemplates()
     {
-        if (databaseServer.GetTables().Templates?.Profiles == null)
-        {
-            throw new Exception(
-                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/profiles.json")
-            );
-        }
-
-        return databaseServer.GetTables().Templates?.Profiles!;
+        return databaseServer.GetTables().Templates.Profiles;
     }
 
     /// <returns> assets/database/templates/quests.json </returns>
-    public Dictionary<string, Quest> GetQuests()
+    public Dictionary<MongoId, Quest> GetQuests()
     {
-        if (databaseServer.GetTables().Templates?.Quests == null)
-        {
-            throw new Exception(
-                serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/templates/quests.json")
-            );
-        }
-
-        return databaseServer.GetTables().Templates?.Quests!;
+        return databaseServer.GetTables().Templates.Quests;
     }
 
     /// <returns> assets/database/traders/ </returns>
     public Dictionary<MongoId, Trader> GetTraders()
     {
-        if (databaseServer.GetTables().Traders == null)
-        {
-            throw new Exception(serverLocalisationService.GetText("database-data_at_path_missing", "assets/database/traders"));
-        }
-
-        return databaseServer.GetTables().Traders!;
+        return databaseServer.GetTables().Traders;
     }
 
     /// <summary>
@@ -273,8 +169,6 @@ public class DatabaseService(
     {
         if (!databaseServer.GetTables().Traders.TryGetValue(traderId, out var desiredTrader))
         {
-            logger.Error(serverLocalisationService.GetText("database-no_trader_found_with_id", traderId));
-
             return null;
         }
 

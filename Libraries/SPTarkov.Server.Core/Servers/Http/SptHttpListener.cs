@@ -16,22 +16,16 @@ namespace SPTarkov.Server.Core.Servers.Http;
 
 [Injectable]
 public class SptHttpListener(
-    HttpRouter _httpRouter,
-    IEnumerable<ISerializer> _serializers,
-    ISptLogger<SptHttpListener> _logger,
-    ISptLogger<RequestLogger> _requestsLogger,
-    JsonUtil _jsonUtil,
-    HttpResponseUtil _httpResponseUtil,
-    ServerLocalisationService _serverLocalisationService
+    HttpRouter httpRouter,
+    IEnumerable<ISerializer> serializers,
+    ISptLogger<SptHttpListener> logger,
+    ISptLogger<RequestLogger> requestsLogger,
+    JsonUtil jsonUtil,
+    HttpResponseUtil httpResponseUtil,
+    ServerLocalisationService serverLocalisationService
 ) : IHttpListener
 {
-    // We want to read 1KB at a time, for most request this is already big enough
-    private const int BodyReadBufferSize = 1024 * 1;
-
     private static readonly ImmutableHashSet<string> SupportedMethods = ["GET", "PUT", "POST"];
-
-    protected readonly HttpRouter _router = _httpRouter;
-    protected readonly IEnumerable<ISerializer> _serializers = _serializers;
 
     public bool CanHandle(MongoId _, HttpRequest req)
     {
@@ -60,41 +54,24 @@ public class SptHttpListener(
                 var requestCompressed = req.Method == "PUT" || requestIsCompressed;
 
                 string body;
-                using MemoryStream bufferStream = new();
-
-                var buffer = new byte[BodyReadBufferSize];
-                int bytesRead;
-
-                while ((bytesRead = await req.Body.ReadAsync(buffer)) > 0)
-                {
-                    await bufferStream.WriteAsync(buffer.AsMemory(0, bytesRead));
-                }
-
-                bufferStream.Position = 0;
 
                 if (requestCompressed)
                 {
-                    await using var deflateStream = new ZLibStream(bufferStream, CompressionMode.Decompress);
-                    await using var decompressedStream = new MemoryStream();
-                    await deflateStream.CopyToAsync(decompressedStream);
-                    decompressedStream.Position = 0;
-
-                    using var reader = new StreamReader(decompressedStream, Encoding.UTF8);
+                    await using var deflateStream = new ZLibStream(req.Body, CompressionMode.Decompress);
+                    using var reader = new StreamReader(deflateStream, Encoding.UTF8);
                     body = await reader.ReadToEndAsync();
                 }
                 else
                 {
-                    // No decompression needed, decode directly from the bufferStream's buffer
-                    bufferStream.Position = 0;
-                    using var reader = new StreamReader(bufferStream, Encoding.UTF8);
+                    using var reader = new StreamReader(req.Body, Encoding.UTF8);
                     body = await reader.ReadToEndAsync();
                 }
 
                 if (!requestIsCompressed)
                 {
-                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    if (logger.IsLogEnabled(LogLevel.Debug))
                     {
-                        _logger.Debug(body);
+                        logger.Debug(body);
                     }
                 }
 
@@ -105,7 +82,7 @@ public class SptHttpListener(
 
             default:
             {
-                _logger.Warning($"{_serverLocalisationService.GetText("unknown_request")}: {req.Method}");
+                logger.Warning($"{serverLocalisationService.GetText("unknown_request")}: {req.Method}");
                 break;
             }
         }
@@ -123,15 +100,15 @@ public class SptHttpListener(
     {
         body ??= new object();
 
-        var bodyInfo = _jsonUtil.Serialize(body);
+        var bodyInfo = jsonUtil.Serialize(body);
 
         if (IsDebugRequest(req))
         {
             // Send only raw response without transformation
             await SendJson(resp, output, sessionID);
-            if (_logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Response: {output}");
+                logger.Debug($"Response: {output}");
             }
 
             LogRequest(req, output);
@@ -139,7 +116,7 @@ public class SptHttpListener(
         }
 
         // Not debug, minority of requests need a serializer to do the job (IMAGE/BUNDLE/NOTIFY)
-        var serialiser = _serializers.FirstOrDefault(x => x.CanHandle(output));
+        var serialiser = serializers.FirstOrDefault(x => x.CanHandle(output));
         if (serialiser != null)
         {
             await serialiser.Serialize(sessionID, req, resp, bodyInfo);
@@ -173,26 +150,26 @@ public class SptHttpListener(
         if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
         {
             var log = new Response(req.Method, output);
-            _requestsLogger.Info($"RESPONSE={_jsonUtil.Serialize(log)}");
+            requestsLogger.Info($"RESPONSE={jsonUtil.Serialize(log)}");
         }
     }
 
     public async ValueTask<string> GetResponse(MongoId sessionId, HttpRequest req, string? body)
     {
-        var output = await _router.GetResponse(req, sessionId, body);
+        var output = await httpRouter.GetResponse(req, sessionId, body);
 
         // Route doesn't exist or response is not properly set up
         if (string.IsNullOrEmpty(output))
         {
-            _logger.Error(_serverLocalisationService.GetText("unhandled_response", req.Path.ToString()));
-            output = _httpResponseUtil.GetBody<object?>(null, BackendErrorCodes.HTTPNotFound, $"UNHANDLED RESPONSE: {req.Path.ToString()}");
+            logger.Error(serverLocalisationService.GetText("unhandled_response", req.Path.ToString()));
+            output = httpResponseUtil.GetBody<object?>(null, BackendErrorCodes.HTTPNotFound, $"UNHANDLED RESPONSE: {req.Path.ToString()}");
         }
 
         if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
         {
             // Parse quest info into object
             var log = new Request(req.Method, new RequestData(req.Path.ToString(), req.Headers));
-            _requestsLogger.Info($"REQUEST={_jsonUtil.Serialize(log)}");
+            requestsLogger.Info($"REQUEST={jsonUtil.Serialize(log)}");
         }
 
         return output;
@@ -203,30 +180,23 @@ public class SptHttpListener(
         resp.StatusCode = 200;
         resp.ContentType = "application/json";
         resp.Headers.Append("Set-Cookie", $"PHPSESSID={sessionID.ToString()}");
+
         if (!string.IsNullOrEmpty(output))
         {
             await resp.WriteAsync(output);
         }
-
-        await resp.StartAsync();
-        await resp.CompleteAsync();
     }
 
-    public async Task SendZlibJson(HttpResponse resp, string? output, MongoId sessionID)
+    public async Task SendZlibJson(HttpResponse resp, string output, MongoId sessionID)
     {
-        using (var ms = new MemoryStream())
+        resp.StatusCode = 200;
+        resp.ContentType = "application/json";
+        resp.Headers.Append("Set-Cookie", $"PHPSESSID={sessionID.ToString()}");
+
+        await using (var deflateStream = new ZLibStream(resp.Body, CompressionLevel.SmallestSize))
         {
-            await using (var deflateStream = new ZLibStream(ms, CompressionLevel.SmallestSize))
-            {
-                await deflateStream.WriteAsync(Encoding.UTF8.GetBytes(output));
-            }
-
-            var bytes = ms.ToArray();
-            await resp.Body.WriteAsync(bytes);
+            await deflateStream.WriteAsync(Encoding.UTF8.GetBytes(output));
         }
-
-        await resp.StartAsync();
-        await resp.CompleteAsync();
     }
 
     private record Response(string Method, string jsonData);

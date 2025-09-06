@@ -19,7 +19,7 @@ public class TraderPurchasePersisterService(
     ConfigServer configServer
 )
 {
-    protected readonly TraderConfig _traderConfig = configServer.GetConfig<TraderConfig>();
+    protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
 
     /// <summary>
     ///     Get the purchases made from a trader for this profile before the last trader reset
@@ -113,7 +113,7 @@ public class TraderPurchasePersisterService(
 
             foreach (var purchaseKvP in purchasesFromTrader)
             {
-                var traderUpdateDetails = _traderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == traderId);
+                var traderUpdateDetails = TraderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == traderId);
                 if (traderUpdateDetails is null)
                 {
                     logger.Error(

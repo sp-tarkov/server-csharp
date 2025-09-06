@@ -22,7 +22,7 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
     ///     Item properties that should be applied over the top of the cloned base
     /// </summary>
     [JsonPropertyName("overrideProperties")]
-    public Props? OverrideProperties { get; set; }
+    public TemplateItemProperties? OverrideProperties { get; set; }
 
     /// <summary>
     ///     ParentId for the new item (item type)
@@ -40,9 +40,6 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
 
 public record NewItemDetailsBase
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("fleaPriceRoubles")]
     public double? FleaPriceRoubles { get; set; }
 
@@ -58,9 +55,6 @@ public record NewItemDetailsBase
 
 public record LocaleDetails
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     [JsonPropertyName("name")]
     public string? Name { get; set; }
 
@@ -73,9 +67,6 @@ public record LocaleDetails
 
 public record CreateItemResult
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public CreateItemResult()
     {
         Success = false;

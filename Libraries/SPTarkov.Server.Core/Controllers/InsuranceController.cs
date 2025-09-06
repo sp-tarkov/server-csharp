@@ -37,12 +37,11 @@ public class InsuranceController(
     RagfairPriceService ragfairPriceService,
     ServerLocalisationService serverLocalisationService,
     SaveServer saveServer,
-    TraderStore traderStore,
     ConfigServer configServer,
     ICloner cloner
 )
 {
-    protected readonly InsuranceConfig _insuranceConfig = configServer.GetConfig<InsuranceConfig>();
+    protected readonly InsuranceConfig InsuranceConfig = configServer.GetConfig<InsuranceConfig>();
 
     /// <summary>
     ///     Process insurance items of all profiles prior to being given back to the player through the mail service
@@ -52,6 +51,11 @@ public class InsuranceController(
         // Process each installed profile.
         foreach (var (sessionId, _) in saveServer.GetProfiles())
         {
+            if (saveServer.IsProfileInvalidOrUnloadable(sessionId))
+            {
+                continue;
+            }
+
             ProcessReturnByProfile(sessionId);
         }
     }
@@ -86,6 +90,12 @@ public class InsuranceController(
         var insuranceTime = time ?? timeUtil.GetTimeStamp();
 
         var profileInsuranceDetails = saveServer.GetProfile(sessionId).InsuranceList;
+
+        if (profileInsuranceDetails is null)
+        {
+            return [];
+        }
+
         if (profileInsuranceDetails.Count > 0)
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
@@ -120,7 +130,7 @@ public class InsuranceController(
             // Update the insured items to have the new root parent ID for root/orphaned items
             insured.Items = insured.Items.AdoptOrphanedItems(rootItemParentId);
 
-            var simulateItemsBeingTaken = _insuranceConfig.SimulateItemsBeingTaken;
+            var simulateItemsBeingTaken = InsuranceConfig.SimulateItemsBeingTaken;
             if (simulateItemsBeingTaken)
             {
                 // Find items that could be taken by another player off the players body
@@ -471,7 +481,7 @@ public class InsuranceController(
         }
 
         // Draw x attachments from weighted array to remove from parent, remove from pool after being picked
-        var attachmentIdsToRemove = attachmentsProbabilityArray.Draw((int)countOfAttachmentsToRemove, false);
+        var attachmentIdsToRemove = attachmentsProbabilityArray.DrawAndRemove((int)countOfAttachmentsToRemove);
         foreach (var attachmentId in attachmentIdsToRemove)
         {
             toDelete.Add(attachmentId);
@@ -546,14 +556,14 @@ public class InsuranceController(
     {
         const int removeCount = 0;
 
-        if (randomUtil.GetChance100(_insuranceConfig.ChanceNoAttachmentsTakenPercent))
+        if (randomUtil.GetChance100(InsuranceConfig.ChanceNoAttachmentsTakenPercent))
         {
             return removeCount;
         }
 
         // Get attachments count above or equal to price set in config
         return weightedAttachmentByPrice
-            .Where(attachment => attachment.Value >= _insuranceConfig.MinAttachmentRoublePriceToBeTaken)
+            .Where(attachment => attachment.Value >= InsuranceConfig.MinAttachmentRoublePriceToBeTaken)
             .Count(_ => RollForDelete(traderId) ?? false);
     }
 
@@ -679,7 +689,7 @@ public class InsuranceController(
     /// <returns>Should item be deleted</returns>
     protected bool? RollForDelete(MongoId traderId, Item? insuredItem = null)
     {
-        var trader = traderStore.GetTraderById(traderId);
+        var trader = databaseService.GetTrader(traderId);
         if (trader is null)
         {
             return null;
@@ -689,15 +699,17 @@ public class InsuranceController(
         const int conversionFactor = 100;
 
         var returnChance = randomUtil.GetInt(0, maxRoll) / conversionFactor;
-        var traderReturnChance = _insuranceConfig.ReturnChancePercent[traderId];
+        var traderReturnChance = InsuranceConfig.ReturnChancePercent[traderId];
         var roll = returnChance >= traderReturnChance;
 
         // Log the roll with as much detail as possible.
-        var itemName = insuredItem is not null ? $"{itemHelper.GetItemName(insuredItem.Template)}" : "";
+        var itemName = insuredItem is not null ? $"{itemHelper.GetItemName(insuredItem.Template)}" : string.Empty;
         var status = roll ? "Delete" : "Keep";
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            logger.Debug($"Rolling {itemName} with {trader} - Return {traderReturnChance}% - Roll: {returnChance} - Status: {status}");
+            logger.Debug(
+                $"Rolling {itemName} with {traderId.ToString()} - Return {traderReturnChance}% - Roll: {returnChance} - Status: {status}"
+            );
         }
 
         return roll;
@@ -736,8 +748,8 @@ public class InsuranceController(
             SchemeItems = itemsToPay,
             TransactionId = request.TransactionId,
             Action = "SptInsure",
-            Type = "",
-            ItemId = "",
+            Type = string.Empty,
+            ItemId = MongoId.Empty(),
             Count = 0,
             SchemeId = 0,
         };

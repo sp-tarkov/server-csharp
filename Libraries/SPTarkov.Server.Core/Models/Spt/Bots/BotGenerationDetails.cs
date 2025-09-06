@@ -5,9 +5,6 @@ namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
 public record BotGenerationDetails
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     /// <summary>
     ///     Should the bot be generated as a PMC
     /// </summary>
@@ -81,4 +78,11 @@ public record BotGenerationDetails
     /// Map bots will be spawned on
     /// </summary>
     public string? Location { get; set; }
+
+    /// <summary>
+    /// DEFAULT: True
+    /// Should the bot container cache be cleared after generating bot equipment + loot
+    /// </summary>
+    [JsonPropertyName("clearBotContainerCacheAfterGeneration")]
+    public bool ClearBotContainerCacheAfterGeneration { get; set; } = true;
 }

@@ -4,19 +4,13 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Prestige;
 using SPTarkov.Server.Core.Models.Eft.Profile;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class PrestigeController(
-    ISptLogger<PrestigeController> logger,
-    ProfileHelper profileHelper,
-    DatabaseService databaseService,
-    SaveServer saveServer
-)
+public class PrestigeController(ProfileHelper profileHelper, DatabaseService databaseService, SaveServer saveServer)
 {
     /// <summary>
     ///     Handle /client/prestige/list

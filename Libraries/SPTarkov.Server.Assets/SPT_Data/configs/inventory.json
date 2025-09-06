@@ -1429,6 +1429,26 @@
         "55818ae44bdc2dde698b456c",
         "550aa4154bdc2dd8348b456b"
       ]
+    },
+    "67cad3226bf74131800752b7": {
+      "_type": "Unlocked equipment crate (BattlePass 0)",
+      "rewardCount": 6,
+      "foundInRaid": true,
+      "rewardTypePool": [
+        "55818ae44bdc2dde698b456c",
+        "550aa4154bdc2dd8348b456b",
+        "5448e54d4bdc2dcc718b4568",
+        "5448e5284bdc2dcb718b4567",
+        "5a341c4086f77401f2541505",
+        "55818b084bdc2d5b648b4571",
+        "5a2c3a9486f774688b05e574",
+        "644120aa86ffbe10ee032b6f",
+        "5645bcb74bdc2ded0b8b4578",
+        "5a341c4686f77469e155819e",
+        "5448eb774bdc2d0a728b4567",
+        "5c99f98d86f7745c314214b3",
+        "5c164d2286f774194c5e69fa"
+      ]
     }
   },
   "sealedAirdropContainer": {

@@ -1,4 +1,105 @@
 {
+  "BTRServerSettings": {
+    "AccelerationSpeed": 0.3,
+    "BodySwingDamping": 0.77,
+    "BodySwingIntensity": 0.506,
+    "BodySwingReturnSpeed": 1,
+    "ChanceSpawn": 70,
+    "CheckTurnDistanceTime": 60,
+    "DecelerationSpeed": 1.5,
+    "DecreaseSpeedOnTurnLimit": 0.5,
+    "EndSplineDecelerationDistance": 3,
+    "MoveSpeed": 8,
+    "PauseDurationRange": {
+      "x": 90,
+      "y": 150,
+      "z": 0
+    },
+    "ReadyToDepartureTime": 15,
+    "ServerMapBTRSettings": {
+      "Develop": {
+        "AccelerationSpeed": 0.3,
+        "BodySwingDamping": 0.6,
+        "BodySwingIntensity": 0.3,
+        "BodySwingReturnSpeed": 1,
+        "ChanceSpawn": 70,
+        "CheckTurnDistanceTime": 60,
+        "DecelerationSpeed": 1.5,
+        "DecreaseSpeedOnTurnLimit": 0.5,
+        "EndSplineDecelerationDistance": 3,
+        "MapID": "develop",
+        "MoveSpeed": 8,
+        "PauseDurationRange": {
+          "x": 90,
+          "y": 150,
+          "z": 0
+        },
+        "ReadyToDepartureTime": 15,
+        "SpawnPeriod": {
+          "x": 300,
+          "y": 600,
+          "z": 0
+        },
+        "TurnCheckSensitivity": 0.98
+      },
+      "TarkovStreets": {
+        "AccelerationSpeed": 0.3,
+        "BodySwingDamping": 0.6,
+        "BodySwingIntensity": 0.3,
+        "BodySwingReturnSpeed": 1,
+        "ChanceSpawn": 100,
+        "CheckTurnDistanceTime": 60,
+        "DecelerationSpeed": 1.5,
+        "DecreaseSpeedOnTurnLimit": 0.5,
+        "EndSplineDecelerationDistance": 3,
+        "MapID": "TarkovStreets",
+        "MoveSpeed": 8,
+        "PauseDurationRange": {
+          "x": 90,
+          "y": 150,
+          "z": 0
+        },
+        "ReadyToDepartureTime": 15,
+        "SpawnPeriod": {
+          "x": 300,
+          "y": 600,
+          "z": 0
+        },
+        "TurnCheckSensitivity": 0.98
+      },
+      "Woods": {
+        "AccelerationSpeed": 0.3,
+        "BodySwingDamping": 0.6,
+        "BodySwingIntensity": 0.3,
+        "BodySwingReturnSpeed": 1,
+        "ChanceSpawn": 100,
+        "CheckTurnDistanceTime": 60,
+        "DecelerationSpeed": 1.5,
+        "DecreaseSpeedOnTurnLimit": 0.5,
+        "EndSplineDecelerationDistance": 3,
+        "MapID": "Woods",
+        "MoveSpeed": 8,
+        "PauseDurationRange": {
+          "x": 90,
+          "y": 150,
+          "z": 0
+        },
+        "ReadyToDepartureTime": 15,
+        "SpawnPeriod": {
+          "x": 180,
+          "y": 360,
+          "z": 0
+        },
+        "TurnCheckSensitivity": 0.98
+      }
+    },
+    "SpawnPeriod": {
+      "x": 300,
+      "y": 600,
+      "z": 0
+    },
+    "TurnCheckSensitivity": 0.98
+  },
   "TraderServerSettings": {
     "TraderServices": {
       "BtrBotCover": {
@@ -30,7 +131,7 @@
           ],
           "Standings": {
             "638f541a29ffd1183d187f57": {
-              "Value": 0.03
+              "Value": 0.01
             }
           }
         },
@@ -57,7 +158,7 @@
           ],
           "Standings": {
             "638f541a29ffd1183d187f57": {
-              "Value": 0.09
+              "Value": 0.01
             }
           }
         },
@@ -102,7 +203,7 @@
           ],
           "Standings": {
             "638f541a29ffd1183d187f57": {
-              "Value": 0.18
+              "Value": 0.01
             }
           }
         },
@@ -119,106 +220,5 @@
         "UniqueItems": []
       }
     }
-  },
-  "BTRServerSettings": {
-    "AccelerationSpeed": 0.3,
-    "BodySwingDamping": 0.77,
-    "BodySwingIntensity": 0.506,
-    "BodySwingReturnSpeed": 1.0,
-    "ChanceSpawn": 70.0,
-    "CheckTurnDistanceTime": 60.0,
-    "DecelerationSpeed": 1.5,
-    "DecreaseSpeedOnTurnLimit": 0.5,
-    "EndSplineDecelerationDistance": 3.0,
-    "MoveSpeed": 8.0,
-    "PauseDurationRange": {
-      "x": 90.0,
-      "y": 150.0,
-      "z": 0.0
-    },
-    "ReadyToDepartureTime": 15.0,
-    "ServerMapBTRSettings": {
-      "Develop": {
-        "AccelerationSpeed": 0.3,
-        "BodySwingDamping": 0.6,
-        "BodySwingIntensity": 0.3,
-        "BodySwingReturnSpeed": 1.0,
-        "ChanceSpawn": 70.0,
-        "CheckTurnDistanceTime": 60.0,
-        "DecelerationSpeed": 1.5,
-        "DecreaseSpeedOnTurnLimit": 0.5,
-        "EndSplineDecelerationDistance": 3.0,
-        "MapID": "develop",
-        "MoveSpeed": 8.0,
-        "PauseDurationRange": {
-          "x": 90.0,
-          "y": 150.0,
-          "z": 0.0
-        },
-        "ReadyToDepartureTime": 15.0,
-        "SpawnPeriod": {
-          "x": 300.0,
-          "y": 600.0,
-          "z": 0.0
-        },
-        "TurnCheckSensitivity": 0.98
-      },
-      "TarkovStreets": {
-        "AccelerationSpeed": 0.3,
-        "BodySwingDamping": 0.6,
-        "BodySwingIntensity": 0.3,
-        "BodySwingReturnSpeed": 1.0,
-        "ChanceSpawn": 70.0,
-        "CheckTurnDistanceTime": 60.0,
-        "DecelerationSpeed": 1.5,
-        "DecreaseSpeedOnTurnLimit": 0.5,
-        "EndSplineDecelerationDistance": 3.0,
-        "MapID": "TarkovStreets",
-        "MoveSpeed": 8.0,
-        "PauseDurationRange": {
-          "x": 90.0,
-          "y": 150.0,
-          "z": 0.0
-        },
-        "ReadyToDepartureTime": 15.0,
-        "SpawnPeriod": {
-          "x": 300.0,
-          "y": 600.0,
-          "z": 0.0
-        },
-        "TurnCheckSensitivity": 0.98
-      },
-      "Woods": {
-        "AccelerationSpeed": 0.3,
-        "BodySwingDamping": 0.6,
-        "BodySwingIntensity": 0.3,
-        "BodySwingReturnSpeed": 1.0,
-        "ChanceSpawn": 80.0,
-        "CheckTurnDistanceTime": 60.0,
-        "DecelerationSpeed": 1.5,
-        "DecreaseSpeedOnTurnLimit": 0.5,
-        "EndSplineDecelerationDistance": 3.0,
-        "MapID": "Woods",
-        "MoveSpeed": 8.0,
-        "PauseDurationRange": {
-          "x": 90.0,
-          "y": 150.0,
-          "z": 0.0
-        },
-        "ReadyToDepartureTime": 15.0,
-        "SpawnPeriod": {
-          "x": 180.0,
-          "y": 360.0,
-          "z": 0.0
-        },
-        "TurnCheckSensitivity": 0.98
-      }
-    },
-    "SpawnPeriod": {
-      "x": 300.0,
-      "y": 600.0,
-      "z": 0.0
-    },
-    "TurnCheckSensitivity": 0.98
   }
 }

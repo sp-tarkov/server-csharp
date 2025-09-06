@@ -6,9 +6,6 @@ namespace SPTarkov.Server.Core.Models.Common;
 public record MinMax<T>
     where T : IMinMaxValue<T>
 {
-    [JsonExtensionData]
-    public Dictionary<string, object>? ExtensionData { get; set; }
-
     public MinMax(T min, T max)
     {
         Min = min;
