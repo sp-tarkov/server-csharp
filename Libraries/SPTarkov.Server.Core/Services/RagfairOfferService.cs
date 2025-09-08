@@ -170,12 +170,6 @@ public class RagfairOfferService(
     {
         // Gather all stale offers
         var staleOfferIds = ragfairOfferHolder.GetStaleOfferIds();
-
-        if (logger.IsLogEnabled(LogLevel.Debug))
-        {
-            logger.Debug($"Processing: {staleOfferIds.Count} stale offers");
-        }
-
         foreach (var offerId in staleOfferIds)
         {
             ProcessStaleOffer(offerId, false);
