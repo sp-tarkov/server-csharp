@@ -21,7 +21,7 @@ public class RagfairOfferHolder(
     /// <summary>
     /// Expired offer Ids
     /// </summary>
-    private readonly HashSet<MongoId> _expiredOfferIds = [];
+    private readonly ConcurrentBag<MongoId> _expiredOfferIds = [];
 
     /// <summary>
     /// Ragfair offer cache, keyed by offer Id
@@ -43,7 +43,7 @@ public class RagfairOfferHolder(
     /// </summary>
     private readonly ConcurrentDictionary<MongoId, HashSet<MongoId>> _fakePlayerOffers = new();
 
-    private readonly Lock _expiredOfferIdsLock = new();
+    private readonly Lock _processExpiredOffersLock = new();
     private readonly Lock _ragfairOperationLock = new();
 
     /// <summary>
@@ -60,11 +60,11 @@ public class RagfairOfferHolder(
     ///     Get a ragfair offer by its id
     /// </summary>
     /// <returns>RagfairOffer</returns>
-    public HashSet<MongoId> GetStaleOfferIds()
+    public List<MongoId> GetStaleOfferIds()
     {
-        lock (_expiredOfferIdsLock)
+        lock (_processExpiredOffersLock)
         {
-            return _expiredOfferIds;
+            return _expiredOfferIds.ToList();
         }
     }
 
@@ -107,12 +107,7 @@ public class RagfairOfferHolder(
     /// <returns>RagfairOffer list</returns>
     public List<RagfairOffer> GetOffers()
     {
-        if (!_offersById.IsEmpty)
-        {
-            return _offersById.Values.ToList();
-        }
-
-        return [];
+        return _offersById.IsEmpty ? [] : _offersById.Values.ToList();
     }
 
     /// <summary>
@@ -324,12 +319,9 @@ public class RagfairOfferHolder(
     /// <param name="staleOfferId">Id of offer to add to stale collection</param>
     public void FlagOfferAsExpired(MongoId staleOfferId)
     {
-        lock (_expiredOfferIdsLock)
+        lock (_processExpiredOffersLock)
         {
-            if (!_expiredOfferIds.Add(staleOfferId))
-            {
-                logger.Warning($"Unable to add offer: {staleOfferId} to expired offers");
-            }
+            _expiredOfferIds.Add(staleOfferId);
         }
     }
 
@@ -339,7 +331,7 @@ public class RagfairOfferHolder(
     /// <returns>Number of expired offers</returns>
     public int GetExpiredOfferCount()
     {
-        lock (_expiredOfferIdsLock)
+        lock (_processExpiredOffersLock)
         {
             return _expiredOfferIds.Count;
         }
@@ -352,7 +344,7 @@ public class RagfairOfferHolder(
     public IEnumerable<List<Item>> GetExpiredOfferItems()
     {
         List<MongoId> expiredOfferIdsCopy;
-        lock (_expiredOfferIdsLock)
+        lock (_processExpiredOffersLock)
         {
             expiredOfferIdsCopy = _expiredOfferIds.ToList();
         }
@@ -385,7 +377,7 @@ public class RagfairOfferHolder(
     /// </summary>
     public void ResetExpiredOfferIds()
     {
-        lock (_expiredOfferIdsLock)
+        lock (_processExpiredOffersLock)
         {
             _expiredOfferIds.Clear();
         }
@@ -397,24 +389,27 @@ public class RagfairOfferHolder(
     /// <param name="timestamp">Timestamp at point offer is 'expired'</param>
     public void FlagExpiredOffersAfterDate(long timestamp)
     {
-        lock (_expiredOfferIdsLock)
+        lock (_processExpiredOffersLock)
         {
-            foreach (var offer in GetOffers())
-            {
-                if (_expiredOfferIds.Contains(offer.Id) || offer.IsTraderOffer())
+            var offers = GetOffers();
+            Parallel.ForEach(
+                offers,
+                offer =>
                 {
-                    // Already flagged or trader offer (handled separately), skip
-                    continue;
-                }
-
-                if (offer.IsStale(timestamp))
-                {
-                    if (!_expiredOfferIds.Add(offer.Id))
+                    if (_expiredOfferIds.Contains(offer.Id) || offer.IsTraderOffer())
                     {
-                        logger.Warning($"Unable to add offer: {offer.Id} to expired offers as it already exists");
+                        // Already flagged or trader offer (handled separately), skip
+                        return;
                     }
+
+                    if (!offer.IsStale(timestamp))
+                    {
+                        return;
+                    }
+
+                    _expiredOfferIds.Add(offer.Id);
                 }
-            }
+            );
         }
     }
 }
