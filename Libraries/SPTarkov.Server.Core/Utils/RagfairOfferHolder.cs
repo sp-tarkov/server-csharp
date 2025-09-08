@@ -21,7 +21,7 @@ public class RagfairOfferHolder(
     /// <summary>
     /// Expired offer Ids
     /// </summary>
-    private readonly ConcurrentBag<MongoId> _expiredOfferIds = [];
+    private readonly ConcurrentDictionary<MongoId, byte> _expiredOfferIds = [];
 
     /// <summary>
     /// Ragfair offer cache, keyed by offer Id
@@ -64,7 +64,7 @@ public class RagfairOfferHolder(
     {
         lock (_processExpiredOffersLock)
         {
-            return _expiredOfferIds.ToList();
+            return _expiredOfferIds.Keys.ToList();
         }
     }
 
@@ -321,7 +321,10 @@ public class RagfairOfferHolder(
     {
         lock (_processExpiredOffersLock)
         {
-            _expiredOfferIds.Add(staleOfferId);
+            if (!_expiredOfferIds.TryAdd(staleOfferId, 0))
+            {
+                logger.Warning($"Unable to add offer: {staleOfferId} to expired offers");
+            }
         }
     }
 
@@ -346,7 +349,7 @@ public class RagfairOfferHolder(
         List<MongoId> expiredOfferIdsCopy;
         lock (_processExpiredOffersLock)
         {
-            expiredOfferIdsCopy = _expiredOfferIds.ToList();
+            expiredOfferIdsCopy = _expiredOfferIds.Keys.ToList();
         }
 
         // list of lists of item+children
@@ -396,7 +399,7 @@ public class RagfairOfferHolder(
                 offers,
                 offer =>
                 {
-                    if (_expiredOfferIds.Contains(offer.Id) || offer.IsTraderOffer())
+                    if (_expiredOfferIds.ContainsKey(offer.Id) || offer.IsTraderOffer())
                     {
                         // Already flagged or trader offer (handled separately), skip
                         return;
@@ -407,7 +410,10 @@ public class RagfairOfferHolder(
                         return;
                     }
 
-                    _expiredOfferIds.Add(offer.Id);
+                    if (!_expiredOfferIds.TryAdd(offer.Id, 0))
+                    {
+                        logger.Warning($"Unable to add offer: {offer.Id} to expired offers as it already exists");
+                    }
                 }
             );
         }
