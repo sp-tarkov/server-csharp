@@ -77,6 +77,7 @@ public class ModItemCacheService(ISptLogger<ModItemCacheService> logger, IReadOn
             if (mod.Assemblies.Any(modAssembly => ReferenceEquals(caller, modAssembly)))
             {
                 sptMod = mod;
+                break;
             }
         }
 
