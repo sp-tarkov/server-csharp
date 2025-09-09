@@ -71,16 +71,14 @@ public class ModItemCacheService(ISptLogger<ModItemCacheService> logger, IReadOn
     /// <returns>SptMod of the assembly</returns>
     private SptMod? GetModFromAssembly(Assembly caller)
     {
-        SptMod? sptMod = null;
         foreach (var mod in loadedMods)
         {
             if (mod.Assemblies.Any(modAssembly => ReferenceEquals(caller, modAssembly)))
             {
-                sptMod = mod;
-                break;
+                return mod;
             }
         }
 
-        return sptMod;
+        return null;
     }
 }
