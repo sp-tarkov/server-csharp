@@ -16,6 +16,7 @@ public class CustomItemService(
     DatabaseService databaseService,
     ItemHelper itemHelper,
     ItemBaseClassService itemBaseClassService,
+    ModItemCacheService modItemCacheService,
     ICloner cloner
 )
 {
@@ -72,6 +73,8 @@ public class CustomItemService(
             AddToWeaponShelf(newItemId);
         }
 
+        modItemCacheService.AddModItem(Assembly.GetCallingAssembly(), newItemId);
+
         result.Success = true;
         result.ItemId = newItemId;
 
@@ -115,6 +118,8 @@ public class CustomItemService(
         {
             AddToWeaponShelf(newItem.Id);
         }
+
+        modItemCacheService.AddModItem(Assembly.GetCallingAssembly(), newItem.Id);
 
         result.ItemId = newItemDetails.NewItem.Id;
         result.Success = true;
