@@ -84,6 +84,7 @@
   "modloader-checked": "已檢查",
   "modloader-checking_mod": "檢查中: %s",
   "modloader-cyclic_dependency": "發現Cyclic dependency(循環依賴). 此錯誤必須修復. 修復前伺服器無法啟動, 伺服器將關閉",
+  "modloader-load_order_conflict": "模組 `{{modOneName}}` 和模組 `{{modTwoName}}` 發現載入順序的衝突, 修復前伺服器無法啟動, 伺服器將關閉",
   "modloader-loading_mods": "ModLoader: 載入伺服器模組 %s 中...",
   "modloader-mod_has_no_main_property": "ModLoader: 模組 (%s) 不相容. 缺少一個 'main' 屬性",
   "modloader-mod_order_error": "ModLoader: order.json 中發現錯誤, 將使用預設載入順序",
