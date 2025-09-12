@@ -431,9 +431,6 @@ public record BotGlobalsMindSettings
     [JsonPropertyName("PUSH_AND_SUPPRESS_PUSH")]
     public float? PushAndSuppressPush { get; set; }
 
-    [JsonPropertyName("AGGRESSOR_LOYALTY_BONUS")]
-    public float? AggressorLoyaltyBonus { get; set; }
-
     public enum EWarnBehaviour
     {
         Default = 1,

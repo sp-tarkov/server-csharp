@@ -285,7 +285,6 @@
         "CanGrenade": true,
         "CanRun": true,
         "DamageCoeff": 1,
-        "GainSightCoef": 1.2,
         "HearingSense": 2.9,
         "PistolFireDistancePref": 35,
         "RifleFireDistancePref": 100,
@@ -438,7 +437,6 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
@@ -448,9 +446,9 @@
         "ENEMY_LIGHT_START_DIST": 90,
         "FAR_DISTANCE": 160,
         "FarDeltaTimeSec": 3,
-        "GOAL_TO_FULL_DISSAPEAR": 0.5,
-        "GOAL_TO_FULL_DISSAPEAR_GREEN": 2,
-        "GOAL_TO_FULL_DISSAPEAR_SHOOT": 0.05,
+        "GOAL_TO_FULL_DISSAPEAR": 0.2,
+        "GOAL_TO_FULL_DISSAPEAR_GREEN": 0,
+        "GOAL_TO_FULL_DISSAPEAR_SHOOT": 0.03,
         "LOOK_AROUND_DELTA": 1.1,
         "LOOK_LAST_POSENEMY_IF_NO_DANGER_SEC": 25,
         "LightOnVisionDistance": 45,
@@ -464,15 +462,14 @@
         "NO_GRASS_DIST": 8,
         "NO_GREEN_DIST": 8,
         "OLD_TIME_POINT": 11,
-
         "POSIBLE_VISION_SPACE": 1.2,
+        "VISIBILITY_CHANGE_SPEED": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 100,
         "WAIT_NEW_SENSOR": 2.1,
         "WAIT_NEW__LOOK_SENSOR": 7.8
       },
       "Mind": {
         "ACTIVE_FOLLOW_PLAYER_EVENTS": false,
-        "AGGRESSOR_LOYALTY_BONUS": 0,
         "AI_POWER_COEF": 120,
         "AMBUSH_WHEN_UNDER_FIRE": true,
         "AMBUSH_WHEN_UNDER_FIRE_TIME_RESIST": 60,
@@ -695,7 +692,7 @@
       "Aiming": {
         "AIMING_TYPE": 4,
         "ANYTIME_LIGHT_WHEN_AIM_100": 70,
-        "ANY_PART_SHOOT_TIME": 0.25,
+        "ANY_PART_SHOOT_TIME": 900,
         "BAD_SHOOTS_MAX": 1,
         "BAD_SHOOTS_MIN": 1,
         "BASE_HIT_AFFECTION_DELAY_SEC": 0.1,
@@ -833,7 +830,6 @@
         "CanGrenade": true,
         "CanRun": true,
         "DamageCoeff": 1,
-        "GainSightCoef": 1.2,
         "HearingSense": 1.25,
         "PistolFireDistancePref": 35,
         "RifleFireDistancePref": 100,
@@ -986,7 +982,6 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
@@ -996,9 +991,9 @@
         "ENEMY_LIGHT_START_DIST": 90,
         "FAR_DISTANCE": 160,
         "FarDeltaTimeSec": 3,
-        "GOAL_TO_FULL_DISSAPEAR": 0.5,
-        "GOAL_TO_FULL_DISSAPEAR_GREEN": 2,
-        "GOAL_TO_FULL_DISSAPEAR_SHOOT": 0.05,
+        "GOAL_TO_FULL_DISSAPEAR": 0.2,
+        "GOAL_TO_FULL_DISSAPEAR_GREEN": 0,
+        "GOAL_TO_FULL_DISSAPEAR_SHOOT": 0.03,
         "LOOK_AROUND_DELTA": 1.1,
         "LOOK_LAST_POSENEMY_IF_NO_DANGER_SEC": 993,
         "LightOnVisionDistance": 45,
@@ -1013,14 +1008,13 @@
         "NO_GRASS_DIST": 8,
         "NO_GREEN_DIST": 8,
         "OLD_TIME_POINT": 11,
-
         "POSIBLE_VISION_SPACE": 1.2,
+        "VISIBILITY_CHANGE_SPEED": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 100,
         "WAIT_NEW_SENSOR": 2.1,
         "WAIT_NEW__LOOK_SENSOR": 7.8
       },
       "Mind": {
-        "AGGRESSOR_LOYALTY_BONUS": 0,
         "AI_POWER_COEF": 120,
         "AMBUSH_WHEN_UNDER_FIRE": true,
         "AMBUSH_WHEN_UNDER_FIRE_TIME_RESIST": 60,
@@ -1243,7 +1237,7 @@
       "Aiming": {
         "AIMING_TYPE": 3,
         "ANYTIME_LIGHT_WHEN_AIM_100": 70,
-        "ANY_PART_SHOOT_TIME": 0.1,
+        "ANY_PART_SHOOT_TIME": 900,
         "BAD_SHOOTS_MAX": 1,
         "BAD_SHOOTS_MIN": 1,
         "BASE_HIT_AFFECTION_DELAY_SEC": 0.1,
@@ -1381,7 +1375,6 @@
         "CanGrenade": true,
         "CanRun": true,
         "DamageCoeff": 1,
-        "GainSightCoef": 1.2,
         "HearingSense": 1.25,
         "PistolFireDistancePref": 35,
         "RifleFireDistancePref": 100,
@@ -1534,7 +1527,6 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
@@ -1544,9 +1536,9 @@
         "ENEMY_LIGHT_START_DIST": 90,
         "FAR_DISTANCE": 160,
         "FarDeltaTimeSec": 3,
-        "GOAL_TO_FULL_DISSAPEAR": 0.5,
-        "GOAL_TO_FULL_DISSAPEAR_GREEN": 2,
-        "GOAL_TO_FULL_DISSAPEAR_SHOOT": 0.05,
+        "GOAL_TO_FULL_DISSAPEAR": 0.2,
+        "GOAL_TO_FULL_DISSAPEAR_GREEN": 0,
+        "GOAL_TO_FULL_DISSAPEAR_SHOOT": 0.03,
         "LOOK_AROUND_DELTA": 1.1,
         "LOOK_LAST_POSENEMY_IF_NO_DANGER_SEC": 993,
         "LightOnVisionDistance": 45,
@@ -1560,14 +1552,13 @@
         "NO_GRASS_DIST": 8,
         "NO_GREEN_DIST": 8,
         "OLD_TIME_POINT": 11,
-
         "POSIBLE_VISION_SPACE": 1.2,
+        "VISIBILITY_CHANGE_SPEED": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 100,
         "WAIT_NEW_SENSOR": 2.1,
         "WAIT_NEW__LOOK_SENSOR": 7.8
       },
       "Mind": {
-        "AGGRESSOR_LOYALTY_BONUS": 0,
         "AI_POWER_COEF": 120,
         "AMBUSH_WHEN_UNDER_FIRE": false,
         "AMBUSH_WHEN_UNDER_FIRE_TIME_RESIST": 60,
@@ -1788,7 +1779,7 @@
       "Aiming": {
         "AIMING_TYPE": 4,
         "ANYTIME_LIGHT_WHEN_AIM_100": 70,
-        "ANY_PART_SHOOT_TIME": 5,
+        "ANY_PART_SHOOT_TIME": 900,
         "BAD_SHOOTS_MAX": 3,
         "BAD_SHOOTS_MIN": 1,
         "BASE_HIT_AFFECTION_DELAY_SEC": 0.3,
@@ -1926,7 +1917,6 @@
         "CanGrenade": true,
         "CanRun": true,
         "DamageCoeff": 1,
-        "GainSightCoef": 1.2,
         "HearingSense": 2.9,
         "PistolFireDistancePref": 35,
         "RifleFireDistancePref": 100,
@@ -2079,7 +2069,6 @@
       },
       "Look": {
         "BODY_DELTA_TIME_SEARCH_SEC": 1.7,
-
         "CHECK_HEAD_ANY_DIST": false,
         "COME_TO_BODY_DIST": 1.2,
         "CloseDeltaTimeSec": 0.1,
@@ -2089,9 +2078,9 @@
         "ENEMY_LIGHT_START_DIST": 90,
         "FAR_DISTANCE": 160,
         "FarDeltaTimeSec": 3,
-        "GOAL_TO_FULL_DISSAPEAR": 0.5,
-        "GOAL_TO_FULL_DISSAPEAR_GREEN": 2,
-        "GOAL_TO_FULL_DISSAPEAR_SHOOT": 0.05,
+        "GOAL_TO_FULL_DISSAPEAR": 0.2,
+        "GOAL_TO_FULL_DISSAPEAR_GREEN": 0,
+        "GOAL_TO_FULL_DISSAPEAR_SHOOT": 0.03,
         "LOOK_AROUND_DELTA": 1.1,
         "LOOK_LAST_POSENEMY_IF_NO_DANGER_SEC": 25,
         "LightOnVisionDistance": 45,
@@ -2102,18 +2091,17 @@
         "MIDDLE_DIST_CAN_SHOOT_HEAD": false,
         "MIN_LOOK_AROUD_TIME": 20,
         "MiddleDeltaTimeSec": 1,
-        "NO_GRASS_DIST": 8,
-        "NO_GREEN_DIST": 8,
+        "NO_GRASS_DIST": 5,
+        "NO_GREEN_DIST": 5,
         "OLD_TIME_POINT": 11,
-
         "POSIBLE_VISION_SPACE": 1.2,
+        "VISIBILITY_CHANGE_SPEED": 1.2,
         "VISIBLE_DISNACE_WITH_LIGHT": 100,
         "WAIT_NEW_SENSOR": 2.1,
         "WAIT_NEW__LOOK_SENSOR": 7.8
       },
       "Mind": {
         "ACTIVE_FOLLOW_PLAYER_EVENTS": false,
-        "AGGRESSOR_LOYALTY_BONUS": 0,
         "AI_POWER_COEF": 120,
         "AMBUSH_WHEN_UNDER_FIRE": true,
         "AMBUSH_WHEN_UNDER_FIRE_TIME_RESIST": 60,

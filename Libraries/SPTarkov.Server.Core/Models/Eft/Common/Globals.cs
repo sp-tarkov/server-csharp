@@ -4368,6 +4368,9 @@ public record BotPreset
     [JsonPropertyName("UseThis")]
     public bool UseThis { get; set; }
 
+    [JsonPropertyName("VISIBILITY_CHANGE_SPEED")]
+    public float VisibilityChangeSpeed { get; set; }
+
     [JsonPropertyName("Role")]
     public string Role { get; set; }
 

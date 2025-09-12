@@ -19,9 +19,6 @@ public record BotGlobalCoreSettings
     [JsonPropertyName("VisibleDistance")]
     public float? VisibleDistance { get; set; }
 
-    [JsonPropertyName("GainSightCoef")]
-    public float? GainSightCoef { get; set; }
-
     [JsonPropertyName("ScatteringPerMeter")]
     public float? ScatteringPerMeter { get; set; }
 

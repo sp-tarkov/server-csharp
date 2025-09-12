@@ -1,35 +1,35 @@
 {
   "appearance": {
     "body": {
-      "670d1a053460753f070bb9b3": 1117,
       "670d1a396f8cc0145f0a0742": 1106,
-      "670d1a5cd2d5ce45140289c3": 1113,
+      "670d1a053460753f070bb9b3": 1117,
       "670d1a6f3460753f070bc0d9": 1111,
       "670d1a4d6f8cc0145f0a0744": 1111,
       "670d1a13e002387b8802950c": 1100,
       "670d1a81b7a8f34fce080717": 1099,
+      "670d1a5cd2d5ce45140289c3": 1113,
       "670d1a92d2d5ce4514028b90": 1097,
       "670d1a2be002387b8802950e": 1108
     },
     "feet": {
-      "670fb7d425772b9ffb0c7f3a": 1233,
-      "670fb78d5ce1f9ca3b04b6c6": 1251,
       "670fb7a4e6040a23520aa5d0": 1268,
-      "670fb7bd2e9d3564120e91c7": 1230
+      "670fb7bd2e9d3564120e91c7": 1230,
+      "670fb78d5ce1f9ca3b04b6c6": 1251,
+      "670fb7d425772b9ffb0c7f3a": 1233
     },
     "hands": {
       "5cc2e68f14c02e28b47de290": 1
     },
     "head": {
-      "670d18827ca0004a2a022603": 2002,
-      "670d18b5032591157e0c353e": 2003,
-      "670d1892d2d5ce4514027e8a": 2011,
       "670d18746f8cc0145f0a0314": 1959,
-      "670d18a3b7a8f34fce07fda9": 1989
+      "670d18a3b7a8f34fce07fda9": 1989,
+      "670d18827ca0004a2a022603": 2002,
+      "670d1892d2d5ce4514027e8a": 2011,
+      "670d18b5032591157e0c353e": 2003
     },
     "voice": {
-      "670a57f082b46e0e55096b09": 3942,
       "67199b72b79a024c140a17b7": 4035,
+      "670a57f082b46e0e55096b09": 3942,
       "6720aa2d1c5e609cb70d5528": 1988
     }
   },
@@ -118,8 +118,8 @@
       },
       "Scabbard": {
         "670ad7f1ad195290cd00da7a": 77330,
-        "601948682627df266209af05": 4388,
         "5c012ffc0db834001d23f03f": 9041,
+        "601948682627df266209af05": 4388,
         "5bead2e00db834001c062938": 8904
       },
       "Pockets": {
@@ -211,7 +211,7 @@
         "NEXT_SHOT_MISS_CHANCE_100": 100,
         "NEXT_SHOT_MISS_Y_OFFSET": 1,
         "ANYTIME_LIGHT_WHEN_AIM_100": -1,
-        "ANY_PART_SHOOT_TIME": 30,
+        "ANY_PART_SHOOT_TIME": 900,
         "WEAPON_ROOT_OFFSET": 0.35,
         "MIN_DAMAGE_TO_GET_HIT_AFFETS": 1,
         "MAX_AIM_TIME": 1.5,
@@ -309,7 +309,6 @@
       "Core": {
         "VisibleAngle": 130,
         "VisibleDistance": 110,
-        "GainSightCoef": 1,
         "ScatteringPerMeter": 0.07,
         "ScatteringClosePerMeter": 0.12,
         "DamageCoeff": 1,
@@ -470,6 +469,7 @@
         "MiddleDeltaTimeSec": 1,
         "CloseDeltaTimeSec": 0.1,
         "POSIBLE_VISION_SPACE": 1.2,
+        "VISIBILITY_CHANGE_SPEED": 1,
         "GOAL_TO_FULL_DISSAPEAR": 0.25,
         "GOAL_TO_FULL_DISSAPEAR_GREEN": 0,
         "GOAL_TO_FULL_DISSAPEAR_SHOOT": 0.0001,
@@ -749,7 +749,7 @@
         "NEXT_SHOT_MISS_CHANCE_100": 100,
         "NEXT_SHOT_MISS_Y_OFFSET": 1,
         "ANYTIME_LIGHT_WHEN_AIM_100": -1,
-        "ANY_PART_SHOOT_TIME": 30,
+        "ANY_PART_SHOOT_TIME": 900,
         "WEAPON_ROOT_OFFSET": 0.35,
         "MIN_DAMAGE_TO_GET_HIT_AFFETS": 1,
         "MAX_AIM_TIME": 1.5,
@@ -853,7 +853,6 @@
       "Core": {
         "VisibleAngle": 130,
         "VisibleDistance": 120,
-        "GainSightCoef": 1,
         "ScatteringPerMeter": 0.05,
         "ScatteringClosePerMeter": 0.1,
         "DamageCoeff": 1,
@@ -1294,7 +1293,7 @@
         "NEXT_SHOT_MISS_CHANCE_100": 100,
         "NEXT_SHOT_MISS_Y_OFFSET": 1,
         "ANYTIME_LIGHT_WHEN_AIM_100": -1,
-        "ANY_PART_SHOOT_TIME": 30,
+        "ANY_PART_SHOOT_TIME": 900,
         "WEAPON_ROOT_OFFSET": 0.35,
         "MIN_DAMAGE_TO_GET_HIT_AFFETS": 1,
         "MAX_AIM_TIME": 1.5,
@@ -1398,7 +1397,6 @@
       "Core": {
         "VisibleAngle": 140,
         "VisibleDistance": 130,
-        "GainSightCoef": 2,
         "ScatteringPerMeter": 0.05,
         "ScatteringClosePerMeter": 0.1,
         "DamageCoeff": 1,
@@ -1559,6 +1557,7 @@
         "MiddleDeltaTimeSec": 1,
         "CloseDeltaTimeSec": 0.1,
         "POSIBLE_VISION_SPACE": 1.2,
+        "VISIBILITY_CHANGE_SPEED": 2,
         "GOAL_TO_FULL_DISSAPEAR": 0.25,
         "GOAL_TO_FULL_DISSAPEAR_GREEN": 0,
         "GOAL_TO_FULL_DISSAPEAR_SHOOT": 0.0001,
@@ -1839,7 +1838,7 @@
         "NEXT_SHOT_MISS_CHANCE_100": 100,
         "NEXT_SHOT_MISS_Y_OFFSET": 1,
         "ANYTIME_LIGHT_WHEN_AIM_100": -1,
-        "ANY_PART_SHOOT_TIME": 30,
+        "ANY_PART_SHOOT_TIME": 900,
         "WEAPON_ROOT_OFFSET": 0.35,
         "MIN_DAMAGE_TO_GET_HIT_AFFETS": 1,
         "MAX_AIM_TIME": 1.5,
@@ -1937,7 +1936,6 @@
       "Core": {
         "VisibleAngle": 130,
         "VisibleDistance": 110,
-        "GainSightCoef": 1,
         "ScatteringPerMeter": 0.07,
         "ScatteringClosePerMeter": 0.12,
         "DamageCoeff": 1,
@@ -2098,6 +2096,7 @@
         "MiddleDeltaTimeSec": 1,
         "CloseDeltaTimeSec": 0.1,
         "POSIBLE_VISION_SPACE": 1.2,
+        "VISIBILITY_CHANGE_SPEED": 1,
         "GOAL_TO_FULL_DISSAPEAR": 0.25,
         "GOAL_TO_FULL_DISSAPEAR_GREEN": 0,
         "GOAL_TO_FULL_DISSAPEAR_SHOOT": 0.0001,

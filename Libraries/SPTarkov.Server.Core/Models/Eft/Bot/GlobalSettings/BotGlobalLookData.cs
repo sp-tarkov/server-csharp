@@ -61,6 +61,12 @@ public record BotGlobalLookData
     [JsonPropertyName("VISIBILITY_CHANGE_SPEED")]
     public float? VisibilityChangeSpeed { get; set; }
 
+    [JsonPropertyName("VISIBILITY_CHANGE_DECREASE_SPEED")]
+    public float? VisibilityChangeDecreaseSpeed { get; set; }
+
+    [JsonPropertyName("BASE_RUNTIME_EFFECT_K")]
+    public float? BaseRuntimeEffectK { get; set; }
+
     [JsonPropertyName("MIN_DISTANCE_VISIBILITY_CHANGE_SPEED_K")]
     public float? MinDistanceVisibilityChangeSpeedK { get; set; }
 

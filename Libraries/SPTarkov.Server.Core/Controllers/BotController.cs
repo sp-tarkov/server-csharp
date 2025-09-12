@@ -136,7 +136,7 @@ public class BotController(
                 continue;
             }
 
-            if (botDetails?.BotDifficulty is null)
+            if (botDetails?.BotDifficulty is null || !botDetails.BotDifficulty.Any())
             {
                 // Bot has no difficulty values, skip
                 logger.Warning($"Unable to find bot: {botTypeLower} difficulty values in db, skipping");
