@@ -48,6 +48,8 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
             RestrictQuestSide(quest.Id, side.Value);
         }
 
+        // TODO: Check if im missing anything?
+
         return new CreateQuestResult(true, quest.Id, null);
     }
 
