@@ -65,10 +65,10 @@ public record CreateQuestResult
     }
 
     [JsonPropertyName("success")]
-    public bool Success { get; }
+    public bool Success { get; set; }
 
     [JsonPropertyName("questId")]
-    public MongoId? QuestId { get; }
+    public MongoId? QuestId { get; set; }
 
     [JsonPropertyName("errors")]
     public List<string>? Errors { get; }

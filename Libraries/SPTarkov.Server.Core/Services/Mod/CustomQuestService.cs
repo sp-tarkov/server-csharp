@@ -23,34 +23,33 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
     public CreateQuestResult CreateQuest(NewQuestDetails newQuestDetails)
     {
         var quest = newQuestDetails.NewQuest;
+        var result = new CreateQuestResult(false, newQuestDetails.NewQuest.Id, []);
 
         var databaseQuests = databaseService.GetTables().Templates.Quests;
         if (!databaseQuests.TryAdd(quest.Id, quest))
         {
-            const string message = "A quest with the same id already exists.";
-            logger.Error(message);
-            throw new NewCustomQuestException(message);
+            result.Errors?.Add($"A quest with the id: {quest.Id.ToString()} already exists.");
+            return result;
         }
 
         var locales = newQuestDetails.Locales;
         if (locales.Count == 0)
         {
-            var message = $"No languages have been added for custom quest id: {quest.Id.ToString()}";
-            logger.Error(message);
-            throw new NewCustomQuestException(message);
+            result.Errors?.Add($"No languages have been added for custom quest id: {quest.Id.ToString()}");
+            return result;
         }
 
-        AddQuestLocales(locales);
+        AddQuestLocales(locales, result);
 
         var side = newQuestDetails.LockedToSide;
-        if (side != null)
+        if (side.HasValue)
         {
-            RestrictQuestSide(quest.Id, side.Value);
+            RestrictQuestSide(quest.Id, side.Value, result);
         }
 
-        // TODO: Check if im missing anything?
-
-        return new CreateQuestResult(true, quest.Id, null);
+        // No errors mean success
+        result.Success = result.Errors?.Count == 0;
+        return result;
     }
 
     /// <summary>
@@ -64,7 +63,7 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
         throw new NotImplementedException();
     }
 
-    private void AddQuestLocales(Dictionary<string, Dictionary<string, string>> locales)
+    private void AddQuestLocales(Dictionary<string, Dictionary<string, string>> locales, CreateQuestResult result)
     {
         var globalLocales = databaseService.GetLocales().Global;
 
@@ -72,13 +71,13 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
         {
             if (entries.Count == 0)
             {
-                logger.Error($"No locale entries have been added for language key: {languageKey}, was this intentional?");
+                result.Errors?.Add($"No locale entries have been added for language key: {languageKey}, was this intentional?");
                 continue;
             }
 
             if (!globalLocales.TryGetValue(languageKey, out var lazyLoadedLocales))
             {
-                logger.Error(
+                result.Errors?.Add(
                     $"Could not find language key: {languageKey} in global locales when adding a custom quest. This is either a typo, or this language is not supported."
                 );
                 continue;
@@ -88,7 +87,7 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
             {
                 if (localeData is null)
                 {
-                    logger.Error($"Locale data is null for language: {languageKey}");
+                    result.Errors?.Add($"Locale data is null for language: {languageKey}");
                     return null;
                 }
 
@@ -107,8 +106,9 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
     /// </summary>
     /// <param name="questId">Quest id to restrict</param>
     /// <param name="side">Side to restrict it to</param>
+    /// <param name="result">Result of the quest creation</param>
     /// <exception cref="NewCustomQuestException"></exception>
-    private void RestrictQuestSide(MongoId questId, PlayerSide side)
+    private void RestrictQuestSide(MongoId questId, PlayerSide side, CreateQuestResult result)
     {
         var questConfig = configServer.GetConfig<QuestConfig>();
 
@@ -124,9 +124,8 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
                 break;
 
             case PlayerSide.Savage:
-                var message = $"QuestId: {questId.ToString()} Savage is not a valid side for a side locked quest.";
-                logger.Error(message);
-                throw new NewCustomQuestException(message);
+                result.Errors?.Add($"QuestId: {questId.ToString()} Savage is not a valid side for a side locked quest.");
+                break;
         }
     }
 }
