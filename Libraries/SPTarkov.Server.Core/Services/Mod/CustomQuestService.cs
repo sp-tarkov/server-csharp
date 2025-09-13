@@ -4,13 +4,16 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 
 namespace SPTarkov.Server.Core.Services.Mod;
 
 [Injectable]
-public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseService databaseService, ConfigServer configServer)
+public class CustomQuestService(
+    DatabaseService databaseService,
+    ConfigServer configServer,
+    ServerLocalisationService serverLocalisationService
+)
 {
     /// <summary>
     ///     Create a new custom quest from a NewQuestDetails object.
@@ -26,14 +29,14 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
         var databaseQuests = databaseService.GetTables().Templates.Quests;
         if (!databaseQuests.TryAdd(quest.Id, quest))
         {
-            result.Errors.Add($"A quest with the id: {quest.Id.ToString()} already exists.");
+            result.Errors.Add(serverLocalisationService.GetText("custom-quest-service_quest_id_already_exists"));
             return result;
         }
 
         var locales = newQuestDetails.Locales;
         if (locales.Count == 0)
         {
-            result.Errors.Add($"No languages have been added for custom quest id: {quest.Id.ToString()}");
+            result.Errors.Add(serverLocalisationService.GetText("custom-quest-service_no_languages_for_quest"));
             return result;
         }
 
@@ -58,15 +61,13 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
         {
             if (entries.Count == 0)
             {
-                result.Errors?.Add($"No locale entries have been added for language key: {languageKey}, was this intentional?");
+                result.Errors?.Add(serverLocalisationService.GetText("custom-quest-service_no_entries_for_language"));
                 continue;
             }
 
             if (!globalLocales.TryGetValue(languageKey, out var lazyLoadedLocales))
             {
-                result.Errors?.Add(
-                    $"Could not find language key: {languageKey} in global locales when adding a custom quest. This is either a typo, or this language is not supported."
-                );
+                result.Errors?.Add(serverLocalisationService.GetText("custom-quest-service_could_not_find_language_key"));
                 continue;
             }
 
@@ -74,7 +75,7 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
             {
                 if (localeData is null)
                 {
-                    result.Errors?.Add($"Locale data is null for language: {languageKey}");
+                    result.Errors?.Add(serverLocalisationService.GetText("custom-quest-service_locale_data_null"));
                     return null;
                 }
 
@@ -111,7 +112,7 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
                 break;
 
             case PlayerSide.Savage:
-                result.Errors.Add($"QuestId: {questId.ToString()} Savage is not a valid side for a side locked quest.");
+                result.Errors.Add(serverLocalisationService.GetText("custom-quest-service_invalid_side"));
                 break;
         }
     }
