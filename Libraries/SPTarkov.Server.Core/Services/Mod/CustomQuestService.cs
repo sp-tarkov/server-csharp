@@ -1,41 +1,49 @@
+using System.Reflection;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Exceptions.Mods;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Services.Mod;
 
 // TODO: LOCALIZE THE ERRORS
 
 [Injectable]
-public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseService databaseService, ConfigServer configServer)
+public class CustomQuestService(
+    ISptLogger<CustomQuestService> logger,
+    DatabaseService databaseService,
+    ConfigServer configServer,
+    ICloner cloner
+)
 {
     /// <summary>
     ///     Create a new custom quest from a NewQuestDetails object.
     /// </summary>
     /// <param name="newQuestDetails">Quest details to be used for creation</param>
-    /// <returns>Result of the quest creation, if this is returned and no exceptions are thrown its safe to assume the quest was added successfully</returns>
+    /// <returns>Result of the quest creation, remember to check it for errors!</returns>
     /// <exception cref="NewCustomQuestException">Thrown if the id already exists, or no languages have been added.</exception>
     public CreateQuestResult CreateQuest(NewQuestDetails newQuestDetails)
     {
         var quest = newQuestDetails.NewQuest;
-        var result = new CreateQuestResult(false, newQuestDetails.NewQuest.Id, []);
+        var result = new CreateQuestResult(false, newQuestDetails.NewQuest.Id);
 
         var databaseQuests = databaseService.GetTables().Templates.Quests;
         if (!databaseQuests.TryAdd(quest.Id, quest))
         {
-            result.Errors?.Add($"A quest with the id: {quest.Id.ToString()} already exists.");
+            result.Errors.Add($"A quest with the id: {quest.Id.ToString()} already exists.");
             return result;
         }
 
         var locales = newQuestDetails.Locales;
         if (locales.Count == 0)
         {
-            result.Errors?.Add($"No languages have been added for custom quest id: {quest.Id.ToString()}");
+            result.Errors.Add($"No languages have been added for custom quest id: {quest.Id.ToString()}");
             return result;
         }
 
@@ -48,7 +56,7 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
         }
 
         // No errors mean success
-        result.Success = result.Errors?.Count == 0;
+        result.Success = result.Errors.Count == 0;
         return result;
     }
 
@@ -60,7 +68,56 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
     /// <exception cref="NotImplementedException"></exception>
     public CreateQuestResult CreateQuestFromClone(NewQuestFromCloneDetails clonedDetails)
     {
-        throw new NotImplementedException();
+        var questTable = databaseService.GetTables().Templates.Quests;
+        var result = new CreateQuestResult(false, null);
+
+        if (questTable.ContainsKey(clonedDetails.NewQuestId))
+        {
+            result.Errors.Add($"A quest with id: {clonedDetails.NewQuestId.ToString()} already exists.");
+            return result;
+        }
+
+        result.QuestId = clonedDetails.NewQuestId;
+
+        if (!questTable.TryGetValue(clonedDetails.QuestTplToClone, out var quest))
+        {
+            result.Errors.Add($"Could not find quest: {clonedDetails.QuestTplToClone.ToString()} to clone in the database.");
+            return result;
+        }
+
+        var questClone = cloner.Clone(quest);
+        if (questClone is null)
+        {
+            result.Errors.Add($"Cloned quest: {quest.Id} was null after cloning. This should never happen. Open an issue.");
+            return result;
+        }
+
+        questClone.Id = clonedDetails.NewQuestId;
+        OverrideQuestData(clonedDetails, questClone, result);
+
+        var side = clonedDetails.LockedToSide;
+        var questConfig = configServer.GetConfig<QuestConfig>();
+
+        // No overriden value, use the original quests side lock
+        if (!side.HasValue)
+        {
+            if (questConfig.UsecOnlyQuests.Contains(quest.Id))
+            {
+                questConfig.UsecOnlyQuests.Add(questClone.Id);
+            }
+
+            if (questConfig.BearOnlyQuests.Contains(quest.Id))
+            {
+                questConfig.BearOnlyQuests.Add(questClone.Id);
+            }
+        }
+        // Use overriden value
+        else
+        {
+            RestrictQuestSide(questClone.Id, side.Value, result);
+        }
+
+        return result;
     }
 
     private void AddQuestLocales(Dictionary<string, Dictionary<string, string>> locales, CreateQuestResult result)
@@ -91,9 +148,9 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
                     return null;
                 }
 
-                foreach (var entry in entries)
+                foreach (var (key, entry) in entries)
                 {
-                    localeData[entry.Key] = entry.Value;
+                    localeData[key] = entry;
                 }
 
                 return localeData;
@@ -124,7 +181,66 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
                 break;
 
             case PlayerSide.Savage:
-                result.Errors?.Add($"QuestId: {questId.ToString()} Savage is not a valid side for a side locked quest.");
+                result.Errors.Add($"QuestId: {questId.ToString()} Savage is not a valid side for a side locked quest.");
+                break;
+        }
+    }
+
+    /// <summary>
+    ///     Overrides properties of the quest.
+    /// </summary>
+    /// <param name="clonedDetails">Cloned details to pull the new data from</param>
+    /// <param name="clonedQuest">Quest to update</param>
+    /// <param name="result">Result of the modification</param>
+    private void OverrideQuestData(NewQuestFromCloneDetails clonedDetails, Quest clonedQuest, CreateQuestResult result)
+    {
+        foreach (var member in typeof(Quest).GetMembers())
+        {
+            switch (member.Name)
+            {
+                case "Conditions":
+                    OverrideQuestConditionMembers(clonedDetails, clonedQuest, result);
+                    continue;
+                case "Rewards":
+                    OverrideQuestRewardMembers(clonedDetails, clonedQuest, result);
+                    continue;
+            }
+
+            // Get the value for this member from the cloned quest
+            var overrideMemberObj = GetMemberObject(member, clonedDetails.QuestOverrideData);
+            if (overrideMemberObj is null)
+            {
+                // Nothing to set
+                continue;
+            }
+
+            SetMemberObjectValue(member, clonedQuest, overrideMemberObj);
+        }
+    }
+
+    private void OverrideQuestConditionMembers(NewQuestFromCloneDetails clonedDetails, Quest clonedQuest, CreateQuestResult result) { }
+
+    private void OverrideQuestRewardMembers(NewQuestFromCloneDetails clonedDetails, Quest clonedQuest, CreateQuestResult result) { }
+
+    private object? GetMemberObject(MemberInfo member, object instance)
+    {
+        return member.MemberType switch
+        {
+            MemberTypes.Field => ((PropertyInfo)member).GetValue(instance),
+            MemberTypes.Property => ((FieldInfo)member).GetValue(instance),
+            _ => null,
+        };
+    }
+
+    private void SetMemberObjectValue(MemberInfo member, object instance, object value)
+    {
+        switch (member.MemberType)
+        {
+            case MemberTypes.Field:
+                ((FieldInfo)member).SetValue(instance, value);
+                break;
+            case MemberTypes.Property:
+                ((PropertyInfo)member).SetValue(instance, value);
                 break;
         }
     }

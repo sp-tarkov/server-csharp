@@ -6,24 +6,21 @@ using SPTarkov.Server.Core.Models.Enums;
 namespace SPTarkov.Server.Core.Models.Spt.Mod;
 
 /// <summary>
-///     New quest detail object for use with the CustomQuestService.<br/><br/>
-///
-/// It is recommended to build these objects manually rather than deserializing directly to it. This will keep you from
-/// having to store locale data inside a quest file, or only having a single quest and associated locale in the same file. <br/><br/>
-///
-///
+///     New quest detail object for use with the CustomQuestService.
 /// </summary>
 public record NewQuestDetails
 {
     /// <summary>
     ///     Quest to be added to the database
     /// </summary>
+    [JsonPropertyName("newQuest")]
     public required Quest NewQuest { get; init; }
 
     /// <summary>
     ///     Locales for this quest. The primary key is the language to add to locale entries to<br/>
     /// The secondary key is the locale key, the value is the locale text itself.
     /// </summary>
+    [JsonPropertyName("locales")]
     public required Dictionary<string, Dictionary<string, string>> Locales { get; init; }
 
     /// <summary>
@@ -32,6 +29,7 @@ public record NewQuestDetails
     ///
     /// If not used, this should be left null to keep the quest open to both Usec and Bears.
     /// </summary>
+    [JsonPropertyName("lockedToSide")]
     public PlayerSide? LockedToSide { get; init; }
 }
 
@@ -46,30 +44,41 @@ public record NewQuestFromCloneDetails
     ///     Id of the quest to copy and use as a base
     /// </summary>
     [JsonPropertyName("questTplToClone")]
-    public required MongoId QuestTplToClone { get; set; }
+    public required MongoId QuestTplToClone { get; init; }
 
-    // TODO: Fill out
+    /// <summary>
+    ///     New quest id for the cloned quest.
+    /// </summary>
+    [JsonPropertyName("newQuestId")]
+    public required MongoId NewQuestId { get; init; }
+
+    /// <summary>
+    ///     Quest override data.
+    /// </summary>
+    [JsonPropertyName("QuestOverrideData")]
+    public required Quest QuestOverrideData { get; init; }
+
+    /// <summary>
+    ///     Only Usec and Bear are valid entries here,
+    /// if used it will lock that quest to only being available to that specific side.<br/><br/>
+    ///
+    /// If the original quest is side locked and this is not set (left null), this clone will also be side locked to the respective side.
+    /// </summary>
+    [JsonPropertyName("lockedToSide")]
+    public PlayerSide? LockedToSide { get; init; }
 }
 
 /// <summary>
 ///     Result from either creating a new quest or cloning one.
 /// </summary>
-public record CreateQuestResult
+public record CreateQuestResult(bool Success, MongoId? QuestId)
 {
-    // TODO: Find a way to shut this stupid inspection up. This CANNOT be a primary constructor you stupid ass linter, it would break equality.
-    public CreateQuestResult(bool success, MongoId? questId, List<string>? errors)
-    {
-        Success = success;
-        QuestId = questId;
-        Errors = errors;
-    }
-
     [JsonPropertyName("success")]
-    public bool Success { get; set; }
+    public bool Success { get; set; } = Success;
 
     [JsonPropertyName("questId")]
-    public MongoId? QuestId { get; set; }
+    public MongoId? QuestId { get; set; } = QuestId;
 
     [JsonPropertyName("errors")]
-    public List<string>? Errors { get; }
+    public List<string> Errors { get; } = [];
 }
