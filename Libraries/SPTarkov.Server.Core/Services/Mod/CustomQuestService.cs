@@ -19,7 +19,6 @@ public class CustomQuestService(
     /// </summary>
     /// <param name="newQuestDetails">Quest details to be used for creation</param>
     /// <returns>Result of the quest creation, remember to check it for errors!</returns>
-    /// <exception cref="NewCustomQuestException">Thrown if the id already exists, or no languages have been added.</exception>
     public CreateQuestResult CreateQuest(NewQuestDetails newQuestDetails)
     {
         var quest = newQuestDetails.NewQuest;
@@ -28,14 +27,14 @@ public class CustomQuestService(
         var databaseQuests = databaseService.GetTables().Templates.Quests;
         if (!databaseQuests.TryAdd(quest.Id, quest))
         {
-            result.Errors.Add(serverLocalisationService.GetText("custom-quest-service_quest_id_already_exists"));
+            result.Errors.Add(serverLocalisationService.GetText("custom-quest-service_quest_id_already_exists", quest.Id));
             return result;
         }
 
         var locales = newQuestDetails.Locales;
         if (locales.Count == 0)
         {
-            result.Errors.Add(serverLocalisationService.GetText("custom-quest-service_no_languages_for_quest"));
+            result.Errors.Add(serverLocalisationService.GetText("custom-quest-service_no_languages_for_quest", quest.Id));
             return result;
         }
 
@@ -52,6 +51,11 @@ public class CustomQuestService(
         return result;
     }
 
+    /// <summary>
+    ///     Adds quest locales to the database
+    /// </summary>
+    /// <param name="locales">locales to add</param>
+    /// <param name="result">create quest result</param>
     private void AddQuestLocales(Dictionary<string, Dictionary<string, string>> locales, CreateQuestResult result)
     {
         var globalLocales = databaseService.GetLocales().Global;
@@ -60,13 +64,13 @@ public class CustomQuestService(
         {
             if (entries.Count == 0)
             {
-                result.Errors?.Add(serverLocalisationService.GetText("custom-quest-service_no_entries_for_language"));
+                result.Errors?.Add(serverLocalisationService.GetText("custom-quest-service_no_entries_for_language", languageKey));
                 continue;
             }
 
             if (!globalLocales.TryGetValue(languageKey, out var lazyLoadedLocales))
             {
-                result.Errors?.Add(serverLocalisationService.GetText("custom-quest-service_could_not_find_language_key"));
+                result.Errors?.Add(serverLocalisationService.GetText("custom-quest-service_could_not_find_language_key", languageKey));
                 continue;
             }
 
@@ -74,7 +78,7 @@ public class CustomQuestService(
             {
                 if (localeData is null)
                 {
-                    result.Errors?.Add(serverLocalisationService.GetText("custom-quest-service_locale_data_null"));
+                    result.Errors?.Add(serverLocalisationService.GetText("custom-quest-service_locale_data_null", languageKey));
                     return null;
                 }
 
@@ -94,7 +98,6 @@ public class CustomQuestService(
     /// <param name="questId">Quest id to restrict</param>
     /// <param name="side">Side to restrict it to</param>
     /// <param name="result">Result of the quest creation</param>
-    /// <exception cref="NewCustomQuestException"></exception>
     private void RestrictQuestSide(MongoId questId, PlayerSide side, CreateQuestResult result)
     {
         var questConfig = configServer.GetConfig<QuestConfig>();
@@ -111,7 +114,7 @@ public class CustomQuestService(
                 break;
 
             case PlayerSide.Savage:
-                result.Errors.Add(serverLocalisationService.GetText("custom-quest-service_invalid_side"));
+                result.Errors.Add(serverLocalisationService.GetText("custom-quest-service_invalid_side", result.QuestId));
                 break;
         }
     }
