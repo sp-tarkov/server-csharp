@@ -34,41 +34,6 @@ public record NewQuestDetails
 }
 
 /// <summary>
-///     Cloned quest object for cloning and modifying an existing quest.<br/><br/>
-///
-/// If you load after another mod, you can even clone a quest from that mod provided you know the Id.
-/// </summary>
-public record NewQuestFromCloneDetails
-{
-    /// <summary>
-    ///     Id of the quest to copy and use as a base
-    /// </summary>
-    [JsonPropertyName("questTplToClone")]
-    public required MongoId QuestTplToClone { get; init; }
-
-    /// <summary>
-    ///     New quest id for the cloned quest.
-    /// </summary>
-    [JsonPropertyName("newQuestId")]
-    public required MongoId NewQuestId { get; init; }
-
-    /// <summary>
-    ///     Quest override data.
-    /// </summary>
-    [JsonPropertyName("QuestOverrideData")]
-    public required Quest QuestOverrideData { get; init; }
-
-    /// <summary>
-    ///     Only Usec and Bear are valid entries here,
-    /// if used it will lock that quest to only being available to that specific side.<br/><br/>
-    ///
-    /// If the original quest is side locked and this is not set (left null), this clone will also be side locked to the respective side.
-    /// </summary>
-    [JsonPropertyName("lockedToSide")]
-    public PlayerSide? LockedToSide { get; init; }
-}
-
-/// <summary>
 ///     Result from either creating a new quest or cloning one.
 /// </summary>
 public record CreateQuestResult(bool Success, MongoId? QuestId)
