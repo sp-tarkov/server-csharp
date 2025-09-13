@@ -14,42 +14,79 @@ namespace SPTarkov.Server.Core.Models.Eft.Bot.GlobalSettings;
 /// </summary>
 public record BotGlobalsMindSettings
 {
+    /// <summary>
+    /// Should the bot ignore damage from grenades
+    /// </summary>
     [JsonPropertyName("GRENADE_DAMAGE_IGNORE")]
     public bool? GrenadeDamageIgnore { get; set; }
 
+    /// <summary>
+    /// Min. number of shots fired at random at the position from which fire was conducted at close range
+    /// </summary>
     [JsonPropertyName("MIN_SHOOTS_TIME")]
     public int? MinShootsTime { get; set; }
 
+    /// <summary>
+    /// Max number of shots fired at random at the position from which the fire was conducted at close range
+    /// </summary>
     [JsonPropertyName("MAX_SHOOTS_TIME")]
     public int? MaxShootsTime { get; set; }
 
+    /// <summary>
+    /// The bot can only punish after this amount of time has passed since the last enemy it saw disappeared from the field.
+    /// </summary>
     [JsonPropertyName("TIME_TO_RUN_TO_COVER_CAUSE_SHOOT_SEC")]
     public float? TimeToRunToCoverCauseShootSec { get; set; }
 
+    /// <summary>
+    /// The time after which the bot will restore its characteristics after receiving damage
+    /// </summary>
     [JsonPropertyName("DAMAGE_REDUCTION_TIME_SEC")]
     public float? DamageReductionTimeSec { get; set; }
 
+    /// <summary>
+    /// Minimum damage a bot must take to get a danger point
+    /// default 20
+    /// </summary>
     [JsonPropertyName("MIN_DAMAGE_SCARE")]
     public float? MinDamageScare { get; set; }
 
+    /// <summary>
+    /// The probability that a bot will run if it is hit while it is in cover and cannot/cannot see to shoot at the enemy
+    /// </summary>
     [JsonPropertyName("CHANCE_TO_RUN_CAUSE_DAMAGE_0_100")]
     public float? ChanceToRunCauseDamage0100 { get; set; }
 
+    /// <summary>
+    /// After X seconds, the enemy stops being given out by the task distributor to bots
+    /// </summary>
     [JsonPropertyName("TIME_TO_FORGOR_ABOUT_ENEMY_SEC")]
     public float? TimeToForgorAboutEnemySec { get; set; }
 
+    /// <summary>
+    /// After X seconds the bot will search for the enemy by coming to the place of his last vision! must be less than TIME_TO_FORGOR_ABOUT_ENEMY_SEC
+    /// </summary>
     [JsonPropertyName("TIME_TO_FIND_ENEMY")]
     public float? TimeToFindEnemy { get; set; }
 
     [JsonPropertyName("MAX_AGGRO_BOT_DIST")]
     public float? MaxAggroBotDist { get; set; }
 
+    /// <summary>
+    /// The coefficient of accuracy of perception of the position from which the player was hit is higher - more accurate
+    /// </summary>
     [JsonPropertyName("HIT_POINT_DETECTION")]
     public float? HitPointDetection { get; set; }
 
+    /// <summary>
+    /// Danger point coefficient when seeking shelter. Danger point
+    /// </summary>
     [JsonPropertyName("DANGER_POINT_CHOOSE_COEF")]
     public float? DangerPointChooseCoef { get; set; }
 
+    /// <summary>
+    /// Danger point coefficient when seeking shelter. Simple point
+    /// </summary>
     [JsonPropertyName("SIMPLE_POINT_CHOOSE_COEF")]
     public float? SimplePointChooseCoef { get; set; }
 
@@ -62,15 +99,27 @@ public record BotGlobalsMindSettings
     [JsonPropertyName("DIST_TO_FOUND_SQRT")]
     public float? DistToFoundSqrt { get; set; }
 
+    /// <summary>
+    /// Does the player search for the opponent when there is a GoalTarget?
+    /// </summary>
     [JsonPropertyName("SEARCH_TARGET")]
     public bool? SearchTarget { get; set; }
 
+    /// <summary>
+    /// if the flag is set on at least one bot in a bot group, then the entire group becomes hostile, in which there is one hostile PMC player
+    /// </summary>
     [JsonPropertyName("ENEMY_BY_GROUPS_PMC_PLAYERS")]
     public bool? EnemyByGroupsPmcPlayers { get; set; }
 
+    /// <summary>
+    /// if the flag is set on at least one bot in a bot group, then the entire group becomes hostile, which contains one hostile wild player
+    /// </summary>
     [JsonPropertyName("ENEMY_BY_GROUPS_SAVAGE_PLAYERS")]
     public bool? EnemyByGroupsSavagePlayers { get; set; }
 
+    /// <summary>
+    /// If true then bosses do not change their behavior for a player with a high reputation as a fencer
+    /// </summary>
     [JsonPropertyName("BOSS_IGNORE_LOYALTY")]
     public bool? BossIgnoreLoyalty { get; set; }
 
@@ -128,6 +177,9 @@ public record BotGlobalsMindSettings
     [JsonPropertyName("DIST_TO_STOP_RUN_ENEMY")]
     public float? DistToStopRunEnemy { get; set; }
 
+    /// <summary>
+    /// The angle at which the bot understands that the enemy is looking at it
+    /// </summary>
     [JsonPropertyName("ENEMY_LOOK_AT_ME_ANG")]
     public float? EnemyLookAtMeAng { get; set; }
 
@@ -137,18 +189,31 @@ public record BotGlobalsMindSettings
     [JsonPropertyName("MAX_START_AGGRESION_COEF")]
     public float? MaxStartAggresionCoef { get; set; }
 
+    /// <summary>
+    /// Distance from which a bot can "feel" a bullet
+    /// </summary>
     [JsonPropertyName("BULLET_FEEL_DIST")]
     public float? BulletFeelDist { get; set; }
 
     [JsonPropertyName("BULLET_FEEL_CLOSE_SDIST")]
     public float? BulletFeelCloseSdist { get; set; }
 
+    /// <summary>
+    /// Chance that after losing sight of an enemy and not having a new one, the bot will immediately go looking for an enemy.
+    /// Only applicable for attack tactics. (Then there is a check for your own strength and the strength of the enemy.)
+    /// </summary>
     [JsonPropertyName("ATTACK_IMMEDIATLY_CHANCE_0_100")]
     public float? AttackImmediatlyChance0100 { get; set; }
 
+    /// <summary>
+    /// Chance to show a faq when the bot sees the player
+    /// </summary>
     [JsonPropertyName("CHANCE_FUCK_YOU_ON_CONTACT_100")]
     public float? ChanceFuckYouOnContact100 { get; set; }
 
+    /// <summary>
+    /// How much does a bot's aggression drop if someone in its group is killed?
+    /// </summary>
     [JsonPropertyName("FRIEND_DEAD_AGR_LOW")]
     public float? FriendDeadAgrLow { get; set; }
 
@@ -233,12 +298,19 @@ public record BotGlobalsMindSettings
     [JsonPropertyName("DIST_TO_ENEMY_YO_CAN_HEAL")]
     public float? DistToEnemyYoCanHeal { get; set; }
 
+    /// <summary>
+    /// Chance that after the first 2 actions when warning the bot will stand and wait for the next 4 seconds
+    /// </summary>
     [JsonPropertyName("CHANCE_TO_STAY_WHEN_WARN_PLAYER_100")]
     public float? ChanceToStayWhenWarnPlayer100 { get; set; }
 
     [JsonPropertyName("DOG_FIGHT_OUT")]
     public float? DogFightOut { get; set; }
 
+    /// <summary>
+    /// Will enter dogfight
+    /// default 3
+    /// </summary>
     [JsonPropertyName("DOG_FIGHT_IN")]
     public float? DogFightIn { get; set; }
 
@@ -296,6 +368,9 @@ public record BotGlobalsMindSettings
     [JsonPropertyName("PANIC_SIT_WEIGHT_PEACE")]
     public float? PanicSitWeightPeace { get; set; }
 
+    /// <summary>
+    /// Can a bot execute requests?
+    /// </summary>
     [JsonPropertyName("CAN_EXECUTE_REQUESTS")]
     public bool? CanExecuteRequests { get; set; }
 
@@ -332,6 +407,9 @@ public record BotGlobalsMindSettings
     [JsonPropertyName("MAX_DIST_TO_PERSUE_AXEMAN")]
     public float? MaxDistToPersueAxeman { get; set; }
 
+    /// <summary>
+    /// Use surgeon kit only from safe container
+    /// </summary>
     [JsonPropertyName("SURGE_KIT_ONLY_SAFE_CONTAINER")]
     public bool? SurgeKitOnlySafeContainer { get; set; }
 
@@ -344,6 +422,9 @@ public record BotGlobalsMindSettings
     [JsonPropertyName("FOOD_DRINK_DELAY_SEC")]
     public float? FoodDrinkDelaySec { get; set; }
 
+    /// <summary>
+    /// What exactly to do when you come to a corpse 1 - use a medicine kit 2 - loot. Default - watch. public bool CAN_TALK = true;
+    /// </summary>
     [JsonPropertyName("HOW_WORK_OVER_DEAD_BODY")]
     public int? HowWorkOverDeadBody { get; set; }
 
@@ -368,6 +449,9 @@ public record BotGlobalsMindSettings
     [JsonPropertyName("ACTIVE_FOLLOW_PLAYER_EVENTS")]
     public bool? ActiveFollowPlayerEvents { get; set; }
 
+    /// <summary>
+    /// The bot can be called to help by the boss (for example, Tagilla or Boar
+    /// </summary>
     [JsonPropertyName("MAY_BE_CALLED_FOR_HELP")]
     public bool? MayBeCalledForHelp { get; set; }
 
@@ -389,9 +473,15 @@ public record BotGlobalsMindSettings
     [JsonPropertyName("SNIPER_FIRE_IMMUNE")]
     public bool? SniperFireImmune { get; set; }
 
+    /// <summary>
+    /// If the flag is set, then enemies are added only for reasons from the VALID_REASONS_TO_ADD_ENEMY list.
+    /// </summary>
     [JsonPropertyName("USE_ADD_TO_ENEMY_VALIDATION")]
     public bool? UseAddToEnemyValidation { get; set; }
 
+    /// <summary>
+    /// List of valid reasons for adding enemies, provided that the USE_ADD_TO_ENEMY_VALIDATION flag is set
+    /// </summary>
     [JsonPropertyName("VALID_REASONS_TO_ADD_ENEMY")]
     public List<EBotEnemyCause>? ValidReasonsToAddEnemy { get; set; }
 
@@ -428,6 +518,9 @@ public record BotGlobalsMindSettings
     [JsonPropertyName("PUSH_AND_SUPPRESS_HIDE")]
     public float? PushAndSuppressHide { get; set; }
 
+    /// <summary>
+    /// For the PushAndSuppressLayer layer, the distance from which the bot will push HARD
+    /// </summary>
     [JsonPropertyName("PUSH_AND_SUPPRESS_PUSH")]
     public float? PushAndSuppressPush { get; set; }
 

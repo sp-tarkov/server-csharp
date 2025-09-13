@@ -49,6 +49,9 @@ public record BotGlobalsScatteringSettings
     [JsonPropertyName("ToStopBotAngularSpeed")]
     public float? ToStopBotAngularSpeed { get; set; }
 
+    /// <summary>
+    /// Degrees\How much the bot's spread angle diverges when it is hit, multiplied by the damage
+    /// </summary>
     [JsonPropertyName("FromShot")]
     public float? FromShot { get; set; }
 
@@ -61,6 +64,9 @@ public record BotGlobalsScatteringSettings
     [JsonPropertyName("HandDamageAccuracySpeed")]
     public float? HandDamageAccuracySpeed { get; set; }
 
+    /// <summary>
+    /// Float\to Coefficient of change in working circle of accuracy during bleeding
+    /// </summary>
     [JsonPropertyName("BloodFall")]
     public float? BloodFall { get; set; }
 
@@ -94,6 +100,9 @@ public record BotGlobalsScatteringSettings
     [JsonPropertyName("PoseChnageCoef")]
     public float? PoseChangeCoef { get; set; }
 
+    /// <summary>
+    /// At the moment of changing the position to prone/non-prone, the current circle of convergence will increase by X
+    /// </summary>
     [JsonPropertyName("LayFactor")]
     public float? LayFactor { get; set; }
 

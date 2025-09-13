@@ -280,12 +280,21 @@ public record BotGlobalShootData
     [JsonPropertyName("MISS_AFTER_SPRINT")]
     public bool? MissAfterSprint { get; set; }
 
+    /// <summary>
+    /// The bot misses the head
+    /// </summary>
     [JsonPropertyName("MISS_TO_HEAD")]
     public bool? MissToHead { get; set; }
 
+    /// <summary>
+    /// The bot misses while moving
+    /// </summary>
     [JsonPropertyName("MISS_ON_MOVE")]
     public bool? MissOnMove { get; set; }
 
+    /// <summary>
+    /// Bot misses during transition animations
+    /// </summary>
     [JsonPropertyName("MISS_ON_TRANSITION")]
     public bool? MissOnTransition { get; set; }
 }

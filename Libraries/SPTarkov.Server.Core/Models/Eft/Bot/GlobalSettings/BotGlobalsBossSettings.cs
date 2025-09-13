@@ -236,6 +236,9 @@ public record BotGlobalsBossSettings
     [JsonPropertyName("KOJANIY_DIST_WHEN_READY")]
     public float? KojaniyDistWhenReady { get; set; }
 
+    /// <summary>
+    /// to calculate the number of enemies, this radius is taken into account
+    /// </summary>
     [JsonPropertyName("KOJANIY_DIST_TO_BE_ENEMY")]
     public float? KojaniyDistToBeEnemy { get; set; }
 

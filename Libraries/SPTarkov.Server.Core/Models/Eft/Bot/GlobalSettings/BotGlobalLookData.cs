@@ -13,6 +13,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Bot.GlobalSettings;
 /// </summary>
 public record BotGlobalLookData
 {
+    /// <summary>
+    /// The lifetime of the point up to which the bot will pay attention to it with the standard inspection algorithm
+    /// </summary>
     [JsonPropertyName("OLD_TIME_POINT")]
     public float? OldTimePoint { get; set; }
 
@@ -67,6 +70,9 @@ public record BotGlobalLookData
     [JsonPropertyName("BASE_RUNTIME_EFFECT_K")]
     public float? BaseRuntimeEffectK { get; set; }
 
+    /// <summary>
+    /// The maximum value of the coefficient of the speed of change of the visibility scale at a minimum distance. The higher it is, the faster the scale will increase near the enemy
+    /// </summary>
     [JsonPropertyName("MIN_DISTANCE_VISIBILITY_CHANGE_SPEED_K")]
     public float? MinDistanceVisibilityChangeSpeedK { get; set; }
 
@@ -148,21 +154,36 @@ public record BotGlobalLookData
     [JsonPropertyName("VISIBLE_ANG_NIGHTVISION")]
     public float? VisibleAngNightvision { get; set; }
 
+    /// <summary>
+    /// if the distance between players is less than X then grass and foliage are ignored at the Layers level
+    /// </summary>
     [JsonPropertyName("NO_GREEN_DIST")]
     public float? NoGreenDist { get; set; }
 
+    /// <summary>
+    /// if the distance between players is less than X then grass is ignored at the Layers level
+    /// </summary>
     [JsonPropertyName("NO_GRASS_DIST")]
     public float? NoGrassDist { get; set; }
 
+    /// <summary>
+    /// Coefficient applied to the speed of notice if the bot is inside the bush
+    /// </summary>
     [JsonPropertyName("INSIDE_BUSH_COEF")]
     public float? InsideBushCoef { get; set; }
 
+    /// <summary>
+    /// what curve to use for vision range by time of day
+    /// </summary>
     [JsonPropertyName("SELF_NIGHTVISION")]
     public bool? SelfNightvision { get; set; }
 
     [JsonPropertyName("FULL_SECTOR_VIEW")]
     public bool? FullSectorView { get; set; }
 
+    /// <summary>
+    /// How many seconds after being hit will you be able to see through the greenery?
+    /// </summary>
     [JsonPropertyName("LOOK_THROUGH_PERIOD_BY_HIT")]
     public float? LookThroughPeriodByHit { get; set; }
 
