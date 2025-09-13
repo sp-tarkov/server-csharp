@@ -80,7 +80,7 @@ public class CustomQuestService(ISptLogger<CustomQuestService> logger, DatabaseS
 
                 foreach (var (key, entry) in entries)
                 {
-                    localeData[key] = entry;
+                    localeData.TryAdd(key, entry);
                 }
 
                 return localeData;
