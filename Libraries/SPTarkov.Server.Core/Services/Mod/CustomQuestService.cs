@@ -60,66 +60,6 @@ public class CustomQuestService(
         return result;
     }
 
-    /// <summary>
-    ///     TODO: Not implemented
-    /// </summary>
-    /// <param name="clonedDetails">Cloned quest details to use for quest creation</param>
-    /// <returns>Result of the quest creation, if this is returned and no exceptions are thrown its safe to assume the quest was added successfully</returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public CreateQuestResult CreateQuestFromClone(NewQuestFromCloneDetails clonedDetails)
-    {
-        var questTable = databaseService.GetTables().Templates.Quests;
-        var result = new CreateQuestResult(false, null);
-
-        if (questTable.ContainsKey(clonedDetails.NewQuestId))
-        {
-            result.Errors.Add($"A quest with id: {clonedDetails.NewQuestId.ToString()} already exists.");
-            return result;
-        }
-
-        result.QuestId = clonedDetails.NewQuestId;
-
-        if (!questTable.TryGetValue(clonedDetails.QuestTplToClone, out var quest))
-        {
-            result.Errors.Add($"Could not find quest: {clonedDetails.QuestTplToClone.ToString()} to clone in the database.");
-            return result;
-        }
-
-        var questClone = cloner.Clone(quest);
-        if (questClone is null)
-        {
-            result.Errors.Add($"Cloned quest: {quest.Id} was null after cloning. This should never happen. Open an issue.");
-            return result;
-        }
-
-        questClone.Id = clonedDetails.NewQuestId;
-        OverrideQuestData(clonedDetails, questClone, result);
-
-        var side = clonedDetails.LockedToSide;
-        var questConfig = configServer.GetConfig<QuestConfig>();
-
-        // No overriden value, use the original quests side lock
-        if (!side.HasValue)
-        {
-            if (questConfig.UsecOnlyQuests.Contains(quest.Id))
-            {
-                questConfig.UsecOnlyQuests.Add(questClone.Id);
-            }
-
-            if (questConfig.BearOnlyQuests.Contains(quest.Id))
-            {
-                questConfig.BearOnlyQuests.Add(questClone.Id);
-            }
-        }
-        // Use overriden value
-        else
-        {
-            RestrictQuestSide(questClone.Id, side.Value, result);
-        }
-
-        return result;
-    }
-
     private void AddQuestLocales(Dictionary<string, Dictionary<string, string>> locales, CreateQuestResult result)
     {
         var globalLocales = databaseService.GetLocales().Global;
@@ -182,65 +122,6 @@ public class CustomQuestService(
 
             case PlayerSide.Savage:
                 result.Errors.Add($"QuestId: {questId.ToString()} Savage is not a valid side for a side locked quest.");
-                break;
-        }
-    }
-
-    /// <summary>
-    ///     Overrides properties of the quest.
-    /// </summary>
-    /// <param name="clonedDetails">Cloned details to pull the new data from</param>
-    /// <param name="clonedQuest">Quest to update</param>
-    /// <param name="result">Result of the modification</param>
-    private void OverrideQuestData(NewQuestFromCloneDetails clonedDetails, Quest clonedQuest, CreateQuestResult result)
-    {
-        foreach (var member in typeof(Quest).GetMembers())
-        {
-            switch (member.Name)
-            {
-                case "Conditions":
-                    OverrideQuestConditionMembers(clonedDetails, clonedQuest, result);
-                    continue;
-                case "Rewards":
-                    OverrideQuestRewardMembers(clonedDetails, clonedQuest, result);
-                    continue;
-            }
-
-            // Get the value for this member from the cloned quest
-            var overrideMemberObj = GetMemberObject(member, clonedDetails.QuestOverrideData);
-            if (overrideMemberObj is null)
-            {
-                // Nothing to set
-                continue;
-            }
-
-            SetMemberObjectValue(member, clonedQuest, overrideMemberObj);
-        }
-    }
-
-    private void OverrideQuestConditionMembers(NewQuestFromCloneDetails clonedDetails, Quest clonedQuest, CreateQuestResult result) { }
-
-    private void OverrideQuestRewardMembers(NewQuestFromCloneDetails clonedDetails, Quest clonedQuest, CreateQuestResult result) { }
-
-    private object? GetMemberObject(MemberInfo member, object instance)
-    {
-        return member.MemberType switch
-        {
-            MemberTypes.Field => ((FieldInfo)member).GetValue(instance),
-            MemberTypes.Property => ((PropertyInfo)member).GetValue(instance),
-            _ => null,
-        };
-    }
-
-    private void SetMemberObjectValue(MemberInfo member, object instance, object value)
-    {
-        switch (member.MemberType)
-        {
-            case MemberTypes.Field:
-                ((FieldInfo)member).SetValue(instance, value);
-                break;
-            case MemberTypes.Property:
-                ((PropertyInfo)member).SetValue(instance, value);
                 break;
         }
     }
