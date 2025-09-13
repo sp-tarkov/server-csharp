@@ -226,8 +226,8 @@ public class CustomQuestService(
     {
         return member.MemberType switch
         {
-            MemberTypes.Field => ((PropertyInfo)member).GetValue(instance),
-            MemberTypes.Property => ((FieldInfo)member).GetValue(instance),
+            MemberTypes.Field => ((FieldInfo)member).GetValue(instance),
+            MemberTypes.Property => ((PropertyInfo)member).GetValue(instance),
             _ => null,
         };
     }
