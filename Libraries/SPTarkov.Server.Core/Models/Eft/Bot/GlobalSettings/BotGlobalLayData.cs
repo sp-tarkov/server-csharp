@@ -13,6 +13,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 /// </summary>
 public record BotGlobalLayData
 {
+    /// <summary>
+    /// When lying down, checks whether it is possible to shoot from this position at the last known position of the enemy. (If not, then it can lie down around the corner, etc.)
+    /// </summary>
     [JsonPropertyName("CHECK_SHOOT_WHEN_LAYING")]
     public bool? CheckShootWhenLaying { get; set; }
 

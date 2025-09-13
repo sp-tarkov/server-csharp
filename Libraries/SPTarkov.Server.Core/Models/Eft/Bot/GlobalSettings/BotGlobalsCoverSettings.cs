@@ -103,12 +103,18 @@ public record BotGlobalsCoverSettings
     [JsonPropertyName("DEPENDS_Y_DIST_TO_BOT")]
     public bool? DependsYDistToBot { get; set; }
 
+    /// <summary>
+    /// The bot will run to cover if it is closer than X
+    /// </summary>
     [JsonPropertyName("RUN_IF_FAR")]
     public float? RunIfFar { get; set; }
 
     [JsonPropertyName("RUN_IF_FAR_SQRT")]
     public float? RunIfFarSqrt { get; set; }
 
+    /// <summary>
+    /// The bot will go shooting into cover if it is closer than X but more than RUN_IF_FAR
+    /// </summary>
     [JsonPropertyName("STAY_IF_FAR")]
     public float? StayIfFar { get; set; }
 
@@ -157,6 +163,9 @@ public record BotGlobalsCoverSettings
     [JsonPropertyName("MIN_TO_ENEMY_TO_BE_NOT_SAFE_SQRT")]
     public float? MinToEnemyToBeNotSafeSqrt { get; set; }
 
+    /// <summary>
+    /// If the enemy is closer than X to this point, the bot will consider that it is impossible to hide there.
+    /// </summary>
     [JsonPropertyName("MIN_TO_ENEMY_TO_BE_NOT_SAFE")]
     public float? MinToEnemyToBeNotSafe { get; set; }
 
@@ -184,6 +193,10 @@ public record BotGlobalsCoverSettings
     [JsonPropertyName("CAN_END_SHOOT_FROM_COVER_CAUSE_STATIONARY_RADIUS")]
     public float? CanEndShootFromCoverCauseStationaryRadius { get; set; }
 
+    /// <summary>
+    /// If the enemy is visible (we are not under fire) and closer than X meters, then we stop holding.
+    /// default 15
+    /// </summary>
     [JsonPropertyName("END_HOLD_IF_ENEMY_CLOSE_AND_VISIBLE")]
     public float? EndHoldIfEnemyCloseAndVisible { get; set; }
 
@@ -211,6 +224,9 @@ public record BotGlobalsCoverSettings
     [JsonPropertyName("CAN_LAY_TO_COVER_DIST_LOOK_TO_ENEMY")]
     public float? CanLayToCoverDistLookToEnemy { get; set; }
 
+    /// <summary>
+    /// Can it lie down in shelters if it is of the lying type?
+    /// </summary>
     [JsonPropertyName("CAN_LAY_TO_COVER")]
     public bool? CanLayToCover { get; set; }
 }
