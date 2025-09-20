@@ -27,10 +27,6 @@ public class HttpServer(
             await webSocketServer.OnConnection(context);
             return;
         }
-        else
-        {
-            await next(context);
-        }
 
         // Use default empty mongoId if not found in cookie
         var sessionId = context.Request.Cookies.TryGetValue("PHPSESSID", out var sessionIdString)
