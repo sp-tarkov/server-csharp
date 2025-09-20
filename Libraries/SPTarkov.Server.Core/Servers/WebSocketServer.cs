@@ -10,6 +10,11 @@ namespace SPTarkov.Server.Core.Servers;
 [Injectable(InjectionType.Singleton)]
 public class WebSocketServer(IEnumerable<IWebSocketConnectionHandler> webSocketConnectionHandler, ISptLogger<WebSocketServer> logger)
 {
+    public bool CanHandle(HttpContext context)
+    {
+        return webSocketConnectionHandler.Any(wsh => context.Request.Path.Value.Contains(wsh.GetHookUrl()));
+    }
+
     public async Task OnConnection(HttpContext httpContext)
     {
         var socket = await httpContext.WebSockets.AcceptWebSocketAsync();

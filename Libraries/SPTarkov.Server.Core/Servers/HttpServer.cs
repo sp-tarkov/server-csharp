@@ -22,10 +22,14 @@ public class HttpServer(
 
     public async Task HandleRequest(HttpContext context, RequestDelegate next)
     {
-        if (context.WebSockets.IsWebSocketRequest)
+        if (context.WebSockets.IsWebSocketRequest && webSocketServer.CanHandle(context))
         {
             await webSocketServer.OnConnection(context);
             return;
+        }
+        else
+        {
+            await next(context);
         }
 
         // Use default empty mongoId if not found in cookie
