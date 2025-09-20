@@ -20,8 +20,10 @@ public class StatusPage(TimeUtil timeUtil, ProfileActivityService profileActivit
         return req.Method == "GET" && req.Path.Value.Contains("/status");
     }
 
-    public async Task Handle(MongoId sessionId, HttpRequest req, HttpResponse resp)
+    public async Task Handle(MongoId sessionId, RequestDelegate next, HttpContext context)
     {
+        var resp = context.Response;
+
         var sptVersion = $"SPT version: {ProgramStatics.SPT_VERSION()}";
         var debugEnabled = $"Debug enabled: {ProgramStatics.DEBUG()}";
         var modsEnabled = $"Mods enabled: {ProgramStatics.MODS()}";
