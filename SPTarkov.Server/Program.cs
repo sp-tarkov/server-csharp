@@ -116,8 +116,6 @@ public static class Program
 
     private static void ConfigureWebApp(WebApplication app)
     {
-        app.UseSptBlazor();
-
         app.UseWebSockets(
             new WebSocketOptions
             {
@@ -134,6 +132,8 @@ public static class Program
                 await context.RequestServices.GetRequiredService<HttpServer>().HandleRequest(context, next);
             }
         );
+
+        app.UseSptBlazor();
     }
 
     private static void ConfigureKestrel(WebApplicationBuilder builder)
