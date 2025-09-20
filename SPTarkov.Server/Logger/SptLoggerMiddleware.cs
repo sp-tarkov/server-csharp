@@ -29,7 +29,7 @@ public class SptLoggerMiddleware(
         }
 
         var realIp = context.Connection.RemoteIpAddress ?? IPAddress.Parse("127.0.0.1");
-        LogRequest(context, realIp, IsPrivateOrLocalAddress(realIp));
+        LogRequest(context, realIp, IsPrivateOrLocalAddress(realIp), context.WebSockets.IsWebSocketRequest);
 
         try
         {
@@ -57,15 +57,33 @@ public class SptLoggerMiddleware(
     /// <param name="context">HttpContext of request</param>
     /// <param name="clientIp">Ip of requester</param>
     /// <param name="isLocalRequest">Is this local request</param>
-    protected void LogRequest(HttpContext context, IPAddress clientIp, bool isLocalRequest)
+    protected void LogRequest(HttpContext context, IPAddress clientIp, bool isLocalRequest, bool isWSRequest)
     {
-        if (isLocalRequest)
+        if (isWSRequest)
         {
-            logger.Info(serverLocalisationService.GetText("client_request", context.Request.Path.Value));
+            if (isLocalRequest)
+            {
+                logger.Info(serverLocalisationService.GetText("websocket_request", context.Request.Path.Value));
+            }
+            else
+            {
+                logger.Info(
+                    serverLocalisationService.GetText("websocket_request_ip", new { ip = clientIp, url = context.Request.Path.Value })
+                );
+            }
         }
         else
         {
-            logger.Info(serverLocalisationService.GetText("client_request_ip", new { ip = clientIp, url = context.Request.Path.Value }));
+            if (isLocalRequest)
+            {
+                logger.Info(serverLocalisationService.GetText("client_request", context.Request.Path.Value));
+            }
+            else
+            {
+                logger.Info(
+                    serverLocalisationService.GetText("client_request_ip", new { ip = clientIp, url = context.Request.Path.Value })
+                );
+            }
         }
     }
 
