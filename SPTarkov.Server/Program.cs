@@ -120,7 +120,7 @@ public static class Program
         app.UseMiddleware<SptLoggerMiddleware>();
 
         app.Use(
-            async (HttpContext context, RequestDelegate _) =>
+            async (HttpContext context, RequestDelegate next) =>
             {
                 await context.RequestServices.GetRequiredService<HttpServer>().HandleRequest(context, next);
             }
