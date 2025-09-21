@@ -21,25 +21,31 @@ public class SptHttpListener(
     ISptLogger<SptHttpListener> logger,
     ISptLogger<RequestLogger> requestsLogger,
     JsonUtil jsonUtil,
-    HttpResponseUtil httpResponseUtil,
-    ServerLocalisationService serverLocalisationService
+    HttpResponseUtil httpResponseUtil
 ) : IHttpListener
 {
     private static readonly ImmutableHashSet<string> SupportedMethods = ["GET", "PUT", "POST"];
 
-    public bool CanHandle(MongoId _, HttpRequest req)
+    public bool CanHandle(MongoId _, HttpContext context)
     {
-        return SupportedMethods.Contains(req.Method);
+        return SupportedMethods.Contains(context.Request.Method) && httpRouter.CanHandle(context);
     }
 
-    public async Task Handle(MongoId sessionId, HttpRequest req, HttpResponse resp)
+    public async Task Handle(MongoId sessionId, HttpContext context)
     {
-        switch (req.Method)
+        switch (context.Request.Method)
         {
             case "GET":
             {
-                var response = await GetResponse(sessionId, req, null);
-                await SendResponse(sessionId, req, resp, null, response);
+                var response = await GetResponse(sessionId, context, null);
+
+                // Another handler is already handling this, or no handler was found.
+                if (response is null)
+                {
+                    return;
+                }
+
+                await SendResponse(sessionId, context.Request, context.Response, null, response);
                 break;
             }
             // these are handled almost identically.
@@ -50,20 +56,21 @@ public class SptHttpListener(
                 // determine if the payload is compressed. All PUT requests are, and POST requests without
                 // debug = 1 are as well. This should be fixed.
                 // let compressed = req.headers["content-encoding"] === "deflate";
-                var requestIsCompressed = !req.Headers.TryGetValue("requestcompressed", out var compressHeader) || compressHeader != "0";
-                var requestCompressed = req.Method == "PUT" || requestIsCompressed;
+                var requestIsCompressed =
+                    !context.Request.Headers.TryGetValue("requestcompressed", out var compressHeader) || compressHeader != "0";
+                var requestCompressed = context.Request.Method == "PUT" || requestIsCompressed;
 
                 string body;
 
                 if (requestCompressed)
                 {
-                    await using var deflateStream = new ZLibStream(req.Body, CompressionMode.Decompress);
+                    await using var deflateStream = new ZLibStream(context.Request.Body, CompressionMode.Decompress);
                     using var reader = new StreamReader(deflateStream, Encoding.UTF8);
                     body = await reader.ReadToEndAsync();
                 }
                 else
                 {
-                    using var reader = new StreamReader(req.Body, Encoding.UTF8);
+                    using var reader = new StreamReader(context.Request.Body, Encoding.UTF8);
                     body = await reader.ReadToEndAsync();
                 }
 
@@ -75,14 +82,15 @@ public class SptHttpListener(
                     }
                 }
 
-                var response = await GetResponse(sessionId, req, body);
-                await SendResponse(sessionId, req, resp, body, response);
-                break;
-            }
+                var response = await GetResponse(sessionId, context, body);
 
-            default:
-            {
-                logger.Warning($"{serverLocalisationService.GetText("unknown_request")}: {req.Method}");
+                // Another handler is already handling this, or no handler was found.
+                if (response is null)
+                {
+                    return;
+                }
+
+                await SendResponse(sessionId, context.Request, context.Response, body, response);
                 break;
             }
         }
@@ -154,21 +162,24 @@ public class SptHttpListener(
         }
     }
 
-    public async ValueTask<string> GetResponse(MongoId sessionId, HttpRequest req, string? body)
+    public async ValueTask<string> GetResponse(MongoId sessionId, HttpContext context, string? body)
     {
-        var output = await httpRouter.GetResponse(req, sessionId, body);
+        var output = await httpRouter.GetResponse(context.Request, sessionId, body);
 
         // Route doesn't exist or response is not properly set up
         if (string.IsNullOrEmpty(output))
         {
-            logger.Error(serverLocalisationService.GetText("unhandled_response", req.Path.ToString()));
-            output = httpResponseUtil.GetBody<object?>(null, BackendErrorCodes.HTTPNotFound, $"UNHANDLED RESPONSE: {req.Path.ToString()}");
+            output = httpResponseUtil.GetBody<object?>(
+                null,
+                BackendErrorCodes.HTTPNotFound,
+                $"UNHANDLED RESPONSE: {context.Request.Path.ToString()}"
+            );
         }
 
         if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
         {
             // Parse quest info into object
-            var log = new Request(req.Method, new RequestData(req.Path.ToString(), req.Headers));
+            var log = new Request(context.Request.Method, new RequestData(context.Request.Path.ToString(), context.Request.Headers));
             requestsLogger.Info($"REQUEST={jsonUtil.Serialize(log)}");
         }
 

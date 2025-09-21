@@ -15,13 +15,15 @@ public class StatusPage(TimeUtil timeUtil, ProfileActivityService profileActivit
 {
     protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
-    public bool CanHandle(MongoId sessionId, HttpRequest req)
+    public bool CanHandle(MongoId sessionId, HttpContext context)
     {
-        return req.Method == "GET" && req.Path.Value.Contains("/status");
+        return context.Request.Method == "GET" && context.Request.Path.Value.Contains("/status");
     }
 
-    public async Task Handle(MongoId sessionId, HttpRequest req, HttpResponse resp)
+    public async Task Handle(MongoId sessionId, HttpContext context)
     {
+        var resp = context.Response;
+
         var sptVersion = $"SPT version: {ProgramStatics.SPT_VERSION()}";
         var debugEnabled = $"Debug enabled: {ProgramStatics.DEBUG()}";
         var modsEnabled = $"Mods enabled: {ProgramStatics.MODS()}";

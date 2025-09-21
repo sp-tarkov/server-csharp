@@ -10,6 +10,11 @@ namespace SPTarkov.Server.Core.Servers;
 [Injectable(InjectionType.Singleton)]
 public class WebSocketServer(IEnumerable<IWebSocketConnectionHandler> webSocketConnectionHandler, ISptLogger<WebSocketServer> logger)
 {
+    public bool CanHandle(HttpContext context)
+    {
+        return webSocketConnectionHandler.Any(wsh => context.Request.Path.Value.Contains(wsh.GetHookUrl()));
+    }
+
     public async Task OnConnection(HttpContext httpContext)
     {
         var socket = await httpContext.WebSockets.AcceptWebSocketAsync();
@@ -22,16 +27,6 @@ public class WebSocketServer(IEnumerable<IWebSocketConnectionHandler> webSocketC
 
         var cts = new CancellationTokenSource();
         var wsToken = cts.Token;
-
-        if (!socketHandlers.Any())
-        {
-            var message =
-                $"Socket connection received for url {context.Request.Path.Value}, but there is no websocket handler configured for it!";
-            logger.Debug(message);
-            await webSocket.CloseAsync(WebSocketCloseStatus.ProtocolError, message, CancellationToken.None);
-            return;
-        }
-
         var webSocketIdContext = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff");
 
         if (logger.IsLogEnabled(LogLevel.Debug))

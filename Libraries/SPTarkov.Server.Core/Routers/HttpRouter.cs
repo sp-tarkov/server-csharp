@@ -8,6 +8,12 @@ namespace SPTarkov.Server.Core.Routers;
 [Injectable]
 public class HttpRouter(IEnumerable<StaticRouter> staticRouters, IEnumerable<DynamicRouter> dynamicRoutes)
 {
+    public bool CanHandle(HttpContext context)
+    {
+        return staticRouters.Any(sr => sr.CanHandle(context.Request.Path.Value, false))
+            || dynamicRoutes.Any(dr => dr.CanHandle(context.Request.Path.Value, true));
+    }
+
     public async ValueTask<string?> GetResponse(HttpRequest req, MongoId sessionID, string? body)
     {
         var wrapper = new ResponseWrapper("");
