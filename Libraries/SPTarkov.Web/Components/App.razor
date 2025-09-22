@@ -2,35 +2,18 @@
 <html lang="en">
 
 <head>
-    <base href="/pages" />
+    <base href="/" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <ImportMap />
-    <HeadOutlet @rendermode="PageRenderMode" />
+    <HeadOutlet />
 </head>
 <body>
-
-    <Routes @rendermode="PageRenderMode" />
-    <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
-    </div>
-
+    <Routes/>
     <script src="/_framework/blazor.web.js"></script>
 </body>
 
 </html>
 
 @code {
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
-
-    private IComponentRenderMode? PageRenderMode
-    {
-        get
-        {
-            return HttpContext.AcceptsInteractiveRouting() ? InteractiveServer : null;
-        }
-    }
 }
