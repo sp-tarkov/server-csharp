@@ -1,0 +1,418 @@
+﻿@page "/"
+@using Microsoft.JSInterop
+@using MudBlazor
+@using SPTarkov.Web.Components.Layout
+@inject IJSRuntime JSRuntime
+<PageTitle>Thank You - Single Player Tarkov - Version 4 Contributors</PageTitle>
+
+<HeadContent>
+    <link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet" />
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&amp;family=Roboto:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet">
+</HeadContent>
+
+<MudThemeProvider Theme="@_theme" IsDarkMode="true" />
+<div class="video-background">
+    <video autoplay muted loop playsinline>
+        <source src="_content/SPTarkov.Web/thank-you/background.mp4" type="video/mp4" />
+    </video>
+    <div class="video-overlay"></div>
+</div>
+
+<MudContainer Class="main-container">
+    <MudPaper Class="main-content-paper" Square="false">
+        <MudContainer MaxWidth="MaxWidth.Medium">
+            <MudStack AlignItems="AlignItems.Center">
+                <MudStack class="thank-you-section" AlignItems="AlignItems.Center">
+                    <MudText Typo="Typo.h1" Align="Align.Center">
+                        Thank You
+                    </MudText>
+                    <MudText Typo="Typo.h2" Color="Color.Warning" Align="Align.Center">
+                        Version 4 Contributors
+                    </MudText>
+                </MudStack>
+
+                <MudStack>
+                    <MudText Typo="Typo.body1" Align="Align.Center" Class="intro">
+                        The release of Single Player Tarkov Version 4 would not have been possible without the incredible dedication, talent, and passion of our amazing community. From core developers to modders, testers to documentation writers, each person listed here has contributed to making SPT what it is today.
+                    </MudText>
+
+                    <MudText Typo="Typo.body1" Align="Align.Center" Class="intro">
+                        To everyone who spent countless hours debugging, coding, testing, and supporting the project, this is for you. Your work has transformed the way thousands experience Tarkov, and we are forever grateful.
+                    </MudText>
+                </MudStack>
+
+                <MudStack class="contributor-section">
+                    <MudGrid Justify="Justify.Center">
+                        @foreach (var contributor in ShuffledContributors)
+                        {
+                            <MudItem xs="10" sm="5" md="4">
+                                <MudCard Class="contributor-card" @onclick="() => TriggerConfetti(false, contributor)">
+                                    <MudCardContent Class="contributor-card-content">
+                                        <MudText Typo="Typo.caption" Align="Align.Center" Class="contributor-name">
+                                            @contributor
+                                        </MudText>
+                                    </MudCardContent>
+                                </MudCard>
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </MudStack>
+
+                <MudText Typo="Typo.body1" Align="Align.Center" Class="closing-text">
+                    Every commit, every bug report, every line of code, and every moment of support has shaped this project. You are the heart of Single Player Tarkov.
+                </MudText>
+
+                <MudText Typo="Typo.body1" Align="Align.Center" Class="patreon-divider">
+                    Patreon Supporters
+                </MudText>
+
+                <MudStack Style="max-width: 800px;">
+                    <MudText Typo="Typo.body1" Align="Align.Center" Class="intro">
+                        A special thank you to our generous Patreon supporters whose financial contributions have helped sustain and grow the SPT project. Your support enables us to maintain infrastructure, develop new features, and keep this project alive for everyone to enjoy.
+                    </MudText>
+
+                    <MudText Typo="Typo.caption" Align="Align.Center" Class="patreon-disclaimer">
+                        The following list includes supporters who opted to be publicly recognized. To all our supporters not listed here, whether by choice or oversight, please know that your contributions are equally valued and deeply appreciated. Every single patron, visible or not, makes this project possible. ♥️
+                    </MudText>
+                </MudStack>
+
+                <MudStack class="contributor-section patreon-section">
+                    <MudGrid Justify="Justify.Center">
+                        @foreach (var supporter in ShuffledPatreonSupporters)
+                        {
+                            <MudItem xs="10" sm="5" md="4">
+                                <MudCard Class="contributor-card patreon-card" @onclick="() => TriggerConfetti(true, supporter)">
+                                    <MudCardContent Class="patreon-card-content">
+                                        <MudStack Direction="Row" AlignItems="AlignItems.Center" Justify="Justify.Center">
+                                            <MudIcon Icon="@Icons.Material.Filled.Star" Color="Color.Warning" Size="Size.Small" />
+                                            <MudText Typo="Typo.caption" Align="Align.Center" Class="patreon-name">
+                                                @supporter
+                                            </MudText>
+                                        </MudStack>
+                                    </MudCardContent>
+                                </MudCard>
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </MudStack>
+
+                <MudContainer Class="signature">
+                    <MudText HtmlTag="p" Align="Align.Center">
+                        With deepest gratitude,<br />
+                        The SPT Team
+                    </MudText>
+                </MudContainer>
+            </MudStack>
+        </MudContainer>
+    </MudPaper>
+</MudContainer>
+
+<MudContainer Class="footer-container">
+    <MudText Typo="Typo.caption">
+        The <MudText Typo="Typo.caption" Style="font-weight: bold;">SPT</MudText> project is not affiliated with Battlestate Games Ltd. in any way. All trademarks are property of their respective owners.
+    </MudText>
+</MudContainer>
+
+<style>
+    .video-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -2;
+        overflow: hidden;
+    }
+
+    .video-background video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.75);
+        z-index: -1;
+    }
+
+    .contributor-section {
+        border: 1px solid rgba(255, 193, 7, 0.1);
+        background: rgba(0, 0, 0, 0.3);
+        padding: 2rem 1rem;
+    }
+
+    .patreon-section {
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.05), rgba(0, 0, 0, 0.3));
+        border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .main-container {
+        position: relative;
+        z-index: 1;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        min-height: 100vh;
+    }
+
+    .header-section {
+        margin-bottom: 2rem;
+    }
+
+    .main-content-paper {
+        background: repeating-linear-gradient(-45deg, rgba(12, 12, 19, 0.6), rgba(12, 12, 19, 0.6) 10px, rgba(15, 15, 24, 0.6) 10px, rgba(15, 15, 24, 0.6) 20px), rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 193, 7, 0.2);
+        padding: 2rem 1.5rem;
+        margin: 2rem auto;
+        max-width: 95ch;
+        width: 90%;
+    }
+
+    .closing-text {
+        font-size: 1.25rem;
+        font-weight: 300;
+        margin-bottom: 2rem;
+        font-style: italic;
+    }
+
+    .thank-you-section h1 {
+        font-size: 3rem;
+        font-weight: 100;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(45deg, #ffc107, #fff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .thank-you-section h2 {
+        font-size: 1.5rem;
+        font-weight: 300;
+        margin-bottom: 2rem;
+        color: #ffc107;
+    }
+
+    .intro-alert,
+    .patreon-alert {
+        background: rgba(33, 150, 243, 0.1) !important;
+        border-color: rgba(33, 150, 243, 0.3) !important;
+        backdrop-filter: blur(5px);
+    }
+
+    .patreon-alert {
+        background: rgba(255, 193, 7, 0.1) !important;
+        border-color: rgba(255, 193, 7, 0.3) !important;
+    }
+
+    .patreon-divider {
+        font-size: 1.75rem;
+        font-weight: 300;
+        margin: 0 0 2rem;
+        color: #ffc107;
+        text-transform: uppercase;
+        position: relative;
+        padding: 0 2rem;
+    }
+
+    .patreon-divider::before {
+        left: 0;
+    }
+
+    patreon-divider::after {
+        right: 0;
+    }
+
+    .patreon-divider::before,
+    .patreon-divider::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: calc(50% - 10rem);
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 193, 7, 0.5), transparent);
+    }
+
+    .patreon-disclaimer {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin: -0.5rem auto 2rem;
+        padding: 1rem 2rem;
+        background: rgba(255, 193, 7, 0.05);
+        border-left: 3px solid rgba(255, 193, 7, 0.3);
+        border-right: 3px solid rgba(255, 193, 7, 0.3);
+        font-style: italic;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.9);
+        max-width: 85%;
+    }
+
+    .intro {
+        font-size: 1.125rem;
+        line-height: 1.75;
+        margin-bottom: 2rem;
+        font-weight: 300;
+    }
+
+    .contributor-card {
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 255, 255, 0.05)) !important;
+        border: 1px solid rgba(255, 193, 7, 0.2) !important;
+        transition: all 0.3s ease !important;
+        cursor: pointer;
+        backdrop-filter: blur(5px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .contributor-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 193, 7, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .contributor-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 193, 7, 0.5) !important;
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2) !important;
+    }
+
+    .contributor-card:hover::before {
+        left: 100%;
+    }
+
+    .contributor-card-content {
+        padding: 1rem 0.5rem !important;
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .contributor-name {
+        color: white !important;
+        font-weight: 400;
+    }
+
+    .patreon-card {
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 255, 255, 0.08)) !important;
+        border: 1px solid rgba(255, 193, 7, 0.3) !important;
+        transition: all 0.3s ease !important;
+        cursor: pointer;
+        backdrop-filter: blur(5px);
+    }
+
+    .patreon-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 193, 7, 0.7) !important;
+        box-shadow: 0 4px 16px rgba(255, 193, 7, 0.3) !important;
+    }
+
+    .patreon-card-content {
+        padding: 1rem 0.5rem !important;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .patreon-name {
+        color: #ffc107 !important;
+        font-weight: 500;
+    }
+
+    .signature {
+        font-size: 1.125rem;
+        margin-top: 3rem;
+        font-weight: 400;
+        color: #ffc107;
+        letter-spacing: 0.05em;
+    }
+
+    .footer-container {
+        text-align: center;
+        padding: 1rem;
+        background: repeating-linear-gradient(-45deg, rgba(12, 12, 19, 0.6), rgba(12, 12, 19, 0.6) 10px, rgba(15, 15, 24, 0.6) 10px, rgba(15, 15, 24, 0.6) 20px), rgba(0, 0, 0, 0.8);
+    }
+</style>
+
+
+@code {
+    private readonly List<string> Contributors = new()
+    {
+        "5o2", "AdmiralAwsum", "Angel-git", "ArchangelWTF", "BrotherVeren",
+        "CameronW1", "CJ", "Clodan", "CP89", "CWX", "DanW", "devmaximum",
+        "Doup22", "DrakiaXYZ", "fearthedje", "GentlemenSausage", "Guidot42",
+        "HB53", "Hulkhan22", "January", "Kaeno", "Lacyway", "Muramas",
+        "nailz420", "Parataku", "ParanoiaBruce", "PhantomInTime", "qe201020335",
+        "R3ality", "Razzmatazz", "Redbeard", "Refringe", "ShadowXtrex",
+        "Shibdib", "Stealthsuit", "studentchy", "Tetris", "Th3NightHawk",
+        "TheHeadPhonesGuy", "ThyMuffinMan", "ultragastro", "Valens",
+        "XeonDead", "yurikus"
+    };
+
+    private readonly List<string> PatreonSupporters = new()
+    {
+        "Refringe", "DrakiaXYZ", "Tron", "Bepis", "John Thicc",
+        "Cardsmen", "Nexstat", "NumberedJester", "Irabeth Tyrabade", "DanW"
+    };
+
+    private List<string> ShuffledContributors = new();
+    private List<string> ShuffledPatreonSupporters = new();
+
+    private readonly MudTheme _theme = new()
+    {
+        PaletteDark = new PaletteDark()
+        {
+            Primary = Colors.Blue.Default,
+            Secondary = Colors.Orange.Default,
+            Warning = Colors.Amber.Default,
+            Info = Colors.Blue.Lighten1,
+            Success = Colors.Green.Default,
+            Background = "rgba(0,0,0,0.9)",
+            Surface = "rgba(255,255,255,0.05)",
+            AppbarBackground = "rgba(0,0,0,0.8)",
+            TextPrimary = "#FFFFFF"
+        }
+    };
+
+    protected override void OnInitialized()
+    {
+        ShuffledContributors = ShuffleList(Contributors);
+        ShuffledPatreonSupporters = ShuffleList(PatreonSupporters);
+    }
+
+    private async Task TriggerConfetti(bool isPatreon, string name)
+    {
+        //Todo: Needs implemnetation
+
+        if (isPatreon)
+        {
+        }
+        else
+        {
+        }
+    }
+
+    private static List<string> ShuffleList(List<string> list)
+    {
+        var shuffled = new List<string>(list);
+
+        for (int i = shuffled.Count - 1; i > 0; i--)
+        {
+            int j = Random.Shared.Next(i + 1);
+            (shuffled[i], shuffled[j]) = (shuffled[j], shuffled[i]);
+        }
+
+        return shuffled;
+    }
+}

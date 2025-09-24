@@ -18,7 +18,13 @@ public static class SPTBlazor
     {
         app.UseAntiforgery();
 
+#if DEBUG
+        //MS currently has a bug where streaming video doesn't work properly in debug, unless you use this
+        //Issue: https://github.com/dotnet/aspnetcore/issues/63320
+        app.UseStaticFiles();
+#else
         app.MapStaticAssets();
+#endif
         app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
     }
 }
