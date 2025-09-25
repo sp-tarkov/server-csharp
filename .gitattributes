@@ -3,3 +3,4 @@
 # LFS tracking for large JSON files and all images
 Libraries/SPTarkov.Server.Assets/SPT_Data/database/locations/**/looseLoot.json filter=lfs diff=lfs merge=lfs -text
 Libraries/SPTarkov.Server.Assets/SPT_Data/database/templates/items.json filter=lfs diff=lfs merge=lfs -text
+Libraries/SPTarkov.Web/wwwroot/thank-you/background.mp4 filter=lfs diff=lfs merge=lfs -text
