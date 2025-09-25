@@ -1,0 +1,87 @@
+﻿@page "/status"
+@using SPTarkov.Server.Core.Helpers
+@using SPTarkov.Server.Core.Models.Spt.Config
+@using SPTarkov.Server.Core.Servers
+@using SPTarkov.Server.Core.Services
+@using SPTarkov.Server.Core.Utils
+@using SPTarkov.Web.Components.Layout
+
+@inject ConfigServer ConfigServer
+@inject TimeUtil TimeUtil
+@inject ProfileActivityService ProfileActivityService
+@inject ProfileHelper ProfileHelper
+
+@layout BaseMudBlazorLayout
+
+<MudContainer Class="mt-16 d-flex justify-center">
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="12" sm="6" md="4">
+            <MudCard Elevation="25" Class="rounded-lg pb-4">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center">Server health</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudList T="string" Class="mx-auto mt-4">
+                        <MudListItem Icon="@Icons.Material.Filled.Circle">SPT Version: @_sptVersion</MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Circle">Mods @(_modsEnabled ? "ENABLED" : "DISABLED")</MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Circle">Debug @(_debugEnabled ? "ENABLED" : "DISABLED")</MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Circle">Time started: @_startTime</MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Circle">Uptime: @_uptimeSeconds seconds</MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Circle">Total profile count: @_totalProfileCount</MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Inbox" Text="Profiles active last 30 minutes:" Expanded>
+                            <NestedList>
+                                @foreach (var profile in _activeProfiles)
+                                {
+                                    <MudListItem Icon="@Icons.Material.Filled.Circle">
+                                        @profile
+                                    </MudListItem>
+                                }
+                            </NestedList>
+                        </MudListItem>
+                    </MudList>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code
+{
+    private string _sptVersion = string.Empty;
+    private bool _debugEnabled = false;
+    private bool _modsEnabled = false;
+    private DateTime _startTime = DateTime.Now;
+    private long _uptimeSeconds = 0;
+    private readonly List<string> _activeProfiles = [];
+    private int _totalProfileCount = 0;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        var coreConfig = ConfigServer.GetConfig<CoreConfig>();
+
+        _sptVersion = ProgramStatics.SPT_VERSION().ToString();
+        _debugEnabled = ProgramStatics.DEBUG();
+        _modsEnabled = ProgramStatics.MODS();
+        _startTime = TimeUtil.GetDateTimeFromTimeStamp(coreConfig.ServerStartTime.Value);
+        _uptimeSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds() - coreConfig.ServerStartTime.Value;
+
+        var activeProfileIds = ProfileActivityService.GetActiveProfileIdsWithinMinutes(30);
+        if (activeProfileIds.Count == 0)
+        {
+            _activeProfiles.Add("None");
+        }
+        else
+        {
+            foreach (var activeProfileId in activeProfileIds)
+            {
+                _activeProfiles.Add($"{activeProfileId} ({ProfileHelper.GetPmcProfile(activeProfileId).Info.Nickname})");
+            }
+        }
+
+        _totalProfileCount = ProfileHelper.GetProfiles().Count;
+    }
+}
