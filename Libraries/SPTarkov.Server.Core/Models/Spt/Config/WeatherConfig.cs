@@ -66,7 +66,7 @@ public record WeatherValues
     public WeatherSettings<int>? TimePeriod { get; set; }
 
     [JsonPropertyName("weatherPresetWeight")]
-    public Dictionary<WeatherPreset, double> WeatherPresetWeight { get; set; }
+    public Dictionary<string, Dictionary<WeatherPreset, double>> WeatherPresetWeight { get; set; }
 }
 
 public enum WeatherPreset

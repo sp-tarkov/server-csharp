@@ -6,7 +6,6 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 
@@ -16,7 +15,6 @@ namespace SPTarkov.Server.Core.Generators;
 public class WeatherGenerator(
     ISptLogger<WeatherGenerator> logger,
     TimeUtil timeUtil,
-    SeasonalEventService seasonalEventService,
     WeatherHelper weatherHelper,
     ConfigServer configServer,
     WeightedRandomHelper weightedRandomHelper,
@@ -41,17 +39,19 @@ public class WeatherGenerator(
         WeatherPreset? previousPreset = null
     )
     {
-        if (previousPreset is not null && presetWeights.Any())
+        if (!presetWeights.Any())
+        {
+            // Get fresh cloned weights from config
+            presetWeights = cloner.Clone(GetWeatherPresetWeightsBySeason(currentSeason));
+        }
+
+        // Only process when we have weights + there was previous preset chosen
+        if (previousPreset.HasValue)
         {
             // We know last picked preset, Adjust weights
             // Make it less likely to be picked now
             presetWeights[previousPreset.Value] -= 1;
             logger.Info($"{previousPreset.Value} weight reduced by: 1 to: {presetWeights[previousPreset.Value]}");
-        }
-        else
-        {
-            // Get fresh cloned weights from config
-            presetWeights = cloner.Clone(WeatherConfig.Weather.WeatherPresetWeight);
         }
 
         // Assign value to previousPreset to be picked up next loop
@@ -62,17 +62,22 @@ public class WeatherGenerator(
         if (presetWeights[previousPreset.Value] <= 0)
         {
             logger.Info($"{previousPreset.Value} is 0, resetting weights");
-            // Force fresh presets to be picked
+            // Flag for fresh presets
             presetWeights.Clear();
         }
 
         return GenerateWeatherByPreset(previousPreset.Value, currentSeason, timestamp);
     }
 
+    public Dictionary<WeatherPreset, double> GetWeatherPresetWeightsBySeason(Season currentSeason)
+    {
+        return !WeatherConfig.Weather.WeatherPresetWeight.TryGetValue(currentSeason.ToString(), out var weights)
+            ? WeatherConfig.Weather.WeatherPresetWeight.GetValueOrDefault("default")
+            : weights;
+    }
+
     protected Weather GenerateWeatherByPreset(WeatherPreset chosenPreset, Season currentSeason, long? timestamp)
     {
-        // TODO: handle currentSeason, apply additive values/overwrite existing?
-
         Weather result;
         var presetWeights = GetWeatherWeightsByPreset(chosenPreset);
         switch (chosenPreset)

@@ -393,9 +393,21 @@
       ]
     },
 	"weatherPresetWeight": {
-		"SUNNY": 8,
-		"RAINY": 8,
-		"CLOUDY": 8
+		"WINTER_START": {
+			"SUNNY": 3,
+			"RAINY": 8,
+			"CLOUDY": 3
+		},
+		"WINTER_END": {
+			"SUNNY": 3,
+			"RAINY": 8,
+			"CLOUDY": 3
+		},
+		"default": {
+			"SUNNY": 8,
+			"RAINY": 8,
+			"CLOUDY": 8
+		}
 	}
   },
   "seasonDates": [

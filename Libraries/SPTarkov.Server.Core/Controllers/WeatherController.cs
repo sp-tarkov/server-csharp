@@ -32,13 +32,14 @@ public class WeatherController(
     /// <returns>WeatherData</returns>
     public WeatherData Generate()
     {
+        var currentSeason = seasonalEventService.GetActiveWeatherSeason();
         var result = new WeatherData
         {
             Acceleration = 0,
             Time = string.Empty,
             Date = string.Empty,
             Weather = null,
-            Season = seasonalEventService.GetActiveWeatherSeason(),
+            Season = currentSeason,
         };
 
         var computedDate = timeUtil.GetDateTimeNow();
@@ -50,7 +51,7 @@ public class WeatherController(
         result.Time = weatherHelper.GetInRaidTime().GetBsgFormattedWeatherTime();
         result.Acceleration = WeatherConfig.Acceleration;
 
-        var presetWeights = cloner.Clone(WeatherConfig.Weather.WeatherPresetWeight);
+        var presetWeights = cloner.Clone(weatherGenerator.GetWeatherPresetWeightsBySeason(currentSeason));
         result.Weather = weatherGenerator.GenerateWeather(result.Season.Value, ref presetWeights);
 
         return result;

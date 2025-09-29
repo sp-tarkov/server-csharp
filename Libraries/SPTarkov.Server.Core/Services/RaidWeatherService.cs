@@ -37,7 +37,7 @@ public class RaidWeatherService(
         // Keep adding new weather until we have reached desired future date
         var nextTimestamp = startingTimestamp;
         WeatherPreset? previousPreset = null;
-        var presetWeights = cloner.Clone(WeatherConfig.Weather.WeatherPresetWeight);
+        var presetWeights = cloner.Clone(weatherGenerator.GetWeatherPresetWeightsBySeason(currentSeason));
         while (nextTimestamp <= futureTimestampToReach)
         {
             var newWeatherToAddToCache = weatherGenerator.GenerateWeather(currentSeason, ref presetWeights, nextTimestamp, previousPreset);
