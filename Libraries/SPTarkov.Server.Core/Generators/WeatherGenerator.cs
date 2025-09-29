@@ -68,7 +68,7 @@ public class WeatherGenerator(
             presetWeights.Clear();
         }
 
-        return GenerateWeatherByPreset(previousPreset.Value, currentSeason, timestamp);
+        return GenerateWeatherByPreset(previousPreset.Value, timestamp);
     }
 
     public Dictionary<WeatherPreset, double> GetWeatherPresetWeightsBySeason(Season currentSeason)
@@ -78,9 +78,15 @@ public class WeatherGenerator(
             : weights;
     }
 
-    protected Weather GenerateWeatherByPreset(WeatherPreset chosenPreset, Season currentSeason, long? timestamp)
+    protected Weather GenerateWeatherByPreset(WeatherPreset chosenPreset, long? timestamp)
     {
         var generator = weatherGenerators.FirstOrDefault(generator => generator.CanHandle(chosenPreset));
+        if (generator is null)
+        {
+            logger.Warning($"Unable to find weather generator for: {chosenPreset}, falling back to sunny");
+
+            generator = weatherGenerators.FirstOrDefault(generator => generator.CanHandle(WeatherPreset.SUNNY));
+        }
 
         var presetWeights = GetWeatherWeightsByPreset(chosenPreset);
         var result = generator.Generate(presetWeights);
