@@ -27,36 +27,9 @@ public class WeatherGenerator(
     protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
 
     /// <summary>
-    ///     Get current + raid datetime and format into correct BSG format.
-    /// </summary>
-    /// <param name="data"> Weather data </param>
-    /// <returns> WeatherData </returns>
-    public void CalculateGameTime(WeatherData data)
-    {
-        var computedDate = timeUtil.GetDateTimeNow();
-        var formattedDate = computedDate.FormatToBsgDate();
-
-        data.Date = formattedDate;
-        data.Time = GetBsgFormattedInRaidTime();
-        data.Acceleration = WeatherConfig.Acceleration;
-
-        data.Season = seasonalEventService.GetActiveWeatherSeason();
-    }
-
-    /// <summary>
-    ///     Get server uptime seconds multiplied by a multiplier and add to current time as seconds.
-    ///     Formatted to BSGs requirements
-    /// </summary>
-    /// <returns>Formatted time as String </returns>
-    protected string GetBsgFormattedInRaidTime()
-    {
-        return weatherHelper.GetInRaidTime().GetBsgFormattedWeatherTime();
-    }
-
-    /// <summary>
     /// Generate a weather object to send to client
     /// </summary>
-    /// <param name="currentSeason">Whaat season is weather being generated for</param>
+    /// <param name="currentSeason">What season is weather being generated for</param>
     /// <param name="presetWeights">Weather preset weights to pick from</param>
     /// <param name="timestamp">Optional - Current time</param>
     /// <param name="previousPreset">Optional -What weather preset was last generated</param>
