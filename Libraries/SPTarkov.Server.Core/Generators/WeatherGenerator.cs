@@ -4,6 +4,7 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Weather;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Weather;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
@@ -19,6 +20,7 @@ public class WeatherGenerator(
     ConfigServer configServer,
     WeightedRandomHelper weightedRandomHelper,
     RandomUtil randomUtil,
+    IEnumerable<IWeatherPresetGenerator> weatherGenerators,
     ICloner cloner
 )
 {
@@ -78,24 +80,10 @@ public class WeatherGenerator(
 
     protected Weather GenerateWeatherByPreset(WeatherPreset chosenPreset, Season currentSeason, long? timestamp)
     {
-        Weather result;
+        var generator = weatherGenerators.FirstOrDefault(generator => generator.CanHandle(chosenPreset));
+
         var presetWeights = GetWeatherWeightsByPreset(chosenPreset);
-        switch (chosenPreset)
-        {
-            case WeatherPreset.SUNNY:
-                result = GenerateSunnyWeather(presetWeights);
-                break;
-            case WeatherPreset.RAINY:
-                result = GenerateRainyWeather(presetWeights);
-                break;
-            case WeatherPreset.CLOUDY:
-                result = GenerateCloudyWeather(presetWeights);
-                break;
-            default:
-                presetWeights = GetWeatherWeightsByPreset(WeatherPreset.SUNNY);
-                result = GenerateSunnyWeather(presetWeights);
-                break;
-        }
+        var result = generator.Generate(presetWeights);
 
         // Set time values in result using now or passed in timestamp
         SetCurrentDateTime(result, timestamp);
@@ -105,76 +93,6 @@ public class WeatherGenerator(
 
         // Needed by RaidWeatherService
         result.SptChosenPreset = chosenPreset;
-
-        return result;
-    }
-
-    protected Weather GenerateSunnyWeather(PresetWeights weatherWeights)
-    {
-        var result = new Weather
-        {
-            Pressure = GetRandomDouble(weatherWeights.Pressure.Min, weatherWeights.Pressure.Max),
-            Temperature = 0, // Handled in caller
-            Fog = GetWeightedFog(weatherWeights),
-            RainIntensity = 0,
-            Rain = 0,
-            WindGustiness = GetRandomDouble(weatherWeights.WindGustiness.Min, weatherWeights.WindGustiness.Max, 2),
-            WindDirection = GetWeightedWindDirection(weatherWeights),
-            WindSpeed = GetWeightedWindSpeed(weatherWeights),
-            Cloud = GetWeightedClouds(weatherWeights),
-            Time = string.Empty,
-            Date = string.Empty,
-            Timestamp = 0,
-            SptInRaidTimestamp = 0, // Handled in caller
-        };
-
-        return result;
-    }
-
-    protected Weather GenerateRainyWeather(PresetWeights weatherWeights)
-    {
-        var clouds = GetWeightedClouds(weatherWeights);
-
-        var result = new Weather
-        {
-            Pressure = GetRandomDouble(weatherWeights.Pressure.Min, weatherWeights.Pressure.Max),
-            Temperature = 0, // // Handled in caller
-            Fog = GetWeightedFog(weatherWeights),
-            RainIntensity = GetRandomDouble(weatherWeights.RainIntensity.Min, weatherWeights.RainIntensity.Max),
-            Rain = GetWeightedRain(weatherWeights),
-            WindGustiness = GetRandomDouble(weatherWeights.WindGustiness.Min, weatherWeights.WindGustiness.Max, 2),
-            WindDirection = GetWeightedWindDirection(weatherWeights),
-            WindSpeed = GetWeightedWindSpeed(weatherWeights),
-            Cloud = clouds,
-            Time = string.Empty,
-            Date = string.Empty,
-            Timestamp = 0,
-            SptInRaidTimestamp = 0, // Handled in caller
-        };
-
-        return result;
-    }
-
-    protected Weather GenerateCloudyWeather(PresetWeights weatherWeights)
-    {
-        var clouds = GetWeightedClouds(weatherWeights);
-
-        var result = new Weather
-        {
-            Pressure = GetRandomDouble(weatherWeights.Pressure.Min, weatherWeights.Pressure.Max),
-            Temperature = 0, // Handled in caller
-            Fog = GetWeightedFog(weatherWeights),
-            RainIntensity = 0,
-            Rain = 0,
-            WindGustiness = GetRandomDouble(weatherWeights.WindGustiness.Min, weatherWeights.WindGustiness.Max, 2),
-            WindDirection = GetWeightedWindDirection(weatherWeights),
-            WindSpeed = GetWeightedWindSpeed(weatherWeights),
-            Cloud = clouds,
-            Time = string.Empty,
-            Date = string.Empty,
-            Timestamp = 0,
-            SptInRaidTimestamp = 0, // Handled in caller
-        };
 
         return result;
     }
@@ -220,35 +138,5 @@ public class WeatherGenerator(
         weather.Date = formattedDate; // matches weather.timestamp
         weather.Time = datetimeBsgFormat; // matches weather.timestamp
         weather.SptInRaidTimestamp = weather.Timestamp;
-    }
-
-    protected WindDirection GetWeightedWindDirection(PresetWeights weather)
-    {
-        return weightedRandomHelper.WeightedRandom(weather.WindDirection.Values, weather.WindDirection.Weights).Item;
-    }
-
-    protected double GetWeightedClouds(PresetWeights weather)
-    {
-        return double.Parse(weightedRandomHelper.GetWeightedValue(weather.Clouds));
-    }
-
-    protected double GetWeightedWindSpeed(PresetWeights weather)
-    {
-        return weightedRandomHelper.WeightedRandom(weather.WindSpeed.Values, weather.WindSpeed.Weights).Item;
-    }
-
-    protected double GetWeightedFog(PresetWeights weather)
-    {
-        return weightedRandomHelper.WeightedRandom(weather.Fog.Values, weather.Fog.Weights).Item;
-    }
-
-    protected double GetWeightedRain(PresetWeights weather)
-    {
-        return weightedRandomHelper.WeightedRandom(weather.Rain.Values, weather.Rain.Weights).Item;
-    }
-
-    protected double GetRandomDouble(double min, double max, int precision = 3)
-    {
-        return Math.Round(randomUtil.GetDouble(min, max), precision);
     }
 }
