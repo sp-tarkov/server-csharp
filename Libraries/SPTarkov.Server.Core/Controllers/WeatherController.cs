@@ -3,8 +3,11 @@ using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Weather;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Weather;
+using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -12,9 +15,13 @@ namespace SPTarkov.Server.Core.Controllers;
 public class WeatherController(
     WeatherGenerator weatherGenerator,
     SeasonalEventService seasonalEventService,
-    RaidWeatherService raidWeatherService
+    RaidWeatherService raidWeatherService,
+    ConfigServer configServer,
+    ICloner cloner
 )
 {
+    protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
+
     /// <summary>
     ///     Handle client/weather
     /// </summary>
@@ -31,7 +38,9 @@ public class WeatherController(
         };
 
         weatherGenerator.CalculateGameTime(result);
-        result.Weather = weatherGenerator.GenerateWeather(result.Season.Value);
+
+        var presetWeights = cloner.Clone(WeatherConfig.Weather.WeatherPresetWeight);
+        result.Weather = weatherGenerator.GenerateWeather(result.Season.Value, ref presetWeights);
 
         return result;
     }

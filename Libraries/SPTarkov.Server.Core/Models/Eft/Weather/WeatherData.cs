@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Config;
 
 namespace SPTarkov.Server.Core.Models.Eft.Weather;
 
@@ -67,4 +68,7 @@ public record Weather
 
     [JsonPropertyName("sptInRaidTimestamp")]
     public long? SptInRaidTimestamp { get; set; }
+
+    [JsonPropertyName("sptChosenPreset")]
+    public WeatherPreset? SptChosenPreset { get; set; }
 }

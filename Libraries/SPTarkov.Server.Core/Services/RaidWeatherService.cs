@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -15,7 +16,8 @@ public class RaidWeatherService(
     WeatherGenerator weatherGenerator,
     SeasonalEventService seasonalEventService,
     WeightedRandomHelper weightedRandomHelper,
-    ConfigServer configServer
+    ConfigServer configServer,
+    ICloner cloner
 )
 {
     protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
@@ -34,12 +36,16 @@ public class RaidWeatherService(
 
         // Keep adding new weather until we have reached desired future date
         var nextTimestamp = startingTimestamp;
+        WeatherPreset? previousPreset = null;
+        var presetWeights = cloner.Clone(WeatherConfig.Weather.WeatherPresetWeight);
         while (nextTimestamp <= futureTimestampToReach)
         {
-            var newWeatherToAddToCache = weatherGenerator.GenerateWeather(currentSeason, nextTimestamp);
+            var newWeatherToAddToCache = weatherGenerator.GenerateWeather(currentSeason, ref presetWeights, nextTimestamp, previousPreset);
 
             // Add generated weather for time period to cache
             WeatherForecast.Add(newWeatherToAddToCache);
+
+            previousPreset = newWeatherToAddToCache.SptChosenPreset;
 
             // Increment timestamp so next loop can begin at correct time
             nextTimestamp += GetWeightedWeatherTimePeriod();
