@@ -7,8 +7,8 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Generators.WeatherGen;
 
 [Injectable]
-public record SunnyWeatherGenerator(WeightedRandomHelper WeightedRandomHelper, RandomUtil RandomUtil)
-    : AbstractWeatherPresetGeneratorBase(WeightedRandomHelper, RandomUtil)
+public class SunnyWeatherGenerator(WeightedRandomHelper weightedRandomHelper, RandomUtil randomUtil)
+    : AbstractWeatherPresetGeneratorBase(weightedRandomHelper, randomUtil)
 {
     public override bool CanHandle(WeatherPreset preset)
     {
