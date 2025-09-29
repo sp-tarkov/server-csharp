@@ -179629,6 +179629,303 @@
     "traderId": "6617beeaa9cfa777ca915b7c",
     "type": "Completion"
   },
+  "6834202a186efa3c5b07f9a2": {
+    "QuestName": "To Great Heights - Part 3 PVE ZONE",
+    "_id": "6834202a186efa3c5b07f9a2",
+    "acceptPlayerMessage": "6834202a186efa3c5b07f9a2 acceptPlayerMessage",
+    "acceptanceAndFinishingSource": "eft",
+    "arenaLocations": [
+      "any"
+    ],
+    "canShowNotificationsInGame": true,
+    "changeQuestMessageText": "6834202a186efa3c5b07f9a2 changeQuestMessageText",
+    "completePlayerMessage": "6834202a186efa3c5b07f9a2 completePlayerMessage",
+    "conditions": {
+      "AvailableForFinish": [
+        {
+          "completeInSeconds": 0,
+          "conditionType": "CounterCreator",
+          "counter": {
+            "conditions": [
+              {
+                "compareMethod": "<=",
+                "conditionType": "ArenaPlayerInTeamPlace",
+                "dynamicLocale": false,
+                "id": "662bb201589b7f21d7ab98fa",
+                "value": 3
+              },
+              {
+                "compareMethod": "<=",
+                "conditionType": "ArenaMatchPlace",
+                "dynamicLocale": false,
+                "id": "67ebc19b79b4cd1899cb20f7",
+                "value": 1
+              },
+              {
+                "conditionType": "ArenaGameMode",
+                "dynamicLocale": false,
+                "id": "67ebc1c58d7ea222b89fc914",
+                "target": [
+                  "TeamFight",
+                  "BlastGang",
+                  "CheckPoint"
+                ]
+              }
+            ],
+            "id": "6834202a186efa3c5b07f9a6"
+          },
+          "doNotResetIfCounterCompleted": false,
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
+          "id": "6834202a186efa3c5b07f9a5",
+          "index": 0,
+          "isNecessary": false,
+          "isResetOnConditionFailed": false,
+          "oneSessionOnly": false,
+          "parentId": "",
+          "type": "Completion",
+          "value": 2,
+          "visibilityConditions": []
+        }
+      ],
+      "AvailableForStart": [
+        {
+          "availableAfter": 0,
+          "conditionType": "Quest",
+          "dispersion": 0,
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
+          "id": "6834202a186efa3c5b07f9a4",
+          "index": 0,
+          "parentId": "",
+          "status": [
+            4
+          ],
+          "target": "68341f6fe2e7ef70a3060a0a",
+          "visibilityConditions": []
+        }
+      ],
+      "Fail": []
+    },
+    "declinePlayerMessage": "6834202a186efa3c5b07f9a2 declinePlayerMessage",
+    "description": "6834202a186efa3c5b07f9a2 description",
+    "failMessageText": "6834202a186efa3c5b07f9a2 failMessageText",
+    "gameModes": [
+      "TeamFight",
+      "BlastGang"
+    ],
+    "image": "/files/quest/icon/66562bb83e8d4075e2354446.png",
+    "instantComplete": false,
+    "isKey": false,
+    "location": "any",
+    "name": "6834202a186efa3c5b07f9a2 name",
+    "note": "6834202a186efa3c5b07f9a2 note",
+    "progressSource": "arena",
+    "rankingModes": [],
+    "restartable": false,
+    "rewards": {
+      "Fail": [],
+      "Started": [],
+      "Success": [
+        {
+          "availableInGameEditions": [],
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "id": "6834202a186efa3c5b07f9a7",
+          "isHidden": false,
+          "type": "Experience",
+          "unknown": false,
+          "value": 11000
+        },
+        {
+          "availableInGameEditions": [],
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "id": "6834202a186efa3c5b07f9a8",
+          "isHidden": false,
+          "target": "6617beeaa9cfa777ca915b7c",
+          "type": "TraderStanding",
+          "unknown": false,
+          "value": 0.04
+        },
+        {
+          "availableInGameEditions": [],
+          "findInRaid": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "id": "6834202a186efa3c5b07f9a9",
+          "isEncoded": false,
+          "isHidden": false,
+          "items": [
+            {
+              "_id": "68dab186f82a2d39de05e03c",
+              "_tpl": "5d235b4d86f7742e017bc88a",
+              "upd": {
+                "StackObjectsCount": 38
+              }
+            }
+          ],
+          "target": "68dab186f82a2d39de05e03c",
+          "type": "Item",
+          "unknown": false,
+          "value": 38
+        },
+        {
+          "availableInGameEditions": [],
+          "findInRaid": true,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "id": "6834202a186efa3c5b07f9aa",
+          "isEncoded": false,
+          "isHidden": false,
+          "items": [
+            {
+              "_id": "68dab186f82a2d39de05e03d",
+              "_tpl": "588892092459774ac91d4b11",
+              "upd": {
+                "StackObjectsCount": 1
+              }
+            },
+            {
+              "_id": "68dab186f82a2d39de05e03e",
+              "_tpl": "5888988e24597752fe43a6fa",
+              "parentId": "68dab186f82a2d39de05e03d",
+              "slotId": "mod_magazine"
+            },
+            {
+              "_id": "68dab186f82a2d39de05e03f",
+              "_tpl": "5888945a2459774bf43ba385",
+              "parentId": "68dab186f82a2d39de05e03d",
+              "slotId": "mod_barrel"
+            },
+            {
+              "_id": "68dab186f82a2d39de05e040",
+              "_tpl": "58889c7324597754281f9439",
+              "parentId": "68dab186f82a2d39de05e03f",
+              "slotId": "mod_muzzle"
+            },
+            {
+              "_id": "68dab186f82a2d39de05e041",
+              "_tpl": "5888961624597754281f93f3",
+              "parentId": "68dab186f82a2d39de05e03f",
+              "slotId": "mod_bipod"
+            },
+            {
+              "_id": "68dab186f82a2d39de05e042",
+              "_tpl": "57c55f172459772d27602381",
+              "parentId": "68dab186f82a2d39de05e03d",
+              "slotId": "mod_pistol_grip"
+            },
+            {
+              "_id": "68dab186f82a2d39de05e043",
+              "_tpl": "58889d0c2459775bc215d981",
+              "parentId": "68dab186f82a2d39de05e03d",
+              "slotId": "mod_stock"
+            }
+          ],
+          "target": "68dab186f82a2d39de05e03d",
+          "type": "Item",
+          "unknown": false,
+          "value": 1
+        },
+        {
+          "availableInGameEditions": [],
+          "findInRaid": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "id": "6834202a186efa3c5b07f9ab",
+          "isEncoded": false,
+          "isHidden": false,
+          "items": [
+            {
+              "_id": "68dab186f82a2d39de05e045",
+              "_tpl": "5888988e24597752fe43a6fa",
+              "upd": {
+                "StackObjectsCount": 1
+              }
+            },
+            {
+              "_id": "68dab186f82a2d39de05e046",
+              "_tpl": "5888988e24597752fe43a6fa",
+              "upd": {
+                "StackObjectsCount": 1
+              }
+            }
+          ],
+          "target": "68dab186f82a2d39de05e046",
+          "type": "Item",
+          "unknown": false,
+          "value": 2
+        },
+        {
+          "availableInGameEditions": [],
+          "findInRaid": false,
+          "gameMode": [
+            "regular",
+            "pve"
+          ],
+          "id": "6834202a186efa3c5b07f9ac",
+          "isEncoded": false,
+          "isHidden": false,
+          "items": [
+            {
+              "_id": "68dab186f82a2d39de05e049",
+              "_tpl": "65702566bfc87b3a3409324d",
+              "upd": {
+                "StackObjectsCount": 1
+              }
+            },
+            {
+              "_id": "68dab186f82a2d39de05e04a",
+              "_tpl": "5e023e6e34d52a55c3304f71",
+              "parentId": "68dab186f82a2d39de05e049",
+              "slotId": "cartridges",
+              "upd": {
+                "StackObjectsCount": 20
+              }
+            },
+            {
+              "_id": "68dab186f82a2d39de05e04b",
+              "_tpl": "65702566bfc87b3a3409324d",
+              "upd": {
+                "StackObjectsCount": 1
+              }
+            },
+            {
+              "_id": "68dab186f82a2d39de05e04c",
+              "_tpl": "5e023e6e34d52a55c3304f71",
+              "parentId": "68dab186f82a2d39de05e04b",
+              "slotId": "cartridges",
+              "upd": {
+                "StackObjectsCount": 20
+              }
+            }
+          ],
+          "target": "68dab186f82a2d39de05e04b",
+          "type": "Item",
+          "unknown": false,
+          "value": 2
+        }
+      ]
+    },
+    "secretQuest": false,
+    "side": "Pmc",
+    "startedMessageText": "6834202a186efa3c5b07f9a2 startedMessageText",
+    "status": 0,
+    "successMessageText": "6834202a186efa3c5b07f9a2 successMessageText",
+    "traderId": "6617beeaa9cfa777ca915b7c",
+    "type": "Completion"
+  },
   "684009026ceedc792c09b2a7": {
     "QuestName": "Hobby Club",
     "_id": "684009026ceedc792c09b2a7",
