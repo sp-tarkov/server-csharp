@@ -43,7 +43,7 @@ public static class Program
         ProgramStatics.Initialize();
 
         // Create web builder and logger
-        var builder = CreateNewHostBuilder(args);
+        var builder = CreateNewHostBuilder();
 
         var diHandler = new DependencyInjectionHandler(builder.Services);
         // register SPT components
@@ -216,9 +216,9 @@ public static class Program
         return hasPageModels || hasCompiledViews;
     }
 
-    private static WebApplicationBuilder CreateNewHostBuilder(string[]? args = null)
+    private static WebApplicationBuilder CreateNewHostBuilder()
     {
-        var builder = WebApplication.CreateBuilder(args);
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions { WebRootPath = "./SPT_Data/wwwroot" });
         builder.Logging.ClearProviders();
         builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
         builder.Host.UseSptLogger();

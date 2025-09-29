@@ -15,6 +15,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Has to be enabled for SPTarkov.Web to function properly-->
     <StaticWebAssetsEnabled>true</StaticWebAssetsEnabled>
+    <StaticWebAssetBasePath>SPTarkov.Web</StaticWebAssetBasePath>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />

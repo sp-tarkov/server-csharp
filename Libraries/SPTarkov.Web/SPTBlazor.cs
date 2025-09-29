@@ -9,7 +9,6 @@ public static class SPTBlazor
 {
     public static void InitializeSptBlazor(this WebApplicationBuilder builder, IReadOnlyList<SptMod> sptMods)
     {
-        //Todo: Might need debug only? Check actual publish build
         builder.WebHost.UseStaticWebAssets();
         builder.Services.AddMudServices();
         builder.Services.AddRazorComponents().AddInteractiveServerComponents();

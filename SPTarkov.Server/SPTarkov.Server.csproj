@@ -14,10 +14,10 @@
     <OutputType>Exe</OutputType>
     <IsPackable>true</IsPackable>
     <AssemblyName>SPT.Server</AssemblyName>
-    <StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     <!-- Has to be enabled for SPTarkov.Web to function properly-->
     <StaticWebAssetsEnabled>true</StaticWebAssetsEnabled>
+    <StaticWebAssetBasePath>../SPT_Data/wwwroot/</StaticWebAssetBasePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
     <ApplicationIcon>..\Libraries\SPTarkov.Server.Assets\SPT_Data\images\icon.ico</ApplicationIcon>
