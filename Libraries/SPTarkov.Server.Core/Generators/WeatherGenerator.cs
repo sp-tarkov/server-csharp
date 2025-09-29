@@ -71,21 +71,32 @@ public class WeatherGenerator(
         return GenerateWeatherByPreset(previousPreset.Value, timestamp);
     }
 
+    /// <summary>
+    /// Get weather property weights for the provided season
+    /// </summary>
+    /// <param name="currentSeason">Desired season to get weights for</param>
+    /// <returns>Dictionary</returns>
     public Dictionary<WeatherPreset, double> GetWeatherPresetWeightsBySeason(Season currentSeason)
     {
         return !WeatherConfig.Weather.WeatherPresetWeight.TryGetValue(currentSeason.ToString(), out var weights)
-            ? WeatherConfig.Weather.WeatherPresetWeight.GetValueOrDefault("default")
+            ? WeatherConfig.Weather.WeatherPresetWeight.GetValueOrDefault("default")!
             : weights;
     }
 
+    /// <summary>
+    /// Create a Weather object that adheres to the chosenPreset value
+    /// </summary>
+    /// <param name="chosenPreset">The weather preset chosen to generate</param>
+    /// <param name="timestamp">OPTIONAL - generate the weapon object with a specific time instead of now</param>
+    /// <returns>Weather</returns>
     protected Weather GenerateWeatherByPreset(WeatherPreset chosenPreset, long? timestamp)
     {
-        var generator = weatherGenerators.FirstOrDefault(generator => generator.CanHandle(chosenPreset));
+        var generator = weatherGenerators.FirstOrDefault(gen => gen.CanHandle(chosenPreset));
         if (generator is null)
         {
             logger.Warning($"Unable to find weather generator for: {chosenPreset}, falling back to sunny");
 
-            generator = weatherGenerators.FirstOrDefault(generator => generator.CanHandle(WeatherPreset.SUNNY));
+            generator = weatherGenerators.FirstOrDefault(gen => gen.CanHandle(WeatherPreset.SUNNY));
         }
 
         var presetWeights = GetWeatherWeightsByPreset(chosenPreset);
@@ -103,14 +114,16 @@ public class WeatherGenerator(
         return result;
     }
 
+    /// <summary>
+    /// Get the weather preset weights based on passed in preset, get defaults if preset not found in config
+    /// </summary>
+    /// <param name="weatherPreset">Desired preset</param>
+    /// <returns>PresetWeights</returns>
     protected PresetWeights GetWeatherWeightsByPreset(WeatherPreset weatherPreset)
     {
-        if (!WeatherConfig.Weather.PresetWeights.TryGetValue(weatherPreset.ToString(), out var value))
-        {
-            return WeatherConfig.Weather.PresetWeights["default"];
-        }
-
-        return value;
+        return WeatherConfig.Weather.PresetWeights.TryGetValue(weatherPreset.ToString(), out var value)
+            ? value
+            : WeatherConfig.Weather.PresetWeights["default"];
     }
 
     /// <summary>
