@@ -63,9 +63,6 @@ public static class Program
             loadedMods = validatedLoadedMods;
 
             diHandler.AddInjectableTypesFromAssemblies(validatedLoadedMods.SelectMany(a => a.Assemblies));
-
-            //Archangel: Todo: Fix up
-            //ConfigureRazorPagesForMods(builder.Services, loadedMods);
         }
         diHandler.InjectAll();
 
