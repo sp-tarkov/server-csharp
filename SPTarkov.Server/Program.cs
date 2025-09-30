@@ -176,46 +176,6 @@ public static class Program
         );
     }
 
-    private static void ConfigureRazorPagesForMods(IServiceCollection services, List<SptMod> mods)
-    {
-        //Todo: Might need more for controllers and the like? Check after the application in general is working
-        //Todo: Fix routing
-
-        var assembliesWithPages = new List<Assembly>();
-
-        foreach (var mod in mods)
-        {
-            foreach (var assembly in mod.Assemblies)
-            {
-                if (AssemblyHasRazorPages(assembly))
-                {
-                    assembliesWithPages.Add(assembly);
-                }
-            }
-        }
-
-        if (assembliesWithPages.Count > 0)
-        {
-            var mvcBuilder = services.AddRazorPages();
-
-            foreach (var assembly in assembliesWithPages)
-            {
-                mvcBuilder.AddApplicationPart(assembly);
-            }
-        }
-    }
-
-    private static bool AssemblyHasRazorPages(Assembly assembly)
-    {
-        // Check for types that inherit from PageModel (Razor Pages)
-        var hasPageModels = assembly.GetTypes().Any(t => t.IsSubclassOf(typeof(Microsoft.AspNetCore.Mvc.RazorPages.PageModel)));
-
-        // Check for compiled Razor views (they implement IRazorPage)
-        var hasCompiledViews = assembly.GetTypes().Any(t => typeof(Microsoft.AspNetCore.Mvc.Razor.IRazorPage).IsAssignableFrom(t));
-
-        return hasPageModels || hasCompiledViews;
-    }
-
     private static WebApplicationBuilder CreateNewHostBuilder()
     {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { WebRootPath = "./SPT_Data/wwwroot" });
