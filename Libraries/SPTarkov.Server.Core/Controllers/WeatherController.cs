@@ -33,6 +33,8 @@ public class WeatherController(
     public WeatherData Generate()
     {
         var currentSeason = seasonalEventService.GetActiveWeatherSeason();
+
+        // Prep object to send to client
         var result = new WeatherData
         {
             Acceleration = 0,
@@ -42,12 +44,10 @@ public class WeatherController(
             Season = currentSeason,
         };
 
-        var computedDate = timeUtil.GetDateTimeNow();
-        var formattedDate = computedDate.FormatToBsgDate();
+        // Assign now in a bsg-style formatted string to result object property
+        result.Date = timeUtil.GetDateTimeNow().FormatToBsgDate();
 
-        result.Date = formattedDate;
-
-        //Get server uptime seconds multiplied by a multiplier and add to current time as seconds
+        // Get server uptime seconds multiplied by a multiplier and add to current time as seconds
         result.Time = weatherHelper.GetInRaidTime().GetBsgFormattedWeatherTime();
         result.Acceleration = WeatherConfig.Acceleration;
 

@@ -30,10 +30,10 @@ public class WeatherGenerator(
     /// Generate a weather object to send to client
     /// </summary>
     /// <param name="currentSeason">What season is weather being generated for</param>
-    /// <param name="presetWeights">Weather preset weights to pick from</param>
-    /// <param name="timestamp">Optional - Current time</param>
+    /// <param name="presetWeights">Weather preset weights to pick from (values will be altered when generating more than 1)</param>
+    /// <param name="timestamp">Optional - Current time in millisecond ticks</param>
     /// <param name="previousPreset">Optional -What weather preset was last generated</param>
-    /// <returns>Weather</returns>
+    /// <returns>A generated <see cref="Weather"/> object</returns>
     public Weather GenerateWeather(
         Season currentSeason,
         ref Dictionary<WeatherPreset, double> presetWeights,
@@ -41,29 +41,27 @@ public class WeatherGenerator(
         WeatherPreset? previousPreset = null
     )
     {
-        if (!presetWeights.Any())
+        if (presetWeights.Count == 0)
         {
-            // Get fresh cloned weights from config
+            // No presets, get fresh cloned weights from config
             presetWeights = cloner.Clone(GetWeatherPresetWeightsBySeason(currentSeason));
         }
 
         // Only process when we have weights + there was previous preset chosen
-        if (previousPreset.HasValue)
+        if (previousPreset.HasValue && presetWeights.ContainsKey(previousPreset.Value))
         {
             // We know last picked preset, Adjust weights
             // Make it less likely to be picked now
-            presetWeights[previousPreset.Value] -= 1;
-            logger.Info($"{previousPreset.Value} weight reduced by: 1 to: {presetWeights[previousPreset.Value]}");
+            // Clamp to 0
+            presetWeights[previousPreset.Value] = Math.Max(0, presetWeights[previousPreset.Value] - 1);
         }
 
         // Assign value to previousPreset to be picked up next loop
         previousPreset = weightedRandomHelper.GetWeightedValue(presetWeights);
-        logger.Warning($"Chose: {previousPreset}");
 
         // Check if chosen preset has been exhausted and reset if necessary
-        if (presetWeights[previousPreset.Value] <= 0)
+        if (presetWeights[previousPreset.Value] == 0)
         {
-            logger.Info($"{previousPreset.Value} is 0, resetting weights");
             // Flag for fresh presets
             presetWeights.Clear();
         }
@@ -72,23 +70,23 @@ public class WeatherGenerator(
     }
 
     /// <summary>
-    /// Get weather property weights for the provided season
+    /// Gets weather property weights for the provided season
     /// </summary>
     /// <param name="currentSeason">Desired season to get weights for</param>
-    /// <returns>Dictionary</returns>
+    /// <returns>A dictionary of weather preset weights</returns>
     public Dictionary<WeatherPreset, double> GetWeatherPresetWeightsBySeason(Season currentSeason)
     {
-        return !WeatherConfig.Weather.WeatherPresetWeight.TryGetValue(currentSeason.ToString(), out var weights)
-            ? WeatherConfig.Weather.WeatherPresetWeight.GetValueOrDefault("default")!
-            : weights;
+        return WeatherConfig.Weather.WeatherPresetWeight.TryGetValue(currentSeason.ToString(), out var weights)
+            ? weights
+            : WeatherConfig.Weather.WeatherPresetWeight.GetValueOrDefault("default")!;
     }
 
     /// <summary>
-    /// Create a Weather object that adheres to the chosenPreset value
+    /// Creates a <see cref="Weather"/> object that adheres to the chosen preset
     /// </summary>
     /// <param name="chosenPreset">The weather preset chosen to generate</param>
-    /// <param name="timestamp">OPTIONAL - generate the weapon object with a specific time instead of now</param>
-    /// <returns>Weather</returns>
+    /// <param name="timestamp">OPTIONAL - generate the weather object with a specific time instead of now</param>
+    /// <returns>A generated <see cref="Weather"/> object</returns>
     protected Weather GenerateWeatherByPreset(WeatherPreset chosenPreset, long? timestamp)
     {
         var generator = weatherGenerators.FirstOrDefault(gen => gen.CanHandle(chosenPreset));
@@ -105,7 +103,7 @@ public class WeatherGenerator(
         // Set time values in result using now or passed in timestamp
         SetCurrentDateTime(result, timestamp);
 
-        // Must occur after SetCurrentDateTime()
+        // Must occur after SetCurrentDateTime(), temp depends on timestamp
         result.Temperature = GetRaidTemperature(presetWeights, result.SptInRaidTimestamp ?? 0);
 
         // Needed by RaidWeatherService

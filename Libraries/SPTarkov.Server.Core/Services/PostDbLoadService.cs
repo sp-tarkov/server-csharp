@@ -118,7 +118,7 @@ public class PostDbLoadService(
         AddCustomItemPresetsToGlobals();
 
         var currentSeason = seasonalEventService.GetActiveWeatherSeason();
-        raidWeatherService.GenerateWeather(currentSeason);
+        raidWeatherService.GenerateFutureWeatherAndCache(currentSeason);
 
         if (BotConfig.WeeklyBoss.Enabled)
         {

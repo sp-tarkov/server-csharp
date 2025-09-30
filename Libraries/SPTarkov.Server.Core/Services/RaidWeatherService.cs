@@ -26,7 +26,7 @@ public class RaidWeatherService(
     /// <summary>
     ///     Generate 24 hours of weather data starting from midnight today
     /// </summary>
-    public void GenerateWeather(Season currentSeason)
+    public void GenerateFutureWeatherAndCache(Season currentSeason)
     {
         // When to start generating weather from in milliseconds
         var startingTimestamp = timeUtil.GetTodayMidnightTimeStamp();
@@ -103,7 +103,7 @@ public class RaidWeatherService(
         var result = WeatherForecast.Where(weather => weather.Timestamp >= timeUtil.GetTimeStamp());
         if (!result.Any())
         {
-            GenerateWeather(currentSeason);
+            GenerateFutureWeatherAndCache(currentSeason);
         }
     }
 }
