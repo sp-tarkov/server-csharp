@@ -257,9 +257,9 @@
 			"CLOUDY": 3
 		},
 		"default": {
-			"SUNNY": 8,
-			"RAINY": 8,
-			"CLOUDY": 8
+			"SUNNY": 7,
+			"RAINY": 7,
+			"CLOUDY": 7
 		}
 	}
   },
