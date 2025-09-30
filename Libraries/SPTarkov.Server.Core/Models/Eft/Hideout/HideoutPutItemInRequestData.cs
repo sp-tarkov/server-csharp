@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
-using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Enums.Hideout;
 
 namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 

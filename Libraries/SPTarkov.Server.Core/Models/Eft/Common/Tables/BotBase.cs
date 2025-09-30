@@ -3,6 +3,7 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Notes;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
