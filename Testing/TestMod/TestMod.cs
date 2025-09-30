@@ -2,11 +2,12 @@
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Web;
 using Version = SemanticVersioning.Version;
 
 namespace TestMod;
 
-public record TestModMetadata : AbstractModMetadata
+public record TestModMetadata : AbstractModMetadata, IModWebMetadata
 {
     public override string ModGuid { get; init; } = "com.sp-tarkov.test-mod";
     public override string Name { get; init; } = "test-mod";
@@ -26,6 +27,8 @@ public class TestMod(ISptLogger<TestMod> logger) : IOnLoad
 {
     public Task OnLoad()
     {
+        logger.Info("Test mod loaded!");
+
         return Task.CompletedTask;
     }
 }
