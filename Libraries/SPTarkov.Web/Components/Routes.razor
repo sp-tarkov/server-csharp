@@ -1,9 +1,7 @@
 ﻿@using System.Reflection
 @using SPTarkov.Web.Components.Layout
-@inject IServiceProvider ServiceProvider
 
-<Router AppAssembly="@typeof(SPTBlazor).Assembly"
-        AdditionalAssemblies="@GetModAssemblies()">
+<Router AppAssembly="@typeof(SPTBlazor).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(BaseMainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
@@ -11,20 +9,4 @@
 </Router>
 
 @code {
-
-    private Assembly[] GetModAssemblies()
-    {
-        // Get all registered Blazor mods and return their assemblies
-        var blazorMods = ServiceProvider.GetServices<IBlazorMod>();
-
-        /*
-        return blazorMods
-            .SelectMany(mod => mod.GetBlazorComponents())
-            .Select(componentType => componentType.Assembly)
-            .Distinct()
-            .ToArray();
-        */
-
-        return [];
-    }
 }
