@@ -179,7 +179,7 @@ public class BotGenerator(
         botGenerationDetails.BotLevel = botLevelDetails.Level.GetValueOrDefault();
 
         // Generate Id/AId for bot
-        AddIdsToBot(bot, botGenerationDetails);
+        AddIdsToBot(bot);
 
         // Only filter bot equipment, never players
         if (!botGenerationDetails.IsPlayerScav)
@@ -641,12 +641,11 @@ public class BotGenerator(
     ///     Generate an id+aid for a bot and apply
     /// </summary>
     /// <param name="bot">bot to update</param>
-    /// <param name="botGenerationDetails"></param>
     /// <returns></returns>
-    protected void AddIdsToBot(BotBase bot, BotGenerationDetails botGenerationDetails)
+    protected void AddIdsToBot(BotBase bot)
     {
         bot.Id = new MongoId();
-        bot.Aid = botGenerationDetails.IsPmc ? hashUtil.GenerateAccountId() : 0;
+        bot.Aid = 0;
     }
 
     /// <summary>

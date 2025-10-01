@@ -33,6 +33,19 @@ public class RepeatableQuestHelper(
     }
 
     /// <summary>
+    ///     Get the relevant exploration config based on the current players PMC level
+    /// </summary>
+    /// <param name="pmcLevel">Level of PMC character</param>
+    /// <param name="repeatableConfig">Main repeatable config</param>
+    /// <returns>ExplorationConfig</returns>
+    public ExplorationConfig? GetExplorationConfigByPmcLevel(int pmcLevel, RepeatableQuestConfig repeatableConfig)
+    {
+        return repeatableConfig.QuestConfig.ExplorationConfig.FirstOrDefault(x =>
+            pmcLevel >= x.LevelRange.Min && pmcLevel <= x.LevelRange.Max
+        );
+    }
+
+    /// <summary>
     ///     Gets a cloned repeatable quest template for the provided type with a unique id
     /// </summary>
     /// <param name="type">Type of template to retrieve</param>

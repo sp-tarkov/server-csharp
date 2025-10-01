@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Services;
@@ -346,6 +347,12 @@ public class HideoutHelper(
 
             // Skip processing (Don't skip continuous crafts like bitcoin farm or cultist circle)
             if (craft.IsCraftComplete())
+            {
+                continue;
+            }
+
+            // Some crafts (that need continuous power) can be interrupted
+            if (craft.Interrupted.GetValueOrDefault(false))
             {
                 continue;
             }

@@ -51,7 +51,12 @@ public class ExplorationQuestGenerator(
         RepeatableQuestConfig repeatableConfig
     )
     {
-        var explorationConfig = repeatableConfig.QuestConfig.Exploration;
+        var explorationConfig = repeatableQuestHelper.GetExplorationConfigByPmcLevel(pmcLevel, repeatableConfig);
+        if (explorationConfig is null)
+        {
+            logger.Warning(localisationService.GetText("repeatable-exploration_config_no_template", new { pmcLevel }));
+            return null;
+        }
 
         // Try and get a location to generate for
         if (!TryGetLocationInfo(repeatableConfig, explorationConfig, questTypePool, out var locationInfo) || locationInfo is null)
@@ -85,7 +90,10 @@ public class ExplorationQuestGenerator(
         }
 
         // If we require a specific extract requirement, generate it
-        if (locationInfo.RequiresSpecificExtract && !TryGenerateSpecificExtractRequirement(quest, repeatableConfig, locationInfo))
+        if (
+            locationInfo.RequiresSpecificExtract
+            && !TryGenerateSpecificExtractRequirement(quest, repeatableConfig, explorationConfig, locationInfo)
+        )
         {
             logger.Error(
                 localisationService.GetText("repeatable-specific_extract_condition_failed_to_generate", locationInfo.LocationName)
@@ -111,15 +119,15 @@ public class ExplorationQuestGenerator(
     /// <returns>True if location selected, false if no locations remain</returns>
     protected bool TryGetLocationInfo(
         RepeatableQuestConfig repeatableConfig,
-        Exploration explorationConfig,
+        ExplorationConfig explorationConfig,
         QuestTypePool pool,
         out LocationInfo? locationInfo
     )
     {
-        if (pool.Pool?.Exploration?.Locations?.Count is null or 0)
+        if (pool.Pool.Exploration.Locations?.Count is null or 0)
         {
             // there are no more locations left for exploration; delete it as a possible quest type
-            pool.Types = pool.Types?.Where(t => t != "Exploration").ToList();
+            pool.Types = pool.Types.Where(t => t != "Exploration").ToList();
             locationInfo = null;
             return false;
         }
@@ -129,9 +137,9 @@ public class ExplorationQuestGenerator(
         var locationKey = randomUtil.DrawRandomFromDict(pool.Pool.Exploration.Locations)[0];
 
         // Make the location info object
-        var locationTarget = pool.Pool!.Exploration!.Locations![locationKey];
+        var locationTarget = pool.Pool.Exploration.Locations![locationKey];
 
-        var requiresSpecificExtract = randomUtil.GetChance100(repeatableConfig.QuestConfig.Exploration.SpecificExits.Chance);
+        var requiresSpecificExtract = randomUtil.GetChance100(explorationConfig.SpecificExits.Chance);
 
         var numExtracts = GetNumberOfExits(explorationConfig, requiresSpecificExtract);
 
@@ -146,15 +154,19 @@ public class ExplorationQuestGenerator(
     /// <summary>
     ///     Get the number of times the player needs to exit
     /// </summary>
-    /// <param name="config">Exploration config</param>
+    /// <param name="explorationConfig">Exploration config</param>
     /// <param name="requiresSpecificExtract">Is this a specific extract</param>
     /// <returns>Number of exit requirements</returns>
-    protected int GetNumberOfExits(Exploration config, bool requiresSpecificExtract)
+    protected int GetNumberOfExits(ExplorationConfig explorationConfig, bool requiresSpecificExtract)
     {
-        // Different max extract count when specific extract needed
-        var exitTimesMax = requiresSpecificExtract ? config.MaximumExtractsWithSpecificExit : config.MaximumExtracts + 1;
+        var exitTimesMin = requiresSpecificExtract ? explorationConfig.MinimumExtractsWithSpecificExit : explorationConfig.MinimumExtracts;
 
-        return randomUtil.RandInt(1, exitTimesMax);
+        // Different max extract count when specific extract needed
+        var exitTimesMax = requiresSpecificExtract
+            ? explorationConfig.MaximumExtractsWithSpecificExit + 1
+            : explorationConfig.MaximumExtracts + 1;
+
+        return randomUtil.RandInt(exitTimesMin, exitTimesMax);
     }
 
     /// <summary>
@@ -225,11 +237,13 @@ public class ExplorationQuestGenerator(
     /// </summary>
     /// <param name="quest">quest to add it to</param>
     /// <param name="repeatableConfig">repeatable config</param>
+    /// <param name="explorationConfig">exploration config</param>
     /// <param name="locationInfo">LocationInfo object with the generated data</param>
     /// <returns>True if generated, false if not</returns>
     protected bool TryGenerateSpecificExtractRequirement(
         RepeatableQuest quest,
         RepeatableQuestConfig repeatableConfig,
+        ExplorationConfig explorationConfig,
         LocationInfo locationInfo
     )
     {
@@ -247,7 +261,7 @@ public class ExplorationQuestGenerator(
 
         // Exclude exits with a requirement to leave (e.g. car extracts)
         var possibleExits = exitPool.Where(exit =>
-            repeatableConfig.QuestConfig.Exploration.SpecificExits.PassageRequirementWhitelist.Contains(exit.PassageRequirement.ToString())
+            explorationConfig.SpecificExits.PassageRequirementWhitelist.Contains(exit.PassageRequirement.ToString())
         );
 
         if (!possibleExits.Any())

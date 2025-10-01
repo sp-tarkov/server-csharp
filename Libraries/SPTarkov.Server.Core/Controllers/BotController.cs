@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Constants;
@@ -64,7 +63,7 @@ public class BotController(
     ///     Get the core.json difficulty settings from database/bots
     /// </summary>
     /// <returns></returns>
-    public Dictionary<string, JsonElement> GetBotCoreDifficulty()
+    public CoreBot GetBotCoreDifficulty()
     {
         return databaseService.GetBots().Core;
     }

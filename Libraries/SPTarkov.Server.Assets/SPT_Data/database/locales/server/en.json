@@ -665,6 +665,7 @@
   "repeatable-accepted_repeatable_quest_not_found_in_active_quests": "Accepted a repeatable quest: %s which could not be found in the activeQuests array. Please report this bug",
   "repeatable-completion_quest_whitelist_too_small_or_blacklist_too_restrictive": "Generate Completion Quest: No items remain. Either Whitelist is too small or Blacklist too restrictive",
   "repeatable-difficulty_was_nan": "Repeatable Reward Generation: Difficulty was NaN. Setting to 1.",
+  "repeatable-exploration_config_no_template": "Unable to find exploration config for pmc level: {{pmcLevel}}",
   "repeatable-no_reward_item_found_in_price_range": "Repeatable Reward Generation: No item found in price range {{minPrice}} to {{roublesBudget}}",
   "repeatable-quest_handover_failed_condition_already_satisfied": "Quest handover error: condition is already satisfied? qid: {{questId}}, condition: {{conditionId}}, profileCounter:{{profileCounter}}, value:{{value}}",
   "repeatable-quest_handover_failed_condition_invalid": "Quest handover error: condition not found or incorrect value. qid: {{body.qid}}, condition: {{body.conditionId}}",

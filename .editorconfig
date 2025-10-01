@@ -147,6 +147,8 @@ resharper_wrap_object_and_collection_initializer_style = chop_always
 resharper_merge_into_pattern_highlighting = none
 resharper_member_can_be_made_static_global_highlighting = none
 resharper_possible_multiple_enumeration_highlighting = none
+resharper_collection_never_updated_global_highlighting = none
+resharper_unused_auto_property_accessor_global_highlighting = none
 
 # Ignored warnings
 dotnet_diagnostic.CS1591.severity = none

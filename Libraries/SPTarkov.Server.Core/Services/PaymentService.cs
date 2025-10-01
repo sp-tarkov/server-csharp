@@ -40,10 +40,6 @@ public class PaymentService(
     /// <param name="output"> Client response </param>
     public void PayMoney(PmcData pmcData, ProcessBuyTradeRequestData request, MongoId sessionID, ItemEventRouterResponse output)
     {
-        // May need to convert to trader currency
-        var trader = traderHelper.GetTrader(request.TransactionId, sessionID);
-        var payToTrader = request.TransactionId != "ragfair" && traderHelper.TraderExists(request.TransactionId);
-
         // Track the amounts of each type of currency involved in the trade.
         var currencyAmounts = new Dictionary<MongoId, double>();
 
@@ -72,7 +68,7 @@ public class PaymentService(
                 // Used by `SptInsure`
                 // Handle differently, `id` is the money type tpl
                 var currencyTpl = itemRequest.Id;
-                // sometimes the currency can be in two parts, so it fails to tryadd the second part
+                // Sometimes the currency can be in two parts, so it fails to tryadd the second part
                 currencyAmounts.AddOrUpdate(currencyTpl, itemRequest.Count.Value);
             }
         }
@@ -80,10 +76,15 @@ public class PaymentService(
         // Track the total amount of all currencies.
         var totalCurrencyAmount = 0d;
 
-        // Convert id to mongoId if we know it'll be valid (trader id)
-        var requestTransactionId = payToTrader ? new MongoId(request.TransactionId) : MongoId.Empty(); // Likely flea, use default
+        var requestTransactionId = new MongoId(request.TransactionId);
 
-        // Loop through each type of currency involved in the trade.
+        // Who is recipient of money player is sending
+        var payToTrader = request.Type == "buy_from_ragfair_trader" && traderHelper.TraderExists(requestTransactionId);
+
+        // May need to convert to trader currency
+        var trader = payToTrader ? traderHelper.GetTrader(requestTransactionId, sessionID) : new TraderBase { Currency = CurrencyType.RUB }; // TODO: cleanup
+
+        // Loop through each type of currency involved in the trade
         foreach (var (currencyTpl, currencyAmount) in currencyAmounts)
         {
             if (currencyAmount <= 0)
@@ -96,7 +97,7 @@ public class PaymentService(
             // Find money stacks in inventory and remove amount needed + update output object to inform client of changes
             AddPaymentToOutput(pmcData, currencyTpl, currencyAmount, sessionID, output);
 
-            // If there are warnings, exit early.
+            // If there are warnings, exit early
             if (output.Warnings?.Count > 0)
             {
                 return;
@@ -104,7 +105,7 @@ public class PaymentService(
 
             if (payToTrader)
             {
-                // Convert the amount to the trader's currency and update the sales sum.
+                // Convert the amount to the trader's currency and update the sales sum
                 var costOfPurchaseInCurrency = handbookHelper.FromRoubles(
                     handbookHelper.InRoubles(currencyAmount, currencyTpl),
                     trader.Currency.Value.GetCurrencyTpl()

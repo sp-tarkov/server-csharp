@@ -2,6 +2,7 @@
   <Import Project="..\..\Build.props" />
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>TestMod</AssemblyName>
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <ItemGroup>
@@ -21,11 +22,10 @@
       <Resources Include="$(ProjectDir)Resources\**\*.*" />
       <WebAssets Include="$(ProjectDir)wwwroot\**\*.*" />
     </ItemGroup>
-    <!-- Copy the output DLL -->
-    <Copy SourceFiles="@(OutputDLL)" DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net9.0\user\mods\TestMod" />
-    <!-- Copy the Resources folder -->
+    <!-- Copies the output dll -->
+    <Copy SourceFiles="@(OutputDLL);" DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net9.0\user\mods\TestMod" />
     <Copy
-      SourceFiles="@(Resources)"
+      SourceFiles="@(Resources);"
       DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net9.0\user\mods\TestMod\Resources\%(RecursiveDir)"
     />
     <!-- Copy the wwwroot folder -->

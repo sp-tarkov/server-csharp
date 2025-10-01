@@ -62,6 +62,8 @@
   "chat-unable_to_register_command_already_registered": "Impossibile registrare il comando già registrato: %s",
   "client_request": "[Richiesta Client] %s",
   "client_request_ip": "[Richiesta Client] {{ip}}{{url}}",
+  "websocket_request": "[WebSocket Request] %s",
+  "websocket_request_ip": "[WebSocket Request] {{ip}} {{url}}",
   "custom-quest-service_quest_id_already_exists": "Una quest con id: {{questId}} già esiste.",
   "custom-quest-service_no_languages_for_quest": "Non sono state aggiunte altre lingue per la quest con id custom: {{questId}}",
   "custom-quest-service_no_entries_for_language": "Nessuna locale entries è stata aggiunta per la language key: {{languageKey}}, sei sicuro che sia stato intenzionale?",

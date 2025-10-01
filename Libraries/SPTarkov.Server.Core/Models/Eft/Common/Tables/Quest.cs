@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Utils.Json;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
@@ -328,7 +329,7 @@ public record QuestConditionCounter
 public record QuestConditionCounterCondition
 {
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public MongoId? Id { get; set; }
 
     [JsonPropertyName("dynamicLocale")]
     public bool? DynamicLocale { get; set; }

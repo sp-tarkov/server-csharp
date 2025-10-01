@@ -404,7 +404,7 @@ public class GameController(
         }
 
         // Two day post-profile creation
-        if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds * 2)
+        if (currentTimeStamp > timeStampProfileCreated + (oneDaySeconds * 2))
         {
             giftService.SendPraporStartingGift(pmcProfile.SessionId.Value, 2);
         }

@@ -67,11 +67,11 @@ public class WeatherHelper(ISptLogger<WeatherHelper> logger, TimeUtil timeUtil, 
         }
 
         // Night if after 9pm or before 5am
-        return time.Hour > 21 || time.Hour < 5;
+        return time.Hour is > 21 or < 5;
     }
 
     public bool IsHourAtNightTime(int currentHour)
     {
-        return currentHour > 21 || currentHour <= 5;
+        return currentHour is > 21 or <= 5;
     }
 }

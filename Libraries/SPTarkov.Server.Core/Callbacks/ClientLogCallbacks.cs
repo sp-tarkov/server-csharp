@@ -24,7 +24,7 @@ public class ClientLogCallbacks(
     ///     Handle /singleplayer/log
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> ClientLog(string url, ClientLogRequest request, MongoId sessionID)
+    public ValueTask<string> ClientLog(string url, ClientLogRequest request, MongoId sessionId)
     {
         if (request.Message == "-1")
         {

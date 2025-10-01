@@ -344,7 +344,7 @@ public class RepeatableQuestRewardGenerator(
             if (itemHelper.IsOfBaseclass(chosenItemFromPool.Id, BaseClasses.AMMO))
             {
                 // Don't reward ammo that stacks to less than what's allowed in config
-                if (chosenItemFromPool.Properties.StackMaxSize < repeatableConfig.RewardAmmoStackMinSize)
+                if (chosenItemFromPool.Properties?.StackMaxSize < repeatableConfig.RewardAmmoStackMinSize)
                 {
                     i--;
                     continue;
@@ -441,7 +441,7 @@ public class RepeatableQuestRewardGenerator(
         var rewardItemPrice = presetHelper.GetDefaultPresetOrItemPrice(item.Id);
 
         // Define price tiers and corresponding stack size options
-        var priceTiers = new List<Tuple<int, List<int>?>>
+        var priceTiers = new List<Tuple<int, List<int>>>
         {
             new(3000, [2, 3, 4]),
             new(10000, [2, 3]),
@@ -452,7 +452,7 @@ public class RepeatableQuestRewardGenerator(
         var tier = priceTiers.FirstOrDefault(tier => rewardItemPrice < tier.Item1);
         if (tier is null)
         {
-            return 4; // Default to 2 if no tier matches
+            return 4; // Default to 4 if no tier matches
         }
 
         return randomUtil.GetArrayValue(tier.Item2);
@@ -467,15 +467,15 @@ public class RepeatableQuestRewardGenerator(
     /// <returns> List of reward items that fit budget </returns>
     protected List<TemplateItem> ChooseRewardItemsWithinBudget(
         RepeatableQuestConfig repeatableConfig,
-        double? roublesBudget,
+        double roublesBudget,
         MongoId traderId
     )
     {
         // First filter for type and baseclass to avoid lookup in handbook for non-available items
         var rewardableItemPool = GetRewardableItems(repeatableConfig, traderId);
-        var minPrice = Math.Min(25000, 0.5 * roublesBudget.Value);
+        var minPrice = Math.Min(25000, 0.5 * roublesBudget);
 
-        var rewardableItemPoolWithinBudget = FilterRewardPoolWithinBudget(rewardableItemPool, roublesBudget.Value, minPrice);
+        var rewardableItemPoolWithinBudget = FilterRewardPoolWithinBudget(rewardableItemPool, roublesBudget, minPrice);
 
         if (rewardableItemPoolWithinBudget.Count == 0)
         {
@@ -533,7 +533,7 @@ public class RepeatableQuestRewardGenerator(
             if (presetPrice <= roublesBudget)
             {
                 logger.Debug($"Added weapon: {tpls[0]}with price: {presetPrice}");
-                var chosenPreset = cloner.Clone(randomPreset);
+                var chosenPreset = cloner.Clone(randomPreset)!;
 
                 return new KeyValuePair<Reward, double>(
                     GeneratePresetReward(chosenPreset.Encyclopedia.Value, 1, rewardIndex, chosenPreset.Items),

@@ -846,7 +846,7 @@ public class HideoutController(
 
         // Build an array of the tools that need to be returned to the player
         List<List<Item>> toolsToSendToPlayer = [];
-        pmcData.Hideout.Production.TryGetValue(prodId.Value, out Production hideoutProduction);
+        pmcData.Hideout.Production.TryGetValue(prodId.Value, out var hideoutProduction);
         if (hideoutProduction.SptRequiredTools?.Count > 0)
         {
             foreach (var tool in hideoutProduction.SptRequiredTools)
@@ -1255,8 +1255,7 @@ public class HideoutController(
 
             if (
                 paymentHelper.IsMoneyTpl(item.inventoryItem.Template)
-                && item.inventoryItem.Upd is not null
-                && item.inventoryItem.Upd.StackObjectsCount is not null
+                && item.inventoryItem.Upd?.StackObjectsCount != null
                 && item.inventoryItem.Upd.StackObjectsCount > item.requestedItem.Count
             )
             {

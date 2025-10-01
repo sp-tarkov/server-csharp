@@ -1,4 +1,4 @@
-﻿namespace SPTarkov.Server.Core.Models.Enums;
+﻿namespace SPTarkov.Server.Core.Models.Enums.Hideout;
 
 public enum HideoutAreas
 {

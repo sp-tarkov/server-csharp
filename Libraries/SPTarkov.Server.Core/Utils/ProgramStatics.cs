@@ -49,11 +49,20 @@ public static partial class ProgramStatics
     }
 
     // Public Static Getters
+
+    /// <summary>
+    /// What type of release is this
+    /// </summary>
+    /// <returns></returns>
     public static EntryType ENTRY_TYPE()
     {
         return BuildType;
     }
 
+    /// <summary>
+    /// Server is running in debug mode
+    /// </summary>
+    /// <returns></returns>
     public static bool DEBUG()
     {
         return _debug;
@@ -64,6 +73,10 @@ public static partial class ProgramStatics
         return _compiled;
     }
 
+    /// <summary>
+    /// Are mods enable for the server
+    /// </summary>
+    /// <returns></returns>
     public static bool MODS()
     {
         return _mods;
@@ -79,6 +92,10 @@ public static partial class ProgramStatics
         return Commit;
     }
 
+    /// <summary>
+    /// Timestamp of server build date
+    /// </summary>
+    /// <returns></returns>
     public static double BUILD_TIME()
     {
         return BuildTime;

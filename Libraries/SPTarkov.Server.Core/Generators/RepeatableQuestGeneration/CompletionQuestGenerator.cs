@@ -47,7 +47,7 @@ public class CompletionQuestGenerator(
         RepeatableQuestConfig repeatableConfig
     )
     {
-        var completionConfig = repeatableConfig.QuestConfig.Completion;
+        var completionConfig = repeatableConfig.QuestConfig.CompletionConfig;
         var levelsConfig = repeatableConfig.RewardScaling.Levels;
         var roublesConfig = repeatableConfig.RewardScaling.Roubles;
 
@@ -73,12 +73,12 @@ public class CompletionQuestGenerator(
 
         // We also have the option to use whitelist and/or blacklist which is defined in repeatableQuests.json as
         // [{"minPlayerLevel": 1, "itemIds": ["id1",...]}, {"minPlayerLevel": 15, "itemIds": ["id3",...]}]
-        if (repeatableConfig.QuestConfig.Completion.UseWhitelist)
+        if (repeatableConfig.QuestConfig.CompletionConfig.UseWhitelist)
         {
             itemsToRetrievePool = GetWhitelistedItemSelection(itemsToRetrievePool, pmcLevel);
         }
 
-        if (repeatableConfig.QuestConfig.Completion.UseBlacklist)
+        if (repeatableConfig.QuestConfig.CompletionConfig.UseBlacklist)
         {
             itemsToRetrievePool = GetBlacklistedItemSelection(itemsToRetrievePool, pmcLevel);
         }
@@ -111,7 +111,7 @@ public class CompletionQuestGenerator(
     /// <param name="completionConfig">Completion quest type config</param>
     /// <param name="itemTplBlacklist">Item tpls to not add to pool</param>
     /// <returns>Set of item tpls</returns>
-    protected HashSet<MongoId> GetItemsToRetrievePool(Completion completionConfig, HashSet<MongoId> itemTplBlacklist)
+    protected HashSet<MongoId> GetItemsToRetrievePool(CompletionConfig completionConfig, HashSet<MongoId> itemTplBlacklist)
     {
         // Get seasonal items that should not be added to pool as seasonal event is not active
         var seasonalItems = seasonalEventService.GetInactiveSeasonalEventItems();
@@ -177,7 +177,7 @@ public class CompletionQuestGenerator(
     /// <returns>Filtered selection, or original if null or empty</returns>
     protected HashSet<MongoId> GetWhitelistedItemSelection(HashSet<MongoId> itemSelection, int pmcLevel)
     {
-        var itemWhitelist = databaseService.GetTemplates().RepeatableQuests?.Data?.Completion?.ItemsWhitelist;
+        var itemWhitelist = databaseService.GetTemplates().RepeatableQuests.Data?.Completion?.ItemsWhitelist;
 
         // Whitelist doesn't exist or is empty, return original
         if (itemWhitelist is null || itemWhitelist.Count == 0)
@@ -186,7 +186,7 @@ public class CompletionQuestGenerator(
         }
 
         // Filter and concatenate items according to current player level
-        var itemIdsWhitelisted = itemWhitelist.Where(p => p.MinPlayerLevel <= pmcLevel).SelectMany(x => x.ItemIds).ToHashSet(); //.Aggregate((a, p) => a.Concat(p.ItemIds), []);
+        var itemIdsWhitelisted = itemWhitelist.Where(p => p.MinPlayerLevel <= pmcLevel).SelectMany(x => x.ItemIds ?? []).ToHashSet(); //.Aggregate((a, p) => a.Concat(p.ItemIds), []);
 
         var filteredSelection = itemSelection
             .Where(x =>
@@ -211,7 +211,7 @@ public class CompletionQuestGenerator(
     /// <returns>Filtered selection, or original if null or empty</returns>
     protected HashSet<MongoId> GetBlacklistedItemSelection(HashSet<MongoId> itemSelection, int pmcLevel)
     {
-        var itemBlacklist = databaseService.GetTemplates().RepeatableQuests?.Data?.Completion?.ItemsBlacklist;
+        var itemBlacklist = databaseService.GetTemplates().RepeatableQuests.Data?.Completion?.ItemsBlacklist;
 
         // Blacklist doesn't exist or is empty, return original
         if (itemBlacklist is null || itemBlacklist.Count == 0)
@@ -222,7 +222,7 @@ public class CompletionQuestGenerator(
         // Filter and concatenate the arrays according to current player level
         var itemIdsBlacklisted = itemBlacklist
             .Where(blacklist => blacklist.MinPlayerLevel <= pmcLevel)
-            .SelectMany(blacklist => blacklist.ItemIds)
+            .SelectMany(blacklist => blacklist.ItemIds ?? [])
             .ToHashSet(); //.Aggregate(List<ItemsBlacklist> , (a, p) => a.Concat(p.ItemIds) );
 
         var filteredSelection = itemSelection
@@ -246,7 +246,7 @@ public class CompletionQuestGenerator(
     /// <returns>Chosen item template Ids</returns>
     protected List<MongoId> GenerateAvailableForFinish(
         RepeatableQuest quest,
-        Completion completionConfig,
+        CompletionConfig completionConfig,
         RepeatableQuestConfig repeatableConfig,
         List<MongoId> itemSelection,
         double roublesBudget
@@ -288,7 +288,7 @@ public class CompletionQuestGenerator(
             usedItemIndexes.Add(chosenItemIndex);
 
             var tplChosen = itemSelection[chosenItemIndex];
-            var itemPrice = itemHelper.GetItemPrice(tplChosen).Value;
+            var itemPrice = itemHelper.GetItemPrice(tplChosen)!.Value;
             var minValue = completionConfig.MinimumRequestedAmount;
             var maxValue = completionConfig.MaximumRequestedAmount;
 
@@ -308,7 +308,7 @@ public class CompletionQuestGenerator(
 
             // Push a CompletionCondition with the item and the amount of the item into quest
             chosenRequirementItemsTpls.Add(tplChosen);
-            quest.Conditions.AvailableForFinish.Add(GenerateCondition(tplChosen, value, repeatableConfig.QuestConfig.Completion));
+            quest.Conditions.AvailableForFinish!.Add(GenerateCondition(tplChosen, value, repeatableConfig.QuestConfig.CompletionConfig));
 
             // Is there budget left for more items
             if (roublesBudget > 0)
@@ -341,7 +341,7 @@ public class CompletionQuestGenerator(
     /// <param name="value">Amount of items of this specific type to request</param>
     /// <param name="completionConfig">Completion config from quest.json</param>
     /// <returns>object of "Completion"-condition</returns>
-    protected QuestCondition GenerateCondition(MongoId itemTpl, double value, Completion completionConfig)
+    protected QuestCondition GenerateCondition(MongoId itemTpl, double value, CompletionConfig completionConfig)
     {
         var onlyFoundInRaid = completionConfig.RequiredItemsAreFiR;
         var minDurability = itemHelper.IsOfBaseclasses(itemTpl, [BaseClasses.WEAPON, BaseClasses.ARMOR])

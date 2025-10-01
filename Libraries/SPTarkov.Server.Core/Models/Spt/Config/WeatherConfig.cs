@@ -50,8 +50,8 @@ public record SeasonDateTimes
 
 public record WeatherValues
 {
-    [JsonPropertyName("seasonValues")]
-    public Dictionary<string, SeasonalValues>? SeasonValues { get; set; }
+    [JsonPropertyName("presetWeights")]
+    public Dictionary<string, PresetWeights>? PresetWeights { get; set; }
 
     /// <summary>
     ///     How many hours to generate weather data into the future
@@ -64,30 +64,40 @@ public record WeatherValues
     /// </summary>
     [JsonPropertyName("timePeriod")]
     public WeatherSettings<int>? TimePeriod { get; set; }
+
+    [JsonPropertyName("weatherPresetWeight")]
+    public Dictionary<string, Dictionary<WeatherPreset, double>> WeatherPresetWeight { get; set; }
 }
 
-public record SeasonalValues
+public enum WeatherPreset
+{
+    SUNNY = 1,
+    RAINY = 2,
+    CLOUDY = 3,
+}
+
+public record PresetWeights
 {
     [JsonPropertyName("clouds")]
-    public WeatherSettings<double>? Clouds { get; set; }
+    public Dictionary<string, double> Clouds { get; set; }
 
     [JsonPropertyName("windSpeed")]
-    public WeatherSettings<double>? WindSpeed { get; set; }
+    public Dictionary<string, double>? WindSpeed { get; set; }
 
     [JsonPropertyName("windDirection")]
-    public WeatherSettings<WindDirection>? WindDirection { get; set; }
+    public Dictionary<WindDirection, double>? WindDirection { get; set; }
 
     [JsonPropertyName("windGustiness")]
     public MinMax<double>? WindGustiness { get; set; }
 
     [JsonPropertyName("rain")]
-    public WeatherSettings<double>? Rain { get; set; }
+    public Dictionary<string, double>? Rain { get; set; }
 
     [JsonPropertyName("rainIntensity")]
     public MinMax<double>? RainIntensity { get; set; }
 
     [JsonPropertyName("fog")]
-    public WeatherSettings<double>? Fog { get; set; }
+    public Dictionary<string, double>? Fog { get; set; }
 
     [JsonPropertyName("temp")]
     public TempDayNight? Temp { get; set; }

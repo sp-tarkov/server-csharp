@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Insurance;
 public record InsureRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("tid")]
-    public string? TransactionId { get; set; }
+    public MongoId TransactionId { get; set; }
 
     [JsonPropertyName("items")]
     public List<MongoId>? Items { get; set; }

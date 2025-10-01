@@ -1,7 +1,5 @@
-using System.Diagnostics;
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -12,7 +10,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using Hideout = SPTarkov.Server.Core.Models.Spt.Hideout.Hideout;
 using Locations = SPTarkov.Server.Core.Models.Spt.Server.Locations;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -26,8 +23,6 @@ public class DatabaseService(
     ServerLocalisationService serverLocalisationService
 )
 {
-    private bool _isDataValid = true;
-
     /// <returns> assets/database/ </returns>
     public DatabaseTables GetTables()
     {

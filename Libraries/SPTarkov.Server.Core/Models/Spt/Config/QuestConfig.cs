@@ -338,16 +338,16 @@ public record RepeatableQuestTypesConfig
     ///     Defines exploration repeatable task generation parameters
     /// </summary>
     [JsonPropertyName("Exploration")]
-    public required Exploration Exploration { get; set; }
+    public required List<ExplorationConfig> ExplorationConfig { get; set; }
 
     /// <summary>
     ///     Defines completion repeatable task generation parameters
     /// </summary>
     [JsonPropertyName("Completion")]
-    public required Completion Completion { get; set; }
+    public required CompletionConfig CompletionConfig { get; set; }
 
     /// <summary>
-    ///     Defines pickup repeatable task generation parameters - TODO: Not implemented/No Data
+    ///     Defines pickup repeatable task generation parameters - TODO: Not implemented/No Data - NOTE: Does not work with dynamicLocale
     /// </summary>
     [JsonPropertyName("Pickup")]
     public Pickup? Pickup { get; set; }
@@ -359,13 +359,31 @@ public record RepeatableQuestTypesConfig
     public required List<EliminationConfig> Elimination { get; set; }
 }
 
-public record Exploration : BaseQuestConfig
+public record ExplorationConfig : BaseQuestConfig
 {
+    /// <summary>
+    ///     Level range at which elimination tasks should be generated from this config
+    /// </summary>
+    [JsonPropertyName("levelRange")]
+    public required MinMax<int> LevelRange { get; set; }
+
+    /// <summary>
+    ///     Minimum extract count that a per map extract requirement can be generated with
+    /// </summary>
+    [JsonPropertyName("minExtracts")]
+    public required int MinimumExtracts { get; set; }
+
     /// <summary>
     ///     Maximum extract count that a per map extract requirement can be generated with
     /// </summary>
     [JsonPropertyName("maxExtracts")]
     public required int MaximumExtracts { get; set; }
+
+    /// <summary>
+    ///     Minimum extract count that a specific extract can be generated with
+    /// </summary>
+    [JsonPropertyName("minExtractsWithSpecificExit")]
+    public required int MinimumExtractsWithSpecificExit { get; set; }
 
     /// <summary>
     ///     Maximum extract count that a specific extract can be generated with
@@ -395,7 +413,7 @@ public record SpecificExits
     public required HashSet<string> PassageRequirementWhitelist { get; set; }
 }
 
-public record Completion : BaseQuestConfig
+public record CompletionConfig : BaseQuestConfig
 {
     /// <summary>
     ///     Minimum item count that can be requested
@@ -443,19 +461,19 @@ public record Completion : BaseQuestConfig
     ///     Should the supplied items be required FiR
     /// </summary>
     [JsonPropertyName("requiredItemsAreFiR")]
-    public bool? RequiredItemsAreFiR { get; set; }
+    public required bool RequiredItemsAreFiR { get; set; }
 
     /// <summary>
-    ///     Should the supplied items be required FiR
+    ///     Min/Max durability requirements for the item
     /// </summary>
     [JsonPropertyName("requiredItemMinDurabilityMinMax")]
-    public MinMax<double>? RequiredItemMinDurabilityMinMax { get; set; }
+    public required MinMax<double> RequiredItemMinDurabilityMinMax { get; set; }
 
     /// <summary>
     ///     Blacklisted item types to not collect
     /// </summary>
     [JsonPropertyName("requiredItemTypeBlacklist")]
-    public HashSet<MongoId>? RequiredItemTypeBlacklist { get; set; }
+    public required HashSet<MongoId> RequiredItemTypeBlacklist { get; set; }
 }
 
 public record Pickup : BaseQuestConfig

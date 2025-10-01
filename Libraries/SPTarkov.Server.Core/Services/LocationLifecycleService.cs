@@ -65,6 +65,7 @@ public class LocationLifecycleService(
     /// Check player type for pmc or scav
     /// </summary>
     /// <param name="playerSide">string</param>
+    /// <param name="sideCheck">What to check the bot against, default = PMC</param>
     /// <returns>bool</returns>
     protected internal bool IsSide(string playerSide, string sideCheck = Pmc)
     {

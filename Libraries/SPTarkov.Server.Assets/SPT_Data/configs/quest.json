@@ -281,7 +281,7 @@
           0.03,
           0.03
         ],
-        "rewardSpread": 0.4,
+        "rewardSpread": 0.25,
         "skillRewardChance": [
           0,
           1,
@@ -517,26 +517,86 @@
         }
       ],
       "questConfig": {
-        "Exploration": {
-          "maxExtracts": 4,
-          "maxExtractsWithSpecificExit": 2,
-          "possibleSkillRewards": [
-            "Endurance",
-            "Strength",
-            "Vitality"
-          ],
-          "specificExits": {
-            "chance": 20,
-            "passageRequirementWhitelist": [
-              "None",
-              "TransferItem",
-              "WorldEvent",
-              "Train",
-              "Reference",
-              "Empty"
-            ]
+        "Exploration": [
+          {
+            "levelRange": {
+              "min": 1,
+              "max": 15
+            },
+            "minExtracts": 1,
+            "maxExtracts": 3,
+            "minExtractsWithSpecificExit": 1,
+            "maxExtractsWithSpecificExit": 2,
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "specificExits": {
+              "chance": 10,
+              "passageRequirementWhitelist": [
+                "None",
+                "TransferItem",
+                "WorldEvent",
+                "Train",
+                "Reference",
+                "Empty"
+              ]
+            }
+          },
+          {
+            "levelRange": {
+              "min": 16,
+              "max": 40
+            },
+            "minExtracts": 2,
+            "maxExtracts": 7,
+            "minExtractsWithSpecificExit": 1,
+            "maxExtractsWithSpecificExit": 3,
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "specificExits": {
+              "chance": 15,
+              "passageRequirementWhitelist": [
+                "None",
+                "TransferItem",
+                "WorldEvent",
+                "Train",
+                "Reference",
+                "Empty"
+              ]
+            }
+          },
+          {
+            "levelRange": {
+              "min": 41,
+              "max": 100
+            },
+            "minExtracts": 3,
+            "maxExtracts": 15,
+            "minExtractsWithSpecificExit": 2,
+            "maxExtractsWithSpecificExit": 4,
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "specificExits": {
+              "chance": 20,
+              "passageRequirementWhitelist": [
+                "None",
+                "TransferItem",
+                "WorldEvent",
+                "Train",
+                "Reference",
+                "Empty"
+              ]
+            }
           }
-        },
+        ],
         "Completion": {
           "possibleSkillRewards": [
             "Endurance",
@@ -1386,7 +1446,7 @@
           0.06,
           0.07
         ],
-        "rewardSpread": 0.5,
+        "rewardSpread": 0.35,
         "skillRewardChance": [
           0,
           5,
@@ -1605,26 +1665,86 @@
         }
       ],
       "questConfig": {
-        "Exploration": {
-          "maxExtracts": 15,
-          "maxExtractsWithSpecificExit": 4,
-          "possibleSkillRewards": [
-            "Endurance",
-            "Strength",
-            "Vitality"
-          ],
-          "specificExits": {
-            "chance": 10,
-            "passageRequirementWhitelist": [
-              "None",
-              "TransferItem",
-              "WorldEvent",
-              "Train",
-              "Reference",
-              "Empty"
-            ]
+        "Exploration": [
+          {
+            "levelRange": {
+              "min": 1,
+              "max": 15
+            },
+            "minExtracts": 3,
+            "maxExtracts": 5,
+            "minExtractsWithSpecificExit": 1,
+            "maxExtractsWithSpecificExit": 4,
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "specificExits": {
+              "chance": 10,
+              "passageRequirementWhitelist": [
+                "None",
+                "TransferItem",
+                "WorldEvent",
+                "Train",
+                "Reference",
+                "Empty"
+              ]
+            }
+          },
+          {
+            "levelRange": {
+              "min": 16,
+              "max": 40
+            },
+            "minExtracts": 4,
+            "maxExtracts": 8,
+            "minExtractsWithSpecificExit": 2,
+            "maxExtractsWithSpecificExit": 5,
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "specificExits": {
+              "chance": 15,
+              "passageRequirementWhitelist": [
+                "None",
+                "TransferItem",
+                "WorldEvent",
+                "Train",
+                "Reference",
+                "Empty"
+              ]
+            }
+          },
+          {
+            "levelRange": {
+              "min": 41,
+              "max": 100
+            },
+            "minExtracts": 5,
+            "maxExtracts": 15,
+            "minExtractsWithSpecificExit": 3,
+            "maxExtractsWithSpecificExit": 6,
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "specificExits": {
+              "chance": 20,
+              "passageRequirementWhitelist": [
+                "None",
+                "TransferItem",
+                "WorldEvent",
+                "Train",
+                "Reference",
+                "Empty"
+              ]
+            }
           }
-        },
+        ],
         "Completion": {
           "possibleSkillRewards": [
             "Endurance",
@@ -2546,7 +2666,7 @@
           0.04,
           0.05
         ],
-        "rewardSpread": 0.5,
+        "rewardSpread": 0.35,
         "skillRewardChance": [
           0,
           0,
@@ -2622,25 +2742,86 @@
         }
       ],
       "questConfig": {
-        "Exploration": {
-          "possibleSkillRewards": [
-            "Endurance",
-            "Strength",
-            "Vitality"
-          ],
-          "maxExtracts": 3,
-          "maxExtractsWithSpecificExit": 1,
-          "specificExits": {
-            "chance": 20,
-            "passageRequirementWhitelist": [
-              "None",
-              "WorldEvent",
-              "Train",
-              "Reference",
-              "Empty"
-            ]
+        "Exploration": [
+          {
+            "levelRange": {
+              "min": 1,
+              "max": 15
+            },
+            "minExtracts": 1,
+            "maxExtracts": 3,
+            "minExtractsWithSpecificExit": 1,
+            "maxExtractsWithSpecificExit": 2,
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "specificExits": {
+              "chance": 10,
+              "passageRequirementWhitelist": [
+                "None",
+                "TransferItem",
+                "WorldEvent",
+                "Train",
+                "Reference",
+                "Empty"
+              ]
+            }
+          },
+          {
+            "levelRange": {
+              "min": 16,
+              "max": 40
+            },
+            "minExtracts": 2,
+            "maxExtracts": 7,
+            "minExtractsWithSpecificExit": 1,
+            "maxExtractsWithSpecificExit": 3,
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "specificExits": {
+              "chance": 15,
+              "passageRequirementWhitelist": [
+                "None",
+                "TransferItem",
+                "WorldEvent",
+                "Train",
+                "Reference",
+                "Empty"
+              ]
+            }
+          },
+          {
+            "levelRange": {
+              "min": 41,
+              "max": 100
+            },
+            "minExtracts": 3,
+            "maxExtracts": 15,
+            "minExtractsWithSpecificExit": 2,
+            "maxExtractsWithSpecificExit": 4,
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "specificExits": {
+              "chance": 20,
+              "passageRequirementWhitelist": [
+                "None",
+                "TransferItem",
+                "WorldEvent",
+                "Train",
+                "Reference",
+                "Empty"
+              ]
+            }
           }
-        },
+        ],
         "Pickup": {
           "possibleSkillRewards": [
             "Endurance",

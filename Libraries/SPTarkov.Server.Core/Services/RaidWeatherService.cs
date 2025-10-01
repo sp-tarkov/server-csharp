@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -15,7 +16,8 @@ public class RaidWeatherService(
     WeatherGenerator weatherGenerator,
     SeasonalEventService seasonalEventService,
     WeightedRandomHelper weightedRandomHelper,
-    ConfigServer configServer
+    ConfigServer configServer,
+    ICloner cloner
 )
 {
     protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
@@ -24,22 +26,30 @@ public class RaidWeatherService(
     /// <summary>
     ///     Generate 24 hours of weather data starting from midnight today
     /// </summary>
-    public void GenerateWeather(Season currentSeason)
+    public void GenerateFutureWeatherAndCache(Season currentSeason)
     {
         // When to start generating weather from in milliseconds
-        var staringTimestamp = timeUtil.GetTodayMidnightTimeStamp();
+        var startingTimestamp = timeUtil.GetTodayMidnightTimeStamp();
 
         // How far into future do we generate weather
-        var futureTimestampToReach = staringTimestamp + timeUtil.GetHoursAsSeconds(WeatherConfig.Weather.GenerateWeatherAmountHours ?? 1);
+        var futureTimestampToReach = startingTimestamp + timeUtil.GetHoursAsSeconds(WeatherConfig.Weather.GenerateWeatherAmountHours ?? 1);
 
         // Keep adding new weather until we have reached desired future date
-        var nextTimestamp = staringTimestamp;
+        var nextTimestamp = startingTimestamp;
+
+        // Store this so it can be passed into GenerateWeather()
+        WeatherPreset? previousPreset = null;
+        var presetWeights = cloner.Clone(weatherGenerator.GetWeatherPresetWeightsBySeason(currentSeason));
         while (nextTimestamp <= futureTimestampToReach)
         {
-            var newWeatherToAddToCache = weatherGenerator.GenerateWeather(currentSeason, nextTimestamp);
+            // Pass by ref as method will alter weight values
+            var newWeatherToAddToCache = weatherGenerator.GenerateWeather(currentSeason, ref presetWeights, nextTimestamp, previousPreset);
 
             // Add generated weather for time period to cache
             WeatherForecast.Add(newWeatherToAddToCache);
+
+            // Store for use in next loop
+            previousPreset = newWeatherToAddToCache.SptChosenPreset;
 
             // Increment timestamp so next loop can begin at correct time
             nextTimestamp += GetWeightedWeatherTimePeriod();
@@ -93,7 +103,7 @@ public class RaidWeatherService(
         var result = WeatherForecast.Where(weather => weather.Timestamp >= timeUtil.GetTimeStamp());
         if (!result.Any())
         {
-            GenerateWeather(currentSeason);
+            GenerateFutureWeatherAndCache(currentSeason);
         }
     }
 }

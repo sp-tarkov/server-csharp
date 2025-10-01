@@ -121,9 +121,9 @@ public class BotEquipmentFilterService(
     /// </summary>
     /// <param name="botEquipmentRole">equipment role to return</param>
     /// <returns>EquipmentFilters object</returns>
-    public EquipmentFilters GetBotEquipmentSettings(string botEquipmentRole)
+    public EquipmentFilters? GetBotEquipmentSettings(string botEquipmentRole)
     {
-        return BotEquipmentConfig[botEquipmentRole];
+        return BotEquipmentConfig.GetValueOrDefault(botEquipmentRole);
     }
 
     /// <summary>
@@ -415,7 +415,7 @@ public class BotEquipmentFilterService(
                 foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
                 // Only make change if item exists as we're editing, not adding
                 {
-                    if (locationToUpdate.GetValueOrDefault(itemToEditKvP.Key) != null || locationToUpdate[itemToEditKvP.Key] == 0)
+                    if (locationToUpdate.ContainsKey(itemToEditKvP.Key) || locationToUpdate[itemToEditKvP.Key] == 0)
                     {
                         locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
                     }

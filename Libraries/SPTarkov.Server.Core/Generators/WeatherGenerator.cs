@@ -4,99 +4,124 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Weather;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Weather;
+using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Generators;
 
 [Injectable]
 public class WeatherGenerator(
+    ISptLogger<WeatherGenerator> logger,
     TimeUtil timeUtil,
-    SeasonalEventService seasonalEventService,
     WeatherHelper weatherHelper,
     ConfigServer configServer,
     WeightedRandomHelper weightedRandomHelper,
-    RandomUtil randomUtil
+    RandomUtil randomUtil,
+    IEnumerable<IWeatherPresetGenerator> weatherGenerators,
+    ICloner cloner
 )
 {
     protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
 
     /// <summary>
-    ///     Get current + raid datetime and format into correct BSG format.
+    /// Generate a weather object to send to client
     /// </summary>
-    /// <param name="data"> Weather data </param>
-    /// <returns> WeatherData </returns>
-    public void CalculateGameTime(WeatherData data)
+    /// <param name="currentSeason">What season is weather being generated for</param>
+    /// <param name="presetWeights">Weather preset weights to pick from (values will be altered when generating more than 1)</param>
+    /// <param name="timestamp">Optional - Current time in millisecond ticks</param>
+    /// <param name="previousPreset">Optional -What weather preset was last generated</param>
+    /// <returns>A generated <see cref="Weather"/> object</returns>
+    public Weather GenerateWeather(
+        Season currentSeason,
+        ref Dictionary<WeatherPreset, double> presetWeights,
+        long? timestamp = null,
+        WeatherPreset? previousPreset = null
+    )
     {
-        var computedDate = timeUtil.GetDateTimeNow();
-        var formattedDate = computedDate.FormatToBsgDate();
-
-        data.Date = formattedDate;
-        data.Time = GetBsgFormattedInRaidTime();
-        data.Acceleration = WeatherConfig.Acceleration;
-
-        data.Season = seasonalEventService.GetActiveWeatherSeason();
-    }
-
-    /// <summary>
-    ///     Get server uptime seconds multiplied by a multiplier and add to current time as seconds.
-    ///     Formatted to BSGs requirements
-    /// </summary>
-    /// <returns>Formatted time as String </returns>
-    protected string GetBsgFormattedInRaidTime()
-    {
-        return weatherHelper.GetInRaidTime().GetBsgFormattedWeatherTime();
-    }
-
-    /// <summary>
-    ///     Return randomised Weather data with help of config/weather.json
-    /// </summary>
-    /// <param name="currentSeason"> The currently active season </param>
-    /// <param name="timestamp"> Optional, what timestamp to generate the weather data at, defaults to now when not supplied </param>
-    /// <returns> Randomised weather data </returns>
-    public Weather GenerateWeather(Season currentSeason, long? timestamp = null)
-    {
-        var weatherValues = GetWeatherValuesBySeason(currentSeason);
-        var clouds = GetWeightedClouds(weatherValues);
-
-        // Force rain to off if no clouds
-        var rain = clouds <= 0.6 ? 0 : GetWeightedRain(weatherValues);
-
-        // TODO: Ensure Weather settings match Ts Server GetRandomDouble produces a decimal value way higher than ts server
-        var result = new Weather
+        if (presetWeights.Count == 0)
         {
-            Pressure = GetRandomDouble(weatherValues.Pressure.Min, weatherValues.Pressure.Max),
-            Temperature = 0,
-            Fog = GetWeightedFog(weatherValues),
-            RainIntensity = rain > 1 ? GetRandomDouble(weatherValues.RainIntensity.Min, weatherValues.RainIntensity.Max) : 0,
-            Rain = rain,
-            WindGustiness = GetRandomDouble(weatherValues.WindGustiness.Min, weatherValues.WindGustiness.Max, 2),
-            WindDirection = GetWeightedWindDirection(weatherValues),
-            WindSpeed = GetWeightedWindSpeed(weatherValues),
-            Cloud = clouds,
-            Time = string.Empty,
-            Date = string.Empty,
-            Timestamp = 0,
-            SptInRaidTimestamp = 0,
-        };
+            // No presets, get fresh cloned weights from config
+            presetWeights = cloner.Clone(GetWeatherPresetWeightsBySeason(currentSeason));
+        }
 
+        // Only process when we have weights + there was previous preset chosen
+        if (previousPreset.HasValue && presetWeights.ContainsKey(previousPreset.Value))
+        {
+            // We know last picked preset, Adjust weights
+            // Make it less likely to be picked now
+            // Clamp to 0
+            presetWeights[previousPreset.Value] = Math.Max(0, presetWeights[previousPreset.Value] - 1);
+        }
+
+        // Assign value to previousPreset to be picked up next loop
+        previousPreset = weightedRandomHelper.GetWeightedValue(presetWeights);
+
+        // Check if chosen preset has been exhausted and reset if necessary
+        if (presetWeights[previousPreset.Value] == 0)
+        {
+            // Flag for fresh presets
+            presetWeights.Clear();
+        }
+
+        return GenerateWeatherByPreset(previousPreset.Value, timestamp);
+    }
+
+    /// <summary>
+    /// Gets weather property weights for the provided season
+    /// </summary>
+    /// <param name="currentSeason">Desired season to get weights for</param>
+    /// <returns>A dictionary of weather preset weights</returns>
+    public Dictionary<WeatherPreset, double> GetWeatherPresetWeightsBySeason(Season currentSeason)
+    {
+        return WeatherConfig.Weather.WeatherPresetWeight.TryGetValue(currentSeason.ToString(), out var weights)
+            ? weights
+            : WeatherConfig.Weather.WeatherPresetWeight.GetValueOrDefault("default")!;
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Weather"/> object that adheres to the chosen preset
+    /// </summary>
+    /// <param name="chosenPreset">The weather preset chosen to generate</param>
+    /// <param name="timestamp">OPTIONAL - generate the weather object with a specific time instead of now</param>
+    /// <returns>A generated <see cref="Weather"/> object</returns>
+    protected Weather GenerateWeatherByPreset(WeatherPreset chosenPreset, long? timestamp)
+    {
+        var generator = weatherGenerators.FirstOrDefault(gen => gen.CanHandle(chosenPreset));
+        if (generator is null)
+        {
+            logger.Warning($"Unable to find weather generator for: {chosenPreset}, falling back to sunny");
+
+            generator = weatherGenerators.FirstOrDefault(gen => gen.CanHandle(WeatherPreset.SUNNY));
+        }
+
+        var presetWeights = GetWeatherWeightsByPreset(chosenPreset);
+        var result = generator.Generate(presetWeights);
+
+        // Set time values in result using now or passed in timestamp
         SetCurrentDateTime(result, timestamp);
 
-        result.Temperature = GetRaidTemperature(weatherValues, result.SptInRaidTimestamp ?? 0);
+        // Must occur after SetCurrentDateTime(), temp depends on timestamp
+        result.Temperature = GetRaidTemperature(presetWeights, result.SptInRaidTimestamp ?? 0);
+
+        // Needed by RaidWeatherService
+        result.SptChosenPreset = chosenPreset;
 
         return result;
     }
 
-    protected SeasonalValues GetWeatherValuesBySeason(Season currentSeason)
+    /// <summary>
+    /// Get the weather preset weights based on passed in preset, get defaults if preset not found in config
+    /// </summary>
+    /// <param name="weatherPreset">Desired preset</param>
+    /// <returns>PresetWeights</returns>
+    protected PresetWeights GetWeatherWeightsByPreset(WeatherPreset weatherPreset)
     {
-        var result = WeatherConfig.Weather.SeasonValues.TryGetValue(currentSeason.ToString(), out var value);
-        if (!result)
-        {
-            return WeatherConfig.Weather.SeasonValues["default"];
-        }
-
-        return value!;
+        return WeatherConfig.Weather.PresetWeights.TryGetValue(weatherPreset.ToString(), out var value)
+            ? value
+            : WeatherConfig.Weather.PresetWeights["default"];
     }
 
     /// <summary>
@@ -105,7 +130,7 @@ public class WeatherGenerator(
     /// <param name="weather"> What season Tarkov is currently in </param>
     /// <param name="inRaidTimestamp"> What time is the raid running at </param>
     /// <returns> Timestamp </returns>
-    protected double GetRaidTemperature(SeasonalValues weather, long inRaidTimestamp)
+    protected double GetRaidTemperature(PresetWeights weather, long inRaidTimestamp)
     {
         // Convert timestamp to date so we can get current hour and check if its day or night
         var currentRaidTime = new DateTime(inRaidTimestamp);
@@ -130,35 +155,5 @@ public class WeatherGenerator(
         weather.Date = formattedDate; // matches weather.timestamp
         weather.Time = datetimeBsgFormat; // matches weather.timestamp
         weather.SptInRaidTimestamp = weather.Timestamp;
-    }
-
-    protected WindDirection GetWeightedWindDirection(SeasonalValues weather)
-    {
-        return weightedRandomHelper.WeightedRandom(weather.WindDirection.Values, weather.WindDirection.Weights).Item;
-    }
-
-    protected double GetWeightedClouds(SeasonalValues weather)
-    {
-        return weightedRandomHelper.WeightedRandom(weather.Clouds.Values, weather.Clouds.Weights).Item;
-    }
-
-    protected double GetWeightedWindSpeed(SeasonalValues weather)
-    {
-        return weightedRandomHelper.WeightedRandom(weather.WindSpeed.Values, weather.WindSpeed.Weights).Item;
-    }
-
-    protected double GetWeightedFog(SeasonalValues weather)
-    {
-        return weightedRandomHelper.WeightedRandom(weather.Fog.Values, weather.Fog.Weights).Item;
-    }
-
-    protected double GetWeightedRain(SeasonalValues weather)
-    {
-        return weightedRandomHelper.WeightedRandom(weather.Rain.Values, weather.Rain.Weights).Item;
-    }
-
-    protected double GetRandomDouble(double min, double max, int precision = 3)
-    {
-        return Math.Round(randomUtil.GetDouble(min, max), precision);
     }
 }

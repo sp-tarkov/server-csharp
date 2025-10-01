@@ -509,6 +509,7 @@ public class BotWeaponGenerator(
     /// <summary>
     ///     Add ammo to the secure container.
     /// </summary>
+    /// <param name="botId">Id of bot we're adding ammo to</param>
     /// <param name="stackCount">How many stacks of ammo to add.</param>
     /// <param name="ammoTpl">Ammo type to add.</param>
     /// <param name="stackSize">Size of the ammo stack to add.</param>

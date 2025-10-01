@@ -48,39 +48,35 @@ public class TraderHelper(
     }
 
     /// <summary>
-    ///     Get a trader base object, update profile to reflect players current standing in profile
+    ///     Get a trader base object, update profile to reflect players current standing in profile (if session id provided)
     ///     when trader not found in profile
     /// </summary>
-    /// <param name="traderID">Traders Id to get</param>
-    /// <param name="sessionID">Players id</param>
+    /// <param name="traderId">Traders Id to return base of</param>
+    /// <param name="sessionId">OPTIONAL - Players id</param>
     /// <returns>Trader base</returns>
-    public TraderBase? GetTrader(string traderID, MongoId sessionID)
+    public TraderBase? GetTrader(MongoId traderId, MongoId? sessionId = null)
     {
-        if (traderID == "ragfair")
+        if (sessionId is not null)
         {
-            return new TraderBase { Currency = CurrencyType.RUB };
+            var pmcData = profileHelper.GetPmcProfile(sessionId.Value);
+            if (pmcData == null)
+            {
+                throw new Exception(serverLocalisationService.GetText("trader-unable_to_find_profile_with_id", sessionId));
+            }
+
+            // Profile has traderInfo dict (profile beyond creation stage) but no requested trader in profile
+            if (pmcData?.TradersInfo != null && !(pmcData?.TradersInfo?.ContainsKey(traderId) ?? false))
+            {
+                // Add trader values to profile
+                ResetTrader(sessionId.Value, traderId);
+                LevelUp(traderId, pmcData);
+            }
         }
 
-        var traderIdMongo = new MongoId(traderID);
-
-        var pmcData = profileHelper.GetPmcProfile(sessionID);
-        if (pmcData == null)
-        {
-            throw new Exception(serverLocalisationService.GetText("trader-unable_to_find_profile_with_id", sessionID));
-        }
-
-        // Profile has traderInfo dict (profile beyond creation stage) but no requested trader in profile
-        if (pmcData?.TradersInfo != null && !(pmcData?.TradersInfo?.ContainsKey(traderIdMongo) ?? false))
-        {
-            // Add trader values to profile
-            ResetTrader(sessionID, traderIdMongo);
-            LevelUp(traderIdMongo, pmcData);
-        }
-
-        var traderBase = databaseService.GetTrader(traderIdMongo).Base;
+        var traderBase = databaseService.GetTrader(traderId)?.Base;
         if (traderBase == null)
         {
-            logger.Error(serverLocalisationService.GetText("trader-unable_to_find_trader_by_id", traderID));
+            logger.Error(serverLocalisationService.GetText("trader-unable_to_find_trader_by_id", traderId.ToString()));
         }
 
         return traderBase;
@@ -231,15 +227,14 @@ public class TraderHelper(
     ///     Alter a traders unlocked status
     /// </summary>
     /// <param name="traderId">Trader to alter</param>
-    /// <param name="status">New status to use</param>
+    /// <param name="status">New status to apply</param>
     /// <param name="sessionId">Session id of player</param>
     public void SetTraderUnlockedState(MongoId traderId, bool status, MongoId sessionId)
     {
         var pmcData = profileHelper.GetPmcProfile(sessionId);
-        var profileTraderData = pmcData.TradersInfo[traderId];
-        if (profileTraderData is null)
+        if (!pmcData.TradersInfo.TryGetValue(traderId, out var profileTraderData))
         {
-            logger.Error($"Unable to set trader {traderId} unlocked state to: {status} as trader cannot be found in profile");
+            logger.Error($"Unable to set trader: {traderId} unlocked state to: {status} as trader cannot be found in profile");
 
             return;
         }
@@ -262,7 +257,7 @@ public class TraderHelper(
         pmcTraderInfo.Standing = AddStandingValuesTogether(pmcTraderInfo.Standing, standingToAdd);
 
         if (traderId == Traders.FENCE)
-        // Must add rep to scav profile to ensure consistency
+        // Must add rep to scav profile to preserve consistency
         {
             fullProfile.CharacterData.ScavData.TradersInfo[traderId].Standing = pmcTraderInfo.Standing;
         }
@@ -292,9 +287,9 @@ public class TraderHelper(
     {
         var profile = profileHelper.GetPmcProfile(sessionId);
         var traders = databaseService.GetTraders();
-        foreach (var trader in traders)
+        foreach (var (traderId, _) in traders)
         {
-            LevelUp(trader.Key, profile);
+            LevelUp(traderId, profile);
         }
     }
 
@@ -302,11 +297,11 @@ public class TraderHelper(
     ///     Calculate trader's level based on experience amount and increments level if over threshold.
     ///     Also validates and updates player level if not correct based on XP value.
     /// </summary>
-    /// <param name="traderID">Trader to check standing of.</param>
+    /// <param name="traderId">Trader to check standing of.</param>
     /// <param name="pmcData">Profile to update trader in.</param>
-    public void LevelUp(MongoId traderID, PmcData pmcData)
+    public void LevelUp(MongoId traderId, PmcData pmcData)
     {
-        var loyaltyLevels = databaseService.GetTrader(traderID).Base.LoyaltyLevels;
+        var loyaltyLevels = databaseService.GetTrader(traderId).Base.LoyaltyLevels;
 
         // Level up player
         pmcData.Info.Level = pmcData.CalculateLevel(databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable);
@@ -315,36 +310,35 @@ public class TraderHelper(
         var targetLevel = 0;
 
         // Round standing to 2 decimal places to address floating point inaccuracies
-        pmcData.TradersInfo[traderID].Standing = Math.Round(pmcData.TradersInfo[traderID].Standing * 100 ?? 0, 2) / 100;
+        pmcData.TradersInfo[traderId].Standing = Math.Round(pmcData.TradersInfo[traderId].Standing * 100 ?? 0, 2) / 100;
 
         foreach (var loyaltyLevel in loyaltyLevels)
         {
             if (
                 loyaltyLevel.MinLevel <= pmcData.Info.Level
-                && loyaltyLevel.MinSalesSum <= pmcData.TradersInfo[traderID].SalesSum
-                && loyaltyLevel.MinStanding <= pmcData.TradersInfo[traderID].Standing
+                && loyaltyLevel.MinSalesSum <= pmcData.TradersInfo[traderId].SalesSum
+                && loyaltyLevel.MinStanding <= pmcData.TradersInfo[traderId].Standing
                 && targetLevel < 4
             )
-            // level reached
+            // Level reached
             {
                 targetLevel++;
             }
         }
 
         // set level
-        pmcData.TradersInfo[traderID].LoyaltyLevel = targetLevel;
+        pmcData.TradersInfo[traderId].LoyaltyLevel = targetLevel;
     }
 
     /// <summary>
     ///     Get the next update timestamp for a trader.
     /// </summary>
-    /// <param name="traderID">Trader to look up update value for.</param>
+    /// <param name="traderId">Trader to look up update value for.</param>
     /// <returns>Future timestamp.</returns>
-    public long GetNextUpdateTimestamp(MongoId traderID)
+    public long GetNextUpdateTimestamp(MongoId traderId)
     {
-        var time = timeUtil.GetTimeStamp();
-        var updateSeconds = GetTraderUpdateSeconds(traderID) ?? 0;
-        return time + updateSeconds;
+        var updateSeconds = GetTraderUpdateSeconds(traderId) ?? 0;
+        return timeUtil.GetTimeStamp() + updateSeconds;
     }
 
     /// <summary>
@@ -379,12 +373,18 @@ public class TraderHelper(
         return randomUtil.GetInt(traderDetails.Seconds.Min, traderDetails.Seconds.Max);
     }
 
-    public TraderLoyaltyLevel GetLoyaltyLevel(MongoId traderID, PmcData pmcData)
+    /// <summary>
+    /// Get the loyalty level object a profile has with specified trader
+    /// </summary>
+    /// <param name="traderId">Trader id to get loyalty level of</param>
+    /// <param name="pmcData">Profile to look for loyalty data in</param>
+    /// <returns>TraderLoyaltyLevel</returns>
+    public TraderLoyaltyLevel GetLoyaltyLevel(MongoId traderId, PmcData pmcData)
     {
-        var traderBase = databaseService.GetTrader(traderID).Base;
+        var traderBase = databaseService.GetTrader(traderId).Base;
 
         int? loyaltyLevel = null;
-        if (pmcData.TradersInfo.TryGetValue(traderID, out var traderInfo))
+        if (pmcData.TradersInfo.TryGetValue(traderId, out var traderInfo))
         {
             loyaltyLevel = traderInfo.LoyaltyLevel;
         }
@@ -461,7 +461,7 @@ public class TraderHelper(
     }
 
     /// <summary>
-    ///     EoD and Unheard get a 20% bonus to personal trader limit purchases
+    ///     EoD and Unheard get a 20% bonus (1.2) to personal trader limit purchases
     /// </summary>
     /// <param name="buyRestrictionMax">Existing value from trader item</param>
     /// <param name="gameVersion">Profiles game version</param>
@@ -470,6 +470,7 @@ public class TraderHelper(
     {
         if (GameVersionsWithHigherBuyRestrictions.Contains(gameVersion))
         {
+            // TODO: move value into config
             return Math.Floor(buyRestrictionMax * 1.2);
         }
 
@@ -489,7 +490,7 @@ public class TraderHelper(
             {
                 highestPrice = 1d; // Default price
                 var itemHandbookPrice = handbookHelper.GetTemplatePrice(tpl);
-                foreach ((var traderKey, var trader) in databaseService.GetTraders())
+                foreach (var (_, trader) in databaseService.GetTraders())
                 {
                     // Get trader and check buy category allows tpl
                     var traderBase = trader.Base;
@@ -520,7 +521,7 @@ public class TraderHelper(
     }
 
     /// <summary>
-    ///     Accepts a trader id
+    ///     Does the provided ID exist in db as a trader id
     /// </summary>
     /// <param name="traderId">Trader id</param>
     /// <returns>True if a Trader exists with given ID</returns>

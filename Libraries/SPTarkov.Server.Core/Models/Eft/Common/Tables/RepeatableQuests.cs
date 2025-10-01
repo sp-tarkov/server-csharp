@@ -14,9 +14,6 @@ public record RepeatableQuest : Quest
     [JsonPropertyName("sptRepatableGroupName")]
     public string? SptRepatableGroupName { get; set; }
 
-    [JsonPropertyName("acceptanceAndFinishingSource")]
-    public string? AcceptanceAndFinishingSource { get; set; }
-
     [JsonPropertyName("questStatus")]
     public RepeatableQuestStatus? QuestStatus { get; set; }
 }

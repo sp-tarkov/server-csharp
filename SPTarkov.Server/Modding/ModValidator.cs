@@ -23,10 +23,10 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
         // Validate and remove broken mods from mod list
         var validMods = GetValidMods(mods).ToList(); // ToList now so we can .Sort later
 
+        CheckForDuplicateMods(validMods);
+
         // Key to guid for easy comparision later
         var modPackageData = validMods.ToDictionary(m => m.ModMetadata.ModGuid, m => m.ModMetadata);
-
-        CheckForDuplicateMods(modPackageData);
 
         // Used to check all errors before stopping the load execution
         var errorsFound = false;
@@ -82,19 +82,20 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
     /// <summary>
     ///     Check for duplicate mods loaded, show error if any
     /// </summary>
-    /// <param name="modPackageData">Dictionary of mod package.json data</param>
-    protected void CheckForDuplicateMods(Dictionary<string, AbstractModMetadata> modPackageData)
+    /// <param name="validMods">List of validated mods to check for duplicates</param>
+    protected void CheckForDuplicateMods(List<SptMod> validMods)
     {
         var groupedMods = new Dictionary<string, List<AbstractModMetadata>>();
 
-        foreach (var mod in modPackageData.Values)
+        foreach (var mod in validMods.Select(mod => mod.ModMetadata).ToArray())
         {
-            groupedMods.Add(mod.ModGuid, [.. groupedMods.GetValueOrDefault(mod.ModGuid) ?? [], mod]);
+            groupedMods[mod.ModGuid] = [.. groupedMods.GetValueOrDefault(mod.ModGuid) ?? [], mod];
 
-            // if there's more than one entry for a given mod it means there's at least 2 mods with the same author and name trying to load.
+            // if there's more than one entry for a given mod it means there's at least 2 mods with the same GUID trying to load.
             if (groupedMods[mod.ModGuid].Count > 1)
             {
                 SkippedMods.Add(mod.ModGuid);
+                validMods.RemoveAll(modInner => modInner.ModMetadata.ModGuid == mod.ModGuid);
             }
         }
 

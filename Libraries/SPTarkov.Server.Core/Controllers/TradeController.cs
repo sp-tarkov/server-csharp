@@ -87,10 +87,14 @@ public class TradeController(
 
         foreach (var offer in request.Offers)
         {
-            var fleaOffer = ragfairServer.GetOffer(offer.Id);
+            var fleaOffer = ragfairServer.GetOffer(new MongoId(offer.Id));
             if (fleaOffer is null)
             {
-                return httpResponseUtil.AppendErrorToOutput(output, $"Offer with ID {offer.Id} not found", BackendErrorCodes.OfferNotFound);
+                return httpResponseUtil.AppendErrorToOutput(
+                    output,
+                    $"Offer with ID: {offer.Id} not found",
+                    BackendErrorCodes.OfferNotFound
+                );
             }
 
             if (offer.Count == 0)
@@ -156,7 +160,7 @@ public class TradeController(
         var buyData = new ProcessBuyTradeRequestData
         {
             Action = "TradingConfirm",
-            Type = "buy_from_ragfair",
+            Type = "buy_from_ragfair_trader",
             TransactionId = fleaOffer.User.Id,
             ItemId = fleaOffer.Root,
             Count = requestOffer.Count,
@@ -188,8 +192,8 @@ public class TradeController(
         var buyData = new ProcessBuyTradeRequestData
         {
             Action = "TradingConfirm",
-            Type = "buy_from_ragfair",
-            TransactionId = "ragfair",
+            Type = "buy_from_ragfair_pmc",
+            TransactionId = fleaOffer.User.Id,
             ItemId = fleaOffer.Id, // Store ragfair offerId in buyRequestData.item_id
             Count = requestOffer.Count,
             SchemeId = 0,

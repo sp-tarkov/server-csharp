@@ -31,12 +31,9 @@ public class BotCallbacks(BotController botController, HttpResponseUtil httpResp
         var splitUrl = url.Split('/');
         var type = splitUrl[^2].ToLowerInvariant();
         var difficulty = splitUrl[^1];
-        if (difficulty == "core")
-        {
-            return new ValueTask<string>(httpResponseUtil.NoBody(botController.GetBotCoreDifficulty()));
-        }
-
-        return new ValueTask<string>(httpResponseUtil.NoBody(botController.GetBotDifficulty(sessionID, type, difficulty)));
+        return difficulty == "core"
+            ? new ValueTask<string>(httpResponseUtil.NoBody(botController.GetBotCoreDifficulty()))
+            : new ValueTask<string>(httpResponseUtil.NoBody(botController.GetBotDifficulty(sessionID, type, difficulty)));
     }
 
     /// <summary>

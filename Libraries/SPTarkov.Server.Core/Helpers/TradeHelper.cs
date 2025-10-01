@@ -57,7 +57,7 @@ public class TradeHelper(
             List<Item> offerItems = [];
             Action<int>? buyCallback;
 
-            if (string.Equals(buyRequestData.TransactionId, "ragfair", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(buyRequestData.Type, "buy_from_ragfair_pmc", StringComparison.OrdinalIgnoreCase))
             {
                 // Called when player purchases PMC offer from ragfair
                 buyCallback = buyCount =>
@@ -129,6 +129,7 @@ public class TradeHelper(
             }
             else
             {
+                // Can only be trader purchase
                 buyCallback = buyCount =>
                 {
                     // Update assort/flea item values
