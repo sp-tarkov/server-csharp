@@ -12,16 +12,26 @@
     <ProjectReference Include="..\..\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
     <ProjectReference Include="..\..\Libraries\SPTarkov.Web\SPTarkov.Web.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
   <Target Name="CopyToServer" AfterTargets="PostBuildEvent">
     <ItemGroup>
       <OutputDLL Include="$(ProjectDir)$(OutDir)$(TargetName).dll" />
       <Resources Include="$(ProjectDir)Resources\**\*.*" />
+      <WebAssets Include="$(ProjectDir)wwwroot\**\*.*" />
     </ItemGroup>
-    <!-- Copies the output dll -->
-    <Copy SourceFiles="@(OutputDLL);" DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net9.0\user\mods\TestMod" />
+    <!-- Copy the output DLL -->
+    <Copy SourceFiles="@(OutputDLL)" DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net9.0\user\mods\TestMod" />
+    <!-- Copy the Resources folder -->
     <Copy
-      SourceFiles="@(Resources);"
+      SourceFiles="@(Resources)"
       DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net9.0\user\mods\TestMod\Resources\%(RecursiveDir)"
+    />
+    <!-- Copy the wwwroot folder -->
+    <Copy
+      SourceFiles="@(WebAssets)"
+      DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net9.0\user\mods\TestMod\wwwroot\%(RecursiveDir)"
     />
   </Target>
 </Project>

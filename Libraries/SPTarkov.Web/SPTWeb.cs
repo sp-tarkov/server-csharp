@@ -1,20 +1,19 @@
 ﻿using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.Extensions.FileProviders;
 using MudBlazor.Services;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Web.Components;
 
 namespace SPTarkov.Web;
 
-public static class SPTBlazor
+public static class SPTWeb
 {
     internal static IEnumerable<SptMod> SptWebMods = [];
-    internal static IEnumerable<Assembly> SptModAssemblies = [];
 
     public static void InitializeSptBlazor(this WebApplicationBuilder builder, IReadOnlyList<SptMod> sptMods)
     {
         SptWebMods = sptMods.Where(mod => mod.ModMetadata is IModWebMetadata).ToList();
-        SptModAssemblies = SptWebMods.SelectMany(mod => mod.Assemblies).ToList();
 
         builder.WebHost.UseStaticWebAssets();
         builder.Services.AddMudServices();
@@ -22,7 +21,7 @@ public static class SPTBlazor
 
         var mvcBuilder = builder.Services.AddControllers();
 
-        foreach (var assembly in SptModAssemblies)
+        foreach (var assembly in SptWebMods.SelectMany(mod => mod.Assemblies))
         {
             mvcBuilder.AddApplicationPart(assembly);
         }
@@ -41,9 +40,29 @@ public static class SPTBlazor
 #endif
         var razorBuilder = app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
-        foreach (var assembly in SptModAssemblies)
+        foreach (var mod in SptWebMods)
         {
-            razorBuilder.AddAdditionalAssemblies(assembly);
+            var modAssembly = mod.ModMetadata.GetType().Assembly;
+
+            var location = Path.GetDirectoryName(modAssembly.Location);
+
+            if (Directory.Exists(Path.Combine(location, "wwwroot")))
+            {
+                Console.WriteLine($"Mod {modAssembly.GetName().Name} has a wwwroot, mapping to /{modAssembly.GetName().Name}");
+
+                app.UseStaticFiles(
+                    new StaticFileOptions
+                    {
+                        FileProvider = new PhysicalFileProvider(Path.Combine(location, "wwwroot")),
+                        RequestPath = $"/{modAssembly.GetName().Name}",
+                    }
+                );
+            }
+
+            foreach (var assembly in mod.Assemblies)
+            {
+                razorBuilder.AddAdditionalAssemblies(assembly);
+            }
         }
 
         app.MapControllers();
