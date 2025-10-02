@@ -663,6 +663,7 @@
   "repair-unable_to_find_item_repair_cost": "Unable to find repair cost for item: %s",
   "repair-unable_to_find_trader_details_by_id": "Unable to find trader: %s repair details",
   "repeatable-accepted_repeatable_quest_not_found_in_active_quests": "Accepted a repeatable quest: %s which could not be found in the activeQuests array. Please report this bug",
+  "repeatable-completion_config_no_template": "Unable to find completion config for pmc level: {{pmcLevel}}",
   "repeatable-completion_quest_whitelist_too_small_or_blacklist_too_restrictive": "Generate Completion Quest: No items remain. Either Whitelist is too small or Blacklist too restrictive",
   "repeatable-difficulty_was_nan": "Repeatable Reward Generation: Difficulty was NaN. Setting to 1.",
   "repeatable-exploration_config_no_template": "Unable to find exploration config for pmc level: {{pmcLevel}}",

@@ -47,7 +47,13 @@ public class CompletionQuestGenerator(
         RepeatableQuestConfig repeatableConfig
     )
     {
-        var completionConfig = repeatableConfig.QuestConfig.CompletionConfig;
+        var completionConfig = repeatableQuestHelper.GetCompletionConfigByPmcLevel(pmcLevel, repeatableConfig);
+        if (completionConfig is null)
+        {
+            logger.Warning(localisationService.GetText("repeatable-completion_config_no_template", new { pmcLevel }));
+            return null;
+        }
+
         var levelsConfig = repeatableConfig.RewardScaling.Levels;
         var roublesConfig = repeatableConfig.RewardScaling.Roubles;
 
@@ -73,12 +79,12 @@ public class CompletionQuestGenerator(
 
         // We also have the option to use whitelist and/or blacklist which is defined in repeatableQuests.json as
         // [{"minPlayerLevel": 1, "itemIds": ["id1",...]}, {"minPlayerLevel": 15, "itemIds": ["id3",...]}]
-        if (repeatableConfig.QuestConfig.CompletionConfig.UseWhitelist)
+        if (completionConfig.UseWhitelist)
         {
             itemsToRetrievePool = GetWhitelistedItemSelection(itemsToRetrievePool, pmcLevel);
         }
 
-        if (repeatableConfig.QuestConfig.CompletionConfig.UseBlacklist)
+        if (completionConfig.UseBlacklist)
         {
             itemsToRetrievePool = GetBlacklistedItemSelection(itemsToRetrievePool, pmcLevel);
         }
@@ -91,7 +97,7 @@ public class CompletionQuestGenerator(
             return null;
         }
 
-        var selectedItems = GenerateAvailableForFinish(quest, completionConfig, repeatableConfig, itemsToRetrievePool.ToList(), budget);
+        var selectedItems = GenerateAvailableForFinish(quest, completionConfig, itemsToRetrievePool.ToList(), budget);
 
         quest.Rewards = repeatableQuestRewardGenerator.GenerateReward(
             pmcLevel,
@@ -240,20 +246,18 @@ public class CompletionQuestGenerator(
     /// </summary>
     /// <param name="quest">Quest to add the conditions to</param>
     /// <param name="completionConfig">Completion config</param>
-    /// <param name="repeatableConfig">Repeatable config</param>
     /// <param name="itemSelection">Filtered item selection</param>
     /// <param name="roublesBudget">Budget in roubles</param>
     /// <returns>Chosen item template Ids</returns>
     protected List<MongoId> GenerateAvailableForFinish(
         RepeatableQuest quest,
         CompletionConfig completionConfig,
-        RepeatableQuestConfig repeatableConfig,
         List<MongoId> itemSelection,
         double roublesBudget
     )
     {
         // Store the indexes of items we are asking player to supply
-        var distinctItemsToRetrieveCount = randomUtil.GetInt(1, completionConfig.UniqueItemCount);
+        var distinctItemsToRetrieveCount = randomUtil.GetInt(completionConfig.UniqueItemCount.Min, completionConfig.UniqueItemCount.Max);
         var chosenRequirementItemsTpls = new List<MongoId>();
         var usedItemIndexes = new HashSet<int>();
 
@@ -289,8 +293,8 @@ public class CompletionQuestGenerator(
 
             var tplChosen = itemSelection[chosenItemIndex];
             var itemPrice = itemHelper.GetItemPrice(tplChosen)!.Value;
-            var minValue = completionConfig.MinimumRequestedAmount;
-            var maxValue = completionConfig.MaximumRequestedAmount;
+            var minValue = completionConfig.RequestedItemCount.Min;
+            var maxValue = completionConfig.RequestedItemCount.Max;
 
             var value = minValue;
 
@@ -308,7 +312,7 @@ public class CompletionQuestGenerator(
 
             // Push a CompletionCondition with the item and the amount of the item into quest
             chosenRequirementItemsTpls.Add(tplChosen);
-            quest.Conditions.AvailableForFinish!.Add(GenerateCondition(tplChosen, value, repeatableConfig.QuestConfig.CompletionConfig));
+            quest.Conditions.AvailableForFinish!.Add(GenerateCondition(tplChosen, value, completionConfig));
 
             // Is there budget left for more items
             if (roublesBudget > 0)
