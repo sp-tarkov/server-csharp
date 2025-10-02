@@ -597,28 +597,86 @@
             }
           }
         ],
-        "Completion": {
-          "possibleSkillRewards": [
-            "Endurance",
-            "Strength",
-            "Vitality"
-          ],
-          "minRequestedAmount": 1,
-          "maxRequestedAmount": 4,
-          "uniqueItemCount": 2,
-          "minRequestedBulletAmount": 15,
-          "maxRequestedBulletAmount": 40,
-          "useWhitelist": true,
-          "useBlacklist": false,
-          "requiredItemsAreFiR": true,
-          "requiredItemMinDurabilityMinMax": {
-            "min": 60,
-            "max": 80
+        "Completion": [
+          {
+            "levelRange": {
+              "min": 1,
+              "max": 15
+            },
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "minRequestedAmount": 1,
+            "maxRequestedAmount": 4,
+            "uniqueItemCount": 2,
+            "minRequestedBulletAmount": 15,
+            "maxRequestedBulletAmount": 40,
+            "useWhitelist": true,
+            "useBlacklist": false,
+            "requiredItemsAreFiR": true,
+            "requiredItemMinDurabilityMinMax": {
+              "min": 60,
+              "max": 80
+            },
+            "requiredItemTypeBlacklist": [
+              "5485a8684bdc2da71d8b4567"
+            ]
           },
-          "requiredItemTypeBlacklist": [
-            "5485a8684bdc2da71d8b4567"
-          ]
-        },
+          {
+            "levelRange": {
+              "min": 16,
+              "max": 40
+            },
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "minRequestedAmount": 2,
+            "maxRequestedAmount": 4,
+            "uniqueItemCount": 2,
+            "minRequestedBulletAmount": 15,
+            "maxRequestedBulletAmount": 40,
+            "useWhitelist": true,
+            "useBlacklist": false,
+            "requiredItemsAreFiR": true,
+            "requiredItemMinDurabilityMinMax": {
+              "min": 60,
+              "max": 80
+            },
+            "requiredItemTypeBlacklist": [
+              "5485a8684bdc2da71d8b4567"
+            ]
+          },
+          {
+            "levelRange": {
+              "min": 41,
+              "max": 100
+            },
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "minRequestedAmount": 3,
+            "maxRequestedAmount": 6,
+            "uniqueItemCount": 2,
+            "minRequestedBulletAmount": 15,
+            "maxRequestedBulletAmount": 40,
+            "useWhitelist": true,
+            "useBlacklist": false,
+            "requiredItemsAreFiR": true,
+            "requiredItemMinDurabilityMinMax": {
+              "min": 60,
+              "max": 80
+            },
+            "requiredItemTypeBlacklist": [
+              "5485a8684bdc2da71d8b4567"
+            ]
+          }
+        ],
         "Elimination": [
           {
             "levelRange": {
@@ -1745,28 +1803,86 @@
             }
           }
         ],
-        "Completion": {
-          "possibleSkillRewards": [
-            "Endurance",
-            "Strength",
-            "Vitality"
-          ],
-          "minRequestedAmount": 4,
-          "maxRequestedAmount": 12,
-          "uniqueItemCount": 4,
-          "minRequestedBulletAmount": 20,
-          "maxRequestedBulletAmount": 60,
-          "useWhitelist": true,
-          "useBlacklist": false,
-          "requiredItemsAreFiR": true,
-          "requiredItemMinDurabilityMinMax": {
-            "min": 60,
-            "max": 80
+        "Completion": [
+          {
+            "levelRange": {
+              "min": 1,
+              "max": 15
+            },
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "minRequestedAmount": 4,
+            "maxRequestedAmount": 6,
+            "uniqueItemCount": 4,
+            "minRequestedBulletAmount": 20,
+            "maxRequestedBulletAmount": 60,
+            "useWhitelist": true,
+            "useBlacklist": false,
+            "requiredItemsAreFiR": true,
+            "requiredItemMinDurabilityMinMax": {
+              "min": 60,
+              "max": 80
+            },
+            "requiredItemTypeBlacklist": [
+              "5485a8684bdc2da71d8b4567"
+            ]
           },
-          "requiredItemTypeBlacklist": [
-            "5485a8684bdc2da71d8b4567"
-          ]
-        },
+          {
+            "levelRange": {
+              "min": 16,
+              "max": 40
+            },
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "minRequestedAmount": 4,
+            "maxRequestedAmount": 8,
+            "uniqueItemCount": 4,
+            "minRequestedBulletAmount": 20,
+            "maxRequestedBulletAmount": 60,
+            "useWhitelist": true,
+            "useBlacklist": false,
+            "requiredItemsAreFiR": true,
+            "requiredItemMinDurabilityMinMax": {
+              "min": 60,
+              "max": 80
+            },
+            "requiredItemTypeBlacklist": [
+              "5485a8684bdc2da71d8b4567"
+            ]
+          },
+          {
+            "levelRange": {
+              "min": 41,
+              "max": 100
+            },
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "minRequestedAmount": 6,
+            "maxRequestedAmount": 12,
+            "uniqueItemCount": 4,
+            "minRequestedBulletAmount": 20,
+            "maxRequestedBulletAmount": 60,
+            "useWhitelist": true,
+            "useBlacklist": false,
+            "requiredItemsAreFiR": true,
+            "requiredItemMinDurabilityMinMax": {
+              "min": 60,
+              "max": 80
+            },
+            "requiredItemTypeBlacklist": [
+              "5485a8684bdc2da71d8b4567"
+            ]
+          }
+        ],
         "Elimination": [
           {
             "levelRange": {
@@ -2887,28 +3003,86 @@
           ],
           "maxItemFetchCount": 3
         },
-        "Completion": {
-          "possibleSkillRewards": [
-            "Endurance",
-            "Strength",
-            "Vitality"
-          ],
-          "minRequestedAmount": 1,
-          "maxRequestedAmount": 3,
-          "uniqueItemCount": 1,
-          "minRequestedBulletAmount": 15,
-          "maxRequestedBulletAmount": 40,
-          "useWhitelist": true,
-          "useBlacklist": false,
-          "requiredItemsAreFiR": true,
-          "requiredItemMinDurabilityMinMax": {
-            "min": 60,
-            "max": 80
+        "Completion": [
+          {
+            "levelRange": {
+              "min": 1,
+              "max": 15
+            },
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "minRequestedAmount": 1,
+            "maxRequestedAmount": 3,
+            "uniqueItemCount": 1,
+            "minRequestedBulletAmount": 15,
+            "maxRequestedBulletAmount": 40,
+            "useWhitelist": true,
+            "useBlacklist": false,
+            "requiredItemsAreFiR": true,
+            "requiredItemMinDurabilityMinMax": {
+              "min": 60,
+              "max": 80
+            },
+            "requiredItemTypeBlacklist": [
+              "5485a8684bdc2da71d8b4567"
+            ]
           },
-          "requiredItemTypeBlacklist": [
-            "5485a8684bdc2da71d8b4567"
-          ]
-        },
+          {
+            "levelRange": {
+              "min": 16,
+              "max": 40
+            },
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "minRequestedAmount": 2,
+            "maxRequestedAmount": 3,
+            "uniqueItemCount": 1,
+            "minRequestedBulletAmount": 15,
+            "maxRequestedBulletAmount": 40,
+            "useWhitelist": true,
+            "useBlacklist": false,
+            "requiredItemsAreFiR": true,
+            "requiredItemMinDurabilityMinMax": {
+              "min": 60,
+              "max": 80
+            },
+            "requiredItemTypeBlacklist": [
+              "5485a8684bdc2da71d8b4567"
+            ]
+          },
+          {
+            "levelRange": {
+              "min": 41,
+              "max": 100
+            },
+            "possibleSkillRewards": [
+              "Endurance",
+              "Strength",
+              "Vitality"
+            ],
+            "minRequestedAmount": 2,
+            "maxRequestedAmount": 4,
+            "uniqueItemCount": 1,
+            "minRequestedBulletAmount": 15,
+            "maxRequestedBulletAmount": 40,
+            "useWhitelist": true,
+            "useBlacklist": false,
+            "requiredItemsAreFiR": true,
+            "requiredItemMinDurabilityMinMax": {
+              "min": 60,
+              "max": 80
+            },
+            "requiredItemTypeBlacklist": [
+              "5485a8684bdc2da71d8b4567"
+            ]
+          }
+        ],
         "Elimination": [
           {
             "levelRange": {

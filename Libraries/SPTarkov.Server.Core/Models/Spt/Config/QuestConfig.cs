@@ -344,7 +344,7 @@ public record RepeatableQuestTypesConfig
     ///     Defines completion repeatable task generation parameters
     /// </summary>
     [JsonPropertyName("Completion")]
-    public required CompletionConfig CompletionConfig { get; set; }
+    public required List<CompletionConfig> CompletionConfig { get; set; }
 
     /// <summary>
     ///     Defines pickup repeatable task generation parameters - TODO: Not implemented/No Data - NOTE: Does not work with dynamicLocale
@@ -415,6 +415,12 @@ public record SpecificExits
 
 public record CompletionConfig : BaseQuestConfig
 {
+    /// <summary>
+    ///     Level range at which completion tasks should be generated from this config
+    /// </summary>
+    [JsonPropertyName("levelRange")]
+    public required MinMax<int> LevelRange { get; set; }
+
     /// <summary>
     ///     Minimum item count that can be requested
     /// </summary>
