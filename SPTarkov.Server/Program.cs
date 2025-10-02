@@ -21,7 +21,7 @@ using SPTarkov.Server.Core.Utils.Logger;
 using SPTarkov.Server.Logger;
 using SPTarkov.Server.Modding;
 using SPTarkov.Server.Services;
-using SPTarkov.Web;
+using SPTarkov.Server.Web;
 
 namespace SPTarkov.Server;
 

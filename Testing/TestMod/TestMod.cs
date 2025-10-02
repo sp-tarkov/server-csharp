@@ -2,7 +2,7 @@
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Web;
+using SPTarkov.Server.Web;
 using Version = SemanticVersioning.Version;
 
 namespace TestMod;

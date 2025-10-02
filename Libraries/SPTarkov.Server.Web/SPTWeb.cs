@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.FileProviders;
 using MudBlazor.Services;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Web.Components;
+using SPTarkov.Server.Web.Components;
 
-namespace SPTarkov.Web;
+namespace SPTarkov.Server.Web;
 
 public static class SPTWeb
 {

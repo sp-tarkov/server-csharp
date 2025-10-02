@@ -43,7 +43,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMod", "Testing\TestMod\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ceciler.JsonExtensionData", "Patches\Ceciler.JsonExtensionData\Ceciler.JsonExtensionData.csproj", "{5D09182A-B0B3-406C-AE88-EE0929F9260C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Web", "Libraries\SPTarkov.Web\SPTarkov.Web.csproj", "{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Server.Web", "Libraries\SPTarkov.Server.Web\SPTarkov.Server.Web.csproj", "{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

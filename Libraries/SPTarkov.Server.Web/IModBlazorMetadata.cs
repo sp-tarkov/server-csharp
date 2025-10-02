@@ -1,4 +1,4 @@
-﻿namespace SPTarkov.Web;
+﻿namespace SPTarkov.Server.Web;
 
 /// <summary>
 /// This empty interface is used as a metadata marker to identify mod assemblies that integrate with Blazor or MVC.

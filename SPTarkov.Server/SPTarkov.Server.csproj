@@ -15,7 +15,7 @@
     <IsPackable>true</IsPackable>
     <AssemblyName>SPT.Server</AssemblyName>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
-    <!-- Has to be enabled for SPTarkov.Web to function properly-->
+    <!-- Has to be enabled for SPTarkov.Server.Web to function properly-->
     <StaticWebAssetsEnabled>true</StaticWebAssetsEnabled>
     <StaticWebAssetBasePath>../SPT_Data/wwwroot/</StaticWebAssetBasePath>
   </PropertyGroup>
@@ -29,7 +29,7 @@
     <ProjectReference Include="..\Libraries\SPTarkov.Reflection\SPTarkov.Reflection.csproj" />
     <ProjectReference Include="..\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
     <ProjectReference Include="..\Libraries\SPTarkov.Server.Assets\SPTarkov.Server.Assets.csproj" />
-    <ProjectReference Include="..\Libraries\SPTarkov.Web\SPTarkov.Web.csproj" />
+    <ProjectReference Include="..\Libraries\SPTarkov.Server.Web\SPTarkov.Server.Web.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.9" />
