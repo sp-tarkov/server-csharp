@@ -422,34 +422,22 @@ public record CompletionConfig : BaseQuestConfig
     public required MinMax<int> LevelRange { get; set; }
 
     /// <summary>
-    ///     Minimum item count that can be requested
+    ///     The minimum and maximum amounts that can be requested for an item
     /// </summary>
-    [JsonPropertyName("minRequestedAmount")]
-    public required int MinimumRequestedAmount { get; set; }
+    [JsonPropertyName("requestedItemCount")]
+    public required MinMax<int> RequestedItemCount { get; set; }
 
     /// <summary>
-    ///     Maximum item count that can be requested
-    /// </summary>
-    [JsonPropertyName("maxRequestedAmount")]
-    public required int MaximumRequestedAmount { get; set; }
-
-    /// <summary>
-    ///     How many unique items should be requested - TODO: This needs to be a range
+    ///     How many different unique items should be requested
     /// </summary>
     [JsonPropertyName("uniqueItemCount")]
-    public required int UniqueItemCount { get; set; }
+    public required MinMax<int> UniqueItemCount { get; set; }
 
     /// <summary>
-    ///     Minimum bullet count that can be requested - TODO: Not implemented
+    ///     The minimum and maximum amounts that can be requested for bullets - TODO: Not implemented
     /// </summary>
-    [JsonPropertyName("minRequestedBulletAmount")]
-    public required int MinimumRequestedBulletAmount { get; set; }
-
-    /// <summary>
-    ///     Maximum bullet count that can be requested - TODO: Not implemented
-    /// </summary>
-    [JsonPropertyName("maxRequestedBulletAmount")]
-    public required int MaximumRequestedBulletAmount { get; set; }
+    [JsonPropertyName("requestedBulletCount")]
+    public required MinMax<int> RequestedBulletCount { get; set; }
 
     /// <summary>
     ///     Should the item whitelist be used
@@ -473,7 +461,7 @@ public record CompletionConfig : BaseQuestConfig
     ///     Min/Max durability requirements for the item
     /// </summary>
     [JsonPropertyName("requiredItemMinDurabilityMinMax")]
-    public required MinMax<double> RequiredItemMinDurabilityMinMax { get; set; }
+    public required MinMax<int> RequiredItemMinDurabilityMinMax { get; set; }
 
     /// <summary>
     ///     Blacklisted item types to not collect

@@ -257,7 +257,7 @@ public class CompletionQuestGenerator(
     )
     {
         // Store the indexes of items we are asking player to supply
-        var distinctItemsToRetrieveCount = randomUtil.GetInt(1, completionConfig.UniqueItemCount);
+        var distinctItemsToRetrieveCount = randomUtil.GetInt(completionConfig.UniqueItemCount.Min, completionConfig.UniqueItemCount.Max);
         var chosenRequirementItemsTpls = new List<MongoId>();
         var usedItemIndexes = new HashSet<int>();
 
@@ -293,8 +293,8 @@ public class CompletionQuestGenerator(
 
             var tplChosen = itemSelection[chosenItemIndex];
             var itemPrice = itemHelper.GetItemPrice(tplChosen)!.Value;
-            var minValue = completionConfig.MinimumRequestedAmount;
-            var maxValue = completionConfig.MaximumRequestedAmount;
+            var minValue = completionConfig.RequestedItemCount.Min;
+            var maxValue = completionConfig.RequestedItemCount.Max;
 
             var value = minValue;
 

@@ -608,11 +608,18 @@
               "Strength",
               "Vitality"
             ],
-            "minRequestedAmount": 1,
-            "maxRequestedAmount": 4,
-            "uniqueItemCount": 2,
-            "minRequestedBulletAmount": 15,
-            "maxRequestedBulletAmount": 40,
+            "requestedItemCount": {
+              "min": 1,
+              "max": 4
+            },
+            "uniqueItemCount": {
+              "min": 1,
+              "max": 2
+            },
+            "requestedBulletCount": {
+              "min": 15,
+              "max": 40
+            },
             "useWhitelist": true,
             "useBlacklist": false,
             "requiredItemsAreFiR": true,
@@ -634,11 +641,18 @@
               "Strength",
               "Vitality"
             ],
-            "minRequestedAmount": 2,
-            "maxRequestedAmount": 4,
-            "uniqueItemCount": 2,
-            "minRequestedBulletAmount": 15,
-            "maxRequestedBulletAmount": 40,
+            "requestedItemCount": {
+              "min": 2,
+              "max": 4
+            },
+            "uniqueItemCount": {
+              "min": 1,
+              "max": 2
+            },
+            "requestedBulletCount": {
+              "min": 15,
+              "max": 40
+            },
             "useWhitelist": true,
             "useBlacklist": false,
             "requiredItemsAreFiR": true,
@@ -660,11 +674,18 @@
               "Strength",
               "Vitality"
             ],
-            "minRequestedAmount": 3,
-            "maxRequestedAmount": 6,
-            "uniqueItemCount": 2,
-            "minRequestedBulletAmount": 15,
-            "maxRequestedBulletAmount": 40,
+            "requestedItemCount": {
+              "min": 3,
+              "max": 6
+            },
+            "uniqueItemCount": {
+              "min": 1,
+              "max": 2
+            },
+            "requestedBulletCount": {
+              "min": 15,
+              "max": 40
+            },
             "useWhitelist": true,
             "useBlacklist": false,
             "requiredItemsAreFiR": true,
@@ -1814,11 +1835,18 @@
               "Strength",
               "Vitality"
             ],
-            "minRequestedAmount": 4,
-            "maxRequestedAmount": 6,
-            "uniqueItemCount": 4,
-            "minRequestedBulletAmount": 20,
-            "maxRequestedBulletAmount": 60,
+            "requestedItemCount": {
+              "min": 4,
+              "max": 6
+            },
+            "uniqueItemCount": {
+              "min": 1,
+              "max": 4
+            },
+            "requestedBulletCount": {
+              "min": 20,
+              "max": 60
+            },
             "useWhitelist": true,
             "useBlacklist": false,
             "requiredItemsAreFiR": true,
@@ -1840,11 +1868,18 @@
               "Strength",
               "Vitality"
             ],
-            "minRequestedAmount": 4,
-            "maxRequestedAmount": 8,
-            "uniqueItemCount": 4,
-            "minRequestedBulletAmount": 20,
-            "maxRequestedBulletAmount": 60,
+            "requestedItemCount": {
+              "min": 4,
+              "max": 8
+            },
+            "uniqueItemCount": {
+              "min": 1,
+              "max": 2
+            },
+            "requestedBulletCount": {
+              "min": 20,
+              "max": 60
+            },
             "useWhitelist": true,
             "useBlacklist": false,
             "requiredItemsAreFiR": true,
@@ -1866,11 +1901,18 @@
               "Strength",
               "Vitality"
             ],
-            "minRequestedAmount": 6,
-            "maxRequestedAmount": 12,
-            "uniqueItemCount": 4,
-            "minRequestedBulletAmount": 20,
-            "maxRequestedBulletAmount": 60,
+            "requestedItemCount": {
+              "min": 6,
+              "max": 12
+            },
+            "uniqueItemCount": {
+              "min": 1,
+              "max": 4
+            },
+            "requestedBulletCount": {
+              "min": 20,
+              "max": 60
+            },
             "useWhitelist": true,
             "useBlacklist": false,
             "requiredItemsAreFiR": true,
@@ -3014,11 +3056,18 @@
               "Strength",
               "Vitality"
             ],
-            "minRequestedAmount": 1,
-            "maxRequestedAmount": 3,
-            "uniqueItemCount": 1,
-            "minRequestedBulletAmount": 15,
-            "maxRequestedBulletAmount": 40,
+            "requestedItemCount": {
+              "min": 1,
+              "max": 3
+            },
+            "uniqueItemCount": {
+              "min": 1,
+              "max": 1
+            },
+            "requestedBulletCount": {
+              "min": 15,
+              "max": 40
+            },
             "useWhitelist": true,
             "useBlacklist": false,
             "requiredItemsAreFiR": true,
@@ -3040,11 +3089,18 @@
               "Strength",
               "Vitality"
             ],
-            "minRequestedAmount": 2,
-            "maxRequestedAmount": 3,
-            "uniqueItemCount": 1,
-            "minRequestedBulletAmount": 15,
-            "maxRequestedBulletAmount": 40,
+            "requestedItemCount": {
+              "min": 2,
+              "max": 3
+            },
+            "uniqueItemCount": {
+              "min": 1,
+              "max": 1
+            },
+            "requestedBulletCount": {
+              "min": 15,
+              "max": 40
+            },
             "useWhitelist": true,
             "useBlacklist": false,
             "requiredItemsAreFiR": true,
@@ -3066,11 +3122,18 @@
               "Strength",
               "Vitality"
             ],
-            "minRequestedAmount": 2,
-            "maxRequestedAmount": 4,
-            "uniqueItemCount": 1,
-            "minRequestedBulletAmount": 15,
-            "maxRequestedBulletAmount": 40,
+            "requestedItemCount": {
+              "min": 2,
+              "max": 4
+            },
+            "uniqueItemCount": {
+              "min": 1,
+              "max": 1
+            },
+            "requestedBulletCount": {
+              "min": 15,
+              "max": 40
+            },
             "useWhitelist": true,
             "useBlacklist": false,
             "requiredItemsAreFiR": true,
