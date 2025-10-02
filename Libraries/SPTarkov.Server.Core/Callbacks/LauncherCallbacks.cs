@@ -45,12 +45,6 @@ public class LauncherCallbacks(
         return new ValueTask<string>(string.IsNullOrEmpty(output) ? "FAILED" : "OK");
     }
 
-    public ValueTask<string> ChangePassword(string url, ChangeRequestData info, MongoId sessionID)
-    {
-        var output = launcherController.ChangePassword(info);
-        return new ValueTask<string>(string.IsNullOrEmpty(output) ? "FAILED" : "OK");
-    }
-
     public ValueTask<string> Wipe(string url, RegisterData info, MongoId sessionID)
     {
         var output = launcherController.Wipe(info);
