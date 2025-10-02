@@ -122,7 +122,6 @@ public class LauncherController(
             ScavengerId = scavId,
             Aid = hashUtil.GenerateAccountId(),
             Username = info.Username,
-            Password = info.Password,
             IsWiped = true,
             Edition = info.Edition,
         };
@@ -145,22 +144,6 @@ public class LauncherController(
         if (!sessionID.IsEmpty)
         {
             saveServer.GetProfile(sessionID).ProfileInfo!.Username = info.Change;
-        }
-
-        return sessionID;
-    }
-
-    /// <summary>
-    /// </summary>
-    /// <param name="info"></param>
-    /// <returns></returns>
-    public string? ChangePassword(ChangeRequestData info)
-    {
-        var sessionID = Login(info);
-
-        if (!string.IsNullOrEmpty(sessionID))
-        {
-            saveServer.GetProfile(sessionID).ProfileInfo!.Password = info.Change;
         }
 
         return sessionID;

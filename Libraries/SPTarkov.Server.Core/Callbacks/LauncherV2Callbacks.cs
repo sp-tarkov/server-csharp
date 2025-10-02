@@ -1,6 +1,5 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
-using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Spt.Launcher;
 using SPTarkov.Server.Core.Utils;
@@ -35,17 +34,6 @@ public class LauncherV2Callbacks(
             new LauncherV2RegisterResponse
             {
                 Response = await launcherV2Controller.Register(info),
-                Profiles = profileController.GetMiniProfiles(),
-            }
-        );
-    }
-
-    public async ValueTask<string> PasswordChange(ChangeRequestData info)
-    {
-        return httpResponseUtil.NoBody(
-            new LauncherV2PasswordChangeResponse
-            {
-                Response = await launcherV2Controller.PasswordChange(info),
                 Profiles = profileController.GetMiniProfiles(),
             }
         );

@@ -33,10 +33,6 @@ public class LauncherStaticRouter(LauncherCallbacks launcherCallbacks, JsonUtil 
                 "/launcher/profile/change/username",
                 async (url, info, sessionID, _) => await launcherCallbacks.ChangeUsername(url, info, sessionID)
             ),
-            new RouteAction<ChangeRequestData>(
-                "/launcher/profile/change/password",
-                async (url, info, sessionID, _) => await launcherCallbacks.ChangePassword(url, info, sessionID)
-            ),
             new RouteAction<RegisterData>(
                 "/launcher/profile/change/wipe",
                 async (url, info, sessionID, _) => await launcherCallbacks.Wipe(url, info, sessionID)

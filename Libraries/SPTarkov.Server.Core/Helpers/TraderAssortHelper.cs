@@ -62,9 +62,9 @@ public class TraderAssortHelper(
         traderClone.Assort.NextResupply = traderClone.Base.NextResupply;
 
         // Adjust displayed assort counts based on values stored in profile
-        var assortPurchasesfromTrader = traderPurchasePersisterService.GetProfileTraderPurchases(sessionId, traderId);
+        var assortPurchasesFromTrader = traderPurchasePersisterService.GetProfileTraderPurchases(sessionId, traderId);
 
-        foreach (var assortId in assortPurchasesfromTrader ?? [])
+        foreach (var assortId in assortPurchasesFromTrader ?? [])
         {
             // Find assort we want to update current buy count of
             var assortToAdjust = traderClone.Assort.Items.FirstOrDefault(x => x.Id == assortId.Key);
@@ -92,7 +92,7 @@ public class TraderAssortHelper(
                 continue;
             }
 
-            assortToAdjust.Upd.BuyRestrictionCurrent = (int)(assortPurchasesfromTrader[assortId.Key].PurchaseCount ?? 0);
+            assortToAdjust.Upd.BuyRestrictionCurrent = (int)(assortPurchasesFromTrader[assortId.Key].PurchaseCount ?? 0);
         }
 
         traderClone.Assort = assortHelper.StripLockedQuestAssort(
