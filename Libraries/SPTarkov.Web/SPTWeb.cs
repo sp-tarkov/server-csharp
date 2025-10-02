@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.Extensions.FileProviders;
+﻿using Microsoft.Extensions.FileProviders;
 using MudBlazor.Services;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Web.Components;
@@ -29,6 +27,8 @@ public static class SPTWeb
 
     public static void UseSptBlazor(this WebApplication app)
     {
+        var logger = app.Services.GetRequiredService<ILogger<App>>();
+
         app.UseAntiforgery();
 
 #if DEBUG
@@ -42,13 +42,24 @@ public static class SPTWeb
 
         foreach (var mod in SptWebMods)
         {
+            foreach (var assembly in mod.Assemblies)
+            {
+                razorBuilder.AddAdditionalAssemblies(assembly);
+            }
+
             var modAssembly = mod.ModMetadata.GetType().Assembly;
 
             var location = Path.GetDirectoryName(modAssembly.Location);
 
-            if (Directory.Exists(Path.Combine(location, "wwwroot")))
+            if (!string.IsNullOrEmpty(location) && Directory.Exists(Path.Combine(location, "wwwroot")))
             {
-                Console.WriteLine($"Mod {modAssembly.GetName().Name} has a wwwroot, mapping to /{modAssembly.GetName().Name}");
+                var modAssemblyName = modAssembly.GetName().Name;
+
+                logger.LogDebug(
+                    "Mod {modName} has a wwwroot, mapping to /{modAssemblyName}/",
+                    mod.ModMetadata.Name,
+                    modAssembly.GetName().Name
+                );
 
                 app.UseStaticFiles(
                     new StaticFileOptions
@@ -57,11 +68,6 @@ public static class SPTWeb
                         RequestPath = $"/{modAssembly.GetName().Name}",
                     }
                 );
-            }
-
-            foreach (var assembly in mod.Assemblies)
-            {
-                razorBuilder.AddAdditionalAssemblies(assembly);
             }
         }
 
