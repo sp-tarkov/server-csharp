@@ -1,5 +1,5 @@
-﻿using Version = SemanticVersioning.Version;
-using Range = SemanticVersioning.Range;
+﻿using Range = SemanticVersioning.Range;
+using Version = SemanticVersioning.Version;
 
 namespace SPTarkov.Common.Semver;
 

@@ -3,8 +3,8 @@ using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Web;
-using Version = SemanticVersioning.Version;
 using Range = SemanticVersioning.Range;
+using Version = SemanticVersioning.Version;
 
 namespace TestMod;
 
