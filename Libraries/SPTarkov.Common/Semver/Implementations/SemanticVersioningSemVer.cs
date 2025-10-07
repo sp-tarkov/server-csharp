@@ -26,23 +26,8 @@ public class SemanticVersioningSemVer : ISemVer
         return Range.MaxSatisfying(version, versionRanges, true);
     }
 
-    public bool Satisfies(Version version, Version testVersion)
+    public bool Satisfies(Version version, Range testRange)
     {
-        return Range.IsSatisfied(testVersion.ToString(), version.ToString(), true);
-    }
-
-    public bool AnySatisfies(Version version, List<Version> testVersions)
-    {
-        return testVersions.Any(v => Satisfies(version, v));
-    }
-
-    public bool IsValid(Version version)
-    {
-        return Version.TryParse(version.ToString(), out _);
-    }
-
-    public bool IsValidRange(Version version)
-    {
-        return Range.TryParse(version.ToString(), out _);
+        return testRange.IsSatisfied(version, true);
     }
 }

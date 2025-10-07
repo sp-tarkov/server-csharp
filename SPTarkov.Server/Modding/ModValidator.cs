@@ -126,13 +126,6 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
         var sptVersion = ProgramStatics.SPT_VERSION();
         var modName = $"{mod.Author}-{mod.Name}";
 
-        // Error and prevent loading if sptVersion property is not a valid semver string
-        if (!(semVer.IsValid(mod.SptVersion) || semVer.IsValidRange(mod.SptVersion)))
-        {
-            logger.Error(localisationService.GetText("modloader-invalid_sptversion_field", modName));
-            return false;
-        }
-
         // Warning and allow loading if semver is not satisfied
         if (!semVer.Satisfies(sptVersion, mod.SptVersion))
         {

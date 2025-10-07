@@ -1,4 +1,5 @@
 ﻿using Version = SemanticVersioning.Version;
+using Range = SemanticVersioning.Range;
 
 namespace SPTarkov.Server.Core.Models.Spt.Mod;
 
@@ -42,13 +43,13 @@ public abstract record AbstractModMetadata
     public abstract Version Version { get; init; }
 
     /// <summary>
-    /// SPT version this mod was built for, this uses the semver standard: https://semver.org/
+    /// SPT version this mod was built for, this uses the semver standard constraints: https://semver.org/
     /// <br/><br/>
-    /// Version = new Version("4.0.0"); is valid
+    /// Version = new Version("~4.0.0"); is valid
     /// <br/>
     /// Version = new Version("4.0.0.0"); is not
     /// </summary>
-    public abstract Version SptVersion { get; init; }
+    public abstract Range SptVersion { get; init; }
 
     /// <summary>
     /// List of mods not compatible with this mod
@@ -60,7 +61,7 @@ public abstract record AbstractModMetadata
     ///
     /// Mod dependency is the key, version is the value
     /// </summary>
-    public abstract Dictionary<string, Version>? ModDependencies { get; init; }
+    public abstract Dictionary<string, Range>? ModDependencies { get; init; }
 
     /// <summary>
     /// Link to this mod's mod page, or GitHub page
