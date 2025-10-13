@@ -17,7 +17,15 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="build\PostBuild.cs" />
-    <None Include="SPT_Data\**">
+    <None Include="SPT_Data\**" Exclude="SPT_Data\checks.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <PackageCopyToOutput>True</PackageCopyToOutput>
+      <ExcludeFromSingleFile>True</ExcludeFromSingleFile>
+      <buildAction>None</buildAction>
+      <Pack>true</Pack>
+      <PackagePath>contentFiles\any\any\SPT_Data\</PackagePath>
+    </None>
+    <None Include="SPT_Data\checks.dat" Condition="'$(Configuration)' == 'Release'">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <PackageCopyToOutput>True</PackageCopyToOutput>
       <ExcludeFromSingleFile>True</ExcludeFromSingleFile>
@@ -26,8 +34,11 @@
       <PackagePath>contentFiles\any\any\SPT_Data\</PackagePath>
     </None>
   </ItemGroup>
-  <Target Name="PostBuildHashFile" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)PostBuild.ps1&quot;" />
+  <Target Name="PreBuildHashFile" BeforeTargets="BeforeBuild" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)PostBuild.ps1&quot;">
+      <Output TaskParameter="ExitCode" PropertyName="HashFileExitCode" />
+    </Exec>
+    <Error Message="Failed to hash files" Condition=" '$(HashFileExitCode)' != '0'" />
   </Target>
   <ItemGroup>
     <Compile Remove="build\PostBuild.cs" />
