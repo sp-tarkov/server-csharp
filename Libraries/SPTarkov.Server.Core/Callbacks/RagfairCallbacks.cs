@@ -26,8 +26,8 @@ public class RagfairCallbacks(
 
     public Task OnLoad()
     {
-        ragfairServer.Load();
         ragfairPriceService.Load();
+        ragfairServer.Load();
 
         return Task.CompletedTask;
     }
