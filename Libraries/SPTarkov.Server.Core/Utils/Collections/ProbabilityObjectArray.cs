@@ -226,7 +226,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
             drawnKeys.Add(chosenItem.Key);
 
             // Only remove item if it's not in whitelist
-            if (neverRemoveWhitelist is null || neverRemoveWhitelist is not null && !neverRemoveWhitelist.Contains(chosenItem.Key))
+            if (neverRemoveWhitelist is null || !neverRemoveWhitelist.Contains(chosenItem.Key))
             {
                 // Reduce total weight value by items weight + Remove item from pool
                 totalWeight -= chosenItem.Weight;
