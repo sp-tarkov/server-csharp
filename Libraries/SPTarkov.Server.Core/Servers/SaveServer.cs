@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
@@ -22,6 +23,7 @@ public class SaveServer(
     HashUtil hashUtil,
     ServerLocalisationService serverLocalisationService,
     ProfileValidatorService profileValidatorService,
+    BackupService backupService,
     ISptLogger<SaveServer> logger,
     ConfigServer configServer
 )
@@ -211,7 +213,31 @@ public class SaveServer(
         if (fileUtil.FileExists(filePath))
         // File found, store in profiles[]
         {
-            var profile = await jsonUtil.DeserializeFromFileAsync<JsonObject>(filePath);
+            JsonObject? profile = null;
+
+            try
+            {
+                profile = await jsonUtil.DeserializeFromFileAsync<JsonObject>(filePath);
+            }
+            catch (JsonException e)
+            {
+                // If the profile fails to deserialize, it may have corrupted, try to restore from a backup
+                logger.Warning($"Failed loading profile for {sessionID.ToString()}. Attempting to load backup");
+
+                // We make a copy of the profile before overwriting it, just incase
+                var corruptBackupPath = $"{profileFilepath}{sessionID.ToString()}-corrupt.json";
+                File.Copy(filePath, corruptBackupPath, true);
+
+                if (backupService.RestoreProfile(sessionID))
+                {
+                    profile = await jsonUtil.DeserializeFromFileAsync<JsonObject>(filePath);
+                    logger.Success("Profile restored from backup!");
+                }
+                else
+                {
+                    throw new Exception("Failed to restore profile backup", e);
+                }
+            }
 
             if (profile is not null)
             {

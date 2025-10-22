@@ -13,6 +13,7 @@ namespace SPTarkov.Server.Core.Services;
 public class BackupService
 {
     protected const string ProfileDir = "./user/profiles";
+    protected const string activeModsFilename = "activeMods.json";
 
     protected readonly List<string> ActiveServerMods;
     protected readonly BackupConfig BackupConfig;
@@ -131,7 +132,7 @@ public class BackupService
             }
 
             // Write a copy of active mods.
-            await FileUtil.WriteFileAsync(Path.Combine(targetDir, "activeMods.json"), JsonUtil.Serialize(ActiveServerMods));
+            await FileUtil.WriteFileAsync(Path.Combine(targetDir, activeModsFilename), JsonUtil.Serialize(ActiveServerMods));
 
             if (Logger.IsLogEnabled(LogLevel.Debug))
             {
@@ -223,6 +224,24 @@ public class BackupService
         return result;
     }
 
+    protected string? GetMostRecentProfileBackup(IEnumerable<string> backupPaths, string profileId)
+    {
+        var profileFilename = $"{profileId}.json";
+        var backupPathsWithCreationDateTime = GetBackupPathsWithCreationTimestamp(backupPaths);
+
+        foreach (var (backupTimestamp, backupPath) in backupPathsWithCreationDateTime.Reverse())
+        {
+            var profileBackups = FileUtil.GetFiles(backupPath);
+            var profileBackup = profileBackups.FirstOrDefault(path => path.EndsWith(profileFilename));
+            if (profileBackup != null)
+            {
+                return profileBackup;
+            }
+        }
+
+        return null;
+    }
+
     /// <summary>
     ///     Retrieves and sorts the backup file paths from the specified directory.
     /// </summary>
@@ -307,5 +326,30 @@ public class BackupService
         }
 
         return result;
+    }
+
+    /// <summary>
+    ///     Restores the most recent profile backup for the given profile Id
+    /// </summary>
+    /// <param name="profileId">The profile ID of the backup to restore</param>
+    /// <returns>True on success. False on failure</returns>
+    public bool RestoreProfile(string profileId)
+    {
+        var backupDir = BackupConfig.Directory;
+        var backupPaths = GetBackupPaths(backupDir);
+        var mostRecentBackupForProfile = GetMostRecentProfileBackup(backupPaths, profileId);
+
+        // Verify we have a backup for this profile
+        if (mostRecentBackupForProfile == null)
+        {
+            return false;
+        }
+
+        // Restore the most recent profile backup
+        var profileFileName = FileUtil.GetFileNameAndExtension(mostRecentBackupForProfile);
+        var targetProfilePath = Path.Combine(ProfileDir, profileFileName);
+
+        File.Copy(mostRecentBackupForProfile, targetProfilePath, true);
+        return true;
     }
 }

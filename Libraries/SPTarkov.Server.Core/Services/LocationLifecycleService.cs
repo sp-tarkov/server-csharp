@@ -26,6 +26,7 @@ public class LocationLifecycleService(
     TimeUtil timeUtil,
     DatabaseService databaseService,
     ProfileHelper profileHelper,
+    BackupService backupService,
     ProfileActivityService profileActivityService,
     BotNameService botNameService,
     ICloner cloner,
@@ -77,6 +78,9 @@ public class LocationLifecycleService(
     /// </summary>
     public virtual StartLocalRaidResponseData StartLocalRaid(MongoId sessionId, StartLocalRaidRequestData request)
     {
+        // Backup the profile on raid start
+        backupService.Init().Wait();
+
         logger.Debug($"Starting: {request.Location}");
 
         var playerProfile = profileHelper.GetFullProfile(sessionId);
@@ -409,6 +413,10 @@ public class LocationLifecycleService(
             HandleCoopExtract(sessionId, pmcProfile, request.Results.ExitName);
             SendCoopTakenFenceMessage(sessionId);
         }
+
+        // Save and backup the profile on raid end
+        saveServer.SaveProfileAsync(sessionId).Wait();
+        backupService.Init().Wait();
     }
 
     /// <summary>

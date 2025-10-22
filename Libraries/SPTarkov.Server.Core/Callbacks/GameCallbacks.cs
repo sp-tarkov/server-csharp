@@ -16,6 +16,7 @@ public class GameCallbacks(
     HttpResponseUtil httpResponseUtil,
     Watermark watermark,
     SaveServer saveServer,
+    BackupService backupService,
     GameController gameController,
     ProfileActivityService profileActivityService,
     TimeUtil timeUtil
@@ -66,6 +67,10 @@ public class GameCallbacks(
     public async ValueTask<string> GameLogout(string url, EmptyRequestData _, MongoId sessionID)
     {
         await saveServer.SaveProfileAsync(sessionID);
+
+        // Backup profiles on exit
+        await backupService.Init();
+
         return httpResponseUtil.GetBody(new GameLogoutResponseData { Status = "ok" });
     }
 

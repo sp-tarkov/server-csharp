@@ -13,8 +13,10 @@ public class SaveCallbacks(SaveServer saveServer, ConfigServer configServer, Bac
 
     public async Task OnLoad()
     {
-        await backupService.StartBackupSystem();
         await saveServer.LoadAsync();
+
+        // Note: This has to happen after loading the saveServer so we don't backup corrupted profiles
+        await backupService.StartBackupSystem();
     }
 
     public async Task<bool> OnUpdate(long secondsSinceLastRun)

@@ -131,10 +131,18 @@ public class FileUtil
 
                 // We flush here so we can be sure it's immediately committed to disk
                 await fs.FlushAsync();
+                fs.Flush(true);
             }
 
             // Overwrite over the old file
-            File.Move(tempFilePath, filePath, overwrite: true);
+            if (File.Exists(filePath))
+            {
+                File.Replace(tempFilePath, filePath, null);
+            }
+            else
+            {
+                File.Move(tempFilePath, filePath);
+            }
         }
         catch
         {
