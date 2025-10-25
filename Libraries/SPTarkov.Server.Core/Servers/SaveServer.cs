@@ -209,8 +209,7 @@ public class SaveServer(
     /// <param name="sessionID"> ID of profile to store in memory </param>
     public async Task LoadProfileAsync(MongoId sessionID)
     {
-        var filename = $"{sessionID.ToString()}.json";
-        var filePath = $"{profileFilepath}{filename}";
+        var filePath = Path.Combine(profileFilepath, $"{sessionID}.json");
         if (fileUtil.FileExists(filePath))
         // File found, store in profiles[]
         {
@@ -226,7 +225,7 @@ public class SaveServer(
                 logger.Warning($"Failed loading profile for {sessionID.ToString()}. Attempting to load backup");
 
                 // We make a copy of the profile before overwriting it, just incase
-                var corruptBackupPath = $"{profileFilepath}{sessionID.ToString()}-corrupt.json";
+                var corruptBackupPath = Path.Combine(profileFilepath, $"{sessionID}-corrupt.json");
                 File.Copy(filePath, corruptBackupPath, true);
 
                 if (backupService.RestoreProfile(sessionID))
@@ -289,7 +288,7 @@ public class SaveServer(
         Stopwatch start;
         try
         {
-            var filePath = $"{profileFilepath}{sessionID.ToString()}.json";
+            var filePath = Path.Combine(profileFilepath, $"{sessionID}.json");
 
             // Run pre-save callbacks before we save into json
             foreach (var callback in onBeforeSaveCallbacks)
@@ -333,7 +332,7 @@ public class SaveServer(
     /// <returns> True if successful </returns>
     public bool RemoveProfile(MongoId sessionID)
     {
-        var file = $"{profileFilepath}{sessionID}.json";
+        var file = Path.Combine(profileFilepath, $"{sessionID}.json");
         if (profiles.ContainsKey(sessionID))
         {
             profiles.TryRemove(sessionID, out _);
