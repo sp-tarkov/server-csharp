@@ -2,7 +2,7 @@
   "projectName": "SPT",
   "compatibleTarkovVersion": "0.16.9.40087",
   "serverName": "SPT Server",
-  "profileSaveIntervalSeconds": 15,
+  "profileSaveIntervalSeconds": 60,
   "sptFriendNickname": "SPT",
   "allowProfileWipe": true,
   "enableNoGCRegions": true,
