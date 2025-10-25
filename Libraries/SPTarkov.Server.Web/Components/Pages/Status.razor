@@ -73,7 +73,7 @@
         _sptVersion = ProgramStatics.SPT_VERSION().ToString();
         _debugEnabled = ProgramStatics.DEBUG();
         _modsEnabled = ProgramStatics.MODS();
-        _startTime = TimeUtil.GetDateTimeFromTimeStamp(coreConfig.ServerStartTime.Value);
+        _startTime = TimeUtil.GetDateTimeFromTimeStamp(coreConfig.ServerStartTime.Value).ToLocalTime();
         _uptimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds() - coreConfig.ServerStartTime.Value;
 
         var activeProfileIds = ProfileActivityService.GetActiveProfileIdsWithinMinutes(30);
