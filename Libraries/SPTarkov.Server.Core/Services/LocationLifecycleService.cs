@@ -630,7 +630,7 @@ public class LocationLifecycleService(
         pmcProfile.Info.LastTimePlayedAsSavage = timeUtil.GetTimeStamp();
 
         // Force a profile save
-        saveServer.SaveProfileAsync(sessionId);
+        saveServer.SaveProfileAsync(sessionId).GetAwaiter().GetResult();
     }
 
     /// <summary>
