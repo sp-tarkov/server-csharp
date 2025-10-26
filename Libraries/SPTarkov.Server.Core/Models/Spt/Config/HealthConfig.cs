@@ -18,6 +18,9 @@ public record HealthMultipliers
 {
     [JsonPropertyName("blacked")]
     public double Blacked { get; set; }
+
+    [JsonPropertyName("death")]
+    public double Death { get; set; }
 }
 
 public record HealthSave

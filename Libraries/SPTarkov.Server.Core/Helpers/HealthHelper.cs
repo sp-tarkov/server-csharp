@@ -3,6 +3,7 @@ using SPTarkov.Server.Core.Exceptions.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Eft.Health;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
@@ -23,7 +24,7 @@ public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, Co
     /// <param name="sessionId">Session id</param>
     /// <param name="pmcProfileToUpdate">Player profile to apply changes to</param>
     /// <param name="healthChanges">Changes to apply </param>
-    public void ApplyHealthChangesToProfile(MongoId sessionId, PmcData pmcProfileToUpdate, BotBaseHealth healthChanges)
+    public void ApplyHealthChangesToProfile(MongoId sessionId, PmcData pmcProfileToUpdate, BotBaseHealth healthChanges, bool isDead)
     {
         /* TODO: Not used here, need to check node or a live profile, commented out for now to avoid the potential alloc - Cj
         var fullProfile = saveServer.GetProfile(sessionId);
@@ -44,7 +45,7 @@ public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, Co
         var playerWasCursed = !PlayerHadGearOnRaidStart(pmcProfileToUpdate.Inventory);
 
         // Alter saved profiles Health with values from post-raid client data
-        ModifyProfileHealthProperties(pmcProfileToUpdate, healthChanges.BodyParts, EffectsToSkip, playerWasCursed);
+        ModifyProfileHealthProperties(pmcProfileToUpdate, healthChanges.BodyParts, EffectsToSkip, isDead, playerWasCursed);
 
         // Adjust hydration/energy/temperature
         AdjustProfileHydrationEnergyTemperature(pmcProfileToUpdate, healthChanges);
@@ -103,11 +104,13 @@ public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, Co
     /// <param name="profileToAdjust">Player profile on server</param>
     /// <param name="bodyPartChanges">Changes to apply</param>
     /// <param name="effectsToSkip"></param>
+    /// <param name="isDead"></param>
     /// <param name="playerWasCursed">Did player enter raid with no equipment</param>
     protected void ModifyProfileHealthProperties(
         PmcData profileToAdjust,
         Dictionary<string, BodyPartHealth> bodyPartChanges,
         HashSet<string>? effectsToSkip = null,
+        bool isDead = false,
         bool playerWasCursed = false
     )
     {
@@ -131,17 +134,24 @@ public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, Co
             if (HealthConfig.Save.Health)
             {
                 // Apply hp changes to profile
-                matchingProfilePart.Health.Current =
-                    partProperties.Health.Current == 0
-                        ? partProperties.Health.Maximum * HealthConfig.HealthMultipliers.Blacked
-                        : partProperties.Health.Current;
-
-                matchingProfilePart.Health.Maximum = partProperties.Health.Maximum;
-
-                // Cursed player + limb was not lost, reset to 20%
-                if (playerWasCursed && matchingProfilePart.Health.Current > 20)
+                if (!isDead)
                 {
-                    matchingProfilePart.Health.Current = 20;
+                    // If the player isn't dead, restore blacked limbs with a penalty
+                    matchingProfilePart.Health.Current =
+                        partProperties.Health.Current == 0
+                            ? matchingProfilePart.Health.Maximum * HealthConfig.HealthMultipliers.Blacked
+                            : partProperties.Health.Current;
+                }
+                else
+                {
+                    // If the player died, set all limbs with a penalty
+                    matchingProfilePart.Health.Current = matchingProfilePart.Health.Maximum * HealthConfig.HealthMultipliers.Death;
+
+                    // Cursed player, body part gets set to 1 on death
+                    if (playerWasCursed)
+                    {
+                        matchingProfilePart.Health.Current = 1;
+                    }
                 }
             }
 
