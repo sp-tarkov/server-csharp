@@ -92,15 +92,7 @@ public class BackupService
             return;
         }
 
-        // Make sure we don't back up too often by using a configurable Cooldown
-        var currentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        if (currentTimestamp < LastBackupTimestamp + BackupConfig.BackupCooldown)
-        {
-            return;
-        }
-        LastBackupTimestamp = currentTimestamp;
-
-        // If the backup lock is already locked, skip backup. This is to stop TOC/TOU race conditions above
+        // If the backup lock is already locked, skip backup. This stops multiple backups running at once
         // Passing 0 is a non-blocking Wait, will return false if the lock can't be acquired
         bool lockAcquired = await BackupLock.WaitAsync(0);
         if (!lockAcquired)
@@ -110,6 +102,14 @@ public class BackupService
 
         try
         {
+            // Make sure we don't back up too often by using a configurable Cooldown
+            var currentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            if (currentTimestamp < LastBackupTimestamp + BackupConfig.BackupCooldown)
+            {
+                return;
+            }
+            LastBackupTimestamp = currentTimestamp;
+
             var targetDir = GenerateBackupTargetDir();
 
             // Fetch all profiles in the profile directory.
