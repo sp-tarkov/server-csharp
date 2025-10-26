@@ -145,7 +145,7 @@ public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, Co
                 else
                 {
                     // If the player died, set all limbs with a penalty
-                    matchingProfilePart.Health.Current = matchingProfilePart.Health.Maximum * HealthConfig.HealthMultipliers.Death ?? 0;
+                    matchingProfilePart.Health.Current = matchingProfilePart.Health.Maximum * HealthConfig.HealthMultipliers.Death;
 
                     // Cursed player, body part gets set to 1 on death
                     if (playerWasCursed)
