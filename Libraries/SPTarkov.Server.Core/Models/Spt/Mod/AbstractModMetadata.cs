@@ -52,6 +52,7 @@ public abstract record AbstractModMetadata
     /// <br/>
     /// Version = new Version("4.0.0.0"); is not
     /// </summary>
+    [Obsolete("Will be removed in 4.1, we now check the assemblies reference to SPTarkov.Server.Core during mod loading")]
     [JsonConverter(typeof(ToStringJsonConverter<Range>))]
     public abstract Range SptVersion { get; init; }
 
