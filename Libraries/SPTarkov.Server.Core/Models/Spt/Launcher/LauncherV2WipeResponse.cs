@@ -3,7 +3,7 @@ using SPTarkov.Server.Core.Models.Utils;
 
 namespace SPTarkov.Server.Core.Models.Spt.Launcher;
 
-public class LauncherV2RemoveResponse : IRequestData
+public record LauncherV2WipeResponse : IRequestData
 {
     public required bool Response { get; set; }
 

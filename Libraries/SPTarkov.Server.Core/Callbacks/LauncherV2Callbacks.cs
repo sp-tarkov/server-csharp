@@ -1,5 +1,6 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Spt.Launcher;
 using SPTarkov.Server.Core.Utils;
@@ -71,10 +72,19 @@ public class LauncherV2Callbacks(
         );
     }
 
-    public ValueTask<string> Profile(LoginRequestData sessionId)
+    public ValueTask<string> Profile(LoginRequestData username)
     {
         return new ValueTask<string>(
-            httpResponseUtil.NoBody(new LauncherV2ProfileResponse { Response = launcherV2Controller.GetMiniProfileFromUsername(sessionId) })
+            httpResponseUtil.NoBody(new LauncherV2ProfileResponse { Response = launcherV2Controller.GetMiniProfileFromUsername(username) })
+        );
+    }
+
+    public ValueTask<string> Wipe(RegisterData info)
+    {
+        return new ValueTask<string>(
+            httpResponseUtil.NoBody(
+                new LauncherV2WipeResponse { Response = launcherV2Controller.Wipe(info), Profiles = profileController.GetMiniProfiles() }
+            )
         );
     }
 }

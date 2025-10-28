@@ -173,4 +173,27 @@ public class LauncherV2Controller(
     {
         return profileController.GetMiniProfile(GetSessionId(info));
     }
+
+    public bool Wipe(RegisterData info)
+    {
+        if (!CoreConfig.AllowProfileWipe)
+        {
+            return false;
+        }
+
+        var sessionId = Login(info);
+
+        if (!sessionId)
+        {
+            var profileInfo = saveServer
+                .GetProfiles()
+                .FirstOrDefault(x => x.Value.ProfileInfo?.Username == info.Username)
+                .Value.ProfileInfo;
+
+            profileInfo!.Edition = info.Edition;
+            profileInfo.IsWiped = true;
+        }
+
+        return sessionId;
+    }
 }
