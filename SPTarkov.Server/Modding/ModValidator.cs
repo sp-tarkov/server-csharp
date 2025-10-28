@@ -171,6 +171,11 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
                 .FirstOrDefault(asm => asm.Name == "SPTarkov.Server.Core")
                 ?.Version?.ToString();
 
+            if (sptCoreAsmRefVersion is null)
+            {
+                continue;
+            }
+
             var modRefVersion = new SemanticVersioning.Version(sptCoreAsmRefVersion?[..^2]!);
             if (modRefVersion > sptVersion)
             {
