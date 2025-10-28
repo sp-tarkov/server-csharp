@@ -18,6 +18,12 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
             return [];
         }
 
+        // Validate all assemblies for references. This will deprecate AbstractMetadata semver checks in 4.1
+        foreach (var mod in mods)
+        {
+            ValidateCoreAssemblyReference(mod);
+        }
+
         logger.Info(localisationService.GetText("modloader-loading_mods", mods.Count()));
 
         // Validate and remove broken mods from mod list
@@ -121,6 +127,7 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
     /// </summary>
     /// <param name="mod">Mod to check compatibility with SPT</param>
     /// <returns>True if compatible</returns>
+    ///
     protected bool IsModCompatibleWithSpt(AbstractModMetadata mod)
     {
         var sptVersion = ProgramStatics.SPT_VERSION();
@@ -145,6 +152,34 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
         }
 
         return true;
+    }
+
+    /// <summary>
+    ///     Validate that the SPTarkov.Server.Core assembly is compatible with this mod. Semver is not enough.<br/>
+    ///
+    /// Throws an exception if the mod was built for a newer SPT version than the current running SPT version
+    /// </summary>
+    /// <param name="mod">mod to validate</param>
+    protected void ValidateCoreAssemblyReference(SptMod mod)
+    {
+        var sptVersion = ProgramStatics.SPT_VERSION();
+        var modName = $"{mod.ModMetadata.Author}-{mod.ModMetadata.Name}";
+
+        foreach (var assembly in mod.Assemblies)
+        {
+            var sptCoreAsmRefVersion = assembly
+                .GetReferencedAssemblies()
+                .FirstOrDefault(asm => asm.Name == "SPTarkov.Server.Core")
+                ?.Version?.ToString();
+
+            var modRefVersion = new SemanticVersioning.Version(sptCoreAsmRefVersion?[..^2]!);
+            if (modRefVersion > sptVersion)
+            {
+                throw new Exception(
+                    $"Mod: {modName} requires a minimum SPT version of `{modRefVersion}`, but you are running `{sptVersion}`. Please update SPT to use this mod."
+                );
+            }
+        }
     }
 
     /// <summary>
