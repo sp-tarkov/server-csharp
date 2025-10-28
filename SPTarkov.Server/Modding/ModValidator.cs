@@ -127,7 +127,6 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
     /// </summary>
     /// <param name="mod">Mod to check compatibility with SPT</param>
     /// <returns>True if compatible</returns>
-    ///
     protected bool IsModCompatibleWithSpt(AbstractModMetadata mod)
     {
         var sptVersion = ProgramStatics.SPT_VERSION();
