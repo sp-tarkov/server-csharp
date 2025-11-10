@@ -412,7 +412,7 @@ public class ItemHelper(
     public double GetItemAndChildrenPrice(IEnumerable<MongoId> tpls)
     {
         // Run getItemPrice for each tpl in tpls array, return sum
-        return tpls.Aggregate(0, (total, tpl) => total + (int) GetItemPrice(tpl).GetValueOrDefault(0));
+        return tpls.Aggregate(0, (total, tpl) => total + (int)GetItemPrice(tpl).GetValueOrDefault(0));
     }
 
     /// <summary>
@@ -1263,7 +1263,7 @@ public class ItemHelper(
             var cartridgeCountToAdd = remainingSpace < maxPerStack ? remainingSpace : maxPerStack;
 
             // Add cartridge item into items array
-            var cartridgeItemToAdd = CreateCartridges(ammoBox[0].Id, cartridgeTpl.Value, (int) cartridgeCountToAdd, location);
+            var cartridgeItemToAdd = CreateCartridges(ammoBox[0].Id, cartridgeTpl.Value, (int)cartridgeCountToAdd, location);
 
             // In live no ammo box has the first cartridge item with a location
             if (location == 0)
@@ -1377,8 +1377,8 @@ public class ItemHelper(
         }
 
         var desiredStackCount = randomUtil.GetInt(
-            (int) Math.Round(minSizeMultiplier * magazineCartridgeMaxCount.Value),
-            (int) magazineCartridgeMaxCount
+            (int)Math.Round(minSizeMultiplier * magazineCartridgeMaxCount.Value),
+            (int)magazineCartridgeMaxCount
         );
 
         if (magazineWithChildCartridges.Count > 1)
@@ -1484,7 +1484,7 @@ public class ItemHelper(
             }
 
             ammoArray.Add(
-                new ProbabilityObject<MongoId, float?>(ammoDetails.Tpl.Value, (double) ammoDetails.RelativeProbability!.Value, null)
+                new ProbabilityObject<MongoId, float?>(ammoDetails.Tpl.Value, (double)ammoDetails.RelativeProbability!.Value, null)
             );
         }
 
