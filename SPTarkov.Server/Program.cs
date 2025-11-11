@@ -61,7 +61,7 @@ public static class Program
 
             Console.WriteLine("=========================================================================================================");
             Console.WriteLine(
-                "The server has unexpectedly stopped, reach out to #spt-support in discord, create a support thread by following the instructions found in #support-guidelines. Also include a screenshot of this message + the below error"
+                "The server has unexpectedly stopped, reach out to #spt-support in our Discord server. Include a screenshot of this message + the below error"
             );
             Console.WriteLine(e);
             Console.WriteLine("=========================================================================================================");
