@@ -1,23 +1,28 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Authentication;
 using System.Text;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using SPTarkov.Common.Extensions;
+using SPTarkov.Common.Logger;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.DI;
 //using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Loaders;
+using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services.Hosted;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Server.Core.Utils.Logger;
 using SPTarkov.Server.Logger;
 using SPTarkov.Server.Modding;
 using SPTarkov.Server.Services;
@@ -27,46 +32,45 @@ namespace SPTarkov.Server;
 
 public static class Program
 {
+    internal static ILoggerFactory? EarlyLoggerFactory;
+    internal static ILogger? EarlyLogger;
+
     public static async Task Main(string[] args)
     {
+        // Initialize the program variables
+        ProgramStatics.Initialize();
+
         try
         {
+            EarlyLoggerFactory = SptLoggerProvider.Create(ProgramStatics.DEBUG());
+            EarlyLogger = EarlyLoggerFactory.CreateLogger("SPTarkov.Server.Core");
+
             await StartServer(args);
         }
         catch (SocketException)
         {
-            Console.WriteLine("=========================================================================================================");
-            Console.WriteLine("You have multiple servers running or another process using port 6969");
-            Console.WriteLine("=========================================================================================================");
-            Console.WriteLine("Press any key to exit...");
+            EarlyLogger!.LogCritical("You have multiple servers running or another process using port 6969");
+            EarlyLogger!.LogInformation("Press any key to exit...");
             Console.ReadLine();
         }
         catch (Exception e)
         {
             if (e.Message.Contains("could not load file or assembly", StringComparison.InvariantCultureIgnoreCase))
             {
-                var requirementName = e.Message;
-                Console.WriteLine(
-                    "========================================================================================================="
-                );
-                Console.BackgroundColor = ConsoleColor.DarkRed;
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.WriteLine(
+                EarlyLogger!.LogCritical(
                     "You may have forgotten to install a requirement for one of your mods, please check the mod page again and install any requirements listed. Read the error message below CAREFULLY for the name of the mod you need to install"
-                );
-                Console.ResetColor();
-                Console.WriteLine(
-                    "========================================================================================================="
                 );
             }
 
-            Console.WriteLine("=========================================================================================================");
-            Console.WriteLine(
-                "The server has unexpectedly stopped, reach out to #spt-support in our Discord server. Include a screenshot of this message + the below error"
-            );
-            Console.WriteLine(ex);
-            Console.WriteLine("=========================================================================================================");
-            Console.WriteLine("Press any key to exit...");
+            if (e is OperationCanceledException)
+            {
+                EarlyLogger!.LogCritical("The server has unexpectedly stopped, reach out to #spt-support in discord.");
+            }
+            else
+            {
+                EarlyLogger!.LogCritical(e, "The server has unexpectedly stopped, reach out to #spt-support in discord.");
+            }
+
             Console.ReadLine();
         }
     }
@@ -83,11 +87,9 @@ public static class Program
             return;
         }
 
-        // Initialize the program variables
-        ProgramStatics.Initialize();
-
         // Create web builder and logger
         var builder = CreateNewHostBuilder();
+        builder.Host.UseSptLogger(ProgramStatics.DEBUG());
 
 #if DEBUG
         builder.Host.UseDefaultServiceProvider(options =>
@@ -129,11 +131,6 @@ public static class Program
 
         // Configure Kestrel WS options and Handle fallback requests
         ConfigureWebApp(app);
-
-        // In case of exceptions we snatch a Server logger
-        var serverExceptionLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Server");
-        // We need any logger instance to use as a finalizer when the app closes
-        var loggerFinalizer = app.Services.GetRequiredService<ISptLogger<SPTStartupHostedService>>();
 
         // Handle edge cases where reverse proxies might pass X-Forwarded-For, use this as the actual IP address
         var forwardedHeadersOptions = new ForwardedHeadersOptions
@@ -214,7 +211,6 @@ public static class Program
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { WebRootPath = "./SPT_Data/wwwroot" });
         builder.Logging.ClearProviders();
         builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
-        builder.Host.UseSptLogger();
 
         return builder;
     }
@@ -236,8 +232,8 @@ public static class Program
         diHandler.InjectAll();
         // register the mod validator components
         var provider = builder
-            .Services.AddScoped(typeof(ISptLogger<ModValidator>), typeof(SptLogger<ModValidator>))
-            .AddScoped(typeof(ISemVer), typeof(SemanticVersioningSemVer))
+            .Services.AddScoped(typeof(ISemVer), typeof(SemanticVersioningSemVer))
+            .AddSptLogger(ProgramStatics.DEBUG())
             .AddSingleton<ModValidator>()
             .BuildServiceProvider();
         var modValidator = provider.GetRequiredService<ModValidator>();

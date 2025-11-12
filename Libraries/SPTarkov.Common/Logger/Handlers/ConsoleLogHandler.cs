@@ -1,10 +1,8 @@
-using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Models.Logging;
+using SPTarkov.Common.Models.Logging;
 
-namespace SPTarkov.Server.Core.Utils.Logger.Handlers;
+namespace SPTarkov.Common.Logger.Handlers;
 
-[Injectable(InjectionType.Singleton)]
-public class ConsoleLogHandler : BaseLogHandler
+internal sealed class ConsoleLogHandler : BaseLogHandler
 {
     public override LoggerType LoggerType
     {

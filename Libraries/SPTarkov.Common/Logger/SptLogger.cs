@@ -1,60 +1,11 @@
-using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Models.Logging;
-using SPTarkov.Server.Core.Models.Utils;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using SPTarkov.Common.Models.Logging;
+using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
-namespace SPTarkov.Server.Core.Utils.Logger;
+namespace SPTarkov.Common.Logger;
 
-[Injectable(TypePriority = int.MinValue)]
-public class SptLogger<T> : ISptLogger<T>
+public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SptLoggerQueueManager loggerQueueManager) : ISptLogger<T>
 {
-    private string _category;
-    private readonly SptLoggerQueueManager _loggerQueueManager;
-
-    private const string ConfigurationPath = "./sptLogger.json";
-    private const string ConfigurationPathDev = "./sptLogger.Development.json";
-    private SptLoggerConfiguration _config;
-
-    public SptLogger(FileUtil fileUtil, JsonUtil jsonUtil, SptLoggerQueueManager loggerQueueManager)
-    {
-        _category = typeof(T).FullName;
-        _loggerQueueManager = loggerQueueManager;
-
-        bool IsReleaseType = ProgramStatics.ENTRY_TYPE() switch
-        {
-            Models.Enums.EntryType.BLEEDINGEDGEMODS => true,
-            Models.Enums.EntryType.RELEASE => true,
-            _ => false,
-        };
-
-        if (!ProgramStatics.DEBUG() || IsReleaseType)
-        {
-            LoadConfig(fileUtil, jsonUtil, ConfigurationPath);
-        }
-        else
-        {
-            LoadConfig(fileUtil, jsonUtil, ConfigurationPathDev);
-        }
-
-        if (_config == null)
-        {
-            throw new Exception("The configuration path was loaded but it contained invalid or incorrect configuration.");
-        }
-
-        _loggerQueueManager.Initialize(_config);
-    }
-
-    private void LoadConfig(FileUtil fileUtil, JsonUtil jsonUtil, string sptLoggerJson)
-    {
-        if (fileUtil.FileExists(sptLoggerJson))
-        {
-            _config = jsonUtil.DeserializeFromFile<SptLoggerConfiguration>(sptLoggerJson);
-        }
-        else
-        {
-            throw new Exception($"Unable to find SPTLogger file '{sptLoggerJson}'");
-        }
-    }
+    private string _category = typeof(T).FullName;
 
     public void OverrideCategory(string category)
     {
@@ -63,7 +14,7 @@ public class SptLogger<T> : ISptLogger<T>
 
     public void LogWithColor(string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null, Exception? ex = null)
     {
-        _loggerQueueManager.EnqueueMessage(
+        loggerQueueManager.EnqueueMessage(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -80,7 +31,7 @@ public class SptLogger<T> : ISptLogger<T>
 
     public void Success(string data, Exception? ex = null)
     {
-        _loggerQueueManager.EnqueueMessage(
+        loggerQueueManager.EnqueueMessage(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -96,7 +47,7 @@ public class SptLogger<T> : ISptLogger<T>
 
     public void Error(string data, Exception? ex = null)
     {
-        _loggerQueueManager.EnqueueMessage(
+        loggerQueueManager.EnqueueMessage(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -112,7 +63,7 @@ public class SptLogger<T> : ISptLogger<T>
 
     public void Warning(string data, Exception? ex = null)
     {
-        _loggerQueueManager.EnqueueMessage(
+        loggerQueueManager.EnqueueMessage(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -128,7 +79,7 @@ public class SptLogger<T> : ISptLogger<T>
 
     public void Info(string data, Exception? ex = null)
     {
-        _loggerQueueManager.EnqueueMessage(
+        loggerQueueManager.EnqueueMessage(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -143,7 +94,7 @@ public class SptLogger<T> : ISptLogger<T>
 
     public void Debug(string data, Exception? ex = null)
     {
-        _loggerQueueManager.EnqueueMessage(
+        loggerQueueManager.EnqueueMessage(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -159,7 +110,7 @@ public class SptLogger<T> : ISptLogger<T>
 
     public void Critical(string data, Exception? ex = null)
     {
-        _loggerQueueManager.EnqueueMessage(
+        loggerQueueManager.EnqueueMessage(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -182,7 +133,7 @@ public class SptLogger<T> : ISptLogger<T>
         Exception? ex = null
     )
     {
-        _loggerQueueManager.EnqueueMessage(
+        loggerQueueManager.EnqueueMessage(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -199,11 +150,6 @@ public class SptLogger<T> : ISptLogger<T>
 
     public bool IsLogEnabled(LogLevel level)
     {
-        return _config.Loggers.Any(l => l.LogLevel.CanLog(level));
-    }
-
-    public void DumpAndStop()
-    {
-        _loggerQueueManager.DumpAndStop();
+        return configuration.Loggers.Any(l => l.LogLevel.CanLog(level));
     }
 }

@@ -1,11 +1,12 @@
 using System.Collections.Concurrent;
-using SPTarkov.DI.Annotations;
+using SPTarkov.Common.Models.Logging;
 
-namespace SPTarkov.Server.Core.Utils.Logger;
+namespace SPTarkov.Common.Logger;
 
-[Injectable(InjectionType.Singleton)]
-public class SptLoggerQueueManager(IEnumerable<ILogHandler> logHandlers)
+public class SptLoggerQueueManager(SptLoggerConfiguration config, IEnumerable<ILogHandler> logHandlers)
 {
+    public bool Initialized { get; private set; } = false;
+
     private readonly Dictionary<string, List<BaseSptLoggerReference>> _resolvedMessageLoggerTypes = new();
     private readonly Lock _resolvedMessageLoggerTypesLock = new();
     private Thread? _loggerTask;
@@ -13,11 +14,13 @@ public class SptLoggerQueueManager(IEnumerable<ILogHandler> logHandlers)
     private readonly CancellationTokenSource _loggerCancellationTokens = new();
     private readonly BlockingCollection<SptLogMessage> _messageQueue = new();
     private Dictionary<LoggerType, ILogHandler>? _logHandlers;
-    private SptLoggerConfiguration _config;
 
-    public void Initialize(SptLoggerConfiguration config)
+    public void Initialize()
     {
-        _config = config;
+        if (Initialized)
+        {
+            return;
+        }
 
         _logHandlers ??= logHandlers.ToDictionary(lh => lh.LoggerType, lh => lh);
 
@@ -29,6 +32,8 @@ public class SptLoggerQueueManager(IEnumerable<ILogHandler> logHandlers)
                 _loggerTask.Start();
             }
         }
+
+        Initialized = true;
     }
 
     private void LoggerWorkerThread()
@@ -42,7 +47,7 @@ public class SptLoggerQueueManager(IEnumerable<ILogHandler> logHandlers)
                     LogMessage(message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 Console.WriteLine($"Logger queue caught exception: {ex}");
             }
@@ -56,7 +61,7 @@ public class SptLoggerQueueManager(IEnumerable<ILogHandler> logHandlers)
         {
             if (!_resolvedMessageLoggerTypes.TryGetValue(message.Logger, out messageLoggers))
             {
-                messageLoggers = _config
+                messageLoggers = config
                     .Loggers.Where(logger =>
                     {
                         var excludeFilters = logger.Filters?.Where(filter => filter.Type == SptLoggerFilterType.Exclude);
@@ -96,13 +101,21 @@ public class SptLoggerQueueManager(IEnumerable<ILogHandler> logHandlers)
         _messageQueue.TryAdd(message);
     }
 
-    public void DumpAndStop()
+    public void DumpAndStop(TimeSpan timeout)
     {
-        _loggerCancellationTokens.Cancel();
-        while (_loggerTask.IsAlive)
+        if (!Initialized)
         {
-            // waiting for logger to finish avoiding the application to close
-            Thread.Sleep(100);
+            return;
         }
+
+        _messageQueue.CompleteAdding();
+
+        if (_loggerTask != null && !_loggerTask.Join(timeout))
+        {
+            _loggerCancellationTokens.Cancel();
+        }
+
+        _loggerTask = null;
+        Initialized = false;
     }
 }

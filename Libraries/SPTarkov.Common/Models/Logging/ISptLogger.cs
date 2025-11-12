@@ -1,7 +1,4 @@
-using SPTarkov.Server.Core.Models.Logging;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
-
-namespace SPTarkov.Server.Core.Models.Utils;
+namespace SPTarkov.Common.Models.Logging;
 
 public interface ISptLogger<T>
 {

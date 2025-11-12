@@ -1,9 +1,8 @@
-﻿using SPTarkov.DI.Annotations;
+﻿using SPTarkov.Common.Models.Logging;
 
-namespace SPTarkov.Server.Core.Utils.Logger.Handlers.File;
+namespace SPTarkov.Common.Logger.Handlers.File;
 
-[Injectable(InjectionType.Singleton)]
-public class DateFilePatternReplacer : IFilePatternReplacer
+internal sealed class DateFilePatternReplacer : IFilePatternReplacer
 {
     public string Pattern
     {

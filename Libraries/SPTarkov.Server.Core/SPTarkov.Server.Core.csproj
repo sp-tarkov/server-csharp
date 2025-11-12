@@ -29,6 +29,9 @@
   <ItemGroup>
     <InternalsVisibleTo Include="UnitTests" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utils\Logger\" />
+  </ItemGroup>
   <Target Name="AfterEverythingDone" AfterTargets="PostBuildEvent">
     <!-- Run virtualizer patch -->
     <Exec

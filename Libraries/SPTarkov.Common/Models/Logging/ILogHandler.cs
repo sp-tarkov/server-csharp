@@ -1,4 +1,4 @@
-namespace SPTarkov.Server.Core.Utils.Logger;
+namespace SPTarkov.Common.Models.Logging;
 
 public interface ILogHandler
 {

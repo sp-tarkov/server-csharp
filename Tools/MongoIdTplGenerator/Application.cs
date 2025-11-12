@@ -1,7 +1,8 @@
 using MongoIdTplGenerator.Generators;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
-using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Common.Models.Logging;
 
 namespace MongoIdTplGenerator;
 

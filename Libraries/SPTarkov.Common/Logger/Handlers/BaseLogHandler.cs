@@ -1,4 +1,6 @@
-namespace SPTarkov.Server.Core.Utils.Logger.Handlers;
+using SPTarkov.Common.Models.Logging;
+
+namespace SPTarkov.Common.Logger.Handlers;
 
 public abstract class BaseLogHandler : ILogHandler
 {

@@ -11,7 +11,6 @@ public class SptJsonConverterRegistrator : IJsonConverterRegistrator
     {
         return
         [
-            new BaseSptLoggerReferenceConverter(),
             new ListOrTConverterFactory(),
             new DictionaryOrListConverter(),
             new BaseInteractionRequestDataConverter(),

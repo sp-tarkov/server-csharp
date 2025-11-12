@@ -1,7 +1,4 @@
-using SPTarkov.Server.Core.Models.Logging;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
-
-namespace SPTarkov.Server.Core.Utils.Logger;
+namespace SPTarkov.Common.Models.Logging;
 
 public record SptLogMessage(
     string Logger,

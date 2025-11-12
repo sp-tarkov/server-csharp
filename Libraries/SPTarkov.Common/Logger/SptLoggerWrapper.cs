@@ -1,19 +1,9 @@
-using SPTarkov.Server.Core.Utils;
-using SPTarkov.Server.Core.Utils.Logger;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
-namespace SPTarkov.Server.Logger;
+namespace SPTarkov.Common.Logger;
 
-public class SptLoggerWrapper : ILogger
+public sealed class SPTLoggerWrapper(string category, SptLogger<SPTLoggerWrapper> logger) : ILogger
 {
-    private readonly SptLogger<SptLoggerWrapper> _logger;
-
-    public SptLoggerWrapper(string category, JsonUtil jsonUtil, FileUtil fileUtil, SptLoggerQueueManager queueManager)
-    {
-        _logger = new SptLogger<SptLoggerWrapper>(fileUtil, jsonUtil, queueManager);
-        _logger.OverrideCategory(category);
-    }
-
     public IDisposable? BeginScope<TState>(TState state)
         where TState : notnull
     {
@@ -22,7 +12,7 @@ public class SptLoggerWrapper : ILogger
 
     public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
     {
-        return _logger.IsLogEnabled(ConvertLogLevel(logLevel));
+        return logger.IsLogEnabled(ConvertLogLevel(logLevel));
     }
 
     public void Log<TState>(
@@ -37,27 +27,32 @@ public class SptLoggerWrapper : ILogger
         switch (level)
         {
             case LogLevel.Fatal:
-                _logger.Critical(formatter(state, exception), exception);
+                logger.OverrideCategory(category);
+                logger.Critical(formatter(state, exception), exception);
                 break;
             case LogLevel.Error:
-                _logger.Error(formatter(state, exception), exception);
+                logger.OverrideCategory(category);
+                logger.Error(formatter(state, exception), exception);
                 break;
             case LogLevel.Warn:
-                _logger.Warning(formatter(state, exception), exception);
+                logger.OverrideCategory(category);
+                logger.Warning(formatter(state, exception), exception);
                 break;
             case LogLevel.Info:
-                _logger.Info(formatter(state, exception), exception);
+                logger.OverrideCategory(category);
+                logger.Info(formatter(state, exception), exception);
                 break;
             case LogLevel.Debug:
             case LogLevel.Trace:
-                _logger.Debug(formatter(state, exception), exception);
+                logger.OverrideCategory(category);
+                logger.Debug(formatter(state, exception), exception);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
 
-    protected Microsoft.Extensions.Logging.LogLevel ConvertLogLevel(LogLevel level)
+    private Microsoft.Extensions.Logging.LogLevel ConvertLogLevel(LogLevel level)
     {
         return level switch
         {
@@ -71,7 +66,7 @@ public class SptLoggerWrapper : ILogger
         };
     }
 
-    protected LogLevel ConvertLogLevel(Microsoft.Extensions.Logging.LogLevel level)
+    private LogLevel ConvertLogLevel(Microsoft.Extensions.Logging.LogLevel level)
     {
         return level switch
         {

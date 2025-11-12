@@ -1,19 +1,20 @@
 using System.Collections.Concurrent;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using SPTarkov.Common.Json.Converters;
 
-namespace SPTarkov.Server.Core.Utils.Logger;
+namespace SPTarkov.Common.Models.Logging;
 
 public class SptLoggerConfiguration
 {
     [JsonPropertyName("loggers")]
-    public List<BaseSptLoggerReference> Loggers { get; set; }
+    public List<BaseSptLoggerReference> Loggers { get; set; } = [];
 
     [JsonPropertyName("poolingTimeMs")]
     public uint PoolingTimeMs { get; set; } = 500;
 }
 
+[JsonConverter(typeof(BaseSptLoggerReferenceConverter))]
 public abstract class BaseSptLoggerReference
 {
     [JsonPropertyName("type")]
@@ -21,14 +22,14 @@ public abstract class BaseSptLoggerReference
     public LoggerType Type { get; set; }
 
     [JsonPropertyName("filters")]
-    public List<SptLoggerFilter> Filters { get; set; }
+    public List<SptLoggerFilter> Filters { get; set; } = [];
 
     [JsonPropertyName("logLevel")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public LogLevel LogLevel { get; set; }
 
     [JsonPropertyName("format")]
-    public string Format { get; set; }
+    public string Format { get; set; } = string.Empty;
 }
 
 public class SptLoggerFilter
@@ -78,10 +79,10 @@ public class SptLoggerFilter
 public class FileSptLoggerReference : BaseSptLoggerReference
 {
     [JsonPropertyName("filePath")]
-    public string FilePath { get; set; }
+    public required string FilePath { get; set; }
 
     [JsonPropertyName("filePattern")]
-    public string FilePattern { get; set; }
+    public required string FilePattern { get; set; }
 
     private readonly int _maxFileSizeMb;
 

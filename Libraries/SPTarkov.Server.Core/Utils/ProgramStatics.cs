@@ -1,5 +1,5 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Logging;
 using Version = SemanticVersioning.Version;
 
 namespace SPTarkov.Server.Core.Utils;

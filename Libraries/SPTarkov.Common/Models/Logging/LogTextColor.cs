@@ -1,4 +1,4 @@
-﻿namespace SPTarkov.Server.Core.Models.Logging;
+﻿namespace SPTarkov.Common.Models.Logging;
 
 public enum LogTextColor
 {

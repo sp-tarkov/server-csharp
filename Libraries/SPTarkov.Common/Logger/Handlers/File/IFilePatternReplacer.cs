@@ -1,4 +1,6 @@
-﻿namespace SPTarkov.Server.Core.Utils.Logger.Handlers.File;
+﻿using SPTarkov.Common.Models.Logging;
+
+namespace SPTarkov.Common.Logger.Handlers.File;
 
 public interface IFilePatternReplacer
 {
