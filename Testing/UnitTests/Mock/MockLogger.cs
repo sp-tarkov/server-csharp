@@ -1,3 +1,4 @@
+using SPTarkov.Common.Logger;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 

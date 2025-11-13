@@ -65,7 +65,7 @@ public static class SptLoggerExtensions
     {
         ArgumentNullException.ThrowIfNull(collection);
 
-        FileRollMonitor.RegisterHandler();
+        LogFileRollMonitor.RegisterHandler();
 
         if (isDevelop)
         {

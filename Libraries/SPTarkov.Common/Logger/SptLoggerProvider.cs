@@ -38,7 +38,7 @@ public sealed class SptLoggerProvider(SptLoggerQueueManager sptLoggerQueueManage
     public void Dispose()
     {
         // We can stop the file roller a bit early.
-        FileRollMonitor.UnregisterHandler();
+        LogFileRollMonitor.UnregisterHandler();
 
         sptLoggerQueueManager.DumpAndStop(TimeSpan.FromSeconds(1));
 

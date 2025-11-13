@@ -5,7 +5,6 @@ using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Services.Hosted;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Server.Core.Utils.Logger.Handlers;
 using UnitTests.Mock;
 
 namespace UnitTests;
@@ -55,10 +54,6 @@ public class DI
 
         foreach (var onLoad in _serviceProvider.GetServices<IOnLoad>())
         {
-            if (onLoad is FileLogHandler)
-            {
-                continue;
-            }
             onLoad.OnLoad(cancellationTokenSource.Token).Wait();
         }
     }
