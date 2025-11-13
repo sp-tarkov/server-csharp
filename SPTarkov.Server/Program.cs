@@ -63,8 +63,10 @@ public static class Program
             }
 
             EarlyLogger!.LogCritical(e, "The server has unexpectedly stopped, reach out to #spt-support in discord.");
-
-            Console.ReadLine();
+        }
+        finally
+        {
+            EarlyLoggerFactory?.Dispose();
         }
     }
 
