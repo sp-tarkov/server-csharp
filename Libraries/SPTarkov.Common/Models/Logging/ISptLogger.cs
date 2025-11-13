@@ -11,5 +11,4 @@ public interface ISptLogger<T>
     void Critical(string data, Exception? ex = null);
     void Log(LogLevel level, string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null, Exception? ex = null);
     bool IsLogEnabled(LogLevel level);
-    void DumpAndStop();
 }
