@@ -32,7 +32,7 @@ internal static class FileRollMonitor
     {
         try
         {
-            while (!_cts!.Token.IsCancellationRequested)
+            while (_cts is not null && !_cts.Token.IsCancellationRequested)
             {
                 foreach (var metadata in FileCoordinator.GetAllFiles())
                 {
