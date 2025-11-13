@@ -70,7 +70,10 @@ public static class Program
                 );
             }
 
-            EarlyLogger!.LogCritical(e, "The server has unexpectedly stopped, reach out to #spt-support in discord.");
+            EarlyLogger!.LogCritical(
+                e,
+                "The server has unexpectedly stopped, Join SPT's Discord server and see the #support-guidelines on how to make a support thread."
+            );
         }
         finally
         {
