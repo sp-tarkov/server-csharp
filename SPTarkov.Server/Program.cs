@@ -40,6 +40,14 @@ public static class Program
         // Initialize the program variables
         ProgramStatics.Initialize();
 
+        // Some users don't know how to create a shortcut...
+        if (!IsRunFromInstallationFolder())
+        {
+            Console.WriteLine("You have not created a shortcut properly. Please hold alt when dragging to create a shortcut.");
+            await Task.Delay(-1);
+            return;
+        }
+
         try
         {
             EarlyLoggerFactory = SptLoggerProvider.Create(ProgramStatics.DEBUG());
@@ -73,14 +81,6 @@ public static class Program
     public static async Task StartServer(string[] args)
     {
         Console.OutputEncoding = Encoding.UTF8;
-
-        // Some users don't know how to create a shortcut...
-        if (!IsRunFromInstallationFolder())
-        {
-            Console.WriteLine("You have not created a shortcut properly. Please hold alt when dragging to create a shortcut.");
-            await Task.Delay(-1);
-            return;
-        }
 
         // Create web builder and logger
         var builder = CreateNewHostBuilder();
