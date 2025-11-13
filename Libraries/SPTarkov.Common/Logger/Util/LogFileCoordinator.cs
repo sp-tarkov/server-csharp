@@ -4,15 +4,7 @@ using SPTarkov.Common.Models.Logging;
 
 namespace SPTarkov.Common.Logger.Util;
 
-internal sealed class FileMetadata(string path, FileSptLoggerReference config, Dictionary<string, IFilePatternReplacer> replacers)
-{
-    public FileInfo FileInfo { get; } = new FileInfo(path);
-    public FileSptLoggerReference Config { get; } = config;
-    public Dictionary<string, IFilePatternReplacer> Replacers { get; } = replacers;
-    public DateTime LastChecked { get; set; } = DateTime.UtcNow;
-}
-
-internal static class FileCoordinator
+internal static class LogFileCoordinator
 {
     private static readonly ConcurrentDictionary<string, Lock> _fileLocks = new();
     private static readonly ConcurrentDictionary<string, FileMetadata> _fileMetadata = new();
@@ -35,4 +27,12 @@ internal static class FileCoordinator
     {
         return _fileMetadata.Values;
     }
+}
+
+internal sealed record FileMetadata(string path, FileSptLoggerReference config, Dictionary<string, IFilePatternReplacer> replacers)
+{
+    public FileInfo FileInfo { get; } = new FileInfo(path);
+    public FileSptLoggerReference Config { get; } = config;
+    public Dictionary<string, IFilePatternReplacer> Replacers { get; } = replacers;
+    public DateTime LastChecked { get; set; } = DateTime.UtcNow;
 }

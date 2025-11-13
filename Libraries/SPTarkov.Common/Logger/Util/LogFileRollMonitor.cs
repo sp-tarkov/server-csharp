@@ -1,6 +1,6 @@
 ﻿namespace SPTarkov.Common.Logger.Util;
 
-internal static class FileRollMonitor
+internal static class LogFileRollMonitor
 {
     private static CancellationTokenSource? _cts;
     private static Task? _monitorTask;
@@ -34,9 +34,9 @@ internal static class FileRollMonitor
         {
             while (_cts is not null && !_cts.Token.IsCancellationRequested)
             {
-                foreach (var metadata in FileCoordinator.GetAllFiles())
+                foreach (var metadata in LogFileCoordinator.GetAllFiles())
                 {
-                    var fileLock = FileCoordinator.GetFileLock(metadata.FileInfo.FullName);
+                    var fileLock = LogFileCoordinator.GetFileLock(metadata.FileInfo.FullName);
                     lock (fileLock)
                     {
                         ValidateAndRollFile(metadata);

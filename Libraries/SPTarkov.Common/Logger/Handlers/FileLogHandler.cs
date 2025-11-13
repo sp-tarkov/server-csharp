@@ -31,7 +31,7 @@ internal sealed class FileLogHandler(IEnumerable<IFilePatternReplacer> replacers
 
         var targetFile = GetParsedTargetFile(config);
 
-        var fileLock = FileCoordinator.GetFileLock(targetFile);
+        var fileLock = LogFileCoordinator.GetFileLock(targetFile);
 
         lock (fileLock)
         {
@@ -43,7 +43,7 @@ internal sealed class FileLogHandler(IEnumerable<IFilePatternReplacer> replacers
             // The AppendAllText will create the file as long as the directory exists
             System.IO.File.AppendAllText(targetFile, FormatMessage(message.Message + "\n", message, reference));
 
-            FileCoordinator.GetOrCreateMetadata(targetFile, config, _replacers);
+            LogFileCoordinator.GetOrCreateMetadata(targetFile, config, _replacers);
         }
     }
 
