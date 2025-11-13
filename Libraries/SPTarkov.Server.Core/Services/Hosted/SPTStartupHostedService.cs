@@ -118,6 +118,7 @@ public sealed class SPTStartupHostedService(
             // Thrown when we stop gracefully, we don't need to care for this
             if (ex is OperationCanceledException)
             {
+                logger.Info("Stopping server...");
                 return;
             }
 
