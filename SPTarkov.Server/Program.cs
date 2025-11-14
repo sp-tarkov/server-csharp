@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -14,6 +15,7 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.DI;
+using SPTarkov.Server.Config;
 //using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Loaders;
@@ -85,8 +87,10 @@ public static class Program
     {
         Console.OutputEncoding = Encoding.UTF8;
 
+        var configuration = await SPTConfigLoader.Initialize(EarlyLogger!);
+
         // Create web builder and logger
-        var builder = CreateNewHostBuilder();
+        var builder = CreateNewHostBuilder(configuration);
         builder.Host.UseSptLogger(ProgramStatics.DEBUG());
 
 #if DEBUG
@@ -109,7 +113,7 @@ public static class Program
             // Search for mod dlls
             loadedMods = ModDllLoader.LoadAllMods();
             // validate and sort mods, this will also discard any mods that are invalid
-            var validatedLoadedMods = ValidateMods(loadedMods);
+            var validatedLoadedMods = ValidateMods(loadedMods, configuration);
 
             // update the loadedMods list with our validated mods
             loadedMods = validatedLoadedMods;
@@ -204,16 +208,26 @@ public static class Program
         );
     }
 
-    private static WebApplicationBuilder CreateNewHostBuilder()
+    private static WebApplicationBuilder CreateNewHostBuilder(IReadOnlyDictionary<Type, BaseConfig> configuration)
     {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { WebRootPath = "./SPT_Data/wwwroot" });
         builder.Logging.ClearProviders();
         builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
 
+        foreach (var configEntry in configuration)
+        {
+            builder.Services.AddSingleton(configEntry.Key, configEntry.Value);
+        }
+
+        // NOTE:
+        // This can be removed after SPT 4.1, it is to make ConfigServer backwards compatible with the older way of doing things giving people time to migrate.
+        IReadOnlyDictionary<Type, BaseConfig> readonlyConfigurationDictionary = configuration;
+        builder.Services.AddSingleton(readonlyConfigurationDictionary);
+
         return builder;
     }
 
-    private static List<SptMod> ValidateMods(IEnumerable<SptMod> mods)
+    private static List<SptMod> ValidateMods(IEnumerable<SptMod> mods, IReadOnlyDictionary<Type, BaseConfig> configuration)
     {
         if (!ProgramStatics.MODS())
         {
@@ -222,7 +236,7 @@ public static class Program
 
         // We need the SPT dependencies for the ModValidator, but mods are loaded before the web application
         // So we create a disposable web application that we will throw away after getting the mods to load
-        var builder = CreateNewHostBuilder();
+        var builder = CreateNewHostBuilder(configuration);
         // register SPT components
         var diHandler = new DependencyInjectionHandler(builder.Services);
         diHandler.AddInjectableTypesFromAssembly(typeof(Program).Assembly);

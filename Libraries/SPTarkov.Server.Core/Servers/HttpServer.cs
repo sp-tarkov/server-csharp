@@ -9,14 +9,12 @@ namespace SPTarkov.Server.Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
 public sealed class HttpServer(
-    ConfigServer configServer,
+    HttpConfig httpConfig,
     WebSocketServer webSocketServer,
     ProfileActivityService profileActivityService,
     IEnumerable<IHttpListener> httpListeners
 )
 {
-    private readonly HttpConfig HttpConfig = configServer.GetConfig<HttpConfig>();
-
     public async Task HandleRequest(HttpContext context, RequestDelegate next)
     {
         if (context.WebSockets.IsWebSocketRequest && webSocketServer.CanHandle(context))
@@ -49,6 +47,6 @@ public sealed class HttpServer(
 
     public string ListeningUrl()
     {
-        return $"https://{HttpConfig.Ip}:{HttpConfig.Port}";
+        return $"https://{httpConfig.Ip}:{httpConfig.Port}";
     }
 }
