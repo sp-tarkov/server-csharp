@@ -37,7 +37,7 @@ public class TraderController(
     ///     Iterate over traders, ensure a pristine copy of their assorts is stored in traderAssortService
     ///     Store timestamp of next assort refresh in nextResupply property of traders .base object
     /// </summary>
-    public void Load()
+    public void Load(bool includeFence = false)
     {
         var nextHourTimestamp = timeUtil.GetTimeStampOfNextHour();
         var traderResetStartsWithServer = TraderConfig.TradersResetFromServerStart;
@@ -54,16 +54,23 @@ public class TraderController(
             {
                 fenceBaseAssortGenerator.GenerateFenceBaseAssorts();
                 fenceService.GenerateFenceAssorts();
-                continue;
-            }
 
-            // Adjust price by traderPriceMultiplier config property
-            if (!TraderConfig.TraderPriceMultiplier.Approx(1))
+                if (!includeFence)
+                {
+                    continue;
+                }
+            }
+            else
             {
-                AdjustTraderItemPrices(trader, TraderConfig.TraderPriceMultiplier);
-            }
+                // Adjust price by traderPriceMultiplier config property
+                if (!TraderConfig.TraderPriceMultiplier.Approx(1))
+                {
+                    AdjustTraderItemPrices(trader, TraderConfig.TraderPriceMultiplier);
+                }
 
-            traderPurchasePersisterService.RemoveStalePurchasesFromProfiles(traderId);
+                // Not sure why we're not running this for Fence
+                traderPurchasePersisterService.RemoveStalePurchasesFromProfiles(traderId);
+            }
 
             // Set to next hour on clock or current time + 60 minutes
             trader.Base.NextResupply = traderResetStartsWithServer

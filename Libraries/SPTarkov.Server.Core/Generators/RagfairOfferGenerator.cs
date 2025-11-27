@@ -37,6 +37,7 @@ public class RagfairOfferGenerator(
     ServerLocalisationService localisationService,
     PaymentHelper paymentHelper,
     ItemHelper itemHelper,
+    TraderHelper traderHelper,
     ConfigServer configServer,
     ICloner cloner
 )
@@ -251,7 +252,7 @@ public class RagfairOfferGenerator(
     }
 
     /// <summary>
-    ///     Get number of section until offer should expire
+    ///     Get number of seconds until offer should expire
     /// </summary>
     /// <param name="creatorType"></param>
     /// <param name="userId"> ID of the offer owner </param>
@@ -522,14 +523,17 @@ public class RagfairOfferGenerator(
     ///     Generate trader offers on flea using the traders assort data
     /// </summary>
     /// <param name="traderId"> Trader to generate offers for </param>
-    public void GenerateFleaOffersForTrader(MongoId traderId)
+    /// <param name="includeFence"> Should we include Fence's assort or not </param>
+    public void GenerateFleaOffersForTrader(MongoId traderId, bool includeFence = false)
     {
         // Purge
         ragfairOfferService.RemoveAllOffersByTrader(traderId);
 
         var time = timeUtil.GetTimeStamp();
         var trader = databaseService.GetTrader(traderId);
-        var assortsClone = cloner.Clone(trader.Assort);
+        var assortsClone = cloner.Clone(
+            traderId == Traders.FENCE && includeFence ? traderHelper.GetTraderAssortsByTraderId(traderId) : trader.Assort
+        );
 
         // Trader assorts / assort items are missing
         if (assortsClone?.Items?.Count is null or 0)

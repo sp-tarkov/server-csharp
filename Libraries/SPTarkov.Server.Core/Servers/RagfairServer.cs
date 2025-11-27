@@ -43,10 +43,10 @@ public class RagfairServer(
         ragfairRequiredItemsService.InvalidateCache();
     }
 
-    protected void RefreshTraderOffers()
+    protected void RefreshTraderOffers(bool includeFence = false)
     {
         // Generate/refresh trader offers - skip fence as his offers are separately handled
-        var tradersToProcess = GetUpdateableTraders().Where(trader => trader != Traders.FENCE);
+        var tradersToProcess = GetUpdateableTraders().Where(trader => trader != Traders.FENCE || includeFence);
         foreach (var traderId in tradersToProcess)
         {
             // Each trader has its own expiry time
