@@ -95,7 +95,7 @@ public class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonUtil, Bu
         var success = _bundles.TryAdd(key, bundle);
         if (!success)
         {
-            logger.Error($"Unable to add bundle: {key}");
+            logger.Warning($"Failed to add bundle: {key} is already exist.");
         }
     }
 }
