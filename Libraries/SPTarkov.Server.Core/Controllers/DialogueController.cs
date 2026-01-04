@@ -569,6 +569,9 @@ public class DialogueController(
 
         foreach (var message in dialog.Messages.Where(MessageHasExpired))
         {
+            // Reset expired message items data
+            message.Items = new();
+            
             var traderDialogMessages = databaseService.GetTrader(dialogueId)?.Dialogue;
             if (message?.Items?.Data?.Count <= 0 || message.TemplateId == null)
             {
@@ -594,8 +597,6 @@ public class DialogueController(
                     Items = []
                 });
             }
-            // Reset expired message items data
-            message.Items = new();
         }
         if (detailsList.Count > 0)
         {
