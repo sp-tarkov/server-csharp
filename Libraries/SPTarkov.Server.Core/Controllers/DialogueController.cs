@@ -19,12 +19,14 @@ public class DialogueController(
     ISptLogger<DialogueController> logger,
     TimeUtil timeUtil,
     DialogueHelper dialogueHelper,
+    DatabaseService databaseService,
     NotificationSendHelper notificationSendHelper,
     ProfileHelper profileHelper,
     SaveServer saveServer,
     ServerLocalisationService serverLocalisationService,
     MailSendService mailSendService,
     CoreConfig coreConfig,
+    RandomUtil randomUtil,
     IEnumerable<IDialogueChatBot> dialogueChatBots
 )
 {
@@ -563,10 +565,45 @@ public class DialogueController(
             return;
         }
 
+        HashSet<SendMessageDetails> detailsList = new HashSet<SendMessageDetails>();
+
         foreach (var message in dialog.Messages.Where(MessageHasExpired))
         {
+            var traderDialogMessages = databaseService.GetTrader(dialogueId)?.Dialogue
+            if (message?.Items?.Data?.Count > 0 && message.TemplateId!=null)
+            {
+                var traderDialogMessages = databaseService.GetTrader(dialogueId)?.Dialogue;
+                if (traderDialogMessages != null)
+                {
+                    traderDialogMessages.TryGetValue("insuranceFound", out var successMessageIds);
+                    if (successMessageIds!=null && successMessageIds.Contains(message.TemplateId))
+                    {
+                        traderDialogMessages.TryGetValue("insuranceExpired", out var responseMessageIds);
+                        if (responseMessageIds != null)
+                        {
+                            var responseMessageId = randomUtil.GetArrayValue(responseMessageIds);
+                            detailsList.Add(new SendMessageDetails
+                            {
+                                RecipientId = sessionId,
+                                Sender = MessageType.NpcTraderMessage,
+                                DialogType = MessageType.NpcTraderMessage,
+                                Trader = dialogueId,
+                                TemplateId = responseMessageId,
+                                Items = []
+                            });
+                        }
+                    }
+                }
+            }
             // Reset expired message items data
             message.Items = new();
+        }
+        if (detailsList.Count > 0)
+        {
+            foreach (var insuranceExpiredDialog in detailsList)
+            {
+                mailSendService.SendMessageToPlayer(insuranceExpiredDialog);
+            }
         }
     }
 
