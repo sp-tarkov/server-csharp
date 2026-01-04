@@ -571,17 +571,17 @@ public class DialogueController(
         {
             // Reset expired message items data
             message.Items = new();
-            
+
             var traderDialogMessages = databaseService.GetTrader(dialogueId)?.Dialogue;
             if (message?.Items?.Data?.Count <= 0 || message.TemplateId == null)
             {
-                return;  
+                continue;
             }
 
             if (traderDialogMessages?.TryGetValue("insuranceFound", out var successMessageIds) != true ||
                 successMessageIds == null || !successMessageIds.Contains(message.TemplateId))
             {
-                return;  
+                continue;
             }
 
             if (traderDialogMessages.TryGetValue("insuranceExpired", out var responseMessageIds) && responseMessageIds != null)
