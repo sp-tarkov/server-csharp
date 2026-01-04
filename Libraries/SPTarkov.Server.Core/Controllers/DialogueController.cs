@@ -569,31 +569,30 @@ public class DialogueController(
 
         foreach (var message in dialog.Messages.Where(MessageHasExpired))
         {
-            var traderDialogMessages = databaseService.GetTrader(dialogueId)?.Dialogue
-            if (message?.Items?.Data?.Count > 0 && message.TemplateId!=null)
+            var traderDialogMessages = databaseService.GetTrader(dialogueId)?.Dialogue;
+            if (message?.Items?.Data?.Count <= 0 || message.TemplateId == null)
             {
-                var traderDialogMessages = databaseService.GetTrader(dialogueId)?.Dialogue;
-                if (traderDialogMessages != null)
+                return;  
+            }
+
+            if (traderDialogMessages?.TryGetValue("insuranceFound", out var successMessageIds) != true ||
+                successMessageIds == null || !successMessageIds.Contains(message.TemplateId))
+            {
+                return;  
+            }
+
+            if (traderDialogMessages.TryGetValue("insuranceExpired", out var responseMessageIds) && responseMessageIds != null)
+            {
+                var responseMessageId = randomUtil.GetArrayValue(responseMessageIds);
+                detailsList.Add(new SendMessageDetails
                 {
-                    traderDialogMessages.TryGetValue("insuranceFound", out var successMessageIds);
-                    if (successMessageIds!=null && successMessageIds.Contains(message.TemplateId))
-                    {
-                        traderDialogMessages.TryGetValue("insuranceExpired", out var responseMessageIds);
-                        if (responseMessageIds != null)
-                        {
-                            var responseMessageId = randomUtil.GetArrayValue(responseMessageIds);
-                            detailsList.Add(new SendMessageDetails
-                            {
-                                RecipientId = sessionId,
-                                Sender = MessageType.NpcTraderMessage,
-                                DialogType = MessageType.NpcTraderMessage,
-                                Trader = dialogueId,
-                                TemplateId = responseMessageId,
-                                Items = []
-                            });
-                        }
-                    }
-                }
+                    RecipientId = sessionId,
+                    Sender = MessageType.NpcTraderMessage,
+                    DialogType = MessageType.NpcTraderMessage,
+                    Trader = dialogueId,
+                    TemplateId = responseMessageId,
+                    Items = []
+                });
             }
             // Reset expired message items data
             message.Items = new();
