@@ -158,7 +158,7 @@ public class BotWeaponModLimitService(ISptLogger<BotWeaponModLimitService> logge
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                logger.Debug($"[{botRole}] {modType} limit reached! tried to add: {modTpl} but scope count is: {currentCount.Count}");
+                logger.Debug($"[{botRole}] {modType} limit reached! tried to add: {modTpl} but {modType} count is: {currentCount.Count}");
             }
 
             return true;
