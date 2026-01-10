@@ -162,10 +162,7 @@ public class HideoutController(
             return;
         }
 
-        // Upgrade profile values
-        profileHideoutArea.Level++;
-        profileHideoutArea.CompleteTime = 0;
-        profileHideoutArea.Constructing = false;
+        var nextLevel = profileHideoutArea.Level + 1;
 
         var hideoutData = hideout.Areas.FirstOrDefault(area => area.Type == profileHideoutArea.Type);
         if (hideoutData is null)
@@ -177,12 +174,18 @@ public class HideoutController(
         }
 
         // Apply bonuses
-        if (!hideoutData.Stages.TryGetValue(profileHideoutArea.Level.ToString(), out var hideoutStage))
+        if (!hideoutData.Stages.TryGetValue(nextLevel.ToString(), out var hideoutStage))
         {
-            logger.Error($"Stage level: {profileHideoutArea.Level} not found for area: {request.AreaType}");
+            logger.Error($"Stage level: {nextLevel} not found for area: {request.AreaType}");
 
             return;
         }
+
+        // Upgrade profile values
+        profileHideoutArea.Level = nextLevel;
+        profileHideoutArea.CompleteTime = 0;
+        profileHideoutArea.Constructing = false;
+
         var bonuses = hideoutStage.Bonuses;
         if (bonuses?.Count > 0)
         {
