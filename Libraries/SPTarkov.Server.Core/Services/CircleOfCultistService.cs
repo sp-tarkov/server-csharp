@@ -687,7 +687,12 @@ public class CircleOfCultistService(
         foreach (var task in activeTasks ?? [])
         {
             var questData = questHelper.GetQuestFromDb(task.QId, pmcData);
-            var handoverConditions = questData?.Conditions.AvailableForFinish?.Where(condition => condition.ConditionType == "HandoverItem");
+            if (questData is null)
+            {
+                logger.Warning($"Could not get quest data for QId {task.QId}.");
+                continue;
+            }
+            var handoverConditions = questData.Conditions.AvailableForFinish?.Where(condition => condition.ConditionType == "HandoverItem");
             foreach (var condition in handoverConditions ?? [])
             {
                 foreach (var neededItem in condition?.Target?.List ?? [])
