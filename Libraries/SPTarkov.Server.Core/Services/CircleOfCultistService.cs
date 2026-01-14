@@ -683,14 +683,14 @@ public class CircleOfCultistService(
     /// <param name="rewardPool">Pool to add items to</param>
     protected void AddTaskItemRequirementsToRewardPool(PmcData pmcData, HashSet<MongoId> itemRewardBlacklist, HashSet<MongoId> rewardPool)
     {
-        var activeTasks = pmcData.Quests.Where(quest => quest.Status == QuestStatusEnum.Started);
-        foreach (var task in activeTasks)
+        var activeTasks = pmcData.Quests?.Where(quest => quest.Status == QuestStatusEnum.Started);
+        foreach (var task in activeTasks ?? [])
         {
             var questData = questHelper.GetQuestFromDb(task.QId, pmcData);
-            var handoverConditions = questData.Conditions.AvailableForFinish.Where(condition => condition.ConditionType == "HandoverItem");
-            foreach (var condition in handoverConditions)
+            var handoverConditions = questData?.Conditions.AvailableForFinish?.Where(condition => condition.ConditionType == "HandoverItem");
+            foreach (var condition in handoverConditions ?? [])
             {
-                foreach (var neededItem in condition.Target.List)
+                foreach (var neededItem in condition?.Target?.List ?? [])
                 {
                     if (itemRewardBlacklist.Contains(neededItem) || !itemHelper.IsValidItem(neededItem))
                     {
