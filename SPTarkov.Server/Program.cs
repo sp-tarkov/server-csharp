@@ -93,6 +93,7 @@ public static class Program
     public static async Task StartServer(string[] args)
     {
         Console.OutputEncoding = Encoding.UTF8;
+        SetConsoleOutputMode();
 
         // Some users don't know how to create a shortcut...
         if (!IsRunFromInstallationFolder())
@@ -156,8 +157,6 @@ public static class Program
             forwardedHeadersOptions.KnownNetworks.Clear();
             forwardedHeadersOptions.KnownProxies.Clear();
             app.UseForwardedHeaders(forwardedHeadersOptions);
-
-            SetConsoleOutputMode();
 
             await app.Services.GetRequiredService<SptServerStartupService>().Startup();
 
