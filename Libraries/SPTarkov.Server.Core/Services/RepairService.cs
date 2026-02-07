@@ -192,9 +192,7 @@ public class RepairService(
         }
 
         // Handle trader repair - gives charisma based on (repair cost/10 * skill progress rate)
-        if (
-            !repairDetails.RepairedByKit.GetValueOrDefault(true) && repairDetails.RepairCost.HasValue
-        )
+        if (!repairDetails.RepairedByKit.GetValueOrDefault(true) && repairDetails.RepairCost.HasValue)
         {
             profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Charisma, repairDetails.RepairCost.Value / 10, true);
         }
