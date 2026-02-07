@@ -20,18 +20,8 @@ public record RepairConfig : BaseConfig
     /// <summary>
     ///     INT gain multiplier per repaired item type
     /// </summary>
-    [JsonPropertyName("repairKitIntellectGainDivisor")]
-    public required IntellectGainValues RepairKitIntellectGainDivisor { get; set; }
-
-    [Obsolete("Only for backwards compatibility, naming incorrect")]
-    [JsonIgnore]
-    public IntellectGainValues RepairKitIntellectGainMultiplier
-    {
-        get
-        {
-            return RepairKitIntellectGainDivisor;
-        }
-    }
+    [JsonPropertyName("repairKitIntellectGainMultiplier")]
+    public required IntellectGainValues RepairKitIntellectGainMultiplier { get; set; }
 
     /// <summary>
     ///     How much INT can be given to player per repair action

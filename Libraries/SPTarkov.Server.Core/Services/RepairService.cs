@@ -214,9 +214,9 @@ public class RepairService(
         if (repairDetails.RepairedByKit.GetValueOrDefault(false))
         {
             // Weapons/armor have different divisors
-            var intRepairDivisor = itemHelper.IsOfBaseclass(repairDetails.RepairedItem.Template, BaseClasses.WEAPON)
-                ? RepairConfig.RepairKitIntellectGainDivisor.Weapon
-                : RepairConfig.RepairKitIntellectGainDivisor.Armor;
+            var intRepairMultiplier = itemHelper.IsOfBaseclass(repairDetails.RepairedItem.Template, BaseClasses.WEAPON)
+                ? RepairConfig.RepairKitIntellectGainMultiplier.Weapon
+                : RepairConfig.RepairKitIntellectGainMultiplier.Armor;
 
             if (repairDetails.RepairPoints is null)
             {
@@ -225,7 +225,7 @@ public class RepairService(
                 );
             }
 
-            return repairDetails.RepairAmount.Value / intRepairDivisor;
+            return repairDetails.RepairAmount.Value * intRepairMultiplier;
         }
 
         // Trader repair does not give INT
