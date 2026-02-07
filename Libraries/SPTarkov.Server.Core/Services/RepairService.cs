@@ -222,7 +222,7 @@ public class RepairService(
                 );
             }
 
-            return repairDetails.RepairPoints.Value / intRepairDivisor;
+            return repairDetails.RepairAmount.Value / intRepairDivisor;
         }
 
         // Trader repair does not give INT

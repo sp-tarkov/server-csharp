@@ -21,7 +21,25 @@ public record RepairConfig : BaseConfig
     ///     INT gain multiplier per repaired item type
     /// </summary>
     [JsonPropertyName("repairKitIntellectGainDivisor")]
-    public required IntellectDivisorValues RepairKitIntellectGainDivisor { get; set; }
+    public required IntellectGainValues RepairKitIntellectGainDivisor { get; set; }
+
+    [Obsolete("Only for backwards compatibility, naming incorrect")]
+    [JsonIgnore]
+    public IntellectGainValues RepairKitIntellectGainMultiplier
+    {
+        get
+        {
+            return RepairKitIntellectGainDivisor;
+        }
+    }
+
+    /// <summary>
+    ///     How much INT can be given to player per repair action
+    /// </summary>
+    [Obsolete("Only for backwards compatibility, does nothing")]
+    [JsonIgnore]
+    public MaxIntellectGainValues MaxIntellectGainPerRepair { get; set; } = new();
+
 
     [JsonPropertyName("weaponTreatment")]
     public required WeaponTreatmentRepairValues WeaponTreatment { get; set; }
@@ -30,7 +48,7 @@ public record RepairConfig : BaseConfig
     public required RepairKit RepairKit { get; set; }
 }
 
-public record IntellectDivisorValues
+public record IntellectGainValues
 {
     [JsonPropertyName("weapon")]
     public double Weapon { get; set; }
