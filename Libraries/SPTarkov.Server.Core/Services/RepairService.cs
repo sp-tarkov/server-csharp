@@ -191,12 +191,20 @@ public class RepairService(
             profileHelper.AddSkillPointsToPlayer(pmcData, vestSkillToLevel, pointsToAddToVestSkill.GetValueOrDefault(0));
         }
 
+        // Handle trader repair - gives charisma based on (repair cost/10 * skill progress rate)
+        if (
+            !repairDetails.RepairedByKit.GetValueOrDefault(true) && repairDetails.RepairCost.HasValue
+        )
+        {
+            profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Charisma, repairDetails.RepairCost.Value / 10, true);
+        }
+
         // Handle giving INT to player - differs if using kit/trader and weapon vs armor
         var intellectGainedFromRepair = GetIntellectGainedFromRepair(repairDetails);
         if (intellectGainedFromRepair > 0)
         {
             logger.Debug($"Added: {intellectGainedFromRepair} intellect skill");
-            profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Intellect, intellectGainedFromRepair);
+            profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Intellect, intellectGainedFromRepair, true);
         }
     }
 
@@ -204,12 +212,11 @@ public class RepairService(
     {
         if (repairDetails.RepairedByKit.GetValueOrDefault(false))
         {
-            // Weapons/armor have different multipliers
-            var intRepairMultiplier = itemHelper.IsOfBaseclass(repairDetails.RepairedItem.Template, BaseClasses.WEAPON)
-                ? RepairConfig.RepairKitIntellectGainMultiplier.Weapon
-                : RepairConfig.RepairKitIntellectGainMultiplier.Armor;
+            // Weapons/armor have different divisors
+            var intRepairDivisor = itemHelper.IsOfBaseclass(repairDetails.RepairedItem.Template, BaseClasses.WEAPON)
+                ? RepairConfig.RepairKitIntellectGainDivisor.Weapon
+                : RepairConfig.RepairKitIntellectGainDivisor.Armor;
 
-            // Limit gain to a max value defined in config.maxIntellectGainPerRepair
             if (repairDetails.RepairPoints is null)
             {
                 logger.Error(
@@ -217,11 +224,11 @@ public class RepairService(
                 );
             }
 
-            return Math.Min(repairDetails.RepairPoints.Value * intRepairMultiplier, RepairConfig.MaxIntellectGainPerRepair.Kit);
+            return repairDetails.RepairPoints.Value / intRepairDivisor;
         }
 
-        // Trader repair - Not as accurate as kit, needs data from live
-        return Math.Min(repairDetails.RepairAmount.Value / 10, RepairConfig.MaxIntellectGainPerRepair.Trader);
+        // Trader repair does not give INT
+        return 0;
     }
 
     /// <summary>
