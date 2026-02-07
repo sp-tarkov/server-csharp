@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Logging;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -509,7 +510,10 @@ public class ProfileHelper(
 
         profileSkill.PointsEarnedDuringSession += pointsToAddToSkill;
 
-        logger.Debug($"Added: {pointsToAddToSkill} points to skill: {skill}, new progress value is: {profileSkill.Progress}");
+        if (logger.IsLogEnabled(LogLevel.Debug))
+        {
+            logger.Debug($"Added: {pointsToAddToSkill} points to skill: {skill}, new progress value is: {profileSkill.Progress}");
+        }
 
         profileSkill.LastAccess = timeUtil.GetTimeStamp();
     }

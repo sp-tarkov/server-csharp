@@ -203,9 +203,12 @@ public class RepairService(
         var intellectGainedFromRepair = GetIntellectGainedFromRepair(repairDetails);
         if (intellectGainedFromRepair > 0)
         {
-            logger.Debug(
-                $"Added: {intellectGainedFromRepair} {SkillTypes.Intellect}, {intellectGainedFromRepair * 0.1} {SkillTypes.Charisma}"
-            );
+            if (logger.IsLogEnabled(LogLevel.Debug))
+            {
+                logger.Debug(
+                    $"Added: {intellectGainedFromRepair} {SkillTypes.Intellect}, {intellectGainedFromRepair * 0.1} {SkillTypes.Charisma}"
+                );
+            }
             profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Intellect, intellectGainedFromRepair, true);
             profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Charisma, intellectGainedFromRepair * 0.1, true);
         }
