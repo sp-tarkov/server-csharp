@@ -203,7 +203,9 @@ public class RepairService(
         var intellectGainedFromRepair = GetIntellectGainedFromRepair(repairDetails);
         if (intellectGainedFromRepair > 0)
         {
-            logger.Debug($"Added: {intellectGainedFromRepair} {SkillTypes.Intellect}, {intellectGainedFromRepair * 0.1} {SkillTypes.Charisma}");
+            logger.Debug(
+                $"Added: {intellectGainedFromRepair} {SkillTypes.Intellect}, {intellectGainedFromRepair * 0.1} {SkillTypes.Charisma}"
+            );
             profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Intellect, intellectGainedFromRepair, true);
             profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Charisma, intellectGainedFromRepair * 0.1, true);
         }
@@ -567,10 +569,10 @@ public class RepairService(
         {
             case SkillTypes.LightVests:
             case SkillTypes.HeavyVests:
-                buffSettings = ((ArmorSkills) skillSettings[itemSkillType.ToString()]).BuffSettings;
+                buffSettings = ((ArmorSkills)skillSettings[itemSkillType.ToString()]).BuffSettings;
                 break;
             case SkillTypes.WeaponTreatment:
-                buffSettings = ((WeaponTreatment) skillSettings[itemSkillType.ToString()]).BuffSettings;
+                buffSettings = ((WeaponTreatment)skillSettings[itemSkillType.ToString()]).BuffSettings;
                 break;
             default:
                 logger.Error($"Unhandled buff type: {itemSkillType}");

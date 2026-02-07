@@ -30,7 +30,6 @@ public record RepairConfig : BaseConfig
     [JsonIgnore]
     public MaxIntellectGainValues MaxIntellectGainPerRepair { get; set; } = new();
 
-
     [JsonPropertyName("weaponTreatment")]
     public required WeaponTreatmentRepairValues WeaponTreatment { get; set; }
 
