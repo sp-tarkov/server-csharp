@@ -1,28 +1,28 @@
 <Solution>
-    <Folder Name="/Libraries/">
-        <Project Path="Libraries/SPTarkov.Common/SPTarkov.Common.csproj" />
-        <Project Path="Libraries/SPTarkov.DI/SPTarkov.DI.csproj" />
-        <Project Path="Libraries/SPTarkov.Reflection/SPTarkov.Reflection.csproj" />
-        <Project Path="Libraries/SPTarkov.Server.Assets/SPTarkov.Server.Assets.csproj" />
-        <Project Path="Libraries/SPTarkov.Server.Core/SPTarkov.Server.Core.csproj">
-            <BuildDependency Project="Patches/Ceciler.JsonExtensionData/Ceciler.JsonExtensionData.csproj" />
-            <BuildDependency Project="Patches/Ceciler.Virtualizer/Ceciler.Virtualizer.csproj" />
-        </Project>
-        <Project Path="Libraries/SPTarkov.Server.Web/SPTarkov.Server.Web.csproj" />
-    </Folder>
-    <Folder Name="/Patches/">
-        <Project Path="Patches/Ceciler.JsonExtensionData/Ceciler.JsonExtensionData.csproj" />
-        <Project Path="Patches/Ceciler.Virtualizer/Ceciler.Virtualizer.csproj" />
-    </Folder>
-    <Folder Name="/Testing/">
-        <Project Path="Testing/Benchmarks/Benchmarks.csproj" />
-        <Project Path="Testing/TestMod/TestMod.csproj" />
-        <Project Path="Testing/UnitTests/UnitTests.csproj" />
-    </Folder>
-    <Folder Name="/Tools/">
-        <Project Path="Tools/HideoutCraftQuestIdGenerator/HideoutCraftQuestIdGenerator.csproj" />
-        <Project Path="Tools/JsonExtensionDataGenerator/JsonExtensionDataGenerator.csproj" />
-        <Project Path="Tools/MongoIdTplGenerator/MongoIdTplGenerator.csproj" />
-    </Folder>
-    <Project Path="SPTarkov.Server/SPTarkov.Server.csproj" />
+  <Folder Name="/Libraries/">
+    <Project Path="Libraries/SPTarkov.Common/SPTarkov.Common.csproj" />
+    <Project Path="Libraries/SPTarkov.DI/SPTarkov.DI.csproj" />
+    <Project Path="Libraries/SPTarkov.Reflection/SPTarkov.Reflection.csproj" />
+    <Project Path="Libraries/SPTarkov.Server.Assets/SPTarkov.Server.Assets.csproj" />
+    <Project Path="Libraries/SPTarkov.Server.Core/SPTarkov.Server.Core.csproj">
+      <BuildDependency Project="Patches/Ceciler.JsonExtensionData/Ceciler.JsonExtensionData.csproj" />
+      <BuildDependency Project="Patches/Ceciler.Virtualizer/Ceciler.Virtualizer.csproj" />
+    </Project>
+    <Project Path="Libraries/SPTarkov.Server.Web/SPTarkov.Server.Web.csproj" />
+  </Folder>
+  <Folder Name="/Patches/">
+    <Project Path="Patches/Ceciler.JsonExtensionData/Ceciler.JsonExtensionData.csproj" />
+    <Project Path="Patches/Ceciler.Virtualizer/Ceciler.Virtualizer.csproj" />
+  </Folder>
+  <Folder Name="/Testing/">
+    <Project Path="Testing/Benchmarks/Benchmarks.csproj" />
+    <Project Path="Testing/TestMod/TestMod.csproj" />
+    <Project Path="Testing/UnitTests/UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/Tools/">
+    <Project Path="Tools/HideoutCraftQuestIdGenerator/HideoutCraftQuestIdGenerator.csproj" />
+    <Project Path="Tools/JsonExtensionDataGenerator/JsonExtensionDataGenerator.csproj" />
+    <Project Path="Tools/MongoIdTplGenerator/MongoIdTplGenerator.csproj" />
+  </Folder>
+  <Project Path="SPTarkov.Server/SPTarkov.Server.csproj" />
 </Solution>
