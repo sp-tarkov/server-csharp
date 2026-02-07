@@ -509,6 +509,8 @@ public class ProfileHelper(
 
         profileSkill.PointsEarnedDuringSession += pointsToAddToSkill;
 
+        logger.Debug($"Added: {pointsToAddToSkill} points to skill: {skill}, new progress value is: {profileSkill.Progress}");
+
         profileSkill.LastAccess = timeUtil.GetTimeStamp();
     }
 

@@ -194,15 +194,16 @@ public class RepairService(
         // Handle trader repair - gives charisma based on (repair cost/10 * skill progress rate)
         if (!repairDetails.RepairedByKit.GetValueOrDefault(true) && repairDetails.RepairCost.HasValue)
         {
-            profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Charisma, repairDetails.RepairCost.Value / 10, true);
+            profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Charisma, repairDetails.RepairAmount.Value / 10, true);
         }
 
         // Handle giving INT to player - differs if using kit/trader and weapon vs armor
         var intellectGainedFromRepair = GetIntellectGainedFromRepair(repairDetails);
         if (intellectGainedFromRepair > 0)
         {
-            logger.Debug($"Added: {intellectGainedFromRepair} intellect skill");
+            logger.Debug($"Added: {intellectGainedFromRepair} {SkillTypes.Intellect}, {intellectGainedFromRepair * 0.1} {SkillTypes.Charisma}");
             profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Intellect, intellectGainedFromRepair, true);
+            profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Charisma, intellectGainedFromRepair * 0.1, true);
         }
     }
 
@@ -564,10 +565,10 @@ public class RepairService(
         {
             case SkillTypes.LightVests:
             case SkillTypes.HeavyVests:
-                buffSettings = ((ArmorSkills)skillSettings[itemSkillType.ToString()]).BuffSettings;
+                buffSettings = ((ArmorSkills) skillSettings[itemSkillType.ToString()]).BuffSettings;
                 break;
             case SkillTypes.WeaponTreatment:
-                buffSettings = ((WeaponTreatment)skillSettings[itemSkillType.ToString()]).BuffSettings;
+                buffSettings = ((WeaponTreatment) skillSettings[itemSkillType.ToString()]).BuffSettings;
                 break;
             default:
                 logger.Error($"Unhandled buff type: {itemSkillType}");
