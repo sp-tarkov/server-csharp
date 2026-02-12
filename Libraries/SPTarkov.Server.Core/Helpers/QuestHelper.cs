@@ -105,6 +105,64 @@ public class QuestHelper(
     }
 
     /// <summary>
+    ///     Adjust skill experience for low skill levels, mimicking the official client
+    /// </summary>
+    /// <param name="profileSkill">the skill experience is being added to</param>
+    /// <param name="progressAmount">the amount of experience being added to the skill</param>
+    /// <returns>the adjusted skill progress gain</returns>
+    public int AdjustSkillExpForLowLevels(CommonSkill profileSkill, int progressAmount)
+    {
+        // TODO: what used this? can't find any uses in node
+        var currentLevel = Math.Floor((double)(profileSkill.Progress / 100));
+
+        // Only run this if the current level is under 9
+        if (currentLevel >= 9)
+        {
+            return progressAmount;
+        }
+
+        // This calculates how much progress we have in the skill's starting level
+        var startingLevelProgress = profileSkill.Progress % 100 * ((currentLevel + 1) / 10);
+
+        // The code below assumes a 1/10th progress skill amount
+        var remainingProgress = progressAmount / 10;
+
+        // We have to do this loop to handle edge cases where the provided XP bumps your level up
+        // See "CalculateExpOnFirstLevels" in client for original logic
+        var adjustedSkillProgress = 0;
+        while (remainingProgress > 0 && currentLevel < 9)
+        {
+            // Calculate how much progress to add, limiting it to the current level max progress
+            var currentLevelRemainingProgress = (currentLevel + 1) * 10 - startingLevelProgress;
+            if (logger.IsLogEnabled(LogLevel.Debug))
+            {
+                logger.Debug($"currentLevelRemainingProgress: {currentLevelRemainingProgress}");
+            }
+
+            var progressToAdd = Math.Min(remainingProgress, currentLevelRemainingProgress);
+            var adjustedProgressToAdd = 10 / (currentLevel + 1) * progressToAdd;
+            if (logger.IsLogEnabled(LogLevel.Debug))
+            {
+                logger.Debug($"Progress To Add: {progressToAdd}  Adjusted for level: {adjustedProgressToAdd}");
+            }
+
+            // Add the progress amount adjusted by level
+            adjustedSkillProgress += (int)adjustedProgressToAdd;
+            remainingProgress -= (int)progressToAdd;
+            startingLevelProgress = 0;
+            currentLevel++;
+        }
+
+        // If there's any remaining progress, add it. This handles if you go from level 8 -> 9
+        if (remainingProgress > 0)
+        {
+            adjustedSkillProgress += remainingProgress;
+        }
+
+        return adjustedSkillProgress;
+    }
+
+    /// <summary>
     ///     Get quest name by quest id
     /// </summary>
     /// <param name="questId">id to get</param>
