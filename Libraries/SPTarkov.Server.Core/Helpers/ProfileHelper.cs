@@ -525,7 +525,7 @@ public class ProfileHelper(
 
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            logger.Debug($"Added: {pointsToAddToSkill} points to skill: {skill}, new progress value is: {profileSkill.Progress}");
+            logger.Debug($"Added: {adjustedSkillProgress} points to skill: {skill}, new progress value is: {profileSkill.Progress}");
         }
 
         profileSkill.LastAccess = timeUtil.GetTimeStamp();
