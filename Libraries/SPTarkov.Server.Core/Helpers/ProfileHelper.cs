@@ -494,6 +494,18 @@ public class ProfileHelper(
             return;
         }
 
+        // already max level, no need to do any further calculations
+        if (profileSkill.Progress >= 5100)
+        {
+            if (logger.IsLogEnabled(LogLevel.Debug))
+            {
+                logger.Debug($"Player already has max level in skill: {skill}, not adding points");
+            }
+
+            profileSkill.LastAccess = timeUtil.GetTimeStamp();
+            return;
+        }
+
         if (useSkillProgressRateMultiplier)
         {
             var skillProgressRate = databaseService.GetGlobals().Configuration.SkillsSettings.SkillProgressRate;
@@ -505,7 +517,7 @@ public class ProfileHelper(
             pointsToAddToSkill *= InventoryConfig.SkillGainMultipliers[skill.ToString()];
         }
 
-        profileSkill.Progress += pointsToAddToSkill;
+        profileSkill.Progress += AdjustSkillExpForLowLevels(profileSkill.Progress, pointsToAddToSkill);
         profileSkill.Progress = Math.Min(profileSkill.Progress, 5100); // Prevent skill from ever going above level 51 (5100)
 
         profileSkill.PointsEarnedDuringSession += pointsToAddToSkill;
@@ -516,6 +528,66 @@ public class ProfileHelper(
         }
 
         profileSkill.LastAccess = timeUtil.GetTimeStamp();
+    }
+
+    /// <summary>
+    ///     This method calculates the adjusted skill progression for lower levels.
+    /// </summary>
+    /// <param name="currentProgress">Current internal progress value of the skill, used to determine current level</param>
+    /// <param name="visualProgressAmount">The amount of visual progress to add</param>
+    /// <returns>Scaled skill progress according to level</returns>
+    /// <remarks>
+    ///     It expects to be passed on a value as expected per the visual progress on the UI.
+    ///     It will return scaled internal progress according to the current skill level, to match Tarkovs skill progression curve.
+    ///     So passing on "0.4" will always yield +0.4 progress on the UI for the player.
+    /// </remarks>
+    public double AdjustSkillExpForLowLevels(double currentProgress, double visualProgressAmount)
+    {
+        var level = Math.Floor(currentProgress / 100d);
+
+        if (level >= 9)
+        {
+            return visualProgressAmount;
+        }
+
+        double internalAdded = 0;
+
+        // See "CalculateExpOnFirstLevels" in client for original logic
+        // loop until all visual progress has been used up
+        while (visualProgressAmount > 0)
+        {
+            // scale to apply for levels 1-10, decreasing as level goes higher
+            var uiMax = 10d * (level + 1d);
+            var factor = 100d / uiMax;
+
+            // remaining internal points in this level
+            var inLevel = currentProgress % 100d;
+            var internalRemaining = 100d - inLevel;
+
+            if (logger.IsLogEnabled(LogLevel.Debug))
+            {
+                logger.Debug($"currentLevelRemainingProgress: {internalRemaining}");
+            }
+
+            // visual needed to fill the rest of this internal level
+            var visualToLevelUp = internalRemaining / factor;
+
+            var spendVisual = Math.Min(visualProgressAmount, visualToLevelUp);
+            var addInternal = spendVisual * factor;
+
+            if (logger.IsLogEnabled(LogLevel.Debug))
+            {
+                logger.Debug($"Progress To Add Adjusted For Level: {addInternal}");
+            }
+
+            internalAdded += addInternal;
+            currentProgress += addInternal;
+            visualProgressAmount -= spendVisual;
+
+            level = Math.Floor(currentProgress / 100d);
+        }
+
+        return internalAdded;
     }
 
     /// <summary>
