@@ -512,15 +512,16 @@ public class ProfileHelper(
             pointsToAddToSkill *= skillProgressRate;
         }
 
-        if (InventoryConfig.SkillGainMultipliers.TryGetValue(skill.ToString(), out _))
+        if (InventoryConfig.SkillGainMultipliers.TryGetValue(skill.ToString(), out var multiplier))
         {
-            pointsToAddToSkill *= InventoryConfig.SkillGainMultipliers[skill.ToString()];
+            pointsToAddToSkill *= multiplier;
         }
 
-        profileSkill.Progress += AdjustSkillExpForLowLevels(profileSkill.Progress, pointsToAddToSkill);
+        var adjustedSkillProgress = AdjustSkillExpForLowLevels(profileSkill.Progress, pointsToAddToSkill);
+        profileSkill.Progress += adjustedSkillProgress;
         profileSkill.Progress = Math.Min(profileSkill.Progress, 5100); // Prevent skill from ever going above level 51 (5100)
 
-        profileSkill.PointsEarnedDuringSession += pointsToAddToSkill;
+        profileSkill.PointsEarnedDuringSession += adjustedSkillProgress;
 
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
