@@ -65,8 +65,6 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
     protected async Task StoreValue(string bundlePath, uint hash)
     {
         _bundleHashes.TryAdd(bundlePath, hash);
-
-        logger.Debug($"Bundle: {bundlePath} hash stored in cache");
     }
 
     /// <summary>
