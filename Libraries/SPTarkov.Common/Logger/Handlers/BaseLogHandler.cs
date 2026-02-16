@@ -33,7 +33,7 @@ public abstract class BaseLogHandler : ILogHandler
                 "\n",
                 Markup.Escape(message.Exception.Message),
                 "\n",
-                Markup.Escape(message.Exception.StackTrace)
+                Markup.Escape(message.Exception.StackTrace ?? string.Empty)
             );
         }
 
