@@ -1,5 +1,6 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Common.Models.Logging;
+using System.Collections.Concurrent;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Services;
@@ -9,7 +10,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
 {
     protected const string _bundleHashCachePath = "./user/cache/";
     protected const string _cacheName = "bundleHashCache.json";
-    protected Dictionary<string, uint> _bundleHashes = [];
+    protected ConcurrentDictionary<string, uint> _bundleHashes = [];
     private readonly SemaphoreSlim _writeLock = new(1, 1);
 
     public async Task HydrateCache()
@@ -27,7 +28,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
             return;
         }
 
-        _bundleHashes = await jsonUtil.DeserializeFromFileAsync<Dictionary<string, uint>>(fullCachePath) ?? [];
+        _bundleHashes = await jsonUtil.DeserializeFromFileAsync<ConcurrentDictionary<string, uint>>(fullCachePath) ?? [];
     }
 
     public async Task WriteCache()
@@ -63,7 +64,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
 
     protected async Task StoreValue(string bundlePath, uint hash)
     {
-        _bundleHashes[bundlePath] = hash;
+        _bundleHashes.TryAdd(bundlePath, hash);
 
         logger.Debug($"Bundle: {bundlePath} hash stored in cache");
     }
