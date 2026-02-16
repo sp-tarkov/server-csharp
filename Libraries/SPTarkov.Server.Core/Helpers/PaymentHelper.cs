@@ -7,10 +7,9 @@ using SPTarkov.Server.Core.Servers;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable(InjectionType.Singleton)]
-public class PaymentHelper(ConfigServer configServer)
+public class PaymentHelper(InventoryConfig inventoryConfig)
 {
     protected bool AddedCustomMoney;
-    protected readonly InventoryConfig InventoryConfig = configServer.GetConfig<InventoryConfig>();
     protected readonly HashSet<MongoId> MoneyTpls = [Money.DOLLARS, Money.EUROS, Money.ROUBLES, Money.GP];
 
     /// <summary>
@@ -23,7 +22,7 @@ public class PaymentHelper(ConfigServer configServer)
         // Add custom currency first time this method is accessed
         if (!AddedCustomMoney)
         {
-            foreach (var customMoney in InventoryConfig.CustomMoneyTpls)
+            foreach (var customMoney in inventoryConfig.CustomMoneyTpls)
             {
                 MoneyTpls.Add(customMoney);
             }

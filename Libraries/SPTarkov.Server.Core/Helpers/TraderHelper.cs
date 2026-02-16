@@ -25,13 +25,11 @@ public class TraderHelper(
     FenceService fenceService,
     TimeUtil timeUtil,
     RandomUtil randomUtil,
-    ConfigServer configServer
+    TraderConfig traderConfig
 )
 {
     protected readonly FrozenSet<string> GameVersionsWithHigherBuyRestrictions = [GameEditions.EDGE_OF_DARKNESS, GameEditions.UNHEARD];
     protected readonly Dictionary<MongoId, double> HighestTraderPriceItems = new();
-    protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
-
     protected readonly Lock _highestPriceLock = new Lock();
 
     /// <summary>
@@ -348,22 +346,22 @@ public class TraderHelper(
     /// <returns>Time in seconds.</returns>
     public long? GetTraderUpdateSeconds(MongoId traderId)
     {
-        var traderDetails = TraderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == traderId);
+        var traderDetails = traderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == traderId);
         if (traderDetails?.Seconds?.Min is null || traderDetails.Seconds?.Max is null)
         {
             logger.Warning(
                 serverLocalisationService.GetText(
                     "trader-missing_trader_details_using_default_refresh_time",
-                    new { traderId, updateTime = TraderConfig.UpdateTimeDefault }
+                    new { traderId, updateTime = traderConfig.UpdateTimeDefault }
                 )
             );
 
-            TraderConfig.UpdateTime.Add(
+            traderConfig.UpdateTime.Add(
                 new UpdateTime
                 // create temporary entry to prevent logger spam
                 {
                     TraderId = traderId,
-                    Seconds = new MinMax<int>(TraderConfig.UpdateTimeDefault, TraderConfig.UpdateTimeDefault),
+                    Seconds = new MinMax<int>(traderConfig.UpdateTimeDefault, traderConfig.UpdateTimeDefault),
                 }
             );
 

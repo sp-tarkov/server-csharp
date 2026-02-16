@@ -1,8 +1,8 @@
 using System.Globalization;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
@@ -45,7 +45,7 @@ public class BackupService
         IReadOnlyList<SptMod> loadedMods,
         JsonUtil jsonUtil,
         TimeUtil timeUtil,
-        ConfigServer configServer,
+        BackupConfig backupConfig,
         FileUtil fileUtil
     )
     {
@@ -56,7 +56,7 @@ public class BackupService
         LoadedMods = loadedMods;
 
         ActiveServerMods = GetActiveServerMods();
-        BackupConfig = configServer.GetConfig<BackupConfig>();
+        BackupConfig = backupConfig;
     }
 
     /// <summary>

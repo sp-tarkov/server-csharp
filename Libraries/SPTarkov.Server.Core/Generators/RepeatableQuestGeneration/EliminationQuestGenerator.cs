@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -6,7 +7,6 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Repeatable;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -28,7 +28,6 @@ public class EliminationQuestGenerator(
     RepeatableQuestRewardGenerator repeatableQuestRewardGenerator,
     DatabaseService databaseService,
     ServerLocalisationService localisationService,
-    ConfigServer configServer,
     ICloner cloner
 ) : IRepeatableQuestGenerator
 {
@@ -47,8 +46,6 @@ public class EliminationQuestGenerator(
     /// MaxDistDifficulty is defined by 2, this could be a tuning parameter if we don't like the reward generation
     /// </summary>
     protected const int MaxDistDifficulty = 2;
-
-    protected QuestConfig QuestConfig = configServer.GetConfig<QuestConfig>();
 
     protected record EliminationQuestGenerationData(
         EliminationConfig EliminationConfig,

@@ -1,10 +1,10 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -21,12 +21,10 @@ public class RagfairServer(
     ServerLocalisationService serverLocalisationService,
     RagfairOfferGenerator ragfairOfferGenerator,
     RagfairOfferHolder ragfairOfferHolder,
-    ConfigServer configServer,
+    RagfairConfig ragfairConfig,
     ICloner cloner
 )
 {
-    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
-
     public void Load()
     {
         logger.Info(serverLocalisationService.GetText("ragfair-generating_offers"));
@@ -90,7 +88,7 @@ public class RagfairServer(
     /// <returns> List of traders </returns>
     public List<MongoId> GetUpdateableTraders()
     {
-        return RagfairConfig.Traders.Keys.ToList();
+        return ragfairConfig.Traders.Keys.ToList();
     }
 
     public Dictionary<MongoId, int> GetAllActiveCategories(

@@ -19,12 +19,10 @@ public class RagfairAssortGenerator(
     PresetHelper presetHelper,
     SeasonalEventService seasonalEventService,
     ItemFilterService itemFilterService,
-    ConfigServer configServer,
+    RagfairConfig ragfairConfig,
     ICloner cloner
 )
 {
-    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
-
     protected readonly FrozenSet<MongoId> RagfairItemInvalidBaseTypes =
     [
         BaseClasses.LOOT_CONTAINER, // Safe, barrel cache etc
@@ -85,7 +83,7 @@ public class RagfairAssortGenerator(
             }
 
             // Skip seasonal items when not in-season
-            if (RagfairConfig.Dynamic.RemoveSeasonalItemsWhenNotInEvent && !seasonalEventActive && seasonalItemTplBlacklist.Contains(tpl))
+            if (ragfairConfig.Dynamic.RemoveSeasonalItemsWhenNotInEvent && !seasonalEventActive && seasonalItemTplBlacklist.Contains(tpl))
             {
                 continue;
             }
@@ -110,7 +108,7 @@ public class RagfairAssortGenerator(
     /// <returns> List of Preset </returns>
     protected List<Preset> GetPresetsToAdd()
     {
-        return RagfairConfig.Dynamic.ShowDefaultPresetsOnly
+        return ragfairConfig.Dynamic.ShowDefaultPresetsOnly
             ? presetHelper.GetDefaultPresets().Values.ToList()
             : presetHelper.GetAllPresets();
     }

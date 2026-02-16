@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -24,11 +24,10 @@ public class ProfileHelper(
     Watermark watermark,
     TimeUtil timeUtil,
     ServerLocalisationService serverLocalisationService,
-    ConfigServer configServer
+    InventoryConfig inventoryConfig
 )
 {
     protected static readonly FrozenSet<string> GameEditionsWithFreeRefresh = ["edge_of_darkness", "unheard_edition"];
-    protected readonly InventoryConfig InventoryConfig = configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
     ///     Remove/reset a completed quest condition from players profile quest data
@@ -511,7 +510,7 @@ public class ProfileHelper(
             pointsToAddToSkill *= skillProgressRate;
         }
 
-        if (InventoryConfig.SkillGainMultipliers.TryGetValue(skill.ToString(), out var multiplier))
+        if (inventoryConfig.SkillGainMultipliers.TryGetValue(skill.ToString(), out var multiplier))
         {
             pointsToAddToSkill *= multiplier;
         }

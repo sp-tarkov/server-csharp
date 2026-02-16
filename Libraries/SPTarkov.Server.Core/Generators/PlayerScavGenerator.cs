@@ -1,4 +1,5 @@
 using System.Globalization;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -31,13 +31,11 @@ public class PlayerScavGenerator(
     ServerLocalisationService serverLocalisationService,
     BotInventoryContainerService botInventoryContainerService,
     BotGenerator botGenerator,
-    ConfigServer configServer,
+    PlayerScavConfig playerScavConfig,
     ICloner cloner,
     TimeUtil timeUtil
 )
 {
-    protected readonly PlayerScavConfig PlayerScavConfig = configServer.GetConfig<PlayerScavConfig>();
-
     /// <summary>
     ///     Update a player profile to include a new player scav profile
     /// </summary>
@@ -55,7 +53,7 @@ public class PlayerScavGenerator(
 
         // use karma level to get correct karmaSettings
         if (
-            !PlayerScavConfig.KarmaLevel.TryGetValue(scavKarmaLevel.ToString(CultureInfo.InvariantCulture), out var playerScavKarmaSettings)
+            !playerScavConfig.KarmaLevel.TryGetValue(scavKarmaLevel.ToString(CultureInfo.InvariantCulture), out var playerScavKarmaSettings)
         )
         {
             logger.Error(serverLocalisationService.GetText("scav-missing_karma_settings", scavKarmaLevel));

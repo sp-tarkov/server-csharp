@@ -1,17 +1,15 @@
-﻿using SPTarkov.DI.Annotations;
+﻿using SPTarkov.Common.Models.Logging;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class WeatherHelper(ISptLogger<WeatherHelper> logger, TimeUtil timeUtil, ConfigServer configServer)
+public class WeatherHelper(ISptLogger<WeatherHelper> logger, TimeUtil timeUtil, WeatherConfig weatherConfig)
 {
-    protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
-
     /// <summary>
     ///     Assumes current time
     ///     Get the current in-raid time - does not include an accurate date, only time
@@ -35,7 +33,7 @@ public class WeatherHelper(ISptLogger<WeatherHelper> logger, TimeUtil timeUtil, 
         var currentTimestampSeconds = timestamp;
 
         var tarkovTime = timeUtil.GetUtcDateTimeFromTimeStamp(
-            (long)(russiaOffsetSeconds + currentTimestampSeconds * WeatherConfig.Acceleration) % twentyFourHoursSeconds
+            (long)(russiaOffsetSeconds + currentTimestampSeconds * weatherConfig.Acceleration) % twentyFourHoursSeconds
         );
 
         return tarkovTime;

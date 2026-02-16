@@ -16,11 +16,10 @@ public class RaidWeatherService(
     WeatherGenerator weatherGenerator,
     SeasonalEventService seasonalEventService,
     WeightedRandomHelper weightedRandomHelper,
-    ConfigServer configServer,
+    WeatherConfig weatherConfig,
     ICloner cloner
 )
 {
-    protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
     protected readonly List<Weather> WeatherForecast = [];
 
     /// <summary>
@@ -32,7 +31,7 @@ public class RaidWeatherService(
         var startingTimestamp = timeUtil.GetTodayMidnightTimeStamp();
 
         // How far into future do we generate weather
-        var futureTimestampToReach = startingTimestamp + timeUtil.GetHoursAsSeconds(WeatherConfig.Weather.GenerateWeatherAmountHours ?? 1);
+        var futureTimestampToReach = startingTimestamp + timeUtil.GetHoursAsSeconds(weatherConfig.Weather.GenerateWeatherAmountHours ?? 1);
 
         // Keep adding new weather until we have reached desired future date
         var nextTimestamp = startingTimestamp;
@@ -63,7 +62,7 @@ public class RaidWeatherService(
     protected long GetWeightedWeatherTimePeriod()
     {
         var chosenTimePeriodMinutes = weightedRandomHelper
-            .WeightedRandom(WeatherConfig.Weather.TimePeriod.Values, WeatherConfig.Weather.TimePeriod.Weights)
+            .WeightedRandom(weatherConfig.Weather.TimePeriod.Values, weatherConfig.Weather.TimePeriod.Weights)
             .Item;
 
         return chosenTimePeriodMinutes * 60;

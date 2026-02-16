@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
@@ -10,7 +11,6 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
@@ -26,11 +26,9 @@ public class ProfileFixerService(
     HideoutHelper hideoutHelper,
     DatabaseService databaseService,
     ServerLocalisationService serverLocalisationService,
-    ConfigServer configServer
+    CoreConfig coreConfig
 )
 {
-    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
-
     /// <summary>
     ///     Find issues in the pmc profile data that may cause issues and fix them
     /// </summary>
@@ -625,7 +623,7 @@ public class ProfileFixerService(
         {
             if (!traderHelper.TraderExists(traderId))
             {
-                if (CoreConfig.Fixes.RemoveInvalidTradersFromProfile)
+                if (coreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
                     logger.Warning(
                         $"Non - default trader: {traderId} removed from PMC TradersInfo in: {fullProfile.ProfileInfo?.ProfileId} profile"
@@ -643,7 +641,7 @@ public class ProfileFixerService(
         {
             if (!traderHelper.TraderExists(traderId))
             {
-                if (CoreConfig.Fixes.RemoveInvalidTradersFromProfile)
+                if (coreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
                     logger.Warning(
                         $"Non - default trader: {traderId} removed from Scav TradersInfo in: {fullProfile.ProfileInfo?.ProfileId} profile"

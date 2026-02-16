@@ -1,8 +1,8 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -17,12 +17,10 @@ public class BotDifficultyHelper(
     RandomUtil randomUtil,
     ServerLocalisationService serverLocalisationService,
     BotHelper botHelper,
-    ConfigServer configServer,
+    PmcConfig pmcConfig,
     ICloner cloner
 )
 {
-    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
-
     /// <summary>
     ///     Get difficulty settings for desired bot type, if not found use assault bot types
     /// </summary>
@@ -72,9 +70,9 @@ public class BotDifficultyHelper(
     /// <returns>Difficulty object</returns>
     protected DifficultyCategories? GetDifficultySettings(string type, string difficulty)
     {
-        var difficultySetting = string.Equals(PMCConfig.Difficulty, "asonline", StringComparison.OrdinalIgnoreCase)
+        var difficultySetting = string.Equals(pmcConfig.Difficulty, "asonline", StringComparison.OrdinalIgnoreCase)
             ? difficulty
-            : PMCConfig.Difficulty.ToLowerInvariant();
+            : pmcConfig.Difficulty.ToLowerInvariant();
 
         difficultySetting = ConvertBotDifficultyDropdownToBotDifficulty(difficultySetting);
 

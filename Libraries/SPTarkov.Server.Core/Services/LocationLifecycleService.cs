@@ -22,7 +22,6 @@ namespace SPTarkov.Server.Core.Services;
 public class LocationLifecycleService(
     ISptLogger<LocationLifecycleService> logger,
     RewardHelper rewardHelper,
-    ConfigServer configServer,
     TimeUtil timeUtil,
     DatabaseService databaseService,
     ProfileHelper profileHelper,
@@ -47,19 +46,18 @@ public class LocationLifecycleService(
     QuestHelper questHelper,
     InsuranceService insuranceService,
     MatchBotDetailsCacheService matchBotDetailsCacheService,
-    BtrDeliveryService btrDeliveryService
+    BtrDeliveryService btrDeliveryService,
+    LocationConfig locationConfig,
+    InRaidConfig inRaidConfig,
+    TraderConfig traderConfig,
+    RagfairConfig ragfairConfig,
+    HideoutConfig hideoutConfig,
+    PmcConfig pmcConfig,
+    BotConfig botConfig,
+    LostOnDeathConfig lostOnDeathConfig,
+    SeasonalEventConfig seasonalEventConfig
 )
 {
-    protected readonly LocationConfig LocationConfig = configServer.GetConfig<LocationConfig>();
-    protected readonly InRaidConfig InRaidConfig = configServer.GetConfig<InRaidConfig>();
-    protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
-    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
-    protected readonly HideoutConfig HideoutConfig = configServer.GetConfig<HideoutConfig>();
-    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
-    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
-    protected readonly LostOnDeathConfig LostOnDeathConfig = configServer.GetConfig<LostOnDeathConfig>();
-    protected readonly SeasonalEventConfig SeasonalEventConfig = configServer.GetConfig<SeasonalEventConfig>();
-
     protected const string Pmc = "pmc";
     protected const string Savage = "savage";
     protected const string Scav = "scav";
@@ -110,8 +108,8 @@ public class LocationLifecycleService(
         }
 
         // Raid is starting, adjust run times to reduce server load while player is in raid
-        RagfairConfig.RunIntervalSeconds = RagfairConfig.RunIntervalValues.InRaid;
-        HideoutConfig.RunIntervalSeconds = HideoutConfig.RunIntervalValues.InRaid;
+        ragfairConfig.RunIntervalSeconds = ragfairConfig.RunIntervalValues.InRaid;
+        hideoutConfig.RunIntervalSeconds = hideoutConfig.RunIntervalValues.InRaid;
 
         var location = GenerateLocationAndLoot(sessionId, request.Location, !request.ShouldSkipLootGeneration ?? true);
         var isRundansActive = databaseService.GetGlobals().Configuration.RunddansSettings.Active;
@@ -122,7 +120,7 @@ public class LocationLifecycleService(
             if (isRundansActive && location.Transits is not null)
             {
                 // Get whitelist for maps transits, event should have 1 only
-                var matchingTransitWhitelist = SeasonalEventConfig.KhorovodEventTransitWhitelist.GetValueOrDefault(
+                var matchingTransitWhitelist = seasonalEventConfig.KhorovodEventTransitWhitelist.GetValueOrDefault(
                     location.Id.ToLowerInvariant(),
                     []
                 );
@@ -214,7 +212,7 @@ public class LocationLifecycleService(
     protected void HandlePreRaidInventoryChecks(string playerSide, PmcData pmcData, MongoId sessionId)
     {
         // If config enabled, remove players equipped items to prevent alt-F4 from persisting items
-        if (!IsSide(playerSide) || !LostOnDeathConfig.WipeOnRaidStart)
+        if (!IsSide(playerSide) || !lostOnDeathConfig.WipeOnRaidStart)
         {
             return;
         }
@@ -265,9 +263,9 @@ public class LocationLifecycleService(
     /// <param name="location"> Map to adjust values of </param>
     protected void AdjustBotHostilitySettings(LocationBase location)
     {
-        foreach (var botId in PMCConfig.HostilitySettings)
+        foreach (var botId in pmcConfig.HostilitySettings)
         {
-            var configHostilityChanges = PMCConfig.HostilitySettings[botId.Key];
+            var configHostilityChanges = pmcConfig.HostilitySettings[botId.Key];
             var locationBotHostilityDetails = location.BotLocationModifier.AdditionalHostilitySettings?.FirstOrDefault(botSettings =>
                 string.Equals(botSettings.BotRole, botId.Key, StringComparison.OrdinalIgnoreCase)
             );
@@ -374,7 +372,7 @@ public class LocationLifecycleService(
             return locationBaseClone;
         }
 
-        if (BotConfig.GoonSpawnSystem.Enabled)
+        if (botConfig.GoonSpawnSystem.Enabled)
         {
             AdjustGoonMapSpawns();
         }
@@ -387,7 +385,7 @@ public class LocationLifecycleService(
         var raidAdjustments = profileActivityService.GetProfileActivityRaidData(sessionId)?.RaidAdjustments;
         if (raidAdjustments is not null)
         {
-            locationConfigClone = cloner.Clone(LocationConfig); // Clone values so they can be used to reset originals later
+            locationConfigClone = cloner.Clone(locationConfig); // Clone values so they can be used to reset originals later
             raidTimeAdjustmentService.MakeAdjustmentsToMap(raidAdjustments, locationBaseClone);
         }
 
@@ -398,8 +396,8 @@ public class LocationLifecycleService(
         if (raidAdjustments is not null && locationConfigClone is not null)
         {
             logger.Debug("Resetting loot multipliers back to their original values");
-            LocationConfig.StaticLootMultiplier = locationConfigClone.StaticLootMultiplier;
-            LocationConfig.LooseLootMultiplier = locationConfigClone.LooseLootMultiplier;
+            locationConfig.StaticLootMultiplier = locationConfigClone.StaticLootMultiplier;
+            locationConfig.LooseLootMultiplier = locationConfigClone.LooseLootMultiplier;
 
             profileActivityService.GetProfileActivityRaidData(sessionId).RaidAdjustments = null;
         }
@@ -437,7 +435,7 @@ public class LocationLifecycleService(
         var random = new Random(seed);
 
         // Filter locations pool
-        var validLocationIds = BotConfig
+        var validLocationIds = botConfig
             .GoonSpawnSystem.LocationPool.Where(locationId =>
                 !locationBlacklist.Contains(locationId)
                 && allLocations.TryGetValue(locationId, out var location)
@@ -460,7 +458,7 @@ public class LocationLifecycleService(
         var goonSpawns = chosenMap.Base.BossLocationSpawn.Where(x => x.BossName == "bossKnight");
         foreach (var goonSpawn in goonSpawns)
         {
-            goonSpawn.BossChance = BotConfig.GoonSpawnSystem.SpawnChance;
+            goonSpawn.BossChance = botConfig.GoonSpawnSystem.SpawnChance;
         }
     }
 
@@ -482,8 +480,8 @@ public class LocationLifecycleService(
         }
 
         // Reset flea interval time to out-of-raid value
-        RagfairConfig.RunIntervalSeconds = RagfairConfig.RunIntervalValues.OutOfRaid;
-        HideoutConfig.RunIntervalSeconds = HideoutConfig.RunIntervalValues.OutOfRaid;
+        ragfairConfig.RunIntervalSeconds = ragfairConfig.RunIntervalValues.OutOfRaid;
+        hideoutConfig.RunIntervalSeconds = hideoutConfig.RunIntervalValues.OutOfRaid;
 
         // ServerId has various info stored in it, delimited by a period
         var serverDetails = request.ServerId.Split(".");
@@ -522,13 +520,13 @@ public class LocationLifecycleService(
         HandlePostRaidPmc(sessionId, fullProfile, scavProfile, isDead, isSurvived, isTransfer, request, locationName);
 
         // Handle car extracts
-        if (request.Results.TookCarExtract(InRaidConfig.CarExtracts))
+        if (request.Results.TookCarExtract(inRaidConfig.CarExtracts))
         {
             HandleCarExtract(request.Results.ExitName, pmcProfile, sessionId);
         }
 
         // Handle coop exit
-        if (request.Results.TookCoopExtract(InRaidConfig.CoopExtracts) && TraderConfig.Fence.CoopExtractGift.SendGift)
+        if (request.Results.TookCoopExtract(inRaidConfig.CoopExtracts) && traderConfig.Fence.CoopExtractGift.SendGift)
         {
             HandleCoopExtract(sessionId, pmcProfile, request.Results.ExitName);
             SendCoopTakenFenceMessage(sessionId);
@@ -546,7 +544,7 @@ public class LocationLifecycleService(
     protected void SendCoopTakenFenceMessage(MongoId sessionId)
     {
         // Generate randomised reward for taking coop extract
-        var loot = lootGenerator.CreateRandomLoot(TraderConfig.Fence.CoopExtractGift);
+        var loot = lootGenerator.CreateRandomLoot(traderConfig.Fence.CoopExtractGift);
 
         var parentId = new MongoId();
         foreach (var itemAndChildren in loot)
@@ -563,9 +561,9 @@ public class LocationLifecycleService(
             sessionId,
             Traders.FENCE,
             MessageType.MessageWithItems,
-            randomUtil.GetArrayValue(TraderConfig.Fence.CoopExtractGift.MessageLocaleIds),
+            randomUtil.GetArrayValue(traderConfig.Fence.CoopExtractGift.MessageLocaleIds),
             mailableLoot,
-            timeUtil.GetHoursAsSeconds(TraderConfig.Fence.CoopExtractGift.GiftExpiryHours)
+            timeUtil.GetHoursAsSeconds(traderConfig.Fence.CoopExtractGift.GiftExpiryHours)
         );
     }
 
@@ -584,7 +582,7 @@ public class LocationLifecycleService(
 
         var newFenceStanding = GetFenceStandingAfterExtract(
             pmcData,
-            InRaidConfig.CarExtractBaseStandingGain,
+            inRaidConfig.CarExtractBaseStandingGain,
             pmcData.CarExtractCounts[extractName]
         );
 
@@ -617,7 +615,7 @@ public class LocationLifecycleService(
 
         var newFenceStanding = GetFenceStandingAfterExtract(
             pmcData,
-            InRaidConfig.CoopExtractBaseStandingGain,
+            inRaidConfig.CoopExtractBaseStandingGain,
             pmcData.CoopExtractCounts[extractName]
         );
 
@@ -652,8 +650,8 @@ public class LocationLifecycleService(
         fenceStanding += Math.Max(baseGain / extractCount, 0.01);
 
         // Ensure fence loyalty level is not above/below the range -7 to 15
-        var fenceMax = TraderConfig.Fence.PlayerRepMax;
-        var fenceMin = TraderConfig.Fence.PlayerRepMin;
+        var fenceMax = traderConfig.Fence.PlayerRepMax;
+        var fenceMin = traderConfig.Fence.PlayerRepMin;
         var newFenceStanding = Math.Clamp(fenceStanding.GetValueOrDefault(0), fenceMin, fenceMax);
         logger.Debug($"Old vs new fence standing: {pmcData.TradersInfo[fenceId].Standing}, {newFenceStanding}");
 
@@ -713,8 +711,8 @@ public class LocationLifecycleService(
         ApplyTraderStandingAdjustments(scavProfile.TradersInfo, postRaidProfile.TradersInfo);
 
         // Clamp fence standing within -7 to 15 range
-        var fenceMax = TraderConfig.Fence.PlayerRepMax; // 15
-        var fenceMin = TraderConfig.Fence.PlayerRepMin; //-7
+        var fenceMax = traderConfig.Fence.PlayerRepMax; // 15
+        var fenceMin = traderConfig.Fence.PlayerRepMin; //-7
         if (!postRaidProfile.TradersInfo.TryGetValue(Traders.FENCE, out var postRaidFenceData))
         {
             logger.Error($"post raid fence data not found for: {sessionId}");
@@ -725,7 +723,7 @@ public class LocationLifecycleService(
         // Successful extract as scav, give some rep
         if (request.Results.IsPlayerSurvived() && scavProfile.TradersInfo[Traders.FENCE].Standing < fenceMax)
         {
-            scavProfile.TradersInfo[Traders.FENCE].Standing += InRaidConfig.ScavExtractStandingGain;
+            scavProfile.TradersInfo[Traders.FENCE].Standing += inRaidConfig.ScavExtractStandingGain;
         }
 
         // Copy scav fence values to PMC profile
@@ -796,7 +794,7 @@ public class LocationLifecycleService(
     /// <param name="profileHealth">Profile health data to adjust</param>
     protected void UpdateLimbValuesAfterTransit(BotBaseHealth? profileHealth)
     {
-        var transitSettings = LocationConfig.TransitSettings;
+        var transitSettings = locationConfig.TransitSettings;
         if (transitSettings == null)
         {
             logger.Warning("Unable to find: _locationConfig.TransitSettings");
@@ -896,8 +894,8 @@ public class LocationLifecycleService(
         var fenceId = Traders.FENCE;
 
         // Clamp fence standing
-        var fenceMax = TraderConfig.Fence.PlayerRepMax; // 15
-        var fenceMin = TraderConfig.Fence.PlayerRepMin; //-7
+        var fenceMax = traderConfig.Fence.PlayerRepMax; // 15
+        var fenceMin = traderConfig.Fence.PlayerRepMin; //-7
 
         serverPmcProfile.TradersInfo[fenceId].Standing = Math.Clamp(
             postRaidProfile.TradersInfo[fenceId].Standing ?? 0d,

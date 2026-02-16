@@ -1,7 +1,7 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 
 namespace SPTarkov.Server.Core.Services;
@@ -10,10 +10,8 @@ namespace SPTarkov.Server.Core.Services;
 ///     Centralise the handling of blacklisting items, uses blacklist found in config/item.json, stores items that should not be used by players / broken items
 /// </summary>
 [Injectable(InjectionType.Singleton)]
-public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServer configServer)
+public class ItemFilterService(ISptLogger<ItemFilterService> logger, ItemConfig itemConfig)
 {
-    protected readonly ItemConfig ItemConfig = configServer.GetConfig<ItemConfig>();
-
     protected readonly HashSet<MongoId> ItemBlacklistCache = [];
     protected readonly HashSet<MongoId> LootableItemBlacklistCache = [];
 
@@ -23,7 +21,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>HashSet of item tpls</returns>
     public HashSet<MongoId> GetItemRewardBlacklist()
     {
-        return ItemConfig.RewardItemBlacklist;
+        return itemConfig.RewardItemBlacklist;
     }
 
     /// <summary>
@@ -32,7 +30,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>HashSet of item base ids</returns>
     public HashSet<MongoId> GetItemRewardBaseTypeBlacklist()
     {
-        return ItemConfig.RewardItemTypeBlacklist;
+        return itemConfig.RewardItemTypeBlacklist;
     }
 
     /// <summary>
@@ -41,7 +39,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>HashSet of blacklisted template ids</returns>
     public HashSet<MongoId> GetBlacklistedItems()
     {
-        return ItemConfig.Blacklist;
+        return itemConfig.Blacklist;
     }
 
     /// <summary>
@@ -50,7 +48,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>HashSet of blacklisted template ids</returns>
     public HashSet<MongoId> GetBlacklistedLootableItems()
     {
-        return ItemConfig.LootableItemBlacklist;
+        return itemConfig.LootableItemBlacklist;
     }
 
     /// <summary>
@@ -59,7 +57,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>HashSet of boss item template ids</returns>
     public HashSet<MongoId> GetBossItems()
     {
-        return ItemConfig.BossItems;
+        return itemConfig.BossItems;
     }
 
     /// <summary>
@@ -80,7 +78,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     {
         if (!LootableItemBlacklistCache.Any())
         {
-            LootableItemBlacklistCache.UnionWith(ItemConfig.LootableItemBlacklist);
+            LootableItemBlacklistCache.UnionWith(itemConfig.LootableItemBlacklist);
         }
 
         return LootableItemBlacklistCache.Contains(itemKey);
@@ -99,7 +97,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     {
         if (!ItemBlacklistCache.Any())
         {
-            ItemBlacklistCache.UnionWith(ItemConfig.Blacklist);
+            ItemBlacklistCache.UnionWith(itemConfig.Blacklist);
         }
 
         return ItemBlacklistCache.Contains(tpl);
@@ -112,7 +110,7 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>True if boss item</returns>
     public bool IsBossItem(MongoId tpl)
     {
-        return ItemConfig.BossItems.Contains(tpl);
+        return itemConfig.BossItems.Contains(tpl);
     }
 
     /// <summary>
@@ -122,6 +120,6 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ConfigServe
     /// <returns>true when blacklisted</returns>
     public bool IsItemRewardBlacklisted(MongoId tpl)
     {
-        return ItemConfig.RewardItemBlacklist.Contains(tpl);
+        return itemConfig.RewardItemBlacklist.Contains(tpl);
     }
 }

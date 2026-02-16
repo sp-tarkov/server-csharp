@@ -1,3 +1,4 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators.WeaponGen;
@@ -8,7 +9,6 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -31,15 +31,14 @@ public class BotWeaponGenerator(
     ServerLocalisationService serverLocalisationService,
     RepairService repairService,
     ICloner cloner,
-    ConfigServer configServer,
-    IEnumerable<IInventoryMagGen> inventoryMagGenComponents
+    IEnumerable<IInventoryMagGen> inventoryMagGenComponents,
+    BotConfig botConfig,
+    PmcConfig pmcConfig,
+    RepairConfig repairConfig
 )
 {
     private const string ModMagazineSlotId = "mod_magazine";
-    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
     protected readonly IEnumerable<IInventoryMagGen> InventoryMagGenComponents = MagGenSetUp(inventoryMagGenComponents);
-    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
-    protected readonly RepairConfig RepairConfig = configServer.GetConfig<RepairConfig>();
 
     protected static List<IInventoryMagGen> MagGenSetUp(IEnumerable<IInventoryMagGen> components)
     {
@@ -148,10 +147,10 @@ public class BotWeaponGenerator(
             .ToList();
 
         // Chance to add randomised weapon enhancement
-        if (botGenerationDetails.IsPmc && randomUtil.GetChance100(PMCConfig.WeaponHasEnhancementChancePercent))
+        if (botGenerationDetails.IsPmc && randomUtil.GetChance100(pmcConfig.WeaponHasEnhancementChancePercent))
         // Add buff to weapon root
         {
-            repairService.AddBuff(RepairConfig.RepairKit.Weapon, weaponWithModsArray[0]);
+            repairService.AddBuff(repairConfig.RepairKit.Weapon, weaponWithModsArray[0]);
         }
 
         // Add mods to weapon base
@@ -463,7 +462,7 @@ public class BotWeaponGenerator(
         // Add x stacks of bullets to SecuredContainer (bots use a magic mag packing skill to reload instantly)
         AddAmmoToSecureContainer(
             botId,
-            BotConfig.SecureContainerAmmoStackCount,
+            botConfig.SecureContainerAmmoStackCount,
             generatedWeaponResult.ChosenAmmoTemplate,
             ammoTemplate.Value.Properties.StackMaxSize ?? 0,
             inventory
@@ -716,8 +715,10 @@ public class BotWeaponGenerator(
 
         // Try to get cartridges from slots array first, if none found, try Cartridges array
         var cartridges =
-            magazineTemplate.Value.Properties.Slots.FirstOrDefault()?.Properties?.Filters?.FirstOrDefault()?.Filter
-            ?? magazineTemplate.Value.Properties.Cartridges.FirstOrDefault()?.Properties?.Filters?.FirstOrDefault()?.Filter;
+            magazineTemplate.Value.Properties.Slots.FirstOrDefault()?.Properties?.Filters?.FirstOrDefault()?.Filter ?? magazineTemplate
+                .Value.Properties.Cartridges.FirstOrDefault()
+                ?.Properties?.Filters?.FirstOrDefault()
+                ?.Filter;
 
         return cartridges ?? [];
     }

@@ -12,9 +12,8 @@ using BodyPartHealth = SPTarkov.Server.Core.Models.Eft.Common.Tables.BodyPartHea
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, ConfigServer configServer)
+public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, HealthConfig healthConfig)
 {
-    protected readonly HealthConfig HealthConfig = configServer.GetConfig<HealthConfig>();
     protected readonly HashSet<string> EffectsToSkip = ["Dehydration", "Exhaustion"];
 
     /// <summary>
@@ -130,7 +129,7 @@ public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, Co
                 throw new HealthHelperException(message);
             }
 
-            if (HealthConfig.Save.Health)
+            if (healthConfig.Save.Health)
             {
                 // Apply hp changes to profile
                 if (!isDead)
@@ -138,13 +137,13 @@ public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, Co
                     // If the player isn't dead, restore blacked limbs with a penalty
                     matchingProfilePart.Health.Current =
                         partProperties.Health.Current == 0
-                            ? matchingProfilePart.Health.Maximum * HealthConfig.HealthMultipliers.Blacked
+                            ? matchingProfilePart.Health.Maximum * healthConfig.HealthMultipliers.Blacked
                             : partProperties.Health.Current;
                 }
                 else
                 {
                     // If the player died, set all limbs with a penalty
-                    matchingProfilePart.Health.Current = matchingProfilePart.Health.Maximum * HealthConfig.HealthMultipliers.Death;
+                    matchingProfilePart.Health.Current = matchingProfilePart.Health.Maximum * healthConfig.HealthMultipliers.Death;
 
                     // Cursed player, body part gets set to 1 on death
                     if (playerWasCursed)

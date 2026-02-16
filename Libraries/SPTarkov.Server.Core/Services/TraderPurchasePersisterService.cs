@@ -1,9 +1,9 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 
@@ -16,11 +16,9 @@ public class TraderPurchasePersisterService(
     TimeUtil timeUtil,
     ProfileHelper profileHelper,
     ServerLocalisationService serverLocalisationService,
-    ConfigServer configServer
+    TraderConfig traderConfig
 )
 {
-    protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
-
     /// <summary>
     ///     Get the purchases made from a trader for this profile before the last trader reset
     /// </summary>
@@ -113,7 +111,7 @@ public class TraderPurchasePersisterService(
 
             foreach (var purchaseKvP in purchasesFromTrader)
             {
-                var traderUpdateDetails = TraderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == traderId);
+                var traderUpdateDetails = traderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == traderId);
                 if (traderUpdateDetails is null)
                 {
                     logger.Error(

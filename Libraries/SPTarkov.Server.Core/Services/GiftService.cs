@@ -1,3 +1,4 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -5,7 +6,6 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Dialog;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
@@ -19,11 +19,9 @@ public class GiftService(
     ServerLocalisationService serverLocalisationService,
     TimeUtil timeUtil,
     ProfileHelper profileHelper,
-    ConfigServer configServer
+    GiftsConfig giftsConfig
 )
 {
-    protected readonly GiftsConfig GiftConfig = configServer.GetConfig<GiftsConfig>();
-
     /// <summary>
     ///     Does a gift with a specific ID exist in db
     /// </summary>
@@ -31,12 +29,12 @@ public class GiftService(
     /// <returns> True if it exists in db </returns>
     public bool GiftExists(string giftId)
     {
-        return GiftConfig.Gifts.ContainsKey(giftId);
+        return giftsConfig.Gifts.ContainsKey(giftId);
     }
 
     public Gift? GetGiftById(string giftId)
     {
-        GiftConfig.Gifts.TryGetValue(giftId, out var gift);
+        giftsConfig.Gifts.TryGetValue(giftId, out var gift);
 
         return gift;
     }
@@ -47,7 +45,7 @@ public class GiftService(
     /// <returns> Dict keyed by gift id </returns>
     public Dictionary<string, Gift> GetGifts()
     {
-        return GiftConfig.Gifts;
+        return giftsConfig.Gifts;
     }
 
     /// <summary>
@@ -56,7 +54,7 @@ public class GiftService(
     /// <returns> String list of gift ids </returns>
     public IEnumerable<string> GetGiftIds()
     {
-        return GiftConfig.Gifts.Keys;
+        return giftsConfig.Gifts.Keys;
     }
 
     /// <summary>

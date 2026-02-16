@@ -1,11 +1,11 @@
 using System.Collections.Concurrent;
 using System.Collections.Frozen;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Constants;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -13,7 +13,13 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseService, RandomUtil randomUtil, ConfigServer configServer)
+public class BotHelper(
+    ISptLogger<BotHelper> logger,
+    DatabaseService databaseService,
+    RandomUtil randomUtil,
+    BotConfig botConfig,
+    PmcConfig pmcConfig
+)
 {
     private static readonly FrozenSet<string> _pmcTypeIds =
     [
@@ -23,8 +29,6 @@ public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseSer
         Sides.PmcUsec.ToLowerInvariant(),
     ];
 
-    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
-    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
     private readonly ConcurrentDictionary<string, List<string>> _pmcNameCache = new();
 
     /// <summary>
@@ -56,7 +60,7 @@ public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseSer
 
     public bool IsBotBoss(string botRole)
     {
-        return !IsBotFollower(botRole) && BotConfig.Bosses.Any(x => string.Equals(x, botRole, StringComparison.CurrentCultureIgnoreCase));
+        return !IsBotFollower(botRole) && botConfig.Bosses.Any(x => string.Equals(x, botRole, StringComparison.CurrentCultureIgnoreCase));
     }
 
     public bool IsBotFollower(string botRole)
@@ -91,12 +95,12 @@ public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseSer
     /// <returns>side (usec/bear)</returns>
     public string GetPmcSideByRole(string botRole)
     {
-        if (string.Equals(PMCConfig.BearType, botRole, StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(pmcConfig.BearType, botRole, StringComparison.OrdinalIgnoreCase))
         {
             return Sides.Bear;
         }
 
-        if (string.Equals(PMCConfig.UsecType, botRole, StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(pmcConfig.UsecType, botRole, StringComparison.OrdinalIgnoreCase))
         {
             return Sides.Usec;
         }
@@ -128,7 +132,7 @@ public class BotHelper(ISptLogger<BotHelper> logger, DatabaseService databaseSer
     /// <returns>pmc side as string</returns>
     protected string GetRandomizedPmcSide()
     {
-        return randomUtil.GetChance100(PMCConfig.IsUsec) ? Sides.Usec : Sides.Bear;
+        return randomUtil.GetChance100(pmcConfig.IsUsec) ? Sides.Usec : Sides.Bear;
     }
 
     /// <summary>

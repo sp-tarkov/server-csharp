@@ -1,5 +1,6 @@
 ﻿using System.Collections.Frozen;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Exceptions.Helpers;
 using SPTarkov.Server.Core.Extensions;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -18,14 +18,13 @@ namespace SPTarkov.Server.Core.Helpers;
 public class InRaidHelper(
     ISptLogger<InRaidHelper> logger,
     InventoryHelper inventoryHelper,
-    ConfigServer configServer,
+    InRaidConfig inRaidConfig,
+    LostOnDeathConfig lostOnDeathConfig,
     ICloner cloner,
     DatabaseService databaseService
 )
 {
     protected static readonly FrozenSet<string> PocketSlots = ["pocket1", "pocket2", "pocket3", "pocket4"];
-    protected readonly InRaidConfig InRaidConfig = configServer.GetConfig<InRaidConfig>();
-    protected readonly LostOnDeathConfig LostOnDeathConfig = configServer.GetConfig<LostOnDeathConfig>();
 
     /// <summary>
     ///     Update a player's inventory post-raid.
@@ -94,7 +93,7 @@ public class InRaidHelper(
 
         // Handle Removing of FIR status if player did not survive + not transferring
         // Do after above filtering code to reduce work done
-        if (!isSurvived && !isTransfer && !InRaidConfig.AlwaysKeepFoundInRaidOnRaidEnd)
+        if (!isSurvived && !isTransfer && !inRaidConfig.AlwaysKeepFoundInRaidOnRaidEnd)
         {
             RemoveFiRStatusFromItems(postRaidProfile.Inventory.Items);
         }
@@ -120,7 +119,7 @@ public class InRaidHelper(
         var itemsToRemovePropertyFrom = items.Where(item =>
             (item.Upd?.SpawnedInSession ?? false)
             && !(dbItems[item.Template].Properties?.QuestItem ?? false)
-            && !(InRaidConfig.KeepFiRSecureContainerOnDeath && item.ItemIsInsideContainer("SecuredContainer", items))
+            && !(inRaidConfig.KeepFiRSecureContainerOnDeath && item.ItemIsInsideContainer("SecuredContainer", items))
         );
 
         foreach (var item in itemsToRemovePropertyFrom)
@@ -243,7 +242,7 @@ public class InRaidHelper(
         if (itemToCheck.ParentId == pmcData.Inventory.Equipment)
         {
             // Check slot id against config, true = delete, false = keep, undefined = delete
-            var discard = LostOnDeathConfig.Equipment.GetByJsonProperty<bool>(itemToCheck.SlotId);
+            var discard = lostOnDeathConfig.Equipment.GetByJsonProperty<bool>(itemToCheck.SlotId);
             if (discard)
             // Lost on death
             {
@@ -254,19 +253,19 @@ public class InRaidHelper(
         }
 
         // Should we keep items in pockets on death
-        if (!LostOnDeathConfig.Equipment.PocketItems && PocketSlots.Contains(itemToCheck.SlotId ?? string.Empty))
+        if (!lostOnDeathConfig.Equipment.PocketItems && PocketSlots.Contains(itemToCheck.SlotId ?? string.Empty))
         {
             return true;
         }
 
         // Is quest item + quest item not lost on death
-        if (itemToCheck.ParentId == pmcData.Inventory.QuestRaidItems && !LostOnDeathConfig.QuestItems)
+        if (itemToCheck.ParentId == pmcData.Inventory.QuestRaidItems && !lostOnDeathConfig.QuestItems)
         {
             return true;
         }
 
         // special slots are always kept after death
-        if ((itemToCheck.SlotId?.Contains("SpecialSlot") ?? false) && LostOnDeathConfig.SpecialSlotItems)
+        if ((itemToCheck.SlotId?.Contains("SpecialSlot") ?? false) && lostOnDeathConfig.SpecialSlotItems)
         {
             return true;
         }

@@ -1,4 +1,5 @@
 using SPTarkov.Common.Extensions;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -29,11 +29,10 @@ public class RagfairOfferService(
     RagfairOfferHolder ragfairOfferHolder,
     NotifierHelper notifierHelper,
     NotificationSendHelper notificationSendHelper,
-    ConfigServer configServer
+    RagfairConfig ragfairConfig
 )
 {
     private bool _playerOffersLoaded;
-    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
     ///     Get all offers
@@ -362,6 +361,6 @@ public class RagfairOfferService(
     /// <returns>True if enough offers have expired</returns>
     public bool EnoughExpiredOffersExistToProcess()
     {
-        return ragfairOfferHolder.GetExpiredOfferCount() >= RagfairConfig.Dynamic.ExpiredOfferThreshold;
+        return ragfairOfferHolder.GetExpiredOfferCount() >= ragfairConfig.Dynamic.ExpiredOfferThreshold;
     }
 }

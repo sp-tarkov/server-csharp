@@ -1,4 +1,5 @@
 using SPTarkov.Common.Extensions;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
@@ -9,7 +10,6 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -39,13 +39,12 @@ public class RagfairOfferHelper(
     RagfairRequiredItemsService ragfairRequiredItemsService,
     ProfileHelper profileHelper,
     EventOutputHolder eventOutputHolder,
-    ConfigServer configServer,
+    BotConfig botConfig,
+    RagfairConfig ragfairConfig,
     ICloner cloner
 )
 {
     protected const string GoodSoldTemplate = "5bdabfb886f7743e152e867e 0"; // Your {soldItem} {itemCount} items were bought by {buyerNickname}.
-    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
-    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
     ///     Pass through to ragfairOfferService.getOffers(), get flea offers a player should see
@@ -63,7 +62,7 @@ public class RagfairOfferHelper(
     )
     {
         var playerIsFleaBanned = pmcData.PlayerIsFleaBanned(timeUtil.GetTimeStamp());
-        var tieredFlea = RagfairConfig.TieredFlea;
+        var tieredFlea = ragfairConfig.TieredFlea;
         var tieredFleaLimitTypes = tieredFlea.UnlocksType;
 
         // Clone offers if tiered flea is enabled as we perform modification of offer data prior to return
@@ -189,7 +188,7 @@ public class RagfairOfferHelper(
         // Get all offers that require the desired item and filter out offers from non traders if player below ragfair unlock
         var offerIDsForItem = ragfairRequiredItemsService.GetRequiredOffersById(searchRequest.NeededSearchId.Value);
 
-        var tieredFlea = RagfairConfig.TieredFlea;
+        var tieredFlea = ragfairConfig.TieredFlea;
         var tieredFleaLimitTypes = tieredFlea.UnlocksType;
         var tieredFleaKeys = tieredFleaLimitTypes.Keys.ToHashSet();
 
@@ -229,7 +228,7 @@ public class RagfairOfferHelper(
         var offersMap = new Dictionary<MongoId, List<RagfairOffer>>();
         var offersToReturn = new List<RagfairOffer>();
         var playerIsFleaBanned = pmcData.PlayerIsFleaBanned(timeUtil.GetTimeStamp());
-        var tieredFlea = RagfairConfig.TieredFlea;
+        var tieredFlea = ragfairConfig.TieredFlea;
         var tieredFleaLimitTypes = tieredFlea.UnlocksType;
 
         // Clone offers when tiered flea enabled as we may modify the offer
@@ -847,7 +846,7 @@ public class RagfairOfferHelper(
         var tplVars = new SystemData
         {
             SoldItem = hasKey ? value : itemTpl,
-            BuyerNickname = botHelper.GetPmcNicknameOfMaxLength(BotConfig.BotNameLengthLimit),
+            BuyerNickname = botHelper.GetPmcNicknameOfMaxLength(botConfig.BotNameLengthLimit),
             ItemCount = boughtAmount,
         };
 

@@ -7,10 +7,8 @@ using SPTarkov.Server.Core.Servers;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable(InjectionType.Singleton)]
-public class HttpServerHelper(ConfigServer configServer)
+public class HttpServerHelper(HttpConfig httpConfig)
 {
-    protected readonly HttpConfig HttpConfig = configServer.GetConfig<HttpConfig>();
-
     protected readonly FrozenDictionary<string, string> Mime = new Dictionary<string, string>
     {
         { "css", "text/css" },
@@ -35,7 +33,7 @@ public class HttpServerHelper(ConfigServer configServer)
     /// <returns>URI</returns>
     public string BuildUrl()
     {
-        return $"{HttpConfig.BackendIp}:{HttpConfig.BackendPort}";
+        return $"{httpConfig.BackendIp}:{httpConfig.BackendPort}";
     }
 
     /// <summary>

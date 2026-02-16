@@ -1,9 +1,9 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -16,11 +16,9 @@ public class RepeatableQuestHelper(
     DatabaseService databaseService,
     ServerLocalisationService serverLocalisationService,
     ICloner cloner,
-    ConfigServer configServer
+    QuestConfig questConfig
 )
 {
-    protected readonly QuestConfig QuestConfig = configServer.GetConfig<QuestConfig>();
-
     /// <summary>
     ///     Get the relevant elimination config based on the current players PMC level
     /// </summary>
@@ -188,7 +186,7 @@ public class RepeatableQuestHelper(
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     protected Dictionary<string, MongoId> GetRepeatableQuestTemplatesByGroup(PlayerGroup playerGroup)
     {
-        var templates = QuestConfig.RepeatableQuestTemplates;
+        var templates = questConfig.RepeatableQuestTemplates;
 
         return playerGroup switch
         {
@@ -205,7 +203,7 @@ public class RepeatableQuestHelper(
     /// <returns>guid</returns>
     public string? GetQuestLocationByMapId(string locationKey)
     {
-        if (!QuestConfig.LocationIdMap.TryGetValue(locationKey, out var locationId))
+        if (!questConfig.LocationIdMap.TryGetValue(locationKey, out var locationId))
         {
             logger.Error(serverLocalisationService.GetText("repeatable-quest_helper_no_loc_id", locationKey));
             return null;

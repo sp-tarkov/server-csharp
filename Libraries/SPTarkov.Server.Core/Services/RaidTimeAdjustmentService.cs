@@ -1,3 +1,4 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Constants;
 using SPTarkov.Server.Core.Helpers;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Models.Eft.Game;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Location;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 
@@ -20,11 +20,9 @@ public class RaidTimeAdjustmentService(
     RandomUtil randomUtil,
     WeightedRandomHelper weightedRandomHelper,
     ProfileActivityService profileActivityService,
-    ConfigServer configServer
+    LocationConfig locationConfig
 )
 {
-    protected readonly LocationConfig LocationConfig = configServer.GetConfig<LocationConfig>();
-
     /// <summary>
     ///     Make alterations to the base map data passed in
     ///     Loot multipliers/waves/wave start times
@@ -46,12 +44,12 @@ public class RaidTimeAdjustmentService(
         // Change loot multiplier values before they're used below
         if (raidAdjustments.DynamicLootPercent < 100)
         {
-            AdjustLootMultipliers(LocationConfig.LooseLootMultiplier, raidAdjustments.DynamicLootPercent);
+            AdjustLootMultipliers(locationConfig.LooseLootMultiplier, raidAdjustments.DynamicLootPercent);
         }
 
         if (raidAdjustments.StaticLootPercent < 100)
         {
-            AdjustLootMultipliers(LocationConfig.StaticLootMultiplier, raidAdjustments.StaticLootPercent);
+            AdjustLootMultipliers(locationConfig.StaticLootMultiplier, raidAdjustments.StaticLootPercent);
         }
 
         // Adjust the escape time limit
@@ -279,7 +277,7 @@ public class RaidTimeAdjustmentService(
     /// <returns>ScavRaidTimeLocationSettings</returns>
     protected ScavRaidTimeLocationSettings GetMapSettings(string location)
     {
-        var mapSettings = LocationConfig.ScavRaidTimeSettings.Maps[location.ToLowerInvariant()];
+        var mapSettings = locationConfig.ScavRaidTimeSettings.Maps[location.ToLowerInvariant()];
         if (mapSettings is null)
         {
             logger.Warning($"Unable to find scav raid time settings for map: {location}, using defaults");
@@ -335,7 +333,7 @@ public class RaidTimeAdjustmentService(
             //
             // I added 2 seconds just to be safe...
             //
-            var trainArrivalDelaySeconds = LocationConfig.ScavRaidTimeSettings.Settings.TrainArrivalDelayObservedSeconds;
+            var trainArrivalDelaySeconds = locationConfig.ScavRaidTimeSettings.Settings.TrainArrivalDelayObservedSeconds;
 
             // Determine the earliest possible time in the raid when the train would leave
             var earliestPossibleDepartureMinutes = (exit.MinTime + exit.Count + exit.ExfiltrationTime + trainArrivalDelaySeconds) / 60;

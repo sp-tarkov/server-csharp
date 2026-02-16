@@ -1,5 +1,6 @@
 using System.Collections.Frozen;
 using System.Globalization;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
@@ -10,7 +11,6 @@ using SPTarkov.Server.Core.Models.Eft.Quests;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -33,12 +33,11 @@ public class QuestHelper(
     ServerLocalisationService serverLocalisationService,
     SeasonalEventService seasonalEventService,
     MailSendService mailSendService,
-    ConfigServer configServer,
+    QuestConfig questConfig,
     ICloner cloner
 )
 {
     protected readonly FrozenSet<QuestStatusEnum> StartedOrAvailToFinish = [QuestStatusEnum.Started, QuestStatusEnum.AvailableForFinish];
-    protected readonly QuestConfig QuestConfig = configServer.GetConfig<QuestConfig>();
     private Dictionary<MongoId, List<QuestCondition>>? _sellToTraderQuestConditionCache;
 
     /// <summary>
@@ -102,65 +101,6 @@ public class QuestHelper(
 
         // Return quests found in after but not before
         return after.Where(quest => !beforeQuests.Contains(quest.Id));
-    }
-
-    /// <summary>
-    ///     Adjust skill experience for low skill levels, mimicking the official client
-    /// </summary>
-    /// <param name="profileSkill">the skill experience is being added to</param>
-    /// <param name="progressAmount">the amount of experience being added to the skill</param>
-    /// <returns>the adjusted skill progress gain</returns>
-    [Obsolete("Will be removed in 4.1: Use ProfileHelper.AdjustSkillExpForLowLevels instead.")]
-    public int AdjustSkillExpForLowLevels(CommonSkill profileSkill, int progressAmount)
-    {
-        // TODO: what used this? can't find any uses in node
-        var currentLevel = Math.Floor((double)(profileSkill.Progress / 100));
-
-        // Only run this if the current level is under 9
-        if (currentLevel >= 9)
-        {
-            return progressAmount;
-        }
-
-        // This calculates how much progress we have in the skill's starting level
-        var startingLevelProgress = profileSkill.Progress % 100 * ((currentLevel + 1) / 10);
-
-        // The code below assumes a 1/10th progress skill amount
-        var remainingProgress = progressAmount / 10;
-
-        // We have to do this loop to handle edge cases where the provided XP bumps your level up
-        // See "CalculateExpOnFirstLevels" in client for original logic
-        var adjustedSkillProgress = 0;
-        while (remainingProgress > 0 && currentLevel < 9)
-        {
-            // Calculate how much progress to add, limiting it to the current level max progress
-            var currentLevelRemainingProgress = (currentLevel + 1) * 10 - startingLevelProgress;
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"currentLevelRemainingProgress: {currentLevelRemainingProgress}");
-            }
-
-            var progressToAdd = Math.Min(remainingProgress, currentLevelRemainingProgress);
-            var adjustedProgressToAdd = 10 / (currentLevel + 1) * progressToAdd;
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug($"Progress To Add: {progressToAdd}  Adjusted for level: {adjustedProgressToAdd}");
-            }
-
-            // Add the progress amount adjusted by level
-            adjustedSkillProgress += (int)adjustedProgressToAdd;
-            remainingProgress -= (int)progressToAdd;
-            startingLevelProgress = 0;
-            currentLevel++;
-        }
-
-        // If there's any remaining progress, add it. This handles if you go from level 8 -> 9
-        if (remainingProgress > 0)
-        {
-            adjustedSkillProgress += remainingProgress;
-        }
-
-        return adjustedSkillProgress;
     }
 
     /// <summary>
@@ -429,7 +369,7 @@ public class QuestHelper(
         }
 
         // Should non-season event quests be shown to player
-        if (!QuestConfig.ShowNonSeasonalEventQuests && seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.None))
+        if (!questConfig.ShowNonSeasonalEventQuests && seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.None))
         {
             return false;
         }
@@ -446,13 +386,13 @@ public class QuestHelper(
     public bool QuestIsForOtherSide(string playerSide, MongoId questId)
     {
         var isUsec = string.Equals(playerSide, "usec", StringComparison.OrdinalIgnoreCase);
-        if (isUsec && QuestConfig.BearOnlyQuests.Contains(questId))
+        if (isUsec && questConfig.BearOnlyQuests.Contains(questId))
         // Player is usec and quest is bear only, skip
         {
             return true;
         }
 
-        if (!isUsec && QuestConfig.UsecOnlyQuests.Contains(questId))
+        if (!isUsec && questConfig.UsecOnlyQuests.Contains(questId))
         // Player is bear and quest is usec only, skip
         {
             return true;
@@ -471,7 +411,7 @@ public class QuestHelper(
     /// <returns>True = Quest should not be visible to game version</returns>
     protected bool QuestIsProfileBlacklisted(string gameVersion, MongoId questId)
     {
-        var questBlacklist = QuestConfig.ProfileBlacklist.GetValueOrDefault(gameVersion);
+        var questBlacklist = questConfig.ProfileBlacklist.GetValueOrDefault(gameVersion);
         if (questBlacklist is null)
         {
             // Not blacklisted
@@ -490,7 +430,7 @@ public class QuestHelper(
     /// <returns>True = Quest should be visible to game version</returns>
     protected bool QuestIsProfileWhitelisted(string gameVersion, MongoId questId)
     {
-        var questBlacklist = QuestConfig.ProfileBlacklist.GetValueOrDefault(gameVersion);
+        var questBlacklist = questConfig.ProfileBlacklist.GetValueOrDefault(gameVersion);
         if (questBlacklist is null)
         // Not blacklisted
         {
@@ -1013,9 +953,9 @@ public class QuestHelper(
     /// <returns>Hours item will be available for</returns>
     public double GetMailItemRedeemTimeHoursForProfile(PmcData pmcData)
     {
-        if (!QuestConfig.MailRedeemTimeHours.TryGetValue(pmcData.Info.GameVersion, out var hours))
+        if (!questConfig.MailRedeemTimeHours.TryGetValue(pmcData.Info.GameVersion, out var hours))
         {
-            return QuestConfig.MailRedeemTimeHours["default"];
+            return questConfig.MailRedeemTimeHours["default"];
         }
 
         return hours;

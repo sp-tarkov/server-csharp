@@ -15,11 +15,9 @@ public class ForceSnowMessageHandler(
     ServerLocalisationService serverLocalisationService,
     MailSendService mailSendService,
     RandomUtil randomUtil,
-    ConfigServer configServer
+    WeatherConfig weatherConfig
 ) : IChatMessageHandler
 {
-    protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
-
     public int GetPriority()
     {
         return 99;
@@ -32,7 +30,7 @@ public class ForceSnowMessageHandler(
 
     public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
-        WeatherConfig.OverrideSeason = Season.WINTER;
+        weatherConfig.OverrideSeason = Season.WINTER;
 
         mailSendService.SendUserMessageToPlayer(
             sessionId,

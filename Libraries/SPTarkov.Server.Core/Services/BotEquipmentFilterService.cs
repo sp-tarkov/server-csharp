@@ -17,11 +17,10 @@ public class BotEquipmentFilterService(
     ISptLogger<BotEquipmentFilterService> logger,
     BotHelper botHelper,
     ProfileHelper profileHelper,
-    ConfigServer configServer
+    BotConfig botConfig
 )
 {
-    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
-    protected readonly Dictionary<string, EquipmentFilters?> BotEquipmentConfig = configServer.GetConfig<BotConfig>().Equipment;
+    protected readonly Dictionary<string, EquipmentFilters?> BotEquipmentConfig = botConfig.Equipment;
 
     /// <summary>
     ///     Filter a bots data to exclude equipment and cartridges defines in the botConfig
@@ -133,7 +132,7 @@ public class BotEquipmentFilterService(
     /// <returns>Dictionary of weapon type and their whitelisted scope types</returns>
     public Dictionary<MongoId, HashSet<MongoId>>? GetBotWeaponSightWhitelist(string botEquipmentRole)
     {
-        return BotConfig.Equipment.TryGetValue(botEquipmentRole, out var botEquipmentSettings)
+        return botConfig.Equipment.TryGetValue(botEquipmentRole, out var botEquipmentSettings)
             ? botEquipmentSettings?.WeaponSightWhitelist
             : null;
     }

@@ -1,3 +1,4 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
@@ -6,7 +7,6 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
@@ -27,10 +27,9 @@ public class RagfairPriceService(
     DatabaseService databaseService,
     DatabaseServer databaseServer,
     ServerLocalisationService serverLocalisationService,
-    ConfigServer configServer
+    RagfairConfig ragfairConfig
 )
 {
-    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
     protected Dictionary<MongoId, double>? StaticPrices;
 
     /// <summary>
@@ -39,7 +38,7 @@ public class RagfairPriceService(
     public void Load()
     {
         RefreshStaticPrices();
-        if (RagfairConfig.Dynamic.GenerateBaseFleaPrices.UseHandbookPrice)
+        if (ragfairConfig.Dynamic.GenerateBaseFleaPrices.UseHandbookPrice)
         {
             ReplaceFleaBasePrices();
         }
@@ -72,7 +71,7 @@ public class RagfairPriceService(
     /// </summary>
     public void ReplaceFleaBasePrices()
     {
-        var config = RagfairConfig.Dynamic.GenerateBaseFleaPrices;
+        var config = ragfairConfig.Dynamic.GenerateBaseFleaPrices;
         var pricePool = databaseServer.GetTables().Templates.Prices;
         var hideoutCraftItems = GetHideoutCraftItemTpls();
 
@@ -148,13 +147,13 @@ public class RagfairPriceService(
     protected double GetFleaBasePriceMultiplier(MongoId itemTpl, GenerateFleaPrices config)
     {
         // Specific item multiplier may exist, check for it
-        if (RagfairConfig.Dynamic.GenerateBaseFleaPrices.ItemTplMultiplierOverride.TryGetValue(itemTpl, out var specificItemMultiplier))
+        if (ragfairConfig.Dynamic.GenerateBaseFleaPrices.ItemTplMultiplierOverride.TryGetValue(itemTpl, out var specificItemMultiplier))
         {
             return specificItemMultiplier;
         }
 
         // Check if tpl is of each time, if it is, use that multi
-        foreach (var (itemType, multiplier) in RagfairConfig.Dynamic.GenerateBaseFleaPrices.ItemTypeMultiplierOverride)
+        foreach (var (itemType, multiplier) in ragfairConfig.Dynamic.GenerateBaseFleaPrices.ItemTypeMultiplierOverride)
         {
             if (itemHelper.IsOfBaseclass(itemTpl, itemType))
             {
@@ -162,7 +161,7 @@ public class RagfairPriceService(
             }
         }
 
-        return RagfairConfig.Dynamic.GenerateBaseFleaPrices.PriceMultiplier;
+        return ragfairConfig.Dynamic.GenerateBaseFleaPrices.PriceMultiplier;
     }
 
     /// <summary>
@@ -307,13 +306,13 @@ public class RagfairPriceService(
         var price = GetFleaPriceForItem(itemTemplateId);
 
         // Adjust price if below handbook price, based on config.
-        if (RagfairConfig.Dynamic.OfferAdjustment.AdjustPriceWhenBelowHandbookPrice)
+        if (ragfairConfig.Dynamic.OfferAdjustment.AdjustPriceWhenBelowHandbookPrice)
         {
             price = AdjustPriceIfBelowHandbook(price, itemTemplateId);
         }
 
         // Use trader price if higher, based on config.
-        if (RagfairConfig.Dynamic.UseTraderPriceForOffersIfHigher)
+        if (ragfairConfig.Dynamic.UseTraderPriceForOffersIfHigher)
         {
             var traderPrice = traderHelper.GetHighestSellToTraderPrice(itemTemplateId);
             if (traderPrice > price)
@@ -330,28 +329,28 @@ public class RagfairPriceService(
         )
         {
             price =
-                RagfairConfig.Dynamic.GenerateBaseFleaPrices.UseHandbookPrice
-                && RagfairConfig.Dynamic.GenerateBaseFleaPrices.GeneratePresetPriceByChildren
+                ragfairConfig.Dynamic.GenerateBaseFleaPrices.UseHandbookPrice
+                && ragfairConfig.Dynamic.GenerateBaseFleaPrices.GeneratePresetPriceByChildren
                     ? GetPresetPriceByChildren(offerItems)
                     : GetWeaponPresetPrice(item, offerItems, price);
             isPreset = true;
         }
 
         // Check for existence of manual price adjustment multiplier
-        if (RagfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(itemTemplateId, out var multiplier))
+        if (ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(itemTemplateId, out var multiplier))
         {
             price *= multiplier;
         }
 
         // The quality of the item affects the price + not on the ignore list
-        if (item is not null && !RagfairConfig.Dynamic.IgnoreQualityPriceVarianceBlacklist.Contains(itemTemplateId))
+        if (item is not null && !ragfairConfig.Dynamic.IgnoreQualityPriceVarianceBlacklist.Contains(itemTemplateId))
         {
             var qualityModifier = itemHelper.GetItemQualityModifier(item);
             price *= qualityModifier;
         }
 
         // Make adjustments for unreasonably priced items.
-        foreach (var (key, value) in RagfairConfig.Dynamic.UnreasonableModPrices)
+        foreach (var (key, value) in ragfairConfig.Dynamic.UnreasonableModPrices)
         {
             if (!value.Enabled || !itemHelper.IsOfBaseclass(itemTemplateId, key))
             {
@@ -415,7 +414,7 @@ public class RagfairPriceService(
     protected MinMax<double> GetOfferTypeRangeValues(bool isPreset, bool isPack)
     {
         // Use different min/max values if the item is a preset or pack
-        var priceRanges = RagfairConfig.Dynamic.PriceRanges;
+        var priceRanges = ragfairConfig.Dynamic.PriceRanges;
         if (isPreset)
         {
             return priceRanges.Preset;
@@ -439,7 +438,7 @@ public class RagfairPriceService(
     {
         var itemHandbookPrice = GetStaticPriceForItem(itemTpl);
         var priceDifferencePercent = GetPriceDifference(itemHandbookPrice.Value, itemPrice);
-        var offerAdjustmentSettings = RagfairConfig.Dynamic.OfferAdjustment;
+        var offerAdjustmentSettings = ragfairConfig.Dynamic.OfferAdjustment;
 
         // Only adjust price if difference is > a percent AND item price passes threshold set in config
         if (

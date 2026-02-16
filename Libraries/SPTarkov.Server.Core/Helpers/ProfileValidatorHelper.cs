@@ -1,4 +1,5 @@
-﻿using SPTarkov.DI.Annotations;
+﻿using SPTarkov.Common.Models.Logging;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Exceptions.Items;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
@@ -6,7 +7,6 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 
@@ -14,14 +14,12 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class ProfileValidatorHelper(
-    ConfigServer configServer,
+    CoreConfig coreConfig,
     DatabaseService databaseService,
     ISptLogger<ProfileValidatorHelper> logger,
     ServerLocalisationService serverLocalisationService
 )
 {
-    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
-
     /// <summary>
     ///     Checks profile inventory for items that do not exist inside the items DB
     /// </summary>
@@ -65,7 +63,7 @@ public class ProfileValidatorHelper(
 
         foreach (var invalidItemId in invalidItemIds)
         {
-            if (CoreConfig.Fixes.RemoveModItemsFromProfile)
+            if (coreConfig.Fixes.RemoveModItemsFromProfile)
             {
                 logger.Warning($"Deleting item id: {invalidItemId} from inventory and insurance");
 
@@ -150,7 +148,7 @@ public class ProfileValidatorHelper(
                 foreach (var itemToRemove in itemsToRemove)
                 {
                     // We've found an item to remove, but the remove config isn't enabled, throw an exception
-                    if (!CoreConfig.Fixes.RemoveModItemsFromProfile)
+                    if (!coreConfig.Fixes.RemoveModItemsFromProfile)
                     {
                         throw new InvalidModdedItemException(
                             serverLocalisationService.GetText("fixer-mod_item_found", itemToRemove.Template.ToString())
@@ -195,7 +193,7 @@ public class ProfileValidatorHelper(
             }
 
             // Found a clothing item to remove but the fixer isn't enabled, throw an exception
-            if (!CoreConfig.Fixes.RemoveModItemsFromProfile)
+            if (!coreConfig.Fixes.RemoveModItemsFromProfile)
             {
                 throw new InvalidModdedClothingException(
                     serverLocalisationService.GetText("fixer-clothing_item_found", clothingItem.ToString())
@@ -234,7 +232,7 @@ public class ProfileValidatorHelper(
                 if (!DoesTraderExist(activeQuest.TraderId))
                 {
                     // We found a trader that doesn't exist, but the fixer isnt enabled, throw an exception
-                    if (!CoreConfig.Fixes.RemoveModItemsFromProfile)
+                    if (!coreConfig.Fixes.RemoveModItemsFromProfile)
                     {
                         throw new InvalidModdedTraderException(
                             serverLocalisationService.GetText("fixer-trader_found", activeQuest.TraderId.ToString())
@@ -287,7 +285,7 @@ public class ProfileValidatorHelper(
         foreach (var (traderId, _) in purchases)
         {
             // We have purchases to remove and the fixer isn't enabled, throw an exception
-            if (!CoreConfig.Fixes.RemoveModItemsFromProfile)
+            if (!coreConfig.Fixes.RemoveModItemsFromProfile)
             {
                 throw new InvalidModdedTraderException(serverLocalisationService.GetText("fixer-trader_found", traderId.ToString()));
             }
@@ -313,7 +311,7 @@ public class ProfileValidatorHelper(
             {
                 logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template.ToString()));
 
-                if (CoreConfig.Fixes.RemoveModItemsFromProfile)
+                if (coreConfig.Fixes.RemoveModItemsFromProfile)
                 {
                     logger.Warning($"Item: {item.Template} has resulted in the deletion of {buildType} build: {build.Name}");
 
@@ -333,7 +331,7 @@ public class ProfileValidatorHelper(
             {
                 logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.Template.ToString()));
 
-                if (CoreConfig.Fixes.RemoveModItemsFromProfile)
+                if (coreConfig.Fixes.RemoveModItemsFromProfile)
                 {
                     logger.Warning($"Item: {item.Template} has resulted in the deletion of {buildType} build: {build.Name}");
 
@@ -369,7 +367,7 @@ public class ProfileValidatorHelper(
             {
                 logger.Error(serverLocalisationService.GetText("fixer-mod_item_found", item.TemplateId.ToString()));
 
-                if (CoreConfig.Fixes.RemoveModItemsFromProfile)
+                if (coreConfig.Fixes.RemoveModItemsFromProfile)
                 {
                     logger.Warning($"Item: {item.TemplateId} has resulted in the deletion of magazine build: {magazineBuild.Name}");
 

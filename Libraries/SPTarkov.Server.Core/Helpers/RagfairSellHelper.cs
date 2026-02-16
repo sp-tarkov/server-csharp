@@ -1,8 +1,8 @@
 using System.Globalization;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -16,11 +16,9 @@ public class RagfairSellHelper(
     TimeUtil timeUtil,
     RandomUtil randomUtil,
     DatabaseService databaseService,
-    ConfigServer configServer
+    RagfairConfig ragfairConfig
 )
 {
-    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
-
     /// <summary>
     ///     Get the percent chance to sell an item based on its average listed price vs player chosen listing price
     /// </summary>
@@ -30,7 +28,7 @@ public class RagfairSellHelper(
     /// <returns>percent value</returns>
     public double CalculateSellChance(double averageOfferPriceRub, double playerListedPriceRub, double qualityMultiplier)
     {
-        var sellConfig = RagfairConfig.Sell.Chance;
+        var sellConfig = ragfairConfig.Sell.Chance;
 
         // Base sell chance modified by items quality
         var baseSellChancePercent = sellConfig.Base * qualityMultiplier;
@@ -77,8 +75,8 @@ public class RagfairSellHelper(
 
         if (sellChancePercent is null)
         {
-            effectiveSellChance = RagfairConfig.Sell.Chance.Base;
-            logger.Warning($"Sell chance was not a number: {sellChancePercent}, defaulting to {RagfairConfig.Sell.Chance.Base}%");
+            effectiveSellChance = ragfairConfig.Sell.Chance.Base;
+            logger.Warning($"Sell chance was not a number: {sellChancePercent}, defaulting to {ragfairConfig.Sell.Chance.Base}%");
         }
 
         if (logger.IsLogEnabled(LogLevel.Debug))
@@ -100,8 +98,8 @@ public class RagfairSellHelper(
                 // Passed roll check, item will be sold
                 // Weight time to sell towards selling faster based on how cheap the item sold
                 var weighting = (100 - effectiveSellChance) / 100;
-                var maximumTime = weighting * RagfairConfig.Sell.Time.Max * 60d;
-                var minimumTime = RagfairConfig.Sell.Time.Min * 60d;
+                var maximumTime = weighting * ragfairConfig.Sell.Time.Max * 60d;
+                var minimumTime = ragfairConfig.Sell.Time.Min * 60d;
                 if (maximumTime < minimumTime)
                 {
                     maximumTime = minimumTime + 5;

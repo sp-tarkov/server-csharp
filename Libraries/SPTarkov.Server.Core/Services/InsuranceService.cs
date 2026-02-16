@@ -1,3 +1,4 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
@@ -8,7 +9,6 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Services;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using Insurance = SPTarkov.Server.Core.Models.Eft.Profile.Insurance;
@@ -27,10 +27,9 @@ public class InsuranceService(
     TraderHelper traderHelper,
     ServerLocalisationService serverLocalisationService,
     MailSendService mailSendService,
-    ConfigServer configServer
+    InsuranceConfig insuranceConfig
 )
 {
-    protected readonly InsuranceConfig InsuranceConfig = configServer.GetConfig<InsuranceConfig>();
     protected readonly Dictionary<MongoId, Dictionary<MongoId, List<Item>>?> Insured = new();
 
     /// <summary>
@@ -139,14 +138,14 @@ public class InsuranceService(
     protected double GetInsuranceReturnTimestamp(PmcData pmcData, TraderBase trader)
     {
         // If override in config is non-zero, use that instead of trader values
-        if (InsuranceConfig.ReturnTimeOverrideSeconds > 0)
+        if (insuranceConfig.ReturnTimeOverrideSeconds > 0)
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                logger.Debug($"Insurance override used: returning in {InsuranceConfig.ReturnTimeOverrideSeconds} seconds");
+                logger.Debug($"Insurance override used: returning in {insuranceConfig.ReturnTimeOverrideSeconds} seconds");
             }
 
-            return timeUtil.GetTimeStamp() + InsuranceConfig.ReturnTimeOverrideSeconds;
+            return timeUtil.GetTimeStamp() + insuranceConfig.ReturnTimeOverrideSeconds;
         }
 
         var insuranceReturnTimeBonusSum = pmcData.GetBonusValueFromProfile(BonusType.InsuranceReturnTime);
@@ -180,10 +179,10 @@ public class InsuranceService(
 
     protected double GetMaxInsuranceStorageTime(TraderBase traderBase)
     {
-        if (InsuranceConfig.StorageTimeOverrideSeconds > 0)
+        if (insuranceConfig.StorageTimeOverrideSeconds > 0)
         // Override exists, use instead of traders value
         {
-            return InsuranceConfig.StorageTimeOverrideSeconds;
+            return insuranceConfig.StorageTimeOverrideSeconds;
         }
 
         return timeUtil.GetHoursAsSeconds((int)traderBase.Insurance.MaxStorageTime);

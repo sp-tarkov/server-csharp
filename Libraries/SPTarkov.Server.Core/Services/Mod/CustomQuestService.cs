@@ -10,8 +10,8 @@ namespace SPTarkov.Server.Core.Services.Mod;
 [Injectable]
 public class CustomQuestService(
     DatabaseService databaseService,
-    ConfigServer configServer,
-    ServerLocalisationService serverLocalisationService
+    ServerLocalisationService serverLocalisationService,
+    QuestConfig questConfig
 )
 {
     /// <summary>
@@ -100,8 +100,6 @@ public class CustomQuestService(
     /// <param name="result">Result of the quest creation</param>
     private void RestrictQuestSide(MongoId questId, PlayerSide side, CreateQuestResult result)
     {
-        var questConfig = configServer.GetConfig<QuestConfig>();
-
         // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
         switch (side)
         {

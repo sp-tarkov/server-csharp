@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -23,7 +24,7 @@ public class ProfileHelperTests
             DI.GetInstance().GetService<Watermark>(),
             DI.GetInstance().GetService<TimeUtil>(),
             DI.GetInstance().GetService<ServerLocalisationService>(),
-            DI.GetInstance().GetService<ConfigServer>()
+            DI.GetInstance().GetService<InventoryConfig>()
         );
     }
 

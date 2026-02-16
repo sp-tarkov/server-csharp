@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Spt.Config;
 
-public record PmcChatResponse : BaseConfig
+public record PmcChatResponseConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public override string Kind { get; set; } = "spt-pmcchatresponse";

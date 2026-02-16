@@ -1,3 +1,4 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
@@ -9,7 +10,6 @@ using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
@@ -26,11 +26,9 @@ public class PaymentService(
     InventoryHelper inventoryHelper,
     ServerLocalisationService serverLocalisationService,
     PaymentHelper paymentHelper,
-    ConfigServer configServer
+    InventoryConfig inventoryConfig
 )
 {
-    protected readonly InventoryConfig InventoryConfig = configServer.GetConfig<InventoryConfig>();
-
     /// <summary>
     ///     Take money and insert items into return to server request
     /// </summary>
@@ -455,8 +453,8 @@ public class PaymentService(
                 );
 
                 // e.g. secure container
-                var aInDeprioContainer = InventoryConfig.DeprioritisedMoneyContainers.Contains(aImmediateParentTemplate.Value);
-                var bInDeprioContainer = InventoryConfig.DeprioritisedMoneyContainers.Contains(bImmediateParentTemplate.Value);
+                var aInDeprioContainer = inventoryConfig.DeprioritisedMoneyContainers.Contains(aImmediateParentTemplate.Value);
+                var bInDeprioContainer = inventoryConfig.DeprioritisedMoneyContainers.Contains(bImmediateParentTemplate.Value);
 
                 // Prioritize B
                 if (!aInDeprioContainer && bInDeprioContainer)

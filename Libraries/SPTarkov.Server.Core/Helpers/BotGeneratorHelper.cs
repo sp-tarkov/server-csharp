@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Constants;
 using SPTarkov.Server.Core.Extensions;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -25,7 +25,7 @@ public class BotGeneratorHelper(
     ProfileActivityService profileActivityService,
     ServerLocalisationService serverLocalisationService,
     BotInventoryContainerService botInventoryContainerService,
-    ConfigServer configServer
+    BotConfig botConfig
 )
 {
     // Equipment slot ids that do not conflict with other slots
@@ -39,8 +39,6 @@ public class BotGeneratorHelper(
     ];
 
     private static readonly FrozenSet<string> _pmcTypes = [Sides.PmcBear.ToLowerInvariant(), Sides.PmcUsec.ToLowerInvariant()];
-
-    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
 
     /// <summary>
     ///     Adds properties to an item
@@ -59,7 +57,7 @@ public class BotGeneratorHelper(
         RandomisedResourceDetails? randomisationSettings = null;
         if (botRole is not null)
         {
-            BotConfig.LootItemResourceRandomization.TryGetValue(botRole, out randomisationSettings);
+            botConfig.LootItemResourceRandomization.TryGetValue(botRole, out randomisationSettings);
         }
 
         Upd itemUpd = new();
@@ -202,7 +200,7 @@ public class BotGeneratorHelper(
     /// <returns>Equipment filter settings</returns>
     protected EquipmentFilters? GetBotEquipmentSettingFromConfig(string botRole)
     {
-        return BotConfig.Equipment.GetValueOrDefault(GetBotEquipmentRole(botRole));
+        return botConfig.Equipment.GetValueOrDefault(GetBotEquipmentRole(botRole));
     }
 
     /// <summary>

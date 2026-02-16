@@ -12,15 +12,13 @@ using SPTarkov.Server.Core.Utils.Cloners;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable(InjectionType.Singleton)]
-public class HandbookHelper(ISptLogger<HandbookHelper> logger, DatabaseService databaseService, ConfigServer configServer, ICloner cloner)
+public class HandbookHelper(ISptLogger<HandbookHelper> logger, DatabaseService databaseService, ItemConfig itemConfig, ICloner cloner)
 {
     private LookupCollection? _handbookPriceCache;
     protected virtual LookupCollection HandbookPriceCache
     {
         get { return _handbookPriceCache ??= HydrateHandbookCache(); }
     }
-
-    protected readonly ItemConfig ItemConfig = configServer.GetConfig<ItemConfig>();
 
     /// <summary>
     ///     Create an in-memory cache of all items with associated handbook price in handbookPriceCache class
@@ -30,7 +28,7 @@ public class HandbookHelper(ISptLogger<HandbookHelper> logger, DatabaseService d
         var result = new LookupCollection();
         var handbook = databaseService.GetHandbook();
         // Add handbook overrides found in items.json config into db
-        foreach (var (key, priceOverride) in ItemConfig.HandbookPriceOverride)
+        foreach (var (key, priceOverride) in itemConfig.HandbookPriceOverride)
         {
             var itemToUpdate = handbook.Items.FirstOrDefault(item => item.Id == key);
             if (itemToUpdate is null)

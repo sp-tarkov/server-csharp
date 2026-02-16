@@ -12,15 +12,9 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
-public class SendGiftMessageHandler(
-    MailSendService mailSendService,
-    RandomUtil randomUtil,
-    GiftService giftService,
-    ConfigServer configServer
-) : IChatMessageHandler
+public class SendGiftMessageHandler(MailSendService mailSendService, RandomUtil randomUtil, GiftService giftService, CoreConfig coreConfig)
+    : IChatMessageHandler
 {
-    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
-
     public int GetPriority()
     {
         return 1;
@@ -34,7 +28,7 @@ public class SendGiftMessageHandler(
     public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         // Gifts may be disabled via config
-        if (!CoreConfig.Features.ChatbotFeatures.SptFriendGiftsEnabled)
+        if (!coreConfig.Features.ChatbotFeatures.SptFriendGiftsEnabled)
         {
             return;
         }

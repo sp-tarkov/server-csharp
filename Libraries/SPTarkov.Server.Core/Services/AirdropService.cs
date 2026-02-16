@@ -1,3 +1,4 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
@@ -8,7 +9,6 @@ using SPTarkov.Server.Core.Models.Eft.Location;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Services;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
@@ -17,7 +17,7 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable]
 public class AirdropService(
     ISptLogger<AirdropService> logger,
-    ConfigServer configServer,
+    AirdropConfig airdropConfig,
     LootGenerator lootGenerator,
     DatabaseService databaseService,
     WeightedRandomHelper weightedRandomHelper,
@@ -26,11 +26,9 @@ public class AirdropService(
     ItemHelper itemHelper
 )
 {
-    protected readonly AirdropConfig AirdropConfig = configServer.GetConfig<AirdropConfig>();
-
     public GetAirdropLootResponse GenerateCustomAirdropLoot(GetAirdropLootRequest request)
     {
-        if (AirdropConfig.CustomAirdropMapping.TryGetValue(request.ContainerId, out var customAirdropInformation))
+        if (airdropConfig.CustomAirdropMapping.TryGetValue(request.ContainerId, out var customAirdropInformation))
         {
             // Found container id, generate specific loot
             return GenerateAirdropLoot(customAirdropInformation);
@@ -195,7 +193,7 @@ public class AirdropService(
     /// <returns>airdrop type value</returns>
     protected SptAirdropTypeEnum ChooseAirdropType()
     {
-        var possibleAirdropTypes = AirdropConfig.AirdropTypeWeightings;
+        var possibleAirdropTypes = airdropConfig.AirdropTypeWeightings;
 
         return weightedRandomHelper.GetWeightedValue(possibleAirdropTypes);
     }
@@ -207,13 +205,13 @@ public class AirdropService(
     /// <returns>LootRequest</returns>
     protected AirdropLootRequest GetAirdropLootConfigByType(SptAirdropTypeEnum? airdropType)
     {
-        if (!AirdropConfig.Loot.TryGetValue(airdropType.ToString() ?? string.Empty, out var lootSettingsByType))
+        if (!airdropConfig.Loot.TryGetValue(airdropType.ToString() ?? string.Empty, out var lootSettingsByType))
         {
             logger.Error(serverLocalisationService.GetText("location-unable_to_find_airdrop_drop_config_of_type", airdropType));
 
             // TODO: Get Radar airdrop to work. Atm Radar will default to common supply drop (mixed)
             // Default to common
-            lootSettingsByType = AirdropConfig.Loot[nameof(AirdropTypeEnum.Common)];
+            lootSettingsByType = airdropConfig.Loot[nameof(AirdropTypeEnum.Common)];
         }
 
         // Get all items that match the blacklisted types and fold into item blacklist

@@ -17,11 +17,9 @@ public class PMCLootGenerator(
     RagfairPriceService ragfairPriceService,
     SeasonalEventService seasonalEventService,
     WeightedRandomHelper weightedRandomHelper,
-    ConfigServer configServer
+    PmcConfig pmcConfig
 )
 {
-    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
-
     // Store loot against its type, usec/bear
     private readonly Dictionary<string, Dictionary<MongoId, double>>? _backpackLootPool = [];
     private readonly Dictionary<string, Dictionary<MongoId, double>>? _pocketLootPool = [];
@@ -47,7 +45,7 @@ public class PMCLootGenerator(
             }
 
             // Get a set of item types we want to generate
-            var allowedItemTypeWhitelist = PMCConfig.PocketLoot.Whitelist;
+            var allowedItemTypeWhitelist = pmcConfig.PocketLoot.Whitelist;
 
             // Get a set of ids we don't want to generate
             var blacklist = GetContainerLootBlacklist();
@@ -79,11 +77,11 @@ public class PMCLootGenerator(
             }
 
             // Get a set of item types we want to generate
-            var allowedItemTypeWhitelist = PMCConfig.VestLoot.Whitelist;
+            var allowedItemTypeWhitelist = pmcConfig.VestLoot.Whitelist;
 
             // Get a set of ids we don't want to generate
             var blacklist = GetContainerLootBlacklist();
-            blacklist.UnionWith(PMCConfig.VestLoot.Blacklist); // Include vest-specific blacklist
+            blacklist.UnionWith(pmcConfig.VestLoot.Blacklist); // Include vest-specific blacklist
 
             // Get pocket priceOverrides
             var vestPriceOverrides = GetPMCPriceOverrides(pmcRole, "vest");
@@ -111,9 +109,9 @@ public class PMCLootGenerator(
                 return existingLootPool;
             }
 
-            var allowedItemTypeWhitelist = PMCConfig.BackpackLoot.Whitelist;
+            var allowedItemTypeWhitelist = pmcConfig.BackpackLoot.Whitelist;
             var blacklist = GetContainerLootBlacklist();
-            blacklist.UnionWith(PMCConfig.BackpackLoot.Blacklist); // Include backpack-specific blacklist
+            blacklist.UnionWith(pmcConfig.BackpackLoot.Blacklist); // Include backpack-specific blacklist
 
             // Get pocket priceOverrides
             var backpackPriceOverrides = GetPMCPriceOverrides(pmcRole, "vest");
@@ -187,8 +185,8 @@ public class PMCLootGenerator(
     protected HashSet<MongoId> GetContainerLootBlacklist()
     {
         var blacklist = new HashSet<MongoId>();
-        blacklist.UnionWith(PMCConfig.PocketLoot.Blacklist);
-        blacklist.UnionWith(PMCConfig.GlobalLootBlacklist);
+        blacklist.UnionWith(pmcConfig.PocketLoot.Blacklist);
+        blacklist.UnionWith(pmcConfig.GlobalLootBlacklist);
         blacklist.UnionWith(itemFilterService.GetBlacklistedItems());
         blacklist.UnionWith(itemFilterService.GetItemRewardBlacklist());
         blacklist.UnionWith(itemFilterService.GetBlacklistedLootableItems());

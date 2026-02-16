@@ -17,12 +17,10 @@ public class RagfairHelper(
     DatabaseService databaseService,
     HandbookHelper handbookHelper,
     RagfairLinkedItemService ragfairLinkedItemService,
-    ConfigServer configServer,
+    RagfairConfig ragfairConfig,
     ICloner cloner
 )
 {
-    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
-
     /// <summary>
     /// Gets currency TAG from currency tpl value
     /// </summary>
@@ -102,7 +100,7 @@ public class RagfairHelper(
         var traders = databaseService.GetTraders();
 
         return traders
-            .Keys.Where(traderId => RagfairConfig.Traders.ContainsKey(traderId)) // Trader enabled in config
+            .Keys.Where(traderId => ragfairConfig.Traders.ContainsKey(traderId)) // Trader enabled in config
             .ToDictionary(traderId => traderId, traderId => traderAssortHelper.GetAssort(sessionId, traderId, showLockedAssorts));
     }
 

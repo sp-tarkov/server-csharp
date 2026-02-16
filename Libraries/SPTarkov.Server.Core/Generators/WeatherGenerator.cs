@@ -1,3 +1,4 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
@@ -5,7 +6,6 @@ using SPTarkov.Server.Core.Models.Eft.Weather;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Weather;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -17,15 +17,13 @@ public class WeatherGenerator(
     ISptLogger<WeatherGenerator> logger,
     TimeUtil timeUtil,
     WeatherHelper weatherHelper,
-    ConfigServer configServer,
+    WeatherConfig weatherConfig,
     WeightedRandomHelper weightedRandomHelper,
     RandomUtil randomUtil,
     IEnumerable<IWeatherPresetGenerator> weatherGenerators,
     ICloner cloner
 )
 {
-    protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
-
     /// <summary>
     /// Generate a weather object to send to client
     /// </summary>
@@ -76,9 +74,9 @@ public class WeatherGenerator(
     /// <returns>A dictionary of weather preset weights</returns>
     public Dictionary<WeatherPreset, double> GetWeatherPresetWeightsBySeason(Season currentSeason)
     {
-        return WeatherConfig.Weather.WeatherPresetWeight.TryGetValue(currentSeason.ToString(), out var weights)
+        return weatherConfig.Weather.WeatherPresetWeight.TryGetValue(currentSeason.ToString(), out var weights)
             ? weights
-            : WeatherConfig.Weather.WeatherPresetWeight.GetValueOrDefault("default")!;
+            : weatherConfig.Weather.WeatherPresetWeight.GetValueOrDefault("default")!;
     }
 
     /// <summary>
@@ -119,9 +117,9 @@ public class WeatherGenerator(
     /// <returns>PresetWeights</returns>
     protected PresetWeights GetWeatherWeightsByPreset(WeatherPreset weatherPreset)
     {
-        return WeatherConfig.Weather.PresetWeights.TryGetValue(weatherPreset.ToString(), out var value)
+        return weatherConfig.Weather.PresetWeights.TryGetValue(weatherPreset.ToString(), out var value)
             ? value
-            : WeatherConfig.Weather.PresetWeights["default"];
+            : weatherConfig.Weather.PresetWeights["default"];
     }
 
     /// <summary>

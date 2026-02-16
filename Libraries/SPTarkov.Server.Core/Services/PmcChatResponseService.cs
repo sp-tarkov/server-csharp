@@ -24,11 +24,9 @@ public class PmcChatResponseService(
     GiftService giftService,
     LocaleService localeService,
     MatchBotDetailsCacheService matchBotDetailsCacheService,
-    ConfigServer configServer
+    PmcChatResponseConfig pmcChatResponseConfig
 )
 {
-    protected readonly PmcChatResponse _pmcResponsesConfig = configServer.GetConfig<PmcChatResponse>();
-
     /// <summary>
     ///     For each PMC victim of the player, have a chance to send a message to the player, can be positive or negative
     /// </summary>
@@ -39,7 +37,7 @@ public class PmcChatResponseService(
     {
         foreach (var victim in pmcVictims)
         {
-            if (!randomUtil.GetChance100(_pmcResponsesConfig.Victim.ResponseChancePercent))
+            if (!randomUtil.GetChance100(pmcChatResponseConfig.Victim.ResponseChancePercent))
             {
                 continue;
             }
@@ -68,7 +66,7 @@ public class PmcChatResponseService(
     /// <param name="killer"> The bot who killed the player </param>
     public void SendKillerResponse(MongoId sessionId, PmcData pmcData, Aggressor killer)
     {
-        if (!randomUtil.GetChance100(_pmcResponsesConfig.Killer.ResponseChancePercent))
+        if (!randomUtil.GetChance100(pmcChatResponseConfig.Killer.ResponseChancePercent))
         {
             return;
         }
@@ -186,8 +184,8 @@ public class PmcChatResponseService(
     protected bool StripCapitalisation(bool isVictim)
     {
         var chance = isVictim
-            ? _pmcResponsesConfig.Victim.StripCapitalisationChancePercent
-            : _pmcResponsesConfig.Killer.StripCapitalisationChancePercent;
+            ? pmcChatResponseConfig.Victim.StripCapitalisationChancePercent
+            : pmcChatResponseConfig.Killer.StripCapitalisationChancePercent;
 
         return randomUtil.GetChance100(chance);
     }
@@ -199,7 +197,7 @@ public class PmcChatResponseService(
     /// <returns> True = should be stripped </returns>
     protected bool AllCaps(bool isVictim)
     {
-        var chance = isVictim ? _pmcResponsesConfig.Victim.AllCapsChancePercent : _pmcResponsesConfig.Killer.AllCapsChancePercent;
+        var chance = isVictim ? pmcChatResponseConfig.Victim.AllCapsChancePercent : pmcChatResponseConfig.Killer.AllCapsChancePercent;
 
         return randomUtil.GetChance100(chance);
     }
@@ -212,8 +210,8 @@ public class PmcChatResponseService(
     protected bool AppendSuffixToMessageEnd(bool isVictim)
     {
         var chance = isVictim
-            ? _pmcResponsesConfig.Victim.AppendBroToMessageEndChancePercent
-            : _pmcResponsesConfig.Killer.AppendBroToMessageEndChancePercent;
+            ? pmcChatResponseConfig.Victim.AppendBroToMessageEndChancePercent
+            : pmcChatResponseConfig.Killer.AppendBroToMessageEndChancePercent;
 
         return randomUtil.GetChance100(chance);
     }
@@ -225,7 +223,9 @@ public class PmcChatResponseService(
     /// <returns> Response type (positive/negative) </returns>
     protected string ChooseResponseType(bool isVictim = true)
     {
-        var responseWeights = isVictim ? _pmcResponsesConfig.Victim.ResponseTypeWeights : _pmcResponsesConfig.Killer.ResponseTypeWeights;
+        var responseWeights = isVictim
+            ? pmcChatResponseConfig.Victim.ResponseTypeWeights
+            : pmcChatResponseConfig.Killer.ResponseTypeWeights;
 
         return weightedRandomHelper.GetWeightedValue(responseWeights);
     }

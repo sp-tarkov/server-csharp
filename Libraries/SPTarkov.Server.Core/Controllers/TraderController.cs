@@ -1,3 +1,4 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Game;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -27,11 +27,9 @@ public class TraderController(
     TraderPurchasePersisterService traderPurchasePersisterService,
     FenceService fenceService,
     FenceBaseAssortGenerator fenceBaseAssortGenerator,
-    ConfigServer configServer
+    TraderConfig traderConfig
 )
 {
-    protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
-
     /// <summary>
     ///     Runs when onLoad event is fired
     ///     Iterate over traders, ensure a pristine copy of their assorts is stored in traderAssortService
@@ -40,7 +38,7 @@ public class TraderController(
     public void Load()
     {
         var nextHourTimestamp = timeUtil.GetTimeStampOfNextHour();
-        var traderResetStartsWithServer = TraderConfig.TradersResetFromServerStart;
+        var traderResetStartsWithServer = traderConfig.TradersResetFromServerStart;
 
         var traders = databaseService.GetTraders();
         foreach (var (traderId, trader) in traders)
@@ -58,9 +56,9 @@ public class TraderController(
             }
 
             // Adjust price by traderPriceMultiplier config property
-            if (!TraderConfig.TraderPriceMultiplier.Approx(1))
+            if (!traderConfig.TraderPriceMultiplier.Approx(1))
             {
-                AdjustTraderItemPrices(trader, TraderConfig.TraderPriceMultiplier);
+                AdjustTraderItemPrices(trader, traderConfig.TraderPriceMultiplier);
             }
 
             traderPurchasePersisterService.RemoveStalePurchasesFromProfiles(traderId);

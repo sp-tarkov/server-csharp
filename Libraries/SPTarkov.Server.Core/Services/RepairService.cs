@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
@@ -11,7 +12,6 @@ using SPTarkov.Server.Core.Models.Eft.Repair;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using BonusSettings = SPTarkov.Server.Core.Models.Spt.Config.BonusSettings;
@@ -31,12 +31,10 @@ public class RepairService(
     RepairHelper repairHelper,
     InventoryHelper inventoryHelper,
     ServerLocalisationService serverLocalisationService,
-    ConfigServer configServer,
+    RepairConfig repairConfig,
     WeightedRandomHelper weightedRandomHelper
 )
 {
-    protected readonly RepairConfig RepairConfig = configServer.GetConfig<RepairConfig>();
-
     /// <summary>
     ///     Use trader to repair an items durability
     /// </summary>
@@ -76,7 +74,7 @@ public class RepairService(
             repairItemDetails.Count.Value,
             false,
             repairQualityMultiplier.Value,
-            repairQualityMultiplier != 0 && RepairConfig.ApplyRandomizeDurabilityLoss
+            repairQualityMultiplier != 0 && repairConfig.ApplyRandomizeDurabilityLoss
         );
 
         // get repair price
@@ -86,12 +84,12 @@ public class RepairService(
             logger.Error(serverLocalisationService.GetText("repair-unable_to_find_item_repair_cost", itemToRepair.Template.ToString()));
         }
 
-        var repairCost = Math.Round(itemRepairCost.Value * repairItemDetails.Count.Value * repairRate.Value * RepairConfig.PriceMultiplier);
+        var repairCost = Math.Round(itemRepairCost.Value * repairItemDetails.Count.Value * repairRate.Value * repairConfig.PriceMultiplier);
 
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
             logger.Debug($"item base repair cost: {itemRepairCost}");
-            logger.Debug($"price multiplier: {RepairConfig.PriceMultiplier}");
+            logger.Debug($"price multiplier: {repairConfig.PriceMultiplier}");
             logger.Debug($"repair cost: {repairCost}");
         }
 
@@ -185,7 +183,7 @@ public class RepairService(
                 );
             }
 
-            var pointsToAddToVestSkill = repairDetails.RepairPoints * RepairConfig.ArmorKitSkillPointGainPerRepairPointMultiplier;
+            var pointsToAddToVestSkill = repairDetails.RepairPoints * repairConfig.ArmorKitSkillPointGainPerRepairPointMultiplier;
 
             logger.Debug($"Added: {pointsToAddToVestSkill} {vestSkillToLevel} skill");
             profileHelper.AddSkillPointsToPlayer(pmcData, vestSkillToLevel, pointsToAddToVestSkill.GetValueOrDefault(0));
@@ -220,8 +218,8 @@ public class RepairService(
         {
             // Weapons/armor have different divisors
             var intRepairMultiplier = itemHelper.IsOfBaseclass(repairDetails.RepairedItem.Template, BaseClasses.WEAPON)
-                ? RepairConfig.RepairKitIntellectGainMultiplier.Weapon
-                : RepairConfig.RepairKitIntellectGainMultiplier.Armor;
+                ? repairConfig.RepairKitIntellectGainMultiplier.Weapon
+                : repairConfig.RepairKitIntellectGainMultiplier.Armor;
 
             if (repairDetails.RepairPoints is null)
             {
@@ -247,7 +245,7 @@ public class RepairService(
         var random = new Random();
         // This formula and associated configs is calculated based on 30 repairs done on live
         // The points always came out 2-aligned, which is why there's a divide/multiply by 2 with ceil calls
-        var gainMult = RepairConfig.WeaponTreatment.PointGainMultiplier;
+        var gainMult = repairConfig.WeaponTreatment.PointGainMultiplier;
 
         // First we get a baseline based on our repair amount, and gain multiplier with a bit of rounding
         var step1 = Math.Ceiling(repairDetails.RepairAmount.Value / 2) * gainMult;
@@ -260,15 +258,15 @@ public class RepairService(
 
         // You can both crit fail and succeed at the same time, for fun (Balances out to 0 with default settings)
         // Add a random chance to crit-fail
-        if (random.NextDouble() <= RepairConfig.WeaponTreatment.CritFailureChance)
+        if (random.NextDouble() <= repairConfig.WeaponTreatment.CritFailureChance)
         {
-            skillPoints -= RepairConfig.WeaponTreatment.CritFailureAmount;
+            skillPoints -= repairConfig.WeaponTreatment.CritFailureAmount;
         }
 
         // Add a random chance to crit-succeed
-        if (random.NextDouble() <= RepairConfig.WeaponTreatment.CritSuccessChance)
+        if (random.NextDouble() <= repairConfig.WeaponTreatment.CritSuccessChance)
         {
-            skillPoints += RepairConfig.WeaponTreatment.CritSuccessAmount;
+            skillPoints += repairConfig.WeaponTreatment.CritSuccessAmount;
         }
 
         return Math.Max(skillPoints, 0);
@@ -311,7 +309,7 @@ public class RepairService(
             repairAmountTotal.Value,
             true,
             1,
-            ShouldRepairKitApplyDurabilityLoss(pmcData, RepairConfig.ApplyRandomizeDurabilityLoss)
+            ShouldRepairKitApplyDurabilityLoss(pmcData, repairConfig.ApplyRandomizeDurabilityLoss)
         );
 
         // Find and use repair kit defined in body
@@ -488,12 +486,12 @@ public class RepairService(
                 )
             )
             {
-                var armorConfig = RepairConfig.RepairKit.Armor;
+                var armorConfig = repairConfig.RepairKit.Armor;
                 AddBuff(armorConfig, repairDetails.RepairedItem);
             }
             else if (itemHelper.IsOfBaseclass(repairDetails.RepairedItem.Template, BaseClasses.WEAPON))
             {
-                var weaponConfig = RepairConfig.RepairKit.Weapon;
+                var weaponConfig = repairConfig.RepairKit.Weapon;
                 AddBuff(weaponConfig, repairDetails.RepairedItem);
             }
             // TODO: Knife repair kits may be added at some point, a bracket needs to be added here

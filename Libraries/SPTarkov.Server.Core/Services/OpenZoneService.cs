@@ -1,6 +1,6 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 
 namespace SPTarkov.Server.Core.Services;
@@ -13,11 +13,9 @@ public class OpenZoneService(
     ISptLogger<OpenZoneService> logger,
     DatabaseService databaseService,
     ServerLocalisationService serverLocalisationService,
-    ConfigServer configServer
+    LocationConfig locationConfig
 )
 {
-    protected readonly LocationConfig LocationConfig = configServer.GetConfig<LocationConfig>();
-
     /// <summary>
     ///     Add open zone to specified map
     /// </summary>
@@ -25,11 +23,11 @@ public class OpenZoneService(
     /// <param name="zoneToAdd">zone to add</param>
     public void AddZoneToMap(string locationId, string zoneToAdd)
     {
-        LocationConfig.OpenZones.TryAdd(locationId, []);
+        locationConfig.OpenZones.TryAdd(locationId, []);
 
-        if (!LocationConfig.OpenZones[locationId].Contains(zoneToAdd))
+        if (!locationConfig.OpenZones[locationId].Contains(zoneToAdd))
         {
-            LocationConfig.OpenZones[locationId].Add(zoneToAdd);
+            locationConfig.OpenZones[locationId].Add(zoneToAdd);
         }
     }
 
@@ -39,7 +37,7 @@ public class OpenZoneService(
     public void ApplyZoneChangesToAllMaps()
     {
         var dbLocations = databaseService.GetLocations().GetDictionary();
-        foreach (var mapKvP in LocationConfig.OpenZones)
+        foreach (var mapKvP in locationConfig.OpenZones)
         {
             if (!dbLocations.ContainsKey(mapKvP.Key))
             {
@@ -48,7 +46,7 @@ public class OpenZoneService(
                 continue;
             }
 
-            var zonesToAdd = LocationConfig.OpenZones[mapKvP.Key];
+            var zonesToAdd = locationConfig.OpenZones[mapKvP.Key];
 
             // Convert openzones string into list, easier to work wih
             var mapOpenZonesArray = dbLocations[mapKvP.Key].Base.OpenZones.Split(",").ToHashSet();

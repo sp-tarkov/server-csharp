@@ -27,13 +27,11 @@ public class InventoryHelper(
     ProfileHelper profileHelper,
     ItemHelper itemHelper,
     ServerLocalisationService serverLocalisationService,
-    ConfigServer configServer,
+    InventoryConfig inventoryConfig,
     ICloner cloner
 )
 {
     private static readonly FrozenSet<MongoId> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD, BaseClasses.MOD];
-
-    protected readonly InventoryConfig InventoryConfig = configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
     ///     Add multiple items to player stash (assuming they all fit)
@@ -1151,7 +1149,7 @@ public class InventoryHelper(
     /// <returns>Reward details</returns>
     public RewardDetails? GetRandomLootContainerRewardDetails(MongoId itemTpl)
     {
-        InventoryConfig.RandomLootContainers.TryGetValue(itemTpl, out var result);
+        inventoryConfig.RandomLootContainers.TryGetValue(itemTpl, out var result);
 
         return result;
     }
@@ -1162,7 +1160,7 @@ public class InventoryHelper(
     /// <returns>Inventory configuration</returns>
     public InventoryConfig GetInventoryConfig()
     {
-        return InventoryConfig;
+        return inventoryConfig;
     }
 
     public void ValidateInventoryUsesMongoIds(IEnumerable<Item> itemsToValidate)

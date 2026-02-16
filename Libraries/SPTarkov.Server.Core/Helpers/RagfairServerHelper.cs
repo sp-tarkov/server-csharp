@@ -20,12 +20,11 @@ public class RagfairServerHelper(
     WeightedRandomHelper weightedRandomHelper,
     MailSendService mailSendService,
     ServerLocalisationService localisationService,
-    ConfigServer configServer,
+    RagfairConfig ragfairConfig,
     ICloner cloner
 )
 {
     protected const string goodsReturnedTemplate = "5bdabfe486f7743e1665df6e 0"; // Your item was not sold
-    protected readonly RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
     /// Is item valid / not on blacklist / not a quest item
