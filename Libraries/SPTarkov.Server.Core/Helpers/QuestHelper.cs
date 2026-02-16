@@ -110,6 +110,7 @@ public class QuestHelper(
     /// <param name="profileSkill">the skill experience is being added to</param>
     /// <param name="progressAmount">the amount of experience being added to the skill</param>
     /// <returns>the adjusted skill progress gain</returns>
+    [Obsolete("Will be removed in 4.1: Use ProfileHelper.AdjustSkillExpForLowLevels instead.")]
     public int AdjustSkillExpForLowLevels(CommonSkill profileSkill, int progressAmount)
     {
         // TODO: what used this? can't find any uses in node

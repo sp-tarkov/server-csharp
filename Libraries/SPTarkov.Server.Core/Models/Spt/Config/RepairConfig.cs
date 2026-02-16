@@ -26,8 +26,9 @@ public record RepairConfig : BaseConfig
     /// <summary>
     ///     How much INT can be given to player per repair action
     /// </summary>
-    [JsonPropertyName("maxIntellectGainPerRepair")]
-    public required MaxIntellectGainValues MaxIntellectGainPerRepair { get; set; }
+    [Obsolete("Removed in SPT 4.1 - Only for backwards compatibility, does nothing")]
+    [JsonIgnore]
+    public MaxIntellectGainValues MaxIntellectGainPerRepair { get; set; } = new();
 
     [JsonPropertyName("weaponTreatment")]
     public required WeaponTreatmentRepairValues WeaponTreatment { get; set; }

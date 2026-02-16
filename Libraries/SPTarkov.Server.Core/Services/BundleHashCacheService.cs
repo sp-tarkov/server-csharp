@@ -78,7 +78,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
 
         if (!MatchWithStoredHash(BundlePath, hash))
         {
-            await StoreValue(BundlePath, await CalculateHash(BundlePath));
+            await StoreValue(BundlePath, hash);
         }
 
         return hash;
@@ -86,7 +86,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
 
     protected async Task<uint> CalculateHash(string BundlePath)
     {
-        return hashUtil.GenerateCrc32ForData(await fileUtil.ReadFileAsBytesAsync(BundlePath));
+        return await hashUtil.GenerateCrc32ForFileAsync(BundlePath);
     }
 
     protected bool MatchWithStoredHash(string BundlePath, uint hash)

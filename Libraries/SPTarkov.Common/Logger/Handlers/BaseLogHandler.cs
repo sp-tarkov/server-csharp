@@ -11,22 +11,32 @@ public abstract class BaseLogHandler : ILogHandler
 
     protected string FormatMessage(string processedMessage, SptLogMessage message, BaseSptLoggerReference reference)
     {
-        var formattedMessage = reference
-            .Format.Replace("%date%", Markup.Escape(message.LogTime.ToString("yyyy-MM-dd")))
-            .Replace("%time%", Markup.Escape(message.LogTime.ToString("HH:mm:ss.fff")))
-            .Replace("%message%", processedMessage)
-            .Replace("%loggerShort%", Markup.Escape(message.Logger.Split('.').Last()))
-            .Replace("%logger%", Markup.Escape(message.Logger))
-            .Replace("%tid%", Markup.Escape(message.threadId.ToString()))
-            .Replace("%tname%", Markup.Escape(message.threadName ?? string.Empty))
-            .Replace("%level%", Markup.Escape(Enum.GetName(message.LogLevel) ?? string.Empty));
+        var format = reference.GetCompiledFormat();
+
+        var formattedMessage = string.Format(
+            null,
+            format,
+            message.LogTime.ToString("yyyy-MM-dd"),
+            message.LogTime.ToString("HH:mm:ss.fff"),
+            processedMessage,
+            GetLoggerShortName(message.Logger),
+            message.Logger,
+            message.threadId,
+            message.threadName,
+            message.LogLevel.ToString()
+        );
 
         if (message.Exception != null)
         {
-            formattedMessage +=
-                $"\n{Markup.Escape(message.Exception.Message)}\n{Markup.Escape(message.Exception.StackTrace ?? string.Empty)}";
+            return string.Concat(formattedMessage, "\n", message.Exception.Message, "\n", message.Exception.StackTrace);
         }
 
         return formattedMessage;
+    }
+
+    protected string GetLoggerShortName(string logger)
+    {
+        var lastDotIndex = logger.AsSpan().LastIndexOf('.');
+        return lastDotIndex >= 0 ? logger.Substring(lastDotIndex + 1) : logger;
     }
 }
