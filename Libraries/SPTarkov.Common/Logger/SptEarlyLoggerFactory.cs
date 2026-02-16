@@ -1,14 +1,9 @@
 ﻿namespace SPTarkov.Common.Logger;
 
-internal sealed class SptEarlyLoggerFactory(ILoggerFactory loggerFactory, ServiceProvider serviceProvider) : ILoggerFactory
+public sealed class SptEarlyLoggerFactory(ILoggerFactory loggerFactory, ServiceProvider serviceProvider) : ILoggerFactory
 {
-    public IServiceProvider ServiceProvider { get; } = serviceProvider;
-
-    public void Dispose()
-    {
-        loggerFactory.Dispose();
-        serviceProvider.Dispose();
-    }
+    public ServiceProvider ServiceProvider { get; } = serviceProvider;
+    public SptLoggerProvider Provider { get; } = serviceProvider.GetRequiredService<SptLoggerProvider>();
 
     public ILogger CreateLogger(string categoryName)
     {
@@ -18,5 +13,10 @@ internal sealed class SptEarlyLoggerFactory(ILoggerFactory loggerFactory, Servic
     public void AddProvider(ILoggerProvider provider)
     {
         loggerFactory.AddProvider(provider);
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
     }
 }

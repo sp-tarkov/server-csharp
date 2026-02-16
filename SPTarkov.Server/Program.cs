@@ -33,13 +33,14 @@ namespace SPTarkov.Server;
 
 public static class Program
 {
-    internal static ILoggerFactory? EarlyLoggerFactory;
     internal static ILogger? EarlyLogger;
 
     public static async Task Main(string[] args)
     {
         // Initialize the program variables
         ProgramStatics.Initialize();
+
+        var loggerFactory = SptLoggerProvider.Create(ProgramStatics.DEBUG());
 
         // Some users don't know how to create a shortcut...
         if (!IsRunFromInstallationFolder())
@@ -51,10 +52,9 @@ public static class Program
 
         try
         {
-            EarlyLoggerFactory = SptLoggerProvider.Create(ProgramStatics.DEBUG());
-            EarlyLogger = EarlyLoggerFactory.CreateLogger("SPTarkov.Server.Core");
+            EarlyLogger = loggerFactory.CreateLogger("SPTarkov.Server.Core");
 
-            await StartServer(args);
+            await StartServer(loggerFactory, args);
         }
         catch (SocketException)
         {
@@ -101,19 +101,19 @@ public static class Program
         }
         finally
         {
-            EarlyLoggerFactory?.Dispose();
+            loggerFactory?.Provider.Dispose();
         }
     }
 
-    public static async Task StartServer(string[] args)
+    public static async Task StartServer(SptEarlyLoggerFactory loggerFactory, string[] args)
     {
         Console.OutputEncoding = Encoding.UTF8;
 
         var configuration = await SPTConfigLoader.Initialize(EarlyLogger!);
 
         // Create web builder and logger
-        var builder = CreateNewHostBuilder(configuration);
-        builder.Host.UseSptLogger(ProgramStatics.DEBUG());
+        var builder = CreateNewHostBuilder(loggerFactory, configuration);
+        builder.Host.UseSptLoggerWithoutProvider(loggerFactory.ServiceProvider);
 
 #if DEBUG
         builder.Host.UseDefaultServiceProvider(options =>
@@ -134,7 +134,7 @@ public static class Program
             // Search for mod dlls
             loadedMods = ModDllLoader.LoadAllMods();
             // validate and sort mods, this will also discard any mods that are invalid
-            var validatedLoadedMods = ValidateMods(loadedMods, configuration);
+            var validatedLoadedMods = ValidateMods(loggerFactory, loadedMods, configuration);
 
             // update the loadedMods list with our validated mods
             loadedMods = validatedLoadedMods;
@@ -227,10 +227,17 @@ public static class Program
         );
     }
 
-    private static WebApplicationBuilder CreateNewHostBuilder(IReadOnlyDictionary<Type, BaseConfig> configuration)
+    private static WebApplicationBuilder CreateNewHostBuilder(
+        SptEarlyLoggerFactory earlyFactory,
+        IReadOnlyDictionary<Type, BaseConfig> configuration
+    )
     {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { WebRootPath = "./SPT_Data/wwwroot" });
-        builder.Logging.ClearProviders();
+        builder.Host.ConfigureLogging(logging =>
+        {
+            logging.ClearProviders();
+            logging.AddProvider(earlyFactory.Provider);
+        });
         builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
 
         foreach (var configEntry in configuration)
@@ -246,7 +253,11 @@ public static class Program
         return builder;
     }
 
-    private static List<SptMod> ValidateMods(IEnumerable<SptMod> mods, IReadOnlyDictionary<Type, BaseConfig> configuration)
+    private static List<SptMod> ValidateMods(
+        SptEarlyLoggerFactory loggerFactory,
+        IEnumerable<SptMod> mods,
+        IReadOnlyDictionary<Type, BaseConfig> configuration
+    )
     {
         if (!ProgramStatics.MODS())
         {
@@ -255,7 +266,7 @@ public static class Program
 
         // We need the SPT dependencies for the ModValidator, but mods are loaded before the web application
         // So we create a disposable web application that we will throw away after getting the mods to load
-        var builder = CreateNewHostBuilder(configuration);
+        var builder = CreateNewHostBuilder(loggerFactory, configuration);
         // register SPT components
         var diHandler = new DependencyInjectionHandler(builder.Services);
         diHandler.AddInjectableTypesFromAssembly(typeof(Program).Assembly);
@@ -264,8 +275,8 @@ public static class Program
         // register the mod validator components
         var provider = builder
             .Services.AddScoped(typeof(ISemVer), typeof(SemanticVersioningSemVer))
-            .AddSptLogger(ProgramStatics.DEBUG())
             .AddSingleton<ModValidator>()
+            .AddSptLoggerWithoutProvider(loggerFactory.ServiceProvider)
             .BuildServiceProvider();
         var modValidator = provider.GetRequiredService<ModValidator>();
         return modValidator.ValidateMods(mods);

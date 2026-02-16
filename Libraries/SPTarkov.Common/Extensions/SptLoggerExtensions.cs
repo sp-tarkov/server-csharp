@@ -61,6 +61,20 @@ public static class SptLoggerExtensions
         return builder;
     }
 
+    public static IHostBuilder UseSptLoggerWithoutProvider(this IHostBuilder builder, IServiceProvider earlyLoggerServiceProvider)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+
+        builder.ConfigureServices(
+            (_, collection) =>
+            {
+                collection.AddSptLoggerWithoutProvider(earlyLoggerServiceProvider);
+            }
+        );
+
+        return builder;
+    }
+
     public static IServiceCollection AddSptLogger(this IServiceCollection collection, bool isDevelop = false)
     {
         ArgumentNullException.ThrowIfNull(collection);
@@ -76,7 +90,8 @@ public static class SptLoggerExtensions
             collection.AddSingleton(LoadConfig(ConfigurationPath));
         }
 
-        collection.AddSingleton<ILoggerFactory, SptLoggerProvider>();
+        collection.AddSingleton<SptLoggerProvider>();
+        collection.AddSingleton<ILoggerFactory>(sp => sp.GetRequiredService<SptLoggerProvider>());
         collection.AddSingleton<SptLoggerQueueManager>();
         collection.AddTransient(typeof(SptLogger<>));
         collection.AddTransient(typeof(ISptLogger<>), typeof(SptLogger<>));
@@ -84,6 +99,18 @@ public static class SptLoggerExtensions
         collection.RegisterImplementations<ILogHandler>(ServiceLifetime.Singleton);
         collection.RegisterImplementations<IFilePatternReplacer>(ServiceLifetime.Transient);
 
+        return collection;
+    }
+
+    public static IServiceCollection AddSptLoggerWithoutProvider(
+        this IServiceCollection collection,
+        IServiceProvider earlyLoggerServiceProvider
+    )
+    {
+        collection.AddSingleton(earlyLoggerServiceProvider.GetRequiredService<SptLoggerConfiguration>());
+        collection.AddSingleton(earlyLoggerServiceProvider.GetRequiredService<SptLoggerQueueManager>());
+        collection.AddTransient(typeof(SptLogger<>));
+        collection.AddTransient(typeof(ISptLogger<>), typeof(SptLogger<>));
         return collection;
     }
 }

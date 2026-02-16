@@ -19,16 +19,22 @@ public abstract class BaseLogHandler : ILogHandler
             message.LogTime.ToString("yyyy-MM-dd"),
             message.LogTime.ToString("HH:mm:ss.fff"),
             processedMessage,
-            GetLoggerShortName(message.Logger),
-            message.Logger,
-            message.threadId,
-            message.threadName,
+            Markup.Escape(GetLoggerShortName(message.Logger)),
+            Markup.Escape(message.Logger),
+            Markup.Escape(message.threadId.ToString()),
+            Markup.Escape(message.threadName ?? string.Empty),
             message.LogLevel.ToString()
         );
 
         if (message.Exception != null)
         {
-            return string.Concat(formattedMessage, "\n", message.Exception.Message, "\n", message.Exception.StackTrace);
+            return string.Concat(
+                formattedMessage,
+                "\n",
+                Markup.Escape(message.Exception.Message),
+                "\n",
+                Markup.Escape(message.Exception.StackTrace)
+            );
         }
 
         return formattedMessage;

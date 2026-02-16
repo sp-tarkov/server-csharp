@@ -14,7 +14,7 @@ public sealed class SptLoggerProvider(SptLoggerQueueManager sptLoggerQueueManage
         _loggerProviders?.Add(provider);
     }
 
-    public static ILoggerFactory Create(bool isDevelop)
+    public static SptEarlyLoggerFactory Create(bool isDevelop)
     {
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddSptLogger(isDevelop);
