@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
         <!--  SPT specific  -->
-        <SptVersion Condition="'$(SptVersion)' == ''">4.0.13</SptVersion>
+        <SptVersion Condition="'$(SptVersion)' == ''">4.0.14</SptVersion>
         <SptCommit Condition="'$(SptCommit)' == ''">a12b34</SptCommit>
         <SptBuildTime Condition="'$(SptBuildTime)' == ''">0000000000</SptBuildTime>
         <SptBuildType Condition="'$(SptBuildType)' == ''">LOCAL</SptBuildType>
