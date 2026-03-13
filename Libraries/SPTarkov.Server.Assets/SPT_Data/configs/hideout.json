@@ -5,7 +5,8 @@
     "inRaid": 60,
     "outOfRaid": 10
   },
-  "expCraftAmount": 10,
+  "craftingExpAmount": 12.5,
+  "craftingExpForHoursOfCrafting": 3.75,
   "overrideCraftTimeSeconds": -1,
   "overrideBuildTimeSeconds": -1,
   "updateProfileHideoutWhenActiveWithinMinutes": 90,

@@ -73,10 +73,13 @@ public class RewardHelper(
             {
                 case RewardType.Skill:
                     // This needs to use the passed in profileData, as it could be the scav profile
+                    // skill reward values are always 100 (+1 level), so adjustment for low levels will give a wrong result
                     profileHelper.AddSkillPointsToPlayer(
                         profileData,
                         Enum.Parse<SkillTypes>(reward.Target),
-                        reward.Value.GetValueOrDefault(0)
+                        reward.Value.GetValueOrDefault(0),
+                        useSkillProgressRateMultiplier: false,
+                        adjustSkillExpForLowLevels: false
                     );
                     break;
                 case RewardType.Experience:

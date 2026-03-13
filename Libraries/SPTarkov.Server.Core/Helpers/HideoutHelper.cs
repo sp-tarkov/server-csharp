@@ -723,7 +723,7 @@ public class HideoutHelper(
             // Fuel consumed / 10 is over 1, add hideout management skill point
             if (pmcData is not null && Math.Floor(pointsConsumed / 10) >= 1)
             {
-                profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.HideoutManagement, 1);
+                profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.HideoutManagement, 2, useSkillProgressRateMultiplier: true);
                 pointsConsumed -= 10;
             }
 
@@ -925,7 +925,7 @@ public class HideoutHelper(
             // Check units consumed for possible increment of hideout mgmt skill point
             if (pmcData is not null && Math.Floor(pointsConsumed / 10) >= 1)
             {
-                profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.HideoutManagement, 1);
+                profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.HideoutManagement, 2, useSkillProgressRateMultiplier: true);
                 pointsConsumed -= 10;
             }
 
@@ -1076,7 +1076,7 @@ public class HideoutHelper(
             // check unit consumed for increment skill point
             if (pmcData is not null && Math.Floor(pointsConsumed / 10) >= 1)
             {
-                profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.HideoutManagement, 1);
+                profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.HideoutManagement, 2, useSkillProgressRateMultiplier: true);
                 pointsConsumed -= 10;
             }
 

@@ -215,7 +215,8 @@ public class HideoutController(
         profileHelper.AddSkillPointsToPlayer(
             pmcData,
             SkillTypes.HideoutManagement,
-            globals.Configuration.SkillsSettings.HideoutManagement.SkillPointsPerAreaUpgrade
+            globals.Configuration.SkillsSettings.HideoutManagement.SkillPointsPerAreaUpgrade,
+            true
         );
     }
 
@@ -685,8 +686,9 @@ public class HideoutController(
         );
         pmcData.Hideout.Production[request.RecipeId].SptIsScavCase = true;
 
-        // reward charisma based on skill progress rate for each scav production start
+        // reward charisma and hideout management based on skill progress rate for each scav production start
         profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Charisma, 1, true);
+        profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.HideoutManagement, 1, true);
 
         return output;
     }
@@ -820,7 +822,7 @@ public class HideoutController(
         }
 
         // Variables for management of skill
-        var craftingExpAmount = 0;
+        double craftingExpAmount = 0;
         var counterHoursCrafting = GetCustomSptHoursCraftingTaskConditionCounter(pmcData, recipe);
         var totalCraftingHours = counterHoursCrafting.Value;
 
@@ -861,13 +863,13 @@ public class HideoutController(
         // Check if the recipe is the same as the last one - get bonus when crafting same thing multiple times
         var area = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == recipe.AreaType);
         if (area is not null && request.RecipeId != area.LastRecipe)
-        // 1 point per craft upon the end of production for alternating between 2 different crafting recipes in the same module
+        // 5 points per craft upon the end of production for alternating between 2 different crafting recipes in the same module
         {
-            craftingExpAmount += hideoutConfig.ExpCraftAmount; // Default is 10
+            craftingExpAmount += hideoutConfig.CraftingExpAmount; // Default is 12.5, scaled (at 0.4 scale => 5 points per alternating craft)
         }
 
         // Update variable with time spent crafting item(s)
-        // 1 point per 8 hours of crafting
+        // 1.5 (3.75 w/ applying default 0.4 scale) points per 8 hours of crafting
         totalCraftingHours += recipe.ProductionTime;
         if (totalCraftingHours / hideoutConfig.HoursForSkillCrafting >= 1)
         {
@@ -941,12 +943,18 @@ public class HideoutController(
         // Add Crafting skill to player profile
         if (craftingExpAmount > 0)
         {
-            profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Crafting, craftingExpAmount);
+            profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Crafting, craftingExpAmount, true);
 
+            // TODO: verify this is still giving intellect skill points on live
             var intellectAmountToGive = 0.5 * Math.Round((double)(craftingExpAmount / 15));
             if (intellectAmountToGive > 0)
             {
-                profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Intellect, intellectAmountToGive);
+                profileHelper.AddSkillPointsToPlayer(
+                    pmcData,
+                    SkillTypes.Intellect,
+                    intellectAmountToGive,
+                    useSkillProgressRateMultiplier: false
+                );
             }
         }
 

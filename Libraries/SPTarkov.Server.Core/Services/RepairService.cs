@@ -183,10 +183,12 @@ public class RepairService(
                 );
             }
 
+            // Every 10 points of repair gives 1 skill point scaled by skillProgressRate
+            // ArmorKitSkillPointGainPerRepairPointMultiplier is 0.1
             var pointsToAddToVestSkill = repairDetails.RepairPoints * repairConfig.ArmorKitSkillPointGainPerRepairPointMultiplier;
 
             logger.Debug($"Added: {pointsToAddToVestSkill} {vestSkillToLevel} skill");
-            profileHelper.AddSkillPointsToPlayer(pmcData, vestSkillToLevel, pointsToAddToVestSkill.GetValueOrDefault(0));
+            profileHelper.AddSkillPointsToPlayer(pmcData, vestSkillToLevel, pointsToAddToVestSkill.GetValueOrDefault(0), true);
         }
 
         // Handle trader repair - gives charisma based on (repair cost/10 * skill progress rate)
@@ -243,18 +245,9 @@ public class RepairService(
     protected double GetWeaponRepairSkillPoints(RepairDetails repairDetails)
     {
         var random = new Random();
-        // This formula and associated configs is calculated based on 30 repairs done on live
-        // The points always came out 2-aligned, which is why there's a divide/multiply by 2 with ceil calls
-        var gainMult = repairConfig.WeaponTreatment.PointGainMultiplier;
-
-        // First we get a baseline based on our repair amount, and gain multiplier with a bit of rounding
-        var step1 = Math.Ceiling(repairDetails.RepairAmount.Value / 2) * gainMult;
-
-        // Then we have to get the next even number
-        var step2 = Math.Ceiling(step1 / 2) * 2;
-
-        // Then multiply by 2 again to hopefully get to what live would give us
-        var skillPoints = step2 * 2;
+        // Every 5 points repaired with kit should give 0.4 skill points, so PointGainMultiplier is 0.2
+        // The return value is later scaled in AddSkillPointsToPlayer, i.e. 1 skill point returned here = 0.4 skill points added
+        var skillPoints = repairDetails.RepairAmount.GetValueOrDefault(0) * repairConfig.WeaponTreatment.PointGainMultiplier;
 
         // You can both crit fail and succeed at the same time, for fun (Balances out to 0 with default settings)
         // Add a random chance to crit-fail
