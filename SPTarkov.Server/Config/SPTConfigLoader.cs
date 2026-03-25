@@ -78,10 +78,11 @@ internal static class SPTConfigLoader
                     deserializedContent = await JsonSerializer.DeserializeAsync(fs, configType, options: options);
                 }
             }
-            catch (JsonException ex)
+            catch (JsonException)
             {
-                logger.LogError($"Config file: {file} failed to deserialize.");
-                throw new Exception($"Server will not run until the: {file} config error mentioned above is fixed", ex);
+                logger.LogError("Config file: {fileName} failed to deserialize.", file);
+                logger.LogError("Server will not run until the: {fileName} config error mentioned above is fixed", file);
+                throw;
             }
 
             if (deserializedContent == null)
