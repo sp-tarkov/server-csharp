@@ -8,19 +8,20 @@ namespace SPTarkov.Server.Web;
 
 public static class SPTWeb
 {
-    internal static IEnumerable<SptMod> SptWebMods = [];
-    internal static List<Assembly> SptWebModsAssemblies = [];
+    internal static IEnumerable<SptMod> _sptWebMods = [];
+    internal static List<Assembly> _sptWebModsAssemblies = [];
+    internal static List<string> _wwwRootDirectories = [];
 
     public static void InitializeSptBlazor(this WebApplicationBuilder builder, IReadOnlyList<SptMod> sptMods)
     {
-        SptWebMods = sptMods.Where(mod => mod.ModMetadata is IModWebMetadata).ToList();
+        _sptWebMods = sptMods.Where(mod => mod.ModMetadata is IModWebMetadata).ToList();
 
         builder.WebHost.UseStaticWebAssets();
         builder.Services.AddMudServices();
 
         var mvcBuilder = builder.Services.AddControllers();
 
-        foreach (var assembly in SptWebMods.SelectMany(mod => mod.Assemblies))
+        foreach (var assembly in _sptWebMods.SelectMany(mod => mod.Assemblies))
         {
             mvcBuilder.AddApplicationPart(assembly);
         }
@@ -38,26 +39,47 @@ public static class SPTWeb
 
         var razorBuilder = app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
-        foreach (var mod in SptWebMods)
+        foreach (var mod in _sptWebMods)
         {
             foreach (var assembly in mod.Assemblies)
             {
                 razorBuilder.AddAdditionalAssemblies(assembly);
-                SptWebModsAssemblies.Add(assembly);
+                _sptWebModsAssemblies.Add(assembly);
             }
 
+            var webMetadata =
+                mod.ModMetadata as IModWebMetadata
+                ?? throw new InvalidOperationException("Web Metadata is null but yet it is included in _sptWebMods?");
             var modAssembly = mod.ModMetadata.GetType().Assembly;
 
             var location = Path.GetDirectoryName(modAssembly.Location);
 
             if (!string.IsNullOrEmpty(location) && Directory.Exists(Path.Combine(location, "wwwroot")))
             {
-                if (logger.IsEnabled(LogLevel.Debug))
+                var wwwrootDirectory = modAssembly.GetName().Name;
+
+                if (!string.IsNullOrEmpty(webMetadata.WWWRootUrl))
                 {
-                    logger.LogDebug(
+                    wwwrootDirectory = webMetadata.WWWRootUrl;
+                }
+
+                if (wwwrootDirectory is null)
+                {
+                    logger.LogWarning("Could not determine wwwroot directory for mod {modName}", mod.ModMetadata.Name);
+                    continue;
+                }
+
+                if (_wwwRootDirectories.Contains(wwwrootDirectory))
+                {
+                    throw new InvalidOperationException($"A www root directory on url /{wwwrootDirectory}/ already exists!");
+                }
+
+                if (logger.IsEnabled(LogLevel.Information))
+                {
+                    logger.LogInformation(
                         "Mod {modName} has a wwwroot, mapping to /{modAssemblyName}/",
                         mod.ModMetadata.Name,
-                        modAssembly.GetName().Name
+                        wwwrootDirectory
                     );
                 }
 
@@ -65,9 +87,11 @@ public static class SPTWeb
                     new StaticFileOptions
                     {
                         FileProvider = new PhysicalFileProvider(Path.Combine(location, "wwwroot")),
-                        RequestPath = $"/{modAssembly.GetName().Name}",
+                        RequestPath = $"/{wwwrootDirectory}",
                     }
                 );
+
+                _wwwRootDirectories.Add(wwwrootDirectory);
             }
         }
     }

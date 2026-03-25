@@ -1,7 +1,7 @@
 ﻿namespace SPTarkov.Server.Web;
 
 /// <summary>
-/// This empty interface is used as a metadata marker to identify mod assemblies that integrate with Blazor or MVC.
+/// This interface is used as a metadata marker to identify mod assemblies that integrate with Blazor or MVC.
 /// </summary>
 /// <remarks>
 /// Implementing this interface signals to the host application to:
@@ -17,6 +17,11 @@
 ///   </item>
 /// </list>
 ///
-/// This interface is intentionally empty but may be extended in the future to include additional metadata.
 /// </remarks>
-public interface IModWebMetadata { }
+public interface IModWebMetadata
+{
+    /// <summary>
+    /// This property will allow you to set a custom directory for wwwroot, if this is left null it will use the assembly's name
+    /// </summary>
+    string? WWWRootUrl { get; init; }
+}

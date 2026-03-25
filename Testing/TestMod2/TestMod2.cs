@@ -25,6 +25,8 @@ public record TestMod2Metadata : AbstractModMetadata, IModWebMetadata
     public override string? Url { get; init; }
     public override bool? IsBundleMod { get; init; }
     public override string License { get; init; } = "MIT";
+
+    public string? WWWRootUrl { get; init; }
 }
 
 [Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]

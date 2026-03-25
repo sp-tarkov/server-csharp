@@ -1,10 +1,10 @@
 ﻿using System.Reflection;
 using HarmonyLib;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Web;
 using Range = SemanticVersioning.Range;
@@ -25,6 +25,8 @@ public record TestModMetadata : AbstractModMetadata, IModWebMetadata
     public override string? Url { get; init; }
     public override bool? IsBundleMod { get; init; }
     public override string License { get; init; } = "MIT";
+
+    public string? WWWRootUrl { get; init; }
 }
 
 [Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
