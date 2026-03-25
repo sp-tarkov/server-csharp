@@ -147,7 +147,7 @@ public record TemplateItemProperties
     public string? AirDropTemplateId { get; set; }
 
     [JsonPropertyName("StackObjectsCount")]
-    public double? StackObjectsCount { get; set; }
+    public int? StackObjectsCount { get; set; }
 
     [JsonPropertyName("NotShownInSlot")]
     public bool? NotShownInSlot { get; set; }

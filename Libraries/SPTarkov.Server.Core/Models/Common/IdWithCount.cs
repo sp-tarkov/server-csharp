@@ -14,5 +14,5 @@ public record IdWithCount
     ///     Amount of money to take off player for treatment
     /// </summary>
     [JsonPropertyName("count")]
-    public double? Count { get; set; }
+    public int? Count { get; set; }
 }

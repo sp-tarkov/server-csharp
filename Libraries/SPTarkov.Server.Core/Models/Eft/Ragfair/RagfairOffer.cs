@@ -95,6 +95,7 @@ public record OfferRequirement
     [JsonPropertyName("_tpl")]
     public required MongoId TemplateId { get; set; }
 
+    //Todo: Float in OfferRequirements.ItemRequirements
     [JsonPropertyName("count")]
     public double? Count { get; set; }
 

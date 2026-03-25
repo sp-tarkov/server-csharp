@@ -198,11 +198,22 @@ public class HandbookHelper(ISptLogger<HandbookHelper> logger, TemplateTable tem
     /// <param name="nonRoubleCurrencyCount">Currency count to convert</param>
     /// <param name="currencyTypeFrom">What current currency is</param>
     /// <returns>Count in roubles</returns>
-    public double InRoubles(double nonRoubleCurrencyCount, MongoId currencyTypeFrom)
+    public int InRoubles(int nonRoubleCurrencyCount, MongoId currencyTypeFrom)
     {
         return currencyTypeFrom == Money.ROUBLES
             ? nonRoubleCurrencyCount
-            : Math.Round(nonRoubleCurrencyCount * GetTemplatePrice(currencyTypeFrom));
+            : (int)Math.Round(nonRoubleCurrencyCount * GetTemplatePrice(currencyTypeFrom));
+    }
+
+    /// <summary>
+    ///     Convert non-roubles into roubles
+    /// </summary>
+    /// <param name="nonRoubleCurrencyCount">Currency count to convert</param>
+    /// <param name="currencyTypeFrom">What current currency is</param>
+    /// <returns>Count in roubles</returns>
+    public int InRoubles(double nonRoubleCurrencyCount, MongoId currencyTypeFrom)
+    {
+        return InRoubles(Convert.ToInt32(nonRoubleCurrencyCount), currencyTypeFrom);
     }
 
     /// <summary>
@@ -211,16 +222,26 @@ public class HandbookHelper(ISptLogger<HandbookHelper> logger, TemplateTable tem
     /// <param name="roubleCurrencyCount">roubles to convert</param>
     /// <param name="currencyTypeTo">Currency to convert roubles into</param>
     /// <returns>currency count in desired type</returns>
-    public double FromRoubles(double roubleCurrencyCount, MongoId currencyTypeTo)
+    public int FromRoubles(int roubleCurrencyCount, MongoId currencyTypeTo)
     {
         if (currencyTypeTo == Money.ROUBLES)
         {
             return roubleCurrencyCount;
         }
 
-        // Get price of currency from handbook
         var price = GetTemplatePrice(currencyTypeTo);
-        return price > 0 ? Math.Max(1, Math.Round(roubleCurrencyCount / price)) : 0;
+        return price > 0 ? Math.Max(1, (int)Math.Round(roubleCurrencyCount / price)) : 0;
+    }
+
+    /// <summary>
+    ///     Convert roubles into another currency
+    /// </summary>
+    /// <param name="roubleCurrencyCount">roubles to convert</param>
+    /// <param name="currencyTypeTo">Currency to convert roubles into</param>
+    /// <returns>currency count in desired type</returns>
+    public int FromRoubles(double roubleCurrencyCount, MongoId currencyTypeTo)
+    {
+        return FromRoubles(Convert.ToInt32(roubleCurrencyCount), currencyTypeTo);
     }
 
     public HandbookCategory? GetCategoryById(MongoId handbookId)

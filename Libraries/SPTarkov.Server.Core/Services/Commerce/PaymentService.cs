@@ -45,7 +45,7 @@ public class PaymentService(
     public void PayMoney(PmcData pmcData, ProcessBuyTradeRequestData request, MongoId sessionID, ItemEventRouterResponse output)
     {
         // Track the amounts of each type of currency involved in the trade.
-        var currencyAmounts = new Dictionary<MongoId, double>();
+        var currencyAmounts = new Dictionary<MongoId, int>();
 
         // Delete barter items and track currencies
         foreach (var itemRequest in request.SchemeItems)
@@ -78,7 +78,7 @@ public class PaymentService(
         }
 
         // Track the total amount of all currencies.
-        var totalCurrencyAmount = 0d;
+        var totalCurrencyAmount = 0;
 
         var requestTransactionId = new MongoId(request.TransactionId);
 
@@ -151,7 +151,7 @@ public class PaymentService(
     /// <param name="traderAssortId"> ID of the assort to look up</param>
     /// <param name="traderId"> ID of trader with assort </param>
     /// <returns> Handbook rouble price of the item </returns>
-    private double? GetTraderItemHandbookPriceRouble(MongoId traderAssortId, MongoId traderId)
+    private int? GetTraderItemHandbookPriceRouble(MongoId traderAssortId, MongoId traderId)
     {
         var purchasedAssortItem = traderHelper.GetTraderAssortItemByAssortId(traderId, traderAssortId);
         if (purchasedAssortItem is null)
@@ -167,7 +167,7 @@ public class PaymentService(
             return 1;
         }
 
-        return assortItemPriceRouble;
+        return Convert.ToInt32(assortItemPriceRouble);
     }
 
     /// <summary>
@@ -250,7 +250,7 @@ public class PaymentService(
         {
             Id = new MongoId(),
             Template = currencyTpl,
-            Upd = new Upd { StackObjectsCount = Math.Round(calcAmount) },
+            Upd = new Upd { StackObjectsCount = calcAmount },
         };
 
         // Ensure money is properly split to follow its max stack size limit
@@ -283,13 +283,7 @@ public class PaymentService(
     /// <param name="amountToPay"> Money value to pay </param>
     /// <param name="sessionID"> Session ID </param>
     /// <param name="output"> Client response </param>
-    public void AddPaymentToOutput(
-        PmcData pmcData,
-        MongoId currencyTpl,
-        double amountToPay,
-        MongoId sessionID,
-        ItemEventRouterResponse output
-    )
+    public void AddPaymentToOutput(PmcData pmcData, MongoId currencyTpl, int amountToPay, MongoId sessionID, ItemEventRouterResponse output)
     {
         var moneyItemsInInventory = GetSortedMoneyItemsInInventory(pmcData, currencyTpl, pmcData.Inventory.Stash.Value);
 

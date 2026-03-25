@@ -743,7 +743,9 @@ public class InsuranceController(
                 new IdWithCount
                 {
                     Id = Money.ROUBLES, // TODO: update to handle different currencies
-                    Count = insuranceService.GetRoublePriceToInsureItemWithTrader(pmcData, inventoryItemsHash[key], request.TransactionId),
+                    Count = Convert.ToInt32(
+                        insuranceService.GetRoublePriceToInsureItemWithTrader(pmcData, inventoryItemsHash[key], request.TransactionId)
+                    ),
                 }
             );
         }

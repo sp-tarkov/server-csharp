@@ -61,7 +61,7 @@ public record HideoutItem
     public Upd? Upd { get; set; }
 
     [JsonPropertyName("count")]
-    public double? Count { get; set; }
+    public int? Count { get; set; }
 
     public Item ConvertToItem()
     {
@@ -109,7 +109,7 @@ public record Upd
 {
     public UpdBuff? Buff { get; set; }
 
-    public double? OriginalStackObjectsCount { get; set; }
+    public int? OriginalStackObjectsCount { get; set; }
 
     public UpdTogglable? Togglable { get; set; }
 
@@ -125,8 +125,7 @@ public record Upd
 
     public UpdFaceShield? FaceShield { get; set; }
 
-    [JsonConverter(typeof(StringToNumberFactoryConverter))]
-    public double? StackObjectsCount { get; set; } // TODO: LootDumpGen is outputting doubles, we can turn back to int once fixed
+    public int? StackObjectsCount { get; set; } // TODO: LootDumpGen is outputting doubles, we can turn back to int once fixed
 
     public bool? UnlimitedCount { get; set; }
 

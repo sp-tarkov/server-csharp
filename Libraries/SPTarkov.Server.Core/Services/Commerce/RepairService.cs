@@ -90,7 +90,8 @@ public class RepairService(
             logger.Error(serverLocalisationService.GetText("repair-unable_to_find_item_repair_cost", itemToRepair.Template.ToString()));
         }
 
-        var repairCost = Math.Round(itemRepairCost.Value * repairItemDetails.Count.Value * repairRate.Value * repairConfig.PriceMultiplier);
+        var repairCost = (int)
+            Math.Round(itemRepairCost.Value * repairItemDetails.Count.Value * repairRate.Value * repairConfig.PriceMultiplier);
 
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
@@ -121,14 +122,14 @@ public class RepairService(
         MongoId sessionID,
         PmcData pmcData,
         string repairedItemId,
-        double repairCost,
+        int repairCost,
         MongoId traderId,
         ItemEventRouterResponse output
     )
     {
         var options = new ProcessBuyTradeRequestData
         {
-            SchemeItems = [new IdWithCount { Count = Math.Round(repairCost), Id = Money.ROUBLES }],
+            SchemeItems = [new IdWithCount { Count = repairCost, Id = Money.ROUBLES }],
             TransactionId = traderId,
             Action = "SptRepair",
             Type = string.Empty,
@@ -660,8 +661,9 @@ public class RepairService(
 public class RepairDetails
 {
     [JsonPropertyName("repairCost")]
-    public double? RepairCost { get; set; }
+    public int? RepairCost { get; set; }
 
+    //Todo: Int?
     [JsonPropertyName("repairPoints")]
     public double? RepairPoints { get; set; }
 

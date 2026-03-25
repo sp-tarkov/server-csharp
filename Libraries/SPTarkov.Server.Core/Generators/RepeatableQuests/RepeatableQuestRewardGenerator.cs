@@ -258,7 +258,7 @@ public class RepeatableQuestRewardGenerator(
         return Math.Floor(effectiveDifficulty * interpolatedXp * randomSpread);
     }
 
-    protected double GetGpCoinRewardCount(
+    protected int GetGpCoinRewardCount(
         double effectiveDifficulty,
         int pmcLevel,
         List<double> levelsConfig,
@@ -269,7 +269,7 @@ public class RepeatableQuestRewardGenerator(
         var interpolatedGpCoins = mathUtil.Interp1(pmcLevel, levelsConfig, gpCoinConfig);
         var randomSpread = randomUtil.GetDouble(1 - rewardSpreadConfig, 1 + rewardSpreadConfig);
 
-        return Math.Ceiling(effectiveDifficulty * interpolatedGpCoins * randomSpread);
+        return (int)Math.Ceiling(effectiveDifficulty * interpolatedGpCoins * randomSpread);
     }
 
     protected double GetRewardRep(
@@ -295,7 +295,7 @@ public class RepeatableQuestRewardGenerator(
         return randomUtil.RandInt(1, (int)Math.Round(interpolatedNumItems) + 1);
     }
 
-    protected double GetRewardRoubles(
+    protected int GetRewardRoubles(
         double effectiveDifficulty,
         int pmcLevel,
         List<double> levelsConfig,
@@ -306,7 +306,7 @@ public class RepeatableQuestRewardGenerator(
         var interpolatedRoubles = mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig);
         var randomSpread = randomUtil.GetDouble(1d - rewardSpreadConfig, 1d + rewardSpreadConfig);
 
-        return Math.Floor(effectiveDifficulty * interpolatedRoubles * randomSpread);
+        return (int)Math.Floor(effectiveDifficulty * interpolatedRoubles * randomSpread);
     }
 
     /// <summary>
@@ -511,7 +511,7 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="roublesBudget"> Budget in roubles </param>
     /// <param name="rewardIndex"> Index of the reward </param>
     /// <returns> Dictionary of the reward and it's price, can return null. </returns>
-    protected KeyValuePair<Reward, double>? GetRandomWeaponPresetWithinBudget(double roublesBudget, int rewardIndex)
+    protected KeyValuePair<Reward, int>? GetRandomWeaponPresetWithinBudget(int roublesBudget, int rewardIndex)
     {
         // Add a random default preset weapon as reward
         var defaultPresetPool = new ExhaustableArray<Preset>(presetHelper.GetDefaultWeaponPresets().Values.ToList(), randomUtil, cloner);
@@ -528,13 +528,13 @@ public class RepeatableQuestRewardGenerator(
             var tpls = randomPreset.Items.Select(item => item.Template).ToList();
 
             // Does preset items fit our budget
-            var presetPrice = itemHelper.GetItemAndChildrenPrice(tpls);
+            var presetPrice = Convert.ToInt32(itemHelper.GetItemAndChildrenPrice(tpls));
             if (presetPrice <= roublesBudget)
             {
                 logger.Debug($"Added weapon: {tpls[0]}with price: {presetPrice}");
                 var chosenPreset = cloner.Clone(randomPreset)!;
 
-                return new KeyValuePair<Reward, double>(
+                return new KeyValuePair<Reward, int>(
                     GeneratePresetReward(chosenPreset.Encyclopedia.Value, 1, rewardIndex, chosenPreset.Items),
                     presetPrice
                 );
@@ -597,7 +597,7 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="index"> All rewards will be appended to a list, for unknown reasons the client wants the index</param>
     /// <param name="foundInRaid"> If generated Item is found in raid, default True </param>
     /// <returns> Object of "Reward"-item-type </returns>
-    protected Reward GenerateItemReward(MongoId tpl, double count, int index, bool foundInRaid = true)
+    protected Reward GenerateItemReward(MongoId tpl, int count, int index, bool foundInRaid = true)
     {
         var id = new MongoId();
         var questRewardItem = new Reward
@@ -626,7 +626,7 @@ public class RepeatableQuestRewardGenerator(
         return questRewardItem;
     }
 
-    protected Reward GetMoneyReward(MongoId traderId, double rewardRoubles, int rewardIndex)
+    protected Reward GetMoneyReward(MongoId traderId, int rewardRoubles, int rewardIndex)
     {
         // Determine currency based on trader
         // PK and Fence use Euros, everyone else is Roubles

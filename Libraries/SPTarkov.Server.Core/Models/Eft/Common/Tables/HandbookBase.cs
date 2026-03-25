@@ -41,6 +41,9 @@ public record HandbookItem
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public MongoId ParentId { get; set; }
 
+    //Todo: Type float?
+    // Yes this is meant to be a float
+    // No idea why, as item stacks can only be ints
     [JsonPropertyName("Price")]
     public double? Price { get; set; }
 }

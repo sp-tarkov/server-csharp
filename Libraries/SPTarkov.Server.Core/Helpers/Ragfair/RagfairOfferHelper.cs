@@ -681,7 +681,7 @@ public class RagfairOfferHelper(
     /// </summary>
     /// <param name="itemsInInventoryToSumStackCount">items to sum up</param>
     /// <returns>Total stack count</returns>
-    public double GetTotalStackCountSize(IEnumerable<List<Item>> itemsInInventoryToSumStackCount)
+    public int GetTotalStackCountSize(IEnumerable<List<Item>> itemsInInventoryToSumStackCount)
     {
         return itemsInInventoryToSumStackCount.Sum(itemAndChildren =>
             itemAndChildren.FirstOrDefault()?.Upd?.StackObjectsCount.GetValueOrDefault(1) ?? 1
@@ -782,7 +782,7 @@ public class RagfairOfferHelper(
             {
                 Id = new MongoId(),
                 Template = requirement.TemplateId,
-                Upd = new Upd { StackObjectsCount = requirement.Count * boughtAmount },
+                Upd = new Upd { StackObjectsCount = Convert.ToInt32(requirement.Count) * boughtAmount },
             };
 
             var stacks = itemHelper.SplitStack(requestedItem);

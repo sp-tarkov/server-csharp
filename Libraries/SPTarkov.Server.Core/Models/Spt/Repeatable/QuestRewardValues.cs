@@ -17,10 +17,10 @@ public record QuestRewardValues
     public required int RewardNumItems { get; set; }
 
     [JsonPropertyName("rewardRoubles")]
-    public required double RewardRoubles { get; set; }
+    public required int RewardRoubles { get; set; }
 
     [JsonPropertyName("gpCoinRewardCount")]
-    public required double GpCoinRewardCount { get; set; }
+    public required int GpCoinRewardCount { get; set; }
 
     [JsonPropertyName("rewardXP")]
     public required double RewardXP { get; set; }

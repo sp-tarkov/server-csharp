@@ -876,7 +876,7 @@ public class RagfairController(
         // Cleanup of cache now we've used the tax value from it
         ragfairTaxService.ClearStoredOfferTaxById(requestRootItemId);
 
-        var buyTradeRequest = CreateBuyTradeRequestObject(CurrencyType.RUB, tax.Value, pmcData.Id.Value);
+        var buyTradeRequest = CreateBuyTradeRequestObject(CurrencyType.RUB, Convert.ToInt32(tax.Value), pmcData.Id.Value);
         paymentService.PayMoney(pmcData, buyTradeRequest, sessionId, output);
         if (output.Warnings.Count > 0)
         {
@@ -1088,7 +1088,7 @@ public class RagfairController(
                 sellInOncePiece
             );
 
-            var request = CreateBuyTradeRequestObject(CurrencyType.RUB, tax, pmcData.Id.Value);
+            var request = CreateBuyTradeRequestObject(CurrencyType.RUB, Convert.ToInt32(tax), pmcData.Id.Value);
             paymentService.PayMoney(pmcData, request, sessionId, output);
             if (output.Warnings.Count > 0)
             {
@@ -1109,13 +1109,13 @@ public class RagfairController(
     /// <param name="value">Amount of currency</param>
     /// <param name="pmcId">Players id</param>
     /// <returns>ProcessBuyTradeRequestData</returns>
-    protected ProcessBuyTradeRequestData CreateBuyTradeRequestObject(CurrencyType currency, double value, MongoId pmcId)
+    protected ProcessBuyTradeRequestData CreateBuyTradeRequestObject(CurrencyType currency, int value, MongoId pmcId)
     {
         return new ProcessBuyTradeRequestData
         {
             TransactionId = pmcId,
             Action = "TradingConfirm",
-            SchemeItems = [new IdWithCount { Id = currency.GetCurrencyTpl(), Count = Math.Round(value) }],
+            SchemeItems = [new IdWithCount { Id = currency.GetCurrencyTpl(), Count = value }],
             Type = string.Empty,
             ItemId = MongoId.Empty(),
             Count = 0,
