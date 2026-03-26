@@ -9,8 +9,8 @@ public record GetItemPricesResponse
     public double? SupplyNextTime { get; set; }
 
     [JsonPropertyName("prices")]
-    public Dictionary<MongoId, double>? Prices { get; set; }
+    public Dictionary<MongoId, int>? Prices { get; set; }
 
     [JsonPropertyName("currencyCourses")]
-    public Dictionary<string, double>? CurrencyCourses { get; set; }
+    public Dictionary<string, int>? CurrencyCourses { get; set; }
 }

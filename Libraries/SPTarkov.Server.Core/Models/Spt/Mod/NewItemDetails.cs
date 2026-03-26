@@ -46,13 +46,13 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
 public record NewItemDetailsBase
 {
     [JsonPropertyName("fleaPriceRoubles")]
-    public double? FleaPriceRoubles { get; set; }
+    public int FleaPriceRoubles { get; set; }
 
     [JsonPropertyName("handbookPriceRoubles")]
-    public double? HandbookPriceRoubles { get; set; }
+    public int HandbookPriceRoubles { get; set; }
 
     [JsonPropertyName("handbookParentId")]
-    public string? HandbookParentId { get; set; }
+    public required string HandbookParentId { get; set; }
 
     /// <summary>
     /// Whether the item should be added to Tarkov's handbook

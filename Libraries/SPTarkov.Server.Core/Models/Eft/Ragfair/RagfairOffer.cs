@@ -29,13 +29,13 @@ public record RagfairOffer
     ///     Handbook price
     /// </summary>
     [JsonPropertyName("itemsCost")]
-    public double? ItemsCost { get; set; }
+    public int? ItemsCost { get; set; }
 
     /// <summary>
     ///     Rouble price per item
     /// </summary>
     [JsonPropertyName("requirementsCost")]
-    public double? RequirementsCost { get; set; }
+    public int? RequirementsCost { get; set; }
 
     [JsonPropertyName("startTime")]
     public long? StartTime { get; set; }

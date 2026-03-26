@@ -341,12 +341,12 @@ public class InsuranceService(
     /// <param name="inventoryItem">Item to be insured</param>
     /// <param name="traderId">Trader item is insured with</param>
     /// <returns>price in roubles</returns>
-    public double GetRoublePriceToInsureItemWithTrader(PmcData? pmcData, Item inventoryItem, MongoId traderId)
+    public int GetRoublePriceToInsureItemWithTrader(PmcData? pmcData, Item inventoryItem, MongoId traderId)
     {
         var price =
             itemHelper.GetStaticItemPrice(inventoryItem.Template)
             * (traderHelper.GetLoyaltyLevel(traderId, pmcData).InsurancePriceCoefficient / 100);
 
-        return Math.Ceiling(price ?? 1);
+        return (int)Math.Ceiling(price ?? 1);
     }
 }

@@ -102,7 +102,7 @@ public class HandbookHelper(ISptLogger<HandbookHelper> logger, TemplateTable tem
     /// </summary>
     /// <param name="tpl">Item tpl to look up price for</param>
     /// <returns>price in roubles</returns>
-    public double GetTemplatePrice(MongoId tpl)
+    public int GetTemplatePrice(MongoId tpl)
     {
         if (HandbookPriceCache.Items.ById.TryGetValue(tpl, out var itemPrice))
         {
@@ -202,7 +202,7 @@ public class HandbookHelper(ISptLogger<HandbookHelper> logger, TemplateTable tem
     {
         return currencyTypeFrom == Money.ROUBLES
             ? nonRoubleCurrencyCount
-            : (int)Math.Round(nonRoubleCurrencyCount * GetTemplatePrice(currencyTypeFrom));
+            : (int)Math.Round((double)nonRoubleCurrencyCount * GetTemplatePrice(currencyTypeFrom));
     }
 
     /// <summary>
@@ -230,7 +230,7 @@ public class HandbookHelper(ISptLogger<HandbookHelper> logger, TemplateTable tem
         }
 
         var price = GetTemplatePrice(currencyTypeTo);
-        return price > 0 ? Math.Max(1, (int)Math.Round(roubleCurrencyCount / price)) : 0;
+        return price > 0 ? Math.Max(1, (int)Math.Round((double)roubleCurrencyCount / price)) : 0;
     }
 
     /// <summary>
@@ -266,11 +266,11 @@ public class HandbookHelper(ISptLogger<HandbookHelper> logger, TemplateTable tem
     {
         public LookupCollection()
         {
-            Items = new LookupItem<double, MongoId>();
+            Items = new LookupItem<int, MongoId>();
             Categories = new LookupItem<string, string>();
         }
 
-        public LookupItem<double, MongoId> Items { get; set; }
+        public LookupItem<int, MongoId> Items { get; set; }
 
         public LookupItem<string, string> Categories { get; set; }
     }

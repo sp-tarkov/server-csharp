@@ -271,7 +271,7 @@ public class CustomItemService(
     /// <param name="newItemId"> ID of the item being added </param>
     /// <param name="parentId"> Parent ID of the item being added </param>
     /// <param name="priceRoubles"> Price of the item being added </param>
-    protected void AddToHandbookDb(MongoId newItemId, string parentId, double? priceRoubles)
+    protected void AddToHandbookDb(MongoId newItemId, string parentId, int priceRoubles)
     {
         templateTable.Handbook.Items.Add(
             new HandbookItem
@@ -337,7 +337,7 @@ public class CustomItemService(
     /// </summary>
     /// <param name="newItemId"> ID of the new item </param>
     /// <param name="fleaPriceRoubles"> Price of the new item </param>
-    protected void AddToFleaPriceDb(string newItemId, double? fleaPriceRoubles)
+    protected void AddToFleaPriceDb(string newItemId, int? fleaPriceRoubles)
     {
         templateTable.Prices[newItemId] = fleaPriceRoubles ?? 0;
     }

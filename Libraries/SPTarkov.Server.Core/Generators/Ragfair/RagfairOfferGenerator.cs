@@ -125,9 +125,9 @@ public class RagfairOfferGenerator(
                     : CreateUserDataForFleaOffer(details.UserId, details.Creator == OfferCreator.Trader),
             Root = rootItem.Id,
             Items = details.Items,
-            ItemsCost = Math.Round(handbookHelper.GetTemplatePrice(rootItem.Template)), // Handbook price
+            ItemsCost = (int)Math.Round((double)handbookHelper.GetTemplatePrice(rootItem.Template)), // Handbook price
             Requirements = offerRequirements,
-            RequirementsCost = Math.Round(singleItemListingPrice),
+            RequirementsCost = (int)Math.Round(singleItemListingPrice),
             SummaryCost = roubleListingPrice,
             StartTime = details.Time,
             EndTime = GetOfferEndTime(details.Creator, details.UserId, details.Time),

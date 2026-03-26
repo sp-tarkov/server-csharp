@@ -232,7 +232,7 @@ public record Dynamic
     ///     Custom rouble prices for items to override values from prices.json
     /// </summary>
     [JsonPropertyName("itemPriceOverrideRouble")]
-    public required Dictionary<MongoId, double> ItemPriceOverrideRouble { get; set; }
+    public required Dictionary<MongoId, int> ItemPriceOverrideRouble { get; set; }
 
     [JsonPropertyName("generateBaseFleaPrices")]
     public GenerateFleaPrices GenerateBaseFleaPrices { get; set; }

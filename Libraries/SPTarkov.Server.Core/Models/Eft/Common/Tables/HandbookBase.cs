@@ -41,9 +41,9 @@ public record HandbookItem
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public MongoId ParentId { get; set; }
 
-    //Todo: Type float?
-    // Yes this is meant to be a float
-    // No idea why, as item stacks can only be ints
+    /// <summary>
+    /// Technically in the game this is a float, however that doesn't make sense as the game's currency stacks are all <see cref="int">ints</see>
+    /// </summary>
     [JsonPropertyName("Price")]
-    public double? Price { get; set; }
+    public int? Price { get; set; }
 }

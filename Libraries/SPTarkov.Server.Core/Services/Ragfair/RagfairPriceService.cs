@@ -32,7 +32,7 @@ public class RagfairPriceService(
     RagfairConfig ragfairConfig
 )
 {
-    protected Dictionary<MongoId, double>? StaticPrices;
+    protected Dictionary<MongoId, int>? StaticPrices;
 
     /// <summary>
     ///     Generate static (handbook) and dynamic (prices.json) flea prices, store inside class as dictionaries
@@ -95,7 +95,7 @@ public class RagfairPriceService(
                 }
             }
 
-            pricePool.AddOrUpdate(itemTpl, newBasePrice);
+            pricePool.AddOrUpdate(itemTpl, (int)newBasePrice);
         }
     }
 
@@ -219,14 +219,14 @@ public class RagfairPriceService(
     ///     This will refresh the caches prior to building the output
     /// </summary>
     /// <returns>Dictionary of item tpls and rouble cost</returns>
-    public Dictionary<MongoId, double> GetAllFleaPrices()
+    public Dictionary<MongoId, int> GetAllFleaPrices()
     {
         var dynamicPrices = templateTable.Prices;
         // Use dynamic prices first, fill in any gaps with data from static prices (handbook)
         return dynamicPrices.Concat(StaticPrices).GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.First().Value);
     }
 
-    public Dictionary<MongoId, double> GetAllStaticPrices()
+    public Dictionary<MongoId, int> GetAllStaticPrices()
     {
         // Refresh the cache so we include any newly added custom items
         if (StaticPrices is null)
@@ -234,7 +234,7 @@ public class RagfairPriceService(
             RefreshStaticPrices();
         }
 
-        return StaticPrices;
+        return StaticPrices!;
     }
 
     /// <summary>

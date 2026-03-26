@@ -145,7 +145,7 @@ public class TraderController(
         {
             SupplyNextTime = traderHelper.GetNextUpdateTimestamp(traderId),
             Prices = handbookPrices,
-            CurrencyCourses = new Dictionary<string, double>
+            CurrencyCourses = new Dictionary<string, int>
             {
                 { Money.ROUBLES, handbookPrices[Money.ROUBLES] },
                 { Money.EUROS, handbookPrices[Money.EUROS] },
