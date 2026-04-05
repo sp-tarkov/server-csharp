@@ -210,7 +210,7 @@ public class CircleOfCultistService(
         var matchingThreshold = GetMatchingThreshold(circleConfig.CraftTimeThresholds, rewardAmountRoubles);
         if (
             rewardAmountRoubles >= circleConfig.HideoutCraftSacrificeThresholdRub
-            && random.Next(0, 1) <= circleConfig.BonusChanceMultiplier
+            && random.NextDouble() <= circleConfig.BonusChanceMultiplier
         )
         {
             // Sacrifice amount is enough + passed 25% check to get hideout/task rewards
