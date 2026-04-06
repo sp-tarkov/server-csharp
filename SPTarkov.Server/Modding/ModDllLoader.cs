@@ -43,7 +43,7 @@ public class ModDllLoader
             }
         }
 
-        return mods;
+        return mods.OrderBy(m => m.ModMetadata.ModGuid, StringComparer.OrdinalIgnoreCase).ToList();
     }
 
     /// <summary>
