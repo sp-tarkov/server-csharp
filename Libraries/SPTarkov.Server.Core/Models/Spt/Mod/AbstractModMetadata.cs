@@ -73,11 +73,6 @@ public abstract record AbstractModMetadata
     public abstract string? Url { get; init; }
 
     /// <summary>
-    /// Does this mod load bundles
-    /// </summary>
-    public abstract bool? IsBundleMod { get; init; }
-
-    /// <summary>
     /// Name of the license this mod uses
     /// </summary>
     public abstract string License { get; init; }

@@ -53,7 +53,7 @@ public class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonUtil, Bu
 
         if (modBundles?.Manifest is null)
         {
-            logger.Warning($"Could not find manifest for mod {mod.ModMetadata.Name}, skipping!");
+            logger.Warning($"Could not load bundle manifest for mod {mod.ModMetadata.Name}, skipping!");
             return;
         }
 

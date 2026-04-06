@@ -23,7 +23,6 @@ public record TestModMetadata : AbstractModMetadata, IModWebMetadata
     public override List<string>? Incompatibilities { get; init; }
     public override Dictionary<string, Range>? ModDependencies { get; init; }
     public override string? Url { get; init; }
-    public override bool? IsBundleMod { get; init; }
     public override string License { get; init; } = "MIT";
 
     public string? WWWRootUrl { get; init; }
