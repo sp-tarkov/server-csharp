@@ -8,7 +8,7 @@ using static SPTarkov.Server.Core.Services.MatchLocationService;
 
 namespace SPTarkov.Server.Core.Routers.Static;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.Routers)]
 public class MatchStaticRouter(JsonUtil jsonUtil, MatchCallbacks matchCallbacks)
     : StaticRouter(
         jsonUtil,

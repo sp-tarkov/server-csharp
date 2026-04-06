@@ -4,7 +4,7 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 
 namespace SPTarkov.Server.Core.Routers.SaveLoad;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.Routers)]
 public class InraidSaveLoadRouter : SaveLoadRouter
 {
     protected override List<HandledRoute> GetHandledRoutes()

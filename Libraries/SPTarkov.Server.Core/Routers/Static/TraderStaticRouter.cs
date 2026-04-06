@@ -6,7 +6,7 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Routers.Static;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.Routers)]
 public class TraderStaticRouter(JsonUtil jsonUtil, TraderCallbacks traderCallbacks)
     : StaticRouter(
         jsonUtil,

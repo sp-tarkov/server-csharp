@@ -10,7 +10,7 @@ using SPTarkov.Server.Core.Models.Enums;
 
 namespace SPTarkov.Server.Core.Routers.ItemEvents;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.Routers)]
 public class QuestItemEventRouter(QuestCallbacks questCallbacks) : ItemEventRouterDefinition
 {
     protected override List<HandledRoute> GetHandledRoutes()

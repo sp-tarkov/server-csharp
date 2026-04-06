@@ -8,7 +8,7 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Routers.Static;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.Routers)]
 public class GameStaticRouter(JsonUtil jsonUtil, GameCallbacks gameCallbacks)
     : StaticRouter(
         jsonUtil,

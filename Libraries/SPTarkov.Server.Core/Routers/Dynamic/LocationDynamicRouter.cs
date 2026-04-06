@@ -4,7 +4,7 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Routers.Dynamic;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.Routers)]
 public class LocationDynamicRouter(JsonUtil jsonUtil) : DynamicRouter(jsonUtil, [])
 {
     public override string GetTopLevelRoute()

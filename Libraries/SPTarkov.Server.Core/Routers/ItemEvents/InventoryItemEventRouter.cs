@@ -12,7 +12,7 @@ using SPTarkov.Server.Core.Models.Enums;
 
 namespace SPTarkov.Server.Core.Routers.ItemEvents;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.Routers)]
 public class InventoryItemEventRouter(InventoryCallbacks inventoryCallbacks, HideoutCallbacks hideoutCallbacks) : ItemEventRouterDefinition
 {
     protected override List<HandledRoute> GetHandledRoutes()

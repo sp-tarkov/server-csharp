@@ -7,7 +7,7 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Routers.Static;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.Routers)]
 public class RagfairStaticRouter(JsonUtil jsonUtil, RagfairCallbacks ragfairCallbacks)
     : StaticRouter(
         jsonUtil,
