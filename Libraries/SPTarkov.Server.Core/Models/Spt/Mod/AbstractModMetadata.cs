@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 using Range = SemanticVersioning.Range;
 using Version = SemanticVersioning.Version;
@@ -10,6 +11,11 @@ namespace SPTarkov.Server.Core.Models.Spt.Mod;
 /// pre-defined load order and incompatibilities. This record is required to be overridden by all mods.
 /// All properties must be overridden. For properties, that you don't need, just assign null.
 /// </summary>
+/// <remarks>
+/// Load order of classes is determined first by <see cref="Injectable.TypePriority">Type Priority</see>, then by <see cref="ModGuid">Mod GUID</see> as a tiebreaker.
+/// In practice, Type Priority is almost always the deciding factor. Mod GUID only
+/// affects ordering when two or more classes share the same Type Priority value.
+/// </remarks>
 public abstract record AbstractModMetadata
 {
     /// <summary>
