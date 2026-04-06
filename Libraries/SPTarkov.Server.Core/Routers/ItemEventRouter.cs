@@ -1,5 +1,6 @@
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
+using SPTarkov.DI.Extensions;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -11,7 +12,7 @@ using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Routers;
 
-[Injectable]
+[Injectable(InjectionType.Singleton)]
 public class ItemEventRouter(
     ISptLogger<ItemEventRouter> logger,
     ISptLogger<FileLogger> fileLogger,
@@ -23,6 +24,10 @@ public class ItemEventRouter(
     ICloner cloner
 )
 {
+    private readonly IEnumerable<ItemEventRouterDefinition> _itemEventRouters = itemEventRouters
+        .OrderBy(DependencyInjectionExtensions.GetTypePriority)
+        .ToList();
+
     /// <summary>
     ///     Handles ItemEventRouter Requests and processes them.
     /// </summary>
@@ -37,7 +42,8 @@ public class ItemEventRouter(
         {
             var pmcData = profileHelper.GetPmcProfile(sessionID);
 
-            var eventRouter = itemEventRouters.FirstOrDefault(r => r.CanHandle(body.Action));
+            var eventRouter = _itemEventRouters.FirstOrDefault(r => r.CanHandle(body.Action));
+
             if (eventRouter is null)
             {
                 logger.Error(localisationService.GetText("event-unhandled_event", body.Action));
