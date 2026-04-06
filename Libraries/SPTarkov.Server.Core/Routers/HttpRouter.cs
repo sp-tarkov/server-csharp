@@ -6,16 +6,9 @@ using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Routers;
 
-[Injectable(InjectionType.Singleton)]
+[Injectable]
 public class HttpRouter(IEnumerable<StaticRouter> staticRouters, IEnumerable<DynamicRouter> dynamicRoutes)
 {
-    private readonly IEnumerable<StaticRouter> _staticRouters = staticRouters
-        .OrderBy(DependencyInjectionExtensions.GetTypePriority)
-        .ToList();
-    private readonly IEnumerable<DynamicRouter> _dynamicRoutes = dynamicRoutes
-        .OrderBy(DependencyInjectionExtensions.GetTypePriority)
-        .ToList();
-
     public bool CanHandle(HttpContext context)
     {
         return staticRouters.Any(sr => sr.CanHandle(context.Request.Path.Value, false))
@@ -25,10 +18,10 @@ public class HttpRouter(IEnumerable<StaticRouter> staticRouters, IEnumerable<Dyn
     public async ValueTask<string?> GetResponse(HttpRequest req, MongoId sessionID, string? body)
     {
         var wrapper = new ResponseWrapper("");
-        var handled = await HandleRoute(req, sessionID, wrapper, _staticRouters, false, body);
+        var handled = await HandleRoute(req, sessionID, wrapper, staticRouters, false, body);
         if (!handled)
         {
-            await HandleRoute(req, sessionID, wrapper, _dynamicRoutes, true, body);
+            await HandleRoute(req, sessionID, wrapper, dynamicRoutes, true, body);
         }
 
         return wrapper.Output;

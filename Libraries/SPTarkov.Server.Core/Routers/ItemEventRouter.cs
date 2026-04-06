@@ -12,7 +12,7 @@ using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Routers;
 
-[Injectable(InjectionType.Singleton)]
+[Injectable]
 public class ItemEventRouter(
     ISptLogger<ItemEventRouter> logger,
     ISptLogger<FileLogger> fileLogger,
@@ -24,10 +24,6 @@ public class ItemEventRouter(
     ICloner cloner
 )
 {
-    private readonly IEnumerable<ItemEventRouterDefinition> _itemEventRouters = itemEventRouters
-        .OrderBy(DependencyInjectionExtensions.GetTypePriority)
-        .ToList();
-
     /// <summary>
     ///     Handles ItemEventRouter Requests and processes them.
     /// </summary>
@@ -42,7 +38,7 @@ public class ItemEventRouter(
         {
             var pmcData = profileHelper.GetPmcProfile(sessionID);
 
-            var eventRouter = _itemEventRouters.FirstOrDefault(r => r.CanHandle(body.Action));
+            var eventRouter = itemEventRouters.FirstOrDefault(r => r.CanHandle(body.Action));
 
             if (eventRouter is null)
             {
