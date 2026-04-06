@@ -6,7 +6,7 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Routers.Static;
 
-[Injectable(TypePriority = OnLoadOrder.Routers - 10000)]
+[Injectable(TypePriority = OnLoadOrder.Routers)]
 public class WeatherStaticRouter(JsonUtil jsonUtil, WeatherCallbacks weatherCallbacks)
     : StaticRouter(
         jsonUtil,
