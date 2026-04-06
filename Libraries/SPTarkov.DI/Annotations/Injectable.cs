@@ -7,11 +7,11 @@ namespace SPTarkov.DI.Annotations;
 public class Injectable(InjectionType injectionType = InjectionType.Transient, Type? typeOverride = null, int typePriority = int.MaxValue)
     : Attribute
 {
-    public InjectionType InjectionType { get; set; } = injectionType;
+    public InjectionType InjectionType { get; init; } = injectionType;
 
-    public int TypePriority { get; set; } = typePriority;
+    public int TypePriority { get; init; } = typePriority;
 
-    public Type? TypeOverride { get; set; } = typeOverride;
+    public Type? TypeOverride { get; init; } = typeOverride;
 }
 
 public enum InjectionType
