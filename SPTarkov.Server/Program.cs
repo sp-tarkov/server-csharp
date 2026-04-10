@@ -218,7 +218,7 @@ public static class Program
                         listenOptions.UseHttps(opts =>
                         {
                             opts.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
-                            opts.ServerCertificate = certHelper.LoadOrGenerateCertificatePfx();
+                            opts.ServerCertificate = certHelper.LoadOrGenerateCertificate();
                             opts.ClientCertificateMode = ClientCertificateMode.NoCertificate;
                         });
                     }
