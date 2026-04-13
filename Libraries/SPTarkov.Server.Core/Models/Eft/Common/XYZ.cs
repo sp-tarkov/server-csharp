@@ -2,14 +2,14 @@ using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common;
 
-public struct XYZ
+public readonly struct XYZ
 {
     [JsonPropertyName("x")]
-    public required float X { get; set; }
+    public readonly float X;
 
     [JsonPropertyName("y")]
-    public required float Y { get; set; }
+    public readonly float Y;
 
     [JsonPropertyName("z")]
-    public required float Z { get; set; }
+    public readonly float Z;
 }
