@@ -130,7 +130,7 @@ public record ArtilleryMapSettings
     public ArtilleryShellingAirDropSettings ArtilleryShellingAirDropSettings { get; set; }
 
     [JsonPropertyName("PauseBetweenShellings")]
-    public XYZ PauseBetweenShellings { get; set; }
+    public Vector3 PauseBetweenShellings { get; set; }
 }
 
 public record ShellingZone
@@ -139,7 +139,7 @@ public record ShellingZone
     public double ID { get; set; }
 
     [JsonPropertyName("PointsInShellings")]
-    public XYZ PointsInShellings { get; set; }
+    public Vector3 PointsInShellings { get; set; }
 
     [JsonPropertyName("ShellingRounds")]
     public double ShellingRounds { get; set; }
@@ -148,28 +148,28 @@ public record ShellingZone
     public double ShotCount { get; set; }
 
     [JsonPropertyName("PauseBetweenRounds")]
-    public XYZ PauseBetweenRounds { get; set; }
+    public Vector3 PauseBetweenRounds { get; set; }
 
     [JsonPropertyName("PauseBetweenShots")]
-    public XYZ PauseBetweenShots { get; set; }
+    public Vector3 PauseBetweenShots { get; set; }
 
     [JsonPropertyName("Center")]
-    public XYZ Center { get; set; }
+    public Vector3 Center { get; set; }
 
     [JsonPropertyName("Rotate")]
     public double Rotate { get; set; }
 
     [JsonPropertyName("GridStep")]
-    public XYZ GridStep { get; set; }
+    public Vector3 GridStep { get; set; }
 
     [JsonPropertyName("Points")]
-    public XYZ Points { get; set; }
+    public Vector3 Points { get; set; }
 
     [JsonPropertyName("PointRadius")]
     public double PointRadius { get; set; }
 
     [JsonPropertyName("ExplosionDistanceRange")]
-    public XYZ ExplosionDistanceRange { get; set; }
+    public Vector3 ExplosionDistanceRange { get; set; }
 
     [JsonPropertyName("AlarmStages")]
     public IEnumerable<AlarmStage> AlarmStages { get; set; }
@@ -205,7 +205,7 @@ public record Brigade
 public record ArtilleryGun
 {
     [JsonPropertyName("Position")]
-    public XYZ Position { get; set; }
+    public Vector3 Position { get; set; }
 }
 
 public record ArtilleryShellingAirDropSettings
@@ -217,7 +217,7 @@ public record ArtilleryShellingAirDropSettings
     public double AirDropTime { get; set; }
 
     [JsonPropertyName("AirDropPosition")]
-    public XYZ AirDropPosition { get; set; }
+    public Vector3 AirDropPosition { get; set; }
 
     [JsonPropertyName("LootTemplateId")]
     public MongoId LootTemplateId { get; set; }
@@ -226,13 +226,13 @@ public record ArtilleryShellingAirDropSettings
 public record ProjectileExplosionParams
 {
     [JsonPropertyName("Blindness")]
-    public XYZ Blindness { get; set; }
+    public Vector3 Blindness { get; set; }
 
     [JsonPropertyName("Contusion")]
-    public XYZ Contusion { get; set; }
+    public Vector3 Contusion { get; set; }
 
     [JsonPropertyName("ArmorDistanceDistanceDamage")]
-    public XYZ ArmorDistanceDistanceDamage { get; set; }
+    public Vector3 ArmorDistanceDistanceDamage { get; set; }
 
     // Checked in client
     [JsonPropertyName("MinExplosionDistance")]
@@ -532,10 +532,10 @@ public record Config
     public required List<EventType> EventType { get; set; }
 
     [JsonPropertyName("WalkSpeed")]
-    public XYZ WalkSpeed { get; set; }
+    public Vector3 WalkSpeed { get; set; }
 
     [JsonPropertyName("SprintSpeed")]
-    public XYZ SprintSpeed { get; set; }
+    public Vector3 SprintSpeed { get; set; }
 
     [JsonPropertyName("SquadSettings")]
     public SquadSettings SquadSettings { get; set; }
@@ -556,7 +556,7 @@ public record Config
     public double GameSearchingTimeout { get; set; }
 
     [JsonPropertyName("WallContusionAbsorption")]
-    public XYZ WallContusionAbsorption { get; set; }
+    public Vector3 WallContusionAbsorption { get; set; }
 
     [JsonPropertyName("WeaponFastDrawSettings")]
     public WeaponFastDrawSettings WeaponFastDrawSettings { get; set; }
@@ -658,7 +658,7 @@ public record RunddansSettings
     public double DrunkImmunitySec { get; set; }
 
     [JsonPropertyName("durability")]
-    public XY Durability { get; set; }
+    public Vector2 Durability { get; set; }
 
     [JsonPropertyName("fireDistanceToHeat")]
     public double FireDistanceToHeat { get; set; }
@@ -688,7 +688,7 @@ public record RunddansSettings
     public double RepairSec { get; set; }
 
     [JsonPropertyName("secToBreak")]
-    public XY SecToBreak { get; set; }
+    public Vector2 SecToBreak { get; set; }
 
     [JsonPropertyName("sleighLocations")]
     public IEnumerable<string> SleighLocations { get; set; }
@@ -864,7 +864,7 @@ public record EventWeather
     public double ScaterringFogDensity { get; set; }
 
     [JsonPropertyName("TopWindDirection")]
-    public XYZ TopWindDirection { get; set; }
+    public Vector3 TopWindDirection { get; set; }
 
     [JsonPropertyName("Wind")]
     public double Wind { get; set; }
@@ -1002,13 +1002,13 @@ public record MountingMovementSettings
     public double MountingSwayFactorModifier { get; set; }
 
     [JsonPropertyName("PitchLimitHorizontal")]
-    public XYZ PitchLimitHorizontal { get; set; }
+    public Vector3 PitchLimitHorizontal { get; set; }
 
     [JsonPropertyName("PitchLimitHorizontalBipod")]
-    public XYZ PitchLimitHorizontalBipod { get; set; }
+    public Vector3 PitchLimitHorizontalBipod { get; set; }
 
     [JsonPropertyName("PitchLimitVertical")]
-    public XYZ PitchLimitVertical { get; set; }
+    public Vector3 PitchLimitVertical { get; set; }
 
     [JsonPropertyName("RotationSpeedClamp")]
     public double RotationSpeedClamp { get; set; }
@@ -2561,28 +2561,28 @@ public record Stamina
     public double OxygenRestoration { get; set; }
 
     [JsonPropertyName("WalkOverweightLimits")]
-    public XYZ WalkOverweightLimits { get; set; }
+    public Vector3 WalkOverweightLimits { get; set; }
 
     [JsonPropertyName("BaseOverweightLimits")]
-    public XYZ BaseOverweightLimits { get; set; }
+    public Vector3 BaseOverweightLimits { get; set; }
 
     [JsonPropertyName("SprintOverweightLimits")]
-    public XYZ SprintOverweightLimits { get; set; }
+    public Vector3 SprintOverweightLimits { get; set; }
 
     [JsonPropertyName("WalkSpeedOverweightLimits")]
-    public XYZ WalkSpeedOverweightLimits { get; set; }
+    public Vector3 WalkSpeedOverweightLimits { get; set; }
 
     [JsonPropertyName("CrouchConsumption")]
-    public XYZ CrouchConsumption { get; set; }
+    public Vector3 CrouchConsumption { get; set; }
 
     [JsonPropertyName("WalkConsumption")]
-    public XYZ WalkConsumption { get; set; }
+    public Vector3 WalkConsumption { get; set; }
 
     [JsonPropertyName("StandupConsumption")]
-    public XYZ StandupConsumption { get; set; }
+    public Vector3 StandupConsumption { get; set; }
 
     [JsonPropertyName("TransitionSpeed")]
-    public XYZ TransitionSpeed { get; set; }
+    public Vector3 TransitionSpeed { get; set; }
 
     [JsonPropertyName("SprintAccelerationLowerLimit")]
     public double SprintAccelerationLowerLimit { get; set; }
@@ -2594,13 +2594,13 @@ public record Stamina
     public double SprintSensitivityLowerLimit { get; set; }
 
     [JsonPropertyName("AimConsumptionByPose")]
-    public XYZ AimConsumptionByPose { get; set; }
+    public Vector3 AimConsumptionByPose { get; set; }
 
     [JsonPropertyName("RestorationMultiplierByPose")]
-    public XYZ RestorationMultiplierByPose { get; set; }
+    public Vector3 RestorationMultiplierByPose { get; set; }
 
     [JsonPropertyName("OverweightConsumptionByPose")]
-    public XYZ OverweightConsumptionByPose { get; set; }
+    public Vector3 OverweightConsumptionByPose { get; set; }
 
     [JsonPropertyName("AimingSpeedMultiplier")]
     public double AimingSpeedMultiplier { get; set; }
@@ -2624,7 +2624,7 @@ public record Stamina
     public double BaseHoldBreathConsumption { get; set; }
 
     [JsonPropertyName("SoundRadius")]
-    public XYZ SoundRadius { get; set; }
+    public Vector3 SoundRadius { get; set; }
 
     [JsonPropertyName("ExhaustedMeleeSpeed")]
     public double ExhaustedMeleeSpeed { get; set; }
@@ -2657,26 +2657,26 @@ public record Stamina
     public bool StaminaExhaustionRocksCamera { get; set; }
 
     [JsonPropertyName("HoldBreathStaminaMultiplier")]
-    public XYZ HoldBreathStaminaMultiplier { get; set; }
+    public Vector3 HoldBreathStaminaMultiplier { get; set; }
 
     [JsonPropertyName("PoseLevelIncreaseSpeed")]
-    public XYZ PoseLevelIncreaseSpeed { get; set; }
+    public Vector3 PoseLevelIncreaseSpeed { get; set; }
 
     [JsonPropertyName("PoseLevelDecreaseSpeed")]
-    public XYZ PoseLevelDecreaseSpeed { get; set; }
+    public Vector3 PoseLevelDecreaseSpeed { get; set; }
 
     [JsonPropertyName("PoseLevelConsumptionPerNotch")]
-    public XYZ PoseLevelConsumptionPerNotch { get; set; }
+    public Vector3 PoseLevelConsumptionPerNotch { get; set; }
 
-    public XYZ ClimbLegsConsumption { get; set; }
+    public Vector3 ClimbLegsConsumption { get; set; }
 
-    public XYZ ClimbOneHandConsumption { get; set; }
+    public Vector3 ClimbOneHandConsumption { get; set; }
 
-    public XYZ ClimbTwoHandsConsumption { get; set; }
+    public Vector3 ClimbTwoHandsConsumption { get; set; }
 
-    public XYZ VaultLegsConsumption { get; set; }
+    public Vector3 VaultLegsConsumption { get; set; }
 
-    public XYZ VaultOneHandConsumption { get; set; }
+    public Vector3 VaultOneHandConsumption { get; set; }
 }
 
 public record StaminaRestoration
@@ -2834,7 +2834,7 @@ public record VaultingSubMoveSettings
     public double MaxOneHandHeight { get; set; }
 
     [JsonPropertyName("SpeedRange")]
-    public XYZ SpeedRange { get; set; }
+    public Vector3 SpeedRange { get; set; }
 
     [JsonPropertyName("MoveRestrictions")]
     public MoveRestrictions MoveRestrictions { get; set; }
@@ -3835,7 +3835,7 @@ public record TroubleShooting
 public record Aiming
 {
     [JsonPropertyName("ProceduralIntensityByPose")]
-    public XYZ ProceduralIntensityByPose { get; set; }
+    public Vector3 ProceduralIntensityByPose { get; set; }
 
     [JsonPropertyName("AimProceduralIntensity")]
     public double AimProceduralIntensity { get; set; }
@@ -3868,13 +3868,13 @@ public record Aiming
     public double CameraSnapGlobalMult { get; set; }
 
     [JsonPropertyName("RecoilXIntensityByPose")]
-    public XYZ RecoilXIntensityByPose { get; set; }
+    public Vector3 RecoilXIntensityByPose { get; set; }
 
     [JsonPropertyName("RecoilYIntensityByPose")]
-    public XYZ RecoilYIntensityByPose { get; set; }
+    public Vector3 RecoilYIntensityByPose { get; set; }
 
     [JsonPropertyName("RecoilZIntensityByPose")]
-    public XYZ RecoilZIntensityByPose { get; set; }
+    public Vector3 RecoilZIntensityByPose { get; set; }
 
     [JsonPropertyName("RecoilCrank")]
     public bool RecoilCrank { get; set; }
@@ -3925,7 +3925,7 @@ public record Malfunction
     public double TimeToQuickdrawPistol { get; set; }
 
     [JsonPropertyName("DurRangeToIgnoreMalfs")]
-    public XYZ DurRangeToIgnoreMalfs { get; set; }
+    public Vector3 DurRangeToIgnoreMalfs { get; set; }
 
     [JsonPropertyName("DurFeedWt")]
     public double DurFeedWt { get; set; }
@@ -4094,7 +4094,7 @@ public record FenceLevel
     public double ScavEquipmentSpawnChanceModifier { get; set; }
 
     [JsonPropertyName("TransitGridSize")]
-    public XYZ TransitGridSize { get; set; }
+    public Vector3 TransitGridSize { get; set; }
 
     [JsonPropertyName("PriceModifier")]
     public double PriceModifier { get; set; }
@@ -4145,7 +4145,7 @@ public record FenceLevel
     public bool ReactOnMarkOnUnknownsPVE { get; set; }
 
     [JsonPropertyName("DeliveryGridSize")]
-    public XYZ DeliveryGridSize { get; set; }
+    public Vector3 DeliveryGridSize { get; set; }
 
     [JsonPropertyName("CanInteractWithBtr")]
     public bool CanInteractWithBtr { get; set; }
@@ -4157,34 +4157,34 @@ public record FenceLevel
 public record Inertia
 {
     [JsonPropertyName("InertiaLimits")]
-    public XYZ InertiaLimits { get; set; }
+    public Vector3 InertiaLimits { get; set; }
 
     [JsonPropertyName("InertiaLimitsStep")]
     public double InertiaLimitsStep { get; set; }
 
     [JsonPropertyName("ExitMovementStateSpeedThreshold")]
-    public XYZ ExitMovementStateSpeedThreshold { get; set; }
+    public Vector3 ExitMovementStateSpeedThreshold { get; set; }
 
     [JsonPropertyName("WalkInertia")]
-    public XYZ WalkInertia { get; set; }
+    public Vector3 WalkInertia { get; set; }
 
     [JsonPropertyName("FallThreshold")]
     public double FallThreshold { get; set; }
 
     [JsonPropertyName("SpeedLimitAfterFallMin")]
-    public XYZ SpeedLimitAfterFallMin { get; set; }
+    public Vector3 SpeedLimitAfterFallMin { get; set; }
 
     [JsonPropertyName("SpeedLimitAfterFallMax")]
-    public XYZ SpeedLimitAfterFallMax { get; set; }
+    public Vector3 SpeedLimitAfterFallMax { get; set; }
 
     [JsonPropertyName("SpeedLimitDurationMin")]
-    public XYZ SpeedLimitDurationMin { get; set; }
+    public Vector3 SpeedLimitDurationMin { get; set; }
 
     [JsonPropertyName("SpeedLimitDurationMax")]
-    public XYZ SpeedLimitDurationMax { get; set; }
+    public Vector3 SpeedLimitDurationMax { get; set; }
 
     [JsonPropertyName("SpeedInertiaAfterJump")]
-    public XYZ SpeedInertiaAfterJump { get; set; }
+    public Vector3 SpeedInertiaAfterJump { get; set; }
 
     [JsonPropertyName("BaseJumpPenaltyDuration")]
     public double BaseJumpPenaltyDuration { get; set; }
@@ -4199,79 +4199,79 @@ public record Inertia
     public double PenaltyPower { get; set; }
 
     [JsonPropertyName("InertiaTiltCurveMin")]
-    public XYZ InertiaTiltCurveMin { get; set; }
+    public Vector3 InertiaTiltCurveMin { get; set; }
 
     [JsonPropertyName("InertiaTiltCurveMax")]
-    public XYZ InertiaTiltCurveMax { get; set; }
+    public Vector3 InertiaTiltCurveMax { get; set; }
 
     [JsonPropertyName("InertiaBackwardCoef")]
-    public XYZ InertiaBackwardCoef { get; set; }
+    public Vector3 InertiaBackwardCoef { get; set; }
 
     [JsonPropertyName("TiltInertiaMaxSpeed")]
-    public XYZ TiltInertiaMaxSpeed { get; set; }
+    public Vector3 TiltInertiaMaxSpeed { get; set; }
 
     [JsonPropertyName("TiltStartSideBackSpeed")]
-    public XYZ TiltStartSideBackSpeed { get; set; }
+    public Vector3 TiltStartSideBackSpeed { get; set; }
 
     [JsonPropertyName("TiltMaxSideBackSpeed")]
-    public XYZ TiltMaxSideBackSpeed { get; set; }
+    public Vector3 TiltMaxSideBackSpeed { get; set; }
 
     [JsonPropertyName("TiltAcceleration")]
-    public XYZ TiltAcceleration { get; set; }
+    public Vector3 TiltAcceleration { get; set; }
 
     [JsonPropertyName("AverageRotationFrameSpan")]
     public double AverageRotationFrameSpan { get; set; }
 
     [JsonPropertyName("SprintSpeedInertiaCurveMin")]
-    public XYZ SprintSpeedInertiaCurveMin { get; set; }
+    public Vector3 SprintSpeedInertiaCurveMin { get; set; }
 
     [JsonPropertyName("SprintSpeedInertiaCurveMax")]
-    public XYZ SprintSpeedInertiaCurveMax { get; set; }
+    public Vector3 SprintSpeedInertiaCurveMax { get; set; }
 
     [JsonPropertyName("SprintBrakeInertia")]
-    public XYZ SprintBrakeInertia { get; set; }
+    public Vector3 SprintBrakeInertia { get; set; }
 
     [JsonPropertyName("SprintTransitionMotionPreservation")]
-    public XYZ SprintTransitionMotionPreservation { get; set; }
+    public Vector3 SprintTransitionMotionPreservation { get; set; }
 
     [JsonPropertyName("WeaponFlipSpeed")]
-    public XYZ WeaponFlipSpeed { get; set; }
+    public Vector3 WeaponFlipSpeed { get; set; }
 
     [JsonPropertyName("PreSprintAccelerationLimits")]
-    public XYZ PreSprintAccelerationLimits { get; set; }
+    public Vector3 PreSprintAccelerationLimits { get; set; }
 
     [JsonPropertyName("SprintAccelerationLimits")]
-    public XYZ SprintAccelerationLimits { get; set; }
+    public Vector3 SprintAccelerationLimits { get; set; }
 
     [JsonPropertyName("SideTime")]
-    public XYZ SideTime { get; set; }
+    public Vector3 SideTime { get; set; }
 
     [JsonPropertyName("DiagonalTime")]
-    public XYZ DiagonalTime { get; set; }
+    public Vector3 DiagonalTime { get; set; }
 
     [JsonPropertyName("MaxTimeWithoutInput")]
-    public XYZ MaxTimeWithoutInput { get; set; }
+    public Vector3 MaxTimeWithoutInput { get; set; }
 
     [JsonPropertyName("MinDirectionBlendTime")]
     public double MinDirectionBlendTime { get; set; }
 
     [JsonPropertyName("MoveTimeRange")]
-    public XYZ MoveTimeRange { get; set; }
+    public Vector3 MoveTimeRange { get; set; }
 
     [JsonPropertyName("ProneDirectionAccelerationRange")]
-    public XYZ ProneDirectionAccelerationRange { get; set; }
+    public Vector3 ProneDirectionAccelerationRange { get; set; }
 
     [JsonPropertyName("ProneSpeedAccelerationRange")]
-    public XYZ ProneSpeedAccelerationRange { get; set; }
+    public Vector3 ProneSpeedAccelerationRange { get; set; }
 
     [JsonPropertyName("MinMovementAccelerationRangeRight")]
-    public XYZ MinMovementAccelerationRangeRight { get; set; }
+    public Vector3 MinMovementAccelerationRangeRight { get; set; }
 
     [JsonPropertyName("MaxMovementAccelerationRangeRight")]
-    public XYZ MaxMovementAccelerationRangeRight { get; set; }
+    public Vector3 MaxMovementAccelerationRangeRight { get; set; }
 
     [JsonPropertyName("CrouchSpeedAccelerationRange")]
-    public XYZ CrouchSpeedAccelerationRange { get; set; }
+    public Vector3 CrouchSpeedAccelerationRange { get; set; }
 }
 
 public record Ballistic

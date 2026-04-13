@@ -42,10 +42,10 @@ public record SpawnpointTemplate
     public bool? RandomRotation { get; set; }
 
     [JsonPropertyName("Position")]
-    public XYZ? Position { get; set; }
+    public Vector3? Position { get; set; }
 
     [JsonPropertyName("Rotation")]
-    public XYZ? Rotation { get; set; }
+    public Vector3? Rotation { get; set; }
 
     [JsonPropertyName("IsAlwaysSpawn")]
     public bool? IsAlwaysSpawn { get; set; }
@@ -86,10 +86,10 @@ public record GroupPosition
     public double? Weight { get; set; }
 
     [JsonPropertyName("Position")]
-    public XYZ? Position { get; set; }
+    public Vector3? Position { get; set; }
 
     [JsonPropertyName("Rotation")]
-    public XYZ? Rotation { get; set; }
+    public Vector3? Rotation { get; set; }
 }
 
 public record Spawnpoint

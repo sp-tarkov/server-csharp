@@ -269,7 +269,7 @@ public record TemplateItemProperties
     public bool? CanSellOnRagfair { get; set; }
 
     [JsonPropertyName("ComputableUnitDamage")]
-    public XY? ComputableUnitDamage { get; set; }
+    public Vector2? ComputableUnitDamage { get; set; }
 
     [JsonPropertyName("ComputableUnitSize")]
     public double? ComputableUnitSize { get; set; }
@@ -440,7 +440,7 @@ public record TemplateItemProperties
     public bool? IsAdjustableOptic { get; set; }
 
     [JsonPropertyName("MinMaxFov")]
-    public XYZ? MinMaxFov { get; set; }
+    public Vector3? MinMaxFov { get; set; }
 
     [JsonPropertyName("sightModType")]
     public string? SightModType { get; set; }
@@ -705,13 +705,13 @@ public record TemplateItemProperties
     public double? OperatingResource { get; set; }
 
     [JsonPropertyName("PostRecoilHorizontalRangeHandRotation")]
-    public XYZ? PostRecoilHorizontalRangeHandRotation { get; set; }
+    public Vector3? PostRecoilHorizontalRangeHandRotation { get; set; }
 
     [JsonPropertyName("PostRecoilVerticalRangeHandRotation")]
-    public XYZ? PostRecoilVerticalRangeHandRotation { get; set; }
+    public Vector3? PostRecoilVerticalRangeHandRotation { get; set; }
 
     [JsonPropertyName("ProgressRecoilAngleOnStable")]
-    public XYZ? ProgressRecoilAngleOnStable { get; set; }
+    public Vector3? ProgressRecoilAngleOnStable { get; set; }
 
     [JsonPropertyName("RepairComplexity")]
     public double? RepairComplexity { get; set; }
@@ -798,7 +798,7 @@ public record TemplateItemProperties
     public double? CameraSnap { get; set; }
 
     [JsonPropertyName("CameraToWeaponAngleSpeedRange")]
-    public XYZ? CameraToWeaponAngleSpeedRange { get; set; }
+    public Vector3? CameraToWeaponAngleSpeedRange { get; set; }
 
     [JsonPropertyName("CameraToWeaponAngleStep")]
     public double? CameraToWeaponAngleStep { get; set; }
@@ -811,19 +811,19 @@ public record TemplateItemProperties
     public double? AimPlane { get; set; }
 
     [JsonPropertyName("TacticalReloadStiffnes")]
-    public XYZ? TacticalReloadStiffnes { get; set; }
+    public Vector3? TacticalReloadStiffnes { get; set; }
 
     [JsonPropertyName("TacticalReloadFixation")]
     public double? TacticalReloadFixation { get; set; }
 
     [JsonPropertyName("RecoilCenter")]
-    public XYZ? RecoilCenter { get; set; }
+    public Vector3? RecoilCenter { get; set; }
 
     [JsonPropertyName("RotationCenter")]
-    public XYZ? RotationCenter { get; set; }
+    public Vector3? RotationCenter { get; set; }
 
     [JsonPropertyName("RotationCenterNoStock")]
-    public XYZ? RotationCenterNoStock { get; set; }
+    public Vector3? RotationCenterNoStock { get; set; }
 
     [JsonPropertyName("ShotsGroupSettings")]
     public IEnumerable<ShotsGroupSettings>? ShotsGroupSettings { get; set; }
@@ -964,7 +964,7 @@ public record TemplateItemProperties
     public double? MountingHorizontalOutOfBreathMultiplier { get; set; }
 
     [JsonPropertyName("MountingPosition")]
-    public XYZ? MountingPosition { get; set; }
+    public Vector3? MountingPosition { get; set; }
 
     [JsonPropertyName("MountingVerticalOutOfBreathMultiplier")]
     public double? MountingVerticalOutOfBreathMultiplier { get; set; }
@@ -994,7 +994,7 @@ public record TemplateItemProperties
     public string? MaterialType { get; set; }
 
     [JsonPropertyName("RicochetParams")]
-    public XYZ? RicochetParams { get; set; }
+    public Vector3? RicochetParams { get; set; }
 
     [JsonPropertyName("DeafStrength")]
     public string? DeafStrength { get; set; }
@@ -1159,10 +1159,10 @@ public record TemplateItemProperties
     public double? DeflectionConsumption { get; set; }
 
     [JsonPropertyName("AppliedTrunkRotation")]
-    public XYZ? AppliedTrunkRotation { get; set; }
+    public Vector3? AppliedTrunkRotation { get; set; }
 
     [JsonPropertyName("AppliedHeadRotation")]
-    public XYZ? AppliedHeadRotation { get; set; }
+    public Vector3? AppliedHeadRotation { get; set; }
 
     [JsonPropertyName("DisplayOnModel")]
     public bool? DisplayOnModel { get; set; }
@@ -1174,7 +1174,7 @@ public record TemplateItemProperties
     public double? StaminaBurnRate { get; set; }
 
     [JsonPropertyName("ColliderScaleMultiplier")]
-    public XYZ? ColliderScaleMultiplier { get; set; }
+    public Vector3? ColliderScaleMultiplier { get; set; }
 
     [JsonPropertyName("ConfigPathStr")]
     public string? ConfigPathStr { get; set; }
@@ -1392,22 +1392,22 @@ public record TemplateItemProperties
     public string? AmmoTooltipClass { get; set; }
 
     [JsonPropertyName("Contusion")]
-    public XYZ? Contusion { get; set; }
+    public Vector3? Contusion { get; set; }
 
     [JsonPropertyName("ArmorDistanceDistanceDamage")]
-    public XYZ? ArmorDistanceDistanceDamage { get; set; }
+    public Vector3? ArmorDistanceDistanceDamage { get; set; }
 
     [JsonPropertyName("BackBlastConeAngle")]
     public double? BackBlastConeAngle { get; set; }
 
     [JsonPropertyName("BackblastDamage")]
-    public XY? BackblastDamage { get; set; }
+    public Vector2? BackblastDamage { get; set; }
 
     [JsonPropertyName("BackblastDistance")]
     public double? BackblastDistance { get; set; }
 
     [JsonPropertyName("Blindness")]
-    public XYZ? Blindness { get; set; }
+    public Vector3? Blindness { get; set; }
 
     [JsonPropertyName("IsLightAndSoundShot")]
     public bool? IsLightAndSoundShot { get; set; }
@@ -1557,10 +1557,10 @@ public record TemplateItemProperties
     public double? BipodReturnHandSpeedMultiplier { get; set; }
 
     [JsonPropertyName("PitchLimitProneBipod")]
-    public XYZ? PitchLimitProneBipod { get; set; }
+    public Vector3? PitchLimitProneBipod { get; set; }
 
     [JsonPropertyName("YawLimitProneBipod")]
-    public XYZ? YawLimitProneBipod { get; set; }
+    public Vector3? YawLimitProneBipod { get; set; }
 
     [JsonPropertyName("AdjustableOpticSensitivity")]
     public double? AdjustableOpticSensitivity { get; set; }
@@ -1853,13 +1853,13 @@ public record ShotsGroupSettings
     public double? EndShotIndex { get; set; }
 
     [JsonPropertyName("ShotRecoilPositionStrength")]
-    public XYZ? ShotRecoilPositionStrength { get; set; }
+    public Vector3? ShotRecoilPositionStrength { get; set; }
 
     [JsonPropertyName("ShotRecoilRadianRange")]
-    public XYZ? ShotRecoilRadianRange { get; set; }
+    public Vector3? ShotRecoilRadianRange { get; set; }
 
     [JsonPropertyName("ShotRecoilRotationStrength")]
-    public XYZ? ShotRecoilRotationStrength { get; set; }
+    public Vector3? ShotRecoilRotationStrength { get; set; }
 
     [JsonPropertyName("StartShotIndex")]
     public double? StartShotIndex { get; set; }

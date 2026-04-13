@@ -231,7 +231,7 @@ public class BotGeneratorHelperTests
         _botInventoryContainerService.AddEmptyContainerToBot(botId, EquipmentSlots.Backpack, backpack);
 
         // Insert items at specific locations
-        var takenSlots = new List<XY>
+        var takenSlots = new List<Vector2>
         {
             new() { X = 0, Y = 0 },
             new() { X = 1, Y = 0 },
@@ -306,7 +306,7 @@ public class BotGeneratorHelperTests
         _botInventoryContainerService.AddEmptyContainerToBot(botId, EquipmentSlots.Backpack, backpack);
 
         // Insert items at specific locations
-        var takenSlots = new List<XY>
+        var takenSlots = new List<Vector2>
         {
             new() { X = 0, Y = 0 },
             new() { X = 1, Y = 0 },
@@ -376,7 +376,7 @@ public class BotGeneratorHelperTests
         _botInventoryContainerService.AddEmptyContainerToBot(botId, EquipmentSlots.Backpack, backpack);
 
         // Insert items at specific locations to ensure there's no space for adding the weapon
-        var takenSlots = new List<XY>
+        var takenSlots = new List<Vector2>
         {
             new() { X = 1, Y = 0 },
             new() { X = 2, Y = 0 },
