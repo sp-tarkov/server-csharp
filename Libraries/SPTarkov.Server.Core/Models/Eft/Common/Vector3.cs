@@ -9,11 +9,19 @@ namespace SPTarkov.Server.Core.Models.Eft.Common;
 public readonly struct Vector3
 {
     [JsonPropertyName("x")]
-    public readonly float X;
+    public float X { get; init; }
 
     [JsonPropertyName("y")]
-    public readonly float Y;
+    public float Y { get; init; }
 
     [JsonPropertyName("z")]
-    public readonly float Z;
+    public float Z { get; init; }
+
+    [JsonConstructor]
+    public Vector3(float x, float y, float z)
+    {
+        X = x;
+        Y = y;
+        Z = z;
+    }
 }
