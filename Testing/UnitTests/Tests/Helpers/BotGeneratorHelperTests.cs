@@ -247,8 +247,8 @@ public class BotGeneratorHelperTests
                 SlotId = "main",
                 Location = new ItemLocation
                 {
-                    X = (int)takenSlot.X.Value,
-                    Y = (int)takenSlot.Y.Value,
+                    X = (int)takenSlot.X,
+                    Y = (int)takenSlot.Y,
                     R = ItemRotation.Horizontal,
                 },
                 Upd = new Upd { StackObjectsCount = 1 },
@@ -323,8 +323,8 @@ public class BotGeneratorHelperTests
                 SlotId = "main",
                 Location = new ItemLocation
                 {
-                    X = (int)takenSlot.X.Value,
-                    Y = (int)takenSlot.Y.Value,
+                    X = (int)takenSlot.X,
+                    Y = (int)takenSlot.Y,
                     R = ItemRotation.Horizontal,
                 },
                 Upd = new Upd { StackObjectsCount = 1 },
@@ -408,8 +408,8 @@ public class BotGeneratorHelperTests
                 SlotId = "main",
                 Location = new ItemLocation
                 {
-                    X = (int)takenSlot.X.Value,
-                    Y = (int)takenSlot.Y.Value,
+                    X = (int)takenSlot.X,
+                    Y = (int)takenSlot.Y,
                     R = ItemRotation.Horizontal,
                 },
                 Upd = new Upd { StackObjectsCount = 1 },
