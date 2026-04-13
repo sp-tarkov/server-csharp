@@ -1,4 +1,3 @@
-using System.Numerics;
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
@@ -43,10 +42,10 @@ public record SpawnpointTemplate
     public bool? RandomRotation { get; set; }
 
     [JsonPropertyName("Position")]
-    public Vector3? Position { get; set; }
+    public XYZ? Position { get; set; }
 
     [JsonPropertyName("Rotation")]
-    public Vector3? Rotation { get; set; }
+    public XYZ? Rotation { get; set; }
 
     [JsonPropertyName("IsAlwaysSpawn")]
     public bool? IsAlwaysSpawn { get; set; }
@@ -87,10 +86,10 @@ public record GroupPosition
     public double? Weight { get; set; }
 
     [JsonPropertyName("Position")]
-    public Vector3? Position { get; set; }
+    public XYZ? Position { get; set; }
 
     [JsonPropertyName("Rotation")]
-    public Vector3? Rotation { get; set; }
+    public XYZ? Rotation { get; set; }
 }
 
 public record Spawnpoint

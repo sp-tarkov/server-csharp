@@ -1,4 +1,3 @@
-using System.Numerics;
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
@@ -168,7 +167,7 @@ public record LocationBase
     public double? GlobalContainerChanceModifier { get; set; }
 
     [JsonPropertyName("HeatmapCellSize")]
-    public Vector3? HeatmapCellSize { get; set; }
+    public XYZ? HeatmapCellSize { get; set; }
 
     [JsonPropertyName("HeatmapLayers")]
     public List<string>? HeatmapLayers { get; set; }
@@ -770,7 +769,7 @@ public record SpawnPointParam
     public string? Infiltration { get; set; }
 
     [JsonPropertyName("Position")]
-    public Vector3? Position { get; set; }
+    public XYZ? Position { get; set; }
 
     [JsonPropertyName("Rotation")]
     public double? Rotation { get; set; }
@@ -795,10 +794,10 @@ public record ColliderParams
 public record ColliderProperties
 {
     [JsonPropertyName("Center")]
-    public Vector3? Center { get; set; }
+    public XYZ? Center { get; set; }
 
     [JsonPropertyName("Size")]
-    public Vector3? Size { get; set; }
+    public XYZ? Size { get; set; }
 
     [JsonPropertyName("Radius")]
     public double? Radius { get; set; }
@@ -1028,7 +1027,7 @@ public record CrowdAttackSpawnParam
 public record Area
 {
     [JsonPropertyName("center")]
-    public Vector3? Center { get; set; }
+    public XYZ? Center { get; set; }
 
     [JsonPropertyName("infiltrationZone")]
     public string? InfiltrationZone { get; set; }
@@ -1037,13 +1036,13 @@ public record Area
     public double? Orientation { get; set; }
 
     [JsonPropertyName("position")]
-    public Vector3? Position { get; set; }
+    public XYZ? Position { get; set; }
 
     [JsonPropertyName("sides")]
     public HashSet<string>? Sides { get; set; }
 
     [JsonPropertyName("size")]
-    public Vector3? Size { get; set; }
+    public XYZ? Size { get; set; }
 }
 
 public enum WildSpawnType
