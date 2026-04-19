@@ -48,7 +48,7 @@ public class ProfileFixerService(
 
         if (pmcProfile.Skills is not null)
         {
-            CheckForSkillsOverMaxLevel(pmcProfile);
+            CheckForSkillsOutOfRange(pmcProfile);
         }
     }
 
@@ -513,16 +513,21 @@ public class ProfileFixerService(
     }
 
     /// <summary>
-    ///     Check for and cap profile skills at 5100.
+    ///     Checks skill progress of all skills and caps them within accepted limits (0, 5100)
     /// </summary>
     /// <param name="pmcProfile"> Profile to check and fix </param>
-    public void CheckForSkillsOverMaxLevel(PmcData pmcProfile)
+    public void CheckForSkillsOutOfRange(PmcData pmcProfile)
     {
-        var skills = pmcProfile.Skills.Common;
+        var skills = pmcProfile.Skills!.Common;
 
         foreach (var skill in skills.Where(skill => skill.Progress > 5100))
         {
-            skill.Progress = 5100;
+            skill.Progress = 5100d;
+        }
+
+        foreach (var skill in skills.Where(skill => double.IsNegative(skill.Progress) || double.IsNaN(skill.Progress)))
+        {
+            skill.Progress = 0d;
         }
     }
 

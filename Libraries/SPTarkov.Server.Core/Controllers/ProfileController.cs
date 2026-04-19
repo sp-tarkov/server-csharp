@@ -105,13 +105,13 @@ public class ProfileController(
             if (profile[0].Skills != null)
             {
                 // Pmc profile is index 0
-                profileFixerService.CheckForSkillsOverMaxLevel(profile[0]);
+                profileFixerService.CheckForSkillsOutOfRange(profile[0]);
             }
 
             if (profile[1].Skills != null)
             {
                 // We also do the scav profile here because it is also affected by the skill multipliers
-                profileFixerService.CheckForSkillsOverMaxLevel(profile[1]);
+                profileFixerService.CheckForSkillsOutOfRange(profile[1]);
             }
         }
 
