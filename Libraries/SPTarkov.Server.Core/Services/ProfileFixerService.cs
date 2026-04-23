@@ -11,14 +11,16 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
 
+/// <summary>
+///     Service for attempting to fix profile related issues.
+/// </summary>
 [Injectable(InjectionType.Singleton)]
-public class ProfileFixerService(
+public partial class ProfileFixerService(
     ISptLogger<ProfileFixerService> logger,
     JsonUtil jsonUtil,
     RewardHelper rewardHelper,
@@ -59,14 +61,13 @@ public class ProfileFixerService(
     /// <param name="fullProfile"></param>
     public void CheckForAndFixDialogueAttachments(SptProfile fullProfile)
     {
-        foreach (var traderDialoguesKvP in fullProfile.DialogueRecords)
+        foreach (var (_, traderDialogues) in fullProfile.DialogueRecords!)
         {
-            if (traderDialoguesKvP.Value.Messages is null)
+            if (traderDialogues.Messages is null)
             {
                 continue;
             }
 
-            var traderDialogues = traderDialoguesKvP.Value;
             foreach (var message in traderDialogues.Messages)
             {
                 // Skip any messages without attached items
@@ -82,11 +83,11 @@ public class ProfileFixerService(
                 }
 
                 // Otherwise we need to generate a new unique stash ID for this message's attachments
-                message.Items.Stash = new MongoId();
-                message.Items.Data = message.Items.Data.AdoptOrphanedItems(message.Items.Stash);
+                message.Items?.Stash = new MongoId();
+                message.Items?.Data = message.Items.Data.AdoptOrphanedItems(message.Items.Stash);
 
                 // Because `adoptOrphanedItems` sets the slotId to `hideout`, we need to re-set it to `main` to work with mail
-                foreach (var item in message.Items.Data.Where(item => item.SlotId == "hideout"))
+                foreach (var item in message.Items?.Data?.Where(item => item.SlotId == "hideout") ?? [])
                 {
                     item.SlotId = "main";
                 }
@@ -101,7 +102,11 @@ public class ProfileFixerService(
     public void FixProfileBreakingInventoryItemIssues(PmcData pmcProfile)
     {
         // Create a mapping of all inventory items, keyed by _id value
-        var itemMapping = pmcProfile.Inventory.Items.GroupBy(item => item.Id).ToDictionary(x => x.Key, x => x.ToList());
+        var itemMapping = pmcProfile.Inventory?.Items?.GroupBy(item => item.Id).ToDictionary(x => x.Key, x => x.ToList());
+        if (itemMapping is null)
+        {
+            return;
+        }
 
         foreach (var mappingKvP in itemMapping)
         {
@@ -117,18 +122,30 @@ public class ProfileFixerService(
             if (itemAJson == itemBJson)
             {
                 // Both items match, we can safely delete one (A)
-                var indexOfItemToRemove = pmcProfile.Inventory.Items.IndexOf(mappingKvP.Value[0]);
-                pmcProfile.Inventory.Items.RemoveAt(indexOfItemToRemove);
+                var indexOfItemToRemove = pmcProfile.Inventory?.Items?.IndexOf(mappingKvP.Value[0]);
+                if (indexOfItemToRemove is null)
+                {
+                    logger.Error($"Could not identify index of item to remove: {mappingKvP.Key}");
+                    continue;
+                }
+
+                pmcProfile.Inventory?.Items?.RemoveAt(indexOfItemToRemove.Value);
                 logger.Warning($"Deleted duplicate item: {mappingKvP.Key}");
             }
             else
             {
                 // Items are different, replace ID with unique value
                 // Only replace ID if items have no children, we don't want orphaned children
-                var itemsHaveChildren = pmcProfile.Inventory.Items.Any(x => x.ParentId == mappingKvP.Key);
-                if (!itemsHaveChildren)
+                var itemsHaveChildren = pmcProfile.Inventory?.Items?.Any(x => (x.ParentId ?? "NULL_PARENT") == mappingKvP.Key);
+                if (itemsHaveChildren.HasValue && !itemsHaveChildren.Value)
                 {
-                    var itemToAdjust = pmcProfile.Inventory.Items.FirstOrDefault(x => x.Id == mappingKvP.Key);
+                    var itemToAdjust = pmcProfile.Inventory?.Items?.FirstOrDefault(x => x.Id == mappingKvP.Key);
+                    if (itemToAdjust is null)
+                    {
+                        logger.Warning("itemToAdjust is null when attempting to replace a duplicate item id");
+                        continue;
+                    }
+
                     itemToAdjust.Id = new MongoId();
                     logger.Warning($"Replace duplicate item Id: {mappingKvP.Key} with {itemToAdjust.Id}");
                 }
@@ -136,20 +153,20 @@ public class ProfileFixerService(
         }
 
         // Iterate over all inventory items
-        foreach (var item in pmcProfile.Inventory.Items.Where(x => x.SlotId is not null))
+        foreach (var item in pmcProfile.Inventory?.Items?.Where(x => x.SlotId is not null) ?? [])
         {
             if (item.Upd is null)
-            // Ignore items without a upd object
+            // Ignore items without an upd object
             {
                 continue;
             }
 
             // Check items with a tags for non-alphanumeric characters and remove
-            var regxp = new Regex("[^a-zA-Z0-9 -]");
-            if (item.Upd.Tag?.Name is not null && !regxp.IsMatch(item.Upd.Tag.Name))
+            var regXp = TagSearchRegex();
+            if (item.Upd.Tag?.Name is not null && !regXp.IsMatch(item.Upd.Tag.Name))
             {
                 logger.Warning($"Fixed item: {item.Id}s Tag value, removed invalid characters");
-                item.Upd.Tag.Name = regxp.Replace(item.Upd.Tag.Name, "");
+                item.Upd.Tag.Name = regXp.Replace(item.Upd.Tag.Name, "");
             }
 
             // Check items with StackObjectsCount (undefined)
@@ -163,42 +180,42 @@ public class ProfileFixerService(
         // Iterate over clothing
         var customizationDb = databaseService.GetTemplates().Customization;
         var customizationDbArray = customizationDb.Values;
-        var playerIsUsec = string.Equals(pmcProfile.Info.Side, "usec", StringComparison.OrdinalIgnoreCase);
+        var playerIsUsec = string.Equals(pmcProfile.Info!.Side, "usec", StringComparison.OrdinalIgnoreCase);
 
         // Check Head
-        if (!customizationDb.ContainsKey(pmcProfile.Customization.Head.Value))
+        if (!customizationDb.ContainsKey(pmcProfile.Customization?.Head ?? MongoId.Empty()))
         {
             var defaultHead = playerIsUsec
                 ? customizationDbArray.FirstOrDefault(x => x.Name == "DefaultUsecHead")
                 : customizationDbArray.FirstOrDefault(x => x.Name == "DefaultBearHead");
-            pmcProfile.Customization.Head = defaultHead.Id;
+            pmcProfile.Customization!.Head = defaultHead!.Id;
         }
 
         // check Body
-        if (customizationDb.ContainsKey(pmcProfile.Customization.Body.Value))
+        if (customizationDb.ContainsKey(pmcProfile.Customization?.Body ?? MongoId.Empty()))
         {
             var defaultBody = playerIsUsec
                 ? customizationDbArray.FirstOrDefault(x => x.Name == "DefaultUsecBody")
                 : customizationDbArray.FirstOrDefault(x => x.Name == "DefaultBearBody");
-            pmcProfile.Customization.Body = defaultBody.Id;
+            pmcProfile.Customization!.Body = defaultBody!.Id;
         }
 
         // check Hands
-        if (customizationDb.ContainsKey(pmcProfile.Customization.Hands.Value))
+        if (customizationDb.ContainsKey(pmcProfile.Customization?.Hands ?? MongoId.Empty()))
         {
             var defaultHands = playerIsUsec
                 ? customizationDbArray.FirstOrDefault(x => x.Name == "DefaultUsecHands")
                 : customizationDbArray.FirstOrDefault(x => x.Name == "DefaultBearHands");
-            pmcProfile.Customization.Hands = defaultHands.Id;
+            pmcProfile.Customization!.Hands = defaultHands!.Id;
         }
 
         // check Feet
-        if (customizationDb.ContainsKey(pmcProfile.Customization.Feet.Value))
+        if (customizationDb.ContainsKey(pmcProfile.Customization?.Feet ?? MongoId.Empty()))
         {
             var defaultFeet = playerIsUsec
                 ? customizationDbArray.FirstOrDefault(x => x.Name == "DefaulUsecFeet")
                 : customizationDbArray.FirstOrDefault(x => x.Name == "DefaultBearFeet");
-            pmcProfile.Customization.Feet = defaultFeet.Id;
+            pmcProfile.Customization!.Feet = defaultFeet!.Id;
         }
     }
 
@@ -226,7 +243,7 @@ public class ProfileFixerService(
     /// <param name="pmcProfile">Player profile to check</param>
     protected void RemoveDanglingTaskConditionCounters(PmcData pmcProfile)
     {
-        if (pmcProfile.TaskConditionCounters is null)
+        if (pmcProfile.TaskConditionCounters is null || pmcProfile.RepeatableQuests is null)
         {
             return;
         }
@@ -244,7 +261,7 @@ public class ProfileFixerService(
                 var existsInActiveRepeatableQuests = activeRepeatableQuests.Any(quest =>
                     quest.Id == TaskConditionCounterKvP.Value.SourceId
                 );
-                var existsInQuests = pmcProfile.Quests.Any(quest => quest.QId == TaskConditionCounterKvP.Value.SourceId);
+                var existsInQuests = pmcProfile.Quests?.Any(quest => quest.QId == TaskConditionCounterKvP.Value.SourceId) ?? false;
                 var isAchievementTracker = achievements.Any(quest => quest.Id == TaskConditionCounterKvP.Value.SourceId);
 
                 // If task conditions id is neither in activeQuests, quests or achievements - it's stale and should be cleaned up
@@ -272,6 +289,11 @@ public class ProfileFixerService(
         foreach (var repeatableQuest in repeatableQuests.Where(questType => questType.ActiveQuests?.Count > 0))
         // daily/weekly collection has active quests in them, add to array and return
         {
+            if (repeatableQuest.ActiveQuests is null)
+            {
+                continue;
+            }
+
             activeQuests.AddRange(repeatableQuest.ActiveQuests);
         }
 
@@ -284,6 +306,11 @@ public class ProfileFixerService(
     /// <param name="pmcProfile">Profile to remove dead quests from</param>
     protected void RemoveOrphanedQuests(PmcData pmcProfile)
     {
+        if (pmcProfile.Quests is null || pmcProfile.RepeatableQuests is null)
+        {
+            return;
+        }
+
         var quests = databaseService.GetQuests();
         var profileQuests = pmcProfile.Quests;
 
@@ -305,6 +332,11 @@ public class ProfileFixerService(
     /// <param name="pmcProfile">The profile to validate quest productions for</param>
     protected void VerifyQuestProductionUnlocks(PmcData pmcProfile)
     {
+        if (pmcProfile.Quests is null)
+        {
+            return;
+        }
+
         var quests = databaseService.GetQuests();
         var profileQuests = pmcProfile.Quests;
 
@@ -319,7 +351,7 @@ public class ProfileFixerService(
             // For started or successful quests, check for unlocks in the `Started` rewards
             if (profileQuest.Status is QuestStatusEnum.Started or QuestStatusEnum.Success)
             {
-                var productionRewards = quest.Rewards["Started"]?.Where(reward => reward.Type == RewardType.ProductionScheme);
+                var productionRewards = quest.Rewards?["Started"].Where(reward => reward.Type == RewardType.ProductionScheme);
 
                 if (productionRewards is not null)
                 {
@@ -333,7 +365,7 @@ public class ProfileFixerService(
             // For successful quests, check for unlocks in the `Success` rewards
             if (profileQuest.Status is QuestStatusEnum.Success)
             {
-                var productionRewards = quest.Rewards["Success"]?.Where(reward => reward.Type == RewardType.ProductionScheme);
+                var productionRewards = quest.Rewards?["Success"].Where(reward => reward.Type == RewardType.ProductionScheme);
 
                 if (productionRewards is not null)
                 {
@@ -368,6 +400,11 @@ public class ProfileFixerService(
             return;
         }
 
+        if (pmcProfile.UnlockedInfo?.UnlockedProductionRecipe is null)
+        {
+            return;
+        }
+
         // Add above match to pmc profile
         var matchingProductionId = matchingProductions[0].Id;
         if (pmcProfile.UnlockedInfo.UnlockedProductionRecipe.Add(matchingProductionId))
@@ -399,10 +436,15 @@ public class ProfileFixerService(
     /// <param name="pmcProfile">profile to add slots to</param>
     protected void AddHideoutEliteSlots(PmcData pmcProfile)
     {
+        if (pmcProfile.Hideout?.Areas is null)
+        {
+            return;
+        }
+
         var globals = databaseService.GetGlobals();
 
         var generator = pmcProfile.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.Generator);
-        if (generator is not null)
+        if (generator?.Slots is not null)
         {
             var fuelSlots = generator.Slots.Count;
             var extraGenSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.Generator.Slots;
@@ -419,19 +461,16 @@ public class ProfileFixerService(
         }
 
         var restArea = pmcProfile.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.RestSpace);
-        if (restArea is not null)
+        var slots = restArea?.Slots?.Count;
+
+        if (slots < 1)
         {
-            var slots = restArea.Slots.Count;
-
-            if (slots < 1)
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug("Updating restArea slots to a size of 1");
-                }
-
-                AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.RestSpace, 1, pmcProfile);
+                logger.Debug("Updating restArea slots to a size of 1");
             }
+
+            AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.RestSpace, 1, pmcProfile);
         }
 
         var waterCollSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.WaterCollector)?.Slots?.Count;
@@ -460,7 +499,7 @@ public class ProfileFixerService(
             AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.AirFilteringUnit, (int)(3 + extraFilterSlots), pmcProfile);
         }
 
-        var btcFarmSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.BitcoinFarm).Slots.Count;
+        var btcFarmSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.BitcoinFarm)?.Slots?.Count;
         var extraBtcSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.BitcoinFarm.Slots;
 
         // BTC Farm doesn't have extra slots for hideout management, but we still check for modded stuff!!
@@ -474,7 +513,7 @@ public class ProfileFixerService(
             AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.BitcoinFarm, (int)(50 + extraBtcSlots), pmcProfile);
         }
 
-        var cultistAreaSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.CircleOfCultists).Slots.Count;
+        var cultistAreaSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.CircleOfCultists)?.Slots?.Count;
         if (cultistAreaSlots < 1)
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
@@ -494,16 +533,21 @@ public class ProfileFixerService(
     /// <param name="pmcProfile">profile to update</param>
     protected void AddEmptyObjectsToHideoutAreaSlots(HideoutAreas areaType, int emptyItemCount, PmcData pmcProfile)
     {
+        if (pmcProfile.Hideout?.Areas is null)
+        {
+            return;
+        }
+
         var area = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == areaType);
-        area.Slots = AddObjectsToList(emptyItemCount, area.Slots);
+        area?.Slots = AddObjectsToList(emptyItemCount, area.Slots);
     }
 
-    protected List<HideoutSlot> AddObjectsToList(int count, List<HideoutSlot> slots)
+    protected List<HideoutSlot> AddObjectsToList(int count, List<HideoutSlot>? slots)
     {
         for (var i = 0; i < count; i++)
         {
             // No slots have this location index
-            if (slots.All(x => x.LocationIndex != i))
+            if (slots?.All(x => x.LocationIndex != i) ?? false)
             {
                 slots.Add(new HideoutSlot { LocationIndex = i });
             }
@@ -616,15 +660,18 @@ public class ProfileFixerService(
         {
             BonusType.StashSize => profileBonuses?.FirstOrDefault(x => x.Type == bonus.Type && x.TemplateId == bonus.TemplateId),
             BonusType.AdditionalSlots => profileBonuses?.FirstOrDefault(x =>
-                x.Type == bonus.Type && x?.Value == bonus?.Value && x?.IsVisible == bonus?.IsVisible
+                x.Type == bonus.Type
+                // Value is the prop name, second Value is the nullable extension, this is dumb I know, blame the compiler.
+                && x.Value!.Value.Approx(bonus.Value!.Value)
+                && x.IsVisible == bonus.IsVisible
             ),
-            _ => profileBonuses?.FirstOrDefault(x => x.Type == bonus.Type && x.Value == bonus.Value),
+            _ => profileBonuses?.FirstOrDefault(x => x.Type == bonus.Type && x.Value!.Value.Approx(bonus.Value!.Value)),
         };
     }
 
     public void CheckForAndRemoveInvalidTraders(SptProfile fullProfile)
     {
-        foreach (var (traderId, _) in fullProfile.CharacterData?.PmcData?.TradersInfo)
+        foreach (var (traderId, _) in fullProfile.CharacterData?.PmcData?.TradersInfo ?? [])
         {
             if (!traderHelper.TraderExists(traderId))
             {
@@ -633,7 +680,8 @@ public class ProfileFixerService(
                     logger.Warning(
                         $"Non - default trader: {traderId} removed from PMC TradersInfo in: {fullProfile.ProfileInfo?.ProfileId} profile"
                     );
-                    fullProfile.CharacterData.PmcData.TradersInfo.Remove(traderId);
+
+                    fullProfile.CharacterData?.PmcData?.TradersInfo.Remove(traderId);
                 }
                 else
                 {
@@ -642,7 +690,7 @@ public class ProfileFixerService(
             }
         }
 
-        foreach (var (traderId, _) in fullProfile.CharacterData.ScavData?.TradersInfo)
+        foreach (var (traderId, _) in fullProfile.CharacterData?.ScavData?.TradersInfo ?? [])
         {
             if (!traderHelper.TraderExists(traderId))
             {
@@ -651,7 +699,7 @@ public class ProfileFixerService(
                     logger.Warning(
                         $"Non - default trader: {traderId} removed from Scav TradersInfo in: {fullProfile.ProfileInfo?.ProfileId} profile"
                     );
-                    fullProfile.CharacterData.ScavData.TradersInfo.Remove(traderId);
+                    fullProfile.CharacterData?.ScavData?.TradersInfo.Remove(traderId);
                 }
                 else
                 {
@@ -660,4 +708,7 @@ public class ProfileFixerService(
             }
         }
     }
+
+    [GeneratedRegex("[^a-zA-Z0-9 -]")]
+    private static partial Regex TagSearchRegex();
 }
