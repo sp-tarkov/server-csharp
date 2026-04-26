@@ -218,6 +218,19 @@ public record EquipmentFilters
     public bool? ForceOnlyArmoredRigWhenNoArmor { get; set; }
 
     /// <summary>
+    ///     Whether the bot should skip chances to have a back plate if the front plate is missing
+    /// </summary>
+    [JsonPropertyName("skipBackPlateIfFrontPlateMissing")]
+    public bool? SkipBackPlateIfFrontPlateMissing { get; set; }
+
+    /// <summary>
+    ///     Try to match the bot's back plate level to the front plate's level instead of being a better plate
+    ///     Only works if filtering plates by level
+    /// </summary>
+    [JsonPropertyName("limitPlateClassToFrontPlateClass")]
+    public bool? LimitPlateClassToFrontPlateClass { get; set; }
+
+    /// <summary>
     ///     Should plates be filtered by level
     /// </summary>
     [JsonPropertyName("filterPlatesByLevel")]
