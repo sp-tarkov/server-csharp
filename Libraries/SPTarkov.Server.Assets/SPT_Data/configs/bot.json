@@ -1203,6 +1203,8 @@
       ],
       "faceShieldIsActiveChancePercent": 85,
       "filterPlatesByLevel": true,
+      "skipBackPlateIfFrontPlateMissing": true,
+      "limitPlateClassToFrontPlateClass": true,
       "forceOnlyArmoredRigWhenNoArmor": true,
       "laserIsActiveChancePercent": 85,
       "lightIsActiveDayChancePercent": 25,
