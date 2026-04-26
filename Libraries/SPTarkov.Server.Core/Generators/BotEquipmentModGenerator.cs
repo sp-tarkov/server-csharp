@@ -291,24 +291,6 @@ public class BotEquipmentModGenerator(
     }
 
     /// <summary>
-    ///     Checks to see if the bot should be skipping the back plate or not based on the presence of the front plate
-    /// </summary>
-    /// <param name="role">Bot equipment role</param>
-    /// <param name="frontPlateSpawned">Whether the bot has a front plate or not</param>
-    /// <returns>Whether the bot should skip the back plate or not</returns>
-    private bool ShouldSkipBackPlate(
-        string role,
-        bool frontPlateSpawned)
-    {
-        if (!botConfig.Equipment.TryGetValue(role, out var config))
-        {
-            return false;
-        }
-
-        return config.SkipBackPlateIfFrontPlateMissing.GetValueOrDefault(false) && !frontPlateSpawned;
-    }
-
-    /// <summary>
     ///     Filter a bots plate pool based on its current level
     /// </summary>
     /// <param name="settings">Bot equipment generation settings</param>
@@ -452,25 +434,6 @@ public class BotEquipmentModGenerator(
         result.PlateModTemplates = platesOfDesiredLevel.Select(item => item.Id).ToHashSet();
 
         return result;
-    }
-
-    /// <summary>
-    ///     Checks to see if the bot needs to try to limit the available plate classes to the front plate class
-    /// </summary>
-    /// <param name="equipmentRole">Bot equipment role</param>
-    /// <returns>Whether the bot should limit plate classes</returns>
-    private bool ShouldAttemptToLimitPlateClasses(string equipmentRole, int? maxArmorLevel = null)
-    {
-        if (maxArmorLevel == null)
-        {
-            return false;
-        }
-        if (!botConfig.Equipment.TryGetValue(equipmentRole, out var config))
-        {
-            return false;
-        }
-
-        return config.LimitPlateClassToFrontPlateClass.GetValueOrDefault(false);
     }
 
     /// <summary>
