@@ -145,8 +145,9 @@ public class ExternalInventoryMagGen(
 
                     magazineTpl = result.Id;
                     magTemplate = result;
-                    fitAttempts++;
                 }
+
+                fitAttempts++;
 
                 // Reduce loop counter by 1 to ensure we get full cout of desired magazines
                 i--;
