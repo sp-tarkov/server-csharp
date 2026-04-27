@@ -107,9 +107,33 @@ public class BotEquipmentModGenerator(
             logger.Warning($"bot: {settings.BotData.Role} lacks a mod slot pool for item: {parentTemplate.Id} {parentTemplate.Name}");
         }
 
+        // Order the modpool by front plates, then backplates, then everything else
+        var orderedCompatibleModsPool = (compatibleModsPool ?? []).OrderBy(pair =>
+            {
+                if (pair.Key.Equals("front_plate", StringComparison.OrdinalIgnoreCase))
+                {
+                    return 0;
+                }
+
+                if (pair.Key.Equals("back_plate", StringComparison.OrdinalIgnoreCase))
+                {
+                    return 1;
+                }
+
+                return 2;
+            })
+            .ToList();
+
+        var frontPlateSpawned = false;
         // Iterate over mod pool and choose mods to add to item
-        foreach (var (modSlotName, modPool) in compatibleModsPool ?? [])
+        foreach (var (modSlotName, modPool) in orderedCompatibleModsPool)
         {
+            // Skip backplate slot if there's no front plate and bot should skip it via config
+            if (modSlotName.Equals("back_plate", StringComparison.OrdinalIgnoreCase) && settings.BotEquipmentConfig.SkipBackPlateIfFrontPlateMissing.GetValueOrDefault(false) && !frontPlateSpawned)
+            {
+                continue;
+            }
+
             // Get the templates slot object from db
             var itemSlotTemplate = GetModItemSlotFromDbTemplate(modSlotName, parentTemplate);
             if (itemSlotTemplate is null)
@@ -166,11 +190,23 @@ public class BotEquipmentModGenerator(
                 && itemHelper.IsRemovablePlateSlot(modSlotName.ToLowerInvariant())
             )
             {
+                int? frontPlateArmorClass = null;
+                if (modSlotName.Equals("back_plate", StringComparison.OrdinalIgnoreCase) && settings.BotEquipmentConfig.LimitPlateClassToFrontPlateClass.GetValueOrDefault(false))
+                {
+                    var frontPlate = equipment.FirstOrDefault(item => item.SlotId.Equals("front_plate", StringComparison.OrdinalIgnoreCase));
+
+                    if (frontPlate != null)
+                    {
+                        frontPlateArmorClass = itemHelper.GetItem(frontPlate.Template).Value?.Properties?.ArmorClass;
+                    }
+                }
+
                 var plateSlotFilteringOutcome = FilterPlateModsForSlotByLevel(
                     settings,
                     modSlotName.ToLowerInvariant(),
                     compatibleModsPool.GetValueOrDefault(modSlotName),
-                    parentTemplate
+                    parentTemplate,
+                    frontPlateArmorClass
                 );
                 switch (plateSlotFilteringOutcome.Result)
                 {
@@ -238,6 +274,11 @@ public class BotEquipmentModGenerator(
             var modId = new MongoId();
             equipment.Add(CreateModItem(modId, modTpl.Value, parentId, modSlotName, modTemplate.Value, settings.BotData.Role));
 
+            if (modSlotName.Equals("front_plate", StringComparison.OrdinalIgnoreCase))
+            {
+                frontPlateSpawned = true;
+            }
+
             // Does item being added exist in mod pool - has its own mod pool
             if (settings.ModPool.ContainsKey(modTpl.Value))
             // Call self again with mod being added as item to add child mods to
@@ -261,7 +302,8 @@ public class BotEquipmentModGenerator(
         GenerateEquipmentProperties settings,
         string modSlot,
         HashSet<MongoId> existingPlateTplPool,
-        TemplateItem armorItem
+        TemplateItem armorItem,
+        int? maxArmorLevel = null
     )
     {
         var result = new FilterPlateModsForSlotByLevelResult { Result = Result.UNKNOWN_FAILURE, PlateModTemplates = null };
@@ -293,12 +335,22 @@ public class BotEquipmentModGenerator(
         // Choose a plate level based on weighting
         var chosenArmorPlateLevelString = weightedRandomHelper.GetWeightedValue(plateWeights);
 
+        // Check if the max plate value was sent over, if it's null then it shouldn't be trying to limit classes
+        if (maxArmorLevel != null)
+        {
+            var chosenLevel = int.Parse(chosenArmorPlateLevelString);
+            if (chosenLevel > maxArmorLevel.Value)
+            {
+                chosenArmorPlateLevelString = maxArmorLevel.Value.ToString();
+            }
+        }
+
         // Convert the array of ids into database items
         var platesFromDb = existingPlateTplPool.Select(plateTpl => itemHelper.GetItem(plateTpl).Value);
 
         // Filter plates to the chosen level based on its armorClass property
         var platesOfDesiredLevel = platesFromDb.Where(item =>
-            item.Properties.ArmorClass.Value == double.Parse(chosenArmorPlateLevelString, CultureInfo.InvariantCulture)
+            item.Properties.ArmorClass.Value == int.Parse(chosenArmorPlateLevelString, CultureInfo.InvariantCulture)
         );
         if (platesOfDesiredLevel.Any())
         {
