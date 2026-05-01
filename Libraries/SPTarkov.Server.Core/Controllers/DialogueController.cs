@@ -139,9 +139,9 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionId">Session Id</param>
     /// <returns>list of dialogs</returns>
-    public virtual List<DialogueInfo> GenerateDialogueList(MongoId sessionId)
+    public virtual List<Dialogue> GenerateDialogueList(MongoId sessionId)
     {
-        var data = new List<DialogueInfo>();
+        var data = new List<Dialogue>();
         foreach (var (_, dialog) in dialogueHelper.GetDialogsForProfile(sessionId))
         {
             var dialogueInfo = GetDialogueInfo(dialog, sessionId);
@@ -162,7 +162,7 @@ public class DialogueController(
     /// <param name="dialogueId">Dialog id</param>
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
-    public virtual DialogueInfo? GetDialogueInfo(MongoId dialogueId, MongoId sessionId)
+    public virtual Dialogue? GetDialogueInfo(MongoId dialogueId, MongoId sessionId)
     {
         var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
         var dialogue = dialogs.GetValueOrDefault(dialogueId);
@@ -176,7 +176,7 @@ public class DialogueController(
     /// <param name="dialogue">Dialog</param>
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
-    public virtual DialogueInfo? GetDialogueInfo(Dialogue? dialogue, MongoId sessionId)
+    public virtual Dialogue? GetDialogueInfo(Dialogue? dialogue, MongoId sessionId)
     {
         if (dialogue is null || dialogue.Messages?.Count == 0)
         {
@@ -398,8 +398,7 @@ public class DialogueController(
                     var checkTime = message.DateTime + (message.MaxStorageTime ?? 0);
                     return timeNow < checkTime;
                 })
-                .ToList()
-            ?? [];
+                .ToList() ?? [];
     }
 
     /// <summary>
@@ -626,8 +625,11 @@ public class DialogueController(
                 continue;
             }
 
-            if (!traderDialogMessages.TryGetValue("insuranceFound", out var successMessageIds) ||
-                successMessageIds == null || !successMessageIds.Contains(message.TemplateId))
+            if (
+                !traderDialogMessages.TryGetValue("insuranceFound", out var successMessageIds)
+                || successMessageIds == null
+                || !successMessageIds.Contains(message.TemplateId)
+            )
             {
                 continue;
             }
@@ -639,15 +641,17 @@ public class DialogueController(
 
             // Choose random expired insurance message to send to player
             var expiredInsuranceMessageId = randomUtil.GetArrayValue(responseMessageIds);
-            expiredInsuranceMessagesToSend.Add(new SendMessageDetails
-            {
-                RecipientId = sessionId,
-                Sender = MessageType.NpcTraderMessage,
-                DialogType = MessageType.NpcTraderMessage,
-                Trader = dialogueId,
-                TemplateId = expiredInsuranceMessageId,
-                Items = []
-            });
+            expiredInsuranceMessagesToSend.Add(
+                new SendMessageDetails
+                {
+                    RecipientId = sessionId,
+                    Sender = MessageType.NpcTraderMessage,
+                    DialogType = MessageType.NpcTraderMessage,
+                    Trader = dialogueId,
+                    TemplateId = expiredInsuranceMessageId,
+                    Items = [],
+                }
+            );
         }
 
         if (expiredInsuranceMessagesToSend.Count > 0)

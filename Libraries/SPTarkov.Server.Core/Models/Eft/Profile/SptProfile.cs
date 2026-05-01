@@ -209,27 +209,8 @@ public record Dialogue
     public MongoId Id { get; set; }
 }
 
-//TODO: @Cleanup: Maybe the same as Dialogue?
-public record DialogueInfo
+public record DialogueInfo : Dialogue
 {
-    [JsonPropertyName("attachmentsNew")]
-    public int? AttachmentsNew { get; set; }
-
-    [JsonPropertyName("new")]
-    public int? New { get; set; }
-
-    [JsonPropertyName("_id")]
-    public MongoId Id { get; set; }
-
-    [JsonPropertyName("type")]
-    public MessageType? Type { get; set; }
-
-    [JsonPropertyName("pinned")]
-    public bool? Pinned { get; set; }
-
-    [JsonPropertyName("Users")]
-    public List<UserDialogInfo>? Users { get; set; }
-
     [JsonPropertyName("message")]
     public MessagePreview? Message { get; set; }
 }

@@ -1,0 +1,10 @@
+﻿using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Loaders;
+
+namespace SPTarkov.Server.Core.Models.Spt.Bundles;
+
+public sealed record BundleManifest
+{
+    [JsonPropertyName("manifest")]
+    public List<BundleManifestEntry>? Manifest { get; set; }
+}

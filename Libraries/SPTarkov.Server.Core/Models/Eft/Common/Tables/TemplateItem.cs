@@ -418,8 +418,7 @@ public record TemplateItemProperties
     public double? DoubleActionAccuracyPenaltyMult { get; set; }
 
     [JsonPropertyName("ModesCount")]
-    //Todo: Fucked in the .Net 9 to .Net 10 migration? Needs fixing
-    public object? ModesCount { get; set; }
+    public ListOrT<int>? ModesCount { get; set; }
 
     [JsonPropertyName("DurabilityBurnModificator")]
     public double? DurabilityBurnModificator { get; set; }
@@ -638,8 +637,9 @@ public record TemplateItemProperties
     [JsonPropertyName("spawnTypes")]
     public string? SpawnTypes { get; set; }
 
+    //Yes, this is meant to be an object according to BSG
     [JsonPropertyName("lootFilter")]
-    public IEnumerable<object>? LootFilter { get; set; } // TODO: object here
+    public IEnumerable<object>? LootFilter { get; set; }
 
     [JsonPropertyName("spawnRarity")]
     public string? SpawnRarity { get; set; }

@@ -11,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SPTarkov.Common.Extensions;
 using SPTarkov.Common.Logger;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.DI;
@@ -19,7 +18,6 @@ using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Config;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Loaders;
-using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Servers;
@@ -33,7 +31,7 @@ namespace SPTarkov.Server;
 
 public static class Program
 {
-    internal static ILogger? EarlyLogger;
+    internal static ILogger? _earlyLogger;
 
     public static async Task Main(string[] args)
     {
@@ -52,14 +50,14 @@ public static class Program
 
         try
         {
-            EarlyLogger = loggerFactory.CreateLogger("SPTarkov.Server.Core");
+            _earlyLogger = loggerFactory.CreateLogger("SPTarkov.Server.Core");
 
             await StartServer(loggerFactory, args);
         }
         catch (SocketException)
         {
-            EarlyLogger!.LogCritical("You have multiple servers running or another process using port 6969");
-            EarlyLogger!.LogInformation("Press any key to exit...");
+            _earlyLogger!.LogCritical("You have multiple servers running or another process using port 6969");
+            _earlyLogger!.LogInformation("Press any key to exit...");
             Console.ReadLine();
         }
         catch (Exception e)
@@ -71,7 +69,7 @@ public static class Program
                 )
             )
             {
-                EarlyLogger!.LogCritical(
+                _earlyLogger!.LogCritical(
                     e,
                     "You may have installed a mod that needs a newer version of of SPT installed. Please try updating SPT"
                 );
@@ -82,7 +80,7 @@ public static class Program
 
             if (e.Message.Contains("could not load file or assembly", StringComparison.InvariantCultureIgnoreCase))
             {
-                EarlyLogger!.LogCritical(
+                _earlyLogger!.LogCritical(
                     e,
                     "You may have forgotten to install a requirement for one of your mods, please check the mod page again and install any requirements listed. Read the error message below CAREFULLY for the name of the mod you need to install"
                 );
@@ -92,7 +90,7 @@ public static class Program
                 return;
             }
 
-            EarlyLogger!.LogCritical(
+            _earlyLogger!.LogCritical(
                 e,
                 "The server has unexpectedly stopped, reach out to #mod-questions-4-0 in our Discord server. Include a screenshot of this message and the surrounding error(s) above and below"
             );
@@ -109,7 +107,7 @@ public static class Program
     {
         Console.OutputEncoding = Encoding.UTF8;
 
-        var configuration = await SPTConfigLoader.Initialize(EarlyLogger!);
+        var configuration = await SPTConfigLoader.Initialize(_earlyLogger!);
 
         // Create web builder and logger
         var builder = CreateNewHostBuilder(loggerFactory, configuration);
@@ -241,11 +239,6 @@ public static class Program
             builder.Services.AddSingleton(configEntry.Key, configEntry.Value);
         }
 
-        // NOTE:
-        // This can be removed after SPT 4.1, it is to make ConfigServer backwards compatible with the older way of doing things giving people time to migrate.
-        IReadOnlyDictionary<Type, BaseConfig> readonlyConfigurationDictionary = configuration;
-        builder.Services.AddSingleton(readonlyConfigurationDictionary);
-
         return builder;
     }
 
@@ -270,7 +263,7 @@ public static class Program
         diHandler.InjectAll();
         // register the mod validator components
         var provider = builder
-            .Services.AddScoped(typeof(ISemVer), typeof(SemanticVersioningSemVer))
+            .Services.AddScoped<ISemVer, SemanticVersioningSemVer>()
             .AddSingleton<ModValidator>()
             .AddSptLoggerWithoutProvider(loggerFactory.ServiceProvider)
             .BuildServiceProvider();

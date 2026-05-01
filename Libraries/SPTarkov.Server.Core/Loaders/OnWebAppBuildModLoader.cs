@@ -1,12 +1,12 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.External;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Loaders;
 
 [Injectable(InjectionType.Singleton)]
-public class OnWebAppBuildModLoader(ISptLogger<OnWebAppBuildModLoader> logger, IEnumerable<IOnWebAppBuildModAsync> onWebAppBuildMods)
+public sealed class OnWebAppBuildModLoader(ISptLogger<OnWebAppBuildModLoader> logger, IEnumerable<IOnWebAppBuildModAsync> onWebAppBuildMods)
 {
     public async Task OnLoad()
     {

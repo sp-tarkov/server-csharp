@@ -1,8 +1,8 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json.Serialization;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Utils;
 using Range = SemanticVersioning.Range;
 using Version = SemanticVersioning.Version;
@@ -13,7 +13,7 @@ namespace SPTarkov.Server.Core.Services;
 //       spam, so we purposely use MaxValue here
 
 [Injectable(TypePriority = int.MaxValue)]
-internal class ReleaseCheckService(ISptLogger<ReleaseCheckService> logger) : IOnLoad
+internal sealed class ReleaseCheckService(ISptLogger<ReleaseCheckService> logger) : IOnLoad
 {
     public Task OnLoad(CancellationToken stoppingToken)
     {
@@ -62,7 +62,7 @@ internal class ReleaseCheckService(ISptLogger<ReleaseCheckService> logger) : IOn
         catch { }
     }
 
-    private record ReleaseInformation
+    private sealed record ReleaseInformation
     {
         [JsonPropertyName("tag_name")]
         public required string Version { get; init; }

@@ -1,41 +1,17 @@
 ﻿using System.Collections.Concurrent;
-using System.Text.Json.Serialization;
 using Spectre.Console;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Spt.Bundles;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Loaders;
 
-/*
-{
-    "ModPath" : "/user/mods/Mod3",
-    "FileName" : "assets/content/weapons/usable_items/item_bottle/textures/client_assets.bundle",
-    "Bundle" : {
-        "key" : "assets/content/weapons/usable_items/item_bottle/textures/client_assets.bundle",
-        "dependencyKeys" : [ ]
-    },
-    "Crc" : 1030040371,
-    "Dependencies" : [ ]
-} */
-public class BundleInfo(string modPath, BundleManifestEntry bundle, uint bundleHash)
-{
-    public string ModPath { get; private set; } = modPath;
-
-    public string FileName { get; private set; } = bundle.Key;
-
-    public BundleManifestEntry Bundle { get; private set; } = bundle;
-
-    public uint Crc { get; private set; } = bundleHash;
-
-    public List<string> Dependencies { get; private set; } = bundle?.DependencyKeys ?? [];
-}
-
 [Injectable(InjectionType.Singleton)]
-public class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonUtil, BundleHashCacheService bundleHashCacheService)
+public sealed class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonUtil, BundleHashCacheService bundleHashCacheService)
 {
     private readonly ConcurrentDictionary<string, BundleInfo> _bundles = [];
 
@@ -136,19 +112,4 @@ public class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonUtil, Bu
             logger.Error($"Unable to add bundle: {key}");
         }
     }
-}
-
-public record BundleManifest
-{
-    [JsonPropertyName("manifest")]
-    public List<BundleManifestEntry>? Manifest { get; set; }
-}
-
-public record BundleManifestEntry
-{
-    [JsonPropertyName("key")]
-    public required string Key { get; set; }
-
-    [JsonPropertyName("dependencyKeys")]
-    public List<string>? DependencyKeys { get; set; }
 }
