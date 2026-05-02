@@ -418,7 +418,7 @@ public record TemplateItemProperties
     public double? DoubleActionAccuracyPenaltyMult { get; set; }
 
     [JsonPropertyName("ModesCount")]
-    public ListOrT<int>? ModesCount { get; set; }
+    public object? ModesCount { get; set; }
 
     [JsonPropertyName("DurabilityBurnModificator")]
     public double? DurabilityBurnModificator { get; set; }

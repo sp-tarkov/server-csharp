@@ -1,6 +1,6 @@
 ﻿namespace SPTarkov.Server.Core.Models.Spt.Bundles;
 
-public sealed record BundleInfo(string modPath, BundleManifestEntry bundle, uint bundleHash)
+public sealed class BundleInfo(string modPath, BundleManifestEntry bundle, uint bundleHash)
 {
     public string ModPath { get; private set; } = modPath;
 
