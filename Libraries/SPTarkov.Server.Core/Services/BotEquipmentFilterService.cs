@@ -358,9 +358,22 @@ public class BotEquipmentFilterService(
                 foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
                 // Only make change if item exists as we're editing, not adding
                 {
-                    if (locationToUpdate[itemToEditKvP.Key] == 0)
+                    if (locationToUpdate.TryGetValue(itemToEditKvP.Key, out var existingValue))
                     {
-                        locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
+                        if (existingValue == 0)
+                        {
+                            locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
+                        }
+                        else
+                        {
+                            if (showEditWarnings)
+                            {
+                                if (logger.IsLogEnabled(LogLevel.Debug))
+                                {
+                                    logger.Debug($"Tried to edit a non-existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
+                                }
+                            }
+                        }
                     }
                     else
                     {
@@ -368,7 +381,7 @@ public class BotEquipmentFilterService(
                         {
                             if (logger.IsLogEnabled(LogLevel.Debug))
                             {
-                                logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
+                                logger.Debug($"Tried to edit a missing item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
                             }
                         }
                     }
