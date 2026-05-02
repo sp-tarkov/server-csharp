@@ -375,16 +375,6 @@ public class BotEquipmentFilterService(
                             }
                         }
                     }
-                    else
-                    {
-                        if (showEditWarnings)
-                        {
-                            if (logger.IsLogEnabled(LogLevel.Debug))
-                            {
-                                logger.Debug($"Tried to edit a missing item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
-                            }
-                        }
-                    }
                 }
             }
         }
