@@ -70,7 +70,15 @@ public sealed class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonU
                         else
                         {
                             var bundleHash = await bundleHashCacheService.CalculateMatchAndStoreHash(bundleLocalPath);
-                            AddBundle(bundleManifest.Key, new BundleInfo(relativeModPath, bundleManifest, bundleHash));
+                            AddBundle(
+                                bundleManifest.Key,
+                                new BundleInfo
+                                {
+                                    ModPath = relativeModPath,
+                                    Bundle = bundleManifest,
+                                    Crc = bundleHash,
+                                }
+                            );
                             Interlocked.Increment(ref ok);
                         }
 

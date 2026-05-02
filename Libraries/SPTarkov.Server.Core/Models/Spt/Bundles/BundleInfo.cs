@@ -1,14 +1,20 @@
 ﻿namespace SPTarkov.Server.Core.Models.Spt.Bundles;
 
-public sealed record BundleInfo(string modPath, BundleManifestEntry bundle, uint bundleHash)
+public sealed record BundleInfo
 {
-    public string ModPath { get; private set; } = modPath;
+    public required string ModPath { get; init; }
 
-    public string FileName { get; private set; } = bundle.Key;
+    public string FileName
+    {
+        get { return Bundle.Key; }
+    }
 
-    public BundleManifestEntry Bundle { get; private set; } = bundle;
+    public required BundleManifestEntry Bundle { get; init; }
 
-    public uint Crc { get; private set; } = bundleHash;
+    public required uint Crc { get; init; }
 
-    public List<string> Dependencies { get; private set; } = bundle?.DependencyKeys ?? [];
+    public List<string> Dependencies
+    {
+        get { return Bundle?.DependencyKeys ?? []; }
+    }
 }
