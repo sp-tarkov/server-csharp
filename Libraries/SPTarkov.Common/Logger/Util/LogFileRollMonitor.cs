@@ -60,11 +60,14 @@ internal static class LogFileRollMonitor
         }
 
         metadata.FileInfo.Refresh();
-        var fileSizeMb = metadata.FileInfo.Length / 1024D / 1024D;
-
-        if (fileSizeMb > config.MaxFileSizeMb)
+        if (metadata.FileInfo.Exists)
         {
-            RollFile(metadata);
+            var fileSizeMb = metadata.FileInfo.Length / 1024D / 1024D;
+
+            if (fileSizeMb > config.MaxFileSizeMb)
+            {
+                RollFile(metadata);
+            }
         }
     }
 
