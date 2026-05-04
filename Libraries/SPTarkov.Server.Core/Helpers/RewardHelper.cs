@@ -1,3 +1,4 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
@@ -9,7 +10,6 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -229,8 +229,16 @@ public class RewardHelper(
     {
         // Get hideout crafts and find those that match by areaType/required level/end product tpl - hope for just one match
 
+        var traderId = craftUnlockReward.TraderId?.ToString();
+
+        if (traderId is null)
+        {
+            logger.Warning($"Trader id is null for {craftUnlockReward.Id}");
+            return [];
+        }
+
         // "TraderId" holds area ID that will be used to craft unlocked item
-        var desiredHideoutAreaType = (HideoutAreas)int.Parse(craftUnlockReward.TraderId.ToString());
+        var desiredHideoutAreaType = (HideoutAreas)int.Parse(traderId);
 
         return GetMatchingProductions(desiredHideoutAreaType, questId, craftUnlockReward);
     }

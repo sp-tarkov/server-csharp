@@ -32,4 +32,19 @@ public class StringOrInt(string? str, int? num)
     {
         get { return Int.HasValue; }
     }
+
+    public override string? ToString()
+    {
+        if (String is null || Int is null)
+        {
+            return null;
+        }
+
+        if (IsInt)
+        {
+            return Int.ToString();
+        }
+
+        return String;
+    }
 }
