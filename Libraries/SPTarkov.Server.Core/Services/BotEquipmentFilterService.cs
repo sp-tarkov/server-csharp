@@ -241,7 +241,7 @@ public class BotEquipmentFilterService(
                 var botEquipment = baseBotNode.BotInventory.Equipment[equipmentSlotKvP.Key];
 
                 // Skip equipment slot if blacklist doesn't exist / is empty
-                if (blacklist.Equipment?.TryGetValue(equipmentSlotKvP.Key.ToString(), out var equipmentSlotBlacklist) is null)
+                if (blacklist.Equipment?.TryGetValue(equipmentSlotKvP.Key.ToString(), out var equipmentSlotBlacklist) is null or false)
                 {
                     continue;
                 }
@@ -302,7 +302,7 @@ public class BotEquipmentFilterService(
         {
             // Skip cartridge slot if blacklist doesn't exist / is empty
             if (
-                blacklist.Cartridge?.TryGetValue(caliber, out var cartridgeCaliberBlacklist) is null
+                blacklist.Cartridge?.TryGetValue(caliber, out var cartridgeCaliberBlacklist) is null or false
                 || cartridgeCaliberBlacklist is null
                 || cartridgeCaliberBlacklist.Count == 0
             )
@@ -366,13 +366,14 @@ public class BotEquipmentFilterService(
                         }
                         else
                         {
-                            if (showEditWarnings)
-                            {
-                                if (logger.IsLogEnabled(LogLevel.Debug))
-                                {
-                                    logger.Debug($"Tried to edit a non-existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
-                                }
-                            }
+                            // Note: Logging disabled for now, because our configs are all kinds of wrong
+                            //if (showEditWarnings)
+                            //{
+                            //    if (logger.IsLogEnabled(LogLevel.Debug))
+                            //    {
+                            //        logger.Debug($"Tried to edit a non-existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
+                            //    }
+                            //}
                         }
                     }
                 }
@@ -417,19 +418,20 @@ public class BotEquipmentFilterService(
                 foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
                 // Only make change if item exists as we're editing, not adding
                 {
-                    if (locationToUpdate.ContainsKey(itemToEditKvP.Key) || locationToUpdate[itemToEditKvP.Key] == 0)
+                    if (locationToUpdate.ContainsKey(itemToEditKvP.Key))
                     {
                         locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
                     }
                     else
                     {
-                        if (showEditWarnings)
-                        {
-                            if (logger.IsLogEnabled(LogLevel.Debug))
-                            {
-                                logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
-                            }
-                        }
+                        // Note: Logging disabled for now, because our configs are all kinds of wrong
+                        //if (showEditWarnings)
+                        //{
+                        //    if (logger.IsLogEnabled(LogLevel.Debug))
+                        //    {
+                        //        logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
+                        //    }
+                        //}
                     }
                 }
             }
