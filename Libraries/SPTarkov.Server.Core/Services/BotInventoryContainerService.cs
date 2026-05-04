@@ -12,7 +12,7 @@ namespace SPTarkov.Server.Core.Services;
 /// <summary>
 /// Service for keeping track of items and their exact position inside a bots container
 /// </summary>
-[Injectable]
+[Injectable(InjectionType.Singleton)]
 public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger, ItemHelper itemHelper)
 {
     // botId/containerName
