@@ -360,20 +360,17 @@ public class BotEquipmentFilterService(
                 {
                     if (locationToUpdate.TryGetValue(itemToEditKvP.Key, out var existingValue))
                     {
-                        if (existingValue == 0)
+                        locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
+                    }
+                    else
+                    {
+                        // Note: Logging disabled for now, because our configs are all kinds of wrong
+                        if (showEditWarnings)
                         {
-                            locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
-                        }
-                        else
-                        {
-                            // Note: Logging disabled for now, because our configs are all kinds of wrong
-                            //if (showEditWarnings)
-                            //{
-                            //    if (logger.IsLogEnabled(LogLevel.Debug))
-                            //    {
-                            //        logger.Debug($"Tried to edit a non-existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
-                            //    }
-                            //}
+                            if (logger.IsLogEnabled(LogLevel.Debug))
+                            {
+                                logger.Debug($"Tried to edit a non-existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
+                            }
                         }
                     }
                 }
@@ -425,13 +422,13 @@ public class BotEquipmentFilterService(
                     else
                     {
                         // Note: Logging disabled for now, because our configs are all kinds of wrong
-                        //if (showEditWarnings)
-                        //{
-                        //    if (logger.IsLogEnabled(LogLevel.Debug))
-                        //    {
-                        //        logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
-                        //    }
-                        //}
+                        if (showEditWarnings)
+                        {
+                            if (logger.IsLogEnabled(LogLevel.Debug))
+                            {
+                                logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
+                            }
+                        }
                     }
                 }
             }
