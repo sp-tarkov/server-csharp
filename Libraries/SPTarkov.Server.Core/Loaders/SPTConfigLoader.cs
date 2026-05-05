@@ -1,21 +1,21 @@
 ﻿using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Logging;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
-namespace SPTarkov.Server.Config;
+namespace SPTarkov.Server.Core.Loaders;
 
-internal static class SPTConfigLoader
+public static class SPTConfigLoader
 {
     private const string Filepath = "./SPT_Data/configs/";
     private static readonly HashSet<string> _acceptableFileExtensions = [".json", ".jsonc"];
 
-    public static async Task<IReadOnlyDictionary<Type, BaseConfig>> Initialize(ILogger logger)
+    public static async Task<IReadOnlyDictionary<Type, BaseConfig>> Initialize(ILogger? logger = null)
     {
-        if (logger.IsEnabled(LogLevel.Debug))
+        if (logger is not null && logger.IsEnabled(LogLevel.Debug))
         {
             logger.LogDebug("Importing configs...");
         }
@@ -63,7 +63,7 @@ internal static class SPTConfigLoader
 
             if (configType == null)
             {
-                logger.LogError($"Config file: {file} has no associated ConfigTypes entry. Skipping.");
+                logger?.LogError($"Config file: {file} has no associated ConfigTypes entry. Skipping.");
                 continue;
             }
 
@@ -80,14 +80,14 @@ internal static class SPTConfigLoader
             }
             catch (JsonException)
             {
-                logger.LogError("Config file: {fileName} failed to deserialize.", file);
-                logger.LogError("Server will not run until the: {fileName} config error mentioned above is fixed", file);
+                logger?.LogError("Config file: {fileName} failed to deserialize.", file);
+                logger?.LogError("Server will not run until the: {fileName} config error mentioned above is fixed", file);
                 throw;
             }
 
             if (deserializedContent == null)
             {
-                logger.LogError($"Config file: {file} is corrupt. Validate the file using a JSON validator.");
+                logger?.LogError($"Config file: {file} is corrupt. Validate the file using a JSON validator.");
                 throw new Exception($"Server will not run until the: {file} config error mentioned above is fixed");
             }
 

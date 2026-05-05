@@ -1,10 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Testing;
 using NUnit.Framework;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI;
 using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Loaders;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Services.Hosted;
-using SPTarkov.Server.Core.Utils;
 using UnitTests.Mock;
 
 namespace UnitTests;
@@ -12,7 +15,7 @@ namespace UnitTests;
 [TestFixture]
 public class DI
 {
-    private static IServiceProvider _serviceProvider;
+    private static IServiceProvider _serviceProvider = default!;
 
     private static DI? _instance;
 
@@ -33,16 +36,22 @@ public class DI
             return;
         }
 
+        var mockLogger = new MockLogger<DI>();
+        var configuration = SPTConfigLoader.Initialize(mockLogger).GetAwaiter().GetResult();
+
         var services = new ServiceCollection();
+        services.AddSingleton(mockLogger);
+        services.AddSingleton(typeof(ILogger<>), typeof(MockLogger<>));
+        services.AddSingleton(typeof(ISptLogger<>), typeof(MockLogger<>));
+
+        foreach (var configEntry in configuration)
+        {
+            services.AddSingleton(configEntry.Key, configEntry.Value);
+        }
 
         var diHandler = new DependencyInjectionHandler(services);
 
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(SPTStartupHostedService));
-        diHandler.AddInjectableTypesFromTypeList(
-            [
-                typeof(MockLogger<>), // TODO: this needs to be enabled but the randomizer needs to NOT be random, typeof(MockRandomUtil)
-            ]
-        );
 
         diHandler.InjectAll();
 

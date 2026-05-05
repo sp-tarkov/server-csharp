@@ -35,7 +35,7 @@
     </None>
   </ItemGroup>
   <Target Name="PreBuildHashFile" BeforeTargets="BeforeBuild" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="dotnet run PostBuild.cs" WorkingDirectory="$(ProjectDir)\build" >
+    <Exec Command="dotnet run PostBuild.cs" WorkingDirectory="$(ProjectDir)\build">
       <Output TaskParameter="ExitCode" PropertyName="HashFileExitCode" />
     </Exec>
     <Error Message="Failed to hash files" Condition=" '$(HashFileExitCode)' != '0'" />
