@@ -2,7 +2,7 @@
     <PropertyGroup>
         <!--  SPT specific  -->
         <SptVersion Condition="'$(SptVersion)' == ''">4.1.0</SptVersion>
-        <SptCommit Condition="'$(SptCommit)' == ''">V10RDY</SptCommit>
+        <SptCommit Condition="'$(SptCommit)' == ''">T10NVR</SptCommit>
         <SptBuildTime Condition="'$(SptBuildTime)' == ''">0000000000</SptBuildTime>
         <SptBuildType Condition="'$(SptBuildType)' == ''">LOCAL</SptBuildType>
         <!--  BuildType options - LOCAL, DEBUG, RELEASE, BLEEDINGEDGE, BLEEDINGEDGEMODS - *must be all caps*--><!-- SemVer-compliant version --><!-- Format: 4.0.1-LOCAL+a12b34.0000000000 -->
