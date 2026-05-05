@@ -1,18 +1,18 @@
 using System.Collections.Concurrent;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Common.Models.Logging;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Services.Mod;
 
 [Injectable(InjectionType.Singleton)]
-public class ProfileDataService(ISptLogger<ProfileDataService> logger, FileUtil fileUtil, JsonUtil jsonUtil)
+public sealed class ProfileDataService(FileUtil fileUtil, JsonUtil jsonUtil)
 {
-    protected const string ProfileDataFilepath = "user/profileData/";
+    private const string ProfileDataFilepath = "user/profileData/";
     private readonly ConcurrentDictionary<string, object> _profileDataCache = new();
 
     /// <summary>
-    /// Check if a specfici mod file exists for a profile
+    /// Check if a specific mod file exists for a profile
     /// </summary>
     /// <param name="profileId">Profile to look up</param>
     /// <param name="modKey">Name of json file to look up</param>
@@ -21,17 +21,70 @@ public class ProfileDataService(ISptLogger<ProfileDataService> logger, FileUtil 
         return fileUtil.FileExists(Path.Combine(ProfileDataFilepath, profileId, $"{modKey}.json"));
     }
 
-    public T? GetProfileData<T>(string profileId, string modKey)
+    /// <summary>
+    /// Gets all custom mod data assigned to a profile
+    /// </summary>
+    /// <param name="profileId">The profile to look up</param>
+    /// <returns>A dictionary containing all of the profile data</returns>
+    public async Task<Dictionary<string, object>> GetAllProfileData(MongoId profileId)
+    {
+        var profileDataPath = Path.Combine(ProfileDataFilepath, profileId.ToString());
+        var profileData = new Dictionary<string, object>();
+
+        if (!fileUtil.DirectoryExists(profileDataPath))
+        {
+            return profileData;
+        }
+
+        var profileFiles = fileUtil.GetFiles(profileDataPath);
+
+        foreach (var filePath in profileFiles)
+        {
+            if (!filePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            var modKey = Path.GetFileNameWithoutExtension(filePath);
+
+            if (string.IsNullOrWhiteSpace(modKey))
+            {
+                continue;
+            }
+
+            var cacheKey = GetCacheKey(profileId, modKey);
+
+            if (_profileDataCache.TryGetValue(cacheKey, out var cachedValue))
+            {
+                profileData[modKey] = cachedValue;
+                continue;
+            }
+
+            var deserializedData = await jsonUtil.DeserializeFromFileAsync<object>(filePath);
+
+            if (deserializedData == null)
+            {
+                continue;
+            }
+
+            profileData[modKey] = deserializedData;
+        }
+
+        return profileData;
+    }
+
+    public async Task<T?> GetProfileData<T>(MongoId profileId, string modKey)
     {
         var profileDataKey = GetCacheKey(profileId, modKey);
         if (!_profileDataCache.TryGetValue(profileDataKey, out var value))
         {
             if (ProfileDataExists(profileId, modKey))
             {
-                value = jsonUtil.Deserialize<T>(fileUtil.ReadFile(Path.Combine(ProfileDataFilepath, profileId, $"{modKey}.json")));
+                value = await jsonUtil.DeserializeFromFileAsync<T>(Path.Combine(ProfileDataFilepath, profileId, $"{modKey}.json"));
+
                 if (value != null)
                 {
-                    _profileDataCache[GetCacheKey(profileId, modKey)] = value;
+                    _profileDataCache[profileDataKey] = value;
                 }
             }
             else
@@ -43,7 +96,7 @@ public class ProfileDataService(ISptLogger<ProfileDataService> logger, FileUtil 
         return (T?)value;
     }
 
-    public void SaveProfileData<T>(string profileId, string modKey, T profileData)
+    public async Task SaveProfileData<T>(MongoId profileId, string modKey, T profileData)
     {
         ArgumentNullException.ThrowIfNull(profileData);
 
@@ -53,14 +106,14 @@ public class ProfileDataService(ISptLogger<ProfileDataService> logger, FileUtil 
 
         _profileDataCache[GetCacheKey(profileId, modKey)] = profileData;
 
-        fileUtil.WriteFile(Path.Combine(ProfileDataFilepath, profileId, $"{modKey}.json"), data);
+        await fileUtil.WriteFileAsync(Path.Combine(ProfileDataFilepath, profileId, $"{modKey}.json"), data);
     }
 
     /// <summary>
     /// Clear all data for a profile
     /// </summary>
     /// <param name="profileId">Id of profile to delete files for</param>
-    public void ClearProfileData(string profileId)
+    public void ClearProfileData(MongoId profileId)
     {
         if (!fileUtil.DirectoryExists(Path.Combine(ProfileDataFilepath, profileId)))
         {
@@ -84,7 +137,7 @@ public class ProfileDataService(ISptLogger<ProfileDataService> logger, FileUtil 
     /// <summary>
     /// Get the cache key in specific format
     /// </summary>
-    protected string GetCacheKey(string profileId, string modKey)
+    private string GetCacheKey(MongoId profileId, string modKey)
     {
         return $"{profileId}:{modKey}";
     }
