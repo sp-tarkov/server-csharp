@@ -10,8 +10,8 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fileUtil)
 {
-    private const string CertificatePath = "./user/certs/server.crt";
-    private const string CertificateKeyPath = "./user/certs/server.key";
+    private static readonly string _certificatePath = Path.Combine("user", "certs", "server.crt");
+    private static readonly string _certificateKeyPath = Path.Combine("user", "certs", "server.key");
 
     public X509Certificate2? LoadOrGenerateCertificate()
     {
@@ -22,7 +22,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
 
         if (TryLoadCertificate(out var cert))
         {
-            logger.Success($"Loaded self-signed certificate ({CertificatePath})");
+            logger.Success($"Loaded self-signed certificate ({_certificatePath})");
             return cert;
         }
 
@@ -38,7 +38,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
     /// <returns></returns>
     private bool TryLoadCertificate(out X509Certificate2 certificate)
     {
-        if (!File.Exists(CertificatePath) || !File.Exists(CertificateKeyPath))
+        if (!File.Exists(_certificatePath) || !File.Exists(_certificateKeyPath))
         {
             // file doesn't exist so create straight away
             var cert = GenerateSelfSignedCertificate();
@@ -52,12 +52,12 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
             SaveCertificate(cert);
             SavePrivateKey(privateKey);
 
-            logger.Success($"Generated and stored self-signed certificate ({CertificatePath})");
+            logger.Success($"Generated and stored self-signed certificate ({_certificatePath})");
         }
 
         try
         {
-            var pem = X509Certificate2.CreateFromPemFile(CertificatePath, CertificateKeyPath);
+            var pem = X509Certificate2.CreateFromPemFile(_certificatePath, _certificateKeyPath);
 
             // This badness has to exist so that .Net can actually use the cert for HTTPS
             certificate = X509CertificateLoader.LoadPkcs12(pem.Export(X509ContentType.Pfx), null);
@@ -104,7 +104,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
                 "-----BEGIN CERTIFICATE-----\n"
                 + Convert.ToBase64String(certificate.Export(X509ContentType.Cert), Base64FormattingOptions.InsertLineBreaks)
                 + "\n-----END CERTIFICATE-----";
-            fileUtil.WriteFile(CertificatePath, certPem);
+            fileUtil.WriteFile(_certificatePath, certPem);
         }
         catch (Exception ex)
         {
@@ -124,7 +124,7 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
                 + Convert.ToBase64String(privateKeyBytes, Base64FormattingOptions.InsertLineBreaks)
                 + "\n-----END PRIVATE KEY-----";
 
-            fileUtil.WriteFile(CertificateKeyPath, privateKeyString);
+            fileUtil.WriteFile(_certificateKeyPath, privateKeyString);
         }
         catch (Exception ex)
         {

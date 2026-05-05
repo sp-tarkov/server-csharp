@@ -10,7 +10,7 @@ namespace SPTarkov.Server.Core.Loaders;
 
 public static class ConfigLoader
 {
-    private const string Filepath = "./SPT_Data/configs/";
+    private static readonly string _configPath = Path.Combine("SPT_Data", "configs");
     private static readonly HashSet<string> _acceptableFileExtensions = [".json", ".jsonc"];
 
     public static async Task<IReadOnlyDictionary<Type, BaseConfig>> Initialize(ILogger? logger = null)
@@ -50,7 +50,7 @@ public static class ConfigLoader
         }
 
         Dictionary<Type, BaseConfig> configs = [];
-        var files = new List<string>(Directory.GetFiles(Filepath, "*"));
+        var files = new List<string>(Directory.GetFiles(_configPath, "*"));
 
         foreach (var file in files)
         {
