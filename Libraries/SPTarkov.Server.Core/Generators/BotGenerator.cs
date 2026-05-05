@@ -253,7 +253,12 @@ public class BotGenerator(
         bot.Customization.Voice = weightedRandomHelper.GetWeightedValue(botJsonTemplate.BotAppearance.Voice);
         bot.Health = GenerateHealth(botJsonTemplate.BotHealth, botGenerationDetails.IsPlayerScav);
         bot.Skills = GenerateSkills(botJsonTemplate.BotSkills);
-        bot.Info.PrestigeLevel = 0;
+
+        //Todo: Might need changed to randomize bots spawning with lower or higher prestige
+        if (bot.Info.PrestigeLevel is null)
+        {
+            bot.Info.PrestigeLevel = 0;
+        }
 
         if (botGenerationDetails.IsPmc)
         {
