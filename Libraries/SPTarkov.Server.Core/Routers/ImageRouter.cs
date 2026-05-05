@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers.Http;
 using SPTarkov.Server.Core.Services.Image;
 using SPTarkov.Server.Core.Utils;

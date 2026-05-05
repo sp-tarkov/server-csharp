@@ -1,7 +1,7 @@
 ﻿using System.Net.WebSockets;
 using Microsoft.AspNetCore.Http;
-using SPTarkov.DI.Annotations;
 using SPTarkov.Common.Models.Logging;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Servers.Ws;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 

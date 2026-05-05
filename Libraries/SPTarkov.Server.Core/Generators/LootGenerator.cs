@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Services;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -53,16 +53,14 @@ public class LootGenerator(
             {
                 // Choose one at random + add to results array
                 var chosenSealedContainer = randomUtil.GetArrayValue(sealedWeaponContainerPool);
-                result.Add(
-                    [
-                        new Item
-                        {
-                            Id = new MongoId(),
-                            Template = chosenSealedContainer.Id,
-                            Upd = new Upd { StackObjectsCount = 1, SpawnedInSession = true },
-                        },
-                    ]
-                );
+                result.Add([
+                    new Item
+                    {
+                        Id = new MongoId(),
+                        Template = chosenSealedContainer.Id,
+                        Upd = new Upd { StackObjectsCount = 1, SpawnedInSession = true },
+                    },
+                ]);
             }
         }
 

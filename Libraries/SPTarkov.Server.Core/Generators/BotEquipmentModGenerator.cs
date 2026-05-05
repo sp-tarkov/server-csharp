@@ -10,7 +10,6 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -108,7 +107,8 @@ public class BotEquipmentModGenerator(
         }
 
         // Order the modpool by front plates, then backplates, then everything else
-        var orderedCompatibleModsPool = (compatibleModsPool ?? []).OrderBy(pair =>
+        var orderedCompatibleModsPool = (compatibleModsPool ?? [])
+            .OrderBy(pair =>
             {
                 if (pair.Key.Equals("front_plate", StringComparison.OrdinalIgnoreCase))
                 {
@@ -129,7 +129,11 @@ public class BotEquipmentModGenerator(
         foreach (var (modSlotName, modPool) in orderedCompatibleModsPool)
         {
             // Skip backplate slot if there's no front plate and bot should skip it via config
-            if (modSlotName.Equals("back_plate", StringComparison.OrdinalIgnoreCase) && settings.BotEquipmentConfig.SkipBackPlateIfFrontPlateMissing.GetValueOrDefault(false) && !frontPlateSpawned)
+            if (
+                modSlotName.Equals("back_plate", StringComparison.OrdinalIgnoreCase)
+                && settings.BotEquipmentConfig.SkipBackPlateIfFrontPlateMissing.GetValueOrDefault(false)
+                && !frontPlateSpawned
+            )
             {
                 continue;
             }
@@ -191,9 +195,14 @@ public class BotEquipmentModGenerator(
             )
             {
                 int? frontPlateArmorClass = null;
-                if (modSlotName.Equals("back_plate", StringComparison.OrdinalIgnoreCase) && settings.BotEquipmentConfig.LimitPlateClassToFrontPlateClass.GetValueOrDefault(false))
+                if (
+                    modSlotName.Equals("back_plate", StringComparison.OrdinalIgnoreCase)
+                    && settings.BotEquipmentConfig.LimitPlateClassToFrontPlateClass.GetValueOrDefault(false)
+                )
                 {
-                    var frontPlate = equipment.FirstOrDefault(item => item.SlotId.Equals("front_plate", StringComparison.OrdinalIgnoreCase));
+                    var frontPlate = equipment.FirstOrDefault(item =>
+                        item.SlotId.Equals("front_plate", StringComparison.OrdinalIgnoreCase)
+                    );
 
                     if (frontPlate != null)
                     {
@@ -1876,8 +1885,7 @@ public class BotEquipmentModGenerator(
                                     || itemHelper.IsOfBaseclass(tpl, BaseClasses.MOUNT)
                                 )
                             )
-                    )
-                    ?? false
+                    ) ?? false
                 )
                 // Add mod to allowed list
                 {

@@ -3,8 +3,6 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Callbacks;
-using SPTarkov.Server.Core.Generators;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 
 namespace TestMod2;

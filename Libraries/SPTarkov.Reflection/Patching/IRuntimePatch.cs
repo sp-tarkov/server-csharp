@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace SPTarkov.Reflection.Patching;
 
 public interface IRuntimePatch

@@ -1,9 +1,9 @@
 using System.Collections.Concurrent;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Common.Models.Logging;
 
 namespace SPTarkov.Server.Core.Services;
 

@@ -1,11 +1,11 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Migration;
 using SPTarkov.Server.Core.Models.Eft.Profile;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Services;

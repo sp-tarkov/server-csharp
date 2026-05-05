@@ -1,5 +1,4 @@
 using Spectre.Console;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Models.Enums;
 using Version = SemanticVersioning.Version;
 

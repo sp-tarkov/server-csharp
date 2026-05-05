@@ -1,7 +1,7 @@
 using System.Net.WebSockets;
 using System.Text;
-using SPTarkov.DI.Annotations;
 using SPTarkov.Common.Models.Logging;
+using SPTarkov.DI.Annotations;
 
 namespace SPTarkov.Server.Core.Servers.Ws.Message;
 

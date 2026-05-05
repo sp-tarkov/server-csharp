@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
 

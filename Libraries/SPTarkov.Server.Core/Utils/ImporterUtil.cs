@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Frozen;
 using System.Linq.Expressions;
 using System.Reflection;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Utils.Json;
 
 namespace SPTarkov.Server.Core.Utils;

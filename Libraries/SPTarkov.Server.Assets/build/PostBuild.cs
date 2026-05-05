@@ -7,13 +7,10 @@ using System.Text.Json.Serialization.Metadata;
 ParallelOptions parallelOptions = new ParallelOptions
 {
     // Limit to only 4 threads
-    MaxDegreeOfParallelism = 4
+    MaxDegreeOfParallelism = 4,
 };
 
-JsonSerializerOptions serializerOptions = new JsonSerializerOptions
-{
-    TypeInfoResolver = new DefaultJsonTypeInfoResolver()
-};
+JsonSerializerOptions serializerOptions = new JsonSerializerOptions { TypeInfoResolver = new DefaultJsonTypeInfoResolver() };
 
 string scriptDir = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), ".."));
 string sptDataPath = Path.Combine(scriptDir, "SPT_Data");
@@ -33,28 +30,32 @@ async Task GenerateHashesAsync()
 
     var hashes = new ConcurrentBag<FileHash>();
 
-    await Parallel.ForEachAsync(files, parallelOptions, async (file, token) =>
-    {
-        if (Path.GetFileName(file).Equals("checks.dat", StringComparison.OrdinalIgnoreCase))
+    await Parallel.ForEachAsync(
+        files,
+        parallelOptions,
+        async (file, token) =>
         {
-            return;
-        }
-        
-        byte[] hashBytes;
-
-        using (var md5 = MD5.Create())
-        {
-            await using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 8192, useAsync: true))
+            if (Path.GetFileName(file).Equals("checks.dat", StringComparison.OrdinalIgnoreCase))
             {
-                hashBytes = await md5.ComputeHashAsync(stream, token);
+                return;
             }
+
+            byte[] hashBytes;
+
+            using (var md5 = MD5.Create())
+            {
+                await using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 8192, useAsync: true))
+                {
+                    hashBytes = await md5.ComputeHashAsync(stream, token);
+                }
+            }
+
+            var hashString = BitConverter.ToString(hashBytes).Replace("-", "");
+            var relativePath = file.Substring(sptDataPath.Length + 1).Replace('\\', '/');
+
+            hashes.Add(new FileHash { Path = relativePath, Hash = hashString });
         }
-
-        var hashString = BitConverter.ToString(hashBytes).Replace("-", "");
-        var relativePath = file.Substring(sptDataPath.Length + 1).Replace('\\', '/');
-
-        hashes.Add(new FileHash { Path = relativePath, Hash = hashString });
-    });
+    );
 
     var jsonString = JsonSerializer.Serialize(hashes.OrderBy(h => h.Path), serializerOptions);
 

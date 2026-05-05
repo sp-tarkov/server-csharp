@@ -1,11 +1,11 @@
 using System.Collections.Concurrent;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Core.Utils;

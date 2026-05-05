@@ -1,7 +1,7 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Spt.Helper;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 

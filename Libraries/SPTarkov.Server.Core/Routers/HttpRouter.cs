@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using SPTarkov.DI.Annotations;
-using SPTarkov.DI.Extensions;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
 

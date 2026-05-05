@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Testing;
 using NUnit.Framework;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI;
