@@ -101,7 +101,7 @@ public static class Program
     {
         Console.OutputEncoding = Encoding.UTF8;
 
-        var configuration = await SPTConfigLoader.Initialize(_earlyLogger!);
+        var configuration = await ConfigLoader.Initialize(_earlyLogger!);
 
         // Create web builder and logger
         var builder = CreateNewHostBuilder(loggerFactory, configuration);

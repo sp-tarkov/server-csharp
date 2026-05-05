@@ -36,7 +36,7 @@ public class DI
         }
 
         var mockLogger = new MockLogger<DI>();
-        var configuration = SPTConfigLoader.Initialize(mockLogger).GetAwaiter().GetResult();
+        var configuration = ConfigLoader.Initialize(mockLogger).GetAwaiter().GetResult();
 
         var services = new ServiceCollection();
         services.AddSingleton(mockLogger);

@@ -8,7 +8,7 @@ using SPTarkov.Server.Core.Utils.Json.Converters;
 
 namespace SPTarkov.Server.Core.Loaders;
 
-public static class SPTConfigLoader
+public static class ConfigLoader
 {
     private const string Filepath = "./SPT_Data/configs/";
     private static readonly HashSet<string> _acceptableFileExtensions = [".json", ".jsonc"];
