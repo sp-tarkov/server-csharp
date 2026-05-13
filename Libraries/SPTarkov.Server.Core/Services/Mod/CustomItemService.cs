@@ -50,7 +50,7 @@ public class CustomItemService(
 
         // Clone existing item
         tables.Templates.Items.TryGetValue(newItemDetails.ItemTplToClone, out var itemToClone);
-        var itemClone = cloner.Clone(itemToClone);
+        var itemClone = cloner.Clone(itemToClone) ?? throw new InvalidOperationException($"Could not clone {nameof(itemToClone)}");
 
         // Update id and parentId of item
         itemClone.Id = newItemId;
