@@ -506,8 +506,8 @@ public class CircleOfCultistService(
         directReward.RequiredItems.Sort();
         directReward.Reward.Sort();
 
-        var required = string.Concat(directReward.RequiredItems, ",");
-        var reward = string.Concat(directReward.Reward, ",");
+        var required = string.Join(",", directReward.RequiredItems);
+        var reward = string.Join(",", directReward.Reward);
         // Key is sacrificed items separated by commas, a dash, then the rewards separated by commas
         var key = $"{{{required}-{reward}}}";
 
