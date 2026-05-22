@@ -123,8 +123,12 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
             throw new ModLoaderException($"No Assemblies found in path: {Path.GetFullPath(path)}");
         }
 
-        SptMod result = new() { Directory = path, Assemblies = assemblyList };
-        LoadModMetadata(result, assemblyList, path);
+        SptMod result = new()
+        {
+            Directory = path,
+            Assemblies = assemblyList,
+            ModMetadata = LoadModMetadata(assemblyList, path),
+        };
 
         if (
             string.IsNullOrEmpty(result.ModMetadata.ModGuid)
@@ -138,6 +142,11 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
             );
         }
 
+        if (result.ModMetadata.HasPatcher)
+        {
+            LoadModPatchers(result, Path.Combine(PatcherPath, result.ModMetadata.ModGuid));
+        }
+
         return result;
     }
 
@@ -149,7 +158,7 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
     /// <param name="path">Path of the mod directory</param>
     /// <returns>Mod metadata</returns>
     /// <exception cref="ModLoaderException">Thrown if duplicate metadata implementations are found</exception>
-    private void LoadModMetadata(SptMod mod, IEnumerable<Assembly> assemblies, string path)
+    private AbstractModMetadata LoadModMetadata(IEnumerable<Assembly> assemblies, string path)
     {
         AbstractModMetadata? result = null;
 
@@ -185,11 +194,7 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
             );
         }
 
-        mod.ModMetadata = result;
-        if (result.HasPatcher)
-        {
-            LoadModPatchers(mod, Path.Combine(PatcherPath, result.ModGuid));
-        }
+        return result;
     }
 
     private void LoadModPatchers(SptMod mod, string path)
