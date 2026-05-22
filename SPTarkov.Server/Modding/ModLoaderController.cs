@@ -169,7 +169,7 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
         try
         {
             using var fs = new FileStream(
-                Path.Combine(Assembly.GetExecutingAssembly().Location, "SPTarkov.Server.Core.dll"),
+                Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "SPTarkov.Server.Core.dll"),
                 FileMode.Open
             );
 
