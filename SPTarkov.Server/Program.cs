@@ -1,5 +1,7 @@
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Security.Authentication;
 using System.Text;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -25,6 +27,9 @@ namespace SPTarkov.Server;
 
 public static class Program
 {
+    private const string PrepatchedArg = "--prepatched";
+    private const string PrepatchStagePath = "./user/cache/prepatcher/server";
+
     internal static ILogger? _earlyLogger;
     private static ModLoaderController? _modLoaderController;
 
@@ -102,6 +107,14 @@ public static class Program
     {
         Console.OutputEncoding = Encoding.UTF8;
 
+        // Clean the console a bit
+        // TODO: Carry over pre-patcher data so it can be logged to console. Create a cache json that can be read in the copied cache dir
+        var isPrepatchedProcess = args.Contains(PrepatchedArg, StringComparer.OrdinalIgnoreCase);
+        if (isPrepatchedProcess)
+        {
+            ClearConsole();
+        }
+
         var configuration = await ConfigLoader.Initialize(_earlyLogger!);
 
         // Init mod loader
@@ -109,6 +122,20 @@ public static class Program
         if (ProgramStatics.MODS())
         {
             modLoaderController = InitModLoader(loggerFactory, configuration);
+        }
+
+        List<SptMod> loadedMods = [];
+        if (ProgramStatics.MODS() && modLoaderController != null)
+        {
+            await modLoaderController.LoadMods();
+            loadedMods = modLoaderController.ValidRuntimeMods;
+
+            if (!isPrepatchedProcess && modLoaderController.HasPatchers)
+            {
+                modLoaderController.ApplyPrepatches(loadedMods);
+                await StartPrepatchedServerProcess(args);
+                return;
+            }
         }
 
         // Create web builder and logger
@@ -128,22 +155,10 @@ public static class Program
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(Program));
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(PatchManager));
 
-        // TODO: Clean this up? Move to method?
-
-        // SPTStartupHostedService can potentially exist in two places and which one we load is based on if mods are enabled.
-        // If mods are enabled, we will run the entire mod loader process, apply prepatches, load/validate mods, and save the patched asm to disk.
-        // If mods are enabled, we will load the patched `Assembly` from disk as bytes and feed that into the DI handler
-        // If mods are NOT enabled, we will just load the one in context.
-        List<SptMod> loadedMods = [];
         if (ProgramStatics.MODS() && modLoaderController != null)
         {
-            modLoaderController.LoadMods();
-            loadedMods = modLoaderController.ValidRuntimeMods;
-
             diHandler.AddInjectableTypesFromAssemblies(loadedMods.SelectMany(a => a.Assemblies));
-
-            // TODO: Read patched ASM from disk as bytes and feed it directly do DI as an assembly
-            //diHandler.AddInjectableTypesFromAssembly();
+            diHandler.AddInjectableTypesFromTypeAssembly(typeof(SPTStartupHostedService));
         }
         else
         {
@@ -251,6 +266,140 @@ public static class Program
         }
 
         return builder;
+    }
+
+    /// <summary>
+    ///     Starts the patched server as a new process. This one is destroyed in release and held open in debug so IDE's don't die.
+    /// </summary>
+    private static async Task StartPrepatchedServerProcess(string[] args)
+    {
+        var sourceDirectory = AppContext.BaseDirectory;
+        var stageDirectory = Path.GetFullPath(PrepatchStagePath);
+
+        CopyApplicationToCache(sourceDirectory, stageDirectory);
+
+        File.Copy(
+            Path.GetFullPath(ModLoaderController.PatchedAssemblyName),
+            Path.Combine(stageDirectory, "SPTarkov.Server.Core.dll"),
+            overwrite: true
+        );
+
+        var startInfo = CreatePrepatchedProcessStartInfo(stageDirectory);
+
+        foreach (var arg in args.Where(arg => !string.Equals(arg, PrepatchedArg, StringComparison.OrdinalIgnoreCase)))
+        {
+            startInfo.ArgumentList.Add(arg);
+        }
+        startInfo.ArgumentList.Add(PrepatchedArg);
+
+        var prepatchedProcess = Process.Start(startInfo);
+        if (prepatchedProcess is null)
+        {
+            throw new ModLoaderException($"Failed to start prepatched server process: {startInfo.FileName}");
+        }
+
+        // Needed for IDE development so the console doesn't just cease to exist when the process relaunches,
+        // in a normal environment it just reattaches to the old console, but this behavior doesn't work in Rider/VS
+#if DEBUG
+        await prepatchedProcess.WaitForExitAsync();
+        Environment.ExitCode = prepatchedProcess.ExitCode;
+#endif
+    }
+
+    private static ProcessStartInfo CreatePrepatchedProcessStartInfo(string stageDirectory)
+    {
+        var processPath = Environment.ProcessPath;
+        var entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
+
+        if (IsDotnetHost(processPath) && !string.IsNullOrEmpty(entryAssemblyPath))
+        {
+            var stagedAssemblyPath = Path.Combine(stageDirectory, Path.GetFileName(entryAssemblyPath));
+            var startInfo = CreateProcessStartInfo(processPath!);
+            startInfo.ArgumentList.Add(stagedAssemblyPath);
+            return startInfo;
+        }
+
+        var executableName = Path.GetFileName(processPath);
+        if (string.IsNullOrEmpty(executableName))
+        {
+            executableName = OperatingSystem.IsWindows() ? "SPT.Server.exe" : "SPT.Server";
+        }
+
+        return CreateProcessStartInfo(Path.Combine(stageDirectory, executableName));
+    }
+
+    private static bool IsDotnetHost(string? processPath)
+    {
+        if (string.IsNullOrEmpty(processPath))
+        {
+            return false;
+        }
+
+        return string.Equals(Path.GetFileNameWithoutExtension(processPath), "dotnet", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static ProcessStartInfo CreateProcessStartInfo(string executablePath)
+    {
+        return new ProcessStartInfo(executablePath) { WorkingDirectory = Directory.GetCurrentDirectory(), UseShellExecute = false };
+    }
+
+    private static void ClearConsole()
+    {
+        if (Console.IsOutputRedirected)
+        {
+            return;
+        }
+
+        Console.Clear();
+    }
+
+    /// <summary>
+    ///     Copies the patched application to a cache
+    /// </summary>
+    /// <param name="sourceDirectory">Source dir</param>
+    /// <param name="cacheDirectory"></param>
+    private static void CopyApplicationToCache(string sourceDirectory, string cacheDirectory)
+    {
+        if (Directory.Exists(cacheDirectory))
+        {
+            Directory.Delete(cacheDirectory, recursive: true);
+        }
+
+        Directory.CreateDirectory(cacheDirectory);
+
+        foreach (var file in Directory.GetFiles(sourceDirectory))
+        {
+            File.Copy(file, Path.Combine(cacheDirectory, Path.GetFileName(file)), overwrite: true);
+        }
+
+        foreach (var directory in Directory.GetDirectories(sourceDirectory))
+        {
+            var directoryName = Path.GetFileName(directory);
+            if (
+                string.Equals(directoryName, "user", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(directoryName, "SPT_Data", StringComparison.OrdinalIgnoreCase)
+            )
+            {
+                continue;
+            }
+
+            CopyDirectory(directory, Path.Combine(cacheDirectory, directoryName));
+        }
+    }
+
+    private static void CopyDirectory(string sourceDirectory, string targetDirectory)
+    {
+        Directory.CreateDirectory(targetDirectory);
+
+        foreach (var file in Directory.GetFiles(sourceDirectory))
+        {
+            File.Copy(file, Path.Combine(targetDirectory, Path.GetFileName(file)), overwrite: true);
+        }
+
+        foreach (var directory in Directory.GetDirectories(sourceDirectory))
+        {
+            CopyDirectory(directory, Path.Combine(targetDirectory, Path.GetFileName(directory)));
+        }
     }
 
     private static ModLoaderController InitModLoader(
