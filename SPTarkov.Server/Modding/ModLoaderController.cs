@@ -1,26 +1,55 @@
 using System.Reflection;
 using System.Runtime.Loader;
+using Mono.Cecil;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Modding;
 
-public class ModDllLoader
+public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModValidator modValidator)
 {
     private const string ModPath = "./user/mods/";
+    private const string PatcherPath = "./user/patchers/";
 
-    public static List<SptMod> LoadAllMods()
+    public List<SptMod> ValidRuntimeMods
+    {
+        get { return modValidator.ValidateMods(_loadedMods); }
+    }
+
+    private List<SptMod> _loadedMods = [];
+    private ModuleDefinition? _serverCoreModule;
+
+    public void LoadMods()
+    {
+        if (!TryLoadServerCoreBytes())
+        {
+            return;
+        }
+
+        LoadAllPatchers();
+        LoadAllMods();
+    }
+
+    // We need control and coupling between pre-patchers and the associated primary assembly,
+    // handle that here and any state needed.
+    // This will control the process of both patchers and the mods themselves
+
+    private void LoadAllPatchers()
+    {
+        var files = Directory.GetFiles(PatcherPath, "*.dll");
+        foreach (var file in files)
+        {
+            LoadPatcher(file);
+        }
+    }
+
+    private void LoadPatcher(string path) { }
+
+    private void LoadAllMods()
     {
         if (!Directory.Exists(ModPath))
         {
             Directory.CreateDirectory(ModPath);
-        }
-
-        var mods = new List<SptMod>();
-
-        if (!ProgramStatics.MODS())
-        {
-            return mods;
         }
 
         // foreach directory in /user/mods/
@@ -35,7 +64,7 @@ public class ModDllLoader
         {
             try
             {
-                mods.Add(LoadMod(modDirectory));
+                _loadedMods.Add(LoadMod(modDirectory));
             }
             catch (Exception e)
             {
@@ -43,7 +72,7 @@ public class ModDllLoader
             }
         }
 
-        return mods.OrderBy(m => m.ModMetadata.ModGuid, StringComparer.OrdinalIgnoreCase).ToList();
+        _loadedMods = _loadedMods.OrderBy(m => m.ModMetadata.ModGuid, StringComparer.OrdinalIgnoreCase).ToList();
     }
 
     /// <summary>
@@ -73,6 +102,8 @@ public class ModDllLoader
             Assemblies = assemblyList,
             ModMetadata = LoadModMetadata(assemblyList, path),
         };
+
+        if (result.ModMetadata.HasPatcher) { }
 
         if (
             string.IsNullOrEmpty(result.ModMetadata.ModGuid)
@@ -131,5 +162,25 @@ public class ModDllLoader
         }
 
         return result;
+    }
+
+    private bool TryLoadServerCoreBytes()
+    {
+        try
+        {
+            using var fs = new FileStream(
+                Path.Combine(Assembly.GetExecutingAssembly().Location, "SPTarkov.Server.Core.dll"),
+                FileMode.Open
+            );
+
+            _serverCoreModule = ModuleDefinition.ReadModule(fs);
+        }
+        catch (Exception e)
+        {
+            logger.Critical("Critical error occured while loading the server core dll for the pre-patcher: ", e);
+            return false;
+        }
+
+        return true;
     }
 }

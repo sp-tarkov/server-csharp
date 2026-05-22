@@ -62,6 +62,11 @@ public abstract record AbstractModMetadata
     public abstract Range SptVersion { get; init; }
 
     /// <summary>
+    ///     Indicates whether this mod includes a pre-patcher.
+    /// </summary>
+    public abstract bool HasPatcher { get; init; }
+
+    /// <summary>
     /// List of mods not compatible with this mod
     /// </summary>
     public abstract List<string>? Incompatibilities { get; init; }

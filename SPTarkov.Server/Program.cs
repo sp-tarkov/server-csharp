@@ -26,6 +26,7 @@ namespace SPTarkov.Server;
 public static class Program
 {
     internal static ILogger? _earlyLogger;
+    private static ModLoaderController? _modLoaderController;
 
     public static async Task Main(string[] args)
     {
@@ -93,7 +94,7 @@ public static class Program
         }
         finally
         {
-            loggerFactory?.Provider.Dispose();
+            loggerFactory.Provider.Dispose();
         }
     }
 
@@ -102,6 +103,13 @@ public static class Program
         Console.OutputEncoding = Encoding.UTF8;
 
         var configuration = await ConfigLoader.Initialize(_earlyLogger!);
+
+        // Init mod loader
+        ModLoaderController? modLoaderController = null;
+        if (ProgramStatics.MODS())
+        {
+            modLoaderController = InitModLoader(loggerFactory, configuration);
+        }
 
         // Create web builder and logger
         var builder = CreateNewHostBuilder(loggerFactory, configuration);
@@ -115,24 +123,33 @@ public static class Program
         });
 #endif
         var diHandler = new DependencyInjectionHandler(builder.Services);
+
         // register SPT components
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(Program));
-        diHandler.AddInjectableTypesFromTypeAssembly(typeof(SPTStartupHostedService));
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(PatchManager));
 
+        // TODO: Clean this up? Move to method?
+
+        // SPTStartupHostedService can potentially exist in two places and which one we load is based on if mods are enabled.
+        // If mods are enabled, we will run the entire mod loader process, apply prepatches, load/validate mods, and save the patched asm to disk.
+        // If mods are enabled, we will load the patched `Assembly` from disk as bytes and feed that into the DI handler
+        // If mods are NOT enabled, we will just load the one in context.
         List<SptMod> loadedMods = [];
-        if (ProgramStatics.MODS())
+        if (ProgramStatics.MODS() && modLoaderController != null)
         {
-            // Search for mod dlls
-            loadedMods = ModDllLoader.LoadAllMods();
-            // validate and sort mods, this will also discard any mods that are invalid
-            var validatedLoadedMods = ValidateMods(loggerFactory, loadedMods, configuration);
+            modLoaderController.LoadMods();
+            loadedMods = modLoaderController.ValidRuntimeMods;
 
-            // update the loadedMods list with our validated mods
-            loadedMods = validatedLoadedMods;
+            diHandler.AddInjectableTypesFromAssemblies(loadedMods.SelectMany(a => a.Assemblies));
 
-            diHandler.AddInjectableTypesFromAssemblies(validatedLoadedMods.SelectMany(a => a.Assemblies));
+            // TODO: Read patched ASM from disk as bytes and feed it directly do DI as an assembly
+            //diHandler.AddInjectableTypesFromAssembly();
         }
+        else
+        {
+            diHandler.AddInjectableTypesFromTypeAssembly(typeof(SPTStartupHostedService));
+        }
+
         diHandler.InjectAll();
 
         builder.InitializeSptBlazor(loadedMods);
@@ -236,17 +253,11 @@ public static class Program
         return builder;
     }
 
-    private static List<SptMod> ValidateMods(
+    private static ModLoaderController InitModLoader(
         SptEarlyLoggerFactory loggerFactory,
-        IEnumerable<SptMod> mods,
         IReadOnlyDictionary<Type, BaseConfig> configuration
     )
     {
-        if (!ProgramStatics.MODS())
-        {
-            return [];
-        }
-
         // We need the SPT dependencies for the ModValidator, but mods are loaded before the web application
         // So we create a disposable web application that we will throw away after getting the mods to load
         var builder = CreateNewHostBuilder(loggerFactory, configuration);
@@ -255,14 +266,16 @@ public static class Program
         diHandler.AddInjectableTypesFromAssembly(typeof(Program).Assembly);
         diHandler.AddInjectableTypesFromAssembly(typeof(SPTStartupHostedService).Assembly);
         diHandler.InjectAll();
-        // register the mod validator components
+
+        // register the mod loader components
         var provider = builder
             .Services.AddScoped<ISemVer, SemanticVersioningSemVer>()
+            .AddSingleton<ModLoaderController>()
             .AddSingleton<ModValidator>()
             .AddSptLoggerWithoutProvider(loggerFactory.ServiceProvider)
             .BuildServiceProvider();
-        var modValidator = provider.GetRequiredService<ModValidator>();
-        return modValidator.ValidateMods(mods);
+
+        return provider.GetRequiredService<ModLoaderController>();
     }
 
     private static bool IsRunFromInstallationFolder()
