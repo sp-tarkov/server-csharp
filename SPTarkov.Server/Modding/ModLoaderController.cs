@@ -4,12 +4,14 @@ using Mono.Cecil;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Modding;
 
-public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModValidator modValidator)
+public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModValidator modValidator, JsonUtil jsonUtil, FileUtil fileUtil)
 {
     public const string PatchedAssemblyName = "./SPTarkov.Server.Core.Patched.dll";
+    public const string PrepatchStagePath = "./user/cache/prepatcher/server";
 
     public List<SptMod> ValidRuntimeMods
     {
@@ -26,6 +28,7 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
 
     private ModuleDefinition? _serverCoreModule;
     private MemoryStream? _serverCoreModuleStream;
+    private List<PrepatchResultEntry> _prepatchResults = [];
 
     private const string ModPath = "./user/mods/";
     private const string PatcherPath = "./user/patchers/";
@@ -70,7 +73,12 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
         _loadedMods = _loadedMods.OrderBy(m => m.ModMetadata.ModGuid, StringComparer.OrdinalIgnoreCase).ToList();
     }
 
-    public void ApplyPrepatches(IReadOnlyCollection<SptMod> validRuntimeMods)
+    /// <summary>
+    ///     Applies all prepatches to the server core
+    /// </summary>
+    /// <param name="validRuntimeMods">Validated runtime mods</param>
+    /// <returns>True if all patches succeeded</returns>
+    public async Task<bool> ApplyPrepatches(IReadOnlyCollection<SptMod> validRuntimeMods)
     {
         if (_serverCoreModule is null)
         {
@@ -86,7 +94,19 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
         foreach (var prepatch in activePrepatches)
         {
             logger.Info($"Applying prepatch: {prepatch.GetType().FullName}");
-            prepatch.Patch(_serverCoreModule);
+            var succeeded = false;
+            try
+            {
+                prepatch.Patch(_serverCoreModule);
+                succeeded = true;
+            }
+            catch (Exception e)
+            {
+                logger.Critical($"Critical error occured while applying a prepatch from mod: {prepatch.ModGuid}", e);
+            }
+
+            var result = new PrepatchResultEntry { ModGuid = prepatch.ModGuid, Succeeded = succeeded };
+            _prepatchResults.Add(result);
         }
 
         try
@@ -99,6 +119,26 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
             _serverCoreModule = null;
             _serverCoreModuleStream?.Dispose();
             _serverCoreModuleStream = null;
+        }
+
+        return _prepatchResults.All(r => r.Succeeded);
+    }
+
+    public async Task WriteResultLog()
+    {
+        var text = jsonUtil.Serialize(_prepatchResults);
+        await fileUtil.WriteFileAsync(Path.Combine(Path.GetFullPath(PrepatchStagePath), "prepatch-result.json"), text);
+    }
+
+    public async Task LogPrepatches()
+    {
+        var text = await fileUtil.ReadFileAsync(Path.Combine(Path.GetFullPath(PrepatchStagePath), "prepatch-result.json"));
+        var results = jsonUtil.Deserialize<List<PrepatchResultEntry>>(text);
+
+        logger.Info($"ModLoader: Applied {results?.Count ?? 0} prepatches");
+        foreach (var result in results ?? [])
+        {
+            logger.Info($"ModLoader: Applied prepatch from mod: {result.ModGuid}");
         }
     }
 

@@ -28,7 +28,6 @@ namespace SPTarkov.Server;
 public static class Program
 {
     private const string PrepatchedArg = "--prepatched";
-    private const string PrepatchStagePath = "./user/cache/prepatcher/server";
 
     internal static ILogger? _earlyLogger;
     private static ModLoaderController? _modLoaderController;
@@ -107,14 +106,6 @@ public static class Program
     {
         Console.OutputEncoding = Encoding.UTF8;
 
-        // Clean the console a bit
-        // TODO: Carry over pre-patcher data so it can be logged to console. Create a cache json that can be read in the copied cache dir
-        var isPrepatchedProcess = args.Contains(PrepatchedArg, StringComparer.OrdinalIgnoreCase);
-        if (isPrepatchedProcess)
-        {
-            ClearConsole();
-        }
-
         var configuration = await ConfigLoader.Initialize(_earlyLogger!);
 
         // Init mod loader
@@ -124,16 +115,23 @@ public static class Program
             modLoaderController = InitModLoader(loggerFactory, configuration);
         }
 
+        // Clean the console a bit
+        var isPrepatchedProcess = args.Contains(PrepatchedArg, StringComparer.OrdinalIgnoreCase);
+        if (ProgramStatics.MODS() && isPrepatchedProcess && modLoaderController != null)
+        {
+            ClearConsole();
+            await modLoaderController.LogPrepatches();
+        }
+
         List<SptMod> loadedMods = [];
         if (ProgramStatics.MODS() && modLoaderController != null)
         {
             await modLoaderController.LoadMods();
             loadedMods = modLoaderController.ValidRuntimeMods;
 
-            if (!isPrepatchedProcess && modLoaderController.HasPatchers)
+            if (!isPrepatchedProcess && modLoaderController.HasPatchers && await modLoaderController.ApplyPrepatches(loadedMods))
             {
-                modLoaderController.ApplyPrepatches(loadedMods);
-                await StartPrepatchedServerProcess(args);
+                await StartPrepatchedServerProcess(args, modLoaderController);
                 return;
             }
         }
@@ -271,12 +269,13 @@ public static class Program
     /// <summary>
     ///     Starts the patched server as a new process. This one is destroyed in release and held open in debug so IDE's don't die.
     /// </summary>
-    private static async Task StartPrepatchedServerProcess(string[] args)
+    private static async Task StartPrepatchedServerProcess(string[] args, ModLoaderController modLoaderController)
     {
         var sourceDirectory = AppContext.BaseDirectory;
-        var stageDirectory = Path.GetFullPath(PrepatchStagePath);
+        var stageDirectory = Path.GetFullPath(ModLoaderController.PrepatchStagePath);
 
         CopyApplicationToCache(sourceDirectory, stageDirectory);
+        await modLoaderController.WriteResultLog();
 
         File.Copy(
             Path.GetFullPath(ModLoaderController.PatchedAssemblyName),
