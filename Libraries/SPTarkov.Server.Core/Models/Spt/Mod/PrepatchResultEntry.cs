@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Spt.Mod;
 
-public record PrepatchResultEntry
+public sealed record PrepatchResultEntry
 {
     [JsonPropertyName("modGuid")]
     public required string ModGuid { get; init; }

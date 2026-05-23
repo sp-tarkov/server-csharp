@@ -1,6 +1,6 @@
 namespace SPTarkov.Server.Modding;
 
-public class ModLoaderException : Exception
+public sealed class ModLoaderException : Exception
 {
     public ModLoaderException(string message)
         : base(message) { }

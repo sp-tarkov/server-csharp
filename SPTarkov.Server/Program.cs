@@ -110,33 +110,31 @@ public static class Program
 
         // Init mod loader
         ModLoaderController? modLoaderController = null;
-        if (ProgramStatics.MODS())
-        {
-            modLoaderController = InitModLoader(loggerFactory, configuration);
-        }
-
-        // Clean the console a bit
-        var isPrepatchedProcess = args.Contains(PrepatchedArg, StringComparer.OrdinalIgnoreCase);
-        if (ProgramStatics.MODS() && isPrepatchedProcess && modLoaderController != null)
-        {
-            ClearConsole();
-            await modLoaderController.LogPrepatches();
-        }
-
         List<SptMod> loadedMods = [];
-        if (ProgramStatics.MODS() && modLoaderController != null)
+        if (InitModLoader(loggerFactory, configuration, out modLoaderController))
         {
-            await modLoaderController.LoadMods();
-            loadedMods = modLoaderController.ValidRuntimeMods;
-
-            if (!isPrepatchedProcess && modLoaderController.HasPatchers)
+            // Clean the console a bit
+            var isPrepatchedProcess = args.Contains(PrepatchedArg, StringComparer.OrdinalIgnoreCase);
+            if (ProgramStatics.MODS() && isPrepatchedProcess && modLoaderController != null)
             {
-                if (await modLoaderController.ApplyPrepatches(loadedMods))
-                {
-                    await StartPrepatchedServerProcess(args, modLoaderController);
-                }
+                ClearConsole();
+                await modLoaderController.LogPrepatches();
+            }
 
-                return;
+            if (ProgramStatics.MODS() && modLoaderController != null)
+            {
+                await modLoaderController.LoadMods();
+                loadedMods = modLoaderController.ValidRuntimeMods;
+
+                if (!isPrepatchedProcess && modLoaderController.HasPatchers)
+                {
+                    if (await modLoaderController.ApplyPrepatches(loadedMods))
+                    {
+                        await StartPrepatchedServerProcess(args, modLoaderController);
+                    }
+
+                    return;
+                }
             }
         }
 
@@ -405,11 +403,22 @@ public static class Program
         }
     }
 
-    private static ModLoaderController InitModLoader(
+    /// <summary>
+    ///     Initializes the mod loader container
+    /// </summary>
+    /// <returns>True if mods are enabled</returns>
+    private static bool InitModLoader(
         SptEarlyLoggerFactory loggerFactory,
-        IReadOnlyDictionary<Type, BaseConfig> configuration
+        IReadOnlyDictionary<Type, BaseConfig> configuration,
+        out ModLoaderController? modLoaderController
     )
     {
+        if (!ProgramStatics.MODS())
+        {
+            modLoaderController = null;
+            return false;
+        }
+
         // We need the SPT dependencies for the ModValidator, but mods are loaded before the web application
         // So we create a disposable web application that we will throw away after getting the mods to load
         var builder = CreateNewHostBuilder(loggerFactory, configuration);
@@ -427,7 +436,11 @@ public static class Program
             .AddSptLoggerWithoutProvider(loggerFactory.ServiceProvider)
             .BuildServiceProvider();
 
-        return provider.GetRequiredService<ModLoaderController>();
+        modLoaderController =
+            provider.GetService<ModLoaderController>()
+            ?? throw new NullReferenceException("Could not retrieve `ModLoaderController` during initialization.");
+
+        return ProgramStatics.MODS();
     }
 
     private static bool IsRunFromInstallationFolder()
