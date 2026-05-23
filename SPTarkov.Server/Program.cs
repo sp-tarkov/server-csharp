@@ -115,26 +115,23 @@ public static class Program
         {
             // Clean the console a bit
             var isPrepatchedProcess = args.Contains(PrepatchedArg, StringComparer.OrdinalIgnoreCase);
-            if (ProgramStatics.MODS() && isPrepatchedProcess && modLoaderController != null)
+            if (isPrepatchedProcess && modLoaderController != null)
             {
                 ClearConsole();
                 await modLoaderController.LogPrepatches();
             }
 
-            if (ProgramStatics.MODS() && modLoaderController != null)
+            await modLoaderController!.LoadMods();
+            loadedMods = modLoaderController.ValidRuntimeMods;
+
+            if (!isPrepatchedProcess && modLoaderController.HasPatchers)
             {
-                await modLoaderController.LoadMods();
-                loadedMods = modLoaderController.ValidRuntimeMods;
-
-                if (!isPrepatchedProcess && modLoaderController.HasPatchers)
+                if (await modLoaderController.ApplyPrepatches(loadedMods))
                 {
-                    if (await modLoaderController.ApplyPrepatches(loadedMods))
-                    {
-                        await StartPrepatchedServerProcess(args, modLoaderController);
-                    }
-
-                    return;
+                    await StartPrepatchedServerProcess(args, modLoaderController);
                 }
+
+                return;
             }
         }
 
