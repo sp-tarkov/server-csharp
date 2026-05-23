@@ -34,6 +34,9 @@ internal sealed class FileLogHandler : BaseLogHandler, IAsyncDisposable
         }
 
         logger.Log(logLevel, 0, message.Exception, "{Message}", FormatMessage(message.Message, message, reference));
+
+        //Todo: Cleanup max rolled files
+        //Todo: Do pattern replacers need reimplementation?
     }
 
     private ZLoggerRollingFileLoggerProvider GetOrCreateProvider(FileSptLoggerReference config)
@@ -73,7 +76,10 @@ internal sealed class FileLogHandler : BaseLogHandler, IAsyncDisposable
         var name = Path.GetFileNameWithoutExtension(fileName);
         var extension = Path.GetExtension(fileName);
 
-        fileName = $"{name}.{sequenceNumber}{extension}";
+        if (sequenceNumber > 0)
+        {
+            fileName = $"{name}.{sequenceNumber}{extension}";
+        }
 
         return Path.Combine(filePath, fileName);
     }
