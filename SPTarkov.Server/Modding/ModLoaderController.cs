@@ -182,7 +182,7 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
             );
         }
 
-        if (result.ModMetadata.HasPatcher)
+        if (result.ModMetadata.HasPrepatcher)
         {
             LoadModPatchers(result, Path.Combine(PatcherPath, result.ModMetadata.ModGuid));
         }

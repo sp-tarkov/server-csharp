@@ -17,7 +17,7 @@ public record TestMod2Metadata : AbstractModMetadata, IModWebMetadata
     public override List<string>? Contributors { get; init; }
     public override Version Version { get; init; } = new("1.0.0");
     public override Range SptVersion { get; init; } = new("~4.1.0");
-    public override bool HasPatcher { get; init; } = true;
+    public override bool HasPrepatcher { get; init; } = true;
     public override List<string>? Incompatibilities { get; init; }
     public override Dictionary<string, Range>? ModDependencies { get; init; }
     public override string? Url { get; init; }
