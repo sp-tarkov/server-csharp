@@ -20,6 +20,9 @@ public class PrestigeHelper(
     RewardHelper rewardHelper
 )
 {
+    /// <summary>
+    /// The key is prestige id, the value is Achievement id
+    /// </summary>
     public static Dictionary<MongoId, MongoId> PrestigeAchievements { get; } =
         new Dictionary<MongoId, MongoId>
         {
