@@ -15,8 +15,8 @@ public sealed class SPTLoggerDispatcher(SptLoggerConfiguration config, IEnumerab
     {
         var matchingLoggers = config.Loggers.Where(logger =>
         {
-            var excludeFilters = logger.Filters?.Where(filter => filter.Type == SptLoggerFilterType.Exclude);
-            var includeFilters = logger.Filters?.Where(filter => filter.Type == SptLoggerFilterType.Include);
+            var excludeFilters = logger.Filters.Where(filter => filter.Type == SptLoggerFilterType.Exclude);
+            var includeFilters = logger.Filters.Where(filter => filter.Type == SptLoggerFilterType.Include);
 
             if (excludeFilters?.Any(filter => filter.Match(message)) ?? false)
             {
