@@ -70,13 +70,10 @@ internal sealed class FileLogHandler : BaseLogHandler, IAsyncDisposable
 
         var fileName = filePattern.Replace("%DATE%", date, StringComparison.OrdinalIgnoreCase);
 
-        if (sequenceNumber > 0)
-        {
-            var name = Path.GetFileNameWithoutExtension(fileName);
-            var extension = Path.GetExtension(fileName);
+        var name = Path.GetFileNameWithoutExtension(fileName);
+        var extension = Path.GetExtension(fileName);
 
-            fileName = $"{name}_{sequenceNumber:000}{extension}";
-        }
+        fileName = $"{name}.{sequenceNumber}{extension}";
 
         return Path.Combine(filePath, fileName);
     }
