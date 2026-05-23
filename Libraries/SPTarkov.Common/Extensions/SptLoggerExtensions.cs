@@ -1,8 +1,6 @@
-using System.Reflection.Emit;
 using System.Text.Json;
 using SPTarkov.Common.Logger;
 using SPTarkov.Common.Models.Logging;
-using ZLogger.Providers;
 
 namespace SPTarkov.Common.Extensions;
 
@@ -45,20 +43,6 @@ public static class SptLoggerExtensions
         {
             serviceCollection.Add(new ServiceDescriptor(interfaceType, implementation, lifetime));
         }
-    }
-
-    public static IHostBuilder UseSptLogger(this IHostBuilder builder, bool isDevelop = false)
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-
-        builder.ConfigureServices(
-            (_, collection) =>
-            {
-                collection.AddSptLogger(isDevelop);
-            }
-        );
-
-        return builder;
     }
 
     public static IHostBuilder UseSptLoggerWithoutProvider(this IHostBuilder builder, IServiceProvider earlyLoggerServiceProvider)
