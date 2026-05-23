@@ -17,7 +17,7 @@
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HarmonyX" Version="2.16.0" />
+    <PackageReference Include="HarmonyX" Version="2.16.1" />
     <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
   </ItemGroup>
   <ItemGroup>

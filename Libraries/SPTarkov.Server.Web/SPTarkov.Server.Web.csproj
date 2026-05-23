@@ -21,7 +21,7 @@
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MudBlazor" Version="8.15.0" />
+    <PackageReference Include="MudBlazor" Version="9.4.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />

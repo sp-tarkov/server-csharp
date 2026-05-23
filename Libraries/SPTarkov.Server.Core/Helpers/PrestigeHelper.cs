@@ -20,6 +20,18 @@ public class PrestigeHelper(
     RewardHelper rewardHelper
 )
 {
+    /// <summary>
+    /// The key is prestige id, the value is Achievement id
+    /// </summary>
+    public static Dictionary<MongoId, MongoId> PrestigeAchievements { get; } =
+        new Dictionary<MongoId, MongoId>
+        {
+            { new MongoId("672df12f97f0469cea52f55e"), new MongoId("676091c0f457869a94017a23") },
+            { new MongoId("672df4281ab8d9c8849a0c88"), new MongoId("676094451fec2f7426093be6") },
+            { new MongoId("683da91d6f472cfa738c52f2"), new MongoId("6842c25bd02bc07d70054019") },
+            { new MongoId("6842f121000d98ce33b9a60f"), new MongoId("6842c27a38482d35ac0bd847") },
+        };
+
     public void ProcessPendingPrestige(SptProfile oldProfile, SptProfile newProfile, PendingPrestige prestige)
     {
         var prePrestigePmc = oldProfile.CharacterData?.PmcData;
@@ -27,11 +39,11 @@ public class PrestigeHelper(
         var prestigeLevels = databaseService.GetTemplates().Prestige?.Elements ?? [];
         var indexOfPrestigeObtained = Math.Clamp((prestige.PrestigeLevel ?? 1) - 1, 0, prestigeLevels.Count - 1); // Levels are 1 to 4, Index is 0 to 3
 
+        var prestigeLevel = prestigeLevels[indexOfPrestigeObtained];
+
         // Skill copy
-        var skillProgressCopyAmount = (float)(1 - prestigeLevels[indexOfPrestigeObtained].TransferConfigs.SkillConfig.TransferMultiplier);
-        var masteringProgressCopyAmount = (float)(
-            1 - prestigeLevels[indexOfPrestigeObtained].TransferConfigs.MasteringConfig.TransferMultiplier
-        );
+        var skillProgressCopyAmount = (float)(1 - prestigeLevel.TransferConfigs.SkillConfig.TransferMultiplier);
+        var masteringProgressCopyAmount = (float)(1 - prestigeLevel.TransferConfigs.MasteringConfig.TransferMultiplier);
 
         if (prePrestigePmc?.Skills?.Common is not null)
         {
@@ -72,15 +84,19 @@ public class PrestigeHelper(
             }
         }
 
-        // Add "Prestigious" achievement
-        var prestigiousAchievement = new MongoId("676091c0f457869a94017a23");
-        if (newProfile.CharacterData?.PmcData?.Achievements?.ContainsKey(prestigiousAchievement) is false)
+        if (PrestigeAchievements.TryGetValue(prestigeLevel.Id, out var currentAchievement))
         {
-            rewardHelper.AddAchievementToProfile(newProfile, prestigiousAchievement);
-        }
+            var achievements = newProfile.CharacterData?.PmcData?.Achievements;
 
-        // Assumes Prestige data is in descending order
-        var currentPrestigeData = databaseService.GetTemplates().Prestige?.Elements[indexOfPrestigeObtained];
+            if (achievements is not null && !achievements.ContainsKey(currentAchievement))
+            {
+                rewardHelper.AddAchievementToProfile(newProfile, currentAchievement);
+            }
+        }
+        else
+        {
+            logger.Error($"Unable to add prestige achievement to profile, no prestige achievement for {prestigeLevel.Id} was found.");
+        }
 
         // Get all prestige rewards from prestige 1 up to desired prestige
         var prestigeRewards = prestigeLevels
@@ -93,10 +109,10 @@ public class PrestigeHelper(
         CopyStats(newProfile, oldProfile);
 
         // Flag profile as having achieved this prestige level
-        if (newProfile.CharacterData?.PmcData?.Prestige?.TryAdd(currentPrestigeData!.Id, timeUtil.GetTimeStamp()) is false)
+        if (newProfile.CharacterData?.PmcData?.Prestige?.TryAdd(prestigeLevel.Id, timeUtil.GetTimeStamp()) is false)
         {
             logger.Error(
-                $"Failed to add prestige element with id: {currentPrestigeData.Id} to new profile during processing of pending prestige."
+                $"Failed to add prestige element with id: {prestigeLevel.Id} to new profile during processing of pending prestige."
             );
         }
 

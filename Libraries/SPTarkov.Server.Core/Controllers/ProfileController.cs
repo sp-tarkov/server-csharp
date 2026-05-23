@@ -353,14 +353,15 @@ public class ProfileController(
     public virtual bool SetChosenProfileIcon(MongoId sessionId, GetProfileSettingsRequest request)
     {
         var profileToUpdate = profileHelper.GetPmcProfile(sessionId);
-        if (profileToUpdate == null)
+
+        if (profileToUpdate == null || profileToUpdate.Info is null)
         {
             return false;
         }
 
         if (request.MemberCategory != null)
         {
-            profileToUpdate.Info.SelectedMemberCategory = request.MemberCategory as MemberCategory?;
+            profileToUpdate.Info.SelectedMemberCategory = (MemberCategory)request.MemberCategory;
         }
 
         if (request.SquadInviteRestriction != null)

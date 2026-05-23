@@ -16,8 +16,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SemanticVersioning" Version="3.0.0" />
-    <PackageReference Include="Spectre.Console" Version="0.54.0" />
-    <PackageReference Include="Spectre.Console.Cli" Version="0.53.0" />
+    <PackageReference Include="Spectre.Console" Version="0.55.2" />
+    <PackageReference Include="Spectre.Console.Cli" Version="0.55.0" />
     <PackageReference Include="ZLogger" Version="2.5.10" />
   </ItemGroup>
   <ItemGroup>
