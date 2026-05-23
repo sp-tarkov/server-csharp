@@ -44,11 +44,11 @@ public static class SptLogLevelExtensions
             {
                 LogLevel.Trace => null,
                 LogLevel.Debug => Color.Gray,
-                LogLevel.Information => Color.White,
+                LogLevel.Information => null,
                 LogLevel.Warning => Color.Yellow,
                 LogLevel.Error => Color.Red,
                 LogLevel.Critical => Color.Black,
-                LogLevel.None => Color.White,
+                LogLevel.None => null,
                 _ => throw new ArgumentOutOfRangeException(nameof(microsoftLogLevel), microsoftLogLevel, null),
             };
         }
