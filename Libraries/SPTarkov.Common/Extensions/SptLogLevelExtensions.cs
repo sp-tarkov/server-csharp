@@ -1,58 +1,71 @@
-﻿namespace SPTarkov.Common.Extensions;
+﻿using Spectre.Console;
+
+namespace SPTarkov.Common.Extensions;
 
 public static class SptLogLevelExtensions
 {
-    public static Microsoft.Extensions.Logging.LogLevel ConvertToMicrosoftLogLevel(this Models.Logging.LogLevel sptLogLevel)
+    extension(Models.Logging.LogLevel sptLogLevel)
     {
-        switch (sptLogLevel)
+        public LogLevel ConvertToMicrosoftLogLevel()
         {
-            case Models.Logging.LogLevel.Trace:
-                return Microsoft.Extensions.Logging.LogLevel.Trace;
-
-            case Models.Logging.LogLevel.Debug:
-                return Microsoft.Extensions.Logging.LogLevel.Debug;
-
-            case Models.Logging.LogLevel.Info:
-                return Microsoft.Extensions.Logging.LogLevel.Information;
-
-            case Models.Logging.LogLevel.Warn:
-                return Microsoft.Extensions.Logging.LogLevel.Warning;
-
-            case Models.Logging.LogLevel.Error:
-                return Microsoft.Extensions.Logging.LogLevel.Error;
-
-            case Models.Logging.LogLevel.Fatal:
-                return Microsoft.Extensions.Logging.LogLevel.Critical;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(sptLogLevel), sptLogLevel, null);
+            return sptLogLevel switch
+            {
+                Models.Logging.LogLevel.Trace => LogLevel.Trace,
+                Models.Logging.LogLevel.Debug => LogLevel.Debug,
+                Models.Logging.LogLevel.Info => LogLevel.Information,
+                Models.Logging.LogLevel.Warn => LogLevel.Warning,
+                Models.Logging.LogLevel.Error => LogLevel.Error,
+                Models.Logging.LogLevel.Fatal => LogLevel.Critical,
+                _ => throw new ArgumentOutOfRangeException(nameof(sptLogLevel), sptLogLevel, null),
+            };
         }
     }
 
-    public static Models.Logging.LogLevel ConvertToSPTLogLevel(this Microsoft.Extensions.Logging.LogLevel microsoftLogLevel)
+    extension(LogLevel microsoftLogLevel)
     {
-        switch (microsoftLogLevel)
+        public Models.Logging.LogLevel ConvertToSPTLogLevel()
         {
-            case Microsoft.Extensions.Logging.LogLevel.Trace:
-                return Models.Logging.LogLevel.Trace;
+            return microsoftLogLevel switch
+            {
+                LogLevel.Trace => Models.Logging.LogLevel.Trace,
+                LogLevel.Debug => Models.Logging.LogLevel.Debug,
+                LogLevel.Information => Models.Logging.LogLevel.Info,
+                LogLevel.Warning => Models.Logging.LogLevel.Warn,
+                LogLevel.Error => Models.Logging.LogLevel.Error,
+                LogLevel.Critical => Models.Logging.LogLevel.Fatal,
+                LogLevel.None => Models.Logging.LogLevel.Info,
+                _ => throw new ArgumentOutOfRangeException(nameof(microsoftLogLevel), microsoftLogLevel, null),
+            };
+        }
 
-            case Microsoft.Extensions.Logging.LogLevel.Debug:
-                return Models.Logging.LogLevel.Debug;
+        public Color? GetTextColor()
+        {
+            return microsoftLogLevel switch
+            {
+                LogLevel.Trace => null,
+                LogLevel.Debug => Color.Gray,
+                LogLevel.Information => Color.White,
+                LogLevel.Warning => Color.Yellow,
+                LogLevel.Error => Color.Red,
+                LogLevel.Critical => Color.Black,
+                LogLevel.None => Color.White,
+                _ => throw new ArgumentOutOfRangeException(nameof(microsoftLogLevel), microsoftLogLevel, null),
+            };
+        }
 
-            case Microsoft.Extensions.Logging.LogLevel.Information:
-                return Models.Logging.LogLevel.Info;
-
-            case Microsoft.Extensions.Logging.LogLevel.Warning:
-                return Models.Logging.LogLevel.Warn;
-
-            case Microsoft.Extensions.Logging.LogLevel.Error:
-                return Models.Logging.LogLevel.Error;
-
-            case Microsoft.Extensions.Logging.LogLevel.Critical:
-                return Models.Logging.LogLevel.Fatal;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(microsoftLogLevel), microsoftLogLevel, null);
+        public Color? GetBackgroundColor()
+        {
+            return microsoftLogLevel switch
+            {
+                LogLevel.Trace => null,
+                LogLevel.Debug => null,
+                LogLevel.Information => null,
+                LogLevel.Warning => null,
+                LogLevel.Error => null,
+                LogLevel.Critical => Color.Red,
+                LogLevel.None => null,
+                _ => throw new ArgumentOutOfRangeException(nameof(microsoftLogLevel), microsoftLogLevel, null),
+            };
         }
     }
 }
