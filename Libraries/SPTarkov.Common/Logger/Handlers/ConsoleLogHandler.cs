@@ -33,4 +33,10 @@ internal sealed class ConsoleLogHandler : BaseLogHandler
 
         return $"[{style.ToMarkup()}]{escapedMarkup}[/]";
     }
+
+    public override ValueTask DisposeAsync()
+    {
+        GC.SuppressFinalize(this);
+        return ValueTask.CompletedTask;
+    }
 }

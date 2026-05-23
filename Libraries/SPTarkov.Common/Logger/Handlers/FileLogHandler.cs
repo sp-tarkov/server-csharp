@@ -1,17 +1,15 @@
 using System.Globalization;
-using Microsoft.Extensions.Logging;
 using SPTarkov.Common.Extensions;
-using SPTarkov.Common.Logger.Handlers.File;
 using SPTarkov.Common.Models.Logging;
-using ZLogger;
 using ZLogger.Providers;
 
 namespace SPTarkov.Common.Logger.Handlers;
 
-internal sealed class FileLogHandler : BaseLogHandler, IAsyncDisposable
+internal sealed class FileLogHandler : BaseLogHandler
 {
     private readonly Lock _providersLock = new();
-    private readonly Dictionary<string, ZLoggerRollingFileLoggerProvider> _providers = new();
+    private readonly Dictionary<string, ZLoggerRollingFileLoggerProvider> _providers = [];
+    private readonly LogFileRollMonitor _logFileRollManager = new();
 
     public override LoggerType LoggerType { get; } = LoggerType.File;
 
@@ -35,8 +33,7 @@ internal sealed class FileLogHandler : BaseLogHandler, IAsyncDisposable
 
         logger.Log(logLevel, 0, message.Exception, "{Message}", FormatMessage(message.Message, message, reference));
 
-        //Todo: Cleanup max rolled files
-        //Todo: Do pattern replacers need reimplementation?
+        // Todo: Do pattern replacers need reimplementation?
     }
 
     private ZLoggerRollingFileLoggerProvider GetOrCreateProvider(FileSptLoggerReference config)
@@ -61,7 +58,9 @@ internal sealed class FileLogHandler : BaseLogHandler, IAsyncDisposable
             options.UsePlainTextFormatter();
 
             var provider = new ZLoggerRollingFileLoggerProvider(options);
+
             _providers.Add(key, provider);
+            _logFileRollManager.RegisterTarget(key, config);
 
             return provider;
         }
@@ -84,8 +83,10 @@ internal sealed class FileLogHandler : BaseLogHandler, IAsyncDisposable
         return Path.Combine(filePath, fileName);
     }
 
-    public async ValueTask DisposeAsync()
+    public override async ValueTask DisposeAsync()
     {
+        await _logFileRollManager.DisposeAsync().ConfigureAwait(false);
+
         foreach (var provider in _providers.Values)
         {
             await provider.DisposeAsync().ConfigureAwait(false);

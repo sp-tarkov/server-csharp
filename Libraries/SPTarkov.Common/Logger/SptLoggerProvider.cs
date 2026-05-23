@@ -1,5 +1,6 @@
 using SPTarkov.Common.Extensions;
-using SPTarkov.Common.Logger;
+
+namespace SPTarkov.Common.Logger;
 
 public sealed class SptLoggerProvider(SPTLoggerDispatcher dispatcher) : ILoggerProvider, ILoggerFactory
 {
@@ -26,6 +27,7 @@ public sealed class SptLoggerProvider(SPTLoggerDispatcher dispatcher) : ILoggerP
 
     public void Dispose()
     {
+        dispatcher.DisposeAsync();
         GC.SuppressFinalize(this);
     }
 }

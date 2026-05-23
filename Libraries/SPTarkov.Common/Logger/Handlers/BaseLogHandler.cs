@@ -45,4 +45,6 @@ public abstract class BaseLogHandler : ILogHandler
         var lastDotIndex = logger.AsSpan().LastIndexOf('.');
         return lastDotIndex >= 0 ? logger.Substring(lastDotIndex + 1) : logger;
     }
+
+    public abstract ValueTask DisposeAsync();
 }

@@ -1,9 +1,8 @@
-using System.Collections.Concurrent;
 using SPTarkov.Common.Models.Logging;
 
 namespace SPTarkov.Common.Logger;
 
-public sealed class SPTLoggerDispatcher(SptLoggerConfiguration config, IEnumerable<ILogHandler> logHandlers)
+public sealed class SPTLoggerDispatcher(SptLoggerConfiguration config, IEnumerable<ILogHandler> logHandlers) : IAsyncDisposable
 {
     private readonly Dictionary<LoggerType, ILogHandler> _logHandlers = logHandlers.ToDictionary(lh => lh.LoggerType, lh => lh);
 
@@ -45,6 +44,14 @@ public sealed class SPTLoggerDispatcher(SptLoggerConfiguration config, IEnumerab
             }
 
             handler.Log(message, logger);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        foreach (var handler in logHandlers)
+        {
+            await handler.DisposeAsync();
         }
     }
 }

@@ -10,9 +10,6 @@ public class SptLoggerConfiguration
 {
     [JsonPropertyName("loggers")]
     public List<BaseSptLoggerReference> Loggers { get; set; } = [];
-
-    [JsonPropertyName("poolingTimeMs")]
-    public uint PoolingTimeMs { get; set; } = 500;
 }
 
 [JsonConverter(typeof(BaseSptLoggerReferenceConverter))]
@@ -109,19 +106,18 @@ public class FileSptLoggerReference : BaseSptLoggerReference
     [JsonPropertyName("filePattern")]
     public required string FilePattern { get; set; }
 
-    private readonly int _maxFileSizeMb;
-
     [JsonPropertyName("maxFileSizeMB")]
     public int MaxFileSizeMb
     {
-        get { return _maxFileSizeMb; }
+        get;
         init
         {
             if (value < 0)
             {
                 throw new Exception("Invalid value for MaxFileSizeMb, must be >= 0");
             }
-            _maxFileSizeMb = value;
+
+            field = value;
         }
     }
 
@@ -130,14 +126,15 @@ public class FileSptLoggerReference : BaseSptLoggerReference
     [JsonPropertyName("maxRollingFiles")]
     public int MaxRollingFiles
     {
-        get { return _maxRollingFiles; }
+        get;
         init
         {
             if (value < 0)
             {
                 throw new Exception("Invalid value for MaxRollingFiles, must be >= 0");
             }
-            _maxRollingFiles = value;
+
+            field = value;
         }
     }
 }
