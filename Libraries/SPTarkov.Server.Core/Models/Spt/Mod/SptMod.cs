@@ -13,4 +13,7 @@ public class SptMod
 
     [JsonPropertyName("assemblies")]
     public required IEnumerable<Assembly> Assemblies { get; init; }
+
+    [JsonPropertyName("patcherAssembly")]
+    public Assembly? PatcherAssembly { get; set; }
 }

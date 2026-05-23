@@ -17,7 +17,10 @@
   <Folder Name="/Testing/">
     <Project Path="Testing/Benchmarks/Benchmarks.csproj" />
     <Project Path="Testing/TestMod/TestMod.csproj" />
-    <Project Path="Testing/TestMod2/TestMod2.csproj" />
+    <Project Path="Testing/TestMod2/TestMod2.csproj">
+      <BuildDependency Project="Testing/TestPrepatch/TestPrepatch.csproj" />
+    </Project>
+    <Project Path="Testing/TestPrepatch/TestPrepatch.csproj" />
     <Project Path="Testing/UnitTests/UnitTests.csproj" />
   </Folder>
   <Folder Name="/Tools/">
