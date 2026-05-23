@@ -32,8 +32,6 @@ internal sealed class FileLogHandler : BaseLogHandler
         }
 
         logger.Log(logLevel, 0, message.Exception, "{Message}", FormatMessage(message.Message, message, reference));
-
-        // Todo: Do pattern replacers need reimplementation?
     }
 
     private ZLoggerRollingFileLoggerProvider GetOrCreateProvider(FileSptLoggerReference config)
@@ -68,7 +66,7 @@ internal sealed class FileLogHandler : BaseLogHandler
 
     private static string BuildFilePath(string filePath, string filePattern, DateTimeOffset timestamp, int sequenceNumber)
     {
-        var date = timestamp.LocalDateTime.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
+        var date = timestamp.UtcDateTime.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
 
         var fileName = filePattern.Replace("%DATE%", date, StringComparison.OrdinalIgnoreCase);
 

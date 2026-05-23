@@ -93,7 +93,7 @@ internal sealed class LogFileRollMonitor : IAsyncDisposable
             return;
         }
 
-        var date = timestamp.LocalDateTime.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
+        var date = timestamp.UtcDateTime.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
         var currentFileName = config.FilePattern.Replace("%DATE%", date, StringComparison.OrdinalIgnoreCase);
 
         var name = Path.GetFileNameWithoutExtension(currentFileName);
