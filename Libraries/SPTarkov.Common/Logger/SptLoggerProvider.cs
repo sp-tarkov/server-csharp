@@ -27,7 +27,7 @@ public sealed class SptLoggerProvider(SPTLoggerDispatcher dispatcher) : ILoggerP
 
     public void Dispose()
     {
-        dispatcher.DisposeAsync();
+        dispatcher.DisposeAsync().AsTask().GetAwaiter().GetResult();
         GC.SuppressFinalize(this);
     }
 }
