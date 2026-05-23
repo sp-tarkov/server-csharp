@@ -1,17 +1,11 @@
 using SPTarkov.Common.Extensions;
-using SPTarkov.Common.Logger.Util;
+using SPTarkov.Common.Logger;
 
-namespace SPTarkov.Common.Logger;
-
-public sealed class SptLoggerProvider(SptLoggerQueueManager sptLoggerQueueManager, SptLogger<SPTLoggerWrapper> logger)
-    : ILoggerProvider,
-        ILoggerFactory
+public sealed class SptLoggerProvider(SPTLoggerDispatcher dispatcher) : ILoggerProvider, ILoggerFactory
 {
-    private readonly List<ILoggerProvider> _loggerProviders = [];
-
     public void AddProvider(ILoggerProvider provider)
     {
-        _loggerProviders?.Add(provider);
+        throw new NotSupportedException("Adding external providers to SptLoggerProvider is not supported.");
     }
 
     public static SptEarlyLoggerFactory Create(bool isDevelop)
@@ -27,21 +21,11 @@ public sealed class SptLoggerProvider(SptLoggerQueueManager sptLoggerQueueManage
 
     public ILogger CreateLogger(string categoryName)
     {
-        if (!sptLoggerQueueManager.Initialized)
-        {
-            sptLoggerQueueManager.Initialize();
-        }
-
-        return new SPTLoggerWrapper(categoryName, logger);
+        return new SPTLoggerWrapper(categoryName, dispatcher);
     }
 
     public void Dispose()
     {
-        // We can stop the file roller a bit early.
-        LogFileRollMonitor.UnregisterHandler();
-
-        sptLoggerQueueManager.DumpAndStop(TimeSpan.FromSeconds(1));
-
         GC.SuppressFinalize(this);
     }
 }

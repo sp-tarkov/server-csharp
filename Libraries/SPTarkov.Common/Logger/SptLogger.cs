@@ -4,7 +4,7 @@ using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Common.Logger;
 
-public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SptLoggerQueueManager loggerQueueManager) : ISptLogger<T>
+public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SPTLoggerDispatcher loggerDispatcher) : ISptLogger<T>
 {
     private string _category = typeof(T).FullName;
 
@@ -15,7 +15,7 @@ public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SptLogger
 
     public void LogWithColor(string data, Color? textColor = null, Color? backgroundColor = null, Exception? ex = null)
     {
-        loggerQueueManager.EnqueueMessage(
+        loggerDispatcher.Log(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -32,7 +32,7 @@ public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SptLogger
 
     public void Success(string data, Exception? ex = null)
     {
-        loggerQueueManager.EnqueueMessage(
+        loggerDispatcher.Log(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -48,7 +48,7 @@ public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SptLogger
 
     public void Error(string data, Exception? ex = null)
     {
-        loggerQueueManager.EnqueueMessage(
+        loggerDispatcher.Log(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -64,7 +64,7 @@ public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SptLogger
 
     public void Warning(string data, Exception? ex = null)
     {
-        loggerQueueManager.EnqueueMessage(
+        loggerDispatcher.Log(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -80,7 +80,7 @@ public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SptLogger
 
     public void Info(string data, Exception? ex = null)
     {
-        loggerQueueManager.EnqueueMessage(
+        loggerDispatcher.Log(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -95,7 +95,7 @@ public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SptLogger
 
     public void Debug(string data, Exception? ex = null)
     {
-        loggerQueueManager.EnqueueMessage(
+        loggerDispatcher.Log(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -111,7 +111,7 @@ public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SptLogger
 
     public void Critical(string data, Exception? ex = null)
     {
-        loggerQueueManager.EnqueueMessage(
+        loggerDispatcher.Log(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
@@ -128,7 +128,7 @@ public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SptLogger
 
     public void Log(LogLevel level, string data, Color? textColor = null, Color? backgroundColor = null, Exception? ex = null)
     {
-        loggerQueueManager.EnqueueMessage(
+        loggerDispatcher.Log(
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,

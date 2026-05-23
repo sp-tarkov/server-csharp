@@ -220,12 +220,16 @@ public static class Program
     }
 
     private static WebApplicationBuilder CreateNewHostBuilder(
-        SptEarlyLoggerFactory loggerFactory,
+        SptEarlyLoggerFactory earlyFactory,
         IReadOnlyDictionary<Type, BaseConfig> configuration
     )
     {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { WebRootPath = "./SPT_Data/wwwroot" });
-        builder.Logging.ClearProviders().AddProvider(loggerFactory.Provider);
+        builder.Host.ConfigureLogging(logging =>
+        {
+            logging.ClearProviders();
+            logging.AddProvider(earlyFactory.Provider);
+        });
         builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
 
         foreach (var configEntry in configuration)

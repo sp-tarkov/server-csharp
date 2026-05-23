@@ -16,8 +16,8 @@ public abstract class BaseLogHandler : ILogHandler
         var formattedMessage = string.Format(
             null,
             format,
-            message.LogTime.ToString("yyyy-MM-dd"),
-            message.LogTime.ToString("HH:mm:ss.fff"),
+            Markup.Escape(message.LogTime.ToString("yyyy-MM-dd")),
+            Markup.Escape(message.LogTime.ToString("HH:mm:ss.fff")),
             processedMessage,
             Markup.Escape(GetLoggerShortName(message.Logger)),
             Markup.Escape(message.Logger),
@@ -33,7 +33,7 @@ public abstract class BaseLogHandler : ILogHandler
                 "\n",
                 Markup.Escape(message.Exception.Message),
                 "\n",
-                Markup.Escape(message.Exception.StackTrace ?? string.Empty)
+                Markup.Escape(message.Exception.StackTrace)
             );
         }
 
