@@ -129,9 +129,13 @@ public static class Program
             await modLoaderController.LoadMods();
             loadedMods = modLoaderController.ValidRuntimeMods;
 
-            if (!isPrepatchedProcess && modLoaderController.HasPatchers && await modLoaderController.ApplyPrepatches(loadedMods))
+            if (!isPrepatchedProcess && modLoaderController.HasPatchers)
             {
-                await StartPrepatchedServerProcess(args, modLoaderController);
+                if (await modLoaderController.ApplyPrepatches(loadedMods))
+                {
+                    await StartPrepatchedServerProcess(args, modLoaderController);
+                }
+
                 return;
             }
         }
