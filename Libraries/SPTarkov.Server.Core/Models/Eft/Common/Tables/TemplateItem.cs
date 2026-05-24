@@ -454,7 +454,7 @@ public record TemplateItemProperties
     public double? ScopesCount { get; set; }
 
     [JsonPropertyName("AimSensitivity")]
-    public object? AimSensitivity { get; set; } // TODO: object here
+    public FloatOrIrregularFloatArray? AimSensitivity { get; set; }
 
     [JsonPropertyName("Zooms")]
     public IEnumerable<List<double>>? Zooms { get; set; }

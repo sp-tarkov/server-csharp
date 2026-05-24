@@ -3,6 +3,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Web;
 using Range = SemanticVersioning.Range;
 using Version = SemanticVersioning.Version;
@@ -27,11 +28,20 @@ public record TestModMetadata : AbstractModMetadata, IModWebMetadata
 }
 
 [Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
-public class TestMod(ISptLogger<TestMod> logger, IEnumerable<IRuntimePatch> patches) : IOnLoad
+public class TestMod(ISptLogger<TestMod> logger, IEnumerable<IRuntimePatch> patches, DatabaseService databaseService) : IOnLoad
 {
     public async Task OnLoad(CancellationToken stoppingToken)
     {
         logger.Info("Test mod loading!");
+
+        foreach (var (_, item) in databaseService.GetItems())
+        {
+            if (item.Properties?.AimSensitivity?.IsFloat ?? false)
+            {
+                logger.Info($"AimSensitivity: {item.Properties.AimSensitivity.Float}");
+            }
+        }
+
         await Task.CompletedTask;
     }
 }

@@ -42,6 +42,7 @@ public static class ConfigLoader
             new EftListEnumConverterFactory(),
             new EnumerableConverterFactory(),
             new StringOrIntConverterFactory(),
+            new FloatOrIrregularFloatArrayFactory(),
         };
 
         foreach (var converter in converters)

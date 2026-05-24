@@ -38,6 +38,7 @@ internal static class SPTConfigLoader
             new EftListEnumConverterFactory(),
             new EnumerableConverterFactory(),
             new StringOrIntConverterFactory(),
+            new FloatOrIrregularFloatArrayFactory(),
         };
 
         foreach (var converter in converters)

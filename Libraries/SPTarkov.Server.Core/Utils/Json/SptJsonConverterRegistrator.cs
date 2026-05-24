@@ -19,6 +19,7 @@ public class SptJsonConverterRegistrator : IJsonConverterRegistrator
             new EftListEnumConverterFactory(),
             new EnumerableConverterFactory(),
             new StringOrIntConverterFactory(),
+            new FloatOrIrregularFloatArrayFactory(),
         ];
     }
 }
