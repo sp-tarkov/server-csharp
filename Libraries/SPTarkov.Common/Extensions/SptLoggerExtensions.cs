@@ -1,7 +1,5 @@
 using System.Text.Json;
 using SPTarkov.Common.Logger;
-using SPTarkov.Common.Logger.Handlers.File;
-using SPTarkov.Common.Logger.Util;
 using SPTarkov.Common.Models.Logging;
 
 namespace SPTarkov.Common.Extensions;
@@ -47,20 +45,6 @@ public static class SptLoggerExtensions
         }
     }
 
-    public static IHostBuilder UseSptLogger(this IHostBuilder builder, bool isDevelop = false)
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-
-        builder.ConfigureServices(
-            (_, collection) =>
-            {
-                collection.AddSptLogger(isDevelop);
-            }
-        );
-
-        return builder;
-    }
-
     public static IHostBuilder UseSptLoggerWithoutProvider(this IHostBuilder builder, IServiceProvider earlyLoggerServiceProvider)
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -79,8 +63,6 @@ public static class SptLoggerExtensions
     {
         ArgumentNullException.ThrowIfNull(collection);
 
-        LogFileRollMonitor.RegisterHandler();
-
         if (isDevelop)
         {
             collection.AddSingleton(LoadConfig(ConfigurationPathDev));
@@ -90,14 +72,15 @@ public static class SptLoggerExtensions
             collection.AddSingleton(LoadConfig(ConfigurationPath));
         }
 
+        collection.RegisterImplementations<ILogHandler>(ServiceLifetime.Singleton);
+
+        collection.AddSingleton<SPTLoggerDispatcher>();
         collection.AddSingleton<SptLoggerProvider>();
+        collection.AddSingleton<ILoggerProvider>(sp => sp.GetRequiredService<SptLoggerProvider>());
         collection.AddSingleton<ILoggerFactory>(sp => sp.GetRequiredService<SptLoggerProvider>());
-        collection.AddSingleton<SptLoggerQueueManager>();
+
         collection.AddTransient(typeof(SptLogger<>));
         collection.AddTransient(typeof(ISptLogger<>), typeof(SptLogger<>));
-
-        collection.RegisterImplementations<ILogHandler>(ServiceLifetime.Singleton);
-        collection.RegisterImplementations<IFilePatternReplacer>(ServiceLifetime.Transient);
 
         return collection;
     }
@@ -108,7 +91,7 @@ public static class SptLoggerExtensions
     )
     {
         collection.AddSingleton(earlyLoggerServiceProvider.GetRequiredService<SptLoggerConfiguration>());
-        collection.AddSingleton(earlyLoggerServiceProvider.GetRequiredService<SptLoggerQueueManager>());
+        collection.AddSingleton(earlyLoggerServiceProvider.GetRequiredService<SPTLoggerDispatcher>());
         collection.AddTransient(typeof(SptLogger<>));
         collection.AddTransient(typeof(ISptLogger<>), typeof(SptLogger<>));
         return collection;

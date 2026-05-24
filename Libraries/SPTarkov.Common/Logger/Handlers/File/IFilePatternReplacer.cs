@@ -1,9 +1,0 @@
-﻿using SPTarkov.Common.Models.Logging;
-
-namespace SPTarkov.Common.Logger.Handlers.File;
-
-public interface IFilePatternReplacer
-{
-    string Pattern { get; }
-    string ReplacePattern(FileSptLoggerReference config, string filePattern);
-}
