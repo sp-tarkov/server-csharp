@@ -1,10 +1,11 @@
 using System.Reflection;
 using Mono.Cecil;
 using SPTarkov.Reflection.Patching;
+using SPTarkov.Server.Core.Models.Enums;
 
 namespace TestPrepatch;
 
-public sealed class TestPrepatch : AbstractPrepatch
+public sealed class TestPrepatch(ModuleDefinition serverCoreModule) : AbstractPrepatch(serverCoreModule)
 {
     private const string MetadataKey = "TestPrepatch";
     private const string MetadataValue = "Applied";
@@ -19,8 +20,10 @@ public sealed class TestPrepatch : AbstractPrepatch
         get { return true; }
     }
 
-    public override void Patch(ModuleDefinition serverCoreModule)
+    public override void Patch()
     {
+        AddNewEnumConstant<SkillTypes>("TestSkillEntry", 100);
+
         if (serverCoreModule.Assembly.CustomAttributes.Any(IsTestPrepatchMarker))
         {
             return;
