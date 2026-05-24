@@ -1,4 +1,3 @@
-using System.Collections.Frozen;
 using System.Text.RegularExpressions;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
@@ -29,7 +28,7 @@ public class GiveSptCommand(
     private static readonly Regex _commandRegex = new(@"^spt give (((([a-z]{2,5}) )?""(.+)""|\w+) )?([0-9]+)$");
 
     // Exception for flares
-    protected static readonly FrozenSet<MongoId> _excludedPresetItems =
+    protected static readonly HashSet<MongoId> _excludedPresetItems =
     [
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_RED,
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_GREEN,

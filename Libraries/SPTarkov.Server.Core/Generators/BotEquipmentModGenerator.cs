@@ -1,4 +1,3 @@
-using System.Collections.Frozen;
 using System.Globalization;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
@@ -38,10 +37,10 @@ public class BotEquipmentModGenerator(
     ICloner cloner
 )
 {
-    protected static readonly FrozenSet<string> _modSightIds = ["mod_sight_front", "mod_sight_rear"];
+    protected static readonly HashSet<string> _modSightIds = ["mod_sight_front", "mod_sight_rear"];
 
     // Slots that hold scopes
-    protected static readonly FrozenSet<string> _scopeIds =
+    protected static readonly HashSet<string> _scopeIds =
     [
         "mod_scope",
         "mod_mount",
@@ -53,13 +52,13 @@ public class BotEquipmentModGenerator(
     ];
 
     // Slots that hold muzzles
-    protected static readonly FrozenSet<string> _muzzleIds = ["mod_muzzle", "mod_muzzle_000", "mod_muzzle_001"];
+    protected static readonly HashSet<string> _muzzleIds = ["mod_muzzle", "mod_muzzle_000", "mod_muzzle_001"];
 
     // Slots a weapon can store its stock in
-    protected static readonly FrozenSet<string> _stockSlots = ["mod_stock", "mod_stock_000", "mod_stock_001", "mod_stock_akms"];
+    protected static readonly HashSet<string> _stockSlots = ["mod_stock", "mod_stock_000", "mod_stock_001", "mod_stock_akms"];
 
     // Slots that hold cartridges
-    protected static readonly FrozenSet<string> _cartridgeHolderSlots =
+    protected static readonly HashSet<string> _cartridgeHolderSlots =
     [
         "mod_magazine",
         "patron_in_weapon",
@@ -1519,7 +1518,7 @@ public class BotEquipmentModGenerator(
     ///     e.g. mod_magazine / patron_in_weapon_000
     /// </summary>
     /// <returns>string array</returns>
-    public static FrozenSet<string> GetAmmoContainers()
+    public static HashSet<string> GetAmmoContainers()
     {
         return _cartridgeHolderSlots;
     }

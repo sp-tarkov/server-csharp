@@ -1,4 +1,3 @@
-using System.Collections.Frozen;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
@@ -27,7 +26,7 @@ public class ProfileHelper(
     InventoryConfig inventoryConfig
 )
 {
-    protected static readonly FrozenSet<string> GameEditionsWithFreeRefresh = ["edge_of_darkness", "unheard_edition"];
+    protected static readonly HashSet<string> GameEditionsWithFreeRefresh = ["edge_of_darkness", "unheard_edition"];
 
     /// <summary>
     ///     Remove/reset a completed quest condition from players profile quest data

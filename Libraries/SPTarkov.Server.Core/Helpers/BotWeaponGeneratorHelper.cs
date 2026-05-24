@@ -1,4 +1,3 @@
-using System.Collections.Frozen;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
@@ -15,7 +14,7 @@ public class BotWeaponGeneratorHelper(
     BotGeneratorHelper botGeneratorHelper
 )
 {
-    private static readonly FrozenSet<string> _magCheck = ["CylinderMagazine", "SpringDrivenCylinder"];
+    private static readonly HashSet<string> _magCheck = ["CylinderMagazine", "SpringDrivenCylinder"];
 
     /// <summary>
     ///     Get a randomized number of bullets for a specific magazine

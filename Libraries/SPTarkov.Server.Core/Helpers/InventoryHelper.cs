@@ -1,4 +1,3 @@
-using System.Collections.Frozen;
 using System.Text.Json.Serialization;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
@@ -30,7 +29,7 @@ public class InventoryHelper(
     ICloner cloner
 )
 {
-    private static readonly FrozenSet<MongoId> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD, BaseClasses.MOD];
+    private static readonly HashSet<MongoId> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD, BaseClasses.MOD];
 
     /// <summary>
     ///     Add multiple items to player stash (assuming they all fit)

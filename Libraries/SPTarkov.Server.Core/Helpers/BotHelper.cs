@@ -1,5 +1,4 @@
 using System.Collections.Concurrent;
-using System.Collections.Frozen;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Constants;
@@ -20,7 +19,7 @@ public class BotHelper(
     PmcConfig pmcConfig
 )
 {
-    private static readonly FrozenSet<string> _pmcTypeIds =
+    private static readonly HashSet<string> _pmcTypeIds =
     [
         Sides.Usec.ToLowerInvariant(),
         Sides.Bear.ToLowerInvariant(),

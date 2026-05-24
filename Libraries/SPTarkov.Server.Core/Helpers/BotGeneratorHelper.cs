@@ -28,7 +28,7 @@ public class BotGeneratorHelper(
 )
 {
     // Equipment slot ids that do not conflict with other slots
-    private static readonly FrozenSet<string> _slotsWithNoCompatIssues =
+    private static readonly HashSet<string> _slotsWithNoCompatIssues =
     [
         nameof(EquipmentSlots.Scabbard),
         nameof(EquipmentSlots.Backpack),
