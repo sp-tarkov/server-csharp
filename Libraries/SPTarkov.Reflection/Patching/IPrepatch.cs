@@ -17,6 +17,5 @@ public interface IPrepatch
     /// <summary>
     ///     prepatch method called by the mod loader
     /// </summary>
-    /// <param name="serverCoreModule">Server core module to patch</param>
-    void Patch(ModuleDefinition serverCoreModule);
+    void Patch();
 }

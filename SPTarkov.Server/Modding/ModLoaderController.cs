@@ -28,7 +28,7 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
 
     private ModuleDefinition? _serverCoreModule;
     private MemoryStream? _serverCoreModuleStream;
-    private List<PrepatchResultEntry> _prepatchResults = [];
+    private readonly List<PrepatchResultEntry> _prepatchResults = [];
 
     private const string ModPath = "./user/mods/";
     private const string PatcherPath = "./user/patchers/";
@@ -97,7 +97,7 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
             var succeeded = false;
             try
             {
-                prepatch.Patch(_serverCoreModule);
+                prepatch.Patch();
                 succeeded = true;
             }
             catch (Exception e)
@@ -266,7 +266,7 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
 
         foreach (var prepatchType in prepatchTypes)
         {
-            _prepatches.Add((AbstractPrepatch)Activator.CreateInstance(prepatchType)!);
+            _prepatches.Add((AbstractPrepatch)Activator.CreateInstance(prepatchType, args: [_serverCoreModule])!);
         }
     }
 
