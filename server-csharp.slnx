@@ -15,7 +15,6 @@
     <Project Path="Patches/Ceciler.Virtualizer/Ceciler.Virtualizer.csproj" />
   </Folder>
   <Folder Name="/Testing/">
-    <Project Path="Testing/Benchmarks/Benchmarks.csproj" />
     <Project Path="Testing/TestMod/TestMod.csproj" />
     <Project Path="Testing/TestMod2/TestMod2.csproj">
       <BuildDependency Project="Testing/TestPrepatch/TestPrepatch.csproj" />
