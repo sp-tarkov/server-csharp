@@ -1,6 +1,6 @@
 namespace SPTarkov.Common.Models.Logging;
 
-public interface ILogHandler
+public interface ILogHandler : IAsyncDisposable
 {
     LoggerType LoggerType { get; }
 

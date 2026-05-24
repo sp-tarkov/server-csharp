@@ -1,24 +1,17 @@
-using SPTarkov.Common.Logger.Handlers.File;
-using SPTarkov.Common.Logger.Util;
+using System.Globalization;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Common.Models.Logging;
+using ZLogger.Providers;
 
 namespace SPTarkov.Common.Logger.Handlers;
 
-internal sealed class FileLogHandler(IEnumerable<IFilePatternReplacer> replacers) : BaseLogHandler
+internal sealed class FileLogHandler : BaseLogHandler
 {
-    // To be more efficient and avoid creating extra strings we will cache file patterns to the current processed pattern
-    // That way we dont need to process them twice and generate extra garbage
-    // _cacheFileNames[config.FilePath][config.FilePattern] will give you the current file pattern
-    private readonly Dictionary<string, Dictionary<string, string>> _cachedFileNames = new();
+    private readonly Lock _providersLock = new();
+    private readonly Dictionary<string, ZLoggerRollingFileLoggerProvider> _providers = [];
+    private readonly LogFileRollMonitor _logFileRollManager = new();
 
-    // This section needs to be fully locked as it is a double dictionary lookup
-    private readonly Lock _cachedFileNamesLocks = new();
-
-    private readonly Dictionary<string, IFilePatternReplacer> _replacers = replacers.ToDictionary(kv => kv.Pattern, kv => kv);
-    public override LoggerType LoggerType
-    {
-        get { return LoggerType.File; }
-    }
+    public override LoggerType LoggerType { get; } = LoggerType.File;
 
     public override void Log(SptLogMessage message, BaseSptLoggerReference reference)
     {
@@ -29,55 +22,72 @@ internal sealed class FileLogHandler(IEnumerable<IFilePatternReplacer> replacers
             throw new Exception("FilePath and FilePattern are required to use FileLogger");
         }
 
-        var targetFile = GetParsedTargetFile(config);
+        var provider = GetOrCreateProvider(config);
+        var logger = provider.CreateLogger(message.Logger);
+        var logLevel = message.LogLevel.ConvertToMicrosoftLogLevel();
 
-        var fileLock = LogFileCoordinator.GetFileLock(targetFile);
-
-        lock (fileLock)
+        if (!logger.IsEnabled(logLevel))
         {
-            if (!Directory.Exists(config.FilePath))
+            return;
+        }
+
+        logger.Log(logLevel, 0, message.Exception, "{Message}", FormatMessage(message.Message, message, reference));
+    }
+
+    private ZLoggerRollingFileLoggerProvider GetOrCreateProvider(FileSptLoggerReference config)
+    {
+        var key = $"{config.FilePath}|{config.FilePattern}|{config.MaxFileSizeMb}";
+
+        lock (_providersLock)
+        {
+            if (_providers.TryGetValue(key, out var existingProvider))
             {
-                Directory.CreateDirectory(config.FilePath);
+                return existingProvider;
             }
 
-            // The AppendAllText will create the file as long as the directory exists
-            System.IO.File.AppendAllText(targetFile, FormatMessage(message.Message + "\n", message, reference));
+            var options = new ZLoggerRollingFileOptions
+            {
+                FilePathSelector = (timestamp, sequenceNumber) =>
+                    BuildFilePath(config.FilePath, config.FilePattern, timestamp, sequenceNumber),
+                RollingInterval = RollingInterval.Day,
+                RollingSizeKB = config.MaxFileSizeMb * 1024,
+            };
 
-            LogFileCoordinator.GetOrCreateMetadata(targetFile, config, _replacers);
+            options.UsePlainTextFormatter();
+
+            var provider = new ZLoggerRollingFileLoggerProvider(options);
+
+            _providers.Add(key, provider);
+            _logFileRollManager.RegisterTarget(key, config);
+
+            return provider;
         }
     }
 
-    private string GetParsedTargetFile(FileSptLoggerReference? config)
+    private static string BuildFilePath(string filePath, string filePattern, DateTimeOffset timestamp, int sequenceNumber)
     {
-        lock (_cachedFileNamesLocks)
+        var date = timestamp.UtcDateTime.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
+
+        var fileName = filePattern.Replace("%DATE%", date, StringComparison.OrdinalIgnoreCase);
+
+        var name = Path.GetFileNameWithoutExtension(fileName);
+        var extension = Path.GetExtension(fileName);
+
+        if (sequenceNumber > 0)
         {
-            if (!_cachedFileNames.TryGetValue(config.FilePath, out var cachedFileNames))
-            {
-                cachedFileNames = new Dictionary<string, string>();
-                _cachedFileNames.Add(config.FilePath, cachedFileNames);
-            }
-
-            if (!cachedFileNames.TryGetValue(config.FilePattern, out var cachedFile))
-            {
-                cachedFile = $"{config.FilePath}{ProcessPattern(config)}";
-                cachedFileNames.Add(config.FilePattern, cachedFile);
-            }
-
-            return cachedFile;
+            fileName = $"{name}.{sequenceNumber}{extension}";
         }
+
+        return Path.Combine(filePath, fileName);
     }
 
-    private string ProcessPattern(FileSptLoggerReference? configFilePattern)
+    public override async ValueTask DisposeAsync()
     {
-        var finalFile = configFilePattern.FilePattern;
-        foreach (var filePatternReplacer in _replacers)
-        {
-            if (finalFile.Contains(filePatternReplacer.Key))
-            {
-                finalFile = filePatternReplacer.Value.ReplacePattern(configFilePattern, finalFile);
-            }
-        }
+        await _logFileRollManager.DisposeAsync().ConfigureAwait(false);
 
-        return finalFile;
+        foreach (var provider in _providers.Values)
+        {
+            await provider.DisposeAsync().ConfigureAwait(false);
+        }
     }
 }

@@ -6,13 +6,10 @@ using SPTarkov.Common.Json.Converters;
 
 namespace SPTarkov.Common.Models.Logging;
 
-public class SptLoggerConfiguration
+public sealed class SptLoggerConfiguration
 {
     [JsonPropertyName("loggers")]
-    public List<BaseSptLoggerReference> Loggers { get; set; } = [];
-
-    [JsonPropertyName("poolingTimeMs")]
-    public uint PoolingTimeMs { get; set; } = 500;
+    public List<BaseSptLoggerReference> Loggers { get; init; } = [];
 }
 
 [JsonConverter(typeof(BaseSptLoggerReferenceConverter))]
@@ -20,17 +17,17 @@ public abstract class BaseSptLoggerReference
 {
     [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public LoggerType Type { get; set; }
+    public required LoggerType Type { get; init; }
 
     [JsonPropertyName("filters")]
-    public List<SptLoggerFilter> Filters { get; set; } = [];
+    public List<SptLoggerFilter> Filters { get; init; } = [];
 
     [JsonPropertyName("logLevel")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public LogLevel LogLevel { get; set; }
+    public required LogLevel LogLevel { get; init; }
 
     [JsonPropertyName("format")]
-    public required string Format { get; set; } = string.Empty;
+    public required string Format { get; init; }
 
     private string? _cachedFormat;
     private CompositeFormat? _compiledFormat;
@@ -57,20 +54,20 @@ public abstract class BaseSptLoggerReference
     }
 }
 
-public class SptLoggerFilter
+public sealed class SptLoggerFilter
 {
     [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public SptLoggerFilterType Type { get; set; }
+    public required SptLoggerFilterType Type { get; init; }
 
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public required string Name { get; init; }
 
     [JsonPropertyName("matchingType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public MatchingType MatchingType { get; set; }
+    public required MatchingType MatchingType { get; init; }
 
-    protected bool Equals(SptLoggerFilter other)
+    private bool Equals(SptLoggerFilter other)
     {
         return Type == other.Type && Name == other.Name && MatchingType == other.MatchingType;
     }
@@ -101,48 +98,46 @@ public class SptLoggerFilter
     }
 }
 
-public class FileSptLoggerReference : BaseSptLoggerReference
+public sealed class FileSptLoggerReference : BaseSptLoggerReference
 {
     [JsonPropertyName("filePath")]
-    public required string FilePath { get; set; }
+    public required string FilePath { get; init; }
 
     [JsonPropertyName("filePattern")]
-    public required string FilePattern { get; set; }
-
-    private readonly int _maxFileSizeMb;
+    public required string FilePattern { get; init; }
 
     [JsonPropertyName("maxFileSizeMB")]
     public int MaxFileSizeMb
     {
-        get { return _maxFileSizeMb; }
+        get;
         init
         {
             if (value < 0)
             {
                 throw new Exception("Invalid value for MaxFileSizeMb, must be >= 0");
             }
-            _maxFileSizeMb = value;
+
+            field = value;
         }
     }
-
-    private readonly int _maxRollingFiles;
 
     [JsonPropertyName("maxRollingFiles")]
     public int MaxRollingFiles
     {
-        get { return _maxRollingFiles; }
+        get;
         init
         {
             if (value < 0)
             {
                 throw new Exception("Invalid value for MaxRollingFiles, must be >= 0");
             }
-            _maxRollingFiles = value;
+
+            field = value;
         }
     }
 }
 
-public class ConsoleSptLoggerReference : BaseSptLoggerReference { }
+public sealed class ConsoleSptLoggerReference : BaseSptLoggerReference { }
 
 public enum LoggerType
 {
@@ -164,34 +159,42 @@ public enum SptLoggerFilterType
 
 public static class SptLoggerFilterExtensions
 {
-    private static readonly ConcurrentDictionary<SptLoggerFilter, Regex> _cachedRegexes = new();
+    /// <summary>
+    /// The cached regex's, keyed to the filter's name with the value being the regex in question
+    /// </summary>
+    private static readonly ConcurrentDictionary<string, Regex> _cachedRegexes = [];
 
     public static bool Match(this SptLoggerFilter filter, SptLogMessage message)
     {
+        if (string.IsNullOrEmpty(filter.Name))
+        {
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(message.Logger))
+        {
+            return false;
+        }
+
         switch (filter.MatchingType)
         {
             case MatchingType.Literal:
-                if (filter.Name != message.Logger)
-                {
-                    return false;
-                }
-                break;
+            {
+                return string.Equals(filter.Name, message.Logger, StringComparison.Ordinal);
+            }
+
             case MatchingType.Regex:
-                if (!_cachedRegexes.TryGetValue(filter, out var regex))
-                {
-                    regex = new Regex(filter.Name);
-                    while (!_cachedRegexes.TryAdd(filter, regex))
-                        ;
-                }
+            {
+                var regex = _cachedRegexes.GetOrAdd(filter.Name, static pattern => new Regex(pattern));
 
-                if (!regex.IsMatch(message.Logger))
-                {
-                    return false;
-                }
-                break;
+                return regex.IsMatch(message.Logger);
+            }
+
+            default:
+            {
+                return false;
+            }
         }
-
-        return true;
     }
 
     public static bool CanLog(this LogLevel logLevel, LogLevel messageLevel)
