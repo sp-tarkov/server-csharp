@@ -117,7 +117,7 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
         {
             _serverCoreModule.Dispose();
             _serverCoreModule = null;
-            _serverCoreModuleStream?.Dispose();
+            await _serverCoreModuleStream!.DisposeAsync();
             _serverCoreModuleStream = null;
         }
 
