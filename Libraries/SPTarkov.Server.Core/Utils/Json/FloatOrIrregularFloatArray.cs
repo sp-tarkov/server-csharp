@@ -14,7 +14,7 @@ public class FloatOrIrregularFloatArray(float? @float, float[][]? irregularFloat
         get { return Float != null; }
     }
 
-    public bool IsFloat2D
+    public bool IsIrregularFloatArray
     {
         get { return IrregularFloatArray != null; }
     }

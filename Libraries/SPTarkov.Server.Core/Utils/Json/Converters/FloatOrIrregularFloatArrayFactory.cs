@@ -81,7 +81,7 @@ public class FloatOrIrregularFloatArrayConverter : JsonConverter<FloatOrIrregula
             return;
         }
 
-        if (value.IsFloat2D)
+        if (value.IsIrregularFloatArray)
         {
             writer.WriteStartArray();
             foreach (var inner in value.IrregularFloatArray!)
