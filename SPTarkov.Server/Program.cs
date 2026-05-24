@@ -109,9 +109,8 @@ public static class Program
         var configuration = await ConfigLoader.Initialize(_earlyLogger!);
 
         // Init mod loader
-        ModLoaderController? modLoaderController = null;
         List<SptMod> loadedMods = [];
-        if (InitModLoader(loggerFactory, configuration, out modLoaderController))
+        if (InitModLoader(loggerFactory, configuration, out var modLoaderController))
         {
             // Clean the console a bit
             var isPrepatchedProcess = args.Contains(PrepatchedArg, StringComparer.OrdinalIgnoreCase);
