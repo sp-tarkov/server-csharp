@@ -138,13 +138,11 @@ public static class Program
         var builder = CreateNewHostBuilder(loggerFactory, configuration);
         builder.Host.UseSptLoggerWithoutProvider(loggerFactory.ServiceProvider);
 
-#if DEBUG
         builder.Host.UseDefaultServiceProvider(options =>
         {
             options.ValidateOnBuild = true;
             options.ValidateScopes = true;
         });
-#endif
         var diHandler = new DependencyInjectionHandler(builder.Services);
 
         // register SPT components
