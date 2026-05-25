@@ -21,13 +21,13 @@ public sealed class BackupService(
     private const string ProfileDir = "./user/profiles";
     private const string ActiveModsFilename = "activeMods.json";
 
-    private readonly BackupConfig BackupConfig = backupConfig;
+    private readonly BackupConfig _backupConfig = backupConfig;
 
     // Runs Init() every x minutes
     private Timer? _backupIntervalTimer;
 
-    private readonly SemaphoreSlim BackupLock = new(1, 1);
-    private long LastBackupTimestamp;
+    private readonly SemaphoreSlim _backupLock = new(1, 1);
+    private long _lastBackupTimestamp;
 
     private static readonly CultureInfo[] _cultures =
     [
@@ -49,7 +49,7 @@ public sealed class BackupService(
             return;
         }
 
-        if (!BackupConfig.BackupInterval.Enabled)
+        if (!_backupConfig.BackupInterval.Enabled)
         {
             // Not backing up at regular intervals, run once and exit
             await Init(cancellationToken);
@@ -71,7 +71,7 @@ public sealed class BackupService(
             },
             null,
             TimeSpan.Zero,
-            TimeSpan.FromMinutes(BackupConfig.BackupInterval.IntervalMinutes)
+            TimeSpan.FromMinutes(_backupConfig.BackupInterval.IntervalMinutes)
         );
     }
 
@@ -89,7 +89,7 @@ public sealed class BackupService(
 
         // If the backup lock is already locked, skip backup. This stops multiple backups running at once
         // Passing 0 is a non-blocking Wait, will return false if the lock can't be acquired
-        var lockAcquired = await BackupLock.WaitAsync(0, cancellationToken);
+        var lockAcquired = await _backupLock.WaitAsync(0, cancellationToken);
         if (!lockAcquired)
         {
             return;
@@ -99,11 +99,11 @@ public sealed class BackupService(
         {
             // Make sure we don't back up too often by using a configurable Cooldown
             var currentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            if (currentTimestamp < LastBackupTimestamp + BackupConfig.BackupCooldown)
+            if (currentTimestamp < _lastBackupTimestamp + _backupConfig.BackupCooldown)
             {
                 return;
             }
-            LastBackupTimestamp = currentTimestamp;
+            _lastBackupTimestamp = currentTimestamp;
 
             var targetDir = GenerateBackupTargetDir();
 
@@ -169,7 +169,7 @@ public sealed class BackupService(
         }
         finally
         {
-            BackupLock.Release();
+            _backupLock.Release();
         }
     }
 
@@ -179,7 +179,7 @@ public sealed class BackupService(
     /// <returns> True if enabled, false otherwise. </returns>
     private bool IsEnabled()
     {
-        if (BackupConfig.Enabled)
+        if (_backupConfig.Enabled)
         {
             return true;
         }
@@ -200,7 +200,7 @@ public sealed class BackupService(
     private string GenerateBackupTargetDir()
     {
         var backupDate = GenerateBackupDate();
-        return Path.GetFullPath($"{BackupConfig.Directory}/{backupDate}");
+        return Path.GetFullPath($"{_backupConfig.Directory}/{backupDate}");
     }
 
     /// <summary>
@@ -219,12 +219,12 @@ public sealed class BackupService(
     /// </summary>
     private void CleanBackups()
     {
-        var backupDir = BackupConfig.Directory;
+        var backupDir = _backupConfig.Directory;
         var backupPaths = GetBackupPaths(backupDir);
 
         // Filter out invalid backup paths by ensuring they contain a valid date.
         var backupPathsWithCreationDateTime = GetBackupPathsWithCreationTimestamp(backupPaths);
-        var excessCount = backupPathsWithCreationDateTime.Count - BackupConfig.MaxBackups;
+        var excessCount = backupPathsWithCreationDateTime.Count - _backupConfig.MaxBackups;
         if (excessCount > 0)
         {
             var excessBackupPaths = backupPaths.GetRange(0, excessCount);
@@ -378,7 +378,7 @@ public sealed class BackupService(
     /// <returns>True on success. False on failure</returns>
     public bool RestoreProfile(string profileId)
     {
-        var backupDir = BackupConfig.Directory;
+        var backupDir = _backupConfig.Directory;
         var backupPaths = GetBackupPaths(backupDir);
         var mostRecentBackupForProfile = GetMostRecentProfileBackup(backupPaths, profileId);
 
