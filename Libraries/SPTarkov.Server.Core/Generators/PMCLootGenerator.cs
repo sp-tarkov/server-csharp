@@ -20,9 +20,9 @@ public class PMCLootGenerator(
 )
 {
     // Store loot against its type, usec/bear
-    private readonly Dictionary<string, Dictionary<MongoId, double>>? _backpackLootPool = [];
-    private readonly Dictionary<string, Dictionary<MongoId, double>>? _pocketLootPool = [];
-    private readonly Dictionary<string, Dictionary<MongoId, double>>? _vestLootPool = [];
+    private readonly Dictionary<string, Dictionary<MongoId, double>> _backpackLootPool = [];
+    private readonly Dictionary<string, Dictionary<MongoId, double>> _pocketLootPool = [];
+    private readonly Dictionary<string, Dictionary<MongoId, double>> _vestLootPool = [];
 
     protected readonly Lock BackpackLock = new();
     protected readonly Lock PocketLock = new();
