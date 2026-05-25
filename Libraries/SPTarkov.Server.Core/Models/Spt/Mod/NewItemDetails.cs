@@ -66,6 +66,12 @@ public record NewItemDetailsBase
     [JsonPropertyName("addToFleaPriceDb")]
     public bool AddToFleaPriceDb { get; set; } = true;
 
+    /// <summary>
+    /// Whether to add the new item to the hideout's weapon shelf whitelist
+    /// </summary>
+    [JsonPropertyName("addToWeaponShelf")]
+    public bool AddToWeaponShelf { get; set; } = true;
+
     [JsonPropertyName("locales")]
     public required Dictionary<string, LocaleDetails> Locales { get; set; } = [];
 }

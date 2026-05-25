@@ -81,7 +81,7 @@ public class CustomItemService(
 
         itemBaseClassService.AddItemToCache(newItemId);
 
-        if (itemHelper.IsOfBaseclass(itemClone.Id, BaseClasses.WEAPON))
+        if (newItemDetails.AddToWeaponShelf && itemHelper.IsOfBaseclass(itemClone.Id, BaseClasses.WEAPON))
         {
             AddToWeaponShelf(newItemId);
         }
@@ -151,7 +151,7 @@ public class CustomItemService(
 
         itemBaseClassService.AddItemToCache(newItem.Id);
 
-        if (itemHelper.IsOfBaseclass(newItem.Id, BaseClasses.WEAPON))
+        if (newItemDetails.AddToWeaponShelf && itemHelper.IsOfBaseclass(newItem.Id, BaseClasses.WEAPON))
         {
             AddToWeaponShelf(newItem.Id);
         }
