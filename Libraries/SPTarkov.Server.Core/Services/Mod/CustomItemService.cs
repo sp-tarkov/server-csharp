@@ -158,7 +158,17 @@ public class CustomItemService(
 
         if (newItemDetails.AddToFleaPriceDb)
         {
+            if (newItemDetails.FleaPriceRoubles is null or <= 0)
+            {
+                throw new InvalidOperationException($"{nameof(newItemDetails.FleaPriceRoubles)} is null or 0 while trying to add to flea!");
+            }
+
             AddToFleaPriceDb(newItem.Id, newItemDetails.FleaPriceRoubles);
+        }
+        else
+        {
+            // Prevent item with no flea entry being added to pmc loot
+            pmcConfig.GlobalLootBlacklist.Add(newItem.Id);
         }
 
         itemBaseClassService.AddItemToCache(newItem.Id);
