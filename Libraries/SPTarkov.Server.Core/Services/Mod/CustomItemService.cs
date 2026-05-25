@@ -132,11 +132,22 @@ public class CustomItemService(
 
         AddToItemsDb(newItem.Id, newItem);
 
-        AddToHandbookDb(newItem.Id, newItemDetails.HandbookParentId, newItemDetails.HandbookPriceRoubles);
+        if (newItemDetails.AddToHandbook)
+        {
+            if (newItemDetails.HandbookParentId is null)
+            {
+                throw new InvalidOperationException($"{nameof(newItemDetails.HandbookParentId)} is null while trying to add to handbook!");
+            }
+
+            AddToHandbookDb(newItem.Id, newItemDetails.HandbookParentId, newItemDetails.HandbookPriceRoubles);
+        }
 
         AddToLocaleDbs(newItemDetails.Locales, newItem.Id);
 
-        AddToFleaPriceDb(newItem.Id, newItemDetails.FleaPriceRoubles);
+        if (newItemDetails.AddToFleaPriceDb)
+        {
+            AddToFleaPriceDb(newItem.Id, newItemDetails.FleaPriceRoubles);
+        }
 
         itemBaseClassService.AddItemToCache(newItem.Id);
 

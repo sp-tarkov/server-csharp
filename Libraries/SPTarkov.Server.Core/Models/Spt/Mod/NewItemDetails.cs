@@ -41,18 +41,6 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
     /// </summary>
     [JsonPropertyName("newItemName")]
     public required string NewItemName { get; set; }
-
-    /// <summary>
-    /// Whether the item should be added to Tarkov's handbook
-    /// </summary>
-    [JsonPropertyName("addToHandbook")]
-    public bool AddToHandbook { get; set; } = true;
-
-    /// <summary>
-    /// Whether the item should be added to the flea price database
-    /// </summary>
-    [JsonPropertyName("addToFleaPriceDb")]
-    public bool AddToFleaPriceDb { get; set; } = true;
 }
 
 public record NewItemDetailsBase
@@ -65,6 +53,18 @@ public record NewItemDetailsBase
 
     [JsonPropertyName("handbookParentId")]
     public string? HandbookParentId { get; set; }
+
+    /// <summary>
+    /// Whether the item should be added to Tarkov's handbook
+    /// </summary>
+    [JsonPropertyName("addToHandbook")]
+    public bool AddToHandbook { get; set; } = true;
+
+    /// <summary>
+    /// Whether the item should be added to the flea price database
+    /// </summary>
+    [JsonPropertyName("addToFleaPriceDb")]
+    public bool AddToFleaPriceDb { get; set; } = true;
 
     [JsonPropertyName("locales")]
     public required Dictionary<string, LocaleDetails> Locales { get; set; } = [];
