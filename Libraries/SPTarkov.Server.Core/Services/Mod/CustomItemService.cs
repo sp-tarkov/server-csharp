@@ -78,6 +78,11 @@ public class CustomItemService(
 
         if (newItemDetails.AddToFleaPriceDb)
         {
+            if (newItemDetails.FleaPriceRoubles is null or <= 0)
+            {
+                throw new InvalidOperationException($"{nameof(newItemDetails.FleaPriceRoubles)} is null or 0 while trying to add to flea!");
+            }
+
             AddToFleaPriceDb(newItemId, newItemDetails.FleaPriceRoubles);
         }
         else
