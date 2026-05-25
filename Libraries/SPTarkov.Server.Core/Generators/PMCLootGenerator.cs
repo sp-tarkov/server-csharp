@@ -8,7 +8,7 @@ using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Core.Generators;
 
-[Injectable]
+[Injectable(InjectionType.Singleton)]
 public class PMCLootGenerator(
     DatabaseService databaseService,
     ItemHelper itemHelper,
