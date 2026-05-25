@@ -5,6 +5,7 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Utils.Cloners;
 
@@ -15,6 +16,7 @@ public class CustomItemService(
     ISptLogger<CustomItemService> logger,
     DatabaseService databaseService,
     ItemHelper itemHelper,
+    PmcConfig pmcConfig,
     ItemBaseClassService itemBaseClassService,
     ModItemCacheService modItemCacheService,
     ICloner cloner
@@ -77,6 +79,11 @@ public class CustomItemService(
         if (newItemDetails.AddToFleaPriceDb)
         {
             AddToFleaPriceDb(newItemId, newItemDetails.FleaPriceRoubles);
+        }
+        else
+        {
+            // Prevent item with no flea entry being added to pmc loot
+            pmcConfig.GlobalLootBlacklist.Add(newItemId);
         }
 
         itemBaseClassService.AddItemToCache(newItemId);
