@@ -34,11 +34,11 @@ public class ModItemCacheService(ISptLogger<ModItemCacheService> logger, IReadOn
     }
 
     /// <summary>
-    ///     Adds a mod item to the cache, internal use only.
+    ///     Adds a mod item to the cache.
     /// </summary>
     /// <param name="caller">Callers assembly</param>
     /// <param name="itemId">Item id added to database</param>
-    internal void AddModItem(Assembly caller, MongoId itemId)
+    public void AddModItem(Assembly caller, MongoId itemId)
     {
         var mod = GetModFromAssembly(caller);
         if (mod is null)
