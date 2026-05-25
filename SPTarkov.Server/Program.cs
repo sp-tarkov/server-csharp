@@ -1,15 +1,12 @@
-using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Security.Authentication;
 using System.Text;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
+using Microsoft.Net.Http.Headers;
 using SPTarkov.Common.Extensions;
 using SPTarkov.Common.Logger;
-using SPTarkov.Common.Semver;
-using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.DI;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Helpers;
@@ -154,6 +151,18 @@ public static class Program
         // Configure Kestrel options
         ConfigureKestrel(builder);
 
+        builder.Services.AddHttpClient();
+        builder.Services.AddHttpClient(
+            "Github",
+            httpClient =>
+            {
+                httpClient.BaseAddress = new Uri("https://api.github.com/");
+
+                // These headers are _required_ by GitHub API
+                httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("spt-csharp-server");
+                httpClient.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");
+            }
+        );
         var app = builder.Build();
 
         // Configure Kestrel WS options and Handle fallback requests

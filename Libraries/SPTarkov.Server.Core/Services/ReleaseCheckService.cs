@@ -13,7 +13,7 @@ namespace SPTarkov.Server.Core.Services;
 //       spam, so we purposely use MaxValue here
 
 [Injectable(TypePriority = int.MaxValue)]
-internal sealed class ReleaseCheckService(ISptLogger<ReleaseCheckService> logger) : IOnLoad
+internal sealed class ReleaseCheckService(ISptLogger<ReleaseCheckService> logger, IHttpClientFactory httpClientFactory) : IOnLoad
 {
     public Task OnLoad(CancellationToken stoppingToken)
     {
@@ -27,11 +27,7 @@ internal sealed class ReleaseCheckService(ISptLogger<ReleaseCheckService> logger
     {
         try
         {
-            var httpClient = new HttpClient();
-
-            // These headers are _required_ by GitHub API
-            httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("SP-Tarkov");
-            httpClient.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");
+            var httpClient = httpClientFactory.CreateClient("Github");
 
             // TODO: We could probably throw this into a config somewhere, for now hard code it
             var release = await httpClient.GetFromJsonAsync<ReleaseInformation>(
