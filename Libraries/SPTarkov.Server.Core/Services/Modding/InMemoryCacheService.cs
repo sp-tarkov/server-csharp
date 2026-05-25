@@ -1,12 +1,12 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Utils.Cloners;
 
-namespace SPTarkov.Server.Core.Services;
+namespace SPTarkov.Server.Core.Services.Modding;
 
 [Injectable(InjectionType.Singleton)]
-public class InMemoryCacheService(ICloner cloner)
+public sealed class InMemoryCacheService(ICloner cloner)
 {
-    protected readonly Dictionary<string, object?> _cacheData = new();
+    private readonly Dictionary<string, object?> _cacheData = [];
 
     /// <summary>
     ///     Store data into an in-memory object

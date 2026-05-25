@@ -9,7 +9,7 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Utils.Cloners;
 
-namespace SPTarkov.Server.Core.Services.Mod;
+namespace SPTarkov.Server.Core.Services.Modding.Custom;
 
 [Injectable]
 public class CustomItemService(

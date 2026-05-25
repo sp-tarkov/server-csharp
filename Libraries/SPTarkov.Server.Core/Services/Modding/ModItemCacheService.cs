@@ -4,7 +4,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 
-namespace SPTarkov.Server.Core.Services.Mod;
+namespace SPTarkov.Server.Core.Services.Modding;
 
 [Injectable(InjectionType.Singleton)]
 public class ModItemCacheService(ISptLogger<ModItemCacheService> logger, IReadOnlyList<SptMod> loadedMods)

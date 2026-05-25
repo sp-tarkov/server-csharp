@@ -4,7 +4,7 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 
-namespace SPTarkov.Server.Core.Services.Mod;
+namespace SPTarkov.Server.Core.Services.Modding.Custom;
 
 [Injectable]
 public class CustomQuestService(
