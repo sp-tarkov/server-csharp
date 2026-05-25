@@ -27,8 +27,6 @@ namespace SPTarkov.Server;
 
 public static class Program
 {
-    private const string PrepatchedArg = "--prepatched";
-
     internal static ILogger? _earlyLogger;
     private static ModLoaderController? _modLoaderController;
 
@@ -113,7 +111,7 @@ public static class Program
         if (InitModLoader(loggerFactory, configuration, out var modLoaderController))
         {
             // Clean the console a bit
-            var isPrepatchedProcess = args.Contains(PrepatchedArg, StringComparer.OrdinalIgnoreCase);
+            var isPrepatchedProcess = args.Contains(ModLoaderController.PrepatchedArg, StringComparer.OrdinalIgnoreCase);
             if (isPrepatchedProcess && modLoaderController != null)
             {
                 ClearConsole();
@@ -127,7 +125,7 @@ public static class Program
             {
                 if (await modLoaderController.ApplyPrepatches(loadedMods))
                 {
-                    await StartPrepatchedServerProcess(args, modLoaderController);
+                    await modLoaderController.StartPrepatchedServerProcess(args, modLoaderController);
                 }
 
                 return;
@@ -263,82 +261,6 @@ public static class Program
         return builder;
     }
 
-    /// <summary>
-    ///     Starts the patched server as a new process. This one is destroyed in release and held open in debug so IDE's don't die.
-    /// </summary>
-    private static async Task StartPrepatchedServerProcess(string[] args, ModLoaderController modLoaderController)
-    {
-        var sourceDirectory = AppContext.BaseDirectory;
-        var stageDirectory = Path.GetFullPath(ModLoaderController.PrepatchStagePath);
-
-        CopyApplicationToCache(sourceDirectory, stageDirectory);
-        await modLoaderController.WriteResultLog();
-
-        File.Copy(
-            Path.GetFullPath(ModLoaderController.PatchedAssemblyName),
-            Path.Combine(stageDirectory, "SPTarkov.Server.Core.dll"),
-            overwrite: true
-        );
-
-        var startInfo = CreatePrepatchedProcessStartInfo(stageDirectory);
-
-        foreach (var arg in args.Where(arg => !string.Equals(arg, PrepatchedArg, StringComparison.OrdinalIgnoreCase)))
-        {
-            startInfo.ArgumentList.Add(arg);
-        }
-        startInfo.ArgumentList.Add(PrepatchedArg);
-
-        var prepatchedProcess = Process.Start(startInfo);
-        if (prepatchedProcess is null)
-        {
-            throw new ModLoaderException($"Failed to start prepatched server process: {startInfo.FileName}");
-        }
-
-        // Needed for IDE development so the console doesn't just cease to exist when the process relaunches,
-        // in a normal environment it just reattaches to the old console, but this behavior doesn't work in Rider/VS
-#if DEBUG
-        await prepatchedProcess.WaitForExitAsync();
-        Environment.ExitCode = prepatchedProcess.ExitCode;
-#endif
-    }
-
-    private static ProcessStartInfo CreatePrepatchedProcessStartInfo(string stageDirectory)
-    {
-        var processPath = Environment.ProcessPath;
-        var entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
-
-        if (IsDotnetHost(processPath) && !string.IsNullOrEmpty(entryAssemblyPath))
-        {
-            var stagedAssemblyPath = Path.Combine(stageDirectory, Path.GetFileName(entryAssemblyPath));
-            var startInfo = CreateProcessStartInfo(processPath!);
-            startInfo.ArgumentList.Add(stagedAssemblyPath);
-            return startInfo;
-        }
-
-        var executableName = Path.GetFileName(processPath);
-        if (string.IsNullOrEmpty(executableName))
-        {
-            executableName = OperatingSystem.IsWindows() ? "SPT.Server.exe" : "SPT.Server";
-        }
-
-        return CreateProcessStartInfo(Path.Combine(stageDirectory, executableName));
-    }
-
-    private static bool IsDotnetHost(string? processPath)
-    {
-        if (string.IsNullOrEmpty(processPath))
-        {
-            return false;
-        }
-
-        return string.Equals(Path.GetFileNameWithoutExtension(processPath), "dotnet", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static ProcessStartInfo CreateProcessStartInfo(string executablePath)
-    {
-        return new ProcessStartInfo(executablePath) { WorkingDirectory = Directory.GetCurrentDirectory(), UseShellExecute = false };
-    }
-
     private static void ClearConsole()
     {
         if (Console.IsOutputRedirected)
@@ -347,55 +269,6 @@ public static class Program
         }
 
         Console.Clear();
-    }
-
-    /// <summary>
-    ///     Copies the patched application to a cache
-    /// </summary>
-    /// <param name="sourceDirectory">Source dir</param>
-    /// <param name="cacheDirectory"></param>
-    private static void CopyApplicationToCache(string sourceDirectory, string cacheDirectory)
-    {
-        if (Directory.Exists(cacheDirectory))
-        {
-            Directory.Delete(cacheDirectory, recursive: true);
-        }
-
-        Directory.CreateDirectory(cacheDirectory);
-
-        foreach (var file in Directory.GetFiles(sourceDirectory))
-        {
-            File.Copy(file, Path.Combine(cacheDirectory, Path.GetFileName(file)), overwrite: true);
-        }
-
-        foreach (var directory in Directory.GetDirectories(sourceDirectory))
-        {
-            var directoryName = Path.GetFileName(directory);
-            if (
-                string.Equals(directoryName, "user", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(directoryName, "SPT_Data", StringComparison.OrdinalIgnoreCase)
-            )
-            {
-                continue;
-            }
-
-            CopyDirectory(directory, Path.Combine(cacheDirectory, directoryName));
-        }
-    }
-
-    private static void CopyDirectory(string sourceDirectory, string targetDirectory)
-    {
-        Directory.CreateDirectory(targetDirectory);
-
-        foreach (var file in Directory.GetFiles(sourceDirectory))
-        {
-            File.Copy(file, Path.Combine(targetDirectory, Path.GetFileName(file)), overwrite: true);
-        }
-
-        foreach (var directory in Directory.GetDirectories(sourceDirectory))
-        {
-            CopyDirectory(directory, Path.Combine(targetDirectory, Path.GetFileName(directory)));
-        }
     }
 
     /// <summary>
