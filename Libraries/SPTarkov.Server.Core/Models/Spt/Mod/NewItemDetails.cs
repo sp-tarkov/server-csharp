@@ -39,7 +39,20 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
     /// <summary>
     /// The new name to assign the item, this is typically something like weapon_colt_m4a1_556x45
     /// </summary>
+    [JsonPropertyName("newItemName")]
     public required string NewItemName { get; set; }
+
+    /// <summary>
+    /// Whether the item should be added to Tarkov's handbook
+    /// </summary>
+    [JsonPropertyName("addToHandbook")]
+    public bool AddToHandbook { get; set; } = true;
+
+    /// <summary>
+    /// Whether the item should be added to the flea price database
+    /// </summary>
+    [JsonPropertyName("addToFleaPriceDb")]
+    public bool AddToFleaPriceDb { get; set; } = true;
 }
 
 public record NewItemDetailsBase
