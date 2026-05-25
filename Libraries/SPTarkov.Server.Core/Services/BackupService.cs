@@ -9,27 +9,27 @@ using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class BackupService
+public sealed class BackupService(
+    ISptLogger<BackupService> logger,
+    IReadOnlyList<SptMod> loadedMods,
+    JsonUtil jsonUtil,
+    TimeUtil timeUtil,
+    BackupConfig backupConfig,
+    FileUtil fileUtil
+)
 {
-    protected const string ProfileDir = "./user/profiles";
-    protected const string activeModsFilename = "activeMods.json";
+    private const string ProfileDir = "./user/profiles";
+    private const string ActiveModsFilename = "activeMods.json";
 
-    protected readonly List<string> ActiveServerMods;
-    protected readonly BackupConfig BackupConfig;
+    private readonly BackupConfig BackupConfig = backupConfig;
 
     // Runs Init() every x minutes
-    protected Timer _backupIntervalTimer;
+    private Timer? _backupIntervalTimer;
 
-    protected readonly SemaphoreSlim BackupLock = new SemaphoreSlim(1, 1);
-    protected long LastBackupTimestamp;
+    private readonly SemaphoreSlim BackupLock = new(1, 1);
+    private long LastBackupTimestamp;
 
-    protected readonly FileUtil FileUtil;
-    protected readonly JsonUtil JsonUtil;
-    protected readonly ISptLogger<BackupService> Logger;
-    protected readonly TimeUtil TimeUtil;
-    protected readonly IReadOnlyList<SptMod> LoadedMods;
-
-    private static readonly CultureInfo[] Cultures =
+    private static readonly CultureInfo[] _cultures =
     [
         CultureInfo.InvariantCulture,
         new CultureInfo("fa-IR") { DateTimeFormat = { Calendar = new PersianCalendar() } },
@@ -39,34 +39,20 @@ public class BackupService
         new CultureInfo("ja-JP") { DateTimeFormat = { Calendar = new JapaneseCalendar() } },
     ];
 
-    public BackupService(
-        ISptLogger<BackupService> logger,
-        IReadOnlyList<SptMod> loadedMods,
-        JsonUtil jsonUtil,
-        TimeUtil timeUtil,
-        BackupConfig backupConfig,
-        FileUtil fileUtil
-    )
-    {
-        Logger = logger;
-        JsonUtil = jsonUtil;
-        TimeUtil = timeUtil;
-        FileUtil = fileUtil;
-        LoadedMods = loadedMods;
-
-        ActiveServerMods = GetActiveServerMods();
-        BackupConfig = backupConfig;
-    }
-
     /// <summary>
     ///     Start the backup interval if enabled in config.
     /// </summary>
-    public async Task StartBackupSystem()
+    public async Task StartBackupSystem(CancellationToken cancellationToken = default)
     {
+        if (_backupIntervalTimer is not null)
+        {
+            return;
+        }
+
         if (!BackupConfig.BackupInterval.Enabled)
         {
             // Not backing up at regular intervals, run once and exit
-            await Init();
+            await Init(cancellationToken);
 
             return;
         }
@@ -80,7 +66,7 @@ public class BackupService
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error($"Profile backup failed: {ex.Message}, {ex.StackTrace}");
+                    logger.Error($"Profile backup failed: {ex.Message}, {ex.StackTrace}");
                 }
             },
             null,
@@ -94,7 +80,7 @@ public class BackupService
     ///     This method orchestrates the profile backup service. Handles copying profiles to a backup directory and cleaning
     ///     up old backups if the number exceeds the configured maximum.
     /// </summary>
-    public async Task Init()
+    public async Task Init(CancellationToken cancellationToken = default)
     {
         if (!IsEnabled())
         {
@@ -103,7 +89,7 @@ public class BackupService
 
         // If the backup lock is already locked, skip backup. This stops multiple backups running at once
         // Passing 0 is a non-blocking Wait, will return false if the lock can't be acquired
-        var lockAcquired = await BackupLock.WaitAsync(0);
+        var lockAcquired = await BackupLock.WaitAsync(0, cancellationToken);
         if (!lockAcquired)
         {
             return;
@@ -125,19 +111,19 @@ public class BackupService
             List<string> currentProfilePaths;
             try
             {
-                currentProfilePaths = FileUtil.GetFiles(ProfileDir);
+                currentProfilePaths = fileUtil.GetFiles(ProfileDir);
             }
             catch (Exception ex)
             {
-                Logger.Debug($"Skipping profile backup: Unable to read profiles directory, {ex.Message}");
+                logger.Debug($"Skipping profile backup: Unable to read profiles directory, {ex.Message}");
                 return;
             }
 
             if (currentProfilePaths.Count == 0)
             {
-                if (Logger.IsLogEnabled(LogLevel.Debug))
+                if (logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    Logger.Debug("No profiles to backup");
+                    logger.Debug("No profiles to backup");
                 }
 
                 return;
@@ -145,33 +131,37 @@ public class BackupService
 
             try
             {
-                FileUtil.CreateDirectory(targetDir);
+                fileUtil.CreateDirectory(targetDir);
 
                 foreach (var profilePath in currentProfilePaths)
                 {
                     // Get filename + extension, removing the path
-                    var profileFileName = FileUtil.GetFileNameAndExtension(profilePath);
+                    var profileFileName = fileUtil.GetFileNameAndExtension(profilePath);
 
                     // Create absolute path to file
                     var relativeSourceFilePath = Path.Combine(ProfileDir, profileFileName);
                     var absoluteDestinationFilePath = Path.Combine(targetDir, profileFileName);
-                    if (!FileUtil.CopyFile(relativeSourceFilePath, absoluteDestinationFilePath))
+                    if (!fileUtil.CopyFile(relativeSourceFilePath, absoluteDestinationFilePath))
                     {
-                        Logger.Error($"Source file not found: {relativeSourceFilePath}. Cannot copy to: {absoluteDestinationFilePath}");
+                        logger.Error($"Source file not found: {relativeSourceFilePath}. Cannot copy to: {absoluteDestinationFilePath}");
                     }
                 }
 
                 // Write a copy of active mods.
-                await FileUtil.WriteFileAsync(Path.Combine(targetDir, activeModsFilename), JsonUtil.Serialize(ActiveServerMods)!);
+                await fileUtil.WriteFileAsync(
+                    Path.Combine(targetDir, ActiveModsFilename),
+                    jsonUtil.Serialize(GetActiveServerMods())
+                        ?? throw new InvalidOperationException("Could not serialize active server mods!")
+                );
 
-                if (Logger.IsLogEnabled(LogLevel.Debug))
+                if (logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    Logger.Debug($"Profile backup created in: {targetDir}");
+                    logger.Debug($"Profile backup created in: {targetDir}");
                 }
             }
             catch (Exception ex)
             {
-                Logger.Error($"Unable to write to backup profile directory: {ex.Message}");
+                logger.Error($"Unable to write to backup profile directory: {ex.Message}");
                 return;
             }
 
@@ -187,16 +177,16 @@ public class BackupService
     ///     Check to see if the backup service is enabled via the config.
     /// </summary>
     /// <returns> True if enabled, false otherwise. </returns>
-    protected bool IsEnabled()
+    private bool IsEnabled()
     {
         if (BackupConfig.Enabled)
         {
             return true;
         }
 
-        if (Logger.IsLogEnabled(LogLevel.Debug))
+        if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            Logger.Debug("Profile backups disabled");
+            logger.Debug("Profile backups disabled");
         }
 
         return false;
@@ -207,7 +197,7 @@ public class BackupService
     ///     the configuration and the current backup date.
     /// </summary>
     /// <returns> The target directory path for the backup. </returns>
-    protected string GenerateBackupTargetDir()
+    private string GenerateBackupTargetDir()
     {
         var backupDate = GenerateBackupDate();
         return Path.GetFullPath($"{BackupConfig.Directory}/{backupDate}");
@@ -217,9 +207,9 @@ public class BackupService
     ///     Generates a formatted backup date string in the format `YYYY-MM-DD_hh-mm-ss`.
     /// </summary>
     /// <returns> The formatted backup date string. </returns>
-    protected string GenerateBackupDate()
+    private string GenerateBackupDate()
     {
-        return TimeUtil.GetDateTimeNow().ToString("yyyy-MM-dd_HH-mm-ss");
+        return timeUtil.GetDateTimeNow().ToString("yyyy-MM-dd_HH-mm-ss");
     }
 
     /// <summary>
@@ -227,7 +217,7 @@ public class BackupService
     ///     This method reads the backup directory, and sorts backups by modification time. If the number of backups exceeds
     ///     the configured maximum, it deletes the oldest backups.
     /// </summary>
-    protected void CleanBackups()
+    private void CleanBackups()
     {
         var backupDir = BackupConfig.Directory;
         var backupPaths = GetBackupPaths(backupDir);
@@ -242,7 +232,7 @@ public class BackupService
         }
     }
 
-    protected SortedDictionary<DateTime, string> GetBackupPathsWithCreationTimestamp(IEnumerable<string> backupPaths)
+    private SortedDictionary<DateTime, string> GetBackupPathsWithCreationTimestamp(IEnumerable<string> backupPaths)
     {
         var result = new SortedDictionary<DateTime, string>();
         foreach (var backupPath in backupPaths)
@@ -259,14 +249,14 @@ public class BackupService
         return result;
     }
 
-    protected string? GetMostRecentProfileBackup(IEnumerable<string> backupPaths, string profileId)
+    private string? GetMostRecentProfileBackup(IEnumerable<string> backupPaths, string profileId)
     {
         var profileFilename = $"{profileId}.json";
         var backupPathsWithCreationDateTime = GetBackupPathsWithCreationTimestamp(backupPaths);
 
         foreach (var (_, backupPath) in backupPathsWithCreationDateTime.Reverse())
         {
-            var profileBackups = FileUtil.GetFiles(backupPath);
+            var profileBackups = fileUtil.GetFiles(backupPath);
             var profileBackup = profileBackups.FirstOrDefault(path => path.EndsWith(profileFilename));
             if (profileBackup != null)
             {
@@ -282,9 +272,9 @@ public class BackupService
     /// </summary>
     /// <param name="dir"> The directory to search for backup files. </param>
     /// <returns> List of sorted backup file paths. </returns>
-    protected List<string> GetBackupPaths(string dir)
+    private List<string> GetBackupPaths(string dir)
     {
-        var backups = FileUtil.GetDirectories(dir).ToList();
+        var backups = fileUtil.GetDirectories(dir).ToList();
         backups.Sort(CompareBackupDates);
 
         return backups;
@@ -296,7 +286,7 @@ public class BackupService
     /// <param name="a"> The name of the first backup folder. </param>
     /// <param name="b"> The name of the second backup folder. </param>
     /// <returns> The difference in time between the two dates in milliseconds, or `null` if either date is invalid. </returns>
-    protected int CompareBackupDates(string a, string b)
+    private int CompareBackupDates(string a, string b)
     {
         var dateA = ExtractDateFromFolderName(a);
         var dateB = ExtractDateFromFolderName(b);
@@ -314,7 +304,7 @@ public class BackupService
     /// </summary>
     /// <param name="folderPath"> The name of the folder from which to extract the date. </param>
     /// <returns> A DateTime object if the folder name is in the correct format, otherwise null. </returns>
-    protected DateTime? ExtractDateFromFolderName(string folderPath)
+    private DateTime? ExtractDateFromFolderName(string folderPath)
     {
         var folderName = Path.GetFileName(folderPath);
         const string format = "yyyy-MM-dd_HH-mm-ss";
@@ -323,7 +313,7 @@ public class BackupService
         var minDate = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         var maxDate = now.AddYears(5);
 
-        foreach (var culture in Cultures)
+        foreach (var culture in _cultures)
         {
             if (
                 DateTime.TryParseExact(
@@ -342,7 +332,7 @@ public class BackupService
             }
         }
 
-        Logger.Warning($"Invalid backup folder name format: {folderPath}, [{folderName}]");
+        logger.Warning($"Invalid backup folder name format: {folderPath}, [{folderName}]");
         return null;
     }
 
@@ -351,16 +341,16 @@ public class BackupService
     /// </summary>
     /// <param name="backupFilenames"> List of backup file names to be removed. </param>
     /// <returns> A promise that resolves when all specified backups have been removed. </returns>
-    protected void RemoveExcessBackups(IEnumerable<string> backupFilenames)
+    private void RemoveExcessBackups(IEnumerable<string> backupFilenames)
     {
         var filePathsToDelete = backupFilenames.Select(x => x);
         foreach (var pathToDelete in filePathsToDelete)
         {
-            FileUtil.DeleteDirectory(Path.Combine(pathToDelete), true);
+            fileUtil.DeleteDirectory(Path.Combine(pathToDelete), true);
 
-            if (Logger.IsLogEnabled(LogLevel.Debug))
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                Logger.Debug($"Deleted old backup: {pathToDelete}");
+                logger.Debug($"Deleted old backup: {pathToDelete}");
             }
         }
     }
@@ -369,11 +359,11 @@ public class BackupService
     ///     Get a List of active server mod details.
     /// </summary>
     /// <returns> A List of mod names. </returns>
-    protected List<string> GetActiveServerMods()
+    private List<string> GetActiveServerMods()
     {
         List<string> result = [];
 
-        foreach (var mod in LoadedMods)
+        foreach (var mod in loadedMods)
         {
             result.Add($"{mod.ModMetadata.Author} - {mod.ModMetadata.Version}");
         }
@@ -399,7 +389,7 @@ public class BackupService
         }
 
         // Restore the most recent profile backup
-        var profileFileName = FileUtil.GetFileNameAndExtension(mostRecentBackupForProfile);
+        var profileFileName = fileUtil.GetFileNameAndExtension(mostRecentBackupForProfile);
         var targetProfilePath = Path.Combine(ProfileDir, profileFileName);
 
         File.Copy(mostRecentBackupForProfile, targetProfilePath, true);
