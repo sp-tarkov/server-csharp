@@ -19,6 +19,7 @@ using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services.Hosted;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Helpers;
 using SPTarkov.Server.Middleware;
 using SPTarkov.Server.Modding;
 using SPTarkov.Server.Web;
@@ -28,7 +29,6 @@ namespace SPTarkov.Server;
 public static class Program
 {
     internal static ILogger? _earlyLogger;
-    private static ModLoaderController? _modLoaderController;
 
     public static async Task Main(string[] args)
     {
@@ -108,32 +108,20 @@ public static class Program
 
         // Init mod loader
         List<SptMod> loadedMods = [];
-        if (InitModLoader(loggerFactory, configuration, out var modLoaderController))
+        var modLoader = ModLoader.Create(loggerFactory, configuration);
+        if (modLoader != null)
         {
-            // Clean the console a bit
-            var isPrepatchedProcess = args.Contains(ModLoaderController.PrepatchedArg, StringComparer.OrdinalIgnoreCase);
-            if (isPrepatchedProcess && modLoaderController != null)
+            var runResult = await modLoader.RunModLoader(args);
+            if (!runResult.ShouldStartServer)
             {
-                ClearConsole();
-                await modLoaderController.LogPrepatches();
-            }
-
-            await modLoaderController!.LoadMods();
-            loadedMods = modLoaderController.ValidRuntimeMods;
-
-            if (!isPrepatchedProcess && modLoaderController.HasPatchers)
-            {
-                if (await modLoaderController.ApplyPrepatches(loadedMods))
-                {
-                    await modLoaderController.StartPrepatchedServerProcess(args, modLoaderController);
-                }
-
                 return;
             }
+
+            loadedMods = runResult.ValidRuntimeMods;
         }
 
         // Create web builder and logger
-        var builder = CreateNewHostBuilder(loggerFactory, configuration);
+        var builder = ProgramHelpers.CreateNewHostBuilder(loggerFactory, configuration);
         builder.Host.UseSptLoggerWithoutProvider(loggerFactory.ServiceProvider);
 
         builder.Host.UseDefaultServiceProvider(options =>
@@ -147,7 +135,7 @@ public static class Program
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(Program));
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(PatchManager));
 
-        if (ProgramStatics.MODS() && modLoaderController != null)
+        if (ProgramStatics.MODS())
         {
             diHandler.AddInjectableTypesFromAssemblies(loadedMods.SelectMany(a => a.Assemblies));
             diHandler.AddInjectableTypesFromTypeAssembly(typeof(SPTStartupHostedService));
@@ -241,74 +229,6 @@ public static class Program
                 );
             }
         );
-    }
-
-    private static WebApplicationBuilder CreateNewHostBuilder(
-        SptEarlyLoggerFactory earlyFactory,
-        IReadOnlyDictionary<Type, BaseConfig> configuration
-    )
-    {
-        var builder = WebApplication.CreateBuilder(new WebApplicationOptions { WebRootPath = "./SPT_Data/wwwroot" });
-        builder.Logging.ClearProviders();
-        builder.Logging.AddProvider(earlyFactory.Provider);
-        builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
-
-        foreach (var configEntry in configuration)
-        {
-            builder.Services.AddSingleton(configEntry.Key, configEntry.Value);
-        }
-
-        return builder;
-    }
-
-    private static void ClearConsole()
-    {
-        if (Console.IsOutputRedirected)
-        {
-            return;
-        }
-
-        Console.Clear();
-    }
-
-    /// <summary>
-    ///     Initializes the mod loader container
-    /// </summary>
-    /// <returns>True if mods are enabled</returns>
-    private static bool InitModLoader(
-        SptEarlyLoggerFactory loggerFactory,
-        IReadOnlyDictionary<Type, BaseConfig> configuration,
-        out ModLoaderController? modLoaderController
-    )
-    {
-        if (!ProgramStatics.MODS())
-        {
-            modLoaderController = null;
-            return false;
-        }
-
-        // We need the SPT dependencies for the ModValidator, but mods are loaded before the web application
-        // So we create a disposable web application that we will throw away after getting the mods to load
-        var builder = CreateNewHostBuilder(loggerFactory, configuration);
-        // register SPT components
-        var diHandler = new DependencyInjectionHandler(builder.Services);
-        diHandler.AddInjectableTypesFromAssembly(typeof(Program).Assembly);
-        diHandler.AddInjectableTypesFromAssembly(typeof(SPTStartupHostedService).Assembly);
-        diHandler.InjectAll();
-
-        // register the mod loader components
-        var provider = builder
-            .Services.AddScoped<ISemVer, SemanticVersioningSemVer>()
-            .AddSingleton<ModLoaderController>()
-            .AddSingleton<ModValidator>()
-            .AddSptLoggerWithoutProvider(loggerFactory.ServiceProvider)
-            .BuildServiceProvider();
-
-        modLoaderController =
-            provider.GetService<ModLoaderController>()
-            ?? throw new NullReferenceException("Could not retrieve `ModLoaderController` during initialization.");
-
-        return ProgramStatics.MODS();
     }
 
     private static bool IsRunFromInstallationFolder()

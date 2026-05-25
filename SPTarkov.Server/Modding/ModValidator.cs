@@ -7,15 +7,15 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Modding;
 
-public partial class ModValidator(
+public sealed partial class ModValidator(
     ISptLogger<ModValidator> logger,
     ServerLocalisationService localisationService,
     ISemVer semVer,
     FileUtil fileUtil
 )
 {
-    protected readonly Dictionary<string, SptMod> Imported = [];
-    protected readonly HashSet<string> SkippedMods = [];
+    private readonly Dictionary<string, SptMod> _imported = [];
+    private readonly HashSet<string> _skippedMods = [];
 
     public List<SptMod> ValidateMods(IEnumerable<SptMod> mods)
     {
@@ -104,7 +104,7 @@ public partial class ModValidator(
             AddMod(mod);
         }
 
-        return Imported.Select(mod => mod.Value).ToList();
+        return _imported.Select(mod => mod.Value).ToList();
     }
 
     /// <summary>
@@ -122,13 +122,13 @@ public partial class ModValidator(
             // if there's more than one entry for a given mod it means there's at least 2 mods with the same GUID trying to load.
             if (groupedMods[mod.ModGuid].Count > 1)
             {
-                SkippedMods.Add(mod.ModGuid);
+                _skippedMods.Add(mod.ModGuid);
                 validMods.RemoveAll(modInner => modInner.ModMetadata.ModGuid == mod.ModGuid);
             }
         }
 
         // at this point skippedMods only contains mods that are duplicated, so we can just go through every single entry and log it
-        foreach (var modName in SkippedMods)
+        foreach (var modName in _skippedMods)
         {
             logger.Error(localisationService.GetText("modloader-x_duplicates_found", modName));
         }
@@ -214,7 +214,7 @@ public partial class ModValidator(
     /// <param name="mod">Mod details</param>
     protected void AddMod(SptMod mod)
     {
-        Imported.Add(mod.ModMetadata.ModGuid, mod);
+        _imported.Add(mod.ModMetadata.ModGuid, mod);
         logger.Info(
             localisationService.GetText(
                 "modloader-loaded_mod",
@@ -235,7 +235,7 @@ public partial class ModValidator(
     /// <returns></returns>
     protected bool ShouldSkipMod(AbstractModMetadata pkg)
     {
-        return SkippedMods.Contains($"{pkg.Author}-{pkg.Name}");
+        return _skippedMods.Contains($"{pkg.Author}-{pkg.Name}");
     }
 
     protected bool AreModDependenciesFulfilled(AbstractModMetadata pkg, Dictionary<string, AbstractModMetadata> loadedMods)

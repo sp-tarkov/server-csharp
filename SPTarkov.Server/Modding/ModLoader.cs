@@ -2,29 +2,23 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Loader;
 using Mono.Cecil;
+using SPTarkov.Common.Extensions;
+using SPTarkov.Common.Logger;
 using SPTarkov.Common.Models.Logging;
+using SPTarkov.Common.Semver;
+using SPTarkov.Common.Semver.Implementations;
+using SPTarkov.DI;
 using SPTarkov.Reflection.Patching;
+using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Services.Hosted;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Helpers;
 
 namespace SPTarkov.Server.Modding;
 
-public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModValidator modValidator, JsonUtil jsonUtil, FileUtil fileUtil)
+public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modValidator, JsonUtil jsonUtil, FileUtil fileUtil)
 {
-    public const string PatchedAssemblyName = "./SPTarkov.Server.Core.Patched.dll";
-    public const string PrepatchStagePath = "./user/cache/prepatcher/server";
-    public const string PrepatchedArg = "--prepatched";
-
-    public List<SptMod> ValidRuntimeMods
-    {
-        get { return modValidator.ValidateMods(_loadedMods); }
-    }
-
-    public bool HasPatchers
-    {
-        get { return _prepatches.Count > 0; }
-    }
-
     private List<SptMod> _loadedMods = [];
     private readonly List<AbstractPrepatch> _prepatches = [];
 
@@ -34,8 +28,72 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
 
     private const string ModPath = "./user/mods/";
     private const string PatcherPath = "./user/patchers/";
+    private const string PatchedAssemblyName = "./SPTarkov.Server.Core.Patched.dll";
+    private const string PrepatchStagePath = "./user/cache/prepatcher/server";
+    private const string PrepatchedArg = "--prepatched";
 
-    public async Task LoadMods()
+    /// <summary>
+    ///     Initializes the mod loader container
+    /// </summary>
+    /// <returns>True if mods are enabled</returns>
+    public static ModLoader? Create(SptEarlyLoggerFactory loggerFactory, IReadOnlyDictionary<Type, BaseConfig> configuration)
+    {
+        if (!ProgramStatics.MODS())
+        {
+            return null;
+        }
+
+        // We need the SPT dependencies for the ModValidator, but mods are loaded before the web application
+        // So we create a disposable web application that we will throw away after getting the mods to load
+        var builder = ProgramHelpers.CreateNewHostBuilder(loggerFactory, configuration);
+        // register SPT components
+        var diHandler = new DependencyInjectionHandler(builder.Services);
+        diHandler.AddInjectableTypesFromAssembly(typeof(Program).Assembly);
+        diHandler.AddInjectableTypesFromAssembly(typeof(SPTStartupHostedService).Assembly);
+        diHandler.InjectAll();
+
+        // register the mod loader components
+        var provider = builder
+            .Services.AddScoped<ISemVer, SemanticVersioningSemVer>()
+            .AddSingleton<ModLoader>()
+            .AddSingleton<ModValidator>()
+            .AddSptLoggerWithoutProvider(loggerFactory.ServiceProvider)
+            .BuildServiceProvider();
+
+        return provider.GetService<ModLoader>()
+            ?? throw new NullReferenceException("Could not retrieve `ModLoaderController` during initialization.");
+    }
+
+    /// <summary>
+    ///     Initializes the mod loader container, and runs the entire mod loader process
+    /// </summary>
+    /// <returns>Active runtime mods</returns>
+    public async Task<ModLoaderRunResult> RunModLoader(string[] args)
+    {
+        // Clean the console a bit
+        var isPrepatchedProcess = args.Contains(PrepatchedArg, StringComparer.OrdinalIgnoreCase);
+        if (isPrepatchedProcess)
+        {
+            ClearConsole();
+            await LogPrepatches();
+        }
+
+        await LoadMods();
+        var loadedMods = modValidator.ValidateMods(_loadedMods);
+
+        if (!isPrepatchedProcess && _prepatches.Count > 0)
+        {
+            if (await ApplyPrepatches(loadedMods))
+            {
+                await StartPrepatchedServerProcess(args);
+                return new ModLoaderRunResult(false, loadedMods);
+            }
+        }
+
+        return new ModLoaderRunResult(true, loadedMods);
+    }
+
+    private async Task LoadMods()
     {
         if (!await TryLoadServerCoreBytes())
         {
@@ -75,7 +133,7 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
         _loadedMods = _loadedMods.OrderBy(m => m.ModMetadata.ModGuid, StringComparer.OrdinalIgnoreCase).ToList();
     }
 
-    public async Task LogPrepatches()
+    private async Task LogPrepatches()
     {
         var text = await fileUtil.ReadFileAsync(Path.Combine(Path.GetFullPath(PrepatchStagePath), "prepatch-result.json"));
         var results = jsonUtil.Deserialize<List<PrepatchResultEntry>>(text);
@@ -92,7 +150,7 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
     /// </summary>
     /// <param name="validRuntimeMods">Validated runtime mods</param>
     /// <returns>True if all patches succeeded</returns>
-    public async Task<bool> ApplyPrepatches(IReadOnlyCollection<SptMod> validRuntimeMods)
+    private async Task<bool> ApplyPrepatches(IReadOnlyCollection<SptMod> validRuntimeMods)
     {
         if (_serverCoreModule is null)
         {
@@ -138,16 +196,26 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
         return _prepatchResults.All(r => r.Succeeded);
     }
 
+    private static void ClearConsole()
+    {
+        if (Console.IsOutputRedirected)
+        {
+            return;
+        }
+
+        Console.Clear();
+    }
+
     /// <summary>
     ///     Starts the patched server as a new process. This one is destroyed in release and held open in debug so IDE's don't die.
     /// </summary>
-    public async Task StartPrepatchedServerProcess(string[] args, ModLoaderController modLoaderController)
+    private async Task StartPrepatchedServerProcess(string[] args)
     {
         var sourceDirectory = AppContext.BaseDirectory;
         var stageDirectory = Path.GetFullPath(PrepatchStagePath);
 
         CopyApplicationToCache(sourceDirectory, stageDirectory);
-        await modLoaderController.WriteResultLog();
+        await WriteResultLog();
 
         File.Copy(Path.GetFullPath(PatchedAssemblyName), Path.Combine(stageDirectory, "SPTarkov.Server.Core.dll"), overwrite: true);
 
@@ -415,3 +483,5 @@ public class ModLoaderController(ISptLogger<ModLoaderController> logger, ModVali
         return true;
     }
 }
+
+public sealed record ModLoaderRunResult(bool ShouldStartServer, List<SptMod> ValidRuntimeMods);
