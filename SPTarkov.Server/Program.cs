@@ -150,11 +150,6 @@ public static class Program
         // Configure Kestrel options
         ConfigureKestrel(builder);
 
-#if DEBUG
-        builder.Logging.AddFilter("System.Net.Http.HttpClient", LogLevel.Debug);
-#else
-        builder.Logging.AddFilter("System.Net.Http.HttpClient", LogLevel.Warning);
-#endif
         builder.Services.AddHttpClient();
         builder.Services.AddHttpClient(
             "Github",
