@@ -28,19 +28,11 @@ public record TestModMetadata : AbstractModMetadata, IModWebMetadata
 }
 
 [Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
-public class TestMod(ISptLogger<TestMod> logger, IEnumerable<IRuntimePatch> patches, DatabaseService databaseService) : IOnLoad
+public class TestMod(ISptLogger<TestMod> logger) : IOnLoad
 {
     public async Task OnLoad(CancellationToken stoppingToken)
     {
         logger.Info("Test mod loading!");
-
-        foreach (var (_, item) in databaseService.GetItems())
-        {
-            if (item.Properties?.AimSensitivity?.IsFloat ?? false)
-            {
-                logger.Info($"AimSensitivity: {item.Properties.AimSensitivity.Float}");
-            }
-        }
 
         await Task.CompletedTask;
     }
