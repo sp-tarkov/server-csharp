@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Migration.Migrations._3._11;
 using SPTarkov.Server.Core.Services;
 
-namespace SPTarkov.Server.Core.Migration.Migrations;
+namespace SPTarkov.Server.Core.Migration.Migrations._4._0;
 
 /// <summary>
 /// In 16.8.0.37972 BSG added customization for voices, technically this only affects BE profiles, but this should fix these.

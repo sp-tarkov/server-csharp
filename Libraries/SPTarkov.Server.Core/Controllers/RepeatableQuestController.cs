@@ -2,7 +2,7 @@ using System.Collections.Frozen;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Generators.RepeatableQuestGeneration;
+using SPTarkov.Server.Core.Generators.RepeatableQuests;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;

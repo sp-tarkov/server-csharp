@@ -1,13 +1,12 @@
 ﻿using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Helpers.Dialog.Commando.SptCommands;
-using SPTarkov.Server.Core.Helpers.Dialogue.Commando;
+using SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Services;
 
-namespace SPTarkov.Server.Core.Helpers.Dialog.Commando;
+namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando;
 
 [Injectable]
 public class SptCommandoCommands : ICommandoCommand

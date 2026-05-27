@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
 using Range = SemanticVersioning.Range;
 
-namespace SPTarkov.Server.Core.Migration.Migrations;
+namespace SPTarkov.Server.Core.Migration.Migrations._3._11;
 
 /// <summary>
 /// In 0.16.1.3.35312 BSG changed this to from an int to a hex64 encoded value.

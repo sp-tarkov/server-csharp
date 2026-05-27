@@ -4,7 +4,7 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Services;
 
-namespace SPTarkov.Server.Core.Migration.Migrations;
+namespace SPTarkov.Server.Core.Migration.Migrations.Fixes;
 
 [Injectable]
 public sealed class InvalidPocketFix(DatabaseService databaseService) : AbstractProfileMigration

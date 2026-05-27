@@ -4,6 +4,7 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using Path = System.IO.Path;

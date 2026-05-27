@@ -1,6 +1,8 @@
 using SPTarkov.Server.Core.Models.Common;
 
 // This is an auto generated file, do not modify. Re-generate by running MongoIdTplGenerator.exe
+namespace SPTarkov.Server.Core.Models.Enums;
+
 public static class ItemTpl
 {
     public static readonly MongoId AMMO_127X108_B32 = new MongoId("5cde8864d7f00c0010373be1");

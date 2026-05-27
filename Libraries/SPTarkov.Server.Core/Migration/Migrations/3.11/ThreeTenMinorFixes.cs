@@ -2,7 +2,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 
-namespace SPTarkov.Server.Core.Migration.Migrations;
+namespace SPTarkov.Server.Core.Migration.Migrations._3._11;
 
 /// <summary>
 /// In the minor versions of 3.10 or somewhere in between these properties were added, it's possible that a profile has not updated

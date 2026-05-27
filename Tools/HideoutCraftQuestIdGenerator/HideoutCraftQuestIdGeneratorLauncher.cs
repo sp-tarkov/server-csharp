@@ -1,7 +1,7 @@
+using HideoutCraftQuestIdGenerator.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using SPTarkov.DI;
-using SPTarkov.Server.Config;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Services.Hosted;

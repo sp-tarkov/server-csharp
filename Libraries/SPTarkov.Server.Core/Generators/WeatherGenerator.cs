@@ -2,12 +2,12 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
-using SPTarkov.Server.Core.Models.Eft.Weather;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Weather;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
+using WeatherModel = SPTarkov.Server.Core.Models.Eft.Weather.Weather;
 
 namespace SPTarkov.Server.Core.Generators;
 
@@ -31,7 +31,7 @@ public class WeatherGenerator(
     /// <param name="timestamp">Optional - Current time in millisecond ticks</param>
     /// <param name="previousPreset">Optional -What weather preset was last generated</param>
     /// <returns>A generated <see cref="Weather"/> object</returns>
-    public Weather GenerateWeather(
+    public WeatherModel GenerateWeather(
         Season currentSeason,
         ref Dictionary<WeatherPreset, double> presetWeights,
         long? timestamp = null,
@@ -84,7 +84,7 @@ public class WeatherGenerator(
     /// <param name="chosenPreset">The weather preset chosen to generate</param>
     /// <param name="timestamp">OPTIONAL - generate the weather object with a specific time instead of now</param>
     /// <returns>A generated <see cref="Weather"/> object</returns>
-    protected Weather GenerateWeatherByPreset(WeatherPreset chosenPreset, long? timestamp)
+    protected SPTarkov.Server.Core.Models.Eft.Weather.Weather GenerateWeatherByPreset(WeatherPreset chosenPreset, long? timestamp)
     {
         var generator = weatherGenerators.FirstOrDefault(gen => gen.CanHandle(chosenPreset));
         if (generator is null)
@@ -141,7 +141,7 @@ public class WeatherGenerator(
     /// </summary>
     /// <param name="weather"> Object to update </param>
     /// <param name="timestamp"> Optional, timestamp used </param>
-    protected void SetCurrentDateTime(Weather weather, long? timestamp = null)
+    protected void SetCurrentDateTime(WeatherModel weather, long? timestamp = null)
     {
         var inRaidTime = timestamp is null ? weatherHelper.GetInRaidTime() : weatherHelper.GetInRaidTime(timestamp.Value);
         var normalTime = inRaidTime.GetBsgFormattedWeatherTime();

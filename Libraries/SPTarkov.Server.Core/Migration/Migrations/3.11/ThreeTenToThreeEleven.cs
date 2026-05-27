@@ -8,7 +8,7 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Services;
 using Range = SemanticVersioning.Range;
 
-namespace SPTarkov.Server.Core.Migration.Migrations;
+namespace SPTarkov.Server.Core.Migration.Migrations._3._11;
 
 [Injectable]
 public sealed class ThreeTenToThreeEleven(

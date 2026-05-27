@@ -2,7 +2,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 
-namespace SPTarkov.Server.Core.Migration.Migrations;
+namespace SPTarkov.Server.Core.Migration.Migrations._4._1;
 
 [Injectable]
 public sealed class AddMissingPrestigesToProfile : AbstractProfileMigration

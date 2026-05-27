@@ -1,10 +1,11 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Migration.Migrations._3._11;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Utils;
 using Range = SemanticVersioning.Range;
 
-namespace SPTarkov.Server.Core.Migration.Migrations;
+namespace SPTarkov.Server.Core.Migration.Migrations._4._0;
 
 [Injectable]
 public sealed class ThreeElevenToFourZero(Watermark watermark) : AbstractProfileMigration

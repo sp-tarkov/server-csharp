@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
 
-namespace SPTarkov.Server.Core.Migration.Migrations;
+namespace SPTarkov.Server.Core.Migration.Migrations._4._0;
 
 [Injectable]
 public sealed class BuyRestrictionMaxStringToInt : AbstractProfileMigration

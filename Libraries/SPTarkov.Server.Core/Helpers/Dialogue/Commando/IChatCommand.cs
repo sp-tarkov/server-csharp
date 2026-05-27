@@ -2,7 +2,7 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 
-namespace SPTarkov.Server.Core.Helpers.Dialog.Commando;
+namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando;
 
 public interface IChatCommand
 {

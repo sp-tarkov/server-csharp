@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
 
-namespace SPTarkov.Server.Core.Migration.Migrations;
+namespace SPTarkov.Server.Core.Migration.Migrations._4._0;
 
 /// <summary>
 /// Password property was removed from profile.info in 4.0

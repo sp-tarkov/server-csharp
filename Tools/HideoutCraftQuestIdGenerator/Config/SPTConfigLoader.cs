@@ -5,7 +5,7 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
-namespace SPTarkov.Server.Config;
+namespace HideoutCraftQuestIdGenerator.Config;
 
 internal static class SPTConfigLoader
 {
