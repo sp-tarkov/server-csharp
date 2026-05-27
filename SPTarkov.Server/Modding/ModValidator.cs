@@ -111,7 +111,7 @@ public sealed partial class ModValidator(
     ///     Check for duplicate mods loaded, show error if any
     /// </summary>
     /// <param name="validMods">List of validated mods to check for duplicates</param>
-    protected void CheckForDuplicateMods(List<SptMod> validMods)
+    private void CheckForDuplicateMods(List<SptMod> validMods)
     {
         var groupedMods = new Dictionary<string, List<AbstractModMetadata>>();
 
@@ -139,7 +139,7 @@ public sealed partial class ModValidator(
     /// </summary>
     /// <param name="mods">mods to validate</param>
     /// <returns>array of mod folder names</returns>
-    protected IEnumerable<SptMod> GetValidMods(IEnumerable<SptMod> mods)
+    private IEnumerable<SptMod> GetValidMods(IEnumerable<SptMod> mods)
     {
         return mods.Where(ValidMod);
     }
@@ -149,7 +149,7 @@ public sealed partial class ModValidator(
     /// </summary>
     /// <param name="mod">Mod to check compatibility with SPT</param>
     /// <returns>True if compatible</returns>
-    protected bool IsModCompatibleWithSpt(AbstractModMetadata mod)
+    private bool IsModCompatibleWithSpt(AbstractModMetadata mod)
     {
         var sptVersion = ProgramStatics.SPT_VERSION();
         var modName = $"{mod.Author}-{mod.Name}";
@@ -181,7 +181,7 @@ public sealed partial class ModValidator(
     /// Throws an exception if the mod was built for a newer SPT version than the current running SPT version
     /// </summary>
     /// <param name="mod">mod to validate</param>
-    protected void ValidateCoreAssemblyReference(SptMod mod)
+    private static void ValidateCoreAssemblyReference(SptMod mod)
     {
         var sptVersion = ProgramStatics.SPT_VERSION();
         var modName = $"{mod.ModMetadata.Author}-{mod.ModMetadata.Name}";
@@ -198,7 +198,7 @@ public sealed partial class ModValidator(
                 continue;
             }
 
-            var modRefVersion = new SemanticVersioning.Version(sptCoreAsmRefVersion?[..^2]!);
+            var modRefVersion = new SemanticVersioning.Version(sptCoreAsmRefVersion[..^2]);
             if (modRefVersion > sptVersion)
             {
                 throw new Exception(
@@ -212,7 +212,7 @@ public sealed partial class ModValidator(
     ///     Add into class property "Imported"
     /// </summary>
     /// <param name="mod">Mod details</param>
-    protected void AddMod(SptMod mod)
+    private void AddMod(SptMod mod)
     {
         _imported.Add(mod.ModMetadata.ModGuid, mod);
         logger.Info(
@@ -233,12 +233,12 @@ public sealed partial class ModValidator(
     /// </summary>
     /// <param name="pkg">mod package.json data</param>
     /// <returns></returns>
-    protected bool ShouldSkipMod(AbstractModMetadata pkg)
+    private bool ShouldSkipMod(AbstractModMetadata pkg)
     {
         return _skippedMods.Contains($"{pkg.Author}-{pkg.Name}");
     }
 
-    protected bool AreModDependenciesFulfilled(AbstractModMetadata pkg, Dictionary<string, AbstractModMetadata> loadedMods)
+    private bool AreModDependenciesFulfilled(AbstractModMetadata pkg, Dictionary<string, AbstractModMetadata> loadedMods)
     {
         if (pkg.ModDependencies == null)
         {
@@ -284,7 +284,7 @@ public sealed partial class ModValidator(
         return true;
     }
 
-    protected bool IsModCompatible(AbstractModMetadata modToCheck, Dictionary<string, AbstractModMetadata> loadedMods)
+    private bool IsModCompatible(AbstractModMetadata modToCheck, Dictionary<string, AbstractModMetadata> loadedMods)
     {
         if (modToCheck.Incompatibilities == null)
         {
@@ -326,7 +326,7 @@ public sealed partial class ModValidator(
     /// </summary>
     /// <param name="mod">name of mod in /mods/ to validate</param>
     /// <returns>true if valid</returns>
-    protected bool ValidMod(SptMod mod)
+    private bool ValidMod(SptMod mod)
     {
         var modName = mod.ModMetadata.Name;
 
