@@ -9,7 +9,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using WeatherModel = SPTarkov.Server.Core.Models.Eft.Weather.Weather;
 
-namespace SPTarkov.Server.Core.Generators;
+namespace SPTarkov.Server.Core.Generators.Weather;
 
 [Injectable]
 public class WeatherGenerator(
