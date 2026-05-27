@@ -1,6 +1,5 @@
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Generators.Ragfair;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;

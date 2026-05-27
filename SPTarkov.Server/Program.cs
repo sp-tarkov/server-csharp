@@ -4,7 +4,6 @@ using System.Security.Authentication;
 using System.Text;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
-using Microsoft.Net.Http.Headers;
 using SPTarkov.Common.Extensions;
 using SPTarkov.Common.Logger;
 using SPTarkov.DI;

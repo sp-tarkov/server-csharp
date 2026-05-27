@@ -2,7 +2,6 @@ using System.Collections.Concurrent;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Generators.Loot;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;

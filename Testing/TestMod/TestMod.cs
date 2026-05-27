@@ -1,9 +1,7 @@
 ﻿using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Web;
 using Range = SemanticVersioning.Range;
 using Version = SemanticVersioning.Version;

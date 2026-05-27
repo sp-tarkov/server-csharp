@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Utils.Json;
 
 namespace SPTarkov.Server.Core.Models.Spt.Server;

@@ -1,5 +1,3 @@
-using Mono.Cecil;
-
 namespace SPTarkov.Reflection.Patching;
 
 public interface IPrepatch

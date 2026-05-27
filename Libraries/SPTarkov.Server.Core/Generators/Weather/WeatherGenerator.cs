@@ -4,7 +4,6 @@ using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Spt.Weather;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 

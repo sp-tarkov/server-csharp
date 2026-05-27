@@ -1,4 +1,3 @@
-using System.Reflection;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
 
