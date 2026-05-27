@@ -7,7 +7,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Weather;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using WeatherModel = SPTarkov.Server.Core.Models.Eft.Weather.Weather;
 
 namespace SPTarkov.Server.Core.Generators.Weather;
 
@@ -19,7 +18,7 @@ public class WeatherGenerator(
     WeatherConfig weatherConfig,
     WeightedRandomHelper weightedRandomHelper,
     RandomUtil randomUtil,
-    IEnumerable<IWeatherPresetGenerator> weatherGenerators,
+    IEnumerable<IWeatherPreset> weatherGenerators,
     ICloner cloner
 )
 {
@@ -31,7 +30,7 @@ public class WeatherGenerator(
     /// <param name="timestamp">Optional - Current time in millisecond ticks</param>
     /// <param name="previousPreset">Optional -What weather preset was last generated</param>
     /// <returns>A generated <see cref="Weather"/> object</returns>
-    public WeatherModel GenerateWeather(
+    public Models.Eft.Weather.Weather GenerateWeather(
         Season currentSeason,
         ref Dictionary<WeatherPreset, double> presetWeights,
         long? timestamp = null,
@@ -141,7 +140,7 @@ public class WeatherGenerator(
     /// </summary>
     /// <param name="weather"> Object to update </param>
     /// <param name="timestamp"> Optional, timestamp used </param>
-    protected void SetCurrentDateTime(WeatherModel weather, long? timestamp = null)
+    protected void SetCurrentDateTime(Models.Eft.Weather.Weather weather, long? timestamp = null)
     {
         var inRaidTime = timestamp is null ? weatherHelper.GetInRaidTime() : weatherHelper.GetInRaidTime(timestamp.Value);
         var normalTime = inRaidTime.GetBsgFormattedWeatherTime();

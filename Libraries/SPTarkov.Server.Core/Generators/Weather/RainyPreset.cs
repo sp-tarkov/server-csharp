@@ -6,27 +6,29 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Generators.Weather;
 
 [Injectable]
-public class SunnyWeatherGenerator(WeightedRandomHelper weightedRandomHelper, RandomUtil randomUtil)
-    : AbstractWeatherPresetGeneratorBase(weightedRandomHelper, randomUtil)
+public class RainyPreset(WeightedRandomHelper weightedRandomHelper, RandomUtil randomUtil)
+    : AbstractWeatherPreset(weightedRandomHelper, randomUtil)
 {
     public override bool CanHandle(WeatherPreset preset)
     {
-        return preset == WeatherPreset.SUNNY;
+        return preset == WeatherPreset.RAINY;
     }
 
     public override Models.Eft.Weather.Weather Generate(PresetWeights weatherWeights)
     {
+        var clouds = GetWeightedClouds(weatherWeights);
+
         var result = new Models.Eft.Weather.Weather
         {
             Pressure = GetRandomDouble(weatherWeights.Pressure.Min, weatherWeights.Pressure.Max),
-            Temperature = 0, // Handled in caller
+            Temperature = 0, // // Handled in caller
             Fog = GetWeightedFog(weatherWeights),
-            RainIntensity = 0,
-            Rain = 0,
+            RainIntensity = GetRandomDouble(weatherWeights.RainIntensity.Min, weatherWeights.RainIntensity.Max),
+            Rain = GetWeightedRain(weatherWeights),
             WindGustiness = GetRandomDouble(weatherWeights.WindGustiness.Min, weatherWeights.WindGustiness.Max, 2),
             WindDirection = GetWeightedWindDirection(weatherWeights),
             WindSpeed = GetWeightedWindSpeed(weatherWeights),
-            Cloud = GetWeightedClouds(weatherWeights),
+            Cloud = clouds,
             Time = string.Empty,
             Date = string.Empty,
             Timestamp = 0,

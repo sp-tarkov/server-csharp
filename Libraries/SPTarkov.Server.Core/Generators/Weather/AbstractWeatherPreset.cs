@@ -2,13 +2,11 @@ using System.Globalization;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Spt.Weather;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Generators.Weather;
 
-public abstract class AbstractWeatherPresetGeneratorBase(WeightedRandomHelper weightedRandomHelper, RandomUtil randomUtil)
-    : IWeatherPresetGenerator
+public abstract class AbstractWeatherPreset(WeightedRandomHelper weightedRandomHelper, RandomUtil randomUtil) : IWeatherPreset
 {
     public abstract bool CanHandle(WeatherPreset preset);
 

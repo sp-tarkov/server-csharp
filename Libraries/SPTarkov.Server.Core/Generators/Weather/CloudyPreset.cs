@@ -6,12 +6,12 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Generators.Weather;
 
 [Injectable]
-public class RainyWeatherGenerator(WeightedRandomHelper weightedRandomHelper, RandomUtil randomUtil)
-    : AbstractWeatherPresetGeneratorBase(weightedRandomHelper, randomUtil)
+public class CloudyPreset(WeightedRandomHelper weightedRandomHelper, RandomUtil randomUtil)
+    : AbstractWeatherPreset(weightedRandomHelper, randomUtil)
 {
     public override bool CanHandle(WeatherPreset preset)
     {
-        return preset == WeatherPreset.RAINY;
+        return preset == WeatherPreset.CLOUDY;
     }
 
     public override Models.Eft.Weather.Weather Generate(PresetWeights weatherWeights)
@@ -21,10 +21,10 @@ public class RainyWeatherGenerator(WeightedRandomHelper weightedRandomHelper, Ra
         var result = new Models.Eft.Weather.Weather
         {
             Pressure = GetRandomDouble(weatherWeights.Pressure.Min, weatherWeights.Pressure.Max),
-            Temperature = 0, // // Handled in caller
+            Temperature = 0, // Handled in caller
             Fog = GetWeightedFog(weatherWeights),
-            RainIntensity = GetRandomDouble(weatherWeights.RainIntensity.Min, weatherWeights.RainIntensity.Max),
-            Rain = GetWeightedRain(weatherWeights),
+            RainIntensity = 0,
+            Rain = 0,
             WindGustiness = GetRandomDouble(weatherWeights.WindGustiness.Min, weatherWeights.WindGustiness.Max, 2),
             WindDirection = GetWeightedWindDirection(weatherWeights),
             WindSpeed = GetWeightedWindSpeed(weatherWeights),
