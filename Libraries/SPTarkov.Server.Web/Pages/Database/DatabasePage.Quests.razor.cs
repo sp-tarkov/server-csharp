@@ -123,8 +123,8 @@ public partial class DatabasePage
         var successConditions = GetConditionCount(quest.Conditions.Success);
         var failConditions = GetConditionCount(quest.Conditions.Fail);
         var rewardCount = GetRewardCount(quest.Rewards);
-        var propertiesJson = jsonUtil.Serialize(quest, typeof(Quest), indented: true) ?? "{}";
-        var properties = DatabasePropertyService.BuildProperties(propertiesJson);
+        var propertiesJson = jsonUtil.Serialize(quest, indented: true) ?? "{}";
+        var properties = BuildProperties(propertiesJson);
 
         var values = new Dictionary<string, string>
         {
