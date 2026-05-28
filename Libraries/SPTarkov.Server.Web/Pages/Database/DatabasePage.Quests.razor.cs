@@ -112,7 +112,7 @@ public partial class DatabasePage
         var traderId = quest.TraderId.ToString();
         var trader = GetTraderLabel(traderId, traderNames);
         var title = GetQuestTitle(quest, locale, id);
-        var description = GetLocaleValue(locale, $"{id} description", quest.Description ?? "No description available.");
+        var description = GetLocaleValue(locale, $"{id} description", quest.Description);
         var type = quest.Type.ToString();
         var location = GetQuestLocationLabel(quest.Location, locale);
         var side = GetNonEmptyValue(quest.Side, "Any");
