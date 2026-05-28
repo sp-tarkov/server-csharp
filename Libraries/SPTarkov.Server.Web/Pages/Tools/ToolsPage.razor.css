@@ -1,0 +1,298 @@
+.tools-page {
+    --tools-panel-bg: rgba(9, 9, 11, 0.74);
+}
+
+.tools-page ::deep .tools-page-container {
+    max-width: 1480px;
+    margin-inline: auto;
+}
+
+.tools-page ::deep .tools-header,
+.tools-page ::deep .tools-tabs-panel,
+.tools-page ::deep .tools-sidebar,
+.tools-page ::deep .tools-results {
+    background: var(--tools-panel-bg);
+}
+
+.tools-page ::deep .tools-header {
+    border-color: #1f2937;
+    background:
+        linear-gradient(135deg, rgba(31, 41, 55, 0.92), rgba(3, 7, 18, 0.95) 52%, rgba(9, 9, 11, 0.98)),
+        rgba(9, 9, 11, 0.86);
+}
+
+.tools-page ::deep .tools-header-content {
+    gap: 24px;
+}
+
+.tools-page ::deep .tools-header .mud-typography-h3 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 1.1;
+}
+
+.tools-page ::deep .tools-header .mud-typography-body2,
+.tools-page ::deep .tools-section-toolbar .mud-typography-caption {
+    color: #a1a1aa;
+}
+
+.tools-page ::deep .tools-title-row,
+.tools-page ::deep .tools-section-toolbar {
+    flex-wrap: wrap;
+}
+
+.tools-page ::deep .tools-stat {
+    min-width: 120px;
+    border: 1px solid #3f3f46;
+    border-radius: 8px;
+    background: rgba(24, 24, 27, 0.78);
+}
+
+.tools-page ::deep .tools-stat .mud-typography-caption {
+    color: #a1a1aa;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.tools-page ::deep .tools-stat .mud-typography-h5 {
+    color: #f8fafc;
+    font-weight: 700;
+}
+
+.tools-page ::deep .tools-tabs-panel {
+    overflow: hidden;
+}
+
+.tools-page ::deep .tools-tabs {
+    background: transparent;
+}
+
+.tools-page ::deep .tools-tabs .mud-tabs-toolbar {
+    border-bottom: 1px solid #27272a;
+    background: rgba(9, 9, 11, 0.76);
+}
+
+.tools-page ::deep .tools-tabs .mud-tab {
+    min-height: 54px;
+    color: #a1a1aa;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.tools-page ::deep .tools-tabs .mud-tab.mud-tab-active {
+    color: #facc15;
+}
+
+.tools-page ::deep .tools-tabs .mud-tabs-toolbar-content {
+    padding-inline: 12px;
+}
+
+.tools-page ::deep .tools-tab-panel {
+    padding: 16px;
+}
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+    gap: 16px;
+    align-items: stretch;
+}
+
+.tools-page ::deep .tools-sidebar,
+.tools-page ::deep .tools-results {
+    min-height: calc(100vh - 270px);
+}
+
+.tools-page ::deep .tools-results {
+    position: sticky;
+    top: 78px;
+    max-height: calc(100vh - 96px);
+    overflow: hidden;
+}
+
+.tools-page ::deep .tools-results-stack {
+    height: 100%;
+    min-height: 0;
+}
+
+.tools-page ::deep .tools-sidebar .mud-typography-h6,
+.tools-page ::deep .tools-results .mud-typography-h6 {
+    color: #f8fafc;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.tools-page ::deep .tools-actions {
+    flex-wrap: wrap;
+}
+
+.tools-page ::deep .tools-actions .mud-button-root {
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.tools-page ::deep .tools-generate-button,
+.tools-page ::deep .tools-generate-button:hover,
+.tools-page ::deep .tools-generate-button:focus,
+.tools-page ::deep .tools-generate-button:focus-visible,
+.tools-page ::deep .tools-generate-button:active {
+    background: #facc15 !important;
+    color: #111827 !important;
+}
+
+.tools-page ::deep .tools-generate-button:hover,
+.tools-page ::deep .tools-generate-button:focus-visible {
+    background: #fde047 !important;
+}
+
+.tools-page ::deep .tools-generate-button .mud-icon-root {
+    color: #111827 !important;
+}
+
+.tools-page ::deep .mud-button-outlined-secondary,
+.tools-page ::deep .mud-icon-button-outlined-secondary {
+    border-color: #3f3f46;
+    color: #facc15;
+}
+
+.tools-page ::deep .mud-button-outlined-secondary:hover,
+.tools-page ::deep .mud-icon-button-outlined-secondary:hover {
+    border-color: #facc15;
+    background: rgba(250, 204, 21, 0.08);
+}
+
+.tools-empty-state {
+    min-height: 300px;
+    border: 1px dashed #3f3f46;
+    border-radius: 8px;
+    background: rgba(3, 7, 18, 0.34);
+    text-align: center;
+}
+
+.tools-id-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: calc(100vh - 230px);
+    overflow: auto;
+    padding-right: 4px;
+}
+
+.tools-id-list {
+    display: grid;
+    gap: 10px;
+}
+
+.tools-id-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    min-height: 56px;
+    padding: 12px 14px;
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    color: #f8fafc;
+    background: rgba(24, 24, 27, 0.64);
+    cursor: pointer;
+    text-align: left;
+    transition:
+        border-color 160ms ease,
+        background 160ms ease,
+        transform 160ms ease;
+}
+
+.tools-id-row:hover,
+.tools-id-row:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(250, 204, 21, 0.72);
+    background: rgba(24, 24, 27, 0.9);
+    outline: none;
+}
+
+.tools-id-row-used {
+    border-color: rgba(52, 211, 153, 0.42);
+    background: rgba(6, 78, 59, 0.2);
+}
+
+.tools-id-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.tools-id-main ::deep .mud-icon-root {
+    flex: 0 0 auto;
+    color: #facc15;
+}
+
+.tools-id-row-used .tools-id-main ::deep .mud-icon-root {
+    color: #6ee7b7;
+}
+
+.tools-mongo-id {
+    color: #e5e7eb;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.tools-id-row-used .tools-mongo-id {
+    color: #a7f3d0;
+}
+
+.tools-page ::deep .tools-id-chip {
+    flex: 0 0 auto;
+    border-radius: 6px;
+    font-weight: 700;
+}
+
+.tools-page ::deep .mud-chip-color-info {
+    background: rgba(34, 211, 238, 0.14);
+    color: #67e8f9;
+}
+
+.tools-page ::deep .mud-chip-color-success {
+    background: rgba(52, 211, 153, 0.14);
+    color: #6ee7b7;
+}
+
+@media (max-width: 900px) {
+    .tools-page ::deep .tools-page-container {
+        padding: 16px !important;
+    }
+
+    .tools-page ::deep .tools-header-content,
+    .tools-page ::deep .tools-stat-stack,
+    .tools-page ::deep .tools-section-toolbar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .tools-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tools-page ::deep .tools-sidebar,
+    .tools-page ::deep .tools-results {
+        min-height: auto;
+    }
+
+    .tools-page ::deep .tools-results {
+        position: static;
+        max-height: none;
+    }
+
+    .tools-id-scroll {
+        max-height: 60vh;
+    }
+
+    .tools-id-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
