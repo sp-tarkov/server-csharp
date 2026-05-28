@@ -11,8 +11,8 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class ItemFilterService(ISptLogger<ItemFilterService> logger, ItemConfig itemConfig)
 {
-    protected readonly HashSet<MongoId> ItemBlacklistCache = [];
-    protected readonly HashSet<MongoId> LootableItemBlacklistCache = [];
+    protected readonly HashSet<MongoId> ItemBlacklistCache = [..itemConfig.Blacklist];
+    protected readonly HashSet<MongoId> LootableItemBlacklistCache = [..itemConfig.LootableItemBlacklist];
 
     /// <summary>
     ///     Get an HashSet of items that should never be given as a reward to player
@@ -75,11 +75,6 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ItemConfig 
     /// <returns>True if blacklisted</returns>
     public bool IsLootableItemBlacklisted(MongoId itemKey)
     {
-        if (!LootableItemBlacklistCache.Any())
-        {
-            LootableItemBlacklistCache.UnionWith(itemConfig.LootableItemBlacklist);
-        }
-
         return LootableItemBlacklistCache.Contains(itemKey);
     }
 
@@ -94,11 +89,6 @@ public class ItemFilterService(ISptLogger<ItemFilterService> logger, ItemConfig 
 
     public bool IsItemBlacklisted(MongoId tpl)
     {
-        if (!ItemBlacklistCache.Any())
-        {
-            ItemBlacklistCache.UnionWith(itemConfig.Blacklist);
-        }
-
         return ItemBlacklistCache.Contains(tpl);
     }
 
