@@ -2,6 +2,7 @@
 using Microsoft.Extensions.FileProviders;
 using MudBlazor.Services;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Web.Services;
 
 namespace SPTarkov.Server.Web;
 
@@ -17,6 +18,7 @@ public static class SPTWeb
 
         builder.WebHost.UseStaticWebAssets();
         builder.Services.AddMudServices();
+        builder.Services.AddSingleton<DatabasePropertyService>();
 
         var mvcBuilder = builder.Services.AddControllers();
 

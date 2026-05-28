@@ -1,12 +1,10 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using SPTarkov.Common.Models.Logging;
-using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Web.Models.Database;
 
 namespace SPTarkov.Server.Web.Services;
 
-[Injectable]
 public class DatabasePropertyService(ISptLogger<DatabasePropertyService> logger)
 {
     public IReadOnlyList<DatabaseProperty> BuildProperties(string propertiesJson)
@@ -78,7 +76,6 @@ public class DatabasePropertyService(ISptLogger<DatabasePropertyService> logger)
             JsonValueKind.String => element.GetString() ?? string.Empty,
             JsonValueKind.True => "true",
             JsonValueKind.False => "false",
-            JsonValueKind.Number => element.GetRawText(),
             _ => element.GetRawText(),
         };
     }

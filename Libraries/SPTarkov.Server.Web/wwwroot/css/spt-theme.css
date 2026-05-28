@@ -36,6 +36,22 @@ main {
     min-height: 100vh;
 }
 
+.spt-home-button {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1200;
+    border-color: rgba(250, 204, 21, 0.5) !important;
+    background: rgba(9, 9, 11, 0.78) !important;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.34);
+}
+
+.spt-home-button:hover {
+    border-color: var(--spt-accent) !important;
+    background: rgba(24, 24, 27, 0.92) !important;
+}
+
 .spt-page {
     min-height: 100vh;
     color: var(--spt-text);

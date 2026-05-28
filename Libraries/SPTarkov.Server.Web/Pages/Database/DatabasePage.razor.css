@@ -73,7 +73,7 @@
 
 .database-page .database-browser-grid {
     display: grid;
-    grid-template-columns: minmax(240px, 300px) minmax(460px, 1fr) minmax(320px, 390px);
+    grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
     gap: 16px;
     align-items: stretch;
 }
@@ -88,9 +88,55 @@
     min-width: 0;
 }
 
+.database-page ::deep .database-loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1400;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background:
+        radial-gradient(circle at 50% 42%, rgba(250, 204, 21, 0.14), transparent 24rem),
+        rgba(3, 7, 18, 0.82);
+    backdrop-filter: blur(10px);
+}
+
+.database-page ::deep .database-loading-panel {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    max-width: min(460px, 100%);
+    border-color: rgba(250, 204, 21, 0.42);
+    background: rgba(9, 9, 11, 0.92);
+}
+
 .database-page ::deep .database-empty-details {
     min-height: calc(100vh - 240px);
     text-align: center;
+}
+
+.database-page ::deep .database-details-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1300;
+    display: grid;
+    place-items: center;
+    padding: 28px;
+    background: rgba(0, 0, 0, 0.68);
+}
+
+.database-page ::deep .database-details-modal {
+    width: min(1280px, 100%);
+    max-height: calc(100vh - 56px);
+    overflow: auto;
+}
+
+.database-page ::deep .database-details-modal .database-details {
+    min-height: auto;
+}
+
+.database-page ::deep .database-details-heading {
+    gap: 16px;
 }
 
 .database-page .database-detail-grid {
@@ -142,7 +188,7 @@
 }
 
 .database-page ::deep .database-properties-table .mud-table-container {
-    max-height: 320px;
+    max-height: 520px;
 }
 
 .database-page ::deep .database-property-path {
@@ -174,7 +220,7 @@
 }
 
 .database-page .database-raw-json pre {
-    max-height: 360px;
+    max-height: 560px;
     margin: 0;
     overflow: auto;
     border-top: 1px solid #27272a;
@@ -310,11 +356,6 @@
     .database-page .database-browser-grid {
         grid-template-columns: 280px minmax(0, 1fr);
     }
-
-    .database-page ::deep .database-details {
-        grid-column: 1 / -1;
-        min-height: auto;
-    }
 }
 
 @media (max-width: 900px) {
@@ -334,9 +375,21 @@
     }
 
     .database-page ::deep .database-sidebar,
-    .database-page ::deep .database-table-panel,
-    .database-page ::deep .database-details {
+    .database-page ::deep .database-table-panel {
         min-height: auto;
+    }
+
+    .database-page ::deep .database-details-modal-backdrop {
+        padding: 12px;
+    }
+
+    .database-page ::deep .database-details-modal {
+        max-height: calc(100vh - 24px);
+    }
+
+    .database-page ::deep .database-loading-panel {
+        flex-direction: column;
+        text-align: center;
     }
 
     .database-page .database-detail-grid {

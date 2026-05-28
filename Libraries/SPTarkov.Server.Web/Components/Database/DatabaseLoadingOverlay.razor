@@ -1,0 +1,19 @@
+@if (Visible)
+{
+    <div class="database-loading-overlay" role="status" aria-live="polite">
+        <MudPaper Elevation="0" Class="database-loading-panel spt-panel pa-6">
+            <MudProgressCircular Indeterminate="true" Size="Size.Large" Color="Color.Warning" />
+            <MudStack Spacing="1" AlignItems="AlignItems.Center">
+                <MudText Typo="Typo.h6">Loading database browser</MudText>
+                <MudText Typo="Typo.body2" Color="Color.Secondary" Align="Align.Center">
+                    Preparing tables.
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool Visible { get; set; }
+}

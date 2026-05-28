@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
 <MudThemeProvider Theme="@_theme" IsDarkMode=true />
 <MudPopoverProvider />
@@ -6,11 +7,33 @@
 <MudSnackbarProvider />
 
 <main>
+@if (!IsLandingPage)
+{
+    <MudTooltip Text="Return to landing page">
+        <MudIconButton Icon="@Icons.Material.Filled.Home"
+                       Href="/"
+                       Variant="Variant.Outlined"
+                       Color="Color.Warning"
+                       Size="Size.Medium"
+                       Class="spt-home-button"
+                       AriaLabel="Return to landing page" />
+    </MudTooltip>
+}
+
 @Body
 <script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>
 </main>
 
 @code {
+    private bool IsLandingPage
+    {
+        get
+        {
+            var relativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).Trim('/');
+            return string.IsNullOrWhiteSpace(relativePath);
+        }
+    }
+
     private readonly MudTheme _theme = new()
     {
         PaletteDark = new PaletteDark
