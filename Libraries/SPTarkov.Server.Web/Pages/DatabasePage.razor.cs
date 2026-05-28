@@ -6,6 +6,7 @@ using MudBlazor;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Web.Models.Database;
+using SPTarkov.Server.Web.Services;
 using HandbookCategory = SPTarkov.Server.Core.Models.Eft.Common.Tables.HandbookCategory;
 using HandbookItem = SPTarkov.Server.Core.Models.Eft.Common.Tables.HandbookItem;
 using TemplateItem = SPTarkov.Server.Core.Models.Eft.Common.Tables.TemplateItem;
@@ -18,13 +19,16 @@ public partial class DatabasePage
     private const string ItemsTableId = "items";
 
     [Inject]
-    private DatabaseService DatabaseService { get; set; } = default!;
+    private DatabaseService DatabaseService { get; set; } = null!;
 
     [Inject]
-    private LocaleService LocaleService { get; set; } = default!;
+    private LocaleService LocaleService { get; set; } = null!;
 
     [Inject]
-    private JsonUtil JsonUtil { get; set; } = default!;
+    private JsonUtil JsonUtil { get; set; } = null!;
+
+    [Inject]
+    private DatabasePropertyService DatabasePropertyService { get; set; } = null!;
 
     private readonly Dictionary<string, string> _filterValues = [];
     private List<DatabaseTableDefinition> _tables = [];
@@ -130,7 +134,7 @@ public partial class DatabasePage
         );
     }
 
-    private static DatabaseRow BuildItemRow(
+    private DatabaseRow BuildItemRow(
         TemplateItem item,
         Dictionary<string, string> locale,
         Dictionary<string, HandbookItem> handbookItems,
@@ -149,7 +153,7 @@ public partial class DatabasePage
         var priceLabel = GetPriceLabel(handbookItem?.Price);
         var sizeLabel = GetSizeLabel(item);
         var propertiesJson = jsonUtil.Serialize(item.Properties, indented: true) ?? "{}";
-        var properties = BuildProperties(propertiesJson);
+        var properties = DatabasePropertyService.BuildProperties(propertiesJson);
 
         var values = new Dictionary<string, string>
         {
@@ -196,91 +200,6 @@ public partial class DatabasePage
             propertiesJson,
             string.Join(" ", id, title, shortName, description, item.Name, type, categoryName)
         );
-    }
-
-    private static IReadOnlyList<DatabaseProperty> BuildProperties(string propertiesJson)
-    {
-        if (string.IsNullOrWhiteSpace(propertiesJson) || propertiesJson == "{}")
-        {
-            return [];
-        }
-
-        var properties = new List<DatabaseProperty>();
-        var node = JsonNode.Parse(propertiesJson);
-
-        if (node is JsonObject obj)
-        {
-            foreach (var property in obj)
-            {
-                AddPropertyRows(properties, property.Key, property.Value);
-            }
-        }
-
-        return properties;
-    }
-
-    private static void AddPropertyRows(List<DatabaseProperty> properties, string path, JsonNode? node)
-    {
-        switch (node)
-        {
-            case null:
-                properties.Add(new DatabaseProperty(path, "null", "Null"));
-                break;
-            case JsonObject obj:
-                if (obj.Count == 0)
-                {
-                    properties.Add(new DatabaseProperty(path, "{}", "Object"));
-                    return;
-                }
-
-                foreach (var property in obj)
-                {
-                    AddPropertyRows(properties, $"{path}.{property.Key}", property.Value);
-                }
-
-                break;
-            case JsonArray array:
-                if (array.Count == 0)
-                {
-                    properties.Add(new DatabaseProperty(path, "[]", "Array"));
-                    return;
-                }
-
-                for (var index = 0; index < array.Count; index++)
-                {
-                    AddPropertyRows(properties, $"{path}[{index}]", array[index]);
-                }
-
-                break;
-            case JsonValue value:
-                properties.Add(new DatabaseProperty(path, GetJsonValueLabel(value), GetJsonValueKind(value)));
-                break;
-        }
-    }
-
-    private static string GetJsonValueLabel(JsonValue value)
-    {
-        var element = value.GetValue<JsonElement>();
-
-        return element.ValueKind switch
-        {
-            JsonValueKind.String => element.GetString() ?? string.Empty,
-            JsonValueKind.True => "true",
-            JsonValueKind.False => "false",
-            JsonValueKind.Number => element.GetRawText(),
-            _ => element.GetRawText(),
-        };
-    }
-
-    private static string GetJsonValueKind(JsonValue value)
-    {
-        return value.GetValue<JsonElement>().ValueKind switch
-        {
-            JsonValueKind.String => "String",
-            JsonValueKind.Number => "Number",
-            JsonValueKind.True or JsonValueKind.False => "Boolean",
-            _ => "Value",
-        };
     }
 
     private static Dictionary<string, string> BuildCategoryNames(
@@ -401,7 +320,7 @@ public partial class DatabasePage
     {
         _selectedTableId = tableId;
         _searchText = string.Empty;
-        _selectedRow = SelectedTable.Rows.FirstOrDefault();
+        _selectedRow = SelectedTable.Rows[0];
     }
 
     private void ClearFilters()
