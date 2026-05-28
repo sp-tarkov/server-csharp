@@ -43,6 +43,6 @@
     <AdditionalFiles Include="Pages\ThankYou.razor" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Components\" />
+    <Folder Include="Models\Database\" />
   </ItemGroup>
 </Project>

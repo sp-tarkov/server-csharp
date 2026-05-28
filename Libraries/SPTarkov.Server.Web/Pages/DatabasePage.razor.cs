@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Web.Models.Database;
 using HandbookCategory = SPTarkov.Server.Core.Models.Eft.Common.Tables.HandbookCategory;
 using HandbookItem = SPTarkov.Server.Core.Models.Eft.Common.Tables.HandbookItem;
 using TemplateItem = SPTarkov.Server.Core.Models.Eft.Common.Tables.TemplateItem;
@@ -74,7 +75,7 @@ public partial class DatabasePage
         _localeName = LocaleService.GetDesiredGameLocale();
         _tables = [BuildItemsTable()];
         _selectedTableId = _tables.FirstOrDefault()?.Id ?? ItemsTableId;
-        _selectedRow = SelectedTable.Rows.FirstOrDefault();
+        _selectedRow = SelectedTable.Rows[0];
     }
 
     private DatabaseTableDefinition BuildItemsTable()
@@ -103,17 +104,6 @@ public partial class DatabasePage
                 ),
                 row => row.Values.GetValueOrDefault("categoryId", string.Empty)
             ),
-            new(
-                "type",
-                "Template type",
-                "All types",
-                BuildFilterOptions(
-                    rows,
-                    row => row.Values.GetValueOrDefault("type", string.Empty),
-                    row => row.Values.GetValueOrDefault("type", string.Empty)
-                ),
-                row => row.Values.GetValueOrDefault("type", string.Empty)
-            ),
         };
 
         return new DatabaseTableDefinition(
@@ -123,18 +113,18 @@ public partial class DatabasePage
             "matching item templates",
             "Select an item to inspect its template details.",
             [
-                new("Name", row => row.Title, IsPrimary: true),
-                new("Type", row => row.Values.GetValueOrDefault("type", string.Empty)),
-                new("Category", row => row.Values.GetValueOrDefault("category", string.Empty)),
-                new("Size", row => row.Values.GetValueOrDefault("size", string.Empty)),
-                new("Price", row => row.Values.GetValueOrDefault("price", string.Empty)),
-                new("Id", row => row.Id, IsMono: true),
+                new DatabaseTableColumn("Name", row => row.Title, IsPrimary: true),
+                new DatabaseTableColumn("Type", row => row.Values.GetValueOrDefault("type", string.Empty)),
+                new DatabaseTableColumn("Category", row => row.Values.GetValueOrDefault("category", string.Empty)),
+                new DatabaseTableColumn("Size", row => row.Values.GetValueOrDefault("size", string.Empty)),
+                new DatabaseTableColumn("Price", row => row.Values.GetValueOrDefault("price", string.Empty)),
+                new DatabaseTableColumn("Id", row => row.Id, IsMono: true),
             ],
             filters,
             [
-                new("Items", rows.Count.ToString("N0", CultureInfo.CurrentCulture)),
-                new("Categories", handbook.Categories.Count.ToString("N0", CultureInfo.CurrentCulture)),
-                new("Locale", _localeName),
+                new DatabaseStat("Items", rows.Count.ToString("N0", CultureInfo.CurrentCulture)),
+                new DatabaseStat("Categories", handbook.Categories.Count.ToString("N0", CultureInfo.CurrentCulture)),
+                new DatabaseStat("Locale", _localeName),
             ],
             rows
         );
@@ -177,12 +167,12 @@ public partial class DatabasePage
             new(
                 "Template",
                 [
-                    new("Parent", item.Parent.ToString(), IsMono: true),
-                    new("Price", priceLabel),
-                    new("Dimensions", sizeLabel),
-                    new("Weight", GetWeightLabel(item)),
-                    new("Stack max", GetStackLabel(item)),
-                    new("Ragfair", GetRagfairLabel(item)),
+                    new DatabaseDetailValue("Parent", item.Parent.ToString(), IsMono: true),
+                    new DatabaseDetailValue("Price", priceLabel),
+                    new DatabaseDetailValue("Dimensions", sizeLabel),
+                    new DatabaseDetailValue("Weight", GetWeightLabel(item)),
+                    new DatabaseDetailValue("Stack max", GetStackLabel(item)),
+                    new DatabaseDetailValue("Ragfair", GetRagfairLabel(item)),
                 ]
             ),
         };
@@ -191,7 +181,7 @@ public partial class DatabasePage
 
         if (item.Properties?.QuestItem == true)
         {
-            chips.Add(new("Quest item", Color.Success));
+            chips.Add(new DatabaseChip("Quest item", Color.Success));
         }
 
         return new DatabaseRow(
@@ -450,70 +440,4 @@ public partial class DatabasePage
             builder.CloseElement();
         };
     }
-
-    private sealed record DatabaseTableDefinition(
-        string Id,
-        string Name,
-        string Description,
-        string ResultLabel,
-        string SelectionHint,
-        IReadOnlyList<DatabaseTableColumn> Columns,
-        IReadOnlyList<DatabaseTableFilter> Filters,
-        IReadOnlyList<DatabaseStat> Stats,
-        IReadOnlyList<DatabaseRow> Rows
-    )
-    {
-        public static DatabaseTableDefinition Empty { get; } =
-            new(
-                string.Empty,
-                "Database",
-                "Browse server database records.",
-                "matching records",
-                "Select a row to inspect its data.",
-                [],
-                [],
-                [],
-                []
-            );
-    }
-
-    private sealed record DatabaseTableColumn(
-        string Header,
-        Func<DatabaseRow, string> GetValue,
-        bool IsPrimary = false,
-        bool IsMono = false
-    );
-
-    private sealed record DatabaseTableFilter(
-        string Id,
-        string Label,
-        string AllLabel,
-        IReadOnlyList<DatabaseFilterOption> Options,
-        Func<DatabaseRow, string> GetValue
-    );
-
-    private sealed record DatabaseFilterOption(string Value, string Label);
-
-    private sealed record DatabaseStat(string Label, string Value);
-
-    private sealed record DatabaseChip(string Text, Color Color);
-
-    private sealed record DatabaseDetailValue(string Label, string Value, bool IsMono = false);
-
-    private sealed record DatabaseDetailSection(string Title, IReadOnlyList<DatabaseDetailValue> Values);
-
-    private sealed record DatabaseProperty(string Path, string Value, string Kind);
-
-    private sealed record DatabaseRow(
-        string Id,
-        string Title,
-        string Subtitle,
-        string Description,
-        IReadOnlyDictionary<string, string> Values,
-        IReadOnlyList<DatabaseDetailSection> DetailSections,
-        IReadOnlyList<DatabaseChip> Chips,
-        IReadOnlyList<DatabaseProperty> Properties,
-        string PropertiesJson,
-        string SearchText
-    );
 }
