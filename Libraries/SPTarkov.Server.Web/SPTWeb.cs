@@ -2,7 +2,6 @@
 using Microsoft.Extensions.FileProviders;
 using MudBlazor.Services;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Web.Components;
 
 namespace SPTarkov.Server.Web;
 

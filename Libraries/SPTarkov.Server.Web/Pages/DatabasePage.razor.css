@@ -1,0 +1,345 @@
+.database-page {
+    --database-panel-bg: rgba(9, 9, 11, 0.74);
+}
+
+.database-page ::deep .database-page-container {
+    max-width: 1800px;
+    margin-inline: auto;
+}
+
+.database-page ::deep .database-header,
+.database-page ::deep .database-sidebar,
+.database-page ::deep .database-table-panel,
+.database-page ::deep .database-details {
+    background: var(--database-panel-bg);
+}
+
+.database-page ::deep .database-header {
+    border-color: #1f2937;
+    background:
+        linear-gradient(135deg, rgba(31, 41, 55, 0.92), rgba(3, 7, 18, 0.95) 52%, rgba(9, 9, 11, 0.98)),
+        rgba(9, 9, 11, 0.86);
+}
+
+.database-page ::deep .database-header-content {
+    gap: 24px;
+}
+
+.database-page ::deep .database-header .mud-typography-h3 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 1.1;
+}
+
+.database-page ::deep .database-title-row {
+    flex-wrap: wrap;
+}
+
+.database-page ::deep .database-header-table-select {
+    width: 220px;
+    min-width: 180px;
+}
+
+.database-page ::deep .database-header-table-select .mud-input-control-input-container {
+    background: rgba(24, 24, 27, 0.72);
+    border-radius: 8px;
+}
+
+.database-page ::deep .database-header .mud-typography-body2,
+.database-page ::deep .database-section-toolbar .mud-typography-caption,
+.database-page ::deep .database-details .mud-typography-caption,
+.database-page ::deep .database-details .mud-typography-body2.mud-secondary-text {
+    color: #a1a1aa;
+}
+
+.database-page ::deep .database-stat {
+    min-width: 120px;
+    border: 1px solid #3f3f46;
+    background: rgba(24, 24, 27, 0.78);
+    border-radius: 8px;
+}
+
+.database-page ::deep .database-stat .mud-typography-caption {
+    color: #a1a1aa;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.database-page ::deep .database-stat .mud-typography-h5 {
+    color: #f8fafc;
+    font-weight: 700;
+}
+
+.database-page .database-browser-grid {
+    display: grid;
+    grid-template-columns: minmax(240px, 300px) minmax(460px, 1fr) minmax(320px, 390px);
+    gap: 16px;
+    align-items: stretch;
+}
+
+.database-page ::deep .database-sidebar,
+.database-page ::deep .database-table-panel,
+.database-page ::deep .database-details {
+    min-height: calc(100vh - 190px);
+}
+
+.database-page ::deep .database-table-panel {
+    min-width: 0;
+}
+
+.database-page ::deep .database-empty-details {
+    min-height: calc(100vh - 240px);
+    text-align: center;
+}
+
+.database-page .database-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.database-page ::deep .database-detail-value {
+    min-width: 0;
+    padding: 10px 12px;
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    background: rgba(24, 24, 27, 0.55);
+}
+
+.database-page ::deep .database-detail-value .mud-typography-caption {
+    color: #a1a1aa !important;
+    font-weight: 600;
+}
+
+.database-page ::deep .database-mono {
+    font-family: Consolas, "Liberation Mono", monospace;
+    word-break: break-all;
+}
+
+.database-page ::deep .database-row-button {
+    min-width: 0;
+    max-width: 260px;
+    justify-content: flex-start;
+    color: #e5e7eb !important;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-align: left;
+    text-transform: none;
+    white-space: normal;
+}
+
+.database-page ::deep .database-chip-row {
+    flex-wrap: wrap;
+}
+
+.database-page ::deep .database-properties {
+    min-width: 0;
+}
+
+.database-page ::deep .database-properties-header {
+    gap: 12px;
+}
+
+.database-page ::deep .database-properties-table .mud-table-container {
+    max-height: 320px;
+}
+
+.database-page ::deep .database-property-path {
+    color: #facc15;
+    font-weight: 700;
+}
+
+.database-page ::deep .database-property-value {
+    display: block;
+    max-width: 100%;
+    color: #d4d4d8;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.database-page .database-raw-json {
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    background: rgba(3, 7, 18, 0.42);
+}
+
+.database-page .database-raw-json summary {
+    cursor: pointer;
+    padding: 10px 12px;
+    color: #facc15;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.database-page .database-raw-json pre {
+    max-height: 360px;
+    margin: 0;
+    overflow: auto;
+    border-top: 1px solid #27272a;
+    padding: 12px;
+    color: #d4d4d8;
+    font-family: Consolas, "Liberation Mono", monospace;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.database-page ::deep .database-selected-row {
+    background: rgba(56, 189, 248, 0.1) !important;
+    box-shadow: inset 3px 0 0 #38bdf8;
+}
+
+.database-page ::deep .database-sidebar .mud-typography-h6,
+.database-page ::deep .database-table-panel .mud-typography-h6,
+.database-page ::deep .database-details .mud-typography-h5,
+.database-page ::deep .database-details .mud-typography-subtitle2 {
+    color: #f8fafc;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.database-page ::deep .database-sidebar .mud-divider,
+.database-page ::deep .database-details .mud-divider {
+    border-color: #27272a;
+}
+
+.database-page ::deep .mud-input-control {
+    margin-top: 0;
+}
+
+.database-page ::deep .mud-input,
+.database-page ::deep .mud-select {
+    color: #f8fafc;
+}
+
+.database-page ::deep .mud-input-outlined-border {
+    border-color: #3f3f46 !important;
+}
+
+.database-page ::deep .mud-input:hover .mud-input-outlined-border {
+    border-color: #52525b !important;
+}
+
+.database-page ::deep .mud-input.mud-input-focused .mud-input-outlined-border {
+    border-color: #38bdf8 !important;
+}
+
+.database-page ::deep .mud-input-label {
+    color: #a1a1aa !important;
+}
+
+.database-page ::deep .mud-input-adornment,
+.database-page ::deep .mud-input-adornment .mud-icon-root {
+    color: #a1a1aa;
+}
+
+.database-page ::deep .mud-button-outlined-secondary {
+    border-color: #3f3f46;
+    color: #facc15;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.database-page ::deep .mud-button-outlined-secondary:hover {
+    border-color: #facc15;
+    background: rgba(250, 204, 21, 0.08);
+}
+
+.database-page ::deep .mud-table {
+    background: transparent;
+    color: #e5e7eb;
+}
+
+.database-page ::deep .mud-table-container {
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    background: rgba(3, 7, 18, 0.42);
+}
+
+.database-page ::deep .mud-table-head {
+    background: rgba(24, 24, 27, 0.96);
+}
+
+.database-page ::deep .mud-table-cell {
+    border-color: #27272a;
+    color: #d4d4d8;
+}
+
+.database-page ::deep .mud-table-head .mud-table-cell {
+    color: #a1a1aa;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.database-page ::deep .mud-table-row:hover {
+    background: rgba(56, 189, 248, 0.07) !important;
+}
+
+.database-page ::deep .mud-table-pagination {
+    border-top: 1px solid #27272a;
+    color: #a1a1aa;
+    background: rgba(9, 9, 11, 0.78);
+}
+
+.database-page ::deep .mud-chip {
+    border-radius: 6px;
+    font-weight: 700;
+}
+
+.database-page ::deep .mud-chip-color-warning {
+    background: rgba(245, 158, 11, 0.16);
+    color: #fbbf24;
+}
+
+.database-page ::deep .mud-chip-color-info {
+    background: rgba(34, 211, 238, 0.14);
+    color: #67e8f9;
+}
+
+.database-page ::deep .mud-chip-color-success {
+    background: rgba(52, 211, 153, 0.14);
+    color: #6ee7b7;
+}
+
+@media (max-width: 1280px) {
+    .database-page .database-browser-grid {
+        grid-template-columns: 280px minmax(0, 1fr);
+    }
+
+    .database-page ::deep .database-details {
+        grid-column: 1 / -1;
+        min-height: auto;
+    }
+}
+
+@media (max-width: 900px) {
+    .database-page ::deep .database-page-container {
+        padding: 16px !important;
+    }
+
+    .database-page ::deep .database-header-content,
+    .database-page ::deep .database-stat-stack,
+    .database-page ::deep .database-section-toolbar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .database-page .database-browser-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .database-page ::deep .database-sidebar,
+    .database-page ::deep .database-table-panel,
+    .database-page ::deep .database-details {
+        min-height: auto;
+    }
+
+    .database-page .database-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}

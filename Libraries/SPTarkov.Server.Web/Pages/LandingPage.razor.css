@@ -1,0 +1,190 @@
+.landing-page {
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: #f8fafc;
+    font-family: Figtree, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.landing-background {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 18% 6%, rgba(245, 158, 11, 0.14), transparent 28rem),
+        radial-gradient(circle at 88% 16%, rgba(56, 189, 248, 0.12), transparent 24rem),
+        #030712;
+}
+
+.landing-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.14;
+    filter: saturate(0.7) contrast(1.1);
+}
+
+.landing-background-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg, rgba(3, 7, 18, 0.8), rgba(3, 7, 18, 0.94) 58%, rgba(9, 9, 11, 0.98)),
+        linear-gradient(90deg, rgba(3, 7, 18, 0.98), rgba(3, 7, 18, 0.7) 44%, rgba(3, 7, 18, 0.95)),
+        repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.025) 1px, transparent 1px, transparent 14px);
+}
+
+.landing-page ::deep .landing-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    min-height: 100vh;
+    max-width: 1040px;
+    margin-inline: auto;
+    padding-block: clamp(48px, 8vh, 96px) !important;
+}
+
+.landing-hero {
+    width: min(760px, 100%);
+    text-align: center;
+}
+
+.landing-page ::deep .landing-kicker {
+    color: #facc15;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.landing-page ::deep .landing-hero .mud-typography-h1 {
+    margin: 8px auto 16px;
+    max-width: 12ch;
+    font-size: clamp(3rem, 6vw, 5.75rem);
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 1;
+}
+
+.landing-page ::deep .landing-subtitle {
+    margin-inline: auto;
+    max-width: 42rem;
+    color: #d4d4d8;
+    font-size: 1.1rem;
+    line-height: 1.65;
+}
+
+.landing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    width: min(100%, 820px);
+    justify-content: center;
+}
+
+.landing-link-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 14px 12px;
+    align-items: start;
+    min-height: 184px;
+    padding: 20px;
+    border: 1px solid rgba(63, 63, 70, 0.9);
+    border-radius: 8px;
+    color: inherit;
+    text-decoration: none;
+    background: rgba(9, 9, 11, 0.76);
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.34);
+    backdrop-filter: blur(14px);
+    transition:
+        transform 160ms ease,
+        border-color 160ms ease,
+        background 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.landing-link-card:hover,
+.landing-link-card:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(250, 204, 21, 0.78);
+    background: rgba(24, 24, 27, 0.88);
+    box-shadow: 0 28px 72px rgba(0, 0, 0, 0.42);
+    outline: none;
+}
+
+.landing-link-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid rgba(250, 204, 21, 0.36);
+    border-radius: 8px;
+    color: #facc15;
+    background: rgba(250, 204, 21, 0.08);
+}
+
+.landing-link-copy {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+}
+
+.landing-link-title {
+    color: #f8fafc;
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.landing-link-description {
+    color: #a1a1aa;
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.landing-page ::deep .landing-link-arrow {
+    grid-column: 1 / -1;
+    justify-self: start;
+    align-self: end;
+    color: #facc15;
+    transition: transform 160ms ease;
+}
+
+.landing-link-card:hover ::deep .landing-link-arrow,
+.landing-link-card:focus-visible ::deep .landing-link-arrow {
+    transform: translateX(3px);
+}
+
+@media (max-width: 1180px) {
+    .landing-grid {
+        width: min(100%, 820px);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 980px) {
+    .landing-grid {
+        width: min(100%, 540px);
+        grid-template-columns: 1fr;
+    }
+
+    .landing-page ::deep .landing-hero .mud-typography-h1 {
+        font-size: 3.5rem;
+    }
+}
+
+@media (max-width: 680px) {
+    .landing-page ::deep .landing-container {
+        padding: 18px !important;
+    }
+
+    .landing-link-card {
+        min-height: 126px;
+        padding: 16px;
+    }
+
+    .landing-page ::deep .landing-hero .mud-typography-h1 {
+        font-size: 2.8rem;
+    }
+}

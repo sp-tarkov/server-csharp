@@ -1,0 +1,35 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="@_theme" IsDarkMode=true />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<main>
+@Body
+<script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>
+</main>
+
+@code {
+    private readonly MudTheme _theme = new()
+    {
+        PaletteDark = new PaletteDark
+        {
+            Primary = "#38bdf8",
+            Secondary = "#f59e0b",
+            Warning = "#facc15",
+            Info = "#22d3ee",
+            Success = "#34d399",
+            Background = "#030712",
+            Surface = "#18181b",
+            AppbarBackground = "#030712",
+            TextPrimary = "#f8fafc",
+            TextSecondary = "#a1a1aa",
+            Divider = "#27272a",
+            LinesDefault = "#27272a",
+            TableLines = "#27272a",
+            TableStriped = "rgba(39,39,42,0.35)",
+            TableHover = "rgba(56,189,248,0.08)"
+        }
+    };
+}
