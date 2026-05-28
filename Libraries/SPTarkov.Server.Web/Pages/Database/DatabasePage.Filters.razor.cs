@@ -49,7 +49,7 @@ public partial class DatabasePage
 
     private void SelectRow(DatabaseRow row)
     {
-        _selectedRow = row;
+        _selectedRow = BuildDetailsRow(row);
         _isDetailsOpen = true;
     }
 

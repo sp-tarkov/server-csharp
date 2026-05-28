@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Components;
+using SPTarkov.Server.Core.Exceptions.Database;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Web.Models.Database;
@@ -13,6 +14,7 @@ public partial class DatabasePage
     private const string AllFilterValues = "";
     private const string ItemsTableId = "items";
     private const string QuestsTableId = "quests";
+    private const string TradersTableId = "traders";
 
     [Inject]
     private DatabaseService DatabaseService { get; set; } = null!;
@@ -24,10 +26,12 @@ public partial class DatabasePage
     private JsonUtil JsonUtil { get; set; } = null!;
 
     private readonly Dictionary<string, string> _filterValues = [];
+    private readonly Dictionary<string, Func<DatabaseRow>> _detailRowFactories = [];
     private List<DatabaseTableDefinition> _tables = [];
     private DatabaseRow? _selectedRow;
     private bool _isDetailsOpen;
     private bool _isLoading = true;
+    private string? _loadError;
     private string _searchText = string.Empty;
     private string _selectedTableId = ItemsTableId;
     private string _localeName = "en";
@@ -70,8 +74,6 @@ public partial class DatabasePage
     protected override void OnInitialized()
     {
         base.OnInitialized();
-
-        _localeName = LocaleService.GetDesiredGameLocale();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -83,17 +85,79 @@ public partial class DatabasePage
             return;
         }
 
-        await Task.Yield();
-        LoadTables();
-        _isLoading = false;
+        try
+        {
+            await Task.Yield();
+            await LoadTablesWhenReadyAsync();
+        }
+        catch (Exception exception)
+        {
+            _loadError =
+                exception.InnerException is null ? exception.Message : $"{exception.Message} {exception.InnerException.Message}";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
 
         StateHasChanged();
     }
 
+    private async Task LoadTablesWhenReadyAsync()
+    {
+        const int maxAttempts = 120;
+
+        for (var attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            try
+            {
+                LoadTables();
+                return;
+            }
+            catch (DatabaseNullException) when (attempt < maxAttempts - 1)
+            {
+                await Task.Delay(250);
+            }
+        }
+    }
+
     private void LoadTables()
     {
-        _tables = [BuildItemsTable(), BuildQuestsTable()];
+        _detailRowFactories.Clear();
+        _localeName = LocaleService.GetDesiredGameLocale();
+        _tables = [BuildTable("Items", BuildItemsTable), BuildTable("Quests", BuildQuestsTable), BuildTable("Traders", BuildTradersTable)];
         _selectedTableId = _tables.FirstOrDefault()?.Id ?? ItemsTableId;
+    }
+
+    private static DatabaseTableDefinition BuildTable(string tableName, Func<DatabaseTableDefinition> buildTable)
+    {
+        try
+        {
+            return buildTable();
+        }
+        catch (DatabaseNullException)
+        {
+            throw;
+        }
+        catch (Exception exception)
+        {
+            throw new InvalidOperationException($"Failed to build {tableName} database table.", exception);
+        }
+    }
+
+    private void RegisterDetailRowFactory(string tableId, string rowId, Func<DatabaseRow> buildRow)
+    {
+        _detailRowFactories[GetRowKey(tableId, rowId)] = buildRow;
+    }
+
+    private DatabaseRow BuildDetailsRow(DatabaseRow row)
+    {
+        return _detailRowFactories.TryGetValue(GetRowKey(_selectedTableId, row.Id), out var buildRow) ? buildRow() : row;
+    }
+
+    private static string GetRowKey(string tableId, string rowId)
+    {
+        return $"{tableId}:{rowId}";
     }
 
     public IReadOnlyList<DatabaseProperty> BuildProperties(string propertiesJson)

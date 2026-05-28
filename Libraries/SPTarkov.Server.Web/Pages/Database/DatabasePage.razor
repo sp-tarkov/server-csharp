@@ -5,7 +5,7 @@
 @layout BaseMudBlazorLayout
 
 <div class="database-page spt-page">
-<DatabaseLoadingOverlay Visible="@_isLoading" />
+<DatabaseLoadingOverlay Visible="@_isLoading" Error="@_loadError" />
 
 <MudContainer MaxWidth="MaxWidth.False" Class="database-page-container pa-6">
     <MudStack Spacing="4">

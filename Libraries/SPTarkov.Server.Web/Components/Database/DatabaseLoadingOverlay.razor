@@ -1,12 +1,19 @@
-@if (Visible)
+@if (Visible || !string.IsNullOrWhiteSpace(Error))
 {
     <div class="database-loading-overlay" role="status" aria-live="polite">
         <MudPaper Elevation="0" Class="database-loading-panel spt-panel pa-6">
-            <MudProgressCircular Indeterminate="true" Size="Size.Large" Color="Color.Warning" />
+            @if (string.IsNullOrWhiteSpace(Error))
+            {
+                <MudProgressCircular Indeterminate="true" Size="Size.Large" Color="Color.Warning" />
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Size="Size.Large" Color="Color.Error" />
+            }
             <MudStack Spacing="1" AlignItems="AlignItems.Center">
-                <MudText Typo="Typo.h6">Loading database browser</MudText>
+                <MudText Typo="Typo.h6">@Title</MudText>
                 <MudText Typo="Typo.body2" Color="Color.Secondary" Align="Align.Center">
-                    Preparing tables.
+                    @Message
                 </MudText>
             </MudStack>
         </MudPaper>
@@ -16,4 +23,17 @@
 @code {
     [Parameter]
     public bool Visible { get; set; }
+
+    [Parameter]
+    public string? Error { get; set; }
+
+    private string Title
+    {
+        get { return string.IsNullOrWhiteSpace(Error) ? "Loading database browser" : "Database browser failed to load"; }
+    }
+
+    private string Message
+    {
+        get { return string.IsNullOrWhiteSpace(Error) ? "Preparing tables." : Error; }
+    }
 }

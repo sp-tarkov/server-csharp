@@ -12,8 +12,8 @@ public partial class DatabasePage
     {
         var locale = LocaleService.GetLocaleDb();
         var handbook = DatabaseService.GetHandbook();
-        var handbookItems = handbook.Items.ToDictionary(item => item.Id.ToString(), item => item);
-        var categoryNames = BuildCategoryNames(handbook.Categories, locale);
+        var handbookItems = (handbook.Items ?? []).ToDictionary(item => item.Id.ToString(), item => item);
+        var categoryNames = BuildCategoryNames(handbook.Categories ?? [], locale);
 
         var rows = DatabaseService
             .GetItems()
@@ -53,7 +53,7 @@ public partial class DatabasePage
             filters,
             [
                 new DatabaseStat("Items", rows.Count.ToString("N0", CultureInfo.CurrentCulture)),
-                new DatabaseStat("Categories", handbook.Categories.Count.ToString("N0", CultureInfo.CurrentCulture)),
+                new DatabaseStat("Categories", (handbook.Categories?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)),
                 new DatabaseStat("Locale", _localeName),
             ],
             rows

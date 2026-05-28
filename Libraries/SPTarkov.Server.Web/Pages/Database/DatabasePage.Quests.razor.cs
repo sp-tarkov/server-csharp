@@ -117,11 +117,11 @@ public partial class DatabasePage
         var location = GetQuestLocationLabel(quest.Location, locale);
         var side = GetNonEmptyValue(quest.Side, "Any");
         var status = GetQuestStatusLabel(quest);
-        var startedConditions = GetConditionCount(quest.Conditions.Started);
-        var startConditions = GetConditionCount(quest.Conditions.AvailableForStart);
-        var finishConditions = GetConditionCount(quest.Conditions.AvailableForFinish);
-        var successConditions = GetConditionCount(quest.Conditions.Success);
-        var failConditions = GetConditionCount(quest.Conditions.Fail);
+        var startedConditions = GetConditionCount(quest.Conditions?.Started);
+        var startConditions = GetConditionCount(quest.Conditions?.AvailableForStart);
+        var finishConditions = GetConditionCount(quest.Conditions?.AvailableForFinish);
+        var successConditions = GetConditionCount(quest.Conditions?.Success);
+        var failConditions = GetConditionCount(quest.Conditions?.Fail);
         var rewardCount = GetRewardCount(quest.Rewards);
         var propertiesJson = jsonUtil.Serialize(quest, indented: true) ?? "{}";
         var properties = BuildProperties(propertiesJson);

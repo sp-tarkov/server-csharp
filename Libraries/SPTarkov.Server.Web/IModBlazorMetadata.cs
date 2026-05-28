@@ -24,4 +24,11 @@ public interface IModWebMetadata
     /// This property will allow you to set a custom directory for wwwroot, if this is left null it will use the assembly's name
     /// </summary>
     string? WWWRootUrl { get; init; }
+
+    /// <summary>
+    ///     Allows setting a home page url that shows up in the SIC mod links section
+    ///  <br/><br/>
+    /// Example: /my-mod
+    /// </summary>
+    string? HomePage { get; init; }
 }
