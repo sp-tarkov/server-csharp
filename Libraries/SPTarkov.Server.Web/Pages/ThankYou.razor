@@ -36,7 +36,7 @@
                         @foreach (var contributor in _shuffledContributors)
                         {
                             <MudItem xs="10" sm="5" md="4">
-                                <MudCard Class="contributor-card spt-card" @onclick="() => TriggerConfetti(false, contributor)">
+                                <MudCard Class="contributor-card spt-card">
                                     <MudCardContent Class="contributor-card-content">
                                         <MudText Typo="Typo.caption" Align="Align.Center" Class="contributor-name">
                                             @contributor
@@ -71,7 +71,7 @@
                         @foreach (var supporter in _shuffledPatreonSupporters)
                         {
                             <MudItem xs="10" sm="5" md="4">
-                                <MudCard Class="contributor-card patreon-card spt-card" @onclick="() => TriggerConfetti(true, supporter)">
+                                <MudCard Class="contributor-card patreon-card spt-card">
                                     <MudCardContent Class="patreon-card-content">
                                         <MudStack Direction="Row" AlignItems="AlignItems.Center" Justify="Justify.Center">
                                             <MudIcon Icon="@Icons.Material.Filled.Star" Color="Color.Warning" Size="Size.Small" />
@@ -347,7 +347,10 @@
         "R3ality", "Razzmatazz", "Redbeard", "Refringe", "ShadowXtrex",
         "Shibdib", "Stealthsuit", "studentchy", "Tetris", "Th3NightHawk",
         "TheHeadPhonesGuy", "ThyMuffinMan", "ultragastro", "Valens",
-        "XeonDead", "yurikus", "Chilly"
+        "XeonDead", "yurikus", "Chilly", "tyfon7", "rootdarkarchon",
+        "acidphantasm", "HiddenCirno", "sheepiest", "yuyuimoe", "bubz-dev",
+        "ozen-m", "qingchunnh", "Greelan", "qe201020335", "dwesterwick",
+        "PMouse23", "andrei-zgirvaci", "cp89gamedev"
     ];
 
     private readonly List<string> _patreonSupporters =
@@ -372,18 +375,6 @@
     {
         _shuffledContributors = ShuffleList(_contributors);
         _shuffledPatreonSupporters = ShuffleList(_patreonSupporters);
-    }
-
-    private async Task TriggerConfetti(bool isPatreon, string name)
-    {
-        //Todo: Needs implementation
-
-        if (isPatreon)
-        {
-        }
-        else
-        {
-        }
     }
 
     private static List<string> ShuffleList(List<string> list)
