@@ -1,8 +1,9 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Utils;
 
 namespace SPTarkov.Server.Core.Models.Eft.Ragfair;
 
-public record SendRagfairReportRequestData
+public record SendRagfairReportRequestData : IRequestData
 {
     [JsonPropertyName("offerId")]
     public int? OfferId { get; set; }

@@ -183,4 +183,4 @@ public record RouteAction(string url, Func<string, IRequestData, MongoId, string
 
 public record RouteAction<TRequest>(string url, Func<string, TRequest, MongoId, string?, ValueTask<string>> typedAction)
     : RouteAction(url, async (url, info, sessionId, output) => await typedAction(url, (TRequest)info, sessionId, output), typeof(TRequest))
-    where TRequest : class;
+    where TRequest : class, IRequestData;
