@@ -24,7 +24,7 @@ public sealed class HashUtil(RandomUtil _randomUtil)
     /// </summary>
     /// <param name="filePath">The path to the file</param>
     /// <param name="cancellationToken">
-    /// The <see cref="CancellationToken"/> that can be used to cancel the read operation.
+    /// The <see cref="CancellationToken"/> that can be used to cancel the hashing operation.
     /// </param>
     /// <returns>The CRC32 hash as a uint</returns>
     public async Task<uint> GenerateCrc32ForFileAsync(string filePath, CancellationToken cancellationToken = default)
@@ -80,7 +80,7 @@ public sealed class HashUtil(RandomUtil _randomUtil)
     /// <param name="algorithm">algorithm to use to hash</param>
     /// <param name="data">data to be hashed</param>
     /// <param name="cancellationToken">
-    /// The <see cref="CancellationToken"/> that can be used to cancel the read operation.
+    /// The <see cref="CancellationToken"/> that can be used to cancel the hashing operation.
     /// </param>
     /// <returns>A task which contains the hash value</returns>
     /// <exception cref="NotImplementedException">thrown if the provided algorithm is not implemented</exception>

@@ -83,7 +83,7 @@ public class JsonUtil
     /// </summary>
     /// <param name="file">The JSON File to read</param>
     /// <param name="cancellationToken">
-    /// The <see cref="CancellationToken"/> that can be used to cancel the read operation.
+    /// The <see cref="CancellationToken"/> that can be used to cancel the deserialization operation.
     /// </param>
     /// <returns>T</returns>
     public async Task<T?> DeserializeFromFileAsync<T>(string file, CancellationToken cancellationToken = default)
