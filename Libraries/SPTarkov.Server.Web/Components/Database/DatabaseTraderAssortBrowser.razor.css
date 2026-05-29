@@ -1,0 +1,176 @@
+.database-assort-browser {
+    background:
+        linear-gradient(135deg, rgba(31, 41, 55, 0.92), rgba(3, 7, 18, 0.96) 48%, rgba(9, 9, 11, 0.98)),
+        rgba(9, 9, 11, 0.9);
+}
+
+.database-assort-heading,
+.database-assort-title-row,
+.database-stat-stack {
+    flex-wrap: wrap;
+}
+
+.database-assort-browser ::deep .mud-typography-h5,
+.database-assort-browser ::deep .mud-typography-h6,
+.database-assort-browser ::deep .mud-typography-subtitle2 {
+    color: #f8fafc;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.database-assort-browser ::deep .mud-typography-caption,
+.database-assort-browser ::deep .mud-typography-body2.mud-secondary-text {
+    color: #a1a1aa;
+}
+
+.database-assort-browser ::deep .database-stat {
+    min-width: 120px;
+    border: 1px solid #3f3f46;
+    border-radius: 8px;
+    background: rgba(24, 24, 27, 0.78);
+}
+
+.database-assort-browser ::deep .database-stat .mud-typography-caption {
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.database-assort-controls {
+    border-color: #27272a;
+    background: rgba(9, 9, 11, 0.62);
+}
+
+.database-assort-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
+    gap: 16px;
+    align-items: start;
+}
+
+.database-assort-browser ::deep .mud-table-container {
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    background: rgba(3, 7, 18, 0.42);
+}
+
+.database-assort-browser ::deep .mud-table {
+    background: transparent;
+    color: #e5e7eb;
+}
+
+.database-assort-browser ::deep .mud-table-head {
+    background: rgba(24, 24, 27, 0.96);
+}
+
+.database-assort-browser ::deep .mud-table-cell {
+    border-color: #27272a;
+    color: #d4d4d8;
+}
+
+.database-assort-browser ::deep .mud-table-head .mud-table-cell {
+    color: #a1a1aa;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.database-assort-browser ::deep .mud-table-row:hover {
+    background: rgba(56, 189, 248, 0.07) !important;
+}
+
+.database-assort-browser ::deep .database-assort-details {
+    max-height: 620px;
+    overflow: auto;
+    border-color: #27272a;
+    background: rgba(9, 9, 11, 0.66);
+}
+
+.database-assort-empty {
+    min-height: 360px;
+    text-align: center;
+}
+
+.database-assort-browser .database-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.database-assort-browser ::deep .database-detail-value {
+    min-width: 0;
+    padding: 10px 12px;
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    background: rgba(24, 24, 27, 0.55);
+}
+
+.database-assort-browser ::deep .database-detail-value .mud-typography-caption {
+    font-weight: 600;
+}
+
+.database-assort-browser ::deep .database-mono {
+    font-family: Consolas, "Liberation Mono", monospace;
+    word-break: break-all;
+}
+
+.database-assort-browser ::deep .database-row-button {
+    min-width: 0;
+    max-width: 260px;
+    justify-content: flex-start;
+    color: #e5e7eb !important;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-align: left;
+    text-transform: none;
+    white-space: normal;
+}
+
+.database-assort-browser ::deep .database-selected-row {
+    background: rgba(56, 189, 248, 0.1) !important;
+    box-shadow: inset 3px 0 0 #38bdf8;
+}
+
+.database-assort-browser .database-raw-json {
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    background: rgba(3, 7, 18, 0.42);
+}
+
+.database-assort-browser .database-raw-json summary {
+    cursor: pointer;
+    padding: 10px 12px;
+    color: #facc15;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.database-assort-browser .database-raw-json pre {
+    max-height: 320px;
+    margin: 0;
+    overflow: auto;
+    border-top: 1px solid #27272a;
+    padding: 12px;
+    color: #d4d4d8;
+    font-family: Consolas, "Liberation Mono", monospace;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+@media (max-width: 1100px) {
+    .database-assort-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .database-assort-browser ::deep .database-assort-details {
+        max-height: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .database-assort-browser .database-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}

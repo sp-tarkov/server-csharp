@@ -5,7 +5,10 @@
 @layout BaseMudBlazorLayout
 
 <div class="database-page spt-page">
-<DatabaseLoadingOverlay Visible="@_isLoading" Error="@_loadError" />
+<DatabaseLoadingOverlay Visible="@IsLoadingOverlayVisible"
+                        Error="@_loadError"
+                        LoadingTitle="@_loadingTitle"
+                        LoadingMessage="@_loadingMessage" />
 
 <MudContainer MaxWidth="MaxWidth.False" Class="database-page-container pa-6">
     <MudStack Spacing="4">
@@ -31,7 +34,14 @@
 
         <DatabaseRecordDetailsModal Row="@_selectedRow"
                                     Open="@_isDetailsOpen"
-                                    OnClose="CloseDetails" />
+                                    OnClose="CloseDetails"
+                                    OnBrowseTraderAssort="OpenTraderAssort" />
+
+        <DatabaseTraderAssortModal Assort="@_selectedTraderAssort"
+                                   Open="@_isAssortOpen"
+                                   Loading="@_isAssortLoading"
+                                   LoadingMessage="@_loadingMessage"
+                                   OnClose="CloseTraderAssort" />
     </MudStack>
 </MudContainer>
 </div>

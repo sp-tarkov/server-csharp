@@ -4,7 +4,7 @@
 {
     <div class="database-details-modal-backdrop" @onclick="OnClose">
         <div class="database-details-modal" role="dialog" aria-modal="true" @onclick:stopPropagation>
-            <DatabaseRecordDetails Row="Row" OnClose="OnClose" />
+            <DatabaseRecordDetails Row="Row" OnClose="OnClose" OnBrowseTraderAssort="OnBrowseTraderAssort" />
         </div>
     </div>
 }
@@ -18,4 +18,7 @@
 
     [Parameter]
     public EventCallback OnClose { get; set; }
+
+    [Parameter]
+    public EventCallback<DatabaseRow> OnBrowseTraderAssort { get; set; }
 }

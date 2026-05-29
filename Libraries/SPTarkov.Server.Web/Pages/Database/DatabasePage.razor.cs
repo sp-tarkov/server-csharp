@@ -27,14 +27,28 @@ public partial class DatabasePage
 
     private readonly Dictionary<string, string> _filterValues = [];
     private readonly Dictionary<string, Func<DatabaseRow>> _detailRowFactories = [];
+    private readonly Dictionary<string, DatabaseRow> _detailRowCache = [];
+    private readonly Dictionary<string, Func<DatabaseTraderAssort>> _traderAssortFactories = [];
+    private readonly Dictionary<string, DatabaseTraderAssort> _traderAssortCache = [];
     private List<DatabaseTableDefinition> _tables = [];
     private DatabaseRow? _selectedRow;
+    private DatabaseTraderAssort? _selectedTraderAssort;
     private bool _isDetailsOpen;
+    private bool _isAssortOpen;
     private bool _isLoading = true;
+    private bool _isRecordLoading;
+    private bool _isAssortLoading;
     private string? _loadError;
+    private string _loadingTitle = "Loading database browser";
+    private string _loadingMessage = "Preparing tables.";
     private string _searchText = string.Empty;
     private string _selectedTableId = ItemsTableId;
     private string _localeName = "en";
+
+    private bool IsLoadingOverlayVisible
+    {
+        get { return _isLoading || _isRecordLoading; }
+    }
 
     private DatabaseTableDefinition SelectedTable
     {
@@ -92,8 +106,7 @@ public partial class DatabasePage
         }
         catch (Exception exception)
         {
-            _loadError =
-                exception.InnerException is null ? exception.Message : $"{exception.Message} {exception.InnerException.Message}";
+            _loadError = GetLoadErrorMessage(exception);
         }
         finally
         {
@@ -124,6 +137,9 @@ public partial class DatabasePage
     private void LoadTables()
     {
         _detailRowFactories.Clear();
+        _detailRowCache.Clear();
+        _traderAssortFactories.Clear();
+        _traderAssortCache.Clear();
         _localeName = LocaleService.GetDesiredGameLocale();
         _tables = [BuildTable("Items", BuildItemsTable), BuildTable("Quests", BuildQuestsTable), BuildTable("Traders", BuildTradersTable)];
         _selectedTableId = _tables.FirstOrDefault()?.Id ?? ItemsTableId;
@@ -150,14 +166,82 @@ public partial class DatabasePage
         _detailRowFactories[GetRowKey(tableId, rowId)] = buildRow;
     }
 
+    private void RegisterTraderAssortFactory(string tableId, string rowId, Func<DatabaseTraderAssort> buildAssort)
+    {
+        _traderAssortFactories[GetRowKey(tableId, rowId)] = buildAssort;
+    }
+
     private DatabaseRow BuildDetailsRow(DatabaseRow row)
     {
-        return _detailRowFactories.TryGetValue(GetRowKey(_selectedTableId, row.Id), out var buildRow) ? buildRow() : row;
+        var cacheKey = GetRowKey(_selectedTableId, row.Id);
+
+        if (_detailRowCache.TryGetValue(cacheKey, out var cachedRow))
+        {
+            return cachedRow;
+        }
+
+        var detailsRow = _detailRowFactories.TryGetValue(cacheKey, out var buildRow) ? buildRow() : row;
+        _detailRowCache[cacheKey] = detailsRow;
+
+        return detailsRow;
+    }
+
+    private async Task OpenTraderAssort(DatabaseRow row)
+    {
+        if (!_traderAssortFactories.TryGetValue(GetRowKey(_selectedTableId, row.Id), out var buildAssort))
+        {
+            return;
+        }
+
+        try
+        {
+            var cacheKey = GetRowKey(_selectedTableId, row.Id);
+            if (!_traderAssortCache.TryGetValue(cacheKey, out var assort))
+            {
+                _selectedTraderAssort = null;
+                _isAssortOpen = true;
+                _isAssortLoading = true;
+                _loadingMessage = $"Preparing {row.Title} assort items.";
+                await RenderLoadingOverlayAsync();
+
+                assort = buildAssort();
+                _traderAssortCache[cacheKey] = assort;
+            }
+
+            _selectedTraderAssort = assort;
+            _isAssortOpen = true;
+        }
+        catch (Exception exception)
+        {
+            _loadError = GetLoadErrorMessage(exception);
+        }
+        finally
+        {
+            _isAssortLoading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void CloseTraderAssort()
+    {
+        _isAssortOpen = false;
+        _isAssortLoading = false;
+    }
+
+    private async Task RenderLoadingOverlayAsync()
+    {
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(75);
     }
 
     private static string GetRowKey(string tableId, string rowId)
     {
         return $"{tableId}:{rowId}";
+    }
+
+    private static string GetLoadErrorMessage(Exception exception)
+    {
+        return exception.InnerException is null ? exception.Message : $"{exception.Message} {exception.InnerException.Message}";
     }
 
     public IReadOnlyList<DatabaseProperty> BuildProperties(string propertiesJson)

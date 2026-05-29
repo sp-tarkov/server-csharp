@@ -21,14 +21,29 @@
                     <MudText Typo="Typo.caption" Class="database-mono">@Row.Id</MudText>
                 </MudStack>
 
-                @if (OnClose.HasDelegate)
-                {
-                    <MudIconButton Icon="@Icons.Material.Filled.Close"
-                                   Color="Color.Secondary"
-                                   Size="Size.Small"
-                                   OnClick="OnClose"
-                                   Title="Close details" />
-                }
+                <MudStack Row Spacing="1" Class="database-details-actions">
+                    @if (CanBrowseTraderAssort)
+                    {
+                        <MudTooltip Text="Browse trader assort">
+                            <MudButton Variant="Variant.Outlined"
+                                       Color="Color.Secondary"
+                                       Size="Size.Small"
+                                       StartIcon="@Icons.Material.Filled.Storefront"
+                                       OnClick="@(() => OnBrowseTraderAssort.InvokeAsync(Row))">
+                                Assort
+                            </MudButton>
+                        </MudTooltip>
+                    }
+
+                    @if (OnClose.HasDelegate)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                       Color="Color.Secondary"
+                                       Size="Size.Small"
+                                       OnClick="OnClose"
+                                       Title="Close details" />
+                    }
+                </MudStack>
             </MudStack>
 
             <MudStack Row Spacing="1" Class="database-chip-row">
@@ -121,4 +136,12 @@
 
     [Parameter]
     public EventCallback OnClose { get; set; }
+
+    [Parameter]
+    public EventCallback<DatabaseRow> OnBrowseTraderAssort { get; set; }
+
+    private bool CanBrowseTraderAssort
+    {
+        get { return Row?.Values.GetValueOrDefault("canBrowseAssort") == "true" && OnBrowseTraderAssort.HasDelegate; }
+    }
 }

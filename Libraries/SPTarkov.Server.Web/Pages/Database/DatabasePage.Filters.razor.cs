@@ -47,10 +47,27 @@ public partial class DatabasePage
         _isDetailsOpen = false;
     }
 
-    private void SelectRow(DatabaseRow row)
+    private async Task SelectRow(DatabaseRow row)
     {
-        _selectedRow = BuildDetailsRow(row);
-        _isDetailsOpen = true;
+        _isRecordLoading = true;
+        _loadingTitle = "Loading record details";
+        _loadingMessage = $"Preparing {row.Title} properties.";
+        await RenderLoadingOverlayAsync();
+
+        try
+        {
+            _selectedRow = BuildDetailsRow(row);
+            _isDetailsOpen = true;
+        }
+        catch (Exception exception)
+        {
+            _loadError = GetLoadErrorMessage(exception);
+        }
+        finally
+        {
+            _isRecordLoading = false;
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private void CloseDetails()

@@ -27,13 +27,22 @@
     [Parameter]
     public string? Error { get; set; }
 
+    [Parameter]
+    public string LoadingTitle { get; set; } = "Loading database browser";
+
+    [Parameter]
+    public string LoadingMessage { get; set; } = "Preparing tables.";
+
+    [Parameter]
+    public string ErrorTitle { get; set; } = "Database browser failed to load";
+
     private string Title
     {
-        get { return string.IsNullOrWhiteSpace(Error) ? "Loading database browser" : "Database browser failed to load"; }
+        get { return string.IsNullOrWhiteSpace(Error) ? LoadingTitle : ErrorTitle; }
     }
 
     private string Message
     {
-        get { return string.IsNullOrWhiteSpace(Error) ? "Preparing tables." : Error; }
+        get { return string.IsNullOrWhiteSpace(Error) ? LoadingMessage : Error; }
     }
 }

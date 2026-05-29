@@ -139,6 +139,51 @@
     gap: 16px;
 }
 
+.database-page ::deep .database-details-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.database-page ::deep .database-details-actions .mud-button-root {
+    border-color: #3f3f46;
+    color: #facc15;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.database-page ::deep .database-details-actions .mud-button-root:hover {
+    border-color: #facc15;
+    background: rgba(250, 204, 21, 0.08);
+}
+
+.database-page ::deep .database-assort-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1350;
+    display: grid;
+    place-items: center;
+    padding: 28px;
+    background: rgba(0, 0, 0, 0.72);
+}
+
+.database-page ::deep .database-assort-modal {
+    width: min(1500px, 100%);
+    max-height: calc(100vh - 56px);
+    overflow: auto;
+}
+
+.database-page ::deep .database-assort-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    min-height: 220px;
+    border-color: rgba(250, 204, 21, 0.42);
+    background: rgba(9, 9, 11, 0.94);
+    text-align: center;
+}
+
 .database-page .database-detail-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -383,7 +428,15 @@
         padding: 12px;
     }
 
+    .database-page ::deep .database-assort-modal-backdrop {
+        padding: 12px;
+    }
+
     .database-page ::deep .database-details-modal {
+        max-height: calc(100vh - 24px);
+    }
+
+    .database-page ::deep .database-assort-modal {
         max-height: calc(100vh - 24px);
     }
 

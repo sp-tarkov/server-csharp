@@ -1,4 +1,4 @@
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 
 <MudThemeProvider Theme="@_theme" IsDarkMode=true />
@@ -16,6 +16,7 @@
                        Color="Color.Warning"
                        Size="Size.Medium"
                        Class="spt-home-button"
+                       OnClick="Collect"
                        AriaLabel="Return to landing page" />
     </MudTooltip>
 }
@@ -55,4 +56,9 @@
             TableHover = "rgba(56,189,248,0.08)"
         }
     };
+
+    private static void Collect(MouseEventArgs obj)
+    {
+        GC.Collect();
+    }
 }

@@ -1,4 +1,5 @@
 using System.Globalization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Web.Models.Database;
@@ -8,6 +9,9 @@ namespace SPTarkov.Server.Web.Pages.Database;
 
 public partial class DatabasePage
 {
+    private Dictionary<MongoId, DatabaseAssortItemLookup>? _assortItemLookup;
+    private string? _assortItemLookupLocale;
+
     private DatabaseTableDefinition BuildTradersTable()
     {
         var rows = DatabaseService
@@ -98,6 +102,7 @@ public partial class DatabasePage
     {
         var id = trader.Base.Id.ToString();
         RegisterDetailRowFactory(TradersTableId, id, () => BuildTraderRow(trader, jsonUtil, includeProperties: true));
+        RegisterTraderAssortFactory(TradersTableId, id, () => BuildTraderAssort(trader, jsonUtil));
 
         var title = GetTraderName(trader);
         var subtitle = GetNonEmptyValue(trader.Base.Name, id);
@@ -121,6 +126,7 @@ public partial class DatabasePage
             ["assortItems"] = assortItemCount.ToString("N0", CultureInfo.CurrentCulture),
             ["assortItemsRaw"] = assortItemCount.ToString(CultureInfo.InvariantCulture),
             ["barterSchemes"] = barterSchemeCount.ToString("N0", CultureInfo.CurrentCulture),
+            ["canBrowseAssort"] = "true",
             ["currency"] = currency,
             ["insurance"] = insurance,
             ["location"] = location,
@@ -223,6 +229,212 @@ public partial class DatabasePage
         );
     }
 
+    private DatabaseTraderAssort BuildTraderAssort(Trader trader, JsonUtil jsonUtil)
+    {
+        var locale = LocaleService.GetLocaleDb();
+        var templates = DatabaseService.GetItems();
+        var assortItems = trader.Assort?.Items ?? [];
+        var rows = new List<DatabaseTraderAssortRow>(assortItems.Count);
+        var loyaltyLevels = new HashSet<int>();
+        var rootItemCount = 0;
+        var barterCount = 0;
+
+        foreach (var item in assortItems)
+        {
+            var loyaltyLevel = trader.Assort?.LoyalLevelItems?.GetValueOrDefault(item.Id);
+            if (loyaltyLevel is not null)
+            {
+                loyaltyLevels.Add(loyaltyLevel.Value);
+            }
+
+            var barterSchemes = trader.Assort?.BarterScheme?.GetValueOrDefault(item.Id) ?? [];
+            if (barterSchemes.Count > 0)
+            {
+                barterCount++;
+            }
+
+            if (string.IsNullOrWhiteSpace(item.ParentId))
+            {
+                rootItemCount++;
+            }
+
+            rows.Add(BuildTraderAssortRow(item, templates, locale, jsonUtil, loyaltyLevel, barterSchemes));
+        }
+
+        return new DatabaseTraderAssort(
+            trader.Base.Id.ToString(),
+            GetTraderName(trader),
+            [
+                new DatabaseStat("Assort items", rows.Count.ToString("N0", CultureInfo.CurrentCulture)),
+                new DatabaseStat("Root items", rootItemCount.ToString("N0", CultureInfo.CurrentCulture)),
+                new DatabaseStat("Barters", barterCount.ToString("N0", CultureInfo.CurrentCulture)),
+            ],
+            loyaltyLevels.Order().Select(level => level.ToString(CultureInfo.InvariantCulture)).ToList(),
+            rows
+        );
+    }
+
+    private DatabaseAssortItemLookup GetAssortItemLookup(
+        MongoId templateMongoId,
+        Dictionary<MongoId, TemplateItem> templates,
+        Dictionary<string, string> locale
+    )
+    {
+        if (_assortItemLookup is null || _assortItemLookupLocale != _localeName)
+        {
+            _assortItemLookup = [];
+            _assortItemLookupLocale = _localeName;
+        }
+
+        if (_assortItemLookup.TryGetValue(templateMongoId, out var cachedLookup))
+        {
+            return cachedLookup;
+        }
+
+        var templateId = templateMongoId.ToString();
+        var template = templates.GetValueOrDefault(templateMongoId);
+        var lookup = new DatabaseAssortItemLookup(
+            templateId,
+            GetLocaleValue(locale, $"{templateId} Name", template?.Properties?.Name ?? template?.Name ?? templateId),
+            GetLocaleValue(locale, $"{templateId} ShortName", template?.Properties?.ShortName ?? string.Empty)
+        );
+
+        _assortItemLookup[templateMongoId] = lookup;
+        return lookup;
+    }
+
+    private DatabaseTraderAssortRow BuildTraderAssortRow(
+        Item item,
+        Dictionary<MongoId, TemplateItem> templates,
+        Dictionary<string, string> locale,
+        JsonUtil jsonUtil,
+        int? loyaltyLevel,
+        IReadOnlyList<List<BarterScheme>> barterSchemes
+    )
+    {
+        var itemId = item.Id.ToString();
+        var templateLookup = GetAssortItemLookup(item.Template, templates, locale);
+        var templateId = templateLookup.TemplateId;
+        var parentId = item.ParentId ?? string.Empty;
+        var slotId = GetNonEmptyValue(item.SlotId, "n/a");
+        var loyaltyLabel = loyaltyLevel is null ? "n/a" : $"LL{loyaltyLevel.Value}";
+        var barter = barterSchemes.Count == 0
+            ? "n/a"
+            : $"{barterSchemes.Count.ToString("N0", CultureInfo.CurrentCulture)} option{(barterSchemes.Count == 1 ? string.Empty : "s")}";
+
+        return new DatabaseTraderAssortRow(
+            itemId,
+            templateId,
+            templateLookup.Name,
+            templateLookup.ShortName,
+            parentId,
+            slotId,
+            loyaltyLabel,
+            loyaltyLevel?.ToString(CultureInfo.InvariantCulture) ?? string.Empty,
+            barter,
+            string.Join(" ", itemId, templateId, templateLookup.Name, templateLookup.ShortName, parentId, slotId, loyaltyLabel),
+            () => BuildTraderAssortRowDetails(
+                item,
+                itemId,
+                templateId,
+                parentId,
+                slotId,
+                loyaltyLevel,
+                loyaltyLabel,
+                barter,
+                barterSchemes,
+                templates,
+                locale,
+                jsonUtil
+            )
+        );
+    }
+
+    private DatabaseTraderAssortRowDetails BuildTraderAssortRowDetails(
+        Item item,
+        string itemId,
+        string templateId,
+        string parentId,
+        string slotId,
+        int? loyaltyLevel,
+        string loyaltyLabel,
+        string barter,
+        IReadOnlyList<List<BarterScheme>> barterSchemes,
+        Dictionary<MongoId, TemplateItem> templates,
+        Dictionary<string, string> locale,
+        JsonUtil jsonUtil
+    )
+    {
+        var barterPreview = BuildBarterPreview(barterSchemes, templates, locale);
+        var propertiesJson = jsonUtil.Serialize(
+            new
+            {
+                Item = item,
+                BarterScheme = barterSchemes,
+                LoyaltyLevel = loyaltyLevel,
+            },
+            indented: true
+        ) ?? "{}";
+        var properties = BuildProperties(propertiesJson);
+
+        var sections = new List<DatabaseDetailSection>
+        {
+            new(
+                "Item",
+                [
+                    new DatabaseDetailValue("Template", templateId, IsMono: true),
+                    new DatabaseDetailValue("Item id", itemId, IsMono: true),
+                    new DatabaseDetailValue("Parent", GetNonEmptyValue(parentId, "root"), IsMono: !string.IsNullOrWhiteSpace(parentId)),
+                    new DatabaseDetailValue("Slot", slotId),
+                ]
+            ),
+            new(
+                "Sale",
+                [
+                    new DatabaseDetailValue("Loyalty", loyaltyLabel),
+                    new DatabaseDetailValue("Barter", barter),
+                    new DatabaseDetailValue("Barter preview", barterPreview),
+                    new DatabaseDetailValue("Stack", GetNumberLabel(item.Upd?.StackObjectsCount)),
+                ]
+            ),
+        };
+
+        return new DatabaseTraderAssortRowDetails(sections, properties, propertiesJson);
+    }
+
+    private string BuildBarterPreview(
+        IReadOnlyList<List<BarterScheme>> barterSchemes,
+        Dictionary<MongoId, TemplateItem> templates,
+        Dictionary<string, string> locale
+    )
+    {
+        if (barterSchemes.Count == 0)
+        {
+            return "n/a";
+        }
+
+        return string.Join(
+            " | ",
+            barterSchemes.Take(3).Select(barterScheme =>
+                string.Join(" + ", barterScheme.Select(requirement => GetBarterRequirementLabel(requirement, templates, locale)))
+            )
+        );
+    }
+
+    private string GetBarterRequirementLabel(
+        BarterScheme requirement,
+        Dictionary<MongoId, TemplateItem> templates,
+        Dictionary<string, string> locale
+    )
+    {
+        var item = GetAssortItemLookup(requirement.Template, templates, locale);
+        var templateId = item.TemplateId;
+        var name = GetNonEmptyValue(item?.ShortName, item?.Name ?? templateId);
+        var count = requirement.Count?.ToString("N0", CultureInfo.CurrentCulture) ?? "1";
+
+        return $"{count} x {name}";
+    }
+
     private static List<DatabaseDetailValue> BuildTraderLoyaltyValues(IReadOnlyList<TraderLoyaltyLevel>? loyaltyLevels)
     {
         if (loyaltyLevels is null || loyaltyLevels.Count == 0)
@@ -284,4 +496,6 @@ public partial class DatabasePage
     {
         return value is null ? "n/a" : value.Value.ToString("N0", CultureInfo.CurrentCulture);
     }
+
+    private sealed record DatabaseAssortItemLookup(string TemplateId, string Name, string ShortName);
 }
