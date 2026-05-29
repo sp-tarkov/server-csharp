@@ -9,7 +9,7 @@
     "enabled": true,
     "enableDefaultUser": true,
     "allowDefaultUserFromAnyIp": false,
-    "requireCredentialsOnLocalhost": true,
+    "requireCredentialsOnLocalhost": false,
     "defaultUser": {
       "username": "spt",
       "password": "spt",
