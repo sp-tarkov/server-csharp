@@ -16,7 +16,7 @@ public class TraderCallbacks(HttpResponseUtil httpResponseUtil, TraderController
         return Task.CompletedTask;
     }
 
-    public Task<bool> OnUpdate(CancellationToken stoppingToken, long _)
+    public Task<bool> OnUpdate(long _, CancellationToken cancellationToken)
     {
         traderController.Update();
 

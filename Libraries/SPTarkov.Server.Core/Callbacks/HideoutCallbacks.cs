@@ -12,7 +12,7 @@ namespace SPTarkov.Server.Core.Callbacks;
 [Injectable(TypePriority = OnUpdateOrder.HideoutCallbacks)]
 public class HideoutCallbacks(HideoutController hideoutController, HideoutConfig hideoutConfig) : IOnUpdate
 {
-    public Task<bool> OnUpdate(CancellationToken stoppingToken, long secondsSinceLastRun)
+    public Task<bool> OnUpdate(long secondsSinceLastRun, CancellationToken cancellationToken)
     {
         if (secondsSinceLastRun < hideoutConfig.RunIntervalSeconds)
         {

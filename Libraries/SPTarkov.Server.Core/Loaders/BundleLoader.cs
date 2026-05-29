@@ -15,13 +15,14 @@ public sealed class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonU
 {
     private readonly ConcurrentDictionary<string, BundleInfo> _bundles = [];
 
-    public async Task LoadBundlesAsync(SptMod mod)
+    public async Task LoadBundlesAsync(SptMod mod, CancellationToken cancellationToken = default)
     {
-        await bundleHashCacheService.HydrateCache();
+        await bundleHashCacheService.HydrateCacheAsync(cancellationToken);
 
         var modPath = mod.GetModPath();
         var modBundles = await jsonUtil.DeserializeFromFileAsync<BundleManifest>(
-            Path.Join(Directory.GetCurrentDirectory(), modPath, "bundles.json")
+            Path.Join(Directory.GetCurrentDirectory(), modPath, "bundles.json"),
+            cancellationToken
         );
 
         var relativeModPath = modPath.Replace('\\', '/');
@@ -69,7 +70,7 @@ public sealed class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonU
                         }
                         else
                         {
-                            var bundleHash = await bundleHashCacheService.CalculateMatchAndStoreHash(bundleLocalPath);
+                            var bundleHash = await bundleHashCacheService.CalculateMatchAndStoreHashAsync(bundleLocalPath, ct);
                             AddBundle(
                                 bundleManifest.Key,
                                 new BundleInfo
@@ -88,11 +89,11 @@ public sealed class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonU
                 );
             });
 
-        await bundleHashCacheService.WriteCache();
+        await bundleHashCacheService.WriteCacheAsync(cancellationToken);
     }
 
     /// <summary>
-    ///     Handle singleplayer/bundles
+    ///     HandleAsync singleplayer/bundles
     /// </summary>
     /// <returns> List of loaded bundles.</returns>
     public List<BundleInfo> GetBundles()

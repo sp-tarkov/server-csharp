@@ -23,8 +23,11 @@ public sealed class HashUtil(RandomUtil _randomUtil)
     /// Generates a CRC32 hash for a file, reading in chunks using a pooled buffer to reduce allocations.
     /// </summary>
     /// <param name="filePath">The path to the file</param>
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> that can be used to cancel the read operation.
+    /// </param>
     /// <returns>The CRC32 hash as a uint</returns>
-    public async Task<uint> GenerateCrc32ForFileAsync(string filePath)
+    public async Task<uint> GenerateCrc32ForFileAsync(string filePath, CancellationToken cancellationToken = default)
     {
         var crc = new Crc32();
         await using var stream = File.OpenRead(filePath);
@@ -34,7 +37,7 @@ public sealed class HashUtil(RandomUtil _randomUtil)
         try
         {
             int bytesRead;
-            while ((bytesRead = await stream.ReadAsync(buffer)) > 0)
+            while ((bytesRead = await stream.ReadAsync(buffer, cancellationToken)) > 0)
             {
                 crc.Append(buffer.AsSpan(0, bytesRead));
             }
@@ -76,24 +79,31 @@ public sealed class HashUtil(RandomUtil _randomUtil)
     /// </summary>
     /// <param name="algorithm">algorithm to use to hash</param>
     /// <param name="data">data to be hashed</param>
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> that can be used to cancel the read operation.
+    /// </param>
     /// <returns>A task which contains the hash value</returns>
     /// <exception cref="NotImplementedException">thrown if the provided algorithm is not implemented</exception>
     /// >
-    public async Task<string> GenerateHashForDataAsync(HashingAlgorithm algorithm, string data)
+    public async Task<string> GenerateHashForDataAsync(
+        HashingAlgorithm algorithm,
+        string data,
+        CancellationToken cancellationToken = default
+    )
     {
         switch (algorithm)
         {
             case HashingAlgorithm.MD5:
             {
                 await using var ms = new MemoryStream(Encoding.UTF8.GetBytes(data));
-                var md5HashData = await MD5.HashDataAsync(ms);
+                var md5HashData = await MD5.HashDataAsync(ms, cancellationToken);
                 return Convert.ToHexString(md5HashData).Replace("-", string.Empty);
             }
 
             case HashingAlgorithm.SHA1:
             {
                 await using var ms = new MemoryStream(Encoding.UTF8.GetBytes(data));
-                var sha1HashData = await SHA1.HashDataAsync(ms);
+                var sha1HashData = await SHA1.HashDataAsync(ms, cancellationToken);
                 return Convert.ToHexString(sha1HashData).Replace("-", string.Empty);
             }
         }

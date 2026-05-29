@@ -31,10 +31,10 @@ public class DatabaseImporter(
 
         if (shouldVerify)
         {
-            await LoadHashes(stoppingToken);
+            await LoadHashesAsync(stoppingToken);
         }
 
-        await HydrateDatabase(SptDataPath, shouldVerify);
+        await HydrateDatabaseAsync(SptDataPath, shouldVerify, stoppingToken);
 
         var imageFilePath = $"{SptDataPath}images/";
         CreateRouteMapping(imageFilePath, "files");
@@ -63,7 +63,7 @@ public class DatabaseImporter(
         }
     }
 
-    protected async Task LoadHashes(CancellationToken stoppingToken)
+    protected async Task LoadHashesAsync(CancellationToken cancellationToken)
     {
         var checksFilePath = Path.Combine(SptDataPath, "checks.dat");
 
@@ -74,13 +74,13 @@ public class DatabaseImporter(
                 await using var fs = File.OpenRead(checksFilePath);
 
                 using var reader = new StreamReader(fs, Encoding.ASCII);
-                var base64Content = await reader.ReadToEndAsync(stoppingToken);
+                var base64Content = await reader.ReadToEndAsync(cancellationToken);
 
                 var jsonBytes = Convert.FromBase64String(base64Content);
 
                 await using var ms = new MemoryStream(jsonBytes);
 
-                var FileHashes = await jsonUtil.DeserializeFromMemoryStreamAsync<List<FileHash>>(ms) ?? [];
+                var FileHashes = await jsonUtil.DeserializeFromMemoryStreamAsync<List<FileHash>>(ms, cancellationToken) ?? [];
 
                 foreach (var hash in FileHashes)
                 {
@@ -104,7 +104,7 @@ public class DatabaseImporter(
     /// <param name="filePath">path to database folder</param>
     /// <param name="shouldVerifyDatabase">if the database should be verified after deserialization</param>
     /// <returns></returns>
-    protected async Task HydrateDatabase(string filePath, bool shouldVerifyDatabase)
+    protected async Task HydrateDatabaseAsync(string filePath, bool shouldVerifyDatabase, CancellationToken cancellationToken = default)
     {
         logger.Info(serverLocalisationService.GetText("importing_database"));
         Stopwatch timer = new();
@@ -112,7 +112,8 @@ public class DatabaseImporter(
 
         var dataToImport = await importerUtil.LoadRecursiveAsync<DatabaseTables>(
             $"{filePath}database/",
-            shouldVerifyDatabase ? VerifyDatabase : null
+            shouldVerifyDatabase ? VerifyDatabase : null,
+            cancellationToken: cancellationToken
         );
 
         timer.Stop();

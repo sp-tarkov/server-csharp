@@ -13,7 +13,7 @@ public class BotStaticRouter(JsonUtil jsonUtil, BotCallbacks botCallbacks)
         [
             new RouteAction<GenerateBotsRequestData>(
                 "/client/game/bot/generate",
-                async (url, info, sessionID, outout) => await botCallbacks.GenerateBots(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await botCallbacks.GenerateBots(url, info, sessionID)
             ),
         ]
     ) { }

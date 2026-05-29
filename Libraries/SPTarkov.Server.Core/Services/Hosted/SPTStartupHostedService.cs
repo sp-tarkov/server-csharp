@@ -36,7 +36,7 @@ public sealed class SPTStartupHostedService(
                 {
                     if (File.Exists(Path.Join(Directory.GetCurrentDirectory(), mod.GetModPath(), "bundles.json")))
                     {
-                        await bundleLoader.LoadBundlesAsync(mod).ConfigureAwait(false);
+                        await bundleLoader.LoadBundlesAsync(mod, stoppingToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -106,7 +106,7 @@ public sealed class SPTStartupHostedService(
 
                     try
                     {
-                        if (await updateable.OnUpdate(stoppingToken, secondsSinceLastRun).ConfigureAwait(false))
+                        if (await updateable.OnUpdate(secondsSinceLastRun, stoppingToken).ConfigureAwait(false))
                         {
                             _onUpdateLastRun[updateableName] = timeUtil.GetTimeStamp();
                         }

@@ -13,11 +13,11 @@ public class WeatherStaticRouter(JsonUtil jsonUtil, WeatherCallbacks weatherCall
         [
             new RouteAction<EmptyRequestData>(
                 "/client/weather",
-                async (url, info, sessionID, output) => await weatherCallbacks.GetWeather(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await weatherCallbacks.GetWeather(url, info, sessionID)
             ),
             new RouteAction<EmptyRequestData>(
                 "/client/localGame/weather",
-                async (url, info, sessionID, output) => await weatherCallbacks.GetLocalWeather(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await weatherCallbacks.GetLocalWeather(url, info, sessionID)
             ),
         ]
     ) { }

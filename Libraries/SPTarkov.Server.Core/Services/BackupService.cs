@@ -151,7 +151,8 @@ public sealed class BackupService(
                 await fileUtil.WriteFileAsync(
                     Path.Combine(targetDir, ActiveModsFilename),
                     jsonUtil.Serialize(GetActiveServerMods())
-                        ?? throw new InvalidOperationException("Could not serialize active server mods!")
+                        ?? throw new InvalidOperationException("Could not serialize active server mods!"),
+                    cancellationToken
                 );
 
                 if (logger.IsLogEnabled(LogLevel.Debug))

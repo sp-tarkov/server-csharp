@@ -65,7 +65,13 @@ public abstract class Router
 
 public abstract class StaticRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> routes) : Router
 {
-    public async ValueTask<object> HandleStatic(string url, string? body, MongoId sessionId, string output)
+    public async ValueTask<object> HandleStaticAsync(
+        string url,
+        string? body,
+        MongoId sessionId,
+        string output,
+        CancellationToken cancellationToken = default
+    )
     {
         var action = routes.Single(route => route.url == url);
         var type = action.bodyType;
@@ -77,7 +83,7 @@ public abstract class StaticRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> r
 
         info ??= new EmptyRequestData();
         TriggerOnBeforeAction(new StaticDynamicOnBeforeEventRequestData(url, info, sessionId, output));
-        var result = await action.action(url, info, sessionId, output);
+        var result = await action.action(url, info, sessionId, output, cancellationToken);
         TriggerOnAfterAction(new StaticDynamicOnAfterEventRequestData(url, info, sessionId, output, result));
         return result;
     }
@@ -90,7 +96,13 @@ public abstract class StaticRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> r
 
 public abstract class DynamicRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> routes) : Router
 {
-    public async ValueTask<object> HandleDynamic(string url, string? body, MongoId sessionId, string output)
+    public async ValueTask<object> HandleDynamic(
+        string url,
+        string? body,
+        MongoId sessionId,
+        string output,
+        CancellationToken cancellationToken = default
+    )
     {
         var action = routes.First(r => url.Contains(r.url));
         var type = action.bodyType;
@@ -102,7 +114,7 @@ public abstract class DynamicRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> 
 
         info ??= new EmptyRequestData();
         TriggerOnBeforeAction(new StaticDynamicOnBeforeEventRequestData(url, info, sessionId, output));
-        var result = await action.action(url, info, sessionId, output);
+        var result = await action.action(url, info, sessionId, output, cancellationToken);
         TriggerOnAfterAction(new StaticDynamicOnAfterEventRequestData(url, info, sessionId, output, result));
         return result;
     }
@@ -179,8 +191,19 @@ public abstract class SaveLoadRouter : Router
 
 public record HandledRoute(string route, bool dynamic);
 
-public record RouteAction(string url, Func<string, IRequestData, MongoId, string?, ValueTask<object>> action, Type? bodyType = null);
+public record RouteAction(
+    string url,
+    Func<string, IRequestData, MongoId, string?, CancellationToken, ValueTask<object>> action,
+    Type? bodyType = null
+);
 
-public record RouteAction<TRequest>(string url, Func<string, TRequest, MongoId, string?, ValueTask<string>> typedAction)
-    : RouteAction(url, async (url, info, sessionId, output) => await typedAction(url, (TRequest)info, sessionId, output), typeof(TRequest))
+public record RouteAction<TRequest>(string url, Func<string, TRequest, MongoId, string?, CancellationToken, ValueTask<string>> typedAction)
+    : RouteAction(
+        url,
+        async (url, info, sessionId, output, cancellationToken) =>
+        {
+            return await typedAction(url, (TRequest)info, sessionId, output, cancellationToken);
+        },
+        typeof(TRequest)
+    )
     where TRequest : class, IRequestData;

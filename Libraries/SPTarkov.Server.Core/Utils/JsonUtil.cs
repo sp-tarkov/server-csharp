@@ -82,8 +82,11 @@ public class JsonUtil
     ///     Convert JSON into an object from a file asynchronously
     /// </summary>
     /// <param name="file">The JSON File to read</param>
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> that can be used to cancel the read operation.
+    /// </param>
     /// <returns>T</returns>
-    public async Task<T?> DeserializeFromFileAsync<T>(string file)
+    public async Task<T?> DeserializeFromFileAsync<T>(string file, CancellationToken cancellationToken = default)
     {
         if (!File.Exists(file))
         {
@@ -92,7 +95,7 @@ public class JsonUtil
 
         await using FileStream fs = new(file, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: true);
 
-        return await JsonSerializer.DeserializeAsync<T>(fs, JsonSerializerOptionsNoIndent);
+        return await JsonSerializer.DeserializeAsync<T>(fs, JsonSerializerOptionsNoIndent, cancellationToken);
     }
 
     /// <summary>
@@ -119,8 +122,11 @@ public class JsonUtil
     /// </summary>
     /// <param name="file">The JSON File to read</param>
     /// <param name="type">The type of the object to deserialize to</param>
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> that can be used to cancel the deserialization operation.
+    /// </param>
     /// <returns>object</returns>
-    public async Task<object?> DeserializeFromFileAsync(string file, Type type)
+    public async Task<object?> DeserializeFromFileAsync(string file, Type type, CancellationToken cancellationToken = default)
     {
         if (!File.Exists(file))
         {
@@ -129,7 +135,7 @@ public class JsonUtil
 
         await using FileStream fs = new(file, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: true);
 
-        return await JsonSerializer.DeserializeAsync(fs, type, JsonSerializerOptionsNoIndent);
+        return await JsonSerializer.DeserializeAsync(fs, type, JsonSerializerOptionsNoIndent, cancellationToken);
     }
 
     /// <summary>
@@ -148,20 +154,26 @@ public class JsonUtil
     /// </summary>
     /// <param name="fs">The file stream to deserialize</param>
     /// <param name="type">The type of the object to deserialize to</param>
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> that can be used to cancel the deserialization operation.
+    /// </param>
     /// <returns></returns>
-    public async Task<object?> DeserializeFromFileStreamAsync(FileStream fs, Type type)
+    public async Task<object?> DeserializeFromFileStreamAsync(FileStream fs, Type type, CancellationToken cancellationToken = default)
     {
-        return await JsonSerializer.DeserializeAsync(fs, type, JsonSerializerOptionsNoIndent);
+        return await JsonSerializer.DeserializeAsync(fs, type, JsonSerializerOptionsNoIndent, cancellationToken);
     }
 
     /// <summary>
     ///     Convert JSON into an object from a MemoryStream asynchronously
     /// </summary>
     /// <param name="ms">The memory stream to deserialize</param>
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> that can be used to cancel the deserialization operation.
+    /// </param>
     /// <returns>T</returns>
-    public async Task<T?> DeserializeFromMemoryStreamAsync<T>(MemoryStream ms)
+    public async Task<T?> DeserializeFromMemoryStreamAsync<T>(MemoryStream ms, CancellationToken cancellationToken = default)
     {
-        return await JsonSerializer.DeserializeAsync<T>(ms, JsonSerializerOptionsNoIndent);
+        return await JsonSerializer.DeserializeAsync<T>(ms, JsonSerializerOptionsNoIndent, cancellationToken);
     }
 
     /// <summary>

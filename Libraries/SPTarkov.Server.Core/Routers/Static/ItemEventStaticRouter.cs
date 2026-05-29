@@ -13,7 +13,7 @@ public class ItemEventStaticRouter(JsonUtil jsonUtil, ItemEventCallbacks itemEve
         [
             new RouteAction<ItemEventRouterRequest>(
                 "/client/game/profile/items/moving",
-                async (url, info, sessionID, output) => await itemEventCallbacks.HandleEvents(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await itemEventCallbacks.HandleEvents(url, info, sessionID)
             ),
         ]
     ) { }

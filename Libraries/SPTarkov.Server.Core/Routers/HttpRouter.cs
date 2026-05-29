@@ -14,25 +14,31 @@ public class HttpRouter(IEnumerable<StaticRouter> staticRouters, IEnumerable<Dyn
             || dynamicRoutes.Any(dr => dr.CanHandle(context.Request.Path.Value, true));
     }
 
-    public async ValueTask<string?> GetResponse(HttpRequest req, MongoId sessionID, string? body)
+    public async ValueTask<string?> GetResponseAsync(
+        HttpRequest req,
+        MongoId sessionID,
+        string? body,
+        CancellationToken cancellationToken = default
+    )
     {
         var wrapper = new ResponseWrapper("");
-        var handled = await HandleRoute(req, sessionID, wrapper, staticRouters, false, body);
+        var handled = await HandleRouteAsync(req, sessionID, wrapper, staticRouters, false, body, cancellationToken);
         if (!handled)
         {
-            await HandleRoute(req, sessionID, wrapper, dynamicRoutes, true, body);
+            await HandleRouteAsync(req, sessionID, wrapper, dynamicRoutes, true, body, cancellationToken);
         }
 
         return wrapper.Output;
     }
 
-    protected async ValueTask<bool> HandleRoute(
+    protected async ValueTask<bool> HandleRouteAsync(
         HttpRequest request,
         MongoId sessionID,
         ResponseWrapper wrapper,
         IEnumerable<Router> routers,
         bool dynamic,
-        string? body
+        string? body,
+        CancellationToken cancellationToken = default
     )
     {
         var url = request.Path.Value;
@@ -54,7 +60,7 @@ public class HttpRouter(IEnumerable<StaticRouter> staticRouters, IEnumerable<Dyn
                 }
                 else
                 {
-                    wrapper.Output = await (route as StaticRouter).HandleStatic(url, body, sessionID, wrapper.Output) as string;
+                    wrapper.Output = await (route as StaticRouter).HandleStaticAsync(url, body, sessionID, wrapper.Output) as string;
                 }
 
                 matched = true;

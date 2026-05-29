@@ -14,11 +14,11 @@ public class PrestigeStaticRouter(JsonUtil jsonUtil, PrestigeCallbacks prestigeC
         [
             new RouteAction<EmptyRequestData>(
                 "/client/prestige/list",
-                async (url, info, sessionID, output) => await prestigeCallbacks.GetPrestige(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await prestigeCallbacks.GetPrestige(url, info, sessionID)
             ),
             new RouteAction<ObtainPrestigeRequestList>(
                 "/client/prestige/obtain",
-                async (url, info, sessionID, output) => await prestigeCallbacks.ObtainPrestige(url, info, sessionID)
+                async (url, info, sessionID, output, canellationToken) => await prestigeCallbacks.ObtainPrestige(url, info, sessionID)
             ),
         ]
     ) { }

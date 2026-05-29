@@ -13,11 +13,11 @@ public class TraderDynamicRouter(JsonUtil jsonUtil, TraderCallbacks traderCallba
         [
             new RouteAction<EmptyRequestData>(
                 "/client/trading/api/getTrader/",
-                async (url, info, sessionID, output) => await traderCallbacks.GetTrader(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await traderCallbacks.GetTrader(url, info, sessionID)
             ),
             new RouteAction<EmptyRequestData>(
                 "/client/trading/api/getTraderAssort/",
-                async (url, info, sessionID, output) => await traderCallbacks.GetAssort(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await traderCallbacks.GetAssort(url, info, sessionID)
             ),
         ]
     ) { }

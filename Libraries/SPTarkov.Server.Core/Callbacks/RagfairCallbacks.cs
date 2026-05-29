@@ -30,7 +30,7 @@ public class RagfairCallbacks(
         return Task.CompletedTask;
     }
 
-    public Task<bool> OnUpdate(CancellationToken stoppingToken, long secondsSinceLastRun)
+    public Task<bool> OnUpdate(long secondsSinceLastRun, CancellationToken cancellationToken)
     {
         if (secondsSinceLastRun < ragfairConfig.RunIntervalSeconds)
         {

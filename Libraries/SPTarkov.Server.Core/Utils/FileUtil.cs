@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Utils;
 [Injectable]
 public sealed class FileUtil
 {
-    private const string _modBasePath = "user/mods/";
+    private const string ModBasePath = "user/mods/";
 
     public List<string> GetFiles(string path, bool recursive = false, string searchPattern = "*")
     {
@@ -65,14 +65,14 @@ public sealed class FileUtil
         return File.ReadAllText(path);
     }
 
-    public async Task<string> ReadFileAsync(string path)
+    public async Task<string> ReadFileAsync(string path, CancellationToken cancellationToken = default)
     {
-        return await File.ReadAllTextAsync(path);
+        return await File.ReadAllTextAsync(path, cancellationToken);
     }
 
-    public async Task<byte[]> ReadFileAsBytesAsync(string path)
+    public async Task<byte[]> ReadFileAsBytesAsync(string path, CancellationToken cancellationToken = default)
     {
-        return await File.ReadAllBytesAsync(path);
+        return await File.ReadAllBytesAsync(path, cancellationToken);
     }
 
     public void WriteFile(string filePath, string fileContent)
@@ -100,17 +100,17 @@ public sealed class FileUtil
         File.WriteAllBytes(filePath, fileContent);
     }
 
-    public async Task WriteFileAsync(string filePath, string fileContent)
+    public async Task WriteFileAsync(string filePath, string fileContent, CancellationToken cancellationToken = default)
     {
         var bytes = Encoding.UTF8.GetBytes(fileContent);
-        await WriteFileAsync(filePath, bytes);
+        await WriteFileAsync(filePath, bytes, cancellationToken);
     }
 
     /// <summary>
     /// Writes a file atomically by first writing to a temporary file, then replacing the original.
     /// This prevents corruption if the write operation fails or is interrupted.
     /// </summary>
-    public async Task WriteFileAsync(string filePath, byte[] fileContent)
+    public async Task WriteFileAsync(string filePath, byte[] fileContent, CancellationToken cancellationToken = default)
     {
         var directoryPath = Path.GetDirectoryName(filePath);
 
@@ -127,10 +127,10 @@ public sealed class FileUtil
                 var fs = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true)
             )
             {
-                await fs.WriteAsync(fileContent);
+                await fs.WriteAsync(fileContent, cancellationToken);
 
                 // We flush here so we can be sure it's immediately committed to disk
-                await fs.FlushAsync();
+                await fs.FlushAsync(cancellationToken);
                 fs.Flush(true);
             }
 
@@ -202,6 +202,6 @@ public sealed class FileUtil
 
     public string GetModPath(string modName)
     {
-        return Path.Combine(_modBasePath, modName);
+        return Path.Combine(ModBasePath, modName);
     }
 }

@@ -11,13 +11,13 @@ public class SaveCallbacks(SaveServer saveServer, BackupService backupService, C
 {
     public async Task OnLoad(CancellationToken stoppingToken)
     {
-        await saveServer.LoadAsync();
+        await saveServer.LoadAsync(stoppingToken);
 
         // Note: This has to happen after loading the saveServer so we don't backup corrupted profiles
-        await backupService.StartBackupSystem();
+        await backupService.StartBackupSystem(stoppingToken);
     }
 
-    public async Task<bool> OnUpdate(CancellationToken stoppingToken, long secondsSinceLastRun)
+    public async Task<bool> OnUpdate(long secondsSinceLastRun, CancellationToken cancellationToken)
     {
         if (secondsSinceLastRun < coreConfig.ProfileSaveIntervalInSeconds)
         {
@@ -25,7 +25,7 @@ public class SaveCallbacks(SaveServer saveServer, BackupService backupService, C
             return false;
         }
 
-        await saveServer.SaveAsync();
+        await saveServer.SaveAsync(cancellationToken);
 
         return true;
     }

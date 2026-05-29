@@ -13,7 +13,7 @@ public class CustomizationDynamicRouter(JsonUtil jsonUtil, CustomizationCallback
         [
             new RouteAction<EmptyRequestData>(
                 "/client/trading/customization/",
-                async (url, info, sessionID, output) => await customizationCallbacks.GetTraderSuits(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await customizationCallbacks.GetTraderSuits(url, info, sessionID)
             ),
         ]
     ) { }

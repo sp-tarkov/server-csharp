@@ -34,7 +34,7 @@ public class ImageRouter(
         return false;
     }
 
-    public async Task Handle(MongoId sessionId, HttpContext context)
+    public async Task HandleAsync(MongoId sessionId, HttpContext context, CancellationToken cancellationToken = default)
     {
         // remove file extension
         var url = fileUtil.StripExtension(context.Request.Path, true);
@@ -43,7 +43,7 @@ public class ImageRouter(
         var urlKeyLower = url.ToLowerInvariant();
         if (imageRouterService.ExistsByKey(urlKeyLower))
         {
-            await httpFileUtil.SendFile(context.Response, imageRouterService.GetByKey(urlKeyLower));
+            await httpFileUtil.SendFileAsync(context.Response, imageRouterService.GetByKey(urlKeyLower), cancellationToken);
             return;
         }
     }

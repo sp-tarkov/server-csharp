@@ -14,11 +14,12 @@ public class NotifierStaticRouter(JsonUtil jsonUtil, NotifierCallbacks notifierC
         [
             new RouteAction<EmptyRequestData>(
                 "/client/notifier/channel/create",
-                async (url, info, sessionID, output) => await notifierCallbacks.CreateNotifierChannel(url, info, sessionID)
+                async (url, info, sessionID, output, canellationToken) =>
+                    await notifierCallbacks.CreateNotifierChannel(url, info, sessionID)
             ),
             new RouteAction<UIDRequestData>(
                 "/client/game/profile/select",
-                async (url, info, sessionID, output) => await notifierCallbacks.SelectProfile(url, info, sessionID)
+                async (url, info, sessionID, output, canellationToken) => await notifierCallbacks.SelectProfile(url, info, sessionID)
             ),
         ]
     ) { }

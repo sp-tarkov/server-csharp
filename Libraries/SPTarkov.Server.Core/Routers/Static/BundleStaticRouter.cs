@@ -13,7 +13,7 @@ public class BundleStaticRouter(JsonUtil jsonUtil, BundleCallbacks bundleCallbac
         [
             new RouteAction<EmptyRequestData>(
                 "/singleplayer/bundles",
-                async (url, info, sessionID, output) => await bundleCallbacks.GetBundles(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await bundleCallbacks.GetBundles(url, info, sessionID)
             ),
         ]
     ) { }
