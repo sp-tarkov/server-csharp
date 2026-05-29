@@ -41,6 +41,7 @@
     <AdditionalFiles Include="Pages\Status.razor" />
     <AdditionalFiles Include="Pages\ThankYou.razor" />
     <AdditionalFiles Include="Pages\Tools\ToolsPage.razor" />
+    <AdditionalFiles Include="Pages\UserCredentialsPage.razor" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Database\" />

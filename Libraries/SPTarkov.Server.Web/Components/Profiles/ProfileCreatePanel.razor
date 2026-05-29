@@ -1,0 +1,56 @@
+<MudStack Spacing="3">
+    <MudText Typo="Typo.h6">Create profile</MudText>
+
+    <MudTextField T="string"
+                  Label="Username"
+                  Variant="Variant.Outlined"
+                  Immediate="true"
+                  Value="@Username"
+                  ValueChanged="UsernameChanged" />
+
+    <MudSelect T="string"
+               Label="Edition"
+               Variant="Variant.Outlined"
+               Value="@Edition"
+               ValueChanged="EditionChanged">
+        @foreach (var edition in Editions)
+        {
+            <MudSelectItem T="string" Value="@edition">@edition</MudSelectItem>
+        }
+    </MudSelect>
+
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Warning"
+               Class="profiles-primary-button"
+               StartIcon="@Icons.Material.Filled.PersonAdd"
+               Disabled="@IsBusy"
+               OnClick="OnCreate">
+        Create
+    </MudButton>
+</MudStack>
+
+@code {
+    private const string BearSide = "Bear";
+    private const string UsecSide = "Usec";
+
+    [Parameter]
+    public IReadOnlyList<string> Editions { get; set; } = [];
+
+    [Parameter]
+    public string Username { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> UsernameChanged { get; set; }
+
+    [Parameter]
+    public string Edition { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> EditionChanged { get; set; }
+
+    [Parameter]
+    public bool IsBusy { get; set; }
+
+    [Parameter]
+    public EventCallback OnCreate { get; set; }
+}

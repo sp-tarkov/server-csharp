@@ -1,0 +1,72 @@
+@using SPTarkov.Server.Web.Models.Profiles
+
+<MudStack Spacing="3">
+    <MudText Typo="Typo.h6">Selected profile</MudText>
+
+    @if (Profile is null)
+    {
+        <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="profiles-empty-state">
+            <MudIcon Icon="@Icons.Material.Filled.PersonSearch" Color="Color.Warning" Size="Size.Large" />
+            <MudText Typo="Typo.body2" Align="Align.Center">Select a profile from the table.</MudText>
+        </MudStack>
+    }
+    else
+    {
+        <MudStack Spacing="2">
+            <MudText Typo="Typo.subtitle2">@Profile.Username</MudText>
+            <MudText Typo="Typo.caption" Class="profiles-mono">@Profile.Id</MudText>
+
+            <MudStack Row Spacing="1" Class="profiles-chip-row">
+                <MudChip T="string" Size="Size.Small" Color="@GetStatusColor(Profile)">@Profile.Status</MudChip>
+                <MudChip T="string" Size="Size.Small" Color="Color.Info">@Profile.Edition</MudChip>
+            </MudStack>
+
+            <MudTextField T="string"
+                          Label="Type username to delete"
+                          Variant="Variant.Outlined"
+                          Immediate="true"
+                          Value="@DeleteConfirmation"
+                          ValueChanged="DeleteConfirmationChanged" />
+
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Error"
+                       StartIcon="@Icons.Material.Filled.DeleteForever"
+                       Disabled="@(!CanDelete)"
+                       OnClick="OnDelete">
+                Delete profile
+            </MudButton>
+        </MudStack>
+    }
+</MudStack>
+
+@code {
+    [Parameter]
+    public ProfileSummary? Profile { get; set; }
+
+    [Parameter]
+    public string DeleteConfirmation { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> DeleteConfirmationChanged { get; set; }
+
+    [Parameter]
+    public bool CanDelete { get; set; }
+
+    [Parameter]
+    public EventCallback OnDelete { get; set; }
+
+    private static Color GetStatusColor(ProfileSummary profile)
+    {
+        if (profile.IsInvalid)
+        {
+            return Color.Error;
+        }
+
+        if (profile.IsWiped)
+        {
+            return Color.Warning;
+        }
+
+        return profile.HasCharacter ? Color.Success : Color.Info;
+    }
+}

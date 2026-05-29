@@ -367,6 +367,25 @@
     text-transform: uppercase;
 }
 
+.database-page ::deep .database-sort-button {
+    min-width: 0;
+    padding: 0;
+    color: #a1a1aa;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.database-page ::deep .database-sort-button .mud-button-label {
+    justify-content: flex-start;
+}
+
+.database-page ::deep .database-sort-button:hover,
+.database-page ::deep .database-sort-button-active {
+    color: #facc15;
+}
+
 .database-page ::deep .mud-table-row:hover {
     background: rgba(56, 189, 248, 0.07) !important;
 }

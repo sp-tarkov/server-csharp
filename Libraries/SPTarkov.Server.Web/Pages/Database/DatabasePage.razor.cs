@@ -15,6 +15,12 @@ public partial class DatabasePage
     private const string ItemsTableId = "items";
     private const string QuestsTableId = "quests";
     private const string TradersTableId = "traders";
+    private const string AchievementsTableId = "achievements";
+    private const string CustomAchievementsTableId = "custom-achievements";
+    private const string HandbookTableId = "handbook";
+    private const string CustomizationTableId = "customization";
+    private const string GlobalsTableId = "globals";
+    private const string BotsTableId = "bots";
 
     [Inject]
     private DatabaseService DatabaseService { get; set; } = null!;
@@ -141,7 +147,18 @@ public partial class DatabasePage
         _traderAssortFactories.Clear();
         _traderAssortCache.Clear();
         _localeName = LocaleService.GetDesiredGameLocale();
-        _tables = [BuildTable("Items", BuildItemsTable), BuildTable("Quests", BuildQuestsTable), BuildTable("Traders", BuildTradersTable)];
+        _tables =
+        [
+            BuildTable("Items", BuildItemsTable),
+            BuildTable("Quests", BuildQuestsTable),
+            BuildTable("Traders", BuildTradersTable),
+            BuildTable("Achievements", BuildAchievementsTable),
+            BuildTable("CustomAchievements", BuildCustomAchievementsTable),
+            BuildTable("Handbook", BuildHandbookTable),
+            BuildTable("Customization", BuildCustomizationTable),
+            BuildTable("Globals", BuildGlobalsTable),
+            BuildTable("Bots", BuildBotsTable),
+        ];
         _selectedTableId = _tables.FirstOrDefault()?.Id ?? ItemsTableId;
     }
 

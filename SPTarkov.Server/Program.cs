@@ -130,6 +130,7 @@ public static class Program
         // register SPT components
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(Program));
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(PatchManager));
+        diHandler.AddInjectableTypesFromTypeAssembly(typeof(SPTWeb));
 
         if (ProgramStatics.MODS())
         {
