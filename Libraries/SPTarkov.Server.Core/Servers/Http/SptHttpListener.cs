@@ -103,6 +103,9 @@ public class SptHttpListener(
     /// <param name="resp"> Outgoing response </param>
     /// <param name="body"> Buffer </param>
     /// <param name="output"> Server generated response data</param>
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> that can be used to cancel the response operation.
+    /// </param>
     public async Task SendResponseAsync(
         MongoId sessionID,
         HttpRequest req,

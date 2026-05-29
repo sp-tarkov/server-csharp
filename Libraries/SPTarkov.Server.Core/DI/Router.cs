@@ -191,12 +191,43 @@ public abstract class SaveLoadRouter : Router
 
 public record HandledRoute(string route, bool dynamic);
 
+/// <summary>
+/// Describes a route and the action that should be executed when the route is invoked.
+/// </summary>
+/// <param name="url">
+/// The route URL or route pattern associated with the action.
+/// </param>
+/// <param name="action">
+/// The action to execute for the route.
+/// The parameters are, in order: the route URL, the request data, the session ID,
+/// an optional output value, and a cancellation token sourced from
+/// <c>HttpContext.RequestAborted</c>.
+/// </param>
+/// <param name="bodyType">
+/// The expected request body type for the route, or <see langword="null"/> when
+/// the route does not declare a specific body type.
+/// </param>
 public record RouteAction(
     string url,
     Func<string, IRequestData, MongoId, string?, CancellationToken, ValueTask<object>> action,
     Type? bodyType = null
 );
 
+/// <summary>
+/// Describes a route and a strongly typed action that should be executed when the route is invoked.
+/// </summary>
+/// <typeparam name="TRequest">
+/// The strongly typed request body type expected by the route.
+/// </typeparam>
+/// <param name="url">
+/// The route URL or route pattern associated with the action.
+/// </param>
+/// <param name="typedAction">
+/// The strongly typed action to execute for the route.
+/// The parameters are, in order: the route URL, the typed request data, the session ID,
+/// an optional output value, and a cancellation token sourced from
+/// <c>HttpContext.RequestAborted</c>.
+/// </param>
 public record RouteAction<TRequest>(string url, Func<string, TRequest, MongoId, string?, CancellationToken, ValueTask<string>> typedAction)
     : RouteAction(
         url,
