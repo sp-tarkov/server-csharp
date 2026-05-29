@@ -13,7 +13,7 @@
     "defaultUser": {
       "username": "spt",
       "password": "spt",
-      "roles": "Administrator"
+      "isAdministrator": true
     }
   }
 }

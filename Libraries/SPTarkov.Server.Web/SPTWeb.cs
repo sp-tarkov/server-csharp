@@ -48,7 +48,12 @@ public static class SPTWeb
                     };
                 }
             );
-        builder.Services.AddAuthorization();
+        builder
+            .Services.AddAuthorizationBuilder()
+            .AddPolicy(
+                AuthService.AdministratorPolicy,
+                policy => policy.RequireClaim(AuthService.IsAdministratorClaimType, AuthService.IsAdministratorClaimValue)
+            );
         builder.Services.AddCascadingAuthenticationState();
 
         var mvcBuilder = builder.Services.AddControllers();

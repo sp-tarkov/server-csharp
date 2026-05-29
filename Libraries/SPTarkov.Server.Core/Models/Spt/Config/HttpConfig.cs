@@ -65,8 +65,8 @@ public record AuthUserCredential
     public required string Password { get; set; }
 
     /// <summary>
-    ///     Gets or sets a comma-delimited list of roles assigned to this user
+    ///     Gets or sets whether this user can access administrator-only web pages
     /// </summary>
-    [JsonPropertyName("roles")]
-    public required string Roles { get; set; }
+    [JsonPropertyName("isAdministrator")]
+    public required bool IsAdministrator { get; set; }
 }

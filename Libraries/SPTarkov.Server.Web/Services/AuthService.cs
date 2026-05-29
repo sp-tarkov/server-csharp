@@ -14,9 +14,12 @@ namespace SPTarkov.Server.Web.Services;
 public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, JsonUtil jsonUtil) : IOnLoad
 {
     internal const string AuthenticationScheme = "SptWebCookie";
+    internal const string AdministratorPolicy = "Administrator";
     internal const string LoginPagePath = "/login";
     internal const string LoginPath = "/spt-web-auth/login";
     internal const string LogoutPath = "/spt-web-auth/logout";
+    internal const string IsAdministratorClaimType = "isAdministrator";
+    internal const string IsAdministratorClaimValue = "true";
 
     internal IReadOnlyList<AuthUserCredential> Credentials
     {
@@ -48,7 +51,7 @@ public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, 
     {
         var defaultUser = httpConfig.WebAuthenticationConfig.DefaultUser;
 
-        return CreatePrincipal(defaultUser.Username, defaultUser.Roles);
+        return CreatePrincipal(defaultUser.Username, defaultUser.IsAdministrator);
     }
 
     internal bool TryGetCredentials(string username, out AuthUserCredential? credential)
@@ -57,7 +60,7 @@ public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, 
         return credential != null;
     }
 
-    internal async Task<bool> TryCreateUser(string username, string password, string roles)
+    internal async Task<bool> TryCreateUser(string username, string password, bool isAdministrator)
     {
         if (TryGetCredentials(username, out _))
         {
@@ -69,7 +72,7 @@ public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, 
             {
                 Username = username,
                 Password = password,
-                Roles = roles,
+                IsAdministrator = isAdministrator,
             }
         );
         await SaveCredentials();
@@ -106,40 +109,14 @@ public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, 
         return true;
     }
 
-    internal async Task<bool> TryAddUserRole(string username, string role)
+    internal async Task<bool> TryUpdateUserAdministrator(string username, bool isAdministrator)
     {
         if (!TryGetCredentials(username, out var credential) || credential is null)
         {
             return false;
         }
 
-        var rolesList = RolesToList(credential.Roles);
-        if (rolesList.Contains(role))
-        {
-            return false;
-        }
-
-        rolesList.Add(role);
-        credential.Roles = RolesToString(rolesList);
-        await SaveCredentials();
-
-        return true;
-    }
-
-    internal async Task<bool> TryRemoveUserRole(string username, string role)
-    {
-        if (!TryGetCredentials(username, out var credential) || credential is null)
-        {
-            return false;
-        }
-
-        var rolesList = RolesToList(credential.Roles);
-        if (!rolesList.Remove(role))
-        {
-            return false;
-        }
-
-        credential.Roles = RolesToString(rolesList);
+        credential.IsAdministrator = isAdministrator;
         await SaveCredentials();
 
         return true;
@@ -183,7 +160,7 @@ public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, 
             return false;
         }
 
-        principal = CreatePrincipal(credentials.Username, credentials.Roles);
+        principal = CreatePrincipal(credentials.Username, credentials.IsAdministrator);
         return true;
     }
 
@@ -219,13 +196,13 @@ public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, 
         return $"{GetLoginPageUrl(returnUrl)}&noPermissions=1";
     }
 
-    private static ClaimsPrincipal CreatePrincipal(string username, string roles)
+    private static ClaimsPrincipal CreatePrincipal(string username, bool isAdministrator)
     {
         var claims = new List<Claim> { new(ClaimTypes.Name, username), new(ClaimTypes.NameIdentifier, username) };
 
-        foreach (var role in roles.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        if (isAdministrator)
         {
-            claims.Add(new Claim(ClaimTypes.Role, role));
+            claims.Add(new Claim(IsAdministratorClaimType, IsAdministratorClaimValue));
         }
 
         var identity = new ClaimsIdentity(claims, AuthenticationScheme);
@@ -287,15 +264,5 @@ public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, 
     {
         var text = jsonUtil.Serialize(credentials ?? _credentials);
         await File.WriteAllTextAsync(Path.Combine(Path.GetFullPath(UserCredentialsPath), UserCredentialsFileName), text);
-    }
-
-    private static List<string> RolesToList(string roles)
-    {
-        return roles.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
-    }
-
-    private static string RolesToString(List<string> roles)
-    {
-        return string.Join(", ", roles);
     }
 }
