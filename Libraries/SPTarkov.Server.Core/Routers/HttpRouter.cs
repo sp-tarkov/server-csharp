@@ -56,11 +56,14 @@ public class HttpRouter(IEnumerable<StaticRouter> staticRouters, IEnumerable<Dyn
             {
                 if (dynamic)
                 {
-                    wrapper.Output = await (route as DynamicRouter).HandleDynamic(url, body, sessionID, wrapper.Output) as string;
+                    wrapper.Output =
+                        await (route as DynamicRouter).HandleDynamicAsync(url, body, sessionID, wrapper.Output, cancellationToken)
+                        as string;
                 }
                 else
                 {
-                    wrapper.Output = await (route as StaticRouter).HandleStaticAsync(url, body, sessionID, wrapper.Output) as string;
+                    wrapper.Output =
+                        await (route as StaticRouter).HandleStaticAsync(url, body, sessionID, wrapper.Output, cancellationToken) as string;
                 }
 
                 matched = true;

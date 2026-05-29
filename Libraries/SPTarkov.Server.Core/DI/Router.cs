@@ -96,7 +96,7 @@ public abstract class StaticRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> r
 
 public abstract class DynamicRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> routes) : Router
 {
-    public async ValueTask<object> HandleDynamic(
+    public async ValueTask<object> HandleDynamicAsync(
         string url,
         string? body,
         MongoId sessionId,
