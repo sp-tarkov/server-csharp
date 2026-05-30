@@ -111,6 +111,10 @@ public sealed class SPTStartupHostedService(
                             _onUpdateLastRun[updateableName] = timeUtil.GetTimeStamp();
                         }
                     }
+                    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                    {
+                        throw;
+                    }
                     catch (Exception err)
                     {
                         LogUpdateException(err, updateable);
