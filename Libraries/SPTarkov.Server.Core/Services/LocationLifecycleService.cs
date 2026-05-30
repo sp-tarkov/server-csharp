@@ -78,10 +78,14 @@ public class LocationLifecycleService(
     /// <summary>
     ///     Handle client/match/local/start
     /// </summary>
-    public virtual StartLocalRaidResponseData StartLocalRaid(MongoId sessionId, StartLocalRaidRequestData request)
+    public virtual async Task<StartLocalRaidResponseData> StartLocalRaidAsync(
+        MongoId sessionId,
+        StartLocalRaidRequestData request,
+        CancellationToken cancellationToken = default
+    )
     {
         // Backup the profile on raid start
-        backupService.InitializeAsync().GetAwaiter().GetResult();
+        await backupService.InitializeAsync(cancellationToken);
 
         logger.Debug($"Starting: {request.Location}");
 
@@ -467,7 +471,11 @@ public class LocationLifecycleService(
     /// <summary>
     ///     Handle client/match/local/end
     /// </summary>
-    public virtual void EndLocalRaid(MongoId sessionId, EndLocalRaidRequestData request)
+    public virtual async Task EndLocalRaidAsync(
+        MongoId sessionId,
+        EndLocalRaidRequestData request,
+        CancellationToken cancellationToken = default
+    )
     {
         // Clear bot loot cache
         botLootCacheService.ClearCache();
@@ -514,7 +522,16 @@ public class LocationLifecycleService(
 
         if (!isPmc)
         {
-            HandlePostRaidPlayerScav(sessionId, pmcProfile, scavProfile, isDead, isTransfer, isSurvived, request);
+            await HandlePostRaidPlayerScavAsync(
+                sessionId,
+                pmcProfile,
+                scavProfile,
+                isDead,
+                isTransfer,
+                isSurvived,
+                request,
+                cancellationToken
+            );
 
             return;
         }
@@ -535,8 +552,8 @@ public class LocationLifecycleService(
         }
 
         // Save and backup the profile on raid end
-        saveServer.SaveProfileAsync(sessionId).GetAwaiter().GetResult();
-        backupService.InitializeAsync().GetAwaiter().GetResult();
+        await saveServer.SaveProfileAsync(sessionId, cancellationToken);
+        await backupService.InitializeAsync(cancellationToken);
     }
 
     /// <summary>
@@ -670,14 +687,18 @@ public class LocationLifecycleService(
     /// <param name="isTransfer">Did player transfer to new map</param>
     /// <param name="isSurvived">DId player get 'survived' exit status</param>
     /// <param name="request">End raid request</param>
-    protected void HandlePostRaidPlayerScav(
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> that can be used to cancel the saving operation.
+    /// </param>
+    protected async Task HandlePostRaidPlayerScavAsync(
         MongoId sessionId,
         PmcData pmcProfile,
         PmcData scavProfile,
         bool isDead,
         bool isTransfer,
         bool isSurvived,
-        EndLocalRaidRequestData request
+        EndLocalRaidRequestData request,
+        CancellationToken cancellationToken = default
     )
     {
         var postRaidProfile = request.Results.Profile;
@@ -750,7 +771,7 @@ public class LocationLifecycleService(
         pmcProfile.Info.LastTimePlayedAsSavage = timeUtil.GetTimeStamp();
 
         // Force a profile save
-        saveServer.SaveProfileAsync(sessionId).GetAwaiter().GetResult();
+        await saveServer.SaveProfileAsync(sessionId, cancellationToken);
     }
 
     /// <summary>

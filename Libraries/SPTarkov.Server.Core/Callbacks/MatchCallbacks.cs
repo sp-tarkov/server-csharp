@@ -222,19 +222,29 @@ public class MatchCallbacks(HttpResponseUtil httpResponseUtil, MatchController m
     ///     Handle client/match/local/start
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> StartLocalRaid(string url, StartLocalRaidRequestData info, MongoId sessionID)
+    public async ValueTask<string> StartLocalRaidAsync(
+        string url,
+        StartLocalRaidRequestData info,
+        MongoId sessionID,
+        CancellationToken cancellationToken = default
+    )
     {
-        return new ValueTask<string>(httpResponseUtil.GetBody(matchController.StartLocalRaid(sessionID, info)));
+        return httpResponseUtil.GetBody(await matchController.StartLocalRaidAsync(sessionID, info, cancellationToken));
     }
 
     /// <summary>
     ///     Handle client/match/local/end
     /// </summary>
     /// <returns></returns>
-    public ValueTask<string> EndLocalRaid(string url, EndLocalRaidRequestData info, MongoId sessionID)
+    public async ValueTask<string> EndLocalRaidAsync(
+        string url,
+        EndLocalRaidRequestData info,
+        MongoId sessionID,
+        CancellationToken cancellationToken = default
+    )
     {
-        matchController.EndLocalRaid(sessionID, info);
-        return new ValueTask<string>(httpResponseUtil.NullResponse());
+        await matchController.EndLocalRaidAsync(sessionID, info, cancellationToken);
+        return httpResponseUtil.NullResponse();
     }
 
     /// <summary>
