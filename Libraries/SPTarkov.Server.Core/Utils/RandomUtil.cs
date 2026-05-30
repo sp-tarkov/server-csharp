@@ -54,7 +54,7 @@ public sealed class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// </summary>
     /// <param name="min">The minimum value (inclusive).</param>
     /// <param name="max">The maximum value (optional).</param>
-    /// <returns>A random 64-bit integerbetween the specified minimum and maximum values./returns>
+    /// <returns>A random 64-bit integerbetween the specified minimum and maximum values.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public long GetInt64(long min, long max)
     {
