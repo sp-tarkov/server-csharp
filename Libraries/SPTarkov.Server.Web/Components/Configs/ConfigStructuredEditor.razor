@@ -1,0 +1,53 @@
+@using System.Text.Json.Nodes
+
+@if (Value is null)
+{
+    <MudPaper Elevation="0" Class="config-structured-empty pa-4">
+        <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1">
+            <MudIcon Icon="@Icons.Material.Filled.DataObject" Color="Color.Warning" Size="Size.Large" />
+            <MudText Typo="Typo.h6">No structured JSON loaded</MudText>
+        </MudStack>
+    </MudPaper>
+}
+else
+{
+    <div class="config-structured-editor">
+        <ConfigJsonValueEditor Name="@Title"
+                               Value="@Value"
+                               Depth="0"
+                               Path=""
+                               IsRoot="true"
+                               AddableObjectPaths="@AddableObjectPaths"
+                               IgnoredSectionPaths="@IgnoredSectionPaths"
+                               ValueChanged="OnRootValueChanged"
+                               Changed="OnChanged" />
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Config";
+
+    [Parameter]
+    public JsonNode? Value { get; set; }
+
+    [Parameter]
+    public IReadOnlyDictionary<string, bool> AddableObjectPaths { get; set; } = new Dictionary<string, bool>();
+
+    [Parameter]
+    public IReadOnlySet<string> IgnoredSectionPaths { get; set; } = new HashSet<string>();
+
+    [Parameter]
+    public EventCallback<JsonNode?> ValueChanged { get; set; }
+
+    private async Task OnRootValueChanged(JsonNode? value)
+    {
+        Value = value;
+        await ValueChanged.InvokeAsync(value);
+    }
+
+    private async Task OnChanged()
+    {
+        await ValueChanged.InvokeAsync(Value);
+    }
+}

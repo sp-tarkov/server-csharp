@@ -37,6 +37,7 @@
     <AdditionalFiles Include="Layout\BaseMainLayout.razor" />
     <AdditionalFiles Include="Layout\BaseMudBlazorLayout.razor" />
     <AdditionalFiles Include="Pages\ExamplePage.razor" />
+    <AdditionalFiles Include="Pages\Configs\ConfigEditorPage.razor" />
     <AdditionalFiles Include="Pages\LandingPage.razor" />
     <AdditionalFiles Include="Pages\Status.razor" />
     <AdditionalFiles Include="Pages\ThankYou.razor" />
@@ -44,6 +45,7 @@
     <AdditionalFiles Include="Pages\UserCredentialsPage.razor" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Models\Configs\" />
     <Folder Include="Models\Database\" />
   </ItemGroup>
 </Project>

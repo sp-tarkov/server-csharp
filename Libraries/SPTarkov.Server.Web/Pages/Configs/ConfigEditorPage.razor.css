@@ -1,0 +1,457 @@
+.config-editor-page {
+    --config-editor-panel-bg: rgba(9, 9, 11, 0.74);
+}
+
+.config-editor-page ::deep .config-editor-container {
+    max-width: 1800px;
+    margin-inline: auto;
+}
+
+.config-editor-page ::deep .config-editor-header,
+.config-editor-page ::deep .config-editor-sidebar,
+.config-editor-page ::deep .config-editor-main,
+.config-editor-page ::deep .config-editor-meta {
+    background: var(--config-editor-panel-bg);
+}
+
+.config-editor-page ::deep .database-loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1400;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background:
+        radial-gradient(circle at 50% 42%, rgba(250, 204, 21, 0.14), transparent 24rem),
+        rgba(3, 7, 18, 0.82);
+    backdrop-filter: blur(10px);
+}
+
+.config-editor-page ::deep .database-loading-panel {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    max-width: min(460px, 100%);
+    border-color: rgba(250, 204, 21, 0.42);
+    background: rgba(9, 9, 11, 0.92);
+}
+
+.config-editor-page ::deep .config-editor-header {
+    border-color: #1f2937;
+    background:
+        linear-gradient(135deg, rgba(31, 41, 55, 0.92), rgba(3, 7, 18, 0.95) 52%, rgba(9, 9, 11, 0.98)),
+        rgba(9, 9, 11, 0.86);
+}
+
+.config-editor-page ::deep .config-editor-header-content {
+    gap: 24px;
+}
+
+.config-editor-page ::deep .config-editor-header .mud-typography-h3 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 1.1;
+}
+
+.config-editor-page ::deep .config-editor-title-row,
+.config-editor-page ::deep .config-editor-heading-row,
+.config-editor-page ::deep .config-editor-toolbar,
+.config-editor-page ::deep .config-editor-actions,
+.config-editor-page ::deep .config-editor-footer,
+.config-editor-page ::deep .config-editor-preset-actions,
+.config-editor-page ::deep .config-editor-apply-actions {
+    flex-wrap: wrap;
+}
+
+.config-editor-page ::deep .config-editor-header .mud-typography-body2,
+.config-editor-page ::deep .config-editor-toolbar .mud-typography-caption,
+.config-editor-page ::deep .config-editor-meta .mud-typography-caption {
+    color: #a1a1aa;
+}
+
+.config-editor-page ::deep .config-editor-stat {
+    min-width: 120px;
+    border: 1px solid #3f3f46;
+    border-radius: 8px;
+    background: rgba(24, 24, 27, 0.78);
+}
+
+.config-editor-page ::deep .config-editor-stat .mud-typography-caption,
+.config-editor-page ::deep .config-editor-meta .mud-typography-caption {
+    color: #a1a1aa;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.config-editor-page ::deep .config-editor-stat .mud-typography-h5,
+.config-editor-page ::deep .config-editor-meta .mud-typography-subtitle2 {
+    color: #f8fafc;
+    font-weight: 700;
+}
+
+.config-editor-grid {
+    display: grid;
+    grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+    gap: 16px;
+    align-items: stretch;
+}
+
+.config-editor-page ::deep .config-editor-sidebar,
+.config-editor-page ::deep .config-editor-main {
+    min-height: calc(100vh - 190px);
+}
+
+.config-editor-page ::deep .config-editor-main {
+    min-width: 0;
+}
+
+.config-editor-page ::deep .config-editor-main-stack {
+    height: 100%;
+}
+
+.config-editor-config-list {
+    max-height: calc(100vh - 330px);
+    overflow: auto;
+    padding-right: 4px;
+}
+
+.config-editor-config-list .config-editor-config-button {
+    margin-bottom: 8px;
+}
+
+.config-editor-config-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    min-height: 58px;
+    padding: 10px 12px;
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    color: #f8fafc;
+    background: rgba(24, 24, 27, 0.55);
+    cursor: pointer;
+    text-align: left;
+    transition:
+        border-color 160ms ease,
+        background 160ms ease,
+        transform 160ms ease;
+}
+
+.config-editor-config-button:hover,
+.config-editor-config-button:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(250, 204, 21, 0.72);
+    background: rgba(24, 24, 27, 0.88);
+    outline: none;
+}
+
+.config-editor-config-button-selected {
+    border-color: rgba(56, 189, 248, 0.86);
+    background: rgba(14, 116, 144, 0.2);
+    box-shadow: inset 3px 0 0 #38bdf8;
+}
+
+.config-editor-config-button-modified:not(.config-editor-config-button-selected) {
+    border-color: rgba(245, 158, 11, 0.42);
+}
+
+.config-editor-config-main {
+    display: grid;
+    min-width: 0;
+    gap: 3px;
+}
+
+.config-editor-config-title {
+    color: #f8fafc;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.config-editor-config-file {
+    color: #a1a1aa;
+    font-size: 0.78rem;
+    line-height: 1.25;
+}
+
+.config-editor-page ::deep .config-editor-sidebar .mud-typography-h6,
+.config-editor-page ::deep .config-editor-toolbar .mud-typography-h5 {
+    color: #f8fafc;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.config-editor-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.config-editor-page ::deep .config-editor-meta {
+    border: 1px solid #27272a;
+    background: rgba(24, 24, 27, 0.55);
+}
+
+.config-editor-page ::deep .config-editor-tabs-panel {
+    overflow: hidden;
+    background: rgba(9, 9, 11, 0.58);
+}
+
+.config-editor-page ::deep .config-editor-tabs {
+    background: transparent;
+}
+
+.config-editor-page ::deep .config-editor-tabs .mud-tabs-toolbar {
+    border-bottom: 1px solid #27272a;
+    background: rgba(9, 9, 11, 0.76);
+}
+
+.config-editor-page ::deep .config-editor-tabs .mud-tab {
+    min-height: 52px;
+    color: #a1a1aa;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.config-editor-page ::deep .config-editor-tabs .mud-tab.mud-tab-active {
+    color: #facc15;
+}
+
+.config-editor-page ::deep .config-editor-tab-panel {
+    padding: 16px;
+}
+
+.config-editor-page ::deep .config-editor-json textarea {
+    min-height: 56vh;
+    color: #e5e7eb;
+    font-family: Consolas, "Liberation Mono", monospace;
+    font-size: 0.82rem;
+    line-height: 1.45;
+}
+
+.config-editor-page ::deep .config-structured-empty {
+    min-height: 320px;
+    border: 1px dashed #3f3f46;
+    border-radius: 8px;
+    background: rgba(3, 7, 18, 0.34);
+}
+
+.config-editor-page ::deep .config-structured-editor {
+    max-height: 64vh;
+    overflow: auto;
+    padding-right: 4px;
+}
+
+.config-editor-page ::deep .config-json-panels {
+    margin-bottom: 10px;
+}
+
+.config-editor-page ::deep .config-json-panels .mud-expand-panel {
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    background: rgba(24, 24, 27, 0.48);
+}
+
+.config-editor-page ::deep .config-json-root-panels .mud-expand-panel {
+    border-color: rgba(56, 189, 248, 0.34);
+    background: rgba(3, 7, 18, 0.34);
+}
+
+.config-editor-page ::deep .config-json-depth-2 .mud-expand-panel,
+.config-editor-page ::deep .config-json-depth-4 .mud-expand-panel,
+.config-editor-page ::deep .config-json-depth-6 .mud-expand-panel {
+    background: rgba(3, 7, 18, 0.3);
+}
+
+.config-editor-page ::deep .config-json-object,
+.config-editor-page ::deep .config-json-array {
+    display: grid;
+    gap: 10px;
+}
+
+.config-editor-page ::deep .config-json-object > div,
+.config-editor-page ::deep .config-json-array > div {
+    min-width: 0;
+}
+
+.config-editor-page ::deep .config-json-array-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: start;
+}
+
+.config-editor-page ::deep .config-json-primitive {
+    display: grid;
+    grid-template-columns: minmax(160px, 280px) minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    min-height: 54px;
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    background: rgba(24, 24, 27, 0.42);
+}
+
+.config-editor-page ::deep .config-json-label {
+    color: #facc15;
+    font-weight: 700;
+    word-break: break-word;
+}
+
+.config-editor-page ::deep .config-json-primitive-input input {
+    font-family: Consolas, "Liberation Mono", monospace;
+}
+
+.config-editor-page ::deep .config-json-add-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    border: 1px dashed #3f3f46;
+    border-radius: 8px;
+    background: rgba(3, 7, 18, 0.24);
+}
+
+.config-editor-page ::deep .config-json-add-name {
+    min-width: 220px;
+}
+
+.config-editor-page ::deep .config-json-add-type {
+    width: 150px;
+}
+
+.config-editor-page ::deep .mud-input-control {
+    margin-top: 0;
+}
+
+.config-editor-page ::deep .mud-input,
+.config-editor-page ::deep .mud-select {
+    color: #f8fafc;
+}
+
+.config-editor-page ::deep .mud-input-outlined-border {
+    border-color: #3f3f46 !important;
+}
+
+.config-editor-page ::deep .mud-input:hover .mud-input-outlined-border {
+    border-color: #52525b !important;
+}
+
+.config-editor-page ::deep .mud-input.mud-input-focused .mud-input-outlined-border {
+    border-color: #38bdf8 !important;
+}
+
+.config-editor-page ::deep .mud-input-label,
+.config-editor-page ::deep .mud-input-adornment,
+.config-editor-page ::deep .mud-input-adornment .mud-icon-root {
+    color: #a1a1aa !important;
+}
+
+.config-editor-page ::deep .mud-button-root {
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.config-editor-page ::deep .mud-button-outlined-secondary,
+.config-editor-page ::deep .mud-icon-button-outlined-secondary {
+    border-color: #3f3f46;
+    color: #facc15;
+}
+
+.config-editor-page ::deep .mud-button-outlined-secondary:hover,
+.config-editor-page ::deep .mud-icon-button-outlined-secondary:hover {
+    border-color: #facc15;
+    background: rgba(250, 204, 21, 0.08);
+}
+
+.config-editor-page ::deep .config-editor-apply-button,
+.config-editor-page ::deep .config-editor-apply-button:hover,
+.config-editor-page ::deep .config-editor-apply-button:focus,
+.config-editor-page ::deep .config-editor-apply-button:focus-visible,
+.config-editor-page ::deep .config-editor-apply-button:active {
+    background: #facc15 !important;
+    color: #111827 !important;
+}
+
+.config-editor-page ::deep .config-editor-apply-button:hover,
+.config-editor-page ::deep .config-editor-apply-button:focus-visible {
+    background: #fde047 !important;
+}
+
+.config-editor-page ::deep .config-editor-apply-button .mud-icon-root {
+    color: #111827 !important;
+}
+
+.config-editor-page ::deep .mud-chip {
+    border-radius: 6px;
+    font-weight: 700;
+}
+
+.config-editor-page ::deep .mud-chip-color-warning {
+    background: rgba(245, 158, 11, 0.16);
+    color: #fbbf24;
+}
+
+.config-editor-page ::deep .mud-chip-color-info {
+    background: rgba(34, 211, 238, 0.14);
+    color: #67e8f9;
+}
+
+.config-editor-page ::deep .config-editor-preset-select {
+    width: 220px;
+}
+
+.config-editor-page ::deep .config-editor-preset-name {
+    width: 240px;
+}
+
+@media (max-width: 1000px) {
+    .config-editor-page ::deep .config-editor-container {
+        padding: 16px !important;
+    }
+
+    .config-editor-page ::deep .config-editor-header-content,
+    .config-editor-page ::deep .config-editor-stat-stack,
+    .config-editor-page ::deep .config-editor-toolbar,
+    .config-editor-page ::deep .config-editor-footer,
+    .config-editor-page ::deep .config-editor-preset-actions,
+    .config-editor-page ::deep .config-editor-apply-actions {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .config-editor-grid,
+    .config-editor-meta-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .config-editor-page ::deep .config-editor-sidebar,
+    .config-editor-page ::deep .config-editor-main {
+        min-height: auto;
+    }
+
+    .config-editor-config-list {
+        max-height: 42vh;
+    }
+
+    .config-editor-page ::deep .config-editor-preset-select,
+    .config-editor-page ::deep .config-editor-preset-name {
+        width: 100%;
+    }
+
+    .config-editor-page ::deep .config-json-primitive,
+    .config-editor-page ::deep .config-json-array-row {
+        grid-template-columns: 1fr;
+    }
+
+    .config-editor-page ::deep .config-structured-editor {
+        max-height: 60vh;
+    }
+}
