@@ -6,10 +6,11 @@ public sealed record ConfigEditorConfigSummary(
     string Id,
     string DisplayName,
     string FileName,
-    ConfigTypes ConfigType,
+    ConfigTypes? ConfigType,
     Type RuntimeType,
     bool ModifiedByMods,
     int RuntimeCharacterCount,
     int CleanCharacterCount,
-    int TopLevelPropertyCount
+    int TopLevelPropertyCount,
+    bool IsRegisteredConfig
 );

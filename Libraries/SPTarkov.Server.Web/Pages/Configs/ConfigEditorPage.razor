@@ -57,7 +57,24 @@
                 <div class="config-editor-grid">
                     <MudPaper Elevation="0" Class="config-editor-sidebar spt-panel pa-4">
                         <MudStack Spacing="3">
-                            <MudText Typo="Typo.h6">Server configs</MudText>
+                            <MudText Typo="Typo.h6">@ConfigListTitle</MudText>
+
+                            <div class="config-editor-source-toggle" role="tablist" aria-label="Config source">
+                                <button type="button"
+                                        class="@GetConfigSourceButtonClass(ConfigEditorConfigSource.Server)"
+                                        disabled="@_isWorking"
+                                        @onclick="() => SelectConfigSource(ConfigEditorConfigSource.Server)">
+                                    <span>Server</span>
+                                    <span>@ServerConfigCount.ToString("N0")</span>
+                                </button>
+                                <button type="button"
+                                        class="@GetConfigSourceButtonClass(ConfigEditorConfigSource.Mod)"
+                                        disabled="@_isWorking"
+                                        @onclick="() => SelectConfigSource(ConfigEditorConfigSource.Mod)">
+                                    <span>Mods</span>
+                                    <span>@ModConfigCount.ToString("N0")</span>
+                                </button>
+                            </div>
 
                             <MudTextField T="string"
                                           Label="Filter"
@@ -68,23 +85,35 @@
                                           @bind-Value="_searchText" />
 
                             <div class="config-editor-config-list">
-                                <Virtualize Items="@FilteredConfigs" Context="config" ItemSize="66" OverscanCount="8">
-                                    <button type="button"
-                                            class="@GetConfigButtonClass(config)"
-                                            @key="config.Id"
-                                            @onclick="() => SelectConfig(config.Id)">
-                                        <span class="config-editor-config-main">
-                                            <span class="config-editor-config-title">@config.DisplayName</span>
-                                            <span class="config-editor-config-file">@config.FileName</span>
-                                        </span>
-                                        @if (config.ModifiedByMods)
-                                        {
-                                            <MudTooltip Text="Runtime differs from clean disk config">
-                                                <MudIcon Icon="@Icons.Material.Filled.Extension" Color="Color.Warning" Size="Size.Small" />
-                                            </MudTooltip>
-                                        }
-                                    </button>
-                                </Virtualize>
+                                @if (FilteredConfigs.Count == 0)
+                                {
+                                    <MudPaper Elevation="0" Class="config-editor-empty-list pa-4">
+                                        <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1">
+                                            <MudIcon Icon="@Icons.Material.Filled.FolderOff" Color="Color.Warning" Size="Size.Medium" />
+                                            <MudText Typo="Typo.subtitle2">No @(ConfigListTitle.ToLowerInvariant())</MudText>
+                                        </MudStack>
+                                    </MudPaper>
+                                }
+                                else
+                                {
+                                    <Virtualize Items="@FilteredConfigs" Context="config" ItemSize="66" OverscanCount="8">
+                                        <button type="button"
+                                                class="@GetConfigButtonClass(config)"
+                                                @key="config.Id"
+                                                @onclick="() => SelectConfig(config.Id)">
+                                            <span class="config-editor-config-main">
+                                                <span class="config-editor-config-title">@config.DisplayName</span>
+                                                <span class="config-editor-config-file">@config.FileName</span>
+                                            </span>
+                                            @if (config.ModifiedByMods)
+                                            {
+                                                <MudTooltip Text="Runtime differs from clean disk config">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Extension" Color="Color.Warning" Size="Size.Small" />
+                                                </MudTooltip>
+                                            }
+                                        </button>
+                                    </Virtualize>
+                                }
                             </div>
                         </MudStack>
                     </MudPaper>
@@ -95,6 +124,10 @@
                                 <MudStack Spacing="1">
                                     <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Class="config-editor-heading-row">
                                         <MudText Typo="Typo.h5">@SelectedConfig?.DisplayName</MudText>
+                                        @if (SelectedConfig?.IsRegisteredConfig == true)
+                                        {
+                                            <MudChip T="string" Size="Size.Small" Color="Color.Info">Registered</MudChip>
+                                        }
                                         @if (_snapshot?.ModifiedByMods == true)
                                         {
                                             <MudChip T="string" Size="Size.Small" Color="Color.Warning">Runtime differs</MudChip>
@@ -240,13 +273,21 @@
                                 </MudStack>
 
                                 <MudStack Row Spacing="2" Class="config-editor-apply-actions">
+                                    <MudButton Variant="Variant.Outlined"
+                                               Color="Color.Secondary"
+                                               Class="config-editor-apply-button"
+                                               StartIcon="@Icons.Material.Filled.Save"
+                                               Disabled="@_isWorking"
+                                               OnClick="SaveToDisk">
+                                        Save
+                                    </MudButton>
                                     <MudButton Variant="Variant.Filled"
                                                Color="Color.Warning"
                                                Class="config-editor-apply-button"
                                                StartIcon="@Icons.Material.Filled.PublishedWithChanges"
                                                Disabled="@_isWorking"
                                                OnClick="ApplyToRuntime">
-                                        Apply runtime
+                                        Apply
                                     </MudButton>
                                 </MudStack>
                             </MudStack>

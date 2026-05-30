@@ -20,6 +20,7 @@ public partial class ConfigEditorPage
     private List<ConfigEditorPreset> _presets = [];
     private ConfigEditorSnapshot? _snapshot;
     private JsonNode? _editorNode;
+    private ConfigEditorConfigSource _selectedConfigSource = ConfigEditorConfigSource.Server;
     private string _selectedConfigId = string.Empty;
     private string _searchText = string.Empty;
     private string _editorJson = string.Empty;
@@ -45,17 +46,39 @@ public partial class ConfigEditorPage
         get { return _configs.FirstOrDefault(config => string.Equals(config.Id, _selectedConfigId, StringComparison.Ordinal)); }
     }
 
+    private int ServerConfigCount
+    {
+        get { return _configs.Count(config => !config.IsRegisteredConfig); }
+    }
+
+    private int ModConfigCount
+    {
+        get { return _configs.Count(config => config.IsRegisteredConfig); }
+    }
+
+    private bool ShowingModConfigs
+    {
+        get { return _selectedConfigSource == ConfigEditorConfigSource.Mod; }
+    }
+
+    private string ConfigListTitle
+    {
+        get { return ShowingModConfigs ? "Mod configs" : "Server configs"; }
+    }
+
     private ICollection<ConfigEditorConfigSummary> FilteredConfigs
     {
         get
         {
+            var sourceConfigs = _configs.Where(config => config.IsRegisteredConfig == ShowingModConfigs);
+
             if (string.IsNullOrWhiteSpace(_searchText))
             {
-                return _configs;
+                return sourceConfigs.ToList();
             }
 
             var searchText = _searchText.Trim();
-            return _configs
+            return sourceConfigs
                 .Where(config =>
                     config.DisplayName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
                     || config.FileName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
@@ -82,7 +105,7 @@ public partial class ConfigEditorPage
         {
             await Task.Yield();
             await RefreshSummariesAsync();
-            _selectedConfigId = _configs.FirstOrDefault()?.Id ?? string.Empty;
+            SelectFirstConfigInCurrentSource();
 
             if (!string.IsNullOrWhiteSpace(_selectedConfigId))
             {
@@ -99,6 +122,43 @@ public partial class ConfigEditorPage
         }
 
         StateHasChanged();
+    }
+
+    private async Task SelectConfigSource(ConfigEditorConfigSource configSource)
+    {
+        if (_isWorking || _selectedConfigSource == configSource)
+        {
+            return;
+        }
+
+        _selectedConfigSource = configSource;
+        _searchText = string.Empty;
+        SelectFirstConfigInCurrentSource();
+
+        if (string.IsNullOrWhiteSpace(_selectedConfigId))
+        {
+            ClearEditor();
+            return;
+        }
+
+        _loadingTitle = "Loading config";
+        _loadingMessage = $"Preparing {SelectedConfig?.DisplayName ?? "selected config"}.";
+        _isWorking = true;
+        await RenderLoadingOverlayAsync();
+
+        try
+        {
+            await LoadSnapshotAsync(loadCleanDisk: false);
+        }
+        catch (Exception exception)
+        {
+            ClearEditor();
+            Snackbar.Add(GetErrorMessage(exception), Severity.Error);
+        }
+        finally
+        {
+            _isWorking = false;
+        }
     }
 
     private async Task SelectConfig(string configId)
@@ -136,7 +196,7 @@ public partial class ConfigEditorPage
             async () => await LoadSnapshotAsync(loadCleanDisk: false),
             "Loaded current runtime config.",
             "Loading runtime config",
-            "Preparing current DI-backed server config."
+            "Preparing current runtime config."
         );
     }
 
@@ -222,14 +282,32 @@ public partial class ConfigEditorPage
         await RunEditorActionAsync(
             async () =>
             {
-                SetEditorJson(ConfigEditorService.ApplyToRuntime(_selectedConfigId, _editorJson), resetModified: true);
-                _sourceLabel = "Current runtime config";
+                SetEditorJson(await ConfigEditorService.ApplyToRuntimeAsync(_selectedConfigId, _editorJson), resetModified: true);
+                _sourceLabel = GetLoadedSourceLabel(loadCleanDisk: false);
                 await RefreshSummariesAsync();
                 _snapshot = await ConfigEditorService.GetSnapshotAsync(_selectedConfigId);
             },
             "Applied config to running server.",
             "Applying runtime config",
             "Copying edited values into the running server config."
+        );
+    }
+
+    private async Task SaveToDisk()
+    {
+        await RunEditorActionAsync(
+            async () =>
+            {
+                var formattedJson = ConfigEditorService.FormatJson(_selectedConfigId, _editorJson);
+                await ConfigEditorService.SaveToDiskAsync(_selectedConfigId, formattedJson);
+                SetEditorJson(formattedJson, resetModified: true);
+                _sourceLabel = "Saved disk config";
+                await RefreshSummariesAsync();
+                _snapshot = await ConfigEditorService.GetSnapshotAsync(_selectedConfigId);
+            },
+            "Saved config to disk.",
+            "Saving disk config",
+            "Writing the edited config to its registered save target."
         );
     }
 
@@ -261,7 +339,7 @@ public partial class ConfigEditorPage
                     return;
                 }
 
-                ConfigEditorService.ApplyPresetToRuntime(_selectedPresetId);
+                await ConfigEditorService.ApplyPresetToRuntimeAsync(_selectedPresetId);
                 await RefreshSummariesAsync();
                 await LoadSnapshotAsync(loadCleanDisk: false);
             },
@@ -301,7 +379,7 @@ public partial class ConfigEditorPage
 
         _snapshot = await ConfigEditorService.GetSnapshotAsync(_selectedConfigId);
         SetEditorJson(loadCleanDisk ? _snapshot.CleanJson : _snapshot.RuntimeJson, resetModified: true);
-        _sourceLabel = loadCleanDisk ? "Clean ConfigLoader disk copy" : "Current runtime DI config";
+        _sourceLabel = GetLoadedSourceLabel(loadCleanDisk);
         _selectedPresetId = null;
         _presetName = null;
         RefreshPresets();
@@ -316,6 +394,24 @@ public partial class ConfigEditorPage
     private void RefreshPresets()
     {
         _presets = ConfigEditorService.GetPresets().ToList();
+    }
+
+    private void SelectFirstConfigInCurrentSource()
+    {
+        _selectedConfigId = _configs.FirstOrDefault(config => config.IsRegisteredConfig == ShowingModConfigs)?.Id ?? string.Empty;
+    }
+
+    private void ClearEditor()
+    {
+        _snapshot = null;
+        _editorNode = null;
+        _editorJson = string.Empty;
+        _lastLoadedJson = string.Empty;
+        _editorParseError = null;
+        _selectedPresetId = null;
+        _presetName = null;
+        _sourceLabel = "No config selected";
+        RefreshPresets();
     }
 
     private void SetEditorJson(string json, bool resetModified)
@@ -398,8 +494,31 @@ public partial class ConfigEditorPage
         return cssClass;
     }
 
+    private string GetConfigSourceButtonClass(ConfigEditorConfigSource configSource)
+    {
+        return _selectedConfigSource == configSource
+            ? "config-editor-source-button config-editor-source-button-selected"
+            : "config-editor-source-button";
+    }
+
+    private string GetLoadedSourceLabel(bool loadCleanDisk)
+    {
+        if (SelectedConfig?.IsRegisteredConfig == true)
+        {
+            return loadCleanDisk ? "Registered disk config" : "Current registered runtime config";
+        }
+
+        return loadCleanDisk ? "Clean ConfigLoader disk copy" : "Current runtime DI config";
+    }
+
     private static string GetErrorMessage(Exception exception)
     {
         return exception.InnerException is null ? exception.Message : $"{exception.Message} {exception.InnerException.Message}";
+    }
+
+    private enum ConfigEditorConfigSource
+    {
+        Server,
+        Mod,
     }
 }

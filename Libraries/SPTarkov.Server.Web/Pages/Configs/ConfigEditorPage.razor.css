@@ -116,8 +116,68 @@
     padding-right: 4px;
 }
 
+.config-editor-source-toggle {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    background: rgba(3, 7, 18, 0.38);
+}
+
+.config-editor-source-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 38px;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: #a1a1aa;
+    background: transparent;
+    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.config-editor-source-button:disabled {
+    cursor: default;
+    opacity: 0.68;
+}
+
+.config-editor-source-button:not(:disabled):hover,
+.config-editor-source-button:not(:disabled):focus-visible {
+    border-color: rgba(250, 204, 21, 0.42);
+    color: #f8fafc;
+    outline: none;
+}
+
+.config-editor-source-button-selected,
+.config-editor-source-button-selected:not(:disabled):hover,
+.config-editor-source-button-selected:not(:disabled):focus-visible {
+    border-color: rgba(56, 189, 248, 0.48);
+    color: #f8fafc;
+    background: rgba(14, 116, 144, 0.24);
+}
+
 .config-editor-config-list .config-editor-config-button {
     margin-bottom: 8px;
+}
+
+.config-editor-page ::deep .config-editor-empty-list {
+    min-height: 160px;
+    display: grid;
+    place-items: center;
+    border: 1px dashed #3f3f46;
+    border-radius: 8px;
+    background: rgba(3, 7, 18, 0.28);
+}
+
+.config-editor-page ::deep .config-editor-empty-list .mud-typography-subtitle2 {
+    color: #a1a1aa;
+    font-weight: 700;
 }
 
 .config-editor-config-button {

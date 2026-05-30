@@ -41,33 +41,42 @@ public class ConfigEditorService
 
     private readonly IServiceProvider _serviceProvider;
     private readonly JsonUtil _jsonUtil;
+    private readonly IEnumerable<IConfigEditorConfigProvider> _configProviders;
     private readonly Dictionary<string, ConfigEditorPreset> _presets = [];
     private readonly Lock _presetLock = new();
 
-    public ConfigEditorService(IServiceProvider serviceProvider, JsonUtil jsonUtil)
+    public ConfigEditorService(
+        IServiceProvider serviceProvider,
+        JsonUtil jsonUtil,
+        IEnumerable<IConfigEditorConfigProvider> configProviders
+    )
     {
         _serviceProvider = serviceProvider;
         _jsonUtil = jsonUtil;
+        _configProviders = configProviders;
         LoadPresetsFromDisk();
     }
 
     public async Task<IReadOnlyList<ConfigEditorConfigSummary>> GetConfigSummariesAsync()
     {
         var cleanConfigs = await ConfigLoader.Initialize();
+        var summaries = new List<ConfigEditorConfigSummary>();
 
-        return Enum.GetValues<ConfigTypes>()
-            .Select(configType => BuildSummary(configType, cleanConfigs))
-            .OrderBy(summary => summary.DisplayName, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+        foreach (var descriptor in GetConfigDescriptors())
+        {
+            summaries.Add(await BuildSummaryAsync(descriptor, cleanConfigs));
+        }
+
+        return summaries.OrderBy(summary => summary.DisplayName, StringComparer.OrdinalIgnoreCase).ToList();
     }
 
     public async Task<ConfigEditorSnapshot> GetSnapshotAsync(string configId)
     {
-        var configType = GetConfigType(configId);
-        var cleanConfigs = await ConfigLoader.Initialize();
-        var summary = BuildSummary(configType, cleanConfigs);
-        var runtimeConfig = GetRuntimeConfig(configType);
-        var cleanConfig = GetCleanConfig(configType, cleanConfigs);
+        var descriptor = GetConfigDescriptor(configId);
+        var cleanConfigs = descriptor.ConfigType is null ? null : await ConfigLoader.Initialize();
+        var summary = await BuildSummaryAsync(descriptor, cleanConfigs);
+        var runtimeConfig = GetRuntimeConfig(descriptor);
+        var cleanConfig = await GetCleanConfigAsync(descriptor, cleanConfigs);
         var runtimeJson = Serialize(runtimeConfig, summary.RuntimeType);
         var cleanJson = Serialize(cleanConfig, summary.RuntimeType);
 
@@ -77,21 +86,15 @@ public class ConfigEditorService
             cleanJson,
             summary.ModifiedByMods,
             BuildAddableObjectPaths(runtimeJson, cleanJson, summary.RuntimeType),
-            GetIgnoredSectionPaths(configType)
+            descriptor.IgnoredSectionPaths
         );
     }
 
     public string FormatJson(string configId, string json)
     {
-        var configType = GetConfigType(configId);
-        var runtimeType = configType.GetConfigType();
-        var deserialized = _jsonUtil.Deserialize(json, runtimeType) as BaseConfig;
-
-        if (deserialized is null)
-        {
-            throw new InvalidOperationException("Config JSON did not deserialize into a server config.");
-        }
-
+        var descriptor = GetConfigDescriptor(configId);
+        var runtimeType = descriptor.RuntimeType;
+        var deserialized = DeserializeConfig(json, runtimeType);
         return Serialize(deserialized, runtimeType);
     }
 
@@ -102,28 +105,34 @@ public class ConfigEditorService
 
     public string ApplyToRuntime(string configId, string json)
     {
-        var configType = GetConfigType(configId);
-        var runtimeType = configType.GetConfigType();
-        var runtimeConfig = GetRuntimeConfig(configType);
-        var editedConfig = _jsonUtil.Deserialize(json, runtimeType) as BaseConfig;
+        return ApplyToRuntimeAsync(configId, json).GetAwaiter().GetResult();
+    }
 
-        if (editedConfig is null)
+    public async Task<string> ApplyToRuntimeAsync(string configId, string json)
+    {
+        var descriptor = GetConfigDescriptor(configId);
+        var runtimeType = descriptor.RuntimeType;
+        var runtimeConfig = GetRuntimeConfig(descriptor);
+        var editedConfig = DeserializeConfig(json, runtimeType);
+
+        if (descriptor.Registration?.ApplyToRuntimeAsync is not null)
         {
-            throw new InvalidOperationException("Config JSON did not deserialize into a server config.");
+            await descriptor.Registration.ApplyToRuntimeAsync(editedConfig, CancellationToken.None);
+        }
+        else
+        {
+            CopyWritableProperties(editedConfig, runtimeConfig, runtimeType);
         }
 
-        CopyWritableProperties(editedConfig, runtimeConfig, runtimeType);
-
-        return Serialize(runtimeConfig, runtimeType);
+        return Serialize(GetRuntimeConfig(descriptor), runtimeType);
     }
 
     public async Task SaveToDiskAsync(string configId, string json)
     {
-        var formattedJson = FormatJson(configId, json);
-        var filePath = GetConfigFilePath(GetConfigType(configId));
+        var descriptor = GetConfigDescriptor(configId);
+        var config = DeserializeConfig(json, descriptor.RuntimeType);
 
-        Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
-        await File.WriteAllTextAsync(filePath, formattedJson);
+        await SaveConfigAsync(descriptor, config, CancellationToken.None);
     }
 
     public IReadOnlyList<ConfigEditorPreset> GetPresets()
@@ -198,6 +207,11 @@ public class ConfigEditorService
 
     public void ApplyPresetToRuntime(string presetId)
     {
+        ApplyPresetToRuntimeAsync(presetId).GetAwaiter().GetResult();
+    }
+
+    public async Task ApplyPresetToRuntimeAsync(string presetId)
+    {
         ConfigEditorPreset? preset;
 
         lock (_presetLock)
@@ -212,7 +226,7 @@ public class ConfigEditorService
 
         foreach (var (configId, json) in preset.ConfigJsonById)
         {
-            ApplyToRuntime(configId, json);
+            await ApplyToRuntimeAsync(configId, json);
         }
     }
 
@@ -320,61 +334,245 @@ public class ConfigEditorService
         var formattedSelectedJson = FormatJson(selectedConfigId, selectedJson);
         Dictionary<string, string> configs = [];
 
-        foreach (var configType in Enum.GetValues<ConfigTypes>())
+        foreach (var descriptor in GetConfigDescriptors())
         {
-            var configId = configType.ToString();
+            var configId = descriptor.Id;
             configs[configId] = string.Equals(configId, selectedConfigId, StringComparison.Ordinal)
                 ? formattedSelectedJson
-                : Serialize(GetRuntimeConfig(configType), configType.GetConfigType());
+                : Serialize(GetRuntimeConfig(descriptor), descriptor.RuntimeType);
         }
 
         return configs;
     }
 
-    private ConfigEditorConfigSummary BuildSummary(ConfigTypes configType, IReadOnlyDictionary<Type, BaseConfig> cleanConfigs)
+    private IReadOnlyList<ConfigEditorDescriptor> GetConfigDescriptors()
     {
-        var runtimeType = configType.GetConfigType();
-        var runtimeConfig = GetRuntimeConfig(configType);
-        var cleanConfig = GetCleanConfig(configType, cleanConfigs);
+        var descriptors = Enum.GetValues<ConfigTypes>()
+            .Select(configType =>
+            {
+                var runtimeType = configType.GetConfigType();
+                return new ConfigEditorDescriptor(
+                    configType.ToString(),
+                    GetDisplayName(configType),
+                    Path.GetFileName(GetConfigFilePath(configType)),
+                    runtimeType,
+                    configType,
+                    null,
+                    GetIgnoredSectionPaths(configType)
+                );
+            })
+            .ToList();
+
+        foreach (var provider in _configProviders)
+        {
+            foreach (var registration in provider.GetConfigs())
+            {
+                descriptors.Add(BuildRegisteredDescriptor(registration));
+            }
+        }
+
+        var duplicate = descriptors
+            .GroupBy(descriptor => descriptor.Id, StringComparer.OrdinalIgnoreCase)
+            .FirstOrDefault(group => group.Count() > 1);
+
+        if (duplicate is not null)
+        {
+            throw new InvalidOperationException($"Duplicate config editor id registered: {duplicate.Key}");
+        }
+
+        return descriptors;
+    }
+
+    private ConfigEditorDescriptor GetConfigDescriptor(string configId)
+    {
+        return GetConfigDescriptors()
+                .FirstOrDefault(descriptor => string.Equals(descriptor.Id, configId, StringComparison.OrdinalIgnoreCase))
+            ?? throw new InvalidOperationException($"Unknown config id: {configId}");
+    }
+
+    private static ConfigEditorDescriptor BuildRegisteredDescriptor(ConfigEditorConfigRegistration registration)
+    {
+        if (string.IsNullOrWhiteSpace(registration.Id))
+        {
+            throw new InvalidOperationException("Registered config editor config must have an id.");
+        }
+
+        if (string.IsNullOrWhiteSpace(registration.DisplayName))
+        {
+            throw new InvalidOperationException($"Registered config editor config {registration.Id} must have a display name.");
+        }
+
+        var runtimeType = registration.RuntimeType ?? registration.RuntimeConfig.GetType();
+
+        if (!runtimeType.IsAssignableFrom(registration.RuntimeConfig.GetType()))
+        {
+            throw new InvalidOperationException(
+                $"Registered config editor config {registration.Id} has runtime type {runtimeType.Name} "
+                    + $"but runtime config is {registration.RuntimeConfig.GetType().Name}."
+            );
+        }
+
+        return new ConfigEditorDescriptor(
+            registration.Id.Trim(),
+            registration.DisplayName.Trim(),
+            GetRegisteredFileName(registration),
+            runtimeType,
+            null,
+            registration,
+            NormalizeJsonPaths(registration.IgnoredSectionPaths)
+        );
+    }
+
+    private static string GetRegisteredFileName(ConfigEditorConfigRegistration registration)
+    {
+        if (!string.IsNullOrWhiteSpace(registration.FileName))
+        {
+            return registration.FileName;
+        }
+
+        if (!string.IsNullOrWhiteSpace(registration.FilePath))
+        {
+            return Path.GetFileName(registration.FilePath);
+        }
+
+        return "Runtime service";
+    }
+
+    private async Task<ConfigEditorConfigSummary> BuildSummaryAsync(
+        ConfigEditorDescriptor descriptor,
+        IReadOnlyDictionary<Type, BaseConfig>? cleanConfigs
+    )
+    {
+        var runtimeType = descriptor.RuntimeType;
+        var runtimeConfig = GetRuntimeConfig(descriptor);
+        var cleanConfig = await GetCleanConfigAsync(descriptor, cleanConfigs);
         var runtimeJson = Serialize(runtimeConfig, runtimeType);
         var cleanJson = Serialize(cleanConfig, runtimeType);
 
         return new ConfigEditorConfigSummary(
-            configType.ToString(),
-            GetDisplayName(configType),
-            Path.GetFileName(GetConfigFilePath(configType)),
-            configType,
+            descriptor.Id,
+            descriptor.DisplayName,
+            descriptor.FileName,
+            descriptor.ConfigType,
             runtimeType,
             !string.Equals(runtimeJson, cleanJson, StringComparison.Ordinal),
             runtimeJson.Length,
             cleanJson.Length,
             runtimeType
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Count(property => property.GetIndexParameters().Length == 0)
+                .Count(property => property.GetIndexParameters().Length == 0),
+            descriptor.Registration is not null
         );
     }
 
-    private BaseConfig GetRuntimeConfig(ConfigTypes configType)
+    private object GetRuntimeConfig(ConfigEditorDescriptor descriptor)
     {
-        var runtimeType = configType.GetConfigType();
-        return (BaseConfig)_serviceProvider.GetRequiredService(runtimeType);
-    }
-
-    private static BaseConfig GetCleanConfig(ConfigTypes configType, IReadOnlyDictionary<Type, BaseConfig> cleanConfigs)
-    {
-        var runtimeType = configType.GetConfigType();
-
-        if (!cleanConfigs.TryGetValue(runtimeType, out var cleanConfig))
+        if (descriptor.Registration is not null)
         {
-            throw new InvalidOperationException($"No clean disk config was loaded for {runtimeType.Name}.");
+            return descriptor.Registration.RuntimeConfig;
         }
 
-        return cleanConfig;
+        return _serviceProvider.GetRequiredService(descriptor.RuntimeType);
     }
 
-    private string Serialize(BaseConfig config, Type runtimeType)
+    private async Task<object> GetCleanConfigAsync(
+        ConfigEditorDescriptor descriptor,
+        IReadOnlyDictionary<Type, BaseConfig>? cleanConfigs,
+        CancellationToken cancellationToken = default
+    )
+    {
+        if (descriptor.ConfigType is not null)
+        {
+            if (cleanConfigs is null)
+            {
+                cleanConfigs = await ConfigLoader.Initialize();
+            }
+
+            if (!cleanConfigs.TryGetValue(descriptor.RuntimeType, out var cleanConfig))
+            {
+                throw new InvalidOperationException($"No clean disk config was loaded for {descriptor.RuntimeType.Name}.");
+            }
+
+            return cleanConfig;
+        }
+
+        if (descriptor.Registration is null)
+        {
+            throw new InvalidOperationException($"Config {descriptor.Id} does not have a registered loader.");
+        }
+
+        if (descriptor.Registration.LoadFromDiskAsync is not null)
+        {
+            var cleanConfig = await descriptor.Registration.LoadFromDiskAsync(cancellationToken);
+
+            if (cleanConfig is null)
+            {
+                throw new InvalidOperationException($"Registered config {descriptor.DisplayName} did not load from disk.");
+            }
+
+            return cleanConfig;
+        }
+
+        if (!string.IsNullOrWhiteSpace(descriptor.Registration.FilePath) && File.Exists(descriptor.Registration.FilePath))
+        {
+            var cleanConfig = await _jsonUtil.DeserializeFromFileAsync(descriptor.Registration.FilePath, descriptor.RuntimeType);
+
+            if (cleanConfig is null)
+            {
+                throw new InvalidOperationException($"Registered config {descriptor.DisplayName} did not deserialize from disk.");
+            }
+
+            return cleanConfig;
+        }
+
+        return CloneConfig(GetRuntimeConfig(descriptor), descriptor.RuntimeType);
+    }
+
+    private string Serialize(object config, Type runtimeType)
     {
         return _jsonUtil.Serialize(config, runtimeType, true) ?? string.Empty;
+    }
+
+    private object DeserializeConfig(string json, Type runtimeType)
+    {
+        var deserialized = _jsonUtil.Deserialize(json, runtimeType);
+
+        if (deserialized is null)
+        {
+            throw new InvalidOperationException($"Config JSON did not deserialize into {runtimeType.Name}.");
+        }
+
+        return deserialized;
+    }
+
+    private object CloneConfig(object config, Type runtimeType)
+    {
+        return DeserializeConfig(Serialize(config, runtimeType), runtimeType);
+    }
+
+    private async Task SaveConfigAsync(ConfigEditorDescriptor descriptor, object config, CancellationToken cancellationToken)
+    {
+        if (descriptor.Registration?.SaveToDiskAsync is not null)
+        {
+            await descriptor.Registration.SaveToDiskAsync(config, cancellationToken);
+            return;
+        }
+
+        var filePath = descriptor.Registration?.FilePath ?? GetConfigFilePath(descriptor.ConfigType!.Value);
+
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            throw new InvalidOperationException($"Config {descriptor.DisplayName} does not have a disk save target.");
+        }
+
+        var directory = Path.GetDirectoryName(filePath);
+
+        if (!string.IsNullOrWhiteSpace(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+        await File.WriteAllTextAsync(filePath, Serialize(config, descriptor.RuntimeType), cancellationToken);
     }
 
     private static IReadOnlyDictionary<string, bool> BuildAddableObjectPaths(string runtimeJson, string cleanJson, Type runtimeType)
@@ -633,7 +831,12 @@ public class ConfigEditorService
         return path.StartsWith("/", StringComparison.Ordinal) ? path : $"/{path}";
     }
 
-    private static void CopyWritableProperties(BaseConfig source, BaseConfig destination, Type runtimeType)
+    private static IReadOnlySet<string> NormalizeJsonPaths(IEnumerable<string> paths)
+    {
+        return paths.Select(NormalizeJsonPath).ToHashSet(StringComparer.Ordinal);
+    }
+
+    private static void CopyWritableProperties(object source, object destination, Type runtimeType)
     {
         foreach (var property in runtimeType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
@@ -644,16 +847,6 @@ public class ConfigEditorService
 
             property.SetValue(destination, property.GetValue(source));
         }
-    }
-
-    private static ConfigTypes GetConfigType(string configId)
-    {
-        if (!Enum.TryParse<ConfigTypes>(configId, out var configType))
-        {
-            throw new InvalidOperationException($"Unknown config id: {configId}");
-        }
-
-        return configType;
     }
 
     private static string GetConfigFilePath(ConfigTypes configType)
@@ -677,4 +870,14 @@ public class ConfigEditorService
                 .Select(word => string.Concat(word[..1], word[1..].ToLowerInvariant()))
         );
     }
+
+    private sealed record ConfigEditorDescriptor(
+        string Id,
+        string DisplayName,
+        string FileName,
+        Type RuntimeType,
+        ConfigTypes? ConfigType,
+        ConfigEditorConfigRegistration? Registration,
+        IReadOnlySet<string> IgnoredSectionPaths
+    );
 }
