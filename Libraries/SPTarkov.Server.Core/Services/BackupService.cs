@@ -23,7 +23,7 @@ public sealed class BackupService(
 
     private readonly BackupConfig _backupConfig = backupConfig;
 
-    // Runs Init() every x minutes
+    // Runs InitializeAsync() every x minutes
     private Timer? _backupIntervalTimer;
 
     private readonly SemaphoreSlim _backupLock = new(1, 1);
@@ -52,7 +52,7 @@ public sealed class BackupService(
         if (!_backupConfig.BackupInterval.Enabled)
         {
             // Not backing up at regular intervals, run once and exit
-            await Init(cancellationToken);
+            await InitializeAsync(cancellationToken);
 
             return;
         }
@@ -62,8 +62,9 @@ public sealed class BackupService(
             {
                 try
                 {
-                    await Init();
+                    await InitializeAsync(cancellationToken);
                 }
+                catch (OperationCanceledException) { }
                 catch (Exception ex)
                 {
                     logger.Error($"Profile backup failed: {ex.Message}, {ex.StackTrace}");
@@ -73,6 +74,12 @@ public sealed class BackupService(
             TimeSpan.Zero,
             TimeSpan.FromMinutes(_backupConfig.BackupInterval.IntervalMinutes)
         );
+
+        cancellationToken.Register(() =>
+        {
+            _backupIntervalTimer?.Dispose();
+            _backupIntervalTimer = null;
+        });
     }
 
     /// <summary>
@@ -80,7 +87,7 @@ public sealed class BackupService(
     ///     This method orchestrates the profile backup service. Handles copying profiles to a backup directory and cleaning
     ///     up old backups if the number exceeds the configured maximum.
     /// </summary>
-    public async Task Init(CancellationToken cancellationToken = default)
+    public async Task InitializeAsync(CancellationToken cancellationToken = default)
     {
         if (!IsEnabled())
         {
@@ -151,7 +158,8 @@ public sealed class BackupService(
                 await fileUtil.WriteFileAsync(
                     Path.Combine(targetDir, ActiveModsFilename),
                     jsonUtil.Serialize(GetActiveServerMods())
-                        ?? throw new InvalidOperationException("Could not serialize active server mods!")
+                        ?? throw new InvalidOperationException("Could not serialize active server mods!"),
+                    cancellationToken
                 );
 
                 if (logger.IsLogEnabled(LogLevel.Debug))

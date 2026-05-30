@@ -11,7 +11,13 @@ namespace SPTarkov.Server.Core.Routers.Serializers;
 [Injectable]
 public class NotifySerializer(NotifierController notifierController, JsonUtil jsonUtil, HttpServerHelper httpServerHelper) : ISerializer
 {
-    public async Task Serialize(MongoId sessionID, HttpRequest req, HttpResponse resp, object? body)
+    public async Task SerializeAsync(
+        MongoId sessionID,
+        HttpRequest req,
+        HttpResponse resp,
+        object? body,
+        CancellationToken cancellationToken = default
+    )
     {
         var splittedUrl = req.Path.Value.Split("/");
         var tmpSessionID = splittedUrl[^1].Split("?last_id")[0];
@@ -21,9 +27,9 @@ public class NotifySerializer(NotifierController notifierController, JsonUtil js
          *  be sent to client as NEWLINE separated strings... yup.
          */
         await notifierController
-            .NotifyAsync(tmpSessionID)
+            .NotifyAsync(tmpSessionID, cancellationToken)
             .ContinueWith(messages => messages.Result.Select(message => string.Join("\n", jsonUtil.Serialize(message))))
-            .ContinueWith(text => httpServerHelper.SendTextJson(resp, text));
+            .ContinueWith(text => httpServerHelper.SendTextJson(resp, text), cancellationToken);
     }
 
     public bool CanHandle(string route)

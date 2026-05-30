@@ -9,15 +9,15 @@ namespace SPTarkov.Server.Core.Callbacks;
 [Injectable(TypePriority = OnLoadOrder.SaveCallbacks)]
 public class SaveCallbacks(SaveServer saveServer, BackupService backupService, CoreConfig coreConfig) : IOnLoad, IOnUpdate
 {
-    public async Task OnLoad(CancellationToken stoppingToken)
+    public async Task OnLoad(CancellationToken cancellationToken)
     {
-        await saveServer.LoadAsync();
+        await saveServer.LoadAsync(cancellationToken);
 
         // Note: This has to happen after loading the saveServer so we don't backup corrupted profiles
-        await backupService.StartBackupSystem();
+        await backupService.StartBackupSystem(cancellationToken);
     }
 
-    public async Task<bool> OnUpdate(CancellationToken stoppingToken, long secondsSinceLastRun)
+    public async Task<bool> OnUpdate(long secondsSinceLastRun, CancellationToken cancellationToken)
     {
         if (secondsSinceLastRun < coreConfig.ProfileSaveIntervalInSeconds)
         {
@@ -25,7 +25,7 @@ public class SaveCallbacks(SaveServer saveServer, BackupService backupService, C
             return false;
         }
 
-        await saveServer.SaveAsync();
+        await saveServer.SaveAsync(cancellationToken);
 
         return true;
     }

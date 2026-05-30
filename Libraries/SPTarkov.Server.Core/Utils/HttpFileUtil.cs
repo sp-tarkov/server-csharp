@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Utils;
 [Injectable]
 public sealed class HttpFileUtil(HttpServerHelper httpServerHelper)
 {
-    public async Task SendFile(HttpResponse resp, string filePath)
+    public async Task SendFileAsync(HttpResponse resp, string filePath, CancellationToken cancellationToken = default)
     {
         var pathSlice = filePath.Split("/");
         var mimePath = httpServerHelper.GetMimeText(pathSlice[^1].Split(".")[^1]);
@@ -16,6 +16,6 @@ public sealed class HttpFileUtil(HttpServerHelper httpServerHelper)
         resp.Headers.Append("Content-Type", type);
         resp.Headers.Append("Content-Length", fileInfo.Length.ToString());
 
-        await resp.SendFileAsync(filePath, CancellationToken.None);
+        await resp.SendFileAsync(filePath, cancellationToken);
     }
 }

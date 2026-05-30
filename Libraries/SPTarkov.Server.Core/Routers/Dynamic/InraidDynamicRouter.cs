@@ -13,7 +13,7 @@ public class InraidDynamicRouter(JsonUtil jsonUtil, InraidCallbacks inraidCallba
         [
             new RouteAction<RegisterPlayerRequestData>(
                 "/client/location/getLocalloot",
-                async (url, info, sessionID, output) => await inraidCallbacks.RegisterPlayer(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await inraidCallbacks.RegisterPlayer(url, info, sessionID)
             ),
         ]
     )

@@ -22,7 +22,7 @@ public class GameCallbacks(
     TimeUtil timeUtil
 ) : IOnLoad
 {
-    public Task OnLoad(CancellationToken stoppingToken)
+    public Task OnLoad(CancellationToken cancellationToken)
     {
         gameController.Load();
         return Task.CompletedTask;
@@ -69,7 +69,7 @@ public class GameCallbacks(
         await saveServer.SaveProfileAsync(sessionID);
 
         // Backup profiles on exit
-        await backupService.Init();
+        await backupService.InitializeAsync();
 
         return httpResponseUtil.GetBody(new GameLogoutResponseData { Status = "ok" });
     }

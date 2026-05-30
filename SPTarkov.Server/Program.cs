@@ -194,7 +194,10 @@ public static class Program
 
         app.UseNoGCRegions();
 
-        app.Use(async (context, next) => await context.RequestServices.GetRequiredService<HttpServer>().HandleRequest(context, next));
+        app.Use(
+            async (context, next) =>
+                await context.RequestServices.GetRequiredService<HttpServer>().HandleRequestAsync(context, next, context.RequestAborted)
+        );
 
         app.UseSptBlazor();
     }

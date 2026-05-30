@@ -13,7 +13,7 @@ public class HealthStaticRouter(JsonUtil jsonUtil, HealthCallbacks healthCallbac
         [
             new RouteAction<WorkoutData>(
                 "/client/hideout/workout",
-                async (url, info, sessionID, output) => await healthCallbacks.HandleWorkoutEffects(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await healthCallbacks.HandleWorkoutEffects(url, info, sessionID)
             ),
         ]
     ) { }

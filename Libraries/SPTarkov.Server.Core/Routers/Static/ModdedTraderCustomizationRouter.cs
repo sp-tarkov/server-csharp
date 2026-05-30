@@ -13,7 +13,7 @@ public class ModdedTraderCustomizationRouter(JsonUtil jsonUtil, ModdedTraderCust
         [
             new RouteAction<EmptyRequestData>(
                 "/singleplayer/moddedTraders",
-                async (url, info, sessionID, output) =>
+                async (url, info, sessionID, output, cancellationToken) =>
                     await moddedTraderCustomizationCallbacks.GetCustomizationTraders(url, info, sessionID)
             ),
         ]

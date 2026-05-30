@@ -81,7 +81,7 @@ public class LocationLifecycleService(
     public virtual StartLocalRaidResponseData StartLocalRaid(MongoId sessionId, StartLocalRaidRequestData request)
     {
         // Backup the profile on raid start
-        backupService.Init().GetAwaiter().GetResult();
+        backupService.InitializeAsync().GetAwaiter().GetResult();
 
         logger.Debug($"Starting: {request.Location}");
 
@@ -536,7 +536,7 @@ public class LocationLifecycleService(
 
         // Save and backup the profile on raid end
         saveServer.SaveProfileAsync(sessionId).GetAwaiter().GetResult();
-        backupService.Init().GetAwaiter().GetResult();
+        backupService.InitializeAsync().GetAwaiter().GetResult();
     }
 
     /// <summary>

@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Callbacks;
 [Injectable(TypePriority = OnLoadOrder.PresetCallbacks)]
 public class PresetCallbacks(PresetController presetController) : IOnLoad
 {
-    public Task OnLoad(CancellationToken stoppingToken)
+    public Task OnLoad(CancellationToken cancellationToken)
     {
         presetController.Initialize();
         return Task.CompletedTask;

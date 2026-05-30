@@ -13,7 +13,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
     protected ConcurrentDictionary<string, uint> _bundleHashes = [];
     private readonly SemaphoreSlim _writeLock = new(1, 1);
 
-    public async Task HydrateCache()
+    public async Task HydrateCacheAsync(CancellationToken cancellationToken = default)
     {
         if (!Directory.Exists(_bundleHashCachePath))
         {
@@ -28,12 +28,12 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
             return;
         }
 
-        _bundleHashes = await jsonUtil.DeserializeFromFileAsync<ConcurrentDictionary<string, uint>>(fullCachePath) ?? [];
+        _bundleHashes = await jsonUtil.DeserializeFromFileAsync<ConcurrentDictionary<string, uint>>(fullCachePath, cancellationToken) ?? [];
     }
 
-    public async Task WriteCache()
+    public async Task WriteCacheAsync(CancellationToken cancellationToken = default)
     {
-        await _writeLock.WaitAsync();
+        await _writeLock.WaitAsync(cancellationToken);
 
         try
         {
@@ -44,7 +44,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
                 return;
             }
 
-            await fileUtil.WriteFileAsync(Path.Join(_bundleHashCachePath, _cacheName), bundleHashesSerialized);
+            await fileUtil.WriteFileAsync(Path.Join(_bundleHashCachePath, _cacheName), bundleHashesSerialized, cancellationToken);
         }
         finally
         {
@@ -62,7 +62,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
         return value;
     }
 
-    protected async Task StoreValue(string bundlePath, uint hash)
+    protected void StoreValue(string bundlePath, uint hash)
     {
         _bundleHashes.TryAdd(bundlePath, hash);
     }
@@ -71,21 +71,24 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
     /// Calculate, match the current hash and store the correct hash of the bundle
     /// </summary>
     /// <param name="BundlePath">The path to the bundle</param>
-    public async Task<uint> CalculateMatchAndStoreHash(string BundlePath)
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> that can be used to cancel the hashing operation.
+    /// </param>
+    public async Task<uint> CalculateMatchAndStoreHashAsync(string BundlePath, CancellationToken cancellationToken = default)
     {
-        var hash = await CalculateHash(BundlePath);
+        var hash = await CalculateHashAsync(BundlePath, cancellationToken);
 
         if (!MatchWithStoredHash(BundlePath, hash))
         {
-            await StoreValue(BundlePath, hash);
+            StoreValue(BundlePath, hash);
         }
 
         return hash;
     }
 
-    protected async Task<uint> CalculateHash(string BundlePath)
+    protected async Task<uint> CalculateHashAsync(string BundlePath, CancellationToken cancellationToken = default)
     {
-        return await hashUtil.GenerateCrc32ForFileAsync(BundlePath);
+        return await hashUtil.GenerateCrc32ForFileAsync(BundlePath, cancellationToken);
     }
 
     protected bool MatchWithStoredHash(string BundlePath, uint hash)

@@ -5,6 +5,12 @@ namespace SPTarkov.Server.Core.DI;
 
 public interface ISerializer
 {
-    public Task Serialize(MongoId sessionID, HttpRequest req, HttpResponse resp, object? body);
+    public Task SerializeAsync(
+        MongoId sessionID,
+        HttpRequest req,
+        HttpResponse resp,
+        object? body,
+        CancellationToken cancellationToken = default
+    );
     public bool CanHandle(string route);
 }
