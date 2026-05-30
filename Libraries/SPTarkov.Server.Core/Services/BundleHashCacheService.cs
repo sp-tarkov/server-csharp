@@ -62,7 +62,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
         return value;
     }
 
-    protected async Task StoreValue(string bundlePath, uint hash)
+    protected void StoreValue(string bundlePath, uint hash)
     {
         _bundleHashes.TryAdd(bundlePath, hash);
     }
@@ -80,7 +80,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
 
         if (!MatchWithStoredHash(BundlePath, hash))
         {
-            await StoreValue(BundlePath, hash);
+            StoreValue(BundlePath, hash);
         }
 
         return hash;

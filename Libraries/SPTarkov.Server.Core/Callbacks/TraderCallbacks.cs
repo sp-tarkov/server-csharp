@@ -10,7 +10,7 @@ namespace SPTarkov.Server.Core.Callbacks;
 [Injectable(TypePriority = OnLoadOrder.TraderCallbacks)]
 public class TraderCallbacks(HttpResponseUtil httpResponseUtil, TraderController traderController) : IOnLoad, IOnUpdate
 {
-    public Task OnLoad(CancellationToken stoppingToken)
+    public Task OnLoad(CancellationToken cancellationToken)
     {
         traderController.Load();
         return Task.CompletedTask;

@@ -22,7 +22,7 @@ public class RagfairCallbacks(
     RagfairConfig ragfairConfig
 ) : IOnLoad, IOnUpdate
 {
-    public Task OnLoad(CancellationToken stoppingToken)
+    public Task OnLoad(CancellationToken cancellationToken)
     {
         ragfairPriceService.Load();
         ragfairServer.Load();
