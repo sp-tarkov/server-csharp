@@ -17,8 +17,8 @@ public sealed class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileU
 
     public async Task<T> LoadRecursiveAsync<T>(
         string filePath,
-        Func<string, Task>? onReadCallback = null,
-        Func<string, object, Task>? onObjectDeserialized = null,
+        Func<string, CancellationToken, Task>? onReadCallback = null,
+        Func<string, object, CancellationToken, Task>? onObjectDeserialized = null,
         CancellationToken cancellationToken = default
     )
     {
@@ -41,11 +41,13 @@ public sealed class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileU
     private async Task<object> LoadRecursiveAsync(
         string filePath,
         Type loadedType,
-        Func<string, Task>? onReadCallback = null,
-        Func<string, object, Task>? onObjectDeserialized = null,
+        Func<string, CancellationToken, Task>? onReadCallback = null,
+        Func<string, object, CancellationToken, Task>? onObjectDeserialized = null,
         CancellationToken cancellationToken = default
     )
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         var tasks = new List<Task>();
         var dictionaryLock = new Lock();
         var result = Activator.CreateInstance(loadedType);
@@ -57,6 +59,8 @@ public sealed class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileU
         // Process files
         foreach (var file in files)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (
                 fileUtil.GetFileExtension(file) != "json"
                 || _filesToIgnore.Contains(fileUtil.GetFileNameAndExtension(file).ToLowerInvariant())
@@ -71,6 +75,8 @@ public sealed class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileU
         // Process directories
         foreach (var directory in directories)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (_directoriesToIgnore.Contains(directory))
             {
                 continue;
@@ -98,19 +104,23 @@ public sealed class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileU
     private async Task ProcessFileAsync(
         string file,
         Type loadedType,
-        Func<string, Task>? onReadCallback,
-        Func<string, object, Task>? onObjectDeserialized,
+        Func<string, CancellationToken, Task>? onReadCallback,
+        Func<string, object, CancellationToken, Task>? onObjectDeserialized,
         object result,
         Lock dictionaryLock,
         CancellationToken cancellationToken = default
     )
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         try
         {
             if (onReadCallback != null)
             {
-                await onReadCallback(file);
+                await onReadCallback(file, cancellationToken);
             }
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             // Get the set method to update the object
             var setMethod = GetSetMethod(
@@ -124,13 +134,17 @@ public sealed class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileU
 
             if (onObjectDeserialized != null)
             {
-                await onObjectDeserialized(file, fileDeserialized);
+                await onObjectDeserialized(file, fileDeserialized, cancellationToken);
             }
 
             lock (dictionaryLock)
             {
                 setMethod.Invoke(result, isDictionary ? [fileUtil.StripExtension(file), fileDeserialized] : [fileDeserialized]);
             }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -143,12 +157,14 @@ public sealed class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileU
         string directory,
         Type loadedType,
         object result,
-        Func<string, Task>? onReadCallback,
-        Func<string, object, Task>? onObjectDeserialized,
+        Func<string, CancellationToken, Task>? onReadCallback,
+        Func<string, object, CancellationToken, Task>? onObjectDeserialized,
         Lock dictionaryLock,
         CancellationToken cancellationToken = default
     )
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         try
         {
             var directoryName = directory.Split("/").Last().Replace("_", "");
@@ -168,6 +184,8 @@ public sealed class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileU
                     onObjectDeserialized,
                     cancellationToken
                 );
+
+                cancellationToken.ThrowIfCancellationRequested();
 
                 lock (dictionaryLock)
                 {
@@ -195,6 +213,10 @@ public sealed class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileU
                     setMethod.Invoke(result, isDictionary ? [directory, loadedData] : [loadedData]);
                 }
             }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {

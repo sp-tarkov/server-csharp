@@ -25,16 +25,16 @@ public class DatabaseImporter(
     private const string SptDataPath = "./SPT_Data/";
     protected readonly Dictionary<string, string> DatabaseHashes = [];
 
-    public async Task OnLoad(CancellationToken stoppingToken)
+    public async Task OnLoad(CancellationToken cancellationToken)
     {
         var shouldVerify = !ProgramStatics.DEBUG();
 
         if (shouldVerify)
         {
-            await LoadHashesAsync(stoppingToken);
+            await LoadHashesAsync(cancellationToken);
         }
 
-        await HydrateDatabaseAsync(SptDataPath, shouldVerify, stoppingToken);
+        await HydrateDatabaseAsync(SptDataPath, shouldVerify, cancellationToken);
 
         var imageFilePath = $"{SptDataPath}images/";
         CreateRouteMapping(imageFilePath, "files");
@@ -63,7 +63,7 @@ public class DatabaseImporter(
         }
     }
 
-    protected async Task LoadHashesAsync(CancellationToken cancellationToken)
+    protected async Task LoadHashesAsync(CancellationToken cancellationToken = default)
     {
         var checksFilePath = Path.Combine(SptDataPath, "checks.dat");
 
@@ -103,27 +103,39 @@ public class DatabaseImporter(
     /// </summary>
     /// <param name="filePath">path to database folder</param>
     /// <param name="shouldVerifyDatabase">if the database should be verified after deserialization</param>
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> that can be used to cancel the database hydration operation.
+    /// </param>
     /// <returns></returns>
     protected async Task HydrateDatabaseAsync(string filePath, bool shouldVerifyDatabase, CancellationToken cancellationToken = default)
     {
-        logger.Info(serverLocalisationService.GetText("importing_database"));
-        Stopwatch timer = new();
-        timer.Start();
+        try
+        {
+            logger.Info(serverLocalisationService.GetText("importing_database"));
+            Stopwatch timer = new();
+            timer.Start();
 
-        var dataToImport = await importerUtil.LoadRecursiveAsync<DatabaseTables>(
-            $"{filePath}database/",
-            shouldVerifyDatabase ? VerifyDatabase : null,
-            cancellationToken: cancellationToken
-        );
+            var dataToImport = await importerUtil.LoadRecursiveAsync<DatabaseTables>(
+                $"{filePath}database/",
+                shouldVerifyDatabase ? VerifyDatabaseAsync : null,
+                cancellationToken: cancellationToken
+            );
 
-        timer.Stop();
+            timer.Stop();
 
-        logger.Info(serverLocalisationService.GetText("importing_database_finish"));
-        logger.Debug($"Database import took {timer.ElapsedMilliseconds}ms");
-        databaseServer.SetTables(dataToImport);
+            logger.Info(serverLocalisationService.GetText("importing_database_finish"));
+            logger.Debug($"Database import took {timer.ElapsedMilliseconds}ms");
+            databaseServer.SetTables(dataToImport);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            logger.Warning("Database import was cancelled.");
+
+            throw;
+        }
     }
 
-    protected async Task VerifyDatabase(string fileName)
+    protected async Task VerifyDatabaseAsync(string fileName, CancellationToken cancellationToken)
     {
         var relativePath = fileName.StartsWith(SptDataPath, StringComparison.OrdinalIgnoreCase)
             ? fileName.Substring(SptDataPath.Length)
@@ -133,7 +145,7 @@ public class DatabaseImporter(
         {
             await using (var stream = File.OpenRead(fileName))
             {
-                var hashBytes = await md5.ComputeHashAsync(stream);
+                var hashBytes = await md5.ComputeHashAsync(stream, cancellationToken);
                 var hashString = Convert.ToHexString(hashBytes);
 
                 if (DatabaseHashes.TryGetValue(relativePath, out var expectedHash))
