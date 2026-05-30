@@ -5,21 +5,29 @@
 @using SPTarkov.Server.Core.Servers
 @using SPTarkov.Server.Core.Services
 @using SPTarkov.Server.Core.Utils
+@using SPTarkov.Server.Web.Components.Database
 @using SPTarkov.Server.Web.Components.Profiles
 @using SPTarkov.Server.Web.Layout
+@using SPTarkov.Server.Web.Models.Database
 @using SPTarkov.Server.Web.Models.Profiles
+@using SPTarkov.Server.Web.Utils
 @using CustomisationTypeId = SPTarkov.Server.Core.Models.Eft.Common.Tables.CustomisationTypeId
 @using TemplateSide = SPTarkov.Server.Core.Models.Eft.Common.Tables.TemplateSide
 @layout BaseMudBlazorLayout
 @inject CreateProfileService CreateProfileService
 @inject DatabaseService DatabaseService
 @inject HashUtil HashUtil
+@inject JsonUtil JsonUtil
 @inject ISnackbar Snackbar
 @inject SaveServer SaveServer
 
 <PageTitle>Profile Control - SPT Server</PageTitle>
 
 <div class="profiles-page spt-page">
+    <DatabaseLoadingOverlay Visible="@_isDetailsLoading"
+                            LoadingTitle="Loading profile details"
+                            LoadingMessage="@_detailsLoadingMessage" />
+
     <MudContainer MaxWidth="MaxWidth.False" Class="profiles-page-container pa-6">
         <MudStack Spacing="4">
             <ProfileControlHeader Profiles="@_profiles" />
@@ -54,6 +62,10 @@
                               OnReloadProfile="ReloadProfile"
                               SelectedProfileChanged="SelectProfile" />
             </div>
+
+            <ProfileRecordDetailsModal Details="@_selectedProfileDetails"
+                                       Open="@_isDetailsOpen"
+                                       OnClose="CloseDetails" />
         </MudStack>
     </MudContainer>
 </div>
@@ -64,10 +76,16 @@
 
     private readonly List<ProfileSummary> _profiles = [];
     private readonly List<string> _editions = [];
+    private readonly Dictionary<string, ProfileDetails> _profileDetailsCache = [];
     private string _deleteConfirmation = string.Empty;
+    private string _detailsLoadingMessage = "Preparing profile properties.";
     private bool _isBusy;
+    private bool _isDetailsOpen;
+    private bool _isDetailsLoading;
     private string _newEdition = string.Empty;
     private string _newUsername = string.Empty;
+    private int _profileDetailsRequestId;
+    private ProfileDetails? _selectedProfileDetails;
     private string? _selectedProfileId;
 
     private ProfileSummary? SelectedProfile
@@ -94,6 +112,7 @@
 
     private void RefreshProfiles()
     {
+        InvalidateProfileDetails();
         _profiles.Clear();
         _profiles.AddRange(
             SaveServer.GetProfiles()
@@ -103,8 +122,13 @@
 
         if (_selectedProfileId is not null && _profiles.All(profile => profile.Id != _selectedProfileId))
         {
-            _selectedProfileId = null;
-            _deleteConfirmation = string.Empty;
+            ClearSelectedProfile();
+            return;
+        }
+
+        if (_isDetailsOpen && SelectedProfile is null)
+        {
+            CloseDetails();
         }
     }
 
@@ -178,8 +202,7 @@
         {
             var deleted = SaveServer.RemoveProfile(new MongoId(profile.Id));
             Snackbar.Add(deleted ? $"Deleted {profile.Username}." : $"Could not delete {profile.Username}.", deleted ? Severity.Success : Severity.Error);
-            _selectedProfileId = null;
-            _deleteConfirmation = string.Empty;
+            ClearSelectedProfile();
             return Task.CompletedTask;
         });
     }
@@ -263,10 +286,75 @@
         return fallback?.Id ?? throw new InvalidOperationException($"No default customization found for {side}.");
     }
 
-    private void SelectProfile(ProfileSummary profile)
+    private async Task SelectProfile(ProfileSummary profile)
     {
         _selectedProfileId = profile.Id;
         _deleteConfirmation = string.Empty;
+
+        await OpenProfileDetails(profile);
+    }
+
+    private async Task OpenProfileDetails(ProfileSummary profile)
+    {
+        var requestId = ++_profileDetailsRequestId;
+
+        if (_profileDetailsCache.TryGetValue(profile.Id, out var details))
+        {
+            _selectedProfileDetails = details;
+            _isDetailsOpen = true;
+            return;
+        }
+
+        _isDetailsLoading = true;
+        _detailsLoadingMessage = $"Preparing {profile.Username} profile properties.";
+        await InvokeAsync(StateHasChanged);
+        await Task.Yield();
+
+        try
+        {
+            details = await Task.Run(() => BuildProfileDetails(profile, SaveServer.GetProfile(new MongoId(profile.Id))));
+            if (requestId != _profileDetailsRequestId || _selectedProfileId != profile.Id)
+            {
+                return;
+            }
+
+            _profileDetailsCache[profile.Id] = details;
+            _selectedProfileDetails = details;
+            _isDetailsOpen = true;
+        }
+        catch (Exception exception)
+        {
+            Snackbar.Add(exception.InnerException?.Message ?? exception.Message, Severity.Error);
+        }
+        finally
+        {
+            if (requestId == _profileDetailsRequestId)
+            {
+                _isDetailsLoading = false;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+    }
+
+    private void CloseDetails()
+    {
+        _isDetailsOpen = false;
+    }
+
+    private void ClearSelectedProfile()
+    {
+        _selectedProfileId = null;
+        InvalidateProfileDetails();
+        _deleteConfirmation = string.Empty;
+    }
+
+    private void InvalidateProfileDetails()
+    {
+        _profileDetailsCache.Clear();
+        _selectedProfileDetails = null;
+        _isDetailsOpen = false;
+        _isDetailsLoading = false;
+        _profileDetailsRequestId++;
     }
 
     private static ProfileSummary BuildProfileSummary(MongoId id, SptProfile profile)
@@ -296,8 +384,56 @@
         );
     }
 
+    private ProfileDetails BuildProfileDetails(ProfileSummary summary, SptProfile profile)
+    {
+        var info = profile.ProfileInfo;
+        var propertiesJson = JsonUtil.Serialize(profile, indented: true) ?? "{}";
+        var properties = JsonPropertyFlattener.BuildProperties(propertiesJson);
+
+        return new ProfileDetails(
+            summary,
+            [
+                new DatabaseDetailSection(
+                    "Account",
+                    [
+                        new DatabaseDetailValue("Username", summary.Username),
+                        new DatabaseDetailValue("Profile ID", summary.Id, true),
+                        new DatabaseDetailValue("Scav ID", GetNonEmptyValue(info?.ScavengerId?.ToString(), "n/a"), true),
+                        new DatabaseDetailValue("Account ID", GetNumberLabel(info?.Aid), true),
+                        new DatabaseDetailValue("Edition", summary.Edition),
+                        new DatabaseDetailValue("Status", summary.Status),
+                    ]
+                ),
+                new DatabaseDetailSection(
+                    "Character",
+                    [
+                        new DatabaseDetailValue("PMC nickname", summary.Nickname),
+                        new DatabaseDetailValue("Side", summary.Side),
+                        new DatabaseDetailValue("PMC level", GetNumberLabel(summary.Level)),
+                        new DatabaseDetailValue("PMC experience", GetNumberLabel(summary.Experience)),
+                        new DatabaseDetailValue("Scav level", GetNumberLabel(summary.ScavLevel)),
+                        new DatabaseDetailValue("Inventory items", GetNumberLabel(summary.ItemCount)),
+                    ]
+                ),
+            ],
+            properties,
+            propertiesJson
+        );
+    }
+
     private static string GetNonEmptyValue(string? value, string fallback)
     {
         return string.IsNullOrWhiteSpace(value) ? fallback : value;
     }
+
+    private static string GetNumberLabel(int? value)
+    {
+        return value is null ? "n/a" : value.Value.ToString("N0");
+    }
+
+    private static string GetNumberLabel(double? value)
+    {
+        return value is null ? "n/a" : value.Value.ToString("N0");
+    }
+
 }

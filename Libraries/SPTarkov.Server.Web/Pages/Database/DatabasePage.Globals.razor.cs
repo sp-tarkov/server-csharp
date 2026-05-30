@@ -85,7 +85,7 @@ public partial class DatabasePage
             var entries = GetEntryCount(value);
             var valueLabel = GetScalarValueLabel(value);
             var propertiesJson = SerializeObject(value, property.PropertyType);
-            var properties = BuildProperties(propertiesJson);
+            var properties = SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson);
 
             yield return new DatabaseRow(
                 $"config.{name}",
@@ -147,7 +147,7 @@ public partial class DatabasePage
                     ),
                 ],
                 [new DatabaseChip("LocationInfection", Color.Warning)],
-                BuildProperties(propertiesJson),
+                SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson),
                 propertiesJson,
                 string.Join(" ", location, infection)
             );
@@ -185,7 +185,7 @@ public partial class DatabasePage
                 ),
             ],
             [new DatabaseChip("bot preset", Color.Warning), new DatabaseChip(preset.BotDifficulty, Color.Info)],
-            BuildProperties(propertiesJson),
+            SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson),
             propertiesJson,
             string.Join(" ", preset.Role, preset.BotDifficulty, preset.UseThis)
         );
@@ -219,7 +219,7 @@ public partial class DatabasePage
                 ),
             ],
             [new DatabaseChip("weapon scattering", Color.Warning)],
-            BuildProperties(propertiesJson),
+            SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson),
             propertiesJson,
             string.Join(" ", scattering.Name, scattering.PriorityScatter1Meter, scattering.PriorityScatter10Meter, scattering.PriorityScatter100Meter)
         );
@@ -256,7 +256,7 @@ public partial class DatabasePage
                 ),
             ],
             [new DatabaseChip("item preset", Color.Warning), new DatabaseChip(GetNonEmptyValue(preset.Type, "Preset"), Color.Info)],
-            BuildProperties(propertiesJson),
+            SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson),
             propertiesJson,
             string.Join(" ", id, title, preset.Type, preset.Parent, preset.Encyclopedia)
         );

@@ -37,6 +37,7 @@
                   Striped="true"
                   FixedHeader="true"
                   Height="calc(100vh - 320px)"
+                  Virtualize="true"
                   RowClassFunc="GetProfileRowClass"
                   OnRowClick="SelectProfile">
             <HeaderContent>
@@ -66,20 +67,34 @@
                 <MudTd>
                     <MudStack Row Spacing="1" Justify="Justify.FlexEnd">
                         <MudTooltip Text="Save profile">
-                            <MudIconButton Icon="@Icons.Material.Filled.Save"
-                                           Size="Size.Small"
-                                           Color="Color.Secondary"
-                                           Disabled="@IsBusy"
-                                           OnClick="@(() => OnSaveProfile.InvokeAsync(context))"
-                                           AriaLabel="Save profile" />
+                            <span @onclick:stopPropagation="true">
+                                <MudIconButton Icon="@Icons.Material.Filled.Save"
+                                               Size="Size.Small"
+                                               Color="Color.Secondary"
+                                               Disabled="@IsBusy"
+                                               OnClick="@(() => OnSaveProfile.InvokeAsync(context))"
+                                               AriaLabel="Save profile" />
+                            </span>
+                        </MudTooltip>
+                        <MudTooltip Text="Download profile">
+                            <span @onclick:stopPropagation="true">
+                                <MudIconButton Icon="@Icons.Material.Filled.Download"
+                                               Size="Size.Small"
+                                               Color="Color.Secondary"
+                                               Disabled="@IsBusy"
+                                               Href="@GetDownloadUrl(context)"
+                                               AriaLabel="Download profile" />
+                            </span>
                         </MudTooltip>
                         <MudTooltip Text="Reload profile from disk">
-                            <MudIconButton Icon="@Icons.Material.Filled.RestartAlt"
-                                           Size="Size.Small"
-                                           Color="Color.Secondary"
-                                           Disabled="@IsBusy"
-                                           OnClick="@(() => OnReloadProfile.InvokeAsync(context))"
-                                           AriaLabel="Reload profile" />
+                            <span @onclick:stopPropagation="true">
+                                <MudIconButton Icon="@Icons.Material.Filled.RestartAlt"
+                                               Size="Size.Small"
+                                               Color="Color.Secondary"
+                                               Disabled="@IsBusy"
+                                               OnClick="@(() => OnReloadProfile.InvokeAsync(context))"
+                                               AriaLabel="Reload profile" />
+                            </span>
                         </MudTooltip>
                     </MudStack>
                 </MudTd>
@@ -118,12 +133,22 @@
 
     private Task SelectProfile(TableRowClickEventArgs<ProfileSummary> args)
     {
+        if (args.Item is null)
+        {
+            return Task.CompletedTask;
+        }
+
         return SelectedProfileChanged.InvokeAsync(args.Item);
     }
 
     private string GetProfileRowClass(ProfileSummary profile, int rowNumber)
     {
         return profile.Id == SelectedProfileId ? "profiles-selected-row" : string.Empty;
+    }
+
+    private static string GetDownloadUrl(ProfileSummary profile)
+    {
+        return $"/profiles/{profile.Id}/download";
     }
 
     private static Color GetStatusColor(ProfileSummary profile)

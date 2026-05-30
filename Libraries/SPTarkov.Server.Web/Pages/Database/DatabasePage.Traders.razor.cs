@@ -119,7 +119,7 @@ public partial class DatabasePage
         var dialogueCount = trader.Dialogue?.Values.Sum(dialogue => dialogue?.Count ?? 0) ?? 0;
         var questAssortCount = trader.QuestAssort?.Values.Sum(assort => assort?.Count ?? 0) ?? 0;
         var propertiesJson = includeProperties ? jsonUtil.Serialize(trader, indented: true) ?? "{}" : "{}";
-        var properties = includeProperties ? BuildProperties(propertiesJson) : [];
+        var properties = includeProperties ? SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson) : [];
 
         var values = new Dictionary<string, string>
         {
@@ -375,7 +375,7 @@ public partial class DatabasePage
             },
             indented: true
         ) ?? "{}";
-        var properties = BuildProperties(propertiesJson);
+        var properties = SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson);
 
         var sections = new List<DatabaseDetailSection>
         {

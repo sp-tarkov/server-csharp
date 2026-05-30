@@ -121,7 +121,7 @@ public partial class DatabasePage
                 ),
             ],
             [new DatabaseChip("Base", Color.Warning)],
-            BuildProperties(propertiesJson),
+            SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson),
             propertiesJson,
             string.Join(" ", "base", botBase.Id, botBase.Info?.Nickname, botBase.Info?.Side, botBase.Info?.Level)
         );
@@ -160,7 +160,7 @@ public partial class DatabasePage
                 ),
             ],
             [new DatabaseChip("Core", Color.Warning)],
-            BuildProperties(propertiesJson),
+            SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson),
             propertiesJson,
             "core bot settings constants"
         );
@@ -236,7 +236,7 @@ public partial class DatabasePage
                 ),
             ],
             [new DatabaseChip("Bot type", Color.Warning), new DatabaseChip(levelLabel, Color.Info)],
-            BuildProperties(propertiesJson),
+            SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson),
             propertiesJson,
             string.Join(
                 " ",

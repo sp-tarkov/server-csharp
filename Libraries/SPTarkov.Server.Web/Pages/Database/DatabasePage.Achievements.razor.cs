@@ -130,7 +130,7 @@ public partial class DatabasePage
         var conditionCount = GetAchievementConditionCount(achievement.Conditions);
         var rewardCount = achievement.Rewards?.Count() ?? 0;
         var propertiesJson = jsonUtil.Serialize(achievement, indented: true) ?? "{}";
-        var properties = BuildProperties(propertiesJson);
+        var properties = SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson);
 
         var values = new Dictionary<string, string>
         {

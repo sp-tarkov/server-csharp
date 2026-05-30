@@ -79,7 +79,7 @@ public partial class DatabasePage
         var priceLabel = GetPriceLabel(handbookItem?.Price);
         var sizeLabel = GetSizeLabel(item);
         var propertiesJson = jsonUtil.Serialize(item.Properties, indented: true) ?? "{}";
-        var properties = BuildProperties(propertiesJson);
+        var properties = SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson);
 
         var values = new Dictionary<string, string>
         {

@@ -86,7 +86,7 @@ public partial class DatabasePage
         var icon = GetNonEmptyValue(category.Icon, "n/a");
         var color = GetNonEmptyValue(category.Color, "n/a");
         var propertiesJson = jsonUtil.Serialize(category, indented: true) ?? "{}";
-        var properties = BuildProperties(propertiesJson);
+        var properties = SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson);
 
         var values = new Dictionary<string, string>
         {
@@ -141,7 +141,7 @@ public partial class DatabasePage
         var description = GetLocaleValue(locale, $"{id} Description", "Handbook item price record.");
         var price = GetPriceLabel(item.Price);
         var propertiesJson = jsonUtil.Serialize(item, indented: true) ?? "{}";
-        var properties = BuildProperties(propertiesJson);
+        var properties = SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson);
 
         var values = new Dictionary<string, string>
         {

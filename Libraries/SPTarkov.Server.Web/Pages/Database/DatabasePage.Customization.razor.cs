@@ -121,7 +121,7 @@ public partial class DatabasePage
         var availableAsDefault = properties?.AvailableAsDefault == true;
         var defaultLabel = availableAsDefault ? "Default" : "Unlockable";
         var propertiesJson = jsonUtil.Serialize(item, indented: true) ?? "{}";
-        var flattenedProperties = BuildProperties(propertiesJson);
+        var flattenedProperties = SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson);
 
         var values = new Dictionary<string, string>
         {

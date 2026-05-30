@@ -1,9 +1,13 @@
 ﻿using System.Reflection;
+using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
 using MudBlazor.Services;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Web.Services;
 
 namespace SPTarkov.Server.Web;
@@ -90,6 +94,7 @@ public static class SPTWeb
         app.MapControllers();
         app.MapPost(AuthService.LoginPath, HandleLogin).DisableAntiforgery();
         app.MapPost(AuthService.LogoutPath, HandleLogout).DisableAntiforgery();
+        app.MapGet("/profiles/{profileId}/download", HandleProfileDownload).RequireAuthorization(AuthService.AdministratorPolicy);
 
         var razorBuilder = app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
@@ -177,6 +182,25 @@ public static class SPTWeb
         await context.SignOutAsync(AuthService.AuthenticationScheme);
 
         return Results.Redirect("/");
+    }
+
+    private static IResult HandleProfileDownload(string profileId, SaveServer saveServer, JsonUtil jsonUtil)
+    {
+        if (!MongoId.IsValidMongoId(profileId))
+        {
+            return Results.BadRequest("Invalid profile id.");
+        }
+
+        var sessionId = new MongoId(profileId);
+        if (!saveServer.ProfileExists(sessionId))
+        {
+            return Results.NotFound("Profile not found.");
+        }
+
+        var profile = saveServer.GetProfile(sessionId);
+        var json = jsonUtil.Serialize(profile, indented: true) ?? "{}";
+
+        return Results.File(Encoding.UTF8.GetBytes(json), "application/json; charset=utf-8", $"{profileId}.json");
     }
 
     private static string GetCurrentRequestUrl(HttpRequest request)

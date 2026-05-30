@@ -124,7 +124,7 @@ public partial class DatabasePage
         var failConditions = GetConditionCount(quest.Conditions?.Fail);
         var rewardCount = GetRewardCount(quest.Rewards);
         var propertiesJson = jsonUtil.Serialize(quest, indented: true) ?? "{}";
-        var properties = BuildProperties(propertiesJson);
+        var properties = SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson);
 
         var values = new Dictionary<string, string>
         {
