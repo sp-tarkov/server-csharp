@@ -107,7 +107,7 @@ public static class Program
         var modLoader = ModLoader.Create(loggerFactory, configuration);
         if (modLoader != null)
         {
-            var runResult = await modLoader.RunModLoader(args);
+            var runResult = await modLoader.RunModLoader(loggerFactory, args);
             if (!runResult.ShouldStartServer)
             {
                 return;

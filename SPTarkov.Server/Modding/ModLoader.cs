@@ -68,7 +68,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     ///     Initializes the mod loader container, and runs the entire mod loader process
     /// </summary>
     /// <returns>Active runtime mods</returns>
-    public async Task<ModLoaderRunResult> RunModLoader(string[] args)
+    public async Task<ModLoaderRunResult> RunModLoader(SptEarlyLoggerFactory loggerFactory, string[] args)
     {
         // Clean the console a bit
         var isPrepatchedProcess = args.Contains(PrepatchedArg, StringComparer.OrdinalIgnoreCase);
@@ -85,7 +85,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         {
             if (await ApplyPrepatches(loadedMods))
             {
-                await StartPrepatchedServerProcess(args);
+                await StartPrepatchedServerProcess(loggerFactory, args);
                 return new ModLoaderRunResult(false, loadedMods);
             }
         }
@@ -209,7 +209,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     /// <summary>
     ///     Starts the patched server as a new process. This one is destroyed in release and held open in debug so IDE's don't die.
     /// </summary>
-    private async Task StartPrepatchedServerProcess(string[] args)
+    private async Task StartPrepatchedServerProcess(SptEarlyLoggerFactory loggerFactory, string[] args)
     {
         var sourceDirectory = AppContext.BaseDirectory;
         var stageDirectory = Path.GetFullPath(PrepatchStagePath);
@@ -236,7 +236,11 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         // Needed for IDE development so the console doesn't just cease to exist when the process relaunches,
         // in a normal environment it just reattaches to the old console, but this behavior doesn't work in Rider/VS
 #if DEBUG
+        // Dispose of logging, we dont need to keep it alive anymore for this program
+        loggerFactory.Provider.Dispose();
+        loggerFactory.Dispose();
         await prepatchedProcess.WaitForExitAsync();
+
         Environment.ExitCode = prepatchedProcess.ExitCode;
 #endif
     }

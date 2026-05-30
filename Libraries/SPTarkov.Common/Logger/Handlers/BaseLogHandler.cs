@@ -16,13 +16,13 @@ public abstract class BaseLogHandler : ILogHandler
         var formattedMessage = string.Format(
             null,
             format,
-            Markup.Escape(message.LogTime.ToString("yyyy-MM-dd")),
-            Markup.Escape(message.LogTime.ToString("HH:mm:ss.fff")),
-            processedMessage,
-            Markup.Escape(GetLoggerShortName(message.Logger)),
-            Markup.Escape(message.Logger),
-            Markup.Escape(message.threadId.ToString()),
-            Markup.Escape(message.threadName ?? string.Empty),
+            EscapeOrEmpty(message.LogTime.ToString("yyyy-MM-dd")),
+            EscapeOrEmpty(message.LogTime.ToString("HH:mm:ss.fff")),
+            processedMessage ?? string.Empty,
+            EscapeOrEmpty(GetLoggerShortName(message.Logger)),
+            EscapeOrEmpty(message.Logger),
+            EscapeOrEmpty(message.threadId.ToString()),
+            EscapeOrEmpty(message.threadName),
             message.LogLevel.ToString()
         );
 
@@ -31,13 +31,23 @@ public abstract class BaseLogHandler : ILogHandler
             return string.Concat(
                 formattedMessage,
                 "\n",
-                Markup.Escape(message.Exception.Message),
+                EscapeOrEmpty(message.Exception.Message),
                 "\n",
-                Markup.Escape(message.Exception.StackTrace)
+                EscapeOrEmpty(message.Exception.StackTrace)
             );
         }
 
         return formattedMessage;
+    }
+
+    private static string EscapeOrEmpty(string? text)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return string.Empty;
+        }
+
+        return Markup.Escape(text);
     }
 
     protected string GetLoggerShortName(string logger)
