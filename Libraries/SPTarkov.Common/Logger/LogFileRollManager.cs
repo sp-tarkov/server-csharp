@@ -41,12 +41,12 @@ internal sealed class LogFileRollMonitor : IAsyncDisposable
         _cleanupCancellationTokenSource = new CancellationTokenSource();
 
         _cleanupTask = Task.Factory.StartNew(
-            async () => await CleanupWorker(_cleanupCancellationTokenSource.Token).ConfigureAwait(false),
+            async () => await CleanupWorkerAsync(_cleanupCancellationTokenSource.Token).ConfigureAwait(false),
             TaskCreationOptions.LongRunning
         );
     }
 
-    private async Task CleanupWorker(CancellationToken cancellationToken)
+    private async Task CleanupWorkerAsync(CancellationToken cancellationToken)
     {
         using var timer = new PeriodicTimer(_cleanupInterval);
 

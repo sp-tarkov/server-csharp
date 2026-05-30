@@ -15,10 +15,10 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(TypePriority = int.MaxValue)]
 internal sealed class ReleaseCheckService(ISptLogger<ReleaseCheckService> logger, IHttpClientFactory httpClientFactory) : IOnLoad
 {
-    public Task OnLoad(CancellationToken stoppingToken)
+    public Task OnLoad(CancellationToken cancellationToken)
     {
         // Run in a new task so we don't hold the main thread at all, this isn't super critical
-        _ = Task.Run(CheckForUpdate, stoppingToken);
+        _ = Task.Run(CheckForUpdate, cancellationToken);
 
         return Task.CompletedTask;
     }

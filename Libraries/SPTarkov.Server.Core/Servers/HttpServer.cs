@@ -15,7 +15,7 @@ public sealed class HttpServer(
     IEnumerable<IHttpListener> httpListeners
 )
 {
-    public async Task HandleRequest(HttpContext context, RequestDelegate next)
+    public async Task HandleRequestAsync(HttpContext context, RequestDelegate next, CancellationToken cancellationToken = default)
     {
         if (context.WebSockets.IsWebSocketRequest && webSocketServer.CanHandle(context))
         {
@@ -37,7 +37,7 @@ public sealed class HttpServer(
 
         if (listener != null)
         {
-            await listener.Handle(sessionId, context);
+            await listener.HandleAsync(sessionId, context, cancellationToken);
         }
         else
         {

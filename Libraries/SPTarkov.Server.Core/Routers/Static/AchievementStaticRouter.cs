@@ -14,11 +14,11 @@ public class AchievementStaticRouter(JsonUtil jsonUtil, AchievementCallbacks ach
         [
             new RouteAction<GetAchievementListRequest>(
                 "/client/achievement/list",
-                async (url, info, sessionID, output) => await achievementCallbacks.GetAchievements(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await achievementCallbacks.GetAchievements(url, info, sessionID)
             ),
             new RouteAction<EmptyRequestData>(
                 "/client/achievement/statistic",
-                async (url, info, sessionID, output) => await achievementCallbacks.Statistic(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await achievementCallbacks.Statistic(url, info, sessionID)
             ),
         ]
     ) { }

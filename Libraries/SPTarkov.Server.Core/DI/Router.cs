@@ -65,7 +65,13 @@ public abstract class Router
 
 public abstract class StaticRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> routes) : Router
 {
-    public async ValueTask<object> HandleStatic(string url, string? body, MongoId sessionId, string output)
+    public async ValueTask<object> HandleStaticAsync(
+        string url,
+        string? body,
+        MongoId sessionId,
+        string output,
+        CancellationToken cancellationToken = default
+    )
     {
         var action = routes.Single(route => route.url == url);
         var type = action.bodyType;
@@ -77,7 +83,7 @@ public abstract class StaticRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> r
 
         info ??= new EmptyRequestData();
         TriggerOnBeforeAction(new StaticDynamicOnBeforeEventRequestData(url, info, sessionId, output));
-        var result = await action.action(url, info, sessionId, output);
+        var result = await action.action(url, info, sessionId, output, cancellationToken);
         TriggerOnAfterAction(new StaticDynamicOnAfterEventRequestData(url, info, sessionId, output, result));
         return result;
     }
@@ -90,7 +96,13 @@ public abstract class StaticRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> r
 
 public abstract class DynamicRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> routes) : Router
 {
-    public async ValueTask<object> HandleDynamic(string url, string? body, MongoId sessionId, string output)
+    public async ValueTask<object> HandleDynamicAsync(
+        string url,
+        string? body,
+        MongoId sessionId,
+        string output,
+        CancellationToken cancellationToken = default
+    )
     {
         var action = routes.First(r => url.Contains(r.url));
         var type = action.bodyType;
@@ -102,7 +114,7 @@ public abstract class DynamicRouter(JsonUtil jsonUtil, IEnumerable<RouteAction> 
 
         info ??= new EmptyRequestData();
         TriggerOnBeforeAction(new StaticDynamicOnBeforeEventRequestData(url, info, sessionId, output));
-        var result = await action.action(url, info, sessionId, output);
+        var result = await action.action(url, info, sessionId, output, cancellationToken);
         TriggerOnAfterAction(new StaticDynamicOnAfterEventRequestData(url, info, sessionId, output, result));
         return result;
     }
@@ -179,8 +191,50 @@ public abstract class SaveLoadRouter : Router
 
 public record HandledRoute(string route, bool dynamic);
 
-public record RouteAction(string url, Func<string, IRequestData, MongoId, string?, ValueTask<object>> action, Type? bodyType = null);
+/// <summary>
+/// Describes a route and the action that should be executed when the route is invoked.
+/// </summary>
+/// <param name="url">
+/// The route URL or route pattern associated with the action.
+/// </param>
+/// <param name="action">
+/// The action to execute for the route.
+/// The parameters are, in order: the route URL, the request data, the session ID,
+/// an optional output value, and a cancellation token sourced from
+/// <c>HttpContext.RequestAborted</c>.
+/// </param>
+/// <param name="bodyType">
+/// The expected request body type for the route, or <see langword="null"/> when
+/// the route does not declare a specific body type.
+/// </param>
+public record RouteAction(
+    string url,
+    Func<string, IRequestData, MongoId, string?, CancellationToken, ValueTask<object>> action,
+    Type? bodyType = null
+);
 
-public record RouteAction<TRequest>(string url, Func<string, TRequest, MongoId, string?, ValueTask<string>> typedAction)
-    : RouteAction(url, async (url, info, sessionId, output) => await typedAction(url, (TRequest)info, sessionId, output), typeof(TRequest))
-    where TRequest : class;
+/// <summary>
+/// Describes a route and a strongly typed action that should be executed when the route is invoked.
+/// </summary>
+/// <typeparam name="TRequest">
+/// The strongly typed request body type expected by the route.
+/// </typeparam>
+/// <param name="url">
+/// The route URL or route pattern associated with the action.
+/// </param>
+/// <param name="typedAction">
+/// The strongly typed action to execute for the route.
+/// The parameters are, in order: the route URL, the typed request data, the session ID,
+/// an optional output value, and a cancellation token sourced from
+/// <c>HttpContext.RequestAborted</c>.
+/// </param>
+public record RouteAction<TRequest>(string url, Func<string, TRequest, MongoId, string?, CancellationToken, ValueTask<string>> typedAction)
+    : RouteAction(
+        url,
+        async (url, info, sessionId, output, cancellationToken) =>
+        {
+            return await typedAction(url, (TRequest)info, sessionId, output, cancellationToken);
+        },
+        typeof(TRequest)
+    )
+    where TRequest : class, IRequestData;

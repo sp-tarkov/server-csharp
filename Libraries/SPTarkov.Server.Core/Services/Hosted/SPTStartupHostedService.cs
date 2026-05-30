@@ -26,7 +26,7 @@ public sealed class SPTStartupHostedService(
 {
     private readonly Dictionary<string, long> _onUpdateLastRun = [];
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -36,7 +36,7 @@ public sealed class SPTStartupHostedService(
                 {
                     if (File.Exists(Path.Join(Directory.GetCurrentDirectory(), mod.GetModPath(), "bundles.json")))
                     {
-                        await bundleLoader.LoadBundlesAsync(mod).ConfigureAwait(false);
+                        await bundleLoader.LoadBundlesAsync(mod, cancellationToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -81,7 +81,7 @@ public sealed class SPTStartupHostedService(
             logger.Info(serverLocalisationService.GetText("executing_startup_callbacks"));
             foreach (var onLoad in onLoadComponents)
             {
-                await onLoad.OnLoad(stoppingToken).ConfigureAwait(false);
+                await onLoad.OnLoad(cancellationToken).ConfigureAwait(false);
             }
 
             logger.Success(serverLocalisationService.GetText("started_webserver_success", httpServer.ListeningUrl()));
@@ -91,7 +91,7 @@ public sealed class SPTStartupHostedService(
 
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(5));
 
-            while (!stoppingToken.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 foreach (var updateable in onUpdateComponents)
                 {
@@ -106,10 +106,14 @@ public sealed class SPTStartupHostedService(
 
                     try
                     {
-                        if (await updateable.OnUpdate(stoppingToken, secondsSinceLastRun).ConfigureAwait(false))
+                        if (await updateable.OnUpdate(secondsSinceLastRun, cancellationToken).ConfigureAwait(false))
                         {
                             _onUpdateLastRun[updateableName] = timeUtil.GetTimeStamp();
                         }
+                    }
+                    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                    {
+                        throw;
                     }
                     catch (Exception err)
                     {
@@ -117,7 +121,7 @@ public sealed class SPTStartupHostedService(
                     }
                 }
 
-                await timer.WaitForNextTickAsync(stoppingToken);
+                await timer.WaitForNextTickAsync(cancellationToken);
             }
         }
         catch (Exception ex)

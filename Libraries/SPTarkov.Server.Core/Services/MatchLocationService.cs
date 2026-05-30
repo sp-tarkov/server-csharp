@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Utils;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -32,7 +33,7 @@ public class MatchLocationService
         public List<string> Groups { get; set; }
     }
 
-    public class DeleteGroupRequest
+    public class DeleteGroupRequest : IRequestData
     {
         [JsonPropertyName("groupId")]
         public string GroupId { get; set; }

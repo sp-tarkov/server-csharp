@@ -5,5 +5,5 @@
 /// </summary>
 public interface IPreSptLoadModAsync
 {
-    Task PreSptLoadAsync(CancellationToken stoppingToken);
+    Task PreSptLoadAsync(CancellationToken cancellationToken);
 }

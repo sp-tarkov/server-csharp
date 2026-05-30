@@ -13,7 +13,7 @@ public class TraderStaticRouter(JsonUtil jsonUtil, TraderCallbacks traderCallbac
         [
             new RouteAction<EmptyRequestData>(
                 "/client/trading/api/traderSettings",
-                async (url, info, sessionID, output) => await traderCallbacks.GetTraderSettings(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await traderCallbacks.GetTraderSettings(url, info, sessionID)
             ),
         ]
     ) { }

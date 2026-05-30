@@ -21,7 +21,7 @@ public class BtrDeliveryCallbacks(
     SaveServer saveServer
 ) : IOnUpdate
 {
-    public Task<bool> OnUpdate(CancellationToken stoppingToken, long secondsSinceLastRun)
+    public Task<bool> OnUpdate(long secondsSinceLastRun, CancellationToken cancellationToken)
     {
         if (secondsSinceLastRun < btrDeliveryConfig.RunIntervalSeconds)
         {

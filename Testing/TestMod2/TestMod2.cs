@@ -29,7 +29,7 @@ public record TestMod2Metadata : AbstractModMetadata, IModWebMetadata
 [Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
 public class TestMod2(ISptLogger<TestMod2> logger) : IOnLoad
 {
-    public async Task OnLoad(CancellationToken stoppingToken)
+    public async Task OnLoad(CancellationToken cancellationToken)
     {
         logger.Info("Test mod 2 loading!");
 

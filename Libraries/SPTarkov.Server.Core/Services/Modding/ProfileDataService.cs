@@ -26,7 +26,7 @@ public sealed class ProfileDataService(FileUtil fileUtil, JsonUtil jsonUtil)
     /// </summary>
     /// <param name="profileId">The profile to look up</param>
     /// <returns>A dictionary containing all of the profile data</returns>
-    public async Task<Dictionary<string, object>> GetAllProfileData(MongoId profileId)
+    public async Task<Dictionary<string, object>> GetAllProfileDataAsync(MongoId profileId, CancellationToken cancellationToken = default)
     {
         var profileDataPath = Path.Combine(ProfileDataFilepath, profileId.ToString());
         var profileData = new Dictionary<string, object>();
@@ -60,7 +60,7 @@ public sealed class ProfileDataService(FileUtil fileUtil, JsonUtil jsonUtil)
                 continue;
             }
 
-            var deserializedData = await jsonUtil.DeserializeFromFileAsync<object>(filePath);
+            var deserializedData = await jsonUtil.DeserializeFromFileAsync<object>(filePath, cancellationToken);
 
             if (deserializedData == null)
             {
@@ -73,14 +73,17 @@ public sealed class ProfileDataService(FileUtil fileUtil, JsonUtil jsonUtil)
         return profileData;
     }
 
-    public async Task<T?> GetProfileData<T>(MongoId profileId, string modKey)
+    public async Task<T?> GetProfileDataAsync<T>(MongoId profileId, string modKey, CancellationToken cancellationToken = default)
     {
         var profileDataKey = GetCacheKey(profileId, modKey);
         if (!_profileDataCache.TryGetValue(profileDataKey, out var value))
         {
             if (ProfileDataExists(profileId, modKey))
             {
-                value = await jsonUtil.DeserializeFromFileAsync<T>(Path.Combine(ProfileDataFilepath, profileId, $"{modKey}.json"));
+                value = await jsonUtil.DeserializeFromFileAsync<T>(
+                    Path.Combine(ProfileDataFilepath, profileId, $"{modKey}.json"),
+                    cancellationToken
+                );
 
                 if (value != null)
                 {
@@ -96,7 +99,12 @@ public sealed class ProfileDataService(FileUtil fileUtil, JsonUtil jsonUtil)
         return (T?)value;
     }
 
-    public async Task SaveProfileData<T>(MongoId profileId, string modKey, T profileData)
+    public async Task SaveProfileDataAsync<T>(
+        MongoId profileId,
+        string modKey,
+        T profileData,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(profileData);
 
@@ -106,7 +114,7 @@ public sealed class ProfileDataService(FileUtil fileUtil, JsonUtil jsonUtil)
 
         _profileDataCache[GetCacheKey(profileId, modKey)] = profileData;
 
-        await fileUtil.WriteFileAsync(Path.Combine(ProfileDataFilepath, profileId, $"{modKey}.json"), data);
+        await fileUtil.WriteFileAsync(Path.Combine(ProfileDataFilepath, profileId, $"{modKey}.json"), data, cancellationToken);
     }
 
     /// <summary>

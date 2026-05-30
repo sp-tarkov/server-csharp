@@ -14,11 +14,11 @@ public class QuestStaticRouter(JsonUtil jsonUtil, QuestCallbacks questCallbacks)
         [
             new RouteAction<ListQuestsRequestData>(
                 "/client/quest/list",
-                async (url, info, sessionID, output) => await questCallbacks.ListQuests(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await questCallbacks.ListQuests(url, info, sessionID)
             ),
             new RouteAction<EmptyRequestData>(
                 "/client/repeatalbeQuests/activityPeriods",
-                async (url, info, sessionID, output) => await questCallbacks.ActivityPeriods(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await questCallbacks.ActivityPeriods(url, info, sessionID)
             ),
         ]
     ) { }

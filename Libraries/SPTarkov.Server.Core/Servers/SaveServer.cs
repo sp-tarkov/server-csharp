@@ -36,7 +36,7 @@ public sealed class SaveServer(
     /// <summary>
     ///     Load all profiles in /user/profiles folder into memory (this.profiles)
     /// </summary>
-    public async Task LoadAsync()
+    public async Task LoadAsync(CancellationToken cancellationToken = default)
     {
         // get files to load
         if (!fileUtil.DirectoryExists(profileFilepath))
@@ -54,7 +54,7 @@ public sealed class SaveServer(
             var filename = Path.GetFileNameWithoutExtension(file);
             if (MongoId.IsValidMongoId(filename))
             {
-                await LoadProfileAsync(fileUtil.StripExtension(file));
+                await LoadProfileAsync(fileUtil.StripExtension(file), cancellationToken);
             }
         }
 
@@ -68,13 +68,13 @@ public sealed class SaveServer(
     /// <summary>
     ///     Save changes for each profile from memory into user/profiles json
     /// </summary>
-    public async Task SaveAsync()
+    public async Task SaveAsync(CancellationToken cancellationToken = default)
     {
         // Save every profile
         var totalTime = 0L;
         foreach (var sessionID in profiles)
         {
-            totalTime += await SaveProfileAsync(sessionID.Key);
+            totalTime += await SaveProfileAsync(sessionID.Key, cancellationToken);
         }
 
         if (!profiles.IsEmpty && logger.IsLogEnabled(LogLevel.Debug))
@@ -184,7 +184,7 @@ public sealed class SaveServer(
     ///     Execute saveLoadRouters callbacks after being loaded into memory.
     /// </summary>
     /// <param name="sessionID"> ID of profile to store in memory </param>
-    public async Task LoadProfileAsync(MongoId sessionID)
+    public async Task LoadProfileAsync(MongoId sessionID, CancellationToken cancellationToken = default)
     {
         var filePath = Path.Combine(profileFilepath, $"{sessionID}.json");
         if (fileUtil.FileExists(filePath))
@@ -194,7 +194,7 @@ public sealed class SaveServer(
 
             try
             {
-                profile = await jsonUtil.DeserializeFromFileAsync<JsonObject>(filePath);
+                profile = await jsonUtil.DeserializeFromFileAsync<JsonObject>(filePath, cancellationToken);
             }
             catch (JsonException e)
             {
@@ -207,7 +207,7 @@ public sealed class SaveServer(
 
                 if (backupService.RestoreProfile(sessionID))
                 {
-                    profile = await jsonUtil.DeserializeFromFileAsync<JsonObject>(filePath);
+                    profile = await jsonUtil.DeserializeFromFileAsync<JsonObject>(filePath, cancellationToken);
                     logger.Success("Profile restored from backup!");
                 }
                 else
@@ -249,7 +249,7 @@ public sealed class SaveServer(
     /// </summary>
     /// <param name="sessionID"> Profile id (user/profiles/id.json) </param>
     /// <returns> Time taken to save the profile in seconds </returns>
-    public async Task<long> SaveProfileAsync(MongoId sessionID)
+    public async Task<long> SaveProfileAsync(MongoId sessionID, CancellationToken cancellationToken = default)
     {
         // No need to save profiles that have been marked as invalid
         if (IsProfileInvalidOrUnloadable(sessionID))
@@ -259,8 +259,8 @@ public sealed class SaveServer(
 
         // Lock based on sessionID so we don't attempt to write to the same save file
         // multiple times at the same time, leading to file access contention
-        SemaphoreSlim saveLock = saveLocks.GetOrAdd(sessionID, _ => new SemaphoreSlim(1, 1));
-        await saveLock.WaitAsync();
+        var saveLock = saveLocks.GetOrAdd(sessionID, _ => new SemaphoreSlim(1, 1));
+        await saveLock.WaitAsync(cancellationToken);
 
         Stopwatch start;
         try
@@ -271,12 +271,12 @@ public sealed class SaveServer(
             var jsonProfile =
                 jsonUtil.Serialize(profiles[sessionID], !coreConfig.Features.CompressProfile)
                 ?? throw new InvalidOperationException("Could not serialize profile for saving!");
-            var fmd5 = await hashUtil.GenerateHashForDataAsync(HashingAlgorithm.MD5, jsonProfile);
+            var fmd5 = await hashUtil.GenerateHashForDataAsync(HashingAlgorithm.MD5, jsonProfile, cancellationToken);
             if (!saveMd5.TryGetValue(sessionID, out var currentMd5) || currentMd5 != fmd5)
             {
                 saveMd5[sessionID] = fmd5;
                 // save profile to disk
-                await fileUtil.WriteFileAsync(filePath, jsonProfile);
+                await fileUtil.WriteFileAsync(filePath, jsonProfile, cancellationToken);
             }
 
             start.Stop();

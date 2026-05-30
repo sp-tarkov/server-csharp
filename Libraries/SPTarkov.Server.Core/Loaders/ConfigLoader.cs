@@ -76,7 +76,7 @@ public static class ConfigLoader
                 {
                     await using FileStream fs = new(file, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: true);
 
-                    deserializedContent = await JsonSerializer.DeserializeAsync(fs, configType, options: options);
+                    deserializedContent = await JsonSerializer.DeserializeAsync(fs, configType, options);
                 }
             }
             catch (JsonException)

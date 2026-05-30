@@ -9,14 +9,14 @@ namespace SPTarkov.Server.Core.Loaders;
 [Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.PreSptModLoader)]
 public sealed class PreSptModLoader(ISptLogger<PreSptModLoader> logger, IEnumerable<IPreSptLoadModAsync> preSptLoadMods) : IOnLoad
 {
-    public async Task OnLoad(CancellationToken stoppingToken)
+    public async Task OnLoad(CancellationToken cancellationToken)
     {
         if (ProgramStatics.MODS())
         {
             logger.Info("Loading PreSptMods...");
             foreach (var postSptLoadMod in preSptLoadMods)
             {
-                await postSptLoadMod.PreSptLoadAsync(stoppingToken);
+                await postSptLoadMod.PreSptLoadAsync(cancellationToken);
             }
 
             logger.Info("Finished loading PreSptMods...");

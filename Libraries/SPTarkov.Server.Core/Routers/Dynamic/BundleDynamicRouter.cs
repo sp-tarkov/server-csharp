@@ -13,7 +13,7 @@ public class BundleDynamicRouter(JsonUtil jsonUtil, BundleCallbacks bundleCallba
         [
             new RouteAction<EmptyRequestData>(
                 "/files/bundle",
-                async (url, info, sessionID, output) => await bundleCallbacks.GetBundle(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await bundleCallbacks.GetBundle(url, info, sessionID)
             ),
         ]
     ) { }
