@@ -1,4 +1,4 @@
-namespace SPTarkov.Server.Modding;
+namespace SPTarkov.Server.Exceptions;
 
 public sealed class ModLoaderException : Exception
 {

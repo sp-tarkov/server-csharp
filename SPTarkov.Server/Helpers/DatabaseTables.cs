@@ -8,7 +8,7 @@ using SPTarkov.Server.Core.Models.Spt.Templates;
 
 namespace SPTarkov.Server.Helpers;
 
-public record DatabaseTables
+public sealed record DatabaseTables
 {
     public required BotTable Bots { get; init; }
 

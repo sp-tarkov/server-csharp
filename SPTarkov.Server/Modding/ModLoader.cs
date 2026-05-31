@@ -7,6 +7,7 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Exceptions;
 
 namespace SPTarkov.Server.Modding;
 

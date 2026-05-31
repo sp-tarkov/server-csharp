@@ -2,22 +2,21 @@ using System.Net;
 using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Text;
-using HarmonyLib.Tools;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using SPTarkov.Common.Extensions;
 using SPTarkov.Common.Logger;
 using SPTarkov.DI;
 using SPTarkov.Reflection.Patching;
-using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Loaders;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Hosted;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Exceptions;
+using SPTarkov.Server.Extensions;
 using SPTarkov.Server.Helpers;
 using SPTarkov.Server.Middleware;
 using SPTarkov.Server.Modding;
@@ -50,11 +49,61 @@ public static class Program
 
             await StartServer(loggerFactory, args);
         }
-        catch (SocketException)
+        catch (WebServerPortUnavailableException ex)
         {
-            _earlyLogger!.LogCritical("You have multiple servers running or another process using port 6969");
-            _earlyLogger!.LogInformation("Press any key to exit...");
-            Console.ReadLine();
+            if (_earlyLogger is not null)
+            {
+                if (_earlyLogger.IsEnabled(LogLevel.Critical))
+                {
+                    _earlyLogger.LogCritical(
+                        "Failed to start the web server on {Ip}:{Port}. Socket error: {SocketErrorCode} ({NativeErrorCode}).",
+                        ex.Ip,
+                        ex.Port,
+                        ex.SocketErrorCode,
+                        ex.NativeErrorCode
+                    );
+                }
+
+                if (_earlyLogger.IsEnabled(LogLevel.Error))
+                {
+                    switch (ex.SocketErrorCode)
+                    {
+                        case SocketError.AddressAlreadyInUse:
+                            _earlyLogger.LogError(
+                                "Another SPT server may already be running, or another process is using port {Port}.",
+                                ex.Port
+                            );
+
+                            _earlyLogger.LogError(
+                                "Close the other process, or change the server port in your HTTP configuration, then restart SPT."
+                            );
+
+                            break;
+
+                        case SocketError.AddressNotAvailable:
+                            _earlyLogger.LogError("The configured IP address {Ip} is not available on this machine.", ex.Ip);
+
+                            _earlyLogger.LogError("Check your HTTP configuration and use a local IP address that exists on this system.");
+
+                            break;
+
+                        case SocketError.AccessDenied:
+                            _earlyLogger.LogError("The server does not have permission to bind to {Ip}:{Port}.", ex.Ip, ex.Port);
+
+                            _earlyLogger.LogError("Try running SPT as administrator, or use a different IP address and port.");
+
+                            break;
+
+                        default:
+                            _earlyLogger.LogError("The web server could not bind to the configured endpoint {Ip}:{Port}.", ex.Ip, ex.Port);
+
+                            break;
+                    }
+                }
+            }
+
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey(true);
         }
         catch (Exception e)
         {
@@ -190,11 +239,11 @@ public static class Program
         forwardedHeadersOptions.KnownProxies.Clear();
         app.UseForwardedHeaders(forwardedHeadersOptions);
 
-        await RunPreSptLoadCallbacks(app.Services);
+        await app.Services.RunPreSptLoadCallbacks(_earlyLogger!);
 
         var httpConfig = app.Services.GetRequiredService<HttpConfig>();
 
-        VerifyWebServerPortAvailable(httpConfig);
+        httpConfig.VerifyWebServerPortAvailable();
 
         await app.RunAsync($"https://{httpConfig.Ip}:{httpConfig.Port}");
     }
@@ -210,8 +259,6 @@ public static class Program
         );
 
         app.UseMiddleware<SptLoggerMiddleware>();
-
-        app.UseNoGCRegions();
 
         app.Use(
             async (context, next) =>
@@ -236,57 +283,6 @@ public static class Program
                 });
             }
         );
-    }
-
-    private static void VerifyWebServerPortAvailable(HttpConfig httpConfig)
-    {
-        // Probe the http ip and port to see if its being used, this method will throw an exception and crash
-        // the server if the IP/Port combination is already in use
-        TcpListener? listener = null;
-
-        try
-        {
-            listener = new TcpListener(IPAddress.Parse(httpConfig.Ip), httpConfig.Port);
-            listener.Start();
-        }
-        finally
-        {
-            listener?.Stop();
-        }
-    }
-
-    private static async Task RunPreSptLoadCallbacks(IServiceProvider serviceProvider)
-    {
-        // This is necessary here so that mods can modify SPT configs pre-emptively before we startup the container
-        // It will make HttpConfig modifiable for mods like Fika
-        var injectableTypes = serviceProvider.GetRequiredService<IReadOnlyList<DependencyInjectionContainer>>();
-        var cancellationToken = serviceProvider.GetRequiredService<IHostApplicationLifetime>().ApplicationStopping;
-
-        var preSptLoadTypes = injectableTypes
-            .Where(container => container.Type == typeof(IOnLoad))
-            .Where(container => container.InjectableAttribute.TypePriority >= OnLoadOrder.Watermark)
-            .Where(container => container.InjectableAttribute.TypePriority < OnLoadOrder.GameCallbacks)
-            .OrderBy(container => container.InjectableAttribute.TypePriority);
-
-        if (_earlyLogger!.IsEnabled(LogLevel.Information))
-        {
-            var executingCallbacksLog = serviceProvider
-                .GetRequiredService<ServerLocalisationService>()
-                .GetText("executing_startup_callbacks");
-            _earlyLogger.LogInformation("{Message}", executingCallbacksLog);
-        }
-
-        foreach (var preSptLoadType in preSptLoadTypes)
-        {
-            var onLoadService = serviceProvider.GetRequiredService(preSptLoadType.ParentType);
-
-            if (onLoadService is not IOnLoad onLoad)
-            {
-                continue;
-            }
-
-            await onLoad.OnLoad(cancellationToken).ConfigureAwait(false);
-        }
     }
 
     private static bool IsRunFromInstallationFolder()

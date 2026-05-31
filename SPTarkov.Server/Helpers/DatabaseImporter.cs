@@ -8,7 +8,7 @@ using Path = System.IO.Path;
 
 namespace SPTarkov.Server.Helpers;
 
-public class DatabaseImporter(
+public sealed class DatabaseImporter(
     ISptLogger<DatabaseImporter> logger,
     ServerLocalisationService serverLocalisationService,
     ImporterUtil importerUtil,

@@ -42,62 +42,6 @@ public record CoreConfig : BaseConfig
     [JsonPropertyName("features")]
     public required ServerFeatures Features { get; set; }
 
-    [JsonPropertyName("enableNoGCRegions")]
-    // ReSharper disable once InconsistentNaming
-    public required bool EnableNoGCRegions { get; set; }
-
-    // ReSharper disable once InconsistentNaming
-    private int _noGCRegionMaxMemoryGB = 4;
-
-    [JsonPropertyName("noGCRegionMaxMemoryGB")]
-    // ReSharper disable once InconsistentNaming
-    public required int NoGCRegionMaxMemoryGB
-    {
-        get => _noGCRegionMaxMemoryGB;
-        set
-        {
-            if (value <= 0)
-            {
-                throw new ArgumentOutOfRangeException(
-                    $"Invalid value: {nameof(NoGCRegionMaxMemoryGB)}: {value}. Must be greater than zero."
-                );
-            }
-            _noGCRegionMaxMemoryGB = value;
-        }
-    }
-
-    // ReSharper disable once InconsistentNaming
-    private int _noGCRegionMaxLOHMemoryGB = 3;
-
-    [JsonPropertyName("noGCRegionMaxLOHMemoryGB")]
-    // ReSharper disable once InconsistentNaming
-    public required int NoGCRegionMaxLOHMemoryGB
-    {
-        get => _noGCRegionMaxLOHMemoryGB;
-        set
-        {
-            if (value <= 0)
-            {
-                throw new ArgumentOutOfRangeException(
-                    $"Invalid value {nameof(NoGCRegionMaxLOHMemoryGB)}: {value}. Must be greater than zero."
-                );
-            }
-            _noGCRegionMaxLOHMemoryGB = value;
-        }
-    }
-
-    /// <summary>
-    ///     Commit hash build server was created from
-    /// </summary>
-    [JsonPropertyName("commit")]
-    public string? Commit { get; set; }
-
-    /// <summary>
-    ///     Timestamp of server build
-    /// </summary>
-    [JsonPropertyName("buildTime")]
-    public string? BuildTime { get; set; }
-
     /// <summary>
     ///     Timestamp of server start up
     /// </summary>
