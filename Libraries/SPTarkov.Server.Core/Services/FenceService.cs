@@ -10,6 +10,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Fence;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 
@@ -19,7 +20,7 @@ namespace SPTarkov.Server.Core.Services;
 public class FenceService(
     ISptLogger<FenceService> logger,
     GlobalTable globalTable,
-    TraderTable traderTable,
+    TradersTable traderTable,
     TimeUtil timeUtil,
     RandomUtil randomUtil,
     HandbookHelper handbookHelper,

@@ -4,11 +4,11 @@ using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Game;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 
@@ -17,7 +17,7 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class TraderController(
     ISptLogger<TraderController> logger,
-    TraderTable traderTable,
+    TradersTable traderTable,
     TimeUtil timeUtil,
     TraderAssortHelper traderAssortHelper,
     ProfileHelper profileHelper,

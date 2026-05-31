@@ -10,6 +10,7 @@ using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -21,7 +22,7 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class TradeController(
     ISptLogger<TradeController> logger,
-    TraderTable traderTable,
+    TradersTable traderTable,
     EventOutputHolder eventOutputHolder,
     TradeHelper tradeHelper,
     TimeUtil timeUtil,

@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
-namespace SPTarkov.Server.Core.Models.Spt.Server;
+namespace SPTarkov.Server.Core.Models.Spt.Tables;
 
 public record LocationTable
 {

@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Utils.Json;
 
-namespace SPTarkov.Server.Core.Models.Spt.Server;
+namespace SPTarkov.Server.Core.Models.Spt.Tables;
 
 public record LocaleTable
 {

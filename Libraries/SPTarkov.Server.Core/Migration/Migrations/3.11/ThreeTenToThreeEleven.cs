@@ -2,11 +2,10 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
-using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Spt.Templates;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services;
 using Range = SemanticVersioning.Range;
 
@@ -14,7 +13,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations._3._11;
 
 [Injectable]
 public sealed class ThreeTenToThreeEleven(
-    TraderTable traderTable,
+    TradersTable traderTable,
     TemplateTable templateTable,
     // Yes, referencing the helpers directly causes a circular dependency. Too bad!
     IServiceProvider serviceProvider

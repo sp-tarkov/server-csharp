@@ -1,10 +1,4 @@
-using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Server.Core.Models.Eft.Common;
-using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Models.Spt.Bots;
-using SPTarkov.Server.Core.Models.Spt.Hideout;
-using SPTarkov.Server.Core.Models.Spt.Server;
-using SPTarkov.Server.Core.Models.Spt.Templates;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 
 namespace SPTarkov.Server.Helpers;
 
@@ -22,8 +16,7 @@ public sealed record DatabaseTables
 
     public required TemplateTable Templates { get; init; }
 
-    // TODO: Use TraderTable Alias
-    public required Dictionary<MongoId, Trader> Traders { get; init; }
+    public required TradersTable Traders { get; init; }
 
     public required GlobalTable Globals { get; init; }
 

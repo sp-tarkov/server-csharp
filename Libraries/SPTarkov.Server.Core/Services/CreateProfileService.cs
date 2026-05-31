@@ -10,7 +10,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Spt.Templates;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
@@ -22,7 +22,7 @@ namespace SPTarkov.Server.Core.Services;
 public class CreateProfileService(
     ISptLogger<CreateProfileService> logger,
     TemplateTable templateTable,
-    TraderTable traderTable,
+    TradersTable traderTable,
     TimeUtil timeUtil,
     ServerLocalisationService serverLocalisationService,
     ProfileHelper profileHelper,

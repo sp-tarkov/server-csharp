@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
 
-namespace SPTarkov.Server.Core.Models.Spt.Hideout;
+namespace SPTarkov.Server.Core.Models.Spt.Tables;
 
 public record HideoutTable
 {

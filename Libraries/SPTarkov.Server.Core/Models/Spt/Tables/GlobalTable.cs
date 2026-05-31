@@ -1,15 +1,16 @@
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Enums;
 
-namespace SPTarkov.Server.Core.Models.Eft.Common;
+namespace SPTarkov.Server.Core.Models.Spt.Tables;
 
 public record GlobalTable
 {
     [JsonPropertyName("config")]
-    public required Config Configuration { get; init; }
+    public required GlobalConfig Configuration { get; init; }
 
     [JsonPropertyName("LocationInfection")]
     public required Dictionary<string, int> LocationInfection { get; init; }
@@ -23,6 +24,8 @@ public record GlobalTable
     [JsonPropertyName("ItemPresets")]
     public required Dictionary<MongoId, Preset> ItemPresets { get; init; }
 }
+
+//Todo: Most of this stuff needs moved out of this and into a globals namespace or something
 
 public record PlayerSettings
 {
@@ -273,7 +276,7 @@ public record ProjectileExplosionParams
     public double DeadlyDistance { get; set; }
 }
 
-public record Config
+public record GlobalConfig
 {
     [JsonPropertyName("ArtilleryShelling")]
     public ArtilleryShelling ArtilleryShelling { get; set; }

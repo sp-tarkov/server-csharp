@@ -8,11 +8,10 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Spt.Server;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Utils;
-using Config = SPTarkov.Server.Core.Models.Eft.Common.Config;
+using GlobalConfig = SPTarkov.Server.Core.Models.Spt.Tables.GlobalConfig;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -383,7 +382,7 @@ public class SeasonalEventService(
     /// </summary>
     /// <param name="globalConfig">globals.json</param>
     /// <param name="eventType">Name of the event to enable. e.g. Christmas</param>
-    protected void UpdateGlobalEvents(Config globalConfig, SeasonalEvent eventType)
+    protected void UpdateGlobalEvents(GlobalConfig globalConfig, SeasonalEvent eventType)
     {
         logger.Success(serverLocalisationService.GetText("season-event_is_active", eventType.Type));
         _christmasEventActive = false;
@@ -433,7 +432,7 @@ public class SeasonalEventService(
         }
     }
 
-    protected void ApplyHalloweenEvent(SeasonalEvent eventType, Config globalConfig)
+    protected void ApplyHalloweenEvent(SeasonalEvent eventType, GlobalConfig globalConfig)
     {
         _halloweenEventActive = true;
 
@@ -488,7 +487,7 @@ public class SeasonalEventService(
         AddEventBossesToMaps("halloweennightcult");
     }
 
-    protected void ApplyChristmasEvent(SeasonalEvent eventType, Config globalConfig)
+    protected void ApplyChristmasEvent(SeasonalEvent eventType, GlobalConfig globalConfig)
     {
         _christmasEventActive = true;
 
@@ -599,7 +598,7 @@ public class SeasonalEventService(
         }
     }
 
-    protected void ApplyNewYearsEvent(SeasonalEvent eventType, Config globalConfig)
+    protected void ApplyNewYearsEvent(SeasonalEvent eventType, GlobalConfig globalConfig)
     {
         _christmasEventActive = true;
 
@@ -1232,7 +1231,7 @@ public class SeasonalEventService(
         }
     }
 
-    protected void HandleModEvent(SeasonalEvent seasonalEvent, Config globalConfig)
+    protected void HandleModEvent(SeasonalEvent seasonalEvent, GlobalConfig globalConfig)
     {
         if (seasonalEvent.Settings?.EnableChristmasHideout ?? false)
         {

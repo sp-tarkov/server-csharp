@@ -1,15 +1,14 @@
 using System.Text.Json.Serialization;
-using SPTarkov.Server.Core.Models.Eft.Common;
 
-namespace SPTarkov.Server.Core.Models.Spt.Server;
+namespace SPTarkov.Server.Core.Models.Spt.Tables;
 
 public record SettingsTable
 {
     [JsonPropertyName("config")]
-    public required Config Configuration { get; init; }
+    public required Settings Configuration { get; init; }
 }
 
-public record Config
+public record Settings
 {
     [JsonPropertyName("AFKTimeoutSeconds")]
     public int AFKTimeoutSeconds { get; set; }

@@ -1,7 +1,8 @@
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Spt.Bots;
 
-namespace SPTarkov.Server.Core.Models.Spt.Bots;
+namespace SPTarkov.Server.Core.Models.Spt.Tables;
 
 public record BotTable
 {

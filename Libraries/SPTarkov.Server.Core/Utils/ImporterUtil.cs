@@ -257,35 +257,53 @@ public sealed class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileU
 
     public MethodInfo GetSetMethod(string propertyName, Type type, out Type propertyType, out bool isDictionary)
     {
-        MethodInfo setMethod;
+        MethodInfo? setMethod;
         isDictionary = false;
 
-        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+        if (TryGetDictionaryValueType(type, out var dictionaryValueType))
         {
-            propertyType = type.GetGenericArguments()[1];
-            setMethod = type.GetMethod("Add");
+            propertyType = dictionaryValueType;
+            setMethod = type.GetMethod("Add") ?? throw new Exception($"Unable to find Add method for dictionary type '{type.Name}'");
             isDictionary = true;
         }
         else
         {
-            var matchedProperty = type.GetProperties()
-                .FirstOrDefault(prop =>
-                    string.Equals(
-                        prop.Name.ToLowerInvariant(),
-                        fileUtil.StripExtension(propertyName).ToLowerInvariant(),
-                        StringComparison.Ordinal
+            var strippedPropertyName = fileUtil.StripExtension(propertyName);
+
+            var matchedProperty =
+                type.GetProperties()
+                    .FirstOrDefault(prop =>
+                        string.Equals(prop.Name.ToLowerInvariant(), strippedPropertyName.ToLowerInvariant(), StringComparison.Ordinal)
                     )
-                );
-
-            if (matchedProperty == null)
-            {
-                throw new Exception($"Unable to find property '{fileUtil.StripExtension(propertyName)}' for type '{type.Name}'");
-            }
-
+                ?? throw new Exception($"Unable to find property '{strippedPropertyName}' for type '{type.Name}'");
             propertyType = matchedProperty.PropertyType;
-            setMethod = matchedProperty.GetSetMethod();
+            setMethod =
+                matchedProperty.GetSetMethod()
+                ?? throw new Exception($"Unable to find setter for property '{matchedProperty.Name}' on type '{type.Name}'");
         }
 
         return setMethod;
+    }
+
+    private static bool TryGetDictionaryValueType(Type type, out Type? valueType)
+    {
+        var currentType = type;
+
+        while (currentType is not null)
+        {
+            if (currentType.IsGenericType)
+            {
+                if (currentType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+                {
+                    valueType = currentType.GetGenericArguments()[1];
+                    return true;
+                }
+            }
+
+            currentType = currentType.BaseType;
+        }
+
+        valueType = null;
+        return false;
     }
 }
