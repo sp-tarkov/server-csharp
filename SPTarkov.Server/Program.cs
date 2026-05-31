@@ -190,36 +190,13 @@ public static class Program
         forwardedHeadersOptions.KnownProxies.Clear();
         app.UseForwardedHeaders(forwardedHeadersOptions);
 
-        // This is necessary here so that mods can modify SPT configs pre-emptively before we startup the container
-        // It will make HttpConfig modifiable for mods like Fika
-        var injectableTypes = app.Services.GetRequiredService<IReadOnlyList<DependencyInjectionContainer>>();
-        var applicationLifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
-        var cancellationToken = applicationLifetime.ApplicationStopping;
+        await RunPreSptLoadCallbacks(app.Services);
 
-        if (_earlyLogger!.IsEnabled(LogLevel.Information))
-        {
-            var executingCallbacksLog = app.Services.GetRequiredService<ServerLocalisationService>().GetText("executing_startup_callbacks");
-            _earlyLogger.LogInformation("{Message}", executingCallbacksLog);
-        }
+        var httpConfig = app.Services.GetRequiredService<HttpConfig>();
 
-        var preSptLoadTypes = injectableTypes
-            .Where(container => container.Type == typeof(IOnLoad))
-            .Where(container => container.InjectableAttribute.TypePriority >= OnLoadOrder.Watermark)
-            .Where(container => container.InjectableAttribute.TypePriority < OnLoadOrder.GameCallbacks);
+        VerifyWebServerPortAvailable(httpConfig);
 
-        foreach (var preSptLoadType in preSptLoadTypes)
-        {
-            var onLoadService = app.Services.GetRequiredService(preSptLoadType.ParentType);
-
-            if (onLoadService is not IOnLoad onLoad)
-            {
-                continue;
-            }
-
-            await onLoad.OnLoad(cancellationToken);
-        }
-
-        await app.RunAsync();
+        await app.RunAsync($"https://{httpConfig.Ip}:{httpConfig.Port}");
     }
 
     private static void ConfigureWebApp(WebApplication app)
@@ -249,37 +226,67 @@ public static class Program
         builder.WebHost.ConfigureKestrel(
             (_, options) =>
             {
-                var httpConfig = options.ApplicationServices.GetRequiredService<HttpConfig>();
-
-                // Probe the http ip and port to see if its being used, this method will throw an exception and crash
-                // the server if the IP/Port combination is already in use
-                TcpListener? listener = null;
-                try
-                {
-                    listener = new TcpListener(IPAddress.Parse(httpConfig.Ip), httpConfig.Port);
-                    listener.Start();
-                }
-                finally
-                {
-                    listener?.Stop();
-                }
-
                 var certHelper = options.ApplicationServices.GetRequiredService<CertificateHelper>();
-                options.Listen(
-                    IPAddress.Parse(httpConfig.Ip),
-                    httpConfig.Port,
-                    listenOptions =>
-                    {
-                        listenOptions.UseHttps(opts =>
-                        {
-                            opts.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
-                            opts.ServerCertificate = certHelper.LoadOrGenerateCertificate();
-                            opts.ClientCertificateMode = ClientCertificateMode.NoCertificate;
-                        });
-                    }
-                );
+
+                options.ConfigureHttpsDefaults(httpsOptions =>
+                {
+                    httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+                    httpsOptions.ServerCertificate = certHelper.LoadOrGenerateCertificate();
+                    httpsOptions.ClientCertificateMode = ClientCertificateMode.NoCertificate;
+                });
             }
         );
+    }
+
+    private static void VerifyWebServerPortAvailable(HttpConfig httpConfig)
+    {
+        // Probe the http ip and port to see if its being used, this method will throw an exception and crash
+        // the server if the IP/Port combination is already in use
+        TcpListener? listener = null;
+
+        try
+        {
+            listener = new TcpListener(IPAddress.Parse(httpConfig.Ip), httpConfig.Port);
+            listener.Start();
+        }
+        finally
+        {
+            listener?.Stop();
+        }
+    }
+
+    private static async Task RunPreSptLoadCallbacks(IServiceProvider serviceProvider)
+    {
+        // This is necessary here so that mods can modify SPT configs pre-emptively before we startup the container
+        // It will make HttpConfig modifiable for mods like Fika
+        var injectableTypes = serviceProvider.GetRequiredService<IReadOnlyList<DependencyInjectionContainer>>();
+        var cancellationToken = serviceProvider.GetRequiredService<IHostApplicationLifetime>().ApplicationStopping;
+
+        var preSptLoadTypes = injectableTypes
+            .Where(container => container.Type == typeof(IOnLoad))
+            .Where(container => container.InjectableAttribute.TypePriority >= OnLoadOrder.Watermark)
+            .Where(container => container.InjectableAttribute.TypePriority < OnLoadOrder.GameCallbacks)
+            .OrderBy(container => container.InjectableAttribute.TypePriority);
+
+        if (_earlyLogger!.IsEnabled(LogLevel.Information))
+        {
+            var executingCallbacksLog = serviceProvider
+                .GetRequiredService<ServerLocalisationService>()
+                .GetText("executing_startup_callbacks");
+            _earlyLogger.LogInformation("{Message}", executingCallbacksLog);
+        }
+
+        foreach (var preSptLoadType in preSptLoadTypes)
+        {
+            var onLoadService = serviceProvider.GetRequiredService(preSptLoadType.ParentType);
+
+            if (onLoadService is not IOnLoad onLoad)
+            {
+                continue;
+            }
+
+            await onLoad.OnLoad(cancellationToken).ConfigureAwait(false);
+        }
     }
 
     private static bool IsRunFromInstallationFolder()
