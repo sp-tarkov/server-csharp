@@ -3,12 +3,11 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Exceptions.Items;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Spt.Templates;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Core.Helpers;
@@ -16,7 +15,7 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class ProfileValidatorHelper(
     TemplateTable templateTable,
-    TraderTable traderTable,
+    TradersTable traderTable,
     CoreConfig coreConfig,
     ISptLogger<ProfileValidatorHelper> logger,
     ServerLocalisationService serverLocalisationService

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace SPTarkov.Server.Core.Models.Spt.Server;
+namespace SPTarkov.Server.Core.Models.Spt.Tables;
 
 /// <summary>
 /// Model for Assets/database/server.json

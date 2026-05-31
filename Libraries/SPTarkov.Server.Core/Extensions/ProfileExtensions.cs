@@ -5,6 +5,7 @@ using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 
 namespace SPTarkov.Server.Core.Extensions;
 

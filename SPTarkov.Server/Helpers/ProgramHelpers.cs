@@ -8,7 +8,7 @@ using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.DI;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Spt.Server;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services.Hosted;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Json;
@@ -58,8 +58,7 @@ public static class ProgramHelpers
         builder.Services.AddSingleton(databaseTables.Locations);
         builder.Services.AddSingleton(databaseTables.Match);
         builder.Services.AddSingleton(databaseTables.Templates);
-        // TODO: Serializer isn't happy going straight to TraderTable alias
-        builder.Services.AddSingleton(new TraderTable(databaseTables.Traders));
+        builder.Services.AddSingleton(databaseTables.Traders);
         builder.Services.AddSingleton(databaseTables.Globals);
         builder.Services.AddSingleton(databaseTables.Server);
         builder.Services.AddSingleton(databaseTables.Settings);

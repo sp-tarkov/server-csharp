@@ -3,13 +3,13 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Dialogue;
 using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Dialog;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -19,7 +19,7 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class DialogueController(
     ISptLogger<DialogueController> logger,
-    TraderTable traderTable,
+    TradersTable traderTable,
     TimeUtil timeUtil,
     DialogueHelper dialogueHelper,
     NotificationSendHelper notificationSendHelper,

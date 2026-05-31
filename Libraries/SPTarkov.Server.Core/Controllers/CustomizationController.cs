@@ -9,8 +9,7 @@ using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Spt.Hideout;
-using SPTarkov.Server.Core.Models.Spt.Templates;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -24,7 +23,7 @@ public class CustomizationController(
     ISptLogger<CustomizationController> logger,
     TemplateTable templateTable,
     HideoutTable hideoutTable,
-    TraderTable traderTable,
+    TradersTable traderTable,
     EventOutputHolder eventOutputHolder,
     SaveServer saveServer,
     ServerLocalisationService serverLocalisationService,

@@ -3,7 +3,7 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 
-namespace SPTarkov.Server.Core.Models.Spt.Templates;
+namespace SPTarkov.Server.Core.Models.Spt.Tables;
 
 public record TemplateTable
 {

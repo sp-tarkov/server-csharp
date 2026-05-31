@@ -2,12 +2,11 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Repeatable;
-using SPTarkov.Server.Core.Models.Spt.Templates;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -52,7 +51,7 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="pmcLevel"> Level of player reward is being generated for </param>
     /// <param name="difficulty"> Reward scaling factor from 0.2 to 1 </param>
     /// <param name="traderId"> Trader reward will be given by </param>
-    /// <param name="repeatableConfig"> Config for quest type (daily, weekly) </param>
+    /// <param name="repeatableConfig"> GlobalConfig for quest type (daily, weekly) </param>
     /// <param name="eliminationConfig"> Base Quest config</param>
     /// <param name="rewardTplBlacklist"> Optional: list of tpls to NOT use when picking a reward </param>
     /// <returns> QuestRewards </returns>
@@ -314,7 +313,7 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="itemPool"> All possible items to choose rewards from </param>
     /// <param name="maxItemCount"> Total number of items to reward </param>
     /// <param name="itemRewardBudget"> Rouble budget all item rewards must fit in </param>
-    /// <param name="repeatableConfig"> Config for quest type </param>
+    /// <param name="repeatableConfig"> GlobalConfig for quest type </param>
     /// <returns> Dictionary of items and stack size</returns>
     protected Dictionary<TemplateItem, int> GetRewardableItemsFromPoolWithinBudget(
         List<TemplateItem> itemPool,
@@ -459,7 +458,7 @@ public class RepeatableQuestRewardGenerator(
     /// <summary>
     ///     Select a number of items that have a collective value of the passed in parameter
     /// </summary>
-    /// <param name="repeatableConfig"> Config </param>
+    /// <param name="repeatableConfig"> GlobalConfig </param>
     /// <param name="roublesBudget"> Total value of items to return </param>
     /// <param name="traderId"> ID of the trader who will give player reward </param>
     /// <returns> List of reward items that fit budget </returns>
@@ -645,7 +644,7 @@ public class RepeatableQuestRewardGenerator(
     ///     - Shouldn't be keys <br />
     ///     - Have a price greater than 0
     /// </summary>
-    /// <param name="repeatableQuestConfig"> Config </param>
+    /// <param name="repeatableQuestConfig"> GlobalConfig </param>
     /// <param name="traderId"> ID of trader who will give reward to player </param>
     /// <returns> List of rewardable items [[_tpl, itemTemplate],...] </returns>
     public List<TemplateItem> GetRewardableItems(RepeatableQuestConfig repeatableQuestConfig, MongoId traderId)

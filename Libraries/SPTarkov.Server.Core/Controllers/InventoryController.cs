@@ -11,7 +11,7 @@ using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
-using SPTarkov.Server.Core.Models.Spt.Templates;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -23,7 +23,7 @@ namespace SPTarkov.Server.Core.Controllers;
 public class InventoryController(
     ISptLogger<InventoryController> logger,
     TemplateTable templateTable,
-    TraderTable traderTable,
+    TradersTable traderTable,
     HttpResponseUtil httpResponseUtil,
     PresetHelper presetHelper,
     InventoryHelper inventoryHelper,

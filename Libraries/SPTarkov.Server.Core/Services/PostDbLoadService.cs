@@ -5,9 +5,7 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Spt.Hideout;
-using SPTarkov.Server.Core.Models.Spt.Server;
-using SPTarkov.Server.Core.Models.Spt.Templates;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 
@@ -17,7 +15,7 @@ namespace SPTarkov.Server.Core.Services;
 public class PostDbLoadService(
     ISptLogger<PostDbLoadService> logger,
     TemplateTable templateTable,
-    TraderTable traderTable,
+    TradersTable traderTable,
     GlobalTable globalTable,
     HideoutTable hideoutTable,
     LocaleTable localeTable,
