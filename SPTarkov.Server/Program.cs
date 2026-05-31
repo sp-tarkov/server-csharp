@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Text;
+using HarmonyLib.Tools;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using SPTarkov.Common.Extensions;
@@ -14,6 +15,7 @@ using SPTarkov.Server.Core.Loaders;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Hosted;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Helpers;
@@ -190,29 +192,26 @@ public static class Program
 
         // This is necessary here so that mods can modify SPT configs pre-emptively before we startup the container
         // It will make HttpConfig modifiable for mods like Fika
-        if (ProgramStatics.MODS())
+        var injectableTypes = app.Services.GetRequiredService<IReadOnlyList<DependencyInjectionContainer>>();
+        var applicationLifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
+        var cancellationToken = applicationLifetime.ApplicationStopping;
+
+        _earlyLogger!.LogInformation(app.Services.GetRequiredService<ServerLocalisationService>().GetText("executing_startup_callbacks"));
+        var preSptLoadTypes = injectableTypes
+            .Where(container => container.Type == typeof(IOnLoad))
+            .Where(container => container.InjectableAttribute.TypePriority >= OnLoadOrder.Watermark)
+            .Where(container => container.InjectableAttribute.TypePriority < OnLoadOrder.GameCallbacks);
+
+        foreach (var preSptLoadType in preSptLoadTypes)
         {
-            var injectableTypes = app.Services.GetRequiredService<IReadOnlyList<DependencyInjectionContainer>>();
-            var applicationLifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
-            var cancellationToken = applicationLifetime.ApplicationStopping;
+            var onLoad = app.Services.GetRequiredService(preSptLoadType.ParentType);
 
-            var preSptLoadTypes = injectableTypes
-                .Where(container => container.Type == typeof(IOnLoad))
-                .Where(container => container.InjectableAttribute.TypePriority >= OnLoadOrder.Watermark)
-                .Where(container => container.InjectableAttribute.TypePriority < OnLoadOrder.GameCallbacks)
-                .OrderBy(container => container.InjectableAttribute.TypePriority);
-
-            foreach (var preSptLoadType in preSptLoadTypes)
+            if (onLoad is not IOnLoad onLoadService)
             {
-                var onLoad = app.Services.GetRequiredService(preSptLoadType.ParentType);
-
-                if (onLoad is not IOnLoad onLoadService)
-                {
-                    continue;
-                }
-
-                await onLoadService.OnLoad(cancellationToken);
+                continue;
             }
+
+            await onLoadService.OnLoad(cancellationToken);
         }
 
         await app.RunAsync();

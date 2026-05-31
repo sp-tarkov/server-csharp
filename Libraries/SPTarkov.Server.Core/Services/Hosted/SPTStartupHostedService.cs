@@ -80,16 +80,12 @@ public sealed class SPTStartupHostedService(
                 logger.Debug($"Commit: {ProgramStatics.COMMIT()}");
             }
 
-            // execute onLoad callbacks
-            logger.Info(serverLocalisationService.GetText("executing_startup_callbacks"));
-            var startupOnLoadComponents = dependencyInjectionContainers
+            // execute OnLoad callbacks past PreLoad
+            var PostPreloadComponents = dependencyInjectionContainers
                 .Where(container => container.Type == typeof(IOnLoad))
-                .Where(container => container.InjectableAttribute.TypePriority >= OnLoadOrder.GameCallbacks)
-                .GroupBy(container => container.ParentType)
-                .Select(group => group.First())
-                .OrderBy(container => container.InjectableAttribute.TypePriority);
+                .Where(container => container.InjectableAttribute.TypePriority >= OnLoadOrder.GameCallbacks);
 
-            foreach (var onLoadContainer in startupOnLoadComponents)
+            foreach (var onLoadContainer in PostPreloadComponents)
             {
                 var onLoadService = serviceProvider.GetRequiredService(onLoadContainer.ParentType);
 
