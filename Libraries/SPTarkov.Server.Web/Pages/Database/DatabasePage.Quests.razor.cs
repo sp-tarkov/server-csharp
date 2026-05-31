@@ -12,11 +12,10 @@ public partial class DatabasePage
     private DatabaseTableDefinition BuildQuestsTable()
     {
         var locale = LocaleService.GetLocaleDb();
-        var traderNames = BuildTraderNames(DatabaseService.GetTraders());
+        var traderNames = BuildTraderNames(TradersTable);
 
-        var rows = DatabaseService
-            .GetQuests()
-            .Values.Select(quest => BuildQuestRow(quest, locale, traderNames, JsonUtil))
+        var rows = TemplateTable
+            .Quests.Values.Select(quest => BuildQuestRow(quest, locale, traderNames, JsonUtil))
             .OrderBy(row => row.Title)
             .ToList();
 

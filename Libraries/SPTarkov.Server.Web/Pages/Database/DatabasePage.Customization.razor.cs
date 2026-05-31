@@ -12,10 +12,11 @@ public partial class DatabasePage
     private DatabaseTableDefinition BuildCustomizationTable()
     {
         var locale = LocaleService.GetLocaleDb();
-        var customization = DatabaseService.GetCustomization();
+        var customization = TemplateTable.Customization;
         var customizationNames = BuildCustomizationNames(customization, locale);
 
-        var rows = customization.Values.Select(item => BuildCustomizationRow(item, locale, customizationNames, JsonUtil))
+        var rows = customization
+            .Values.Select(item => BuildCustomizationRow(item, locale, customizationNames, JsonUtil))
             .OrderBy(row => row.Title)
             .ToList();
 
@@ -87,11 +88,13 @@ public partial class DatabasePage
                 new DatabaseStat("Records", rows.Count.ToString("N0", CultureInfo.CurrentCulture)),
                 new DatabaseStat(
                     "Items",
-                    rows.Count(row => row.Values.GetValueOrDefault("type", string.Empty) == "Item").ToString("N0", CultureInfo.CurrentCulture)
+                    rows.Count(row => row.Values.GetValueOrDefault("type", string.Empty) == "Item")
+                        .ToString("N0", CultureInfo.CurrentCulture)
                 ),
                 new DatabaseStat(
                     "Defaults",
-                    rows.Count(row => row.Values.GetValueOrDefault("availableAsDefault", string.Empty) == "true").ToString("N0", CultureInfo.CurrentCulture)
+                    rows.Count(row => row.Values.GetValueOrDefault("availableAsDefault", string.Empty) == "true")
+                        .ToString("N0", CultureInfo.CurrentCulture)
                 ),
                 new DatabaseStat("Locale", _localeName),
             ],
@@ -110,7 +113,11 @@ public partial class DatabasePage
         var properties = item.Properties;
         var title = GetCustomizationName(id, item, locale);
         var shortName = GetLocaleValue(locale, $"{id} ShortName", GetNonEmptyValue(properties?.ShortName, string.Empty));
-        var description = GetLocaleValue(locale, $"{id} Description", GetNonEmptyValue(properties?.Description, "No description available."));
+        var description = GetLocaleValue(
+            locale,
+            $"{id} Description",
+            GetNonEmptyValue(properties?.Description, "No description available.")
+        );
         var parentId = item.Parent ?? string.Empty;
         var parent = string.IsNullOrWhiteSpace(parentId) ? "Root" : customizationNames.GetValueOrDefault(parentId, parentId);
         var type = GetNonEmptyValue(item.Type, "Unknown");
@@ -145,7 +152,11 @@ public partial class DatabasePage
                     new DatabaseDetailValue("Parent", parent),
                     new DatabaseDetailValue("Parent id", GetNonEmptyValue(parentId, "n/a"), IsMono: !string.IsNullOrWhiteSpace(parentId)),
                     new DatabaseDetailValue("Type", type),
-                    new DatabaseDetailValue("Prototype", GetNonEmptyValue(item.Prototype, "n/a"), IsMono: !string.IsNullOrWhiteSpace(item.Prototype)),
+                    new DatabaseDetailValue(
+                        "Prototype",
+                        GetNonEmptyValue(item.Prototype, "n/a"),
+                        IsMono: !string.IsNullOrWhiteSpace(item.Prototype)
+                    ),
                     new DatabaseDetailValue("Body part", bodyPart),
                 ]
             ),
@@ -166,8 +177,16 @@ public partial class DatabasePage
                     new DatabaseDetailValue("Body", GetMongoIdLabel(properties?.Body), IsMono: properties?.Body is not null),
                     new DatabaseDetailValue("Hands", GetMongoIdLabel(properties?.Hands), IsMono: properties?.Hands is not null),
                     new DatabaseDetailValue("Feet", GetMongoIdLabel(properties?.Feet), IsMono: properties?.Feet is not null),
-                    new DatabaseDetailValue("USEC template", GetMongoIdLabel(properties?.UsecTemplateId), IsMono: properties?.UsecTemplateId is not null),
-                    new DatabaseDetailValue("BEAR template", GetMongoIdLabel(properties?.BearTemplateId), IsMono: properties?.BearTemplateId is not null),
+                    new DatabaseDetailValue(
+                        "USEC template",
+                        GetMongoIdLabel(properties?.UsecTemplateId),
+                        IsMono: properties?.UsecTemplateId is not null
+                    ),
+                    new DatabaseDetailValue(
+                        "BEAR template",
+                        GetMongoIdLabel(properties?.BearTemplateId),
+                        IsMono: properties?.BearTemplateId is not null
+                    ),
                 ]
             ),
         };
@@ -198,7 +217,10 @@ public partial class DatabasePage
         Dictionary<string, string> locale
     )
     {
-        return customization.ToDictionary(pair => pair.Key.ToString(), pair => GetCustomizationName(pair.Key.ToString(), pair.Value, locale));
+        return customization.ToDictionary(
+            pair => pair.Key.ToString(),
+            pair => GetCustomizationName(pair.Key.ToString(), pair.Value, locale)
+        );
     }
 
     private static string GetCustomizationName(string id, CustomizationItem item, Dictionary<string, string> locale)

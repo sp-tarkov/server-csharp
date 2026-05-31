@@ -14,8 +14,7 @@ public partial class DatabasePage
 
     private DatabaseTableDefinition BuildTradersTable()
     {
-        var rows = DatabaseService
-            .GetTraders()
+        var rows = TradersTable
             .Values.Select(trader => BuildTraderRow(trader, JsonUtil, includeProperties: false))
             .OrderBy(row => row.Title)
             .ToList();
@@ -169,7 +168,10 @@ public partial class DatabasePage
                     new DatabaseDetailValue("Loyal level items", loyalLevelItemCount.ToString("N0", CultureInfo.CurrentCulture)),
                     new DatabaseDetailValue("Next resupply", GetNumberLabel(trader.Assort?.NextResupply)),
                     new DatabaseDetailValue("Quest assort locks", questAssortCount.ToString("N0", CultureInfo.CurrentCulture)),
-                    new DatabaseDetailValue("Sell categories", (trader.Base.SellCategory?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)),
+                    new DatabaseDetailValue(
+                        "Sell categories",
+                        (trader.Base.SellCategory?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)
+                    ),
                 ]
             ),
             new(
@@ -183,17 +185,10 @@ public partial class DatabasePage
                     new DatabaseDetailValue("Dialogue entries", dialogueCount.ToString("N0", CultureInfo.CurrentCulture)),
                 ]
             ),
-            new(
-                "Loyalty",
-                BuildTraderLoyaltyValues(trader.Base.LoyaltyLevels)
-            ),
+            new("Loyalty", BuildTraderLoyaltyValues(trader.Base.LoyaltyLevels)),
         };
 
-        var chips = new List<DatabaseChip>
-        {
-            new(currency, Color.Warning),
-            new(location, Color.Info),
-        };
+        var chips = new List<DatabaseChip> { new(currency, Color.Warning), new(location, Color.Info) };
 
         if (trader.Base.Insurance?.Availability == true)
         {
@@ -232,7 +227,7 @@ public partial class DatabasePage
     private DatabaseTraderAssort BuildTraderAssort(Trader trader, JsonUtil jsonUtil)
     {
         var locale = LocaleService.GetLocaleDb();
-        var templates = DatabaseService.GetItems();
+        var templates = TemplateTable.Items;
         var assortItems = trader.Assort?.Items ?? [];
         var rows = new List<DatabaseTraderAssortRow>(assortItems.Count);
         var loyaltyLevels = new HashSet<int>();
@@ -318,9 +313,10 @@ public partial class DatabasePage
         var parentId = item.ParentId ?? string.Empty;
         var slotId = GetNonEmptyValue(item.SlotId, "n/a");
         var loyaltyLabel = loyaltyLevel is null ? "n/a" : $"LL{loyaltyLevel.Value}";
-        var barter = barterSchemes.Count == 0
-            ? "n/a"
-            : $"{barterSchemes.Count.ToString("N0", CultureInfo.CurrentCulture)} option{(barterSchemes.Count == 1 ? string.Empty : "s")}";
+        var barter =
+            barterSchemes.Count == 0
+                ? "n/a"
+                : $"{barterSchemes.Count.ToString("N0", CultureInfo.CurrentCulture)} option{(barterSchemes.Count == 1 ? string.Empty : "s")}";
 
         return new DatabaseTraderAssortRow(
             itemId,
@@ -333,20 +329,21 @@ public partial class DatabasePage
             loyaltyLevel?.ToString(CultureInfo.InvariantCulture) ?? string.Empty,
             barter,
             string.Join(" ", itemId, templateId, templateLookup.Name, templateLookup.ShortName, parentId, slotId, loyaltyLabel),
-            () => BuildTraderAssortRowDetails(
-                item,
-                itemId,
-                templateId,
-                parentId,
-                slotId,
-                loyaltyLevel,
-                loyaltyLabel,
-                barter,
-                barterSchemes,
-                templates,
-                locale,
-                jsonUtil
-            )
+            () =>
+                BuildTraderAssortRowDetails(
+                    item,
+                    itemId,
+                    templateId,
+                    parentId,
+                    slotId,
+                    loyaltyLevel,
+                    loyaltyLabel,
+                    barter,
+                    barterSchemes,
+                    templates,
+                    locale,
+                    jsonUtil
+                )
         );
     }
 
@@ -366,15 +363,16 @@ public partial class DatabasePage
     )
     {
         var barterPreview = BuildBarterPreview(barterSchemes, templates, locale);
-        var propertiesJson = jsonUtil.Serialize(
-            new
-            {
-                Item = item,
-                BarterScheme = barterSchemes,
-                LoyaltyLevel = loyaltyLevel,
-            },
-            indented: true
-        ) ?? "{}";
+        var propertiesJson =
+            jsonUtil.Serialize(
+                new
+                {
+                    Item = item,
+                    BarterScheme = barterSchemes,
+                    LoyaltyLevel = loyaltyLevel,
+                },
+                indented: true
+            ) ?? "{}";
         var properties = SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson);
 
         var sections = new List<DatabaseDetailSection>
@@ -415,9 +413,11 @@ public partial class DatabasePage
 
         return string.Join(
             " | ",
-            barterSchemes.Take(3).Select(barterScheme =>
-                string.Join(" + ", barterScheme.Select(requirement => GetBarterRequirementLabel(requirement, templates, locale)))
-            )
+            barterSchemes
+                .Take(3)
+                .Select(barterScheme =>
+                    string.Join(" + ", barterScheme.Select(requirement => GetBarterRequirementLabel(requirement, templates, locale)))
+                )
         );
     }
 
@@ -442,10 +442,7 @@ public partial class DatabasePage
             return [new DatabaseDetailValue("Levels", "0")];
         }
 
-        var values = new List<DatabaseDetailValue>
-        {
-            new("Levels", loyaltyLevels.Count.ToString("N0", CultureInfo.CurrentCulture)),
-        };
+        var values = new List<DatabaseDetailValue> { new("Levels", loyaltyLevels.Count.ToString("N0", CultureInfo.CurrentCulture)) };
 
         for (var index = 0; index < loyaltyLevels.Count; index++)
         {

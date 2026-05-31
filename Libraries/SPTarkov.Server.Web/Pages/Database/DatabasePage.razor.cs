@@ -1,6 +1,7 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using SPTarkov.Server.Core.Exceptions.Database;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Web.Models.Database;
@@ -21,7 +22,16 @@ public partial class DatabasePage
     private const string BotsTableId = "bots";
 
     [Inject]
-    private DatabaseService DatabaseService { get; set; } = null!;
+    private TemplateTable TemplateTable { get; set; } = null!;
+
+    [Inject]
+    private BotTable BotTable { get; set; } = null!;
+
+    [Inject]
+    private GlobalTable GlobalTable { get; set; } = null!;
+
+    [Inject]
+    private TradersTable TradersTable { get; set; } = null!;
 
     [Inject]
     private LocaleService LocaleService { get; set; } = null!;

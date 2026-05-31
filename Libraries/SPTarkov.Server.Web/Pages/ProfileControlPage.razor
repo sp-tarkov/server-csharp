@@ -2,6 +2,7 @@
 @attribute [Authorize(Policy = "Administrator")]
 @using SPTarkov.Server.Core.Models.Common
 @using SPTarkov.Server.Core.Models.Eft.Profile
+@using SPTarkov.Server.Core.Models.Spt.Tables
 @using SPTarkov.Server.Core.Servers
 @using SPTarkov.Server.Core.Services
 @using SPTarkov.Server.Core.Utils
@@ -22,7 +23,7 @@
 @using TemplateSide = SPTarkov.Server.Core.Models.Eft.Common.Tables.TemplateSide
 @layout BaseMudBlazorLayout
 @inject CreateProfileService CreateProfileService
-@inject DatabaseService DatabaseService
+@inject TemplateTable TemplateTable
 @inject HashUtil HashUtil
 @inject JsonUtil JsonUtil
 @inject ISnackbar Snackbar
@@ -112,7 +113,7 @@
 
     protected override void OnInitialized()
     {
-        _editions.AddRange(DatabaseService.GetProfileTemplates().Keys.OrderBy(edition => edition));
+        _editions.AddRange(TemplateTable.Profiles.Keys.OrderBy(edition => edition));
         _newEdition = _editions.FirstOrDefault() ?? string.Empty;
         RefreshProfiles();
     }
@@ -244,7 +245,7 @@
             return false;
         }
 
-        if (string.IsNullOrWhiteSpace(_newEdition) || !DatabaseService.GetProfileTemplates().ContainsKey(_newEdition))
+        if (string.IsNullOrWhiteSpace(_newEdition) || !TemplateTable.Profiles.ContainsKey(_newEdition))
         {
             Snackbar.Add("Choose a valid edition.", Severity.Warning);
             return false;
@@ -261,7 +262,7 @@
 
     private TemplateSide GetTemplateSide(string edition, string side)
     {
-        var templates = DatabaseService.GetProfileTemplates();
+        var templates = TemplateTable.Profiles;
 
         if (!templates.TryGetValue(edition, out var profileSides))
         {
@@ -284,7 +285,7 @@
             return templateValue.Value;
         }
 
-        var fallback = DatabaseService.GetCustomization()
+        var fallback = TemplateTable.Customization
             .Values.FirstOrDefault(item =>
                 item.Parent == parentId
                 && (item.Properties?.Side?.Any(value => string.Equals(value, side, StringComparison.OrdinalIgnoreCase)) ?? false)
@@ -578,7 +579,7 @@
         }
 
         var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        var questDb = DatabaseService.GetQuests();
+        var questDb = TemplateTable.Quests;
         var quests = profileQuests ?? [];
         var values = new List<DatabaseDetailValue>
         {

@@ -11,13 +11,12 @@ public partial class DatabasePage
     private DatabaseTableDefinition BuildItemsTable()
     {
         var locale = LocaleService.GetLocaleDb();
-        var handbook = DatabaseService.GetHandbook();
+        var handbook = TemplateTable.Handbook;
         var handbookItems = (handbook.Items ?? []).ToDictionary(item => item.Id.ToString(), item => item);
         var categoryNames = BuildCategoryNames(handbook.Categories ?? [], locale);
 
-        var rows = DatabaseService
-            .GetItems()
-            .Values.Select(item => BuildItemRow(item, locale, handbookItems, categoryNames, JsonUtil))
+        var rows = TemplateTable
+            .Items.Values.Select(item => BuildItemRow(item, locale, handbookItems, categoryNames, JsonUtil))
             .OrderBy(row => row.Title)
             .ToList();
 

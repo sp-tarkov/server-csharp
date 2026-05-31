@@ -11,11 +11,12 @@ public partial class DatabasePage
     private DatabaseTableDefinition BuildHandbookTable()
     {
         var locale = LocaleService.GetLocaleDb();
-        var handbook = DatabaseService.GetHandbook();
+        var handbook = TemplateTable.Handbook;
         var categories = handbook.Categories ?? [];
         var categoryNames = BuildCategoryNames(categories, locale);
 
-        var rows = categories.Select(category => BuildHandbookCategoryRow(category, categoryNames, JsonUtil))
+        var rows = categories
+            .Select(category => BuildHandbookCategoryRow(category, categoryNames, JsonUtil))
             .Concat((handbook.Items ?? []).Select(item => BuildHandbookItemRow(item, locale, categoryNames, JsonUtil)))
             .OrderBy(row => row.Values.GetValueOrDefault("recordType", string.Empty))
             .ThenBy(row => row.Title)
@@ -72,11 +73,7 @@ public partial class DatabasePage
         );
     }
 
-    private DatabaseRow BuildHandbookCategoryRow(
-        HandbookCategory category,
-        Dictionary<string, string> categoryNames,
-        JsonUtil jsonUtil
-    )
+    private DatabaseRow BuildHandbookCategoryRow(HandbookCategory category, Dictionary<string, string> categoryNames, JsonUtil jsonUtil)
     {
         var id = category.Id.ToString();
         var parentId = category.ParentId?.ToString() ?? string.Empty;

@@ -12,17 +12,10 @@ public partial class DatabasePage
 {
     private DatabaseTableDefinition BuildBotsTable()
     {
-        var bots = DatabaseService.GetBots();
-        var rows = new List<DatabaseRow>
-        {
-            BuildBotBaseRow(bots.Base),
-            BuildBotCoreRow(bots.Core),
-        };
+        var bots = BotTable;
+        var rows = new List<DatabaseRow> { BuildBotBaseRow(bots.Base), BuildBotCoreRow(bots.Core) };
 
-        rows.AddRange(
-            bots.Types.OrderBy(pair => pair.Key)
-                .Select(pair => BuildBotTypeRow(pair.Key, pair.Value))
-        );
+        rows.AddRange(bots.Types.OrderBy(pair => pair.Key).Select(pair => BuildBotTypeRow(pair.Key, pair.Value)));
 
         var filters = new List<DatabaseTableFilter>
         {
@@ -69,7 +62,11 @@ public partial class DatabasePage
             [
                 new DatabaseStat("Records", rows.Count.ToString("N0", CultureInfo.CurrentCulture)),
                 new DatabaseStat("Bot types", bots.Types.Count.ToString("N0", CultureInfo.CurrentCulture)),
-                new DatabaseStat("With inventory", rows.Count(row => row.Values.GetValueOrDefault("hasInventory", string.Empty) == "true").ToString("N0", CultureInfo.CurrentCulture)),
+                new DatabaseStat(
+                    "With inventory",
+                    rows.Count(row => row.Values.GetValueOrDefault("hasInventory", string.Empty) == "true")
+                        .ToString("N0", CultureInfo.CurrentCulture)
+                ),
                 new DatabaseStat("Locale", _localeName),
             ],
             rows
@@ -113,10 +110,17 @@ public partial class DatabasePage
                     "Collections",
                     [
                         new DatabaseDetailValue("Inventory items", inventoryItemCount.ToString("N0", CultureInfo.CurrentCulture)),
-                        new DatabaseDetailValue("Equipment root", botBase.Inventory?.Equipment?.ToString() ?? "n/a", IsMono: botBase.Inventory?.Equipment is not null),
+                        new DatabaseDetailValue(
+                            "Equipment root",
+                            botBase.Inventory?.Equipment?.ToString() ?? "n/a",
+                            IsMono: botBase.Inventory?.Equipment is not null
+                        ),
                         new DatabaseDetailValue("Quests", questCount.ToString("N0", CultureInfo.CurrentCulture)),
                         new DatabaseDetailValue("Traders", traderCount.ToString("N0", CultureInfo.CurrentCulture)),
-                        new DatabaseDetailValue("Achievements", (botBase.Achievements?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)),
+                        new DatabaseDetailValue(
+                            "Achievements",
+                            (botBase.Achievements?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)
+                        ),
                     ]
                 ),
             ],
@@ -230,8 +234,14 @@ public partial class DatabasePage
                         new DatabaseDetailValue("Appearance entries", appearanceCount.ToString("N0", CultureInfo.CurrentCulture)),
                         new DatabaseDetailValue("First names", firstNameCount.ToString("N0", CultureInfo.CurrentCulture)),
                         new DatabaseDetailValue("Last names", lastNameCount.ToString("N0", CultureInfo.CurrentCulture)),
-                        new DatabaseDetailValue("Common skills", (botType.BotSkills?.Common?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)),
-                        new DatabaseDetailValue("Mastering skills", (botType.BotSkills?.Mastering?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)),
+                        new DatabaseDetailValue(
+                            "Common skills",
+                            (botType.BotSkills?.Common?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)
+                        ),
+                        new DatabaseDetailValue(
+                            "Mastering skills",
+                            (botType.BotSkills?.Mastering?.Count ?? 0).ToString("N0", CultureInfo.CurrentCulture)
+                        ),
                     ]
                 ),
             ],
@@ -268,15 +278,7 @@ public partial class DatabasePage
                 ["level"] = "n/a",
                 ["recordType"] = "Missing bot type",
             },
-            [
-                new DatabaseDetailSection(
-                    "Bot type",
-                    [
-                        new DatabaseDetailValue("Role", role),
-                        new DatabaseDetailValue("Status", "Missing"),
-                    ]
-                ),
-            ],
+            [new DatabaseDetailSection("Bot type", [new DatabaseDetailValue("Role", role), new DatabaseDetailValue("Status", "Missing")])],
             [new DatabaseChip("Missing", Color.Warning)],
             [],
             "{}",

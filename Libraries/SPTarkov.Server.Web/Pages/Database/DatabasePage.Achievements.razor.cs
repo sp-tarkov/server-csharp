@@ -10,8 +10,10 @@ public partial class DatabasePage
 {
     private DatabaseTableDefinition BuildAchievementsTable()
     {
-        var customAchievementIds = DatabaseService.GetCustomAchievements().Select(achievement => achievement.Id.ToString()).ToHashSet(StringComparer.Ordinal);
-        var achievements = DatabaseService.GetAchievements().Where(achievement => !customAchievementIds.Contains(achievement.Id.ToString()));
+        var customAchievementIds = TemplateTable
+            .CustomAchievements.Select(achievement => achievement.Id.ToString())
+            .ToHashSet(StringComparer.Ordinal);
+        var achievements = TemplateTable.Achievements.Where(achievement => !customAchievementIds.Contains(achievement.Id.ToString()));
 
         return BuildAchievementTable(
             AchievementsTableId,
@@ -31,7 +33,7 @@ public partial class DatabasePage
             "Custom achievement templates, rarity, visibility, conditions, rewards, and source properties.",
             "matching custom achievements",
             "Select a custom achievement to inspect its template details.",
-            DatabaseService.GetCustomAchievements()
+            TemplateTable.CustomAchievements
         );
     }
 
@@ -45,7 +47,10 @@ public partial class DatabasePage
     )
     {
         var locale = LocaleService.GetLocaleDb();
-        var rows = achievements.Select(achievement => BuildAchievementRow(achievement, locale, JsonUtil)).OrderBy(row => row.Title).ToList();
+        var rows = achievements
+            .Select(achievement => BuildAchievementRow(achievement, locale, JsonUtil))
+            .OrderBy(row => row.Title)
+            .ToList();
 
         var filters = new List<DatabaseTableFilter>
         {
@@ -105,7 +110,8 @@ public partial class DatabasePage
                 new DatabaseStat(name, rows.Count.ToString("N0", CultureInfo.CurrentCulture)),
                 new DatabaseStat(
                     "Hidden",
-                    rows.Count(row => row.Values.GetValueOrDefault("hidden", string.Empty) == "true").ToString("N0", CultureInfo.CurrentCulture)
+                    rows.Count(row => row.Values.GetValueOrDefault("hidden", string.Empty) == "true")
+                        .ToString("N0", CultureInfo.CurrentCulture)
                 ),
                 new DatabaseStat(
                     "Rewards",
@@ -170,12 +176,7 @@ public partial class DatabasePage
             ),
             new("Conditions", BuildAchievementConditionValues(achievement.Conditions, conditionCount)),
             new("Rewards", BuildAchievementRewardValues(achievement.Rewards, rewardCount)),
-            new(
-                "Locale",
-                [
-                    new DatabaseDetailValue("Success message", successMessage),
-                ]
-            ),
+            new("Locale", [new DatabaseDetailValue("Success message", successMessage)]),
         };
 
         var chips = new List<DatabaseChip>
@@ -205,8 +206,14 @@ public partial class DatabasePage
         [
             new DatabaseDetailValue("Total conditions", conditionCount.ToString("N0", CultureInfo.CurrentCulture)),
             new DatabaseDetailValue("Started", GetConditionCount(conditions?.Started).ToString("N0", CultureInfo.CurrentCulture)),
-            new DatabaseDetailValue("Available start", GetConditionCount(conditions?.AvailableForStart).ToString("N0", CultureInfo.CurrentCulture)),
-            new DatabaseDetailValue("Available finish", GetConditionCount(conditions?.AvailableForFinish).ToString("N0", CultureInfo.CurrentCulture)),
+            new DatabaseDetailValue(
+                "Available start",
+                GetConditionCount(conditions?.AvailableForStart).ToString("N0", CultureInfo.CurrentCulture)
+            ),
+            new DatabaseDetailValue(
+                "Available finish",
+                GetConditionCount(conditions?.AvailableForFinish).ToString("N0", CultureInfo.CurrentCulture)
+            ),
             new DatabaseDetailValue("Success", GetConditionCount(conditions?.Success).ToString("N0", CultureInfo.CurrentCulture)),
             new DatabaseDetailValue("Fail", GetConditionCount(conditions?.Fail).ToString("N0", CultureInfo.CurrentCulture)),
         ];

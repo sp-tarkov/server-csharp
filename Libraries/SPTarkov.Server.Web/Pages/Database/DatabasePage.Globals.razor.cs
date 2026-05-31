@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Common;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Web.Models.Database;
 using Color = MudBlazor.Color;
@@ -13,7 +14,7 @@ public partial class DatabasePage
 {
     private DatabaseTableDefinition BuildGlobalsTable()
     {
-        var globals = DatabaseService.GetGlobals();
+        var globals = GlobalTable;
         var rows = new List<DatabaseRow>();
 
         rows.AddRange(BuildGlobalConfigRows(globals.Configuration));
@@ -67,7 +68,11 @@ public partial class DatabasePage
             filters,
             [
                 new DatabaseStat("Records", rows.Count.ToString("N0", CultureInfo.CurrentCulture)),
-                new DatabaseStat("Config", rows.Count(row => row.Values.GetValueOrDefault("scope", string.Empty) == "config").ToString("N0", CultureInfo.CurrentCulture)),
+                new DatabaseStat(
+                    "Config",
+                    rows.Count(row => row.Values.GetValueOrDefault("scope", string.Empty) == "config")
+                        .ToString("N0", CultureInfo.CurrentCulture)
+                ),
                 new DatabaseStat("Item presets", globals.ItemPresets.Count.ToString("N0", CultureInfo.CurrentCulture)),
                 new DatabaseStat("Locale", _localeName),
             ],
@@ -75,9 +80,9 @@ public partial class DatabasePage
         );
     }
 
-    private IEnumerable<DatabaseRow> BuildGlobalConfigRows(Config config)
+    private IEnumerable<DatabaseRow> BuildGlobalConfigRows(GlobalConfig config)
     {
-        foreach (var property in typeof(Config).GetProperties(BindingFlags.Instance | BindingFlags.Public))
+        foreach (var property in typeof(GlobalConfig).GetProperties(BindingFlags.Instance | BindingFlags.Public))
         {
             var value = property.GetValue(config);
             var name = GetJsonPropertyName(property);
@@ -123,7 +128,10 @@ public partial class DatabasePage
     {
         foreach (var (location, infection) in locationInfection.OrderBy(pair => pair.Key))
         {
-            var propertiesJson = SerializeObject(new Dictionary<string, object> { ["location"] = location, ["infection"] = infection }, typeof(Dictionary<string, object>));
+            var propertiesJson = SerializeObject(
+                new Dictionary<string, object> { ["location"] = location, ["infection"] = infection },
+                typeof(Dictionary<string, object>)
+            );
 
             yield return new DatabaseRow(
                 $"LocationInfection.{location}",
@@ -221,7 +229,13 @@ public partial class DatabasePage
             [new DatabaseChip("weapon scattering", Color.Warning)],
             SPTarkov.Server.Web.Utils.JsonPropertyFlattener.BuildProperties(propertiesJson),
             propertiesJson,
-            string.Join(" ", scattering.Name, scattering.PriorityScatter1Meter, scattering.PriorityScatter10Meter, scattering.PriorityScatter100Meter)
+            string.Join(
+                " ",
+                scattering.Name,
+                scattering.PriorityScatter1Meter,
+                scattering.PriorityScatter10Meter,
+                scattering.PriorityScatter100Meter
+            )
         );
     }
 
@@ -249,7 +263,11 @@ public partial class DatabasePage
                     [
                         new DatabaseDetailValue("Type", GetNonEmptyValue(preset.Type, "n/a")),
                         new DatabaseDetailValue("Parent", preset.Parent.ToString(), IsMono: true),
-                        new DatabaseDetailValue("Encyclopedia", preset.Encyclopedia?.ToString() ?? "n/a", IsMono: preset.Encyclopedia is not null),
+                        new DatabaseDetailValue(
+                            "Encyclopedia",
+                            preset.Encyclopedia?.ToString() ?? "n/a",
+                            IsMono: preset.Encyclopedia is not null
+                        ),
                         new DatabaseDetailValue("Items", itemCount.ToString("N0", CultureInfo.CurrentCulture)),
                         new DatabaseDetailValue("Changes weapon name", GetBoolLabel(preset.ChangeWeaponName)),
                     ]
