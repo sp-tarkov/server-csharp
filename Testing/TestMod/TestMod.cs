@@ -25,7 +25,18 @@ public record TestModMetadata : AbstractModMetadata, IModWebMetadata
     public string? WWWRootUrl { get; init; }
 }
 
-[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
+[Injectable(TypePriority = OnLoadOrder.Preload + 1)]
+public class TestModPreload(ISptLogger<TestMod> logger) : IOnLoad
+{
+    public async Task OnLoad(CancellationToken cancellationToken)
+    {
+        logger.Info("Test mod preloading!");
+
+        await Task.CompletedTask;
+    }
+}
+
+[Injectable(TypePriority = OnLoadOrder.PostLoad + 1)]
 public class TestMod(ISptLogger<TestMod> logger) : IOnLoad
 {
     public async Task OnLoad(CancellationToken cancellationToken)
