@@ -85,7 +85,7 @@ public static class ProgramHelpers
             .Services.AddScoped<ISemVer, SemanticVersioningSemVer>()
             .AddSptLoggerWithoutProvider(loggerFactory.ServiceProvider);
 
-        serviceCollection.AddSingleton<EarlyDatabaseImporter>();
+        serviceCollection.AddSingleton<DatabaseImporter>();
 
         if (ProgramStatics.MODS())
         {

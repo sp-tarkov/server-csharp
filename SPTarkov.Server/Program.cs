@@ -117,7 +117,7 @@ public static class Program
         }
 
         var cTSource = new CancellationTokenSource();
-        var dbImporter = earlyServiceProvider.GetService<EarlyDatabaseImporter>();
+        var dbImporter = earlyServiceProvider.GetService<DatabaseImporter>();
         if (dbImporter is null)
         {
             throw new NullReferenceException("EarlyDatabaseImporter is null");
