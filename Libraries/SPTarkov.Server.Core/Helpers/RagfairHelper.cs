@@ -1,6 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
@@ -12,8 +13,8 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class RagfairHelper(
+    TraderTable traderTable,
     TraderAssortHelper traderAssortHelper,
-    DatabaseService databaseService,
     HandbookHelper handbookHelper,
     RagfairLinkedItemService ragfairLinkedItemService,
     RagfairConfig ragfairConfig,
@@ -96,9 +97,7 @@ public class RagfairHelper(
 
     public Dictionary<MongoId, TraderAssort> GetDisplayableAssorts(MongoId sessionId, bool showLockedAssorts = true)
     {
-        var traders = databaseService.GetTraders();
-
-        return traders
+        return traderTable
             .Keys.Where(traderId => ragfairConfig.Traders.ContainsKey(traderId)) // Trader enabled in config
             .ToDictionary(traderId => traderId, traderId => traderAssortHelper.GetAssort(sessionId, traderId, showLockedAssorts));
     }

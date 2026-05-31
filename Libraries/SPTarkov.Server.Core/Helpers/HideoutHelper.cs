@@ -10,6 +10,7 @@ using SPTarkov.Server.Core.Models.Eft.Inventory;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
+using SPTarkov.Server.Core.Models.Spt.Hideout;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -21,9 +22,10 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class HideoutHelper(
     ISptLogger<HideoutHelper> logger,
+    GlobalTable globalTable,
+    HideoutTable hideoutTable,
     TimeUtil timeUtil,
     ServerLocalisationService serverLocalisationService,
-    DatabaseService databaseService,
     EventOutputHolder eventOutputHolder,
     HttpResponseUtil httpResponseUtil,
     ProfileHelper profileHelper,
@@ -44,9 +46,7 @@ public class HideoutHelper(
     /// <returns>client response</returns>
     public void RegisterProduction(PmcData pmcData, HideoutSingleProductionStartRequestData productionRequest, MongoId sessionId)
     {
-        var recipe = databaseService
-            .GetHideout()
-            .Production.Recipes?.FirstOrDefault(production => production.Id == productionRequest.RecipeId);
+        var recipe = hideoutTable.Production.Recipes?.FirstOrDefault(production => production.Id == productionRequest.RecipeId);
 
         if (recipe is null)
         {
@@ -121,9 +121,7 @@ public class HideoutHelper(
             return;
         }
 
-        var recipe = databaseService
-            .GetHideout()
-            .Production.Recipes?.FirstOrDefault(production => production.Id == productionRequest.RecipeId);
+        var recipe = hideoutTable.Production.Recipes?.FirstOrDefault(production => production.Id == productionRequest.RecipeId);
         if (recipe is null)
         {
             logger.Error(serverLocalisationService.GetText("hideout-missing_recipe_in_db", productionRequest.RecipeId));
@@ -325,7 +323,7 @@ public class HideoutHelper(
     /// <param name="hideoutProperties">Hideout properties</param>
     protected void UpdateProductionTimers(PmcData pmcData, HideoutProperties hideoutProperties)
     {
-        var recipes = databaseService.GetHideout().Production;
+        var recipes = hideoutTable.Production;
 
         // Check each production and handle edge cases if necessary
         foreach (var prodId in pmcData.Hideout?.Production ?? [])
@@ -653,8 +651,7 @@ public class HideoutHelper(
     {
         // 1 resource last 14 min 27 sec, 1/14.45/60 = 0.00115
         // 10-10-2021 From wiki, 1 resource last 12 minutes 38 seconds, 1/12.63333/60 = 0.00131
-        var fuelUsedSinceLastTick =
-            databaseService.GetHideout().Settings.GeneratorFuelFlowRate * GetTimeElapsedSinceLastServerTick(pmcData, isGeneratorOn);
+        var fuelUsedSinceLastTick = hideoutTable.Settings.GeneratorFuelFlowRate * GetTimeElapsedSinceLastServerTick(pmcData, isGeneratorOn);
 
         // Get all fuel consumption bonuses, returns an empty array if none found
         var profileFuelConsomptionBonusSum = pmcData.GetBonusValueFromProfile(BonusType.FuelConsumption);
@@ -810,9 +807,9 @@ public class HideoutHelper(
     /// <returns>Items craft time with bonuses subtracted</returns>
     public double? GetAdjustedCraftTimeWithSkills(PmcData pmcData, MongoId recipeId, bool applyHideoutManagementBonus = false)
     {
-        var globalSkillsDb = databaseService.GetGlobals().Configuration.SkillsSettings;
+        var globalSkillsDb = globalTable.Configuration.SkillsSettings;
 
-        var recipe = databaseService.GetHideout().Production.Recipes?.FirstOrDefault(production => production.Id == recipeId);
+        var recipe = hideoutTable.Production.Recipes?.FirstOrDefault(production => production.Id == recipeId);
         if (recipe is null)
         {
             logger.Error(serverLocalisationService.GetText("hideout-missing_recipe_in_db", recipeId));
@@ -983,7 +980,7 @@ public class HideoutHelper(
     /// <returns>Drain rate</returns>
     protected double GetWaterFilterDrainRate(PmcData pmcData)
     {
-        var globalSkillsDb = databaseService.GetGlobals().Configuration.SkillsSettings;
+        var globalSkillsDb = globalTable.Configuration.SkillsSettings;
 
         // 100 resources last 8 hrs 20 min, 100/8.33/60/60 = 0.00333
         const double filterDrainRate = 0.00333d;
@@ -1013,7 +1010,7 @@ public class HideoutHelper(
     /// <returns>Seconds to produce item</returns>
     protected double GetTotalProductionTimeSeconds(MongoId prodId)
     {
-        return databaseService.GetHideout().Production.Recipes?.FirstOrDefault(prod => prod.Id == prodId)?.ProductionTime ?? 0;
+        return hideoutTable.Production.Recipes?.FirstOrDefault(prod => prod.Id == prodId)?.ProductionTime ?? 0;
     }
 
     /// <summary>
@@ -1040,8 +1037,7 @@ public class HideoutHelper(
         // 10-10-2021 from WIKI (https://escapefromtarkov.fandom.com/wiki/FP-100_filter_absorber)
         //   Lasts for 17 hours 38 minutes and 49 seconds (23 hours 31 minutes and 45 seconds with elite hideout management skill),
         //   300/17.64694/60/60 = 0.004722
-        var filterDrainRate =
-            databaseService.GetHideout().Settings.AirFilterUnitFlowRate * GetTimeElapsedSinceLastServerTick(pmcData, isGeneratorOn);
+        var filterDrainRate = hideoutTable.Settings.AirFilterUnitFlowRate * GetTimeElapsedSinceLastServerTick(pmcData, isGeneratorOn);
 
         // Hideout management resource consumption bonus:
         var hideoutManagementConsumptionBonus = 1.0 - GetHideoutManagementConsumptionBonus(pmcData);
@@ -1175,9 +1171,7 @@ public class HideoutHelper(
             return;
         }
 
-        var bitcoinProdData = databaseService
-            .GetHideout()
-            .Production.Recipes?.FirstOrDefault(production => production.Id == BitcoinProductionId);
+        var bitcoinProdData = hideoutTable.Production.Recipes?.FirstOrDefault(production => production.Id == BitcoinProductionId);
 
         if (bitcoinProdData is null)
         {
@@ -1188,7 +1182,7 @@ public class HideoutHelper(
         // BSG finally fixed their settings, they now get loaded from the settings and used in the client
         var adjustedCraftTime =
             (profileHelper.IsDeveloperAccount(pmcData.SessionId!.Value) ? 40 : bitcoinProdData.ProductionTime)
-            / (1 + (btcFarmCGs - 1) * databaseService.GetHideout().Settings.GpuBoostRate);
+            / (1 + (btcFarmCGs - 1) * hideoutTable.Settings.GpuBoostRate);
 
         // The progress should be adjusted based on the GPU boost rate, but the target is still the base productionTime
         var timeMultiplier = bitcoinProdData.ProductionTime / adjustedCraftTime;
@@ -1253,7 +1247,7 @@ public class HideoutHelper(
 
         if (recipe is not null)
         {
-            var hideoutArea = databaseService.GetHideout().Areas.FirstOrDefault(area => area.Type == recipe.AreaType);
+            var hideoutArea = hideoutTable.Areas.FirstOrDefault(area => area.Type == recipe.AreaType);
             if (!(hideoutArea?.NeedsFuel ?? false))
             // e.g. Lavatory works at 100% when power is on / off
             {
@@ -1263,7 +1257,7 @@ public class HideoutHelper(
 
         if (!isGeneratorOn && timeElapsed.HasValue)
         {
-            timeElapsed = (long)(timeElapsed * databaseService.GetHideout().Settings.GeneratorSpeedWithoutFuel!.Value);
+            timeElapsed = (long)(timeElapsed * hideoutTable.Settings.GeneratorSpeedWithoutFuel!.Value);
         }
 
         return timeElapsed;
@@ -1276,9 +1270,7 @@ public class HideoutHelper(
     /// <returns>Coin slot count</returns>
     protected double GetBTCSlots(PmcData pmcData)
     {
-        var bitcoinProductions = databaseService
-            .GetHideout()
-            .Production.Recipes?.FirstOrDefault(production => production.Id == BitcoinProductionId);
+        var bitcoinProductions = hideoutTable.Production.Recipes?.FirstOrDefault(production => production.Id == BitcoinProductionId);
         var productionSlots = bitcoinProductions?.ProductionLimitCount ?? 3; // Default to 3 if none found
         var hasManagementSkillSlots = profileHelper.HasEliteSkillLevel(SkillTypes.HideoutManagement, pmcData);
         var managementSlotsCount = GetEliteSkillAdditionalBitcoinSlotCount() ?? 2;
@@ -1291,7 +1283,7 @@ public class HideoutHelper(
     /// </summary>
     protected double? GetEliteSkillAdditionalBitcoinSlotCount()
     {
-        return databaseService.GetGlobals().Configuration.SkillsSettings.HideoutManagement.EliteSlots.BitcoinFarm.Container;
+        return globalTable.Configuration.SkillsSettings.HideoutManagement.EliteSlots.BitcoinFarm.Container;
     }
 
     /// <summary>
@@ -1314,9 +1306,7 @@ public class HideoutHelper(
         var roundedLevel = Math.Floor(hideoutManagementSkill.Progress / 100);
         roundedLevel = roundedLevel.Approx(51d) ? roundedLevel - 1 : roundedLevel;
 
-        return roundedLevel
-            * databaseService.GetGlobals().Configuration.SkillsSettings.HideoutManagement.ConsumptionReductionPerLevel
-            / 100;
+        return roundedLevel * globalTable.Configuration.SkillsSettings.HideoutManagement.ConsumptionReductionPerLevel / 100;
     }
 
     /// <summary>
@@ -1371,14 +1361,16 @@ public class HideoutHelper(
         List<List<Item>> itemsToAdd = [];
         for (var index = 0; index < craftedCoinCount; index++)
         {
-            itemsToAdd.Add([
-                new Item
-                {
-                    Id = new MongoId(),
-                    Template = ItemTpl.BARTER_PHYSICAL_BITCOIN,
-                    Upd = new Upd { StackObjectsCount = 1 },
-                },
-            ]);
+            itemsToAdd.Add(
+                [
+                    new Item
+                    {
+                        Id = new MongoId(),
+                        Template = ItemTpl.BARTER_PHYSICAL_BITCOIN,
+                        Upd = new Upd { StackObjectsCount = 1 },
+                    },
+                ]
+            );
         }
 
         // Create request for what we want to add to stash
@@ -1454,7 +1446,7 @@ public class HideoutHelper(
         }
 
         // Get hideout area 16 bonus array
-        var fameAreaDb = databaseService.GetHideout().Areas.FirstOrDefault(area => area.Type == HideoutAreas.PlaceOfFame);
+        var fameAreaDb = hideoutTable.Areas.FirstOrDefault(area => area.Type == HideoutAreas.PlaceOfFame);
         if (fameAreaDb is null)
         {
             logger.Error("Could not locate fame area in database when trying to apply dogtag bonus");

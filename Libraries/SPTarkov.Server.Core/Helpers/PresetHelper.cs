@@ -3,13 +3,12 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Presets;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable(InjectionType.Singleton)]
-public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper, ICloner cloner)
+public class PresetHelper(GlobalTable globalTable, ItemHelper itemHelper, ICloner cloner)
 {
     protected Dictionary<MongoId, Preset>? DefaultEquipmentPresets;
     protected Dictionary<MongoId, Preset>? DefaultWeaponPresets;
@@ -60,7 +59,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
     {
         if (DefaultWeaponPresets is null)
         {
-            var tempPresets = databaseService.GetGlobals().ItemPresets;
+            var tempPresets = globalTable.ItemPresets;
             DefaultWeaponPresets = tempPresets
                 .Where(p => p.Value.Encyclopedia != null && itemHelper.IsOfBaseclass(p.Value.Encyclopedia.Value, BaseClasses.WEAPON))
                 .ToDictionary();
@@ -77,7 +76,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
     {
         if (DefaultEquipmentPresets == null)
         {
-            var tempPresets = databaseService.GetGlobals().ItemPresets;
+            var tempPresets = globalTable.ItemPresets;
             DefaultEquipmentPresets = tempPresets
                 .Where(p => p.Value.Encyclopedia != null && itemHelper.ArmorItemCanHoldMods(p.Value.Encyclopedia.Value))
                 .ToDictionary();
@@ -98,7 +97,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
             return false;
         }
 
-        return databaseService.GetGlobals().ItemPresets.ContainsKey(id);
+        return globalTable.ItemPresets.ContainsKey(id);
     }
 
     /// <summary>
@@ -124,7 +123,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
 
     public Preset? GetPreset(MongoId id)
     {
-        return cloner.Clone(databaseService.GetGlobals().ItemPresets[id]);
+        return cloner.Clone(globalTable.ItemPresets[id]);
     }
 
     /// <summary>
@@ -133,7 +132,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
     /// <returns>List</returns>
     public List<Preset>? GetAllPresets()
     {
-        return cloner.Clone(databaseService.GetGlobals().ItemPresets.Values.ToList());
+        return cloner.Clone(globalTable.ItemPresets.Values.ToList());
     }
 
     /// <summary>
@@ -151,7 +150,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
         }
 
         // Use gathered preset ids to get full preset objects, clone and return
-        return cloner.Clone(presetDetailsForTpl.PresetIds.Select(x => databaseService.GetGlobals().ItemPresets[x]).ToList());
+        return cloner.Clone(presetDetailsForTpl.PresetIds.Select(x => globalTable.ItemPresets[x]).ToList());
     }
 
     /// <summary>
@@ -178,7 +177,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
             if (DefaultEquipmentPresets?.TryGetValue(presetDetails.DefaultId.Value, out defaultPreset) is null or false)
             {
                 // Default not found in weapon or equipment, return first preset in list
-                return cloner.Clone(databaseService.GetGlobals().ItemPresets[presetDetails.PresetIds.First()]);
+                return cloner.Clone(globalTable.ItemPresets[presetDetails.PresetIds.First()]);
             }
         }
 
@@ -192,7 +191,7 @@ public class PresetHelper(DatabaseService databaseService, ItemHelper itemHelper
     /// <returns>tpl mongoid</returns>
     public MongoId GetBaseItemTpl(MongoId presetId)
     {
-        if (!databaseService.GetGlobals().ItemPresets.TryGetValue(presetId, out var preset))
+        if (!globalTable.ItemPresets.TryGetValue(presetId, out var preset))
         {
             // No preset exists
             return "";

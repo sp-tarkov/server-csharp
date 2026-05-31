@@ -3,7 +3,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
-public record Bots
+public record BotTable
 {
     [JsonPropertyName("types")]
     public required Dictionary<string, BotType?> Types { get; init; }

@@ -2,12 +2,12 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 
 namespace SPTarkov.Server.Core.Migration.Migrations.Fixes;
 
 [Injectable]
-public sealed class InvalidPocketFix(DatabaseService databaseService) : AbstractProfileMigration
+public sealed class InvalidPocketFix(TemplateTable templateTable) : AbstractProfileMigration
 {
     public const string DEFAULT_POCKETS = "627a4e6b255f7527fb05a0f6";
     public const string UNHEARD_POCKETS = "65e080be269cbd5c5005e529";
@@ -52,7 +52,7 @@ public sealed class InvalidPocketFix(DatabaseService databaseService) : Abstract
                     && tplValue.TryGetValue<string>(out var template)
                 )
                 {
-                    return databaseService.GetItems().ContainsKey(template) ? PocketStatus.Valid : PocketStatus.Invalid;
+                    return templateTable.Items.ContainsKey(template) ? PocketStatus.Valid : PocketStatus.Invalid;
                 }
             }
         }
@@ -88,7 +88,7 @@ public sealed class InvalidPocketFix(DatabaseService databaseService) : Abstract
                     && tplValue.TryGetValue<string>(out var template)
                 )
                 {
-                    return databaseService.GetItems().ContainsKey(template) ? PocketStatus.Valid : PocketStatus.Invalid;
+                    return templateTable.Items.ContainsKey(template) ? PocketStatus.Valid : PocketStatus.Invalid;
                 }
             }
         }

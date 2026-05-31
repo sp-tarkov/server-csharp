@@ -1,6 +1,7 @@
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Server;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -10,7 +11,7 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class OpenZoneService(
     ISptLogger<OpenZoneService> logger,
-    DatabaseService databaseService,
+    LocationTable locationTable,
     ServerLocalisationService serverLocalisationService,
     LocationConfig locationConfig
 )
@@ -35,7 +36,7 @@ public class OpenZoneService(
     /// </summary>
     public void ApplyZoneChangesToAllMaps()
     {
-        var dbLocations = databaseService.GetLocations().GetDictionary();
+        var dbLocations = locationTable.GetDictionary();
         foreach (var mapKvP in locationConfig.OpenZones)
         {
             if (!dbLocations.ContainsKey(mapKvP.Key))

@@ -7,7 +7,8 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Models.Spt.Hideout;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
@@ -19,13 +20,13 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class RagfairPriceService(
     ISptLogger<RagfairPriceService> logger,
+    TemplateTable templateTable,
+    HideoutTable hideoutTable,
     RandomUtil randomUtil,
     HandbookHelper handbookHelper,
     TraderHelper traderHelper,
     PresetHelper presetHelper,
     ItemHelper itemHelper,
-    DatabaseService databaseService,
-    DatabaseServer databaseServer,
     ServerLocalisationService serverLocalisationService,
     RagfairConfig ragfairConfig
 )
@@ -55,11 +56,7 @@ public class RagfairPriceService(
     public void RefreshStaticPrices()
     {
         StaticPrices = new Dictionary<MongoId, double>();
-        foreach (
-            var item in databaseService
-                .GetItems()
-                .Values.Where(item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase))
-        )
+        foreach (var item in templateTable.Items.Values.Where(item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)))
         {
             StaticPrices[item.Id] = handbookHelper.GetTemplatePrice(item.Id);
         }
@@ -72,7 +69,7 @@ public class RagfairPriceService(
     public void ReplaceFleaBasePrices()
     {
         var config = ragfairConfig.Dynamic.GenerateBaseFleaPrices;
-        var pricePool = databaseServer.GetTables().Templates.Prices;
+        var pricePool = templateTable.Prices;
         var hideoutCraftItems = GetHideoutCraftItemTpls();
 
         foreach (var (itemTpl, handbookPrice) in StaticPrices)
@@ -127,9 +124,9 @@ public class RagfairPriceService(
     {
         var results = new HashSet<MongoId?>();
         foreach (
-            var itemRequirements in databaseService
-                .GetHideout()
-                .Production.Recipes.Select(recipe => recipe.Requirements.Where(x => x.Type == "Item").Select(x => x.TemplateId))
+            var itemRequirements in hideoutTable.Production.Recipes.Select(recipe =>
+                recipe.Requirements.Where(x => x.Type == "Item").Select(x => x.TemplateId)
+            )
         )
         {
             results.UnionWith(itemRequirements);
@@ -201,7 +198,7 @@ public class RagfairPriceService(
     /// <returns> Price in roubles </returns>
     public double? GetDynamicPriceForItem(MongoId itemTpl)
     {
-        databaseService.GetPrices().TryGetValue(itemTpl, out var value);
+        templateTable.Prices.TryGetValue(itemTpl, out var value);
 
         return value;
     }
@@ -223,7 +220,7 @@ public class RagfairPriceService(
     /// <returns>Dictionary of item tpls and rouble cost</returns>
     public Dictionary<MongoId, double> GetAllFleaPrices()
     {
-        var dynamicPrices = databaseService.GetPrices();
+        var dynamicPrices = templateTable.Prices;
         // Use dynamic prices first, fill in any gaps with data from static prices (handbook)
         return dynamicPrices.Concat(StaticPrices).GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.First().Value);
     }

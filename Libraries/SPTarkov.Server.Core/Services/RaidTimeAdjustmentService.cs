@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Models.Eft.Game;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Location;
+using SPTarkov.Server.Core.Models.Spt.Server;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Services;
@@ -15,7 +16,8 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class RaidTimeAdjustmentService(
     ISptLogger<RaidTimeAdjustmentService> logger,
-    DatabaseService databaseService,
+    GlobalTable globalTable,
+    LocationTable locationTable,
     RandomUtil randomUtil,
     WeightedRandomHelper weightedRandomHelper,
     ProfileActivityService profileActivityService,
@@ -196,15 +198,14 @@ public class RaidTimeAdjustmentService(
     /// <returns>Response to send to client</returns>
     public RaidChanges GetRaidAdjustments(MongoId sessionId, GetRaidTimeRequest request)
     {
-        var globals = databaseService.GetGlobals();
-        var mapBase = databaseService.GetLocation(request.Location.ToLowerInvariant()).Base;
+        var mapBase = locationTable.GetLocation(request.Location.ToLowerInvariant()).Base;
         var baseEscapeTimeMinutes = mapBase.EscapeTimeLimit;
 
         // Prep result object to return
         var result = new RaidChanges
         {
-            NewSurviveTimeSeconds = globals.Configuration.Exp.MatchEnd.SurvivedSecondsRequirement,
-            OriginalSurvivalTimeSeconds = globals.Configuration.Exp.MatchEnd.SurvivedSecondsRequirement,
+            NewSurviveTimeSeconds = globalTable.Configuration.Exp.MatchEnd.SurvivedSecondsRequirement,
+            OriginalSurvivalTimeSeconds = globalTable.Configuration.Exp.MatchEnd.SurvivedSecondsRequirement,
             DynamicLootPercent = 100,
             StaticLootPercent = 100,
             SimulatedRaidStartSeconds = 0,

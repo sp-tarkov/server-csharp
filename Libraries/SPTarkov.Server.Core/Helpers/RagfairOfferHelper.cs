@@ -20,6 +20,7 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class RagfairOfferHelper(
     ISptLogger<RagfairOfferHelper> logger,
+    GlobalTable globalTable,
     TimeUtil timeUtil,
     BotHelper botHelper,
     RagfairSortHelper ragfairSortHelper,
@@ -30,7 +31,6 @@ public class RagfairOfferHelper(
     QuestHelper questHelper,
     RagfairServerHelper ragfairServerHelper,
     ItemHelper itemHelper,
-    DatabaseService databaseService,
     RagfairOfferService ragfairOfferService,
     LocaleService localeService,
     ServerLocalisationService serverLocalisationService,
@@ -686,7 +686,7 @@ public class RagfairOfferHelper(
     /// <param name="amountToIncrementBy">Raw amount to add to players ragfair rating (excluding the reputation gain multiplier)</param>
     public void IncreaseProfileRagfairRating(SptProfile profile, double? amountToIncrementBy)
     {
-        var ragfairGlobalsConfig = databaseService.GetGlobals().Configuration.RagFair;
+        var ragfairGlobalsConfig = globalTable.Configuration.RagFair;
 
         profile.CharacterData.PmcData.RagfairInfo.IsRatingGrowing = true;
         if (amountToIncrementBy is null)
@@ -872,7 +872,7 @@ public class RagfairOfferHelper(
     protected bool PassesSearchFilterCriteria(SearchRequestData searchRequest, RagfairOffer offer, Item offerRootItem, PmcData pmcData)
     {
         var isDefaultUserOffer = offer.User.MemberType == MemberCategory.Default;
-        if (pmcData.Info.Level < databaseService.GetGlobals().Configuration.RagFair.MinUserLevel && isDefaultUserOffer)
+        if (pmcData.Info.Level < globalTable.Configuration.RagFair.MinUserLevel && isDefaultUserOffer)
         // Skip item if player is < global unlock level (default is 15) and item is from a dynamically generated source
         {
             return false;

@@ -3,9 +3,11 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
 
@@ -14,7 +16,8 @@ namespace SPTarkov.Server.Core.Generators;
 [Injectable]
 public class FenceBaseAssortGenerator(
     ISptLogger<FenceBaseAssortGenerator> logger,
-    DatabaseService databaseService,
+    TraderTable traderTable,
+    TemplateTable templateTable,
     HandbookHelper handbookHelper,
     ItemHelper itemHelper,
     PresetHelper presetHelper,
@@ -32,9 +35,9 @@ public class FenceBaseAssortGenerator(
     public void GenerateFenceBaseAssorts()
     {
         var blockedSeasonalItems = seasonalEventService.GetInactiveSeasonalEventItems();
-        var baseFenceAssort = databaseService.GetTrader(Traders.FENCE)?.Assort;
+        var baseFenceAssort = traderTable.GetTrader(Traders.FENCE)?.Assort;
 
-        foreach (var (itemId, rootItemDb) in databaseService.GetItems())
+        foreach (var (itemId, rootItemDb) in templateTable.Items)
         {
             if (!string.Equals(rootItemDb.Type, "Item", StringComparison.OrdinalIgnoreCase))
             {

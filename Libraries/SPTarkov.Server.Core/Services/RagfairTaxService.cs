@@ -16,7 +16,7 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class RagfairTaxService(
     ISptLogger<RagfairTaxService> logger,
-    DatabaseService databaseService,
+    GlobalTable globalTable,
     RagfairPriceService ragfairPriceService,
     ItemHelper itemHelper,
     RagfairConfig ragfairConfig,
@@ -62,14 +62,12 @@ public class RagfairTaxService(
             return 0;
         }
 
-        var globals = databaseService.GetGlobals();
-
         var itemTemplate = itemHelper.GetItem(item.Template).Value;
         var itemWorth = CalculateItemWorth(item, itemTemplate, offerItemCount.Value, pmcData);
         var requirementsPrice = requirementsValue * (sellInOnePiece ? 1 : offerItemCount);
 
-        var itemTaxMult = globals.Configuration.RagFair.CommunityItemTax / 100.0;
-        var requirementTaxMult = globals.Configuration.RagFair.CommunityRequirementTax / 100.0;
+        var itemTaxMult = globalTable.Configuration.RagFair.CommunityItemTax / 100.0;
+        var requirementTaxMult = globalTable.Configuration.RagFair.CommunityRequirementTax / 100.0;
 
         var itemPriceMult = Math.Log10(itemWorth / requirementsPrice.Value);
         var requirementPriceMult = Math.Log10(requirementsPrice.Value / itemWorth);
@@ -97,7 +95,7 @@ public class RagfairTaxService(
         if (item.Upd.Buff is not null)
         {
             var buffType = item.Upd.Buff.BuffType;
-            var itemEnhancementSettings = databaseService.GetGlobals().Configuration.RepairSettings.ItemEnhancementSettings;
+            var itemEnhancementSettings = globalTable.Configuration.RepairSettings.ItemEnhancementSettings;
             var priceModiferValue = buffType switch
             {
                 RepairBuffType.DamageReduction => itemEnhancementSettings.DamageReduction.PriceModifierValue,

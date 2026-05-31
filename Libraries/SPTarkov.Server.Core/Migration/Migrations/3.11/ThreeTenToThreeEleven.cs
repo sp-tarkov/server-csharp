@@ -2,9 +2,11 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 using Range = SemanticVersioning.Range;
 
@@ -12,7 +14,8 @@ namespace SPTarkov.Server.Core.Migration.Migrations._3._11;
 
 [Injectable]
 public sealed class ThreeTenToThreeEleven(
-    DatabaseService databaseService,
+    TraderTable traderTable,
+    TemplateTable templateTable,
     // Yes, referencing the helpers directly causes a circular dependency. Too bad!
     IServiceProvider serviceProvider
 ) : AbstractProfileMigration
@@ -106,7 +109,7 @@ public sealed class ThreeTenToThreeEleven(
 
         if (profile.CharacterData.PmcData.Achievements.Count > 0)
         {
-            var achievementsDb = databaseService.GetTemplates().Achievements;
+            var achievementsDb = templateTable.Achievements;
 
             foreach (var achievementId in profile.CharacterData.PmcData.Achievements.Keys)
             {
@@ -161,7 +164,7 @@ public sealed class ThreeTenToThreeEleven(
                 continue;
             }
 
-            var trader = databaseService.GetTrader("5ac3b934156ae10c4430e83c");
+            var trader = traderTable.GetTrader("5ac3b934156ae10c4430e83c");
             var traderClothing = trader?.Suits?.FirstOrDefault(s => s.SuiteId == oldSuite);
 
             if (traderClothing != null)
@@ -204,7 +207,7 @@ public sealed class ThreeTenToThreeEleven(
                 continue;
             }
 
-            var trader = databaseService.GetTrader("5ac3b934156ae10c4430e83c");
+            var trader = traderTable.GetTrader("5ac3b934156ae10c4430e83c");
             var traderClothing = trader?.Suits?.FirstOrDefault(s => s.SuiteId == oldSuite);
 
             if (traderClothing != null)

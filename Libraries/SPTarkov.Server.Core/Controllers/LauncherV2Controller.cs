@@ -4,6 +4,7 @@ using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -14,9 +15,9 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class LauncherV2Controller(
     IReadOnlyList<SptMod> loadedMods,
+    TemplateTable templateTable,
     HashUtil hashUtil,
     SaveServer saveServer,
-    DatabaseService databaseService,
     ServerLocalisationService serverLocalisationService,
     CoreConfig coreConfig,
     Watermark watermark,
@@ -40,7 +41,7 @@ public class LauncherV2Controller(
     public Dictionary<string, string> Types()
     {
         var result = new Dictionary<string, string>();
-        var dbProfiles = databaseService.GetProfileTemplates();
+        var dbProfiles = templateTable.Profiles;
 
         foreach (var (templateName, template) in dbProfiles)
         {

@@ -2,19 +2,11 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Loader;
 using Mono.Cecil;
-using SPTarkov.Common.Extensions;
 using SPTarkov.Common.Logger;
 using SPTarkov.Common.Models.Logging;
-using SPTarkov.Common.Semver;
-using SPTarkov.Common.Semver.Implementations;
-using SPTarkov.DI;
-using SPTarkov.DI.Annotations;
 using SPTarkov.Reflection.Patching;
-using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Services.Hosted;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Server.Helpers;
 
 namespace SPTarkov.Server.Modding;
 

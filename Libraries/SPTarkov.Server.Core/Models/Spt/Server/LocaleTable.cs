@@ -3,7 +3,7 @@ using SPTarkov.Server.Core.Utils.Json;
 
 namespace SPTarkov.Server.Core.Models.Spt.Server;
 
-public record LocaleBase
+public record LocaleTable
 {
     /// <summary>
     /// DO NOT USE THIS PROPERTY DIRECTLY, USE LOCALESERVICE INSTEAD

@@ -1,8 +1,8 @@
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
@@ -10,7 +10,7 @@ using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class RepairHelper(ISptLogger<RepairHelper> logger, RandomUtil randomUtil, DatabaseService databaseService, ICloner cloner)
+public class RepairHelper(ISptLogger<RepairHelper> logger, GlobalTable globalTable, RandomUtil randomUtil, ICloner cloner)
 {
     /// <summary>
     ///     Alter an items durability after a repair by trader/repair kit
@@ -110,7 +110,7 @@ public class RepairHelper(ISptLogger<RepairHelper> logger, RandomUtil randomUtil
     )
     {
         // Degradation value is based on the armor material
-        if (!databaseService.GetGlobals().Configuration.ArmorMaterials.TryGetValue(material, out var armorMaterialSettings))
+        if (!globalTable.Configuration.ArmorMaterials.TryGetValue(material, out var armorMaterialSettings))
         {
             logger.Error($"Unable to find armor with a type of: {material}");
         }

@@ -11,6 +11,7 @@ using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -21,6 +22,8 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class InventoryController(
     ISptLogger<InventoryController> logger,
+    TemplateTable templateTable,
+    TraderTable traderTable,
     HttpResponseUtil httpResponseUtil,
     PresetHelper presetHelper,
     InventoryHelper inventoryHelper,
@@ -28,7 +31,6 @@ public class InventoryController(
     ProfileHelper profileHelper,
     TraderHelper traderHelper,
     ItemHelper itemHelper,
-    DatabaseService databaseService,
     FenceService fenceService,
     RagfairOfferService ragfairOfferService,
     MapMarkerService mapMarkerService,
@@ -213,7 +215,7 @@ public class InventoryController(
                 }
                 case "ExamineAllItems":
                 {
-                    var itemIds = databaseService.GetItems().Where(x => x.Value.Type != "Node").Select(x => x.Key);
+                    var itemIds = templateTable.Items.Where(x => x.Value.Type != "Node").Select(x => x.Key);
                     FlagItemsAsInspectedAndRewardXp(itemIds, fullProfile);
                     logger.Success($"Flagged {itemIds.Count()} items as examined");
 
@@ -479,7 +481,7 @@ public class InventoryController(
         if (itemId is null)
         // item template
         {
-            if (databaseService.GetItems().ContainsKey(request.ItemId))
+            if (templateTable.Items.ContainsKey(request.ItemId))
             {
                 itemId = request.ItemId;
             }
@@ -525,7 +527,7 @@ public class InventoryController(
         // Not fence
         // get tpl from trader assort
         {
-            return databaseService.GetTrader(request.FromOwner.Id).Assort.Items.FirstOrDefault(item => item.Id == request.ItemId)?.Template;
+            return traderTable.GetTrader(request.FromOwner.Id).Assort.Items.FirstOrDefault(item => item.Id == request.ItemId)?.Template;
         }
 
         if (request.FromOwner.Type == "RagFair")

@@ -3,14 +3,17 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Core.Generators.Loot;
 
 [Injectable(InjectionType.Singleton)]
 public class PMCLootGenerator(
-    DatabaseService databaseService,
+    TemplateTable templateTable,
+    BotTable botTable,
     ItemHelper itemHelper,
     ItemFilterService itemFilterService,
     RagfairPriceService ragfairPriceService,
@@ -140,7 +143,7 @@ public class PMCLootGenerator(
     )
     {
         var lootPool = new Dictionary<MongoId, double>();
-        var items = databaseService.GetItems();
+        var items = templateTable.Items;
 
         // Filter all items in DB to ones we want with passed in whitelist + blacklist + generic 'IsValidItem' check
         // Also run Delegate if it's not null
@@ -205,7 +208,7 @@ public class PMCLootGenerator(
         var pmcType = string.Equals(pmcRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec";
 
         // the usec/bear.json item prices act as overrides we apply over what we dynamically generate
-        if (databaseService.GetBots().Types.TryGetValue(pmcType, out var priceOverrides))
+        if (botTable.Types.TryGetValue(pmcType, out var priceOverrides))
         {
             var botItems = priceOverrides.BotInventory.Items;
             switch (slot)

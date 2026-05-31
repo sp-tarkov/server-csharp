@@ -21,7 +21,7 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class TradeController(
     ISptLogger<TradeController> logger,
-    DatabaseService databaseService,
+    TraderTable traderTable,
     EventOutputHolder eventOutputHolder,
     TradeHelper tradeHelper,
     TimeUtil timeUtil,
@@ -266,7 +266,7 @@ public class TradeController(
             sessionId,
             trader,
             MessageType.MessageWithItems,
-            randomUtil.GetArrayValue(databaseService.GetTrader(trader).Dialogue.TryGetValue("soldItems", out var items) ? items : []),
+            randomUtil.GetArrayValue(traderTable.GetTrader(trader).Dialogue.TryGetValue("soldItems", out var items) ? items : []),
             currencyReward.SelectMany(x => x).ToList(),
             timeUtil.GetHoursAsSeconds(72)
         );

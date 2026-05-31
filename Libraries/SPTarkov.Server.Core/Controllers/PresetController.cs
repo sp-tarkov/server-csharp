@@ -2,20 +2,20 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Spt.Presets;
-using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class PresetController(ISptLogger<PresetController> logger, PresetHelper presetHelper, DatabaseService databaseService)
+public class PresetController(ISptLogger<PresetController> logger, GlobalTable globalTable, PresetHelper presetHelper)
 {
     /// <summary>
     ///     Keyed by item tpl, value = collection of preset ids
     /// </summary>
     public void Initialize()
     {
-        var presets = databaseService.GetGlobals().ItemPresets;
+        var presets = globalTable.ItemPresets;
         var result = new Dictionary<MongoId, PresetCacheDetails>();
         foreach (var (presetId, preset) in presets)
         {

@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Dialog;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -18,9 +19,9 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable]
 public class MailSendService(
     ISptLogger<MailSendService> logger,
+    TemplateTable templateTable,
     TimeUtil timeUtil,
     SaveServer saveServer,
-    DatabaseService databaseService,
     NotifierHelper notifierHelper,
     DialogueHelper dialogueHelper,
     NotificationSendHelper notificationSendHelper,
@@ -439,7 +440,7 @@ public class MailSendService(
     /// <returns> Sanitised items </returns>
     private MessageItems ProcessItemsBeforeAddingToMail(MessageType? dialogType, SendMessageDetails messageDetails)
     {
-        var items = databaseService.GetItems();
+        var items = templateTable.Items;
 
         MessageItems itemsToSendToPlayer = new();
         if ((messageDetails.Items?.Count ?? 0) > 0)

@@ -183,10 +183,6 @@ public static class Program
         );
         var app = builder.Build();
 
-        // TODO: Remove once fully ported to DI
-        var dbServer = app.Services.GetService<DatabaseServer>();
-        dbServer!.SetTables(tables);
-
         // Configure Kestrel WS options and Handle fallback requests
         ConfigureWebApp(app);
 

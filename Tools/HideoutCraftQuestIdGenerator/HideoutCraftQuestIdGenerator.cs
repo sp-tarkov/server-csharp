@@ -5,7 +5,9 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Models.Spt.Hideout;
+using SPTarkov.Server.Core.Models.Spt.Server;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Utils;
 using Path = System.IO.Path;
 
@@ -14,9 +16,11 @@ namespace HideoutCraftQuestIdGenerator;
 [Injectable]
 public class HideoutCraftQuestIdGenerator(
     ISptLogger<HideoutCraftQuestIdGenerator> logger,
+    TemplateTable templateTable,
+    HideoutTable hideoutTable,
+    LocaleTable localeTable,
     FileUtil fileUtil,
     JsonUtil jsonUtil,
-    DatabaseServer databaseServer,
     ItemHelper itemHelper,
     ImageRouteImporter imageRouteImporter
 )
@@ -53,14 +57,14 @@ public class HideoutCraftQuestIdGenerator(
         const string productionPath = "Libraries\\SPTarkov.Server.Assets\\SPT_Data\\database\\hideout\\production.json";
         var productionFilePath = Path.Combine(projectDir.FullName, productionPath);
 
-        var updatedProductionJson = jsonUtil.Serialize(databaseServer.GetTables().Hideout.Production, true);
+        var updatedProductionJson = jsonUtil.Serialize(hideoutTable.Production, true);
         await fileUtil.WriteFileAsync(productionFilePath, updatedProductionJson);
     }
 
     // Build a list of all quests and what production they unlock
     private void BuildQuestProductionList()
     {
-        foreach (var (questId, quest) in databaseServer.GetTables().Templates.Quests)
+        foreach (var (questId, quest) in templateTable.Quests)
         {
             var combinedRewards = CombineRewards(quest.Rewards).Where(x => x.Type == RewardType.ProductionScheme).ToList();
             foreach (var reward in combinedRewards)
@@ -95,7 +99,7 @@ public class HideoutCraftQuestIdGenerator(
     private void UpdateProductionQuests()
     {
         // Loop through all productions, and try to associate any with a `QuestComplete` type with its quest
-        foreach (var production in databaseServer.GetTables().Hideout.Production.Recipes)
+        foreach (var production in hideoutTable.Production.Recipes)
         {
             // Skip blacklisted productions
             if (_blacklistedProductions.Contains(production.Id))
@@ -123,7 +127,7 @@ public class HideoutCraftQuestIdGenerator(
             // Check for forced ids
             if (_forcedQuestToProductionAssociations.TryGetValue(production.Id, out var associatedQuestIdToComplete))
             {
-                var enLocale = databaseServer.GetTables().Locales.Global["en"].Value;
+                var enLocale = localeTable.Global["en"].Value;
                 var questName = enLocale[$"{associatedQuestIdToComplete} name"];
                 // Found one, move to next production
                 logger.Success(
@@ -189,7 +193,7 @@ public class HideoutCraftQuestIdGenerator(
 
         if (_questProductionMap.ContainsKey(questProductionOutputs[0].QuestId))
         {
-            var recipies = databaseServer.GetTables().Hideout.Production.Recipes;
+            var recipies = hideoutTable.Production.Recipes;
             var prodId = _questProductionMap[questProductionOutputs[0].QuestId];
             var prod = recipies.FirstOrDefault(x => x.Id == prodId);
             var prodItemName = itemHelper.GetItemName(prod.EndProduct);

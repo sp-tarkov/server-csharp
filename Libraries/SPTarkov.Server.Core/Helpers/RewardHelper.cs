@@ -10,6 +10,8 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
+using SPTarkov.Server.Core.Models.Spt.Hideout;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -19,9 +21,11 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class RewardHelper(
     ISptLogger<RewardHelper> logger,
+    GlobalTable globalTable,
+    HideoutTable hideoutTable,
+    TemplateTable templateTable,
     TimeUtil timeUtil,
     ItemHelper itemHelper,
-    DatabaseService databaseService,
     ProfileHelper profileHelper,
     ServerLocalisationService serverLocalisationService,
     TraderHelper traderHelper,
@@ -85,7 +89,7 @@ public class RewardHelper(
                 case RewardType.Experience:
                     profileHelper.AddExperienceToPmc(sessionId.Value, int.Parse(reward.Value.ToString())); // this must occur first as the output object needs to take the modified profile exp value
                     // Recalculate level in event player leveled up
-                    pmcProfile.Info.Level = pmcProfile.CalculateLevel(databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable);
+                    pmcProfile.Info.Level = pmcProfile.CalculateLevel(globalTable.Configuration.Exp.Level.ExperienceTable);
                     break;
                 case RewardType.TraderStanding:
                     traderHelper.AddStandingToTrader(sessionId.Value, reward.Target, reward.Value.Value);
@@ -260,7 +264,7 @@ public class RewardHelper(
             return [];
         }
 
-        var craftingRecipesDb = databaseService.GetHideout().Production.Recipes;
+        var craftingRecipesDb = hideoutTable.Production.Recipes;
         var result = craftingRecipesDb
             .Where(production =>
                 // Attempt to match by questId (value we add manually to production.json via `gen:productionquests` command)
@@ -445,7 +449,7 @@ public class RewardHelper(
         fullProfile.CharacterData.PmcData.Achievements.TryAdd(achievementId, timeUtil.GetTimeStamp());
 
         // Check for any customisation unlocks
-        var achievementDataDb = databaseService.GetTemplates().Achievements.FirstOrDefault(achievement => achievement.Id == achievementId);
+        var achievementDataDb = templateTable.Achievements.FirstOrDefault(achievement => achievement.Id == achievementId);
         if (achievementDataDb is null)
         {
             return;

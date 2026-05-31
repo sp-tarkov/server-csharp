@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Server;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -19,9 +20,9 @@ namespace SPTarkov.Server.Core.Generators.Loot;
 [Injectable]
 public class LocationLootGenerator(
     ISptLogger<LocationLootGenerator> logger,
+    LocationTable locationTable,
     RandomUtil randomUtil,
     ItemHelper itemHelper,
-    DatabaseService databaseService,
     PresetHelper presetHelper,
     ServerLocalisationService serverLocalisationService,
     SeasonalEventService seasonalEventService,
@@ -42,7 +43,7 @@ public class LocationLootGenerator(
         var result = new List<SpawnpointTemplate>();
 
         // Get generation details for location from db
-        var locationDetails = databaseService.GetLocation(locationId);
+        var locationDetails = locationTable.GetLocation(locationId);
         if (locationDetails is null)
         {
             logger.Error($"Location: {locationId} not found in database, generated 0 loot items");
@@ -93,7 +94,7 @@ public class LocationLootGenerator(
         var staticLootItemCount = 0;
         var result = new List<SpawnpointTemplate>();
 
-        var mapData = databaseService.GetLocation(locationId);
+        var mapData = locationTable.GetLocation(locationId);
 
         var staticWeaponsOnMap = mapData.StaticContainers.Value.StaticWeapons;
         if (staticWeaponsOnMap is null)

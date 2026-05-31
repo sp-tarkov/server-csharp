@@ -5,6 +5,9 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Hideout;
+using SPTarkov.Server.Core.Models.Spt.Server;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 
@@ -13,7 +16,12 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class PostDbLoadService(
     ISptLogger<PostDbLoadService> logger,
-    DatabaseService databaseService,
+    TemplateTable templateTable,
+    TraderTable traderTable,
+    GlobalTable globalTable,
+    HideoutTable hideoutTable,
+    LocaleTable localeTable,
+    LocationTable locationTable,
     ServerLocalisationService serverLocalisationService,
     SeasonalEventService seasonalEventService,
     CustomLocationWaveService customLocationWaveService,
@@ -142,7 +150,7 @@ public class PostDbLoadService(
 
     protected void RenamePreraidLocales()
     {
-        if (databaseService.GetLocales().Global.TryGetValue("en", out var lazyloadedValue))
+        if (localeTable.Global.TryGetValue("en", out var lazyloadedValue))
         {
             // We have to add a transformer here, because locales are lazy loaded due to them taking up huge space in memory
             // The transformer will make sure that each time the locales are requested, the ones changed or added below are included
@@ -158,7 +166,7 @@ public class PostDbLoadService(
 
     protected void ReplaceScavWavesWithRole(WildSpawnType newScavRole)
     {
-        foreach (var location in databaseService.GetLocations().GetDictionary().Values)
+        foreach (var location in locationTable.GetDictionary().Values)
         {
             if (location.Base?.Waves is null)
             {
@@ -181,7 +189,7 @@ public class PostDbLoadService(
     protected void FixDogtagCaseNotAcceptingAllDogtags()
     {
         //Find case to add new ids to
-        if (!databaseService.GetItems().TryGetValue(ItemTpl.CONTAINER_DOGTAG_CASE, out var dogtagCase))
+        if (!templateTable.Items.TryGetValue(ItemTpl.CONTAINER_DOGTAG_CASE, out var dogtagCase))
         {
             return;
         }
@@ -250,33 +258,32 @@ public class PostDbLoadService(
     protected void FlagMapAsGuaranteedBoss(WildSpawnType boss)
     {
         // Get the corresponding map for the provided boss
-        var locations = databaseService.GetLocations();
         Location? location;
         switch (boss)
         {
             case WildSpawnType.bossBully:
-                location = locations.Bigmap;
+                location = locationTable.Bigmap;
                 break;
             case WildSpawnType.bossGluhar:
-                location = locations.RezervBase;
+                location = locationTable.RezervBase;
                 break;
             case WildSpawnType.bossKilla:
-                location = locations.Interchange;
+                location = locationTable.Interchange;
                 break;
             case WildSpawnType.bossKojaniy:
-                location = locations.Woods;
+                location = locationTable.Woods;
                 break;
             case WildSpawnType.bossSanitar:
-                location = locations.Shoreline;
+                location = locationTable.Shoreline;
                 break;
             case WildSpawnType.bossKolontay:
-                location = locations.TarkovStreets;
+                location = locationTable.TarkovStreets;
                 break;
             case WildSpawnType.bossKnight:
-                location = locations.Lighthouse;
+                location = locationTable.Lighthouse;
                 break;
             case WildSpawnType.bossTagilla:
-                location = locations.Factory4Day;
+                location = locationTable.Factory4Day;
                 break;
             default:
                 logger.Warning($"Unknown boss type: {boss}. Unable to set as weekly. Skipping");
@@ -298,18 +305,17 @@ public class PostDbLoadService(
 
     private void MergeCustomHideoutAreas()
     {
-        var hideout = databaseService.GetHideout();
-        foreach (var customArea in hideout.CustomAreas)
+        foreach (var customArea in hideoutTable.CustomAreas ?? [])
         {
             // Check if exists
-            if (hideout.Areas!.Exists(area => area.Id == customArea.Id))
+            if (hideoutTable.Areas.Exists(area => area.Id == customArea.Id))
             {
                 logger.Warning($"Unable to add new hideout area with Id: {customArea.Id} as ID is already in use, skipping");
 
                 continue;
             }
 
-            hideout.Areas.Add(customArea);
+            hideoutTable.Areas.Add(customArea);
         }
     }
 
@@ -318,8 +324,8 @@ public class PostDbLoadService(
     /// </summary>
     protected void MergeCustomAchievements()
     {
-        var achievements = databaseService.GetAchievements();
-        foreach (var customAchievement in databaseService.GetCustomAchievements())
+        var achievements = templateTable.Achievements;
+        foreach (var customAchievement in templateTable.CustomAchievements)
         {
             if (achievements.Exists(a => a.Id == customAchievement.Id))
             {
@@ -333,14 +339,12 @@ public class PostDbLoadService(
 
     private void RemovePrestigeQuestRequirementsIfQuestNotFound()
     {
-        var prestigeDb = databaseService.GetTemplates().Prestige;
+        var prestigeDb = templateTable.Prestige;
 
         foreach (var prestige in prestigeDb.Elements)
         {
             var conditionsToRemove = prestige
-                .Conditions.Where(c =>
-                    c.ConditionType == "Quest" && c.Target.IsItem && !databaseService.GetTemplates().Quests.ContainsKey(c.Target.Item)
-                )
+                .Conditions.Where(c => c.ConditionType == "Quest" && c.Target.IsItem && !templateTable.Quests.ContainsKey(c.Target.Item))
                 .ToList();
 
             foreach (var conditionToRemove in conditionsToRemove)
@@ -353,7 +357,7 @@ public class PostDbLoadService(
 
     private void RemovePraporTestMessage()
     {
-        foreach (var (locale, lazyLoad) in databaseService.GetLocales().Global)
+        foreach (var (_, lazyLoad) in localeTable.Global)
         {
             lazyLoad.AddTransformer(lazyloadedData =>
             {
@@ -366,7 +370,7 @@ public class PostDbLoadService(
 
     protected void CloneExistingCraftsAndAddNew()
     {
-        var hideoutCraftDb = databaseService.GetHideout().Production;
+        var hideoutCraftDb = hideoutTable.Production;
         var craftsToAdd = hideoutConfig.HideoutCraftsToAdd;
         foreach (var craftToAdd in craftsToAdd)
         {
@@ -389,7 +393,7 @@ public class PostDbLoadService(
     protected void AdjustMinReserveRaiderSpawnChance()
     {
         // Get reserve base.json
-        var reserveBase = databaseService.GetLocation(ELocationName.RezervBase.ToString()).Base;
+        var reserveBase = locationTable.GetLocation(ELocationName.RezervBase.ToString()).Base;
 
         // Raiders are bosses, get only those from boss spawn array
         foreach (var raiderSpawn in reserveBase.BossLocationSpawn.Where(boss => boss.BossName == "pmcBot"))
@@ -424,7 +428,7 @@ public class PostDbLoadService(
                 continue;
             }
 
-            databaseService
+            locationTable
                 .GetLocation(locationId)
                 .LooseLoot.AddTransformer(looseLootData =>
                 {
@@ -466,7 +470,7 @@ public class PostDbLoadService(
     {
         foreach (var (locationId, itemTplWeightDict) in lootConfig.StaticItemWeightAdjustment)
         {
-            databaseService
+            locationTable
                 .GetLocation(locationId)
                 .StaticLoot.AddTransformer(staticLootData =>
                 {
@@ -499,11 +503,9 @@ public class PostDbLoadService(
     // BSG have two values for shotgun dispersion, we make sure both have the same value
     protected void FixShotgunDispersions(IEnumerable<MongoId> shotgunIds)
     {
-        var itemDb = databaseService.GetItems();
-
         foreach (var shotgunId in shotgunIds)
         {
-            if (itemDb.TryGetValue(shotgunId, out var shotgun) && shotgun.Properties.ShotgunDispersion.HasValue)
+            if (templateTable.Items.TryGetValue(shotgunId, out var shotgun) && shotgun.Properties.ShotgunDispersion.HasValue)
             {
                 shotgun.Properties.shotgunDispersion = shotgun.Properties.ShotgunDispersion;
             }
@@ -512,10 +514,8 @@ public class PostDbLoadService(
 
     protected void RemoveExistingPmcWaves()
     {
-        var locations = databaseService.GetLocations().GetDictionary();
-
         var pmcTypes = new HashSet<string> { "pmcUSEC", "pmcBEAR" };
-        foreach (var (_, location) in locations)
+        foreach (var (_, location) in locationTable.GetDictionary())
         {
             if (location?.Base?.BossLocationSpawn is null)
             {
@@ -533,7 +533,7 @@ public class PostDbLoadService(
     /// </summary>
     protected void AdjustMapBotLimits()
     {
-        var mapsDb = databaseService.GetLocations().GetDictionary();
+        var mapsDb = locationTable.GetDictionary();
         if (locationConfig.BotTypeLimits is null)
         {
             return;
@@ -584,7 +584,7 @@ public class PostDbLoadService(
 
         foreach (var (mapId, mapAdjustments) in lootConfig.LooseLootSpawnPointAdjustments)
         {
-            databaseService
+            locationTable
                 .GetLocation(mapId)
                 .LooseLoot.AddTransformer(looselootData =>
                 {
@@ -617,12 +617,11 @@ public class PostDbLoadService(
 
     protected void AdjustLocationBotValues()
     {
-        var mapsDb = databaseService.GetLocations();
-        var mapsDict = mapsDb.GetDictionary();
+        var mapsDict = locationTable.GetDictionary();
         foreach (var (key, cap) in botConfig.MaxBotCap)
         {
             // Keys given are like this: "factory4_night" use GetMappedKey to change to "Factory4Night" which the dictionary contains
-            if (!mapsDict.TryGetValue(mapsDb.GetMappedKey(key), out var map))
+            if (!mapsDict.TryGetValue(locationTable.GetMappedKey(key), out var map))
             {
                 continue;
             }
@@ -640,12 +639,7 @@ public class PostDbLoadService(
     protected void FixRoguesSpawningInstantlyOnLighthouse()
     {
         var rogueSpawnDelaySeconds = locationConfig.RogueLighthouseSpawnTimeSettings.WaitTimeSeconds;
-        var lighthouse = databaseService.GetLocations().Lighthouse?.Base;
-        if (lighthouse is null)
-        // Just in case they remove this cursed map
-        {
-            return;
-        }
+        var lighthouse = locationTable.Lighthouse.Base;
 
         // Find Rogues that spawn instantly
         var instantRogueBossSpawns = lighthouse.BossLocationSpawn.Where(spawn => spawn.BossName == "exUsec" && spawn.Time == -1);
@@ -660,7 +654,7 @@ public class PostDbLoadService(
     /// </summary>
     protected void AdjustLabsRaiderSpawnRate()
     {
-        var labsBase = databaseService.GetLocations().Laboratory.Base;
+        var labsBase = locationTable.Laboratory.Base;
 
         // Find spawns with empty string for triggerId/TriggerName
         var nonTriggerLabsBossSpawns = labsBase.BossLocationSpawn.Where(bossSpawn =>
@@ -681,7 +675,7 @@ public class PostDbLoadService(
             return;
         }
 
-        foreach (var craft in databaseService.GetHideout().Production.Recipes)
+        foreach (var craft in hideoutTable.Production.Recipes)
         // Only adjust crafts ABOVE the override
         {
             craft.ProductionTime = Math.Min(craft.ProductionTime.Value, overrideSeconds);
@@ -699,7 +693,7 @@ public class PostDbLoadService(
             return;
         }
 
-        foreach (var area in databaseService.GetHideout().Areas)
+        foreach (var area in hideoutTable.Areas)
         foreach (var (_, stage) in area.Stages)
         // Only adjust crafts ABOVE the override
         {
@@ -711,7 +705,7 @@ public class PostDbLoadService(
     {
         foreach (var craftId in craftIdsToUnlock)
         {
-            var recipe = databaseService.GetHideout().Production.Recipes.FirstOrDefault(craft => craft.Id == craftId);
+            var recipe = hideoutTable.Production.Recipes.FirstOrDefault(craft => craft.Id == craftId);
             if (recipe is not null)
             {
                 recipe.Locked = false;
@@ -724,10 +718,8 @@ public class PostDbLoadService(
     /// </summary>
     protected void ValidateQuestAssortUnlocksExist()
     {
-        var db = databaseService.GetTables();
-        var traders = db.Traders;
-        var quests = db.Templates.Quests;
-        foreach (var (traderId, traderData) in traders)
+        var quests = templateTable.Quests;
+        foreach (var (traderId, traderData) in traderTable)
         {
             var traderAssorts = traderData?.Assort;
             if (traderAssorts is null)
@@ -764,7 +756,7 @@ public class PostDbLoadService(
 
     protected void SetAllDbItemsAsSellableOnFlea()
     {
-        var dbItems = databaseService.GetItems().Values.ToList();
+        var dbItems = templateTable.Items.Values.ToList();
         foreach (
             var item in dbItems.Where(item =>
                 string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)
@@ -779,16 +771,15 @@ public class PostDbLoadService(
 
     protected void AddMissingTraderBuyRestrictionMaxValue()
     {
-        var restrictions = databaseService.GetGlobals().Configuration.TradingSettings.BuyRestrictionMaxBonus;
+        var restrictions = globalTable.Configuration.TradingSettings.BuyRestrictionMaxBonus;
         restrictions["unheard_edition"] = new BuyRestrictionMaxBonus { Multiplier = restrictions["edge_of_darkness"].Multiplier };
     }
 
     protected void ApplyFleaPriceOverrides()
     {
-        var fleaPrices = databaseService.GetPrices();
         foreach (var (itemTpl, price) in ragfairConfig.Dynamic.ItemPriceOverrideRouble)
         {
-            fleaPrices[itemTpl] = price;
+            templateTable.Prices[itemTpl] = price;
         }
     }
 
@@ -796,13 +787,13 @@ public class PostDbLoadService(
     {
         foreach (var presetToAdd in itemConfig.CustomItemGlobalPresets)
         {
-            if (databaseService.GetGlobals().ItemPresets.ContainsKey(presetToAdd.Id))
+            if (globalTable.ItemPresets.ContainsKey(presetToAdd.Id))
             {
                 logger.Warning($"Global ItemPreset with Id of: {presetToAdd.Id} already exists, unable to overwrite");
                 continue;
             }
 
-            databaseService.GetGlobals().ItemPresets.TryAdd(presetToAdd.Id, presetToAdd);
+            globalTable.ItemPresets.TryAdd(presetToAdd.Id, presetToAdd);
         }
     }
 }

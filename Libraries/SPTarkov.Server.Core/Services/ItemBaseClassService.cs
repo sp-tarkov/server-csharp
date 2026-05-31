@@ -2,6 +2,7 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -11,7 +12,7 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class ItemBaseClassService(
     ISptLogger<ItemBaseClassService> logger,
-    DatabaseService databaseService,
+    TemplateTable templateTable,
     ServerLocalisationService serverLocalisationService
 )
 {
@@ -31,8 +32,7 @@ public class ItemBaseClassService(
         // Clear existing cache
         _itemBaseClassesCache = [];
 
-        var items = databaseService.GetItems();
-        foreach (var item in items)
+        foreach (var item in templateTable.Items)
         {
             AddItemToCache(item.Key);
         }
@@ -40,7 +40,7 @@ public class ItemBaseClassService(
 
     public void AddItemToCache(MongoId itemTpl)
     {
-        var itemDb = databaseService.GetItems();
+        var itemDb = templateTable.Items;
 
         if (!itemDb.TryGetValue(itemTpl, out var item))
         {
@@ -70,7 +70,7 @@ public class ItemBaseClassService(
     protected void AddBaseItems(MongoId itemIdToUpdate, TemplateItem item)
     {
         _itemBaseClassesCache[itemIdToUpdate].Add(item.Parent);
-        databaseService.GetItems().TryGetValue(item.Parent, out var parent);
+        templateTable.Items.TryGetValue(item.Parent, out var parent);
 
         if (parent is not null && !parent.Parent.IsEmpty)
         {

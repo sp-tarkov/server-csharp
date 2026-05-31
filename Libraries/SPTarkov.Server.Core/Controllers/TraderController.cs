@@ -4,6 +4,7 @@ using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Game;
 using SPTarkov.Server.Core.Models.Enums;
@@ -16,8 +17,8 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class TraderController(
     ISptLogger<TraderController> logger,
+    TraderTable traderTable,
     TimeUtil timeUtil,
-    DatabaseService databaseService,
     TraderAssortHelper traderAssortHelper,
     ProfileHelper profileHelper,
     TraderHelper traderHelper,
@@ -39,8 +40,7 @@ public class TraderController(
         var nextHourTimestamp = timeUtil.GetTimeStampOfNextHour();
         var traderResetStartsWithServer = traderConfig.TradersResetFromServerStart;
 
-        var traders = databaseService.GetTraders();
-        foreach (var (traderId, trader) in traders)
+        foreach (var (traderId, trader) in traderTable)
         {
             if (traderId == Traders.LIGHTHOUSEKEEPER)
             {
@@ -95,7 +95,7 @@ public class TraderController(
     /// <returns>True if ran successfully</returns>
     public bool Update()
     {
-        foreach (var (traderId, trader) in databaseService.GetTables().Traders)
+        foreach (var (traderId, trader) in traderTable)
         {
             if (traderId == Traders.LIGHTHOUSEKEEPER)
             {
@@ -137,7 +137,7 @@ public class TraderController(
     {
         var traders = new List<TraderBase>();
         var pmcData = profileHelper.GetPmcProfile(sessionId);
-        foreach (var (traderId, trader) in databaseService.GetTables().Traders)
+        foreach (var (traderId, trader) in traderTable)
         {
             traderHelper.GetTrader(traderId, sessionId);
             if (trader.Base is null)

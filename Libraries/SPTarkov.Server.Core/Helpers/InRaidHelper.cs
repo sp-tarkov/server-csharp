@@ -8,7 +8,7 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Helpers;
@@ -16,11 +16,11 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class InRaidHelper(
     ISptLogger<InRaidHelper> logger,
+    TemplateTable templateTable,
     InventoryHelper inventoryHelper,
     InRaidConfig inRaidConfig,
     LostOnDeathConfig lostOnDeathConfig,
-    ICloner cloner,
-    DatabaseService databaseService
+    ICloner cloner
 )
 {
     protected static readonly FrozenSet<string> PocketSlots = ["pocket1", "pocket2", "pocket3", "pocket4"];
@@ -113,7 +113,7 @@ public class InRaidHelper(
     /// <param name="items">Items to process</param>
     protected void RemoveFiRStatusFromItems(IEnumerable<Item> items)
     {
-        var dbItems = databaseService.GetItems();
+        var dbItems = templateTable.Items;
 
         var itemsToRemovePropertyFrom = items.Where(item =>
             (item.Upd?.SpawnedInSession ?? false)

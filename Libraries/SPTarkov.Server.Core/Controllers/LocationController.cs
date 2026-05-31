@@ -4,13 +4,14 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Location;
+using SPTarkov.Server.Core.Models.Spt.Server;
 using SPTarkov.Server.Core.Services;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class LocationController(ISptLogger<LocationController> logger, DatabaseService databaseService, AirdropService airdropService)
+public class LocationController(ISptLogger<LocationController> logger, LocationTable locationTable, AirdropService airdropService)
 {
     /// <summary>
     ///     Handle client/locations
@@ -20,8 +21,7 @@ public class LocationController(ISptLogger<LocationController> logger, DatabaseS
     /// <returns>LocationsGenerateAllResponse</returns>
     public LocationsGenerateAllResponse GenerateAll(MongoId sessionId)
     {
-        var locationsFromDb = databaseService.GetLocations();
-        var maps = locationsFromDb.GetDictionary();
+        var maps = locationTable.GetDictionary();
 
         // keyed by _id location property
         var locationResult = new Dictionary<MongoId, LocationBase>();
@@ -45,7 +45,7 @@ public class LocationController(ISptLogger<LocationController> logger, DatabaseS
             locationResult.Add(mapBase.IdField, mapBase);
         }
 
-        return new LocationsGenerateAllResponse { Locations = locationResult, Paths = locationsFromDb.Base!.Paths };
+        return new LocationsGenerateAllResponse { Locations = locationResult, Paths = locationTable.Base!.Paths };
     }
 
     /// <summary>
