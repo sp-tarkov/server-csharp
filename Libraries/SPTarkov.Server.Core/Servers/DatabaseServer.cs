@@ -29,7 +29,7 @@ public sealed class DatabaseServer
     /// </summary>
     /// <param name="tables">The database tables to set.</param>
     /// <exception cref="DatabaseTablesAlreadySetException">Thrown if the database tables are already set.</exception>
-    internal void SetTables(DatabaseTables tables)
+    public void SetTables(DatabaseTables tables)
     {
         if (TableData is null)
         {

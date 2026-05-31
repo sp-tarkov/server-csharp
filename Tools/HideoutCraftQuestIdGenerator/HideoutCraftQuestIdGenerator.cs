@@ -18,7 +18,7 @@ public class HideoutCraftQuestIdGenerator(
     JsonUtil jsonUtil,
     DatabaseServer databaseServer,
     ItemHelper itemHelper,
-    DatabaseImporter databaseImporter
+    ImageRouteImporter imageRouteImporter
 )
 {
     private static readonly HashSet<MongoId> _blacklistedProductions =
@@ -42,7 +42,7 @@ public class HideoutCraftQuestIdGenerator(
     public async Task Run()
     {
         var cancellationTokenSource = new CancellationTokenSource();
-        await databaseImporter.OnLoad(cancellationTokenSource.Token);
+        await imageRouteImporter.OnLoad(cancellationTokenSource.Token);
 
         // Build up our dataset
         BuildQuestProductionList();

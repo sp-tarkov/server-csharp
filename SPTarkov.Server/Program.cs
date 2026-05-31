@@ -101,10 +101,10 @@ public static class Program
         Console.OutputEncoding = Encoding.UTF8;
 
         var configuration = await ConfigLoader.Initialize(_earlyLogger!);
+        var earlyServiceProvider = ProgramHelpers.CreateEarlySptProvider(loggerFactory, configuration);
 
-        // Init mod loader
         List<SptMod> loadedMods = [];
-        var modLoader = ModLoader.Create(loggerFactory, configuration);
+        var modLoader = earlyServiceProvider.GetService<ModLoader>();
         if (modLoader != null)
         {
             var runResult = await modLoader.RunModLoader(loggerFactory, args);
@@ -116,8 +116,27 @@ public static class Program
             loadedMods = runResult.ValidRuntimeMods;
         }
 
+        var cTSource = new CancellationTokenSource();
+        var dbImporter = earlyServiceProvider.GetService<EarlyDatabaseImporter>();
+        if (dbImporter is null)
+        {
+            throw new NullReferenceException("EarlyDatabaseImporter is null");
+        }
+
+        var shouldVerify = !ProgramStatics.DEBUG();
+        if (shouldVerify)
+        {
+            await dbImporter.LoadHashesAsync(cTSource.Token);
+        }
+
+        var tables = await dbImporter.LoadDatabaseAsync(shouldVerify, cTSource.Token);
+        if (tables is null)
+        {
+            throw new NullReferenceException("Failed to import database tables.");
+        }
+
         // Create web builder and logger
-        var builder = ProgramHelpers.CreateNewHostBuilder(loggerFactory, configuration);
+        var builder = ProgramHelpers.CreateNewHostBuilder(loggerFactory, configuration, tables);
         builder.Host.UseSptLoggerWithoutProvider(loggerFactory.ServiceProvider);
 
         builder.Host.UseDefaultServiceProvider(options =>
@@ -163,6 +182,10 @@ public static class Program
             }
         );
         var app = builder.Build();
+
+        // TODO: Remove once fully ported to DI
+        var dbServer = app.Services.GetService<DatabaseServer>();
+        dbServer!.SetTables(tables);
 
         // Configure Kestrel WS options and Handle fallback requests
         ConfigureWebApp(app);

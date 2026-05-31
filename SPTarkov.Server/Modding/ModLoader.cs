@@ -8,6 +8,7 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.DI;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
@@ -31,38 +32,6 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     private const string PatchedAssemblyName = "./SPTarkov.Server.Core.Patched.dll";
     private const string PrepatchStagePath = "./user/cache/prepatcher/server";
     private const string PrepatchedArg = "--prepatched";
-
-    /// <summary>
-    ///     Initializes the mod loader container
-    /// </summary>
-    /// <returns>True if mods are enabled</returns>
-    public static ModLoader? Create(SptEarlyLoggerFactory loggerFactory, IReadOnlyDictionary<Type, BaseConfig> configuration)
-    {
-        if (!ProgramStatics.MODS())
-        {
-            return null;
-        }
-
-        // We need the SPT dependencies for the ModValidator, but mods are loaded before the web application
-        // So we create a disposable web application that we will throw away after getting the mods to load
-        var builder = ProgramHelpers.CreateNewHostBuilder(loggerFactory, configuration);
-        // register SPT components
-        var diHandler = new DependencyInjectionHandler(builder.Services);
-        diHandler.AddInjectableTypesFromAssembly(typeof(Program).Assembly);
-        diHandler.AddInjectableTypesFromAssembly(typeof(SPTStartupHostedService).Assembly);
-        diHandler.InjectAll();
-
-        // register the mod loader components
-        var provider = builder
-            .Services.AddScoped<ISemVer, SemanticVersioningSemVer>()
-            .AddSingleton<ModLoader>()
-            .AddSingleton<ModValidator>()
-            .AddSptLoggerWithoutProvider(loggerFactory.ServiceProvider)
-            .BuildServiceProvider();
-
-        return provider.GetService<ModLoader>()
-            ?? throw new NullReferenceException("Could not retrieve `ModLoaderController` during initialization.");
-    }
 
     /// <summary>
     ///     Initializes the mod loader container, and runs the entire mod loader process
