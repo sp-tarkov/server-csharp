@@ -62,23 +62,9 @@ public class DependencyInjectionHandler(IServiceCollection serviceCollection)
             t,
             t
         ));
-        // All the components that have a type override, we need to find them and remove them before injecting everything
-        var componentsToRemove = typeRefValues
-            .Where(tr => tr.InjectableAttribute.TypeOverride != null)
-            .Select(tr =>
-                string.IsNullOrEmpty(tr.InjectableAttribute.TypeOverride!.FullName)
-                    ? $"{tr.InjectableAttribute.TypeOverride.Namespace}.{tr.InjectableAttribute.TypeOverride.Name}"
-                    : tr.InjectableAttribute.TypeOverride.FullName!
-            )
-            .ToHashSet();
-        // All the components without the removed overrides
-        var cleanedComponents = typeRefValues.Where(tr =>
-        {
-            var name = string.IsNullOrEmpty(tr.Type.FullName) ? $"{tr.Type.Namespace}.{tr.Type.Name}" : tr.Type.FullName!;
-            return !componentsToRemove.Contains(name);
-        });
+
         // All the components sorted and ready to be inserted into the DI container
-        var sortedInjectableTypes = cleanedComponents.OrderBy(tRef => tRef.InjectableAttribute.TypePriority);
+        var sortedInjectableTypes = typeRefValues.OrderBy(tRef => tRef.InjectableAttribute.TypePriority);
 
         List<DependencyInjectionContainer> dependencyInjectionContainers = [];
 
