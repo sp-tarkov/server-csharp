@@ -38,7 +38,6 @@ public class QuestHelper(
 )
 {
     protected readonly FrozenSet<QuestStatusEnum> StartedOrAvailToFinish = [QuestStatusEnum.Started, QuestStatusEnum.AvailableForFinish];
-    private Dictionary<MongoId, List<QuestCondition>>? _sellToTraderQuestConditionCache;
 
     /// <summary>
     /// List of <see cref="Quest"/> conditions that require trader sales be tracked and incremented, keyed by <see cref="Quest.Id"/>
@@ -46,7 +45,7 @@ public class QuestHelper(
     /// </summary>
     protected virtual Dictionary<MongoId, List<QuestCondition>> SellToTraderQuestConditionCache
     {
-        get { return _sellToTraderQuestConditionCache ??= GetSellToTraderQuests(GetQuestsFromDb()); }
+        get { return field ??= GetSellToTraderQuests(GetQuestsFromDb()); }
     }
 
     /// <summary>
