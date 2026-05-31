@@ -6,7 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ceciler.Interfaces">
-      <HintPath>..\..\Ceciler\Ceciler.Interfaces.dll</HintPath>
+      <HintPath>..\..\Ceciler\Ceciler.Launcher.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

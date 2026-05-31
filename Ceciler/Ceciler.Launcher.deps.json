@@ -8,7 +8,6 @@
     ".NETCoreApp,Version=v10.0": {
       "Ceciler.Launcher/1.0.0": {
         "dependencies": {
-          "Ceciler.Interfaces": "1.0.0",
           "Mono.Cecil": "0.11.6"
         },
         "runtime": {
@@ -34,14 +33,6 @@
             "fileVersion": "0.11.6.0"
           }
         }
-      },
-      "Ceciler.Interfaces/1.0.0": {
-        "runtime": {
-          "Ceciler.Interfaces.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
       }
     }
   },
@@ -57,11 +48,6 @@
       "sha512": "sha512-f33RkDtZO8VlGXCtmQIviOtxgnUdym9xx/b1p9h91CRGOsJFxCFOFK1FDbVt1OCf1aWwYejUFa2MOQyFWTFjbA==",
       "path": "mono.cecil/0.11.6",
       "hashPath": "mono.cecil.0.11.6.nupkg.sha512"
-    },
-    "Ceciler.Interfaces/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
     }
   }
 }
