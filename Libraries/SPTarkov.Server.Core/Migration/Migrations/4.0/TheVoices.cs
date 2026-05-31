@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Migration.Migrations._3._11;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 
 namespace SPTarkov.Server.Core.Migration.Migrations._4._0;
 
@@ -9,7 +9,7 @@ namespace SPTarkov.Server.Core.Migration.Migrations._4._0;
 /// In 16.8.0.37972 BSG added customization for voices, technically this only affects BE profiles, but this should fix these.
 /// </summary>
 [Injectable]
-public sealed class TheVoices(DatabaseService databaseService) : AbstractProfileMigration
+public sealed class TheVoices(TemplateTable templateTable) : AbstractProfileMigration
 {
     private bool _pmcVoiceIsMissing = false;
     private bool _scavVoiceIsMissing = false;
@@ -67,7 +67,7 @@ public sealed class TheVoices(DatabaseService databaseService) : AbstractProfile
         var oldVoice = pmcInfo["Voice"]?.ToString() ?? "";
         pmcInfo.Remove("Voice");
 
-        var voiceMongoId = databaseService.GetCustomization().FirstOrDefault(x => x.Value.Properties.Name == oldVoice).Key;
+        var voiceMongoId = templateTable.Customization.FirstOrDefault(x => x.Value.Properties.Name == oldVoice).Key;
 
         profileObject["characters"]!["pmc"]!["Customization"]!["Voice"] = voiceMongoId.ToString();
     }
@@ -79,7 +79,7 @@ public sealed class TheVoices(DatabaseService databaseService) : AbstractProfile
         var oldVoice = pmcInfo["Voice"]?.ToString() ?? "";
         pmcInfo.Remove("Voice");
 
-        var voiceMongoId = databaseService.GetCustomization().FirstOrDefault(x => x.Value.Properties.Name == oldVoice).Key;
+        var voiceMongoId = templateTable.Customization.FirstOrDefault(x => x.Value.Properties.Name == oldVoice).Key;
 
         profileObject["characters"]!["scav"]!["Customization"]!["Voice"] = voiceMongoId.ToString();
     }

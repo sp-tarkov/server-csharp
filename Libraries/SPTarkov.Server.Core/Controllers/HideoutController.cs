@@ -13,6 +13,7 @@ using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Hideout;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -24,8 +25,9 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class HideoutController(
     ISptLogger<HideoutController> logger,
+    HideoutTable hideoutTable,
+    GlobalTable globalTable,
     TimeUtil timeUtil,
-    DatabaseService databaseService,
     InventoryHelper inventoryHelper,
     ItemHelper itemHelper,
     SaveServer saveServer,
@@ -109,7 +111,7 @@ public class HideoutController(
             return;
         }
 
-        var hideoutDataDb = databaseService.GetTables().Hideout.Areas.FirstOrDefault(area => area.Type == request.AreaType);
+        var hideoutDataDb = hideoutTable.Areas.FirstOrDefault(area => area.Type == request.AreaType);
         if (hideoutDataDb is null)
         {
             logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area_in_database", request.AreaType));
@@ -148,9 +150,6 @@ public class HideoutController(
         ItemEventRouterResponse output
     )
     {
-        var hideout = databaseService.GetHideout();
-        var globals = databaseService.GetGlobals();
-
         var profileHideoutArea = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == request.AreaType);
         if (profileHideoutArea is null)
         {
@@ -162,7 +161,7 @@ public class HideoutController(
 
         var nextLevel = profileHideoutArea.Level + 1;
 
-        var hideoutData = hideout.Areas.FirstOrDefault(area => area.Type == profileHideoutArea.Type);
+        var hideoutData = hideoutTable.Areas.FirstOrDefault(area => area.Type == profileHideoutArea.Type);
         if (hideoutData is null)
         {
             logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area_in_database", request.AreaType));
@@ -215,7 +214,7 @@ public class HideoutController(
         profileHelper.AddSkillPointsToPlayer(
             pmcData,
             SkillTypes.HideoutManagement,
-            globals.Configuration.SkillsSettings.HideoutManagement.SkillPointsPerAreaUpgrade,
+            globalTable.Configuration.SkillsSettings.HideoutManagement.SkillPointsPerAreaUpgrade,
             true
         );
     }
@@ -281,7 +280,7 @@ public class HideoutController(
         AddContainerUpgradeToClientOutput(sessionId, keyForHideoutAreaStash, dbHideoutArea, hideoutStage, output);
 
         // Some hideout areas (Gun stand) have child areas linked to it
-        var childDbArea = databaseService.GetHideout().Areas.FirstOrDefault(area => area.ParentArea == dbHideoutArea.Id);
+        var childDbArea = hideoutTable.Areas.FirstOrDefault(area => area.ParentArea == dbHideoutArea.Id);
         if (childDbArea is null)
         {
             // No child db area, we're complete
@@ -587,7 +586,7 @@ public class HideoutController(
         hideoutHelper.RegisterProduction(pmcData, request, sessionID);
 
         // Find the recipe of the production
-        var recipe = databaseService.GetHideout().Production.Recipes.FirstOrDefault(production => production.Id == request.RecipeId);
+        var recipe = hideoutTable.Production.Recipes.FirstOrDefault(production => production.Id == request.RecipeId);
 
         // Find the actual amount of items we need to remove because body can send weird data
         var recipeRequirementsClone = cloner.Clone(recipe.Requirements.Where(r => r.Type == "Item" || r.Type == "Tool"));
@@ -657,7 +656,7 @@ public class HideoutController(
             }
         }
 
-        var recipe = databaseService.GetHideout().Production?.ScavRecipes?.FirstOrDefault(r => r.Id == request.RecipeId);
+        var recipe = hideoutTable.Production.ScavRecipes?.FirstOrDefault(r => r.Id == request.RecipeId);
         if (recipe is null)
         {
             logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_scav_case_recipie_in_database", request.RecipeId));
@@ -674,7 +673,7 @@ public class HideoutController(
                 pmcData,
                 recipe.ProductionTime ?? 0,
                 SkillTypes.Crafting,
-                databaseService.GetGlobals().Configuration.SkillsSettings.Crafting.CraftTimeReductionPerLevel
+                globalTable.Configuration.SkillsSettings.Crafting.CraftTimeReductionPerLevel
             );
 
         var modifiedScavCaseTime = GetScavCaseTime(pmcData, adjustedCraftTime);
@@ -739,7 +738,6 @@ public class HideoutController(
     public ItemEventRouterResponse TakeProduction(PmcData pmcData, HideoutTakeProductionRequestData request, MongoId sessionID)
     {
         var output = eventOutputHolder.GetOutput(sessionID);
-        var hideoutDb = databaseService.GetHideout();
 
         if (request.RecipeId == HideoutHelper.BitcoinProductionId)
         {
@@ -750,7 +748,7 @@ public class HideoutController(
             return output;
         }
 
-        var recipe = hideoutDb.Production.Recipes.FirstOrDefault(r => r.Id == request.RecipeId);
+        var recipe = hideoutTable.Production.Recipes.FirstOrDefault(r => r.Id == request.RecipeId);
         if (recipe is not null)
         {
             HandleRecipe(sessionID, recipe, pmcData, request, output);
@@ -758,7 +756,7 @@ public class HideoutController(
             return output;
         }
 
-        var scavCase = hideoutDb.Production.ScavRecipes.FirstOrDefault(r => r.Id == request.RecipeId);
+        var scavCase = hideoutTable.Production.ScavRecipes.FirstOrDefault(r => r.Id == request.RecipeId);
         if (scavCase is not null)
         {
             HandleScavCase(sessionID, pmcData, request, output);
@@ -932,11 +930,10 @@ public class HideoutController(
         //  - Delete the production in profile Hideout.Production
         // Hideout Management skill
         // ? Use a configuration variable for the value?
-        var globals = databaseService.GetGlobals();
         profileHelper.AddSkillPointsToPlayer(
             pmcData,
             SkillTypes.HideoutManagement,
-            globals.Configuration.SkillsSettings.HideoutManagement.SkillPointsPerCraft,
+            globalTable.Configuration.SkillsSettings.HideoutManagement.SkillPointsPerCraft,
             true
         );
 
@@ -1149,7 +1146,7 @@ public class HideoutController(
         // Skill changes are done in
         // /client/hideout/workout (applyWorkoutChanges).
 
-        var qteDb = databaseService.GetHideout().Qte;
+        var qteDb = hideoutTable.Qte;
         var relevantQte = qteDb.FirstOrDefault(qte => qte.Id == request.Id);
         foreach (var outcome in request.Results)
         {
@@ -1289,7 +1286,7 @@ public class HideoutController(
             return httpResponseUtil.AppendErrorToOutput(output);
         }
 
-        var hideoutDbData = databaseService.GetHideout().Areas.FirstOrDefault(area => area.Type == request.AreaType);
+        var hideoutDbData = hideoutTable.Areas.FirstOrDefault(area => area.Type == request.AreaType);
         if (hideoutDbData is null)
         {
             logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area_in_database", request.AreaType));
@@ -1392,7 +1389,7 @@ public class HideoutController(
     {
         var output = eventOutputHolder.GetOutput(sessionId);
 
-        var itemDetails = databaseService.GetHideout().Customisation.Globals.FirstOrDefault(cust => cust.Id == request.OfferId);
+        var itemDetails = hideoutTable.Customisation.Globals.FirstOrDefault(cust => cust.Id == request.OfferId);
         if (itemDetails is null)
         {
             logger.Error($"Unable to find customisation: {request.OfferId} in db, cannot apply to hideout");
@@ -1522,7 +1519,7 @@ public class HideoutController(
     /// <returns></returns>
     public List<QteData> GetQteList(MongoId sessionId)
     {
-        return databaseService.GetHideout().Qte;
+        return hideoutTable.Qte;
     }
 
     /// <summary>

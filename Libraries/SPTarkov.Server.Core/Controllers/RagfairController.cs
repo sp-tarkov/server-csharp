@@ -13,6 +13,7 @@ using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Ragfair;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -24,6 +25,8 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class RagfairController(
     ISptLogger<RagfairController> logger,
+    TemplateTable templateTable,
+    GlobalTable globalTable,
     TimeUtil timeUtil,
     JsonUtil jsonUtil,
     HttpResponseUtil httpResponseUtil,
@@ -39,7 +42,6 @@ public class RagfairController(
     RagfairSortHelper ragfairSortHelper,
     RagfairOfferHelper ragfairOfferHelper,
     TraderHelper traderHelper,
-    DatabaseService databaseService,
     ServerLocalisationService localisationService,
     RagfairTaxService ragfairTaxService,
     RagfairOfferService ragfairOfferService,
@@ -57,11 +59,8 @@ public class RagfairController(
         foreach (var (sessionId, profile) in profileHelper.GetProfiles())
         {
             // Check profile is capable of creating offers
-            var pmcProfile = profile?.CharacterData?.PmcData;
-            if (
-                pmcProfile?.RagfairInfo is not null
-                && pmcProfile?.Info?.Level >= databaseService.GetGlobals().Configuration.RagFair.MinUserLevel
-            )
+            var pmcProfile = profile.CharacterData?.PmcData;
+            if (pmcProfile?.RagfairInfo is not null && pmcProfile?.Info?.Level >= globalTable.Configuration.RagFair.MinUserLevel)
             {
                 ragfairOfferHelper.ProcessOffersOnProfile(sessionId);
             }
@@ -254,7 +253,7 @@ public class RagfairController(
     protected Dictionary<MongoId, int> GetSpecificCategories(PmcData pmcProfile, SearchRequestData searchRequest, List<RagfairOffer> offers)
     {
         // Linked/required search categories
-        var playerHasFleaUnlocked = pmcProfile.Info.Level >= databaseService.GetGlobals().Configuration.RagFair.MinUserLevel;
+        var playerHasFleaUnlocked = pmcProfile.Info.Level >= globalTable.Configuration.RagFair.MinUserLevel;
         List<RagfairOffer> offerPool;
         if (IsLinkedSearch(searchRequest) || IsRequiredSearch(searchRequest))
         {
@@ -359,7 +358,7 @@ public class RagfairController(
 
         // No offers listed, get price from live ragfair price list prices.json
         // No flea price, get handbook price
-        var fleaPrices = databaseService.GetPrices();
+        var fleaPrices = templateTable.Prices;
         if (!fleaPrices.TryGetValue(getPriceRequest.TemplateId, out var tplPrice))
         {
             tplPrice = handbookHelper.GetTemplatePrice(getPriceRequest.TemplateId);

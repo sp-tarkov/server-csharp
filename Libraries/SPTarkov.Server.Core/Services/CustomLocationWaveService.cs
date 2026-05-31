@@ -2,6 +2,7 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Server;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -9,7 +10,7 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class CustomLocationWaveService(
     ISptLogger<CustomLocationWaveService> logger,
-    DatabaseService databaseService,
+    LocationTable locationTable,
     LocationConfig locationConfig
 )
 {
@@ -61,7 +62,7 @@ public class CustomLocationWaveService(
 
         foreach (var mapKvP in bossWavesToApply)
         {
-            var locationBase = databaseService.GetLocation(mapKvP.Key).Base;
+            var locationBase = locationTable.GetLocation(mapKvP.Key).Base;
             if (locationBase is null)
             {
                 logger.Warning($"Unable to add custom boss wave to location: {mapKvP}, location not found");
@@ -89,7 +90,7 @@ public class CustomLocationWaveService(
 
         foreach (var mapKvP in normalWavesToApply)
         {
-            var locationBase = databaseService.GetLocation(mapKvP.Key).Base;
+            var locationBase = locationTable.GetLocation(mapKvP.Key).Base;
             if (locationBase is null)
             {
                 logger.Warning($"Unable to add custom wave to location: {mapKvP}, location not found");

@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
 
@@ -14,8 +15,8 @@ namespace SPTarkov.Server.Core.Generators.Ragfair;
 
 [Injectable]
 public class RagfairAssortGenerator(
+    TemplateTable templateTable,
     ItemHelper itemHelper,
-    DatabaseService databaseService,
     PresetHelper presetHelper,
     SeasonalEventService seasonalEventService,
     ItemFilterService itemFilterService,
@@ -44,9 +45,9 @@ public class RagfairAssortGenerator(
 
         // Get cloned items from db
         var blacklist = itemFilterService.GetBlacklistedItems();
-        var dbItems = databaseService
-            .GetItems()
-            .Where(item => !string.Equals(item.Value.Type, "Node", StringComparison.OrdinalIgnoreCase) && !blacklist.Contains(item.Key));
+        var dbItems = templateTable.Items.Where(item =>
+            !string.Equals(item.Value.Type, "Node", StringComparison.OrdinalIgnoreCase) && !blacklist.Contains(item.Key)
+        );
 
         // Store processed preset tpls so we don't add them when processing non-preset items
         HashSet<MongoId> processedArmorItems = [];

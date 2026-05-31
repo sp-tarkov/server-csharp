@@ -1,9 +1,10 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Models.Spt.Server;
 
-public record Locations
+public record LocationTable
 {
     // sometimes we get the key or value given so save changing logic in each place
     // have it key both
@@ -116,6 +117,16 @@ public record Locations
     [JsonPropertyName("base")]
     public required LocationsBase Base { get; init; }
 
+    public Eft.Common.Location? GetLocation(string name)
+    {
+        if (GetDictionary().TryGetValue(GetMappedKey(name), out var mappedLocation))
+        {
+            return mappedLocation;
+        }
+
+        return this.GetByJsonProperty<Eft.Common.Location>(name.ToLowerInvariant());
+    }
+
     /// <summary>
     ///     Get map locations as a dictionary, keyed by its name e.g. Factory4Day
     /// </summary>
@@ -142,7 +153,9 @@ public record Locations
 
     private void HydrateDictionary()
     {
-        var classProps = typeof(Locations).GetProperties().Where(p => p.PropertyType == typeof(Eft.Common.Location) && p.Name != "Item");
+        var classProps = typeof(LocationTable)
+            .GetProperties()
+            .Where(p => p.PropertyType == typeof(Eft.Common.Location) && p.Name != "Item");
         _locationDictionaryCache = classProps.ToDictionary(
             propertyInfo => propertyInfo.Name,
             propertyInfo => propertyInfo.GetValue(this, null) as Eft.Common.Location,

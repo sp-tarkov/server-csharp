@@ -4,13 +4,13 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Prestige;
 using SPTarkov.Server.Core.Models.Eft.Profile;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class PrestigeController(ProfileHelper profileHelper, DatabaseService databaseService, SaveServer saveServer)
+public class PrestigeController(TemplateTable templateTable, ProfileHelper profileHelper, SaveServer saveServer)
 {
     /// <summary>
     ///     Handle /client/prestige/list
@@ -20,7 +20,7 @@ public class PrestigeController(ProfileHelper profileHelper, DatabaseService dat
     /// <returns>Prestige</returns>
     public Prestige GetPrestige(MongoId sessionId)
     {
-        return databaseService.GetTemplates().Prestige;
+        return templateTable.Prestige;
     }
 
     /// <summary>
@@ -67,13 +67,13 @@ public class PrestigeController(ProfileHelper profileHelper, DatabaseService dat
             profile.SptData.PendingPrestige = pendingPrestige;
             profile.ProfileInfo.IsWiped = true;
 
-            var prestigeLevels = databaseService.GetTemplates().Prestige?.Elements ?? [];
+            var prestigeLevels = templateTable.Prestige.Elements ?? [];
 
             var prestigeRewards = prestigeLevels
                 .Slice(0, pendingPrestige.PrestigeLevel.Value)
                 .SelectMany(prestigeInner => prestigeInner.Rewards);
 
-            var customisationTemplateDb = databaseService.GetTemplates().Customization;
+            var customisationTemplateDb = templateTable.Customization;
 
             foreach (var reward in prestigeRewards)
             {

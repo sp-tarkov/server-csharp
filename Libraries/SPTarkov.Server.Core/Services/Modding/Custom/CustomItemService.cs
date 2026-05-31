@@ -5,8 +5,11 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Models.Spt.Server;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Services.Modding.Custom;
@@ -14,7 +17,9 @@ namespace SPTarkov.Server.Core.Services.Modding.Custom;
 [Injectable]
 public class CustomItemService(
     ISptLogger<CustomItemService> logger,
-    DatabaseService databaseService,
+    TemplateTable templateTable,
+    LocaleTable locales,
+    BotTable botTable,
     ItemHelper itemHelper,
     PmcConfig pmcConfig,
     ItemBaseClassService itemBaseClassService,
@@ -35,13 +40,11 @@ public class CustomItemService(
     /// <returns> tplId of the new item created </returns>
     public CreateItemResult CreateItemFromClone(NewItemFromCloneDetails newItemDetails, Assembly? callingAssembly = null)
     {
-        var tables = databaseService.GetTables();
-
         // Generate new id for item if none supplied
         var newItemId = newItemDetails.NewId;
 
         // Fail if itemId already exists
-        if (tables.Templates.Items.TryGetValue(newItemId, out var item))
+        if (templateTable.Items.TryGetValue(newItemId, out var item))
         {
             return new CreateItemResult
             {
@@ -52,7 +55,7 @@ public class CustomItemService(
         }
 
         // Clone existing item
-        tables.Templates.Items.TryGetValue(newItemDetails.ItemTplToClone, out var itemToClone);
+        templateTable.Items.TryGetValue(newItemDetails.ItemTplToClone, out var itemToClone);
         var itemClone = cloner.Clone(itemToClone) ?? throw new InvalidOperationException($"Could not clone {nameof(itemToClone)}");
 
         // Update id and parentId of item
@@ -127,12 +130,10 @@ public class CustomItemService(
     /// <returns> CreateItemResult containing the completed items ID </returns>
     public CreateItemResult CreateItem(NewItemDetails newItemDetails, Assembly? callingAssembly = null)
     {
-        var tables = databaseService.GetTables();
-
         var newItem = newItemDetails.NewItem;
 
         // Fail if itemId already exists
-        if (tables.Templates.Items.TryGetValue(newItem.Id, out var item))
+        if (templateTable.Items.TryGetValue(newItem.Id, out var item))
         {
             return new CreateItemResult
             {
@@ -258,7 +259,7 @@ public class CustomItemService(
     /// <param name="itemToAdd"> Item to add against the new id </param>
     protected void AddToItemsDb(string newItemId, TemplateItem itemToAdd)
     {
-        if (!databaseService.GetItems().TryAdd(newItemId, itemToAdd))
+        if (!templateTable.Items.TryAdd(newItemId, itemToAdd))
         {
             logger.Warning($"Unable to add: {newItemId} To Database");
         }
@@ -272,16 +273,14 @@ public class CustomItemService(
     /// <param name="priceRoubles"> Price of the item being added </param>
     protected void AddToHandbookDb(MongoId newItemId, string parentId, double? priceRoubles)
     {
-        databaseService
-            .GetTemplates()
-            .Handbook.Items.Add(
-                new HandbookItem
-                {
-                    Id = newItemId,
-                    ParentId = parentId,
-                    Price = priceRoubles,
-                }
-            );
+        templateTable.Handbook.Items.Add(
+            new HandbookItem
+            {
+                Id = newItemId,
+                ParentId = parentId,
+                Price = priceRoubles,
+            }
+        );
         // TODO: would we want to keep this the same or get them to send a HandbookItem
     }
 
@@ -305,7 +304,7 @@ public class CustomItemService(
             return;
         }
 
-        var languages = databaseService.GetLocales().Languages;
+        var languages = locales.Languages;
         foreach (var shortNameKey in languages)
         {
             // Get locale details passed in, if not provided by caller use first record in newItemDetails.locales
@@ -319,7 +318,7 @@ public class CustomItemService(
                 continue;
             }
 
-            if (databaseService.GetLocales().Global.TryGetValue(shortNameKey.Key, out var lazyLoad))
+            if (locales.Global.TryGetValue(shortNameKey.Key, out var lazyLoad))
             {
                 lazyLoad.AddTransformer(localeData =>
                 {
@@ -340,7 +339,7 @@ public class CustomItemService(
     /// <param name="fleaPriceRoubles"> Price of the new item </param>
     protected void AddToFleaPriceDb(string newItemId, double? fleaPriceRoubles)
     {
-        databaseService.GetTemplates().Prices[newItemId] = fleaPriceRoubles ?? 0;
+        templateTable.Prices[newItemId] = fleaPriceRoubles ?? 0;
     }
 
     /// <summary>
@@ -392,7 +391,7 @@ public class CustomItemService(
         }
 
         // Get PMCs
-        var botTypes = databaseService.GetBots().Types;
+        var botTypes = botTable.Types;
 
         // Add weapon base+mods into bear/usec data
         botTypes["usec"].BotInventory.Mods[weaponTpl] = baseWeaponModObject;

@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -20,9 +21,10 @@ namespace SPTarkov.Server.Core.Generators.Bot;
 [Injectable]
 public class BotGenerator(
     ISptLogger<BotGenerator> logger,
-    HashUtil hashUtil,
+    TemplateTable templateTable,
+    GlobalTable globalTable,
+    BotTable botTable,
     RandomUtil randomUtil,
-    DatabaseService databaseService,
     BotInventoryGenerator botInventoryGenerator,
     BotLevelGenerator botLevelGenerator,
     BotEquipmentFilterService botEquipmentFilterService,
@@ -170,7 +172,7 @@ public class BotGenerator(
     /// <returns>BotBase object</returns>
     protected BotBase GetBotBaseClone()
     {
-        return cloner.Clone(databaseService.GetBots().Base);
+        return cloner.Clone(botTable.Base);
     }
 
     /// <summary>
@@ -431,8 +433,8 @@ public class BotGenerator(
         bot.Customization.Feet = weightedRandomHelper.GetWeightedValue(appearance.Feet);
         bot.Customization.Body = weightedRandomHelper.GetWeightedValue(appearance.Body);
 
-        var bodyGlobalDictDb = databaseService.GetGlobals().Configuration.Customization.Body;
-        var chosenBodyTemplate = databaseService.GetCustomization()[bot.Customization.Body.Value];
+        var bodyGlobalDictDb = globalTable.Configuration.Customization.Body;
+        var chosenBodyTemplate = templateTable.Customization[bot.Customization.Body.Value];
 
         // Some bodies have matching hands, look up body to see if this is the case
         var chosenBody = bodyGlobalDictDb.FirstOrDefault(c => c.Key == chosenBodyTemplate?.Name.Trim());

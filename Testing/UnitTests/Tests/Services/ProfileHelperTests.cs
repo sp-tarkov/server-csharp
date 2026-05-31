@@ -1,6 +1,8 @@
 using NUnit.Framework;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -18,9 +20,10 @@ public class ProfileHelperTests
     {
         _sut = new ProfileHelper(
             new MockLogger<ProfileHelper>(),
+            DI.GetInstance().GetService<TemplateTable>(),
+            DI.GetInstance().GetService<GlobalTable>(),
             new SPTarkov.Server.Core.Utils.Cloners.FastCloner(),
             DI.GetInstance().GetService<SaveServer>(),
-            DI.GetInstance().GetService<DatabaseService>(),
             DI.GetInstance().GetService<Watermark>(),
             DI.GetInstance().GetService<TimeUtil>(),
             DI.GetInstance().GetService<ServerLocalisationService>(),

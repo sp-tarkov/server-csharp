@@ -19,7 +19,8 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class InsuranceService(
     ISptLogger<InsuranceService> logger,
-    DatabaseService databaseService,
+    GlobalTable globalTable,
+    TraderTable traderTable,
     RandomUtil randomUtil,
     ItemHelper itemHelper,
     TimeUtil timeUtil,
@@ -70,7 +71,6 @@ public class InsuranceService(
     public void StartPostRaidInsuranceLostProcess(PmcData pmcData, MongoId sessionID, string mapId)
     {
         // Get insurance items for each trader
-        var globals = databaseService.GetGlobals();
         foreach (var traderKvP in GetInsurance(sessionID))
         {
             var traderBase = traderHelper.GetTrader(traderKvP.Key, sessionID);
@@ -81,7 +81,7 @@ public class InsuranceService(
                 continue;
             }
 
-            var dialogueTemplates = databaseService.GetTrader(traderKvP.Key).Dialogue;
+            var dialogueTemplates = traderTable.GetTrader(traderKvP.Key).Dialogue;
             if (dialogueTemplates is null)
             {
                 logger.Error(serverLocalisationService.GetText("insurance-trader_lacks_dialogue_property", traderKvP.Key));
@@ -103,7 +103,7 @@ public class InsuranceService(
                 MessageType.NpcTraderMessage,
                 randomUtil.GetArrayValue(dialogueTemplates["insuranceStart"] ?? ["INSURANCE START MESSAGE MISSING"]),
                 null,
-                timeUtil.GetHoursAsSeconds((int)globals.Configuration?.Insurance?.MaxStorageTimeInHour),
+                timeUtil.GetHoursAsSeconds((int)globalTable.Configuration?.Insurance?.MaxStorageTimeInHour),
                 systemData
             );
 
@@ -158,16 +158,15 @@ public class InsuranceService(
         var randomisedReturnTimeSeconds = randomUtil.GetDouble(traderMinReturnAsSeconds.Value, traderMaxReturnAsSeconds.Value);
 
         // Check for Mark of The Unheard in players special slots (only slot item can fit)
-        var globals = databaseService.GetGlobals();
         var hasMarkOfUnheard = itemHelper.HasItemWithTpl(pmcData.Inventory.Items, ItemTpl.MARKOFUNKNOWN_MARK_OF_THE_UNHEARD, "SpecialSlot");
         if (hasMarkOfUnheard)
         // Reduce return time by globals multiplier value
         {
-            randomisedReturnTimeSeconds *= globals.Configuration.Insurance.CoefOfHavingMarkOfUnknown;
+            randomisedReturnTimeSeconds *= globalTable.Configuration.Insurance.CoefOfHavingMarkOfUnknown;
         }
 
         // EoD has 30% faster returns
-        if (globals.Configuration.Insurance.EditionSendingMessageTime.TryGetValue(pmcData.Info.GameVersion, out var editionModifier))
+        if (globalTable.Configuration.Insurance.EditionSendingMessageTime.TryGetValue(pmcData.Info.GameVersion, out var editionModifier))
         {
             randomisedReturnTimeSeconds *= editionModifier.Multiplier;
         }

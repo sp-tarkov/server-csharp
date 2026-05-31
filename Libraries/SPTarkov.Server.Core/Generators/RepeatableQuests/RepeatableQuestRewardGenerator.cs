@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Repeatable;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -18,9 +19,9 @@ namespace SPTarkov.Server.Core.Generators.RepeatableQuests;
 [Injectable]
 public class RepeatableQuestRewardGenerator(
     ISptLogger<RepeatableQuestRewardGenerator> logger,
+    TemplateTable templateTable,
     RandomUtil randomUtil,
     MathUtil mathUtil,
-    DatabaseService databaseService,
     ItemHelper itemHelper,
     PresetHelper presetHelper,
     HandbookHelper handbookHelper,
@@ -655,9 +656,8 @@ public class RepeatableQuestRewardGenerator(
         // Check for specific base classes which don't make sense as reward item
         // also check if the price is greater than 0; there are some items whose price can not be found
         // those are not in the game yet (e.g. AGS grenade launcher)
-        return databaseService
-            .GetItems()
-            .Values.Where(itemTemplate =>
+        return templateTable
+            .Items.Values.Where(itemTemplate =>
             {
                 // Base "Item" item has no parent, ignore it
                 if (itemTemplate.Parent == MongoId.Empty())

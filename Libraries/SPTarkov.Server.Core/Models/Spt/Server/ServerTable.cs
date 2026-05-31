@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Server;
 /// <summary>
 /// Model for Assets/database/server.json
 /// </summary>
-public record ServerBase
+public record ServerTable
 {
     [JsonPropertyName("ip")]
     public required string Ip { get; set; }

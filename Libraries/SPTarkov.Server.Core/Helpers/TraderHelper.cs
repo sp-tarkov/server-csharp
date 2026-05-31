@@ -17,7 +17,8 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable(InjectionType.Singleton)]
 public class TraderHelper(
     ISptLogger<TraderHelper> logger,
-    DatabaseService databaseService,
+    GlobalTable globalTable,
+    TraderTable traderTable,
     ProfileHelper profileHelper,
     HandbookHelper handbookHelper,
     ServerLocalisationService serverLocalisationService,
@@ -38,8 +39,7 @@ public class TraderHelper(
     /// <returns>TraderBase</returns>
     public TraderBase? GetTraderByNickName(string traderName)
     {
-        return databaseService
-            .GetTraders()
+        return traderTable
             .Select(dict => dict.Value.Base)
             .FirstOrDefault(t => t?.Nickname != null && string.Equals(t.Nickname, traderName, StringComparison.CurrentCultureIgnoreCase));
     }
@@ -70,7 +70,7 @@ public class TraderHelper(
             }
         }
 
-        var traderBase = databaseService.GetTrader(traderId)?.Base;
+        var traderBase = traderTable.GetTrader(traderId)?.Base;
         if (traderBase == null)
         {
             logger.Error(serverLocalisationService.GetText("trader-unable_to_find_trader_by_id", traderId.ToString()));
@@ -86,7 +86,7 @@ public class TraderHelper(
     /// <returns>TraderAssort</returns>
     public TraderAssort? GetTraderAssortsByTraderId(MongoId traderId)
     {
-        return traderId == Traders.FENCE ? fenceService.GetRawFenceAssorts() : databaseService.GetTrader(traderId)?.Assort;
+        return traderId == Traders.FENCE ? fenceService.GetRawFenceAssorts() : traderTable.GetTrader(traderId)?.Assort;
     }
 
     /// <summary>
@@ -131,7 +131,7 @@ public class TraderHelper(
     /// <param name="traderID">trader id to reset</param>
     public void ResetTrader(MongoId sessionID, MongoId traderID)
     {
-        var trader = databaseService.GetTrader(traderID);
+        var trader = traderTable.GetTrader(traderID);
 
         var fullProfile = profileHelper.GetFullProfile(sessionID);
         if (fullProfile is null)
@@ -168,7 +168,7 @@ public class TraderHelper(
         if (profileTemplateTraderData.PurchaseAllClothingByDefaultForTrader?.Contains(traderID) ?? false)
         {
             // Get traders clothing
-            var clothing = databaseService.GetTrader(traderID).Suits;
+            var clothing = traderTable.GetTrader(traderID).Suits;
             if (clothing?.Count > 0)
             // Force suit ids into profile
             {
@@ -283,8 +283,7 @@ public class TraderHelper(
     public void ValidateTraderStandingsAndPlayerLevelForProfile(MongoId sessionId)
     {
         var profile = profileHelper.GetPmcProfile(sessionId);
-        var traders = databaseService.GetTraders();
-        foreach (var (traderId, _) in traders)
+        foreach (var (traderId, _) in traderTable)
         {
             LevelUp(traderId, profile);
         }
@@ -298,10 +297,10 @@ public class TraderHelper(
     /// <param name="pmcData">Profile to update trader in.</param>
     public void LevelUp(MongoId traderId, PmcData pmcData)
     {
-        var loyaltyLevels = databaseService.GetTrader(traderId).Base.LoyaltyLevels;
+        var loyaltyLevels = traderTable.GetTrader(traderId).Base.LoyaltyLevels;
 
         // Level up player
-        pmcData.Info.Level = pmcData.CalculateLevel(databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable);
+        pmcData.Info.Level = pmcData.CalculateLevel(globalTable.Configuration.Exp.Level.ExperienceTable);
 
         // Level up traders
         var targetLevel = 0;
@@ -378,7 +377,7 @@ public class TraderHelper(
     /// <returns>TraderLoyaltyLevel</returns>
     public TraderLoyaltyLevel GetLoyaltyLevel(MongoId traderId, PmcData pmcData)
     {
-        var traderBase = databaseService.GetTrader(traderId).Base;
+        var traderBase = traderTable.GetTrader(traderId).Base;
 
         int? loyaltyLevel = null;
         if (pmcData.TradersInfo.TryGetValue(traderId, out var traderInfo))
@@ -487,7 +486,7 @@ public class TraderHelper(
             {
                 highestPrice = 1d; // Default price
                 var itemHandbookPrice = handbookHelper.GetTemplatePrice(tpl);
-                foreach (var (_, trader) in databaseService.GetTraders())
+                foreach (var (_, trader) in traderTable)
                 {
                     // Get trader and check buy category allows tpl
                     var traderBase = trader.Base;
@@ -524,6 +523,6 @@ public class TraderHelper(
     /// <returns>True if a Trader exists with given ID</returns>
     public bool TraderExists(MongoId traderId)
     {
-        return databaseService.GetTrader(traderId) != null;
+        return traderTable.GetTrader(traderId) != null;
     }
 }

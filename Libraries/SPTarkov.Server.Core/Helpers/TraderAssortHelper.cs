@@ -2,6 +2,7 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Services;
@@ -14,8 +15,8 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable(InjectionType.Singleton)]
 public class TraderAssortHelper(
     ISptLogger<TraderAssortHelper> logger,
+    TraderTable traderTable,
     TimeUtil timeUtil,
-    DatabaseService databaseService,
     ProfileHelper profileHelper,
     AssortHelper assortHelper,
     TraderPurchasePersisterService traderPurchasePersisterService,
@@ -41,7 +42,7 @@ public class TraderAssortHelper(
     /// <returns>a traders' assorts</returns>
     public TraderAssort GetAssort(MongoId sessionId, MongoId traderId, bool showLockedAssorts = false)
     {
-        var traderClone = cloner.Clone(databaseService.GetTrader(traderId));
+        var traderClone = cloner.Clone(traderTable.GetTrader(traderId));
         var fullProfile = profileHelper.GetFullProfile(sessionId);
         var pmcProfile = fullProfile?.CharacterData?.PmcData;
 
@@ -140,8 +141,7 @@ public class TraderAssortHelper(
         var result = new Dictionary<string, Dictionary<MongoId, MongoId>>();
 
         // Loop every trader
-        var traders = databaseService.GetTraders();
-        foreach (var (_, trader) in traders)
+        foreach (var (_, trader) in traderTable)
         {
             if (trader?.QuestAssort is null)
             {
@@ -194,7 +194,7 @@ public class TraderAssortHelper(
     public bool TraderAssortsHaveExpired(MongoId traderID)
     {
         var time = timeUtil.GetTimeStamp();
-        var trader = databaseService.GetTables().Traders[traderID];
+        var trader = traderTable[traderID];
 
         return trader.Base.NextResupply <= time;
     }

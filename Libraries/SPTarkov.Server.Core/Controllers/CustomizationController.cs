@@ -9,6 +9,8 @@ using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Hideout;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -20,8 +22,10 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class CustomizationController(
     ISptLogger<CustomizationController> logger,
+    TemplateTable templateTable,
+    HideoutTable hideoutTable,
+    TraderTable traderTable,
     EventOutputHolder eventOutputHolder,
-    DatabaseService databaseService,
     SaveServer saveServer,
     ServerLocalisationService serverLocalisationService,
     ProfileHelper profileHelper,
@@ -38,8 +42,8 @@ public class CustomizationController(
     public List<Suit> GetTraderSuits(MongoId traderId, MongoId sessionId)
     {
         var pmcData = profileHelper.GetPmcProfile(sessionId);
-        var clothing = databaseService.GetCustomization();
-        var suits = databaseService.GetTrader(traderId)?.Suits;
+        var clothing = templateTable.Customization;
+        var suits = traderTable.GetTrader(traderId)?.Suits;
 
         var matchingSuits = suits?.Where(s => clothing.ContainsKey(s.SuiteId));
         matchingSuits = matchingSuits?.Where(s =>
@@ -76,7 +80,7 @@ public class CustomizationController(
         var suitId = traderOffer.SuiteId;
         if (OutfitAlreadyPurchased(traderOffer.SuiteId, sessionId))
         {
-            var suitDetails = databaseService.GetCustomization().GetValueOrDefault(suitId);
+            var suitDetails = templateTable.Customization.GetValueOrDefault(suitId);
             logger.Error(
                 serverLocalisationService.GetText(
                     "customisation-item_already_purchased",
@@ -179,8 +183,7 @@ public class CustomizationController(
     /// <returns></returns>
     protected IEnumerable<Suit> GetAllTraderSuits(MongoId sessionId)
     {
-        return databaseService
-            .GetTraders()
+        return traderTable
             .Where(trader => trader.Value.Base.CustomizationSeller.GetValueOrDefault(false))
             .SelectMany(trader => GetTraderSuits(trader.Key, sessionId));
     }
@@ -191,7 +194,7 @@ public class CustomizationController(
     /// <returns>Hideout customizations</returns>
     public HideoutCustomisation GetHideoutCustomisation()
     {
-        return databaseService.GetHideout().Customisation;
+        return hideoutTable.Customisation;
     }
 
     /// <summary>
@@ -201,7 +204,7 @@ public class CustomizationController(
     /// <returns></returns>
     public List<CustomisationStorage> GetCustomisationStorage(MongoId sessionId)
     {
-        var customisationResultsClone = cloner.Clone(databaseService.GetTemplates().CustomisationStorage);
+        var customisationResultsClone = cloner.Clone(templateTable.CustomisationStorage);
 
         var profile = profileHelper.GetFullProfile(sessionId);
 
@@ -248,7 +251,7 @@ public class CustomizationController(
     /// <param name="pmcData">Profile to update</param>
     protected void ApplyClothingItemToProfile(CustomizationSetOption customisation, PmcData pmcData)
     {
-        if (!databaseService.GetCustomization().TryGetValue(customisation.Id, out var dbSuit))
+        if (!templateTable.Customization.TryGetValue(customisation.Id, out var dbSuit))
         {
             logger.Error(
                 $"Unable to find suit customisation id: {customisation.Id}, cannot apply clothing to player profile: {pmcData.Id}"

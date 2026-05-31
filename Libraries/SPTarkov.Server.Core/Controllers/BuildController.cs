@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Eft.Builds;
 using SPTarkov.Server.Core.Models.Eft.PresetBuild;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -15,7 +16,7 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class BuildController(
     ISptLogger<BuildController> logger,
-    DatabaseService databaseService,
+    TemplateTable templateTable,
     ProfileHelper profileHelper,
     ServerLocalisationService serverLocalisationService,
     ItemHelper itemHelper,
@@ -41,7 +42,7 @@ public class BuildController(
         };
 
         // Ensure the secure container in the default presets match what the player has equipped
-        var defaultEquipmentPresetsClone = cloner.Clone(databaseService.GetTemplates().DefaultEquipmentPresets).ToList();
+        var defaultEquipmentPresetsClone = cloner.Clone(templateTable.DefaultEquipmentPresets).ToList();
 
         // Get players secure container
         var playerSecureContainer = profile.CharacterData?.PmcData?.Inventory?.Items?.FirstOrDefault(x =>

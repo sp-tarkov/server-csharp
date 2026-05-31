@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
 
@@ -15,8 +16,8 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.GiveCommand
 [Injectable]
 public class GiveSptCommand(
     ISptLogger<GiveSptCommand> logger,
+    TemplateTable templateTable,
     ItemHelper itemHelper,
-    DatabaseService databaseService,
     PresetHelper presetHelper,
     ItemFilterService itemFilterService,
     MailSendService mailSendService,
@@ -140,9 +141,8 @@ public class GiveSptCommand(
                 }
 
                 localizedGlobal = GetGlobalsLocale(locale);
-                var allAllowedItemNames = databaseService
-                    .GetItems()
-                    .Values.Where(IsItemAllowed)
+                var allAllowedItemNames = templateTable
+                    .Items.Values.Where(IsItemAllowed)
                     .Select(i => localizedGlobal.GetValueOrDefault($"{i.Id} Name", i.Properties.Name)?.ToLowerInvariant())
                     .Where(i => !string.IsNullOrEmpty(i));
 
@@ -178,9 +178,8 @@ public class GiveSptCommand(
         // If item is an item name, we need to search using that item name and the locale which one we want otherwise
         // item is just the tplId.
         MongoId tplId = isItemName
-            ? databaseService
-                .GetItems()
-                .Values.Where(IsItemAllowed)
+            ? templateTable
+                .Items.Values.Where(IsItemAllowed)
                 .FirstOrDefault(i => (localizedGlobal[$"{i?.Id} Name"]?.ToLowerInvariant() ?? i.Properties.Name) == item)
                 .Id
             : item;

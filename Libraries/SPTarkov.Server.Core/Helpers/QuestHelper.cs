@@ -11,6 +11,7 @@ using SPTarkov.Server.Core.Models.Eft.Quests;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -22,8 +23,8 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable(InjectionType.Singleton)]
 public class QuestHelper(
     ISptLogger<QuestHelper> logger,
+    TemplateTable templateTable,
     TimeUtil timeUtil,
-    DatabaseService databaseService,
     EventOutputHolder eventOutputHolder,
     LocaleService localeService,
     ProfileHelper profileHelper,
@@ -715,7 +716,7 @@ public class QuestHelper(
     /// <returns>List of Quest objects</returns>
     public List<Quest> GetQuestsFromDb()
     {
-        return databaseService.GetQuests().Values.ToList();
+        return templateTable.Quests.Values.ToList();
     }
 
     /// <summary>
@@ -727,7 +728,7 @@ public class QuestHelper(
     public Quest? GetQuestFromDb(MongoId questId, PmcData pmcData)
     {
         // Maybe a repeatable quest?
-        if (databaseService.GetQuests().TryGetValue(questId, out var quest))
+        if (templateTable.Quests.TryGetValue(questId, out var quest))
         {
             return quest;
         }
@@ -869,8 +870,7 @@ public class QuestHelper(
     public void AddAllQuestsToProfile(PmcData pmcProfile, IEnumerable<QuestStatusEnum> statuses)
     {
         // Iterate over all quests in db
-        var quests = databaseService.GetQuests();
-        foreach (var (key, questData) in quests)
+        foreach (var (key, questData) in templateTable.Quests)
         {
             // Quest from db matches quests in profile, skip
             if (pmcProfile.Quests.Any(x => x.QId == questData.Id))

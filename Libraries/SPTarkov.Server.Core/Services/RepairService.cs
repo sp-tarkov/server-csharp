@@ -12,6 +12,7 @@ using SPTarkov.Server.Core.Models.Eft.Repair;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Utils;
 using BonusSettings = SPTarkov.Server.Core.Models.Spt.Config.BonusSettings;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
@@ -21,8 +22,9 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class RepairService(
     ISptLogger<RepairService> logger,
+    GlobalTable globalTable,
+    TemplateTable templateTable,
     RandomUtil randomUtil,
-    DatabaseService databaseService,
     ItemHelper itemHelper,
     TraderHelper traderHelper,
     PaymentService paymentService,
@@ -62,7 +64,7 @@ public class RepairService(
         var repairQualityMultiplier = traderRepairDetails.Quality;
         var repairRate = priceCoef <= 0 ? 1 : priceCoef / 100 + 1;
 
-        var items = databaseService.GetItems();
+        var items = templateTable.Items;
         var itemToRepairDetails = items[itemToRepair.Template];
         var repairItemIsArmor = itemToRepairDetails.Properties.ArmorMaterial is not null;
 
@@ -287,7 +289,7 @@ public class RepairService(
             logger.Error(serverLocalisationService.GetText("repair-item_not_found_unable_to_repair", itemToRepairId.ToString()));
         }
 
-        var itemsDb = databaseService.GetItems();
+        var itemsDb = templateTable.Items;
         var itemToRepairDetails = itemsDb[itemToRepair.Template];
         var repairItemIsArmor = itemToRepairDetails.Properties.ArmorMaterial is not null;
 
@@ -360,8 +362,7 @@ public class RepairService(
     /// <returns>Number to divide kit points by</returns>
     protected double GetKitDivisor(TemplateItem itemToRepairDetails, bool isArmor, PmcData pmcData)
     {
-        var globals = databaseService.GetGlobals();
-        var globalConfig = globals.Configuration;
+        var globalConfig = globalTable.Configuration;
         var globalRepairSettings = globalConfig.RepairSettings;
 
         var intellectRepairPointsPerLevel = globalConfig.SkillsSettings.Intellect.RepairPointsCostReduction;
@@ -377,7 +378,7 @@ public class RepairService(
             globalConfig.ArmorMaterials.TryGetValue(materialType, out var armorMaterial);
             var destructability = 1 + armorMaterial.Destructibility;
             var armorClass = itemToRepairDetails.Properties.ArmorClass.Value;
-            var armorClassDivisor = globals.Configuration.RepairSettings.ArmorClassDivisor;
+            var armorClassDivisor = globalTable.Configuration.RepairSettings.ArmorClassDivisor;
             var armorClassMultiplier = 1.0 + (armorClass / armorClassDivisor);
 
             return durabilityPointCostArmor * armorBonus * destructability * armorClassMultiplier;
@@ -385,7 +386,7 @@ public class RepairService(
 
         var repairWeaponBonus = GetBonusMultiplierValue(BonusType.RepairWeaponBonus, pmcData) - 1;
         var repairPointMultiplier = 1.0 - repairWeaponBonus - intellectPointReduction;
-        var durabilityPointCostGuns = globals.Configuration.RepairSettings.DurabilityPointCostGuns;
+        var durabilityPointCostGuns = globalTable.Configuration.RepairSettings.DurabilityPointCostGuns;
 
         return durabilityPointCostGuns * repairPointMultiplier;
     }
@@ -524,9 +525,7 @@ public class RepairService(
     /// <returns>True if item should have buff applied</returns>
     protected bool ShouldBuffItem(RepairDetails repairDetails, PmcData pmcData)
     {
-        var globals = databaseService.GetGlobals();
-
-        if (pmcData.Info.Level < globals.Configuration.RepairSettings.MinimumLevelToApplyBuff)
+        if (pmcData.Info.Level < globalTable.Configuration.RepairSettings.MinimumLevelToApplyBuff)
         {
             return false;
         }
@@ -561,7 +560,7 @@ public class RepairService(
             return false;
         }
 
-        var skillSettings = globals.Configuration.SkillsSettings.GetAllPropertiesAsDictionary();
+        var skillSettings = globalTable.Configuration.SkillsSettings.GetAllPropertiesAsDictionary();
         BuffSettings? buffSettings = null;
         switch (itemSkillType)
         {

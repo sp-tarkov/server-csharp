@@ -5,14 +5,15 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class BotEquipmentModPoolService(
     ISptLogger<BotEquipmentModPoolService> logger,
+    TemplateTable templateTable,
     ItemHelper itemHelper,
-    DatabaseService databaseService,
     ServerLocalisationService localisationService
 )
 {
@@ -198,12 +199,10 @@ public class BotEquipmentModPoolService(
     /// </summary>
     protected ConcurrentDictionary<MongoId, ConcurrentDictionary<string, HashSet<MongoId>>> GenerateWeaponPool()
     {
-        var weaponsAndMods = databaseService
-            .GetItems()
-            .Values.Where(item =>
-                string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)
-                && itemHelper.IsOfBaseclasses(item.Id, [BaseClasses.WEAPON, BaseClasses.MOD])
-            );
+        var weaponsAndMods = templateTable.Items.Values.Where(item =>
+            string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)
+            && itemHelper.IsOfBaseclasses(item.Id, [BaseClasses.WEAPON, BaseClasses.MOD])
+        );
 
         return GeneratePool(weaponsAndMods, "weapon");
     }
@@ -213,15 +212,13 @@ public class BotEquipmentModPoolService(
     /// </summary>
     protected ConcurrentDictionary<MongoId, ConcurrentDictionary<string, HashSet<MongoId>>> GenerateGearPool()
     {
-        var gearAndMods = databaseService
-            .GetItems()
-            .Values.Where(item =>
-                string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)
-                && itemHelper.IsOfBaseclasses(
-                    item.Id,
-                    [BaseClasses.ARMORED_EQUIPMENT, BaseClasses.VEST, BaseClasses.ARMOR, BaseClasses.HEADWEAR, BaseClasses.MOD]
-                )
-            );
+        var gearAndMods = templateTable.Items.Values.Where(item =>
+            string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)
+            && itemHelper.IsOfBaseclasses(
+                item.Id,
+                [BaseClasses.ARMORED_EQUIPMENT, BaseClasses.VEST, BaseClasses.ARMOR, BaseClasses.HEADWEAR, BaseClasses.MOD]
+            )
+        );
 
         return GeneratePool(gearAndMods, "gear");
     }

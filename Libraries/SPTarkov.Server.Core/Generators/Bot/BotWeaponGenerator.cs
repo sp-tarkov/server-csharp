@@ -19,7 +19,7 @@ namespace SPTarkov.Server.Core.Generators.Bot;
 [Injectable(InjectionType.Singleton)]
 public class BotWeaponGenerator(
     ISptLogger<BotWeaponGenerator> logger,
-    DatabaseService databaseService,
+    GlobalTable globalTable,
     ItemHelper itemHelper,
     WeightedRandomHelper weightedRandomHelper,
     BotGeneratorHelper botGeneratorHelper,
@@ -329,7 +329,7 @@ public class BotWeaponGenerator(
 
         // TODO: Preset weapons trigger a lot of warnings regarding missing ammo in magazines & such
         Preset? preset = null;
-        foreach (var (_, itemPreset) in databaseService.GetGlobals().ItemPresets)
+        foreach (var (_, itemPreset) in globalTable.ItemPresets)
         {
             if (itemPreset.Items[0].Template == weaponTemplate)
             {

@@ -2,15 +2,15 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Match;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using static SPTarkov.Server.Core.Services.MatchLocationService;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
-public class MatchCallbacks(HttpResponseUtil httpResponseUtil, MatchController matchController, DatabaseService databaseService)
+public class MatchCallbacks(MatchTable matchTable, HttpResponseUtil httpResponseUtil, MatchController matchController)
 {
     /// <summary>
     ///     Handle client/match/updatePing
@@ -177,7 +177,7 @@ public class MatchCallbacks(HttpResponseUtil httpResponseUtil, MatchController m
     /// <returns></returns>
     public ValueTask<string> GetMetrics(string url, EmptyRequestData _, MongoId sessionID)
     {
-        return new ValueTask<string>(httpResponseUtil.GetBody(databaseService.GetMatch().Metrics));
+        return new ValueTask<string>(httpResponseUtil.GetBody(matchTable.Metrics));
     }
 
     /// <summary>

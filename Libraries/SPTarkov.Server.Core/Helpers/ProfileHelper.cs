@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -17,9 +18,10 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class ProfileHelper(
     ISptLogger<ProfileHelper> logger,
+    TemplateTable templateTable,
+    GlobalTable globalTable,
     ICloner cloner,
     SaveServer saveServer,
-    DatabaseService databaseService,
     Watermark watermark,
     TimeUtil timeUtil,
     ServerLocalisationService serverLocalisationService,
@@ -168,7 +170,7 @@ public class ProfileHelper(
     public int? GetExperience(int level)
     {
         var playerLevel = level;
-        var expTable = databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
+        var expTable = globalTable.Configuration.Exp.Level.ExperienceTable;
         int? exp = 0;
 
         if (playerLevel >= expTable.Length) // make sure to not go out of bounds
@@ -190,7 +192,7 @@ public class ProfileHelper(
     /// <returns>Max level</returns>
     public int GetMaxLevel()
     {
-        return databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable.Length - 1;
+        return globalTable.Configuration.Exp.Level.ExperienceTable.Length - 1;
     }
 
     /// <summary>
@@ -524,7 +526,7 @@ public class ProfileHelper(
 
         if (useSkillProgressRateMultiplier)
         {
-            var skillProgressRate = databaseService.GetGlobals().Configuration.SkillsSettings.SkillProgressRate;
+            var skillProgressRate = globalTable.Configuration.SkillsSettings.SkillProgressRate;
             pointsToAddToSkill *= skillProgressRate;
         }
 
@@ -731,7 +733,7 @@ public class ProfileHelper(
             return;
         }
 
-        var customisationTemplateDb = databaseService.GetTemplates().Customization;
+        var customisationTemplateDb = templateTable.Customization;
 
         if (!customisationTemplateDb.TryGetValue(reward.Target, out var template))
         {
@@ -800,7 +802,7 @@ public class ProfileHelper(
     /// <returns></returns>
     public TemplateSide? GetProfileTemplateForSide(string accountEdition, string side)
     {
-        var profileTemplates = databaseService.GetProfileTemplates();
+        var profileTemplates = templateTable.Profiles;
 
         // Get matching profile 'type' e.g. 'standard'
         if (!profileTemplates.TryGetValue(accountEdition, out var matchingProfileTemplate))
@@ -823,7 +825,7 @@ public class ProfileHelper(
     /// <returns></returns>
     public bool GetProfileTemplateFlagValue(string accountEdition, string flagKey)
     {
-        var profileTemplates = databaseService.GetProfileTemplates();
+        var profileTemplates = templateTable.Profiles;
 
         // Get matching profile 'type' e.g. 'standard'
         if (!profileTemplates.TryGetValue(accountEdition, out var matchingProfileTemplate))

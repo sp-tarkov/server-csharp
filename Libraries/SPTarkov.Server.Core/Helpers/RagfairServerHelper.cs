@@ -1,6 +1,7 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -12,9 +13,10 @@ namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class RagfairServerHelper(
+    GlobalTable globalTable,
+    TraderTable traderTable,
     RandomUtil randomUtil,
     TimeUtil timeUtil,
-    DatabaseService databaseService,
     ItemHelper itemHelper,
     WeightedRandomHelper weightedRandomHelper,
     MailSendService mailSendService,
@@ -111,7 +113,7 @@ public class RagfairServerHelper(
     /// <returns>True if id was a trader</returns>
     public bool IsTrader(MongoId traderId)
     {
-        return databaseService.GetTraders().ContainsKey(traderId);
+        return traderTable.ContainsKey(traderId);
     }
 
     /// <summary>
@@ -127,7 +129,7 @@ public class RagfairServerHelper(
             MessageType.MessageWithItems,
             goodsReturnedTemplate,
             returnedItems,
-            timeUtil.GetHoursAsSeconds((int)databaseService.GetGlobals().Configuration.RagFair.YourOfferDidNotSellMaxStorageTimeInHour)
+            timeUtil.GetHoursAsSeconds((int)globalTable.Configuration.RagFair.YourOfferDidNotSellMaxStorageTimeInHour)
         );
     }
 
@@ -180,7 +182,7 @@ public class RagfairServerHelper(
     /// <returns>Collection containing weapon and its children</returns>
     public List<Item> GetPresetItems(Item item)
     {
-        if (!databaseService.GetGlobals().ItemPresets.TryGetValue(item.Id, out var presetToClone))
+        if (!globalTable.ItemPresets.TryGetValue(item.Id, out var presetToClone))
         {
             return [];
         }
@@ -197,10 +199,10 @@ public class RagfairServerHelper(
     public List<Item> GetPresetItemsByTpl(Item item)
     {
         var presets = new List<Item>();
-        foreach (var itemId in databaseService.GetGlobals().ItemPresets.Keys)
+        foreach (var itemId in globalTable.ItemPresets.Keys)
         {
             if (
-                databaseService.GetGlobals().ItemPresets.TryGetValue(itemId, out var presetsOfItem)
+                globalTable.ItemPresets.TryGetValue(itemId, out var presetsOfItem)
                 && presetsOfItem.Items?.FirstOrDefault()?.Template == item.Template
             )
             {

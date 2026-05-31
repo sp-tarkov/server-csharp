@@ -5,13 +5,13 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable(InjectionType.Singleton)]
-public class HandbookHelper(ISptLogger<HandbookHelper> logger, DatabaseService databaseService, ItemConfig itemConfig, ICloner cloner)
+public class HandbookHelper(ISptLogger<HandbookHelper> logger, TemplateTable templateTable, ItemConfig itemConfig, ICloner cloner)
 {
     private LookupCollection? _handbookPriceCache;
     protected virtual LookupCollection HandbookPriceCache
@@ -25,7 +25,7 @@ public class HandbookHelper(ISptLogger<HandbookHelper> logger, DatabaseService d
     protected LookupCollection HydrateHandbookCache()
     {
         var result = new LookupCollection();
-        var handbook = databaseService.GetHandbook();
+        var handbook = templateTable.Handbook;
         // Add handbook overrides found in items.json config into db
         foreach (var (key, priceOverride) in itemConfig.HandbookPriceOverride)
         {
@@ -109,7 +109,7 @@ public class HandbookHelper(ISptLogger<HandbookHelper> logger, DatabaseService d
             return itemPrice;
         }
 
-        var handbookItem = databaseService.GetHandbook().Items?.FirstOrDefault(item => item.Id == tpl);
+        var handbookItem = templateTable.Handbook.Items.FirstOrDefault(item => item.Id == tpl);
         if (handbookItem is null)
         {
             const int newValue = 0;
@@ -225,7 +225,7 @@ public class HandbookHelper(ISptLogger<HandbookHelper> logger, DatabaseService d
 
     public HandbookCategory? GetCategoryById(MongoId handbookId)
     {
-        return databaseService.GetHandbook().Categories.FirstOrDefault(category => category.Id == handbookId);
+        return templateTable.Handbook.Categories.FirstOrDefault(category => category.Id == handbookId);
     }
 
     protected record LookupItem<T, I>

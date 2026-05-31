@@ -2,12 +2,12 @@ using System.Globalization;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Models.Spt.Server;
 
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class LocaleService(ISptLogger<LocaleService> logger, DatabaseServer databaseServer, LocaleConfig localeConfig)
+public class LocaleService(ISptLogger<LocaleService> logger, LocaleTable localeTable, LocaleConfig localeConfig)
 {
     private string _chosenServerLocale = string.Empty;
     private string _chosenClientLocale = string.Empty;
@@ -38,7 +38,7 @@ public class LocaleService(ISptLogger<LocaleService> logger, DatabaseServer data
     protected bool TryGetLocaleDb(string languageKey, out Dictionary<string, string>? localeToReturn)
     {
         localeToReturn = null;
-        if (!databaseServer.GetTables().Locales.Global.TryGetValue(languageKey, out var keyedLocales))
+        if (!localeTable.Global.TryGetValue(languageKey, out var keyedLocales))
         {
             return false;
         }
@@ -159,15 +159,14 @@ public class LocaleService(ISptLogger<LocaleService> logger, DatabaseServer data
             return "en";
         }
 
-        var locales = databaseServer.GetTables().Locales;
         var baseNameCode = platformLocale.TwoLetterISOLanguageName.ToLowerInvariant();
-        if (locales.Global.ContainsKey(baseNameCode))
+        if (localeTable.Global.ContainsKey(baseNameCode))
         {
             return baseNameCode;
         }
 
         var languageCode = platformLocale.Name.ToLowerInvariant();
-        if (locales.Global.ContainsKey(languageCode))
+        if (localeTable.Global.ContainsKey(languageCode))
         {
             return languageCode;
         }
@@ -177,7 +176,7 @@ public class LocaleService(ISptLogger<LocaleService> logger, DatabaseServer data
         if (languageCode.Length > 2)
         {
             // Take first 2 characters and see if that exists
-            if (locales.Global.ContainsKey(languageCode[..1]))
+            if (localeTable.Global.ContainsKey(languageCode[..1]))
             {
                 return languageCode;
             }
