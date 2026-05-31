@@ -25,6 +25,7 @@ public partial class ProfileFixerService(
     ISptLogger<ProfileFixerService> logger,
     TemplateTable templateTable,
     GlobalTable globalTable,
+    TradersTable tradersTable,
     JsonUtil jsonUtil,
     RewardHelper rewardHelper,
     TraderHelper traderHelper,
@@ -673,7 +674,7 @@ public partial class ProfileFixerService(
     {
         foreach (var (traderId, _) in fullProfile.CharacterData?.PmcData?.TradersInfo ?? [])
         {
-            if (!traderHelper.TraderExists(traderId))
+            if (!tradersTable.ContainsKey(traderId))
             {
                 if (coreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
@@ -692,7 +693,7 @@ public partial class ProfileFixerService(
 
         foreach (var (traderId, _) in fullProfile.CharacterData?.ScavData?.TradersInfo ?? [])
         {
-            if (!traderHelper.TraderExists(traderId))
+            if (!tradersTable.ContainsKey(traderId))
             {
                 if (coreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {

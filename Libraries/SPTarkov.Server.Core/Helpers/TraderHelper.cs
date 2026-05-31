@@ -516,14 +516,4 @@ public class TraderHelper(
             return highestPrice;
         }
     }
-
-    /// <summary>
-    ///     Does the provided ID exist in db as a trader id
-    /// </summary>
-    /// <param name="traderId">Trader id</param>
-    /// <returns>True if a Trader exists with given ID</returns>
-    public bool TraderExists(MongoId traderId)
-    {
-        return traderTable.GetTrader(traderId) != null;
-    }
 }

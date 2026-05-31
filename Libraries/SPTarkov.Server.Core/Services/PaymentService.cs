@@ -10,6 +10,7 @@ using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
@@ -18,6 +19,7 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class PaymentService(
     ISptLogger<PaymentService> logger,
+    TradersTable tradersTable,
     HttpResponseUtil httpResponseUtil,
     HandbookHelper handbookHelper,
     TraderHelper traderHelper,
@@ -76,7 +78,7 @@ public class PaymentService(
         var requestTransactionId = new MongoId(request.TransactionId);
 
         // Who is recipient of money player is sending
-        var payToTrader = traderHelper.TraderExists(requestTransactionId);
+        var payToTrader = tradersTable.ContainsKey(requestTransactionId);
 
         // May need to convert to trader currency
         var trader = payToTrader ? traderHelper.GetTrader(requestTransactionId, sessionID) : new TraderBase { Currency = CurrencyType.RUB }; // TODO: cleanup
