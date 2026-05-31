@@ -8,6 +8,7 @@ using SPTarkov.Common.Extensions;
 using SPTarkov.Common.Logger;
 using SPTarkov.DI;
 using SPTarkov.Reflection.Patching;
+using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Loaders;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -104,24 +105,17 @@ public static class Program
         var earlyServiceProvider = ProgramHelpers.CreateEarlySptProvider(loggerFactory, configuration);
 
         List<SptMod> loadedMods = [];
-        var modLoader = earlyServiceProvider.GetService<ModLoader>();
-        if (modLoader != null)
+        var modLoader = earlyServiceProvider.GetRequiredService<ModLoader>();
+        var runResult = await modLoader.RunModLoader(loggerFactory, args);
+        if (!runResult.ShouldStartServer)
         {
-            var runResult = await modLoader.RunModLoader(loggerFactory, args);
-            if (!runResult.ShouldStartServer)
-            {
-                return;
-            }
-
-            loadedMods = runResult.ValidRuntimeMods;
+            return;
         }
+
+        loadedMods = runResult.ValidRuntimeMods;
 
         var cTSource = new CancellationTokenSource();
-        var dbImporter = earlyServiceProvider.GetService<DatabaseImporter>();
-        if (dbImporter is null)
-        {
-            throw new NullReferenceException("EarlyDatabaseImporter is null");
-        }
+        var dbImporter = earlyServiceProvider.GetRequiredService<DatabaseImporter>();
 
         var shouldVerify = !ProgramStatics.DEBUG();
         if (shouldVerify)
@@ -129,11 +123,9 @@ public static class Program
             await dbImporter.LoadHashesAsync(cTSource.Token);
         }
 
-        var tables = await dbImporter.LoadDatabaseAsync(shouldVerify, cTSource.Token);
-        if (tables is null)
-        {
-            throw new NullReferenceException("Failed to import database tables.");
-        }
+        var tables =
+            await dbImporter.LoadDatabaseAsync(shouldVerify, cTSource.Token)
+            ?? throw new NullReferenceException("Failed to import database tables.");
 
         // Create web builder and logger
         var builder = ProgramHelpers.CreateNewHostBuilder(loggerFactory, configuration, tables);
@@ -196,6 +188,31 @@ public static class Program
         forwardedHeadersOptions.KnownProxies.Clear();
         app.UseForwardedHeaders(forwardedHeadersOptions);
 
+        if (ProgramStatics.MODS())
+        {
+            var injectableTypes = app.Services.GetRequiredService<IReadOnlyList<DependencyInjectionContainer>>();
+            var applicationLifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
+            var cancellationToken = applicationLifetime.ApplicationStopping;
+
+            var preSptLoadTypes = injectableTypes
+                .Where(container => container.Type == typeof(IOnLoad))
+                .Where(container => container.InjectableAttribute.TypePriority >= OnLoadOrder.Watermark)
+                .Where(container => container.InjectableAttribute.TypePriority < OnLoadOrder.GameCallbacks)
+                .OrderBy(container => container.InjectableAttribute.TypePriority);
+
+            foreach (var preSptLoadType in preSptLoadTypes)
+            {
+                var onLoad = app.Services.GetRequiredService(preSptLoadType.ParentType);
+
+                if (onLoad is not IOnLoad onLoadService)
+                {
+                    continue;
+                }
+
+                await onLoadService.OnLoad(cancellationToken);
+            }
+        }
+
         await app.RunAsync();
     }
 
@@ -226,8 +243,6 @@ public static class Program
         builder.WebHost.ConfigureKestrel(
             (_, options) =>
             {
-                // This method is not expected to be async so we need to wait for the Task instead of using await keyword
-                options.ApplicationServices.GetRequiredService<OnWebAppBuildModLoader>().OnLoad().Wait();
                 var httpConfig = options.ApplicationServices.GetRequiredService<HttpConfig>();
 
                 // Probe the http ip and port to see if its being used, this method will throw an exception and crash

@@ -4,7 +4,7 @@ using SPTarkov.Server.Core.Routers;
 
 namespace SPTarkov.Server.Core.Utils;
 
-[Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.Database)]
+[Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.Preload)]
 public class ImageRouteImporter(FileUtil fileUtil, ImageRouter imageRouter) : IOnLoad
 {
     private const string SptDataPath = "./SPT_Data/";
