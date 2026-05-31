@@ -7,6 +7,11 @@
     <MudExpansionPanels Class="@GetPanelClass()" Elevation="0" Dense="true" MultiExpansion="true">
         <MudExpansionPanel Text="@PanelTitle" Expanded="@IsRoot">
             <div class="config-json-object">
+                <div class="config-json-section-summary">
+                    <span class="config-json-kind config-json-kind-object">Object</span>
+                    <span>@GetVisibleObjectPropertyCount(jsonObject).ToString("N0") visible properties</span>
+                </div>
+
                 <Virtualize Items="@GetObjectProperties(jsonObject)" Context="property" ItemSize="74" OverscanCount="8">
                     <ConfigJsonValueEditor @key="property.Key"
                                            Name="@property.Key"
@@ -45,7 +50,7 @@
                                            Color="Color.Secondary"
                                            Disabled="@(!CanAddProperty(jsonObject))"
                                            OnClick="() => AddObjectProperty(jsonObject)"
-                                           AriaLabel="Add property" />
+                                           aria-label="Add property" />
                         </MudTooltip>
                     </div>
                 }
@@ -58,6 +63,11 @@ else if (Value is JsonArray jsonArray)
     <MudExpansionPanels Class="@GetPanelClass()" Elevation="0" Dense="true" MultiExpansion="true">
         <MudExpansionPanel Text="@PanelTitle" Expanded="@IsRoot">
             <div class="config-json-array">
+                <div class="config-json-section-summary">
+                    <span class="config-json-kind config-json-kind-array">Array</span>
+                    <span>@GetVisibleArrayItemCount(jsonArray).ToString("N0") visible items</span>
+                </div>
+
                 <Virtualize Items="@GetArrayItems(jsonArray)" Context="item" ItemSize="74" OverscanCount="8">
                     <div @key="item.Index" class="config-json-array-row">
                         <ConfigJsonValueEditor Name="@($"[{item.Index}]")"
@@ -73,7 +83,7 @@ else if (Value is JsonArray jsonArray)
                                            Variant="Variant.Outlined"
                                            Color="Color.Secondary"
                                            OnClick="() => RemoveArrayItem(jsonArray, item.Index)"
-                                           AriaLabel="Remove item" />
+                                           aria-label="Remove item" />
                         </MudTooltip>
                     </div>
                 </Virtualize>
@@ -95,7 +105,7 @@ else if (Value is JsonArray jsonArray)
                                        Variant="Variant.Outlined"
                                        Color="Color.Secondary"
                                        OnClick="() => AddArrayItem(jsonArray)"
-                                       AriaLabel="Add item" />
+                                       aria-label="Add item" />
                     </MudTooltip>
                 </div>
             </div>
@@ -104,15 +114,21 @@ else if (Value is JsonArray jsonArray)
 }
 else
 {
-    <div class="config-json-primitive">
-        <MudText Typo="Typo.caption" Class="config-json-label">@Name</MudText>
+    <div class="@GetPrimitiveClass()">
+        <div class="config-json-field-meta">
+            <MudText Typo="Typo.caption" Class="config-json-label">@Name</MudText>
+            <span class="@GetValueKindClass()">@ValueKindLabel</span>
+        </div>
 
         @if (TryGetBoolean(Value, out var boolValue))
         {
-            <MudSwitch T="bool"
-                       Value="@boolValue"
-                       ValueChanged="SetBoolean"
-                       Color="Color.Warning" />
+            <div class="config-json-switch-field">
+                <MudSwitch T="bool"
+                           Value="@boolValue"
+                           ValueChanged="SetBoolean"
+                           Color="Color.Warning" />
+                <span>@(boolValue ? "Enabled" : "Disabled")</span>
+            </div>
         }
         else
         {
@@ -192,6 +208,22 @@ else
         get { return !AddableObjectPaths.TryGetValue(Path, out var canAddProperties) || canAddProperties; }
     }
 
+    private string ValueKindLabel
+    {
+        get
+        {
+            return Value switch
+            {
+                null => "Null",
+                JsonValue jsonValue when jsonValue.TryGetValue(out bool _) => "Boolean",
+                JsonValue jsonValue when jsonValue.TryGetValue(out string _) => "String",
+                JsonValue jsonValue when IsNumberValue(jsonValue) => "Number",
+                JsonValue => "Value",
+                _ => "Value",
+            };
+        }
+    }
+
     private async Task SetObjectProperty(JsonObject jsonObject, string propertyName, JsonNode? value)
     {
         jsonObject[propertyName] = value;
@@ -254,9 +286,24 @@ else
         return IsRoot ? "config-json-panels config-json-root-panels" : $"config-json-panels config-json-depth-{Math.Min(Depth, 6)}";
     }
 
+    private string GetPrimitiveClass()
+    {
+        return $"config-json-primitive config-json-primitive-{ValueKindLabel.ToLowerInvariant()}";
+    }
+
+    private string GetValueKindClass()
+    {
+        return $"config-json-kind config-json-kind-{ValueKindLabel.ToLowerInvariant()}";
+    }
+
     private ICollection<KeyValuePair<string, JsonNode?>> GetObjectProperties(JsonObject jsonObject)
     {
         return jsonObject.Where(property => !IsIgnoredPath(AppendJsonPath(Path, property.Key))).ToList();
+    }
+
+    private int GetVisibleObjectPropertyCount(JsonObject jsonObject)
+    {
+        return jsonObject.Count(property => !IsIgnoredPath(AppendJsonPath(Path, property.Key)));
     }
 
     private ICollection<JsonArrayItem> GetArrayItems(JsonArray jsonArray)
@@ -274,6 +321,21 @@ else
         }
 
         return items;
+    }
+
+    private int GetVisibleArrayItemCount(JsonArray jsonArray)
+    {
+        var count = 0;
+
+        for (var index = 0; index < jsonArray.Count; index++)
+        {
+            if (!IsIgnoredPath(AppendJsonPath(Path, index.ToString(CultureInfo.InvariantCulture))))
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     private bool IsIgnoredPath(string path)
@@ -350,6 +412,21 @@ else
 
         value = string.Empty;
         return false;
+    }
+
+    private static bool IsNumberValue(JsonValue jsonValue)
+    {
+        return jsonValue.TryGetValue(out byte _)
+            || jsonValue.TryGetValue(out sbyte _)
+            || jsonValue.TryGetValue(out short _)
+            || jsonValue.TryGetValue(out ushort _)
+            || jsonValue.TryGetValue(out int _)
+            || jsonValue.TryGetValue(out uint _)
+            || jsonValue.TryGetValue(out long _)
+            || jsonValue.TryGetValue(out ulong _)
+            || jsonValue.TryGetValue(out float _)
+            || jsonValue.TryGetValue(out double _)
+            || jsonValue.TryGetValue(out decimal _);
     }
 
     private readonly record struct JsonArrayItem(int Index, JsonNode? Value);

@@ -295,6 +295,12 @@ public partial class ConfigEditorPage
 
     private async Task SaveToDisk()
     {
+        if (SelectedConfig?.IsRegisteredConfig != true)
+        {
+            Snackbar.Add("Server configs cannot be saved to disk from the editor.", Severity.Warning);
+            return;
+        }
+
         await RunEditorActionAsync(
             async () =>
             {

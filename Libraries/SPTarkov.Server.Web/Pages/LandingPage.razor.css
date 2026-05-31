@@ -94,7 +94,9 @@
     border-radius: 8px;
     color: inherit;
     text-decoration: none;
-    background: rgba(9, 9, 11, 0.76);
+    background:
+        linear-gradient(180deg, rgba(24, 24, 27, 0.52), rgba(9, 9, 11, 0.78)),
+        rgba(9, 9, 11, 0.76);
     box-shadow: 0 22px 60px rgba(0, 0, 0, 0.34);
     backdrop-filter: blur(14px);
     transition:
@@ -108,7 +110,9 @@
 .landing-link-card:focus-visible {
     transform: translateY(-2px);
     border-color: rgba(250, 204, 21, 0.78);
-    background: rgba(24, 24, 27, 0.88);
+    background:
+        linear-gradient(180deg, rgba(39, 39, 42, 0.62), rgba(24, 24, 27, 0.88)),
+        rgba(24, 24, 27, 0.88);
     box-shadow: 0 28px 72px rgba(0, 0, 0, 0.42);
     outline: none;
 }
@@ -121,7 +125,10 @@
     border: 1px solid rgba(250, 204, 21, 0.36);
     border-radius: 8px;
     color: #facc15;
-    background: rgba(250, 204, 21, 0.08);
+    background:
+        linear-gradient(180deg, rgba(250, 204, 21, 0.12), rgba(250, 204, 21, 0.06)),
+        rgba(250, 204, 21, 0.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .landing-link-copy {

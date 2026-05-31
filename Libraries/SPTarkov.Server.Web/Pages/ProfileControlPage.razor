@@ -11,7 +11,14 @@
 @using SPTarkov.Server.Web.Models.Database
 @using SPTarkov.Server.Web.Models.Profiles
 @using SPTarkov.Server.Web.Utils
+@using BotHideoutArea = SPTarkov.Server.Core.Models.Eft.Common.Tables.BotHideoutArea
+@using CommonSkill = SPTarkov.Server.Core.Models.Eft.Common.Tables.CommonSkill
 @using CustomisationTypeId = SPTarkov.Server.Core.Models.Eft.Common.Tables.CustomisationTypeId
+@using PmcData = SPTarkov.Server.Core.Models.Eft.Common.PmcData
+@using Production = SPTarkov.Server.Core.Models.Eft.Common.Tables.Production
+@using ProfileQuestStatus = SPTarkov.Server.Core.Models.Eft.Common.Tables.QuestStatus
+@using Quest = SPTarkov.Server.Core.Models.Eft.Common.Tables.Quest
+@using QuestStatusEnum = SPTarkov.Server.Core.Models.Enums.QuestStatusEnum
 @using TemplateSide = SPTarkov.Server.Core.Models.Eft.Common.Tables.TemplateSide
 @layout BaseMudBlazorLayout
 @inject CreateProfileService CreateProfileService
@@ -387,38 +394,469 @@
     private ProfileDetails BuildProfileDetails(ProfileSummary summary, SptProfile profile)
     {
         var info = profile.ProfileInfo;
+        var pmc = profile.CharacterData?.PmcData;
         var propertiesJson = JsonUtil.Serialize(profile, indented: true) ?? "{}";
         var properties = JsonPropertyFlattener.BuildProperties(propertiesJson);
+        var detailSections = new List<DatabaseDetailSection>
+        {
+            new(
+                "Account",
+                [
+                    new DatabaseDetailValue("Username", summary.Username),
+                    new DatabaseDetailValue("Profile ID", summary.Id, true),
+                    new DatabaseDetailValue("Scav ID", GetNonEmptyValue(info?.ScavengerId?.ToString(), "n/a"), true),
+                    new DatabaseDetailValue("Account ID", GetAccountIdLabel(info?.Aid), true),
+                    new DatabaseDetailValue("Edition", summary.Edition),
+                    new DatabaseDetailValue("Status", summary.Status),
+                ]
+            ),
+            new(
+                "Character",
+                [
+                    new DatabaseDetailValue("PMC nickname", summary.Nickname),
+                    new DatabaseDetailValue("Side", summary.Side),
+                    new DatabaseDetailValue("PMC level", GetNumberLabel(summary.Level)),
+                    new DatabaseDetailValue("PMC experience", GetNumberLabel(summary.Experience)),
+                    new DatabaseDetailValue("Scav level", GetNumberLabel(summary.ScavLevel)),
+                    new DatabaseDetailValue("Inventory items", GetNumberLabel(summary.ItemCount)),
+                ]
+            ),
+        };
+
+        var hideoutTimers = BuildHideoutTimerSection(pmc);
+        if (hideoutTimers is not null)
+        {
+            detailSections.Add(hideoutTimers);
+        }
+
+        var quests = BuildQuestSection(pmc);
+        if (quests is not null)
+        {
+            detailSections.Add(quests);
+        }
+
+        var skills = BuildSkillSection(pmc);
+        if (skills is not null)
+        {
+            detailSections.Add(skills);
+        }
 
         return new ProfileDetails(
             summary,
-            [
-                new DatabaseDetailSection(
-                    "Account",
-                    [
-                        new DatabaseDetailValue("Username", summary.Username),
-                        new DatabaseDetailValue("Profile ID", summary.Id, true),
-                        new DatabaseDetailValue("Scav ID", GetNonEmptyValue(info?.ScavengerId?.ToString(), "n/a"), true),
-                        new DatabaseDetailValue("Account ID", GetNumberLabel(info?.Aid), true),
-                        new DatabaseDetailValue("Edition", summary.Edition),
-                        new DatabaseDetailValue("Status", summary.Status),
-                    ]
-                ),
-                new DatabaseDetailSection(
-                    "Character",
-                    [
-                        new DatabaseDetailValue("PMC nickname", summary.Nickname),
-                        new DatabaseDetailValue("Side", summary.Side),
-                        new DatabaseDetailValue("PMC level", GetNumberLabel(summary.Level)),
-                        new DatabaseDetailValue("PMC experience", GetNumberLabel(summary.Experience)),
-                        new DatabaseDetailValue("Scav level", GetNumberLabel(summary.ScavLevel)),
-                        new DatabaseDetailValue("Inventory items", GetNumberLabel(summary.ItemCount)),
-                    ]
-                ),
-            ],
+            detailSections,
             properties,
             propertiesJson
         );
+    }
+
+    private static DatabaseDetailSection? BuildHideoutTimerSection(PmcData? pmc)
+    {
+        if (pmc?.Hideout is null)
+        {
+            return null;
+        }
+
+        var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        var readyCraftCount = 0;
+        var readyConstructionCount = 0;
+        var craftTimers = new List<(string Label, double RemainingSeconds)>();
+        var constructionTimers = new List<(string Label, double RemainingSeconds)>();
+
+        if (pmc.Hideout.Production is not null)
+        {
+            foreach (var productionEntry in pmc.Hideout.Production)
+            {
+                var production = productionEntry.Value;
+                if (production is null)
+                {
+                    continue;
+                }
+
+                if (production.AvailableForFinish == true || production.SptIsComplete == true)
+                {
+                    readyCraftCount++;
+                    continue;
+                }
+
+                if (production.Interrupted == true)
+                {
+                    continue;
+                }
+
+                var remainingSeconds = GetProductionRemainingSeconds(production, now);
+                if (remainingSeconds is null)
+                {
+                    continue;
+                }
+
+                if (remainingSeconds <= 0)
+                {
+                    readyCraftCount++;
+                    continue;
+                }
+
+                craftTimers.Add((GetProductionLabel(production), remainingSeconds.Value));
+            }
+        }
+
+        if (pmc.Hideout.Areas is not null)
+        {
+            foreach (var area in pmc.Hideout.Areas)
+            {
+                if (area.Constructing != true || area.CompleteTime is not > 0)
+                {
+                    continue;
+                }
+
+                var remainingSeconds = area.CompleteTime.Value - now;
+                if (remainingSeconds <= 0)
+                {
+                    readyConstructionCount++;
+                    continue;
+                }
+
+                constructionTimers.Add((GetHideoutAreaLabel(area), remainingSeconds));
+            }
+        }
+
+        if (pmc.Hideout.Improvements is not null)
+        {
+            foreach (var improvementEntry in pmc.Hideout.Improvements)
+            {
+                var improvement = improvementEntry.Value;
+                if (improvement is null || improvement.Completed == true || improvement.ImproveCompleteTimestamp is not > 0)
+                {
+                    continue;
+                }
+
+                var remainingSeconds = improvement.ImproveCompleteTimestamp.Value - now;
+                if (remainingSeconds <= 0)
+                {
+                    readyConstructionCount++;
+                    continue;
+                }
+
+                constructionTimers.Add((GetImprovementLabel(improvementEntry.Key.ToString()), remainingSeconds));
+            }
+        }
+
+        craftTimers.Sort((left, right) => left.RemainingSeconds.CompareTo(right.RemainingSeconds));
+        constructionTimers.Sort((left, right) => left.RemainingSeconds.CompareTo(right.RemainingSeconds));
+
+        var values = new List<DatabaseDetailValue>
+        {
+            new("Crafts active", craftTimers.Count.ToString("N0")),
+            new("Crafts ready", readyCraftCount.ToString("N0")),
+            new("Construction active", constructionTimers.Count.ToString("N0")),
+            new("Construction ready", readyConstructionCount.ToString("N0")),
+        };
+
+        AddTimerValues(values, "Craft", craftTimers);
+        AddTimerValues(values, "Build", constructionTimers);
+
+        if (craftTimers.Count == 0)
+        {
+            values.Add(new DatabaseDetailValue("Craft timers", readyCraftCount > 0 ? $"{readyCraftCount:N0} ready" : "None active"));
+        }
+
+        if (constructionTimers.Count == 0)
+        {
+            values.Add(new DatabaseDetailValue("Construction timers", readyConstructionCount > 0 ? $"{readyConstructionCount:N0} ready" : "None active"));
+        }
+
+        return new DatabaseDetailSection("Hideout Timers", values);
+    }
+
+    private DatabaseDetailSection? BuildQuestSection(PmcData? pmc)
+    {
+        var profileQuests = pmc?.Quests;
+        var repeatableQuests = pmc?.RepeatableQuests;
+
+        if ((profileQuests is null || profileQuests.Count == 0) && (repeatableQuests is null || repeatableQuests.Count == 0))
+        {
+            return null;
+        }
+
+        var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        var questDb = DatabaseService.GetQuests();
+        var quests = profileQuests ?? [];
+        var values = new List<DatabaseDetailValue>
+        {
+            new("Total quests", quests.Count.ToString("N0")),
+            new("Started", CountQuestStatus(quests, QuestStatusEnum.Started).ToString("N0")),
+            new("Ready to finish", CountQuestStatus(quests, QuestStatusEnum.AvailableForFinish).ToString("N0")),
+            new("Available to start", CountQuestStatus(quests, QuestStatusEnum.AvailableForStart).ToString("N0")),
+            new("Completed", CountQuestStatus(quests, QuestStatusEnum.Success).ToString("N0")),
+            new("Failed", CountQuestStatus(quests, QuestStatusEnum.Fail, QuestStatusEnum.FailRestartable, QuestStatusEnum.MarkedAsFailed).ToString("N0")),
+            new("Locked", CountQuestStatus(quests, QuestStatusEnum.Locked).ToString("N0")),
+            new("Waiting", CountQuestStatus(quests, QuestStatusEnum.AvailableAfter).ToString("N0")),
+        };
+
+        var repeatableActiveCount = repeatableQuests?
+            .SelectMany(group => group.ActiveQuests ?? [])
+            .Count() ?? 0;
+        values.Add(new DatabaseDetailValue("Repeatables active", repeatableActiveCount.ToString("N0")));
+
+        var nextRepeatableReset = repeatableQuests?
+            .Select(group => group.EndTime)
+            .Where(endTime => endTime is > 0)
+            .Select(endTime => endTime!.Value - now)
+            .Where(remainingSeconds => remainingSeconds > 0)
+            .OrderBy(remainingSeconds => remainingSeconds)
+            .FirstOrDefault();
+        values.Add(new DatabaseDetailValue("Repeatable reset", nextRepeatableReset is > 0 ? FormatTimerValue(nextRepeatableReset.Value) : "n/a"));
+
+        AddQuestValues(values, "Ready quest", quests, questDb, QuestStatusEnum.AvailableForFinish);
+        AddQuestValues(values, "Active quest", quests, questDb, QuestStatusEnum.Started);
+
+        var nextUnlock = quests
+            .Where(quest => quest.Status == QuestStatusEnum.AvailableAfter && quest.AvailableAfter is > 0)
+            .Select(quest => (Quest: quest, RemainingSeconds: quest.AvailableAfter!.Value - now))
+            .Where(quest => quest.RemainingSeconds > 0)
+            .OrderBy(quest => quest.RemainingSeconds)
+            .FirstOrDefault();
+
+        if (nextUnlock.Quest is not null)
+        {
+            values.Add(new DatabaseDetailValue("Next unlock", $"{GetQuestLabel(nextUnlock.Quest, questDb)}: {FormatTimerValue(nextUnlock.RemainingSeconds)}"));
+        }
+
+        if (!quests.Any(quest => quest.Status is QuestStatusEnum.Started or QuestStatusEnum.AvailableForFinish))
+        {
+            values.Add(new DatabaseDetailValue("Current quests", "None active"));
+        }
+
+        return new DatabaseDetailSection("Quests", values);
+    }
+
+    private static DatabaseDetailSection? BuildSkillSection(PmcData? pmc)
+    {
+        var commonSkills = pmc?.Skills?.Common?.ToList();
+        if (commonSkills is null || commonSkills.Count == 0)
+        {
+            return null;
+        }
+
+        var skillLevels = commonSkills
+            .OrderByDescending(skill => skill.Progress)
+            .Select(skill => (Skill: skill, Level: GetSkillLevel(skill.Progress)))
+            .ToList();
+
+        var highestSkill = skillLevels.First();
+        var averageLevel = skillLevels.Average(skill => skill.Level);
+        var eliteCount = skillLevels.Count(skill => skill.Level >= 51);
+        var values = new List<DatabaseDetailValue>
+        {
+            new("Highest skill", $"{FormatSkillName(highestSkill.Skill.Id.ToString())} level {highestSkill.Level}"),
+            new("Average level", averageLevel.ToString("0.#")),
+            new("Elite skills", eliteCount.ToString("N0")),
+            new("Total skill points", GetNumberLabel(pmc.Skills?.Points)),
+        };
+
+        AddSkillValue(values, commonSkills, "Crafting");
+        AddSkillValue(values, commonSkills, "HideoutManagement");
+        AddSkillValue(values, commonSkills, "Endurance");
+        AddSkillValue(values, commonSkills, "Strength");
+        AddSkillValue(values, commonSkills, "Health");
+        AddSkillValue(values, commonSkills, "Metabolism");
+        AddSkillValue(values, commonSkills, "Attention");
+        AddSkillValue(values, commonSkills, "Intellect");
+
+        return new DatabaseDetailSection("Skills", values);
+    }
+
+    private static void AddTimerValues(List<DatabaseDetailValue> values, string labelPrefix, IReadOnlyList<(string Label, double RemainingSeconds)> timers)
+    {
+        for (var index = 0; index < Math.Min(timers.Count, 3); index++)
+        {
+            var timer = timers[index];
+            values.Add(new DatabaseDetailValue($"{labelPrefix} {index + 1}", $"{timer.Label}: {FormatTimerValue(timer.RemainingSeconds)}"));
+        }
+    }
+
+    private static void AddSkillValue(List<DatabaseDetailValue> values, IReadOnlyList<CommonSkill> skills, string skillId)
+    {
+        var skill = skills.FirstOrDefault(skill => string.Equals(skill.Id.ToString(), skillId, StringComparison.Ordinal));
+        if (skill is null)
+        {
+            return;
+        }
+
+        values.Add(new DatabaseDetailValue(FormatSkillName(skillId), FormatSkillLevel(skill)));
+    }
+
+    private static int CountQuestStatus(IReadOnlyList<ProfileQuestStatus> quests, params QuestStatusEnum[] statuses)
+    {
+        return quests.Count(quest => statuses.Contains(quest.Status));
+    }
+
+    private static void AddQuestValues(
+        List<DatabaseDetailValue> values,
+        string labelPrefix,
+        IReadOnlyList<ProfileQuestStatus> quests,
+        IReadOnlyDictionary<MongoId, Quest> questDb,
+        QuestStatusEnum status
+    )
+    {
+        var matchingQuests = quests
+            .Where(quest => quest.Status == status)
+            .OrderByDescending(quest => quest.StatusTimers.TryGetValue(status, out var statusTime) ? statusTime : quest.StartTime)
+            .Take(3)
+            .ToList();
+
+        for (var index = 0; index < matchingQuests.Count; index++)
+        {
+            values.Add(new DatabaseDetailValue($"{labelPrefix} {index + 1}", GetQuestLabel(matchingQuests[index], questDb)));
+        }
+    }
+
+    private static string GetQuestLabel(ProfileQuestStatus questStatus, IReadOnlyDictionary<MongoId, Quest> questDb)
+    {
+        if (!questDb.TryGetValue(questStatus.QId, out var quest))
+        {
+            return GetShortId(questStatus.QId.ToString());
+        }
+
+        return GetNonEmptyValue(
+            quest.QuestName,
+            GetNonEmptyValue(quest.Name, GetShortId(questStatus.QId.ToString()))
+        );
+    }
+
+    private static double? GetProductionRemainingSeconds(Production production, long now)
+    {
+        if (production.ProductionTime is not > 0d || (production.InProgress != true && production.StartTimestamp is not > 0))
+        {
+            return null;
+        }
+
+        var storedProgress = Math.Max(0d, production.Progress ?? 0d);
+        var elapsedFromStart = production.StartTimestamp is > 0
+            ? Math.Max(0d, now - production.StartTimestamp.Value)
+            : 0d;
+        var skipTime = Math.Max(0d, production.SkipTime ?? 0d);
+        var effectiveProgress = Math.Max(storedProgress, elapsedFromStart) + skipTime;
+
+        return Math.Max(0d, production.ProductionTime.Value - effectiveProgress);
+    }
+
+    private static string GetProductionLabel(Production production)
+    {
+        var recipeId = production.RecipeId.ToString();
+        var recipeLabel = string.IsNullOrWhiteSpace(recipeId) ? "Recipe" : $"Recipe {GetShortId(recipeId)}";
+
+        if (production.SptIsScavCase == true)
+        {
+            return $"Scav case {GetShortId(recipeId)}";
+        }
+
+        if (production.SptIsCultistCircle == true)
+        {
+            return $"Cultist circle {GetShortId(recipeId)}";
+        }
+
+        return recipeLabel;
+    }
+
+    private static string GetHideoutAreaLabel(BotHideoutArea area)
+    {
+        var areaName = FormatSkillName(area.Type.ToString());
+        return area.Level is null ? areaName : $"{areaName} level {area.Level.Value}";
+    }
+
+    private static string GetImprovementLabel(string improvementId)
+    {
+        return $"Improvement {GetShortId(improvementId)}";
+    }
+
+    private static string GetShortId(string value)
+    {
+        return value.Length <= 8 ? value : value[..8];
+    }
+
+    private static string FormatTimerValue(double remainingSeconds)
+    {
+        return remainingSeconds <= 0 ? "Ready" : $"{FormatDuration(remainingSeconds)} remaining";
+    }
+
+    private static string FormatDuration(double totalSeconds)
+    {
+        var duration = TimeSpan.FromSeconds(Math.Ceiling(Math.Max(0d, totalSeconds)));
+
+        if (duration.TotalMinutes < 1)
+        {
+            return "<1m";
+        }
+
+        if (duration.TotalDays >= 1)
+        {
+            return $"{(int)duration.TotalDays}d {duration.Hours}h";
+        }
+
+        if (duration.TotalHours >= 1)
+        {
+            return $"{(int)duration.TotalHours}h {duration.Minutes}m";
+        }
+
+        return $"{duration.Minutes}m";
+    }
+
+    private static string FormatSkillLevel(CommonSkill skill)
+    {
+        var level = GetSkillLevel(skill.Progress);
+        if (level >= 51)
+        {
+            return "Level 51 - elite";
+        }
+
+        var currentLevelProgress = Math.Clamp(skill.Progress - (level * 100d), 0d, 100d);
+        return $"Level {level} - {currentLevelProgress:0.#}/100";
+    }
+
+    private static int GetSkillLevel(double progress)
+    {
+        return Math.Clamp((int)Math.Floor(Math.Max(0d, progress) / 100d), 0, 51);
+    }
+
+    private static string FormatSkillName(string value)
+    {
+        return value switch
+        {
+            "DMR" => "DMR",
+            "HMG" => "HMG",
+            "LMG" => "LMG",
+            "SMG" => "SMG",
+            "MagDrills" => "Magazine Drills",
+            "HideoutManagement" => "Hideout Management",
+            "RecoilControl" => "Recoil Control",
+            "StressResistance" => "Stress Resistance",
+            "WeaponTreatment" => "Weapon Maintenance",
+            "TroubleShooting" => "Troubleshooting",
+            _ => SplitPascalCase(value),
+        };
+    }
+
+    private static string SplitPascalCase(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return "n/a";
+        }
+
+        var result = value[0].ToString();
+        for (var index = 1; index < value.Length; index++)
+        {
+            var character = value[index];
+            var previous = value[index - 1];
+            if (char.IsUpper(character) && !char.IsUpper(previous))
+            {
+                result += " ";
+            }
+
+            result += character;
+        }
+
+        return result;
     }
 
     private static string GetNonEmptyValue(string? value, string fallback)
@@ -429,6 +867,11 @@
     private static string GetNumberLabel(int? value)
     {
         return value is null ? "n/a" : value.Value.ToString("N0");
+    }
+
+    private static string GetAccountIdLabel(int? value)
+    {
+        return value is null ? "n/a" : value.Value.ToString();
     }
 
     private static string GetNumberLabel(double? value)

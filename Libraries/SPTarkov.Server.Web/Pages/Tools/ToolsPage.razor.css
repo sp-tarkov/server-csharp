@@ -1,5 +1,8 @@
 .tools-page {
     --tools-panel-bg: rgba(9, 9, 11, 0.74);
+    --tools-yellow-soft: rgba(250, 204, 21, 0.12);
+    --tools-blue-soft: rgba(56, 189, 248, 0.12);
+    --tools-green-soft: rgba(34, 197, 94, 0.13);
 }
 
 .tools-page ::deep .tools-page-container {
@@ -12,6 +15,7 @@
 .tools-page ::deep .tools-sidebar,
 .tools-page ::deep .tools-results {
     background: var(--tools-panel-bg);
+    border-color: rgba(63, 63, 70, 0.76);
 }
 
 .tools-page ::deep .tools-header {
@@ -44,9 +48,12 @@
 
 .tools-page ::deep .tools-stat {
     min-width: 120px;
-    border: 1px solid #3f3f46;
+    border: 1px solid rgba(63, 63, 70, 0.9);
     border-radius: 8px;
-    background: rgba(24, 24, 27, 0.78);
+    background:
+        linear-gradient(180deg, rgba(39, 39, 42, 0.58), rgba(24, 24, 27, 0.78)),
+        rgba(24, 24, 27, 0.78);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .tools-page ::deep .tools-stat .mud-typography-caption {
@@ -62,6 +69,9 @@
 
 .tools-page ::deep .tools-tabs-panel {
     overflow: hidden;
+    background:
+        linear-gradient(180deg, rgba(24, 24, 27, 0.52), rgba(9, 9, 11, 0.64)),
+        var(--tools-panel-bg);
 }
 
 .tools-page ::deep .tools-tabs {
@@ -90,7 +100,7 @@
 }
 
 .tools-page ::deep .tools-tab-panel {
-    padding: 16px;
+    padding: 18px;
 }
 
 .tools-grid {
@@ -103,6 +113,7 @@
 .tools-page ::deep .tools-sidebar,
 .tools-page ::deep .tools-results {
     min-height: calc(100vh - 270px);
+    overflow: hidden;
 }
 
 .tools-page ::deep .tools-results {
@@ -166,9 +177,9 @@
 
 .tools-empty-state {
     min-height: 300px;
-    border: 1px dashed #3f3f46;
+    border: 1px dashed rgba(82, 82, 91, 0.85);
     border-radius: 8px;
-    background: rgba(3, 7, 18, 0.34);
+    background: rgba(3, 7, 18, 0.3);
     text-align: center;
 }
 
@@ -178,6 +189,7 @@
     max-height: calc(100vh - 230px);
     overflow: auto;
     padding-right: 4px;
+    scrollbar-color: #52525b rgba(3, 7, 18, 0.24);
 }
 
 .tools-id-list {
@@ -193,16 +205,20 @@
     width: 100%;
     min-height: 56px;
     padding: 12px 14px;
-    border: 1px solid #27272a;
+    border: 1px solid rgba(39, 39, 42, 0.98);
     border-radius: 8px;
     color: #f8fafc;
-    background: rgba(24, 24, 27, 0.64);
+    background:
+        linear-gradient(90deg, rgba(24, 24, 27, 0.72), rgba(24, 24, 27, 0.52)),
+        rgba(24, 24, 27, 0.64);
     cursor: pointer;
     text-align: left;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
     transition:
         border-color 160ms ease,
         background 160ms ease,
-        transform 160ms ease;
+        transform 160ms ease,
+        box-shadow 160ms ease;
 }
 
 .tools-id-row:hover,
@@ -210,12 +226,18 @@
     transform: translateY(-1px);
     border-color: rgba(250, 204, 21, 0.72);
     background: rgba(24, 24, 27, 0.9);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
     outline: none;
 }
 
 .tools-id-row-used {
     border-color: rgba(52, 211, 153, 0.42);
-    background: rgba(6, 78, 59, 0.2);
+    background:
+        linear-gradient(90deg, rgba(6, 78, 59, 0.32), rgba(24, 24, 27, 0.58)),
+        rgba(6, 78, 59, 0.2);
+    box-shadow:
+        inset 3px 0 0 #34d399,
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .tools-id-main {

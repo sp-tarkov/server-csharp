@@ -1,5 +1,9 @@
 .profiles-page {
     --profiles-panel-bg: rgba(9, 9, 11, 0.74);
+    --profiles-yellow-soft: rgba(250, 204, 21, 0.12);
+    --profiles-blue-soft: rgba(56, 189, 248, 0.12);
+    --profiles-green-soft: rgba(34, 197, 94, 0.13);
+    --profiles-red-soft: rgba(248, 113, 113, 0.12);
 }
 
 .profiles-page ::deep .profiles-page-container {
@@ -12,6 +16,7 @@
 .profiles-page ::deep .profiles-results,
 .profiles-page ::deep .profiles-details {
     background: var(--profiles-panel-bg);
+    border-color: rgba(63, 63, 70, 0.76);
 }
 
 .profiles-page ::deep .profiles-header {
@@ -46,9 +51,12 @@
 
 .profiles-page ::deep .profiles-stat {
     min-width: 120px;
-    border: 1px solid #3f3f46;
+    border: 1px solid rgba(63, 63, 70, 0.9);
     border-radius: 8px;
-    background: rgba(24, 24, 27, 0.78);
+    background:
+        linear-gradient(180deg, rgba(39, 39, 42, 0.58), rgba(24, 24, 27, 0.78)),
+        rgba(24, 24, 27, 0.78);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .profiles-page ::deep .profiles-stat .mud-typography-caption {
@@ -73,6 +81,7 @@
 .profiles-page ::deep .profiles-results,
 .profiles-page ::deep .profiles-details {
     min-height: calc(100vh - 190px);
+    overflow: hidden;
 }
 
 .profiles-page ::deep .profiles-sidebar .mud-typography-h6,
@@ -93,12 +102,14 @@
     place-items: center;
     padding: 28px;
     background: rgba(0, 0, 0, 0.68);
+    backdrop-filter: blur(10px);
 }
 
 .profiles-page ::deep .profiles-details-modal {
     width: min(1280px, 100%);
     max-height: calc(100vh - 56px);
     overflow: auto;
+    scrollbar-color: #52525b rgba(3, 7, 18, 0.24);
 }
 
 .profiles-page ::deep .profiles-details-modal .profiles-details {
@@ -146,9 +157,12 @@
 .profiles-page ::deep .profiles-detail-value {
     min-width: 0;
     padding: 10px 12px;
-    border: 1px solid #27272a;
+    border: 1px solid rgba(39, 39, 42, 0.98);
     border-radius: 8px;
-    background: rgba(24, 24, 27, 0.55);
+    background:
+        linear-gradient(90deg, rgba(24, 24, 27, 0.72), rgba(24, 24, 27, 0.48)),
+        rgba(24, 24, 27, 0.55);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .profiles-page ::deep .profiles-detail-value .mud-typography-caption {
@@ -182,9 +196,11 @@
 }
 
 .profiles-page ::deep .profiles-raw-json {
-    border: 1px solid #27272a;
+    border: 1px solid rgba(39, 39, 42, 0.96);
     border-radius: 8px;
-    background: rgba(3, 7, 18, 0.42);
+    background:
+        linear-gradient(180deg, rgba(3, 7, 18, 0.54), rgba(3, 7, 18, 0.42)),
+        rgba(3, 7, 18, 0.42);
 }
 
 .profiles-page ::deep .profiles-raw-json pre {
@@ -198,6 +214,7 @@
     line-height: 1.45;
     white-space: pre-wrap;
     word-break: break-word;
+    scrollbar-color: #52525b rgba(3, 7, 18, 0.24);
 }
 
 .profiles-page ::deep .profiles-primary-button,
@@ -235,9 +252,9 @@
 
 .profiles-empty-state {
     min-height: 180px;
-    border: 1px dashed #3f3f46;
+    border: 1px dashed rgba(82, 82, 91, 0.85);
     border-radius: 8px;
-    background: rgba(3, 7, 18, 0.34);
+    background: rgba(3, 7, 18, 0.3);
     text-align: center;
 }
 
@@ -252,7 +269,8 @@
 }
 
 .profiles-page ::deep .profiles-selected-row {
-    background: rgba(56, 189, 248, 0.1) !important;
+    background:
+        linear-gradient(90deg, rgba(14, 116, 144, 0.28), rgba(56, 189, 248, 0.08)) !important;
     box-shadow: inset 3px 0 0 #38bdf8;
 }
 
@@ -289,13 +307,17 @@
 }
 
 .profiles-page ::deep .mud-table-container {
-    border: 1px solid #27272a;
+    border: 1px solid rgba(39, 39, 42, 0.96);
     border-radius: 8px;
-    background: rgba(3, 7, 18, 0.42);
+    background:
+        linear-gradient(180deg, rgba(3, 7, 18, 0.54), rgba(3, 7, 18, 0.42)),
+        rgba(3, 7, 18, 0.42);
 }
 
 .profiles-page ::deep .mud-table-head {
-    background: rgba(24, 24, 27, 0.96);
+    background:
+        linear-gradient(180deg, rgba(39, 39, 42, 0.98), rgba(24, 24, 27, 0.96)),
+        rgba(24, 24, 27, 0.96);
 }
 
 .profiles-page ::deep .mud-table-cell {

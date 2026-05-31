@@ -62,6 +62,7 @@
                             <div class="config-editor-source-toggle" role="tablist" aria-label="Config source">
                                 <button type="button"
                                         class="@GetConfigSourceButtonClass(ConfigEditorConfigSource.Server)"
+                                        aria-selected="@(_selectedConfigSource == ConfigEditorConfigSource.Server)"
                                         disabled="@_isWorking"
                                         @onclick="() => SelectConfigSource(ConfigEditorConfigSource.Server)">
                                     <span>Server</span>
@@ -69,6 +70,7 @@
                                 </button>
                                 <button type="button"
                                         class="@GetConfigSourceButtonClass(ConfigEditorConfigSource.Mod)"
+                                        aria-selected="@(_selectedConfigSource == ConfigEditorConfigSource.Mod)"
                                         disabled="@_isWorking"
                                         @onclick="() => SelectConfigSource(ConfigEditorConfigSource.Mod)">
                                     <span>Mods</span>
@@ -146,6 +148,7 @@
                                                    Color="Color.Secondary"
                                                    Icon="@Icons.Material.Filled.Memory"
                                                    Disabled="@_isWorking"
+                                                   aria-label="Load current DI config"
                                                    OnClick="LoadCurrentServer">
                                         </MudIconButton>
                                     </MudTooltip>
@@ -154,6 +157,7 @@
                                                    Color="Color.Secondary"
                                                    Icon="@Icons.Material.Filled.FolderOpen"
                                                    Disabled="@_isWorking"
+                                                   aria-label="Load clean config from disk"
                                                    OnClick="LoadCleanFromDisk">
                                         </MudIconButton>
                                     </MudTooltip>
@@ -162,6 +166,7 @@
                                                        Variant="Variant.Outlined"
                                                        Color="Color.Secondary"
                                                        Disabled="@_isWorking"
+                                                       aria-label="Format JSON"
                                                        OnClick="FormatEditor"/>
                                     </MudTooltip>
                                     <MudTooltip Text="Validate JSON">
@@ -169,6 +174,7 @@
                                                        Variant="Variant.Outlined"
                                                        Color="Color.Secondary"
                                                        Disabled="@_isWorking"
+                                                       aria-label="Validate JSON"
                                                        OnClick="ValidateEditor"/>
                                     </MudTooltip>
                                 </MudStack>
@@ -177,7 +183,7 @@
                             @if (_snapshot?.ModifiedByMods == true)
                             {
                                 <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" Dense="true">
-                                    This config is edited.
+                                    Runtime values differ from the clean disk config.
                                 </MudAlert>
                             }
 
@@ -252,7 +258,7 @@
                                                        Color="Color.Secondary"
                                                        Disabled="@_isWorking"
                                                        OnClick="SavePreset"
-                                                       AriaLabel="Save preset" />
+                                                       aria-label="Save preset" />
                                     </MudTooltip>
                                     <MudTooltip Text="Delete preset">
                                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
@@ -260,7 +266,7 @@
                                                        Color="Color.Secondary"
                                                        Disabled="@(_isWorking || string.IsNullOrWhiteSpace(_selectedPresetId))"
                                                        OnClick="DeletePreset"
-                                                       AriaLabel="Delete preset" />
+                                                       aria-label="Delete preset" />
                                     </MudTooltip>
                                     <MudTooltip Text="Apply preset to runtime configs">
                                         <MudIconButton Icon="@Icons.Material.Filled.PlaylistAddCheck"
@@ -268,19 +274,22 @@
                                                        Color="Color.Secondary"
                                                        Disabled="@(_isWorking || string.IsNullOrWhiteSpace(_selectedPresetId))"
                                                        OnClick="ApplySelectedPreset"
-                                                       AriaLabel="Apply preset" />
+                                                       aria-label="Apply preset" />
                                     </MudTooltip>
                                 </MudStack>
 
                                 <MudStack Row Spacing="2" Class="config-editor-apply-actions">
-                                    <MudButton Variant="Variant.Outlined"
-                                               Color="Color.Secondary"
-                                               Class="config-editor-apply-button"
-                                               StartIcon="@Icons.Material.Filled.Save"
-                                               Disabled="@_isWorking"
-                                               OnClick="SaveToDisk">
-                                        Save
-                                    </MudButton>
+                                    @if (SelectedConfig?.IsRegisteredConfig == true)
+                                    {
+                                        <MudButton Variant="Variant.Outlined"
+                                                   Color="Color.Secondary"
+                                                   Class="config-editor-save-button"
+                                                   StartIcon="@Icons.Material.Filled.Save"
+                                                   Disabled="@_isWorking"
+                                                   OnClick="SaveToDisk">
+                                            Save
+                                        </MudButton>
+                                    }
                                     <MudButton Variant="Variant.Filled"
                                                Color="Color.Warning"
                                                Class="config-editor-apply-button"
