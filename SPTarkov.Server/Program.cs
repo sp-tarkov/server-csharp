@@ -83,7 +83,7 @@ public static class Program
                         case SocketError.AddressNotAvailable:
                             _earlyLogger.LogError("The configured IP address {Ip} is not available on this machine.", ex.Ip);
 
-                            _earlyLogger.LogError("Check your HTTP configuration and use a local IP address that exists on this system.");
+                            _earlyLogger.LogError("Check your HTTP configuration and use a IP address that exists on this system.");
 
                             break;
 
