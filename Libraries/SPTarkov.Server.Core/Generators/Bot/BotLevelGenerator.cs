@@ -1,15 +1,15 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Bot;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Bots;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Generators.Bot;
 
 [Injectable]
-public class BotLevelGenerator(RandomUtil randomUtil, DatabaseService databaseService)
+public class BotLevelGenerator(GlobalTable globalTable, RandomUtil randomUtil)
 {
     /// <summary>
     ///     Return a randomised bot level and exp value
@@ -25,7 +25,7 @@ public class BotLevelGenerator(RandomUtil randomUtil, DatabaseService databaseSe
             return new RandomisedBotLevelResult { Exp = 0, Level = 1 };
         }
 
-        var expTable = databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
+        var expTable = globalTable.Configuration.Exp.Level.ExperienceTable;
         var botLevelRange = GetRelativePmcBotLevelRange(botGenerationDetails, levelDetails, expTable.Length);
 
         // ChooseBotLevel now returns int directly

@@ -3,12 +3,12 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class AchievementController(ProfileHelper profileHelper, DatabaseService databaseService, CoreConfig coreConfig)
+public class AchievementController(TemplateTable templateTable, ProfileHelper profileHelper, CoreConfig coreConfig)
 {
     /// <summary>
     ///     Get base achievements
@@ -17,7 +17,7 @@ public class AchievementController(ProfileHelper profileHelper, DatabaseService 
     /// <returns></returns>
     public virtual GetAchievementsResponse GetAchievements(MongoId sessionID)
     {
-        return new GetAchievementsResponse { Elements = databaseService.GetAchievements() };
+        return new GetAchievementsResponse { Elements = templateTable.Achievements };
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public class AchievementController(ProfileHelper profileHelper, DatabaseService 
             .Where(kvp => !coreConfig.Features.AchievementProfileIdBlacklist.Contains(kvp.Value.ProfileInfo.ProfileId))
             .ToDictionary();
 
-        var achievements = databaseService.GetAchievements();
+        var achievements = templateTable.Achievements;
         foreach (
             var achievementId in achievements
                 .Select(achievement => achievement.Id)

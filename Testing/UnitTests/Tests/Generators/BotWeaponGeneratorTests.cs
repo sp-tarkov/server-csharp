@@ -6,7 +6,6 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
 
 namespace UnitTests.Tests.Generators;
 
@@ -14,23 +13,23 @@ namespace UnitTests.Tests.Generators;
 public class BotWeaponGeneratorTests
 {
     private BotWeaponGenerator _botWeaponGenerator;
-    private DatabaseService _databaseService;
     private InventoryHelper _inventoryHelper;
     private SaveServer _saveServer;
+    private BotTable _botTable;
 
     [OneTimeSetUp]
     public void Initialize()
     {
         _botWeaponGenerator = DI.GetInstance().GetService<BotWeaponGenerator>();
-        _databaseService = DI.GetInstance().GetService<DatabaseService>();
         _inventoryHelper = DI.GetInstance().GetService<InventoryHelper>();
         _saveServer = DI.GetInstance().GetService<SaveServer>();
+        _botTable = DI.GetInstance().GetService<BotTable>();
     }
 
     [Test]
     public void GenerateWeaponByTpl_generate_m4_pmc()
     {
-        var usecTemplate = _databaseService.GetBots().Types["usec"];
+        var usecTemplate = _botTable.Types["usec"];
         var botTemplateInventory = usecTemplate.BotInventory;
 
         // Create profile stub to allow `GenerateWeaponByTpl` to work

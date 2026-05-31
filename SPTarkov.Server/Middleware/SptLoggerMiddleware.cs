@@ -6,7 +6,7 @@ using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Middleware;
 
-public class SptLoggerMiddleware(
+public sealed class SptLoggerMiddleware(
     RequestDelegate next,
     ServerLocalisationService serverLocalisationService,
     HttpConfig httpConfig,
@@ -37,7 +37,11 @@ public class SptLoggerMiddleware(
         {
             logger.Critical("Error handling request: " + context.Request.Path);
             logger.Critical(ex.Message);
-            logger.Critical(ex.StackTrace);
+
+            if (ex.StackTrace is not null)
+            {
+                logger.Critical(ex.StackTrace);
+            }
 #if DEBUG
             throw; // added this so we can debug something.
 #endif
@@ -85,7 +89,7 @@ public class SptLoggerMiddleware(
     /// </summary>
     /// <param name="remoteAddress"> Address to check </param>
     /// <returns> True if its local </returns>
-    protected bool IsPrivateOrLocalAddress(IPAddress remoteAddress)
+    private bool IsPrivateOrLocalAddress(IPAddress remoteAddress)
     {
         if (IPAddress.IsLoopback(remoteAddress))
         {

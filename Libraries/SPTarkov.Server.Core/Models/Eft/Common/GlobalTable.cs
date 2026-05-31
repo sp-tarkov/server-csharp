@@ -6,7 +6,7 @@ using SPTarkov.Server.Core.Models.Enums;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common;
 
-public record Globals
+public record GlobalTable
 {
     [JsonPropertyName("config")]
     public required Config Configuration { get; init; }

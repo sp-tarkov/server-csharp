@@ -18,9 +18,10 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class FenceService(
     ISptLogger<FenceService> logger,
+    GlobalTable globalTable,
+    TraderTable traderTable,
     TimeUtil timeUtil,
     RandomUtil randomUtil,
-    DatabaseService databaseService,
     HandbookHelper handbookHelper,
     ItemHelper itemHelper,
     PresetHelper presetHelper,
@@ -644,7 +645,7 @@ public class FenceService(
             LoyalLevelItems = new Dictionary<MongoId, int>(),
         };
 
-        var baseFenceAssortClone = _cloner.Clone(databaseService.GetTrader(Traders.FENCE).Assort);
+        var baseFenceAssortClone = _cloner.Clone(traderTable.GetTrader(Traders.FENCE).Assort);
         var itemTypeLimitCounts = InitItemLimitCounter(traderConfig.Fence.ItemTypeLimits);
 
         if (itemCounts.Item > 0)
@@ -1470,7 +1471,7 @@ public class FenceService(
     /// <returns> FenceLevel object </returns>
     public FenceLevel? GetFenceInfo(PmcData pmcData)
     {
-        var fenceSettings = databaseService.GetGlobals().Configuration.FenceSettings;
+        var fenceSettings = globalTable.Configuration.FenceSettings;
         if (!pmcData.TradersInfo.TryGetValue(fenceSettings.FenceIdentifier, out var pmcFenceInfo))
         {
             return fenceSettings.Levels[0];

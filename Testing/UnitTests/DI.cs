@@ -42,6 +42,7 @@ public class DI
         services.AddSingleton(mockLogger);
         services.AddSingleton(typeof(ILogger<>), typeof(MockLogger<>));
         services.AddSingleton(typeof(ISptLogger<>), typeof(MockLogger<>));
+        services.AddHttpClient();
 
         foreach (var configEntry in configuration)
         {

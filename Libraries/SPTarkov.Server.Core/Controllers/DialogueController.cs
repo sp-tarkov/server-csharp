@@ -3,6 +3,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Dialogue;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Eft.Ws;
@@ -18,9 +19,9 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class DialogueController(
     ISptLogger<DialogueController> logger,
+    TraderTable traderTable,
     TimeUtil timeUtil,
     DialogueHelper dialogueHelper,
-    DatabaseService databaseService,
     NotificationSendHelper notificationSendHelper,
     ProfileHelper profileHelper,
     SaveServer saveServer,
@@ -614,7 +615,7 @@ public class DialogueController(
             // Reset expired message items data
             message.Items = new();
 
-            var traderDialogMessages = databaseService.GetTrader(dialogueId)?.Dialogue;
+            var traderDialogMessages = traderTable.GetTrader(dialogueId)?.Dialogue;
             if (traderDialogMessages == null)
             {
                 continue;

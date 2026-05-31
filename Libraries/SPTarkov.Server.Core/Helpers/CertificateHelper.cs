@@ -82,9 +82,9 @@ public class CertificateHelper(ISptLogger<CertificateHelper> logger, FileUtil fi
         sanBuilder.AddIpAddress(IPAddress.Loopback);
         sanBuilder.AddDnsName("localhost");
 
-        var distinguishedName = new X500DistinguishedName("CN=localhost");
+        var distinguishedName = new X500DistinguishedName("CN=localhost, O=spt-csharp");
 
-        using var rsa = RSA.Create(2048);
+        using var rsa = RSA.Create(4096);
         var request = new CertificateRequest(distinguishedName, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
         request.CertificateExtensions.Add(sanBuilder.Build());
 

@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Repeatable;
+using SPTarkov.Server.Core.Models.Spt.Server;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -20,12 +21,12 @@ namespace SPTarkov.Server.Core.Generators.RepeatableQuests;
 [Injectable]
 public class EliminationQuestGenerator(
     ISptLogger<EliminationQuestGenerator> logger,
+    LocationTable locationTable,
     RandomUtil randomUtil,
     MathUtil mathUtil,
     RepeatableQuestHelper repeatableQuestHelper,
     ItemHelper itemHelper,
     RepeatableQuestRewardGenerator repeatableQuestRewardGenerator,
-    DatabaseService databaseService,
     ServerLocalisationService localisationService,
     ICloner cloner
 ) : IRepeatableQuestGenerator
@@ -478,8 +479,7 @@ public class EliminationQuestGenerator(
         }
 
         // Get all boss spawn information
-        var bossSpawns = databaseService
-            .GetLocations()
+        var bossSpawns = locationTable
             .GetDictionary()
             .Select(x => x.Value)
             .Where(location => location.Base?.Id != null)

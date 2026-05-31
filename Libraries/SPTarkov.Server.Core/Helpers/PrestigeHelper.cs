@@ -5,6 +5,7 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 
@@ -13,8 +14,8 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class PrestigeHelper(
     ISptLogger<PrestigeHelper> logger,
+    TemplateTable templateTable,
     TimeUtil timeUtil,
-    DatabaseService databaseService,
     MailSendService mailSendService,
     ProfileHelper profileHelper,
     RewardHelper rewardHelper
@@ -36,7 +37,7 @@ public class PrestigeHelper(
     {
         var prePrestigePmc = oldProfile.CharacterData?.PmcData;
         var sessionId = newProfile.ProfileInfo?.ProfileId;
-        var prestigeLevels = databaseService.GetTemplates().Prestige?.Elements ?? [];
+        var prestigeLevels = templateTable.Prestige.Elements ?? [];
         var indexOfPrestigeObtained = Math.Clamp((prestige.PrestigeLevel ?? 1) - 1, 0, prestigeLevels.Count - 1); // Levels are 1 to 4, Index is 0 to 3
 
         var prestigeLevel = prestigeLevels[indexOfPrestigeObtained];
@@ -77,9 +78,9 @@ public class PrestigeHelper(
                 }
                 else
                 {
-                    newProfile.CharacterData!.PmcData!.Skills!.Mastering = newProfile.CharacterData.PmcData.Skills.Mastering?.Union([
-                        skillToCopy,
-                    ]);
+                    newProfile.CharacterData!.PmcData!.Skills!.Mastering = newProfile.CharacterData.PmcData.Skills.Mastering?.Union(
+                        [skillToCopy]
+                    );
                 }
             }
         }

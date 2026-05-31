@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Repeatable;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Json;
@@ -15,9 +16,9 @@ namespace SPTarkov.Server.Core.Generators.RepeatableQuests;
 [Injectable]
 public class CompletionQuestGenerator(
     ISptLogger<CompletionQuestGenerator> logger,
+    TemplateTable templateTable,
     RepeatableQuestHelper repeatableQuestHelper,
     RepeatableQuestRewardGenerator repeatableQuestRewardGenerator,
-    DatabaseService databaseService,
     SeasonalEventService seasonalEventService,
     ServerLocalisationService localisationService,
     RandomUtil randomUtil,
@@ -124,9 +125,8 @@ public class CompletionQuestGenerator(
 
         // Check for specific base classes which don't make sense as reward item
         // also check if the price is greater than 0; there are some items whose price can not be found
-        return databaseService
-            .GetItems()
-            .Values.Where(itemTemplate =>
+        return templateTable
+            .Items.Values.Where(itemTemplate =>
             {
                 // Base "Item" item has no parent, ignore it
                 if (itemTemplate.Parent == MongoId.Empty())
@@ -183,7 +183,7 @@ public class CompletionQuestGenerator(
     /// <returns>Filtered selection, or original if null or empty</returns>
     protected HashSet<MongoId> GetWhitelistedItemSelection(HashSet<MongoId> itemSelection, int pmcLevel)
     {
-        var itemWhitelist = databaseService.GetTemplates().RepeatableQuests.Data?.Completion?.ItemsWhitelist;
+        var itemWhitelist = templateTable.RepeatableQuests.Data?.Completion?.ItemsWhitelist;
 
         // Whitelist doesn't exist or is empty, return original
         if (itemWhitelist is null || itemWhitelist.Count == 0)
@@ -217,7 +217,7 @@ public class CompletionQuestGenerator(
     /// <returns>Filtered selection, or original if null or empty</returns>
     protected HashSet<MongoId> GetBlacklistedItemSelection(HashSet<MongoId> itemSelection, int pmcLevel)
     {
-        var itemBlacklist = databaseService.GetTemplates().RepeatableQuests.Data?.Completion?.ItemsBlacklist;
+        var itemBlacklist = templateTable.RepeatableQuests.Data?.Completion?.ItemsBlacklist;
 
         // Blacklist doesn't exist or is empty, return original
         if (itemBlacklist is null || itemBlacklist.Count == 0)

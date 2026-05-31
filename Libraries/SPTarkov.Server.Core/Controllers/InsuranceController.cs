@@ -10,6 +10,7 @@ using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Server;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -24,6 +25,8 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class InsuranceController(
     ISptLogger<InsuranceController> logger,
+    LocationTable locationTable,
+    TraderTable traderTable,
     RandomUtil randomUtil,
     TimeUtil timeUtil,
     EventOutputHolder eventOutputHolder,
@@ -32,7 +35,6 @@ public class InsuranceController(
     WeightedRandomHelper weightedRandomHelper,
     PaymentService paymentService,
     InsuranceService insuranceService,
-    DatabaseService databaseService,
     MailSendService mailSendService,
     RagfairPriceService ragfairPriceService,
     ServerLocalisationService serverLocalisationService,
@@ -584,7 +586,7 @@ public class InsuranceController(
     {
         // If there are no items remaining after the item filtering, the insurance has
         // successfully "failed" to return anything and an appropriate message should be sent to the player.
-        var traderDialogMessages = databaseService.GetTrader(insurance.TraderId).Dialogue;
+        var traderDialogMessages = traderTable.GetTrader(insurance.TraderId).Dialogue;
 
         // Map is labs + insurance is disabled in base.json
         if (IsMapLabsAndInsuranceDisabled(insurance))
@@ -627,7 +629,7 @@ public class InsuranceController(
     protected bool IsMapLabsAndInsuranceDisabled(Insurance insurance, string labsId = "laboratory")
     {
         return string.Equals(insurance.SystemData?.Location, labsId, StringComparison.OrdinalIgnoreCase)
-            && !(databaseService.GetLocation(labsId)?.Base?.Insurance ?? false);
+            && !(locationTable.GetLocation(labsId)?.Base?.Insurance ?? false);
     }
 
     /// <summary>
@@ -639,7 +641,7 @@ public class InsuranceController(
     protected bool IsMapLabyrinthAndInsuranceDisabled(Insurance insurance, string labyrinthId = "labyrinth")
     {
         return string.Equals(insurance.SystemData?.Location, labyrinthId, StringComparison.OrdinalIgnoreCase)
-            && !(databaseService.GetLocation(labyrinthId)?.Base?.Insurance ?? false);
+            && !(locationTable.GetLocation(labyrinthId)?.Base?.Insurance ?? false);
     }
 
     /// <summary>
@@ -687,7 +689,7 @@ public class InsuranceController(
     /// <returns>Should item be deleted</returns>
     protected bool? RollForDelete(MongoId traderId, Item? insuredItem = null)
     {
-        var trader = databaseService.GetTrader(traderId);
+        var trader = traderTable.GetTrader(traderId);
         if (trader is null)
         {
             return null;

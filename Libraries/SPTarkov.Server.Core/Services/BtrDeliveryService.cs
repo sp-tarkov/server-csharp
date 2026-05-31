@@ -1,6 +1,7 @@
 ﻿using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Match;
 using SPTarkov.Server.Core.Models.Eft.Profile;
@@ -15,7 +16,7 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class BtrDeliveryService(
     ISptLogger<BtrDeliveryService> logger,
-    DatabaseService databaseService,
+    TraderTable traderTable,
     RandomUtil randomUtil,
     TimeUtil timeUtil,
     SaveServer saveServer,
@@ -87,7 +88,7 @@ public class BtrDeliveryService(
 
     public void SendBTRDelivery(MongoId sessionId, IEnumerable<Item> items)
     {
-        var dialogueTemplates = databaseService.GetTrader(Traders.BTR).Dialogue;
+        var dialogueTemplates = traderTable.GetTrader(Traders.BTR).Dialogue;
         if (dialogueTemplates is null)
         {
             logger.Error(serverLocalisationService.GetText("inraid-unable_to_deliver_item_no_trader_found", Traders.BTR));

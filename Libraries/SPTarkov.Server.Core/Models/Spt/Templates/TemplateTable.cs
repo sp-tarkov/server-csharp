@@ -5,7 +5,7 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 
 namespace SPTarkov.Server.Core.Models.Spt.Templates;
 
-public record Templates
+public record TemplateTable
 {
     [JsonPropertyName("character")]
     public required List<string> Character { get; init; }

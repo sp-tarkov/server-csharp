@@ -3,7 +3,7 @@ using SPTarkov.Server.Core.Models.Eft.Hideout;
 
 namespace SPTarkov.Server.Core.Models.Spt.Hideout;
 
-public record Hideout
+public record HideoutTable
 {
     [JsonPropertyName("areas")]
     public required List<HideoutArea> Areas { get; init; }

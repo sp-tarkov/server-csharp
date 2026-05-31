@@ -11,6 +11,7 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
@@ -22,11 +23,12 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public partial class ProfileFixerService(
     ISptLogger<ProfileFixerService> logger,
+    TemplateTable templateTable,
+    GlobalTable globalTable,
     JsonUtil jsonUtil,
     RewardHelper rewardHelper,
     TraderHelper traderHelper,
     HideoutHelper hideoutHelper,
-    DatabaseService databaseService,
     ServerLocalisationService serverLocalisationService,
     CoreConfig coreConfig
 )
@@ -178,7 +180,7 @@ public partial class ProfileFixerService(
         }
 
         // Iterate over clothing
-        var customizationDb = databaseService.GetTemplates().Customization;
+        var customizationDb = templateTable.Customization;
         var customizationDbArray = customizationDb.Values;
         var playerIsUsec = string.Equals(pmcProfile.Info!.Side, "usec", StringComparison.OrdinalIgnoreCase);
 
@@ -250,7 +252,7 @@ public partial class ProfileFixerService(
 
         var taskConditionKeysToRemove = new List<string>();
         var activeRepeatableQuests = GetActiveRepeatableQuests(pmcProfile.RepeatableQuests);
-        var achievements = databaseService.GetAchievements();
+        var achievements = templateTable.Achievements;
 
         // Loop over TaskConditionCounters objects and add once we want to remove to counterKeysToRemove
         foreach (var TaskConditionCounterKvP in pmcProfile.TaskConditionCounters)
@@ -311,7 +313,7 @@ public partial class ProfileFixerService(
             return;
         }
 
-        var quests = databaseService.GetQuests();
+        var quests = templateTable.Quests;
         var profileQuests = pmcProfile.Quests;
 
         var activeRepeatableQuests = GetActiveRepeatableQuests(pmcProfile.RepeatableQuests);
@@ -337,7 +339,7 @@ public partial class ProfileFixerService(
             return;
         }
 
-        var quests = databaseService.GetQuests();
+        var quests = templateTable.Quests;
         var profileQuests = pmcProfile.Quests;
 
         foreach (var profileQuest in profileQuests)
@@ -441,13 +443,11 @@ public partial class ProfileFixerService(
             return;
         }
 
-        var globals = databaseService.GetGlobals();
-
         var generator = pmcProfile.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.Generator);
         if (generator?.Slots is not null)
         {
             var fuelSlots = generator.Slots.Count;
-            var extraGenSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.Generator.Slots;
+            var extraGenSlots = globalTable.Configuration.SkillsSettings.HideoutManagement.EliteSlots.Generator.Slots;
 
             if (fuelSlots < 6 + extraGenSlots)
             {
@@ -474,7 +474,7 @@ public partial class ProfileFixerService(
         }
 
         var waterCollSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.WaterCollector)?.Slots?.Count;
-        var extraWaterCollSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.WaterCollector.Slots;
+        var extraWaterCollSlots = globalTable.Configuration.SkillsSettings.HideoutManagement.EliteSlots.WaterCollector.Slots;
 
         if (waterCollSlots.GetValueOrDefault(0) < 1 + extraWaterCollSlots)
         {
@@ -487,7 +487,7 @@ public partial class ProfileFixerService(
         }
 
         var filterSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.AirFilteringUnit)?.Slots?.Count;
-        var extraFilterSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.AirFilteringUnit.Slots;
+        var extraFilterSlots = globalTable.Configuration.SkillsSettings.HideoutManagement.EliteSlots.AirFilteringUnit.Slots;
 
         if (filterSlots.GetValueOrDefault(0) < 3 + extraFilterSlots)
         {
@@ -500,7 +500,7 @@ public partial class ProfileFixerService(
         }
 
         var btcFarmSlots = pmcProfile.Hideout.Areas.FirstOrDefault(x => x.Type == HideoutAreas.BitcoinFarm)?.Slots?.Count;
-        var extraBtcSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.BitcoinFarm.Slots;
+        var extraBtcSlots = globalTable.Configuration.SkillsSettings.HideoutManagement.EliteSlots.BitcoinFarm.Slots;
 
         // BTC Farm doesn't have extra slots for hideout management, but we still check for modded stuff!!
         if (btcFarmSlots < 50 + extraBtcSlots)

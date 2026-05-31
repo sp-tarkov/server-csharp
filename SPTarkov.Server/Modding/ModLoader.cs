@@ -2,18 +2,12 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Loader;
 using Mono.Cecil;
-using SPTarkov.Common.Extensions;
 using SPTarkov.Common.Logger;
 using SPTarkov.Common.Models.Logging;
-using SPTarkov.Common.Semver;
-using SPTarkov.Common.Semver.Implementations;
-using SPTarkov.DI;
 using SPTarkov.Reflection.Patching;
-using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Services.Hosted;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Server.Helpers;
+using SPTarkov.Server.Exceptions;
 
 namespace SPTarkov.Server.Modding;
 
@@ -33,42 +27,10 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     private const string PrepatchedArg = "--prepatched";
 
     /// <summary>
-    ///     Initializes the mod loader container
-    /// </summary>
-    /// <returns>True if mods are enabled</returns>
-    public static ModLoader? Create(SptEarlyLoggerFactory loggerFactory, IReadOnlyDictionary<Type, BaseConfig> configuration)
-    {
-        if (!ProgramStatics.MODS())
-        {
-            return null;
-        }
-
-        // We need the SPT dependencies for the ModValidator, but mods are loaded before the web application
-        // So we create a disposable web application that we will throw away after getting the mods to load
-        var builder = ProgramHelpers.CreateNewHostBuilder(loggerFactory, configuration);
-        // register SPT components
-        var diHandler = new DependencyInjectionHandler(builder.Services);
-        diHandler.AddInjectableTypesFromAssembly(typeof(Program).Assembly);
-        diHandler.AddInjectableTypesFromAssembly(typeof(SPTStartupHostedService).Assembly);
-        diHandler.InjectAll();
-
-        // register the mod loader components
-        var provider = builder
-            .Services.AddScoped<ISemVer, SemanticVersioningSemVer>()
-            .AddSingleton<ModLoader>()
-            .AddSingleton<ModValidator>()
-            .AddSptLoggerWithoutProvider(loggerFactory.ServiceProvider)
-            .BuildServiceProvider();
-
-        return provider.GetService<ModLoader>()
-            ?? throw new NullReferenceException("Could not retrieve `ModLoaderController` during initialization.");
-    }
-
-    /// <summary>
     ///     Initializes the mod loader container, and runs the entire mod loader process
     /// </summary>
     /// <returns>Active runtime mods</returns>
-    public async Task<ModLoaderRunResult> RunModLoader(string[] args)
+    public async Task<ModLoaderRunResult> RunModLoader(SptEarlyLoggerFactory loggerFactory, string[] args)
     {
         // Clean the console a bit
         var isPrepatchedProcess = args.Contains(PrepatchedArg, StringComparer.OrdinalIgnoreCase);
@@ -85,7 +47,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         {
             if (await ApplyPrepatches(loadedMods))
             {
-                await StartPrepatchedServerProcess(args);
+                await StartPrepatchedServerProcess(loggerFactory, args);
                 return new ModLoaderRunResult(false, loadedMods);
             }
         }
@@ -209,7 +171,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     /// <summary>
     ///     Starts the patched server as a new process. This one is destroyed in release and held open in debug so IDE's don't die.
     /// </summary>
-    private async Task StartPrepatchedServerProcess(string[] args)
+    private async Task StartPrepatchedServerProcess(SptEarlyLoggerFactory loggerFactory, string[] args)
     {
         var sourceDirectory = AppContext.BaseDirectory;
         var stageDirectory = Path.GetFullPath(PrepatchStagePath);
@@ -236,7 +198,11 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         // Needed for IDE development so the console doesn't just cease to exist when the process relaunches,
         // in a normal environment it just reattaches to the old console, but this behavior doesn't work in Rider/VS
 #if DEBUG
+        // Dispose of logging, we dont need to keep it alive anymore for this program
+        loggerFactory.Provider.Dispose();
+        loggerFactory.Dispose();
         await prepatchedProcess.WaitForExitAsync();
+
         Environment.ExitCode = prepatchedProcess.ExitCode;
 #endif
     }

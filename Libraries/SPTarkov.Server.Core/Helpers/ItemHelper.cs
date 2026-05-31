@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Inventory;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -19,8 +20,8 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable(InjectionType.Singleton)]
 public class ItemHelper(
     ISptLogger<ItemHelper> logger,
+    TemplateTable templateTable,
     RandomUtil randomUtil,
-    DatabaseService databaseService,
     HandbookHelper handbookHelper,
     ItemBaseClassService itemBaseClassService,
     ItemFilterService itemFilterService,
@@ -94,13 +95,7 @@ public class ItemHelper(
         "helmet_ears",
     ];
 
-    protected static readonly HashSet<string> _removablePlateSlotIds =
-    [
-        "front_plate",
-        "back_plate",
-        "left_side_plate",
-        "right_side_plate",
-    ];
+    protected static readonly HashSet<string> _removablePlateSlotIds = ["front_plate", "back_plate", "left_side_plate", "right_side_plate"];
 
     protected static readonly FrozenSet<MongoId> _armorSlotsThatCanHoldMods = [BaseClasses.HEADWEAR, BaseClasses.VEST, BaseClasses.ARMOR];
 
@@ -469,7 +464,7 @@ public class ItemHelper(
     /// <returns>Price in roubles (undefined if not found)</returns>
     public double? GetDynamicItemPrice(MongoId tpl)
     {
-        if (databaseService.GetPrices().TryGetValue(tpl, out var price))
+        if (templateTable.Prices.TryGetValue(tpl, out var price))
         {
             return price;
         }
@@ -483,7 +478,7 @@ public class ItemHelper(
     /// <returns>List of TemplateItem objects</returns>
     public List<TemplateItem>? GetItemsClone()
     {
-        return cloner.Clone(databaseService.GetItems().Values.ToList());
+        return cloner.Clone(templateTable.Items.Values.ToList());
     }
 
     /// <summary>
@@ -494,7 +489,7 @@ public class ItemHelper(
     public KeyValuePair<bool, TemplateItem?> GetItem(MongoId itemTpl)
     {
         // -> Gets item from <input: _tpl>
-        if (databaseService.GetItems().TryGetValue(itemTpl, out var item))
+        if (templateTable.Items.TryGetValue(itemTpl, out var item))
         {
             return new KeyValuePair<bool, TemplateItem?>(true, item);
         }
@@ -509,7 +504,7 @@ public class ItemHelper(
     /// <returns>True if the item has slots</returns>
     public bool ItemHasSlots(MongoId itemTpl)
     {
-        if (databaseService.GetItems().TryGetValue(itemTpl, out var item))
+        if (templateTable.Items.TryGetValue(itemTpl, out var item))
         {
             return item.Properties?.Slots is not null && item.Properties.Slots.Any();
         }
@@ -524,7 +519,7 @@ public class ItemHelper(
     /// <returns>true if the item is in the database</returns>
     public bool IsItemInDb(MongoId itemTpl)
     {
-        return databaseService.GetItems().ContainsKey(itemTpl);
+        return templateTable.Items.ContainsKey(itemTpl);
     }
 
     /// <summary>
@@ -730,7 +725,7 @@ public class ItemHelper(
     /// <returns>True if it can be stacked.</returns>
     public bool? IsItemTplStackable(MongoId tpl)
     {
-        if (!databaseService.GetItems().TryGetValue(tpl, out var item))
+        if (!templateTable.Items.TryGetValue(tpl, out var item))
         {
             return null;
         }
@@ -1546,7 +1541,7 @@ public class ItemHelper(
     /// <returns>Array of tpls</returns>
     public IEnumerable<MongoId> GetItemTplsOfBaseType(string desiredBaseType)
     {
-        return databaseService.GetItems().Values.Where(item => item.Parent == desiredBaseType).Select(item => item.Id);
+        return templateTable.Items.Values.Where(item => item.Parent == desiredBaseType).Select(item => item.Id);
     }
 
     /// <summary>

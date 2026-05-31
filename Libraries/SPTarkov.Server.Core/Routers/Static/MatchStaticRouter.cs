@@ -120,11 +120,13 @@ public class MatchStaticRouter(JsonUtil jsonUtil, MatchCallbacks matchCallbacks)
             ),
             new RouteAction<StartLocalRaidRequestData>(
                 "/client/match/local/start",
-                async (url, info, sessionID, output, cancellationToken) => await matchCallbacks.StartLocalRaid(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) =>
+                    await matchCallbacks.StartLocalRaidAsync(url, info, sessionID, cancellationToken)
             ),
             new RouteAction<EndLocalRaidRequestData>(
                 "/client/match/local/end",
-                async (url, info, sessionID, output, cancellationToken) => await matchCallbacks.EndLocalRaid(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) =>
+                    await matchCallbacks.EndLocalRaidAsync(url, info, sessionID, cancellationToken)
             ),
         ]
     ) { }

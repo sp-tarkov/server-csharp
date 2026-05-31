@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Modding;
@@ -17,11 +18,11 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class LauncherController(
     IReadOnlyList<SptMod> loadedMods,
+    TemplateTable templateTable,
     HashUtil hashUtil,
     SaveServer saveServer,
     HttpServerHelper httpServerHelper,
     ProfileHelper profileHelper,
-    DatabaseService databaseService,
     ServerLocalisationService serverLocalisationService,
     ProfileDataService profileDataService,
     CoreConfig coreConfig
@@ -34,9 +35,8 @@ public class LauncherController(
     public ConnectResponse Connect()
     {
         // Get all possible profile types + filter out any that are blacklisted
-        var profileTemplates = databaseService
-            .GetProfileTemplates()
-            .Where(profile => !coreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profile.Key))
+        var profileTemplates = templateTable
+            .Profiles.Where(profile => !coreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profile.Key))
             .ToDictionary();
 
         return new ConnectResponse

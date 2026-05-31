@@ -13,6 +13,8 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Eft.Quests;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Server;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -23,9 +25,11 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class LocationLifecycleService(
     ISptLogger<LocationLifecycleService> logger,
+    GlobalTable globalTable,
+    TemplateTable templateTable,
+    LocationTable locationTable,
     RewardHelper rewardHelper,
     TimeUtil timeUtil,
-    DatabaseService databaseService,
     ProfileHelper profileHelper,
     BackupService backupService,
     ProfileActivityService profileActivityService,
@@ -78,10 +82,14 @@ public class LocationLifecycleService(
     /// <summary>
     ///     Handle client/match/local/start
     /// </summary>
-    public virtual StartLocalRaidResponseData StartLocalRaid(MongoId sessionId, StartLocalRaidRequestData request)
+    public virtual async Task<StartLocalRaidResponseData> StartLocalRaidAsync(
+        MongoId sessionId,
+        StartLocalRaidRequestData request,
+        CancellationToken cancellationToken = default
+    )
     {
         // Backup the profile on raid start
-        backupService.InitializeAsync().GetAwaiter().GetResult();
+        await backupService.InitializeAsync(cancellationToken);
 
         logger.Debug($"Starting: {request.Location}");
 
@@ -114,7 +122,7 @@ public class LocationLifecycleService(
         hideoutConfig.RunIntervalSeconds = hideoutConfig.RunIntervalValues.InRaid;
 
         var location = GenerateLocationAndLoot(sessionId, request.Location, !request.ShouldSkipLootGeneration ?? true);
-        var isRundansActive = databaseService.GetGlobals().Configuration.RunddansSettings.Active;
+        var isRundansActive = globalTable.Configuration.RunddansSettings.Active;
 
         if (transitionType == TransitionType.EVENT)
         {
@@ -154,7 +162,7 @@ public class LocationLifecycleService(
         {
             // PVE_OFFLINE_xxxxxxxx_27_06_2025_20_20_44
             ServerId = $"{request.Location}.{request.PlayerSide} {timeUtil.GetTimeStamp()}", // Only used for metrics in client
-            ServerSettings = databaseService.GetLocationServices(), // TODO - is this per map or global?
+            ServerSettings = templateTable.LocationServices, // TODO - is this per map or global?
             Profile = new ProfileInsuredItems { InsuredItems = playerProfile.CharacterData.PmcData.InsuredItems },
             LocationLoot = location,
             TransitionType = transitionType,
@@ -242,7 +250,7 @@ public class LocationLifecycleService(
         }
 
         // Get relevant extract data for map
-        var mapExtracts = databaseService.GetLocation(location)?.AllExtracts;
+        var mapExtracts = locationTable.GetLocation(location)?.AllExtracts;
         if (mapExtracts is null)
         {
             logger.Warning($"Unable to find map: {location} extract data, no adjustments made");
@@ -356,7 +364,7 @@ public class LocationLifecycleService(
     /// <returns>LocationBase with loot</returns>
     public virtual LocationBase GenerateLocationAndLoot(MongoId sessionId, string name, bool generateLoot = true)
     {
-        var location = databaseService.GetLocation(name);
+        var location = locationTable.GetLocation(name);
         var locationBaseClone = cloner.Clone(location.Base);
 
         // Update datetime property to now
@@ -416,7 +424,7 @@ public class LocationLifecycleService(
         locationBlacklist ??= ["hideout", "develop"];
 
         // Reset all maps with goons to 0% spawn, ignore blacklisted locations
-        var allLocations = databaseService.GetLocations().GetDictionary();
+        var allLocations = locationTable.GetDictionary();
         foreach (var (locationId, location) in allLocations)
         {
             if (!locationBlacklist.Contains(locationId) && location?.Base?.BossLocationSpawn is not null)
@@ -467,7 +475,11 @@ public class LocationLifecycleService(
     /// <summary>
     ///     Handle client/match/local/end
     /// </summary>
-    public virtual void EndLocalRaid(MongoId sessionId, EndLocalRaidRequestData request)
+    public virtual async Task EndLocalRaidAsync(
+        MongoId sessionId,
+        EndLocalRaidRequestData request,
+        CancellationToken cancellationToken = default
+    )
     {
         // Clear bot loot cache
         botLootCacheService.ClearCache();
@@ -514,7 +526,16 @@ public class LocationLifecycleService(
 
         if (!isPmc)
         {
-            HandlePostRaidPlayerScav(sessionId, pmcProfile, scavProfile, isDead, isTransfer, isSurvived, request);
+            await HandlePostRaidPlayerScavAsync(
+                sessionId,
+                pmcProfile,
+                scavProfile,
+                isDead,
+                isTransfer,
+                isSurvived,
+                request,
+                cancellationToken
+            );
 
             return;
         }
@@ -535,8 +556,8 @@ public class LocationLifecycleService(
         }
 
         // Save and backup the profile on raid end
-        saveServer.SaveProfileAsync(sessionId).GetAwaiter().GetResult();
-        backupService.InitializeAsync().GetAwaiter().GetResult();
+        await saveServer.SaveProfileAsync(sessionId, cancellationToken);
+        await backupService.InitializeAsync(cancellationToken);
     }
 
     /// <summary>
@@ -670,14 +691,18 @@ public class LocationLifecycleService(
     /// <param name="isTransfer">Did player transfer to new map</param>
     /// <param name="isSurvived">DId player get 'survived' exit status</param>
     /// <param name="request">End raid request</param>
-    protected void HandlePostRaidPlayerScav(
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> that can be used to cancel the saving operation.
+    /// </param>
+    protected async Task HandlePostRaidPlayerScavAsync(
         MongoId sessionId,
         PmcData pmcProfile,
         PmcData scavProfile,
         bool isDead,
         bool isTransfer,
         bool isSurvived,
-        EndLocalRaidRequestData request
+        EndLocalRaidRequestData request,
+        CancellationToken cancellationToken = default
     )
     {
         var postRaidProfile = request.Results.Profile;
@@ -750,7 +775,7 @@ public class LocationLifecycleService(
         pmcProfile.Info.LastTimePlayedAsSavage = timeUtil.GetTimeStamp();
 
         // Force a profile save
-        saveServer.SaveProfileAsync(sessionId).GetAwaiter().GetResult();
+        await saveServer.SaveProfileAsync(sessionId, cancellationToken);
     }
 
     /// <summary>
@@ -977,7 +1002,7 @@ public class LocationLifecycleService(
             .ToHashSet();
 
         // Get db details of quests we found above
-        var questDb = databaseService.GetQuests().Values.Where(quest => activeQuestIdsInProfile.Contains(quest.Id));
+        var questDb = templateTable.Quests.Values.Where(quest => activeQuestIdsInProfile.Contains(quest.Id));
 
         foreach (var lostItem in lostQuestItems)
         {
@@ -1054,7 +1079,7 @@ public class LocationLifecycleService(
                 preRaidQuest.Status != QuestStatusEnum.Success
             )
             && // Completed quest was not completed before raid started
-            databaseService.GetQuests().TryGetValue(postRaidQuest.QId, out var quest)
+            templateTable.Quests.TryGetValue(postRaidQuest.QId, out var quest)
             && quest?.TraderId == Traders.LIGHTHOUSEKEEPER
         ); // Quest is from LK
 
@@ -1085,7 +1110,7 @@ public class LocationLifecycleService(
         var failedQuests = questsToProcess.Where(quest => quest.Status == QuestStatusEnum.MarkedAsFailed);
         foreach (var failedQuest in failedQuests)
         {
-            if (!databaseService.GetQuests().TryGetValue(failedQuest.QId, out var dbQuest))
+            if (!templateTable.Quests.TryGetValue(failedQuest.QId, out var dbQuest))
             {
                 continue;
             }
@@ -1190,7 +1215,7 @@ public class LocationLifecycleService(
         var achievementIdsAcquiredThisRaid = postRaidAchievementIds.Where(id => !preRaidAchievementIds.Contains(id));
 
         // Get achievement data from db
-        var achievementsDb = databaseService.GetTemplates().Achievements;
+        var achievementsDb = templateTable.Achievements;
 
         // Map the achievement ids player obtained in raid with matching achievement data from db
         var achievements = achievementIdsAcquiredThisRaid.Select(achievementId =>

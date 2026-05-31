@@ -125,9 +125,13 @@ public class MatchController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Start raid request</param>
     /// <returns>StartLocalRaidResponseData</returns>
-    public StartLocalRaidResponseData StartLocalRaid(MongoId sessionId, StartLocalRaidRequestData request)
+    public async Task<StartLocalRaidResponseData> StartLocalRaidAsync(
+        MongoId sessionId,
+        StartLocalRaidRequestData request,
+        CancellationToken cancellationToken = default
+    )
     {
-        return locationLifecycleService.StartLocalRaid(sessionId, request);
+        return await locationLifecycleService.StartLocalRaidAsync(sessionId, request, cancellationToken);
     }
 
     /// <summary>
@@ -135,8 +139,8 @@ public class MatchController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Emd local raid request</param>
-    public void EndLocalRaid(MongoId sessionId, EndLocalRaidRequestData request)
+    public async Task EndLocalRaidAsync(MongoId sessionId, EndLocalRaidRequestData request, CancellationToken cancellationToken = default)
     {
-        locationLifecycleService.EndLocalRaid(sessionId, request);
+        await locationLifecycleService.EndLocalRaidAsync(sessionId, request, cancellationToken);
     }
 }

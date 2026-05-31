@@ -1,9 +1,9 @@
 using System.Globalization;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
@@ -12,9 +12,9 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class RagfairSellHelper(
     ISptLogger<RagfairSellHelper> logger,
+    GlobalTable globalTable,
     TimeUtil timeUtil,
     RandomUtil randomUtil,
-    DatabaseService databaseService,
     RagfairConfig ragfairConfig
 )
 {
@@ -63,8 +63,7 @@ public class RagfairSellHelper(
         var startTimestamp = timeUtil.GetTimeStamp();
 
         // Get a time in future to stop simulating sell chances at
-        var endTime =
-            startTimestamp + timeUtil.GetHoursAsSeconds((int)databaseService.GetGlobals().Configuration.RagFair.OfferDurationTimeInHour);
+        var endTime = startTimestamp + timeUtil.GetHoursAsSeconds((int)globalTable.Configuration.RagFair.OfferDurationTimeInHour);
 
         var sellTimestamp = startTimestamp;
         var remainingCount = itemSellCount;

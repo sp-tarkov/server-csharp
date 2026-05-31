@@ -19,8 +19,8 @@ namespace SPTarkov.Server.Core.Generators.Bot;
 [Injectable]
 public class PlayerScavGenerator(
     ISptLogger<PlayerScavGenerator> logger,
+    GlobalTable globalTable,
     RandomUtil randomUtil,
-    DatabaseService databaseService,
     ItemHelper itemHelper,
     BotGeneratorHelper botGeneratorHelper,
     SaveServer saveServer,
@@ -397,7 +397,7 @@ public class PlayerScavGenerator(
         modifier *= fenceInfo.SavageCooldownModifier;
 
         // Make sure to apply ScavCooldownTimer bonus from Hideout if the player has it.
-        var scavLockDuration = databaseService.GetGlobals().Configuration.SavagePlayCooldown * modifier;
+        var scavLockDuration = globalTable.Configuration.SavagePlayCooldown * modifier;
 
         var fullProfile = profileHelper.GetFullProfile(pmcData.SessionId.Value);
         if (fullProfile?.ProfileInfo?.Edition?.StartsWith(AccountTypes.SPT_DEVELOPER, StringComparison.OrdinalIgnoreCase) ?? false)

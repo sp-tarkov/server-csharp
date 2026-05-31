@@ -5,11 +5,13 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Ragfair;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -21,10 +23,12 @@ namespace SPTarkov.Server.Core.Generators.Ragfair;
 [Injectable]
 public class RagfairOfferGenerator(
     ISptLogger<RagfairOfferGenerator> logger,
+    TemplateTable templateTable,
+    TraderTable traderTable,
+    GlobalTable globalTable,
     HashUtil hashUtil,
     RandomUtil randomUtil,
     TimeUtil timeUtil,
-    DatabaseService databaseService,
     RagfairServerHelper ragfairServerHelper,
     ProfileHelper profileHelper,
     HandbookHelper handbookHelper,
@@ -203,7 +207,7 @@ public class RagfairOfferGenerator(
     {
         if (isTrader)
         {
-            return databaseService.GetTrader(userId).Base.Avatar;
+            return traderTable.GetTrader(userId).Base.Avatar;
         }
 
         return "/files/trader/avatar/unknown.jpg";
@@ -260,13 +264,13 @@ public class RagfairOfferGenerator(
         if (creatorType == OfferCreator.Player)
         {
             // Player offer = current time + offerDurationTimeInHour;
-            var offerDurationTimeHours = databaseService.GetGlobals().Configuration.RagFair.OfferDurationTimeInHour;
+            var offerDurationTimeHours = globalTable.Configuration.RagFair.OfferDurationTimeInHour;
             return (long)(timeUtil.GetTimeStamp() + Math.Round(offerDurationTimeHours * TimeUtil.OneHourAsSeconds));
         }
 
         if (creatorType == OfferCreator.Trader)
         {
-            return (long)databaseService.GetTrader(userId).Base.NextResupply;
+            return (long)traderTable.GetTrader(userId).Base.NextResupply;
         }
 
         var randomSpread = randomUtil.GetDouble(ragfairConfig.Dynamic.EndTimeSeconds.Min, ragfairConfig.Dynamic.EndTimeSeconds.Max);
@@ -526,7 +530,7 @@ public class RagfairOfferGenerator(
         ragfairOfferService.RemoveAllOffersByTrader(traderId);
 
         var time = timeUtil.GetTimeStamp();
-        var trader = databaseService.GetTrader(traderId);
+        var trader = traderTable.GetTrader(traderId);
         var assortsClone = cloner.Clone(trader.Assort);
 
         // Trader assorts / assort items are missing
@@ -924,7 +928,7 @@ public class RagfairOfferGenerator(
         // Generate if needed
         if (AllowedFleaPriceItemsForBarter == null)
         {
-            var fleaPrices = databaseService.GetPrices();
+            var fleaPrices = templateTable.Prices;
 
             // Only get prices for items that also exist in items.json
             var filteredFleaItems = fleaPrices

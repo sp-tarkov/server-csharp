@@ -3,18 +3,21 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Exceptions.Items;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
 public class ProfileValidatorHelper(
+    TemplateTable templateTable,
+    TraderTable traderTable,
     CoreConfig coreConfig,
-    DatabaseService databaseService,
     ISptLogger<ProfileValidatorHelper> logger,
     ServerLocalisationService serverLocalisationService
 )
@@ -46,7 +49,7 @@ public class ProfileValidatorHelper(
     /// <exception cref="InvalidModdedItemException">Thrown if <see cref="GameFixes.RemoveModItemsFromProfile">RemoveModItemsFromProfile</see> is false.</exception>
     protected void RemoveInvalidItems(MongoId sessionId, SptProfile fullProfile)
     {
-        var itemsDb = databaseService.GetItems();
+        var itemsDb = templateTable.Items;
         var pmcProfile = fullProfile.CharacterData?.PmcData;
 
         var invalidItemIds = pmcProfile
@@ -88,7 +91,7 @@ public class ProfileValidatorHelper(
             return;
         }
 
-        var itemsDb = databaseService.GetItems();
+        var itemsDb = templateTable.Items;
 
         // Remove invalid builds from weapon, equipment and magazine build lists
         var weaponBuilds = fullProfile.UserBuildData?.WeaponBuilds ?? [];
@@ -117,7 +120,7 @@ public class ProfileValidatorHelper(
             return;
         }
 
-        var itemsDb = databaseService.GetItems();
+        var itemsDb = templateTable.Items;
 
         // Iterate over dialogs, looking for messages with items not found in item db, remove message if item found
         foreach (var dialog in fullProfile.DialogueRecords)
@@ -170,7 +173,7 @@ public class ProfileValidatorHelper(
     /// <exception cref="InvalidModdedClothingException">Thrown if <see cref="GameFixes.RemoveModItemsFromProfile">RemoveModItemsFromProfile</see> is false.</exception>
     protected void RemoveInvalidClothing(SptProfile fullProfile)
     {
-        var clothingDb = databaseService.GetTemplates().Customization;
+        var clothingDb = templateTable.Customization;
 
         // We're removing element, ToList to allow that to occur
         var clothingItems = fullProfile
@@ -217,7 +220,7 @@ public class ProfileValidatorHelper(
             return;
         }
 
-        var itemsDb = databaseService.GetItems();
+        var itemsDb = templateTable.Items;
         foreach (var repeatable in fullProfile.CharacterData.PmcData.RepeatableQuests)
         {
             if (repeatable.ActiveQuests is null)
@@ -382,6 +385,6 @@ public class ProfileValidatorHelper(
 
     protected bool DoesTraderExist(MongoId traderId)
     {
-        return databaseService.GetTrader(traderId) != null;
+        return traderTable.GetTrader(traderId) != null;
     }
 }

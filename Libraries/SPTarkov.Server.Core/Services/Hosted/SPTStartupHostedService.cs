@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using SPTarkov.Common.Models.Logging;
+using SPTarkov.DI;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Extensions;
@@ -14,13 +16,14 @@ namespace SPTarkov.Server.Core.Services.Hosted;
 [Injectable(InjectionType.HostedService)]
 public sealed class SPTStartupHostedService(
     IReadOnlyList<SptMod> loadedMods,
+    IReadOnlyList<DependencyInjectionContainer> dependencyInjectionContainers,
     BundleLoader bundleLoader,
     TimeUtil timeUtil,
     RandomUtil randomUtil,
     ServerLocalisationService serverLocalisationService,
     HttpServer httpServer,
     ISptLogger<SPTStartupHostedService> logger,
-    IEnumerable<IOnLoad> onLoadComponents,
+    IServiceProvider serviceProvider,
     IEnumerable<IOnUpdate> onUpdateComponents
 ) : BackgroundService
 {
@@ -77,10 +80,20 @@ public sealed class SPTStartupHostedService(
                 logger.Debug($"Commit: {ProgramStatics.COMMIT()}");
             }
 
-            // execute onLoad callbacks
-            logger.Info(serverLocalisationService.GetText("executing_startup_callbacks"));
-            foreach (var onLoad in onLoadComponents)
+            // execute OnLoad callbacks past PreLoad
+            var PostPreloadComponents = dependencyInjectionContainers
+                .Where(container => container.Type == typeof(IOnLoad))
+                .Where(container => container.InjectableAttribute.TypePriority >= OnLoadOrder.GameCallbacks);
+
+            foreach (var onLoadContainer in PostPreloadComponents)
             {
+                var onLoadService = serviceProvider.GetRequiredService(onLoadContainer.ParentType);
+
+                if (onLoadService is not IOnLoad onLoad)
+                {
+                    throw new InvalidOperationException($"Unable to resolve {onLoadContainer.ParentType.FullName} as {nameof(IOnLoad)}");
+                }
+
                 await onLoad.OnLoad(cancellationToken).ConfigureAwait(false);
             }
 

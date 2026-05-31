@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
 
@@ -14,8 +15,8 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class QuestRewardHelper(
     ISptLogger<QuestRewardHelper> logger,
+    TemplateTable templateTable,
     PaymentHelper paymentHelper,
-    DatabaseService databaseService,
     ProfileHelper profileHelper,
     RewardHelper rewardHelper,
     ServerLocalisationService serverLocalisationService,
@@ -106,7 +107,7 @@ public class QuestRewardHelper(
     protected Quest? GetQuestFromDb(MongoId questId, PmcData pmcData)
     {
         // Look for quest in db
-        if (databaseService.GetQuests().TryGetValue(questId, out var quest))
+        if (templateTable.Quests.TryGetValue(questId, out var quest))
         {
             return quest;
         }

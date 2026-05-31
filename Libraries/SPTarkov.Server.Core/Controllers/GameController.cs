@@ -7,9 +7,12 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Game;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Hideout;
 using SPTarkov.Server.Core.Models.Spt.Location;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Models.Spt.Server;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
@@ -19,8 +22,10 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class GameController(
     ISptLogger<GameController> logger,
+    HideoutTable hideoutTable,
+    LocaleTable localeTable,
+    BotTable botTable,
     IReadOnlyList<SptMod> loadedMods,
-    DatabaseService databaseService,
     TimeUtil timeUtil,
     HttpServerHelper httpServerHelper,
     HideoutHelper hideoutHelper,
@@ -115,7 +120,7 @@ public class GameController(
 
         if (pmcProfile.Hideout is not null)
         {
-            profileFixerService.AddMissingHideoutBonusesToProfile(pmcProfile, databaseService.GetHideout().Areas);
+            profileFixerService.AddMissingHideoutBonusesToProfile(pmcProfile, hideoutTable.Areas);
             hideoutHelper.SetHideoutImprovementsToCompleted(pmcProfile);
             pmcProfile.UnlockHideoutWallInProfile();
 
@@ -159,7 +164,7 @@ public class GameController(
 
         var config = new GameConfigResponse
         {
-            Languages = databaseService.GetLocales().Languages,
+            Languages = localeTable.Languages,
             IsNdaFree = false,
             IsReportAvailable = false,
             IsTwitchEventMember = false,
@@ -459,7 +464,7 @@ public class GameController(
         var playerName = pmcProfile.Info?.Nickname;
         if (playerName is not null)
         {
-            var bots = databaseService.GetBots().Types;
+            var bots = botTable.Types;
 
             // Official names can only be 15 chars in length
             if (playerName.Length > botConfig.BotNameLengthLimit)

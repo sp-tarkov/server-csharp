@@ -27,6 +27,7 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class RepeatableQuestController(
     ISptLogger<RepeatableQuestChangeRequest> logger,
+    GlobalTable globalTable,
     EliminationQuestGenerator eliminationQuestGenerator,
     CompletionQuestGenerator completionQuestGenerator,
     ExplorationQuestGenerator explorationQuestGenerator,
@@ -41,7 +42,6 @@ public class RepeatableQuestController(
     PaymentService paymentService,
     RepeatableQuestHelper repeatableQuestHelper,
     QuestHelper questHelper,
-    DatabaseService databaseService,
     QuestConfig questConfig,
     ICloner cloner
 )
@@ -918,9 +918,7 @@ public class RepeatableQuestController(
         )
         // Elite charisma skill gives extra daily quest(s)
         {
-            questCount += databaseService
-                .GetGlobals()
-                .Configuration.SkillsSettings.Charisma.BonusSettings.EliteBonusSettings.RepeatableQuestExtraCount;
+            questCount += globalTable.Configuration.SkillsSettings.Charisma.BonusSettings.EliteBonusSettings.RepeatableQuestExtraCount;
         }
 
         // Add any extra repeatable quests the profile has unlocked

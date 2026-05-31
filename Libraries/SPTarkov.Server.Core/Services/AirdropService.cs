@@ -9,6 +9,7 @@ using SPTarkov.Server.Core.Models.Eft.Location;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Services;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -16,9 +17,9 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable]
 public class AirdropService(
     ISptLogger<AirdropService> logger,
+    TemplateTable templateTable,
     AirdropConfig airdropConfig,
     LootGenerator lootGenerator,
-    DatabaseService databaseService,
     WeightedRandomHelper weightedRandomHelper,
     ServerLocalisationService serverLocalisationService,
     ItemFilterService itemFilterService,
@@ -215,9 +216,8 @@ public class AirdropService(
 
         // Get all items that match the blacklisted types and fold into item blacklist
         var itemTypeBlacklist = itemFilterService.GetItemRewardBaseTypeBlacklist();
-        var itemsMatchingTypeBlacklist = databaseService
-            .GetItems()
-            .Where(kvp => !kvp.Value.Parent.IsEmpty)
+        var itemsMatchingTypeBlacklist = templateTable
+            .Items.Where(kvp => !kvp.Value.Parent.IsEmpty)
             .Where(kvp => itemHelper.IsOfBaseclasses(kvp.Value.Parent, itemTypeBlacklist))
             .Select(kvp => kvp.Key)
             .ToHashSet();

@@ -12,10 +12,10 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class BotNameService(
     ISptLogger<BotNameService> logger,
+    BotTable botTable,
     BotHelper botHelper,
     RandomUtil randomUtil,
     ServerLocalisationService serverLocalisationService,
-    DatabaseService databaseService,
     BotConfig botConfig
 )
 {
@@ -146,7 +146,7 @@ public class BotNameService(
     /// <returns>PMC name as string</returns>
     protected string GetRandomPmcName()
     {
-        var bots = databaseService.GetBots().Types;
+        var bots = botTable.Types;
 
         var pmcNames = new List<string>();
         pmcNames.AddRange(bots["usec"].FirstNames);

@@ -15,6 +15,8 @@ using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services.Hosted;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Exceptions;
+using SPTarkov.Server.Extensions;
 using SPTarkov.Server.Helpers;
 using SPTarkov.Server.Middleware;
 using SPTarkov.Server.Modding;
@@ -47,11 +49,61 @@ public static class Program
 
             await StartServer(loggerFactory, args);
         }
-        catch (SocketException)
+        catch (WebServerPortUnavailableException ex)
         {
-            _earlyLogger!.LogCritical("You have multiple servers running or another process using port 6969");
-            _earlyLogger!.LogInformation("Press any key to exit...");
-            Console.ReadLine();
+            if (_earlyLogger is not null)
+            {
+                if (_earlyLogger.IsEnabled(LogLevel.Critical))
+                {
+                    _earlyLogger.LogCritical(
+                        "Failed to start the web server on {Ip}:{Port}. Socket error: {SocketErrorCode} ({NativeErrorCode}).",
+                        ex.Ip,
+                        ex.Port,
+                        ex.SocketErrorCode,
+                        ex.NativeErrorCode
+                    );
+                }
+
+                if (_earlyLogger.IsEnabled(LogLevel.Error))
+                {
+                    switch (ex.SocketErrorCode)
+                    {
+                        case SocketError.AddressAlreadyInUse:
+                            _earlyLogger.LogError(
+                                "Another SPT server may already be running, or another process is using port {Port}.",
+                                ex.Port
+                            );
+
+                            _earlyLogger.LogError(
+                                "Close the other process, or change the server port in your HTTP configuration, then restart SPT."
+                            );
+
+                            break;
+
+                        case SocketError.AddressNotAvailable:
+                            _earlyLogger.LogError("The configured IP address {Ip} is not available on this machine.", ex.Ip);
+
+                            _earlyLogger.LogError("Check your HTTP configuration and use a IP address that exists on this system.");
+
+                            break;
+
+                        case SocketError.AccessDenied:
+                            _earlyLogger.LogError("The server does not have permission to bind to {Ip}:{Port}.", ex.Ip, ex.Port);
+
+                            _earlyLogger.LogError("Try running SPT as administrator, or use a different IP address and port.");
+
+                            break;
+
+                        default:
+                            _earlyLogger.LogError("The web server could not bind to the configured endpoint {Ip}:{Port}.", ex.Ip, ex.Port);
+
+                            break;
+                    }
+                }
+            }
+
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey(true);
         }
         catch (Exception e)
         {
@@ -101,23 +153,33 @@ public static class Program
         Console.OutputEncoding = Encoding.UTF8;
 
         var configuration = await ConfigLoader.Initialize(_earlyLogger!);
+        var earlyServiceProvider = ProgramHelpers.CreateEarlySptProvider(loggerFactory, configuration);
 
-        // Init mod loader
         List<SptMod> loadedMods = [];
-        var modLoader = ModLoader.Create(loggerFactory, configuration);
-        if (modLoader != null)
+        var modLoader = earlyServiceProvider.GetRequiredService<ModLoader>();
+        var runResult = await modLoader.RunModLoader(loggerFactory, args);
+        if (!runResult.ShouldStartServer)
         {
-            var runResult = await modLoader.RunModLoader(args);
-            if (!runResult.ShouldStartServer)
-            {
-                return;
-            }
-
-            loadedMods = runResult.ValidRuntimeMods;
+            return;
         }
 
+        loadedMods = runResult.ValidRuntimeMods;
+
+        var cTSource = new CancellationTokenSource();
+        var dbImporter = earlyServiceProvider.GetRequiredService<DatabaseImporter>();
+
+        var shouldVerify = !ProgramStatics.DEBUG();
+        if (shouldVerify)
+        {
+            await dbImporter.LoadHashesAsync(cTSource.Token);
+        }
+
+        var tables =
+            await dbImporter.LoadDatabaseAsync(shouldVerify, cTSource.Token)
+            ?? throw new NullReferenceException("Failed to import database tables.");
+
         // Create web builder and logger
-        var builder = ProgramHelpers.CreateNewHostBuilder(loggerFactory, configuration);
+        var builder = ProgramHelpers.CreateNewHostBuilder(loggerFactory, configuration, tables);
         builder.Host.UseSptLoggerWithoutProvider(loggerFactory.ServiceProvider);
 
         builder.Host.UseDefaultServiceProvider(options =>
@@ -178,7 +240,13 @@ public static class Program
         forwardedHeadersOptions.KnownProxies.Clear();
         app.UseForwardedHeaders(forwardedHeadersOptions);
 
-        await app.RunAsync();
+        await app.Services.RunPreSptLoadCallbacks(_earlyLogger!);
+
+        var httpConfig = app.Services.GetRequiredService<HttpConfig>();
+
+        httpConfig.VerifyWebServerPortAvailable();
+
+        await app.RunAsync($"https://{httpConfig.Ip}:{httpConfig.Port}");
     }
 
     private static void ConfigureWebApp(WebApplication app)
@@ -193,8 +261,6 @@ public static class Program
 
         app.UseMiddleware<SptLoggerMiddleware>();
 
-        app.UseNoGCRegions();
-
         app.Use(
             async (context, next) =>
                 await context.RequestServices.GetRequiredService<HttpServer>().HandleRequestAsync(context, next, context.RequestAborted)
@@ -208,37 +274,14 @@ public static class Program
         builder.WebHost.ConfigureKestrel(
             (_, options) =>
             {
-                // This method is not expected to be async so we need to wait for the Task instead of using await keyword
-                options.ApplicationServices.GetRequiredService<OnWebAppBuildModLoader>().OnLoad().Wait();
-                var httpConfig = options.ApplicationServices.GetRequiredService<HttpConfig>();
-
-                // Probe the http ip and port to see if its being used, this method will throw an exception and crash
-                // the server if the IP/Port combination is already in use
-                TcpListener? listener = null;
-                try
-                {
-                    listener = new TcpListener(IPAddress.Parse(httpConfig.Ip), httpConfig.Port);
-                    listener.Start();
-                }
-                finally
-                {
-                    listener?.Stop();
-                }
-
                 var certHelper = options.ApplicationServices.GetRequiredService<CertificateHelper>();
-                options.Listen(
-                    IPAddress.Parse(httpConfig.Ip),
-                    httpConfig.Port,
-                    listenOptions =>
-                    {
-                        listenOptions.UseHttps(opts =>
-                        {
-                            opts.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
-                            opts.ServerCertificate = certHelper.LoadOrGenerateCertificate();
-                            opts.ClientCertificateMode = ClientCertificateMode.NoCertificate;
-                        });
-                    }
-                );
+
+                options.ConfigureHttpsDefaults(httpsOptions =>
+                {
+                    httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+                    httpsOptions.ServerCertificate = certHelper.LoadOrGenerateCertificate();
+                    httpsOptions.ClientCertificateMode = ClientCertificateMode.NoCertificate;
+                });
             }
         );
     }

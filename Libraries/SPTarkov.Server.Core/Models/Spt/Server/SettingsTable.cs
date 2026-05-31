@@ -3,7 +3,7 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 
 namespace SPTarkov.Server.Core.Models.Spt.Server;
 
-public record SettingsBase
+public record SettingsTable
 {
     [JsonPropertyName("config")]
     public required Config Configuration { get; init; }

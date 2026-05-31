@@ -4,6 +4,7 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
 
@@ -12,7 +13,7 @@ namespace SPTarkov.Server.Core.Helpers;
 [Injectable]
 public class RepeatableQuestHelper(
     ISptLogger<RepeatableQuestHelper> logger,
-    DatabaseService databaseService,
+    TemplateTable templateTable,
     ServerLocalisationService serverLocalisationService,
     ICloner cloner,
     QuestConfig questConfig
@@ -64,7 +65,7 @@ public class RepeatableQuestHelper(
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     public RepeatableQuest? GetClonedQuestTemplateForType(RepeatableQuestType type, MongoId traderId)
     {
-        var repeatableQuestTemplates = databaseService.GetTemplates().RepeatableQuests.Templates;
+        var repeatableQuestTemplates = templateTable.RepeatableQuests.Templates;
         var quest = type switch
         {
             RepeatableQuestType.Elimination => cloner.Clone(repeatableQuestTemplates?.Elimination),

@@ -4,20 +4,14 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Constants;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class BotHelper(
-    ISptLogger<BotHelper> logger,
-    DatabaseService databaseService,
-    RandomUtil randomUtil,
-    BotConfig botConfig,
-    PmcConfig pmcConfig
-)
+public class BotHelper(ISptLogger<BotHelper> logger, BotTable botTable, RandomUtil randomUtil, BotConfig botConfig, PmcConfig pmcConfig)
 {
     private static readonly HashSet<string> _pmcTypeIds =
     [
@@ -36,7 +30,7 @@ public class BotHelper(
     /// <returns>BotType object</returns>
     public BotType? GetBotTemplate(string role)
     {
-        if (!databaseService.GetBots().Types.TryGetValue(role.ToLowerInvariant(), out var bot))
+        if (!botTable.Types.TryGetValue(role.ToLowerInvariant(), out var bot))
         {
             logger.Error($"Unable to get bot of type: {role} from DB");
 
@@ -189,11 +183,11 @@ public class BotHelper(
     protected List<string> GatherPmcNamesOfLength(string chosenFaction, int maxLength)
     {
         // Ensure faction is legit before gathering
-        if (!databaseService.GetBots().Types.TryGetValue(chosenFaction, out var chosenFactionDetails))
+        if (!botTable.Types.TryGetValue(chosenFaction, out var chosenFactionDetails))
         {
             logger.Error($"Unknown faction: {chosenFaction} Defaulting to: {Sides.Usec}");
             chosenFaction = Sides.Usec.ToLowerInvariant();
-            chosenFactionDetails = databaseService.GetBots().Types[chosenFaction];
+            chosenFactionDetails = botTable.Types[chosenFaction];
         }
 
         var matchingNames = chosenFactionDetails.FirstNames.Where(name => name.Length <= maxLength).ToList();

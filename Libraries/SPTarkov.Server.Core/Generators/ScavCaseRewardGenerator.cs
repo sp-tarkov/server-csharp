@@ -9,6 +9,7 @@ using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Hideout;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -18,10 +19,11 @@ namespace SPTarkov.Server.Core.Generators;
 [Injectable]
 public class ScavCaseRewardGenerator(
     ISptLogger<ScavCaseRewardGenerator> logger,
+    HideoutTable hideoutTable,
+    TemplateTable templateTable,
     RandomUtil randomUtil,
     ItemHelper itemHelper,
     PresetHelper presetHelper,
-    DatabaseService databaseService,
     RagfairPriceService ragfairPriceService,
     SeasonalEventService seasonalEventService,
     ItemFilterService itemFilterService,
@@ -43,7 +45,7 @@ public class ScavCaseRewardGenerator(
         CacheDbItems();
 
         // Get scavcase details from hideout/scavcase.json
-        var scavCaseDetails = databaseService.GetHideout().Production.ScavRecipes.FirstOrDefault(r => r.Id == recipeId);
+        var scavCaseDetails = hideoutTable.Production.ScavRecipes.FirstOrDefault(r => r.Id == recipeId);
         var rewardItemCounts = GetScavCaseRewardCountsAndPrices(scavCaseDetails);
 
         // Get items that fit the price criteria as set by the scavCase config
@@ -78,9 +80,8 @@ public class ScavCaseRewardGenerator(
         var inactiveSeasonalItems = seasonalEventService.GetInactiveSeasonalEventItems();
         if (!DbItemsCache.Any())
         {
-            DbItemsCache = databaseService
-                .GetItems()
-                .Values.Where(item =>
+            DbItemsCache = templateTable
+                .Items.Values.Where(item =>
                 {
                     // Base "Item" item has no parent, ignore it
                     if (item.Parent == MongoId.Empty())
@@ -137,9 +138,8 @@ public class ScavCaseRewardGenerator(
 
         if (!DbAmmoItemsCache.Any())
         {
-            DbAmmoItemsCache = databaseService
-                .GetItems()
-                .Values.Where(item =>
+            DbAmmoItemsCache = templateTable
+                .Items.Values.Where(item =>
                 {
                     // Base "Item" item has no parent, ignore it
                     if (item.Parent == MongoId.Empty())
@@ -260,7 +260,7 @@ public class ScavCaseRewardGenerator(
     protected TemplateItem GetRandomMoney()
     {
         List<TemplateItem> money = [];
-        var items = databaseService.GetItems();
+        var items = templateTable.Items;
         money.Add(items[Money.ROUBLES]);
         money.Add(items[Money.EUROS]);
         money.Add(items[Money.DOLLARS]);

@@ -9,6 +9,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Services;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -19,10 +20,10 @@ namespace SPTarkov.Server.Core.Generators.Loot;
 [Injectable]
 public class LootGenerator(
     ISptLogger<LootGenerator> logger,
+    TemplateTable templateTable,
     RandomUtil randomUtil,
     ItemHelper itemHelper,
     PresetHelper presetHelper,
-    DatabaseService databaseService,
     ItemFilterService itemFilterService,
     ServerLocalisationService serverLocalisationService,
     WeightedRandomHelper weightedRandomHelper,
@@ -47,7 +48,7 @@ public class LootGenerator(
         if (sealedWeaponCrateCount > 0)
         {
             // Get list of all sealed containers from db - they're all the same, just for flavor
-            var itemsDb = databaseService.GetItems().Values;
+            var itemsDb = templateTable.Items.Values;
             var sealedWeaponContainerPool = itemsDb.Where(item => item.Name.Contains("event_container_airdrop"));
 
             for (var index = 0; index < sealedWeaponCrateCount; index++)
@@ -208,7 +209,7 @@ public class LootGenerator(
         bool blockSeasonalItemsOutOfSeason
     )
     {
-        var itemsDb = databaseService.GetItems().Values;
+        var itemsDb = templateTable.Items.Values;
         var itemBlacklist = new HashSet<MongoId>();
         itemBlacklist.UnionWith([.. itemFilterService.GetBlacklistedItems(), .. itemTplBlacklist]);
 
@@ -559,15 +560,13 @@ public class LootGenerator(
             }
 
             // Get all items of the desired type + not quest items + not globally blacklisted
-            var rewardItemPool = databaseService
-                .GetItems()
-                .Values.Where(item =>
-                    item.Parent == rewardKey
-                    && string.Equals(item.Type, "item", StringComparison.OrdinalIgnoreCase)
-                    && itemFilterService.IsItemBlacklisted(item.Id)
-                    && !(containerSettings.AllowBossItems || itemFilterService.IsBossItem(item.Id))
-                    && item.Properties.QuestItem is null
-                );
+            var rewardItemPool = templateTable.Items.Values.Where(item =>
+                item.Parent == rewardKey
+                && string.Equals(item.Type, "item", StringComparison.OrdinalIgnoreCase)
+                && itemFilterService.IsItemBlacklisted(item.Id)
+                && !(containerSettings.AllowBossItems || itemFilterService.IsBossItem(item.Id))
+                && item.Properties.QuestItem is null
+            );
 
             if (!rewardItemPool.Any())
             {

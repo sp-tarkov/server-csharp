@@ -3,12 +3,15 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Models.Spt.Server;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 
 namespace SPTarkov.Server.Core.Services.Modding.Custom;
 
 [Injectable]
 public class CustomQuestService(
-    DatabaseService databaseService,
+    TemplateTable templateTable,
+    LocaleTable localeTable,
     ServerLocalisationService serverLocalisationService,
     QuestConfig questConfig
 )
@@ -23,7 +26,7 @@ public class CustomQuestService(
         var quest = newQuestDetails.NewQuest;
         var result = new CreateQuestResult(false, newQuestDetails.NewQuest.Id);
 
-        var databaseQuests = databaseService.GetTables().Templates.Quests;
+        var databaseQuests = templateTable.Quests;
         if (!databaseQuests.TryAdd(quest.Id, quest))
         {
             result.Errors.Add(serverLocalisationService.GetText("custom-quest-service_quest_id_already_exists", quest.Id));
@@ -57,8 +60,6 @@ public class CustomQuestService(
     /// <param name="result">create quest result</param>
     private void AddQuestLocales(Dictionary<string, Dictionary<string, string>> locales, CreateQuestResult result)
     {
-        var globalLocales = databaseService.GetLocales().Global;
-
         foreach (var (languageKey, entries) in locales)
         {
             if (entries.Count == 0)
@@ -67,7 +68,7 @@ public class CustomQuestService(
                 continue;
             }
 
-            if (!globalLocales.TryGetValue(languageKey, out var lazyLoadedLocales))
+            if (!localeTable.Global.TryGetValue(languageKey, out var lazyLoadedLocales))
             {
                 result.Errors?.Add(serverLocalisationService.GetText("custom-quest-service_could_not_find_language_key", languageKey));
                 continue;

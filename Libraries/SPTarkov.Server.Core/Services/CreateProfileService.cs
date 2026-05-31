@@ -10,6 +10,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
@@ -20,8 +21,9 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable]
 public class CreateProfileService(
     ISptLogger<CreateProfileService> logger,
+    TemplateTable templateTable,
+    TraderTable traderTable,
     TimeUtil timeUtil,
-    DatabaseService databaseService,
     ServerLocalisationService serverLocalisationService,
     ProfileHelper profileHelper,
     ItemHelper itemHelper,
@@ -55,7 +57,7 @@ public class CreateProfileService(
         pmcData.Info.Nickname = request.Nickname;
         pmcData.Info.LowerNickname = request.Nickname.ToLowerInvariant();
         pmcData.Info.RegistrationDate = (int)timeUtil.GetTimeStamp();
-        pmcData.Customization.Voice = databaseService.GetCustomization()[request.VoiceId].Id;
+        pmcData.Customization.Voice = templateTable.Customization[request.VoiceId].Id;
         pmcData.Stats = profileHelper.GetDefaultCounters();
         pmcData.Info.NeedWipeOptions = [];
         pmcData.Customization.Head = request.HeadId;
@@ -139,7 +141,7 @@ public class CreateProfileService(
 
         if (profileDetails.CharacterData.PmcData.Achievements.Count > 0)
         {
-            var achievementsDb = databaseService.GetTemplates().Achievements;
+            var achievementsDb = templateTable.Achievements;
             var achievementRewardItemsToSend = new List<Item>();
 
             foreach (var (achievementId, _) in profileDetails.CharacterData.PmcData.Achievements)
@@ -283,7 +285,7 @@ public class CreateProfileService(
     /// <param name="sessionId"> Session ID of profile to reset </param>
     protected void ResetAllTradersInProfile(MongoId sessionId)
     {
-        foreach (var traderId in databaseService.GetTraders().Keys)
+        foreach (var traderId in traderTable.Keys)
         {
             traderHelper.ResetTrader(sessionId, traderId);
         }

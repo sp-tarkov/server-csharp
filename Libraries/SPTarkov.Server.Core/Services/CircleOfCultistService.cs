@@ -13,10 +13,10 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Hideout;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using Hideout = SPTarkov.Server.Core.Models.Spt.Hideout.Hideout;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -24,6 +24,8 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class CircleOfCultistService(
     ISptLogger<CircleOfCultistService> logger,
+    HideoutTable hideoutTable,
+    TemplateTable templateTable,
     TimeUtil timeUtil,
     ICloner cloner,
     EventOutputHolder eventOutputHolder,
@@ -35,7 +37,6 @@ public class CircleOfCultistService(
     InventoryHelper inventoryHelper,
     HideoutHelper hideoutHelper,
     QuestHelper questHelper,
-    DatabaseService databaseService,
     ItemFilterService itemFilterService,
     SeasonalEventService seasonalEventService,
     ServerLocalisationService localisationService,
@@ -72,7 +73,7 @@ public class CircleOfCultistService(
         }
 
         // `cultistRecipes` just has single recipeId
-        var cultistCraftData = databaseService.GetHideout().Production.CultistRecipes.FirstOrDefault();
+        var cultistCraftData = hideoutTable.Production.CultistRecipes.FirstOrDefault();
         var sacrificedItems = GetSacrificedItems(pmcData);
         var sacrificedItemCostRoubles = sacrificedItems.Aggregate(0D, (sum, curr) => sum + (itemHelper.GetItemPrice(curr.Template) ?? 0));
 
@@ -611,8 +612,7 @@ public class CircleOfCultistService(
     )
     {
         var rewardPool = new HashSet<MongoId>();
-        var hideoutDbData = databaseService.GetHideout();
-        var itemsDb = databaseService.GetItems();
+        var itemsDb = templateTable.Items;
 
         // Get all items that match the blacklisted types and fold into item blacklist below
         var itemTypeBlacklist = itemFilterService.GetItemRewardBaseTypeBlacklist();
@@ -642,7 +642,7 @@ public class CircleOfCultistService(
             case CircleRewardType.HIDEOUT_TASK:
             {
                 // Hideout/Task loot
-                AddHideoutUpgradeRequirementsToRewardPool(hideoutDbData, pmcData, itemRewardBlacklist, rewardPool);
+                AddHideoutUpgradeRequirementsToRewardPool(hideoutTable, pmcData, itemRewardBlacklist, rewardPool);
                 AddTaskItemRequirementsToRewardPool(pmcData, itemRewardBlacklist, rewardPool);
 
                 // If we have no tasks or hideout stuff left or need more loot to fill it out, default to high value
@@ -714,18 +714,18 @@ public class CircleOfCultistService(
     /// <summary>
     ///     Adds items the player needs to complete hideout crafts/upgrades to the reward pool
     /// </summary>
-    /// <param name="hideoutDbData">Hideout area data</param>
+    /// <param name="hideoutTableDbData">Hideout area data</param>
     /// <param name="pmcData">Player profile</param>
     /// <param name="itemRewardBlacklist">Items not to add to pool</param>
     /// <param name="rewardPool">Pool to add items to</param>
     protected void AddHideoutUpgradeRequirementsToRewardPool(
-        Hideout hideoutDbData,
+        HideoutTable hideoutTableDbData,
         PmcData pmcData,
         HashSet<MongoId> itemRewardBlacklist,
         HashSet<MongoId> rewardPool
     )
     {
-        var dbAreas = hideoutDbData.Areas;
+        var dbAreas = hideoutTableDbData.Areas;
         foreach (var profileArea in GetPlayerAccessibleHideoutAreas(pmcData.Hideout.Areas))
         {
             var currentStageLevel = profileArea.Level;
@@ -788,7 +788,7 @@ public class CircleOfCultistService(
         bool itemsShouldBeHighValue
     )
     {
-        var allItems = databaseService.GetItems();
+        var allItems = templateTable.Items;
         var currentItemCount = 0;
         var attempts = 0;
         // `currentItemCount` var will look for the correct number of items, `attempts` var will keep this from never stopping if the highValueThreshold is too high

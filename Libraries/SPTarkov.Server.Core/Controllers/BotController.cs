@@ -23,7 +23,7 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class BotController(
     ISptLogger<BotController> logger,
-    DatabaseService databaseService,
+    BotTable botTable,
     BotGenerator botGenerator,
     BotHelper botHelper,
     BotDifficultyHelper botDifficultyHelper,
@@ -62,7 +62,7 @@ public class BotController(
     /// <returns></returns>
     public CoreBot GetBotCoreDifficulty()
     {
-        return databaseService.GetBots().Core;
+        return botTable.Core;
     }
 
     /// <summary>
@@ -93,8 +93,7 @@ public class BotController(
             difficulty = botDifficultyHelper.ConvertBotDifficultyDropdownToBotDifficulty(botDifficultyDropDownValue);
         }
 
-        var botDb = databaseService.GetBots();
-        return botDifficultyHelper.GetBotDifficultySettings(type, difficulty, botDb);
+        return botDifficultyHelper.GetBotDifficultySettings(type, difficulty, botTable);
     }
 
     /// <summary>
@@ -105,7 +104,7 @@ public class BotController(
     {
         var result = new Dictionary<string, Dictionary<string, DifficultyCategories>>();
 
-        var botTypesDb = databaseService.GetBots().Types;
+        var botTypesDb = botTable.Types;
         if (botTypesDb is null)
         {
             return result;

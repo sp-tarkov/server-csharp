@@ -5,7 +5,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Utils;
 using Path = System.IO.Path;
 
@@ -14,7 +14,7 @@ namespace MongoIdTplGenerator.Generators;
 [Injectable]
 public class BaseClassesIdGenerator(
     ISptLogger<BaseClassesIdGenerator> logger,
-    DatabaseServer databaseServer,
+    TemplateTable templateTable,
     FileUtil fileUtil,
     LocaleUtil localeUtil
 ) : IMongoIdGenerator
@@ -28,7 +28,7 @@ public class BaseClassesIdGenerator(
         // Figure out our source and target directories
         var projectDir = Directory.GetParent("./").Parent.Parent.Parent.Parent.Parent;
         _enumDir = Path.Combine(projectDir.FullName, "Libraries", "SPTarkov.Server.Core", "Models", "Enums");
-        _items = databaseServer.GetTables().Templates.Items;
+        _items = templateTable.Items;
 
         // Generate an object containing all item name to ID associations
         var orderedItemsObject = GenerateItemsObject();

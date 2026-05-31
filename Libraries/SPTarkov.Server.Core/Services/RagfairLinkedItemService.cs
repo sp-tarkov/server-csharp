@@ -5,11 +5,12 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class RagfairLinkedItemService(DatabaseService databaseService, ItemHelper itemHelper, ISptLogger<RagfairLinkedItemService> logger)
+public class RagfairLinkedItemService(TemplateTable templateTable, ItemHelper itemHelper, ISptLogger<RagfairLinkedItemService> logger)
 {
     protected readonly Dictionary<MongoId, HashSet<MongoId>> linkedItemsCache = new();
 
@@ -60,7 +61,7 @@ public class RagfairLinkedItemService(DatabaseService databaseService, ItemHelpe
     {
         var linkedItems = new Dictionary<MongoId, HashSet<MongoId>>();
 
-        foreach (var item in databaseService.GetItems().Values)
+        foreach (var item in templateTable.Items.Values)
         {
             // Ensure hashset exists for item
             linkedItems.TryAdd(item.Id, []);

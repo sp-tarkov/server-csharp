@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
-public record Match
+public record MatchTable
 {
     [JsonPropertyName("metrics")]
     public Metrics Metrics { get; set; }

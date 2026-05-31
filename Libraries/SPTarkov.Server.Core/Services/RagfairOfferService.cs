@@ -4,6 +4,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
@@ -18,8 +19,9 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class RagfairOfferService(
     ISptLogger<RagfairOfferService> logger,
+    GlobalTable globalTable,
+    TraderTable traderTable,
     TimeUtil timeUtil,
-    DatabaseService databaseService,
     SaveServer saveServer,
     RagfairServerHelper ragfairServerHelper,
     ItemHelper itemHelper,
@@ -119,7 +121,7 @@ public class RagfairOfferService(
     /// <returns> True if they do </returns>
     public bool TraderOffersNeedRefreshing(MongoId traderID)
     {
-        var trader = databaseService.GetTrader(traderID);
+        var trader = traderTable.GetTrader(traderID);
         if (trader?.Base == null)
         {
             logger.Error(localisationService.GetText("ragfair-trader_missing_base_file", traderID));
@@ -251,7 +253,7 @@ public class RagfairOfferService(
         }
 
         // Reduce player ragfair rep
-        offerCreatorProfile.RagfairInfo.Rating -= databaseService.GetGlobals().Configuration.RagFair.RatingDecreaseCount;
+        offerCreatorProfile.RagfairInfo.Rating -= globalTable.Configuration.RagFair.RatingDecreaseCount;
         offerCreatorProfile.RagfairInfo.IsRatingGrowing = false;
 
         // Increment players 'notSellSum' value

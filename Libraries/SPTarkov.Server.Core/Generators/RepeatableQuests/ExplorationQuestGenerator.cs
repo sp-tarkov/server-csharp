@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Repeatable;
+using SPTarkov.Server.Core.Models.Spt.Server;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Json;
@@ -16,9 +17,9 @@ namespace SPTarkov.Server.Core.Generators.RepeatableQuests;
 [Injectable]
 public class ExplorationQuestGenerator(
     ISptLogger<ExplorationQuestGenerator> logger,
+    LocationTable locationTable,
     RepeatableQuestHelper repeatableQuestHelper,
     RepeatableQuestRewardGenerator repeatableQuestRewardGenerator,
-    DatabaseService databaseService,
     ServerLocalisationService localisationService,
     RandomUtil randomUtil,
     MathUtil mathUtil
@@ -177,7 +178,7 @@ public class ExplorationQuestGenerator(
     /// <returns>List of Exit objects</returns>
     protected IEnumerable<Exit>? GetLocationExitsForSide(string locationKey, PlayerGroup playerGroup)
     {
-        var mapExtracts = databaseService.GetLocation(locationKey.ToLowerInvariant())?.AllExtracts;
+        var mapExtracts = locationTable.GetLocation(locationKey.ToLowerInvariant())?.AllExtracts;
 
         return mapExtracts?.Where(exit => exit.Side == Enum.GetName(playerGroup));
     }
