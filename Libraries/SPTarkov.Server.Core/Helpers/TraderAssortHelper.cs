@@ -25,10 +25,9 @@ public class TraderAssortHelper(
     ICloner cloner
 )
 {
-    private Dictionary<string, Dictionary<MongoId, MongoId>>? _mergedQuestAssorts;
     protected virtual Dictionary<string, Dictionary<MongoId, MongoId>> MergedQuestAssorts
     {
-        get { return _mergedQuestAssorts ??= HydrateMergedQuestAssorts(); }
+        get { return field ??= HydrateMergedQuestAssorts(); }
     }
 
     /// <summary>
