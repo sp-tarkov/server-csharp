@@ -196,7 +196,12 @@ public static class Program
         var applicationLifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
         var cancellationToken = applicationLifetime.ApplicationStopping;
 
-        _earlyLogger!.LogInformation(app.Services.GetRequiredService<ServerLocalisationService>().GetText("executing_startup_callbacks"));
+        if (_earlyLogger!.IsEnabled(LogLevel.Information))
+        {
+            var executingCallbacksLog = app.Services.GetRequiredService<ServerLocalisationService>().GetText("executing_startup_callbacks");
+            _earlyLogger.LogInformation("{Message}", executingCallbacksLog);
+        }
+
         var preSptLoadTypes = injectableTypes
             .Where(container => container.Type == typeof(IOnLoad))
             .Where(container => container.InjectableAttribute.TypePriority >= OnLoadOrder.Watermark)
@@ -204,14 +209,14 @@ public static class Program
 
         foreach (var preSptLoadType in preSptLoadTypes)
         {
-            var onLoad = app.Services.GetRequiredService(preSptLoadType.ParentType);
+            var onLoadService = app.Services.GetRequiredService(preSptLoadType.ParentType);
 
-            if (onLoad is not IOnLoad onLoadService)
+            if (onLoadService is not IOnLoad onLoad)
             {
                 continue;
             }
 
-            await onLoadService.OnLoad(cancellationToken);
+            await onLoad.OnLoad(cancellationToken);
         }
 
         await app.RunAsync();
