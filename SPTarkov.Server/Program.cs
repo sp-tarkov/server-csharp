@@ -188,6 +188,8 @@ public static class Program
         forwardedHeadersOptions.KnownProxies.Clear();
         app.UseForwardedHeaders(forwardedHeadersOptions);
 
+        // This is necessary here so that mods can modify SPT configs pre-emptively before we startup the container
+        // It will make HttpConfig modifiable for mods like Fika
         if (ProgramStatics.MODS())
         {
             var injectableTypes = app.Services.GetRequiredService<IReadOnlyList<DependencyInjectionContainer>>();
