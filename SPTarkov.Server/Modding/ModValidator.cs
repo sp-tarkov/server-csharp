@@ -3,6 +3,7 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.Common.Semver;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Modding;

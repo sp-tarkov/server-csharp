@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Locales;
 
 namespace SPTarkov.Server.Middleware;
 

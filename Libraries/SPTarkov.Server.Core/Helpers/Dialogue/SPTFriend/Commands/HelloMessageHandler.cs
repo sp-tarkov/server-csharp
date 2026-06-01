@@ -4,6 +4,7 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
@@ -28,19 +29,21 @@ public class HelloMessageHandler(MailSendService mailSendService, RandomUtil ran
         mailSendService.SendUserMessageToPlayer(
             sessionId,
             sptFriendUser,
-            randomUtil.GetArrayValue([
-                "Howdy",
-                "Hi",
-                "Greetings",
-                "Hello",
-                "Bonjor",
-                "Yo",
-                "Sup",
-                "Heyyyyy",
-                "Hey there",
-                "OH its you",
-                $"Hello {sender?.Info?.Nickname}",
-            ]),
+            randomUtil.GetArrayValue(
+                [
+                    "Howdy",
+                    "Hi",
+                    "Greetings",
+                    "Hello",
+                    "Bonjor",
+                    "Yo",
+                    "Sup",
+                    "Heyyyyy",
+                    "Hey there",
+                    "OH its you",
+                    $"Hello {sender?.Info?.Nickname}",
+                ]
+            ),
             [],
             null
         );

@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
@@ -40,13 +41,15 @@ public class SendGiftMessageHandler(MailSendService mailSendService, RandomUtil 
                 mailSendService.SendUserMessageToPlayer(
                     sessionId,
                     sptFriendUser,
-                    randomUtil.GetArrayValue([
-                        "Hey! you got the right code!",
-                        "A secret code, how exciting!",
-                        "You found a gift code!",
-                        "A gift code! incredible",
-                        "A gift! what could it be!",
-                    ]),
+                    randomUtil.GetArrayValue(
+                        [
+                            "Hey! you got the right code!",
+                            "A secret code, how exciting!",
+                            "You found a gift code!",
+                            "A gift code! incredible",
+                            "A gift! what could it be!",
+                        ]
+                    ),
                     [],
                     null
                 );

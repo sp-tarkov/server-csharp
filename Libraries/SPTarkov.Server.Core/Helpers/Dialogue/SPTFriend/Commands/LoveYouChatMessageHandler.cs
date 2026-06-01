@@ -3,6 +3,7 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
@@ -25,12 +26,14 @@ public class LoveYouChatMessageHandler(MailSendService _mailSendService, RandomU
         _mailSendService.SendUserMessageToPlayer(
             sessionId,
             sptFriendUser,
-            _randomUtil.GetArrayValue([
-                "That's quite forward but i love you too in a purely chatbot-human way",
-                "I love you too buddy :3!",
-                "uwu",
-                $"love you too {sender?.Info?.Nickname}",
-            ]),
+            _randomUtil.GetArrayValue(
+                [
+                    "That's quite forward but i love you too in a purely chatbot-human way",
+                    "I love you too buddy :3!",
+                    "uwu",
+                    $"love you too {sender?.Info?.Nickname}",
+                ]
+            ),
             [],
             null
         );

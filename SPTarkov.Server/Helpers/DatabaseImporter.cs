@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using Path = System.IO.Path;
 
