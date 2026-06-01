@@ -45,8 +45,8 @@ public class InsuranceCallbacks(InsuranceController insuranceController, HttpRes
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse Insure(PmcData pmcData, InsureRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> Insure(PmcData pmcData, InsureRequestData info, MongoId sessionID)
     {
-        return insuranceController.Insure(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(insuranceController.Insure(pmcData, info, sessionID));
     }
 }

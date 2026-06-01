@@ -8,7 +8,7 @@ using SPTarkov.Server.Core.Models.Eft.Repair;
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
-public class RepairCallbacks(RepairController _repairController)
+public class RepairCallbacks(RepairController repairController)
 {
     /// <summary>
     ///     Handle TraderRepair event
@@ -18,9 +18,9 @@ public class RepairCallbacks(RepairController _repairController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse TraderRepair(PmcData pmcData, TraderRepairActionDataRequest info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> TraderRepair(PmcData pmcData, TraderRepairActionDataRequest info, MongoId sessionID)
     {
-        return _repairController.TraderRepair(sessionID, info, pmcData);
+        return new ValueTask<ItemEventRouterResponse>(repairController.TraderRepair(sessionID, info, pmcData));
     }
 
     /// <summary>
@@ -31,8 +31,8 @@ public class RepairCallbacks(RepairController _repairController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse Repair(PmcData pmcData, RepairActionDataRequest info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> Repair(PmcData pmcData, RepairActionDataRequest info, MongoId sessionID)
     {
-        return _repairController.RepairWithKit(sessionID, info, pmcData);
+        return new ValueTask<ItemEventRouterResponse>(repairController.RepairWithKit(sessionID, info, pmcData));
     }
 }

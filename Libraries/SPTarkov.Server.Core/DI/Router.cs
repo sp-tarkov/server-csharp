@@ -140,33 +140,6 @@ public record ItemRouterOnAfterEventRequestData(
 public record OnAfterEventRequestData<T, R>(string Url, T RequestData, MongoId SessionId, R Output, object Result)
     : IOnAfterEventRequestData;
 
-// The name of this class should be ItemEventRouter, but that name is taken,
-// So instead I added the definition
-public abstract class ItemEventRouterDefinition : Router
-{
-    public ValueTask<ItemEventRouterResponse> HandleItemEvent(
-        string url,
-        PmcData pmcData,
-        BaseInteractionRequestData body,
-        MongoId sessionID,
-        ItemEventRouterResponse output
-    )
-    {
-        TriggerOnBeforeAction(new ItemRouterOnBeforeEventRequestData(url, pmcData, body, sessionID, output));
-        var result = HandleItemEventInternal(url, pmcData, body, sessionID, output);
-        TriggerOnAfterAction(new ItemRouterOnAfterEventRequestData(url, pmcData, body, sessionID, output, result));
-        return result;
-    }
-
-    protected abstract ValueTask<ItemEventRouterResponse> HandleItemEventInternal(
-        string url,
-        PmcData pmcData,
-        BaseInteractionRequestData body,
-        MongoId sessionID,
-        ItemEventRouterResponse output
-    );
-}
-
 public record SaveLoadOnBeforeEventRequestData(SptProfile Profile) : IOnBeforeEventRequestData;
 
 public record SaveLoadRouterOnAfterEventRequestData(SptProfile Profile) : IOnAfterEventRequestData;

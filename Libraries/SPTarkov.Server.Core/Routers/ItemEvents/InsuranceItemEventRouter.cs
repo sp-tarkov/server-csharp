@@ -1,37 +1,17 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Callbacks;
 using SPTarkov.Server.Core.DI;
-using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Server.Core.Models.Eft.Common;
-using SPTarkov.Server.Core.Models.Eft.Common.Request;
+using SPTarkov.Server.Core.DI.Routing;
 using SPTarkov.Server.Core.Models.Eft.Insurance;
-using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Enums;
 
 namespace SPTarkov.Server.Core.Routers.ItemEvents;
 
 [Injectable(TypePriority = OnLoadOrder.Routers)]
-public class InsuranceItemEventRouter(InsuranceCallbacks insuranceCallbacks) : ItemEventRouterDefinition
-{
-    protected override List<HandledRoute> GetHandledRoutes()
-    {
-        return [new(ItemEventActions.INSURE, false)];
-    }
-
-    protected override ValueTask<ItemEventRouterResponse> HandleItemEventInternal(
-        string url,
-        PmcData pmcData,
-        BaseInteractionRequestData body,
-        MongoId sessionID,
-        ItemEventRouterResponse output
-    )
-    {
-        switch (url)
-        {
-            case ItemEventActions.INSURE:
-                return new ValueTask<ItemEventRouterResponse>(insuranceCallbacks.Insure(pmcData, body as InsureRequestData, sessionID));
-            default:
-                throw new Exception($"InsuranceItemEventRouter being used when it cant handle route {url}");
-        }
-    }
-}
+public sealed class InsuranceItemEventRouter(InsuranceCallbacks insuranceCallbacks)
+    : ItemEventRouter([
+        new ItemRouteAction<InsureRequestData>(
+            ItemEventActions.INSURE,
+            async (url, pmcData, body, sessionID, output, cancellationToken) => await insuranceCallbacks.Insure(pmcData, body, sessionID)
+        ),
+    ]) { }
