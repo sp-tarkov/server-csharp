@@ -84,9 +84,9 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse AddOffer(PmcData pmcData, AddOfferRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> AddOffer(PmcData pmcData, AddOfferRequestData info, MongoId sessionID)
     {
-        return ragfairController.AddPlayerOffer(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(ragfairController.AddPlayerOffer(pmcData, info, sessionID));
     }
 
     /// <summary>
@@ -96,9 +96,9 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse RemoveOffer(PmcData pmcData, RemoveOfferRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> RemoveOffer(PmcData pmcData, RemoveOfferRequestData info, MongoId sessionID)
     {
-        return ragfairController.FlagOfferForRemoval(info.OfferId, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(ragfairController.FlagOfferForRemoval(info.OfferId, sessionID));
     }
 
     /// <summary>
@@ -108,9 +108,9 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ExtendOffer(PmcData pmcData, ExtendOfferRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> ExtendOffer(PmcData pmcData, ExtendOfferRequestData info, MongoId sessionID)
     {
-        return ragfairController.ExtendOffer(info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(ragfairController.ExtendOffer(info, sessionID));
     }
 
     /// <summary>

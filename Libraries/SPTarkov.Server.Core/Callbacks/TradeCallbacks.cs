@@ -17,9 +17,9 @@ public class TradeCallbacks(TradeController tradeController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ProcessTrade(PmcData pmcData, ProcessBaseTradeRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> ProcessTrade(PmcData pmcData, ProcessBaseTradeRequestData info, MongoId sessionID)
     {
-        return tradeController.ConfirmTrading(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(tradeController.ConfirmTrading(pmcData, info, sessionID));
     }
 
     /// <summary>
@@ -29,9 +29,9 @@ public class TradeCallbacks(TradeController tradeController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ProcessRagfairTrade(PmcData pmcData, ProcessRagfairTradeRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> ProcessRagfairTrade(PmcData pmcData, ProcessRagfairTradeRequestData info, MongoId sessionID)
     {
-        return tradeController.ConfirmRagfairTrading(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(tradeController.ConfirmRagfairTrading(pmcData, info, sessionID));
     }
 
     /// <summary>
@@ -41,8 +41,8 @@ public class TradeCallbacks(TradeController tradeController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse SellAllFromSavage(PmcData pmcData, SellScavItemsToFenceRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> SellAllFromSavage(PmcData pmcData, SellScavItemsToFenceRequestData info, MongoId sessionID)
     {
-        return tradeController.SellScavItemsToFence(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(tradeController.SellScavItemsToFence(pmcData, info, sessionID));
     }
 }

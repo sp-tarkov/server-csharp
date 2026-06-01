@@ -33,9 +33,9 @@ public class HealthCallbacks(HttpResponseUtil httpResponseUtil, ProfileHelper pr
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse OffraidEat(PmcData pmcData, OffraidEatRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> OffraidEat(PmcData pmcData, OffraidEatRequestData info, MongoId sessionID)
     {
-        return healthController.OffRaidEat(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(healthController.OffRaidEat(pmcData, info, sessionID));
     }
 
     /// <summary>
@@ -45,9 +45,9 @@ public class HealthCallbacks(HttpResponseUtil httpResponseUtil, ProfileHelper pr
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse OffraidHeal(PmcData pmcData, OffraidHealRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> OffraidHeal(PmcData pmcData, OffraidHealRequestData info, MongoId sessionID)
     {
-        return healthController.OffRaidHeal(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(healthController.OffRaidHeal(pmcData, info, sessionID));
     }
 
     /// <summary>
@@ -57,8 +57,8 @@ public class HealthCallbacks(HttpResponseUtil httpResponseUtil, ProfileHelper pr
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse HealthTreatment(PmcData pmcData, HealthTreatmentRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> HealthTreatment(PmcData pmcData, HealthTreatmentRequestData info, MongoId sessionID)
     {
-        return healthController.HealthTreatment(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(healthController.HealthTreatment(pmcData, info, sessionID));
     }
 }
