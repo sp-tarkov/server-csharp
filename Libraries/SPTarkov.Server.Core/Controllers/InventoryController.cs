@@ -20,6 +20,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Commerce;
 using SPTarkov.Server.Core.Services.Hideout;
 using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Services.Ragfair;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 

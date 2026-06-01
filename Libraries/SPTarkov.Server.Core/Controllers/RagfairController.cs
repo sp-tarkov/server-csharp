@@ -24,6 +24,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Commerce;
 using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Services.Ragfair;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
@@ -48,6 +49,7 @@ public class RagfairController(
     RagfairHelper ragfairHelper,
     RagfairSortHelper ragfairSortHelper,
     RagfairOfferHelper ragfairOfferHelper,
+    RagfairCategoriesService ragfairCategoriesService,
     TraderHelper traderHelper,
     ServerLocalisationService localisationService,
     RagfairTaxService ragfairTaxService,
@@ -282,7 +284,7 @@ public class RagfairController(
             return [];
         }
 
-        return ragfairServer.GetAllActiveCategories(playerHasFleaUnlocked, searchRequest, offerPool);
+        return ragfairCategoriesService.GetCategoriesFromOffers(offerPool, searchRequest, playerHasFleaUnlocked);
     }
 
     /// <summary>

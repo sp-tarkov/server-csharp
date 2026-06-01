@@ -16,6 +16,7 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services.Commerce;
 using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Services.Ragfair;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
@@ -33,7 +34,7 @@ public class TradeHelper(
     ServerLocalisationService serverLocalisationService,
     HttpResponseUtil httpResponseUtil,
     InventoryHelper inventoryHelper,
-    RagfairServer ragfairServer,
+    RagfairOfferService ragfairOfferService,
     TraderAssortHelper traderAssortHelper,
     TraderPurchasePersisterService traderPurchasePersisterService,
     ICloner cloner
@@ -67,7 +68,7 @@ public class TradeHelper(
                 // Called when player purchases PMC offer from ragfair
                 buyCallback = buyCount =>
                 {
-                    var allOffers = ragfairServer.GetOffers();
+                    var allOffers = ragfairOfferService.GetOffers();
 
                     // We store ragfair offerId in buyRequestData.item_id
                     var offerWithItem = allOffers.FirstOrDefault(x => x.Id == buyRequestData.ItemId);
@@ -97,7 +98,7 @@ public class TradeHelper(
 
                 // buyCallback = BuyCallback1;
                 // Get raw offer from ragfair, clone to prevent altering offer itself
-                var allOffers = ragfairServer.GetOffers();
+                var allOffers = ragfairOfferService.GetOffers();
                 var offerWithItemCloned = cloner.Clone(allOffers.FirstOrDefault(x => x.Id == buyRequestData.ItemId));
                 offerItems = offerWithItemCloned.Items;
             }

@@ -7,8 +7,8 @@ using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Commerce;
+using SPTarkov.Server.Core.Services.Ragfair;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
@@ -20,6 +20,7 @@ public class RagfairCallbacks(
     RagfairController ragfairController,
     RagfairTaxService ragfairTaxService,
     RagfairPriceService ragfairPriceService,
+    RagfairOfferService ragfairOfferService,
     RagfairConfig ragfairConfig
 ) : IOnLoad, IOnUpdate
 {
@@ -40,7 +41,7 @@ public class RagfairCallbacks(
         }
 
         // There is a flag inside this class that only makes it run once.
-        ragfairServer.AddPlayerOffers();
+        ragfairOfferService.AddPlayerOffers();
 
         // Check player offers and mail payment to player if sold
         ragfairController.Update();

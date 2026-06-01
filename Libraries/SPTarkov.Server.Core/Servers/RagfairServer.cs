@@ -1,24 +1,20 @@
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Generators.Ragfair;
-using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Services;
-using SPTarkov.Server.Core.Services.Commerce;
 using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Services.Ragfair;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Servers;
 
 [Injectable]
-public class RagfairServer(
+public sealed class RagfairServer(
     ISptLogger<RagfairServer> logger,
     TimeUtil timeUtil,
     RagfairOfferService ragfairOfferService,
-    RagfairCategoriesService ragfairCategoriesService,
     RagfairRequiredItemsService ragfairRequiredItemsService,
     ServerLocalisationService serverLocalisationService,
     RagfairOfferGenerator ragfairOfferGenerator,
@@ -43,10 +39,10 @@ public class RagfairServer(
         ragfairRequiredItemsService.InvalidateCache();
     }
 
-    protected void RefreshTraderOffers()
+    private void RefreshTraderOffers()
     {
         // Generate/refresh trader offers - skip fence as his offers are separately handled
-        var tradersToProcess = GetUpdateableTraders().Where(trader => trader != Traders.FENCE);
+        var tradersToProcess = ragfairConfig.Traders.Keys.ToList().Where(trader => trader != Traders.FENCE);
         foreach (var traderId in tradersToProcess)
         {
             // Each trader has its own expiry time
@@ -82,67 +78,5 @@ public class RagfairServer(
             // Replace the expired offers with new ones
             ragfairOfferGenerator.GenerateDynamicOffers(expiredOfferItemsClone);
         }
-    }
-
-    /// <summary>
-    ///     Get traders who need to be periodically refreshed
-    /// </summary>
-    /// <returns> List of traders </returns>
-    public List<MongoId> GetUpdateableTraders()
-    {
-        return ragfairConfig.Traders.Keys.ToList();
-    }
-
-    public Dictionary<MongoId, int> GetAllActiveCategories(
-        bool fleaUnlocked,
-        SearchRequestData searchRequestData,
-        IEnumerable<RagfairOffer> offers
-    )
-    {
-        return ragfairCategoriesService.GetCategoriesFromOffers(offers, searchRequestData, fleaUnlocked);
-    }
-
-    /// <summary>
-    ///     Disable/Hide an offer from flea
-    /// </summary>
-    /// <param name="offerId"> OfferID to hide </param>
-    public void HideOffer(MongoId offerId)
-    {
-        var offers = ragfairOfferService.GetOffers();
-        var offer = offers.FirstOrDefault(x => x.Id == offerId);
-
-        if (offer is null)
-        {
-            logger.Error(serverLocalisationService.GetText("ragfair-offer_not_found_unable_to_hide", offerId));
-
-            return;
-        }
-
-        offer.Locked = true;
-    }
-
-    public RagfairOffer? GetOffer(MongoId offerId)
-    {
-        return ragfairOfferService.GetOfferByOfferId(offerId);
-    }
-
-    public List<RagfairOffer> GetOffers()
-    {
-        return ragfairOfferService.GetOffers();
-    }
-
-    public void ReduceOfferQuantity(MongoId offerId, int amount)
-    {
-        ragfairOfferService.ReduceOfferQuantity(offerId, amount);
-    }
-
-    public bool DoesOfferExist(MongoId offerId)
-    {
-        return ragfairOfferService.DoesOfferExist(offerId);
-    }
-
-    public void AddPlayerOffers()
-    {
-        ragfairOfferService.AddPlayerOffers();
     }
 }

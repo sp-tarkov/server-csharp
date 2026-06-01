@@ -1,12 +1,11 @@
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Commerce;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 
-namespace SPTarkov.Server.Core.Services.Commerce;
+namespace SPTarkov.Server.Core.Services.Ragfair;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairCategoriesService(ISptLogger<RagfairCategoriesService> logger, PaymentHelper paymentHelper)
