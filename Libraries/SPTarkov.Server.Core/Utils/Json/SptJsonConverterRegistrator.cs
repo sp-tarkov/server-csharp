@@ -13,7 +13,7 @@ public class SptJsonConverterRegistrator : IJsonConverterRegistrator
         [
             new ListOrTConverterFactory(),
             new DictionaryOrListConverter(),
-            new BaseInteractionRequestDataConverter(),
+            new ProcessBaseTradeRequestDataConverter(),
             new StringToMongoIdConverter(),
             new EftEnumConverterFactory(),
             new EftListEnumConverterFactory(),

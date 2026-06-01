@@ -36,7 +36,7 @@ public static class ConfigLoader
         {
             new ListOrTConverterFactory(),
             new DictionaryOrListConverter(),
-            new BaseInteractionRequestDataConverter(),
+            new ProcessBaseTradeRequestDataConverter(),
             new StringToMongoIdConverter(),
             new EftEnumConverterFactory(),
             new EftListEnumConverterFactory(),

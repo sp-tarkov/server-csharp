@@ -1,6 +1,6 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Server.Core.Models.Eft.Common.Request;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 
@@ -9,7 +9,7 @@ namespace SPTarkov.Server.Core.Models.Eft.ItemEvent;
 public record ItemEventRouterRequest : IRequestData
 {
     [JsonPropertyName("data")]
-    public List<BaseInteractionRequestData>? Data { get; set; }
+    public List<JsonElement>? Data { get; set; }
 
     [JsonPropertyName("tm")]
     public long? Time { get; set; }
