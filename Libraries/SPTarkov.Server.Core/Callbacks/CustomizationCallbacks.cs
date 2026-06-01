@@ -41,9 +41,9 @@ public class CustomizationCallbacks(
     ///     Handle CustomizationBuy event
     /// </summary>
     /// <returns></returns>
-    public ItemEventRouterResponse BuyCustomisation(PmcData pmcData, BuyClothingRequestData request, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> BuyCustomisation(PmcData pmcData, BuyClothingRequestData request, MongoId sessionID)
     {
-        return customizationController.BuyCustomisation(pmcData, request, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(customizationController.BuyCustomisation(pmcData, request, sessionID));
     }
 
     /// <summary>
@@ -68,8 +68,8 @@ public class CustomizationCallbacks(
     ///     Handle CustomizationSet
     /// </summary>
     /// <returns></returns>
-    public ItemEventRouterResponse SetCustomisation(PmcData pmcData, CustomizationSetRequest request, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> SetCustomisation(PmcData pmcData, CustomizationSetRequest request, MongoId sessionID)
     {
-        return customizationController.SetCustomisation(sessionID, request, pmcData);
+        return new ValueTask<ItemEventRouterResponse>(customizationController.SetCustomisation(sessionID, request, pmcData));
     }
 }

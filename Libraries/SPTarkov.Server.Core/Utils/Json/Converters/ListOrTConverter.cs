@@ -22,6 +22,8 @@ public class ListOrTConverter<T> : JsonConverter<ListOrT<T>?>
     {
         switch (reader.TokenType)
         {
+            case JsonTokenType.Null:
+                return null;
             case JsonTokenType.String:
             case JsonTokenType.Number:
                 var singleValue = JsonSerializer.Deserialize<T>(ref reader, options);
@@ -39,8 +41,14 @@ public class ListOrTConverter<T> : JsonConverter<ListOrT<T>?>
         }
     }
 
-    public override void Write(Utf8JsonWriter writer, ListOrT<T> value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, ListOrT<T>? value, JsonSerializerOptions options)
     {
+        if (value == null)
+        {
+            writer.WriteNullValue();
+            return;
+        }
+
         if (value.IsList)
         {
             JsonSerializer.Serialize(writer, value.List, options);

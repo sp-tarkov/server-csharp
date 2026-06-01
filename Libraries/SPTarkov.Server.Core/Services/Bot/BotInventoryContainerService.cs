@@ -1,9 +1,6 @@
 ﻿using System.Collections.Concurrent;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Helpers;
-using SPTarkov.Server.Core.Helpers.Bot;
 using SPTarkov.Server.Core.Helpers.Items;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -15,7 +12,7 @@ namespace SPTarkov.Server.Core.Services.Bot;
 /// Service for keeping track of items and their exact position inside a bots container
 /// </summary>
 [Injectable(InjectionType.Singleton)]
-public class BotInventoryContainerService(ISptLogger<BotGeneratorHelper> logger, ItemHelper itemHelper)
+public class BotInventoryContainerService(ItemHelper itemHelper)
 {
     // botId/containerName
     private readonly ConcurrentDictionary<MongoId, Dictionary<EquipmentSlots, ContainerDetails>> _botContainers = new();

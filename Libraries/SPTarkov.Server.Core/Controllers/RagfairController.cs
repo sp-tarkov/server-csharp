@@ -2,7 +2,6 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators.Ragfair;
-using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Commerce;
 using SPTarkov.Server.Core.Helpers.Items;
 using SPTarkov.Server.Core.Helpers.Profile;
@@ -20,10 +19,9 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Ragfair;
 using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Routers;
-using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Commerce;
 using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Services.Ragfair;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
@@ -38,7 +36,6 @@ public class RagfairController(
     JsonUtil jsonUtil,
     HttpResponseUtil httpResponseUtil,
     EventOutputHolder eventOutputHolder,
-    RagfairServer ragfairServer,
     ItemHelper itemHelper,
     InventoryHelper inventoryHelper,
     RagfairSellHelper ragfairSellHelper,
@@ -48,6 +45,7 @@ public class RagfairController(
     RagfairHelper ragfairHelper,
     RagfairSortHelper ragfairSortHelper,
     RagfairOfferHelper ragfairOfferHelper,
+    RagfairCategoriesService ragfairCategoriesService,
     TraderHelper traderHelper,
     ServerLocalisationService localisationService,
     RagfairTaxService ragfairTaxService,
@@ -282,7 +280,7 @@ public class RagfairController(
             return [];
         }
 
-        return ragfairServer.GetAllActiveCategories(playerHasFleaUnlocked, searchRequest, offerPool);
+        return ragfairCategoriesService.GetCategoriesFromOffers(offerPool, searchRequest, playerHasFleaUnlocked);
     }
 
     /// <summary>

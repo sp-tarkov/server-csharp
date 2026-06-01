@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using SPTarkov.Common.Models.Logging;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using Path = System.IO.Path;
@@ -17,7 +16,7 @@ public sealed class DatabaseImporter(
 )
 {
     private const string SptDataPath = "./SPT_Data/";
-    protected readonly Dictionary<string, string> DatabaseHashes = [];
+    private readonly Dictionary<string, string> _databaseHashes = [];
 
     public async Task LoadHashesAsync(CancellationToken cancellationToken = default)
     {
@@ -40,7 +39,7 @@ public sealed class DatabaseImporter(
 
                 foreach (var hash in FileHashes)
                 {
-                    DatabaseHashes.Add(hash.Path, hash.Hash);
+                    _databaseHashes.Add(hash.Path, hash.Hash);
                 }
             }
             else
@@ -92,7 +91,7 @@ public sealed class DatabaseImporter(
         }
     }
 
-    protected async Task VerifyDatabaseAsync(string fileName, CancellationToken cancellationToken)
+    public async Task VerifyDatabaseAsync(string fileName, CancellationToken cancellationToken)
     {
         var relativePath = fileName.StartsWith(SptDataPath, StringComparison.OrdinalIgnoreCase) ? fileName[SptDataPath.Length..] : fileName;
 
@@ -101,7 +100,7 @@ public sealed class DatabaseImporter(
         var hashBytes = await md5.ComputeHashAsync(stream, cancellationToken);
         var hashString = Convert.ToHexString(hashBytes);
 
-        if (DatabaseHashes.TryGetValue(relativePath, out var expectedHash))
+        if (_databaseHashes.TryGetValue(relativePath, out var expectedHash))
         {
             if (expectedHash != hashString)
             {

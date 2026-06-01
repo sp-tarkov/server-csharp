@@ -12,6 +12,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Items;
 using SPTarkov.Server.Core.Services.Server;
 using SPTarkov.Server.Core.Utils.Cloners;
+using ZLinq;
 
 namespace SPTarkov.Server.Core.Generators.Ragfair;
 
@@ -47,9 +48,9 @@ public class RagfairAssortGenerator(
 
         // Get cloned items from db
         var blacklist = itemFilterService.GetBlacklistedItems();
-        var dbItems = templateTable.Items.Where(item =>
-            !string.Equals(item.Value.Type, "Node", StringComparison.OrdinalIgnoreCase) && !blacklist.Contains(item.Key)
-        );
+        var dbItems = templateTable
+            .Items.AsValueEnumerable()
+            .Where(item => !string.Equals(item.Value.Type, "Node", StringComparison.OrdinalIgnoreCase) && !blacklist.Contains(item.Key));
 
         // Store processed preset tpls so we don't add them when processing non-preset items
         HashSet<MongoId> processedArmorItems = [];

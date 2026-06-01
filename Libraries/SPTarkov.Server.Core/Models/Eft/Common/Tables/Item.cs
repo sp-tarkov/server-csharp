@@ -9,7 +9,7 @@ public record Item
 {
     // MongoId
     [JsonPropertyName("_id")]
-    public virtual required MongoId Id { get; set; }
+    public required MongoId Id { get; set; }
 
     [JsonPropertyName("_tpl")]
     // MongoId

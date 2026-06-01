@@ -15,7 +15,7 @@ using SPTarkov.Server.Core.Services.Commerce;
 namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.TraderCommand;
 
 [Injectable]
-public class TraderSptCommand(ISptLogger<TraderSptCommand> logger, TraderHelper traderHelper, MailSendService mailSendService) : ISptCommand
+public class TraderSptCommand(TraderHelper traderHelper, MailSendService mailSendService) : ISptCommand
 {
     protected readonly Regex _commandRegex = new(@"^spt trader (?<trader>[\w]+) (?<command>rep|spend) (?<quantity>(?!0+)[0-9]+)$");
 

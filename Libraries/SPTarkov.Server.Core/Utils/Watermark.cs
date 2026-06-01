@@ -51,7 +51,7 @@ public class Watermark(
     protected readonly List<string> text = [];
     protected string versionLabel = string.Empty;
 
-    public virtual Task OnLoad(CancellationToken cancellationToken)
+    public Task OnLoad(CancellationToken cancellationToken)
     {
         var versionTag = GetVersionTag();
 

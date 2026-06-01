@@ -32,7 +32,7 @@ internal static class SPTConfigLoader
         {
             new ListOrTConverterFactory(),
             new DictionaryOrListConverter(),
-            new BaseInteractionRequestDataConverter(),
+            new ProcessBaseTradeRequestDataConverter(),
             new StringToMongoIdConverter(),
             new EftEnumConverterFactory(),
             new EftListEnumConverterFactory(),

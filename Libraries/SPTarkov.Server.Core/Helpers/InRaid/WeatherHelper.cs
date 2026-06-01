@@ -1,5 +1,4 @@
-﻿using SPTarkov.Common.Models.Logging;
-using SPTarkov.DI.Annotations;
+﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Utils;
@@ -7,7 +6,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Helpers.InRaid;
 
 [Injectable]
-public class WeatherHelper(ISptLogger<WeatherHelper> logger, TimeUtil timeUtil, WeatherConfig weatherConfig)
+public class WeatherHelper(TimeUtil timeUtil, WeatherConfig weatherConfig)
 {
     /// <summary>
     ///     Assumes current time

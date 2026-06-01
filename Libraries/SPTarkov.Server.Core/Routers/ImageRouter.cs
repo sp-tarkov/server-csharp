@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Servers.Http;
@@ -9,12 +8,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Routers;
 
 [Injectable]
-public class ImageRouter(
-    FileUtil fileUtil,
-    ImageRouterService imageRouterService,
-    HttpFileUtil httpFileUtil,
-    ISptLogger<ImageRouter> logger
-) : IHttpListener
+public class ImageRouter(FileUtil fileUtil, ImageRouterService imageRouterService, HttpFileUtil httpFileUtil) : IHttpListener
 {
     public void AddRoute(string key, string valueToAdd)
     {

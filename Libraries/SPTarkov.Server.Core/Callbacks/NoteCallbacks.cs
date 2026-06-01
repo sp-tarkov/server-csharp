@@ -17,9 +17,9 @@ public class NoteCallbacks(NoteController noteController)
     /// <param name="request">Add note request</param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse AddNote(PmcData pmcData, NoteActionRequest request, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> AddNote(PmcData pmcData, NoteActionRequest request, MongoId sessionID)
     {
-        return noteController.AddNote(pmcData, request, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(noteController.AddNote(pmcData, request, sessionID));
     }
 
     /// <summary>
@@ -29,9 +29,9 @@ public class NoteCallbacks(NoteController noteController)
     /// <param name="request">Edit note request</param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse EditNote(PmcData pmcData, NoteActionRequest request, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> EditNote(PmcData pmcData, NoteActionRequest request, MongoId sessionID)
     {
-        return noteController.EditNote(pmcData, request, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(noteController.EditNote(pmcData, request, sessionID));
     }
 
     /// <summary>
@@ -41,8 +41,8 @@ public class NoteCallbacks(NoteController noteController)
     /// <param name="request">Delete note request</param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse DeleteNote(PmcData pmcData, NoteActionRequest request, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> DeleteNote(PmcData pmcData, NoteActionRequest request, MongoId sessionID)
     {
-        return noteController.DeleteNote(pmcData, request, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(noteController.DeleteNote(pmcData, request, sessionID));
     }
 }

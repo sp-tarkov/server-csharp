@@ -16,7 +16,7 @@ public class AchievementController(TemplateTable templateTable, ProfileHelper pr
     /// </summary>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public virtual GetAchievementsResponse GetAchievements(MongoId sessionID)
+    public GetAchievementsResponse GetAchievements(MongoId sessionID)
     {
         return new GetAchievementsResponse { Elements = templateTable.Achievements };
     }
@@ -26,7 +26,7 @@ public class AchievementController(TemplateTable templateTable, ProfileHelper pr
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>CompletedAchievementsResponse</returns>
-    public virtual CompletedAchievementsResponse GetAchievementStatics(MongoId sessionId)
+    public CompletedAchievementsResponse GetAchievementStatics(MongoId sessionId)
     {
         var stats = new Dictionary<string, int>();
         var profiles = profileHelper

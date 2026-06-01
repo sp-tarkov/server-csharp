@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using SPTarkov.Server.Core.Generators.Bot;
-using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;

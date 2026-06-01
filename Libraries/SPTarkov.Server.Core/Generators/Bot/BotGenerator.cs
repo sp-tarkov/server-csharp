@@ -680,6 +680,11 @@ public class BotGenerator(
     {
         var newInventoryItemId = new MongoId();
 
+        if (profile.Inventory is null || profile.Inventory.Items is null)
+        {
+            throw new InvalidOperationException("Could not generate inventory id, inventory is null!");
+        }
+
         foreach (var item in profile.Inventory.Items)
         {
             // Root item found, update its _id value to newly generated id

@@ -90,7 +90,7 @@ public class LocationLifecycleService(
     /// <summary>
     ///     Handle client/match/local/start
     /// </summary>
-    public virtual async Task<StartLocalRaidResponseData> StartLocalRaidAsync(
+    public async Task<StartLocalRaidResponseData> StartLocalRaidAsync(
         MongoId sessionId,
         StartLocalRaidRequestData request,
         CancellationToken cancellationToken = default
@@ -370,7 +370,7 @@ public class LocationLifecycleService(
     /// <param name="name"> Map name </param>
     /// <param name="generateLoot"> OPTIONAL - Should loot be generated for the map before being returned </param>
     /// <returns>LocationBase with loot</returns>
-    public virtual LocationBase GenerateLocationAndLoot(MongoId sessionId, string name, bool generateLoot = true)
+    public LocationBase GenerateLocationAndLoot(MongoId sessionId, string name, bool generateLoot = true)
     {
         var location = locationTable.GetLocation(name);
         var locationBaseClone = cloner.Clone(location.Base);
@@ -483,7 +483,7 @@ public class LocationLifecycleService(
     /// <summary>
     ///     Handle client/match/local/end
     /// </summary>
-    public virtual async Task EndLocalRaidAsync(
+    public async Task EndLocalRaidAsync(
         MongoId sessionId,
         EndLocalRaidRequestData request,
         CancellationToken cancellationToken = default

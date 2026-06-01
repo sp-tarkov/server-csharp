@@ -9,6 +9,6 @@ public interface IChatMessageHandler
     // Lower = More priority
     int GetPriority();
 
-    public bool CanHandle(string? message);
+    public bool CanHandle(string message);
     public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null);
 }

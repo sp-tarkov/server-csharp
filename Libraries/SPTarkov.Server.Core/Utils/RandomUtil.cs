@@ -495,7 +495,7 @@ public sealed class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
         return factor;
     }
 
-    public T? GetArrayValue<T>(IEnumerable<T> list)
+    public T GetArrayValue<T>(IEnumerable<T> list)
     {
         return GetRandomElement(list);
     }

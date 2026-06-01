@@ -2,7 +2,6 @@
 using System.Net.Sockets;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Locales;
 
 namespace SPTarkov.Server.Middleware;
@@ -55,7 +54,7 @@ public sealed class SptLoggerMiddleware(
     /// <param name="context">HttpContext of request</param>
     /// <param name="clientIp">Ip of requester</param>
     /// <param name="isLocalRequest">Is this local request</param>
-    protected void LogRequest(HttpContext context, IPAddress clientIp, bool isLocalRequest, bool isWSRequest)
+    public void LogRequest(HttpContext context, IPAddress clientIp, bool isLocalRequest, bool isWSRequest)
     {
         if (isWSRequest)
         {

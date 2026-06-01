@@ -88,7 +88,7 @@ public class BotDifficultyHelper(
     /// </summary>
     /// <param name="dropDownDifficulty">Dropdown difficulty value to convert</param>
     /// <returns>bot difficulty</returns>
-    public string? ConvertBotDifficultyDropdownToBotDifficulty(string dropDownDifficulty)
+    public string ConvertBotDifficultyDropdownToBotDifficulty(string dropDownDifficulty)
     {
         return dropDownDifficulty.ToLowerInvariant() switch
         {
@@ -102,7 +102,7 @@ public class BotDifficultyHelper(
     ///     Choose a random difficulty from - easy/normal/hard/impossible
     /// </summary>
     /// <returns>random difficulty</returns>
-    public string? ChooseRandomDifficulty()
+    public string ChooseRandomDifficulty()
     {
         return randomUtil.GetArrayValue(["easy", "normal", "hard", "impossible"]);
     }

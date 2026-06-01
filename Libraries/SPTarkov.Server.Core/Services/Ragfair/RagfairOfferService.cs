@@ -2,7 +2,6 @@ using SPTarkov.Common.Extensions;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Items;
 using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Helpers.Ragfair;
@@ -19,7 +18,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
-namespace SPTarkov.Server.Core.Services.Commerce;
+namespace SPTarkov.Server.Core.Services.Ragfair;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairOfferService(
@@ -36,7 +35,8 @@ public class RagfairOfferService(
     RagfairOfferHolder ragfairOfferHolder,
     NotifierHelper notifierHelper,
     NotificationSendHelper notificationSendHelper,
-    RagfairConfig ragfairConfig
+    RagfairConfig ragfairConfig,
+    ServerLocalisationService serverLocalisationService
 )
 {
     private bool _playerOffersLoaded;
@@ -172,6 +172,25 @@ public class RagfairOfferService(
         }
 
         _playerOffersLoaded = true;
+    }
+
+    /// <summary>
+    ///     Disable/Hide an offer from flea
+    /// </summary>
+    /// <param name="offerId"> OfferID to hide </param>
+    public void HideOffer(MongoId offerId)
+    {
+        var offers = GetOffers();
+        var offer = offers.FirstOrDefault(x => x.Id == offerId);
+
+        if (offer is null)
+        {
+            logger.Error(serverLocalisationService.GetText("ragfair-offer_not_found_unable_to_hide", offerId));
+
+            return;
+        }
+
+        offer.Locked = true;
     }
 
     /// <summary>

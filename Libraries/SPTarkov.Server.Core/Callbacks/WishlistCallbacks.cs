@@ -17,9 +17,9 @@ public class WishlistCallbacks(WishlistController wishlistController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse AddToWishlist(PmcData pmcData, AddToWishlistRequest info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> AddToWishlist(PmcData pmcData, AddToWishlistRequest info, MongoId sessionID)
     {
-        return wishlistController.AddToWishList(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(wishlistController.AddToWishList(pmcData, info, sessionID));
     }
 
     /// <summary>
@@ -29,9 +29,9 @@ public class WishlistCallbacks(WishlistController wishlistController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse RemoveFromWishlist(PmcData pmcData, RemoveFromWishlistRequest info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> RemoveFromWishlist(PmcData pmcData, RemoveFromWishlistRequest info, MongoId sessionID)
     {
-        return wishlistController.RemoveFromWishList(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(wishlistController.RemoveFromWishList(pmcData, info, sessionID));
     }
 
     /// <summary>
@@ -41,8 +41,12 @@ public class WishlistCallbacks(WishlistController wishlistController)
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ChangeWishlistItemCategory(PmcData pmcData, ChangeWishlistItemCategoryRequest info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> ChangeWishlistItemCategory(
+        PmcData pmcData,
+        ChangeWishlistItemCategoryRequest info,
+        MongoId sessionID
+    )
     {
-        return wishlistController.ChangeWishListItemCategory(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(wishlistController.ChangeWishListItemCategory(pmcData, info, sessionID));
     }
 }

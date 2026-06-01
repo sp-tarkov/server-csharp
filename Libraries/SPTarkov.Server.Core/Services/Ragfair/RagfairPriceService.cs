@@ -1,7 +1,6 @@
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Items;
 using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Helpers.Traders;
@@ -14,7 +13,7 @@ using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
-namespace SPTarkov.Server.Core.Services.Commerce;
+namespace SPTarkov.Server.Core.Services.Ragfair;
 
 /// <summary>
 ///     Stores flea prices for items as well as methods to interact with them.

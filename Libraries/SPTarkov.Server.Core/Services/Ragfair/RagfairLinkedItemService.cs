@@ -1,14 +1,13 @@
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Items;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Tables;
 
-namespace SPTarkov.Server.Core.Services.Commerce;
+namespace SPTarkov.Server.Core.Services.Ragfair;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairLinkedItemService(TemplateTable templateTable, ItemHelper itemHelper, ISptLogger<RagfairLinkedItemService> logger)

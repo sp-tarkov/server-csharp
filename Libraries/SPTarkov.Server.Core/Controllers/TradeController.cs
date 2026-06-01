@@ -19,6 +19,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Commerce;
 using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Services.Ragfair;
 using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
@@ -33,8 +34,8 @@ public class TradeController(
     TimeUtil timeUtil,
     RandomUtil randomUtil,
     ItemHelper itemHelper,
+    RagfairOfferService ragfairOfferService,
     RagfairOfferHelper ragfairOfferHelper,
-    RagfairServer ragfairServer,
     HttpResponseUtil httpResponseUtil,
     ServerLocalisationService serverLocalisationService,
     MailSendService mailSendService,
@@ -91,7 +92,7 @@ public class TradeController(
 
         foreach (var offer in request.Offers)
         {
-            var fleaOffer = ragfairServer.GetOffer(new MongoId(offer.Id));
+            var fleaOffer = ragfairOfferService.GetOfferByOfferId(new MongoId(offer.Id));
             if (fleaOffer is null)
             {
                 return httpResponseUtil.AppendErrorToOutput(
@@ -174,7 +175,7 @@ public class TradeController(
         tradeHelper.BuyItem(pmcData, buyData, sessionId, traderConfig.PurchasesAreFoundInRaid, output);
 
         // Remove/lower offer quantity of item purchased from trader flea offer
-        ragfairServer.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
+        ragfairOfferService.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
     }
 
     /// <summary>
@@ -224,7 +225,7 @@ public class TradeController(
         }
 
         // Remove/lower offer quantity of item purchased from PMC flea offer
-        ragfairServer.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
+        ragfairOfferService.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
     }
 
     /// <summary>
