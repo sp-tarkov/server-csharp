@@ -4,6 +4,7 @@ using SPTarkov.DI;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Exceptions;
 
 namespace SPTarkov.Server.Extensions;

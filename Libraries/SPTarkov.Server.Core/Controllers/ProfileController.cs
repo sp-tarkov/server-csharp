@@ -12,6 +12,8 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Launcher;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Profile;
+using ProfileFixerService = SPTarkov.Server.Core.Services.Profile.ProfileFixerService;
 
 namespace SPTarkov.Server.Core.Controllers;
 

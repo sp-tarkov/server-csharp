@@ -1,0 +1,595 @@
+using SPTarkov.Common.Models.Logging;
+using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Tables;
+using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Utils;
+using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
+
+namespace SPTarkov.Server.Core.Services.Commerce;
+
+/// <summary>
+///     Stores flea prices for items as well as methods to interact with them.
+/// </summary>
+[Injectable(InjectionType.Singleton)]
+public class RagfairPriceService(
+    ISptLogger<RagfairPriceService> logger,
+    TemplateTable templateTable,
+    HideoutTable hideoutTable,
+    RandomUtil randomUtil,
+    HandbookHelper handbookHelper,
+    TraderHelper traderHelper,
+    PresetHelper presetHelper,
+    ItemHelper itemHelper,
+    ServerLocalisationService serverLocalisationService,
+    RagfairConfig ragfairConfig
+)
+{
+    protected Dictionary<MongoId, double>? StaticPrices;
+
+    /// <summary>
+    ///     Generate static (handbook) and dynamic (prices.json) flea prices, store inside class as dictionaries
+    /// </summary>
+    public void Load()
+    {
+        RefreshStaticPrices();
+        if (ragfairConfig.Dynamic.GenerateBaseFleaPrices.UseHandbookPrice)
+        {
+            ReplaceFleaBasePrices();
+        }
+    }
+
+    public string GetRoute()
+    {
+        return "RagfairPriceService";
+    }
+
+    /// <summary>
+    ///     Iterate over all items of type "Item" in db and get template price, store in cache
+    /// </summary>
+    public void RefreshStaticPrices()
+    {
+        StaticPrices = new Dictionary<MongoId, double>();
+        foreach (var item in templateTable.Items.Values.Where(item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)))
+        {
+            StaticPrices[item.Id] = handbookHelper.GetTemplatePrice(item.Id);
+        }
+    }
+
+    /// <summary>
+    /// Replace base item price used for flea
+    /// Use handbook as a base price
+    /// </summary>
+    public void ReplaceFleaBasePrices()
+    {
+        var config = ragfairConfig.Dynamic.GenerateBaseFleaPrices;
+        var pricePool = templateTable.Prices;
+        var hideoutCraftItems = GetHideoutCraftItemTpls();
+
+        foreach (var (itemTpl, handbookPrice) in StaticPrices)
+        {
+            // Get new price to use
+            var newBasePrice =
+                handbookPrice
+                * (GetFleaBasePriceMultiplier(itemTpl, config) + GetHideoutCraftMultiplier(itemTpl, config, hideoutCraftItems));
+            if (newBasePrice == 0)
+            {
+                continue;
+            }
+
+            if (config.PreventPriceBeingBelowTraderBuyPrice)
+            {
+                // Check if item can be sold to trader for a higher price than what we're going to set
+                var highestSellToTraderPrice = traderHelper.GetHighestSellToTraderPrice(itemTpl);
+                if (highestSellToTraderPrice > newBasePrice)
+                {
+                    // Trader has higher sell price, use that value
+                    newBasePrice = highestSellToTraderPrice;
+                }
+            }
+
+            pricePool.AddOrUpdate(itemTpl, newBasePrice);
+        }
+    }
+
+    /// <summary>
+    /// Get the multiplier to apply to items used in hideout crafts
+    /// If not hideout craft item, return 0
+    /// </summary>
+    /// <param name="itemTpl">Item to get multiplier for</param>
+    /// <param name="config">Ragfair config</param>
+    /// <param name="hideoutCraftItems">Craft item tpls</param>
+    /// <returns>Multiplier</returns>
+    protected double GetHideoutCraftMultiplier(MongoId itemTpl, GenerateFleaPrices config, HashSet<MongoId?> hideoutCraftItems)
+    {
+        if (!config.UseHideoutCraftMultiplier || !hideoutCraftItems.Contains(itemTpl))
+        {
+            return 0;
+        }
+
+        return config.HideoutCraftMultiplier;
+    }
+
+    /// <summary>
+    /// Get a set of item tpls used by hideout crafts as requirements
+    /// </summary>
+    /// <returns>Set</returns>
+    protected HashSet<MongoId?> GetHideoutCraftItemTpls()
+    {
+        var results = new HashSet<MongoId?>();
+        foreach (
+            var itemRequirements in hideoutTable.Production.Recipes.Select(recipe =>
+                recipe.Requirements.Where(x => x.Type == "Item").Select(x => x.TemplateId)
+            )
+        )
+        {
+            results.UnionWith(itemRequirements);
+        }
+
+        return results;
+    }
+
+    /// <summary>
+    /// Get the multiplier to apply to a handbook price to create the base flea price of an item
+    /// </summary>
+    /// <param name="itemTpl">Item to look up multiplier of</param>
+    /// <param name="config"></param>
+    /// <returns>Multiplier value</returns>
+    protected double GetFleaBasePriceMultiplier(MongoId itemTpl, GenerateFleaPrices config)
+    {
+        // Specific item multiplier may exist, check for it
+        if (ragfairConfig.Dynamic.GenerateBaseFleaPrices.ItemTplMultiplierOverride.TryGetValue(itemTpl, out var specificItemMultiplier))
+        {
+            return specificItemMultiplier;
+        }
+
+        // Check if tpl is of each time, if it is, use that multi
+        foreach (var (itemType, multiplier) in ragfairConfig.Dynamic.GenerateBaseFleaPrices.ItemTypeMultiplierOverride)
+        {
+            if (itemHelper.IsOfBaseclass(itemTpl, itemType))
+            {
+                return multiplier;
+            }
+        }
+
+        return ragfairConfig.Dynamic.GenerateBaseFleaPrices.PriceMultiplier;
+    }
+
+    /// <summary>
+    ///     Get the dynamic price for an item. If value doesn't exist, use static (handbook) value.
+    ///     if no static value, return 1
+    /// </summary>
+    /// <param name="tplId">Item tpl id to get price for</param>
+    /// <returns>price in roubles</returns>
+    public double GetFleaPriceForItem(MongoId tplId)
+    {
+        // Get dynamic price (templates/prices), if that doesn't exist get price from static array (templates/handbook)
+        var itemPrice = itemHelper.GetDynamicItemPrice(tplId) ?? GetStaticPriceForItem(tplId);
+        if (itemPrice is null)
+        {
+            var itemFromDb = itemHelper.GetItem(tplId);
+            logger.Warning(
+                serverLocalisationService.GetText(
+                    "ragfair-unable_to_find_item_price_for_item_in_flea_handbook",
+                    new { tpl = tplId, name = itemFromDb.Value.Name ?? "" }
+                )
+            );
+        }
+
+        // If no price in dynamic/static, set to 1
+        if (itemPrice == 0)
+        {
+            itemPrice = 1;
+        }
+
+        return itemPrice.Value;
+    }
+
+    /// <summary>
+    ///     Get the dynamic (flea) price for an item
+    /// </summary>
+    /// <param name="itemTpl"> Item template id to look up </param>
+    /// <returns> Price in roubles </returns>
+    public double? GetDynamicPriceForItem(MongoId itemTpl)
+    {
+        templateTable.Prices.TryGetValue(itemTpl, out var value);
+
+        return value;
+    }
+
+    /// <summary>
+    ///     Grab the static (handbook) for an item by its tplId
+    /// </summary>
+    /// <param name="itemTpl">item template id to look up</param>
+    /// <returns>price in roubles</returns>
+    public double? GetStaticPriceForItem(MongoId itemTpl)
+    {
+        return handbookHelper.GetTemplatePrice(itemTpl);
+    }
+
+    /// <summary>
+    ///     Get prices for all items on flea, prioritize handbook prices first, use prices from prices.json if missing
+    ///     This will refresh the caches prior to building the output
+    /// </summary>
+    /// <returns>Dictionary of item tpls and rouble cost</returns>
+    public Dictionary<MongoId, double> GetAllFleaPrices()
+    {
+        var dynamicPrices = templateTable.Prices;
+        // Use dynamic prices first, fill in any gaps with data from static prices (handbook)
+        return dynamicPrices.Concat(StaticPrices).GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.First().Value);
+    }
+
+    public Dictionary<MongoId, double> GetAllStaticPrices()
+    {
+        // Refresh the cache so we include any newly added custom items
+        if (StaticPrices is null)
+        {
+            RefreshStaticPrices();
+        }
+
+        return StaticPrices;
+    }
+
+    /// <summary>
+    ///     Get the percentage difference between two values
+    /// </summary>
+    /// <param name="a">numerical value a</param>
+    /// <param name="b">numerical value b</param>
+    /// <returns>different in percent</returns>
+    protected double GetPriceDifference(double a, double b)
+    {
+        return 100 * a / (a + b);
+    }
+
+    /// <summary>
+    ///     Generate a currency cost for an item and its mods
+    /// </summary>
+    /// <param name="offerItems">Item with mods to get price for</param>
+    /// <param name="desiredCurrency">Currency price desired in</param>
+    /// <param name="isPackOffer">Price is for a pack type offer</param>
+    /// <returns>cost of item in desired currency</returns>
+    public double GetDynamicOfferPriceForOffer(IEnumerable<Item> offerItems, MongoId desiredCurrency, bool isPackOffer)
+    {
+        // Price to return.
+        var price = 0d;
+
+        // Iterate over each item in the offer.
+        foreach (var item in offerItems)
+        {
+            // Skip over armor inserts as those are not factored into item prices.
+            if (itemHelper.IsOfBaseclass(item.Template, BaseClasses.BUILT_IN_INSERTS))
+            {
+                continue;
+            }
+
+            price += GetDynamicItemPrice(item.Template, desiredCurrency, item, offerItems, isPackOffer) ?? 0;
+
+            // Check if the item is a weapon preset.
+            if (item?.Upd?.SptPresetId is not null && presetHelper.IsPresetBaseClass(item.Upd.SptPresetId.Value, BaseClasses.WEAPON))
+            // This is a weapon preset, which has its own price calculation that takes into account the mods in the
+            // preset. Since we've already calculated the price for the preset entire preset in
+            // `getDynamicItemPrice`, we can skip the rest of the items in the offer.
+            {
+                break;
+            }
+        }
+
+        return Math.Round(price);
+    }
+
+    /// <summary>
+    /// </summary>
+    /// <param name="itemTemplateId">items tpl value</param>
+    /// <param name="desiredCurrency">Currency to return result in</param>
+    /// <param name="item">Item object (used for weapon presets)</param>
+    /// <param name="offerItems"></param>
+    /// <param name="isPackOffer"></param>
+    /// <returns></returns>
+    public double? GetDynamicItemPrice(
+        MongoId itemTemplateId,
+        MongoId desiredCurrency,
+        Item? item = null,
+        IEnumerable<Item>? offerItems = null,
+        bool? isPackOffer = null
+    )
+    {
+        var isPreset = false;
+        var price = GetFleaPriceForItem(itemTemplateId);
+
+        // Adjust price if below handbook price, based on config.
+        if (ragfairConfig.Dynamic.OfferAdjustment.AdjustPriceWhenBelowHandbookPrice)
+        {
+            price = AdjustPriceIfBelowHandbook(price, itemTemplateId);
+        }
+
+        // Use trader price if higher, based on config.
+        if (ragfairConfig.Dynamic.UseTraderPriceForOffersIfHigher)
+        {
+            var traderPrice = traderHelper.GetHighestSellToTraderPrice(itemTemplateId);
+            if (traderPrice > price)
+            {
+                price = traderPrice;
+            }
+        }
+
+        // Prices for weapon presets are handled differently.
+        if (
+            item?.Upd?.SptPresetId is not null
+            && offerItems is not null
+            && presetHelper.IsPresetBaseClass(item.Upd.SptPresetId.Value, BaseClasses.WEAPON)
+        )
+        {
+            price =
+                ragfairConfig.Dynamic.GenerateBaseFleaPrices.UseHandbookPrice
+                && ragfairConfig.Dynamic.GenerateBaseFleaPrices.GeneratePresetPriceByChildren
+                    ? GetPresetPriceByChildren(offerItems)
+                    : GetWeaponPresetPrice(item, offerItems, price);
+            isPreset = true;
+        }
+
+        // Check for existence of manual price adjustment multiplier
+        if (ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(itemTemplateId, out var multiplier))
+        {
+            price *= multiplier;
+        }
+
+        // The quality of the item affects the price + not on the ignore list
+        if (item is not null && !ragfairConfig.Dynamic.IgnoreQualityPriceVarianceBlacklist.Contains(itemTemplateId))
+        {
+            var qualityModifier = itemHelper.GetItemQualityModifier(item);
+            price *= qualityModifier;
+        }
+
+        // Make adjustments for unreasonably priced items.
+        foreach (var (key, value) in ragfairConfig.Dynamic.UnreasonableModPrices)
+        {
+            if (!value.Enabled || !itemHelper.IsOfBaseclass(itemTemplateId, key))
+            {
+                continue;
+            }
+
+            price = AdjustUnreasonablePrice(value, itemTemplateId, price);
+        }
+
+        // Vary the price based on the type of offer.
+        var range = GetOfferTypeRangeValues(isPreset, isPackOffer ?? false);
+        price = RandomiseOfferPrice(price, range);
+
+        // Convert to different currency if required.
+        if (desiredCurrency != Money.ROUBLES)
+        {
+            price = handbookHelper.FromRoubles(price, desiredCurrency);
+        }
+
+        if (price <= 0)
+        {
+            return 0.1d;
+        }
+
+        return price;
+    }
+
+    /// <summary>
+    ///     using data from config, adjust an items price to be relative to its handbook price
+    /// </summary>
+    /// <param name="unreasonableItemChange">Change object from config</param>
+    /// <param name="itemTpl">Item being adjusted</param>
+    /// <param name="price">Current price of item</param>
+    /// <returns>Adjusted price of item</returns>
+    protected double AdjustUnreasonablePrice(UnreasonableModPrices unreasonableItemChange, MongoId itemTpl, double price)
+    {
+        var itemHandbookPrice = handbookHelper.GetTemplatePrice(itemTpl);
+
+        // Flea price is over handbook price
+        if (price > itemHandbookPrice * unreasonableItemChange.HandbookPriceOverMultiplier)
+        {
+            // Skip extreme values
+            if (price <= 1)
+            {
+                return price;
+            }
+
+            // Price is over limit, adjust
+            return itemHandbookPrice * unreasonableItemChange.NewPriceHandbookMultiplier;
+        }
+
+        return price;
+    }
+
+    /// <summary>
+    ///     Get different min/max price multipliers for different offer types (preset/pack/default)
+    /// </summary>
+    /// <param name="isPreset">Offer is a preset</param>
+    /// <param name="isPack">Offer is a pack</param>
+    /// <returns>MinMax values</returns>
+    protected MinMax<double> GetOfferTypeRangeValues(bool isPreset, bool isPack)
+    {
+        // Use different min/max values if the item is a preset or pack
+        var priceRanges = ragfairConfig.Dynamic.PriceRanges;
+        if (isPreset)
+        {
+            return priceRanges.Preset;
+        }
+
+        if (isPack)
+        {
+            return priceRanges.Pack;
+        }
+
+        return priceRanges.Default;
+    }
+
+    /// <summary>
+    ///     Check to see if an items price is below its handbook price and adjust according to values set to config/ragfair.json
+    /// </summary>
+    /// <param name="itemPrice">price of item</param>
+    /// <param name="itemTpl">item template Id being checked</param>
+    /// <returns>adjusted price value in roubles</returns>
+    protected double AdjustPriceIfBelowHandbook(double itemPrice, MongoId itemTpl)
+    {
+        var itemHandbookPrice = GetStaticPriceForItem(itemTpl);
+        var priceDifferencePercent = GetPriceDifference(itemHandbookPrice.Value, itemPrice);
+        var offerAdjustmentSettings = ragfairConfig.Dynamic.OfferAdjustment;
+
+        // Only adjust price if difference is > a percent AND item price passes threshold set in config
+        if (
+            priceDifferencePercent > offerAdjustmentSettings.MaxPriceDifferenceBelowHandbookPercent
+            && itemPrice >= offerAdjustmentSettings.PriceThresholdRub
+        )
+        // var itemDetails = this.itemHelper.getItem(itemTpl);
+        // this.logger.debug(`item below handbook price {itemDetails[1]._name} handbook: {itemHandbookPrice} flea: ${itemPrice} {priceDifferencePercent}%`);
+        {
+            return Math.Round(itemHandbookPrice.Value * offerAdjustmentSettings.HandbookPriceMultiplier);
+        }
+
+        return itemPrice;
+    }
+
+    /// <summary>
+    ///     Multiply the price by a randomised curve where n = 2, shift = 2
+    /// </summary>
+    /// <param name="existingPrice">price to alter</param>
+    /// <param name="rangeValues">min and max to adjust price by</param>
+    /// <returns>multiplied price</returns>
+    protected double RandomiseOfferPrice(double existingPrice, MinMax<double> rangeValues)
+    {
+        // Multiply by 100 to get 2 decimal places of precision
+        var multiplier = randomUtil.GetBiasedRandomNumber(rangeValues.Min * 100, rangeValues.Max * 100, 2, 2);
+
+        // return multiplier back to its original decimal place location
+        return existingPrice * (multiplier / 100);
+    }
+
+    /// <summary>
+    ///     Calculate the cost of a weapon preset by adding together the price of its mods + base price of default weapon preset
+    /// </summary>
+    /// <param name="weaponRootItem">base weapon</param>
+    /// <param name="weaponWithChildren">weapon plus mods</param>
+    /// <param name="existingPrice">price of existing base weapon</param>
+    /// <returns>price of weapon in roubles</returns>
+    protected double GetWeaponPresetPrice(Item weaponRootItem, IEnumerable<Item> weaponWithChildren, double existingPrice)
+    {
+        // Get the default preset for this weapon
+        var presetResult = GetWeaponPreset(weaponRootItem);
+        if (presetResult.IsDefault)
+        {
+            return GetFleaPriceForItem(weaponRootItem.Template);
+        }
+
+        // Get mods on current gun not in default preset
+        var newOrReplacedModsInPresetVsDefault = weaponWithChildren.Where(x =>
+            !presetResult.Preset.Items.Any(y => y.Template == x.Template)
+        );
+
+        // Add up extra mods price
+        var extraModsPrice = 0d;
+        foreach (var mod in newOrReplacedModsInPresetVsDefault)
+        // Use handbook or trader price, whatever is higher (dont use dynamic flea price as purchased item cannot be relisted)
+        {
+            extraModsPrice += GetHighestHandbookOrTraderPriceAsRouble(mod.Template).Value;
+        }
+
+        // Only deduct cost of replaced mods if there's replaced/new mods
+        if (newOrReplacedModsInPresetVsDefault.Any())
+        {
+            // Add up cost of mods replaced
+            var modsReplacedByNewMods = newOrReplacedModsInPresetVsDefault.Where(x =>
+                presetResult.Preset.Items.Any(y => y.SlotId == x.SlotId)
+            );
+
+            // Add up replaced mods price
+            var replacedModsPrice = 0d;
+            foreach (var replacedMod in modsReplacedByNewMods)
+            {
+                replacedModsPrice += GetHighestHandbookOrTraderPriceAsRouble(replacedMod.Template).Value;
+            }
+
+            // Subtract replaced mods total from extra mods total
+            extraModsPrice -= replacedModsPrice;
+        }
+
+        // return extra mods price + base gun price
+        return existingPrice + extraModsPrice;
+    }
+
+    /// <summary>
+    ///     Calculate the cost of a weapon preset by adding together the price of its mods
+    /// </summary>
+    /// <param name="weaponWithChildren">weapon plus mods</param>
+    /// <returns>price of weapon in roubles</returns>
+    public double GetPresetPriceByChildren(IEnumerable<Item> weaponWithChildren)
+    {
+        var priceTotal = 0d;
+        foreach (var item in weaponWithChildren)
+        {
+            // Root item uses static price
+            if (item.ParentId == null || string.Equals(item.ParentId, "hideout", StringComparison.OrdinalIgnoreCase))
+            {
+                priceTotal += GetStaticPriceForItem(item.Template) ?? 0;
+
+                continue;
+            }
+
+            priceTotal += GetFleaPriceForItem(item.Template);
+        }
+
+        return priceTotal;
+    }
+
+    /// <summary>
+    ///     Get the highest price for an item that is stored in handbook or trader assorts
+    /// </summary>
+    /// <param name="itemTpl">Item to get highest price of</param>
+    /// <returns>rouble cost</returns>
+    protected double? GetHighestHandbookOrTraderPriceAsRouble(MongoId itemTpl)
+    {
+        var price = GetStaticPriceForItem(itemTpl);
+        var traderPrice = traderHelper.GetHighestSellToTraderPrice(itemTpl);
+        if (traderPrice > price)
+        {
+            price = traderPrice;
+        }
+
+        return price;
+    }
+
+    /// <summary>
+    ///     Attempt to get the default preset for a weapon, failing that get the first preset in the array
+    ///     (assumes default = has encyclopedia entry)
+    /// </summary>
+    /// <param name="weapon">weapon item to get preset of</param>
+    /// <returns>Default preset object</returns>
+    protected WeaponPreset GetWeaponPreset(Item weapon)
+    {
+        var defaultPreset = presetHelper.GetDefaultPreset(weapon.Template);
+        if (defaultPreset is not null)
+        {
+            return new WeaponPreset { IsDefault = true, Preset = defaultPreset };
+        }
+
+        var nonDefaultPresets = presetHelper.GetPresets(weapon.Template);
+
+        if (logger.IsLogEnabled(LogLevel.Debug))
+        {
+            logger.Debug(
+                nonDefaultPresets.Count == 1
+                    ? $"Item Id: {weapon.Template} has no default encyclopedia entry but only one preset: ({nonDefaultPresets[0].Name}), choosing preset: ({nonDefaultPresets[0].Name})"
+                    : $"Item Id: {weapon.Template} has no default encyclopedia entry, choosing first preset({nonDefaultPresets[0].Name}) of {nonDefaultPresets.Count}"
+            );
+        }
+
+        return new WeaponPreset { IsDefault = false, Preset = nonDefaultPresets[0] };
+    }
+
+    public record WeaponPreset
+    {
+        public bool IsDefault { get; set; }
+
+        public Preset Preset { get; set; }
+    }
+}

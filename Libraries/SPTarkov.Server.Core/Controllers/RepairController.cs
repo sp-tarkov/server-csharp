@@ -5,6 +5,7 @@ using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Repair;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
 
 namespace SPTarkov.Server.Core.Controllers;
 

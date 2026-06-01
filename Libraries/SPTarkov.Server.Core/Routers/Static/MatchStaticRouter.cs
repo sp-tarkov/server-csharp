@@ -4,7 +4,7 @@ using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Match;
 using SPTarkov.Server.Core.Utils;
-using static SPTarkov.Server.Core.Services.MatchLocationService;
+using static SPTarkov.Server.Core.Services.InRaid.MatchLocationService;
 
 namespace SPTarkov.Server.Core.Routers.Static;
 

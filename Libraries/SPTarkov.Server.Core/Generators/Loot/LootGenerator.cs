@@ -10,6 +10,10 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Services;
 using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
+using SPTarkov.Server.Core.Services.Items;
+using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Services.Server;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
@@ -54,14 +58,16 @@ public class LootGenerator(
             {
                 // Choose one at random + add to results array
                 var chosenSealedContainer = randomUtil.GetArrayValue(sealedWeaponContainerPool);
-                result.Add([
-                    new Item
-                    {
-                        Id = new MongoId(),
-                        Template = chosenSealedContainer.Id,
-                        Upd = new Upd { StackObjectsCount = 1, SpawnedInSession = true },
-                    },
-                ]);
+                result.Add(
+                    [
+                        new Item
+                        {
+                            Id = new MongoId(),
+                            Template = chosenSealedContainer.Id,
+                            Upd = new Upd { StackObjectsCount = 1, SpawnedInSession = true },
+                        },
+                    ]
+                );
             }
         }
 

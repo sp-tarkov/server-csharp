@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Loaders;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using static SPTarkov.Server.Core.Extensions.StringExtensions;
 

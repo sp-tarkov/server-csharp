@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Profile;
 using Range = SemanticVersioning.Range;
 
 namespace SPTarkov.Server.Core.Migration.Migrations._3._11;
