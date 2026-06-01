@@ -6,6 +6,8 @@ using SPTarkov.Server.Core.Constants;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators.Bot;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Bot;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Bot;
 using SPTarkov.Server.Core.Models.Eft.Common;

@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Commerce;
 using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Services.Commerce;

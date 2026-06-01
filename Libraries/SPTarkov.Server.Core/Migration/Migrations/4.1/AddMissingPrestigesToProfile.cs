@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Profile;
 
 namespace SPTarkov.Server.Core.Migration.Migrations._4._1;
 
