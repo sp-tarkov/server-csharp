@@ -1,4 +1,5 @@
 using SPTarkov.Common.Models.Logging;
+using ZLinq;
 
 namespace SPTarkov.Common.Logger;
 
@@ -13,23 +14,25 @@ public sealed class SPTLoggerDispatcher(SptLoggerConfiguration config, IEnumerab
 
     public void Log(SptLogMessage message)
     {
-        var matchingLoggers = config.Loggers.Where(logger =>
-        {
-            var excludeFilters = logger.Filters.Where(filter => filter.Type == SptLoggerFilterType.Exclude);
-            var includeFilters = logger.Filters.Where(filter => filter.Type == SptLoggerFilterType.Include);
-
-            if (excludeFilters?.Any(filter => filter.Match(message)) ?? false)
+        var matchingLoggers = config
+            .Loggers.AsValueEnumerable()
+            .Where(logger =>
             {
-                return false;
-            }
+                var excludeFilters = logger.Filters.AsValueEnumerable().Where(filter => filter.Type == SptLoggerFilterType.Exclude);
+                var includeFilters = logger.Filters.AsValueEnumerable().Where(filter => filter.Type == SptLoggerFilterType.Include);
 
-            if (includeFilters?.Any() ?? false)
-            {
-                return includeFilters.Any(filter => filter.Match(message));
-            }
+                if (excludeFilters.Any(filter => filter.Match(message)))
+                {
+                    return false;
+                }
 
-            return true;
-        });
+                if (includeFilters.Any())
+                {
+                    return includeFilters.Any(filter => filter.Match(message));
+                }
+
+                return true;
+            });
 
         foreach (var logger in matchingLoggers)
         {

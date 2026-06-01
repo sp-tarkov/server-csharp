@@ -41,7 +41,7 @@ public class DialogueController(
     /// <summary>
     /// </summary>
     /// <param name="chatBot"></param>
-    public virtual void RegisterChatBot(IDialogueChatBot chatBot) // TODO: this is in with the helper types
+    public void RegisterChatBot(IDialogueChatBot chatBot) // TODO: this is in with the helper types
     {
         if (DialogueChatBots.Any(cb => cb.GetChatBot().Id == chatBot.GetChatBot().Id))
         {
@@ -73,7 +73,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionId">session id</param>
     /// <returns>GetFriendListDataResponse</returns>
-    public virtual GetFriendListDataResponse GetFriendList(MongoId sessionId)
+    public GetFriendListDataResponse GetFriendList(MongoId sessionId)
     {
         // Add all chatbots to the friends list
         var friends = GetActiveChatBots();
@@ -144,7 +144,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionId">Session Id</param>
     /// <returns>list of dialogs</returns>
-    public virtual List<DialogueInfo> GenerateDialogueList(MongoId sessionId)
+    public List<DialogueInfo> GenerateDialogueList(MongoId sessionId)
     {
         var data = new List<DialogueInfo>();
         foreach (var (_, dialog) in dialogueHelper.GetDialogsForProfile(sessionId))
@@ -167,7 +167,7 @@ public class DialogueController(
     /// <param name="dialogueId">Dialog id</param>
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
-    public virtual DialogueInfo? GetDialogueInfo(MongoId dialogueId, MongoId sessionId)
+    public DialogueInfo? GetDialogueInfo(MongoId dialogueId, MongoId sessionId)
     {
         var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
         var dialogue = dialogs.GetValueOrDefault(dialogueId);
@@ -181,7 +181,7 @@ public class DialogueController(
     /// <param name="dialogue">Dialog</param>
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
-    public virtual DialogueInfo? GetDialogueInfo(Dialogue? dialogue, MongoId sessionId)
+    public DialogueInfo? GetDialogueInfo(Dialogue? dialogue, MongoId sessionId)
     {
         if (dialogue is null || dialogue.Messages?.Count == 0)
         {
@@ -209,7 +209,7 @@ public class DialogueController(
     /// <param name="messageType">What type of message is being sent</param>
     /// <param name="sessionId">Player id</param>
     /// <returns>UserDialogInfo list</returns>
-    public virtual List<UserDialogInfo> GetDialogueUsers(Dialogue? dialog, MessageType? messageType, MongoId sessionId)
+    public List<UserDialogInfo> GetDialogueUsers(Dialogue? dialog, MessageType? messageType, MongoId sessionId)
     {
         var profile = saveServer.GetProfile(sessionId);
 
@@ -249,7 +249,7 @@ public class DialogueController(
     /// <param name="request">Get dialog request</param>
     /// <param name="sessionId">Session id</param>
     /// <returns>GetMailDialogViewResponseData object</returns>
-    public virtual GetMailDialogViewResponseData GenerateDialogueView(GetMailDialogViewRequestData request, MongoId sessionId)
+    public GetMailDialogViewResponseData GenerateDialogueView(GetMailDialogViewRequestData request, MongoId sessionId)
     {
         var dialogueId = request.DialogId;
         var fullProfile = saveServer.GetProfile(sessionId);
@@ -465,7 +465,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueId">id of the dialog to remove</param>
     /// <param name="sessionId">Player id</param>
-    public virtual void RemoveDialogue(MongoId dialogueId, MongoId sessionId)
+    public void RemoveDialogue(MongoId dialogueId, MongoId sessionId)
     {
         var profile = saveServer.GetProfile(sessionId);
         if (!profile.DialogueRecords?.Remove(dialogueId) ?? false)
@@ -480,7 +480,7 @@ public class DialogueController(
     /// <param name="dialogueId"></param>
     /// <param name="shouldPin"></param>
     /// <param name="sessionId">Session/Player id</param>
-    public virtual void SetDialoguePin(MongoId dialogueId, bool shouldPin, MongoId sessionId)
+    public void SetDialoguePin(MongoId dialogueId, bool shouldPin, MongoId sessionId)
     {
         var dialog = dialogueHelper.GetDialogsForProfile(sessionId).GetValueOrDefault(dialogueId);
         if (dialog is null)
@@ -499,7 +499,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueIds">Dialog ids to set as read</param>
     /// <param name="sessionId">Player profile id</param>
-    public virtual void SetRead(List<MongoId>? dialogueIds, MongoId sessionId)
+    public void SetRead(List<MongoId>? dialogueIds, MongoId sessionId)
     {
         if (dialogueIds is null)
         {
@@ -529,7 +529,7 @@ public class DialogueController(
     /// <param name="dialogueId">Dialog to get mail attachments from</param>
     /// <param name="sessionId">Session id</param>
     /// <returns>GetAllAttachmentsResponse or null if dialogue doesn't exist</returns>
-    public virtual GetAllAttachmentsResponse? GetAllAttachments(string dialogueId, MongoId sessionId)
+    public GetAllAttachmentsResponse? GetAllAttachments(string dialogueId, MongoId sessionId)
     {
         var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
         var dialog = dialogs.TryGetValue(dialogueId, out var dialogInfo);
@@ -557,7 +557,7 @@ public class DialogueController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public virtual async ValueTask<string> SendMessage(MongoId sessionId, SendMessageRequest request)
+    public async ValueTask<string> SendMessage(MongoId sessionId, SendMessageRequest request)
     {
         mailSendService.SendPlayerMessageToNpc(sessionId, request.DialogId, request.Text);
 
@@ -685,7 +685,7 @@ public class DialogueController(
     /// <param name="sessionID">Session/player id</param>
     /// <param name="request">Sent friend request</param>
     /// <returns></returns>
-    public virtual FriendRequestSendResponse SendFriendRequest(MongoId sessionID, FriendRequestData request)
+    public FriendRequestSendResponse SendFriendRequest(MongoId sessionID, FriendRequestData request)
     {
         // To avoid needing to jump between profiles, auto-accept all friend requests
         var friendProfile = profileHelper.GetFullProfile(request.To.Value);
@@ -732,7 +732,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionID">Session/player id</param>
     /// <param name="request">Sent delete friend request</param>
-    public virtual void DeleteFriend(MongoId sessionID, DeleteFriendRequest request)
+    public void DeleteFriend(MongoId sessionID, DeleteFriendRequest request)
     {
         var profile = saveServer.GetProfile(sessionID);
         profile?.FriendProfileIds?.Remove(request.FriendId);

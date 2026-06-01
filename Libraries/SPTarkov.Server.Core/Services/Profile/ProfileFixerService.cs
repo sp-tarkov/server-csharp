@@ -2,10 +2,8 @@ using System.Text.RegularExpressions;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Commerce;
 using SPTarkov.Server.Core.Helpers.Profile;
-using SPTarkov.Server.Core.Helpers.Traders;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -32,7 +30,6 @@ public partial class ProfileFixerService(
     TradersTable tradersTable,
     JsonUtil jsonUtil,
     RewardHelper rewardHelper,
-    TraderHelper traderHelper,
     HideoutHelper hideoutHelper,
     ServerLocalisationService serverLocalisationService,
     CoreConfig coreConfig

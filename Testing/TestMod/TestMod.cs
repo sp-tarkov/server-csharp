@@ -41,7 +41,7 @@ public class TestMod(ISptLogger<TestMod> logger) : IOnLoad
 {
     public async Task OnLoad(CancellationToken cancellationToken)
     {
-        logger.Info("Test mod loading!");
+        logger.Info("Test mod postloading!");
 
         await Task.CompletedTask;
     }

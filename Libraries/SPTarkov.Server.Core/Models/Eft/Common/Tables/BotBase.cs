@@ -175,7 +175,7 @@ public record Info
 
     public string? Side
     {
-        get { return field; }
+        get;
         set { field = string.Intern(value); }
     }
 

@@ -1,4 +1,3 @@
-using System.Net;
 using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Text;
@@ -8,7 +7,6 @@ using SPTarkov.Common.Extensions;
 using SPTarkov.Common.Logger;
 using SPTarkov.DI;
 using SPTarkov.Reflection.Patching;
-using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Server;
 using SPTarkov.Server.Core.Loaders;
 using SPTarkov.Server.Core.Models.Spt.Config;

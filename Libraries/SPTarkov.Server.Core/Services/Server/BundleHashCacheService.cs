@@ -1,26 +1,26 @@
 using System.Collections.Concurrent;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Services.Server;
 
 [Injectable(InjectionType.Singleton)]
-public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, JsonUtil jsonUtil, HashUtil hashUtil, FileUtil fileUtil)
+public sealed class BundleHashCacheService(JsonUtil jsonUtil, HashUtil hashUtil, FileUtil fileUtil)
 {
-    protected const string _bundleHashCachePath = "./user/cache/";
-    protected const string _cacheName = "bundleHashCache.json";
-    protected ConcurrentDictionary<string, uint> _bundleHashes = [];
+    private const string BundleHashCachePath = "./user/cache/";
+    private const string CacheName = "bundleHashCache.json";
+
+    private ConcurrentDictionary<string, uint> _bundleHashes = [];
     private readonly SemaphoreSlim _writeLock = new(1, 1);
 
     public async Task HydrateCacheAsync(CancellationToken cancellationToken = default)
     {
-        if (!Directory.Exists(_bundleHashCachePath))
+        if (!Directory.Exists(BundleHashCachePath))
         {
-            Directory.CreateDirectory(_bundleHashCachePath);
+            Directory.CreateDirectory(BundleHashCachePath);
         }
 
-        var fullCachePath = Path.Join(_bundleHashCachePath, _cacheName);
+        var fullCachePath = Path.Join(BundleHashCachePath, CacheName);
 
         // File doesn't exist, assume this is the first time we're trying to load in bundles
         if (!File.Exists(fullCachePath))
@@ -44,7 +44,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
                 return;
             }
 
-            await fileUtil.WriteFileAsync(Path.Join(_bundleHashCachePath, _cacheName), bundleHashesSerialized, cancellationToken);
+            await fileUtil.WriteFileAsync(Path.Join(BundleHashCachePath, CacheName), bundleHashesSerialized, cancellationToken);
         }
         finally
         {
@@ -52,7 +52,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
         }
     }
 
-    protected uint GetStoredValue(string key)
+    private uint GetStoredValue(string key)
     {
         if (!_bundleHashes.TryGetValue(key, out var value))
         {
@@ -62,7 +62,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
         return value;
     }
 
-    protected void StoreValue(string bundlePath, uint hash)
+    private void StoreValue(string bundlePath, uint hash)
     {
         _bundleHashes.TryAdd(bundlePath, hash);
     }
@@ -86,12 +86,12 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
         return hash;
     }
 
-    protected async Task<uint> CalculateHashAsync(string BundlePath, CancellationToken cancellationToken = default)
+    public async Task<uint> CalculateHashAsync(string BundlePath, CancellationToken cancellationToken = default)
     {
         return await hashUtil.GenerateCrc32ForFileAsync(BundlePath, cancellationToken);
     }
 
-    protected bool MatchWithStoredHash(string BundlePath, uint hash)
+    private bool MatchWithStoredHash(string BundlePath, uint hash)
     {
         return GetStoredValue(BundlePath) == hash;
     }

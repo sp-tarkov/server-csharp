@@ -742,7 +742,12 @@ public class QuestHelper(
         }
 
         // Check daily/weekly objects
-        return pmcData.RepeatableQuests.SelectMany(x => x.ActiveQuests).FirstOrDefault(x => x.Id == questId);
+        if (pmcData.RepeatableQuests is not null)
+        {
+            return pmcData.RepeatableQuests.SelectMany(x => x.ActiveQuests ?? []).FirstOrDefault(x => x.Id == questId);
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -1358,7 +1363,7 @@ public class QuestHelper(
             sessionID,
             quest.TraderId,
             MessageType.QuestSuccess,
-            quest.SuccessMessageText,
+            quest.SuccessMessageText ?? "",
             questRewards,
             timeUtil.GetHoursAsSeconds((int)GetMailItemRedeemTimeHoursForProfile(pmcData))
         );

@@ -1,4 +1,3 @@
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers.Commerce;
@@ -8,7 +7,7 @@ using SPTarkov.Server.Core.Models.Eft.Ragfair;
 namespace SPTarkov.Server.Core.Services.Ragfair;
 
 [Injectable(InjectionType.Singleton)]
-public class RagfairCategoriesService(ISptLogger<RagfairCategoriesService> logger, PaymentHelper paymentHelper)
+public class RagfairCategoriesService(PaymentHelper paymentHelper)
 {
     /// <summary>
     ///     Get a dictionary of each item the play can see in their flea menu, filtered by what is available for them to buy

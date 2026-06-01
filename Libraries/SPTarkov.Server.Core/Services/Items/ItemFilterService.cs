@@ -1,4 +1,3 @@
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -9,7 +8,7 @@ namespace SPTarkov.Server.Core.Services.Items;
 ///     Centralise the handling of blacklisting items, uses blacklist found in config/item.json, stores items that should not be used by players / broken items
 /// </summary>
 [Injectable(InjectionType.Singleton)]
-public class ItemFilterService(ISptLogger<ItemFilterService> logger, ItemConfig itemConfig)
+public class ItemFilterService(ItemConfig itemConfig)
 {
     protected readonly HashSet<MongoId> ItemBlacklistCache = [.. itemConfig.Blacklist];
     protected readonly HashSet<MongoId> LootableItemBlacklistCache = [.. itemConfig.LootableItemBlacklist];

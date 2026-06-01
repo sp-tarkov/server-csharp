@@ -25,11 +25,6 @@ public abstract class Router
 
     protected IEnumerable<HandledRoute> handledRoutes = [];
 
-    public virtual string GetTopLevelRoute()
-    {
-        return "spt";
-    }
-
     protected abstract IEnumerable<HandledRoute> GetHandledRoutes();
 
     protected IEnumerable<HandledRoute> GetInternalHandledRoutes()

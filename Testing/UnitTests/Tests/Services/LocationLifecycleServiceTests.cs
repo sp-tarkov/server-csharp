@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.InRaid;
 
 namespace UnitTests.Tests.Services;
 

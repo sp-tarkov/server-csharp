@@ -1,6 +1,7 @@
 using System.Text.Json;
 using SPTarkov.Common.Logger;
 using SPTarkov.Common.Models.Logging;
+using ZLinq;
 
 namespace SPTarkov.Common.Extensions;
 
@@ -34,6 +35,7 @@ public static class SptLoggerExtensions
         var interfaceType = typeof(TInterface);
         var implementingTypes = AppDomain
             .CurrentDomain.GetAssemblies()
+            .AsValueEnumerable()
             .Where(a => !a.IsDynamic && !a.FullName.StartsWith("System") && !a.FullName.StartsWith("Microsoft"))
             .SelectMany(a => a.GetTypes())
             .Where(type => interfaceType.IsAssignableFrom(type) && type != interfaceType && type.IsClass && !type.IsAbstract)

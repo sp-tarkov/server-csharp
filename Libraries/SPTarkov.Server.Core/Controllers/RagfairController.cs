@@ -2,7 +2,6 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators.Ragfair;
-using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Commerce;
 using SPTarkov.Server.Core.Helpers.Items;
 using SPTarkov.Server.Core.Helpers.Profile;
@@ -20,8 +19,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Ragfair;
 using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Routers;
-using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Commerce;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Services.Ragfair;
@@ -39,7 +36,6 @@ public class RagfairController(
     JsonUtil jsonUtil,
     HttpResponseUtil httpResponseUtil,
     EventOutputHolder eventOutputHolder,
-    RagfairServer ragfairServer,
     ItemHelper itemHelper,
     InventoryHelper inventoryHelper,
     RagfairSellHelper ragfairSellHelper,

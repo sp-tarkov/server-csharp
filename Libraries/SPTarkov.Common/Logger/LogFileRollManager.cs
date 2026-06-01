@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using SPTarkov.Common.Models.Logging;
+using ZLinq;
 
 namespace SPTarkov.Common.Logger;
 
@@ -102,6 +103,7 @@ internal sealed class LogFileRollMonitor : IAsyncDisposable
 
         var rolledFiles = Directory
             .EnumerateFiles(directory, $"{name}.*{extension}", SearchOption.TopDirectoryOnly)
+            .AsValueEnumerable()
             .Select(path => new FileInfo(path))
             .Where(file => file.Exists)
             .Where(file => IsRolledFile(file.Name, name, extension))
