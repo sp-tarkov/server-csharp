@@ -1,11 +1,12 @@
 ﻿@page "/status"
+@attribute [Authorize]
 @using SPTarkov.Server.Core.Helpers
 @using SPTarkov.Server.Core.Helpers.Profile
 @using SPTarkov.Server.Core.Models.Spt.Config
 @using SPTarkov.Server.Core.Services
 @using SPTarkov.Server.Core.Services.Profile
 @using SPTarkov.Server.Core.Utils
-@using SPTarkov.Server.Web.Components.Layout
+@using SPTarkov.Server.Web.Layout
 
 @inject CoreConfig coreConfig
 @inject TimeUtil TimeUtil
@@ -14,17 +15,11 @@
 
 @layout BaseMudBlazorLayout
 
-<HeadContent>
-    <link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet" />
-    <meta name="robots" content="noindex, nofollow">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&amp;family=Roboto:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet">
-</HeadContent>
-<MudThemeProvider Theme="@_theme" IsDarkMode="true" />
-
-<MudContainer Class="mt-16 d-flex justify-center">
-    <MudGrid Justify="Justify.Center">
-        <MudItem xs="12" sm="6" md="4">
-            <MudCard Elevation="25" Class="rounded-lg pb-4">
+<div class="spt-page spt-page-centered">
+    <MudContainer MaxWidth="MaxWidth.Small" Class="spt-container">
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="12">
+                <MudCard Elevation="0" Class="spt-card pb-4">
                 <MudCardHeader>
                     <CardHeaderContent>
                         <MudText Typo="Typo.h4" Color="Color.Warning" Align="Align.Center">Server health</MudText>
@@ -53,7 +48,8 @@
             </MudCard>
         </MudItem>
     </MudGrid>
-</MudContainer>
+    </MudContainer>
+</div>
 
 @code
 {
@@ -91,19 +87,4 @@
         _totalProfileCount = ProfileHelper.GetProfiles().Count;
     }
 
-    private readonly MudTheme _theme = new()
-    {
-        PaletteDark = new PaletteDark
-        {
-            Primary = Colors.Blue.Default,
-            Secondary = Colors.Orange.Default,
-            Warning = Colors.Amber.Default,
-            Info = Colors.Blue.Lighten1,
-            Success = Colors.Green.Default,
-            Background = "rgba(0,0,0,0.9)",
-            Surface = "rgba(255,255,255,0.05)",
-            AppbarBackground = "rgba(0,0,0,0.8)",
-            TextPrimary = "#FFFFFF"
-        }
-    };
 }

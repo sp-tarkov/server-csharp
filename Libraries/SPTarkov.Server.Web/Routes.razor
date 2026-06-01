@@ -1,0 +1,26 @@
+﻿@using SPTarkov.Server.Web.Layout
+
+@using SPTarkov.Server.Web.Components.Auth
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(SPTWeb).Assembly" AdditionalAssemblies="SPTWeb._sptWebModsAssemblies">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(BaseMainLayout)">
+                <NotAuthorized Context="authenticationState">
+                    @if (authenticationState.User.Identity?.IsAuthenticated == true)
+                    {
+                        <LoginBox Message="No permissions" ShowForm="false" />
+                    }
+                    else
+                    {
+                        <LoginBox />
+                    }
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+}

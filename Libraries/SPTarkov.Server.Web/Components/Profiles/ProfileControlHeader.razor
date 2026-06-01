@@ -1,0 +1,33 @@
+@using SPTarkov.Server.Web.Models.Profiles
+
+<MudPaper Elevation="0" Class="profiles-header spt-panel pa-5">
+    <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="profiles-header-content">
+        <MudStack Spacing="1">
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="3" Class="profiles-title-row">
+                <MudIcon Icon="@Icons.Material.Filled.ManageAccounts" Color="Color.Warning" Size="Size.Large" />
+                <MudText Typo="Typo.h3">Profile control</MudText>
+            </MudStack>
+            <MudText Typo="Typo.body2">Create, inspect, save, reload, and remove local SPT profiles.</MudText>
+        </MudStack>
+
+        <MudStack Row Spacing="2" Class="profiles-stat-stack">
+            <MudPaper Elevation="0" Class="profiles-stat spt-panel pa-3">
+                <MudText Typo="Typo.caption">Profiles</MudText>
+                <MudText Typo="Typo.h5">@Profiles.Count.ToString("N0")</MudText>
+            </MudPaper>
+            <MudPaper Elevation="0" Class="profiles-stat spt-panel pa-3">
+                <MudText Typo="Typo.caption">Created</MudText>
+                <MudText Typo="Typo.h5">@Profiles.Count(profile => profile.HasCharacter).ToString("N0")</MudText>
+            </MudPaper>
+            <MudPaper Elevation="0" Class="profiles-stat spt-panel pa-3">
+                <MudText Typo="Typo.caption">Wiped</MudText>
+                <MudText Typo="Typo.h5">@Profiles.Count(profile => profile.IsWiped).ToString("N0")</MudText>
+            </MudPaper>
+        </MudStack>
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public IReadOnlyList<ProfileSummary> Profiles { get; set; } = [];
+}

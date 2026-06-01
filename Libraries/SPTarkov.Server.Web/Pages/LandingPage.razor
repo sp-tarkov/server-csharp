@@ -1,0 +1,49 @@
+@page "/"
+@using SPTarkov.Server.Web.Layout
+
+@layout BaseMudBlazorLayout
+
+<PageTitle>SPT Server</PageTitle>
+
+<div class="landing-page spt-page">
+
+    <MudContainer MaxWidth="MaxWidth.False" Class="landing-container pa-6">
+        <header class="landing-hero">
+            <MudText Typo="Typo.h1" Class="spt-title">Server Information Center (SIC)</MudText>
+            <MudText Typo="Typo.body1" Class="landing-subtitle spt-subtitle">
+                Local tools and server pages for inspecting this running SPT instance.
+            </MudText>
+        </header>
+
+        <nav class="landing-grid" aria-label="Server pages">
+            @foreach (var link in _pages)
+            {
+                <a class="landing-link-card spt-card" href="@link.Href">
+                    <span class="landing-link-icon">
+                        <MudIcon Icon="@(link.Icon)" Size="Size.Medium" />
+                    </span>
+                    <span class="landing-link-copy">
+                        <span class="landing-link-title">@link.Title</span>
+                        <span class="landing-link-description">@link.Description</span>
+                    </span>
+                    <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" Class="landing-link-arrow" />
+                </a>
+            }
+        </nav>
+    </MudContainer>
+</div>
+
+@code {
+    private readonly IReadOnlyList<LandingPageLink> _pages =
+    [
+        new("Database browser", "/database", "Browse the database", Icons.Material.Filled.Dataset),
+        new("Config editor", "/configs", "Edit server configs and compare runtime values against disk.", Icons.Material.Filled.Tune),
+        new("Profile control", "/profiles", "Create, save, reload, and remove local profiles.", Icons.Material.Filled.ManageAccounts),
+        new("User credentials", "/credentials", "Manage web sign-in users, passwords, and admin access.", Icons.Material.Filled.AdminPanelSettings),
+        new("Tools", "/tools", "Generate MongoIDs and use local server utilities.", Icons.Material.Filled.Build),
+        new("Server health", "/status", "View uptime, profile activity, build mode, and server state.", Icons.Material.Filled.MonitorHeart),
+        new("Version 4 contributors", "/thank-you", "See the contributor and Patreon supporter thank-you page.", Icons.Material.Filled.VolunteerActivism)
+    ];
+
+    private sealed record LandingPageLink(string Title, string Href, string Description, string Icon);
+}

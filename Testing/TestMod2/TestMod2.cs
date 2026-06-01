@@ -23,6 +23,7 @@ public record TestMod2Metadata : AbstractModMetadata, IModWebMetadata
     public override string License { get; init; } = "MIT";
 
     public string? WWWRootUrl { get; init; }
+    public string? HomePage { get; init; }
 }
 
 [Injectable(TypePriority = OnLoadOrder.PostLoad + 1)]

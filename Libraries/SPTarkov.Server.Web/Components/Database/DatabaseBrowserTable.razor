@@ -1,0 +1,237 @@
+@using System.Globalization
+@using SPTarkov.Server.Web.Models.Database
+
+<MudPaper Elevation="0" Class="database-table-panel spt-panel pa-4">
+    <MudStack Spacing="3">
+        <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="database-section-toolbar">
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.h6">@Table.Name</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Secondary">@Table.SelectionHint</MudText>
+            </MudStack>
+        </MudStack>
+
+        <MudTable T="DatabaseRow"
+                  Items="@_sortedRows"
+                  Dense="true"
+                  Hover="true"
+                  Bordered="false"
+                  Striped="true"
+                  FixedHeader="true"
+                  Height="calc(100vh - 350px)"
+                  Breakpoint="Breakpoint.Sm"
+                  Virtualize="true"
+                  OnRowClick="OnRowClicked"
+                  RowClassFunc="GetRowClass">
+            <HeaderContent>
+                @foreach (var column in Table.Columns)
+                {
+                    var tableColumn = column;
+                    <MudTh>
+                        <MudButton Variant="Variant.Text"
+                                   Size="Size.Small"
+                                   Color="@(IsSortedBy(tableColumn) ? Color.Warning : Color.Default)"
+                                   EndIcon="@GetSortIcon(tableColumn)"
+                                   Class="@GetSortButtonClass(tableColumn)"
+                                   OnClick="@(() => SetSort(tableColumn))">
+                            @tableColumn.Header
+                        </MudButton>
+                    </MudTh>
+                }
+            </HeaderContent>
+            <RowTemplate>
+                @foreach (var column in Table.Columns)
+                {
+                    <MudTd DataLabel="@column.Header">
+                        @if (column.IsPrimary)
+                        {
+                            <MudButton Variant="Variant.Text"
+                                       Color="Color.Warning"
+                                       Class="database-row-button px-0"
+                                       OnClick="@(() => SelectedRowChanged.InvokeAsync(context))">
+                                @column.GetValue(context)
+                            </MudButton>
+                        }
+                        else if (column.IsMono)
+                        {
+                            <MudText Typo="Typo.caption" Class="database-mono">@column.GetValue(context)</MudText>
+                        }
+                        else
+                        {
+                            @column.GetValue(context)
+                        }
+                    </MudTd>
+                }
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new[] { 25, 50, 100 }" />
+            </PagerContent>
+        </MudTable>
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public DatabaseTableDefinition Table { get; set; } = DatabaseTableDefinition.Empty;
+
+    [Parameter]
+    public IEnumerable<DatabaseRow> Rows { get; set; } = [];
+
+    [Parameter]
+    public DatabaseRow? SelectedRow { get; set; }
+
+    [Parameter]
+    public EventCallback<DatabaseRow> SelectedRowChanged { get; set; }
+
+    private readonly List<DatabaseRow> _rows = [];
+    private IReadOnlyList<DatabaseRow> _sortedRows = [];
+    private string? _sortColumnHeader;
+    private bool _sortDescending;
+
+    protected override void OnParametersSet()
+    {
+        _rows.Clear();
+        _rows.AddRange(Rows);
+        ApplySort();
+    }
+
+    private string GetRowClass(DatabaseRow row, int rowNumber)
+    {
+        return SelectedRow?.Id == row.Id ? "database-selected-row" : string.Empty;
+    }
+
+    private Task OnRowClicked(TableRowClickEventArgs<DatabaseRow> args)
+    {
+        return SelectedRowChanged.InvokeAsync(args.Item);
+    }
+
+    private void SetSort(DatabaseTableColumn column)
+    {
+        if (_sortColumnHeader == column.Header)
+        {
+            _sortDescending = !_sortDescending;
+        }
+        else
+        {
+            _sortColumnHeader = column.Header;
+            _sortDescending = false;
+        }
+
+        ApplySort();
+    }
+
+    private void ApplySort()
+    {
+        var sortColumn = Table.Columns.FirstOrDefault(column => column.Header == _sortColumnHeader);
+
+        if (sortColumn is null)
+        {
+            _sortedRows = _rows;
+            return;
+        }
+
+        var sortedRows = _rows.ToList();
+        sortedRows.Sort((left, right) => CompareRows(left, right, sortColumn));
+        _sortedRows = sortedRows;
+    }
+
+    private int CompareRows(DatabaseRow left, DatabaseRow right, DatabaseTableColumn column)
+    {
+        var leftValue = column.GetValue(left);
+        var rightValue = column.GetValue(right);
+        var leftMissing = IsMissingSortValue(leftValue);
+        var rightMissing = IsMissingSortValue(rightValue);
+
+        if (leftMissing || rightMissing)
+        {
+            return leftMissing == rightMissing ? CompareFallback(left, right) : leftMissing ? 1 : -1;
+        }
+
+        var comparison = CompareCellValues(leftValue, rightValue);
+
+        if (_sortDescending)
+        {
+            comparison *= -1;
+        }
+
+        return comparison != 0 ? comparison : CompareFallback(left, right);
+    }
+
+    private static int CompareCellValues(string left, string right)
+    {
+        if (TryParseSize(left, out var leftSize) && TryParseSize(right, out var rightSize))
+        {
+            var areaComparison = leftSize.Area.CompareTo(rightSize.Area);
+
+            if (areaComparison != 0)
+            {
+                return areaComparison;
+            }
+
+            var widthComparison = leftSize.Width.CompareTo(rightSize.Width);
+            return widthComparison != 0 ? widthComparison : leftSize.Height.CompareTo(rightSize.Height);
+        }
+
+        if (TryParseNumber(left, out var leftNumber) && TryParseNumber(right, out var rightNumber))
+        {
+            return leftNumber.CompareTo(rightNumber);
+        }
+
+        return StringComparer.CurrentCultureIgnoreCase.Compare(left, right);
+    }
+
+    private static int CompareFallback(DatabaseRow left, DatabaseRow right)
+    {
+        var titleComparison = StringComparer.CurrentCultureIgnoreCase.Compare(left.Title, right.Title);
+        return titleComparison != 0 ? titleComparison : StringComparer.Ordinal.Compare(left.Id, right.Id);
+    }
+
+    private static bool TryParseSize(string value, out SizeSortValue size)
+    {
+        var parts = value.Split('x', 'X', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+
+        if (parts.Length == 2 && TryParseNumber(parts[0], out var width) && TryParseNumber(parts[1], out var height))
+        {
+            size = new SizeSortValue(width * height, width, height);
+            return true;
+        }
+
+        size = default;
+        return false;
+    }
+
+    private static bool TryParseNumber(string value, out decimal number)
+    {
+        var normalized = value.Trim().Replace(",", string.Empty, StringComparison.Ordinal);
+        const NumberStyles numberStyles = NumberStyles.Number | NumberStyles.AllowCurrencySymbol;
+
+        return decimal.TryParse(normalized, numberStyles, CultureInfo.InvariantCulture, out number)
+            || decimal.TryParse(normalized, numberStyles, CultureInfo.CurrentCulture, out number);
+    }
+
+    private static bool IsMissingSortValue(string value)
+    {
+        return string.IsNullOrWhiteSpace(value) || value.Equals("n/a", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool IsSortedBy(DatabaseTableColumn column)
+    {
+        return _sortColumnHeader == column.Header;
+    }
+
+    private string GetSortIcon(DatabaseTableColumn column)
+    {
+        if (!IsSortedBy(column))
+        {
+            return Icons.Material.Filled.UnfoldMore;
+        }
+
+        return _sortDescending ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward;
+    }
+
+    private string GetSortButtonClass(DatabaseTableColumn column)
+    {
+        return IsSortedBy(column) ? "database-sort-button database-sort-button-active" : "database-sort-button";
+    }
+
+    private readonly record struct SizeSortValue(decimal Area, decimal Width, decimal Height);
+}

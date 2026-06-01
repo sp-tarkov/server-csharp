@@ -1,0 +1,128 @@
+@using Microsoft.AspNetCore.WebUtilities
+@using SPTarkov.Server.Web.Services
+@inject NavigationManager NavigationManager
+
+<div class="auth-page spt-page spt-page-centered">
+    <MudPaper Elevation="0" Class="auth-box spt-panel pa-5">
+        <MudStack Spacing="4">
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icon" Color="Color.Warning" Size="Size.Large" />
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h5">@Title</MudText>
+                    @if (ShowForm)
+                    {
+                        <MudText Typo="Typo.body2" Class="spt-muted">Enter your SPT web credentials to continue.</MudText>
+                    }
+                </MudStack>
+            </MudStack>
+
+            @if (!string.IsNullOrWhiteSpace(StatusMessage))
+            {
+                <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Dense="true">
+                    @StatusMessage
+                </MudAlert>
+            }
+
+            @if (ShowForm)
+            {
+                <form method="post" action="@AuthService.LoginPath" class="auth-form">
+                    <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+                    <input type="hidden" name="failureUrl" value="@FailureUrl" />
+
+                    <label class="auth-field">
+                        <span>Username</span>
+                        <input name="username" autocomplete="username" required autofocus />
+                    </label>
+
+                    <label class="auth-field">
+                        <span>Password</span>
+                        <input name="password" type="password" autocomplete="current-password" required />
+                    </label>
+
+                    <button type="submit" class="auth-submit">
+                        <span>Sign in</span>
+                        <MudIcon Icon="@Icons.Material.Filled.Login" Size="Size.Small" />
+                    </button>
+                </form>
+            }
+        </MudStack>
+    </MudPaper>
+</div>
+
+@code {
+    [Parameter]
+    public string? Message { get; set; }
+
+    [Parameter]
+    public bool ShowForm { get; set; } = true;
+
+    [Parameter]
+    public string? ReturnUrlOverride { get; set; }
+
+    [Parameter]
+    public string? FailureUrlOverride { get; set; }
+
+    private bool HasLoginError { get; set; }
+
+    private string Icon
+    {
+        get { return ShowForm ? Icons.Material.Filled.Lock : Icons.Material.Filled.LockPerson; }
+    }
+
+    private string Title
+    {
+        get { return ShowForm ? "Sign in" : "No permissions"; }
+    }
+
+    private string? StatusMessage
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(Message))
+            {
+                return Message;
+            }
+
+            return HasLoginError ? "Invalid username or password" : null;
+        }
+    }
+
+    private string ReturnUrl
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(ReturnUrlOverride))
+            {
+                return AuthService.GetSafeReturnUrl(ReturnUrlOverride);
+            }
+
+            var relativeUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+            var pathOnly = relativeUrl.Split(['?', '#'], 2, StringSplitOptions.None)[0];
+
+            return string.IsNullOrWhiteSpace(pathOnly) ? "/" : $"/{pathOnly}";
+        }
+    }
+
+    private string FailureUrl
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(FailureUrlOverride))
+            {
+                return AuthService.GetSafeReturnUrl(FailureUrlOverride);
+            }
+
+            var relativeUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+
+            return string.IsNullOrWhiteSpace(relativeUrl) ? "/" : $"/{relativeUrl}";
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        HasLoginError = query.ContainsKey("authError");
+    }
+}

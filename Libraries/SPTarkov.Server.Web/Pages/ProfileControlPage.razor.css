@@ -1,0 +1,409 @@
+.profiles-page {
+    --profiles-panel-bg: rgba(9, 9, 11, 0.74);
+    --profiles-yellow-soft: rgba(250, 204, 21, 0.12);
+    --profiles-blue-soft: rgba(56, 189, 248, 0.12);
+    --profiles-green-soft: rgba(34, 197, 94, 0.13);
+    --profiles-red-soft: rgba(248, 113, 113, 0.12);
+}
+
+.profiles-page ::deep .profiles-page-container {
+    max-width: 1680px;
+    margin-inline: auto;
+}
+
+.profiles-page ::deep .profiles-header,
+.profiles-page ::deep .profiles-sidebar,
+.profiles-page ::deep .profiles-results,
+.profiles-page ::deep .profiles-details {
+    background: var(--profiles-panel-bg);
+    border-color: rgba(63, 63, 70, 0.76);
+}
+
+.profiles-page ::deep .profiles-header {
+    border-color: #1f2937;
+    background:
+        linear-gradient(135deg, rgba(31, 41, 55, 0.92), rgba(3, 7, 18, 0.95) 52%, rgba(9, 9, 11, 0.98)),
+        rgba(9, 9, 11, 0.86);
+}
+
+.profiles-page ::deep .profiles-header-content {
+    gap: 24px;
+}
+
+.profiles-page ::deep .profiles-header .mud-typography-h3 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 1.1;
+}
+
+.profiles-page ::deep .profiles-header .mud-typography-body2,
+.profiles-page ::deep .profiles-section-toolbar .mud-typography-caption {
+    color: #a1a1aa;
+}
+
+.profiles-page ::deep .profiles-title-row,
+.profiles-page ::deep .profiles-section-toolbar,
+.profiles-page ::deep .profiles-actions,
+.profiles-page ::deep .profiles-chip-row {
+    flex-wrap: wrap;
+}
+
+.profiles-page ::deep .profiles-stat {
+    min-width: 120px;
+    border: 1px solid rgba(63, 63, 70, 0.9);
+    border-radius: 8px;
+    background:
+        linear-gradient(180deg, rgba(39, 39, 42, 0.58), rgba(24, 24, 27, 0.78)),
+        rgba(24, 24, 27, 0.78);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.profiles-page ::deep .profiles-stat .mud-typography-caption {
+    color: #a1a1aa;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.profiles-page ::deep .profiles-stat .mud-typography-h5 {
+    color: #f8fafc;
+    font-weight: 700;
+}
+
+.profiles-grid {
+    display: grid;
+    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+    gap: 16px;
+    align-items: stretch;
+}
+
+.profiles-page ::deep .profiles-sidebar,
+.profiles-page ::deep .profiles-results,
+.profiles-page ::deep .profiles-details {
+    min-height: calc(100vh - 190px);
+    overflow: hidden;
+}
+
+.profiles-page ::deep .profiles-sidebar .mud-typography-h6,
+.profiles-page ::deep .profiles-results .mud-typography-h6,
+.profiles-page ::deep .profiles-details .mud-typography-h5,
+.profiles-page ::deep .profiles-details .mud-typography-subtitle2,
+.profiles-page ::deep .profiles-sidebar .mud-typography-subtitle2 {
+    color: #f8fafc;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.profiles-page ::deep .profiles-details-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1300;
+    display: grid;
+    place-items: center;
+    padding: 28px;
+    background: rgba(0, 0, 0, 0.68);
+    backdrop-filter: blur(10px);
+}
+
+.profiles-page ::deep .profiles-details-modal {
+    width: min(1280px, 100%);
+    max-height: calc(100vh - 56px);
+    overflow: auto;
+    scrollbar-color: #52525b rgba(3, 7, 18, 0.24);
+}
+
+.profiles-page ::deep .profiles-details-modal .profiles-details {
+    min-height: auto;
+}
+
+.profiles-page ::deep .profiles-empty-details {
+    min-height: 360px;
+    text-align: center;
+}
+
+.profiles-page ::deep .database-loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1400;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background:
+        radial-gradient(circle at 50% 42%, rgba(250, 204, 21, 0.14), transparent 24rem),
+        rgba(3, 7, 18, 0.82);
+    backdrop-filter: blur(10px);
+}
+
+.profiles-page ::deep .database-loading-panel {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    max-width: min(460px, 100%);
+    border-color: rgba(250, 204, 21, 0.42);
+    background: rgba(9, 9, 11, 0.92);
+}
+
+.profiles-page ::deep .profiles-details-heading,
+.profiles-page ::deep .profiles-properties-header {
+    gap: 12px;
+}
+
+.profiles-page ::deep .profiles-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.profiles-page ::deep .profiles-detail-value {
+    min-width: 0;
+    padding: 10px 12px;
+    border: 1px solid rgba(39, 39, 42, 0.98);
+    border-radius: 8px;
+    background:
+        linear-gradient(90deg, rgba(24, 24, 27, 0.72), rgba(24, 24, 27, 0.48)),
+        rgba(24, 24, 27, 0.55);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.profiles-page ::deep .profiles-detail-value .mud-typography-caption {
+    color: #a1a1aa !important;
+    font-weight: 600;
+}
+
+.profiles-page ::deep .profiles-properties {
+    min-width: 0;
+}
+
+.profiles-page ::deep .profiles-properties-table .mud-table-container {
+    max-height: 520px;
+}
+
+.profiles-page ::deep .profiles-property-path {
+    color: #facc15;
+    font-weight: 700;
+}
+
+.profiles-page ::deep .profiles-property-value {
+    display: block;
+    max-width: 100%;
+    color: #d4d4d8;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.profiles-page ::deep .profiles-raw-json-toggle {
+    align-self: flex-start;
+}
+
+.profiles-page ::deep .profiles-raw-json {
+    border: 1px solid rgba(39, 39, 42, 0.96);
+    border-radius: 8px;
+    background:
+        linear-gradient(180deg, rgba(3, 7, 18, 0.54), rgba(3, 7, 18, 0.42)),
+        rgba(3, 7, 18, 0.42);
+}
+
+.profiles-page ::deep .profiles-raw-json pre {
+    max-height: 560px;
+    margin: 0;
+    overflow: auto;
+    padding: 12px;
+    color: #d4d4d8;
+    font-family: Consolas, "Liberation Mono", monospace;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+    scrollbar-color: #52525b rgba(3, 7, 18, 0.24);
+}
+
+.profiles-page ::deep .profiles-primary-button,
+.profiles-page ::deep .profiles-primary-button:hover,
+.profiles-page ::deep .profiles-primary-button:focus,
+.profiles-page ::deep .profiles-primary-button:focus-visible,
+.profiles-page ::deep .profiles-primary-button:active {
+    background: #facc15 !important;
+    color: #111827 !important;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.profiles-page ::deep .profiles-primary-button:hover,
+.profiles-page ::deep .profiles-primary-button:focus-visible {
+    background: #fde047 !important;
+}
+
+.profiles-page ::deep .profiles-primary-button .mud-icon-root {
+    color: #111827 !important;
+}
+
+.profiles-page ::deep .mud-button-outlined-secondary,
+.profiles-page ::deep .mud-icon-button-outlined-secondary {
+    border-color: #3f3f46;
+    color: #facc15;
+}
+
+.profiles-page ::deep .mud-button-outlined-secondary:hover,
+.profiles-page ::deep .mud-icon-button-outlined-secondary:hover {
+    border-color: #facc15;
+    background: rgba(250, 204, 21, 0.08);
+}
+
+.profiles-empty-state {
+    min-height: 180px;
+    border: 1px dashed rgba(82, 82, 91, 0.85);
+    border-radius: 8px;
+    background: rgba(3, 7, 18, 0.3);
+    text-align: center;
+}
+
+.profiles-page ::deep .profiles-row-title {
+    color: #f8fafc;
+    font-weight: 700;
+}
+
+.profiles-page ::deep .profiles-mono {
+    font-family: Consolas, "Liberation Mono", monospace;
+    word-break: break-all;
+}
+
+.profiles-page ::deep .profiles-selected-row {
+    background:
+        linear-gradient(90deg, rgba(14, 116, 144, 0.28), rgba(56, 189, 248, 0.08)) !important;
+    box-shadow: inset 3px 0 0 #38bdf8;
+}
+
+.profiles-page ::deep .mud-input-control {
+    margin-top: 0;
+}
+
+.profiles-page ::deep .mud-input,
+.profiles-page ::deep .mud-select {
+    color: #f8fafc;
+}
+
+.profiles-page ::deep .mud-input-outlined-border {
+    border-color: #3f3f46 !important;
+}
+
+.profiles-page ::deep .mud-input:hover .mud-input-outlined-border {
+    border-color: #52525b !important;
+}
+
+.profiles-page ::deep .mud-input.mud-input-focused .mud-input-outlined-border {
+    border-color: #38bdf8 !important;
+}
+
+.profiles-page ::deep .mud-input-label,
+.profiles-page ::deep .mud-input-adornment,
+.profiles-page ::deep .mud-input-adornment .mud-icon-root {
+    color: #a1a1aa !important;
+}
+
+.profiles-page ::deep .mud-table {
+    background: transparent;
+    color: #e5e7eb;
+}
+
+.profiles-page ::deep .mud-table-container {
+    border: 1px solid rgba(39, 39, 42, 0.96);
+    border-radius: 8px;
+    background:
+        linear-gradient(180deg, rgba(3, 7, 18, 0.54), rgba(3, 7, 18, 0.42)),
+        rgba(3, 7, 18, 0.42);
+}
+
+.profiles-page ::deep .mud-table-head {
+    background:
+        linear-gradient(180deg, rgba(39, 39, 42, 0.98), rgba(24, 24, 27, 0.96)),
+        rgba(24, 24, 27, 0.96);
+}
+
+.profiles-page ::deep .mud-table-cell {
+    border-color: #27272a;
+    color: #d4d4d8;
+}
+
+.profiles-page ::deep .mud-table-head .mud-table-cell {
+    color: #a1a1aa;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.profiles-page ::deep .mud-table-row:hover {
+    background: rgba(56, 189, 248, 0.07) !important;
+}
+
+.profiles-page ::deep .mud-table-pagination {
+    border-top: 1px solid #27272a;
+    color: #a1a1aa;
+    background: rgba(9, 9, 11, 0.78);
+}
+
+.profiles-page ::deep .mud-chip {
+    border-radius: 6px;
+    font-weight: 700;
+}
+
+.profiles-page ::deep .mud-chip-color-warning {
+    background: rgba(245, 158, 11, 0.16);
+    color: #fbbf24;
+}
+
+.profiles-page ::deep .mud-chip-color-info {
+    background: rgba(34, 211, 238, 0.14);
+    color: #67e8f9;
+}
+
+.profiles-page ::deep .mud-chip-color-success {
+    background: rgba(52, 211, 153, 0.14);
+    color: #6ee7b7;
+}
+
+.profiles-page ::deep .mud-chip-color-error {
+    background: rgba(248, 113, 113, 0.14);
+    color: #fca5a5;
+}
+
+@media (max-width: 1020px) {
+    .profiles-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profiles-page ::deep .profiles-sidebar,
+    .profiles-page ::deep .profiles-results {
+        min-height: auto;
+    }
+}
+
+@media (max-width: 900px) {
+    .profiles-page ::deep .profiles-page-container {
+        padding: 16px !important;
+    }
+
+    .profiles-page ::deep .profiles-header-content,
+    .profiles-page ::deep .profiles-stat-stack,
+    .profiles-page ::deep .profiles-section-toolbar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .profiles-page ::deep .profiles-details-modal-backdrop {
+        padding: 12px;
+    }
+
+    .profiles-page ::deep .profiles-details-modal {
+        max-height: calc(100vh - 24px);
+    }
+
+    .profiles-page ::deep .database-loading-panel {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profiles-page ::deep .profiles-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}

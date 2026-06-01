@@ -1,0 +1,26 @@
+﻿@page "/example-page"
+@attribute [Authorize]
+@using SPTarkov.Server.Web.Layout
+@layout BaseMudBlazorLayout
+
+<div class="spt-page spt-page-centered">
+    <MudContainer MaxWidth="MaxWidth.Small" Class="spt-container">
+        <MudCard Elevation="0" Class="spt-card pb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5" Align="Align.Center" Class="spt-title">SPT 4.0</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <div class="d-flex justify-center">
+                    <MudText Typo="Typo.h5" Class="ml-1 mt-5 spt-accent">Is pretty awesome</MudText>
+                </div>
+                <MudList T="string" Class="mx-auto mt-4" Style="width:300px;">
+                    <MudListItem Icon="@Icons.Material.Filled.Star" IconColor="Color.Warning">Feature 1</MudListItem>
+                    <MudListItem Icon="@Icons.Material.Filled.Star" IconColor="Color.Warning">Feature 2</MudListItem>
+                    <MudListItem Icon="@Icons.Material.Filled.Star" IconColor="Color.Warning">Feature 3</MudListItem>
+                </MudList>
+            </MudCardContent>
+        </MudCard>
+    </MudContainer>
+</div>

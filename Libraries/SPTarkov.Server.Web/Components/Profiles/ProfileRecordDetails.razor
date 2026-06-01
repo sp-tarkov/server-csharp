@@ -1,0 +1,181 @@
+@using System.Globalization
+@using SPTarkov.Server.Web.Models.Database
+@using SPTarkov.Server.Web.Models.Profiles
+
+<MudPaper Elevation="0" Class="profiles-details spt-panel pa-5">
+    @if (Details is null)
+    {
+        <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="profiles-empty-details">
+            <MudIcon Icon="@Icons.Material.Filled.ManageAccounts" Size="Size.Large" Color="Color.Secondary" />
+            <MudText Typo="Typo.h6">No profile selected</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary" Align="Align.Center">
+                Pick a profile from the table to view identifiers, character data, and profile properties.
+            </MudText>
+        </MudStack>
+    }
+    else
+    {
+        <MudStack Spacing="3">
+            <MudStack Row AlignItems="AlignItems.Start" Justify="Justify.SpaceBetween" Class="profiles-details-heading">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h5">@Details.Summary.Username</MudText>
+                    <MudText Typo="Typo.caption" Class="profiles-mono">@Details.Summary.Id</MudText>
+                </MudStack>
+
+                @if (OnClose.HasDelegate)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                   Color="Color.Secondary"
+                                   Size="Size.Small"
+                                   OnClick="OnClose"
+                                   aria-label="Close details" />
+                }
+            </MudStack>
+
+            <MudStack Row Spacing="1" Class="profiles-chip-row">
+                <MudChip T="string" Size="Size.Small" Color="@GetStatusColor(Details.Summary)">@Details.Summary.Status</MudChip>
+                <MudChip T="string" Size="Size.Small" Color="Color.Info">@Details.Summary.Edition</MudChip>
+                <MudChip T="string" Size="Size.Small" Color="Color.Info">@Details.Summary.Side</MudChip>
+            </MudStack>
+
+            @foreach (var section in Details.DetailSections)
+            {
+                <MudDivider />
+
+                @if (!string.IsNullOrWhiteSpace(section.Title))
+                {
+                    <MudText Typo="Typo.subtitle2">@section.Title</MudText>
+                }
+
+                <div class="profiles-detail-grid">
+                    @foreach (var value in section.Values)
+                    {
+                        <div class="profiles-detail-value">
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">@value.Label</MudText>
+                            <MudText Typo="Typo.body2" Class="@GetDetailValueClass(value)">@value.Value</MudText>
+                        </div>
+                    }
+                </div>
+            }
+
+            <MudDivider />
+
+            <MudStack Spacing="2" Class="profiles-properties">
+                <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="profiles-properties-header">
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.subtitle2">All profile properties</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">
+                            @Details.Properties.Count.ToString("N0", CultureInfo.CurrentCulture) populated property values
+                        </MudText>
+                    </MudStack>
+                </MudStack>
+
+                @if (Details.Properties.Count == 0)
+                {
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">No properties are populated for this profile.</MudText>
+                }
+                else
+                {
+                    <MudTable T="DatabaseProperty"
+                              Items="@Details.Properties"
+                              Dense="true"
+                              Hover="true"
+                              Bordered="false"
+                              Striped="true"
+                              FixedHeader="true"
+                              Height="320px"
+                              Virtualize="true"
+                              Class="profiles-properties-table">
+                        <HeaderContent>
+                            <MudTh>Property</MudTh>
+                            <MudTh>Type</MudTh>
+                            <MudTh>Value</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Property">
+                                <MudText Typo="Typo.caption" Class="profiles-mono profiles-property-path">@context.Path</MudText>
+                            </MudTd>
+                            <MudTd DataLabel="Type">@context.Kind</MudTd>
+                            <MudTd DataLabel="Value">
+                                <MudText Typo="Typo.caption" Class="profiles-mono profiles-property-value">@context.Value</MudText>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+
+                    <MudButton Variant="Variant.Text"
+                               Color="Color.Secondary"
+                               Size="Size.Small"
+                               StartIcon="@RawJsonToggleIcon"
+                               Class="profiles-raw-json-toggle"
+                               OnClick="ToggleRawJson">
+                        @RawJsonToggleLabel
+                    </MudButton>
+
+                    @if (_showRawJson)
+                    {
+                        <div class="profiles-raw-json">
+                            <pre>@Details.PropertiesJson</pre>
+                        </div>
+                    }
+                }
+            </MudStack>
+        </MudStack>
+    }
+</MudPaper>
+
+@code {
+    [Parameter]
+    public ProfileDetails? Details { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    private string? _detailsId;
+    private bool _showRawJson;
+
+    private string RawJsonToggleIcon
+    {
+        get { return _showRawJson ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.Code; }
+    }
+
+    private string RawJsonToggleLabel
+    {
+        get { return _showRawJson ? "Hide raw profile JSON" : "Show raw profile JSON"; }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (_detailsId == Details?.Summary.Id)
+        {
+            return;
+        }
+
+        _detailsId = Details?.Summary.Id;
+        _showRawJson = false;
+    }
+
+    private static string? GetDetailValueClass(DatabaseDetailValue value)
+    {
+        return value.IsMono ? "profiles-mono" : null;
+    }
+
+    private void ToggleRawJson()
+    {
+        _showRawJson = !_showRawJson;
+    }
+
+    private static Color GetStatusColor(ProfileSummary profile)
+    {
+        if (profile.IsInvalid)
+        {
+            return Color.Error;
+        }
+
+        if (profile.IsWiped)
+        {
+            return Color.Warning;
+        }
+
+        return profile.HasCharacter ? Color.Success : Color.Info;
+    }
+}

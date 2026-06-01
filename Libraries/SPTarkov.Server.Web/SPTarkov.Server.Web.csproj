@@ -26,4 +26,26 @@
   <ItemGroup>
     <ProjectReference Include="..\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Components\Pages\DatabasePage.razor" />
+    <_ContentIncludedByDefault Remove="Components\Pages\ExamplePage.razor" />
+    <_ContentIncludedByDefault Remove="Components\Pages\LandingPage.razor" />
+    <_ContentIncludedByDefault Remove="Components\Pages\Status.razor" />
+    <_ContentIncludedByDefault Remove="Components\Pages\ThankYou.razor" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="Layout\BaseMainLayout.razor" />
+    <AdditionalFiles Include="Layout\BaseMudBlazorLayout.razor" />
+    <AdditionalFiles Include="Pages\ExamplePage.razor" />
+    <AdditionalFiles Include="Pages\Configs\ConfigEditorPage.razor" />
+    <AdditionalFiles Include="Pages\LandingPage.razor" />
+    <AdditionalFiles Include="Pages\Status.razor" />
+    <AdditionalFiles Include="Pages\ThankYou.razor" />
+    <AdditionalFiles Include="Pages\Tools\ToolsPage.razor" />
+    <AdditionalFiles Include="Pages\UserCredentialsPage.razor" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\Configs\" />
+    <Folder Include="Models\Database\" />
+  </ItemGroup>
 </Project>

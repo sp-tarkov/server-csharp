@@ -1,8 +1,14 @@
 ﻿using System.Reflection;
+using System.Text;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
 using MudBlazor.Services;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Web.Components;
+using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Web.Services;
 
 namespace SPTarkov.Server.Web;
 
@@ -18,6 +24,41 @@ public static class SPTWeb
 
         builder.WebHost.UseStaticWebAssets();
         builder.Services.AddMudServices();
+        builder
+            .Services.AddAuthentication(AuthService.AuthenticationScheme)
+            .AddCookie(
+                AuthService.AuthenticationScheme,
+                options =>
+                {
+                    options.Cookie.Name = "SPT.Server.Web.Auth";
+                    options.ExpireTimeSpan = TimeSpan.FromHours(8);
+                    options.SlidingExpiration = true;
+                    options.LoginPath = AuthService.LoginPagePath;
+                    options.AccessDeniedPath = AuthService.LoginPagePath;
+                    options.Events = new CookieAuthenticationEvents
+                    {
+                        OnRedirectToLogin = context =>
+                        {
+                            context.Response.Redirect(AuthService.GetLoginPageUrl(GetCurrentRequestUrl(context.Request)));
+
+                            return Task.CompletedTask;
+                        },
+                        OnRedirectToAccessDenied = context =>
+                        {
+                            context.Response.Redirect(AuthService.GetNoPermissionsUrl(GetCurrentRequestUrl(context.Request)));
+
+                            return Task.CompletedTask;
+                        },
+                    };
+                }
+            );
+        builder
+            .Services.AddAuthorizationBuilder()
+            .AddPolicy(
+                AuthService.AdministratorPolicy,
+                policy => policy.RequireClaim(AuthService.IsAdministratorClaimType, AuthService.IsAdministratorClaimValue)
+            );
+        builder.Services.AddCascadingAuthenticationState();
 
         var mvcBuilder = builder.Services.AddControllers();
 
@@ -33,9 +74,27 @@ public static class SPTWeb
     {
         var logger = app.Services.GetRequiredService<ILogger<App>>();
 
-        app.UseAntiforgery();
         app.UseStaticFiles();
+        app.UseAuthentication();
+        app.Use(
+            async (context, next) =>
+            {
+                var authService = context.RequestServices.GetRequiredService<AuthService>();
+
+                if (authService.ShouldBypassCredentials(context) && context.User.Identity?.IsAuthenticated != true)
+                {
+                    context.User = authService.CreateDefaultPrincipal();
+                }
+
+                await next();
+            }
+        );
+        app.UseAuthorization();
+        app.UseAntiforgery();
         app.MapControllers();
+        app.MapPost(AuthService.LoginPath, HandleLogin).DisableAntiforgery();
+        app.MapPost(AuthService.LogoutPath, HandleLogout).DisableAntiforgery();
+        app.MapGet("/profiles/{profileId}/download", HandleProfileDownload).RequireAuthorization(AuthService.AdministratorPolicy);
 
         var razorBuilder = app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
@@ -94,5 +153,58 @@ public static class SPTWeb
                 _wwwRootDirectories.Add(wwwrootDirectory);
             }
         }
+    }
+
+    private static async Task<IResult> HandleLogin(HttpContext context, AuthService authService)
+    {
+        var form = await context.Request.ReadFormAsync();
+        var returnUrl = AuthService.GetSafeReturnUrl(form["returnUrl"].ToString());
+        var failureUrl = AuthService.GetSafeReturnUrl(form["failureUrl"].ToString());
+        var username = form["username"].ToString();
+        var password = form["password"].ToString();
+
+        if (!authService.TryValidateCredentials(username, password, context, out var principal) || principal is null)
+        {
+            return Results.Redirect(AuthService.AddLoginError(failureUrl));
+        }
+
+        await context.SignInAsync(
+            AuthService.AuthenticationScheme,
+            principal,
+            new AuthenticationProperties { IsPersistent = true, AllowRefresh = true }
+        );
+
+        return Results.Redirect(returnUrl);
+    }
+
+    private static async Task<IResult> HandleLogout(HttpContext context)
+    {
+        await context.SignOutAsync(AuthService.AuthenticationScheme);
+
+        return Results.Redirect("/");
+    }
+
+    private static IResult HandleProfileDownload(string profileId, SaveServer saveServer, JsonUtil jsonUtil)
+    {
+        if (!MongoId.IsValidMongoId(profileId))
+        {
+            return Results.BadRequest("Invalid profile id.");
+        }
+
+        var sessionId = new MongoId(profileId);
+        if (!saveServer.ProfileExists(sessionId))
+        {
+            return Results.NotFound("Profile not found.");
+        }
+
+        var profile = saveServer.GetProfile(sessionId);
+        var json = jsonUtil.Serialize(profile, indented: true) ?? "{}";
+
+        return Results.File(Encoding.UTF8.GetBytes(json), "application/json; charset=utf-8", $"{profileId}.json");
+    }
+
+    private static string GetCurrentRequestUrl(HttpRequest request)
+    {
+        return $"{request.PathBase}{request.Path}{request.QueryString}";
     }
 }

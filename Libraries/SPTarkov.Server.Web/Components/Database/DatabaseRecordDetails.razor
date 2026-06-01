@@ -1,0 +1,147 @@
+@using System.Globalization
+@using SPTarkov.Server.Web.Models.Database
+
+<MudPaper Elevation="0" Class="database-details spt-panel pa-5">
+    @if (Row is null)
+    {
+        <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="database-empty-details">
+            <MudIcon Icon="@Icons.Material.Filled.Dataset" Size="Size.Large" Color="Color.Secondary" />
+            <MudText Typo="Typo.h6">No record selected</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary" Align="Align.Center">
+                Pick a row from the table to view identifiers, source data, and useful properties.
+            </MudText>
+        </MudStack>
+    }
+    else
+    {
+        <MudStack Spacing="3">
+            <MudStack Row AlignItems="AlignItems.Start" Justify="Justify.SpaceBetween" Class="database-details-heading">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h5">@Row.Title</MudText>
+                    <MudText Typo="Typo.caption" Class="database-mono">@Row.Id</MudText>
+                </MudStack>
+
+                <MudStack Row Spacing="1" Class="database-details-actions">
+                    @if (CanBrowseTraderAssort)
+                    {
+                        <MudTooltip Text="Browse trader assort">
+                            <MudButton Variant="Variant.Outlined"
+                                       Color="Color.Secondary"
+                                       Size="Size.Small"
+                                       StartIcon="@Icons.Material.Filled.Storefront"
+                                       OnClick="@(() => OnBrowseTraderAssort.InvokeAsync(Row))">
+                                Assort
+                            </MudButton>
+                        </MudTooltip>
+                    }
+
+                    @if (OnClose.HasDelegate)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                       Color="Color.Secondary"
+                                       Size="Size.Small"
+                                       OnClick="OnClose"
+                                       Title="Close details" />
+                    }
+                </MudStack>
+            </MudStack>
+
+            <MudStack Row Spacing="1" Class="database-chip-row">
+                @foreach (var chip in Row.Chips)
+                {
+                    <MudChip T="string" Size="Size.Small" Color="@chip.Color">@chip.Text</MudChip>
+                }
+            </MudStack>
+
+            @foreach (var section in Row.DetailSections)
+            {
+                <MudDivider />
+
+                @if (!string.IsNullOrWhiteSpace(section.Title))
+                {
+                    <MudText Typo="Typo.subtitle2">@section.Title</MudText>
+                }
+
+                <div class="database-detail-grid">
+                    @foreach (var value in section.Values)
+                    {
+                        <DatabaseDetailValueCard Value="value" />
+                    }
+                </div>
+            }
+
+            <MudDivider />
+
+            <MudStack Spacing="1">
+                <MudText Typo="Typo.subtitle2">Description</MudText>
+                <MudText Typo="Typo.body2" Color="Color.Secondary">@Row.Description</MudText>
+            </MudStack>
+
+            <MudDivider />
+
+            <MudStack Spacing="2" Class="database-properties">
+                <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="database-properties-header">
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.subtitle2">All record properties</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">
+                            @Row.Properties.Count.ToString("N0", CultureInfo.CurrentCulture) populated property values
+                        </MudText>
+                    </MudStack>
+                </MudStack>
+
+                @if (Row.Properties.Count == 0)
+                {
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">No properties are populated for this record.</MudText>
+                }
+                else
+                {
+                    <MudTable T="DatabaseProperty"
+                              Items="@Row.Properties"
+                              Dense="true"
+                              Hover="true"
+                              Bordered="false"
+                              Striped="true"
+                              FixedHeader="true"
+                              Height="320px"
+                              Class="database-properties-table">
+                        <HeaderContent>
+                            <MudTh>Property</MudTh>
+                            <MudTh>Type</MudTh>
+                            <MudTh>Value</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Property">
+                                <MudText Typo="Typo.caption" Class="database-mono database-property-path">@context.Path</MudText>
+                            </MudTd>
+                            <MudTd DataLabel="Type">@context.Kind</MudTd>
+                            <MudTd DataLabel="Value">
+                                <MudText Typo="Typo.caption" Class="database-mono database-property-value">@context.Value</MudText>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+
+                    <details class="database-raw-json">
+                        <summary>Raw source JSON</summary>
+                        <pre>@Row.PropertiesJson</pre>
+                    </details>
+                }
+            </MudStack>
+        </MudStack>
+    }
+</MudPaper>
+
+@code {
+    [Parameter]
+    public DatabaseRow? Row { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    [Parameter]
+    public EventCallback<DatabaseRow> OnBrowseTraderAssort { get; set; }
+
+    private bool CanBrowseTraderAssort
+    {
+        get { return Row?.Values.GetValueOrDefault("canBrowseAssort") == "true" && OnBrowseTraderAssort.HasDelegate; }
+    }
+}

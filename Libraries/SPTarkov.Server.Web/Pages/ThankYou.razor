@@ -1,24 +1,15 @@
-﻿@page "/"
+﻿@page "/thank-you"
 @using Microsoft.JSInterop
+@using SPTarkov.Server.Web.Layout
 @inject IJSRuntime JSRuntime
+@layout BaseMudBlazorLayout
+
 <PageTitle>Thank You - Single Player Tarkov - Version 4 Contributors</PageTitle>
 
-<HeadContent>
-    <link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet" />
-    <meta name="robots" content="noindex, nofollow">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&amp;family=Roboto:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet">
-</HeadContent>
-
-<MudThemeProvider Theme="@_theme" IsDarkMode="true" />
-<div class="video-background">
-    <video autoplay muted loop playsinline>
-        <source src="/SPTarkov.Server.Web/thank-you/background.mp4" type="video/mp4" />
-    </video>
-    <div class="video-overlay"></div>
-</div>
+<div class="thank-you-page spt-page">
 
 <MudContainer Class="main-container">
-    <MudPaper Class="main-content-paper" Square="false">
+    <MudPaper Class="main-content-paper spt-panel" Square="false">
         <MudContainer MaxWidth="MaxWidth.Medium">
             <MudStack AlignItems="AlignItems.Center">
                 <MudStack class="thank-you-section" AlignItems="AlignItems.Center">
@@ -45,7 +36,7 @@
                         @foreach (var contributor in _shuffledContributors)
                         {
                             <MudItem xs="10" sm="5" md="4">
-                                <MudCard Class="contributor-card" @onclick="() => TriggerConfetti(false, contributor)">
+                                <MudCard Class="contributor-card spt-card">
                                     <MudCardContent Class="contributor-card-content">
                                         <MudText Typo="Typo.caption" Align="Align.Center" Class="contributor-name">
                                             @contributor
@@ -80,7 +71,7 @@
                         @foreach (var supporter in _shuffledPatreonSupporters)
                         {
                             <MudItem xs="10" sm="5" md="4">
-                                <MudCard Class="contributor-card patreon-card" @onclick="() => TriggerConfetti(true, supporter)">
+                                <MudCard Class="contributor-card patreon-card spt-card">
                                     <MudCardContent Class="patreon-card-content">
                                         <MudStack Direction="Row" AlignItems="AlignItems.Center" Justify="Justify.Center">
                                             <MudIcon Icon="@Icons.Material.Filled.Star" Color="Color.Warning" Size="Size.Small" />
@@ -106,11 +97,12 @@
     </MudPaper>
 </MudContainer>
 
-<MudContainer Class="footer-container">
+<MudContainer Class="footer-container spt-panel">
     <MudText Typo="Typo.caption">
         The <MudText Typo="Typo.caption" Style="font-weight: bold;">SPT</MudText> project is not affiliated with Battlestate Games Ltd. in any way. All trademarks are property of their respective owners.
     </MudText>
 </MudContainer>
+</div>
 
 <style>
     .video-background {
@@ -355,7 +347,9 @@
         "R3ality", "Razzmatazz", "Redbeard", "Refringe", "ShadowXtrex",
         "Shibdib", "Stealthsuit", "studentchy", "Tetris", "Th3NightHawk",
         "TheHeadPhonesGuy", "ThyMuffinMan", "ultragastro", "Valens",
-        "XeonDead", "yurikus", "Chilly"
+        "XeonDead", "yurikus", "Chilly", "tyfon7", "rootdarkarchon",
+        "acidphantasm", "HiddenCirno", "sheepiest", "yuyuimoe", "bubz-dev",
+        "ozen-m", "qingchunnh", "Greelan", "PMouse23", "andrei-zgirvaci", "cp89gamedev"
     ];
 
     private readonly List<string> _patreonSupporters =
@@ -376,38 +370,10 @@
     private List<string> _shuffledContributors = [];
     private List<string> _shuffledPatreonSupporters = [];
 
-    private readonly MudTheme _theme = new()
-    {
-        PaletteDark = new PaletteDark()
-        {
-            Primary = Colors.Blue.Default,
-            Secondary = Colors.Orange.Default,
-            Warning = Colors.Amber.Default,
-            Info = Colors.Blue.Lighten1,
-            Success = Colors.Green.Default,
-            Background = "rgba(0,0,0,0.9)",
-            Surface = "rgba(255,255,255,0.05)",
-            AppbarBackground = "rgba(0,0,0,0.8)",
-            TextPrimary = "#FFFFFF"
-        }
-    };
-
     protected override void OnInitialized()
     {
         _shuffledContributors = ShuffleList(_contributors);
         _shuffledPatreonSupporters = ShuffleList(_patreonSupporters);
-    }
-
-    private async Task TriggerConfetti(bool isPatreon, string name)
-    {
-        //Todo: Needs implementation
-
-        if (isPatreon)
-        {
-        }
-        else
-        {
-        }
     }
 
     private static List<string> ShuffleList(List<string> list)
