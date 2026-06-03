@@ -31,4 +31,9 @@ public interface IModWebMetadata
     /// Example: /my-mod
     /// </summary>
     string? HomePage { get; init; }
+
+    /// <summary>
+    ///     Sets the card description on the SPT landing page
+    /// </summary>
+    string? HomePageDescription { get; init; }
 }

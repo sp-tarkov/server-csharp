@@ -15,21 +15,48 @@
             </MudText>
         </header>
 
-        <nav class="landing-grid" aria-label="Server pages">
-            @foreach (var link in _pages)
-            {
-                <a class="landing-link-card spt-card" href="@link.Href">
-                    <span class="landing-link-icon">
-                        <MudIcon Icon="@(link.Icon)" Size="Size.Medium" />
-                    </span>
-                    <span class="landing-link-copy">
-                        <span class="landing-link-title">@link.Title</span>
-                        <span class="landing-link-description">@link.Description</span>
-                    </span>
-                    <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" Class="landing-link-arrow" />
-                </a>
-            }
-        </nav>
+        <section class="landing-section" aria-labelledby="server-pages-heading">
+            <MudText Typo="Typo.h2" Id="server-pages-heading" Class="landing-section-title">Server pages</MudText>
+
+            <nav class="landing-grid" aria-label="Server pages">
+                @foreach (var link in _pages)
+                {
+                    <a class="landing-link-card spt-card" href="@link.Href">
+                        <span class="landing-link-icon">
+                            <MudIcon Icon="@(link.Icon)" Size="Size.Medium" />
+                        </span>
+                        <span class="landing-link-copy">
+                            <span class="landing-link-title">@link.Title</span>
+                            <span class="landing-link-description">@link.Description</span>
+                        </span>
+                        <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" Class="landing-link-arrow" />
+                    </a>
+                }
+            </nav>
+        </section>
+
+        @if (ModPages.Count > 0)
+        {
+            <section class="landing-section" aria-labelledby="mod-pages-heading">
+                <MudText Typo="Typo.h2" Id="mod-pages-heading" Class="landing-section-title">Mod pages</MudText>
+
+                <nav class="landing-grid landing-mod-grid" aria-label="Mod pages">
+                    @foreach (var link in ModPages)
+                    {
+                        <a class="landing-link-card landing-mod-link-card spt-card" href="@link.Href">
+                            <span class="landing-link-icon">
+                                <MudIcon Icon="@(link.Icon)" Size="Size.Medium" />
+                            </span>
+                            <span class="landing-link-copy">
+                                <span class="landing-link-title">@link.Title</span>
+                                <span class="landing-link-description">@link.Description</span>
+                            </span>
+                            <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" Class="landing-link-arrow" />
+                        </a>
+                    }
+                </nav>
+            </section>
+        }
     </MudContainer>
 </div>
 
@@ -44,6 +71,30 @@
         new("Server health", "/status", "View uptime, profile activity, build mode, and server state.", Icons.Material.Filled.MonitorHeart),
         new("Version 4 contributors", "/thank-you", "See the contributor and Patreon supporter thank-you page.", Icons.Material.Filled.VolunteerActivism)
     ];
+
+    private static IReadOnlyList<LandingPageLink> ModPages
+    {
+        get
+        {
+            return SPTWeb._sptWebMods
+                .Select(mod => (Metadata: mod.ModMetadata, WebMetadata: mod.ModMetadata as IModWebMetadata))
+                .Where(mod => !string.IsNullOrWhiteSpace(mod.WebMetadata?.HomePage))
+                .OrderBy(mod => mod.Metadata.Name)
+                .Select(mod => new LandingPageLink(
+                    mod.Metadata.Name,
+                    NormalizeHomePage(mod.WebMetadata!.HomePage!),
+                    mod.WebMetadata.HomePageDescription ?? "Description not set by author.",
+                    Icons.Material.Filled.Extension
+                ))
+                .ToList();
+        }
+    }
+
+    private static string NormalizeHomePage(string homePage)
+    {
+        var trimmed = homePage.Trim();
+        return trimmed.StartsWith('/') ? trimmed : $"/{trimmed}";
+    }
 
     private sealed record LandingPageLink(string Title, string Href, string Description, string Icon);
 }

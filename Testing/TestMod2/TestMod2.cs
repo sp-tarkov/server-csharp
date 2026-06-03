@@ -24,6 +24,7 @@ public record TestMod2Metadata : AbstractModMetadata, IModWebMetadata
 
     public string? WWWRootUrl { get; init; }
     public string? HomePage { get; init; }
+    public string? HomePageDescription { get; init; }
 }
 
 [Injectable(TypePriority = OnLoadOrder.PostLoad + 1)]
