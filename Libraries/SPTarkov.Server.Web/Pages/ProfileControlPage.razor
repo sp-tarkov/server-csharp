@@ -32,12 +32,13 @@
 @inject JsonUtil JsonUtil
 @inject ISnackbar Snackbar
 @inject SaveServer SaveServer
+@inject WebLocalizationService WebLocalizationService
 
-<PageTitle>Profile Control - SPT Server</PageTitle>
+<PageTitle>@L("profiles-page-title")</PageTitle>
 
 <div class="profiles-page spt-page">
     <DatabaseLoadingOverlay Visible="@_isDetailsLoading"
-                            LoadingTitle="Loading profile details"
+                            LoadingTitle="@L("profiles-loading-details")"
                             LoadingMessage="@_detailsLoadingMessage" />
 
     <MudContainer MaxWidth="MaxWidth.False" Class="profiles-page-container pa-6">
@@ -92,7 +93,7 @@
     private readonly List<string> _editions = [];
     private readonly Dictionary<string, ProfileDetails> _profileDetailsCache = [];
     private string _deleteConfirmation = string.Empty;
-    private string _detailsLoadingMessage = "Preparing profile properties.";
+    private string _detailsLoadingMessage = string.Empty;
     private bool _isBusy;
     private bool _isDetailsOpen;
     private bool _isDetailsLoading;
@@ -119,6 +120,7 @@
 
     protected override void OnInitialized()
     {
+        _detailsLoadingMessage = L("profiles-preparing-profile-properties");
         _editions.AddRange(TemplateTable.Profiles.Keys.OrderBy(edition => edition));
         _newEdition = _editions.FirstOrDefault() ?? string.Empty;
         RefreshProfiles();
@@ -177,7 +179,7 @@
             _selectedProfileId = profileId.ToString();
             _deleteConfirmation = string.Empty;
             _newUsername = string.Empty;
-            Snackbar.Add("Profile created.", Severity.Success);
+            Snackbar.Add(L("profiles-created"), Severity.Success);
         });
     }
 
@@ -186,7 +188,7 @@
         await RunProfileAction(async () =>
         {
             await SaveServer.SaveAsync();
-            Snackbar.Add("All profiles saved.", Severity.Success);
+            Snackbar.Add(L("profiles-all-saved"), Severity.Success);
         });
     }
 
@@ -195,7 +197,7 @@
         await RunProfileAction(async () =>
         {
             await SaveServer.SaveProfileAsync(new MongoId(profile.Id));
-            Snackbar.Add($"Saved {profile.Username}.", Severity.Success);
+            Snackbar.Add(string.Format(L("profiles-saved"), profile.Username), Severity.Success);
         });
     }
 
@@ -218,7 +220,7 @@
             _profileDetailsCache.Remove(editModel.Id);
             RefreshProfiles(invalidateDetails: false);
             RebuildSelectedProfileDetails();
-            Snackbar.Add($"Saved edits for {editModel.Username.Trim()}.", Severity.Success);
+            Snackbar.Add(string.Format(L("profiles-edits-saved"), editModel.Username.Trim()), Severity.Success);
         }
         catch (Exception exception)
         {
@@ -236,7 +238,7 @@
         await RunProfileAction(async () =>
         {
             await SaveServer.LoadProfileAsync(new MongoId(profile.Id));
-            Snackbar.Add($"Reloaded {profile.Username}.", Severity.Info);
+            Snackbar.Add(string.Format(L("profiles-reloaded"), profile.Username), Severity.Info);
         });
     }
 
@@ -251,7 +253,10 @@
         await RunProfileAction(() =>
         {
             var deleted = SaveServer.RemoveProfile(new MongoId(profile.Id));
-            Snackbar.Add(deleted ? $"Deleted {profile.Username}." : $"Could not delete {profile.Username}.", deleted ? Severity.Success : Severity.Error);
+            Snackbar.Add(
+                string.Format(deleted ? L("profiles-deleted") : L("profiles-delete-failed"), profile.Username),
+                deleted ? Severity.Success : Severity.Error
+            );
             ClearSelectedProfile();
             return Task.CompletedTask;
         });
@@ -283,19 +288,19 @@
 
         if (string.IsNullOrWhiteSpace(username))
         {
-            Snackbar.Add("Username is required.", Severity.Warning);
+            Snackbar.Add(L("profiles-username-required"), Severity.Warning);
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(_newEdition) || !TemplateTable.Profiles.ContainsKey(_newEdition))
         {
-            Snackbar.Add("Choose a valid edition.", Severity.Warning);
+            Snackbar.Add(L("profiles-valid-edition-required"), Severity.Warning);
             return false;
         }
 
         if (SaveServer.GetProfiles().Values.Any(profile => string.Equals(profile.ProfileInfo?.Username, username, StringComparison.OrdinalIgnoreCase)))
         {
-            Snackbar.Add("That username already exists.", Severity.Warning);
+            Snackbar.Add(L("profiles-username-exists"), Severity.Warning);
             return false;
         }
 
@@ -306,14 +311,14 @@
     {
         if (string.IsNullOrWhiteSpace(editModel.Id) || !MongoId.IsValidMongoId(editModel.Id))
         {
-            Snackbar.Add("Could not identify the selected profile.", Severity.Error);
+            Snackbar.Add(L("profiles-selected-profile-missing"), Severity.Error);
             return false;
         }
 
         var username = editModel.Username.Trim();
         if (string.IsNullOrWhiteSpace(username))
         {
-            Snackbar.Add("Username is required.", Severity.Warning);
+            Snackbar.Add(L("profiles-username-required"), Severity.Warning);
             return false;
         }
 
@@ -321,49 +326,49 @@
                 profile.Key.ToString() != editModel.Id
                 && string.Equals(profile.Value.ProfileInfo?.Username, username, StringComparison.OrdinalIgnoreCase)))
         {
-            Snackbar.Add("That username already exists.", Severity.Warning);
+            Snackbar.Add(L("profiles-username-exists"), Severity.Warning);
             return false;
         }
 
         if (editModel.PmcLevel is < 1 or > 99 || editModel.ScavLevel is < 1 or > 99)
         {
-            Snackbar.Add("Character levels must be between 1 and 99.", Severity.Warning);
+            Snackbar.Add(L("profiles-character-level-range"), Severity.Warning);
             return false;
         }
 
         if (editModel.PmcExperience is < 0 || editModel.ScavExperience is < 0)
         {
-            Snackbar.Add("Experience cannot be negative.", Severity.Warning);
+            Snackbar.Add(L("profiles-experience-not-negative"), Severity.Warning);
             return false;
         }
 
         if (editModel.Skills.Any(skill => skill.Level is < 0 or > 51 || skill.ProgressInLevel is < 0 or >= 100))
         {
-            Snackbar.Add("Skill levels must be 0-51 and progress must be 0-99.99.", Severity.Warning);
+            Snackbar.Add(L("profiles-skill-range"), Severity.Warning);
             return false;
         }
 
         if (editModel.HideoutAreas.Any(area => area.Level < 0 || area.Level > area.MaxLevel))
         {
-            Snackbar.Add("Hideout area levels must be between 0 and the area's maximum level.", Severity.Warning);
+            Snackbar.Add(L("profiles-hideout-level-range"), Severity.Warning);
             return false;
         }
 
         if (editModel.Quests.GroupBy(quest => quest.Id).Any(group => group.Count() > 1))
         {
-            Snackbar.Add("A quest can only be queued once.", Severity.Warning);
+            Snackbar.Add(L("profiles-quest-queued-once"), Severity.Warning);
             return false;
         }
 
         if (editModel.Traders.Any(trader => trader.LoyaltyLevel < 1 || trader.LoyaltyLevel > trader.MaxLoyaltyLevel))
         {
-            Snackbar.Add("Trader loyalty levels must be between 1 and the trader's maximum level.", Severity.Warning);
+            Snackbar.Add(L("profiles-trader-loyalty-range"), Severity.Warning);
             return false;
         }
 
         if (editModel.Traders.Any(trader => trader.SalesSum < 0 || trader.NextResupply < 0))
         {
-            Snackbar.Add("Trader sales and resupply values cannot be negative.", Severity.Warning);
+            Snackbar.Add(L("profiles-trader-values-not-negative"), Severity.Warning);
             return false;
         }
 
@@ -625,7 +630,7 @@
         }
 
         _isDetailsLoading = true;
-        _detailsLoadingMessage = $"Preparing {profile.Username} profile properties.";
+        _detailsLoadingMessage = string.Format(L("profiles-preparing-named-profile-properties"), profile.Username);
         await InvokeAsync(StateHasChanged);
         await Task.Yield();
 
@@ -696,7 +701,7 @@
         _isDetailsOpen = true;
     }
 
-    private static ProfileSummary BuildProfileSummary(MongoId id, SptProfile profile)
+    private ProfileSummary BuildProfileSummary(MongoId id, SptProfile profile)
     {
         var info = profile.ProfileInfo;
         var pmc = profile.CharacterData?.PmcData;
@@ -704,11 +709,11 @@
         var hasCharacter = !string.IsNullOrWhiteSpace(pmcInfo?.Nickname);
         var isInvalid = info?.InvalidOrUnloadableProfile == true;
         var isWiped = info?.IsWiped == true;
-        var status = isInvalid ? "Invalid" : isWiped ? "Wiped" : hasCharacter ? "Ready" : "Account";
+        var status = isInvalid ? L("profiles-status-invalid") : isWiped ? L("profiles-status-wiped") : hasCharacter ? L("profiles-status-ready") : L("profiles-status-account");
 
         return new ProfileSummary(
             id.ToString(),
-            GetNonEmptyValue(info?.Username, "Unknown"),
+            GetNonEmptyValue(info?.Username, L("common-unknown")),
             GetNonEmptyValue(pmcInfo?.Nickname, "n/a"),
             GetNonEmptyValue(pmcInfo?.Side, "n/a"),
             GetNonEmptyValue(info?.Edition, "n/a"),
@@ -1376,6 +1381,11 @@
     private static string GetNumberLabel(double? value)
     {
         return value is null ? "n/a" : value.Value.ToString("N0");
+    }
+
+    private string L(string key)
+    {
+        return WebLocalizationService.GetText(key);
     }
 
 }

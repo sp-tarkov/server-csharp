@@ -50,8 +50,8 @@ public partial class DatabasePage
     private async Task SelectRow(DatabaseRow row)
     {
         _isRecordLoading = true;
-        _loadingTitle = "Loading record details";
-        _loadingMessage = $"Preparing {row.Title} properties.";
+        _loadingTitle = L("database-loading-record-details");
+        _loadingMessage = string.Format(L("database-preparing-row-properties"), row.Title);
         await RenderLoadingOverlayAsync();
 
         try

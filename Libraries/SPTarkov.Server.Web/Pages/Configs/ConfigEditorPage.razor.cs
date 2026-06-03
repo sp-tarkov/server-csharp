@@ -25,13 +25,13 @@ public partial class ConfigEditorPage
     private string _searchText = string.Empty;
     private string _editorJson = string.Empty;
     private string _lastLoadedJson = string.Empty;
-    private string _sourceLabel = "No config selected";
+    private string _sourceLabel = string.Empty;
     private string? _editorParseError;
     private string? _selectedPresetId;
     private string? _presetName;
     private string? _loadError;
-    private string _loadingTitle = "Loading config editor";
-    private string _loadingMessage = "Preparing runtime and clean disk snapshots.";
+    private string _loadingTitle = string.Empty;
+    private string _loadingMessage = string.Empty;
     private bool _isLoading = true;
     private bool _isWorking;
     private int _presetCount;
@@ -63,7 +63,7 @@ public partial class ConfigEditorPage
 
     private string ConfigListTitle
     {
-        get { return ShowingModConfigs ? "Mod configs" : "Server configs"; }
+        get { return ShowingModConfigs ? L("configs-mod-configs") : L("configs-server-configs"); }
     }
 
     private ICollection<ConfigEditorConfigSummary> FilteredConfigs
@@ -92,6 +92,11 @@ public partial class ConfigEditorPage
         get { return !string.Equals(_editorJson, _lastLoadedJson, StringComparison.Ordinal); }
     }
 
+    protected override void OnInitialized()
+    {
+        InitializeLocalizedText();
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -103,6 +108,7 @@ public partial class ConfigEditorPage
 
         try
         {
+            InitializeLocalizedText();
             await Task.Yield();
             await RefreshSummariesAsync();
             SelectFirstConfigInCurrentSource();
@@ -141,8 +147,8 @@ public partial class ConfigEditorPage
             return;
         }
 
-        _loadingTitle = "Loading config";
-        _loadingMessage = $"Preparing {SelectedConfig?.DisplayName ?? "selected config"}.";
+        _loadingTitle = L("configs-loading-config");
+        _loadingMessage = string.Format(L("configs-preparing-config"), SelectedConfig?.DisplayName ?? L("configs-selected-config"));
         _isWorking = true;
         await RenderLoadingOverlayAsync();
 
@@ -170,8 +176,8 @@ public partial class ConfigEditorPage
 
         var previousConfigId = _selectedConfigId;
         _selectedConfigId = configId;
-        _loadingTitle = "Loading config";
-        _loadingMessage = $"Preparing {SelectedConfig?.DisplayName ?? "selected config"}.";
+        _loadingTitle = L("configs-loading-config");
+        _loadingMessage = string.Format(L("configs-preparing-config"), SelectedConfig?.DisplayName ?? L("configs-selected-config"));
         _isWorking = true;
         await RenderLoadingOverlayAsync();
 
@@ -194,9 +200,9 @@ public partial class ConfigEditorPage
     {
         await RunEditorActionAsync(
             async () => await LoadSnapshotAsync(loadCleanDisk: false),
-            "Loaded current runtime config.",
-            "Loading runtime config",
-            "Preparing current runtime config."
+            L("configs-loaded-current-runtime"),
+            L("configs-loading-runtime"),
+            L("configs-preparing-current-runtime")
         );
     }
 
@@ -204,9 +210,9 @@ public partial class ConfigEditorPage
     {
         await RunEditorActionAsync(
             async () => await LoadSnapshotAsync(loadCleanDisk: true),
-            "Loaded clean disk config.",
-            "Loading clean config",
-            "Preparing a fresh ConfigLoader disk snapshot."
+            L("configs-loaded-clean-disk"),
+            L("configs-loading-clean"),
+            L("configs-preparing-clean-snapshot")
         );
     }
 
@@ -240,13 +246,13 @@ public partial class ConfigEditorPage
 
         if (!preset.ConfigJsonById.TryGetValue(_selectedConfigId, out var presetJson))
         {
-            Snackbar.Add("Preset does not contain the selected config.", Severity.Warning);
+            Snackbar.Add(L("configs-preset-missing-selected-config"), Severity.Warning);
             return;
         }
 
         SetEditorJson(presetJson, resetModified: true);
         _presetName = preset.Name;
-        _sourceLabel = $"Preset: {preset.Name}";
+        _sourceLabel = string.Format(L("configs-preset-source"), preset.Name);
     }
 
     private async Task FormatEditor()
@@ -257,9 +263,9 @@ public partial class ConfigEditorPage
                 SetEditorJson(ConfigEditorService.FormatJson(_selectedConfigId, _editorJson), resetModified: false);
                 return Task.CompletedTask;
             },
-            "Formatted JSON.",
-            "Formatting JSON",
-            "Rebuilding the editor snapshot."
+            L("configs-formatted-json"),
+            L("configs-formatting-json"),
+            L("configs-rebuilding-editor-snapshot")
         );
     }
 
@@ -271,9 +277,9 @@ public partial class ConfigEditorPage
                 ConfigEditorService.ValidateJson(_selectedConfigId, _editorJson);
                 return Task.CompletedTask;
             },
-            "Config JSON is valid.",
-            "Validating JSON",
-            "Checking the edited config against the runtime type."
+            L("configs-json-valid"),
+            L("configs-validating-json"),
+            L("configs-checking-runtime-type")
         );
     }
 
@@ -287,9 +293,9 @@ public partial class ConfigEditorPage
                 await RefreshSummariesAsync();
                 _snapshot = await ConfigEditorService.GetSnapshotAsync(_selectedConfigId);
             },
-            "Applied config to running server.",
-            "Applying runtime config",
-            "Copying edited values into the running server config."
+            L("configs-applied-runtime"),
+            L("configs-applying-runtime"),
+            L("configs-copying-runtime-values")
         );
     }
 
@@ -297,7 +303,7 @@ public partial class ConfigEditorPage
     {
         if (SelectedConfig?.IsRegisteredConfig != true)
         {
-            Snackbar.Add("Server configs cannot be saved to disk from the editor.", Severity.Warning);
+            Snackbar.Add(L("configs-server-save-to-disk-blocked"), Severity.Warning);
             return;
         }
 
@@ -307,13 +313,13 @@ public partial class ConfigEditorPage
                 var formattedJson = ConfigEditorService.FormatJson(_selectedConfigId, _editorJson);
                 await ConfigEditorService.SaveToDiskAsync(_selectedConfigId, formattedJson);
                 SetEditorJson(formattedJson, resetModified: true);
-                _sourceLabel = "Saved disk config";
+                _sourceLabel = L("configs-saved-disk-source");
                 await RefreshSummariesAsync();
                 _snapshot = await ConfigEditorService.GetSnapshotAsync(_selectedConfigId);
             },
-            "Saved config to disk.",
-            "Saving disk config",
-            "Writing the edited config to its registered save target."
+            L("configs-saved-disk"),
+            L("configs-saving-disk"),
+            L("configs-writing-save-target")
         );
     }
 
@@ -329,9 +335,9 @@ public partial class ConfigEditorPage
                 _presetCount = ConfigEditorService.GetPresetCount();
                 return Task.CompletedTask;
             },
-            "Saved preset.",
-            "Saving preset",
-            "Capturing the current config set."
+            L("configs-saved-preset"),
+            L("configs-saving-preset"),
+            L("configs-capturing-config-set")
         );
     }
 
@@ -349,9 +355,9 @@ public partial class ConfigEditorPage
                 await RefreshSummariesAsync();
                 await LoadSnapshotAsync(loadCleanDisk: false);
             },
-            "Applied preset to running server.",
-            "Applying preset",
-            "Copying preset values into runtime configs."
+            L("configs-applied-preset"),
+            L("configs-applying-preset"),
+            L("configs-copying-preset-values")
         );
     }
 
@@ -370,9 +376,9 @@ public partial class ConfigEditorPage
                 _presetCount = ConfigEditorService.GetPresetCount();
                 return Task.CompletedTask;
             },
-            "Deleted preset.",
-            "Deleting preset",
-            "Removing the saved preset from disk."
+            L("configs-deleted-preset"),
+            L("configs-deleting-preset"),
+            L("configs-removing-preset")
         );
     }
 
@@ -416,7 +422,7 @@ public partial class ConfigEditorPage
         _editorParseError = null;
         _selectedPresetId = null;
         _presetName = null;
-        _sourceLabel = "No config selected";
+        _sourceLabel = L("configs-no-config-selected");
         RefreshPresets();
     }
 
@@ -511,10 +517,33 @@ public partial class ConfigEditorPage
     {
         if (SelectedConfig?.IsRegisteredConfig == true)
         {
-            return loadCleanDisk ? "Registered disk config" : "Current registered runtime config";
+            return loadCleanDisk ? L("configs-registered-disk-config") : L("configs-current-registered-runtime");
         }
 
-        return loadCleanDisk ? "Clean ConfigLoader disk copy" : "Current runtime DI config";
+        return loadCleanDisk ? L("configs-clean-disk-copy") : L("configs-current-runtime-di");
+    }
+
+    private void InitializeLocalizedText()
+    {
+        if (string.IsNullOrWhiteSpace(_sourceLabel))
+        {
+            _sourceLabel = L("configs-no-config-selected");
+        }
+
+        if (string.IsNullOrWhiteSpace(_loadingTitle))
+        {
+            _loadingTitle = L("configs-loading-editor");
+        }
+
+        if (string.IsNullOrWhiteSpace(_loadingMessage))
+        {
+            _loadingMessage = L("configs-preparing-snapshots");
+        }
+    }
+
+    private string L(string key)
+    {
+        return WebLocalizationService.GetText(key);
     }
 
     private static string GetErrorMessage(Exception exception)

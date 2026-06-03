@@ -2,9 +2,10 @@
 @using Microsoft.JSInterop
 @using SPTarkov.Server.Web.Layout
 @inject IJSRuntime JSRuntime
+@inject WebLocalizationService WebLocalizationService
 @layout BaseMudBlazorLayout
 
-<PageTitle>Thank You - Single Player Tarkov - Version 4 Contributors</PageTitle>
+<PageTitle>@L("thank-you-page-title")</PageTitle>
 
 <div class="thank-you-page spt-page">
 
@@ -14,20 +15,20 @@
             <MudStack AlignItems="AlignItems.Center">
                 <MudStack class="thank-you-section" AlignItems="AlignItems.Center">
                     <MudText Typo="Typo.h1" Align="Align.Center">
-                        Thank You
+                        @L("thank-you-heading")
                     </MudText>
                     <MudText Typo="Typo.h2" Color="Color.Warning" Align="Align.Center">
-                        Version 4 Contributors
+                        @L("thank-you-version-4-contributors")
                     </MudText>
                 </MudStack>
 
                 <MudStack>
                     <MudText Typo="Typo.body1" Align="Align.Center" Class="intro">
-                        The release of Single Player Tarkov Version 4 would not have been possible without the incredible dedication, talent, and passion of our amazing community. From core developers to modders, testers to documentation writers, each person listed here has contributed to making SPT what it is today.
+                        @L("thank-you-intro-1")
                     </MudText>
 
                     <MudText Typo="Typo.body1" Align="Align.Center" Class="intro">
-                        To everyone who spent countless hours debugging, coding, testing, and supporting the project, this is for you. Your work has transformed the way thousands experience Tarkov, and we are forever grateful.
+                        @L("thank-you-intro-2")
                     </MudText>
                 </MudStack>
 
@@ -49,20 +50,20 @@
                 </MudStack>
 
                 <MudText Typo="Typo.body1" Align="Align.Center" Class="closing-text">
-                    Every commit, every bug report, every line of code, and every moment of support has shaped this project. You are the heart of Single Player Tarkov.
+                    @L("thank-you-closing")
                 </MudText>
 
                 <MudText Typo="Typo.body1" Align="Align.Center" Class="patreon-divider">
-                    Patreon Supporters
+                    @L("thank-you-patreon-supporters")
                 </MudText>
 
                 <MudStack Style="max-width: 800px;">
                     <MudText Typo="Typo.body1" Align="Align.Center" Class="intro">
-                        A special thank you to our generous Patreon supporters whose financial contributions have helped sustain and grow the SPT project. Your support enables us to maintain infrastructure, develop new features, and keep this project alive for everyone to enjoy.
+                        @L("thank-you-patreon-intro")
                     </MudText>
 
                     <MudText Typo="Typo.caption" Align="Align.Center" Class="patreon-disclaimer">
-                        The following list includes supporters who opted to be publicly recognized. To all our supporters not listed here, whether by choice or oversight, please know that your contributions are equally valued and deeply appreciated. Every single patron, visible or not, makes this project possible. ♥️
+                        @L("thank-you-patreon-disclaimer")
                     </MudText>
                 </MudStack>
 
@@ -88,8 +89,8 @@
 
                 <MudContainer Class="signature">
                     <MudText HtmlTag="p" Align="Align.Center">
-                        With deepest gratitude,<br />
-                        The SPT Team
+                        @L("thank-you-signature-line-1")<br />
+                        @L("thank-you-signature-line-2")
                     </MudText>
                 </MudContainer>
             </MudStack>
@@ -99,7 +100,7 @@
 
 <MudContainer Class="footer-container spt-panel">
     <MudText Typo="Typo.caption">
-        The <MudText Typo="Typo.caption" Style="font-weight: bold;">SPT</MudText> project is not affiliated with Battlestate Games Ltd. in any way. All trademarks are property of their respective owners.
+        @L("thank-you-footer-prefix") <MudText Typo="Typo.caption" Style="font-weight: bold;">SPT</MudText> @L("thank-you-footer-suffix")
     </MudText>
 </MudContainer>
 </div>
@@ -374,6 +375,11 @@
     {
         _shuffledContributors = ShuffleList(_contributors);
         _shuffledPatreonSupporters = ShuffleList(_patreonSupporters);
+    }
+
+    private string L(string key)
+    {
+        return WebLocalizationService.GetText(key);
     }
 
     private static List<string> ShuffleList(List<string> list)

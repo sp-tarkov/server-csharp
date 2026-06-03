@@ -4,10 +4,11 @@
 @using SPTarkov.Server.Core.Models.Common
 @using SPTarkov.Server.Web.Layout
 @inject IJSRuntime JSRuntime
+@inject WebLocalizationService WebLocalizationService
 
 @layout BaseMudBlazorLayout
 
-<PageTitle>Tools - SPT Server</PageTitle>
+<PageTitle>@L("tools-page-title")</PageTitle>
 
 <div class="tools-page spt-page">
     <MudContainer MaxWidth="MaxWidth.False" Class="tools-page-container pa-6">
@@ -17,18 +18,18 @@
                     <MudStack Spacing="1">
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="3" Class="tools-title-row">
                             <MudIcon Icon="@Icons.Material.Filled.Build" Color="Color.Warning" Size="Size.Large" />
-                            <MudText Typo="Typo.h3">Tools</MudText>
+                            <MudText Typo="Typo.h3">@L("tools-page-heading")</MudText>
                         </MudStack>
-                        <MudText Typo="Typo.body2">Small utilities for server data, content work, and mod development.</MudText>
+                        <MudText Typo="Typo.body2">@L("tools-page-subtitle")</MudText>
                     </MudStack>
 
                     <MudStack Row Spacing="2" Class="tools-stat-stack">
                         <MudPaper Elevation="0" Class="tools-stat spt-panel pa-3">
-                            <MudText Typo="Typo.caption">Generated</MudText>
+                            <MudText Typo="Typo.caption">@L("tools-generated")</MudText>
                             <MudText Typo="Typo.h5">@_mongoIds.Count.ToString("N0")</MudText>
                         </MudPaper>
                         <MudPaper Elevation="0" Class="tools-stat spt-panel pa-3">
-                            <MudText Typo="Typo.caption">Used</MudText>
+                            <MudText Typo="Typo.caption">@L("tools-used")</MudText>
                             <MudText Typo="Typo.h5">@_mongoIds.Count(id => id.Used).ToString("N0")</MudText>
                         </MudPaper>
                     </MudStack>
@@ -37,14 +38,14 @@
 
             <MudPaper Elevation="0" Class="tools-tabs-panel spt-panel">
                 <MudTabs Class="tools-tabs" PanelClass="tools-tab-panel" Rounded="false" Elevation="0">
-                    <MudTabPanel Text="MongoIDs" Icon="@Icons.Material.Filled.Fingerprint">
+                    <MudTabPanel Text="@L("tools-mongoids-tab")" Icon="@Icons.Material.Filled.Fingerprint">
                         <div class="tools-grid">
                             <MudPaper Elevation="0" Class="tools-sidebar spt-panel pa-4">
                                 <MudStack Spacing="3">
-                                    <MudText Typo="Typo.h6">MongoID generator</MudText>
+                                    <MudText Typo="Typo.h6">@L("tools-mongoid-generator")</MudText>
 
                                     <MudNumericField T="int"
-                                                     Label="Quantity"
+                                                     Label="@L("tools-quantity")"
                                                      Variant="Variant.Outlined"
                                                      Min="1"
                                                      Max="@MaxMongoIdBatchSize"
@@ -53,23 +54,23 @@
                                                      @bind-Value="_mongoIdCount" />
 
                                     <MudStack Row Spacing="2" Class="tools-actions">
-                                        <MudTooltip Text="Generate MongoIDs">
+                                        <MudTooltip Text="@L("tools-generate-mongoids-tooltip")">
                                             <MudButton Variant="Variant.Filled"
                                                        Color="Color.Warning"
                                                        Class="tools-generate-button"
                                                        StartIcon="@Icons.Material.Filled.Add"
                                                        OnClick="GenerateMongoIds">
-                                                Generate
+                                                @L("tools-generate")
                                             </MudButton>
                                         </MudTooltip>
 
-                                        <MudTooltip Text="Clear generated IDs">
+                                        <MudTooltip Text="@L("tools-clear-generated-ids")">
                                             <MudIconButton Icon="@Icons.Material.Filled.DeleteSweep"
                                                            Variant="Variant.Outlined"
                                                            Color="Color.Secondary"
                                                            Disabled="@(!_mongoIds.Any())"
                                                            OnClick="ClearMongoIds"
-                                                           AriaLabel="Clear generated IDs" />
+                                                           AriaLabel="@L("tools-clear-generated-ids")" />
                                         </MudTooltip>
                                     </MudStack>
                                 </MudStack>
@@ -79,17 +80,17 @@
                                 <MudStack Spacing="3" Class="tools-results-stack">
                                     <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="tools-section-toolbar">
                                         <MudStack Spacing="0">
-                                            <MudText Typo="Typo.h6">Generated MongoIDs</MudText>
-                                            <MudText Typo="Typo.caption">@UnusedMongoIdCountLabel unused</MudText>
+                                            <MudText Typo="Typo.h6">@L("tools-generated-mongoids")</MudText>
+                                            <MudText Typo="Typo.caption">@UnusedMongoIdCountLabel @L("tools-unused-count")</MudText>
                                         </MudStack>
 
-                                        <MudTooltip Text="Clear used IDs">
+                                        <MudTooltip Text="@L("tools-clear-used-ids")">
                                             <MudIconButton Icon="@Icons.Material.Filled.DoneAll"
                                                            Variant="Variant.Outlined"
                                                            Color="Color.Secondary"
                                                            Disabled="@(!_mongoIds.Any(id => id.Used))"
                                                            OnClick="ClearUsedMongoIds"
-                                                           AriaLabel="Clear used IDs" />
+                                                           AriaLabel="@L("tools-clear-used-ids")" />
                                         </MudTooltip>
                                     </MudStack>
 
@@ -98,7 +99,7 @@
                                         {
                                             <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="tools-empty-state">
                                                 <MudIcon Icon="@Icons.Material.Filled.Fingerprint" Color="Color.Warning" Size="Size.Large" />
-                                                <MudText Typo="Typo.h6">No MongoIDs generated</MudText>
+                                                <MudText Typo="Typo.h6">@L("tools-no-mongoids-generated")</MudText>
                                             </MudStack>
                                         }
                                         else
@@ -118,7 +119,7 @@
                                                                      Size="Size.Small"
                                                                      Color="@GetMongoIdChipColor(mongoId)"
                                                                      Class="tools-id-chip">
-                                                                @(mongoId.Used ? "Used" : "Unused")
+                                                                @(mongoId.Used ? L("tools-used") : L("tools-unused"))
                                                             </MudChip>
                                                         </button>
                                                     </MudTooltip>
@@ -190,9 +191,14 @@
         return mongoId.Used ? Color.Success : Color.Info;
     }
 
-    private static string GetMongoIdTooltip(GeneratedMongoId mongoId)
+    private string GetMongoIdTooltip(GeneratedMongoId mongoId)
     {
-        return mongoId.Used ? "Copy MongoID again" : "Copy MongoID";
+        return mongoId.Used ? L("tools-copy-mongoid-again") : L("tools-copy-mongoid");
+    }
+
+    private string L(string key)
+    {
+        return WebLocalizationService.GetText(key);
     }
 
     private sealed class GeneratedMongoId(string value)

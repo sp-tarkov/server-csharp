@@ -7,17 +7,18 @@
 @using SPTarkov.Server.Web.Services
 @inject ConfigEditorService ConfigEditorService
 @inject ISnackbar Snackbar
+@inject WebLocalizationService WebLocalizationService
 
 @layout BaseMudBlazorLayout
 
-<PageTitle>Config Editor - SPT Server</PageTitle>
+<PageTitle>@L("configs-page-title")</PageTitle>
 
 <div class="config-editor-page spt-page">
     <DatabaseLoadingOverlay Visible="@IsLoadingOverlayVisible"
                             Error="@_loadError"
                             LoadingTitle="@_loadingTitle"
                             LoadingMessage="@_loadingMessage"
-                            ErrorTitle="Config editor failed to load" />
+                            ErrorTitle="@L("configs-load-failed")" />
 
     <MudContainer MaxWidth="MaxWidth.False" Class="config-editor-container pa-6">
         <MudStack Spacing="4">
@@ -26,22 +27,22 @@
                     <MudStack Spacing="1">
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="3" Class="config-editor-title-row">
                             <MudIcon Icon="@Icons.Material.Filled.Tune" Color="Color.Warning" Size="Size.Large" />
-                            <MudText Typo="Typo.h3">Config editor</MudText>
+                            <MudText Typo="Typo.h3">@L("configs-heading")</MudText>
                         </MudStack>
-                        <MudText Typo="Typo.body2">Edit server configs and compare runtime values against disk.</MudText>
+                        <MudText Typo="Typo.body2">@L("configs-subtitle")</MudText>
                     </MudStack>
 
                     <MudStack Row Spacing="2" Class="config-editor-stat-stack">
                         <MudPaper Elevation="0" Class="config-editor-stat spt-panel pa-3">
-                            <MudText Typo="Typo.caption">Configs</MudText>
+                            <MudText Typo="Typo.caption">@L("configs-count-label")</MudText>
                             <MudText Typo="Typo.h5">@_configs.Count.ToString("N0")</MudText>
                         </MudPaper>
                         <MudPaper Elevation="0" Class="config-editor-stat spt-panel pa-3">
-                            <MudText Typo="Typo.caption">Runtime diffs</MudText>
+                            <MudText Typo="Typo.caption">@L("configs-runtime-diffs")</MudText>
                             <MudText Typo="Typo.h5">@_configs.Count(config => config.ModifiedByMods).ToString("N0")</MudText>
                         </MudPaper>
                         <MudPaper Elevation="0" Class="config-editor-stat spt-panel pa-3">
-                            <MudText Typo="Typo.caption">Presets</MudText>
+                            <MudText Typo="Typo.caption">@L("configs-presets")</MudText>
                             <MudText Typo="Typo.h5">@_presetCount.ToString("N0")</MudText>
                         </MudPaper>
                     </MudStack>
@@ -59,13 +60,13 @@
                         <MudStack Spacing="3">
                             <MudText Typo="Typo.h6">@ConfigListTitle</MudText>
 
-                            <div class="config-editor-source-toggle" role="tablist" aria-label="Config source">
+                            <div class="config-editor-source-toggle" role="tablist" aria-label="@L("configs-source")">
                                 <button type="button"
                                         class="@GetConfigSourceButtonClass(ConfigEditorConfigSource.Server)"
                                         aria-selected="@(_selectedConfigSource == ConfigEditorConfigSource.Server)"
                                         disabled="@_isWorking"
                                         @onclick="() => SelectConfigSource(ConfigEditorConfigSource.Server)">
-                                    <span>Server</span>
+                                    <span>@L("configs-server")</span>
                                     <span>@ServerConfigCount.ToString("N0")</span>
                                 </button>
                                 <button type="button"
@@ -73,13 +74,13 @@
                                         aria-selected="@(_selectedConfigSource == ConfigEditorConfigSource.Mod)"
                                         disabled="@_isWorking"
                                         @onclick="() => SelectConfigSource(ConfigEditorConfigSource.Mod)">
-                                    <span>Mods</span>
+                                    <span>@L("configs-mods")</span>
                                     <span>@ModConfigCount.ToString("N0")</span>
                                 </button>
                             </div>
 
                             <MudTextField T="string"
-                                          Label="Filter"
+                                          Label="@L("configs-filter")"
                                           Variant="Variant.Outlined"
                                           Adornment="Adornment.Start"
                                           AdornmentIcon="@Icons.Material.Filled.Search"
@@ -92,7 +93,7 @@
                                     <MudPaper Elevation="0" Class="config-editor-empty-list pa-4">
                                         <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1">
                                             <MudIcon Icon="@Icons.Material.Filled.FolderOff" Color="Color.Warning" Size="Size.Medium" />
-                                            <MudText Typo="Typo.subtitle2">No @(ConfigListTitle.ToLowerInvariant())</MudText>
+                                            <MudText Typo="Typo.subtitle2">@L("common-no") @(ConfigListTitle.ToLowerInvariant())</MudText>
                                         </MudStack>
                                     </MudPaper>
                                 }
@@ -109,7 +110,7 @@
                                             </span>
                                             @if (config.ModifiedByMods)
                                             {
-                                                <MudTooltip Text="Runtime differs from clean disk config">
+                                                <MudTooltip Text="@L("configs-runtime-diff-tooltip")">
                                                     <MudIcon Icon="@Icons.Material.Filled.Extension" Color="Color.Warning" Size="Size.Small" />
                                                 </MudTooltip>
                                             }
@@ -128,53 +129,53 @@
                                         <MudText Typo="Typo.h5">@SelectedConfig?.DisplayName</MudText>
                                         @if (SelectedConfig?.IsRegisteredConfig == true)
                                         {
-                                            <MudChip T="string" Size="Size.Small" Color="Color.Info">Registered</MudChip>
+                                            <MudChip T="string" Size="Size.Small" Color="Color.Info">@L("configs-registered")</MudChip>
                                         }
                                         @if (_snapshot?.ModifiedByMods == true)
                                         {
-                                            <MudChip T="string" Size="Size.Small" Color="Color.Warning">Runtime differs</MudChip>
+                                            <MudChip T="string" Size="Size.Small" Color="Color.Warning">@L("configs-runtime-diff-chip")</MudChip>
                                         }
                                         @if (EditorModified)
                                         {
-                                            <MudChip T="string" Size="Size.Small" Color="Color.Info">Editor modified</MudChip>
+                                            <MudChip T="string" Size="Size.Small" Color="Color.Info">@L("configs-editor-modified")</MudChip>
                                         }
                                     </MudStack>
                                     <MudText Typo="Typo.caption">@_sourceLabel</MudText>
                                 </MudStack>
 
                                 <MudStack Row Spacing="2" Class="config-editor-actions">
-                                    <MudTooltip Text="Load current DI config">
+                                    <MudTooltip Text="@L("configs-load-current-di")">
                                         <MudIconButton Variant="Variant.Outlined"
                                                    Color="Color.Secondary"
                                                    Icon="@Icons.Material.Filled.Memory"
                                                    Disabled="@_isWorking"
-                                                   aria-label="Load current DI config"
+                                                   aria-label="@L("configs-load-current-di")"
                                                    OnClick="LoadCurrentServer">
                                         </MudIconButton>
                                     </MudTooltip>
-                                    <MudTooltip Text="Load clean config from disk">
+                                    <MudTooltip Text="@L("configs-load-clean-disk")">
                                         <MudIconButton Variant="Variant.Outlined"
                                                    Color="Color.Secondary"
                                                    Icon="@Icons.Material.Filled.FolderOpen"
                                                    Disabled="@_isWorking"
-                                                   aria-label="Load clean config from disk"
+                                                   aria-label="@L("configs-load-clean-disk")"
                                                    OnClick="LoadCleanFromDisk">
                                         </MudIconButton>
                                     </MudTooltip>
-                                    <MudTooltip Text="Format JSON">
+                                    <MudTooltip Text="@L("configs-format-json")">
                                         <MudIconButton Icon="@Icons.Material.Filled.FormatAlignLeft"
                                                        Variant="Variant.Outlined"
                                                        Color="Color.Secondary"
                                                        Disabled="@_isWorking"
-                                                       aria-label="Format JSON"
+                                                       aria-label="@L("configs-format-json")"
                                                        OnClick="FormatEditor"/>
                                     </MudTooltip>
-                                    <MudTooltip Text="Validate JSON">
+                                    <MudTooltip Text="@L("configs-validate-json")">
                                         <MudIconButton Icon="@Icons.Material.Filled.Rule"
                                                        Variant="Variant.Outlined"
                                                        Color="Color.Secondary"
                                                        Disabled="@_isWorking"
-                                                       aria-label="Validate JSON"
+                                                       aria-label="@L("configs-validate-json")"
                                                        OnClick="ValidateEditor"/>
                                     </MudTooltip>
                                 </MudStack>
@@ -183,42 +184,42 @@
                             @if (_snapshot?.ModifiedByMods == true)
                             {
                                 <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" Dense="true">
-                                    Runtime values differ from the clean disk config.
+                                    @L("configs-runtime-values-differ")
                                 </MudAlert>
                             }
 
                             <div class="config-editor-meta-grid">
                                 <MudPaper Elevation="0" Class="config-editor-meta spt-panel pa-3">
-                                    <MudText Typo="Typo.caption">Runtime size</MudText>
-                                    <MudText Typo="Typo.subtitle2">@((SelectedConfig?.RuntimeCharacterCount ?? 0).ToString("N0")) chars</MudText>
+                                    <MudText Typo="Typo.caption">@L("configs-runtime-size")</MudText>
+                                    <MudText Typo="Typo.subtitle2">@((SelectedConfig?.RuntimeCharacterCount ?? 0).ToString("N0")) @L("configs-chars")</MudText>
                                 </MudPaper>
                                 <MudPaper Elevation="0" Class="config-editor-meta spt-panel pa-3">
-                                    <MudText Typo="Typo.caption">Disk size</MudText>
-                                    <MudText Typo="Typo.subtitle2">@((SelectedConfig?.CleanCharacterCount ?? 0).ToString("N0")) chars</MudText>
+                                    <MudText Typo="Typo.caption">@L("configs-disk-size")</MudText>
+                                    <MudText Typo="Typo.subtitle2">@((SelectedConfig?.CleanCharacterCount ?? 0).ToString("N0")) @L("configs-chars")</MudText>
                                 </MudPaper>
                                 <MudPaper Elevation="0" Class="config-editor-meta spt-panel pa-3">
-                                    <MudText Typo="Typo.caption">Top-level props</MudText>
+                                    <MudText Typo="Typo.caption">@L("configs-top-level-props")</MudText>
                                     <MudText Typo="Typo.subtitle2">@((SelectedConfig?.TopLevelPropertyCount ?? 0).ToString("N0"))</MudText>
                                 </MudPaper>
                             </div>
 
                             <MudPaper Elevation="0" Class="config-editor-tabs-panel spt-panel">
                                 <MudTabs Class="config-editor-tabs" PanelClass="config-editor-tab-panel" Rounded="false" Elevation="0">
-                                    <MudTabPanel Text="Controls" Icon="@Icons.Material.Filled.Tune">
+                                    <MudTabPanel Text="@L("configs-controls")" Icon="@Icons.Material.Filled.Tune">
                                         @if (!string.IsNullOrWhiteSpace(_editorParseError))
                                         {
                                             <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Dense="true">@_editorParseError</MudAlert>
                                         }
                                         else
                                         {
-                                            <ConfigStructuredEditor Title="@(SelectedConfig?.DisplayName ?? "Config")"
+                                            <ConfigStructuredEditor Title="@(SelectedConfig?.DisplayName ?? L("configs-config"))"
                                                                     Value="@_editorNode"
                                                                     AddableObjectPaths="@(_snapshot?.AddableObjectPaths ?? _emptyAddableObjectPaths)"
                                                                     IgnoredSectionPaths="@(_snapshot?.IgnoredSectionPaths ?? _emptyIgnoredSectionPaths)"
                                                                     ValueChanged="OnStructuredEditorChanged" />
                                         }
                                     </MudTabPanel>
-                                    <MudTabPanel Text="Raw JSON" Icon="@Icons.Material.Filled.DataObject">
+                                    <MudTabPanel Text="@L("configs-raw-json")" Icon="@Icons.Material.Filled.DataObject">
                                         <MudTextField T="string"
                                                       Value="@_editorJson"
                                                       ValueChanged="OnEditorJsonChanged"
@@ -233,7 +234,7 @@
                             <MudStack Row AlignItems="AlignItems.End" Justify="Justify.SpaceBetween" Class="config-editor-footer">
                                 <MudStack Row Spacing="2" Class="config-editor-preset-actions">
                                     <MudSelect T="string"
-                                               Label="Preset"
+                                               Label="@L("configs-preset")"
                                                Variant="Variant.Outlined"
                                                Dense="true"
                                                Value="@_selectedPresetId"
@@ -241,40 +242,40 @@
                                                Class="config-editor-preset-select">
                                         @foreach (var preset in _presets)
                                         {
-                                            <MudSelectItem T="string" Value="@preset.Id">@preset.Name (@preset.ConfigJsonById.Count configs)</MudSelectItem>
+                                            <MudSelectItem T="string" Value="@preset.Id">@preset.Name (@preset.ConfigJsonById.Count @L("configs-count-label").ToLowerInvariant())</MudSelectItem>
                                         }
                                     </MudSelect>
 
                                     <MudTextField T="string"
-                                                  Label="Preset name"
+                                                  Label="@L("configs-preset-name")"
                                                   Variant="Variant.Outlined"
                                                   Dense="true"
                                                   @bind-Value="_presetName"
                                                   Class="config-editor-preset-name" />
 
-                                    <MudTooltip Text="Save preset">
+                                    <MudTooltip Text="@L("configs-save-preset")">
                                         <MudIconButton Icon="@Icons.Material.Filled.BookmarkAdd"
                                                        Variant="Variant.Outlined"
                                                        Color="Color.Secondary"
                                                        Disabled="@_isWorking"
                                                        OnClick="SavePreset"
-                                                       aria-label="Save preset" />
+                                                       aria-label="@L("configs-save-preset")" />
                                     </MudTooltip>
-                                    <MudTooltip Text="Delete preset">
+                                    <MudTooltip Text="@L("configs-delete-preset")">
                                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                                        Variant="Variant.Outlined"
                                                        Color="Color.Secondary"
                                                        Disabled="@(_isWorking || string.IsNullOrWhiteSpace(_selectedPresetId))"
                                                        OnClick="DeletePreset"
-                                                       aria-label="Delete preset" />
+                                                       aria-label="@L("configs-delete-preset")" />
                                     </MudTooltip>
-                                    <MudTooltip Text="Apply preset to runtime configs">
+                                    <MudTooltip Text="@L("configs-apply-preset-tooltip")">
                                         <MudIconButton Icon="@Icons.Material.Filled.PlaylistAddCheck"
                                                        Variant="Variant.Outlined"
                                                        Color="Color.Secondary"
                                                        Disabled="@(_isWorking || string.IsNullOrWhiteSpace(_selectedPresetId))"
                                                        OnClick="ApplySelectedPreset"
-                                                       aria-label="Apply preset" />
+                                                       aria-label="@L("configs-apply-preset")" />
                                     </MudTooltip>
                                 </MudStack>
 
@@ -287,7 +288,7 @@
                                                    StartIcon="@Icons.Material.Filled.Save"
                                                    Disabled="@_isWorking"
                                                    OnClick="SaveToDisk">
-                                            Save
+                                            @L("common-save")
                                         </MudButton>
                                     }
                                     <MudButton Variant="Variant.Filled"
@@ -296,7 +297,7 @@
                                                StartIcon="@Icons.Material.Filled.PublishedWithChanges"
                                                Disabled="@_isWorking"
                                                OnClick="ApplyToRuntime">
-                                        Apply
+                                        @L("common-apply")
                                     </MudButton>
                                 </MudStack>
                             </MudStack>

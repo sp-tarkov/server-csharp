@@ -5,6 +5,9 @@
 @using SPTarkov.Server.Web.Services
 
 @layout BaseMudBlazorLayout
+@inject WebLocalizationService WebLocalizationService
+
+<PageTitle>@WebLocalizationService.GetText("login-page-title")</PageTitle>
 
 <LoginBox Message="@Message"
           ShowForm="@ShowForm"
@@ -36,11 +39,11 @@
 
         if (query.ContainsKey("authError"))
         {
-            Message = "Invalid username or password";
+            Message = WebLocalizationService.GetText("login-invalid-username-password");
         }
         else if (query.ContainsKey("noPermissions"))
         {
-            Message = "No permissions";
+            Message = WebLocalizationService.GetText("login-no-permissions");
             ShowForm = false;
         }
 

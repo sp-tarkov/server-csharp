@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Web.Models.Database;
+using SPTarkov.Server.Web.Services;
 
 namespace SPTarkov.Server.Web.Pages.Database;
 
@@ -40,6 +41,9 @@ public partial class DatabasePage
     [Inject]
     private JsonUtil JsonUtil { get; set; } = null!;
 
+    [Inject]
+    private WebLocalizationService WebLocalizationService { get; set; } = null!;
+
     private readonly Dictionary<string, string> _filterValues = [];
     private readonly Dictionary<string, Func<DatabaseRow>> _detailRowFactories = [];
     private readonly Dictionary<string, DatabaseRow> _detailRowCache = [];
@@ -54,8 +58,8 @@ public partial class DatabasePage
     private bool _isRecordLoading;
     private bool _isAssortLoading;
     private string? _loadError;
-    private string _loadingTitle = "Loading database browser";
-    private string _loadingMessage = "Preparing tables.";
+    private string _loadingTitle = string.Empty;
+    private string _loadingMessage = string.Empty;
     private string _searchText = string.Empty;
     private string _selectedTableId = ItemsTableId;
     private string _localeName = "en";
@@ -102,6 +106,8 @@ public partial class DatabasePage
 
     protected override void OnInitialized()
     {
+        _loadingTitle = L("database-loading-browser");
+        _loadingMessage = L("database-preparing-tables");
         base.OnInitialized();
     }
 
@@ -227,7 +233,7 @@ public partial class DatabasePage
                 _selectedTraderAssort = null;
                 _isAssortOpen = true;
                 _isAssortLoading = true;
-                _loadingMessage = $"Preparing {row.Title} assort items.";
+                _loadingMessage = string.Format(L("database-preparing-assort-items"), row.Title);
                 await RenderLoadingOverlayAsync();
 
                 assort = buildAssort();
@@ -268,5 +274,10 @@ public partial class DatabasePage
     private static string GetLoadErrorMessage(Exception exception)
     {
         return exception.InnerException is null ? exception.Message : $"{exception.Message} {exception.InnerException.Message}";
+    }
+
+    private string L(string key)
+    {
+        return WebLocalizationService.GetText(key);
     }
 }
