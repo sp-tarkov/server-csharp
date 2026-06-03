@@ -20,11 +20,14 @@
 @using Production = SPTarkov.Server.Core.Models.Eft.Common.Tables.Production
 @using ProfileQuestStatus = SPTarkov.Server.Core.Models.Eft.Common.Tables.QuestStatus
 @using Quest = SPTarkov.Server.Core.Models.Eft.Common.Tables.Quest
+@using HideoutAreas = SPTarkov.Server.Core.Models.Enums.Hideout.HideoutAreas
 @using QuestStatusEnum = SPTarkov.Server.Core.Models.Enums.QuestStatusEnum
 @using TemplateSide = SPTarkov.Server.Core.Models.Eft.Common.Tables.TemplateSide
 @layout BaseMudBlazorLayout
 @inject CreateProfileService CreateProfileService
+@inject HideoutTable HideoutTable
 @inject TemplateTable TemplateTable
+@inject TradersTable TradersTable
 @inject HashUtil HashUtil
 @inject JsonUtil JsonUtil
 @inject ISnackbar Snackbar
@@ -65,7 +68,7 @@
                 <ProfileTable Profiles="@_profiles"
                               SelectedProfileId="@_selectedProfileId"
                               IsBusy="@_isBusy"
-                              OnRefresh="RefreshProfiles"
+                              OnRefresh="@(() => RefreshProfiles())"
                               OnSaveAll="SaveAllProfiles"
                               OnSaveProfile="SaveProfile"
                               OnReloadProfile="ReloadProfile"
@@ -74,6 +77,8 @@
 
             <ProfileRecordDetailsModal Details="@_selectedProfileDetails"
                                        Open="@_isDetailsOpen"
+                                       IsBusy="@_isBusy"
+                                       OnSaveEdit="SaveProfileEdits"
                                        OnClose="CloseDetails" />
         </MudStack>
     </MudContainer>
@@ -119,9 +124,13 @@
         RefreshProfiles();
     }
 
-    private void RefreshProfiles()
+    private void RefreshProfiles(bool invalidateDetails = true)
     {
-        InvalidateProfileDetails();
+        if (invalidateDetails)
+        {
+            InvalidateProfileDetails();
+        }
+
         _profiles.Clear();
         _profiles.AddRange(
             SaveServer.GetProfiles()
@@ -188,6 +197,38 @@
             await SaveServer.SaveProfileAsync(new MongoId(profile.Id));
             Snackbar.Add($"Saved {profile.Username}.", Severity.Success);
         });
+    }
+
+    private async Task SaveProfileEdits(ProfileEditModel editModel)
+    {
+        if (!ValidateEditForm(editModel))
+        {
+            return;
+        }
+
+        _isBusy = true;
+
+        try
+        {
+            var profileId = new MongoId(editModel.Id);
+            var profile = SaveServer.GetProfile(profileId);
+            ApplyProfileEdits(profile, editModel);
+            await SaveServer.SaveProfileAsync(profileId);
+
+            _profileDetailsCache.Remove(editModel.Id);
+            RefreshProfiles(invalidateDetails: false);
+            RebuildSelectedProfileDetails();
+            Snackbar.Add($"Saved edits for {editModel.Username.Trim()}.", Severity.Success);
+        }
+        catch (Exception exception)
+        {
+            Snackbar.Add(exception.InnerException?.Message ?? exception.Message, Severity.Error);
+        }
+        finally
+        {
+            _isBusy = false;
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private async Task ReloadProfile(ProfileSummary profile)
@@ -259,6 +300,275 @@
         }
 
         return true;
+    }
+
+    private bool ValidateEditForm(ProfileEditModel editModel)
+    {
+        if (string.IsNullOrWhiteSpace(editModel.Id) || !MongoId.IsValidMongoId(editModel.Id))
+        {
+            Snackbar.Add("Could not identify the selected profile.", Severity.Error);
+            return false;
+        }
+
+        var username = editModel.Username.Trim();
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            Snackbar.Add("Username is required.", Severity.Warning);
+            return false;
+        }
+
+        if (SaveServer.GetProfiles().Any(profile =>
+                profile.Key.ToString() != editModel.Id
+                && string.Equals(profile.Value.ProfileInfo?.Username, username, StringComparison.OrdinalIgnoreCase)))
+        {
+            Snackbar.Add("That username already exists.", Severity.Warning);
+            return false;
+        }
+
+        if (editModel.PmcLevel is < 1 or > 99 || editModel.ScavLevel is < 1 or > 99)
+        {
+            Snackbar.Add("Character levels must be between 1 and 99.", Severity.Warning);
+            return false;
+        }
+
+        if (editModel.PmcExperience is < 0 || editModel.ScavExperience is < 0)
+        {
+            Snackbar.Add("Experience cannot be negative.", Severity.Warning);
+            return false;
+        }
+
+        if (editModel.Skills.Any(skill => skill.Level is < 0 or > 51 || skill.ProgressInLevel is < 0 or >= 100))
+        {
+            Snackbar.Add("Skill levels must be 0-51 and progress must be 0-99.99.", Severity.Warning);
+            return false;
+        }
+
+        if (editModel.HideoutAreas.Any(area => area.Level < 0 || area.Level > area.MaxLevel))
+        {
+            Snackbar.Add("Hideout area levels must be between 0 and the area's maximum level.", Severity.Warning);
+            return false;
+        }
+
+        if (editModel.Quests.GroupBy(quest => quest.Id).Any(group => group.Count() > 1))
+        {
+            Snackbar.Add("A quest can only be queued once.", Severity.Warning);
+            return false;
+        }
+
+        if (editModel.Traders.Any(trader => trader.LoyaltyLevel < 1 || trader.LoyaltyLevel > trader.MaxLoyaltyLevel))
+        {
+            Snackbar.Add("Trader loyalty levels must be between 1 and the trader's maximum level.", Severity.Warning);
+            return false;
+        }
+
+        if (editModel.Traders.Any(trader => trader.SalesSum < 0 || trader.NextResupply < 0))
+        {
+            Snackbar.Add("Trader sales and resupply values cannot be negative.", Severity.Warning);
+            return false;
+        }
+
+        return true;
+    }
+
+    private static void ApplyProfileEdits(SptProfile profile, ProfileEditModel editModel)
+    {
+        var accountInfo = profile.ProfileInfo;
+        if (accountInfo is not null)
+        {
+            accountInfo.Username = editModel.Username.Trim();
+        }
+
+        var pmcInfo = profile.CharacterData?.PmcData?.Info;
+        if (pmcInfo is not null)
+        {
+            pmcInfo.Nickname = editModel.PmcNickname.Trim();
+            pmcInfo.LowerNickname = pmcInfo.Nickname.ToLowerInvariant();
+            pmcInfo.Level = editModel.PmcLevel;
+            pmcInfo.Experience = editModel.PmcExperience;
+        }
+
+        var scavInfo = profile.CharacterData?.ScavData?.Info;
+        if (scavInfo is not null)
+        {
+            scavInfo.Level = editModel.ScavLevel;
+            scavInfo.Experience = editModel.ScavExperience;
+        }
+
+        var pmcSkills = profile.CharacterData?.PmcData?.Skills;
+        var commonSkills = pmcSkills?.Common?.ToList();
+        if (pmcSkills is not null && commonSkills is not null)
+        {
+            foreach (var skillEdit in editModel.Skills)
+            {
+                var skill = commonSkills.FirstOrDefault(skill => string.Equals(skill.Id.ToString(), skillEdit.Id, StringComparison.Ordinal));
+                if (skill is null)
+                {
+                    continue;
+                }
+
+                skill.Progress = skillEdit.TotalProgress;
+            }
+        }
+
+        ApplyHideoutAreaEdits(profile, editModel);
+        ApplyQuestEdits(profile, editModel);
+        ApplyTraderEdits(profile, editModel);
+    }
+
+    private static void ApplyHideoutAreaEdits(SptProfile profile, ProfileEditModel editModel)
+    {
+        var hideoutAreas = profile.CharacterData?.PmcData?.Hideout?.Areas;
+        if (hideoutAreas is null)
+        {
+            return;
+        }
+
+        foreach (var areaEdit in editModel.HideoutAreas)
+        {
+            if (!Enum.TryParse<HideoutAreas>(areaEdit.Type, out var areaType))
+            {
+                continue;
+            }
+
+            var area = hideoutAreas.FirstOrDefault(area => area.Type == areaType);
+            if (area is null)
+            {
+                continue;
+            }
+
+            area.Level = Math.Clamp(areaEdit.Level, 0, areaEdit.MaxLevel);
+            area.Active = areaEdit.Active;
+            area.PassiveBonusesEnabled = areaEdit.PassiveBonusesEnabled;
+
+            if (areaEdit.CompleteConstruction)
+            {
+                area.Constructing = false;
+                area.CompleteTime = 0;
+                continue;
+            }
+
+            area.Constructing = areaEdit.Constructing;
+
+            if (!areaEdit.Constructing)
+            {
+                area.CompleteTime = 0;
+            }
+        }
+    }
+
+    private static void ApplyQuestEdits(SptProfile profile, ProfileEditModel editModel)
+    {
+        var pmcData = profile.CharacterData?.PmcData;
+        if (pmcData is null)
+        {
+            return;
+        }
+
+        pmcData.Quests ??= [];
+        var quests = pmcData.Quests;
+        var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        foreach (var questEdit in editModel.Quests)
+        {
+            if (!MongoId.IsValidMongoId(questEdit.Id))
+            {
+                continue;
+            }
+
+            var questId = new MongoId(questEdit.Id);
+            var quest = quests.FirstOrDefault(quest => quest.QId == questId);
+            if (quest is null)
+            {
+                if (!questEdit.IsNew)
+                {
+                    continue;
+                }
+
+                quest = CreateStartedQuestStatus(questId, now);
+                quests.Add(quest);
+            }
+
+            switch (questEdit.PendingAction)
+            {
+                case ProfileQuestEditAction.Complete:
+                    CompleteQuestStatus(quest, now);
+                    break;
+                case ProfileQuestEditAction.Restart:
+                    RestartQuestStatus(quest, now);
+                    break;
+                case ProfileQuestEditAction.None:
+                    if (questEdit.IsNew)
+                    {
+                        RestartQuestStatus(quest, now);
+                    }
+
+                    break;
+            }
+        }
+    }
+
+    private static ProfileQuestStatus CreateStartedQuestStatus(MongoId questId, long timestamp)
+    {
+        return new ProfileQuestStatus
+        {
+            QId = questId,
+            StartTime = timestamp,
+            Status = QuestStatusEnum.Started,
+            StatusTimers = new Dictionary<QuestStatusEnum, double> { [QuestStatusEnum.Started] = timestamp },
+            CompletedConditions = [],
+        };
+    }
+
+    private static void CompleteQuestStatus(ProfileQuestStatus quest, long timestamp)
+    {
+        quest.Status = QuestStatusEnum.Success;
+        quest.AvailableAfter = null;
+        quest.StatusTimers ??= [];
+        quest.StatusTimers[QuestStatusEnum.Success] = timestamp;
+    }
+
+    private static void RestartQuestStatus(ProfileQuestStatus quest, long timestamp)
+    {
+        quest.Status = QuestStatusEnum.Started;
+        quest.StartTime = timestamp;
+        quest.AvailableAfter = null;
+        quest.StatusTimers ??= [];
+        quest.StatusTimers[QuestStatusEnum.Started] = timestamp;
+
+        foreach (var status in quest.StatusTimers.Keys.Where(status => status > QuestStatusEnum.Started).ToList())
+        {
+            quest.StatusTimers.Remove(status);
+        }
+
+        quest.CompletedConditions = [];
+    }
+
+    private static void ApplyTraderEdits(SptProfile profile, ProfileEditModel editModel)
+    {
+        var pmcTraders = profile.CharacterData?.PmcData?.TradersInfo;
+        if (pmcTraders is null)
+        {
+            return;
+        }
+
+        foreach (var traderEdit in editModel.Traders)
+        {
+            if (!MongoId.IsValidMongoId(traderEdit.Id))
+            {
+                continue;
+            }
+
+            var traderId = new MongoId(traderEdit.Id);
+            if (!pmcTraders.TryGetValue(traderId, out var traderInfo))
+            {
+                continue;
+            }
+
+            traderInfo.LoyaltyLevel = Math.Clamp(traderEdit.LoyaltyLevel, 1, traderEdit.MaxLoyaltyLevel);
+            traderInfo.Standing = Math.Round(traderEdit.Standing, 2);
+            traderInfo.SalesSum = Math.Max(0d, traderEdit.SalesSum);
+            traderInfo.NextResupply = Math.Max(0d, traderEdit.NextResupply);
+            traderInfo.Unlocked = traderEdit.Unlocked;
+        }
     }
 
     private TemplateSide GetTemplateSide(string edition, string side)
@@ -366,6 +676,26 @@
         _profileDetailsRequestId++;
     }
 
+    private void RebuildSelectedProfileDetails()
+    {
+        if (_selectedProfileId is null)
+        {
+            return;
+        }
+
+        var selectedProfile = SelectedProfile;
+        if (selectedProfile is null)
+        {
+            CloseDetails();
+            return;
+        }
+
+        var details = BuildProfileDetails(selectedProfile, SaveServer.GetProfile(new MongoId(selectedProfile.Id)));
+        _profileDetailsCache[selectedProfile.Id] = details;
+        _selectedProfileDetails = details;
+        _isDetailsOpen = true;
+    }
+
     private static ProfileSummary BuildProfileSummary(MongoId id, SptProfile profile)
     {
         var info = profile.ProfileInfo;
@@ -445,10 +775,172 @@
 
         return new ProfileDetails(
             summary,
+            BuildProfileEditModel(summary, profile),
             detailSections,
             properties,
             propertiesJson
         );
+    }
+
+    private ProfileEditModel BuildProfileEditModel(ProfileSummary summary, SptProfile profile)
+    {
+        var accountInfo = profile.ProfileInfo;
+        var pmc = profile.CharacterData?.PmcData;
+        var pmcInfo = pmc?.Info;
+        var scavInfo = profile.CharacterData?.ScavData?.Info;
+        var commonSkills = pmc?.Skills?.Common?
+            .Select(skill =>
+            {
+                var level = GetSkillLevel(skill.Progress);
+                return new ProfileSkillEditModel
+                {
+                    Id = skill.Id.ToString(),
+                    Label = FormatSkillName(skill.Id.ToString()),
+                    Level = level,
+                    ProgressInLevel = level >= 51 ? 0d : Math.Round(Math.Clamp(skill.Progress - (level * 100d), 0d, 99.99d), 2),
+                };
+            })
+            .OrderBy(skill => skill.Label)
+            .ToList() ?? [];
+
+        return new ProfileEditModel
+        {
+            Id = summary.Id,
+            Username = GetNonEmptyValue(accountInfo?.Username, summary.Username),
+            PmcNickname = GetNonEmptyValue(pmcInfo?.Nickname, summary.Nickname),
+            PmcLevel = pmcInfo?.Level,
+            PmcExperience = pmcInfo?.Experience,
+            ScavLevel = scavInfo?.Level,
+            ScavExperience = scavInfo?.Experience,
+            HasCharacter = pmcInfo is not null,
+            Skills = commonSkills,
+            HideoutAreas = BuildHideoutAreaEditModels(pmc),
+            Quests = BuildQuestEditModels(pmc),
+            MissingQuests = BuildMissingQuestOptions(pmc),
+            Traders = BuildTraderEditModels(pmc),
+        };
+    }
+
+    private List<ProfileHideoutAreaEditModel> BuildHideoutAreaEditModels(PmcData? pmc)
+    {
+        var areas = pmc?.Hideout?.Areas;
+        if (areas is null || areas.Count == 0)
+        {
+            return [];
+        }
+
+        return areas
+            .OrderBy(area => FormatSkillName(area.Type.ToString()))
+            .Select(area => new ProfileHideoutAreaEditModel
+            {
+                Type = area.Type.ToString(),
+                Label = FormatSkillName(area.Type.ToString()),
+                Level = Math.Max(0, area.Level ?? 0),
+                MaxLevel = GetHideoutAreaMaxLevel(area.Type, area.Level ?? 0),
+                Active = area.Active == true,
+                PassiveBonusesEnabled = area.PassiveBonusesEnabled == true,
+                Constructing = area.Constructing == true,
+                CompleteConstruction = false,
+                CompleteTime = area.CompleteTime,
+            })
+            .ToList();
+    }
+
+    private int GetHideoutAreaMaxLevel(HideoutAreas areaType, int currentLevel)
+    {
+        var dbArea = HideoutTable.Areas
+            .Concat(HideoutTable.CustomAreas ?? [])
+            .FirstOrDefault(area => area.Type == areaType);
+
+        if (dbArea?.Stages is null || dbArea.Stages.Count == 0)
+        {
+            return Math.Max(currentLevel, 1);
+        }
+
+        var maxStage = dbArea.Stages.Keys
+            .Select(stage => int.TryParse(stage, out var level) ? level : 0)
+            .DefaultIfEmpty(0)
+            .Max();
+
+        return Math.Max(currentLevel, maxStage);
+    }
+
+    private List<ProfileQuestEditModel> BuildQuestEditModels(PmcData? pmc)
+    {
+        var quests = pmc?.Quests;
+        if (quests is null || quests.Count == 0)
+        {
+            return [];
+        }
+
+        return quests
+            .Select(quest => new ProfileQuestEditModel
+            {
+                Id = quest.QId.ToString(),
+                Label = GetQuestLabel(quest, TemplateTable.Quests),
+                Status = quest.Status,
+            })
+            .OrderBy(quest => quest.Label)
+            .ToList();
+    }
+
+    private List<ProfileQuestOptionModel> BuildMissingQuestOptions(PmcData? pmc)
+    {
+        var profileQuestIds = pmc?.Quests?.Select(quest => quest.QId).ToHashSet() ?? [];
+
+        return TemplateTable.Quests
+            .Where(quest => !profileQuestIds.Contains(quest.Key))
+            .Select(quest => new ProfileQuestOptionModel
+            {
+                Id = quest.Key.ToString(),
+                Label = GetQuestDbLabel(quest.Key, quest.Value),
+            })
+            .OrderBy(quest => quest.Label)
+            .ToList();
+    }
+
+    private List<ProfileTraderEditModel> BuildTraderEditModels(PmcData? pmc)
+    {
+        if (pmc?.TradersInfo is null || pmc.TradersInfo.Count == 0)
+        {
+            return [];
+        }
+
+        return pmc.TradersInfo
+            .Select(trader =>
+            {
+                var maxLoyalty = GetTraderMaxLoyaltyLevel(trader.Key);
+                return new ProfileTraderEditModel
+                {
+                    Id = trader.Key.ToString(),
+                    Label = GetTraderLabel(trader.Key),
+                    LoyaltyLevel = Math.Clamp(trader.Value.LoyaltyLevel ?? 1, 1, maxLoyalty),
+                    MaxLoyaltyLevel = maxLoyalty,
+                    Standing = Math.Round(trader.Value.Standing ?? 0d, 2),
+                    SalesSum = Math.Max(0d, trader.Value.SalesSum ?? 0d),
+                    NextResupply = Math.Max(0d, trader.Value.NextResupply ?? 0d),
+                    Unlocked = trader.Value.Unlocked == true,
+                };
+            })
+            .OrderBy(trader => trader.Label)
+            .ToList();
+    }
+
+    private int GetTraderMaxLoyaltyLevel(MongoId traderId)
+    {
+        var maxLoyalty = TradersTable.GetTrader(traderId)?.Base?.LoyaltyLevels?.Count ?? 1;
+        return Math.Max(1, maxLoyalty);
+    }
+
+    private string GetTraderLabel(MongoId traderId)
+    {
+        var trader = TradersTable.GetTrader(traderId);
+        if (trader is null)
+        {
+            return GetShortId(traderId.ToString());
+        }
+
+        return GetNonEmptyValue(trader.Base.Nickname, GetNonEmptyValue(trader.Base.Name, traderId.ToString()));
     }
 
     private static DatabaseDetailSection? BuildHideoutTimerSection(PmcData? pmc)
@@ -719,9 +1211,14 @@
             return GetShortId(questStatus.QId.ToString());
         }
 
+        return GetQuestDbLabel(questStatus.QId, quest);
+    }
+
+    private static string GetQuestDbLabel(MongoId questId, Quest quest)
+    {
         return GetNonEmptyValue(
             quest.QuestName,
-            GetNonEmptyValue(quest.Name, GetShortId(questStatus.QId.ToString()))
+            GetNonEmptyValue(quest.Name, GetShortId(questId.ToString()))
         );
     }
 

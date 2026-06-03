@@ -154,6 +154,53 @@
     gap: 12px;
 }
 
+.profiles-page ::deep .profiles-edit-panel {
+    border: 1px solid rgba(39, 39, 42, 0.98);
+    border-radius: 8px;
+    background:
+        linear-gradient(180deg, rgba(24, 24, 27, 0.64), rgba(9, 9, 11, 0.72)),
+        rgba(9, 9, 11, 0.72);
+}
+
+.profiles-page ::deep .profiles-edit-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.profiles-page ::deep .profiles-skills-table .mud-table-container {
+    max-height: 360px;
+}
+
+.profiles-page ::deep .profiles-hideout-table .mud-table-container {
+    max-height: 360px;
+}
+
+.profiles-page ::deep .profiles-quests-table .mud-table-container {
+    max-height: 420px;
+}
+
+.profiles-page ::deep .profiles-traders-table .mud-table-container {
+    max-height: 420px;
+}
+
+.profiles-page ::deep .profiles-details-tabs {
+    border: 1px solid rgba(39, 39, 42, 0.98);
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(3, 7, 18, 0.28);
+}
+
+.profiles-page ::deep .profiles-details-tabs .mud-tabs-toolbar {
+    background:
+        linear-gradient(180deg, rgba(39, 39, 42, 0.9), rgba(24, 24, 27, 0.88)),
+        rgba(24, 24, 27, 0.88);
+}
+
+.profiles-page ::deep .profiles-details-tab-panel {
+    padding: 16px;
+}
+
 .profiles-page ::deep .profiles-detail-value {
     min-width: 0;
     padding: 10px 12px;
@@ -404,6 +451,10 @@
     }
 
     .profiles-page ::deep .profiles-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profiles-page ::deep .profiles-edit-grid {
         grid-template-columns: 1fr;
     }
 }

@@ -4,7 +4,10 @@
 {
     <div class="profiles-details-modal-backdrop" @onclick="OnClose">
         <div class="profiles-details-modal" role="dialog" aria-modal="true" @onclick:stopPropagation>
-            <ProfileRecordDetails Details="Details" OnClose="OnClose" />
+            <ProfileRecordDetails Details="Details"
+                                  IsBusy="@IsBusy"
+                                  OnSaveEdit="OnSaveEdit"
+                                  OnClose="OnClose" />
         </div>
     </div>
 }
@@ -15,6 +18,12 @@
 
     [Parameter]
     public bool Open { get; set; }
+
+    [Parameter]
+    public bool IsBusy { get; set; }
+
+    [Parameter]
+    public EventCallback<ProfileEditModel> OnSaveEdit { get; set; }
 
     [Parameter]
     public EventCallback OnClose { get; set; }
