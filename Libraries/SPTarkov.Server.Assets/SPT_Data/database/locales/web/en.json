@@ -1,3 +1,22 @@
 {
-  "spt-server": "SPT Server"
+  "spt-server": "SPT Server",
+  "landing-page-title": "Server Information Center (SIC)",
+  "landing-page-subtitle": "Local tools and server pages for inspecting this SPT instance.",
+  "landing-page-server-page-category": "Server pages",
+  "landing-page-mod-page-category": "Mod pages",
+  "database-browser": "Database browser",
+  "database-browser-desc": "Browse the database",
+  "config-editor": "Config editor",
+  "config-editor-desc": "Edit server configs and compare runtime values against disk",
+  "profile-control": "Profile control",
+  "profile-control-desc": "Create, save, reload, and remove local profiles",
+  "user-credentials": "User credentials",
+  "user-credentials-desc": "Manage web sign-in users, passwords, and admin access",
+  "tools": "Tools",
+  "tools-desc": "Generate MongoIDs and use local server utilities",
+  "server-health": "Server health",
+  "server-health-desc": "View uptime, profile activity, build mode, and server state",
+  "version-4-contribute": "Version 4 contributors",
+  "version-4-contribute-desc": "See the contributor and Patreon supporter thank-you page",
+  "desc-not-set-author": "Description not set by author"
 }
