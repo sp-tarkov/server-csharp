@@ -134,68 +134,6 @@ public class TraderController(
     }
 
     /// <summary>
-    ///     Handle client/trading/api/traderSettings
-    /// </summary>
-    /// <param name="sessionId">session id</param>
-    /// <returns>Return a list of all traders</returns>
-    public List<TraderBase> GetAllTraders(MongoId sessionId)
-    {
-        var traders = new List<TraderBase>();
-        var pmcData = profileHelper.GetPmcProfile(sessionId);
-        foreach (var (traderId, trader) in traderTable)
-        {
-            traderHelper.GetTrader(traderId, sessionId);
-            if (trader.Base is null)
-            {
-                logger.Warning($"No trader with id: {traderId} found, skipping");
-                continue;
-            }
-            traders.Add(trader.Base);
-
-            if (pmcData?.Info != null)
-            {
-                traderHelper.LevelUp(traderId, pmcData);
-            }
-        }
-
-        traders.Sort(SortByTraderId);
-        return traders;
-    }
-
-    /// <summary>
-    ///     Order traders by their traderId (tid)
-    /// </summary>
-    /// <param name="traderA">First trader to compare</param>
-    /// <param name="traderB">Second trader to compare</param>
-    /// <returns>1,-1 or 0</returns>
-    protected static int SortByTraderId(TraderBase traderA, TraderBase traderB)
-    {
-        return string.CompareOrdinal(traderA.Id, traderB.Id);
-    }
-
-    /// <summary>
-    ///     Handle client/trading/api/getTrader
-    /// </summary>
-    /// <param name="sessionId">Session/Player id</param>
-    /// <param name="traderId"></param>
-    /// <returns></returns>
-    public TraderBase? GetTrader(MongoId sessionId, MongoId traderId)
-    {
-        return traderHelper.GetTrader(sessionId, traderId);
-    }
-
-    /// <summary>
-    ///     Handle client/trading/api/getTraderAssort
-    /// </summary>
-    /// <param name="sessionId">Session/Player id</param>
-    /// <param name="traderId"></param>
-    /// <returns></returns>
-    public TraderAssort GetAssort(MongoId sessionId, MongoId traderId)
-    {
-        return traderAssortHelper.GetAssort(sessionId, traderId);
-    }
-
-    /// <summary>
     ///     Handle client/items/prices/TRADERID
     /// </summary>
     /// <returns></returns>
