@@ -14,6 +14,7 @@
     <ProjectReference Include="..\..\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
     <ProjectReference Include="..\..\Libraries\SPTarkov.DI\SPTarkov.DI.csproj" />
     <ProjectReference Include="..\..\Libraries\SPTarkov.Common\SPTarkov.Common.csproj" />
+    <ProjectReference Include="..\..\SPTarkov.Server\SPTarkov.Server.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="TestAssets\**">
