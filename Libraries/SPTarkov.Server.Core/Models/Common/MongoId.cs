@@ -39,7 +39,7 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
     private readonly int _pidAndIncrement;
 
     private static readonly int _machine = BitConverter.ToInt32(RandomNumberGenerator.GetBytes(4), 0) & 0xFFFFFF;
-    private static readonly short _pid = (short) Environment.ProcessId;
+    private static readonly short _pid = (short)Environment.ProcessId;
     private static int _increment = RandomNumberGenerator.GetInt32(0, 0xFFFFFF);
 
     public bool IsEmpty
