@@ -30,17 +30,6 @@
     <InternalsVisibleTo Include="UnitTests" />
   </ItemGroup>
   <Target Name="AfterEverythingDone" AfterTargets="PostBuildEvent">
-    <!-- Run virtualizer patch -->
-    <Exec
-      ConsoleToMsBuild="true"
-      Condition="'$(IsPublish)' == 'true' or '$(Configuration)' == 'Release'"
-      Command="dotnet build -c &quot;$(Configuration)&quot; &quot;$(MSBuildProjectDirectory)/../../Patches/Ceciler.Virtualizer/Ceciler.Virtualizer.csproj&quot;"
-    />
-    <Exec
-      ConsoleToMsBuild="true"
-      Condition="'$(IsPublish)' == 'true' or '$(Configuration)' == 'Release'"
-      Command="dotnet &quot;$(MSBuildProjectDirectory)/../../Ceciler/Ceciler.Launcher.dll&quot; &quot;$(OutDir)SPTarkov.Server.Core.dll&quot; &quot;$(MSBuildProjectDirectory)/../../Patches/Ceciler.Virtualizer/bin/$(Configuration)/$(TargetFramework)/Ceciler.Virtualizer.dll&quot;"
-    />
     <!-- Run ExtensionData patch -->
     <Exec
       ConsoleToMsBuild="true"
