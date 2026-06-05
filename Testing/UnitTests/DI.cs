@@ -73,7 +73,6 @@ public class DI
         services.AddSingleton(mockLogger);
         services.AddSingleton(typeof(ILogger<>), typeof(MockLogger<>));
         services.AddSingleton(typeof(ISptLogger<>), typeof(MockLogger<>));
-        services.AddSingleton<DatabaseImporter>();
         services.AddHttpClient();
 
         var locales = ProgramHelpers.CreateEarlyLocaleTable() ?? throw new InvalidOperationException("Locales aren't loaded lmao");
