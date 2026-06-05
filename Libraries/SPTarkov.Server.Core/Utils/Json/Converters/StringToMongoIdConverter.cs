@@ -4,7 +4,7 @@ using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Utils.Json.Converters;
 
-public class StringToMongoIdConverter : JsonConverter<MongoId>
+public sealed class StringToMongoIdConverter : JsonConverter<MongoId>
 {
     public override MongoId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
@@ -13,12 +13,20 @@ public class StringToMongoIdConverter : JsonConverter<MongoId>
             return new MongoId(reader.GetString());
         }
 
-        throw new JsonException();
+        throw new JsonException($"The JsonTokenType was not of type string, it was: {reader.TokenType}");
     }
 
     public override void Write(Utf8JsonWriter writer, MongoId mongoId, JsonSerializerOptions options)
     {
-        JsonSerializer.Serialize(writer, mongoId.ToString(), options);
+        Span<char> buffer = stackalloc char[24];
+        if (mongoId.TryFormat(buffer, out var charsWritten))
+        {
+            writer.WriteStringValue(buffer[..charsWritten]);
+        }
+        else
+        {
+            throw new JsonException("Failed to format MongoId to stack buffer.");
+        }
     }
 
     // Deserialize MongoId as a dictionary key
@@ -30,6 +38,21 @@ public class StringToMongoIdConverter : JsonConverter<MongoId>
     // Serialize MongoId as a dictionary key
     public override void WriteAsPropertyName(Utf8JsonWriter writer, MongoId value, JsonSerializerOptions options)
     {
-        writer.WritePropertyName(value.ToString());
+        Span<char> buffer = stackalloc char[24];
+        if (value.TryFormat(buffer, out var charsWritten))
+        {
+            if (charsWritten == 0)
+            {
+                writer.WritePropertyName(string.Empty);
+            }
+            else
+            {
+                writer.WritePropertyName(buffer[..charsWritten]);
+            }
+        }
+        else
+        {
+            throw new JsonException("Failed to format MongoId to stack buffer.");
+        }
     }
 }

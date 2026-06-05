@@ -5,7 +5,7 @@ using SPTarkov.Server.Core.Extensions;
 namespace SPTarkov.Server.Core.Models.Common;
 
 /// <summary>
-/// Represents a 12-byte MongoDB-style ObjectId, consisting of:
+/// Represents a 12-<see cref="byte"/> MongoDB-style ObjectId, consisting of:
 /// <list type="bullet">
 ///   <item><description>4-byte timestamp (seconds since Unix epoch, big-endian)</description></item>
 ///   <item><description>3-byte machine identifier</description></item>
@@ -39,7 +39,7 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
     private readonly int _pidAndIncrement;
 
     private static readonly int _machine = BitConverter.ToInt32(RandomNumberGenerator.GetBytes(4), 0) & 0xFFFFFF;
-    private static readonly short _pid = (short)Environment.ProcessId;
+    private static readonly short _pid = (short) Environment.ProcessId;
     private static int _increment = RandomNumberGenerator.GetInt32(0, 0xFFFFFF);
 
     public bool IsEmpty
@@ -157,6 +157,41 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
         });
     }
 
+    /// <summary>
+    /// Tries to format the current <see cref="MongoId"/> instance into the provided character span.
+    /// </summary>
+    /// <param name="destination">The destination span. Must be at least 24 characters long.</param>
+    /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
+    /// <returns><see langword="true"/> if the formatting was successful; otherwise, <see langword="false"/>.</returns>
+    public bool TryFormat(Span<char> destination, out int charsWritten)
+    {
+        if (destination.Length < 24)
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        if (IsEmpty)
+        {
+            charsWritten = 0;
+            return true;
+        }
+
+        Span<byte> bytes = stackalloc byte[12];
+        BitConverter.TryWriteBytes(bytes, _timestampAndMachine);
+        BitConverter.TryWriteBytes(bytes[8..], _pidAndIncrement);
+
+        for (var i = 0; i < 12; i++)
+        {
+            var b = bytes[i];
+            destination[i * 2] = HexValueToChar(b >> 4);
+            destination[(i * 2) + 1] = HexValueToChar(b & 0x0F);
+        }
+
+        charsWritten = 24;
+        return true;
+    }
+
     /// <inheritdoc/>
     public bool Equals(MongoId other)
     {
@@ -193,7 +228,7 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
     /// Validates whether the specified string represents a valid MongoDB ObjectId format.
     /// </summary>
     /// <param name="stringToCheck">The string representation of the identifier to validate.</param>
-    /// <returns><see langword="true"/> if the string satisfies format constraints; otherwise <see langword="false"/>.</returns>
+    /// <returns><see langword="true"/> if the string satisfies format constraints; otherwise, <see langword="false"/>.</returns>
     public static bool IsValidMongoId(string stringToCheck)
     {
         return stringToCheck.IsValidMongoId();
