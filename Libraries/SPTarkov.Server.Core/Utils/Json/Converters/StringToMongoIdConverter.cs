@@ -8,12 +8,30 @@ public sealed class StringToMongoIdConverter : JsonConverter<MongoId>
 {
     public override MongoId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (reader.TokenType == JsonTokenType.String)
+        if (reader.TokenType is not JsonTokenType.String)
         {
-            return new MongoId(reader.GetString());
+            throw new JsonException($"The JsonTokenType was not of type string, it was: {reader.TokenType}");
         }
 
-        throw new JsonException($"The JsonTokenType was not of type string, it was: {reader.TokenType}");
+        return Read(ref reader);
+    }
+
+    // Deserialize MongoId as a dictionary key
+    public override MongoId ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        return Read(ref reader);
+    }
+
+    private static MongoId Read(ref Utf8JsonReader reader)
+    {
+        if (!reader.HasValueSequence && !reader.ValueIsEscaped)
+        {
+            return new MongoId(reader.ValueSpan);
+        }
+
+        Span<char> buffer = stackalloc char[24];
+        var written = reader.CopyString(buffer);
+        return new MongoId(buffer[..written]);
     }
 
     public override void Write(Utf8JsonWriter writer, MongoId mongoId, JsonSerializerOptions options)
@@ -27,12 +45,6 @@ public sealed class StringToMongoIdConverter : JsonConverter<MongoId>
         {
             throw new JsonException("Failed to format MongoId to stack buffer.");
         }
-    }
-
-    // Deserialize MongoId as a dictionary key
-    public override MongoId ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        return new MongoId(reader.GetString());
     }
 
     // Serialize MongoId as a dictionary key

@@ -38,7 +38,7 @@ public class BotWeaponGeneratorHelper(
         {
             var firstSlotAmmoTpl =
                 magTemplate.Properties?.Cartridges?.FirstOrDefault()?.Properties?.Filters?.First().Filter?.FirstOrDefault()
-                ?? new MongoId(null);
+                ?? MongoId.Empty();
             var ammoMaxStackSize = itemHelper.GetItem(firstSlotAmmoTpl).Value?.Properties?.StackMaxSize ?? 1;
             chamberBulletCount =
                 ammoMaxStackSize == 1

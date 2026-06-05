@@ -78,9 +78,9 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
         _pidAndIncrement = BitConverter.ToInt32(bytes[8..]);
     }
 
-    public MongoId(string? hex)
+    public MongoId(ReadOnlySpan<char> hex)
     {
-        if (string.IsNullOrEmpty(hex) || hex == "000000000000000000000000")
+        if (hex.IsEmpty)
         {
             this = default;
             return;
@@ -88,7 +88,7 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
 
         if (hex.Length != 24)
         {
-            throw new ArgumentException("ObjectId must be a 24-character hex string.", hex);
+            throw new ArgumentException("ObjectId must be a 24-character hex string.", nameof(hex));
         }
 
         Span<byte> bytes = stackalloc byte[12];
@@ -108,6 +108,40 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
         _timestampAndMachine = BitConverter.ToInt64(bytes);
         _pidAndIncrement = BitConverter.ToInt32(bytes[8..]);
     }
+
+    public MongoId(ReadOnlySpan<byte> hex)
+    {
+        if (hex.IsEmpty)
+        {
+            this = default;
+            return;
+        }
+
+        if (hex.Length != 24)
+        {
+            throw new ArgumentException("ObjectId must be a 24-character hex string.", nameof(hex));
+        }
+
+        Span<byte> bytes = stackalloc byte[12];
+        for (var i = 0; i < 12; i++)
+        {
+            var hi = HexCharToValue((char)hex[2 * i]);
+            var lo = HexCharToValue((char)hex[(2 * i) + 1]);
+
+            if (hi == -1 || lo == -1)
+            {
+                throw new FormatException("ObjectId contains invalid hex characters.");
+            }
+
+            bytes[i] = (byte)((hi << 4) | lo);
+        }
+
+        _timestampAndMachine = BitConverter.ToInt64(bytes);
+        _pidAndIncrement = BitConverter.ToInt32(bytes[8..]);
+    }
+
+    public MongoId(string? hex)
+        : this(hex.AsSpan()) { }
 
     /// <summary>
     /// Converts a hexadecimal character into its corresponding integer nibble value.

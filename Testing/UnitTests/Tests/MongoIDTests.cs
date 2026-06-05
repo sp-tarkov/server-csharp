@@ -56,7 +56,7 @@ public class MongoIDTests
     public void Constructor_EmptyAndNull_ReturnsDefaultInstance()
     {
         // Arrange & Act
-        var fromNull = new MongoId(null);
+        var fromNull = MongoId.Empty();
         var fromEmpty = new MongoId(string.Empty);
         var fromZeroes = new MongoId(ZeroHexZeroHex);
         var defaultInstance = default(MongoId);
