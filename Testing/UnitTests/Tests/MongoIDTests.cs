@@ -1,8 +1,13 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using NUnit.Framework;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Utils.Json.Converters;
 
 namespace UnitTests.Tests;
 
@@ -12,8 +17,24 @@ public class MongoIDTests
     private const string ValidHex = "507f1f77bcf86cd799439011";
     private const string ZeroHexZeroHex = "000000000000000000000000";
 
+    private const string TestHex = "507f1f77bcf86cd799439011";
+    private MongoId _testId;
+    private JsonSerializerOptions? _options;
+
     [OneTimeSetUp]
-    public void Initialize() { }
+    public void Initialize()
+    {
+        _testId = new MongoId(TestHex);
+        _options = new JsonSerializerOptions()
+        {
+            // This is required for JSONC support
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            NewLine = "\n",
+        };
+    }
 
     [Test]
     public void GenerateTest()
@@ -189,8 +210,8 @@ public class MongoIDTests
         var emptyId = MongoId.Empty();
 
         // Act
-        string outputFromParsed = idFromUpper.ToString();
-        string outputFromEmpty = emptyId.ToString();
+        var outputFromParsed = idFromUpper.ToString();
+        var outputFromEmpty = emptyId.ToString();
 
         // Assert
         Assert.Multiple(() =>
@@ -201,6 +222,65 @@ public class MongoIDTests
             // Verifies empty instance strictly yields string.Empty
             Assert.That(outputFromEmpty, Is.EqualTo(string.Empty));
         });
+    }
+
+    [Test]
+    public void Write_ValidMongoId_WritesCorrectJsonString()
+    {
+        // Arrange
+        using var stream = new MemoryStream();
+        using var writer = new Utf8JsonWriter(stream);
+        var converter = new StringToMongoIdConverter();
+
+        // Act
+        writer.WriteStartObject();
+        writer.WritePropertyName("id");
+        converter.Write(writer, _testId, _options!);
+        writer.WriteEndObject();
+        writer.Flush();
+
+        // Assert
+        var jsonOutput = Encoding.UTF8.GetString(stream.ToArray());
+        Assert.That(jsonOutput, Is.EqualTo($"{{\"id\":\"{TestHex}\"}}"));
+    }
+
+    [Test]
+    public void WriteAsPropertyName_ValidMongoId_WritesCorrectPropertyName()
+    {
+        // Arrange
+        using var stream = new MemoryStream();
+        using var writer = new Utf8JsonWriter(stream);
+        var converter = new StringToMongoIdConverter();
+
+        // Act
+        writer.WriteStartObject();
+        converter.WriteAsPropertyName(writer, _testId, _options!);
+        writer.WriteBooleanValue(true);
+        writer.WriteEndObject();
+        writer.Flush();
+
+        // Assert
+        var jsonOutput = Encoding.UTF8.GetString(stream.ToArray());
+        Assert.That(jsonOutput, Is.EqualTo($"{{\"{TestHex}\":true}}"));
+    }
+
+    [Test]
+    public void Write_EmptyMongoId_WritesZeroHexString()
+    {
+        using var stream = new MemoryStream();
+        using var writer = new Utf8JsonWriter(stream);
+        var converter = new StringToMongoIdConverter();
+        var emptyId = MongoId.Empty();
+
+        writer.WriteStartObject();
+        writer.WritePropertyName("id");
+        converter.Write(writer, emptyId, _options!);
+        writer.WriteEndObject();
+        writer.Flush();
+
+        var jsonOutput = Encoding.UTF8.GetString(stream.ToArray());
+        Assert.That(jsonOutput, Is.EqualTo("{\"id\":\"\"}"));
+        Console.WriteLine($"Output: {jsonOutput}");
     }
 
     [TestCase("677ddb67406e9918a0264bbz", false, "677ddb67406e9918a0264bbz contains invalid char `z`, but result was true")]
