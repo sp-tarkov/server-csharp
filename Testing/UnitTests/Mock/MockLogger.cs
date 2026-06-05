@@ -1,12 +1,11 @@
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
-using SPTarkov.Common.Logger;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 
 namespace UnitTests.Mock;
 
-[Injectable(TypeOverride = typeof(SptLogger<>))]
+[Injectable]
 public class MockLogger<T> : ISptLogger<T>, ILogger<T>
 {
     public void LogWithColor(string data, Color? textColor = null, Color? backgroundColor = null, Exception? ex = null)

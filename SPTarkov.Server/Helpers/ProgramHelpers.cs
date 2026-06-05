@@ -94,7 +94,7 @@ public static class ProgramHelpers
         return serviceCollection.BuildServiceProvider();
     }
 
-    private static LocaleTable CreateEarlyLocaleTable()
+    public static LocaleTable CreateEarlyLocaleTable()
     {
         var localesPath = Path.Combine(".", "SPT_Data", "database", "locales");
         var globalPath = Path.Combine(localesPath, "global");
