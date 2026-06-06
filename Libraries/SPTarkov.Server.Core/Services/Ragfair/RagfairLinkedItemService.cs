@@ -123,7 +123,7 @@ public class RagfairLinkedItemService(TemplateTable templateTable, ItemHelper it
         }
 
         // Get the first cylinder filter tpl
-        var cylinderTpl = cylinderMod.Properties?.Filters?.First().Filter?.FirstOrDefault() ?? new MongoId(null);
+        var cylinderTpl = cylinderMod.Properties?.Filters?.First().Filter?.FirstOrDefault() ?? MongoId.Empty();
 
         if (!cylinderTpl.IsValidMongoId())
         {
