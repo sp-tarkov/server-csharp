@@ -126,7 +126,16 @@ public record Upd
     public UpdFaceShield? FaceShield { get; set; }
 
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
-    public double? StackObjectsCount { get; set; } // TODO: LootDumpGen is outputting doubles, we can turn back to int once fixed
+    public double? StackObjectsCount
+    {
+        get { return field; }
+        set
+        {
+            field = value.HasValue
+            ? Math.Round(value.Value, 0, MidpointRounding.AwayFromZero)
+            : null;
+        }
+    } // TODO: LootDumpGen is outputting doubles, we can turn back to int once fixed
 
     public bool? UnlimitedCount { get; set; }
 
