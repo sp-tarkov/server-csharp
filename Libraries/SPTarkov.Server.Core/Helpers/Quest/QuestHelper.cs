@@ -65,7 +65,7 @@ public class QuestHelper(
             return true;
         }
 
-        var conditionValue = double.Parse(condition.Value.ToString(), CultureInfo.InvariantCulture);
+        var conditionValue = condition.Value;
         switch (condition.CompareMethod)
         {
             case ">=":
