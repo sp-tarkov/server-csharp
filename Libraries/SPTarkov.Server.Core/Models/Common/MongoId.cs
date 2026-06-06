@@ -1,5 +1,6 @@
 ﻿using System.Buffers.Binary;
 using System.Security.Cryptography;
+using System.Text;
 using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Models.Common;
@@ -88,7 +89,10 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
 
         if (hex.Length != 24)
         {
-            throw new ArgumentException("ObjectId must be a 24-character hex string.", nameof(hex));
+            throw new ArgumentException(
+                $"ObjectId must be a 24-character hex string, but got \"{hex}\" (length {hex.Length}).",
+                nameof(hex)
+            );
         }
 
         Span<byte> bytes = stackalloc byte[12];
@@ -119,7 +123,10 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
 
         if (hex.Length != 24)
         {
-            throw new ArgumentException("ObjectId must be a 24-character hex string.", nameof(hex));
+            throw new ArgumentException(
+                $"ObjectId must be a 24-character hex string, but got \"{Encoding.UTF8.GetString(hex)}\" (length {hex.Length}).",
+                nameof(hex)
+            );
         }
 
         Span<byte> bytes = stackalloc byte[12];
