@@ -56,7 +56,7 @@ public class RagfairPriceService(
     /// </summary>
     public void RefreshStaticPrices()
     {
-        StaticPrices = new Dictionary<MongoId, double>();
+        StaticPrices = [];
         foreach (var item in templateTable.Items.Values.Where(item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)))
         {
             StaticPrices[item.Id] = handbookHelper.GetTemplatePrice(item.Id);
