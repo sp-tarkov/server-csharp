@@ -291,7 +291,7 @@ public class PaymentService(
         ItemEventRouterResponse output
     )
     {
-        var moneyItemsInInventory = GetSortedMoneyItemsInInventory(pmcData, currencyTpl, pmcData.Inventory.Stash.Value);
+        var moneyItemsInInventory = GetSortedMoneyItemsInInventory(pmcData, currencyTpl, pmcData.Inventory!.Stash!.Value);
 
         //Ensure all money items found have a upd
         foreach (var moneyStack in moneyItemsInInventory)
@@ -299,10 +299,10 @@ public class PaymentService(
             moneyStack.Upd ??= new Upd { StackObjectsCount = 1 };
         }
 
-        var amountAvailable = moneyItemsInInventory.Aggregate(0d, (accumulator, item) => accumulator + item.Upd.StackObjectsCount.Value);
+        var amountAvailable = moneyItemsInInventory.Aggregate(0d, (accumulator, item) => accumulator + item.Upd!.StackObjectsCount!.Value);
 
         // If no money in inventory or amount is not enough we return false
-        if (moneyItemsInInventory.Count <= 0 || amountAvailable < amountToPay)
+        if (moneyItemsInInventory.Count == 0 || amountAvailable < amountToPay)
         {
             logger.Error(
                 serverLocalisationService.GetText(
@@ -322,7 +322,7 @@ public class PaymentService(
         var leftToPay = amountToPay;
         foreach (var profileMoneyItem in moneyItemsInInventory)
         {
-            var itemAmount = profileMoneyItem.Upd.StackObjectsCount;
+            var itemAmount = profileMoneyItem.Upd!.StackObjectsCount;
             if (leftToPay >= itemAmount)
             {
                 leftToPay -= itemAmount.Value;
@@ -332,7 +332,7 @@ public class PaymentService(
             {
                 profileMoneyItem.Upd.StackObjectsCount -= leftToPay;
                 leftToPay = 0;
-                output.ProfileChanges[sessionID].Items.ChangedItems.Add(profileMoneyItem);
+                output.ProfileChanges[sessionID].Items!.ChangedItems!.Add(profileMoneyItem);
             }
 
             if (leftToPay == 0)
