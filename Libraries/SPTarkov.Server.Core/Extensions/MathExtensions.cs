@@ -69,6 +69,23 @@ public static class MathExtensions
     }
 
     /// <summary>
+    ///     Helper to determine if one double is approx equal to another double
+    /// </summary>
+    /// <param name="value">Value to check</param>
+    /// <param name="target">Target value</param>
+    /// <param name="error">Error value</param>
+    /// <returns>True if value is approx target within the error range</returns>
+    public static bool Approx(this double? value, double target, double error = 0.001d)
+    {
+        if (value is null)
+        {
+            return false;
+        }
+
+        return Math.Abs((double)value - target) <= error;
+    }
+
+    /// <summary>
     ///     Helper to determine if one float is approx equal to another float
     /// </summary>
     /// <param name="value">Value to check</param>

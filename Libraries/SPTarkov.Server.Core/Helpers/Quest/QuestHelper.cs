@@ -58,7 +58,7 @@ public class QuestHelper(
     /// <param name="playerLevel">Players level</param>
     /// <param name="condition">Quest condition</param>
     /// <returns>true if player level is greater than or equal to quest</returns>
-    public bool DoesPlayerLevelFulfilCondition(double playerLevel, QuestCondition condition)
+    public bool DoesPlayerLevelFulfilCondition(int playerLevel, QuestCondition condition)
     {
         if (condition.ConditionType != "Level")
         {
@@ -77,7 +77,7 @@ public class QuestHelper(
             case "<=":
                 return playerLevel <= conditionValue;
             case "=":
-                return playerLevel == conditionValue;
+                return conditionValue.Approx(playerLevel);
             default:
                 logger.Error(serverLocalisationService.GetText("quest-unable_to_find_compare_condition", condition.CompareMethod));
 
@@ -1096,7 +1096,7 @@ public class QuestHelper(
             }
 
             // Don't add quests that have a level higher than the user's
-            if (!PlayerLevelFulfillsQuestRequirement(quest, profile.Info.Level.Value))
+            if (!PlayerLevelFulfillsQuestRequirement(quest, profile.Info.Level!.Value))
             {
                 continue;
             }
@@ -1477,15 +1477,9 @@ public class QuestHelper(
     /// <param name="quest">Quest to check</param>
     /// <param name="playerLevel">level of player to test against quest</param>
     /// <returns>true if quest can be seen/accepted by player of defined level</returns>
-    protected bool PlayerLevelFulfillsQuestRequirement(Models.Eft.Common.Tables.Quest quest, double playerLevel)
+    protected bool PlayerLevelFulfillsQuestRequirement(Models.Eft.Common.Tables.Quest quest, int playerLevel)
     {
-        if (quest.Conditions is null)
-        // No conditions
-        {
-            return true;
-        }
-
-        var levelConditions = quest.Conditions.AvailableForStart.GetLevelConditions();
+        var levelConditions = quest.Conditions.AvailableForStart?.GetLevelConditions();
         if (levelConditions is not null)
         {
             foreach (var levelCondition in levelConditions)
