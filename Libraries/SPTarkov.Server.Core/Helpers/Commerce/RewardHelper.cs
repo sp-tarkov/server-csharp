@@ -57,8 +57,8 @@ public class RewardHelper(
         ItemEventRouterResponse? questResponse = null
     )
     {
-        var sessionId = fullProfile?.ProfileInfo?.ProfileId;
-        var pmcProfile = fullProfile?.CharacterData?.PmcData;
+        var sessionId = fullProfile.ProfileInfo?.ProfileId;
+        var pmcProfile = fullProfile.CharacterData?.PmcData;
         if (pmcProfile is null)
         {
             logger.Error($"Unable to get PMC profile for: {sessionId}, no rewards given");
@@ -66,12 +66,12 @@ public class RewardHelper(
             return [];
         }
 
-        var gameVersion = pmcProfile.Info.GameVersion;
+        var gameVersion = pmcProfile.Info!.GameVersion;
 
         foreach (var reward in rewards)
         {
             // Handle reward availability for different game versions, notAvailableInGameEditions currently not used
-            if (!RewardIsForGameEdition(reward, gameVersion))
+            if (!RewardIsForGameEdition(reward, gameVersion!))
             {
                 continue;
             }
@@ -83,22 +83,23 @@ public class RewardHelper(
                     // skill reward values are always 100 (+1 level), so adjustment for low levels will give a wrong result
                     profileHelper.AddSkillPointsToPlayer(
                         profileData,
-                        Enum.Parse<SkillTypes>(reward.Target),
+                        Enum.Parse<SkillTypes>(reward.Target!),
                         reward.Value.GetValueOrDefault(0),
                         useSkillProgressRateMultiplier: false,
                         adjustSkillExpForLowLevels: false
                     );
                     break;
                 case RewardType.Experience:
-                    profileHelper.AddExperienceToPmc(sessionId.Value, int.Parse(reward.Value.ToString())); // this must occur first as the output object needs to take the modified profile exp value
+                    // this must occur first as the output object needs to take the modified profile exp value
+                    profileHelper.AddExperienceToPmc(sessionId!.Value, Convert.ToInt32(reward.Value));
                     // Recalculate level in event player leveled up
                     pmcProfile.Info.Level = pmcProfile.CalculateLevel(globalTable.Configuration.Exp.Level.ExperienceTable);
                     break;
                 case RewardType.TraderStanding:
-                    traderHelper.AddStandingToTrader(sessionId.Value, reward.Target, reward.Value.Value);
+                    traderHelper.AddStandingToTrader(sessionId!.Value, reward.Target!, reward.Value!.Value);
                     break;
                 case RewardType.TraderUnlock:
-                    traderHelper.SetTraderUnlockedState(reward.Target, true, sessionId.Value);
+                    traderHelper.SetTraderUnlockedState(reward.Target!, true, sessionId!.Value);
                     break;
                 case RewardType.Item:
                     // Item rewards are retrieved by getRewardItems() below, and returned to be handled by caller
@@ -107,10 +108,11 @@ public class RewardHelper(
                     // Handled by getAssort(), locked assorts are stripped out by `assortHelper.stripLockedLoyaltyAssort()` before being sent to player
                     break;
                 case RewardType.Achievement:
-                    AddAchievementToProfile(fullProfile, reward.Target);
+                    AddAchievementToProfile(fullProfile, reward.Target!);
                     break;
                 case RewardType.StashRows:
-                    var bonusId = profileHelper.AddStashRowsBonusToProfile(sessionId.Value, (int)reward.Value); // Add specified stash rows from reward - requires client restart
+                    // Add specified stash rows from reward - requires client restart
+                    var bonusId = profileHelper.AddStashRowsBonusToProfile(sessionId!.Value, Convert.ToInt32(reward.Value));
 
                     notificationSendHelper.SendMessage(
                         sessionId.Value,
@@ -118,21 +120,21 @@ public class RewardHelper(
                         {
                             EventIdentifier = new MongoId(),
                             EventType = NotificationEventType.StashRows,
-                            Changes = new Dictionary<string, double?> { { bonusId, reward.Value } },
+                            Changes = new Dictionary<string, double?> { { bonusId!, reward.Value } },
                         }
                     );
 
                     break;
                 case RewardType.ProductionScheme:
-                    FindAndAddHideoutProductionIdToProfile(pmcProfile, reward, rewardSourceId, sessionId.Value, questResponse);
+                    FindAndAddHideoutProductionIdToProfile(pmcProfile, reward, rewardSourceId, sessionId!.Value, questResponse!);
                     break;
                 case RewardType.Pockets:
-                    profileHelper.ReplaceProfilePocketTpl(pmcProfile, reward.Target);
+                    profileHelper.ReplaceProfilePocketTpl(pmcProfile, reward.Target!);
                     break;
                 case RewardType.CustomizationDirect:
                     profileHelper.AddHideoutCustomisationUnlock(fullProfile, reward, rewardSource);
                     notificationSendHelper.SendMessage(
-                        sessionId.Value,
+                        sessionId!.Value,
                         new WsNotificationEvent
                         {
                             EventIdentifier = new MongoId(),
@@ -142,8 +144,8 @@ public class RewardHelper(
 
                     break;
                 case RewardType.NotificationPopup:
-                    var notification = notifierHelper.CreateNotificationPopup(reward.IllustrationConfig, reward.Message.Value);
-                    notificationSendHelper.SendMessage(sessionId.Value, notification);
+                    var notification = notifierHelper.CreateNotificationPopup(reward.IllustrationConfig!, reward.Message!.Value);
+                    notificationSendHelper.SendMessage(sessionId!.Value, notification);
                     break;
                 case RewardType.WebPromoCode:
                     // TODO: ??? (Free arena trial from Balancing - Part 1)
@@ -160,7 +162,7 @@ public class RewardHelper(
             }
         }
 
-        return GetRewardItems(rewards, gameVersion).ToList();
+        return GetRewardItems(rewards, gameVersion!).ToList();
     }
 
     /// <summary>
@@ -194,13 +196,13 @@ public class RewardHelper(
     /// <param name="pmcData">Player profile.</param>
     /// <param name="craftUnlockReward">Reward with craft unlock details.</param>
     /// <param name="questId">Quest or achievement ID with craft unlock reward.</param>
-    /// <param name="sessionID">Session id.</param>
+    /// <param name="sessionId">Session id.</param>
     /// <param name="response">Response to send back to client.</param>
     protected void FindAndAddHideoutProductionIdToProfile(
         PmcData pmcData,
         Reward craftUnlockReward,
         MongoId questId,
-        MongoId sessionID,
+        MongoId sessionId,
         ItemEventRouterResponse response
     )
     {
@@ -219,11 +221,11 @@ public class RewardHelper(
 
         // Add above match to pmc profile + client response
         var matchingCraftId = matchingProductions[0].Id;
-        pmcData.UnlockedInfo.UnlockedProductionRecipe.Add(matchingCraftId);
+        pmcData.UnlockedInfo!.UnlockedProductionRecipe!.Add(matchingCraftId);
 
         // Update Inform client of change
-        response.ProfileChanges[sessionID].RecipeUnlocked ??= new();
-        response.ProfileChanges[sessionID].RecipeUnlocked[matchingCraftId] = true;
+        response.ProfileChanges[sessionId].RecipeUnlocked ??= new();
+        response.ProfileChanges[sessionId].RecipeUnlocked![matchingCraftId] = true;
     }
 
     /// <summary>
@@ -268,10 +270,10 @@ public class RewardHelper(
         }
 
         var craftingRecipesDb = hideoutTable.Production.Recipes;
-        var result = craftingRecipesDb
+        var result = craftingRecipesDb!
             .Where(production =>
                 // Attempt to match by questId (value we add manually to production.json via `gen:productionquests` command)
-                production.Requirements.Any(req => req.QuestId == questId)
+                production.Requirements!.Any(req => req.QuestId == questId)
             )
             .ToList();
         if (result.Count == 1)
@@ -281,14 +283,14 @@ public class RewardHelper(
         }
 
         // Found more than or less than 1 craft by questId, try to get closest match based on information we know
-        return craftingRecipesDb
+        return craftingRecipesDb!
             .Where(production =>
                 (
                     production.AreaType == desiredHideoutAreaType
                     && production.EndProduct == rewardItemTpl.Value
-                    && production.Requirements.Any(req => req.Type is "QuestComplete")
+                    && production.Requirements!.Any(req => req.Type is "QuestComplete")
                     && production.Locked.GetValueOrDefault(false) // Craft would be locked if we're unlocking it
-                    && production.Requirements.Any(req => req.RequiredLevel == craftUnlockReward.LoyaltyLevel)
+                    && production.Requirements!.Any(req => req.RequiredLevel == craftUnlockReward.LoyaltyLevel)
                 )
             )
             .ToList();
@@ -323,13 +325,13 @@ public class RewardHelper(
         List<Item> mods = [];
 
         // Is armor item that may need inserts / plates
-        if (reward.Items.Count == 1 && itemHelper.ArmorItemCanHoldMods(reward.Items[0].Template))
+        if (reward.Items!.Count == 1 && itemHelper.ArmorItemCanHoldMods(reward.Items[0].Template))
         // Only process items with slots
         {
-            if (itemHelper.ItemHasSlots(reward.Items.FirstOrDefault().Template))
+            if (itemHelper.ItemHasSlots(reward.Items.FirstOrDefault()!.Template))
             // Attempt to pull default preset from globals and add child items to reward (clones reward.items)
             {
-                GenerateArmorRewardChildSlots(reward.Items.FirstOrDefault(), reward);
+                GenerateArmorRewardChildSlots(reward.Items.FirstOrDefault()!, reward);
             }
         }
 
@@ -341,7 +343,7 @@ public class RewardHelper(
             itemHelper.SetFoundInRaid(rewardItem);
 
             // Is root item, fix stacks
-            if (rewardItem.Id == reward.Target)
+            if (rewardItem.Id == reward.Target!)
             {
                 // Is base reward item
                 if (
@@ -368,12 +370,12 @@ public class RewardHelper(
             else
             {
                 // Is child mod
-                if (reward.Items.FirstOrDefault().Upd.SpawnedInSession.GetValueOrDefault(false))
+                if (reward.Items.FirstOrDefault()!.Upd!.SpawnedInSession.GetValueOrDefault(false))
                 // Propagate FiR status into child items
                 {
                     if (!itemHelper.IsOfBaseclasses(rewardItem.Template, [BaseClasses.AMMO, BaseClasses.MONEY]))
                     {
-                        rewardItem.Upd.SpawnedInSession = reward.Items.FirstOrDefault()?.Upd.SpawnedInSession;
+                        rewardItem.Upd!.SpawnedInSession = reward.Items.FirstOrDefault()!.Upd!.SpawnedInSession;
                     }
                 }
 
@@ -385,13 +387,13 @@ public class RewardHelper(
         foreach (var target in targets)
         {
             // This has all the original id relations since we reset the id to the original after the splitStack
-            var itemsClone = new List<Item> { cloner.Clone(target) };
+            var itemsClone = new List<Item> { cloner.Clone(target)! };
             // Here we generate a new id for the root item
             target.Id = new MongoId();
 
             // Add cloned mods to root item array
             var clonedMods = cloner.Clone(mods);
-            foreach (var mod in clonedMods)
+            foreach (var mod in clonedMods!)
             {
                 itemsClone.Add(mod);
             }
@@ -416,7 +418,7 @@ public class RewardHelper(
         if (defaultPreset is not null)
         {
             // Found preset, use mods to hydrate reward item
-            var presetAndMods = cloner.Clone(defaultPreset.Items).ReplaceIDs().ToList();
+            var presetAndMods = cloner.Clone(defaultPreset.Items)!.ReplaceIDs().ToList();
             var newRootId = presetAndMods.RemapRootItemId();
 
             reward.Items = presetAndMods;
@@ -425,11 +427,11 @@ public class RewardHelper(
             var rootItem = reward.Items.FirstOrDefault(item => item.Id == newRootId);
 
             // Remap target id to the new presets root id
-            reward.Target = rootItem.Id;
+            reward.Target = rootItem!.Id;
 
             // Copy over stack count otherwise reward shows as missing in client
             rootItem.AddUpd();
-            rootItem.Upd.StackObjectsCount = originalRewardRootItem.Upd.StackObjectsCount;
+            rootItem.Upd!.StackObjectsCount = originalRewardRootItem.Upd!.StackObjectsCount;
             return;
         }
 
@@ -437,7 +439,7 @@ public class RewardHelper(
         var itemDbData = itemHelper.GetItem(originalRewardRootItem.Template).Value;
 
         // Hydrate reward with only 'required' mods - necessary for things like helmets otherwise you end up with nvgs/visors etc
-        reward.Items = itemHelper.AddChildSlotItems(reward.Items, itemDbData, null, true);
+        reward.Items = itemHelper.AddChildSlotItems(reward.Items!, itemDbData!, null, true);
     }
 
     /// <summary>
@@ -449,7 +451,7 @@ public class RewardHelper(
     public void AddAchievementToProfile(SptProfile fullProfile, MongoId achievementId)
     {
         // Add achievement id to profile with timestamp it was unlocked
-        fullProfile.CharacterData.PmcData.Achievements.TryAdd(achievementId, timeUtil.GetTimeStamp());
+        fullProfile.CharacterData!.PmcData!.Achievements!.TryAdd(achievementId, timeUtil.GetTimeStamp());
 
         // Check for any customisation unlocks
         var achievementDataDb = templateTable.Achievements.FirstOrDefault(achievement => achievement.Id == achievementId);
