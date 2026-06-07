@@ -13,7 +13,6 @@ using SPTarkov.Server.Core.Models.Eft.Inventory;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services.Commerce;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Services.Ragfair;
@@ -40,25 +39,25 @@ public class TradeHelper(
     ICloner cloner
 )
 {
-    protected static readonly Lock buyLock = new();
+    private static readonly Lock _buyLock = new();
 
     /// <summary>
     ///     Buy item from flea or trader
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="buyRequestData">data from client</param>
-    /// <param name="sessionID">Session id</param>
+    /// <param name="sessionId">Session id</param>
     /// <param name="foundInRaid">Should item be found in raid</param>
     /// <param name="output">Item event router response</param>
     public void BuyItem(
         PmcData pmcData,
         ProcessBuyTradeRequestData buyRequestData,
-        MongoId sessionID,
+        MongoId sessionId,
         bool foundInRaid,
         ItemEventRouterResponse output
     )
     {
-        lock (buyLock)
+        lock (_buyLock)
         {
             List<Item> offerItems = [];
             Action<int>? buyCallback;
@@ -72,16 +71,16 @@ public class TradeHelper(
 
                     // We store ragfair offerId in buyRequestData.item_id
                     var offerWithItem = allOffers.FirstOrDefault(x => x.Id == buyRequestData.ItemId);
-                    var itemPurchased = offerWithItem.Items.FirstOrDefault();
+                    var itemPurchased = offerWithItem!.Items!.FirstOrDefault();
 
                     // Ensure purchase does not exceed trader item limit
-                    if (itemPurchased.HasBuyRestrictions())
+                    if (itemPurchased!.HasBuyRestrictions())
                     {
                         CheckPurchaseIsWithinTraderItemLimit(
-                            sessionID,
+                            sessionId,
                             pmcData,
                             buyRequestData.TransactionId,
-                            itemPurchased,
+                            itemPurchased!,
                             buyRequestData.ItemId,
                             buyCount
                         );
@@ -92,7 +91,7 @@ public class TradeHelper(
                             Items = [new PurchaseItems { ItemId = buyRequestData.ItemId, Count = buyCount }],
                             TraderId = buyRequestData.TransactionId,
                         };
-                        traderHelper.AddTraderPurchasesToPlayerProfile(sessionID, itemPurchaseDetails, itemPurchased);
+                        traderHelper.AddTraderPurchasesToPlayerProfile(sessionId, itemPurchaseDetails, itemPurchased!);
                     }
                 };
 
@@ -100,18 +99,18 @@ public class TradeHelper(
                 // Get raw offer from ragfair, clone to prevent altering offer itself
                 var allOffers = ragfairOfferService.GetOffers();
                 var offerWithItemCloned = cloner.Clone(allOffers.FirstOrDefault(x => x.Id == buyRequestData.ItemId));
-                offerItems = offerWithItemCloned.Items;
+                offerItems = offerWithItemCloned!.Items!;
             }
             else if (buyRequestData.TransactionId == Models.Enums.Traders.FENCE)
             {
                 buyCallback = buyCount =>
                 {
                     // Update assort/flea item values
-                    var traderAssorts = traderHelper.GetTraderAssortsByTraderId(buyRequestData.TransactionId).Items;
+                    var traderAssorts = traderHelper.GetTraderAssortsByTraderId(buyRequestData.TransactionId)!.Items;
                     var itemPurchased = traderAssorts.FirstOrDefault(assort => assort.Id == buyRequestData.ItemId);
 
                     // Decrement trader item count
-                    itemPurchased.Upd.StackObjectsCount -= buyCount;
+                    itemPurchased!.Upd!.StackObjectsCount -= buyCount;
 
                     fenceService.AmendOrRemoveFenceOffer(buyRequestData.ItemId, buyCount);
                 };
@@ -139,25 +138,25 @@ public class TradeHelper(
                 buyCallback = buyCount =>
                 {
                     // Update assort/flea item values
-                    var traderAssorts = traderHelper.GetTraderAssortsByTraderId(buyRequestData.TransactionId).Items;
+                    var traderAssorts = traderHelper.GetTraderAssortsByTraderId(buyRequestData.TransactionId)!.Items;
                     var itemPurchased = traderAssorts.FirstOrDefault(item => item.Id == buyRequestData.ItemId);
 
                     // Ensure purchase does not exceed trader item limit
-                    if (itemPurchased.HasBuyRestrictions())
+                    if (itemPurchased!.HasBuyRestrictions())
                     // Will throw error if check fails
                     {
                         CheckPurchaseIsWithinTraderItemLimit(
-                            sessionID,
+                            sessionId,
                             pmcData,
                             buyRequestData.TransactionId,
-                            itemPurchased,
+                            itemPurchased!,
                             buyRequestData.ItemId,
                             buyCount
                         );
                     }
 
                     // Check if trader has enough stock
-                    if (itemPurchased.Upd.StackObjectsCount < buyCount)
+                    if (itemPurchased!.Upd!.StackObjectsCount < buyCount)
                     {
                         throw new Exception(
                             $"Unable to purchase {buyCount} items, this would exceed the remaining stock left {itemPurchased.Upd.StackObjectsCount} from the traders assort: {buyRequestData.TransactionId} this refresh"
@@ -175,12 +174,12 @@ public class TradeHelper(
                             TraderId = buyRequestData.TransactionId,
                         };
 
-                        traderHelper.AddTraderPurchasesToPlayerProfile(sessionID, itemPurchaseDat, itemPurchased);
+                        traderHelper.AddTraderPurchasesToPlayerProfile(sessionId, itemPurchaseDat, itemPurchased);
                     }
                 };
 
                 // Get all trader assort items
-                var traderItems = traderAssortHelper.GetAssort(sessionID, buyRequestData.TransactionId).Items;
+                var traderItems = traderAssortHelper.GetAssort(sessionId, buyRequestData.TransactionId).Items;
 
                 // Get item + children for purchase
                 var relevantItems = traderItems.GetItemWithChildren(buyRequestData.ItemId);
@@ -193,8 +192,8 @@ public class TradeHelper(
             }
 
             // Get item details from db
-            var itemDbDetails = itemHelper.GetItem(offerItems.FirstOrDefault().Template).Value;
-            var itemMaxStackSize = itemDbDetails.Properties.StackMaxSize;
+            var itemDbDetails = itemHelper.GetItem(offerItems.FirstOrDefault()!.Template).Value;
+            var itemMaxStackSize = itemDbDetails!.Properties!.StackMaxSize;
             var itemsToSendTotalCount = buyRequestData.Count;
             var itemsToSendRemaining = itemsToSendTotalCount;
 
@@ -205,13 +204,13 @@ public class TradeHelper(
                 var offerClone = cloner.Clone(offerItems);
                 // Handle stackable items that have a max stack size limit
                 var itemCountToSend = Math.Min(itemMaxStackSize ?? 0, itemsToSendRemaining.Value);
-                offerClone.FirstOrDefault().Upd.StackObjectsCount = itemCountToSend;
+                offerClone!.FirstOrDefault()!.Upd!.StackObjectsCount = itemCountToSend;
 
                 // Prevent any collisions
-                offerClone.RemapRootItemId();
-                if (offerClone.Count > 1)
+                offerClone!.RemapRootItemId();
+                if (offerClone!.Count > 1)
                 {
-                    itemHelper.ReparentItemAndChildren(offerClone.FirstOrDefault(), offerClone);
+                    itemHelper.ReparentItemAndChildren(offerClone.FirstOrDefault()!, offerClone);
                 }
 
                 itemsToSendToPlayer.Add(offerClone);
@@ -230,17 +229,17 @@ public class TradeHelper(
             };
 
             // Add items + their children to stash
-            inventoryHelper.AddItemsToStash(sessionID, request, pmcData, output);
+            inventoryHelper.AddItemsToStash(sessionId, request, pmcData, output);
             if (output.Warnings?.Count > 0)
             {
                 return;
             }
 
             // Pay for purchase
-            paymentService.PayMoney(pmcData, buyRequestData, sessionID, output);
+            paymentService.PayMoney(pmcData, buyRequestData, sessionId, output);
             if (output.Warnings?.Count > 0)
             {
-                var errorMessage = $"Transaction failed: {output.Warnings.FirstOrDefault().ErrorMessage}";
+                var errorMessage = $"Transaction failed: {output.Warnings.FirstOrDefault()!.ErrorMessage}";
                 httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.UnknownTradingError);
             }
         }
@@ -252,13 +251,13 @@ public class TradeHelper(
     /// <param name="profileWithItemsToSell">Profile to remove items from</param>
     /// <param name="profileToReceiveMoney">Profile to accept the money for selling item</param>
     /// <param name="sellRequest">Request data</param>
-    /// <param name="sessionID">Session id</param>
+    /// <param name="sessionId">Session id</param>
     /// <param name="output">Item event router response</param>
     public void SellItem(
         PmcData profileWithItemsToSell,
         PmcData profileToReceiveMoney,
         ProcessSellTradeRequestData sellRequest,
-        MongoId sessionID,
+        MongoId sessionId,
         ItemEventRouterResponse output
     )
     {
@@ -268,11 +267,11 @@ public class TradeHelper(
         const string pattern = @"\s+";
 
         // Find item in inventory and remove it
-        foreach (var itemToBeRemoved in sellRequest.Items)
+        foreach (var itemToBeRemoved in sellRequest.Items!)
         {
             var itemIdToFind = Regex.Replace(itemToBeRemoved.Id, pattern, ""); // Strip out whitespace
             // Find item in player inventory, or show error to player if not found
-            var matchingItemInInventory = profileWithItemsToSell.Inventory.Items.FirstOrDefault(x => x.Id == itemIdToFind);
+            var matchingItemInInventory = profileWithItemsToSell.Inventory!.Items!.FirstOrDefault(x => x.Id == itemIdToFind);
             if (matchingItemInInventory is null)
             {
                 var errorMessage = $"Unable to sell item {itemToBeRemoved.Id}, cannot be found in player inventory";
@@ -290,15 +289,15 @@ public class TradeHelper(
 
             if (sellRequest.TransactionId == Models.Enums.Traders.FENCE)
             {
-                fenceService.AddItemsToFenceAssort(profileWithItemsToSell.Inventory.Items, matchingItemInInventory);
+                fenceService.AddItemsToFenceAssort(profileWithItemsToSell.Inventory.Items!, matchingItemInInventory);
             }
 
             // Remove item from inventory + any child items it has
-            inventoryHelper.RemoveItem(profileWithItemsToSell, itemToBeRemoved.Id, sessionID, output);
+            inventoryHelper.RemoveItem(profileWithItemsToSell, itemToBeRemoved.Id, sessionId, output);
         }
 
         // Give player money for sold item(s)
-        paymentService.GiveProfileMoney(profileToReceiveMoney, sellRequest.Price, sellRequest, output, sessionID);
+        paymentService.GiveProfileMoney(profileToReceiveMoney, sellRequest.Price, sellRequest, output, sessionId);
     }
 
     /// <summary>
@@ -321,8 +320,8 @@ public class TradeHelper(
     {
         var traderPurchaseData = traderPurchasePersisterService.GetProfileTraderPurchase(sessionId, traderId, assortBeingPurchased.Id);
         var traderItemPurchaseLimit = traderHelper.GetAccountTypeAdjustedTraderPurchaseLimit(
-            (double)assortBeingPurchased.Upd?.BuyRestrictionMax,
-            pmcData.Info.GameVersion
+            (double)assortBeingPurchased.Upd?.BuyRestrictionMax!,
+            pmcData.Info!.GameVersion!
         );
         if ((traderPurchaseData?.PurchaseCount ?? 0) + count > traderItemPurchaseLimit)
         {
@@ -335,14 +334,14 @@ public class TradeHelper(
 
 public record PurchaseDetails
 {
-    public List<PurchaseItems> Items { get; set; }
+    public required List<PurchaseItems> Items { get; init; }
 
-    public MongoId TraderId { get; set; }
+    public MongoId TraderId { get; init; }
 }
 
 public record PurchaseItems
 {
-    public MongoId ItemId { get; set; }
+    public MongoId ItemId { get; init; }
 
-    public double Count { get; set; }
+    public double Count { get; init; }
 }
