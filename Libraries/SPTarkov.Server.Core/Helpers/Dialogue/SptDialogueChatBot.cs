@@ -6,7 +6,6 @@ using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Commerce;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue;

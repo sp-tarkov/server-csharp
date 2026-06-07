@@ -201,7 +201,7 @@ public class InRaidHelper(
             }
 
             // Remove normal items or quest raid items
-            if (item.ParentId == equipmentRootId || item.ParentId == questRaidItemContainerId)
+            if (item.ParentId! == equipmentRootId || item.ParentId! == questRaidItemContainerId)
             {
                 return true;
             }

@@ -68,7 +68,7 @@ public class HandbookHelper(ISptLogger<HandbookHelper> logger, TemplateTable tem
 
         foreach (var handbookCategory in handbookDbClone.Categories)
         {
-            if (!result.Categories.ById.TryAdd(handbookCategory.Id, handbookCategory.ParentId))
+            if (!result.Categories.ById.TryAdd(handbookCategory.Id, handbookCategory.ParentId!))
             {
                 var message = $"Unable to add `{handbookCategory.Id}`. Key already exists.";
                 logger.Error(message);
@@ -129,7 +129,7 @@ public class HandbookHelper(ISptLogger<HandbookHelper> logger, TemplateTable tem
             HandbookPriceCache.Items.ById[tpl] = handbookItem.Price ?? 0;
         }
 
-        return handbookItem.Price.Value;
+        return handbookItem.Price!.Value;
     }
 
     /// <summary>
@@ -228,29 +228,17 @@ public class HandbookHelper(ISptLogger<HandbookHelper> logger, TemplateTable tem
         return templateTable.Handbook.Categories.FirstOrDefault(category => category.Id == handbookId);
     }
 
-    protected record LookupItem<T, I>
+    protected record LookupItem<T, TI>
     {
-        public LookupItem()
-        {
-            ById = new Dictionary<MongoId, T>();
-            ByParent = new Dictionary<MongoId, List<I>>();
-        }
+        public Dictionary<MongoId, T> ById { get; set; } = new();
 
-        public Dictionary<MongoId, T> ById { get; set; }
-
-        public Dictionary<MongoId, List<I>> ByParent { get; set; }
+        public Dictionary<MongoId, List<TI>> ByParent { get; set; } = new();
     }
 
     protected record LookupCollection
     {
-        public LookupCollection()
-        {
-            Items = new LookupItem<double, MongoId>();
-            Categories = new LookupItem<string, string>();
-        }
+        public LookupItem<double, MongoId> Items { get; set; } = new();
 
-        public LookupItem<double, MongoId> Items { get; set; }
-
-        public LookupItem<string, string> Categories { get; set; }
+        public LookupItem<string, string> Categories { get; set; } = new();
     }
 }

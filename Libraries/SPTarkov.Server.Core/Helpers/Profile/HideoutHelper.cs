@@ -252,10 +252,10 @@ public class HideoutHelper(
     /// <summary>
     ///     Process a players hideout, update areas that use resources + increment production timers
     /// </summary>
-    /// <param name="sessionID">Session id</param>
-    public void UpdatePlayerHideout(MongoId sessionID)
+    /// <param name="sessionId">Session id</param>
+    public void UpdatePlayerHideout(MongoId sessionId)
     {
-        var pmcData = profileHelper.GetPmcProfile(sessionID)!;
+        var pmcData = profileHelper.GetPmcProfile(sessionId)!;
         var hideoutProperties = GetHideoutProperties(pmcData);
 
         if (pmcData.Hideout is null)
@@ -267,7 +267,7 @@ public class HideoutHelper(
 
         pmcData.Hideout.SptUpdateLastRunTimestamp ??= timeUtil.GetTimeStamp();
 
-        UpdateAreasWithResources(sessionID, pmcData, hideoutProperties);
+        UpdateAreasWithResources(sessionId, pmcData, hideoutProperties);
         UpdateProductionTimers(pmcData, hideoutProperties);
         pmcData.Hideout.SptUpdateLastRunTimestamp = timeUtil.GetTimeStamp();
     }
@@ -679,13 +679,8 @@ public class HideoutHelper(
             double pointsConsumed;
 
             var generatorSlot = generatorArea.Slots[i];
-            if (generatorSlot?.Items is null)
-            // No item in slot, skip
-            {
-                continue;
-            }
+            var fuelItemInSlot = generatorSlot.Items?.FirstOrDefault();
 
-            var fuelItemInSlot = generatorSlot?.Items.FirstOrDefault();
             if (fuelItemInSlot is null)
             // No item in slot, skip
             {
@@ -704,12 +699,12 @@ public class HideoutHelper(
                 {
                     var fuelItemTemplate = itemHelper.GetItem(fuelItemInSlot.Template).Value;
                     pointsConsumed = fuelUsedSinceLastTick ?? 0;
-                    fuelRemaining = fuelItemTemplate.Properties.MaxResource - fuelUsedSinceLastTick;
+                    fuelRemaining = fuelItemTemplate!.Properties!.MaxResource - fuelUsedSinceLastTick;
                     break;
                 }
                 default:
                     // Fuel exists already, deduct fuel from item remaining value
-                    pointsConsumed = (double)((fuelItemInSlot.Upd.Resource.UnitsConsumed ?? 0) + fuelUsedSinceLastTick);
+                    pointsConsumed = (double)((fuelItemInSlot.Upd!.Resource!.UnitsConsumed ?? 0) + fuelUsedSinceLastTick)!;
                     fuelRemaining -= fuelUsedSinceLastTick;
                     break;
             }
@@ -1426,7 +1421,7 @@ public class HideoutHelper(
                 continue;
             }
 
-            if (improvementDetails?.Completed == false && improvementDetails.ImproveCompleteTimestamp < timeUtil.GetTimeStamp())
+            if (improvementDetails.Completed == false && improvementDetails.ImproveCompleteTimestamp < timeUtil.GetTimeStamp())
             {
                 improvementDetails.Completed = true;
             }

@@ -35,7 +35,7 @@ public class DialogueHelper(ISptLogger<DialogueHelper> logger, ProfileHelper pro
 
         if (message?.SystemData is not null)
         {
-            result.SystemData = message?.SystemData;
+            result.SystemData = message.SystemData;
         }
 
         return result;
@@ -57,7 +57,7 @@ public class DialogueHelper(ISptLogger<DialogueHelper> logger, ProfileHelper pro
             return [];
         }
 
-        foreach (var (dialogId, dialog) in fullProfile.DialogueRecords)
+        foreach (var (_, dialog) in fullProfile.DialogueRecords)
         {
             var message = dialog.Messages?.FirstOrDefault(x => x.Id == messageId);
             if (message is null)

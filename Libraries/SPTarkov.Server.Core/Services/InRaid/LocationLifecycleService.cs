@@ -483,11 +483,7 @@ public class LocationLifecycleService(
     /// <summary>
     ///     Handle client/match/local/end
     /// </summary>
-    public async Task EndLocalRaidAsync(
-        MongoId sessionId,
-        EndLocalRaidRequestData request,
-        CancellationToken cancellationToken = default
-    )
+    public async Task EndLocalRaidAsync(MongoId sessionId, EndLocalRaidRequestData request, CancellationToken cancellationToken = default)
     {
         // Clear bot loot cache
         botLootCacheService.ClearCache();
@@ -945,7 +941,7 @@ public class LocationLifecycleService(
         MergePmcAndScavEncyclopedias(serverPmcProfile, scavProfile);
 
         // Handle temp, hydration, limb hp/effects
-        healthHelper.ApplyHealthChangesToProfile(sessionId, serverPmcProfile, postRaidProfile.Health, isDead);
+        healthHelper.ApplyHealthChangesToProfile(serverPmcProfile, postRaidProfile.Health, isDead);
 
         if (isTransfer)
         {

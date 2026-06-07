@@ -1,7 +1,6 @@
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Exceptions.Helpers;
-using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -18,20 +17,11 @@ public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, He
     /// <summary>
     ///     Update player profile vitality values with changes from client request object
     /// </summary>
-    /// <param name="sessionId">Session id</param>
     /// <param name="pmcProfileToUpdate">Player profile to apply changes to</param>
     /// <param name="healthChanges">Changes to apply </param>
-    public void ApplyHealthChangesToProfile(MongoId sessionId, PmcData pmcProfileToUpdate, BotBaseHealth healthChanges, bool isDead)
+    /// <param name="isDead">Is the player dead</param>
+    public void ApplyHealthChangesToProfile(PmcData pmcProfileToUpdate, BotBaseHealth healthChanges, bool isDead)
     {
-        /* TODO: Not used here, need to check node or a live profile, commented out for now to avoid the potential alloc - Cj
-        var fullProfile = saveServer.GetProfile(sessionId);
-        var profileEdition = fullProfile.ProfileInfo?.Edition;
-        var profileSide = fullProfile.CharacterData?.PmcData?.Info?.Side;
-        // Get matching 'side' e.g. USEC
-        var matchingSide = profileHelper.GetProfileTemplateForSide(profileEdition, profileSide);
-        var defaultTemperature = matchingSide?.Character?.Health?.Temperature ?? new CurrentMinMax { Current = 36.6 };
-        */
-
         if (healthChanges.BodyParts is null)
         {
             const string message = "healthChanges.BodyParts is null when trying to apply health changes";
@@ -39,7 +29,7 @@ public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, He
             throw new HealthHelperException(message);
         }
 
-        var playerWasCursed = !PlayerHadGearOnRaidStart(pmcProfileToUpdate.Inventory);
+        var playerWasCursed = !PlayerHadGearOnRaidStart(pmcProfileToUpdate.Inventory!);
 
         // Alter saved profiles Health with values from post-raid client data
         ModifyProfileHealthProperties(pmcProfileToUpdate, healthChanges.BodyParts, EffectsToSkip, isDead, playerWasCursed);
@@ -65,7 +55,7 @@ public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, He
     /// <returns>True = they had enough gear to not be classed as 'cursed'</returns>
     protected bool PlayerHadGearOnRaidStart(BotBaseInventory inventory)
     {
-        if (inventory?.Items == null)
+        if (inventory.Items == null)
         {
             return false;
         }
@@ -216,18 +206,18 @@ public class HealthHelper(ISptLogger<HealthHelper> logger, TimeUtil timeUtil, He
     {
         // Ensure current hydration/energy/temp are copied over and don't exceed maximum
         var profileHealth = profileToUpdate.Health;
-        profileHealth.Hydration.Current =
-            profileHealth.Hydration.Current > healthChanges.Hydration.Maximum
+        profileHealth!.Hydration!.Current =
+            profileHealth.Hydration.Current > healthChanges.Hydration!.Maximum
                 ? healthChanges.Hydration.Maximum
                 : Math.Round(healthChanges.Hydration.Current ?? 0);
 
-        profileHealth.Energy.Current =
-            profileHealth.Energy.Current > healthChanges.Energy.Maximum
+        profileHealth.Energy!.Current =
+            profileHealth.Energy.Current > healthChanges.Energy!.Maximum
                 ? healthChanges.Energy.Maximum
                 : Math.Round(healthChanges.Energy.Current ?? 0);
 
-        profileHealth.Temperature.Current =
-            profileHealth.Temperature.Current > healthChanges.Temperature.Maximum
+        profileHealth.Temperature!.Current =
+            profileHealth.Temperature.Current > healthChanges.Temperature!.Maximum
                 ? healthChanges.Temperature.Maximum
                 : Math.Round(healthChanges.Temperature.Current ?? 0);
     }
