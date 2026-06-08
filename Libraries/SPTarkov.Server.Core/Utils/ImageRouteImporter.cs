@@ -9,7 +9,7 @@ public class ImageRouteImporter(FileUtil fileUtil, ImageRouter imageRouter) : IO
 {
     private const string SptDataPath = "./SPT_Data/";
 
-    public Task OnLoad(CancellationToken cancellationToken)
+    public Task OnLoadAsync(CancellationToken cancellationToken)
     {
         const string imageFilePath = $"{SptDataPath}images/";
         CreateRouteMapping(imageFilePath, "files");

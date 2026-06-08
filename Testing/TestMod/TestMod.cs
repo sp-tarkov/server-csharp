@@ -36,6 +36,8 @@ public class TestModPreload(ISptLogger<TestMod> logger, TestDIClass testClass) :
 
         return Task.CompletedTask;
     }
+
+    public async Task OnLoadAsync(CancellationToken cancellationToken)
     {
         logger.Info("Test mod preloading!");
         logger.Info(testClass.TestString);
@@ -47,7 +49,7 @@ public class TestModPreload(ISptLogger<TestMod> logger, TestDIClass testClass) :
 [Injectable(TypePriority = OnLoadOrder.PostLoad + 1)]
 public class TestMod(ISptLogger<TestMod> logger) : IOnLoad
 {
-    public async Task OnLoad(CancellationToken cancellationToken)
+    public async Task OnLoadAsync(CancellationToken cancellationToken)
     {
         logger.Info("Test mod postloading!");
 

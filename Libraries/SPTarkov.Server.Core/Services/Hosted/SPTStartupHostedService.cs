@@ -95,7 +95,7 @@ public sealed class SPTStartupHostedService(
                     throw new InvalidOperationException($"Unable to resolve {onLoadContainer.ParentType.FullName} as {nameof(IOnLoad)}");
                 }
 
-                await onLoad.OnLoad(cancellationToken).ConfigureAwait(false);
+                await onLoad.OnLoadAsync(cancellationToken).ConfigureAwait(false);
             }
 
             logger.Success(serverLocalisationService.GetText("started_webserver_success", httpServer.ListeningUrl()));
@@ -120,7 +120,7 @@ public sealed class SPTStartupHostedService(
 
                     try
                     {
-                        if (await updateable.OnUpdate(secondsSinceLastRun, cancellationToken).ConfigureAwait(false))
+                        if (await updateable.OnUpdateAsync(secondsSinceLastRun, cancellationToken).ConfigureAwait(false))
                         {
                             _onUpdateLastRun[updateableName] = timeUtil.GetTimeStamp();
                         }

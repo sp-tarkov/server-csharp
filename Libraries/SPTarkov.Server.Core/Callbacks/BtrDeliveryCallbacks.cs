@@ -22,7 +22,7 @@ public class BtrDeliveryCallbacks(
     SaveServer saveServer
 ) : IOnUpdate
 {
-    public Task<bool> OnUpdate(long secondsSinceLastRun, CancellationToken cancellationToken)
+    public Task<bool> OnUpdateAsync(long secondsSinceLastRun, CancellationToken cancellationToken)
     {
         if (secondsSinceLastRun < btrDeliveryConfig.RunIntervalSeconds)
         {

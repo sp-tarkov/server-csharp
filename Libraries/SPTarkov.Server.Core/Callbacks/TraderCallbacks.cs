@@ -16,13 +16,13 @@ public class TraderCallbacks(
     TraderAssortHelper traderAssortHelper
 ) : IOnLoad, IOnUpdate
 {
-    public Task OnLoad(CancellationToken cancellationToken)
+    public Task OnLoadAsync(CancellationToken cancellationToken)
     {
         traderController.Load();
         return Task.CompletedTask;
     }
 
-    public Task<bool> OnUpdate(long _, CancellationToken cancellationToken)
+    public Task<bool> OnUpdateAsync(long _, CancellationToken cancellationToken)
     {
         traderController.Update();
 

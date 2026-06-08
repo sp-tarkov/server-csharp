@@ -30,7 +30,7 @@ public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, 
     private const string UserCredentialsFileName = "credentials.json";
     private List<AuthUserCredential> _credentials = null!;
 
-    public async Task OnLoad(CancellationToken stoppingToken)
+    public async Task OnLoadAsync(CancellationToken stoppingToken)
     {
         await CreateOrLoadUserCredentials();
 

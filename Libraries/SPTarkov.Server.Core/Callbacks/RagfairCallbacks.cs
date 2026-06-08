@@ -24,7 +24,7 @@ public class RagfairCallbacks(
     RagfairConfig ragfairConfig
 ) : IOnLoad, IOnUpdate
 {
-    public Task OnLoad(CancellationToken cancellationToken)
+    public Task OnLoadAsync(CancellationToken cancellationToken)
     {
         ragfairPriceService.Load();
         ragfairServer.Load();
@@ -32,7 +32,7 @@ public class RagfairCallbacks(
         return Task.CompletedTask;
     }
 
-    public Task<bool> OnUpdate(long secondsSinceLastRun, CancellationToken cancellationToken)
+    public Task<bool> OnUpdateAsync(long secondsSinceLastRun, CancellationToken cancellationToken)
     {
         if (secondsSinceLastRun < ragfairConfig.RunIntervalSeconds)
         {

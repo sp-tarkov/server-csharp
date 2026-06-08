@@ -25,5 +25,5 @@ public interface IOnLoad
     /// Do not treat cancellation as an error. If cancellation is requested, allow
     /// <see cref="OperationCanceledException"/> to propagate unless cleanup is required.
     /// </remarks>
-    Task OnLoad(CancellationToken cancellationToken);
+    Task OnLoadAsync(CancellationToken cancellationToken);
 }

@@ -107,7 +107,7 @@ public class DI
 
         foreach (var onLoad in _serviceProvider.GetServices<IOnLoad>())
         {
-            onLoad.OnLoad(cancellationTokenSource.Token).Wait();
+            onLoad.OnLoadAsync(cancellationTokenSource.Token).Wait();
         }
     }
 

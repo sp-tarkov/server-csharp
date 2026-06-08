@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Callbacks;
 [Injectable(TypePriority = OnLoadOrder.HandbookCallbacks)]
 public class HandbookCallbacks(HandBookController handBookController) : IOnLoad
 {
-    public Task OnLoad(CancellationToken cancellationToken)
+    public Task OnLoadAsync(CancellationToken cancellationToken)
     {
         handBookController.Load();
         return Task.CompletedTask;
