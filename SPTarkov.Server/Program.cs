@@ -209,6 +209,9 @@ public static class Program
 
         builder.Services.AddSingleton(builder);
         builder.Services.AddSingleton<IReadOnlyList<SptMod>>(loadedMods);
+
+        await builder.Services.AddModDIConstructorsAsync(loadedMods.SelectMany(mod => mod.Assemblies).ToArray());
+
         // Configure Kestrel options
         ConfigureKestrel(builder);
 
