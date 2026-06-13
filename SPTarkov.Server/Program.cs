@@ -155,14 +155,18 @@ public static class Program
         var earlyServiceProvider = ProgramHelpers.CreateEarlySptProvider(loggerFactory, configuration);
 
         List<SptMod> loadedMods = [];
-        var modLoader = earlyServiceProvider.GetRequiredService<ModLoader>();
-        var runResult = await modLoader.RunModLoader(loggerFactory, args);
-        if (!runResult.ShouldStartServer)
-        {
-            return;
-        }
 
-        loadedMods = runResult.ValidRuntimeMods;
+        if (ProgramStatics.MODS())
+        {
+            var modLoader = earlyServiceProvider.GetRequiredService<ModLoader>();
+            var runResult = await modLoader.RunModLoader(loggerFactory, args);
+            if (!runResult.ShouldStartServer)
+            {
+                return;
+            }
+
+            loadedMods = runResult.ValidRuntimeMods;
+        }
 
         var cTSource = new CancellationTokenSource();
         var dbImporter = earlyServiceProvider.GetRequiredService<DatabaseImporter>();
