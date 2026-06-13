@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.IO.Hashing;
 using System.Security.Cryptography;
 using System.Text;
@@ -16,6 +17,34 @@ public class HashUtil(RandomUtil _randomUtil)
     public uint GenerateCrc32ForData(ReadOnlySpan<byte> data)
     {
         return Crc32.HashToUInt32(data);
+    }
+
+    /// <summary>
+    /// Generates a CRC32 hash for a file, reading in chunks using a pooled buffer to reduce allocations.
+    /// </summary>
+    /// <param name="filePath">The path to the file</param>
+    /// <returns>The CRC32 hash as a uint</returns>
+    public async Task<uint> GenerateCrc32ForFileAsync(string filePath)
+    {
+        var crc = new Crc32();
+        await using var stream = File.OpenRead(filePath);
+
+        // Rent from pool to avoid repeated allocations for each file read
+        var buffer = ArrayPool<byte>.Shared.Rent(81920);
+        try
+        {
+            int bytesRead;
+            while ((bytesRead = await stream.ReadAsync(buffer)) > 0)
+            {
+                crc.Append(buffer.AsSpan(0, bytesRead));
+            }
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
+
+        return crc.GetCurrentHashAsUInt32();
     }
 
     /// <summary>

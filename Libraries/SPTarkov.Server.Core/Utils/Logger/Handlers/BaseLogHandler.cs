@@ -8,19 +8,32 @@ public abstract class BaseLogHandler : ILogHandler
 
     protected string FormatMessage(string processedMessage, SptLogMessage message, BaseSptLoggerReference reference)
     {
-        var formattedMessage = reference
-            .Format.Replace("%date%", message.LogTime.ToString("yyyy-MM-dd"))
-            .Replace("%time%", message.LogTime.ToString("HH:mm:ss.fff"))
-            .Replace("%message%", processedMessage)
-            .Replace("%loggerShort%", message.Logger.Split('.').Last())
-            .Replace("%logger%", message.Logger)
-            .Replace("%tid%", message.threadId.ToString())
-            .Replace("%tname%", message.threadName)
-            .Replace("%level%", Enum.GetName(message.LogLevel));
+        var format = reference.GetCompiledFormat();
+
+        var formattedMessage = string.Format(
+            null,
+            format,
+            message.LogTime.ToString("yyyy-MM-dd"),
+            message.LogTime.ToString("HH:mm:ss.fff"),
+            processedMessage,
+            GetLoggerShortName(message.Logger),
+            message.Logger,
+            message.threadId,
+            message.threadName,
+            message.LogLevel.ToString()
+        );
+
         if (message.Exception != null)
         {
-            formattedMessage += $"\n{message.Exception.Message}\n{message.Exception.StackTrace}";
+            return string.Concat(formattedMessage, "\n", message.Exception.Message, "\n", message.Exception.StackTrace);
         }
+
         return formattedMessage;
+    }
+
+    protected string GetLoggerShortName(string logger)
+    {
+        var lastDotIndex = logger.AsSpan().LastIndexOf('.');
+        return lastDotIndex >= 0 ? logger.Substring(lastDotIndex + 1) : logger;
     }
 }

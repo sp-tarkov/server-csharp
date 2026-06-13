@@ -774,7 +774,10 @@ public class InsuranceController(
             }
         }
 
-        profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Charisma, itemsToInsureCount * 0.01);
+        // give charisma skill points based on the total price of the insured items divded by 200000rub, multiplied by skill progress rate
+        double intSkillPoints = (itemsToPay.Sum(c => c.Count ?? 0) / 200000);
+        logger.Debug($"Insured {itemsToPay.Sum(c => c.Count ?? 0)} value, granting {intSkillPoints} {SkillTypes.Charisma} skill points.");
+        profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Charisma, intSkillPoints, true);
 
         return output;
     }

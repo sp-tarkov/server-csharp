@@ -195,7 +195,14 @@ public class PrestigeHelper(
                 case RewardType.Skill:
                     if (Enum.TryParse(reward.Target, out SkillTypes result))
                     {
-                        profileHelper.AddSkillPointsToPlayer(newProfile.CharacterData!.PmcData!, result, reward.Value.GetValueOrDefault(0));
+                        // skill reward values are always 100 (+1 level), so adjustment for low levels will give a wrong result
+                        profileHelper.AddSkillPointsToPlayer(
+                            newProfile.CharacterData!.PmcData!,
+                            result,
+                            reward.Value.GetValueOrDefault(0),
+                            useSkillProgressRateMultiplier: false,
+                            adjustSkillExpForLowLevels: false
+                        );
                     }
                     else
                     {

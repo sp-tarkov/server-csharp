@@ -24,6 +24,7 @@ public class JsonUtil
             UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
 #endif
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            NewLine = "\n",
         };
 
         foreach (var registrator in registrators)

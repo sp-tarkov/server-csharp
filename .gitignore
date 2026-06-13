@@ -426,3 +426,6 @@ fabric.properties
 
 # Automatically generated file containing metadata on build
 Libraries/SPTarkov.Server.Core/Utils/ProgramStatics.Generated.cs
+
+# Not necessary to be included in the repo
+Testing/**/Properties/launchSettings.json

@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
@@ -28,7 +29,31 @@ public abstract class BaseSptLoggerReference
     public LogLevel LogLevel { get; set; }
 
     [JsonPropertyName("format")]
-    public string Format { get; set; }
+    public required string Format { get; set; }
+
+    private string? _cachedFormat;
+    private CompositeFormat? _compiledFormat;
+
+    public virtual CompositeFormat GetCompiledFormat()
+    {
+        if (_cachedFormat != Format)
+        {
+            var convertedFormat = Format
+                .Replace("%date%", "{0}")
+                .Replace("%time%", "{1}")
+                .Replace("%message%", "{2}")
+                .Replace("%loggerShort%", "{3}")
+                .Replace("%logger%", "{4}")
+                .Replace("%tid%", "{5}")
+                .Replace("%tname%", "{6}")
+                .Replace("%level%", "{7}");
+
+            _compiledFormat = CompositeFormat.Parse(convertedFormat);
+            _cachedFormat = Format;
+        }
+
+        return _compiledFormat!;
+    }
 }
 
 public class SptLoggerFilter

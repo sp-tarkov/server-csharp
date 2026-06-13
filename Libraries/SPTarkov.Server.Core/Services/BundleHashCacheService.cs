@@ -1,5 +1,5 @@
-﻿using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Models.Eft.Profile;
+﻿using System.Collections.Concurrent;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 
@@ -10,7 +10,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
 {
     protected const string _bundleHashCachePath = "./user/cache/";
     protected const string _cacheName = "bundleHashCache.json";
-    protected Dictionary<string, uint> _bundleHashes = [];
+    protected ConcurrentDictionary<string, uint> _bundleHashes = [];
     private readonly SemaphoreSlim _writeLock = new(1, 1);
 
     public async Task HydrateCache()
@@ -28,7 +28,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
             return;
         }
 
-        _bundleHashes = await jsonUtil.DeserializeFromFileAsync<Dictionary<string, uint>>(fullCachePath) ?? [];
+        _bundleHashes = await jsonUtil.DeserializeFromFileAsync<ConcurrentDictionary<string, uint>>(fullCachePath) ?? [];
     }
 
     public async Task WriteCache()
@@ -64,7 +64,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
 
     protected async Task StoreValue(string bundlePath, uint hash)
     {
-        _bundleHashes[bundlePath] = hash;
+        _bundleHashes.TryAdd(bundlePath, hash);
 
         logger.Debug($"Bundle: {bundlePath} hash stored in cache");
     }
@@ -79,7 +79,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
 
         if (!MatchWithStoredHash(BundlePath, hash))
         {
-            await StoreValue(BundlePath, await CalculateHash(BundlePath));
+            await StoreValue(BundlePath, hash);
         }
 
         return hash;
@@ -87,7 +87,7 @@ public class BundleHashCacheService(ISptLogger<BundleHashCacheService> logger, J
 
     protected async Task<uint> CalculateHash(string BundlePath)
     {
-        return hashUtil.GenerateCrc32ForData(await fileUtil.ReadFileAsBytesAsync(BundlePath));
+        return await hashUtil.GenerateCrc32ForFileAsync(BundlePath);
     }
 
     protected bool MatchWithStoredHash(string BundlePath, uint hash)

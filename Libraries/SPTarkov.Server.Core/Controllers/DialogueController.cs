@@ -248,7 +248,7 @@ public class DialogueController(
         var fullProfile = saveServer.GetProfile(sessionId);
         var dialogue = GetDialogByIdFromProfile(fullProfile, request);
 
-        if (dialogue.Messages?.Count == 0)
+        if (dialogue.Messages == null || dialogue.Messages.Count == 0)
         {
             return new GetMailDialogViewResponseData
             {
@@ -266,9 +266,9 @@ public class DialogueController(
 
         return new GetMailDialogViewResponseData
         {
-            Messages = dialogue.Messages,
+            Messages = GetLimitedMessages(dialogue.Messages, request.Limit, request.Time),
             Profiles = GetProfilesForMail(fullProfile, dialogue.Users),
-            HasMessagesWithRewards = MessagesHaveUncollectedRewards(dialogue.Messages!),
+            HasMessagesWithRewards = MessagesHaveUncollectedRewards(dialogue.Messages),
         };
     }
 
@@ -408,6 +408,49 @@ public class DialogueController(
     protected bool MessagesHaveUncollectedRewards(List<Message> messages)
     {
         return messages.Any(message => (message.Items?.Data?.Count ?? 0) > 0);
+    }
+
+    /// <summary>
+    /// Gets a subset of messages from before a certain time
+    /// </summary>
+    /// <param name="allMessages">The superset of messages</param>
+    /// <param name="limit">The maximum number of messages to return, null/0 means all</param>
+    /// <param name="time">Limit to messages before this Unix time (seconds since epoch), null/0 means all</param>
+    /// <returns>List of matching messages</returns>
+    protected List<Message> GetLimitedMessages(List<Message> allMessages, int? limit, decimal? time)
+    {
+        if ((time == null || time == 0) && (limit == null || limit == 0 || limit >= allMessages.Count))
+        {
+            return allMessages;
+        }
+
+        if (time == null || time == 0)
+        {
+            time = timeUtil.GetTimeStamp();
+        }
+
+        if (limit == null || limit == 0)
+        {
+            limit = int.MaxValue;
+        }
+
+        List<Message> results = [];
+        for (var i = allMessages.Count - 1; i >= 0; i--)
+        {
+            var message = allMessages[i];
+            if (message.DateTime <= time)
+            {
+                results.Add(message);
+
+                if (results.Count >= limit)
+                {
+                    break;
+                }
+            }
+        }
+
+        results.Reverse(); // Since we iterated from newest to oldest, reverse so the result is in order
+        return results;
     }
 
     /// <summary>

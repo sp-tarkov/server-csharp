@@ -199,7 +199,7 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
                 new
                 {
                     name = mod.ModMetadata.Name,
-                    version = $"{mod.ModMetadata.Version} (targets SPT: {mod.ModMetadata.SptVersion})",
+                    version = $"{mod.ModMetadata.Version} (GUID: {mod.ModMetadata.ModGuid} | targets SPT: {mod.ModMetadata.SptVersion})",
                     author = mod.ModMetadata.Author,
                 }
             )

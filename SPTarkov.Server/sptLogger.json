@@ -2,7 +2,7 @@
   "loggers": [
     {
       "type": "File",
-      "logLevel": "Trace",
+      "logLevel": "Info",
       "format": "[%date% %time%][%level%][%logger%] %message%",
       "filePath": "./user/logs/spt/",
       "filePattern": "spt%DATE%.log",
@@ -23,7 +23,7 @@
     },
     {
       "type": "File",
-      "logLevel": "Trace",
+      "logLevel": "Info",
       "format": "[%date% %time%][%level%][%logger%] %message%",
       "filePath": "./user/logs/requests/",
       "filePattern": "requests%DATE%.log",

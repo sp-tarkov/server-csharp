@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Concurrent;
+using System.Text.Json.Serialization;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Spt.Mod;
@@ -35,36 +36,42 @@ public class BundleInfo(string modPath, BundleManifestEntry bundle, uint bundleH
 [Injectable(InjectionType.Singleton)]
 public class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonUtil, BundleHashCacheService bundleHashCacheService)
 {
-    private readonly Dictionary<string, BundleInfo> _bundles = [];
+    private readonly ConcurrentDictionary<string, BundleInfo> _bundles = [];
 
     public async Task LoadBundlesAsync(SptMod mod)
     {
         await bundleHashCacheService.HydrateCache();
 
         var modPath = mod.GetModPath();
-
         var modBundles = await jsonUtil.DeserializeFromFileAsync<BundleManifest>(
             Path.Join(Directory.GetCurrentDirectory(), modPath, "bundles.json")
         );
 
-        var bundleManifests = modBundles?.Manifest ?? [];
+        var relativeModPath = modPath.Replace('\\', '/');
+        var bundlesPath = Path.Join(relativeModPath, "bundles");
 
-        foreach (var bundleManifest in bundleManifests)
+        if (modBundles?.Manifest is null)
         {
-            var relativeModPath = modPath.Replace('\\', '/');
-
-            var bundleLocalPath = Path.Join(relativeModPath, "bundles", bundleManifest.Key).Replace('\\', '/');
-
-            if (!File.Exists(bundleLocalPath))
-            {
-                logger.Warning($"Could not find bundle {bundleManifest.Key} for mod {mod.ModMetadata.Name}");
-                continue;
-            }
-
-            var bundleHash = await bundleHashCacheService.CalculateMatchAndStoreHash(bundleLocalPath);
-
-            AddBundle(bundleManifest.Key, new BundleInfo(relativeModPath, bundleManifest, bundleHash));
+            logger.Warning($"Could not find manifest for mod {mod.ModMetadata.Name}, skipping!");
+            return;
         }
+
+        await Parallel.ForEachAsync(
+            modBundles.Manifest,
+            async (bundleManifest, ct) =>
+            {
+                var bundleLocalPath = Path.Join(bundlesPath, bundleManifest.Key).Replace('\\', '/');
+
+                if (!File.Exists(bundleLocalPath))
+                {
+                    logger.Warning($"Could not find bundle {bundleManifest.Key} for mod {mod.ModMetadata.Name}");
+                    return;
+                }
+
+                var bundleHash = await bundleHashCacheService.CalculateMatchAndStoreHash(bundleLocalPath);
+                AddBundle(bundleManifest.Key, new BundleInfo(relativeModPath, bundleManifest, bundleHash));
+            }
+        );
 
         await bundleHashCacheService.WriteCache();
     }

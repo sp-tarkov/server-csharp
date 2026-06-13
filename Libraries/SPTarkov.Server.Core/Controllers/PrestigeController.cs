@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -66,6 +67,33 @@ public class PrestigeController(ProfileHelper profileHelper, DatabaseService dat
 
             profile.SptData.PendingPrestige = pendingPrestige;
             profile.ProfileInfo.IsWiped = true;
+
+            var prestigeLevels = databaseService.GetTemplates().Prestige?.Elements ?? [];
+
+            var prestigeRewards = prestigeLevels
+                .Slice(0, pendingPrestige.PrestigeLevel.Value)
+                .SelectMany(prestigeInner => prestigeInner.Rewards);
+
+            var customisationTemplateDb = databaseService.GetTemplates().Customization;
+
+            foreach (var reward in prestigeRewards)
+            {
+                if (!MongoId.IsValidMongoId(reward.Target))
+                {
+                    continue;
+                }
+
+                if (!customisationTemplateDb.TryGetValue(reward.Target, out var template))
+                {
+                    continue;
+                }
+
+                // This has to be done before the profile is wiped, as the user can only select a new head during the wipe
+                if (template.Parent == CustomisationTypeId.HEAD)
+                {
+                    profileHelper.AddHideoutCustomisationUnlock(profile, reward, CustomisationSource.PRESTIGE);
+                }
+            }
 
             await saveServer.SaveProfileAsync(sessionId);
         }

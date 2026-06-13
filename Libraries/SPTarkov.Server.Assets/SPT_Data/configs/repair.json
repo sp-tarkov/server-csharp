@@ -1,21 +1,17 @@
 {
   "priceMultiplier": 1,
   "applyRandomizeDurabilityLoss": true,
-  "armorKitSkillPointGainPerRepairPointMultiplier": 0.05,
+  "armorKitSkillPointGainPerRepairPointMultiplier": 0.1,
   "repairKitIntellectGainMultiplier": {
-    "weapon": 0.045,
-    "armor": 0.03
-  },
-  "maxIntellectGainPerRepair": {
-    "kit": 0.6,
-    "trader": 0.6
+    "weapon": 0.1,
+    "armor": 0.1
   },
   "weaponTreatment": {
     "critSuccessChance": 0.1,
     "critSuccessAmount": 4,
     "critFailureChance": 0.1,
     "critFailureAmount": 4,
-    "pointGainMultiplier": 0.6
+    "pointGainMultiplier": 0.2
   },
   "repairKit": {
     "armor": {

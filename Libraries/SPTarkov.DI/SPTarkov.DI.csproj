@@ -4,7 +4,7 @@
     <PackageId>SPTarkov.DI</PackageId>
     <Authors>Single Player Tarkov</Authors>
     <Description>Dependency injection shared library for the Single Player Tarkov projects.</Description>
-    <Copyright>Copyright (c) Single Player Tarkov 2025</Copyright>
+    <Copyright>Copyright (c) Single Player Tarkov 2026</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://sp-tarkov.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/sp-tarkov/server-csharp</RepositoryUrl>

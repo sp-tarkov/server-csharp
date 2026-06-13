@@ -13,7 +13,7 @@ public class SptLogger<T> : ISptLogger<T>
 
     private const string ConfigurationPath = "./sptLogger.json";
     private const string ConfigurationPathDev = "./sptLogger.Development.json";
-    private SptLoggerConfiguration _config;
+    private static SptLoggerConfiguration? _config = null;
 
     public SptLogger(FileUtil fileUtil, JsonUtil jsonUtil, SptLoggerQueueManager loggerQueueManager)
     {
@@ -27,13 +27,16 @@ public class SptLogger<T> : ISptLogger<T>
             _ => false,
         };
 
-        if (!ProgramStatics.DEBUG() || IsReleaseType)
+        if (_config is null)
         {
-            LoadConfig(fileUtil, jsonUtil, ConfigurationPath);
-        }
-        else
-        {
-            LoadConfig(fileUtil, jsonUtil, ConfigurationPathDev);
+            if (!ProgramStatics.DEBUG() || IsReleaseType)
+            {
+                LoadConfig(fileUtil, jsonUtil, ConfigurationPath);
+            }
+            else
+            {
+                LoadConfig(fileUtil, jsonUtil, ConfigurationPathDev);
+            }
         }
 
         if (_config == null)

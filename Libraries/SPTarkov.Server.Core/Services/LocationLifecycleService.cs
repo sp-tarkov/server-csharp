@@ -505,7 +505,11 @@ public class LocationLifecycleService(
             // TODO - Persist each players last visited location history over multiple transits, e.g. using InMemoryCacheService, need to take care to not let data get stored forever
             // Store transfer data for later use in `startLocalRaid()` when next raid starts
             request.LocationTransit.SptExitName = request.Results.ExitName;
-            profileActivityService.GetProfileActivityRaidData(sessionId).LocationTransit = request.LocationTransit;
+
+            // Update raid data with new location data
+            var profileActivityRaidData = profileActivityService.GetProfileActivityRaidData(sessionId);
+            profileActivityRaidData.LocationTransit = request.LocationTransit;
+            profileActivityRaidData.RaidConfiguration?.Location = locationName;
         }
 
         if (!isPmc)

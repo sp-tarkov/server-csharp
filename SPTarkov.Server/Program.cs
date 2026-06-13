@@ -71,7 +71,7 @@ public static class Program
 
             ShowRedConsoleMessage(
                 e,
-                "The server has unexpectedly stopped, reach out to #spt-support in our Discord server. Include a screenshot of this message + the below error"
+                "The server has unexpectedly stopped, reach out to #mod-questions-4-0 in our Discord server. Include a screenshot of this message and the surrounding error(s) above and below"
             );
             Console.WriteLine("Press any key to exit...");
             Console.ReadLine();
@@ -93,6 +93,7 @@ public static class Program
     public static async Task StartServer(string[] args)
     {
         Console.OutputEncoding = Encoding.UTF8;
+        SetConsoleOutputMode();
 
         // Some users don't know how to create a shortcut...
         if (!IsRunFromInstallationFolder())
@@ -156,8 +157,6 @@ public static class Program
             forwardedHeadersOptions.KnownNetworks.Clear();
             forwardedHeadersOptions.KnownProxies.Clear();
             app.UseForwardedHeaders(forwardedHeadersOptions);
-
-            SetConsoleOutputMode();
 
             await app.Services.GetRequiredService<SptServerStartupService>().Startup();
 

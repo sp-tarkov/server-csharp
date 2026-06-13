@@ -1025,15 +1025,24 @@ public class RagfairController(
         }
 
         // Only reduce time to end if time remaining is greater than what we would set it to
-        var differenceInSeconds = playerOffer.EndTime - timeUtil.GetTimeStamp();
-        if (differenceInSeconds > RagfairConfig.Sell.ExpireSeconds)
+        var now = timeUtil.GetTimeStamp();
+        var configExpireSeconds = RagfairConfig.Sell.ExpireSeconds;
+
+        var differenceInSeconds = playerOffer.EndTime - now;
+        if (differenceInSeconds > configExpireSeconds)
         {
             // `expireSeconds` Default is 71 seconds
-            var newEndTime = RagfairConfig.Sell.ExpireSeconds + timeUtil.GetTimeStamp();
+            // TODO: RagfairConfig.Sell.ExpireSeconds should not exist as it should use
+            // Globals.Configuration.RagFair.OfferDurationTimeInHourAfterRemove (the value actually used by client)
+            var newEndTime = configExpireSeconds + now;
             playerOffer.EndTime = (long?)Math.Round((double)newEndTime);
+            differenceInSeconds = configExpireSeconds;
         }
 
-        logger.Debug($"Flagged player offer: {offerId} for expiry in: {TimeSpan.FromTicks(playerOffer.EndTime.Value).ToString()}");
+        if (logger.IsLogEnabled(LogLevel.Debug) && differenceInSeconds is { } remaining)
+        {
+            logger.Debug($"Flagged player: {sessionId} offer: {offerId} for expiry in: {TimeSpan.FromSeconds(remaining).ToString()}");
+        }
 
         return output;
     }

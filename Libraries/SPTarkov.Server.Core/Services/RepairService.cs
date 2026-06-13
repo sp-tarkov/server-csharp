@@ -185,18 +185,34 @@ public class RepairService(
                 );
             }
 
+            // Every 10 points of repair gives 1 skill point scaled by skillProgressRate
+            // ArmorKitSkillPointGainPerRepairPointMultiplier is 0.1
             var pointsToAddToVestSkill = repairDetails.RepairPoints * RepairConfig.ArmorKitSkillPointGainPerRepairPointMultiplier;
 
             logger.Debug($"Added: {pointsToAddToVestSkill} {vestSkillToLevel} skill");
-            profileHelper.AddSkillPointsToPlayer(pmcData, vestSkillToLevel, pointsToAddToVestSkill.GetValueOrDefault(0));
+            profileHelper.AddSkillPointsToPlayer(pmcData, vestSkillToLevel, pointsToAddToVestSkill.GetValueOrDefault(0), true);
+        }
+
+        // Handle trader repair - gives charisma based on (repair cost/10 * skill progress rate)
+        if (!repairDetails.RepairedByKit.GetValueOrDefault(true) && repairDetails.RepairCost.HasValue)
+        {
+            var charismaFromRepair = repairDetails.RepairCost.Value / 10000;
+            logger.Debug($"Added: {charismaFromRepair} {SkillTypes.Charisma}");
+            profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Charisma, charismaFromRepair, true);
         }
 
         // Handle giving INT to player - differs if using kit/trader and weapon vs armor
         var intellectGainedFromRepair = GetIntellectGainedFromRepair(repairDetails);
         if (intellectGainedFromRepair > 0)
         {
-            logger.Debug($"Added: {intellectGainedFromRepair} intellect skill");
-            profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Intellect, intellectGainedFromRepair);
+            if (logger.IsLogEnabled(LogLevel.Debug))
+            {
+                logger.Debug(
+                    $"Added: {intellectGainedFromRepair} {SkillTypes.Intellect}, {intellectGainedFromRepair * 0.1} {SkillTypes.Charisma}"
+                );
+            }
+            profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Intellect, intellectGainedFromRepair, true);
+            profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Charisma, intellectGainedFromRepair * 0.1, true);
         }
     }
 
@@ -204,12 +220,11 @@ public class RepairService(
     {
         if (repairDetails.RepairedByKit.GetValueOrDefault(false))
         {
-            // Weapons/armor have different multipliers
+            // Weapons/armor have different divisors
             var intRepairMultiplier = itemHelper.IsOfBaseclass(repairDetails.RepairedItem.Template, BaseClasses.WEAPON)
                 ? RepairConfig.RepairKitIntellectGainMultiplier.Weapon
                 : RepairConfig.RepairKitIntellectGainMultiplier.Armor;
 
-            // Limit gain to a max value defined in config.maxIntellectGainPerRepair
             if (repairDetails.RepairPoints is null)
             {
                 logger.Error(
@@ -217,11 +232,11 @@ public class RepairService(
                 );
             }
 
-            return Math.Min(repairDetails.RepairPoints.Value * intRepairMultiplier, RepairConfig.MaxIntellectGainPerRepair.Kit);
+            return repairDetails.RepairAmount.Value * intRepairMultiplier;
         }
 
-        // Trader repair - Not as accurate as kit, needs data from live
-        return Math.Min(repairDetails.RepairAmount.Value / 10, RepairConfig.MaxIntellectGainPerRepair.Trader);
+        // Trader repair does not give INT
+        return 0;
     }
 
     /// <summary>
@@ -232,18 +247,9 @@ public class RepairService(
     protected double GetWeaponRepairSkillPoints(RepairDetails repairDetails)
     {
         var random = new Random();
-        // This formula and associated configs is calculated based on 30 repairs done on live
-        // The points always came out 2-aligned, which is why there's a divide/multiply by 2 with ceil calls
-        var gainMult = RepairConfig.WeaponTreatment.PointGainMultiplier;
-
-        // First we get a baseline based on our repair amount, and gain multiplier with a bit of rounding
-        var step1 = Math.Ceiling(repairDetails.RepairAmount.Value / 2) * gainMult;
-
-        // Then we have to get the next even number
-        var step2 = Math.Ceiling(step1 / 2) * 2;
-
-        // Then multiply by 2 again to hopefully get to what live would give us
-        var skillPoints = step2 * 2;
+        // Every 5 points repaired with kit should give 0.4 skill points, so PointGainMultiplier is 0.2
+        // The return value is later scaled in AddSkillPointsToPlayer, i.e. 1 skill point returned here = 0.4 skill points added
+        var skillPoints = repairDetails.RepairAmount.GetValueOrDefault(0) * RepairConfig.WeaponTreatment.PointGainMultiplier;
 
         // You can both crit fail and succeed at the same time, for fun (Balances out to 0 with default settings)
         // Add a random chance to crit-fail
