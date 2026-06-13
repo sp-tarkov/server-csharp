@@ -28,11 +28,19 @@ public record TestModMetadata : AbstractModMetadata, IModWebMetadata
 }
 
 [Injectable(TypePriority = OnLoadOrder.Preload + 1)]
-public class TestModPreload(ISptLogger<TestMod> logger) : IOnLoad
+public class TestModPreload(ISptLogger<TestMod> logger, TestDIClass testClass) : IOnDIConstruct, IOnLoad
 {
-    public async Task OnLoad(CancellationToken cancellationToken)
+    public static Task OnDIConstructAsync(IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddSingleton(new TestDIClass());
+
+        return Task.CompletedTask;
+    }
+
+    public async Task OnLoadAsync(CancellationToken cancellationToken)
     {
         logger.Info("Test mod preloading!");
+        logger.Info(testClass.TestString);
 
         await Task.CompletedTask;
     }
@@ -41,10 +49,15 @@ public class TestModPreload(ISptLogger<TestMod> logger) : IOnLoad
 [Injectable(TypePriority = OnLoadOrder.PostLoad + 1)]
 public class TestMod(ISptLogger<TestMod> logger) : IOnLoad
 {
-    public async Task OnLoad(CancellationToken cancellationToken)
+    public async Task OnLoadAsync(CancellationToken cancellationToken)
     {
         logger.Info("Test mod postloading!");
 
         await Task.CompletedTask;
     }
+}
+
+public record TestDIClass()
+{
+    public string TestString { get; init; } = "Test mod with it's own singleton injection!";
 }

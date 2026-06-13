@@ -10,7 +10,7 @@ namespace SPTarkov.Server.Core.Callbacks;
 [Injectable(TypePriority = OnLoadOrder.SaveCallbacks)]
 public class SaveCallbacks(SaveServer saveServer, BackupService backupService, CoreConfig coreConfig) : IOnLoad, IOnUpdate
 {
-    public async Task OnLoad(CancellationToken cancellationToken)
+    public async Task OnLoadAsync(CancellationToken cancellationToken)
     {
         await saveServer.LoadAsync(cancellationToken);
 
@@ -18,7 +18,7 @@ public class SaveCallbacks(SaveServer saveServer, BackupService backupService, C
         await backupService.StartBackupSystem(cancellationToken);
     }
 
-    public async Task<bool> OnUpdate(long secondsSinceLastRun, CancellationToken cancellationToken)
+    public async Task<bool> OnUpdateAsync(long secondsSinceLastRun, CancellationToken cancellationToken)
     {
         if (secondsSinceLastRun < coreConfig.ProfileSaveIntervalInSeconds)
         {

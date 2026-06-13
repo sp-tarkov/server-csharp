@@ -14,7 +14,7 @@ namespace SPTarkov.Server.Core.Callbacks;
 public class InsuranceCallbacks(InsuranceController insuranceController, HttpResponseUtil httpResponseUtil, InsuranceConfig insuranceConfig)
     : IOnUpdate
 {
-    public Task<bool> OnUpdate(long secondsSinceLastRun, CancellationToken cancellationToken)
+    public Task<bool> OnUpdateAsync(long secondsSinceLastRun, CancellationToken cancellationToken)
     {
         if (secondsSinceLastRun < insuranceConfig.RunIntervalSeconds)
         {

@@ -45,7 +45,7 @@ public class HideoutCraftQuestIdGenerator(
     public async Task Run()
     {
         var cancellationTokenSource = new CancellationTokenSource();
-        await imageRouteImporter.OnLoad(cancellationTokenSource.Token);
+        await imageRouteImporter.OnLoadAsync(cancellationTokenSource.Token);
 
         // Build up our dataset
         BuildQuestProductionList();

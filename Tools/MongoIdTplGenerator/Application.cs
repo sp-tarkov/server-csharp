@@ -14,7 +14,7 @@ public class Application(ISptLogger<Application> logger, IEnumerable<IOnLoad> on
 
         foreach (var onLoad in onloadComponents)
         {
-            await onLoad.OnLoad(cancellationTokenSource.Token);
+            await onLoad.OnLoadAsync(cancellationTokenSource.Token);
         }
 
         try

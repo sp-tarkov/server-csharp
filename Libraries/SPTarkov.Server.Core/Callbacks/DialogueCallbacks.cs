@@ -12,7 +12,7 @@ namespace SPTarkov.Server.Core.Callbacks;
 [Injectable(TypePriority = OnUpdateOrder.DialogueCallbacks)]
 public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseUtil, DialogueController dialogueController) : IOnUpdate
 {
-    public Task<bool> OnUpdate(long timeSinceLastRun, CancellationToken cancellationToken)
+    public Task<bool> OnUpdateAsync(long timeSinceLastRun, CancellationToken cancellationToken)
     {
         dialogueController.Update();
         return Task.FromResult(true);

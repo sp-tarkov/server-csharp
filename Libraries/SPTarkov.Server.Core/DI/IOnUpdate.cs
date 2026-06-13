@@ -33,5 +33,5 @@ public interface IOnUpdate
     /// <see langword="false"/> can be used when the update intentionally skipped work and should be
     /// called again later with the same accumulated elapsed time.
     /// </remarks>
-    Task<bool> OnUpdate(long secondsSinceLastRun, CancellationToken cancellationToken);
+    Task<bool> OnUpdateAsync(long secondsSinceLastRun, CancellationToken cancellationToken);
 }

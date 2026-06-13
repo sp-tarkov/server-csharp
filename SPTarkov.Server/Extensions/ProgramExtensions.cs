@@ -42,7 +42,7 @@ public static class ProgramExtensions
                     continue;
                 }
 
-                await onLoad.OnLoad(cancellationToken).ConfigureAwait(false);
+                await onLoad.OnLoadAsync(cancellationToken).ConfigureAwait(false);
             }
         }
     }

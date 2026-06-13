@@ -23,7 +23,7 @@ public class GameCallbacks(
     TimeUtil timeUtil
 ) : IOnLoad
 {
-    public Task OnLoad(CancellationToken cancellationToken)
+    public Task OnLoadAsync(CancellationToken cancellationToken)
     {
         gameController.Load();
         return Task.CompletedTask;
