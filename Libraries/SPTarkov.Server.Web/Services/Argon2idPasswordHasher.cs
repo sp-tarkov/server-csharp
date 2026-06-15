@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using ScottBrady91.AspNetCore.Identity;
+using Argon2Sharp;
 using SPTarkov.DI.Annotations;
 
 namespace SPTarkov.Server.Web.Services;
@@ -8,11 +6,25 @@ namespace SPTarkov.Server.Web.Services;
 [Injectable(InjectionType.Singleton)]
 public class Argon2idPasswordHasher : IPasswordHasher
 {
-    private const Argon2HashStrength Strength = Argon2HashStrength.Interactive;
+    // Cost parameters for newly created hashes. RFC 9106's memory-constrained "uniformly safe" recommendation is currently (2026-06-15)
+    // 64 MiB of memory, 3 iterations, 4 lanes, a 128-bit salt, and a 256-bit tag.
+    private const int MemorySizeKB = 65536;
+    private const int Iterations = 3;
+    private const int Parallelism = 4;
+    private const int HashLength = 32;
+    private const int SaltLength = 16;
+    private const Argon2Type Variant = Argon2Type.Argon2id;
 
-    private static readonly object _dummyUser = new(); // Shared instance avoids per-call allocation.
-
-    private readonly Argon2PasswordHasher<object> _hasher = new(Options.Create(new Argon2PasswordHasherOptions { Strength = Strength }));
+    // Immutable cost template reused across calls. The salt is a placeholder.
+    private readonly Argon2Parameters _parameters = Argon2Parameters
+        .CreateBuilder()
+        .WithType(Variant)
+        .WithMemorySizeKB(MemorySizeKB)
+        .WithIterations(Iterations)
+        .WithParallelism(Parallelism)
+        .WithHashLength(HashLength)
+        .WithRandomSalt(SaltLength)
+        .Build();
 
     public Argon2idPasswordHasher()
     {
@@ -23,7 +35,7 @@ public class Argon2idPasswordHasher : IPasswordHasher
 
     public string Hash(string password)
     {
-        return _hasher.HashPassword(_dummyUser, password);
+        return Argon2PhcFormat.HashToPhcStringWithAutoSalt(password, _parameters, SaltLength);
     }
 
     public bool IsEncodedHash(string value)
@@ -41,22 +53,30 @@ public class Argon2idPasswordHasher : IPasswordHasher
             return false;
         }
 
-        PasswordVerificationResult result;
+        bool isValid;
+        Argon2Parameters? stored;
         try
         {
-            result = _hasher.VerifyHashedPassword(_dummyUser, encodedHash, password);
+            (isValid, stored) = Argon2PhcFormat.VerifyPhcString(password, encodedHash);
         }
         catch
         {
             return false; // Always fail closed.
         }
 
-        if (result == PasswordVerificationResult.Failed)
+        if (!isValid || stored is null)
         {
             return false;
         }
 
-        needsRehash = result == PasswordVerificationResult.SuccessRehashNeeded;
+        // Flag the hash for upgrade on the next login when it was produced with cost parameters other than current.
+        needsRehash =
+            stored.MemorySizeKB != MemorySizeKB
+            || stored.Iterations != Iterations
+            || stored.Parallelism != Parallelism
+            || stored.HashLength != HashLength
+            || stored.Type != Variant;
+
         return true;
     }
 }

@@ -1,6 +1,5 @@
-using Microsoft.Extensions.Options;
+using Argon2Sharp;
 using NUnit.Framework;
-using ScottBrady91.AspNetCore.Identity;
 using SPTarkov.Server.Web.Services;
 
 namespace UnitTests.Tests.Services;
@@ -57,12 +56,8 @@ public class Argon2idPasswordHasherTests
     {
         const string password = "correct horse battery staple";
 
-        // A hash produced with a different strength than the hasher's current setting should verify but also be flagged
-        // for upgrade.
-        var staleHasher = new Argon2PasswordHasher<object>(
-            Options.Create(new Argon2PasswordHasherOptions { Strength = Argon2HashStrength.Medium })
-        );
-        var staleHash = staleHasher.HashPassword(new object(), password);
+        // A hash produced with weaker cost parameters than the hasher's current settings should verify but also be flagged for upgrade.
+        var staleHash = Argon2PhcFormat.HashToPhcStringWithAutoSalt(password);
 
         var ok = _hasher.Verify(password, staleHash, out var needsRehash);
 
