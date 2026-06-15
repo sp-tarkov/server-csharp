@@ -1,7 +1,5 @@
 using System.Net;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
@@ -11,7 +9,7 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Web.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, JsonUtil jsonUtil) : IOnLoad
+public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, JsonUtil jsonUtil, IPasswordHasher passwordHasher) : IOnLoad
 {
     internal const string AuthenticationScheme = "SptWebCookie";
     internal const string AdministratorPolicy = "Administrator";
@@ -71,7 +69,7 @@ public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, 
             new AuthUserCredential()
             {
                 Username = username,
-                Password = password,
+                Password = passwordHasher.Hash(password),
                 IsAdministrator = isAdministrator,
             }
         );
@@ -87,7 +85,7 @@ public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, 
             return false;
         }
 
-        credential.Password = password;
+        credential.Password = passwordHasher.Hash(password);
         await SaveCredentials();
 
         return true;
@@ -122,15 +120,13 @@ public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, 
         return true;
     }
 
-    internal bool TryValidateCredentials(string username, string password, HttpContext httpContext, out ClaimsPrincipal? principal)
+    internal async Task<ClaimsPrincipal?> ValidateCredentialsAsync(string username, string password, HttpContext httpContext)
     {
-        principal = null;
         var authenticationConfig = httpConfig.WebAuthenticationConfig;
 
         if (!authenticationConfig.Enabled)
         {
-            principal = CreateDefaultPrincipal();
-            return true;
+            return CreateDefaultPrincipal();
         }
 
         var defaultUser = authenticationConfig.DefaultUser;
@@ -138,30 +134,45 @@ public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, 
         {
             if (!authenticationConfig.EnableDefaultUser)
             {
-                return false;
+                return null;
             }
 
             if (!authenticationConfig.AllowDefaultUserFromAnyIp && !IsLocalRequest(httpContext))
             {
-                return false;
+                return null;
             }
         }
 
         if (!TryGetCredentials(username, out var credentials) || credentials is null)
         {
-            return false;
+            // Spend the same work on a missing user as a real verification.
+            _ = passwordHasher.Verify(password, passwordHasher.DummyHash, out _);
+
+            return null;
         }
 
-        var usernameMatches = SecureEquals(username, credentials.Username);
-        var passwordMatches = SecureEquals(password, credentials.Password);
-
-        if (!(usernameMatches & passwordMatches))
+        if (!passwordHasher.Verify(password, credentials.Password, out var needsRehash))
         {
-            return false;
+            return null;
         }
 
-        principal = CreatePrincipal(credentials.Username, credentials.IsAdministrator);
-        return true;
+        // Upgrade hashes created with out-of-date parameters on the next successful login.
+        // ReSharper disable once InvertIf
+        if (needsRehash)
+        {
+            credentials.Password = passwordHasher.Hash(password);
+
+            try
+            {
+                await SaveCredentials();
+            }
+            catch (Exception exception)
+            {
+                logger.Warning($"Failed to persist rehashed web credential for '{credentials.Username}': {exception.Message}");
+            }
+        }
+
+        return CreatePrincipal(credentials.Username, credentials.IsAdministrator);
     }
 
     internal static string GetSafeReturnUrl(string? returnUrl)
@@ -229,14 +240,6 @@ public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, 
         return localIpAddress is not null && remoteIpAddress.Equals(localIpAddress);
     }
 
-    private static bool SecureEquals(string suppliedValue, string expectedValue)
-    {
-        var suppliedBytes = Encoding.UTF8.GetBytes(suppliedValue);
-        var expectedBytes = Encoding.UTF8.GetBytes(expectedValue);
-
-        return CryptographicOperations.FixedTimeEquals(suppliedBytes, expectedBytes);
-    }
-
     private async Task CreateOrLoadUserCredentials()
     {
         var fullPath = Path.GetFullPath(UserCredentialsPath);
@@ -253,11 +256,46 @@ public class AuthService(ISptLogger<AuthService> logger, HttpConfig httpConfig, 
                 await jsonUtil.DeserializeFromFileAsync<List<AuthUserCredential>>(credentialsPath)
                 ?? throw new NullReferenceException("Could not deserialize credentials.json");
 
+            await MigratePlaintextCredentials();
+
             return;
         }
 
-        _credentials = new List<AuthUserCredential>([httpConfig.WebAuthenticationConfig.DefaultUser]);
+        // Seed from the config default user, hashing its plaintext password before it touches disk.
+        var defaultUser = httpConfig.WebAuthenticationConfig.DefaultUser;
+        _credentials =
+        [
+            new AuthUserCredential
+            {
+                Username = defaultUser.Username,
+                Password = passwordHasher.Hash(defaultUser.Password),
+                IsAdministrator = defaultUser.IsAdministrator,
+            },
+        ];
         await SaveCredentials();
+    }
+
+    private async Task MigratePlaintextCredentials()
+    {
+        // Unhashed, plaintext passwords are hashed in place. This allows server administrators to manually set account passwords and have
+        // them hashed on next server reload. Empty entries are left alone as they cannot be meaningfully hashed.
+        var migratedCount = 0;
+        foreach (var credential in _credentials)
+        {
+            if (string.IsNullOrEmpty(credential.Password) || passwordHasher.IsEncodedHash(credential.Password))
+            {
+                continue;
+            }
+
+            credential.Password = passwordHasher.Hash(credential.Password);
+            migratedCount++;
+        }
+
+        if (migratedCount > 0)
+        {
+            await SaveCredentials();
+            logger.Warning($"Migrated {migratedCount} plaintext web credentials to hashes.");
+        }
     }
 
     private async Task SaveCredentials(List<AuthUserCredential>? credentials = null)

@@ -21,6 +21,7 @@
     <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Argon2Sharp" Version="4.0.1" />
     <PackageReference Include="MudBlazor" Version="9.4.0" />
   </ItemGroup>
   <ItemGroup>

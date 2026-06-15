@@ -163,14 +163,15 @@ public static class SPTWeb
         var username = form["username"].ToString();
         var password = form["password"].ToString();
 
-        if (!authService.TryValidateCredentials(username, password, context, out var principal) || principal is null)
+        var authenticatedUser = await authService.ValidateCredentialsAsync(username, password, context);
+        if (authenticatedUser is null)
         {
             return Results.Redirect(AuthService.AddLoginError(failureUrl));
         }
 
         await context.SignInAsync(
             AuthService.AuthenticationScheme,
-            principal,
+            authenticatedUser,
             new AuthenticationProperties { IsPersistent = true, AllowRefresh = true }
         );
 
