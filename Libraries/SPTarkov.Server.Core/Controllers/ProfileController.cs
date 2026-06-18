@@ -72,6 +72,8 @@ public class ProfileController(
                 ProfileId = profile.ProfileInfo?.ProfileId ?? string.Empty,
                 InvalidOrUnloadableProfile = profile.ProfileInfo?.InvalidOrUnloadableProfile,
                 SptData = profileHelper.GetDefaultSptDataObject(),
+                ProfileCurrency = profileHelper.GetAccountCurrency(profile),
+                ProfileStats = profileHelper.GetProfileStats(profile)
             };
         }
 
@@ -89,6 +91,8 @@ public class ProfileController(
             ProfileId = profile.ProfileInfo?.ProfileId ?? string.Empty,
             InvalidOrUnloadableProfile = profile.ProfileInfo?.InvalidOrUnloadableProfile,
             SptData = profile.SptData,
+            ProfileCurrency = profileHelper.GetAccountCurrency(profile),
+            ProfileStats = profileHelper.GetProfileStats(profile)
         };
     }
 

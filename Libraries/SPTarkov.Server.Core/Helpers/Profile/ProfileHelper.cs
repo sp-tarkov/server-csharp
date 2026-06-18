@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Helper;
 using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services.Locales;
@@ -835,5 +836,129 @@ public class ProfileHelper(
         }
 
         return matchingProfileTemplate.CustomFlags.GetValueOrDefault(flagKey, false);
+    }
+
+    /// <summary>
+    /// Gets the currencies in the profiles inventory
+    /// </summary>
+    /// <param name="profile">Full profile</param>
+    /// <returns></returns>
+    public ProfileCurrency GetAccountCurrency(SptProfile profile)
+    {
+        var returnObject = new ProfileCurrency
+        {
+            Roubles = 0,
+            Euros = 0,
+            Dollars = 0,
+            GP = 0
+        };
+
+        if (profile.CharacterData?.PmcData?.Inventory?.Items is null)
+        {
+            return returnObject;
+        }
+
+        var items = profile.CharacterData?.PmcData?.Inventory.Items;
+
+        foreach (var item in items!)
+        {
+            if (item.Template == Money.ROUBLES)
+            {
+                if (item.Upd?.StackObjectsCount.HasValue == true)
+                {
+                    returnObject.Roubles = (int) (returnObject.Roubles + item.Upd.StackObjectsCount);
+                }
+            }
+
+            if (item.Template == Money.EUROS)
+            {
+                if (item.Upd?.StackObjectsCount.HasValue == true)
+                {
+                    returnObject.Euros = (int) (returnObject.Euros + item.Upd.StackObjectsCount);
+                }
+            }
+
+            if (item.Template == Money.DOLLARS)
+            {
+                if (item.Upd?.StackObjectsCount.HasValue == true)
+                {
+                    returnObject.Dollars = (int) (returnObject.Dollars + item.Upd.StackObjectsCount);
+                }
+            }
+
+            if (item.Template == Money.GP)
+            {
+                if (item.Upd?.StackObjectsCount.HasValue == true)
+                {
+                    returnObject.GP = (int) (returnObject.GP + item.Upd.StackObjectsCount);
+                }
+            }
+        }
+
+        return returnObject;
+    }
+
+    /// <summary>
+    /// TODO: Works out the stats for the profile, BSG's system for this isn't that friendly, so will come back to this
+    /// Currently returns a template of data for the profiles stats
+    /// </summary>
+    /// <param name="profile">Full profile</param>
+    /// <returns></returns>
+    public ProfileStats GetProfileStats(SptProfile profile)
+    {
+        return new ProfileStats()
+        {
+            Overall = new Dictionary<string, string>()
+            {
+                { "Raids", "0" },
+                { "Survived", "1" },
+                { "KIA", "2" },
+                { "Kills", "3" },
+                { "RunThrough", "4" },
+                { "AWOL", "5" },
+                { "MIA", "6" },
+                { "KD", "7" },
+                { "SurvivalRate", "100%" },
+                { "AverageLifeSpan", "00:50" },
+                { "Online", "69H00M" },
+                { "LeaveRate", "0%" },
+                { "SurvivalsInARow", "7" },
+                { "AccountLifetime", "67H00M" }
+            },
+            Pmc = new Dictionary<string, string>()
+            {
+                { "Raids", "0" },
+                { "Survived", "1" },
+                { "KIA", "2" },
+                { "Kills", "3" },
+                { "RunThrough", "4" },
+                { "AWOL", "5" },
+                { "MIA", "6" },
+                { "KD", "7" },
+                { "SurvivalRate", "100%" },
+                { "AverageLifeSpan", "00:50" },
+                { "Online", "69H00M" },
+                { "LeaveRate", "0%" },
+                { "SurvivalsInARow", "7" },
+                { "AccountLifetime", "67H00M" }
+            },
+            Scav = new Dictionary<string, string>()
+            {
+                { "Raids", "0" },
+                { "Survived", "1" },
+                { "KIA", "2" },
+                { "Kills", "3" },
+                { "RunThrough", "4" },
+                { "AWOL", "5" },
+                { "MIA", "6" },
+                { "KD", "7" },
+                { "SurvivalRate", "100%" },
+                { "AverageLifeSpan", "00:50" },
+                { "Online", "69H00M" },
+                { "LeaveRate", "0%" },
+                { "SurvivalsInARow", "7" },
+                { "AccountLifetime", "67H00M" }
+            }
+        };
     }
 }
