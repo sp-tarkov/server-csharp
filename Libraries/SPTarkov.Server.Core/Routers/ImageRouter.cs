@@ -12,13 +12,13 @@ public class ImageRouter(FileUtil fileUtil, ImageRouterService imageRouterServic
 {
     public void AddRoute(string key, string valueToAdd)
     {
-        imageRouterService.AddRoute(key.ToLowerInvariant(), valueToAdd);
+        imageRouterService.AddRoute(Uri.UnescapeDataString(key).ToLowerInvariant(), valueToAdd);
     }
 
     public bool CanHandle(MongoId sessionId, HttpContext context)
     {
         var url = fileUtil.StripExtension(context.Request.Path, true);
-        var urlKeyLower = url.ToLowerInvariant();
+        var urlKeyLower = Uri.UnescapeDataString(url).ToLowerInvariant();
 
         if (imageRouterService.ExistsByKey(urlKeyLower))
         {
@@ -34,7 +34,7 @@ public class ImageRouter(FileUtil fileUtil, ImageRouterService imageRouterServic
         var url = fileUtil.StripExtension(context.Request.Path, true);
 
         // Send image
-        var urlKeyLower = url.ToLowerInvariant();
+        var urlKeyLower = Uri.UnescapeDataString(url).ToLowerInvariant();
         if (imageRouterService.ExistsByKey(urlKeyLower))
         {
             await httpFileUtil.SendFileAsync(context.Response, imageRouterService.GetByKey(urlKeyLower), cancellationToken);
