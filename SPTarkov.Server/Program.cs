@@ -136,7 +136,7 @@ public static class Program
 
             _earlyLogger!.LogCritical(
                 e,
-                "The server has unexpectedly stopped, reach out to #mod-questions-4-0 in our Discord server. Include a screenshot of this message and the surrounding error(s) above and below"
+                "The server has unexpectedly stopped, reach out to the support channel in our Discord server. Include a screenshot of this message and the surrounding error(s) above and below"
             );
             Console.WriteLine("Press any key to exit...");
             Console.ReadLine();
