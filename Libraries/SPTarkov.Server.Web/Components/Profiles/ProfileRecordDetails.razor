@@ -169,7 +169,9 @@
                                                   Variant="Variant.Outlined"
                                                   Immediate="true"
                                                   Disabled="@(!_editModel.HasCharacter)"
-                                                  @bind-Value="_editModel.PmcNickname" />
+                                                  @bind-Value="_editModel.PmcNickname"
+                                                  MaxLength="15"
+                                                  Counter="0" />
 
                                     <MudNumericField T="int?"
                                                      Label="PMC level"
