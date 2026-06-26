@@ -1,5 +1,6 @@
 @page "/profiles"
 @attribute [Authorize(Policy = "Administrator")]
+@using SPTarkov.Server.Core.Helpers.Profile
 @using SPTarkov.Server.Core.Models.Common
 @using SPTarkov.Server.Core.Models.Eft.Profile
 @using SPTarkov.Server.Core.Models.Spt.Tables
@@ -25,9 +26,11 @@
 @using TemplateSide = SPTarkov.Server.Core.Models.Eft.Common.Tables.TemplateSide
 @layout BaseMudBlazorLayout
 @inject CreateProfileService CreateProfileService
+@inject GlobalTable GlobalTable
 @inject HideoutTable HideoutTable
 @inject TemplateTable TemplateTable
 @inject TradersTable TradersTable
+@inject ProfileHelper ProfileHelper
 @inject HashUtil HashUtil
 @inject JsonUtil JsonUtil
 @inject ISnackbar Snackbar
@@ -330,9 +333,22 @@
             return false;
         }
 
-        if (editModel.PmcLevel is < 1 or > 99 || editModel.ScavLevel is < 1 or > 99)
+        if (!editModel.PmcLevel.HasValue || !editModel.ScavLevel.HasValue)
         {
-            Snackbar.Add(L("profiles-character-level-range"), Severity.Warning);
+            Snackbar.Add("profiles-character-level-required", Severity.Warning);
+            return false;
+        }
+
+        var maxLevel = GlobalTable.Configuration.Exp.Level.ExperienceTable.Length - 1;
+        if (editModel.PmcLevel < 1 || editModel.PmcLevel > maxLevel || editModel.ScavLevel < 1 || editModel.ScavLevel > maxLevel)
+        {
+            Snackbar.Add(string.Format(L("profiles-character-level-range"), maxLevel), Severity.Warning);
+            return false;
+        }
+
+        if (editModel.PmcExperience != ProfileHelper.GetExperience(editModel.PmcLevel.Value) || editModel.ScavExperience != ProfileHelper.GetExperience(editModel.ScavLevel.Value))
+        {
+            Snackbar.Add(L("profiles-experience-mismatch-level"), Severity.Warning);
             return false;
         }
 
