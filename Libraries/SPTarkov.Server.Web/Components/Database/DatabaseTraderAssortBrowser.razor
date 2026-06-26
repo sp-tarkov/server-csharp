@@ -126,12 +126,12 @@
                             <MudText Typo="Typo.caption" Class="database-mono">@SelectedRow.Id</MudText>
                         </MudStack>
 
-                        @foreach (var section in SelectedRowDetails.DetailSections)
+                        @foreach (var sectionData in SelectedRowDetails.DetailSections)
                         {
                             <MudDivider />
-                            <MudText Typo="Typo.subtitle2">@section.Title</MudText>
+                            <MudText Typo="Typo.subtitle2">@sectionData.Title</MudText>
                             <div class="database-detail-grid">
-                                @foreach (var value in section.Values)
+                                @foreach (var value in sectionData.Values)
                                 {
                                     <DatabaseDetailValueCard Value="value" />
                                 }

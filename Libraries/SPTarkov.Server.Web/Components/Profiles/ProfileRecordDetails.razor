@@ -41,17 +41,17 @@
             <MudTabs Class="profiles-details-tabs" PanelClass="profiles-details-tab-panel" Rounded="false" Elevation="0">
                 <MudTabPanel Text="Profile info" Icon="@Icons.Material.Filled.ManageAccounts">
                     <MudStack Spacing="3">
-                        @foreach (var section in Details.DetailSections)
+                        @foreach (var sectionData in Details.DetailSections)
                         {
                             <MudDivider />
 
-                            @if (!string.IsNullOrWhiteSpace(section.Title))
+                            @if (!string.IsNullOrWhiteSpace(sectionData.Title))
                             {
-                                <MudText Typo="Typo.subtitle2">@section.Title</MudText>
+                                <MudText Typo="Typo.subtitle2">@sectionData.Title</MudText>
                             }
 
                             <div class="profiles-detail-grid">
-                                @foreach (var value in section.Values)
+                                @foreach (var value in sectionData.Values)
                                 {
                                     <div class="profiles-detail-value">
                                         <MudText Typo="Typo.caption" Color="Color.Secondary">@value.Label</MudText>
