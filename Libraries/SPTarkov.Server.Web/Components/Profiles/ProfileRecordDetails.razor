@@ -1,6 +1,8 @@
 @using System.Globalization
+@using SPTarkov.Server.Core.Models.Spt.Tables
 @using SPTarkov.Server.Web.Models.Database
 @using SPTarkov.Server.Web.Models.Profiles
+@inject GlobalTable GlobalTable
 
 <MudPaper Elevation="0" Class="profiles-details spt-panel pa-5">
     @if (Details is null)
@@ -177,11 +179,12 @@
                                                      Label="PMC level"
                                                      Variant="Variant.Outlined"
                                                      Min="1"
-                                                     Max="99"
+                                                     Max="@MaxCharacterLevel"
                                                      Step="1"
                                                      Immediate="true"
                                                      Disabled="@(!_editModel.HasCharacter)"
-                                                     @bind-Value="_editModel.PmcLevel" />
+                                                     Value="_editModel.PmcLevel"
+                                                     ValueChanged="@(v => SetCharacterLevel(CharacterTarget.Pmc, v))" />
 
                                     <MudNumericField T="int?"
                                                      Label="PMC experience"
@@ -196,10 +199,11 @@
                                                      Label="Scav level"
                                                      Variant="Variant.Outlined"
                                                      Min="1"
-                                                     Max="99"
+                                                     Max="@MaxCharacterLevel"
                                                      Step="1"
                                                      Immediate="true"
-                                                     @bind-Value="_editModel.ScavLevel" />
+                                                     Value="_editModel.ScavLevel"
+                                                     ValueChanged="@(v => SetCharacterLevel(CharacterTarget.Scav, v))" />
 
                                     <MudNumericField T="int?"
                                                      Label="Scav experience"
@@ -512,6 +516,7 @@
     public EventCallback OnClose { get; set; }
 
     private const int MaxSkillLevel = 51;
+    private int MaxCharacterLevel => GlobalTable.Configuration.Exp.Level.ExperienceTable.Length - 1;
 
     private ProfileDetails? _detailsReference;
     private ProfileEditModel? _editModel;
@@ -559,6 +564,39 @@
     private Task SaveEditForm()
     {
         return _editModel is null ? Task.CompletedTask : OnSaveEdit.InvokeAsync(_editModel.Clone());
+    }
+
+    private void SetCharacterLevel(CharacterTarget target, int? value)
+    {
+        if (_editModel is null || !value.HasValue)
+            return;
+
+        var maxLevel = MaxCharacterLevel;
+        var clamped = Math.Clamp(value.Value, 1, maxLevel);
+
+        if (target == CharacterTarget.Pmc)
+        {
+            _editModel.PmcLevel = clamped;
+            _editModel.PmcExperience = GetLevelStartXp(clamped);
+        }
+        else
+        {
+            _editModel.ScavLevel = clamped;
+            _editModel.ScavExperience = GetLevelStartXp(clamped);
+        }
+    }
+
+    private int GetLevelStartXp(int level)
+    {
+        var table = GlobalTable.Configuration.Exp.Level.ExperienceTable;
+
+        level = Math.Clamp(level, 1, table.Length - 1);
+
+        var exp = 0;
+        for (var i = 0; i < level; i++)
+            exp += table[i].Experience;
+
+        return exp;
     }
 
     private static void SetSkillLevel(ProfileSkillEditModel skill, int value)
