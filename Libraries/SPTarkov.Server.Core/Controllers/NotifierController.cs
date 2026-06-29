@@ -20,31 +20,28 @@ public class NotifierController(HttpServerHelper httpServerHelper, NotifierHelpe
     ///     If no notifications are available after the timeout, use a default message.
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
-    public Task<List<WsNotificationEvent>> NotifyAsync(MongoId sessionId)
+    public async Task<List<WsNotificationEvent>> NotifyAsync(MongoId sessionId)
     {
-        return Task.Factory.StartNew(() =>
+        // keep track of our timeout
+        var counter = 0;
+
+        while (counter < Timeout)
         {
-            // keep track of our timeout
-            var counter = 0;
-
-            while (counter < Timeout)
+            if (!notificationService.Has(sessionId))
             {
-                if (!notificationService.Has(sessionId))
-                {
-                    counter += PollInterval;
-                    Thread.Sleep(PollInterval);
-                }
-                else
-                {
-                    var messages = notificationService.Get(sessionId);
-
-                    notificationService.UpdateMessageOnQueue(sessionId, []);
-                    return messages;
-                }
+                counter += PollInterval;
+                await Task.Delay(PollInterval);
             }
+            else
+            {
+                var messages = notificationService.Get(sessionId);
 
-            return [notifierHelper.GetDefaultNotification()];
-        });
+                notificationService.UpdateMessageOnQueue(sessionId, []);
+                return messages;
+            }
+        }
+
+        return [notifierHelper.GetDefaultNotification()];
     }
 
     /// <summary>
