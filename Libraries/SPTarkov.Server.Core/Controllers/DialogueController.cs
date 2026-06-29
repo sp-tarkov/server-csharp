@@ -657,7 +657,9 @@ public class DialogueController(
                     EventType = NotificationEventType.friendListRequestAccept,
                     Profile = profileHelper.GetChatRoomMemberFromPmcProfile(friendProfile.CharacterData.PmcData),
                 };
-                notificationSendHelper.SendMessage(sessionID, notification);
+#pragma warning disable CS4014
+                _ = notificationSendHelper.SendMessageAsync(sessionID, notification); // TODO(debt): Timer callback can't be async
+#pragma warning restore CS4014
             },
             null,
             TimeSpan.FromMicroseconds(1000),

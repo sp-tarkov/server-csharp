@@ -51,7 +51,8 @@ public class GiveMeSpaceMessageHandler(
             const int rowsToAdd = 2;
             var bonusId = profileHelper.AddStashRowsBonusToProfile(sessionId, rowsToAdd);
 
-            notificationSendHelper.SendMessage(
+#pragma warning disable CS4014
+            _ = notificationSendHelper.SendMessageAsync( // TODO(debt): convert Process to async to properly await
                 sessionId,
                 new WsProfileChangeEvent
                 {
@@ -60,6 +61,7 @@ public class GiveMeSpaceMessageHandler(
                     Changes = new Dictionary<string, double?> { { bonusId, rowsToAdd } },
                 }
             );
+#pragma warning restore CS4014
 
             mailSendService.SendUserMessageToPlayer(
                 sessionId,

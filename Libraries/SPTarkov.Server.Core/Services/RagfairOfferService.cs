@@ -289,7 +289,9 @@ public class RagfairOfferService(
             offerCreatorProfile.RagfairInfo.Rating.Value,
             offerCreatorProfile.RagfairInfo.IsRatingGrowing.GetValueOrDefault(false)
         );
-        notificationSendHelper.SendMessage(offerCreatorId, notificationMessage);
+#pragma warning disable CS4014
+        _ = notificationSendHelper.SendMessageAsync(offerCreatorId, notificationMessage); // TODO(debt): convert ReturnUnsoldPlayerOffer to async to properly await
+#pragma warning restore CS4014
 
         ragfairServerHelper.ReturnItems(offerCreatorProfile.SessionId.Value, unstackedItems);
         offerCreatorProfile.RagfairInfo.Offers.Splice(indexOfOfferInProfile, 1);

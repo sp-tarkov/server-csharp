@@ -105,7 +105,8 @@ public class RewardHelper(
                 case RewardType.StashRows:
                     var bonusId = profileHelper.AddStashRowsBonusToProfile(sessionId.Value, (int)reward.Value); // Add specified stash rows from reward - requires client restart
 
-                    notificationSendHelper.SendMessage(
+#pragma warning disable CS4014
+                    _ = notificationSendHelper.SendMessageAsync( // TODO(debt): convert ApplyRewards to async to properly await
                         sessionId.Value,
                         new WsProfileChangeEvent
                         {
@@ -114,6 +115,7 @@ public class RewardHelper(
                             Changes = new Dictionary<string, double?> { { bonusId, reward.Value } },
                         }
                     );
+#pragma warning restore CS4014
 
                     break;
                 case RewardType.ProductionScheme:
@@ -124,7 +126,8 @@ public class RewardHelper(
                     break;
                 case RewardType.CustomizationDirect:
                     profileHelper.AddHideoutCustomisationUnlock(fullProfile, reward, rewardSource);
-                    notificationSendHelper.SendMessage(
+#pragma warning disable CS4014
+                    _ = notificationSendHelper.SendMessageAsync( // TODO(debt): convert ApplyRewards to async to properly await
                         sessionId.Value,
                         new WsNotificationEvent
                         {
@@ -132,11 +135,14 @@ public class RewardHelper(
                             EventType = NotificationEventType.CustomizationUpdateRequired,
                         }
                     );
+#pragma warning restore CS4014
 
                     break;
                 case RewardType.NotificationPopup:
                     var notification = notifierHelper.CreateNotificationPopup(reward.IllustrationConfig, reward.Message.Value);
-                    notificationSendHelper.SendMessage(sessionId.Value, notification);
+#pragma warning disable CS4014
+                    _ = notificationSendHelper.SendMessageAsync(sessionId.Value, notification); // TODO(debt): convert ApplyRewards to async to properly await
+#pragma warning restore CS4014
                     break;
                 case RewardType.WebPromoCode:
                     // TODO: ??? (Free arena trial from Balancing - Part 1)

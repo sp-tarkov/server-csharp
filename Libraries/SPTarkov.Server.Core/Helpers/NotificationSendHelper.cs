@@ -27,7 +27,7 @@ public class NotificationSendHelper(
     /// </summary>
     /// <param name="sessionId">Session/player id</param>
     /// <param name="notificationMessage"></param>
-    public void SendMessage(MongoId sessionId, WsNotificationEvent notificationMessage)
+    public async Task SendMessageAsync(MongoId sessionId, WsNotificationEvent notificationMessage)
     {
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
@@ -40,7 +40,7 @@ public class NotificationSendHelper(
             {
                 logger.Debug($"Send message for {sessionId} websocket available, message being sent");
             }
-            sptWebSocketConnectionHandler.SendMessage(sessionId, notificationMessage);
+            await sptWebSocketConnectionHandler.SendMessageAsync(sessionId, notificationMessage);
             return;
         }
 
@@ -59,48 +59,55 @@ public class NotificationSendHelper(
     /// <param name="senderDetails">Who is sending the message to player</param>
     /// <param name="messageText">Text to send player</param>
     /// <param name="messageType">Underlying type of message being sent</param>
-    public void SendMessageToPlayer(MongoId sessionId, UserDialogInfo senderDetails, string messageText, MessageType messageType)
+    public async Task SendMessageToPlayerAsync(MongoId sessionId, UserDialogInfo senderDetails, string messageText, MessageType messageType)
     {
-        var dialog = GetDialog(sessionId, messageType, senderDetails);
-        if (dialog is null)
+        try
         {
-            // Error is logged in GetDialog
-            return;
-        }
+            var dialog = GetDialog(sessionId, messageType, senderDetails);
+            if (dialog is null)
+            {
+                // Error is logged in GetDialog
+                return;
+            }
 
-        dialog.New += 1;
-        var message = new Message
-        {
-            Id = new MongoId(),
-            UserId = dialog.Id,
-            MessageType = messageType,
-            DateTime = timeUtil.GetTimeStamp(),
-            Text = messageText,
-            HasRewards = null,
-            RewardCollected = null,
-            Items = null,
-        };
+            dialog.New += 1;
+            var message = new Message
+            {
+                Id = new MongoId(),
+                UserId = dialog.Id,
+                MessageType = messageType,
+                DateTime = timeUtil.GetTimeStamp(),
+                Text = messageText,
+                HasRewards = null,
+                RewardCollected = null,
+                Items = null,
+            };
 
-        if (dialog.Messages != null)
-        {
-            dialog.Messages.Add(message);
-        }
-        else
-        {
-            logger.Error(
-                $"Could not add message Id: {message.Id.ToString()} to dialogue for player Id: {sessionId.ToString()}. dialog.Messages is null. Message was not sent."
-            );
-            return;
-        }
+            if (dialog.Messages != null)
+            {
+                dialog.Messages.Add(message);
+            }
+            else
+            {
+                logger.Error(
+                    $"Could not add message Id: {message.Id.ToString()} to dialogue for player Id: {sessionId.ToString()}. dialog.Messages is null. Message was not sent."
+                );
+                return;
+            }
 
-        var notification = new WsChatMessageReceived
+            var notification = new WsChatMessageReceived
+            {
+                EventType = NotificationEventType.new_message,
+                EventIdentifier = message.Id,
+                DialogId = message.UserId,
+                Message = message,
+            };
+            await SendMessageAsync(sessionId, notification);
+        }
+        catch (Exception err)
         {
-            EventType = NotificationEventType.new_message,
-            EventIdentifier = message.Id,
-            DialogId = message.UserId,
-            Message = message,
-        };
-        SendMessage(sessionId, notification);
+            logger.Error($"Failed to send message to player {sessionId}: {err.Message}", err);
+        }
     }
 
     /// <summary>

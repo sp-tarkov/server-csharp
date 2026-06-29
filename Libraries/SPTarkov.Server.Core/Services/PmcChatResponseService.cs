@@ -54,7 +54,9 @@ public class PmcChatResponseService(
             var message = ChooseMessage(true, pmcData, victim);
             if (message is not null)
             {
-                notificationSendHelper.SendMessageToPlayer(sessionId, victimDetails, message, MessageType.UserMessage);
+#pragma warning disable CS4014
+                _ = notificationSendHelper.SendMessageToPlayerAsync(sessionId, victimDetails, message, MessageType.UserMessage); // TODO(debt): convert caller to async to properly await
+#pragma warning restore CS4014
             }
         }
     }
@@ -102,7 +104,9 @@ public class PmcChatResponseService(
             return;
         }
 
-        notificationSendHelper.SendMessageToPlayer(sessionId, killerDetails, message, MessageType.UserMessage);
+#pragma warning disable CS4014
+        _ = notificationSendHelper.SendMessageToPlayerAsync(sessionId, killerDetails, message, MessageType.UserMessage); // TODO(debt): convert caller to async to properly await
+#pragma warning restore CS4014
     }
 
     /// <summary>
