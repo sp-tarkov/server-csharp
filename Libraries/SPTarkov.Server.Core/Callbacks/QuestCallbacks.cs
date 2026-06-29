@@ -82,6 +82,9 @@ public class QuestCallbacks(
 
     /// <summary>
     ///     Handle client/repeatalbeQuests/activityPeriods
+    ///     <para>
+    ///     Yes the typo is intended, BSG has it in the live client as well and it has to match
+    ///     </para>
     /// </summary>
     /// <param name="url"></param>
     /// <param name="_"></param>
