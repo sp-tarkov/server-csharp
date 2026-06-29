@@ -81,7 +81,7 @@ public class QuestCallbacks(
     }
 
     /// <summary>
-    ///     Handle client/repeatalbeQuests/activityPeriods
+    ///     Handle client/repeatableQuests/activityPeriods
     /// </summary>
     /// <param name="url"></param>
     /// <param name="_"></param>
