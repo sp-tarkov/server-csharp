@@ -25,7 +25,7 @@ public class WebSocketServer(IEnumerable<IWebSocketConnectionHandler> webSocketC
     {
         var socketHandlers = webSocketConnectionHandler.Where(wsh => context.Request.Path.Value.Contains(wsh.GetHookUrl()));
 
-        var cts = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
         var wsToken = cts.Token;
         var webSocketIdContext = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff");
 
