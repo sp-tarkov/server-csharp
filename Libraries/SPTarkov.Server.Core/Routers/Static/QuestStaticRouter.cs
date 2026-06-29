@@ -17,7 +17,7 @@ public class QuestStaticRouter(JsonUtil jsonUtil, QuestCallbacks questCallbacks)
                 async (url, info, sessionID, output) => await questCallbacks.ListQuests(url, info, sessionID)
             ),
             new RouteAction<EmptyRequestData>(
-                "/client/repeatalbeQuests/activityPeriods",
+                "/client/repeatableQuests/activityPeriods",
                 async (url, info, sessionID, output) => await questCallbacks.ActivityPeriods(url, info, sessionID)
             ),
         ]
