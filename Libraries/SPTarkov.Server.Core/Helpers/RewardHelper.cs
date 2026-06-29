@@ -104,7 +104,6 @@ public class RewardHelper(
                     break;
                 case RewardType.StashRows:
                     var bonusId = profileHelper.AddStashRowsBonusToProfile(sessionId.Value, (int)reward.Value); // Add specified stash rows from reward - requires client restart
-
 #pragma warning disable CS4014
                     _ = notificationSendHelper.SendMessageAsync( // TODO(debt): convert ApplyRewards to async to properly await
                         sessionId.Value,

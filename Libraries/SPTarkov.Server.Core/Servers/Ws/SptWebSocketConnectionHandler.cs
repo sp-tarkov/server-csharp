@@ -184,12 +184,7 @@ public class SptWebSocketConnectionHandler(
                         logger.Debug($"Send message for {sessionID} on websocket async started");
                     }
 
-                    await webSocket.SendAsync(
-                        payload,
-                        WebSocketMessageType.Text,
-                        true,
-                        CancellationToken.None
-                    );
+                    await webSocket.SendAsync(payload, WebSocketMessageType.Text, true, CancellationToken.None);
 
                     if (logger.IsLogEnabled(LogLevel.Debug))
                     {

@@ -176,11 +176,7 @@ public static class Program
     private static void ConfigureWebApp(WebApplication app)
     {
         app.UseWebSockets(
-            new WebSocketOptions
-            {
-                KeepAliveInterval = TimeSpan.FromSeconds(30),
-                KeepAliveTimeout = TimeSpan.FromSeconds(30),
-            }
+            new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(30), KeepAliveTimeout = TimeSpan.FromSeconds(30) }
         );
 
         app.UseMiddleware<SptLoggerMiddleware>();
