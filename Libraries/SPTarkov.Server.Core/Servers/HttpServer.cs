@@ -20,7 +20,7 @@ public sealed class HttpServer(
     {
         if (context.WebSockets.IsWebSocketRequest && webSocketServer.CanHandle(context))
         {
-            await webSocketServer.OnConnection(context);
+            await webSocketServer.OnConnectionAsync(context);
             return;
         }
 

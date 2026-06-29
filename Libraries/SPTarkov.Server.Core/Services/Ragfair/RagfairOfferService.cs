@@ -314,7 +314,7 @@ public class RagfairOfferService(
             offerCreatorProfile.RagfairInfo.Rating.Value,
             offerCreatorProfile.RagfairInfo.IsRatingGrowing.GetValueOrDefault(false)
         );
-        notificationSendHelper.SendMessage(offerCreatorId, notificationMessage);
+        _ = notificationSendHelper.SendMessageAsync(offerCreatorId, notificationMessage);
 
         ragfairServerHelper.ReturnItems(offerCreatorProfile.SessionId.Value, unstackedItems);
         offerCreatorProfile.RagfairInfo.Offers.Splice(indexOfOfferInProfile, 1);

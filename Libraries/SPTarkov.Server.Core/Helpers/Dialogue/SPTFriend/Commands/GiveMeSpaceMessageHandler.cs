@@ -52,7 +52,7 @@ public class GiveMeSpaceMessageHandler(
             const int rowsToAdd = 2;
             var bonusId = profileHelper.AddStashRowsBonusToProfile(sessionId, rowsToAdd);
 
-            notificationSendHelper.SendMessage(
+            _ = notificationSendHelper.SendMessageAsync(
                 sessionId,
                 new WsProfileChangeEvent
                 {

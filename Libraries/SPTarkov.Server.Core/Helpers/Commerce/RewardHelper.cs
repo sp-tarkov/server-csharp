@@ -114,7 +114,7 @@ public class RewardHelper(
                     // Add specified stash rows from reward - requires client restart
                     var bonusId = profileHelper.AddStashRowsBonusToProfile(sessionId!.Value, Convert.ToInt32(reward.Value));
 
-                    notificationSendHelper.SendMessage(
+                    _ = notificationSendHelper.SendMessageAsync(
                         sessionId.Value,
                         new WsProfileChangeEvent
                         {
@@ -133,7 +133,7 @@ public class RewardHelper(
                     break;
                 case RewardType.CustomizationDirect:
                     profileHelper.AddHideoutCustomisationUnlock(fullProfile, reward, rewardSource);
-                    notificationSendHelper.SendMessage(
+                    _ = notificationSendHelper.SendMessageAsync(
                         sessionId!.Value,
                         new WsNotificationEvent
                         {
@@ -145,7 +145,7 @@ public class RewardHelper(
                     break;
                 case RewardType.NotificationPopup:
                     var notification = notifierHelper.CreateNotificationPopup(reward.IllustrationConfig!, reward.Message!.Value);
-                    notificationSendHelper.SendMessage(sessionId!.Value, notification);
+                    _ = notificationSendHelper.SendMessageAsync(sessionId!.Value, notification);
                     break;
                 case RewardType.WebPromoCode:
                     // TODO: ??? (Free arena trial from Balancing - Part 1)

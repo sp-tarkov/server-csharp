@@ -313,13 +313,13 @@ public class MailSendService(
         if (_messageTypes.Contains(senderDialog.Type ?? MessageType.SystemMessage) && messageDetails?.RagfairDetails is not null)
         {
             var offerSoldMessage = notifierHelper.CreateRagfairOfferSoldNotification(message, messageDetails.RagfairDetails);
-            notificationSendHelper.SendMessage(messageDetails.RecipientId, offerSoldMessage);
+            _ = notificationSendHelper.SendMessageAsync(messageDetails.RecipientId, offerSoldMessage);
             message.MessageType = MessageType.MessageWithItems; // Should prevent getting the same notification popup twice
         }
 
         // Send notification to player informing them of mail delivery
         var notificationMessage = notifierHelper.CreateNewMessageNotification(message);
-        notificationSendHelper.SendMessage(messageDetails.RecipientId, notificationMessage);
+        _ = notificationSendHelper.SendMessageAsync(messageDetails.RecipientId, notificationMessage);
     }
 
     /// <summary>

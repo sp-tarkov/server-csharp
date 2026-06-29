@@ -712,7 +712,7 @@ public class DialogueController(
                     EventType = NotificationEventType.friendListRequestAccept,
                     Profile = profileHelper.GetChatRoomMemberFromPmcProfile(friendProfile.CharacterData.PmcData),
                 };
-                notificationSendHelper.SendMessage(sessionID, notification);
+                _ = notificationSendHelper.SendMessageAsync(sessionID, notification);
             },
             null,
             TimeSpan.FromMicroseconds(1000),

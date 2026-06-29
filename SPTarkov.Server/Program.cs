@@ -257,13 +257,7 @@ public static class Program
 
     private static void ConfigureWebApp(WebApplication app)
     {
-        app.UseWebSockets(
-            new WebSocketOptions
-            {
-                // Every minute a heartbeat is sent to keep the connection alive.
-                KeepAliveInterval = TimeSpan.FromSeconds(60),
-            }
-        );
+        app.UseWebSockets();
 
         app.UseMiddleware<SptLoggerMiddleware>();
 
