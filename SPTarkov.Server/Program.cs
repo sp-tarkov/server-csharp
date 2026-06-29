@@ -178,8 +178,8 @@ public static class Program
         app.UseWebSockets(
             new WebSocketOptions
             {
-                // Every minute a heartbeat is sent to keep the connection alive.
-                KeepAliveInterval = TimeSpan.FromSeconds(60),
+                KeepAliveInterval = TimeSpan.FromSeconds(30),
+                KeepAliveTimeout = TimeSpan.FromSeconds(30),
             }
         );
 
