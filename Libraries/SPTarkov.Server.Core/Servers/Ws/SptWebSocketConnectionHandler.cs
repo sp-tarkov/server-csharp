@@ -149,24 +149,28 @@ public class SptWebSocketConnectionHandler(
         return Task.CompletedTask;
     }
 
-    public void SendMessageToAll(WsNotificationEvent output)
+    public async Task SendMessageToAllAsync(WsNotificationEvent output)
     {
+        MongoId[] sessionIds;
         lock (_socketsLock)
         {
-            foreach (var sessionID in _sockets.Keys)
-            {
-                SendMessage(sessionID, output); // this currently serializes for every socket, might want to separate into sending already serialized data
-            }
+            sessionIds = _sockets.Keys.ToArray();
+        }
+
+        foreach (var sessionID in sessionIds)
+        {
+            await SendMessageAsync(sessionID, output);
         }
     }
 
-    public void SendMessage(MongoId sessionID, WsNotificationEvent output)
+    public async Task SendMessageAsync(MongoId sessionID, WsNotificationEvent output)
     {
         try
         {
             if (IsWebSocketConnected(sessionID))
             {
                 var webSockets = GetSessionWebSocket(sessionID);
+                var payload = Encoding.UTF8.GetBytes(jsonUtil.Serialize(output, output.GetType()));
 
                 if (logger.IsLogEnabled(LogLevel.Debug))
                 {
@@ -175,18 +179,18 @@ public class SptWebSocketConnectionHandler(
 
                 foreach (var webSocket in webSockets)
                 {
-                    var sendTask = webSocket.SendAsync(
-                        Encoding.UTF8.GetBytes(jsonUtil.Serialize(output, output.GetType())),
-                        WebSocketMessageType.Text,
-                        true,
-                        CancellationToken.None
-                    );
                     if (logger.IsLogEnabled(LogLevel.Debug))
                     {
                         logger.Debug($"Send message for {sessionID} on websocket async started");
                     }
 
-                    sendTask.Wait();
+                    await webSocket.SendAsync(
+                        payload,
+                        WebSocketMessageType.Text,
+                        true,
+                        CancellationToken.None
+                    );
+
                     if (logger.IsLogEnabled(LogLevel.Debug))
                     {
                         logger.Debug($"Send message for {sessionID} on websocket async finished");
@@ -224,7 +228,7 @@ public class SptWebSocketConnectionHandler(
     {
         lock (_socketsLock)
         {
-            return _sockets.GetValueOrDefault(sessionID)?.Values.Where(s => s.State == WebSocketState.Open) ?? [];
+            return _sockets.GetValueOrDefault(sessionID)?.Values.Where(s => s.State == WebSocketState.Open).ToList() ?? [];
         }
     }
 }
