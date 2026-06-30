@@ -219,6 +219,7 @@ public static class Program
         // Configure Kestrel options
         ConfigureKestrel(builder);
 
+        builder.Services.AddHttpContextAccessor();
         builder.Services.AddHttpClient();
         builder.Services.AddHttpClient(
             "Github",
