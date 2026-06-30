@@ -8,6 +8,8 @@ namespace SPTarkov.Server.Core.Helpers.Server;
 [Injectable(InjectionType.Singleton)]
 public class HttpServerHelper(HttpConfig httpConfig, IHttpContextAccessor httpContextAccessor)
 {
+    private const string AllInterfacesIpv4 = "0.0.0.0";
+
     protected readonly FrozenDictionary<string, string> Mime = new Dictionary<string, string>
     {
         { "css", "text/css" },
@@ -29,7 +31,7 @@ public class HttpServerHelper(HttpConfig httpConfig, IHttpContextAccessor httpCo
     public string GetBackendHost()
     {
         // Return the regular backend ip if we aren't using 0.0.0.0
-        if (httpConfig.BackendIp != "0.0.0.0")
+        if (httpConfig.BackendIp != AllInterfacesIpv4)
         {
             return httpConfig.BackendIp;
         }
