@@ -215,7 +215,7 @@ public class GameController(
     /// <returns></returns>
     public List<ServerDetails> GetServer(MongoId sessionId)
     {
-        return [new ServerDetails { Ip = httpConfig.BackendIp, Port = httpConfig.BackendPort }];
+        return [new ServerDetails { Ip = httpServerHelper.GetBackendHost(), Port = httpConfig.BackendPort }];
     }
 
     /// <summary>
