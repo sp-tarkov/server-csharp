@@ -1,5 +1,6 @@
 @page "/profiles"
 @attribute [Authorize(Policy = "Administrator")]
+@using SPTarkov.Server.Core.Helpers.Commerce
 @using SPTarkov.Server.Core.Helpers.Profile
 @using SPTarkov.Server.Core.Models.Common
 @using SPTarkov.Server.Core.Models.Eft.Profile
@@ -14,6 +15,7 @@
 @using SPTarkov.Server.Web.Models.Database
 @using SPTarkov.Server.Web.Models.Profiles
 @using SPTarkov.Server.Web.Utils
+@using SPTarkov.Server.Core.Utils.Cloners
 @using BotHideoutArea = SPTarkov.Server.Core.Models.Eft.Common.Tables.BotHideoutArea
 @using CommonSkill = SPTarkov.Server.Core.Models.Eft.Common.Tables.CommonSkill
 @using CustomisationTypeId = SPTarkov.Server.Core.Models.Eft.Common.Tables.CustomisationTypeId
@@ -31,6 +33,9 @@
 @inject TemplateTable TemplateTable
 @inject TradersTable TradersTable
 @inject ProfileHelper ProfileHelper
+@inject PrestigeHelper PrestigeHelper
+@inject RewardHelper RewardHelper
+@inject ICloner Cloner
 @inject HashUtil HashUtil
 @inject JsonUtil JsonUtil
 @inject ISnackbar Snackbar
@@ -83,6 +88,7 @@
                                        Open="@_isDetailsOpen"
                                        IsBusy="@_isBusy"
                                        OnSaveEdit="SaveProfileEdits"
+                                       OnGrantPrestige="GrantPrestige"
                                        OnClose="CloseDetails" />
         </MudStack>
     </MudContainer>
@@ -233,6 +239,107 @@
         {
             _isBusy = false;
             await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task GrantPrestige(ProfilePrestigeGrantRequest request)
+    {
+        if (!MongoId.IsValidMongoId(request.ProfileId))
+        {
+            Snackbar.Add(L("profiles-selected-profile-missing"), Severity.Error);
+            return;
+        }
+
+        var profileId = new MongoId(request.ProfileId);
+        var profile = SaveServer.GetProfile(profileId);
+        var currentLevel = profile?.CharacterData?.PmcData?.Info?.PrestigeLevel ?? 0;
+        var maxLevel = TemplateTable.Prestige?.Elements?.Count ?? 0;
+
+        if (profile is null || request.TargetLevel <= currentLevel || request.TargetLevel > maxLevel)
+        {
+            Snackbar.Add(L("profiles-prestige-level-must-increase"), Severity.Warning);
+            return;
+        }
+
+        _isBusy = true;
+
+        try
+        {
+            if (request.FullWipe)
+            {
+                profile.SptData!.PendingPrestige = new PendingPrestige { PrestigeLevel = request.TargetLevel };
+                profile.ProfileInfo!.IsWiped = true;
+                MarkPrestigeTiersAchieved(profile.CharacterData!.PmcData!, request.TargetLevel);
+                GrantPrestigeAchievements(profile, request.TargetLevel);
+                await SaveServer.SaveProfileAsync(profileId);
+            }
+            else
+            {
+                profile.SptData ??= ProfileHelper.GetDefaultSptDataObject();
+                var oldProfile = Cloner.Clone(profile);
+                profile.CharacterData!.PmcData!.Prestige ??= [];
+                var pendingPrestige = new PendingPrestige { PrestigeLevel = request.TargetLevel };
+                PrestigeHelper.ProcessPendingPrestige(oldProfile, profile, pendingPrestige);
+                MarkPrestigeTiersAchieved(profile.CharacterData!.PmcData!, request.TargetLevel);
+                GrantPrestigeAchievements(profile, request.TargetLevel);
+                await SaveServer.SaveProfileAsync(profileId);
+            }
+
+            _profileDetailsCache.Remove(request.ProfileId);
+            RefreshProfiles(invalidateDetails: false);
+            RebuildSelectedProfileDetails();
+            Snackbar.Add(string.Format(L("profiles-prestige-granted"), request.TargetLevel), Severity.Success);
+        }
+        catch (Exception exception)
+        {
+            Snackbar.Add(exception.InnerException?.Message ?? exception.Message, Severity.Error);
+        }
+        finally
+        {
+            _isBusy = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void MarkPrestigeTiersAchieved(PmcData pmc, int targetLevel)
+    {
+        var elements = TemplateTable.Prestige?.Elements;
+        if (elements is null || elements.Count == 0)
+        {
+            return;
+        }
+
+        pmc.Prestige ??= [];
+        var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        foreach (var element in elements.Take(Math.Min(targetLevel, elements.Count)))
+        {
+            pmc.Prestige.TryAdd(element.Id, now);
+        }
+    }
+
+    private void GrantPrestigeAchievements(SptProfile profile, int targetLevel)
+    {
+        var elements = TemplateTable.Prestige?.Elements;
+        if (elements is null || elements.Count == 0)
+        {
+            return;
+        }
+
+        var achievements = profile.CharacterData?.PmcData?.Achievements;
+
+        foreach (var element in elements.Take(Math.Min(targetLevel, elements.Count)))
+        {
+            if (!PrestigeHelper.PrestigeAchievements.TryGetValue(element.Id, out var achievementId))
+            {
+                continue;
+            }
+
+            if (profile.CharacterData!.PmcData!.Achievements!.ContainsKey(achievementId))
+            {
+                continue;
+            }
+
+            RewardHelper.AddAchievementToProfile(profile, achievementId);
         }
     }
 
@@ -799,7 +906,8 @@
             BuildProfileEditModel(summary, profile),
             detailSections,
             properties,
-            propertiesJson
+            propertiesJson,
+            BuildPrestigeInfo(pmc)
         );
     }
 
@@ -840,6 +948,29 @@
             MissingQuests = BuildMissingQuestOptions(pmc),
             Traders = BuildTraderEditModels(pmc),
         };
+    }
+
+    private ProfilePrestigeInfo BuildPrestigeInfo(PmcData? pmc)
+    {
+        var elements = TemplateTable.Prestige?.Elements ?? [];
+        var achieved = pmc?.Prestige ?? new Dictionary<string, long>();
+
+        var tiers = elements
+            .Select((element, index) =>
+            {
+                var achievedAt = achieved.GetValueOrDefault(element.Id, 0L);
+                return new ProfilePrestigeEditModel
+                {
+                    Id = element.Id,
+                    Label = $"Prestige {index + 1}",
+                    Level = index + 1,
+                    Achieved = achievedAt > 0,
+                    AchievedAt = achievedAt,
+                };
+            })
+            .ToList();
+
+        return new ProfilePrestigeInfo(pmc?.Info?.PrestigeLevel ?? 0, elements.Count, tiers);
     }
 
     private List<ProfileHideoutAreaEditModel> BuildHideoutAreaEditModels(PmcData? pmc)

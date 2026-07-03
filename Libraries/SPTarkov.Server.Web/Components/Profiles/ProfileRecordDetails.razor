@@ -502,6 +502,13 @@
                         </MudPaper>
                     }
                 </MudTabPanel>
+
+                <MudTabPanel Text="Prestige"
+                             Icon="@Icons.Material.Filled.MilitaryTech"
+                             Disabled="@Details.Summary.IsWiped"
+                             ToolTip="@(Details.Summary.IsWiped ? L("profiles-prestige-disabled-wiped-tooltip") : null)">
+                    <ProfilePrestigePanel Details="@Details" IsBusy="@IsBusy" OnGrantPrestige="OnGrantPrestige" />
+                </MudTabPanel>
             </MudTabs>
         </MudStack>
     }
@@ -516,6 +523,9 @@
 
     [Parameter]
     public EventCallback<ProfileEditModel> OnSaveEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<ProfilePrestigeGrantRequest> OnGrantPrestige { get; set; }
 
     [Parameter]
     public EventCallback OnClose { get; set; }
