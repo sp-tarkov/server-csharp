@@ -72,6 +72,7 @@ public class ProfileController(
                 ProfileId = profile.ProfileInfo?.ProfileId ?? string.Empty,
                 InvalidOrUnloadableProfile = profile.ProfileInfo?.InvalidOrUnloadableProfile,
                 SptData = profileHelper.GetDefaultSptDataObject(),
+                Wipe = true
             };
         }
 
@@ -89,6 +90,7 @@ public class ProfileController(
             ProfileId = profile.ProfileInfo?.ProfileId ?? string.Empty,
             InvalidOrUnloadableProfile = profile.ProfileInfo?.InvalidOrUnloadableProfile,
             SptData = profile.SptData,
+            Wipe = profile.ProfileInfo?.IsWiped ?? false
         };
     }
 
