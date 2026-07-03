@@ -158,6 +158,7 @@
   "profiles-created": "Profile created.",
   "profiles-delete-failed": "Could not delete {0}.",
   "profiles-deleted": "Deleted {0}.",
+  "profiles-edit-disabled-wiped-tooltip": "Start the game to finish creating this profile before being able to edit it",
   "profiles-edits-saved": "Saved edits for {0}.",
   "profiles-experience-mismatch-level": "Experience cannot be mismatched with level.",
   "profiles-experience-not-negative": "Experience cannot be negative.",
