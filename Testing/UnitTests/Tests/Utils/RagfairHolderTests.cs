@@ -38,7 +38,7 @@ public sealed class RagfairHolderTests
     }
 
     [Test]
-    [Timeout(60_000)]
+    [CancelAfter(60_000)]
     public void AddOffers_LargeBatch_ShouldStoreAllOffers()
     {
         var holder = CreateHolder();
@@ -52,7 +52,7 @@ public sealed class RagfairHolderTests
     }
 
     [Test]
-    [Timeout(60_000)]
+    [CancelAfter(60_000)]
     public void AddOffers_LargeBatch_ShouldBeQueryableByIdTemplateAndTrader()
     {
         var holder = CreateHolder();
@@ -93,7 +93,7 @@ public sealed class RagfairHolderTests
     }
 
     [Test]
-    [Timeout(60_000)]
+    [CancelAfter(60_000)]
     public async Task ConcurrentLargeBatchOperations_ShouldCompleteWithoutDeadlockOrUnhandledExceptions()
     {
         var holder = CreateHolder();
@@ -133,7 +133,7 @@ public sealed class RagfairHolderTests
     }
 
     [Test]
-    [Timeout(60_000)]
+    [CancelAfter(60_000)]
     public async Task ConcurrentReadsWhileRemoving_ShouldNotThrowCollectionModifiedExceptions()
     {
         var holder = CreateHolder();
@@ -169,7 +169,7 @@ public sealed class RagfairHolderTests
     }
 
     [Test]
-    [Timeout(60_000)]
+    [CancelAfter(60_000)]
     public void RemoveAllOffersByTrader_LargeBatch_ShouldRemoveTraderOffers()
     {
         var holder = CreateHolder();
@@ -195,7 +195,7 @@ public sealed class RagfairHolderTests
     }
 
     [Test]
-    [Timeout(60_000)]
+    [CancelAfter(60_000)]
     public void RemoveAllOffersByTrader_LargeBatch_ShouldNotLeaveOfferIdsInTemplateIndex()
     {
         var holder = CreateHolder();
@@ -217,7 +217,7 @@ public sealed class RagfairHolderTests
     }
 
     [Test]
-    [Timeout(60_000)]
+    [CancelAfter(60_000)]
     public void RemoveOffer_ShouldRemoveOfferFromAllIndexes()
     {
         var holder = CreateHolder();
@@ -237,7 +237,7 @@ public sealed class RagfairHolderTests
     }
 
     [Test]
-    [Timeout(60_000)]
+    [CancelAfter(60_000)]
     public void FlagExpiredOffersAfterDate_LargeBatch_ShouldNotHang()
     {
         var holder = CreateHolder();
