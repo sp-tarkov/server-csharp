@@ -4,7 +4,7 @@ using System.Runtime.Loader;
 namespace SPTarkov.Server.Modding;
 
 /// <summary>
-/// This context hosts the server with an in-memory prepatched Core as well as it's symbols so they can be loaded in memory
+/// Binds the server to an in-memory prepatched Core (and its symbols)
 /// </summary>
 public sealed class PrepatchLoadContext(string hostAssemblyPath, byte[] patchedCore, byte[]? patchedSymbols)
     : AssemblyLoadContext(ContextName, isCollectible: false)
