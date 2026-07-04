@@ -1,4 +1,7 @@
 using System.Net.Sockets;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Loader;
 using System.Security.Authentication;
 using System.Text;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -29,6 +32,8 @@ public static class Program
 
     public static async Task Main(string[] args)
     {
+        RegisterSatelliteLocalizations();
+
         // Initialize the program variables
         ProgramStatics.Initialize();
 
@@ -293,5 +298,29 @@ public static class Program
 
         // This file is guaranteed to exist if ran from the correct location, even if the game does not exist here.
         return dirFiles.Any(dirFile => dirFile.EndsWith("sptLogger.json") || dirFile.EndsWith("sptLogger.Development.json"));
+    }
+
+    /// <summary>
+    /// This method makes sure that the satellite assemblies that other libraries create get moved out of the root directory to reduce clutter
+    /// </summary>
+    private static void RegisterSatelliteLocalizations()
+    {
+        AssemblyLoadContext.Default.Resolving += (context, assemblyName) =>
+            ResolveSatelliteAssembly(AppContext.BaseDirectory, assemblyName, context.LoadFromAssemblyPath);
+    }
+
+    public static Assembly? ResolveSatelliteAssembly(string baseDirectory, AssemblyName assemblyName, Func<string, Assembly> loadFromPath)
+    {
+        if (
+            assemblyName.Name is not { } name
+            || !name.EndsWith(".resources", StringComparison.Ordinal)
+            || assemblyName.CultureName is not { Length: > 0 } culture
+        )
+        {
+            return null;
+        }
+
+        var path = Path.Combine(baseDirectory, "SPT_Data", "dotnet", culture, $"{name}.dll");
+        return File.Exists(path) ? loadFromPath(path) : null;
     }
 }

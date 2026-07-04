@@ -51,4 +51,18 @@
   <ItemGroup>
     <None Include="..\LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
+  <Target Name="RelocateSatelliteAssemblies" AfterTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+      <_RelocatedSatelliteCulture
+        Include="@(ReferenceCopyLocalPaths->'%(DestinationSubDirectory)')"
+        Condition="$([System.String]::Copy('%(ReferenceCopyLocalPaths.Filename)').EndsWith('.resources'))"
+      />
+      <ReferenceCopyLocalPaths Condition="$([System.String]::Copy('%(ReferenceCopyLocalPaths.Filename)').EndsWith('.resources'))">
+        <DestinationSubDirectory>SPT_Data\dotnet\%(ReferenceCopyLocalPaths.DestinationSubDirectory)</DestinationSubDirectory>
+      </ReferenceCopyLocalPaths>
+    </ItemGroup>
+  </Target>
+  <Target Name="CleanStaleSatelliteFolders" AfterTargets="Build" Condition="'@(_RelocatedSatelliteCulture)' != ''">
+    <RemoveDir Directories="@(_RelocatedSatelliteCulture->'$(OutDir)%(Identity)')" />
+  </Target>
 </Project>
