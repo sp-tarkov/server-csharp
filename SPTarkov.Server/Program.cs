@@ -26,7 +26,7 @@ using SPTarkov.Server.Web;
 
 namespace SPTarkov.Server;
 
-public static class Program
+public static class Program 
 {
     internal static ILogger? _earlyLogger;
 
