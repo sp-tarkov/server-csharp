@@ -65,9 +65,19 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
             Directory.CreateDirectory(ModPath);
         }
 
-        if (!isPrepatchedProcess && File.Exists(PatchedAssemblyName))
+        if (!isPrepatchedProcess)
         {
-            File.Delete(PatchedAssemblyName);
+            if (File.Exists(PatchedAssemblyName))
+            {
+                File.Delete(PatchedAssemblyName);
+            }
+
+            var patchedSymbolPath = Path.ChangeExtension(PatchedAssemblyName, ".pdb");
+
+            if (File.Exists(patchedSymbolPath))
+            {
+                File.Delete(patchedSymbolPath);
+            }
         }
 
         // foreach directory in /user/mods/
