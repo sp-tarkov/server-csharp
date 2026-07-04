@@ -1,53 +1,51 @@
-using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Loader;
 using Mono.Cecil;
-using SPTarkov.Common.Logger;
+using Mono.Cecil.Cil;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Exceptions;
 
 namespace SPTarkov.Server.Modding;
 
-public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modValidator, JsonUtil jsonUtil, FileUtil fileUtil)
+public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modValidator)
 {
     private List<SptMod> _loadedMods = [];
     private readonly List<AbstractPrepatch> _prepatches = [];
 
     private ModuleDefinition? _serverCoreModule;
     private MemoryStream? _serverCoreModuleStream;
+    private MemoryStream? _serverCoreSymbolStream;
+    private bool _serverCoreHasSymbols;
     private readonly List<PrepatchResultEntry> _prepatchResults = [];
 
     private const string ModPath = "./user/mods/";
     private const string PatcherPath = "./user/patchers/";
     private const string PatchedAssemblyName = "./SPTarkov.Server.Core.Patched.dll";
-    private const string PrepatchStagePath = "./user/cache/prepatcher/server";
-    private const string PrepatchedArg = "--prepatched";
 
     /// <summary>
     ///     Initializes the mod loader container, and runs the entire mod loader process
     /// </summary>
     /// <returns>Active runtime mods</returns>
-    public async Task<ModLoaderRunResult> RunModLoader(SptEarlyLoggerFactory loggerFactory, string[] args)
+    public async Task<ModLoaderRunResult> RunModLoader(string[] args)
     {
-        // Clean the console a bit
-        var isPrepatchedProcess = args.Contains(PrepatchedArg, StringComparer.OrdinalIgnoreCase);
-        if (isPrepatchedProcess)
-        {
-            ClearConsole();
-            await LogPrepatches();
-        }
+        // The hosted copy already runs inside the prepatch context, so it must not patch or host again.
+        var isHostedPatchedProcess =
+            AssemblyLoadContext.GetLoadContext(typeof(ModLoader).Assembly)?.Name == PrepatchLoadContext.ContextName;
 
-        await LoadMods();
+        await LoadMods(isHostedPatchedProcess);
         var loadedMods = modValidator.ValidateMods(_loadedMods);
 
-        if (!isPrepatchedProcess && _prepatches.Count > 0)
+        if (!isHostedPatchedProcess && _prepatches.Count > 0)
         {
-            if (await ApplyPrepatches(loadedMods))
+            // Clean the console a bit
+            ClearConsole();
+
+            var patchedCore = await ApplyPrepatchesInMemory(loadedMods);
+            if (patchedCore is not null)
             {
-                await StartPrepatchedServerProcess(loggerFactory, args);
+                await BootPatchedServerInMemory(patchedCore, args);
                 return new ModLoaderRunResult(false, loadedMods);
             }
         }
@@ -55,7 +53,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         return new ModLoaderRunResult(true, loadedMods);
     }
 
-    private async Task LoadMods()
+    private async Task LoadMods(bool isPrepatchedProcess)
     {
         if (!await TryLoadServerCoreBytes())
         {
@@ -67,10 +65,19 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
             Directory.CreateDirectory(ModPath);
         }
 
-        // Delete the old patched assembly
-        if (File.Exists(PatchedAssemblyName))
+        if (!isPrepatchedProcess)
         {
-            File.Delete(PatchedAssemblyName);
+            if (File.Exists(PatchedAssemblyName))
+            {
+                File.Delete(PatchedAssemblyName);
+            }
+
+            var patchedSymbolPath = Path.ChangeExtension(PatchedAssemblyName, ".pdb");
+
+            if (File.Exists(patchedSymbolPath))
+            {
+                File.Delete(patchedSymbolPath);
+            }
         }
 
         // foreach directory in /user/mods/
@@ -95,24 +102,62 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         _loadedMods = _loadedMods.OrderBy(m => m.ModMetadata.ModGuid, StringComparer.OrdinalIgnoreCase).ToList();
     }
 
-    private async Task LogPrepatches()
+    /// <summary>
+    ///     Applies all prepatches, writes the patched Core (and its pdb) to disk
+    /// </summary>
+    /// <returns>Patched assembly and it's symbols, or null if any prepatch failed.</returns>
+    private async Task<PatchedCoreAssembly?> ApplyPrepatchesInMemory(IReadOnlyCollection<SptMod> validRuntimeMods)
     {
-        var text = await fileUtil.ReadFileAsync(Path.Combine(Path.GetFullPath(PrepatchStagePath), "prepatch-result.json"));
-        var results = jsonUtil.Deserialize<List<PrepatchResultEntry>>(text);
+        var success = RunActivePrepatches(validRuntimeMods);
 
-        logger.Info($"ModLoader: Applied {results?.Count ?? 0} prepatches");
-        foreach (var result in results ?? [])
+        try
         {
-            logger.Info($"ModLoader: Applied prepatch from mod: {result.ModGuid}");
+            if (!success)
+            {
+                return null;
+            }
+
+            using var patchedStream = new MemoryStream();
+            using var symbolStream = new MemoryStream();
+
+            var writerParameters = new WriterParameters();
+            if (_serverCoreHasSymbols)
+            {
+                writerParameters.WriteSymbols = true;
+                writerParameters.SymbolWriterProvider = new PortablePdbWriterProvider();
+                writerParameters.SymbolStream = symbolStream;
+            }
+
+            _serverCoreModule!.Write(patchedStream, writerParameters);
+
+            var assemblyBytes = patchedStream.ToArray();
+            var symbolBytes = _serverCoreHasSymbols ? symbolStream.ToArray() : null;
+
+            await File.WriteAllBytesAsync(PatchedAssemblyName, assemblyBytes);
+
+            // Write PDB, this is important when debugging
+            if (symbolBytes is not null)
+            {
+                await File.WriteAllBytesAsync(Path.ChangeExtension(PatchedAssemblyName, ".pdb"), symbolBytes);
+            }
+
+            return new PatchedCoreAssembly(assemblyBytes, symbolBytes);
+        }
+        finally
+        {
+            DisposeServerCoreModule();
+            _serverCoreModuleStream?.Dispose();
+            _serverCoreModuleStream = null;
+            _serverCoreSymbolStream?.Dispose();
+            _serverCoreSymbolStream = null;
         }
     }
 
     /// <summary>
-    ///     Applies all prepatches to the server core
+    ///     Runs every active, valid prepatch against the loaded Core module in a deterministic order.
     /// </summary>
-    /// <param name="validRuntimeMods">Validated runtime mods</param>
-    /// <returns>True if all patches succeeded</returns>
-    private async Task<bool> ApplyPrepatches(IReadOnlyCollection<SptMod> validRuntimeMods)
+    /// <returns>True if all prepatches succeeded.</returns>
+    private bool RunActivePrepatches(IReadOnlyCollection<SptMod> validRuntimeMods)
     {
         if (_serverCoreModule is null)
         {
@@ -139,23 +184,16 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
                 logger.Critical($"Critical error occured while applying a prepatch from mod: {prepatch.ModGuid}", e);
             }
 
-            var result = new PrepatchResultEntry { ModGuid = prepatch.ModGuid, Succeeded = succeeded };
-            _prepatchResults.Add(result);
-        }
-
-        try
-        {
-            _serverCoreModule.Write(PatchedAssemblyName);
-        }
-        finally
-        {
-            _serverCoreModule.Dispose();
-            _serverCoreModule = null;
-            await _serverCoreModuleStream!.DisposeAsync();
-            _serverCoreModuleStream = null;
+            _prepatchResults.Add(new PrepatchResultEntry { ModGuid = prepatch.ModGuid, Succeeded = succeeded });
         }
 
         return _prepatchResults.All(r => r.Succeeded);
+    }
+
+    private void DisposeServerCoreModule()
+    {
+        _serverCoreModule?.Dispose();
+        _serverCoreModule = null;
     }
 
     private static void ClearConsole()
@@ -169,134 +207,20 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     }
 
     /// <summary>
-    ///     Starts the patched server as a new process. This one is destroyed in release and held open in debug so IDE's don't die.
+    ///     Hosts the server in-process with the patched Core in an isolated load context
+    ///     The hosted copy detects the context and runs the normal startup without re-patching.
     /// </summary>
-    private async Task StartPrepatchedServerProcess(SptEarlyLoggerFactory loggerFactory, string[] args)
+    private async Task BootPatchedServerInMemory(PatchedCoreAssembly patchedCore, string[] args)
     {
-        var sourceDirectory = AppContext.BaseDirectory;
-        var stageDirectory = Path.GetFullPath(PrepatchStagePath);
+        var hostAssemblyPath = Assembly.GetExecutingAssembly().Location;
+        var context = new PrepatchLoadContext(hostAssemblyPath, patchedCore.Assembly, patchedCore.Symbols);
+        var hostedServer = context.LoadFromAssemblyPath(hostAssemblyPath);
 
-        CopyApplicationToCache(sourceDirectory, stageDirectory);
-        await WriteResultLog();
+        var entryPoint =
+            hostedServer.GetType("SPTarkov.Server.Program")?.GetMethod("Main", BindingFlags.Public | BindingFlags.Static)
+            ?? throw new ModLoaderException("Unable to locate the hosted server entry point for in-memory prepatching.");
 
-        File.Copy(Path.GetFullPath(PatchedAssemblyName), Path.Combine(stageDirectory, "SPTarkov.Server.Core.dll"), overwrite: true);
-
-        var startInfo = CreatePrepatchedProcessStartInfo(stageDirectory);
-
-        foreach (var arg in args.Where(arg => !string.Equals(arg, PrepatchedArg, StringComparison.OrdinalIgnoreCase)))
-        {
-            startInfo.ArgumentList.Add(arg);
-        }
-        startInfo.ArgumentList.Add(PrepatchedArg);
-
-        var prepatchedProcess = Process.Start(startInfo);
-        if (prepatchedProcess is null)
-        {
-            throw new ModLoaderException($"Failed to start prepatched server process: {startInfo.FileName}");
-        }
-
-        // Needed for IDE development so the console doesn't just cease to exist when the process relaunches,
-        // in a normal environment it just reattaches to the old console, but this behavior doesn't work in Rider/VS
-#if DEBUG
-        // Dispose of logging, we dont need to keep it alive anymore for this program
-        loggerFactory.Provider.Dispose();
-        loggerFactory.Dispose();
-        await prepatchedProcess.WaitForExitAsync();
-
-        Environment.ExitCode = prepatchedProcess.ExitCode;
-#endif
-    }
-
-    private static ProcessStartInfo CreatePrepatchedProcessStartInfo(string stageDirectory)
-    {
-        var processPath = Environment.ProcessPath;
-        var entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
-
-        if (IsDotnetHost(processPath) && !string.IsNullOrEmpty(entryAssemblyPath))
-        {
-            var stagedAssemblyPath = Path.Combine(stageDirectory, Path.GetFileName(entryAssemblyPath));
-            var startInfo = CreateProcessStartInfo(processPath!);
-            startInfo.ArgumentList.Add(stagedAssemblyPath);
-            return startInfo;
-        }
-
-        var executableName = Path.GetFileName(processPath);
-        if (string.IsNullOrEmpty(executableName))
-        {
-            executableName = OperatingSystem.IsWindows() ? "SPT.Server.exe" : "SPT.Server";
-        }
-
-        return CreateProcessStartInfo(Path.Combine(stageDirectory, executableName));
-    }
-
-    private static bool IsDotnetHost(string? processPath)
-    {
-        if (string.IsNullOrEmpty(processPath))
-        {
-            return false;
-        }
-
-        return string.Equals(Path.GetFileNameWithoutExtension(processPath), "dotnet", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static ProcessStartInfo CreateProcessStartInfo(string executablePath)
-    {
-        return new ProcessStartInfo(executablePath) { WorkingDirectory = Directory.GetCurrentDirectory(), UseShellExecute = false };
-    }
-
-    /// <summary>
-    ///     Copies the patched application to a cache
-    /// </summary>
-    /// <param name="sourceDirectory">Source dir</param>
-    /// <param name="cacheDirectory"></param>
-    private static void CopyApplicationToCache(string sourceDirectory, string cacheDirectory)
-    {
-        if (Directory.Exists(cacheDirectory))
-        {
-            Directory.Delete(cacheDirectory, recursive: true);
-        }
-
-        Directory.CreateDirectory(cacheDirectory);
-
-        foreach (var file in Directory.GetFiles(sourceDirectory))
-        {
-            File.Copy(file, Path.Combine(cacheDirectory, Path.GetFileName(file)), overwrite: true);
-        }
-
-        foreach (var directory in Directory.GetDirectories(sourceDirectory))
-        {
-            var directoryName = Path.GetFileName(directory);
-            if (
-                string.Equals(directoryName, "user", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(directoryName, "SPT_Data", StringComparison.OrdinalIgnoreCase)
-            )
-            {
-                continue;
-            }
-
-            CopyDirectory(directory, Path.Combine(cacheDirectory, directoryName));
-        }
-    }
-
-    private static void CopyDirectory(string sourceDirectory, string targetDirectory)
-    {
-        Directory.CreateDirectory(targetDirectory);
-
-        foreach (var file in Directory.GetFiles(sourceDirectory))
-        {
-            File.Copy(file, Path.Combine(targetDirectory, Path.GetFileName(file)), overwrite: true);
-        }
-
-        foreach (var directory in Directory.GetDirectories(sourceDirectory))
-        {
-            CopyDirectory(directory, Path.Combine(targetDirectory, Path.GetFileName(directory)));
-        }
-    }
-
-    private async Task WriteResultLog()
-    {
-        var text = jsonUtil.Serialize(_prepatchResults);
-        await fileUtil.WriteFileAsync(Path.Combine(Path.GetFullPath(PrepatchStagePath), "prepatch-result.json"), text);
+        await (Task)entryPoint.Invoke(null, [args])!;
     }
 
     /// <summary>
@@ -306,12 +230,15 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     /// <returns>SptMod</returns>
     private SptMod LoadMod(string path)
     {
+        // Load mods into whichever context this loader runs in, so under in-memory prepatching they bind to the patched Core.
+        var loadContext = AssemblyLoadContext.GetLoadContext(typeof(ModLoader).Assembly) ?? AssemblyLoadContext.Default;
+
         List<Assembly> assemblyList = [];
         foreach (var file in new DirectoryInfo(path).GetFiles()) // Only search top level
         {
             if (string.Equals(file.Extension, ".dll", StringComparison.OrdinalIgnoreCase))
             {
-                assemblyList.Add(AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.GetFullPath(file.FullName)));
+                assemblyList.Add(loadContext.LoadFromAssemblyPath(Path.GetFullPath(file.FullName)));
             }
         }
 
@@ -403,19 +330,19 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
             );
         }
 
-        var patcherPath = Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly).FirstOrDefault();
-        if (patcherPath is null)
-        {
-            throw new ModLoaderException(
+        var patcherPath =
+            Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly).FirstOrDefault() ?? throw new ModLoaderException(
                 $"Failed to locate a patcher for mod: `{mod.ModMetadata.ModGuid}`. If you did not intend to ship a patcher. Disable `HasPatcher` in AbstractModMetadata."
             );
-        }
 
-        mod.PatcherAssembly = Assembly.LoadFrom(patcherPath);
+        // Load into the loader's own context so the patcher's AbstractPrepatch matches ours
+        var loadContext = AssemblyLoadContext.GetLoadContext(typeof(ModLoader).Assembly) ?? AssemblyLoadContext.Default;
+        mod.PatcherAssembly = loadContext.LoadFromAssemblyPath(Path.GetFullPath(patcherPath));
 
         var prepatchTypes = mod
             .PatcherAssembly.GetTypes()
             .Where(type => !type.IsAbstract && typeof(AbstractPrepatch).IsAssignableFrom(type));
+
         if (!prepatchTypes.Any())
         {
             throw new ModLoaderException($"Patcher at path: `{patcherPath}` has no patcher entry point(s) of type `AbstractPrepatch`");
@@ -432,13 +359,24 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         try
         {
             var serverCorePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "SPTarkov.Server.Core.dll");
+            var symbolPath = Path.ChangeExtension(serverCorePath, ".pdb");
 
-            // Don't dispose the stream, keep it open, it will cause cecil to have a stroke if it's disposed of
+            // Don't dispose the streams, keep them open, it will cause cecil to have a stroke if they're disposed of
             _serverCoreModuleStream = new MemoryStream(await File.ReadAllBytesAsync(serverCorePath), writable: false);
-            _serverCoreModule = ModuleDefinition.ReadModule(
-                _serverCoreModuleStream,
-                new ReaderParameters { ReadingMode = ReadingMode.Immediate, InMemory = true }
-            );
+
+            var readerParameters = new ReaderParameters { ReadingMode = ReadingMode.Immediate, InMemory = true };
+
+            // Read the symbols so the patched Core can emit a matching pdb and stay breakpointable
+            if (File.Exists(symbolPath))
+            {
+                _serverCoreSymbolStream = new MemoryStream(await File.ReadAllBytesAsync(symbolPath), writable: false);
+                readerParameters.ReadSymbols = true;
+                readerParameters.SymbolReaderProvider = new PortablePdbReaderProvider();
+                readerParameters.SymbolStream = _serverCoreSymbolStream;
+                _serverCoreHasSymbols = true;
+            }
+
+            _serverCoreModule = ModuleDefinition.ReadModule(_serverCoreModuleStream, readerParameters);
         }
         catch (Exception e)
         {
@@ -451,3 +389,5 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
 }
 
 public sealed record ModLoaderRunResult(bool ShouldStartServer, List<SptMod> ValidRuntimeMods);
+
+public sealed record PatchedCoreAssembly(byte[] Assembly, byte[]? Symbols);

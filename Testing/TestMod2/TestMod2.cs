@@ -1,6 +1,7 @@
 ﻿using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Web;
 using Range = SemanticVersioning.Range;
@@ -30,9 +31,23 @@ public record TestMod2Metadata : AbstractModMetadata, IModWebMetadata
 [Injectable(TypePriority = OnLoadOrder.PostLoad + 1)]
 public class TestMod2(ISptLogger<TestMod2> logger) : IOnLoad
 {
+    private const string InjectedName = "TestSkillEntry";
+
     public async Task OnLoadAsync(CancellationToken cancellationToken)
     {
         logger.Info("Test mod 2 loading!");
+
+        var names = Enum.GetNames<SkillTypes>();
+        logger.Info($"SkillTypes ({names.Length} entries): {string.Join(", ", names)}");
+
+        if (Enum.TryParse<SkillTypes>(InjectedName, out var injected))
+        {
+            logger.Info($"Prepatch applied: {InjectedName} = {(int)injected}");
+        }
+        else
+        {
+            logger.Warning($"Prepatch NOT applied: {InjectedName} missing from SkillTypes");
+        }
 
         await Task.CompletedTask;
     }
