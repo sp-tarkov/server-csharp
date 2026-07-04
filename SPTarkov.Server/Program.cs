@@ -164,7 +164,7 @@ public static class Program
         if (ProgramStatics.MODS())
         {
             var modLoader = earlyServiceProvider.GetRequiredService<ModLoader>();
-            var runResult = await modLoader.RunModLoader(loggerFactory, args);
+            var runResult = await modLoader.RunModLoader(args);
             if (!runResult.ShouldStartServer)
             {
                 return;
