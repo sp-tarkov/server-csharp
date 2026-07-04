@@ -62,6 +62,13 @@
       </ReferenceCopyLocalPaths>
     </ItemGroup>
   </Target>
+  <Target Name="RelocatePublishedSatelliteAssemblies" AfterTargets="ComputeFilesToPublish">
+    <ItemGroup>
+      <ResolvedFileToPublish Condition="$([System.String]::Copy('%(ResolvedFileToPublish.Filename)').EndsWith('.resources'))">
+        <RelativePath>SPT_Data\dotnet\%(ResolvedFileToPublish.RelativePath)</RelativePath>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
   <Target Name="CleanStaleSatelliteFolders" AfterTargets="Build" Condition="'@(_RelocatedSatelliteCulture)' != ''">
     <RemoveDir Directories="@(_RelocatedSatelliteCulture->'$(OutDir)%(Identity)')" />
   </Target>
