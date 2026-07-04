@@ -6,6 +6,7 @@
   "baseclass-item_not_found_failed": "Objekt %s hittas fortfarande inte i bascache efter regeneration",
   "baseclass-missing_db_no_cache": "Databasen var tom, det gick inte att generera en artikelbascache",
   "bleeding_edge_build": "EXPERIMENTELL",
+  "btr-unable_to_find_items_in_dialog_template": "Kunde inte hitta itemsDelivered i dialogueTemplates för spelare: %s",
   "bot-bot-cache_has_zero_bots_of_requested_type": "VARNING - Botcachen har inte en förgenererad bot av typen %s, måste genereras, konfigurera bot.json (presetBatch) för att vara högre",
   "bot-bot_preset_count_value_missing": "Det går inte att hitta ett förinställningsantal att generera för bot: %s, som standard 30",
   "bot-compatibility_check_missing_props": "Det går inte att validera objektet: {{id}} {{name}} i plats {{slot}} kan utrustas, det saknar ett _props-värde",
