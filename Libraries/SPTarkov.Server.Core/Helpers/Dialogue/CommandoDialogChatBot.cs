@@ -23,7 +23,7 @@ public class CommandoDialogChatBot(
         return new UserDialogInfo
         {
             Id = coreConfig.Features.ChatbotFeatures.Ids["commando"],
-            Aid = 1234566,
+            Aid = coreConfig.Features.ChatbotFeatures.Aids["commando"],
             Info = new UserDialogDetails
             {
                 Level = 1,

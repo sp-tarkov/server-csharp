@@ -146,8 +146,8 @@ public class GiftService(
                 Sender = GetMessageType(giftData),
                 SenderDetails = new UserDialogInfo
                 {
-                    Id = GetSenderId(giftData),
-                    Aid = 1234567, // TODO - pass proper aid value
+                    Id = GetSenderId(giftData)!,
+                    Aid = giftData.SenderDetails!.Aid,
                     Info = null,
                 },
                 MessageText = giftData.MessageText,

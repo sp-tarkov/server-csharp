@@ -309,6 +309,10 @@
         "commando": "6723fd51c5924c57ce0ca01e",
         "spt": "6723fd51c5924c57ce0ca01f"
       },
+      "aids": {
+        "commando": 2999998,
+        "spt": 2999999
+      },
       "enabledBots": {
         "6723fd51c5924c57ce0ca01e": true,
         "6723fd51c5924c57ce0ca01f": true
