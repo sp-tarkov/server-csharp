@@ -1,0 +1,22 @@
+# Example compose file for running the SPT server container.
+# If you don't know what you're doing, you shouldn't be looking at this.
+services:
+  spt-server:
+    image: ghcr.io/sp-tarkov/server-csharp:latest
+    container_name: spt-server
+    restart: unless-stopped
+    ports:
+      - "6969:6969"
+    environment:
+      # Bind address inside the container. Leave as 0.0.0.0 so the mapped port is reachable from the host.
+      SPT_IP: "0.0.0.0"
+      SPT_PORT: "6969"
+      # Address the server advertises to the game client. 127.0.0.1 works when the client runs on the same machine. For
+      # LAN/remote play, set this to the host's reachable IP (e.g. 192.168.1.50). Never set it to 0.0.0.0.
+      SPT_BACKEND_IP: "127.0.0.1"
+      # Ownership of the persisted ./spt-user data. Match your host user so mod DLLs and profiles are editable from the
+      # host without root.
+      PUID: "1000"
+      PGID: "1000"
+    volumes:
+      - ./spt-user:/opt/spt/user

@@ -1,0 +1,101 @@
+name: Docker Release
+
+on:
+  push:
+    tags:
+      # Stable, e.g. 4.1.0 -> RELEASE
+      - '[0-9]+.[0-9]+.[0-9]+'
+      # Bleeding edge, e.g. 4.1.0-BE-20260704 -> BLEEDINGEDGE
+      - '[0-9]+.[0-9]+.[0-9]+-BE-[0-9]+'
+      # Bleeding edge + mods, e.g. 4.1.0-BEM-20260704 -> BLEEDINGEDGEMODS
+      - '[0-9]+.[0-9]+.[0-9]+-BEM-[0-9]+'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  docker:
+    name: Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          lfs: false
+
+      - name: Configure Git LFS
+        run: |
+          git lfs install
+          git config -f .lfsconfig lfs.url https://spt-lfs.sp-tarkov.com/sp-tarkov/server-csharp
+          git config -f .lfsconfig lfs.locksverify false
+          git lfs pull
+
+      # Determine the release channel from the tag and map it onto the MSBuild version props.
+      #   channel:    release | edge | edge-mods
+      #   stable:     true only for a plain X.Y.Z tag (drives latest/major tags)
+      #   buildtype:  RELEASE | BLEEDINGEDGE | BLEEDINGEDGEMODS
+      #   sptversion: numeric core ONLY (e.g. 4.1.0).
+      - name: Build Metadata
+        id: vars
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          case "$TAG" in
+            *-BEM-*) CHANNEL=edge-mods; BUILDTYPE=BLEEDINGEDGEMODS; STABLE=false ;;
+            *-BE-*)  CHANNEL=edge;      BUILDTYPE=BLEEDINGEDGE;     STABLE=false ;;
+            *)       CHANNEL=release;   BUILDTYPE=RELEASE;          STABLE=true  ;;
+          esac
+          CORE="${TAG%%-*}"
+          {
+            echo "sptversion=${CORE}"
+            echo "channel=${CHANNEL}"
+            echo "stable=${STABLE}"
+            echo "buildtype=${BUILDTYPE}"
+            echo "commit=$(git rev-parse --short=7 HEAD)"
+            echo "buildtime=$(date +%s)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate Image Metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository }}
+          flavor: |
+            latest=false
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}},enable=${{ steps.vars.outputs.stable == 'true' }}
+            type=semver,pattern={{major}},enable=${{ steps.vars.outputs.stable == 'true' && !startsWith(github.ref, 'refs/tags/0.') }}
+            type=raw,value=latest,enable=${{ steps.vars.outputs.stable == 'true' }}
+            type=raw,value=edge,enable=${{ steps.vars.outputs.channel == 'edge' }}
+            type=raw,value=edge-mods,enable=${{ steps.vars.outputs.channel == 'edge-mods' }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            SptVersion=${{ steps.vars.outputs.sptversion }}
+            SptCommit=${{ steps.vars.outputs.commit }}
+            SptBuildTime=${{ steps.vars.outputs.buildtime }}
+            SptBuildType=${{ steps.vars.outputs.buildtype }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
