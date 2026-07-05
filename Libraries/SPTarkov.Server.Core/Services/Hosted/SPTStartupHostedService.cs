@@ -10,7 +10,6 @@ using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
-using static SPTarkov.Server.Core.Extensions.StringExtensions;
 
 namespace SPTarkov.Server.Core.Services.Hosted;
 
@@ -25,6 +24,7 @@ public sealed class SPTStartupHostedService(
     HttpServer httpServer,
     ISptLogger<SPTStartupHostedService> logger,
     IServiceProvider serviceProvider,
+    SystemInformationLogger systemInformationLogger,
     IEnumerable<IOnUpdate> onUpdateComponents
 ) : BackgroundService
 {
@@ -45,41 +45,7 @@ public sealed class SPTStartupHostedService(
                 }
             }
 
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                var totalMemoryBytes = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
-
-                // Convert bytes to GB
-                var totalMemoryGb = totalMemoryBytes / (1024.0 * 1024.0 * 1024.0);
-                var pageFileGb = Environment.SystemPageSize / 1024.0;
-
-                logger.Debug($"OS: {Environment.OSVersion.Version} | {Environment.OSVersion.Platform}");
-                logger.Debug($"Pagefile: {pageFileGb:F2} GB");
-                if (pageFileGb <= 0 && Environment.OSVersion.Platform == PlatformID.Win32NT)
-                {
-                    logger.Warning("Pagefile size is 0 GB, you may encounter out of memory errors when loading into raids");
-                }
-                logger.Debug($"RAM: {totalMemoryGb:F2} GB");
-                if (totalMemoryGb < 30)
-                {
-                    logger.Warning(
-                        $"Detected RAM ({totalMemoryGb:F2}GB) is smaller than recommended (32GB) you may experience crashes or reduced FPS on large maps"
-                    );
-                }
-                logger.Debug($"Ran as admin: {Environment.IsPrivilegedProcess}");
-                logger.Debug($"CPU cores: {Environment.ProcessorCount}");
-                logger.Debug($"PATH: {(Environment.ProcessPath ?? "null returned").Encode(EncodeType.BASE64)}");
-                logger.Debug($"Server: {ProgramStatics.SPT_VERSION()}");
-
-                // _logger.Debug($"RAM: {(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB");
-
-                if (ProgramStatics.BUILD_TIME() != 0)
-                {
-                    logger.Debug($"Date: {ProgramStatics.BUILD_TIME()}");
-                }
-
-                logger.Debug($"Commit: {ProgramStatics.COMMIT()}");
-            }
+            systemInformationLogger.LogSystemInformation();
 
             // execute OnLoad callbacks past PreLoad
             var PostPreloadComponents = dependencyInjectionContainers
