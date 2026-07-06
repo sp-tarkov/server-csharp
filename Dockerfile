@@ -3,9 +3,9 @@
 # ---------------------------------------------------------------------------
 # Build Stage
 # ---------------------------------------------------------------------------
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
-
+ARG TARGETARCH
 ARG SptVersion=4.1.0
 ARG SptCommit=000000
 ARG SptBuildTime=0000000000
@@ -14,9 +14,14 @@ ARG SptBuildType=RELEASE
 WORKDIR /src
 COPY . .
 
-RUN dotnet publish SPTarkov.Server/SPTarkov.Server.csproj \
+RUN case "${TARGETARCH}" in \
+        amd64) RID=linux-x64 ;; \
+        arm64) RID=linux-arm64 ;; \
+        *) echo "Unsupported TARGETARCH: ${TARGETARCH}" >&2; exit 1 ;; \
+    esac \
+    && dotnet publish SPTarkov.Server/SPTarkov.Server.csproj \
     --configuration Release \
-    --runtime linux-x64 \
+    --runtime "${RID}" \
     --self-contained false \
     -p:SptVersion="${SptVersion}" \
     -p:SptCommit="${SptCommit}" \
