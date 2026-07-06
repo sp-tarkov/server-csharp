@@ -51,7 +51,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh \
 # Environment Defaults
 ENV SPT_IP=0.0.0.0 \
     SPT_PORT=6969 \
-    SPT_BACKEND_IP=127.0.0.1 \
+    SPT_BACKEND_IP=0.0.0.0 \
     PUID=1000 \
     PGID=1000
 

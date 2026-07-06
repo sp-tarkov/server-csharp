@@ -51,7 +51,7 @@ Everything the server writes lives under `/opt/spt/user`, exposed as a volume:
 |----------|---------|---------|
 | `SPT_IP` | `0.0.0.0` | Bind address inside the container. Leave as `0.0.0.0` so the mapped port is reachable. |
 | `SPT_PORT` | `6969` | Listen port. |
-| `SPT_BACKEND_IP` | `127.0.0.1` | Address advertised to the game client. **Never `0.0.0.0`.** |
+| `SPT_BACKEND_IP` | `0.0.0.0` | Address advertised to the game client. `0.0.0.0` is a special value: the server echoes back whichever host the client connected to (the request `Host` header), so it works behind port mappings and reverse proxies without hardcoding an address. **Set a specific IP/hostname only if you need to override that.** |
 | `SPT_BACKEND_PORT` | = `SPT_PORT` | Port advertised to the client. |
 | `PUID` / `PGID` | `1000` / `1000` | UID/GID the server runs as. Match your host user so the mounted `user/` data (mods, profiles) stays editable without root. |
 
