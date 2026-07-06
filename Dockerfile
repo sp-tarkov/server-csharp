@@ -38,7 +38,7 @@ RUN cp SPTarkov.Server/sptLogger.Development.json /app/
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends jq gosu ca-certificates \
+    && apt-get install -y --no-install-recommends jq gosu ca-certificates curl \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/spt
@@ -57,6 +57,9 @@ ENV SPT_IP=0.0.0.0 \
 
 EXPOSE 6969
 VOLUME /opt/spt/user
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+    CMD curl -fsSk "https://localhost:${SPT_PORT}/health" || exit 1
 
 LABEL org.opencontainers.image.title="SPT Server" \
       org.opencontainers.image.description="Single Player Tarkov Server" \

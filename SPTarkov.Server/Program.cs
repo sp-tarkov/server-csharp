@@ -26,7 +26,7 @@ using SPTarkov.Server.Web;
 
 namespace SPTarkov.Server;
 
-public static class Program 
+public static class Program
 {
     internal static ILogger? _earlyLogger;
 
@@ -266,6 +266,10 @@ public static class Program
         app.UseWebSockets();
 
         app.UseMiddleware<SptLoggerMiddleware>();
+
+        // Docker health endpoint
+        app.MapGet("/health", () => Results.Ok(new { status = "healthy", version = ProgramStatics.SPT_VERSION().ToString() }))
+            .AllowAnonymous();
 
         app.Use(
             async (context, next) =>
