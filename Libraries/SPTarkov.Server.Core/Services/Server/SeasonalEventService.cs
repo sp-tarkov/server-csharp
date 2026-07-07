@@ -381,6 +381,49 @@ public class SeasonalEventService(
     }
 
     /// <summary>
+    ///     Iterate through bots inventory and loot to find and remove halloween items (as defined in SeasonalEventService)
+    /// </summary>
+    /// <param name="botInventory">Bots inventory to iterate over</param>
+    /// <param name="botRole">the role of the bot being processed</param>
+    public void RemoveHalloweenItemsFromBotInventory(BotTypeInventory botInventory, string botRole)
+    {
+        var halloweenItems = GetHalloweenEventItems();
+
+        // Remove halloween related equipment
+        foreach (var equipmentSlotKey in EquipmentSlotsToFilter)
+        {
+            if (!botInventory.Equipment.TryGetValue(equipmentSlotKey, out var equipment))
+            {
+                logger.Warning(
+                    serverLocalisationService.GetText(
+                        "seasonal-missing_equipment_slot_on_bot",
+                        new { equipmentSlot = equipmentSlotKey, botRole }
+                    )
+                );
+
+                continue;
+            }
+
+            botInventory.Equipment[equipmentSlotKey] = equipment.Where(i => !HalloweenEventItems.Contains(i.Key)).ToDictionary();
+        }
+
+        var containersToCheck = new List<Dictionary<MongoId, double>>
+        {
+            botInventory.Items.Backpack,
+            botInventory.Items.Pockets,
+            botInventory.Items.SecuredContainer,
+            botInventory.Items.TacticalVest,
+            botInventory.Items.SpecialLoot,
+        };
+
+        foreach (var container in containersToCheck)
+        {
+            // Find all Halloween items in container and remove
+            container.RemoveItems(halloweenItems);
+        }
+    }
+
+    /// <summary>
     ///     Make adjusted to server code based on the name of the event passed in
     /// </summary>
     /// <param name="globalConfig">globals.json</param>

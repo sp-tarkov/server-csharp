@@ -230,6 +230,11 @@ public class BotGenerator(
             }
         }
 
+        if (!seasonalEventService.HalloweenEventEnabled())
+        {
+            seasonalEventService.RemoveHalloweenItemsFromBotInventory(botJsonTemplate.BotInventory, botGenerationDetails.Role);
+        }
+
         RemoveBlacklistedLootFromBotTemplate(botJsonTemplate.BotInventory);
 
         // Remove hideout data if bot is not a PMC or pscav - match what live sends
