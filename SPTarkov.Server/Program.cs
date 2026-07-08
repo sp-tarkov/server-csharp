@@ -177,7 +177,7 @@ public static class Program
     }
 
     /// <summary>
-    /// Split the loading logic, we this method needs to stay seperated as otherwise things are forced into context too early which causes issues with mod loading pre-patching (In particular the SIC not loading)
+    /// Split the loading logic, this method needs to stay seperated as otherwise things are forced into context too early which causes issues with mod loading pre-patching (In particular the SIC not loading)
     /// </summary>
     private static async Task StartServerAfterModLoading(
         SptEarlyLoggerFactory loggerFactory,
