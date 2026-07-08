@@ -173,10 +173,12 @@ public static class Program
             loadedMods = runResult.ValidRuntimeMods;
         }
 
-        // Split the loading logic, We do this so we don't force things into context too early. This causes issues with the mod loader
         await StartServerAfterModLoading(loggerFactory, configuration, earlyServiceProvider, loadedMods);
     }
 
+    /// <summary>
+    /// Split the loading logic, we this method needs to stay seperated as otherwise things are forced into context too early which causes issues with mod loading pre-patching (In particular the SIC not loading)
+    /// </summary>
     private static async Task StartServerAfterModLoading(
         SptEarlyLoggerFactory loggerFactory,
         IReadOnlyDictionary<Type, BaseConfig> configuration,
