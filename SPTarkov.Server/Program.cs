@@ -173,6 +173,17 @@ public static class Program
             loadedMods = runResult.ValidRuntimeMods;
         }
 
+        // Split the loading logic, We do this so we don't force things into context too early. This causes issues with the mod loader
+        await StartServerAfterModLoading(loggerFactory, configuration, earlyServiceProvider, loadedMods);
+    }
+
+    private static async Task StartServerAfterModLoading(
+        SptEarlyLoggerFactory loggerFactory,
+        IReadOnlyDictionary<Type, BaseConfig> configuration,
+        IServiceProvider earlyServiceProvider,
+        List<SptMod> loadedMods
+    )
+    {
         var cTSource = new CancellationTokenSource();
         var dbImporter = earlyServiceProvider.GetRequiredService<DatabaseImporter>();
 
