@@ -2,6 +2,8 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.FileProviders;
 using MudBlazor.Services;
 using SPTarkov.Server.Core.Models.Common;
@@ -59,6 +61,9 @@ public static class SPTWeb
                 policy => policy.RequireClaim(AuthService.IsAdministratorClaimType, AuthService.IsAdministratorClaimValue)
             );
         builder.Services.AddCascadingAuthenticationState();
+
+        // Prevent MVC loading app parts by name into the default context
+        builder.Services.AddSingleton(new ApplicationPartManager { FeatureProviders = { new ControllerFeatureProvider() } });
 
         var mvcBuilder = builder.Services.AddControllers();
 

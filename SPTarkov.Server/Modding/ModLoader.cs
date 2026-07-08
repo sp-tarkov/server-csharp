@@ -34,23 +34,59 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         var isHostedPatchedProcess =
             AssemblyLoadContext.GetLoadContext(typeof(ModLoader).Assembly)?.Name == PrepatchLoadContext.ContextName;
 
-        await LoadMods(isHostedPatchedProcess);
-        var loadedMods = modValidator.ValidateMods(_loadedMods);
-
-        if (!isHostedPatchedProcess && _prepatches.Count > 0)
+        if (!isHostedPatchedProcess)
         {
-            // Clean the console a bit
-            ClearConsole();
+            // Load all prepatches without loading metadata, preventing a stale copy of the patched assembly
+            await LoadPrepatchesForPrepatchPass();
 
-            var patchedCore = await ApplyPrepatchesInMemory(loadedMods);
-            if (patchedCore is not null)
+            if (_prepatches.Count > 0)
             {
-                await BootPatchedServerInMemory(patchedCore, args);
-                return new ModLoaderRunResult(false, loadedMods);
+                // Clean the console a bit
+                ClearConsole();
+
+                var patchedCore = await ApplyPrepatchesInMemory();
+                if (patchedCore is not null)
+                {
+                    await BootPatchedServerInMemory(patchedCore, args);
+                    return new ModLoaderRunResult(false, []);
+                }
             }
         }
 
+        await LoadMods(isHostedPatchedProcess);
+        var loadedMods = modValidator.ValidateMods(_loadedMods);
+
         return new ModLoaderRunResult(true, loadedMods);
+    }
+
+    private async Task LoadPrepatchesForPrepatchPass()
+    {
+        if (!await TryLoadServerCoreBytes())
+        {
+            return;
+        }
+
+        if (File.Exists(PatchedAssemblyName))
+        {
+            File.Delete(PatchedAssemblyName);
+        }
+
+        var patchedSymbolPath = Path.ChangeExtension(PatchedAssemblyName, ".pdb");
+
+        if (File.Exists(patchedSymbolPath))
+        {
+            File.Delete(patchedSymbolPath);
+        }
+
+        if (!Directory.Exists(PatcherPath))
+        {
+            return;
+        }
+
+        foreach (var patcherDirectory in Directory.GetDirectories(PatcherPath))
+        {
+            LoadModPatchers(Path.GetFileName(patcherDirectory), patcherDirectory);
+        }
     }
 
     private async Task LoadMods(bool isPrepatchedProcess)
@@ -106,7 +142,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     ///     Applies all prepatches, writes the patched Core (and its pdb) to disk
     /// </summary>
     /// <returns>Patched assembly and it's symbols, or null if any prepatch failed.</returns>
-    private async Task<PatchedCoreAssembly?> ApplyPrepatchesInMemory(IReadOnlyCollection<SptMod> validRuntimeMods)
+    private async Task<PatchedCoreAssembly?> ApplyPrepatchesInMemory(IReadOnlyCollection<SptMod>? validRuntimeMods = null)
     {
         var success = RunActivePrepatches(validRuntimeMods);
 
@@ -157,16 +193,16 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     ///     Runs every active, valid prepatch against the loaded Core module in a deterministic order.
     /// </summary>
     /// <returns>True if all prepatches succeeded.</returns>
-    private bool RunActivePrepatches(IReadOnlyCollection<SptMod> validRuntimeMods)
+    private bool RunActivePrepatches(IReadOnlyCollection<SptMod>? validRuntimeMods)
     {
         if (_serverCoreModule is null)
         {
             throw new ModLoaderException("Server core module was not loaded, unable to apply prepatches.");
         }
 
-        var validModGuids = validRuntimeMods.Select(mod => mod.ModMetadata.ModGuid).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var validModGuids = validRuntimeMods?.Select(mod => mod.ModMetadata.ModGuid).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var activePrepatches = _prepatches
-            .Where(prepatch => prepatch.IsActive && validModGuids.Contains(prepatch.ModGuid))
+            .Where(prepatch => prepatch.IsActive && (validModGuids is null || validModGuids.Contains(prepatch.ModGuid)))
             .OrderBy(prepatch => prepatch.ModGuid, StringComparer.OrdinalIgnoreCase)
             .ThenBy(prepatch => prepatch.GetType().FullName, StringComparer.OrdinalIgnoreCase);
 
@@ -268,7 +304,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
 
         if (result.ModMetadata.HasPrepatcher)
         {
-            LoadModPatchers(result, Path.Combine(PatcherPath, result.ModMetadata.ModGuid));
+            LoadModPatchers(result.ModMetadata.ModGuid, Path.Combine(PatcherPath, result.ModMetadata.ModGuid), result);
         }
 
         return result;
@@ -321,27 +357,31 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         return result;
     }
 
-    private void LoadModPatchers(SptMod mod, string path)
+    private void LoadModPatchers(string modGuid, string path, SptMod? mod = null)
     {
         if (!Directory.Exists(path))
         {
             throw new ModLoaderException(
-                $"Failed to locate patcher directory for mod: `{mod.ModMetadata.ModGuid}`. Expected directory: `{Path.GetFullPath(path)}`"
+                $"Failed to locate patcher directory for mod: `{modGuid}`. Expected directory: `{Path.GetFullPath(path)}`"
             );
         }
 
         var patcherPath =
-            Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly).FirstOrDefault() ?? throw new ModLoaderException(
-                $"Failed to locate a patcher for mod: `{mod.ModMetadata.ModGuid}`. If you did not intend to ship a patcher. Disable `HasPatcher` in AbstractModMetadata."
+            Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly).FirstOrDefault()
+            ?? throw new ModLoaderException(
+                $"Failed to locate a patcher for mod: `{modGuid}`. If you did not intend to ship a patcher. Disable `HasPatcher` in AbstractModMetadata."
             );
 
         // Load into the loader's own context so the patcher's AbstractPrepatch matches ours
         var loadContext = AssemblyLoadContext.GetLoadContext(typeof(ModLoader).Assembly) ?? AssemblyLoadContext.Default;
-        mod.PatcherAssembly = loadContext.LoadFromAssemblyPath(Path.GetFullPath(patcherPath));
+        var patcherAssembly = loadContext.LoadFromAssemblyPath(Path.GetFullPath(patcherPath));
+        if (mod is not null)
+        {
+            mod.PatcherAssembly = patcherAssembly;
+        }
 
-        var prepatchTypes = mod
-            .PatcherAssembly.GetTypes()
-            .Where(type => !type.IsAbstract && typeof(AbstractPrepatch).IsAssignableFrom(type));
+        var patcherTypes = mod?.PatcherAssembly.GetTypes() ?? patcherAssembly.GetTypes();
+        var prepatchTypes = patcherTypes.Where(type => !type.IsAbstract && typeof(AbstractPrepatch).IsAssignableFrom(type));
 
         if (!prepatchTypes.Any())
         {

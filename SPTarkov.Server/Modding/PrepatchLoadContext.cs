@@ -4,21 +4,21 @@ using System.Runtime.Loader;
 namespace SPTarkov.Server.Modding;
 
 /// <summary>
-/// Binds the server to an in-memory prepatched Core (and its symbols)
+/// Binds the hosted server to an in-memory prepatched Core while sharing process-wide framework assemblies.
 /// </summary>
 public sealed class PrepatchLoadContext(string hostAssemblyPath, byte[] patchedCore, byte[]? patchedSymbols)
     : AssemblyLoadContext(ContextName, isCollectible: false)
 {
-    // Identifies the hosting context by name; type checks fail here because each hosted copy has its own PrepatchLoadContext type.
     public const string ContextName = "SPT.PrepatchHost";
 
     private const string CoreAssemblyName = "SPTarkov.Server.Core";
+
+    private static readonly string[] _sharedAssemblyPrefixes = ["Microsoft.", "System.", "MudBlazor", "ZLogger"];
 
     private readonly AssemblyDependencyResolver _resolver = new(hostAssemblyPath);
 
     protected override Assembly? Load(AssemblyName assemblyName)
     {
-        // Intercept Core so everything in this context binds to the patched copy, with symbols so it stays debuggable.
         if (assemblyName.Name == CoreAssemblyName)
         {
             using var assemblyStream = new MemoryStream(patchedCore);
@@ -31,7 +31,31 @@ public sealed class PrepatchLoadContext(string hostAssemblyPath, byte[] patchedC
             return LoadFromStream(assemblyStream, symbolStream);
         }
 
+        if (ShouldShareFromDefaultContext(assemblyName.Name))
+        {
+            var sharedAssembly = Default.Assemblies.FirstOrDefault(assembly =>
+                AssemblyName.ReferenceMatchesDefinition(assemblyName, assembly.GetName())
+            );
+
+            if (sharedAssembly is not null)
+            {
+                return sharedAssembly;
+            }
+
+            var sharedPath = _resolver.ResolveAssemblyToPath(assemblyName);
+            if (sharedPath is not null)
+            {
+                return Default.LoadFromAssemblyPath(sharedPath);
+            }
+        }
+
         var path = _resolver.ResolveAssemblyToPath(assemblyName);
         return path is not null ? LoadFromAssemblyPath(path) : null;
+    }
+
+    private static bool ShouldShareFromDefaultContext(string? assemblyName)
+    {
+        return assemblyName is not null
+            && _sharedAssemblyPrefixes.Any(prefix => assemblyName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
     }
 }

@@ -76,7 +76,6 @@ public static class ProgramHelpers
         var builder = CreateNewHostBuilder(loggerFactory, configuration, localeTable: CreateEarlyLocaleTable());
         // register SPT components
         var diHandler = new DependencyInjectionHandler(builder.Services);
-        diHandler.AddInjectableTypesFromAssembly(typeof(Program).Assembly);
         diHandler.AddInjectableTypesFromAssembly(typeof(SPTStartupHostedService).Assembly);
         diHandler.InjectAll();
 
