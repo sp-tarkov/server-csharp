@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.FileProviders;
 using MudBlazor.Services;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Spt.Launcher;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
@@ -23,6 +24,21 @@ public static class SPTWeb
     public static void InitializeSptBlazor(this WebApplicationBuilder builder, IReadOnlyList<SptMod> sptMods)
     {
         _sptWebMods = sptMods.Where(mod => mod.ModMetadata is IModWebMetadata).ToList();
+
+        // Build the mod-registered pages up once, so both the SIC landing page and the launcher mod-pages route use the same list.
+        builder.Services.AddSingleton<IReadOnlyList<ModPage>>(
+            _sptWebMods
+                .Select(mod => (mod.ModMetadata, WebMetadata: mod.ModMetadata as IModWebMetadata))
+                .Where(mod => !string.IsNullOrWhiteSpace(mod.WebMetadata?.HomePage))
+                .OrderBy(mod => mod.ModMetadata.Name)
+                .Select(mod => new ModPage
+                {
+                    Name = mod.ModMetadata.Name,
+                    HomePage = NormalizeHomePage(mod.WebMetadata!.HomePage!),
+                    Description = mod.WebMetadata.HomePageDescription,
+                })
+                .ToList()
+        );
 
         builder.WebHost.UseStaticWebAssets();
         builder.Services.AddMudServices();
@@ -212,5 +228,11 @@ public static class SPTWeb
     private static string GetCurrentRequestUrl(HttpRequest request)
     {
         return $"{request.PathBase}{request.Path}{request.QueryString}";
+    }
+
+    private static string NormalizeHomePage(string homePage)
+    {
+        var trimmed = homePage.Trim();
+        return trimmed.StartsWith('/') ? trimmed : $"/{trimmed}";
     }
 }

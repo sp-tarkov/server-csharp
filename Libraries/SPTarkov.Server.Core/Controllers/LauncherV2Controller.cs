@@ -3,6 +3,7 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Launcher;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Servers;
@@ -16,6 +17,7 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class LauncherV2Controller(
     IReadOnlyList<SptMod> loadedMods,
+    IReadOnlyList<ModPage> modPages,
     TemplateTable templateTable,
     HashUtil hashUtil,
     SaveServer saveServer,
@@ -122,6 +124,14 @@ public class LauncherV2Controller(
     public Dictionary<string, AbstractModMetadata> LoadedMods()
     {
         return loadedMods.ToDictionary(sptMod => sptMod.ModMetadata.Name, sptMod => sptMod.ModMetadata);
+    }
+
+    /// <summary>
+    ///     Gets a list of mod-registered SIC pages.
+    /// </summary>
+    public List<ModPage> ModPages()
+    {
+        return modPages.ToList();
     }
 
     /// <summary>
