@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;

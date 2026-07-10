@@ -7,7 +7,7 @@ public sealed class SPTLoggerDispatcher(SptLoggerConfiguration config, IEnumerab
 {
     private readonly Dictionary<LoggerType, ILogHandler> _logHandlers = logHandlers.ToDictionary(lh => lh.LoggerType, lh => lh);
 
-    public bool IsLogEnabled(Models.Logging.LogLevel level)
+    public bool IsLogEnabled(LogLevel level)
     {
         return config.Loggers.Any(logger => logger.LogLevel.CanLog(level));
     }

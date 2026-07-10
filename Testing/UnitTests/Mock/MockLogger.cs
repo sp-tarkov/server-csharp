@@ -43,23 +43,17 @@ public class MockLogger<T> : ISptLogger<T>, ILogger<T>
         Console.WriteLine(data);
     }
 
-    public void Log(
-        SPTarkov.Common.Models.Logging.LogLevel level,
-        string data,
-        Color? textColor = null,
-        Color? backgroundColor = null,
-        Exception? ex = null
-    )
+    public void Log(LogLevel level, string data, Color? textColor = null, Color? backgroundColor = null, Exception? ex = null)
     {
         Console.WriteLine(data);
     }
 
-    public void WriteToLogFile(string body, SPTarkov.Common.Models.Logging.LogLevel level = SPTarkov.Common.Models.Logging.LogLevel.Info)
+    public void WriteToLogFile(string body, LogLevel level = LogLevel.Information)
     {
         throw new NotImplementedException();
     }
 
-    public bool IsLogEnabled(SPTarkov.Common.Models.Logging.LogLevel level)
+    public bool IsLogEnabled(LogLevel level)
     {
         return true;
     }
@@ -85,13 +79,13 @@ public class MockLogger<T> : ISptLogger<T>, ILogger<T>
         return null;
     }
 
-    public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
+    public bool IsEnabled(LogLevel logLevel)
     {
         return true;
     }
 
     public void Log<TState>(
-        Microsoft.Extensions.Logging.LogLevel logLevel,
+        LogLevel logLevel,
         EventId eventId,
         TState state,
         Exception? exception,

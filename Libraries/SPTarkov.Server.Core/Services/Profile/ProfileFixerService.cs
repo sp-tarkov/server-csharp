@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
@@ -15,7 +16,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services.Profile;
 

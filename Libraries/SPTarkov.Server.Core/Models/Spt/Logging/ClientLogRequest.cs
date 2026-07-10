@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Models.Utils;

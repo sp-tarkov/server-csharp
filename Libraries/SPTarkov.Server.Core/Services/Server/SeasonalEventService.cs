@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System.Collections.Frozen;
 using SPTarkov.Common.Extensions;
 using SPTarkov.Common.Models.Logging;
@@ -15,7 +16,6 @@ using SPTarkov.Server.Core.Services.Commerce;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using GlobalConfig = SPTarkov.Server.Core.Models.Spt.Tables.GlobalConfig;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services.Server;
 

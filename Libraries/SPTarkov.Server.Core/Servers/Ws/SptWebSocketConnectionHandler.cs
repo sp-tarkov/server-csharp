@@ -10,7 +10,7 @@ using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Servers.Ws.Message;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
+using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Servers.Ws;
 
@@ -74,7 +74,7 @@ public sealed class SptWebSocketConnectionHandler(
             }
 
             sessionSockets.Add(sessionIdContext, ws);
-            if (logger.IsLogEnabled(LogLevel.Info))
+            if (logger.IsLogEnabled(LogLevel.Information))
             {
                 logger.Info(
                     serverLocalisationService.GetText(
@@ -121,7 +121,7 @@ public sealed class SptWebSocketConnectionHandler(
                     logger.Debug($"Websockets for session {sessionID} entry matched, attempting to find context {sessionIdContext}");
                 }
 
-                if (!sessionSockets.TryGetValue(sessionIdContext, out _) && logger.IsLogEnabled(LogLevel.Info))
+                if (!sessionSockets.TryGetValue(sessionIdContext, out _) && logger.IsLogEnabled(LogLevel.Information))
                 {
                     logger.Info(
                         $"[WS] The websocket session {sessionID} with reference: {sessionIdContext} has already been removed or reconnected"
@@ -130,7 +130,7 @@ public sealed class SptWebSocketConnectionHandler(
                 else
                 {
                     sessionSockets.Remove(sessionIdContext);
-                    if (logger.IsLogEnabled(LogLevel.Info))
+                    if (logger.IsLogEnabled(LogLevel.Information))
                     {
                         var playerProfile = profileHelper.GetFullProfile(sessionID);
                         var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";

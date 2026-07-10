@@ -16,7 +16,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using Insurance = SPTarkov.Server.Core.Models.Eft.Profile.Insurance;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
+using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Services.Commerce;
 

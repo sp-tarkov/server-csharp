@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using Microsoft.Extensions.Logging;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
@@ -25,7 +26,6 @@ using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 using ProfileFixerService = SPTarkov.Server.Core.Services.Profile.ProfileFixerService;
 
 namespace SPTarkov.Server.Core.Controllers;

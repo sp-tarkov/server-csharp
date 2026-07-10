@@ -199,6 +199,6 @@ public static class SptLoggerFilterExtensions
 
     public static bool CanLog(this LogLevel logLevel, LogLevel messageLevel)
     {
-        return logLevel >= messageLevel;
+        return messageLevel >= logLevel;
     }
 }
