@@ -9999,7 +9999,7 @@
       "messageText": "Thank you for linking your Discord profile",
       "collectionTimeHours": 168,
       "associatedEvent": "Promo",
-      "maxToSendPlayer": 10
+      "maxToSendPlayer": 1
     }
   }
 }
