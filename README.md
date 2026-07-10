@@ -85,8 +85,10 @@ We're really excited that you're interested in contributing! Before submitting y
 
 - **master**
   The default branch used for the latest stable release. This branch is protected and typically is only merged with release branches.
-- **develop**
-  The main branch for server development. **PRs should target this.**
+- **develop (4.0x)**
+  The 4.0 branch for server development. **There is no more work being done on 4.0 at the moment, this branch should not be targeted!**
+- **4.1x-dev**
+  The 4.1 branch for server development. **PRs should target this.**
 
 ### Pull Request Guidelines
 

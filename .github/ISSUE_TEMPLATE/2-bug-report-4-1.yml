@@ -1,13 +1,13 @@
-name: "Bug Report - Stable 4.0"
-description: "Report a bug in the current stable (4.0) release of the SPT project."
-labels: ["triage"]
+name: "Bug Report - Bleeding Edge 4.1"
+description: "Report a bug in a pre-release (4.1) version of the SPT project."
+labels: ["triage", "bleeding edge"]
 body:
   - type: markdown
     attributes:
       value: |
         ## Thank you for taking the time to fill out a bug report!
 
-        Please note the following requirements:
+        You are reporting against a **pre-release (bleeding-edge) 4.1 build**. These builds are unstable and change frequently, so please note the following requirements:
 
         - You must be able to replicate the issue with a fresh profile, running no mods. If you can't, we can't fix it.
         - If you are using a profile from an older version, please make a fresh profile and replicate the issue before submitting.
@@ -19,7 +19,15 @@ body:
       label: SPT Version
       description: What version of SPT are you using?
       options:
-        - "4.0"
+        - "4.1"
+    validations:
+      required: true
+  - type: input
+    id: build
+    attributes:
+      label: "Build Name"
+      description: "The exact build name you're running. This can be found in the #dev-builds channel where you downloaded the BE build. This is critical."
+      placeholder: "e.g. SPT-BLEEDINGEDGE-4.1.0-40743-9185fc2-20260704"
     validations:
       required: true
   - type: dropdown
@@ -59,7 +67,7 @@ body:
     id: log_server
     attributes:
       label: "Server Log"
-      description: "Upload your *entire* server log for the affected session from `SPT/user/logs/spt/`. Files are named `spt<date>.log`."
+      description: "Upload your *entire* server log for the affected session from `SPT_Runtime/user/logs/spt/`. Files are named `spt<date>.log`."
       placeholder: "Attach the log file. Do not paste the contents."
     validations:
       required: true
@@ -83,7 +91,7 @@ body:
     id: profile
     attributes:
       label: "Player Profile"
-      description: "If helpful, upload a copy of your *entire* player profile: `SPT/user/profiles/<profileId>.json`."
+      description: "If helpful, upload a copy of your *entire* player profile: `SPT_Runtime/user/profiles/<profileId>.json`."
       placeholder: "Attach the profile file. Do not paste the contents."
     validations:
       required: false
