@@ -1,1 +1,786 @@
-{"Caliber1143x23ACP":[{"tpl":"5efb0cabfb3e451d70735af5","relativeProbability":4074},{"tpl":"5e81f423763d9f754677bf2e","relativeProbability":23539},{"tpl":"5efb0d4f4bc50b58e81710f3","relativeProbability":3624},{"tpl":"5ea2a8e200685063ec28c05a","relativeProbability":3638},{"tpl":"5efb0fc6aeb21837e749c801","relativeProbability":2504}],"Caliber127x33":[{"tpl":"66a0d1c87d0d369e270bb9de","relativeProbability":5160},{"tpl":"66a0d1e0ed648d72fe064d06","relativeProbability":5197},{"tpl":"668fe62ac62660a5d8071446","relativeProbability":19571},{"tpl":"66a0d1f88486c69fce00fdf6","relativeProbability":5291}],"Caliber127x55":[{"tpl":"5cadf6e5ae921500113bb973","relativeProbability":9380},{"tpl":"5cadf6ddae9215051e1c23b2","relativeProbability":7755},{"tpl":"5cadf6eeae921500134b2799","relativeProbability":5550}],"Caliber127x99":[{"tpl":"67d41936f378a36c4706eeb9","relativeProbability":494}],"Caliber12g":[{"tpl":"5d6e68dea4b9361bcc29e659","relativeProbability":4062},{"tpl":"5d6e6869a4b9361c140bcfde","relativeProbability":5773},{"tpl":"5c0d591486f7744c505b416f","relativeProbability":5934},{"tpl":"64b8ee384b75259c590fa89b","relativeProbability":8199},{"tpl":"5d6e6891a4b9361bd473feea","relativeProbability":5214},{"tpl":"58820d1224597753c90aeb13","relativeProbability":8766},{"tpl":"560d5e524bdc2d25448b4571","relativeProbability":20517},{"tpl":"5d6e68c4a4b9361b93413f79","relativeProbability":9338},{"tpl":"5d6e6806a4b936088465b17e","relativeProbability":8862},{"tpl":"5d6e689ca4b9361bc8618956","relativeProbability":5294},{"tpl":"5d6e68a8a4b9360b6c0d54e2","relativeProbability":6427},{"tpl":"5d6e6911a4b9361bd5780d52","relativeProbability":5491},{"tpl":"5d6e68e6a4b9361c140bcfe0","relativeProbability":3523},{"tpl":"5d6e67fba4b9361bc73bc779","relativeProbability":626},{"tpl":"5d6e68b3a4b9361bca7e50b5","relativeProbability":4734},{"tpl":"5d6e68d1a4b93622fe60e845","relativeProbability":4131},{"tpl":"5d6e6772a4b936088465b17c","relativeProbability":650}],"Caliber20g":[{"tpl":"5d6e6a42a4b9364f07165f52","relativeProbability":6592},{"tpl":"5d6e6a53a4b9361bd473feec","relativeProbability":7072},{"tpl":"6601380580e77cfd080e3418","relativeProbability":15488},{"tpl":"5a38ebd9c4a282000d722a5b","relativeProbability":14661},{"tpl":"5d6e6a5fa4b93614ec501745","relativeProbability":5933},{"tpl":"660137ef76c1b56143052be8","relativeProbability":15030},{"tpl":"5d6e69c7a4b9360b6c0d54e4","relativeProbability":6558},{"tpl":"5d6e695fa4b936359b35d852","relativeProbability":7754},{"tpl":"5d6e69b9a4b9361bc8618958","relativeProbability":6978},{"tpl":"5d6e6a05a4b93618084f58d0","relativeProbability":7659},{"tpl":"660137d8481cc6907a0c5cda","relativeProbability":13345}],"Caliber20x1mm":[{"tpl":"6601546f86889319850bd566","relativeProbability":13631}],"Caliber23x75":[{"tpl":"5e85a9a6eacf8c039e4e2ac1","relativeProbability":6220},{"tpl":"5e85a9f4add9fe03027d9bf1","relativeProbability":2373},{"tpl":"5f647f31b6238e5dd066e196","relativeProbability":6243},{"tpl":"5e85aa1a988a8701445df1f5","relativeProbability":4560}],"Caliber26x75":[{"tpl":"62389aaba63f32501b1b444f","relativeProbability":10451},{"tpl":"62389be94d5d474bf712e709","relativeProbability":1901},{"tpl":"62389bc9423ed1685422dc57","relativeProbability":1872},{"tpl":"635267f063651329f75a4ee8","relativeProbability":117},{"tpl":"62389ba9a63f32501b1b4451","relativeProbability":910}],"Caliber366TKM":[{"tpl":"59e655cb86f77411dc52a77b","relativeProbability":11366},{"tpl":"5f0596629e22f464da6bbdd9","relativeProbability":3984},{"tpl":"59e6542b86f77411dc52a77a","relativeProbability":10617},{"tpl":"59e6658b86f77411d949b250","relativeProbability":5348}],"Caliber40mmRU":[{"tpl":"5656eb674bdc2d35148b457c","relativeProbability":52799}],"Caliber40x46":[{"tpl":"5ede4739e0350d05467f73e8","relativeProbability":19780},{"tpl":"5ede474b0c226a66f5402622","relativeProbability":2335},{"tpl":"5ede475b549eed7c6d5c18fb","relativeProbability":19775},{"tpl":"5f0c892565703e5c461894e9","relativeProbability":19446},{"tpl":"5ede475339ee016e8c534742","relativeProbability":6922},{"tpl":"5ede47405b097655935d7d16","relativeProbability":1152}],"Caliber46x30":[{"tpl":"5ba26835d4351e0035628ff5","relativeProbability":4226},{"tpl":"5ba2678ad4351e44f824b344","relativeProbability":10431},{"tpl":"5ba26812d4351e003201fef1","relativeProbability":9870},{"tpl":"64b6979341772715af0f9c39","relativeProbability":12003},{"tpl":"5ba26844d4351e00334c9475","relativeProbability":1800}],"Caliber545x39":[{"tpl":"56dff4ecd2720b5f5a8b4568","relativeProbability":31240},{"tpl":"56dff421d2720b5f5a8b4567","relativeProbability":14668},{"tpl":"56dff0bed2720bb0668b4567","relativeProbability":24550},{"tpl":"61962b617c6c7b169525f168","relativeProbability":5543},{"tpl":"56dff2ced2720bb4668b4567","relativeProbability":44035},{"tpl":"56dff338d2720bbd668b4569","relativeProbability":51100},{"tpl":"56dff4a2d2720bbd668b456a","relativeProbability":36094},{"tpl":"56dff026d2720bb8668b4567","relativeProbability":13599},{"tpl":"56dff3afd2720bba668b4567","relativeProbability":70406},{"tpl":"56dff216d2720bbd668b4568","relativeProbability":14623},{"tpl":"56dff061d2720bb5668b4567","relativeProbability":16085},{"tpl":"56dfef82d2720bbd668b4567","relativeProbability":12830},{"tpl":"5c0d5e4486f77478390952fe","relativeProbability":5026}],"Caliber556x45NATO":[{"tpl":"54527ac44bdc2d36668b4567","relativeProbability":10865},{"tpl":"54527a984bdc2d4e668b4567","relativeProbability":12341},{"tpl":"59e6920f86f77411d82aa167","relativeProbability":33743},{"tpl":"59e6927d86f77411da468256","relativeProbability":14045},{"tpl":"59e6918f86f7746c9f75e849","relativeProbability":10316},{"tpl":"59e68f6f86f7746c9f75e846","relativeProbability":10634},{"tpl":"5c0d5ae286f7741e46554302","relativeProbability":5952},{"tpl":"59e6906286f7746c9f75e847","relativeProbability":10000},{"tpl":"601949593ae8f707c4608daa","relativeProbability":2262},{"tpl":"60194943740c5d77f6705eea","relativeProbability":5835},{"tpl":"59e690b686f7746c9f75e848","relativeProbability":3770}],"Caliber57x28":[{"tpl":"5cc86832d7f00c000d3a6e6c","relativeProbability":5542},{"tpl":"5cc86840d7f00c002412c56c","relativeProbability":5627},{"tpl":"5cc80f67e4a949035e43bbba","relativeProbability":6378},{"tpl":"5cc80f8fe4a949033b0224a2","relativeProbability":19397},{"tpl":"5cc80f79e4a949033c7343b2","relativeProbability":10887},{"tpl":"5cc80f53e4a949000e1ea4f8","relativeProbability":6459},{"tpl":"5cc80f38e4a949001152b560","relativeProbability":3450}],"Caliber68x51":[{"tpl":"6529243824cbe3c74a05e5c1","relativeProbability":1223},{"tpl":"6529302b8c26af6326029fb7","relativeProbability":1362}],"Caliber762x25TT":[{"tpl":"5735ff5c245977640e39ba7e","relativeProbability":23034},{"tpl":"573601b42459776410737435","relativeProbability":13260},{"tpl":"5736026a245977644601dc61","relativeProbability":34832},{"tpl":"573602322459776445391df1","relativeProbability":1467},{"tpl":"5735fdcd2459776445391d61","relativeProbability":1504},{"tpl":"573603c924597764442bd9cb","relativeProbability":1529},{"tpl":"573603562459776430731618","relativeProbability":1561}],"Caliber762x35":[{"tpl":"6196365d58ef8c428c287da1","relativeProbability":5975},{"tpl":"5fd20ff893a8961fc660a954","relativeProbability":4666},{"tpl":"619636be6db0f2477964e710","relativeProbability":3278},{"tpl":"64b8725c4b75259c590fa899","relativeProbability":5994},{"tpl":"5fbe3ffdf8b6a877a729ea82","relativeProbability":7918},{"tpl":"6196364158ef8c428c287d9f","relativeProbability":3251}],"Caliber762x39":[{"tpl":"64b7af434b75259c590fa893","relativeProbability":12285},{"tpl":"64b7af5a8532cf95ee0a0dbd","relativeProbability":25875},{"tpl":"59e0d99486f7744a32234762","relativeProbability":12319},{"tpl":"59e4d3d286f774176a36250a","relativeProbability":11654},{"tpl":"5656d7c34bdc2d9d198b4587","relativeProbability":52009},{"tpl":"59e4cf5286f7741778269d8a","relativeProbability":16320},{"tpl":"59e4d24686f7741776641ac7","relativeProbability":2742},{"tpl":"64b7af734b75259c590fa895","relativeProbability":15151},{"tpl":"601aa3d2b2bcb34913271e6d","relativeProbability":2921}],"Caliber762x51":[{"tpl":"5a608bf24f39f98ffc77720e","relativeProbability":8553},{"tpl":"5efb0c1bd79ff02a1f5e68d9","relativeProbability":1292},{"tpl":"58dd3ad986f77403051cba8f","relativeProbability":12340},{"tpl":"5e023e53d4353e3302577c4c","relativeProbability":21153},{"tpl":"5a6086ea4f39f99cd479502f","relativeProbability":3380},{"tpl":"5e023e6e34d52a55c3304f71","relativeProbability":10737},{"tpl":"5e023e88277cce2b522ff2b1","relativeProbability":7297},{"tpl":"6768c25aa7b238f14a08d3f6","relativeProbability":2976}],"Caliber762x54R":[{"tpl":"5887431f2459777e1612938f","relativeProbability":16317},{"tpl":"5e023d34e8a400319a28ed44","relativeProbability":3915},{"tpl":"64b8f7b5389d7ffd620ccba2","relativeProbability":8511},{"tpl":"64b8f7c241772715af0f9c3d","relativeProbability":11908},{"tpl":"560d61e84bdc2da74d8b4571","relativeProbability":2795},{"tpl":"59e77a2386f7742ee578960a","relativeProbability":6527},{"tpl":"64b8f7968532cf95ee0a0dbf","relativeProbability":12255},{"tpl":"5e023cf8186a883be655e54f","relativeProbability":7106},{"tpl":"5e023d48186a883be655e551","relativeProbability":2073}],"Caliber86x70":[{"tpl":"5fc382a9d724d907e2077dab","relativeProbability":1284},{"tpl":"5fc382c1016cce60e8341b20","relativeProbability":2937},{"tpl":"5fc382b6d6fa9c00c571bbc3","relativeProbability":2081},{"tpl":"5fc275cf85fd526b824a571a","relativeProbability":2655}],"Caliber9x18PM":[{"tpl":"573719df2459775a626ccbc2","relativeProbability":22353},{"tpl":"57372140245977611f70ee91","relativeProbability":29837},{"tpl":"573719762459775a626ccbc1","relativeProbability":96456},{"tpl":"5737218f245977612125ba51","relativeProbability":28177},{"tpl":"57371e4124597760ff7b25f1","relativeProbability":17336},{"tpl":"573718ba2459775a75491131","relativeProbability":20861},{"tpl":"57371eb62459776125652ac1","relativeProbability":6524},{"tpl":"57371b192459775a9f58a5e0","relativeProbability":11311},{"tpl":"5737207f24597760ff7b25f2","relativeProbability":15793},{"tpl":"5737201124597760fc4431f1","relativeProbability":6381},{"tpl":"57371f8d24597761006c6a81","relativeProbability":6520},{"tpl":"57371aab2459775a77142f22","relativeProbability":12682},{"tpl":"573720e02459776143012541","relativeProbability":6329},{"tpl":"57371f2b24597761224311f1","relativeProbability":6544}],"Caliber9x19PARA":[{"tpl":"56d59d3ad2720bdb418b4577","relativeProbability":72503},{"tpl":"64b7bbb74b75259c590fa897","relativeProbability":61640},{"tpl":"5a3c16fe86f77452b62de32a","relativeProbability":8711},{"tpl":"5c3df7d588a4501f290594e5","relativeProbability":9583},{"tpl":"58864a4f2459770fcc257101","relativeProbability":10791},{"tpl":"5efb0e16aeb21837e749c7ff","relativeProbability":5069},{"tpl":"5c0d56a986f774449d5de529","relativeProbability":10968},{"tpl":"5c925fa22e221601da359b7b","relativeProbability":4126},{"tpl":"5efb0da7a29a85116f6ea05f","relativeProbability":3914}],"Caliber9x21":[{"tpl":"5a269f97c4a282000b151807","relativeProbability":10727},{"tpl":"5a26ac0ec4a28200741e1e18","relativeProbability":10787},{"tpl":"5a26abfac4a28232980eabff","relativeProbability":16621},{"tpl":"5a26ac06c4a282000c5a90a8","relativeProbability":14591},{"tpl":"6576f4708ca9c4381d16cd9d","relativeProbability":709},{"tpl":"6576f93989f0062e741ba952","relativeProbability":1510}],"Caliber9x33R":[{"tpl":"62330c40bdd19b369e1e53d1","relativeProbability":5546},{"tpl":"62330c18744e5e31df12f516","relativeProbability":3201},{"tpl":"62330b3ed4dc74626d570b95","relativeProbability":13618},{"tpl":"62330bfadc5883093563729b","relativeProbability":4464}],"Caliber9x39":[{"tpl":"61962d879bb3d20b0946d385","relativeProbability":8742},{"tpl":"6576f96220d53a5b8f3e395e","relativeProbability":9530},{"tpl":"57a0dfb82459774d3078b56c","relativeProbability":11231},{"tpl":"57a0e5022459774d1673f889","relativeProbability":12935},{"tpl":"5c0d688c86f77413ae3407b2","relativeProbability":11815},{"tpl":"5c0d668f86f7747ccb7f13b2","relativeProbability":15602}]}
+{
+  "Caliber1143x23ACP": [
+    {
+      "tpl": "5e81f423763d9f754677bf2e",
+      "relativeProbability": 21735
+    },
+    {
+      "tpl": "5ea2a8e200685063ec28c05a",
+      "relativeProbability": 3411
+    },
+    {
+      "tpl": "5efb0fc6aeb21837e749c801",
+      "relativeProbability": 2308
+    },
+    {
+      "tpl": "5efb0d4f4bc50b58e81710f3",
+      "relativeProbability": 3380
+    },
+    {
+      "tpl": "5efb0cabfb3e451d70735af5",
+      "relativeProbability": 3811
+    }
+  ],
+  "Caliber127x33": [
+    {
+      "tpl": "668fe62ac62660a5d8071446",
+      "relativeProbability": 18138
+    },
+    {
+      "tpl": "66a0d1c87d0d369e270bb9de",
+      "relativeProbability": 4807
+    },
+    {
+      "tpl": "66a0d1f88486c69fce00fdf6",
+      "relativeProbability": 4911
+    },
+    {
+      "tpl": "66a0d1e0ed648d72fe064d06",
+      "relativeProbability": 4846
+    }
+  ],
+  "Caliber127x55": [
+    {
+      "tpl": "5cadf6ddae9215051e1c23b2",
+      "relativeProbability": 7115
+    },
+    {
+      "tpl": "5cadf6eeae921500134b2799",
+      "relativeProbability": 5066
+    },
+    {
+      "tpl": "5cadf6e5ae921500113bb973",
+      "relativeProbability": 8690
+    }
+  ],
+  "Caliber127x99": [
+    {
+      "tpl": "67d41936f378a36c4706eeb9",
+      "relativeProbability": 413
+    }
+  ],
+  "Caliber12g": [
+    {
+      "tpl": "560d5e524bdc2d25448b4571",
+      "relativeProbability": 18900
+    },
+    {
+      "tpl": "5d6e68a8a4b9360b6c0d54e2",
+      "relativeProbability": 5937
+    },
+    {
+      "tpl": "58820d1224597753c90aeb13",
+      "relativeProbability": 8173
+    },
+    {
+      "tpl": "5d6e6869a4b9361c140bcfde",
+      "relativeProbability": 5363
+    },
+    {
+      "tpl": "5d6e68b3a4b9361bca7e50b5",
+      "relativeProbability": 4398
+    },
+    {
+      "tpl": "5d6e6806a4b936088465b17e",
+      "relativeProbability": 8199
+    },
+    {
+      "tpl": "5d6e689ca4b9361bc8618956",
+      "relativeProbability": 4914
+    },
+    {
+      "tpl": "5d6e68c4a4b9361b93413f79",
+      "relativeProbability": 8686
+    },
+    {
+      "tpl": "5d6e68dea4b9361bcc29e659",
+      "relativeProbability": 3792
+    },
+    {
+      "tpl": "5d6e68d1a4b93622fe60e845",
+      "relativeProbability": 3844
+    },
+    {
+      "tpl": "5d6e6891a4b9361bd473feea",
+      "relativeProbability": 4809
+    },
+    {
+      "tpl": "64b8ee384b75259c590fa89b",
+      "relativeProbability": 7636
+    },
+    {
+      "tpl": "5d6e68e6a4b9361c140bcfe0",
+      "relativeProbability": 3279
+    },
+    {
+      "tpl": "5c0d591486f7744c505b416f",
+      "relativeProbability": 5541
+    },
+    {
+      "tpl": "5d6e6911a4b9361bd5780d52",
+      "relativeProbability": 5115
+    },
+    {
+      "tpl": "5d6e67fba4b9361bc73bc779",
+      "relativeProbability": 558
+    },
+    {
+      "tpl": "5d6e6772a4b936088465b17c",
+      "relativeProbability": 588
+    }
+  ],
+  "Caliber20g": [
+    {
+      "tpl": "5a38ebd9c4a282000d722a5b",
+      "relativeProbability": 13532
+    },
+    {
+      "tpl": "660137ef76c1b56143052be8",
+      "relativeProbability": 10868
+    },
+    {
+      "tpl": "5d6e6a5fa4b93614ec501745",
+      "relativeProbability": 5553
+    },
+    {
+      "tpl": "5d6e6a05a4b93618084f58d0",
+      "relativeProbability": 7106
+    },
+    {
+      "tpl": "5d6e69b9a4b9361bc8618958",
+      "relativeProbability": 6493
+    },
+    {
+      "tpl": "660137d8481cc6907a0c5cda",
+      "relativeProbability": 9204
+    },
+    {
+      "tpl": "5d6e6a42a4b9364f07165f52",
+      "relativeProbability": 6116
+    },
+    {
+      "tpl": "5d6e6a53a4b9361bd473feec",
+      "relativeProbability": 6539
+    },
+    {
+      "tpl": "5d6e695fa4b936359b35d852",
+      "relativeProbability": 7143
+    },
+    {
+      "tpl": "5d6e69c7a4b9360b6c0d54e4",
+      "relativeProbability": 6092
+    },
+    {
+      "tpl": "6601380580e77cfd080e3418",
+      "relativeProbability": 11424
+    }
+  ],
+  "Caliber20x1mm": [
+    {
+      "tpl": "6601546f86889319850bd566",
+      "relativeProbability": 12640
+    }
+  ],
+  "Caliber23x75": [
+    {
+      "tpl": "5e85a9f4add9fe03027d9bf1",
+      "relativeProbability": 2198
+    },
+    {
+      "tpl": "5e85aa1a988a8701445df1f5",
+      "relativeProbability": 4219
+    },
+    {
+      "tpl": "5e85a9a6eacf8c039e4e2ac1",
+      "relativeProbability": 5779
+    },
+    {
+      "tpl": "5f647f31b6238e5dd066e196",
+      "relativeProbability": 5797
+    }
+  ],
+  "Caliber26x75": [
+    {
+      "tpl": "62389aaba63f32501b1b444f",
+      "relativeProbability": 9625
+    },
+    {
+      "tpl": "62389bc9423ed1685422dc57",
+      "relativeProbability": 1743
+    },
+    {
+      "tpl": "62389be94d5d474bf712e709",
+      "relativeProbability": 1763
+    },
+    {
+      "tpl": "62389ba9a63f32501b1b4451",
+      "relativeProbability": 846
+    },
+    {
+      "tpl": "635267f063651329f75a4ee8",
+      "relativeProbability": 108
+    }
+  ],
+  "Caliber366TKM": [
+    {
+      "tpl": "59e655cb86f77411dc52a77b",
+      "relativeProbability": 10474
+    },
+    {
+      "tpl": "59e6658b86f77411d949b250",
+      "relativeProbability": 4976
+    },
+    {
+      "tpl": "59e6542b86f77411dc52a77a",
+      "relativeProbability": 9834
+    },
+    {
+      "tpl": "5f0596629e22f464da6bbdd9",
+      "relativeProbability": 3712
+    }
+  ],
+  "Caliber40mmRU": [
+    {
+      "tpl": "5656eb674bdc2d35148b457c",
+      "relativeProbability": 48184
+    }
+  ],
+  "Caliber40x46": [
+    {
+      "tpl": "5ede4739e0350d05467f73e8",
+      "relativeProbability": 18020
+    },
+    {
+      "tpl": "5ede475b549eed7c6d5c18fb",
+      "relativeProbability": 18063
+    },
+    {
+      "tpl": "5ede475339ee016e8c534742",
+      "relativeProbability": 6464
+    },
+    {
+      "tpl": "5f0c892565703e5c461894e9",
+      "relativeProbability": 17776
+    },
+    {
+      "tpl": "5ede474b0c226a66f5402622",
+      "relativeProbability": 2179
+    },
+    {
+      "tpl": "5ede47405b097655935d7d16",
+      "relativeProbability": 1087
+    }
+  ],
+  "Caliber46x30": [
+    {
+      "tpl": "5ba26812d4351e003201fef1",
+      "relativeProbability": 9140
+    },
+    {
+      "tpl": "64b6979341772715af0f9c39",
+      "relativeProbability": 11188
+    },
+    {
+      "tpl": "5ba2678ad4351e44f824b344",
+      "relativeProbability": 9633
+    },
+    {
+      "tpl": "5ba26844d4351e00334c9475",
+      "relativeProbability": 1651
+    },
+    {
+      "tpl": "5ba26835d4351e0035628ff5",
+      "relativeProbability": 3927
+    }
+  ],
+  "Caliber545x39": [
+    {
+      "tpl": "56dff061d2720bb5668b4567",
+      "relativeProbability": 14761
+    },
+    {
+      "tpl": "56dff3afd2720bba668b4567",
+      "relativeProbability": 64840
+    },
+    {
+      "tpl": "56dff338d2720bbd668b4569",
+      "relativeProbability": 47176
+    },
+    {
+      "tpl": "56dff4ecd2720b5f5a8b4568",
+      "relativeProbability": 28688
+    },
+    {
+      "tpl": "56dff421d2720b5f5a8b4567",
+      "relativeProbability": 13712
+    },
+    {
+      "tpl": "56dff4a2d2720bbd668b456a",
+      "relativeProbability": 33269
+    },
+    {
+      "tpl": "56dff2ced2720bb4668b4567",
+      "relativeProbability": 40480
+    },
+    {
+      "tpl": "61962b617c6c7b169525f168",
+      "relativeProbability": 5059
+    },
+    {
+      "tpl": "56dff0bed2720bb0668b4567",
+      "relativeProbability": 22786
+    },
+    {
+      "tpl": "56dff216d2720bbd668b4568",
+      "relativeProbability": 13625
+    },
+    {
+      "tpl": "56dfef82d2720bbd668b4567",
+      "relativeProbability": 11707
+    },
+    {
+      "tpl": "56dff026d2720bb8668b4567",
+      "relativeProbability": 12368
+    },
+    {
+      "tpl": "5c0d5e4486f77478390952fe",
+      "relativeProbability": 4622
+    }
+  ],
+  "Caliber556x45NATO": [
+    {
+      "tpl": "59e6927d86f77411da468256",
+      "relativeProbability": 13073
+    },
+    {
+      "tpl": "59e6920f86f77411d82aa167",
+      "relativeProbability": 31228
+    },
+    {
+      "tpl": "5c0d5ae286f7741e46554302",
+      "relativeProbability": 5535
+    },
+    {
+      "tpl": "59e6906286f7746c9f75e847",
+      "relativeProbability": 9265
+    },
+    {
+      "tpl": "59e690b686f7746c9f75e848",
+      "relativeProbability": 3499
+    },
+    {
+      "tpl": "60194943740c5d77f6705eea",
+      "relativeProbability": 5412
+    },
+    {
+      "tpl": "54527a984bdc2d4e668b4567",
+      "relativeProbability": 11488
+    },
+    {
+      "tpl": "54527ac44bdc2d36668b4567",
+      "relativeProbability": 9928
+    },
+    {
+      "tpl": "59e68f6f86f7746c9f75e846",
+      "relativeProbability": 9832
+    },
+    {
+      "tpl": "59e6918f86f7746c9f75e849",
+      "relativeProbability": 9621
+    },
+    {
+      "tpl": "601949593ae8f707c4608daa",
+      "relativeProbability": 2075
+    }
+  ],
+  "Caliber57x28": [
+    {
+      "tpl": "5cc86832d7f00c000d3a6e6c",
+      "relativeProbability": 5139
+    },
+    {
+      "tpl": "5cc86840d7f00c002412c56c",
+      "relativeProbability": 5226
+    },
+    {
+      "tpl": "5cc80f8fe4a949033b0224a2",
+      "relativeProbability": 17985
+    },
+    {
+      "tpl": "5cc80f79e4a949033c7343b2",
+      "relativeProbability": 10082
+    },
+    {
+      "tpl": "5cc80f53e4a949000e1ea4f8",
+      "relativeProbability": 5999
+    },
+    {
+      "tpl": "5cc80f38e4a949001152b560",
+      "relativeProbability": 3192
+    },
+    {
+      "tpl": "5cc80f67e4a949035e43bbba",
+      "relativeProbability": 5953
+    }
+  ],
+  "Caliber68x51": [
+    {
+      "tpl": "6529243824cbe3c74a05e5c1",
+      "relativeProbability": 1123
+    },
+    {
+      "tpl": "6529302b8c26af6326029fb7",
+      "relativeProbability": 1247
+    }
+  ],
+  "Caliber762x25TT": [
+    {
+      "tpl": "5735ff5c245977640e39ba7e",
+      "relativeProbability": 21423
+    },
+    {
+      "tpl": "573601b42459776410737435",
+      "relativeProbability": 12364
+    },
+    {
+      "tpl": "5736026a245977644601dc61",
+      "relativeProbability": 31797
+    },
+    {
+      "tpl": "5735fdcd2459776445391d61",
+      "relativeProbability": 1378
+    },
+    {
+      "tpl": "573603c924597764442bd9cb",
+      "relativeProbability": 1414
+    },
+    {
+      "tpl": "573603562459776430731618",
+      "relativeProbability": 1432
+    },
+    {
+      "tpl": "573602322459776445391df1",
+      "relativeProbability": 1356
+    }
+  ],
+  "Caliber762x35": [
+    {
+      "tpl": "6196365d58ef8c428c287da1",
+      "relativeProbability": 5568
+    },
+    {
+      "tpl": "5fbe3ffdf8b6a877a729ea82",
+      "relativeProbability": 7337
+    },
+    {
+      "tpl": "619636be6db0f2477964e710",
+      "relativeProbability": 3055
+    },
+    {
+      "tpl": "64b8725c4b75259c590fa899",
+      "relativeProbability": 5530
+    },
+    {
+      "tpl": "5fd20ff893a8961fc660a954",
+      "relativeProbability": 4305
+    },
+    {
+      "tpl": "6196364158ef8c428c287d9f",
+      "relativeProbability": 3026
+    }
+  ],
+  "Caliber762x39": [
+    {
+      "tpl": "5656d7c34bdc2d9d198b4587",
+      "relativeProbability": 47780
+    },
+    {
+      "tpl": "64b7af434b75259c590fa893",
+      "relativeProbability": 11364
+    },
+    {
+      "tpl": "59e4d3d286f774176a36250a",
+      "relativeProbability": 10858
+    },
+    {
+      "tpl": "64b7af734b75259c590fa895",
+      "relativeProbability": 14061
+    },
+    {
+      "tpl": "64b7af5a8532cf95ee0a0dbd",
+      "relativeProbability": 23882
+    },
+    {
+      "tpl": "601aa3d2b2bcb34913271e6d",
+      "relativeProbability": 2715
+    },
+    {
+      "tpl": "59e4cf5286f7741778269d8a",
+      "relativeProbability": 15079
+    },
+    {
+      "tpl": "59e0d99486f7744a32234762",
+      "relativeProbability": 11274
+    },
+    {
+      "tpl": "59e4d24686f7741776641ac7",
+      "relativeProbability": 2543
+    }
+  ],
+  "Caliber762x51": [
+    {
+      "tpl": "5e023e53d4353e3302577c4c",
+      "relativeProbability": 19640
+    },
+    {
+      "tpl": "58dd3ad986f77403051cba8f",
+      "relativeProbability": 11376
+    },
+    {
+      "tpl": "5e023e88277cce2b522ff2b1",
+      "relativeProbability": 6778
+    },
+    {
+      "tpl": "5efb0c1bd79ff02a1f5e68d9",
+      "relativeProbability": 1209
+    },
+    {
+      "tpl": "6768c25aa7b238f14a08d3f6",
+      "relativeProbability": 2742
+    },
+    {
+      "tpl": "5e023e6e34d52a55c3304f71",
+      "relativeProbability": 9974
+    },
+    {
+      "tpl": "5a608bf24f39f98ffc77720e",
+      "relativeProbability": 7894
+    },
+    {
+      "tpl": "5a6086ea4f39f99cd479502f",
+      "relativeProbability": 3114
+    }
+  ],
+  "Caliber762x54R": [
+    {
+      "tpl": "64b8f7b5389d7ffd620ccba2",
+      "relativeProbability": 7912
+    },
+    {
+      "tpl": "64b8f7968532cf95ee0a0dbf",
+      "relativeProbability": 11418
+    },
+    {
+      "tpl": "5e023cf8186a883be655e54f",
+      "relativeProbability": 6586
+    },
+    {
+      "tpl": "64b8f7c241772715af0f9c3d",
+      "relativeProbability": 11093
+    },
+    {
+      "tpl": "5887431f2459777e1612938f",
+      "relativeProbability": 15108
+    },
+    {
+      "tpl": "5e023d48186a883be655e551",
+      "relativeProbability": 1918
+    },
+    {
+      "tpl": "59e77a2386f7742ee578960a",
+      "relativeProbability": 6040
+    },
+    {
+      "tpl": "560d61e84bdc2da74d8b4571",
+      "relativeProbability": 2574
+    },
+    {
+      "tpl": "5e023d34e8a400319a28ed44",
+      "relativeProbability": 3603
+    }
+  ],
+  "Caliber86x70": [
+    {
+      "tpl": "5fc275cf85fd526b824a571a",
+      "relativeProbability": 2482
+    },
+    {
+      "tpl": "5fc382b6d6fa9c00c571bbc3",
+      "relativeProbability": 1942
+    },
+    {
+      "tpl": "5fc382c1016cce60e8341b20",
+      "relativeProbability": 2711
+    },
+    {
+      "tpl": "5fc382a9d724d907e2077dab",
+      "relativeProbability": 1158
+    }
+  ],
+  "Caliber9x18PM": [
+    {
+      "tpl": "573719762459775a626ccbc1",
+      "relativeProbability": 88327
+    },
+    {
+      "tpl": "57371aab2459775a77142f22",
+      "relativeProbability": 11678
+    },
+    {
+      "tpl": "57371f8d24597761006c6a81",
+      "relativeProbability": 6032
+    },
+    {
+      "tpl": "5737207f24597760ff7b25f2",
+      "relativeProbability": 14565
+    },
+    {
+      "tpl": "57371e4124597760ff7b25f1",
+      "relativeProbability": 16066
+    },
+    {
+      "tpl": "57372140245977611f70ee91",
+      "relativeProbability": 27541
+    },
+    {
+      "tpl": "573718ba2459775a75491131",
+      "relativeProbability": 19248
+    },
+    {
+      "tpl": "5737218f245977612125ba51",
+      "relativeProbability": 25962
+    },
+    {
+      "tpl": "57371eb62459776125652ac1",
+      "relativeProbability": 5948
+    },
+    {
+      "tpl": "573720e02459776143012541",
+      "relativeProbability": 5807
+    },
+    {
+      "tpl": "573719df2459775a626ccbc2",
+      "relativeProbability": 20583
+    },
+    {
+      "tpl": "5737201124597760fc4431f1",
+      "relativeProbability": 5839
+    },
+    {
+      "tpl": "57371f2b24597761224311f1",
+      "relativeProbability": 6019
+    },
+    {
+      "tpl": "57371b192459775a9f58a5e0",
+      "relativeProbability": 10403
+    }
+  ],
+  "Caliber9x19PARA": [
+    {
+      "tpl": "64b7bbb74b75259c590fa897",
+      "relativeProbability": 56760
+    },
+    {
+      "tpl": "56d59d3ad2720bdb418b4577",
+      "relativeProbability": 66653
+    },
+    {
+      "tpl": "5a3c16fe86f77452b62de32a",
+      "relativeProbability": 8096
+    },
+    {
+      "tpl": "5c0d56a986f774449d5de529",
+      "relativeProbability": 10157
+    },
+    {
+      "tpl": "5c3df7d588a4501f290594e5",
+      "relativeProbability": 8947
+    },
+    {
+      "tpl": "58864a4f2459770fcc257101",
+      "relativeProbability": 9972
+    },
+    {
+      "tpl": "5efb0e16aeb21837e749c7ff",
+      "relativeProbability": 4698
+    },
+    {
+      "tpl": "5c925fa22e221601da359b7b",
+      "relativeProbability": 3841
+    },
+    {
+      "tpl": "5efb0da7a29a85116f6ea05f",
+      "relativeProbability": 3625
+    }
+  ],
+  "Caliber9x21": [
+    {
+      "tpl": "5a26ac06c4a282000c5a90a8",
+      "relativeProbability": 13462
+    },
+    {
+      "tpl": "5a269f97c4a282000b151807",
+      "relativeProbability": 9951
+    },
+    {
+      "tpl": "5a26abfac4a28232980eabff",
+      "relativeProbability": 15383
+    },
+    {
+      "tpl": "5a26ac0ec4a28200741e1e18",
+      "relativeProbability": 10005
+    },
+    {
+      "tpl": "6576f93989f0062e741ba952",
+      "relativeProbability": 1383
+    },
+    {
+      "tpl": "6576f4708ca9c4381d16cd9d",
+      "relativeProbability": 665
+    }
+  ],
+  "Caliber9x33R": [
+    {
+      "tpl": "62330b3ed4dc74626d570b95",
+      "relativeProbability": 12501
+    },
+    {
+      "tpl": "62330c40bdd19b369e1e53d1",
+      "relativeProbability": 5140
+    },
+    {
+      "tpl": "62330bfadc5883093563729b",
+      "relativeProbability": 4144
+    },
+    {
+      "tpl": "62330c18744e5e31df12f516",
+      "relativeProbability": 2974
+    }
+  ],
+  "Caliber9x39": [
+    {
+      "tpl": "5c0d668f86f7747ccb7f13b2",
+      "relativeProbability": 14324
+    },
+    {
+      "tpl": "6576f96220d53a5b8f3e395e",
+      "relativeProbability": 8881
+    },
+    {
+      "tpl": "61962d879bb3d20b0946d385",
+      "relativeProbability": 8078
+    },
+    {
+      "tpl": "57a0e5022459774d1673f889",
+      "relativeProbability": 11894
+    },
+    {
+      "tpl": "57a0dfb82459774d3078b56c",
+      "relativeProbability": 10349
+    },
+    {
+      "tpl": "5c0d688c86f77413ae3407b2",
+      "relativeProbability": 10808
+    }
+  ]
+}
