@@ -33,10 +33,7 @@
       "SecuredContainer": 100,
       "TacticalVest": 0
     },
-    "equipmentMods": {
-      "mod_equipment": 0,
-      "mod_nvg": 0
-    },
+    "equipmentMods": {},
     "weaponMods": {
       "mod_bipod": 38,
       "mod_charge": 94,
@@ -2669,9 +2666,7 @@
         "661ceb1b9311543c7104149b": 2403
       },
       "Headwear": {
-        "5b4329f05acfc47a86086aa1": 567,
-        "5c0d2727d174af02a012cf58": 6620,
-        "66bdc28a0b603c26902b2011": 567
+        "5c0d2727d174af02a012cf58": 1
       },
       "Holster": {
         "5448bd6b4bdc2dfc2f8b4569": 21575,
@@ -3009,23 +3004,6 @@
       "5b222d335acfc4771e1be099": {
         "mod_stock": [
           "5b222d405acfc400153af4fe"
-        ]
-      },
-      "5b4329f05acfc47a86086aa1": {
-        "Helmet_back": [
-          "65711b489eb8c145180dbb9d"
-        ],
-        "Helmet_ears": [
-          "65711b706d197c216005b31c"
-        ],
-        "Helmet_top": [
-          "65711b07a330b8c9060f7b01"
-        ],
-        "helmet_eyes": [
-          "65711b9b65daf6aa960c9b1b"
-        ],
-        "helmet_jaw": [
-          "65711bc79eb8c145180dbba1"
         ]
       },
       "5b7be4895acfc400170e2dd5": {
@@ -3407,23 +3385,6 @@
       "668fe60b56984d93550462c6": {
         "mod_sight_rear": [
           "668fe5e1800f0244f9036e46"
-        ]
-      },
-      "66bdc28a0b603c26902b2011": {
-        "Helmet_back": [
-          "66bdc2e25f17154509115d1e"
-        ],
-        "Helmet_ears": [
-          "66bdc2c90b603c26902b2018"
-        ],
-        "Helmet_top": [
-          "66bdc2ea8cbd597c9c2f9360"
-        ],
-        "helmet_eyes": [
-          "66bdc2d051aa8c345646d03f"
-        ],
-        "helmet_jaw": [
-          "66bdc2d9408f1e66eb4fd957"
         ]
       }
     }
