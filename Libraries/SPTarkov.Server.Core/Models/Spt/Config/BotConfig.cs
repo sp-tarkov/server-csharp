@@ -145,19 +145,19 @@ public record BotConfig : BaseConfig
 public record GoonSpawnSystem
 {
     [JsonPropertyName("enabled")]
-    public bool Enabled { get; set; }
+    public required bool Enabled { get; set; }
 
     [JsonPropertyName("locationPool")]
-    public IEnumerable<string> LocationPool { get; set; }
+    public required IEnumerable<string> LocationPool { get; set; }
 
     [JsonPropertyName("spawnChance")]
-    public double SpawnChance { get; set; }
+    public required double SpawnChance { get; set; }
 
     /// <summary>
     /// How often (in hours) the goons rotate to a new map
     /// </summary>
     [JsonPropertyName("rotationIntervalHours")]
-    public int RotationIntervalHours { get; set; } = 3;
+    public required int RotationIntervalHours { get; set; }
 }
 
 public record WeeklyBossSettings
