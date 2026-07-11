@@ -1,31 +1,15 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
-using SPTarkov.Server.Core.Helpers;
-using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Health;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
-using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable]
-public class HealthCallbacks(HttpResponseUtil httpResponseUtil, ProfileHelper profileHelper, HealthController healthController)
+public class HealthCallbacks(HealthController healthController)
 {
-    /// <summary>
-    ///     Custom spt server request found in modules/QTEPatch.cs
-    /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info">HealthListener.Instance.CurrentHealth class</param>
-    /// <param name="sessionID">session id</param>
-    /// <returns>empty response, no data sent back to client</returns>
-    public ValueTask<string> HandleWorkoutEffects(string url, WorkoutData info, MongoId sessionID)
-    {
-        healthController.ApplyWorkoutChanges(profileHelper.GetPmcProfile(sessionID), info, sessionID);
-        return new ValueTask<string>(httpResponseUtil.EmptyResponse());
-    }
-
     /// <summary>
     ///     Handle Eat
     /// </summary>
