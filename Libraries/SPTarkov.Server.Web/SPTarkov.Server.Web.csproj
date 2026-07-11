@@ -22,7 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Argon2Sharp" Version="4.0.1" />
-    <PackageReference Include="MudBlazor" Version="9.6.0" />
+    <PackageReference Include="MudBlazor" Version="9.7.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
