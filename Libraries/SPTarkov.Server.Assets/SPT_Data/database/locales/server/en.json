@@ -90,6 +90,7 @@
   "fence-ammo_not_found_in_db": "Ammo: %s is not a valid item",
   "fence-unable_to_find_assort_by_id": "Unable to find fence assort for id: %s",
   "fence-unable_to_find_offer_by_id": "Unable to find offer with id: %s",
+  "fence-unable_to_find_soft_insert_template_for_slot": "Unable to find soft armor template in the database: %s",
   "fence-unable_to_get_ammo_penetration_value": "No penetration value found for Ammo: %s, Unable to check if its above penetration limit, assuming false",
   "fence-unable_to_find_root_item_to_add": "Unable to add items to Fence as no root items were found",
   "fixer-clothing_item_found": "Clothing item: %s found in profile that does not exist in SPT. You WILL experience errors, this can be due to using a clothing mod and removing the mod with your character still wearing it. DO NOT USE THIS PROFILE. Open SPT\\SPT_Data\\configs\\core.json, edit 'removeModItemsFromProfile' to be true. This will allow the server to edit your profile and hopefully remove the missing clothing",

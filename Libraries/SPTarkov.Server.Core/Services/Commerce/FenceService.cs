@@ -1121,49 +1121,61 @@ public class FenceService(
     }
 
     /// <summary>
-    ///     Randomise the durability values of items on armor with a passed in slot
+    ///     Randomise the durability values of installed soft-insert items on armor
     /// </summary>
-    /// <param name="softInsertSlots"> Slots of items to randomise </param>
-    /// <param name="armorItemAndMods"> Array of armor + inserts to get items from </param>
+    /// <param name="softInsertSlots">Slots of soft inserts to randomise</param>
+    /// <param name="armorItemAndMods">
+    ///     Flat collection of armor + inserts to get items from
+    /// </param>
     protected void RandomiseArmorSoftInsertDurabilities(IEnumerable<Slot> softInsertSlots, IEnumerable<Item> armorItemAndMods)
     {
         foreach (var requiredSlot in softInsertSlots)
         {
-            var modItemDbDetails = itemHelper.GetItem(requiredSlot.Properties.Filters.First().Plate.Value).Value;
+            // Find the soft insert for this slot
+            var modItemToAdjust = armorItemAndMods.FirstOrDefault(mod =>
+                string.Equals(mod.SlotId, requiredSlot.Name, StringComparison.OrdinalIgnoreCase));
 
-            var durabilityValues = GetRandomisedArmorDurabilityValues(modItemDbDetails, traderConfig.Fence.ArmorMaxDurabilityPercentMinMax);
-            var plateTpl = requiredSlot.Properties.Filters.First().Plate ?? string.Empty; // "Plate" property appears to be the 'default' item for slot
-            if (plateTpl.IsEmpty)
-            // Some bsg plate properties are empty, skip mod
+            if (modItemToAdjust == null)
             {
                 continue;
             }
 
-            // Find items mod to apply dura changes to
-            var modItemToAdjust = armorItemAndMods.FirstOrDefault(mod =>
-                string.Equals(mod.SlotId, requiredSlot.Name.ToLowerInvariant(), StringComparison.OrdinalIgnoreCase)
-            );
+            var modItemDbDetails = itemHelper.GetItem(modItemToAdjust.Template).Value;
+            if (modItemDbDetails == null)
+            {
+                logger.Error(
+                    localisationService.GetText(
+                        "fence-unable_to_find_soft_insert_template_for_slot",
+                        modItemToAdjust.Template));
 
+                continue;
+            }
+
+            // Randomize durability
+            var durabilityValues = GetRandomisedArmorDurabilityValues(
+                modItemDbDetails,
+                traderConfig.Fence.ArmorMaxDurabilityPercentMinMax);
+
+            // Ensure item has defaults
             modItemToAdjust.AddUpd();
 
-            // Fence assorts can be null, ensure they have defaults
             modItemToAdjust.Upd.Repairable ??= new UpdRepairable
             {
                 Durability = modItemDbDetails.Properties.MaxDurability,
                 MaxDurability = modItemDbDetails.Properties.MaxDurability,
             };
 
+            // Apply the new durability
             modItemToAdjust.Upd.Repairable.Durability = durabilityValues.Durability;
             modItemToAdjust.Upd.Repairable.MaxDurability = durabilityValues.MaxDurability;
 
-            // 25% chance to add shots to visor items when its below max durability
+            // 25% chance to add shots to visor items when it's below max durability
             if (
                 randomUtil.GetChance100(25)
                 && modItemToAdjust.ParentId == BaseClasses.ARMORED_EQUIPMENT
                 && modItemToAdjust.SlotId == "mod_equipment_000"
                 && modItemToAdjust.Upd.Repairable.Durability < modItemDbDetails.Properties.MaxDurability
             )
-            // Is damaged
             {
                 modItemToAdjust.Upd.FaceShield = new UpdFaceShield { Hits = randomUtil.GetInt(1, 3) };
             }
