@@ -26,6 +26,7 @@ public class PostDbLoadService(
     ServerLocalisationService serverLocalisationService,
     SeasonalEventService seasonalEventService,
     CustomLocationWaveService customLocationWaveService,
+    GoonLocationSpawnService goonLocationSpawnService,
     OpenZoneService openZoneService,
     ItemBaseClassService itemBaseClassService,
     RaidWeatherService raidWeatherService,
@@ -136,6 +137,11 @@ public class PostDbLoadService(
         {
             var chosenBoss = GetWeeklyBoss(botConfig.WeeklyBoss.BossPool, botConfig.WeeklyBoss.ResetDay);
             FlagMapAsGuaranteedBoss(chosenBoss);
+        }
+
+        if (botConfig.GoonSpawnSystem.Enabled)
+        {
+            goonLocationSpawnService.AdjustGoonMapSpawns();
         }
 
         if (botConfig.ReplaceScavWith != WildSpawnType.assault)

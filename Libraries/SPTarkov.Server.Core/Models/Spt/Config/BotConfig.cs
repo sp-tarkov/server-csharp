@@ -152,6 +152,12 @@ public record GoonSpawnSystem
 
     [JsonPropertyName("spawnChance")]
     public double SpawnChance { get; set; }
+
+    /// <summary>
+    /// How often (in hours) the goons rotate to a new map
+    /// </summary>
+    [JsonPropertyName("rotationIntervalHours")]
+    public int RotationIntervalHours { get; set; } = 3;
 }
 
 public record WeeklyBossSettings
