@@ -302,7 +302,6 @@ public class GiveSptCommand(
                     BaseClasses.HIDEOUT_AREA_CONTAINER,
                     BaseClasses.LOOT_CONTAINER,
                     BaseClasses.RANDOM_LOOT_CONTAINER,
-                    BaseClasses.MOB_CONTAINER,
                     BaseClasses.BUILT_IN_INSERTS,
                 ]
             );
