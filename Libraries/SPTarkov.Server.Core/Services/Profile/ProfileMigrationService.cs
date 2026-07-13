@@ -12,11 +12,11 @@ using SPTarkov.Server.Core.Utils;
 namespace SPTarkov.Server.Core.Services.Profile;
 
 [Injectable(InjectionType.Singleton)]
-public class ProfileValidatorService(
+public sealed class ProfileMigrationService(
     IEnumerable<IProfileMigration> profileMigrations,
     ProfileValidatorHelper profileValidatorHelper,
     TimeUtil timeUtil,
-    ISptLogger<ProfileValidatorService> logger
+    ISptLogger<ProfileMigrationService> logger
 )
 {
     private readonly IEnumerable<IProfileMigration> _sortedMigrations = profileMigrations.Sort();
@@ -42,23 +42,26 @@ public class ProfileValidatorService(
                 ?? throw new InvalidOperationException($"Could not deserialize the profile: {profileId}");
         }
 
-        var ranMigrations = new List<IProfileMigration>();
+        var ranMigrations = new List<(IProfileMigration Migration, ProfileMigrationContext Context)>();
 
         // The initial part of the profile migrations, this allows for fixing up
         // Any incorrect typing that might not allow the profile to load
         foreach (var profileMigration in _sortedMigrations)
         {
-            if (profileMigration.CanMigrate(profile, ranMigrations))
+            var migrationContext = new ProfileMigrationContext();
+            var ranMigrationInstances = ranMigrations.Select(x => x.Migration);
+
+            if (profileMigration.CanMigrate(profile, migrationContext, ranMigrationInstances))
             {
                 logger.Warning($"{profileId} has a pending profile migration: {profileMigration.MigrationName}");
 
-                var migratedProfile = profileMigration.Migrate(profile);
+                var migratedProfile = profileMigration.Migrate(profile, migrationContext);
 
                 if (migratedProfile is not null)
                 {
                     profile = migratedProfile;
 
-                    ranMigrations.Add(profileMigration);
+                    ranMigrations.Add((profileMigration, migrationContext));
                 }
             }
         }
@@ -105,9 +108,9 @@ public class ProfileValidatorService(
             return sptReadyProfile;
         }
 
-        foreach (var ranMigration in ranMigrations)
+        foreach (var (ranMigration, migrationContext) in ranMigrations)
         {
-            if (ranMigration.PostMigrate(sptReadyProfile))
+            if (ranMigration.PostMigrate(sptReadyProfile, migrationContext))
             {
                 logger.Success($"{profileId} successfully ran profile migration: {ranMigration.MigrationName}");
 
