@@ -413,26 +413,43 @@ public record MasterySkill
 {
     public string Id { get; set; }
 
+    [JsonConverter(typeof(SafeDoubleConverter))]
     public double Progress { get; set; }
 }
 
 public record CommonSkill
 {
+    public const double MaxSkillProgress = 5100d;
+
     [JsonConverter(typeof(SafeDoubleConverter))]
-    public double PointsEarnedDuringSession { get; set; }
+    public double PointsEarnedDuringSession
+    {
+        get;
+        set { field = GetSafeSkillProgress(value); }
+    }
 
     public long LastAccess { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public SkillTypes Id { get; set; }
 
-    public double Progress { get; set; }
+    [JsonConverter(typeof(SafeDoubleConverter))]
+    public double Progress
+    {
+        get;
+        set { field = GetSafeSkillProgress(value); }
+    }
 
     [JsonPropertyName("max")]
     public int? Max { get; set; }
 
     [JsonPropertyName("min")]
     public int? Min { get; set; }
+
+    private static double GetSafeSkillProgress(double value)
+    {
+        return double.IsFinite(value) ? Math.Min(value, MaxSkillProgress) : 0;
+    }
 }
 
 public record Stats
