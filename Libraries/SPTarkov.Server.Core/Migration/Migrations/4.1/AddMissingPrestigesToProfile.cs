@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Profile;
 
@@ -16,8 +17,8 @@ public sealed class AddMissingPrestigesToProfile : AbstractProfileMigration
     public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
     {
         if (
-            profile["characters"]?["pmc"]?["Prestige"] is JsonObject prestiges
-            && profile["characters"]?["pmc"]?["Achievements"] is JsonObject achievements
+            profile.TryGetObject(out var prestiges, "characters", "pmc", "Prestige")
+            && profile.TryGetObject(out var achievements, "characters", "pmc", "Achievements")
         )
         {
             foreach (var prestige in prestiges)
@@ -40,8 +41,8 @@ public sealed class AddMissingPrestigesToProfile : AbstractProfileMigration
     public override JsonObject? Migrate(JsonObject profile)
     {
         if (
-            profile["characters"]?["pmc"]?["Prestige"] is JsonObject prestiges
-            && profile["characters"]?["pmc"]?["Achievements"] is JsonObject achievements
+            profile.TryGetObject(out var prestiges, "characters", "pmc", "Prestige")
+            && profile.TryGetObject(out var achievements, "characters", "pmc", "Achievements")
         )
         {
             foreach (var prestige in prestiges)

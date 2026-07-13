@@ -56,7 +56,7 @@ public sealed class ThreeTenToThreeEleven(
 
     public override JsonObject? Migrate(JsonObject profile, ProfileMigrationContext context)
     {
-        if (profile["suits"] is JsonArray suitsArray)
+        if (profile.TryGetArray(out var suitsArray, "suits"))
         {
             context.Set(OldSuiteDataContextKey, suitsArray.Select(node => node?.GetValue<string>()).Where(suit => suit != null).ToList()!);
         }

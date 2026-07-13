@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Spt.Config;
 
 namespace SPTarkov.Server.Core.Migration.Migrations;
@@ -36,7 +37,7 @@ public sealed class FixChatBotAids(CoreConfig coreConfig) : AbstractProfileMigra
     /// </summary>
     private IEnumerable<(JsonObject user, int expectedAid)> GetStaleBotUsers(JsonObject profile)
     {
-        if (profile["dialogues"] is not JsonObject dialogues)
+        if (!profile.TryGetObject(out var dialogues, "dialogues"))
         {
             yield break;
         }
@@ -49,7 +50,7 @@ public sealed class FixChatBotAids(CoreConfig coreConfig) : AbstractProfileMigra
                 continue;
             }
 
-            if (dialogues[botId.ToString()] is not JsonObject dialogue || dialogue["Users"] is not JsonArray users)
+            if (!dialogues.TryGetObject(out var dialogue, botId.ToString()) || !dialogue.TryGetArray(out var users, "Users"))
             {
                 continue;
             }
@@ -59,8 +60,9 @@ public sealed class FixChatBotAids(CoreConfig coreConfig) : AbstractProfileMigra
             {
                 if (
                     user is JsonObject userObject
-                    && userObject["_id"]?.GetValue<string>() == botId.ToString()
-                    && userObject["aid"]?.GetValue<int>() != expectedAid
+                    && userObject.TryGetValue<string>(out var userId, "_id")
+                    && userId == botId.ToString()
+                    && (!userObject.TryGetValue<int>(out var userAid, "aid") || userAid != expectedAid)
                 )
                 {
                     yield return (userObject, expectedAid);

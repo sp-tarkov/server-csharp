@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Migration.Migrations._4._0;
 
@@ -18,7 +19,7 @@ public sealed class RemoveVitaltyFromProfile : AbstractProfileMigration
 
     public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
     {
-        return profile["vitality"] is not null;
+        return profile.TryGetNode(out _, "vitality");
     }
 
     public override JsonObject? Migrate(JsonObject profile)

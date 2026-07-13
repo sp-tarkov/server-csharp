@@ -23,10 +23,9 @@ public sealed class InvalidRepeatableQuestFix : AbstractProfileMigration
                     continue;
                 }
 
-                var endTimeNode = quest["endTime"];
-                var endTime = endTimeNode?.GetValue<long>() ?? 0;
+                quest.TryGetValue<long>(out var endTime, "endTime");
 
-                if (endTime != 0 && quest["changeRequirement"] is null)
+                if (endTime != 0 && !quest.TryGetNode(out _, "changeRequirement"))
                 {
                     return true;
                 }
@@ -47,9 +46,9 @@ public sealed class InvalidRepeatableQuestFix : AbstractProfileMigration
                     continue;
                 }
 
-                var endTime = quest["endTime"]?.GetValue<long>() ?? 0;
+                quest.TryGetValue<long>(out var endTime, "endTime");
 
-                if (endTime != 0 && quest["changeRequirement"] is null)
+                if (endTime != 0 && !quest.TryGetNode(out _, "changeRequirement"))
                 {
                     quest["endTime"] = 0;
                 }

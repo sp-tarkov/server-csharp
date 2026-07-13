@@ -88,10 +88,10 @@ public sealed class TheVoices(TemplateTable templateTable) : AbstractProfileMigr
             return;
         }
 
-        var oldVoice = pmcInfo["Voice"]?.ToString() ?? "";
+        pmcInfo.TryGetValue<string>(out var oldVoice, "Voice");
         pmcInfo.Remove("Voice");
 
-        var voiceMongoId = templateTable.Customization.FirstOrDefault(x => x.Value.Properties.Name == oldVoice).Key;
+        var voiceMongoId = templateTable.Customization.FirstOrDefault(x => x.Value.Properties.Name == (oldVoice ?? "")).Key;
 
         pmcCustomization["Voice"] = voiceMongoId.ToString();
     }
@@ -106,10 +106,10 @@ public sealed class TheVoices(TemplateTable templateTable) : AbstractProfileMigr
             return;
         }
 
-        var oldVoice = scavInfo["Voice"]?.ToString() ?? "";
+        scavInfo.TryGetValue<string>(out var oldVoice, "Voice");
         scavInfo.Remove("Voice");
 
-        var voiceMongoId = templateTable.Customization.FirstOrDefault(x => x.Value.Properties.Name == oldVoice).Key;
+        var voiceMongoId = templateTable.Customization.FirstOrDefault(x => x.Value.Properties.Name == (oldVoice ?? "")).Key;
 
         scavCustomization["Voice"] = voiceMongoId.ToString();
     }

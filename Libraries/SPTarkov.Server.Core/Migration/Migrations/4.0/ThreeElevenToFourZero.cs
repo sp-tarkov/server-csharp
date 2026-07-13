@@ -52,8 +52,7 @@ public sealed class ThreeElevenToFourZero(Watermark watermark) : AbstractProfile
             {
                 if (
                     entry.Value is JsonObject productionEntry
-                    && productionEntry["StartTimestamp"] is JsonValue startTimestampValue
-                    && startTimestampValue.TryGetValue<string>(out var startTimestampStr)
+                    && productionEntry.TryGetValue<string>(out var startTimestampStr, "StartTimestamp")
                     && long.TryParse(startTimestampStr, out var startTimestampInt)
                 )
                 {
@@ -66,9 +65,9 @@ public sealed class ThreeElevenToFourZero(Watermark watermark) : AbstractProfile
         {
             foreach (var item in insuranceArray)
             {
-                if (item is JsonObject insuranceEntry && insuranceEntry["scheduledTime"] is JsonValue scheduledTimeValue)
+                if (item is JsonObject insuranceEntry)
                 {
-                    if (scheduledTimeValue.TryGetValue<double>(out var timeAsDouble))
+                    if (insuranceEntry.TryGetValue<double>(out var timeAsDouble, "scheduledTime"))
                     {
                         // Handle the node server having turned this value into a double
                         insuranceEntry["scheduledTime"] = Convert.ToInt32(timeAsDouble);

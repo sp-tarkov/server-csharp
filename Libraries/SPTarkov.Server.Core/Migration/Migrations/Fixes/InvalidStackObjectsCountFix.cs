@@ -30,12 +30,12 @@ public sealed class InvalidStackObjectsCountFix : AbstractProfileMigration
                 continue;
             }
 
-            if (itemObj["upd"] is not JsonObject updObj)
+            if (!itemObj.TryGetObject(out var updObj, "upd"))
             {
                 continue;
             }
 
-            if (updObj["StackObjectsCount"] is JsonValue stackValue)
+            if (updObj.TryGetNode(out var stackNode, "StackObjectsCount") && stackNode is JsonValue stackValue)
             {
                 // Check if the value will fit into an int
                 // If it wont return false, as it's a double
@@ -63,12 +63,12 @@ public sealed class InvalidStackObjectsCountFix : AbstractProfileMigration
                 continue;
             }
 
-            if (itemObj["upd"] is not JsonObject updObj)
+            if (!itemObj.TryGetObject(out var updObj, "upd"))
             {
                 continue;
             }
 
-            if (updObj["StackObjectsCount"] is JsonValue stackValue)
+            if (updObj.TryGetNode(out var stackNode, "StackObjectsCount") && stackNode is JsonValue stackValue)
             {
                 if (stackValue.TryGetValue<double>(out var doubleValue))
                 {
