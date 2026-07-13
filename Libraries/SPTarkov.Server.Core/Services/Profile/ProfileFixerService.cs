@@ -181,15 +181,6 @@ public partial class ProfileFixerService(
         var customizationDbArray = customizationDb.Values;
         var playerIsUsec = string.Equals(pmcProfile.Info!.Side, "usec", StringComparison.OrdinalIgnoreCase);
 
-        // Check Head
-        if (!customizationDb.ContainsKey(pmcProfile.Customization?.Head ?? MongoId.Empty()))
-        {
-            var defaultHead = playerIsUsec
-                ? customizationDbArray.FirstOrDefault(x => x.Name == "DefaultUsecHead")
-                : customizationDbArray.FirstOrDefault(x => x.Name == "DefaultBearHead");
-            pmcProfile.Customization!.Head = defaultHead!.Id;
-        }
-
         // check Body
         if (customizationDb.ContainsKey(pmcProfile.Customization?.Body ?? MongoId.Empty()))
         {
