@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Migration.Migrations._3._11;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Utils;
@@ -45,7 +46,7 @@ public sealed class ThreeElevenToFourZero(Watermark watermark) : AbstractProfile
 
     public override JsonObject? Migrate(JsonObject profile)
     {
-        if (profile["characters"]!["pmc"]!["Hideout"]!["Production"] is JsonObject production)
+        if (profile.TryGetObject(out var production, "characters", "pmc", "Hideout", "Production"))
         {
             foreach (var entry in production)
             {
@@ -61,7 +62,7 @@ public sealed class ThreeElevenToFourZero(Watermark watermark) : AbstractProfile
             }
         }
 
-        if (profile["insurance"] is JsonArray insuranceArray)
+        if (profile.TryGetArray(out var insuranceArray, "insurance"))
         {
             foreach (var item in insuranceArray)
             {

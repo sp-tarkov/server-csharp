@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Migration.Migrations.Fixes;
 
@@ -13,7 +14,7 @@ public sealed class InvalidRepeatableQuestFix : AbstractProfileMigration
 
     public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
     {
-        if (profile["characters"]?["pmc"]?["RepeatableQuests"] is JsonArray repeatables)
+        if (profile.TryGetArray(out var repeatables, "characters", "pmc", "RepeatableQuests"))
         {
             foreach (var node in repeatables)
             {
@@ -37,7 +38,7 @@ public sealed class InvalidRepeatableQuestFix : AbstractProfileMigration
 
     public override JsonObject? Migrate(JsonObject profile)
     {
-        if (profile["characters"]?["pmc"]?["RepeatableQuests"] is JsonArray repeatables)
+        if (profile.TryGetArray(out var repeatables, "characters", "pmc", "RepeatableQuests"))
         {
             foreach (var node in repeatables)
             {

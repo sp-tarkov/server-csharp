@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Migration.Migrations._4._0;
 
@@ -18,7 +19,7 @@ public sealed class BuyRestrictionMaxStringToInt : AbstractProfileMigration
 
     public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
     {
-        if (profile?["characters"]?["pmc"]?["Inventory"]?["items"] is JsonArray items)
+        if (profile.TryGetArray(out var items, "characters", "pmc", "Inventory", "items"))
         {
             foreach (var itemNode in items)
             {
@@ -27,14 +28,11 @@ public sealed class BuyRestrictionMaxStringToInt : AbstractProfileMigration
                     continue;
                 }
 
-                if (itemObj["upd"] is JsonObject updObj)
+                if (itemObj.TryGetObject(out var updObj, "upd"))
                 {
-                    if (updObj.TryGetPropertyValue("BuyRestrictionMax", out var buyRestrictionMaxNode))
+                    if (updObj.TryGetValue<string?>(out _, "BuyRestrictionMax"))
                     {
-                        if (buyRestrictionMaxNode is JsonValue value && value.TryGetValue(out string? _))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }
@@ -45,7 +43,7 @@ public sealed class BuyRestrictionMaxStringToInt : AbstractProfileMigration
 
     public override JsonObject? Migrate(JsonObject profile)
     {
-        if (profile["characters"]?["pmc"]?["Inventory"]?["items"] is JsonArray items)
+        if (profile.TryGetArray(out var items, "characters", "pmc", "Inventory", "items"))
         {
             foreach (var itemNode in items)
             {
@@ -54,18 +52,15 @@ public sealed class BuyRestrictionMaxStringToInt : AbstractProfileMigration
                     continue;
                 }
 
-                if (itemObj["upd"] is JsonObject updObj && updObj.TryGetPropertyValue("BuyRestrictionMax", out var buyRestrictionMaxNode))
+                if (itemObj.TryGetObject(out var updObj, "upd") && updObj.TryGetValue<string?>(out var strValue, "BuyRestrictionMax"))
                 {
-                    if (buyRestrictionMaxNode is JsonValue value && value.TryGetValue(out string? strValue))
+                    if (int.TryParse(strValue, out var intValue))
                     {
-                        if (int.TryParse(strValue, out var intValue))
-                        {
-                            updObj["BuyRestrictionMax"] = intValue;
-                        }
-                        else
-                        {
-                            updObj.Remove("BuyRestrictionMax");
-                        }
+                        updObj["BuyRestrictionMax"] = intValue;
+                    }
+                    else
+                    {
+                        updObj.Remove("BuyRestrictionMax");
                     }
                 }
             }

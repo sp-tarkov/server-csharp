@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace SPTarkov.Server.Core.Extensions;
 
-public static class ProfileMigrationJsonExtensions
+public static class JsonNodeExtensions
 {
     public static bool TryGetObject(this JsonNode? node, out JsonObject value, params string[] path)
     {

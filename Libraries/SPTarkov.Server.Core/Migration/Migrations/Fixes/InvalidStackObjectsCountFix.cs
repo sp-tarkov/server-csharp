@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Migration.Migrations.Fixes;
 
@@ -17,7 +18,7 @@ public sealed class InvalidStackObjectsCountFix : AbstractProfileMigration
 
     public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
     {
-        if (profile["characters"]?["pmc"]?["Inventory"]?["items"] is not JsonArray items)
+        if (!profile.TryGetArray(out var items, "characters", "pmc", "Inventory", "items"))
         {
             return false;
         }
@@ -50,7 +51,7 @@ public sealed class InvalidStackObjectsCountFix : AbstractProfileMigration
 
     public override JsonObject? Migrate(JsonObject profile)
     {
-        if (profile["characters"]?["pmc"]?["Inventory"]?["items"] is not JsonArray items)
+        if (!profile.TryGetArray(out var items, "characters", "pmc", "Inventory", "items"))
         {
             return base.Migrate(profile);
         }
