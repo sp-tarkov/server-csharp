@@ -24,7 +24,14 @@ public sealed class HttpServer(
             return;
         }
 
-        // Use default empty mongoId if not found in cookie
+        var listener = httpListeners.FirstOrDefault(listener => listener.CanHandle(context));
+
+        if (listener is null)
+        {
+            await next(context);
+            return;
+        }
+
         var sessionId = context.Request.Cookies.TryGetValue("PHPSESSID", out var sessionIdString)
             ? new MongoId(sessionIdString)
             : MongoId.Empty();
@@ -34,16 +41,7 @@ public sealed class HttpServer(
             profileActivityService.SetActivityTimestamp(sessionId);
         }
 
-        var listener = httpListeners.FirstOrDefault(listener => listener.CanHandle(sessionId, context));
-
-        if (listener != null)
-        {
-            await listener.HandleAsync(sessionId, context, cancellationToken);
-        }
-        else
-        {
-            await next(context);
-        }
+        await listener.HandleAsync(sessionId, context, cancellationToken);
     }
 
     public string ListeningUrl()

@@ -15,7 +15,7 @@ public class ImageRouter(FileUtil fileUtil, ImageRouterService imageRouterServic
         imageRouterService.AddRoute(Uri.UnescapeDataString(key).ToLowerInvariant(), valueToAdd);
     }
 
-    public bool CanHandle(MongoId sessionId, HttpContext context)
+    public bool CanHandle(HttpContext context)
     {
         var url = fileUtil.StripExtension(context.Request.Path, true);
         var urlKeyLower = Uri.UnescapeDataString(url).ToLowerInvariant();
