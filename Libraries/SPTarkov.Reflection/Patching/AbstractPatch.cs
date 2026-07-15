@@ -142,7 +142,10 @@ public abstract class AbstractPatch : IRuntimePatch
         }
         catch (Exception ex)
         {
-            throw new Exception($"{GetType().Name}:", ex);
+            throw new PatchException(
+                $"{GetType().Name}: Failed to patch {TargetMethod.DeclaringType?.FullName}.{TargetMethod.Name} - {ex.Message}",
+                ex
+            );
         }
     }
 
