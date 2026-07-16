@@ -7,11 +7,11 @@ using Version = SemanticVersioning.Version;
 namespace SPTarkov.Server.Core.Models.Spt.Mod;
 
 /// <summary>
-/// This interface describes a mod to the host application. Every mod must contain exactly one
+/// This interface describes a mod to the SPT Server. Every mod must contain exactly one
 /// implementation. All properties must be implemented, assign null to any optional property you don't need.
 /// </summary>
 /// <remarks>
-/// The host application uses this metadata to:
+/// The SPT server uses this metadata to:
 /// <list type="bullet">
 ///   <item>
 ///     <description>Identify the mod and display it (name, author, version, url, etc.) in places such as the launcher.</description>
