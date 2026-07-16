@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
@@ -13,7 +12,6 @@ public record ClientLogRequest : IRequestData
     public string? Source { get; set; }
 
     [JsonPropertyName("Level")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public LogLevel? Level { get; set; }
 
     [JsonPropertyName("Message")]
