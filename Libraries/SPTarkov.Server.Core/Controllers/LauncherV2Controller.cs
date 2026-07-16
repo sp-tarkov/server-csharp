@@ -121,7 +121,7 @@ public class LauncherV2Controller(
     ///     Gets the Servers loaded mods.
     /// </summary>
     /// <returns></returns>
-    public Dictionary<string, AbstractModMetadata> LoadedMods()
+    public Dictionary<string, IModMetadata> LoadedMods()
     {
         return loadedMods.ToDictionary(sptMod => sptMod.ModMetadata.Name, sptMod => sptMod.ModMetadata);
     }

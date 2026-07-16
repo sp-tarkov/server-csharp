@@ -18,7 +18,7 @@
 /// </list>
 ///
 /// </remarks>
-public interface IModWebMetadata
+public interface IModBlazorMetadata
 {
     /// <summary>
     /// This property will allow you to set a custom directory for wwwroot, if this is left null it will use the assembly's name

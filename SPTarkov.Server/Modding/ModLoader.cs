@@ -318,15 +318,15 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     /// <param name="path">Path of the mod directory</param>
     /// <returns>Mod metadata</returns>
     /// <exception cref="ModLoaderException">Thrown if duplicate metadata implementations are found</exception>
-    private AbstractModMetadata LoadModMetadata(IEnumerable<Assembly> assemblies, string path)
+    private IModMetadata LoadModMetadata(IEnumerable<Assembly> assemblies, string path)
     {
-        AbstractModMetadata? result = null;
+        IModMetadata? result = null;
 
         foreach (var allAsmModules in assemblies.Select(a => a.Modules))
         {
             foreach (var module in allAsmModules)
             {
-                var modMetadata = module.GetTypes().SingleOrDefault(t => typeof(AbstractModMetadata).IsAssignableFrom(t));
+                var modMetadata = module.GetTypes().SingleOrDefault(t => typeof(IModMetadata).IsAssignableFrom(t));
 
                 if (result != null && modMetadata != null)
                 {
@@ -337,7 +337,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
                 {
                     try
                     {
-                        result = (AbstractModMetadata)Activator.CreateInstance(modMetadata)!;
+                        result = (IModMetadata)Activator.CreateInstance(modMetadata)!;
                     }
                     catch (Exception ex)
                     {
@@ -350,7 +350,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         if (result == null)
         {
             throw new ModLoaderException(
-                $"Failed to load mod metadata for: {Path.GetFullPath(path)} \ndid you override `AbstractModMetadata`?"
+                $"Failed to load mod metadata for: {Path.GetFullPath(path)} \ndid you implement `IModMetadata`?"
             );
         }
 
@@ -369,7 +369,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         var patcherPath =
             Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly).FirstOrDefault()
             ?? throw new ModLoaderException(
-                $"Failed to locate a patcher for mod: `{modGuid}`. If you did not intend to ship a patcher. Disable `HasPatcher` in AbstractModMetadata."
+                $"Failed to locate a patcher for mod: `{modGuid}`. If you did not intend to ship a patcher. Disable `HasPatcher` in your IModMetadata implementation."
             );
 
         // Load into the loader's own context so the patcher's AbstractPrepatch matches ours
