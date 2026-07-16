@@ -1,6 +1,5 @@
 using Spectre.Console;
 using SPTarkov.Common.Models.Logging;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Common.Logger;
 
@@ -19,7 +18,7 @@ public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SPTLogger
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
-                LogLevel.Info,
+                LogLevel.Information,
                 Environment.CurrentManagedThreadId,
                 Thread.CurrentThread.Name,
                 data,
@@ -36,7 +35,7 @@ public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SPTLogger
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
-                LogLevel.Info,
+                LogLevel.Information,
                 Environment.CurrentManagedThreadId,
                 Thread.CurrentThread.Name,
                 data,
@@ -68,7 +67,7 @@ public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SPTLogger
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
-                LogLevel.Warn,
+                LogLevel.Warning,
                 Environment.CurrentManagedThreadId,
                 Thread.CurrentThread.Name,
                 data,
@@ -84,7 +83,7 @@ public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SPTLogger
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
-                LogLevel.Info,
+                LogLevel.Information,
                 Environment.CurrentManagedThreadId,
                 Thread.CurrentThread.Name,
                 data,
@@ -115,7 +114,7 @@ public sealed class SptLogger<T>(SptLoggerConfiguration configuration, SPTLogger
             new SptLogMessage(
                 _category,
                 DateTime.UtcNow,
-                LogLevel.Fatal,
+                LogLevel.Critical,
                 Environment.CurrentManagedThreadId,
                 Thread.CurrentThread.Name,
                 data,

@@ -1,0 +1,157 @@
+@using System.Globalization
+@using SPTarkov.Server.Web.Models.Profiles
+@using SPTarkov.Server.Web.Services
+@inject WebLocalizationService WebLocalizationService
+
+@if (Details.PrestigeInfo.Tiers.Count > 0)
+{
+    <MudPaper Elevation="0" Class="profiles-edit-panel pa-4">
+        <MudStack Spacing="3">
+            <MudTable T="ProfilePrestigeEditModel"
+                      Items="@Details.PrestigeInfo.Tiers"
+                      Dense="true"
+                      Hover="true"
+                      Bordered="false"
+                      Striped="true"
+                      FixedHeader="true"
+                      Height="260px"
+                      Class="profiles-prestige-table">
+                <HeaderContent>
+                    <MudTh>Level</MudTh>
+                    <MudTh>Achieved</MudTh>
+                    <MudTh>Achieved at</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Level">
+                        <MudText Typo="Typo.body2" Class="profiles-row-title">@context.Label</MudText>
+                        <MudText Typo="Typo.caption" Class="profiles-mono">@context.Id</MudText>
+                    </MudTd>
+                    <MudTd DataLabel="Achieved">
+                        <MudIcon Icon="@(context.Achieved ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.RadioButtonUnchecked)"
+                                 Color="@(context.Achieved ? Color.Success : Color.Secondary)"
+                                 Size="Size.Small" />
+                    </MudTd>
+                    <MudTd DataLabel="Achieved at">
+                        <MudText Typo="Typo.caption" Class="profiles-mono">
+                            @FormatUnixTimestamp(context.AchievedAt)
+                        </MudText>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+
+            <MudDivider />
+
+            <MudStack Spacing="1">
+                <MudText Typo="Typo.subtitle2">@L("profiles-add-prestige")</MudText>
+
+                <div class="profiles-edit-grid">
+                    <MudSelect T="int?"
+                               Label="Target prestige level"
+                               Variant="Variant.Outlined"
+                               Dense="true"
+                               Value="@_selectedPrestigeTargetLevel"
+                               ValueChanged="@((value) => _selectedPrestigeTargetLevel = value)">
+                        @foreach (var level in GetAvailablePrestigeLevels())
+                        {
+                            <MudSelectItem T="int?" Value="@level">Prestige @level</MudSelectItem>
+                        }
+                    </MudSelect>
+                </div>
+
+                @if (!Details.Summary.IsWiped)
+                {
+                    <MudCheckBox T="bool"
+                                 Color="Color.Warning"
+                                 Value="@_prestigeFullWipe"
+                                 ValueChanged="@((value) => _prestigeFullWipe = value)"
+                                 Label="@L("profiles-prestige-full-wipe-label")" />
+                }
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Warning"
+                           Class="profiles-primary-button"
+                           StartIcon="@Icons.Material.Filled.MilitaryTech"
+                           Disabled="@(IsBusy || !_selectedPrestigeTargetLevel.HasValue)"
+                           OnClick="GrantSelectedPrestige">
+                    @L("profiles-add-prestige")
+                </MudButton>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+}
+else
+{
+    <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="profiles-empty-details">
+        <MudText Typo="Typo.body2" Color="Color.Secondary">@L("profiles-prestige-no-data")</MudText>
+    </MudStack>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public ProfileDetails Details { get; set; } = null!;
+
+    [Parameter]
+    public bool IsBusy { get; set; }
+
+    [Parameter]
+    public EventCallback<ProfilePrestigeGrantRequest> OnGrantPrestige { get; set; }
+
+    private ProfileDetails? _detailsReference;
+    private int? _selectedPrestigeTargetLevel;
+    private bool _prestigeFullWipe = true;
+
+    protected override void OnParametersSet()
+    {
+        if (ReferenceEquals(_detailsReference, Details))
+        {
+            return;
+        }
+
+        _detailsReference = Details;
+        _selectedPrestigeTargetLevel = null;
+        _prestigeFullWipe = !Details.Summary.IsWiped;
+    }
+
+    private List<int> GetAvailablePrestigeLevels()
+    {
+        return Enumerable
+            .Range(Details.PrestigeInfo.CurrentLevel + 1, Math.Max(0, Details.PrestigeInfo.MaxLevel - Details.PrestigeInfo.CurrentLevel))
+            .ToList();
+    }
+
+    private Task GrantSelectedPrestige()
+    {
+        if (!_selectedPrestigeTargetLevel.HasValue)
+        {
+            return Task.CompletedTask;
+        }
+
+        var fullWipe = _prestigeFullWipe && !Details.Summary.IsWiped;
+        return OnGrantPrestige.InvokeAsync(new ProfilePrestigeGrantRequest(Details.Summary.Id, _selectedPrestigeTargetLevel.Value, fullWipe));
+    }
+
+    private string L(string key)
+    {
+        return WebLocalizationService.GetText(key);
+    }
+
+    private static string FormatUnixTimestamp(double value)
+    {
+        if (value <= 0d)
+        {
+            return "n/a";
+        }
+
+        try
+        {
+            return DateTimeOffset
+                .FromUnixTimeSeconds((long)Math.Round(value))
+                .ToLocalTime()
+                .ToString("yyyy-MM-dd HH:mm:ss zzz", CultureInfo.CurrentCulture);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return value.ToString("0", CultureInfo.CurrentCulture);
+        }
+    }
+}

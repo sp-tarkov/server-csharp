@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Microsoft.Extensions.Logging;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
@@ -12,7 +13,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Profile;
 using SPTarkov.Server.Core.Utils;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Servers;
 
@@ -22,7 +22,7 @@ public sealed class SaveServer(
     IEnumerable<SaveLoadRouter> saveLoadRouters,
     JsonUtil jsonUtil,
     HashUtil hashUtil,
-    ProfileValidatorService profileValidatorService,
+    ProfileMigrationService profileValidatorService,
     BackupService backupService,
     ISptLogger<SaveServer> logger,
     CoreConfig coreConfig

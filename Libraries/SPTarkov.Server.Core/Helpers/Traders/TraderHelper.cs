@@ -14,7 +14,7 @@ using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services.Commerce;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
+using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Helpers.Traders;
 
@@ -299,17 +299,14 @@ public class TraderHelper(
     }
 
     /// <summary>
-    ///     Add standing to current standing and clamp value if it goes too low
+    ///     Add standing to current standing
     /// </summary>
     /// <param name="currentStanding">current trader standing</param>
     /// <param name="standingToAdd">standing to add to trader standing</param>
-    /// <returns>current standing + added standing (clamped if needed)</returns>
+    /// <returns>current standing + added standing</returns>
     protected double? AddStandingValuesTogether(double? currentStanding, double standingToAdd)
     {
-        var newStanding = currentStanding + standingToAdd;
-
-        // Never let standing fall below 0
-        return newStanding < 0 ? 0 : newStanding;
+        return currentStanding + standingToAdd;
     }
 
     /// <summary>
@@ -358,8 +355,8 @@ public class TraderHelper(
             }
         }
 
-        // set level
-        pmcData.TradersInfo[traderId].LoyaltyLevel = targetLevel;
+        // Set level, minimum of 1 as negative standing fails level 1's MinStanding check
+        pmcData.TradersInfo[traderId].LoyaltyLevel = Math.Max(targetLevel, 1);
     }
 
     /// <summary>

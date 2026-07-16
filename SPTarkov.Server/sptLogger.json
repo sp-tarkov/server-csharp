@@ -2,7 +2,7 @@
   "loggers": [
     {
       "type": "File",
-      "logLevel": "Info",
+      "logLevel": "Information",
       "format": "[%date% %time%][%level%][%logger%] %message%",
       "filePath": "./user/logs/spt/",
       "filePattern": "spt%DATE%.log",
@@ -23,7 +23,7 @@
     },
     {
       "type": "File",
-      "logLevel": "Info",
+      "logLevel": "Information",
       "format": "[%date% %time%][%level%][%logger%] %message%",
       "filePath": "./user/logs/requests/",
       "filePattern": "requests%DATE%.log",
@@ -39,7 +39,7 @@
     },
     {
       "type": "Console",
-      "logLevel": "Info",
+      "logLevel": "Information",
       "format": "%message%",
       "filters": [
         {
@@ -60,6 +60,11 @@
         {
           "type": "Exclude",
           "name": ".*RequestLogger",
+          "matchingType": "Regex"
+        },
+        {
+          "type": "Exclude",
+          "name": ".*SystemInformationLogger",
           "matchingType": "Regex"
         }
       ]

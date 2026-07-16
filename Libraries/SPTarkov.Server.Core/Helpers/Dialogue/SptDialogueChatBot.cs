@@ -25,7 +25,7 @@ public class SptDialogueChatBot(
         return new UserDialogInfo
         {
             Id = coreConfig.Features.ChatbotFeatures.Ids["spt"],
-            Aid = 1234566,
+            Aid = coreConfig.Features.ChatbotFeatures.Aids["spt"],
             Info = new UserDialogDetails
             {
                 Level = 1,

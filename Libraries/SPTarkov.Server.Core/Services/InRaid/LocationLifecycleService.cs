@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
@@ -26,7 +27,6 @@ using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Services.Profile;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services.InRaid;
 
@@ -67,7 +67,6 @@ public class LocationLifecycleService(
     RagfairConfig ragfairConfig,
     HideoutConfig hideoutConfig,
     PmcConfig pmcConfig,
-    BotConfig botConfig,
     LostOnDeathConfig lostOnDeathConfig,
     SeasonalEventConfig seasonalEventConfig
 )
@@ -390,11 +389,6 @@ public class LocationLifecycleService(
             return locationBaseClone;
         }
 
-        if (botConfig.GoonSpawnSystem.Enabled)
-        {
-            AdjustGoonMapSpawns();
-        }
-
         // Add custom PMCs to map every time its run
         pmcWaveGenerator.ApplyWaveChangesToMap(locationBaseClone);
 
@@ -421,63 +415,6 @@ public class LocationLifecycleService(
         }
 
         return locationBaseClone;
-    }
-
-    /// <summary>
-    /// Goons will spawn on one map each hour, changing randomly based on a consistent seed made from current utc year + utc hour
-    /// </summary>
-    /// <param name="locationBlacklist">LocationIds to always ignore when choosing a spawn</param>
-    protected void AdjustGoonMapSpawns(HashSet<string>? locationBlacklist = null)
-    {
-        locationBlacklist ??= ["hideout", "develop"];
-
-        // Reset all maps with goons to 0% spawn, ignore blacklisted locations
-        var allLocations = locationTable.GetDictionary();
-        foreach (var (locationId, location) in allLocations)
-        {
-            if (!locationBlacklist.Contains(locationId) && location?.Base?.BossLocationSpawn is not null)
-            {
-                foreach (var goonSpawn in location.Base.BossLocationSpawn.Where(x => x.BossName == "bossKnight"))
-                {
-                    goonSpawn.BossChance = 0;
-                }
-            }
-        }
-
-        var now = DateTime.UtcNow;
-
-        // Create consistent seed for hour (use prime)
-        var seed = (now.Year * 1009) + now.Hour;
-
-        // Init Random class with unique seed
-        var random = new Random(seed);
-
-        // Filter locations pool
-        var validLocationIds = botConfig
-            .GoonSpawnSystem.LocationPool.Where(locationId =>
-                !locationBlacklist.Contains(locationId)
-                && allLocations.TryGetValue(locationId, out var location)
-                && location?.Base?.BossLocationSpawn is not null
-            )
-            .ToList();
-
-        if (validLocationIds.Count == 0)
-        {
-            logger.Error("Unable to adjust goon spawn chance, no valid locations found");
-
-            return;
-        }
-
-        // Choose a spawn location for goons
-        var chosenMapId = validLocationIds[random.Next(0, validLocationIds.Count)];
-        var chosenMap = allLocations[chosenMapId];
-
-        // "Where" just incase there's multiple knight spawns for some reason
-        var goonSpawns = chosenMap.Base.BossLocationSpawn.Where(x => x.BossName == "bossKnight");
-        foreach (var goonSpawn in goonSpawns)
-        {
-            goonSpawn.BossChance = botConfig.GoonSpawnSystem.SpawnChance;
-        }
     }
 
     /// <summary>

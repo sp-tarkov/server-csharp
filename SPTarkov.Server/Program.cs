@@ -1,4 +1,7 @@
 using System.Net.Sockets;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Loader;
 using System.Security.Authentication;
 using System.Text;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -29,6 +32,8 @@ public static class Program
 
     public static async Task Main(string[] args)
     {
+        RegisterSatelliteLocalizations();
+
         // Initialize the program variables
         ProgramStatics.Initialize();
 
@@ -136,7 +141,7 @@ public static class Program
 
             _earlyLogger!.LogCritical(
                 e,
-                "The server has unexpectedly stopped, reach out to #mod-questions-4-0 in our Discord server. Include a screenshot of this message and the surrounding error(s) above and below"
+                "The server has unexpectedly stopped, reach out to the support channel in our Discord server. Include a screenshot of this message and the surrounding error(s) above and below"
             );
             Console.WriteLine("Press any key to exit...");
             Console.ReadLine();
@@ -159,7 +164,7 @@ public static class Program
         if (ProgramStatics.MODS())
         {
             var modLoader = earlyServiceProvider.GetRequiredService<ModLoader>();
-            var runResult = await modLoader.RunModLoader(loggerFactory, args);
+            var runResult = await modLoader.RunModLoader(args);
             if (!runResult.ShouldStartServer)
             {
                 return;
@@ -168,6 +173,19 @@ public static class Program
             loadedMods = runResult.ValidRuntimeMods;
         }
 
+        await StartServerAfterModLoading(loggerFactory, configuration, earlyServiceProvider, loadedMods);
+    }
+
+    /// <summary>
+    /// Split the loading logic, this method needs to stay seperated as otherwise things are forced into context too early which causes issues with mod loading pre-patching (In particular the SIC not loading)
+    /// </summary>
+    private static async Task StartServerAfterModLoading(
+        SptEarlyLoggerFactory loggerFactory,
+        IReadOnlyDictionary<Type, BaseConfig> configuration,
+        IServiceProvider earlyServiceProvider,
+        List<SptMod> loadedMods
+    )
+    {
         var cTSource = new CancellationTokenSource();
         var dbImporter = earlyServiceProvider.GetRequiredService<DatabaseImporter>();
 
@@ -219,6 +237,7 @@ public static class Program
         // Configure Kestrel options
         ConfigureKestrel(builder);
 
+        builder.Services.AddHttpContextAccessor();
         builder.Services.AddHttpClient();
         builder.Services.AddHttpClient(
             "Github",
@@ -257,15 +276,13 @@ public static class Program
 
     private static void ConfigureWebApp(WebApplication app)
     {
-        app.UseWebSockets(
-            new WebSocketOptions
-            {
-                // Every minute a heartbeat is sent to keep the connection alive.
-                KeepAliveInterval = TimeSpan.FromSeconds(60),
-            }
-        );
+        app.UseWebSockets();
 
         app.UseMiddleware<SptLoggerMiddleware>();
+
+        // Docker health endpoint
+        app.MapGet("/health", () => Results.Ok(new { status = "healthy", version = ProgramStatics.SPT_VERSION().ToString() }))
+            .AllowAnonymous();
 
         app.Use(
             async (context, next) =>
@@ -298,5 +315,29 @@ public static class Program
 
         // This file is guaranteed to exist if ran from the correct location, even if the game does not exist here.
         return dirFiles.Any(dirFile => dirFile.EndsWith("sptLogger.json") || dirFile.EndsWith("sptLogger.Development.json"));
+    }
+
+    /// <summary>
+    /// This method makes sure that the satellite assemblies that other libraries create get moved out of the root directory to reduce clutter
+    /// </summary>
+    private static void RegisterSatelliteLocalizations()
+    {
+        AssemblyLoadContext.Default.Resolving += (context, assemblyName) =>
+            ResolveSatelliteAssembly(AppContext.BaseDirectory, assemblyName, context.LoadFromAssemblyPath);
+    }
+
+    public static Assembly? ResolveSatelliteAssembly(string baseDirectory, AssemblyName assemblyName, Func<string, Assembly> loadFromPath)
+    {
+        if (
+            assemblyName.Name is not { } name
+            || !name.EndsWith(".resources", StringComparison.Ordinal)
+            || assemblyName.CultureName is not { Length: > 0 } culture
+        )
+        {
+            return null;
+        }
+
+        var path = Path.Combine(baseDirectory, "SPT_Data", "dotnet", culture, $"{name}.dll");
+        return File.Exists(path) ? loadFromPath(path) : null;
     }
 }

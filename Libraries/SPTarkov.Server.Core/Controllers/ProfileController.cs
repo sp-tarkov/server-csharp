@@ -72,8 +72,9 @@ public class ProfileController(
                 ProfileId = profile.ProfileInfo?.ProfileId ?? string.Empty,
                 InvalidOrUnloadableProfile = profile.ProfileInfo?.InvalidOrUnloadableProfile,
                 SptData = profileHelper.GetDefaultSptDataObject(),
+                Wipe = true,
                 ProfileCurrency = profileHelper.GetAccountCurrency(profile),
-                ProfileStats = profileHelper.GetProfileStats(profile)
+                ProfileStats = profileHelper.GetProfileStats(profile),
             };
         }
 
@@ -91,8 +92,9 @@ public class ProfileController(
             ProfileId = profile.ProfileInfo?.ProfileId ?? string.Empty,
             InvalidOrUnloadableProfile = profile.ProfileInfo?.InvalidOrUnloadableProfile,
             SptData = profile.SptData,
+            Wipe = profile.ProfileInfo?.IsWiped ?? false,
             ProfileCurrency = profileHelper.GetAccountCurrency(profile),
-            ProfileStats = profileHelper.GetProfileStats(profile)
+            ProfileStats = profileHelper.GetProfileStats(profile),
         };
     }
 
@@ -103,26 +105,7 @@ public class ProfileController(
     /// <returns>Return a full profile, scav and pmc profiles + meta data</returns>
     public List<PmcData> GetCompleteProfile(MongoId sessionId)
     {
-        var profile = profileHelper.GetCompleteProfile(sessionId);
-
-        // Some users like to crank massive skill multipliers and send the client invalid information,
-        // causing a json exception during parsing
-        if (profile.Any())
-        {
-            if (profile[0].Skills != null)
-            {
-                // Pmc profile is index 0
-                profileFixerService.CheckForSkillsOutOfRange(profile[0]);
-            }
-
-            if (profile[1].Skills != null)
-            {
-                // We also do the scav profile here because it is also affected by the skill multipliers
-                profileFixerService.CheckForSkillsOutOfRange(profile[1]);
-            }
-        }
-
-        return profile;
+        return profileHelper.GetCompleteProfile(sessionId);
     }
 
     /// <summary>

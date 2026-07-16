@@ -7,7 +7,7 @@ using SPTarkov.Server.Core.Models.Eft.Location;
 using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.InRaid;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
+using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Controllers;
 

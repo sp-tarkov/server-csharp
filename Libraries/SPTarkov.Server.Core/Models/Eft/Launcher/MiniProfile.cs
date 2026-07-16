@@ -40,6 +40,9 @@ public record MiniProfile
     [JsonPropertyName("sptData")]
     public Profile.Spt? SptData { get; set; }
 
+    [JsonPropertyName("wipe")]
+    public bool Wipe { get; set; }
+
     [JsonPropertyName("profileCurrency")]
     public ProfileCurrency? ProfileCurrency { get; set; }
 

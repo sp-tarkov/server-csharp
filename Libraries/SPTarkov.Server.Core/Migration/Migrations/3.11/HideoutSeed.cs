@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using Range = SemanticVersioning.Range;
 
 namespace SPTarkov.Server.Core.Migration.Migrations._3._11;
@@ -32,17 +33,18 @@ public sealed class HideoutSeed : AbstractProfileMigration
         var fromRange = Range.Parse(FromVersion);
         var profileVersionMatches = fromRange.IsSatisfied(profileVersion);
 
-        var seedNode = profile["characters"]?["pmc"]?["Hideout"]?["Seed"];
-
         // Check if the seed still has it's numeric value, this is not valid anymore
-        var seedIsNumeric = seedNode is JsonValue seedValue && seedValue.TryGetValue<long>(out _);
+        var seedIsNumeric = profile.TryGetValue<long>(out _, "characters", "pmc", "Hideout", "Seed");
 
         return profileVersionMatches && seedIsNumeric;
     }
 
     public override JsonObject? Migrate(JsonObject profile)
     {
-        profile["characters"]!["pmc"]!["Hideout"]!["Seed"] = Convert.ToHexStringLower(RandomNumberGenerator.GetBytes(16));
+        if (profile.TryGetObject(out var hideout, "characters", "pmc", "Hideout"))
+        {
+            hideout["Seed"] = Convert.ToHexStringLower(RandomNumberGenerator.GetBytes(16));
+        }
 
         return base.Migrate(profile);
     }

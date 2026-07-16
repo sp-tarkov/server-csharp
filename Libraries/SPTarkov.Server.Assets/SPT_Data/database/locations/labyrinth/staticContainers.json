@@ -1,1 +1,1126 @@
-{"staticWeapons":[],"staticContainers":[{"probability":0.69,"template":{"Id":"container_Labyrinth_DesignMain_00014","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fb3448405e73093715","Items":[{"_id":"67eff3fb3448405e73093715","_tpl":"67adf4eb110ba15da90c6413","upd":{"StackObjectsCount":1}}]}},{"probability":0.59,"template":{"Id":"container_Labyrinth_DesignMain_00005","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fb3448405e73093719","Items":[{"_id":"67eff3fb3448405e73093719","_tpl":"67adf4db515e3dd542077a1d","upd":{"StackObjectsCount":1}}]}},{"probability":0.73,"template":{"Id":"container_Labyrinth_DesignMain_00017","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":true,"Root":"67eff3fb3448405e7309371f","Items":[{"_id":"67eff3fb3448405e7309371f","_tpl":"67adf5f7adc1f43b0702b826","upd":{"StackObjectsCount":1}}]}},{"probability":0.69,"template":{"Id":"container_Labyrinth_DesignMain_00008","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fb3448405e7309372d","Items":[{"_id":"67eff3fb3448405e7309372d","_tpl":"67adf5752fc5ee84020a9940","upd":{"StackObjectsCount":1}}]}},{"probability":0.64,"template":{"Id":"container_Labyrinth_DesignMain_00002","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":true,"Root":"67eff3fb3448405e73093735","Items":[{"_id":"67eff3fb3448405e73093735","_tpl":"67adf5f7adc1f43b0702b826","upd":{"StackObjectsCount":1}}]}},{"probability":0.68,"template":{"Id":"container_Labyrinth_DesignMain_00009","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fb3448405e73093739","Items":[{"_id":"67eff3fb3448405e73093739","_tpl":"67adf5752fc5ee84020a9940","upd":{"StackObjectsCount":1}}]}},{"probability":0.69,"template":{"Id":"container_Labyrinth_DesignMain_00019","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fb3448405e73093750","Items":[{"_id":"67eff3fb3448405e73093750","_tpl":"67adf4db515e3dd542077a1d","upd":{"StackObjectsCount":1}}]}},{"probability":0.7,"template":{"Id":"container_ProfileEditor_00004","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fb3448405e73093754","Items":[{"_id":"67eff3fb3448405e73093754","_tpl":"67adf5752fc5ee84020a9940","upd":{"StackObjectsCount":1}}]}},{"probability":0.79,"template":{"Id":"container_Labyrinth_Scripts_00001","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fb3448405e7309375a","Items":[{"_id":"67eff3fb3448405e7309375a","_tpl":"67adf4db515e3dd542077a1d","upd":{"StackObjectsCount":1}}]}},{"probability":0.59,"template":{"Id":"container_Labyrinth_DesignMain_00001","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fb3448405e73093760","Items":[{"_id":"67eff3fb3448405e73093760","_tpl":"67adf4a95247ac91530fcec7","upd":{"StackObjectsCount":1}}]}},{"probability":0.73,"template":{"Id":"container_Labyrinth_DesignMain_00015","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":true,"Root":"67eff3fb3448405e73093764","Items":[{"_id":"67eff3fb3448405e73093764","_tpl":"67adf5f7adc1f43b0702b826","upd":{"StackObjectsCount":1}}]}},{"probability":0.79,"template":{"Id":"container_Labyrinth_Scripts_00004","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fb3448405e7309376a","Items":[{"_id":"67eff3fb3448405e7309376a","_tpl":"67adf4b81c58bd68b2002fec","upd":{"StackObjectsCount":1}}]}},{"probability":0.59,"template":{"Id":"container_Labyrinth_Scripts_00008","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fb3448405e73093778","Items":[{"_id":"67eff3fb3448405e73093778","_tpl":"67adf4a95247ac91530fcec7","upd":{"StackObjectsCount":1}}]}},{"probability":0.65,"template":{"Id":"container_Labyrinth_DesignMain_00004","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":true,"Root":"67eff3fb3448405e73093780","Items":[{"_id":"67eff3fb3448405e73093780","_tpl":"67adf5f7adc1f43b0702b826","upd":{"StackObjectsCount":1}}]}},{"probability":0.69,"template":{"Id":"container_Labyrinth_DesignMain_00024","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fb3448405e7309378c","Items":[{"_id":"67eff3fb3448405e7309378c","_tpl":"67adf4b81c58bd68b2002fec","upd":{"StackObjectsCount":1}}]}},{"probability":0.74,"template":{"Id":"container_Labyrinth_DesignMain_00016","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":true,"Root":"67eff3fb3448405e7309379a","Items":[{"_id":"67eff3fb3448405e7309379a","_tpl":"67adf5f7adc1f43b0702b826","upd":{"StackObjectsCount":1}}]}},{"probability":1,"template":{"Id":"container_Labyrinth_Scripts_00003","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":true,"Root":"67eff3fb3448405e730937a4","Items":[{"_id":"67eff3fb3448405e730937a4","_tpl":"67adf5752fc5ee84020a9940","upd":{"StackObjectsCount":1}}]}},{"probability":0.7,"template":{"Id":"container_Labyrinth_DesignMain_00018","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fb3448405e730937bf","Items":[{"_id":"67eff3fb3448405e730937bf","_tpl":"67adf4db515e3dd542077a1d","upd":{"StackObjectsCount":1}}]}},{"probability":1,"template":{"Id":"container_Labyrinth_Scripts_00000","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":true,"Root":"67eff3fc3448405e730937cb","Items":[{"_id":"67eff3fc3448405e730937cb","_tpl":"67adf5752fc5ee84020a9940","upd":{"StackObjectsCount":1}}]}},{"probability":0.79,"template":{"Id":"container_Labyrinth_DesignMain_00010","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fb3448405e73093704","Items":[{"_id":"67eff3fb3448405e73093704","_tpl":"67adf4db515e3dd542077a1d","upd":{"StackObjectsCount":1}}]}},{"probability":0.69,"template":{"Id":"container_Labyrinth_DesignMain_00022","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fb3448405e7309377c","Items":[{"_id":"67eff3fb3448405e7309377c","_tpl":"67adf4db515e3dd542077a1d","upd":{"StackObjectsCount":1}}]}},{"probability":0.8,"template":{"Id":"container_Labyrinth_Scripts_00002","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67eff3fc3448405e730937c5","Items":[{"_id":"67eff3fc3448405e730937c5","_tpl":"67adf54d1c58bd68b2002ff0","upd":{"StackObjectsCount":1}}]}},{"probability":0.7,"template":{"Id":"container_Labyrinth_DesignMain_00021","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67efecf3dfa458f7e10ea25c","Items":[{"_id":"67efecf3dfa458f7e10ea25c","_tpl":"67adf4db515e3dd542077a1d","upd":{"StackObjectsCount":1}}]}},{"probability":0.6,"template":{"Id":"container_Labyrinth_Scripts_00007","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67efecf3dfa458f7e10ea260","Items":[{"_id":"67efecf3dfa458f7e10ea260","_tpl":"67adf4eb110ba15da90c6413","upd":{"StackObjectsCount":1}}]}},{"probability":0.68,"template":{"Id":"container_Labyrinth_DesignMain_00023","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67efecf3dfa458f7e10ea272","Items":[{"_id":"67efecf3dfa458f7e10ea272","_tpl":"67adf4b81c58bd68b2002fec","upd":{"StackObjectsCount":1}}]}},{"probability":0.69,"template":{"Id":"container_Labyrinth_DesignMain_00020","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67efecf3dfa458f7e10ea2aa","Items":[{"_id":"67efecf3dfa458f7e10ea2aa","_tpl":"67adf4db515e3dd542077a1d","upd":{"StackObjectsCount":1}}]}},{"probability":0.69,"template":{"Id":"container_Labyrinth_DesignMain_00011","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67efecf3dfa458f7e10ea2ba","Items":[{"_id":"67efecf3dfa458f7e10ea2ba","_tpl":"67adf54d1c58bd68b2002ff0","upd":{"StackObjectsCount":1}}]}},{"probability":0.69,"template":{"Id":"container_Labyrinth_DesignMain_00007","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67efecf3dfa458f7e10ea2c0","Items":[{"_id":"67efecf3dfa458f7e10ea2c0","_tpl":"67adf5752fc5ee84020a9940","upd":{"StackObjectsCount":1}}]}},{"probability":0.6,"template":{"Id":"container_Labyrinth_DesignMain_00003","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67efecf3dfa458f7e10ea2f7","Items":[{"_id":"67efecf3dfa458f7e10ea2f7","_tpl":"67adf4db515e3dd542077a1d","upd":{"StackObjectsCount":1}}]}},{"probability":0.59,"template":{"Id":"container_Labyrinth_DesignMain_00000","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67efecf3dfa458f7e10ea2fb","Items":[{"_id":"67efecf3dfa458f7e10ea2fb","_tpl":"67adf54d1c58bd68b2002ff0","upd":{"StackObjectsCount":1}}]}},{"probability":0.69,"template":{"Id":"container_Labyrinth_DesignMain_00006","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67efef4c2cd37fe12b0d9118","Items":[{"_id":"67efef4c2cd37fe12b0d9118","_tpl":"67adf5752fc5ee84020a9940","upd":{"StackObjectsCount":1}}]}},{"probability":0.68,"template":{"Id":"container_Labyrinth_DesignMain_00013","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67efef4c2cd37fe12b0d9134","Items":[{"_id":"67efef4c2cd37fe12b0d9134","_tpl":"67adf4eb110ba15da90c6413","upd":{"StackObjectsCount":1}}]}},{"probability":0.6,"template":{"Id":"container_Labyrinth_Scripts_00006","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67efe843dbf85fb3bc056b33","Items":[{"_id":"67efe843dbf85fb3bc056b33","_tpl":"67adf4db515e3dd542077a1d","upd":{"StackObjectsCount":1}}]}},{"probability":0.7,"template":{"Id":"container_Labyrinth_DesignMain_00012","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67efe843dbf85fb3bc056b71","Items":[{"_id":"67efe843dbf85fb3bc056b71","_tpl":"67adf54d1c58bd68b2002ff0","upd":{"StackObjectsCount":1}}]}},{"probability":0.69,"template":{"Id":"container_Labyrinth_DesignMain_00025","IsContainer":true,"useGravity":false,"randomRotation":false,"Position":{"x":0,"y":0,"z":0},"Rotation":{"x":0,"y":0,"z":0},"IsGroupPosition":false,"GroupPositions":[],"IsAlwaysSpawn":false,"Root":"67efe393c41b4362f601ca62","Items":[{"_id":"67efe393c41b4362f601ca62","_tpl":"67adf5752fc5ee84020a9940","upd":{"StackObjectsCount":1}}]}}],"staticForced":[]}
+{
+  "staticWeapons": [],
+  "staticContainers": [
+    {
+      "probability": 0.67,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00014",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac22d",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac22d",
+            "_tpl": "67adf4eb110ba15da90c6413",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.67,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00021",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac235",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac235",
+            "_tpl": "67adf4db515e3dd542077a1d",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.57,
+      "template": {
+        "Id": "container_Labyrinth_Scripts_00007",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac239",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac239",
+            "_tpl": "67adf4eb110ba15da90c6413",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.66,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00023",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac247",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac247",
+            "_tpl": "67adf4b81c58bd68b2002fec",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.67,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00008",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac259",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac259",
+            "_tpl": "67adf5752fc5ee84020a9940",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.68,
+      "template": {
+        "Id": "container_ProfileEditor_00004",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac275",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac275",
+            "_tpl": "67adf5752fc5ee84020a9940",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.77,
+      "template": {
+        "Id": "container_Labyrinth_Scripts_00004",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac28e",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac28e",
+            "_tpl": "67adf4b81c58bd68b2002fec",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.67,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00011",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac298",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac298",
+            "_tpl": "67adf54d1c58bd68b2002ff0",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.67,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00007",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac2a0",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac2a0",
+            "_tpl": "67adf5752fc5ee84020a9940",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.57,
+      "template": {
+        "Id": "container_Labyrinth_Scripts_00008",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac2a4",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac2a4",
+            "_tpl": "67adf4a95247ac91530fcec7",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.67,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00024",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac2ae",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac2ae",
+            "_tpl": "67adf4b81c58bd68b2002fec",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.71,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00016",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": true,
+        "Root": "67f1457c3350c4c0010ac2b4",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac2b4",
+            "_tpl": "67adf5f7adc1f43b0702b826",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 1,
+      "template": {
+        "Id": "container_Labyrinth_Scripts_00003",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": true,
+        "Root": "67f1457c3350c4c0010ac2c0",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac2c0",
+            "_tpl": "67adf5752fc5ee84020a9940",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.67,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00006",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac2c8",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac2c8",
+            "_tpl": "67adf5752fc5ee84020a9940",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.78,
+      "template": {
+        "Id": "container_Labyrinth_Scripts_00002",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac2d4",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac2d4",
+            "_tpl": "67adf54d1c58bd68b2002ff0",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.57,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00003",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac2da",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac2da",
+            "_tpl": "67adf4db515e3dd542077a1d",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.57,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00000",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1457c3350c4c0010ac2e0",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac2e0",
+            "_tpl": "67adf54d1c58bd68b2002ff0",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 1,
+      "template": {
+        "Id": "container_Labyrinth_Scripts_00000",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": true,
+        "Root": "67f1457c3350c4c0010ac2e6",
+        "Items": [
+          {
+            "_id": "67f1457c3350c4c0010ac2e6",
+            "_tpl": "67adf5752fc5ee84020a9940",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.77,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00010",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1513401c549ac1808de23",
+        "Items": [
+          {
+            "_id": "67f1513401c549ac1808de23",
+            "_tpl": "67adf4db515e3dd542077a1d",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.71,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00017",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": true,
+        "Root": "67f1513401c549ac1808de35",
+        "Items": [
+          {
+            "_id": "67f1513401c549ac1808de35",
+            "_tpl": "67adf5f7adc1f43b0702b826",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.61,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00002",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": true,
+        "Root": "67f1513401c549ac1808de3d",
+        "Items": [
+          {
+            "_id": "67f1513401c549ac1808de3d",
+            "_tpl": "67adf5f7adc1f43b0702b826",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.66,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00009",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1513401c549ac1808de41",
+        "Items": [
+          {
+            "_id": "67f1513401c549ac1808de41",
+            "_tpl": "67adf5752fc5ee84020a9940",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.67,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00025",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1513401c549ac1808de49",
+        "Items": [
+          {
+            "_id": "67f1513401c549ac1808de49",
+            "_tpl": "67adf5752fc5ee84020a9940",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.67,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00019",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1513401c549ac1808de4f",
+        "Items": [
+          {
+            "_id": "67f1513401c549ac1808de4f",
+            "_tpl": "67adf4db515e3dd542077a1d",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.57,
+      "template": {
+        "Id": "container_Labyrinth_Scripts_00006",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1513401c549ac1808de53",
+        "Items": [
+          {
+            "_id": "67f1513401c549ac1808de53",
+            "_tpl": "67adf4db515e3dd542077a1d",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.67,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00020",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1513401c549ac1808de63",
+        "Items": [
+          {
+            "_id": "67f1513401c549ac1808de63",
+            "_tpl": "67adf4db515e3dd542077a1d",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.71,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00015",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": true,
+        "Root": "67f1513401c549ac1808de69",
+        "Items": [
+          {
+            "_id": "67f1513401c549ac1808de69",
+            "_tpl": "67adf5f7adc1f43b0702b826",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.67,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00022",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1513401c549ac1808de7f",
+        "Items": [
+          {
+            "_id": "67f1513401c549ac1808de7f",
+            "_tpl": "67adf4db515e3dd542077a1d",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.68,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00012",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1513401c549ac1808de87",
+        "Items": [
+          {
+            "_id": "67f1513401c549ac1808de87",
+            "_tpl": "67adf54d1c58bd68b2002ff0",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.68,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00018",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1513401c549ac1808deb5",
+        "Items": [
+          {
+            "_id": "67f1513401c549ac1808deb5",
+            "_tpl": "67adf4db515e3dd542077a1d",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.66,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00013",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1513401c549ac1808dec3",
+        "Items": [
+          {
+            "_id": "67f1513401c549ac1808dec3",
+            "_tpl": "67adf4eb110ba15da90c6413",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.56,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00005",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1538ced8fb8d3f407533a",
+        "Items": [
+          {
+            "_id": "67f1538ced8fb8d3f407533a",
+            "_tpl": "67adf4db515e3dd542077a1d",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.77,
+      "template": {
+        "Id": "container_Labyrinth_Scripts_00001",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f1538ced8fb8d3f4075388",
+        "Items": [
+          {
+            "_id": "67f1538ced8fb8d3f4075388",
+            "_tpl": "67adf4db515e3dd542077a1d",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.61,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00004",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": true,
+        "Root": "67f1538ced8fb8d3f40753be",
+        "Items": [
+          {
+            "_id": "67f1538ced8fb8d3f40753be",
+            "_tpl": "67adf5f7adc1f43b0702b826",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "probability": 0.56,
+      "template": {
+        "Id": "container_Labyrinth_DesignMain_00001",
+        "IsContainer": true,
+        "useGravity": false,
+        "randomRotation": false,
+        "Position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "Rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "IsGroupPosition": false,
+        "GroupPositions": [],
+        "IsAlwaysSpawn": false,
+        "Root": "67f147d31a81b967e20cb5a0",
+        "Items": [
+          {
+            "_id": "67f147d31a81b967e20cb5a0",
+            "_tpl": "67adf4a95247ac91530fcec7",
+            "upd": {
+              "StackObjectsCount": 1
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "staticForced": []
+}

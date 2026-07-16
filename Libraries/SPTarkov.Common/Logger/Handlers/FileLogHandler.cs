@@ -24,7 +24,7 @@ internal sealed class FileLogHandler : BaseLogHandler
 
         var provider = GetOrCreateProvider(config);
         var logger = provider.CreateLogger(message.Logger);
-        var logLevel = message.LogLevel.ConvertToMicrosoftLogLevel();
+        var logLevel = message.LogLevel;
 
         if (!logger.IsEnabled(logLevel))
         {

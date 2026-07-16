@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Migration.Migrations._4._0;
 
@@ -18,7 +19,7 @@ public sealed class RemoveGInterfaceFromVictims : AbstractProfileMigration
 
     public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
     {
-        if (profile?["characters"]?["pmc"]?["Stats"]?["Eft"]?["Victims"] is JsonArray victims)
+        if (profile.TryGetArray(out var victims, "characters", "pmc", "Stats", "Eft", "Victims"))
         {
             foreach (var victim in victims)
             {
@@ -31,7 +32,7 @@ public sealed class RemoveGInterfaceFromVictims : AbstractProfileMigration
                 }
             }
         }
-        else if (profile?["characters"]?["pmc"]?["Stats"]?["Eft"]?["Aggressor"] is JsonObject aggressorObj)
+        else if (profile.TryGetObject(out var aggressorObj, "characters", "pmc", "Stats", "Eft", "Aggressor"))
         {
             if (aggressorObj.Any(kvp => kvp.Key.StartsWith("GInterface")))
             {
@@ -44,13 +45,16 @@ public sealed class RemoveGInterfaceFromVictims : AbstractProfileMigration
 
     public override JsonObject? Migrate(JsonObject profile)
     {
-        if (profile?["characters"]?["pmc"]?["Stats"]?["Eft"] is not JsonNode eftStats)
+        if (!profile.TryGetNode(out var eftStats, "characters", "pmc", "Stats", "Eft"))
         {
             return null;
         }
 
-        CleanJsonNode(eftStats["Victims"]);
-        CleanJsonNode(eftStats["Aggressor"]);
+        eftStats.TryGetNode(out var victims, "Victims");
+        eftStats.TryGetNode(out var aggressor, "Aggressor");
+
+        CleanJsonNode(victims);
+        CleanJsonNode(aggressor);
 
         return profile;
     }

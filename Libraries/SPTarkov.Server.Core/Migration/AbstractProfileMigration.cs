@@ -10,14 +10,33 @@ public abstract class AbstractProfileMigration : IProfileMigration
 
     public abstract bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations);
 
+    public virtual bool CanMigrate(
+        JsonObject profile,
+        ProfileMigrationContext context,
+        IEnumerable<IProfileMigration> previouslyRanMigrations
+    )
+    {
+        return CanMigrate(profile, previouslyRanMigrations);
+    }
+
     public virtual JsonObject? Migrate(JsonObject profile)
     {
         return profile;
     }
 
+    public virtual JsonObject? Migrate(JsonObject profile, ProfileMigrationContext context)
+    {
+        return Migrate(profile);
+    }
+
     public virtual bool PostMigrate(SptProfile profile)
     {
         return true;
+    }
+
+    public virtual bool PostMigrate(SptProfile profile, ProfileMigrationContext context)
+    {
+        return PostMigrate(profile);
     }
 
     protected SemanticVersioning.Version? GetProfileVersion(JsonObject profile)

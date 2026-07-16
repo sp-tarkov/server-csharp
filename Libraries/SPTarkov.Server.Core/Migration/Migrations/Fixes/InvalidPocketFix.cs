@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Tables;
@@ -26,7 +27,7 @@ public sealed class InvalidPocketFix(TemplateTable templateTable) : AbstractProf
 
     private PocketStatus GetPmcPocketStatus(JsonObject profile)
     {
-        if (profile["characters"]?["pmc"]?["Inventory"]?["items"] is not JsonArray items)
+        if (!profile.TryGetArray(out var items, "characters", "pmc", "Inventory", "items"))
         {
             // Uninitialized profile, just pass valid
             return PocketStatus.Valid;
@@ -40,17 +41,11 @@ public sealed class InvalidPocketFix(TemplateTable templateTable) : AbstractProf
             }
 
             if (
-                itemObj.TryGetPropertyValue("slotId", out var slotNode)
-                && slotNode is JsonValue slotValue
-                && slotValue.TryGetValue<string>(out var slotId)
+                itemObj.TryGetValue<string>(out var slotId, "slotId")
                 && slotId == "Pockets"
             )
             {
-                if (
-                    itemObj.TryGetPropertyValue("_tpl", out var tplNode)
-                    && tplNode is JsonValue tplValue
-                    && tplValue.TryGetValue<string>(out var template)
-                )
+                if (itemObj.TryGetValue<string>(out var template, "_tpl"))
                 {
                     return templateTable.Items.ContainsKey(template) ? PocketStatus.Valid : PocketStatus.Invalid;
                 }
@@ -62,7 +57,7 @@ public sealed class InvalidPocketFix(TemplateTable templateTable) : AbstractProf
 
     private PocketStatus GetScavPocketStatus(JsonObject profile)
     {
-        if (profile["characters"]?["scav"]?["Inventory"]?["items"] is not JsonArray items)
+        if (!profile.TryGetArray(out var items, "characters", "scav", "Inventory", "items"))
         {
             // Uninitialized profile, just pass valid
             return PocketStatus.Valid;
@@ -76,17 +71,11 @@ public sealed class InvalidPocketFix(TemplateTable templateTable) : AbstractProf
             }
 
             if (
-                itemObj.TryGetPropertyValue("slotId", out var slotNode)
-                && slotNode is JsonValue slotValue
-                && slotValue.TryGetValue<string>(out var slotId)
+                itemObj.TryGetValue<string>(out var slotId, "slotId")
                 && slotId == "Pockets"
             )
             {
-                if (
-                    itemObj.TryGetPropertyValue("_tpl", out var tplNode)
-                    && tplNode is JsonValue tplValue
-                    && tplValue.TryGetValue<string>(out var template)
-                )
+                if (itemObj.TryGetValue<string>(out var template, "_tpl"))
                 {
                     return templateTable.Items.ContainsKey(template) ? PocketStatus.Valid : PocketStatus.Invalid;
                 }
@@ -98,7 +87,7 @@ public sealed class InvalidPocketFix(TemplateTable templateTable) : AbstractProf
 
     private bool HasCompletedOldPatterns(JsonObject profile)
     {
-        if (profile["characters"]?["pmc"]?["Quests"] is not JsonArray quests)
+        if (!profile.TryGetArray(out var quests, "characters", "pmc", "Quests"))
         {
             return false;
         }
@@ -111,13 +100,9 @@ public sealed class InvalidPocketFix(TemplateTable templateTable) : AbstractProf
             }
 
             if (
-                questObj.TryGetPropertyValue("qid", out var qIdNode)
-                && qIdNode is JsonValue qIdValue
-                && qIdValue.TryGetValue<string>(out var qId)
+                questObj.TryGetValue<string>(out var qId, "qid")
                 && qId == QuestTpl.OLD_PATTERNS.ToString()
-                && questObj.TryGetPropertyValue("status", out var statusNode)
-                && statusNode is JsonValue statusValue
-                && statusValue.TryGetValue<string>(out var status)
+                && questObj.TryGetValue<string>(out var status, "status")
                 && status.Equals(nameof(QuestStatusEnum.Success), StringComparison.OrdinalIgnoreCase)
             )
             {
@@ -130,7 +115,7 @@ public sealed class InvalidPocketFix(TemplateTable templateTable) : AbstractProf
 
     private bool IsUnheardProfile(JsonObject profile)
     {
-        var gameVersion = profile?["characters"]?["pmc"]?["Info"]?["GameVersion"]?.GetValue<string>();
+        profile.TryGetValue<string>(out var gameVersion, "characters", "pmc", "Info", "GameVersion");
 
         if (!string.IsNullOrEmpty(gameVersion))
         {
@@ -152,14 +137,12 @@ public sealed class InvalidPocketFix(TemplateTable templateTable) : AbstractProf
     }
 
     // Set slotId to hideout, parentId to sorting table & remove location so that the sorting table will automatically pick a location
-    private void MoveItemsToSortingTable(JsonArray items, string sortingTableId)
+    private void MoveItemsToSortingTable(JsonArray items, string? sortingTableId)
     {
         foreach (var item in items.OfType<JsonObject>())
         {
             if (
-                item.TryGetPropertyValue("slotId", out var slotNode)
-                && slotNode is JsonValue slotNodeValue
-                && slotNodeValue.TryGetValue<string>(out var slotId)
+                item.TryGetValue<string>(out var slotId, "slotId")
                 && (
                     (
                         slotId.StartsWith("pocket", StringComparison.OrdinalIgnoreCase)
@@ -195,10 +178,10 @@ public sealed class InvalidPocketFix(TemplateTable templateTable) : AbstractProf
 
         if (pmcPocketStatus != PocketStatus.Valid)
         {
-            var items = profile["characters"]?["pmc"]?["Inventory"]?["items"] as JsonArray;
-            var pmcInventory = profile["characters"]?["pmc"]?["Inventory"] as JsonObject;
-            var pmcSortingTable = pmcInventory?["sortingTable"]?.GetValue<string>()!;
-            var pmcEquipment = pmcInventory?["equipment"]?.GetValue<string>();
+            profile.TryGetArray(out var items, "characters", "pmc", "Inventory", "items");
+            profile.TryGetObject(out var pmcInventory, "characters", "pmc", "Inventory");
+            pmcInventory.TryGetValue<string>(out var pmcSortingTable, "sortingTable");
+            pmcInventory.TryGetValue<string>(out var pmcEquipment, "equipment");
 
             var pmcPocketTpl = DEFAULT_POCKETS;
 
@@ -220,9 +203,7 @@ public sealed class InvalidPocketFix(TemplateTable templateTable) : AbstractProf
                 foreach (var item in items.OfType<JsonObject>())
                 {
                     if (
-                        item.TryGetPropertyValue("slotId", out var slotNode)
-                        && slotNode is JsonValue slotNodeValue
-                        && slotNodeValue.TryGetValue<string>(out var slotId)
+                        item.TryGetValue<string>(out var slotId, "slotId")
                         && slotId == "Pockets"
                     )
                     {
@@ -236,9 +217,9 @@ public sealed class InvalidPocketFix(TemplateTable templateTable) : AbstractProf
 
         if (scavPocketStatus != PocketStatus.Valid)
         {
-            var scavItems = profile["characters"]?["scav"]?["Inventory"]?["items"] as JsonArray;
-            var scavInventory = profile["characters"]?["scav"]?["Inventory"] as JsonObject;
-            var scavEquipment = scavInventory?["equipment"]?.GetValue<string>();
+            profile.TryGetArray(out var scavItems, "characters", "scav", "Inventory", "items");
+            profile.TryGetObject(out var scavInventory, "characters", "scav", "Inventory");
+            scavInventory.TryGetValue<string>(out var scavEquipment, "equipment");
 
             if (scavPocketStatus == PocketStatus.Missing)
             {
@@ -252,9 +233,7 @@ public sealed class InvalidPocketFix(TemplateTable templateTable) : AbstractProf
                 foreach (var item in scavItems.OfType<JsonObject>())
                 {
                     if (
-                        item.TryGetPropertyValue("slotId", out var slotNode)
-                        && slotNode is JsonValue slotNodeValue
-                        && slotNodeValue.TryGetValue<string>(out var slotId)
+                        item.TryGetValue<string>(out var slotId, "slotId")
                         && slotId == "Pockets"
                     )
                     {

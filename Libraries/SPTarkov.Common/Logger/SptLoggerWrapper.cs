@@ -16,13 +16,13 @@ public sealed class SPTLoggerWrapper(string category, SPTLoggerDispatcher dispat
         return null;
     }
 
-    public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
+    public bool IsEnabled(LogLevel logLevel)
     {
-        return dispatcher.IsLogEnabled(logLevel.ConvertToSPTLogLevel());
+        return dispatcher.IsLogEnabled(logLevel);
     }
 
     public void Log<TState>(
-        Microsoft.Extensions.Logging.LogLevel logLevel,
+        LogLevel logLevel,
         EventId eventId,
         TState state,
         Exception? exception,
@@ -38,7 +38,7 @@ public sealed class SPTLoggerWrapper(string category, SPTLoggerDispatcher dispat
             new SptLogMessage(
                 category,
                 DateTime.UtcNow,
-                logLevel.ConvertToSPTLogLevel(),
+                logLevel,
                 Environment.CurrentManagedThreadId,
                 Thread.CurrentThread.Name,
                 formatter(state, exception),

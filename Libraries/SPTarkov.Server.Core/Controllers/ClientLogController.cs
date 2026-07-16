@@ -2,7 +2,7 @@ using Spectre.Console;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Spt.Logging;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
+using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -20,6 +20,6 @@ public class ClientLogController(ISptLogger<ClientLogController> logger)
         var color = logRequest.Color ?? Color.White;
         var backgroundColor = logRequest.BackgroundColor ?? Color.Default;
 
-        logger.Log(logRequest.Level ?? LogLevel.Info, message, color, backgroundColor);
+        logger.Log(logRequest.Level ?? LogLevel.Information, message, color, backgroundColor);
     }
 }

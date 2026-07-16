@@ -9,7 +9,7 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Dialog;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
+using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Services.Commerce;
 
@@ -146,8 +146,8 @@ public class GiftService(
                 Sender = GetMessageType(giftData),
                 SenderDetails = new UserDialogInfo
                 {
-                    Id = GetSenderId(giftData),
-                    Aid = 1234567, // TODO - pass proper aid value
+                    Id = GetSenderId(giftData)!,
+                    Aid = giftData.SenderDetails!.Aid,
                     Info = null,
                 },
                 MessageText = giftData.MessageText,

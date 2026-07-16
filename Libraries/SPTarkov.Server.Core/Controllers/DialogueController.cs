@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
@@ -613,39 +614,38 @@ public class DialogueController(
             return;
         }
 
+        var traderDialogMessages = traderTable.GetTrader(dialogueId)?.Dialogue;
+        List<string>? insuranceFoundMessageIds = null;
+        List<string>? insuranceExpiredMessageIds = null;
+        traderDialogMessages?.TryGetValue("insuranceFound", out insuranceFoundMessageIds);
+        traderDialogMessages?.TryGetValue("insuranceExpired", out insuranceExpiredMessageIds);
+
         HashSet<SendMessageDetails> expiredInsuranceMessagesToSend = [];
         foreach (var message in dialog.Messages.Where(MessageHasExpired))
         {
+            // Check before reset, only messages that still had items get an expiry notification
+            var hadItems = (message.Items?.Data?.Count ?? 0) > 0;
+
             // Reset expired message items data
             message.Items = new();
 
-            var traderDialogMessages = traderTable.GetTrader(dialogueId)?.Dialogue;
-            if (traderDialogMessages == null)
+            if (message.TemplateId == null || !hadItems)
             {
                 continue;
             }
 
-            if (message?.TemplateId == null || message.Items.Data?.Count <= 0)
+            if (insuranceFoundMessageIds == null || !insuranceFoundMessageIds.Contains(message.TemplateId))
             {
                 continue;
             }
 
-            if (
-                !traderDialogMessages.TryGetValue("insuranceFound", out var successMessageIds)
-                || successMessageIds == null
-                || !successMessageIds.Contains(message.TemplateId)
-            )
-            {
-                continue;
-            }
-
-            if (!traderDialogMessages.TryGetValue("insuranceExpired", out var responseMessageIds) || responseMessageIds == null)
+            if (insuranceExpiredMessageIds == null)
             {
                 continue;
             }
 
             // Choose random expired insurance message to send to player
-            var expiredInsuranceMessageId = randomUtil.GetArrayValue(responseMessageIds);
+            var expiredInsuranceMessageId = randomUtil.GetArrayValue(insuranceExpiredMessageIds);
             expiredInsuranceMessagesToSend.Add(
                 new SendMessageDetails
                 {
@@ -659,6 +659,8 @@ public class DialogueController(
             );
         }
 
+        RemoveStaleExpiredInsuranceNotifications(sessionId, dialog, insuranceExpiredMessageIds);
+
         if (expiredInsuranceMessagesToSend.Count > 0)
         {
             // We have expired insurance messages to send to player
@@ -666,6 +668,42 @@ public class DialogueController(
             {
                 mailSendService.SendMessageToPlayer(insuranceExpiredDialog);
             }
+        }
+    }
+
+    /// <summary>
+    ///     Remove empty expired insurance notifications from a dialog, keeping only the newest.
+    /// </summary>
+    /// <param name="sessionId">Session id</param>
+    /// <param name="dialog">Trader dialog to clean up</param>
+    /// <param name="insuranceExpiredMessageIds">Trader expired insurance message template ids</param>
+    protected void RemoveStaleExpiredInsuranceNotifications(MongoId sessionId, Dialogue dialog, List<string>? insuranceExpiredMessageIds)
+    {
+        if (insuranceExpiredMessageIds == null || dialog.Messages == null)
+        {
+            return;
+        }
+
+        var staleNotifications = dialog
+            .Messages.Where(message =>
+                message.TemplateId != null
+                && insuranceExpiredMessageIds.Contains(message.TemplateId)
+                && (message.Items?.Data?.Count ?? 0) == 0
+            )
+            .ToHashSet();
+
+        if (staleNotifications.Count == 0)
+        {
+            return;
+        }
+
+        dialog.Messages.RemoveAll(staleNotifications.Contains);
+
+        if (logger.IsLogEnabled(LogLevel.Debug))
+        {
+            logger.Debug(
+                $"Removed {staleNotifications.Count} stale expired insurance notifications from dialog {dialog.Id} for profile {sessionId}"
+            );
         }
     }
 
@@ -712,7 +750,7 @@ public class DialogueController(
                     EventType = NotificationEventType.friendListRequestAccept,
                     Profile = profileHelper.GetChatRoomMemberFromPmcProfile(friendProfile.CharacterData.PmcData),
                 };
-                notificationSendHelper.SendMessage(sessionID, notification);
+                _ = notificationSendHelper.SendMessageAsync(sessionID, notification);
             },
             null,
             TimeSpan.FromMicroseconds(1000),

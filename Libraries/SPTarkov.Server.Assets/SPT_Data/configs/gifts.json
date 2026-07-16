@@ -9973,6 +9973,30 @@
       "collectionTimeHours": 96,
       "associatedEvent": "Promo",
       "maxToSendPlayer": 1
+    },
+    "DISCORD": {
+      "items": [
+        {
+          "_id": "6a515370673e1c542898f7f2",
+          "_tpl": "688b2dba67bf6fa26c07e918",
+          "slotId": "main",
+          "parentId": "6924774ab8d5c1c95931186f"
+        },
+        {
+          "_id": "6a515370673e1c542898f7f3",
+          "_tpl": "688b2e574172ca83e70cf868",
+          "slotId": "main",
+          "upd": {
+            "StackObjectsCount": 1
+          },
+          "parentId": "6924774ab8d5c1c95931186f"
+        }
+      ],
+      "sender": "System",
+      "messageText": "Thank you for linking your Discord profile",
+      "collectionTimeHours": 168,
+      "associatedEvent": "Promo",
+      "maxToSendPlayer": 1
     }
   }
 }

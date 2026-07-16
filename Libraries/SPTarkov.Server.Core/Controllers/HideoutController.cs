@@ -1135,7 +1135,6 @@ public class HideoutController(
 
     /// <summary>
     ///     Handle HideoutQuickTimeEvent on client/game/profile/items/moving
-    ///     Called after completing workout at gym
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="pmcData">Players PMC profile</param>
@@ -1143,45 +1142,82 @@ public class HideoutController(
     /// <param name="output">Client response</param>
     public void HandleQTEEventOutcome(MongoId sessionId, PmcData pmcData, HandleQTEEventRequestData request, ItemEventRouterResponse output)
     {
-        // {
-        //     "Action": "HideoutQuickTimeEvent",
-        //     "results": [true, false, true, true, true, true, true, true, true, false, false, false, false, false, false],
-        //     "id": "63b16feb5d012c402c01f6ef",
-        //     "timestamp": 1672585349
-        // }
+        var relevantQte = hideoutTable.Qte.FirstOrDefault(qte => qte.Id == request.Id);
+        var qteResults = relevantQte?.Results;
+        if (qteResults is null)
+        {
+            logger.Error($"Unable to find QTE data with id: {request.Id}, skipping workout outcome");
+            return;
+        }
 
-        // Skill changes are done in
-        // /client/hideout/workout (applyWorkoutChanges).
+        if (request.Results is null || pmcData.Health?.Energy is null || pmcData.Health.Hydration is null)
+        {
+            logger.Error($"Unable to apply workout outcome to player: {pmcData.Id}, request results or health data is missing");
+            return;
+        }
 
-        var qteDb = hideoutTable.Qte;
-        var relevantQte = qteDb.FirstOrDefault(qte => qte.Id == request.Id);
+        var energy = pmcData.Health.Energy;
+        var hydration = pmcData.Health.Hydration;
+
+        var successEffect = qteResults[QteEffectType.singleSuccessEffect];
+        var failEffect = qteResults[QteEffectType.singleFailEffect];
+        var skillRewards =
+            successEffect.RewardEffects?.Where(effect => effect.Type == QteRewardType.Skill && effect.SkillId is not null).ToList() ?? [];
+
+        // Muscle pain reduces gym effectiveness, this is important for proper calculation
+        var gymEffectivity = GetMusclePainGymEffectivity(pmcData);
+
+        // Arm trauma is only possible if the fail effect includes it
+        var armTrauma = failEffect.RewardEffects?.FirstOrDefault(effect => effect.Type == QteRewardType.GymArmTrauma);
+
+        // With Result 'Exit' the client stops the workout on the first fracture, so only one arm can break
+        var stopOnBrokenArm = armTrauma?.Result == QteResultType.Exit;
+
+        var rng = QteRandomUtil.FromSeedHex(pmcData.Hideout?.Seed);
+
+        //QTEResult.ActionsFailed is a running total of failed reps so far (incremented before each break roll)
+        var actionsFailed = 0;
+
         foreach (var outcome in request.Results)
         {
             if (outcome)
             {
                 // Success
-                pmcData.Health.Energy.Current += relevantQte.Results[QteEffectType.singleSuccessEffect].Energy;
-                pmcData.Health.Hydration.Current += relevantQte.Results[QteEffectType.singleSuccessEffect].Hydration;
+                energy.Current += successEffect.Energy;
+                hydration.Current += successEffect.Hydration;
+                ApplyWorkoutSkillGain(pmcData, skillRewards, gymEffectivity, rng);
             }
             else
             {
                 // Failed
-                pmcData.Health.Energy.Current += relevantQte.Results[QteEffectType.singleFailEffect].Energy;
-                pmcData.Health.Hydration.Current += relevantQte.Results[QteEffectType.singleFailEffect].Hydration;
+                energy.Current += failEffect.Energy;
+                hydration.Current += failEffect.Hydration;
+                actionsFailed++;
+
+                if (armTrauma is not null && TryBreakArm(pmcData, rng, actionsFailed) && stopOnBrokenArm)
+                {
+                    break;
+                }
             }
         }
 
-        if (pmcData.Health.Energy.Current < 1)
+        // Regenerate new hideout seed
+        if (pmcData.Hideout is not null)
         {
-            pmcData.Health.Energy.Current = 1;
+            pmcData.Hideout.Seed = rng.ToSeedHex();
         }
 
-        if (pmcData.Health.Hydration.Current < 1)
+        if (energy.Current < 1)
         {
-            pmcData.Health.Hydration.Current = 1;
+            energy.Current = 1;
         }
 
-        HandleMusclePain(pmcData, relevantQte.Results[QteEffectType.finishEffect]);
+        if (hydration.Current < 1)
+        {
+            hydration.Current = 1;
+        }
+
+        HandleMusclePain(pmcData, qteResults[QteEffectType.finishEffect]);
     }
 
     /// <summary>
@@ -1191,35 +1227,168 @@ public class HideoutController(
     /// <param name="finishEffect">Effect data to apply after completing QTE gym event</param>
     protected void HandleMusclePain(PmcData pmcData, QteResult finishEffect)
     {
-        if (!pmcData.Health.BodyParts.TryGetValue("Chest", out var chest))
+        var bodyParts = pmcData.Health?.BodyParts;
+        if (bodyParts is null || !bodyParts.TryGetValue("Chest", out var chest))
         {
-            logger.Error($"Unable to apply muscle pain effect to player: {pmcData.Id.ToString}. They lack a chest");
+            logger.Error($"Unable to apply muscle pain effect to player: {pmcData.Id}. They lack a chest");
 
             return;
         }
-        var hasMildPain = chest.Effects?.ContainsKey("MildMusclePain");
-        var hasSeverePain = chest.Effects?.ContainsKey("SevereMusclePain");
 
-        // Has no muscle pain at all, add mild
-        if (!hasMildPain.GetValueOrDefault(false) && !hasSeverePain.GetValueOrDefault(false))
+        var musclePainTime = finishEffect.RewardEffects?.FirstOrDefault(effect => effect.Type == QteRewardType.MusclePain)?.Time;
+        if (musclePainTime is null)
         {
-            // Create effects as it may not exist
-            chest.Effects ??= [];
-            chest.Effects["MildMusclePain"] = new BodyPartEffectProperties
+            // No muscle pain reward on this QTE, nothing to apply
+            return;
+        }
+
+        chest.Effects ??= [];
+
+        var hasMildPain = chest.Effects.ContainsKey("MildMusclePain");
+        var hasSeverePain = chest.Effects.ContainsKey("SevereMusclePain");
+
+        // No active muscle pain -> give the mild effect
+        if (!hasMildPain && !hasSeverePain)
+        {
+            chest.Effects["MildMusclePain"] = new BodyPartEffectProperties { Time = musclePainTime };
+
+            return;
+        }
+
+        //Already has mild or severe -> (re)apply severe with a fresh timer, removing any mild muscle pain first
+        chest.Effects.Remove("MildMusclePain");
+        chest.Effects["SevereMusclePain"] = new BodyPartEffectProperties { Time = musclePainTime };
+    }
+
+    /// <summary>
+    ///     Apply skill xp for a single successful workout rep to a randomly chosen candidate skill.
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="skillRewards">Skill reward effects from the QTE single-success effect</param>
+    /// <param name="gymEffectivity">Muscle pain reduction to gym effectiveness (0 = no pain)</param>
+    /// <param name="rng">Deterministic QTE RNG, replayed in step with the client</param>
+    protected void ApplyWorkoutSkillGain(PmcData pmcData, List<QteEffect> skillRewards, double gymEffectivity, QteRandomUtil rng)
+    {
+        var profileSkills = pmcData.Skills?.Common;
+        if (profileSkills is null)
+        {
+            return;
+        }
+
+        var candidates = skillRewards
+            .Where(reward => (profileSkills.FirstOrDefault(skill => skill.Id == reward.SkillId)?.Progress ?? 0) < 5100)
+            .ToList();
+
+        if (candidates.Count == 0)
+        {
+            return;
+        }
+
+        // Only draw when more than one candidate exists
+        var chosen = candidates.Count == 1 ? candidates[0] : candidates[rng.Next(0, candidates.Count)];
+        var skillLevel = Math.Floor((profileSkills.FirstOrDefault(skill => skill.Id == chosen.SkillId)?.Progress ?? 0) / 100d);
+
+        var multiplier = 0f;
+        foreach (var levelMultiplier in chosen.LevelMultipliers ?? [])
+        {
+            if (skillLevel >= levelMultiplier.Level.GetValueOrDefault())
             {
-                Time = finishEffect.RewardEffects.FirstOrDefault()?.Time, // TODO - remove hard coded access, get value properly
-            };
-
-            return;
+                multiplier = levelMultiplier.MultiplierValue.GetValueOrDefault();
+            }
         }
 
-        if (hasMildPain.GetValueOrDefault(false))
+        // Muscle pain reduces the gain
+        var pointsToAdd = multiplier - multiplier * gymEffectivity;
+
+        // AddSkillPointsToPlayer applies SkillProgressRate + low level curve (client: Factor(x, true) + CalculateExpOnFirstLevels)
+        profileHelper.AddSkillPointsToPlayer(pmcData, chosen.SkillId!.Value, pointsToAdd, useSkillProgressRateMultiplier: true);
+    }
+
+    /// <summary>
+    ///     Get the gym effectiveness reduction caused by the players existing muscle pain.
+    ///     Mirrors client severe/mild GymEffectivity lookup
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <returns>Effectivity reduction (0 = no muscle pain)</returns>
+    protected double GetMusclePainGymEffectivity(PmcData pmcData)
+    {
+        var bodyParts = pmcData.Health?.BodyParts;
+        if (bodyParts is null || !bodyParts.TryGetValue("Chest", out var chest) || chest.Effects is null)
         {
-            // Already has mild pain, remove mild and add severe
-            chest.Effects.Remove("MildMusclePain");
-
-            chest.Effects["SevereMusclePain"] = new BodyPartEffectProperties { Time = finishEffect.RewardEffects.FirstOrDefault()?.Time };
+            return 0;
         }
+
+        var effects = globalTable.Configuration.Health.Effects;
+
+        // Severe takes priority over mild
+        if (chest.Effects.ContainsKey("SevereMusclePain"))
+        {
+            return effects.SevereMusclePain.GymEffectivity;
+        }
+
+        if (chest.Effects.ContainsKey("MildMusclePain"))
+        {
+            return effects.MildMusclePain.GymEffectivity;
+        }
+
+        return 0;
+    }
+
+    /// <summary>
+    ///     Roll for a broken arm after a failed workout rep and apply a fracture if it occurs
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="rng">Deterministic QTE RNG, replayed in step with the client</param>
+    /// <param name="coef">Client QTEResult.ActionsFailed - the running total of failed reps so far</param>
+    /// <returns>True if an arm was fractured</returns>
+    protected bool TryBreakArm(PmcData pmcData, QteRandomUtil rng, int coef)
+    {
+        var strengthProgress = pmcData.Skills?.Common?.FirstOrDefault(skill => skill.Id == SkillTypes.Strength)?.Progress ?? 0;
+        var strengthLevel = Math.Floor(strengthProgress / 100d);
+
+        // Severe muscle pain increases the chance to break an arm
+        var traumaChance = HasSevereMusclePain(pmcData) ? globalTable.Configuration.Health.Effects.SevereMusclePain.TraumaChance : 0;
+
+        // num2 = level/10 + coef/4 + trauma (coef/4 is integer division)
+        var breakChance = strengthLevel / 10 + coef / 4 + traumaChance;
+
+        if (rng.Next(0, 101) > breakChance)
+        {
+            return false;
+        }
+
+        // Client fractures a random arm: InQteRandomChance(50) picks left, otherwise right
+        var arm = rng.Next(0, 101) <= 50 ? "LeftArm" : "RightArm";
+        var bodyParts = pmcData.Health?.BodyParts;
+        if (bodyParts is null || !bodyParts.TryGetValue(arm, out var bodyPart))
+        {
+            logger.Error($"Unable to break arm: {arm} on player: {pmcData.Id}, they lack the body part");
+
+            return false;
+        }
+
+        logger.Debug($"Breaking {pmcData.Id} {arm}");
+
+        // Time -1 = lasts until treated
+        bodyPart.Effects ??= [];
+        bodyPart.Effects["Fracture"] = new BodyPartEffectProperties { Time = -1 };
+
+        return true;
+    }
+
+    /// <summary>
+    ///     Does the player have a severe muscle pain effect on their chest
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <returns>True if severe muscle pain is present</returns>
+    protected bool HasSevereMusclePain(PmcData pmcData)
+    {
+        var bodyParts = pmcData.Health?.BodyParts;
+
+        return bodyParts is not null
+            && bodyParts.TryGetValue("Chest", out var chest)
+            && chest.Effects is not null
+            && chest.Effects.ContainsKey("SevereMusclePain");
     }
 
     /// <summary>

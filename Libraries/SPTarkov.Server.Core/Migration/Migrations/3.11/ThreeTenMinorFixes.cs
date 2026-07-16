@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 
 namespace SPTarkov.Server.Core.Migration.Migrations._3._11;
@@ -23,8 +24,8 @@ public sealed class ThreeTenMinorFixes : AbstractProfileMigration
 
     public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
     {
-        var cultistRewardsMissing = profile["spt"]?["cultistRewards"] == null;
-        var friendProfileIdsMissing = profile["friends"] == null;
+        var cultistRewardsMissing = !profile.TryGetNode(out _, "spt", "cultistRewards");
+        var friendProfileIdsMissing = !profile.TryGetNode(out _, "friends");
 
         return cultistRewardsMissing || friendProfileIdsMissing;
     }

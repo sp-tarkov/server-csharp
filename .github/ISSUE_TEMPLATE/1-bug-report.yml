@@ -1,5 +1,5 @@
-name: "Bug Report"
-description: "Report a bug in the SPT project."
+name: "Bug Report - Stable 4.0"
+description: "Report a bug in the current stable (4.0) release of the SPT project."
 labels: ["triage"]
 body:
   - type: markdown
@@ -59,7 +59,7 @@ body:
     id: log_server
     attributes:
       label: "Server Log"
-      description: "Upload a copy of your *entire* server log: `SPT/user/logs/spt/spt.txt`."
+      description: "Upload your *entire* server log for the affected session from `SPT/user/logs/spt/`. Files are named `spt<date>.log`."
       placeholder: "Attach the log file. Do not paste the contents."
     validations:
       required: true

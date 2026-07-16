@@ -5,5 +5,5 @@ namespace SPTarkov.Server.Core.Models.Spt.Launcher;
 
 public class LauncherV2ModsResponse : IRequestData
 {
-    public required Dictionary<string, AbstractModMetadata> Response { get; set; }
+    public required Dictionary<string, IModMetadata> Response { get; set; }
 }

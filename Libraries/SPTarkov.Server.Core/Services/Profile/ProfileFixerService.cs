@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
@@ -15,7 +16,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services.Profile;
 
@@ -50,11 +50,6 @@ public partial class ProfileFixerService(
         if (pmcProfile.Hideout is not null)
         {
             AddHideoutEliteSlots(pmcProfile);
-        }
-
-        if (pmcProfile.Skills is not null)
-        {
-            CheckForSkillsOutOfRange(pmcProfile);
         }
     }
 
@@ -185,15 +180,6 @@ public partial class ProfileFixerService(
         var customizationDb = templateTable.Customization;
         var customizationDbArray = customizationDb.Values;
         var playerIsUsec = string.Equals(pmcProfile.Info!.Side, "usec", StringComparison.OrdinalIgnoreCase);
-
-        // Check Head
-        if (!customizationDb.ContainsKey(pmcProfile.Customization?.Head ?? MongoId.Empty()))
-        {
-            var defaultHead = playerIsUsec
-                ? customizationDbArray.FirstOrDefault(x => x.Name == "DefaultUsecHead")
-                : customizationDbArray.FirstOrDefault(x => x.Name == "DefaultBearHead");
-            pmcProfile.Customization!.Head = defaultHead!.Id;
-        }
 
         // check Body
         if (customizationDb.ContainsKey(pmcProfile.Customization?.Body ?? MongoId.Empty()))
@@ -556,25 +542,6 @@ public partial class ProfileFixerService(
         }
 
         return slots;
-    }
-
-    /// <summary>
-    ///     Checks skill progress of all skills and caps them within accepted limits (0, 5100)
-    /// </summary>
-    /// <param name="pmcProfile"> Profile to check and fix </param>
-    public void CheckForSkillsOutOfRange(PmcData pmcProfile)
-    {
-        var skills = pmcProfile.Skills!.Common;
-
-        foreach (var skill in skills.Where(skill => skill.Progress > 5100))
-        {
-            skill.Progress = 5100d;
-        }
-
-        foreach (var skill in skills.Where(skill => double.IsNegative(skill.Progress) || double.IsNaN(skill.Progress)))
-        {
-            skill.Progress = 0d;
-        }
     }
 
     /// <summary>

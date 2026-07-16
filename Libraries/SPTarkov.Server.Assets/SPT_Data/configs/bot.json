@@ -2935,7 +2935,8 @@
       "shoreline",
       "lighthouse"
     ],
-    "spawnChance": 35
+    "spawnChance": 35,
+    "rotationIntervalHours": 3
   },
   "replaceScavWith": "assault"
 }

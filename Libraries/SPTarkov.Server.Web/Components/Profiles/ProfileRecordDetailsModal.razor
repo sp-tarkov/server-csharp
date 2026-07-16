@@ -7,6 +7,7 @@
             <ProfileRecordDetails Details="Details"
                                   IsBusy="@IsBusy"
                                   OnSaveEdit="OnSaveEdit"
+                                  OnGrantPrestige="OnGrantPrestige"
                                   OnClose="OnClose" />
         </div>
     </div>
@@ -24,6 +25,9 @@
 
     [Parameter]
     public EventCallback<ProfileEditModel> OnSaveEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<ProfilePrestigeGrantRequest> OnGrantPrestige { get; set; }
 
     [Parameter]
     public EventCallback OnClose { get; set; }

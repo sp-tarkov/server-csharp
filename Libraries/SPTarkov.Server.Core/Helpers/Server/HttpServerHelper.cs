@@ -6,8 +6,10 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 namespace SPTarkov.Server.Core.Helpers.Server;
 
 [Injectable(InjectionType.Singleton)]
-public class HttpServerHelper(HttpConfig httpConfig)
+public class HttpServerHelper(HttpConfig httpConfig, IHttpContextAccessor httpContextAccessor)
 {
+    private const string AllInterfacesIpv4 = "0.0.0.0";
+
     protected readonly FrozenDictionary<string, string> Mime = new Dictionary<string, string>
     {
         { "css", "text/css" },
@@ -26,13 +28,37 @@ public class HttpServerHelper(HttpConfig httpConfig)
         return Mime.GetValueOrDefault(key);
     }
 
-    /// <summary>
-    /// Combine ip and port into address
-    /// </summary>
-    /// <returns>URI</returns>
+    public string GetBackendHost()
+    {
+        // Return the regular backend ip if we aren't using 0.0.0.0
+        if (httpConfig.BackendIp != AllInterfacesIpv4)
+        {
+            return httpConfig.BackendIp;
+        }
+
+        // If we're on 0.0.0.0, use the requested host - throw if there isn't one.
+        var request = httpContextAccessor.HttpContext?.Request;
+        if (request is null || !request.Host.HasValue)
+        {
+            throw new InvalidOperationException(
+                "BackendIp is configured as 0.0.0.0 but there is no active request to resolve the backend host from."
+            );
+        }
+
+        return request.Host.Host;
+    }
+
     public string BuildUrl()
     {
-        return $"{httpConfig.BackendIp}:{httpConfig.BackendPort}";
+        var host = GetBackendHost();
+
+        // Default https port, no need to append 443
+        if (httpConfig.BackendPort == 443)
+        {
+            return host;
+        }
+
+        return $"{host}:{httpConfig.BackendPort}";
     }
 
     /// <summary>

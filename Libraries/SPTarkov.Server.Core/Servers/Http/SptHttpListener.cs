@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using System.IO.Compression;
 using System.Text;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
@@ -9,7 +10,6 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Utils;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Servers.Http;
 
@@ -25,7 +25,7 @@ public class SptHttpListener(
 {
     private static readonly ImmutableHashSet<string> SupportedMethods = ["GET", "PUT", "POST"];
 
-    public bool CanHandle(MongoId _, HttpContext context)
+    public bool CanHandle(HttpContext context)
     {
         return SupportedMethods.Contains(context.Request.Method) && httpRouter.CanHandle(context);
     }

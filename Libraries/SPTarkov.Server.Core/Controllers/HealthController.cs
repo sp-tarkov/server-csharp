@@ -306,15 +306,4 @@ public class HealthController(
 
         return output;
     }
-
-    /// <summary>
-    ///     applies skills from hideout workout.
-    /// </summary>
-    /// <param name="pmcData">Player profile</param>
-    /// <param name="request">Request data</param>
-    /// <param name="sessionId">session id</param>
-    public void ApplyWorkoutChanges(PmcData? pmcData, WorkoutData request, MongoId sessionId)
-    {
-        pmcData.Skills.Common = request.Skills.Common;
-    }
 }

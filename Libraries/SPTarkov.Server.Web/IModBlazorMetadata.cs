@@ -4,13 +4,13 @@
 /// This interface is used as a metadata marker to identify mod assemblies that integrate with Blazor or MVC.
 /// </summary>
 /// <remarks>
-/// Implementing this interface signals to the host application to:
+/// Implementing this interface signals to the SPT Server to:
 /// <list type="bullet">
 ///   <item>
 ///     <description>Link the mod's <c>wwwroot</c> directory, enabling serving of static web assets (CSS, JS, etc.).</description>
 ///   </item>
 ///   <item>
-///     <description>Register the mod's Blazor components and pages for routing within the application.</description>
+///     <description>Register the mod's Blazor components and pages for routing within the SPT Server.</description>
 ///   </item>
 ///   <item>
 ///     <description>Register the mod's MVC controllers for use as APIs where necessary.</description>
@@ -18,7 +18,7 @@
 /// </list>
 ///
 /// </remarks>
-public interface IModWebMetadata
+public interface IModBlazorMetadata
 {
     /// <summary>
     /// This property will allow you to set a custom directory for wwwroot, if this is left null it will use the assembly's name

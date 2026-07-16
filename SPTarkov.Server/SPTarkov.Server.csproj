@@ -24,7 +24,7 @@
   <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
     <ApplicationIcon>..\Libraries\SPTarkov.Server.Assets\SPT_Data\images\icon.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64' Or '$(RuntimeIdentifier)' == 'linux-arm64'">
     <AssemblyName>SPT.Server.Linux</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">
@@ -51,4 +51,25 @@
   <ItemGroup>
     <None Include="..\LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
+  <Target Name="RelocateSatelliteAssemblies" AfterTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+      <_RelocatedSatelliteCulture
+        Include="@(ReferenceCopyLocalPaths->'%(DestinationSubDirectory)')"
+        Condition="$([System.String]::Copy('%(ReferenceCopyLocalPaths.Filename)').EndsWith('.resources'))"
+      />
+      <ReferenceCopyLocalPaths Condition="$([System.String]::Copy('%(ReferenceCopyLocalPaths.Filename)').EndsWith('.resources'))">
+        <DestinationSubDirectory>SPT_Data\dotnet\%(ReferenceCopyLocalPaths.DestinationSubDirectory)</DestinationSubDirectory>
+      </ReferenceCopyLocalPaths>
+    </ItemGroup>
+  </Target>
+  <Target Name="RelocatePublishedSatelliteAssemblies" AfterTargets="ComputeFilesToPublish">
+    <ItemGroup>
+      <ResolvedFileToPublish Condition="$([System.String]::Copy('%(ResolvedFileToPublish.Filename)').EndsWith('.resources'))">
+        <RelativePath>SPT_Data\dotnet\%(ResolvedFileToPublish.RelativePath)</RelativePath>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+  <Target Name="CleanStaleSatelliteFolders" AfterTargets="Build" Condition="'@(_RelocatedSatelliteCulture)' != ''">
+    <RemoveDir Directories="@(_RelocatedSatelliteCulture->'$(OutDir)%(Identity)')" />
+  </Target>
 </Project>

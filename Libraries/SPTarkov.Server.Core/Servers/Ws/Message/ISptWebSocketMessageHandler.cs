@@ -4,5 +4,5 @@ namespace SPTarkov.Server.Core.Servers.Ws.Message;
 
 public interface ISptWebSocketMessageHandler
 {
-    Task OnSptMessage(string sessionID, WebSocket client, byte[] rawData);
+    Task OnSptMessageAsync(string sessionID, WebSocket client, byte[] rawData);
 }

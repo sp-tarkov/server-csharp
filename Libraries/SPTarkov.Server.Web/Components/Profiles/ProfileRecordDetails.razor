@@ -1,6 +1,10 @@
 @using System.Globalization
+@using SPTarkov.Server.Core.Models.Spt.Tables
 @using SPTarkov.Server.Web.Models.Database
 @using SPTarkov.Server.Web.Models.Profiles
+@using SPTarkov.Server.Web.Services
+@inject GlobalTable GlobalTable
+@inject WebLocalizationService WebLocalizationService
 
 <MudPaper Elevation="0" Class="profiles-details spt-panel pa-5">
     @if (Details is null)
@@ -41,17 +45,17 @@
             <MudTabs Class="profiles-details-tabs" PanelClass="profiles-details-tab-panel" Rounded="false" Elevation="0">
                 <MudTabPanel Text="Profile info" Icon="@Icons.Material.Filled.ManageAccounts">
                     <MudStack Spacing="3">
-                        @foreach (var section in Details.DetailSections)
+                        @foreach (var sectionData in Details.DetailSections)
                         {
                             <MudDivider />
 
-                            @if (!string.IsNullOrWhiteSpace(section.Title))
+                            @if (!string.IsNullOrWhiteSpace(sectionData.Title))
                             {
-                                <MudText Typo="Typo.subtitle2">@section.Title</MudText>
+                                <MudText Typo="Typo.subtitle2">@sectionData.Title</MudText>
                             }
 
                             <div class="profiles-detail-grid">
-                                @foreach (var value in section.Values)
+                                @foreach (var value in sectionData.Values)
                                 {
                                     <div class="profiles-detail-value">
                                         <MudText Typo="Typo.caption" Color="Color.Secondary">@value.Label</MudText>
@@ -125,7 +129,10 @@
                     </MudStack>
                 </MudTabPanel>
 
-                <MudTabPanel Text="Edit profile" Icon="@Icons.Material.Filled.Edit">
+                <MudTabPanel Text="Edit profile"
+                             Icon="@Icons.Material.Filled.Edit"
+                             Disabled="@Details.Summary.IsWiped"
+                             ToolTip="@(Details.Summary.IsWiped ? L("profiles-edit-disabled-wiped-tooltip") : null)">
                     @if (_editModel is not null)
                     {
                         <MudPaper Elevation="0" Class="profiles-edit-panel pa-4">
@@ -169,17 +176,20 @@
                                                   Variant="Variant.Outlined"
                                                   Immediate="true"
                                                   Disabled="@(!_editModel.HasCharacter)"
-                                                  @bind-Value="_editModel.PmcNickname" />
+                                                  @bind-Value="_editModel.PmcNickname"
+                                                  MaxLength="15"
+                                                  Counter="0" />
 
                                     <MudNumericField T="int?"
                                                      Label="PMC level"
                                                      Variant="Variant.Outlined"
                                                      Min="1"
-                                                     Max="99"
+                                                     Max="@MaxCharacterLevel"
                                                      Step="1"
                                                      Immediate="true"
                                                      Disabled="@(!_editModel.HasCharacter)"
-                                                     @bind-Value="_editModel.PmcLevel" />
+                                                     Value="_editModel.PmcLevel"
+                                                     ValueChanged="@(v => SetCharacterLevel(CharacterTarget.Pmc, v))" />
 
                                     <MudNumericField T="int?"
                                                      Label="PMC experience"
@@ -194,10 +204,11 @@
                                                      Label="Scav level"
                                                      Variant="Variant.Outlined"
                                                      Min="1"
-                                                     Max="99"
+                                                     Max="@MaxCharacterLevel"
                                                      Step="1"
                                                      Immediate="true"
-                                                     @bind-Value="_editModel.ScavLevel" />
+                                                     Value="_editModel.ScavLevel"
+                                                     ValueChanged="@(v => SetCharacterLevel(CharacterTarget.Scav, v))" />
 
                                     <MudNumericField T="int?"
                                                      Label="Scav experience"
@@ -491,6 +502,13 @@
                         </MudPaper>
                     }
                 </MudTabPanel>
+
+                <MudTabPanel Text="Prestige"
+                             Icon="@Icons.Material.Filled.MilitaryTech"
+                             Disabled="@Details.Summary.IsWiped"
+                             ToolTip="@(Details.Summary.IsWiped ? L("profiles-prestige-disabled-wiped-tooltip") : null)">
+                    <ProfilePrestigePanel Details="@Details" IsBusy="@IsBusy" OnGrantPrestige="OnGrantPrestige" />
+                </MudTabPanel>
             </MudTabs>
         </MudStack>
     }
@@ -507,9 +525,13 @@
     public EventCallback<ProfileEditModel> OnSaveEdit { get; set; }
 
     [Parameter]
+    public EventCallback<ProfilePrestigeGrantRequest> OnGrantPrestige { get; set; }
+
+    [Parameter]
     public EventCallback OnClose { get; set; }
 
     private const int MaxSkillLevel = 51;
+    private int MaxCharacterLevel => GlobalTable.Configuration.Exp.Level.ExperienceTable.Length - 1;
 
     private ProfileDetails? _detailsReference;
     private ProfileEditModel? _editModel;
@@ -524,6 +546,11 @@
     private string RawJsonToggleLabel
     {
         get { return _showRawJson ? "Hide raw profile JSON" : "Show raw profile JSON"; }
+    }
+
+    private string L(string key)
+    {
+        return WebLocalizationService.GetText(key);
     }
 
     protected override void OnParametersSet()
@@ -557,6 +584,39 @@
     private Task SaveEditForm()
     {
         return _editModel is null ? Task.CompletedTask : OnSaveEdit.InvokeAsync(_editModel.Clone());
+    }
+
+    private void SetCharacterLevel(CharacterTarget target, int? value)
+    {
+        if (_editModel is null || !value.HasValue)
+            return;
+
+        var maxLevel = MaxCharacterLevel;
+        var clamped = Math.Clamp(value.Value, 1, maxLevel);
+
+        if (target == CharacterTarget.Pmc)
+        {
+            _editModel.PmcLevel = clamped;
+            _editModel.PmcExperience = GetLevelStartXp(clamped);
+        }
+        else
+        {
+            _editModel.ScavLevel = clamped;
+            _editModel.ScavExperience = GetLevelStartXp(clamped);
+        }
+    }
+
+    private int GetLevelStartXp(int level)
+    {
+        var table = GlobalTable.Configuration.Exp.Level.ExperienceTable;
+
+        level = Math.Clamp(level, 1, table.Length - 1);
+
+        var exp = 0;
+        for (var i = 0; i < level; i++)
+            exp += table[i].Experience;
+
+        return exp;
     }
 
     private static void SetSkillLevel(ProfileSkillEditModel skill, int value)

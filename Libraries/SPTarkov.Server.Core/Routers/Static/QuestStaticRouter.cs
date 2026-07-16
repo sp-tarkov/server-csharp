@@ -17,6 +17,7 @@ public class QuestStaticRouter(JsonUtil jsonUtil, QuestCallbacks questCallbacks)
                 async (url, info, sessionID, output, cancellationToken) => await questCallbacks.ListQuests(url, info, sessionID)
             ),
             new RouteAction<EmptyRequestData>(
+                //Yes the typo is intended, BSG has it in the live client as well and it has to match
                 "/client/repeatalbeQuests/activityPeriods",
                 async (url, info, sessionID, output, cancellationToken) => await questCallbacks.ActivityPeriods(url, info, sessionID)
             ),

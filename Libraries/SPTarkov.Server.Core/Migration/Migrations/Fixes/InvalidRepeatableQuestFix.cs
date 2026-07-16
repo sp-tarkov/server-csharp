@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Migration.Migrations.Fixes;
 
@@ -13,7 +14,7 @@ public sealed class InvalidRepeatableQuestFix : AbstractProfileMigration
 
     public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
     {
-        if (profile["characters"]?["pmc"]?["RepeatableQuests"] is JsonArray repeatables)
+        if (profile.TryGetArray(out var repeatables, "characters", "pmc", "RepeatableQuests"))
         {
             foreach (var node in repeatables)
             {
@@ -22,10 +23,9 @@ public sealed class InvalidRepeatableQuestFix : AbstractProfileMigration
                     continue;
                 }
 
-                var endTimeNode = quest["endTime"];
-                var endTime = endTimeNode?.GetValue<long>() ?? 0;
+                quest.TryGetValue<long>(out var endTime, "endTime");
 
-                if (endTime != 0 && quest["changeRequirement"] is null)
+                if (endTime != 0 && !quest.TryGetNode(out _, "changeRequirement"))
                 {
                     return true;
                 }
@@ -37,7 +37,7 @@ public sealed class InvalidRepeatableQuestFix : AbstractProfileMigration
 
     public override JsonObject? Migrate(JsonObject profile)
     {
-        if (profile["characters"]?["pmc"]?["RepeatableQuests"] is JsonArray repeatables)
+        if (profile.TryGetArray(out var repeatables, "characters", "pmc", "RepeatableQuests"))
         {
             foreach (var node in repeatables)
             {
@@ -46,9 +46,9 @@ public sealed class InvalidRepeatableQuestFix : AbstractProfileMigration
                     continue;
                 }
 
-                var endTime = quest["endTime"]?.GetValue<long>() ?? 0;
+                quest.TryGetValue<long>(out var endTime, "endTime");
 
-                if (endTime != 0 && quest["changeRequirement"] is null)
+                if (endTime != 0 && !quest.TryGetNode(out _, "changeRequirement"))
                 {
                     quest["endTime"] = 0;
                 }

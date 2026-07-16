@@ -13,7 +13,7 @@ using SPTarkov.Server.Core.Models.Spt.Services;
 using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services.Items;
 using SPTarkov.Server.Core.Services.Locales;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
+using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Services.InRaid;
 

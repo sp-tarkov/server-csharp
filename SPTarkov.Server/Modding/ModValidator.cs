@@ -1,10 +1,11 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.Common.Semver;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Web;
 
 namespace SPTarkov.Server.Modding;
 
@@ -114,7 +115,7 @@ public sealed partial class ModValidator(
     /// <param name="validMods">List of validated mods to check for duplicates</param>
     private void CheckForDuplicateMods(List<SptMod> validMods)
     {
-        var groupedMods = new Dictionary<string, List<AbstractModMetadata>>();
+        var groupedMods = new Dictionary<string, List<IModMetadata>>();
 
         foreach (var mod in validMods.Select(mod => mod.ModMetadata).ToArray())
         {
@@ -150,7 +151,7 @@ public sealed partial class ModValidator(
     /// </summary>
     /// <param name="mod">Mod to check compatibility with SPT</param>
     /// <returns>True if compatible</returns>
-    private bool IsModCompatibleWithSpt(AbstractModMetadata mod)
+    private bool IsModCompatibleWithSpt(IModMetadata mod)
     {
         var sptVersion = ProgramStatics.SPT_VERSION();
         var modName = $"{mod.Author}-{mod.Name}";
@@ -234,12 +235,12 @@ public sealed partial class ModValidator(
     /// </summary>
     /// <param name="pkg">mod package.json data</param>
     /// <returns></returns>
-    private bool ShouldSkipMod(AbstractModMetadata pkg)
+    private bool ShouldSkipMod(IModMetadata pkg)
     {
         return _skippedMods.Contains($"{pkg.Author}-{pkg.Name}");
     }
 
-    private bool AreModDependenciesFulfilled(AbstractModMetadata pkg, Dictionary<string, AbstractModMetadata> loadedMods)
+    private bool AreModDependenciesFulfilled(IModMetadata pkg, Dictionary<string, IModMetadata> loadedMods)
     {
         if (pkg.ModDependencies == null)
         {
@@ -285,7 +286,7 @@ public sealed partial class ModValidator(
         return true;
     }
 
-    private bool IsModCompatible(AbstractModMetadata modToCheck, Dictionary<string, AbstractModMetadata> loadedMods)
+    private bool IsModCompatible(IModMetadata modToCheck, Dictionary<string, IModMetadata> loadedMods)
     {
         if (modToCheck.Incompatibilities == null)
         {
@@ -351,10 +352,13 @@ public sealed partial class ModValidator(
             return false;
         }
 
-        if (containsJs || containsTs)
+        if (mod.ModMetadata is not IModBlazorMetadata)
         {
-            logger.Error(localisationService.GetText("modloader-is-old-js-mod", modName));
-            return false;
+            if (containsJs || containsTs)
+            {
+                logger.Error(localisationService.GetText("modloader-is-old-js-mod", modName));
+                return false;
+            }
         }
 
         return true;

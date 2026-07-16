@@ -7,5 +7,6 @@ public sealed record ProfileDetails(
     ProfileEditModel EditModel,
     IReadOnlyList<DatabaseDetailSection> DetailSections,
     IReadOnlyList<DatabaseProperty> Properties,
-    string PropertiesJson
+    string PropertiesJson,
+    ProfilePrestigeInfo PrestigeInfo
 );

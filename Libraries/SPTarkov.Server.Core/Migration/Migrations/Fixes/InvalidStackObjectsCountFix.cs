@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Migration.Migrations.Fixes;
 
@@ -17,7 +18,7 @@ public sealed class InvalidStackObjectsCountFix : AbstractProfileMigration
 
     public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
     {
-        if (profile["characters"]?["pmc"]?["Inventory"]?["items"] is not JsonArray items)
+        if (!profile.TryGetArray(out var items, "characters", "pmc", "Inventory", "items"))
         {
             return false;
         }
@@ -29,12 +30,12 @@ public sealed class InvalidStackObjectsCountFix : AbstractProfileMigration
                 continue;
             }
 
-            if (itemObj["upd"] is not JsonObject updObj)
+            if (!itemObj.TryGetObject(out var updObj, "upd"))
             {
                 continue;
             }
 
-            if (updObj["StackObjectsCount"] is JsonValue stackValue)
+            if (updObj.TryGetNode(out var stackNode, "StackObjectsCount") && stackNode is JsonValue stackValue)
             {
                 // Check if the value will fit into an int
                 // If it wont return false, as it's a double
@@ -50,7 +51,7 @@ public sealed class InvalidStackObjectsCountFix : AbstractProfileMigration
 
     public override JsonObject? Migrate(JsonObject profile)
     {
-        if (profile["characters"]?["pmc"]?["Inventory"]?["items"] is not JsonArray items)
+        if (!profile.TryGetArray(out var items, "characters", "pmc", "Inventory", "items"))
         {
             return base.Migrate(profile);
         }
@@ -62,12 +63,12 @@ public sealed class InvalidStackObjectsCountFix : AbstractProfileMigration
                 continue;
             }
 
-            if (itemObj["upd"] is not JsonObject updObj)
+            if (!itemObj.TryGetObject(out var updObj, "upd"))
             {
                 continue;
             }
 
-            if (updObj["StackObjectsCount"] is JsonValue stackValue)
+            if (updObj.TryGetNode(out var stackNode, "StackObjectsCount") && stackNode is JsonValue stackValue)
             {
                 if (stackValue.TryGetValue<double>(out var doubleValue))
                 {

@@ -55,7 +55,7 @@ public class PmcChatResponseService(
             var message = ChooseMessage(true, pmcData, victim);
             if (message is not null)
             {
-                notificationSendHelper.SendMessageToPlayer(sessionId, victimDetails, message, MessageType.UserMessage);
+                _ = notificationSendHelper.SendMessageToPlayerAsync(sessionId, victimDetails, message, MessageType.UserMessage);
             }
         }
     }
@@ -103,7 +103,7 @@ public class PmcChatResponseService(
             return;
         }
 
-        notificationSendHelper.SendMessageToPlayer(sessionId, killerDetails, message, MessageType.UserMessage);
+        _ = notificationSendHelper.SendMessageToPlayerAsync(sessionId, killerDetails, message, MessageType.UserMessage);
     }
 
     /// <summary>

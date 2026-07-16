@@ -1,22 +1,21 @@
+using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Servers.Ws.Message;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
+using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Servers.Ws;
 
 [Injectable(InjectionType.Singleton)]
-public class SptWebSocketConnectionHandler(
+public sealed class SptWebSocketConnectionHandler(
     ISptLogger<SptWebSocketConnectionHandler> logger,
     ServerLocalisationService serverLocalisationService,
     JsonUtil jsonUtil,
@@ -24,8 +23,9 @@ public class SptWebSocketConnectionHandler(
     IEnumerable<ISptWebSocketMessageHandler> messageHandlers
 ) : IWebSocketConnectionHandler
 {
-    protected readonly Dictionary<MongoId, Dictionary<string, WebSocket>> _sockets = new();
-    protected readonly Lock _socketsLock = new();
+    private readonly Dictionary<MongoId, Dictionary<string, WebSocket>> _sockets = [];
+    private readonly Lock _socketsLock = new();
+    private readonly ConcurrentDictionary<WebSocket, SemaphoreSlim> _sendGates = [];
 
     public string GetHookUrl()
     {
@@ -37,12 +37,12 @@ public class SptWebSocketConnectionHandler(
         return "SPT WebSocket Handler";
     }
 
-    public Task OnConnection(WebSocket ws, HttpContext context, string sessionIdContext)
+    public Task OnConnectionAsync(WebSocket ws, HttpContext context, string sessionIdContext)
     {
-        var splitUrl = context.Request.Path.Value.Split("/");
-        var sessionID = new MongoId(splitUrl.Last());
+        var sessionID = new MongoId(GetSessionId(context));
         var playerProfile = profileHelper.GetFullProfile(sessionID);
         var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
+
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
             logger.Debug($"[WS] Websocket connect for player: {playerInfoText} started with context: {sessionIdContext}");
@@ -52,7 +52,9 @@ public class SptWebSocketConnectionHandler(
         {
             if (_sockets.TryGetValue(sessionID, out var sessionSockets))
             {
-                if (sessionSockets.Any())
+                PruneClosedSockets(sessionSockets);
+
+                if (sessionSockets.Count != 0)
                 {
                     if (logger.IsLogEnabled(LogLevel.Debug))
                     {
@@ -67,12 +69,12 @@ public class SptWebSocketConnectionHandler(
             }
             else
             {
-                sessionSockets = new Dictionary<string, WebSocket>();
+                sessionSockets = [];
                 _sockets.Add(sessionID, sessionSockets);
             }
 
             sessionSockets.Add(sessionIdContext, ws);
-            if (logger.IsLogEnabled(LogLevel.Info))
+            if (logger.IsLogEnabled(LogLevel.Information))
             {
                 logger.Info(
                     serverLocalisationService.GetText(
@@ -86,10 +88,10 @@ public class SptWebSocketConnectionHandler(
         }
     }
 
-    public async Task OnMessage(byte[] receivedMessage, WebSocketMessageType messageType, WebSocket ws, HttpContext context)
+    public async Task OnMessageAsync(byte[] receivedMessage, WebSocketMessageType messageType, WebSocket ws, HttpContext context)
     {
-        var splitUrl = context.Request.Path.Value.Split("/");
-        var sessionID = splitUrl.Last();
+        var sessionID = GetSessionId(context);
+
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
             logger.Debug($"[WS] Message for session {sessionID} received. Notifying message handlers.");
@@ -97,14 +99,13 @@ public class SptWebSocketConnectionHandler(
 
         foreach (var sptWebSocketMessageHandler in messageHandlers)
         {
-            await sptWebSocketMessageHandler.OnSptMessage(sessionID, ws, receivedMessage);
+            await sptWebSocketMessageHandler.OnSptMessageAsync(sessionID, ws, receivedMessage);
         }
     }
 
-    public Task OnClose(WebSocket ws, HttpContext context, string sessionIdContext)
+    public Task OnCloseAsync(WebSocket ws, HttpContext context, string sessionIdContext)
     {
-        var splitUrl = context.Request.Path.Value.Split("/");
-        var sessionID = splitUrl.Last();
+        var sessionID = GetSessionId(context);
 
         lock (_socketsLock)
         {
@@ -113,28 +114,34 @@ public class SptWebSocketConnectionHandler(
                 logger.Debug($"Attempting to close websocket session {sessionID} with context {sessionIdContext}");
             }
 
-            if (_sockets.TryGetValue(sessionID, out var sessionSockets) && sessionSockets.Any())
+            if (_sockets.TryGetValue(sessionID, out var sessionSockets) && sessionSockets.Count > 0)
             {
                 if (logger.IsLogEnabled(LogLevel.Debug))
                 {
                     logger.Debug($"Websockets for session {sessionID} entry matched, attempting to find context {sessionIdContext}");
                 }
 
-                if (!sessionSockets.TryGetValue(sessionIdContext, out _) && logger.IsLogEnabled(LogLevel.Info))
+                if (!sessionSockets.TryGetValue(sessionIdContext, out _) && logger.IsLogEnabled(LogLevel.Information))
                 {
                     logger.Info(
-                        $"[ws] The websocket session {sessionID} with reference: {sessionIdContext} has already been removed or reconnected"
+                        $"[WS] The websocket session {sessionID} with reference: {sessionIdContext} has already been removed or reconnected"
                     );
                 }
                 else
                 {
                     sessionSockets.Remove(sessionIdContext);
-                    if (logger.IsLogEnabled(LogLevel.Info))
+                    if (logger.IsLogEnabled(LogLevel.Information))
                     {
                         var playerProfile = profileHelper.GetFullProfile(sessionID);
                         var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
-                        logger.Info($"[ws] player: {playerInfoText} {sessionIdContext} has disconnected");
+                        logger.Info($"[WS] player: {playerInfoText} {sessionIdContext} has disconnected");
                     }
+                }
+
+                // Once the last socket for a session goes away, drop the session entry entirely.
+                if (sessionSockets.Count == 0)
+                {
+                    _sockets.Remove(sessionID);
                 }
             }
             else
@@ -148,69 +155,84 @@ public class SptWebSocketConnectionHandler(
             }
         }
 
+        // Release the per-socket send gate now that the connection is gone.
+        if (_sendGates.TryRemove(ws, out var gate))
+        {
+            gate.Dispose();
+        }
+
         return Task.CompletedTask;
     }
 
-    public void SendMessageToAll(WsNotificationEvent output)
+    public Task SendMessageToAll(WsNotificationEvent output)
     {
+        // Serialize once and reuse the payload for every socket rather than re-serializing per session.
+        var payload = Encoding.UTF8.GetBytes(
+            jsonUtil.Serialize(output, output.GetType()) ?? throw new InvalidOperationException("Could not serialize message!")
+        );
+
+        WebSocket[] targets;
         lock (_socketsLock)
         {
-            foreach (var sessionID in _sockets.Keys)
-            {
-                SendMessage(sessionID, output); // this currently serializes for every socket, might want to separate into sending already serialized data
-            }
+            targets = _sockets.Values.SelectMany(sockets => sockets.Values).Where(s => s.State == WebSocketState.Open).ToArray();
         }
+
+        return SendRawToSocketsAsync(targets, payload);
     }
 
-    public void SendMessage(MongoId sessionID, WsNotificationEvent output)
+    public Task SendMessageAsync(MongoId sessionID, WsNotificationEvent output)
     {
-        try
+        WebSocket[] targets;
+        lock (_socketsLock)
         {
-            if (IsWebSocketConnected(sessionID))
+            targets = _sockets.GetValueOrDefault(sessionID)?.Values.Where(s => s.State == WebSocketState.Open).ToArray() ?? [];
+        }
+
+        if (targets.Length == 0)
+        {
+            if (logger.IsLogEnabled(LogLevel.Debug))
             {
-                var webSockets = GetSessionWebSocket(sessionID);
+                logger.Debug(serverLocalisationService.GetText("websocket-not_ready_message_not_sent", sessionID.ToString()));
+            }
 
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug($"Send message for {sessionID} matched {webSockets.Count()} websockets. Messages being sent");
-                }
+            return Task.CompletedTask;
+        }
 
-                foreach (var webSocket in webSockets)
-                {
-                    var sendTask = webSocket.SendAsync(
-                        Encoding.UTF8.GetBytes(jsonUtil.Serialize(output, output.GetType())),
-                        WebSocketMessageType.Text,
-                        true,
-                        CancellationToken.None
-                    );
-                    if (logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        logger.Debug($"Send message for {sessionID} on websocket async started");
-                    }
+        if (logger.IsLogEnabled(LogLevel.Debug))
+        {
+            logger.Debug($"Send message for {sessionID} matched {targets.Length} websockets. Messages being sent");
+        }
 
-                    sendTask.Wait();
-                    if (logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        logger.Debug($"Send message for {sessionID} on websocket async finished");
-                    }
-                }
+        var payload = Encoding.UTF8.GetBytes(
+            jsonUtil.Serialize(output, output.GetType()) ?? throw new InvalidOperationException("Could not serialize message!")
+        );
+
+        return SendRawToSocketsAsync(targets, payload);
+    }
+
+    private async Task SendRawToSocketsAsync(WebSocket[] sockets, byte[] payload)
+    {
+        foreach (var webSocket in sockets)
+        {
+            var gate = _sendGates.GetOrAdd(webSocket, _ => new SemaphoreSlim(1, 1));
+            await gate.WaitAsync();
+            try
+            {
+                await webSocket.SendAsync(payload, WebSocketMessageType.Text, true, CancellationToken.None);
 
                 if (logger.IsLogEnabled(LogLevel.Debug))
                 {
                     logger.Debug(serverLocalisationService.GetText("websocket-message_sent"));
                 }
             }
-            else
+            catch (Exception err)
             {
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug(serverLocalisationService.GetText("websocket-not_ready_message_not_sent", sessionID.ToString()));
-                }
+                logger.Error(serverLocalisationService.GetText("websocket-message_send_failed_with_error", err.Message), err);
             }
-        }
-        catch (Exception err)
-        {
-            logger.Error(serverLocalisationService.GetText("websocket-message_send_failed_with_error", err.Message), err);
+            finally
+            {
+                gate.Release();
+            }
         }
     }
 
@@ -227,6 +249,25 @@ public class SptWebSocketConnectionHandler(
         lock (_socketsLock)
         {
             return _sockets.GetValueOrDefault(sessionID)?.Values.Where(s => s.State == WebSocketState.Open) ?? [];
+        }
+    }
+
+    private static string GetSessionId(HttpContext context)
+    {
+        var path = context.Request.Path.Value ?? string.Empty;
+        var lastSlash = path.LastIndexOf('/');
+        return lastSlash >= 0 ? path[(lastSlash + 1)..] : path;
+    }
+
+    private void PruneClosedSockets(Dictionary<string, WebSocket> sessionSockets)
+    {
+        foreach (var (contextId, socket) in sessionSockets.Where(kvp => kvp.Value.State != WebSocketState.Open).ToArray())
+        {
+            sessionSockets.Remove(contextId);
+            if (_sendGates.TryRemove(socket, out var gate))
+            {
+                gate.Dispose();
+            }
         }
     }
 }

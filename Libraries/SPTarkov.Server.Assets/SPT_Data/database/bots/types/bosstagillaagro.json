@@ -2124,15 +2124,19 @@
   },
   "experience": {
     "aggressorBonus": {
+      "normal": 0.05,
       "easy": 0.05,
-      "hard": 0.05,
-      "normal": 0.05
+      "hard": 0.05
     },
     "level": {
       "max": 1,
       "min": 0
     },
     "reward": {
+      "normal": {
+        "max": 6666,
+        "min": 6666
+      },
       "easy": {
         "max": 6666,
         "min": 6666
@@ -2140,16 +2144,12 @@
       "hard": {
         "max": 6666,
         "min": 6666
-      },
-      "normal": {
-        "max": 6666,
-        "min": 6666
       }
     },
     "standingForKill": {
+      "normal": -0.2,
       "easy": -0.2,
-      "hard": -0.2,
-      "normal": -0.2
+      "hard": -0.2
     },
     "useSimpleAnimator": false
   },
@@ -2569,9 +2569,8 @@
         "64d4b23dc1b37504b41ac2b6": 9,
         "655c673673a43e23e857aebd": 1,
         "655c67782a1356436041c9c5": 1,
-        "655c67ab0d37ca5135388f4b": 1,
-        "6581998038c79576a2569e11": 843,
-        "658199972dc4e60f6d556a2f": 1016,
+        "6581998038c79576a2569e11": 711,
+        "658199972dc4e60f6d556a2f": 853,
         "658199aa38c79576a2569e13": 4,
         "6582dbe43a2e5248357dbe9a": 737,
         "6582dbf0b8d7830efc45016f": 8,

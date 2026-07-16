@@ -1,10 +1,11 @@
 @page "/"
 @using SPTarkov.Server.Web.Layout
-@using SPTarkov.Server.Web.Services
+@using SPTarkov.Server.Core.Models.Spt.Launcher
 
 @layout BaseMudBlazorLayout
 
 @inject WebLocalizationService WebLocalizationService
+@inject IReadOnlyList<ModPage> ModPages
 
 <PageTitle>@WebLocalizationService.GetText("spt-server")</PageTitle>
 
@@ -38,13 +39,13 @@
             </nav>
         </section>
 
-        @if (ModPages.Count > 0)
+        @if (_modPages.Count > 0)
         {
             <section class="landing-section" aria-labelledby="mod-pages-heading">
                 <MudText Typo="Typo.h2" Id="mod-pages-heading" Class="landing-section-title">@WebLocalizationService.GetText("landing-page-mod-page-category")</MudText>
 
                 <nav class="landing-grid landing-mod-grid" aria-label="Mod pages">
-                    @foreach (var link in ModPages)
+                    @foreach (var link in _modPages)
                     {
                         <a class="landing-link-card landing-mod-link-card spt-card" href="@link.Href">
                             <span class="landing-link-icon">
@@ -64,26 +65,8 @@
 </div>
 
 @code {
-    private IReadOnlyList<LandingPageLink> _pages;
-
-    private IReadOnlyList<LandingPageLink> ModPages
-    {
-        get
-        {
-            return SPTWeb._sptWebMods
-                .Select(mod => (Metadata: mod.ModMetadata, WebMetadata: mod.ModMetadata as IModWebMetadata))
-                .Where(mod => !string.IsNullOrWhiteSpace(mod.WebMetadata?.HomePage))
-                .OrderBy(mod => mod.Metadata.Name)
-                .Select(mod => new LandingPageLink(
-                    mod.Metadata.Name,
-                    NormalizeHomePage(mod.WebMetadata!.HomePage!),
-                    mod.WebMetadata.HomePageDescription ?? WebLocalizationService.GetText("desc-not-set-author"),
-                    Icons.Material.Filled.Extension
-                ))
-                .ToList();
-        }
-    }
-
+    private IReadOnlyList<LandingPageLink> _pages = [];
+    private IReadOnlyList<LandingPageLink> _modPages = [];
 
     protected override void OnInitialized()
     {
@@ -119,13 +102,17 @@
                 )
         ];
 
-        base.OnInitialized();
-    }
+        // Mod pages come from a shared list. Here we just layer on some presentation.
+        _modPages = ModPages
+            .Select(page => new LandingPageLink(
+                page.Name,
+                page.HomePage,
+                page.Description ?? WebLocalizationService.GetText("desc-not-set-author"),
+                Icons.Material.Filled.Extension
+            ))
+            .ToList();
 
-    private static string NormalizeHomePage(string homePage)
-    {
-        var trimmed = homePage.Trim();
-        return trimmed.StartsWith('/') ? trimmed : $"/{trimmed}";
+        base.OnInitialized();
     }
 
     private sealed record LandingPageLink(string Title, string Href, string Description, string Icon);

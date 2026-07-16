@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Migration.Migrations._4._0;
 
@@ -21,15 +22,17 @@ public sealed class RemovePassword : AbstractProfileMigration
 
     public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
     {
-        var hasPassword = profile["info"]?["password"] != null;
+        var hasPassword = profile.TryGetNode(out _, "info", "password");
 
         return hasPassword;
     }
 
     public override JsonObject? Migrate(JsonObject profile)
     {
-        var profileInfo = profile["info"] as JsonObject;
-        profileInfo?.Remove("password");
+        if (profile.TryGetObject(out var profileInfo, "info"))
+        {
+            profileInfo.Remove("password");
+        }
 
         return base.Migrate(profile);
     }

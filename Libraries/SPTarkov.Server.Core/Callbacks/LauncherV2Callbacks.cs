@@ -64,6 +64,13 @@ public class LauncherV2Callbacks(
         return new ValueTask<string>(httpResponseUtil.NoBody(new LauncherV2ModsResponse { Response = launcherV2Controller.LoadedMods() }));
     }
 
+    public ValueTask<string> ModPages()
+    {
+        return new ValueTask<string>(
+            httpResponseUtil.NoBody(new LauncherV2ModPagesResponse { Response = launcherV2Controller.ModPages() })
+        );
+    }
+
     public ValueTask<string> Profiles()
     {
         return new ValueTask<string>(

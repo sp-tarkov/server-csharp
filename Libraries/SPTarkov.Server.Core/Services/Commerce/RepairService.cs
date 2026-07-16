@@ -20,7 +20,7 @@ using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using BonusSettings = SPTarkov.Server.Core.Models.Spt.Config.BonusSettings;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
+using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Services.Commerce;
 

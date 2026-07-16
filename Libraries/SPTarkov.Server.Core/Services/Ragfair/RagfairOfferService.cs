@@ -16,7 +16,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
+using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Services.Ragfair;
 
@@ -314,7 +314,7 @@ public class RagfairOfferService(
             offerCreatorProfile.RagfairInfo.Rating.Value,
             offerCreatorProfile.RagfairInfo.IsRatingGrowing.GetValueOrDefault(false)
         );
-        notificationSendHelper.SendMessage(offerCreatorId, notificationMessage);
+        _ = notificationSendHelper.SendMessageAsync(offerCreatorId, notificationMessage);
 
         ragfairServerHelper.ReturnItems(offerCreatorProfile.SessionId.Value, unstackedItems);
         offerCreatorProfile.RagfairInfo.Offers.Splice(indexOfOfferInProfile, 1);
