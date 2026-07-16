@@ -5,6 +5,7 @@ using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Web;
 
 namespace SPTarkov.Server.Modding;
 
@@ -351,10 +352,13 @@ public sealed partial class ModValidator(
             return false;
         }
 
-        if (containsJs || containsTs)
+        if (mod.ModMetadata is not IModWebMetadata)
         {
-            logger.Error(localisationService.GetText("modloader-is-old-js-mod", modName));
-            return false;
+            if (containsJs || containsTs)
+            {
+                logger.Error(localisationService.GetText("modloader-is-old-js-mod", modName));
+                return false;
+            }
         }
 
         return true;
