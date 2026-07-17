@@ -330,6 +330,12 @@ public record BarterDetails
     /// <summary>
     ///     Item Tpls to never be turned into a barter
     /// </summary>
+    [JsonPropertyName("itemTplBlacklist")]
+    public required HashSet<MongoId> ItemTplBlacklist { get; set; }
+
+    /// <summary>
+    ///     Item Base Classes to never be turned into a barter
+    /// </summary>
     [JsonPropertyName("itemTypeBlacklist")]
     public required HashSet<MongoId> ItemTypeBlacklist { get; set; }
 }

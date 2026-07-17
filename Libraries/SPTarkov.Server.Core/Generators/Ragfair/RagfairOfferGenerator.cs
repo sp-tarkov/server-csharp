@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 using SPTarkov.Common.Extensions;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
@@ -23,7 +24,6 @@ using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Services.Ragfair;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Generators.Ragfair;
 
@@ -943,8 +943,10 @@ public class RagfairOfferGenerator(
                 .Where(item => itemHelper.GetItem(item.Tpl).Key);
 
             var itemTypeBlacklist = ragfairConfig.Dynamic.Barter.ItemTypeBlacklist;
+            var itemTplBlacklist = ragfairConfig.Dynamic.Barter.ItemTplBlacklist;
             AllowedFleaPriceItemsForBarter = filteredFleaItems
                 .Where(item => !itemHelper.IsOfBaseclasses(item.Tpl, itemTypeBlacklist))
+                .Where(item => !itemTplBlacklist.Contains(item.Tpl))
                 .ToList();
         }
 

@@ -11,6 +11,9 @@
       "chancePercent": 0,
       "itemCountMax": 3,
       "itemCountMin": 1,
+      "itemTplBlacklist": [
+        "5d235b4d86f7742e017bc88a"
+      ],
       "itemTypeBlacklist": [
         "55802f4a4bdc2ddb688b4569",
         "55802f3e4bdc2de7118b4584",
