@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using SPTarkov.Common.Extensions;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
@@ -23,7 +24,6 @@ using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Services.Server;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Services.Hideout;
 
@@ -91,10 +91,11 @@ public class CircleOfCultistService(
         // Check if it matches any direct swap recipes
         var directRewardsCache = GenerateSacrificedItemsCache(hideoutConfig.CultistCircle.DirectRewards);
         var directRewardSettings = CheckForDirectReward(sessionId, sacrificedItems, directRewardsCache);
-        var hasDirectReward = directRewardSettings?.Reward.Count > 0;
+        var hasDirectReward = directRewardSettings.Count > 0;
+        var selectedDirectReward = hasDirectReward ? randomUtil.GetArrayValue(directRewardSettings) : null;
 
         // Get craft time and bonus status
-        var craftingInfo = GetCircleCraftingInfo(rewardAmountRoubles, hideoutConfig.CultistCircle, directRewardSettings);
+        var craftingInfo = GetCircleCraftingInfo(rewardAmountRoubles, hideoutConfig.CultistCircle, selectedDirectReward);
 
         // Create production in pmc profile
         RegisterCircleOfCultistProduction(sessionId, pmcData, cultistCraftData.Id, sacrificedItems, craftingInfo.Time);
@@ -109,7 +110,7 @@ public class CircleOfCultistService(
         }
 
         var rewards = hasDirectReward
-            ? GetDirectRewards(sessionId, directRewardSettings, cultistCircleStashId.Value)
+            ? GetDirectRewards(sessionId, selectedDirectReward, cultistCircleStashId.Value)
             : GetRewardsWithinBudget(
                 GetCultistCircleRewardPool(sessionId, pmcData, craftingInfo, hideoutConfig.CultistCircle),
                 rewardAmountRoubles,
@@ -399,13 +400,6 @@ public class CircleOfCultistService(
         // Prep rewards array (reward can be item with children, hence array of arrays)
         List<List<Item>> rewards = [];
 
-        // Handle special case of tagilla helmets - only one reward is allowed
-        if (directReward.Reward.Contains(ItemTpl.FACECOVER_TAGILLAS_WELDING_MASK_GORILLA))
-        {
-            // TODO: this is likely redundant with direct reward system in config?
-            directReward.Reward = [randomUtil.GetArrayValue(directReward.Reward)];
-        }
-
         // Loop because these can include multiple rewards
         foreach (var rewardTpl in directReward.Reward)
         {
@@ -474,10 +468,10 @@ public class CircleOfCultistService(
     /// <param name="sacrificedItems">Items sacrificed</param>
     /// <param name="directRewardsCache"></param>
     /// <returns>Direct reward items to send to player</returns>
-    protected DirectRewardSettings? CheckForDirectReward(
+    protected List<DirectRewardSettings> CheckForDirectReward(
         MongoId sessionId,
         List<Item> sacrificedItems,
-        Dictionary<string, DirectRewardSettings> directRewardsCache
+        Dictionary<string, List<DirectRewardSettings>> directRewardsCache
     )
     {
         // Get sacrificed tpls
@@ -485,40 +479,22 @@ public class CircleOfCultistService(
         // Create md5 key of the items player sacrificed so we can compare against the direct reward cache
         var sacrificedItemsKey = CreateSacrificeCacheKey(sacrificedItemTpls);
 
-        var matchingDirectReward = directRewardsCache.GetValueOrDefault(sacrificedItemsKey);
-        if (matchingDirectReward is null)
-        // No direct reward
+        // return empty list if no match
+        if (!directRewardsCache.TryGetValue(sacrificedItemsKey, out var matchingDirectRewards))
         {
-            return null;
+            return [];
         }
 
+        // check if player already completed a direct reward with these sacrificed items
         var fullProfile = profileHelper.GetFullProfile(sessionId);
-        var directRewardHash = GetDirectRewardHashKey(matchingDirectReward);
-        if (fullProfile.SptData.CultistRewards?.ContainsKey(directRewardHash) ?? false)
-        // Player has already received this direct reward
+        var hasCompletedNonRepeatable = fullProfile.SptData.CultistRewards?.ContainsKey(sacrificedItemsKey) ?? false;
+        if (!hasCompletedNonRepeatable)
         {
-            return null;
+            var nonRepeatableRewards = matchingDirectRewards.Where(reward => !reward.Repeatable).ToList();
+            return nonRepeatableRewards.Count > 0 ? nonRepeatableRewards : matchingDirectRewards;
         }
 
-        return matchingDirectReward;
-    }
-
-    /// <summary>
-    ///     Create an md5 key of the sacrificed + reward items
-    /// </summary>
-    /// <param name="directReward">Direct reward to create key for</param>
-    /// <returns>Key</returns>
-    protected string GetDirectRewardHashKey(DirectRewardSettings directReward)
-    {
-        directReward.RequiredItems.Sort();
-        directReward.Reward.Sort();
-
-        var required = string.Join(",", directReward.RequiredItems);
-        var reward = string.Join(",", directReward.Reward);
-        // Key is sacrificed items separated by commas, a dash, then the rewards separated by commas
-        var key = $"{{{required}-{reward}}}";
-
-        return hashUtil.GenerateHashForData(HashingAlgorithm.MD5, key);
+        return matchingDirectRewards.Where(reward => reward.Repeatable).ToList();
     }
 
     /// <summary>
@@ -554,6 +530,7 @@ public class CircleOfCultistService(
     protected void FlagDirectRewardAsAcceptedInProfile(MongoId sessionId, DirectRewardSettings directReward)
     {
         var fullProfile = profileHelper.GetFullProfile(sessionId);
+        var sacrificeKey = CreateSacrificeCacheKey(directReward.RequiredItems);
         var dataToStoreInProfile = new AcceptedCultistReward
         {
             Timestamp = timeUtil.GetTimeStamp(),
@@ -561,7 +538,7 @@ public class CircleOfCultistService(
             RewardItems = directReward.Reward,
         };
 
-        fullProfile.SptData.CultistRewards[GetDirectRewardHashKey(directReward)] = dataToStoreInProfile;
+        fullProfile.SptData.CultistRewards[sacrificeKey] = dataToStoreInProfile;
     }
 
     /// <summary>
@@ -853,13 +830,21 @@ public class CircleOfCultistService(
     /// </summary>
     /// <param name="directRewards">Direct rewards array from hideout config</param>
     /// <returns>Dictionary</returns>
-    protected Dictionary<string, DirectRewardSettings> GenerateSacrificedItemsCache(List<DirectRewardSettings> directRewards)
+    protected Dictionary<string, List<DirectRewardSettings>> GenerateSacrificedItemsCache(List<DirectRewardSettings> directRewards)
     {
-        var result = new Dictionary<string, DirectRewardSettings>();
+        var result = new Dictionary<string, List<DirectRewardSettings>>();
+
         foreach (var rewardSettings in directRewards)
         {
-            string key = CreateSacrificeCacheKey(rewardSettings.RequiredItems);
-            result[key] = rewardSettings;
+            var key = CreateSacrificeCacheKey(rewardSettings.RequiredItems);
+
+            if (!result.TryGetValue(key, out var rewards))
+            {
+                rewards = [];
+                result[key] = rewards;
+            }
+
+            rewards.Add(rewardSettings);
         }
 
         return result;
