@@ -8,15 +8,19 @@
       "removeRemovablePlateChance": 40
     },
     "barter": {
-      "chancePercent": 20,
+      "chancePercent": 0,
       "itemCountMax": 3,
       "itemCountMin": 1,
+      "itemTplBlacklist": [
+        "5d235b4d86f7742e017bc88a"
+      ],
       "itemTypeBlacklist": [
         "55802f4a4bdc2ddb688b4569",
         "55802f3e4bdc2de7118b4584",
         "543be5cb4bdc2deb348b4568",
         "55818ac54bdc2d5b648b456e",
-        "5a74651486f7744e73386dd1"
+        "5a74651486f7744e73386dd1",
+        "65649eb40bf0ed77b8044453"
       ],
       "makeSingleStackOnly": true,
       "minRoubleCostToBecomeBarter": 20000,
