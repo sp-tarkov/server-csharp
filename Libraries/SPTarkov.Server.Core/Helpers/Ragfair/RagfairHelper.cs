@@ -60,6 +60,8 @@ public class RagfairHelper(
     {
         switch (currencyFilter)
         {
+            case 4:
+                return "GP";
             case 3:
                 return "EUR";
             case 2:
