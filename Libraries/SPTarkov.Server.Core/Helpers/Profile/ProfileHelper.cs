@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.Extensions.Logging;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
@@ -852,48 +853,31 @@ public class ProfileHelper(
             Roubles = 0,
             Euros = 0,
             Dollars = 0,
-            GP = 0
+            GP = 0,
         };
 
-        if (profile.CharacterData?.PmcData?.Inventory?.Items is null)
+        foreach (var item in profile.CharacterData?.PmcData?.Inventory?.Items ?? [])
         {
-            return returnObject;
-        }
+            var stackSize = item.GetItemStackSize();
 
-        var items = profile.CharacterData?.PmcData?.Inventory.Items;
-
-        foreach (var item in items!)
-        {
             if (item.Template == Money.ROUBLES)
             {
-                if (item.Upd?.StackObjectsCount.HasValue == true)
-                {
-                    returnObject.Roubles = (int) (returnObject.Roubles + item.Upd.StackObjectsCount);
-                }
-            }
-
-            if (item.Template == Money.EUROS)
-            {
-                if (item.Upd?.StackObjectsCount.HasValue == true)
-                {
-                    returnObject.Euros = (int) (returnObject.Euros + item.Upd.StackObjectsCount);
-                }
+                returnObject.Roubles += stackSize;
             }
 
             if (item.Template == Money.DOLLARS)
             {
-                if (item.Upd?.StackObjectsCount.HasValue == true)
-                {
-                    returnObject.Dollars = (int) (returnObject.Dollars + item.Upd.StackObjectsCount);
-                }
+                returnObject.Dollars += stackSize;
+            }
+
+            if (item.Template == Money.EUROS)
+            {
+                returnObject.Euros += stackSize;
             }
 
             if (item.Template == Money.GP)
             {
-                if (item.Upd?.StackObjectsCount.HasValue == true)
-                {
-                    returnObject.GP = (int) (returnObject.GP + item.Upd.StackObjectsCount);
-                }
+                returnObject.GP += stackSize;
             }
         }
 
@@ -901,66 +885,167 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// TODO: Works out the stats for the profile, BSG's system for this isn't that friendly, so will come back to this
     /// Currently returns a template of data for the profiles stats
     /// </summary>
     /// <param name="profile">Full profile</param>
     /// <returns></returns>
     public ProfileStats GetProfileStats(SptProfile profile)
     {
-        return new ProfileStats()
+        var pmcStats = ReadStats(profile.CharacterData?.PmcData);
+        var scavStats = ReadStats(profile.CharacterData?.ScavData);
+        var overallStats = CombineStats(pmcStats, scavStats);
+        var accountLifetime = FormatOverallLifetime(profile.CharacterData?.PmcData?.Info?.RegistrationDate ?? 0);
+
+        return new ProfileStats
         {
-            Overall = new Dictionary<string, string>()
-            {
-                { "Raids", "0" },
-                { "Survived", "1" },
-                { "KIA", "2" },
-                { "Kills", "3" },
-                { "RunThrough", "4" },
-                { "AWOL", "5" },
-                { "MIA", "6" },
-                { "KD", "7" },
-                { "SurvivalRate", "100%" },
-                { "AverageLifeSpan", "00:50" },
-                { "Online", "69H00M" },
-                { "LeaveRate", "0%" },
-                { "SurvivalsInARow", "7" },
-                { "AccountLifetime", "67H00M" }
-            },
-            Pmc = new Dictionary<string, string>()
-            {
-                { "Raids", "0" },
-                { "Survived", "1" },
-                { "KIA", "2" },
-                { "Kills", "3" },
-                { "RunThrough", "4" },
-                { "AWOL", "5" },
-                { "MIA", "6" },
-                { "KD", "7" },
-                { "SurvivalRate", "100%" },
-                { "AverageLifeSpan", "00:50" },
-                { "Online", "69H00M" },
-                { "LeaveRate", "0%" },
-                { "SurvivalsInARow", "7" },
-                { "AccountLifetime", "67H00M" }
-            },
-            Scav = new Dictionary<string, string>()
-            {
-                { "Raids", "0" },
-                { "Survived", "1" },
-                { "KIA", "2" },
-                { "Kills", "3" },
-                { "RunThrough", "4" },
-                { "AWOL", "5" },
-                { "MIA", "6" },
-                { "KD", "7" },
-                { "SurvivalRate", "100%" },
-                { "AverageLifeSpan", "00:50" },
-                { "Online", "69H00M" },
-                { "LeaveRate", "0%" },
-                { "SurvivalsInARow", "7" },
-                { "AccountLifetime", "67H00M" }
-            }
+            Overall = FormatStats(overallStats, accountLifetime),
+            Pmc = FormatStats(pmcStats, accountLifetime),
+            Scav = FormatStats(scavStats, accountLifetime),
         };
     }
+
+    private static CharacterStats ReadStats(PmcData? character)
+    {
+        var eft = character?.Stats?.Eft;
+        var counters = eft?.OverallCounters?.Items;
+
+        var transitCounter = GetStat(counters, "ExitStatus", "Transit");
+
+        return new CharacterStats
+        {
+            Raids = GetStat(counters, "Sessions"),
+            Survived = GetStat(counters, "ExitStatus", "Survived") + transitCounter,
+            Killed = GetStat(counters, "ExitStatus", "Killed"),
+            Deaths = GetStat(counters, "Deaths"),
+            Kills = GetStat(counters, "Kills"),
+            RunThrough = GetStat(counters, "ExitStatus", "Runner"),
+            Awols = GetStat(counters, "ExitStatus", "Left"),
+            Mias = GetStat(counters, "ExitStatus", "MissingInAction"),
+            LongestWinStreak = GetStat(counters, "LongestWinStreak"),
+            TotalInGameTime = eft?.TotalInGameTime ?? 0,
+        };
+    }
+
+    private static CharacterStats CombineStats(CharacterStats pmcStats, CharacterStats scavStats)
+    {
+        return new CharacterStats
+        {
+            Raids = pmcStats.Raids + scavStats.Raids,
+            Survived = pmcStats.Survived + scavStats.Survived,
+            Killed = pmcStats.Killed + scavStats.Killed,
+            Deaths = pmcStats.Deaths + scavStats.Deaths,
+            Kills = pmcStats.Kills + scavStats.Kills,
+            RunThrough = pmcStats.RunThrough + scavStats.RunThrough,
+            Awols = pmcStats.Awols + scavStats.Awols,
+            Mias = pmcStats.Mias + scavStats.Mias,
+            LongestWinStreak = pmcStats.LongestWinStreak + scavStats.LongestWinStreak,
+            TotalInGameTime = pmcStats.TotalInGameTime + scavStats.TotalInGameTime,
+        };
+    }
+
+    private static Dictionary<string, string> FormatStats(CharacterStats stats, string accountLifetime)
+    {
+        var killDeathRatio =
+            stats.Deaths > 0
+                ? Math.Round(stats.Kills / (double)stats.Deaths, 2).ToString(CultureInfo.InvariantCulture)
+                : stats.Kills.ToString(CultureInfo.InvariantCulture);
+        var averageLifeSpan = stats.Raids > 0 ? FormatMinSeconds(stats.TotalInGameTime / stats.Raids) : "-";
+
+        return new Dictionary<string, string>
+        {
+            { "Raids", stats.Raids.ToString(CultureInfo.InvariantCulture) },
+            { "Survived", stats.Survived.ToString(CultureInfo.InvariantCulture) },
+            { "KIA", stats.Killed.ToString(CultureInfo.InvariantCulture) },
+            { "Kills", stats.Kills.ToString(CultureInfo.InvariantCulture) },
+            { "RunThrough", stats.RunThrough.ToString(CultureInfo.InvariantCulture) },
+            { "AWOL", stats.Awols.ToString(CultureInfo.InvariantCulture) },
+            { "MIA", stats.Mias.ToString(CultureInfo.InvariantCulture) },
+            { "KD", killDeathRatio },
+            { "SurvivalRate", FormatPercentage(stats.Survived, stats.Raids) },
+            { "AverageLifeSpan", averageLifeSpan },
+            { "Online", FormatHoursMins(stats.TotalInGameTime) },
+            { "LeaveRate", FormatPercentage(stats.Awols, stats.Raids) },
+            { "SurvivalsInARow", stats.LongestWinStreak.ToString(CultureInfo.InvariantCulture) },
+            { "AccountLifetime", accountLifetime },
+        };
+    }
+
+    private static string FormatPercentage(long value, long total)
+    {
+        if (total <= 0)
+        {
+            return "-";
+        }
+
+        var percentage = (long)(value / (double)total * 100);
+        return $"{percentage.ToString(CultureInfo.InvariantCulture)}%";
+    }
+
+    private static long GetStat(IEnumerable<CounterKeyValue>? counters, params string[] requiredTags)
+    {
+        var value = counters?.FirstOrDefault(counter => counter.Key?.IsSupersetOf(requiredTags) == true)?.Value;
+
+        return value ?? 0;
+    }
+
+    /// <summary>
+    /// Taken from the client with interpolation instead, returns a format of MM:SS
+    /// </summary>
+    /// <param name="seconds"></param>
+    /// <returns></returns>
+    private static string FormatMinSeconds(long seconds)
+    {
+        var timeSpan = TimeSpan.FromSeconds(seconds);
+        return $"{timeSpan.Minutes:00}:{timeSpan.Seconds:00}";
+    }
+
+    /// <summary>
+    /// Taken from the client with interpolation instead, returns a format of HH:MM
+    /// </summary>
+    /// <param name="seconds"></param>
+    /// <returns></returns>
+    private static string FormatHoursMins(long seconds)
+    {
+        var timeSpan = TimeSpan.FromSeconds(seconds);
+        return $"{timeSpan.Hours:00}:{timeSpan.Minutes:00}";
+    }
+
+    /// <summary>
+    /// Taken from the client with interpolation instead, returns a format of - or HH:MM or DD or YYDD
+    /// </summary>
+    /// <param name="regDate"></param>
+    /// <returns></returns>
+    private static string FormatOverallLifetime(int regDate)
+    {
+        var localDateTimeFromUnixTime = DateTime.UnixEpoch.AddMilliseconds(regDate * 1000.0).ToLocalTime();
+        var ts = DateTime.UtcNow - localDateTimeFromUnixTime;
+
+        if (ts <= TimeSpan.FromHours(48))
+        {
+            return $"{ts.TotalHours}h{ts.Minutes:00}m";
+        }
+
+        if (ts <= TimeSpan.FromDays(365))
+        {
+            return $"{(int)ts.TotalDays}d";
+        }
+
+        var num = (int)(ts.TotalDays / 365);
+        var num2 = (int)(ts.TotalDays - 365 * num);
+        return $"{num}y{num2}d";
+    }
+}
+
+public record CharacterStats
+{
+    public long Raids { get; init; }
+    public long Survived { get; init; }
+    public long Killed { get; init; }
+    public long Deaths { get; init; }
+    public long Kills { get; init; }
+    public long RunThrough { get; init; }
+    public long Awols { get; init; }
+    public long Mias { get; init; }
+    public long LongestWinStreak { get; init; }
+    public long TotalInGameTime { get; init; }
 }
