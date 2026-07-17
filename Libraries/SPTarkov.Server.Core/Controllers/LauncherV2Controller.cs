@@ -1,13 +1,11 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Launcher;
-using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Launcher;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using Info = SPTarkov.Server.Core.Models.Eft.Profile.Info;
@@ -172,11 +170,6 @@ public class LauncherV2Controller(
         }
 
         return MongoId.Empty();
-    }
-
-    public SptProfile GetProfile(MongoId sessionId)
-    {
-        return saveServer.GetProfile(sessionId);
     }
 
     public MiniProfile? GetMiniProfileFromUsername(LoginRequestData info)

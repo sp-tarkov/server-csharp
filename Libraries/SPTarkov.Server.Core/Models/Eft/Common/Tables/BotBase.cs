@@ -568,7 +568,7 @@ public record CounterKeyValue
 {
     public HashSet<string>? Key { get; set; }
 
-    public double? Value { get; set; }
+    public long? Value { get; set; }
 }
 
 public record Aggressor

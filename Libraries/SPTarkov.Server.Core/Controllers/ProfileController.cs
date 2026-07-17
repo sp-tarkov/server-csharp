@@ -73,6 +73,8 @@ public class ProfileController(
                 InvalidOrUnloadableProfile = profile.ProfileInfo?.InvalidOrUnloadableProfile,
                 SptData = profileHelper.GetDefaultSptDataObject(),
                 Wipe = true,
+                ProfileCurrency = profileHelper.GetAccountCurrency(profile),
+                ProfileStats = profileHelper.GetProfileStats(profile),
             };
         }
 
@@ -91,6 +93,8 @@ public class ProfileController(
             InvalidOrUnloadableProfile = profile.ProfileInfo?.InvalidOrUnloadableProfile,
             SptData = profile.SptData,
             Wipe = profile.ProfileInfo?.IsWiped ?? false,
+            ProfileCurrency = profileHelper.GetAccountCurrency(profile),
+            ProfileStats = profileHelper.GetProfileStats(profile),
         };
     }
 
