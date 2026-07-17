@@ -8,7 +8,7 @@
       "removeRemovablePlateChance": 40
     },
     "barter": {
-      "chancePercent": 20,
+      "chancePercent": 0,
       "itemCountMax": 3,
       "itemCountMin": 1,
       "itemTypeBlacklist": [
