@@ -52,28 +52,6 @@
       },
       {
         "reward": [
-          "686666db646d47fec3018925"
-        ],
-        "requiredItems": [
-          "6866665cdf54e1190902df55",
-          "5d1b371186f774253763a656",
-          "56742c2e4bdc2d95058b456d"
-        ],
-        "craftTimeSeconds": 66,
-        "repeatable": true
-      },
-      {
-        "reward": [
-          "6866665cdf54e1190902df55"
-        ],
-        "requiredItems": [
-          "686665484c6f39163e076c3d"
-        ],
-        "craftTimeSeconds": 66,
-        "repeatable": true
-      },
-      {
-        "reward": [
           "676008db84e242067d0dc4c9"
         ],
         "requiredItems": [
