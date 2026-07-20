@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Exceptions.Database;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Utils.Json;
 
@@ -143,6 +144,10 @@ public sealed class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileU
             }
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (ValidationErrorException)
         {
             throw;
         }
