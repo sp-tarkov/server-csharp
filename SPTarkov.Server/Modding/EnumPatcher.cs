@@ -28,9 +28,7 @@ internal static class EnumPatcher
         }
 
         var cecilTypeName = entry.EnumType.Replace('+', '/');
-        var enumType = module
-            .GetAllTypes()
-            .FirstOrDefault(type => string.Equals(type.FullName, cecilTypeName, StringComparison.Ordinal));
+        var enumType = module.GetAllTypes().FirstOrDefault(type => string.Equals(type.FullName, cecilTypeName, StringComparison.Ordinal));
 
         if (enumType is null || !enumType.IsEnum)
         {
@@ -67,14 +65,14 @@ internal static class EnumPatcher
         {
             return underlyingType switch
             {
-                MetadataType.SByte => checked((sbyte) entry.ConstantValue),
-                MetadataType.Byte => checked((byte) entry.ConstantValue),
-                MetadataType.Int16 => checked((short) entry.ConstantValue),
-                MetadataType.UInt16 => checked((ushort) entry.ConstantValue),
-                MetadataType.Int32 => entry.ConstantValue,
-                MetadataType.UInt32 => checked((uint) entry.ConstantValue),
-                MetadataType.Int64 => (long) entry.ConstantValue,
-                MetadataType.UInt64 => checked((ulong) entry.ConstantValue),
+                MetadataType.SByte => checked((sbyte)entry.ConstantValue),
+                MetadataType.Byte => checked((byte)entry.ConstantValue),
+                MetadataType.Int16 => checked((short)entry.ConstantValue),
+                MetadataType.UInt16 => checked((ushort)entry.ConstantValue),
+                MetadataType.Int32 => checked((int)entry.ConstantValue),
+                MetadataType.UInt32 => checked((uint)entry.ConstantValue),
+                MetadataType.Int64 => entry.ConstantValue,
+                MetadataType.UInt64 => checked((ulong)entry.ConstantValue),
                 _ => throw new ModLoaderException($"Enum `{entry.EnumType}` has an unsupported underlying type `{underlyingType}`."),
             };
         }
