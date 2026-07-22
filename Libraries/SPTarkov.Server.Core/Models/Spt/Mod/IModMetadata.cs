@@ -73,7 +73,8 @@ public interface IModMetadata
     Range SptVersion { get; init; }
 
     /// <summary>
-    ///     Indicates whether this mod includes a pre-patcher. If you don't know what this means, leave it false.
+    ///     Indicates whether this mod includes enum prepatch definitions. Definitions must be stored as one JSON array in
+    ///     <c>user/patchers/{ModGuid}</c>. If you don't know what this means, leave it false.
     /// </summary>
     bool HasPrepatcher { get; init; }
 

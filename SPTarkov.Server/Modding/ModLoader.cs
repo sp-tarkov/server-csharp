@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Text.Json;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using SPTarkov.Common.Models.Logging;
@@ -12,7 +13,7 @@ namespace SPTarkov.Server.Modding;
 public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modValidator)
 {
     private List<SptMod> _loadedMods = [];
-    private readonly List<AbstractPrepatch> _prepatches = [];
+    private readonly List<EnumPrepatch> _enumPrepatches = [];
 
     private ModuleDefinition? _serverCoreModule;
     private MemoryStream? _serverCoreModuleStream;
@@ -39,7 +40,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
             // Load all prepatches without loading metadata, preventing a stale copy of the patched assembly
             await LoadPrepatchesForPrepatchPass();
 
-            if (_prepatches.Count > 0)
+            if (_enumPrepatches.Count > 0)
             {
                 // Clean the console a bit
                 ClearConsole();
@@ -85,7 +86,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
 
         foreach (var patcherDirectory in Directory.GetDirectories(PatcherPath))
         {
-            LoadModPatchers(Path.GetFileName(patcherDirectory), patcherDirectory);
+            LoadEnumPrepatch(Path.GetFileName(patcherDirectory), patcherDirectory);
         }
     }
 
@@ -144,7 +145,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     /// <returns>Patched assembly and it's symbols, or null if any prepatch failed.</returns>
     private async Task<PatchedCoreAssembly?> ApplyPrepatchesInMemory(IReadOnlyCollection<SptMod>? validRuntimeMods = null)
     {
-        var success = RunActivePrepatches(validRuntimeMods);
+        var success = RunEnumPrepatches(validRuntimeMods);
 
         try
         {
@@ -190,10 +191,10 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     }
 
     /// <summary>
-    ///     Runs every active, valid prepatch against the loaded Core module in a deterministic order.
+    ///     Runs every valid enum prepatch against the loaded Core module in a deterministic order.
     /// </summary>
     /// <returns>True if all prepatches succeeded.</returns>
-    private bool RunActivePrepatches(IReadOnlyCollection<SptMod>? validRuntimeMods)
+    private bool RunEnumPrepatches(IReadOnlyCollection<SptMod>? validRuntimeMods)
     {
         if (_serverCoreModule is null)
         {
@@ -201,18 +202,18 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         }
 
         var validModGuids = validRuntimeMods?.Select(mod => mod.ModMetadata.ModGuid).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var activePrepatches = _prepatches
-            .Where(prepatch => prepatch.IsActive && (validModGuids is null || validModGuids.Contains(prepatch.ModGuid)))
+        var activePrepatches = _enumPrepatches
+            .Where(prepatch => validModGuids is null || validModGuids.Contains(prepatch.ModGuid))
             .OrderBy(prepatch => prepatch.ModGuid, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(prepatch => prepatch.GetType().FullName, StringComparer.OrdinalIgnoreCase);
+            .ThenBy(prepatch => prepatch.DefinitionPath, StringComparer.OrdinalIgnoreCase);
 
         foreach (var prepatch in activePrepatches)
         {
-            logger.Info($"Applying prepatch: {prepatch.GetType().FullName}");
+            logger.Info($"Applying enum prepatch definitions: {prepatch.DefinitionPath}");
             var succeeded = false;
             try
             {
-                prepatch.Patch();
+                EnumPatcher.Patch(_serverCoreModule, prepatch.Entries);
                 succeeded = true;
             }
             catch (Exception e)
@@ -304,7 +305,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
 
         if (result.ModMetadata.HasPrepatcher)
         {
-            LoadModPatchers(result.ModMetadata.ModGuid, Path.Combine(PatcherPath, result.ModMetadata.ModGuid), result);
+            LoadEnumPrepatch(result.ModMetadata.ModGuid, Path.Combine(PatcherPath, result.ModMetadata.ModGuid));
         }
 
         return result;
@@ -357,7 +358,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         return result;
     }
 
-    private void LoadModPatchers(string modGuid, string path, SptMod? mod = null)
+    private void LoadEnumPrepatch(string modGuid, string path)
     {
         if (!Directory.Exists(path))
         {
@@ -366,32 +367,45 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
             );
         }
 
-        var patcherPath =
-            Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly).FirstOrDefault()
-            ?? throw new ModLoaderException(
-                $"Failed to locate a patcher for mod: `{modGuid}`. If you did not intend to ship a patcher. Disable `HasPatcher` in your IModMetadata implementation."
+        var definitionFiles = Directory
+            .EnumerateFiles(path, "*", SearchOption.TopDirectoryOnly)
+            .Where(file => string.Equals(Path.GetExtension(file), ".json", StringComparison.OrdinalIgnoreCase))
+            .OrderBy(file => file, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        if (definitionFiles.Length == 0)
+        {
+            throw new ModLoaderException(
+                $"Failed to locate an enum prepatch JSON file for mod: `{modGuid}`. If you did not intend to ship a prepatcher, disable `HasPrepatcher` in your IModMetadata implementation."
             );
-
-        // Load into the loader's own context so the patcher's AbstractPrepatch matches ours
-        var loadContext = AssemblyLoadContext.GetLoadContext(typeof(ModLoader).Assembly) ?? AssemblyLoadContext.Default;
-        var patcherAssembly = loadContext.LoadFromAssemblyPath(Path.GetFullPath(patcherPath));
-        if (mod is not null)
-        {
-            mod.PatcherAssembly = patcherAssembly;
         }
 
-        var patcherTypes = mod?.PatcherAssembly.GetTypes() ?? patcherAssembly.GetTypes();
-        var prepatchTypes = patcherTypes.Where(type => !type.IsAbstract && typeof(AbstractPrepatch).IsAssignableFrom(type));
-
-        if (!prepatchTypes.Any())
+        if (definitionFiles.Length > 1)
         {
-            throw new ModLoaderException($"Patcher at path: `{patcherPath}` has no patcher entry point(s) of type `AbstractPrepatch`");
+            throw new ModLoaderException(
+                $"Found multiple enum prepatch JSON files for mod: `{modGuid}`. Expected exactly one file in: `{Path.GetFullPath(path)}`"
+            );
         }
 
-        foreach (var prepatchType in prepatchTypes)
+        var definitionPath = definitionFiles[0];
+        List<EnumEntryDefinition>? entries;
+
+        try
         {
-            _prepatches.Add((AbstractPrepatch)Activator.CreateInstance(prepatchType, args: [_serverCoreModule])!);
+            using var definitionStream = File.OpenRead(definitionPath);
+            entries = JsonSerializer.Deserialize<List<EnumEntryDefinition>>(definitionStream);
         }
+        catch (Exception exception) when (exception is JsonException or NotSupportedException or IOException or UnauthorizedAccessException)
+        {
+            throw new ModLoaderException($"Failed to load enum prepatch definitions from: `{Path.GetFullPath(definitionPath)}`", exception);
+        }
+
+        if (entries is null || entries.Count == 0)
+        {
+            throw new ModLoaderException($"Enum prepatch file contains no definitions: `{Path.GetFullPath(definitionPath)}`");
+        }
+
+        _enumPrepatches.Add(new EnumPrepatch(modGuid, Path.GetFullPath(definitionPath), entries));
     }
 
     private async Task<bool> TryLoadServerCoreBytes()
@@ -431,3 +445,5 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
 public sealed record ModLoaderRunResult(bool ShouldStartServer, List<SptMod> ValidRuntimeMods);
 
 public sealed record PatchedCoreAssembly(byte[] Assembly, byte[]? Symbols);
+
+internal sealed record EnumPrepatch(string ModGuid, string DefinitionPath, IReadOnlyList<EnumEntryDefinition> Entries);

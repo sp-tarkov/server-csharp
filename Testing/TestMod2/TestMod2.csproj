@@ -15,16 +15,10 @@
   <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
-  <Target Name="BuildTestPrepatch" BeforeTargets="CopyToServer">
-    <MSBuild
-      Projects="$(MSBuildProjectDirectory)\..\TestPrepatch\TestPrepatch.csproj"
-      Targets="Build"
-      Properties="Configuration=$(Configuration)"
-    />
-  </Target>
   <Target Name="CopyToServer" AfterTargets="PostBuildEvent">
     <ItemGroup>
       <OutputDLL Include="$(ProjectDir)$(OutDir)$(TargetName).dll" />
+      <PrepatchDefinition Include="$(ProjectDir)TestPrepatch.json" />
       <Resources Include="$(ProjectDir)Resources\**\*.*" />
       <WebAssets Include="$(ProjectDir)wwwroot\**\*.*" />
     </ItemGroup>
@@ -32,6 +26,10 @@
     <Copy
       SourceFiles="@(OutputDLL);"
       DestinationFolder="$(MSBuildProjectDirectory)\..\..\SPTarkov.Server\bin\$(Configuration)\net10.0\user\mods\TestMod2"
+    />
+    <Copy
+      SourceFiles="@(PrepatchDefinition)"
+      DestinationFolder="$(MSBuildProjectDirectory)\..\..\SPTarkov.Server\bin\$(Configuration)\net10.0\user\patchers\com.sp-tarkov.test-mod2"
     />
     <Copy
       SourceFiles="@(Resources);"
