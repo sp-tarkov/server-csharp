@@ -1,6 +1,7 @@
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
 using SPTarkov.Reflection.Patching;
+using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Exceptions;
 
 namespace SPTarkov.Server.Modding;
@@ -20,11 +21,6 @@ internal static class EnumPatcher
         if (string.IsNullOrWhiteSpace(entry.EnumType))
         {
             throw new ModLoaderException("An enum prepatch entry has no enumType.");
-        }
-
-        if (string.IsNullOrWhiteSpace(entry.ConstantName))
-        {
-            throw new ModLoaderException($"An enum prepatch entry for `{entry.EnumType}` has no constantName.");
         }
 
         var cecilTypeName = entry.EnumType.Replace('+', '/');

@@ -218,6 +218,7 @@ public static class Program
         if (ProgramStatics.MODS())
         {
             diHandler.AddInjectableTypesFromAssemblies(loadedMods.SelectMany(a => a.Assemblies));
+            builder.Services.AddSingleton(new ClientEnumDefinitions());
             diHandler.AddInjectableTypesFromTypeAssembly(typeof(SPTStartupHostedService));
         }
         else

@@ -29,7 +29,7 @@ public sealed class TestMod2Metadata : IModMetadata, IModBlazorMetadata
 }
 
 [Injectable(TypePriority = OnLoadOrder.PostLoad + 1)]
-public class TestMod2(ISptLogger<TestMod2> logger) : IOnLoad
+public class TestMod2(ISptLogger<TestMod2> logger, ClientEnumDefinitions clientEnumDefinitions) : IOnLoad
 {
     private const string InjectedName = "TestSkillEntry";
 
@@ -48,6 +48,17 @@ public class TestMod2(ISptLogger<TestMod2> logger) : IOnLoad
         {
             logger.Warning($"Prepatch NOT applied: {InjectedName} missing from SkillTypes");
         }
+
+        clientEnumDefinitions.Add(
+            "com.sp-tarkov.test-mod2",
+            new EnumEntryDefinition
+            {
+                EnumType = "EFT.EBuffId",
+                ConstantName = "NewSkill",
+                ConstantValue = 10000,
+                JsonEnumName = "NewSkill",
+            }
+        );
 
         await Task.CompletedTask;
     }
