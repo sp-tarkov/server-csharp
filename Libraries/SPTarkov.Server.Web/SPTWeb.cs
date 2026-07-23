@@ -23,12 +23,12 @@ public static class SPTWeb
 
     public static void InitializeSptBlazor(this WebApplicationBuilder builder, IReadOnlyList<SptMod> sptMods)
     {
-        _sptWebMods = sptMods.Where(mod => mod.ModMetadata is IModWebMetadata).ToList();
+        _sptWebMods = sptMods.Where(mod => mod.ModMetadata is IModBlazorMetadata).ToList();
 
         // Build the mod-registered pages up once, so both the SIC landing page and the launcher mod-pages route use the same list.
         builder.Services.AddSingleton<IReadOnlyList<ModPage>>(
             _sptWebMods
-                .Select(mod => (mod.ModMetadata, WebMetadata: mod.ModMetadata as IModWebMetadata))
+                .Select(mod => (mod.ModMetadata, WebMetadata: mod.ModMetadata as IModBlazorMetadata))
                 .Where(mod => !string.IsNullOrWhiteSpace(mod.WebMetadata?.HomePage))
                 .OrderBy(mod => mod.ModMetadata.Name)
                 .Select(mod => new ModPage
@@ -128,7 +128,7 @@ public static class SPTWeb
             }
 
             var webMetadata =
-                mod.ModMetadata as IModWebMetadata
+                mod.ModMetadata as IModBlazorMetadata
                 ?? throw new InvalidOperationException("Web Metadata is null but yet it is included in _sptWebMods?");
             var modAssembly = mod.ModMetadata.GetType().Assembly;
 

@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using SPTarkov.Common.Models.Logging;
+using SPTarkov.Server.Core.Exceptions.Database;
 using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using Path = System.IO.Path;
@@ -100,16 +101,9 @@ public sealed class DatabaseImporter(
         var hashBytes = await md5.ComputeHashAsync(stream, cancellationToken);
         var hashString = Convert.ToHexString(hashBytes);
 
-        if (_databaseHashes.TryGetValue(relativePath, out var expectedHash))
+        if (!_databaseHashes.TryGetValue(relativePath, out var expectedHash) || expectedHash != hashString)
         {
-            if (expectedHash != hashString)
-            {
-                logger.Warning(serverLocalisationService.GetText("validation_error_file", fileName));
-            }
-        }
-        else
-        {
-            logger.Warning(serverLocalisationService.GetText("validation_error_file", fileName));
+            throw new ValidationErrorException(serverLocalisationService.GetText("validation_error_file", fileName));
         }
     }
 

@@ -13,7 +13,16 @@ public sealed class PrepatchLoadContext(string hostAssemblyPath, byte[] patchedC
 
     private const string CoreAssemblyName = "SPTarkov.Server.Core";
 
-    private static readonly string[] _sharedAssemblyPrefixes = ["Microsoft.", "System.", "MudBlazor", "ZLogger"];
+    private static readonly string[] _sharedAssemblyPrefixes =
+    [
+        "Microsoft.",
+        "System.",
+        "MudBlazor",
+        "ZLogger",
+        "0Harmony",
+        "MonoMod.",
+        "Mono.Cecil",
+    ];
 
     private readonly AssemblyDependencyResolver _resolver = new(hostAssemblyPath);
 

@@ -9,11 +9,8 @@ public class SptMod
     public required string Directory { get; init; }
 
     [JsonPropertyName("modMetadata")]
-    public required AbstractModMetadata ModMetadata { get; init; }
+    public required IModMetadata ModMetadata { get; init; }
 
     [JsonPropertyName("assemblies")]
     public required IEnumerable<Assembly> Assemblies { get; init; }
-
-    [JsonPropertyName("patcherAssembly")]
-    public Assembly? PatcherAssembly { get; set; }
 }
