@@ -47,7 +47,7 @@
         "requiredItems": [
           "665ee77ccf2d642e98220bca"
         ],
-        "craftTimeSeconds": 60,
+        "craftTimeSeconds": 360,
         "repeatable": false
       },
       {
