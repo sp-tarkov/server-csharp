@@ -225,10 +225,11 @@ public static class Program
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(PatchManager));
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(SPTWeb));
 
+        builder.Services.AddSingleton(new ClientEnumDefinitions());
+
         if (ProgramStatics.MODS())
         {
             diHandler.AddInjectableTypesFromAssemblies(loadedMods.SelectMany(a => a.Assemblies));
-            builder.Services.AddSingleton(new ClientEnumDefinitions());
             diHandler.AddInjectableTypesFromTypeAssembly(typeof(SPTStartupHostedService));
         }
         else
