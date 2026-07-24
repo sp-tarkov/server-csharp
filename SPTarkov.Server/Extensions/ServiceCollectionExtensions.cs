@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.ExceptionServices;
 using SPTarkov.Server.Core.DI;
 
 namespace SPTarkov.Server.Extensions;
@@ -7,7 +8,7 @@ public static class ServiceCollectionExtensions
 {
     extension(IServiceCollection serviceCollection)
     {
-        public async Task AddModDIConstructorsAsync(IEnumerable<Assembly> modAssemblies)
+        public async Task AddModDIConstructorsAsync(IEnumerable<Assembly> modAssemblies, CancellationToken cancellationToken = default)
         {
             var candidates = modAssemblies
                 .SelectMany(GetLoadableTypes)
@@ -15,12 +16,14 @@ public static class ServiceCollectionExtensions
 
             foreach (var type in candidates)
             {
-                await InvokeDIConstructorAsync(type, serviceCollection);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                await InvokeDIConstructorAsync(type, serviceCollection, cancellationToken);
             }
         }
     }
 
-    private static async Task InvokeDIConstructorAsync(Type type, IServiceCollection serviceCollection)
+    private static async Task InvokeDIConstructorAsync(Type type, IServiceCollection serviceCollection, CancellationToken cancellationToken)
     {
         var method =
             type.GetMethod(nameof(IOnDIConstruct.OnDIConstructAsync), BindingFlags.Public | BindingFlags.Static)
@@ -28,7 +31,20 @@ public static class ServiceCollectionExtensions
                 $"Type '{type.FullName}' implements '{nameof(IOnDIConstruct)}' but does not expose a public static '{nameof(IOnDIConstruct.OnDIConstructAsync)}' method."
             );
 
-        if (method.Invoke(null, [serviceCollection]) is not Task task)
+        object? result;
+
+        try
+        {
+            result = method.Invoke(null, [serviceCollection, cancellationToken]);
+        }
+        catch (TargetInvocationException e) when (e.InnerException is not null)
+        {
+            // Unwrap so cancellation and mod errors surface as themselves rather than a reflection wrapper
+            ExceptionDispatchInfo.Capture(e.InnerException).Throw();
+            throw;
+        }
+
+        if (result is not Task task)
         {
             throw new InvalidOperationException($"Method '{type.FullName}.{method.Name}' must return Task.");
         }

@@ -13,12 +13,11 @@ public static class ProgramExtensions
 {
     extension(IServiceProvider serviceProvider)
     {
-        public async Task RunPreSptLoadCallbacks(ILogger logger)
+        public async Task RunPreSptLoadCallbacks(ILogger logger, CancellationToken cancellationToken = default)
         {
             // This is necessary here so that mods can modify SPT configs pre-emptively before we startup the container
             // It will make HttpConfig modifiable for mods like Fika
             var injectableTypes = serviceProvider.GetRequiredService<IReadOnlyList<DependencyInjectionContainer>>();
-            var cancellationToken = serviceProvider.GetRequiredService<IHostApplicationLifetime>().ApplicationStopping;
 
             var preSptLoadTypes = injectableTypes
                 .Where(container => container.Type == typeof(IOnLoad))

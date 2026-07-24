@@ -13,7 +13,10 @@ public static class ConfigLoader
     private static readonly string _configPath = Path.Combine("SPT_Data", "configs");
     private static readonly HashSet<string> _acceptableFileExtensions = [".json", ".jsonc"];
 
-    public static async Task<IReadOnlyDictionary<Type, BaseConfig>> Initialize(ILogger? logger = null)
+    public static async Task<IReadOnlyDictionary<Type, BaseConfig>> Initialize(
+        ILogger? logger = null,
+        CancellationToken cancellationToken = default
+    )
     {
         if (logger is not null && logger.IsEnabled(LogLevel.Debug))
         {
@@ -76,7 +79,7 @@ public static class ConfigLoader
                 {
                     await using FileStream fs = new(file, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: true);
 
-                    deserializedContent = await JsonSerializer.DeserializeAsync(fs, configType, options);
+                    deserializedContent = await JsonSerializer.DeserializeAsync(fs, configType, options, cancellationToken);
                 }
             }
             catch (JsonException)

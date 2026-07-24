@@ -29,8 +29,9 @@ public interface IOnDIConstruct
     /// <param name="serviceCollection">
     /// The service collection that the mod may add additional service registrations to.
     /// </param>
+    /// <param name="cancellationToken">Cancelled when server startup is aborted, for example by Ctrl-C.</param>
     /// <returns>
     /// A task that completes when the mod has finished adding its service registrations.
     /// </returns>
-    static abstract Task OnDIConstructAsync(IServiceCollection serviceCollection);
+    static abstract Task OnDIConstructAsync(IServiceCollection serviceCollection, CancellationToken cancellationToken);
 }

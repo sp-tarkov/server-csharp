@@ -30,7 +30,7 @@ public sealed class TestModMetadata : IModMetadata, IModBlazorMetadata
 [Injectable(TypePriority = OnLoadOrder.Preload + 1)]
 public class TestModPreload(ISptLogger<TestMod> logger, TestDIClass testClass) : IOnDIConstruct, IOnLoad
 {
-    public static Task OnDIConstructAsync(IServiceCollection serviceCollection)
+    public static Task OnDIConstructAsync(IServiceCollection serviceCollection, CancellationToken cancellationToken)
     {
         serviceCollection.AddSingleton(new TestDIClass());
 

@@ -29,7 +29,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     ///     Initializes the mod loader container, and runs the entire mod loader process
     /// </summary>
     /// <returns>Active runtime mods</returns>
-    public async Task<ModLoaderRunResult> RunModLoader(string[] args)
+    public async Task<ModLoaderRunResult> RunModLoader(string[] args, CancellationToken cancellationToken = default)
     {
         // The hosted copy already runs inside the prepatch context, so it must not patch or host again.
         var isHostedPatchedProcess =
@@ -37,6 +37,8 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
 
         if (!isHostedPatchedProcess)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             // Load all prepatches without loading metadata, preventing a stale copy of the patched assembly
             await LoadPrepatchesForPrepatchPass();
 
@@ -45,7 +47,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
                 // Clean the console a bit
                 ClearConsole();
 
-                var patchedCore = await ApplyPrepatchesInMemory();
+                var patchedCore = await ApplyPrepatchesInMemory(cancellationToken: cancellationToken);
                 if (patchedCore is not null)
                 {
                     await BootPatchedServerInMemory(patchedCore, args);
@@ -54,7 +56,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
             }
         }
 
-        await LoadMods(isHostedPatchedProcess);
+        await LoadMods(isHostedPatchedProcess, cancellationToken);
         var loadedMods = modValidator.ValidateMods(_loadedMods);
 
         return new ModLoaderRunResult(true, loadedMods);
@@ -90,7 +92,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         }
     }
 
-    private async Task LoadMods(bool isPrepatchedProcess)
+    private async Task LoadMods(bool isPrepatchedProcess, CancellationToken cancellationToken = default)
     {
         if (!await TryLoadServerCoreBytes())
         {
@@ -126,6 +128,8 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         // Load mods found in dir
         foreach (var modDirectory in modDirectories)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             try
             {
                 _loadedMods.Add(LoadMod(modDirectory));
@@ -143,7 +147,10 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     ///     Applies all prepatches, writes the patched Core (and its pdb) to disk
     /// </summary>
     /// <returns>Patched assembly and it's symbols, or null if any prepatch failed.</returns>
-    private async Task<PatchedCoreAssembly?> ApplyPrepatchesInMemory(IReadOnlyCollection<SptMod>? validRuntimeMods = null)
+    private async Task<PatchedCoreAssembly?> ApplyPrepatchesInMemory(
+        IReadOnlyCollection<SptMod>? validRuntimeMods = null,
+        CancellationToken cancellationToken = default
+    )
     {
         var success = RunEnumPrepatches(validRuntimeMods);
 
@@ -170,12 +177,12 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
             var assemblyBytes = patchedStream.ToArray();
             var symbolBytes = _serverCoreHasSymbols ? symbolStream.ToArray() : null;
 
-            await File.WriteAllBytesAsync(PatchedAssemblyName, assemblyBytes);
+            await File.WriteAllBytesAsync(PatchedAssemblyName, assemblyBytes, cancellationToken);
 
             // Write PDB, this is important when debugging
             if (symbolBytes is not null)
             {
-                await File.WriteAllBytesAsync(Path.ChangeExtension(PatchedAssemblyName, ".pdb"), symbolBytes);
+                await File.WriteAllBytesAsync(Path.ChangeExtension(PatchedAssemblyName, ".pdb"), symbolBytes, cancellationToken);
             }
 
             return new PatchedCoreAssembly(assemblyBytes, symbolBytes);

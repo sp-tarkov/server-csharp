@@ -47,11 +47,20 @@ public static class Program
             return;
         }
 
+        using var startupCancellation = new StartupCancellation();
+
         try
         {
             _earlyLogger = loggerFactory.CreateLogger("SPTarkov.Server.Core");
 
-            await StartServer(loggerFactory, args);
+            await StartServer(loggerFactory, args, startupCancellation);
+        }
+        catch (OperationCanceledException) when (startupCancellation.IsCancellationRequested)
+        {
+            if (_earlyLogger is not null && _earlyLogger.IsEnabled(LogLevel.Information))
+            {
+                _earlyLogger.LogInformation("Server startup was cancelled, shutting down.");
+            }
         }
         catch (WebServerPortUnavailableException ex)
         {
@@ -152,11 +161,11 @@ public static class Program
         }
     }
 
-    public static async Task StartServer(SptEarlyLoggerFactory loggerFactory, string[] args)
+    public static async Task StartServer(SptEarlyLoggerFactory loggerFactory, string[] args, StartupCancellation startupCancellation)
     {
         Console.OutputEncoding = Encoding.UTF8;
 
-        var configuration = await ConfigLoader.Initialize(_earlyLogger!);
+        var configuration = await ConfigLoader.Initialize(_earlyLogger!, startupCancellation.Token);
         var earlyServiceProvider = ProgramHelpers.CreateEarlySptProvider(loggerFactory, configuration);
 
         List<SptMod> loadedMods = [];
@@ -164,7 +173,7 @@ public static class Program
         if (ProgramStatics.MODS())
         {
             var modLoader = earlyServiceProvider.GetRequiredService<ModLoader>();
-            var runResult = await modLoader.RunModLoader(args);
+            var runResult = await modLoader.RunModLoader(args, startupCancellation.Token);
             if (!runResult.ShouldStartServer)
             {
                 return;
@@ -173,7 +182,7 @@ public static class Program
             loadedMods = runResult.ValidRuntimeMods;
         }
 
-        await StartServerAfterModLoading(loggerFactory, configuration, earlyServiceProvider, loadedMods);
+        await StartServerAfterModLoading(loggerFactory, configuration, earlyServiceProvider, loadedMods, startupCancellation);
     }
 
     /// <summary>
@@ -183,20 +192,21 @@ public static class Program
         SptEarlyLoggerFactory loggerFactory,
         IReadOnlyDictionary<Type, BaseConfig> configuration,
         IServiceProvider earlyServiceProvider,
-        List<SptMod> loadedMods
+        List<SptMod> loadedMods,
+        StartupCancellation startupCancellation
     )
     {
-        var cTSource = new CancellationTokenSource();
+        var cancellationToken = startupCancellation.Token;
         var dbImporter = earlyServiceProvider.GetRequiredService<DatabaseImporter>();
 
         var shouldVerify = !ProgramStatics.DEBUG();
         if (shouldVerify)
         {
-            await dbImporter.LoadHashesAsync(cTSource.Token);
+            await dbImporter.LoadHashesAsync(cancellationToken);
         }
 
         var tables =
-            await dbImporter.LoadDatabaseAsync(shouldVerify, cTSource.Token)
+            await dbImporter.LoadDatabaseAsync(shouldVerify, cancellationToken)
             ?? throw new NullReferenceException("Failed to import database tables.");
 
         // Create web builder and logger
@@ -233,7 +243,7 @@ public static class Program
         builder.Services.AddSingleton(builder);
         builder.Services.AddSingleton<IReadOnlyList<SptMod>>(loadedMods);
 
-        await builder.Services.AddModDIConstructorsAsync(loadedMods.SelectMany(mod => mod.Assemblies).ToArray());
+        await builder.Services.AddModDIConstructorsAsync(loadedMods.SelectMany(mod => mod.Assemblies).ToArray(), cancellationToken);
 
         // Configure Kestrel options
         ConfigureKestrel(builder);
@@ -253,6 +263,9 @@ public static class Program
         );
         var app = builder.Build();
 
+        // Link startup token to the host's lifetime
+        startupCancellation.LinkTo(app.Services.GetRequiredService<IHostApplicationLifetime>());
+
         // Configure Kestrel WS options and Handle fallback requests
         ConfigureWebApp(app);
 
@@ -266,9 +279,11 @@ public static class Program
         forwardedHeadersOptions.KnownProxies.Clear();
         app.UseForwardedHeaders(forwardedHeadersOptions);
 
-        await app.Services.RunPreSptLoadCallbacks(_earlyLogger!);
+        await app.Services.RunPreSptLoadCallbacks(_earlyLogger!, cancellationToken);
 
         var httpConfig = app.Services.GetRequiredService<HttpConfig>();
+
+        cancellationToken.ThrowIfCancellationRequested();
 
         httpConfig.VerifyWebServerPortAvailable();
 
