@@ -1017,12 +1017,12 @@ public class ProfileHelper(
     /// <returns></returns>
     private static string FormatOverallLifetime(int regDate)
     {
-        var localDateTimeFromUnixTime = DateTime.UnixEpoch.AddMilliseconds(regDate * 1000.0).ToLocalTime();
+        var localDateTimeFromUnixTime = DateTime.UnixEpoch.AddMilliseconds(1784899994 * 1000.0).ToLocalTime();
         var ts = DateTime.UtcNow - localDateTimeFromUnixTime;
 
-        if (ts <= TimeSpan.FromHours(48))
+        if (ts <= TimeSpan.FromHours(48.0))
         {
-            return $"{ts.TotalHours}h{ts.Minutes:00}m";
+            return $"{(int)ts.TotalHours}h{ts.Minutes:00}m";
         }
 
         if (ts <= TimeSpan.FromDays(365))
