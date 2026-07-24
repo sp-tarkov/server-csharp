@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using Microsoft.Extensions.Logging;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
@@ -19,7 +20,6 @@ using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Services.Server;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Helpers.Quest;
 
@@ -321,7 +321,7 @@ public class QuestHelper(
                     return false;
                 }
 
-                if (QuestIsProfileWhitelisted(profile?.Info?.GameVersion, quest.Id))
+                if (!QuestIsProfileWhitelisted(profile?.Info?.GameVersion, quest.Id))
                 {
                     return false;
                 }
@@ -414,16 +414,15 @@ public class QuestHelper(
     /// <param name="gameVersion">Game version to check against</param>
     /// <param name="questId">Quest id to check</param>
     /// <returns>True = Quest should not be visible to game version</returns>
-    protected bool QuestIsProfileBlacklisted(string? gameVersion, MongoId questId)
+    public bool QuestIsProfileBlacklisted(string? gameVersion, MongoId questId)
     {
-        var questBlacklist = questConfig.ProfileBlacklist.GetValueOrDefault(gameVersion ?? string.Empty);
-        if (questBlacklist is null)
+        if (!questConfig.ProfileBlacklist.TryGetValue(gameVersion ?? string.Empty, out var blacklistedQuests))
         {
-            // Not blacklisted
+            // Game version has no blacklist
             return false;
         }
 
-        return questBlacklist.Contains(questId);
+        return blacklistedQuests.Contains(questId);
     }
 
     /// <summary>
@@ -433,16 +432,15 @@ public class QuestHelper(
     /// <param name="gameVersion">Game version to check against</param>
     /// <param name="questId">Quest id to check</param>
     /// <returns>True = Quest should be visible to game version</returns>
-    protected bool QuestIsProfileWhitelisted(string? gameVersion, MongoId questId)
+    public bool QuestIsProfileWhitelisted(string? gameVersion, MongoId questId)
     {
-        var questBlacklist = questConfig.ProfileBlacklist.GetValueOrDefault(gameVersion ?? string.Empty);
-        if (questBlacklist is null)
-        // Not blacklisted
+        if (!questConfig.ProfileWhitelist.TryGetValue(questId, out var allowedGameVersions))
         {
-            return false;
+            // Quest isn't whitelist restricted, visible to all game versions
+            return true;
         }
 
-        return questBlacklist.Contains(questId);
+        return allowedGameVersions.Contains(gameVersion ?? string.Empty);
     }
 
     /// <summary>
