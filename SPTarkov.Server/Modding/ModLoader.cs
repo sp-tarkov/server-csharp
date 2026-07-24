@@ -1,10 +1,8 @@
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text.Json;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
+using AsmResolver.DotNet;
 using SPTarkov.Common.Models.Logging;
-using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Exceptions;
 
@@ -16,9 +14,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
     private readonly List<EnumPrepatch> _enumPrepatches = [];
 
     private ModuleDefinition? _serverCoreModule;
-    private MemoryStream? _serverCoreModuleStream;
-    private MemoryStream? _serverCoreSymbolStream;
-    private bool _serverCoreHasSymbols;
+    private byte[]? _serverCoreSymbols;
     private readonly List<PrepatchResultEntry> _prepatchResults = [];
 
     private const string ModPath = "./user/mods/";
@@ -161,21 +157,8 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
                 return null;
             }
 
-            using var patchedStream = new MemoryStream();
-            using var symbolStream = new MemoryStream();
-
-            var writerParameters = new WriterParameters();
-            if (_serverCoreHasSymbols)
-            {
-                writerParameters.WriteSymbols = true;
-                writerParameters.SymbolWriterProvider = new PortablePdbWriterProvider();
-                writerParameters.SymbolStream = symbolStream;
-            }
-
-            _serverCoreModule!.Write(patchedStream, writerParameters);
-
-            var assemblyBytes = patchedStream.ToArray();
-            var symbolBytes = _serverCoreHasSymbols ? symbolStream.ToArray() : null;
+            var assemblyBytes = _serverCoreModule!.Write();
+            var symbolBytes = _serverCoreSymbols;
 
             await File.WriteAllBytesAsync(PatchedAssemblyName, assemblyBytes, cancellationToken);
 
@@ -189,11 +172,8 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         }
         finally
         {
-            DisposeServerCoreModule();
-            _serverCoreModuleStream?.Dispose();
-            _serverCoreModuleStream = null;
-            _serverCoreSymbolStream?.Dispose();
-            _serverCoreSymbolStream = null;
+            _serverCoreModule = null;
+            _serverCoreSymbols = null;
         }
     }
 
@@ -232,12 +212,6 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
         }
 
         return _prepatchResults.All(r => r.Succeeded);
-    }
-
-    private void DisposeServerCoreModule()
-    {
-        _serverCoreModule?.Dispose();
-        _serverCoreModule = null;
     }
 
     private static void ClearConsole()
@@ -357,9 +331,7 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
 
         if (result == null)
         {
-            throw new ModLoaderException(
-                $"Failed to load mod metadata for: {Path.GetFullPath(path)} \ndid you implement `IModMetadata`?"
-            );
+            throw new ModLoaderException($"Failed to load mod metadata for: {Path.GetFullPath(path)} \ndid you implement `IModMetadata`?");
         }
 
         return result;
@@ -422,22 +394,13 @@ public sealed class ModLoader(ISptLogger<ModLoader> logger, ModValidator modVali
             var serverCorePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "SPTarkov.Server.Core.dll");
             var symbolPath = Path.ChangeExtension(serverCorePath, ".pdb");
 
-            // Don't dispose the streams, keep them open, it will cause cecil to have a stroke if they're disposed of
-            _serverCoreModuleStream = new MemoryStream(await File.ReadAllBytesAsync(serverCorePath), writable: false);
+            _serverCoreModule = ModuleDefinition.FromBytes(await File.ReadAllBytesAsync(serverCorePath));
 
-            var readerParameters = new ReaderParameters { ReadingMode = ReadingMode.Immediate, InMemory = true };
-
-            // Read the symbols so the patched Core can emit a matching pdb and stay breakpointable
+            // Existing metadata tokens are preserved, so the original PDB remains valid for the patched assembly.
             if (File.Exists(symbolPath))
             {
-                _serverCoreSymbolStream = new MemoryStream(await File.ReadAllBytesAsync(symbolPath), writable: false);
-                readerParameters.ReadSymbols = true;
-                readerParameters.SymbolReaderProvider = new PortablePdbReaderProvider();
-                readerParameters.SymbolStream = _serverCoreSymbolStream;
-                _serverCoreHasSymbols = true;
+                _serverCoreSymbols = await File.ReadAllBytesAsync(symbolPath);
             }
-
-            _serverCoreModule = ModuleDefinition.ReadModule(_serverCoreModuleStream, readerParameters);
         }
         catch (Exception e)
         {

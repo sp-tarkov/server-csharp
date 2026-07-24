@@ -1,6 +1,5 @@
-using Mono.Cecil;
-using Mono.Cecil.Rocks;
-using SPTarkov.Reflection.Patching;
+using AsmResolver.DotNet;
+using AsmResolver.PE.DotNet.Metadata.Tables;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Exceptions;
 
@@ -23,8 +22,7 @@ internal static class EnumPatcher
             throw new ModLoaderException("An enum prepatch entry has no enumType.");
         }
 
-        var cecilTypeName = entry.EnumType.Replace('+', '/');
-        var enumType = module.GetAllTypes().FirstOrDefault(type => string.Equals(type.FullName, cecilTypeName, StringComparison.Ordinal));
+        var enumType = module.GetAllTypes().FirstOrDefault(type => string.Equals(type.FullName, entry.EnumType, StringComparison.Ordinal));
 
         if (enumType is null || !enumType.IsEnum)
         {
@@ -36,39 +34,39 @@ internal static class EnumPatcher
             throw new ModLoaderException($"Enum `{entry.EnumType}` already contains an entry named `{entry.ConstantName}`.");
         }
 
-        if (enumType.Fields.Any(field => field.HasConstant && Convert.ToDecimal(field.Constant) == entry.ConstantValue))
+        if (enumType.Fields.Any(field => field.Constant?.InterpretData() is { } value && Convert.ToDecimal(value) == entry.ConstantValue))
         {
             throw new ModLoaderException($"Enum `{entry.EnumType}` already contains the value {entry.ConstantValue}.");
         }
 
-        enumType.Fields.Add(
-            new FieldDefinition(
-                entry.ConstantName,
-                FieldAttributes.Public | FieldAttributes.Static | FieldAttributes.Literal | FieldAttributes.HasDefault,
-                enumType
-            )
-            {
-                Constant = ConvertConstant(enumType, entry),
-            }
+        var field = new FieldDefinition(
+            entry.ConstantName,
+            FieldAttributes.Public | FieldAttributes.Static | FieldAttributes.Literal | FieldAttributes.HasDefault,
+            enumType.ToTypeSignature()
         );
+        field.Constant = ConvertConstant(enumType, entry);
+        enumType.Fields.Add(field);
+        module.TokenAllocator.AssignNextAvailableToken(field);
     }
 
-    private static object ConvertConstant(TypeDefinition enumType, EnumEntryDefinition entry)
+    private static Constant ConvertConstant(TypeDefinition enumType, EnumEntryDefinition entry)
     {
-        var underlyingType = enumType.Fields.First(field => field.Name == "value__").FieldType.MetadataType;
+        var underlyingType =
+            enumType.GetEnumUnderlyingType()?.ElementType
+            ?? throw new ModLoaderException($"Enum `{entry.EnumType}` has no underlying type.");
 
         try
         {
             return underlyingType switch
             {
-                MetadataType.SByte => checked((sbyte)entry.ConstantValue),
-                MetadataType.Byte => checked((byte)entry.ConstantValue),
-                MetadataType.Int16 => checked((short)entry.ConstantValue),
-                MetadataType.UInt16 => checked((ushort)entry.ConstantValue),
-                MetadataType.Int32 => checked((int)entry.ConstantValue),
-                MetadataType.UInt32 => checked((uint)entry.ConstantValue),
-                MetadataType.Int64 => entry.ConstantValue,
-                MetadataType.UInt64 => checked((ulong)entry.ConstantValue),
+                ElementType.I1 => Constant.FromValue(checked((sbyte)entry.ConstantValue)),
+                ElementType.U1 => Constant.FromValue(checked((byte)entry.ConstantValue)),
+                ElementType.I2 => Constant.FromValue(checked((short)entry.ConstantValue)),
+                ElementType.U2 => Constant.FromValue(checked((ushort)entry.ConstantValue)),
+                ElementType.I4 => Constant.FromValue(checked((int)entry.ConstantValue)),
+                ElementType.U4 => Constant.FromValue(checked((uint)entry.ConstantValue)),
+                ElementType.I8 => Constant.FromValue(entry.ConstantValue),
+                ElementType.U8 => Constant.FromValue(checked((ulong)entry.ConstantValue)),
                 _ => throw new ModLoaderException($"Enum `{entry.EnumType}` has an unsupported underlying type `{underlyingType}`."),
             };
         }
