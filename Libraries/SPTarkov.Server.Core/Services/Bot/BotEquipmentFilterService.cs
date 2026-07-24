@@ -1,7 +1,5 @@
 using SPTarkov.Common.Extensions;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Bot;
 using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
@@ -9,17 +7,11 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Services.Bot;
 
 [Injectable(InjectionType.Singleton)]
-public class BotEquipmentFilterService(
-    ISptLogger<BotEquipmentFilterService> logger,
-    BotHelper botHelper,
-    ProfileHelper profileHelper,
-    BotConfig botConfig
-)
+public class BotEquipmentFilterService(BotHelper botHelper, ProfileHelper profileHelper, BotConfig botConfig)
 {
     protected readonly Dictionary<string, EquipmentFilters?> BotEquipmentConfig = botConfig.Equipment;
 
@@ -55,9 +47,7 @@ public class BotEquipmentFilterService(
         {
             AdjustWeighting(botWeightingAdjustments.Equipment, baseBotNode.BotInventory.Equipment);
             AdjustWeighting(botWeightingAdjustments.Ammo, baseBotNode.BotInventory.Ammo);
-
-            // Don't warn when edited item not found, we're editing usec/bear clothing and they don't have each others clothing
-            AdjustWeighting(botWeightingAdjustments.Clothing, baseBotNode.BotAppearance, false);
+            AdjustWeighting(botWeightingAdjustments.Clothing, baseBotNode.BotAppearance);
         }
 
         if (botWeightingAdjustmentsByPlayerLevel is not null)
@@ -325,176 +315,82 @@ public class BotEquipmentFilterService(
     ///     Add/Edit weighting changes to bot items using values from config/bot.json/equipment
     /// </summary>
     /// <param name="weightingAdjustments">Weighting change to apply to bot</param>
-    /// <param name="botItemPool">Bot item dictionary to adjust</param>
-    /// <param name="showEditWarnings">OPTIONAL - show warnings when editing existing value</param>
+    /// <param name="botItemPool">Bot item dictionary to adjust, keyed by equipment slot</param>
     protected void AdjustWeighting(
         AdjustmentDetails? weightingAdjustments,
-        Dictionary<EquipmentSlots, Dictionary<MongoId, double>> botItemPool,
-        bool showEditWarnings = true
+        Dictionary<EquipmentSlots, Dictionary<MongoId, double>> botItemPool
     )
     {
-        // TODO: bad typing by key with method below due to, EquipmentSlots
-        if (weightingAdjustments is null)
-        {
-            return;
-        }
-
-        if (weightingAdjustments.Add?.Count > 0)
-        {
-            foreach (var poolAdjustmentKvP in weightingAdjustments.Add)
-            {
-                var locationToUpdate = botItemPool[Enum.Parse<EquipmentSlots>(poolAdjustmentKvP.Key)];
-                foreach (var itemToAddKvP in poolAdjustmentKvP.Value)
-                {
-                    locationToUpdate[itemToAddKvP.Key] = itemToAddKvP.Value;
-                }
-            }
-        }
-
-        if (weightingAdjustments.Edit?.Count > 0)
-        {
-            foreach (var poolAdjustmentKvP in weightingAdjustments.Edit)
-            {
-                var locationToUpdate = botItemPool[Enum.Parse<EquipmentSlots>(poolAdjustmentKvP.Key)];
-                foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
-                // Only make change if item exists as we're editing, not adding
-                {
-                    if (locationToUpdate.TryGetValue(itemToEditKvP.Key, out var existingValue))
-                    {
-                        locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
-                    }
-                    else
-                    {
-                        // Note: Logging disabled for now, because our configs are all kinds of wrong
-                        if (showEditWarnings)
-                        {
-                            if (logger.IsLogEnabled(LogLevel.Debug))
-                            {
-                                logger.Debug($"Tried to edit a non-existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        AdjustWeighting(
+            weightingAdjustments,
+            poolKey => Enum.TryParse<EquipmentSlots>(poolKey, out var slot) ? botItemPool.GetValueOrDefault(slot) : null
+        );
     }
 
     /// <summary>
     ///     Add/Edit weighting changes to bot items using values from config/bot.json/equipment
     /// </summary>
     /// <param name="weightingAdjustments">Weighting change to apply to bot</param>
-    /// <param name="botItemPool">Bot item dictionary to adjust</param>
-    /// <param name="showEditWarnings"></param>
-    protected void AdjustWeighting(
-        AdjustmentDetails? weightingAdjustments,
-        Dictionary<string, Dictionary<MongoId, double>> botItemPool,
-        bool showEditWarnings = true
-    )
+    /// <param name="botItemPool">Bot item dictionary to adjust, keyed by caliber</param>
+    protected void AdjustWeighting(AdjustmentDetails? weightingAdjustments, Dictionary<string, Dictionary<MongoId, double>> botItemPool)
     {
-        if (weightingAdjustments is null)
-        {
-            return;
-        }
-
-        if (weightingAdjustments.Add?.Count > 0)
-        {
-            foreach (var poolAdjustmentKvP in weightingAdjustments.Add)
-            {
-                var locationToUpdate = botItemPool[poolAdjustmentKvP.Key];
-                foreach (var itemToAddKvP in poolAdjustmentKvP.Value)
-                {
-                    locationToUpdate[itemToAddKvP.Key] = itemToAddKvP.Value;
-                }
-            }
-        }
-
-        if (weightingAdjustments.Edit?.Count > 0)
-        {
-            foreach (var poolAdjustmentKvP in weightingAdjustments.Edit)
-            {
-                var locationToUpdate = botItemPool[poolAdjustmentKvP.Key];
-                foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
-                // Only make change if item exists as we're editing, not adding
-                {
-                    if (locationToUpdate.ContainsKey(itemToEditKvP.Key))
-                    {
-                        locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
-                    }
-                    else
-                    {
-                        // Note: Logging disabled for now, because our configs are all kinds of wrong
-                        if (showEditWarnings)
-                        {
-                            if (logger.IsLogEnabled(LogLevel.Debug))
-                            {
-                                logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        AdjustWeighting(weightingAdjustments, botItemPool.GetValueOrDefault);
     }
 
     /// <summary>
     ///     Add/Edit weighting changes to bot items using values from config/bot.json/equipment
     /// </summary>
     /// <param name="weightingAdjustments">Weighting change to apply to bot</param>
-    /// <param name="botItemPool">Bot item dictionary to adjust</param>
-    /// <param name="showEditWarnings">When item being adjusted cannot be found at source, show warning message</param>
-    protected void AdjustWeighting(AdjustmentDetails? weightingAdjustments, Appearance botItemPool, bool showEditWarnings = true)
+    /// <param name="botItemPool">Bot appearance to adjust</param>
+    protected void AdjustWeighting(AdjustmentDetails? weightingAdjustments, Appearance botItemPool)
+    {
+        AdjustWeighting(weightingAdjustments, botItemPool.GetByJsonProperty<Dictionary<MongoId, double>>);
+    }
+
+    /// <summary>
+    ///     Add/Edit weighting changes to bot items using values from config/bot.json/equipment
+    /// </summary>
+    /// <param name="weightingAdjustments">Weighting change to apply to bot</param>
+    /// <param name="poolResolver">Resolves an adjustment key to the item pool it applies to, null when the pool doesn't exist</param>
+    protected void AdjustWeighting(AdjustmentDetails? weightingAdjustments, Func<string, Dictionary<MongoId, double>?> poolResolver)
     {
         if (weightingAdjustments is null)
         {
             return;
         }
 
-        if (weightingAdjustments.Add?.Count > 0)
+        foreach (var poolAdjustmentKvP in weightingAdjustments.Add ?? [])
         {
-            foreach (var poolAdjustmentKvP in weightingAdjustments.Add)
+            var locationToUpdate = poolResolver(poolAdjustmentKvP.Key);
+            if (locationToUpdate is null)
             {
-                var locationToUpdate = botItemPool.GetByJsonProperty<Dictionary<MongoId, double>>(poolAdjustmentKvP.Key);
-                if (locationToUpdate is null)
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                foreach (var itemToAddKvP in poolAdjustmentKvP.Value)
-                {
-                    locationToUpdate[itemToAddKvP.Key] = itemToAddKvP.Value;
-                }
+            foreach (var itemToAddKvP in poolAdjustmentKvP.Value)
+            {
+                locationToUpdate[itemToAddKvP.Key] = itemToAddKvP.Value;
             }
         }
 
-        if (weightingAdjustments.Edit?.Count > 0)
+        foreach (var poolAdjustmentKvP in weightingAdjustments.Edit ?? [])
         {
-            foreach (var poolAdjustmentKvP in weightingAdjustments.Edit)
+            var locationToUpdate = poolResolver(poolAdjustmentKvP.Key);
+            if (locationToUpdate is null)
             {
-                var locationToUpdate = botItemPool.GetByJsonProperty<Dictionary<MongoId, double>>(poolAdjustmentKvP.Key);
-                if (locationToUpdate is null)
+                continue;
+            }
+
+            foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
+            {
+                // Only make change if item exists as we're editing, not adding
+                // A weight of 0 means something has removed it from the pool, don't re-add it
+                if (!locationToUpdate.TryGetValue(itemToEditKvP.Key, out var existingValue) || existingValue == 0)
                 {
                     continue;
                 }
 
-                foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
-                // Only make change if item exists as we're editing, not adding
-                {
-                    if (locationToUpdate.ContainsKey(itemToEditKvP.Key))
-                    {
-                        locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
-
-                        continue;
-                    }
-
-                    // We tried to add an item flagged as edit only
-                    if (showEditWarnings)
-                    {
-                        if (logger.IsLogEnabled(LogLevel.Debug))
-                        {
-                            logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
-                        }
-                    }
-                }
+                locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
             }
         }
     }
