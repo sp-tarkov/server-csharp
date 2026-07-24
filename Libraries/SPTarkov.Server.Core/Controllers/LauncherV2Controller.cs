@@ -188,14 +188,13 @@ public class LauncherV2Controller(
 
         if (!sessionId)
         {
-            var profileInfo = saveServer
-                .GetProfiles()
-                .FirstOrDefault(x => x.Value.ProfileInfo?.Username == info.Username)
-                .Value.ProfileInfo;
-
-            profileInfo!.Edition = info.Edition;
-            profileInfo.IsWiped = true;
+            return sessionId;
         }
+
+        var profileInfo = saveServer.GetProfiles().FirstOrDefault(x => x.Value.ProfileInfo?.Username == info.Username).Value.ProfileInfo;
+
+        profileInfo!.Edition = info.Edition;
+        profileInfo.IsWiped = true;
 
         return sessionId;
     }
