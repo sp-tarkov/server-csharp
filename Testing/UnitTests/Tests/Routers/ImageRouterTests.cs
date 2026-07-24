@@ -41,7 +41,7 @@ public sealed class ImageRouterTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(router.CanHandle(default, RequestFor(requestPath)), Is.True, "request should resolve");
+            Assert.That(router.CanHandle(RequestFor(requestPath)), Is.True, "request should resolve");
 
             // It normalizes to the key holding the one non-encoded file.
             Assert.That(routes.GetByKey(NormalizedKey), Is.EqualTo(OnDiskFile));
