@@ -191,6 +191,33 @@ public class ProfileHelper(
     }
 
     /// <summary>
+    ///     Get level from an expected experience value
+    /// </summary>
+    /// <param name="experience">Experience number to get level for</param>
+    /// <returns>Level expected</returns>
+    public int GetLevelFromExperience(int experience)
+    {
+        var expTable = globalTable.Configuration.Exp.Level.ExperienceTable;
+
+        var cumulative = 0;
+
+        for (var level = 1; level <= expTable.Length; level++)
+        {
+            if (level > 1)
+            {
+                cumulative += expTable[level - 1].Experience;
+            }
+
+            if (experience < cumulative)
+            {
+                return level - 1;
+            }
+        }
+
+        return expTable.Length;
+    }
+
+    /// <summary>
     ///     Get the max level a player can be
     /// </summary>
     /// <returns>Max level</returns>
