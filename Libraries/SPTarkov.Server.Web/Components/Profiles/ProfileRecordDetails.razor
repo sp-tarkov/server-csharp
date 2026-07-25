@@ -404,8 +404,8 @@
                                                                    Color="Color.Secondary"
                                                                    Size="Size.Small"
                                                                    StartIcon="@Icons.Material.Filled.Done"
-                                                                   OnClick="@(() => SetQuestAction(context, ProfileQuestEditAction.Complete))">
-                                                            Complete
+                                                                   OnClick="@(() => SetQuestAction(context, ProfileQuestEditAction.AvailableForFinish))">
+                                                            Ready To Finish
                                                         </MudButton>
 
                                                         <MudButton Variant="Variant.Outlined"
@@ -722,9 +722,9 @@
 
     private static string GetQuestPendingLabel(ProfileQuestEditModel quest)
     {
-        if (quest.PendingAction == ProfileQuestEditAction.Complete)
+        if (quest.PendingAction == ProfileQuestEditAction.AvailableForFinish)
         {
-            return quest.IsNew ? "Add and complete" : "Complete";
+            return quest.IsNew ? "Add and mark ready to finish" : "Available For Finish";
         }
 
         if (quest.PendingAction == ProfileQuestEditAction.Restart)

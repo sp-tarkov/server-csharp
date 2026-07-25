@@ -635,8 +635,8 @@
 
             switch (questEdit.PendingAction)
             {
-                case ProfileQuestEditAction.Complete:
-                    CompleteQuestStatus(quest, now);
+                case ProfileQuestEditAction.AvailableForFinish:
+                    AvailableForFinishQuestStatus(quest, now);
                     break;
                 case ProfileQuestEditAction.Restart:
                     RestartQuestStatus(quest, now);
@@ -664,12 +664,12 @@
         };
     }
 
-    private static void CompleteQuestStatus(ProfileQuestStatus quest, long timestamp)
+    private static void AvailableForFinishQuestStatus(ProfileQuestStatus quest, long timestamp)
     {
-        quest.Status = QuestStatusEnum.Success;
+        quest.Status = QuestStatusEnum.AvailableForFinish;
         quest.AvailableAfter = null;
         quest.StatusTimers ??= [];
-        quest.StatusTimers[QuestStatusEnum.Success] = timestamp;
+        quest.StatusTimers[QuestStatusEnum.AvailableForFinish] = timestamp;
     }
 
     private static void RestartQuestStatus(ProfileQuestStatus quest, long timestamp)

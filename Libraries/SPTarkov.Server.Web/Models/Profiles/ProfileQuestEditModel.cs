@@ -30,6 +30,6 @@ public sealed class ProfileQuestEditModel
 public enum ProfileQuestEditAction
 {
     None,
-    Complete,
+    AvailableForFinish,
     Restart,
 }
