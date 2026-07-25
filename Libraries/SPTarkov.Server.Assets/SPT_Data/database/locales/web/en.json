@@ -175,6 +175,8 @@
   "profiles-prestige-no-data": "No prestige data is available.",
   "profiles-quest-queued-once": "A quest can only be queued once.",
   "profiles-reloaded": "Reloaded {0}.",
+  "profiles-clear-messages": "Cleared {1} dialogues for {0}.",
+  "profiles-no-messages": "No dialogues for {0}.",
   "profiles-saved": "Saved {0}.",
   "profiles-selected-profile-missing": "Could not identify the selected profile.",
   "profiles-skill-range": "Skill levels must be 0-51 and progress must be 0-99.99.",

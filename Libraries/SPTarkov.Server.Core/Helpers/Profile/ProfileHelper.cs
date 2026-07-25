@@ -52,6 +52,27 @@ public class ProfileHelper(
     }
 
     /// <summary>
+    ///     Removes all trader/pmc/etc dialogues from a profile.
+    ///     Useful in scenarios where the profile has too many dialogues to properly handle saving/loading due to size
+    /// </summary>
+    /// <param name="sessionId">Player profile</param>
+    /// <returns>Whether anything was cleared and the number of dialogues removed</returns>
+    public (bool Cleared, int Count) RemoveAllDialoguesFromProfile(MongoId sessionId)
+    {
+        var profile = GetFullProfile(sessionId);
+        var dialogues = profile.DialogueRecords ?? (profile.DialogueRecords = new Dictionary<MongoId, Models.Eft.Profile.Dialogue>());
+
+        var count = dialogues.Count;
+        if (count == 0)
+        {
+            return (false, 0);
+        }
+
+        dialogues.Clear();
+        return (true, count);
+    }
+
+    /// <summary>
     ///     Get all profiles from server
     /// </summary>
     /// <returns>Dictionary of profiles</returns>

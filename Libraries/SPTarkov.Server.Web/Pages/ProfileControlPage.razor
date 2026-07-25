@@ -79,6 +79,7 @@
                               IsBusy="@_isBusy"
                               OnRefresh="@(() => RefreshProfiles())"
                               OnSaveAll="SaveAllProfiles"
+                              OnClearMessages="ClearMessages"
                               OnSaveProfile="SaveProfile"
                               OnReloadProfile="ReloadProfile"
                               SelectedProfileChanged="SelectProfile" />
@@ -198,6 +199,22 @@
         {
             await SaveServer.SaveAsync();
             Snackbar.Add(L("profiles-all-saved"), Severity.Success);
+        });
+    }
+
+    private async Task ClearMessages(ProfileSummary profile)
+    {
+        await RunProfileAction(async () =>
+        {
+            var result = ProfileHelper.RemoveAllDialoguesFromProfile(profile.Id);
+            if (result.Cleared)
+            {
+                await SaveServer.SaveProfileAsync(new MongoId(profile.Id));
+                Snackbar.Add(string.Format(L("profiles-clear-messages"), profile.Username, result.Count), Severity.Success);
+                return;
+            }
+
+            Snackbar.Add(string.Format(L("profiles-no-messages"), profile.Username), Severity.Warning);
         });
     }
 

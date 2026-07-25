@@ -66,6 +66,16 @@
                 </MudTd>
                 <MudTd>
                     <MudStack Row Spacing="1" Justify="Justify.FlexEnd">
+                        <MudTooltip Text="Clear Messages">
+                            <span @onclick:stopPropagation="true">
+                                <MudIconButton Icon="@Icons.Material.Filled.Mail"
+                                               Size="Size.Small"
+                                               Color="Color.Secondary"
+                                               Disabled="@IsBusy"
+                                               OnClick="@(() => OnClearMessages.InvokeAsync(context))"
+                                               AriaLabel="Clear Messages" />
+                            </span>
+                        </MudTooltip>
                         <MudTooltip Text="Save profile">
                             <span @onclick:stopPropagation="true">
                                 <MudIconButton Icon="@Icons.Material.Filled.Save"
@@ -121,6 +131,9 @@
 
     [Parameter]
     public EventCallback OnSaveAll { get; set; }
+
+    [Parameter]
+    public EventCallback<ProfileSummary> OnClearMessages { get; set; }
 
     [Parameter]
     public EventCallback<ProfileSummary> OnSaveProfile { get; set; }
