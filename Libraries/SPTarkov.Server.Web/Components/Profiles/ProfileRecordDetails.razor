@@ -1,9 +1,10 @@
 @using System.Globalization
+@using SPTarkov.Server.Core.Helpers.Profile
 @using SPTarkov.Server.Core.Models.Spt.Tables
 @using SPTarkov.Server.Web.Models.Database
 @using SPTarkov.Server.Web.Models.Profiles
-@using SPTarkov.Server.Web.Services
 @inject GlobalTable GlobalTable
+@inject ProfileHelper ProfileHelper
 @inject WebLocalizationService WebLocalizationService
 
 <MudPaper Elevation="0" Class="profiles-details spt-panel pa-5">
@@ -198,7 +199,8 @@
                                                      Step="1000"
                                                      Immediate="true"
                                                      Disabled="@(!_editModel.HasCharacter)"
-                                                     @bind-Value="_editModel.PmcExperience" />
+                                                     Value="_editModel.PmcExperience"
+                                                     ValueChanged="@(v => SetCharacterExperience(CharacterTarget.Pmc, v))" />
 
                                     <MudNumericField T="int?"
                                                      Label="Scav level"
@@ -216,7 +218,8 @@
                                                      Min="0"
                                                      Step="1000"
                                                      Immediate="true"
-                                                     @bind-Value="_editModel.ScavExperience" />
+                                                     Value="_editModel.ScavExperience"
+                                                     ValueChanged="@(v => SetCharacterExperience(CharacterTarget.Scav, v))" />
 
                                 </div>
 
@@ -401,8 +404,8 @@
                                                                    Color="Color.Secondary"
                                                                    Size="Size.Small"
                                                                    StartIcon="@Icons.Material.Filled.Done"
-                                                                   OnClick="@(() => SetQuestAction(context, ProfileQuestEditAction.Complete))">
-                                                            Complete
+                                                                   OnClick="@(() => SetQuestAction(context, ProfileQuestEditAction.AvailableForFinish))">
+                                                            Ready To Finish
                                                         </MudButton>
 
                                                         <MudButton Variant="Variant.Outlined"
@@ -531,7 +534,7 @@
     public EventCallback OnClose { get; set; }
 
     private const int MaxSkillLevel = 51;
-    private int MaxCharacterLevel => GlobalTable.Configuration.Exp.Level.ExperienceTable.Length - 1;
+    private int MaxCharacterLevel => GlobalTable.Configuration.Exp.Level.ExperienceTable.Length;
 
     private ProfileDetails? _detailsReference;
     private ProfileEditModel? _editModel;
@@ -597,26 +600,33 @@
         if (target == CharacterTarget.Pmc)
         {
             _editModel.PmcLevel = clamped;
-            _editModel.PmcExperience = GetLevelStartXp(clamped);
+            _editModel.PmcExperience = ProfileHelper.GetExperience(clamped);
         }
         else
         {
             _editModel.ScavLevel = clamped;
-            _editModel.ScavExperience = GetLevelStartXp(clamped);
+            _editModel.ScavExperience = ProfileHelper.GetExperience(clamped);
         }
     }
 
-    private int GetLevelStartXp(int level)
+    private void SetCharacterExperience(CharacterTarget target, int? experience)
     {
-        var table = GlobalTable.Configuration.Exp.Level.ExperienceTable;
+        if (_editModel is null || !experience.HasValue)
+            return;
 
-        level = Math.Clamp(level, 1, table.Length - 1);
+        var exp = Math.Max(0, experience.Value);
+        var level = ProfileHelper.GetLevelFromExperience(exp);
 
-        var exp = 0;
-        for (var i = 0; i < level; i++)
-            exp += table[i].Experience;
-
-        return exp;
+        if (target == CharacterTarget.Pmc)
+        {
+            _editModel.PmcExperience = exp;
+            _editModel.PmcLevel = level;
+        }
+        else
+        {
+            _editModel.ScavExperience = exp;
+            _editModel.ScavLevel = level;
+        }
     }
 
     private static void SetSkillLevel(ProfileSkillEditModel skill, int value)
@@ -712,9 +722,9 @@
 
     private static string GetQuestPendingLabel(ProfileQuestEditModel quest)
     {
-        if (quest.PendingAction == ProfileQuestEditAction.Complete)
+        if (quest.PendingAction == ProfileQuestEditAction.AvailableForFinish)
         {
-            return quest.IsNew ? "Add and complete" : "Complete";
+            return quest.IsNew ? "Add and mark ready to finish" : "Available For Finish";
         }
 
         if (quest.PendingAction == ProfileQuestEditAction.Restart)

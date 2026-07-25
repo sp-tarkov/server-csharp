@@ -52,6 +52,27 @@ public class ProfileHelper(
     }
 
     /// <summary>
+    ///     Removes all trader/pmc/etc dialogues from a profile.
+    ///     Useful in scenarios where the profile has too many dialogues to properly handle saving/loading due to size
+    /// </summary>
+    /// <param name="sessionId">Player profile</param>
+    /// <returns>Whether anything was cleared and the number of dialogues removed</returns>
+    public (bool Cleared, int Count) RemoveAllDialoguesFromProfile(MongoId sessionId)
+    {
+        var profile = GetFullProfile(sessionId);
+        var dialogues = profile.DialogueRecords ?? (profile.DialogueRecords = new Dictionary<MongoId, Models.Eft.Profile.Dialogue>());
+
+        var count = dialogues.Count;
+        if (count == 0)
+        {
+            return (false, 0);
+        }
+
+        dialogues.Clear();
+        return (true, count);
+    }
+
+    /// <summary>
     ///     Get all profiles from server
     /// </summary>
     /// <returns>Dictionary of profiles</returns>
@@ -177,9 +198,9 @@ public class ProfileHelper(
         var expTable = globalTable.Configuration.Exp.Level.ExperienceTable;
         int? exp = 0;
 
-        if (playerLevel >= expTable.Length) // make sure to not go out of bounds
+        if (playerLevel > expTable.Length)
         {
-            playerLevel = expTable.Length - 1;
+            playerLevel = expTable.Length;
         }
 
         for (var i = 0; i < playerLevel; i++)
@@ -188,6 +209,33 @@ public class ProfileHelper(
         }
 
         return exp;
+    }
+
+    /// <summary>
+    ///     Get level from an expected experience value
+    /// </summary>
+    /// <param name="experience">Experience number to get level for</param>
+    /// <returns>Level expected</returns>
+    public int GetLevelFromExperience(int experience)
+    {
+        var expTable = globalTable.Configuration.Exp.Level.ExperienceTable;
+
+        var cumulative = 0;
+
+        for (var level = 1; level <= expTable.Length; level++)
+        {
+            if (level > 1)
+            {
+                cumulative += expTable[level - 1].Experience;
+            }
+
+            if (experience < cumulative)
+            {
+                return level - 1;
+            }
+        }
+
+        return expTable.Length;
     }
 
     /// <summary>
