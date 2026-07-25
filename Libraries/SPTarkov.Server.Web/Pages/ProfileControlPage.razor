@@ -446,14 +446,15 @@
             return false;
         }
 
-        var maxLevel = GlobalTable.Configuration.Exp.Level.ExperienceTable.Length - 1;
+        var maxLevel = GlobalTable.Configuration.Exp.Level.ExperienceTable.Length;
         if (editModel.PmcLevel < 1 || editModel.PmcLevel > maxLevel || editModel.ScavLevel < 1 || editModel.ScavLevel > maxLevel)
         {
             Snackbar.Add(string.Format(L("profiles-character-level-range"), maxLevel), Severity.Warning);
             return false;
         }
 
-        if (editModel.PmcExperience != ProfileHelper.GetExperience(editModel.PmcLevel.Value) || editModel.ScavExperience != ProfileHelper.GetExperience(editModel.ScavLevel.Value))
+        if (ProfileHelper.GetLevelFromExperience(editModel.PmcExperience.Value) != editModel.PmcLevel.Value ||
+            ProfileHelper.GetLevelFromExperience(editModel.ScavExperience.Value) != editModel.ScavLevel.Value)
         {
             Snackbar.Add(L("profiles-experience-mismatch-level"), Severity.Warning);
             return false;
