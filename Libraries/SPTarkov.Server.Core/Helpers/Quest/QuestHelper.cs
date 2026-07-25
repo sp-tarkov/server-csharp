@@ -1087,6 +1087,18 @@ public class QuestHelper(
                 continue;
             }
 
+            // Quest is blacklisted for this game version
+            if (QuestIsProfileBlacklisted(profile.Info.GameVersion, quest.Id))
+            {
+                continue;
+            }
+
+            // Quest is whitelisted to game versions the profile isn't part of
+            if (!QuestIsProfileWhitelisted(profile.Info.GameVersion, quest.Id))
+            {
+                continue;
+            }
+
             if (!ShowEventQuestToPlayer(quest.Id))
             {
                 continue;
