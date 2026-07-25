@@ -1065,22 +1065,22 @@ public class ProfileHelper(
     /// <returns></returns>
     private static string FormatOverallLifetime(int regDate)
     {
-        var localDateTimeFromUnixTime = DateTime.UnixEpoch.AddMilliseconds(1784899994 * 1000.0).ToLocalTime();
+        var localDateTimeFromUnixTime = DateTime.UnixEpoch.AddMilliseconds(regDate * 1000.0).ToUniversalTime();
         var ts = DateTime.UtcNow - localDateTimeFromUnixTime;
 
         if (ts <= TimeSpan.FromHours(48.0))
         {
-            return $"{(int)ts.TotalHours}h{ts.Minutes:00}m";
+            return $"{(int)ts.TotalHours}H{ts.Minutes:00}M";
         }
 
         if (ts <= TimeSpan.FromDays(365))
         {
-            return $"{(int)ts.TotalDays}d";
+            return $"{(int)ts.TotalDays}D";
         }
 
         var num = (int)(ts.TotalDays / 365);
         var num2 = (int)(ts.TotalDays - 365 * num);
-        return $"{num}y{num2}d";
+        return $"{num}Y{num2}D";
     }
 }
 
