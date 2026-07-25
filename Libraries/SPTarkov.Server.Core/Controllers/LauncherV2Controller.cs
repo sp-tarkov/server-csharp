@@ -184,11 +184,11 @@ public class LauncherV2Controller(
             return false;
         }
 
-        var sessionId = Login(info);
+        var sessionIsValid = Login(info);
 
-        if (!sessionId)
+        if (!sessionIsValid)
         {
-            return sessionId;
+            return sessionIsValid;
         }
 
         var profileInfo = saveServer.GetProfiles().FirstOrDefault(x => x.Value.ProfileInfo?.Username == info.Username).Value.ProfileInfo;
@@ -196,6 +196,6 @@ public class LauncherV2Controller(
         profileInfo!.Edition = info.Edition;
         profileInfo.IsWiped = true;
 
-        return sessionId;
+        return sessionIsValid;
     }
 }
