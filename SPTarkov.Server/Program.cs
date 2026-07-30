@@ -8,14 +8,11 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using SPTarkov.Common.Extensions;
 using SPTarkov.Common.Logger;
-using SPTarkov.DI;
-using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Helpers.Server;
 using SPTarkov.Server.Core.Loaders;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services.Hosted;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Exceptions;
 using SPTarkov.Server.Extensions;
@@ -166,7 +163,7 @@ public static class Program
         Console.OutputEncoding = Encoding.UTF8;
 
         var configuration = await ConfigLoader.Initialize(_earlyLogger!, startupCancellation.Token);
-        var earlyServiceProvider = ProgramHelpers.CreateEarlySptProvider(loggerFactory, configuration);
+        var earlyServiceProvider = ProgramHelpers.CreateEarlySptProvider(loggerFactory, configuration, ProgramStatics.MODS());
 
         List<SptMod> loadedMods = [];
 
@@ -218,50 +215,11 @@ public static class Program
             options.ValidateOnBuild = true;
             options.ValidateScopes = true;
         });
-        var diHandler = new DependencyInjectionHandler(builder.Services);
-
-        // register SPT components
-        diHandler.AddInjectableTypesFromTypeAssembly(typeof(Program));
-        diHandler.AddInjectableTypesFromTypeAssembly(typeof(PatchManager));
-        diHandler.AddInjectableTypesFromTypeAssembly(typeof(SPTWeb));
-
-        builder.Services.AddSingleton(new ClientEnumDefinitions());
-
-        if (ProgramStatics.MODS())
-        {
-            diHandler.AddInjectableTypesFromAssemblies(loadedMods.SelectMany(a => a.Assemblies));
-            diHandler.AddInjectableTypesFromTypeAssembly(typeof(SPTStartupHostedService));
-        }
-        else
-        {
-            diHandler.AddInjectableTypesFromTypeAssembly(typeof(SPTStartupHostedService));
-        }
-
-        diHandler.InjectAll();
-
-        builder.InitializeSptBlazor(loadedMods);
-
-        builder.Services.AddSingleton(builder);
-        builder.Services.AddSingleton<IReadOnlyList<SptMod>>(loadedMods);
-
-        await builder.Services.AddModDIConstructorsAsync(loadedMods.SelectMany(mod => mod.Assemblies).ToArray(), cancellationToken);
+        await ProgramHelpers.RegisterSptServicesAsync(builder, loadedMods, ProgramStatics.MODS(), cancellationToken);
 
         // Configure Kestrel options
         ConfigureKestrel(builder);
 
-        builder.Services.AddHttpContextAccessor();
-        builder.Services.AddHttpClient();
-        builder.Services.AddHttpClient(
-            "Github",
-            httpClient =>
-            {
-                httpClient.BaseAddress = new Uri("https://api.github.com/");
-
-                // These headers are _required_ by GitHub API
-                httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("spt-csharp-server");
-                httpClient.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");
-            }
-        );
         var app = builder.Build();
 
         // Link startup token to the host's lifetime

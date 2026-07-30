@@ -6,13 +6,17 @@ using SPTarkov.Common.Logger;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.DI;
+using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services.Hosted;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Json;
+using SPTarkov.Server.Extensions;
 using SPTarkov.Server.Modding;
+using SPTarkov.Server.Web;
 
 namespace SPTarkov.Server.Helpers;
 
@@ -66,9 +70,61 @@ public static class ProgramHelpers
         return builder;
     }
 
+    /// <summary>
+    /// Registers every SPT service onto the builder.
+    /// Kept in one place so the DI validation test can build the exact same container the server does.
+    /// </summary>
+    public static async Task RegisterSptServicesAsync(
+        WebApplicationBuilder builder,
+        IReadOnlyList<SptMod> loadedMods,
+        bool modsEnabled,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var diHandler = new DependencyInjectionHandler(builder.Services);
+
+        // register SPT components
+        diHandler.AddInjectableTypesFromTypeAssembly(typeof(Program));
+        diHandler.AddInjectableTypesFromTypeAssembly(typeof(PatchManager));
+        diHandler.AddInjectableTypesFromTypeAssembly(typeof(SPTWeb));
+
+        builder.Services.AddSingleton(new ClientEnumDefinitions());
+
+        if (modsEnabled)
+        {
+            diHandler.AddInjectableTypesFromAssemblies(loadedMods.SelectMany(a => a.Assemblies));
+        }
+
+        diHandler.AddInjectableTypesFromTypeAssembly(typeof(SPTStartupHostedService));
+
+        diHandler.InjectAll();
+
+        builder.InitializeSptBlazor(loadedMods);
+
+        builder.Services.AddSingleton(builder);
+        builder.Services.AddSingleton(loadedMods);
+
+        await builder.Services.AddModDIConstructorsAsync(loadedMods.SelectMany(mod => mod.Assemblies).ToArray(), cancellationToken);
+
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddHttpClient();
+        builder.Services.AddHttpClient(
+            "Github",
+            httpClient =>
+            {
+                httpClient.BaseAddress = new Uri("https://api.github.com/");
+
+                // These headers are _required_ by GitHub API
+                httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("spt-csharp-server");
+                httpClient.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");
+            }
+        );
+    }
+
     public static ServiceProvider CreateEarlySptProvider(
         SptEarlyLoggerFactory loggerFactory,
-        IReadOnlyDictionary<Type, BaseConfig> configuration
+        IReadOnlyDictionary<Type, BaseConfig> configuration,
+        bool modsEnabled
     )
     {
         // We need the SPT dependencies for the ModValidator, but mods are loaded before the web application
@@ -85,7 +141,7 @@ public static class ProgramHelpers
 
         serviceCollection.AddSingleton<DatabaseImporter>();
 
-        if (ProgramStatics.MODS())
+        if (modsEnabled)
         {
             serviceCollection.AddSingleton<ModLoader>().AddSingleton<ModValidator>();
         }

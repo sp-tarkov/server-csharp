@@ -20,6 +20,10 @@
     <Content Include="TestAssets\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <!-- Needed by tests that build the real early logger factory, which reads this from the working directory -->
+    <None Include="..\..\SPTarkov.Server\sptLogger.json" Link="sptLogger.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Tests\Mock\MockSptLogger.cs" />

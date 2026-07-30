@@ -33,11 +33,10 @@ public static class SptLoggerExtensions
         where TInterface : class
     {
         var interfaceType = typeof(TInterface);
-        var implementingTypes = AppDomain
-            .CurrentDomain.GetAssemblies()
+
+        var implementingTypes = interfaceType
+            .Assembly.GetTypes()
             .AsValueEnumerable()
-            .Where(a => !a.IsDynamic && !a.FullName.StartsWith("System") && !a.FullName.StartsWith("Microsoft"))
-            .SelectMany(a => a.GetTypes())
             .Where(type => interfaceType.IsAssignableFrom(type) && type != interfaceType && type.IsClass && !type.IsAbstract)
             .ToList();
 

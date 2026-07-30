@@ -8,8 +8,8 @@ namespace SPTarkov.DI;
 
 public class DependencyInjectionHandler(IServiceCollection serviceCollection)
 {
-    private static List<Type>? _allLoadedTypes;
-    private static List<ConstructorInfo>? _allConstructors;
+    private readonly HashSet<Assembly> _injectableAssemblies = [];
+    private List<ConstructorInfo>? _candidateConstructors;
 
     private readonly Dictionary<string, Type> _injectedTypeNames = [];
 
@@ -38,7 +38,14 @@ public class DependencyInjectionHandler(IServiceCollection serviceCollection)
 
     public void AddInjectableTypesFromTypeList(IEnumerable<Type> types)
     {
-        var typesToInject = types.Where(type =>
+        var candidates = types as IReadOnlyCollection<Type> ?? types.ToList();
+
+        foreach (var assembly in candidates.Select(type => type.Assembly))
+        {
+            _injectableAssemblies.Add(assembly);
+        }
+
+        var typesToInject = candidates.Where(type =>
             Attribute.IsDefined(type, typeof(Injectable)) && !_injectedTypeNames.ContainsKey($"{type.Namespace}.{type.Name}")
         );
         if (typesToInject.Any())
@@ -106,21 +113,15 @@ public class DependencyInjectionHandler(IServiceCollection serviceCollection)
 
     private void RegisterGenericComponents(DependencyInjectionContainer typeRef)
     {
-        try
-        {
-            _allLoadedTypes ??= AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).ToList();
-        }
-        catch (ReflectionTypeLoadException ex)
-        {
-            Console.WriteLine($"COULD NOT LOAD TYPE: {ex}");
-        }
-
-        _allConstructors ??= _allLoadedTypes.SelectMany(t => t.GetConstructors()).ToList();
+        _candidateConstructors ??= _injectableAssemblies
+            .SelectMany(GetLoadableTypes)
+            .SelectMany(type => type.GetConstructors())
+            .ToList();
 
         var typeName = $"{typeRef.Type.Namespace}.{typeRef.Type.Name}";
         try
         {
-            var matchedConstructors = _allConstructors.Where(c =>
+            var matchedConstructors = _candidateConstructors.Where(c =>
                 c.GetParameters().Any(p => p.ParameterType.IsGenericType && p.ParameterType.GetGenericTypeDefinition().FullName == typeName)
             );
 
@@ -145,6 +146,20 @@ public class DependencyInjectionHandler(IServiceCollection serviceCollection)
         {
             Console.WriteLine(e);
             throw;
+        }
+    }
+
+    private static IEnumerable<Type> GetLoadableTypes(Assembly assembly)
+    {
+        try
+        {
+            return assembly.GetTypes();
+        }
+        catch (ReflectionTypeLoadException ex)
+        {
+            Console.WriteLine($"COULD NOT LOAD TYPE: {ex}");
+
+            return ex.Types.Where(type => type is not null)!;
         }
     }
 
