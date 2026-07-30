@@ -1,5 +1,5 @@
+using Spectre.Console;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Logging;
 using Version = SemanticVersioning.Version;
 
 namespace SPTarkov.Server.Core.Utils;
@@ -101,14 +101,14 @@ public static partial class ProgramStatics
         return BuildTime;
     }
 
-    public static LogTextColor BUILD_TEXT_COLOR()
+    public static Color BUILD_TEXT_COLOR()
     {
         return BuildType switch
         {
-            EntryType.RELEASE => LogTextColor.Yellow,
-            EntryType.LOCAL or EntryType.DEBUG => LogTextColor.Cyan,
-            EntryType.BLEEDINGEDGE or EntryType.BLEEDINGEDGEMODS => LogTextColor.Magenta,
-            _ => LogTextColor.Yellow,
+            EntryType.RELEASE => Color.FromInt32(3),
+            EntryType.LOCAL or EntryType.DEBUG => Color.SlateBlue3_1,
+            EntryType.BLEEDINGEDGE or EntryType.BLEEDINGEDGEMODS => Color.Magenta3,
+            _ => Color.FromInt32(3),
         };
     }
 }

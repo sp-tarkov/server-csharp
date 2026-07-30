@@ -1,7 +1,9 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Generators;
+using SPTarkov.Server.Core.Generators.Bot;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -9,9 +11,10 @@ using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Launcher;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Profile;
+using ProfileFixerService = SPTarkov.Server.Core.Services.Profile.ProfileFixerService;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -29,7 +32,7 @@ public class ProfileController(
     ///     Handle /launcher/profiles
     /// </summary>
     /// <returns></returns>
-    public virtual List<MiniProfile> GetMiniProfiles()
+    public List<MiniProfile> GetMiniProfiles()
     {
         return saveServer.GetProfiles().Select(kvp => GetMiniProfile(kvp.Key)).ToList();
     }
@@ -39,7 +42,7 @@ public class ProfileController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public virtual MiniProfile GetMiniProfile(MongoId sessionId)
+    public MiniProfile GetMiniProfile(MongoId sessionId)
     {
         var profile = saveServer.GetProfile(sessionId);
         if (profile?.CharacterData == null)
@@ -69,6 +72,9 @@ public class ProfileController(
                 ProfileId = profile.ProfileInfo?.ProfileId ?? string.Empty,
                 InvalidOrUnloadableProfile = profile.ProfileInfo?.InvalidOrUnloadableProfile,
                 SptData = profileHelper.GetDefaultSptDataObject(),
+                Wipe = true,
+                ProfileCurrency = profileHelper.GetAccountCurrency(profile),
+                ProfileStats = profileHelper.GetProfileStats(profile),
             };
         }
 
@@ -86,6 +92,9 @@ public class ProfileController(
             ProfileId = profile.ProfileInfo?.ProfileId ?? string.Empty,
             InvalidOrUnloadableProfile = profile.ProfileInfo?.InvalidOrUnloadableProfile,
             SptData = profile.SptData,
+            Wipe = profile.ProfileInfo?.IsWiped ?? false,
+            ProfileCurrency = profileHelper.GetAccountCurrency(profile),
+            ProfileStats = profileHelper.GetProfileStats(profile),
         };
     }
 
@@ -94,28 +103,9 @@ public class ProfileController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>Return a full profile, scav and pmc profiles + meta data</returns>
-    public virtual List<PmcData> GetCompleteProfile(MongoId sessionId)
+    public List<PmcData> GetCompleteProfile(MongoId sessionId)
     {
-        var profile = profileHelper.GetCompleteProfile(sessionId);
-
-        // Some users like to crank massive skill multipliers and send the client invalid information,
-        // causing a json exception during parsing
-        if (profile.Any())
-        {
-            if (profile[0].Skills != null)
-            {
-                // Pmc profile is index 0
-                profileFixerService.CheckForSkillsOverMaxLevel(profile[0]);
-            }
-
-            if (profile[1].Skills != null)
-            {
-                // We also do the scav profile here because it is also affected by the skill multipliers
-                profileFixerService.CheckForSkillsOverMaxLevel(profile[1]);
-            }
-        }
-
-        return profile;
+        return profileHelper.GetCompleteProfile(sessionId);
     }
 
     /// <summary>
@@ -124,7 +114,7 @@ public class ProfileController(
     /// <param name="request">Create profile request</param>
     /// <param name="sessionId">Player id</param>
     /// <returns>Player id</returns>
-    public virtual async ValueTask<string> CreateProfile(ProfileCreateRequestData request, MongoId sessionId)
+    public async ValueTask<string> CreateProfile(ProfileCreateRequestData request, MongoId sessionId)
     {
         return await createProfileService.CreateProfile(sessionId, request);
     }
@@ -135,7 +125,7 @@ public class ProfileController(
     /// </summary>
     /// <param name="sessionId">Player id</param>
     /// <returns>PmcData</returns>
-    public virtual PmcData GeneratePlayerScav(MongoId sessionId)
+    public PmcData GeneratePlayerScav(MongoId sessionId)
     {
         return playerScavGenerator.Generate(sessionId);
     }
@@ -146,7 +136,7 @@ public class ProfileController(
     /// <param name="request">Validate nickname request</param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public virtual NicknameValidationResult ValidateNickname(ValidateNicknameRequestData request, MongoId sessionId)
+    public NicknameValidationResult ValidateNickname(ValidateNicknameRequestData request, MongoId sessionId)
     {
         if (request.Nickname?.Length < 3)
         {
@@ -168,7 +158,7 @@ public class ProfileController(
     /// <param name="request">Change nickname request</param>
     /// <param name="sessionId">Player id</param>
     /// <returns></returns>
-    public virtual NicknameValidationResult ChangeNickname(ProfileChangeNicknameRequestData request, MongoId sessionId)
+    public NicknameValidationResult ChangeNickname(ProfileChangeNicknameRequestData request, MongoId sessionId)
     {
         var output = ValidateNickname(new ValidateNicknameRequestData { Nickname = request.Nickname }, sessionId);
 
@@ -188,7 +178,7 @@ public class ProfileController(
     /// </summary>
     /// <param name="request">Change voice request</param>
     /// <param name="sessionID">Player id</param>
-    public virtual void ChangeVoice(ProfileChangeVoiceRequestData request, MongoId sessionID)
+    public void ChangeVoice(ProfileChangeVoiceRequestData request, MongoId sessionID)
     {
         var pmcData = profileHelper.GetPmcProfile(sessionID);
         pmcData.Customization.Voice = request.Voice;
@@ -200,7 +190,7 @@ public class ProfileController(
     /// <param name="request">Search profiles request</param>
     /// <param name="sessionID">Player id</param>
     /// <returns>Found profiles</returns>
-    public virtual List<SearchFriendResponse> SearchProfiles(SearchProfilesRequestData request, MongoId sessionID)
+    public List<SearchFriendResponse> SearchProfiles(SearchProfilesRequestData request, MongoId sessionID)
     {
         var result = new List<SearchFriendResponse>();
 
@@ -226,7 +216,7 @@ public class ProfileController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public virtual GetProfileStatusResponseData GetProfileStatus(MongoId sessionId)
+    public GetProfileStatusResponseData GetProfileStatus(MongoId sessionId)
     {
         var account = saveServer.GetProfile(sessionId).ProfileInfo;
         var response = new GetProfileStatusResponseData
@@ -264,7 +254,7 @@ public class ProfileController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Get other profile request</param>
     /// <returns>GetOtherProfileResponse</returns>
-    public virtual GetOtherProfileResponse GetOtherProfile(MongoId sessionId, GetOtherProfileRequest request)
+    public GetOtherProfileResponse GetOtherProfile(MongoId sessionId, GetOtherProfileRequest request)
     {
         // Find the profile by the account ID, fall back to the current player if we can't find the account
         var profileToView = profileHelper.GetFullProfileByAccountId(request.AccountId);
@@ -350,17 +340,18 @@ public class ProfileController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Get profile settings request</param>
     /// <returns></returns>
-    public virtual bool SetChosenProfileIcon(MongoId sessionId, GetProfileSettingsRequest request)
+    public bool SetChosenProfileIcon(MongoId sessionId, GetProfileSettingsRequest request)
     {
         var profileToUpdate = profileHelper.GetPmcProfile(sessionId);
-        if (profileToUpdate == null)
+
+        if (profileToUpdate == null || profileToUpdate.Info is null)
         {
             return false;
         }
 
         if (request.MemberCategory != null)
         {
-            profileToUpdate.Info.SelectedMemberCategory = request.MemberCategory as MemberCategory?;
+            profileToUpdate.Info.SelectedMemberCategory = (MemberCategory)request.MemberCategory;
         }
 
         if (request.SquadInviteRestriction != null)

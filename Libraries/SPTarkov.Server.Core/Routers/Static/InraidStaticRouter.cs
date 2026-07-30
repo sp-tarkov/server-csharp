@@ -7,26 +7,27 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Routers.Static;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.Routers)]
 public class InraidStaticRouter(InraidCallbacks inRaidCallbacks, JsonUtil jsonUtil)
     : StaticRouter(
         jsonUtil,
         [
             new RouteAction<ScavSaveRequestData>(
                 "/raid/profile/scavsave",
-                async (url, info, sessionID, output) => await inRaidCallbacks.SaveProgress(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await inRaidCallbacks.SaveProgress(url, info, sessionID)
             ),
             new RouteAction<EmptyRequestData>(
                 "/singleplayer/settings/raid/menu",
-                async (url, info, sessionID, output) => await inRaidCallbacks.GetRaidMenuSettings()
+                async (url, info, sessionID, output, cancellationToken) => await inRaidCallbacks.GetRaidMenuSettings()
             ),
             new RouteAction<EmptyRequestData>(
                 "/singleplayer/scav/traitorscavhostile",
-                async (url, info, sessionID, output) => await inRaidCallbacks.GetTraitorScavHostileChance(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) =>
+                    await inRaidCallbacks.GetTraitorScavHostileChance(url, info, sessionID)
             ),
             new RouteAction<EmptyRequestData>(
                 "/singleplayer/bosstypes",
-                async (url, info, sessionID, output) => await inRaidCallbacks.GetBossTypes(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await inRaidCallbacks.GetBossTypes(url, info, sessionID)
             ),
         ]
     ) { }

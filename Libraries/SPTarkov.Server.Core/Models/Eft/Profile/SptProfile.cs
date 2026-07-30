@@ -17,13 +17,6 @@ public record SptProfile
     [JsonPropertyName("characters")]
     public Characters? CharacterData { get; set; }
 
-    /// <summary>
-    ///     No longer used as of 4.0.0
-    /// </summary>
-    [Obsolete("Replaced with CustomisationUnlocks")]
-    [JsonPropertyName("suits")]
-    public List<string>? Suits { get; set; }
-
     [JsonPropertyName("userbuilds")]
     public UserBuilds? UserBuildData { get; set; }
 
@@ -140,7 +133,7 @@ public record UserBuild
 public record WeaponBuild : UserBuild
 {
     [JsonPropertyName("Root")]
-    public string? Root { get; set; }
+    public MongoId Root { get; set; }
 
     [JsonPropertyName("Items")]
     public List<Item>? Items { get; set; } // Same as PMC inventory items
@@ -216,27 +209,8 @@ public record Dialogue
     public MongoId Id { get; set; }
 }
 
-//TODO: @Cleanup: Maybe the same as Dialogue?
-public record DialogueInfo
+public record DialogueInfo : Dialogue
 {
-    [JsonPropertyName("attachmentsNew")]
-    public int? AttachmentsNew { get; set; }
-
-    [JsonPropertyName("new")]
-    public int? New { get; set; }
-
-    [JsonPropertyName("_id")]
-    public MongoId Id { get; set; }
-
-    [JsonPropertyName("type")]
-    public MessageType? Type { get; set; }
-
-    [JsonPropertyName("pinned")]
-    public bool? Pinned { get; set; }
-
-    [JsonPropertyName("Users")]
-    public List<UserDialogInfo>? Users { get; set; }
-
     [JsonPropertyName("message")]
     public MessagePreview? Message { get; set; }
 }

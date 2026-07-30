@@ -1,0 +1,27 @@
+@using SPTarkov.Server.Web.Models.Database
+
+<MudPaper Elevation="0" Class="database-header spt-panel pa-5">
+    <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="database-header-content">
+        <MudStack Spacing="1">
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="3" Class="database-title-row">
+                <MudText Typo="Typo.h3">@Table.Name</MudText>
+            </MudStack>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">@Table.Description</MudText>
+        </MudStack>
+
+        <MudStack Row Spacing="2" Class="database-stat-stack">
+            @foreach (var stat in Table.Stats)
+            {
+                <MudPaper Elevation="0" Class="database-stat spt-panel pa-3">
+                    <MudText Typo="Typo.caption">@stat.Label</MudText>
+                    <MudText Typo="Typo.h5">@stat.Value</MudText>
+                </MudPaper>
+            }
+        </MudStack>
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public DatabaseTableDefinition Table { get; set; } = DatabaseTableDefinition.Empty;
+}

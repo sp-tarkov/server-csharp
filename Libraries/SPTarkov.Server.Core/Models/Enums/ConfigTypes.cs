@@ -62,7 +62,7 @@ public static class ConfigTypesExtension
             ConfigTypes.LOOT => typeof(LootConfig),
             ConfigTypes.MATCH => typeof(MatchConfig),
             ConfigTypes.PLAYERSCAV => typeof(PlayerScavConfig),
-            ConfigTypes.PMC_CHAT_RESPONSE => typeof(PmcChatResponse),
+            ConfigTypes.PMC_CHAT_RESPONSE => typeof(PmcChatResponseConfig),
             ConfigTypes.QUEST => typeof(QuestConfig),
             ConfigTypes.RAGFAIR => typeof(RagfairConfig),
             ConfigTypes.REPAIR => typeof(RepairConfig),

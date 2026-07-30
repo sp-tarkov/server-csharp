@@ -1,13 +1,19 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Items;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
+using SPTarkov.Server.Core.Services.Items;
+using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Services.Server;
 using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Generators;
@@ -15,29 +21,28 @@ namespace SPTarkov.Server.Core.Generators;
 [Injectable]
 public class FenceBaseAssortGenerator(
     ISptLogger<FenceBaseAssortGenerator> logger,
-    DatabaseService databaseService,
+    TradersTable traderTable,
+    TemplateTable templateTable,
     HandbookHelper handbookHelper,
     ItemHelper itemHelper,
     PresetHelper presetHelper,
     ItemFilterService itemFilterService,
     SeasonalEventService seasonalEventService,
     ServerLocalisationService localisationService,
-    ConfigServer configServer,
+    TraderConfig traderConfig,
     FenceService fenceService,
     ICloner cloner
 )
 {
-    protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
-
     /// <summary>
     ///     Create base fence assorts dynamically and store in memory
     /// </summary>
     public void GenerateFenceBaseAssorts()
     {
         var blockedSeasonalItems = seasonalEventService.GetInactiveSeasonalEventItems();
-        var baseFenceAssort = databaseService.GetTrader(Traders.FENCE)?.Assort;
+        var baseFenceAssort = traderTable.GetTrader(Traders.FENCE)?.Assort;
 
-        foreach (var (itemId, rootItemDb) in databaseService.GetItems())
+        foreach (var (itemId, rootItemDb) in templateTable.Items)
         {
             if (!string.Equals(rootItemDb.Type, "Item", StringComparison.OrdinalIgnoreCase))
             {
@@ -63,9 +68,9 @@ public class FenceBaseAssortGenerator(
             }
 
             // Item base type blacklisted
-            if (TraderConfig.Fence.Blacklist.Count > 0)
+            if (traderConfig.Fence.Blacklist.Count > 0)
             {
-                if (TraderConfig.Fence.Blacklist.Contains(itemId) || itemHelper.IsOfBaseclasses(itemId, TraderConfig.Fence.Blacklist))
+                if (traderConfig.Fence.Blacklist.Contains(itemId) || itemHelper.IsOfBaseclasses(itemId, traderConfig.Fence.Blacklist))
                 {
                     continue;
                 }
@@ -81,7 +86,7 @@ public class FenceBaseAssortGenerator(
             }
 
             // Skip seasonal event items when not in seasonal event
-            if (TraderConfig.Fence.BlacklistSeasonalItems && blockedSeasonalItems.Contains(itemId))
+            if (traderConfig.Fence.BlacklistSeasonalItems && blockedSeasonalItems.Contains(itemId))
             {
                 continue;
             }
@@ -196,7 +201,7 @@ public class FenceBaseAssortGenerator(
             return false;
         }
 
-        return ammoPenetrationPower > TraderConfig.Fence.AmmoMaxPenLimit;
+        return ammoPenetrationPower > traderConfig.Fence.AmmoMaxPenLimit;
     }
 
     /// <summary>

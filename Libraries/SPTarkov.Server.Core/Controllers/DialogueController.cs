@@ -1,15 +1,22 @@
+using Microsoft.Extensions.Logging;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Dialogue;
+using SPTarkov.Server.Core.Helpers.Profile;
+using SPTarkov.Server.Core.Helpers.Server;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Models.Spt.Dialog;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
+using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Controllers;
@@ -17,24 +24,25 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class DialogueController(
     ISptLogger<DialogueController> logger,
+    TradersTable traderTable,
     TimeUtil timeUtil,
     DialogueHelper dialogueHelper,
     NotificationSendHelper notificationSendHelper,
     ProfileHelper profileHelper,
-    ConfigServer configServer,
     SaveServer saveServer,
     ServerLocalisationService serverLocalisationService,
     MailSendService mailSendService,
+    CoreConfig coreConfig,
+    RandomUtil randomUtil,
     IEnumerable<IDialogueChatBot> dialogueChatBots
 )
 {
-    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
     protected readonly List<IDialogueChatBot> DialogueChatBots = dialogueChatBots.ToList();
 
     /// <summary>
     /// </summary>
     /// <param name="chatBot"></param>
-    public virtual void RegisterChatBot(IDialogueChatBot chatBot) // TODO: this is in with the helper types
+    public void RegisterChatBot(IDialogueChatBot chatBot) // TODO: this is in with the helper types
     {
         if (DialogueChatBots.Any(cb => cb.GetChatBot().Id == chatBot.GetChatBot().Id))
         {
@@ -57,7 +65,7 @@ public class DialogueController(
                 continue;
             }
 
-            RemoveExpiredItemsFromMessages(sessionId);
+            ProcessExpiredInsurance(sessionId);
         }
     }
 
@@ -66,7 +74,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionId">session id</param>
     /// <returns>GetFriendListDataResponse</returns>
-    public virtual GetFriendListDataResponse GetFriendList(MongoId sessionId)
+    public GetFriendListDataResponse GetFriendList(MongoId sessionId)
     {
         // Add all chatbots to the friends list
         var friends = GetActiveChatBots();
@@ -116,7 +124,7 @@ public class DialogueController(
     {
         var activeBots = new List<UserDialogInfo>();
 
-        var chatBotConfig = CoreConfig.Features.ChatbotFeatures;
+        var chatBotConfig = coreConfig.Features.ChatbotFeatures;
 
         foreach (var bot in DialogueChatBots)
         {
@@ -137,7 +145,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionId">Session Id</param>
     /// <returns>list of dialogs</returns>
-    public virtual List<DialogueInfo> GenerateDialogueList(MongoId sessionId)
+    public List<DialogueInfo> GenerateDialogueList(MongoId sessionId)
     {
         var data = new List<DialogueInfo>();
         foreach (var (_, dialog) in dialogueHelper.GetDialogsForProfile(sessionId))
@@ -160,7 +168,7 @@ public class DialogueController(
     /// <param name="dialogueId">Dialog id</param>
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
-    public virtual DialogueInfo? GetDialogueInfo(MongoId dialogueId, MongoId sessionId)
+    public DialogueInfo? GetDialogueInfo(MongoId dialogueId, MongoId sessionId)
     {
         var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
         var dialogue = dialogs.GetValueOrDefault(dialogueId);
@@ -174,7 +182,7 @@ public class DialogueController(
     /// <param name="dialogue">Dialog</param>
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
-    public virtual DialogueInfo? GetDialogueInfo(Dialogue? dialogue, MongoId sessionId)
+    public DialogueInfo? GetDialogueInfo(Dialogue? dialogue, MongoId sessionId)
     {
         if (dialogue is null || dialogue.Messages?.Count == 0)
         {
@@ -202,7 +210,7 @@ public class DialogueController(
     /// <param name="messageType">What type of message is being sent</param>
     /// <param name="sessionId">Player id</param>
     /// <returns>UserDialogInfo list</returns>
-    public virtual List<UserDialogInfo> GetDialogueUsers(Dialogue? dialog, MessageType? messageType, MongoId sessionId)
+    public List<UserDialogInfo> GetDialogueUsers(Dialogue? dialog, MessageType? messageType, MongoId sessionId)
     {
         var profile = saveServer.GetProfile(sessionId);
 
@@ -242,7 +250,7 @@ public class DialogueController(
     /// <param name="request">Get dialog request</param>
     /// <param name="sessionId">Session id</param>
     /// <returns>GetMailDialogViewResponseData object</returns>
-    public virtual GetMailDialogViewResponseData GenerateDialogueView(GetMailDialogViewRequestData request, MongoId sessionId)
+    public GetMailDialogViewResponseData GenerateDialogueView(GetMailDialogViewRequestData request, MongoId sessionId)
     {
         var dialogueId = request.DialogId;
         var fullProfile = saveServer.GetProfile(sessionId);
@@ -396,8 +404,7 @@ public class DialogueController(
                     var checkTime = message.DateTime + (message.MaxStorageTime ?? 0);
                     return timeNow < checkTime;
                 })
-                .ToList()
-            ?? [];
+                .ToList() ?? [];
     }
 
     /// <summary>
@@ -459,7 +466,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueId">id of the dialog to remove</param>
     /// <param name="sessionId">Player id</param>
-    public virtual void RemoveDialogue(MongoId dialogueId, MongoId sessionId)
+    public void RemoveDialogue(MongoId dialogueId, MongoId sessionId)
     {
         var profile = saveServer.GetProfile(sessionId);
         if (!profile.DialogueRecords?.Remove(dialogueId) ?? false)
@@ -474,7 +481,7 @@ public class DialogueController(
     /// <param name="dialogueId"></param>
     /// <param name="shouldPin"></param>
     /// <param name="sessionId">Session/Player id</param>
-    public virtual void SetDialoguePin(MongoId dialogueId, bool shouldPin, MongoId sessionId)
+    public void SetDialoguePin(MongoId dialogueId, bool shouldPin, MongoId sessionId)
     {
         var dialog = dialogueHelper.GetDialogsForProfile(sessionId).GetValueOrDefault(dialogueId);
         if (dialog is null)
@@ -493,7 +500,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueIds">Dialog ids to set as read</param>
     /// <param name="sessionId">Player profile id</param>
-    public virtual void SetRead(List<MongoId>? dialogueIds, MongoId sessionId)
+    public void SetRead(List<MongoId>? dialogueIds, MongoId sessionId)
     {
         if (dialogueIds is null)
         {
@@ -523,7 +530,7 @@ public class DialogueController(
     /// <param name="dialogueId">Dialog to get mail attachments from</param>
     /// <param name="sessionId">Session id</param>
     /// <returns>GetAllAttachmentsResponse or null if dialogue doesn't exist</returns>
-    public virtual GetAllAttachmentsResponse? GetAllAttachments(string dialogueId, MongoId sessionId)
+    public GetAllAttachmentsResponse? GetAllAttachments(string dialogueId, MongoId sessionId)
     {
         var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
         var dialog = dialogs.TryGetValue(dialogueId, out var dialogInfo);
@@ -551,7 +558,7 @@ public class DialogueController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public virtual async ValueTask<string> SendMessage(MongoId sessionId, SendMessageRequest request)
+    public async ValueTask<string> SendMessage(MongoId sessionId, SendMessageRequest request)
     {
         mailSendService.SendPlayerMessageToNpc(sessionId, request.DialogId, request.Text);
 
@@ -578,23 +585,23 @@ public class DialogueController(
     }
 
     /// <summary>
-    ///     Delete expired items from all messages in player profile. triggers when updating traders.
+    ///     Delete expired items from all messages in player profile + send expired messages. triggers when updating traders.
     /// </summary>
     /// <param name="sessionId">Session id</param>
-    protected void RemoveExpiredItemsFromMessages(MongoId sessionId)
+    protected void ProcessExpiredInsurance(MongoId sessionId)
     {
         foreach (var (dialogId, _) in dialogueHelper.GetDialogsForProfile(sessionId))
         {
-            RemoveExpiredItemsFromMessage(sessionId, dialogId);
+            SendExpiredInsuranceMessages(sessionId, dialogId);
         }
     }
 
     /// <summary>
-    ///     Removes expired items from a message in player profile
+    ///     Send expired insurance messages and remove expired items from messages
     /// </summary>
     /// <param name="sessionId">Session id</param>
-    /// <param name="dialogueId">Dialog id</param>
-    protected void RemoveExpiredItemsFromMessage(MongoId sessionId, MongoId dialogueId)
+    /// <param name="dialogueId">Trader dialog id</param>
+    protected void SendExpiredInsuranceMessages(MongoId sessionId, MongoId dialogueId)
     {
         var dialogs = dialogueHelper.GetDialogsForProfile(sessionId);
         if (!dialogs.TryGetValue(dialogueId, out var dialog))
@@ -607,10 +614,96 @@ public class DialogueController(
             return;
         }
 
+        var traderDialogMessages = traderTable.GetTrader(dialogueId)?.Dialogue;
+        List<string>? insuranceFoundMessageIds = null;
+        List<string>? insuranceExpiredMessageIds = null;
+        traderDialogMessages?.TryGetValue("insuranceFound", out insuranceFoundMessageIds);
+        traderDialogMessages?.TryGetValue("insuranceExpired", out insuranceExpiredMessageIds);
+
+        HashSet<SendMessageDetails> expiredInsuranceMessagesToSend = [];
         foreach (var message in dialog.Messages.Where(MessageHasExpired))
         {
+            // Check before reset, only messages that still had items get an expiry notification
+            var hadItems = (message.Items?.Data?.Count ?? 0) > 0;
+
             // Reset expired message items data
             message.Items = new();
+
+            if (message.TemplateId == null || !hadItems)
+            {
+                continue;
+            }
+
+            if (insuranceFoundMessageIds == null || !insuranceFoundMessageIds.Contains(message.TemplateId))
+            {
+                continue;
+            }
+
+            if (insuranceExpiredMessageIds == null)
+            {
+                continue;
+            }
+
+            // Choose random expired insurance message to send to player
+            var expiredInsuranceMessageId = randomUtil.GetArrayValue(insuranceExpiredMessageIds);
+            expiredInsuranceMessagesToSend.Add(
+                new SendMessageDetails
+                {
+                    RecipientId = sessionId,
+                    Sender = MessageType.NpcTraderMessage,
+                    DialogType = MessageType.NpcTraderMessage,
+                    Trader = dialogueId,
+                    TemplateId = expiredInsuranceMessageId,
+                    Items = [],
+                }
+            );
+        }
+
+        RemoveStaleExpiredInsuranceNotifications(sessionId, dialog, insuranceExpiredMessageIds);
+
+        if (expiredInsuranceMessagesToSend.Count > 0)
+        {
+            // We have expired insurance messages to send to player
+            foreach (var insuranceExpiredDialog in expiredInsuranceMessagesToSend)
+            {
+                mailSendService.SendMessageToPlayer(insuranceExpiredDialog);
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Remove empty expired insurance notifications from a dialog, keeping only the newest.
+    /// </summary>
+    /// <param name="sessionId">Session id</param>
+    /// <param name="dialog">Trader dialog to clean up</param>
+    /// <param name="insuranceExpiredMessageIds">Trader expired insurance message template ids</param>
+    protected void RemoveStaleExpiredInsuranceNotifications(MongoId sessionId, Dialogue dialog, List<string>? insuranceExpiredMessageIds)
+    {
+        if (insuranceExpiredMessageIds == null || dialog.Messages == null)
+        {
+            return;
+        }
+
+        var staleNotifications = dialog
+            .Messages.Where(message =>
+                message.TemplateId != null
+                && insuranceExpiredMessageIds.Contains(message.TemplateId)
+                && (message.Items?.Data?.Count ?? 0) == 0
+            )
+            .ToHashSet();
+
+        if (staleNotifications.Count == 0)
+        {
+            return;
+        }
+
+        dialog.Messages.RemoveAll(staleNotifications.Contains);
+
+        if (logger.IsLogEnabled(LogLevel.Debug))
+        {
+            logger.Debug(
+                $"Removed {staleNotifications.Count} stale expired insurance notifications from dialog {dialog.Id} for profile {sessionId}"
+            );
         }
     }
 
@@ -630,7 +723,7 @@ public class DialogueController(
     /// <param name="sessionID">Session/player id</param>
     /// <param name="request">Sent friend request</param>
     /// <returns></returns>
-    public virtual FriendRequestSendResponse SendFriendRequest(MongoId sessionID, FriendRequestData request)
+    public FriendRequestSendResponse SendFriendRequest(MongoId sessionID, FriendRequestData request)
     {
         // To avoid needing to jump between profiles, auto-accept all friend requests
         var friendProfile = profileHelper.GetFullProfile(request.To.Value);
@@ -657,7 +750,7 @@ public class DialogueController(
                     EventType = NotificationEventType.friendListRequestAccept,
                     Profile = profileHelper.GetChatRoomMemberFromPmcProfile(friendProfile.CharacterData.PmcData),
                 };
-                notificationSendHelper.SendMessage(sessionID, notification);
+                _ = notificationSendHelper.SendMessageAsync(sessionID, notification);
             },
             null,
             TimeSpan.FromMicroseconds(1000),
@@ -677,7 +770,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionID">Session/player id</param>
     /// <param name="request">Sent delete friend request</param>
-    public virtual void DeleteFriend(MongoId sessionID, DeleteFriendRequest request)
+    public void DeleteFriend(MongoId sessionID, DeleteFriendRequest request)
     {
         var profile = saveServer.GetProfile(sessionID);
         profile?.FriendProfileIds?.Remove(request.FriendId);

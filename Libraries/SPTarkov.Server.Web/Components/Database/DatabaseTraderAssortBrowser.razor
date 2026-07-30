@@ -1,0 +1,367 @@
+@using System.Globalization
+@using SPTarkov.Server.Web.Models.Database
+
+<MudPaper Elevation="0" Class="database-assort-browser spt-panel pa-5">
+    <DatabaseLoadingOverlay Visible="@_isDetailsLoading"
+                            LoadingTitle="Loading assort item"
+                            LoadingMessage="@_detailsLoadingMessage" />
+
+    <MudStack Spacing="3">
+        <MudStack Row AlignItems="AlignItems.Start" Justify="Justify.SpaceBetween" Class="database-assort-heading">
+            <MudStack Spacing="1">
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Class="database-assort-title-row">
+                    <MudIcon Icon="@Icons.Material.Filled.Storefront" Color="Color.Warning" Size="Size.Medium" />
+                    <MudText Typo="Typo.h5">@Assort.TraderName assort</MudText>
+                </MudStack>
+                <MudText Typo="Typo.caption" Class="database-mono">@Assort.TraderId</MudText>
+            </MudStack>
+
+            @if (OnClose.HasDelegate)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.Close"
+                               Color="Color.Secondary"
+                               Size="Size.Small"
+                               OnClick="OnClose"
+                               Title="Close assort browser" />
+            }
+        </MudStack>
+
+        <MudStack Row Spacing="2" Class="database-stat-stack">
+            @foreach (var stat in Assort.Stats)
+            {
+                <MudPaper Elevation="0" Class="database-stat spt-panel pa-3">
+                    <MudText Typo="Typo.caption">@stat.Label</MudText>
+                    <MudText Typo="Typo.h5">@stat.Value</MudText>
+                </MudPaper>
+            }
+        </MudStack>
+
+        <MudPaper Elevation="0" Class="database-assort-controls spt-panel pa-3">
+            <MudGrid Spacing="2">
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string"
+                                  Label="Search assort"
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  @bind-Value="SearchText" />
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudSelect T="string" Label="Loyalty" Variant="Variant.Outlined" @bind-Value="LoyaltyFilter">
+                        <MudSelectItem Value="@AllFilterValues">All loyalty levels</MudSelectItem>
+                        @foreach (var loyaltyLevel in _loyaltyLevels)
+                        {
+                            <MudSelectItem Value="@loyaltyLevel">@GetLoyaltyLabel(loyaltyLevel)</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudSelect T="string" Label="Placement" Variant="Variant.Outlined" @bind-Value="PlacementFilter">
+                        <MudSelectItem Value="@AllFilterValues">All placements</MudSelectItem>
+                        <MudSelectItem Value="@RootPlacementFilter">Root items</MudSelectItem>
+                        <MudSelectItem Value="@ChildPlacementFilter">Child items</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+
+        <div class="database-assort-grid">
+            <MudTable T="DatabaseTraderAssortRow"
+                      Items="@_filteredRows"
+                      Dense="true"
+                      Hover="true"
+                      Bordered="false"
+                      Striped="true"
+                      FixedHeader="true"
+                      Height="440px"
+                      Breakpoint="Breakpoint.Sm"
+                      OnRowClick="OnRowClicked"
+                      RowClassFunc="GetRowClass">
+                <HeaderContent>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Loyalty</MudTh>
+                    <MudTh>Barter</MudTh>
+                    <MudTh>Slot</MudTh>
+                    <MudTh>Item id</MudTh>
+                    <MudTh>Template</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Name">
+                        <MudButton Variant="Variant.Text"
+                                   Color="Color.Warning"
+                                   Class="database-row-button px-0"
+                                   OnClick="@(() => SelectRow(context))">
+                            @context.Name
+                        </MudButton>
+                    </MudTd>
+                    <MudTd DataLabel="Loyalty">@context.LoyaltyLevel</MudTd>
+                    <MudTd DataLabel="Barter">@context.Barter</MudTd>
+                    <MudTd DataLabel="Slot">@context.SlotId</MudTd>
+                    <MudTd DataLabel="Item id">
+                        <MudText Typo="Typo.caption" Class="database-mono">@context.Id</MudText>
+                    </MudTd>
+                    <MudTd DataLabel="Template">
+                        <MudText Typo="Typo.caption" Class="database-mono">@context.TemplateId</MudText>
+                    </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new[] { 25, 50, 100 }" />
+                </PagerContent>
+            </MudTable>
+
+            <MudPaper Elevation="0" Class="database-assort-details spt-panel pa-4">
+                @if (SelectedRow is null)
+                {
+                    <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="database-assort-empty">
+                        <MudIcon Icon="@Icons.Material.Filled.Inventory2" Color="Color.Secondary" Size="Size.Large" />
+                        <MudText Typo="Typo.h6">No assort item selected</MudText>
+                    </MudStack>
+                }
+                else
+                {
+                    <MudStack Spacing="3">
+                        <MudStack Spacing="1">
+                            <MudText Typo="Typo.h6">@SelectedRow.Name</MudText>
+                            <MudText Typo="Typo.caption" Class="database-mono">@SelectedRow.Id</MudText>
+                        </MudStack>
+
+                        @foreach (var sectionData in SelectedRowDetails.DetailSections)
+                        {
+                            <MudDivider />
+                            <MudText Typo="Typo.subtitle2">@sectionData.Title</MudText>
+                            <div class="database-detail-grid">
+                                @foreach (var value in sectionData.Values)
+                                {
+                                    <DatabaseDetailValueCard Value="value" />
+                                }
+                            </div>
+                        }
+
+                        <MudDivider />
+
+                        <MudStack Spacing="2" Class="database-properties">
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.subtitle2">All assort properties</MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                    @SelectedRowDetails.Properties.Count.ToString("N0", CultureInfo.CurrentCulture) populated property values
+                                </MudText>
+                            </MudStack>
+
+                            @if (SelectedRowDetails.Properties.Count == 0)
+                            {
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">No properties are populated for this assort item.</MudText>
+                            }
+                            else
+                            {
+                                <MudTable T="DatabaseProperty"
+                                          Items="@SelectedRowDetails.Properties"
+                                          Dense="true"
+                                          Hover="true"
+                                          Bordered="false"
+                                          Striped="true"
+                                          FixedHeader="true"
+                                          Height="220px"
+                                          Class="database-properties-table">
+                                    <HeaderContent>
+                                        <MudTh>Property</MudTh>
+                                        <MudTh>Type</MudTh>
+                                        <MudTh>Value</MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate>
+                                        <MudTd DataLabel="Property">
+                                            <MudText Typo="Typo.caption" Class="database-mono database-property-path">@context.Path</MudText>
+                                        </MudTd>
+                                        <MudTd DataLabel="Type">@context.Kind</MudTd>
+                                        <MudTd DataLabel="Value">
+                                            <MudText Typo="Typo.caption" Class="database-mono database-property-value">@context.Value</MudText>
+                                        </MudTd>
+                                    </RowTemplate>
+                                </MudTable>
+
+                                <details class="database-raw-json">
+                                    <summary>Raw assort JSON</summary>
+                                    <pre>@SelectedRowDetails.PropertiesJson</pre>
+                                </details>
+                            }
+                        </MudStack>
+                    </MudStack>
+                }
+            </MudPaper>
+        </div>
+    </MudStack>
+</MudPaper>
+
+@code {
+    private const string AllFilterValues = "";
+    private const string RootPlacementFilter = "root";
+    private const string ChildPlacementFilter = "child";
+
+    private string _searchText = string.Empty;
+    private string _loyaltyFilter = AllFilterValues;
+    private string _placementFilter = AllFilterValues;
+    private string? _assortTraderId;
+    private bool _isDetailsLoading;
+    private string _detailsLoadingMessage = "Preparing assort item properties.";
+    private readonly Dictionary<string, DatabaseTraderAssortRowDetails> _detailsCache = [];
+    private List<string> _loyaltyLevels = [];
+    private List<DatabaseTraderAssortRow> _filteredRows = [];
+
+    [Parameter]
+    public DatabaseTraderAssort Assort { get; set; } = new(string.Empty, string.Empty, [], [], []);
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    private DatabaseTraderAssortRow? SelectedRow { get; set; }
+    private DatabaseTraderAssortRowDetails SelectedRowDetails { get; set; } = new([], [], "{}");
+
+    private string SearchText
+    {
+        get { return _searchText; }
+        set
+        {
+            if (_searchText == value)
+            {
+                return;
+            }
+
+            _searchText = value;
+            ApplyFilters();
+        }
+    }
+
+    private string LoyaltyFilter
+    {
+        get { return _loyaltyFilter; }
+        set
+        {
+            if (_loyaltyFilter == value)
+            {
+                return;
+            }
+
+            _loyaltyFilter = value;
+            ApplyFilters();
+        }
+    }
+
+    private string PlacementFilter
+    {
+        get { return _placementFilter; }
+        set
+        {
+            if (_placementFilter == value)
+            {
+                return;
+            }
+
+            _placementFilter = value;
+            ApplyFilters();
+        }
+    }
+
+    private void ApplyFilters()
+    {
+        var searchText = _searchText.Trim();
+        var hasSearch = !string.IsNullOrWhiteSpace(searchText);
+        var rows = new List<DatabaseTraderAssortRow>(Assort.Rows.Count);
+
+        foreach (var row in Assort.Rows)
+        {
+            if (!string.IsNullOrWhiteSpace(_loyaltyFilter) && row.LoyaltyLevelRaw != _loyaltyFilter)
+            {
+                continue;
+            }
+
+            if (_placementFilter == RootPlacementFilter && !string.IsNullOrWhiteSpace(row.ParentId))
+            {
+                continue;
+            }
+
+            if (_placementFilter == ChildPlacementFilter && string.IsNullOrWhiteSpace(row.ParentId))
+            {
+                continue;
+            }
+
+            if (hasSearch && !row.SearchText.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            rows.Add(row);
+        }
+
+        _filteredRows = rows;
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (_assortTraderId == Assort.TraderId)
+        {
+            return;
+        }
+
+        _assortTraderId = Assort.TraderId;
+        _searchText = string.Empty;
+        _loyaltyFilter = AllFilterValues;
+        _placementFilter = AllFilterValues;
+        _loyaltyLevels = Assort.LoyaltyLevels.ToList();
+        _detailsCache.Clear();
+        SelectedRow = null;
+        SelectedRowDetails = new DatabaseTraderAssortRowDetails([], [], "{}");
+        ApplyFilters();
+    }
+
+    private static string GetLoyaltyLabel(string loyaltyLevel)
+    {
+        return $"LL{loyaltyLevel}";
+    }
+
+    private string GetRowClass(DatabaseTraderAssortRow row, int rowNumber)
+    {
+        return SelectedRow?.Id == row.Id ? "database-selected-row" : string.Empty;
+    }
+
+    private async Task SelectRow(DatabaseTraderAssortRow? row)
+    {
+        SelectedRow = row;
+
+        if (row is null)
+        {
+            SelectedRowDetails = new DatabaseTraderAssortRowDetails([], [], "{}");
+            return;
+        }
+
+        _isDetailsLoading = true;
+        _detailsLoadingMessage = $"Preparing {row.Name} properties.";
+        await RenderLoadingOverlayAsync();
+
+        try
+        {
+            if (!_detailsCache.TryGetValue(row.Id, out var details))
+            {
+                details = row.BuildDetails();
+                _detailsCache[row.Id] = details;
+            }
+
+            SelectedRowDetails = details;
+        }
+        finally
+        {
+            _isDetailsLoading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task RenderLoadingOverlayAsync()
+    {
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(75);
+    }
+
+    private Task OnRowClicked(TableRowClickEventArgs<DatabaseTraderAssortRow> args)
+    {
+        return SelectRow(args.Item);
+    }
+}

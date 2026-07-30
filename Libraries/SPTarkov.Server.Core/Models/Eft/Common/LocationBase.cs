@@ -167,7 +167,7 @@ public record LocationBase
     public double? GlobalContainerChanceModifier { get; set; }
 
     [JsonPropertyName("HeatmapCellSize")]
-    public XYZ? HeatmapCellSize { get; set; }
+    public Vector3? HeatmapCellSize { get; set; }
 
     [JsonPropertyName("HeatmapLayers")]
     public List<string>? HeatmapLayers { get; set; }
@@ -769,7 +769,7 @@ public record SpawnPointParam
     public string? Infiltration { get; set; }
 
     [JsonPropertyName("Position")]
-    public XYZ? Position { get; set; }
+    public Vector3? Position { get; set; }
 
     [JsonPropertyName("Rotation")]
     public double? Rotation { get; set; }
@@ -780,13 +780,11 @@ public record SpawnPointParam
 
 public record ColliderParams
 {
-    private string? _parent;
-
     [JsonPropertyName("_parent")]
     public string? Parent
     {
-        get { return _parent; }
-        set { _parent = string.Intern(value); }
+        get { return field; }
+        set { field = string.Intern(value); }
     }
 
     [JsonPropertyName("_props")]
@@ -796,10 +794,10 @@ public record ColliderParams
 public record ColliderProperties
 {
     [JsonPropertyName("Center")]
-    public XYZ? Center { get; set; }
+    public Vector3? Center { get; set; }
 
     [JsonPropertyName("Size")]
-    public XYZ? Size { get; set; }
+    public Vector3? Size { get; set; }
 
     [JsonPropertyName("Radius")]
     public double? Radius { get; set; }
@@ -1029,7 +1027,7 @@ public record CrowdAttackSpawnParam
 public record Area
 {
     [JsonPropertyName("center")]
-    public XYZ? Center { get; set; }
+    public Vector3? Center { get; set; }
 
     [JsonPropertyName("infiltrationZone")]
     public string? InfiltrationZone { get; set; }
@@ -1038,13 +1036,13 @@ public record Area
     public double? Orientation { get; set; }
 
     [JsonPropertyName("position")]
-    public XYZ? Position { get; set; }
+    public Vector3? Position { get; set; }
 
     [JsonPropertyName("sides")]
     public HashSet<string>? Sides { get; set; }
 
     [JsonPropertyName("size")]
-    public XYZ? Size { get; set; }
+    public Vector3? Size { get; set; }
 }
 
 public enum WildSpawnType

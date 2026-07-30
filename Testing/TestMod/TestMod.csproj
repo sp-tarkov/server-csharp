@@ -23,15 +23,15 @@
       <WebAssets Include="$(ProjectDir)wwwroot\**\*.*" />
     </ItemGroup>
     <!-- Copies the output dll -->
-    <Copy SourceFiles="@(OutputDLL);" DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net9.0\user\mods\TestMod" />
+    <Copy SourceFiles="@(OutputDLL);" DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net10.0\user\mods\TestMod" />
     <Copy
       SourceFiles="@(Resources);"
-      DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net9.0\user\mods\TestMod\Resources\%(RecursiveDir)"
+      DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net10.0\user\mods\TestMod\Resources\%(RecursiveDir)"
     />
     <!-- Copy the wwwroot folder -->
     <Copy
       SourceFiles="@(WebAssets)"
-      DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net9.0\user\mods\TestMod\wwwroot\%(RecursiveDir)"
+      DestinationFolder="$(SolutionDir)\SPTarkov.Server\bin\$(Configuration)\net10.0\user\mods\TestMod\wwwroot\%(RecursiveDir)"
     />
   </Target>
 </Project>

@@ -1,10 +1,11 @@
+using System.Runtime.CompilerServices;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
-public class TimeUtil
+public sealed class TimeUtil
 {
     public const int OneHourAsSeconds = 3600;
 
@@ -17,6 +18,7 @@ public class TimeUtil
         return DateTimeOffset.UtcNow.FormatToBsgDate();
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public DateTime GetDateTimeNow()
     {
         return DateTime.UtcNow;
@@ -35,6 +37,7 @@ public class TimeUtil
     ///     Gets the current timestamp in seconds in UTC.
     /// </summary>
     /// <returns>The current timestamp in seconds since the Unix epoch in UTC.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public long GetTimeStamp()
     {
         return DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -97,6 +100,7 @@ public class TimeUtil
     /// </summary>
     /// <param name="hours">The number of hours to convert.</param>
     /// <returns>The equivalent number of seconds.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetHoursAsSeconds(int hours)
     {
         return OneHourAsSeconds * hours;
@@ -147,6 +151,7 @@ public class TimeUtil
     /// </summary>
     /// <param name="timeStamp"></param>
     /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public DateTime GetDateTimeFromTimeStamp(long timeStamp)
     {
         return DateTimeOffset.FromUnixTimeSeconds(timeStamp).DateTime;

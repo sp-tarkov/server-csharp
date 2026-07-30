@@ -5,6 +5,6 @@ namespace SPTarkov.Server.Core.Servers.Http;
 
 public interface IHttpListener
 {
-    bool CanHandle(MongoId sessionId, HttpContext context);
-    Task Handle(MongoId sessionId, HttpContext context);
+    bool CanHandle(HttpContext context);
+    Task HandleAsync(MongoId sessionId, HttpContext context, CancellationToken cancellationToken = default);
 }

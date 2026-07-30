@@ -7,18 +7,19 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Routers.Static;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.Routers)]
 public class QuestStaticRouter(JsonUtil jsonUtil, QuestCallbacks questCallbacks)
     : StaticRouter(
         jsonUtil,
         [
             new RouteAction<ListQuestsRequestData>(
                 "/client/quest/list",
-                async (url, info, sessionID, output) => await questCallbacks.ListQuests(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await questCallbacks.ListQuests(url, info, sessionID)
             ),
             new RouteAction<EmptyRequestData>(
+                //Yes the typo is intended, BSG has it in the live client as well and it has to match
                 "/client/repeatalbeQuests/activityPeriods",
-                async (url, info, sessionID, output) => await questCallbacks.ActivityPeriods(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await questCallbacks.ActivityPeriods(url, info, sessionID)
             ),
         ]
     ) { }

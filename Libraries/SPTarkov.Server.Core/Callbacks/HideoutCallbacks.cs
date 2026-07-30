@@ -6,18 +6,15 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable(TypePriority = OnUpdateOrder.HideoutCallbacks)]
-public class HideoutCallbacks(HideoutController hideoutController, ConfigServer configServer) : IOnUpdate
+public class HideoutCallbacks(HideoutController hideoutController, HideoutConfig hideoutConfig) : IOnUpdate
 {
-    protected readonly HideoutConfig HideoutConfig = configServer.GetConfig<HideoutConfig>();
-
-    public Task<bool> OnUpdate(long secondsSinceLastRun)
+    public Task<bool> OnUpdateAsync(long secondsSinceLastRun, CancellationToken cancellationToken)
     {
-        if (secondsSinceLastRun < HideoutConfig.RunIntervalSeconds)
+        if (secondsSinceLastRun < hideoutConfig.RunIntervalSeconds)
         {
             // Not enough time has passed since last run, exit early
             return Task.FromResult(false);
@@ -31,7 +28,7 @@ public class HideoutCallbacks(HideoutController hideoutController, ConfigServer 
     /// <summary>
     ///     Handle HideoutUpgrade event
     /// </summary>
-    public ItemEventRouterResponse Upgrade(
+    public ValueTask<ItemEventRouterResponse> Upgrade(
         PmcData pmcData,
         HideoutUpgradeRequestData request,
         MongoId sessionID,
@@ -40,13 +37,13 @@ public class HideoutCallbacks(HideoutController hideoutController, ConfigServer 
     {
         hideoutController.StartUpgrade(pmcData, request, sessionID, output);
 
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
     ///     Handle HideoutUpgradeComplete event
     /// </summary>
-    public ItemEventRouterResponse UpgradeComplete(
+    public ValueTask<ItemEventRouterResponse> UpgradeComplete(
         PmcData pmcData,
         HideoutUpgradeCompleteRequestData request,
         MongoId sessionID,
@@ -55,77 +52,85 @@ public class HideoutCallbacks(HideoutController hideoutController, ConfigServer 
     {
         hideoutController.UpgradeComplete(pmcData, request, sessionID, output);
 
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
     ///     Handle HideoutPutItemsInAreaSlots
     /// </summary>
-    public ItemEventRouterResponse PutItemsInAreaSlots(PmcData pmcData, HideoutPutItemInRequestData request, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> PutItemsInAreaSlots(PmcData pmcData, HideoutPutItemInRequestData request, MongoId sessionID)
     {
-        return hideoutController.PutItemsInAreaSlots(pmcData, request, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(hideoutController.PutItemsInAreaSlots(pmcData, request, sessionID));
     }
 
     /// <summary>
     ///     Handle HideoutTakeItemsFromAreaSlots event
     /// </summary>
-    public ItemEventRouterResponse TakeItemsFromAreaSlots(PmcData pmcData, HideoutTakeItemOutRequestData request, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> TakeItemsFromAreaSlots(
+        PmcData pmcData,
+        HideoutTakeItemOutRequestData request,
+        MongoId sessionID
+    )
     {
-        return hideoutController.TakeItemsFromAreaSlots(pmcData, request, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(hideoutController.TakeItemsFromAreaSlots(pmcData, request, sessionID));
     }
 
     /// <summary>
     ///     Handle HideoutToggleArea event
     /// </summary>
-    public ItemEventRouterResponse ToggleArea(PmcData pmcData, HideoutToggleAreaRequestData request, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> ToggleArea(PmcData pmcData, HideoutToggleAreaRequestData request, MongoId sessionID)
     {
-        return hideoutController.ToggleArea(pmcData, request, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(hideoutController.ToggleArea(pmcData, request, sessionID));
     }
 
     /// <summary>
     ///     Handle HideoutSingleProductionStart event
     /// </summary>
-    public ItemEventRouterResponse SingleProductionStart(
+    public ValueTask<ItemEventRouterResponse> SingleProductionStart(
         PmcData pmcData,
         HideoutSingleProductionStartRequestData request,
         MongoId sessionID
     )
     {
-        return hideoutController.SingleProductionStart(pmcData, request, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(hideoutController.SingleProductionStart(pmcData, request, sessionID));
     }
 
     /// <summary>
     ///     Handle HideoutScavCaseProductionStart event
     /// </summary>
-    public ItemEventRouterResponse ScavCaseProductionStart(PmcData pmcData, HideoutScavCaseStartRequestData request, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> ScavCaseProductionStart(
+        PmcData pmcData,
+        HideoutScavCaseStartRequestData request,
+        MongoId sessionID
+    )
     {
-        return hideoutController.ScavCaseProductionStart(pmcData, request, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(hideoutController.ScavCaseProductionStart(pmcData, request, sessionID));
     }
 
     /// <summary>
     ///     Handle HideoutContinuousProductionStart
     /// </summary>
-    public ItemEventRouterResponse ContinuousProductionStart(
+    public ValueTask<ItemEventRouterResponse> ContinuousProductionStart(
         PmcData pmcData,
         HideoutContinuousProductionStartRequestData request,
         MongoId sessionID
     )
     {
-        return hideoutController.ContinuousProductionStart(pmcData, request, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(hideoutController.ContinuousProductionStart(pmcData, request, sessionID));
     }
 
     /// <summary>
     ///     Handle HideoutTakeProduction event
     /// </summary>
-    public ItemEventRouterResponse TakeProduction(PmcData pmcData, HideoutTakeProductionRequestData request, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> TakeProduction(PmcData pmcData, HideoutTakeProductionRequestData request, MongoId sessionID)
     {
-        return hideoutController.TakeProduction(pmcData, request, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(hideoutController.TakeProduction(pmcData, request, sessionID));
     }
 
     /// <summary>
     ///     Handle HideoutQuickTimeEvent
     /// </summary>
-    public ItemEventRouterResponse HandleQTEEvent(
+    public ValueTask<ItemEventRouterResponse> HandleQTEEvent(
         PmcData pmcData,
         HandleQTEEventRequestData request,
         MongoId sessionID,
@@ -134,13 +139,13 @@ public class HideoutCallbacks(HideoutController hideoutController, ConfigServer 
     {
         hideoutController.HandleQTEEventOutcome(sessionID, pmcData, request, output);
 
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
     ///     Handle client/game/profile/items/moving - RecordShootingRangePoints
     /// </summary>
-    public ItemEventRouterResponse RecordShootingRangePoints(
+    public ValueTask<ItemEventRouterResponse> RecordShootingRangePoints(
         PmcData pmcData,
         RecordShootingRangePoints request,
         MongoId sessionID,
@@ -149,71 +154,75 @@ public class HideoutCallbacks(HideoutController hideoutController, ConfigServer 
     {
         hideoutController.RecordShootingRangePoints(sessionID, pmcData, request);
 
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
     ///     Handle client/game/profile/items/moving - RecordShootingRangePoints
     /// </summary>
-    public ItemEventRouterResponse ImproveArea(PmcData pmcData, HideoutImproveAreaRequestData request, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> ImproveArea(PmcData pmcData, HideoutImproveAreaRequestData request, MongoId sessionID)
     {
-        return hideoutController.ImproveArea(sessionID, pmcData, request);
+        return new ValueTask<ItemEventRouterResponse>(hideoutController.ImproveArea(sessionID, pmcData, request));
     }
 
     /// <summary>
     ///     Handle client/game/profile/items/moving - HideoutCancelProductionCommand
     /// </summary>
-    public ItemEventRouterResponse CancelProduction(PmcData pmcData, HideoutCancelProductionRequestData request, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> CancelProduction(
+        PmcData pmcData,
+        HideoutCancelProductionRequestData request,
+        MongoId sessionID
+    )
     {
-        return hideoutController.CancelProduction(sessionID, pmcData, request);
+        return new ValueTask<ItemEventRouterResponse>(hideoutController.CancelProduction(sessionID, pmcData, request));
     }
 
     /// <summary>
     ///     Handle client/game/profile/items/moving - HideoutCircleOfCultistProductionStart
     /// </summary>
-    public ItemEventRouterResponse CicleOfCultistProductionStart(
+    public ValueTask<ItemEventRouterResponse> CicleOfCultistProductionStart(
         PmcData pmcData,
         HideoutCircleOfCultistProductionStartRequestData request,
         MongoId sessionID
     )
     {
-        return hideoutController.CircleOfCultistProductionStart(sessionID, pmcData, request);
+        return new ValueTask<ItemEventRouterResponse>(hideoutController.CircleOfCultistProductionStart(sessionID, pmcData, request));
     }
 
     /// <summary>
     ///     Handle client/game/profile/items/moving - HideoutDeleteProductionCommand
     /// </summary>
-    public ItemEventRouterResponse HideoutDeleteProductionCommand(
+    public ValueTask<ItemEventRouterResponse> HideoutDeleteProductionCommand(
         PmcData pmcData,
         HideoutDeleteProductionRequestData request,
         MongoId sessionID
     )
     {
-        return hideoutController.HideoutDeleteProductionCommand(sessionID, pmcData, request);
+        return new ValueTask<ItemEventRouterResponse>(hideoutController.HideoutDeleteProductionCommand(sessionID, pmcData, request));
     }
 
     /// <summary>
     ///     Handle client/game/profile/items/moving - HideoutCustomizationApply
     /// </summary>
-    public ItemEventRouterResponse HideoutCustomizationApplyCommand(
+    public ValueTask<ItemEventRouterResponse> HideoutCustomizationApplyCommand(
         PmcData pmcData,
         HideoutCustomizationApplyRequestData request,
         MongoId sessionID
     )
     {
-        return hideoutController.HideoutCustomizationApply(sessionID, pmcData, request);
+        return new ValueTask<ItemEventRouterResponse>(hideoutController.HideoutCustomizationApply(sessionID, pmcData, request));
     }
 
     /// <summary>
     ///     Handle client/game/profile/items/moving - hideoutCustomizationSetMannequinPose
     /// </summary>
     /// <returns></returns>
-    public ItemEventRouterResponse HideoutCustomizationSetMannequinPose(
+    public ValueTask<ItemEventRouterResponse> HideoutCustomizationSetMannequinPose(
         PmcData pmcData,
         HideoutCustomizationSetMannequinPoseRequest request,
         MongoId sessionId
     )
     {
-        return hideoutController.HideoutCustomizationSetMannequinPose(sessionId, pmcData, request);
+        return new ValueTask<ItemEventRouterResponse>(hideoutController.HideoutCustomizationSetMannequinPose(sessionId, pmcData, request));
     }
 }

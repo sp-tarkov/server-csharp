@@ -1,12 +1,13 @@
-﻿using SPTarkov.DI.Annotations;
+﻿using SPTarkov.Common.Models.Logging;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Logging;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
@@ -15,9 +16,12 @@ namespace SPTarkov.Server.Core.Callbacks;
 public class ClientLogCallbacks(
     HttpResponseUtil httpResponseUtil,
     ClientLogController clientLogController,
-    ConfigServer configServer,
     ServerLocalisationService serverLocalisationService,
-    IReadOnlyList<SptMod> loadedMods
+    IReadOnlyList<SptMod> loadedMods,
+    CoreConfig coreConfig,
+    BotConfig botConfig,
+    InsuranceConfig insuranceConfig,
+    PmcConfig pmcConfig
 )
 {
     /// <summary>
@@ -26,11 +30,6 @@ public class ClientLogCallbacks(
     /// <returns></returns>
     public ValueTask<string> ClientLog(string url, ClientLogRequest request, MongoId sessionId)
     {
-        if (request.Message == "-1")
-        {
-            HandleClientLog();
-            request.Level = LogLevel.Debug;
-        }
         clientLogController.ClientLog(request);
         return new ValueTask<string>(httpResponseUtil.NullResponse());
     }
@@ -41,7 +40,7 @@ public class ClientLogCallbacks(
     /// <returns></returns>
     public ValueTask<string> ReleaseNotes()
     {
-        var data = configServer.GetConfig<CoreConfig>().Release;
+        var data = coreConfig.Release;
 
         data.BetaDisclaimerText = ProgramStatics.MODS()
             ? serverLocalisationService.GetText("release-beta-disclaimer-mods-enabled")
@@ -68,33 +67,7 @@ public class ClientLogCallbacks(
     /// <returns></returns>
     public ValueTask<string> BsgLogging()
     {
-        var data = configServer.GetConfig<CoreConfig>().BsgLogging;
+        var data = coreConfig.BsgLogging;
         return new ValueTask<string>(httpResponseUtil.NoBody(data));
-    }
-
-    internal void HandleClientLog()
-    {
-        var bot = configServer.GetConfig<BotConfig>();
-        bot.MaxBotCap = new Dictionary<string, int> { { "default", 7 } };
-
-        bot.Durability.BotDurabilities.GetValueOrDefault("assault", null).Armor.MaxDelta = 78;
-        bot.Durability.BotDurabilities.GetValueOrDefault("assault", null).Weapon.LowestMax = 30;
-
-        var pmc = configServer.GetConfig<PmcConfig>();
-        pmc.LootSettings.Backpack.TotalRubByLevel =
-        [
-            new MinMaxLootValue
-            {
-                Min = 1,
-                Max = 1000,
-                Value = 20000,
-            },
-        ];
-
-        pmc.GameVersionWeight["unheard_edition"] = 44;
-
-        var insurance = configServer.GetConfig<InsuranceConfig>();
-        insurance.ReturnChancePercent[new MongoId("54cb50c76803fa8b248b4571")] = 10;
-        insurance.ReturnChancePercent[new MongoId("54cb57776803fa99248b456e")] = 10;
     }
 }

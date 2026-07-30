@@ -134,7 +134,39 @@ public static class ObjectExtensions
 
     public static object AddToExtensionData(this object obj, string key, object value)
     {
-        obj.GetExtensionData().Add(key, value);
+        if (string.IsNullOrEmpty(key))
+        {
+            throw new ArgumentException("Key cannot be null or empty.", nameof(key));
+        }
+
+        var propertyExists = obj.GetType()
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Any(property =>
+            {
+                var jsonPropertyNameAttribute = property.GetCustomAttribute<JsonPropertyNameAttribute>();
+                var jsonPropertyName = jsonPropertyNameAttribute?.Name ?? property.Name;
+
+                return string.Equals(jsonPropertyName, key, StringComparison.Ordinal);
+            });
+
+        if (propertyExists)
+        {
+            throw new InvalidOperationException(
+                $"Cannot add extension data with key '{key}' because the object already contains a JSON property with that name."
+            );
+        }
+
+        var extensionData = obj.GetExtensionData();
+
+        if (extensionData.ContainsKey(key))
+        {
+            throw new InvalidOperationException(
+                $"Cannot add extension data with key '{key}' because extension data already contains that key."
+            );
+        }
+
+        extensionData.Add(key, value);
+
         return obj;
     }
 

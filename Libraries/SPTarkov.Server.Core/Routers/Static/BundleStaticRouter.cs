@@ -6,14 +6,14 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Routers.Static;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.Routers)]
 public class BundleStaticRouter(JsonUtil jsonUtil, BundleCallbacks bundleCallbacks)
     : StaticRouter(
         jsonUtil,
         [
             new RouteAction<EmptyRequestData>(
                 "/singleplayer/bundles",
-                async (url, info, sessionID, output) => await bundleCallbacks.GetBundles(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await bundleCallbacks.GetBundles(url, info, sessionID)
             ),
         ]
     ) { }

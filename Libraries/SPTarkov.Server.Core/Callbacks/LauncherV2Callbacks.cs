@@ -1,6 +1,5 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
-using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Spt.Launcher;
 using SPTarkov.Server.Core.Utils;
@@ -63,6 +62,13 @@ public class LauncherV2Callbacks(
     public ValueTask<string> Mods()
     {
         return new ValueTask<string>(httpResponseUtil.NoBody(new LauncherV2ModsResponse { Response = launcherV2Controller.LoadedMods() }));
+    }
+
+    public ValueTask<string> ModPages()
+    {
+        return new ValueTask<string>(
+            httpResponseUtil.NoBody(new LauncherV2ModPagesResponse { Response = launcherV2Controller.ModPages() })
+        );
     }
 
     public ValueTask<string> Profiles()

@@ -1,15 +1,23 @@
-﻿using SPTarkov.Common.Semver;
+using System.Text.RegularExpressions;
+using SPTarkov.Common.Models.Logging;
+using SPTarkov.Common.Semver;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Web;
 
 namespace SPTarkov.Server.Modding;
 
-public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationService localisationService, ISemVer semVer, FileUtil fileUtil)
+public sealed partial class ModValidator(
+    ISptLogger<ModValidator> logger,
+    ServerLocalisationService localisationService,
+    ISemVer semVer,
+    FileUtil fileUtil
+)
 {
-    protected readonly Dictionary<string, SptMod> Imported = [];
-    protected readonly HashSet<string> SkippedMods = [];
+    private readonly Dictionary<string, SptMod> _imported = [];
+    private readonly HashSet<string> _skippedMods = [];
 
     public List<SptMod> ValidateMods(IEnumerable<SptMod> mods)
     {
@@ -43,6 +51,22 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
             {
                 // skip error checking and dependency install for mods already marked as skipped.
                 continue;
+            }
+
+            if (!ModGuidRegex().IsMatch(modToValidate.ModGuid))
+            {
+                logger.Error(
+                    localisationService.GetText(
+                        "modloaded-invalid_mod_guid",
+                        new
+                        {
+                            author = modToValidate.Author,
+                            name = modToValidate.Name,
+                            guid = modToValidate.ModGuid,
+                        }
+                    )
+                );
+                errorsFound = true;
             }
 
             // Returns if any mod dependency is not satisfied
@@ -82,16 +106,16 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
             AddMod(mod);
         }
 
-        return Imported.Select(mod => mod.Value).ToList();
+        return _imported.Select(mod => mod.Value).ToList();
     }
 
     /// <summary>
     ///     Check for duplicate mods loaded, show error if any
     /// </summary>
     /// <param name="validMods">List of validated mods to check for duplicates</param>
-    protected void CheckForDuplicateMods(List<SptMod> validMods)
+    private void CheckForDuplicateMods(List<SptMod> validMods)
     {
-        var groupedMods = new Dictionary<string, List<AbstractModMetadata>>();
+        var groupedMods = new Dictionary<string, List<IModMetadata>>();
 
         foreach (var mod in validMods.Select(mod => mod.ModMetadata).ToArray())
         {
@@ -100,13 +124,13 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
             // if there's more than one entry for a given mod it means there's at least 2 mods with the same GUID trying to load.
             if (groupedMods[mod.ModGuid].Count > 1)
             {
-                SkippedMods.Add(mod.ModGuid);
+                _skippedMods.Add(mod.ModGuid);
                 validMods.RemoveAll(modInner => modInner.ModMetadata.ModGuid == mod.ModGuid);
             }
         }
 
         // at this point skippedMods only contains mods that are duplicated, so we can just go through every single entry and log it
-        foreach (var modName in SkippedMods)
+        foreach (var modName in _skippedMods)
         {
             logger.Error(localisationService.GetText("modloader-x_duplicates_found", modName));
         }
@@ -117,7 +141,7 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
     /// </summary>
     /// <param name="mods">mods to validate</param>
     /// <returns>array of mod folder names</returns>
-    protected IEnumerable<SptMod> GetValidMods(IEnumerable<SptMod> mods)
+    private IEnumerable<SptMod> GetValidMods(IEnumerable<SptMod> mods)
     {
         return mods.Where(ValidMod);
     }
@@ -127,7 +151,7 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
     /// </summary>
     /// <param name="mod">Mod to check compatibility with SPT</param>
     /// <returns>True if compatible</returns>
-    protected bool IsModCompatibleWithSpt(AbstractModMetadata mod)
+    private bool IsModCompatibleWithSpt(IModMetadata mod)
     {
         var sptVersion = ProgramStatics.SPT_VERSION();
         var modName = $"{mod.Author}-{mod.Name}";
@@ -159,7 +183,7 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
     /// Throws an exception if the mod was built for a newer SPT version than the current running SPT version
     /// </summary>
     /// <param name="mod">mod to validate</param>
-    protected void ValidateCoreAssemblyReference(SptMod mod)
+    private static void ValidateCoreAssemblyReference(SptMod mod)
     {
         var sptVersion = ProgramStatics.SPT_VERSION();
         var modName = $"{mod.ModMetadata.Author}-{mod.ModMetadata.Name}";
@@ -176,7 +200,7 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
                 continue;
             }
 
-            var modRefVersion = new SemanticVersioning.Version(sptCoreAsmRefVersion?[..^2]!);
+            var modRefVersion = new SemanticVersioning.Version(sptCoreAsmRefVersion[..^2]);
             if (modRefVersion > sptVersion)
             {
                 throw new Exception(
@@ -190,9 +214,9 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
     ///     Add into class property "Imported"
     /// </summary>
     /// <param name="mod">Mod details</param>
-    protected void AddMod(SptMod mod)
+    private void AddMod(SptMod mod)
     {
-        Imported.Add(mod.ModMetadata.ModGuid, mod);
+        _imported.Add(mod.ModMetadata.ModGuid, mod);
         logger.Info(
             localisationService.GetText(
                 "modloader-loaded_mod",
@@ -211,12 +235,12 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
     /// </summary>
     /// <param name="pkg">mod package.json data</param>
     /// <returns></returns>
-    protected bool ShouldSkipMod(AbstractModMetadata pkg)
+    private bool ShouldSkipMod(IModMetadata pkg)
     {
-        return SkippedMods.Contains($"{pkg.Author}-{pkg.Name}");
+        return _skippedMods.Contains($"{pkg.Author}-{pkg.Name}");
     }
 
-    protected bool AreModDependenciesFulfilled(AbstractModMetadata pkg, Dictionary<string, AbstractModMetadata> loadedMods)
+    private bool AreModDependenciesFulfilled(IModMetadata pkg, Dictionary<string, IModMetadata> loadedMods)
     {
         if (pkg.ModDependencies == null)
         {
@@ -262,7 +286,7 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
         return true;
     }
 
-    protected bool IsModCompatible(AbstractModMetadata modToCheck, Dictionary<string, AbstractModMetadata> loadedMods)
+    private bool IsModCompatible(IModMetadata modToCheck, Dictionary<string, IModMetadata> loadedMods)
     {
         if (modToCheck.Incompatibilities == null)
         {
@@ -304,7 +328,7 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
     /// </summary>
     /// <param name="mod">name of mod in /mods/ to validate</param>
     /// <returns>true if valid</returns>
-    protected bool ValidMod(SptMod mod)
+    private bool ValidMod(SptMod mod)
     {
         var modName = mod.ModMetadata.Name;
 
@@ -328,12 +352,18 @@ public class ModValidator(ISptLogger<ModValidator> logger, ServerLocalisationSer
             return false;
         }
 
-        if (containsJs || containsTs)
+        if (mod.ModMetadata is not IModBlazorMetadata)
         {
-            logger.Error(localisationService.GetText("modloader-is-old-js-mod", modName));
-            return false;
+            if (containsJs || containsTs)
+            {
+                logger.Error(localisationService.GetText("modloader-is-old-js-mod", modName));
+                return false;
+            }
         }
 
         return true;
     }
+
+    [GeneratedRegex("^[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$")]
+    private static partial Regex ModGuidRegex();
 }

@@ -1,7 +1,7 @@
-﻿using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Models.Logging;
-using SPTarkov.Server.Core.Models.Spt.Logging;
-using SPTarkov.Server.Core.Models.Utils;
+using Microsoft.Extensions.Logging;
+﻿using Spectre.Console;
+using SPTarkov.Common.Models.Logging;
+using SPTarkov.DI.Annotations;
 
 namespace MongoIdTplGenerator.Utils;
 
@@ -15,7 +15,7 @@ public class SptBasicLogger<T> : ISptLogger<T>
         categoryName = typeof(T).Name;
     }
 
-    public void LogWithColor(string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null, Exception? ex = null)
+    public void LogWithColor(string data, Color? textColor = null, Color? backgroundColor = null, Exception? ex = null)
     {
         Console.WriteLine($"{categoryName}: {data}");
     }
@@ -50,18 +50,12 @@ public class SptBasicLogger<T> : ISptLogger<T>
         Console.WriteLine($"{categoryName}: {data}");
     }
 
-    public void Log(
-        LogLevel level,
-        string data,
-        LogTextColor? textColor = null,
-        LogBackgroundColor? backgroundColor = null,
-        Exception? ex = null
-    )
+    public void Log(LogLevel level, string data, Color? textColor = null, Color? backgroundColor = null, Exception? ex = null)
     {
         throw new NotImplementedException();
     }
 
-    public void WriteToLogFile(string body, LogLevel level = LogLevel.Info)
+    public void WriteToLogFile(string body, LogLevel level = LogLevel.Information)
     {
         Console.WriteLine($"{categoryName}: {body}");
     }

@@ -12,7 +12,7 @@ namespace SPTarkov.Server.Core.Callbacks;
 [Injectable(TypePriority = OnUpdateOrder.DialogueCallbacks)]
 public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseUtil, DialogueController dialogueController) : IOnUpdate
 {
-    public Task<bool> OnUpdate(long timeSinceLastRun)
+    public Task<bool> OnUpdateAsync(long timeSinceLastRun, CancellationToken cancellationToken)
     {
         dialogueController.Update();
         return Task.FromResult(true);
@@ -22,7 +22,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/friend/list
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> GetFriendList(string url, EmptyRequestData _, MongoId sessionID)
+    public ValueTask<string> GetFriendList(string url, EmptyRequestData _, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetBody(dialogueController.GetFriendList(sessionID)));
     }
@@ -31,7 +31,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/chatServer/list
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> GetChatServerList(string url, GetChatServerListRequestData request, MongoId sessionID)
+    public ValueTask<string> GetChatServerList(string url, GetChatServerListRequestData request, MongoId sessionID)
     {
         var chatServer = new List<ChatServer>
         {
@@ -57,7 +57,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     TODO: request properties are not handled
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> GetMailDialogList(string url, GetMailDialogListRequestData request, MongoId sessionID)
+    public ValueTask<string> GetMailDialogList(string url, GetMailDialogListRequestData request, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetBody(dialogueController.GenerateDialogueList(sessionID), 0, null, false));
     }
@@ -69,7 +69,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     /// <param name="request"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public virtual ValueTask<string> GetMailDialogView(string url, GetMailDialogViewRequestData request, MongoId sessionID)
+    public ValueTask<string> GetMailDialogView(string url, GetMailDialogViewRequestData request, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetBody(dialogueController.GenerateDialogueView(request, sessionID), 0, null, false));
     }
@@ -78,7 +78,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/mail/dialog/info
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> GetMailDialogInfo(string url, GetMailDialogInfoRequestData request, MongoId sessionID)
+    public ValueTask<string> GetMailDialogInfo(string url, GetMailDialogInfoRequestData request, MongoId sessionID)
     {
         return new ValueTask<string>(
             httpResponseUtil.GetBody(dialogueController.GetDialogueInfo(request.DialogId ?? MongoId.Empty(), sessionID))
@@ -89,7 +89,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/mail/dialog/remove
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> RemoveDialog(string url, RemoveDialogRequestData request, MongoId sessionID)
+    public ValueTask<string> RemoveDialog(string url, RemoveDialogRequestData request, MongoId sessionID)
     {
         dialogueController.RemoveDialogue(request.DialogId ?? MongoId.Empty(), sessionID);
         return new ValueTask<string>(httpResponseUtil.EmptyArrayResponse());
@@ -99,7 +99,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/mail/dialog/pin
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> PinDialog(string url, PinDialogRequestData request, MongoId sessionID)
+    public ValueTask<string> PinDialog(string url, PinDialogRequestData request, MongoId sessionID)
     {
         dialogueController.SetDialoguePin(request.DialogId ?? MongoId.Empty(), true, sessionID);
         return new ValueTask<string>(httpResponseUtil.EmptyArrayResponse());
@@ -109,7 +109,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/mail/dialog/unpin
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> UnpinDialog(string url, PinDialogRequestData request, MongoId sessionID)
+    public ValueTask<string> UnpinDialog(string url, PinDialogRequestData request, MongoId sessionID)
     {
         dialogueController.SetDialoguePin(request.DialogId ?? MongoId.Empty(), false, sessionID);
         return new ValueTask<string>(httpResponseUtil.EmptyArrayResponse());
@@ -119,7 +119,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/mail/dialog/read
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> SetRead(string url, SetDialogReadRequestData request, MongoId sessionID)
+    public ValueTask<string> SetRead(string url, SetDialogReadRequestData request, MongoId sessionID)
     {
         dialogueController.SetRead(request.Dialogs, sessionID);
         return new ValueTask<string>(httpResponseUtil.EmptyArrayResponse());
@@ -129,7 +129,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/mail/dialog/getAllAttachments
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> GetAllAttachments(string url, GetAllAttachmentsRequestData request, MongoId sessionID)
+    public ValueTask<string> GetAllAttachments(string url, GetAllAttachmentsRequestData request, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetBody(dialogueController.GetAllAttachments(request.DialogId, sessionID)));
     }
@@ -138,7 +138,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/mail/msg/send
     /// </summary>
     /// <returns></returns>
-    public virtual async ValueTask<string> SendMessage(string url, SendMessageRequest request, MongoId sessionID)
+    public async ValueTask<string> SendMessage(string url, SendMessageRequest request, MongoId sessionID)
     {
         return httpResponseUtil.GetBody(await dialogueController.SendMessage(sessionID, request));
     }
@@ -147,7 +147,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/friend/request/list/outbox
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> ListOutbox(string url, EmptyRequestData _, MongoId sessionID)
+    public ValueTask<string> ListOutbox(string url, EmptyRequestData _, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.EmptyArrayResponse());
     }
@@ -156,7 +156,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/friend/request/list/inbox
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> ListInbox(string url, EmptyRequestData _, MongoId sessionID)
+    public ValueTask<string> ListInbox(string url, EmptyRequestData _, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.EmptyArrayResponse());
     }
@@ -165,7 +165,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/friend/request/send
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> SendFriendRequest(string url, FriendRequestData request, MongoId sessionID)
+    public ValueTask<string> SendFriendRequest(string url, FriendRequestData request, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetBody(dialogueController.SendFriendRequest(sessionID, request)));
     }
@@ -174,7 +174,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/friend/request/accept-all
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> AcceptAllFriendRequests(string url, EmptyRequestData _, MongoId sessionID)
+    public ValueTask<string> AcceptAllFriendRequests(string url, EmptyRequestData _, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.NullResponse());
     }
@@ -183,7 +183,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/friend/request/accept
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> AcceptFriendRequest(string url, AcceptFriendRequestData request, MongoId sessionID)
+    public ValueTask<string> AcceptFriendRequest(string url, AcceptFriendRequestData request, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetBody(true));
     }
@@ -192,7 +192,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/friend/request/decline
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> DeclineFriendRequest(string url, DeclineFriendRequestData request, MongoId sessionID)
+    public ValueTask<string> DeclineFriendRequest(string url, DeclineFriendRequestData request, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetBody(true));
     }
@@ -201,7 +201,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/friend/request/cancel
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> CancelFriendRequest(string url, CancelFriendRequestData request, MongoId sessionID)
+    public ValueTask<string> CancelFriendRequest(string url, CancelFriendRequestData request, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.GetBody(true));
     }
@@ -210,7 +210,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/friend/delete
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> DeleteFriend(string url, DeleteFriendRequest request, MongoId sessionID)
+    public ValueTask<string> DeleteFriend(string url, DeleteFriendRequest request, MongoId sessionID)
     {
         dialogueController.DeleteFriend(sessionID, request);
         return new ValueTask<string>(httpResponseUtil.NullResponse());
@@ -220,7 +220,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/friend/ignore/set
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> IgnoreFriend(string url, UIDRequestData request, MongoId sessionID)
+    public ValueTask<string> IgnoreFriend(string url, UIDRequestData request, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.NullResponse());
     }
@@ -229,7 +229,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle client/friend/ignore/remove
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> UnIgnoreFriend(string url, UIDRequestData request, MongoId sessionID)
+    public ValueTask<string> UnIgnoreFriend(string url, UIDRequestData request, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.NullResponse());
     }
@@ -238,7 +238,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle /client/mail/dialog/clear
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> ClearMail(string url, ClearMailMessageRequest request, MongoId sessionID)
+    public ValueTask<string> ClearMail(string url, ClearMailMessageRequest request, MongoId sessionID)
     {
         dialogueController.ClearMessages(sessionID, request);
 
@@ -249,7 +249,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle /client/mail/dialog/group/create
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> CreateGroupMail(string url, CreateGroupMailRequest request, MongoId sessionID)
+    public ValueTask<string> CreateGroupMail(string url, CreateGroupMailRequest request, MongoId sessionID)
     {
         return new ValueTask<string>(httpResponseUtil.EmptyArrayResponse());
     }
@@ -258,7 +258,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle /client/mail/dialog/group/owner/change
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> ChangeMailGroupOwner(string url, ChangeGroupMailOwnerRequest request, MongoId sessionID)
+    public ValueTask<string> ChangeMailGroupOwner(string url, ChangeGroupMailOwnerRequest request, MongoId sessionID)
     {
         return new ValueTask<string>("Not Implemented!"); // Not implemented in Node
     }
@@ -267,7 +267,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle /client/mail/dialog/group/users/add
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> AddUserToMail(string url, AddUserGroupMailRequest request, MongoId sessionID)
+    public ValueTask<string> AddUserToMail(string url, AddUserGroupMailRequest request, MongoId sessionID)
     {
         return new ValueTask<string>("Not Implemented!"); // Not implemented in Node
     }
@@ -276,7 +276,7 @@ public class DialogueCallbacks(TimeUtil timeUtil, HttpResponseUtil httpResponseU
     ///     Handle /client/mail/dialog/group/users/remove
     /// </summary>
     /// <returns></returns>
-    public virtual ValueTask<string> RemoveUserFromMail(string url, RemoveUserGroupMailRequest request, MongoId sessionID)
+    public ValueTask<string> RemoveUserFromMail(string url, RemoveUserGroupMailRequest request, MongoId sessionID)
     {
         return new ValueTask<string>("Not Implemented!"); // Not implemented in Node
     }

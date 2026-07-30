@@ -6,26 +6,26 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Routers.Dynamic;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.Routers)]
 public class NotifierDynamicRouter(JsonUtil jsonUtil, NotifierCallbacks notifierCallbacks)
     : DynamicRouter(
         jsonUtil,
         [
             new RouteAction<EmptyRequestData>(
                 "/?last_id",
-                async (url, info, sessionID, _) => await notifierCallbacks.Notify(url, info, sessionID)
+                async (url, info, sessionID, _, cancellationToken) => await notifierCallbacks.Notify(url, info, sessionID)
             ),
             new RouteAction<EmptyRequestData>(
                 "/notifierServer",
-                async (url, info, sessionID, _) => await notifierCallbacks.Notify(url, info, sessionID)
+                async (url, info, sessionID, _, cancellationToken) => await notifierCallbacks.Notify(url, info, sessionID)
             ),
             new RouteAction<EmptyRequestData>(
                 "/push/notifier/get/",
-                async (url, info, sessionID, _) => await notifierCallbacks.GetNotifier(url, info, sessionID)
+                async (url, info, sessionID, _, cancellationToken) => await notifierCallbacks.GetNotifier(url, info, sessionID)
             ),
             new RouteAction<EmptyRequestData>(
                 "/push/notifier/get/",
-                async (url, info, sessionID, _) => await notifierCallbacks.GetNotifier(url, info, sessionID)
+                async (url, info, sessionID, _, cancellationToken) => await notifierCallbacks.GetNotifier(url, info, sessionID)
             ),
         ]
     ) { }

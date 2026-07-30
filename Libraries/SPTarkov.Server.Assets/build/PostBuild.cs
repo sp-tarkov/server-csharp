@@ -1,52 +1,68 @@
-using System.Formats.Tar;
-using System.IO.Compression;
+using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 
+ParallelOptions parallelOptions = new ParallelOptions
+{
+    // Limit to only 4 threads
+    MaxDegreeOfParallelism = 4,
+};
+
+JsonSerializerOptions serializerOptions = new JsonSerializerOptions { TypeInfoResolver = new DefaultJsonTypeInfoResolver() };
+
 string scriptDir = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), ".."));
 string sptDataPath = Path.Combine(scriptDir, "SPT_Data");
 string outputFile = Path.Combine(sptDataPath, "checks.dat");
 
-GenerateHashes();
+await GenerateHashesAsync();
 
-void GenerateHashes()
+async Task GenerateHashesAsync()
 {
-    // Get all files recursively, excluding the 'images' directory
-    string imagesPath = Path.Combine(sptDataPath, "images");
+    var imagesPath = Path.Combine(sptDataPath, "images");
+
     var files = Directory
-        .GetFiles(sptDataPath, "*", SearchOption.AllDirectories)
+        .EnumerateFiles(sptDataPath, "*", SearchOption.AllDirectories)
         .Where(file => !file.StartsWith(imagesPath, StringComparison.OrdinalIgnoreCase))
         .OrderBy(file => file)
         .ToArray();
 
-    var hashes = new List<FileHash>();
+    var hashes = new ConcurrentBag<FileHash>();
 
-    using (var md5 = MD5.Create())
-    {
-        foreach (string file in files)
+    await Parallel.ForEachAsync(
+        files,
+        parallelOptions,
+        async (file, token) =>
         {
-            byte[] fileBytes = File.ReadAllBytes(file);
-            byte[] hashBytes = md5.ComputeHash(fileBytes);
+            if (Path.GetFileName(file).Equals("checks.dat", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
 
-            string hashString = BitConverter.ToString(hashBytes).Replace("-", "");
+            byte[] hashBytes;
 
-            string relativePath = file.Substring(sptDataPath.Length + 1).Replace('\\', '/');
+            using (var md5 = MD5.Create())
+            {
+                await using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 8192, useAsync: true))
+                {
+                    hashBytes = await md5.ComputeHashAsync(stream, token);
+                }
+            }
+
+            var hashString = BitConverter.ToString(hashBytes).Replace("-", "");
+            var relativePath = file.Substring(sptDataPath.Length + 1).Replace('\\', '/');
 
             hashes.Add(new FileHash { Path = relativePath, Hash = hashString });
         }
-    }
-
-    string jsonString = JsonSerializer.Serialize(
-        hashes,
-        new JsonSerializerOptions { TypeInfoResolver = new DefaultJsonTypeInfoResolver() }
     );
 
-    byte[] jsonBytes = Encoding.UTF8.GetBytes(jsonString);
-    string base64String = Convert.ToBase64String(jsonBytes);
+    var jsonString = JsonSerializer.Serialize(hashes.OrderBy(h => h.Path), serializerOptions);
 
-    File.WriteAllText(outputFile, base64String, Encoding.ASCII);
+    var jsonBytes = Encoding.UTF8.GetBytes(jsonString);
+    var base64String = Convert.ToBase64String(jsonBytes);
+
+    await File.WriteAllTextAsync(outputFile, base64String, Encoding.ASCII);
 
     Console.WriteLine($"Hashed {hashes.Count} files");
 }
@@ -55,32 +71,4 @@ class FileHash
 {
     public string? Path { get; set; }
     public string? Hash { get; set; }
-}
-
-class TarGz
-{
-    public static void ExtractTarGz(string tarGzPath, string destinationDirectory, bool deleteTarGzFile = false)
-    {
-        string tempTarPath = Path.GetTempFileName();
-
-        // Yes it's disgusting I know
-        using (FileStream gzipStream = File.OpenRead(tarGzPath))
-        using (FileStream tarFileStream = File.Create(tempTarPath))
-        using (GZipStream decompressionStream = new GZipStream(gzipStream, CompressionMode.Decompress))
-        {
-            decompressionStream.CopyTo(tarFileStream);
-        }
-
-        using (FileStream tarStream = File.OpenRead(tempTarPath))
-        {
-            TarFile.ExtractToDirectory(tarStream, destinationDirectory, overwriteFiles: true);
-        }
-
-        File.Delete(tempTarPath);
-
-        if (deleteTarGzFile)
-        {
-            File.Delete(tarGzPath);
-        }
-    }
 }

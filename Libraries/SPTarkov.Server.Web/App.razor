@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+    <link href="/_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <link href="/SPTarkov.Server.Web/css/spt-theme.css" rel="stylesheet" />
+    <link href="/SPTarkov.Server.Web/SPTarkov.Server.Web.styles.css" rel="stylesheet" />
+    <ImportMap />
+	<HeadOutlet @rendermode="PageRenderMode" />
+</head>
+<body>
+	<Routes @rendermode="PageRenderMode" />
+    <script src="/_content/MudBlazor/MudBlazor.min.js"></script>
+    <script src="/_framework/blazor.web.js"></script>
+</body>
+
+</html>
+
+@code {
+
+	[CascadingParameter]
+	private HttpContext HttpContext { get; set; } = default!;
+
+	private IComponentRenderMode? PageRenderMode
+	{
+		get
+		{
+
+			return HttpContext.AcceptsInteractiveRouting() ? InteractiveServer : null;
+		}
+	}
+}

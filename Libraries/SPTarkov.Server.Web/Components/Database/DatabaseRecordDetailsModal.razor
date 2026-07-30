@@ -1,0 +1,24 @@
+@using SPTarkov.Server.Web.Models.Database
+
+@if (Open)
+{
+    <div class="database-details-modal-backdrop" @onclick="OnClose">
+        <div class="database-details-modal" role="dialog" aria-modal="true" @onclick:stopPropagation>
+            <DatabaseRecordDetails Row="Row" OnClose="OnClose" OnBrowseTraderAssort="OnBrowseTraderAssort" />
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public DatabaseRow? Row { get; set; }
+
+    [Parameter]
+    public bool Open { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    [Parameter]
+    public EventCallback<DatabaseRow> OnBrowseTraderAssort { get; set; }
+}

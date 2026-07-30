@@ -1,13 +1,10 @@
 {
   "projectName": "SPT",
-  "compatibleTarkovVersion": "0.16.9.40087",
+  "compatibleTarkovVersion": "0.16.9.40743",
   "serverName": "SPT Server",
   "profileSaveIntervalSeconds": 60,
   "sptFriendNickname": "SPT",
   "allowProfileWipe": true,
-  "enableNoGCRegions": false,
-  "noGCRegionMaxMemoryGB": 4,
-  "noGCRegionMaxLOHMemoryGB": 3,
   "bsgLogging": {
     "verbosity": 6,
     "sendToServer": false
@@ -299,7 +296,7 @@
     }
   },
   "features": {
-    "compressProfile": false,
+    "compressProfile": true,
     "chatbotFeatures": {
       "sptFriendGiftsEnabled": true,
       "commandoFeatures": {
@@ -311,6 +308,10 @@
       "ids": {
         "commando": "6723fd51c5924c57ce0ca01e",
         "spt": "6723fd51c5924c57ce0ca01f"
+      },
+      "aids": {
+        "commando": 2999998,
+        "spt": 2999999
       },
       "enabledBots": {
         "6723fd51c5924c57ce0ca01e": true,

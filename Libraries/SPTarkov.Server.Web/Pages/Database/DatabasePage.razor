@@ -1,0 +1,50 @@
+@page "/database"
+@attribute [Authorize]
+@using SPTarkov.Server.Web.Components.Database
+@using SPTarkov.Server.Web.Layout
+
+@layout BaseMudBlazorLayout
+
+<PageTitle>@L("database-page-title")</PageTitle>
+
+<div class="database-page spt-page">
+<DatabaseLoadingOverlay Visible="@IsLoadingOverlayVisible"
+                        Error="@_loadError"
+                        LoadingTitle="@_loadingTitle"
+                        LoadingMessage="@_loadingMessage" />
+
+<MudContainer MaxWidth="MaxWidth.False" Class="database-page-container pa-6">
+    <MudStack Spacing="4">
+        <DatabaseBrowserHeader Table="@SelectedTable" />
+
+        <div class="database-browser-grid">
+            <DatabaseBrowserFilters Tables="@_tables"
+                                    SelectedTable="@SelectedTable"
+                                    SelectedTableId="@_selectedTableId"
+                                    SelectedTableIdChanged="OnTableChanged"
+                                    SearchText="@_searchText"
+                                    SearchTextChanged="OnSearchChanged"
+                                    ResultCountLabel="@FilteredRowCountLabel"
+                                    GetFilterValue="GetFilterValue"
+                                    SetFilterValue="SetFilterValue"
+                                    OnClearFilters="ClearFilters" />
+
+            <DatabaseBrowserTable Table="@SelectedTable"
+                                  Rows="@FilteredRows"
+                                  SelectedRow="@_selectedRow"
+                                  SelectedRowChanged="SelectRow" />
+        </div>
+
+        <DatabaseRecordDetailsModal Row="@_selectedRow"
+                                    Open="@_isDetailsOpen"
+                                    OnClose="CloseDetails"
+                                    OnBrowseTraderAssort="OpenTraderAssort" />
+
+        <DatabaseTraderAssortModal Assort="@_selectedTraderAssort"
+                                   Open="@_isAssortOpen"
+                                   Loading="@_isAssortLoading"
+                                   LoadingMessage="@_loadingMessage"
+                                   OnClose="CloseTraderAssort" />
+    </MudStack>
+</MudContainer>
+</div>

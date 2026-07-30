@@ -1,44 +1,119 @@
-using System.Net;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Loader;
 using System.Security.Authentication;
 using System.Text;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
-using SPTarkov.Common.Semver;
-using SPTarkov.Common.Semver.Implementations;
-using SPTarkov.DI;
-using SPTarkov.Reflection.Patching;
-using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Common.Extensions;
+using SPTarkov.Common.Logger;
+using SPTarkov.Server.Core.Helpers.Server;
 using SPTarkov.Server.Core.Loaders;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Server.Core.Utils.Logger;
-using SPTarkov.Server.Logger;
+using SPTarkov.Server.Exceptions;
+using SPTarkov.Server.Extensions;
+using SPTarkov.Server.Helpers;
+using SPTarkov.Server.Middleware;
 using SPTarkov.Server.Modding;
-using SPTarkov.Server.Services;
 using SPTarkov.Server.Web;
 
 namespace SPTarkov.Server;
 
 public static class Program
 {
+    internal static ILogger? _earlyLogger;
+
     public static async Task Main(string[] args)
     {
+        RegisterSatelliteLocalizations();
+
+        // Initialize the program variables
+        ProgramStatics.Initialize();
+
+        var loggerFactory = SptLoggerProvider.Create(ProgramStatics.DEBUG());
+
+        // Some users don't know how to create a shortcut...
+        if (!IsRunFromInstallationFolder())
+        {
+            Console.WriteLine("You have not created a shortcut properly. Please hold alt when dragging to create a shortcut.");
+            await Task.Delay(-1);
+            return;
+        }
+
+        using var startupCancellation = new StartupCancellation();
+
         try
         {
-            await StartServer(args);
+            _earlyLogger = loggerFactory.CreateLogger("SPTarkov.Server.Core");
+
+            await StartServer(loggerFactory, args, startupCancellation);
         }
-        catch (SocketException)
+        catch (OperationCanceledException) when (startupCancellation.IsCancellationRequested)
         {
-            Console.WriteLine("=========================================================================================================");
-            Console.WriteLine("You have multiple servers running or another process using port 6969");
-            Console.WriteLine("=========================================================================================================");
+            if (_earlyLogger is not null && _earlyLogger.IsEnabled(LogLevel.Information))
+            {
+                _earlyLogger.LogInformation("Server startup was cancelled, shutting down.");
+            }
+        }
+        catch (WebServerPortUnavailableException ex)
+        {
+            if (_earlyLogger is not null)
+            {
+                if (_earlyLogger.IsEnabled(LogLevel.Critical))
+                {
+                    _earlyLogger.LogCritical(
+                        "Failed to start the web server on {Ip}:{Port}. Socket error: {SocketErrorCode} ({NativeErrorCode}).",
+                        ex.Ip,
+                        ex.Port,
+                        ex.SocketErrorCode,
+                        ex.NativeErrorCode
+                    );
+                }
+
+                if (_earlyLogger.IsEnabled(LogLevel.Error))
+                {
+                    switch (ex.SocketErrorCode)
+                    {
+                        case SocketError.AddressAlreadyInUse:
+                            _earlyLogger.LogError(
+                                "Another SPT server may already be running, or another process is using port {Port}.",
+                                ex.Port
+                            );
+
+                            _earlyLogger.LogError(
+                                "Close the other process, or change the server port in your HTTP configuration, then restart SPT."
+                            );
+
+                            break;
+
+                        case SocketError.AddressNotAvailable:
+                            _earlyLogger.LogError("The configured IP address {Ip} is not available on this machine.", ex.Ip);
+
+                            _earlyLogger.LogError("Check your HTTP configuration and use a IP address that exists on this system.");
+
+                            break;
+
+                        case SocketError.AccessDenied:
+                            _earlyLogger.LogError("The server does not have permission to bind to {Ip}:{Port}.", ex.Ip, ex.Port);
+
+                            _earlyLogger.LogError("Try running SPT as administrator, or use a different IP address and port.");
+
+                            break;
+
+                        default:
+                            _earlyLogger.LogError("The web server could not bind to the configured endpoint {Ip}:{Port}.", ex.Ip, ex.Port);
+
+                            break;
+                    }
+                }
+            }
+
             Console.WriteLine("Press any key to exit...");
-            Console.ReadLine();
+            Console.ReadKey(true);
         }
         catch (Exception e)
         {
@@ -49,7 +124,7 @@ public static class Program
                 )
             )
             {
-                ShowRedConsoleMessage(
+                _earlyLogger!.LogCritical(
                     e,
                     "You may have installed a mod that needs a newer version of of SPT installed. Please try updating SPT"
                 );
@@ -60,134 +135,134 @@ public static class Program
 
             if (e.Message.Contains("could not load file or assembly", StringComparison.InvariantCultureIgnoreCase))
             {
-                ShowRedConsoleMessage(
+                _earlyLogger!.LogCritical(
                     e,
-                    "You may have forgotten to install a requirement for one of your mods, please check the mod page again and install any dependencies listed. Read the below error message CAREFULLY to find the name of the mod you need to install"
+                    "You may have forgotten to install a requirement for one of your mods, please check the mod page again and install any requirements listed. Read the error message below CAREFULLY for the name of the mod you need to install"
                 );
 
                 Console.ReadLine();
+                // Don't show below error message when it's a mod exception.
                 return;
             }
 
-            ShowRedConsoleMessage(
+            _earlyLogger!.LogCritical(
                 e,
-                "The server has unexpectedly stopped, reach out to #mod-questions-4-0 in our Discord server. Include a screenshot of this message and the surrounding error(s) above and below"
+                "The server has unexpectedly stopped, reach out to the support channel in our Discord server. Include a screenshot of this message and the surrounding error(s) above and below"
             );
             Console.WriteLine("Press any key to exit...");
             Console.ReadLine();
         }
+        finally
+        {
+            loggerFactory.Provider.Dispose();
+        }
     }
 
-    private static void ShowRedConsoleMessage(Exception e, string message)
-    {
-        Console.WriteLine("=========================================================================================================");
-        Console.BackgroundColor = ConsoleColor.DarkRed;
-        Console.ForegroundColor = ConsoleColor.Black;
-        Console.WriteLine(message);
-
-        Console.ResetColor();
-        Console.WriteLine(e);
-        Console.WriteLine("=========================================================================================================");
-    }
-
-    public static async Task StartServer(string[] args)
+    public static async Task StartServer(SptEarlyLoggerFactory loggerFactory, string[] args, StartupCancellation startupCancellation)
     {
         Console.OutputEncoding = Encoding.UTF8;
-        SetConsoleOutputMode();
 
-        // Some users don't know how to create a shortcut...
-        if (!IsRunFromInstallationFolder())
-        {
-            Console.WriteLine("You have not created a shortcut properly. Please hold alt when dragging to create a shortcut.");
-            await Task.Delay(-1);
-            return;
-        }
-
-        // Initialize the program variables
-        ProgramStatics.Initialize();
-
-        // Create web builder and logger
-        var builder = CreateNewHostBuilder();
-
-        var diHandler = new DependencyInjectionHandler(builder.Services);
-        // register SPT components
-        diHandler.AddInjectableTypesFromTypeAssembly(typeof(Program));
-        diHandler.AddInjectableTypesFromTypeAssembly(typeof(App));
-        diHandler.AddInjectableTypesFromTypeAssembly(typeof(PatchManager));
+        var configuration = await ConfigLoader.Initialize(_earlyLogger!, startupCancellation.Token);
+        var earlyServiceProvider = ProgramHelpers.CreateEarlySptProvider(loggerFactory, configuration, ProgramStatics.MODS());
 
         List<SptMod> loadedMods = [];
+
         if (ProgramStatics.MODS())
         {
-            // Search for mod dlls
-            loadedMods = ModDllLoader.LoadAllMods();
-            // validate and sort mods, this will also discard any mods that are invalid
-            var validatedLoadedMods = ValidateMods(loadedMods);
+            var modLoader = earlyServiceProvider.GetRequiredService<ModLoader>();
+            var runResult = await modLoader.RunModLoader(args, startupCancellation.Token);
+            if (!runResult.ShouldStartServer)
+            {
+                return;
+            }
 
-            // update the loadedMods list with our validated mods
-            loadedMods = validatedLoadedMods;
-
-            diHandler.AddInjectableTypesFromAssemblies(validatedLoadedMods.SelectMany(a => a.Assemblies));
+            loadedMods = runResult.ValidRuntimeMods;
         }
-        diHandler.InjectAll();
 
-        builder.InitializeSptBlazor(loadedMods);
+        await StartServerAfterModLoading(loggerFactory, configuration, earlyServiceProvider, loadedMods, startupCancellation);
+    }
 
-        builder.Services.AddSingleton(builder);
-        builder.Services.AddSingleton<IReadOnlyList<SptMod>>(loadedMods);
+    /// <summary>
+    /// Split the loading logic, this method needs to stay seperated as otherwise things are forced into context too early which causes issues with mod loading pre-patching (In particular the SIC not loading)
+    /// </summary>
+    private static async Task StartServerAfterModLoading(
+        SptEarlyLoggerFactory loggerFactory,
+        IReadOnlyDictionary<Type, BaseConfig> configuration,
+        IServiceProvider earlyServiceProvider,
+        List<SptMod> loadedMods,
+        StartupCancellation startupCancellation
+    )
+    {
+        var cancellationToken = startupCancellation.Token;
+        var dbImporter = earlyServiceProvider.GetRequiredService<DatabaseImporter>();
+
+        var shouldVerify = !ProgramStatics.DEBUG();
+        if (shouldVerify)
+        {
+            await dbImporter.LoadHashesAsync(cancellationToken);
+        }
+
+        var tables =
+            await dbImporter.LoadDatabaseAsync(shouldVerify, cancellationToken)
+            ?? throw new NullReferenceException("Failed to import database tables.");
+
+        // Create web builder and logger
+        var builder = ProgramHelpers.CreateNewHostBuilder(loggerFactory, configuration, tables);
+        builder.Host.UseSptLoggerWithoutProvider(loggerFactory.ServiceProvider);
+
+        builder.Host.UseDefaultServiceProvider(options =>
+        {
+            options.ValidateOnBuild = true;
+            options.ValidateScopes = true;
+        });
+        await ProgramHelpers.RegisterSptServicesAsync(builder, loadedMods, ProgramStatics.MODS(), cancellationToken);
+
         // Configure Kestrel options
         ConfigureKestrel(builder);
 
         var app = builder.Build();
 
+        // Link startup token to the host's lifetime
+        startupCancellation.LinkTo(app.Services.GetRequiredService<IHostApplicationLifetime>());
+
         // Configure Kestrel WS options and Handle fallback requests
         ConfigureWebApp(app);
 
-        // In case of exceptions we snatch a Server logger
-        var serverExceptionLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Server");
-        // We need any logger instance to use as a finalizer when the app closes
-        var loggerFinalizer = app.Services.GetRequiredService<ISptLogger<App>>();
-        try
+        // Handle edge cases where reverse proxies might pass X-Forwarded-For, use this as the actual IP address
+        var forwardedHeadersOptions = new ForwardedHeadersOptions
         {
-            // Handle edge cases where reverse proxies might pass X-Forwarded-For, use this as the actual IP address
-            var forwardedHeadersOptions = new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-                ForwardLimit = null,
-            };
-            forwardedHeadersOptions.KnownNetworks.Clear();
-            forwardedHeadersOptions.KnownProxies.Clear();
-            app.UseForwardedHeaders(forwardedHeadersOptions);
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+            ForwardLimit = null,
+        };
+        forwardedHeadersOptions.KnownIPNetworks.Clear();
+        forwardedHeadersOptions.KnownProxies.Clear();
+        app.UseForwardedHeaders(forwardedHeadersOptions);
 
-            await app.Services.GetRequiredService<SptServerStartupService>().Startup();
+        await app.Services.RunPreSptLoadCallbacks(_earlyLogger!, cancellationToken);
 
-            await app.RunAsync();
-        }
-        catch (Exception ex)
-        {
-            serverExceptionLogger.LogCritical(ex, "Critical exception, stopping server...");
-            throw;
-        }
-        finally
-        {
-            loggerFinalizer.DumpAndStop();
-        }
+        var httpConfig = app.Services.GetRequiredService<HttpConfig>();
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        httpConfig.VerifyWebServerPortAvailable();
+
+        await app.RunAsync($"https://{httpConfig.Ip}:{httpConfig.Port}");
     }
 
     private static void ConfigureWebApp(WebApplication app)
     {
-        app.UseWebSockets(
-            new WebSocketOptions
-            {
-                // Every minute a heartbeat is sent to keep the connection alive.
-                KeepAliveInterval = TimeSpan.FromSeconds(60),
-            }
-        );
+        app.UseWebSockets();
 
         app.UseMiddleware<SptLoggerMiddleware>();
 
-        app.UseNoGCRegions();
+        // Docker health endpoint
+        app.MapGet("/health", () => Results.Ok(new { status = "healthy", version = ProgramStatics.SPT_VERSION().ToString() }))
+            .AllowAnonymous();
 
-        app.Use(async (context, next) => await context.RequestServices.GetRequiredService<HttpServer>().HandleRequest(context, next));
+        app.Use(
+            async (context, next) =>
+                await context.RequestServices.GetRequiredService<HttpServer>().HandleRequestAsync(context, next, context.RequestAborted)
+        );
 
         app.UseSptBlazor();
     }
@@ -197,101 +272,16 @@ public static class Program
         builder.WebHost.ConfigureKestrel(
             (_, options) =>
             {
-                // This method is not expected to be async so we need to wait for the Task instead of using await keyword
-                options.ApplicationServices.GetRequiredService<OnWebAppBuildModLoader>().OnLoad().Wait();
-                var httpConfig = options.ApplicationServices.GetRequiredService<ConfigServer>().GetConfig<HttpConfig>();
-
-                // Probe the http ip and port to see if its being used, this method will throw an exception and crash
-                // the server if the IP/Port combination is already in use
-                TcpListener? listener = null;
-                try
-                {
-                    listener = new TcpListener(IPAddress.Parse(httpConfig.Ip), httpConfig.Port);
-                    listener.Start();
-                }
-                finally
-                {
-                    listener?.Stop();
-                }
-
                 var certHelper = options.ApplicationServices.GetRequiredService<CertificateHelper>();
-                options.Listen(
-                    IPAddress.Parse(httpConfig.Ip),
-                    httpConfig.Port,
-                    listenOptions =>
-                    {
-                        listenOptions.UseHttps(opts =>
-                        {
-                            opts.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
-                            opts.ServerCertificate = certHelper.LoadOrGenerateCertificatePfx();
-                            opts.ClientCertificateMode = ClientCertificateMode.NoCertificate;
-                        });
-                    }
-                );
+
+                options.ConfigureHttpsDefaults(httpsOptions =>
+                {
+                    httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+                    httpsOptions.ServerCertificate = certHelper.LoadOrGenerateCertificate();
+                    httpsOptions.ClientCertificateMode = ClientCertificateMode.NoCertificate;
+                });
             }
         );
-    }
-
-    private static WebApplicationBuilder CreateNewHostBuilder()
-    {
-        var builder = WebApplication.CreateBuilder(new WebApplicationOptions { WebRootPath = "./SPT_Data/wwwroot" });
-        builder.Logging.ClearProviders();
-        builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
-        builder.Host.UseSptLogger();
-
-        return builder;
-    }
-
-    private static List<SptMod> ValidateMods(IEnumerable<SptMod> mods)
-    {
-        if (!ProgramStatics.MODS())
-        {
-            return [];
-        }
-
-        // We need the SPT dependencies for the ModValidator, but mods are loaded before the web application
-        // So we create a disposable web application that we will throw away after getting the mods to load
-        var builder = CreateNewHostBuilder();
-        // register SPT components
-        var diHandler = new DependencyInjectionHandler(builder.Services);
-        diHandler.AddInjectableTypesFromAssembly(typeof(Program).Assembly);
-        diHandler.AddInjectableTypesFromAssembly(typeof(App).Assembly);
-        diHandler.InjectAll();
-        // register the mod validator components
-        var provider = builder
-            .Services.AddScoped(typeof(ISptLogger<ModValidator>), typeof(SptLogger<ModValidator>))
-            .AddScoped(typeof(ISemVer), typeof(SemanticVersioningSemVer))
-            .AddSingleton<ModValidator>()
-            .BuildServiceProvider();
-        var modValidator = provider.GetRequiredService<ModValidator>();
-        return modValidator.ValidateMods(mods);
-    }
-
-    private static void SetConsoleOutputMode()
-    {
-        var disableFlag = Environment.GetEnvironmentVariable("DISABLE_VIRTUAL_TERMINAL");
-
-        if (!OperatingSystem.IsWindows() || disableFlag == "1" || string.Equals(disableFlag, "true", StringComparison.OrdinalIgnoreCase))
-        {
-            return;
-        }
-
-        const int stdOutputHandle = -11;
-        const uint enableVirtualTerminalProcessing = 0x0004;
-
-        var handle = GetStdHandle(stdOutputHandle);
-
-        if (!GetConsoleMode(handle, out var consoleMode))
-        {
-            throw new Exception("Unable to get console mode");
-        }
-
-        consoleMode |= enableVirtualTerminalProcessing;
-
-        if (!SetConsoleMode(handle, consoleMode))
-        {
-            throw new Exception("Unable to set console mode");
-        }
     }
 
     private static bool IsRunFromInstallationFolder()
@@ -302,12 +292,27 @@ public static class Program
         return dirFiles.Any(dirFile => dirFile.EndsWith("sptLogger.json") || dirFile.EndsWith("sptLogger.Development.json"));
     }
 
-    [DllImport("kernel32.dll", SetLastError = true)]
-    private static extern IntPtr GetStdHandle(int nStdHandle);
+    /// <summary>
+    /// This method makes sure that the satellite assemblies that other libraries create get moved out of the root directory to reduce clutter
+    /// </summary>
+    private static void RegisterSatelliteLocalizations()
+    {
+        AssemblyLoadContext.Default.Resolving += (context, assemblyName) =>
+            ResolveSatelliteAssembly(AppContext.BaseDirectory, assemblyName, context.LoadFromAssemblyPath);
+    }
 
-    [DllImport("kernel32.dll")]
-    private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+    public static Assembly? ResolveSatelliteAssembly(string baseDirectory, AssemblyName assemblyName, Func<string, Assembly> loadFromPath)
+    {
+        if (
+            assemblyName.Name is not { } name
+            || !name.EndsWith(".resources", StringComparison.Ordinal)
+            || assemblyName.CultureName is not { Length: > 0 } culture
+        )
+        {
+            return null;
+        }
 
-    [DllImport("kernel32.dll")]
-    private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+        var path = Path.Combine(baseDirectory, "SPT_Data", "dotnet", culture, $"{name}.dll");
+        return File.Exists(path) ? loadFromPath(path) : null;
+    }
 }

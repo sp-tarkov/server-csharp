@@ -1,6 +1,8 @@
 using SPTarkov.Server.Core.Models.Common;
 
 // This is an auto generated file, do not modify. Re-generate by running MongoIdTplGenerator.exe
+namespace SPTarkov.Server.Core.Models.Enums;
+
 public static class QuestTpl
 {
     public static readonly MongoId DEBUT = new MongoId("5936d90786f7742b1420ba5b");

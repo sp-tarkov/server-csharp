@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Request;
 using SPTarkov.Server.Core.Models.Eft.Game;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Profile;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
@@ -22,7 +23,7 @@ public class GameCallbacks(
     TimeUtil timeUtil
 ) : IOnLoad
 {
-    public Task OnLoad()
+    public Task OnLoadAsync(CancellationToken cancellationToken)
     {
         gameController.Load();
         return Task.CompletedTask;
@@ -69,7 +70,7 @@ public class GameCallbacks(
         await saveServer.SaveProfileAsync(sessionID);
 
         // Backup profiles on exit
-        await backupService.Init();
+        await backupService.InitializeAsync();
 
         return httpResponseUtil.GetBody(new GameLogoutResponseData { Status = "ok" });
     }

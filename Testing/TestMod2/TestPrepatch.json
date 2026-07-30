@@ -1,0 +1,7 @@
+[
+  {
+    "enumType": "SPTarkov.Server.Core.Models.Enums.SkillTypes",
+    "constantName": "TestSkillEntry",
+    "constantValue": 100
+  }
+]

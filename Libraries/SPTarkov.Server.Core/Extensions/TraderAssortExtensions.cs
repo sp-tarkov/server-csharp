@@ -47,4 +47,30 @@ public static class TraderAssortExtensions
             .Items.Where(item => item.ParentId == "hideout" && itemsTplsToRemove.Contains(item.Template))
             .ToList();
     }
+
+    /// <summary>
+    ///     Merge two trader assort files together
+    /// </summary>
+    /// <param name="firstAssort"> Assort #1 </param>
+    /// <param name="secondAssort"> Assort #2 </param>
+    /// <returns> Merged assort </returns>
+    public static TraderAssort MergeAssorts(this TraderAssort firstAssort, TraderAssort secondAssort)
+    {
+        foreach (var itemId in secondAssort.BarterScheme.Keys)
+        {
+            firstAssort.BarterScheme[itemId] = secondAssort.BarterScheme[itemId];
+        }
+
+        foreach (var item in secondAssort.Items)
+        {
+            firstAssort.Items.Add(item);
+        }
+
+        foreach (var itemId in secondAssort.LoyalLevelItems.Keys)
+        {
+            firstAssort.LoyalLevelItems[itemId] = secondAssort.LoyalLevelItems[itemId];
+        }
+
+        return firstAssort;
+    }
 }

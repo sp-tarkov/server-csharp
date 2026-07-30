@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.InRaid;
 
 namespace UnitTests.Tests.Helpers;
 

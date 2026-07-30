@@ -1,6 +1,10 @@
+using Microsoft.Extensions.Logging;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Items;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -9,21 +13,25 @@ using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
+using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Services.Ragfair;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
 using Insurance = SPTarkov.Server.Core.Models.Eft.Profile.Insurance;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class InsuranceController(
     ISptLogger<InsuranceController> logger,
+    LocationTable locationTable,
+    TradersTable traderTable,
     RandomUtil randomUtil,
     TimeUtil timeUtil,
     EventOutputHolder eventOutputHolder,
@@ -32,17 +40,14 @@ public class InsuranceController(
     WeightedRandomHelper weightedRandomHelper,
     PaymentService paymentService,
     InsuranceService insuranceService,
-    DatabaseService databaseService,
     MailSendService mailSendService,
     RagfairPriceService ragfairPriceService,
     ServerLocalisationService serverLocalisationService,
     SaveServer saveServer,
-    ConfigServer configServer,
+    InsuranceConfig insuranceConfig,
     ICloner cloner
 )
 {
-    protected readonly InsuranceConfig InsuranceConfig = configServer.GetConfig<InsuranceConfig>();
-
     /// <summary>
     ///     Process insurance items of all profiles prior to being given back to the player through the mail service
     /// </summary>
@@ -130,7 +135,7 @@ public class InsuranceController(
             // Update the insured items to have the new root parent ID for root/orphaned items
             insured.Items = insured.Items.AdoptOrphanedItems(rootItemParentId);
 
-            var simulateItemsBeingTaken = InsuranceConfig.SimulateItemsBeingTaken;
+            var simulateItemsBeingTaken = insuranceConfig.SimulateItemsBeingTaken;
             if (simulateItemsBeingTaken)
             {
                 // Find items that could be taken by another player off the players body
@@ -556,14 +561,14 @@ public class InsuranceController(
     {
         const int removeCount = 0;
 
-        if (randomUtil.GetChance100(InsuranceConfig.ChanceNoAttachmentsTakenPercent))
+        if (randomUtil.GetChance100(insuranceConfig.ChanceNoAttachmentsTakenPercent))
         {
             return removeCount;
         }
 
         // Get attachments count above or equal to price set in config
         return weightedAttachmentByPrice
-            .Where(attachment => attachment.Value >= InsuranceConfig.MinAttachmentRoublePriceToBeTaken)
+            .Where(attachment => attachment.Value >= insuranceConfig.MinAttachmentRoublePriceToBeTaken)
             .Count(_ => RollForDelete(traderId) ?? false);
     }
 
@@ -586,7 +591,7 @@ public class InsuranceController(
     {
         // If there are no items remaining after the item filtering, the insurance has
         // successfully "failed" to return anything and an appropriate message should be sent to the player.
-        var traderDialogMessages = databaseService.GetTrader(insurance.TraderId).Dialogue;
+        var traderDialogMessages = traderTable.GetTrader(insurance.TraderId).Dialogue;
 
         // Map is labs + insurance is disabled in base.json
         if (IsMapLabsAndInsuranceDisabled(insurance))
@@ -629,7 +634,7 @@ public class InsuranceController(
     protected bool IsMapLabsAndInsuranceDisabled(Insurance insurance, string labsId = "laboratory")
     {
         return string.Equals(insurance.SystemData?.Location, labsId, StringComparison.OrdinalIgnoreCase)
-            && !(databaseService.GetLocation(labsId)?.Base?.Insurance ?? false);
+            && !(locationTable.GetLocation(labsId)?.Base?.Insurance ?? false);
     }
 
     /// <summary>
@@ -641,7 +646,7 @@ public class InsuranceController(
     protected bool IsMapLabyrinthAndInsuranceDisabled(Insurance insurance, string labyrinthId = "labyrinth")
     {
         return string.Equals(insurance.SystemData?.Location, labyrinthId, StringComparison.OrdinalIgnoreCase)
-            && !(databaseService.GetLocation(labyrinthId)?.Base?.Insurance ?? false);
+            && !(locationTable.GetLocation(labyrinthId)?.Base?.Insurance ?? false);
     }
 
     /// <summary>
@@ -689,7 +694,7 @@ public class InsuranceController(
     /// <returns>Should item be deleted</returns>
     protected bool? RollForDelete(MongoId traderId, Item? insuredItem = null)
     {
-        var trader = databaseService.GetTrader(traderId);
+        var trader = traderTable.GetTrader(traderId);
         if (trader is null)
         {
             return null;
@@ -699,7 +704,7 @@ public class InsuranceController(
         const int conversionFactor = 100;
 
         var returnChance = randomUtil.GetInt(0, maxRoll) / conversionFactor;
-        var traderReturnChance = InsuranceConfig.ReturnChancePercent[traderId];
+        var traderReturnChance = insuranceConfig.ReturnChancePercent[traderId];
         var roll = returnChance >= traderReturnChance;
 
         // Log the roll with as much detail as possible.

@@ -1,10 +1,13 @@
 using System.Diagnostics;
 using System.Text.Json.Serialization;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Constants;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Generators;
+using SPTarkov.Server.Core.Generators.Bot;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Bot;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Bot;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -12,19 +15,22 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Match;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Bot;
+using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Services.Profile;
+using SPTarkov.Server.Core.Services.Server;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class BotController(
     ISptLogger<BotController> logger,
-    DatabaseService databaseService,
+    BotTable botTable,
     BotGenerator botGenerator,
     BotHelper botHelper,
     BotDifficultyHelper botDifficultyHelper,
@@ -32,15 +38,13 @@ public class BotController(
     SeasonalEventService seasonalEventService,
     MatchBotDetailsCacheService matchBotDetailsCacheService,
     ProfileHelper profileHelper,
-    ConfigServer configServer,
     ProfileActivityService profileActivityService,
     RandomUtil randomUtil,
+    BotConfig botConfig,
+    PmcConfig pmcConfig,
     ICloner cloner
 )
 {
-    protected readonly BotConfig botConfig = configServer.GetConfig<BotConfig>();
-    protected readonly PmcConfig pmcConfig = configServer.GetConfig<PmcConfig>();
-
     /// <summary>
     ///     Return the number of bot load-out varieties to be generated
     /// </summary>
@@ -65,7 +69,7 @@ public class BotController(
     /// <returns></returns>
     public CoreBot GetBotCoreDifficulty()
     {
-        return databaseService.GetBots().Core;
+        return botTable.Core;
     }
 
     /// <summary>
@@ -96,8 +100,7 @@ public class BotController(
             difficulty = botDifficultyHelper.ConvertBotDifficultyDropdownToBotDifficulty(botDifficultyDropDownValue);
         }
 
-        var botDb = databaseService.GetBots();
-        return botDifficultyHelper.GetBotDifficultySettings(type, difficulty, botDb);
+        return botDifficultyHelper.GetBotDifficultySettings(type, difficulty, botTable);
     }
 
     /// <summary>
@@ -108,7 +111,7 @@ public class BotController(
     {
         var result = new Dictionary<string, Dictionary<string, DifficultyCategories>>();
 
-        var botTypesDb = databaseService.GetBots().Types;
+        var botTypesDb = botTable.Types;
         if (botTypesDb is null)
         {
             return result;
@@ -296,7 +299,7 @@ public class BotController(
         }
         catch (Exception e)
         {
-            logger.Error($"Failed to generate bot #{botIndex + 1} ({generationDetails.Role}): {e.Message}");
+            logger.Critical($"Failed to generate bot #{botIndex + 1} ({generationDetails.Role}): {e.Message}", e);
             return null;
         }
     }

@@ -26,7 +26,8 @@
   },
   "profileWhitelist": {
     "666314b4d7f171c4c20226c3": [
-      "edge_of_darkness"
+      "edge_of_darkness",
+      "unheard_edition"
     ]
   },
   "repeatableQuestTemplateIds": {
@@ -193,6 +194,13 @@
     },
     "674647f38466ebb03408b291": {
       "name": "Thats a Great Plan Walter",
+      "season": "None",
+      "startTimestamp": 1341615600000,
+      "endTimestamp": "",
+      "yearly": false
+    },
+    "6863cf925eaeb676d50a9651": {
+      "name": "Friend from Norvinsk - Part 1",
       "season": "None",
       "startTimestamp": 1341615600000,
       "endTimestamp": "",

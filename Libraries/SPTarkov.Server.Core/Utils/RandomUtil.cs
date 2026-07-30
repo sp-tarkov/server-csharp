@@ -1,14 +1,21 @@
+using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Utils;
 
-// TODO: Finish porting this class
 [Injectable(InjectionType.Singleton)]
-public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
+public sealed class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
 {
+    /// <summary>
+    /// Max value at 2^48
+    /// </summary>
+    private const double MaxRandomValue = 281474976710656.0;
+
     private const int DecimalPointRandomPrecision = 6;
 
     /// <summary>
@@ -17,9 +24,6 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// </summary>
     public const int MaxSignificantDigits = 15;
 
-    private static readonly int _decimalPointRandomPrecisionMultiplier = (int)Math.Pow(10, DecimalPointRandomPrecision);
-    public readonly Random Random = new();
-
     /// <summary>
     ///     Generates a random integer between the specified minimum and maximum values, inclusive.
     /// </summary>
@@ -27,15 +31,40 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// <param name="max">The maximum value (optional).</param>
     /// <param name="exclusive">If max is exclusive or not.</param>
     /// <returns>A random integer between the specified minimum and maximum values.</returns>
-    public virtual int GetInt(int min, int max = int.MaxValue, bool exclusive = false)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int GetInt(int min, int max = int.MaxValue, bool exclusive = false)
     {
-        // Prevents a potential integer overflow.
+        if (!exclusive && max == int.MaxValue)
+        {
+            // Can't add 1 to int.MaxValue, so treat as exclusive instead
+            exclusive = true;
+        }
+
+        // Prevent overflow
         if (exclusive && max == int.MaxValue)
         {
             max -= 1;
         }
 
-        return max > min ? Random.Shared.Next(min, exclusive ? max : max + 1) : min;
+        return max > min ? RandomNumberGenerator.GetInt32(min, exclusive ? max : max + 1) : min;
+    }
+
+    /// <summary>
+    ///     Generates a cryptographically secure random 64-bit integer in the specified range.
+    /// </summary>
+    /// <param name="min">The minimum value (inclusive).</param>
+    /// <param name="max">The maximum value (optional).</param>
+    /// <returns>A random 64-bit integerbetween the specified minimum and maximum values.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public long GetInt64(long min, long max)
+    {
+        if (max <= min)
+        {
+            return min;
+        }
+
+        var range = max - min;
+        return min + (long)(GetSecureRandomNumber() * range);
     }
 
     /// <summary>
@@ -44,26 +73,26 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// <param name="min">The minimum value of the range (inclusive).</param>
     /// <param name="max">The maximum value of the range (exclusive).</param>
     /// <returns>A random floating-point number between `min` (inclusive) and `max` (exclusive).</returns>
-    public virtual double GetDouble(double min, double max)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public double GetDouble(double min, double max)
     {
-        var realMin = (long)(min * _decimalPointRandomPrecisionMultiplier);
-        var realMax = (long)(max * _decimalPointRandomPrecisionMultiplier);
-
-        return Math.Round(Random.NextInt64(realMin, realMax) / (double)_decimalPointRandomPrecisionMultiplier, DecimalPointRandomPrecision);
+        var uniform = GetSecureRandomNumber();
+        return min + uniform * (max - min);
     }
 
     /// <summary>
     ///     Generates a random boolean value.
     /// </summary>
     /// <returns>A random boolean value, where the probability of `true` and `false` is approximately equal.</returns>
-    public virtual bool GetBool()
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool GetBool()
     {
-        return Random.Next(0, 2) == 1;
+        return GetSecureRandomNumber() < 0.5;
     }
 
-    public virtual void NextBytes(Span<byte> bytes)
+    public void NextBytes(Span<byte> bytes)
     {
-        Random.Shared.NextBytes(bytes);
+        RandomNumberGenerator.Fill(bytes);
     }
 
     /// <summary>
@@ -73,7 +102,7 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// <param name="number">The number to calculate the percentage of.</param>
     /// <param name="toFixed">The number of decimal places to round the result to (default is 2).</param>
     /// <returns>The calculated percentage of the given number, rounded to the specified number of decimal places.</returns>
-    public virtual double GetPercentOfValue(double percent, double number, int toFixed = 2)
+    public double GetPercentOfValue(double percent, double number, int toFixed = 2)
     {
         var num = percent * (number / 100);
 
@@ -87,7 +116,7 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// <param name="number">The number to calculate the percentage of.</param>
     /// <param name="toFixed">The number of decimal places to round the result to (default is 2).</param>
     /// <returns>The calculated percentage of the given number, rounded to the specified number of decimal places.</returns>
-    public virtual float GetPercentOfValue(double percent, float number, int toFixed = 2)
+    public float GetPercentOfValue(double percent, float number, int toFixed = 2)
     {
         var num = percent * (number / 100);
 
@@ -100,7 +129,7 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// <param name="number">The original number to be reduced.</param>
     /// <param name="percentage">The percentage by which to reduce the number.</param>
     /// <returns>The reduced number after applying the percentage reduction.</returns>
-    public virtual double ReduceValueByPercent(double number, double percentage)
+    public double ReduceValueByPercent(double number, double percentage)
     {
         var reductionAmount = number * percentage / 100;
 
@@ -112,11 +141,12 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// </summary>
     /// <param name="chancePercent">The percentage chance (0-100) that the event will occur.</param>
     /// <returns>`true` if the event occurs, `false` otherwise.</returns>
-    public virtual bool GetChance100(double? chancePercent)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool GetChance100(double? chancePercent)
     {
         chancePercent = Math.Clamp(chancePercent ?? 0, 0D, 100D);
 
-        return GetInt(1, 100) <= chancePercent;
+        return GetInt(1, 100, exclusive: true) <= chancePercent;
     }
 
     /// <summary>
@@ -125,7 +155,8 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// </summary>
     /// <param name="collection">The collection of strings to select a random value from.</param>
     /// <returns>A randomly selected string from the array.</returns>
-    public virtual T GetRandomElement<T>(IEnumerable<T> collection)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public T GetRandomElement<T>(IEnumerable<T> collection)
     {
         // Already a List
         if (collection is IList<T> list)
@@ -150,7 +181,7 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// <typeparam name="TKey">Type of key</typeparam>
     /// <typeparam name="TVal">Type of Value</typeparam>
     /// <returns>A random TKey representing one of the keys of the dictionary.</returns>
-    public virtual TKey GetKey<TKey, TVal>(Dictionary<TKey, TVal> dictionary)
+    public TKey GetKey<TKey, TVal>(Dictionary<TKey, TVal> dictionary)
         where TKey : notnull
     {
         return GetRandomElement(dictionary.Keys);
@@ -163,7 +194,7 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// <typeparam name="TKey">Type of key</typeparam>
     /// <typeparam name="TVal">Type of Value</typeparam>
     /// <returns>A random TVal representing one of the values of the dictionary.</returns>
-    public virtual TVal GetVal<TKey, TVal>(Dictionary<TKey, TVal> dictionary)
+    public TVal GetVal<TKey, TVal>(Dictionary<TKey, TVal> dictionary)
         where TKey : notnull
     {
         return GetRandomElement(dictionary.Values);
@@ -181,29 +212,34 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     ///     If the generated number is less than 0, it will recursively attempt to generate a valid number up to 100 times.
     ///     If it fails to generate a valid number after 100 attempts, it will return a random float between 0.01 and twice the mean.
     /// </remarks>
-    public virtual double GetNormallyDistributedRandomNumber(double mean, double sigma, int attempt = 0)
+    public double GetNormallyDistributedRandomNumber(double mean, double sigma, int attempt = 0)
     {
-        double u,
-            v;
+        double u = 0;
+        double v = 0;
 
-        do
+        while (u == 0.0)
         {
             u = GetSecureRandomNumber();
-        } while (u == 0);
+        }
 
-        do
+        while (v == 0.0)
         {
             v = GetSecureRandomNumber();
-        } while (v == 0);
+        }
 
         // Apply the Box-Muller transform
         var w = Math.Sqrt(-2.0 * Math.Log(u)) * Math.Cos(2.0 * Math.PI * v);
         var valueDrawn = mean + w * sigma;
 
         // Check if the generated value is valid
-        if (valueDrawn < 0)
+        if (valueDrawn < 0.0)
         {
-            return attempt > 100 ? GetDouble(0.01D, mean * 2D) : GetNormallyDistributedRandomNumber(mean, sigma, attempt + 1);
+            if (attempt > 100)
+            {
+                return GetDouble(0.01, mean * 2.0);
+            }
+
+            return GetNormallyDistributedRandomNumber(mean, sigma, attempt + 1);
         }
 
         return valueDrawn;
@@ -215,16 +251,17 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// <param name="low">The lower bound of the range (inclusive).</param>
     /// <param name="high">The upper bound of the range (exclusive). If not provided, the range will be from 0 to `low`.</param>
     /// <returns>A random integer within the specified range.</returns>
-    public virtual int RandInt(int low, int? high = null)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int RandInt(int low, int? high = null)
     {
         // Return a random integer from 0 to low if high is not provided
         if (high is null)
         {
-            return Random.Next(0, low);
+            return RandomNumberGenerator.GetInt32(0, low);
         }
 
         // Return low directly when low and high are equal
-        return low == high ? low : Random.Next(low, (int)high);
+        return low == high ? low : RandomNumberGenerator.GetInt32(low, (int)high);
     }
 
     /// <summary>
@@ -237,7 +274,8 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     ///     and MaxSignificantDigits(15), inclusive. If not provided, precision is determined by the input values.
     /// </param>
     /// <returns></returns>
-    public virtual double RandNum(double val1, double val2 = 0, int precision = DecimalPointRandomPrecision)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public double RandNum(double val1, double val2 = 0, int precision = DecimalPointRandomPrecision)
     {
         if (!double.IsFinite(val1) || !double.IsFinite(val2))
         {
@@ -253,7 +291,7 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
         var minInt = (long)(min * realPrecision);
         var maxInt = (long)(max * realPrecision);
 
-        return Math.Round(Random.NextInt64(minInt, maxInt) / (double)realPrecision, precision);
+        return Math.Round(GetInt64(minInt, maxInt) / (double)realPrecision, precision);
     }
 
     /// <summary>
@@ -264,7 +302,7 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// <param name="replacement">Whether to draw with replacement. Defaults to true.</param>
     /// <typeparam name="T">The type of elements in the list.</typeparam>
     /// <returns>A List containing the drawn elements.</returns>
-    public virtual List<T> DrawRandomFromList<T>(List<T> originalList, int count = 1, bool replacement = true)
+    public List<T> DrawRandomFromList<T>(List<T> originalList, int count = 1, bool replacement = true)
     {
         var list = originalList;
         var drawCount = count;
@@ -305,7 +343,7 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// <typeparam name="TKey">The type of elements in keys</typeparam>
     /// <typeparam name="TVal">The type of elements in values</typeparam>
     /// <returns>A list of randomly drawn keys from the dictionary.</returns>
-    public virtual List<TKey> DrawRandomFromDict<TKey, TVal>(Dictionary<TKey, TVal> dict, int count = 1, bool replacement = true)
+    public List<TKey> DrawRandomFromDict<TKey, TVal>(Dictionary<TKey, TVal> dict, int count = 1, bool replacement = true)
         where TKey : notnull
     {
         var keys = dict.Keys.ToList();
@@ -321,7 +359,7 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// <param name="shift">The bias shift to apply to the random number generation.</param>
     /// <param name="n">The number of iterations to use for generating a Gaussian random number.</param>
     /// <returns>A biased random number within the specified range.</returns>
-    public virtual double GetBiasedRandomNumber(double min, double max, double shift, double n)
+    public double GetBiasedRandomNumber(double min, double max, double shift, double n)
     {
         // This function generates a random number based on a gaussian distribution with an option to add a bias via shifting.
 
@@ -378,12 +416,12 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
         return num;
     }
 
-    protected double GetBoundedGaussian(double start, double end, double n)
+    private double GetBoundedGaussian(double start, double end, double n)
     {
         return Math.Round(start + GetGaussianRandom(n) * (end - start + 1));
     }
 
-    protected double GetGaussianRandom(double n)
+    private double GetGaussianRandom(double n)
     {
         var rand = 0d;
         for (var i = 0; i < n; i += 1)
@@ -400,7 +438,7 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// <param name="originalList">The list to shuffle.</param>
     /// <typeparam name="T">The type of elements in the list.</typeparam>
     /// <returns>The shuffled list.</returns>
-    public virtual List<T> Shuffle<T>(List<T> originalList)
+    public List<T> Shuffle<T>(List<T> originalList)
     {
         var currentIndex = originalList.Count;
 
@@ -418,14 +456,25 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
 
     /// <summary>
     ///     Generates a secure random number between 0 (inclusive) and 1 (exclusive).
-    ///     This method uses the `crypto` module to generate a 48-bit random integer,
+    ///     This method uses RandomNumberGenerator to generate a 48-bit random integer,
     ///     which is then divided by the maximum possible 48-bit integer value to
     ///     produce a floating-point number in the range [0, 1).
     /// </summary>
     /// <returns>A secure random number between 0 (inclusive) and 1 (exclusive).</returns>
-    private double GetSecureRandomNumber()
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public double GetSecureRandomNumber()
     {
-        return Random.NextSingle();
+        Span<byte> buffer = stackalloc byte[8];
+        RandomNumberGenerator.Fill(buffer);
+
+        var value = BinaryPrimitives.ReadInt64BigEndian(buffer) & 0x0000_FFFF_FFFF_FFFF;
+
+        if (value == 0L)
+        {
+            value = 1L;
+        }
+
+        return value / MaxRandomValue;
     }
 
     /// <summary>
@@ -433,7 +482,7 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// </summary>
     /// <param name="num">The number to analyze.</param>
     /// <returns>The number of decimal places, or 0 if none exist.</returns>
-    public virtual int GetNumberPrecision(double num)
+    public int GetNumberPrecision(double num)
     {
         var preciseNum = (decimal)num;
         var factor = 0;
@@ -446,7 +495,7 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
         return factor;
     }
 
-    public virtual T? GetArrayValue<T>(IEnumerable<T> list)
+    public T GetArrayValue<T>(IEnumerable<T> list)
     {
         return GetRandomElement(list);
     }
@@ -457,7 +506,7 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// <param name="chance">Percentage chance roll should success</param>
     /// <param name="scale">scale of chance to allow support of numbers > 1-100</param>
     /// <returns>true if success</returns>
-    public virtual bool RollChance(double chance, double scale = 1)
+    public bool RollChance(double chance, double scale = 1)
     {
         return GetInt(1, (int)(100 * scale)) / (1 * scale) <= chance;
     }

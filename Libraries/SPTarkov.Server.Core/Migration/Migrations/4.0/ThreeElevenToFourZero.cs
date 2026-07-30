@@ -1,20 +1,22 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Migration.Migrations._3._11;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Utils;
 using Range = SemanticVersioning.Range;
 
-namespace SPTarkov.Server.Core.Migration.Migrations;
+namespace SPTarkov.Server.Core.Migration.Migrations._4._0;
 
 [Injectable]
-public class ThreeElevenToFourZero(Watermark watermark) : AbstractProfileMigration
+public sealed class ThreeElevenToFourZero(Watermark watermark) : AbstractProfileMigration
 {
-    public override string FromVersion
+    public string FromVersion
     {
         get { return "~3.11"; }
     }
 
-    public override string ToVersion
+    public string ToVersion
     {
         get { return "4.0"; }
     }
@@ -44,14 +46,13 @@ public class ThreeElevenToFourZero(Watermark watermark) : AbstractProfileMigrati
 
     public override JsonObject? Migrate(JsonObject profile)
     {
-        if (profile["characters"]!["pmc"]!["Hideout"]!["Production"] is JsonObject production)
+        if (profile.TryGetObject(out var production, "characters", "pmc", "Hideout", "Production"))
         {
             foreach (var entry in production)
             {
                 if (
                     entry.Value is JsonObject productionEntry
-                    && productionEntry["StartTimestamp"] is JsonValue startTimestampValue
-                    && startTimestampValue.TryGetValue<string>(out var startTimestampStr)
+                    && productionEntry.TryGetValue<string>(out var startTimestampStr, "StartTimestamp")
                     && long.TryParse(startTimestampStr, out var startTimestampInt)
                 )
                 {
@@ -60,13 +61,13 @@ public class ThreeElevenToFourZero(Watermark watermark) : AbstractProfileMigrati
             }
         }
 
-        if (profile["insurance"] is JsonArray insuranceArray)
+        if (profile.TryGetArray(out var insuranceArray, "insurance"))
         {
             foreach (var item in insuranceArray)
             {
-                if (item is JsonObject insuranceEntry && insuranceEntry["scheduledTime"] is JsonValue scheduledTimeValue)
+                if (item is JsonObject insuranceEntry)
                 {
-                    if (scheduledTimeValue.TryGetValue<double>(out var timeAsDouble))
+                    if (insuranceEntry.TryGetValue<double>(out var timeAsDouble, "scheduledTime"))
                     {
                         // Handle the node server having turned this value into a double
                         insuranceEntry["scheduledTime"] = Convert.ToInt32(timeAsDouble);

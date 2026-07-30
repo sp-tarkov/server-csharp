@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Mod;
 public record NewItemDetails : NewItemDetailsBase
 {
     [JsonPropertyName("newItem")]
-    public TemplateItem? NewItem { get; set; }
+    public required TemplateItem NewItem { get; set; }
 }
 
 public record NewItemFromCloneDetails : NewItemDetailsBase
@@ -16,7 +16,7 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
     ///     Id of the item to copy and use as a base
     /// </summary>
     [JsonPropertyName("itemTplToClone")]
-    public MongoId? ItemTplToClone { get; set; }
+    public required MongoId ItemTplToClone { get; set; }
 
     /// <summary>
     ///     Item properties that should be applied over the top of the cloned base
@@ -28,14 +28,19 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
     ///     ParentId for the new item (item type)
     /// </summary>
     [JsonPropertyName("parentId")]
-    public string? ParentId { get; set; }
+    public required MongoId ParentId { get; set; }
 
     /// <summary>
-    ///     the id the new item should have, leave blank to have one generated for you.
-    ///     This is often known as the TplId, or TemplateId
+    ///     The id the new item should have. This is often known as the TplId, or TemplateId
     /// </summary>
     [JsonPropertyName("newId")]
-    public string? NewId { get; set; } = "";
+    public required MongoId NewId { get; set; }
+
+    /// <summary>
+    /// The new name to assign the item, this is typically something like weapon_colt_m4a1_556x45
+    /// </summary>
+    [JsonPropertyName("newItemName")]
+    public required string NewItemName { get; set; }
 }
 
 public record NewItemDetailsBase
@@ -49,8 +54,26 @@ public record NewItemDetailsBase
     [JsonPropertyName("handbookParentId")]
     public string? HandbookParentId { get; set; }
 
+    /// <summary>
+    /// Whether the item should be added to Tarkov's handbook
+    /// </summary>
+    [JsonPropertyName("addToHandbook")]
+    public bool AddToHandbook { get; set; } = true;
+
+    /// <summary>
+    /// Whether the item should be added to the flea price database
+    /// </summary>
+    [JsonPropertyName("addToFleaPriceDb")]
+    public bool AddToFleaPriceDb { get; set; } = true;
+
+    /// <summary>
+    /// Whether to add the new item to the hideout's weapon shelf whitelist
+    /// </summary>
+    [JsonPropertyName("addToWeaponShelf")]
+    public bool AddToWeaponShelf { get; set; } = true;
+
     [JsonPropertyName("locales")]
-    public Dictionary<string, LocaleDetails>? Locales { get; set; }
+    public required Dictionary<string, LocaleDetails> Locales { get; set; } = [];
 }
 
 public record LocaleDetails
@@ -74,13 +97,11 @@ public record CreateItemResult
     }
 
     [JsonPropertyName("success")]
-    public bool? Success { get; set; }
+    public required bool Success { get; set; }
 
     [JsonPropertyName("itemId")]
-    public MongoId? ItemId { get; set; }
+    public required MongoId ItemId { get; set; }
 
     [JsonPropertyName("errors")]
-    public List<string>? Errors { get; set; }
+    public required List<string> Errors { get; set; } = [];
 }
-
-// TODO: This needs to be reworked with however we do it for this project

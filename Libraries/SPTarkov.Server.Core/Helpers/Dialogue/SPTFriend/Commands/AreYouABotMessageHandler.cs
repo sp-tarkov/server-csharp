@@ -3,6 +3,7 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;

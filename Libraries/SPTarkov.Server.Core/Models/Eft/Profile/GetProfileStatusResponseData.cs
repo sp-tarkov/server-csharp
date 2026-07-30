@@ -45,7 +45,4 @@ public record ProfileStatusData
 
     [JsonPropertyName("shortId")]
     public string? ShortId { get; set; }
-
-    [JsonPropertyName("additional_info")]
-    public List<object>? AdditionalInfo { get; set; } // TODO: Was `any` in the node server
 }

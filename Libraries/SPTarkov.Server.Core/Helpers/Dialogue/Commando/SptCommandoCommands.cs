@@ -1,14 +1,13 @@
 ﻿using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Helpers.Dialog.Commando.SptCommands;
-using SPTarkov.Server.Core.Helpers.Dialogue.Commando;
+using SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Locales;
 
-namespace SPTarkov.Server.Core.Helpers.Dialog.Commando;
+namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando;
 
 [Injectable]
 public class SptCommandoCommands : ICommandoCommand
@@ -16,20 +15,15 @@ public class SptCommandoCommands : ICommandoCommand
     protected readonly ServerLocalisationService _serverLocalisationService;
     protected readonly IDictionary<string, ISptCommand> _sptCommands;
 
-    public SptCommandoCommands(
-        ConfigServer configServer,
-        ServerLocalisationService localisationService,
-        IEnumerable<ISptCommand> sptCommands
-    )
+    public SptCommandoCommands(CoreConfig coreConfig, ServerLocalisationService localisationService, IEnumerable<ISptCommand> sptCommands)
     {
         _sptCommands = sptCommands.ToDictionary(command => command.Command);
         _serverLocalisationService = localisationService;
-        var coreConfigs = configServer.GetConfig<CoreConfig>();
-        var commandoId = coreConfigs.Features?.ChatbotFeatures.Ids.GetValueOrDefault("commando");
+        var commandoId = coreConfig.Features?.ChatbotFeatures.Ids.GetValueOrDefault("commando");
         if (
             !(
-                coreConfigs.Features.ChatbotFeatures.CommandoFeatures.GiveCommandEnabled
-                && coreConfigs.Features.ChatbotFeatures.EnabledBots.ContainsKey(commandoId.Value)
+                coreConfig.Features.ChatbotFeatures.CommandoFeatures.GiveCommandEnabled
+                && coreConfig.Features.ChatbotFeatures.EnabledBots.ContainsKey(commandoId.Value)
             )
         )
         {

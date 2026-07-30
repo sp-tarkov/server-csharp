@@ -4,28 +4,34 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers.Http;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Profile;
 
 namespace SPTarkov.Server.Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
-public class HttpServer(
-    ConfigServer configServer,
+public sealed class HttpServer(
+    HttpConfig httpConfig,
     WebSocketServer webSocketServer,
     ProfileActivityService profileActivityService,
     IEnumerable<IHttpListener> httpListeners
 )
 {
-    protected readonly HttpConfig HttpConfig = configServer.GetConfig<HttpConfig>();
-
-    public async Task HandleRequest(HttpContext context, RequestDelegate next)
+    public async Task HandleRequestAsync(HttpContext context, RequestDelegate next, CancellationToken cancellationToken = default)
     {
         if (context.WebSockets.IsWebSocketRequest && webSocketServer.CanHandle(context))
         {
-            await webSocketServer.OnConnection(context);
+            await webSocketServer.OnConnectionAsync(context);
             return;
         }
 
-        // Use default empty mongoId if not found in cookie
+        var listener = httpListeners.FirstOrDefault(listener => listener.CanHandle(context));
+
+        if (listener is null)
+        {
+            await next(context);
+            return;
+        }
+
         var sessionId = context.Request.Cookies.TryGetValue("PHPSESSID", out var sessionIdString)
             ? new MongoId(sessionIdString)
             : MongoId.Empty();
@@ -35,20 +41,11 @@ public class HttpServer(
             profileActivityService.SetActivityTimestamp(sessionId);
         }
 
-        var listener = httpListeners.FirstOrDefault(listener => listener.CanHandle(sessionId, context));
-
-        if (listener != null)
-        {
-            await listener.Handle(sessionId, context);
-        }
-        else
-        {
-            await next(context);
-        }
+        await listener.HandleAsync(sessionId, context, cancellationToken);
     }
 
     public string ListeningUrl()
     {
-        return $"https://{HttpConfig.Ip}:{HttpConfig.Port}";
+        return $"https://{httpConfig.Ip}:{httpConfig.Port}";
     }
 }

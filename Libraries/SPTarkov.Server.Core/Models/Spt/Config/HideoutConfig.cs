@@ -24,9 +24,6 @@ public record HideoutConfig : BaseConfig
     [JsonPropertyName("hoursForSkillCrafting")]
     public int HoursForSkillCrafting { get; set; }
 
-    [Obsolete("Will be removed in 4.1, use CraftingExpAmount")]
-    public int ExpCraftAmount { get; set; } = 0;
-
     [JsonPropertyName("craftingExpAmount")]
     public double CraftingExpAmount { get; set; }
 

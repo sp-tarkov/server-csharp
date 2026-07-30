@@ -323,7 +323,7 @@ public record SuitRequirements
     public double? Standing { get; set; }
 
     [JsonPropertyName("skillRequirements")]
-    public List<string>? SkillRequirements { get; set; }
+    public List<SkillRequirement>? SkillRequirements { get; set; }
 
     [JsonPropertyName("questRequirements")]
     public List<string>? QuestRequirements { get; set; }
@@ -351,4 +351,13 @@ public record ItemRequirement
 
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+}
+
+public record SkillRequirement
+{
+    [JsonPropertyName("skillName")]
+    public required string SkillName { get; set; }
+
+    [JsonPropertyName("skillLevel")]
+    public required int SkillLevel { get; set; }
 }

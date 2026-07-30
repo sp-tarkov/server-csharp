@@ -4,7 +4,7 @@ using SPTarkov.DI.Annotations;
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
-public class MathUtil
+public sealed class MathUtil
 {
     /// <summary>
     ///     Helper to add a constant to all list elements

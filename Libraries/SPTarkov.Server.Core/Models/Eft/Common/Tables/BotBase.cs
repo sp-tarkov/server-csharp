@@ -66,7 +66,7 @@ public record BotBase
     public List<QuestStatus>? Quests { get; set; }
 
     [JsonPropertyName("TradersInfo")]
-    public Dictionary<MongoId, TraderInfo> TradersInfo { get; set; }
+    public Dictionary<MongoId, TraderInfo>? TradersInfo { get; set; }
 
     [JsonPropertyName("UnlockedInfo")]
     public UnlockedInfo? UnlockedInfo { get; set; }
@@ -137,16 +137,14 @@ public record MoneyTransferLimits
 
 public record TaskConditionCounter
 {
-    private string? _type;
-
     [JsonPropertyName("id")]
     public MongoId? Id { get; set; }
 
     [JsonPropertyName("type")]
     public string? Type
     {
-        get { return _type; }
-        set { _type = value == null ? null : string.Intern(value); }
+        get { return field; }
+        set { field = value == null ? null : string.Intern(value); }
     }
 
     [JsonPropertyName("value")]
@@ -167,8 +165,6 @@ public record UnlockedInfo
 
 public record Info
 {
-    private string? _side;
-
     public string? EntryPoint { get; set; }
 
     public string? Nickname { get; set; }
@@ -179,8 +175,8 @@ public record Info
 
     public string? Side
     {
-        get { return _side; }
-        set { _side = string.Intern(value); }
+        get;
+        set { field = string.Intern(value); }
     }
 
     public int? Level { get; set; }
@@ -255,19 +251,16 @@ public record Info
 
 public record BotInfoSettings
 {
-    private string? _botDifficulty;
-    private string? _role;
-
     public string? Role
     {
-        get { return _role; }
-        set { _role = value == null ? null : string.Intern(value); }
+        get { return field; }
+        set { field = value == null ? null : string.Intern(value); }
     }
 
     public string? BotDifficulty
     {
-        get { return _botDifficulty; }
-        set { _botDifficulty = value == null ? null : string.Intern(value); }
+        get { return field; }
+        set { field = value == null ? null : string.Intern(value); }
     }
 
     // Experience given for being killed
@@ -420,26 +413,43 @@ public record MasterySkill
 {
     public string Id { get; set; }
 
+    [JsonConverter(typeof(SafeDoubleConverter))]
     public double Progress { get; set; }
 }
 
 public record CommonSkill
 {
+    public const double MaxSkillProgress = 5100d;
+
     [JsonConverter(typeof(SafeDoubleConverter))]
-    public double PointsEarnedDuringSession { get; set; }
+    public double PointsEarnedDuringSession
+    {
+        get;
+        set { field = GetSafeSkillProgress(value); }
+    }
 
     public long LastAccess { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public SkillTypes Id { get; set; }
 
-    public double Progress { get; set; }
+    [JsonConverter(typeof(SafeDoubleConverter))]
+    public double Progress
+    {
+        get;
+        set { field = GetSafeSkillProgress(value); }
+    }
 
     [JsonPropertyName("max")]
     public int? Max { get; set; }
 
     [JsonPropertyName("min")]
     public int? Min { get; set; }
+
+    private static double GetSafeSkillProgress(double value)
+    {
+        return double.IsFinite(value) ? Math.Min(value, MaxSkillProgress) : 0;
+    }
 }
 
 public record Stats
@@ -558,7 +568,7 @@ public record CounterKeyValue
 {
     public HashSet<string>? Key { get; set; }
 
-    public double? Value { get; set; }
+    public long? Value { get; set; }
 }
 
 public record Aggressor
@@ -624,14 +634,12 @@ public record BodyPartsDamageHistory
 
 public record DamageStats
 {
-    private string? _type;
-
     public double? Amount { get; set; }
 
     public string? Type
     {
-        get { return _type; }
-        set { _type = value == null ? null : string.Intern(value); }
+        get { return field; }
+        set { field = value == null ? null : string.Intern(value); }
     }
 
     public string? SourceId { get; set; }

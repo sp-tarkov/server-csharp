@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Utils.Json;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -34,7 +35,8 @@ public record Reward
     ///     Hideout area id
     /// </summary>
     [JsonPropertyName("traderId")]
-    public object? TraderId { get; set; } // TODO: string | int
+    [JsonConverter(typeof(StringOrIntConverter))]
+    public StringOrInt? TraderId { get; set; }
 
     [JsonPropertyName("isEncoded")]
     public bool? IsEncoded { get; set; }

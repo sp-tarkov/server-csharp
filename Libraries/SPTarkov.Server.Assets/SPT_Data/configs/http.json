@@ -4,5 +4,16 @@
   "backendIp": "127.0.0.1",
   "backendPort": 6969,
   "logRequests": true,
-  "serverImagePathOverride": {}
+  "serverImagePathOverride": {},
+  "webAuthenticationConfig": {
+    "enabled": true,
+    "enableDefaultUser": true,
+    "allowDefaultUserFromAnyIp": false,
+    "requireCredentialsOnLocalhost": false,
+    "defaultUser": {
+      "username": "spt",
+      "password": "spt",
+      "isAdministrator": true
+    }
+  }
 }

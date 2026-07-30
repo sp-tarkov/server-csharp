@@ -6,22 +6,24 @@ using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Routers.Static;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.Routers)]
 public class CustomizationStaticRouter(JsonUtil jsonUtil, CustomizationCallbacks customizationCallbacks)
     : StaticRouter(
         jsonUtil,
         [
             new RouteAction<EmptyRequestData>(
                 "/client/trading/customization/storage",
-                async (url, info, sessionID, output) => await customizationCallbacks.GetCustomisationUnlocks(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) =>
+                    await customizationCallbacks.GetCustomisationUnlocks(url, info, sessionID)
             ),
             new RouteAction<EmptyRequestData>(
                 "/client/hideout/customization/offer/list",
-                async (url, info, sessionID, output) => await customizationCallbacks.GetHideoutCustomisation(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) =>
+                    await customizationCallbacks.GetHideoutCustomisation(url, info, sessionID)
             ),
             new RouteAction<EmptyRequestData>(
                 "/client/customization/storage",
-                async (url, info, sessionID, output) => await customizationCallbacks.GetStorage(url, info, sessionID)
+                async (url, info, sessionID, output, cancellationToken) => await customizationCallbacks.GetStorage(url, info, sessionID)
             ),
         ]
     ) { }

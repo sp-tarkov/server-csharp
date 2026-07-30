@@ -51,7 +51,9 @@ public static class ProfileMigratorExtensions
         {
             if (!migrationTypeDictionary.TryGetValue(prerequisiteType, out var prereqMigration))
             {
-                continue;
+                throw new InvalidOperationException(
+                    $"Profile migration '{migration.GetType().Name}' depends on missing prerequisite migration: {prerequisiteType.Name}"
+                );
             }
 
             // Visit the next prerequisite

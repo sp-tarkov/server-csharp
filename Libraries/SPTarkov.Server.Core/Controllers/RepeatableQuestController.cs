@@ -1,8 +1,12 @@
 using System.Collections.Frozen;
+using Microsoft.Extensions.Logging;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Generators.RepeatableQuestGeneration;
+using SPTarkov.Server.Core.Generators.RepeatableQuests;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Profile;
+using SPTarkov.Server.Core.Helpers.Quest;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -14,20 +18,22 @@ using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Quests;
 using SPTarkov.Server.Core.Models.Spt.Repeatable;
-using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Routers;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
+using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using ProfileFixerService = SPTarkov.Server.Core.Services.Profile.ProfileFixerService;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class RepeatableQuestController(
     ISptLogger<RepeatableQuestChangeRequest> logger,
+    GlobalTable globalTable,
     EliminationQuestGenerator eliminationQuestGenerator,
     CompletionQuestGenerator completionQuestGenerator,
     ExplorationQuestGenerator explorationQuestGenerator,
@@ -42,13 +48,11 @@ public class RepeatableQuestController(
     PaymentService paymentService,
     RepeatableQuestHelper repeatableQuestHelper,
     QuestHelper questHelper,
-    DatabaseService databaseService,
-    ConfigServer configServer,
+    QuestConfig questConfig,
     ICloner cloner
 )
 {
     protected static readonly FrozenSet<string> _questTypes = ["PickUp", "Exploration", "Elimination"];
-    protected readonly QuestConfig QuestConfig = configServer.GetConfig<QuestConfig>();
 
     /// <summary>
     ///     Handle the client accepting a repeatable quest and starting it
@@ -134,7 +138,7 @@ public class RepeatableQuestController(
         repeatablesOfTypeInProfile.ChangeRequirement.Remove(changeRequest.QuestId);
 
         // Get config for this repeatable subtype (daily/weekly/scav)
-        var repeatableConfig = QuestConfig.RepeatableQuests.FirstOrDefault(config => config.Name == repeatablesOfTypeInProfile.Name);
+        var repeatableConfig = questConfig.RepeatableQuests.FirstOrDefault(config => config.Name == repeatablesOfTypeInProfile.Name);
 
         // If the configuration dictates to replace with the same quest type, adjust the available quest types
         if (repeatableConfig?.KeepDailyQuestTypeOnReplacement is not null && repeatableConfig.KeepDailyQuestTypeOnReplacement)
@@ -487,7 +491,7 @@ public class RepeatableQuestController(
         var currentTime = timeUtil.GetTimeStamp();
 
         // Daily / weekly / Daily_Savage
-        foreach (var repeatableConfig in QuestConfig.RepeatableQuests)
+        foreach (var repeatableConfig in questConfig.RepeatableQuests)
         {
             // Get daily/weekly data from profile, add empty object if missing
             var generatedRepeatables = GetRepeatableQuestSubTypeFromProfile(repeatableConfig, pmcData);
@@ -920,9 +924,7 @@ public class RepeatableQuestController(
         )
         // Elite charisma skill gives extra daily quest(s)
         {
-            questCount += databaseService
-                .GetGlobals()
-                .Configuration.SkillsSettings.Charisma.BonusSettings.EliteBonusSettings.RepeatableQuestExtraCount;
+            questCount += globalTable.Configuration.SkillsSettings.Charisma.BonusSettings.EliteBonusSettings.RepeatableQuestExtraCount;
         }
 
         // Add any extra repeatable quests the profile has unlocked

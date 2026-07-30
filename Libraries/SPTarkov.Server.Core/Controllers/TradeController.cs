@@ -1,6 +1,10 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Commerce;
+using SPTarkov.Server.Core.Helpers.Items;
+using SPTarkov.Server.Core.Helpers.Ragfair;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -9,35 +13,36 @@ using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
+using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Services.Ragfair;
 using SPTarkov.Server.Core.Utils;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using Microsoft.Extensions.Logging;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class TradeController(
     ISptLogger<TradeController> logger,
-    DatabaseService databaseService,
+    TradersTable traderTable,
     EventOutputHolder eventOutputHolder,
     TradeHelper tradeHelper,
     TimeUtil timeUtil,
     RandomUtil randomUtil,
     ItemHelper itemHelper,
+    RagfairOfferService ragfairOfferService,
     RagfairOfferHelper ragfairOfferHelper,
-    RagfairServer ragfairServer,
     HttpResponseUtil httpResponseUtil,
     ServerLocalisationService serverLocalisationService,
     MailSendService mailSendService,
-    ConfigServer configServer
+    RagfairConfig ragfairConfig,
+    TraderConfig traderConfig
 )
 {
-    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
-    protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
-
     /// <summary>
     ///     Handle TradingConfirm event
     /// </summary>
@@ -52,7 +57,7 @@ public class TradeController(
         // Buying
         if (request.Type == "buy_from_trader")
         {
-            var foundInRaid = TraderConfig.PurchasesAreFoundInRaid;
+            var foundInRaid = traderConfig.PurchasesAreFoundInRaid;
             var buyData = (ProcessBuyTradeRequestData)request;
             tradeHelper.BuyItem(pmcData, buyData, sessionID, foundInRaid, output);
 
@@ -87,7 +92,7 @@ public class TradeController(
 
         foreach (var offer in request.Offers)
         {
-            var fleaOffer = ragfairServer.GetOffer(new MongoId(offer.Id));
+            var fleaOffer = ragfairOfferService.GetOfferByOfferId(new MongoId(offer.Id));
             if (fleaOffer is null)
             {
                 return httpResponseUtil.AppendErrorToOutput(
@@ -167,10 +172,10 @@ public class TradeController(
             SchemeId = 0,
             SchemeItems = requestOffer.Items,
         };
-        tradeHelper.BuyItem(pmcData, buyData, sessionId, TraderConfig.PurchasesAreFoundInRaid, output);
+        tradeHelper.BuyItem(pmcData, buyData, sessionId, traderConfig.PurchasesAreFoundInRaid, output);
 
         // Remove/lower offer quantity of item purchased from trader flea offer
-        ragfairServer.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
+        ragfairOfferService.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
     }
 
     /// <summary>
@@ -201,7 +206,7 @@ public class TradeController(
         };
 
         // buyItem() must occur prior to removing the offer stack, otherwise item inside offer doesn't exist for confirmTrading() to use
-        tradeHelper.BuyItem(pmcData, buyData, sessionId, RagfairConfig.Dynamic.PurchasesAreFoundInRaid, output);
+        tradeHelper.BuyItem(pmcData, buyData, sessionId, ragfairConfig.Dynamic.PurchasesAreFoundInRaid, output);
         if (output.Warnings?.Count > 0)
         {
             return;
@@ -220,7 +225,7 @@ public class TradeController(
         }
 
         // Remove/lower offer quantity of item purchased from PMC flea offer
-        ragfairServer.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
+        ragfairOfferService.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
     }
 
     /// <summary>
@@ -268,7 +273,7 @@ public class TradeController(
             sessionId,
             trader,
             MessageType.MessageWithItems,
-            randomUtil.GetArrayValue(databaseService.GetTrader(trader).Dialogue.TryGetValue("soldItems", out var items) ? items : []),
+            randomUtil.GetArrayValue(traderTable.GetTrader(trader).Dialogue.TryGetValue("soldItems", out var items) ? items : []),
             currencyReward.SelectMany(x => x).ToList(),
             timeUtil.GetHoursAsSeconds(72)
         );

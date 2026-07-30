@@ -19,7 +19,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse MoveItem(
+    public ValueTask<ItemEventRouterResponse> MoveItem(
         PmcData pmcData,
         InventoryMoveRequestData info,
         MongoId sessionID,
@@ -27,7 +27,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.MoveItem(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -38,7 +38,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse RemoveItem(
+    public ValueTask<ItemEventRouterResponse> RemoveItem(
         PmcData pmcData,
         InventoryRemoveRequestData info,
         MongoId sessionID,
@@ -46,7 +46,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.DiscardItem(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse SplitItem(
+    public ValueTask<ItemEventRouterResponse> SplitItem(
         PmcData pmcData,
         InventorySplitRequestData info,
         MongoId sessionID,
@@ -65,7 +65,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.SplitItem(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse MergeItem(
+    public ValueTask<ItemEventRouterResponse> MergeItem(
         PmcData pmcData,
         InventoryMergeRequestData info,
         MongoId sessionID,
@@ -83,7 +83,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.MergeItem(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse TransferItem(
+    public ValueTask<ItemEventRouterResponse> TransferItem(
         PmcData pmcData,
         InventoryTransferRequestData info,
         MongoId sessionID,
@@ -101,7 +101,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.TransferItem(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -111,9 +111,9 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse SwapItem(PmcData pmcData, InventorySwapRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> SwapItem(PmcData pmcData, InventorySwapRequestData info, MongoId sessionID)
     {
-        return inventoryController.SwapItem(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(inventoryController.SwapItem(pmcData, info, sessionID));
     }
 
     /// <summary>
@@ -122,9 +122,9 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse FoldItem(PmcData pmcData, InventoryFoldRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> FoldItem(PmcData pmcData, InventoryFoldRequestData info, MongoId sessionID)
     {
-        return inventoryController.FoldItem(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(inventoryController.FoldItem(pmcData, info, sessionID));
     }
 
     /// <summary>
@@ -133,9 +133,9 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ToggleItem(PmcData pmcData, InventoryToggleRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> ToggleItem(PmcData pmcData, InventoryToggleRequestData info, MongoId sessionID)
     {
-        return inventoryController.ToggleItem(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(inventoryController.ToggleItem(pmcData, info, sessionID));
     }
 
     /// <summary>
@@ -144,9 +144,9 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="request"></param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse TagItem(PmcData pmcData, InventoryTagRequestData request, MongoId sessionId)
+    public ValueTask<ItemEventRouterResponse> TagItem(PmcData pmcData, InventoryTagRequestData request, MongoId sessionId)
     {
-        return inventoryController.TagItem(pmcData, request, sessionId);
+        return new ValueTask<ItemEventRouterResponse>(inventoryController.TagItem(pmcData, request, sessionId));
     }
 
     /// <summary>
@@ -156,7 +156,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse BindItem(
+    public ValueTask<ItemEventRouterResponse> BindItem(
         PmcData pmcData,
         InventoryBindRequestData info,
         MongoId sessionID,
@@ -164,7 +164,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.BindItem(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -174,7 +174,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse UnBindItem(
+    public ValueTask<ItemEventRouterResponse> UnBindItem(
         PmcData pmcData,
         InventoryBindRequestData info,
         MongoId sessionID,
@@ -182,7 +182,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.UnBindItem(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -192,7 +192,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ExamineItem(
+    public ValueTask<ItemEventRouterResponse> ExamineItem(
         PmcData pmcData,
         InventoryExamineRequestData info,
         MongoId sessionID,
@@ -200,7 +200,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.ExamineItem(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -210,9 +210,13 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ReadEncyclopedia(PmcData pmcData, InventoryReadEncyclopediaRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> ReadEncyclopedia(
+        PmcData pmcData,
+        InventoryReadEncyclopediaRequestData info,
+        MongoId sessionID
+    )
     {
-        return inventoryController.ReadEncyclopedia(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(inventoryController.ReadEncyclopedia(pmcData, info, sessionID));
     }
 
     /// <summary>
@@ -223,7 +227,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse SortInventory(
+    public ValueTask<ItemEventRouterResponse> SortInventory(
         PmcData pmcData,
         InventorySortRequestData info,
         MongoId sessionID,
@@ -231,7 +235,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.SortInventory(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -241,7 +245,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse CreateMapMarker(
+    public ValueTask<ItemEventRouterResponse> CreateMapMarker(
         PmcData pmcData,
         InventoryCreateMarkerRequestData info,
         MongoId sessionID,
@@ -249,7 +253,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.CreateMapMarker(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -259,7 +263,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse DeleteMapMarker(
+    public ValueTask<ItemEventRouterResponse> DeleteMapMarker(
         PmcData pmcData,
         InventoryDeleteMarkerRequestData info,
         MongoId sessionID,
@@ -267,7 +271,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.DeleteMapMarker(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -277,7 +281,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse EditMapMarker(
+    public ValueTask<ItemEventRouterResponse> EditMapMarker(
         PmcData pmcData,
         InventoryEditMarkerRequestData info,
         MongoId sessionID,
@@ -285,7 +289,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.EditMapMarker(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -296,7 +300,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse OpenRandomLootContainer(
+    public ValueTask<ItemEventRouterResponse> OpenRandomLootContainer(
         PmcData pmcData,
         OpenRandomLootContainerRequestData info,
         MongoId sessionID,
@@ -304,7 +308,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.OpenRandomLootContainer(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -314,7 +318,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse RedeemProfileReward(
+    public ValueTask<ItemEventRouterResponse> RedeemProfileReward(
         PmcData pmcData,
         RedeemProfileRequestData info,
         MongoId sessionID,
@@ -322,7 +326,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.RedeemProfileReward(pmcData, info, sessionID);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -333,7 +337,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse SetFavoriteItem(
+    public ValueTask<ItemEventRouterResponse> SetFavoriteItem(
         PmcData pmcData,
         SetFavoriteItems info,
         MongoId sessionID,
@@ -341,7 +345,7 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.SetFavoriteItem(pmcData, info, sessionID);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -353,10 +357,15 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse FailQuest(PmcData pmcData, FailQuestRequestData info, MongoId sessionID, ItemEventRouterResponse output)
+    public ValueTask<ItemEventRouterResponse> FailQuest(
+        PmcData pmcData,
+        FailQuestRequestData info,
+        MongoId sessionID,
+        ItemEventRouterResponse output
+    )
     {
         questController.FailQuest(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
     /// <summary>
@@ -366,13 +375,18 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     /// <param name="sessionID">Session/player id</param>
     /// <param name="output">Client response</param>
     /// <returns></returns>
-    public ItemEventRouterResponse PinOrLock(PmcData pmcData, PinOrLockItemRequest info, MongoId sessionID, ItemEventRouterResponse output)
+    public ValueTask<ItemEventRouterResponse> PinOrLock(
+        PmcData pmcData,
+        PinOrLockItemRequest info,
+        MongoId sessionID,
+        ItemEventRouterResponse output
+    )
     {
         inventoryController.PinOrLock(pmcData, info, sessionID, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 
-    public ItemEventRouterResponse SaveDialogueState(
+    public ValueTask<ItemEventRouterResponse> SaveDialogueState(
         PmcData pmcData,
         SaveDialogueStateRequest request,
         MongoId sessionId,
@@ -380,6 +394,6 @@ public class InventoryCallbacks(InventoryController inventoryController, QuestCo
     )
     {
         inventoryController.SetDialogueProgress(pmcData, request, sessionId, output);
-        return output;
+        return new ValueTask<ItemEventRouterResponse>(output);
     }
 }

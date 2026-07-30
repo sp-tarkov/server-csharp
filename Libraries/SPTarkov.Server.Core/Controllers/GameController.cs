@@ -1,6 +1,10 @@
+using Microsoft.Extensions.Logging;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Profile;
+using SPTarkov.Server.Core.Helpers.Server;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Game;
@@ -9,20 +13,25 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Location;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
+using SPTarkov.Server.Core.Services.InRaid;
+using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Services.Profile;
+using SPTarkov.Server.Core.Services.Server;
 using SPTarkov.Server.Core.Utils;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using ProfileFixerService = SPTarkov.Server.Core.Services.Profile.ProfileFixerService;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class GameController(
     ISptLogger<GameController> logger,
+    HideoutTable hideoutTable,
+    LocaleTable localeTable,
+    BotTable botTable,
     IReadOnlyList<SptMod> loadedMods,
-    ConfigServer configServer,
-    DatabaseService databaseService,
     TimeUtil timeUtil,
     HttpServerHelper httpServerHelper,
     HideoutHelper hideoutHelper,
@@ -33,14 +42,14 @@ public class GameController(
     SeasonalEventService seasonalEventService,
     GiftService giftService,
     RaidTimeAdjustmentService raidTimeAdjustmentService,
-    ProfileActivityService profileActivityService
+    ProfileActivityService profileActivityService,
+    BotConfig botConfig,
+    CoreConfig coreConfig,
+    HideoutConfig hideoutConfig,
+    HttpConfig httpConfig
 )
 {
-    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
-    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
     protected const double Deviation = 0.0001;
-    protected readonly HideoutConfig HideoutConfig = configServer.GetConfig<HideoutConfig>();
-    protected readonly HttpConfig HttpConfig = configServer.GetConfig<HttpConfig>();
 
     /// <summary>
     ///     Handle client/game/start
@@ -96,7 +105,7 @@ public class GameController(
 
         var pmcProfile = fullProfile.CharacterData.PmcData;
 
-        if (CoreConfig.Fixes.FixProfileBreakingInventoryItemIssues)
+        if (coreConfig.Fixes.FixProfileBreakingInventoryItemIssues)
         {
             profileFixerService.FixProfileBreakingInventoryItemIssues(pmcProfile);
         }
@@ -117,12 +126,12 @@ public class GameController(
 
         if (pmcProfile.Hideout is not null)
         {
-            profileFixerService.AddMissingHideoutBonusesToProfile(pmcProfile, databaseService.GetHideout().Areas);
+            profileFixerService.AddMissingHideoutBonusesToProfile(pmcProfile, hideoutTable.Areas);
             hideoutHelper.SetHideoutImprovementsToCompleted(pmcProfile);
             pmcProfile.UnlockHideoutWallInProfile();
 
             // Handle if player has been inactive for a long time, catch up on hideout update before the user goes to his hideout
-            if (!profileActivityService.ActiveWithinLastMinutes(sessionId, HideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes))
+            if (!profileActivityService.ActiveWithinLastMinutes(sessionId, hideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes))
             {
                 hideoutHelper.UpdatePlayerHideout(sessionId);
             }
@@ -161,7 +170,7 @@ public class GameController(
 
         var config = new GameConfigResponse
         {
-            Languages = databaseService.GetLocales().Languages,
+            Languages = localeTable.Languages,
             IsNdaFree = false,
             IsReportAvailable = false,
             IsTwitchEventMember = false,
@@ -206,7 +215,7 @@ public class GameController(
     /// <returns></returns>
     public List<ServerDetails> GetServer(MongoId sessionId)
     {
-        return [new ServerDetails { Ip = HttpConfig.BackendIp, Port = HttpConfig.BackendPort }];
+        return [new ServerDetails { Ip = httpServerHelper.GetBackendHost(), Port = httpConfig.BackendPort }];
     }
 
     /// <summary>
@@ -226,7 +235,7 @@ public class GameController(
     /// <returns></returns>
     public CheckVersionResponse GetValidGameVersion(MongoId sessionId)
     {
-        return new CheckVersionResponse { IsValid = true, LatestVersion = CoreConfig.CompatibleTarkovVersion };
+        return new CheckVersionResponse { IsValid = true, LatestVersion = coreConfig.CompatibleTarkovVersion };
     }
 
     /// <summary>
@@ -257,7 +266,7 @@ public class GameController(
     /// <returns></returns>
     public SurveyResponseData GetSurvey(MongoId sessionId)
     {
-        return CoreConfig.Survey;
+        return coreConfig.Survey;
     }
 
     /// <summary>
@@ -461,10 +470,10 @@ public class GameController(
         var playerName = pmcProfile.Info?.Nickname;
         if (playerName is not null)
         {
-            var bots = databaseService.GetBots().Types;
+            var bots = botTable.Types;
 
             // Official names can only be 15 chars in length
-            if (playerName.Length > BotConfig.BotNameLengthLimit)
+            if (playerName.Length > botConfig.BotNameLengthLimit)
             {
                 return;
             }

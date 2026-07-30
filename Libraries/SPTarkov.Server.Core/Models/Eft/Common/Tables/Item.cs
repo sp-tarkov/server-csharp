@@ -7,13 +7,9 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Item
 {
-    private string? _parentId;
-
-    private string? _slotId;
-
     // MongoId
     [JsonPropertyName("_id")]
-    public virtual required MongoId Id { get; set; }
+    public required MongoId Id { get; set; }
 
     [JsonPropertyName("_tpl")]
     // MongoId
@@ -22,15 +18,15 @@ public record Item
     [JsonPropertyName("parentId")]
     public string? ParentId
     {
-        get { return _parentId; }
-        set { _parentId = value == null ? null : string.Intern(value); }
+        get { return field; }
+        set { field = value == null ? null : string.Intern(value); }
     }
 
     [JsonPropertyName("slotId")]
     public string? SlotId
     {
-        get { return _slotId; }
-        set { _slotId = value == null ? null : string.Intern(value); }
+        get { return field; }
+        set { field = value == null ? null : string.Intern(value); }
     }
 
     [JsonPropertyName("location")]
@@ -130,7 +126,16 @@ public record Upd
     public UpdFaceShield? FaceShield { get; set; }
 
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
-    public double? StackObjectsCount { get; set; } // TODO: LootDumpGen is outputting doubles, we can turn back to int once fixed
+    public double? StackObjectsCount
+    {
+        get { return field; }
+        set
+        {
+            field = value.HasValue
+            ? Math.Round(value.Value, 0, MidpointRounding.AwayFromZero)
+            : null;
+        }
+    } // TODO: LootDumpGen is outputting doubles, we can turn back to int once fixed
 
     public bool? UnlimitedCount { get; set; }
 

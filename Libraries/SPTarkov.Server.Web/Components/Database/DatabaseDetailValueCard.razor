@@ -1,0 +1,16 @@
+@using SPTarkov.Server.Web.Models.Database
+
+<div class="database-detail-value">
+    <MudText Typo="Typo.caption" Color="Color.Secondary">@Value.Label</MudText>
+    <MudText Typo="Typo.body2" Class="@TextClass">@Value.Value</MudText>
+</div>
+
+@code {
+    [Parameter]
+    public DatabaseDetailValue Value { get; set; } = new(string.Empty, string.Empty);
+
+    private string? TextClass
+    {
+        get { return Value.IsMono ? "database-mono" : null; }
+    }
+}

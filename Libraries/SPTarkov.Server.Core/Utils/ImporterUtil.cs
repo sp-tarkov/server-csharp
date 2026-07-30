@@ -2,26 +2,28 @@ using System.Collections;
 using System.Collections.Frozen;
 using System.Linq.Expressions;
 using System.Reflection;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Exceptions.Database;
 using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils.Json;
 
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
-public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, JsonUtil jsonUtil)
+public sealed class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, JsonUtil jsonUtil)
 {
-    private readonly FrozenSet<string> _directoriesToIgnore = ["./SPT_Data/database/locales/server"];
+    private readonly FrozenSet<string> _directoriesToIgnore = ["./SPT_Data/database/locales/server", "./SPT_Data/database/locales/web"];
     private readonly FrozenSet<string> _filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
 
     public async Task<T> LoadRecursiveAsync<T>(
         string filePath,
-        Func<string, Task>? onReadCallback = null,
-        Func<string, object, Task>? onObjectDeserialized = null
+        Func<string, CancellationToken, Task>? onReadCallback = null,
+        Func<string, object, CancellationToken, Task>? onObjectDeserialized = null,
+        CancellationToken cancellationToken = default
     )
     {
-        var result = await LoadRecursiveAsync(filePath, typeof(T), onReadCallback, onObjectDeserialized);
+        var result = await LoadRecursiveAsync(filePath, typeof(T), onReadCallback, onObjectDeserialized, cancellationToken);
 
         return (T)result;
     }
@@ -33,14 +35,20 @@ public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, Js
     /// <param name="loadedType"></param>
     /// <param name="onReadCallback"></param>
     /// <param name="onObjectDeserialized"></param>
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> that can be used to cancel the loading operation.
+    /// </param>
     /// <returns>Task</returns>
-    protected async Task<object> LoadRecursiveAsync(
+    private async Task<object> LoadRecursiveAsync(
         string filePath,
         Type loadedType,
-        Func<string, Task>? onReadCallback = null,
-        Func<string, object, Task>? onObjectDeserialized = null
+        Func<string, CancellationToken, Task>? onReadCallback = null,
+        Func<string, object, CancellationToken, Task>? onObjectDeserialized = null,
+        CancellationToken cancellationToken = default
     )
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         var tasks = new List<Task>();
         var dictionaryLock = new Lock();
         var result = Activator.CreateInstance(loadedType);
@@ -52,6 +60,8 @@ public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, Js
         // Process files
         foreach (var file in files)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (
                 fileUtil.GetFileExtension(file) != "json"
                 || _filesToIgnore.Contains(fileUtil.GetFileNameAndExtension(file).ToLowerInvariant())
@@ -60,18 +70,30 @@ public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, Js
                 continue;
             }
 
-            tasks.Add(ProcessFileAsync(file, loadedType, onReadCallback, onObjectDeserialized, result, dictionaryLock));
+            tasks.Add(ProcessFileAsync(file, loadedType, onReadCallback, onObjectDeserialized, result, dictionaryLock, cancellationToken));
         }
 
         // Process directories
         foreach (var directory in directories)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (_directoriesToIgnore.Contains(directory))
             {
                 continue;
             }
 
-            tasks.Add(ProcessDirectoryAsync(directory, loadedType, result, onReadCallback, onObjectDeserialized, dictionaryLock));
+            tasks.Add(
+                ProcessDirectoryAsync(
+                    directory,
+                    loadedType,
+                    result,
+                    onReadCallback,
+                    onObjectDeserialized,
+                    dictionaryLock,
+                    cancellationToken
+                )
+            );
         }
 
         // Wait for all tasks to finish
@@ -83,18 +105,23 @@ public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, Js
     private async Task ProcessFileAsync(
         string file,
         Type loadedType,
-        Func<string, Task>? onReadCallback,
-        Func<string, object, Task>? onObjectDeserialized,
+        Func<string, CancellationToken, Task>? onReadCallback,
+        Func<string, object, CancellationToken, Task>? onObjectDeserialized,
         object result,
-        Lock dictionaryLock
+        Lock dictionaryLock,
+        CancellationToken cancellationToken = default
     )
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         try
         {
             if (onReadCallback != null)
             {
-                await onReadCallback(file);
+                await onReadCallback(file, cancellationToken);
             }
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             // Get the set method to update the object
             var setMethod = GetSetMethod(
@@ -104,17 +131,25 @@ public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, Js
                 out var isDictionary
             );
 
-            var fileDeserialized = await DeserializeFileAsync(file, propertyType);
+            var fileDeserialized = await DeserializeFileAsync(file, propertyType, cancellationToken);
 
             if (onObjectDeserialized != null)
             {
-                await onObjectDeserialized(file, fileDeserialized);
+                await onObjectDeserialized(file, fileDeserialized, cancellationToken);
             }
 
             lock (dictionaryLock)
             {
                 setMethod.Invoke(result, isDictionary ? [fileUtil.StripExtension(file), fileDeserialized] : [fileDeserialized]);
             }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (ValidationErrorException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -127,11 +162,14 @@ public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, Js
         string directory,
         Type loadedType,
         object result,
-        Func<string, Task>? onReadCallback,
-        Func<string, object, Task>? onObjectDeserialized,
-        Lock dictionaryLock
+        Func<string, CancellationToken, Task>? onReadCallback,
+        Func<string, object, CancellationToken, Task>? onObjectDeserialized,
+        Lock dictionaryLock,
+        CancellationToken cancellationToken = default
     )
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         try
         {
             var directoryName = directory.Split("/").Last().Replace("_", "");
@@ -144,7 +182,15 @@ public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, Js
 
                 GetSetMethod(parentName, loadedType, out var matchedProperty, out _);
 
-                var loadedData = await LoadRecursiveAsync($"{directory}/", matchedProperty, onReadCallback, onObjectDeserialized);
+                var loadedData = await LoadRecursiveAsync(
+                    $"{directory}/",
+                    matchedProperty,
+                    onReadCallback,
+                    onObjectDeserialized,
+                    cancellationToken
+                );
+
+                cancellationToken.ThrowIfCancellationRequested();
 
                 lock (dictionaryLock)
                 {
@@ -159,7 +205,13 @@ public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, Js
             {
                 var setMethod = GetSetMethod(directoryName, loadedType, out var matchedProperty, out var isDictionary);
 
-                var loadedData = await LoadRecursiveAsync($"{directory}/", matchedProperty, onReadCallback, onObjectDeserialized);
+                var loadedData = await LoadRecursiveAsync(
+                    $"{directory}/",
+                    matchedProperty,
+                    onReadCallback,
+                    onObjectDeserialized,
+                    cancellationToken
+                );
 
                 lock (dictionaryLock)
                 {
@@ -167,20 +219,24 @@ public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, Js
                 }
             }
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             throw new Exception($"Error processing directory '{directory}'", ex);
         }
     }
 
-    private async Task<object> DeserializeFileAsync(string file, Type propertyType)
+    private async Task<object> DeserializeFileAsync(string file, Type propertyType, CancellationToken cancellationToken = default)
     {
         if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(LazyLoad<>))
         {
             return CreateLazyLoadDeserialization(file, propertyType);
         }
 
-        return await jsonUtil.DeserializeFromFileAsync(file, propertyType);
+        return await jsonUtil.DeserializeFromFileAsync(file, propertyType, cancellationToken);
     }
 
     private object CreateLazyLoadDeserialization(string file, Type propertyType)
@@ -206,35 +262,53 @@ public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, Js
 
     public MethodInfo GetSetMethod(string propertyName, Type type, out Type propertyType, out bool isDictionary)
     {
-        MethodInfo setMethod;
+        MethodInfo? setMethod;
         isDictionary = false;
 
-        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+        if (TryGetDictionaryValueType(type, out var dictionaryValueType))
         {
-            propertyType = type.GetGenericArguments()[1];
-            setMethod = type.GetMethod("Add");
+            propertyType = dictionaryValueType;
+            setMethod = type.GetMethod("Add") ?? throw new Exception($"Unable to find Add method for dictionary type '{type.Name}'");
             isDictionary = true;
         }
         else
         {
-            var matchedProperty = type.GetProperties()
-                .FirstOrDefault(prop =>
-                    string.Equals(
-                        prop.Name.ToLowerInvariant(),
-                        fileUtil.StripExtension(propertyName).ToLowerInvariant(),
-                        StringComparison.Ordinal
+            var strippedPropertyName = fileUtil.StripExtension(propertyName);
+
+            var matchedProperty =
+                type.GetProperties()
+                    .FirstOrDefault(prop =>
+                        string.Equals(prop.Name.ToLowerInvariant(), strippedPropertyName.ToLowerInvariant(), StringComparison.Ordinal)
                     )
-                );
-
-            if (matchedProperty == null)
-            {
-                throw new Exception($"Unable to find property '{fileUtil.StripExtension(propertyName)}' for type '{type.Name}'");
-            }
-
+                ?? throw new Exception($"Unable to find property '{strippedPropertyName}' for type '{type.Name}'");
             propertyType = matchedProperty.PropertyType;
-            setMethod = matchedProperty.GetSetMethod();
+            setMethod =
+                matchedProperty.GetSetMethod()
+                ?? throw new Exception($"Unable to find setter for property '{matchedProperty.Name}' on type '{type.Name}'");
         }
 
         return setMethod;
+    }
+
+    private static bool TryGetDictionaryValueType(Type type, out Type? valueType)
+    {
+        var currentType = type;
+
+        while (currentType is not null)
+        {
+            if (currentType.IsGenericType)
+            {
+                if (currentType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+                {
+                    valueType = currentType.GetGenericArguments()[1];
+                    return true;
+                }
+            }
+
+            currentType = currentType.BaseType;
+        }
+
+        valueType = null;
+        return false;
     }
 }

@@ -1,38 +1,37 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue;
 
 [Injectable]
 public class SptDialogueChatBot(
     MailSendService mailSendService,
-    ConfigServer configServer,
+    CoreConfig coreConfig,
     ProfileHelper profileHelper,
     IEnumerable<IChatMessageHandler> chatMessageHandlers
 ) : IDialogueChatBot
 {
     protected readonly IEnumerable<IChatMessageHandler> ChatMessageHandlers = ChatMessageHandlerSetup(chatMessageHandlers);
-    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
     public UserDialogInfo GetChatBot()
     {
         return new UserDialogInfo
         {
-            Id = CoreConfig.Features.ChatbotFeatures.Ids["spt"],
-            Aid = 1234566,
+            Id = coreConfig.Features.ChatbotFeatures.Ids["spt"],
+            Aid = coreConfig.Features.ChatbotFeatures.Aids["spt"],
             Info = new UserDialogDetails
             {
                 Level = 1,
                 MemberCategory = MemberCategory.Developer,
                 SelectedMemberCategory = MemberCategory.Developer,
-                Nickname = CoreConfig.SptFriendNickname,
+                Nickname = coreConfig.SptFriendNickname,
                 Side = "Usec",
             },
         };

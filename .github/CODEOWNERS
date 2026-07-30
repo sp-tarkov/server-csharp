@@ -1,0 +1,11 @@
+# CODEOWNERS
+# https://docs.github.com/articles/about-code-owners
+
+# GitHub Workflows
+/.github/workflows/ @Refringe
+
+# Docker Container Build-out
+/Dockerfile @Refringe
+/.dockerignore @Refringe
+/compose.yaml @Refringe
+/docker/ @Refringe

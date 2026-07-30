@@ -1,8 +1,12 @@
 using System.Collections.Frozen;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Commerce;
+using SPTarkov.Server.Core.Helpers.Items;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -12,10 +16,14 @@ using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
+using SPTarkov.Server.Core.Services.Hideout;
+using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Services.Profile;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 
@@ -24,8 +32,9 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class HideoutController(
     ISptLogger<HideoutController> logger,
+    HideoutTable hideoutTable,
+    GlobalTable globalTable,
     TimeUtil timeUtil,
-    DatabaseService databaseService,
     InventoryHelper inventoryHelper,
     ItemHelper itemHelper,
     SaveServer saveServer,
@@ -41,7 +50,7 @@ public class HideoutController(
     FenceService fenceService,
     CircleOfCultistService circleOfCultistService,
     ICloner cloner,
-    ConfigServer configServer
+    HideoutConfig hideoutConfig
 )
 {
     public static readonly MongoId NameTaskConditionCountersCraftingId = new("673f5d6fdd6ed700c703afdc");
@@ -54,8 +63,6 @@ public class HideoutController(
         HideoutAreas.BitcoinFarm,
         HideoutAreas.RestSpace, // Can insert disk
     ];
-
-    protected readonly HideoutConfig HideoutConfig = configServer.GetConfig<HideoutConfig>();
 
     /// <summary>
     ///     Handle HideoutUpgrade event
@@ -111,7 +118,7 @@ public class HideoutController(
             return;
         }
 
-        var hideoutDataDb = databaseService.GetTables().Hideout.Areas.FirstOrDefault(area => area.Type == request.AreaType);
+        var hideoutDataDb = hideoutTable.Areas.FirstOrDefault(area => area.Type == request.AreaType);
         if (hideoutDataDb is null)
         {
             logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area_in_database", request.AreaType));
@@ -150,9 +157,6 @@ public class HideoutController(
         ItemEventRouterResponse output
     )
     {
-        var hideout = databaseService.GetHideout();
-        var globals = databaseService.GetGlobals();
-
         var profileHideoutArea = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == request.AreaType);
         if (profileHideoutArea is null)
         {
@@ -164,7 +168,7 @@ public class HideoutController(
 
         var nextLevel = profileHideoutArea.Level + 1;
 
-        var hideoutData = hideout.Areas.FirstOrDefault(area => area.Type == profileHideoutArea.Type);
+        var hideoutData = hideoutTable.Areas.FirstOrDefault(area => area.Type == profileHideoutArea.Type);
         if (hideoutData is null)
         {
             logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area_in_database", request.AreaType));
@@ -217,7 +221,7 @@ public class HideoutController(
         profileHelper.AddSkillPointsToPlayer(
             pmcData,
             SkillTypes.HideoutManagement,
-            globals.Configuration.SkillsSettings.HideoutManagement.SkillPointsPerAreaUpgrade,
+            globalTable.Configuration.SkillsSettings.HideoutManagement.SkillPointsPerAreaUpgrade,
             true
         );
     }
@@ -283,7 +287,7 @@ public class HideoutController(
         AddContainerUpgradeToClientOutput(sessionId, keyForHideoutAreaStash, dbHideoutArea, hideoutStage, output);
 
         // Some hideout areas (Gun stand) have child areas linked to it
-        var childDbArea = databaseService.GetHideout().Areas.FirstOrDefault(area => area.ParentArea == dbHideoutArea.Id);
+        var childDbArea = hideoutTable.Areas.FirstOrDefault(area => area.ParentArea == dbHideoutArea.Id);
         if (childDbArea is null)
         {
             // No child db area, we're complete
@@ -589,7 +593,7 @@ public class HideoutController(
         hideoutHelper.RegisterProduction(pmcData, request, sessionID);
 
         // Find the recipe of the production
-        var recipe = databaseService.GetHideout().Production.Recipes.FirstOrDefault(production => production.Id == request.RecipeId);
+        var recipe = hideoutTable.Production.Recipes.FirstOrDefault(production => production.Id == request.RecipeId);
 
         // Find the actual amount of items we need to remove because body can send weird data
         var recipeRequirementsClone = cloner.Clone(recipe.Requirements.Where(r => r.Type == "Item" || r.Type == "Tool"));
@@ -659,7 +663,7 @@ public class HideoutController(
             }
         }
 
-        var recipe = databaseService.GetHideout().Production?.ScavRecipes?.FirstOrDefault(r => r.Id == request.RecipeId);
+        var recipe = hideoutTable.Production.ScavRecipes?.FirstOrDefault(r => r.Id == request.RecipeId);
         if (recipe is null)
         {
             logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_scav_case_recipie_in_database", request.RecipeId));
@@ -676,7 +680,7 @@ public class HideoutController(
                 pmcData,
                 recipe.ProductionTime ?? 0,
                 SkillTypes.Crafting,
-                databaseService.GetGlobals().Configuration.SkillsSettings.Crafting.CraftTimeReductionPerLevel
+                globalTable.Configuration.SkillsSettings.Crafting.CraftTimeReductionPerLevel
             );
 
         var modifiedScavCaseTime = GetScavCaseTime(pmcData, adjustedCraftTime);
@@ -741,7 +745,6 @@ public class HideoutController(
     public ItemEventRouterResponse TakeProduction(PmcData pmcData, HideoutTakeProductionRequestData request, MongoId sessionID)
     {
         var output = eventOutputHolder.GetOutput(sessionID);
-        var hideoutDb = databaseService.GetHideout();
 
         if (request.RecipeId == HideoutHelper.BitcoinProductionId)
         {
@@ -752,7 +755,7 @@ public class HideoutController(
             return output;
         }
 
-        var recipe = hideoutDb.Production.Recipes.FirstOrDefault(r => r.Id == request.RecipeId);
+        var recipe = hideoutTable.Production.Recipes.FirstOrDefault(r => r.Id == request.RecipeId);
         if (recipe is not null)
         {
             HandleRecipe(sessionID, recipe, pmcData, request, output);
@@ -760,7 +763,7 @@ public class HideoutController(
             return output;
         }
 
-        var scavCase = hideoutDb.Production.ScavRecipes.FirstOrDefault(r => r.Id == request.RecipeId);
+        var scavCase = hideoutTable.Production.ScavRecipes.FirstOrDefault(r => r.Id == request.RecipeId);
         if (scavCase is not null)
         {
             HandleScavCase(sessionID, pmcData, request, output);
@@ -867,18 +870,18 @@ public class HideoutController(
         if (area is not null && request.RecipeId != area.LastRecipe)
         // 5 points per craft upon the end of production for alternating between 2 different crafting recipes in the same module
         {
-            craftingExpAmount += HideoutConfig.CraftingExpAmount; // Default is 12.5, scaled (at 0.4 scale => 5 points per alternating craft)
+            craftingExpAmount += hideoutConfig.CraftingExpAmount; // Default is 12.5, scaled (at 0.4 scale => 5 points per alternating craft)
         }
 
         // Update variable with time spent crafting item(s)
         // 1.5 (3.75 w/ applying default 0.4 scale) points per 8 hours of crafting
         totalCraftingHours += recipe.ProductionTime;
-        if (totalCraftingHours / HideoutConfig.HoursForSkillCrafting >= 1)
+        if (totalCraftingHours / hideoutConfig.HoursForSkillCrafting >= 1)
         {
             // Spent enough time crafting to get a bonus xp multiplier
-            var multiplierCrafting = Math.Floor(totalCraftingHours.Value / HideoutConfig.HoursForSkillCrafting);
-            craftingExpAmount += (HideoutConfig.CraftingExpForHoursOfCrafting * multiplierCrafting);
-            totalCraftingHours -= HideoutConfig.HoursForSkillCrafting * multiplierCrafting;
+            var multiplierCrafting = Math.Floor(totalCraftingHours.Value / hideoutConfig.HoursForSkillCrafting);
+            craftingExpAmount += (int)(1 * multiplierCrafting);
+            totalCraftingHours -= hideoutConfig.HoursForSkillCrafting * multiplierCrafting;
         }
 
         // Make sure we can fit both the craft result and tools in the stash
@@ -934,11 +937,10 @@ public class HideoutController(
         //  - Delete the production in profile Hideout.Production
         // Hideout Management skill
         // ? Use a configuration variable for the value?
-        var globals = databaseService.GetGlobals();
         profileHelper.AddSkillPointsToPlayer(
             pmcData,
             SkillTypes.HideoutManagement,
-            globals.Configuration.SkillsSettings.HideoutManagement.SkillPointsPerCraft,
+            globalTable.Configuration.SkillsSettings.HideoutManagement.SkillPointsPerCraft,
             true
         );
 
@@ -1133,7 +1135,6 @@ public class HideoutController(
 
     /// <summary>
     ///     Handle HideoutQuickTimeEvent on client/game/profile/items/moving
-    ///     Called after completing workout at gym
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="pmcData">Players PMC profile</param>
@@ -1141,45 +1142,82 @@ public class HideoutController(
     /// <param name="output">Client response</param>
     public void HandleQTEEventOutcome(MongoId sessionId, PmcData pmcData, HandleQTEEventRequestData request, ItemEventRouterResponse output)
     {
-        // {
-        //     "Action": "HideoutQuickTimeEvent",
-        //     "results": [true, false, true, true, true, true, true, true, true, false, false, false, false, false, false],
-        //     "id": "63b16feb5d012c402c01f6ef",
-        //     "timestamp": 1672585349
-        // }
+        var relevantQte = hideoutTable.Qte.FirstOrDefault(qte => qte.Id == request.Id);
+        var qteResults = relevantQte?.Results;
+        if (qteResults is null)
+        {
+            logger.Error($"Unable to find QTE data with id: {request.Id}, skipping workout outcome");
+            return;
+        }
 
-        // Skill changes are done in
-        // /client/hideout/workout (applyWorkoutChanges).
+        if (request.Results is null || pmcData.Health?.Energy is null || pmcData.Health.Hydration is null)
+        {
+            logger.Error($"Unable to apply workout outcome to player: {pmcData.Id}, request results or health data is missing");
+            return;
+        }
 
-        var qteDb = databaseService.GetHideout().Qte;
-        var relevantQte = qteDb.FirstOrDefault(qte => qte.Id == request.Id);
+        var energy = pmcData.Health.Energy;
+        var hydration = pmcData.Health.Hydration;
+
+        var successEffect = qteResults[QteEffectType.singleSuccessEffect];
+        var failEffect = qteResults[QteEffectType.singleFailEffect];
+        var skillRewards =
+            successEffect.RewardEffects?.Where(effect => effect.Type == QteRewardType.Skill && effect.SkillId is not null).ToList() ?? [];
+
+        // Muscle pain reduces gym effectiveness, this is important for proper calculation
+        var gymEffectivity = GetMusclePainGymEffectivity(pmcData);
+
+        // Arm trauma is only possible if the fail effect includes it
+        var armTrauma = failEffect.RewardEffects?.FirstOrDefault(effect => effect.Type == QteRewardType.GymArmTrauma);
+
+        // With Result 'Exit' the client stops the workout on the first fracture, so only one arm can break
+        var stopOnBrokenArm = armTrauma?.Result == QteResultType.Exit;
+
+        var rng = QteRandomUtil.FromSeedHex(pmcData.Hideout?.Seed);
+
+        //QTEResult.ActionsFailed is a running total of failed reps so far (incremented before each break roll)
+        var actionsFailed = 0;
+
         foreach (var outcome in request.Results)
         {
             if (outcome)
             {
                 // Success
-                pmcData.Health.Energy.Current += relevantQte.Results[QteEffectType.singleSuccessEffect].Energy;
-                pmcData.Health.Hydration.Current += relevantQte.Results[QteEffectType.singleSuccessEffect].Hydration;
+                energy.Current += successEffect.Energy;
+                hydration.Current += successEffect.Hydration;
+                ApplyWorkoutSkillGain(pmcData, skillRewards, gymEffectivity, rng);
             }
             else
             {
                 // Failed
-                pmcData.Health.Energy.Current += relevantQte.Results[QteEffectType.singleFailEffect].Energy;
-                pmcData.Health.Hydration.Current += relevantQte.Results[QteEffectType.singleFailEffect].Hydration;
+                energy.Current += failEffect.Energy;
+                hydration.Current += failEffect.Hydration;
+                actionsFailed++;
+
+                if (armTrauma is not null && TryBreakArm(pmcData, rng, actionsFailed) && stopOnBrokenArm)
+                {
+                    break;
+                }
             }
         }
 
-        if (pmcData.Health.Energy.Current < 1)
+        // Regenerate new hideout seed
+        if (pmcData.Hideout is not null)
         {
-            pmcData.Health.Energy.Current = 1;
+            pmcData.Hideout.Seed = rng.ToSeedHex();
         }
 
-        if (pmcData.Health.Hydration.Current < 1)
+        if (energy.Current < 1)
         {
-            pmcData.Health.Hydration.Current = 1;
+            energy.Current = 1;
         }
 
-        HandleMusclePain(pmcData, relevantQte.Results[QteEffectType.finishEffect]);
+        if (hydration.Current < 1)
+        {
+            hydration.Current = 1;
+        }
+
+        HandleMusclePain(pmcData, qteResults[QteEffectType.finishEffect]);
     }
 
     /// <summary>
@@ -1189,35 +1227,168 @@ public class HideoutController(
     /// <param name="finishEffect">Effect data to apply after completing QTE gym event</param>
     protected void HandleMusclePain(PmcData pmcData, QteResult finishEffect)
     {
-        if (!pmcData.Health.BodyParts.TryGetValue("Chest", out var chest))
+        var bodyParts = pmcData.Health?.BodyParts;
+        if (bodyParts is null || !bodyParts.TryGetValue("Chest", out var chest))
         {
-            logger.Error($"Unable to apply muscle pain effect to player: {pmcData.Id.ToString}. They lack a chest");
+            logger.Error($"Unable to apply muscle pain effect to player: {pmcData.Id}. They lack a chest");
 
             return;
         }
-        var hasMildPain = chest.Effects?.ContainsKey("MildMusclePain");
-        var hasSeverePain = chest.Effects?.ContainsKey("SevereMusclePain");
 
-        // Has no muscle pain at all, add mild
-        if (!hasMildPain.GetValueOrDefault(false) && !hasSeverePain.GetValueOrDefault(false))
+        var musclePainTime = finishEffect.RewardEffects?.FirstOrDefault(effect => effect.Type == QteRewardType.MusclePain)?.Time;
+        if (musclePainTime is null)
         {
-            // Create effects as it may not exist
-            chest.Effects ??= [];
-            chest.Effects["MildMusclePain"] = new BodyPartEffectProperties
+            // No muscle pain reward on this QTE, nothing to apply
+            return;
+        }
+
+        chest.Effects ??= [];
+
+        var hasMildPain = chest.Effects.ContainsKey("MildMusclePain");
+        var hasSeverePain = chest.Effects.ContainsKey("SevereMusclePain");
+
+        // No active muscle pain -> give the mild effect
+        if (!hasMildPain && !hasSeverePain)
+        {
+            chest.Effects["MildMusclePain"] = new BodyPartEffectProperties { Time = musclePainTime };
+
+            return;
+        }
+
+        //Already has mild or severe -> (re)apply severe with a fresh timer, removing any mild muscle pain first
+        chest.Effects.Remove("MildMusclePain");
+        chest.Effects["SevereMusclePain"] = new BodyPartEffectProperties { Time = musclePainTime };
+    }
+
+    /// <summary>
+    ///     Apply skill xp for a single successful workout rep to a randomly chosen candidate skill.
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="skillRewards">Skill reward effects from the QTE single-success effect</param>
+    /// <param name="gymEffectivity">Muscle pain reduction to gym effectiveness (0 = no pain)</param>
+    /// <param name="rng">Deterministic QTE RNG, replayed in step with the client</param>
+    protected void ApplyWorkoutSkillGain(PmcData pmcData, List<QteEffect> skillRewards, double gymEffectivity, QteRandomUtil rng)
+    {
+        var profileSkills = pmcData.Skills?.Common;
+        if (profileSkills is null)
+        {
+            return;
+        }
+
+        var candidates = skillRewards
+            .Where(reward => (profileSkills.FirstOrDefault(skill => skill.Id == reward.SkillId)?.Progress ?? 0) < 5100)
+            .ToList();
+
+        if (candidates.Count == 0)
+        {
+            return;
+        }
+
+        // Only draw when more than one candidate exists
+        var chosen = candidates.Count == 1 ? candidates[0] : candidates[rng.Next(0, candidates.Count)];
+        var skillLevel = Math.Floor((profileSkills.FirstOrDefault(skill => skill.Id == chosen.SkillId)?.Progress ?? 0) / 100d);
+
+        var multiplier = 0f;
+        foreach (var levelMultiplier in chosen.LevelMultipliers ?? [])
+        {
+            if (skillLevel >= levelMultiplier.Level.GetValueOrDefault())
             {
-                Time = finishEffect.RewardEffects.FirstOrDefault()?.Time, // TODO - remove hard coded access, get value properly
-            };
-
-            return;
+                multiplier = levelMultiplier.MultiplierValue.GetValueOrDefault();
+            }
         }
 
-        if (hasMildPain.GetValueOrDefault(false))
+        // Muscle pain reduces the gain
+        var pointsToAdd = multiplier - multiplier * gymEffectivity;
+
+        // AddSkillPointsToPlayer applies SkillProgressRate + low level curve (client: Factor(x, true) + CalculateExpOnFirstLevels)
+        profileHelper.AddSkillPointsToPlayer(pmcData, chosen.SkillId!.Value, pointsToAdd, useSkillProgressRateMultiplier: true);
+    }
+
+    /// <summary>
+    ///     Get the gym effectiveness reduction caused by the players existing muscle pain.
+    ///     Mirrors client severe/mild GymEffectivity lookup
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <returns>Effectivity reduction (0 = no muscle pain)</returns>
+    protected double GetMusclePainGymEffectivity(PmcData pmcData)
+    {
+        var bodyParts = pmcData.Health?.BodyParts;
+        if (bodyParts is null || !bodyParts.TryGetValue("Chest", out var chest) || chest.Effects is null)
         {
-            // Already has mild pain, remove mild and add severe
-            chest.Effects.Remove("MildMusclePain");
-
-            chest.Effects["SevereMusclePain"] = new BodyPartEffectProperties { Time = finishEffect.RewardEffects.FirstOrDefault()?.Time };
+            return 0;
         }
+
+        var effects = globalTable.Configuration.Health.Effects;
+
+        // Severe takes priority over mild
+        if (chest.Effects.ContainsKey("SevereMusclePain"))
+        {
+            return effects.SevereMusclePain.GymEffectivity;
+        }
+
+        if (chest.Effects.ContainsKey("MildMusclePain"))
+        {
+            return effects.MildMusclePain.GymEffectivity;
+        }
+
+        return 0;
+    }
+
+    /// <summary>
+    ///     Roll for a broken arm after a failed workout rep and apply a fracture if it occurs
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="rng">Deterministic QTE RNG, replayed in step with the client</param>
+    /// <param name="coef">Client QTEResult.ActionsFailed - the running total of failed reps so far</param>
+    /// <returns>True if an arm was fractured</returns>
+    protected bool TryBreakArm(PmcData pmcData, QteRandomUtil rng, int coef)
+    {
+        var strengthProgress = pmcData.Skills?.Common?.FirstOrDefault(skill => skill.Id == SkillTypes.Strength)?.Progress ?? 0;
+        var strengthLevel = Math.Floor(strengthProgress / 100d);
+
+        // Severe muscle pain increases the chance to break an arm
+        var traumaChance = HasSevereMusclePain(pmcData) ? globalTable.Configuration.Health.Effects.SevereMusclePain.TraumaChance : 0;
+
+        // num2 = level/10 + coef/4 + trauma (coef/4 is integer division)
+        var breakChance = strengthLevel / 10 + coef / 4 + traumaChance;
+
+        if (rng.Next(0, 101) > breakChance)
+        {
+            return false;
+        }
+
+        // Client fractures a random arm: InQteRandomChance(50) picks left, otherwise right
+        var arm = rng.Next(0, 101) <= 50 ? "LeftArm" : "RightArm";
+        var bodyParts = pmcData.Health?.BodyParts;
+        if (bodyParts is null || !bodyParts.TryGetValue(arm, out var bodyPart))
+        {
+            logger.Error($"Unable to break arm: {arm} on player: {pmcData.Id}, they lack the body part");
+
+            return false;
+        }
+
+        logger.Debug($"Breaking {pmcData.Id} {arm}");
+
+        // Time -1 = lasts until treated
+        bodyPart.Effects ??= [];
+        bodyPart.Effects["Fracture"] = new BodyPartEffectProperties { Time = -1 };
+
+        return true;
+    }
+
+    /// <summary>
+    ///     Does the player have a severe muscle pain effect on their chest
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <returns>True if severe muscle pain is present</returns>
+    protected bool HasSevereMusclePain(PmcData pmcData)
+    {
+        var bodyParts = pmcData.Health?.BodyParts;
+
+        return bodyParts is not null
+            && bodyParts.TryGetValue("Chest", out var chest)
+            && chest.Effects is not null
+            && chest.Effects.ContainsKey("SevereMusclePain");
     }
 
     /// <summary>
@@ -1291,7 +1462,7 @@ public class HideoutController(
             return httpResponseUtil.AppendErrorToOutput(output);
         }
 
-        var hideoutDbData = databaseService.GetHideout().Areas.FirstOrDefault(area => area.Type == request.AreaType);
+        var hideoutDbData = hideoutTable.Areas.FirstOrDefault(area => area.Type == request.AreaType);
         if (hideoutDbData is null)
         {
             logger.Error(serverLocalisationService.GetText("hideout-unable_to_find_area_in_database", request.AreaType));
@@ -1394,7 +1565,7 @@ public class HideoutController(
     {
         var output = eventOutputHolder.GetOutput(sessionId);
 
-        var itemDetails = databaseService.GetHideout().Customisation.Globals.FirstOrDefault(cust => cust.Id == request.OfferId);
+        var itemDetails = hideoutTable.Customisation.Globals.FirstOrDefault(cust => cust.Id == request.OfferId);
         if (itemDetails is null)
         {
             logger.Error($"Unable to find customisation: {request.OfferId} in db, cannot apply to hideout");
@@ -1524,7 +1695,7 @@ public class HideoutController(
     /// <returns></returns>
     public List<QteData> GetQteList(MongoId sessionId)
     {
-        return databaseService.GetHideout().Qte;
+        return hideoutTable.Qte;
     }
 
     /// <summary>
@@ -1542,7 +1713,7 @@ public class HideoutController(
 
             if (
                 profile.CharacterData?.PmcData?.Hideout is not null
-                && profileActivityService.ActiveWithinLastMinutes(sessionId, HideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes)
+                && profileActivityService.ActiveWithinLastMinutes(sessionId, hideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes)
             )
             {
                 hideoutHelper.UpdatePlayerHideout(sessionId);

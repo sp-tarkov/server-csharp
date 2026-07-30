@@ -1,10 +1,11 @@
 using MongoIdTplGenerator.Utils;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using Path = System.IO.Path;
 
@@ -13,7 +14,7 @@ namespace MongoIdTplGenerator.Generators;
 [Injectable]
 public class QuestTplMongoIdGenerator(
     ISptLogger<QuestTplMongoIdGenerator> logger,
-    DatabaseServer databaseServer,
+    TemplateTable templateTable,
     LocaleService localeService,
     FileUtil fileUtil,
     LocaleUtil localeUtil
@@ -28,7 +29,7 @@ public class QuestTplMongoIdGenerator(
         var projectDir = Directory.GetParent("./").Parent.Parent.Parent.Parent.Parent;
         _enumDir = Path.Combine(projectDir.FullName, "Libraries", "SPTarkov.Server.Core", "Models", "Enums");
 
-        _quests = databaseServer.GetTables().Templates.Quests;
+        _quests = templateTable.Quests;
         var questTplObject = GenerateQuestTplObject();
         var questTplOutPath = Path.Combine(_enumDir, "QuestTpl.cs");
 

@@ -1,50 +1,29 @@
 ﻿using System.Collections.Concurrent;
-using System.Text.Json.Serialization;
+using Spectre.Console;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
+using SPTarkov.Server.Core.Models.Spt.Bundles;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Server;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Loaders;
 
-/*
-{
-    "ModPath" : "/user/mods/Mod3",
-    "FileName" : "assets/content/weapons/usable_items/item_bottle/textures/client_assets.bundle",
-    "Bundle" : {
-        "key" : "assets/content/weapons/usable_items/item_bottle/textures/client_assets.bundle",
-        "dependencyKeys" : [ ]
-    },
-    "Crc" : 1030040371,
-    "Dependencies" : [ ]
-} */
-public class BundleInfo(string modPath, BundleManifestEntry bundle, uint bundleHash)
-{
-    public string ModPath { get; private set; } = modPath;
-
-    public string FileName { get; private set; } = bundle.Key;
-
-    public BundleManifestEntry Bundle { get; private set; } = bundle;
-
-    public uint Crc { get; private set; } = bundleHash;
-
-    public List<string> Dependencies { get; private set; } = bundle?.DependencyKeys ?? [];
-}
-
 [Injectable(InjectionType.Singleton)]
-public class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonUtil, BundleHashCacheService bundleHashCacheService)
+public sealed class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonUtil, BundleHashCacheService bundleHashCacheService)
 {
     private readonly ConcurrentDictionary<string, BundleInfo> _bundles = [];
 
-    public async Task LoadBundlesAsync(SptMod mod)
+    public async Task LoadBundlesAsync(SptMod mod, CancellationToken cancellationToken = default)
     {
-        await bundleHashCacheService.HydrateCache();
+        await bundleHashCacheService.HydrateCacheAsync(cancellationToken);
 
         var modPath = mod.GetModPath();
         var modBundles = await jsonUtil.DeserializeFromFileAsync<BundleManifest>(
-            Path.Join(Directory.GetCurrentDirectory(), modPath, "bundles.json")
+            Path.Join(Directory.GetCurrentDirectory(), modPath, "bundles.json"),
+            cancellationToken
         );
 
         var relativeModPath = modPath.Replace('\\', '/');
@@ -52,32 +31,70 @@ public class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonUtil, Bu
 
         if (modBundles?.Manifest is null)
         {
-            logger.Warning($"Could not find manifest for mod {mod.ModMetadata.Name}, skipping!");
+            logger.Warning($"Could not load bundle manifest for mod {mod.ModMetadata.Name}, skipping!");
             return;
         }
 
-        await Parallel.ForEachAsync(
-            modBundles.Manifest,
-            async (bundleManifest, ct) =>
+        var total = modBundles.Manifest.Count;
+        var ok = 0;
+        var missing = 0;
+
+        await AnsiConsole
+            .Progress()
+            .AutoClear(false)
+            .HideCompleted(false)
+            .Columns(
+                new SpinnerColumn(),
+                new TaskDescriptionColumn(),
+                new ProgressBarColumn(),
+                new PercentageColumn(),
+                new RemainingTimeColumn()
+            )
+            .StartAsync(async ctx =>
             {
-                var bundleLocalPath = Path.Join(bundlesPath, bundleManifest.Key).Replace('\\', '/');
+                var progressTask = ctx.AddTask(
+                    $"Loading bundles for {mod.ModMetadata.Name}",
+                    new ProgressTaskSettings { MaxValue = total }
+                );
 
-                if (!File.Exists(bundleLocalPath))
-                {
-                    logger.Warning($"Could not find bundle {bundleManifest.Key} for mod {mod.ModMetadata.Name}");
-                    return;
-                }
+                await Parallel.ForEachAsync(
+                    modBundles.Manifest,
+                    new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                    async (bundleManifest, ct) =>
+                    {
+                        var bundleLocalPath = Path.Join(bundlesPath, bundleManifest.Key).Replace('\\', '/');
 
-                var bundleHash = await bundleHashCacheService.CalculateMatchAndStoreHash(bundleLocalPath);
-                AddBundle(bundleManifest.Key, new BundleInfo(relativeModPath, bundleManifest, bundleHash));
-            }
-        );
+                        if (!File.Exists(bundleLocalPath))
+                        {
+                            logger.Warning($"Could not find bundle {bundleManifest.Key} for mod {mod.ModMetadata.Name}");
+                            Interlocked.Increment(ref missing);
+                        }
+                        else
+                        {
+                            var bundleHash = await bundleHashCacheService.CalculateMatchAndStoreHashAsync(bundleLocalPath, ct);
+                            AddBundle(
+                                bundleManifest.Key,
+                                new BundleInfo
+                                {
+                                    ModPath = relativeModPath,
+                                    Bundle = bundleManifest,
+                                    Crc = bundleHash,
+                                }
+                            );
+                            Interlocked.Increment(ref ok);
+                        }
 
-        await bundleHashCacheService.WriteCache();
+                        progressTask.Increment(1);
+                        progressTask.Description = $"Loading bundles for {mod.ModMetadata.Name} (ok: {ok}, missing: {missing})";
+                    }
+                );
+            });
+
+        await bundleHashCacheService.WriteCacheAsync(cancellationToken);
     }
 
     /// <summary>
-    ///     Handle singleplayer/bundles
+    ///     HandleAsync singleplayer/bundles
     /// </summary>
     /// <returns> List of loaded bundles.</returns>
     public List<BundleInfo> GetBundles()
@@ -105,19 +122,4 @@ public class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonUtil, Bu
             logger.Error($"Unable to add bundle: {key}");
         }
     }
-}
-
-public record BundleManifest
-{
-    [JsonPropertyName("manifest")]
-    public List<BundleManifestEntry>? Manifest { get; set; }
-}
-
-public record BundleManifestEntry
-{
-    [JsonPropertyName("key")]
-    public required string Key { get; set; }
-
-    [JsonPropertyName("dependencyKeys")]
-    public List<string>? DependencyKeys { get; set; }
 }

@@ -1,7 +1,10 @@
 ﻿using NUnit.Framework;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Items;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Enums;
 
 namespace UnitTests.Tests.Helpers;
 

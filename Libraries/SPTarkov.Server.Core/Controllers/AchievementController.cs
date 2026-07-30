@@ -1,26 +1,24 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class AchievementController(ProfileHelper profileHelper, DatabaseService databaseService, ConfigServer configServer)
+public class AchievementController(TemplateTable templateTable, ProfileHelper profileHelper, CoreConfig coreConfig)
 {
-    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
-
     /// <summary>
     ///     Get base achievements
     /// </summary>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public virtual GetAchievementsResponse GetAchievements(MongoId sessionID)
+    public GetAchievementsResponse GetAchievements(MongoId sessionID)
     {
-        return new GetAchievementsResponse { Elements = databaseService.GetAchievements() };
+        return new GetAchievementsResponse { Elements = templateTable.Achievements };
     }
 
     /// <summary>
@@ -28,15 +26,15 @@ public class AchievementController(ProfileHelper profileHelper, DatabaseService 
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>CompletedAchievementsResponse</returns>
-    public virtual CompletedAchievementsResponse GetAchievementStatics(MongoId sessionId)
+    public CompletedAchievementsResponse GetAchievementStatics(MongoId sessionId)
     {
         var stats = new Dictionary<string, int>();
         var profiles = profileHelper
             .GetProfiles()
-            .Where(kvp => !CoreConfig.Features.AchievementProfileIdBlacklist.Contains(kvp.Value.ProfileInfo.ProfileId))
+            .Where(kvp => !coreConfig.Features.AchievementProfileIdBlacklist.Contains(kvp.Value.ProfileInfo.ProfileId))
             .ToDictionary();
 
-        var achievements = databaseService.GetAchievements();
+        var achievements = templateTable.Achievements;
         foreach (
             var achievementId in achievements
                 .Select(achievement => achievement.Id)

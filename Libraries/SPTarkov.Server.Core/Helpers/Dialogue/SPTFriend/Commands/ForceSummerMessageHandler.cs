@@ -4,8 +4,9 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
+using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
@@ -15,11 +16,9 @@ public class ForceSummerMessageHandler(
     ServerLocalisationService serverLocalisationService,
     MailSendService mailSendService,
     RandomUtil randomUtil,
-    ConfigServer configServer
+    WeatherConfig weatherConfig
 ) : IChatMessageHandler
 {
-    protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
-
     public int GetPriority()
     {
         return 99;
@@ -32,7 +31,7 @@ public class ForceSummerMessageHandler(
 
     public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
-        WeatherConfig.OverrideSeason = Season.SUMMER;
+        weatherConfig.OverrideSeason = Season.SUMMER;
 
         mailSendService.SendUserMessageToPlayer(
             sessionId,

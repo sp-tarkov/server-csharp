@@ -1,18 +1,15 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.InRaid;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
-public class InRaidController(ProfileHelper profileHelper, ConfigServer configServer)
+public class InRaidController(ProfileHelper profileHelper, BotConfig botConfig, InRaidConfig inRaidConfig)
 {
-    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
-    protected readonly InRaidConfig InRaidConfig = configServer.GetConfig<InRaidConfig>();
-
     /// <summary>
     ///     Save locationId to active profiles in-raid object AND app context
     /// </summary>
@@ -47,7 +44,7 @@ public class InRaidController(ProfileHelper profileHelper, ConfigServer configSe
     /// </summary>
     public InRaidConfig GetInRaidConfig()
     {
-        return InRaidConfig;
+        return inRaidConfig;
     }
 
     /// <summary>
@@ -59,7 +56,7 @@ public class InRaidController(ProfileHelper profileHelper, ConfigServer configSe
     /// <returns>% chance scav is hostile to player</returns>
     public double GetTraitorScavHostileChance(string url, MongoId sessionId)
     {
-        return InRaidConfig.PlayerScavHostileChancePercent;
+        return inRaidConfig.PlayerScavHostileChancePercent;
     }
 
     /// <summary>
@@ -70,6 +67,6 @@ public class InRaidController(ProfileHelper profileHelper, ConfigServer configSe
     /// <returns>string array of boss types</returns>
     public List<string> GetBossTypes(string url, MongoId sessionId)
     {
-        return BotConfig.Bosses;
+        return botConfig.Bosses;
     }
 }

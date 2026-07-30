@@ -1,0 +1,97 @@
+@using SPTarkov.Server.Web.Models.Database
+
+<MudPaper Elevation="0" Class="database-sidebar spt-panel pa-4">
+    <MudStack Spacing="3">
+        <MudText Typo="Typo.h6">Table</MudText>
+
+        <MudSelect T="string"
+                   Value="@SelectedTableId"
+                   ValueChanged="SelectedTableIdChanged"
+                   Label="Table"
+                   Variant="Variant.Outlined"
+                   Margin="Margin.Dense"
+                   Dense="true"
+                   Class="database-header-table-select">
+            @foreach (var table in Tables)
+            {
+                <MudSelectItem T="string" Value="@table.Id">@table.Name</MudSelectItem>
+            }
+        </MudSelect>
+
+        <MudText Typo="Typo.h6">Filters</MudText>
+
+        <MudTextField Value="@SearchText"
+                      ValueChanged="SearchTextChanged"
+                      Label="Search"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      Immediate="true"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" />
+
+        @foreach (var filter in SelectedTable.Filters)
+        {
+            <MudSelect T="string"
+                       Value="@GetFilterValue(filter.Id)"
+                       ValueChanged="@((value) => SetFilterValue(filter.Id, value))"
+                       Label="@filter.Label"
+                       Variant="Variant.Outlined"
+                       Margin="Margin.Dense"
+                       Dense="true">
+                <MudSelectItem T="string" Value="@string.Empty">@filter.AllLabel</MudSelectItem>
+                @foreach (var option in filter.Options)
+                {
+                    <MudSelectItem T="string" Value="@option.Value">@option.Label</MudSelectItem>
+                }
+            </MudSelect>
+        }
+
+        <MudDivider />
+
+        <MudStack Spacing="1">
+            <MudText Typo="Typo.subtitle2">Current result</MudText>
+            <MudText Typo="Typo.h4">@ResultCountLabel</MudText>
+            <MudText Typo="Typo.caption" Color="Color.Secondary">@SelectedTable.ResultLabel</MudText>
+        </MudStack>
+
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Secondary"
+                   StartIcon="@Icons.Material.Filled.FilterAltOff"
+                   OnClick="OnClearFilters"
+                   FullWidth="true">
+            Clear filters
+        </MudButton>
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public IReadOnlyList<DatabaseTableDefinition> Tables { get; set; } = [];
+
+    [Parameter]
+    public DatabaseTableDefinition SelectedTable { get; set; } = DatabaseTableDefinition.Empty;
+
+    [Parameter]
+    public string SelectedTableId { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> SelectedTableIdChanged { get; set; }
+
+    [Parameter]
+    public string SearchText { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> SearchTextChanged { get; set; }
+
+    [Parameter]
+    public string ResultCountLabel { get; set; } = "0";
+
+    [Parameter]
+    public Func<string, string> GetFilterValue { get; set; } = _ => string.Empty;
+
+    [Parameter]
+    public Func<string, string, Task> SetFilterValue { get; set; } = (_, _) => Task.CompletedTask;
+
+    [Parameter]
+    public EventCallback OnClearFilters { get; set; }
+}

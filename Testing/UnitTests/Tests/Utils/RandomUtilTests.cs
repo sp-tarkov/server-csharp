@@ -4,7 +4,6 @@ using SPTarkov.Server.Core.Utils;
 namespace UnitTests.Tests.Utils;
 
 [TestFixture]
-[TestFixture]
 public sealed class RandomUtilTests
 {
     private RandomUtil _randomUtil;

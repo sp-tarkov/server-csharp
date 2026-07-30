@@ -1,11 +1,14 @@
 ﻿using NUnit.Framework;
-using SPTarkov.Server.Core.Generators;
+using SPTarkov.Server.Core.Generators.Loot;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Bot;
+using SPTarkov.Server.Core.Helpers.Items;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Bot;
 
 namespace UnitTests.Tests.Helpers;
 
@@ -231,7 +234,7 @@ public class BotGeneratorHelperTests
         _botInventoryContainerService.AddEmptyContainerToBot(botId, EquipmentSlots.Backpack, backpack);
 
         // Insert items at specific locations
-        var takenSlots = new List<XY>
+        var takenSlots = new List<Vector2>
         {
             new() { X = 0, Y = 0 },
             new() { X = 1, Y = 0 },
@@ -247,8 +250,8 @@ public class BotGeneratorHelperTests
                 SlotId = "main",
                 Location = new ItemLocation
                 {
-                    X = (int)takenSlot.X.Value,
-                    Y = (int)takenSlot.Y.Value,
+                    X = (int)takenSlot.X,
+                    Y = (int)takenSlot.Y,
                     R = ItemRotation.Horizontal,
                 },
                 Upd = new Upd { StackObjectsCount = 1 },
@@ -306,7 +309,7 @@ public class BotGeneratorHelperTests
         _botInventoryContainerService.AddEmptyContainerToBot(botId, EquipmentSlots.Backpack, backpack);
 
         // Insert items at specific locations
-        var takenSlots = new List<XY>
+        var takenSlots = new List<Vector2>
         {
             new() { X = 0, Y = 0 },
             new() { X = 1, Y = 0 },
@@ -323,8 +326,8 @@ public class BotGeneratorHelperTests
                 SlotId = "main",
                 Location = new ItemLocation
                 {
-                    X = (int)takenSlot.X.Value,
-                    Y = (int)takenSlot.Y.Value,
+                    X = (int)takenSlot.X,
+                    Y = (int)takenSlot.Y,
                     R = ItemRotation.Horizontal,
                 },
                 Upd = new Upd { StackObjectsCount = 1 },
@@ -376,7 +379,7 @@ public class BotGeneratorHelperTests
         _botInventoryContainerService.AddEmptyContainerToBot(botId, EquipmentSlots.Backpack, backpack);
 
         // Insert items at specific locations to ensure there's no space for adding the weapon
-        var takenSlots = new List<XY>
+        var takenSlots = new List<Vector2>
         {
             new() { X = 1, Y = 0 },
             new() { X = 2, Y = 0 },
@@ -408,8 +411,8 @@ public class BotGeneratorHelperTests
                 SlotId = "main",
                 Location = new ItemLocation
                 {
-                    X = (int)takenSlot.X.Value,
-                    Y = (int)takenSlot.Y.Value,
+                    X = (int)takenSlot.X,
+                    Y = (int)takenSlot.Y,
                     R = ItemRotation.Horizontal,
                 },
                 Upd = new Upd { StackObjectsCount = 1 },

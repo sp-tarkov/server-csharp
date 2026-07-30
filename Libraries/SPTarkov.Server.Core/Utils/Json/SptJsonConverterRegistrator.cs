@@ -11,14 +11,15 @@ public class SptJsonConverterRegistrator : IJsonConverterRegistrator
     {
         return
         [
-            new BaseSptLoggerReferenceConverter(),
             new ListOrTConverterFactory(),
             new DictionaryOrListConverter(),
-            new BaseInteractionRequestDataConverter(),
+            new ProcessBaseTradeRequestDataConverter(),
             new StringToMongoIdConverter(),
             new EftEnumConverterFactory(),
             new EftListEnumConverterFactory(),
             new EnumerableConverterFactory(),
+            new StringOrIntConverterFactory(),
+            new FloatOrIrregularFloatArrayFactory(),
         ];
     }
 }

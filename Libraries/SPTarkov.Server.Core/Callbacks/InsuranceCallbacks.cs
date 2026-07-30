@@ -6,20 +6,17 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Insurance;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
 [Injectable(TypePriority = OnUpdateOrder.InsuranceCallbacks)]
-public class InsuranceCallbacks(InsuranceController insuranceController, HttpResponseUtil httpResponseUtil, ConfigServer configServer)
+public class InsuranceCallbacks(InsuranceController insuranceController, HttpResponseUtil httpResponseUtil, InsuranceConfig insuranceConfig)
     : IOnUpdate
 {
-    protected readonly InsuranceConfig InsuranceConfig = configServer.GetConfig<InsuranceConfig>();
-
-    public Task<bool> OnUpdate(long secondsSinceLastRun)
+    public Task<bool> OnUpdateAsync(long secondsSinceLastRun, CancellationToken cancellationToken)
     {
-        if (secondsSinceLastRun < InsuranceConfig.RunIntervalSeconds)
+        if (secondsSinceLastRun < insuranceConfig.RunIntervalSeconds)
         {
             return Task.FromResult(false);
         }
@@ -48,8 +45,8 @@ public class InsuranceCallbacks(InsuranceController insuranceController, HttpRes
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse Insure(PmcData pmcData, InsureRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> Insure(PmcData pmcData, InsureRequestData info, MongoId sessionID)
     {
-        return insuranceController.Insure(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(insuranceController.Insure(pmcData, info, sessionID));
     }
 }

@@ -1,9 +1,11 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Server;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Notifier;
 using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Server;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -20,31 +22,37 @@ public class NotifierController(HttpServerHelper httpServerHelper, NotifierHelpe
     ///     If no notifications are available after the timeout, use a default message.
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
-    public Task<List<WsNotificationEvent>> NotifyAsync(MongoId sessionId)
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> that can be used to cancel the notification operation.
+    /// </param>
+    public Task<List<WsNotificationEvent>> NotifyAsync(MongoId sessionId, CancellationToken cancellationToken = default)
     {
-        return Task.Factory.StartNew(() =>
-        {
-            // keep track of our timeout
-            var counter = 0;
-
-            while (counter < Timeout)
+        return Task.Factory.StartNew(
+            () =>
             {
-                if (!notificationService.Has(sessionId))
-                {
-                    counter += PollInterval;
-                    Thread.Sleep(PollInterval);
-                }
-                else
-                {
-                    var messages = notificationService.Get(sessionId);
+                // keep track of our timeout
+                var counter = 0;
 
-                    notificationService.UpdateMessageOnQueue(sessionId, []);
-                    return messages;
-                }
-            }
+                while (counter < Timeout)
+                {
+                    if (!notificationService.Has(sessionId))
+                    {
+                        counter += PollInterval;
+                        Thread.Sleep(PollInterval);
+                    }
+                    else
+                    {
+                        var messages = notificationService.Get(sessionId);
 
-            return [notifierHelper.GetDefaultNotification()];
-        });
+                        notificationService.UpdateMessageOnQueue(sessionId, []);
+                        return messages;
+                    }
+                }
+
+                return [notifierHelper.GetDefaultNotification()];
+            },
+            cancellationToken
+        );
     }
 
     /// <summary>

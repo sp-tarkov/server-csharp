@@ -1,0 +1,34 @@
+@using SPTarkov.Server.Web.Models.Profiles
+
+@if (Open)
+{
+    <div class="profiles-details-modal-backdrop" @onclick="OnClose">
+        <div class="profiles-details-modal" role="dialog" aria-modal="true" @onclick:stopPropagation>
+            <ProfileRecordDetails Details="Details"
+                                  IsBusy="@IsBusy"
+                                  OnSaveEdit="OnSaveEdit"
+                                  OnGrantPrestige="OnGrantPrestige"
+                                  OnClose="OnClose" />
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public ProfileDetails? Details { get; set; }
+
+    [Parameter]
+    public bool Open { get; set; }
+
+    [Parameter]
+    public bool IsBusy { get; set; }
+
+    [Parameter]
+    public EventCallback<ProfileEditModel> OnSaveEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<ProfilePrestigeGrantRequest> OnGrantPrestige { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+}

@@ -1,11 +1,12 @@
 ﻿using System.Buffers.Binary;
 using System.Security.Cryptography;
+using System.Text;
 using SPTarkov.Server.Core.Extensions;
 
 namespace SPTarkov.Server.Core.Models.Common;
 
 /// <summary>
-/// Represents a 12-byte MongoDB-style ObjectId, consisting of:
+/// Represents a 12-<see cref="byte"/> MongoDB-style ObjectId, consisting of:
 /// <list type="bullet">
 ///   <item><description>4-byte timestamp (seconds since Unix epoch, big-endian)</description></item>
 ///   <item><description>3-byte machine identifier</description></item>
@@ -39,7 +40,7 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
     private readonly int _pidAndIncrement;
 
     private static readonly int _machine = BitConverter.ToInt32(RandomNumberGenerator.GetBytes(4), 0) & 0xFFFFFF;
-    private static readonly short _pid = (short)Environment.ProcessId;
+    private static readonly short _pid = (short) Environment.ProcessId;
     private static int _increment = RandomNumberGenerator.GetInt32(0, 0xFFFFFF);
 
     public bool IsEmpty
@@ -53,53 +54,86 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
     /// </summary>
     public MongoId()
     {
-        var timestamp = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        var timestamp = (int) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         Span<byte> bytes = stackalloc byte[12];
 
         // timestamp (4 bytes, big-endian)
         BinaryPrimitives.WriteInt32BigEndian(bytes, timestamp);
 
         // machine ID (3 bytes)
-        bytes[4] = (byte)(_machine >> 16);
-        bytes[5] = (byte)(_machine >> 8);
-        bytes[6] = (byte)_machine;
+        bytes[4] = (byte) (_machine >> 16);
+        bytes[5] = (byte) (_machine >> 8);
+        bytes[6] = (byte) _machine;
 
         // PID (2 bytes)
         BinaryPrimitives.WriteInt16BigEndian(bytes[7..9], _pid);
 
         // increment (3 bytes, big-endian)
         var inc = Interlocked.Increment(ref _increment) & 0xFFFFFF;
-        bytes[9] = (byte)(inc >> 16);
-        bytes[10] = (byte)(inc >> 8);
-        bytes[11] = (byte)inc;
+        bytes[9] = (byte) (inc >> 16);
+        bytes[10] = (byte) (inc >> 8);
+        bytes[11] = (byte) inc;
 
         // pack into fields (avoids array allocations later)
         _timestampAndMachine = BitConverter.ToInt64(bytes);
         _pidAndIncrement = BitConverter.ToInt32(bytes[8..]);
     }
 
-    public MongoId(string? hex)
+    public MongoId(ReadOnlySpan<char> hex)
     {
-        if (string.IsNullOrEmpty(hex) || hex == "000000000000000000000000")
+        if (hex.IsEmpty)
         {
-            _timestampAndMachine = 0;
-            _pidAndIncrement = 0;
+            this = default;
             return;
         }
 
         if (hex.Length != 24)
         {
-            throw new ArgumentException("ObjectId must be a 24-character hex string.", hex);
+            throw new ArgumentException(
+                $"ObjectId must be a 24-character hex string, but got \"{hex}\" (length {hex.Length}).",
+                nameof(hex)
+            );
         }
 
         Span<byte> bytes = stackalloc byte[12];
-        Span<char> chars = stackalloc char[24];
-        hex.AsSpan().CopyTo(chars);
-
         for (var i = 0; i < 12; i++)
         {
             var hi = HexCharToValue(hex[2 * i]);
-            var lo = HexCharToValue(hex[2 * i + 1]);
+            var lo = HexCharToValue(hex[(2 * i) + 1]);
+
+            if (hi == -1 || lo == -1)
+            {
+                throw new FormatException("ObjectId contains invalid hex characters.");
+            }
+
+            bytes[i] = (byte) ((hi << 4) | lo);
+        }
+
+        _timestampAndMachine = BitConverter.ToInt64(bytes);
+        _pidAndIncrement = BitConverter.ToInt32(bytes[8..]);
+    }
+
+    public MongoId(ReadOnlySpan<byte> hex)
+    {
+        if (hex.IsEmpty)
+        {
+            this = default;
+            return;
+        }
+
+        if (hex.Length != 24)
+        {
+            throw new ArgumentException(
+                $"ObjectId must be a 24-character hex string, but got \"{Encoding.UTF8.GetString(hex)}\" (length {hex.Length}).",
+                nameof(hex)
+            );
+        }
+
+        Span<byte> bytes = stackalloc byte[12];
+        for (var i = 0; i < 12; i++)
+        {
+            var hi = HexCharToValue((char)hex[2 * i]);
+            var lo = HexCharToValue((char)hex[(2 * i) + 1]);
 
             if (hi == -1 || lo == -1)
             {
@@ -113,6 +147,14 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
         _pidAndIncrement = BitConverter.ToInt32(bytes[8..]);
     }
 
+    public MongoId(string? hex)
+        : this(hex.AsSpan()) { }
+
+    /// <summary>
+    /// Converts a hexadecimal character into its corresponding integer nibble value.
+    /// </summary>
+    /// <param name="c">The hex character to evaluate (0-9, a-f, A-F).</param>
+    /// <returns>An integer value from 0 to 15 if the character is valid hex; otherwise, -1.</returns>
     private static int HexCharToValue(char c)
     {
         return c >= '0' && c <= '9' ? c - '0'
@@ -122,29 +164,73 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
     }
 
     /// <summary>
+    /// Converts an integer nibble value into its corresponding lowercase hexadecimal character representation.
+    /// </summary>
+    /// <param name="value">The nibble value to convert (0-15).</param>
+    /// <returns>A lowercase hexadecimal character representing the specified value.</returns>
+    private static char HexValueToChar(int value)
+    {
+        return (char) (value < 10 ? value + '0' : value - 10 + 'a');
+    }
+
+    /// <summary>
     /// Returns the MongoId as a 24-character lowercase hexadecimal string.
     /// </summary>
     public override string ToString()
     {
-        if (_timestampAndMachine == 0 && _pidAndIncrement == 0)
+        if (IsEmpty)
         {
             return string.Empty;
+        }
+
+        return string.Create(24, this, static (chars, state) =>
+        {
+            Span<byte> bytes = stackalloc byte[12];
+            BitConverter.TryWriteBytes(bytes, state._timestampAndMachine);
+            BitConverter.TryWriteBytes(bytes[8..], state._pidAndIncrement);
+
+            for (var i = 0; i < 12; i++)
+            {
+                var b = bytes[i];
+                chars[i * 2] = HexValueToChar(b >> 4);
+                chars[(i * 2) + 1] = HexValueToChar(b & 0x0F);
+            }
+        });
+    }
+
+    /// <summary>
+    /// Tries to format the current <see cref="MongoId"/> instance into the provided character span.
+    /// </summary>
+    /// <param name="destination">The destination span. Must be at least 24 characters long.</param>
+    /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
+    /// <returns><see langword="true"/> if the formatting was successful; otherwise, <see langword="false"/>.</returns>
+    public bool TryFormat(Span<char> destination, out int charsWritten)
+    {
+        if (destination.Length < 24)
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        if (IsEmpty)
+        {
+            charsWritten = 0;
+            return true;
         }
 
         Span<byte> bytes = stackalloc byte[12];
         BitConverter.TryWriteBytes(bytes, _timestampAndMachine);
         BitConverter.TryWriteBytes(bytes[8..], _pidAndIncrement);
-        return Convert.ToHexString(bytes).ToLowerInvariant();
-    }
 
-    public bool Equals(MongoId? other)
-    {
-        if (other is null)
+        for (var i = 0; i < 12; i++)
         {
-            return false;
+            var b = bytes[i];
+            destination[i * 2] = HexValueToChar(b >> 4);
+            destination[(i * 2) + 1] = HexValueToChar(b & 0x0F);
         }
 
-        return _timestampAndMachine == other.Value._timestampAndMachine && _pidAndIncrement == other.Value._pidAndIncrement;
+        charsWritten = 24;
+        return true;
     }
 
     /// <inheritdoc/>
@@ -170,7 +256,7 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
                 return false;
             }
 
-            bytes[i] = (byte)((hi << 4) | lo);
+            bytes[i] = (byte) ((hi << 4) | lo);
         }
 
         var a = BitConverter.ToInt64(bytes);
@@ -179,6 +265,11 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
         return _timestampAndMachine == a && _pidAndIncrement == b;
     }
 
+    /// <summary>
+    /// Validates whether the specified string represents a valid MongoDB ObjectId format.
+    /// </summary>
+    /// <param name="stringToCheck">The string representation of the identifier to validate.</param>
+    /// <returns><see langword="true"/> if the string satisfies format constraints; otherwise, <see langword="false"/>.</returns>
     public static bool IsValidMongoId(string stringToCheck)
     {
         return stringToCheck.IsValidMongoId();
@@ -232,8 +323,12 @@ public readonly struct MongoId : IEquatable<MongoId>, IComparable<MongoId>
         return HashCode.Combine(_timestampAndMachine, _pidAndIncrement);
     }
 
+    /// <summary>
+    /// Returns an empty <see cref="MongoId"/> instance with all internal bits initialized to zero.
+    /// </summary>
+    /// <returns>A default initialized <see cref="MongoId"/>.</returns>
     public static MongoId Empty()
     {
-        return new MongoId("000000000000000000000000");
+        return default;
     }
 }

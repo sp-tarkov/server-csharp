@@ -9853,7 +9853,7 @@
           "parentId": "68a3bb64b8031ab7fc0e62c1",
           "slotId": "cartridges",
           "upd": {
-            "StackObjectsCount": "30"
+            "StackObjectsCount": 30
           }
         },
         {
@@ -9956,7 +9956,7 @@
       "associatedEvent": "Promo",
       "maxToSendPlayer": 5
     },
-    "IL2CPP": {
+	"IL2CPP": {
       "items": [
         {
           "_id": "69247732af29b6d0d8b9eb42",
@@ -9971,6 +9971,30 @@
       "sender": "System",
       "messageText": "It was good while it lasted",
       "collectionTimeHours": 96,
+      "associatedEvent": "Promo",
+      "maxToSendPlayer": 1
+    },
+    "DISCORD": {
+      "items": [
+        {
+          "_id": "6a515370673e1c542898f7f2",
+          "_tpl": "688b2dba67bf6fa26c07e918",
+          "slotId": "main",
+          "parentId": "6924774ab8d5c1c95931186f"
+        },
+        {
+          "_id": "6a515370673e1c542898f7f3",
+          "_tpl": "688b2e574172ca83e70cf868",
+          "slotId": "main",
+          "upd": {
+            "StackObjectsCount": 1
+          },
+          "parentId": "6924774ab8d5c1c95931186f"
+        }
+      ],
+      "sender": "System",
+      "messageText": "Thank you for linking your Discord profile",
+      "collectionTimeHours": 168,
       "associatedEvent": "Promo",
       "maxToSendPlayer": 1
     }

@@ -1,16 +1,13 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 
 namespace SPTarkov.Server.Core.Generators;
 
 [Injectable]
-public class PmcWaveGenerator(DatabaseService databaseService, ConfigServer configServer)
+public class PmcWaveGenerator(LocationTable locationTable, PmcConfig pmcConfig)
 {
-    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
-
     /// <summary>
     ///     Add a pmc wave to a map
     /// </summary>
@@ -18,7 +15,7 @@ public class PmcWaveGenerator(DatabaseService databaseService, ConfigServer conf
     /// <param name="waveToAdd"> Boss wave to add to map </param>
     public void AddPmcWaveToLocation(string locationId, BossLocationSpawn waveToAdd)
     {
-        PMCConfig.CustomPmcWaves[locationId].Add(waveToAdd);
+        pmcConfig.CustomPmcWaves[locationId].Add(waveToAdd);
     }
 
     /// <summary>
@@ -26,7 +23,7 @@ public class PmcWaveGenerator(DatabaseService databaseService, ConfigServer conf
     /// </summary>
     public void ApplyWaveChangesToAllMaps()
     {
-        foreach (var location in PMCConfig.CustomPmcWaves)
+        foreach (var location in pmcConfig.CustomPmcWaves)
         {
             ApplyWaveChangesToMapByName(location.Key);
         }
@@ -38,12 +35,12 @@ public class PmcWaveGenerator(DatabaseService databaseService, ConfigServer conf
     /// <param name="name"> e.g. factory4_day, bigmap </param>
     public void ApplyWaveChangesToMapByName(string name)
     {
-        if (!PMCConfig.CustomPmcWaves.TryGetValue(name, out var pmcWavesToAdd))
+        if (!pmcConfig.CustomPmcWaves.TryGetValue(name, out var pmcWavesToAdd))
         {
             return;
         }
 
-        var location = databaseService.GetLocation(name);
+        var location = locationTable.GetLocation(name);
         location?.Base.BossLocationSpawn.AddRange(pmcWavesToAdd);
     }
 
@@ -53,7 +50,7 @@ public class PmcWaveGenerator(DatabaseService databaseService, ConfigServer conf
     /// <param name="location"> Location Object </param>
     public void ApplyWaveChangesToMap(LocationBase location)
     {
-        if (!PMCConfig.CustomPmcWaves.TryGetValue(location.Id.ToLowerInvariant(), out var pmcWavesToAdd))
+        if (!pmcConfig.CustomPmcWaves.TryGetValue(location.Id.ToLowerInvariant(), out var pmcWavesToAdd))
         {
             return;
         }

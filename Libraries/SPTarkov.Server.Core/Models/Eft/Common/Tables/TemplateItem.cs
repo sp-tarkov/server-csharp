@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Constants;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Utils.Json;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -10,20 +11,14 @@ public record TemplateItem
 {
     private Dictionary<string, bool>? _blocks;
 
-    private string? _name;
-
-    private string? _prototype;
-
-    private string? _type;
-
     [JsonPropertyName("_id")]
     public MongoId Id { get; set; }
 
     [JsonPropertyName("_name")]
     public string? Name
     {
-        get { return _name; }
-        set { _name = string.Intern(value); }
+        get { return field; }
+        set { field = string.Intern(value); }
     }
 
     [JsonPropertyName("_parent")]
@@ -32,8 +27,8 @@ public record TemplateItem
     [JsonPropertyName("_type")]
     public string? Type
     {
-        get { return _type; }
-        set { _type = value != null ? string.Intern(value) : null; }
+        get { return field; }
+        set { field = value != null ? string.Intern(value) : null; }
     }
 
     [JsonPropertyName("_props")]
@@ -42,8 +37,8 @@ public record TemplateItem
     [JsonPropertyName("_proto")]
     public string? Prototype
     {
-        get { return _prototype; }
-        set { _prototype = string.Intern(value); }
+        get { return field; }
+        set { field = string.Intern(value); }
     }
 
     /// <summary>
@@ -70,15 +65,6 @@ public record TemplateItem
 
 public record TemplateItemProperties
 {
-    private string? _backgroundColor;
-
-    private string? _itemSound;
-    private string? _metascoreGroup;
-
-    private string? _rarityPvE;
-
-    private string? _unlootableFromSlot;
-
     [JsonPropertyName("AllowSpawnOnLocations")]
     public IEnumerable<string>? AllowSpawnOnLocations { get; set; }
 
@@ -115,8 +101,8 @@ public record TemplateItemProperties
     [JsonPropertyName("BackgroundColor")]
     public string? BackgroundColor
     {
-        get { return _backgroundColor; }
-        set { _backgroundColor = string.Intern(value); }
+        get { return field; }
+        set { field = string.Intern(value); }
     }
 
     // Type confirmed via client
@@ -144,8 +130,8 @@ public record TemplateItemProperties
     [JsonPropertyName("ItemSound")]
     public string? ItemSound
     {
-        get { return _itemSound; }
-        set { _itemSound = string.Intern(value); }
+        get { return field; }
+        set { field = string.Intern(value); }
     }
 
     [JsonPropertyName("LeftHandItem")]
@@ -269,8 +255,8 @@ public record TemplateItemProperties
     [JsonPropertyName("MetascoreGroup")]
     public string? MetascoreGroup
     {
-        get { return _metascoreGroup; }
-        set { _metascoreGroup = value == null ? null : string.Intern(value); }
+        get { return field; }
+        set { field = value == null ? null : string.Intern(value); }
     }
 
     [JsonPropertyName("NpcCompressorSendLevel")]
@@ -283,7 +269,7 @@ public record TemplateItemProperties
     public bool? CanSellOnRagfair { get; set; }
 
     [JsonPropertyName("ComputableUnitDamage")]
-    public XY? ComputableUnitDamage { get; set; }
+    public Vector2? ComputableUnitDamage { get; set; }
 
     [JsonPropertyName("ComputableUnitSize")]
     public double? ComputableUnitSize { get; set; }
@@ -306,8 +292,8 @@ public record TemplateItemProperties
     [JsonPropertyName("UnlootableFromSlot")]
     public string? UnlootableFromSlot
     {
-        get { return _unlootableFromSlot; }
-        set { _unlootableFromSlot = value == null ? null : string.Intern(value); }
+        get { return field; }
+        set { field = value == null ? null : string.Intern(value); }
     }
 
     [JsonPropertyName("UnlootableFromSide")]
@@ -330,8 +316,8 @@ public record TemplateItemProperties
     [JsonPropertyName("RarityPvE")]
     public string? RarityPvE
     {
-        get { return _rarityPvE; }
-        set { _rarityPvE = value == null ? null : string.Intern(value); }
+        get { return field; }
+        set { field = value == null ? null : string.Intern(value); }
     }
 
     [JsonPropertyName("IsAlwaysAvailableForInsurance")]
@@ -432,7 +418,7 @@ public record TemplateItemProperties
     public double? DoubleActionAccuracyPenaltyMult { get; set; }
 
     [JsonPropertyName("ModesCount")]
-    public object? ModesCount { get; set; } // TODO: object here
+    public ListOrT<int>? ModesCount { get; set; }
 
     [JsonPropertyName("DurabilityBurnModificator")]
     public double? DurabilityBurnModificator { get; set; }
@@ -453,7 +439,7 @@ public record TemplateItemProperties
     public bool? IsAdjustableOptic { get; set; }
 
     [JsonPropertyName("MinMaxFov")]
-    public XYZ? MinMaxFov { get; set; }
+    public Vector3? MinMaxFov { get; set; }
 
     [JsonPropertyName("sightModType")]
     public string? SightModType { get; set; }
@@ -468,7 +454,7 @@ public record TemplateItemProperties
     public double? ScopesCount { get; set; }
 
     [JsonPropertyName("AimSensitivity")]
-    public object? AimSensitivity { get; set; } // TODO: object here
+    public FloatOrIrregularFloatArray? AimSensitivity { get; set; }
 
     [JsonPropertyName("Zooms")]
     public IEnumerable<List<double>>? Zooms { get; set; }
@@ -627,11 +613,17 @@ public record TemplateItemProperties
     [JsonPropertyName("ContainerSpawnChanceModifier")]
     public double? ContainerSpawnChanceModifier { get; set; }
 
+    /// <summary>
+    ///     Not used in client, but still exists in the items json
+    /// </summary>
     [JsonPropertyName("SpawnFilter")]
-    public IEnumerable<object>? SpawnFilter { get; set; } // TODO: object here
+    public IEnumerable<object>? SpawnFilter { get; set; }
 
+    /// <summary>
+    ///     Unknown type it is an object[] in the client
+    /// </summary>
     [JsonPropertyName("containType")]
-    public IEnumerable<object>? ContainType { get; set; } // TODO: object here
+    public IEnumerable<object>? ContainType { get; set; }
 
     [JsonPropertyName("sizeWidth")]
     public double? SizeWidth { get; set; }
@@ -645,8 +637,9 @@ public record TemplateItemProperties
     [JsonPropertyName("spawnTypes")]
     public string? SpawnTypes { get; set; }
 
+    //Yes, this is meant to be an object according to BSG
     [JsonPropertyName("lootFilter")]
-    public IEnumerable<object>? LootFilter { get; set; } // TODO: object here
+    public IEnumerable<object>? LootFilter { get; set; }
 
     [JsonPropertyName("spawnRarity")]
     public string? SpawnRarity { get; set; }
@@ -712,13 +705,13 @@ public record TemplateItemProperties
     public double? OperatingResource { get; set; }
 
     [JsonPropertyName("PostRecoilHorizontalRangeHandRotation")]
-    public XYZ? PostRecoilHorizontalRangeHandRotation { get; set; }
+    public Vector3? PostRecoilHorizontalRangeHandRotation { get; set; }
 
     [JsonPropertyName("PostRecoilVerticalRangeHandRotation")]
-    public XYZ? PostRecoilVerticalRangeHandRotation { get; set; }
+    public Vector3? PostRecoilVerticalRangeHandRotation { get; set; }
 
     [JsonPropertyName("ProgressRecoilAngleOnStable")]
-    public XYZ? ProgressRecoilAngleOnStable { get; set; }
+    public Vector3? ProgressRecoilAngleOnStable { get; set; }
 
     [JsonPropertyName("RepairComplexity")]
     public double? RepairComplexity { get; set; }
@@ -805,7 +798,7 @@ public record TemplateItemProperties
     public double? CameraSnap { get; set; }
 
     [JsonPropertyName("CameraToWeaponAngleSpeedRange")]
-    public XYZ? CameraToWeaponAngleSpeedRange { get; set; }
+    public Vector3? CameraToWeaponAngleSpeedRange { get; set; }
 
     [JsonPropertyName("CameraToWeaponAngleStep")]
     public double? CameraToWeaponAngleStep { get; set; }
@@ -818,19 +811,19 @@ public record TemplateItemProperties
     public double? AimPlane { get; set; }
 
     [JsonPropertyName("TacticalReloadStiffnes")]
-    public XYZ? TacticalReloadStiffnes { get; set; }
+    public Vector3? TacticalReloadStiffnes { get; set; }
 
     [JsonPropertyName("TacticalReloadFixation")]
     public double? TacticalReloadFixation { get; set; }
 
     [JsonPropertyName("RecoilCenter")]
-    public XYZ? RecoilCenter { get; set; }
+    public Vector3? RecoilCenter { get; set; }
 
     [JsonPropertyName("RotationCenter")]
-    public XYZ? RotationCenter { get; set; }
+    public Vector3? RotationCenter { get; set; }
 
     [JsonPropertyName("RotationCenterNoStock")]
-    public XYZ? RotationCenterNoStock { get; set; }
+    public Vector3? RotationCenterNoStock { get; set; }
 
     [JsonPropertyName("ShotsGroupSettings")]
     public IEnumerable<ShotsGroupSettings>? ShotsGroupSettings { get; set; }
@@ -971,7 +964,7 @@ public record TemplateItemProperties
     public double? MountingHorizontalOutOfBreathMultiplier { get; set; }
 
     [JsonPropertyName("MountingPosition")]
-    public XYZ? MountingPosition { get; set; }
+    public Vector3? MountingPosition { get; set; }
 
     [JsonPropertyName("MountingVerticalOutOfBreathMultiplier")]
     public double? MountingVerticalOutOfBreathMultiplier { get; set; }
@@ -1001,7 +994,7 @@ public record TemplateItemProperties
     public string? MaterialType { get; set; }
 
     [JsonPropertyName("RicochetParams")]
-    public XYZ? RicochetParams { get; set; }
+    public Vector3? RicochetParams { get; set; }
 
     [JsonPropertyName("DeafStrength")]
     public string? DeafStrength { get; set; }
@@ -1166,10 +1159,10 @@ public record TemplateItemProperties
     public double? DeflectionConsumption { get; set; }
 
     [JsonPropertyName("AppliedTrunkRotation")]
-    public XYZ? AppliedTrunkRotation { get; set; }
+    public Vector3? AppliedTrunkRotation { get; set; }
 
     [JsonPropertyName("AppliedHeadRotation")]
-    public XYZ? AppliedHeadRotation { get; set; }
+    public Vector3? AppliedHeadRotation { get; set; }
 
     [JsonPropertyName("DisplayOnModel")]
     public bool? DisplayOnModel { get; set; }
@@ -1181,7 +1174,7 @@ public record TemplateItemProperties
     public double? StaminaBurnRate { get; set; }
 
     [JsonPropertyName("ColliderScaleMultiplier")]
-    public XYZ? ColliderScaleMultiplier { get; set; }
+    public Vector3? ColliderScaleMultiplier { get; set; }
 
     [JsonPropertyName("ConfigPathStr")]
     public string? ConfigPathStr { get; set; }
@@ -1399,22 +1392,22 @@ public record TemplateItemProperties
     public string? AmmoTooltipClass { get; set; }
 
     [JsonPropertyName("Contusion")]
-    public XYZ? Contusion { get; set; }
+    public Vector3? Contusion { get; set; }
 
     [JsonPropertyName("ArmorDistanceDistanceDamage")]
-    public XYZ? ArmorDistanceDistanceDamage { get; set; }
+    public Vector3? ArmorDistanceDistanceDamage { get; set; }
 
     [JsonPropertyName("BackBlastConeAngle")]
     public double? BackBlastConeAngle { get; set; }
 
     [JsonPropertyName("BackblastDamage")]
-    public XY? BackblastDamage { get; set; }
+    public Vector2? BackblastDamage { get; set; }
 
     [JsonPropertyName("BackblastDistance")]
     public double? BackblastDistance { get; set; }
 
     [JsonPropertyName("Blindness")]
-    public XYZ? Blindness { get; set; }
+    public Vector3? Blindness { get; set; }
 
     [JsonPropertyName("IsLightAndSoundShot")]
     public bool? IsLightAndSoundShot { get; set; }
@@ -1564,10 +1557,10 @@ public record TemplateItemProperties
     public double? BipodReturnHandSpeedMultiplier { get; set; }
 
     [JsonPropertyName("PitchLimitProneBipod")]
-    public XYZ? PitchLimitProneBipod { get; set; }
+    public Vector3? PitchLimitProneBipod { get; set; }
 
     [JsonPropertyName("YawLimitProneBipod")]
-    public XYZ? YawLimitProneBipod { get; set; }
+    public Vector3? YawLimitProneBipod { get; set; }
 
     [JsonPropertyName("AdjustableOpticSensitivity")]
     public double? AdjustableOpticSensitivity { get; set; }
@@ -1631,15 +1624,6 @@ public record WeaponRecoilTransformationCurveKey
 
     [JsonPropertyName("time")]
     public double? Time { get; set; }
-
-    [JsonPropertyName("value")]
-    public double? Value { get; set; }
-}
-
-public record HealthEffect
-{
-    [JsonPropertyName("type")]
-    public string? Type { get; set; }
 
     [JsonPropertyName("value")]
     public double? Value { get; set; }
@@ -1710,22 +1694,18 @@ public record GridFilter
 
 public record Slot
 {
-    private string? _name;
-
-    private string? _prototype;
-
     [JsonPropertyName("_name")]
     public string? Name
     {
-        get { return _name; }
-        set { _name = value == null ? null : string.Intern(value); }
+        get { return field; }
+        set { field = value == null ? null : string.Intern(value); }
     }
 
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public MongoId? Id { get; set; }
 
     [JsonPropertyName("_parent")]
-    public string? Parent { get; set; }
+    public MongoId? Parent { get; set; }
 
     [JsonPropertyName("_props")]
     public SlotProperties? Properties { get; set; }
@@ -1742,8 +1722,8 @@ public record Slot
     [JsonPropertyName("_proto")]
     public string? Prototype
     {
-        get { return _prototype; }
-        set { _prototype = value == null ? null : string.Intern(value); }
+        get { return field; }
+        set { field = value == null ? null : string.Intern(value); }
     }
 }
 
@@ -1816,54 +1796,6 @@ public record StackSlotProperties
     public IEnumerable<SlotFilter>? Filters { get; set; }
 }
 
-public record RandomLootSettings
-{
-    [JsonPropertyName("allowToSpawnIdenticalItems")]
-    public bool? AllowToSpawnIdenticalItems { get; set; }
-
-    [JsonPropertyName("allowToSpawnQuestItems")]
-    public bool? AllowToSpawnQuestItems { get; set; }
-
-    [JsonPropertyName("countByRarity")]
-    public IEnumerable<object>? CountByRarity { get; set; } // TODO: object here
-
-    [JsonPropertyName("excluded")]
-    public RandomLootExcluded? Excluded { get; set; }
-
-    [JsonPropertyName("filters")]
-    public IEnumerable<object>? Filters { get; set; } // TODO: object here
-
-    [JsonPropertyName("findInRaid")]
-    public bool? FindInRaid { get; set; }
-
-    [JsonPropertyName("maxCount")]
-    public double? MaxCount { get; set; }
-
-    [JsonPropertyName("minCount")]
-    public double? MinCount { get; set; }
-}
-
-public record RandomLootExcluded
-{
-    [JsonPropertyName("categoryTemplates")]
-    public IEnumerable<object>? CategoryTemplates { get; set; } // TODO: object here
-
-    [JsonPropertyName("rarity")]
-    public IEnumerable<string>? Rarity { get; set; }
-
-    [JsonPropertyName("templates")]
-    public IEnumerable<object>? Templates { get; set; } // TODO: object here
-}
-
-public record EffectsHealth
-{
-    [JsonPropertyName("Energy")]
-    public EffectsHealthProperties? Energy { get; set; }
-
-    [JsonPropertyName("Hydration")]
-    public EffectsHealthProperties? Hydration { get; set; }
-}
-
 public record EffectsHealthProperties
 {
     [JsonPropertyName("value")]
@@ -1874,30 +1806,6 @@ public record EffectsHealthProperties
 
     [JsonPropertyName("duration")]
     public double? Duration { get; set; }
-}
-
-public record EffectsDamage
-{
-    [JsonPropertyName("Pain")]
-    public EffectsDamageProperties? Pain { get; set; }
-
-    [JsonPropertyName("LightBleeding")]
-    public EffectsDamageProperties? LightBleeding { get; set; }
-
-    [JsonPropertyName("HeavyBleeding")]
-    public EffectsDamageProperties? HeavyBleeding { get; set; }
-
-    [JsonPropertyName("Contusion")]
-    public EffectsDamageProperties? Contusion { get; set; }
-
-    [JsonPropertyName("RadExposure")]
-    public EffectsDamageProperties? RadExposure { get; set; }
-
-    [JsonPropertyName("Fracture")]
-    public EffectsDamageProperties? Fracture { get; set; }
-
-    [JsonPropertyName("DestroyedPart")]
-    public EffectsDamageProperties? DestroyedPart { get; set; }
 }
 
 public record EffectsDamageProperties
@@ -1945,13 +1853,13 @@ public record ShotsGroupSettings
     public double? EndShotIndex { get; set; }
 
     [JsonPropertyName("ShotRecoilPositionStrength")]
-    public XYZ? ShotRecoilPositionStrength { get; set; }
+    public Vector3? ShotRecoilPositionStrength { get; set; }
 
     [JsonPropertyName("ShotRecoilRadianRange")]
-    public XYZ? ShotRecoilRadianRange { get; set; }
+    public Vector3? ShotRecoilRadianRange { get; set; }
 
     [JsonPropertyName("ShotRecoilRotationStrength")]
-    public XYZ? ShotRecoilRotationStrength { get; set; }
+    public Vector3? ShotRecoilRotationStrength { get; set; }
 
     [JsonPropertyName("StartShotIndex")]
     public double? StartShotIndex { get; set; }

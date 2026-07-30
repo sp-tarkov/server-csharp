@@ -7,7 +7,8 @@ using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
+using SPTarkov.Server.Core.Services.Ragfair;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Callbacks;
@@ -19,12 +20,11 @@ public class RagfairCallbacks(
     RagfairController ragfairController,
     RagfairTaxService ragfairTaxService,
     RagfairPriceService ragfairPriceService,
-    ConfigServer configServer
+    RagfairOfferService ragfairOfferService,
+    RagfairConfig ragfairConfig
 ) : IOnLoad, IOnUpdate
 {
-    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
-
-    public Task OnLoad()
+    public Task OnLoadAsync(CancellationToken cancellationToken)
     {
         ragfairPriceService.Load();
         ragfairServer.Load();
@@ -32,16 +32,16 @@ public class RagfairCallbacks(
         return Task.CompletedTask;
     }
 
-    public Task<bool> OnUpdate(long secondsSinceLastRun)
+    public Task<bool> OnUpdateAsync(long secondsSinceLastRun, CancellationToken cancellationToken)
     {
-        if (secondsSinceLastRun < RagfairConfig.RunIntervalSeconds)
+        if (secondsSinceLastRun < ragfairConfig.RunIntervalSeconds)
         {
             // Not enough time has passed since last run, exit early
             return Task.FromResult(false);
         }
 
         // There is a flag inside this class that only makes it run once.
-        ragfairServer.AddPlayerOffers();
+        ragfairOfferService.AddPlayerOffers();
 
         // Check player offers and mail payment to player if sold
         ragfairController.Update();
@@ -84,9 +84,9 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse AddOffer(PmcData pmcData, AddOfferRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> AddOffer(PmcData pmcData, AddOfferRequestData info, MongoId sessionID)
     {
-        return ragfairController.AddPlayerOffer(pmcData, info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(ragfairController.AddPlayerOffer(pmcData, info, sessionID));
     }
 
     /// <summary>
@@ -96,9 +96,9 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse RemoveOffer(PmcData pmcData, RemoveOfferRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> RemoveOffer(PmcData pmcData, RemoveOfferRequestData info, MongoId sessionID)
     {
-        return ragfairController.FlagOfferForRemoval(info.OfferId, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(ragfairController.FlagOfferForRemoval(info.OfferId, sessionID));
     }
 
     /// <summary>
@@ -108,9 +108,9 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse ExtendOffer(PmcData pmcData, ExtendOfferRequestData info, MongoId sessionID)
+    public ValueTask<ItemEventRouterResponse> ExtendOffer(PmcData pmcData, ExtendOfferRequestData info, MongoId sessionID)
     {
-        return ragfairController.ExtendOffer(info, sessionID);
+        return new ValueTask<ItemEventRouterResponse>(ragfairController.ExtendOffer(info, sessionID));
     }
 
     /// <summary>

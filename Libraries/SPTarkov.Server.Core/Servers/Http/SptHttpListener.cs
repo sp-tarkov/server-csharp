@@ -2,15 +2,14 @@ using System.Collections.Immutable;
 using System.IO.Compression;
 using System.Text;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Routers;
-using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Servers.Http;
 
@@ -26,18 +25,18 @@ public class SptHttpListener(
 {
     private static readonly ImmutableHashSet<string> SupportedMethods = ["GET", "PUT", "POST"];
 
-    public bool CanHandle(MongoId _, HttpContext context)
+    public bool CanHandle(HttpContext context)
     {
         return SupportedMethods.Contains(context.Request.Method) && httpRouter.CanHandle(context);
     }
 
-    public async Task Handle(MongoId sessionId, HttpContext context)
+    public async Task HandleAsync(MongoId sessionId, HttpContext context, CancellationToken cancellationToken = default)
     {
         switch (context.Request.Method)
         {
             case "GET":
             {
-                var response = await GetResponse(sessionId, context, null);
+                var response = await GetResponseAsync(sessionId, context, null, cancellationToken);
 
                 // Another handler is already handling this, or no handler was found.
                 if (response is null)
@@ -45,7 +44,7 @@ public class SptHttpListener(
                     return;
                 }
 
-                await SendResponse(sessionId, context.Request, context.Response, null, response);
+                await SendResponseAsync(sessionId, context.Request, context.Response, null, response, cancellationToken);
                 break;
             }
             // these are handled almost identically.
@@ -66,12 +65,12 @@ public class SptHttpListener(
                 {
                     await using var deflateStream = new ZLibStream(context.Request.Body, CompressionMode.Decompress);
                     using var reader = new StreamReader(deflateStream, Encoding.UTF8);
-                    body = await reader.ReadToEndAsync();
+                    body = await reader.ReadToEndAsync(cancellationToken);
                 }
                 else
                 {
                     using var reader = new StreamReader(context.Request.Body, Encoding.UTF8);
-                    body = await reader.ReadToEndAsync();
+                    body = await reader.ReadToEndAsync(cancellationToken);
                 }
 
                 if (!requestIsCompressed)
@@ -82,7 +81,7 @@ public class SptHttpListener(
                     }
                 }
 
-                var response = await GetResponse(sessionId, context, body);
+                var response = await GetResponseAsync(sessionId, context, body, cancellationToken);
 
                 // Another handler is already handling this, or no handler was found.
                 if (response is null)
@@ -90,7 +89,7 @@ public class SptHttpListener(
                     return;
                 }
 
-                await SendResponse(sessionId, context.Request, context.Response, body, response);
+                await SendResponseAsync(sessionId, context.Request, context.Response, body, response, cancellationToken);
                 break;
             }
         }
@@ -104,7 +103,17 @@ public class SptHttpListener(
     /// <param name="resp"> Outgoing response </param>
     /// <param name="body"> Buffer </param>
     /// <param name="output"> Server generated response data</param>
-    public async Task SendResponse(MongoId sessionID, HttpRequest req, HttpResponse resp, object? body, string output)
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> that can be used to cancel the response operation.
+    /// </param>
+    public async Task SendResponseAsync(
+        MongoId sessionID,
+        HttpRequest req,
+        HttpResponse resp,
+        object? body,
+        string output,
+        CancellationToken cancellationToken = default
+    )
     {
         body ??= new object();
 
@@ -113,7 +122,7 @@ public class SptHttpListener(
         if (IsDebugRequest(req))
         {
             // Send only raw response without transformation
-            await SendJson(resp, output, sessionID);
+            await SendJsonAsync(resp, output, sessionID, cancellationToken);
             if (logger.IsLogEnabled(LogLevel.Debug))
             {
                 logger.Debug($"Response: {output}");
@@ -127,12 +136,12 @@ public class SptHttpListener(
         var serialiser = serializers.FirstOrDefault(x => x.CanHandle(output));
         if (serialiser != null)
         {
-            await serialiser.Serialize(sessionID, req, resp, bodyInfo);
+            await serialiser.SerializeAsync(sessionID, req, resp, bodyInfo, cancellationToken);
         }
         else
         // No serializer can handle the request (majority of requests don't), zlib the output and send response back
         {
-            await SendZlibJson(resp, output, sessionID);
+            await SendZlibJsonAsync(resp, output, sessionID, cancellationToken);
         }
 
         LogRequest(req, output);
@@ -162,9 +171,14 @@ public class SptHttpListener(
         }
     }
 
-    public async ValueTask<string> GetResponse(MongoId sessionId, HttpContext context, string? body)
+    public async ValueTask<string> GetResponseAsync(
+        MongoId sessionId,
+        HttpContext context,
+        string? body,
+        CancellationToken cancellationToken = default
+    )
     {
-        var output = await httpRouter.GetResponse(context.Request, sessionId, body);
+        var output = await httpRouter.GetResponseAsync(context.Request, sessionId, body, cancellationToken);
 
         // Route doesn't exist or response is not properly set up
         if (string.IsNullOrEmpty(output))
@@ -186,7 +200,7 @@ public class SptHttpListener(
         return output;
     }
 
-    public async Task SendJson(HttpResponse resp, string? output, MongoId sessionID)
+    public async Task SendJsonAsync(HttpResponse resp, string? output, MongoId sessionID, CancellationToken cancellationToken = default)
     {
         resp.StatusCode = 200;
         resp.ContentType = "application/json";
@@ -194,11 +208,11 @@ public class SptHttpListener(
 
         if (!string.IsNullOrEmpty(output))
         {
-            await resp.WriteAsync(output);
+            await resp.WriteAsync(output, cancellationToken: cancellationToken);
         }
     }
 
-    public async Task SendZlibJson(HttpResponse resp, string output, MongoId sessionID)
+    public async Task SendZlibJsonAsync(HttpResponse resp, string output, MongoId sessionID, CancellationToken cancellationToken = default)
     {
         resp.StatusCode = 200;
         resp.ContentType = "application/json";
@@ -206,7 +220,7 @@ public class SptHttpListener(
 
         await using (var deflateStream = new ZLibStream(resp.Body, CompressionLevel.SmallestSize))
         {
-            await deflateStream.WriteAsync(Encoding.UTF8.GetBytes(output));
+            await deflateStream.WriteAsync(Encoding.UTF8.GetBytes(output), cancellationToken);
         }
     }
 

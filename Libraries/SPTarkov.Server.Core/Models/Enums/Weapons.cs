@@ -1,6 +1,8 @@
 using SPTarkov.Server.Core.Models.Common;
 
 // This is an auto generated file, do not modify. Re-generate by running MongoIdTplGenerator.exe
+namespace SPTarkov.Server.Core.Models.Enums;
+
 public static class Weapons
 {
     public static readonly MongoId ASSAULTCARBINE_762X39_OP_SKS = new MongoId("587e02ff24597743df3deaeb");

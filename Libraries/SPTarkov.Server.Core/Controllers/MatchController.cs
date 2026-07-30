@@ -1,33 +1,33 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.InRaid;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Match;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
-using static SPTarkov.Server.Core.Services.MatchLocationService;
+using SPTarkov.Server.Core.Services.InRaid;
+using SPTarkov.Server.Core.Services.Profile;
+using static SPTarkov.Server.Core.Services.InRaid.MatchLocationService;
 
 namespace SPTarkov.Server.Core.Controllers;
 
 [Injectable]
 public class MatchController(
     MatchLocationService matchLocationService,
-    ConfigServer configServer,
+    MatchConfig matchConfig,
+    PmcConfig pmcConfig,
     LocationLifecycleService locationLifecycleService,
     ProfileActivityService profileActivityService,
     WeatherHelper weatherHelper
 )
 {
-    protected readonly MatchConfig MatchConfig = configServer.GetConfig<MatchConfig>();
-    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
-
     /// <summary>
     ///     Handle client/match/available
     /// </summary>
     /// <returns>True if server should be available</returns>
     public bool GetEnabled()
     {
-        return MatchConfig.Enabled;
+        return matchConfig.Enabled;
     }
 
     /// <summary>
@@ -100,9 +100,9 @@ public class MatchController(
         // TODO: add code to strip PMC of equipment now they've started the raid
 
         // Set pmcs to difficulty set in pre-raid screen if override in bot config isnt enabled
-        if (!PMCConfig.UseDifficultyOverride)
+        if (!pmcConfig.UseDifficultyOverride)
         {
-            PMCConfig.Difficulty = ConvertDifficultyDropdownIntoBotDifficulty(request.WavesSettings.BotDifficulty.ToString());
+            pmcConfig.Difficulty = ConvertDifficultyDropdownIntoBotDifficulty(request.WavesSettings.BotDifficulty.ToString());
         }
     }
 
@@ -128,9 +128,13 @@ public class MatchController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Start raid request</param>
     /// <returns>StartLocalRaidResponseData</returns>
-    public StartLocalRaidResponseData StartLocalRaid(MongoId sessionId, StartLocalRaidRequestData request)
+    public async Task<StartLocalRaidResponseData> StartLocalRaidAsync(
+        MongoId sessionId,
+        StartLocalRaidRequestData request,
+        CancellationToken cancellationToken = default
+    )
     {
-        return locationLifecycleService.StartLocalRaid(sessionId, request);
+        return await locationLifecycleService.StartLocalRaidAsync(sessionId, request, cancellationToken);
     }
 
     /// <summary>
@@ -138,8 +142,8 @@ public class MatchController(
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Emd local raid request</param>
-    public void EndLocalRaid(MongoId sessionId, EndLocalRaidRequestData request)
+    public async Task EndLocalRaidAsync(MongoId sessionId, EndLocalRaidRequestData request, CancellationToken cancellationToken = default)
     {
-        locationLifecycleService.EndLocalRaid(sessionId, request);
+        await locationLifecycleService.EndLocalRaidAsync(sessionId, request, cancellationToken);
     }
 }

@@ -145,13 +145,19 @@ public record BotConfig : BaseConfig
 public record GoonSpawnSystem
 {
     [JsonPropertyName("enabled")]
-    public bool Enabled { get; set; }
+    public required bool Enabled { get; set; }
 
     [JsonPropertyName("locationPool")]
-    public IEnumerable<string> LocationPool { get; set; }
+    public required IEnumerable<string> LocationPool { get; set; }
 
     [JsonPropertyName("spawnChance")]
-    public double SpawnChance { get; set; }
+    public required double SpawnChance { get; set; }
+
+    /// <summary>
+    /// How often (in hours) the goons rotate to a new map
+    /// </summary>
+    [JsonPropertyName("rotationIntervalHours")]
+    public required int RotationIntervalHours { get; set; }
 }
 
 public record WeeklyBossSettings
@@ -216,6 +222,19 @@ public record EquipmentFilters
 
     [JsonPropertyName("forceOnlyArmoredRigWhenNoArmor")]
     public bool? ForceOnlyArmoredRigWhenNoArmor { get; set; }
+
+    /// <summary>
+    ///     Whether the bot should skip chances to have a back plate if the front plate is missing
+    /// </summary>
+    [JsonPropertyName("skipBackPlateIfFrontPlateMissing")]
+    public bool? SkipBackPlateIfFrontPlateMissing { get; set; }
+
+    /// <summary>
+    ///     Try to match the bot's back plate level to the front plate's level instead of being a better plate
+    ///     Only works if filtering plates by level
+    /// </summary>
+    [JsonPropertyName("limitPlateClassToFrontPlateClass")]
+    public bool? LimitPlateClassToFrontPlateClass { get; set; }
 
     /// <summary>
     ///     Should plates be filtered by level

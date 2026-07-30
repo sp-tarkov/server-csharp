@@ -26,6 +26,7 @@ public class PatchManager
 
     private Harmony? _harmony;
     private readonly List<AbstractPatch> _patches = [];
+    private Assembly? _ownersAssembly;
 
     /// <summary>
     ///     Adds a single patch
@@ -39,6 +40,7 @@ public class PatchManager
             throw new PatchException("You cannot manually add patches when using auto patching");
         }
 
+        _ownersAssembly ??= Assembly.GetCallingAssembly();
         _patches.Add(patch);
     }
 
@@ -54,6 +56,7 @@ public class PatchManager
             throw new PatchException("You cannot manually add patches when using auto patching");
         }
 
+        _ownersAssembly ??= Assembly.GetCallingAssembly();
         _patches.AddRange(patchList);
     }
 
@@ -111,10 +114,11 @@ public class PatchManager
         }
 
         _harmony ??= new Harmony(PatcherName);
+        _ownersAssembly ??= Assembly.GetCallingAssembly();
 
         if (AutoPatch)
         {
-            var patches = GetPatches(Assembly.GetCallingAssembly());
+            var patches = GetPatches(_ownersAssembly);
 
             if (patches.Count == 0)
             {
@@ -126,7 +130,7 @@ public class PatchManager
             {
                 try
                 {
-                    ((AbstractPatch)Activator.CreateInstance(type)).Enable(_harmony);
+                    ((AbstractPatch)Activator.CreateInstance(type)!).Enable(_harmony);
                     successfulPatches++;
                 }
                 catch (Exception ex)
@@ -171,6 +175,7 @@ public class PatchManager
             throw new PatchException("You cannot disable without first enabling patches. _harmony is null");
         }
 
+        _ownersAssembly ??= Assembly.GetCallingAssembly();
         if (AutoPatch)
         {
             var patches = GetPatches(Assembly.GetCallingAssembly());
@@ -185,7 +190,7 @@ public class PatchManager
             {
                 try
                 {
-                    ((AbstractPatch)Activator.CreateInstance(type)).Disable(_harmony);
+                    ((AbstractPatch)Activator.CreateInstance(type)!).Disable(_harmony);
                     disabledPatches++;
                 }
                 catch (Exception ex)
@@ -231,6 +236,7 @@ public class PatchManager
             throw new PatchException("You cannot enable patches without setting a PatcherName.");
         }
 
+        _ownersAssembly ??= Assembly.GetCallingAssembly();
         patch.Enable(_harmony);
     }
 
@@ -251,6 +257,7 @@ public class PatchManager
             throw new PatchException("You cannot disable without first enabling patches. _harmony is null");
         }
 
+        _ownersAssembly ??= Assembly.GetCallingAssembly();
         patch.Disable(_harmony);
     }
 

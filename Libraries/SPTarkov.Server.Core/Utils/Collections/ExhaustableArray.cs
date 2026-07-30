@@ -15,7 +15,7 @@ public record ExhaustableArray<T> : IExhaustableArray<T>
     {
         _cloner = cloner;
         _randomUtil = randomUtil;
-        pool = cloner.Clone(itemPool ?? []);
+        pool = new LinkedList<T>(itemPool ?? []);
     }
 
     public ExhaustableArray(ICollection<T>? itemPool, RandomUtil randomUtil, ICloner cloner)

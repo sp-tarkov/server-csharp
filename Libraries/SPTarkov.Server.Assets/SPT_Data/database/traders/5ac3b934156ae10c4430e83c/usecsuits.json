@@ -1452,5 +1452,61 @@
       "requiredTid": "6617beeaa9cfa777ca915b7c",
       "prestigeLevel": 0
     }
+  },
+  {
+    "_id": "66744a92e4a26f00b654acf7",
+    "tid": "5ac3b934156ae10c4430e83c",
+    "suiteId": "66589baadaadd1069736c54c",
+    "isActive": true,
+    "isHiddenInPVE": true,
+    "externalObtain": false,
+    "internalObtain": true,
+    "requirements": {
+      "loyaltyLevel": 3,
+      "profileLevel": 30,
+      "standing": 0,
+      "skillRequirements": [],
+      "questRequirements": [],
+      "achievementRequirements": [],
+      "itemRequirements": [
+        {
+          "id": null,
+          "count": 6,
+          "_tpl": "6656560053eaaa7a23349c86",
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
+        }
+      ],
+      "requiredTid": "6617beeaa9cfa777ca915b7c",
+      "prestigeLevel": 0
+    }
+  },
+  {
+    "_id": "66744ad4b1e7597eb971a5b7",
+    "tid": "5ac3b934156ae10c4430e83c",
+    "suiteId": "66589ef5146af22739040fbb",
+    "isActive": true,
+    "isHiddenInPVE": true,
+    "externalObtain": false,
+    "internalObtain": true,
+    "requirements": {
+      "loyaltyLevel": 4,
+      "profileLevel": 42,
+      "standing": 0,
+      "skillRequirements": [],
+      "questRequirements": [],
+      "achievementRequirements": [],
+      "itemRequirements": [
+        {
+          "id": null,
+          "count": 10,
+          "_tpl": "6656560053eaaa7a23349c86",
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
+        }
+      ],
+      "requiredTid": "6617beeaa9cfa777ca915b7c",
+      "prestigeLevel": 0
+    }
   }
 ]

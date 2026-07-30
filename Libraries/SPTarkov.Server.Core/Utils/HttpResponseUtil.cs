@@ -5,6 +5,7 @@ using SPTarkov.Server.Core.Models.Eft.HttpResponse;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Locales;
 
 namespace SPTarkov.Server.Core.Utils;
 
@@ -59,13 +60,13 @@ public class HttpResponseUtil(JsonUtil jsonUtil, ServerLocalisationService serve
     public string GetUnclearedBody<T>(T? data, BackendErrorCodes err = BackendErrorCodes.None, string? errmsg = null)
     {
         return jsonUtil.Serialize(
-            new GetBodyResponseData<T>
-            {
-                Err = err,
-                ErrMsg = errmsg,
-                Data = data,
-            }
-        );
+                new GetBodyResponseData<T>
+                {
+                    Err = err,
+                    ErrMsg = errmsg,
+                    Data = data,
+                }
+            ) ?? throw new InvalidOperationException("Could not serialize data!");
     }
 
     /// <summary>

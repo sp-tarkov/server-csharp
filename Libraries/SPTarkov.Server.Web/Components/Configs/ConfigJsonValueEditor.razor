@@ -1,0 +1,433 @@
+@using System.Globalization
+@using System.Text.Json
+@using System.Text.Json.Nodes
+
+@if (Value is JsonObject jsonObject)
+{
+    <MudExpansionPanels Class="@GetPanelClass()" Elevation="0" Dense="true" MultiExpansion="true">
+        <MudExpansionPanel Text="@PanelTitle" Expanded="@IsRoot">
+            <div class="config-json-object">
+                <div class="config-json-section-summary">
+                    <span class="config-json-kind config-json-kind-object">Object</span>
+                    <span>@GetVisibleObjectPropertyCount(jsonObject).ToString("N0") visible properties</span>
+                </div>
+
+                <Virtualize Items="@GetObjectProperties(jsonObject)" Context="property" ItemSize="74" OverscanCount="8">
+                    <ConfigJsonValueEditor @key="property.Key"
+                                           Name="@property.Key"
+                                           Value="@property.Value"
+                                           Depth="@(Depth + 1)"
+                                           Path="@AppendJsonPath(Path, property.Key)"
+                                           AddableObjectPaths="@AddableObjectPaths"
+                                           IgnoredSectionPaths="@IgnoredSectionPaths"
+                                           ValueChanged="value => SetObjectProperty(jsonObject, property.Key, value)"
+                                           Changed="NotifyChanged" />
+                </Virtualize>
+
+                @if (CanAddProperties)
+                {
+                    <div class="config-json-add-row">
+                        <MudTextField T="string"
+                                      Label="Property"
+                                      Variant="Variant.Outlined"
+                                      Dense="true"
+                                      @bind-Value="_newPropertyName"
+                                      Class="config-json-add-name" />
+                        <MudSelect T="string"
+                                   Label="Type"
+                                   Variant="Variant.Outlined"
+                                   Dense="true"
+                                   @bind-Value="_newPropertyType"
+                                   Class="config-json-add-type">
+                            @foreach (var option in AddTypeOptions)
+                            {
+                                <MudSelectItem T="string" Value="@option">@option</MudSelectItem>
+                            }
+                        </MudSelect>
+                        <MudTooltip Text="Add property">
+                            <MudIconButton Icon="@Icons.Material.Filled.Add"
+                                           Variant="Variant.Outlined"
+                                           Color="Color.Secondary"
+                                           Disabled="@(!CanAddProperty(jsonObject))"
+                                           OnClick="() => AddObjectProperty(jsonObject)"
+                                           aria-label="Add property" />
+                        </MudTooltip>
+                    </div>
+                }
+            </div>
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+}
+else if (Value is JsonArray jsonArray)
+{
+    <MudExpansionPanels Class="@GetPanelClass()" Elevation="0" Dense="true" MultiExpansion="true">
+        <MudExpansionPanel Text="@PanelTitle" Expanded="@IsRoot">
+            <div class="config-json-array">
+                <div class="config-json-section-summary">
+                    <span class="config-json-kind config-json-kind-array">Array</span>
+                    <span>@GetVisibleArrayItemCount(jsonArray).ToString("N0") visible items</span>
+                </div>
+
+                <Virtualize Items="@GetArrayItems(jsonArray)" Context="item" ItemSize="74" OverscanCount="8">
+                    <div @key="item.Index" class="config-json-array-row">
+                        <ConfigJsonValueEditor Name="@($"[{item.Index}]")"
+                                               Value="@item.Value"
+                                               Depth="@(Depth + 1)"
+                                               Path="@AppendJsonPath(Path, item.Index.ToString(CultureInfo.InvariantCulture))"
+                                               AddableObjectPaths="@AddableObjectPaths"
+                                               IgnoredSectionPaths="@IgnoredSectionPaths"
+                                               ValueChanged="value => SetArrayItem(jsonArray, item.Index, value)"
+                                               Changed="NotifyChanged" />
+                        <MudTooltip Text="Remove item">
+                            <MudIconButton Icon="@Icons.Material.Filled.RemoveCircleOutline"
+                                           Variant="Variant.Outlined"
+                                           Color="Color.Secondary"
+                                           OnClick="() => RemoveArrayItem(jsonArray, item.Index)"
+                                           aria-label="Remove item" />
+                        </MudTooltip>
+                    </div>
+                </Virtualize>
+
+                <div class="config-json-add-row">
+                    <MudSelect T="string"
+                               Label="Type"
+                               Variant="Variant.Outlined"
+                               Dense="true"
+                               @bind-Value="_newArrayItemType"
+                               Class="config-json-add-type">
+                        @foreach (var option in AddTypeOptions)
+                        {
+                            <MudSelectItem T="string" Value="@option">@option</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudTooltip Text="Add item">
+                        <MudIconButton Icon="@Icons.Material.Filled.Add"
+                                       Variant="Variant.Outlined"
+                                       Color="Color.Secondary"
+                                       OnClick="() => AddArrayItem(jsonArray)"
+                                       aria-label="Add item" />
+                    </MudTooltip>
+                </div>
+            </div>
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+}
+else
+{
+    <div class="@GetPrimitiveClass()">
+        <div class="config-json-field-meta">
+            <MudText Typo="Typo.caption" Class="config-json-label">@Name</MudText>
+            <span class="@GetValueKindClass()">@ValueKindLabel</span>
+        </div>
+
+        @if (TryGetBoolean(Value, out var boolValue))
+        {
+            <div class="config-json-switch-field">
+                <MudSwitch T="bool"
+                           Value="@boolValue"
+                           ValueChanged="SetBoolean"
+                           Color="Color.Warning" />
+                <span>@(boolValue ? "Enabled" : "Disabled")</span>
+            </div>
+        }
+        else
+        {
+            <MudTextField T="string"
+                          Value="@PrimitiveText"
+                          ValueChanged="SetPrimitiveText"
+                          Immediate="true"
+                          Variant="Variant.Outlined"
+                          Dense="true"
+                          Class="config-json-primitive-input" />
+        }
+    </div>
+}
+
+@code {
+    private static readonly string[] AddTypeOptions = ["String", "Number", "Boolean", "Object", "Array", "Null"];
+
+    private string? _newPropertyName;
+    private string _newPropertyType = "String";
+    private string _newArrayItemType = "String";
+
+    [Parameter]
+    public string Name { get; set; } = string.Empty;
+
+    [Parameter]
+    public JsonNode? Value { get; set; }
+
+    [Parameter]
+    public int Depth { get; set; }
+
+    [Parameter]
+    public string Path { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool IsRoot { get; set; }
+
+    [Parameter]
+    public IReadOnlyDictionary<string, bool> AddableObjectPaths { get; set; } = new Dictionary<string, bool>();
+
+    [Parameter]
+    public IReadOnlySet<string> IgnoredSectionPaths { get; set; } = new HashSet<string>();
+
+    [Parameter]
+    public EventCallback<JsonNode?> ValueChanged { get; set; }
+
+    [Parameter]
+    public EventCallback Changed { get; set; }
+
+    private string PanelTitle
+    {
+        get
+        {
+            return Value switch
+            {
+                JsonObject jsonObject => $"{Name} ({jsonObject.Count} properties)",
+                JsonArray jsonArray => $"{Name} ({jsonArray.Count} items)",
+                _ => Name,
+            };
+        }
+    }
+
+    private string PrimitiveText
+    {
+        get
+        {
+            if (TryGetString(Value, out var stringValue))
+            {
+                return stringValue;
+            }
+
+            return Value is null ? "null" : Value.ToJsonString();
+        }
+    }
+
+    private bool CanAddProperties
+    {
+        get { return !AddableObjectPaths.TryGetValue(Path, out var canAddProperties) || canAddProperties; }
+    }
+
+    private string ValueKindLabel
+    {
+        get
+        {
+            return Value switch
+            {
+                null => "Null",
+                JsonValue jsonValue when jsonValue.TryGetValue(out bool _) => "Boolean",
+                JsonValue jsonValue when jsonValue.TryGetValue(out string _) => "String",
+                JsonValue jsonValue when IsNumberValue(jsonValue) => "Number",
+                JsonValue => "Value",
+                _ => "Value",
+            };
+        }
+    }
+
+    private async Task SetObjectProperty(JsonObject jsonObject, string propertyName, JsonNode? value)
+    {
+        jsonObject[propertyName] = value;
+        await NotifyChanged();
+    }
+
+    private async Task SetArrayItem(JsonArray jsonArray, int index, JsonNode? value)
+    {
+        jsonArray[index] = value;
+        await NotifyChanged();
+    }
+
+    private async Task AddObjectProperty(JsonObject jsonObject)
+    {
+        if (!CanAddProperty(jsonObject))
+        {
+            return;
+        }
+
+        jsonObject[_newPropertyName!.Trim()] = CreateDefaultNode(_newPropertyType);
+        _newPropertyName = null;
+        await NotifyChanged();
+    }
+
+    private async Task AddArrayItem(JsonArray jsonArray)
+    {
+        jsonArray.Add(CreateDefaultNode(_newArrayItemType));
+        await NotifyChanged();
+    }
+
+    private async Task RemoveArrayItem(JsonArray jsonArray, int index)
+    {
+        jsonArray.RemoveAt(index);
+        await NotifyChanged();
+    }
+
+    private async Task SetBoolean(bool value)
+    {
+        await ValueChanged.InvokeAsync(JsonValue.Create(value));
+    }
+
+    private async Task SetPrimitiveText(string text)
+    {
+        var value = TryGetString(Value, out _) ? JsonValue.Create(text) : ParsePrimitiveText(text);
+        await ValueChanged.InvokeAsync(value);
+    }
+
+    private async Task NotifyChanged()
+    {
+        await Changed.InvokeAsync();
+    }
+
+    private bool CanAddProperty(JsonObject jsonObject)
+    {
+        return CanAddProperties && !string.IsNullOrWhiteSpace(_newPropertyName) && !jsonObject.ContainsKey(_newPropertyName.Trim());
+    }
+
+    private string GetPanelClass()
+    {
+        return IsRoot ? "config-json-panels config-json-root-panels" : $"config-json-panels config-json-depth-{Math.Min(Depth, 6)}";
+    }
+
+    private string GetPrimitiveClass()
+    {
+        return $"config-json-primitive config-json-primitive-{ValueKindLabel.ToLowerInvariant()}";
+    }
+
+    private string GetValueKindClass()
+    {
+        return $"config-json-kind config-json-kind-{ValueKindLabel.ToLowerInvariant()}";
+    }
+
+    private ICollection<KeyValuePair<string, JsonNode?>> GetObjectProperties(JsonObject jsonObject)
+    {
+        return jsonObject.Where(property => !IsIgnoredPath(AppendJsonPath(Path, property.Key))).ToList();
+    }
+
+    private int GetVisibleObjectPropertyCount(JsonObject jsonObject)
+    {
+        return jsonObject.Count(property => !IsIgnoredPath(AppendJsonPath(Path, property.Key)));
+    }
+
+    private ICollection<JsonArrayItem> GetArrayItems(JsonArray jsonArray)
+    {
+        var items = new List<JsonArrayItem>(jsonArray.Count);
+
+        for (var index = 0; index < jsonArray.Count; index++)
+        {
+            if (IsIgnoredPath(AppendJsonPath(Path, index.ToString(CultureInfo.InvariantCulture))))
+            {
+                continue;
+            }
+
+            items.Add(new JsonArrayItem(index, jsonArray[index]));
+        }
+
+        return items;
+    }
+
+    private int GetVisibleArrayItemCount(JsonArray jsonArray)
+    {
+        var count = 0;
+
+        for (var index = 0; index < jsonArray.Count; index++)
+        {
+            if (!IsIgnoredPath(AppendJsonPath(Path, index.ToString(CultureInfo.InvariantCulture))))
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private bool IsIgnoredPath(string path)
+    {
+        return IgnoredSectionPaths.Contains(path);
+    }
+
+    private static string AppendJsonPath(string path, string segment)
+    {
+        var escapedSegment = segment.Replace("~", "~0", StringComparison.Ordinal).Replace("/", "~1", StringComparison.Ordinal);
+        return string.IsNullOrEmpty(path) ? $"/{escapedSegment}" : $"{path}/{escapedSegment}";
+    }
+
+    private static JsonNode? CreateDefaultNode(string type)
+    {
+        return type switch
+        {
+            "Number" => JsonValue.Create(0),
+            "Boolean" => JsonValue.Create(false),
+            "Object" => new JsonObject(),
+            "Array" => new JsonArray(),
+            "Null" => null,
+            _ => JsonValue.Create(string.Empty),
+        };
+    }
+
+    private static JsonNode? ParsePrimitiveText(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return JsonValue.Create(string.Empty);
+        }
+
+        try
+        {
+            using var document = JsonDocument.Parse(text);
+            return JsonNode.Parse(document.RootElement.GetRawText());
+        }
+        catch (JsonException)
+        {
+            if (long.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var longValue))
+            {
+                return JsonValue.Create(longValue);
+            }
+
+            if (double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                return JsonValue.Create(doubleValue);
+            }
+
+            return JsonValue.Create(text);
+        }
+    }
+
+    private static bool TryGetBoolean(JsonNode? node, out bool value)
+    {
+        if (node is JsonValue jsonValue && jsonValue.TryGetValue(out bool boolValue))
+        {
+            value = boolValue;
+            return true;
+        }
+
+        value = false;
+        return false;
+    }
+
+    private static bool TryGetString(JsonNode? node, out string value)
+    {
+        if (node is JsonValue jsonValue && jsonValue.TryGetValue(out string? stringValue))
+        {
+            value = stringValue ?? string.Empty;
+            return true;
+        }
+
+        value = string.Empty;
+        return false;
+    }
+
+    private static bool IsNumberValue(JsonValue jsonValue)
+    {
+        return jsonValue.TryGetValue(out byte _)
+            || jsonValue.TryGetValue(out sbyte _)
+            || jsonValue.TryGetValue(out short _)
+            || jsonValue.TryGetValue(out ushort _)
+            || jsonValue.TryGetValue(out int _)
+            || jsonValue.TryGetValue(out uint _)
+            || jsonValue.TryGetValue(out long _)
+            || jsonValue.TryGetValue(out ulong _)
+            || jsonValue.TryGetValue(out float _)
+            || jsonValue.TryGetValue(out double _)
+            || jsonValue.TryGetValue(out decimal _);
+    }
+
+    private readonly record struct JsonArrayItem(int Index, JsonNode? Value);
+}

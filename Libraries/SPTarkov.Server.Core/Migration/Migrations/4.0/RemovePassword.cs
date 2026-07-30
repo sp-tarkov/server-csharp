@@ -1,24 +1,15 @@
 ﻿using System.Text.Json.Nodes;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Extensions;
 
-namespace SPTarkov.Server.Core.Migration.Migrations;
+namespace SPTarkov.Server.Core.Migration.Migrations._4._0;
 
 /// <summary>
 /// Password property was removed from profile.info in 4.0
 /// </summary>
 [Injectable]
-public class RemovePassword : AbstractProfileMigration
+public sealed class RemovePassword : AbstractProfileMigration
 {
-    public override string FromVersion
-    {
-        get { return "~3.11"; }
-    }
-
-    public override string ToVersion
-    {
-        get { return "4.0"; }
-    }
-
     public override string MigrationName
     {
         get { return "RemovePassword-SPTSharp"; }
@@ -31,15 +22,17 @@ public class RemovePassword : AbstractProfileMigration
 
     public override bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations)
     {
-        var hasPassword = profile["info"]?["password"] != null;
+        var hasPassword = profile.TryGetNode(out _, "info", "password");
 
         return hasPassword;
     }
 
     public override JsonObject? Migrate(JsonObject profile)
     {
-        var profileInfo = profile["info"] as JsonObject;
-        profileInfo?.Remove("password");
+        if (profile.TryGetObject(out var profileInfo, "info"))
+        {
+            profileInfo.Remove("password");
+        }
 
         return base.Migrate(profile);
     }

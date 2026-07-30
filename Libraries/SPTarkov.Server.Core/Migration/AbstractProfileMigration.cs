@@ -5,25 +5,38 @@ namespace SPTarkov.Server.Core.Migration;
 
 public abstract class AbstractProfileMigration : IProfileMigration
 {
-    public virtual string MigrationName { get; }
+    public abstract string MigrationName { get; }
     public virtual IEnumerable<Type> PrerequisiteMigrations { get; } = [];
 
-    [Obsolete("Will be removed in the next version of SPT due to this property not being used.")]
-    public abstract string FromVersion { get; }
-
-    [Obsolete("Will be removed in the next version of SPT due to this property not being used.")]
-    public abstract string ToVersion { get; }
-
     public abstract bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations);
+
+    public virtual bool CanMigrate(
+        JsonObject profile,
+        ProfileMigrationContext context,
+        IEnumerable<IProfileMigration> previouslyRanMigrations
+    )
+    {
+        return CanMigrate(profile, previouslyRanMigrations);
+    }
 
     public virtual JsonObject? Migrate(JsonObject profile)
     {
         return profile;
     }
 
+    public virtual JsonObject? Migrate(JsonObject profile, ProfileMigrationContext context)
+    {
+        return Migrate(profile);
+    }
+
     public virtual bool PostMigrate(SptProfile profile)
     {
         return true;
+    }
+
+    public virtual bool PostMigrate(SptProfile profile, ProfileMigrationContext context)
+    {
+        return PostMigrate(profile);
     }
 
     protected SemanticVersioning.Version? GetProfileVersion(JsonObject profile)

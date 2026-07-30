@@ -1,4 +1,5 @@
-﻿using SPTarkov.Server.Core.Models.Common;
+﻿using System.Runtime.CompilerServices;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 
 namespace SPTarkov.Server.Core.Extensions;
@@ -10,6 +11,7 @@ public static class CurrencyTypeExtensions
     /// </summary>
     /// <param name="currency"></param>
     /// <returns>Tpl of currency</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static MongoId GetCurrencyTpl(this CurrencyType currency)
     {
         return currency switch

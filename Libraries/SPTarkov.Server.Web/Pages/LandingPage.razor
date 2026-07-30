@@ -1,0 +1,119 @@
+@page "/"
+@using SPTarkov.Server.Web.Layout
+@using SPTarkov.Server.Core.Models.Spt.Launcher
+
+@layout BaseMudBlazorLayout
+
+@inject WebLocalizationService WebLocalizationService
+@inject IReadOnlyList<ModPage> ModPages
+
+<PageTitle>@WebLocalizationService.GetText("spt-server")</PageTitle>
+
+<div class="landing-page spt-page">
+
+    <MudContainer MaxWidth="MaxWidth.False" Class="landing-container pa-6">
+        <header class="landing-hero">
+            <MudText Typo="Typo.h1" Class="spt-title">@WebLocalizationService.GetText("landing-page-title")</MudText>
+            <MudText Typo="Typo.body1" Class="landing-subtitle spt-subtitle">
+                @WebLocalizationService.GetText("landing-page-subtitle")
+            </MudText>
+        </header>
+
+        <section class="landing-section" aria-labelledby="server-pages-heading">
+            <MudText Typo="Typo.h2" Id="server-pages-heading" Class="landing-section-title">@WebLocalizationService.GetText("landing-page-server-page-category")</MudText>
+
+            <nav class="landing-grid" aria-label="Server pages">
+                @foreach (var link in _pages)
+                {
+                    <a class="landing-link-card spt-card" href="@link.Href">
+                        <span class="landing-link-icon">
+                            <MudIcon Icon="@(link.Icon)" Size="Size.Medium" />
+                        </span>
+                        <span class="landing-link-copy">
+                            <span class="landing-link-title">@link.Title</span>
+                            <span class="landing-link-description">@link.Description</span>
+                        </span>
+                        <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" Class="landing-link-arrow" />
+                    </a>
+                }
+            </nav>
+        </section>
+
+        @if (_modPages.Count > 0)
+        {
+            <section class="landing-section" aria-labelledby="mod-pages-heading">
+                <MudText Typo="Typo.h2" Id="mod-pages-heading" Class="landing-section-title">@WebLocalizationService.GetText("landing-page-mod-page-category")</MudText>
+
+                <nav class="landing-grid landing-mod-grid" aria-label="Mod pages">
+                    @foreach (var link in _modPages)
+                    {
+                        <a class="landing-link-card landing-mod-link-card spt-card" href="@link.Href">
+                            <span class="landing-link-icon">
+                                <MudIcon Icon="@(link.Icon)" Size="Size.Medium" />
+                            </span>
+                            <span class="landing-link-copy">
+                                <span class="landing-link-title">@link.Title</span>
+                                <span class="landing-link-description">@link.Description</span>
+                            </span>
+                            <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" Class="landing-link-arrow" />
+                        </a>
+                    }
+                </nav>
+            </section>
+        }
+    </MudContainer>
+</div>
+
+@code {
+    private IReadOnlyList<LandingPageLink> _pages = [];
+    private IReadOnlyList<LandingPageLink> _modPages = [];
+
+    protected override void OnInitialized()
+    {
+        _pages =
+        [
+            new LandingPageLink(
+                WebLocalizationService.GetText("database-browser"), "/database",
+                WebLocalizationService.GetText("database-browser-desc"), Icons.Material.Filled.Dataset
+                ),
+            new LandingPageLink(
+                WebLocalizationService.GetText("config-editor"), "/configs",
+                WebLocalizationService.GetText("config-editor-desc"), Icons.Material.Filled.Tune
+                ),
+            new LandingPageLink(
+                WebLocalizationService.GetText("profile-control"), "/profiles",
+                WebLocalizationService.GetText("profile-control-desc"), Icons.Material.Filled.ManageAccounts
+                ),
+            new LandingPageLink(
+                WebLocalizationService.GetText("user-credentials"), "/credentials",
+                WebLocalizationService.GetText("user-credentials-desc"), Icons.Material.Filled.AdminPanelSettings
+                ),
+            new LandingPageLink(
+                WebLocalizationService.GetText("tools"), "/tools",
+                WebLocalizationService.GetText("tools-desc"), Icons.Material.Filled.Build
+                ),
+            new LandingPageLink(
+                WebLocalizationService.GetText("server-health"), "/status",
+                WebLocalizationService.GetText("server-health-desc"), Icons.Material.Filled.MonitorHeart
+                ),
+            new LandingPageLink(
+                WebLocalizationService.GetText("version-4-contribute"), "/thank-you",
+                WebLocalizationService.GetText("version-4-contribute-desc"), Icons.Material.Filled.VolunteerActivism
+                )
+        ];
+
+        // Mod pages come from a shared list. Here we just layer on some presentation.
+        _modPages = ModPages
+            .Select(page => new LandingPageLink(
+                page.Name,
+                page.HomePage,
+                page.Description ?? WebLocalizationService.GetText("desc-not-set-author"),
+                Icons.Material.Filled.Extension
+            ))
+            .ToList();
+
+        base.OnInitialized();
+    }
+
+    private sealed record LandingPageLink(string Title, string Href, string Description, string Icon);
+}

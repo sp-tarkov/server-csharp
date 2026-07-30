@@ -1,14 +1,18 @@
-using System.Collections.Frozen;
 using System.Text.RegularExpressions;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Helpers.Dialog.Commando.SptCommands;
+using SPTarkov.Server.Core.Helpers.Items;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
-using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
+using SPTarkov.Server.Core.Services.Items;
+using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.GiveCommand;
@@ -16,8 +20,8 @@ namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.GiveCommand
 [Injectable]
 public class GiveSptCommand(
     ISptLogger<GiveSptCommand> logger,
+    TemplateTable templateTable,
     ItemHelper itemHelper,
-    DatabaseService databaseService,
     PresetHelper presetHelper,
     ItemFilterService itemFilterService,
     MailSendService mailSendService,
@@ -25,11 +29,11 @@ public class GiveSptCommand(
     ICloner cloner
 ) : ISptCommand
 {
-    private const double _acceptableConfidence = 0.9d;
+    private const double MinSuggestionConfidence = 0.5d;
     private static readonly Regex _commandRegex = new(@"^spt give (((([a-z]{2,5}) )?""(.+)""|\w+) )?([0-9]+)$");
 
     // Exception for flares
-    protected static readonly FrozenSet<MongoId> _excludedPresetItems =
+    protected static readonly HashSet<MongoId> _excludedPresetItems =
     [
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_RED,
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_GREEN,
@@ -141,36 +145,76 @@ public class GiveSptCommand(
                 }
 
                 localizedGlobal = GetGlobalsLocale(locale);
-                var allAllowedItemNames = databaseService
-                    .GetItems()
-                    .Values.Where(IsItemAllowed)
-                    .Select(i => localizedGlobal.GetValueOrDefault($"{i.Id} Name", i.Properties.Name)?.ToLowerInvariant())
-                    .Where(i => !string.IsNullOrEmpty(i));
+                var query = item.ToLowerInvariant();
 
-                var closestItemsMatchedByName = allAllowedItemNames
-                    .Select(i => new { Match = StringSimilarity.Match(item, i, 2, true), ItemName = i })
+                var allAllowedItemNames = templateTable
+                    .Items.Values.Where(IsItemAllowed)
+                    .Select(i => localizedGlobal.GetValueOrDefault($"{i.Id} Name", i.Properties.Name)?.ToLowerInvariant())
+                    .Where(name => !string.IsNullOrEmpty(name))
+                    .Select(name => name!)
                     .ToList();
 
-                closestItemsMatchedByName.Sort((a1, a2) => a2.Match.CompareTo(a1.Match));
-
-                if (closestItemsMatchedByName[0].Match >= _acceptableConfidence)
+                // An exact name match always wins, even if other items contain the same text
+                var exactMatch = allAllowedItemNames.FirstOrDefault(name => name == query);
+                if (exactMatch is not null)
                 {
-                    item = closestItemsMatchedByName[0].ItemName;
+                    item = exactMatch;
                 }
                 else
                 {
-                    var i = 1;
-                    var slicedItems = closestItemsMatchedByName.Slice(0, 10);
-                    // max 10 item names and map them
-                    var itemList = slicedItems.Select(match => $"{i++}. {match.ItemName} (conf: {Math.Round(match.Match * 100d), 2})");
-                    _savedCommand.Add(sessionId, new SavedCommand(quantity, slicedItems.Select(item => item.ItemName).ToList(), locale));
-                    mailSendService.SendUserMessageToPlayer(
-                        sessionId,
-                        commandHandler,
-                        $"Could not find exact match. Closest are:\n{string.Join("\n", itemList)}\n\nUse 'spt give [above number]' to select one."
-                    );
+                    // Use lookup similar to SIC database page
+                    var substringMatches = allAllowedItemNames
+                        .Where(name => name.Contains(query, StringComparison.OrdinalIgnoreCase))
+                        .OrderByDescending(name => name.StartsWith(query, StringComparison.OrdinalIgnoreCase))
+                        .ThenBy(name => name.Length)
+                        .ToList();
 
-                    return new ValueTask<string>(request.DialogId);
+                    if (substringMatches.Count == 1)
+                    {
+                        // Only one item matched, no need to ask which one
+                        item = substringMatches[0];
+                    }
+                    else
+                    {
+                        List<string> candidates;
+                        if (substringMatches.Count > 0)
+                        {
+                            candidates = substringMatches;
+                        }
+                        else
+                        {
+                            // No substring hit, fall back to fuzzy matching to catch typos
+                            candidates = allAllowedItemNames
+                                .Select(name => new { Name = name, Score = FuzzyScore(query, name) })
+                                .Where(match => match.Score >= MinSuggestionConfidence)
+                                .OrderByDescending(match => match.Score)
+                                .Select(match => match.Name)
+                                .ToList();
+                        }
+
+                        if (candidates.Count == 0)
+                        {
+                            mailSendService.SendUserMessageToPlayer(
+                                sessionId,
+                                commandHandler,
+                                $"No items found matching \"{query}\". Please refine your search and try again."
+                            );
+
+                            return new ValueTask<string>(request.DialogId);
+                        }
+
+                        var slicedItems = candidates.Take(10).ToList();
+                        var i = 1;
+                        var itemList = slicedItems.Select(name => $"{i++}. {name}");
+                        _savedCommand.Add(sessionId, new SavedCommand(quantity, slicedItems, locale));
+                        mailSendService.SendUserMessageToPlayer(
+                            sessionId,
+                            commandHandler,
+                            $"Could not find exact match. Closest are:\n{string.Join("\n", itemList)}\n\nUse 'spt give [above number]' to select one."
+                        );
+
+                        return new ValueTask<string>(request.DialogId);
+                    }
                 }
             }
         }
@@ -179,9 +223,8 @@ public class GiveSptCommand(
         // If item is an item name, we need to search using that item name and the locale which one we want otherwise
         // item is just the tplId.
         MongoId tplId = isItemName
-            ? databaseService
-                .GetItems()
-                .Values.Where(IsItemAllowed)
+            ? templateTable
+                .Items.Values.Where(IsItemAllowed)
                 .FirstOrDefault(i => (localizedGlobal[$"{i?.Id} Name"]?.ToLowerInvariant() ?? i.Properties.Name) == item)
                 .Id
             : item;
@@ -283,6 +326,21 @@ public class GiveSptCommand(
         return localeService.GetLocaleDb(desiredLocale);
     }
 
+    protected static double FuzzyScore(string query, string name)
+    {
+        var best = StringSimilarity.Match(query, name, 2, true);
+        foreach (var word in name.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var wordScore = StringSimilarity.Match(query, word, 2, true);
+            if (wordScore > best)
+            {
+                best = wordScore;
+            }
+        }
+
+        return best;
+    }
+
     /// <summary>
     /// A "simple" function that checks if an item is supposed to be given to a player or not
     /// </summary>
@@ -300,7 +358,6 @@ public class GiveSptCommand(
                     BaseClasses.HIDEOUT_AREA_CONTAINER,
                     BaseClasses.LOOT_CONTAINER,
                     BaseClasses.RANDOM_LOOT_CONTAINER,
-                    BaseClasses.MOB_CONTAINER,
                     BaseClasses.BUILT_IN_INSERTS,
                 ]
             );

@@ -1,0 +1,181 @@
+@using SPTarkov.Server.Web.Models.Profiles
+
+<MudPaper Elevation="0" Class="profiles-results spt-panel pa-4">
+    <MudStack Spacing="3">
+        <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="profiles-section-toolbar">
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.h6">Profiles</MudText>
+                <MudText Typo="Typo.caption">@Profiles.Count.ToString("N0") local profiles loaded</MudText>
+            </MudStack>
+
+            <MudStack Row Spacing="1" Class="profiles-actions">
+                <MudTooltip Text="Refresh list">
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                                   Variant="Variant.Outlined"
+                                   Color="Color.Secondary"
+                                   Disabled="@IsBusy"
+                                   OnClick="OnRefresh"
+                                   AriaLabel="Refresh profiles" />
+                </MudTooltip>
+
+                <MudTooltip Text="Save all profiles">
+                    <MudIconButton Icon="@Icons.Material.Filled.Save"
+                                   Variant="Variant.Outlined"
+                                   Color="Color.Secondary"
+                                   Disabled="@IsBusy"
+                                   OnClick="OnSaveAll"
+                                   AriaLabel="Save all profiles" />
+                </MudTooltip>
+            </MudStack>
+        </MudStack>
+
+        <MudTable T="ProfileSummary"
+                  Items="@Profiles"
+                  Dense="true"
+                  Hover="true"
+                  Bordered="false"
+                  Striped="true"
+                  FixedHeader="true"
+                  Height="calc(100vh - 320px)"
+                  Virtualize="true"
+                  RowClassFunc="GetProfileRowClass"
+                  OnRowClick="SelectProfile">
+            <HeaderContent>
+                <MudTh>Username</MudTh>
+                <MudTh>Nickname</MudTh>
+                <MudTh>Side</MudTh>
+                <MudTh>Edition</MudTh>
+                <MudTh>Level</MudTh>
+                <MudTh>Status</MudTh>
+                <MudTh>Profile ID</MudTh>
+                <MudTh></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Username">
+                    <MudText Typo="Typo.body2" Class="profiles-row-title">@context.Username</MudText>
+                </MudTd>
+                <MudTd DataLabel="Nickname">@context.Nickname</MudTd>
+                <MudTd DataLabel="Side">@context.Side</MudTd>
+                <MudTd DataLabel="Edition">@context.Edition</MudTd>
+                <MudTd DataLabel="Level">@context.LevelLabel</MudTd>
+                <MudTd DataLabel="Status">
+                    <MudChip T="string" Size="Size.Small" Color="@GetStatusColor(context)">@context.Status</MudChip>
+                </MudTd>
+                <MudTd DataLabel="Profile ID">
+                    <MudText Typo="Typo.caption" Class="profiles-mono">@context.Id</MudText>
+                </MudTd>
+                <MudTd>
+                    <MudStack Row Spacing="1" Justify="Justify.FlexEnd">
+                        <MudTooltip Text="Clear Messages">
+                            <span @onclick:stopPropagation="true">
+                                <MudIconButton Icon="@Icons.Material.Filled.Mail"
+                                               Size="Size.Small"
+                                               Color="Color.Secondary"
+                                               Disabled="@IsBusy"
+                                               OnClick="@(() => OnClearMessages.InvokeAsync(context))"
+                                               AriaLabel="Clear Messages" />
+                            </span>
+                        </MudTooltip>
+                        <MudTooltip Text="Save profile">
+                            <span @onclick:stopPropagation="true">
+                                <MudIconButton Icon="@Icons.Material.Filled.Save"
+                                               Size="Size.Small"
+                                               Color="Color.Secondary"
+                                               Disabled="@IsBusy"
+                                               OnClick="@(() => OnSaveProfile.InvokeAsync(context))"
+                                               AriaLabel="Save profile" />
+                            </span>
+                        </MudTooltip>
+                        <MudTooltip Text="Download profile">
+                            <span @onclick:stopPropagation="true">
+                                <MudIconButton Icon="@Icons.Material.Filled.Download"
+                                               Size="Size.Small"
+                                               Color="Color.Secondary"
+                                               Disabled="@IsBusy"
+                                               Href="@GetDownloadUrl(context)"
+                                               AriaLabel="Download profile" />
+                            </span>
+                        </MudTooltip>
+                        <MudTooltip Text="Reload profile from disk">
+                            <span @onclick:stopPropagation="true">
+                                <MudIconButton Icon="@Icons.Material.Filled.RestartAlt"
+                                               Size="Size.Small"
+                                               Color="Color.Secondary"
+                                               Disabled="@IsBusy"
+                                               OnClick="@(() => OnReloadProfile.InvokeAsync(context))"
+                                               AriaLabel="Reload profile" />
+                            </span>
+                        </MudTooltip>
+                    </MudStack>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new[] { 25, 50, 100 }" />
+            </PagerContent>
+        </MudTable>
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public IReadOnlyList<ProfileSummary> Profiles { get; set; } = [];
+
+    [Parameter]
+    public string? SelectedProfileId { get; set; }
+
+    [Parameter]
+    public bool IsBusy { get; set; }
+
+    [Parameter]
+    public EventCallback OnRefresh { get; set; }
+
+    [Parameter]
+    public EventCallback OnSaveAll { get; set; }
+
+    [Parameter]
+    public EventCallback<ProfileSummary> OnClearMessages { get; set; }
+
+    [Parameter]
+    public EventCallback<ProfileSummary> OnSaveProfile { get; set; }
+
+    [Parameter]
+    public EventCallback<ProfileSummary> OnReloadProfile { get; set; }
+
+    [Parameter]
+    public EventCallback<ProfileSummary> SelectedProfileChanged { get; set; }
+
+    private Task SelectProfile(TableRowClickEventArgs<ProfileSummary> args)
+    {
+        if (args.Item is null)
+        {
+            return Task.CompletedTask;
+        }
+
+        return SelectedProfileChanged.InvokeAsync(args.Item);
+    }
+
+    private string GetProfileRowClass(ProfileSummary profile, int rowNumber)
+    {
+        return profile.Id == SelectedProfileId ? "profiles-selected-row" : string.Empty;
+    }
+
+    private static string GetDownloadUrl(ProfileSummary profile)
+    {
+        return $"/profiles/{profile.Id}/download";
+    }
+
+    private static Color GetStatusColor(ProfileSummary profile)
+    {
+        if (profile.IsInvalid)
+        {
+            return Color.Error;
+        }
+
+        if (profile.IsWiped)
+        {
+            return Color.Warning;
+        }
+
+        return profile.HasCharacter ? Color.Success : Color.Info;
+    }
+}

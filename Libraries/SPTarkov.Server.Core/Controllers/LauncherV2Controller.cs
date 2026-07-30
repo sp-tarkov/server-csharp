@@ -1,11 +1,12 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Launcher;
-using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Launcher;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 using Info = SPTarkov.Server.Core.Models.Eft.Profile.Info;
 
@@ -14,17 +15,16 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class LauncherV2Controller(
     IReadOnlyList<SptMod> loadedMods,
+    IReadOnlyList<ModPage> modPages,
+    TemplateTable templateTable,
     HashUtil hashUtil,
     SaveServer saveServer,
-    DatabaseService databaseService,
     ServerLocalisationService serverLocalisationService,
-    ConfigServer configServer,
+    CoreConfig coreConfig,
     Watermark watermark,
     ProfileController profileController
 )
 {
-    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
-
     /// <summary>
     ///     Returns a simple string of Pong!
     /// </summary>
@@ -42,7 +42,7 @@ public class LauncherV2Controller(
     public Dictionary<string, string> Types()
     {
         var result = new Dictionary<string, string>();
-        var dbProfiles = databaseService.GetProfileTemplates();
+        var dbProfiles = templateTable.Profiles;
 
         foreach (var (templateName, template) in dbProfiles)
         {
@@ -112,16 +112,24 @@ public class LauncherV2Controller(
     /// <returns></returns>
     public string EftVersion()
     {
-        return CoreConfig.CompatibleTarkovVersion;
+        return coreConfig.CompatibleTarkovVersion;
     }
 
     /// <summary>
     ///     Gets the Servers loaded mods.
     /// </summary>
     /// <returns></returns>
-    public Dictionary<string, AbstractModMetadata> LoadedMods()
+    public Dictionary<string, IModMetadata> LoadedMods()
     {
         return loadedMods.ToDictionary(sptMod => sptMod.ModMetadata.Name, sptMod => sptMod.ModMetadata);
+    }
+
+    /// <summary>
+    ///     Gets a list of mod-registered SIC pages.
+    /// </summary>
+    public List<ModPage> ModPages()
+    {
+        return modPages.ToList();
     }
 
     /// <summary>
@@ -164,11 +172,6 @@ public class LauncherV2Controller(
         return MongoId.Empty();
     }
 
-    public SptProfile GetProfile(MongoId sessionId)
-    {
-        return saveServer.GetProfile(sessionId);
-    }
-
     public MiniProfile? GetMiniProfileFromUsername(LoginRequestData info)
     {
         return profileController.GetMiniProfile(GetSessionId(info));
@@ -176,24 +179,23 @@ public class LauncherV2Controller(
 
     public bool Wipe(RegisterData info)
     {
-        if (!CoreConfig.AllowProfileWipe)
+        if (!coreConfig.AllowProfileWipe)
         {
             return false;
         }
 
-        var sessionId = Login(info);
+        var sessionIsValid = Login(info);
 
-        if (!sessionId)
+        if (!sessionIsValid)
         {
-            var profileInfo = saveServer
-                .GetProfiles()
-                .FirstOrDefault(x => x.Value.ProfileInfo?.Username == info.Username)
-                .Value.ProfileInfo;
-
-            profileInfo!.Edition = info.Edition;
-            profileInfo.IsWiped = true;
+            return sessionIsValid;
         }
 
-        return sessionId;
+        var profileInfo = saveServer.GetProfiles().FirstOrDefault(x => x.Value.ProfileInfo?.Username == info.Username).Value.ProfileInfo;
+
+        profileInfo!.Edition = info.Edition;
+        profileInfo.IsWiped = true;
+
+        return sessionIsValid;
     }
 }

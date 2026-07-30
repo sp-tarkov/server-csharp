@@ -1,13 +1,15 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Generators;
+using SPTarkov.Server.Core.Generators.Weather;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.InRaid;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Weather;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Weather;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.InRaid;
+using SPTarkov.Server.Core.Services.Server;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 
@@ -20,12 +22,10 @@ public class WeatherController(
     SeasonalEventService seasonalEventService,
     RaidWeatherService raidWeatherService,
     WeatherHelper weatherHelper,
-    ConfigServer configServer,
+    WeatherConfig weatherConfig,
     ICloner cloner
 )
 {
-    protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
-
     /// <summary>
     ///     Handle client/weather
     /// </summary>
@@ -49,7 +49,7 @@ public class WeatherController(
 
         // Get server uptime seconds multiplied by a multiplier and add to current time as seconds
         result.Time = weatherHelper.GetInRaidTime().GetBsgFormattedWeatherTime();
-        result.Acceleration = WeatherConfig.Acceleration;
+        result.Acceleration = weatherConfig.Acceleration;
 
         var presetWeights = cloner.Clone(weatherGenerator.GetWeatherPresetWeightsBySeason(currentSeason));
         result.Weather = weatherGenerator.GenerateWeather(result.Season.Value, ref presetWeights);

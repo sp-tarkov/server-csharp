@@ -1,17 +1,19 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using SPTarkov.DI.Annotations;
 
 namespace SPTarkov.DI;
 
 public class DependencyInjectionHandler(IServiceCollection serviceCollection)
 {
-    private static List<Type>? _allLoadedTypes;
-    private static List<ConstructorInfo>? _allConstructors;
+    private readonly HashSet<Assembly> _injectableAssemblies = [];
+    private List<ConstructorInfo>? _candidateConstructors;
 
-    private readonly Dictionary<string, Type> _injectedTypeNames = new();
+    private readonly Dictionary<string, Type> _injectedTypeNames = [];
 
-    private readonly Dictionary<string, object> _injectedValues = new();
+    private readonly Dictionary<string, object> _injectedValues = [];
     private readonly Lock _injectedValuesLock = new();
 
     private bool _oneTimeUseFlag;
@@ -36,7 +38,14 @@ public class DependencyInjectionHandler(IServiceCollection serviceCollection)
 
     public void AddInjectableTypesFromTypeList(IEnumerable<Type> types)
     {
-        var typesToInject = types.Where(type =>
+        var candidates = types as IReadOnlyCollection<Type> ?? types.ToList();
+
+        foreach (var assembly in candidates.Select(type => type.Assembly))
+        {
+            _injectableAssemblies.Add(assembly);
+        }
+
+        var typesToInject = candidates.Where(type =>
             Attribute.IsDefined(type, typeof(Injectable)) && !_injectedTypeNames.ContainsKey($"{type.Namespace}.{type.Name}")
         );
         if (typesToInject.Any())
@@ -55,44 +64,35 @@ public class DependencyInjectionHandler(IServiceCollection serviceCollection)
             throw new Exception("Invalid usage of DependencyInjectionHandler, this is a one time use service!");
         }
         _oneTimeUseFlag = true;
-        var typeRefValues = _injectedTypeNames.Values.Select(t => new TypeRefContainer(
+        var typeRefValues = _injectedTypeNames.Values.Select(t => new DependencyInjectionContainer(
             ((Injectable[])Attribute.GetCustomAttributes(t, typeof(Injectable)))[0],
             t,
             t
         ));
-        // All the components that have a type override, we need to find them and remove them before injecting everything
-        var componentsToRemove = typeRefValues
-            .Where(tr => tr.InjectableAttribute.TypeOverride != null)
-            .Select(tr =>
-                string.IsNullOrEmpty(tr.InjectableAttribute.TypeOverride!.FullName)
-                    ? $"{tr.InjectableAttribute.TypeOverride.Namespace}.{tr.InjectableAttribute.TypeOverride.Name}"
-                    : tr.InjectableAttribute.TypeOverride.FullName!
-            )
-            .ToHashSet();
-        // All the components without the removed overrides
-        var cleanedComponents = typeRefValues.Where(tr =>
-        {
-            var name = string.IsNullOrEmpty(tr.Type.FullName) ? $"{tr.Type.Namespace}.{tr.Type.Name}" : tr.Type.FullName!;
-            return !componentsToRemove.Contains(name);
-        });
+
         // All the components sorted and ready to be inserted into the DI container
-        var sortedInjectableTypes = cleanedComponents.OrderBy(tRef => tRef.InjectableAttribute.TypePriority);
+        var sortedInjectableTypes = typeRefValues.OrderBy(tRef => tRef.InjectableAttribute.TypePriority);
+
+        List<DependencyInjectionContainer> dependencyInjectionContainers = [];
 
         foreach (var typeRefToInject in sortedInjectableTypes)
         {
-            var nodes = new Queue<TypeRefContainer>();
+            var nodes = new Queue<DependencyInjectionContainer>();
             nodes.Enqueue(typeRefToInject);
             foreach (var implementedInterface in typeRefToInject.Type.GetInterfaces().Where(t => !t.Namespace.StartsWith("System")))
             {
-                nodes.Enqueue(new TypeRefContainer(typeRefToInject.InjectableAttribute, typeRefToInject.Type, implementedInterface));
+                nodes.Enqueue(
+                    new DependencyInjectionContainer(typeRefToInject.InjectableAttribute, typeRefToInject.Type, implementedInterface)
+                );
             }
 
-            while (nodes.Any())
+            while (nodes.Count > 0)
             {
                 var node = nodes.Dequeue();
+
                 if (node.Type.BaseType != null && node.Type.BaseType != typeof(object))
                 {
-                    nodes.Enqueue(new TypeRefContainer(node.InjectableAttribute, typeRefToInject.Type, node.Type.BaseType));
+                    nodes.Enqueue(new DependencyInjectionContainer(node.InjectableAttribute, typeRefToInject.Type, node.Type.BaseType));
                 }
 
                 if (node.Type.IsGenericType)
@@ -103,27 +103,25 @@ public class DependencyInjectionHandler(IServiceCollection serviceCollection)
                 {
                     RegisterComponent(node.InjectableAttribute.InjectionType, node.Type, node.ParentType);
                 }
+
+                dependencyInjectionContainers.Add(node);
             }
         }
+
+        serviceCollection.AddSingleton<IReadOnlyList<DependencyInjectionContainer>>(dependencyInjectionContainers);
     }
 
-    private void RegisterGenericComponents(TypeRefContainer typeRef)
+    private void RegisterGenericComponents(DependencyInjectionContainer typeRef)
     {
-        try
-        {
-            _allLoadedTypes ??= AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).ToList();
-        }
-        catch (ReflectionTypeLoadException ex)
-        {
-            Console.WriteLine($"COULD NOT LOAD TYPE: {ex}");
-        }
-
-        _allConstructors ??= _allLoadedTypes.SelectMany(t => t.GetConstructors()).ToList();
+        _candidateConstructors ??= _injectableAssemblies
+            .SelectMany(GetLoadableTypes)
+            .SelectMany(type => type.GetConstructors())
+            .ToList();
 
         var typeName = $"{typeRef.Type.Namespace}.{typeRef.Type.Name}";
         try
         {
-            var matchedConstructors = _allConstructors.Where(c =>
+            var matchedConstructors = _candidateConstructors.Where(c =>
                 c.GetParameters().Any(p => p.ParameterType.IsGenericType && p.ParameterType.GetGenericTypeDefinition().FullName == typeName)
             );
 
@@ -151,6 +149,20 @@ public class DependencyInjectionHandler(IServiceCollection serviceCollection)
         }
     }
 
+    private static IEnumerable<Type> GetLoadableTypes(Assembly assembly)
+    {
+        try
+        {
+            return assembly.GetTypes();
+        }
+        catch (ReflectionTypeLoadException ex)
+        {
+            Console.WriteLine($"COULD NOT LOAD TYPE: {ex}");
+
+            return ex.Types.Where(type => type is not null)!;
+        }
+    }
+
     private static bool IsMatchingGenericType(ParameterInfo paramInfo, string typeName)
     {
         return paramInfo.ParameterType.IsGenericType && paramInfo.ParameterType.GetGenericTypeDefinition().FullName == typeName;
@@ -160,13 +172,48 @@ public class DependencyInjectionHandler(IServiceCollection serviceCollection)
     {
         switch (injectionType)
         {
+            case InjectionType.HostedService:
+                if (!typeof(IHostedService).IsAssignableFrom(implementationType))
+                {
+                    throw new ArgumentException(
+                        $"Invalid hosted service registration: {implementationType.FullName} does not derive from or implement IHostedService.",
+                        nameof(implementationType)
+                    );
+                }
+
+                serviceCollection.TryAddEnumerable(ServiceDescriptor.Singleton(typeof(IHostedService), implementationType));
+                break;
             case InjectionType.Singleton:
+                if (registrableInterface == typeof(IHostedService))
+                {
+                    throw new ArgumentException(
+                        $"Invalid injection type on {implementationType.Namespace}.{implementationType.Name}, should be HostedService!",
+                        nameof(injectionType)
+                    );
+                }
+
                 HandleSingletonRegistration(registrableInterface, implementationType);
                 break;
             case InjectionType.Transient:
+                if (registrableInterface == typeof(IHostedService))
+                {
+                    throw new ArgumentException(
+                        $"Invalid injection type on {implementationType.Namespace}.{implementationType.Name}, should be HostedService!",
+                        nameof(injectionType)
+                    );
+                }
+
                 serviceCollection.AddTransient(registrableInterface, implementationType);
                 break;
             case InjectionType.Scoped:
+                if (registrableInterface == typeof(IHostedService))
+                {
+                    throw new ArgumentException(
+                        $"Invalid injection type on {implementationType.Namespace}.{implementationType.Name}, should be HostedService!",
+                        nameof(injectionType)
+                    );
+                }
+
                 serviceCollection.AddScoped(registrableInterface, implementationType);
                 break;
             default:
@@ -205,18 +252,18 @@ public class DependencyInjectionHandler(IServiceCollection serviceCollection)
             serviceCollection.AddSingleton(registrableInterface, implementationType);
         }
     }
+}
 
-    private class TypeRefContainer
+public sealed record DependencyInjectionContainer
+{
+    public Injectable InjectableAttribute { get; init; }
+    public Type Type { get; init; }
+    public Type ParentType { get; init; }
+
+    public DependencyInjectionContainer(Injectable injectable, Type parentType, Type type)
     {
-        public Injectable InjectableAttribute { get; }
-        public Type Type { get; }
-        public Type ParentType { get; }
-
-        public TypeRefContainer(Injectable injectable, Type parentType, Type type)
-        {
-            InjectableAttribute = injectable;
-            Type = type;
-            ParentType = parentType;
-        }
+        InjectableAttribute = injectable;
+        Type = type;
+        ParentType = parentType;
     }
 }

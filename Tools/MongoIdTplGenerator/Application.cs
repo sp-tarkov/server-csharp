@@ -1,7 +1,7 @@
 using MongoIdTplGenerator.Generators;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
-using SPTarkov.Server.Core.Models.Utils;
 
 namespace MongoIdTplGenerator;
 
@@ -10,9 +10,11 @@ public class Application(ISptLogger<Application> logger, IEnumerable<IOnLoad> on
 {
     public async Task Run()
     {
+        var cancellationTokenSource = new CancellationTokenSource();
+
         foreach (var onLoad in onloadComponents)
         {
-            await onLoad.OnLoad();
+            await onLoad.OnLoadAsync(cancellationTokenSource.Token);
         }
 
         try

@@ -1,0 +1,98 @@
+﻿@page "/status"
+@attribute [Authorize]
+@using SPTarkov.Server.Core.Helpers
+@using SPTarkov.Server.Core.Helpers.Profile
+@using SPTarkov.Server.Core.Models.Spt.Config
+@using SPTarkov.Server.Core.Services
+@using SPTarkov.Server.Core.Services.Profile
+@using SPTarkov.Server.Core.Utils
+@using SPTarkov.Server.Web.Layout
+
+@inject CoreConfig coreConfig
+@inject TimeUtil TimeUtil
+@inject ProfileActivityService ProfileActivityService
+@inject ProfileHelper ProfileHelper
+@inject WebLocalizationService WebLocalizationService
+
+@layout BaseMudBlazorLayout
+
+<PageTitle>@L("status-page-title")</PageTitle>
+
+<div class="spt-page spt-page-centered">
+    <MudContainer MaxWidth="MaxWidth.Small" Class="spt-container">
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="12">
+                <MudCard Elevation="0" Class="spt-card pb-4">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h4" Color="Color.Warning" Align="Align.Center">@L("status-heading")</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudList T="string" Class="mx-auto mt-4">
+                        <MudListItem Icon="@Icons.Material.Filled.Circle" IconColor="Color.Warning">@L("status-spt-version"): @_sptVersion</MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Circle" IconColor="Color.Warning">@L("status-mods") @(_modsEnabled ? L("common-enabled") : L("common-disabled"))</MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Circle" IconColor="Color.Warning">@L("status-debug") @(_debugEnabled ? L("common-enabled") : L("common-disabled"))</MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Circle" IconColor="Color.Warning">@L("status-time-started"): @_startTime</MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Circle" IconColor="Color.Warning">@L("status-uptime"): @_uptimeSeconds @L("common-seconds")</MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Circle" IconColor="Color.Warning">@L("status-total-profile-count"): @_totalProfileCount</MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Inbox"  IconColor="Color.Warning" Text="@L("status-active-profiles")" Expanded>
+                            <NestedList>
+                                @foreach (var profile in _activeProfiles)
+                                {
+                                    <MudListItem Icon="@Icons.Material.Filled.Circle" IconColor="Color.Warning">
+                                        @profile
+                                    </MudListItem>
+                                }
+                            </NestedList>
+                        </MudListItem>
+                    </MudList>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+    </MudContainer>
+</div>
+
+@code
+{
+    private string _sptVersion = string.Empty;
+    private bool _debugEnabled = false;
+    private bool _modsEnabled = false;
+    private DateTime _startTime = DateTime.Now;
+    private long _uptimeSeconds = 0;
+    private readonly List<string> _activeProfiles = [];
+    private int _totalProfileCount = 0;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _sptVersion = ProgramStatics.SPT_VERSION().ToString();
+        _debugEnabled = ProgramStatics.DEBUG();
+        _modsEnabled = ProgramStatics.MODS();
+        _startTime = TimeUtil.GetDateTimeFromTimeStamp(coreConfig.ServerStartTime.Value).ToLocalTime();
+        _uptimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds() - coreConfig.ServerStartTime.Value;
+
+        var activeProfileIds = ProfileActivityService.GetActiveProfileIdsWithinMinutes(30);
+        if (activeProfileIds.Count == 0)
+        {
+            _activeProfiles.Add(L("common-none"));
+        }
+        else
+        {
+            foreach (var activeProfileId in activeProfileIds)
+            {
+                _activeProfiles.Add($"{activeProfileId} ({ProfileHelper.GetPmcProfile(activeProfileId).Info.Nickname})");
+            }
+        }
+
+        _totalProfileCount = ProfileHelper.GetProfiles().Count;
+    }
+
+    private string L(string key)
+    {
+        return WebLocalizationService.GetText(key);
+    }
+
+}

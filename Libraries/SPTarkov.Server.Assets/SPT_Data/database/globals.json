@@ -23965,6 +23965,844 @@
       "_name": "Body armor FORT Redut M Woodland",
       "_parent": "67c871b6e0b64a07890a2f41",
       "_type": "Preset"
+    },
+    "68d3db3e0c47fe28c2067ab9": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "6895bb82c4519957df062f82",
+      "_id": "68d3db3e0c47fe28c2067ab9",
+      "_items": [
+        {
+          "_id": "68d3dc60e85e7753d2078a2b",
+          "_tpl": "6895bb82c4519957df062f82",
+          "upd": {
+            "Repairable": {
+              "Durability": 100,
+              "MaxDurability": 100
+            }
+          }
+        },
+        {
+          "_id": "68d3dc60e85e7753d2078a2c",
+          "_tpl": "55802f5d4bdc2dac148b458f",
+          "parentId": "68d3dc60e85e7753d2078a2b",
+          "slotId": "mod_pistol_grip"
+        },
+        {
+          "_id": "68d3dc60e85e7753d2078a2d",
+          "_tpl": "5aaa5dfee5b5b000140293d3",
+          "parentId": "68d3dc60e85e7753d2078a2b",
+          "slotId": "mod_magazine"
+        },
+        {
+          "_id": "68d3dc60e85e7753d2078a2e",
+          "_tpl": "6895becad55f0ebf6a0c0311",
+          "parentId": "68d3dc60e85e7753d2078a2b",
+          "slotId": "mod_reciever"
+        },
+        {
+          "_id": "68d3dc60e85e7753d2078a2f",
+          "_tpl": "63d3d44a2a49307baf09386d",
+          "parentId": "68d3dc60e85e7753d2078a2e",
+          "slotId": "mod_barrel"
+        },
+        {
+          "_id": "68d3dc60e85e7753d2078a30",
+          "_tpl": "6405ff6bd4578826ec3e377a",
+          "parentId": "68d3dc60e85e7753d2078a2f",
+          "slotId": "mod_muzzle"
+        },
+        {
+          "_id": "68d3dc60e85e7753d2078a31",
+          "_tpl": "56eabcd4d2720b66698b4574",
+          "parentId": "68d3dc60e85e7753d2078a2f",
+          "slotId": "mod_gas_block"
+        },
+        {
+          "_id": "68d3dc60e85e7753d2078a32",
+          "_tpl": "6895bd19d55f0ebf6a0c0306",
+          "parentId": "68d3dc60e85e7753d2078a2e",
+          "slotId": "mod_handguard"
+        },
+        {
+          "_id": "68d3dc60e85e7753d2078a33",
+          "_tpl": "5bc09a30d4351e00367fb7c8",
+          "parentId": "68d3dc60e85e7753d2078a32",
+          "slotId": "mod_sight_front"
+        },
+        {
+          "_id": "68d3dc60e85e7753d2078a34",
+          "_tpl": "5bc09a18d4351e003562b68e",
+          "parentId": "68d3dc60e85e7753d2078a2e",
+          "slotId": "mod_sight_rear"
+        },
+        {
+          "_id": "68d3dc60e85e7753d2078a35",
+          "_tpl": "5c793fb92e221644f31bfb64",
+          "parentId": "68d3dc60e85e7753d2078a2b",
+          "slotId": "mod_stock"
+        },
+        {
+          "_id": "68d3dc60e85e7753d2078a36",
+          "_tpl": "56eabf3bd2720b75698b4569",
+          "parentId": "68d3dc60e85e7753d2078a35",
+          "slotId": "mod_stock_000"
+        },
+        {
+          "_id": "68d3dc60e85e7753d2078a37",
+          "_tpl": "6895bf08e2d16810ba0bf43e",
+          "parentId": "68d3dc60e85e7753d2078a2b",
+          "slotId": "mod_charge"
+        }
+      ],
+      "_name": "ar15_radian_model1_default",
+      "_parent": "68d3dc60e85e7753d2078a2b",
+      "_type": "Preset"
+    },
+    "68d68f57655cd4629e0903a0": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68a9b3ca0a9c4f9398032c46",
+      "_id": "68d68f57655cd4629e0903a0",
+      "_items": [
+        {
+          "_id": "68d6a158f45f78ad95017b04",
+          "_tpl": "68a9b3ca0a9c4f9398032c46"
+        },
+        {
+          "_id": "68d6a158f45f78ad95017b05",
+          "_tpl": "657bbad7a1c61ee0c3036323",
+          "parentId": "68d6a158f45f78ad95017b04",
+          "slotId": "Helmet_top"
+        },
+        {
+          "_id": "68d6a158f45f78ad95017b06",
+          "_tpl": "657bbb31b30eca9763051183",
+          "parentId": "68d6a158f45f78ad95017b04",
+          "slotId": "Helmet_back"
+        }
+      ],
+      "_name": "Шлем Galvion Caiman Hybrid (Multicam) Standart",
+      "_parent": "68d6a158f45f78ad95017b04",
+      "_type": "Preset"
+    },
+    "68d68fb20e4bab3ddc085f0a": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68a9b5a5863d2a71fa0494a6",
+      "_id": "68d68fb20e4bab3ddc085f0a",
+      "_items": [
+        {
+          "_id": "68d6a14d8f9527c33609ce71",
+          "_tpl": "68a9b5a5863d2a71fa0494a6"
+        },
+        {
+          "_id": "68d6a14d8f9527c33609ce72",
+          "_tpl": "657bbad7a1c61ee0c3036323",
+          "parentId": "68d6a14d8f9527c33609ce71",
+          "slotId": "Helmet_top"
+        },
+        {
+          "_id": "68d6a14d8f9527c33609ce73",
+          "_tpl": "657bbb31b30eca9763051183",
+          "parentId": "68d6a14d8f9527c33609ce71",
+          "slotId": "Helmet_back"
+        }
+      ],
+      "_name": "Шлем Galvion Caiman Hybrid (Mutualist) Standart",
+      "_parent": "68d6a14d8f9527c33609ce71",
+      "_type": "Preset"
+    },
+    "68d690020c7e3ce5a80b8bec": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68a89942431252e29a02dbf6",
+      "_id": "68d690020c7e3ce5a80b8bec",
+      "_items": [
+        {
+          "_id": "68d69196655cd4629e0903b0",
+          "_tpl": "68a89942431252e29a02dbf6"
+        },
+        {
+          "_id": "68d69196655cd4629e0903b1",
+          "_tpl": "6570f30b0921c914bf07964c",
+          "parentId": "68d69196655cd4629e0903b0",
+          "slotId": "Soft_armor_front"
+        },
+        {
+          "_id": "68d69196655cd4629e0903b2",
+          "_tpl": "6570f35cd67d0309980a7acb",
+          "parentId": "68d69196655cd4629e0903b0",
+          "slotId": "Soft_armor_back"
+        },
+        {
+          "_id": "68d69196655cd4629e0903b3",
+          "_tpl": "6570f3890b4ae5847f060dad",
+          "parentId": "68d69196655cd4629e0903b0",
+          "slotId": "Soft_armor_left"
+        },
+        {
+          "_id": "68d69196655cd4629e0903b4",
+          "_tpl": "6570f3bb0b4ae5847f060db2",
+          "parentId": "68d69196655cd4629e0903b0",
+          "slotId": "soft_armor_right"
+        },
+        {
+          "_id": "68d69196655cd4629e0903b5",
+          "_tpl": "656fb0bd7c2d57afe200c0dc",
+          "parentId": "68d69196655cd4629e0903b0",
+          "slotId": "Front_plate"
+        },
+        {
+          "_id": "68d69196655cd4629e0903b6",
+          "_tpl": "656fb0bd7c2d57afe200c0dc",
+          "parentId": "68d69196655cd4629e0903b0",
+          "slotId": "Back_plate"
+        }
+      ],
+      "_name": "Бронежилет Interceptor OTV (Woodland) Standart",
+      "_parent": "68d69196655cd4629e0903b0",
+      "_type": "Preset"
+    },
+    "68d6906df45f78ad95017aec": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68a89146212dbbeead0d5636",
+      "_id": "68d6906df45f78ad95017aec",
+      "_items": [
+        {
+          "_id": "68d691a2b5b32e015d012b39",
+          "_tpl": "68a89146212dbbeead0d5636"
+        },
+        {
+          "_id": "68d691a2b5b32e015d012b3a",
+          "_tpl": "6572e5221b5bc1185508c24f",
+          "parentId": "68d691a2b5b32e015d012b39",
+          "slotId": "Soft_armor_front"
+        },
+        {
+          "_id": "68d691a2b5b32e015d012b3b",
+          "_tpl": "6572e52f73c0eabb700109a0",
+          "parentId": "68d691a2b5b32e015d012b39",
+          "slotId": "Soft_armor_back"
+        },
+        {
+          "_id": "68d691a2b5b32e015d012b3c",
+          "_tpl": "6572e53c73c0eabb700109a4",
+          "parentId": "68d691a2b5b32e015d012b39",
+          "slotId": "Soft_armor_left"
+        },
+        {
+          "_id": "68d691a2b5b32e015d012b3d",
+          "_tpl": "6572e54873c0eabb700109a8",
+          "parentId": "68d691a2b5b32e015d012b39",
+          "slotId": "soft_armor_right"
+        },
+        {
+          "_id": "68d691a2b5b32e015d012b3e",
+          "_tpl": "656f9fa0498d1b7e3e071d98",
+          "parentId": "68d691a2b5b32e015d012b39",
+          "slotId": "Front_plate"
+        },
+        {
+          "_id": "68d691a2b5b32e015d012b3f",
+          "_tpl": "656f9fa0498d1b7e3e071d98",
+          "parentId": "68d691a2b5b32e015d012b39",
+          "slotId": "Back_plate"
+        }
+      ],
+      "_name": "Бронежилет NFM THOR Concealable Reinforced Vest (Head, Eyes) Standart",
+      "_parent": "68d691a2b5b32e015d012b39",
+      "_type": "Preset"
+    },
+    "68d69154b5b32e015d012b31": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68a9be93f260f4e1c2038686",
+      "_id": "68d69154b5b32e015d012b31",
+      "_items": [
+        {
+          "_id": "68d6a1a17ad56cf0430d9d1f",
+          "_tpl": "68a9be93f260f4e1c2038686"
+        },
+        {
+          "_id": "68d6a1a17ad56cf0430d9d20",
+          "_tpl": "657f9eb7e9433140ad0baf86",
+          "parentId": "68d6a1a17ad56cf0430d9d1f",
+          "slotId": "Helmet_top"
+        },
+        {
+          "_id": "68d6a1a17ad56cf0430d9d21",
+          "_tpl": "657f9ef6c6679fefb3051e1f",
+          "parentId": "68d6a1a17ad56cf0430d9d1f",
+          "slotId": "Helmet_back"
+        }
+      ],
+      "_name": "Шлем Diamond Age NeoSteel (Оранжевые пятна) Standard",
+      "_parent": "68d6a1a17ad56cf0430d9d1f",
+      "_type": "Preset"
+    },
+    "68d69182131ffdc2b90ffb7b": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68a9beecbba00932ed0bc256",
+      "_id": "68d69182131ffdc2b90ffb7b",
+      "_items": [
+        {
+          "_id": "68d6a1ae0e4bab3ddc085f42",
+          "_tpl": "68a9beecbba00932ed0bc256"
+        },
+        {
+          "_id": "68d6a1ae0e4bab3ddc085f43",
+          "_tpl": "657f9eb7e9433140ad0baf86",
+          "parentId": "68d6a1ae0e4bab3ddc085f42",
+          "slotId": "Helmet_top"
+        },
+        {
+          "_id": "68d6a1ae0e4bab3ddc085f44",
+          "_tpl": "657f9ef6c6679fefb3051e1f",
+          "parentId": "68d6a1ae0e4bab3ddc085f42",
+          "slotId": "Helmet_back"
+        }
+      ],
+      "_name": "Шлем Diamond Age NeoSteel (Каре) Standard",
+      "_parent": "68d6a1ae0e4bab3ddc085f42",
+      "_type": "Preset"
+    },
+    "68d6928f02a3c063ac0e1366": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68bee2e876e02b9e340ef113",
+      "_id": "68d6928f02a3c063ac0e1366",
+      "_items": [
+        {
+          "_id": "68d6a2a37ad56cf0430d9d23",
+          "_tpl": "68bee2e876e02b9e340ef113"
+        },
+        {
+          "_id": "68d6a2a37ad56cf0430d9d24",
+          "_tpl": "657112234269e9a568089eac",
+          "parentId": "68d6a2a37ad56cf0430d9d23",
+          "slotId": "Helmet_top"
+        },
+        {
+          "_id": "68d6a2a37ad56cf0430d9d25",
+          "_tpl": "657112a4818110db4600aa66",
+          "parentId": "68d6a2a37ad56cf0430d9d23",
+          "slotId": "Helmet_back"
+        },
+        {
+          "_id": "68d6a2a37ad56cf0430d9d26",
+          "_tpl": "657112ce22996eaf110881fb",
+          "parentId": "68d6a2a37ad56cf0430d9d23",
+          "slotId": "Helmet_ears"
+        }
+      ],
+      "_name": "Шлем HIghCom Striker ULACH IIIA (Coyote) Standard",
+      "_parent": "68d6a2a37ad56cf0430d9d23",
+      "_type": "Preset"
+    },
+    "68d692f3592ca83a7f0b06a3": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68bee2e0ede5c8489f08e1b5",
+      "_id": "68d692f3592ca83a7f0b06a3",
+      "_items": [
+        {
+          "_id": "68d6a2a9f45f78ad95017b09",
+          "_tpl": "68bee2e0ede5c8489f08e1b5"
+        },
+        {
+          "_id": "68d6a2a9f45f78ad95017b0a",
+          "_tpl": "657112234269e9a568089eac",
+          "parentId": "68d6a2a9f45f78ad95017b09",
+          "slotId": "Helmet_top"
+        },
+        {
+          "_id": "68d6a2a9f45f78ad95017b0b",
+          "_tpl": "657112a4818110db4600aa66",
+          "parentId": "68d6a2a9f45f78ad95017b09",
+          "slotId": "Helmet_back"
+        },
+        {
+          "_id": "68d6a2a9f45f78ad95017b0c",
+          "_tpl": "657112ce22996eaf110881fb",
+          "parentId": "68d6a2a9f45f78ad95017b09",
+          "slotId": "Helmet_ears"
+        }
+      ],
+      "_name": "Шлем HIghCom Striker ULACH IIIA (Dots) Standard",
+      "_parent": "68d6a2a9f45f78ad95017b09",
+      "_type": "Preset"
+    },
+    "68d6931e7fe3a18997093bbe": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68bee2ccd6da72c13f03db95",
+      "_id": "68d6931e7fe3a18997093bbe",
+      "_items": [
+        {
+          "_id": "68d6a2b98f9527c33609ce75",
+          "_tpl": "68bee2ccd6da72c13f03db95"
+        },
+        {
+          "_id": "68d6a2b98f9527c33609ce76",
+          "_tpl": "657112234269e9a568089eac",
+          "parentId": "68d6a2b98f9527c33609ce75",
+          "slotId": "Helmet_top"
+        },
+        {
+          "_id": "68d6a2b98f9527c33609ce77",
+          "_tpl": "657112a4818110db4600aa66",
+          "parentId": "68d6a2b98f9527c33609ce75",
+          "slotId": "Helmet_back"
+        },
+        {
+          "_id": "68d6a2b98f9527c33609ce78",
+          "_tpl": "657112ce22996eaf110881fb",
+          "parentId": "68d6a2b98f9527c33609ce75",
+          "slotId": "Helmet_ears"
+        }
+      ],
+      "_name": "Шлем HIghCom Striker ULACH IIIA (Sand) Standard",
+      "_parent": "68d6a2b98f9527c33609ce75",
+      "_type": "Preset"
+    },
+    "68d693498eeb9377640273be": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68bee2d9af253218c00ebbb4",
+      "_id": "68d693498eeb9377640273be",
+      "_items": [
+        {
+          "_id": "68d6a2b18f7567aca50eb37a",
+          "_tpl": "68bee2d9af253218c00ebbb4"
+        },
+        {
+          "_id": "68d6a2b18f7567aca50eb37b",
+          "_tpl": "657112234269e9a568089eac",
+          "parentId": "68d6a2b18f7567aca50eb37a",
+          "slotId": "Helmet_top"
+        },
+        {
+          "_id": "68d6a2b18f7567aca50eb37c",
+          "_tpl": "657112a4818110db4600aa66",
+          "parentId": "68d6a2b18f7567aca50eb37a",
+          "slotId": "Helmet_back"
+        },
+        {
+          "_id": "68d6a2b18f7567aca50eb37d",
+          "_tpl": "657112ce22996eaf110881fb",
+          "parentId": "68d6a2b18f7567aca50eb37a",
+          "slotId": "Helmet_ears"
+        }
+      ],
+      "_name": "Шлем HIghCom Striker ULACH IIIA (Green Stripes) Standard",
+      "_parent": "68d6a2b18f7567aca50eb37a",
+      "_type": "Preset"
+    },
+    "68d693990e4bab3ddc085f12": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68a85ab8ef22d08bf401fa68",
+      "_id": "68d693990e4bab3ddc085f12",
+      "_items": [
+        {
+          "_id": "68d6a2d37fe3a18997093bf4",
+          "_tpl": "68a85ab8ef22d08bf401fa68"
+        },
+        {
+          "_id": "68d6a2d37fe3a18997093bf5",
+          "_tpl": "6572eb0e55beba16bc04079f",
+          "parentId": "68d6a2d37fe3a18997093bf4",
+          "slotId": "Soft_armor_front"
+        },
+        {
+          "_id": "68d6a2d37fe3a18997093bf6",
+          "_tpl": "6572eb1b04ee6483ef039882",
+          "parentId": "68d6a2d37fe3a18997093bf4",
+          "slotId": "Soft_armor_back"
+        },
+        {
+          "_id": "68d6a2d37fe3a18997093bf7",
+          "_tpl": "6572eb3004ee6483ef039886",
+          "parentId": "68d6a2d37fe3a18997093bf4",
+          "slotId": "Soft_armor_left"
+        },
+        {
+          "_id": "68d6a2d37fe3a18997093bf8",
+          "_tpl": "6572eb3b04ee6483ef03988a",
+          "parentId": "68d6a2d37fe3a18997093bf4",
+          "slotId": "soft_armor_right"
+        },
+        {
+          "_id": "68d6a2d37fe3a18997093bf9",
+          "_tpl": "6572eb865b5eac12f10a03ee",
+          "parentId": "68d6a2d37fe3a18997093bf4",
+          "slotId": "Groin"
+        },
+        {
+          "_id": "68d6a2d37fe3a18997093bfa",
+          "_tpl": "656fb21fa0dce000a2020f7c",
+          "parentId": "68d6a2d37fe3a18997093bf4",
+          "slotId": "Front_plate"
+        },
+        {
+          "_id": "68d6a2d37fe3a18997093bfb",
+          "_tpl": "656fb21fa0dce000a2020f7c",
+          "parentId": "68d6a2d37fe3a18997093bf4",
+          "slotId": "Back_plate"
+        }
+      ],
+      "_name": "Разгрузочный жилет с бронепластинами FirstSpear Strandhogg (ABUPAT) Standard",
+      "_parent": "68d6a2d37fe3a18997093bf4",
+      "_type": "Preset"
+    },
+    "68d694770e4bab3ddc085f20": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68a99207aa809946e507c2f6",
+      "_id": "68d694770e4bab3ddc085f20",
+      "_items": [
+        {
+          "_id": "68d6a2e00c7e3ce5a80b8c0b",
+          "_tpl": "68a99207aa809946e507c2f6"
+        },
+        {
+          "_id": "68d6a2e00c7e3ce5a80b8c0c",
+          "_tpl": "66b884f4c5d72b02774886eb",
+          "parentId": "68d6a2e00c7e3ce5a80b8c0b",
+          "slotId": "Soft_armor_front"
+        },
+        {
+          "_id": "68d6a2e00c7e3ce5a80b8c0d",
+          "_tpl": "66b884eaacff495a29492849",
+          "parentId": "68d6a2e00c7e3ce5a80b8c0b",
+          "slotId": "Soft_armor_back"
+        },
+        {
+          "_id": "68d6a2e00c7e3ce5a80b8c0e",
+          "_tpl": "66b8851678bbc0200425fa03",
+          "parentId": "68d6a2e00c7e3ce5a80b8c0b",
+          "slotId": "Soft_armor_left"
+        },
+        {
+          "_id": "68d6a2e00c7e3ce5a80b8c0f",
+          "_tpl": "66b88521a7f72d197e70be3b",
+          "parentId": "68d6a2e00c7e3ce5a80b8c0b",
+          "slotId": "soft_armor_right"
+        },
+        {
+          "_id": "68d6a2e00c7e3ce5a80b8c10",
+          "_tpl": "66b884fd7994640992013b37",
+          "parentId": "68d6a2e00c7e3ce5a80b8c0b",
+          "slotId": "Groin"
+        },
+        {
+          "_id": "68d6a2e00c7e3ce5a80b8c11",
+          "_tpl": "656fa0fb498d1b7e3e071d9c",
+          "parentId": "68d6a2e00c7e3ce5a80b8c0b",
+          "slotId": "Front_plate"
+        },
+        {
+          "_id": "68d6a2e00c7e3ce5a80b8c12",
+          "_tpl": "656fa0fb498d1b7e3e071d9c",
+          "parentId": "68d6a2e00c7e3ce5a80b8c0b",
+          "slotId": "Back_plate"
+        }
+      ],
+      "_name": "Разгрузочный жилет с бронепластинами Stich Profi Plate Carrier вер.2 (MARPAT) Standard",
+      "_parent": "68d6a2e00c7e3ce5a80b8c0b",
+      "_type": "Preset"
+    },
+    "68d69500131ffdc2b90ffb86": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68a9a92b838d65bcb3050176",
+      "_id": "68d69500131ffdc2b90ffb86",
+      "_items": [
+        {
+          "_id": "68d69500131ffdc2b90ffb8d",
+          "_tpl": "68a9a92b838d65bcb3050176"
+        },
+        {
+          "_id": "68d69500131ffdc2b90ffb8e",
+          "_tpl": "65711b07a330b8c9060f7b01",
+          "parentId": "68d69500131ffdc2b90ffb8d",
+          "slotId": "Helmet_top"
+        },
+        {
+          "_id": "68d69500131ffdc2b90ffb8f",
+          "_tpl": "65711b489eb8c145180dbb9d",
+          "parentId": "68d69500131ffdc2b90ffb8d",
+          "slotId": "Helmet_back"
+        },
+        {
+          "_id": "68d69500131ffdc2b90ffb90",
+          "_tpl": "65711b9b65daf6aa960c9b1b",
+          "parentId": "68d69500131ffdc2b90ffb8d",
+          "slotId": "helmet_eyes"
+        },
+        {
+          "_id": "68d69500131ffdc2b90ffb91",
+          "_tpl": "65711bc79eb8c145180dbba1",
+          "parentId": "68d69500131ffdc2b90ffb8d",
+          "slotId": "helmet_jaw"
+        },
+        {
+          "_id": "68d69500131ffdc2b90ffb92",
+          "_tpl": "65711b706d197c216005b31c",
+          "parentId": "68d69500131ffdc2b90ffb8d",
+          "slotId": "Helmet_ears"
+        }
+      ],
+      "_name": "Шлем DevTac Ronin Respiator (Eternal Green) Standard",
+      "_parent": "68d69500131ffdc2b90ffb8d",
+      "_type": "Preset"
+    },
+    "68d695370e4bab3ddc085f2e": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68a9a85c3e1ee5a70504c12e",
+      "_id": "68d695370e4bab3ddc085f2e",
+      "_items": [
+        {
+          "_id": "68d695370e4bab3ddc085f35",
+          "_tpl": "68a9a85c3e1ee5a70504c12e"
+        },
+        {
+          "_id": "68d695370e4bab3ddc085f36",
+          "_tpl": "65711b07a330b8c9060f7b01",
+          "parentId": "68d695370e4bab3ddc085f35",
+          "slotId": "Helmet_top"
+        },
+        {
+          "_id": "68d695370e4bab3ddc085f37",
+          "_tpl": "65711b489eb8c145180dbb9d",
+          "parentId": "68d695370e4bab3ddc085f35",
+          "slotId": "Helmet_back"
+        },
+        {
+          "_id": "68d695370e4bab3ddc085f38",
+          "_tpl": "65711b9b65daf6aa960c9b1b",
+          "parentId": "68d695370e4bab3ddc085f35",
+          "slotId": "helmet_eyes"
+        },
+        {
+          "_id": "68d695370e4bab3ddc085f39",
+          "_tpl": "65711bc79eb8c145180dbba1",
+          "parentId": "68d695370e4bab3ddc085f35",
+          "slotId": "helmet_jaw"
+        },
+        {
+          "_id": "68d695370e4bab3ddc085f3a",
+          "_tpl": "65711b706d197c216005b31c",
+          "parentId": "68d695370e4bab3ddc085f35",
+          "slotId": "Helmet_ears"
+        }
+      ],
+      "_name": "Шлем DevTac Ronin Respiator (Beast) Standard",
+      "_parent": "68d695370e4bab3ddc085f35",
+      "_type": "Preset"
+    },
+    "68d6957e7ad56cf0430d9d10": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68a987a1609a5cb2120ebd2f",
+      "_id": "68d6957e7ad56cf0430d9d10",
+      "_items": [
+        {
+          "_id": "68d6a1327fe3a18997093bf0",
+          "_tpl": "68a987a1609a5cb2120ebd2f"
+        },
+        {
+          "_id": "68d6a1327fe3a18997093bf1",
+          "_tpl": "657bbe73a1c61ee0c303632b",
+          "parentId": "68d6a1327fe3a18997093bf0",
+          "slotId": "Helmet_top"
+        },
+        {
+          "_id": "68d6a1327fe3a18997093bf2",
+          "_tpl": "657bbed0aab96fccee08be96",
+          "parentId": "68d6a1327fe3a18997093bf0",
+          "slotId": "Helmet_back"
+        },
+        {
+          "_id": "68d6a1327fe3a18997093bf3",
+          "_tpl": "657bbefeb30eca9763051189",
+          "parentId": "68d6a1327fe3a18997093bf0",
+          "slotId": "Helmet_ears"
+        }
+      ],
+      "_name": "Шлем ЛШЗ-5 Вулкан-5 (Камуфляжный) Standard",
+      "_parent": "68d6a1327fe3a18997093bf0",
+      "_type": "Preset"
+    },
+    "68d695a28eeb9377640273c8": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68a98762609a5cb2120ebd26",
+      "_id": "68d695a28eeb9377640273c8",
+      "_items": [
+        {
+          "_id": "68d6a13ea3dc2d13a108cb63",
+          "_tpl": "68a98762609a5cb2120ebd26"
+        },
+        {
+          "_id": "68d6a13ea3dc2d13a108cb64",
+          "_tpl": "657bbe73a1c61ee0c303632b",
+          "parentId": "68d6a13ea3dc2d13a108cb63",
+          "slotId": "Helmet_top"
+        },
+        {
+          "_id": "68d6a13ea3dc2d13a108cb65",
+          "_tpl": "657bbed0aab96fccee08be96",
+          "parentId": "68d6a13ea3dc2d13a108cb63",
+          "slotId": "Helmet_back"
+        },
+        {
+          "_id": "68d6a13ea3dc2d13a108cb66",
+          "_tpl": "657bbefeb30eca9763051189",
+          "parentId": "68d6a13ea3dc2d13a108cb63",
+          "slotId": "Helmet_ears"
+        }
+      ],
+      "_name": "Шлем ЛШЗ-5 Вулкан-5 (Пламя) Standard",
+      "_parent": "68d6a13ea3dc2d13a108cb63",
+      "_type": "Preset"
+    },
+    "68d695c38f7567aca50eb36c": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68a986ca5c0073fa2d0d8cb8",
+      "_id": "68d695c38f7567aca50eb36c",
+      "_items": [
+        {
+          "_id": "68d6a127f45f78ad95017b00",
+          "_tpl": "68a986ca5c0073fa2d0d8cb8"
+        },
+        {
+          "_id": "68d6a127f45f78ad95017b01",
+          "_tpl": "657bbe73a1c61ee0c303632b",
+          "parentId": "68d6a127f45f78ad95017b00",
+          "slotId": "Helmet_top"
+        },
+        {
+          "_id": "68d6a127f45f78ad95017b02",
+          "_tpl": "657bbed0aab96fccee08be96",
+          "parentId": "68d6a127f45f78ad95017b00",
+          "slotId": "Helmet_back"
+        },
+        {
+          "_id": "68d6a127f45f78ad95017b03",
+          "_tpl": "657bbefeb30eca9763051189",
+          "parentId": "68d6a127f45f78ad95017b00",
+          "slotId": "Helmet_ears"
+        }
+      ],
+      "_name": "Шлем ЛШЗ-5 Вулкан-5 (Восьмёрка) Standard",
+      "_parent": "68d6a127f45f78ad95017b00",
+      "_type": "Preset"
+    },
+    "68d6962c7fe3a18997093bd3": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68a97093431252e29a02dc06",
+      "_id": "68d6962c7fe3a18997093bd3",
+      "_items": [
+        {
+          "_id": "68d6a10c0c7e3ce5a80b8bff",
+          "_tpl": "68a97093431252e29a02dc06"
+        },
+        {
+          "_id": "68d6a10c0c7e3ce5a80b8c00",
+          "_tpl": "65731b46cea9255e2102360a",
+          "parentId": "68d6a10c0c7e3ce5a80b8bff",
+          "slotId": "Soft_armor_front"
+        },
+        {
+          "_id": "68d6a10c0c7e3ce5a80b8c01",
+          "_tpl": "65731b4fcea9255e2102360e",
+          "parentId": "68d6a10c0c7e3ce5a80b8bff",
+          "slotId": "Soft_armor_back"
+        },
+        {
+          "_id": "68d6a10c0c7e3ce5a80b8c02",
+          "_tpl": "65731b576e709cddd001ec3f",
+          "parentId": "68d6a10c0c7e3ce5a80b8bff",
+          "slotId": "Soft_armor_left"
+        },
+        {
+          "_id": "68d6a10c0c7e3ce5a80b8c03",
+          "_tpl": "65731b60ff6dc44a7d068c4a",
+          "parentId": "68d6a10c0c7e3ce5a80b8bff",
+          "slotId": "soft_armor_right"
+        },
+        {
+          "_id": "68d6a10c0c7e3ce5a80b8c04",
+          "_tpl": "65731b666e709cddd001ec43",
+          "parentId": "68d6a10c0c7e3ce5a80b8bff",
+          "slotId": "Collar"
+        },
+        {
+          "_id": "68d6a10c0c7e3ce5a80b8c05",
+          "_tpl": "65731b716e709cddd001ec47",
+          "parentId": "68d6a10c0c7e3ce5a80b8bff",
+          "slotId": "Groin"
+        },
+        {
+          "_id": "68d6a10c0c7e3ce5a80b8c06",
+          "_tpl": "65731b6b6042b0f210020ef6",
+          "parentId": "68d6a10c0c7e3ce5a80b8bff",
+          "slotId": "Groin_back"
+        },
+        {
+          "_id": "68d6a10c0c7e3ce5a80b8c07",
+          "_tpl": "656f664200d62bcd2e024077",
+          "parentId": "68d6a10c0c7e3ce5a80b8bff",
+          "slotId": "Front_plate"
+        },
+        {
+          "_id": "68d6a10c0c7e3ce5a80b8c08",
+          "_tpl": "657b2797c3dbcb01d60c35ea",
+          "parentId": "68d6a10c0c7e3ce5a80b8bff",
+          "slotId": "Back_plate"
+        },
+        {
+          "_id": "68d6a10c0c7e3ce5a80b8c09",
+          "_tpl": "654a4f8bc721968a4404ef18",
+          "parentId": "68d6a10c0c7e3ce5a80b8bff",
+          "slotId": "Left_side_plate"
+        },
+        {
+          "_id": "68d6a10c0c7e3ce5a80b8c0a",
+          "_tpl": "654a4f8bc721968a4404ef18",
+          "parentId": "68d6a10c0c7e3ce5a80b8bff",
+          "slotId": "Right_side_plate"
+        }
+      ],
+      "_name": "Бронежилет НПП КлАСС Корунд-ВМ (Камыш) Standard",
+      "_parent": "68d6a10c0c7e3ce5a80b8bff",
+      "_type": "Preset"
+    },
+    "68d6a31ea3dc2d13a108cb67": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "68bee28f79c8186398098e6f",
+      "_id": "68d6a31ea3dc2d13a108cb67",
+      "_items": [
+        {
+          "_id": "68da8c6727020608870481e8",
+          "_tpl": "68bee28f79c8186398098e6f"
+        },
+        {
+          "_id": "68da8c6727020608870481e9",
+          "_tpl": "68c2d8a05a62f5af2d095fe7",
+          "parentId": "68da8c6727020608870481e8",
+          "slotId": "Helmet_top"
+        },
+        {
+          "_id": "68da8c6727020608870481ea",
+          "_tpl": "68c2de2248616dad9e081d00",
+          "parentId": "68da8c6727020608870481e8",
+          "slotId": "Helmet_back"
+        },
+        {
+          "_id": "68da8c6727020608870481eb",
+          "_tpl": "68c2e040f5b74996770e140c",
+          "parentId": "68da8c6727020608870481e8",
+          "slotId": "Helmet_eyes"
+        },
+        {
+          "_id": "68da8c6727020608870481ec",
+          "_tpl": "68c2e074f9ad4682dd0d5c1d",
+          "parentId": "68da8c6727020608870481e8",
+          "slotId": "Helmet_jaw"
+        }
+      ],
+      "_name": "Шлем Чемпиона Standard",
+      "_parent": "68da8c6727020608870481e8",
+      "_type": "Preset"
     }
   },
   "LocationInfection": {
@@ -24374,7 +25212,7 @@
     }
   ],
   "config": {
-    "AimPunchMagnitude": 14.4,
+    "AimPunchMagnitude": 5.76,
     "Aiming": {
       "AimProceduralIntensity": 0.75,
       "CameraSnapGlobalMult": 2,
@@ -30186,8 +31024,8 @@
     },
     "GameSearchingTimeout": 45,
     "GlobalItemPriceModifier": 1,
-    "GlobalLootChanceModifier": 0.2,
-    "GlobalLootChanceModifierPvE": 0.2,
+    "GlobalLootChanceModifier": 0.19,
+    "GlobalLootChanceModifierPvE": 0.23,
     "GraphicSettings": {
       "ExperimentalFogInCity": true
     },
@@ -34073,7 +34911,7 @@
           "PriceModifier": 1.1
         }
       },
-      "MinimumLevelToApplyBuff": 10,
+      "MinimumLevelToApplyBuff": 3,
       "RepairStrategies": {
         "Armor": {
           "BuffTypes": [
@@ -35183,6 +36021,21 @@
         "MaxInLobby": 0,
         "MaxInRaid": 0,
         "TemplateId": "689b5f0f986634d56b0e099f"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 0,
+        "TemplateId": "68c944200bf756126e00d801"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 0,
+        "TemplateId": "68c954d8ecbf3abc9907ee9b"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 0,
+        "TemplateId": "688b2dba67bf6fa26c07e918"
       }
     ],
     "RunddansSettings": {
@@ -35258,7 +36111,12 @@
         "WeaponReloadAction": 0.025,
         "WeaponShotAction": 0.1
       },
-      "AttachedLauncher": [],
+      "AttachedLauncher": {
+        "WeaponChamberAction": 1.1,
+        "WeaponFixAction": 2.2,
+        "WeaponReloadAction": 0.275,
+        "WeaponShotAction": 1.1
+      },
       "Attention": {
         "DependentSkillRatios": [
           {
@@ -35373,7 +36231,12 @@
       "FieldMedicine": [],
       "FirstAid": [],
       "Freetrading": [],
-      "HMG": [],
+      "HMG": {
+        "WeaponChamberAction": 0.6,
+        "WeaponFixAction": 1.2,
+        "WeaponReloadAction": 0.15,
+        "WeaponShotAction": 0.6
+      },
       "Health": {
         "SkillProgress": 0.5
       },
@@ -35479,8 +36342,18 @@
         "WearAmountReducePerLevel": 0.004,
         "WearChanceReduceEliteLevel": 0.5
       },
-      "LMG": [],
-      "Launcher": [],
+      "LMG": {
+        "WeaponChamberAction": 0.6,
+        "WeaponFixAction": 1.2,
+        "WeaponReloadAction": 0.15,
+        "WeaponShotAction": 0.6
+      },
+      "Launcher": {
+        "WeaponChamberAction": 1.1,
+        "WeaponFixAction": 2.2,
+        "WeaponReloadAction": 0.275,
+        "WeaponShotAction": 1.1
+      },
       "LightVests": {
         "BuffMaxCount": 1,
         "BuffSettings": {
@@ -35556,7 +36429,12 @@
         "WeaponReloadAction": 0.025,
         "WeaponShotAction": 0.1
       },
-      "SMG": [],
+      "SMG": {
+        "WeaponChamberAction": 0.4,
+        "WeaponFixAction": 0.8,
+        "WeaponReloadAction": 0.1,
+        "WeaponShotAction": 0.4
+      },
       "Search": {
         "FindAction": 0.166,
         "SearchAction": 0.33
@@ -36624,7 +37502,7 @@
         }
       ],
       "match_end": {
-        "README": "Сначала проверяются условия выхода (*_requirement), только потом применяются награды (*_reward). Получившаяся сумма умножается на *Mult",
+        "README": "First, the exit conditions (*_requirement) are checked, and only then are the rewards (*_reward) applied. The resulting amount is multiplied by *Mult",
         "killedMult": 1,
         "leftMult": 0,
         "miaMult": 1,

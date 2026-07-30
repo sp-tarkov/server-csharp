@@ -1,20 +1,18 @@
 using System.Text.RegularExpressions;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Helpers.Dialog.Commando.SptCommands;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Dialog;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.ProfileCommand;
 
 [Injectable]
-public class ProfileSptCommand(ISptLogger<ProfileSptCommand> logger, MailSendService mailSendService, ProfileHelper profileHelper)
-    : ISptCommand
+public class ProfileSptCommand(MailSendService mailSendService, ProfileHelper profileHelper) : ISptCommand
 {
     /// <summary>
     /// Regex to account for all these cases

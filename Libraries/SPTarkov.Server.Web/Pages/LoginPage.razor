@@ -1,0 +1,52 @@
+@page "/login"
+@using Microsoft.AspNetCore.WebUtilities
+@using SPTarkov.Server.Web.Components.Auth
+@using SPTarkov.Server.Web.Layout
+@using SPTarkov.Server.Web.Services
+
+@layout BaseMudBlazorLayout
+@inject WebLocalizationService WebLocalizationService
+
+<PageTitle>@WebLocalizationService.GetText("login-page-title")</PageTitle>
+
+<LoginBox Message="@Message"
+          ShowForm="@ShowForm"
+          ReturnUrlOverride="@ReturnUrl"
+          FailureUrlOverride="@FailureUrl" />
+
+@code {
+    private string ReturnUrl { get; set; } = "/";
+    private string FailureUrl { get; set; } = AuthService.LoginPagePath;
+    private string? Message { get; set; }
+    private bool ShowForm { get; set; } = true;
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+
+    protected override void OnParametersSet()
+    {
+        ReturnUrl = "/";
+        Message = null;
+        ShowForm = true;
+
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("returnUrl", out var returnUrl))
+        {
+            ReturnUrl = AuthService.GetSafeReturnUrl(returnUrl.ToString());
+        }
+
+        if (query.ContainsKey("authError"))
+        {
+            Message = WebLocalizationService.GetText("login-invalid-username-password");
+        }
+        else if (query.ContainsKey("noPermissions"))
+        {
+            Message = WebLocalizationService.GetText("login-no-permissions");
+            ShowForm = false;
+        }
+
+        FailureUrl = $"{AuthService.LoginPagePath}?returnUrl={Uri.EscapeDataString(ReturnUrl)}";
+    }
+}

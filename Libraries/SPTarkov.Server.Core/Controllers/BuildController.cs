@@ -1,13 +1,17 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Items;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Builds;
 using SPTarkov.Server.Core.Models.Eft.PresetBuild;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Controllers;
@@ -15,7 +19,7 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class BuildController(
     ISptLogger<BuildController> logger,
-    DatabaseService databaseService,
+    TemplateTable templateTable,
     ProfileHelper profileHelper,
     ServerLocalisationService serverLocalisationService,
     ItemHelper itemHelper,
@@ -41,7 +45,7 @@ public class BuildController(
         };
 
         // Ensure the secure container in the default presets match what the player has equipped
-        var defaultEquipmentPresetsClone = cloner.Clone(databaseService.GetTemplates().DefaultEquipmentPresets).ToList();
+        var defaultEquipmentPresetsClone = cloner.Clone(templateTable.DefaultEquipmentPresets).ToList();
 
         // Get players secure container
         var playerSecureContainer = profile.CharacterData?.PmcData?.Inventory?.Items?.FirstOrDefault(x =>

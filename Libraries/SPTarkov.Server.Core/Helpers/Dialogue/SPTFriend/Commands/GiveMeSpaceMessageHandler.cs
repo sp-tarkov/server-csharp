@@ -1,11 +1,14 @@
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Helpers.Profile;
+using SPTarkov.Server.Core.Helpers.Server;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
+using SPTarkov.Server.Core.Services.Locales;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
@@ -17,11 +20,9 @@ public class GiveMeSpaceMessageHandler(
     ServerLocalisationService serverLocalisationService,
     MailSendService mailSendService,
     RandomUtil randomUtil,
-    ConfigServer configServer
+    CoreConfig coreConfig
 ) : IChatMessageHandler
 {
-    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
-
     public int GetPriority()
     {
         return 100;
@@ -35,7 +36,7 @@ public class GiveMeSpaceMessageHandler(
     public void Process(MongoId sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         const string stashRowGiftId = "StashRows";
-        var maxGiftsToSendCount = CoreConfig.Features.ChatbotFeatures.CommandUseLimits[stashRowGiftId] ?? 5;
+        var maxGiftsToSendCount = coreConfig.Features.ChatbotFeatures.CommandUseLimits[stashRowGiftId] ?? 5;
         if (profileHelper.PlayerHasReceivedMaxNumberOfGift(sessionId, stashRowGiftId, maxGiftsToSendCount))
         {
             mailSendService.SendUserMessageToPlayer(
@@ -51,7 +52,7 @@ public class GiveMeSpaceMessageHandler(
             const int rowsToAdd = 2;
             var bonusId = profileHelper.AddStashRowsBonusToProfile(sessionId, rowsToAdd);
 
-            notificationSendHelper.SendMessage(
+            _ = notificationSendHelper.SendMessageAsync(
                 sessionId,
                 new WsProfileChangeEvent
                 {

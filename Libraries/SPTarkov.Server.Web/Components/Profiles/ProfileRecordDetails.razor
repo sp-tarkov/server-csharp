@@ -1,0 +1,765 @@
+@using System.Globalization
+@using SPTarkov.Server.Core.Helpers.Profile
+@using SPTarkov.Server.Core.Models.Spt.Tables
+@using SPTarkov.Server.Web.Models.Database
+@using SPTarkov.Server.Web.Models.Profiles
+@inject GlobalTable GlobalTable
+@inject ProfileHelper ProfileHelper
+@inject WebLocalizationService WebLocalizationService
+
+<MudPaper Elevation="0" Class="profiles-details spt-panel pa-5">
+    @if (Details is null)
+    {
+        <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="profiles-empty-details">
+            <MudIcon Icon="@Icons.Material.Filled.ManageAccounts" Size="Size.Large" Color="Color.Secondary" />
+            <MudText Typo="Typo.h6">No profile selected</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary" Align="Align.Center">
+                Pick a profile from the table to view identifiers, character data, and profile properties.
+            </MudText>
+        </MudStack>
+    }
+    else
+    {
+        <MudStack Spacing="3">
+            <MudStack Row AlignItems="AlignItems.Start" Justify="Justify.SpaceBetween" Class="profiles-details-heading">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h5">@Details.Summary.Username</MudText>
+                    <MudText Typo="Typo.caption" Class="profiles-mono">@Details.Summary.Id</MudText>
+                </MudStack>
+
+                @if (OnClose.HasDelegate)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                   Color="Color.Secondary"
+                                   Size="Size.Small"
+                                   OnClick="OnClose"
+                                   aria-label="Close details" />
+                }
+            </MudStack>
+
+            <MudStack Row Spacing="1" Class="profiles-chip-row">
+                <MudChip T="string" Size="Size.Small" Color="@GetStatusColor(Details.Summary)">@Details.Summary.Status</MudChip>
+                <MudChip T="string" Size="Size.Small" Color="Color.Info">@Details.Summary.Edition</MudChip>
+                <MudChip T="string" Size="Size.Small" Color="Color.Info">@Details.Summary.Side</MudChip>
+            </MudStack>
+
+            <MudTabs Class="profiles-details-tabs" PanelClass="profiles-details-tab-panel" Rounded="false" Elevation="0">
+                <MudTabPanel Text="Profile info" Icon="@Icons.Material.Filled.ManageAccounts">
+                    <MudStack Spacing="3">
+                        @foreach (var sectionData in Details.DetailSections)
+                        {
+                            <MudDivider />
+
+                            @if (!string.IsNullOrWhiteSpace(sectionData.Title))
+                            {
+                                <MudText Typo="Typo.subtitle2">@sectionData.Title</MudText>
+                            }
+
+                            <div class="profiles-detail-grid">
+                                @foreach (var value in sectionData.Values)
+                                {
+                                    <div class="profiles-detail-value">
+                                        <MudText Typo="Typo.caption" Color="Color.Secondary">@value.Label</MudText>
+                                        <MudText Typo="Typo.body2" Class="@GetDetailValueClass(value)">@value.Value</MudText>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        <MudDivider />
+
+                        <MudStack Spacing="2" Class="profiles-properties">
+                            <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="profiles-properties-header">
+                                <MudStack Spacing="0">
+                                    <MudText Typo="Typo.subtitle2">All profile properties</MudText>
+                                    <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                        @Details.Properties.Count.ToString("N0", CultureInfo.CurrentCulture) populated property values
+                                    </MudText>
+                                </MudStack>
+                            </MudStack>
+
+                            @if (Details.Properties.Count == 0)
+                            {
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">No properties are populated for this profile.</MudText>
+                            }
+                            else
+                            {
+                                <MudTable T="DatabaseProperty"
+                                          Items="@Details.Properties"
+                                          Dense="true"
+                                          Hover="true"
+                                          Bordered="false"
+                                          Striped="true"
+                                          FixedHeader="true"
+                                          Height="320px"
+                                          Virtualize="true"
+                                          Class="profiles-properties-table">
+                                    <HeaderContent>
+                                        <MudTh>Property</MudTh>
+                                        <MudTh>Type</MudTh>
+                                        <MudTh>Value</MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate>
+                                        <MudTd DataLabel="Property">
+                                            <MudText Typo="Typo.caption" Class="profiles-mono profiles-property-path">@context.Path</MudText>
+                                        </MudTd>
+                                        <MudTd DataLabel="Type">@context.Kind</MudTd>
+                                        <MudTd DataLabel="Value">
+                                            <MudText Typo="Typo.caption" Class="profiles-mono profiles-property-value">@context.Value</MudText>
+                                        </MudTd>
+                                    </RowTemplate>
+                                </MudTable>
+
+                                <MudButton Variant="Variant.Text"
+                                           Color="Color.Secondary"
+                                           Size="Size.Small"
+                                           StartIcon="@RawJsonToggleIcon"
+                                           Class="profiles-raw-json-toggle"
+                                           OnClick="ToggleRawJson">
+                                    @RawJsonToggleLabel
+                                </MudButton>
+
+                                @if (_showRawJson)
+                                {
+                                    <div class="profiles-raw-json">
+                                        <pre>@Details.PropertiesJson</pre>
+                                    </div>
+                                }
+                            }
+                        </MudStack>
+                    </MudStack>
+                </MudTabPanel>
+
+                <MudTabPanel Text="Edit profile"
+                             Icon="@Icons.Material.Filled.Edit"
+                             Disabled="@Details.Summary.IsWiped"
+                             ToolTip="@(Details.Summary.IsWiped ? L("profiles-edit-disabled-wiped-tooltip") : null)">
+                    @if (_editModel is not null)
+                    {
+                        <MudPaper Elevation="0" Class="profiles-edit-panel pa-4">
+                            <MudStack Spacing="3">
+                                <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="profiles-section-toolbar">
+                                    <MudStack Spacing="0">
+                                        <MudText Typo="Typo.subtitle2">Edit profile</MudText>
+                                        <MudText Typo="Typo.caption" Color="Color.Secondary">Changes are applied when saved.</MudText>
+                                    </MudStack>
+
+                                    <MudStack Row Spacing="1" Class="profiles-actions">
+                                        <MudTooltip Text="Reset edit form">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Undo"
+                                                           Variant="Variant.Outlined"
+                                                           Color="Color.Secondary"
+                                                           Disabled="@IsBusy"
+                                                           OnClick="ResetEditForm"
+                                                           AriaLabel="Reset edit form" />
+                                        </MudTooltip>
+
+                                        <MudButton Variant="Variant.Filled"
+                                                   Color="Color.Warning"
+                                                   Class="profiles-primary-button"
+                                                   StartIcon="@Icons.Material.Filled.Save"
+                                                   Disabled="@IsBusy"
+                                                   OnClick="SaveEditForm">
+                                            Save edits
+                                        </MudButton>
+                                    </MudStack>
+                                </MudStack>
+
+                                <div class="profiles-edit-grid">
+                                    <MudTextField T="string"
+                                                  Label="Username"
+                                                  Variant="Variant.Outlined"
+                                                  Immediate="true"
+                                                  @bind-Value="_editModel.Username" />
+
+                                    <MudTextField T="string"
+                                                  Label="PMC nickname"
+                                                  Variant="Variant.Outlined"
+                                                  Immediate="true"
+                                                  Disabled="@(!_editModel.HasCharacter)"
+                                                  @bind-Value="_editModel.PmcNickname"
+                                                  MaxLength="15"
+                                                  Counter="0" />
+
+                                    <MudNumericField T="int?"
+                                                     Label="PMC level"
+                                                     Variant="Variant.Outlined"
+                                                     Min="1"
+                                                     Max="@MaxCharacterLevel"
+                                                     Step="1"
+                                                     Immediate="true"
+                                                     Disabled="@(!_editModel.HasCharacter)"
+                                                     Value="_editModel.PmcLevel"
+                                                     ValueChanged="@(v => SetCharacterLevel(CharacterTarget.Pmc, v))" />
+
+                                    <MudNumericField T="int?"
+                                                     Label="PMC experience"
+                                                     Variant="Variant.Outlined"
+                                                     Min="0"
+                                                     Step="1000"
+                                                     Immediate="true"
+                                                     Disabled="@(!_editModel.HasCharacter)"
+                                                     Value="_editModel.PmcExperience"
+                                                     ValueChanged="@(v => SetCharacterExperience(CharacterTarget.Pmc, v))" />
+
+                                    <MudNumericField T="int?"
+                                                     Label="Scav level"
+                                                     Variant="Variant.Outlined"
+                                                     Min="1"
+                                                     Max="@MaxCharacterLevel"
+                                                     Step="1"
+                                                     Immediate="true"
+                                                     Value="_editModel.ScavLevel"
+                                                     ValueChanged="@(v => SetCharacterLevel(CharacterTarget.Scav, v))" />
+
+                                    <MudNumericField T="int?"
+                                                     Label="Scav experience"
+                                                     Variant="Variant.Outlined"
+                                                     Min="0"
+                                                     Step="1000"
+                                                     Immediate="true"
+                                                     Value="_editModel.ScavExperience"
+                                                     ValueChanged="@(v => SetCharacterExperience(CharacterTarget.Scav, v))" />
+
+                                </div>
+
+                                @if (_editModel.Skills.Count > 0)
+                                {
+                                    <MudTable T="ProfileSkillEditModel"
+                                              Items="@_editModel.Skills"
+                                              Dense="true"
+                                              Hover="true"
+                                              Bordered="false"
+                                              Striped="true"
+                                              FixedHeader="true"
+                                              Height="360px"
+                                              Class="profiles-skills-table">
+                                        <HeaderContent>
+                                            <MudTh>Skill</MudTh>
+                                            <MudTh>Level</MudTh>
+                                            <MudTh>Progress</MudTh>
+                                            <MudTh>Total</MudTh>
+                                        </HeaderContent>
+                                        <RowTemplate>
+                                            <MudTd DataLabel="Skill">
+                                                <MudText Typo="Typo.body2" Class="profiles-row-title">@context.Label</MudText>
+                                                <MudText Typo="Typo.caption" Class="profiles-mono">@context.Id</MudText>
+                                            </MudTd>
+                                            <MudTd DataLabel="Level">
+                                                <MudNumericField T="int"
+                                                                 Min="0"
+                                                                 Max="@MaxSkillLevel"
+                                                                 Step="1"
+                                                                 Immediate="true"
+                                                                 Value="@context.Level"
+                                                                 ValueChanged="@((value) => SetSkillLevel(context, value))" />
+                                            </MudTd>
+                                            <MudTd DataLabel="Progress">
+                                                <MudNumericField T="double"
+                                                                 Min="0"
+                                                                 Max="99.99"
+                                                                 Step="0.01"
+                                                                 Format="F2"
+                                                                 Immediate="true"
+                                                                 Disabled="@(context.Level >= MaxSkillLevel)"
+                                                                 Value="@context.ProgressInLevel"
+                                                                 ValueChanged="@((value) => SetSkillProgress(context, value))" />
+                                            </MudTd>
+                                            <MudTd DataLabel="Total">
+                                                <MudText Typo="Typo.caption" Class="profiles-mono">@context.TotalProgress.ToString("0.#", CultureInfo.CurrentCulture)</MudText>
+                                            </MudTd>
+                                        </RowTemplate>
+                                    </MudTable>
+                                }
+
+                                @if (_editModel.HideoutAreas.Count > 0)
+                                {
+                                    <MudDivider />
+
+                                    <MudStack Spacing="1">
+                                        <MudText Typo="Typo.subtitle2">Hideout areas</MudText>
+
+                                        <MudTable T="ProfileHideoutAreaEditModel"
+                                                  Items="@_editModel.HideoutAreas"
+                                                  Dense="true"
+                                                  Hover="true"
+                                                  Bordered="false"
+                                                  Striped="true"
+                                                  FixedHeader="true"
+                                                  Height="360px"
+                                                  Class="profiles-hideout-table">
+                                            <HeaderContent>
+                                                <MudTh>Area</MudTh>
+                                                <MudTh>Level</MudTh>
+                                                <MudTh>Active</MudTh>
+                                                <MudTh>Bonuses</MudTh>
+                                                <MudTh>Building</MudTh>
+                                                <MudTh>Finish</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd DataLabel="Area">
+                                                    <MudText Typo="Typo.body2" Class="profiles-row-title">@context.Label</MudText>
+                                                    <MudText Typo="Typo.caption" Class="profiles-mono">@context.Type</MudText>
+                                                </MudTd>
+                                                <MudTd DataLabel="Level">
+                                                    <MudNumericField T="int"
+                                                                     Min="0"
+                                                                     Max="@context.MaxLevel"
+                                                                     Step="1"
+                                                                     Immediate="true"
+                                                                     Value="@context.Level"
+                                                                     ValueChanged="@((value) => SetHideoutLevel(context, value))" />
+                                                </MudTd>
+                                                <MudTd DataLabel="Active">
+                                                    <MudCheckBox T="bool"
+                                                                 Color="Color.Warning"
+                                                                 Value="@context.Active"
+                                                                 ValueChanged="@((value) => context.Active = value)" />
+                                                </MudTd>
+                                                <MudTd DataLabel="Bonuses">
+                                                    <MudCheckBox T="bool"
+                                                                 Color="Color.Warning"
+                                                                 Value="@context.PassiveBonusesEnabled"
+                                                                 ValueChanged="@((value) => context.PassiveBonusesEnabled = value)" />
+                                                </MudTd>
+                                                <MudTd DataLabel="Building">
+                                                    <MudCheckBox T="bool"
+                                                                 Color="Color.Warning"
+                                                                 Value="@context.Constructing"
+                                                                 ValueChanged="@((value) => SetHideoutConstructing(context, value))" />
+                                                </MudTd>
+                                                <MudTd DataLabel="Finish">
+                                                    <MudCheckBox T="bool"
+                                                                 Color="Color.Warning"
+                                                                 Disabled="@(!context.Constructing)"
+                                                                 Value="@context.CompleteConstruction"
+                                                                 ValueChanged="@((value) => context.CompleteConstruction = value)" />
+                                                </MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                    </MudStack>
+                                }
+
+                                @if (_editModel.Quests.Count > 0 || _editModel.MissingQuests.Count > 0)
+                                {
+                                    <MudDivider />
+
+                                    <MudStack Spacing="2">
+                                        <MudText Typo="Typo.subtitle2">Quests</MudText>
+
+                                        @if (_editModel.MissingQuests.Count > 0)
+                                        {
+                                            <div class="profiles-quest-add-row">
+                                                <MudSelect T="string"
+                                                           Label="Add missing quest"
+                                                           Variant="Variant.Outlined"
+                                                           Dense="true"
+                                                           Value="@_selectedMissingQuestId"
+                                                           ValueChanged="@((value) => _selectedMissingQuestId = value)">
+                                                    @foreach (var quest in _editModel.MissingQuests)
+                                                    {
+                                                        <MudSelectItem T="string" Value="@quest.Id">@quest.Label</MudSelectItem>
+                                                    }
+                                                </MudSelect>
+
+                                                <MudButton Variant="Variant.Outlined"
+                                                           Color="Color.Secondary"
+                                                           StartIcon="@Icons.Material.Filled.Add"
+                                                           Disabled="@string.IsNullOrWhiteSpace(_selectedMissingQuestId)"
+                                                           OnClick="AddSelectedMissingQuest">
+                                                    Add quest
+                                                </MudButton>
+                                            </div>
+                                        }
+
+                                        <MudTable T="ProfileQuestEditModel"
+                                                  Items="@_editModel.Quests"
+                                                  Dense="true"
+                                                  Hover="true"
+                                                  Bordered="false"
+                                                  Striped="true"
+                                                  FixedHeader="true"
+                                                  Height="420px"
+                                                  Class="profiles-quests-table">
+                                            <HeaderContent>
+                                                <MudTh>Quest</MudTh>
+                                                <MudTh>Status</MudTh>
+                                                <MudTh>Pending</MudTh>
+                                                <MudTh></MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd DataLabel="Quest">
+                                                    <MudText Typo="Typo.body2" Class="profiles-row-title">@context.Label</MudText>
+                                                    <MudText Typo="Typo.caption" Class="profiles-mono">@context.Id</MudText>
+                                                </MudTd>
+                                                <MudTd DataLabel="Status">
+                                                    @FormatQuestStatus(context.Status)
+                                                </MudTd>
+                                                <MudTd DataLabel="Pending">
+                                                    @GetQuestPendingLabel(context)
+                                                </MudTd>
+                                                <MudTd>
+                                                    <MudStack Row Spacing="1" Justify="Justify.FlexEnd">
+                                                        <MudButton Variant="Variant.Outlined"
+                                                                   Color="Color.Secondary"
+                                                                   Size="Size.Small"
+                                                                   StartIcon="@Icons.Material.Filled.Done"
+                                                                   OnClick="@(() => SetQuestAction(context, ProfileQuestEditAction.AvailableForFinish))">
+                                                            Ready To Finish
+                                                        </MudButton>
+
+                                                        <MudButton Variant="Variant.Outlined"
+                                                                   Color="Color.Secondary"
+                                                                   Size="Size.Small"
+                                                                   StartIcon="@Icons.Material.Filled.RestartAlt"
+                                                                   OnClick="@(() => SetQuestAction(context, ProfileQuestEditAction.Restart))">
+                                                            Restart
+                                                        </MudButton>
+                                                    </MudStack>
+                                                </MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                    </MudStack>
+                                }
+
+                                @if (_editModel.Traders.Count > 0)
+                                {
+                                    <MudDivider />
+
+                                    <MudStack Spacing="1">
+                                        <MudText Typo="Typo.subtitle2">Traders</MudText>
+
+                                        <MudTable T="ProfileTraderEditModel"
+                                                  Items="@_editModel.Traders"
+                                                  Dense="true"
+                                                  Hover="true"
+                                                  Bordered="false"
+                                                  Striped="true"
+                                                  FixedHeader="true"
+                                                  Height="420px"
+                                                  Class="profiles-traders-table">
+                                            <HeaderContent>
+                                                <MudTh>Trader</MudTh>
+                                                <MudTh>Loyalty</MudTh>
+                                                <MudTh>Standing</MudTh>
+                                                <MudTh>Sales</MudTh>
+                                                <MudTh>Next resupply</MudTh>
+                                                <MudTh></MudTh>
+                                                <MudTh>Unlocked</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd DataLabel="Trader">
+                                                    <MudText Typo="Typo.body2" Class="profiles-row-title">@context.Label</MudText>
+                                                    <MudText Typo="Typo.caption" Class="profiles-mono">@context.Id</MudText>
+                                                </MudTd>
+                                                <MudTd DataLabel="Loyalty">
+                                                    <MudNumericField T="int"
+                                                                     Min="1"
+                                                                     Max="@context.MaxLoyaltyLevel"
+                                                                     Step="1"
+                                                                     Immediate="true"
+                                                                     Value="@context.LoyaltyLevel"
+                                                                     ValueChanged="@((value) => SetTraderLoyalty(context, value))" />
+                                                </MudTd>
+                                                <MudTd DataLabel="Standing">
+                                                    <MudNumericField T="double"
+                                                                     Step="0.01"
+                                                                     Format="F2"
+                                                                     Immediate="true"
+                                                                     Value="@context.Standing"
+                                                                     ValueChanged="@((value) => context.Standing = Math.Round(value, 2))" />
+                                                </MudTd>
+                                                <MudTd DataLabel="Sales">
+                                                    <MudNumericField T="double"
+                                                                     Min="0"
+                                                                     Step="1000"
+                                                                     Immediate="true"
+                                                                     Value="@context.SalesSum"
+                                                                     ValueChanged="@((value) => context.SalesSum = Math.Max(0d, value))" />
+                                                </MudTd>
+                                                <MudTd DataLabel="Next resupply">
+                                                    <MudText Typo="Typo.caption" Class="profiles-mono">
+                                                        @FormatUnixTimestamp(context.NextResupply)
+                                                    </MudText>
+                                                </MudTd>
+                                                <MudTd>
+                                                    <MudButton Variant="Variant.Outlined"
+                                                               Color="Color.Secondary"
+                                                               Size="Size.Small"
+                                                               StartIcon="@Icons.Material.Filled.Update"
+                                                               OnClick="@(() => ResupplyTraderNow(context))">
+                                                        Now
+                                                    </MudButton>
+                                                </MudTd>
+                                                <MudTd DataLabel="Unlocked">
+                                                    <MudCheckBox T="bool"
+                                                                 Color="Color.Warning"
+                                                                 Value="@context.Unlocked"
+                                                                 ValueChanged="@((value) => context.Unlocked = value)" />
+                                                </MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                    </MudStack>
+                                }
+                            </MudStack>
+                        </MudPaper>
+                    }
+                </MudTabPanel>
+
+                <MudTabPanel Text="Prestige"
+                             Icon="@Icons.Material.Filled.MilitaryTech"
+                             Disabled="@Details.Summary.IsWiped"
+                             ToolTip="@(Details.Summary.IsWiped ? L("profiles-prestige-disabled-wiped-tooltip") : null)">
+                    <ProfilePrestigePanel Details="@Details" IsBusy="@IsBusy" OnGrantPrestige="OnGrantPrestige" />
+                </MudTabPanel>
+            </MudTabs>
+        </MudStack>
+    }
+</MudPaper>
+
+@code {
+    [Parameter]
+    public ProfileDetails? Details { get; set; }
+
+    [Parameter]
+    public bool IsBusy { get; set; }
+
+    [Parameter]
+    public EventCallback<ProfileEditModel> OnSaveEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<ProfilePrestigeGrantRequest> OnGrantPrestige { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    private const int MaxSkillLevel = 51;
+    private int MaxCharacterLevel => GlobalTable.Configuration.Exp.Level.ExperienceTable.Length;
+
+    private ProfileDetails? _detailsReference;
+    private ProfileEditModel? _editModel;
+    private string _selectedMissingQuestId = string.Empty;
+    private bool _showRawJson;
+
+    private string RawJsonToggleIcon
+    {
+        get { return _showRawJson ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.Code; }
+    }
+
+    private string RawJsonToggleLabel
+    {
+        get { return _showRawJson ? "Hide raw profile JSON" : "Show raw profile JSON"; }
+    }
+
+    private string L(string key)
+    {
+        return WebLocalizationService.GetText(key);
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (ReferenceEquals(_detailsReference, Details))
+        {
+            return;
+        }
+
+        _detailsReference = Details;
+        _editModel = Details?.EditModel.Clone();
+        _selectedMissingQuestId = string.Empty;
+        _showRawJson = false;
+    }
+
+    private static string? GetDetailValueClass(DatabaseDetailValue value)
+    {
+        return value.IsMono ? "profiles-mono" : null;
+    }
+
+    private void ToggleRawJson()
+    {
+        _showRawJson = !_showRawJson;
+    }
+
+    private void ResetEditForm()
+    {
+        _editModel = Details?.EditModel.Clone();
+    }
+
+    private Task SaveEditForm()
+    {
+        return _editModel is null ? Task.CompletedTask : OnSaveEdit.InvokeAsync(_editModel.Clone());
+    }
+
+    private void SetCharacterLevel(CharacterTarget target, int? value)
+    {
+        if (_editModel is null || !value.HasValue)
+            return;
+
+        var maxLevel = MaxCharacterLevel;
+        var clamped = Math.Clamp(value.Value, 1, maxLevel);
+
+        if (target == CharacterTarget.Pmc)
+        {
+            _editModel.PmcLevel = clamped;
+            _editModel.PmcExperience = ProfileHelper.GetExperience(clamped);
+        }
+        else
+        {
+            _editModel.ScavLevel = clamped;
+            _editModel.ScavExperience = ProfileHelper.GetExperience(clamped);
+        }
+    }
+
+    private void SetCharacterExperience(CharacterTarget target, int? experience)
+    {
+        if (_editModel is null || !experience.HasValue)
+            return;
+
+        var exp = Math.Max(0, experience.Value);
+        var level = ProfileHelper.GetLevelFromExperience(exp);
+
+        if (target == CharacterTarget.Pmc)
+        {
+            _editModel.PmcExperience = exp;
+            _editModel.PmcLevel = level;
+        }
+        else
+        {
+            _editModel.ScavExperience = exp;
+            _editModel.ScavLevel = level;
+        }
+    }
+
+    private static void SetSkillLevel(ProfileSkillEditModel skill, int value)
+    {
+        skill.Level = Math.Clamp(value, 0, MaxSkillLevel);
+
+        if (skill.Level >= MaxSkillLevel)
+        {
+            skill.ProgressInLevel = 0d;
+        }
+    }
+
+    private static void SetSkillProgress(ProfileSkillEditModel skill, double value)
+    {
+        skill.ProgressInLevel = Math.Round(Math.Clamp(value, 0d, 99.99d), 2);
+    }
+
+    private static void SetHideoutLevel(ProfileHideoutAreaEditModel area, int value)
+    {
+        area.Level = Math.Clamp(value, 0, area.MaxLevel);
+    }
+
+    private static void SetHideoutConstructing(ProfileHideoutAreaEditModel area, bool value)
+    {
+        area.Constructing = value;
+
+        if (!area.Constructing)
+        {
+            area.CompleteConstruction = false;
+        }
+    }
+
+    private void AddSelectedMissingQuest()
+    {
+        if (_editModel is null || string.IsNullOrWhiteSpace(_selectedMissingQuestId))
+        {
+            return;
+        }
+
+        var quest = _editModel.MissingQuests.FirstOrDefault(quest => quest.Id == _selectedMissingQuestId);
+        if (quest is null)
+        {
+            return;
+        }
+
+        _editModel.MissingQuests.Remove(quest);
+        _editModel.Quests.Add(new ProfileQuestEditModel
+        {
+            Id = quest.Id,
+            Label = quest.Label,
+            Status = SPTarkov.Server.Core.Models.Enums.QuestStatusEnum.Started,
+            IsNew = true,
+        });
+
+        _editModel.Quests = _editModel.Quests.OrderBy(quest => quest.Label).ToList();
+        _selectedMissingQuestId = string.Empty;
+    }
+
+    private static void SetQuestAction(ProfileQuestEditModel quest, ProfileQuestEditAction action)
+    {
+        quest.PendingAction = action;
+    }
+
+    private static void SetTraderLoyalty(ProfileTraderEditModel trader, int value)
+    {
+        trader.LoyaltyLevel = Math.Clamp(value, 1, trader.MaxLoyaltyLevel);
+    }
+
+    private static void ResupplyTraderNow(ProfileTraderEditModel trader)
+    {
+        trader.NextResupply = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+    }
+
+    private static string FormatUnixTimestamp(double value)
+    {
+        if (value <= 0d)
+        {
+            return "n/a";
+        }
+
+        try
+        {
+            return DateTimeOffset
+                .FromUnixTimeSeconds((long)Math.Round(value))
+                .ToLocalTime()
+                .ToString("yyyy-MM-dd HH:mm:ss zzz", CultureInfo.CurrentCulture);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return value.ToString("0", CultureInfo.CurrentCulture);
+        }
+    }
+
+    private static string GetQuestPendingLabel(ProfileQuestEditModel quest)
+    {
+        if (quest.PendingAction == ProfileQuestEditAction.AvailableForFinish)
+        {
+            return quest.IsNew ? "Add and mark ready to finish" : "Available For Finish";
+        }
+
+        if (quest.PendingAction == ProfileQuestEditAction.Restart)
+        {
+            return quest.IsNew ? "Add and start" : "Restart";
+        }
+
+        return quest.IsNew ? "Add and start" : "No change";
+    }
+
+    private static string FormatQuestStatus(SPTarkov.Server.Core.Models.Enums.QuestStatusEnum status)
+    {
+        return status.ToString() switch
+        {
+            "AvailableForStart" => "Available For Start",
+            "AvailableForFinish" => "Available For Finish",
+            "FailRestartable" => "Fail Restartable",
+            "MarkedAsFailed" => "Marked As Failed",
+            "AvailableAfter" => "Available After",
+            _ => status.ToString(),
+        };
+    }
+
+    private static Color GetStatusColor(ProfileSummary profile)
+    {
+        if (profile.IsInvalid)
+        {
+            return Color.Error;
+        }
+
+        if (profile.IsWiped)
+        {
+            return Color.Warning;
+        }
+
+        return profile.HasCharacter ? Color.Success : Color.Info;
+    }
+}

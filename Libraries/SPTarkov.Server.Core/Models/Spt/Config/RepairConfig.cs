@@ -23,13 +23,6 @@ public record RepairConfig : BaseConfig
     [JsonPropertyName("repairKitIntellectGainMultiplier")]
     public required IntellectGainValues RepairKitIntellectGainMultiplier { get; set; }
 
-    /// <summary>
-    ///     How much INT can be given to player per repair action
-    /// </summary>
-    [Obsolete("Removed in SPT 4.1 - Only for backwards compatibility, does nothing")]
-    [JsonIgnore]
-    public MaxIntellectGainValues MaxIntellectGainPerRepair { get; set; } = new();
-
     [JsonPropertyName("weaponTreatment")]
     public required WeaponTreatmentRepairValues WeaponTreatment { get; set; }
 
