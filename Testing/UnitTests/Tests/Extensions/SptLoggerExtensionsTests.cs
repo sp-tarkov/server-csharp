@@ -17,7 +17,7 @@ public class SptLoggerExtensionsTests
             .ToList();
 
         var registered = new ServiceCollection()
-            .AddSptLogger(isDevelop: true)
+            .AddSptLogger(isDevelop: false)
             .Where(descriptor => descriptor.ServiceType == typeof(ILogHandler))
             .Select(descriptor => descriptor.ImplementationType)
             .ToList();
@@ -35,7 +35,7 @@ public class SptLoggerExtensionsTests
     public void AddSptLogger_DoesNotScanAssembliesOutsideTheDeclaringOne()
     {
         var registered = new ServiceCollection()
-            .AddSptLogger(isDevelop: true)
+            .AddSptLogger(isDevelop: false)
             .Where(descriptor => descriptor.ServiceType == typeof(ILogHandler))
             .Select(descriptor => descriptor.ImplementationType!)
             .ToList();
@@ -58,7 +58,7 @@ public class SptLoggerExtensionsTests
         );
 
         var registered = new ServiceCollection()
-            .AddSptLogger(isDevelop: true)
+            .AddSptLogger(isDevelop: false)
             .Where(descriptor => descriptor.ServiceType == typeof(ILogHandler))
             .Select(descriptor => descriptor.ImplementationType)
             .ToList();
