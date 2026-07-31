@@ -86,7 +86,8 @@ public class PrepatchIsolationTests
     {
         var extensions = LoadFrom(context, typeof(SptLoggerExtensions));
 
-        Invoke(extensions, nameof(SptLoggerExtensions.AddSptLogger), instance: null, [new ServiceCollection(), true]);
+        // Not the develop config: only sptLogger.json is copied next to the tests in every configuration.
+        Invoke(extensions, nameof(SptLoggerExtensions.AddSptLogger), instance: null, [new ServiceCollection(), false]);
     }
 
     /// <summary>
