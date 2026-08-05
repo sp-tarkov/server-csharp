@@ -50,17 +50,18 @@ public class PmcWaveGenerator(LocationTable locationTable, PmcConfig pmcConfig)
     /// <param name="location"> Location Object </param>
     public void ApplyWaveChangesToMap(LocationBase location)
     {
-        if (pmcConfig.RemoveExistingPmcWaves && location.BossLocationSpawn != null)
+        // Only remove existing PMC waves if there are custom PMC waves to replace them with
+        if (pmcConfig.RemoveExistingPmcWaves)
         {
-            var pmcTypes = new HashSet<string> { "pmcUSEC", "pmcBEAR" };
-            location.BossLocationSpawn = location
-                .BossLocationSpawn.Where(bossSpawn => !pmcTypes.Contains(bossSpawn.BossName))
-                .ToList();
-        }
+            if (pmcConfig.CustomPmcWaves.TryGetValue(location.Id.ToLowerInvariant(), out var pmcWavesToAdd) && pmcWavesToAdd.Count > 0)
+            {
+                var pmcTypes = new HashSet<string> { "pmcUSEC", "pmcBEAR" };
+                location.BossLocationSpawn = location
+                    .BossLocationSpawn.Where(bossSpawn => !pmcTypes.Contains(bossSpawn.BossName))
+                    .ToList();
 
-        if (pmcConfig.CustomPmcWaves.TryGetValue(location.Id.ToLowerInvariant(), out var pmcWavesToAdd))
-        {
-            location.BossLocationSpawn.AddRange(pmcWavesToAdd);
+                location.BossLocationSpawn.AddRange(pmcWavesToAdd);
+            }
         }
     }
 }
