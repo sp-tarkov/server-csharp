@@ -136,6 +136,8 @@ else
                           Value="@PrimitiveText"
                           ValueChanged="SetPrimitiveText"
                           Immediate="true"
+                          Error="@_hasUnappliedText"
+                          ErrorText="Not a valid number, the previous value is still in use"
                           Variant="Variant.Outlined"
                           Dense="true"
                           Class="config-json-primitive-input" />
@@ -149,6 +151,9 @@ else
     private string? _newPropertyName;
     private string _newPropertyType = "String";
     private string _newArrayItemType = "String";
+    private string? _pendingText;
+    private JsonNode? _emittedValue;
+    private bool _hasUnappliedText;
 
     [Parameter]
     public string Name { get; set; } = string.Empty;
@@ -194,6 +199,11 @@ else
     {
         get
         {
+            if (_pendingText is not null)
+            {
+                return _pendingText;
+            }
+
             if (TryGetString(Value, out var stringValue))
             {
                 return stringValue;
@@ -222,6 +232,18 @@ else
                 _ => "Value",
             };
         }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (ReferenceEquals(Value, _emittedValue))
+        {
+            return;
+        }
+
+        _pendingText = null;
+        _emittedValue = null;
+        _hasUnappliedText = false;
     }
 
     private async Task SetObjectProperty(JsonObject jsonObject, string propertyName, JsonNode? value)
@@ -265,10 +287,37 @@ else
         await ValueChanged.InvokeAsync(JsonValue.Create(value));
     }
 
+    // Keeps the raw text local so a half-typed number ("", "-", "1.") doesn't get pushed as a string
     private async Task SetPrimitiveText(string text)
     {
-        var value = TryGetString(Value, out _) ? JsonValue.Create(text) : ParsePrimitiveText(text);
+        _pendingText = text;
+
+        if (!TryConvertPrimitiveText(text, out var value))
+        {
+            _hasUnappliedText = true;
+            return;
+        }
+
+        _hasUnappliedText = false;
+        _emittedValue = value;
         await ValueChanged.InvokeAsync(value);
+    }
+
+    private bool TryConvertPrimitiveText(string text, out JsonNode? value)
+    {
+        if (TryGetString(Value, out _))
+        {
+            value = JsonValue.Create(text);
+            return true;
+        }
+
+        if (Value is JsonValue jsonValue && IsNumberValue(jsonValue))
+        {
+            return TryParseNumber(text, out value);
+        }
+
+        value = ParsePrimitiveText(text);
+        return true;
     }
 
     private async Task NotifyChanged()
@@ -362,11 +411,12 @@ else
         };
     }
 
+    // Only reached for null-valued fields, where clearing the text means the field stays null.
     private static JsonNode? ParsePrimitiveText(string text)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
-            return JsonValue.Create(string.Empty);
+            return null;
         }
 
         try
@@ -376,18 +426,27 @@ else
         }
         catch (JsonException)
         {
-            if (long.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var longValue))
-            {
-                return JsonValue.Create(longValue);
-            }
-
-            if (double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var doubleValue))
-            {
-                return JsonValue.Create(doubleValue);
-            }
-
-            return JsonValue.Create(text);
+            return TryParseNumber(text, out var numberValue) ? numberValue : JsonValue.Create(text);
         }
+    }
+
+    private static bool TryParseNumber(string text, out JsonNode? value)
+    {
+        if (long.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var longValue))
+        {
+            value = JsonValue.Create(longValue);
+            return true;
+        }
+
+        // double.TryParse accepts "NaN" and "Infinity", which have no JSON representation and throw on serialize.
+        if (double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var doubleValue) && double.IsFinite(doubleValue))
+        {
+            value = JsonValue.Create(doubleValue);
+            return true;
+        }
+
+        value = null;
+        return false;
     }
 
     private static bool TryGetBoolean(JsonNode? node, out bool value)
