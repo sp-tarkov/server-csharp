@@ -50,11 +50,17 @@ public class PmcWaveGenerator(LocationTable locationTable, PmcConfig pmcConfig)
     /// <param name="location"> Location Object </param>
     public void ApplyWaveChangesToMap(LocationBase location)
     {
-        if (!pmcConfig.CustomPmcWaves.TryGetValue(location.Id.ToLowerInvariant(), out var pmcWavesToAdd))
+        if (pmcConfig.RemoveExistingPmcWaves && location.BossLocationSpawn != null)
         {
-            return;
+            var pmcTypes = new HashSet<string> { "pmcUSEC", "pmcBEAR" };
+            location.BossLocationSpawn = location
+                .BossLocationSpawn.Where(bossSpawn => !pmcTypes.Contains(bossSpawn.BossName))
+                .ToList();
         }
 
-        location.BossLocationSpawn.AddRange(pmcWavesToAdd);
+        if (pmcConfig.CustomPmcWaves.TryGetValue(location.Id.ToLowerInvariant(), out var pmcWavesToAdd))
+        {
+            location.BossLocationSpawn.AddRange(pmcWavesToAdd);
+        }
     }
 }

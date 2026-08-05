@@ -69,11 +69,6 @@ public class PostDbLoadService(
             openZoneService.ApplyZoneChangesToAllMaps();
         }
 
-        if (pmcConfig.RemoveExistingPmcWaves)
-        {
-            RemoveExistingPmcWaves();
-        }
-
         if (locationConfig.AddCustomBotWavesToMaps)
         {
             customLocationWaveService.ApplyWaveChangesToAllMaps();
@@ -516,22 +511,6 @@ public class PostDbLoadService(
             {
                 shotgun.Properties.shotgunDispersion = shotgun.Properties.ShotgunDispersion;
             }
-        }
-    }
-
-    protected void RemoveExistingPmcWaves()
-    {
-        var pmcTypes = new HashSet<string> { "pmcUSEC", "pmcBEAR" };
-        foreach (var (_, location) in locationTable.GetDictionary())
-        {
-            if (location?.Base?.BossLocationSpawn is null)
-            {
-                continue;
-            }
-
-            location.Base.BossLocationSpawn = location
-                .Base.BossLocationSpawn.Where(bossSpawn => !pmcTypes.Contains(bossSpawn.BossName))
-                .ToList();
         }
     }
 
