@@ -8,10 +8,10 @@ public abstract class AbstractProfileMigration : IProfileMigration
     public virtual string MigrationName { get; }
     public virtual IEnumerable<Type> PrerequisiteMigrations { get; } = [];
 
-    [Obsolete("Will be removed in the next version of SPT due to this property not being used.")]
+    [Obsolete("Property not used.")]
     public abstract string FromVersion { get; }
 
-    [Obsolete("Will be removed in the next version of SPT due to this property not being used.")]
+    [Obsolete("Property not used.")]
     public abstract string ToVersion { get; }
 
     public abstract bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations);

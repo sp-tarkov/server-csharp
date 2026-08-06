@@ -10,7 +10,7 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
-[Obsolete("This class will be removed in SPT 4.1 in favor for directly injecting the configuration into classes")]
+[Obsolete("Obsolete - Only for backwards compatibility, inject the config directly instead")]
 public class ConfigServer
 {
     protected readonly FrozenSet<string> acceptableFileExtensions = ["json", "jsonc"];
@@ -31,7 +31,7 @@ public class ConfigServer
         }
     }
 
-    [Obsolete("This method will be removed in SPT 4.1 in favor for directly injecting the configuration into classes")]
+    [Obsolete("Obsolete -  Inject the config directly instead")]
     public T GetConfig<T>()
         where T : BaseConfig
     {

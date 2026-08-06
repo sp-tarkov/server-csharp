@@ -31,7 +31,7 @@ public class SaveServer(
     protected const string profileFilepath = "user/profiles/";
 
     // onLoad = require("../bindings/SaveLoad");
-    [Obsolete("This will be removed in the next version of SPT")]
+    [Obsolete("Obsolete do not use")]
     protected readonly Dictionary<string, Func<SptProfile, SptProfile>> onBeforeSaveCallbacks = new();
 
     protected readonly ConcurrentDictionary<MongoId, SptProfile> profiles = new();
@@ -43,7 +43,7 @@ public class SaveServer(
     /// </summary>
     /// <param name="id"> ID for the save callback </param>
     /// <param name="callback"> Callback to execute prior to running SaveServer.saveProfile() </param>
-    [Obsolete("This will be removed in the next version of SPT")]
+    [Obsolete("Obsolete do not use")]
     public void AddBeforeSaveCallback(string id, Func<SptProfile, SptProfile> callback)
     {
         onBeforeSaveCallbacks[id] = callback;
@@ -53,7 +53,7 @@ public class SaveServer(
     ///     Remove a callback from being executed prior to saving profile in SaveServer.saveProfile()
     /// </summary>
     /// <param name="id"> ID of Callback to remove </param>
-    [Obsolete("This will be removed in the next version of SPT")]
+    [Obsolete("Obsolete do not use")]
     public void RemoveBeforeSaveCallback(string id)
     {
         onBeforeSaveCallbacks.Remove(id);
